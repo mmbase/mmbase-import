@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.71 2006-06-02 13:30:53 pierre Exp $
+ * @version $Id: TypeRel.java,v 1.72 2006-06-09 12:20:34 pierre Exp $
  * @see RelDef
  * @see InsRel
  * @see org.mmbase.module.core.MMBase
@@ -261,33 +261,27 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      * either allowed to be the source, or to be the destination (but where the corresponing
      * relation definition is bidirectional). The allowed relations are determined by the type of
      * the node
-     * @param mmnode The node to retrieve the allowed relations of.
+     * @param node The node to retrieve the allowed relations of.
      * @return An <code>Enumeration</code> of nodes containing the typerel relation data
      */
-    public Enumeration getAllowedRelations(MMObjectNode mmnode) {
-        return getAllowedRelations(mmnode.getBuilder().getNumber());
+    public Enumeration getAllowedRelations(MMObjectNode node) {
+        return getAllowedRelations(node.getBuilder().getNumber());
     }
 
     public Enumeration getAllowedRelations(int otype) {
-        // wrap into a set, because result of getBySource is unmodifiable
-        Set res = new HashSet(typeRelNodes.getBySource(otype)); // order does
-        // not matter
-        res.addAll(inverseTypeRelNodes.getByDestination(otype));
+        Set res = getAllowedRelations(otype, 0, 0, RelationStep.DIRECTIONS_BOTH);
         return Collections.enumeration(res);
     }
 
     /**
      * Retrieves all relations which are 'allowed' between two specified nodes. No distinction
      * between source / destination.
-     * @param n1 The first objectnode
-     * @param n2 The second objectnode
+     * @param node1 The first objectnode
+     * @param node2 The second objectnode
      * @return An <code>Enumeration</code> of nodes containing the typerel relation data
      */
-    public Enumeration getAllowedRelations(MMObjectNode n1, MMObjectNode n2) {
-        int builder1 = n1.getOType();
-        int builder2 = n2.getOType();
-        return getAllowedRelations(builder1, builder2);
-
+    public Enumeration getAllowedRelations(MMObjectNode node1, MMObjectNode node2) {
+        return getAllowedRelations(node1.getOType(), node2.getOType());
     }
 
     /**
@@ -296,8 +290,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      *
      */
     public Enumeration getAllowedRelations(int builder1, int builder2) {
-        Set res = new HashSet(typeRelNodes.getBySourceDestination(builder1, builder2));
-        res.addAll(inverseTypeRelNodes.getByDestinationSource(builder2, builder1));
+        Set res = getAllowedRelations(builder1, builder2, 0, RelationStep.DIRECTIONS_BOTH);
         return Collections.enumeration(res);
     }
 
@@ -308,8 +301,23 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      * @since MMBase-1.6.2
      */
     public Set getAllowedRelations(int builder1, int builder2, int role) {
-        Set res = new HashSet(typeRelNodes.getBySourceDestinationRole(builder1, builder2, role));
-        res.addAll(inverseTypeRelNodes.getByDestinationSourceRole(builder2, builder1, role));
+        return getAllowedRelations(builder1, builder2, role, RelationStep.DIRECTIONS_BOTH);
+    }
+
+    /**
+     * A Set of all allowed relations of a certain role between two builders. Distinction is made between
+     * source and destination depending on passed directionality.
+     *
+     * @since MMBase-1.6.2
+     */
+    public Set getAllowedRelations(int builder1, int builder2, int role, int directionality) {
+        Set res = new HashSet();
+        if (directionality != RelationStep.DIRECTIONS_SOURCE) {
+            res.addAll(typeRelNodes.getBySourceDestinationRole(builder1, builder2, role));
+        }
+        if (directionality != RelationStep.DIRECTIONS_DESTINATION && (directionality != RelationStep.DIRECTIONS_EITHER || res.isEmpty())) {
+            res.addAll(inverseTypeRelNodes.getByDestinationSourceRole(builder2, builder1, role));
+        }
         return res;
     }
 
@@ -703,29 +711,36 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
 
         // find some subsets:
         SortedSet getBySource(MMObjectBuilder source) {
-            return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(source.getNumber(), 0, 0),
-                                                            new VirtualTypeRelNode(source.getNumber() + 1, 0, 0)));
+            return getBySourceDestinationRole(source.getNumber(), 0, 0);
         }
 
-        SortedSet getBySource(int sourceOType) {
-            return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(sourceOType, 0, 0),
-                                                            new VirtualTypeRelNode(sourceOType + 1, 0, 0)));
-        }
-
-        SortedSet getBySourceDestination(int source, int destination) {
-            return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(source, destination, 0),
-                                                            new VirtualTypeRelNode(source, destination + 1, 0)));
+        SortedSet getBySource(int source) {
+            return getBySourceDestinationRole(source, 0, 0);
         }
 
         SortedSet getBySourceDestination(MMObjectBuilder source, MMObjectBuilder destination) {
-            return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(source.getNumber(), destination.getNumber(), 0),
-                                                            new VirtualTypeRelNode(source.getNumber(), destination.getNumber() + 1, 0)));
+            return getBySourceDestinationRole(source.getNumber(), destination.getNumber(), 0);
+        }
+
+        SortedSet getBySourceDestination(int source, int destination) {
+            return getBySourceDestinationRole(source, destination, 0);
         }
 
         SortedSet getBySourceDestinationRole(int source, int destination, int role) {
-            return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(source, destination, role),
-                                                            new VirtualTypeRelNode(source, destination, role + 1)));
+            // determine minimum value - corrects in case '-1' (common MMBase value for N.A.) is passed
+            int roleMin = role <= 0  ? 0 : role;
+            int destinationMin = destination <= 0  ? 0 : destination;
+            int sourceMin = source <= 0  ? 0 : source;
+
+            // determine maximum value
+            int roleMax = role <= 0  ? 0 : role + 1; // i.e. source, destination, role
+            int destinationMax = role <= 0 ? destination + 1 : destination; // i.e. source, destination, 0
+            int sourceMax = (destination <= 0 && role <= 0) ? (source <= 0  ? 0 : source + 1) : source; // i.e. source, 0, 0
+
+            return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(sourceMin, destinationMin, roleMin),
+                                                            new VirtualTypeRelNode(sourceMax, destinationMax, roleMax)));
         }
+
     }
 
     /**
@@ -765,29 +780,36 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         }
 
         SortedSet getByDestination(MMObjectBuilder destination) {
-            return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(0, destination.getNumber(), 0),
-                                                            new VirtualTypeRelNode(0, destination.getNumber() + 1, 0)));
+            return getByDestinationSourceRole(0, destination.getNumber(), 0);
         }
 
-        SortedSet getByDestination(int destinationOType) {
-            return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(0, destinationOType, 0),
-                                                            new VirtualTypeRelNode(0, destinationOType + 1, 0)));
-        }
-
-        SortedSet getByDestinationSource(int source, int destination) {
-            return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(source, destination, 0),
-                                                            new VirtualTypeRelNode(source + 1, destination, 0)));
+        SortedSet getByDestination(int destination) {
+            return getByDestinationSourceRole(0, destination, 0);
         }
 
         SortedSet getByDestinationSource(MMObjectBuilder source, MMObjectBuilder destination) {
-            return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(source.getNumber(), destination.getNumber(), 0),
-                                                            new VirtualTypeRelNode(source.getNumber() + 1, destination.getNumber(), 0)));
+            return getByDestinationSourceRole(source.getNumber(), destination.getNumber(), 0);
+        }
+
+        SortedSet getByDestinationSource(int source, int destination) {
+            return getByDestinationSourceRole(source, destination, 0);
         }
 
         SortedSet getByDestinationSourceRole(int source, int destination, int role) {
-            return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(source, destination, role),
-                                                            new VirtualTypeRelNode(source, destination, role + 1)));
+            // determine minimum value - corrects in case '-1' (common MMBase value for N.A.) is passed
+            int roleMin = role <= 0  ? 0 : role;
+            int sourceMin = source <= 0  ? 0 : source;
+            int destinationMin = destination <= 0  ? 0 : destination;
+
+            // determine maximum value
+            int roleMax = role <= 0  ? 0 : role + 1; // i.e. source, destination, role
+            int sourceMax = role <= 0 ? (source <= 0  ? 0 : source + 1) : source; // i.e. source, destination, 0
+            int destinationMax = (source <= 0 && role <= 0) ? destination + 1 : destination; // i.e. 0, destination, 0
+
+            return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(sourceMin, destinationMin, roleMin),
+                                                            new VirtualTypeRelNode(sourceMax, destinationMax, roleMax)));
         }
+
     }
 
     /**
