@@ -28,8 +28,9 @@ import javax.servlet.jsp.PageContext;
  * yammeditor.jsp?nrs=76&fields=76_number;76_title;76_subtitle;76_intro;80_gui();
  *
  * @author Andr&eacute; van Toly
- * @version $Id: YAMMEditor.java,v 1.8 2006-03-15 02:21:04 michiel Exp $
- * @see EditTag, Editor
+ * @version $Id: YAMMEditor.java,v 1.9 2006-06-10 11:22:37 andre Exp $
+ * @see EditTag
+ * @see BasicEditor
  * @since MMBase-1.8
  */
 
