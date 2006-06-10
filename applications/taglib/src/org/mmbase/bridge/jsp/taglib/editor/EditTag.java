@@ -47,8 +47,10 @@ import org.xml.sax.InputSource;
  *
  * @author Andr&eacute; van Toly
  * @author Michiel Meeuwissen
- * @version $Id: EditTag.java,v 1.15 2006-03-28 22:33:06 michiel Exp $
- * @see Editor, BasicEditor, YAMMEditor
+ * @version $Id: EditTag.java,v 1.16 2006-06-10 11:22:37 andre Exp $
+ * @see Editor
+ * @see BasicEditor
+ * @see YAMMEditor
  * @since MMBase-1.8
  */
 public class EditTag extends CloudReferrerTag implements ParamHandler {

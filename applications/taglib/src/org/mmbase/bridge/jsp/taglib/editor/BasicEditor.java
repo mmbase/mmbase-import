@@ -27,9 +27,9 @@ import org.mmbase.util.logging.Logging;
  * of the very first field the edittag encounters, with an icon to click on.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: BasicEditor.java,v 1.6 2006-04-25 18:35:28 michiel Exp $
+ * @version $Id: BasicEditor.java,v 1.7 2006-06-10 11:22:37 andre Exp $
  * @see EditTag
- * @see Editor
+ * @see YAMMEditor
  * @since MMBase-1.8
  */
 
