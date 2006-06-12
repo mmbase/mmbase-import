@@ -4,7 +4,7 @@
   <articleinfo>
     <title>MMBase Builder Configuration</title>
     <date>2005-12-18</date>
-    <edition>$Id: builders.xml,v 1.14 2005-12-18 10:18:25 michiel Exp $</edition>
+    <edition>$Id: builders.xml,v 1.15 2006-06-12 17:53:30 andre Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Pierre</firstname>
@@ -149,7 +149,7 @@
         <example>
         <title>Example Class Tag</title>
          <programlisting ><![CDATA[
-<classfile>com.mycompany.mmbase.builders.MyPeople</classfile>
+<class>com.mycompany.mmbase.builders.MyPeople</class>
          ]]></programlisting>
         </example>
       </section>
@@ -240,7 +240,7 @@
       <section>
         <title>&lt;properties&gt;</title>
         <anchor id="properties" />
-        <para>A list of name-value pairs, used by the java class specified in the <emphasis>classfile</emphasis> as configuration parameters. You normally only specify properties for objects with specific behavior (such as Images).</para>
+        <para>A list of name-value pairs, used by the java class specified in <emphasis>class</emphasis> as configuration parameters. You normally only specify properties for objects with specific behavior (such as Images).</para>
         <section>
           <title>&lt;property&gt;</title>
           <anchor id="property" />
