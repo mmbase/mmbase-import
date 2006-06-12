@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.66 2006-04-10 15:19:51 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.67 2006-06-12 09:01:59 pierre Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -597,20 +597,27 @@ public class BuilderReader extends DocumentReader {
         if (guiTypeElement != null && collector != null) {
             String guiType = getElementValue(guiTypeElement);
             if (!guiType.equals("")) {
-                // The guitype is deprecated. Normally coincides with datatype's id.
-                // 'string' is an exception, it is surrogated with the datatype 'line'.
-                if ("string".equals(guiType)) {
-                    guiType = "line";
-                    if (log.isDebugEnabled()) {
-                        log.debug("Converted deprecated guitype 'string' for field " + (builder != null ? builder.getTableName() + "."  : "") + fieldName + " with datatype 'line'.");
-                    }
-                }
-
-                dataType = collector.getDataTypeInstance(guiType, baseDataType);
-                if (dataType == null) {
-                    log.warn("Could not find data type for " + baseDataType + " / " + guiType + " for builder: '" + builder.getTableName() + "'");
+                if (guiType.indexOf('.') != -1) {
+                    // apparently, this is a class path, which means it is an enumeration
+                    dataType = (BasicDataType) baseDataType.clone();
+                    dataType.getEnumerationFactory().addBundle(guiType, getClass().getClassLoader(), null, dataType.getTypeAsClass(), null);
                 } else {
-                    if (log.isDebugEnabled()) log.debug("Found data type for " + baseDataType + " / " + guiType + " " + dataType);
+                    // The guitype is deprecated. Normally coincides with datatype's id.
+                    // 'string' is an exception, it is surrogated with the datatype 'line'.
+                    if ("string".equals(guiType)) {
+                        guiType = "line";
+                        if (log.isDebugEnabled()) {
+                            log.debug("Converted deprecated guitype 'string' for field " + (builder != null ? builder.getTableName() + "."  : "") + fieldName + " with datatype 'line'.");
+                        }
+                    }
+                    // TODO: check for builder names when the type is NODE
+
+                    dataType = collector.getDataTypeInstance(guiType, baseDataType);
+                    if (dataType == null) {
+                        log.warn("Could not find data type for " + baseDataType + " / " + guiType + " for builder: '" + builder.getTableName() + "'");
+                    } else {
+                        if (log.isDebugEnabled()) log.debug("Found data type for " + baseDataType + " / " + guiType + " " + dataType);
+                    }
                 }
             }
         }
@@ -649,11 +656,11 @@ public class BuilderReader extends DocumentReader {
             dataType = (BasicDataType) DataTypeReader.readDataType(dataTypeElement, requestedBaseDataType, collector).dataType;
             log.debug("Found datatype " + dataType + " for field " + fieldName);
         }
-        
+
 
         if (dataType == null && forceInstance) {
             // DataType is null if no data type element was found
-            // I'm not sure if also  if DataTypeReadreadDataType failed somehow (it not so, this could be in the 'else' of the above 'if' and be easier to see.)            
+            // I'm not sure if also  if DataTypeReadreadDataType failed somehow (it not so, this could be in the 'else' of the above 'if' and be easier to see.)
             dataType = (BasicDataType) baseDataType.clone(""); // clone with empty id
         }
 
