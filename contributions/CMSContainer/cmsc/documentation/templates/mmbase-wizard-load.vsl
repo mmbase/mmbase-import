@@ -1,0 +1,33 @@
+##
+##
+## UML2MMBase module.
+##
+## The contents of this file are subject to the Mozilla Public License
+##
+## Version 1.0 (the "License"); you may not use this file except in
+## compliance with the License. You may obtain a copy of the License at
+## http://www.mozilla.org/MPL/
+##
+## Software distributed under the License is distributed on an "AS IS"
+## basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+## License for the specific language governing rights and limitations
+## under the License.
+##
+<?xml version="1.0"?>
+<!DOCTYPE action PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<action type="load">
+## bepaal alle attributen in zowel de class, interfaces als superclasses
+#set ($attributes = $transform.getAllAttributes($class.id,"true","true","true",""))
+#foreach ( $att in $attributes )
+   #if (!$att.optionListDefinition)
+      <field name="$transform.toLowerCase($transform.getAttributeName($att))"/>
+   #else
+      <field name="$transform.toLowerCase($transform.getAttributeName($att))" ftype="enum">
+         <optionlist select ="${att.optionListDefinition}"/>
+      </field>
+   #end
+#end
+#foreach ( $rel in $transform.relationHelper.getRelations($class))
+   <relation destination="$rel.targetName" role="$rel.type"/>
+#end
+</action>
