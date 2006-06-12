@@ -7,7 +7,7 @@
 
     <date>2005-12-12</date>
 
-    <edition>$Id: index.xml,v 1.55 2006-06-09 10:44:51 andre Exp $</edition>
+    <edition>$Id: index.xml,v 1.56 2006-06-12 12:14:11 andre Exp $</edition>
 
     <authorgroup>
       <author>
@@ -237,6 +237,12 @@
         <para>HOW TO: Add a custom function to a nodebuilder ( <ulink
         url="backenddevelopers/custombuilderclass.html">HTML</ulink>, <ulink
         url="backenddevelopers/custombuilderclass.pdf">PDF</ulink> )</para>
+      </listitem>
+
+      <listitem>
+        <para>The MMBase Function sets ( <ulink
+        url="backenddevelopers/functionsets.html">HTML</ulink>, <ulink
+        url="backenddevelopers/functionsets.pdf">PDF</ulink> )</para>
       </listitem>
 
       <listitem>
