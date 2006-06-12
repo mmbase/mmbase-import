@@ -1,0 +1,1 @@
+build build cmsc designnlDemo && build deploy-tomcat designnlDemo
