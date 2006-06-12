@@ -45,15 +45,19 @@
    String rubriekID = "";
    boolean hasEditwizards = false;
 	
-	HashMap hmUnusedItems = (HashMap)application.getAttribute("UnusedItems");
 	int iTotalNotUsed = 0;
-	if (hmUnusedItems != null){
-		String account = cloud.getUser().getIdentifier();
-		ArrayList alUnusedNodes = (ArrayList) hmUnusedItems.get(account);
-		if(alUnusedNodes!=null) {
-			iTotalNotUsed = alUnusedNodes.size();
-		}
-	} 
+	String account = cloud.getUser().getIdentifier();
+	String unused_items = cloud.getNodeManager("users").getList("users.account = '" + account + "'",null,null).getNode(0).getStringValue("unused_items");
+	if (unused_items!=null&&(!unused_items.equals(""))){
+		String contentElementConstraint = " contentelement.number IN (0, " + unused_items + ") ";
+		NodeList nlObjects = cloud.getList("",
+                                 "contentelement",
+                                 "contentelement.number",
+                                 contentElementConstraint,
+                                 null,null,null,true);
+		iTotalNotUsed = nlObjects.size();
+		application.setAttribute("unused_items",unused_items);
+	}
 	String unusedItemsLink = "";
 	if (iTotalNotUsed>0) {
 		unusedItemsLink = "<td><a href='beheerbibliotheek/view_unused_items.jsp' target='bottompane' title='bekijk niet gebruikte contentelementen uit de door u beheerde rubrieken'>"

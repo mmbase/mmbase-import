@@ -67,20 +67,13 @@ if (searchIsOn) {
    }
 	
 	if (show_unused){
-		contentElementConstraint = " contentelement.number IN (0";
-		HashMap hmUnusedItems = (HashMap)application.getAttribute("UnusedItems");
-		String account = cloud.getUser().getIdentifier();
-		ArrayList alUnusedNodes = (ArrayList)hmUnusedItems.get(account);
-		Iterator it = alUnusedNodes.iterator();
-		while (it.hasNext()){
-			contentElementConstraint += "," + it.next();
-		}
-		contentElementConstraint += ") ";
+		String unused_items = (String) application.getAttribute("unused_items");
+		contentElementConstraint = " contentelement.number IN (0, " + unused_items + ") ";
 	}
 	
    String objects = "";
-   if(contentElementConstraint!=null && !"".equals(contentElementConstraint)) {
-      queryLog += ", using cc=" +  contentElementConstraint; 
+   if((contentElementConstraint!=null && !"".equals(contentElementConstraint))||show_unused) {
+     	queryLog += ", using cc=" +  contentElementConstraint; 
       NodeList nlObjects = cloud.getList("",
                                  "contentelement",
                                  "contentelement.number",
