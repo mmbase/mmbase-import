@@ -97,7 +97,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.35 2006-03-29 00:04:54 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.36 2006-06-12 08:19:01 nklasens Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -1563,9 +1563,15 @@ public class ResourceLoader extends ClassLoader {
                 return NOT_AVAILABLE_URLSTREAM_HANDLER.openConnection(name);
             }
         }
+
         public Set getPaths(final Set results, final Pattern pattern,  final boolean recursive, final boolean directories) {
+            return getPaths(results, pattern, recursive, directories, "");
+        }
+
+        private Set getPaths(final Set results, final Pattern pattern, final boolean recursive, final boolean directories, String resourceDir) {
             try {
-                Enumeration e = getResources(INDEX);
+                List subDirs = new ArrayList();
+                Enumeration e = getResources("".equals(resourceDir) ? INDEX : resourceDir + INDEX);
                 while (e.hasMoreElements()) {
                     URL u = (URL) e.nextElement();
                     InputStream inputStream = u.openStream();
@@ -1580,20 +1586,25 @@ public class ResourceLoader extends ClassLoader {
                                 if (line.equals("")) continue;     // support for empty lines
                                 if (directories) {
                                     line = getDirectory(line);
-                                    //subDirs.add(line);
-                                } else {
-                                    //subDirs.add(getDirectory(line));
                                 }
                                 if (pattern == null || pattern.matcher(line).matches()) {
-                                    results.add(line);
+                                    results.add("".equals(resourceDir) ? line : resourceDir + line);
+                                }
+                                if (line.endsWith("/")) {
+                                    subDirs.add("".equals(resourceDir) ? line : resourceDir + line);
                                 }
                             }
                         } catch (IOException ioe) {
                         } finally {
                             reader.close();
                         }
-                    } else {
-
+                    }
+                }
+                if (recursive) {
+                    for (Iterator iter = subDirs.iterator(); iter.hasNext();) {
+                        String dir = (String) iter.next();
+                        String newDir = "".equals(resourceDir) ? dir : resourceDir + dir;
+                        getPaths(results, pattern, recursive, directories, newDir);
                     }
                 }
             } catch (IOException ioe) {
