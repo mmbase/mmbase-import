@@ -113,8 +113,6 @@ See http://www.MMBase.org/license
 	</goal>
 
 
-<!-- This does not work the same way as the ant build does.
-	We have to change more in the build to get it working
 	<preGoal name="jar:jar">
 	    <util:available file="${maven.build.dest}/org/mmbase/config">
 	    <fileScanner var="scanner">
@@ -127,11 +125,47 @@ See http://www.MMBase.org/license
 		    		<include name="*"/>
 		    	</fileset>
 		    </fileScanner>
-## Generate INDEX file with each filename on a new line ##
+<!-- ## Generate INDEX file with each filename and directory on a new line ## -->
 <echo file="${dir.path}/INDEX"><j:forEach var="file" items="${filescan.iterator()}">${file.name}
+</j:forEach><j:forEach var="filedir" items="${filescan.directories()}">${filedir.name}/
 </j:forEach></echo>
     	</j:forEach>
     	</util:available>
 	</preGoal>
--->
+
+  <goal name="jellyVars">
+      <ant:echo>POM ARTIFACT: ${pom.artifactId}</ant:echo>
+      <ant:echo>POM ID: ${pom.id}</ant:echo>
+      <ant:echo>POM NAME: ${pom.name}</ant:echo>
+      <ant:echo>POM GROUP: ${pom.groupId}</ant:echo>
+      <ant:echo>POM VERSION: ${pom.currentVersion}</ant:echo>
+      <ant:echo>POM DESCRIPTION: ${pom.shortDescription}</ant:echo>
+      <ant:echo>POM ORGANIZATION: ${pom.organization.name}</ant:echo>
+      <ant:echo>POM URL: ${pom.organization.url}</ant:echo>
+      <ant:echo></ant:echo>
+      
+      <j:forEach var="lib" items="${pom.artifacts}">
+        <j:set var="dep" value="${lib.dependency}"/>
+        <j:set var="name" value="${lib.file.name}"/>
+        <j:set var="parent" value="${lib.file.parent}"/>
+        <j:set var="artifact" value="${dep.artifact}"/>
+        <j:set var="id" value="${dep.id}"/>
+        <j:set var="group" value="${dep.artifactDirectory}"/>
+        <j:set var="version" value="${dep.version}"/>
+        <j:set var="type" value="${dep.type}"/>
+        <j:set var="depname" value="${dep.artifactId}"/>
+
+        <ant:echo>LIB: ${lib}</ant:echo>
+        <ant:echo>DEP: ${dep}</ant:echo>
+        <ant:echo>NAME: ${name}</ant:echo>
+        <ant:echo>PARENT: ${parent}</ant:echo>
+        <ant:echo>ARTIFACT: ${artifact}</ant:echo>
+        <ant:echo>ID: ${id}</ant:echo>
+        <ant:echo>GROUP: ${group}</ant:echo>
+        <ant:echo>VERSION: ${version}</ant:echo>
+        <ant:echo>TYPE: ${type}</ant:echo>
+        <ant:echo>DEPNAME: ${depname}</ant:echo>
+        <ant:echo></ant:echo>
+      </j:forEach>
+  </goal>
 </project>

@@ -18,7 +18,7 @@
 	    	<j:forEach var="library" items="${libScanner.iterator()}">
 				<ant:unjar src="${library}" dest="${maven.war.webapp.dir}/WEB-INF/classes">
 					<patternset>
-						<include name="org/mmbase/config/**"/>
+						<include name="org/mmbase/config/applications/**/builders/**" />
 					</patternset>
 				</ant:unjar>
 	    	</j:forEach>
@@ -49,6 +49,51 @@
 			    </j:if>
 			</j:forEach>
 		</util:available>
+
+    <echo file="${maven.war.webapp.dir}/WEB-INF/config/datatypes.xml"><![CDATA[<?xml version="1.0" ?>
+<datatypes
+    xmlns="http://www.mmbase.org/xmlns/datatypes"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes
+    http://www.mmbase.org/xmlns/datatypes.xsd">
+    <!--
+    This is a template datatypes.xml
+    You can add your own datatypes here.
+    The default data types can be found in jar:file:mmbase.jar!/org/mmbase/config/datatypes.xml, and
+    can be used as an example.
+    Every jar can contains its own data types in the same fashion.
+  -->
+</datatypes>
+]]></echo>
+
+    <mkdir dir="${maven.war.webapp.dir}/WEB-INF/config/functions" />
+    <echo file="${maven.war.webapp.dir}/WEB-INF/config/functions/functionsets.xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE functionsets PUBLIC "-//MMBase//DTD functionsets config 1.0//EN" "http://www.mmbase.org/dtd/functionsets_1_0.dtd">
+<functionsets>
+    <!--
+    This is a template functionsets.xml
+    You can add your own function sets here.
+    The default function sets can be found in jar:file:mmbase.jar!/org/mmbase/config/functions/functionsets.xml, and
+    can be used as an example.
+    Every jar can contains its own sets in the same fashion.
+  -->
+</functionsets>
+ ]]></echo>
+
+    <echo file="${maven.war.webapp.dir}/WEB-INF/config/security/classauthentication.xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE security PUBLIC "-//MMBase//DTD classsecurity config 1.0//EN" "http://www.mmbase.org/dtd/classsecurity_1_0.dtd">
+<security>
+  <!--
+    You can connect classes to security authentication here.
+    Some mmbase classes are authorized on default.
+    See jar:file:mmbase.jar!/org/mmbase/config/security/classauthentication.xml
+    Every jar can contains a classauthentication.xml of its own in the same fashion.
+  -->
+
+  -->
+</security>
+ ]]></echo>
+
 	</preGoal>
-	
+
 </project>

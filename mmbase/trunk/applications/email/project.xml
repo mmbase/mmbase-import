@@ -29,4 +29,27 @@ See http://www.MMBase.org/license
 			</properties>
 	    </dependency>
     </dependencies>
+	<build>    
+        <resources>
+            <resource>
+                <directory>${basedir}/src</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                    <include>**/*.dtd</include>
+                    <include>**/*.xsd</include>
+                    <include>**/*.properties</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <targetPath>org/mmbase/config</targetPath>
+                <directory>config</directory>
+                <excludes>
+                    <exclude>"**/CVS"</exclude>
+                    <exclude>applications/EmailExamples/**</exclude>
+                    <exclude>applications/EmailExamples.xml</exclude>
+                </excludes>
+            </resource>
+        </resources>
+    </build>
 </project>
