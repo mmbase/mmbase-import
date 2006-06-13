@@ -170,7 +170,7 @@ Rubriek:
       </tr> 
     <tr><td valign="top">Notitie</td><td><html:textarea property="notitie" cols='40' rows='4'/></td></tr>   
     <tr><td valign="top">Metatags</td><td><html:text property="metatags" size='40' maxlength='40'/></td></tr>
-    <tr><td valign="top">Embargo</td><td><html:text property="embargodag" size='2' maxlength='2'/>-<html:text property="embargomaand" size='2' maxlength='2'/>-<html:text property="embargojaar" size='4' maxlength='4'/>&nbsp;&nbsp;<a href="javascript:popUpCalendarEmbargo()" ><img src='../../calendar/show-calendar-on-button.gif' width='24' height='24' align='absmiddle' border='0'></a><input type="hidden" name="embargo">
+    <tr><td valign="top">Publiceerdatum</td><td><html:text property="embargodag" size='2' maxlength='2'/>-<html:text property="embargomaand" size='2' maxlength='2'/>-<html:text property="embargojaar" size='4' maxlength='4'/>&nbsp;&nbsp;<a href="javascript:popUpCalendarEmbargo()" ><img src='../../calendar/show-calendar-on-button.gif' width='24' height='24' align='absmiddle' border='0'></a><input type="hidden" name="embargo">
         <span class="notvalid"><html:errors bundle="LEOCMS" property="embargo" /></span></td>
     </tr>       
     <tr><td valign="top">Verloopdatum</td><td><html:text property="verloopdatumdag" size='2' maxlength='2'/>-<html:text property="verloopdatummaand" size='2' maxlength='2'/>-<html:text property="verloopdatumjaar" size='4' maxlength='4'/>&nbsp;&nbsp;<a href="javascript:popUpCalendarVerloop()" ><img src='../../calendar/show-calendar-on-button.gif' width='24' height='24' align='absmiddle' border='0'><input type="hidden" name="verloopdatum"></a>
