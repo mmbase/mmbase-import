@@ -18,7 +18,7 @@ import org.mmbase.module.core.*;
  * A list of relations
  *
  * @author Pierre van Rooden
- * @version $Id: BasicRelationList.java,v 1.20 2005-12-29 19:10:49 michiel Exp $
+ * @version $Id: BasicRelationList.java,v 1.21 2006-06-13 19:08:31 michiel Exp $
  */
 public class BasicRelationList extends BasicNodeList implements RelationList {
 
@@ -39,10 +39,11 @@ public class BasicRelationList extends BasicNodeList implements RelationList {
             if (((MMObjectNode) o).getBuilder() instanceof org.mmbase.module.corebuilders.InsRel) {
                 return o;
             } else {
-                throw new IllegalArgumentException("requires a relation node");
+                throw new IllegalArgumentException("Requires a relation node, but builder of " + o + " is " + ((MMObjectNode) o).getBuilder());
             }
         } else {
-            return (Relation)o;
+            if (! (o instanceof Relation)) throw new ClassCastException("" + o + " is not a Relation, but a "  + o.getClass());
+            return o;
         }
     }
 
