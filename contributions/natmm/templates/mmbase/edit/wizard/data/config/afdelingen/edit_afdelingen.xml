@@ -11,7 +11,7 @@
    <field name="creatiedatum" ftype="data"><prompt>creatiedatum</prompt></field>
    <field name="datumlaatstewijziging" ftype="data"><prompt>datumlaatstewijziging</prompt></field>
    <!-- field name="embargo" ><prompt>verschijnt op website vanaf</prompt></field -->
-   <!-- field name="verloopdatum" ><prompt>verwijdert van website op</prompt></field -->
+   <!-- field name="verloopdatum" ><prompt>verwijderd van website op</prompt></field -->
    <!-- field name="reageer" ><prompt>reageer</prompt></field -->
    <!-- field name="status" ><prompt>status</prompt></field -->
    <field name="bezoekadres" ><prompt>bezoekadres</prompt></field>
