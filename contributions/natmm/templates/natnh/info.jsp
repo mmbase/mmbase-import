@@ -24,7 +24,7 @@ if(!articleId.equals("-1")) {
 
 } else {  
 
-	String articleConstraint =	"artikel.embargo < " + nowSec + "  AND (artikel.use_verloopdatum='0' OR artikel.verloopdatum > '" + nowSec + "' )";
+	String articleConstraint =	"artikel.embargo < " + (nowSec + 15*60) + "  AND (artikel.use_verloopdatum='0' OR artikel.verloopdatum > '" + nowSec + "' )";
 	%><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel" 
 		orderby="artikel.embargo" directions="DOWN" 
 		offset="<%= "" + thisOffset*10 %>" max="10" constraints="<%= articleConstraint %>">
