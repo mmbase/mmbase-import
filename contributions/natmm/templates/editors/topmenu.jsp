@@ -28,9 +28,10 @@
 <mm:import id="referrer"><%=new java.io.File(request.getServletPath())%>?language=<mm:write  referid="language" /></mm:import>
 <mm:import id="jsps"><%= editwizard_location %>/jsp/</mm:import>
 <mm:import id="debug">false</mm:import>
-
 <%
 	ApplicationHelper ap = new ApplicationHelper();
+	RubriekHelper rh = new RubriekHelper(cloud);
+	PaginaHelper ph = new PaginaHelper(cloud);
 	
    String contentModusProperty = PropertiesUtil.getProperty("content.modus");
    if ((contentModusProperty != null) && (contentModusProperty.equals("on"))) {
@@ -63,72 +64,89 @@
 		unusedItemsLink = "<td><a href='beheerbibliotheek/view_unused_items.jsp' target='bottompane' title='bekijk niet gebruikte contentelementen uit de door u beheerde rubrieken'>"
 			+ "<img src='img/delete.gif' style='vertical-align:bottom;'>(" + iTotalNotUsed + ")</a><td>";
 	}
+	TreeSet tsRubrieks = new TreeSet();
+	boolean isEventUser = false;
+	String sNatuurinNumber = cloud.getNode("natuurin_rubriek").getStringValue("number");
 	%>
 <mm:listnodes type="users" constraints="<%= "[account]='" + cloud.getUser().getIdentifier() + "'" %>" max="1" id="thisuser">
-   <mm:related path="rolerel,rubriek" max="1">
-      <mm:node element="rubriek">
-         <mm:aliaslist>
-		      <mm:write jspvar="rubriek_alias" vartype="String" write="false">
-               <% rubriekID = rubriek_alias; %>
-            </mm:write>
-         </mm:aliaslist>
-      </mm:node>
+   <mm:related path="rolerel,rubriek">
+      <mm:field name="rubriek.number" jspvar="rubriek_number" vartype="String" write="false">
+			<mm:field name="rubriek.level" jspvar="rubriek_level" vartype="String" write="false">
+				<%
+				if(rubriek_number.equals(sNatuurinNumber)){
+					isEventUser = true;
+				}
+				if(rubriek_level.equals("0")) { //put children of this rubriek in list 
+					%>
+					<mm:list nodes="<%= rubriek_number %>" path="rubriek1,parent,rubriek2">
+						<mm:field name="rubriek2.number" jspvar="rubriek2_number" vartype="String" write="false">
+							<% tsRubrieks.add(rubriek2_number); %>
+						</mm:field>
+					</mm:list>
+					<% 
+				} else if (rubriek_level.equals("1")) { // this is a root rubriek
+					tsRubrieks.add(rubriek_number);
+            } else { // add the root rubriek of this rubriek
+					tsRubrieks.add(PaginaHelper.getRootRubriek(cloud,rubriek_number));
+            } %>
+			</mm:field>	
+      </mm:field>
    </mm:related>
    <mm:related path="gebruikt,editwizards" max="1">
       <% hasEditwizards = true; %>
    </mm:related>
 </mm:listnodes>
-<h1 style="text-align:center;width:100%;">Beheeromgeving <mm:node number="root" notfound="skipbody"><mm:field name="naam" /></mm:node></h1>
-<table class="formcontent" style="background-color:#E4F0F7;width:auto;"><tr>
+<div style="position:absolute;left:5px;top:5px;z-index:100;overflow:auto;"><small>
 <% 
-if(rubriekID.equals("naardermeer")) { 
-   %>
-   <td class="fieldname"><a href="/naardermeer" target="_blank" class="menu" title="bekijk de website">Website</a></td>
-   <td class="fieldname"><a href="beheerbibliotheek/index.jsp?refreshFrame=bottompane" target="bottompane" class="menu" title="beheer de contentelementen via de bibliotheek">Bibliotheek</a></td><%= unusedItemsLink %>
-   <td class="fieldname"><a href="paginamanagement/frames.jsp" target="bottompane" class="menu" title="beheer rubrieken en paginas">Pagina-editor</a></td>
-   <td class="fieldname"><a href="usermanagement/changepassword.jsp" target="bottompane" class="menu" title="wijzig uw wachtwoord">Wijzig wachtwoord</a></td>
-   <td class="fieldname"><a href="logout.jsp" target="_top" class="menu" title="log uit als gebruiker">Uitloggen</a></td>
-   <% 
-} else if(rubriekID.equals("natuurin_rubriek")) {
-   %>
-   <td class="fieldname"><a href="/activiteiten" target="_blank" class="menu" title="bekijk de website">Website</a></td>
-   <td class="fieldname"><a href="evenementen/evenementen.jsp" target="bottompane" class="menu" title="beheer activiteiten en boek aanmeldingen">Activiteiten</a></td>
-   <% 
-   if(hasEditwizards) {
-      %><td class="fieldname"><a href="paginamanagement/frames.jsp" target="bottompane" class="menu" title="beheer rubrieken en paginas">Pagina-editor</a></td><%
-   } %>
-   <td class="fieldname"><a href="usermanagement/changepassword.jsp" target="bottompane" class="menu" title="wijzig uw wachtwoord">Wijzig wachtwoord</a></td>
-   <td class="fieldname"><a href="logout.jsp" target="_top" class="menu" title="log uit als gebruiker">Uitloggen</a></td>
-   <% 
-} else if(!rubriekID.equals("")) {
-   %>
-   <%--
-   <td class="fieldname"><a href="signalering/takenlijst.jsp" target="bottompane" class="menu">Takenlijst</a></td>
-   <td lass="fieldname"><a href="../workflow/workflow.jsp" target="bottompane" class="menu">Workflow</a></td>
-   --%>
-   <td class="fieldname"><a href="/index.jsp" target="_blank" class="menu" title="bekijk de website">Website</a></td>
-	<td class="fieldname"><a href="beheerbibliotheek/index.jsp?refreshFrame=bottompane" target="bottompane" class="menu" title="beheer de contentelementen via de bibliotheek">Bibliotheek</a></td><%= unusedItemsLink %>
-   <% if(isAdmin&&ap.isInstalled(cloud,"NatMM")) {
-      %>
-      <td class="fieldname"><a href="evenementen/frames.jsp" target="bottompane" class="menu" title="beheer activiteiten en boek aanmeldingen">Activiteiten</a></td>
-      <% 
-   } %>
-   <td class="fieldname"><a href="paginamanagement/frames.jsp" target="bottompane" class="menu" title="beheer rubrieken en paginas">Pagina-editor</a></td>
-   <td class="fieldname"><a href="usermanagement/changepassword.jsp" target="bottompane" class="menu" title="wijzig uw wachtwoord">Wijzig wachtwoord</a></td>
-   <td class="fieldname"><a href="logout.jsp" target="_top" class="menu" title="log uit als gebruiker">Uitloggen</a></td>
-   <%
-} else {
-   %>
-   <td class="fieldname"><a href="/index.jsp" target="_blank" class="menu" title="bekijk de website">Website</a></td>
-   <td class="fieldname"><a href="usermanagement/changepassword.jsp" target="bottompane" class="menu" title="wijzig uw wachtwoord">Wijzig wachtwoord</a></td>
-   <td class="fieldname"><a href="logout.jsp" target="_top" class="menu" title="log uit als gebruiker">Uitloggen</a></td>
-   <td class="menu" style="color:red;">
-         Er is geen rubriek voor u geselecteerd. Neem contact op met de webmasters om u een rol op één van de rubrieken te geven.
-   </td>
-   <%
-}
+	for (Iterator it = tsRubrieks.iterator(); it.hasNext(); ) { 
+		rubriekID = (String) it.next();
+		String paginaId = rh.getFirstPage(rubriekID);
+		String contextPath = request.getContextPath(); // todo add functionality 
+		String sLink = ph.createPaginaUrl(paginaId,contextPath);
+		String sRubriekName = cloud.getNode(rubriekID).getStringValue("naam");
+		%>
+		<li><a href="<%= sLink %>" target="_blank" class="menu" title="bekijk <%= sRubriekName %>"><%= sRubriekName %></a><br/>
+		<%
+	}
 %>
-</tr><form name="dummy" method="post" target=""></form></table>
+</small></div>
+<h1 style="text-align:center;width:100%;">Beheeromgeving <mm:node number="root" notfound="skipbody"><mm:field name="naam" /></mm:node></h1>
+<table class="formcontent" style="margin-left:180px;background-color:#E4F0F7;width:auto;">
+	<tr>
+	<%
+	if (isEventUser) { 
+		if (isAdmin) {
+			%>
+			<td class="fieldname"><a href="evenementen/frames.jsp" target="bottompane" class="menu" title="beheer activiteiten en boek aanmeldingen">Activiteiten</a></td>
+			<%
+		} else {
+			%>
+			<td class="fieldname"><a href="evenementen/evenementen.jsp" target="bottompane" class="menu" title="beheer activiteiten en boek aanmeldingen">Activiteiten</a></td>						
+			<%
+		} 
+	}
+	if (!tsRubrieks.isEmpty()) {
+		%>	 
+		<td class="fieldname"><a href="beheerbibliotheek/index.jsp?refreshFrame=bottompane" target="bottompane" class="menu" title="beheer de contentelementen via de bibliotheek">Bibliotheek</a></td><%= unusedItemsLink %>
+		<td class="fieldname"><a href="paginamanagement/frames.jsp" target="bottompane" class="menu" title="beheer rubrieken en paginas">Pagina-editor</a></td>
+		<%
+	} else if(hasEditwizards) {
+		%>
+		<td class="fieldname"><a href="paginamanagement/frames.jsp" target="bottompane" class="menu" title="beheer rubrieken en paginas">Pagina-editor</a></td>
+		<% 
+	}
+	%>
+	<td class="fieldname"><a href="usermanagement/changepassword.jsp" target="bottompane" class="menu" title="wijzig uw wachtwoord">Wijzig wachtwoord</a></td>	
+	<td class="fieldname"><a href="logout.jsp" target="_top" class="menu" title="log uit als gebruiker">Uitloggen</a></td>
+	<%	
+	if (tsRubrieks.isEmpty()) { 
+		%>
+   	<td class="menu" style="color:red;">Er is geen rubriek voor u geselecteerd. Neem contact op met de webmasters om u een rol op een van de rubrieken te geven.</td>
+		<% 
+	} %>
+	</tr>
+	<form name="dummy" method="post" target=""></form>
+</table>
 <div style="position:absolute;right:5px;top:5px;z-index:100"><small>
 <li><a class="menu" target="bottompane" href="../doc/index.jsp" title="klik hier om de gebruikershandleidingen te bekijken of te downloaden">gebruikershandleiding</a><br>
 <% String webmasterMail = ""; %>
