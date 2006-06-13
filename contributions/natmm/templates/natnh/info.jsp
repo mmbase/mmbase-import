@@ -16,7 +16,7 @@ try {
 if(!articleId.equals("-1")) { 
 	
 	%>
-	<a target="_top" href="index.jsp?r=<%= rubriekId %>&p=<%= paginaID %>">Meer nieuws >></a><br><br>
+	<a href="index.jsp?r=<%= rubriekId %>&p=<%= paginaID %>">Meer nieuws >></a><br><br>
 	<mm:list nodes="<%= articleId %>" path="artikel">
 		<%@include file="includes/relatedarticle.jsp" %>
 	</mm:list>
@@ -52,17 +52,17 @@ if(!articleId.equals("-1")) {
 				<td><img src="media/spacer.gif" width="1" height="1"></td>
 				<td><div><%
 					if(thisOffset>0) { 
-						%><a target="_top" href="<%= ph.createPaginaUrl(paginaID,request.getContextPath()) %>&o=<%= thisOffset-1 %>">[<<- vorige ]</a>&nbsp;&nbsp;<%
+						%><a href="<%= ph.createPaginaUrl(paginaID,request.getContextPath()) %>&o=<%= thisOffset-1 %>">[<<- vorige ]</a>&nbsp;&nbsp;<%
 					}
 					for(int i=0; i < (listSize/10 + 1); i++) {	
 						if(i==thisOffset) {
 							%><%= i+1 %>&nbsp;&nbsp;<%
 						} else { 
-							%><a target="_top" href="<%= ph.createPaginaUrl(paginaID,request.getContextPath()) %>&o=<%= i %>"><%= i+1 %></a>&nbsp;&nbsp;<%
+							%><a href="<%= ph.createPaginaUrl(paginaID,request.getContextPath()) %>&o=<%= i %>"><%= i+1 %></a>&nbsp;&nbsp;<%
 						} 
 					}
 					if(thisOffset+1<(listSize/10 + 1)) { 
-						%><a target="_top" href="<%= ph.createPaginaUrl(paginaID,request.getContextPath()) %>&o=<%= thisOffset+1 %>">[volgende ->>]</a><%
+						%><a href="<%= ph.createPaginaUrl(paginaID,request.getContextPath()) %>&o=<%= thisOffset+1 %>">[volgende ->>]</a><%
 					} 
 				%></div>
 				</td>
