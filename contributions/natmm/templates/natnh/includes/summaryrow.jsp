@@ -16,7 +16,7 @@ if(spacePos>-1) {
 }
 %><mm:field name="artikel.titel" jspvar="artikel_titel" vartype="String" write="false"
 	><% if(readMore) { 
-			%><a target="_top" href="<%= readmoreUrl %>"><%
+			%><a href="<%= readmoreUrl %>"><%
 		} %>
 		<mm:field name="artikel.titel_zichtbaar"
 		   ><mm:compare value="0" inverse="true"
@@ -29,7 +29,7 @@ if(spacePos>-1) {
 ><%= tdateStr %><br>
 <%= summary 	
 %><% if(readMore){ 
-	%>...<a target="_top" href="<%= readmoreUrl %>"><span style="text-decoration:none;"> Lees meer >></span></a><% 
+	%>...<a href="<%= readmoreUrl %>"><span style="text-decoration:none;"> Lees meer >></span></a><% 
 } %><br><br><br>
 </mm:field
 ></mm:field
