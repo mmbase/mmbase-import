@@ -27,7 +27,9 @@ String objectDirections = "UP";
          c.set(c.get(Calendar.YEAR),c.get(Calendar.MONTH),c.get(Calendar.DATE),0,0);
          menuType = QUOTE;
          objectOrderby = objecttype + "." + objectdate;
-         objectConstraint = objectOrderby + " < '" + c.getTime().getTime()/1000 + "'"; // the begin of today, so start with yesterday
+         if (!objecttype.equals("ads")) {
+            objectConstraint = objectOrderby + " < '" + c.getTime().getTime()/1000 + "'"; // the begin of today, so start with yesterday
+         }
          objectDirections = "DOWN";
       } 
       if(url.indexOf("date")>-1) {
