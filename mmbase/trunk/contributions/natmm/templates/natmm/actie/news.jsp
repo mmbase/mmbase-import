@@ -2,21 +2,23 @@
 <mm:cloud jspvar="cloud">
 <%@include file="../includes/top1_params.jsp" %>
 <%@include file="../includes/top2_cacheparams.jsp" %>
+<mm:import externid="show_one" jspvar="show_one">false</mm:import>
+<% boolean bShowOne = !show_one.equals("false"); %>
+<% if(bShowOne) { cacheKey += "~showone"; } %>
 <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
 <%@include file="../includes/top4_head.jsp" %>
 <div style="position:absolute"><%@include file="/editors/paginamanagement/flushlink.jsp" %></div>
 <table cellspacing="0" cellpadding="0" width="100%" align="center" border="0" valign="top">
    <%@include file="../includes/top5b_pano.jsp" %>
 </table>
-<mm:import externid="show_one" jspvar="show_one">false</mm:import>
-<% boolean bShowOne = !show_one.equals("false");
-	PaginaHelper pHelper = new PaginaHelper(cloud);
-	Calendar cal = Calendar.getInstance();
-	cal.setTime(now);
-	cal.set(cal.get(Calendar.YEAR),cal.get(Calendar.MONTH),cal.get(Calendar.DATE),0,0);
-	long nowDay = cal.getTime().getTime()/1000; // the begin of today
-	long oneDay = 24*60*60;
-	String articleConstraint = "(artikel.embargo < '" + nowSec + "') AND (artikel.use_verloopdatum='0' OR artikel.verloopdatum > '" + nowSec + "' )";
+<%
+PaginaHelper pHelper = new PaginaHelper(cloud);
+Calendar cal = Calendar.getInstance();
+cal.setTime(now);
+cal.set(cal.get(Calendar.YEAR),cal.get(Calendar.MONTH),cal.get(Calendar.DATE),0,0);
+long nowDay = cal.getTime().getTime()/1000; // the begin of today
+long oneDay = 24*60*60;
+String articleConstraint = "(artikel.embargo < '" + nowSec + "') AND (artikel.use_verloopdatum='0' OR artikel.verloopdatum > '" + nowSec + "' )";
 %>
 <mm:node number="<%= paginaID %>">
   <%@include file="includes/navsettings.jsp" %>
