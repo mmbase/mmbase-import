@@ -13,7 +13,7 @@
 		<li><b>datum laatste wijziging:</b> de datum waarop dit artikel voor het laatst is gewijzigd</li>
 		<li><b>datum die op website te zien is:</b> wordt alleen gebruikt bij nieuws</li>
 		<li><b>verschijnt op website vanaf:</b> wordt alleen gebruikt bij nieuws; het artikel verschijnt binnen maximaal een dag na de verschijningsdatum op de website</li>
-		<li><b>verwijdert van website op:</b> wordt alleen gebruikt bij nieuws; het artikel wordt binnen maximaal een dag na de verwijderdatum verwijdert</li>
+		<li><b>verwijdert van website op:</b> wordt alleen gebruikt bij nieuws; het artikel wordt binnen maximaal een dag na de verwijderdatum verwijderd</li>
 		<li><b>verwijderdatum gebruiken:</b> wordt alleen gebruikt bij nieuws</li>
 		<li><b>intro:</b> tekst die in vet lettertype onder de titel van het artikel te zien is</li>
 		<li><b>tekst:</b> tekst die in standaard lettertype onder de intro te zien is</li>
