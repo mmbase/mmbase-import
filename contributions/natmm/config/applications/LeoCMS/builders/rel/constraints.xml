@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<builder name="constraints" maintainer="mmbase.org" version="2" extends="insrel">
+<status>active</status>
+<classfile>org.mmbase.module.corebuilders.InsRel</classfile>
+<names>
+    <singular xml:lang="en">Constraint Relation</singular>
+    <singular xml:lang="fr">Constraint La Relation</singular>
+    <singular xml:lang="nl">Constrelatie</singular>
+    <plural xml:lang="en">Constraint Relations</plural>
+    <plural xml:lang="fr">Constraint La Relations</plural>
+    <plural xml:lang="nl">Constraint Relaties</plural>
+</names>
+<descriptions>
+    <description xml:lang="en">This relation sets a constraint between two objects</description>
+    <description xml:lang="fr">Cette relation a un attribut de position</description>
+    <description xml:lang="nl">Deze relatie wordt gebruikt om een constraint tussen twee objecten te definieren</description>
+</descriptions>
+<fieldlist>
+    <field>
+        <descriptions>
+          <description xml:lang="en">Position number, useful for ordering the relations</description>
+          <description xml:lang="nl">Postitie of volgordenummer, te gebruiken voor het sorteren van de relaties</description>
+        </descriptions>
+        <gui>
+            <guiname xml:lang="en">Position</guiname>
+            <guiname xml:lang="fr">Placent</guiname>
+            <guiname xml:lang="nl">Positie</guiname>
+            <guitype>integer</guitype>
+        </gui>
+        <editor>
+            <positions>
+                <input>3</input>
+                <list>3</list>
+                <search>3</search>
+            </positions>
+        </editor>
+        <db>
+            <name>pos</name>
+            <type state="persistent" notnull="false" key="false">INTEGER</type>
+        </db>
+    </field>
+    <field>
+      <descriptions>
+        <description xml:lang="nl">Type van de constraint</description>
+        <description xml:lang="en">Type of the constraint</description>
+        <!--
+          1 = Mandatory
+          2 = Limited
+          3 = Forbidden
+         -->
+      </descriptions>
+      <gui>
+        <guiname xml:lang="nl">Type</guiname>
+        <guiname xml:lang="en">Type</guiname>
+        <guitype>integer</guitype>
+      </gui>
+      <editor>
+        <positions>
+          <input>3</input>
+          <list>3</list>
+          <search>3</search>
+        </positions>
+      </editor>
+      <db>
+        <name>type</name>
+        <type state="persistent" notnull="true" key="false">INTEGER</type>
+      </db>
+    </field>
+    <field>
+      <descriptions>
+        <description xml:lang="nl">Maximum aantal waarden die opgegeven kunnen worden</description>
+        <description xml:lang="en">Maximum number of values that can be given </description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="nl">MaxAantal</guiname>
+        <guiname xml:lang="en">MaxNumber</guiname>
+        <guitype>integer</guitype>
+      </gui>
+      <editor>
+        <positions>
+          <input>3</input>
+          <list>3</list>
+          <search>3</search>
+        </positions>
+      </editor>
+      <db>
+        <name>maxvalues</name>
+        <type state="persistent" notnull="true" key="false">INTEGER</type>
+      </db>
+    </field>
+    <field>
+      <descriptions>
+        <description xml:lang="nl">Minimum aantal waarden die opgegeven kunnen worden</description>
+        <description xml:lang="en">Minimum number of values that can be given </description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="nl">MinAantal</guiname>
+        <guiname xml:lang="en">MinNumber</guiname>
+        <guitype>integer</guitype>
+      </gui>
+      <editor>
+        <positions>
+          <input>3</input>
+          <list>3</list>
+          <search>3</search>
+        </positions>
+      </editor>
+      <db>
+        <name>minvalues</name>
+        <type state="persistent" notnull="true" key="false">INTEGER</type>
+      </db>
+    </field>
+</fieldlist>
+</builder>
