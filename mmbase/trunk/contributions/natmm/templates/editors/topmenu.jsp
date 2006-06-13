@@ -73,22 +73,24 @@
       <mm:field name="rubriek.number" jspvar="rubriek_number" vartype="String" write="false">
 			<mm:field name="rubriek.level" jspvar="rubriek_level" vartype="String" write="false">
 				<%
-				if(rubriek_number.equals(sNatuurinNumber)){
+				if(rubriek_number.equals(sNatuurinNumber)){ // special purpose rubriek, do not use for general functionality
 					isEventUser = true;
-				}
-				if(rubriek_level.equals("0")) { //put children of this rubriek in list 
-					%>
-					<mm:list nodes="<%= rubriek_number %>" path="rubriek1,parent,rubriek2">
-						<mm:field name="rubriek2.number" jspvar="rubriek2_number" vartype="String" write="false">
-							<% tsRubrieks.add(rubriek2_number); %>
-						</mm:field>
-					</mm:list>
-					<% 
-				} else if (rubriek_level.equals("1")) { // this is a root rubriek
-					tsRubrieks.add(rubriek_number);
-            } else { // add the root rubriek of this rubriek
-					tsRubrieks.add(PaginaHelper.getRootRubriek(cloud,rubriek_number));
-            } %>
+				} else {
+					if(rubriek_level.equals("0")) { //put children of this rubriek in list 
+						%>
+						<mm:list nodes="<%= rubriek_number %>" path="rubriek1,parent,rubriek2">
+							<mm:field name="rubriek2.number" jspvar="rubriek2_number" vartype="String" write="false">
+								<% tsRubrieks.add(rubriek2_number); %>
+							</mm:field>
+						</mm:list>
+						<% 
+					} else if (rubriek_level.equals("1")) { // this is a root rubriek
+						tsRubrieks.add(rubriek_number);
+					} else { // add the root rubriek of this rubriek
+						tsRubrieks.add(PaginaHelper.getRootRubriek(cloud,rubriek_number));
+					}
+				} 
+				%>
 			</mm:field>	
       </mm:field>
    </mm:related>
@@ -115,6 +117,9 @@
 	<tr>
 	<%
 	if (isEventUser) { 
+		%>
+		<td class="fieldname"><a href="/activiteiten" target="_blank" class="menu" title="bekijk de agenda">Agenda</a></td>
+		<%
 		if (isAdmin) {
 			%>
 			<td class="fieldname"><a href="evenementen/frames.jsp" target="bottompane" class="menu" title="beheer activiteiten en boek aanmeldingen">Activiteiten</a></td>
@@ -139,7 +144,7 @@
 	<td class="fieldname"><a href="usermanagement/changepassword.jsp" target="bottompane" class="menu" title="wijzig uw wachtwoord">Wijzig wachtwoord</a></td>	
 	<td class="fieldname"><a href="logout.jsp" target="_top" class="menu" title="log uit als gebruiker">Uitloggen</a></td>
 	<%	
-	if (tsRubrieks.isEmpty()) { 
+	if (tsRubrieks.isEmpty()&&!isEventUser) { 
 		%>
    	<td class="menu" style="color:red;">Er is geen rubriek voor u geselecteerd. Neem contact op met de webmasters om u een rol op een van de rubrieken te geven.</td>
 		<% 
