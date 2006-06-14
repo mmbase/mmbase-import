@@ -1,3 +1,4 @@
+<%@page import="org.mmbase.util.logging.Logger" %>
 <%@include file="/taglibs.jsp" %>
 <mm:cloud jspvar="cloud">
 <%@include file="includes/templateheader.jsp" %>
