@@ -43,21 +43,6 @@
                <field name="tekst">indexed.text</field>
             </related>
          </related>
-         <related name="paragraaf">
-            <field name="titel">indexed.text</field>
-            <field name="tekst">indexed.text</field>
-         </related>
-         <related name="shorty">
-            <field name="titel">indexed.text</field>
-            <field name="omschrijving">indexed.text</field>
-         </related>
-         <related name="vertrekpunten">
-            <field name="titel">indexed.text</field>
-            <field name="tekst">indexed.text</field>
-         </related>
-         <related name="provincies">
-            <field name="titel">indexed.text</field>
-         </related>
       </table>
    </index>
    
