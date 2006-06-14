@@ -10,6 +10,8 @@ package org.mmbase.applications.crontab;
 import org.mmbase.bridge.*;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 /**
  * Performs Runtime.gc(), and if afterwards the used memory is above a certain fraction of the
@@ -22,7 +24,7 @@ import org.mmbase.util.logging.*;
    &lt;property name="memory"&gt;*&#047;10 * * * *|org.mmbase.applications.crontab.MemoryWarner||0.8;Michiel.Meeuwissen@omroep.nl&lt;/property&gt;
    </pre>
  * @author Michiel Meeuwissen
- * @version $Id: MemoryWarner.java,v 1.1 2006-03-03 15:53:25 michiel Exp $
+ * @version $Id: MemoryWarner.java,v 1.2 2006-06-14 10:50:35 michiel Exp $
  */
 
 public class MemoryWarner extends AbstractCronJob  {
@@ -41,19 +43,21 @@ public class MemoryWarner extends AbstractCronJob  {
 
             double use  = (double) usedMemory / rt.maxMemory();
             double limit = Double.parseDouble(config[0]);
+            String usePerc = NumberFormat.getPercentInstance(Locale.US).format(use);
+            String limitPerc = NumberFormat.getPercentInstance(Locale.US).format(limit);
             if (use > limit) {
-                log.info("Memory use " + (use * 100) + "% > " + (limit * 100) + "%");
-                log.info("Used memory over " + (limit * 100) + "% , mailing " + config[1]);
+                log.info("Memory use " + usePerc + " > " +  limitPerc);
+                log.info("Used memory over " + limitPerc + " , mailing " + config[1]);
                 Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null); 
                 if (cloud.hasNodeManager("email")) {
                     NodeManager email = cloud.getNodeManager("email");
                     Node message = email.createNode();
                     message.setValue("from", "memorywarner@" + java.net.InetAddress.getLocalHost().getHostName());
                     message.setValue("to", config[1]);
-                    message.setValue("subject", "Out of memory warning, less then " + (limit * 100) + "% free, for " + 
+                    message.setValue("subject", "Out of memory warning, less then " + limitPerc + " free, for " + 
                                      org.mmbase.module.core.MMBaseContext.getHtmlRootUrlPath() + "@" + 
                                      java.net.InetAddress.getLocalHost().getHostName());
-                    message.setValue("body", "Memory use " + (use * 100) + "% > " + (limit * 100) + "%");
+                    message.setValue("body", "Memory use " + usePerc + " > " + limitPerc);
                     message.commit();
                     Function mail = message.getFunction("mail");
                     Parameters params = mail.createParameters();
@@ -64,7 +68,7 @@ public class MemoryWarner extends AbstractCronJob  {
                     // could introduce depedency on java-mail here.
                 }
             } else {
-                log.info("Memory use " + (use * 100) + "% < " + (limit * 100) + "%");
+                log.info("Memory use " + usePerc + " < " + limitPerc);
             }
         } catch (java.net.UnknownHostException uhe) {
             log.error(uhe);
