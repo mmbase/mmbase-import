@@ -10,21 +10,22 @@ See http://www.MMBase.org/license
 
 package org.mmbase.datatypes;
 
+import java.io.*;
 import java.util.*;
-import java.io.*; // because of Serializable
-import org.w3c.dom.Element;
-import org.w3c.dom.Document;
+
 import org.mmbase.bridge.*;
-import org.mmbase.security.Rank;
-import org.mmbase.datatypes.processors.*;
 import org.mmbase.bridge.util.Queries;
-import org.mmbase.storage.search.*;
-import org.mmbase.core.util.Fields;
 import org.mmbase.core.AbstractDescriptor;
-import org.mmbase.datatypes.DataTypes;
+import org.mmbase.core.util.Fields;
+import org.mmbase.datatypes.processors.*;
+import org.mmbase.security.Rank;
+import org.mmbase.storage.search.Constraint;
+import org.mmbase.storage.search.FieldCompareConstraint;
 import org.mmbase.util.*;
-import org.mmbase.util.xml.*;
-import org.mmbase.util.logging.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.xml.DocumentReader;
+import org.w3c.dom.Element;
 
 
 /**
@@ -37,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.53 2006-05-16 21:11:05 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.54 2006-06-14 08:02:26 nklasens Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -47,8 +48,6 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
      */
     public static final String DATATYPE_BUNDLE = "org.mmbase.datatypes.resources.datatypes";
     private static final Logger log = Logging.getLoggerInstance(BasicDataType.class);
-
-    private static int anonymousSequence = 1;
 
     protected RequiredRestriction requiredRestriction        = new RequiredRestriction(false);
     protected UniqueRestriction   uniqueRestriction          = new UniqueRestriction(false);
@@ -368,7 +367,7 @@ s     */
         getElement(parent, "unique",   "description,class,property,default,unique").setAttribute("value", "" + uniqueRestriction.isUnique());
         getElement(parent, "required", "description,class,property,default,unique,required").setAttribute("value", "" + requiredRestriction.isRequired());
 
-        Element enum = getElement(parent, "enumeration", "description,class,property,default,unique,required,enumeration");
+        getElement(parent, "enumeration", "description,class,property,default,unique,required,enumeration");
         /// set this here...
 
         if (getCommitProcessor() != EmptyCommitProcessor.getInstance()) {
@@ -874,9 +873,9 @@ s     */
         protected final Collection addError(Collection errors, Object v, Node node, Field field) {
             if (errors == VALID) errors = new ArrayList();
             ReplacingLocalizedString error = new ReplacingLocalizedString(getErrorDescription());
-            error.replaceAll("\\$\\{NAME\\}",       error.makeLiteral(getName()));
-            error.replaceAll("\\$\\{CONSTRAINT\\}", error.makeLiteral(toString(node, field)));
-            error.replaceAll("\\$\\{VALUE\\}",      error.makeLiteral("" + v));
+            error.replaceAll("\\$\\{NAME\\}",       ReplacingLocalizedString.makeLiteral(getName()));
+            error.replaceAll("\\$\\{CONSTRAINT\\}", ReplacingLocalizedString.makeLiteral(toString(node, field)));
+            error.replaceAll("\\$\\{VALUE\\}",      ReplacingLocalizedString.makeLiteral("" + v));
             errors.add(error);
             return errors;
         }
@@ -939,7 +938,7 @@ s     */
 
         protected final void inherit(StaticAbstractRestriction source) {
             // perhaps this value must be cloned?, but how?? Cloneable has no public methods....
-            setValue((Serializable) source.getValue());
+            setValue(source.getValue());
             enforceStrength = source.getEnforceStrength();
             errorDescription = (LocalizedString) source.getErrorDescription().clone();
         }
