@@ -183,7 +183,14 @@ String[] META_TAGS = {"dit", "is", "een", "test"};
                   </mm:related>
                   <mm:related path="contentrel,provincies,pos4rel,natuurgebieden,rolerel,artikel" fields="natuurgebieden.number">
                      <mm:field name="natuurgebieden.number" jspvar="sID" vartype="String" write="false"><%
-                     if((hsetNatuurgebiedenRouteNodes.contains(sID)) || (hsetNatuurgebiedenNatuurgebiedenNodes.contains(sID))){
+                     if(hsetNatuurgebiedenRouteNodes.contains(sID)){
+                        %><li><a href="<%= templateUrl %>?n=<mm:field name="natuurgebieden.number"/>"><mm:field name="natuurgebieden.naam"/></a></li><%
+                     }
+                     %></mm:field>
+                  </mm:related>
+                  <mm:related path="contentrel,provincies,pos4rel,natuurgebieden,posrel,artikel" fields="natuurgebieden.number">
+                     <mm:field name="natuurgebieden.number" jspvar="sID" vartype="String" write="false"><%
+                     if(hsetNatuurgebiedenNatuurgebiedenNodes.contains(sID)){
                         %><li><a href="<%= templateUrl %>?n=<mm:field name="natuurgebieden.number"/>"><mm:field name="natuurgebieden.naam"/></a></li><%
                      }
                      %></mm:field>
