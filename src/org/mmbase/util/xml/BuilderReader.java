@@ -22,6 +22,7 @@ import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.storage.util.Index;
 
+import org.mmbase.util.LocalizedString;
 import org.mmbase.util.XMLEntityResolver;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
@@ -35,7 +36,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.67 2006-06-12 09:01:59 pierre Exp $
+ * @version $Id: BuilderReader.java,v 1.68 2006-06-15 13:33:45 pierre Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -610,13 +611,10 @@ public class BuilderReader extends DocumentReader {
                             log.debug("Converted deprecated guitype 'string' for field " + (builder != null ? builder.getTableName() + "."  : "") + fieldName + " with datatype 'line'.");
                         }
                     }
-                    // TODO: check for builder names when the type is NODE
-
+                    // TODO check for builder names when the type is NODE
                     dataType = collector.getDataTypeInstance(guiType, baseDataType);
                     if (dataType == null) {
                         log.warn("Could not find data type for " + baseDataType + " / " + guiType + " for builder: '" + builder.getTableName() + "'");
-                    } else {
-                        if (log.isDebugEnabled()) log.debug("Found data type for " + baseDataType + " / " + guiType + " " + dataType);
                     }
                 }
             }
@@ -628,7 +626,7 @@ public class BuilderReader extends DocumentReader {
             if (dataType != null) {
                 log.warn("Using both deprecated 'gui/guitime' and 'datatype' subelements in field tag for field '" + fieldName + "', ignoring the first one.");
             }
-            BasicDataType requestedBaseDataType; // pointer to the actual database which will be used as a base.
+            BasicDataType requestedBaseDataType; // pointer to the original field's datatype which will be used as a base.
             String base = dataTypeElement.getAttribute("base");
             if (base.equals("")) {
                 if (log.isDebugEnabled()) {
@@ -640,16 +638,6 @@ public class BuilderReader extends DocumentReader {
                 if (requestedBaseDataType == null) {
                     log.error("Could not find base datatype for '" + base + "' falling back to " + baseDataType + " in builder '" + builder.getTableName() + "'");
                     requestedBaseDataType = baseDataType;
-                } else {
-                    // Furthermore, I think it is just common sense that a DataType cannot be based on a incompatible base.
-                    if (! baseDataType.getClass().isAssignableFrom(requestedBaseDataType.getClass())) {
-                        // the thus configured datatype is not compatible with the database type.
-                        // Fix that as good as possible:
-                        BasicDataType newDataType = (BasicDataType) requestedBaseDataType.clone();
-                        newDataType.inherit(baseDataType);
-                        log.debug("" + requestedBaseDataType + " in '" + getSystemId() + "' field " + fieldName + " is not compatible with " + baseDataType + ". Cloning and inheriting to support gracefull fall backs -> " + newDataType);
-                        requestedBaseDataType = newDataType;
-                    }
                 }
             }
 
