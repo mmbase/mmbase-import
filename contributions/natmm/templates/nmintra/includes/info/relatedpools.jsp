@@ -120,8 +120,17 @@ if (lastpool.equals("")){
          </td>
       </tr>
       </table>
-      <br>
-      <div align="right"><input type="submit" name="submit" value="Zoek" style="text-align:center;font-weight:bold;"></div>
+      <br/>
+      <table border="0" cellspacing="0" cellpadding="0" style="width:100%;">
+      <tr>
+         <td>
+            <input type="reset" name="clear" value="Wis" style="text-align:center;font-weight:bold;width:50px;" onClick="postIt('clear');">
+         </td>
+         <td style="text-align:right;padding-right:10px;">
+            <input type="submit" name="submit" value="Zoek" style="text-align:center;font-weight:bold;">
+         </td>
+      </tr>
+      </table>
    </td></tr>
 <% 
 }
@@ -131,28 +140,30 @@ if(hasPools||isArchive) { %>
    <%@include file="../whiteline.jsp" %>
    <script language="JavaScript" type="text/javascript">
    <%= "<!--" %>
-   function postIt() {
+   function postIt(action) {
        var href = document.infoform.action;
-		 var pool = document.infoform.elements["pool"].value;
-       if(pool != '') href += "&pool=" + pool;
-   <% if(isArchive) { %>
-       var termsearch = document.infoform.elements["termsearch"].value;
-       if(termsearch != '') href += "&termsearch=" + termsearch;
-       var period = "";
-       var v = document.infoform.elements["from_day"].value;
-       if(v != '') { period += v; } else { period += '00'; }
-       v = document.infoform.elements["from_month"].value;
-       if(v != '') { period += v; } else { period += '00'; }
-       v = document.infoform.elements["from_year"].value;
-       if(v != '') { period += v; } else { period += '0000'; }
-       v = document.infoform.elements["to_day"].value;
-       if(v != '') { period += v; } else { period += '00'; }
-       v = document.infoform.elements["to_month"].value;
-       if(v != '') { period += v; } else { period += '00'; }
-       v = document.infoform.elements["to_year"].value;
-       if(v != '') { period += v; } else { period += '0000'; }
-       if(period != '0000000000000000') href += "&d=" + period;
-   <% } %>
+      if(action!='clear') {
+		    var pool = document.infoform.elements["pool"].value;
+   	    if(pool != '') href += "&pool=" + pool;
+	    <% if(isArchive) { %>
+   	    var termsearch = document.infoform.elements["termsearch"].value;
+      	 if(termsearch != '') href += "&termsearch=" + termsearch;
+	       var period = "";
+   	    var v = document.infoform.elements["from_day"].value;
+      	 if(v != '') { period += v; } else { period += '00'; }
+	       v = document.infoform.elements["from_month"].value;
+   	    if(v != '') { period += v; } else { period += '00'; }
+      	 v = document.infoform.elements["from_year"].value;
+	       if(v != '') { period += v; } else { period += '0000'; }
+   	    v = document.infoform.elements["to_day"].value;
+	       if(v != '') { period += v; } else { period += '00'; }
+   	    v = document.infoform.elements["to_month"].value;
+	       if(v != '') { period += v; } else { period += '00'; }
+   	    v = document.infoform.elements["to_year"].value;
+      	 if(v != '') { period += v; } else { period += '0000'; }
+	       if(period != '0000000000000000') href += "&d=" + period;
+	   <% } %>
+      }
        document.location = href;
        return false;
    }
