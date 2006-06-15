@@ -1,129 +1,206 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd">
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd">
 <article>
   <articleinfo>
     <title>The MMBase Function sets</title>
-    <date>2006-04-2006</date>
-    <edition>$Id: functionsets.xml,v 1.4 2006-04-12 22:22:56 daniel Exp $</edition>
+
+    <date>15-06-2006</date>
+
+    <edition>$Id: functionsets.xml,v 1.4 2006/04/12 22:22:56 daniel Exp
+    $</edition>
+
     <authorgroup>
       <author>
-        <firstname>Daniel</firstname><surname>Ockeloen</surname>
-        <affiliation><orgname>MMCoder</orgname></affiliation>
+        <firstname>Daniel</firstname>
+
+        <surname>Ockeloen</surname>
+
+        <affiliation>
+          <orgname>MMCoder</orgname>
+        </affiliation>
+      </author>
+
+      <author>
+        <firstname>André</firstname>
+
+        <surname>van Toly</surname>
       </author>
     </authorgroup>
+
     <legalnotice>
-      <para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
-      <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink
+      <para>This software is OSI Certified Open Source Software. OSI Certified
+      is a certification mark of the Open Source Initiative.</para>
+
+      <para>The license (Mozilla version 1.0) can be read at the MMBase site.
+      See <ulink
       url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
     </legalnotice>
   </articleinfo>
+
   <section>
-    <title>What are functionsets ?</title>
-    <para>
-     MMBase function's allow you to add functions/methods to different layers of mmbase and make them available within the MMBase taglib project or bridge. 
-	 This way it is possible to add you own functionality in a way thats easy to access. These functions can be added to fields, nodes, builders and clouds
-	 each having their own backend implementation but they all share a common way to use them from inside java (bridge) or jsp (taglibs)
-    </para>
+    <title>What are functions ?</title>
+
+    <para>The MMBase 'Function Framework' allows you to add functions or
+    methods to different layers of MMBase. You can access them using the
+    taglib function tags or the bridge. Functions can be added to nodes,
+    builders and clouds and can be defined in three locations:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>The nodemanager (or builder)</para>
+
+        <para>For functions located in the builder code, see for example
+        org.mmbase.util.functions.ExampleBuilder</para>
+      </listitem>
+
+      <listitem>
+        <para>As a functionset</para>
+      </listitem>
+
+      <listitem>
+        <para>A specific classname</para>
+
+        <para>See for example org.mmbase.util.functions.ExampleBean</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>Each having their own backend implementation but they all share a
+    common way to use them from inside Java or JSP. This document shows some
+    examples of the use of functions, more information can be found in the API
+    documentation at org.mmbase.util.functions and the taglib reference
+    documentation.</para>
   </section>
+
   <section>
     <title>Using functions from the taglibs</title>
-      <para>
-a simple example of a function on a set (explained later) could be
 
-<programlisting>
-example : &lt;mm:function set="util" name="generatePassword" /&gt;
+    <para>A simple example of a function made available by the class
+    org.mmbase.util.functions.ExampleBean could look like this. It accesses
+    the method stringFunction which uses no arguments and returns an arbitrary
+    String.<programlisting>&lt;mm:function classname="org.mmbase.util.functions.ExampleBean" name="stringFunction" /&gt;</programlisting></para>
+
+    <para>ExampleBean contains multiple methods that can be accessed using
+    functions but when you would strip down ExampleBean to the bare minimum
+    that is needed to execute the above example you will be left with
+    something like this:</para>
+
+    <programlisting>package org.mmbase.util.functions;
+
+    public final class ExampleBean {
+    private String parameter1;
+    private String parameter3 = "default";
+
+    public void setParameter1(String hoi) {
+        parameter1 = hoi;
+    }
+
+    public void setAnotherParameter(String a) {
+        parameter3 = a;
+    }
+
+    public String stringFunction() {
+        return "[[" + parameter1 + "/" + parameter3 + "]]";
+    }
+
+}
 </programlisting>
 
-This calls the funcion generatePassword in the set util, and returns it as a String (the default).
+    <para>As you would expect the combined examples return '[[null/default]]'.
+    A more exiting example would use the the set-methods defined in this bean
+    by using parameter tags which should be grouped using the tag
+    functioncontainer tag. </para>
 
-You can have multiple return types that are defined by the way you call them :
-<programlisting>
-        &lt;mm:function ...      (default String)
-        &lt;mm:booleanfunction   (boolean)
-        &lt;mm:voidfunction      (no return value)
-        &lt;mm:list              (list)
-        &lt;mm:nodefunction      (one mmbase node or virtual mmbase node)
-        &lt;mm:nodelistfunction  (returns a list of nodes or virtual nodes)
-</programlisting>
-      </para>
-	  <para>
-      Functions can have parameters that you can set in several ways the normal way is to ceate a 
-	  functioncontainer where you can set the parameters and then call one or more functions.
-      <programlisting>
-        &lt;mm:functioncontainer&gt;
-          &lt;mm:param name="template"&gt;AASSHHM&lt;/mm:param&gt;
-           your random new password might be : &lt;mm:function set="util" name="generatePassword" /&gt;
-		&lt;/mm:functioncontainer&gt;
-	  </programlisting>
-      </para>
-	  <para>
-        Each of the defined parameters will be added to every function within the functioncontainer.
-		It is also possible to add parameters using the mmbase referid concept, this is handy when a
-		parameter is already loaded into your page using a &lt;mm:import ...
-		 <programlisting>
+    <programlisting>  &lt;mm:functioncontainer&gt;
+    &lt;mm:param name="parameter1"&gt;foo&lt;/mm:param&gt;
+    &lt;mm:param name="parameter3"&gt;bar&lt;/mm:param&gt;
+    &lt;mm:function classname="org.mmbase.util.functions.ExampleBean" name="stringFunction" /&gt;
+  &lt;/mm:functioncontainer&gt; </programlisting>
+
+    <para>The above example returns '[[foo/bar]]'.</para>
+
+    <para>The class ExampleBean has several examples all with different return
+    types. Multiple return types are defined by the way you call them, the
+    taglib contains several function tags to accommodate them :
+    <programlisting>  &lt;mm:function          (String)
+  &lt;mm:booleanfunction   (boolean)
+  &lt;mm:voidfunction      (no return value)
+  &lt;mm:listfunction      (list)
+  &lt;mm:nodefunction      (a MMBase node or a virtual MMBase node)
+  &lt;mm:nodelistfunction  (a list of nodes or virtual nodes)</programlisting></para>
+
+    <para>Functions can have parameters that you can set in several ways the
+    normal way is to create a functioncontainer where you can set the
+    parameters and then call one or more functions. <programlisting>  &lt;mm:functioncontainer&gt;
+    &lt;mm:param name="template"&gt;AASSHHM&lt;/mm:param&gt;
+    your random new password might be : &lt;mm:function set="util" name="generatePassword" /&gt;
+  &lt;/mm:functioncontainer&gt;  </programlisting></para>
+
+    <para>Each of the defined parameters will be added to every function
+    within the functioncontainer. It is also possible to add parameters using
+    the mmbase referid concept, this is handy when a parameter is already
+    loaded into your page using a &lt;mm:import ... <programlisting>
            &lt;mm:import externid="template" /&gt;
         your random new password might be : &lt;mm:function name="getPassword" referid="template" /&gt;
-		 </programlisting>
-	  </para>
-  </section>  
+         </programlisting></para>
+  </section>
+
   <section>
     <title>Using functions from the bridge</title>
-	<para>
-	 TODO
-	</para>
-   </section>
-     <section>
-    <title>Defining functions in Builders for functions on builders and nodes</title>
-	<para>
-	For functions related to one type of nodes you can add functions its builder, they can be executed on either
-	one node of on the builder itself. You can define them in 2 ways. One if in the builder.xml and the other is 
-	in the java file of the builder itself.
- 
-	From the example in tests/config/builders/tests/datatypes.xml
-     <programlisting>
-		&lt;functionlist&gt;
-		 &lt;function key="integerFunction" name="aaa"&gt;
+
+    <para>TODO</para>
+  </section>
+
+  <section>
+    <title>Defining functions in Builders for functions on builders and
+    nodes</title>
+
+    <para>For functions related to one type of nodes you can add functions its
+    builder, they can be executed on either one node of on the builder itself.
+    You can define them in 2 ways. One if in the builder.xml and the other is
+    in the java file of the builder itself. From the example in
+    tests/config/builders/tests/datatypes.xml <programlisting>
+        &lt;functionlist&gt;
+         &lt;function key="integerFunction" name="aaa"&gt;
             &lt;class&gt;org.mmbase.util.functions.ExampleBean&lt;/class&gt;
-		 &lt;/function&gt;
+         &lt;/function&gt;
         &lt;/functionlist&gt;
-	 </programlisting>
-	</para>
-	<para>
-	Here we defined a function on the datatypes builder with the name 'aaa', When this is called from either the 
-	bridge of tags it calles the integerFunction in the org.mmbas.util.functions.ExampleBean.
-	<programlisting>
-	    public Integer integerFunction() {
+     </programlisting></para>
+
+    <para>Here we defined a function on the datatypes builder with the name
+    'aaa', When this is called from either the bridge of tags it calls the
+    integerFunction in the org.mmbase.util.functions.ExampleBean.
+    <programlisting>
+        public Integer integerFunction() {
                 return new Integer(parameter2.intValue() * 3);
         }
-	</programlisting>
-	</para>
-   </section>
-     <section>
-    <title>Defining functions in Modules</title>
-	<para>
-	 Its also possible to define functions in MMBase Modules see the MMAdmin module
-and its jsp pages in mmbase/mmadmin/.
-	</para>
-   </section>
-   <section>
-    <title>Defining functions in Sets</title>
-	<para>
-     Unlike Module or NodeManagers related functions the set functions are aimed for a global use and can be implemented 
-     in any java class or . You can for example define a set 'util' or 'statistics' or even map to external application 'lucien'.
-	 Defining sets is done in a 2 xml files. The first defines whats sets you have : 
-	 <programlisting>        
-	 mmbase config xml : config/functions/functionsets.xml
-	 
-	    &lt;functionsets&gt;
-		  &lt;functionset name="util" file="utils.xml" /&gt;
-		 &lt;/functionsets&gt;
-	 </programlisting>
-	 
-	 The set itself (in this case utils.xml) defines the mapping, names, classes and methodes to be called
+    </programlisting></para>
+  </section>
 
-     <programlisting>
-				&lt;functionset&gt;                 
-				&lt;description&gt;Some util functions from org.mmbase.util, made accessible through the function-framework&lt;/description&gt;
+  <section>
+    <title>Defining functions in Modules</title>
+
+    <para>Its also possible to define functions in MMBase Modules see the
+    MMAdmin module and its jsp pages in mmbase/mmadmin/.</para>
+  </section>
+
+  <section>
+    <title>Defining functions in Sets</title>
+
+    <para>Unlike Module or NodeManagers related functions the set functions
+    are aimed for a global use and can be implemented in any java class or .
+    You can for example define a set 'util' or 'statistics' or even map to
+    external application 'lucien'. Defining sets is done in a 2 xml files. The
+    first defines what sets you have : <programlisting>        
+     mmbase config xml : config/functions/functionsets.xml
+     
+        &lt;functionsets&gt;
+          &lt;functionset name="util" file="utils.xml" /&gt;
+         &lt;/functionsets&gt;
+     </programlisting> The set itself (in this case utils.xml) defines the
+    mapping, names, classes and methods to be called <programlisting>
+                &lt;functionset&gt;                 
+                &lt;description&gt;Some util functions from org.mmbase.util, made accessible through the function-framework&lt;/description&gt;
                  &lt;function name="generatePassword"&gt;
                   &lt;description&gt;Generates a password. Using a template&lt;/description&gt;
                   &lt;type&gt;class&lt;/type&gt;
@@ -133,62 +210,63 @@ and its jsp pages in mmbase/mmadmin/.
                   &lt;return type="String" /&gt;
                  &lt;/function&gt;
                 &lt;/functionset&gt;
-	 </programlisting>
-	</para>
-	<para>
-	In this example we only defined one function called generatePassword, its implemented as a class (type) the class 
-	file is (org.mmbase.util.PasswordGenerator) and the method that will be called inside that class is getPassword. 
-	Next we can define one or more parameters in this case one so the end result will be of this function configuration will be that
-	&lt;mm:function set="util" name="getPassword" referid="template" /&gt;  will be mapped to the method String getPassword(String template) 
-	inside the class orf.mmbase.util.PasswordGenerator.
-	</para>
-   </section>
-      <section>
+     </programlisting></para>
+
+    <para>In this example we only defined one function called
+    generatePassword, its implemented as a class (type) the class file is
+    (org.mmbase.util.PasswordGenerator) and the method that will be called
+    inside that class is getPassword. Next we can define one or more
+    parameters in this case one so the end result will be of this function
+    configuration will be that &lt;mm:function set="util" name="getPassword"
+    referid="template" /&gt; will be mapped to the method String
+    getPassword(String template) inside the class
+    org.mmbase.util.PasswordGenerator.</para>
+  </section>
+
+  <section>
     <title>Working with nodes and and nodelists</title>
-	<para>
-	One of the advantages of the function framework is that you can not only return objects like booleans or strings but also MMBase nodes
-	or lists of nodes. In this way you can make function that work like a &lt;mm:node or &lt;mm:nodelist but have their own selection method. 
-	For example we could make a function like :
-	<programlisting>
-	        &lt;mm:functionnode set="util" name="getRandomNode"&gt;
+
+    <para>One of the advantages of the function framework is that you can not
+    only return objects like booleans or strings but also MMBase nodes or
+    lists of nodes. In this way you can make function that work like a
+    &lt;mm:node or &lt;mm:nodelist but have their own selection method. For
+    example we could make a function like : <programlisting>
+            &lt;mm:functionnode set="util" name="getRandomNode"&gt;
                 object number : &lt;mm:field name="number" /&gt;
                 object type : &lt;mm:field name="otype" /&gt;
                 object owner : &lt;mm:field name="owner" /&gt;
         &lt;/mm:functionnode&gt;
-	</programlisting>
-	In the java code you just return a bridge or core node like
-	<programlisting>
-	        public MMObjectNode getRandomNode() {
+    </programlisting> In the java code you just return a bridge or core node
+    like <programlisting>
+            public MMObjectNode getRandomNode() {
                 return cloud.getRandomNode(randomnumber); // none working code
         }
-	</programlisting>	
-	</para>
-	<para>
-	The same is possible with lists :
-	 <programlisting>
-	         &lt;mm:functionnodelist set="util" name="getRandomNodes"&gt;
+    </programlisting></para>
+
+    <para>The same is possible with lists : <programlisting>
+             &lt;mm:functionnodelist set="util" name="getRandomNodes"&gt;
                 object number : &lt;mm:field name="number" /&gt;
                 object type : &lt;mm:field name="otype" /&gt;
                 object owner : &lt;mm:field name="owner" /&gt;
              &lt;/mm:functionnodelist&gt;
-	 </programlisting>	
-	 Again in java the method could look like this :
-	 <programlisting>
-	   public List getRandomNodes() {
+     </programlisting> Again in java the method could look like this :
+    <programlisting>
+       public List getRandomNodes() {
                 List list =  new ArrayList();
                 list.add(cloud.getRandomNode(randomnumber)); // none working code
                 list.add(cloud.getRandomNode(randomnumber2)); // none working code
                 list.add(cloud.getRandomNode(randomnumber3)); // none working code
-                retun list;
+                return list;
         }
-     </programlisting>	
-	</para>
-	<para>
-	Its also possible to use virtual nodes in functions, this opens up a interesting uses in that it allows you to return any information in the 
-	form of mmbase objects. The main advantage of this that the frontend programmers can use the tools they already know for handling nodes, fields 
-	and lists for example we could return some information as a mmbase node like this :
-	<programlisting>
-	        public MMObjectNode getOSInfo() {
+     </programlisting></para>
+
+    <para>Its also possible to use virtual nodes in functions, this opens up a
+    interesting uses in that it allows you to return any information in the
+    form of mmbase objects. The main advantage of this that the frontend
+    programmers can use the tools they already know for handling nodes, fields
+    and lists for example we could return some information as a mmbase node
+    like this : <programlisting>
+            public MMObjectNode getOSInfo() {
                 Cloud cloud = LocalContext.getCloudContext().getCloud("mmbase");
                 MMObjectNode virtual = builder.getNewNode("admin");
                 virtual.setValue("hardware", System.getProperty("os.arch");
@@ -196,10 +274,9 @@ and its jsp pages in mmbase/mmadmin/.
                 virtual.setValue("version", System.getProperty("os.version");
                 return virtual;
         }
-    </programlisting>	
-	We can use this from the taglibs like we do with normal nodes
-	<programlisting>
-	        &lt;mm:nodefunction set="mySet" name="getOSInfo"&gt;
+    </programlisting> We can use this from the taglibs like we do with normal
+    nodes <programlisting>
+            &lt;mm:nodefunction set="mySet" name="getOSInfo"&gt;
                 So you use &lt;mm:field name="hardware" /&gt;
                 &lt;mm:field name="os"&gt;
                         &lt;mm:compare value="osx"&gt;
@@ -210,13 +287,12 @@ and its jsp pages in mmbase/mmadmin/.
                         &lt;/mm:compare&gt;
                 &lt;/mm:field&gt;
         &lt;/mm:nodefunction&gt;
-	 </programlisting>
-	</para>
-	<para>
-	We can also use this for lists for example we could make a list of accounts from a ldap server that acts 
-	like any normal mmbase list (made up code for the ldap parts).
-	<programlisting>
-	        public List getAccounts(String searchkey) {
+     </programlisting></para>
+
+    <para>We can also use this for lists for example we could make a list of
+    accounts from a ldap server that acts like any normal mmbase list (made up
+    code for the ldap parts). <programlisting>
+            public List getAccounts(String searchkey) {
                 Cloud cloud = LocalContext.getCloudContext().getCloud("mmbase");
                 List list =  new ArrayList();
                 // fill the list from the ldap server, using a while
@@ -230,16 +306,15 @@ and its jsp pages in mmbase/mmadmin/.
                         list.add(virtual);
                 }
        }
-	</programlisting>
-	From the taglib we can work with this list like we can work with any other nodelist :
-	<programlisting>
-	        &lt;mm:nodelistfunction set="mySet" name="getUsers" referid="searchkey"&gt;
+    </programlisting> From the taglib we can work with this list like we can
+    work with any other nodelist : <programlisting>
+            &lt;mm:nodelistfunction set="mySet" name="getUsers" referid="searchkey"&gt;
                 &lt;mm:first&gt;The first user found&lt;/mm:first&gt;
                 &lt;mm:last&gt;The last user found&lt;/mm:last&gt;
                 &lt;mm:field name="account" /&gt; (&lt;mm:field name="firstname" /&gt; &lt;mm:field name="surname" /&gt;)&lt;br /&gt;
         &lt;/mm:nodelistfunction&gt;
-	</programlisting>
-	As you can see all the normal mmbase tags can be applied, The frontend programmer doesn't have to know the content is not coming from mmbase at all.
-	</para>
-   </section>
+    </programlisting> As you can see all the normal mmbase tags can be
+    applied, The frontend programmer doesn't have to know the content is not
+    coming from mmbase at all.</para>
+  </section>
 </article>
