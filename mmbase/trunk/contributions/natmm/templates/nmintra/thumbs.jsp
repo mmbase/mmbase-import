@@ -150,18 +150,30 @@ if(employeeFound) {
         ></mm:list
     ></select></td></tr>
     <tr><td><img src="media/spacer.gif" width="1" height="20"></td></tr>
-    <tr><td><div align="right"><input type="submit" name="Submit" value="Zoek" style="text-align:center;font-weight:bold;">&nbsp;</div>
+    <tr><td>
+    <table border="0" cellspacing="0" cellpadding="0" style="width:100%;">
+      <tr>
+         <td>
+            <input type="reset" name="clear" value="Wis" style="text-align:center;font-weight:bold;width:50px;" onClick="postIt('clear');">
+         </td>
+         <td style="text-align:right;padding-right:10px;">
+            <input type="submit" name="Submit" value="Zoek" style="text-align:center;font-weight:bold;">
+         </td>
+      </tr>
+      </table>
     </td></tr>
 </table></form>
 <script>
 <!--
 function postIt(el) {
-    var href = document.smoelenboek.action;
-    var department = escape(document.smoelenboek.elements["department"].value);
-    var program = escape(document.smoelenboek.elements["program"].value);
-    href += "&department=" + department + "&program=" + program; 
-    document.location = href; 
-    return false; 
+   var href = document.smoelenboek.action;
+   if(el!='clear') {
+      var department = escape(document.smoelenboek.elements["department"].value);
+      var program = escape(document.smoelenboek.elements["program"].value);
+      href += "&department=" + department + "&program=" + program; 
+   }	 
+   document.location = href; 
+   return false; 
 }
 //-->
 </script>

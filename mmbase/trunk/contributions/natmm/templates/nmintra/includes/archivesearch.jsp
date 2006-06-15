@@ -117,44 +117,55 @@
               } %></select></td>
    </tr>
    </table>
-   <br>
-   <div align="right"><input type="submit" name="submit" value="Zoek" style="text-align:center;font-weight:bold;"></div>
-</td></tr>
+   <br/>
+   <table border="0" cellspacing="0" cellpadding="0" style="width:100%;">
+      <tr>
+         <td>
+            <input type="reset" name="clear" value="Wis" style="text-align:center;font-weight:bold;width:50px;" onClick="postIt('clear');">
+         </td>
+         <td style="text-align:right;padding-right:10px;">
+            <input type="submit" name="Submit" value="Zoek" style="text-align:center;font-weight:bold;">
+         </td>
+      </tr>
+   </table>
+   </td></tr>
    </form>
    </table>
    <%@include file="../includes/whiteline.jsp" %>
    <script language="JavaScript" type="text/javascript">
    <%= "<!--" %>
-   function postIt() {
+   function postIt(el) {
        var href = document.infoform.action;
-       var projectname = document.infoform.elements["projectname"].value;
-       if(projectname != '') href += "&projectname=" + projectname;
-       var type = document.infoform.elements["type"].value;
-       if(type != '') href += "&type=" + type;
-       //var group = document.infoform.elements["group"].value;
-       //if(group != '') href += "&group=" + group;
-       <mm:present referid="employeefound">
-       var employee = document.infoform.elements["employee"].value;
-       if(employee != '') href += "&employee=" + employee;
-		 </mm:present>
-       <mm:present referid="departmentfound">
-       var department = document.infoform.elements["department"].value;
-       if(department != '') href += "&department=" + department;
-       </mm:present>
-       var period = "";
-       var v = document.infoform.elements["from_day"].value;
-       if(v != '') { period += v; } else { period += '00'; }
-       v = document.infoform.elements["from_month"].value;
-       if(v != '') { period += v; } else { period += '00'; }
-       v = document.infoform.elements["from_year"].value;
-       if(v != '') { period += v; } else { period += '0000'; }
-       v = document.infoform.elements["to_day"].value;
-       if(v != '') { period += v; } else { period += '00'; }
-       v = document.infoform.elements["to_month"].value;
-       if(v != '') { period += v; } else { period += '00'; }
-       v = document.infoform.elements["to_year"].value;
-       if(v != '') { period += v; } else { period += '0000'; }
-       if(period != '0000000000000000') href += "&d=" + period;
+       if(el!='clear') {
+          var projectname = document.infoform.elements["projectname"].value;
+          if(projectname != '') href += "&projectname=" + projectname;
+          var type = document.infoform.elements["type"].value;
+          if(type != '') href += "&type=" + type;
+          //var group = document.infoform.elements["group"].value;
+          //if(group != '') href += "&group=" + group;
+          <mm:present referid="employeefound">
+          var employee = document.infoform.elements["employee"].value;
+          if(employee != '') href += "&employee=" + employee;
+		    </mm:present>
+          <mm:present referid="departmentfound">
+          var department = document.infoform.elements["department"].value;
+          if(department != '') href += "&department=" + department;
+          </mm:present>
+          var period = "";
+          var v = document.infoform.elements["from_day"].value;
+          if(v != '') { period += v; } else { period += '00'; }
+          v = document.infoform.elements["from_month"].value;
+          if(v != '') { period += v; } else { period += '00'; }
+          v = document.infoform.elements["from_year"].value;
+          if(v != '') { period += v; } else { period += '0000'; }
+          v = document.infoform.elements["to_day"].value;
+          if(v != '') { period += v; } else { period += '00'; }
+          v = document.infoform.elements["to_month"].value;
+          if(v != '') { period += v; } else { period += '00'; }
+          v = document.infoform.elements["to_year"].value;
+          if(v != '') { period += v; } else { period += '0000'; }
+          if(period != '0000000000000000') href += "&d=" + period;
+       }
        document.location = href;
        return false;
    }
