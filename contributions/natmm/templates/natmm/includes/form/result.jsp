@@ -77,8 +77,11 @@ if(referer!=null) {
                String formulierveld_number =  thisField.getStringValue("number");
                String formulierveld_label = HtmlCleaner.cleanText(thisField.getStringValue("label"),"<",">");
                String formulierveld_type =  thisField.getStringValue("type");
-               boolean isRequired = thisField.getStringValue("verplicht").equals("1");
-               String formulierveld_warning = "U bent vergeten '" +  formulierveld_label + "' in te vullen";
+               boolean isRequired = thisField.getStringValue("verplicht").equals("1"); %>
+               <mm:related path="constraints,formulierveldantwoord" constraints="constraints.type=1">
+                  <% isRequired = true; %>
+               </mm:related>
+            <% String formulierveld_warning = "U bent vergeten '" +  formulierveld_label + "' in te vullen";
                String omschrijving = thisField.getStringValue("omschrijving");
                if(omschrijving!=null&&!HtmlCleaner.cleanText(omschrijving,"<",">","").trim().equals("")) {
                   formulierveld_warning = omschrijving;
