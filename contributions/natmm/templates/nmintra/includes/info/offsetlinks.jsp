@@ -1,4 +1,7 @@
-<%
+<% 
+if (!termSearchId.equals("")){
+	extTemplateQueryString += "&termsearch=" + termSearchId;
+}
 int pagesCount = listSize/objectPerPage;
 if (pagesCount*objectPerPage < listSize) { pagesCount++; }
 // show navigation to other pages if there are more than objectPerPage articles
