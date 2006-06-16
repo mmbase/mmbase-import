@@ -256,6 +256,14 @@
         <type  state="persistent">DATETIME</type>
       </db>
     </field>
+
+    <field>
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>integer_datetime</name>
+        <type  state="persistent">INTEGER</type>
+      </db>
+    </field>
     
     <field>
       <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
