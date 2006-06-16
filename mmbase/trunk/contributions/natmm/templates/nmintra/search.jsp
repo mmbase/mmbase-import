@@ -58,7 +58,6 @@
 	HashSet hsetVacatureNodes = new HashSet();
 
    LuceneModule mod = (LuceneModule) Module.getModule("lucenemodule");
-	System.out.println("searchId = " + searchId + " sCategory = " + sCategory + " sPool = " + sPool + " fromTime = " + fromTime + " toTime = " + toTime);
    if(mod!= null) {
       %><%@include file="includes/search/hashsets.jsp" %><%
    }

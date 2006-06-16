@@ -10,7 +10,7 @@
          <br/><br/>
 		<% } %>
 	</mm:field>
-   <mm:related path="posrel,paragraph" orderby="posrel.pos" directions="UP">
+   <mm:related path="posrel,paragraaf" orderby="posrel.pos" directions="UP">
       <%@include file="../relatedparagraph.jsp" %>
    </mm:related>
    <table cellpadding="5" cellspacing="0" style="border:solid #000000 1px;border-collapse:collapse;width:100%;">

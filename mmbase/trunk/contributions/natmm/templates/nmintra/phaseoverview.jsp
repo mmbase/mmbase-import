@@ -22,8 +22,8 @@
 		<mm:related path="posrel,paragraaf"
 			orderby="posrel.pos" directions="UP" fields="paragraaf.number"
 			><mm:first><ul type="square" class="black"></mm:first>
-			<li><b><mm:field name="paragraph.titel"/></b></li><br/>
-			<mm:field name="paragraph.tekst"/>
+			<li><b><mm:field name="paragraaf.titel"/></b></li><br/>
+			<mm:field name="paragraaf.tekst"/>
 			<mm:last></ul></mm:last>
 		</mm:related
 	></mm:node
