@@ -57,9 +57,9 @@
 					<%-- not used by M. Driessen 24.11.2005
 					<tr>
 						<td style="width:200px;text-align:right;"><span class="black"><b>Beoogde resultaten&nbsp;|&nbsp;</b></span></td>
-						<td style="width:350px;"><mm:related path="posrel,paragraph" orderby="posrel.pos" directions="UP"
+						<td style="width:350px;"><mm:related path="posrel,paragraaf" orderby="posrel.pos" directions="UP"
 								><mm:first><ul type="square" class="black"></mm:first>
-								<li><mm:field name="paragraph.title"/></li>
+								<li><mm:field name="paragraaf.title"/></li>
 								<mm:last></ul></mm:last
 							></mm:related></td>
 					</tr>
