@@ -16,42 +16,46 @@ if(lastPage>listSize) { lastPage = listSize; }
 <div class="pageheader">Zoekresultaten</div>
 <br/>
 <span class="black">
-<mm:list nodes="<%= sEducations %>" path="educations" fields="educations.number,educations.titel"
-		orderby="educations.titel" directions="UP"
-		offset="<%= "" + thisOffset*pageSize %>" max="<%= "" + pageSize %>">
-   <mm:node element="educations" jspvar="tE">	 
-	   <%
-      String sUrl = "educations.jsp?p="+paginaID+"&e="+tE.getStringValue("number")+"&k="+keywordId+"&pool="+poolId+"&pr="+providerId+"&c="+competenceId;
-      String sProvider = "Intern"; 
-	   String sSubsidie = "";	
-      %>
-      <a href="<%= sUrl %>"><mm:field name="titel"/></a><br/>
-      <mm:related path="providers">
-         <mm:field name="providers.naam" jspvar="dummy" vartype="String" write="false">
-          <% sProvider = dummy; %>
-         </mm:field>
-         <mm:field name="providers.funding" jspvar="providers_funding" vartype="String" write="false">
-          <% if (providers_funding.equals("1")) {
-                sSubsidie = "/&nbsp;<a href=\"article.jsp?p=subsidie\">Subsidie</a>&nbsp;"; 
-         	 }%>
-         </mm:field>
-         </mm:related>
-         <%= sProvider + "&nbsp;" + "<nobr>" + sSubsidie + "</nobr>" %>
-         <% int iScore = 0; %>
-         <mm:related path="feedback">
-         <mm:field name="feedback.score" jspvar="score" vartype="Integer" write="false">
-          <% iScore += score.intValue(); %>
-         </mm:field>
-         <mm:last>
-         <mm:size jspvar="size" vartype="Integer" write="false">
-            <% iScore = new Double(iScore/size.intValue()).intValue(); %>
-         </mm:size>
-         <nobr>/&nbsp;Beoordeling van collega's&nbsp;<a href="<%= sUrl %>#feedback" title="Bekijk feedback"><img src="media/icon_rating_<%= iScore %>.gif" border="0"></nobr>
-         </mm:last>		   
-      </mm:related>
-   </mm:node>
-   <br/><br/>
-</mm:list>
+<% if (!sEducations.equals("")) {%>
+	<mm:list nodes="<%= sEducations %>" path="educations" fields="educations.number,educations.titel"
+			orderby="educations.titel" directions="UP"
+			offset="<%= "" + thisOffset*pageSize %>" max="<%= "" + pageSize %>">
+	   <mm:node element="educations" jspvar="tE">	 
+		   <%
+      	String sUrl = "educations.jsp?p="+paginaID+"&e="+tE.getStringValue("number")+"&k="+keywordId+"&pool="+poolId+"&pr="+providerId+"&c="+competenceId;
+	      String sProvider = "Intern"; 
+		   String sSubsidie = "";	
+      	%>
+	      <a href="<%= sUrl %>"><mm:field name="titel"/></a><br/>
+   	   <mm:related path="providers">
+      	   <mm:field name="providers.naam" jspvar="dummy" vartype="String" write="false">
+         	 <% sProvider = dummy; %>
+	         </mm:field>
+   	      <mm:field name="providers.funding" jspvar="providers_funding" vartype="String" write="false">
+      	    <% if (providers_funding.equals("1")) {
+         	       sSubsidie = "/&nbsp;<a href=\"article.jsp?p=subsidie\">Subsidie</a>&nbsp;"; 
+         		 }%>
+	         </mm:field>
+   	      </mm:related>
+      	   <%= sProvider + "&nbsp;" + "<nobr>" + sSubsidie + "</nobr>" %>
+         	<% int iScore = 0; %>
+	         <mm:related path="feedback">
+   	      <mm:field name="feedback.score" jspvar="score" vartype="Integer" write="false">
+      	    <% iScore += score.intValue(); %>
+         	</mm:field>
+	         <mm:last>
+   	      <mm:size jspvar="size" vartype="Integer" write="false">
+      	      <% iScore = new Double(iScore/size.intValue()).intValue(); %>
+         	</mm:size>
+	         <nobr>/&nbsp;Beoordeling van collega's&nbsp;<a href="<%= sUrl %>#feedback" title="Bekijk feedback"><img src="media/icon_rating_<%= iScore %>.gif" border="0"></nobr>
+   	      </mm:last>		   
+      	</mm:related>
+	   </mm:node>
+   	<br/><br/>
+	</mm:list>
+<% } else {%>	
+	Er zijn geen opleidingen gevonden, die voldoen aan uw selectie criteria. Pas uw selectie criteria aan om wel resultaten te vinden.
+<% } %>
 </span>
 <br/>
 <br/>

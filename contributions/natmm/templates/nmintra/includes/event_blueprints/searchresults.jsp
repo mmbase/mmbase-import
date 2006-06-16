@@ -20,41 +20,45 @@ if(lastPage>listSize) { lastPage = listSize; }
 <div class="pageheader">Zoekresultaten</div>
 <br/>
 <span class="black">
-<mm:list nodes="<%= sEvents %>" path="evenement_blueprint" fields="evenement_blueprint.number,evenement_blueprint.titel"
-		orderby="evenement_blueprint.titel" directions="UP"
-		offset="<%= "" + thisOffset*pageSize %>" max="<%= "" + pageSize %>">
-   <mm:node element="evenement_blueprint" jspvar="tE">	 
-	   <%
-      String sUrl = searchUrl + "&ev=" + tE.getStringValue("number");
-      %>
-      <a href="<%= sUrl %>"><mm:field name="titel"/></a><br/>
-     	<mm:field name="tekst" jspvar="sText" vartype="String" write="false">
-   		<% if (sText!=null&&!HtmlCleaner.cleanText(sText,"<",">","").trim().equals("")) {
-               int spacePos = sText.indexOf(" ",200); 
-               if(spacePos>-1) { 
-                  sText = sText.substring(0,spacePos);
-               } 
-               %>
-      			<%= sText %>
-               <br/>
-      		   <% 
-            } %>
-	   </mm:field>
-      <% int iScore = 0; %>
-      <mm:related path="feedback">
-         <mm:field name="feedback.score" jspvar="score" vartype="Integer" write="false">
-          <% iScore += score.intValue(); %>
-         </mm:field>
-         <mm:last>
-         <mm:size jspvar="size" vartype="Integer" write="false">
-            <% iScore = new Double(iScore/size.intValue()).intValue(); %>
-         </mm:size>
-         <nobr>Feedback van collega's&nbsp;<a href="<%= sUrl %>#feedback" title="Bekijk feedback"><img src="media/icon_rating_<%= iScore %>.gif" border="0"></nobr>
-         </mm:last>		   
-      </mm:related>
-   </mm:node>
-   <br/><br/>
-</mm:list>
+<% if (!sEvents.equals("")){  %>
+	<mm:list nodes="<%= sEvents %>" path="evenement_blueprint" fields="evenement_blueprint.number,evenement_blueprint.titel"
+			orderby="evenement_blueprint.titel" directions="UP"
+			offset="<%= "" + thisOffset*pageSize %>" max="<%= "" + pageSize %>">
+	   <mm:node element="evenement_blueprint" jspvar="tE">	 
+		   <%
+      	String sUrl = searchUrl + "&ev=" + tE.getStringValue("number");
+	      %>
+   	   <a href="<%= sUrl %>"><mm:field name="titel"/></a><br/>
+     		<mm:field name="tekst" jspvar="sText" vartype="String" write="false">
+	   		<% if (sText!=null&&!HtmlCleaner.cleanText(sText,"<",">","").trim().equals("")) {
+   	            int spacePos = sText.indexOf(" ",200); 
+      	         if(spacePos>-1) { 
+         	         sText = sText.substring(0,spacePos);
+            	   } 
+	               %>
+   	   			<%= sText %>
+      	         <br/>
+      			   <% 
+	            } %>
+		   </mm:field>
+      	<% int iScore = 0; %>
+	      <mm:related path="feedback">
+   	      <mm:field name="feedback.score" jspvar="score" vartype="Integer" write="false">
+      	    <% iScore += score.intValue(); %>
+         	</mm:field>
+	         <mm:last>
+   	      <mm:size jspvar="size" vartype="Integer" write="false">
+      	      <% iScore = new Double(iScore/size.intValue()).intValue(); %>
+         	</mm:size>
+	         <nobr>Feedback van collega's&nbsp;<a href="<%= sUrl %>#feedback" title="Bekijk feedback"><img src="media/icon_rating_<%= iScore %>.gif" border="0"></nobr>
+   	      </mm:last>		   
+      	</mm:related>
+	   </mm:node>
+   	<br/><br/>
+	</mm:list>
+<% } else { %>
+	Er zijn geen activiteiten gevonden, die voldoen aan uw selectie criteria. Pas uw selectie criteria aan om wel resultaten te vinden.
+<% } %>
 </span>
 <br/>
 <br/>
