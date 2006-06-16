@@ -24,7 +24,7 @@ import java.util.Locale;
    &lt;property name="memory"&gt;*&#047;10 * * * *|org.mmbase.applications.crontab.MemoryWarner||0.8;Michiel.Meeuwissen@omroep.nl&lt;/property&gt;
    </pre>
  * @author Michiel Meeuwissen
- * @version $Id: MemoryWarner.java,v 1.2 2006-06-14 10:50:35 michiel Exp $
+ * @version $Id: MemoryWarner.java,v 1.3 2006-06-16 09:14:04 michiel Exp $
  */
 
 public class MemoryWarner extends AbstractCronJob  {
@@ -54,7 +54,7 @@ public class MemoryWarner extends AbstractCronJob  {
                     Node message = email.createNode();
                     message.setValue("from", "memorywarner@" + java.net.InetAddress.getLocalHost().getHostName());
                     message.setValue("to", config[1]);
-                    message.setValue("subject", "Out of memory warning, less then " + limitPerc + " free, for " + 
+                    message.setValue("subject", "Out of memory warning: more than " + limitPerc + " in use, for " + 
                                      org.mmbase.module.core.MMBaseContext.getHtmlRootUrlPath() + "@" + 
                                      java.net.InetAddress.getLocalHost().getHostName());
                     message.setValue("body", "Memory use " + usePerc + " > " + limitPerc);
