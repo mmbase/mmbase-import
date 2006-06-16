@@ -22,12 +22,14 @@ if(!providerId.equals("")) { // a provider has been selected
       </tr>
    </table>	
 	<select name="menu1" style="width:180px;" onChange="MM_jumpMenu('document',this,0)">
-      <option value='educations.jsp?p=<%= paginaID %>&k=<%= keywordId %>&pool=<%= poolId %>&c=<%= competenceId %>'>Selecteer</option>
-      <% String sProviders = searchResults(providers); %>
-      <mm:list nodes="<%= sProviders %>" path="providers,related,educations" orderby="providers.naam" directions="UP"
-         constraints="<%= providerConstraint %>" fields="providers.number" distinct="true">
-         <option value='<%= localPath %>educations.jsp?p=<%= paginaID %>&k=<%= keywordId %>&pool=<%= poolId %>&pr=<mm:field name="providers.number" />&c=<%= competenceId %>'><mm:field name="providers.naam" /></option>
-      </mm:list>
+      <option value='educations.jsp?p=<%= paginaID %>&termsearch=<%= termSearchId %>&k=<%= keywordId %>&pool=<%= poolId %>&c=<%= competenceId %>'>Selecteer</option>
+      <% String sProviders = searchResults(providers); 
+			if (!sProviders.equals("")) {%>
+	      	<mm:list nodes="<%= sProviders %>" path="providers,related,educations" orderby="providers.naam" directions="UP"
+   	      	constraints="<%= providerConstraint %>" fields="providers.number" distinct="true">
+	      	   <option value='<%= localPath %>educations.jsp?p=<%= paginaID %>&termsearch=<%= termSearchId %>&k=<%= keywordId %>&pool=<%= poolId %>&pr=<mm:field name="providers.number" />&c=<%= competenceId %>'><mm:field name="providers.naam" /></option>
+		      </mm:list>
+		<% } %>	
 	</select>
 	<br/>
    <% 
