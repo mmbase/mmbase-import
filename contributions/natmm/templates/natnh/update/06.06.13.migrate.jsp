@@ -56,13 +56,15 @@
 									<mm:node element="posrel">
 										<mm:field name="pos" jspvar="posrel_pos" vartype="String" write="false">
 											<% 
-												if(posrel_pos.equals("3")) { posrel_pos = "3"; // rechts -> klein rechts
+												if(posrel_pos.equals("3")) { posrel_pos = "3"; // rechts klein -> klein rechts
 												} else if(posrel_pos.equals("4")) { posrel_pos = "2"; // links klein -> klein links
-												} else if(posrel_pos.equals("7")) { posrel_pos = "4"; // volle breedte -> groot
+												} else if(posrel_pos.equals("7")) { posrel_pos = "4"; // rechts groot -> groot
+												} else if(posrel_pos.equals("8")) { posrel_pos = "4"; // links groot -> groot
 												} else if(posrel_pos.equals("1")) { posrel_pos = "9"; // rechts -> medium rechts
 												} else if(posrel_pos.equals("2")) { posrel_pos = "8"; // links -> medium links
 												} else if(posrel_pos.equals("5")) { posrel_pos = "9"; // rechts medium -> medium rechts
 												} else if(posrel_pos.equals("6")) { posrel_pos = "8"; // links medium -> medium links
+												} else { posrel_pos = "2"; // default klein links
 												}
 											%>
 											<mm:setfield name="pos"><%= posrel_pos %></mm:setfield>

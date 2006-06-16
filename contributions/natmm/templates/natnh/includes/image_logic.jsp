@@ -2,8 +2,8 @@
 
 // <option id="2">klein links</option>
 // <option id="3">klein rechts</option>
-// <option id="7">medium links</option>
-// <option id="8">medium rechts</option>
+// <option id="8">medium links</option>
+// <option id="9">medium rechts</option>
 // <option id="4">groot</option>
 
 %><mm:related path="posrel,images"  max="1"
@@ -27,7 +27,7 @@
 		 } else { // medium or small image, spacer between table and text
 		 
 			  if((1<image_position)&&(image_position<4)) { imageTemplate = "+s(150)"; }
-			  if((6<image_position)&&(image_position<9)) { imageTemplate = "+s(300)"; }
+			  if((7<image_position)&&(image_position<10)) { imageTemplate = "+s(300)"; }
 			  boolean rightAlign = false;
 			  if((image_position%2)==1){  rightAlign = true; }
 			 %><table cellspacing="0" cellpadding="0" border="0" width="1" <%
