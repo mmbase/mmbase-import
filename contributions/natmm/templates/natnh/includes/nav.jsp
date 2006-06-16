@@ -1,12 +1,11 @@
 <img src="media/logo_175.gif" align="right">
-<% if(!rubriekId.equals(rootId)) { 
-	%>
-	<mm:node number="<%= rubriekId %>" 
-		><mm:present referid="ishomepage"
-			><p><mm:field name="naam_eng"/><br><span class="projecttitle"><mm:field name="naam"/></span></p></mm:present
-		><mm:notpresent referid="ishomepage"
-			><p><mm:field name="naam" /><br><span class="projecttitle"><mm:node number="<%= paginaID %>"
-				><mm:field name="titel" /></mm:node></span></p></mm:notpresent><%
+<mm:node number="<%= rubriekId %>" 
+	><mm:present referid="ishomepage"
+		><p><mm:field name="naam_eng"/><br><span class="projecttitle"><mm:field name="naam"/></span></p></mm:present
+	><mm:notpresent referid="ishomepage"
+		><p><mm:field name="naam" /><br><span class="projecttitle"><mm:node number="<%= paginaID %>"
+			><mm:field name="titel" /></mm:node></span></p></mm:notpresent><%
+	if(!rubriekId.equals(rootId)) {
 		RubriekHelper rubriekHelper = new RubriekHelper(cloud);
 		TreeMap pages = (TreeMap) rubriekHelper.getSubObjects(rubriekId);
 		int i = 0;
@@ -30,6 +29,5 @@
 			pages.remove(thisKey);
 			i++; 
 		}
-	%></mm:node>
-	<%
-} %>
+	}
+%></mm:node>
