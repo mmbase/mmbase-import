@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: StorageConnector.java,v 1.7 2006-06-07 19:19:43 michiel Exp $
+ * @version $Id: StorageConnector.java,v 1.8 2006-06-16 09:06:21 michiel Exp $
  */
 public class StorageConnector {
 
@@ -194,8 +194,8 @@ public class StorageConnector {
         if (log.isDebugEnabled()) {
             log.trace("Getting node with number " + number);
         }
-        if (number == -1) {
-            throw new IllegalArgumentException("Try to obtain node from " + builder.getTableName() + " with number = -1");
+        if (number < 0) {
+            throw new IllegalArgumentException("Tried to obtain node from builder '" + builder.getTableName() + "' with an illegal number = " + number);
         }
         MMObjectNode node = null;
 
@@ -265,7 +265,7 @@ public class StorageConnector {
      */
     public int getNodeType(int number) throws StorageException {
         if (number < 0 ) {
-            throw new IllegalArgumentException("node number was invalid(" + number + ")" );
+            throw new IllegalArgumentException("node number was invalid (" + number + " < 0)" );
         } else {
             return builder.getMMBase().getStorageManager().getNodeType(number);
         }
@@ -415,10 +415,8 @@ public class StorageConnector {
     private List getRawNodes(SearchQuery query, boolean useCache) throws SearchQueryException {
         // Test if nodetype corresponds to builder.
         verifyBuilderQuery(query);
-        List results = null;
-        if (useCache) {
-            results = (List) getCache(query).get(query);
-        }
+        List results = useCache ? (List) getCache(query).get(query) : null;
+
         // if unavailable, obtain from storage
         if (results == null) {
             log.debug("result list is null, getting from storage");
