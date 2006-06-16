@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadoc)
- * @version $Id: MMTable.java,v 1.22 2006-06-07 19:11:40 michiel Exp $
+ * @version $Id: MMTable.java,v 1.23 2006-06-16 09:08:42 michiel Exp $
  */
 public abstract class MMTable extends FunctionProvider {
 
@@ -175,7 +175,10 @@ public abstract class MMTable extends FunctionProvider {
         try {
             return storageConnector.getNode(number, useCache);
         } catch(IllegalArgumentException iae) {
-            log.warn(" (" + tableName + ") nodenumber == " + number + ": " + iae.getMessage(), iae);
+            log.warn(iae.getMessage());
+            if (log.isDebugEnabled()) {
+                log.debug(iae);
+            }
             return null;
         } catch(StorageNotFoundException se) {
             return null;
