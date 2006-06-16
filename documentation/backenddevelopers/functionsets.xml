@@ -108,12 +108,12 @@
 
     <para>As you would expect the combined examples return '[[null/default]]'.
     A more exiting example would use the the set-methods defined in this bean
-    by using parameter tags which should be grouped using the tag
+    by using parameter tags which should be grouped using the
     functioncontainer tag. </para>
 
     <programlisting>  &lt;mm:functioncontainer&gt;
     &lt;mm:param name="parameter1"&gt;foo&lt;/mm:param&gt;
-    &lt;mm:param name="parameter3"&gt;bar&lt;/mm:param&gt;
+    &lt;mm:param name="anotherParameter"&gt;bar&lt;/mm:param&gt;
     &lt;mm:function classname="org.mmbase.util.functions.ExampleBean" name="stringFunction" /&gt;
   &lt;/mm:functioncontainer&gt; </programlisting>
 

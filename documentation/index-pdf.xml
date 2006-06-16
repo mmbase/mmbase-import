@@ -7,7 +7,7 @@
 
     <date>2006-12-16</date>
 
-    <edition>$Id: index.xml,v 1.57 2006-06-16 09:21:09 andre Exp $</edition>
+    <edition>$Id: index-pdf.xml,v 1.1 2006-06-16 09:21:09 andre Exp $</edition>
 
     <authorgroup>
       <author>
@@ -100,13 +100,13 @@
 
     <revhistory>
       <revision>
-        <revnumber>0.2</revnumber>
+        <revnumber>0.1</revnumber>
 
         <date>2006-06-16</date>
 
         <authorinitials>AvT</authorinitials>
 
-        <revremark>Moved pdf to seperate document.</revremark>
+        <revremark>Initial version of this document.</revremark>
       </revision>
     </revhistory>
 
@@ -115,29 +115,29 @@
       documentation should be listed here. It has several sections targeted at
       different groups of users and developers. More about the documentation
       structure can be read in the document <ulink
-      url="documentation.html">About MMBase Documentation</ulink>.</para>
+      url="documentation.pdf">About MMBase Documentation</ulink>.</para>
     </abstract>
   </articleinfo>
 
   <section id="introduction">
     <title>Introduction</title>
 
-    <para>If you ran the documentation build with PDF's enabled then the PDF
-    versions of these documents can be accessed via the <ulink
-    url="index-pdf.html">PDF index page</ulink>.</para>
+    <para>This is PDF version of the documentation. Note that not all
+    documents are available as PDF. The HTML versions of these documents can
+    be accessed via this <ulink url="index.html">index page</ulink>.</para>
 
     <itemizedlist>
       <listitem>
-        <para><ulink url="documentation.html">About MMBase
+        <para><ulink url="documentation.pdf">About MMBase
         Documentation</ulink></para>
       </listitem>
 
       <listitem>
-        <para><ulink url="glossary.html">MMBase Glossary</ulink></para>
+        <para><ulink url="glossary.pdf">MMBase Glossary</ulink></para>
       </listitem>
 
       <listitem>
-        <para><ulink url="general/architecture.html">MMBase Architectural
+        <para><ulink url="general/architecture.pdf">MMBase Architectural
         Overview</ulink></para>
       </listitem>
     </itemizedlist>
@@ -152,17 +152,17 @@
 
     <itemizedlist>
       <listitem>
-        <para><ulink url="contribute.html">How to contribute to the
+        <para><ulink url="contribute.pdf">How to contribute to the
         community</ulink></para>
       </listitem>
 
       <listitem>
-        <para><ulink url="3rdparty.html">How to share code in the MMBase
+        <para><ulink url="3rdparty.pdf">How to share code in the MMBase
         repository</ulink></para>
       </listitem>
 
       <listitem>
-        <para><ulink url="mmbase.org/mmcmissionstatement.html">MMC Mission
+        <para><ulink url="mmbase.org/mmcmissionstatement.pdf">MMC Mission
         Statement Document</ulink></para>
       </listitem>
     </itemizedlist>
@@ -171,16 +171,16 @@
 
     <itemizedlist>
       <listitem>
-        <para><ulink url="xml-how-to.html">How To Use XML</ulink></para>
+        <para><ulink url="xml-how-to.pdf">How To Use XML</ulink></para>
       </listitem>
 
       <listitem>
-        <para><ulink url="modules/images-and-attachments.html">Images and
+        <para><ulink url="modules/images-and-attachments.pdf">Images and
         Attachments</ulink></para>
       </listitem>
 
       <listitem>
-        <para><ulink url="modules/i18n.html">MMBase Internationalization and
+        <para><ulink url="modules/i18n.pdf">MMBase Internationalization and
         Localization</ulink></para>
       </listitem>
     </itemizedlist>
@@ -195,17 +195,17 @@
 
     <itemizedlist>
       <listitem>
-        <para><ulink url="administrators/install-tomcat.html">MMBase
+        <para><ulink url="administrators/install-tomcat.pdf">MMBase
         installation on Apache Tomcat</ulink></para>
       </listitem>
 
       <listitem>
-        <para><ulink url="administrators/configuration.html">MMBase
+        <para><ulink url="administrators/configuration.pdf">MMBase
         configuration documentation</ulink></para>
       </listitem>
 
       <listitem>
-        <para><ulink url="administrators/tune-production.html">How to tune
+        <para><ulink url="administrators/tune-production.pdf">How to tune
         MMBase for production</ulink></para>
       </listitem>
     </itemizedlist>
@@ -215,17 +215,17 @@
 
     <itemizedlist>
       <listitem>
-        <para><ulink url="administrators/security-framework.html">The MMBase
+        <para><ulink url="administrators/security-framework.pdf">The MMBase
         security framework</ulink></para>
       </listitem>
 
       <listitem>
-        <para><ulink url="administrators/cloud-security.html">Cloud security
+        <para><ulink url="administrators/cloud-security.pdf">Cloud security
         configuration</ulink></para>
       </listitem>
 
       <listitem>
-        <para><ulink url="administrators/context-security.html">Context
+        <para><ulink url="administrators/context-security.pdf">Context
         security configuration</ulink></para>
       </listitem>
     </itemizedlist>
@@ -239,39 +239,39 @@
 
     <itemizedlist>
       <listitem>
-        <para><ulink url="backenddevelopers/codingstandards.html">Summary of
+        <para><ulink url="backenddevelopers/codingstandards.pdf">Summary of
         Coding Standards</ulink></para>
       </listitem>
 
       <listitem>
-        <para><ulink url="backenddevelopers/custombuilderclass.html">HOW TO:
+        <para><ulink url="backenddevelopers/custombuilderclass.pdf">HOW TO:
         Add a custom function to a nodebuilder</ulink></para>
       </listitem>
 
       <listitem>
-        <para><ulink url="backenddevelopers/functionsets.html">The MMBase
+        <para><ulink url="backenddevelopers/functionsets.pdf">The MMBase
         Function sets</ulink></para>
       </listitem>
 
       <listitem>
-        <para><ulink url="backenddevelopers/dbsq.html">SearchQuery
+        <para><ulink url="backenddevelopers/dbsq.pdf">SearchQuery
         introduction</ulink></para>
       </listitem>
 
       <listitem>
-        <para><ulink url="backenddevelopers/storage/index.html">The Storage
+        <para><ulink url="backenddevelopers/storage/index.pdf">The Storage
         Layer</ulink></para>
 
         <itemizedlist>
           <listitem>
             <para><ulink
-            url="backenddevelopers/storage/configuration.html">Storage
+            url="backenddevelopers/storage/configuration.pdf">Storage
             Configuration</ulink></para>
           </listitem>
 
           <listitem>
             <para><ulink
-            url="backenddevelopers/storage/conversions.html">Storage
+            url="backenddevelopers/storage/conversions.pdf">Storage
             Conversions</ulink></para>
           </listitem>
         </itemizedlist>
@@ -282,13 +282,13 @@
 
         <itemizedlist>
           <listitem>
-            <para><ulink url="backenddevelopers/eventframework.html">The Event
+            <para><ulink url="backenddevelopers/eventframework.pdf">The Event
             Framework Technical Reference</ulink></para>
           </listitem>
 
           <listitem>
             <para><ulink
-            url="backenddevelopers/QueryCache_release_strategies.html">The
+            url="backenddevelopers/QueryCache_release_strategies.pdf">The
             Query Cache Release Strategy Technical Reference</ulink></para>
           </listitem>
         </itemizedlist>
@@ -303,7 +303,7 @@
       </listitem>
 
       <listitem>
-        <para><ulink url="backenddevelopers/resourceloader.html">The MMBase
+        <para><ulink url="backenddevelopers/resourceloader.pdf">The MMBase
         Resource loader</ulink></para>
       </listitem>
     </itemizedlist>
@@ -319,23 +319,23 @@
     <itemizedlist>
       <listitem>
         <para><ulink
-        url="applications/cloudcontext/cloudcontextsecurity.html">Cloud
-        Context Security</ulink></para>
+        url="applications/cloudcontext/cloudcontextsecurity.pdf">Cloud Context
+        Security</ulink></para>
       </listitem>
 
       <listitem>
-        <para><ulink url="applications/crontab/crontab.html">MMBase
+        <para><ulink url="applications/crontab/crontab.pdf">MMBase
         Crontab</ulink></para>
       </listitem>
 
       <listitem>
-        <para><ulink url="applications/email/email.html">Email
+        <para><ulink url="applications/email/email.pdf">Email
         application</ulink></para>
       </listitem>
 
       <listitem>
         <para><ulink
-        url="applications/media/applications/media/index.html">Media project
+        url="applications/media/applications/media/index.pdf">Media project
         documentation</ulink></para>
       </listitem>
 
@@ -348,13 +348,13 @@
 
       <listitem>
         <para><ulink
-        url="applications/richtext/frontenddevelopers/richtext/richtext.html">The
+        url="applications/richtext/frontenddevelopers/richtext/richtext.pdf">The
         Richtext Functional Reference</ulink></para>
       </listitem>
 
       <listitem>
         <para><ulink
-        url="applications/rmmci/backenddevelopers/rmmci/index.html">Remote
+        url="applications/rmmci/backenddevelopers/rmmci/index.pdf">Remote
         MMBase Cloud Interface</ulink></para>
       </listitem>
 
@@ -369,13 +369,13 @@
     <itemizedlist>
       <listitem>
         <para><ulink
-        url="applications/taglib/frontenddevelopers/taglib/taglib-tutorial.html">Taglib
+        url="applications/taglib/frontenddevelopers/taglib/taglib-tutorial.pdf">Taglib
         Tutorial</ulink></para>
       </listitem>
 
       <listitem>
         <para><ulink
-        url="applications/taglib/frontenddevelopers/taglib/include.html">MMBase
+        url="applications/taglib/frontenddevelopers/taglib/include.pdf">MMBase
         Include / TreeInclude / LeafInclude (HTML</ulink></para>
       </listitem>
 
@@ -391,24 +391,24 @@
     <itemizedlist>
       <listitem>
         <para><ulink
-        url="applications/editwizard/build/frontenddevelopers/editwizard/index.html">Editwizards</ulink></para>
+        url="applications/editwizard/build/frontenddevelopers/editwizard/index.pdf">Editwizards</ulink></para>
       </listitem>
 
       <listitem>
         <para><ulink
-        url="applications/editwizard/build/frontenddevelopers/editwizard/editwizard-reference.html">Editwizard
+        url="applications/editwizard/build/frontenddevelopers/editwizard/editwizard-reference.pdf">Editwizard
         Syntax Reference</ulink></para>
       </listitem>
 
       <listitem>
         <para><ulink
-        url="applications/editwizard/build/frontenddevelopers/editwizard/editwizard-frontend.html">Editwizard
+        url="applications/editwizard/build/frontenddevelopers/editwizard/editwizard-frontend.pdf">Editwizard
         Front end</ulink></para>
       </listitem>
 
       <listitem>
         <para><ulink
-        url="applications/dove/build/frontenddevelopers/dove/index.html">Dove
+        url="applications/dove/build/frontenddevelopers/dove/index.pdf">Dove
         XML API</ulink></para>
       </listitem>
 
@@ -424,18 +424,18 @@
     <itemizedlist>
       <listitem>
         <para><ulink
-        url="applications/xmlimporter/frontenddevelopers/xmlimporter/index.html">Overview</ulink></para>
+        url="applications/xmlimporter/frontenddevelopers/xmlimporter/index.pdf">Overview</ulink></para>
       </listitem>
 
       <listitem>
         <para><ulink
-        url="applications/xmlimporter/frontenddevelopers/xmlimporter/quickstart.html">Quick
+        url="applications/xmlimporter/frontenddevelopers/xmlimporter/quickstart.pdf">Quick
         Start</ulink></para>
       </listitem>
 
       <listitem>
         <para><ulink
-        url="applications/xmlimporter/frontenddevelopers/xmlimporter/cookbook.html">Cook
+        url="applications/xmlimporter/frontenddevelopers/xmlimporter/cookbook.pdf">Cook
         Book</ulink></para>
       </listitem>
     </itemizedlist>
@@ -449,17 +449,17 @@
 
     <itemizedlist>
       <listitem>
-        <para><ulink url="informationanalysts/builders.html">MMBase Builder
+        <para><ulink url="informationanalysts/builders.pdf">MMBase Builder
         Configuration</ulink></para>
       </listitem>
 
       <listitem>
-        <para><ulink url="informationanalysts/relations.html">Relations in
+        <para><ulink url="informationanalysts/relations.pdf">Relations in
         MMBase</ulink></para>
       </listitem>
 
       <listitem>
-        <para><ulink url="informationanalysts/applications.html">MMBase
+        <para><ulink url="informationanalysts/applications.pdf">MMBase
         Applications</ulink></para>
       </listitem>
     </itemizedlist>
@@ -473,8 +473,8 @@
 
     <itemizedlist>
       <listitem>
-        <para><ulink url="managers/mmbase4managers.html">Running MMBase in
-        your organization</ulink></para>
+        <para><ulink url="managers/mmbase4managers.pdf">Running MMBase in your
+        organization</ulink></para>
       </listitem>
     </itemizedlist>
   </section>
@@ -487,31 +487,31 @@
 
     <itemizedlist>
       <listitem>
-        <para><ulink url="mmbase.org/templates/index.html">The Project
+        <para><ulink url="mmbase.org/templates/index.pdf">The Project
         [projectname] Document</ulink></para>
 
         <itemizedlist>
           <listitem>
             <para><ulink
-            url="mmbase.org/templates/configuration.html">[applicationname]
+            url="mmbase.org/templates/configuration.pdf">[applicationname]
             Configuration</ulink></para>
           </listitem>
 
           <listitem>
             <para><ulink
-            url="mmbase.org/templates/functional-reference.html">The
+            url="mmbase.org/templates/functional-reference.pdf">The
             [projectname] Functional Reference</ulink></para>
           </listitem>
 
           <listitem>
             <para><ulink
-            url="mmbase.org/templates/installation.html">[applicationname]
+            url="mmbase.org/templates/installation.pdf">[applicationname]
             Installation</ulink></para>
           </listitem>
 
           <listitem>
             <para><ulink
-            url="mmbase.org/templates/technical-reference.html">The
+            url="mmbase.org/templates/technical-reference.pdf">The
             [projectname] Technical Reference</ulink></para>
           </listitem>
         </itemizedlist>
