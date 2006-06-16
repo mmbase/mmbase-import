@@ -104,23 +104,30 @@ if((sCategory != null) && (!sCategory.equals(""))) {
 
 %><mm:log jspvar="log"><% 
 
-// this will lead to double results on the natuurgebieden, because artikel,rolerel,natuurgebieden,pos4rel,provincies is used to link routes
-hsetNatuurgebiedenRouteNodes = addPages(cloud, log, cf, sQuery, 1, "natuurgebieden,pos4rel,provincies,contentrel,pagina", rootID, nowSec, hsetPagesNodes);
+String DOUBLESPACE = "  ";
+String SINGLESPACE = " ";
+String qStr = sQuery;
+while(qStr.indexOf(DOUBLESPACE)>-1) {
+   qStr = qStr.replaceAll(DOUBLESPACE,SINGLESPACE);
+}
+qStr = qStr.trim().replaceAll(SINGLESPACE,"* AND ") + "*";
+
+hsetNatuurgebiedenRouteNodes = addPages(cloud, log, cf, qStr, 1, "natuurgebieden,pos4rel,provincies,contentrel,pagina", rootID, nowSec, hsetPagesNodes);
 if(debug) { %><br/>natuurgebiedenRoutesHits:<br/><%= hsetNatuurgebiedenRouteNodes %><br/><%= hsetPagesNodes %><% } 
 
-hsetNatuurgebiedenNatuurgebiedenNodes = addPages(cloud, log, cf, sQuery, 2, "natuurgebieden,pos4rel,provincies,contentrel,pagina", rootID, nowSec, hsetPagesNodes);
+hsetNatuurgebiedenNatuurgebiedenNodes = addPages(cloud, log, cf, qStr, 2, "natuurgebieden,pos4rel,provincies,contentrel,pagina", rootID, nowSec, hsetPagesNodes);
 if(debug) { %><br/>natuurgebiedenNatuurgebiedenHits:<br/><%= hsetNatuurgebiedenNatuurgebiedenNodes %><br/><%= hsetPagesNodes %><% } 
 
-hsetArticlesNodes = addPages(cloud, log, cf, sQuery, 0, "artikel,contentrel,pagina", rootID, nowSec, hsetPagesNodes);
+hsetArticlesNodes = addPages(cloud, log, cf, qStr, 0, "artikel,contentrel,pagina", rootID, nowSec, hsetPagesNodes);
 if(debug) { %><br/>articleHits:<br/><%= hsetArticlesNodes %><br/><%= hsetPagesNodes %><% } 
 
-hsetArtDossierNodes = addPages(cloud, log, cf, sQuery, 0, "artikel,posrel,dossier,posrel,pagina", rootID, nowSec, hsetPagesNodes);
+hsetArtDossierNodes = addPages(cloud, log, cf, qStr, 0, "artikel,posrel,dossier,posrel,pagina", rootID, nowSec, hsetPagesNodes);
 if(debug) { %><br/>artByDossierHits:<br/><%= hsetArtDossierNodes %><br/><%= hsetPagesNodes %><% } 
 
-hsetFormulierNodes = addPages(cloud, log, cf, sQuery, 3, "formulier,posrel,pagina", rootID, nowSec, hsetPagesNodes);
+hsetFormulierNodes = addPages(cloud, log, cf, qStr, 3, "formulier,posrel,pagina", rootID, nowSec, hsetPagesNodes);
 if(debug) { %><br/>formulierHits:<br/><%= hsetFormulierNodes %><br/><%= hsetPagesNodes %><% } 
 
-hsetEvenementNodes = addPages(cloud, log, cf, sQuery, 4, null, rootID, nowSec, hsetPagesNodes);
+hsetEvenementNodes = addPages(cloud, log, cf, qStr, 4, null, rootID, nowSec, hsetPagesNodes);
 if(hsetEvenementNodes.size()>0) { 
    %><mm:node number="agenda">
       <mm:field name="number" jspvar="agenda_number" vartype="String" write="false"><%
