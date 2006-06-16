@@ -52,11 +52,13 @@ public String getSelect(Cloud cloud, Logger log, String title, int iRubriekStyle
       } else {
          log.error("Url " + url + " does not contain param " + param );
       }
-      for(int n=0; n<related.size(); n++) {
-         String name = related.getNode(n).getStringValue(destination + "." + field);
-         String number = related.getNode(n).getStringValue(destination + ".number");      
-         sSelect += 
-               "<option value='" + url + "&" + param + "=" + number + "'>" + name + "</option>";
+      if (related!=null){
+	      for(int n=0; n<related.size(); n++) {
+   	      String name = related.getNode(n).getStringValue(destination + "." + field);
+      	   String number = related.getNode(n).getStringValue(destination + ".number");      
+         	sSelect += 
+            	   "<option value='" + url + "&" + param + "=" + number + "'>" + name + "</option>";
+	      }
       }
       sSelect += 
    	      "</select>"
