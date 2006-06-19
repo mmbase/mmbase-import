@@ -10,10 +10,10 @@ See http://www.MMBase.org/license
 package org.mmbase.datatypes;
 import org.mmbase.bridge.*;
 /**
- * The DataType associated with a boolean values. 
+ * The DataType associated with a boolean value.
  *
  * @author Pierre van Rooden
- * @version $Id: BooleanDataType.java,v 1.8 2006-04-10 15:23:55 michiel Exp $
+ * @version $Id: BooleanDataType.java,v 1.9 2006-06-19 15:55:08 pierre Exp $
  * @since MMBase-1.8
  */
 public class BooleanDataType extends BasicDataType {
@@ -21,8 +21,7 @@ public class BooleanDataType extends BasicDataType {
     private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
 
     /**
-     * Constructor for boolean field that takes a class as argument, this
-     * should be the 'true' class: either boolean.class or Boolean.class
+     * Constructor for a boolean datatype (either a primitive boolean type or the Boolean class).
      *
      * @param name the name of the data type
      * @param primitive indicate if a primitive type should be used
@@ -31,9 +30,8 @@ public class BooleanDataType extends BasicDataType {
         super(name, primitive ? Boolean.TYPE : Boolean.class);
     }
 
-
     /**
-     * Cast a bit more conservativly, because Casting, aggressively casts everthing to boolean,
+     * Cast a bit more conservatively, because Casting aggressively casts everything to boolean,
      * which would make nearly every value valid.
      */
     protected final Object cast(Object value, Cloud cloud, Node node, Field field) throws CastException {
@@ -54,7 +52,7 @@ public class BooleanDataType extends BasicDataType {
             if (d == 1.0) return Boolean.TRUE;
             if (d == 0.0) return Boolean.FALSE;
             throw new CastException("The number '" + value + "' cannot be casted to boolean (boolean is 0 or 1)");
-        } 
+        }
         throw new CastException("'" + value + "' cannot be casted to boolean (boolean is 0 or 1)");
 
     }
