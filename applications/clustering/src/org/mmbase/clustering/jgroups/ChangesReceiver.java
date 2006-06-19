@@ -41,21 +41,20 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Costyn van Dongen
  * @author Ronald Wildenberg
- * @version $Id: ChangesReceiver.java,v 1.3 2006-03-30 11:23:53 pierre Exp $
+ * @version $Id: ChangesReceiver.java,v 1.4 2006-06-19 16:20:31 michiel Exp $
  */
 public class ChangesReceiver implements Runnable {
 
-    /** MMbase logging system */
-    private static Logger log = Logging.getLoggerInstance(ChangesReceiver.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(ChangesReceiver.class);
 
     /** Thread which sends the messages */
     private Thread kicker = null;
 
     /** Queue with messages received from other MMBase instances */
-    private Queue nodesToSpawn;
+    private final Queue nodesToSpawn;
 
     /** JChannel: the multicast communication channel */
-    JChannel channel;
+    private final JChannel channel;
 
     /**
      * Construct the MultiCast Receiver
@@ -63,15 +62,15 @@ public class ChangesReceiver implements Runnable {
      * @param nodesToSpawn Queue of received messages
      */
     public ChangesReceiver(JChannel channel, Queue nodesToSpawn) {
-        this.channel=channel;
-        this.nodesToSpawn=nodesToSpawn;
+        this.channel = channel;
+        this.nodesToSpawn = nodesToSpawn;
         this.start();
     }
 
     /**
      * Start thread
      */
-    public void start() {
+    private void start() {
         /* Start up the main thread */
         if (kicker == null) {
             kicker = new Thread(this, "MulticastReceiver");
@@ -84,10 +83,15 @@ public class ChangesReceiver implements Runnable {
     /**
      * Stop thread
      */
-    public void stop() {
+    void stop() {
         /* Stop thread */
-        kicker.setPriority(Thread.MIN_PRIORITY);
-        kicker = null;
+        if (kicker != null) {
+            kicker.setPriority(Thread.MIN_PRIORITY);
+            kicker.interrupt();
+            kicker = null;
+        } else {
+            log.service("Cannot stop thread, because it is null");
+        }
     }
 
     /**
@@ -111,43 +115,51 @@ public class ChangesReceiver implements Runnable {
 
       while (kicker != null) {
 
+          if (channel == null ||  (! channel.isConnected())) {
+              log.warn("Channel " + channel + " not connected. Sleeping for 5 s.");
+              try {
+                  Thread.sleep(5000);
+              } catch (InterruptedException ie) {
+              }
+              continue;
+          }
          /* Attempt to receive an object. */
          Object receivedObject = null;
          try {
             receivedObject = channel.receive(0); /* wait forever */
-         }
-         catch (ChannelNotConnectedException e) {
-            /* This channel is not connected to a group.
-             * This should never happen, since we never call disconnect on the channel. */
-            log.error("Channel disconnected. This should never happen.");
-            log.error(Logging.stackTrace(e));
-         }
-         catch (ChannelClosedException e) {
-            log.warn("Channel closed.");
-            log.warn(Logging.stackTrace());
-         }
-         catch (TimeoutException e) {
-            log.error("A timeout occurred while receiving a message. This should never happen, since we wait indefinitely.");
-            log.error(Logging.stackTrace());
+         } catch (ChannelNotConnectedException e) {
+             // This channel is not connected to a group.
+             // This should never happen, since we never call disconnect on the channel. */
+             log.error("Channel disconnected. This should never happen:" + e.getMessage(), e);
+             continue;
+         } catch (ChannelClosedException e) {
+             log.warn("Channel closed: " + e.getMessage(), e);
+             continue;
+         } catch (TimeoutException e) {
+             log.error("A timeout occurred while receiving a message. This should never happen, since we wait indefinitely: " + e.getMessage(), e);
          }
 
          /* Handle the received object. */
          if (receivedObject != null) {
             if (receivedObject instanceof Message) {
                Message message = (Message) receivedObject;
-               log.debug("Received Message from: " + message.getSrc());
-               log.debug("Message content:");
-               Set headerKeySet = message.getHeaders().keySet();
-               final Iterator headers = headerKeySet.iterator();
-               while(headers.hasNext()) {
-                   log.debug(new String(" " +  message.getHeaders().get(headers.next())));
+               if (log.isDebugEnabled()) {
+                   log.debug("Received Message from: " + message.getSrc());
+                   log.debug("Message content:");
+                   Set headerKeySet = message.getHeaders().keySet();
+                   final Iterator headers = headerKeySet.iterator();
+                   while(headers.hasNext()) {
+                       log.debug(new String(" " +  message.getHeaders().get(headers.next())));
+                   }
+                   log.debug("message: " + message.getLength() + " bytes");
+                   if (log.isTraceEnabled()) {
+                       log.trace("      " + new String(message.getBuffer()));
+                   }
                }
-
-               log.debug("      " + new String(message.getBuffer()));
                try {
                   nodesToSpawn.append(message.getBuffer());
                } catch (Exception ex) {
-                  log.error(Logging.stackTrace(ex));
+                  log.error(ex);
                }
             } else if (receivedObject instanceof View) {
                View view = (View) receivedObject;
@@ -155,7 +167,6 @@ public class ChangesReceiver implements Runnable {
                log.info("Current members of group:");
 
                Vector members = view.getMembers() ;
-
                for ( int i = 0 ; i < members.size() ; i++ ) {
                   log.info("       " + members.elementAt(i) ) ;
                }

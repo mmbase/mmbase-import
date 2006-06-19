@@ -38,7 +38,7 @@ import org.jgroups.*;
  * @author Nico Klasens
  * @author Costyn van Dongen
  * @author Ronald Wildenberg
- * @version $Id: Multicast.java,v 1.5 2006-06-19 06:05:30 michiel Exp $
+ * @version $Id: Multicast.java,v 1.6 2006-06-19 16:20:31 michiel Exp $
  */
 public class Multicast extends ClusterManager {
 
@@ -88,9 +88,11 @@ public class Multicast extends ClusterManager {
     private final Map configuration = new UtilReader(CONFIG_FILE,
                                                      new Runnable() {
                                                          public void run() {
-                                                             stopCommunicationThreads();
-                                                             readConfiguration();
-                                                             startCommunicationThreads();
+                                                             synchronized(Multicast.this) {
+                                                                 stopCommunicationThreads();
+                                                                 readConfiguration();
+                                                                 startCommunicationThreads();
+                                                             }
                                                          }
                                                      }).getProperties();
 
@@ -105,7 +107,7 @@ public class Multicast extends ClusterManager {
     /**
      * @since MMBase-1.8.1
      */
-    protected void readConfiguration() {
+    protected synchronized void readConfiguration() {
 
         String tmp = (String) configuration.get("spawnthreads");
         if (tmp != null && !tmp.equals("")) {
@@ -138,6 +140,9 @@ public class Multicast extends ClusterManager {
             channel.connect(channelName);
         } catch (ChannelException createChannelException) {
             log.error("JChannel: Unable to create or join multicast channel: " + createChannelException.getMessage(), createChannelException);
+            if (channel == null) {
+                return;
+            }
         }
 
         if (channel.isConnected()) {
@@ -145,7 +150,6 @@ public class Multicast extends ClusterManager {
         } else {
             log.warn("Could not connect channel: " + channel.toString(true));
         }
-        start();
     }
 
     /**
@@ -153,16 +157,29 @@ public class Multicast extends ClusterManager {
      * which handle the sending and recieving of messages on the channel in
      * seaparate threads.
      */
-    protected void startCommunicationThreads() {
+    protected  synchronized void startCommunicationThreads() {
         mcs = new ChangesSender(channel, nodesToSend);
+        log.service("Started communication sender " + mcs);
         mcr = new ChangesReceiver(channel, nodesToSpawn);
+        log.service("Started communication receiver " + mcr);
     }
 
 
-    protected void stopCommunicationThreads() {
-        mcs.stop();
-        mcr.stop();
-        log.service("Disconnecting jgroup channel " + channel.toString(true));
-        channel.disconnect();
+    protected synchronized void stopCommunicationThreads() {
+        if (mcs != null) {
+            mcs.stop();
+            log.service("Stopped communication sender " + mcs);
+            mcs = null;
+        }
+        if (mcr != null) { 
+            mcr.stop();
+            log.service("Stopped communication receiver " + mcr);
+            mcr = null;
+        }
+        if (channel != null) {
+            log.service("Disconnecting jgroup channel " + channel.toString(true));
+            channel.disconnect();
+            channel = null;
+        }
     }
 }

@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: ClusterManager.java,v 1.25 2006-04-03 08:42:29 michiel Exp $
+ * @version $Id: ClusterManager.java,v 1.26 2006-06-19 16:20:31 michiel Exp $
  */
 public abstract class ClusterManager implements AllEventListener, Runnable {
 
@@ -54,7 +54,8 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
     protected boolean compatible17 = false;
 
 
-    public void shutdown(){
+    public final void shutdown(){
+        log.info("Shutting down clustering");
         stopCommunicationThreads();
         kicker.setPriority(Thread.MIN_PRIORITY);
         kicker = null;
@@ -248,6 +249,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
         while(kicker != null) {
             try {
                 byte[] message = (byte[]) nodesToSpawn.get();
+                if (message == null) continue;
                 if (log.isDebugEnabled()) {
                     log.trace("RECEIVED =>" + message.length + " bytes");
                 }
@@ -281,7 +283,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
         }
         if (mmbase.getMachineName().equals(event.getMachine())) {
             // ignore changes of ourselves
-            log.debug("Ignoring event " + event + " it is from this mmbase");
+            log.debug("Ignoring event " + event + " it is from this (" + event.getMachine() + ") mmbase");
             return;
         }
         if (event instanceof NodeEvent) {
