@@ -302,11 +302,40 @@ public class SearchUtil {
             NodeManager manager = cloud.getNodeManager(type);
             set.add(new Integer(manager.getNumber()));
         }
-        FieldValueInConstraint constraint = query.createConstraint(query.getStepField(field), set);
-        addConstraint(query, constraint);
+        addInConstraint(query, field, set);
+    }
+
+    public static void addNodesConstraints(Query query, Field field, NodeList nodes) {
+        SortedSet set = new TreeSet();
+        for (Iterator iter = nodes.iterator(); iter.hasNext();) {
+            Node node = (Node) iter.next();
+            set.add(new Integer(node.getNumber()));
+        }
+        addInConstraint(query, field, set);
     }
     
-    public static void addConstraint(NodeQuery query, Constraint constraint) {
+    public static void addInConstraint(Query query, Field field, SortedSet set) {
+        query.getStep(field.getNodeManager().getName());
+        StepField stepfield = getStepField(query, field);        
+        FieldValueInConstraint constraint = query.createConstraint(stepfield, set);
+        addConstraint(query, constraint);
+    }
+
+    public static StepField getStepField(Query query, Field field) {
+        StepField stepfield = null;
+        Iterator fields = query.getFields().iterator();
+        while(fields.hasNext()) {
+            StepField tempStepField = (StepField) fields.next();
+            if (tempStepField.getFieldName().equals(field.getName())) {
+                if (tempStepField.getStep().getAlias().equals(field.getNodeManager().getName())) {
+                    stepfield = tempStepField;
+                }
+            }
+        }
+        return stepfield;
+    }
+    
+    public static void addConstraint(Query query, Constraint constraint) {
         if (query.getConstraint() == null) {
             query.setConstraint(constraint);
         }
