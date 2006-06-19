@@ -66,7 +66,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: SizeOf.java,v 1.16 2006-02-20 16:18:09 michiel Exp $
+ * @version $Id: SizeOf.java,v 1.17 2006-06-19 05:57:57 michiel Exp $
  * @todo   We need to know how well this actually works...
  */
 public class SizeOf {
@@ -103,6 +103,7 @@ public class SizeOf {
     }
 
     /**
+     * Makes this SizeOf object ready for reuse.
      * @since MMBase-1.8
      */
     public void clear() {
