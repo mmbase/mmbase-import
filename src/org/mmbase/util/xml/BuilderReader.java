@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.68 2006-06-15 13:33:45 pierre Exp $
+ * @version $Id: BuilderReader.java,v 1.69 2006-06-19 16:17:12 pierre Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -599,19 +599,20 @@ public class BuilderReader extends DocumentReader {
             String guiType = getElementValue(guiTypeElement);
             if (!guiType.equals("")) {
                 if (guiType.indexOf('.') != -1) {
-                    // apparently, this is a class path, which means it is an enumeration
+                    // apparently, this is a class path, which means it is probably an enumeration
+                    // (if not, what else?)
                     dataType = (BasicDataType) baseDataType.clone();
                     dataType.getEnumerationFactory().addBundle(guiType, getClass().getClassLoader(), null, dataType.getTypeAsClass(), null);
                 } else {
                     // The guitype is deprecated. Normally coincides with datatype's id.
-                    // 'string' is an exception, it is surrogated with the datatype 'line'.
+                    // The following are exceptions:
+                    // 'string' is surrogated with the datatype 'line'.
                     if ("string".equals(guiType)) {
                         guiType = "line";
                         if (log.isDebugEnabled()) {
                             log.debug("Converted deprecated guitype 'string' for field " + (builder != null ? builder.getTableName() + "."  : "") + fieldName + " with datatype 'line'.");
                         }
                     }
-                    // TODO check for builder names when the type is NODE
                     dataType = collector.getDataTypeInstance(guiType, baseDataType);
                     if (dataType == null) {
                         log.warn("Could not find data type for " + baseDataType + " / " + guiType + " for builder: '" + builder.getTableName() + "'");
@@ -624,7 +625,7 @@ public class BuilderReader extends DocumentReader {
 
         if (dataTypeElement != null) {
             if (dataType != null) {
-                log.warn("Using both deprecated 'gui/guitime' and 'datatype' subelements in field tag for field '" + fieldName + "', ignoring the first one.");
+                log.warn("Using both deprecated 'gui/guitype' and 'datatype' subelements in field tag for field '" + fieldName + "', ignoring the first one.");
             }
             BasicDataType requestedBaseDataType; // pointer to the original field's datatype which will be used as a base.
             String base = dataTypeElement.getAttribute("base");
@@ -640,15 +641,22 @@ public class BuilderReader extends DocumentReader {
                     requestedBaseDataType = baseDataType;
                 }
             }
-
             dataType = (BasicDataType) DataTypeReader.readDataType(dataTypeElement, requestedBaseDataType, collector).dataType;
             log.debug("Found datatype " + dataType + " for field " + fieldName);
         }
 
+        // try to resolve any issues where the datatype differs from the database type
+        if (dataType!= null && !baseDataType.getClass().isAssignableFrom(dataType.getClass())) {
+            // the thus configured datatype is not compatible with the database type.
+            // Fix that as good as possible:
+            BasicDataType newDataType = (BasicDataType) dataType.clone();
+            newDataType.inherit(baseDataType);
+            log.debug("" + dataType + " in '" + getSystemId() + "' field " + fieldName + " is not compatible with " + baseDataType + ". Cloning and inheriting to support gracefull fall backs -> " + newDataType);
+            dataType = newDataType;
+        }
 
         if (dataType == null && forceInstance) {
             // DataType is null if no data type element was found
-            // I'm not sure if also  if DataTypeReadreadDataType failed somehow (it not so, this could be in the 'else' of the above 'if' and be easier to see.)
             dataType = (BasicDataType) baseDataType.clone(""); // clone with empty id
         }
 
