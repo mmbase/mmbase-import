@@ -26,7 +26,7 @@ import org.mmbase.util.xml.UtilReader;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: Multicast.java,v 1.5 2006-02-10 15:50:00 michiel Exp $
+ * @version $Id: Multicast.java,v 1.6 2006-06-19 06:05:30 michiel Exp $
  */
 public class Multicast extends ClusterManager {
 
@@ -50,7 +50,7 @@ public class Multicast extends ClusterManager {
     private int multicastTTL = 1;
 
     /** Datapacket receive size */
-    private int dpsize = 64*1024;
+    private int dpsize = 64 * 1024;
 
     /** Sender which reads the nodesToSend Queue amd puts the message on the line */
     private ChangesSender mcs;
@@ -58,39 +58,55 @@ public class Multicast extends ClusterManager {
     private ChangesReceiver mcr;
 
     /**
+     * @since MMBase-1.8.1
+     */
+    private final Map configuration = new UtilReader(CONFIG_FILE,
+                                                     new Runnable() {
+                                                         public void run() {
+                                                             stopCommunicationThreads();
+                                                             readConfiguration();
+                                                             startCommunicationThreads();
+                                                         }
+                                                     }).getProperties();
+
+    /**
      * @see org.mmbase.module.core.MMBaseChangeInterface#init(org.mmbase.module.core.MMBase)
      */
 
     public Multicast(){
+        readConfiguration();
+        start();
+    }
 
-        UtilReader reader = new UtilReader(CONFIG_FILE);
-        Map properties = reader.getProperties();
-
-        String tmp = (String) properties.get("spawnthreads");
+    /**
+     * @since MMBase-1.8.1
+     */
+    protected void readConfiguration() {
+        String tmp = (String) configuration.get("spawnthreads");
         if (tmp != null && !tmp.equals("")) {
             spawnThreads = !"false".equalsIgnoreCase(tmp);
         }
 
-        tmp = (String) properties.get("multicastport");
+        tmp = (String) configuration.get("multicastport");
         if (tmp != null && !tmp.equals("")) {
             try {
                 multicastPort = Integer.parseInt(tmp);
             } catch (Exception e) {}
         }
 
-        tmp = (String) properties.get("multicasthost");
+        tmp = (String) configuration.get("multicasthost");
         if (tmp != null && !tmp.equals("")) {
             multicastHost = tmp;
         }
 
-        tmp = (String) properties.get("multicastTTL");
+        tmp = (String) configuration.get("multicastTTL");
         if (tmp != null && !tmp.equals("")) {
             try {
                 multicastTTL = Integer.parseInt(tmp);
             } catch (Exception e) {}
         }
 
-        tmp = (String) properties.get("dpsize");
+        tmp = (String) configuration.get("dpsize");
         if (tmp != null && !tmp.equals("")) {
             try {
                 dpsize = Integer.parseInt(tmp);
@@ -101,9 +117,8 @@ public class Multicast extends ClusterManager {
                  ", port: " + multicastPort + 
                  ", TTL: " + multicastTTL + 
                  ", datapacketsize: " + dpsize);
-        start();
-    }
 
+    }
 
     protected void startCommunicationThreads() {
         mcs = new ChangesSender(multicastHost, multicastPort, multicastTTL, nodesToSend);
