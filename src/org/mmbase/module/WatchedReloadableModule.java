@@ -17,13 +17,14 @@ import org.mmbase.util.ResourceWatcher;
  *
  * @author   Michiel Meeuwissen
  * @since    MMBase-1.8
- * @version  $Id: WatchedReloadableModule.java,v 1.3 2005-01-30 16:46:37 nico Exp $
+ * @version  $Id: WatchedReloadableModule.java,v 1.4 2006-06-19 08:38:59 michiel Exp $
  */
 public abstract class WatchedReloadableModule extends ReloadableModule {
 
     private ResourceWatcher configWatcher = new ResourceWatcher() {
             public void onChange(String resource) {
-                if (reloadConfiguration(resource)) {
+                // resource parameter can be ignored, because it inconveniently contains ".xml".
+                if (reloadConfiguration(getName())) {
                     reload();
                 }
             }
