@@ -40,7 +40,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.28 2006-05-16 22:13:55 michiel Exp $
+ * @version $Id: DocumentReader.java,v 1.29 2006-06-19 05:53:58 michiel Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
@@ -86,7 +86,7 @@ public class DocumentReader  {
     /**
      * Whether to validate given a request for that. So, the request is followed, unless it is configured to 'never' validate.
      * @since MMBase-1.8
-     */    
+     */
     protected static final boolean validate(boolean requested) {
         Object validate = utilProperties == null ? null : utilProperties.get("validate");
         if (validate != null && validate.equals("never")) return false;
@@ -345,7 +345,10 @@ public class DocumentReader  {
      * separated list of regular expressions.  If the the child matches the last element of the
      * path, then the child is appended after similer childs, if not, then it will be appended
      * before them.
-     * 
+     *
+     * @param parent The parent element, to which a new child will be added
+     * @param newChild this new child
+     * @param path The beforementioned comma separated list of regexps. See also {@link java.util.regex.Pattern};
      * @since MMBase-1.8
      */
     static public void appendChild(Element parent, Element newChild, String path) {
@@ -354,7 +357,7 @@ public class DocumentReader  {
         Node refChild = null;
         NodeList childs = parent.getChildNodes();
         int j = 0;
-        Pattern pattern = null; 
+        Pattern pattern = null;
         if (p.length > 0) pattern = Pattern.compile("\\A" + p[i] + "\\z");
         boolean matching = false;
         while (j < childs.getLength() && i < p.length) {
@@ -549,7 +552,7 @@ public class DocumentReader  {
         boolean ignoretag = tag.equals("*");
         if (e!=null) {
             NodeList nl = e.getChildNodes();
-            for (int i=0;i<nl.getLength();i++) {
+            for (int i = 0; i < nl.getLength(); i++) {
                 Node n = nl.item(i);
                 if (n.getNodeType() == Node.ELEMENT_NODE &&
                     (ignoretag ||
@@ -566,7 +569,7 @@ public class DocumentReader  {
             System.out.println("Usage: java -Dmmbase.config=<config dir> org.mmbase.util.xml.DocumentReader <path to xml>");
             System.out.println(" The mmbase config dir is used to resolve XSD's (in config/xmlns) and DTD's (in config/dtd).");
             System.out.println(" Errors will be reported if the XML is invalid");
-            
+
             return;
         }
         Document d = org.mmbase.util.ResourceLoader.getDocument(new java.io.File(argv[0]).toURL(), true, null);

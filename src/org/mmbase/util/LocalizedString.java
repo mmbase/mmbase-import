@@ -17,22 +17,22 @@ import org.w3c.dom.*;
 /**
  *<p>
  * A String which is localized. There are two mechanisms to find and provide translations: They can
- * explicitely be set with {@link #set} (e.g. during parsing an XML), or a resource bundle can be
+ * explicitely be set with {@link #set} (e.g. during parsing an XML), or a resource-bundle can be
  * associated with {@link #setBundle}, which will be used to find translations based on the key of
  * this object.
  *</p>
  *<p>
  * The 'set' mechanism can also be driven by {@link #fillFromXml}, which provides a sensible way to fill the LocalizedString with
- * setting from a sub element of XML's.
+ * setting from a sub element of XMLs.
  *</p>
  *<p>
  * The idea is that objects of this type can be used in stead of normal String objects, for error
- * messages, descriptions and other texts which need localization (e.g. because they are exposed to 
+ * messages, descriptions and other texts which need localization (e.g. because they are exposed to
  * end-users).
  *</p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedString.java,v 1.22 2006-05-16 21:09:59 michiel Exp $
+ * @version $Id: LocalizedString.java,v 1.23 2006-06-19 05:57:24 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedString implements java.io.Serializable, Cloneable {
@@ -50,7 +50,7 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
      *
      * So, this function can be called only once. Calling it the second time will not do
      * anything. It returns the already set default locale then, which should probably prompt you to log an error
-     * a throw an exception or so. Otherwise it returns <code>null</code> indicating that the
+     * or throw an exception or so. Otherwise it returns <code>null</code> indicating that the
      * default locale is now what you just set.
      */
     public static Locale setDefault(Locale locale) {
@@ -81,7 +81,6 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
         return res;
     }
 
-    //    private final String key; cannot be final if cloneable: java sucks.
     private String key;
 
     private Map    values = null;
@@ -89,7 +88,6 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
 
     // just for the contract of Serializable
     protected LocalizedString() {
-
     }
 
     /**
@@ -139,9 +137,9 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
                 if (result != null) return result;
             }
 
-            // Some LocalizedString isntances may have a default value stored with the key 'null'
+            // Some LocalizedString instances may have a default value stored with the key 'null'
             // instead of the locale from MMBase. This is the case for values stored while the
-            // MMBase module was not yet active
+            // MMBase module was not yet active.
             // This code 'fixes' that reference.
             // It's not nice, but as a proper fix likely requires a total rewrite of Module.java and
             // MMBase.java, this will have to do for the moment.
@@ -158,8 +156,10 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
             try {
                 return ResourceBundle.getBundle(bundle, locale).getString(key);
             } catch (MissingResourceException mre) {
-                // fall back to key, invalidate bundle, and log error
-                log.debug("Cannot get resource from bundle: " + bundle + ", key: " + key);
+                // fall back to key.
+                if (log.isDebugEnabled()) {
+                    log.debug("Cannot get resource from bundle: " + bundle + ", key: " + key);
+                }
             }
         }
 
@@ -203,7 +203,8 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
     }
 
     /**
-     * Locale -> description
+     * Returns a Map representation of the localisation setting represented by this
+     * LocalizedString. It is an unmodifiable mapping: Locale -> localized value.
      */
     public Map asMap() {
         if (values == null) return Collections.EMPTY_MAP;
@@ -230,9 +231,11 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
     }
 
 
-
     /**
      * This utility takes care of reading the xml:lang attribute from an element
+     * @param element a DOM element
+     * @return A {@link java.util.Locale} object, or <code>null</code> if the element did not have,
+     * or had an emnpty, xml:lang attribute
      */
     public static Locale getLocale(Element element) {
         Locale loc = null;
@@ -252,7 +255,10 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
 
 
     /**
-     * This utility determines value of an xml:lang attribute.
+     * This utility determines value of an xml:lang attribute. So, given a {@link java.util.Locale}
+     * it produces a String.
+     * @param locale A java locale
+     * @return A string that can be used as the value for an XML xml:lang attribute.
      * @since MMBase-1.8.1
      */
     public static String getXmlLang(Locale locale) {
@@ -268,8 +274,11 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
         }
         return lang.toString();
     }
+
     /**
      * This utility takes care of setting the xml:lang attribute on an element.
+     * @param element Element on which th xml:lang attribute is going to be set
+     * @param locale  Java's Locale object
      * @since MMBase-1.8.1
      */
     public static void setXmlLang(Element element, Locale locale) {
@@ -299,11 +308,21 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
     }
 
     /**
+     * Writes this LocalizedString object back to an XML, i.e. it searches for and creates
+     * sub-elements (identified by xml:lang attributes) of a certain given parent element, and sets
+     * the node-text-value of those elements corresponding to the locale.
+     * @param tagName Tag-name of the to be used sub-elements
+     * @param ns      Namespace of the to be created sub-elements, or <code>null</code>
+     * @param element The parent element which must contain the localized elements.
+     * @param path    A comma separated list of names of tags which must skipped, before appending
+     * childs. See {@link org.mmbase.util.xml.DocumentReader#appendChild(Element, Element, String)}.
+     *
      * @since MMBase-1.8.1
      */
     public void toXml(final String tagName, final String ns, final Element element, final String path) {
-        if (values != null) {
-            // what there is already:
+        if (values != null) { // if no explicit values, nothing can be done
+
+            // what if there are corresponding elements already:
             org.w3c.dom.NodeList nl  = element.getElementsByTagName(tagName);
             Iterator i = values.entrySet().iterator();
             while (i.hasNext()) {
