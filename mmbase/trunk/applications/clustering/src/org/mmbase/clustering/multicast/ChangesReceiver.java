@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: ChangesReceiver.java,v 1.10 2006-04-12 14:47:28 pierre Exp $
+ * @version $Id: ChangesReceiver.java,v 1.11 2006-06-19 16:20:31 michiel Exp $
  */
 public class ChangesReceiver implements Runnable {
 
@@ -64,8 +64,7 @@ public class ChangesReceiver implements Runnable {
         this.nodesToSpawn = nodesToSpawn;
         try {
             this.ia = InetAddress.getByName(multicastHost);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error(Logging.stackTrace(e));
         }
         this.start();

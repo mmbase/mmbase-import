@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: ChangesSender.java,v 1.7 2006-04-02 11:59:38 michiel Exp $
+ * @version $Id: ChangesSender.java,v 1.8 2006-06-19 16:20:31 michiel Exp $
  */
 public class ChangesSender implements Runnable {
 
@@ -128,8 +128,8 @@ public class ChangesSender implements Runnable {
                     }
                     ms.send(dp);
                 } catch (IOException e) {
-                    log.error("can't send message" + dp);
-                    log.error(Logging.stackTrace(e));
+                    log.error("can't send message" + dp + " to " + ia + ":" + mport);
+                    log.error(e.getMessage(), e);
                 }
                 outcount++;
             } catch (InterruptedException e) {

@@ -30,12 +30,11 @@ import org.mmbase.util.logging.Logging;
  * @author Rico Jansen
  * @author Nico Klasens
  * @author Costyn van Dongen
- * @version $Id: ChangesSender.java,v 1.3 2005-11-30 15:58:03 pierre Exp $
+ * @version $Id: ChangesSender.java,v 1.4 2006-06-19 16:20:31 michiel Exp $
  */
 public class ChangesSender implements Runnable {
 
-    /** MMbase logging system */
-    private static Logger log = Logging.getLoggerInstance(ChangesSender.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(ChangesSender.class);
 
     /** counter of send messages */
     private int outcount = 0;
@@ -44,10 +43,10 @@ public class ChangesSender implements Runnable {
     private Thread kicker = null;
 
     /** Queue with messages to send to other MMBase instances */
-    private Queue nodesToSend;
+    private final Queue nodesToSend;
 
     /** Channel to send messages on */
-    private JChannel channel = null;
+    private final JChannel channel ;
 
     /** Construct MultiCast Sender
      * @param channel Channel on which to send messages
@@ -62,7 +61,7 @@ public class ChangesSender implements Runnable {
     /**
      * Start thread
      */
-    public void start() {
+    private void start() {
         /* Start up the main thread */
         if (kicker == null) {
             kicker = MMBaseContext.startThread(this, "MulticastSender");
@@ -73,10 +72,15 @@ public class ChangesSender implements Runnable {
     /**
      * Stop thread
      */
-    public void stop() {
+    void stop() {
         /* Stop thread */
-        kicker.setPriority(Thread.MIN_PRIORITY);
-        kicker = null;
+        if (kicker != null) {
+            kicker.setPriority(Thread.MIN_PRIORITY);
+            kicker.interrupt();
+            kicker = null;
+        } else {
+            log.service("Cannot stop thread, because it is null");
+        }
     }
 
     /**
@@ -99,22 +103,26 @@ public class ChangesSender implements Runnable {
      * @todo check what encoding to use for getBytes()
      */
     private void doWork() {
-
-        Message msg = null;
-        byte[] message = null;
-
         while(kicker != null) {
             try {
-                message = (byte[]) nodesToSend.get();
-                msg = new Message(null, null, message);
+                if (channel == null || (! channel.isConnected())) {
+                    log.warn("Channel " + channel + " not connected. Sleeping for 5 s.");
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException ie) {
+                    }
+                    continue;
+                }
+
+                byte[] message = (byte[]) nodesToSend.get();
+                Message msg = new Message(null, null, message);
                 try {
                     if (log.isDebugEnabled()) {
                         log.debug("SEND=>" + message);
                     }
                     channel.send(msg);
                 } catch (ChannelException e) {
-                    log.error("Can't send message" + message);
-                    log.error(Logging.stackTrace(e));
+                    log.error("Can't send message" + message + ": " + e.getMessage(), e);
                 }
                 outcount++;
             } catch (InterruptedException e) {
