@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * which means that chanegs are committed only if you commit the transaction itself.
  * This mechanism allows you to rollback changes if something goes wrong.
  * @author Pierre van Rooden
- * @version $Id: BasicTransaction.java,v 1.23 2006-04-27 11:58:42 michiel Exp $
+ * @version $Id: BasicTransaction.java,v 1.24 2006-06-19 14:16:21 nklasens Exp $
  */
 public class BasicTransaction extends BasicCloud implements Transaction {
 
@@ -205,6 +205,18 @@ public class BasicTransaction extends BasicCloud implements Transaction {
     }
     public boolean isCommitted() {
         return committed;
+    }
+
+    /**
+     * @see org.mmbase.bridge.Transaction#getCloudName()
+     */
+    public String getCloudName() {
+        if (parentCloud instanceof Transaction) {
+            return ((Transaction) parentCloud).getCloudName();
+        }
+        else {
+            return parentCloud.getName();
+        }
     }
 }
 
