@@ -6,7 +6,7 @@
     <title>begindatum- en einddatum binnen project</title>
     <item>
         <title></title>
-        <field name="name" ftype="data">
+        <field name="titel" ftype="data">
             <prompt>Naam</prompt>
         </field>
         <field fdatapath="field[@name=&apos;begindate&apos;]" ftype="date"><prompt>Aanvangsdatum</prompt></field>
@@ -17,11 +17,11 @@
             <object type="projects" />
         </relation>
     </action>    
-    <command name="search" nodepath="phases" fields="name" orderby="name" age="-1">
+    <command name="search" nodepath="phases" fields="titel" orderby="titel" age="-1">
         <prompt>zoek project</prompt>
         <search-filter>
             <name>naam bevat</name>
-            <search-fields>name</search-fields>
+            <search-fields>titel</search-fields>
         </search-filter>
     </command>
 </list>
