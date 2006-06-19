@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Function;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.57 2006-05-17 15:20:38 nklasens Exp $
+ * @version $Id: Cloud.java,v 1.58 2006-06-19 14:16:21 nklasens Exp $
  */
 public interface Cloud {
 
@@ -646,6 +646,5 @@ public interface Cloud {
      * @since   MMBase-1.8
      */
     public RelationManagerList createRelationManagerList();
-
 
 }

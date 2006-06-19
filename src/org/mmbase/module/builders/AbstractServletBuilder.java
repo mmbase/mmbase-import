@@ -30,7 +30,7 @@ import org.mmbase.security.Rank;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.38 2006-02-20 17:37:11 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.39 2006-06-19 14:16:21 nklasens Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -439,7 +439,14 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                             // - node not readable by anonymous
                             // - no anonymous user defined
                             try{
-                                Cloud anonymousCloud = cloud.getCloudContext().getCloud(cloud.getName());
+                                String cloudName;
+                                if (cloud instanceof Transaction) {
+                                    cloudName = ((Transaction) cloud).getCloudName();
+                                }
+                                else {
+                                    cloudName = cloud.getName();
+                                }
+                                Cloud anonymousCloud = cloud.getCloudContext().getCloud(cloudName);
                                 if (! anonymousCloud.mayRead(node.getNumber())) {
                                     session = (String) cloud.getProperty(Cloud.PROP_SESSIONNAME);
                                 }
