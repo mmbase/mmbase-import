@@ -202,6 +202,7 @@
       <relation from="pagina" to="programs" type="posrel"/>
       <relation from="pagina" to="shorty" type="rolerel"/>
       <relation from="pagina" to="teaser" type="rolerel"/>
+		<relation from="pagina" to="terms" type="contentrel"/>
       <relation from="pagina" to="users" type="rolerel"/>
       <relation from="paginatemplate" to="editwizards" type="related"/> 
       <relation from="paragraaf" to="attachments" type="posrel"/> 
