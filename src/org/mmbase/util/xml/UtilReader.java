@@ -34,7 +34,7 @@ import org.w3c.dom.Element;
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.21 2006-06-19 05:55:28 michiel Exp $
+ * @version $Id: UtilReader.java,v 1.22 2006-06-19 17:23:32 michiel Exp $
  */
 public class UtilReader {
 
@@ -135,8 +135,6 @@ public class UtilReader {
         watcher.start();
 
     }
-
-
     /**
      * Produces a UtilReader for the given resource name.
      * @param resourceName a Resource name relative to config/utils
@@ -152,6 +150,9 @@ public class UtilReader {
              );
     }
 
+    public void finalize() {
+        if (watcher != null) watcher.exit();
+    }
 
     /**
      * Get the properties of this utility.
