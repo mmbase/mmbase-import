@@ -14,6 +14,7 @@
                <field name="titel">indexed.text</field>
                <field name="description">indexed.text</field>
                <field name="filename">indexed.text</field>
+               <field name="handle" type="binary">indexed.text</field>
             </related>
             <related name="link">
                <field name="titel">indexed.text</field>
