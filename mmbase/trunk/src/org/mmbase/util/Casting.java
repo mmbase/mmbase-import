@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.86 2006-02-20 16:17:11 michiel Exp $
+ * @version $Id: Casting.java,v 1.87 2006-06-19 13:01:54 pierre Exp $
  */
 
 import java.util.*;
@@ -732,7 +732,7 @@ public class Casting {
                     }else if(((String)i).toLowerCase().equals(("false"))){
                         res = 0;
                     }
-                }    
+                }
             }
         }
         return res;
@@ -781,7 +781,7 @@ public class Casting {
                     }else if(((String)i).toLowerCase().equals(("false"))){
                         res = 0;
                     }
-                }    
+                }
             }
         }
         return res;
@@ -843,6 +843,10 @@ public class Casting {
                 }
                 if (dateInSeconds == -1) {
                     date = new Date(-1);
+                } else if (dateInSeconds > Long.MAX_VALUE / 1000) {
+                    date = new Date(Long.MAX_VALUE); // or should this throw an exception?
+                } else if (dateInSeconds < Long.MIN_VALUE / 1000) {
+                    date = new Date(Long.MIN_VALUE); // or should this throw an exception?
                 } else {
                     date = new Date(dateInSeconds * 1000);
                 }
@@ -858,9 +862,7 @@ public class Casting {
             }
         }
         return date;
-
     }
-
 
     static DocumentBuilder DOCUMENTBUILDER;
     static {
