@@ -66,8 +66,11 @@
 	}
 	TreeSet tsRubrieks = new TreeSet();
 	boolean isEventUser = false;
-	String sNatuurinNumber = cloud.getNode("natuurin_rubriek").getStringValue("number");
+	String sNatuurinNumber = "";
 	%>
+<mm:node number="natuurin_rubriek" notfound="skipbody" jspvar="natmmEventsRubriek">
+ <% sNatuurinNumber = natmmEventsRubriek.getStringValue("number"); %>
+</mm:node>
 <mm:listnodes type="users" constraints="<%= "[account]='" + cloud.getUser().getIdentifier() + "'" %>" max="1" id="thisuser">
    <mm:related path="rolerel,rubriek">
       <mm:field name="rubriek.number" jspvar="rubriek_number" vartype="String" write="false">
