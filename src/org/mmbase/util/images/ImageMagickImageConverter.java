@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Nico Klasens
  * @author Jaco de Groot
- * @version $Id: ImageMagickImageConverter.java,v 1.3 2006-02-14 22:53:34 michiel Exp $
+ * @version $Id: ImageMagickImageConverter.java,v 1.4 2006-06-19 14:15:13 nklasens Exp $
  */
 public class ImageMagickImageConverter implements ImageConverter {
     private static final Logger log = Logging.getLoggerInstance(ImageMagickImageConverter.class);
@@ -52,12 +52,6 @@ public class ImageMagickImageConverter implements ImageConverter {
         String converterRoot = "";
         String converterCommand = "convert";
 
-        if(System.getProperty("os.name") != null && System.getProperty("os.name").startsWith("Windows")) {
-            // on the windows system, we _can_ assume the it uses .exe as extention...
-            // otherwise the check on existance of the program will fail.
-            converterCommand += ".exe";
-        }
-
         String tmp;
         tmp = (String) params.get("ImageConvert.ConverterRoot");
         if (tmp != null && ! tmp.equals("")) {
@@ -69,6 +63,13 @@ public class ImageMagickImageConverter implements ImageConverter {
             converterCommand = tmp;
         }
 
+        if(System.getProperty("os.name") != null && System.getProperty("os.name").startsWith("Windows")) {
+            // on the windows system, we _can_ assume the it uses .exe as extention...
+            // otherwise the check on existance of the program will fail.
+            if (!converterCommand.endsWith(".exe")) {
+                converterCommand += ".exe";
+            }
+        }
 
         String configFile = params.get("configfile").toString();
         if (configFile == null) configFile = "images builder xml";
@@ -115,7 +116,12 @@ public class ImageMagickImageConverter implements ImageConverter {
             if (tokenizer.hasMoreTokens()) {
                 log.service("Will use: " + converterPath + ", " + tokenizer.nextToken());
             } else {
-                log.error( "converter from location " + converterPath + ", gave strange result: " + outputStream.toString()
+                String result = outputStream.toString();
+                if (result == null || "".equals(result)) {
+                    result = errorStream.toString();
+                }
+                
+                log.error( "converter from location " + converterPath + ", gave strange result: " + result 
                            + "conv.root='" + converterRoot + "' conv.command='" + converterCommand + "'");
             }
         } catch (ProcessException e) {
