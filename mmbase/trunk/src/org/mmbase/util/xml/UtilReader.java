@@ -11,6 +11,7 @@ package org.mmbase.util.xml;
 
 import java.util.*;
 import java.net.URL;
+import java.io.IOException;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import org.w3c.dom.Element;
@@ -33,7 +34,7 @@ import org.w3c.dom.Element;
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.20 2006-01-17 12:25:21 michiel Exp $
+ * @version $Id: UtilReader.java,v 1.21 2006-06-19 05:55:28 michiel Exp $
  */
 public class UtilReader {
 
@@ -98,8 +99,9 @@ public class UtilReader {
         }
     }
 
-    private Map properties;
-    private ResourceWatcher watcher;
+    private final Map properties = new HashMap();
+    private final ResourceWatcher watcher;
+    private final String file;
 
 
     /**
@@ -109,11 +111,12 @@ public class UtilReader {
      * @param fileName The name of the property file (e.g. httppost.xml).
      */
     public UtilReader(String fileName) {
-        String file = CONFIG_UTILS + "/" + fileName;
+        file = CONFIG_UTILS + "/" + fileName;
         readProperties(file);
         watcher = new UtilFileWatcher(null);
         watcher.add(file);
         watcher.start();
+
     }
     /**
      * Produces a UtilReader for the given resource name.
@@ -125,7 +128,7 @@ public class UtilReader {
      * @since MMBase-1.8
      */
     public UtilReader(String fileName, ResourceWatcher w) {
-        String file =  CONFIG_UTILS + "/" + fileName;
+        file =  CONFIG_UTILS + "/" + fileName;
         readProperties(file);
         watcher = new UtilFileWatcher(w);
         watcher.add(file);
@@ -157,12 +160,21 @@ public class UtilReader {
         return new PropertiesMap(properties);
     }
 
-    protected void readProperties(String s) {
-        if (properties == null) {
-            properties = new HashMap();
-        } else {
-            properties.clear();
+    /**
+     * Reports whether the configured resource (in the constructor) is actually backed. If not,
+     * getProperties will certainly return an empty Map.
+     * @since MMBase-1.8.1
+     */
+    public boolean resourceAvailable() {
+        try {
+            return ResourceLoader.getConfigurationRoot().getResource(file).openConnection().getDoInput();
+        } catch (IOException io) {
+            return false;
         }
+    }
+
+    protected void readProperties(String s) {
+        properties.clear();
 
         ResourceLoader configLoader = ResourceLoader.getConfigurationRoot();
         List configList = configLoader.getResourceList(s);
@@ -173,7 +185,7 @@ public class UtilReader {
             org.xml.sax.InputSource is;
             try {
                 is = ResourceLoader.getInputSource(url);
-            } catch (java.io.IOException ioe) {
+            } catch (IOException ioe) {
                 // input source does not exist
                 log.debug(ioe.getMessage() + " for " + url);
                 continue;
@@ -189,12 +201,12 @@ public class UtilReader {
                         String type = reader.getElementAttributeValue(p, "type");
                         if (type.equals("map")) {
                             Collection entryList = new ArrayList();
-                            
+
                             for (Iterator entriesIter = reader.getChildElements(p, "entry"); entriesIter.hasNext();) {
                                 Element entry = (Element) entriesIter.next();
                                 String key = null;
                                 String value = null;
-                                
+
                                 for (Iterator en = reader.getChildElements(entry, "*"); en.hasNext();) {
                                     Element keyorvalue = (Element) en.next();
                                     if (keyorvalue.getTagName().equals("key")) {
@@ -219,25 +231,28 @@ public class UtilReader {
                             } else {
                                 properties.put(name, value);
                             }
-                        }                        
+                        }
                     }
                 }
             } else {
                 log.debug("Resource " + s + " does not exist");
             }
         }
+        if (properties.size() == 0) {
+            log.warn("No properties read from " + configList);
+        }
     }
-            
+
     /**
      * A unmodifiable Map, with extra 'Properties'-like methods. The entries of this Map are
      * typically backed by the resources of an UtilReader (and the Map dynamically changes if the
      * resources change).
      * @since MMBase-1.8
      */
-    
+
     public static class PropertiesMap extends AbstractMap {
 
-        private Map wrappedMap;
+        private final Map wrappedMap;
 
         /**
          * Creates an empty Map (not very useful since this Map is unmodifiable).
@@ -257,7 +272,7 @@ public class UtilReader {
          */
         public Set entrySet() {
             return new EntrySet();
-        
+
         }
 
         /**
@@ -274,7 +289,7 @@ public class UtilReader {
                 return PropertiesMap.this.wrappedMap.size();
             }
             public Iterator iterator() {
-                return new EntrySetIterator();                
+                return new EntrySetIterator();
             }
         }
         private class EntrySetIterator implements Iterator {
