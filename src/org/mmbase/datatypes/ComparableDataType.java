@@ -20,14 +20,14 @@ import org.mmbase.util.logging.*;
  * therefore can have a minimum and a maximum value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComparableDataType.java,v 1.17 2006-05-16 21:11:05 michiel Exp $
+ * @version $Id: ComparableDataType.java,v 1.18 2006-06-19 15:56:23 pierre Exp $
  * @since MMBase-1.8
  */
 public abstract class ComparableDataType extends BasicDataType {
 
     private static final Logger log = Logging.getLoggerInstance(ComparableDataType.class);
 
-    private static final long serialVersionUID = 1L; 
+    private static final long serialVersionUID = 1L;
 
     protected MinRestriction minRestriction  = new MinRestriction(true);
     protected MaxRestriction maxRestriction  = new MaxRestriction(true);
@@ -39,11 +39,26 @@ public abstract class ComparableDataType extends BasicDataType {
     protected void inheritRestrictions(BasicDataType origin) {
         super.inheritRestrictions(origin);
         if (origin instanceof ComparableDataType) {
-            ComparableDataType dataType = (ComparableDataType) origin;
-            minRestriction.inherit(dataType.minRestriction);
-            maxRestriction.inherit(dataType.maxRestriction);
+            ComparableDataType compOrigin = (ComparableDataType) origin;
+
+            Comparable currentMin = (Comparable)minRestriction.getValue();
+            // cast origin minimum type to new datatype type
+            Comparable originMin = (Comparable)cast(compOrigin.minRestriction.getValue(), null, null);
+            // Only apply the new min if it is higher
+            if (currentMin == null || (originMin != null &&  (currentMin.compareTo(originMin) < 0))) {
+                minRestriction.inherit(compOrigin.minRestriction, true);
+            }
+
+            Comparable currentMax = (Comparable)maxRestriction.getValue();
+            // cast origin maximum type to new datatype type
+            Comparable originMax = (Comparable)cast(compOrigin.maxRestriction.getValue(), null, null);
+            // Only apply the new max if it is lower
+            if (currentMax == null || (originMax != null &&  (currentMax.compareTo(originMax) > 0))) {
+                maxRestriction.inherit(compOrigin.maxRestriction, true);
+            }
         }
     }
+
     protected void cloneRestrictions(BasicDataType origin) {
         super.cloneRestrictions(origin);
         if (origin instanceof ComparableDataType) {
@@ -52,7 +67,6 @@ public abstract class ComparableDataType extends BasicDataType {
             maxRestriction  = new MaxRestriction(dataType.maxRestriction);
         }
     }
-
 
     /**
      */
@@ -125,7 +139,7 @@ public abstract class ComparableDataType extends BasicDataType {
         maxRestriction.setValue((java.io.Serializable) value);
     }
 
-    
+
     public void toXml(org.w3c.dom.Element parent) {
         super.toXml(parent);
         /* TODO
