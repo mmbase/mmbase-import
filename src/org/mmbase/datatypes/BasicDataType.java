@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.54 2006-06-14 08:02:26 nklasens Exp $
+ * @version $Id: BasicDataType.java,v 1.55 2006-06-19 13:05:51 pierre Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -262,7 +262,7 @@ s     */
 
     /**
      * This method implements 'precasting', which can be seen as a kind of datatype specific
-     * casting.  It should anticipated that every argument can be <code>null</code>. It should not
+     * casting.  It should anticipate that every argument can be <code>null</code>. It should not
      * change the actual type of the value.
      */
     protected Object preCast(Object value, Cloud cloud, Node node, Field field) {
@@ -338,7 +338,7 @@ s     */
 
     protected Element getElement(Element parent, String name, String path) {
         return getElement(parent, name, name, path);
-    }    
+    }
     protected Element getElement(Element parent, String pattern, String name, String path) {
         java.util.regex.Pattern p = java.util.regex.Pattern.compile("\\A" + pattern + "\\z");
         org.w3c.dom.NodeList nl  = parent.getChildNodes();
@@ -381,7 +381,7 @@ s     */
             } else {
                 element = (Element) nl.item(0);
             }
-            
+
             //element.setAttribute("value", Casting.toString(defaultValue));
         }
 
@@ -565,7 +565,7 @@ s     */
                     ||childElement.getLocalName().equals("datatype")
                     ) {
                     xml.removeChild(childElement);
-                } 
+                }
             }
         }
     }
@@ -936,11 +936,17 @@ s     */
 
         protected abstract boolean simpleValid(Object v, Node node, Field field);
 
-        protected final void inherit(StaticAbstractRestriction source) {
+        protected final void inherit(StaticAbstractRestriction source, boolean cast) {
             // perhaps this value must be cloned?, but how?? Cloneable has no public methods....
-            setValue(source.getValue());
+            Serializable inheritedValue = source.getValue();
+            if (cast) inheritedValue = (Serializable) parent.cast(inheritedValue, null, null);
+            setValue(inheritedValue);
             enforceStrength = source.getEnforceStrength();
             errorDescription = (LocalizedString) source.getErrorDescription().clone();
+        }
+
+        protected final void inherit(StaticAbstractRestriction source) {
+            inherit(source, false);
         }
 
         public int getEnforceStrength() {
