@@ -7,7 +7,7 @@
         <td><div><%
             for(char i='A'; i<='Z'; i++) {
                 String abcConstraints = "UPPER(terms.name) LIKE '" + i + "%'";
-                %><mm:list path="terms" constraints="<%= abcConstraints %>"
+                %><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,terms" constraints="<%= abcConstraints %>"
                     ><mm:first><%
 						if(abcId.indexOf(i)!=-1) {
 							%><%= i %>&nbsp;&nbsp;<%
