@@ -22,6 +22,7 @@ import org.mmbase.module.builders.Versions;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.security.MMBaseCop;
 import org.mmbase.storage.*;
+import org.mmbase.storage.search.RelationStep;
 import org.mmbase.model.*;
 import org.mmbase.storage.search.SearchQueryHandler;
 import org.mmbase.util.ResourceLoader;
@@ -45,7 +46,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.194 2006-05-18 10:53:32 michiel Exp $
+ * @version $Id: MMBase.java,v 1.195 2006-06-20 21:26:31 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -256,6 +257,7 @@ public class MMBase extends ProcessorModule {
         // this method is run
         mmbaseroot = this;
 
+
         // is there a basename defined in MMBASE.properties ?
         String tmp = getInitParameter("BASENAME");
         if (tmp != null) {
@@ -366,6 +368,8 @@ public class MMBase extends ProcessorModule {
 
         log.service("Initializing  builders:");
         initBuilders();
+
+        EventManager.getInstance().addEventListener(org.mmbase.cache.NodeCache.getCache());
 
         log.debug("Objects started");
 
@@ -1362,16 +1366,15 @@ public class MMBase extends ProcessorModule {
      * or both
      * @since MMBase-1.8
      */
-    public void addNodeRelatedEventsListener(String builder, org.mmbase.core.event.EventListener listener){
-        if(getBuilder(builder) != null){
+    public void addNodeRelatedEventsListener(String builder, org.mmbase.core.event.EventListener listener) {
+        MMObjectBuilder b = getBuilder(builder);
+        if(b != null){
             if(listener instanceof NodeEventListener){
-                TypedNodeEventListenerWrapper tnelr =
-                    new TypedNodeEventListenerWrapper(builder, (NodeEventListener)listener);
+                TypedNodeEventListenerWrapper tnelr = new TypedNodeEventListenerWrapper(b, (NodeEventListener)listener, true);
                 EventManager.getInstance().addEventListener(tnelr);
             }
             if(listener instanceof RelationEventListener){
-                TypedRelationEventListenerWrapper trelr =
-                    new TypedRelationEventListenerWrapper(builder, (RelationEventListener)listener);
+                TypedRelationEventListenerWrapper trelr = new TypedRelationEventListenerWrapper(b, (RelationEventListener)listener, RelationStep.DIRECTIONS_BOTH, true);
                 EventManager.getInstance().addEventListener(trelr);
             }
         }
@@ -1383,17 +1386,17 @@ public class MMBase extends ProcessorModule {
      * @param listener
      * @since MMBase-1.8
      */
-    public void removeNodeRelatedEventsListener(String builder, org.mmbase.core.event.EventListener listener){
-        if(getBuilder(builder) != null){
+    public void removeNodeRelatedEventsListener(String builder, org.mmbase.core.event.EventListener listener) {
+        MMObjectBuilder b = getBuilder(builder);
+        if(b != null){
             if(listener instanceof NodeEventListener){
-                TypedNodeEventListenerWrapper tnelr =
-                    new TypedNodeEventListenerWrapper(builder, (NodeEventListener)listener);
+                TypedNodeEventListenerWrapper tnelr = new TypedNodeEventListenerWrapper(b, (NodeEventListener)listener, true);
                 EventManager.getInstance().removeEventListener(tnelr);
             }
             if(listener instanceof RelationEventListener){
-                TypedRelationEventListenerWrapper trelr =
-                    new TypedRelationEventListenerWrapper(builder, (RelationEventListener)listener);
+                TypedRelationEventListenerWrapper trelr= new TypedRelationEventListenerWrapper(b, (RelationEventListener)listener, RelationStep.DIRECTIONS_BOTH, true);
                 EventManager.getInstance().removeEventListener(trelr);
+
             }
         }
     }
