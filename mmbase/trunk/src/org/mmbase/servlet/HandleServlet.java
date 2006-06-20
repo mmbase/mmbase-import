@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * specialized servlets. The mime-type is always application/x-binary, forcing the browser to
  * download.
  *
- * @version $Id: HandleServlet.java,v 1.26 2006-03-25 02:32:00 michiel Exp $
+ * @version $Id: HandleServlet.java,v 1.27 2006-06-20 20:20:15 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see ImageServlet
@@ -77,7 +77,7 @@ public class HandleServlet extends BridgeServlet {
         return "application/x-binary";
     }
 
-    
+
     protected static final Pattern legalizeFileName = Pattern.compile("[\\/\\:\\;\\\\\"]+");
 
     /**
@@ -161,7 +161,7 @@ public class HandleServlet extends BridgeServlet {
      * Sets cache-controlling headers. Only nodes which are to be served to 'anonymous' might be
      * (front proxy) cached. To other nodes there might be read restrictions, so they should not be
      * stored in front-proxy caches.
-     * 
+     *
      * @return true if cacheing is disabled.
      * @since MMBase-1.7
      */
@@ -215,14 +215,14 @@ public class HandleServlet extends BridgeServlet {
         }
         InputStream bytes = node.getInputStreamValue("handle");
 
-        
+
         //remove additional information left by PhotoShop 7 in jpegs
         //this information may crash Internet Exploder. that's why you need to remove it.
-        //With PS 7, Adobe decided by default to embed XML-encoded "preview" data into JPEG files, 
-        //using a feature of the JPEG format that permits embedding of arbitrarily-named "profiles". 
-        //In theory, these files are valid according to the JPEG specifications. 
-        //However they break many applications, including Quark and, significantly, 
-        //various versions of Internet Explorer on various platforms.         
+        //With PS 7, Adobe decided by default to embed XML-encoded "preview" data into JPEG files,
+        //using a feature of the JPEG format that permits embedding of arbitrarily-named "profiles".
+        //In theory, these files are valid according to the JPEG specifications.
+        //However they break many applications, including Quark and, significantly,
+        //various versions of Internet Explorer on various platforms.
 
         boolean canSendLength = true;
         if (mimeType.equals("image/jpeg") || mimeType.equals("image/jpg")) {
@@ -286,9 +286,10 @@ public class HandleServlet extends BridgeServlet {
             out.write(b);
             count++;
             b = bytes.read();
-        }        
+        }
         log.debug("ready wrote " + count + " bytes");
         out.flush();
+        out.close();
         bytes.close();
     }
 
