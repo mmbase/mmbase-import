@@ -41,7 +41,7 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Costyn van Dongen
  * @author Ronald Wildenberg
- * @version $Id: ChangesReceiver.java,v 1.4 2006-06-19 16:20:31 michiel Exp $
+ * @version $Id: ChangesReceiver.java,v 1.5 2006-06-20 08:05:53 michiel Exp $
  */
 public class ChangesReceiver implements Runnable {
 
@@ -61,17 +61,13 @@ public class ChangesReceiver implements Runnable {
      * @param channel channel on which to listen for and recieve messages.
      * @param nodesToSpawn Queue of received messages
      */
-    public ChangesReceiver(JChannel channel, Queue nodesToSpawn) {
+    ChangesReceiver(JChannel channel, Queue nodesToSpawn) {
         this.channel = channel;
         this.nodesToSpawn = nodesToSpawn;
         this.start();
     }
 
-    /**
-     * Start thread
-     */
     private void start() {
-        /* Start up the main thread */
         if (kicker == null) {
             kicker = new Thread(this, "MulticastReceiver");
             kicker.setDaemon(true);
@@ -80,11 +76,7 @@ public class ChangesReceiver implements Runnable {
         }
     }
 
-    /**
-     * Stop thread
-     */
     void stop() {
-        /* Stop thread */
         if (kicker != null) {
             kicker.setPriority(Thread.MIN_PRIORITY);
             kicker.interrupt();
@@ -94,27 +86,8 @@ public class ChangesReceiver implements Runnable {
         }
     }
 
-    /**
-     * Run thread
-     */
     public void run() {
-        try {
-            doWork();
-        } catch (Exception e) {
-            log.error(Logging.stackTrace(e));
-        }
-    }
-
-
-    /**
-     * Let the thread do his work
-     *
-     * @todo determine what encoding to use on receiving packages
-     */
-    public void doWork() {
-
       while (kicker != null) {
-
           if (channel == null ||  (! channel.isConnected())) {
               log.warn("Channel " + channel + " not connected. Sleeping for 5 s.");
               try {
@@ -139,67 +112,71 @@ public class ChangesReceiver implements Runnable {
              log.error("A timeout occurred while receiving a message. This should never happen, since we wait indefinitely: " + e.getMessage(), e);
          }
 
-         /* Handle the received object. */
-         if (receivedObject != null) {
-            if (receivedObject instanceof Message) {
-               Message message = (Message) receivedObject;
-               if (log.isDebugEnabled()) {
-                   log.debug("Received Message from: " + message.getSrc());
-                   log.debug("Message content:");
-                   Set headerKeySet = message.getHeaders().keySet();
-                   final Iterator headers = headerKeySet.iterator();
-                   while(headers.hasNext()) {
-                       log.debug(new String(" " +  message.getHeaders().get(headers.next())));
-                   }
-                   log.debug("message: " + message.getLength() + " bytes");
-                   if (log.isTraceEnabled()) {
-                       log.trace("      " + new String(message.getBuffer()));
-                   }
-               }
-               try {
-                  nodesToSpawn.append(message.getBuffer());
-               } catch (Exception ex) {
-                  log.error(ex);
-               }
-            } else if (receivedObject instanceof View) {
-               View view = (View) receivedObject;
-               log.info("Received View from: " + view.getCreator());
-               log.info("Current members of group:");
-
-               Vector members = view.getMembers() ;
-               for ( int i = 0 ; i < members.size() ; i++ ) {
-                  log.info("       " + members.elementAt(i) ) ;
-               }
-            } else if (receivedObject instanceof SuspectEvent) {
-               log.warn("Received SuspectEvent for member: " + ((SuspectEvent) receivedObject).getMember());
-            } else if (receivedObject instanceof ExitEvent) {
-               /* If an ExitEvent occurs, this means the channel is no longer open.
-                * Continuing to call JChannel.receive(0) inside this
-                * loop will result in throwing an enormous amount of
-                * ChannelClosedException's. Therefore, we wait until the channel is open again. */
-               log.warn("Received an ExitEvent. Going to wait until we automatically reconnect to the channel.");
-               log.info("Starting to wait at: " +
-                        new SimpleDateFormat("yyyyMMdd HH:mm:ss.SSS").format(new Date(System.currentTimeMillis())));
-               while (!(channel.isOpen() && channel.isConnected())) {
-                  try {
-                     Thread.sleep(10);
-                  } catch (InterruptedException e) {
-                     if (log.isServiceEnabled()) {
-                        log.service("Thread " + Thread.currentThread() + " ");
+         try {
+             /* Handle the received object. */
+             if (receivedObject != null) {
+                 if (receivedObject instanceof Message) {
+                     Message message = (Message) receivedObject;
+                     if (log.isDebugEnabled()) {
+                         log.debug("Received Message from: " + message.getSrc());
+                         log.debug("Message content:");
+                         Set headerKeySet = message.getHeaders().keySet();
+                         final Iterator headers = headerKeySet.iterator();
+                         while(headers.hasNext()) {
+                             log.debug(new String(" " +  message.getHeaders().get(headers.next())));
+                         }
+                         log.debug("message: " + message.getLength() + " bytes");
+                         if (log.isTraceEnabled()) {
+                             log.trace("      " + new String(message.getBuffer()));
+                         }
                      }
-                  }
-               }
-               log.info("Finished waiting at: " +
-                        new SimpleDateFormat("yyyyMMdd HH:mm:ss.SSS").format(new Date(System.currentTimeMillis())));
-               log.info("Channel open again. Current View:");
-               View view = channel.getView() ;
-               Vector members = view.getMembers() ;
-               for ( int i = 0 ; i < members.size() ; i++ ) {
-                  log.info("       " + members.elementAt(i) ) ;
-               }
-            } else {
-               log.warn("Unkown object recieved: " + receivedObject.toString());
-            }
+                     try {
+                         nodesToSpawn.append(message.getBuffer());
+                     } catch (Exception ex) {
+                         log.error(ex);
+                     }
+                 } else if (receivedObject instanceof View) {
+                     View view = (View) receivedObject;
+                     log.info("Received View from: " + view.getCreator());
+                     log.info("Current members of group:");
+
+                     Vector members = view.getMembers() ;
+                     for ( int i = 0 ; i < members.size() ; i++ ) {
+                         log.info("       " + members.elementAt(i) ) ;
+                     }
+                 } else if (receivedObject instanceof SuspectEvent) {
+                     log.warn("Received SuspectEvent for member: " + ((SuspectEvent) receivedObject).getMember());
+                 } else if (receivedObject instanceof ExitEvent) {
+                     /* If an ExitEvent occurs, this means the channel is no longer open.
+                      * Continuing to call JChannel.receive(0) inside this
+                      * loop will result in throwing an enormous amount of
+                      * ChannelClosedException's. Therefore, we wait until the channel is open again. */
+                     log.warn("Received an ExitEvent. Going to wait until we automatically reconnect to the channel.");
+                     log.info("Starting to wait at: " +
+                              new SimpleDateFormat("yyyyMMdd HH:mm:ss.SSS").format(new Date(System.currentTimeMillis())));
+                     while (!(channel.isOpen() && channel.isConnected())) {
+                         try {
+                             Thread.sleep(10);
+                         } catch (InterruptedException e) {
+                             if (log.isServiceEnabled()) {
+                                 log.service("Thread " + Thread.currentThread() + " ");
+                             }
+                         }
+                     }
+                     log.info("Finished waiting at: " +
+                              new SimpleDateFormat("yyyyMMdd HH:mm:ss.SSS").format(new Date(System.currentTimeMillis())));
+                     log.info("Channel open again. Current View:");
+                     View view = channel.getView() ;
+                     Vector members = view.getMembers() ;
+                     for ( int i = 0 ; i < members.size() ; i++ ) {
+                         log.info("       " + members.elementAt(i) ) ;
+                     }
+                 } else {
+                     log.warn("Unkown object recieved: " + receivedObject.toString());
+                 }
+             }
+         } catch (Exception e) {
+             log.error(e);
          }
       }
    }

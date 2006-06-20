@@ -26,7 +26,7 @@ import org.mmbase.util.xml.UtilReader;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: Multicast.java,v 1.6 2006-06-19 06:05:30 michiel Exp $
+ * @version $Id: Multicast.java,v 1.7 2006-06-20 08:05:53 michiel Exp $
  */
 public class Multicast extends ClusterManager {
 
@@ -60,34 +60,33 @@ public class Multicast extends ClusterManager {
     /**
      * @since MMBase-1.8.1
      */
-    private final Map configuration = new UtilReader(CONFIG_FILE,
-                                                     new Runnable() {
-                                                         public void run() {
-                                                             stopCommunicationThreads();
-                                                             readConfiguration();
-                                                             startCommunicationThreads();
-                                                         }
-                                                     }).getProperties();
+    private final UtilReader reader = new UtilReader(CONFIG_FILE,
+                                                            new Runnable() {
+                                                                public void run() {
+                                                                    synchronized(Multicast.this) {
+                                                                        stopCommunicationThreads();
+                                                                        readConfiguration(reader.getProperties());
+                                                                        startCommunicationThreads();
+                                                                    }
+                                                                }
+                                                            });
 
     /**
      * @see org.mmbase.module.core.MMBaseChangeInterface#init(org.mmbase.module.core.MMBase)
      */
 
     public Multicast(){
-        readConfiguration();
+        readConfiguration(reader.getProperties());
         start();
     }
 
     /**
      * @since MMBase-1.8.1
      */
-    protected void readConfiguration() {
-        String tmp = (String) configuration.get("spawnthreads");
-        if (tmp != null && !tmp.equals("")) {
-            spawnThreads = !"false".equalsIgnoreCase(tmp);
-        }
+    protected synchronized void readConfiguration(Map configuration) {
+        super.readConfiguration(configuration);
 
-        tmp = (String) configuration.get("multicastport");
+        String tmp = (String) configuration.get("multicastport");
         if (tmp != null && !tmp.equals("")) {
             try {
                 multicastPort = Integer.parseInt(tmp);
@@ -120,14 +119,22 @@ public class Multicast extends ClusterManager {
 
     }
 
-    protected void startCommunicationThreads() {
+    protected synchronized void startCommunicationThreads() {
         mcs = new ChangesSender(multicastHost, multicastPort, multicastTTL, nodesToSend);
         mcr = new ChangesReceiver(multicastHost, multicastPort, dpsize, nodesToSpawn);
     }
 
-    protected void stopCommunicationThreads() {
-        mcs.stop();
-        mcr.stop();
+    protected synchronized void stopCommunicationThreads() {
+        if (mcs != null) {
+            mcs.stop();
+            log.service("Stopped communication sender " + mcs);
+            mcs = null;
+        }
+        if (mcr != null) { 
+            mcr.stop();
+            log.service("Stopped communication receiver " + mcr);
+            mcr = null;
+        }
     }
 
 }

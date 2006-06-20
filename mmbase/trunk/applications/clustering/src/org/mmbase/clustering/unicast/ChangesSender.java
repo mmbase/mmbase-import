@@ -11,15 +11,12 @@ package org.mmbase.clustering.unicast;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.SocketTimeoutException;
-import java.util.List;
+import java.net.*;
+import java.util.*;
 
 import org.mmbase.module.builders.MMServers;
-import org.mmbase.module.core.MMBase;
-import org.mmbase.module.core.MMBaseContext;
-import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.core.*;
+
 import org.mmbase.util.Queue;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -30,11 +27,10 @@ import org.mmbase.util.logging.Logging;
  * sending queue over unicast connections
  *
  * @author Nico Klasens
- * @version $Id: ChangesSender.java,v 1.5 2006-03-30 11:23:53 pierre Exp $
+ * @version $Id: ChangesSender.java,v 1.6 2006-06-20 08:05:53 michiel Exp $
  */
 public class ChangesSender implements Runnable {
 
-    /** MMbase logging system */
     private static final Logger log = Logging.getLoggerInstance(ChangesSender.class);
 
     /** counter of send messages */
@@ -44,20 +40,21 @@ public class ChangesSender implements Runnable {
     private Thread kicker = null;
 
     /** Queue with messages to send to other MMBase instances */
-    private Queue nodesToSend;
+    private final Queue nodesToSend;
 
-    /** Port on which the talking between nodes take place.*/
-    private int unicastPort = 4243;
+    /** For the port on which the talking between nodes take place.*/
+    private final Map configuration;
+    private final int defaultUnicastPort;
 
     /** Timeout of the connection.*/
-    private int unicastTimeout = 10*1000;
+    private final int unicastTimeout;
 
-    /** List of active MMBase servers */
-    private List activeServers = null;
     /** last time the mmservers table was checked for active servers */
     private long lastServerChecked = -1;
+    private List activeServers = null;
+
     /** Interval of servers change their state */
-    private long serverInterval = -1;
+    private long serverInterval;
 
     /**
      * Construct UniCast Sender
@@ -66,77 +63,65 @@ public class ChangesSender implements Runnable {
      * @param nodesToSend Queue of messages to send
      * @param mmbase MMBase instance
      */
-    public ChangesSender(int unicastPort, int unicastTimeout, Queue nodesToSend) {
+    ChangesSender(Map configuration, int unicastPort, int unicastTimeout, Queue nodesToSend) {
         this.nodesToSend = nodesToSend;
-        this.unicastPort = unicastPort;
+        this.configuration = configuration;
+        this.defaultUnicastPort = unicastPort;
         this.unicastTimeout = unicastTimeout;
         this.start();
     }
 
-    /**
-     * Start thread
-     */
-    public void start() {
-        /* Start up the main thread */
+    private  void start() {
         if (kicker == null) {
             kicker = MMBaseContext.startThread(this, "UnicastSender");
             log.debug("UnicastSender started");
         }
     }
-
-    /**
-     * Stop thread
-     */
-    public void stop() {
-        /* Stop thread */
-        kicker.setPriority(Thread.MIN_PRIORITY);
-        kicker = null;
-    }
-
-    /**
-     * Run thread
-     */
-    public void run() {
-        try {
-            doWork();
-        } catch (Exception e) {
-            log.error(Logging.stackTrace(e));
+    void stop() {
+        if (kicker != null) {
+            kicker.interrupt();
+            kicker.setPriority(Thread.MIN_PRIORITY);
+            kicker = null;
+        } else {
+            log.service("Cannot stop thread, because it is null");
         }
     }
 
-    /**
-     * Let the thread do his work
-     *
-     * @todo check what encoding to sue for getBytes()
-     */
-    private void doWork() {
+
+    // javadoc inherited
+    public void run() {
         while(kicker != null) {
             try {
-                String message = (String) nodesToSend.get();
+                byte[] data = (byte[]) nodesToSend.get();
 
                 List servers = getActiveServers();
                 for (int i = 0; i < servers.size(); i++) {
                     MMObjectNode node = (MMObjectNode) servers.get(i);
                     if (node != null) {
                         String hostname = node.getStringValue("host");
+                        String machinename = node.getStringValue("name");
 
+                        int unicastPort = defaultUnicastPort;
+                        String specificPort = (String) configuration.get(machinename + ".unicastport");
+                        if (specificPort != null) {
+                            unicastPort = Integer.parseInt(specificPort);
+                        }
                         Socket socket = null;
                         DataOutputStream os = null;
                         try {
                             socket = new Socket();
                             socket.connect(new InetSocketAddress(hostname, unicastPort), unicastTimeout);
                             os = new DataOutputStream(socket.getOutputStream());
-                            os.writeBytes(message);
+                            os.write(data, 0, data.length);
                             os.flush();
                             if (log.isDebugEnabled()) {
-                                log.debug("SEND=>" + message);
+                                log.debug("SEND=>" + hostname + ":" + unicastPort);
                             }
                         } catch(SocketTimeoutException ste) {
-                            log.warn("Server timeout: " + hostname);
+                            log.warn("Server timeout: " + hostname + " " + ste);
                             servers.remove(i);
                         } catch (IOException e) {
-                            log.error("can't send message" + message);
-                            log.error(Logging.stackTrace(e));
+                            log.error("can't send message " + e.getMessage() , e);
                         } finally {
                             if (os != null) {
                                 try {
@@ -157,6 +142,8 @@ public class ChangesSender implements Runnable {
             } catch (InterruptedException e) {
                 log.debug(Thread.currentThread().getName() +" was interruped.");
                 break;
+            } catch (Exception e) {
+                log.error(e);
             }
         }
     }
@@ -166,9 +153,9 @@ public class ChangesSender implements Runnable {
      * @return server list
      */
     private List getActiveServers() {
-        MMBase mmbase = MMBase.getMMBase();
         if (serverInterval < 0) {
-            MMServers mmservers = (MMServers) mmbase.getMMObject("mmservers");
+            MMBase mmbase = MMBase.getMMBase();
+            MMServers mmservers = (MMServers) mmbase.getBuilder("mmservers");
             serverInterval = mmservers.getIntervalTime();
             activeServers = mmservers.getActiveServers();
             lastServerChecked = System.currentTimeMillis();
@@ -177,7 +164,8 @@ public class ChangesSender implements Runnable {
             }
         } else {
             if (lastServerChecked + serverInterval < System.currentTimeMillis()) {
-                MMServers mmservers = (MMServers) mmbase.getMMObject("mmservers");
+                MMBase mmbase = MMBase.getMMBase();
+                MMServers mmservers = (MMServers) mmbase.getBuilder("mmservers");
                 activeServers = mmservers.getActiveServers();
                 lastServerChecked = System.currentTimeMillis();
                 if (log.isDebugEnabled()) {
