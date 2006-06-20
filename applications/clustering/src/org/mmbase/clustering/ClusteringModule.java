@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  * This module bootstraps and configures MMBase clustering.
  *
  * @since MMBase-1.8
- * @version $Id: ClusteringModule.java,v 1.6 2006-06-19 16:20:31 michiel Exp $
+ * @version $Id: ClusteringModule.java,v 1.7 2006-06-20 08:05:53 michiel Exp $
  */
 public class ClusteringModule extends WatchedReloadableModule {
 
@@ -83,7 +83,11 @@ public class ClusteringModule extends WatchedReloadableModule {
     }
 
     public void reload() {
-        shutdown();
+        try {
+            shutdown();
+        } catch (Exception e) {
+            log.error(e);
+        }
         init();
     }
 

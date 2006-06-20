@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: ClusterManager.java,v 1.26 2006-06-19 16:20:31 michiel Exp $
+ * @version $Id: ClusterManager.java,v 1.27 2006-06-20 08:05:53 michiel Exp $
  */
 public abstract class ClusterManager implements AllEventListener, Runnable {
 
@@ -61,6 +61,13 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
         kicker = null;
     }
 
+    protected void readConfiguration(Map configuration) {
+        String tmp = (String) configuration.get("spawnthreads");
+        if (tmp != null && !tmp.equals("")) {
+            spawnThreads = !"false".equalsIgnoreCase(tmp);
+        }
+    }
+
     /**
      * Subclasses should start the communication threads in this method
      */
@@ -78,7 +85,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
             log.debug("Sending an event to the cluster");
             nodesToSend.append(message);
         } else {
-            log.debug("Ignoring remote event from " + event.getMachine());
+            log.trace("Ignoring remote event from " + event.getMachine() + " it will not be propagated");
         }
     }
 

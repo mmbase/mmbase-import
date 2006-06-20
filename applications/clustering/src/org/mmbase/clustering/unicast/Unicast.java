@@ -22,7 +22,7 @@ import org.mmbase.util.xml.UtilReader;
  * @javadoc
  *
  * @author Nico Klasens
- * @version $Id: Unicast.java,v 1.6 2006-01-02 14:33:37 nklasens Exp $
+ * @version $Id: Unicast.java,v 1.7 2006-06-20 08:05:53 michiel Exp $
  */
 public class Unicast extends ClusterManager {
 
@@ -34,58 +34,85 @@ public class Unicast extends ClusterManager {
     private int unicastPort = 4243;
 
     /** Timeout of the connection.*/
-    private int unicastTimeout = 10*1000;
+    private int unicastTimeout = 10 * 1000;
+
 
     /** Sender which reads the nodesToSend Queue amd puts the message on the line */
     private ChangesSender ucs;
     /** Receiver which reads the message from the line and puts message in the nodesToSpawn Queue */
     private ChangesReceiver ucr;
 
+    /**
+     * @since MMBase-1.8.1
+     */
+    private final UtilReader reader = new UtilReader(CONFIG_FILE,
+                                                     new Runnable() {
+                                                         public void run() {
+                                                             synchronized(Unicast.this) {
+                                                                 stopCommunicationThreads();
+                                                                 readConfiguration(reader.getProperties());
+                                                                 startCommunicationThreads();
+                                                             }
+                                                         }
+                                                     });
+
+
 
     public Unicast(){
-        
-        UtilReader reader = new UtilReader(CONFIG_FILE);
-        Map properties = reader.getProperties();
+        readConfiguration(reader.getProperties());
+        start();
+    }
 
-        String tmp = (String) properties.get("spawnthreads");
+    protected synchronized void readConfiguration(Map configuration) {
+        super.readConfiguration(configuration);
+
+        String tmp = (String) configuration.get("unicastport");
         if (tmp != null && !tmp.equals("")) {
-            spawnThreads = !"false".equalsIgnoreCase(tmp);
+            try {
+                unicastPort = Integer.parseInt(tmp);
+            } catch (Exception e) {}
         }
-
-        tmp = (String) properties.get("unicastport");
+        tmp = (String) configuration.get(org.mmbase.module.core.MMBase.getMMBase().getMachineName() + ".unicastport");
         if (tmp != null && !tmp.equals("")) {
             try {
                 unicastPort = Integer.parseInt(tmp);
             } catch (Exception e) {}
         }
 
-        tmp = (String) properties.get("unicasttimeout");
+        tmp = (String) configuration.get("unicasttimeout");
         if (tmp != null && !tmp.equals("")) {
             try {
                 unicastTimeout = Integer.parseInt(tmp);
             } catch (Exception e) {}
         }
 
-        log.info("unicastport: " + unicastPort);
-        log.info("unicasttimeout: " + unicastTimeout);
+        log.info("unicast port: "    + unicastPort);
+        log.info("unicast timeout: " + unicastTimeout);
 
-        start();
     }
 
     /**
      * @see org.mmbase.clustering.ClusterManager#startCommunicationThreads()
      */
-    protected void startCommunicationThreads() {
-        ucs = new ChangesSender(unicastPort, unicastTimeout, nodesToSend);
+    protected synchronized void startCommunicationThreads() {
+        ucs = new ChangesSender(reader.getProperties(), unicastPort, unicastTimeout, nodesToSend);
         ucr = new ChangesReceiver(unicastPort, nodesToSpawn);
     }
 
     /**
      * @see org.mmbase.clustering.ClusterManager#stopCommunicationThreads()
      */
-    protected void stopCommunicationThreads() {
-        ucs.stop();
-        ucr.stop();
+    protected synchronized void stopCommunicationThreads() {
+        if (ucs != null) {
+            ucs.stop();
+            log.service("Stopped communication sender " + ucs);
+            ucs = null;
+        }
+        if (ucr != null) { 
+            ucr.stop();
+            log.service("Stopped communication receiver " + ucr);
+            ucr = null;
+        }
     }
 
     // javadoc inherited
@@ -94,8 +121,9 @@ public class Unicast extends ClusterManager {
         nodesToSend.append(message);
         //Multicast receives his own message. Unicast now too.
         nodesToSpawn.append(message);
-
-        log.debug("message: " + event);
+        if (log.isDebugEnabled()) {
+            log.debug("message: " + event);
+        }
         return;
     }
 

@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: ChangesSender.java,v 1.8 2006-06-19 16:20:31 michiel Exp $
+ * @version $Id: ChangesSender.java,v 1.9 2006-06-20 08:05:53 michiel Exp $
  */
 public class ChangesSender implements Runnable {
 
@@ -56,7 +56,7 @@ public class ChangesSender implements Runnable {
      * @param mTTL time-to-live of the multicast packet (0-255)
      * @param nodesToSend Queue of messages to send
      */
-    public ChangesSender(String multicastHost, int mport, int mTTL, Queue nodesToSend) {
+    ChangesSender(String multicastHost, int mport, int mTTL, Queue nodesToSend) {
         this.mport = mport;
         this.mTTL = mTTL;
         this.nodesToSend = nodesToSend;
@@ -68,11 +68,7 @@ public class ChangesSender implements Runnable {
         this.start();
     }
 
-    /**
-     * Start thread
-     */
-    protected void start() {
-        /* Start up the main thread */
+    private void start() {
         if (kicker == null && ia != null) {
             try {
                 ms = new MulticastSocket();
@@ -87,8 +83,7 @@ public class ChangesSender implements Runnable {
         }
     }
 
-    public void stop() {
-        /* Stop thread */
+    void stop() {
         try {
             ms.leaveGroup(ia);
             ms.close();
@@ -96,27 +91,15 @@ public class ChangesSender implements Runnable {
             // nothing
         }
         ms = null;
-        kicker.setPriority(Thread.MIN_PRIORITY);
-        kicker = null;
-    }
-
-    /**
-     * Run thread
-     */
-    public void run() {
-        try {
-            doWork();
-        } catch (Exception e) {
-            log.error(Logging.stackTrace(e));
+        if (kicker != null) {
+            kicker.interrupt();
+            kicker.setPriority(Thread.MIN_PRIORITY);
+            kicker = null;
+        } else {
+            log.service("Cannot stop thread, because it is null");
         }
     }
-
-    /**
-     * Let the thread do his work
-     *
-     * @todo check what encoding to sue for getBytes()
-     */
-    private void doWork() {
+    public void run() {
         log.debug("Started sending");
         while(ms != null) {
             try {
@@ -135,6 +118,8 @@ public class ChangesSender implements Runnable {
             } catch (InterruptedException e) {
                 log.debug(Thread.currentThread().getName() +" was interruped.");
                 break;
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
             }
         }
         log.debug("Finished sending");

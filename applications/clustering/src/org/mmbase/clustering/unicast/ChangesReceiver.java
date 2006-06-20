@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * to receive changes from other MMBase Servers.
  *
  * @author Nico Klasens
- * @version $Id: ChangesReceiver.java,v 1.3 2006-03-30 11:23:53 pierre Exp $
+ * @version $Id: ChangesReceiver.java,v 1.4 2006-06-20 08:05:53 michiel Exp $
  */
 public class ChangesReceiver implements Runnable {
 
@@ -50,17 +50,13 @@ public class ChangesReceiver implements Runnable {
      * @param unicastPort port of the unicast connections
      * @param nodesToSpawn Queue of received messages
      */
-    public ChangesReceiver(int unicastPort, Queue nodesToSpawn) {
+    ChangesReceiver(int unicastPort, Queue nodesToSpawn) {
         this.nodesToSpawn = nodesToSpawn;
         this.unicastPort = unicastPort;
         this.start();
     }
 
-    /**
-     * Start Thread
-     */
-    public void start() {
-        /* Start up the main thread */
+    private void start() {
         if (kicker == null) {
             kicker = new Thread(this, "UnicastReceiver");
             kicker.setDaemon(true);
@@ -69,32 +65,17 @@ public class ChangesReceiver implements Runnable {
         }
     }
 
-    /**
-     * Stop thread
-     */
-    public void stop() {
-        /* Stop thread */
-        kicker.setPriority(Thread.MIN_PRIORITY);
-        kicker = null;
-    }
-
-    /**
-     * Run thread
-     */
-    public void run() {
-        try {
-            doWork();
-        } catch (Exception e) {
-            log.error(Logging.stackTrace(e));
+    void stop() {
+        if (kicker != null) {
+            kicker.setPriority(Thread.MIN_PRIORITY);
+            kicker.interrupt();
+            kicker = null;
+        } else {
+            log.service("Cannot stop thread, because it is null");
         }
     }
 
-    /**
-     * Let the thread do his work
-     *
-     * @todo determine what encoding to use on receiving packages
-     */
-    public void doWork() {
+    public void run() {
         ServerSocket serverSocket = null;
         try {
             serverSocket = new ServerSocket(unicastPort);
@@ -140,7 +121,7 @@ public class ChangesReceiver implements Runnable {
                 incount++;
             }
         } catch (Exception e) {
-            log.error(Logging.stackTrace(e));
+            log.error(e);
         } finally {
             if (serverSocket != null) {
                 try {

@@ -38,7 +38,7 @@ import org.jgroups.*;
  * @author Nico Klasens
  * @author Costyn van Dongen
  * @author Ronald Wildenberg
- * @version $Id: Multicast.java,v 1.6 2006-06-19 16:20:31 michiel Exp $
+ * @version $Id: Multicast.java,v 1.7 2006-06-20 08:05:53 michiel Exp $
  */
 public class Multicast extends ClusterManager {
 
@@ -85,36 +85,32 @@ public class Multicast extends ClusterManager {
     /**
      * @since MMBase-1.8.1
      */
-    private final Map configuration = new UtilReader(CONFIG_FILE,
+    private final UtilReader reader = new UtilReader(CONFIG_FILE,
                                                      new Runnable() {
                                                          public void run() {
                                                              synchronized(Multicast.this) {
                                                                  stopCommunicationThreads();
-                                                                 readConfiguration();
+                                                                 readConfiguration(reader.getProperties());
                                                                  startCommunicationThreads();
                                                              }
                                                          }
-                                                     }).getProperties();
+                                                     });
 
     /**
      * @see org.mmbase.module.core.MMBaseChangeInterface#init(org.mmbase.module.core.MMBase)
      */
     public Multicast() {
-        readConfiguration();
+        readConfiguration(reader.getProperties());
         start();
     }
 
     /**
      * @since MMBase-1.8.1
      */
-    protected synchronized void readConfiguration() {
+    protected synchronized void readConfiguration(Map configuration) {
+        super.readConfiguration(configuration);
 
-        String tmp = (String) configuration.get("spawnthreads");
-        if (tmp != null && !tmp.equals("")) {
-            spawnThreads = !"false".equalsIgnoreCase(tmp);
-        }
-
-        tmp = (String) configuration.get("channelproperties");
+        String tmp = (String) configuration.get("channelproperties");
         if (tmp != null && !tmp.equals("")) {
             channelProperties = tmp;
         } else {

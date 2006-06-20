@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: ChangesReceiver.java,v 1.11 2006-06-19 16:20:31 michiel Exp $
+ * @version $Id: ChangesReceiver.java,v 1.12 2006-06-20 08:05:53 michiel Exp $
  */
 public class ChangesReceiver implements Runnable {
 
@@ -58,7 +58,7 @@ public class ChangesReceiver implements Runnable {
      * @param dpsize datapacket receive size
      * @param nodesToSpawn Queue of received messages
      */
-    public ChangesReceiver(String multicastHost, int mport, int dpsize, Queue nodesToSpawn) {
+    ChangesReceiver(String multicastHost, int mport, int dpsize, Queue nodesToSpawn) {
         this.mport = mport;
         this.dpsize = dpsize;
         this.nodesToSpawn = nodesToSpawn;
@@ -69,12 +69,7 @@ public class ChangesReceiver implements Runnable {
         }
         this.start();
     }
-
-    /**
-     * Start thread
-     */
-    public void start() {
-        /* Start up the main thread */
+    private  void start() {
         if (kicker == null && ia != null) {
             try {
                 ms = new MulticastSocket(mport);
@@ -89,11 +84,7 @@ public class ChangesReceiver implements Runnable {
         }
     }
 
-    /**
-     * Stop thread
-     */
-    public void stop() {
-        /* Stop thread */
+    void stop() {
         MulticastSocket closingMS = ms; // for closing the socket while the thread stops
         ms = null; // the criteria for stopping thread
         try {
@@ -102,27 +93,17 @@ public class ChangesReceiver implements Runnable {
         } catch (Exception e) {
             // nothing
         }
-        kicker.setPriority(Thread.MIN_PRIORITY);
-        kicker = null;
-    }
-
-    /**
-     * Run thread
-     */
-    public void run() {
-        try {
-            doWork();
-        } catch (Exception e) {
-            log.error(Logging.stackTrace(e));
+        if (kicker != null) {
+            kicker.setPriority(Thread.MIN_PRIORITY);
+            kicker.interrupt();
+            kicker = null;
+        } else {
+            log.service("Cannot stop thread, because it is null");
         }
     }
 
-    /**
-     * Let the thread do his work
-     *
-     * @todo determine what encoding to use on receiving packages
-     */
-    public void doWork() {
+
+    public void run() {
         // create a datapackage to receive all messages
         byte[] buffer = new byte[dpsize];
         DatagramPacket dp = new DatagramPacket(buffer, dpsize);
@@ -146,7 +127,7 @@ public class ChangesReceiver implements Runnable {
                 // if not log it as an error
                 if (ms != null) log.error(se.getMessage());
             } catch (Exception f) {
-                log.error(Logging.stackTrace(f));
+                log.error(f.getMessage(), f);
             }
         }
     }
