@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: ClusterManager.java,v 1.28 2006-06-20 17:30:45 michiel Exp $
+ * @version $Id: ClusterManager.java,v 1.29 2006-06-20 21:29:42 michiel Exp $
  */
 public abstract class ClusterManager implements AllEventListener, Runnable {
 
@@ -110,7 +110,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
 
     protected byte[] createMessage(Event event) {
         if (log.isDebugEnabled()) {
-            log.debug("Serializing " + event, new Exception());
+            log.debug("Serializing " + event);
         }
         try {
             long startTime = System.currentTimeMillis();
