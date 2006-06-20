@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rico Jansen
  * @author Nico Klasens
  * @author Costyn van Dongen
- * @version $Id: ChangesSender.java,v 1.4 2006-06-19 16:20:31 michiel Exp $
+ * @version $Id: ChangesSender.java,v 1.5 2006-06-20 08:05:53 michiel Exp $
  */
 public class ChangesSender implements Runnable {
 
@@ -52,47 +52,29 @@ public class ChangesSender implements Runnable {
      * @param channel Channel on which to send messages
      * @param nodesToSend Queue of messages to send
      */
-    public ChangesSender(JChannel channel, Queue nodesToSend) {
+    ChangesSender(JChannel channel, Queue nodesToSend) {
         this.channel = channel;
         this.nodesToSend = nodesToSend;
         this.start();
     }
 
-    /**
-     * Start thread
-     */
     private void start() {
-        /* Start up the main thread */
         if (kicker == null) {
             kicker = MMBaseContext.startThread(this, "MulticastSender");
             log.debug("MulticastSender started");
         }
     }
 
-    /**
-     * Stop thread
-     */
     void stop() {
-        /* Stop thread */
         if (kicker != null) {
-            kicker.setPriority(Thread.MIN_PRIORITY);
             kicker.interrupt();
+            kicker.setPriority(Thread.MIN_PRIORITY);
             kicker = null;
         } else {
             log.service("Cannot stop thread, because it is null");
         }
     }
 
-    /**
-     * Run thread
-     */
-    public void run() {
-        try {
-            doWork();
-        } catch (Exception e) {
-            log.error(Logging.stackTrace(e));
-        }
-    }
 
     /**
      * Take messages fromt the queeu nodesToSend and send them
@@ -100,9 +82,8 @@ public class ChangesSender implements Runnable {
      * cases that the channel is closed or that no channel
      * has been joined.
      *
-     * @todo check what encoding to use for getBytes()
      */
-    private void doWork() {
+    public void run() {
         while(kicker != null) {
             try {
                 if (channel == null || (! channel.isConnected())) {
@@ -128,6 +109,8 @@ public class ChangesSender implements Runnable {
             } catch (InterruptedException e) {
                 log.debug(Thread.currentThread().getName() +" was interruped.");
                 break;
+            } catch (Exception e) {
+                log.error(e);
             }
         }
     }
