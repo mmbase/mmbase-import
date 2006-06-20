@@ -1,5 +1,5 @@
 NatMM - readme.txt
-Version: 06.05.26
+Version: 06.06.20
 Author: H. Hangyi (www.mmatch.nl)
 
 NatMM is an MMBase application which is based on LeoCMS, which is specially geared for use in
@@ -15,12 +15,13 @@ Features of LeoCMS (currently) not used in NatMM:
 WHAT IS IN IT FOR YOU?
 
 1. All the other features of LeoCMS, like the 
-   (a) page-tree, 
-   (b) authorisation model,
-   (c) nice-looking editwizards,
-   (d) content-library,
-   (e) url-rewriting for Google friendly urls, 
-   (f) versioning
+   (a) support for multiple websites in one environment,
+   (b) rubriek and page-tree,
+   (c) authorisation model,
+   (d) nice-looking editwizards,
+   (e) content-library with carbadge can functionality,
+   (f) url-rewriting for Google friendly urls,
+   (g) versioning
    and much more. The original version of LeoCMS was build by Finalist.
 	Have a look at the user-manual /templates/doc/GebruikershandleidingEditors.doc (in Dutch unfortunately) for the basic functionality.
 2. The event-database in use at www.natuurmonumenten.nl. For the event-database both a back-office booking system
@@ -34,7 +35,8 @@ WHAT IS IN IT FOR YOU?
 7. Image bulk upload (see natmm\templates\editors\util\image_upload.jsp). Build by N. Bukharev.
 8. Creating navigation structure from Excel file. Build by A. Zemskov.
 9. Check on email addresses, Dutch zipcodes and bankaccounts (see natmm\src\nl\leocms\forms\MembershipForm.java)
-10. Example templates (the most basic one is templates\natnh) 
+10 Integration of Lucene for searching on the website (sourceforge implementation)
+11. Example templates (the most basic one is templates\natnh) 
    and the accompanying editwizards (see natmm\templates\mmbase\edit\wizard\data\config)
 
 WHAT IS THE BASIC STRUCTURE OF NATMM?
@@ -60,7 +62,7 @@ Each website in the NatMM application, e.g. MySite, should consist of the follow
    c. to see if a page still contains contentelements
       (see nl.leocms.pagina.PaginaUtil.doesPageContainContentElements)
 4. editwizards in templates/mmbase/edit/wizard/data/config
-5. user manuals and technical documentaion in templates/mysite/doc
+5. user manuals and technical documentation in templates/mysite/doc
 
 HOW TO ADD YOUR OWN APPLICATION TO NATMM?
 
@@ -98,7 +100,7 @@ sources in the /natmm/src tree.
 4. For CREATING A BUILD carry out the following steps:
    a. commit the changes from the templating dirs to CVS
 	b. update the NatMM contribution
-	c. create the build (work.bat)
+	c. create the build (work.bat). Note that the resulting war is not deployable as a webapp, but should be copied over an MMBase installation.
 
 SOME LAST REMARKS
 
