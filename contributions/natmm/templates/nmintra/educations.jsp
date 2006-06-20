@@ -56,63 +56,63 @@ public String searchResults(TreeSet searchResultList) {
       }
       if(bSearchIsOn) {
          // ** first determine the educations that fit the search term criteria
-         if (!termSearchId.equals("")){
-            searchConstraint = "(( UPPER(educations.titel) LIKE '%" + termSearchId.toUpperCase() + "%') OR ( UPPER(educations.content) LIKE '%" + termSearchId.toUpperCase() + "%') ";
-          %><mm:list path="educations" constraints="<%= searchConstraint %>">
-               <%@include file="includes/education/searcheducations.jsp" %>
-            </mm:list>
-         <% sEducations = searchResults(educations);
-               if(debug) { %> termsearch: <%= termSearchId %><br/><% }
-            }
-            // then searching education using dropdowns only if no search term was entered or some educations were found using search term
-            if (termSearchId.equals("")||(!termSearchId.equals("")&&!sEducations.equals(""))){ 
-               if (!keywordId.equals("")){
-                  educations.clear();
-    				   searchConstraint = "(keywords.number = '" + keywordId + "')"; 	   
-             %>
-				 	<mm:list nodes="<%= sEducations %>" path="educations,related,keywords" constraints="<%= searchConstraint %>">
-   					<%@include file="includes/education/searcheducations.jsp" %>
-   				</mm:list>
-	   	      <%
-   		      sEducations = searchResults(educations);
-   		      if(debug) { %>keyword: <%= sEducations %><br/><% }
-         	}
+			if (!termSearchId.equals("")){
+				searchConstraint = "(( UPPER(educations.titel) LIKE '%" + termSearchId.toUpperCase() + "%') OR ( UPPER(educations.content) LIKE '%" + termSearchId.toUpperCase() + "%') ";
+			}
+			%>
+			<mm:list path="educations" constraints="<%= searchConstraint %>">
+				<%@include file="includes/education/searcheducations.jsp" %>
+			</mm:list>
+			<%
+			sEducations = searchResults(educations);
+			if(debug) { %> termsearch: <%= sEducations %><br/><% }
 
-	   		if (!poolId.equals("")){
-   		      educations.clear();
-   				searchConstraint = "(education_pools.number = '" + poolId + "')";
-         	   %>
-   				<mm:list nodes="<%= sEducations %>" path="educations,posrel,education_pools" constraints="<%= searchConstraint %>">
-   					<%@include file="includes/education/searcheducations.jsp" %>
-	   			</mm:list>
-   		      <%
-   		      sEducations = searchResults(educations);
-   	   	   if(debug) { %>pool: <%= sEducations %><br/><% }
-	         }
+			if (!keywordId.equals("")&&!sEducations.equals("")){
+				educations.clear();
+				searchConstraint = "(keywords.number = '" + keywordId + "')"; 	   
+				%>
+				<mm:list nodes="<%= sEducations %>" path="educations,related,keywords" constraints="<%= searchConstraint %>">
+					<%@include file="includes/education/searcheducations.jsp" %>
+				</mm:list>
+				<%
+				sEducations = searchResults(educations);
+				if(debug) { %>keyword: <%= sEducations %><br/><% }
+			}
 
-   			if (!providerId.equals("")){
-   		      educations.clear();
-   				searchConstraint = "(providers.number = '" + providerId + "')";
-            	%>
-	   			<mm:list nodes="<%= sEducations %>" path="educations,related,providers" constraints="<%= searchConstraint %>">
-   					<%@include file="includes/education/searcheducations.jsp" %>
-   				</mm:list>
-   	   	   <%
-   	      	sEducations = searchResults(educations);
-	   	      if(debug) { %>providers: <%= sEducations %><br/><% }
-   	      }
+			if (!poolId.equals("")&&!sEducations.equals("")){
+				educations.clear();
+				searchConstraint = "(education_pools.number = '" + poolId + "')";
+				%>
+				<mm:list nodes="<%= sEducations %>" path="educations,posrel,education_pools" constraints="<%= searchConstraint %>">
+					<%@include file="includes/education/searcheducations.jsp" %>
+				</mm:list>
+				<%
+				sEducations = searchResults(educations);
+				if(debug) { %>pool: <%= sEducations %><br/><% }
+			}
 
-   			if (!competenceId.equals("")){
-   	   	   educations.clear();
-   				searchConstraint = "(competencies.number = '" + competenceId + "')";
-	            %>
-   				<mm:list nodes="<%= sEducations %>" path="educations,posrel,competencies" constraints="<%= searchConstraint %>">
-   					<%@include file="includes/education/searcheducations.jsp" %>
-   				</mm:list>
-   	      	<%
-	   	      sEducations = searchResults(educations);
-   		      if(debug) { %>competence: <%= sEducations %><br/><% }
-      	   }
+			if (!providerId.equals("")&&!sEducations.equals("")){
+				educations.clear();
+				searchConstraint = "(providers.number = '" + providerId + "')";
+				%>
+				<mm:list nodes="<%= sEducations %>" path="educations,related,providers" constraints="<%= searchConstraint %>">
+					<%@include file="includes/education/searcheducations.jsp" %>
+				</mm:list>
+				<%
+				sEducations = searchResults(educations);
+				if(debug) { %>providers: <%= sEducations %><br/><% }
+			}
+
+			if (!competenceId.equals("")&&!sEducations.equals("")){
+				educations.clear();
+				searchConstraint = "(competencies.number = '" + competenceId + "')";
+				%>
+				<mm:list nodes="<%= sEducations %>" path="educations,posrel,competencies" constraints="<%= searchConstraint %>">
+					<%@include file="includes/education/searcheducations.jsp" %>
+				</mm:list>
+				<%
+				sEducations = searchResults(educations);
+				if(debug) { %>competence: <%= sEducations %><br/><% }
 			}
       }
       // *** add the objects that are still possible to the TreeSets
@@ -122,28 +122,29 @@ public String searchResults(TreeSet searchResultList) {
          cPos = sEducations.indexOf(",",cPos+1);
          iEducations++;
       }
-      if (!sEducations.equals("")) { %>
-			<mm:list nodes="<%= sEducations %>" path="educations,related,keywords">
-   			<mm:field name="keywords.number" jspvar="keyword_number" vartype="String" write="false">
-	   	      <% keywords.add(keyword_number); %>
-         	</mm:field>
-			</mm:list>
-			<mm:list nodes="<%= sEducations %>" path="educations,posrel,education_pools">
-			   <mm:field name="education_pools.number" jspvar="education_pool_number" vartype="String" write="false">
-         		<% educationPools.add(education_pool_number); %>
-	         </mm:field>
-			</mm:list>
-			<mm:list nodes="<%= sEducations %>" path="educations,related,providers">
-		   	<mm:field name="providers.number" jspvar="providers_number" vartype="String" write="false">
-	         	<% providers.add(providers_number); %>
-   	      </mm:field>
-			</mm:list>
-			<mm:list nodes="<%= sEducations %>" path="educations,posrel,competencies">
-				<mm:field name="competencies.number" jspvar="competencies_number" vartype="String" write="false">
-				   <% competencies.add(competencies_number); %>
-				</mm:field>
-			</mm:list>
-   <%    if(debug) { 
+      %>
+		<mm:list nodes="<%= sEducations %>" path="educations,related,keywords">
+			<mm:field name="keywords.number" jspvar="keyword_number" vartype="String" write="false">
+				<% keywords.add(keyword_number); %>
+			</mm:field>
+		</mm:list>
+		<mm:list nodes="<%= sEducations %>" path="educations,posrel,education_pools">
+			<mm:field name="education_pools.number" jspvar="education_pool_number" vartype="String" write="false">
+				<% educationPools.add(education_pool_number); %>
+			</mm:field>
+		</mm:list>
+		<mm:list nodes="<%= sEducations %>" path="educations,related,providers">
+			<mm:field name="providers.number" jspvar="providers_number" vartype="String" write="false">
+				<% providers.add(providers_number); %>
+			</mm:field>
+		</mm:list>
+		<mm:list nodes="<%= sEducations %>" path="educations,posrel,competencies">
+			<mm:field name="competencies.number" jspvar="competencies_number" vartype="String" write="false">
+				<% competencies.add(competencies_number); %>
+			</mm:field>
+		</mm:list>
+		<%
+		if(debug) { 
       	   %>
          	End search with:<br/>
 	         educations=<%= sEducations %>, count = <%= iEducations %><br/>
@@ -152,50 +153,49 @@ public String searchResults(TreeSet searchResultList) {
          	k=<%= keywords %><br/>
 	         c=<%= competencies %><br/>
    	      <%
-      	}	
-	      // all educations should be related to the selected Id (if it is the only one)
-   	   // otherwise the set size of educations will change, with the next click on offset
-      	// this check would not be necessary if the relation would be mandatory
-	      if(keywordId.equals("")&&keywords.size()==1) { 
-   	      %>
-      	   <mm:list nodes="<%= sEducations %>" path="educations,related,keywords"
-         	   constraints="<%= "keywords.number='" + (String) keywords.first() + "'" %>">
-            	<mm:size jspvar="iKeywords" vartype="Integer" write="false">
-	               <% if(iEducations==iKeywords.intValue()) { keywordId = (String) keywords.first(); } %>
-   	         </mm:size>
-      	   </mm:list>
-         	<%
-	      }
-			if(poolId.equals("")&&educationPools.size()==1) { 
-      	   %>
-	         <mm:list nodes="<%= sEducations %>" path="educations,posrel,education_pools"
-   	         constraints="<%= "education_pools.number='" + (String) educationPools.first() + "'" %>">
-      	      <mm:size jspvar="iPools" vartype="Integer" write="false">
-         	      <% if(iEducations==iPools.intValue()) { poolId = (String) educationPools.first(); } %>
-            	</mm:size>
-	         </mm:list>
-   	      <%
-      	}
-			if(providerId.equals("")&&providers.size()==1) {
-   	      %>
-   			<mm:list nodes="<%= sEducations %>" path="educations,related,providers"
-   			    constraints="<%= "providers.number='" + (String) providers.first() + "'" %>">
-            	<mm:size jspvar="iProviders" vartype="Integer" write="false">
-	               <% if(iEducations==iProviders.intValue()) { providerId = (String) providers.first(); } %>
-   	         </mm:size>
-   			</mm:list>
-	         <%
-   	   }
-			if(competenceId.equals("")&&competencies.size()==1) {
-   	      %>
-   			<mm:list nodes="<%= sEducations %>" path="educations,posrel,competencies"
-   			    constraints="<%= "competencies.number='" + (String) competencies.first() + "'" %>">
-	            <mm:size jspvar="iCompetencies" vartype="Integer" write="false">
-   	            <% if(iEducations==iCompetencies.intValue()) { competenceId = (String) competencies.first(); } %>
-      	      </mm:size>
-   			</mm:list>
-	         <%
-   	   }
+		}	
+		// all educations should be related to the selected Id (if it is the only one)
+		// otherwise the set size of educations will change, with the next click on offset
+		// this check would not be necessary if the relation would be mandatory
+		if(keywordId.equals("")&&keywords.size()==1) { 
+			%>
+			<mm:list nodes="<%= sEducations %>" path="educations,related,keywords"
+				constraints="<%= "keywords.number='" + (String) keywords.first() + "'" %>">
+				<mm:size jspvar="iKeywords" vartype="Integer" write="false">
+					<% if(iEducations==iKeywords.intValue()) { keywordId = (String) keywords.first(); } %>
+				</mm:size>
+			</mm:list>
+			<%
+		}
+		if(poolId.equals("")&&educationPools.size()==1) { 
+			%>
+			<mm:list nodes="<%= sEducations %>" path="educations,posrel,education_pools"
+				constraints="<%= "education_pools.number='" + (String) educationPools.first() + "'" %>">
+				<mm:size jspvar="iPools" vartype="Integer" write="false">
+					<% if(iEducations==iPools.intValue()) { poolId = (String) educationPools.first(); } %>
+				</mm:size>
+			</mm:list>
+			<%
+		}
+		if(providerId.equals("")&&providers.size()==1) {
+			%>
+			<mm:list nodes="<%= sEducations %>" path="educations,related,providers"
+				 constraints="<%= "providers.number='" + (String) providers.first() + "'" %>">
+				<mm:size jspvar="iProviders" vartype="Integer" write="false">
+					<% if(iEducations==iProviders.intValue()) { providerId = (String) providers.first(); } %>
+				</mm:size>
+			</mm:list>
+			<%
+		}
+		if(competenceId.equals("")&&competencies.size()==1) {
+			%>
+			<mm:list nodes="<%= sEducations %>" path="educations,posrel,competencies"
+				 constraints="<%= "competencies.number='" + (String) competencies.first() + "'" %>">
+				<mm:size jspvar="iCompetencies" vartype="Integer" write="false">
+					<% if(iEducations==iCompetencies.intValue()) { competenceId = (String) competencies.first(); } %>
+				</mm:size>
+			</mm:list>
+			<%
 		}
       if(!postingStr.equals("|action=print")) {
         %><div align="right" style="letter-spacing:1px;"><a href="javascript:history.go(-1);">terug</a>&nbsp/&nbsp;<a target="_blank" href="ipage.jsp<%= 
