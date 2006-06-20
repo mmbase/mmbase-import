@@ -20,6 +20,7 @@ import org.mmbase.datatypes.*;
 import org.mmbase.storage.search.RelationStep;
 import org.mmbase.util.Casting;
 import org.mmbase.util.Encode;
+import org.mmbase.util.xml.UtilReader;
 import org.mmbase.util.logging.*;
 
 /**
@@ -53,12 +54,22 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.74 2006-01-06 14:22:23 michiel Exp $
+ * @version $Id: Dove.java,v 1.75 2006-06-20 22:04:48 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
 
     private static final Logger log = Logging.getLoggerInstance(Dove.class);
+
+
+    /**
+     *@since MMBase-1.8.1
+     */
+    private static final UtilReader properties = new UtilReader("dove");
+    private static final String PROP_CHANGES = "changes";
+    private static final String CHANGES_IGNORE = "ignore";
+    private static final String CHANGES_WARN   = "warn";
+    private static final String CHANGES_EXCEPTION   = "exception";
 
     /**
      * Constructor
@@ -966,12 +977,14 @@ public class Dove extends AbstractDove {
             if (isEditableField(node.getNodeManager(),key)) {
                 Object value = me.getValue();
                 DataType dt = node.getNodeManager().getField(key).getDataType();
-                if ((originalValues != null) &&
+                String changes = (String) properties.getProperties().get(PROP_CHANGES);
+                if ((! CHANGES_IGNORE.equals(changes)) &&
+                    (originalValues != null) &&
                     (!(value instanceof byte[]))) { // XXX: currently, we do not validate on byte fields
                     String originalValue = (String) originalValues.get(key);
                     String  mmbaseValue;
-                    if (dt instanceof DateTimeDataType || 
-                        dt instanceof LongDataType || 
+                    if (dt instanceof DateTimeDataType ||
+                        dt instanceof LongDataType ||
                         dt instanceof IntegerDataType) {
                         // have to convert ourselves because bridge will use user-defined formatting
                         mmbaseValue = "" + node.getLongValue(key);
@@ -980,7 +993,7 @@ public class Dove extends AbstractDove {
                     }
                     if (mmbaseValue == null) {
                         if ("".equals(originalValue)) {
-                            // XML Cannot make difference between NULL and empty.
+                            // XML cannot make difference between NULL and empty.
                             originalValue = null;
                         }
                         if ("".equals(value)) {
@@ -988,10 +1001,15 @@ public class Dove extends AbstractDove {
                         }
                     }
                     if ((originalValue != null ) && !originalValue.equals(mmbaseValue)) {
+                        String message = "Node was changed in the cloud, node number : " + alias + " field name '" + key + "' value found: '" + mmbaseValue + "' value expected '" + originalValue + "' changes: " + changes;
                         // give error node was changed in cloud
-                        Element err = addContentElement(ERROR, "Node was changed in the cloud, node number : " + alias + " field name '" + key + "' value found: '" + mmbaseValue + "' value expected '" + originalValue + "'", out);
-                        err.setAttribute(ELM_TYPE, IS_SERVER);
-                        return false;
+                        if (CHANGES_WARN.equals(changes)) {
+                            log.warn(message);
+                        } else {
+                            Element err = addContentElement(ERROR, message, out);
+                            err.setAttribute(ELM_TYPE, IS_SERVER);
+                            return false;
+                        }
                     }
                 }
                 if (log.isDebugEnabled()) {
