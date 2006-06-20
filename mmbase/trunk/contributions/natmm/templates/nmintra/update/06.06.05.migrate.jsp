@@ -12,6 +12,7 @@
    </head>
    <body style="width:100%;padding:5px;">
 	Things to be done in this update:<br/>
+	<mm:node number="home" id="natuurmonumente_subsite" />
 	0. Adding users ew to admin<br/>
 	<mm:listnodes type="users" constraints="account = 'admin'">
 		<mm:node id="admin" />
@@ -184,6 +185,127 @@
       	</mm:listnodes>
       </mm:node>
 	</mm:listnodes>
+	11. Add terms ew to terms template, add all terms to the page<br/>
+	<mm:listnodes type="paginatemplate" constraints="url = 'terms.jsp'">
+		<mm:node id="term_template" />
+		<mm:listnodes type="editwizards" constraints="wizard = '/editors/config/terms/terms'">
+			<mm:node id="term_ew">
+				<mm:setfield name="description">Bewerk de begrippen op deze pagina</mm:setfield>
+				<mm:setfield name="wizard">/editors/projects/project_overview.jsp</mm:setfield>
+				<mm:setfield name="nodepath">pagina,contentrel,terms</mm:setfield>
+				<mm:setfield name="fields">terms.name</mm:setfield>
+				<mm:setfield name="orderby">terms.name</mm:setfield>
+				<mm:setfield name="directions">up</mm:setfield>
+				<mm:setfield name="pagelength">50</mm:setfield>
+				<mm:setfield name="maxpagecount">100</mm:setfield>
+				<mm:setfield name="searchfields">terms.name</mm:setfield>
+				<mm:setfield name="search">yes</mm:setfield>
+			</mm:node>
+		</mm:listnodes>
+		<mm:createrelation source="term_ew" destination="term_template" role="related" />
+		<mm:relatednodes type="pagina">
+			<mm:node id="terms_pagina" />
+			<mm:listnodes type="terms" id="this_term">
+				<mm:createrelation source="terms_pagina" destination="this_term" role="contentrel" />
+			</mm:listnodes>
+		</mm:relatednodes>
+	</mm:listnodes>
+	12. Set verloopdatum of pages to 2038<br/>		
+	<mm:listnodes type="pagina">
+		<mm:setfield name="verloopdatum">2145913200</mm:setfield>
+   </mm:listnodes>
+	13. Hide pagina "Zoeken" from navigation
+	<mm:node number="search">
+		<mm:setfield name="embargo">2145913200</mm:setfield>
+	</mm:node>
+	14. Remove duplicate users
+	<% String lastAccount = ""; %>
+	<mm:listnodes type="users" orderby="account,emailadres" directions="DOWN,DOWN">
+		<mm:field name="account" jspvar="account" vartype="String" write="false">
+			<% if(lastAccount.equals(account)) {
+					%>Deleting duplicate account for <%= account %><br/>
+					<mm:deletenode deleterelations="true" />
+					<% 
+				}
+				lastAccount = account;
+			%>
+		</mm:field>
+	</mm:listnodes>
+	14. Move news archief to main level<br/>
+	<mm:listnodes type="rubriek" constraints="naam = 'Home'">
+		<mm:node id="home_rubriek" />
+			<mm:listnodes type="users" constraints="account = 'KemperinkM'">
+				<mm:node id="news_editor" />
+				<mm:node number="archief" id="archief">
+					<mm:relatednodes type="artikel" id="this_artikel">
+						<mm:createrelation source="this_artikel" destination="natuurmonumente_subsite" role="subsite" />
+						<mm:createrelation source="this_artikel" destination="home_rubriek" role="creatierubriek" />
+						<mm:createrelation source="this_artikel" destination="home_rubriek" role="hoofdrubriek" />
+						<mm:createrelation source="this_artikel" destination="news_editor" role="schrijver" />
+					</mm:relatednodes>
+					<mm:related path="posrel,rubriek">
+						<mm:deletenode element="posrel" />
+					</mm:related>
+					<mm:createrelation source="natuurmonumente_subsite" destination="archief" role="posrel">
+						<mm:setfield name="pos">99</mm:setfield>
+					</mm:createrelation>
+				</mm:node>
+			</mm:listnodes>
+		</mm:node>
+	</mm:listnodes>
+	14. Merge library archief with news archief<br/>
+	<mm:createnode type="pools" id="bib_pool">
+		<mm:setfield name="name">Bibliotheek</mm:setfield>
+	</mm:createnode>
+	<mm:listnodes type="rubriek" constraints="naam = 'Bibliotheek'">
+		<mm:node id="bib_rubriek" />
+			<mm:listnodes type="users" constraints="account = 'BieW'">
+				<mm:node id="library_editor" />
+				<mm:node number="archief" id="news_archief" />
+				<mm:node number="bibarchief">
+					<mm:relatednodes type="artikel" id="this_artikel">
+						<mm:createrelation source="this_artikel" destination="natuurmonumente_subsite" role="subsite" />
+						<mm:createrelation source="this_artikel" destination="bib_rubriek" role="creatierubriek" />
+						<mm:createrelation source="this_artikel" destination="bib_rubriek" role="hoofdrubriek" />
+						<mm:createrelation source="this_artikel" destination="library_editor" role="schrijver" />
+						<mm:createrelation source="this_artikel" destination="bib_pool" role="posrel" />
+						<mm:createrelation source="news_archief" destination="this_artikel" role="contentrel" />
+					</mm:relatednodes>
+				</mm:node>
+				<mm:deletenode number="bibarchief" deleterelations="true" />
+			</mm:listnodes>
+		</mm:node>
+	</mm:listnodes>
+	15. artikel met info pagina<br/>
+	<mm:node number="104653" id="def_ew" />
+	<mm:listnodes type="editwizards" constraints="wizard = 'config/pagina/pagina_artikel_info'">
+		<mm:relatednodes type="paginatemplate" id="artikel_info_template">
+			<mm:createrelation source="artikel_info_template" destination="def_ew" role="related" />
+			<mm:relatednodes type="pagina">
+				<% String artikel_text = ""; %>
+				<mm:related path="contentrel,artikel" fields="artikel.intro" constraints="contentrel.pos='0'"
+					orderby="artikel.embargo" directions="UP" searchdir="destination" max="1">
+					<mm:field name="artikel.intro" jspvar="dummy" vartype="String" write="false">
+						<% artikel_text = dummy + "<br/><br/>"; %>
+					</mm:field>
+					<mm:node element="artikel">
+						<mm:related path="posrel,paragraaf" fields="paragraaf.titel,paragraaf.tekst"  orderby="posrel.pos" directions="UP">
+							<mm:field name="paragraaf.titel" jspvar="dummy" vartype="String" write="false">
+								<% artikel_text += "<b>" + dummy + "</b><br/>"; %>
+							</mm:field>
+							<mm:field name="paragraaf.tekst" jspvar="dummy" vartype="String" write="false">
+								<% artikel_text += dummy + "<br/><br/>"; %>
+							</mm:field>
+							<mm:deletenode element="paragraaf" deleterelations="true" />
+						</mm:related>
+					</mm:node>
+					<mm:deletenode element="artikel" deleterelations="true" />
+				</mm:related>
+				<mm:setfield name="omschrijving"><%= artikel_text %></mm:setfield>
+			</mm:relatednodes>
+		</mm:relatednodes>
+	   <mm:deletenode deleterelations="true" />
+	</mm:listnodes>
 	99. Deleting unused editwizards<br/>
 	<%
 	String [] ewToDelete = {
@@ -209,9 +331,6 @@
 	}
 	%>
 	Done.<br/>
-	Manual<br/>
-	1. Delete template for "Wat vindt je ervan?" page in P&O<br/>
-	2. Delete double relation for "Zoek een opleiding" page<br/>
 	</body>
   </html>
 </mm:log>

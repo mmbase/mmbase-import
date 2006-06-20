@@ -31,8 +31,10 @@
    7. Add a rubriek Natuurmonumenten with alias root and relate the Intranet and Ontwikkel rubrieken to it<br/>
    8. Link admin to root (rolerel.iRol=100). Remove the other two rubrieken from admin.<br/>
 	9. Delete pages Nieuws and Interne Mededelingen (2x)<br/>
-   10. Run the other update scripts.
-   11. Set new passwords for all users, and set their rights<br/>
+	10. Delete template for "Wat vindt je ervan?" page in P&O<br/>
+	11. Delete double relation for "Zoek een opleiding" page<br/>
+   12. Run the other update scripts.
+   13. Set new passwords for all users, and set their rights<br/>
 	Note: RelationsMigrator will call NMIntraToNatMM migrator<br/>
 	<% (new nl.mmatch.util.migrate.RelationsMigrator()).run(); %>
    Done.
