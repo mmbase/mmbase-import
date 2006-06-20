@@ -12,7 +12,7 @@ import org.mmbase.util.logging.Logging;
  * A bean can be accessed through the function framework. 
  *
  * @author Michiel Meeuwissen
- * @version $Id: ExampleBean.java,v 1.8 2005-12-29 22:08:59 michiel Exp $
+ * @version $Id: ExampleBean.java,v 1.9 2006-06-20 20:51:49 michiel Exp $
  * @since MMBase-1.8
  */
 public final class ExampleBean {
@@ -49,7 +49,8 @@ public final class ExampleBean {
     }
 
     /**
-     * Makes the functions useable in bridge (so with security)
+     * Makes the functions useable in bridge (so with security). See also {@link
+     * Parameter#CLOUD}. This is an example of a parameter which is automaticly filled by function tags.
      */
     public void setCloud(Cloud c) {
         cloud = c;
