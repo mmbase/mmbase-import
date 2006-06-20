@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.381 2006-06-06 19:44:13 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.382 2006-06-20 21:20:53 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -1072,7 +1072,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         try {
             nr = Integer.parseInt(key);
         } catch (Exception e) {}
-        if (nr!=-1) {
+        if (nr != -1) {
             // key passed was a number.
             // return node with this number
             return getNode(nr, useCache);
@@ -2183,7 +2183,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      *  Used to create a default teaser by any builder
      *  @deprecated Will be removed?
      */
-    public MMObjectNode getDefaultTeaser(MMObjectNode node,MMObjectNode tnode) {
+    public MMObjectNode getDefaultTeaser(MMObjectNode node, MMObjectNode tnode) {
         log.warn("getDefaultTeaser(): Generate Teaser,Should be overridden");
         return tnode;
     }
@@ -2962,27 +2962,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         int type = event.getType();
         eventBackwardsCompatible(event.getMachine(), event.getNodeNumber(), type);
 
-        //update the cache
-        Integer changedNodeNumber = new Integer(event.getNodeNumber());
-
-        //and now refire the event for the parent builders
-        MMObjectBuilder pb = getParentBuilder();
-        if(pb != null) {
-            if (log.isDebugEnabled()) {
-                log.debug(getTableName() + "creating node event for parent builder: " + pb.getTableName());
-            }
-            NodeEvent parentBuilderEvent = event.clone(pb.getTableName());
-            EventManager.getInstance().propagateEvent(parentBuilderEvent);
-        }
-
-        if(type == Event.TYPE_DELETE || ((! event.isLocal()) && type == Event.TYPE_CHANGE)) {
-            if (nodeCache.remove(changedNodeNumber) != null && log.isDebugEnabled()) {
-                log.debug("Removed node " + changedNodeNumber + " from node cache");
-            }
-        }
-
-
-
     }
 
 
@@ -2993,42 +2972,12 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         if (log.isDebugEnabled()) {
             log.debug("" + this + " received relation event " + event);
         }
-
          //for backwards compatibilty: create relation changed calls
          if (event.getRelationSourceType().equals(getTableName())) {
              eventBackwardsCompatible(event.getMachine(), event.getRelationSourceNumber(), NodeEvent.TYPE_RELATION_CHANGE);
          }
          if (event.getRelationDestinationType().equals(getTableName())) {
              eventBackwardsCompatible(event.getMachine(), event.getRelationDestinationNumber(), NodeEvent.TYPE_RELATION_CHANGE);
-         }
-
-         //update the cache
-         Integer changedNode = new Integer((event.getRelationDestinationType().equals(getTableName()) ? event.getRelationSourceNumber() : event.getRelationDestinationNumber()));
-         MMObjectNode node = (MMObjectNode)nodeCache.get(changedNode);
-         if (node != null) {
-             node.delRelationsCache();
-         }
-
-         //      and now refire the event for the parent builders
-         MMObjectBuilder pb = getParentBuilder();
-         send_event:
-         if(pb != null){
-             RelationEvent parentBuilderEvent;
-             if (log.isDebugEnabled()) {
-                 log.debug(getTableName() + "creating relation event for parent builder: " + pb.getTableName());
-             }
-
-             if(getTableName().equals(event.getRelationSourceType())) {
-                 log.debug(">> overwriting the relation source type");
-                 parentBuilderEvent = event.clone(pb.getTableName(), event.getRelationDestinationType());
-             } else if(getTableName().equals(event.getRelationDestinationType())) {
-                 log.debug(">> overwriting the relation destination type");
-                 parentBuilderEvent = event.clone(event.getRelationSourceType(), pb.getTableName());
-             } else {
-                log.error(" relation source and destination type do not match builder " + getTableName());
-                break send_event;
-             }
-             EventManager.getInstance().propagateEvent(parentBuilderEvent);
          }
      }
 
