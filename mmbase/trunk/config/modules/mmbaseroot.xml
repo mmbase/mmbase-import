@@ -100,9 +100,12 @@
   running on. Its important that this name is set correctly because its
   used for communication between mmbase nodes and external devices
   (xml or jini based).
-  -->
-  <property name="host">127.0.0.1</property>
 
+  Default it is : java.net.InetAddress.getLocalHost().getHostName(), which may very well be correct.
+  -->
+  <!--
+  <property name="host">127.0.0.1</property>
+  -->
 
   <!--
   name="basename" You can have multiple mmbase systems inside your database
