@@ -30,16 +30,16 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: ClusterManager.java,v 1.27 2006-06-20 08:05:53 michiel Exp $
+ * @version $Id: ClusterManager.java,v 1.28 2006-06-20 17:30:45 michiel Exp $
  */
 public abstract class ClusterManager implements AllEventListener, Runnable {
 
     private static final Logger log = Logging.getLoggerInstance(ClusterManager.class);
 
-    /**
-     * Number of processed messages
-     */
-    protected long spawncount = 0;
+
+    protected final Statistics receive = new Statistics();
+    protected final Statistics send    = new Statistics();
+
 
     /** Queue with messages to send to other MMBase instances */
     protected Queue nodesToSend = new Queue(64);
@@ -47,7 +47,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
     protected Queue nodesToSpawn = new Queue(64);
 
     /** Thread which processes the messages */
-    private Thread kicker = null;
+    protected Thread kicker = null;
 
     protected boolean spawnThreads = true;
 
@@ -110,9 +110,10 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
 
     protected byte[] createMessage(Event event) {
         if (log.isDebugEnabled()) {
-            log.debug("Serializing " + event);
+            log.debug("Serializing " + event, new Exception());
         }
         try {
+            long startTime = System.currentTimeMillis();
             ByteArrayOutputStream bytes = new ByteArrayOutputStream();
             if (compatible17) {
                 if (event instanceof  NodeEvent || event instanceof RelationEvent) {
@@ -143,6 +144,9 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
             bytes.write(0);
             ObjectOutputStream out = new ObjectOutputStream(bytes);
             out.writeObject(event);
+            long cost = System.currentTimeMillis() - startTime;
+            send.parseCost += cost;
+            send.cost += cost;
             return bytes.toByteArray();
         } catch (IOException ioe) {
             log.error(ioe.getMessage(), ioe);
@@ -257,16 +261,20 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
             try {
                 byte[] message = (byte[]) nodesToSpawn.get();
                 if (message == null) continue;
+                long startTime = System.currentTimeMillis();
                 if (log.isDebugEnabled()) {
                     log.trace("RECEIVED =>" + message.length + " bytes");
                 }
-                spawncount++;
+                receive.count++;
+                receive.bytes += message.length;
                 Event event = parseMessage(message);
+                receive.parseCost += (System.currentTimeMillis() - startTime);
                 if (event != null) {
                     handleEvent(event);
                 } else {
-                    log.warn("Could not handle message, it is null");
+                    log.warn("Could not handle event, it is null");
                 }
+                receive.cost += (System.currentTimeMillis() - startTime);
             } catch (InterruptedException e) {
                 log.debug(Thread.currentThread().getName() +" was interruped.");
                 break;
