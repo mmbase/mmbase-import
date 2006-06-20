@@ -9,12 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.clustering.unicast;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.io.*;
+import java.net.*;
 
 import org.mmbase.util.Queue;
 import org.mmbase.util.logging.Logger;
@@ -26,33 +22,30 @@ import org.mmbase.util.logging.Logging;
  * to receive changes from other MMBase Servers.
  *
  * @author Nico Klasens
- * @version $Id: ChangesReceiver.java,v 1.4 2006-06-20 08:05:53 michiel Exp $
+ * @version $Id: ChangesReceiver.java,v 1.5 2006-06-20 21:31:06 michiel Exp $
  */
 public class ChangesReceiver implements Runnable {
 
-    /** MMbase logging system */
-    private static Logger log = Logging.getLoggerInstance(ChangesReceiver.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(ChangesReceiver.class);
 
-    /** counter of incoming messages */
-    private int incount = 0;
 
     /** Thread which sends the messages */
     private Thread kicker = null;
 
     /** Queue with messages received from other MMBase instances */
-    private Queue nodesToSpawn;
+    private final Queue nodesToSpawn;
 
-    /** Port on which the talking between nodes take place.*/
-    private int unicastPort = 4243;
+
+    private final ServerSocket serverSocket;
 
     /**
      * Construct UniCast Receiver
      * @param unicastPort port of the unicast connections
      * @param nodesToSpawn Queue of received messages
      */
-    ChangesReceiver(int unicastPort, Queue nodesToSpawn) {
+    ChangesReceiver(int unicastPort, Queue nodesToSpawn) throws IOException {
         this.nodesToSpawn = nodesToSpawn;
-        this.unicastPort = unicastPort;
+        this.serverSocket = new ServerSocket(unicastPort);
         this.start();
     }
 
@@ -67,18 +60,24 @@ public class ChangesReceiver implements Runnable {
 
     void stop() {
         if (kicker != null) {
-            kicker.setPriority(Thread.MIN_PRIORITY);
-            kicker.interrupt();
-            kicker = null;
+            try {
+                kicker.interrupt();
+                kicker.setPriority(Thread.MIN_PRIORITY);
+                kicker = null;
+            } catch (Throwable t) {
+            }
+            try {
+                serverSocket.close();
+            } catch (IOException ioe) {
+                log.warn(ioe);
+            }
         } else {
             log.service("Cannot stop thread, because it is null");
         }
     }
 
     public void run() {
-        ServerSocket serverSocket = null;
         try {
-            serverSocket = new ServerSocket(unicastPort);
             while (kicker!=null) {
                 Socket socket = null;
                 InputStream reader = null;
@@ -102,8 +101,11 @@ public class ChangesReceiver implements Runnable {
                         log.debug("RECEIVED=>" + message);
                     }
                     nodesToSpawn.append(message);
+                } catch (SocketException e) {
+                    log.warn(e);
+                    continue;
                 } catch (Exception e) {
-                    log.error(Logging.stackTrace(e));
+                    log.error(e);
                 } finally {
                     if (reader != null) {
                         try {
@@ -118,7 +120,6 @@ public class ChangesReceiver implements Runnable {
                         }
                     }
                 }
-                incount++;
             }
         } catch (Exception e) {
             log.error(e);
