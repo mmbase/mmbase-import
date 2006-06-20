@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: ReleaseStrategy.java,v 1.14 2006-02-27 23:49:46 michiel Exp $
+ * @version $Id: ReleaseStrategy.java,v 1.15 2006-06-20 21:28:32 michiel Exp $
  */
 
 public abstract class ReleaseStrategy {
@@ -287,7 +287,7 @@ public abstract class ReleaseStrategy {
      *         then use it to create the StrategyResult object
      */
     protected static class Timer {
-        private long now;
+        private final long now;
 
         Timer() {
             now = System.currentTimeMillis();
