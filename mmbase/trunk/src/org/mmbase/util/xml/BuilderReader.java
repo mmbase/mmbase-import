@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.69 2006-06-19 16:17:12 pierre Exp $
+ * @version $Id: BuilderReader.java,v 1.70 2006-06-20 20:18:06 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -200,7 +200,7 @@ public class BuilderReader extends DocumentReader {
      */
     public String getStatus() {
         if (!inheritanceResolved) return "inactive";
-        String val=getElementValue("builder.status").toLowerCase();
+        String val = getElementValue("builder.status").toLowerCase();
         if (val.equals("")) {
            if (parentBuilder != null) {
                return "active";
@@ -210,7 +210,7 @@ public class BuilderReader extends DocumentReader {
         }
         // fix invalid values
         if (!val.equals("active")) {
-           val="inactive";
+           val = "inactive";
         }
         return val;
     }
