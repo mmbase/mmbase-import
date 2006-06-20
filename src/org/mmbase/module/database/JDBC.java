@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @deprecation-used drop reference to {@link JDBCInterface}
  * @author vpro
- * @version $Id: JDBC.java,v 1.46 2006-02-10 16:03:00 michiel Exp $
+ * @version $Id: JDBC.java,v 1.47 2006-06-20 20:50:47 michiel Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -40,25 +40,25 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
     private int maxConnections;
     private int maxQueries;
     private String jdbcDatabase;
-    private String databasesupportclass;
-    private DatabaseSupport databasesupport;
+    private String databaseSupportClass;
+    private DatabaseSupport databaseSupport;
     private MultiPoolHandler poolHandler;
     private JDBCProbe probe = null;
-    private String defaultname;
-    private String defaultpassword;
+    private String defaultName;
+    private String defaultPassword;
     private long probeTime;
     private long maxLifeTime = 120000;
 
     {
         addFunction(new GetNodeListFunction("POOLS", PARAMS_PAGEINFO));
         addFunction(new GetNodeListFunction("CONNECTIONS", PARAMS_PAGEINFO));
-    }    
+    }
 
     public void onload() {
         getProps();
         getDriver();
         loadSupport();
-        poolHandler = new MultiPoolHandler(databasesupport,maxConnections,maxQueries);
+        poolHandler = new MultiPoolHandler(databaseSupport, maxConnections, maxQueries);
     }
 
     /*
@@ -100,7 +100,6 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      * Get the driver as specified in our properties
      */
     private void getDriver() {
-        Driver d;
 
         driver = null;
         try {
@@ -114,15 +113,19 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
             log.service("Loaded JDBC driver: " + jdbcDriver);
 
         } catch (Exception e) {
-            log.fatal("JDBC driver not found: " + jdbcDriver + "\n" + Logging.stackTrace(e));
+            log.fatal("JDBC driver not found: " + jdbcDriver , e);
         }
 
-        log.debug("makeUrl(): " + makeUrl());
+        if (log.isDebugEnabled()) {
+            log.debug("makeUrl(): " + makeUrl());
+        }
 
         /* Also get the instance to unload it later */
         for (Enumeration e = DriverManager.getDrivers(); e.hasMoreElements();) {
-            d = (Driver)e.nextElement();
-            log.debug("Driver " + d);
+            Driver d = (Driver) e.nextElement();
+            if (log.isDebugEnabled()) {
+                log.debug("Driver " + d);
+            }
             if (classdriver == d.getClass()) {
                 driver = d;
                 break;
@@ -137,15 +140,13 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      * Get the driver as specified in our properties
      */
     private void loadSupport() {
-        Class cl;
-
         try {
-            cl=Class.forName(databasesupportclass);
-            databasesupport=(DatabaseSupport)cl.newInstance();
-            databasesupport.init();
-            log.debug("Loaded load class : "+databasesupportclass);
+            Class cl = Class.forName(databaseSupportClass);
+            databaseSupport = (DatabaseSupport)cl.newInstance();
+            databaseSupport.init();
+            log.debug("Loaded load class : " + databaseSupportClass);
         } catch (Exception e) {
-            log.error("Can't load class : "+databasesupportclass+"\n"+Logging.stackTrace(e));
+            log.error("Can't load class : " + databaseSupportClass + " " + e.getMessage(), e);
         }
     }
 
@@ -157,9 +158,9 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         jdbcDriver = getInitParameter("driver");
         jdbcURL    = getInitParameter("url");
         jdbcHost   = getInitParameter("host");
-        defaultname=getInitParameter("user");
-        defaultpassword=getInitParameter("password");
-        databasesupportclass=getInitParameter("supportclass");
+        defaultName = getInitParameter("user");
+        defaultPassword = getInitParameter("password");
+        databaseSupportClass = getInitParameter("supportclass");
         probeTime = 30000;
         String tmp = getInitParameter("probetime");
         if (tmp != null) {
@@ -186,18 +187,18 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         log.trace("jdbcDriver="+jdbcDriver +
                   "\njdbcURL="+jdbcURL +
                   "\njdbcHost="+jdbcHost +
-                  "\ndefaultname="+defaultname +
-                  "\ndefaultpassword="+defaultpassword +
-                  "\ndatabasesupportclass="+databasesupportclass);
+                  "\ndefaultName="+defaultName +
+                  "\ndefaultPassword="+defaultPassword +
+                  "\ndatabaseSupportClass="+databaseSupportClass);
         */
 
-        if (defaultname==null) {
-            defaultname="wwwtech";
-            log.warn("name was not set, using default: '" + defaultname +"'");
+        if (defaultName == null) {
+            defaultName = "wwwtech";
+            log.warn("name was not set, using default: '" + defaultName +"'");
         }
-        if (defaultpassword==null) {
-            defaultpassword="xxxxxx";
-            log.warn("name was not set, using default: '" + defaultpassword +"'");
+        if (defaultPassword == null) {
+            defaultPassword="xxxxxx";
+            log.warn("name was not set, using default: '" + defaultPassword +"'");
         }
         tmp = getInitParameter("port");
         if (tmp != null) {
@@ -224,10 +225,10 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
                 log.warn("querys was not set or a invalid integer :" + e + "(using default " + maxQueries + ")");
             }
         }
-        jdbcDatabase=getInitParameter("database");
-        if (databasesupportclass==null || databasesupportclass.length()==0) {
-            databasesupportclass="org.mmbase.module.database.DatabaseSupportShim";
-            log.warn("database supportclass was not known, using default: " + databasesupportclass);
+        jdbcDatabase = getInitParameter("database");
+        if (databaseSupportClass == null || databaseSupportClass.length() == 0) {
+            databaseSupportClass="org.mmbase.module.database.DatabaseSupportShim";
+            log.warn("database supportclass was not known, using default: " + databaseSupportClass);
         }
     }
 
@@ -289,14 +290,13 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      * @javadoc
      */
     public MultiConnection getConnection(String url) throws SQLException {
-        return poolHandler.getConnection(url, defaultname, defaultpassword);
+        return poolHandler.getConnection(url, defaultName, defaultPassword);
     }
 
     /**
      * @javadoc
      */
     public Connection getDirectConnection(String url,String name,String password) throws SQLException {
-
         return DriverManager.getConnection(url, name, password);
     }
 
@@ -304,7 +304,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      * @javadoc
      */
     public Connection getDirectConnection(String url) throws SQLException {
-        return DriverManager.getConnection(url, defaultname, defaultpassword);
+        return DriverManager.getConnection(url, defaultName, defaultPassword);
     }
 
     /**
@@ -314,9 +314,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         try {
             if (poolHandler != null) poolHandler.checkTime();
         } catch(Exception e) {
-            log.error("could not check the time: " + e);
-            log.error(Logging.stackTrace(e));
-            //e.printStackTrace();
+            log.error("could not check the time: " + e, e);
         }
     }
 
@@ -340,10 +338,10 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
     private String stripSensistive(String name) {
         // strip either after the first '?', or the first ',',
         // whichever comes first
-        int i=name.indexOf('?');
-        int j=name.indexOf(',');
-        if ((i>j) && (j!=-1)) i=j;
-        if (i!=-1) {
+        int i = name.indexOf('?');
+        int j = name.indexOf(',');
+        if ((i > j) && (j != -1)) i = j;
+        if (i !=- 1) {
             return name.substring(0,i);
         } else {
             return name;
@@ -359,10 +357,10 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
             String name = (String) i.next();
             MultiPool pool = poolHandler.get(name);
             results.addElement(stripSensistive(name));
-            results.addElement(""+pool.getSize());
-            results.addElement(""+pool.getTotalConnectionsCreated());
+            results.addElement("" + pool.getSize());
+            results.addElement("" + pool.getTotalConnectionsCreated());
         }
-        tagger.setValue("ITEMS","3");
+        tagger.setValue("ITEMS", "3");
         return results;
     }
 
@@ -378,20 +376,20 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
                 MultiConnection realcon=(MultiConnection)f.next();
                 results.addElement(stripSensistive(name.substring(name.lastIndexOf('/')+1)));
                 results.addElement(realcon.getStateString());
-                results.addElement(""+realcon.getLastSQL());
-                results.addElement(""+realcon.getUsage());
+                results.addElement("" + realcon.getLastSQL());
+                results.addElement("" + realcon.getUsage());
                 //results.addElement(""+pool.getStatementsCreated(realcon));
             }
             for (Iterator f=pool.getPool();f.hasNext();) {
                 MultiConnection realcon=(MultiConnection)f.next();
                 results.addElement(stripSensistive(name.substring(name.lastIndexOf('/')+1)));
                 results.addElement(realcon.getStateString());
-                results.addElement(""+realcon.getLastSQL());
-                results.addElement(""+realcon.getUsage());
+                results.addElement("" + realcon.getLastSQL());
+                results.addElement("" + realcon.getUsage());
                 //results.addElement(""+pool.getStatementsCreated(realcon));
             }
         }
-        tagger.setValue("ITEMS","4");
+        tagger.setValue("ITEMS", "4");
         return results;
     }
 
@@ -399,14 +397,14 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      * @javadoc
      */
     public String getUser() {
-        return defaultname;
+        return defaultName;
     }
 
     /**
      * @javadoc
      */
     public String getPassword() {
-        return defaultpassword;
+        return defaultPassword;
     }
 
     /**
@@ -421,6 +419,6 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      * @return a <code>String</code> whith some information about the connection
      */
     public String toString() {
-        return "host: '" + jdbcHost + "' port: '"  + jdbcPort + "' database: '" + jdbcDatabase + "' user: '" + defaultname + "'" + (driver != null ? " driver: " + driver.getClass().getName() + "'" : "") + " max life time: " + maxLifeTime + " ms  probe time: " + probeTime + " ms";
+        return "host: '" + jdbcHost + "' port: '"  + jdbcPort + "' database: '" + jdbcDatabase + "' user: '" + defaultName + "'" + (driver != null ? " driver: " + driver.getClass().getName() + "'" : "") + " max life time: " + maxLifeTime + " ms  probe time: " + probeTime + " ms";
      }
 }
