@@ -13,13 +13,14 @@ import org.mmbase.core.event.EventManager;
 import org.mmbase.module.WatchedReloadableModule;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.util.functions.*;
 
 
 /**
  * This module bootstraps and configures MMBase clustering.
  *
  * @since MMBase-1.8
- * @version $Id: ClusteringModule.java,v 1.7 2006-06-20 08:05:53 michiel Exp $
+ * @version $Id: ClusteringModule.java,v 1.8 2006-06-20 17:30:45 michiel Exp $
  */
 public class ClusteringModule extends WatchedReloadableModule {
 
@@ -82,6 +83,7 @@ public class ClusteringModule extends WatchedReloadableModule {
         }
     }
 
+
     public void reload() {
         try {
             shutdown();
@@ -90,5 +92,81 @@ public class ClusteringModule extends WatchedReloadableModule {
         }
         init();
     }
+
+    /**
+     * @since MMBase-1.8.1
+     */
+    {
+        addFunction(new AbstractFunction("send", Parameter.EMPTY, new ReturnType(Statistics.class, "Stat-structure")) {
+                public Object getFunctionValue(Parameters arguments) {
+                    return clusterManager == null ? new Statistics() : clusterManager.send;
+                }
+            });
+    }
+    /**
+     * @since MMBase-1.8.1
+     */
+    {
+        addFunction(new AbstractFunction("receive", Parameter.EMPTY, new ReturnType(Statistics.class, "Stat-structure")) {
+                public Object getFunctionValue(Parameters arguments) {
+                    return clusterManager == null ? new Statistics() : clusterManager.receive;
+                }
+            });
+    }
+
+    /**
+     * @since MMBase-1.8.1
+     */
+    {
+        addFunction(new AbstractFunction("numbertosend", Parameter.EMPTY, ReturnType.INTEGER) {
+                public Object getFunctionValue(Parameters arguments) {
+                    return Integer.valueOf(clusterManager == null ? -1 : clusterManager.nodesToSend.count());
+                }
+            });
+    }
+    /**
+     * @since MMBase-1.8.1
+     */
+    {
+        addFunction(new AbstractFunction("numbertoreceive", Parameter.EMPTY, ReturnType.INTEGER) {
+                public Object getFunctionValue(Parameters arguments) {
+                    return Integer.valueOf(clusterManager == null ? -1 : clusterManager.nodesToSpawn.count());
+                }
+            });
+    }
+
+    /**
+     * @since MMBase-1.8.1
+     */
+    {
+        addFunction(new AbstractFunction("shutdown", Parameter.EMPTY, ReturnType.VOID) {
+                public Object getFunctionValue(Parameters arguments) {
+                    shutdown();
+                    return "";
+                }
+            });
+    }
+    /**
+     * @since MMBase-1.8.1
+     */
+    {
+        addFunction(new AbstractFunction("start", Parameter.EMPTY, ReturnType.VOID) {
+                public Object getFunctionValue(Parameters arguments) {
+                    init();
+                    return "";
+                }
+            });
+    }
+    /**
+     * @since MMBase-1.8.1
+     */
+    {
+        addFunction(new AbstractFunction("active", Parameter.EMPTY, ReturnType.BOOLEAN) {
+                public Object getFunctionValue(Parameters arguments) {
+                    return Boolean.valueOf(clusterManager != null && clusterManager.kicker != null);
+                }
+            });
+    }
+
 
 }

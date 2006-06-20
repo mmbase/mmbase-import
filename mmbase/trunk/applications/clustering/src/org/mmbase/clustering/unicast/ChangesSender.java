@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.clustering.unicast;
 
+import org.mmbase.clustering.Statistics;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.*;
@@ -27,14 +28,14 @@ import org.mmbase.util.logging.Logging;
  * sending queue over unicast connections
  *
  * @author Nico Klasens
- * @version $Id: ChangesSender.java,v 1.6 2006-06-20 08:05:53 michiel Exp $
+ * @version $Id: ChangesSender.java,v 1.7 2006-06-20 17:30:45 michiel Exp $
  */
 public class ChangesSender implements Runnable {
 
     private static final Logger log = Logging.getLoggerInstance(ChangesSender.class);
 
-    /** counter of send messages */
-    private int outcount = 0;
+
+    private final Statistics send;
 
     /** Thread which sends the messages */
     private Thread kicker = null;
@@ -63,11 +64,12 @@ public class ChangesSender implements Runnable {
      * @param nodesToSend Queue of messages to send
      * @param mmbase MMBase instance
      */
-    ChangesSender(Map configuration, int unicastPort, int unicastTimeout, Queue nodesToSend) {
+    ChangesSender(Map configuration, int unicastPort, int unicastTimeout, Queue nodesToSend, Statistics send) {
         this.nodesToSend = nodesToSend;
         this.configuration = configuration;
         this.defaultUnicastPort = unicastPort;
         this.unicastTimeout = unicastTimeout;
+        this.send = send;
         this.start();
     }
 
@@ -93,7 +95,7 @@ public class ChangesSender implements Runnable {
         while(kicker != null) {
             try {
                 byte[] data = (byte[]) nodesToSend.get();
-
+                long startTime = System.currentTimeMillis();
                 List servers = getActiveServers();
                 for (int i = 0; i < servers.size(); i++) {
                     MMObjectNode node = (MMObjectNode) servers.get(i);
@@ -136,9 +138,12 @@ public class ChangesSender implements Runnable {
                                 }
                             }
                         }
-                        outcount++;
                     }
                 }
+                send.count++;
+                send.bytes += data.length;
+                send.cost += (System.currentTimeMillis() - startTime);
+
             } catch (InterruptedException e) {
                 log.debug(Thread.currentThread().getName() +" was interruped.");
                 break;

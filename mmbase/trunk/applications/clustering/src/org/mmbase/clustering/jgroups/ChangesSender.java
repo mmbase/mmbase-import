@@ -9,6 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.clustering.jgroups;
 
+import org.mmbase.clustering.Statistics;
+
 import org.jgroups.ChannelException;
 import org.jgroups.JChannel;
 import org.jgroups.Message;
@@ -30,14 +32,11 @@ import org.mmbase.util.logging.Logging;
  * @author Rico Jansen
  * @author Nico Klasens
  * @author Costyn van Dongen
- * @version $Id: ChangesSender.java,v 1.5 2006-06-20 08:05:53 michiel Exp $
+ * @version $Id: ChangesSender.java,v 1.6 2006-06-20 17:30:45 michiel Exp $
  */
 public class ChangesSender implements Runnable {
 
     private static final Logger log = Logging.getLoggerInstance(ChangesSender.class);
-
-    /** counter of send messages */
-    private int outcount = 0;
 
     /** Thread which sends the messages */
     private Thread kicker = null;
@@ -46,13 +45,16 @@ public class ChangesSender implements Runnable {
     private final Queue nodesToSend;
 
     /** Channel to send messages on */
-    private final JChannel channel ;
+    private final JChannel channel;
+
+    private final Statistics send;
 
     /** Construct MultiCast Sender
      * @param channel Channel on which to send messages
      * @param nodesToSend Queue of messages to send
      */
-    ChangesSender(JChannel channel, Queue nodesToSend) {
+    ChangesSender(JChannel channel, Queue nodesToSend, Statistics send) {
+        this.send = send;
         this.channel = channel;
         this.nodesToSend = nodesToSend;
         this.start();
@@ -96,6 +98,7 @@ public class ChangesSender implements Runnable {
                 }
 
                 byte[] message = (byte[]) nodesToSend.get();
+                long startTime = System.currentTimeMillis();
                 Message msg = new Message(null, null, message);
                 try {
                     if (log.isDebugEnabled()) {
@@ -105,7 +108,9 @@ public class ChangesSender implements Runnable {
                 } catch (ChannelException e) {
                     log.error("Can't send message" + message + ": " + e.getMessage(), e);
                 }
-                outcount++;
+                send.count++;
+                send.bytes += message.length;
+                send.cost += (System.currentTimeMillis() - startTime);
             } catch (InterruptedException e) {
                 log.debug(Thread.currentThread().getName() +" was interruped.");
                 break;

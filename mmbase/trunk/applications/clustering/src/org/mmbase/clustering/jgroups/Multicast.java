@@ -38,7 +38,7 @@ import org.jgroups.*;
  * @author Nico Klasens
  * @author Costyn van Dongen
  * @author Ronald Wildenberg
- * @version $Id: Multicast.java,v 1.7 2006-06-20 08:05:53 michiel Exp $
+ * @version $Id: Multicast.java,v 1.8 2006-06-20 17:30:45 michiel Exp $
  */
 public class Multicast extends ClusterManager {
 
@@ -154,7 +154,7 @@ public class Multicast extends ClusterManager {
      * seaparate threads.
      */
     protected  synchronized void startCommunicationThreads() {
-        mcs = new ChangesSender(channel, nodesToSend);
+        mcs = new ChangesSender(channel, nodesToSend, send);
         log.service("Started communication sender " + mcs);
         mcr = new ChangesReceiver(channel, nodesToSpawn);
         log.service("Started communication receiver " + mcr);
