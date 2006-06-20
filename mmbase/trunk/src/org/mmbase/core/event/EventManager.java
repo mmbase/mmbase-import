@@ -29,7 +29,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
  * manager is instantiated, event brokers are added for Event, NodeEvent and RelationEvent
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: EventManager.java,v 1.11 2006-04-18 13:03:30 michiel Exp $
+ * @version $Id: EventManager.java,v 1.12 2006-06-20 21:23:15 michiel Exp $
  */
 public class EventManager {
 
@@ -52,6 +52,9 @@ public class EventManager {
      * The collection of event brokers. There is one for every event type that can be sent/received
      */
     private final Set eventBrokers = new CopyOnWriteArraySet();
+
+    private long numberOfPropagatedEvents = 0;
+    private long duration = 0;
 
     /**
      * use this metod to get an instance of the event manager
@@ -194,19 +197,43 @@ public class EventManager {
         if (log.isTraceEnabled()) {
             log.trace("Propagating events to " + eventBrokers);
         }
+        long startTime = System.currentTimeMillis();
         for (Iterator i = eventBrokers.iterator(); i.hasNext();) {
             AbstractEventBroker broker = (AbstractEventBroker) i.next();
             if (broker.canBrokerForEvent(event)) {
                 broker.notifyForEvent(event);
                 if (log.isDebugEnabled()) {
-                    log.debug("event: " + event + " has been accepted by broker " + broker);
+                    if (log.isTraceEnabled()) {
+                        log.trace("event: " + event + " has been accepted by broker " + broker);
+                    } else {
+                        log.debug("event has been accepted by broker " + broker);
+                    }
                 }
             } else {
                 if (log.isDebugEnabled()) {
-                    log.debug("event: " + event + " has been rejected by broker " + broker);
+                    if (log.isTraceEnabled()) {
+                        log.trace("event: " + event + " has been rejected by broker " + broker);
+                    } else {
+                        log.debug("event has been rejected by broker " + broker);
+                    }
                 }
             }
         }
+        numberOfPropagatedEvents++;
+        duration += (System.currentTimeMillis() - startTime);
+    }
+
+    /**
+     * @since MMBase-1.8.1
+     */
+    public long getNumberOfPropagatedEvents() {
+        return numberOfPropagatedEvents;
+    }
+    /**
+     * @since MMBase-1.8.1
+     */
+    public long getPropagationCost() {
+        return duration;
     }
 
 
