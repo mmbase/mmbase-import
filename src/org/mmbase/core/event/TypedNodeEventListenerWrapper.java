@@ -8,6 +8,9 @@
 package org.mmbase.core.event;
 
 import java.util.Properties;
+import org.mmbase.module.core.*;
+import org.mmbase.util.HashCodeUtil;
+
 
 /**
  * This class is a wrapper for node event listeners that only want to listen to
@@ -18,31 +21,56 @@ import java.util.Properties;
  */
 public class TypedNodeEventListenerWrapper implements NodeEventListener {
 
-    private String nodeType;
-
-    private NodeEventListener wrappedListener;
+    private final MMObjectBuilder builder;
+    private final String nodeType;
+    private final NodeEventListener wrappedListener;
+    private final boolean descendants;
 
     /**
      * @param nodeType should be a valid builder name
      * @param listener the node event listener you want to wrap
+     * @param descendants Whether also descendants of the given builder must be listened to. ('true' would be the must logical value).
      */
-    public TypedNodeEventListenerWrapper(String nodeType, NodeEventListener listener) {
-        this.nodeType = nodeType;
+    public TypedNodeEventListenerWrapper(MMObjectBuilder builder, NodeEventListener listener, boolean descendants) {
+        this.builder = builder;
+        this.nodeType = builder.getTableName();
         wrappedListener = listener;
+        this.descendants = descendants;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.mmbase.core.event.NodeEventListener#notify(org.mmbase.core.event.NodeEvent)
-     */
+
     public void notify(NodeEvent event) {
-        if(event.getBuilderName().equals(nodeType)) {
+        if (nodeType.equals(event.getBuilderName())) {
             wrappedListener.notify(event);
+        } else if (descendants) {
+            MMObjectBuilder eventBuilder = MMBase.getMMBase().getBuilder(event.getBuilderName());
+            if(eventBuilder.isExtensionOf(builder)) {
+                wrappedListener.notify(event);
+            }
         }
     }
 
     public String toString() {
         return "TypedNodeEventListenerWrapper(" + wrappedListener + ")";
+    }
+
+    public boolean equals(Object o) {
+        if (o instanceof TypedNodeEventListenerWrapper) {
+            TypedNodeEventListenerWrapper tw = (TypedNodeEventListenerWrapper) o;
+            return
+                nodeType.equals(tw.nodeType) &&
+                wrappedListener.equals(tw.wrappedListener) &&
+                descendants == tw.descendants;
+        } else {
+            return false;
+        }
+    }
+    public int hashCode() {
+        int result = 0;
+        result = HashCodeUtil.hashCode(result, nodeType);
+        result = HashCodeUtil.hashCode(result, wrappedListener);
+        return result;
+
     }
 
 }

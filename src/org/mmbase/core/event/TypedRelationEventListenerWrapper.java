@@ -8,7 +8,9 @@
 package org.mmbase.core.event;
 
 import java.util.Properties;
-
+import org.mmbase.module.core.*;
+import org.mmbase.util.HashCodeUtil;
+import org.mmbase.storage.search.RelationStep;
 /**
  * This class is a wrapper for relation event listeners that only want to listen
  * to events concerning a specific builder - more specifically, events concerning changes
@@ -19,33 +21,76 @@ import java.util.Properties;
  *
  */
 public class TypedRelationEventListenerWrapper implements RelationEventListener {
-    private String nodeType;
 
-    private RelationEventListener wrappedListener;
+    private final MMObjectBuilder builder;
+    private final RelationEventListener wrappedListener;
+    private final int direction;
+    private final boolean descendants;
 
     /**
-     * @param nodeType should be a valid builder name
+     * @param builder The builder which must constrain the listener
      * @param wrappedListener the relation event listener you want to wrap
+     * @param direction At which side of the relation nodes of this builders can be: {@link org.mmbase.storage.search.RelationStep#DIRECTIONS_SOURCE}, {@link org.mmbase.storage.search.RelationStep#DIRECTIONS_DESTIONATION}, or {@link org.mmbase.storage.search.RelationStep#DIRECTIONS_BOTH}
+     * @param descendants Whether also descendants of the given builder must be listened to. ('true' would be the must logical value).
      */
-    public TypedRelationEventListenerWrapper(String nodeType,
-            RelationEventListener wrappedListener) {
-        this.nodeType = nodeType;
+    public TypedRelationEventListenerWrapper(MMObjectBuilder builder, RelationEventListener wrappedListener, int direction, boolean descendants) {
+        this.builder = builder;
         this.wrappedListener = wrappedListener;
+        this.direction = direction;
+        this.descendants = descendants;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.mmbase.core.event.RelationEventListener#fire(org.mmbase.core.event.RelationEvent)
-     */
-    public void notify(RelationEvent event) {
-        if (event.getRelationSourceType().equals(nodeType) || event.getRelationDestinationType().equals(nodeType)) {
+
+    private boolean notify(RelationEvent event, MMObjectBuilder eventBuilder) {
+        if (eventBuilder.equals(builder)
+            || (descendants && eventBuilder.isExtensionOf(builder))) {
             wrappedListener.notify(event);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void notify(RelationEvent event) {
+        switch(direction) {
+        case RelationStep.DIRECTIONS_SOURCE:
+            notify(event, MMBase.getMMBase().getBuilder(event.getRelationSourceType()));
+            break;
+        case RelationStep.DIRECTIONS_DESTINATION:
+            notify(event, MMBase.getMMBase().getBuilder(event.getRelationDestinationType()));
+            break;
+        case RelationStep.DIRECTIONS_BOTH:
+        default: 
+            if (! notify(event, MMBase.getMMBase().getBuilder(event.getRelationSourceType()))) {
+                notify(event, MMBase.getMMBase().getBuilder(event.getRelationDestinationType()));
+            }
         }
     }
 
     public String toString() {
         return "TypedRelationEventListenerWrapper(" + wrappedListener + ")";
     }
+
+    public boolean equals(Object o) {
+        if (o instanceof TypedRelationEventListenerWrapper) {
+            TypedRelationEventListenerWrapper tw = (TypedRelationEventListenerWrapper) o;
+            return
+                builder.equals(tw.builder) &&
+                wrappedListener.equals(tw.wrappedListener) &&
+                direction == tw.direction &&
+                descendants == tw.descendants;
+        } else {
+            return false;
+        }
+    }
+    public int hashCode() {
+        int result = 0;
+        result = HashCodeUtil.hashCode(result, builder);
+        result = HashCodeUtil.hashCode(result, wrappedListener);
+        result = HashCodeUtil.hashCode(result, direction);
+        return result;
+
+    }
+
 
 }
