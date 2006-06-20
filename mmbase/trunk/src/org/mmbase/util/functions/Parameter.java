@@ -27,7 +27,7 @@ import java.io.*;
  * @author Daniel Ockeloen (MMFunctionParam)
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.29 2006-03-20 13:02:03 pierre Exp $
+ * @version $Id: Parameter.java,v 1.30 2006-06-20 20:13:55 michiel Exp $
  * @see Parameters
  */
 
@@ -36,7 +36,10 @@ public class Parameter extends AbstractDescriptor implements java.io.Serializabl
 
     private static final long serialVersionUID = 1L;
     /**
-     * Parameter which might be needed in lots of Parameter definitions.
+     * Parameter which might be needed in lots of Parameter definitions. These parameters are
+     * 'standard' parameters, which can be filled in by the system. E.g. the mmbase taglib uses
+     * these constants, and if it has a cloud ('mm:cloud is used'), then cloud-parameters are filled
+     * automaticly.
      */
     public static final Parameter LANGUAGE = new Parameter("language", String.class);
     public static final Parameter LOCALE   = new Parameter("locale",   Locale.class);
