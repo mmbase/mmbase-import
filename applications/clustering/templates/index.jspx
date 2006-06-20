@@ -40,7 +40,7 @@
               <mm:booleanfunction module="clustering" name="active" inverse="true">
                 <mm:link>
                   <mm:param name="active" value="true" />
-                  <a href="${_}">Incctive</a>
+                  <a href="${_}">Inactive</a>
                 </mm:link>
               </mm:booleanfunction>
             </td>
