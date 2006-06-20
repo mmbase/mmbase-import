@@ -16,6 +16,7 @@
       <%@include file="selectkeyword.jsp"%>
       <%@include file="selectpool.jsp"%>
       <% 
+		String sProviders = searchResults(providers); 
       String providerConstraint = "educations.edutype='intern'"; 
       String providerTitle = "Interne themadag of -training";
       %>
