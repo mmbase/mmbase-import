@@ -1,5 +1,5 @@
 <!ATTLIST security active (true|false) #REQUIRED >
-<!ELEMENT security ( key?, authentication, authorization, sharedsecret ) >
+<!ELEMENT security ( key?, authentication, authorization, sharedsecret? ) >
 <!ELEMENT authentication EMPTY >
 <!ATTLIST authentication class NMTOKEN #REQUIRED >
 <!ATTLIST authentication url CDATA "" > 
