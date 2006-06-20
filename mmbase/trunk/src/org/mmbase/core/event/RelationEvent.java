@@ -10,6 +10,7 @@ package org.mmbase.core.event;
 import java.io.Serializable;
 import java.util.*;
 import org.mmbase.util.HashCodeUtil;
+import org.mmbase.module.core.MMBase;
 
 /**
  * This class reflects a ,,change relation event. it contains information about the kind of event (new, delete, change),
@@ -19,7 +20,7 @@ import org.mmbase.util.HashCodeUtil;
  * 
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: RelationEvent.java,v 1.17 2006-04-18 13:03:30 michiel Exp $
+ * @version $Id: RelationEvent.java,v 1.18 2006-06-20 21:23:57 michiel Exp $
  */
 public class RelationEvent extends Event implements Serializable, Cloneable {
 
@@ -99,6 +100,11 @@ public class RelationEvent extends Event implements Serializable, Cloneable {
         return role;
     }
 
+    /**
+     * I think this method is not needed.
+     * @deprecated
+     */
+    /*
     public RelationEvent clone(String sourceType, String destType) {
         RelationEvent clone = (RelationEvent) super.clone();
         clone.nodeEvent = (NodeEvent) nodeEvent.clone();
@@ -106,7 +112,7 @@ public class RelationEvent extends Event implements Serializable, Cloneable {
         clone.relationDestinationType = destType;
         return clone;
     }
-
+    */
 
     public int hashCode() {
         int result = nodeEvent.hashCode();
