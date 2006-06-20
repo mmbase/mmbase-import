@@ -218,7 +218,7 @@ public class NMIntraToNatMMigrator {
          log.info("in sParentContent changing pages numbers to rubriek numbers");
          sParentContent = sParentContent.replaceAll(sPage,sRubriek);
          log.info("changing relation page-dposrel-page to rubriek-posrel-page for existing pages");
-         iBegNodeIndex = sPosrelContent.indexOf("<node number=\"" + sPage + "\"");
+         iBegNodeIndex = sPosrelContent.indexOf("snumber=\"" + sPage + "\"");
          while (iBegNodeIndex>-1){
             iEndNodeIndex = sPosrelContent.indexOf("</node>",iBegNodeIndex);
             String sNodeContent = sPosrelContent.substring(iBegNodeIndex,iEndNodeIndex);
@@ -227,7 +227,7 @@ public class NMIntraToNatMMigrator {
                sPosrelContent = sPosrelContent.substring(0,iBegNodeIndex) + sNodeContent
                   + sPosrelContent.substring(iEndNodeIndex);
             }
-            iBegNodeIndex = sPosrelContent.indexOf("<node number=\"" + sPage + "\"",iEndNodeIndex);
+            iBegNodeIndex = sPosrelContent.indexOf("snumber=\"" + sPage + "\"",iEndNodeIndex);
          }
       }
 
