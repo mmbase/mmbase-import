@@ -11,6 +11,7 @@ import java.io.*;
 import java.util.*;
 
 import org.mmbase.util.HashCodeUtil;
+import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -22,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: NodeEvent.java,v 1.26 2006-04-18 13:03:30 michiel Exp $
+ * @version $Id: NodeEvent.java,v 1.27 2006-06-20 21:23:57 michiel Exp $
  */
 public class NodeEvent extends Event {
 
@@ -133,12 +134,17 @@ public class NodeEvent extends Event {
 
 
 
-
+    /**
+     * I think this method is not needed.
+     * @deprecated
+     */
+    /*
     public NodeEvent clone(String builderName) {
         NodeEvent clone = (NodeEvent) super.clone();
         clone.builderName = builderName;
         return clone;
     }
+    */
 
     /**
      * For conveneance: conversion of the new event type indication to the old
@@ -238,9 +244,6 @@ public class NodeEvent extends Event {
         newv.putAll(oldv);
 
         NodeEvent event = new NodeEvent(  "local", "builder", 0, oldv, newv, NodeEvent.TYPE_CHANGE);
-        System.out.println("event 1: " + event.toString());
-        NodeEvent event2 = (NodeEvent) event.clone("otherbuilder");
-        System.out.println("clone: " + event2.toString());
         System.out.println("event 1: " + event.toString());
 
     }
