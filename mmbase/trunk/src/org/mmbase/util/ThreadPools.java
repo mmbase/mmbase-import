@@ -15,22 +15,22 @@ import org.mmbase.util.logging.*;
  *
  * @since MMBase 1.8
  * @author Michiel Meewissen
- * @version $Id: ThreadPools.java,v 1.4 2006-01-17 14:45:58 michiel Exp $
+ * @version $Id: ThreadPools.java,v 1.5 2006-06-20 20:18:45 michiel Exp $
  */
 public abstract class ThreadPools {
     private static final Logger log = Logging.getLoggerInstance(ThreadPools.class);
 
     /**
-     * Generic Thread Pools which can be used by 'filters'. 
+     * Generic Thread Pools which can be used by 'filters'.
      */
     public static final Executor filterExecutor = Executors.newCachedThreadPool();
 
-    
+
     /**
      * For jobs there are 'scheduled', and typically happen on larger time-scales.
      */
     public static final Executor jobsExecutor = new ThreadPoolExecutor(2, 10, 5, TimeUnit.MINUTES, new  LinkedBlockingQueue(), new ThreadFactory() {
-            
+
             public Thread newThread(Runnable r) {
                 Thread t = new Thread(r, "JOBTHREAD") {
                         /**
@@ -40,7 +40,7 @@ public abstract class ThreadPools {
                             try {
                                 super.run();
                             } catch (Throwable t) {
-                                log.error("Error during job: " + t.getClass().getName() + " " + t.getMessage() + "\n" + Logging.stackTrace(t));
+                                log.error("Error during job: " + t.getClass().getName() + " " + t.getMessage(), t);
                             }
                         }
                     };
@@ -48,6 +48,6 @@ public abstract class ThreadPools {
                 return t;
             }
         });
-                                                                              
+
 
 }
