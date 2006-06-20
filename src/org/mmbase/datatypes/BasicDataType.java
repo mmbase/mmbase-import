@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.55 2006-06-19 13:05:51 pierre Exp $
+ * @version $Id: BasicDataType.java,v 1.56 2006-06-20 20:15:14 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -556,6 +556,9 @@ s     */
 
     public void setXml(Element element) {
         xml = DocumentReader.toDocument(element).getDocumentElement();
+        if (origin != null) {
+            xml.setAttribute("base", origin.getName());
+        }
         // remove 'specialization' childs (they don't say anything about this datatype itself)
         org.w3c.dom.NodeList childNodes = xml.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {
@@ -971,6 +974,8 @@ s     */
 
     // REQUIRED
     protected class RequiredRestriction extends AbstractRestriction {
+        private static final long serialVersionUID = 1L; 
+
         RequiredRestriction(RequiredRestriction source) {
             super(source);
         }
@@ -991,6 +996,7 @@ s     */
 
     // UNIQUE
     protected class UniqueRestriction extends AbstractRestriction {
+        private static final long serialVersionUID = 1L; 
         UniqueRestriction(UniqueRestriction source) {
             super(source);
         }
@@ -1057,6 +1063,7 @@ s     */
     // TYPE
 
     protected class TypeRestriction extends AbstractRestriction {
+        private static final long serialVersionUID = 1L; 
         TypeRestriction(TypeRestriction source) {
             super(source);
         }
@@ -1077,6 +1084,7 @@ s     */
 
     // ENUMERATION
     protected class EnumerationRestriction extends AbstractRestriction {
+        private static final long serialVersionUID = 1L; 
 
         EnumerationRestriction(EnumerationRestriction source) {
             super(source);
