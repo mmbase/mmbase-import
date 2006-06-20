@@ -97,7 +97,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.36 2006-06-12 08:19:01 nklasens Exp $
+ * @version $Id: ResourceLoader.java,v 1.37 2006-06-20 20:19:08 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -217,7 +217,7 @@ public class ResourceLoader extends ClassLoader {
      * Initializes the Resourceloader using a servlet-context (makes resolving relatively to WEB-INF/config possible).
      * @param sc The ServletContext used for determining the mmbase configuration directory. Or <code>null</code>.
      */
-    public static  void init(ServletContext sc) {
+    public static  synchronized void init(ServletContext sc) {
         servletContext = sc;
         // reset both roots, they will be redetermined using servletContext.
         configRoot = null;
