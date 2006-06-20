@@ -29,7 +29,7 @@ import org.w3c.dom.Element;
  * MMBase Node. E.g. because then it can be accessed in MMBase taglib using mm:field tags.
 
  * @author  Michiel Meeuwissen
- * @version $Id: MapNode.java,v 1.5 2006-02-10 18:00:47 michiel Exp $
+ * @version $Id: MapNode.java,v 1.6 2006-06-20 20:05:32 michiel Exp $
  * @since   MMBase-1.8
  */
 
@@ -55,7 +55,7 @@ public class MapNode extends AbstractNode implements Node {
         nodeManager = nm;
     }
     /**
-     * A node with a 'virtual' nodemanager will be contructed. This virtual node manager will have
+     * A node with a 'virtual' nodemanager will be constructed. This virtual node manager will have
      * fields which are guessed based on the keys and values of the given map.
      */
     public MapNode(Map v, Cloud cloud) {
