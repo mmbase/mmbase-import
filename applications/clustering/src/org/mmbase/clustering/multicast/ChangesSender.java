@@ -9,6 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.clustering.multicast;
 
+import org.mmbase.clustering.Statistics;
+
 import java.net.*;
 import java.io.*;
 
@@ -24,14 +26,13 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: ChangesSender.java,v 1.9 2006-06-20 08:05:53 michiel Exp $
+ * @version $Id: ChangesSender.java,v 1.10 2006-06-20 17:30:45 michiel Exp $
  */
 public class ChangesSender implements Runnable {
 
     private static final Logger log = Logging.getLoggerInstance(ChangesSender.class);
 
-    /** counter of send messages */
-    private int outcount = 0;
+    private final Statistics send;
 
     /** Thread which sends the messages */
     private Thread kicker = null;
@@ -56,7 +57,7 @@ public class ChangesSender implements Runnable {
      * @param mTTL time-to-live of the multicast packet (0-255)
      * @param nodesToSend Queue of messages to send
      */
-    ChangesSender(String multicastHost, int mport, int mTTL, Queue nodesToSend) {
+    ChangesSender(String multicastHost, int mport, int mTTL, Queue nodesToSend, Statistics send) {
         this.mport = mport;
         this.mTTL = mTTL;
         this.nodesToSend = nodesToSend;
@@ -65,6 +66,7 @@ public class ChangesSender implements Runnable {
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
+        this.send = send;
         this.start();
     }
 
@@ -104,6 +106,7 @@ public class ChangesSender implements Runnable {
         while(ms != null) {
             try {
                 byte[] data = (byte[]) nodesToSend.get();
+                long startTime = System.currentTimeMillis();
                 DatagramPacket dp = new DatagramPacket(data, data.length, ia, mport);
                 try {
                     if (log.isDebugEnabled()) {
@@ -114,7 +117,9 @@ public class ChangesSender implements Runnable {
                     log.error("can't send message" + dp + " to " + ia + ":" + mport);
                     log.error(e.getMessage(), e);
                 }
-                outcount++;
+                send.count++;
+                send.bytes += data.length;
+                send.cost += (System.currentTimeMillis() - startTime);
             } catch (InterruptedException e) {
                 log.debug(Thread.currentThread().getName() +" was interruped.");
                 break;
