@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase 1.8
  * @author Ernst Bunders
- * @version $Id: BetterStrategy.java,v 1.19 2006-04-18 13:05:18 michiel Exp $
+ * @version $Id: BetterStrategy.java,v 1.20 2006-06-20 20:16:46 michiel Exp $
  */
 public class BetterStrategy extends ReleaseStrategy {
 
@@ -367,10 +367,9 @@ public class BetterStrategy extends ReleaseStrategy {
                     return;
             }
             try {
-                log.debug("\n******** \n**" + comment + "\n**" + event.toString() + role + "\n**"
-                        + sqlHandler.toSql(query, sqlHandler) + "\n******");
+                log.debug("\n******** \n**" + comment + "\n**" + event.toString() + role + "\n**" + sqlHandler.toSql(query, sqlHandler) + "\n******");
             } catch (SearchQueryException e) {
-                e.printStackTrace();
+                log.warn(e);
             }
         }
     }
