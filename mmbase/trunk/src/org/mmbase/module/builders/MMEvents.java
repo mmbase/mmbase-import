@@ -21,10 +21,10 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @application Tools
  * @author Daniel Ockeloen
- * @version $Id: MMEvents.java,v 1.19 2005-08-31 11:46:55 nklasens Exp $
+ * @version $Id: MMEvents.java,v 1.20 2006-06-20 20:41:30 michiel Exp $
  */
 public class MMEvents extends MMObjectBuilder {
-    private static Logger log = Logging.getLoggerInstance(MMEvents.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(MMEvents.class);
     MMEventsProbe probe;
     DateStrings datestrings;
     private int notifyWindow=3600;
