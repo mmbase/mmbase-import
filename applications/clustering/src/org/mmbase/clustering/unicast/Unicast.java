@@ -22,7 +22,7 @@ import org.mmbase.util.xml.UtilReader;
  * @javadoc
  *
  * @author Nico Klasens
- * @version $Id: Unicast.java,v 1.8 2006-06-20 17:30:45 michiel Exp $
+ * @version $Id: Unicast.java,v 1.9 2006-06-21 05:46:20 michiel Exp $
  */
 public class Unicast extends ClusterManager {
 
@@ -96,7 +96,11 @@ public class Unicast extends ClusterManager {
      */
     protected synchronized void startCommunicationThreads() {
         ucs = new ChangesSender(reader.getProperties(), unicastPort, unicastTimeout, nodesToSend, send);
-        ucr = new ChangesReceiver(unicastPort, nodesToSpawn);
+        try {
+            ucr = new ChangesReceiver(unicastPort, nodesToSpawn);
+        } catch (java.io.IOException ioe) {
+            log.error(ioe);
+        }
     }
 
     /**
