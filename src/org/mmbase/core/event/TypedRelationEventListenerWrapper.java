@@ -42,8 +42,9 @@ public class TypedRelationEventListenerWrapper implements RelationEventListener 
 
 
     private boolean notify(RelationEvent event, MMObjectBuilder eventBuilder) {
-        if (eventBuilder.equals(builder)
-            || (descendants && eventBuilder.isExtensionOf(builder))) {
+        if (eventBuilder != null &&
+            (eventBuilder.equals(builder)
+             || (descendants && eventBuilder.isExtensionOf(builder)))) {
             wrappedListener.notify(event);
             return true;
         } else {
@@ -60,7 +61,7 @@ public class TypedRelationEventListenerWrapper implements RelationEventListener 
             notify(event, MMBase.getMMBase().getBuilder(event.getRelationDestinationType()));
             break;
         case RelationStep.DIRECTIONS_BOTH:
-        default: 
+        default:
             if (! notify(event, MMBase.getMMBase().getBuilder(event.getRelationSourceType()))) {
                 notify(event, MMBase.getMMBase().getBuilder(event.getRelationDestinationType()));
             }
