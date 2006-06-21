@@ -1,0 +1,99 @@
+##
+##
+## UML2MMBase module.
+##
+## The contents of this file are subject to the Mozilla Public License
+##
+## Version 1.0 (the "License"); you may not use this file except in
+## compliance with the License. You may obtain a copy of the License at
+## http://www.mozilla.org/MPL/
+##
+## Software distributed under the License is distributed on an "AS IS"
+## basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+## License for the specific language governing rights and limitations
+## under the License.
+##
+## Velocity Template for de mmbase builder generation
+## based on a UML class diagram with the MMBase sterotype
+##
+## @author  Rudie Ekkelenkamp
+## @version 0.1
+##
+#set ($visibility = "public")
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<mm:cloud method="http" rank="administrator" jspvar="cloud">
+<mm:import externid="action"/>
+<!-- We are going to set the referrer explicitely, because we don't wont to depend on the 'Referer' header (which is not mandatory) -->
+<mm:import externid="language">nl</mm:import>
+<mm:import id="referrer"><%=new java.io.File(request.getServletPath())%>?language=<mm:write  referid="language" /></mm:import>
+<!-- MMBase version: ${mmbaseVersion}    -->
+
+#if(${mmbaseVersion} != '1.6')
+   <mm:import id="jsps">/mmbase/edit/wizard/jsp/</mm:import>
+#else
+   <mm:import id="jsps">/mmapps/editwizard/jsp/</mm:import>
+#end
+<mm:import id="debug">false</mm:import>
+
+<html>
+<head>
+	<title>topmenu</title>
+    <LINK rel="stylesheet" type="text/css" href="css/editorstyle.css">
+</head>
+<body>
+<br>
+#foreach ( $modelElement in $transform.modelElements )
+## Only show public classes in the jsp menu page.
+#set ($visibilitytest = $transform.checkModelElementVisibility($modelElement, "public"))
+#if ($transform.getStereotype($modelElement)==$transform.profile.STEREOTYPE_CLASS_MMBASE && $visibilitytest)
+#set ($class = $modelElement)
+## bepaal alle attributen in zowel de class, interfaces als superclasses
+#set ($attributes = $transform.getAllAttributes($class.id,"true","true","true",""))
+#set ($packagename = $transform.findPackageName(${class.package}))
+#set ($classnameLowercase = $transform.toLowerCase(${class.name}))
+       &nbsp;<a target="wizard" href="<mm:url referids="referrer" page="${jsps}list.jsp">
+        <mm:param name="wizard">config/${class.name}/${class.name}</mm:param>
+        <mm:param name="nodepath">$class.name</mm:param>
+#set ($attributeCount=0)
+		<mm:param name="fields">#foreach ( $att in $attributes)#if(!$transform.isSystemAttribute($att))#if (  ($visibility == "private") || ( ($visibility == "protected") && ( ($att.visibility == "public") || ($att.visibility == "protected") ) ) || ( ($visibility == "public") &&  ($att.visibility == "public") )  )#if($attributeCount != 0),#else#set($attributeCount=$attributeCount+1)#end$transform.toLowerCase($transform.getAttributeName($att))#end#end#end</mm:param>
+#set($attributeCount=0)
+		<mm:param name="searchfields">#foreach ( $att in $attributes)#if(!$transform.isSystemAttribute($att))#if (  ($visibility == "private") || ( ($visibility == "protected") && ( ($att.visibility == "public") || ($att.visibility == "protected") ) ) || ( ($visibility == "public") &&  ($att.visibility == "public") )  )#if($attributeCount != 0),#else#set($attributeCount=$attributeCount+1)#end$transform.toLowerCase($transform.getAttributeName($att))#end#end#end</mm:param>
+        <mm:param name="pagelength">100</mm:param>
+        <mm:param name="maxpagecount">50</mm:param>
+      </mm:url>">$class.name</a><p/>
+
+#end
+#end
+<!-- The following editors are added by default by uml2mmbase: -->
+<p/>
+       &nbsp;<a target="wizard" href="<mm:url referids="referrer" page="${jsps}list.jsp">
+        <mm:param name="wizard">config/images/images</mm:param>
+        <mm:param name="nodepath">images</mm:param>
+		<mm:param name="fields">title,description</mm:param>
+		<mm:param name="searchfields">title,description</mm:param>
+        <mm:param name="pagelength">100</mm:param>
+        <mm:param name="maxpagecount">50</mm:param>
+      </mm:url>">images</a>
+<p/>
+       &nbsp;<a target="wizard" href="<mm:url referids="referrer" page="${jsps}list.jsp">
+        <mm:param name="wizard">config/urls/urls</mm:param>
+        <mm:param name="nodepath">urls</mm:param>
+		<mm:param name="fields">name,url,description</mm:param>
+		<mm:param name="searchfields">name,url,description</mm:param>
+        <mm:param name="pagelength">100</mm:param>
+        <mm:param name="maxpagecount">50</mm:param>
+      </mm:url>">urls</a>
+<p/>
+       &nbsp;<a target="wizard" href="<mm:url referids="referrer" page="${jsps}list.jsp">
+        <mm:param name="wizard">config/attachments/attachments</mm:param>
+        <mm:param name="nodepath">attachments</mm:param>
+		<mm:param name="fields">title,description,filename</mm:param>
+		<mm:param name="searchfields">title,description,filename</mm:param>
+        <mm:param name="pagelength">100</mm:param>
+        <mm:param name="maxpagecount">50</mm:param>
+      </mm:url>">attachments</a>
+
+</body>
+</html>
+
+</mm:cloud>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<allowrel exportsource="jdbc:mysql://localhost/cmsc" timestamp="20050919142139">
+   <node number="800" owner="default" snumber="44002" dnumber="319" rtype="allowrel" dir="bidirectional">
+      <allow>yes</allow>
+   </node>
+   <node number="801" owner="default" snumber="44001" dnumber="318" rtype="allowrel" dir="bidirectional">
+      <allow>yes</allow>
+   </node>
+   <node number="802" owner="default" snumber="44001" dnumber="34001" rtype="allowrel" dir="bidirectional">
+      <allow>yes</allow>
+   </node>
+   <node number="803" owner="default" snumber="44001" dnumber="34002" rtype="allowrel" dir="bidirectional">
+      <allow>yes</allow>
+   </node>
+   <node number="804" owner="default" snumber="44003" dnumber="34003" rtype="allowrel" dir="bidirectional">
+      <allow>yes</allow>
+   </node>
+   <node number="804" owner="default" snumber="44003" dnumber="34004" rtype="allowrel" dir="bidirectional">
+      <allow>yes</allow>
+   </node>
+</allowrel>
