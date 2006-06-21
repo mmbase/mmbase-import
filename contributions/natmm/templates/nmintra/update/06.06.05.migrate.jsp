@@ -277,7 +277,6 @@
 		</mm:node>
 	</mm:listnodes>
 	15. artikel met info pagina<br/>
-	<mm:node number="104653" id="def_ew" />
 	<mm:listnodes type="editwizards" constraints="wizard = 'config/pagina/pagina_artikel_info'">
 		<mm:relatednodes type="paginatemplate" id="artikel_info_template">
 			<mm:createrelation source="artikel_info_template" destination="def_ew" role="related" />
