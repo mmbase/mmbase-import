@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.159 2006-06-08 13:24:47 nklasens Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.160 2006-06-21 14:17:52 johannes Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1538,6 +1538,9 @@ public class DatabaseStorageManager implements StorageManager {
                     if (factory.hasOption(Attributes.STORES_BINARY_AS_FILE) && (field.getType() == Field.TYPE_BINARY)) {
                         continue;
                     }
+                    if (field.getType() == Field.TYPE_BINARY) {
+                        continue;
+                    }
                     // store the fieldname and the value parameter
                     String fieldName = (String)factory.getStorageIdentifier(field);
                     if (fieldNames == null) {
@@ -1637,6 +1640,9 @@ public class DatabaseStorageManager implements StorageManager {
                         if (field.getType() == Field.TYPE_BINARY && factory.hasOption(Attributes.STORES_BINARY_AS_FILE)) {
                             value =  getBlobFromFile(node, field, true);
                             if (value == BLOB_SHORTED) value = MMObjectNode.VALUE_SHORTED;
+                        } else if (field.getType() == Field.TYPE_BINARY) {
+                            // it is never in the resultset that came from the database
+                            value = MMObjectNode.VALUE_SHORTED;
                         } else {
                             String id = (String)factory.getStorageIdentifier(field);
                             value = getValue(result, result.findColumn(id), field, true);
