@@ -81,7 +81,7 @@ public class ContentHelper {
 
    public String getTitleField(NodeManager objectmanager) {
       String titleField = null;
-      String [] titleFields = { "titel", "naam", "title", "name" };
+      String [] titleFields = { "titel", "naam", "title", "name", "filename" };
       for(int f=0; f<titleFields.length && titleField==null; f++) {
          if(objectmanager.hasField(titleFields[f])) {
            titleField = titleFields[f];
