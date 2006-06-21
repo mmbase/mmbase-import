@@ -44,7 +44,7 @@ public class TypedNodeEventListenerWrapper implements NodeEventListener {
             wrappedListener.notify(event);
         } else if (descendants) {
             MMObjectBuilder eventBuilder = MMBase.getMMBase().getBuilder(event.getBuilderName());
-            if(eventBuilder.isExtensionOf(builder)) {
+            if(eventBuilder != null && eventBuilder.isExtensionOf(builder)) {
                 wrappedListener.notify(event);
             }
         }
