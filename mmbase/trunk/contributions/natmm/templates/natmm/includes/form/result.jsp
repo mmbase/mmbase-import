@@ -5,7 +5,7 @@
 String postingStr = request.getParameter("pst");
 String referer = request.getParameter("referer");
 String style = request.getParameter("style");
-
+String nums = request.getParameter("nums");
 if(referer!=null) { 
    %>
    <% if(style!=null) { %><link rel="stylesheet" type="text/css" href="<%= style %>" /><% } %>
@@ -77,8 +77,9 @@ if(referer!=null) {
                String formulierveld_number =  thisField.getStringValue("number");
                String formulierveld_label = HtmlCleaner.cleanText(thisField.getStringValue("label"),"<",">");
                String formulierveld_type =  thisField.getStringValue("type");
-               boolean isRequired = thisField.getStringValue("verplicht").equals("1"); %>
-               <mm:related path="constraints,formulierveldantwoord" constraints="constraints.type=1">
+               boolean isRequired = thisField.getStringValue("verplicht").equals("1"); 
+               String sConstrains = "(formulierveldantwoord.number in (0," + nums + ") AND (constraints.type=1)"; %>
+               <mm:related path="constraints,formulierveldantwoord" constraints="<%= sConstrains %>">
                   <% isRequired = true; %>
                </mm:related>
             <% String formulierveld_warning = "U bent vergeten '" +  formulierveld_label + "' in te vullen";
