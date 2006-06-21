@@ -4,7 +4,7 @@
   <articleinfo >
     <title>Cloud Security Configuration</title>
     <date>2004-06-07</date>
-    <edition>$Id: cloud-security.xml,v 1.3 2004-06-07 16:31:18 michiel Exp $</edition>
+    <edition>$Id: cloud-security.xml,v 1.4 2006-06-21 05:24:39 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Henk</firstname>
@@ -35,7 +35,7 @@
       </revision>
     </revhistory>
   </articleinfo>
-  <section>
+  <section id="cloud_security">
     <title>A security implementation that uses the cloud</title>
     <para>
       Cloud security uses the object mmbaseusers to store information used for authorization and
@@ -51,7 +51,7 @@
       security with the power of 'context' security. It can be downloaded separately.
     </para>
   </section>
-  <section>
+  <section id="users_ranks_rights">
     <title>Users, ranks and rights</title>
     <para>
       Users are stored in the object 'mmbaseusers'. Users can be added by the user
@@ -82,7 +82,8 @@
         </para>
       </listitem>
     </itemizedlist>
-    </section><section>
+  </section>
+  <section id="installing">
     <title>Installing Cloud Security</title>
     <para>To install Cloud Security you have to:</para>
     <orderedlist>

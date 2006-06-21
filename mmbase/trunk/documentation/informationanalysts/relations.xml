@@ -4,7 +4,7 @@
   <articleinfo>
     <title>Relations in MMBase</title>
     <date>2003-05-14</date>
-    <edition>$Id: relations.xml,v 1.8 2004-01-22 13:48:43 michiel Exp $</edition>
+    <edition>$Id: relations.xml,v 1.9 2006-06-21 05:24:39 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Henk</firstname>
@@ -30,7 +30,7 @@
       <revision><revnumber>0.2</revnumber><date>2004-01-17</date><authorinitials>MM</authorinitials></revision>
     </revhistory>
   </articleinfo>
-  <section>
+  <section id="mmbase">
     <title>Relations in MMBase</title>
     <para>
       MMBase is an object oriented content management system. I.e. text, images and other content
@@ -45,7 +45,7 @@
       use the &quot;pos&quot; field of the relation. In general, you can create relations with
       whatever fields you need for your content model. For instance, when connecting employees to
       departments one can use a relation which contains an extra String field to store information
-      on the function(s) an employee has in his/her department(s). 
+      on the function(s) an employee has in his/her department(s).
       <!-- The MyCompany example application contains the rolerel which does just that. -->
     </para>
     <para>
@@ -100,7 +100,7 @@
       </listitem>
     </orderedlist>
   </section>
-  <section>
+  <section id="fields">
     <title>
       Creating a relation object type with the fields that are necessary in the
       relation
@@ -110,7 +110,7 @@
       will have a closer look at two standard object type definitions used for relations: insrel
       (defined in insrel.xml) and posrel (defined in posrel.xml).
     </para>
-    <section>
+    <section id="insrel">
       <title>The base relation type (insrel)</title>
       <para>
         The insrel.xml builder definition defines the base type for relation objects. A relation
@@ -164,12 +164,12 @@
           </para>
           <para>
             Directionality only tells something about the visibility of the relation. A unidirectional
-            relation is not visible from the destination node. 
+            relation is not visible from the destination node.
           </para>
         </listitem>
       </orderedlist>
     </section>
-    <section>
+    <section id="posrel">
       <title>The posrel.xml builder.</title>
       <para>
         Have a look at the posrel.xml builder in the MyNews application. The posrel.xml builder
@@ -183,7 +183,7 @@
       </para>
     </section>
   </section>
-  <section>
+  <section id="role">
     <title>Assign a role to the in the list of relation definitions (reldef)</title>
     <para>
       In the previous section we saw what a builder for a relation looks like. You can use these
@@ -231,7 +231,7 @@
         </para>
       </listitem>
     </orderedlist>
-    <example>
+    <example id="example_roles">
       <title>Roles (reldef)</title>
       <screenshot>
         <graphic fileref="media/reldef.jpg"/>
@@ -271,11 +271,11 @@
       </para>
     </example>
   </section>
-  <section>
+  <section id="allowed_relations">
     <title>
       Enter the source-relation-destination information into the list of allowed relations
       (typerel)
-    </title>    
+    </title>
     <para>
       In the previous section we saw how we can define relation roles in MMBase. Principally you could be
       ready now to create actual relation instances. You could take two object and connect them by a
@@ -349,7 +349,7 @@
         </note>
       </listitem>
     </orderedlist>
-    <example>
+    <example id="example_typerel">
       <title>Allowed relations types (typerel)</title>
       <screenshot>
         <graphic fileref="media/typerel.jpg"/>
@@ -401,7 +401,7 @@
       </para>
     </note>
   </section>
-  <section>
+  <section id="create">
     <title>Create relations</title>
     <para>
       Every interface to the MMBase cloud provides its own way for creating relations. We will have a
@@ -450,7 +450,7 @@
       </listitem>
     </orderedlist>
   </section>
-  <section>
+  <section id="use">
     <title>Use relations</title>
     <para>
       Every interface also provides its own way for using relations. In the mmeditors one can use
