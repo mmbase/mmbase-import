@@ -11,7 +11,6 @@ package com.finalist.cmsc.beans.om;
 
 /**
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
  */
 @SuppressWarnings("serial")
 public class Site extends Page {

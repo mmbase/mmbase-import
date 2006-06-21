@@ -23,7 +23,6 @@ import org.apache.pluto.om.portlet.PortletDefinition;
  * Implementation of the PortletInvokerFactory
  *
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
  */
 public class PortletInvokerFactoryImpl implements PortletInvokerFactory {
 	private static Log log = LogFactory.getLog(PortletInvokerFactoryImpl.class);

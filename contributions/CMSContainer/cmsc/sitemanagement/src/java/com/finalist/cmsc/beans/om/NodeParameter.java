@@ -16,7 +16,6 @@ import org.mmbase.bridge.Node;
 
 /**
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
  */
 @SuppressWarnings("serial")
 public class NodeParameter extends NodeBean {

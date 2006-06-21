@@ -19,7 +19,6 @@ import com.finalist.pluto.portalImpl.services.ServiceManager;
 
 /**
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
  */
 public class ContentRepository {
 	private final static ContentRepositoryService cService = (ContentRepositoryService) ServiceManager

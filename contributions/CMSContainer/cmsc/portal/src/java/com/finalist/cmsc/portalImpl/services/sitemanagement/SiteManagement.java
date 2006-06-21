@@ -24,7 +24,6 @@ import com.finalist.pluto.portalImpl.services.ServiceManager;
  * implementation.
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
  */
 public class SiteManagement {
 	private final static SiteManagementService cService = (SiteManagementService) ServiceManager

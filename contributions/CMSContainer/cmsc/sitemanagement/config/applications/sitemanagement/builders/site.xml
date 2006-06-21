@@ -49,5 +49,116 @@
             <type key="false" notnull="true" size="40" state="persistent">STRING</type>
          </db>
       </field>
+
+      <field>
+         <descriptions>
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <gui>
+            <guiname xml:lang="nl">Auteur</guiname>
+            <guiname xml:lang="en">Creator</guiname>
+         </gui>
+         <editor>
+            <positions>
+               <input>5</input>
+               <list>-1</list>
+               <search>-1</search>
+            </positions>
+         </editor>
+			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+         <db>
+            <name>creator</name>
+            <type key="false" notnull="true" size="150" state="persistent">STRING</type>
+         </db>
+      </field>
+      <field>
+         <descriptions>
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <gui>
+            <guiname xml:lang="nl">Taal</guiname>
+            <guiname xml:lang="en">Language</guiname>
+         </gui>
+         <editor>
+            <positions>
+               <input>6</input>
+               <list>-1</list>
+               <search>-1</search>
+            </positions>
+         </editor>
+			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+         <db>
+            <name>language</name>
+            <type key="false" notnull="true" size="2" state="persistent">STRING</type>
+         </db>
+      </field>
+      <field>
+         <descriptions>
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <gui>
+            <guiname xml:lang="nl">Publiseerder</guiname>
+            <guiname xml:lang="en">Publisher</guiname>
+         </gui>
+         <editor>
+            <positions>
+               <input>7</input>
+               <list>-1</list>
+               <search>-1</search>
+            </positions>
+         </editor>
+			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+         <db>
+            <name>publisher</name>
+            <type key="false" notnull="true" size="150" state="persistent">STRING</type>
+         </db>
+      </field>
+      <field>
+         <descriptions>
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <gui>
+            <guiname xml:lang="nl">Bronvermelding</guiname>
+            <guiname xml:lang="en">Source</guiname>
+         </gui>
+         <editor>
+            <positions>
+               <input>8</input>
+               <list>-1</list>
+               <search>-1</search>
+            </positions>
+         </editor>
+			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+         <db>
+            <name>source</name>
+            <type key="false" notnull="true" size="150" state="persistent">STRING</type>
+         </db>
+      </field>
+      <field>
+         <descriptions>
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <gui>
+            <guiname xml:lang="nl">Rechten</guiname>
+            <guiname xml:lang="en">Rights</guiname>
+         </gui>
+         <editor>
+            <positions>
+               <input>9</input>
+               <list>-1</list>
+               <search>-1</search>
+            </positions>
+         </editor>
+			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+         <db>
+            <name>rights</name>
+            <type key="false" notnull="true" size="150" state="persistent">STRING</type>
+         </db>
+      </field>
 </fieldlist>
 </builder>

@@ -28,7 +28,6 @@ import com.finalist.pluto.portalImpl.aggregation.*;
  * Container tag for a Screen
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
  */
 public class ScreenTag extends CmscTag {
 	private static Log log = LogFactory.getLog(ScreenTag.class);

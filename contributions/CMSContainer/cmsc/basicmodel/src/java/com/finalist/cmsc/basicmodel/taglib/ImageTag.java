@@ -16,7 +16,6 @@ import javax.servlet.jsp.JspTagException;
  * This tag renders an html image tag to display an image from MMBase.
  *
  * @author Hillebrand Gelderblom
- * @version $Revision: 1.1 $, $Date: 2006-06-12 13:08:48 $
  */
 public class ImageTag extends org.mmbase.bridge.jsp.taglib.ImageTag {
    /** URL to the jsp used to display the image. */

@@ -310,12 +310,36 @@
 				<description xml:lang="en"></description>
 			</descriptions>
 			<gui>
+				<guiname xml:lang="nl">Archief datum</guiname>
+				<guiname xml:lang="en">Archivedate</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>16</input>
+					<list>-1</list>
+					<search>-1</search>
+				</positions>
+			</editor>
+			<datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+				<default value="today + 100 year" />
+			</datatype>
+			<db>
+				<name>archivedate</name>
+				<type key="false" notnull="true" state="persistent">DATETIME</type>
+			</db>
+		</field>
+		<field>
+			<descriptions>
+				<description xml:lang="nl"></description>
+				<description xml:lang="en"></description>
+			</descriptions>
+			<gui>
 				<guiname xml:lang="nl">Status</guiname>
 				<guiname xml:lang="en">Status</guiname>
 			</gui>
 			<editor>
 				<positions>
-					<input>16</input>
+					<input>17</input>
 					<list>-1</list>
 					<search>-1</search>
 				</positions>

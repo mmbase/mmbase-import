@@ -13,6 +13,13 @@
 	<field name="description" />
 	<field name="inmenu" />
 	<field name="secure" />
+	<field name="creator" />
+	<field name="publisher" />
+	<field name="source" />
+	<field name="language" />
+	<field name="rights" />
+	<field name="archivedate" />
+	
 	<relation destination="layout" role="allowrel" />
 	<relation destination="layout" role="layoutrel" />
 	<relation destination="page" role="navrel" />

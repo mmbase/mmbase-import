@@ -15,6 +15,7 @@ import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
 
 import net.sf.mmapps.commons.bridge.CloudUtil;
+import net.sf.mmapps.commons.util.StringUtil;
 import net.sf.mmapps.modules.cloudprovider.CloudProvider;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
@@ -39,7 +40,6 @@ import com.finalist.pluto.portalImpl.util.Properties;
  * manages the Screens/Layout and Portlets
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
  */
 public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
 	private static Log log = LogFactory.getLog(SiteManagementServiceMMBaseImpl.class);
@@ -158,7 +158,10 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
             String key = param.getKey();
             String value = param.getValue();
             Cloud cloud = getUserCloud();
-            Node node = cloud.getNode(value);
+            Node node = null;
+            if (!StringUtil.isEmptyOrWhitespace(value)) {
+                node = cloud.getNode(value);
+            }
             PortletUtil.updatePortletParameter(cloud, portletId, key, node);
         }
 
@@ -270,23 +273,21 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
 	 * @see net.sf.mmapps.commons.portalImpl.services.sitemanagement.SiteManagementService#getStylesheetForPage(int)
 	 */
 	public List<Stylesheet> getStylesheetForPageByPath (String path) {
-            List<Page> pagesToRoot = getListFromPath(path);//get all pages to root
-            List<Integer> stylesheetNumbers;
-            List<Stylesheet> stylesheets = new ArrayList<Stylesheet>();
-            for(int i=pagesToRoot.size(); i > 0; i-- ){//start with deepest page in tree
-                Page page = pagesToRoot.get(i-1);
-                if(!page.getStylesheet().isEmpty()){
-                    stylesheetNumbers = page.getStylesheet();
-                    for (int j =0; j <stylesheetNumbers.size(); j++) {
-                        Integer stylesheetNumber = stylesheetNumbers.get(j);
-                        Stylesheet stylesheet = siteModelManager.getStylesheet(stylesheetNumber.intValue());
-                        stylesheets.add(stylesheet);
-                        return stylesheets;
-                    }
-                }
+        List<Page> pagesToRoot = getListFromPath(path);//get all pages to root
+        List<Stylesheet> stylesheets = new ArrayList<Stylesheet>();
+
+        for(int count = 0; count < pagesToRoot.size(); count++){
+            Page page = pagesToRoot.get(count);
+
+            List<Integer> stylesheetNumbers = page.getStylesheet();
+            for (int j =0; j <stylesheetNumbers.size(); j++) {
+                Integer stylesheetNumber = stylesheetNumbers.get(j);
+                Stylesheet stylesheet = siteModelManager.getStylesheet(stylesheetNumber.intValue());
+                stylesheets.add(stylesheet);
             }
-            return new ArrayList<Stylesheet>();
         }
+        return stylesheets;
+    }
 
 
 	/**

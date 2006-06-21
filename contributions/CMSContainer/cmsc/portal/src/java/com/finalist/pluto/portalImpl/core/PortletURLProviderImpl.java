@@ -31,6 +31,9 @@ import org.apache.pluto.services.information.PortletURLProvider;
 public class PortletURLProviderImpl implements PortletURLProvider {
 	private static Log log = LogFactory.getLog(PortletURLProviderImpl.class);
 
+    protected String windowid;
+    protected String page;
+    
 	private DynamicInformationProviderImpl provider;
 
 	private PortletWindow portletWindow;
@@ -50,34 +53,27 @@ public class PortletURLProviderImpl implements PortletURLProvider {
 	public PortletURLProviderImpl(DynamicInformationProviderImpl provider, PortletWindow portletWindow) {
 		this.provider = provider;
 		this.portletWindow = portletWindow;
-
-		log.debug(">>>>>>WINDOW='" + portletWindow.getId() + "'");
 	}
 
 	// PortletURLProvider implementation.
 
 	public void setPortletMode(PortletMode mode) {
-		log.debug(">>>>>>setPortletMode='" + mode.toString() + "'");
 		this.mode = mode;
 	}
 
 	public void setWindowState(WindowState state) {
-		log.debug(">>>>>>setWindowState='" + state.toString() + "'");
 		this.state = state;
 	}
 
 	public void setAction() {
-		log.debug(">>>>>>setAction");
 		action = true;
 	}
 
 	public void setSecure() {
-		log.debug(">>>>>>setSecure");
 		secure = true;
 	}
 
 	public void clearParameters() {
-		log.debug(">>>>>>clearParameters");
 		clearParameters = true;
 	}
 
@@ -91,35 +87,51 @@ public class PortletURLProviderImpl implements PortletURLProvider {
             Object value = entry.getValue();
             String[] values = value instanceof String ?
                 new String[]{(String) value} : (String[]) value;
-
-				log.debug(">>>>>>setParameters:'" + name + "'='" + values + "'");
-				
         }
 	}
 
 	public String toString() {
-		PortalURL url = PortalEnvironment.getPortalEnvironment(provider.request).getRequestedPortalURL();
+        PortalURL url = null;
+        if (page != null) {
+            url = new PortalURL(provider.request, page);
+        }
+        else {
+            url = PortalEnvironment.getPortalEnvironment(provider.request).getRequestedPortalURL();
+        }
 
-		PortalControlParameter controlURL = new PortalControlParameter(url);
+        PortalControlParameter controlURL = new PortalControlParameter(url);
 
-		if (mode != null) {
-			controlURL.setMode(portletWindow, mode);
-		}
+        if (page != null) {
+    		if (mode != null) {
+    			controlURL.setMode(windowid, mode);
+    		}
+    		if (state != null) {
+    			controlURL.setState(windowid, state);
+    		}
 
-		if (state != null) {
-			controlURL.setState(portletWindow, state);
-		}
+            // set portlet id for associated request parms
+            controlURL.setPortletId(windowid);
+            if (action) {
+                controlURL.setAction(windowid);
+            }
+        }
+        else {
+            if (mode != null) {
+                controlURL.setMode(portletWindow, mode);
+            }
+            if (state != null) {
+                controlURL.setState(portletWindow, state);
+            }
+            if (clearParameters) {
+                controlURL.clearRenderParameters(portletWindow);
+            }
 
-		if (clearParameters) {
-			log.debug(">>>>>>CLR");
-			controlURL.clearRenderParameters(portletWindow);
-		}
-
-		// set portlet id for associated request parms
-		controlURL.setPortletId(portletWindow);
-		if (action) {
-			controlURL.setAction(portletWindow);
-		}
+            // set portlet id for associated request parms
+            controlURL.setPortletId(portletWindow);
+            if (action) {
+                controlURL.setAction(portletWindow);
+            }
+        }
 
 		if (parameters != null) {
 			Iterator names = parameters.keySet().iterator();
@@ -132,12 +144,27 @@ public class PortletURLProviderImpl implements PortletURLProvider {
 					// name),values);
 					controlURL.setRequestParam(name, values);
 				} else {
-					controlURL.setRenderParam(portletWindow, name, values);
+                    if (page != null) {
+                        controlURL.setRenderParam(windowid, name, values);
+                    }
+                    else {
+                        controlURL.setRenderParam(portletWindow, name, values);
+                    }
 				}
 			}
 		}
 
 		return url.toString(controlURL, new Boolean(secure));
 	}
+
+    
+    public void setPage(String page) {
+        this.page = page;
+    }
+
+    
+    public void setWindowid(String windowid) {
+        this.windowid = windowid;
+    }
 
 }

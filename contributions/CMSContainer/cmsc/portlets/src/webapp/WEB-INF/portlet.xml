@@ -66,7 +66,7 @@
 		<description>MenuPortlet</description>
 		<portlet-name>menuportlet</portlet-name>
 		<display-name>MenuPortlet</display-name>
-		<portlet-class>com.finalist.cmsc.portlets.MenuPortlet</portlet-class>
+		<portlet-class>com.finalist.cmsc.portlets.JspPortlet</portlet-class>
 		<init-param>
 			<name>template.edit_defaults</name>
 			<value>Menu.jsp</value>
@@ -153,4 +153,63 @@
 		</portlet-info>
 	</portlet>
 
+	<portlet>
+		<description>the server side include portlet</description>
+		<portlet-name>serversideincludeportlet</portlet-name>
+		<display-name>Server Side Include Portlet</display-name>
+		<portlet-class>com.finalist.cmsc.portlets.ServerSideIncludePortlet</portlet-class>
+		<init-param>
+			<name>template.edit_defaults</name>
+			<value>ServerSideInclude.jsp</value>
+		</init-param>
+		<init-param>
+			<name>template.help</name>
+			<value>ServerSideInclude.jsp</value>
+		</init-param>
+		<supports>
+			<mime-type>text/html</mime-type>
+			<portlet-mode>VIEW</portlet-mode>
+			<portlet-mode>HELP</portlet-mode>
+			<portlet-mode>EDIT_DEFAULTS</portlet-mode>
+			<portlet-mode>DELETE</portlet-mode>
+		</supports>
+		<supported-locale>en</supported-locale>
+		<supported-locale>nl</supported-locale>
+		<resource-bundle>com.finalist.cmsc.portlets.ServerSideIncludePortlet</resource-bundle>
+		<portlet-info>
+			<title>ServerSideInclude Portlet</title>
+			<short-title>ServerSideInclude</short-title>
+			<keywords>server,side,include</keywords>
+		</portlet-info>
+	</portlet>
+
+	<portlet>
+		<description>the jsp portlet, which only renders a piece of jsp</description>
+		<portlet-name>jspportlet</portlet-name>
+		<display-name>Jsp Portlet</display-name>
+		<portlet-class>com.finalist.cmsc.portlets.JspPortlet</portlet-class>
+		<init-param>
+			<name>template.edit_defaults</name>
+			<value>Jsp.jsp</value>
+		</init-param>
+		<init-param>
+			<name>template.help</name>
+			<value>Jsp.jsp</value>
+		</init-param>
+		<supports>
+			<mime-type>text/html</mime-type>
+			<portlet-mode>VIEW</portlet-mode>
+			<portlet-mode>HELP</portlet-mode>
+			<portlet-mode>EDIT_DEFAULTS</portlet-mode>
+			<portlet-mode>DELETE</portlet-mode>
+		</supports>
+		<supported-locale>en</supported-locale>
+		<supported-locale>nl</supported-locale>
+		<resource-bundle>com.finalist.cmsc.portlets.JspPortlet</resource-bundle>
+		<portlet-info>
+			<title>Jsp Portlet</title>
+			<short-title>Jsp</short-title>
+			<keywords>jsp,static</keywords>
+		</portlet-info>
+	</portlet>
 </portlet-app>

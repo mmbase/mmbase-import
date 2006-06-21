@@ -20,7 +20,6 @@ import net.sf.mmapps.commons.web.FriendlyUrlFilter;
  * 
  * @author R.W. van 't Veer
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
  */
 public class ControllerFilter extends FriendlyUrlFilter {
 

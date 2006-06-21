@@ -18,7 +18,6 @@ import com.finalist.cmsc.portalImpl.services.contentrepository.ContentRepository
  * List the available content elements
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
  */
 public class ListContentElementsTag extends AbstractListTag {
 

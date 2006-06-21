@@ -48,27 +48,48 @@
 				<type state="persistent" size="20" notnull="true" key="false">STRING</type>
 			</db>
 		</field>
-
 		<field>
+			<descriptions>
+				<description xml:lang="nl"></description>
+				<description xml:lang="en"></description>
+			</descriptions>
 			<gui>
-				<guiname xml:lang="fr">mesure</guiname>
-				<guiname xml:lang="nl">grootte</guiname>
-				<guiname xml:lang="en">size</guiname>
-				<guiname xml:lang="us">size</guiname>
+				<guiname xml:lang="nl">Breedte</guiname>
+				<guiname xml:lang="en">Width</guiname>
 			</gui>
 			<editor>
 				<positions>
-					<input>2</input>
-					<list>2</list>
-					<search>2</search>
+					<input>8</input>
+					<list>-1</list>
+					<search>-1</search>
 				</positions>
 			</editor>
 			<db>
-				<name>size</name>
-				<type state="persistent" notnull="true" key="false">INTEGER</type>
+				<name>width</name>
+				<type key="false" notnull="false" size="1024" state="persistent">INTEGER</type>
 			</db>
 		</field>
-
+		<field>
+			<descriptions>
+				<description xml:lang="nl"></description>
+				<description xml:lang="en"></description>
+			</descriptions>
+			<gui>
+				<guiname xml:lang="nl">Hoogte</guiname>
+				<guiname xml:lang="en">Height</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>9</input>
+					<list>-1</list>
+					<search>-1</search>
+				</positions>
+			</editor>
+			<db>
+				<name>height</name>
+				<type key="false" notnull="false" size="1024" state="persistent">INTEGER</type>
+			</db>
+		</field>
 		<field>
 			<!-- gui related -->
 			<gui>

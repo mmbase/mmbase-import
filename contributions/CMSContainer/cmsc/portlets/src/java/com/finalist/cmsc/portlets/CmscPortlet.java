@@ -19,7 +19,7 @@ import com.finalist.cmsc.portalImpl.services.sitemanagement.SiteManagement;
 import com.finalist.pluto.portalImpl.core.*;
 
 @SuppressWarnings("unused")
-public class CmscPortlet extends GenericPortlet {
+public abstract class CmscPortlet extends GenericPortlet {
 	
     private Log log;
     

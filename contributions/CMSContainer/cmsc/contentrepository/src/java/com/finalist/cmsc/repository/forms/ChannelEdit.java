@@ -17,6 +17,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.Cloud;
 
+import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
 
 
@@ -37,6 +38,7 @@ public class ChannelEdit extends MMBaseFormlessAction {
             return ret;
         }
         else {
+            SecurityUtil.clearUserRoles(cloud);
             ActionForward ret = mapping.findForward(SUCCESS);
             return ret;
         }

@@ -81,7 +81,7 @@ top.location.href=location.href
                         <td><input type="password" name="password"/></td>
                      </tr>
                      <tr>
-                        <td class="version"><fmt:message key="login.version" /> <%@include file="version.jsp" %></td>
+                        <td class="version"><fmt:message key="login.version" /> <cmsc:version/></td>
 						<td id="Submit" align="right"><input type="submit" value="<fmt:message key="login.submit" />" /></td>
                      </tr>
 					<mm:write referid="reason">

@@ -12,6 +12,7 @@
 	<field name="description" />
 	<field name="inmenu" />
 	<field name="secure" />
+
 	<relation destination="layout" role="allowrel" />
 	<relation destination="layout" role="layoutrel" />
 	<relation destination="page" role="navrel" />

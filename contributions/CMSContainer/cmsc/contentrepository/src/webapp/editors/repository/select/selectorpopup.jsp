@@ -20,7 +20,7 @@
 		ajaxTreeConfig.addressbarId = 'addressbar';
 	</script>
 	<script type="text/javascript">
-		function selectChannel(channel, path) {
+		function selectItem(channel, path) {
 			opener.selectChannel(channel, path);
 			close();
 		}

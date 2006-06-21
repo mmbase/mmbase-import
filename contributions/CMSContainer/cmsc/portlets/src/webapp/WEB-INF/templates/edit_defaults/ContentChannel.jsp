@@ -4,6 +4,10 @@ function selectChannel(channel, path) {
 	document.forms['<portlet:namespace />form'].contentchannel.value = channel;
 	document.forms['<portlet:namespace />form'].contentchannelpath.value = path;
 }
+function selectPage(page, path) {
+	document.forms['<portlet:namespace />form'].page.value = page;
+	document.forms['<portlet:namespace />form'].pagepath.value = path;
+}
 </script>
 <div>
 <h3><fmt:message key="edit_defaults.title" /></h3>
@@ -76,17 +80,9 @@ function selectChannel(channel, path) {
 	</tr>
 	<tr>
 		<td><fmt:message key="edit_defaults.maxelements" />:</td>
-		<td><cmsc:select var="maxElements">
-			<cmsc:option value="" message="edit_defaults.unlimited" />
-			<cmsc:option value="1" />
-			<cmsc:option value="2" />
-			<cmsc:option value="3" />
-			<cmsc:option value="4" />
-			<cmsc:option value="5" />
-			<cmsc:option value="10" />
-			<cmsc:option value="15" />
-			<cmsc:option value="20" />
-		</cmsc:select></td>
+		<td>
+			<input type="text" name="maxElements" value="${maxElements}" />
+		</td>
 	</tr>
 	<tr>
 		<td colspan="2">
@@ -138,6 +134,29 @@ function selectChannel(channel, path) {
 			<cmsc:option value="half-full" message="edit_defaults.pagesindex.half-full" />
 		</cmsc:select></td>
 	</tr>
+
+	<tr>
+		<td><fmt:message key="edit_defaults.page" />:</td>
+		<td>
+		<mm:cloud>
+			<mm:node number="${page}" notfound="skip">
+				<mm:field name="path" id="pagepath" write="false" />
+			</mm:node>
+		</mm:cloud>
+		<input type="hidden" name="page" value="${page}" />
+		<input type="text" name="pagepath" value="${pagepath}" disabled="true" />
+			<a href="<c:url value='/editors/site/select/SelectorPage.do?channel=${page}' />"
+				target="selectpage" onclick="openPopupWindow('selectpage', 300, 400)"> 
+				<fmt:message key="edit_defaults.pageselect" />
+			</a></td>
+	</tr>
+	<tr>
+		<td><fmt:message key="edit_defaults.window" />:</td>
+		<td>
+			<input type="text" name="window" value="${window}" />
+		</td>
+	</tr>
+
 	<tr>
 		<td colspan="2">
 			<input type="submit" value="<fmt:message key="edit_defaults.save" />" class="button" />
