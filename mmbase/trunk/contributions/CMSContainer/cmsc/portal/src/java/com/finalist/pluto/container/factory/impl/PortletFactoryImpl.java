@@ -20,7 +20,6 @@ import com.finalist.pluto.container.factory.PortletFactory;
  * Instantiate Portlets and remember them for later use
  *
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
  */
 public class PortletFactoryImpl implements PortletFactory {
 	private static final Log log = LogFactory.getLog(PortletFactoryImpl.class);

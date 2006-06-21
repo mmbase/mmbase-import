@@ -17,6 +17,8 @@
 	<field name="notificationdate" />
 	<field name="status" />
 	<field name="type" />
+	<field name="archivedate" />
+
 	<relation destination="popupinfo" role="related" />
 	<relation destination="urls" role="posrel" />
 

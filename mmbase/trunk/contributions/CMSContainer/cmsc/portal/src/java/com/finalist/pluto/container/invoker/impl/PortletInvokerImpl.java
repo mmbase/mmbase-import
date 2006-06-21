@@ -45,9 +45,6 @@ import org.apache.pluto.om.portlet.PortletDefinition;
 
 import com.finalist.cmsc.portalImpl.PortalConstants;
 
-/**
- * @version $Revision: 1.1 $
- */
 public class PortletInvokerImpl implements PortletInvoker {
 	private static Log log = LogFactory.getLog(PortletInvokerImpl.class);
 

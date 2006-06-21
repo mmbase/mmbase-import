@@ -214,10 +214,11 @@ public class PortletUtil {
         if (!plist.isEmpty()) {
             Node foundNode = plist.getNode(0);
             if (StringUtil.isEmptyOrWhitespace(value)) {
+                log.debug("removing parameter node:" + foundNode.getNumber());
                 foundNode.delete(true);
             }
             else {
-                log.debug("updating node:" + foundNode.getNumber());
+                log.debug("updating parameter node:" + foundNode.getNumber());
                 foundNode.setStringValue(VALUE_FIELD, value);
                 foundNode.commit();
             }
@@ -239,9 +240,15 @@ public class PortletUtil {
         NodeList plist = SearchUtil.findRelatedNodeList(portlet, NODEPARAMETER, PARAMETERREL, KEY_FIELD, key);
         if (!plist.isEmpty()) {
             Node foundNode = plist.getNode(0);
-            log.debug("updating node:" + foundNode.getNumber());
-            foundNode.setNodeValue(VALUE_FIELD, value);
-            foundNode.commit();
+            if (value == null) {
+                log.debug("removing parameter node:" + foundNode.getNumber());
+                foundNode.delete(true);
+            }
+            else {
+                log.debug("updating parameter node:" + foundNode.getNumber());
+                foundNode.setNodeValue(VALUE_FIELD, value);
+                foundNode.commit();
+            }
         } else {
             log.debug("creating node for node:" + portlet.getNumber());
             Node newNode = createNodeParameter(portlet.getCloud(), key, value);

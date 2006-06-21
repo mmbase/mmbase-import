@@ -6,7 +6,7 @@
 		<mm:field name="subtitle"><mm:isnotempty><h2><mm:write /></h2></mm:isnotempty></mm:field>
 		<mm:field name="intro"><mm:isnotempty><p class="intro"><mm:write /></p></mm:isnotempty></mm:field>
 		<br />
-		<portlet:renderURL var="renderUrl"><portlet:param name="elementId" value="${elementId}" /></portlet:renderURL>
+		<cmsc:renderURL page="${page}" window="${window}" var="renderUrl"><cmsc:param name="elementId" value="${elementId}" /></cmsc:renderURL>
 		<a href="${renderUrl}"><fmt:message key="view.readmore" /></a>
 	</mm:node>
 </mm:cloud>

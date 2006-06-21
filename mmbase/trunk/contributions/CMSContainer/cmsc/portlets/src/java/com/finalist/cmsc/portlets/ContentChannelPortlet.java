@@ -29,7 +29,6 @@ import com.finalist.pluto.portalImpl.core.CmscPortletMode;
 
 /**
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
  */
 public class ContentChannelPortlet extends CmscPortlet {
 
@@ -60,6 +59,9 @@ public class ContentChannelPortlet extends CmscPortlet {
 	private static final String VIEW = "view";
     private static final String VIEW_TYPE = "viewtype";
 
+    private static final String WINDOW = "window";
+    private static final String PAGE = "page";
+    
     /**
      * @see net.sf.mmapps.commons.portlets.CmscPortlet#processEditDefaults(javax.portlet.ActionRequest, javax.portlet.ActionResponse)
      */
@@ -89,6 +91,9 @@ public class ContentChannelPortlet extends CmscPortlet {
                 setPorltetParameter(portletId, VIEW_TYPE, request.getParameter(VIEW_TYPE));
                 
                 setPortletView(portletId, request.getParameter(VIEW));
+
+                setPorltetNodeParameter(portletId, PAGE, request.getParameter(PAGE));
+                setPorltetParameter(portletId, WINDOW, request.getParameter(WINDOW));
             } else {
                 getLogger().error("No portletId");
             }

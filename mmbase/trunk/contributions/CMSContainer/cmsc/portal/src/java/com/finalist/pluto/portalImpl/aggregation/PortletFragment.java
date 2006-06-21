@@ -18,6 +18,8 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.mmapps.commons.util.HttpUtil;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.pluto.PortletContainerException;
@@ -25,8 +27,10 @@ import org.apache.pluto.om.ControllerObjectAccess;
 import org.apache.pluto.om.servlet.ServletDefinition;
 import org.apache.pluto.om.servlet.ServletDefinitionCtrl;
 import org.apache.pluto.om.window.*;
+import org.mmbase.bridge.Node;
 
 import com.finalist.cmsc.beans.om.*;
+import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.cmsc.portalImpl.services.sitemanagement.SiteModelManager;
 import com.finalist.pluto.portalImpl.core.*;
@@ -49,7 +53,7 @@ import com.finalist.pluto.portalImpl.servlet.ServletResponseImpl;
  * @author Stephan Hesmer
  * @author Nick Lothian
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class PortletFragment extends AbstractFragmentSingle {
     
@@ -96,11 +100,14 @@ public class PortletFragment extends AbstractFragmentSingle {
                     if (objectParam instanceof NodeParameter) {
                         NodeParameter param = (NodeParameter) objectParam;
                         String key = param.getKey();
-                        String value = String.valueOf(param.getValue().getNumber());
+                        Node paramValue = param.getValue();
+                        if (paramValue != null) {
+                            String value = String.valueOf(paramValue.getNumber());
                         log.debug("key: " + key + " value: " + value);
                         ps.add(key, value);
                     }
 				}
+			}
 			}
             
 			// also add the view
@@ -142,7 +149,7 @@ public class PortletFragment extends AbstractFragmentSingle {
 			PortletContainerFactory.getPortletContainer().portletLoad(portletWindow, wrappedRequest, response);
 		} catch (PortletContainerException e) {
 			log.error("PortletContainerException-Error in Portlet", e);
-			errorMsg = getErrorMsg();
+			errorMsg = getErrorMsg(e);
 		} catch (Throwable t) {
 			// If we catch any throwable, we want to try to continue
 			// so that the rest of the portal renders correctly
@@ -153,7 +160,7 @@ public class PortletFragment extends AbstractFragmentSingle {
 				// to render correctly.
 				throw (Error) t;
 			} else {
-				errorMsg = getErrorMsg();
+				errorMsg = getErrorMsg(t);
 			}
 
 		}
@@ -197,7 +204,7 @@ public class PortletFragment extends AbstractFragmentSingle {
 					servletDefinitionCtrl.setAvailable(System.currentTimeMillis() + unavailableSeconds * 1000);
 				}
 			} catch (Exception e) {
-				writer2.println(getErrorMsg());
+				writer2.println(getErrorMsg(e));
 			}
 
 		} else {
@@ -257,8 +264,13 @@ public class PortletFragment extends AbstractFragmentSingle {
         return layoutId;
     }
     
-	protected String getErrorMsg() {
-		return PORTLET_ERROR_MSG;
+	protected String getErrorMsg(Throwable t) {
+        if (ServerUtil.isStaging()) {
+            return "<pre>" + PORTLET_ERROR_MSG + "\n\n" + HttpUtil.getExceptionInfo(t) + "</pre>";
+	}
+        else {
+            return "";
+        }
 	}
 
 	public String getKey() {

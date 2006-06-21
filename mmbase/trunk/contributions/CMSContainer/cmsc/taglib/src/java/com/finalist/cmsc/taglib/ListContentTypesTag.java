@@ -17,7 +17,6 @@ import com.finalist.cmsc.portalImpl.services.contentrepository.ContentRepository
  * List the available content channels
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
  */
 public class ListContentTypesTag extends AbstractListTag {
 

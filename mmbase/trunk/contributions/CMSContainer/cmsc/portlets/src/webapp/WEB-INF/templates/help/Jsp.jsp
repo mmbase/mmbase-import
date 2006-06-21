@@ -1,0 +1,1 @@
+help static jsp portlet

@@ -10,7 +10,6 @@ import org.apache.pluto.om.portlet.PortletDefinition;
  * A PortletFactory
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
  */
 public interface PortletFactory {
 	Portlet getPortletInstance(ServletContext servletContext, PortletDefinition pd) throws PortletException;

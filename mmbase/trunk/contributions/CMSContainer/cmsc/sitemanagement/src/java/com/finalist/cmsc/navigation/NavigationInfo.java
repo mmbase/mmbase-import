@@ -21,6 +21,16 @@ public class NavigationInfo implements TreeInfo {
     
     protected List<Integer> openChannels = new ArrayList<Integer>();
 
+    public NavigationInfo() {
+        // Default
+    }
+    
+    public NavigationInfo(NavigationInfo navigationInfo) {
+        for (Integer open : navigationInfo.openChannels) {
+            openChannels.add(open);
+        }
+    }
+    
     public void expand(Object o) {
         Integer number = null;
         if (o instanceof Node) {

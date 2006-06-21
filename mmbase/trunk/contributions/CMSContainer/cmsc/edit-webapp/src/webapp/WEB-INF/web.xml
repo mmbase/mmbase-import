@@ -125,6 +125,13 @@
       <load-on-startup>3</load-on-startup>
    </servlet>
     
+    <servlet>
+        <servlet-name>CmscRedirectServlet</servlet-name>
+        <display-name>Redirect</display-name>
+        <servlet-class>com.finalist.cmsc.portalImpl.RedirectServlet</servlet-class>
+        <load-on-startup>4</load-on-startup>
+    </servlet>
+    
 	<!-- The base MMBase servlet informs about the current MMBase version -->
 	<servlet>
 		<servlet-name>version</servlet-name>
@@ -222,6 +229,11 @@
 		<servlet-name>attachments</servlet-name>
 		<url-pattern>/mmbase/attachments/*</url-pattern>
 	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>CmscRedirectServlet</servlet-name>
+		<url-pattern>/content/*</url-pattern>
+	</servlet-mapping>
 	<!-- Standard Action Servlet Mapping -->
 	<servlet-mapping>
 		<servlet-name>action</servlet-name>
@@ -312,7 +324,7 @@
   <env-entry>
   	<description>Contains value 'live' or 'staging' to determine whether this server is Live or Staging.</description>
     <env-entry-name>server/LiveOrStaging</env-entry-name>
-    <env-entry-value>live</env-entry-value>
+    <env-entry-value>staging</env-entry-value>
     <env-entry-type>java.lang.String</env-entry-type>
   </env-entry>
   <env-entry>

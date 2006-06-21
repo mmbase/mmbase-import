@@ -81,6 +81,14 @@
 			<forward name="success" path="/editors/site/refreshpagesandshow.jsp" redirect="false" />
 		</action>
 
+		<!-- ==== Select repository nodes ==== -->
+	
+		<action path="/editors/site/select/SelectorPage" type="com.finalist.cmsc.navigation.select.forms.SelectorAction" 
+			unknown="false" validate="false"
+			className="com.finalist.cmsc.struts.SelectorPopupActionMapping">
+			<forward name="success" path="/editors/site/select/selectorpopup.jsp" redirect="false" />
+		</action>
+
 		<!-- ==== Security role management ==== -->
 
 		<action path="/editors/usermanagement/SiteRolesInitAction"

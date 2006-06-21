@@ -15,8 +15,8 @@
       <script src="../../utils/window.js" type="text/javascript"></script>
       <script src="../../utils/rowhover.js" type="text/javascript"></script>
 		<script type="text/javascript">
-			function selectElement(element, title) {
-				window.top.opener.selectElement(element, title);
+			function selectElement(element, title, url) {
+				window.top.opener.selectElement(element, title, url);
 				window.top.close();
 			}
 		</script>
@@ -72,10 +72,10 @@
             </tr>
             	<mm:list referid="results">
             		<mm:node element="${contenttypes}" jspvar="node">
-						<mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<mm:field name="title"/>');</mm:import>
+						<mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<mm:field name="title"/>', '<cmsc:staticurl page="/content/" /><mm:field name="number"/>');</mm:import>
                         <tr onMouseOver="objMouseOver(this);"
                             onMouseOut="objMouseOut(this);"
-                            href="<mm:write referid="url"/>"><td onMouseDown="objClick(this);">
+                            href="<mm:write referid="url"/>">
                            <td onMouseDown="objClick(this);"><mm:field name="number"/></td>
                            <td onMouseDown="objClick(this);"><mm:nodeinfo type="guitype"/></td>
                            <td onMouseDown="objClick(this);"><mm:field name="title"/></td>

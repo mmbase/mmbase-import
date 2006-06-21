@@ -9,50 +9,25 @@
  */
 package com.finalist.cmsc.repository.select;
 
-import java.text.MessageFormat;
-
-import net.sf.mmapps.commons.util.StringUtil;
-
 import org.mmbase.bridge.Node;
 
-import com.finalist.cmsc.mmbase.TreeUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
-import com.finalist.tree.*;
+import com.finalist.tree.ajax.SelectAjaxRenderer;
 
-public abstract class SelectRenderer implements TreeCellRenderer {
+public class SelectRenderer extends SelectAjaxRenderer {
 
-    private String linkPattern;
-    private String target;
-    
-    protected SelectRenderer(String linkPattern, String target) {
-        this.linkPattern = linkPattern;
-        this.target = target;
+    public SelectRenderer(String linkPattern, String target) {
+       super(linkPattern, target);
     }
     
-    /**
-     * @see com.finalist.tree.TreeCellRenderer#getElement(TreeModel, Object, String)
-     */
-    public TreeElement getElement(TreeModel model, Object node, String id) {
-        Node parentNode = (Node) node;
-        if (id == null) {
-            id = String.valueOf(parentNode.getNumber());
-        }
-        String fragment = parentNode.getStringValue( RepositoryUtil.getFragmentFieldname(parentNode) );
-
-        String name = parentNode.getStringValue("name");
-        String icon = getIcon(node);
-        TreeElement element = createElement(icon, id, name, fragment);
-        Object[] arguments = { parentNode.getNumber(), parentNode.getStringValue(TreeUtil.PATH_FIELD) };
-        String link = MessageFormat.format(linkPattern, arguments);
-        element.setLink(link);
-        if (!StringUtil.isEmpty(target)) {
-            element.setTarget(target);
-        }
-        return element;
+    protected String getName(Node parentNode) {
+        return parentNode.getStringValue(RepositoryUtil.NAME_FIELD);
     }
 
-    protected abstract TreeElement createElement(String icon, String id, String name, String fragment);
-
+    protected String getFragment(Node parentNode) {
+        return parentNode.getStringValue( RepositoryUtil.getFragmentFieldname(parentNode) );
+    }
+    
     public String getIcon(Object node) {
         Node n = (Node) node;
         return "type/" + n.getNodeManager().getName() + ".gif";

@@ -25,7 +25,6 @@ import com.finalist.pluto.portalImpl.services.Service;
  * datastore layer to get information about the site.
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
  */
 public abstract class SiteManagementService extends Service {
 

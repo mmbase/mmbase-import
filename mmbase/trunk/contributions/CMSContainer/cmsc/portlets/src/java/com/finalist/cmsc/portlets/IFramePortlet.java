@@ -67,8 +67,6 @@ public class IFramePortlet extends CmscPortlet {
             setPorltetParameter(portletId, STYLE_ATTR_PARAM, request.getParameter(STYLE_ATTR_PARAM));
             setPorltetParameter(portletId, WIDTH_ATTR_PARAM, request.getParameter(WIDTH_ATTR_PARAM));
 
-            // switch to View mode
-            response.setPortletMode(PortletMode.VIEW);
         } else {
             getLogger().error("No portletId");
         }

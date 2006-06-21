@@ -6,8 +6,6 @@
   Based on script by:
   Author : Daniel Nolan
   http://www.bleedingego.co.uk/webdev.php
-  
-  $Id: menu.js,v 1.1 2006-06-12 13:08:47 nico Exp $
 */
 
 

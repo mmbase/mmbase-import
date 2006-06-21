@@ -16,6 +16,8 @@
 	<field name="status" />
 	<field name="question" />
 	<field name="body" />
+	<field name="archivedate" />
+
 	<relation destination="attachments" role="posrel" />
 	<relation destination="faqcategory" role="posrel" />
 	<relation destination="images" role="imagerel" />

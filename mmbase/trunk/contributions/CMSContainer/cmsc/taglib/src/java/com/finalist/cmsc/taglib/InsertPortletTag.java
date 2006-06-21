@@ -31,7 +31,6 @@ import com.finalist.pluto.portalImpl.servlet.ServletResponseImpl;
  * Tag to insert a Portlet, the corresponding Screen keeps track of the Portlets
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
  */
 public class InsertPortletTag extends SimpleTagSupport {
 	private static Log log = LogFactory.getLog(InsertPortletTag.class);
