@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * sending queue over unicast connections
  *
  * @author Nico Klasens
- * @version $Id: ChangesSender.java,v 1.7 2006-06-20 17:30:45 michiel Exp $
+ * @version $Id: ChangesSender.java,v 1.8 2006-06-21 11:46:14 michiel Exp $
  */
 public class ChangesSender implements Runnable {
 
@@ -52,7 +52,7 @@ public class ChangesSender implements Runnable {
 
     /** last time the mmservers table was checked for active servers */
     private long lastServerChecked = -1;
-    private List activeServers = null;
+    private List activeServers = new ArrayList();
 
     /** Interval of servers change their state */
     private long serverInterval;
@@ -148,7 +148,7 @@ public class ChangesSender implements Runnable {
                 log.debug(Thread.currentThread().getName() +" was interruped.");
                 break;
             } catch (Exception e) {
-                log.error(e);
+                log.error(e.getMessage(), e);
             }
         }
     }
@@ -158,14 +158,17 @@ public class ChangesSender implements Runnable {
      * @return server list
      */
     private List getActiveServers() {
+        List prevActiveServers = activeServers;
         if (serverInterval < 0) {
             MMBase mmbase = MMBase.getMMBase();
             MMServers mmservers = (MMServers) mmbase.getBuilder("mmservers");
             serverInterval = mmservers.getIntervalTime();
             activeServers = mmservers.getActiveServers();
             lastServerChecked = System.currentTimeMillis();
-            if (log.isDebugEnabled()) {
-                log.debug("active servers: " + activeServers);
+            if (! activeServers.equals(prevActiveServers)) {
+                log.info("Active servers: " + activeServers + " " + prevActiveServers.size() + "-> " + activeServers.size());
+            } else {
+                log.debug("Active servers: " + activeServers);
             }
         } else {
             if (lastServerChecked + serverInterval < System.currentTimeMillis()) {
@@ -173,8 +176,10 @@ public class ChangesSender implements Runnable {
                 MMServers mmservers = (MMServers) mmbase.getBuilder("mmservers");
                 activeServers = mmservers.getActiveServers();
                 lastServerChecked = System.currentTimeMillis();
-                if (log.isDebugEnabled()) {
-                    log.debug("active servers: " + activeServers);
+                if (! activeServers.equals(prevActiveServers)) {
+                    log.info("Active servers: " + activeServers + " " + prevActiveServers.size() + "-> " + activeServers.size());
+                } else {
+                    log.debug("Active servers: " + activeServers);
                 }
             }
         }
