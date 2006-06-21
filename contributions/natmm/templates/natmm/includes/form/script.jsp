@@ -4,6 +4,7 @@
 <%= "<!--" %>
 function postIt(searchtype) {
 var href = "?p=<%= paginaID %>&pst=";
+var nums = '';
 if(searchtype != 'clear' ) {
 <mm:list nodes="<%= paginaID %>" path="pagina,posrel,formulier" orderby="posrel.pos" directions="UP">
    <mm:node element="formulier" jspvar="thisForm">
@@ -40,6 +41,8 @@ if(searchtype != 'clear' ) {
                   var answer = document.emailform.q<%= thisFormNumber %>_<%= formulierveld_number %>_<mm:field name="formulierveldantwoord.number" />;
                   if(answer.checked) {
   	                  href += "|q<%= thisFormNumber %>_<%= formulierveld_number %>_<mm:field name="formulierveldantwoord.number" />=" + answer.value;
+							if (nums != '') { nums += ','; }
+							nums += '<mm:field name="formulierveldantwoord.number" />';
 						}
                </mm:related><%
             } else if(formulierveld_type.equals("4")) { // *** radio buttons ***
@@ -51,6 +54,12 @@ if(searchtype != 'clear' ) {
                      if(rad_val != '') {
                         href += "|q<%= thisFormNumber %>_<%= formulierveld_number %>=" + rad_val;
 								flag = true;
+								<mm:related path="posrel,formulierveldantwoord" orderby="posrel.pos" directions="UP">
+									if (rad_val == '<mm:field name="formulierveldantwoord.waarde" />') {
+										if (nums != '') { nums += ','; }
+										nums += '<mm:field name="formulierveldantwoord.number" />';
+									}
+								</mm:related>
                      }
                   }
                }
@@ -85,13 +94,21 @@ if(searchtype != 'clear' ) {
 							href += else_answer;
 						}
 					}
-            <% }
+            <% if (formulierveld_type.equals("3")) { %>
+						<mm:related path="posrel,formulierveldantwoord" orderby="posrel.pos" directions="UP">
+							if (answer == '<mm:field name="formulierveldantwoord.waarde" />') {
+								if (nums != '') { nums += ','; }
+								nums += '<mm:field name="formulierveldantwoord.number" />';
+							}
+						</mm:related>
+				<%	}
+				}
          %></mm:node
       ></mm:related
       ></mm:node
 ></mm:list>
 }
-top.location = href;
+top.location = href+"&nums="+nums;
 return false;
 }
 function handleEnter (field, event) {
