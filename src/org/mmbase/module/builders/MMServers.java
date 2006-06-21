@@ -28,7 +28,7 @@ import org.mmbase.storage.search.implementation.*;
  * nodes caches in sync but also makes it possible to split tasks between machines. You could for example have a server that encodes video.
  *  when a change to a certain node is made one of the servers (if wel configured) can start encoding the videos.
  * @author  vpro
- * @version $Id: MMServers.java,v 1.40 2006-06-21 09:51:19 michiel Exp $
+ * @version $Id: MMServers.java,v 1.41 2006-06-21 11:44:06 michiel Exp $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnable {
 
@@ -83,6 +83,13 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
             log.service("ProbeInterval was configured to be " + intervalTime / 1000 + " seconds");
         } else {
             log.service("ProbeInterval defaults to " + intervalTime / 1000 + " seconds");
+        }
+         tmp = getInitParameter("ServiceTimeout");
+        if (tmp != null) {
+            serviceTimeout = (int)Integer.parseInt(tmp);
+            log.service("ServiceTimeout was configured to be " + serviceTimeout + " seconds");
+        } else {
+            log.service("ServiceTimeout defaults to " + serviceTimeout + " seconds");
         }
         start();
         return true;
@@ -174,6 +181,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
             for (Iterator iter = getNodes().iterator(); iter.hasNext();) {
                 MMObjectNode node = (MMObjectNode) iter.next();
                 String tmpname = node.getStringValue("name");
+                log.debug("Checking " + tmpname);
                 if (tmpname.equals(machineName)) {
                     imoke = checkMySelf(node);
                 } else {
@@ -213,6 +221,9 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
     private void checkOther(MMObjectNode node) {
         int now = (int) (System.currentTimeMillis() / 1000);
         int then = node.getIntValue("atime");
+        if (log.isDebugEnabled()) {
+            log.debug("" + now + ": Checking " + node.getValue("name")  + " (updated at  " + then + ", " + (now - then) + " s ago, interval: " + serviceTimeout + " s )" );
+        }
         if ((now - then) > (serviceTimeout)) {
             if (node.getIntValue("state") != INACTIVE) {
                 log.debug("checkOther() updating state for " + node.getStringValue("host"));
@@ -259,7 +270,9 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
                 //node2.commit();
             }
         }
-        log.debug("setServicesDown() for " + node + " done");
+        if (log.isDebugEnabled()) {
+            log.debug("setServicesDown() for " + node + " done");
+        }
     }
 
     /**
@@ -304,7 +317,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
      */
 
     public boolean equals(MMObjectNode o1, MMObjectNode o2) {
-        return o1 == null ? o2 == null : o2 != null && o1.getValues().equals(o2.getValues());
+        return o1 == null ? o2 == null : o2 != null && (o1.getNumber() == o2.getNumber() && o1.getValue("name").equals(o2.getValue("name")) && o1.getValue("host").equals(o2.getValue("host")));
     }
 
     /**
@@ -314,7 +327,9 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
         List activeServers = new ArrayList();
 
         String machineName = mmb.getMachineName();
-        log.debug("getActiveServers(): machine=" + machineName);
+        if (log.isDebugEnabled()) {
+            log.debug("machine=" + machineName);
+        }
         NodeSearchQuery query = new NodeSearchQuery(this);
         try {
             for (Iterator iter = storageConnector.getNodes(query, false).iterator(); iter.hasNext();) { // don't use cache. This list of active server may be needed to arrange clustering.
