@@ -19,7 +19,7 @@
   <articleinfo>
     <title>MMBase Editwizard Reference Manual</title>
     <date>2002-09-02</date>
-    <edition>$Id: editwizard-reference.xml,v 1.5 2006-03-24 14:17:20 andre Exp $</edition>
+    <edition>$Id: editwizard-reference.xml,v 1.6 2006-06-21 05:51:34 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Kars</firstname>
@@ -56,7 +56,7 @@
   <section id="calling">
     <title>Calling the Wizard Pages</title>
     <para>This reference describes the wizard pages and how to call them from a html or jsp page.</para>
-    <section>
+    <section id="calling_general">
       <title>General - wizard definition schemas</title>
       <para>The editwizards need a xml file with a definition of the wizard to operate.			By default, those are found in the subdirectory /editwizard/data/, but it is possible to place your definitions, as well as the wizard stylesheets (which define layout) elsewhere.</para>
       <para>When the wizards search for a requested file (a wizard xsl stylesheet or a wizard xml schema), they look for the referenced file in the following order:
@@ -81,7 +81,7 @@
         </varlistentry>
       </variablelist>
     </section>
-    <section>
+    <section id="list.jsp">
       <title>list.jsp</title>
       <para>To run a wizard, you'll need to call either list.jsp or wizard.jsp. These scripts are located in the jsp subdirectory of the editwizard home directory. In the standard distribution, this is mmapps/editwizard/jsp/.</para>
       <para>List.jsp starts with running a search query on MMBase to create a list of items to search from. It shows a list of all found nodes and allows you to select one of these items to edit, to remove an item, or to add a new item. The actual options given depend on the security settings (if you are allowed to do this by MMBase), and the possibilities offered by the wizard. Note that the list.jsp does NOT run an editwizard itself, it is just a 'starter'. It eventually calls wizard.jsp (see below) to actually edit or create an item.</para>
@@ -317,7 +317,7 @@
         <programlisting format="linespecific">list.jsp?wizard=practice/simple&amp;startnodes=1&amp;nodepath=people,news&amp;fields=news.title,people.firstname,people.lastname</programlisting>
       </example>
     </section>
-    <section>
+    <section id="wizard.jsp">
       <title>wizard.jsp</title>
       <para>You can use wizard.jsp to directly start a wizard. Like list.jsp, you will need to supply the correct parameters in order to let the wizard run correctly. If you call the wizard.jsp page, a wizard will be loaded and started. The proper html will be rendered and shown in the browser. The syntax of wizard.jsp to create a new object looks like this:</para>
       <programlisting format="linespecific">wizard.jsp?wizard=practice/simple&amp;objectnumber=new</programlisting>
@@ -430,7 +430,7 @@
         <programlisting format="linespecific">wizard.jsp?wizard=practice/simple&amp;objectnumber=new</programlisting>
       </example>
     </section>
-    <section>
+    <section id="debug.jsp">
       <title>debug.jsp</title>
       <para>When you are debugging your wizard code, it can be useful to know what data is read and parsed by the wizard. The debug.jsp page gives access to three xml trees that are used by the current running wizard.</para>
       <para>The data tree shows the xml that contains the data used by the wizard, including any changes made by the user. It can be useful to see if data is loaded (or changed) as expected. It can also be useful to determine xpaths when you plan to use these in your wizard: if you use an xpath in your wizard xml file, it access the data xml.</para>
@@ -496,7 +496,7 @@
 &rf-wizard-schema;
 
     </section>
-    <section>
+    <section id="syntax">
       <title>Syntax reference</title>
       <variablelist>
         <title>object (inside action type="create")</title>
