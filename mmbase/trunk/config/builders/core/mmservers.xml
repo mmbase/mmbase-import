@@ -31,7 +31,12 @@
         table. Defaults to 60 seconds.
         You can safely set it higher if you have only one server (and spare
         some SQL-queries)    -->
-    <property name="ProbeInterval">6000</property>
+    <property name="ProbeInterval">60</property>
+    <!-- 
+         Time to take until a server is marked as 'inactive', in seconds.
+         Defaults to 15 minutes (900 s)
+    -->
+    <property name="ServiceTimeout">900</property>
   </properties>
 
   <fieldlist>
@@ -108,10 +113,9 @@
           <search>3</search>
         </positions>
       </editor>
-      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>atime</name>
-        <type state="persistent">INTEGER</type>
+        <type state="persistent">DATETIME</type>
       </db>
     </field>
 
