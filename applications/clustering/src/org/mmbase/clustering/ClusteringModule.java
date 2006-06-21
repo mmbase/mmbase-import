@@ -20,7 +20,7 @@ import org.mmbase.util.functions.*;
  * This module bootstraps and configures MMBase clustering.
  *
  * @since MMBase-1.8
- * @version $Id: ClusteringModule.java,v 1.8 2006-06-20 17:30:45 michiel Exp $
+ * @version $Id: ClusteringModule.java,v 1.9 2006-06-21 05:46:00 michiel Exp $
  */
 public class ClusteringModule extends WatchedReloadableModule {
 
@@ -120,7 +120,7 @@ public class ClusteringModule extends WatchedReloadableModule {
     {
         addFunction(new AbstractFunction("numbertosend", Parameter.EMPTY, ReturnType.INTEGER) {
                 public Object getFunctionValue(Parameters arguments) {
-                    return Integer.valueOf(clusterManager == null ? -1 : clusterManager.nodesToSend.count());
+                    return new Integer(clusterManager == null ? -1 : clusterManager.nodesToSend.count());
                 }
             });
     }
@@ -130,7 +130,7 @@ public class ClusteringModule extends WatchedReloadableModule {
     {
         addFunction(new AbstractFunction("numbertoreceive", Parameter.EMPTY, ReturnType.INTEGER) {
                 public Object getFunctionValue(Parameters arguments) {
-                    return Integer.valueOf(clusterManager == null ? -1 : clusterManager.nodesToSpawn.count());
+                    return new Integer(clusterManager == null ? -1 : clusterManager.nodesToSpawn.count());
                 }
             });
     }
