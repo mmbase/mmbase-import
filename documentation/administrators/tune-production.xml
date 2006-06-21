@@ -7,7 +7,7 @@
 
     <date>2005-12-09</date>
 
-    <edition>$Id: tune-production.xml,v 1.1 2005-12-10 15:48:33 nklasens Exp $</edition>
+    <edition>$Id: tune-production.xml,v 1.2 2006-06-21 05:24:39 michiel Exp $</edition>
 
     <authorgroup>
       <!-- one or more authors -->
@@ -55,7 +55,7 @@
     site.</para>
   </section>
 
-  <section>
+  <section id="scope">
     <title>Scope</title>
 
     <para>The experience of an user that a site is slow is usually not only
@@ -109,7 +109,7 @@
     <para></para>
   </section>
 
-  <section>
+  <section id="bottlenecks">
     <title>Identify bottlenecks</title>
 
     <para>The first step, in identifying which systems perform poorly, is to
@@ -172,7 +172,7 @@
     <para></para>
   </section>
 
-  <section>
+  <section id="browsersegment">
     <title>Browser segment</title>
 
     <para>If the response time is not acceptable is this segment then the
@@ -263,7 +263,7 @@
     database can easily become a bottleneck over time.</para>
   </section>
 
-  <section>
+  <section id="appserversegment">
     <title>Application server segment</title>
 
     <para>If the response time in this segment is very bad then the problem
@@ -301,7 +301,7 @@
     memory usage is not caused by the application server process then the
     problem is somewhere in other applications or the OS.</para>
 
-    <section>
+    <section id="os">
       <title>Operating system and applications</title>
 
       <para>The first thing to check is that the last update release of the
@@ -327,7 +327,7 @@
       resource contention that may interfere with your measurements.</para>
     </section>
 
-    <section>
+    <section id="jvm">
       <title>Java Virtual Machine</title>
 
       <para>Before going into the details of the JVM realize that one of the
@@ -378,7 +378,7 @@
       above will be treated as server-class machines.</para>
     </section>
 
-    <section>
+    <section id="memory">
       <title>Memory</title>
 
       <para>Even though Ergonomics significantly improves the "out of the box"
@@ -500,7 +500,7 @@ Survivors 42</programlisting></para>
       http://java.sun.com/performance/</ulink></para>
     </section>
 
-    <section>
+    <section id="appserver">
       <title>Application server</title>
 
       <para>Every application server contains a number of OOTB
@@ -545,10 +545,10 @@ Survivors 42</programlisting></para>
     </section>
   </section>
 
-  <section>
+  <section id="mmbase">
     <title>MMBase optimization</title>
 
-    <section>
+    <section id="mmbase_caches">
       <title>Caches</title>
 
       <para>MMBase relies heavily on its caches. Most caches are configurable
@@ -616,7 +616,7 @@ Survivors 42</programlisting></para>
     </section>
   </section>
 
-  <section>
+  <section id="sequence">
     <title>Performance tuning sequence</title>
 
     <para>We recommend that you tune the production environment in the

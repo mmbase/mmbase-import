@@ -4,7 +4,7 @@
   <articleinfo>
     <title>The MMBase Security Framework</title>
     <date>2003-02-12</date>
-    <edition>$Id: security-framework.xml,v 1.14 2004-06-07 17:30:34 michiel Exp $</edition>
+    <edition>$Id: security-framework.xml,v 1.15 2006-06-21 05:24:39 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Eduard</firstname><surname>Witteveen</surname>
@@ -69,7 +69,7 @@
   </section>
   <section id="securityframework">
     <title>The MMBase Security Framework</title>
-    <section>
+    <section id="overview">
       <title>Overview of the MMBase Architecture</title>
       <graphic fileref="media/architecture.png" />
       <para>
@@ -116,7 +116,7 @@
         only read access to others.
       </para>
     </section>
-    <section>
+    <section id="modules">
       <title>Authentication and Authentication Modules</title>
       <para>
         There are various ways to authenticate a user. Name/password login is one of the most
@@ -150,7 +150,7 @@
         </para>
       </note>
     </section>
-    <section>
+    <section id="authorization">
       <title>Authorization</title>
       <para>
         Authorization takes place on object level: for each object, the authorization system
@@ -161,7 +161,7 @@
       </para>
         <para>Forthcoming...</para>
     </section>
-    <section>
+    <section id="authentication">
       <title>User Information</title>
       <para>Forthcoming...</para>
     </section>

@@ -5,7 +5,7 @@
   <articleinfo>
     <title>Summary of Coding Standards</title>
     <date>2003-02-14</date>
-    <edition>$Id: codingstandards.xml,v 1.9 2005-11-15 11:43:20 michiel Exp $</edition>
+    <edition>$Id: codingstandards.xml,v 1.10 2006-06-21 05:24:39 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Pierre</firstname>
@@ -28,7 +28,7 @@
       url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
     </legalnotice>
   </articleinfo>
-  <section>
+  <section id="references">
     <title>References</title>
     <para>The following is a summary of coding standards that need to be applied to source code.</para>
     <para>All future sources need to conform to these standards.</para>
@@ -50,13 +50,13 @@
       </listitem>
     </itemizedlist>
   </section>
-  <section>
+  <section id="introduction">
     <title>Introduction</title>
     <para>We understamd that formatting is a matter of taste and that many developers prefer other formmatting styles, but try to stick to the
     guidelines. We are using them to keep the code readable. Don't take it personally when someone points you to the coding standards when you submit
     some code. We will accept your code anyway.</para>
   </section>
-  <section>
+  <section id="documentation">
     <title>Documentation</title>
     <para>Every method, whether public or private, must start out with a documentation comment that describes what the method does. The documentation
     should mention every parameter received by the method, every possible return value, and (if not obvious) the conditions under which the method
@@ -116,7 +116,7 @@
     <para>If you are one of those developers who has a personal issue with documentation then at least document the public methods of your code.
     Public methods can be used by everyone and should have a clear contract. One exception to this rule are getter and setter methods.</para>
   </section>
-  <section>
+  <section id="naming">
     <title>Naming</title>
     <itemizedlist>
       <listitem>
@@ -193,7 +193,7 @@
       </listitem>
     </itemizedlist>
   </section>
-  <section>
+  <section id="spacing">
     <title>Spacing</title>
     <itemizedlist>
       <listitem>
@@ -215,7 +215,7 @@
       </listitem>
     </itemizedlist>
   </section>
-  <section>
+  <section id="other_style_conventions">
     <title>Other style conventions</title>
     <itemizedlist>
       <listitem>
@@ -295,7 +295,7 @@
       </listitem>
     </itemizedlist>
   </section>
-  <section>
+  <section id="mmbase_specific">
     <title>Specific MMBase issues</title>
     <itemizedlist>
       <listitem>
@@ -401,7 +401,7 @@
       </para>
     </section>
   </section>
-  <section>
+  <section id="input_validation">
     <title>Input validation</title>
     <para>The first lines of a method are usually devoted to checking the validity of all arguments. The idea is to fail as quickly as possible in the
     event of an error. This is particularly important for constructors.</para>
@@ -411,7 +411,7 @@
     <para>If every object parameter of every method in a class needs to be non-null in order to avoid throwing NullPointerException, then it is
     acceptable to state this once in the general class javadoc, instead of repeating it for each method.</para>
   </section>
-  <section>
+  <section id="strings">
     <title>String operations</title>
     <para>To build Strings dynamically, one may use either the String concatenation operator + or the StringBuffer class. In the great majority of
     cases, only a few items are concatenated, and either style may be used freely, according to taste, without concern for performance.</para>
@@ -430,7 +430,7 @@
       </listitem>
     </itemizedlist>
   </section>
-  <section>
+  <section id="portability">
     <title>Portability</title>
     <para>Portability is one of the principal advantages of using Java. Guidelines for ensuring that a Java application remains portable are:</para>
     <itemizedlist>
@@ -455,7 +455,7 @@
       </listitem>
     </itemizedlist>
   </section>
-  <section>
+  <section id="ripples">
     <title>Minimize ripple effects</title>
     <para>Much of object programming is centered on minimizing the ripple effects caused by changes to a program. This is done simply by keeping
     details secret (information hiding or encapsulation).</para>
@@ -484,7 +484,7 @@
       </listitem>
     </itemizedlist>
   </section>
-  <section>
+  <section id="error_message">
     <title>Error message conventions</title>
     <para>For error messages the following conventions apply:</para>
     <itemizedlist>
@@ -527,7 +527,7 @@
       </listitem>
     </itemizedlist>
   </section>
-  <section>
+  <section id="exceptions">
     <title>Exception handling</title>
     <para>Exceptions in java are used to communicate errors between a callee and a caller. They aren't supposed to be used for control flow (throw and
     catch in the same method). Exception declarations are usually found on the boundaries of an API.</para>
@@ -567,7 +567,7 @@
       </listitem>
     </itemizedlist>
   </section>
-  <section>
+  <section id="other_conventions">
     <title>Other conventions</title>
     <para>There are many other unspoken conventions maintained throughout the code, that are only noticed when someone unintentionally fails to follow
     them. Just try to have a sensitive eye for the way things are done, and when in doubt, ask.</para>

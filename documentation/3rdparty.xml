@@ -5,7 +5,7 @@
 	<articleinfo>
 		<title>How to share code in the MMBase repository</title>
 		<date>2005-08-31</date>
-		<edition>$Id: 3rdparty.xml,v 1.1 2005-08-31 12:37:36 nklasens Exp $</edition>
+		<edition>$Id: 3rdparty.xml,v 1.2 2006-06-21 05:24:39 michiel Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Nico</firstname>
@@ -26,7 +26,7 @@
 			</para>
 		</legalnotice>
 	</articleinfo>
-	<section>
+	<section id="readfirst">
 		<title></title>
 		<para>If you are planning to share code in the MMBase repository, please read this first.</para>
 		<para>
@@ -43,7 +43,7 @@
 			MMBase-community could be dealing with them.
 		</para>
 	</section>
-	<section>
+	<section id="core_and_applications">
 		<title>Core and Applications</title>
 		<para>
 			MMBase is or can be divided in different parts. Some of the parts belong to the core of MMBase, some of the
@@ -57,7 +57,7 @@
 			used or can be used, etc.
 		</para>
 	</section>
-	<section>
+	<section id="mmbase_core">
 		<title>MMBase Core</title>
 		<para>
 			MMBase core is the base of all MMBase-applications. We strive to keep the Core as small as possible. There's
@@ -85,7 +85,7 @@
 			to maintain between different MMBase releases.
 		</para>
 	</section>
-	<section>
+	<section id="community_packages">
 		<title>MMBase Community Packages</title>
 		<para>
 			Community packages are packages which are being developed by the same developers community as the MMBase
@@ -120,7 +120,7 @@
 			can be packaged together without any trouble regarding licenses.
 		</para>
 	</section>
-	<section>
+	<section id="third_pary_packages">
 		<title>MMBase 3rd Party Packages</title>
 		<para>
 			Packages being developed by external companies or organizations, which are build upon the MMBase Core. There
@@ -153,7 +153,7 @@
 			<ulink url="contribute.html">How to contribute to the community</ulink>
 		</para>
 	</section>
-	<section>
+	<section id="infrastructure">
 		<title>Infrastructure and Organization</title>
 		<para>
 			To support all different types of packages an infrastructure is needed. An infrastructure contains things
@@ -211,7 +211,7 @@
 			'official MMBase 3rd Party Packages'.
 		</para>
 	</section>
-	<section>
+	<section id="become_third_party">
 		<title>How to become a 3rd Party Package</title>
 		<itemizedlist>
 			<listitem>
@@ -293,7 +293,7 @@
 			The committer will be temporarily disallowed CVS access for the duration of the call.
 		</para>
 	</section>
-	<section>
+	<section id="open_source">
 		<title>Open Source</title>
 		<para>
 			When is software Open Source? There are different definitions in use, but a general definition is provided

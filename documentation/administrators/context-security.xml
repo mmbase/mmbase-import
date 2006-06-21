@@ -4,7 +4,7 @@
   <articleinfo>
     <title>Context Security Configuration</title>
     <date>2003-02-12</date>
-    <edition>$Id: context-security.xml,v 1.11 2003-12-18 15:15:41 michiel Exp $</edition>
+    <edition>$Id: context-security.xml,v 1.12 2006-06-21 05:24:39 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Eduard</firstname>
@@ -107,26 +107,26 @@
   </section>
   <section id="explanation">
     <title>Central notions in the context security model</title>
-    <section>
+    <section id="contexts_groups_users">
       <title>Contexts, Groups and Users </title>
-      <section>
+      <section id="reference_field">
         <title>Reference field</title>
         <para>Within MMBase each object has a field called &#39;owner&#39;. The value of this field is used by the security system to specify the context of an object. If an object is accessed and the name of its context does not exist a warning will be issued in the logs and the default context will be selected.</para>
       </section>
-      <section>
+      <section id="expl_contexts">
         <title>Contexts</title>
         <para>A context defines which rights a group has on a object. Also is defined within this context to which contexts you can change to assume there rights.</para>
       </section>
-      <section>
+      <section id="groups">
         <title>Groups</title>
         <para>A group is a collection of users and groups. In this way you can represent your organization in the security system. If used properly in combination with contexts for each group.</para>
       </section>
-      <section>
+      <section id="users">
         <title>Users</title>
         <para>Anonymous users: These users get there rights from the module called anonymous. They are considered the normal page viewers. There rank will always be &#39;ANONYMOUS&#39;.</para>
         <para>Logged in users: These users are validated through the user/password module of the context security. They are the users which can change your data in MMBase. The rank of these users is normally &#39;Basic users&#39; but can also be &#39;Administrator&#39; which is a rank that grants more rights within MMBase.</para>
       </section>
-      <section>
+      <section id="overview">
         <title>Overview picture of the security model</title>
         <screenshot>
           <graphic fileref="media/contextSecurity.png" />
@@ -134,50 +134,50 @@
         <para>Note that the context to which a user belongs, is stored in the owner field of the user.</para>
       </section>
     </section>
-    <section>
+    <section id="operations">
       <title>Operations on objects</title>
-      <section>
+      <section id="rwd">
         <title>Read, Write and Delete</title>
         <para>To be able to read or write or delete an object in MMBase a user needs the right &#39;read&#39; or &#39;write&#39; or &#39;delete&#39; for this object.</para>
       </section>
-      <section>
+      <section id="making_reference">
         <title>Making a reference to.</title>
         <para>The right &#39;link&#39; give a user the possibility to create relations between objects in MMBase. The user needs create rights on the relation builder for this to work!</para>
       </section>
-      <section>
+      <section id="create">
         <title>Create</title>
         <para>The right &#39;create&#39; is only used for builders. It gives the specified user the right to create objects in this selected builder.</para>
       </section>
-      <section>
+      <section id="change">
         <title>Change</title>
         <para>The right &#39;change context&#39; gives a users the right to alter the rights defined in the selected context.</para>
       </section>
     </section>
-    <section>
+    <section id="rights">
       <title>Rights</title>
-      <section>
+      <section id="create_object">
         <title>Create a new object</title>
         <para>To be able to create an object the user needs &#39;create&#39; rights on the node that represents the node-type within MMBase, see the typedef table.</para>
       </section>
-      <section>
+      <section id="create_relation">
         <title>Creating a new relation</title>
         <para>To create a new relation your users needs &#39;create&#39; rights on the insrel table and &#39;link&#39; rights between the objects where he or she wants to create a relation in-between.</para>
       </section>
-      <section>
+      <section id="alter">
         <title>Altering an object</title>
         <para>To be able to change an object the user needs the &#39;change&#39; right for that object.</para>
       </section>
-      <section>
+      <section id="change_rights">
         <title>Changing rights in contexts</title>
         <para>When you want a user to be able to change the rights of a context then that user needs &#39;change context&#39; rights for that selected context.</para>
       </section>
-      <section>
+      <section id="delete_right">
         <title>Deleting objects</title>
         <para>To remove an object the user needs &#39;delete&#39; rights.</para>
       </section>
     </section>
   </section>
-  <section>
+  <section id="extended_example">
     <title>An extended example</title>
     <para>The following XML will be used to provide some explanation on the context security configuration</para>
     <programlisting><![CDATA[
@@ -235,15 +235,15 @@
   </contexts>
 </contextconfig>
     ]]></programlisting>
-    <section>
+    <section id="loginmodule">
       <title>&lt;loginmodules /&gt;</title>
       <para>This is the module that takes care of the login process within MMBase. There are no changes needed to this field so it will not be described any further.</para>
     </section>
-    <section>
+    <section id="accounts">
       <title>&lt;accounts /&gt;</title>
       <para>This are the accounts of the users which are know to the system. It is advised to also create a user called anonymous since it does not exists anywhere else.</para>
     </section>
-    <section>
+    <section id="user_tag">
       <title>&lt;user&gt; &lt;identify /&gt; &lt;/user&gt;</title>
       <para>The following values can be given to the elements of user.</para>
       <itemizedlist>
@@ -264,7 +264,7 @@
         </listitem>
       </itemizedlist>
     </section>
-    <section>
+    <section id="group_tag">
       <title>&lt;group&gt; &lt;contains /&gt; &lt;/group&gt;</title>
       <para>This defines groups within the context security. The following structure applies:</para>
       <programlisting><![CDATA[
@@ -288,7 +288,7 @@
         </listitem>
     </itemizedlist>
     </section>
-  <section>
+  <section id="contexts_tag">
       <title>&lt;contexts&gt; &lt;context /&gt; &lt;/contexts&gt;</title>
       <para>The following values can be given to the elements of contexts.</para>
       <itemizedlist>
@@ -328,7 +328,7 @@
         </listitem>
       </itemizedlist>
     </section>
-    <section>
+    <section id="dtd">
       <title>The DTD of context.xml</title>
       <para>For completeness this is the full DTD used for context.xml:</para>
       <programlisting><![CDATA[
