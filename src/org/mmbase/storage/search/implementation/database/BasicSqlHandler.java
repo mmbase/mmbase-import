@@ -22,7 +22,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.58 2006-03-28 23:43:08 michiel Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.59 2006-06-21 15:06:36 johannes Exp $
  * @since MMBase-1.7
  */
 
@@ -359,7 +359,7 @@ public class BasicSqlHandler implements SqlHandler {
         boolean appended = false;
         while (iFields.hasNext()) {
             StepField field = (StepField) iFields.next();
-            if (field.getType() == Field.TYPE_BINARY && storesAsFile) continue; 
+            if (field.getType() == Field.TYPE_BINARY) continue; 
             if (appended) {
                 sb.append(',');
             }
