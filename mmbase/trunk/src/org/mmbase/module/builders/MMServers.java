@@ -15,6 +15,7 @@ import java.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.storage.search.implementation.*;
 
 /**
  * @javadoc
@@ -27,7 +28,7 @@ import org.mmbase.util.logging.*;
  * nodes caches in sync but also makes it possible to split tasks between machines. You could for example have a server that encodes video.
  *  when a change to a certain node is made one of the servers (if wel configured) can start encoding the videos.
  * @author  vpro
- * @version $Id: MMServers.java,v 1.39 2006-01-13 15:41:42 pierre Exp $
+ * @version $Id: MMServers.java,v 1.40 2006-06-21 09:51:19 michiel Exp $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnable {
 
@@ -183,7 +184,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
                 createMySelf(machineName);
             }
         } catch (Exception e) {
-            log.error("Something went wrong in MMServers Checkup Thread " + Logging.stackTrace(e));
+            log.error("Something went wrong in MMServers Checkup Thread " + e.getMessage(), e);
         }
     }
 
@@ -299,22 +300,34 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
     }
 
     /**
+     * MMServer object are field by field equals.
+     */
+
+    public boolean equals(MMObjectNode o1, MMObjectNode o2) {
+        return o1 == null ? o2 == null : o2 != null && o1.getValues().equals(o2.getValues());
+    }
+
+    /**
      * @return List of MMObjectNodes representing  active servers.
      */
     public List getActiveServers() {
         List activeServers = new ArrayList();
 
         String machineName = mmb.getMachineName();
-        log.debug("getActiveServers(): machine="+machineName);
-
-        for (Iterator iter = getNodes().iterator(); iter.hasNext();) {
-            MMObjectNode node = (MMObjectNode) iter.next();
-            String tmpname=node.getStringValue("name");
-            if (!tmpname.equals(machineName)) {
-                if (node.getIntValue("state") == ACTIVE) {
-                    activeServers.add(node);
+        log.debug("getActiveServers(): machine=" + machineName);
+        NodeSearchQuery query = new NodeSearchQuery(this);
+        try {
+            for (Iterator iter = storageConnector.getNodes(query, false).iterator(); iter.hasNext();) { // don't use cache. This list of active server may be needed to arrange clustering.
+                MMObjectNode node = (MMObjectNode) iter.next();
+                String tmpname = node.getStringValue("name");
+                if (!tmpname.equals(machineName)) {
+                    if (node.getIntValue("state") == ACTIVE) {
+                        activeServers.add(node);
+                    }
                 }
             }
+        } catch (org.mmbase.storage.search.SearchQueryException sqe) {
+            log.error(sqe);
         }
         return activeServers;
     }
