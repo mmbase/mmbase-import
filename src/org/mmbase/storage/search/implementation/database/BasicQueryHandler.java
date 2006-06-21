@@ -33,7 +33,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.50 2006-06-08 13:24:47 nklasens Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.51 2006-06-21 15:06:36 johannes Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -226,7 +226,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
                             alias = step.getTableName();
                         }
                         CoreField field = builder.getField(alias +  '.' + fieldName);
-                        if (field.getType() == CoreField.TYPE_BINARY && storesAsFile) continue;
+                        if (field.getType() == CoreField.TYPE_BINARY) continue;
                         Object value = storageManager.getValue(rs, j++, field, false);
                         node.storeValue(alias +  '.' + fieldName, value);
                     }
@@ -266,7 +266,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
                             fieldName = fields[i].getFieldName();
                         }
                         CoreField field = builder.getField(fieldName);
-                        if (field != null && field.getType() == CoreField.TYPE_BINARY && storesAsFile) continue;
+                        if (field != null && field.getType() == CoreField.TYPE_BINARY) continue;
                         Object value = storageManager.getValue(rs, j++, field, false);
                         node.storeValue(fieldName, value);
                     }
@@ -298,7 +298,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
         Step nodeStep = fields[0].getStep();
         int j = 1;
         for (int i = 0; i < fields.length; i++) {
-            if (fields[i].getType() == CoreField.TYPE_BINARY && storesAsFile) continue;
+            if (fields[i].getType() == CoreField.TYPE_BINARY) continue;
             Integer index = new Integer(j++);
             if (fields[i].getStep() == nodeStep) {
                 String fieldName =  fields[i].getFieldName();
@@ -317,7 +317,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
         for (Iterator f = builderFields.iterator(); f.hasNext();) {
             CoreField field = (CoreField)f.next();
             if (field.inStorage()) {
-                if (field.getType() == CoreField.TYPE_BINARY && storesAsFile) continue;
+                if (field.getType() == CoreField.TYPE_BINARY) continue;
                 if (fieldIndices.get(field) == null) {
                     if (missingFields == null) {
                         missingFields = new StringBuffer(field.getName());
@@ -361,7 +361,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
                         CoreField field = (CoreField)i.next();
                         if (! field.inStorage()) continue;
                         Integer index = (Integer) fieldIndices.get(field);
-                        Object value;
+                        Object value = null;
                         String fieldName = field.getName();
                         if (index != null) {
                             value = storageManager.getValue(rs, index.intValue(), field, true);
@@ -371,14 +371,15 @@ public class BasicQueryHandler implements SearchQueryHandler {
                                 log.debug("Storage did not return data for '" + fieldName + "', supposing it on disk");
                                 // must have been a explicitely specified 'blob' field
                                 b = storageManager.getBlobValue(node, field, true);
+                            } else if (field.getType() == CoreField.TYPE_BINARY) {
+                                // binary fields never come directly from the database
+                                value = MMObjectNode.VALUE_SHORTED;
                             } else if (! isVirtual){
                                 // field wasn't returned by the db - this must be a Virtual node, otherwise fail!
                                 // (this shoudln't occur)
                                 throw new IllegalStateException("Storage did not return data for field '" + fieldName + "'");
                             }
-                            if (b == null) {
-                                value = null;
-                            } else {
+                            if (b != null) {
                                 if (b.length() == -1) {
                                     value = MMObjectNode.VALUE_SHORTED;
                                 } else {
