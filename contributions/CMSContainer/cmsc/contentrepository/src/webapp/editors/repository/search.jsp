@@ -126,7 +126,7 @@
                     </mm:node>
                  </mm:list>
                </table>
-            <% } %>
+            <% } %> <%-- Close searchpages --%>
       </mm:cloud>
    </body>
 </html:html>

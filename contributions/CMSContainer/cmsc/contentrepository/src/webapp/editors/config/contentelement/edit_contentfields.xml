@@ -25,6 +25,10 @@
 		<prompt xml:lang="en">Expiredate</prompt>
 		<prompt xml:lang="nl">Verloopdatum</prompt>
 	</field>
+	<field name="archivedate">
+		<prompt xml:lang="en">Archivedate</prompt>
+		<prompt xml:lang="nl">Archief datum</prompt>
+	</field>
 	<field name="notificationdate">
 		<prompt xml:lang="en">Notificationdate</prompt>
 		<prompt xml:lang="nl">Notificatie datum</prompt>

@@ -19,7 +19,7 @@
 %>
 <%
 	// $Name: not supported by cvs2svn $ will be expanded when checked out with an explicit tagname. For Example "cvs co -r first"
-	String version = "$Name: not supported by cvs2svn $";
+	String version = com.finalist.util.version.VersionUtil.getVersion(this.getServletConfig().getServletContext());
 	// prepare error ticket
 	long ticket = System.currentTimeMillis();
 
@@ -42,12 +42,12 @@
 <fmt:message key="exception.500.message" /><br />
 <fmt:message key="exception.500.description" /><br />
 <fmt:message key="exception.500.actions" /><br />
-<P>
-<hr>
-<form action="senderror.jsp" method="post">
-	<input type="hidden" name="messagetype" value="500">
-	<input type="hidden" name="ticket" value="<%= ticket %>">
-	<input type="hidden" name="message" value="<%= msg %>">
+</p>
+<hr />
+<form action="<c:url value='/error/senderror.jsp' />" method="post">
+	<input type="hidden" name="messagetype" value="500" />
+	<input type="hidden" name="ticket" value="<%= ticket %>" />
+	<input type="hidden" name="message" value="<%= msg %>" />
 </form>
 <p><a href="javascript:document.forms[0].submit();"><fmt:message key="exception.500.send" /></a></p>
 

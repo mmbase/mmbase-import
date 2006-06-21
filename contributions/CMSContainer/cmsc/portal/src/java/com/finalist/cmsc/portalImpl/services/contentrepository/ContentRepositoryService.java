@@ -19,7 +19,6 @@ import com.finalist.pluto.portalImpl.services.Service;
 
 /**
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
  */
 public abstract class ContentRepositoryService extends Service {
 

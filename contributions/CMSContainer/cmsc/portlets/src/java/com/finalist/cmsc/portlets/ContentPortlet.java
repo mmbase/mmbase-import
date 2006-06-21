@@ -19,7 +19,6 @@ import com.finalist.pluto.portalImpl.core.CmscPortletMode;
  * Portlet to edit content elements
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
  */
 public class ContentPortlet extends CmscPortlet {
 	
@@ -122,8 +121,11 @@ public class ContentPortlet extends CmscPortlet {
 
     @Override
     protected void doView(RenderRequest req, RenderResponse res) throws PortletException, IOException {
-        PortletPreferences preferences = req.getPreferences();
-        String elementId = preferences.getValue(CONTENTELEMENT, null);
+        String elementId = req.getParameter(ELEMENT_ID);
+        if (StringUtil.isEmpty(elementId)) {
+            PortletPreferences preferences = req.getPreferences();
+            elementId = preferences.getValue(CONTENTELEMENT, null);
+        }
         if (!StringUtil.isEmpty(elementId)) {
             setAttribute(req, ELEMENT_ID, elementId);
             super.doView(req, res);
@@ -132,8 +134,11 @@ public class ContentPortlet extends CmscPortlet {
     
     
     protected void doEdit(RenderRequest req, RenderResponse res) throws IOException, PortletException {
-        PortletPreferences preferences = req.getPreferences();
-        String elementId = preferences.getValue(CONTENTELEMENT, null);
+        String elementId = req.getParameter(ELEMENT_ID);
+        if (StringUtil.isEmpty(elementId)) {
+            PortletPreferences preferences = req.getPreferences();
+            elementId = preferences.getValue(CONTENTELEMENT, null);
+        }
         if (!StringUtil.isEmpty(elementId)) {
             setAttribute(req, ELEMENT_ID, elementId);
             if (ContentRepository.mayEdit(elementId)) {

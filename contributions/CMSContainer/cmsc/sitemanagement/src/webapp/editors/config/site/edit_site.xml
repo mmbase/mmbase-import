@@ -33,6 +33,29 @@
 		<prompt xml:lang="nl">Beveiligd</prompt>
 		<optionlist select="boolean" />
 	</field>
+
+	<field name="language" dtmaxlength="2"
+>
+		<prompt xml:lang="en">Language</prompt>
+		<prompt xml:lang="nl">Taal</prompt>
+	</field>
+	<field name="creator" dtmaxlength="150">
+		<prompt xml:lang="en">Creator</prompt>
+		<prompt xml:lang="nl">Auteur</prompt>
+	</field>
+	<field name="publisher" dtmaxlength="150">
+		<prompt xml:lang="en">Publisher</prompt>
+		<prompt xml:lang="nl">Publiseerder</prompt>
+	</field>
+	<field name="source" dtmaxlength="150">
+		<prompt xml:lang="en">Source</prompt>
+		<prompt xml:lang="nl">Bronvermelding</prompt>
+	</field>
+	<field name="rights" dtmaxlength="150">
+		<prompt xml:lang="en">Rights</prompt>
+		<prompt xml:lang="nl">Rechten</prompt>
+	</field>
+
 	<list include="config/layout/search_page_layoutrel_layout.xml" />
 	<list include="config/popupinfo/search_page_related_popupinfo.xml" />
 	<list include="config/stylesheet/search_page_stylerel_stylesheet.xml" />

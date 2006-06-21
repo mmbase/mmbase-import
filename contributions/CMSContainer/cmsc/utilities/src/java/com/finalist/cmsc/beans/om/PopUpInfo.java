@@ -14,7 +14,6 @@ import net.sf.mmapps.commons.beans.NodeBean;
 
 /**
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
  */
 public class PopUpInfo extends NodeBean {
 

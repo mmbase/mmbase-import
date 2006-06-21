@@ -12,7 +12,7 @@
 
 	<names>
 		<singular xml:lang="nl">Inlinerel</singular>
-		<singular xml:lang="en">IdRelation</singular>
+		<singular xml:lang="en">Inlinerel</singular>
 		<plural xml:lang="nl">Inlinerels</plural>
 		<plural xml:lang="en">Inlinerels</plural>
 	</names>

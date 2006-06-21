@@ -43,7 +43,6 @@ import com.finalist.pluto.portalImpl.factory.FactoryAccess;
  * Container tag for a Portlet
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
  */
 public class PortletTag extends SimpleTagSupport {
 

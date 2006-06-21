@@ -45,7 +45,6 @@ import com.finalist.pluto.portalImpl.servlet.ServletObjectAccess;
  * Portal controller servlet. Alle portal requests gaan door deze servlet.
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
  */
 public class PortalServlet extends HttpServlet {
 	private static Log log = LogFactory.getLog(PortalServlet.class);

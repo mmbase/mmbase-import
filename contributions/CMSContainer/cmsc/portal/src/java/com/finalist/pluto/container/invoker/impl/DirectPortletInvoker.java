@@ -24,7 +24,6 @@ import com.finalist.pluto.container.factory.PortletFactory;
 
 /**
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
  */
 public class DirectPortletInvoker implements PortletInvoker {
 	private static Log log = LogFactory.getLog(DirectPortletInvoker.class);

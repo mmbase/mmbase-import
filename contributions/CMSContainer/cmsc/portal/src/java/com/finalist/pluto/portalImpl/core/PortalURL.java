@@ -34,21 +34,19 @@ import com.finalist.pluto.portalImpl.aggregation.Fragment;
  * PortalURL to accomodate CMSC's filter/servlet setup.
  * @changes pluto-1.0.1
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class PortalURL {
 	private static Log log = LogFactory.getLog(PortalURL.class);
 
+    private String basePortalURL = null;
+    private boolean secure = false;
 	private List startGlobalNavigation = new ArrayList();
-
 	private List startLocalNavigation = new ArrayList();
-
 	private HashMap encodedStartControlParameter = new HashMap();
-
 	private HashMap startStateLessControlParameter = new HashMap();
 
 	private boolean analyzed = false;
-
 	private PortalEnvironment environment;
 	
 	/**
@@ -69,14 +67,32 @@ public class PortalURL {
 	 */
 	public String getBasePortalURL(PortalEnvironment env) {
 		StringBuffer result = new StringBuffer(256);
-		/*
-		 * result.append(secure?hostNameHTTPS:hostNameHTTP);
-		 */
-		result.append(env.getRequest().getContextPath());
+		if (env == null) {
+            result.append(basePortalURL);
+        }
+        else {
+            /*
+    		 * result.append(secure?hostNameHTTPS:hostNameHTTP);
+    		 */
+    		result.append(env.getRequest().getContextPath());
+        }
 	
 		return result.toString();
 	}
 
+    public PortalURL(HttpServletRequest request, String globalNavigation) {
+        this(request.getContextPath(), request.isSecure(), globalNavigation);
+    }
+    
+    public PortalURL(String basePortalURL, boolean secure, String globalNavigation) {
+        this.basePortalURL = basePortalURL;
+        this.secure = secure;
+        if (globalNavigation != null) {
+            addGlobalNavigation(globalNavigation);
+        }
+        analyzed = true;
+    }
+    
 	/**
 	 * Creates and URL pointing to the home of the portal
 	 * 
@@ -280,9 +296,9 @@ public class PortalURL {
 		if (p_secure != null) {
 			secure = p_secure.booleanValue();
 		} else {
-			secure = environment.getRequest().isSecure();
+			secure = environment == null ? this.secure : environment.getRequest().isSecure();
 		}
-		urlBase.append(environment.getRequest().getContextPath());
+		urlBase.append(getBasePortalURL(environment));
 		//urlBase.append(secure ? secureServlet : insecureServlet);
 
 		String url = urlBase.toString();
@@ -308,7 +324,12 @@ public class PortalURL {
 			url += local;
 		}
 
-		return environment.getResponse().encodeURL(url);
+        if (environment == null) {
+            return url;
+        }
+        else {
+            return environment.getResponse().encodeURL(url);
+        }
 	}
 
 	Map getClonedEncodedStateFullControlParameter() {
@@ -375,6 +396,13 @@ public class PortalURL {
 
 	}
 
+    public void setRenderParameter(String portletWindow, String name, String[] values) {
+        encodedStartControlParameter.put(PortalControlParameter.encodeRenderParamName(portletWindow, name),
+                PortalControlParameter.encodeRenderParamValues(values));
+
+    }
+
+    
 	public void clearRenderParameters(PortletWindow portletWindow) {
 		String prefix = PortalControlParameter.getRenderParamKey(portletWindow);
 		Iterator keyIterator = encodedStartControlParameter.keySet().iterator();

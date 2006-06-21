@@ -46,7 +46,6 @@ import com.finalist.pluto.portalImpl.om.servlet.impl.WebApplicationDefinitionImp
 /**
  * Implements the Pluto Container.
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
  */
 public class PortletContainerImpl extends org.apache.pluto.PortletContainerImpl {
 	private static Log log = LogFactory.getLog(PortletContainerImpl.class);

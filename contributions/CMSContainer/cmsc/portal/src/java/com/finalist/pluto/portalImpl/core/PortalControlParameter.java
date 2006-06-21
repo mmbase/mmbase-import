@@ -164,13 +164,24 @@ public class PortalControlParameter {
 	 *         portal urls.
 	 */
 	public static String encodeRenderParamName(PortletWindow window, String paramName) {
-		String encodedParamName = encodeString(paramName);
+        String renderParamKey = getRenderParamKey(window);
+		return encodeRenderParamNameInternal(renderParamKey, paramName);
+	}
+
+    public static String encodeRenderParamName(String windowid, String paramName) {
+        String renderParamKey = getRenderParamKey(windowid);
+        return encodeRenderParamNameInternal(renderParamKey, paramName);
+        
+    }
+    
+    private static String encodeRenderParamNameInternal(String renderParamKey, String paramName) {
+        String encodedParamName = encodeString(paramName);
 		StringBuffer returnvalue = new StringBuffer(50);
-		returnvalue.append(getRenderParamKey(window));
+        returnvalue.append(renderParamKey);
 		returnvalue.append("_");
 		returnvalue.append(encodedParamName);
 		return returnvalue.toString();
-	}
+    }
 
 	/**
 	 * Reverse method for method {{@link #encodeRenderParamName(PortletWindow, String)}}.
@@ -233,8 +244,13 @@ public class PortalControlParameter {
 	 * @return
 	 */
 	public static String getRenderParamKey(PortletWindow window) {
-		return RENDER_PARAM + "_" + window.getId().toString();
+		String windowid = window.getId().toString();
+        return getRenderParamKey(windowid);
 	}
+
+    private static String getRenderParamKey(String windowid) {
+        return RENDER_PARAM + "_" + windowid;
+    }
 
 	/**
 	 * Check whether the given string encodes a control parameter.
@@ -275,8 +291,13 @@ public class PortalControlParameter {
 	}
 
 	private String getActionKey(PortletWindow window) {
-		return ACTION + "_" + window.getId().toString();
+		String windowid = window.getId().toString();
+        return getActionKey(windowid);
 	}
+
+    private String getActionKey(String windowid) {
+        return ACTION + "_" + windowid;
+    }
 
 	public String[] getActionParameter(PortletWindow window, String paramName) {
 		String encodedValues = (String) encodedStateFullControlParameter.get(encodeRenderParamName(window, paramName));
@@ -294,8 +315,13 @@ public class PortalControlParameter {
 	}
 
 	private String getModeKey(PortletWindow window) {
-		return MODE + "_" + window.getId().toString();
+		String windowid = window.getId().toString();
+        return getModeKey(windowid);
 	}
+
+    private String getModeKey(String windowid) {
+        return MODE + "_" + windowid;
+    }
 
 	public String getPIDValue() {
 		String value = (String) stateLessControlParameter.get(getPortletIdKey());
@@ -331,8 +357,13 @@ public class PortalControlParameter {
 	}
 
 	private String getPrevModeKey(PortletWindow window) {
-		return PREV_MODE + "_" + window.getId().toString();
+		String windowid = window.getId().toString();
+        return getPrevModeKey(windowid);
 	}
+
+    private String getPrevModeKey(String windowid) {
+        return PREV_MODE + "_" + windowid;
+    }
 
 	public WindowState getPrevState(PortletWindow window) {
 		String state = (String) encodedStateFullControlParameter.get(getPrevStateKey(window));
@@ -343,8 +374,13 @@ public class PortalControlParameter {
 	}
 
 	private String getPrevStateKey(PortletWindow window) {
-		return PREV_STATE + "_" + window.getId().toString();
+		String windowid = window.getId().toString();
+        return getPrevStateKey(windowid);
 	}
+
+    private String getPrevStateKey(String windowid) {
+        return PREV_STATE + "_" + windowid;
+    }
 
 	public Iterator getRenderParamNames(PortletWindow window) {
 		ArrayList returnvalue = new ArrayList();
@@ -386,8 +422,13 @@ public class PortalControlParameter {
 	}
 
 	private String getStateKey(PortletWindow window) {
-		return STATE + "_" + window.getId().toString();
+		String windowid = window.getId().toString();
+        return getStateKey(windowid);
 	}
+
+    private String getStateKey(String windowid) {
+        return STATE + "_" + windowid;
+    }
 
 	public Map getStateLessControlParameter() {
 		return stateLessControlParameter;
@@ -407,21 +448,49 @@ public class PortalControlParameter {
 	}
 
 	public void setAction(PortletWindow window) {
-		getEncodedStateFullControlParameter().put(getActionKey(window), ACTION.toUpperCase());
+		String actionKey = getActionKey(window);
+        setActionInternal(actionKey);
 	}
+
+    public void setAction(String window) {
+        String actionKey = getActionKey(window);
+        setActionInternal(actionKey);
+    }
+    
+    private void setActionInternal(String actionKey) {
+        getEncodedStateFullControlParameter().put(actionKey, ACTION.toUpperCase());
+    }
 
 	public void setMode(PortletWindow window, PortletMode mode) {
-		Object prevMode = encodedStateFullControlParameter.get(getModeKey(window));
-		if (prevMode != null)
-			encodedStateFullControlParameter.put(getPrevModeKey(window), prevMode);
-		// set current mode
-		encodedStateFullControlParameter.put(getModeKey(window), mode.toString());
+		String modeKey = getModeKey(window);
+        String prevModeKey = getPrevModeKey(window);
+        setModeInternal(mode, modeKey, prevModeKey);
 	}
 
+    public void setMode(String window, PortletMode mode) {
+        String modeKey = getModeKey(window);
+        String prevModeKey = getPrevModeKey(window);
+        setModeInternal(mode, modeKey, prevModeKey);
+    }
+
+    
+    private void setModeInternal(PortletMode mode, String modeKey, String prevModeKey) {
+        Object prevMode = encodedStateFullControlParameter.get(modeKey);
+        if (prevMode != null)
+			encodedStateFullControlParameter.put(prevModeKey, prevMode);
+		// set current mode
+		encodedStateFullControlParameter.put(modeKey, mode.toString());
+    }
+
 	public void setPortletId(PortletWindow window) {
-		getEncodedStateFullControlParameter().put(getPortletIdKey(), window.getId().toString());
-		// getStateLessControlParameter().put(getPortletIdKey(),window.getId().toString());
+		String windowid = window.getId().toString();
+        setPortletId(windowid);
 	}
+
+    public void setPortletId(String windowid) {
+        getEncodedStateFullControlParameter().put(getPortletIdKey(), windowid);
+		// getStateLessControlParameter().put(getPortletIdKey(),window.getId().toString());
+    }
 
 	/**
 	 * Sets the given render parameter. Note that its name as well as its values
@@ -432,15 +501,32 @@ public class PortalControlParameter {
 		encodedStateFullControlParameter.put(encodeRenderParamName(window, name), encodeRenderParamValues(values));
 	}
 
+    public void setRenderParam(String window, String name, String[] values) {
+        encodedStateFullControlParameter.put(encodeRenderParamName(window, name), encodeRenderParamValues(values));
+    }
+
+    
 	public void setRequestParam(String name, String[] values) {
 		requestParameter.put(name, values);
 	}
 
 	public void setState(PortletWindow window, WindowState state) {
-		Object prevState = encodedStateFullControlParameter.get(getStateKey(window));
-		if (prevState != null) {
-			encodedStateFullControlParameter.put(getPrevStateKey(window), prevState);
-		}
-		encodedStateFullControlParameter.put(getStateKey(window), state.toString());
+		String stateKey = getStateKey(window);
+        String prevStateKey = getPrevStateKey(window);
+        setStateInternal(state, stateKey, prevStateKey);
 	}
+
+    public void setState(String window, WindowState state) {
+        String stateKey = getStateKey(window);
+        String prevStateKey = getPrevStateKey(window);
+        setStateInternal(state, stateKey, prevStateKey);
+    }
+
+    private void setStateInternal(WindowState state, String stateKey, String prevStateKey) {
+        Object prevState = encodedStateFullControlParameter.get(stateKey);
+		if (prevState != null) {
+            encodedStateFullControlParameter.put(prevStateKey, prevState);
+		}
+		encodedStateFullControlParameter.put(stateKey, state.toString());
+    }
 }

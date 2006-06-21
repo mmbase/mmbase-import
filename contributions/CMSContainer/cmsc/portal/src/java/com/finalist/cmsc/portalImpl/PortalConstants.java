@@ -13,7 +13,6 @@ package com.finalist.cmsc.portalImpl;
  * Constants
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
  */
 public class PortalConstants {
 

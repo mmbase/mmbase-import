@@ -8,7 +8,6 @@ import net.sf.mmapps.commons.beans.NodeBean;
 
 /**
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
  */
 @SuppressWarnings("serial")
 public class Portlet extends NodeBean implements Comparable {

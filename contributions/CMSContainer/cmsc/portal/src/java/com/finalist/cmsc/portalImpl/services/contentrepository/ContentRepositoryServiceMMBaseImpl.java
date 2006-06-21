@@ -41,7 +41,6 @@ import com.finalist.pluto.portalImpl.util.Properties;
  * implementation.
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
  */
 public class ContentRepositoryServiceMMBaseImpl extends ContentRepositoryService {
 	private static Log log = LogFactory.getLog(ContentRepositoryServiceMMBaseImpl.class);

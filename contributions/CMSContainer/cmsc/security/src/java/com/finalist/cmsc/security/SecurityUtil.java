@@ -258,7 +258,7 @@ public class SecurityUtil {
     }
 
 
-    private static void clearUserRoles(Cloud cloud) {
+    public static void clearUserRoles(Cloud cloud) {
         for (Iterator iter = cloud.getProperties().keySet().iterator(); iter.hasNext();) {
             String property = (String) iter.next();
             if (property.startsWith(CMSC_USERROLES)) {

@@ -21,16 +21,15 @@ import org.mmbase.bridge.*;
 
 import com.finalist.cmsc.mmbase.TreeUtil;
 import com.finalist.cmsc.repository.*;
-import com.finalist.cmsc.repository.select.SelectAjaxRenderer;
-import com.finalist.cmsc.struts.*;
+import com.finalist.cmsc.repository.select.SelectRenderer;
+import com.finalist.cmsc.struts.JstlUtil;
 import com.finalist.tree.TreeInfo;
 import com.finalist.tree.ajax.AjaxTree;
+import com.finalist.tree.ajax.SelectAjaxRenderer;
 
-public class SelectorAction extends TreeAction {
 
-    private String linkPattern;
-    private String target;
-    
+public class SelectorAction extends com.finalist.cmsc.struts.SelectorAction {
+
     @Override
     public ActionForward execute(ActionMapping mapping, ActionForm form,
             HttpServletRequest request, HttpServletResponse response, Cloud cloud) throws Exception {
@@ -39,12 +38,6 @@ public class SelectorAction extends TreeAction {
         if(StringUtil.isEmpty(action)) {
             RepositoryInfo info = new RepositoryInfo(RepositoryUtil.getRepositoryInfo(cloud));
             cloud.setProperty("Selector" + RepositoryInfo.class.getName(), info);
-        }
-        
-        if (mapping instanceof SelectorActionMapping) {
-            SelectorActionMapping selectoMapping = (SelectorActionMapping) mapping;
-            linkPattern = selectoMapping.getLinkPattern();
-            target = selectoMapping.getTarget();
         }
         
         JstlUtil.setResourceBundle(request, "cmsc-repository");
@@ -81,18 +74,10 @@ public class SelectorAction extends TreeAction {
 
     protected AjaxTree getTree(HttpServletRequest request, Cloud cloud, TreeInfo info, String persistentid) {
         RepositoryTreeModel model = new RepositoryTreeModel(cloud);
-        SelectAjaxRenderer chr = new SelectAjaxRenderer(getLinkPattern(), getTarget());
+        SelectAjaxRenderer chr = new SelectRenderer(getLinkPattern(), getTarget());
         AjaxTree t = new AjaxTree(model, chr, info);
         t.setImgBaseUrl("../../img/");
         return t;
-    }
-
-    protected String getLinkPattern() {
-        return linkPattern; 
-    }
-
-    protected String getTarget() {
-        return target;
     }
     
     protected List getChildren(Cloud cloud, String path) {
@@ -113,4 +98,5 @@ public class SelectorAction extends TreeAction {
         }
         return strings;
     }
+    
 }

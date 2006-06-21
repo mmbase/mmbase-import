@@ -41,6 +41,7 @@
       <relation from="article" to="article" type="inlinerel" />
       <relation from="article" to="faqitem" type="inlinerel" />
       <relation from="article" to="attachments" type="inlinerel" />
+      <relation from="article" to="urls" type="inlinerel" />
       <relation from="article" to="images" type="imageinlinerel" />
    </allowedrelationlist>
 

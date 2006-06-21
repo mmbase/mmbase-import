@@ -28,16 +28,26 @@ public class RichText {
 
    public final static String LINK_TAGNAME = "a";
    public final static String IMG_TAGNAME = "img";
+   
    public final static String DESTINATION_ATTR = "destination";
    public final static String RELATIONID_ATTR = "relationID";
-   public final static String ANCHOR_ATTR = "anchor";
-   public final static String ANCHORREF_ATTR = "anchorref";
-   public final static String POS_ATTR = "imgpos";
+
+   public final static String SRC_ATTR = "src";
+   public final static String HREF_ATTR = "href";
+
    public final static String SIZE_ATTR = "imgsize";
    public final static String LEGEND = "legend";
 
+   public static final String TITLE_ATTR = "title";
+   public static final String DESCRIPTION_ATTR = "description";
+   public static final String ALT_ATTR = "alt";
+   public static final String WIDTH_ATTR = "width";
+   public static final String HEIGHT_ATTR = "height";
+
    // mmbase stuff
-   public final static String RICHTEXT_GUITYPE = "richtext";
+   public final static String RICHTEXT_TYPE = "cmscrichtext";
    public final static String INLINEREL_NM = "inlinerel";
    public final static String IMAGEINLINEREL_NM = "imageinlinerel";
+   public static final String REFERID_FIELD = "referid";
+
 }

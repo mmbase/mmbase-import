@@ -18,6 +18,7 @@
 	<field name="status" />
 	<field name="subject" />
 	<field name="email" />
+	<field name="archivedate" />
 	
 	<!-- content info relations -->
 	<relation destination="contentchannel" role="creationrel" />

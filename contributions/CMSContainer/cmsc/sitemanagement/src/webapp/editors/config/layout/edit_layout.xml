@@ -13,7 +13,7 @@
 		<prompt xml:lang="nl">Omschrijving</prompt>
 	</field>
 	<field name="resource" dtmaxlength="255" ftype="text" rows="3">
-		<prompt xml:lang="en">Resource</prompt>
+		<prompt xml:lang="en">Template</prompt>
 		<prompt xml:lang="nl">Template</prompt>
 	</field>
 	<list include="config/portletdefinition/search_layout_namedallowrel_portletdefinition.xml" />
