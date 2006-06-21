@@ -37,6 +37,9 @@
       LegacyCKey: If this property is true or missing (as in legacy icaches.xml), then icaches are also matched
                   by the 'legacy' form (without plus-signs). This is a slight performance penalty which can be 
                   avoided if icaches is clean (as in new installations), icached is cleaned, or if you don't mind.                  
+      FixLegacyCKey: If this property is true or missing, then icaches that mach the legacy form will be updated
+                     with the new CKEY format on the database as soon as they are found. This means that if you 
+                     have a mix of 1.7 and 1.8 machines on 1 database, you want to set this to false!
     -->
     <property name="LegacyCKey">false</property>
   </properties>
