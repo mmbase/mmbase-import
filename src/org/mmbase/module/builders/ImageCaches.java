@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.53 2006-04-27 16:48:49 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.54 2006-06-21 08:23:57 johannes Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -40,6 +40,7 @@ public class ImageCaches extends AbstractImages {
 
     private boolean checkLegacyCkey = true;
 
+    private boolean fixLegacyCkeys = true;
 
     public ImageCaches() {
     }
@@ -49,6 +50,7 @@ public class ImageCaches extends AbstractImages {
         if (!super.init()) return false;
 
         checkLegacyCkey = ! "false".equals(getInitParameter("LegacyCKey"));
+        fixLegacyCkeys = ! "false".equals(getInitParameter("FixLegacyCKey"));
         return true;
     }
 
@@ -241,8 +243,10 @@ public class ImageCaches extends AbstractImages {
             String ckey = Factory.getCKey(imageNumber, template).toString();
             while (i.hasNext()) {
                 legacyNode = (MMObjectNode) i.next();
-                legacyNode.setValue(Imaging.FIELD_CKEY, ckey); // fix to new format
-                legacyNode.commit();
+                if (fixLegacyCkeys) {
+                    legacyNode.setValue(Imaging.FIELD_CKEY, ckey); // fix to new format
+                    legacyNode.commit();
+                }
             }
             return legacyNode;
         } catch (SearchQueryException e) {
@@ -327,7 +331,14 @@ public class ImageCaches extends AbstractImages {
         int fi = ckey.indexOf("f(");
         if (fi > -1) {
             int fi2 = ckey.indexOf(")", fi);
-            return ckey.substring(fi + 2, fi2);
+            // be resilient against corrupt ckeys
+            if (fi2 > -1) {
+                return ckey.substring(fi + 2, fi2);
+            } else {
+                // best guess, might not work, but if we don't know
+                // it we have to return something.
+                return Factory.getDefaultImageFormat();
+            }
         } else {
             String r = Factory.getDefaultImageFormat();
             if (r.equals("asis")) {
