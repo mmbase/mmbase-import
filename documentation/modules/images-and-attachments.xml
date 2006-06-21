@@ -4,7 +4,7 @@
   <articleinfo>
     <title>Images and Attachments</title>
     <date>2005-05-09</date>
-    <edition>$Id: images-and-attachments.xml,v 1.9 2005-11-15 11:44:35 michiel Exp $</edition>
+    <edition>$Id: images-and-attachments.xml,v 1.10 2006-06-21 05:24:39 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Michiel</firstname>
@@ -17,7 +17,7 @@
       </para>
     </legalnotice>
   </articleinfo>
-  <section>
+  <section id="introduction">
     <title>Introduction</title>
     <para>
       This document describes how you have to deal with images and attachments in MMBase. We will
@@ -25,7 +25,7 @@
       and will end with some implementation details an MMBase developer might need to know.
     </para>
   </section>
-  <section>
+  <section id="imageservlet">
     <title>Images and ImageServlet</title>
     <para>
       Lets start with the most simple thing, which is needed in almost every MMBase installation. Images
@@ -114,7 +114,7 @@ while(i.hasNext()) {
         servlet (which helps some browsers). I advice to use the image-tag if you can.
       </para>
     </note>
-    <section>
+    <section id="conversion">
       <title>Image conversion</title>
       <para>
         As mentioned, images can be converted to other images. This is a very useful feature, because you
@@ -207,7 +207,7 @@ int iCacheNodeNumber = image.getFunctionValue("cache", arguments).intValue();
         the image tag entry of the MMBase taglib reference guide there are given some examples.
       </para>
     </section>
-    <section>
+    <section id="height_and_width">
       <title>Image height and width</title>
       <para>
         Until now we've said nothing about the 'height' and 'width' of images. In HTML you actually
@@ -263,7 +263,7 @@ int iCacheNodeNumber = image.getFunctionValue("cache", arguments).intValue();
         conversion has not yet taken place.
       </para>
     </section>
-    <section>
+    <section id="attachments">
       <title>Attachments</title>
       <para>
         Other types of data blobs can of course, just as images, be stored in MMBase. We call them generally
@@ -285,7 +285,7 @@ int iCacheNodeNumber = image.getFunctionValue("cache", arguments).intValue();
       </para>
     </section>
   </section>
-  <section>
+  <section id="xslt">
     <title>XSLT</title>
     <para>
       Sometimes you want to generate output using XSLT. This happens for example in the Editwizard
@@ -332,7 +332,7 @@ int iCacheNodeNumber = image.getFunctionValue("cache", arguments).intValue();
       for more information on how to use it.      
     </para>
   </section>
-  <section>
+  <section id="builders">
     <title>More about the builders, 'servlet builders'.</title>
     <para>
       It has become clear that the images and attachments builders are more than simple dumb MMBase
@@ -353,9 +353,9 @@ int iCacheNodeNumber = image.getFunctionValue("cache", arguments).intValue();
       do it like this.
     </para>
   </section>
-  <section>
+  <section id="servlets">
     <title>More about the implementation of the servlets.</title>
-    <section>
+    <section id="servdb">
       <title>Introduction, servdb</title>
       <para>
         Before MMBase 1.6 the function of the Image Servlet was performed by the generic MMBase
@@ -379,7 +379,7 @@ int iCacheNodeNumber = image.getFunctionValue("cache", arguments).intValue();
         builders' (and 'image tag'), solves all of these problems.
       </para>
     </section>
-    <section>
+    <section id="bridgeservlets">
       <title>Bridge servlet, handle servlet, image servlet</title>
       <para>
         Protecting read rights has nothing do with images. When you want to honor MMBase security, the
@@ -408,7 +408,7 @@ int iCacheNodeNumber = image.getFunctionValue("cache", arguments).intValue();
         earlier MMBase versions.
       </para>
     </section>
-    <section>
+    <section id="configuration">
       <title>Configuration</title>
       <para>
         The following configurations are possible.
