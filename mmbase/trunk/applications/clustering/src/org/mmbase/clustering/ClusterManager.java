@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: ClusterManager.java,v 1.29 2006-06-20 21:29:42 michiel Exp $
+ * @version $Id: ClusterManager.java,v 1.30 2006-06-22 07:29:12 michiel Exp $
  */
 public abstract class ClusterManager implements AllEventListener, Runnable {
 
@@ -168,7 +168,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
      * @return message
      */
     protected String createMessage(String machine, int nodenr, String tableName, String type) {
-        return machine + "," + (follownr++) + "," + nodenr + "," + tableName + "," + type;
+        return machine + ',' + (follownr++) + ',' + nodenr + ',' + tableName + ',' + type;
     }
 
     protected Event parseMessage(byte[] message) {
@@ -293,12 +293,16 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
         // check if MMBase is 100% up and running, if not eat event
         MMBase mmbase = MMBase.getMMBase();
         if (mmbase == null || !mmbase.getState()) {
-            log.debug("Ignoring event " + event + ", mmbase is not up " + mmbase);
+            if (log.isDebugEnabled()) {
+                log.debug("Ignoring event " + event + ", mmbase is not up " + mmbase);
+            }
             return;
         }
         if (mmbase.getMachineName().equals(event.getMachine())) {
             // ignore changes of ourselves
-            log.debug("Ignoring event " + event + " it is from this (" + event.getMachine() + ") mmbase");
+            if (log.isDebugEnabled()) {
+                log.debug("Ignoring event " + event + " it is from this (" + event.getMachine() + ") mmbase");
+            }
             return;
         }
         if (event instanceof NodeEvent) {
@@ -309,12 +313,16 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
             }
         }
 
-        log.debug("Handling event " + event + " for " + event.getMachine());
+        if (log.isDebugEnabled()) {
+            log.debug("Handling event " + event + " for " + event.getMachine());
+        }
 
         if (spawnThreads) {
             Runnable job = new Runnable () {
                     public void run() {
+                        long startTime = System.currentTimeMillis();
                         EventManager.getInstance().propagateEvent(event);
+                        receive.cost += (System.currentTimeMillis() - startTime);
                     }
                 };
             org.mmbase.util.ThreadPools.jobsExecutor.execute(job);
