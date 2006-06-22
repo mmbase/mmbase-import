@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * sending queue over unicast connections
  *
  * @author Nico Klasens
- * @version $Id: ChangesSender.java,v 1.8 2006-06-21 11:46:14 michiel Exp $
+ * @version $Id: ChangesSender.java,v 1.9 2006-06-22 09:45:08 michiel Exp $
  */
 public class ChangesSender implements Runnable {
 
@@ -165,11 +165,7 @@ public class ChangesSender implements Runnable {
             serverInterval = mmservers.getIntervalTime();
             activeServers = mmservers.getActiveServers();
             lastServerChecked = System.currentTimeMillis();
-            if (! activeServers.equals(prevActiveServers)) {
-                log.info("Active servers: " + activeServers + " " + prevActiveServers.size() + "-> " + activeServers.size());
-            } else {
-                log.debug("Active servers: " + activeServers);
-            }
+            log.info("Active servers: " + activeServers );
         } else {
             if (lastServerChecked + serverInterval < System.currentTimeMillis()) {
                 MMBase mmbase = MMBase.getMMBase();
