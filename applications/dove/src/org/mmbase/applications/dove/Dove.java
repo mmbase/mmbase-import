@@ -54,7 +54,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.75 2006-06-20 22:04:48 michiel Exp $
+ * @version $Id: Dove.java,v 1.76 2006-06-22 11:59:16 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -65,7 +65,7 @@ public class Dove extends AbstractDove {
     /**
      *@since MMBase-1.8.1
      */
-    private static final UtilReader properties = new UtilReader("dove");
+    private static final UtilReader properties = new UtilReader("dove.xml");
     private static final String PROP_CHANGES = "changes";
     private static final String CHANGES_IGNORE = "ignore";
     private static final String CHANGES_WARN   = "warn";
