@@ -15,7 +15,7 @@
 <%= "<!--" %>
 function postIt() {
 	var shop_item = document.selectform.elements["shop_item"].value;
-	document.location = "<mm:url page="<%= pageUrl + "&p=" + paginaID + "&u=" %>" />" + shop_item;
+	document.location = "<mm:url page="<%= ph.createPaginaUrl(paginaID,request.getContextPath()) %>" />" + "?u=" + shop_item;
 }
 <%= "//-->" %>
 </script>

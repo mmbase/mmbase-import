@@ -30,6 +30,7 @@
       TreeMap [] nodesAtLevel = new TreeMap[10];
       nodesAtLevel[0] = (TreeMap) rubriekHelper.getSubObjects(rootId);
       int depth = 0;
+		int iPageInRubriek = 0;
       
       // invariant: depth = level of present leafs (root has level 0)
       while(depth>-1&&depth<10) { 
@@ -51,31 +52,35 @@
 						><mm:nodeinfo  type="type" write="false" jspvar="nType" vartype="String"><%
 							
 							if(nType.equals("pagina")) { // show page
+							
+								iPageInRubriek++;
+								if(iPageInRubriek>1) { // don't show first subpage of rubriek
 								
-								// the page can be a redirect to another page
-								String sThisPage = sThisObject;
-								%><mm:related path="rolerel,pagina" searchdir="destination"
-									><mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false"><%
-										sThisPage = pagina_number; 
-									%></mm:field
-								></mm:related>
-								<mm:node number="<%= sThisPage %>">
-									<tr>
-										<td>
-											<table border="0" cellpadding="0" cellspacing="0">
-												<tr>
-													<%@include file="rubriek_page.jsp" %>
-													<td style="letter-spacing:1px;">
-													<a href="<%= ph.createPaginaUrl(sThisPage,request.getContextPath()) 
-														%>" class="menuItem<mm:field name="number"><mm:compare value="<%= paginaID %>">Active</mm:compare></mm:field
-														>"><mm:field name="titel" /></a>
-													</td>
-												</tr>
-											</table>
-										</td>
-									</tr>
-								</mm:node>
-								<%
+									// the page can be a redirect to another page
+									String sThisPage = sThisObject;
+									%><mm:related path="rolerel,pagina" searchdir="destination"
+										><mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false"><%
+											sThisPage = pagina_number; 
+										%></mm:field
+									></mm:related>
+									<mm:node number="<%= sThisPage %>" jspvar="thisPage">
+										<tr>
+											<td>
+												<table border="0" cellpadding="0" cellspacing="0">
+													<tr>
+														<%@include file="rubriek_page.jsp" %>
+														<td style="letter-spacing:1px;">
+														<a href="<%= ph.createPaginaUrl(sThisPage,request.getContextPath()) 
+															%>" class="menuItem<mm:field name="number"><mm:compare value="<%= paginaID %>">Active</mm:compare></mm:field
+															>"><mm:field name="titel" /></a>
+														</td>
+													</tr>
+												</table>
+											</td>
+										</tr>
+									</mm:node>
+									<%
+								}
 								
 							} else { // show rubriek, which is a link to the first page in the rubriek
 								
@@ -101,7 +106,8 @@
 								if(breadcrumbs.contains(sThisObject)) {
 									// this rubriek is in the breadcrumbs, so show its subobjects in the next iteration
 								   depth++;
-									nodesAtLevel[depth] = (TreeMap) rubriekHelper.getSubObjects(sThisObject);   
+									nodesAtLevel[depth] = (TreeMap) rubriekHelper.getSubObjects(sThisObject);
+									iPageInRubriek = 0;
 								}
 							} 
 						%></mm:nodeinfo

@@ -1,151 +1,150 @@
-<mm:node number="<%= shop_itemId %>"
-><% shop_itemHref = pageUrl + "&p=bestel&u=" + shop_itemId;
-%><table width="100%" cellspacing="0" cellpadding="0">
-	<tr>
-		<td style="padding-left:3px;padding-right:3px;">
-			<strong><mm:field name="title" /></strong><br>
-			<mm:field name="intro" jspvar="articles_intro" vartype="String" write="false"
-					><mm:isnotempty><span class="black"><%@include file="../cleanarticlesintro.jsp" %></span></mm:isnotempty
-			></mm:field>
-		</td>
-	</tr>
-</table><%--
-	************************************* Show the image, price and shoppingcart *************
---%><table width="100%" cellspacing="0" cellpadding="0" background="<mm:related path="posrel,images" constraints="posrel.pos=1"
+<% shop_itemHref = ph.createItemUrl(shop_itemId,"bestel",null,request.getContextPath()); %>
+<mm:node number="<%= shop_itemId %>">
+	<table width="100%" cellspacing="0" cellpadding="0">
+		<tr>
+			<td style="padding-left:3px;padding-right:3px;">
+				<strong><mm:field name="title" /></strong><br>
+				<mm:field name="intro" jspvar="articles_intro" vartype="String" write="false"
+						><mm:isnotempty><span class="black"><%@include file="../cleanarticlesintro.jsp" %></span></mm:isnotempty
+				></mm:field>
+			</td>
+		</tr>
+	</table><%
+	//	************************************* Show the image, price and shoppingcart ************* 
+	%>
+	<table width="100%" cellspacing="0" cellpadding="0" background="<mm:related path="posrel,images" constraints="posrel.pos=1"
 				><mm:node element="images"><mm:image template="s(195x80)" /></mm:node
 			></mm:related
 		>" style="background-position:bottom left;background-repeat:no-repeat;">
-	<tr>
-		<td rowspan="2" width="45%" height="100px">
-		<mm:field name="type"
-			><mm:isnotempty
-				><mm:compare value="standaard" inverse="true"
-				><mm:compare value="niet_te_koop" inverse="true"
-					><img style="float:left;margin-left:70px;margin-top:10px;" src="media/<mm:write />.gif"></mm:compare
-			   ></mm:compare
-		   ></mm:isnotempty
-		></mm:field>
-		</td>
-		<td class="middle" style="padding-right:3px;">
-		<%@include file="price.jsp" %>
-		</td>
-	</tr>
-	<tr><%@include file="shoppingcart.jsp"%></tr>
-	<tr><td class="titlebar" colspan="2"><img src="media/spacer.gif" height="1" width="1" border="0" alt=""></td></tr>
-</table>
-<table width="100%" cellspacing="0" cellpadding="0"><%--
-	************************************* Show discounts (if any) *************************************
-	--%><mm:related path="posrel,discounts"
-		><mm:field name="discounts.startdate" jspvar="startdate" vartype="String" write="false"
-		><mm:field name="discounts.enddate" jspvar="enddate" vartype="String" write="false"><%
-		if(nowSec<=Long.parseLong(enddate)) { // do not show old discounts
+		<tr>
+			<td rowspan="2" width="45%" height="100px">
+			<mm:field name="type"
+				><mm:isnotempty
+					><mm:compare value="standaard" inverse="true"
+					><mm:compare value="niet_te_koop" inverse="true"
+						><img style="float:left;margin-left:70px;margin-top:10px;" src="media/<mm:write />.gif"></mm:compare
+					></mm:compare
+				></mm:isnotempty
+			></mm:field>
+			</td>
+			<td class="middle" style="padding-right:3px;">
+			<%@include file="price.jsp" %>
+			</td>
+		</tr>
+		<tr><%@include file="shoppingcart.jsp"%></tr>
+		<tr><td class="titlebar" colspan="2"><img src="media/spacer.gif" height="1" width="1" border="0" alt=""></td></tr>
+		</table>
+		<table width="100%" cellspacing="0" cellpadding="0"><%
+		//	************************************* Show discounts (if any) *******************************
+		%><mm:related path="posrel,discounts"
+			><mm:field name="discounts.startdate" jspvar="startdate" vartype="String" write="false"
+			><mm:field name="discounts.enddate" jspvar="enddate" vartype="String" write="false"><%
+			if(nowSec<=Long.parseLong(enddate)) { // do not show old discounts
+					%><tr><td style="padding:3px;">
+					<div class="subtitle"
+						><mm:field name="discounts.title" jspvar="discounts_title" vartype="String" write="false"
+							><%= discounts_title.toUpperCase() 
+						%></mm:field
+					></div>
+					<mm:field name="discounts.body" /><br>
+					 Deze actie loopt <%
+						if(Long.parseLong(startdate)>=nowSec) { // only show startdate if discount is not started
+							%> van <%
+							timestr = startdate; %><%@include file="timestring.jsp" %><%
+						} 
+						%> tot en met <%
+						timestr = enddate; %><%@include file="timestring.jsp" %>.
+					</tr></td>
+					<tr><td><img src="media/spacer.gif" height="4" width="1" border="0" alt=""></td></tr>
+					<tr><td class="titlebar"><img src="media/spacer.gif" height="1" width="1" border="0" alt=""></td></tr><%
+			} 
+			%></mm:field
+			></mm:field
+		></mm:related><%
+		// ************************************* the combi-discount: the source shop_item **************
+		%>
+		<mm:related path="discountrel,pools"
+			><mm:field name="discountrel.startdate" jspvar="startdate" vartype="String" write="false"
+			><mm:field name="discountrel.enddate" jspvar="enddate" vartype="String" write="false"><%
+			if(nowSec<=Long.parseLong(enddate)) { // do not show old discountrel
 				%><tr><td style="padding:3px;">
 				<div class="subtitle"
-					><mm:field name="discounts.title" jspvar="discounts_title" vartype="String" write="false"
-						><%= discounts_title.toUpperCase() 
+					><mm:field name="discountrel.title" jspvar="discountrel_title" vartype="String" write="false"
+						><%= discountrel_title.toUpperCase() 
 					%></mm:field
 				></div>
-				<mm:field name="discounts.body" /><br>
-				 Deze actie loopt <%
+				<mm:field name="discountrel.body" /><br>
+				<mm:field name="pools.number" jspvar="pools_number" vartype="String" write="false"
+					><mm:list nodes="<%= pools_number %>" path="pools,posrel,items" orderby="posrel.pos" directions="UP"
+						constraints="<%= "items.number != '" +  shop_itemId + "'" %>"
+					><mm:first>Deze aanbieding is geldig als u ook <mm:remove referid="size"
+					/><mm:size id="size"
+						><mm:compare referid="size" value="1">het volgende artikel</mm:compare
+						><mm:compare referid="size" value="1" inverse="true">&eacute;&eacute;n van de volgende artikelen</mm:compare
+					></mm:size
+					> besteld: </mm:first
+					><mm:first inverse="true">, </mm:first
+					><a href="<mm:url page="shop_items.jsp"><mm:param name="u"><mm:field name="items.number" /></mm:param></mm:url
+						>"><mm:field name="items.titel" /></a><mm:last>.</mm:last
+					></mm:list
+				></mm:field> Deze actie loopt <%
 					if(Long.parseLong(startdate)>=nowSec) { // only show startdate if discount is not started
 						%> van <%
 						timestr = startdate; %><%@include file="timestring.jsp" %><%
 					} 
 					%> tot en met <%
-					timestr = enddate; %><%@include file="timestring.jsp" %>.
+					timestr = enddate; %><%@include file="timestring.jsp" 
+				%>.			
 				</tr></td>
 				<tr><td><img src="media/spacer.gif" height="4" width="1" border="0" alt=""></td></tr>
 				<tr><td class="titlebar"><img src="media/spacer.gif" height="1" width="1" border="0" alt=""></td></tr><%
-		} 
-		%></mm:field
-		></mm:field
-	></mm:related
-	><%
-	// the combi-discount: the source shop_item
-	%><mm:related path="discountrel,pools"
-		><mm:field name="discountrel.startdate" jspvar="startdate" vartype="String" write="false"
-		><mm:field name="discountrel.enddate" jspvar="enddate" vartype="String" write="false"><%
-		if(nowSec<=Long.parseLong(enddate)) { // do not show old discountrel
-			%><tr><td style="padding:3px;">
-			<div class="subtitle"
-				><mm:field name="discountrel.title" jspvar="discountrel_title" vartype="String" write="false"
-					><%= discountrel_title.toUpperCase() 
-				%></mm:field
-			></div>
-			<mm:field name="discountrel.body" /><br>
-			<mm:field name="pools.number" jspvar="pools_number" vartype="String" write="false"
-				><mm:list nodes="<%= pools_number %>" path="pools,posrel,items" orderby="posrel.pos" directions="UP"
-					constraints="<%= "items.number != '" +  shop_itemId + "'" %>"
-				><mm:first>Deze aanbieding is geldig als u ook <mm:remove referid="size"
-				/><mm:size id="size"
-					><mm:compare referid="size" value="1">het volgende artikel</mm:compare
-					><mm:compare referid="size" value="1" inverse="true">&eacute;&eacute;n van de volgende artikelen</mm:compare
-				></mm:size
-				> besteld: </mm:first
-				><mm:first inverse="true">, </mm:first
-				><a href="<mm:url page="shop_items.jsp"><mm:param name="u"><mm:field name="items.number" /></mm:param></mm:url
-					>"><mm:field name="items.titel" /></a><mm:last>.</mm:last
-				></mm:list
-			></mm:field> Deze actie loopt <%
-				if(Long.parseLong(startdate)>=nowSec) { // only show startdate if discount is not started
-					%> van <%
-					timestr = startdate; %><%@include file="timestring.jsp" %><%
-				} 
-				%> tot en met <%
-				timestr = enddate; %><%@include file="timestring.jsp" 
-			%>.			
-			</tr></td>
-			<tr><td><img src="media/spacer.gif" height="4" width="1" border="0" alt=""></td></tr>
-			<tr><td class="titlebar"><img src="media/spacer.gif" height="1" width="1" border="0" alt=""></td></tr><%
-		} 
-		%></mm:field
-		></mm:field
-	></mm:related
-	><%
-	// the combi-discount: the target shop_item
-	%><mm:list path="items1,discountrel,pools,posrel,items2" 
-		constraints="<%= "items2.number = '" + shop_itemId + "' AND items1.number != '" + shop_itemId + "'" %>"
-		><mm:field name="discountrel.startdate" jspvar="startdate" vartype="String" write="false"
-		><mm:field name="discountrel.enddate" jspvar="enddate" vartype="String" write="false"><%
-		if(nowSec<=Long.parseLong(enddate)) { // do not show old discountrel
-			%><tr><td style="padding:3px;">
-			<div class="subtitle"
-				><mm:field name="discountrel.title" jspvar="discountrel_title" vartype="String" write="false"
-					><%= discountrel_title.toUpperCase() 
-				%></mm:field
-			></div>
-			<mm:field name="discountrel.body" /><br>
-			Geniet dus nu van deze aanbieding op <a href="<mm:url page="shop_items.jsp"
-					><mm:param name="u"><mm:field name="items1.number" /></mm:param></mm:url
-					>"><mm:field name="items1.titel" /></a>.
-			Deze actie loopt <%
-				if(Long.parseLong(startdate)>=nowSec) { // only show startdate if discount is not started
-					%> van <%
-					timestr = startdate; %><%@include file="timestring.jsp" %><%
-				} 
-				%> tot en met <%
-				timestr = enddate; %><%@include file="timestring.jsp" 
-			%>.			
-			</tr></td>
-			<tr><td><img src="media/spacer.gif" height="4" width="1" border="0" alt=""></td></tr>
-			<tr><td class="titlebar"><img src="media/spacer.gif" height="1" width="1" border="0" alt=""></td></tr><%
-		} 
-		%></mm:field
-		></mm:field
-	></mm:list>
-	<%
-	// ************************************* Show the body *************************************
-	%><mm:import id="body">BESCHRIJVING</mm:import
-   ><tr><td style="padding:3px;"><a name="body"></a>
-   			<div class="subtitle"><mm:write referid="body" /></div>
-   			<mm:field name="body"><mm:isnotempty><span class="black"><mm:write /></span></mm:isnotempty></mm:field>
-   			<mm:related path="posrel,link"  orderby="posrel.pos" directions="UP"
-               ><li><a target="_blank" href="<mm:field name="link.url" />" title="<mm:field name="link.alt_tekst"/>">
-					<mm:field name="link.titel" /></a><br>
-            </mm:related>
-   		</td>
-   	</tr><%
-	// ************************************* Related products (from dienstenpakketten) *************************************
+			} 
+			%></mm:field
+			></mm:field
+		></mm:related><%
+		//  ************************************* the combi-discount: the target shop_item ***************
+		%><mm:list path="items1,discountrel,pools,posrel,items2" 
+			constraints="<%= "items2.number = '" + shop_itemId + "' AND items1.number != '" + shop_itemId + "'" %>"
+			><mm:field name="discountrel.startdate" jspvar="startdate" vartype="String" write="false"
+			><mm:field name="discountrel.enddate" jspvar="enddate" vartype="String" write="false"><%
+			if(nowSec<=Long.parseLong(enddate)) { // do not show old discountrel
+				%><tr><td style="padding:3px;">
+				<div class="subtitle"
+					><mm:field name="discountrel.title" jspvar="discountrel_title" vartype="String" write="false"
+						><%= discountrel_title.toUpperCase() 
+					%></mm:field
+				></div>
+				<mm:field name="discountrel.body" /><br>
+				Geniet dus nu van deze aanbieding op <a href="<mm:url page="shop_items.jsp"
+						><mm:param name="u"><mm:field name="items1.number" /></mm:param></mm:url
+						>"><mm:field name="items1.titel" /></a>.
+				Deze actie loopt <%
+					if(Long.parseLong(startdate)>=nowSec) { // only show startdate if discount is not started
+						%> van <%
+						timestr = startdate; %><%@include file="timestring.jsp" %><%
+					} 
+					%> tot en met <%
+					timestr = enddate; %><%@include file="timestring.jsp" 
+				%>.			
+				</tr></td>
+				<tr><td><img src="media/spacer.gif" height="4" width="1" border="0" alt=""></td></tr>
+				<tr><td class="titlebar"><img src="media/spacer.gif" height="1" width="1" border="0" alt=""></td></tr><%
+			} 
+			%></mm:field
+			></mm:field
+		></mm:list><%
+		// ************************************* Show the body *************************************
+		%><mm:import id="body">BESCHRIJVING</mm:import
+		><tr><td style="padding:3px;"><a name="body"></a>
+					<div class="subtitle"><mm:write referid="body" /></div>
+					<mm:field name="body"><mm:isnotempty><span class="black"><mm:write /></span></mm:isnotempty></mm:field>
+					<mm:related path="posrel,link"  orderby="posrel.pos" directions="UP"
+						><li><a target="_blank" href="<mm:field name="link.url" />" title="<mm:field name="link.alt_tekst"/>">
+						<mm:field name="link.titel" /></a><br>
+					</mm:related>
+				</td>
+			</tr><%
+		// ************************************* Related products (from dienstenpakketten) ************
 	%><mm:related path="posrel,products" orderby="posrel.pos" directions="UP"
 		><mm:first
 		   ><mm:import id="product">UIT DE DIENSTENPAKKETTEN</mm:import
@@ -228,7 +227,7 @@
 				<table cellspacing="0" cellpadding="0" class="thumbnail">
 					<tr><td class="thumbnail">
 						<%@include file="../splitimagelist.jsp" 
-						%><a href="#" onClick="javascript:launchCenter('<%= slideshowUrl %>&i=<%= imageId %>', 'center', 550, 740);setTimeout('newwin.focus();',250);">
+						%><a href="javascript:void(0);" onClick="javascript:launchCenter('<%= "/" + ph.getSubDir(cloud,paginaID) + slideshowUrl + "&i=" + imageId %>', 'center', 550, 740);setTimeout('newwin.focus();',250);">
 						<mm:listnodes type="images" constraints="<%= "number='" + thisImage + "'" %>">
 							<img src="<mm:image template="s(32x54)" />" border="0" alt="">
 						</mm:listnodes
@@ -256,7 +255,7 @@
 						></a>
 					</td></tr>
 				</table>
-			<a href="#" onClick="javascript:launchCenter('<%= slideshowUrl %>&i=<%= imageId 
+			<a href="javascript:void(0);" onClick="javascript:launchCenter('<%=  "/" + ph.getSubDir(cloud,paginaID) + slideshowUrl + "&i=" + imageId 
 				%>', 'center', 550, 740)"><mm:node number="<%= thisImage %>"><mm:field name="title" /></mm:node></a>
 		</td><%
 		imageId = nextImage; 
@@ -275,9 +274,9 @@
 			%></tr></table>
 		</td></tr>
 		<tr><td><img src="media/spacer.gif" height="4" width="1" border="0" alt=""></td></tr><%
-	} %><%--
-	************************************* Show articles ********************************
-	--%><mm:remove referid="thumbnailsfound" 
+	}
+	// ************************************* Show articles ********************************
+	%><mm:remove referid="thumbnailsfound" 
 	/><mm:list nodes="<%= shop_itemId %>" path="items,posrel,artikel" orderby="posrel.pos" directions="UP">
 	<tr><td><a name="<mm:field name="artikel.number" />"></a><img src="media/spacer.gif" height="8" width="1" border="0" alt=""></td></tr>
 	<tr><td  class="titlebar"><img src="media/spacer.gif" height="1" width="1" border="0" alt=""></td></tr>

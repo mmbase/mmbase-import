@@ -7,4 +7,5 @@
 	<jsp:include page="06.06.05.migrate.jsp"/>
 	<jsp:include page="06.06.19.migrate.jsp"/>
 	<jsp:include page="06.06.20.migrate.jsp"/>
+	<jsp:include page="06.06.22.migrate.jsp"/>
 </mm:cloud>

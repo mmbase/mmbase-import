@@ -64,7 +64,6 @@ String programId = request.getParameter("program"); if(programId==null){ program
 // IntraShop
 String imageId = request.getParameter("i"); 
 String actionId = request.getParameter("t"); if (actionId==null) {actionId=""; }
-String pageUrl = "";
 String totalitemsId = (String) session.getAttribute("totalitems");
 if(totalitemsId==null) totalitemsId = "0";
 String shop_itemHref = "";

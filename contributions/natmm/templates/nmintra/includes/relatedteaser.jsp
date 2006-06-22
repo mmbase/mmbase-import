@@ -2,7 +2,7 @@
 	<mm:field name="omschrijving" jspvar="text" vartype="String" write="false">
 	<% 
    	if(text!=null&&!HtmlCleaner.cleanText(text,"<",">","").trim().equals("")) { 
-   	   %><mm:write /><br/><br/><%
+   	   %><span class="black"><mm:write /></span><br/><br/><%
       } 
    %>
 	</mm:field>

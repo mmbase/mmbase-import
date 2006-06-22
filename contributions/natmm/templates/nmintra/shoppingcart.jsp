@@ -1,14 +1,20 @@
-<%@include file="/taglibs.jsp" 
-%><mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud"
-><%@include file="includes/templateheader.jsp" 
-%><%@include file="includes/calendar.jsp" %>
+<%@include file="/taglibs.jsp" %>
+<mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud">
+<%@include file="includes/templateheader.jsp" %>
+<%@include file="includes/calendar.jsp" %>
+<%@include file="includes/cacheparams.jsp" %>
 <%@include file="includes/header.jsp" %>
+<%@include file="includes/shoppingcart/update.jsp" %>
 <td colspan="2"><%@include file="includes/pagetitle.jsp" %></td>
 </tr>
 <tr>
 <td colspan="2" class="transperant" style="text-align:right;">
 <div class="<%= infopageClass %>">
 <%
+
+boolean debug = false;
+String debugEmail = "hangyi@xs4all.nl";
+
 TreeMap shop_items = (TreeMap) session.getAttribute("shop_items"); 
 if(shop_items==null) {
    shop_items = new TreeMap();
