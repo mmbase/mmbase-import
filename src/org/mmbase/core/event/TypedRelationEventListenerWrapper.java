@@ -23,6 +23,7 @@ import org.mmbase.storage.search.RelationStep;
 public class TypedRelationEventListenerWrapper implements RelationEventListener {
 
     private final MMObjectBuilder builder;
+    private final String nodeType;
     private final RelationEventListener wrappedListener;
     private final int direction;
     private final boolean descendants;
@@ -35,35 +36,39 @@ public class TypedRelationEventListenerWrapper implements RelationEventListener 
      */
     public TypedRelationEventListenerWrapper(MMObjectBuilder builder, RelationEventListener wrappedListener, int direction, boolean descendants) {
         this.builder = builder;
+        this.nodeType = builder.getTableName();
         this.wrappedListener = wrappedListener;
         this.direction = direction;
         this.descendants = descendants;
     }
 
 
-    private boolean notify(RelationEvent event, MMObjectBuilder eventBuilder) {
-        if (eventBuilder != null &&
-            (eventBuilder.equals(builder)
-             || (descendants && eventBuilder.isExtensionOf(builder)))) {
+    private boolean notify(RelationEvent event, String eventNodeType) {
+        if (nodeType.equals(eventNodeType)) {
             wrappedListener.notify(event);
             return true;
-        } else {
-            return false;
+        } else if (descendants) {
+            MMObjectBuilder eventBuilder = MMBase.getMMBase().getBuilder(eventNodeType);
+            if(nodeType.equals("object") || (eventBuilder != null && eventBuilder.isExtensionOf(builder))) {
+                wrappedListener.notify(event);
+                return true;
+            }
         }
+        return false;
     }
 
     public void notify(RelationEvent event) {
         switch(direction) {
         case RelationStep.DIRECTIONS_SOURCE:
-            notify(event, MMBase.getMMBase().getBuilder(event.getRelationSourceType()));
+            notify(event, event.getRelationSourceType());
             break;
         case RelationStep.DIRECTIONS_DESTINATION:
-            notify(event, MMBase.getMMBase().getBuilder(event.getRelationDestinationType()));
+            notify(event, event.getRelationDestinationType());
             break;
         case RelationStep.DIRECTIONS_BOTH:
         default:
-            if (! notify(event, MMBase.getMMBase().getBuilder(event.getRelationSourceType()))) {
-                notify(event, MMBase.getMMBase().getBuilder(event.getRelationDestinationType()));
+            if (! notify(event, event.getRelationSourceType())) {
+                notify(event, event.getRelationDestinationType());
             }
         }
     }
