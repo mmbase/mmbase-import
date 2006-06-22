@@ -1,6 +1,5 @@
 <% (new SimpleStats()).pageCounter(cloud,application,paginaID,request); %>
 <%@include file="../includes/getresponse.jsp" %>
-<%--@include file="../includes/shoppingcartupdate.jsp" --%>
 <% 
 String sPageRef = (String) session.getAttribute("pageref");
 if(sPageRef!=null&&!sPageRef.equals(paginaID)) { // set pagerefminone to sPagRef, set pageref to paginaID
