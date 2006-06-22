@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.21 2006-04-12 14:51:40 michiel Exp $
+ * @version $Id: NodeListHelper.java,v 1.22 2006-06-22 10:43:50 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -36,8 +36,8 @@ public class NodeListHelper implements ListProvider {
 
     private static final Logger log = Logging.getLoggerInstance(NodeListHelper.class);
 
-    private ContextReferrerTag thisTag;
-    private NodeProviderHelper nodeHelper;
+    private final ContextReferrerTag thisTag;
+    private final NodeProviderHelper nodeHelper;
 
     public NodeListHelper(ContextReferrerTag thisTag, NodeProviderHelper nodeHelper) {
         this.thisTag = thisTag;
@@ -325,6 +325,7 @@ public class NodeListHelper implements ListProvider {
             collector.release(thisTag.getPageContext(), thisTag.getContextProvider().getContextContainer());
             collector = null;
         }
+        nodeHelper.doEndTag();
         nodeIterator = null;
         returnList = null;
         previousValue = null;
@@ -379,8 +380,8 @@ public class NodeListHelper implements ListProvider {
     }
 
     public void setNext() throws JspTagException {
-        currentItemIndex ++;
         try {
+            currentItemIndex ++;
             Node next = nodeIterator.nextNode();
             if (next == null) throw new RuntimeException("Found null in node list " + returnList);
             NodeManager nextNodeManager = next.getNodeManager();
