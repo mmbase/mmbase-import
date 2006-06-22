@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.160 2006-06-21 14:17:52 johannes Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.161 2006-06-22 20:36:20 johannes Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -561,6 +561,9 @@ public class DatabaseStorageManager implements StorageManager {
     public byte[] getBinaryValue(MMObjectNode node, CoreField field) throws StorageException {
         try {
             Blob b = getBlobValue(node, field);;
+            if (b == null || b.length() < 1) {
+                return null;
+            }
             return b.getBytes(1, (int) b.length());
         } catch (SQLException sqe) {
             throw new StorageException(sqe);
