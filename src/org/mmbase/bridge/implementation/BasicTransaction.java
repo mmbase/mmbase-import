@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * which means that chanegs are committed only if you commit the transaction itself.
  * This mechanism allows you to rollback changes if something goes wrong.
  * @author Pierre van Rooden
- * @version $Id: BasicTransaction.java,v 1.24 2006-06-19 14:16:21 nklasens Exp $
+ * @version $Id: BasicTransaction.java,v 1.25 2006-06-22 07:52:14 nklasens Exp $
  */
 public class BasicTransaction extends BasicCloud implements Transaction {
 
@@ -91,11 +91,15 @@ public class BasicTransaction extends BasicCloud implements Transaction {
                 Collection col = BasicCloudContext.transactionManager.getTransaction(transactionContext);
                 // BasicCloudContext.transactionManager.commit(account, transactionContext);
                 BasicCloudContext.transactionManager.commit(userContext, transactionContext);
+                // This is a hack to call the commitprocessors which are only available in the bridge.
+                // The EXISTS_NOLONGER check is required to prevent committing of deleted nodes.
                 Iterator i = col.iterator();
                 while (i.hasNext()) {
                     MMObjectNode n = (MMObjectNode) i.next();
-                    Node node = parentCloud.makeNode(n, "" + n.getNumber());
-                    node.commit();
+                    if (!TransactionManager.EXISTS_NOLONGER.equals(n.getStringValue("_exists"))) {
+                        Node node = parentCloud.makeNode(n, "" + n.getNumber());
+                        node.commit();
+                    }
                 }
             } catch (TransactionManagerException e) {
                 // do we drop the transaction here or delete the trans context?
