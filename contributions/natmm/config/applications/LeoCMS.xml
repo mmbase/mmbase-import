@@ -10,6 +10,7 @@
       <builder version="0" maintainer="mmbase.org">sitemenurel</builder>
       
       <!-- objects -->
+      <builder version="0" maintainer="mmbase.org">archief</builder>
       <builder version="0" maintainer="mmbase.org">contentelement</builder>
       <builder version="0" maintainer="mmbase.org">editwizards</builder>
       <builder version="0" maintainer="mmbase.org">help</builder>
@@ -72,6 +73,7 @@
       <relation from="users" to="editwizards" type="gebruikt" />
    </allowedrelationlist>
    <datasourcelist>
+      <datasource builder="archief" path="LeoCMS/archief.xml"/>
       <datasource builder="contentelement" path="LeoCMS/contentelement.xml"/>
       <datasource builder="editwizards" path="LeoCMS/editwizards.xml"/>
       <datasource builder="help" path="LeoCMS/help.xml"/>
