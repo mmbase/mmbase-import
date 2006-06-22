@@ -126,7 +126,7 @@
       <relation from="artikel" to="items" type="readmore"/>
       <relation from="artikel" to="paragraaf" type="posrel"/>
       <relation from="avatarsets" to="images" type="posrel"/>
-      <relation from="community" to="pools" type="related"/> 
+      <relation from="community" to="pools" type="related"/>
       <relation from="competencies" to="competencetypes" type="posrel"/>
       <relation from="contentblocks" to="attachments" type="readmore"/>
       <relation from="contentblocks" to="link" type="posrel"/>
@@ -156,7 +156,7 @@
       <relation from="evenement_blueprint" to="paragraaf" type="posrel"/>
       <relation from="formulier" to="formulierveld" type="posrel"/>
       <relation from="formulierveld" to="formulierveldantwoord" type="posrel"/>
-      <relation from="formulierveld" to="pools" type="posrel"/>
+      <relation from="formulierveld" to="pools" type="posrel"/> <!-- should be removed after migration -->
       <relation from="forummessagebox" to="forumprivatemessage" type="related"/>
       <relation from="forums" to="postareas" type="related"/>
       <relation from="forums" to="posters" type="related"/>
@@ -168,6 +168,7 @@
       <relation from="items" to="artikel" type="posrel"/>
       <relation from="items" to="attachments" type="posrel"/>
       <relation from="items" to="discounts" type="posrel"/>
+      <relation from="items" to="formulier" type="posrel"/>
       <relation from="items" to="images" type="posrel"/>
       <relation from="items" to="link" type="posrel"/>
       <relation from="items" to="persoon" type="posrel"/>
