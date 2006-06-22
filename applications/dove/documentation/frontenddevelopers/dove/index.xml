@@ -5,7 +5,7 @@
   <articleinfo>
     <title>Dove 1.1 XML API</title>
     <date>2002-07-20</date>
-    <edition>$Id: index.xml,v 1.1 2004-11-03 15:02:00 pierre Exp $</edition>
+    <edition>$Id: index.xml,v 1.2 2006-06-22 12:05:41 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Pierre</firstname>
@@ -19,7 +19,7 @@
     </legalnotice>
     <releaseinfo>MMBase 1.5 includes a beta version of Dove. Version 1.0 was released with MMBase 1.5.1. Version 1.1 is included with MMBase 1.6.</releaseinfo>
   </articleinfo>
-  <section>
+  <section id="introduction">
     <title>Introduction</title>
     <para>The Dove is a support class for MMBase, which adds a protocol for communication with, and passing commands to, the MMBase system using an XML format. The current implementation (<classname>org.mmbase.applications.dove.Dove</classname>) makes use of the <interfacename>MMCI</interfacename> to communicate with MMBase. Alternate implementations (i.e. versions that work on the core) can be implemented by extending the <classname>AbstractDove</classname> class. Every implementation should at the least support the XML format presented here, though it is possible that implementations add custom commands or functionality. Commands are run by passing an XML DOM root element to an instance of Dove (the request). The calling member function returns an <interfacename>Element</interfacename> that contains the result of the passed command (the response). This document focuses on the structure of the request and response XML (the Dove Communication API). The actual mechanics for instantiation of the Dove class and calling its member functions are documented in the Dove class API.</para>
     <para>The version noted here is version 1.1, which is included with MMBase version 1.6 and higher.</para>
@@ -41,7 +41,7 @@
       <para>This document deals with three versions of Dove: 1.0 beta (included in MMBase 1.5), 1.0 (included in MMBase 1.5.1), and 1.1. (MMBase 1.6).</para>
       <para>Where appropriate, notes will be used to indicate which versions support certain functionality.</para>
     </sidebar>
-    <section>
+    <section id="commands">
       <title>Passing Commands</title>
       <para>The root element of the request xml is the <sgmltag>request</sgmltag> tag.</para>
       <para>Each request tag contains at most one <sgmltag>security</sgmltag> tag (containing user login information), and one or more dove command tags (each tag being one command). If more than one command is passed, the commands are handled in the order that they appear in the xml.</para>
@@ -68,7 +68,7 @@
         <para>If you want to call Dove remote, you can also install the DoveServlet (comments on configuring this servlet can be found in the sample web.xml that comes with MMBase). You can call this servlet using a html form containing an 'xml' field that should then contain the xml to parse and run. The result of the call is the xml response (in text format).</para>
       </sidebar>
     </section>
-    <section>
+    <section id="security">
       <title>Security</title>
       <para>It is possible to pass a <sgmltag>security</sgmltag> tag to Dove, enabling the class to log in on MMBase. The tag accepts a <sgmltag class="attribute">name</sgmltag> and <sgmltag class="attribute">password</sgmltag> attribute, as well as a <sgmltag class="attribute">cloud</sgmltag> attribute containing the name and a <sgmltag class="attribute">method</sgmltag> attribute containing the login method name. These attributes are similar in meaning to the attributes of the cloud tag in the MMBase taglib (documented elsewhere). All attributes are optional. In general, name and password will be required unless the default method for authentication is overruled.</para>
       <programlisting format="linespecific"><![CDATA[
@@ -93,7 +93,7 @@
         <para>Dove does not allow anonymous access: if you do not provide a security login, you need to provide a secure MMCI cloud as an additional parameter when passing the XML.</para>
       </note>
     </section>
-    <section>
+    <section id="errors">
       <title>Errors</title>
       <para>When the Dove fails to execute a command it returns an <sgmltag>error</sgmltag> tag. An error tag contains a <sgmltag class="attribute">type</sgmltag> attribute that details the type of error, as follows:</para>
       <itemizedlist>
@@ -151,7 +151,7 @@
       </note>
     </section>
   </section>
-  <section>
+  <section id="commands">
     <title>Commands</title>
     <para>The following pages list the commands that can be passed to the Dove.</para>
     <para>An implementation should support the following commands:</para>
@@ -201,7 +201,7 @@
       </listitem>
     </itemizedlist>
   </section>
-  <section>
+  <section id="getdata">
     <title>getdata</title>
     <para>A <sgmltag>getdata</sgmltag> command retrieves objects from MMBase by their number.</para>
     <para>The command should contain one or more <sgmltag>object</sgmltag> tags, each tag referencing an object through the <sgmltag class="attribute">number</sgmltag> attribute. If the referenced object can be found, the object, along with type and all its fields, is returned in the response. If retrieving the object fails, the returned response <sgmltag>object</sgmltag> tag contains an <sgmltag>error</sgmltag> tag describing the problem.</para>
@@ -274,7 +274,7 @@
   ]]></programlisting>
     </example>
   </section>
-  <section>
+  <section id="getrelations">
     <title>getrelations</title>
     <para>A <sgmltag>getrelations</sgmltag> command obtains the relation objects belonging to the specified objects, filtered by a specified destination type or relation role.</para>
     <para>The command should contain one or more <sgmltag>object</sgmltag> tags, each tag referencing an object through the <sgmltag class="attribute">number</sgmltag> attribute. If the referenced object can be found, the object's relations are retrieved and returned.</para>
@@ -373,7 +373,7 @@
   ]]></programlisting>
     </example>
   </section>
-  <section>
+  <section id="nesting">
     <title>Nesting calls (getdata/getrelations)</title>
     <note>
       <para>Deep nesting is possible only with Dove version 1.0 that is available with MMBase 1.5.1 and up.</para>
@@ -486,7 +486,7 @@
   ]]></programlisting>
     </example>
   </section>
-  <section>
+  <section id="getnew">
     <title>getnew</title>
     <para>A <sgmltag>getnew</sgmltag> command creates a new, empty object of a specified object type.</para>
     <para>The new object is returned with a (system-generated) temporary object <sgmltag class="attribute">number</sgmltag>, and any fields for this object, with default values according to the system. This call is for generating normal objects - for generating relations use <sgmltag>getnewrelation</sgmltag>.</para>
@@ -532,7 +532,7 @@
 ]]></programlisting>
     </example>
   </section>
-  <section>
+  <section id="getnewrelation">
     <title>getnewrelation</title>
     <para>A <sgmltag>getnewrelation</sgmltag> command creates a new, empty relation object with a specified role, source, and destination.</para>
     <para>The new object is returned with a (system-generated) temporary object  <sgmltag class="attribute">number</sgmltag>, <sgmltag class="attribute">role</sgmltag>, <sgmltag class="attribute">source</sgmltag>, and <sgmltag class="attribute">destination</sgmltag>, and any additional fields for this object, with default values according to the system. This call is for generating relations - for normal objects use <sgmltag>getnew</sgmltag>.</para>
@@ -588,7 +588,7 @@
 ]]></programlisting>
     </example>
   </section>
-  <section>
+  <section id="getconstraints">
     <title>getconstraints</title>
     <para>A <sgmltag>getconstraints</sgmltag> command obtains constraint information for an object type.</para>
     <para>The type should be specified in the <sgmltag class="attribute">type</sgmltag> attribute. An optional <sgmltag class="attribute">xml:lang</sgmltag> attribute can be specified to indicate the preferred language of any gui information (help text, prompts, etc.).  A Dove implementation that supports this will return data in the preferred language where possible. the language specified should be in the <ulink url="http://lcweb.loc.gov/standards/iso639-2/">ISO 639-1</ulink> format, such as 'en', 'nl', or the like.</para>
@@ -692,7 +692,7 @@
 ]]></programlisting>
     </example>
   </section>
-  <section>
+  <section id="getlist">
     <title>getlist</title>
     <para>The <sgmltag>getlist</sgmltag>command is used to retrieve lists of nodes using a set of criteria , such as nodetype and field content. The tag contains a set of <sgmltag>query</sgmltag> tags, each specifying the constraints to retrieve nodes with.</para>
     <para>Each query element should have a <sgmltag class="attribute">xpath</sgmltag> attribute to indicate the nodemanager to run the list on, and optionally a <sgmltag class="attribute">where</sgmltag> attribute that contains the field-constraints.</para>
@@ -807,7 +807,7 @@
 ]]></programlisting>
     </example>      
   </section>
-  <section>
+  <section id="put">
     <title>put</title>
     <para>The <sgmltag>put</sgmltag> command is used to update MMBase by sending a set of nodes and relations to add or change. Each put command contains two node lists: the <sgmltag>original</sgmltag> tag contains a set of (original) objects that should be changed or deleted, the <sgmltag>new</sgmltag> tag contains a corresponding set of object with the needed changes, as well as a set of objects or relations that are new and need to be added.</para>
     <note>
@@ -921,6 +921,17 @@
 </response>
 ]]></programlisting>
     </example>
+  </section>
+  <section id="configuration">
+    <title>Configuration</title>
+    <para>
+      Since MMBase-1.8.1 (also backported to 1.7.5), dove can be configured with an xml property
+      file in &lt;mmbase config dir&gt;/utils/dove.xml. The only recognized property at the moment
+      is 'changes' which indicates what must happen if changes in the cloud are detected
+      ('exception' to indicate an error, 'ignore' to ignore or 'warn' to log a warning). See the
+      example dove.xml for more information. The file is watched, so if you change properties, they
+      should be taken into effect a few seconds later.
+    </para>
   </section>
 </article>
 
