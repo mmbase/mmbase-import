@@ -521,7 +521,10 @@
   <!-- Define your Struts controller in a file called struts-controller.xml and place it in your merge directory. -->
 
   <message-resources key="LEOCMS" parameter="ApplicationResources" />
-  <message-resources key="VANHAM" parameter="VanHamResources" />
+  <message-resources key="VANHAM.de" parameter="VanHamResources_de" />
+  <message-resources key="VANHAM.eng" parameter="VanHamResources_eng" />
+  <message-resources key="VANHAM.fra" parameter="VanHamResources_fra" />
+  <message-resources key="VANHAM.nl" parameter="VanHamResources_nl" />
 
    <!-- Define your Struts plugins in a file called struts-plugins.xml and place it in your merge directory. -->
 
