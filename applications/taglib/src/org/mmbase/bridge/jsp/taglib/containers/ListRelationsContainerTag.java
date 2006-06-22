@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListRelationsContainerTag.java,v 1.13 2006-05-22 16:31:13 michiel Exp $
+ * @version $Id: ListRelationsContainerTag.java,v 1.14 2006-06-22 13:17:46 johannes Exp $
  */
 public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQueryContainer {
 
@@ -120,6 +120,7 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQu
     }
     public int doEndTag() throws JspTagException {
         query = null;
+        relatedQuery = null;
         return super.doEndTag();
     }
 
