@@ -1,6 +1,7 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@include file="/taglibs.jsp" %>
 <%@page import="nl.leocms.authorization.forms.UserForm" %>
+<% ApplicationHelper ap = new ApplicationHelper(); %>
 <html>
 <head>
 <link href="<mm:url page="<%= editwizard_location %>"/>/style/color/wizard.css" type="text/css" rel="stylesheet"/>
@@ -18,9 +19,15 @@
    <th style="width:10%;">Rank</th>
    <th style="width:10%;">&nbsp;</th>
    <th style="width:30%;">Rollen</th>
-   <th style="width:30%;">Afdeling (tbv authorisatie in CAD)</th>
+	<%
+	if(ap.isInstalled(cloud,"NatMM")) {
+		%>
+   	<th style="width:30%;">Afdeling (tbv authorisatie in CAD)</th>
+		<% 
+	} %>
 </tr>
-<mm:listnodes type='users' orderby='account'>
+<!-- temporary hack to prevent users imported without emailaddress to be listed -->
+<mm:listnodes type='users' orderby='account' constraints="emailadres != ''">
 <tr>
    <td style="vertical-align:top;"><a href="UserInitAction.eb?id=<mm:field name='number'/>"><mm:field name="account"/></a></td>
    <td style="vertical-align:top;"><nobr><mm:field name="voornaam"/> <mm:field name="tussenvoegsel"/> <mm:field name="achternaam"/></nobr></td>
@@ -52,11 +59,16 @@
          </mm:field>)
        </mm:related>
    </td>
-   <td style="vertical-align:top;"><mm:related path="rolerel,afdelingen" orderby="afdelingen.naam">
-         <mm:first inverse="true">, </mm:first>
-         <mm:field name="afdelingen.naam" />
-       </mm:related>
-   </td>
+	<%
+	if(ap.isInstalled(cloud,"NatMM")) {
+		%>
+		<td style="vertical-align:top;"><mm:related path="rolerel,afdelingen" orderby="afdelingen.naam">
+				<mm:first inverse="true">, </mm:first>
+				<mm:field name="afdelingen.naam" />
+			 </mm:related>
+		</td>
+		<% 
+	} %>
 </tr>
 </mm:listnodes>
 </table>
