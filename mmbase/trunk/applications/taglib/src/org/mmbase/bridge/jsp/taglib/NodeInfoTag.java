@@ -23,7 +23,7 @@ import org.mmbase.bridge.*;
  * like what its nodemanager is.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeInfoTag.java,v 1.39 2006-04-12 14:50:33 michiel Exp $
+ * @version $Id: NodeInfoTag.java,v 1.40 2006-06-22 18:15:44 johannes Exp $
  */
 
 public class NodeInfoTag extends NodeReferrerTag implements Writer {
@@ -155,6 +155,7 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
      * Write the value of the nodeinfo.
      */
     public int doEndTag() throws JspTagException {
+        super.doEndTag();
         return helper.doEndTag();
     }
 }

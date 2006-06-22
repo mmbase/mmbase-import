@@ -28,14 +28,14 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
  *
  * @author Michiel Meeuwissen
  * @author Kees Jongenburger
- * @version $Id: AbstractNodeProviderTag.java,v 1.35 2005-11-23 10:29:39 michiel Exp $ 
+ * @version $Id: AbstractNodeProviderTag.java,v 1.36 2006-06-22 18:15:44 johannes Exp $ 
  */
 
 abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements NodeProvider {
     // a node provider is a nodereferrer as well...
     // this is especially useful for some extended classes (like 'relatednodes').
 
-    protected  NodeProviderHelper nodeHelper = new NodeProviderHelper(this); // no m.i. and there are more nodeprovider which cannot extend this, they can use the same trick.
+    final protected  NodeProviderHelper nodeHelper = new NodeProviderHelper(this); // no m.i. and there are more nodeprovider which cannot extend this, they can use the same trick.
 
 
     protected Attribute fieldEscaper;
