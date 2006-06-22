@@ -20,7 +20,7 @@ import org.mmbase.storage.search.*;
  * Defines options for a field to index.
  *
  * @author Pierre van Rooden
- * @version $Id: IndexFieldDefinition.java,v 1.4 2006-01-03 14:34:52 michiel Exp $
+ * @version $Id: IndexFieldDefinition.java,v 1.5 2006-06-22 17:04:16 michiel Exp $
  **/
 public class IndexFieldDefinition extends FieldDefinition {
 
@@ -93,6 +93,10 @@ public class IndexFieldDefinition extends FieldDefinition {
                 allIndexedFieldsSet.add(fieldName);
             }
         }
+    }
+
+    public String toString() {
+        return "IndexField" + allIndexedFieldsSet + (alias != null ? "(" + alias + ")" : "");
     }
 
 }
