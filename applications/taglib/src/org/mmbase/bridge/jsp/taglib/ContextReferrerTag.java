@@ -32,7 +32,7 @@ import java.util.Locale;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.82 2006-06-22 18:15:44 johannes Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.83 2006-06-22 19:00:29 johannes Exp $
  * @see ContextTag
  */
 
@@ -231,8 +231,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
     }
 
-    public int doEndTag() throws JspException {
-        super.doEndTag();
+    public int doEndTag() throws JspTagException {
         helper.release();
         pageContextTag = null;
         return EVAL_PAGE;
