@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.25 2006-04-18 13:25:40 michiel Exp $
+ * @version $Id: Indexer.java,v 1.26 2006-06-22 17:04:39 michiel Exp $
  **/
 public class Indexer {
 
@@ -176,7 +176,7 @@ public class Indexer {
                 }
             }
         } catch (Exception e) {
-            log.error("Cannot update Index: " + e.getMessage());
+            log.error("Cannot update Index: " + e.getMessage(), e);
         } finally {
             if (writer != null) {
                 try {
