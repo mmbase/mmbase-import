@@ -287,5 +287,27 @@
 					<type state="persistent" notnull="false" key="false">INTEGER</type>
 				</db>
 		</field>
+		<field>
+         <descriptions>
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <gui>
+            <guiname xml:lang="nl">Type</guiname>
+            <guiname xml:lang="en">Type</guiname>
+            <guitype>string</guitype>
+         </gui>
+         <editor>
+            <positions>
+               <input>16</input>
+               <list>16</list>
+               <search>16</search>
+            </positions>
+         </editor>
+         <db>
+            <name xml:lang="nl">type</name>
+            <type key="false" notnull="false" size="64" state="persistent">STRING</type>
+         </db>
+      </field>
 </fieldlist>
 </builder>
