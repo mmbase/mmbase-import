@@ -54,7 +54,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.76 2006-06-22 11:59:16 michiel Exp $
+ * @version $Id: Dove.java,v 1.77 2006-06-22 12:07:37 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -1006,6 +1006,7 @@ public class Dove extends AbstractDove {
                         if (CHANGES_WARN.equals(changes)) {
                             log.warn(message);
                         } else {
+                            log.debug(message);
                             Element err = addContentElement(ERROR, message, out);
                             err.setAttribute(ELM_TYPE, IS_SERVER);
                             return false;
