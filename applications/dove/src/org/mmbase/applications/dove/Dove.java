@@ -16,6 +16,7 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.storage.search.RelationStep;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.xml.UtilReader;
 
 /**
  * This class handles Remote Procedure Calls described using a DOM model.
@@ -48,12 +49,23 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.52.2.3 2004-09-27 15:13:02 michiel Exp $
+ * @version $Id: Dove.java,v 1.52.2.4 2006-06-22 11:47:34 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
 
     private static final Logger log = Logging.getLoggerInstance(Dove.class);
+
+
+    /**
+     * @since MMBase-1.8.1
+     */
+    private static final UtilReader properties = new UtilReader("dove.xml");
+    private static final String PROP_CHANGES = "changes";
+    private static final String CHANGES_IGNORE = "ignore";
+    private static final String CHANGES_WARN   = "warn";
+    private static final String CHANGES_EXCEPTION   = "exception";
+
 
     /**
      * Constructor
@@ -954,15 +966,22 @@ public class Dove extends AbstractDove {
             String key = (String)me.getKey();
             if (isDataField(node.getNodeManager(),key)) {
                 Object value = me.getValue();
-                if ((originalValues != null) &&
+                String changes = (String) properties.getProperties().get(PROP_CHANGES);
+                if ((! CHANGES_IGNORE.equals(changes)) &&
+                    (originalValues != null) &&
                     (!(value instanceof byte[]))) { // XXX: currently, we do not validate on byte fields
                     String originalValue = (String)originalValues.get(key);
                     String mmbaseValue = node.getStringValue(key);
                     if ((originalValue != null) && !originalValue.equals(mmbaseValue)) {
+                        String message = "Node was changed in the cloud, node number : " + alias + " field name '" + key + "' value found: '" + mmbaseValue + "' value expected '" + originalValue + "' changes: " + changes;
                         // give error node was changed in cloud
-                        Element err = addContentElement(ERROR, "Node was changed in the cloud, node number : " + alias + " field name " + key, out);
-                        err.setAttribute(ELM_TYPE, IS_SERVER);
-                        return false;
+                        if (CHANGES_WARN.equals(changes)) {
+                            log.warn(message);
+                        } else {
+                            Element err = addContentElement(ERROR, message, out);
+                            err.setAttribute(ELM_TYPE, IS_SERVER);
+                            return false;
+                        }
                     }
                 }
                 if (log.isDebugEnabled()) {
