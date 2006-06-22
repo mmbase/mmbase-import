@@ -58,16 +58,13 @@ public TreeSet unify(TreeSet ts1, TreeSet ts2){
 		shop_itemsIterator.remove(thisShop_item);
    }
 
-   %>
-<!--
-products = 
-<%= shop_items %>
-product groups = 
-<%= getTreeSetsOfTreeMap(product_groups) %>
-emails = 
-<%= getTreeSetsOfTreeMap(emails) %>
--->
-   <%
+   if(debug) {
+		%>
+		products = <%= shop_items %><br/>
+		product groups = <%= getTreeSetsOfTreeMap(product_groups) %><br/>
+		emails = <%= getTreeSetsOfTreeMap(emails) %><br/>
+		<%
+	}
 	
    if(isValidAnswer) {
 		
@@ -146,7 +143,7 @@ emails =
                while(shopItems.hasNext()) {
                   responseText += responses.get(shopItems.next());
                }
-               
+					
                %><mm:node referid="productorder_email"
                   ><mm:setfield name="subject"><%=  emailSubject + orderId %></mm:setfield
                   ><mm:setfield name="body">
@@ -156,7 +153,7 @@ emails =
                          <%= "<html>" + responseText  + "</html>" %>
                      </multipart>
                   </mm:setfield
-                  ><mm:setfield name="to"><%= thisEmail %></mm:setfield
+                  ><mm:setfield name="to"><%= (debug ? debugEmail : thisEmail ) %></mm:setfield
                 ></mm:node
                ><mm:node referid="productorder_email"
                   ><mm:field name="mail(oneshot)" 
@@ -201,7 +198,7 @@ emails =
       String formMessageHref = "shoppingcart.jsp";
       String formMessageLinktext = okLink;
       
-      %><jsp:include page="../formmessage.jsp">
+      %><jsp:include page="includes/shoppingcart/message.jsp">
             <jsp:param name="ft" value="<%= formTitle %>" />
             <jsp:param name="fm" value="<%= formMessage %>" />
             <jsp:param name="fmh" value="<%= formMessageHref %>" />
@@ -215,12 +212,13 @@ emails =
 		String formMessage = warningMessage;
 		String formMessageHref = "javascript:history.go(-1)";
 		String formMessageLinktext = warningLink;
-		%><jsp:include page="../formmessage.jsp">
-            <jsp:param name="ft" value="<%= formTitle %>" />
-            <jsp:param name="fm" value="<%= formMessage %>" />
-            <jsp:param name="fmh" value="<%= formMessageHref %>" />
-            <jsp:param name="fmlt" value="<%= formMessageLinktext %>" />
-         </jsp:include>
+		%>
+		<jsp:include page="includes/shoppingcart/message.jsp">
+			<jsp:param name="ft" value="<%= formTitle %>" />
+			<jsp:param name="fm" value="<%= formMessage %>" />
+			<jsp:param name="fmh" value="<%= formMessageHref %>" />
+			<jsp:param name="fmlt" value="<%= formMessageLinktext %>" />
+		</jsp:include>
 		<% 
 	} 
 

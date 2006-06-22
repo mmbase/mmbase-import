@@ -1,13 +1,14 @@
-<%! public void putProductGroup(TreeMap product_groups, String thisProductGroup, String thisShop_item)
-   {  TreeSet shopItems = (TreeSet) product_groups.get(thisProductGroup);
+<%! public void putProductGroup(TreeMap product_groups, String thisProductGroup, String thisShop_item) {
+		TreeSet shopItems = (TreeSet) product_groups.get(thisProductGroup);
       if(shopItems==null) {
          shopItems = new TreeSet();
       }
       shopItems.add(thisShop_item);
       product_groups.put(thisProductGroup, shopItems); 
    }
-   public void putEmails(TreeMap emails, String thisEmails, String thisShop_item)
-   {  thisEmails += ";";
+	
+   public void putEmails(TreeMap emails, String thisEmails, String thisShop_item) { 
+		thisEmails += ";";
       int semicolon = thisEmails.indexOf(";"); 
       while(semicolon>-1) {
          String emailAddress = thisEmails.substring(0,semicolon).trim();
@@ -24,7 +25,7 @@
    }
 %><%
 String responseText = "";
-String thisPool = null;   
+String thisForm = null;   
 %><mm:node number="<%= thisShop_item %>"
 	><mm:relatednodes type="pagina" max="1" jspvar="thisPage"
 	   ><mm:field name="number" jspvar="thisProductGroup" vartype="String" write="false"><%
@@ -60,20 +61,16 @@ String thisPool = null;
          %></mm:notpresent
       ></mm:isempty
    ></mm:field
-	><mm:field name="title" jspvar="dummy" vartype="String" write="false"><%
+	><mm:field name="titel" jspvar="dummy" vartype="String" write="false"><%
 	   responseText += "<b>" + numberOfItems + " x " + dummy + "</b><br>\n";
 	%></mm:field
-	><mm:related path="posrel,pools" orderby="posrel.pos" directions="UP" searchdir="destination"
-		><mm:node element="pools"
-			><mm:field name="number" jspvar="dummy" vartype="String" write="false"><%
-			   thisPool = dummy; 
-			%></mm:field
-			><mm:field name="name" jspvar="pools_name" vartype="String" write="false"><%
-				responseText += "<br>" + pools_name + "\n"; 
-			%></mm:field><%
-			
+	><mm:related path="posrel,formulier" orderby="formulier.pos" directions="UP" searchdir="destination"
+		><mm:node element="formulier" jspvar="form">
+			<%
+			thisForm = form.getStringValue("number");
+			responseText += "<br>" + form.getStringValue("titel") + "\n";
 			int numberOrdered = 1;
-			%><mm:field name="view"
+			%><mm:field name="type"
 			   ><mm:compare value="shop_repeat"><%
 			      numberOrdered = Integer.parseInt(numberOfItems);
 			   %></mm:compare
@@ -81,107 +78,95 @@ String thisPool = null;
    	   for(int i =0; i< numberOrdered; i++) { 
       	   %><mm:related path="posrel,formulierveld" orderby="posrel.pos" directions="UP"
    				><mm:first><% responseText += "<ol>\n<li>"; %></mm:first
-   				><mm:first inverse="true"><% responseText += "</li>\n<li>"; %></mm:first><%
+   				><mm:first inverse="true"><% responseText += "</li>\n<li>"; %></mm:first>
+					<mm:node element="formulierveld" jspvar="thisQuestion"><%
    				
-   				String questions_title = ""; 
-   				%><mm:field name="formulierveld.label" jspvar="dummy" vartype="String" write="false"
-   						><%  questions_title = dummy;
-   				%></mm:field><%
-   				if(numberOrdered>1) { questions_title += " (item nummer " + (i+1) + ")"; }
-   				
-   				String questions_type = ""; 
-   				%><mm:field name="formulierveld.type" jspvar="dummy" vartype="String" write="false"
-   					><% questions_type = dummy; 
-   				%></mm:field><%
-   				
-   				boolean isRequired = false; 
-   				%><mm:field name="formulierveld.verplicht" jspvar="dummy" vartype="String" write="false"
-   					><% isRequired = dummy.equals("1"); 
-   				%></mm:field><%
-   				
-   				String questions_number = ""; 
-   				%><mm:field name="formulierveld.number" jspvar="dummy" vartype="String" write="false"
-   					><% questions_number= dummy; 
-   				%></mm:field><%
-   
-   				responseText += questions_title + " : "; 
-   
-   				if(questions_type.equals("6")) { // *** date ***
-   
-   					responseText += "(Dag,Maand,Jaar) ";
-   					String answerValue = getResponseVal("q_" + thisPool + "_" + questions_number + "_" + i + "_day",postingStr);
-   					if(answerValue.equals("")) {
-   						responseText += noAnswer;
-   						if(isRequired) {
-   							isValidAnswer = false;
-   							warningMessage += "&#149; Dag in " + questions_title + "<br>";
-   						}
-   					} else {
-   						responseText += answerValue;
-   					}
-   					answerValue = getResponseVal("q_" + thisPool + "_" + questions_number + "_" + i + "_month",postingStr);
-   					if(answerValue.equals("")) {
-   						responseText += ", " + noAnswer;
-   						if(isRequired) {
-   							isValidAnswer = false;
-   							warningMessage += "&#149; Maand in " + questions_title + "<br>";
-   						}
-   					} else {
-   						responseText += ", " + answerValue;
-   					}
-   					answerValue = getResponseVal("q_" + thisPool + "_" + questions_number + "_" + i + "_year",postingStr);
-   					if(answerValue.equals("")) {
-   						responseText +=  ", " + noAnswer;
-   						if(isRequired) {
-   							isValidAnswer = false;
-   							warningMessage += "&#149; Jaar in " + questions_title + "<br>";
-   						}
-   					} else {
-   						responseText +=  ", " + answerValue;
-   					}
-   
-   				} else if(questions_type.equals("5")) { // *** check boxes ***
-   					boolean hasSelected = false; 
-   					%><mm:list nodes="<%= questions_number %>" path="formulierveld,posrel,formulierveldantwoord" orderby="posrel.pos" directions="UP"
-      					><mm:field name="formulierveldantwoord.number" jspvar="answer_number" vartype="String" write="false"><%
-   					   String answerValue = getResponseVal("q_" + thisPool + "_" + questions_number + "_" + i + "_" + answer_number,postingStr);
-   						if(!answerValue.equals("")) { 
-   							hasSelected = true;
-   							responseText += "<br>&#149; " + answerValue;
-   						}
-   						%></mm:field
-   					></mm:list><%
-   					if(!hasSelected) {
-   						responseText += noAnswer;
-   						if(isRequired) {
-   							isValidAnswer = false;
-   							warningMessage += "&#149; " + questions_title + "<br>";
-   						}
-   					} 
-   
-   				} else { // *** textarea, textline, dropdown, radio buttons ***
-   					String answerValue = getResponseVal("q_" + thisPool + "_" + questions_number + "_" + i,postingStr);
-   					if(answerValue.equals("")) {
-   						responseText += noAnswer;
-   						if(isRequired) {
-   							isValidAnswer = false;
-   							warningMessage += "&#149; " + questions_title + "<br>";
-   						}
-   					}
-   					responseText += answerValue;
-   					// *** check whether this question provides the client email address ***
-					   // *** the object cloud has to contain a question with alias client_email ***
-   					%><mm:list nodes="client_email" path="formulierveld" constraints="<%= "formulierveld.number=" + questions_number %>"><%
-   					      clientEmail = answerValue;
-   					%></mm:list><%
-   					
-   					// *** check whether this question provides the client email address ***
-					   // *** the object cloud has to contain a question with alias client_department ***
-   					%><mm:list nodes="client_department" path="formulierveld" constraints="<%= "formulierveld.number=" + questions_number %>"><%
-   					      clientDept = answerValue;
-   					%></mm:list><%
-   				} 
-   				%><mm:last><% responseText += "</li>\n</ol>\n"; %></mm:last
+						String questions_number = thisQuestion.getStringValue("number"); 
+						String questions_title = thisQuestion.getStringValue("label"); 
+						if(numberOrdered>1) { questions_title += " (item nummer " + (i+1) + ")"; }
+						String questions_type = thisQuestion.getStringValue("type");
+						boolean isRequired = thisQuestion.getStringValue("verplicht").equals("1");
+						
+						responseText += questions_title + " : "; 
+						
+						if(questions_type.equals("6")) { // *** date ***
+						
+							responseText += "(Dag,Maand,Jaar) ";
+							String answerValue = getResponseVal("q_" + thisForm + "_" + questions_number + "_" + i + "_day",postingStr);
+							if(answerValue.equals("")) {
+								responseText += noAnswer;
+								if(isRequired) {
+									isValidAnswer = false;
+									warningMessage += "&#149; Dag in " + questions_title + "<br>";
+								}
+							} else {
+								responseText += answerValue;
+							}
+							answerValue = getResponseVal("q_" + thisForm + "_" + questions_number + "_" + i + "_month",postingStr);
+							if(answerValue.equals("")) {
+								responseText += ", " + noAnswer;
+								if(isRequired) {
+									isValidAnswer = false;
+									warningMessage += "&#149; Maand in " + questions_title + "<br>";
+								}
+							} else {
+								responseText += ", " + answerValue;
+							}
+							answerValue = getResponseVal("q_" + thisForm + "_" + questions_number + "_" + i + "_year",postingStr);
+							if(answerValue.equals("")) {
+								responseText +=  ", " + noAnswer;
+								if(isRequired) {
+									isValidAnswer = false;
+									warningMessage += "&#149; Jaar in " + questions_title + "<br>";
+								}
+							} else {
+								responseText +=  ", " + answerValue;
+							}
+		
+						} else if(questions_type.equals("5")) { // *** check boxes ***
+							boolean hasSelected = false; 
+							%><mm:related path="posrel,formulierveldantwoord" orderby="posrel.pos" directions="UP"
+								><mm:field name="formulierveldantwoord.number" jspvar="answer_number" vartype="String" write="false"><%
+								String answerValue = getResponseVal("q_" + thisForm + "_" + questions_number + "_" + i + "_" + answer_number,postingStr);
+								if(!answerValue.equals("")) { 
+									hasSelected = true;
+									responseText += "<br>&#149; " + answerValue;
+								}
+								%></mm:field
+							></mm:related><%
+							if(!hasSelected) {
+								responseText += noAnswer;
+								if(isRequired) {
+									isValidAnswer = false;
+									warningMessage += "&#149; " + questions_title + "<br>";
+								}
+							} 
+		
+						} else { // *** textarea, textline, dropdown, radio buttons ***
+							String answerValue = getResponseVal("q_" + thisForm + "_" + questions_number + "_" + i,postingStr);
+							if(answerValue.equals("")) {
+								responseText += noAnswer;
+								if(isRequired) {
+									isValidAnswer = false;
+									warningMessage += "&#149; " + questions_title + "<br>";
+								}
+							}
+							responseText += answerValue;
+							// *** check whether this question provides the client email address ***
+							// *** the object cloud has to contain a question with alias client_email ***
+							%><mm:list nodes="client_email" path="formulierveld" constraints="<%= "formulierveld.number=" + questions_number %>"><%
+									clientEmail = answerValue;
+							%></mm:list><%
+							
+							// *** check whether this question provides the client email address ***
+							// *** the object cloud has to contain a question with alias client_department ***
+							%><mm:list nodes="client_department" path="formulierveld" constraints="<%= "formulierveld.number=" + questions_number %>"><%
+									clientDept = answerValue;
+							%></mm:list><%
+						} 
+   				%>
+					</mm:node>
+					<mm:last><% responseText += "</li>\n</ol>\n"; %></mm:last
    			></mm:related><%
 		   }
 		   

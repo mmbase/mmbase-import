@@ -33,32 +33,32 @@ if(bShowPrices) {
    		tmpSepar = ",";
    		shop_itemsIterator.remove(thisShop_item);
    	}
-   	String thisPool = null;
-   // *** for all pools, related to the shop items ordered ***
-   %><mm:list nodes="<%= allShop_items %>" path="items,posrel,pools"
-  	   orderby="pools.language" directions="UP" searchdir="destination" 
-      fields="pools.number" distinct="true"
-   	><mm:node element="pools">
+   	String thisForm = null;
+   // *** for all formulieren, related to the shop items ordered ***
+   %><mm:list nodes="<%= allShop_items %>" path="items,posrel,formulier"
+  	   orderby="formulier.pos" directions="UP" searchdir="destination" 
+      fields="formulier.number" distinct="true"
+   	><mm:node element="formulier">
    	   <tr><td style="padding-left:10px;">
    		<mm:field name="number" jspvar="dummy" vartype="String" write="false"
-   			><% thisPool = dummy; 
+   			><% thisForm = dummy; 
    		%></mm:field
-   		><mm:field name="name" jspvar="pools_name" vartype="String" write="false"
-   			><% if(pools_name.indexOf("#NZ#")==-1) { %><h4><%= pools_name %></h4><% } 
+   		><mm:field name="titel" jspvar="form_title" vartype="String" write="false"
+   			><% if(form_title.indexOf("#NZ#")==-1) { %><h4><%= form_title %></h4><% } 
    		%></mm:field>
-           <mm:field name="description" jspvar="pools_description" vartype="String" write="false"
+           <mm:field name="omschrijving" jspvar="form_description" vartype="String" write="false"
                ><mm:isnotempty><span class="black"><%
-               if(pools_description.toLowerCase().indexOf("<p>")==-1) { 
-                   %><p><%=pools_description %></p><% 
+               if(form_description.toLowerCase().indexOf("<p>")==-1) { 
+                   %><p><%=form_description %></p><% 
                } else { 
-                   %><%= pools_description %><% 
+                   %><%= form_description %><% 
                } 
                %></span></mm:isnotempty
            ></mm:field><%
            // *** for all shop items, that use this pool ***
            if(shop_items.size()>1) { 
-               %><mm:list nodes="<%= allShop_items %>" path="items,posrel,pools" orderby="items.titel" directions="UP" 
-         	   	fields="items.number" distinct="true" constraints="<%= "pools.number = '"  + thisPool + "'" %>"
+               %><mm:list nodes="<%= allShop_items %>" path="items,posrel,formulieren" orderby="items.titel" directions="UP" 
+         	   	fields="items.number" distinct="true" constraints="<%= "formulieren.number = '"  + thisForm + "'" %>"
          		   ><mm:first>Antwoorden zijn nodig voor:</mm:first
          		   ><mm:node element="items"
          		      ><li><mm:field name="titel" />
@@ -81,10 +81,10 @@ if(bShowPrices) {
          <table width="180" cellspacing="0" cellpadding="0">
             <tr>
             <td class="titlebar" style="vertical-align:middle;padding-left:4px;padding-right:2px;" width="100%">
-            	<nowrap><a href="javascript:changeIt('<mm:url page="<%= pageUrl + "&p=bestel&t=send" %>" />');"
+            	<nowrap><a href="javascript:changeIt('<mm:url page="<%= ph.createPaginaUrl("bestel",request.getContextPath()) + "?t=send" %>" />');"
                         onclick="needToConfirm = false;" class="white">Verstuur</a></td>
             <td class="titlebar" style="padding:2px;" width="100%">
-            	<a href="javascript:changeIt('<mm:url page="<%= pageUrl + "&p=bestel&t=send" %>" />');" 
+            	<a href="javascript:changeIt('<mm:url page="<%= ph.createPaginaUrl("bestel",request.getContextPath()) + "?t=send" %>" />');" 
                   onclick="needToConfirm = false;"><img src="media/pijl_wit_op_oranje.gif" border="0" alt=""></a></td>
             </tr>
       	</table>

@@ -28,19 +28,17 @@ if(!articleId.equals("-1")) {
    <td class="transperant">
    <div class="<%= infopageClass %>">
    <table border="0" cellpadding="0" cellspacing="0">
-       <tr><td style="padding:10px;padding-top:18px;">
-       <mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel" fields="artikel.number"  constraints="contentrel.pos='0'"
-                orderby="artikel.embargo" directions="UP" searchdir="destination" max="1"
-            ><mm:field name="artikel.number" jspvar="article_number" vartype="String" write="false"><%
-               articleId = article_number; 
-            %></mm:field><%
-            if(!postingStr.equals("|action=print")) {
-               %><div align="right" style="letter-spacing:1px;"><a href="javascript:history.go(-1);">terug</a>&nbsp/&nbsp;<a target="_blank" href="ipage.jsp<%= 
-                    templateQueryString %>&article=<%=articleId %>&pst=|action=print">print</a></div><%
-            }
-            %><%@include file="includes/relatedarticle.jsp" 
-       %></mm:list></td>
-   </tr>
+       <tr>
+		 	<td style="padding:10px;padding-top:18px;">
+		 	<%
+			if(!postingStr.equals("|action=print")) {
+				%><div align="right" style="letter-spacing:1px;"><a href="javascript:history.go(-1);">terug</a>&nbsp/&nbsp;<a target="_blank" href="ipage.jsp<%= 
+					  templateQueryString %>&article=<%=articleId %>&pst=|action=print">print</a></div><%
+			}
+			%>
+			<%@include file="includes/relatedteaser.jsp" %>
+			</td>
+		</tr>
    </table>
    </div>
    </td><%
