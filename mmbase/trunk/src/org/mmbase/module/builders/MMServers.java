@@ -16,6 +16,7 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.storage.search.implementation.*;
+import org.mmbase.storage.search.*;
 
 /**
  * @javadoc
@@ -28,7 +29,7 @@ import org.mmbase.storage.search.implementation.*;
  * nodes caches in sync but also makes it possible to split tasks between machines. You could for example have a server that encodes video.
  *  when a change to a certain node is made one of the servers (if wel configured) can start encoding the videos.
  * @author  vpro
- * @version $Id: MMServers.java,v 1.41 2006-06-21 11:44:06 michiel Exp $
+ * @version $Id: MMServers.java,v 1.42 2006-06-22 07:39:13 michiel Exp $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnable {
 
@@ -320,30 +321,33 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
         return o1 == null ? o2 == null : o2 != null && (o1.getNumber() == o2.getNumber() && o1.getValue("name").equals(o2.getValue("name")) && o1.getValue("host").equals(o2.getValue("host")));
     }
 
+
+    protected NodeSearchQuery query = null;
     /**
-     * @return List of MMObjectNodes representing  active servers.
+     * @return List of MMObjectNodes representing  active servers, which are not this server.
      */
     public List getActiveServers() {
-        List activeServers = new ArrayList();
-
         String machineName = mmb.getMachineName();
         if (log.isDebugEnabled()) {
             log.debug("machine=" + machineName);
         }
-        NodeSearchQuery query = new NodeSearchQuery(this);
+        if (query == null) {
+            query = new NodeSearchQuery(this);
+            BasicFieldValueConstraint constraint1 = new BasicFieldValueConstraint(query.getField(getField("name")), machineName);
+            constraint1.setInverse(true);
+            BasicFieldValueConstraint constraint2 = new BasicFieldValueConstraint(query.getField(getField("state")), new Integer(ACTIVE));
+            BasicCompositeConstraint constraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
+            query.setConstraint(constraint);
+            StepField field = query.getField(getField(FIELD_NUMBER));
+            BasicSortOrder so = query.addSortOrder(field);
+            so.setDirection(SortOrder.ORDER_DESCENDING);
+        }
+
         try {
-            for (Iterator iter = storageConnector.getNodes(query, false).iterator(); iter.hasNext();) { // don't use cache. This list of active server may be needed to arrange clustering.
-                MMObjectNode node = (MMObjectNode) iter.next();
-                String tmpname = node.getStringValue("name");
-                if (!tmpname.equals(machineName)) {
-                    if (node.getIntValue("state") == ACTIVE) {
-                        activeServers.add(node);
-                    }
-                }
-            }
+            return storageConnector.getNodes(query, false);
         } catch (org.mmbase.storage.search.SearchQueryException sqe) {
             log.error(sqe);
+            return new ArrayList();
         }
-        return activeServers;
     }
 }
