@@ -19,6 +19,7 @@ import org.mmbase.util.logging.*;
 import org.mmbase.storage.search.*;
 
 import org.mmbase.storage.search.implementation.database.BasicSqlHandler;
+import org.mmbase.bridge.implementation.BasicQuery;
 
 /**
  * This cache provides a base implementation to cache the result of
@@ -32,7 +33,7 @@ import org.mmbase.storage.search.implementation.database.BasicSqlHandler;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Bunst Eunders
- * @version $Id: QueryResultCache.java,v 1.31 2006-02-14 22:43:30 michiel Exp $
+ * @version $Id: QueryResultCache.java,v 1.32 2006-06-22 14:53:24 johannes Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -130,6 +131,10 @@ abstract public class QueryResultCache extends Cache {
      * @throws ClassCastException if key not a SearchQuery or value not a List.
      */
     public synchronized Object put(Object key, Object value) {
+        if (key instanceof BasicQuery) {
+            return put(((BasicQuery) key).getQuery(), (List) value);
+        }
+
         return put((SearchQuery) key, (List) value);
     }
 
