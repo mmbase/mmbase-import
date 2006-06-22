@@ -23,7 +23,7 @@ import org.mmbase.bridge.util.Queries;
  * The size of a list or of a nodelistcontainer (then the query is consulted).
  *
  * @author Michiel Meeuwissen
- * @version $Id: SizeTag.java,v 1.25 2006-06-22 18:15:44 johannes Exp $ 
+ * @version $Id: SizeTag.java,v 1.26 2006-06-22 19:00:29 johannes Exp $ 
  */
 public class SizeTag extends ListReferrerTag implements Writer, QueryContainerReferrer {
 
@@ -95,8 +95,7 @@ public class SizeTag extends ListReferrerTag implements Writer, QueryContainerRe
      *
      **/
     public int doEndTag() throws JspTagException {
-        super.doEndTag();
-        return helper.doEndTag();
+        helper.doEndTag();
+        return super.doEndTag();
     }
-
 }
