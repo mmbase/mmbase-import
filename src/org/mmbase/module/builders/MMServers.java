@@ -29,7 +29,7 @@ import org.mmbase.storage.search.*;
  * nodes caches in sync but also makes it possible to split tasks between machines. You could for example have a server that encodes video.
  *  when a change to a certain node is made one of the servers (if wel configured) can start encoding the videos.
  * @author  vpro
- * @version $Id: MMServers.java,v 1.42 2006-06-22 07:39:13 michiel Exp $
+ * @version $Id: MMServers.java,v 1.43 2006-06-22 10:57:22 michiel Exp $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnable {
 
@@ -321,6 +321,10 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
         return o1 == null ? o2 == null : o2 != null && (o1.getNumber() == o2.getNumber() && o1.getValue("name").equals(o2.getValue("name")) && o1.getValue("host").equals(o2.getValue("host")));
     }
 
+    public String toString(MMObjectNode n) {
+        return "" + n.getValue("name") + "@" + n.getValue("host");
+    }
+
 
     protected NodeSearchQuery query = null;
     /**
@@ -337,6 +341,8 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
             constraint1.setInverse(true);
             BasicFieldValueConstraint constraint2 = new BasicFieldValueConstraint(query.getField(getField("state")), new Integer(ACTIVE));
             BasicCompositeConstraint constraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
+            constraint.addChild(constraint1);
+            constraint.addChild(constraint2);
             query.setConstraint(constraint);
             StepField field = query.getField(getField(FIELD_NUMBER));
             BasicSortOrder so = query.addSortOrder(field);
