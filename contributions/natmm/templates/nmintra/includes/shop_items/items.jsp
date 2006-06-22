@@ -8,14 +8,14 @@
 
 while(shop_items.size()>0) {
 	String leftShop_itemNumber = (String) shop_items.removeFirst(); 
-	String leftShop_itemHref = pageUrl + "?p=" + paginaID + "&u=" + leftShop_itemNumber; 
+	String leftShop_itemHref = ph.createItemUrl(leftShop_itemNumber,paginaID,null,request.getContextPath());
 	
 	String rightShop_itemNumber = "";
 	String rightShop_itemHref = "";
 	boolean rightShop_itemExists = false;
 	if(shop_items.size()>0) { 
 		rightShop_itemNumber = (String) shop_items.removeFirst();
-		rightShop_itemHref =  pageUrl + "&p=" + paginaID + "&u=" + rightShop_itemNumber; 
+		rightShop_itemHref = ph.createItemUrl(rightShop_itemNumber,paginaID,null,request.getContextPath());
 		rightShop_itemExists = true;
 	} 
 	%><table width="100%" cellspacing="0" cellpadding="0">
@@ -32,12 +32,15 @@ while(shop_items.size()>0) {
 		} %>
 	</tr>
 	<%@include file="imagerow.jsp" %>
-	<tr>				
-		<% shop_itemHref = pageUrl + "&p=bestel&u=" + leftShop_itemNumber;
+	<tr>
+		<%
+		// don't use urlConversion here because shop_items are not related to the page "bestel"
+		shop_itemHref = "shoppingcart.jsp?p=bestel&u=" + leftShop_itemNumber;
 		%><mm:node number="<%= leftShop_itemNumber %>"><%@include file="shoppingcart.jsp"%></mm:node>
 		<td><img src="media/spacer.gif" height="40" width="8" border="0" alt=""></td>
-		<% if(rightShop_itemExists) {
-			shop_itemHref = pageUrl + "&p=bestel&u=" + rightShop_itemNumber;
+		<% 
+		if(rightShop_itemExists) {
+			shop_itemHref =  "shoppingcart.jsp?p=bestel&u=" + rightShop_itemNumber;
 			%><mm:node number="<%= rightShop_itemNumber %>"><%@include file="shoppingcart.jsp" %></mm:node><% 
 		} else {
 			%><td>&nbsp;</td><%

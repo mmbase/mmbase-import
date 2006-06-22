@@ -1,8 +1,8 @@
-<%@include file="script.jsp" %>
 <% String formTitle = request.getParameter("ft"); 
 	String formMessage = request.getParameter("fm"); 
 	String formMessageHref = request.getParameter("fmh"); 
-	String formMessageLinktext = request.getParameter("fmlt"); %>
+	String formMessageLinktext = request.getParameter("fmlt"); 
+%>
 <center>
 <table cellspacing="10" cellpadding="0" style="width:400px;">
 	<tr>
