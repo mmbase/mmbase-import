@@ -521,12 +521,7 @@
   <!-- Define your Struts controller in a file called struts-controller.xml and place it in your merge directory. -->
 
   <message-resources key="LEOCMS" parameter="ApplicationResources" />
-  <message-resources parameter="forum.application"/>
-  <message-resources key="MESSAGE_IMAGES" parameter="forum.images"/>
-  <message-resources key="MESSAGE_PAGE_NAME" parameter="forum.pagename"/>
-  <message-resources key="MESSAGE_PAGE_TEXT" parameter="forum.pagetext"/>
-  <message-resources key="MESSAGE_PAGE_LAYOUT" parameter="forum.pagelayout"/>
-  <message-resources key="MESSAGE_PAGE_CONTENT" parameter="forum.pagecontent"/>
+  <message-resources key="VANHAM" parameter="VanHamResources" />
 
    <!-- Define your Struts plugins in a file called struts-plugins.xml and place it in your merge directory. -->
 
