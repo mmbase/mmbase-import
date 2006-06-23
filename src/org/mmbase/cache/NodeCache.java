@@ -15,9 +15,9 @@ import org.mmbase.module.core.*;
  * A cache for MMObjectNodes. 
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeCache.java,v 1.5 2006-06-20 21:27:28 michiel Exp $
+ * @version $Id: NodeCache.java,v 1.6 2006-06-23 17:01:00 michiel Exp $
  */
-public class NodeCache extends Cache implements NodeEventListener, RelationEventListener { 
+public class NodeCache extends Cache implements NodeEventListener { 
     private static final int CACHE_SIZE = 4 * 1024;
 
     private static NodeCache cache;
@@ -59,16 +59,5 @@ public class NodeCache extends Cache implements NodeEventListener, RelationEvent
             Integer changedNodeNumber = new Integer(event.getNodeNumber());
             remove(changedNodeNumber);
         }
-    }
-
-    private void delRelationsCache(Integer nodeNumber) {
-        MMObjectNode node = (MMObjectNode) get(nodeNumber);
-        if (node != null) {
-            node.delRelationsCache();
-        }
-    }
-    public void notify(RelationEvent event) {
-        delRelationsCache(new Integer(event.getRelationSourceNumber()));
-        delRelationsCache(new Integer(event.getRelationDestinationNumber()));
     }
 }
