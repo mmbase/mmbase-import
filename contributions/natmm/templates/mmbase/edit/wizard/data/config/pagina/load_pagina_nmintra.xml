@@ -15,7 +15,23 @@
    <field name="verloopdatum"/>
    <field name="reageer"/>
    <field name="status"/>
-   <relation destination="contentelement" role="contentrel"/>
+   <relation destination="contentelement" role="contentrel">
+		<object>
+			<relation destination="paragraaf" role="posrel" >
+				<object>
+					  <relation destination="images" role="posrel">
+							<object />
+					  </relation>
+					  <relation destination="link" role="posrel">
+							<object />
+					  </relation>
+					  <relation destination="attachments" role="related">
+							<object />
+					  </relation>
+				</object>
+			</relation>
+		</object>
+	</relation>
 	<relation destination="linklijst" role="lijstcontentrel">
       <object>
          <relation destination="link" role="lijstcontentrel">
