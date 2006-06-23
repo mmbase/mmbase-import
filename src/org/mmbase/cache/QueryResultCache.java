@@ -33,7 +33,7 @@ import org.mmbase.bridge.implementation.BasicQuery;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Bunst Eunders
- * @version $Id: QueryResultCache.java,v 1.32 2006-06-22 14:53:24 johannes Exp $
+ * @version $Id: QueryResultCache.java,v 1.33 2006-06-23 11:48:39 johannes Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -321,14 +321,23 @@ abstract public class QueryResultCache extends Cache {
             }
             return removeKeys.size();
         }
+
         public String toString() {
             return "QueryResultCacheObserver for " + type + " watching " + cacheKeys.size() + " queries";
         }
+
+        public void clear() {
+            cacheKeys.clear();
+        }	
     }
 
     public void clear(){
         super.clear();
         releaseStrategy.clear();
+        Iterator i = observers.values().iterator();
+        while (i.hasNext()) {
+            Observer o = (Observer) i.next();
+            o.clear();
+        }
     }
-
 }
