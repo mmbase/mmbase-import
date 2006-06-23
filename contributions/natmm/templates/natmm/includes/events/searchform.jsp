@@ -113,7 +113,7 @@
       // don't show list if exactly one natuurgebied is selected
       // if provID is set it means the not natuurgebieden are selected on this page, use provID determine selectedNatuurgebieden 
       if(!provID.equals("-1")) {
-         %><mm:list nodes="<%= provID %>" path="provincies,posrel,natuurgebieden" fields="natuurgebieden.number">
+         %><mm:list nodes="<%= provID %>" path="provincies,pos4rel,natuurgebieden" fields="natuurgebieden.number">
             <mm:first inverse="true"><% selectedNatuurgebieden += ","; %></mm:first>
             <mm:field name="natuurgebieden.number" jspvar="et_number" vartype="String" write="false">
                <% selectedNatuurgebieden += et_number; %>
@@ -152,7 +152,7 @@ function setOptionsN(chosen)
 <mm:listnodes type="provincies">
    if (chosen == "<mm:field name="number" />") {
       selbox.options[selbox.options.length] = new Option("Alle gebieden in <mm:field name="naam" />","-1");
-   <mm:related path="posrel,natuurgebieden" orderby="natuurgebieden.naam">
+   <mm:related path="pos4rel,natuurgebieden" orderby="natuurgebieden.naam">
       selbox.options[selbox.options.length] = new Option("<mm:field name="natuurgebieden.naam" />","<mm:field name="natuurgebieden.number" />"); 
    </mm:related>
    }
@@ -170,7 +170,7 @@ function setSelectedProv(chosen)
    var selbox = document.eventForm.prov; 
 <mm:listnodes type="natuurgebieden">
    if (chosen == "<mm:field name="number" />") {
-   <mm:related path="posrel,provincies">
+   <mm:related path="pos4rel,provincies">
       selbox.value = '<mm:field name="provincies.number" />'; 
    </mm:related>
    }
