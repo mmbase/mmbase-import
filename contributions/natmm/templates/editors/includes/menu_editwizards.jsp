@@ -1,4 +1,5 @@
 <%
+PaginaHelper ph = new PaginaHelper(cloud);
 String menu_path = "menu1,posrel,menu";
 String orderby="posrel.pos";
 String path = "posrel,editwizards";
@@ -54,7 +55,7 @@ String userConstraint = "";
                                  <mm:param name="pagelength"><mm:field name="pagelength"/></mm:param>
                                  <mm:param name="maxpagecount"><mm:field name="maxpagecount"/></mm:param>
                                  <mm:param name="orderby"><mm:field name="orderby"/></mm:param>
-                                 <mm:param name="maxsize"><%= 2*1024*1024 %></mm:param>
+                                 <mm:param name="maxsize"><%= ph.getMaxSize() %></mm:param>
                                  <mm:param name="search">yes</mm:param>   
                               </mm:url>"
                               title='<mm:field name="description"/>'>
