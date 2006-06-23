@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.78 2006-05-23 21:12:47 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.79 2006-06-23 15:29:06 michiel Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
@@ -45,7 +45,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
 
     private static  Boolean makeRelative      = null;
     private   Attribute  referids             = Attribute.NULL;
-    protected List       extraParameters      = null;
+    protected final List extraParameters      = new ArrayList();
     protected Attribute  page                 = Attribute.NULL;
     protected   Attribute  escapeAmps           = Attribute.NULL;
     private   Attribute  absolute             = Attribute.NULL;
@@ -86,7 +86,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
 
     public int doStartTag() throws JspTagException {
         log.debug("starttag");
-        extraParameters = new ArrayList();
+        extraParameters.clear();
         helper.useEscaper(false);
         return EVAL_BODY_BUFFERED;
     }
@@ -273,7 +273,8 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
         return helper.doAfterBody();
     }
 
-    public int doEndTag() throws JspTagException {
+
+    protected void initDoEndTag() throws JspTagException {
         log.debug("endtag of url tag");
         if (helper.getJspvar() == null) {
             helper.overrideWrite(true);
@@ -281,13 +282,15 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
             // unless jspvar is specified, because then, perhaps the user wants that..
         }
 
-
+    }
+    public int doEndTag() throws JspTagException {
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), getUrl(false, false));  // write it as cleanly as possible.
         }
+        initDoEndTag();
         doAfterBodySetValue();
-        extraParameters = null;
         helper.doEndTag();
+        extraParameters.clear();
         return super.doEndTag();
     }
 
