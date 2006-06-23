@@ -23,7 +23,7 @@ import java.util.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TreeList.java,v 1.20 2006-03-14 17:49:37 michiel Exp $
+ * @version $Id: TreeList.java,v 1.21 2006-06-23 15:21:51 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -42,6 +42,11 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
 
     protected boolean foundEnd = false;
     protected int     leafConstraintOffset = Integer.MAX_VALUE;
+
+    /**
+     * @since MMBase-1.8.1
+     */
+    protected int    max = SearchQuery.DEFAULT_MAX_NUMBER;
 
     /**
      * @param q              The 'base' query defining the minimal depth of the tree elements. The trunk of the tree.
@@ -77,6 +82,19 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
         leafConstraintOffset = tl.leafConstraintOffset;
     }
 
+    /**
+     * @since MMBase-1.8.1
+     */
+    public void setMax(int m) {
+        max = m;
+    }
+
+    /**
+     * @since MMBase-1.8.1
+     */
+    public int getMax() {
+        return max;
+    }
 
     /**
      * @since MMBase-1.8
@@ -88,7 +106,7 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
     // javadoc inherited
     public int size() {
         sizeCheck();
-        return size;
+        return max != SearchQuery.DEFAULT_MAX_NUMBER ? (max < size ? max : size) : size;
     }
 
 
@@ -307,6 +325,13 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
             if (leafQuery != null) return leafQuery;
             Queries.sortUniquely(query);
             Queries.addSortedFields(query);
+            int m = TreeList.this.getMax();
+            if (m != SearchQuery.DEFAULT_MAX_NUMBER) {
+                int cm = query.getMaxNumber();
+                if (cm == -1 || m < cm) {
+                    query.setMaxNumber(m);
+                }
+            }
             query.markUsed();
             if (leafConstraint != null) {
                 leafQuery = (NodeQuery) query.clone();
@@ -355,6 +380,7 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
         }
 
         public boolean hasNext() {
+            if (TreeList.this.max != SearchQuery.DEFAULT_MAX_NUMBER && nextIndex > TreeList.this.max) return false;
             if (TreeList.this.foundEnd) { // why bother
                 return nextIndex < TreeList.this.size();
             } else {
