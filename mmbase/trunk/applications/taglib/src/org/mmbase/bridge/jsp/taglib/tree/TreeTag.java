@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
 </pre>
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: TreeTag.java,v 1.15 2006-03-14 17:52:32 michiel Exp $
+ * @version $Id: TreeTag.java,v 1.16 2006-06-23 14:40:40 michiel Exp $
  */
 public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, QueryContainerReferrer  {
     private static final Logger log = Logging.getLoggerInstance(TreeTag.class);
@@ -79,6 +79,7 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
     protected Attribute maxDepth    = Attribute.NULL;
     protected Attribute orderby     = Attribute.NULL;
     protected Attribute directions  = Attribute.NULL;
+    protected Attribute max         = Attribute.NULL;
 
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
@@ -114,6 +115,10 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
 
     public Stack getShrinkStack() {
         return shrinkStack;
+    }
+
+    public void setMax(String m) throws JspTagException {
+        max = getAttribute(m);
     }
 
 
@@ -221,6 +226,9 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
             }
 
         }
+        if (max != Attribute.NULL) {
+            tree.setMax(max.getInt(this, -1));
+        }
         iterator = tree.treeIterator();
 
         // returnList is known, now we can serve parent formatter tag
@@ -249,7 +257,7 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
                 log.debug("no next " + nextDepth);
 
             }
-            return EVAL_BODY_BUFFERED;
+            return EVAL_BODY;
         } else {
             return SKIP_BODY;
         }
@@ -289,12 +297,14 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
             index++;
             return EVAL_BODY_AGAIN;
         } else {
-            log.debug("writing body");
-            if (bodyContent != null) {
-                try {
-                    bodyContent.writeOut(bodyContent.getEnclosingWriter());
-                } catch (IOException ioe){
-                    throw new TaglibException(ioe);
+            if (EVAL_BODY == EVAL_BODY_BUFFERED) {
+                log.debug("writing body");
+                if (bodyContent != null) {
+                    try {
+                        bodyContent.writeOut(bodyContent.getEnclosingWriter());
+                    } catch (IOException ioe){
+                        throw new TaglibException(ioe);
+                    }
                 }
             }
             return SKIP_BODY;
