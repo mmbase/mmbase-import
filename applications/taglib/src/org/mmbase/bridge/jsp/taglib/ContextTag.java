@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextTag.java,v 1.84 2006-06-23 13:13:36 johannes Exp $ 
+ * @version $Id: ContextTag.java,v 1.85 2006-06-23 14:37:03 michiel Exp $
  * @see ImportTag
  * @see WriteTag
  */
@@ -51,12 +51,16 @@ import org.mmbase.util.logging.*;
 public class ContextTag extends ContextReferrerTag implements ContextProvider {
     private static final Logger log = Logging.getLoggerInstance(ContextTag.class);
 
-    public static final String CONTEXTTAG_KEY      = "org.mmbase.taglib.context";
-    public static final String DEFAULTENCODING_KEY = "org.mmbase.taglib.defaultencoding";
-    public static final String ISELIGNORED_PARAM   = "mmbase.taglib.defaultencoding";
+    public static final String CONTEXTTAG_KEY        = "org.mmbase.taglib.context";
+    public static final String CONTAINER_KEY_PREFIX  = "org.mmbase.taglib.contextcontainer.";
+    public static final String DEFAULTENCODING_KEY   = "org.mmbase.taglib.defaultencoding";
+    public static final String ISELIGNORED_PARAM    = "mmbase.taglib.defaultencoding";
 
     private ContextProvider  parent = null;
     private boolean    searchedParent = false;
+    private static int  latestNumber = 0;
+
+    private int number;
 
     private CloudContext cloudContext;
 
@@ -66,12 +70,12 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
     public void setReferid(String r) throws JspTagException {
         referid = getAttribute(r);
     }
-    
+
     public void setScope(String s) throws JspTagException {
         scope = getAttribute(s);
     }
 
-    private int getScope() throws JspTagException {        
+    private int getScope() throws JspTagException {
         String ss = scope.getString(this).toLowerCase();
         if ("".equals(ss)) {
             return PageContext.PAGE_SCOPE;
@@ -96,7 +100,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
         cloudContext = cc;
         String def = (String) pageContext.getAttribute(DEFAULTENCODING_KEY);
         if (def == null && cloudContext != null) {
-            pageContext.setAttribute(DEFAULTENCODING_KEY, cloudContext.getDefaultCharacterEncoding());            
+            pageContext.setAttribute(DEFAULTENCODING_KEY, cloudContext.getDefaultCharacterEncoding());
         }
     }
 
@@ -109,26 +113,28 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
     /**
      * @param c Parent context-container, if <code>null</code> then a container writing to page context will be instantiated.
      */
-    void createContainer(ContextContainer c) { //throws JspTagException {
+    ContextContainer createContainer(ContextContainer c) { //throws JspTagException {
+        number = latestNumber++;
         ContextContainer container = null;
         if (c == null && (!"true".equals(pageContext.getServletContext().getInitParameter(ISELIGNORED_PARAM)))) {
             container = new PageContextContainer(pageContext);
         } else {
             container = new StandaloneContextContainer(pageContext, getId(), c);
         }
-	pageContext.setAttribute("_mmbase_container", container, PageContext.PAGE_SCOPE);
+        pageContext.setAttribute(CONTAINER_KEY_PREFIX + number, container, PageContext.PAGE_SCOPE);
+        return container;
     }
 
     public ContextContainer getContextContainer() {
-        return (ContextContainer)pageContext.getAttribute("_mmbase_container");
+        return (ContextContainer)pageContext.getAttribute(CONTAINER_KEY_PREFIX + number);
     }
 
     public int doStartTag() throws JspTagException {
         log.debug("Start tag of ContextTag");
         parent = null;
         searchedParent = false;
-        ContextContainer container = getContextContainer();
 
+        ContextContainer container;
         int s = getScope();
         if (referid != Attribute.NULL || (s != PageContext.PAGE_SCOPE && getId() != null)) {
             Object o;
@@ -143,24 +149,26 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
                 o = pageContext.getAttribute(id, s);
             }
             if (o == null || "".equals(o)) { // that means, lets ignore it.
-                createContainer(getContextProvider().getContextContainer());
+                container = createContainer(getContextProvider().getContextContainer());
             } else {
                 if (! (o instanceof ContextContainer)) {
                     throw new JspTagException("Found context var '" + o + "' is not of type Context but of '" + o.getClass().getName());
                 }
                 container = (ContextContainer)  o;
                 container.setParent(pageContext, getContextProvider().getContextContainer());
-                pageContext.setAttribute("_mmbase_container", container, PageContext.PAGE_SCOPE);
+                pageContext.setAttribute(CONTAINER_KEY_PREFIX + number, container, PageContext.PAGE_SCOPE);
             }
         } else {
-            createContainer(getContextProvider().getContextContainer());
+            container = createContainer(getContextProvider().getContextContainer());
         }
+
+
         if (s != PageContext.PAGE_SCOPE) {
             String id = getId();
             if (id == null) {
                 id = referid.getString(this);
             }
-            pageContext.setAttribute(id, container, s);            
+            pageContext.setAttribute(id, container, s);
         }
         setCloudContext(getContextTag().cloudContext);
         if (getId() != null) {
@@ -256,7 +264,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
     public boolean isPresent(String key) throws JspTagException {
         return getContextContainer().isPresent(key);
     }
-    
+
     /**
      * @deprecated Use getContextProvider().getContextContainer().isRegistered
      */
