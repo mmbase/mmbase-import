@@ -105,7 +105,7 @@ public class CronDaemon extends TimerTask {
     protected void removeEntry(CronEntry entry) {
         cronEntries.remove(entry);
         entry.stop();
-        log.info("Removed entry " + entry);
+        log.service("Removed entry " + entry);
     }
 
     /** 
