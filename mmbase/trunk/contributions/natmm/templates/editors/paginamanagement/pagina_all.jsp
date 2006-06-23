@@ -1,4 +1,4 @@
-<%@page import="com.finalist.tree.*,nl.leocms.pagina.*,nl.leocms.authorization.*" %>
+<%@page import="com.finalist.tree.*,nl.leocms.pagina.*,nl.leocms.authorization.*,nl.leocms.util.PaginaHelper" %>
 <%@include file="/taglibs.jsp" %>
 <mm:cloud jspvar="cloud" rank="basic user" method='http'>
 <%

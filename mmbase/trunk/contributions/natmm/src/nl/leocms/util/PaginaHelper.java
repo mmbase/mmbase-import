@@ -48,13 +48,14 @@ public class PaginaHelper {
    public final static int MAX_NUMBER_DOSSIER_ELEMENTS = 7;
    
    Cloud cloud;
+	ApplicationHelper ap;
    public HashMap pathsFromPageToElements;
    public boolean urlConversion;
 	
    public PaginaHelper(Cloud cloud) {
       this.cloud = cloud;
       this.pathsFromPageToElements = new HashMap();
-		ApplicationHelper ap = new ApplicationHelper();
+		this.ap = new ApplicationHelper();
 		// todo: create a more generic version for this piece of code
 		if(ap.isInstalled(cloud,"NatMM")) {
 			this.urlConversion = NatMMConfig.urlConversion;
@@ -358,6 +359,15 @@ public class PaginaHelper {
       return url.toString();
    }
    
+	public int getMaxSize() {
+		// returns the maxsize of uploads (= images / attachments) per application
+	   int maxsize = 2*1024*1024;
+		if(ap.isInstalled(cloud,"VanHam")) {
+			maxsize = 3*1024*1024;
+		}
+		return maxsize;
+	}
+	
    /**
      * Creates the url to an editwizard of a page.
      * @param paginaNumber
@@ -367,7 +377,6 @@ public class PaginaHelper {
      */
    public TreeMap createEditwizardUrls(String pageNumber, String contextPath) {
       TreeMap ewUrls = new TreeMap();
-      
       Node templateNode = getPaginaTemplate(pageNumber);
       if(templateNode!=null) {
          NodeList editwizardNodes = templateNode.getRelatedNodes("editwizards", "related", "DESTINATION");
@@ -402,7 +411,7 @@ public class PaginaHelper {
                          + "&directions=" + editwizardNode.getStringValue("directions")
                          + "&pagelength=" + editwizardNode.getStringValue("pagelength")
                          + "&maxpagecount=" + editwizardNode.getStringValue("maxpagecount")
-                         + "&maxsize=" + 2*1024*1024
+                         + "&maxsize=" + getMaxSize()
                          + "&searchfields=" + editwizardNode.getStringValue("searchfields")
                        //  + "&searchtype=" + editwizardNode.getStringValue("searchtype")
                        //  + "&searchvalue=" + editwizardNode.getStringValue("searchvalue")
@@ -421,7 +430,7 @@ public class PaginaHelper {
                } else {
                   ewUrl += "/mmbase/edit/wizard/jsp/wizard.jsp?language=nl&wizard=" + editwizardNode.getStringValue("wizard")
                      + "&nodepath=pagina&referrer=/editors/empty.html&objectnumber=" + pageNumber
-                     + "&maxsize=" + 2*1024*1024;
+                     + "&maxsize=" + getMaxSize();
                }
             }
             if(!ewUrl.equals(contextPath)) {
