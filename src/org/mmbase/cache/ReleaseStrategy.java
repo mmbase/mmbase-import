@@ -13,6 +13,7 @@ import java.util.*;
 
 import org.mmbase.core.event.*;
 import org.mmbase.module.core.MMObjectBuilder;
+import org.mmbase.module.core.MMBase;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.BasicCompositeConstraint;
 import org.mmbase.util.logging.Logger;
@@ -28,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: ReleaseStrategy.java,v 1.15 2006-06-20 21:28:32 michiel Exp $
+ * @version $Id: ReleaseStrategy.java,v 1.16 2006-06-23 16:54:23 michiel Exp $
  */
 
 public abstract class ReleaseStrategy {
@@ -177,7 +178,7 @@ public abstract class ReleaseStrategy {
      * @param query
      */
     protected static List getConstraintsForField(String  fieldName, String builderName, Constraint constraint, SearchQuery query){
-        if(constraint == null)constraint = query.getConstraint();
+        if(constraint == null) constraint = query.getConstraint();
         List result = new ArrayList();
         if(constraint == null)return result;
         if(constraint instanceof BasicCompositeConstraint){
@@ -211,7 +212,7 @@ public abstract class ReleaseStrategy {
      * @param query
      */
     protected   static List getRelationSteps(SearchQuery query) {
-        List result = new ArrayList(10);
+        List result = new ArrayList();
         for (Iterator i = query.getSteps().iterator(); i.hasNext();) {
             Object step = i.next();
             if (step instanceof RelationStep) result.add(step);
@@ -240,7 +241,10 @@ public abstract class ReleaseStrategy {
         List result = new ArrayList(10);
         for (Iterator i = query.getSteps().iterator(); i.hasNext();) {
             Step step = (Step) i.next();
-            if( step.getTableName().equals(type.getTableName()))
+            String table = step.getTableName();
+            if( table.equals(type.getTableName()) ||
+                type.isExtensionOf(MMBase.getMMBase().getBuilder(table))
+                )
                 result.add(step);
         }
         return result;
