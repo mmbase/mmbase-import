@@ -4,11 +4,11 @@
 	<title>afbeelding (eerst verwijderen voordat een nieuw item kan worden toegevoegd)</title>	
 	<item displaytype="image">
 		<field name="titel" ftype="data"><prompt>titel</prompt></field>
-		<field name="titel_fra" ftype="data"><prompt>filenaam</prompt></field>
+		<field name="filename" ftype="data"><prompt>filenaam</prompt></field>
 		<!-- field fdatapath="field[@name='pos']" ftype="enum"><prompt>grootte en positie</prompt><optionlist select="images_position"/></field -->
 		<field ftype="startwizard" wizardname="config/images/images" />
 	</item>
-	<command name="search" nodepath="images" fields="titel_fra,titel,alt_tekst,titel_de,metatags" orderby="titel" age="-1">
+	<command name="search" nodepath="images" fields="filename,titel,alt_tekst,titel_de,metatags" orderby="titel" age="-1">
 		<prompt>zoek afbeelding</prompt>
 		<search-filter>
 			<name>titel bevat</name>
@@ -16,7 +16,7 @@
 		</search-filter>
       <search-filter>
 			<name>filenaam bevat</name>
-			<search-fields>titel_fra</search-fields>
+			<search-fields>filename</search-fields>
 		</search-filter>
       <search-filter>
          <name>categorie</name>
