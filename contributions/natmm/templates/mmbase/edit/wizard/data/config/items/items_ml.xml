@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<wizard-schema id="empty">
+	<title>werk</title>
+	<action include="config/items/create_items.xml" />
+	<action include="config/items/delete_items.xml" />
+	<action include="config/items/load_items_shop.xml" />
+	<lists>
+	</lists>
+	<steps>
+		<step form-schema="edit_item_ml" />
+	</steps>
+	<form-schema id="edit_item_ml" extends="config/items/edit_items_ml.xml" />
+</wizard-schema>
