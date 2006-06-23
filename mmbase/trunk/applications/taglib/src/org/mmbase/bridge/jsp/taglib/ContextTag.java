@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextTag.java,v 1.83 2005-12-05 17:21:17 michiel Exp $ 
+ * @version $Id: ContextTag.java,v 1.84 2006-06-23 13:13:36 johannes Exp $ 
  * @see ImportTag
  * @see WriteTag
  */
@@ -55,7 +55,6 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
     public static final String DEFAULTENCODING_KEY = "org.mmbase.taglib.defaultencoding";
     public static final String ISELIGNORED_PARAM   = "mmbase.taglib.defaultencoding";
 
-    private ContextContainer container = null;
     private ContextProvider  parent = null;
     private boolean    searchedParent = false;
 
@@ -111,22 +110,24 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
      * @param c Parent context-container, if <code>null</code> then a container writing to page context will be instantiated.
      */
     void createContainer(ContextContainer c) { //throws JspTagException {
+        ContextContainer container = null;
         if (c == null && (!"true".equals(pageContext.getServletContext().getInitParameter(ISELIGNORED_PARAM)))) {
             container = new PageContextContainer(pageContext);
         } else {
             container = new StandaloneContextContainer(pageContext, getId(), c);
         }
-
+	pageContext.setAttribute("_mmbase_container", container, PageContext.PAGE_SCOPE);
     }
 
     public ContextContainer getContextContainer() {
-        return container;
+        return (ContextContainer)pageContext.getAttribute("_mmbase_container");
     }
 
     public int doStartTag() throws JspTagException {
         log.debug("Start tag of ContextTag");
         parent = null;
         searchedParent = false;
+        ContextContainer container = getContextContainer();
 
         int s = getScope();
         if (referid != Attribute.NULL || (s != PageContext.PAGE_SCOPE && getId() != null)) {
@@ -149,6 +150,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
                 }
                 container = (ContextContainer)  o;
                 container.setParent(pageContext, getContextProvider().getContextContainer());
+                pageContext.setAttribute("_mmbase_container", container, PageContext.PAGE_SCOPE);
             }
         } else {
             createContainer(getContextProvider().getContextContainer());
@@ -180,7 +182,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
      * @deprecated Use getContextProvider().getContextContainer().registerNode
      */
     public void  registerNode(String key, Node node) throws JspTagException {
-        container.registerNode(key, node);
+        getContextContainer().registerNode(key, node);
     }
 
 
@@ -192,21 +194,21 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
      * @deprecated Use getContextProvider().getContextContainer().findAndRegister
      */
     public Object findAndRegister(int from, String referid, String newid) throws JspTagException {
-        return container.findAndRegister(pageContext, from, referid, newid, true);
+        return getContextContainer().findAndRegister(pageContext, from, referid, newid, true);
     }
 
     /**
      * @deprecated Use getContextProvider().getContextContainer().findAndRegister
      */
     protected Object findAndRegister(int from, String referid, String newid, boolean check) throws JspTagException {
-        return container.findAndRegister(pageContext, from, referid, newid, check);
+        return getContextContainer().findAndRegister(pageContext, from, referid, newid, check);
     }
 
     /**
      * @deprecated Use getContextProvider().getContextContainer().findAndRegister
      */
     public Object findAndRegister(String externid, String newid) throws JspTagException {
-        return container.findAndRegister(pageContext, externid, newid);
+        return getContextContainer().findAndRegister(pageContext, externid, newid);
     }
 
 
@@ -214,7 +216,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
      * @deprecated Use getContextProvider().getContextContainer().register
      */
     public void register(String newid, Object n, boolean check) throws JspTagException {
-        container.register(newid, n, check);
+        getContextContainer().register(newid, n, check);
     }
 
     /**
@@ -223,7 +225,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
      * @deprecated Use getContextProvider().getContextContainer().register
      */
     public void register(String newid, Object n) throws JspTagException {
-        container.register(newid, n);
+        getContextContainer().register(newid, n);
     }
 
 
@@ -231,7 +233,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
      * @deprecated Use getContextProvider().getContextContainer().unRegister
      */
     public void unRegister(String key) throws JspTagException {
-        container.unRegister(key);
+        getContextContainer().unRegister(key);
     }
 
     /**
@@ -241,7 +243,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
      * @deprecated Use getContextProvider().getContextContainer().reregister
      */
     public void reregister(String id, Object n) throws JspTagException {
-        container.reregister(id, n);
+        getContextContainer().reregister(id, n);
     }
 
 
@@ -252,33 +254,33 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
      */
 
     public boolean isPresent(String key) throws JspTagException {
-        return container.isPresent(key);
+        return getContextContainer().isPresent(key);
     }
     
     /**
      * @deprecated Use getContextProvider().getContextContainer().isRegistered
      */
     public boolean isRegistered(String key) throws JspTagException {
-        return container.isRegistered(key);
+        return getContextContainer().isRegistered(key);
     }
     /**
      * @deprecated Use getContextProvider().getContextContainer().isRegisteredSomewhere
      */
     private boolean isRegisteredSomewhere(String key) throws JspTagException {
-        return container.containsKey(key, true); // do check parent.
+        return getContextContainer().containsKey(key, true); // do check parent.
     }
 
     /**
      * @deprecated Use getContextProvider().getContextContainer().findAndRegister
      */
     public Object findAndRegister(String id) throws JspTagException {
-        return container.findAndRegister(pageContext, id);
+        return getContextContainer().findAndRegister(pageContext, id);
     }
     /**
      * @deprecated Use getContextProvider().getContextContainer().findAndRegisterString
      */
     public String findAndRegisterString(String id) throws JspTagException {
-        return container.findAndRegisterString(pageContext, id);
+        return getContextContainer().findAndRegisterString(pageContext, id);
     }
 
     /**
@@ -286,7 +288,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
      */
 
     public Object getContainerObject(String key) throws JspTagException {
-        return container.getObject(key);
+        return getContextContainer().getObject(key);
 
     }
 
@@ -308,7 +310,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
         if (log.isDebugEnabled()) {
             log.debug("after body of context " + getId());
         }
-        container.release(pageContext, getContextProvider().getContextContainer()); // remove the vars from 'page-context' again if necessary.
+        getContextContainer().release(pageContext, getContextProvider().getContextContainer()); // remove the vars from 'page-context' again if necessary.
         // just to serve lousy app-server which do not support EVAL_BODY_INCLUDE
         if (EVAL_BODY == EVAL_BODY_BUFFERED) {
             try {
@@ -323,17 +325,20 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
     }
 
     public int doEndTag() throws JspTagException {
-        container = null;
         parent = null;
         cloudContext = null;
         return super.doEndTag();
     }
 
+    public void release() {
+        parent = null;
+        cloudContext = null;
+        super.release();
+    }
 
     public String toString() {
         return getClass().getName() + " with id " + getId();
     }
-
 }
 
 
