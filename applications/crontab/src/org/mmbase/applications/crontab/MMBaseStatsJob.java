@@ -7,6 +7,7 @@ See http://www.MMBase.org/license
  */
 package org.mmbase.applications.crontab;
 
+import org.mmbase.util.ThreadPools;
 import org.mmbase.cache.Cache;
 import org.mmbase.util.logging.*;
 
@@ -37,7 +38,7 @@ and:
   &lt;/logger&gt;
 </pre>
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseStatsJob.java,v 1.3 2006-01-27 20:35:16 michiel Exp $
+ * @version $Id: MMBaseStatsJob.java,v 1.4 2006-06-23 18:11:56 michiel Exp $
  */
 
 public class MMBaseStatsJob extends AbstractCronJob  {
@@ -65,7 +66,15 @@ public class MMBaseStatsJob extends AbstractCronJob  {
                         statsLogger.service("" + org.mmbase.module.database.MultiConnection.queries);
                     }
                 };
-
+        } else if (w.equals("JOBSPOOL")) {
+            job = new Runnable() {
+                    public void run() {
+                        edu.emory.mathcs.backport.java.util.concurrent.ThreadPoolExecutor j = 
+                            (edu.emory.mathcs.backport.java.util.concurrent.ThreadPoolExecutor) ThreadPools.jobsExecutor;
+                        statsLogger.service("" + j.getCompletedTaskCount() + '\t' + j.getActiveCount() + '\t'+ j.getQueue().size() + '\t' + 
+                                            j.getPoolSize() + '\t' + j.getLargestPoolSize() + '\t' + j.getCorePoolSize() + '\t' + j.getMaximumPoolSize());
+                    }
+                };
         } else if (w.startsWith("CACHE.")) {
             job = new Runnable() {
                     private Cache cache = getCache();
