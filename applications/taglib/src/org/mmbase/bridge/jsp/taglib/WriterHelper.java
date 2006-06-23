@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.83 2006-06-22 13:17:46 johannes Exp $
+ * @version $Id: WriterHelper.java,v 1.84 2006-06-23 14:41:14 michiel Exp $
  */
 
 public class WriterHelper {
@@ -536,7 +536,6 @@ public class WriterHelper {
     }
 
     /**
-     * Sets the bodycontent (to be used in doAfterBody)
      * @since MMBase-1.7
      */
     public int doAfterBody() throws JspTagException {
