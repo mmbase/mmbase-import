@@ -222,7 +222,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                         return eventMatches;
                     } else {
                         if (log.isDebugEnabled()) {
-                            logResult("flush: event does not apply to wrapper {"+matcher+"}:", query, event, node);
+                            logResult("flush: event does not apply to wrapper {" + matcher + "}:", query, event, node);
                         }
                         return true;
                     }
@@ -874,7 +874,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                     return;
             }
             try {
-                log.debug("\n******** \n**" + comment + "\n**" + event.toString() + role + "\n**nodevalues: " + node.getValues() + "\n**"
+                log.debug("\n******** \n**" + comment + "\n**" + event.toString() + role + "\n**nodevalues: " + (node == null ? "NODE NULL" : "" + node.getValues()) + "\n**"
                         + sqlHandler.toSql(query, sqlHandler) + "\n******");
             } catch (SearchQueryException e) {
                 log.error(e);
