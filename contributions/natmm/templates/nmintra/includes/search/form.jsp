@@ -115,6 +115,17 @@
 		</td></tr>
    </table>
 	</form>
+	<% String sPageRefMinOne = (String) session.getAttribute("pagerefminone");
+		if(sPageRefMinOne!=null) {
+      %><table cellpadding="0" cellspacing="0" align="center">
+			<tr><td>
+				<mm:list nodes="<%= sPageRefMinOne %>" path="pagina,gebruikt,paginatemplate">
+					<a href="<mm:field name="paginatemplate.url"/>?p=<%= sPageRefMinOne %>" target="_top" style="color:#FFFFFF;">Terug naar vorige pagina</a>
+				</mm:list>
+			</td></tr>
+		</table>	
+	<% } %>
+
 	<script language="JavaScript" type="text/javascript">
 	<!--
    function postIt(action) {
