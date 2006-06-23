@@ -286,7 +286,7 @@ Build-compiler: ${build.compiler}
   </target>
 
 
-  <target name="run.typerel" depends="mmbase,jar,init">
+  <target name="run.typerel" depends="mmbase,jar,init" description="Allowed Relations tests">
     <antcall target="clean.database" />
     <java
       classname="${ui.class}"
@@ -299,7 +299,7 @@ Build-compiler: ${build.compiler}
     </java>
   </target>
 
-  <target name="run.releasestrategy" depends="mmbase,jar,init">
+  <target name="run.releasestrategy" depends="mmbase,jar,init" description="Query Result Release Strategy tests">
     <antcall target="clean.database" />
     <java
       classname="${ui.class}"
@@ -313,7 +313,7 @@ Build-compiler: ${build.compiler}
   </target>
 
   
-  <target name="run.bridge" depends="mmbase,jar,init">
+  <target name="run.bridge" depends="mmbase,jar,init" description="Bridge tests">
     <antcall target="clean.database" />
     <java
         classname="${ui.class}"
@@ -326,7 +326,7 @@ Build-compiler: ${build.compiler}
     </java>
   </target>
 
-  <target name="run.bridge.util" depends="init">
+  <target name="run.bridge.util" depends="init" description="Bridge utility tests">
     <!--
     <antcall target="clean.database" />
     -->
@@ -355,7 +355,7 @@ Build-compiler: ${build.compiler}
   </target>
 
 
-  <target name="run.bridge.rmmci" depends="mmbase,jar,init">
+  <target name="run.bridge.rmmci" depends="mmbase,jar,init" description="Bridge tests (through RMMCI)">
     <antcall target="clean.database" />
     <parallel>
       <daemons>
@@ -384,7 +384,7 @@ Build-compiler: ${build.compiler}
   </target>
 
 
-  <target name="run.convertimage" depends="jar,init">
+  <target name="run.convertimage" depends="jar,init" description="Image conversion tests">
     <java
       classname="${ui.class}"
       fork="true"
@@ -397,7 +397,7 @@ Build-compiler: ${build.compiler}
   </target>
 
 
-  <target name="run.dbsq" depends="jar,init,mmbase">
+  <target name="run.dbsq" depends="jar,init,mmbase" description="SearchQuery tests">
     <antcall target="clean.database" />
     <java
         classname="${ui.class}"
@@ -410,7 +410,7 @@ Build-compiler: ${build.compiler}
     </java>
   </target>
 
-  <target name="run.util" depends="jar,init">
+  <target name="run.util" depends="mmbase,jar,init" description="Various tests on utitilies (org.mmbase.util)">
     <java
     	classname="${ui.class}"
         fork="true"
@@ -421,7 +421,7 @@ Build-compiler: ${build.compiler}
     </java>
   </target>
 
-  <target name="run.clustering" depends="jar,init,mmbase">
+  <target name="run.clustering" depends="jar,init,mmbase" description="Clustering test-cases (Starts 2 mmbases, communicates with RMMCI)">
     <ant target="install" dir="${mmbase.source.dir}/applications/clustering" />
     <antcall target="clean.database" />
     <parallel>
@@ -471,7 +471,7 @@ Build-compiler: ${build.compiler}
 
   <!-- ================================================================== -->
 
-  <target name="standalone" depends="jar,init">
+  <target name="standalone" depends="jar,init" description="Start a stand-alone MMBase instantion">
     <java
       classname="org.mmbase.tests.MMBaseTest"
       fork="true"
