@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: PageContextBacking.java,v 1.9 2006-03-28 20:30:26 michiel Exp $
+ * @version $Id: PageContextBacking.java,v 1.10 2006-06-23 14:38:30 michiel Exp $
  */
 
 public  class PageContextBacking extends AbstractMap implements Backing {
@@ -38,11 +38,11 @@ public  class PageContextBacking extends AbstractMap implements Backing {
     private final PageContext pageContext;
 
     // We also want to store null, pageContext cannot contain those.
-    private Set nulls = new HashSet();
+    private final Set nulls = new HashSet();
 
-    private Set jspvars = new HashSet();
+    private final Set jspvars = new HashSet();
 
-    private Map unwrapped = new HashMap();
+    private final Map unwrapped = new HashMap();
 
     public PageContextBacking(PageContext pc) {
         pageContext = pc;
@@ -155,9 +155,9 @@ public  class PageContextBacking extends AbstractMap implements Backing {
     }
 
     void release() {
-        nulls = null;
-        unwrapped = null;
-        jspvars = null;
+        nulls.clear();
+        unwrapped.clear();
+        jspvars.clear();
     }
 
     public String toString() {
