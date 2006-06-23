@@ -19,7 +19,7 @@ WHAT IS IN IT FOR YOU?
    (b) rubriek and page-tree,
    (c) authorisation model,
    (d) nice-looking editwizards,
-   (e) content-library with carbadge can functionality,
+   (e) content-library with garbage can functionality,
    (f) url-rewriting for Google friendly urls,
    (g) versioning
    and much more. The original version of LeoCMS was build by Finalist.
