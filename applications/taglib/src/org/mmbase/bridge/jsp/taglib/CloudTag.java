@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.133 2006-05-08 18:01:54 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.134 2006-06-23 14:39:51 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
@@ -219,7 +219,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     protected int getMethod() throws JspTagException {
         String m = method.getString(this);
         int r =  cloudContext.getAuthentication().getMethod(m);
-        log.debug("method '" + m + "' -> " + r);
+        if (log.isDebugEnabled()) {
+            log.debug("method '" + m + "' -> " + r);
+        }
         return r;
     }
 
