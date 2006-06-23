@@ -95,7 +95,7 @@
         <guiname xml:lang="nl">Filename</guiname>
         <guiname xml:lang="eo">Filename</guiname>
         <guiname xml:lang="it">Filename</guiname>
-        <guitype>field</guitype>
+        <guitype>string</guitype>
       </gui>
       <editor>
         <positions>
