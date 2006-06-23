@@ -42,7 +42,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.64 2006-03-24 17:37:30 michiel Exp $
+ * @version $Id: FormatterTag.java,v 1.65 2006-06-23 13:17:30 johannes Exp $
  */
 public class FormatterTag extends CloudReferrerTag implements ParamHandler {
 
@@ -456,8 +456,10 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
         return super.doEndTag();
     } // doEndTag
 
-
-
+    public void release() {
+        xsltSource = null;
+        props = null;
+    }
 
     /**
      * @return the Factory which must be used for XSL transformations in this directory.

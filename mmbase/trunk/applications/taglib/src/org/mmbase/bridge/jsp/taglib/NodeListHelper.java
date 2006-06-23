@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.22 2006-06-22 10:43:50 michiel Exp $
+ * @version $Id: NodeListHelper.java,v 1.23 2006-06-23 13:17:30 johannes Exp $
  * @since MMBase-1.7
  */
 
@@ -426,8 +426,20 @@ public class NodeListHelper implements ListProvider {
         return new ListProviderLoopTagStatus(this);
     }
 
-    // unused
     public void release() {
+        if (collector != null) {
+            try {
+                collector.release(thisTag.getPageContext(), thisTag.getContextProvider().getContextContainer());
+                collector = null;
+            } catch (Exception e) {
+            }
+        }
+        if (nodeHelper != null) {
+            nodeHelper.release();
+        }
+        nodeIterator = null;
+        returnList = null;
+        previousValue = null;
     }
     // unused
     public int doStartTag() throws JspTagException {

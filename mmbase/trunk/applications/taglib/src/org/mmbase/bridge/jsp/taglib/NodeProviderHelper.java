@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeProviderHelper.java,v 1.17 2006-06-22 10:43:50 michiel Exp $
+ * @version $Id: NodeProviderHelper.java,v 1.18 2006-06-23 13:17:30 johannes Exp $
  * @since MMBase-1.7
  */
 
@@ -204,5 +204,10 @@ public class NodeProviderHelper implements NodeProvider {
         return BodyTagSupport.EVAL_PAGE;
     }
 
-
+    public void release() {
+        node = null;
+        checked = false;
+        _Stack = null;
+        query = null;
+    }
 }

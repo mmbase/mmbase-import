@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: AbstractNodeListTag.java,v 1.72 2006-06-22 18:15:44 johannes Exp $
+ * @version $Id: AbstractNodeListTag.java,v 1.73 2006-06-23 13:17:30 johannes Exp $
  */
 
 abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListProvider {
@@ -295,6 +295,12 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
         generatingQuery = null;
         listHelper.doEndTag();
         return  super.doEndTag();
+    }
+
+    public void release() {
+        generatingQuery = null;
+        listHelper.release();
+        super.release();
     }
 
     /**

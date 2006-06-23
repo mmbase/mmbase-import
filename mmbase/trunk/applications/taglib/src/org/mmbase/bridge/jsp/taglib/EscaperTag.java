@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * Configures a new Escaper on this page.
  * 
  * @author Michiel Meeuwissen
- * @version $Id: EscaperTag.java,v 1.7 2005-10-19 18:36:53 michiel Exp $
+ * @version $Id: EscaperTag.java,v 1.8 2006-06-23 13:17:30 johannes Exp $
  * @since MMBase-1.8
  */
 
@@ -97,4 +97,9 @@ public class EscaperTag extends ContextReferrerTag implements ParamHandler {
         return super.doEndTag();
     }
 
+    public void release() {
+        factory = null;
+        parameters = null;
+        transformer = null;
+    }
 }
