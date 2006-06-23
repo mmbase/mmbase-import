@@ -478,16 +478,17 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                 float constraintFloat = Casting.toFloat(constraintValue, Float.MAX_VALUE);
                 float floatToCompare = Casting.toFloat(valueToCompare, Float.MAX_VALUE);
                 //if either value could not be cast to an int, return true, which is safe
-                if(constraintFloat == Float.MAX_VALUE || floatToCompare == Float.MAX_VALUE)
-                    throw new FieldComparisonException("either " + constraintValue + " or " + valueToCompare + " could not be casted to type float (while that is supposed to be their type");
+                if(constraintFloat == Float.MAX_VALUE || floatToCompare == Float.MAX_VALUE) {
+                    throw new FieldComparisonException("either " + constraintValue + " or " + valueToCompare + " could not be casted to type float (while that is supposed to be their type)");
+                }
                 return floatMatches(constraintFloat, floatToCompare, operator);
             } else if (fieldType.equals(Double.class)) {
                 log.debug("**> type: Double");
                 double constraintDouble = Casting.toDouble(constraintValue, Double.MAX_VALUE);
                 double doubleToCompare = Casting.toDouble(valueToCompare, Double.MAX_VALUE);
                 //if either value could not be cast to an int, return true, which is safe
-                if(constraintDouble == Double.MAX_VALUE || doubleToCompare == Double.MAX_VALUE) {
-                    throw new FieldComparisonException("either " + constraintValue + " or " + valueToCompare + " could not be casted to type double (while that is supposed to be their type");
+                if(constraintDouble == Double.MAX_VALUE || doubleToCompare == Double.MAX_VALUE) { 
+                    throw new FieldComparisonException("either " + constraintValue + " or " + valueToCompare + " could not be casted to type double (while that is supposed to be their type)");
                 }
                 return floatMatches(constraintDouble, doubleToCompare, operator);
             } else if (fieldType.equals(Date.class)) {
@@ -496,8 +497,9 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                 long longToCompare = Casting.toLong(valueToCompare, Long.MAX_VALUE);
 
                 //if either value could not be cast to an int, return true, which is safe
-                if(constraintLong == Long.MAX_VALUE || longToCompare == Long.MAX_VALUE)
-                    throw new FieldComparisonException("either " + constraintValue + " or " + valueToCompare + " could not be casted to type long (while they are supposed to be of type Date supposed to be their type");
+                if(constraintLong == Long.MAX_VALUE || longToCompare == Long.MAX_VALUE) {
+                    throw new FieldComparisonException("either " + constraintValue + " or " + valueToCompare + " could not be casted to type long (while they are supposed to be of type Date supposed to be their type)");
+                }
                 return intMatches(constraintLong, longToCompare, operator);
             } else if (fieldType.equals(Integer.class)) {
                 log.debug("**> type: Integer");
@@ -505,8 +507,9 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                 int intToCompare = Casting.toInt(valueToCompare, Integer.MAX_VALUE);
 
                 //if either value could not be cast to an int, return true, which is safe
-                if(constraintInt == Integer.MAX_VALUE || intToCompare == Integer.MAX_VALUE)
-                    throw new FieldComparisonException("either " + constraintValue + " or " + valueToCompare + " could not be casted to type int (while that is supposed to be their type");
+                if(constraintInt == Integer.MAX_VALUE || intToCompare == Integer.MAX_VALUE) {
+                    throw new FieldComparisonException("either " + constraintValue + " or " + valueToCompare + " could not be casted to type int (while that is supposed to be their type)");
+                }
                 return intMatches(constraintInt, intToCompare, operator);
             } else if (fieldType.equals(Long.class)) {
                 log.debug("**> type: Long");
