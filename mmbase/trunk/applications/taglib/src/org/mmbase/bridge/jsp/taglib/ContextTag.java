@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextTag.java,v 1.85 2006-06-23 14:37:03 michiel Exp $
+ * @version $Id: ContextTag.java,v 1.86 2006-06-23 20:27:58 michiel Exp $
  * @see ImportTag
  * @see WriteTag
  */
@@ -54,7 +54,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
     public static final String CONTEXTTAG_KEY        = "org.mmbase.taglib.context";
     public static final String CONTAINER_KEY_PREFIX  = "org.mmbase.taglib.contextcontainer.";
     public static final String DEFAULTENCODING_KEY   = "org.mmbase.taglib.defaultencoding";
-    public static final String ISELIGNORED_PARAM    = "mmbase.taglib.defaultencoding";
+    public static final String ISELIGNORED_PARAM     = "mmbase.taglib.isELIgnored";
 
     private ContextProvider  parent = null;
     private boolean    searchedParent = false;
