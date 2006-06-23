@@ -14,8 +14,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.mmbase.core.event.*;
-import org.mmbase.module.core.MMBase;
-import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.core.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.database.BasicSqlHandler;
 import org.mmbase.util.logging.Logger;
@@ -28,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase 1.8
  * @author Ernst Bunders
- * @version $Id: BetterStrategy.java,v 1.20 2006-06-20 20:16:46 michiel Exp $
+ * @version $Id: BetterStrategy.java,v 1.21 2006-06-23 16:54:23 michiel Exp $
  */
 public class BetterStrategy extends ReleaseStrategy {
 
@@ -261,22 +260,34 @@ public class BetterStrategy extends ReleaseStrategy {
         if (log.isDebugEnabled()) {
             log.debug("method: checkPathMatches()");
             log.debug(event.toString());
-            log.debug("query: "+query.toString());
+            log.debug("query: " + query.toString());
         }
-        boolean match = false;
+        MMBase mmb = MMBase.getMMBase();
+        String          eventSourceType = event.getRelationSourceType();
+        String          eventDestType   = event.getRelationDestinationType();
+        MMObjectBuilder eventSource     = mmb.getBuilder(eventSourceType);
+        MMObjectBuilder eventDest       = mmb.getBuilder(eventDestType);
+
         for (Iterator i = getRelationSteps(query).iterator(); i.hasNext();) {
             RelationStep step = (RelationStep) i.next();
 
-            //check this relation step
             String stepSource = step.getPrevious().getTableName();
-            String stepDestination = step.getNext().getTableName();
-            if (( stepSource.equals(event.getRelationSourceType()) && stepDestination.equals(event.getRelationDestinationType()) ) ||
-                ( stepDestination.equals(event.getRelationSourceType()) && stepSource.equals(event.getRelationDestinationType()) )) {
-                if (step.getRole() == null || step.getRole().intValue() == event.getRole())
-                    match = true;
+            String stepDest   = step.getNext().getTableName();
+            boolean matchesProper =
+                (eventSourceType.equals(stepSource) || eventSource.isExtensionOf(mmb.getBuilder(stepSource))) &&
+                (eventDestType.equals(stepDest)     || eventDest.isExtensionOf(mmb.getBuilder(stepDest)));
+            boolean matches = matchesProper ||
+                ( // matchesInverse
+                 (eventDestType.equals(stepSource)  || eventDest.isExtensionOf(mmb.getBuilder(stepSource))) &&
+                 (eventSourceType.equals(stepDest)  || eventSource.isExtensionOf(mmb.getBuilder(stepDest)))
+                 );
+
+            if (matches &&
+                (step.getRole() == null || step.getRole().intValue() == event.getRole())) {
+                return true;
             }
         }
-        return match;
+        return false;
     }
 
 
