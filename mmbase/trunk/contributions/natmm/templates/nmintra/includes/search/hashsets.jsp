@@ -33,6 +33,10 @@ if (!sQuery.equals("")){
 	hsetItemsNodes = su.addPages(cloud, cf, qStr, 8, "items,posrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
 	hsetDocumentsNodes = su.addPages(cloud, cf, qStr, 9, "documents,posrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
 	hsetVacatureNodes = su.addPages(cloud, cf, qStr, 10, "vacature,contentrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
+	hsetAttachmentsParagraafNodes = su.addPages(cloud, cf, qStr, 11, "attachments,posrel,paragraaf,posrel,artikel,contentrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
+	hsetAttachmentsContentblocksNodes = su.addPages(cloud, cf, qStr, 11, "attachments,readmore,contentblocks,readmore,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
+	hsetAttachmentsItemsNodes = su.addPages(cloud, cf, qStr, 11, "attachments,posrel,items,posrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
+	hsetAttachmentsVacaturesNodes = su.addPages(cloud, cf, qStr, 11, "attachments,posrel,vacature,contentrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
 } else if (!sCategory.equals("")||!sPool.equals("")||(fromTime>0)||(toTime>0)){
 	hsetArticlesNodes = su.addPages(cloud, "artikel,contentrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
 	hsetTeaserNodes = su.addPages(cloud, "teaser,contentrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
@@ -41,6 +45,10 @@ if (!sQuery.equals("")){
 	hsetItemsNodes = su.addPages(cloud, "items,posrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
 	hsetDocumentsNodes = su.addPages(cloud, "documents,posrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
 	hsetVacatureNodes = su.addPages(cloud, "vacature,contentrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
+	hsetAttachmentsParagraafNodes = su.addPages(cloud, "attachments,posrel,paragraaf,posrel,artikel,contentrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
+	hsetAttachmentsContentblocksNodes = su.addPages(cloud, "attachments,readmore,contentblocks,readmore,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
+	hsetAttachmentsItemsNodes = su.addPages(cloud, "attachments,posrel,items,posrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
+	hsetAttachmentsVacaturesNodes = su.addPages(cloud, "attachments,posrel,vacature,contentrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
 }
 // *** Create list of categories from list of pages: hSetCategories ***
 // *** Seems to me it is faster than create another index ***
