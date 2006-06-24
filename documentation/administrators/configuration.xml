@@ -4,8 +4,8 @@
 	<article>
 		<articleinfo>
 		<title>MMBase Configuration documentation</title>
-		<date>2002-12-04</date>
-		<edition>$Id: configuration.xml,v 1.24 2006-06-21 05:24:39 michiel Exp $</edition>
+		<date>2006-06-24</date>
+		<edition>$Id: configuration.xml,v 1.25 2006-06-24 08:37:30 michiel Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Michiel</firstname>
@@ -51,10 +51,16 @@
 						<term><classname>org.mmbase.servlet.MMBaseServlet</classname></term>
 						<listitem>
 							<para>
-								MMBaseServlet itself can only serve the MMBase version number. It has no properties
-								to be set. You don't need a servlet-mapping to it, though "/version" would be nice
-								(and specified as such in the MMBase distro).
+                MMBaseServlet itself is the most basic MMBaseServlet, which can be used to serve the
+                MMBase version number. It has no properties to be set. You don't need a
+                servlet-mapping to it (if you only want to use it to start up mmbase), though
+                "/version" would be nice (and specified as such in the MMBase distro).
 							</para>
+              <para>
+                If mapped to an URL, then it also recognizes a few parameters like 'uptime',
+                'starttime' and 'server', which, when supplied, make the servlet return, besides the mmbase
+                version, also some system information.
+              </para>
 						</listitem>
 					</varlistentry>
 					<varlistentry>
@@ -78,7 +84,7 @@
                 produce these kind of URL's. In 1.8 this does not make much sense, because
                 image-transformation would be postponed to image serving any way. But it is possible
                 any way (from 1.7.4 onwards).
-              </para>                
+              </para>
               <para>
                 It is also possible to have the images served by another web-application (which you
                 might want for certain load-balancing reasons). In that case you don't specify the
@@ -115,15 +121,26 @@
 							</para>
 							<para>
 								Since servdb is not based on the MMBase bridge, the content which it serves is not protected by the security system. It will serve any image, attachment etc. disregarding the possible read-restrictions on them.
-						</para>
+              </para>
+              <para>
+                The implementation of this servlet is nowadays only available in mmbase-scan.jar,
+                and it's use is deprecated.
+              </para>
 					</listitem>
 				</varlistentry>
 				<varlistentry>
 					<term><classname>org.mmbase.servlet.servscan</classname></term>
 					<listitem>
 						<para>
-							If you also have turned on the right MMBase 'modules', this servlet will provide the 'SCAN' template language. For new users it is advised not to use SCAN, but to use e.g. JSP (the JSP servlet and servlet-mapping are normally shipped with and installed in your application server). The SCAN servlet servscan has to be mapped to '*.shtml'.
+							If you also have turned on the right MMBase 'modules', this servlet will provide the
+							'SCAN' template language. For new users it is advised not to use SCAN, but to use
+							e.g. JSP (the JSP servlet and servlet-mapping are normally shipped with and installed
+							in your application server). The SCAN servlet servscan has to be mapped to '*.shtml'.
 							</para>
+              <para>
+                The implementation of this servlet (and of the SCAN language) is nowadays only
+                available in mmbase-scan.jar, and it's use is deprecated.
+              </para>
 						</listitem>
 					</varlistentry>
 				</variablelist>
@@ -132,17 +149,25 @@
 		<section id="taglibs">
 			<title>Taglibs</title>
 			<para>
-				If you want to use taglibs in your (jsp) pages - which you probably want - then you may have to indicate that as well in web.xml. Taglibs that you might want to use are the MMBase taglib, the MMBase community taglib, the oscache taglib and the jakarta taglibs. In some newer application servers it might be enough to have the mmbase-taglib.jar (or other jars) in your WEB-INF/lib directory to have the MMBase taglib (or other taglibs) to your disposal.
+				If you want to use taglibs in your (jsp) pages - which you probably want - then you may have
+				to indicate that as well in web.xml. Taglibs that you might want to use are the MMBase
+				taglib, the MMBase community taglib, the oscache taglib and the jakarta taglibs. In mosst
+				newer application servers it is enough to have the mmbase-taglib-2.jar (or other jars)
+				in your WEB-INF/lib directory to have the MMBase taglib (or other taglibs) to your disposal.
 				<!-- TODO links -->
 			</para>
 		</section>
 		<section id="resources">
 			<title>Resources</title>
 			<para>
-				Since MMBase 1.6 certain things can (optionally) also be configured by the use of references to resources provided by the application server. A resource a an instance of a certain type which is created and configured and can be referred to by a 'resource name'.
+				Since MMBase 1.6 certain things can (optionally) also be configured by the use of references
+				to resources provided by the application server. A resource a an instance of a certain type
+				which is created and configured and can be referred to by a 'resource name'.
 			</para>
 			<para>
-				These resources must also be described in web.xml. The actual configuration of these resources happens somewhere else and we refer to the documentation of your application server.
+				These resources must also be described in web.xml. The actual configuration of these
+				resources happens somewhere else and we refer to the documentation of your application
+				server.
 			</para>
 		</section>
 		<section id="webxmlexample">
@@ -222,7 +247,7 @@
 		<url-pattern>/attachments/*</url-pattern>
 	</servlet-mapping>
 
-	<!-- The MMBase taglib 
+	<!-- The MMBase taglib
   In Tomcat 5, this section can be left away (it will detect the jar by itself)
   -->
 	<taglib>
@@ -234,7 +259,7 @@
 		<!-- <taglib-location>/WEB-INF/mmbase-taglib.tld</taglib-location> -->
 	</taglib>
 
-	<!-- MMBase community taglib 
+	<!-- MMBase community taglib
   In Tomcat 5, this section can be left away (it will detect the jar by itself)
   -->
 	<taglib>
@@ -287,16 +312,26 @@
 	<section id="nowebxml">
 		<title>Running MMBase without a web.xml</title>
 		<para>
-			Sometimes it is useful to run (parts of) MMBase outside a servlet environment, for example when you are a developer and want to test only a certain part without the overhead of starting up a whole application server. Another example is when you make a data-importer.
+			Sometimes it is useful to run (parts of) MMBase outside a servlet environment, for example
+			when you are a developer and want to test only a certain part without the overhead of starting
+			up a whole application server. Another example is when you make a data-importer.
 		</para>
 		<para>
-			In such cases the JVM option (-D) mmbase.config might come in handy, because most parts of MMBase somehow do need a configuration. It might be for example only to configure the logging system.
+			In such cases the JVM option (-D) mmbase.config might come in handy, because most parts of
+			MMBase somehow do need a configuration. It might be for example only to configure the logging
+			system.
 		</para>
 		<para>
-			In older MMBase versions it was required to use this JVM option even when you did run it as a (set of) servlet(s), but this is not any longer the case (since MMBase 1.4), and use of '-Dmmbase.config' other then in debugging or other 'stand-alone' situations is discouraged.
+			In older MMBase versions it was required to use this JVM option even when you did run it as a
+			(set of) servlet(s), but this is not any longer the case (since MMBase 1.4), and use of
+			'-Dmmbase.config' other then in debugging or other 'stand-alone' situations is discouraged.
 		</para>
 		<para>
-			In these older versions of MMBase also the 'mmbase.htmlroot' command line option was needed. It still is supported (though not by JSP), but I can't think of any situation in which it would be needed (besides when using a very old MMBase or perhaps a very old application server), and I think this option can now be considered fully deprecated. --> perhaps in junit tests?
+			In these older versions of MMBase also the 'mmbase.htmlroot' command line option was
+			needed. It still is supported (though not by JSP), but I can't think of any situation in which
+			it would be needed (besides when using a very old MMBase or perhaps a very old application
+			server), and I think this option can now be considered fully deprecated. --> perhaps in junit
+			tests?
 		</para>
 		<para>
 			To complete this description of how to run MMBase outside a servlet environment
@@ -368,10 +403,19 @@
 	<section id="databases">
 		<title>Databases</title>
 		<para>
-			In the databases subdirectory of the configuration you find the XML's describing supported databases. These files are only used by the old (pre-1.7) database layer of MMBase. If you intend to use the new Storage layer (recommended), you can remove this directory. For configuration of the new Storage Layer, see the <ulink url="../backenddevelopers/storage/index.html">storage documentation</ulink>.
+			In the databases subdirectory of the configuration you find the XML's describing supported
+			databases. These files are only used by the old (pre-1.7) database layer of MMBase. If you
+			intend to use the new Storage layer (recommended), you can remove this directory. For
+			configuration of the new Storage Layer, see the <ulink
+			url="../backenddevelopers/storage/index.html">storage documentation</ulink>.
 		</para>
 		<para>
-			Even when you use the old database layer, in an actual installation all but one of these files can be removed. It must correspond to the 'database' property in config/modules/mmbaseroot.xml, if this property is present. You can also remove the database property from mmbaseroot.xml (I would advice this, because then all database configuration is in jdbc.xml), then the 'lookup.xml' file will be used to determine the right database configuration XML (so perhaps it is better to leave them) using the available driver.
+			Even when you use the old database layer, in an actual installation all but one of these files
+			can be removed. It must correspond to the 'database' property in
+			config/modules/mmbaseroot.xml, if this property is present. You can also remove the database
+			property from mmbaseroot.xml (I would advice this, because then all database configuration is
+			in jdbc.xml), then the 'lookup.xml' file will be used to determine the right database
+			configuration XML (so perhaps it is better to leave them) using the available driver.
 		</para>
 		<para>
 			It is important to make the right driver available, anyhow. This is
@@ -602,8 +646,13 @@
 	<section id="caches">
 		<title>Caches</title>
 		<para>
-			MMBase has several caches, which can be configured by a file 'caches.xml' which must be in in the MMBase configuration directory.
+			MMBase has several caches, which can be configured by a file 'caches.xml' which must be in in
+			the MMBase configuration directory.
 		</para>
+    <para>
+      Since MMBase-1.8 also the strategies which must be used to invalidate entries in Query caches
+      can be configured in this file. 
+    </para>
 		<example id="caches_example">
 			<title>Caches</title>
 			<programlisting>
@@ -640,12 +689,29 @@
 			Some words about XML, XML Entities and so on. Not directly related to MMBase.
 		</para>
 		<section id="dtd">
-			<title>DTD's and validation</title>
+			<title>DTD's, XSD's and validation</title>
 			<para>
-				The format of XML's is defined by dtd's. All MMBase specific XML's (recognizable by the DOCTTYPE) are validated when parsed (from MMBase 1.6 onwards). This means that the dtd's for all these XML type must be available. They are available in the mmbase.jar, so you normally will not have to worry about them. You can store them in config/dtd where MMBase will find them first, so you could override the ones in the jar (useful during development). It they cannot be found, validation will occur with an empty DTD, resulting in lots of errors in your log.
-				<!-- TODO: We should try to use schema's, for
-				validation and auto-generation of documentation -->
+				The format of XML's is defined by dtd's. All MMBase specific XML's (recognizable by the
+				DOCTTYPE) are validated when parsed (from MMBase 1.6 onwards). This means that the dtd's for
+				all these XML type must be available. They are available in the mmbase.jar, so you normally
+				will not have to worry about them. You can store them in config/dtd where MMBase will find
+				them first, so you could override the ones in the jar (useful during development). It they
+				cannot be found, validation will occur with an empty DTD, resulting in lots of errors in
+				your log.
 			</para>
+      <para>
+        Since MMBase 1.8 also some XML's are defined by XML Schema Definitions. For example
+        config/datatypes.xml and the new version of the builder XML's (with support for
+        datatypes). There is no DOCTYPE on such XML's but the root element defined a namespace and
+        'schemaLocation'. The schema is resolved in a similar way as DTD's are resolved. 
+      </para>
+      <para>
+        If you don't want XML's to be validated, then you can place a configuration file
+        config/utils/documentreader.xml (the default version is in mmbase.jar), and change it. This
+        can be useful to avoid the overhead, or avoid the warning which may fill the log if you have
+        a lot of legacy XML's (e.g. some people shipped a zillion of non-validating editwizard
+        definitions).
+      </para>
 			<para>
 				Validation of non MMBase specific xml's, like web.xml and 'log4j.xml' is left to the applications responsible for them (application server and log4j in these cases).
 			</para>
