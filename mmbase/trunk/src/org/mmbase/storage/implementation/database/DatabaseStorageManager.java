@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.161 2006-06-22 20:36:20 johannes Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.162 2006-06-24 16:00:39 johannes Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -2831,16 +2831,16 @@ public class DatabaseStorageManager implements StorageManager {
         protected void getBytes() {
             ByteArrayOutputStream b = new ByteArrayOutputStream();
             int c;
+            byte[] buf = new byte[1024];
             try {
-                while((c = inputStream.read()) > -1) {
-                    b.write(c);
+                while((c = inputStream.read(buf)) > -1) {
+                    b.write(buf, 0, c);
                 }
             } catch (IOException ioe) {
                 log.error(ioe);
             }
             bytes = b.toByteArray();
             size = bytes.length;
-
         }
 
         public long length() {
