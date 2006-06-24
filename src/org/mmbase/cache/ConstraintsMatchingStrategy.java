@@ -25,24 +25,24 @@ import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
 
 /**
- * This strategy will evaluate the constraint on a a query object against a NodeEvent. It will appy the following rules:<br>
+ * This strategy will evaluate the constraint on a a query object against a NodeEvent. It will apply the following rules:<br>
  * <b>new node/delete node</b><br>
  * <ul>
- * <li>If the step of a constraint matches the type of the event, and the node's values don't fall within the
+ * <li>If the step of a constraint matches the type of the event, and the values of the node don't fall within the
  * constraint: don't flush.</li>
- * <li>If the step of a constraint matches the type of the event, and the node's values dous fall within the
+ * <li>If the step of a constraint matches the type of the event, and the values of the node don't fall within the
  * constraint: flush.</li>
  * <li>If no constraints have a step matching the type of the event: flush.
  * </ul>
- * <b>change node</b> Like the abouve, but an extra check has to be made:
+ * <b>change node</b> Like the above, but an extra check has to be made:
  * <ul>
- * <li>if the node preveously fell within the constraints but now dousn't: flush</li>
- * <li>if the node preveously didn't fall within the constraints but now dous: flush</li>
+ * <li>if the node previously fell within the constraints but now doesn't: flush</li>
+ * <li>if the node previously didn't fall within the constraints but now does: flush</li>
  * </ul>
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id:
+ * @version $Id: ConstraintsMatchingStrategy.java,v 1.21 2006-06-24 07:12:52 michiel Exp $
  *
  */
 public class ConstraintsMatchingStrategy extends ReleaseStrategy {
@@ -58,7 +58,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
     private static final Cache constraintWrapperCache;
 
 
-    static{
+    static {
         constraintWrapperCache =  new Cache(1000) {
                 public String getName(){      return "ConstraintMatcherCache";}
                 public String getDescription() {return "Caches query constraint wrappers used by ConstraintsMatchingStrategy";}
@@ -103,9 +103,9 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
     }
 
     public String getDescription() {
-        return "Checks wether a changed node has a matching step within a queries constraint, and then checks "
-                + "if the node falls within the constraint. For changed nodes a check is made if the node preveously "
-                + "fell within the constraint and if it dous so now. Queries that exclude changed nodes by their constraints "
+        return "Checks wether a changed node has a matching step within the constraints of a query, and then checks "
+                + "if the node falls within the constraint. For changed nodes a check is made if the node previously "
+                + "fell within the constraint and if it does so now. Queries that exclude changed nodes by their constraints "
                 + "will not be flushed.";
     }
 
@@ -124,6 +124,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                 if (log.isDebugEnabled()) {
                     log.trace("created constraint matcher: " + matcher);
                 }
+                // Unwrapping BasicQuery's. This avoids unnecessary references (mainly to BasicCloud instances).
                 if (query instanceof BasicQuery) {
                     constraintWrapperCache.put(((BasicQuery) query).getQuery(), matcher);
                 } else {
@@ -133,8 +134,8 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
             } catch (Exception e) {
                 log.error("Could not create constraint matcher for constraint: " + constraint + "main reason: " + e, e);
             }
-        } else{
-            if(log.isDebugEnabled()){
+        } else {
+            if(log.isTraceEnabled()){
                 log.trace("found matcher for query in cache. query: " + query);
             }
         }
@@ -143,7 +144,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
         if(matcher != null){
             try {
 
-            	//becouse composite constraints can allso cover fields that are not in the changed field list of the node
+            	//because composite constraints can allso cover fields that are not in the changed field list of the node
             	//let's find the node and get all the values.
             	MMObjectNode node = MMBase.getMMBase().getBuilder(event.getBuilderName()).getNode(event.getNodeNumber());
             	Map oldValues;
@@ -169,7 +170,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                 switch(event.getType()) {
                 case Event.TYPE_NEW:
                     // we have to compare the constraint value with the new value of the changed field to see if the new
-                    // node falls within the constraint. it it dous: flush
+                    // node falls within the constraint. it it does: flush
                     if(matcher.eventApplies(newValues, event)){
                         boolean eventMatches =  matcher.nodeMatchesConstraint(newValues, event);
                         if (log.isDebugEnabled()) {
@@ -249,8 +250,8 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
     }
 
     /**
-     * this method will find a constraint matcher that supports the given constraint, and will return the
-     * UnsupportedConstraintMatcher if non is found
+     * This method will find a constraint matcher that supports the given constraint, and will return the
+     * UnsupportedConstraintMatcher if none is found.
      *
      * @param constraint
      */
@@ -383,14 +384,14 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                     log.debug("** composite AND: all constraints match, event applies to query");
                     return true;
                 } else {
-                    log.debug("** composite AND: not all constraints match, so the event dous not apply to this constraint");
+                    log.debug("** composite AND: not all constraints match, so the event does not apply to this constraint");
                 }
             } else {
                 if(relevantConstraints.size() > 0){
                     log.debug("** composite OR: more than zero constraints match, so event applies to query");
                     return true;
                 }else{
-                    log.debug("** composite OR: zero constraints match, so event dous not apply to query.");
+                    log.debug("** composite OR: zero constraints match, so event does not apply to query.");
                 }
 
             }
@@ -543,28 +544,28 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                 switch(operator) {
                 case FieldCompareConstraint.EQUAL: {
                     boolean result =  stringToCompare.equals(constraintString);
-                    if (log.isDebugEnabled()) {
+                    if (log.isTraceEnabled()) {
                         log.trace("**value " + stringToCompare + " equals " + constraintString + ": " + result);
                     }
                     return result;
                 }
                 case  FieldCompareConstraint.GREATER: {
                     boolean result = (stringToCompare.compareTo(constraintString) > 0);
-                    if (log.isDebugEnabled()) {
+                    if (log.isTraceEnabled()) {
                         log.trace("**value " + stringToCompare + " is greater than " + constraintString + ": " + result);
                     }
                     return result;
                 }
                 case FieldCompareConstraint.LESS: {
                     boolean result = (stringToCompare.compareTo(constraintString) < 0);
-                    if (log.isDebugEnabled()) {
-                        log.trace("**value " + stringToCompare + " is less then " + constraintString + ": " + result);
+                    if (log.isTraceEnabled()) {
+                        log.trace("**value " + stringToCompare + " is less than " + constraintString + ": " + result);
                     }
                     return result;
                 }
                 case FieldCompareConstraint.LIKE: {
                     boolean result = likeMatches(constraintString, stringToCompare, isCaseSensitive);
-                    if (log.isDebugEnabled()) {
+                    if (log.isTraceEnabled()) {
                         log.trace("**value " + stringToCompare + " LIKE " + constraintString + ": " + result);
                     }
                     return result;
@@ -585,7 +586,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                 }
                 case FieldCompareConstraint.NOT_EQUAL: {
                     boolean result =  ! stringToCompare.equals(constraintString);
-                    if (log.isDebugEnabled()) {
+                    if (log.isTraceEnabled()) {
                         log.trace("**value " + stringToCompare + " does not equal " + constraintString + ": " + result);
                     }
                     return result;
@@ -602,7 +603,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
             switch(operator) {
             case FieldCompareConstraint.EQUAL: {
                 boolean result = (doubleTocompare == constraintDouble);
-                if (log.isDebugEnabled()) {
+                if (log.isTraceEnabled()) {
                     log.trace("**value " + doubleTocompare + " equals " + constraintDouble + ": " + result);
                 }
                 return result;
@@ -616,28 +617,28 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
             }
             case FieldCompareConstraint.GREATER_EQUAL: {
                 boolean result =  (doubleTocompare >= constraintDouble);
-                if (log.isDebugEnabled()) {
+                if (log.isTraceEnabled()) {
                     log.trace("**value " + doubleTocompare + " is greater than or equal to " + constraintDouble + ": " + result);
                 }
                 return result;
             }
             case FieldCompareConstraint.LESS: {
                 boolean result = (doubleTocompare < constraintDouble);
-                if (log.isDebugEnabled()) {
+                if (log.isTraceEnabled()) {
                     log.trace("**value " + doubleTocompare + " is less than " + constraintDouble + ": " + result);
                 }
                 return result;
             }
             case FieldCompareConstraint.LESS_EQUAL: {
                 boolean result = (doubleTocompare <= constraintDouble);
-                if (log.isDebugEnabled()) {
+                if (log.isTraceEnabled()) {
                     log.trace("**value " + doubleTocompare + " is greater than or equal to" + constraintDouble + ": " + result);
                 }
                 return result;
             }
             case FieldCompareConstraint.NOT_EQUAL: {
                 boolean result =  (doubleTocompare != constraintDouble);
-                if (log.isDebugEnabled()) {
+                if (log.isTraceEnabled()) {
                     log.trace("**value " + doubleTocompare + " is not equal to " + constraintDouble + ": " + result);
                 }
                 return result;
@@ -672,21 +673,21 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
             }
             case  FieldCompareConstraint.LESS: {
                 boolean result = (longToCompare < constraintLong);
-                if (log.isDebugEnabled()) {
+                if (log.isTraceEnabled()) {
                     log.trace("**value " + longToCompare + " is less than " + constraintLong + ": " + result);
                 }
                 return result;
             }
             case FieldCompareConstraint.LESS_EQUAL: {
                 boolean result = (longToCompare <= constraintLong);
-                if (log.isDebugEnabled()) {
+                if (log.isTraceEnabled()) {
                     log.trace("**value " + longToCompare + " is greater than or equal to" + constraintLong + ": " + result);
                 }
                 return result;
             }
             case FieldCompareConstraint.NOT_EQUAL: {
                 boolean result =  (longToCompare != constraintLong);
-                if (log.isDebugEnabled()) {
+                if (log.isTraceEnabled()) {
                     log.trace("**value " + longToCompare + " is not equal to " + constraintLong + ": " + result);
                 }
                 return result;
@@ -697,7 +698,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
         }
 
         private boolean likeMatches(String constraintString, String stringToCompare, boolean isCaseSensitive){
-            if (log.isDebugEnabled()) {
+            if (log.isTraceEnabled()) {
                 log.trace("** method: likeMatches() stringToCompare: " + stringToCompare + ", constraintString: " + constraintString );
             }
             if(isCaseSensitive){
@@ -772,7 +773,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
             return wrappedFieldValueConstraint.getOperator();
         }
         /**
-         * Check the values to see if the node's value matches the constraint.
+         * Check the values to see if the values of the node matches the constraint.
          */
         public boolean nodeMatchesConstraint(Map valuesToMatch, NodeEvent event) throws FieldComparisonException {
             log.debug("**method: nodeMatchesConstraint");
@@ -792,7 +793,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
 
 
         /**
-         * an event applies to a field value constraint wrapper if the wrapper is of the same type as the event, and the field
+         * An event applies to a field value constraint wrapper if the wrapper is of the same type as the event, and the field
          * that is being checked is in the 'changed' fields map (valuesToMatch)
          */
         public boolean eventApplies(Map valuesToMatch, NodeEvent event) {
