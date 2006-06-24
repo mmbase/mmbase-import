@@ -3,29 +3,22 @@
 "http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd">
 <article>
   <articleinfo>
-    <title>The MMBase Function sets</title>
-
-    <date>15-06-2006</date>
-
-    <edition>$Id: functionsets.xml,v 1.4 2006/04/12 22:22:56 daniel Exp
-    $</edition>
-
+    <title>The MMBase Function Framework</title>
+    <date>2006-06-24</date>
+    <edition>$Id: functionsets.xml,v 1.7 2006-06-24 08:38:04 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Daniel</firstname>
-
         <surname>Ockeloen</surname>
-
         <affiliation>
           <orgname>MMCoder</orgname>
         </affiliation>
       </author>
-
       <author>
         <firstname>André</firstname>
-
         <surname>van Toly</surname>
       </author>
+      <author><firstname>Michiel</firstname><surname>Meeuwissen</surname></author>
     </authorgroup>
 
     <legalnotice>
@@ -38,7 +31,7 @@
     </legalnotice>
   </articleinfo>
 
-  <section>
+  <section id="whatare">
     <title>What are functions ?</title>
 
     <para>The MMBase 'Function Framework' allows you to add functions or
@@ -50,8 +43,10 @@
       <listitem>
         <para>The nodemanager (or builder)</para>
 
-        <para>For functions located in the builder code, see for example
-        org.mmbase.util.functions.ExampleBuilder</para>
+        <para>
+          For functions located in the builder code, see for example
+          org.mmbase.util.functions.ExampleBuilder. These can also define functions on MMBase nodes.
+        </para>
       </listitem>
 
       <listitem>
@@ -72,8 +67,8 @@
     documentation.</para>
   </section>
 
-  <section>
-    <title>Using functions from the taglibs</title>
+  <section id="taglib">
+    <title>Using functions from the MMBase taglib</title>
 
     <para>A simple example of a function made available by the class
     org.mmbase.util.functions.ExampleBean could look like this. It accesses
@@ -145,13 +140,90 @@
          </programlisting></para>
   </section>
 
-  <section>
+  <section id="bridge">
     <title>Using functions from the bridge</title>
 
-    <para>TODO</para>
+    <para>
+      The classes and interfaces of the function framework are in the org.mmbase.util.functions
+      package. The bridge classes will return object from this package.
+    </para>
+    <para>
+      The most important classes are 'Function', and 'Parameters'. 
+    </para>
+    <para>
+      The Function object represents the piece of functionality. You must start by somehow getting a
+      Function object. Several bridge objects like Node, NodeManager and Module have their
+      'getFunction' methods, but you can also call the static methods from FunctionFactory from the
+      org.mmbase.util.functions package.
+    </para>
+    <para>
+      The most important methods of the function object are 'createParameters' and
+      'getFunctionValue(Parameters)'. You'd normally start with calling 'createParameters':
+      <programlisting>  
+        Function nodeFunction = node.getFunction("myfunction");
+        Parameters parameters = nodeFunction.createParameters();
+      </programlisting>
+      And then you have to set the parameters:
+      <programlisting>
+        parameters.set("foo", "bar");
+        parameters.set(Parameter.REQUEST, request);
+      </programlisting>
+      You can only set parameters wich are defined for the function. Failing to do that results in
+      exceptions. You can also fill this parameters object as a List (because it is a list). So you
+      could have done this too:
+      <programlisting>
+        parameters.add("bar");
+        parameters.add(request);
+      </programlisting>
+      or
+      <programlisting>
+        parameters.set(0, "bar");
+        parameters.set(1, request);
+      </programlisting>
+      but then you have to remember the exact order of the parameters. It is recommended to set them
+      by name.
+    </para>
+    <para>
+      When ready, you can obtain the function value:
+      <programlisting>
+        Object value = function.getFunctionValue(parameters);
+      </programlisting>
+    </para>
+    <para>
+      If the function does not need any parameters, you can skip the parameters part and simply
+      provide null to getFunctionValue.
+    </para>
+    <section id="parameter">
+      <title>Parameter</title>
+      <para>
+        The 'Parameter' class of org.mmbase.util.functions defines one parameter. So, it contains
+        e.g. a name, a type and a default value. Don't be confused with the 'Parameters' class,
+        which contains actual parameter <emphasis>values</emphasis>. A complete argument definition
+        is represented with an <emphasis>array</emphasis> of Parameter objects. 
+      </para>
+      <para>
+        Many functions have similar arguments. Like 'cloud', 'request' or 'locale'. For these kind
+        of parameters some static constants in the Parameter class are present. These constants can
+        be used to deal with parameters object without knowing very much about it. You can e.g. fill
+        a cloud parameter if there is one:
+      <programlisting>
+        if (parameters.containsParameter(Parameter.CLOUD)) {
+          parameters.set(Parameter.CLOUD, cloud);
+        }
+      </programlisting>
+      or:
+      <programlisting>
+        parameters.setIfDefined(Parameter.CLOUD, cloud);
+      </programlisting>
+      </para>
+      <para>
+        This is e.g. used by MMBase taglib to automaticly set some parameters (like cloud, request,
+        node etc).
+      </para>
+    </section>
   </section>
 
-  <section>
+  <section id="defining">
     <title>Defining functions in Builders for functions on builders and
     nodes</title>
 
@@ -177,29 +249,33 @@
     </programlisting></para>
   </section>
 
-  <section>
+  <section id="modules">
     <title>Defining functions in Modules</title>
 
-    <para>Its also possible to define functions in MMBase Modules see the
-    MMAdmin module and its jsp pages in mmbase/mmadmin/.</para>
+    <para>
+      Its also possible to define functions in MMBase Modules see e.g. the
+      MMAdmin module and its jsp pages in mmbase/mmadmin/. Also e.g. the crontab and clustering
+      applications ship with modules (CrontabModule, ClusteringModule), which define 'functions'
+      which are used in admin pages.
+    </para>
   </section>
 
-  <section>
+  <section id="sets">
     <title>Defining functions in Sets</title>
 
     <para>Unlike Module or NodeManagers related functions the set functions
     are aimed for a global use and can be implemented in any java class or .
     You can for example define a set 'util' or 'statistics' or even map to
-    external application 'lucien'. Defining sets is done in a 2 xml files. The
-    first defines what sets you have : <programlisting>        
+    external application 'lucene'. Defining sets is done in a 2 xml files. The
+    first defines what sets you have : <programlisting>
      mmbase config xml : config/functions/functionsets.xml
-     
+
         &lt;functionsets&gt;
           &lt;functionset name="util" file="utils.xml" /&gt;
          &lt;/functionsets&gt;
      </programlisting> The set itself (in this case utils.xml) defines the
     mapping, names, classes and methods to be called <programlisting>
-                &lt;functionset&gt;                 
+                &lt;functionset&gt;
                 &lt;description&gt;Some util functions from org.mmbase.util, made accessible through the function-framework&lt;/description&gt;
                  &lt;function name="generatePassword"&gt;
                   &lt;description&gt;Generates a password. Using a template&lt;/description&gt;
@@ -223,7 +299,7 @@
     org.mmbase.util.PasswordGenerator.</para>
   </section>
 
-  <section>
+  <section id="lists">
     <title>Working with nodes and and nodelists</title>
 
     <para>One of the advantages of the function framework is that you can not
