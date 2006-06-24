@@ -13,6 +13,7 @@ import java.lang.reflect.*;
 import java.util.*;
 
 import org.mmbase.bridge.Node;
+import org.mmbase.bridge.implementation.BasicQuery;
 import org.mmbase.core.CoreField;
 import org.mmbase.core.event.*;
 import org.mmbase.datatypes.DataType;
@@ -39,7 +40,7 @@ import org.mmbase.util.logging.*;
  * <li>if the node preveously didn't fall within the constraints but now dous: flush</li>
  * </ul>
  *
- * @author ebunders
+ * @author Ernst Bunders
  * @since MMBase-1.8
  * @version $Id:
  *
@@ -123,7 +124,11 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                 if (log.isDebugEnabled()) {
                     log.trace("created constraint matcher: " + matcher);
                 }
-                constraintWrapperCache.put(query, matcher);
+                if (query instanceof BasicQuery) {
+                    constraintWrapperCache.put(((BasicQuery) query).getQuery(), matcher);
+                } else {
+                    constraintWrapperCache.put(query, matcher);
+                }
                 //if anything goes wrong constraintMatches is true, which means the query should be flushed
             } catch (Exception e) {
                 log.error("Could not create constraint matcher for constraint: " + constraint + "main reason: " + e, e);
