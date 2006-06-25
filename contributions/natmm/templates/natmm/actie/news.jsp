@@ -18,7 +18,7 @@ cal.setTime(now);
 cal.set(cal.get(Calendar.YEAR),cal.get(Calendar.MONTH),cal.get(Calendar.DATE),0,0);
 long nowDay = cal.getTime().getTime()/1000; // the begin of today
 long oneDay = 24*60*60;
-String articleConstraint = "(artikel.embargo < '" + nowSec + "') AND (artikel.use_verloopdatum='0' OR artikel.verloopdatum > '" + nowSec + "' )";
+String articleConstraint = "(artikel.embargo < '" + nowSec-quarterOfAnHour + "') AND (artikel.use_verloopdatum='0' OR artikel.verloopdatum > '" + nowSec + "' )";
 %>
 <mm:node number="<%= paginaID %>">
   <%@include file="includes/navsettings.jsp" %>
@@ -47,7 +47,7 @@ String articleConstraint = "(artikel.embargo < '" + nowSec + "') AND (artikel.us
 		<td style="padding-right:0px;padding-left:10px;padding-bottom:10px;vertical-align:top;padding-top:10px">
 			<% String sNodes = paginaID;
             String sPath = "pagina,contentrel,artikel";
-            String sConstraints = "(artikel.embargo < '" + nowSec + "') AND (artikel.use_verloopdatum='0' OR artikel.verloopdatum > '" + nowSec + "' )";
+            String sConstraints = "(artikel.embargo < '" + nowSec-quarterOfAnHour + "') AND (artikel.use_verloopdatum='0' OR artikel.verloopdatum > '" + nowSec + "' )";
             objectPerPage = 6;
             int thisOffset = 1;
             try{
