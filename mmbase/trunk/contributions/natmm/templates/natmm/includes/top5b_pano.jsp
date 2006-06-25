@@ -3,7 +3,7 @@
 int maxShorties = 1;
 int shortyCnt = 0; 
 String[] shortyID = new String[maxShorties];
-String pannoConstraint = "(panno.embargo < '" + nowSec + "') AND (panno.reageer='0' OR panno.verloopdatum > '" + nowSec + "' )";
+String pannoConstraint = "(panno.embargo < '" + nowSec-quarterOfAnHour + "') AND (panno.reageer='0' OR panno.verloopdatum > '" + nowSec + "' )";
 if(!natuurgebiedID.equals("-1")){%>
    <mm:list nodes="<%=natuurgebiedID%>" path="natuurgebieden,posrel,panno" fields="panno.number"
       max="1" constraints="<%= pannoConstraint %>" orderby="panno.embargo" directions="DOWN">
