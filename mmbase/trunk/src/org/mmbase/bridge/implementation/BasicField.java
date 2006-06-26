@@ -20,12 +20,12 @@ import java.util.Collection;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicField.java,v 1.29 2006-03-31 16:45:37 pierre Exp $
+ * @version $Id: BasicField.java,v 1.30 2006-06-26 11:46:46 michiel Exp $
  */
 public class BasicField extends AbstractField implements Field {
 
-    NodeManager nodeManager = null;
-    CoreField coreField = null;
+    private final NodeManager nodeManager;
+    protected final CoreField coreField;
 
     public BasicField(CoreField field, NodeManager nodeManager) {
         super(field.getName(), field);
@@ -35,14 +35,6 @@ public class BasicField extends AbstractField implements Field {
 
     public NodeManager getNodeManager() {
         return nodeManager;
-    }
-
-    public int getState(){
-        return coreField.getState();
-    }
-
-    public boolean isUnique(){
-        return coreField.isUnique();
     }
 
     public int getSearchPosition(){
@@ -70,12 +62,14 @@ public class BasicField extends AbstractField implements Field {
         return coreField.getMaxLength();
     }
 
+
+    protected java.util.Locale getDefaultLocale() {
+        return nodeManager.getCloud().getLocale();
+    }
+
     // deprecated methods
     public String getGUIType() {
         return coreField.getGUIType();
     }
 
-    public String getGUIName() {
-        return getLocalizedGUIName().get(getNodeManager().getCloud().getLocale());
-    }
 }
