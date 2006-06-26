@@ -36,16 +36,9 @@ public class SpaceReducer extends ReaderTransformer implements CharTransformer {
             BufferedReader br = new BufferedReader(r);
             PrintWriter bw = new PrintWriter(new BufferedWriter(w));
 
-            boolean previousBlank = true;
             String line;
             while ((line = br.readLine()) != null) {
-                if (line.trim().equals("")) {
-                    if (previousBlank) {
-                        // ignore this line
-                    } else {
-                       previousBlank = true;
-                    }
-                } else {
+                if (!line.trim().equals("")) {
                     bw.println(line);
                 }
             }
