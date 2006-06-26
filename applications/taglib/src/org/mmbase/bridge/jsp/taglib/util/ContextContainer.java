@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.50 2006-03-29 01:47:08 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.51 2006-06-26 18:32:46 johannes Exp $
  **/
 
 public abstract class ContextContainer extends AbstractMap implements Map {
@@ -201,7 +201,8 @@ public abstract class ContextContainer extends AbstractMap implements Map {
         int dotPos = -1;
         {
             int pos = 0;
-            while (pos < key.length()) {
+            int keyLength = key.length();
+            while (pos < keyLength) {
                 char c = key.charAt(pos);
                 if (c == '.') {
                     dotPos = pos;
