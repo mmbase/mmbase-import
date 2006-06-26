@@ -30,7 +30,7 @@ import org.mmbase.util.LocalizedString;
  * It's sole function is to provide a type definition for the results of a search.
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: VirtualNodeManager.java,v 1.42 2006-06-26 09:22:48 michiel Exp $
+ * @version $Id: VirtualNodeManager.java,v 1.43 2006-06-26 09:47:50 michiel Exp $
  */
 public class VirtualNodeManager extends AbstractNodeManager implements NodeManager {
     private static final  Logger log = Logging.getLoggerInstance(VirtualNodeManager.class);
@@ -41,6 +41,7 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
     final protected Map fieldTypes = new HashMap();
 
     final MMObjectBuilder builder;
+    private SearchQuery query;
 
     /**
      * Instantiated a Virtual NodeManager, and tries its best to find reasonable values for the field-types.
@@ -81,46 +82,8 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
             if (log.isDebugEnabled()) {
                 log.debug("Creating NodeManager for " + query.toSql());
             }
-            // code to solve the fields.
-            Iterator steps = query.getSteps().iterator();
-            while (steps.hasNext()) {
-                Step step = (Step) steps.next();
-                DataType nodeType  = DataTypes.getDataType("node");
-                String name = step.getAlias();
-                if (name == null) name = step.getTableName();
-                CoreField fd = Fields.createField(name, Field.TYPE_NODE, Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL, nodeType);
-                fd.finish();
-                Field ft = new VirtualNodeManagerField(fd, name);
-                fieldTypes.put(name, ft);
-
-                if (allowNonQueriedFields && ! query.isAggregating()) {
-                    /// if hasField returns true also for unqueried fields
-                    Iterator fields = cloud.getNodeManager(step.getTableName()).getFields().iterator();
-                    while (fields.hasNext()) {
-                        Field f = (Field) fields.next();
-                        final String fieldName = name + "." + f.getName();
-                        fieldTypes.put(fieldName, new VirtualNodeManagerField(f, fieldName));
-                    }
-                }
-            }
-            if (! allowNonQueriedFields || query.isAggregating()) {
-                //hasField only returns true for queried fields
-                Iterator fields = query.getFields().iterator();
-                while(fields.hasNext()) {
-                    StepField field = (StepField) fields.next();
-                    Step step = field.getStep();
-                    Field f = cloud.getNodeManager(step.getTableName()).getField(field.getFieldName());
-                    String name = field.getAlias();
-                    if (name == null) {
-                        name = step.getAlias();
-                        if (name == null) name = step.getTableName();
-                        name += "." + field.getFieldName();
-                    }
-                    final String fieldName = name;
-                    fieldTypes.put(name, new VirtualNodeManagerField(f, fieldName));
-
-                }
-            }
+            // fieldTypes map will be filled 'lazily' on first call to getFieldTypes.
+            this.query = query; // query instanceof BasicQuery ? ((BasicQuery ) query).getQuery() : query;
             setStringValue("name", "cluster builder");
             setStringValue("description", "cluster builder");
         }
@@ -134,7 +97,54 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
      * @since MMBase-1.8
      */
     protected Map getFieldTypes() {
-        return fieldTypes;
+        if (builder == null) {
+            return fieldTypes;
+        } else {
+            if (query != null) { // means not yet called (lazy loading of fields)
+                // code to solve the fields.
+                Iterator steps = query.getSteps().iterator();
+                while (steps.hasNext()) {
+                    Step step = (Step) steps.next();
+                    DataType nodeType  = DataTypes.getDataType("node");
+                    String name = step.getAlias();
+                    if (name == null) name = step.getTableName();
+                    CoreField fd = Fields.createField(name, Field.TYPE_NODE, Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL, nodeType);
+                    fd.finish();
+                    Field ft = new VirtualNodeManagerField(fd, name);
+                    fieldTypes.put(name, ft);
+
+                    if (allowNonQueriedFields && ! query.isAggregating()) {
+                        /// if hasField returns true also for unqueried fields
+                        FieldIterator fields = cloud.getNodeManager(step.getTableName()).getFields().fieldIterator();
+                        while (fields.hasNext()) {
+                            Field f = fields.nextField();
+                            final String fieldName = name + "." + f.getName();
+                            fieldTypes.put(fieldName, new VirtualNodeManagerField(f, fieldName));
+                        }
+                    }
+                }
+                if (! allowNonQueriedFields || query.isAggregating()) {
+                    //hasField only returns true for queried fields
+                    Iterator fields = query.getFields().iterator();
+                    while(fields.hasNext()) {
+                        StepField field = (StepField) fields.next();
+                        Step step = field.getStep();
+                        Field f = cloud.getNodeManager(step.getTableName()).getField(field.getFieldName());
+                        String name = field.getAlias();
+                        if (name == null) {
+                            name = step.getAlias();
+                            if (name == null) name = step.getTableName();
+                            name += "." + field.getFieldName();
+                        }
+                        final String fieldName = name;
+                        fieldTypes.put(name, new VirtualNodeManagerField(f, fieldName));
+
+                    }
+                }
+                query = null;
+            }
+            return fieldTypes;
+        }
     }
 
 
