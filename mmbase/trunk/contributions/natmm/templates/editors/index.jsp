@@ -57,24 +57,21 @@
          Neem contact op met de systeembeheerder voor een nieuw password.
       </body>
       <%
-   } else {
-     if (passwordChecked.equals("false")) {
-       if (!"valid".equals(status)) {
-         url += "?status=" + status;
-         session.setAttribute("password_checked", "true");
-         %>
-         <script type="text/javascript">
-           window.open("<%= url %>", "ha_dialog","toolbar=no,menubar=no,personalbar=no,width=400,height=250,scrollbars=no,resizable=no");
-         </script>
-         <%
-       }
-     }
+   } else { %>
+   <frameset rows="80,*" framespacing="2" frameborder="1">
+      <frame src="topmenu.jsp" name="toppane" frameborder="0" scrolling="auto">
+   <% String sPars = "";
+      if (passwordChecked.equals("false")) {
+         if (!"valid".equals(status)) {
+            url += "?status=" + status;
+            session.setAttribute("password_checked", "true");
+            sPars = "?warning=true";
+         }
+      }
      %>
-     <frameset rows="80,*" framespacing="2" frameborder="1">
-        <frame src="topmenu.jsp" name="toppane" frameborder="0" scrolling="auto">
-        <frame src="news.html" name="bottompane" frameborder="0" scrolling="yes">
-     </frameset>
-     <%
+      <frame src="news.jsp<%= sPars %>" name="bottompane" frameborder="0" scrolling="yes">
+   </frameset>
+<%
   }
 %>
 </html>
