@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.187 2006-05-15 17:28:23 pierre Exp $
+ * @version $Id: MMObjectNode.java,v 1.188 2006-06-26 15:05:40 nklasens Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -642,7 +642,10 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         Long l = (Long) sizes.get(fieldName);
         if (l != null)  return l.intValue();
         Object value = values.get(fieldName);
-        if (value == null) return -1;
+        // Value is null so it does not occupy any space. 
+        if (value == null) return 0;
+        // Value is not yet loaded from the database?
+        if (VALUE_SHORTED.equals(value)) return -1;
         return SizeOf.getByteSize(value);
     }
 
@@ -741,7 +744,12 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
             if (getBuilder().getField(fieldName).getType() == Field.TYPE_NODE) {
                 return getIntValue(fieldName) <= -1;
             }
-            return values.get(fieldName) == null;
+            Object value = values.get(fieldName);
+            if (VALUE_SHORTED.equals(value)) {
+                // value is not loaded from the database. We have to check the database to be sure.
+                value = getValue(fieldName);
+            }
+            return value == null;
         } else {
             return true;
         }
