@@ -30,7 +30,7 @@ import org.mmbase.security.Rank;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.39 2006-06-19 14:16:21 nklasens Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.40 2006-06-26 15:57:34 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -470,7 +470,9 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                             argument = node.getStringValue(fieldName);
                         }
                     }
-                    MMObjectNode mmnode = new MMObjectNode(AbstractServletBuilder.this, new org.mmbase.bridge.util.NodeMap(node));
+                    MMObjectNode mmnode = node.getNumber() > 0 ? 
+                        AbstractServletBuilder.this.getNode(node.getNumber()) : 
+                        new MMObjectNode(AbstractServletBuilder.this, new org.mmbase.bridge.util.NodeMap(node));
                     boolean addFileName = addFileName(mmnode, servlet.toString());
 
                     if (usesBridgeServlet && ! session.equals("")) {
