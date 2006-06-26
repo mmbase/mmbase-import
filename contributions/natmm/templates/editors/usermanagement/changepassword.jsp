@@ -16,7 +16,7 @@ String succeeded = request.getParameter("succeeded");
 String status = request.getParameter("status");
 if ((succeeded != null) && (succeeded.equals("true"))) {
    %>
-   <div align="right"><a href="#" onClick="window.close()"><img src='../img/close.gif' align='absmiddle' border='0' alt='Sluit dit venster'></a></div>
+   <%--div align="right"><a href="#" onClick="window.close()"><img src='../img/close.gif' align='absmiddle' border='0' alt='Sluit dit venster'></a></div--%>
    <h2>Wijzig wachtwoord</h2>
    <font color="#FF0000"><b>Wachtwoord is succesvol gewijzigd.</b></font>
    <%
