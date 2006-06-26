@@ -30,7 +30,7 @@ import org.mmbase.util.LocalizedString;
  * It's sole function is to provide a type definition for the results of a search.
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: VirtualNodeManager.java,v 1.43 2006-06-26 09:47:50 michiel Exp $
+ * @version $Id: VirtualNodeManager.java,v 1.44 2006-06-26 10:03:29 michiel Exp $
  */
 public class VirtualNodeManager extends AbstractNodeManager implements NodeManager {
     private static final  Logger log = Logging.getLoggerInstance(VirtualNodeManager.class);
@@ -97,7 +97,7 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
      * @since MMBase-1.8
      */
     protected Map getFieldTypes() {
-        if (builder == null) {
+        if (builder != null) {
             return fieldTypes;
         } else {
             if (query != null) { // means not yet called (lazy loading of fields)
