@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: AbstractDescriptor.java,v 1.7 2005-11-04 23:18:41 michiel Exp $
+ * @version $Id: AbstractDescriptor.java,v 1.8 2006-06-26 11:45:50 michiel Exp $
  */
 
 abstract public class AbstractDescriptor implements Descriptor, Cloneable {
@@ -48,10 +48,30 @@ abstract public class AbstractDescriptor implements Descriptor, Cloneable {
      * @param name the name of the data type
      * @param descriptor
      */
-    protected AbstractDescriptor(String name, Descriptor descriptor) {
+    protected AbstractDescriptor(String name, Descriptor descriptor, boolean cloneDataForRewrite) {
         key = name;
-        description = (LocalizedString)descriptor.getLocalizedDescription().clone();
-        guiName = (LocalizedString)descriptor.getLocalizedGUIName().clone();
+        if (cloneDataForRewrite) {
+            description = (LocalizedString)descriptor.getLocalizedDescription().clone();
+            guiName = (LocalizedString)descriptor.getLocalizedGUIName().clone();
+        } else {
+            description = (LocalizedString)descriptor.getLocalizedDescription();
+            guiName = (LocalizedString)descriptor.getLocalizedGUIName();
+        }
+    }
+
+    protected AbstractDescriptor(String name, Descriptor descriptor) {
+        this(name, descriptor, true);
+    }
+
+
+    /**
+     * The locale wihch must be used if no locale is specified .  Returns <code>null</code> for the
+     * defaul of this. This method can be overriden if another more logical default is
+     * available. E.g. in BasicField, where the locale of the current cloud is returned here.
+     * @since MMBase-1.8.1
+     */
+    protected Locale getDefaultLocale() {
+        return null;
     }
 
     /**
@@ -64,11 +84,11 @@ abstract public class AbstractDescriptor implements Descriptor, Cloneable {
 
     public String getDescription(Locale locale) {
         if (description == null) description = new LocalizedString(key);
-        return description.get(locale);
+        return description.get(locale == null ? getDefaultLocale() : locale);
     }
 
     public String getDescription() {
-        return getDescription(null);
+        return getDescription(getDefaultLocale());
     }
 
     public LocalizedString getLocalizedDescription() {
@@ -85,7 +105,7 @@ abstract public class AbstractDescriptor implements Descriptor, Cloneable {
     }
 
     public void setDescription(String desc) {
-        setDescription(desc,null);
+        setDescription(desc, getDefaultLocale());
     }
     
 
@@ -97,7 +117,7 @@ abstract public class AbstractDescriptor implements Descriptor, Cloneable {
      */
     public String getGUIName(Locale locale) {
         if (guiName == null) guiName = new LocalizedString(key);
-        return guiName.get(locale);
+        return guiName.get(locale == null ? getDefaultLocale() : locale);
     }
 
     /**
@@ -107,7 +127,7 @@ abstract public class AbstractDescriptor implements Descriptor, Cloneable {
      * @return the GUI Name
      */
     public String getGUIName() {
-        return getGUIName(null);
+        return getGUIName(getDefaultLocale());
     }
 
     public void setGUIName(String g, Locale locale) {
@@ -116,7 +136,7 @@ abstract public class AbstractDescriptor implements Descriptor, Cloneable {
     }
 
     public void setGUIName(String g) {
-        setGUIName(g, null);
+        setGUIName(g, getDefaultLocale());
     }
 
     public LocalizedString getLocalizedGUIName() {
