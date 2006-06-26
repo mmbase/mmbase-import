@@ -12,14 +12,7 @@ package org.mmbase.cache;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.NodeManager;
-import org.mmbase.bridge.NotFoundException;
-import org.mmbase.bridge.Query;
-import org.mmbase.bridge.Relation;
-import org.mmbase.bridge.RelationManager;
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.core.event.NodeEvent;
 import org.mmbase.core.event.Event;
@@ -279,32 +272,32 @@ public class ReleaseStrategyTest extends BridgeTest {
         Query q2 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.subtitle", "news.title = 'hallo'", null, null, null, false);
         Query q3 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.title", "news.number < 1000", null, null, null, false);
 
-        assertFalse("changed field is not used by query: it should not be flused",
+        assertFalse("changed field is not used by query: it should not be flushed",
                     strategy.evaluate(event, q1, null).shouldRelease());
-        assertTrue("changed field is in constraints section of query: it should be flused",
+        assertTrue("changed field is in constraints section of query: it should be flushed",
                    strategy.evaluate(event, q2, null).shouldRelease());
-        assertTrue("changed field is in select section of query: it should be flused",
+        assertTrue("changed field is in select section of query: it should be flushed",
                    strategy.evaluate(event, q3, null).shouldRelease());
 
         //also test  composite constraints
         Query q4 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.subtitle", "news.number < 1000 AND urls.name = 'hi'", null, null, null, false);
         Query q5 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.subtitle", "news.title='something' AND urls.name = 'hi'", null, null, null, false);
 
-        assertFalse("changed field is not used by (composite) constraint: it should not be flused",
+        assertFalse("changed field is not used by (composite) constraint: it should not be flushed",
                     strategy.evaluate(event, q4, null).shouldRelease());
-        assertTrue("changed field is used by (composite) constraint: it should be flused",
+        assertTrue("changed field is used by (composite) constraint: it should be flushed",
                    strategy.evaluate(event, q5, null).shouldRelease());
 
         //also test legacy constraints
         Query q6 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.subtitle", null, null, null, null, false);
         q6.setConstraint(new BasicLegacyConstraint("news.number < 1000 AND urls.name = 'hi'"));
 
-        assertFalse("changed field is not used by (legacy) constraint: it should not be flused",
+        assertFalse("changed field is not used by (legacy) constraint: it should not be flushed",
                     strategy.evaluate(event, q6, null).shouldRelease());
 
         q6.setConstraint(new BasicLegacyConstraint("news.title='something' AND urls.name = 'hi'"));
 
-        assertTrue("changed field is used by (legacy) constraint: it should be flused",
+        assertTrue("changed field is used by (legacy) constraint: it should be flushed",
                    strategy.evaluate(event, q6, null).shouldRelease());
 
         //*************************
@@ -356,32 +349,32 @@ public class ReleaseStrategyTest extends BridgeTest {
         Query q2 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.subtitle", "posrel.pos < 10 ", null, null, null, false);
         Query q3 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.subtitle,posrel.pos", "news.number < 10 ", null, null, null, false);
 
-        assertFalse("changed relation field is not used by query: it should not be flused",
+        assertFalse("changed relation field is not used by query: it should not be flushed",
                     strategy.evaluate(relEvent, q1, null).shouldRelease());
-        assertTrue("changed relation field is in constraints section of query: it should be flused",
+        assertTrue("changed relation field is in constraints section of query: it should be flushed",
                    strategy.evaluate(relEvent, q2, null).shouldRelease());
-        assertTrue("changed relation field is in select section of query: it should be flused",
+        assertTrue("changed relation field is in select section of query: it should be flushed",
                    strategy.evaluate(relEvent, q3, null).shouldRelease());
 
         //also test  composite constraints
         Query q4 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.subtitle", "news.number < 1000 AND urls.name = 'hi'", null, null, null, false);
         Query q5 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.subtitle", "posrel.pos < 1 AND urls.name = 'hi'", null, null, null, false);
 
-        assertFalse("changed relation field is not used by (composite) constraint: it should not be flused",
+        assertFalse("changed relation field is not used by (composite) constraint: it should not be flushed",
                     strategy.evaluate(relEvent, q4, null).shouldRelease());
-        assertTrue("changed relation field is used by (composite) constraint: it should be flused",
+        assertTrue("changed relation field is used by (composite) constraint: it should be flushed",
                    strategy.evaluate(relEvent, q5, null).shouldRelease());
 
         //also test legacy constraints
         Query q6 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.subtitle", null, null, null, null, false);
         q6.setConstraint(new BasicLegacyConstraint("news.number < 1000 AND urls.name = 'hi'"));
 
-        assertFalse("changed relation field is not used by (legacy) constraint: it should not be flused",
+        assertFalse("changed relation field is not used by (legacy) constraint: it should not be flushed",
                     strategy.evaluate(relEvent, q6, null).shouldRelease());
 
         q6.setConstraint(new BasicLegacyConstraint("news.title='something' AND posrel.pos < 1"));
 
-        assertTrue("changed relation field is used by (legacy) constraint: it should be flused",
+        assertTrue("changed relation field is used by (legacy) constraint: it should be flushed",
                    strategy.evaluate(relEvent, q6, null).shouldRelease());
 
     }
