@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.162 2006-06-24 16:00:39 johannes Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.163 2006-06-26 12:59:14 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -138,7 +138,7 @@ public class DatabaseStorageManager implements StorageManager {
             transactionIsolation = ((Integer)factory.getAttribute(Attributes.TRANSACTION_ISOLATION_LEVEL)).intValue();
         }
         // determine generated key buffer size
-        if (bufferSize==null) {
+        if (bufferSize == null) {
             bufferSize = new Integer(1);
             Object bufferSizeAttribute = factory.getAttribute(Attributes.SEQUENCE_BUFFER_SIZE);
             if (bufferSizeAttribute != null) {
@@ -146,7 +146,7 @@ public class DatabaseStorageManager implements StorageManager {
                     bufferSize = Integer.valueOf(bufferSizeAttribute.toString());
                 } catch (NumberFormatException nfe) {
                     // remove the SEQUENCE_BUFFER_SIZE attribute (invalid value)
-                    factory.setAttribute(Attributes.SEQUENCE_BUFFER_SIZE,null);
+                    factory.setAttribute(Attributes.SEQUENCE_BUFFER_SIZE, null);
                     log.error("The attribute 'SEQUENCE_BUFFER_SIZE' has an invalid value(" +
                         bufferSizeAttribute + "), will be ignored.");
                 }
@@ -560,11 +560,12 @@ public class DatabaseStorageManager implements StorageManager {
     // javadoc is inherited
     public byte[] getBinaryValue(MMObjectNode node, CoreField field) throws StorageException {
         try {
-            Blob b = getBlobValue(node, field);;
-            if (b == null || b.length() < 1) {
+            Blob b = getBlobValue(node, field);
+            if (b == null) {
                 return null;
+            } else {
+                return b.getBytes(1, (int) b.length());
             }
-            return b.getBytes(1, (int) b.length());
         } catch (SQLException sqe) {
             throw new StorageException(sqe);
         }
@@ -665,9 +666,9 @@ public class DatabaseStorageManager implements StorageManager {
             pathBuffer.insert(0, File.separator);
             number /= 100;
         }
-        
+
         /*
-         * This method is sometimes called with a node which has a supertype builder 
+         * This method is sometimes called with a node which has a supertype builder
          * attached instead of the real subtype builder. A read from the file system will fail,
          * because binaries are stored based on the subtype.
          */
@@ -682,7 +683,7 @@ public class DatabaseStorageManager implements StorageManager {
         else {
             builderName = node.getBuilder().getFullTableName();
         }
-        
+
         pathBuffer.insert(0, basePath + factory.getDatabaseName() + File.separator + builderName);
         return new File(pathBuffer.toString(), "" + node.getNumber() + '.' + fieldName);
     }
