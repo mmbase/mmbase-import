@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.70 2006-02-17 13:04:23 andre Exp $
+ * @version $Id: ImageTag.java,v 1.71 2006-06-26 15:06:22 nklasens Exp $
  */
 
 public class ImageTag extends FieldTag {
@@ -194,22 +194,26 @@ public class ImageTag extends FieldTag {
     }
 
     public int doStartTag() throws JspTagException {
-        Node node = getNode();
-        if (!node.getNodeManager().hasField("handle")) {
-            throw new JspTagException("Found parent node '" + node.getNumber() + "' of type " + node.getNodeManager().getName() + " does not have 'handle' field, therefore cannot be a image. Perhaps you have the wrong node, perhaps you'd have to use the 'node' attribute?");
+        Node originalNode = getNode();
+        if (!originalNode.getNodeManager().hasField("handle")) {
+            throw new JspTagException(
+                "Found parent node '" + originalNode.getNumber() + "' of type " +
+                originalNode.getNodeManager().getName() +
+                " does not have 'handle' field, therefore cannot be a image." +
+                " Perhaps you have the wrong node, perhaps you'd have to use the 'node' attribute?");
         }
 
         helper.useEscaper(false);
         prevDimension = pageContext.getAttribute("dimension");
 
-        String templateStr = getTemplate(node, template.getString(this), width.getInt(this, 0), height.getInt(this, 0), getCrop());
-        Dimension dim = getDimension(node, templateStr);
+        String templateStr = getTemplate(originalNode, template.getString(this), width.getInt(this, 0), height.getInt(this, 0), getCrop());
+        Dimension dim = getDimension(originalNode, templateStr);
 
-        node = getServletNode(node, templateStr);
+        Node node = getServletNode(originalNode, templateStr);
         
         String servletArgument;
         if (node == null) {            
-            node = getNode();
+            node = originalNode;
             log.warn("Found null from " + node + " with '" + templateStr + "'");
             servletArgument = node.getStringValue("number");
         } else {
@@ -217,7 +221,7 @@ public class ImageTag extends FieldTag {
         }
 
         String servletPath = getServletPath(node, servletArgument);
-        String outputValue = getOutputValue(getMode(), node, servletPath, dim);
+        String outputValue = getOutputValue(getMode(), originalNode, servletPath, dim);
 
         if (outputValue != null) {
             helper.setValue(outputValue);
