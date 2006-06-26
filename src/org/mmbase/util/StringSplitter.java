@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @author Pierre van Rooden
  * @author Kees Jongenburger
- * @version $Id: StringSplitter.java,v 1.6 2005-10-02 16:42:14 michiel Exp $
+ * @version $Id: StringSplitter.java,v 1.7 2006-06-26 18:15:22 johannes Exp $
  */
 public class StringSplitter {
 
@@ -59,7 +59,8 @@ public class StringSplitter {
         int nested   =  0;
         List  result = new ArrayList();
         int i;
-        for(i = 0; i < attribute.length(); i++) {
+        int length   =  attribute.length();
+        for(i = 0; i < length; i++) {
             char c = attribute.charAt(i);
             if ((c == ',') || (c == ';')){
                 if(nested == 0) {
