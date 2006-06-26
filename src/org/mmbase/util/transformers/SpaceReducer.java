@@ -9,8 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.transformers;
 
-import java.io.Reader;
-import java.io.Writer;
+import java.io.*;
 
 import org.mmbase.util.logging.*;
 
@@ -33,6 +32,31 @@ public class SpaceReducer extends ReaderTransformer implements CharTransformer {
     private static Logger log = Logging.getLoggerInstance(SpaceReducer.class);
 
     public Writer transform(Reader r, Writer w) {
+        try {
+            BufferedReader br = new BufferedReader(r);
+            PrintWriter bw = new PrintWriter(new BufferedWriter(w));
+
+            boolean previousBlank = true;
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.trim().equals("")) {
+                    if (previousBlank) {
+                        // ignore this line
+                    } else {
+                       previousBlank = true;
+                    }
+                } else {
+                    bw.println(line);
+                }
+            }
+            bw.flush();
+        } catch (java.io.IOException e) {
+            log.error(e.toString());
+        }
+        return w;
+    }
+
+    public Writer transform2(Reader r, Writer w) {
 
         int space = 1;  // 'open' spaces (on this line)
         int nl    = 1;  // 'open' newlines
