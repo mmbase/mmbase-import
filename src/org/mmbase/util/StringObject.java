@@ -53,7 +53,7 @@ package org.mmbase.util;
  * @author Daniel Ockeloen 
  * @author Johannes Verelst (bugfix)
  * @author  Arthur van Hoff
- * @version $Id: StringObject.java,v 1.10 2006-01-06 19:06:48 daniel Exp $
+ * @version $Id: StringObject.java,v 1.11 2006-06-26 18:16:01 johannes Exp $
  */
 
 public final class StringObject {
@@ -524,11 +524,12 @@ public final class StringObject {
      * replace
      */
     public synchronized StringObject replace(String oldstr,String newstr) {
-        int pos=indexOf(oldstr,0);
+        int strlen = oldstr.length();
+        int pos=indexOf(oldstr,0,strlen);
         while (pos!=-1) {
-            delete(pos,oldstr.length());
+            delete(pos,strlen);
             insert(pos,newstr);
-            pos=indexOf(oldstr,pos+newstr.length());
+            pos=indexOf(oldstr,pos+newstr.length(),strlen);
         }
         return this;
     }
@@ -581,12 +582,16 @@ public final class StringObject {
     }
 
     public int indexOf(String str, int fromIndex) {
+       return indexOf(str, fromIndex, str.length());
+    }
+
+    private int indexOf(String str, int fromIndex, int strlen) {
         char v1[] = value;
         char v2[] = str.toCharArray();
-        int max = (count - str.length());
+        int max = (count - strlen);
       test:
         for (int i = ((fromIndex < 0) ? 0 : fromIndex); i <= max ; i++) {
-            int n = str.length();
+            int n = strlen;
             int j = i;
             int k = 0;
             while (n-- != 0) {
