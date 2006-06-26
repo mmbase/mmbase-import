@@ -46,7 +46,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.195 2006-06-20 21:26:31 michiel Exp $
+ * @version $Id: MMBase.java,v 1.196 2006-06-26 09:10:20 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -138,7 +138,7 @@ public class MMBase extends ProcessorModule {
      */
     private Map mmobjs = new ConcurrentHashMap();
 
-    private CloudModel cm;
+    private CloudModel cloudModel;
 
     /**
      * Determines whether MMBase is in development mode. 
@@ -348,7 +348,7 @@ public class MMBase extends ProcessorModule {
 
         log.debug("Loading builders:");
 
-	cm = ModelsManager.addModel("default","default.xml");
+	cloudModel = ModelsManager.addModel("default","default.xml");
 
         loadBuilders();
 
@@ -863,8 +863,12 @@ public class MMBase extends ProcessorModule {
                 return;
             }
             String builderXml  = (String) i.next();
-            loadBuilderFromXML(ResourceLoader.getName(builderXml), ResourceLoader.getDirectory(builderXml) + "/");
-	    if (cm!=null) cm.addBuilder(ResourceLoader.getName(builderXml),"builders/"+ResourceLoader.getDirectory(builderXml) + "/" + ResourceLoader.getName(builderXml) + ".xml");
+            String resourceName = ResourceLoader.getName(builderXml);
+            String resourceDirectory = ResourceLoader.getDirectory(builderXml) + "/";
+            loadBuilderFromXML(resourceName, resourceDirectory);
+	    if (cloudModel != null) {
+                cloudModel.addBuilder(resourceName,"builders/" + resourceDirectory + resourceName + ".xml");
+            }
         }
 
         log.debug("Starting Cluster Builder");
@@ -1051,7 +1055,9 @@ public class MMBase extends ProcessorModule {
         }
         String path = getBuilderPath(builderName, ipath);
         if (path != null) {
-	    if (cm!=null) cm.addBuilder(builderName,path+builderName+".xml");
+	    if (cloudModel != null) {
+                cloudModel.addBuilder(builderName,path+builderName+".xml");
+            }
             return loadBuilderFromXML(builderName, path);
         } else {
             log.error("Cannot find specified builder " + builderName);
