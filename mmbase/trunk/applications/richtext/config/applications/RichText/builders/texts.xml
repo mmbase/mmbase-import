@@ -1,6 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="texts" maintainer="mmbase.org" version="0" extends="content">
+<?xml version="1.0" ?>
+<builder 
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    name="texts" maintainer="mmbase.org" version="0" extends="content">
   <names>
     <singular xml:lang="nl">Tekst-object</singular>
     <singular xml:lang="en">Text object</singular>
@@ -23,11 +27,13 @@
       </gui>
       <editor>
         <positions>
-          <input>5</input>
-          <list>5</list>
-          <search>5</search>
+          <list>1</list>
         </positions>
       </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="Titel" />
+        <minLength value="2" />
+      </datatype>
       <db>
         <name>title</name>
         <type key="false" notnull="true" size="255" state="persistent">STRING</type>
@@ -44,14 +50,8 @@
         <guiname xml:lang="fr">Sous-titre</guiname>
         <guiname xml:lang="nl">SubTitel</guiname>
         <guiname xml:lang="eo">Subtitolo</guiname>
-        <guitype>string</guitype>
-      </gui>
-      <editor>
-        <positions>
-          <input>6</input>
-          <search>6</search>
-        </positions>
-      </editor>
+        </gui>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>subtitle</name>
         <type key="false" notnull="false" size="255" state="persistent">STRING</type>
@@ -68,16 +68,10 @@
         <guiname xml:lang="fr">Intro</guiname>
         <guiname xml:lang="nl">Intro</guiname>
         <guiname xml:lang="eo">Enkonduko</guiname>
-        <guitype>field</guitype>
       </gui>
-      <editor>
-        <positions>
-          <input>7</input>
-          <search>7</search>
-        </positions>
-      </editor>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
-        <name xml:lang="en">intro</name>
+        <name>intro</name>
         <type key="false" notnull="false" size="2048" state="persistent">STRING</type>
       </db>
     </field>
@@ -92,14 +86,8 @@
         <guiname xml:lang="fr">Texte</guiname>
         <guiname xml:lang="nl">Tekst</guiname>
         <guiname xml:lang="eo">Teksto</guiname>
-        <guitype>mmxf</guitype>
       </gui>
-      <editor>
-        <positions>
-          <input>8</input>
-          <search>8</search>
-        </positions>
-      </editor>
+      <datatype base="mmxfunp" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>body</name>
         <type key="false" notnull="false" size="64000" state="persistent">XML</type>

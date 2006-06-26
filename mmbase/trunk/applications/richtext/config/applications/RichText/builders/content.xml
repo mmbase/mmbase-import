@@ -36,6 +36,7 @@
         </positions>
       </editor>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="Titel" />
         <minLength value="2" />
       </datatype>
       <db>
