@@ -20,6 +20,7 @@ import org.mmbase.core.util.Fields;
 import org.mmbase.module.core.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.LocalizedString;
 
 /**
  * This class represents a virtual node type information object.
@@ -29,7 +30,7 @@ import org.mmbase.util.logging.*;
  * It's sole function is to provide a type definition for the results of a search.
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: VirtualNodeManager.java,v 1.41 2006-02-28 08:53:01 nklasens Exp $
+ * @version $Id: VirtualNodeManager.java,v 1.42 2006-06-26 09:22:48 michiel Exp $
  */
 public class VirtualNodeManager extends AbstractNodeManager implements NodeManager {
     private static final  Logger log = Logging.getLoggerInstance(VirtualNodeManager.class);
@@ -89,7 +90,7 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
                 if (name == null) name = step.getTableName();
                 CoreField fd = Fields.createField(name, Field.TYPE_NODE, Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL, nodeType);
                 fd.finish();
-                Field ft = new BasicField(fd, this);
+                Field ft = new VirtualNodeManagerField(fd, name);
                 fieldTypes.put(name, ft);
 
                 if (allowNonQueriedFields && ! query.isAggregating()) {
@@ -98,11 +99,7 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
                     while (fields.hasNext()) {
                         Field f = (Field) fields.next();
                         final String fieldName = name + "." + f.getName();
-                        fieldTypes.put(fieldName, new BasicField(((BasicField)f).coreField , this)  { // XXX casting is wrong!!, but I don't have other solution right now
-                                public String getName() {
-                                    return fieldName;
-                                }
-                            });
+                        fieldTypes.put(fieldName, new VirtualNodeManagerField(f, fieldName));
                     }
                 }
             }
@@ -120,11 +117,7 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
                         name += "." + field.getFieldName();
                     }
                     final String fieldName = name;
-                    fieldTypes.put(name, new BasicField(((BasicField)f).coreField , this)  { // XXX casting is wrong!!, but I don't have other solution right now
-                            public String getName() {
-                                return fieldName;
-                            }
-                        });
+                    fieldTypes.put(name, new VirtualNodeManagerField(f, fieldName));
 
                 }
             }
@@ -170,6 +163,114 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
         if (builder == null) return getStringValue("description");
         if (locale == null) locale = cloud.getLocale();
         return builder.getDescription(locale.getLanguage());
+    }
+
+    /**
+     * @todo may be moved to org.mmbase.bridge.util.FieldWrapper
+     */
+    private class VirtualNodeManagerField implements Field {
+
+        private final Field field;
+        private final String name;
+        VirtualNodeManagerField(Field field, String name)  {
+            this.field = field;
+            this.name = name;
+        }
+        public NodeManager getNodeManager() {
+            return VirtualNodeManager.this;
+        }
+
+        public int getState() {
+            return Field.STATE_VIRTUAL;
+        }
+
+        public DataType getDataType() {
+            return field.getDataType();
+        }
+        public boolean isUnique() {
+            return field.isUnique();
+        }
+
+        public boolean hasIndex() {
+            return field.hasIndex();
+        }
+        public int getType() {
+            return field.getType();
+        }
+        public int getListItemType() {
+            return field.getListItemType();
+        }
+        public int getSearchPosition() {
+            return field.getSearchPosition();
+        }
+        public int getListPosition() {
+            return field.getListPosition();
+        }
+        public int getEditPosition() {
+            return field.getEditPosition();
+        }
+        public int getStoragePosition() {
+            return field.getStoragePosition();
+        }
+        public String getGUIType() {
+            return field.getGUIType();
+        }
+        public boolean isRequired() {
+            return field.isRequired();
+        }
+
+        public int getMaxLength() {
+            return field.getMaxLength();
+        }
+        public java.util.Collection validate(Object value) {
+            return field.validate(value);
+        }
+        public boolean isVirtual() {
+            return true;
+        }
+        public boolean isReadOnly() {
+            return true;
+        }
+        public String getName() {
+            return name;
+        }
+        public String getGUIName() {
+            return field.getGUIName();
+        }
+
+        public String getGUIName(Locale locale) {
+            return field.getGUIName(locale);
+        }
+
+        public LocalizedString getLocalizedGUIName() {
+            return field.getLocalizedGUIName();
+        }
+
+        public void setGUIName(String g, Locale locale) {
+            throw new UnsupportedOperationException();
+        }
+        public void setGUIName(String g) {
+            throw new UnsupportedOperationException();
+        }
+        public LocalizedString getLocalizedDescription() {
+            return field.getLocalizedDescription();
+        }
+
+        public String getDescription(Locale locale) {
+            return field.getDescription(locale);
+        }
+        public String getDescription() {
+            return field.getDescription();
+        }
+
+        public void setDescription(String description, Locale locale) {
+            throw new UnsupportedOperationException();
+        }
+
+        public void setDescription(String description) {
+            throw new UnsupportedOperationException();
+        }
+
     }
 
 }
