@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.87 2006-06-19 13:01:54 pierre Exp $
+ * @version $Id: Casting.java,v 1.88 2006-06-26 18:41:14 johannes Exp $
  */
 
 import java.util.*;
@@ -717,10 +717,11 @@ public class Casting {
             res = ((Node)i).getNumber();
         } else if (i != null) {
             if(i instanceof String){
-                if(((String)i).toLowerCase().equals("true")){
+                if(((String)i).toLowerCase().equals("true")) {
                     res = 1;
-                }else
-                if(((String)i).toLowerCase().equals("false")) res = 0;
+                } else if(((String)i).toLowerCase().equals("false")) {
+                    res = 0;
+                }
             }
             try {
                 res = Float.parseFloat("" + i);
@@ -729,7 +730,7 @@ public class Casting {
                 if(i instanceof String){
                     if(((String)i).toLowerCase().equals(("true"))){
                         res = 1;
-                    }else if(((String)i).toLowerCase().equals(("false"))){
+                    } else if(((String)i).toLowerCase().equals(("false"))){
                         res = 0;
                     }
                 }
