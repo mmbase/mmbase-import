@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: AbstractField.java,v 1.12 2006-03-31 16:45:21 pierre Exp $
+ * @version $Id: AbstractField.java,v 1.13 2006-06-26 11:45:50 michiel Exp $
  */
 
 abstract public class AbstractField extends AbstractDescriptor implements Field, Comparable {
@@ -49,16 +49,16 @@ abstract public class AbstractField extends AbstractDescriptor implements Field,
      * Create a field object based on another field.
      * @param name the name of the field
      * @param field the parent field
-     * @param copyDataTypeForRewrite determines whether the datatype of the parent field is copied (which means it can be altered
+     * @param cloneDataForRewrite determines whether the datatype of the parent field is copied (which means it can be altered
      *        without affecting the original datatype)
      */
-    protected AbstractField(String name, Field field, boolean copyDataTypeForRewrite) {
-        super(name, (Descriptor)field);
+    protected AbstractField(String name, Field field, boolean cloneDataForRewrite) {
+        super(name, field, cloneDataForRewrite);
         type = field.getType();
         setState(field.getState());
         readOnly = field.isReadOnly();
         listItemType = field.getListItemType();
-        if (copyDataTypeForRewrite) {
+        if (cloneDataForRewrite) {
             setDataType((DataType)field.getDataType().clone());
         } else {
             setDataType(dataType = field.getDataType());
