@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.56 2006-06-20 20:15:14 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.57 2006-06-26 12:27:11 pierre Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -198,8 +198,11 @@ s     */
                     if (elm == null) {
                         log.warn("Did not get XML from Factory " + fact);
                     } else {
-                        fact.clear();
+                        // need to clone the actual factory,
+                        // since it will otherwise change the original restrictions.
+                        fact = new LocalizedEntryListFactory();
                         fact.fillFromXml(elm, getTypeAsClass());
+                        enumerationRestriction.setValue(fact);
                     }
                 }
             }
@@ -974,7 +977,7 @@ s     */
 
     // REQUIRED
     protected class RequiredRestriction extends AbstractRestriction {
-        private static final long serialVersionUID = 1L; 
+        private static final long serialVersionUID = 1L;
 
         RequiredRestriction(RequiredRestriction source) {
             super(source);
@@ -996,7 +999,7 @@ s     */
 
     // UNIQUE
     protected class UniqueRestriction extends AbstractRestriction {
-        private static final long serialVersionUID = 1L; 
+        private static final long serialVersionUID = 1L;
         UniqueRestriction(UniqueRestriction source) {
             super(source);
         }
@@ -1063,7 +1066,7 @@ s     */
     // TYPE
 
     protected class TypeRestriction extends AbstractRestriction {
-        private static final long serialVersionUID = 1L; 
+        private static final long serialVersionUID = 1L;
         TypeRestriction(TypeRestriction source) {
             super(source);
         }
@@ -1084,7 +1087,7 @@ s     */
 
     // ENUMERATION
     protected class EnumerationRestriction extends AbstractRestriction {
-        private static final long serialVersionUID = 1L; 
+        private static final long serialVersionUID = 1L;
 
         EnumerationRestriction(EnumerationRestriction source) {
             super(source);
@@ -1163,7 +1166,8 @@ s     */
             Iterator it = col.iterator();
             int i = 0;
             while (it.hasNext() && ++i < 10) {
-                buf.append(Casting.toString(it.next()));
+                Map.Entry ent = (Map.Entry)it.next();
+                buf.append(Casting.toString(ent));
                 if (it.hasNext()) buf.append(", ");
             }
             if (i < col.size()) buf.append(".(" + (col.size() - i) + " more ..");
