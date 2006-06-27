@@ -10,7 +10,7 @@
 <mm:node number="<%= paginaID %>">
 <%@include file="actie/includes/navsettings.jsp" %>
 <% if(artikelID.equals("-1")) { %>
-	<mm:relatednodes type="artikel" path="contentrel,artikel" orderby="contentrel.pos" directions="up" max="1">
+	<mm:relatednodes type="artikel" path="contentrel,artikel" orderby="begindatum" directions="down" max="1">
        <mm:field name="number" jspvar="artikel_number" vartype="String" write="false">
           <% artikelID = artikel_number;%>
        </mm:field>
