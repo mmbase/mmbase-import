@@ -22,7 +22,7 @@ import java.io.*;
  *
  * @since MMBase 1.7
  * @author Kees Jongenburger <keesj@dds.nl>
- * @version $Id: IECompatibleJpegInputStream.java,v 1.7 2006-06-27 13:11:50 johannes Exp $
+ * @version $Id: IECompatibleJpegInputStream.java,v 1.8 2006-06-27 14:36:38 johannes Exp $
  */
 public class IECompatibleJpegInputStream extends FilterInputStream implements Runnable {
 
@@ -139,8 +139,9 @@ public class IECompatibleJpegInputStream extends FilterInputStream implements Ru
             InputStream inputStream = new IECompatibleJpegInputStream(new ByteArrayInputStream(in));
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             int c = 0;
-            while ((c = inputStream.read()) != -1) {
-                out.write(c);
+            byte[] buf = new byte[1024];
+            while ((c = inputStream.read(buf)) != -1) {
+                out.write(buf, 0, c);
             }
             out.flush();
             return out.toByteArray();
