@@ -4,5 +4,10 @@
   <class>org.mmbase.clustering.ClusteringModule</class>
   <properties>
   	<property name="ClusterManagerImplementation">org.mmbase.clustering.multicast.Multicast</property>
+
+    <!-- You can remove the property (or set it to false)
+         If your complete cluster is >= 1.8
+    -->    
+  	<property name="mmbase17.compatible">true</property>
   </properties>
 </module>
