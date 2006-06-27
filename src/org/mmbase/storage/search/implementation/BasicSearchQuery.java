@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.30 2005-10-02 16:18:15 michiel Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.31 2006-06-27 13:12:54 johannes Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
@@ -51,6 +51,10 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
     /** Aggragating property. */
     private boolean aggregating = false;
 
+    /** Two variables to speed up hashCode() by caching the result */
+    private boolean hasChangedHashcode = true;
+    private int savedHashcode = -1;
+    
     /**
      * Constructor.
      *
@@ -58,6 +62,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
      */
     public BasicSearchQuery(boolean aggregating) {
         this.aggregating = aggregating;
+        hasChangedHashcode = true;
     }
 
     /**
@@ -99,6 +104,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
             log.debug("Unknown copy method " + copyMethod);
             break;
         }
+        hasChangedHashcode = true;
     }
 
 
@@ -168,7 +174,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
             }
         }
         //log.info("copied steps " + q.getSteps() + " became " + steps);
-
+        hasChangedHashcode = true;
     }
     protected void copyFields(SearchQuery q) {
         fields = new ArrayList();
@@ -186,6 +192,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
             BasicStepField newField = addField(newStep, bul.getField(field.getFieldName()));
             newField.setAlias(field.getAlias());
         }
+        hasChangedHashcode = true;
         //log.info("copied fields " + q.getFields() + " became " + fields);
     }
     protected void copySortOrders(SearchQuery q) {
@@ -207,6 +214,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
             BasicSortOrder newSortOrder = addSortOrder(newField);
             newSortOrder.setDirection(sortOrder.getDirection());
         }
+        hasChangedHashcode = true;
     }
 
     /**
@@ -304,6 +312,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
     */
     public BasicSearchQuery setDistinct(boolean distinct) {
         this.distinct = distinct;
+        hasChangedHashcode = true;
         return this;
     }
 
@@ -319,6 +328,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
             throw new IllegalArgumentException( "Invalid maxNumber value: " + maxNumber);
         }
         this.maxNumber = maxNumber;
+        hasChangedHashcode = true;
         return this;
     }
 
@@ -335,6 +345,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
             "Invalid offset value: " + offset);
         }
         this.offset = offset;
+        hasChangedHashcode = true;
         return this;
     }
 
@@ -348,6 +359,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
     public BasicStep addStep(MMObjectBuilder builder) {
         BasicStep step = new BasicStep(builder);
         steps.add(step);
+        hasChangedHashcode = true;
         return step;
     }
 
@@ -373,6 +385,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
         BasicRelationStep relationStep = new BasicRelationStep(builder, previous, next);
         steps.add(relationStep);
         steps.add(next);
+        hasChangedHashcode = true;
         return relationStep;
     }
 
@@ -392,6 +405,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
         }
         BasicStepField field = new BasicStepField(step, fieldDefs);
         fields.add(field);
+        hasChangedHashcode = true;
         return field;
     }
 
@@ -416,11 +430,12 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
                 mapField(field, stepField);
             }
         }
-
+        hasChangedHashcode = true;
     }
 
     public void removeFields() {
         fields.clear();
+        hasChangedHashcode = true;
     }
 
     /**
@@ -441,6 +456,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
         }
         BasicAggregatedField stepField = new BasicAggregatedField(step, field, aggregationType);
         fields.add(stepField);
+        hasChangedHashcode = true;
         return stepField;
     }
 
@@ -454,6 +470,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
     public BasicSortOrder addSortOrder(StepField field) {
         BasicSortOrder sortOrder =  new BasicSortOrder(field);
         sortOrders.add(sortOrder);
+        hasChangedHashcode = true;
         return sortOrder;
     }
 
@@ -465,6 +482,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
      */
     public void setConstraint(Constraint constraint) {
         this.constraint = constraint;
+        hasChangedHashcode = true;
     }
 
     // javadoc is inherited
@@ -534,12 +552,16 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
 
     // javadoc is inherited
     public int hashCode() {
-        return (distinct? 0: 101)
-        + maxNumber * 17 + offset * 19
-        + 23 * steps.hashCode()
-        + 29 * fields.hashCode()
-        + 31 * sortOrders.hashCode()
-        + 37 * (constraint == null? 0: constraint.hashCode());
+        if (hasChangedHashcode) {
+          savedHashcode = (distinct? 0: 101)
+            + maxNumber * 17 + offset * 19
+            + 23 * steps.hashCode()
+            + 29 * fields.hashCode()
+            + 31 * sortOrders.hashCode()
+            + 37 * (constraint == null? 0: constraint.hashCode());
+          hasChangedHashcode = false;
+        }
+        return savedHashcode;
     }
 
     // javadoc is inherited

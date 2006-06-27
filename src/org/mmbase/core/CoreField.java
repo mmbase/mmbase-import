@@ -44,6 +44,9 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
 
     private boolean notNull = false;
 
+    private int savedHashcode = -1;
+    private boolean hashcodeChanged = true;
+
     /**
      * Create a core object
      * @param name the name of the data type
@@ -51,6 +54,7 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
      */
     protected CoreField(String name, int type, int listItemType, int state, DataType dataType) {
         super(name, type, listItemType, state, dataType);
+        hashcodeChanged = true;
     }
 
     /**
@@ -67,6 +71,7 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
         setParent(coreField.getParent());
         setMaxLength(coreField.getMaxLength());
         setUnique(coreField.isUnique());
+        hashcodeChanged = true;
     }
 
     public NodeManager getNodeManager() {
@@ -78,14 +83,17 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
     }
 
     public Object clone(String name) {
+        hashcodeChanged = true;
         return super.clone(name, true);
     }
 
     public void setReadOnly(boolean readOnly) {
+        hashcodeChanged = true;
         this.readOnly = readOnly;
     }
 
     public void setNotNull(boolean nl) {
+        hashcodeChanged = true;
         notNull = nl;
     }
 
@@ -106,6 +114,7 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
      * @see #getSearchPosition
      */
     public void setSearchPosition(int i) {
+        hashcodeChanged = true;
         searchPosition = i;
     }
 
@@ -122,6 +131,7 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
      * @see #getListPosition
      */
     public void setListPosition(int i) {
+        hashcodeChanged = true;
         listPosition = i;
     }
 
@@ -139,6 +149,7 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
      */
     public void setEditPosition(int i) {
         editPosition = i;
+        hashcodeChanged = true;
     }
 
     /**
@@ -153,6 +164,7 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
      */
     public void setStoragePosition(int i) {
         storagePosition = i;
+        hashcodeChanged = true;
     }
 
     /**
@@ -168,18 +180,22 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
      */
     public void setParent(MMObjectBuilder parent) {
         this.parent = parent;
+        hashcodeChanged = true;
     }
 
     public void setState(int state) {
         super.setState(state);
+        hashcodeChanged = true;
     }
 
     public void setType(int type) {
         this.type = type;
+        hashcodeChanged = true;
     }
 
     public void setListItemType(int listItemType) {
         this.listItemType = listItemType;
+        hashcodeChanged = true;
     }
 
     public Collection validate(Object value) {
@@ -229,15 +245,19 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
-        int result = 0;
-        result = HashCodeUtil.hashCode(result, getName());
-        result = HashCodeUtil.hashCode(result, getType());
-        result = HashCodeUtil.hashCode(result, getState());
-        result = HashCodeUtil.hashCode(result, getDataType().isRequired());
-        result = HashCodeUtil.hashCode(result, getDataType().isUnique());
-        result = HashCodeUtil.hashCode(result, parent);
-        result = HashCodeUtil.hashCode(result, storagePosition);
-        return result;
+        if (hashcodeChanged) {
+          int result = 0;
+          result = HashCodeUtil.hashCode(result, getName());
+          result = HashCodeUtil.hashCode(result, getType());
+          result = HashCodeUtil.hashCode(result, getState());
+          result = HashCodeUtil.hashCode(result, getDataType().isRequired());
+          result = HashCodeUtil.hashCode(result, getDataType().isUnique());
+          result = HashCodeUtil.hashCode(result, parent);
+          result = HashCodeUtil.hashCode(result, storagePosition);
+          savedHashcode = result;
+          hashcodeChanged = false;
+        }
+        return savedHashcode;
     }
 
     /**
@@ -286,16 +306,19 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
             }
             ((LengthDataType)dataType).setMaxLength(size);
         }
+        hashcodeChanged = true;
     }
 
     public void setDataType(DataType dataType) throws IllegalArgumentException {
         super.setDataType(dataType);
         // datatype can be influenced by size
         setMaxLength(maxLength);
+        hashcodeChanged = true;
     }
 
     public void setUnique(boolean unique) {
         dataType.setUnique(unique);
+        hashcodeChanged = true;
     }
 
     // Storable interface
@@ -317,6 +340,7 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
 
     public void setStorageType(int type) {
         storageType = type;
+        hashcodeChanged = true;
     }
 
     public boolean inStorage() {
