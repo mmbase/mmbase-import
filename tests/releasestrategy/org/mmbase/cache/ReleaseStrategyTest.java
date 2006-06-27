@@ -18,8 +18,7 @@ import org.mmbase.core.event.NodeEvent;
 import org.mmbase.core.event.Event;
 import org.mmbase.core.event.NodeEventHelper;
 import org.mmbase.core.event.RelationEvent;
-import org.mmbase.module.core.MMBase;
-import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.core.*;
 import org.mmbase.storage.search.AggregatedField;
 import org.mmbase.storage.search.Step;
 import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
@@ -267,18 +266,31 @@ public class ReleaseStrategyTest extends BridgeTest {
         //testNode.setValue("title", "another title");
 
         NodeEvent event = new NodeEvent(null, "news", 0, getMap("title", "oldTitle"), getMap("title", "newtitle"), Event.TYPE_CHANGE);
+        NodeEvent event2 = new NodeEvent(null, "news", 0, getMap("owner", "oldOwner"), getMap("owner", "newowner"), Event.TYPE_CHANGE);
+        {
+            Query q1 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.subtitle", "news.number < 1000", null, null, null, false);
+            Query q2 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.subtitle", "news.title = 'hallo'", null, null, null, false);
+            Query q3 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.title", "news.number < 1000", null, null, null, false);
 
-        Query q1 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.subtitle", "news.number < 1000", null, null, null, false);
-        Query q2 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.subtitle", "news.title = 'hallo'", null, null, null, false);
-        Query q3 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.title", "news.number < 1000", null, null, null, false);
+            assertFalse("changed field is not used by query: it should not be flushed",
+                        strategy.evaluate(event, q1, null).shouldRelease());
+            assertTrue("changed field is in constraints section of query: it should be flushed",
+                       strategy.evaluate(event, q2, null).shouldRelease());
+            assertTrue("changed field is in select section of query: it should be flushed",
+                       strategy.evaluate(event, q3, null).shouldRelease());
+        }
+        {// same thing, but now with inheritance
+            Query q1 = Queries.createQuery(cloud, null, "object,posrel,urls" ,"object.otype", "object.number < 1000", null, null, null, false);
+            Query q2 = Queries.createQuery(cloud, null, "object,posrel,urls" ,"object.otype", "object.owner = 'hallo'", null, null, null, false);
+            Query q3 = Queries.createQuery(cloud, null, "object,posrel,urls" ,"object.owner", "news.number < 1000", null, null, null, false);
 
-        assertFalse("changed field is not used by query: it should not be flushed",
-                    strategy.evaluate(event, q1, null).shouldRelease());
-        assertTrue("changed field is in constraints section of query: it should be flushed",
-                   strategy.evaluate(event, q2, null).shouldRelease());
-        assertTrue("changed field is in select section of query: it should be flushed",
-                   strategy.evaluate(event, q3, null).shouldRelease());
-
+            assertFalse("changed field is not used by query: it should not be flushed",
+                        strategy.evaluate(event2, q1, null).shouldRelease());
+            assertTrue("changed field is in constraints section of query: it should be flushed",
+                       strategy.evaluate(event2, q2, null).shouldRelease());
+            assertTrue("changed field is in select section of query: it should be flushed",
+                       strategy.evaluate(event2, q3, null).shouldRelease());
+        }
         //also test  composite constraints
         Query q4 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.subtitle", "news.number < 1000 AND urls.name = 'hi'", null, null, null, false);
         Query q5 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.subtitle", "news.title='something' AND urls.name = 'hi'", null, null, null, false);
@@ -341,7 +353,7 @@ public class ReleaseStrategyTest extends BridgeTest {
         //stupid hack to create a changed field for the event. for some reason settin the field on an Node does not alter the
         //changedField collection on MMObjectNode
         MMObjectNode pos = MMBase.getMMBase().getBuilder( posrelNode.getNodeManager().getName() ).getNode(posrelNode.getNumber());
-        pos.setValue( "pos", new Integer(100));
+        pos.setValue("pos", new Integer(100));
         //now create a relation event
         RelationEvent relEvent = NodeEventHelper.createRelationEventInstance(posrelNode, Event.TYPE_CHANGE, null);
 
@@ -385,14 +397,16 @@ public class ReleaseStrategyTest extends BridgeTest {
         Query q3 = Queries.createQuery(cloud, null, "news,posrel,urls", "news.number", "news.title = 'hallo' AND news.subtitle='hi'", null, null, null, false);
         Query q4 = Queries.createQuery(cloud, null, "news,posrel,urls", "news.number", null, null, null, null, false);
 
+        MMBase mmb = MMBase.getMMBase();
+        MMObjectBuilder news = mmb.getBuilder("news");
         assertTrue("title field of news builder is in constraints",
-                   ReleaseStrategy.getConstraintsForField("title", "news", null, q1).size() == 1);
+                   ReleaseStrategy.getConstraintsForField("title", news, null, q1).size() == 1);
         assertTrue("title field of news builder is not in constraints",
-                   ReleaseStrategy.getConstraintsForField("title", "news", null, q2).size() == 0);
+                   ReleaseStrategy.getConstraintsForField("title", news, null, q2).size() == 0);
         assertTrue("title field of news builder is one of the constraints.",
-                   ReleaseStrategy.getConstraintsForField("title", "news", null, q3).size() == 1);
+                   ReleaseStrategy.getConstraintsForField("title", news, null, q3).size() == 1);
         assertTrue("there are no constraints.",
-                   ReleaseStrategy.getConstraintsForField("title", "news", null, q4).size() == 0);
+                   ReleaseStrategy.getConstraintsForField("title", news, null, q4).size() == 0);
     }
 
 
