@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @application Tools, Jumpers
  * @author Jaco de Groot
- * @version $Id: JumpersFilter.java,v 1.15 2006-01-25 15:29:18 michiel Exp $
+ * @version $Id: JumpersFilter.java,v 1.16 2006-06-27 14:36:58 johannes Exp $
  */
 public class JumpersFilter implements Filter, MMBaseStarter {
     private static final Logger log = Logging.getLoggerInstance(JumpersFilter.class);
@@ -114,7 +114,7 @@ public class JumpersFilter implements Filter, MMBaseStarter {
         String key = "";
         if (contextPart < reqURI.length()) {
             // also remove the leading "/", unless it's an empty string.
-            key = req.getRequestURI().substring(context.length()+1);
+            key = req.getRequestURI().substring(contextPart+1);
         }
 
         if (log.isDebugEnabled()) {
