@@ -9,7 +9,7 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.19 2006-03-29 12:55:46 nklasens Exp $
+  @version $Id: prompts.xsl,v 1.20 2006-06-27 12:57:31 nklasens Exp $
   -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -29,6 +29,22 @@
 <xsl:variable name="date_october">oktober</xsl:variable>
 <xsl:variable name="date_november">november</xsl:variable>
 <xsl:variable name="date_december">december</xsl:variable>
+
+<xsl:variable name="day_sun">Sun</xsl:variable>
+<xsl:variable name="day_mon">Mon</xsl:variable>
+<xsl:variable name="day_tue">Tue</xsl:variable>
+<xsl:variable name="day_wed">Wed</xsl:variable>
+<xsl:variable name="day_thu">Thu</xsl:variable>
+<xsl:variable name="day_fri">Fri</xsl:variable>
+<xsl:variable name="day_sat">Sat</xsl:variable>
+
+<xsl:variable name="datepicker_currentmonth">Ga naar huidige maand</xsl:variable>
+<xsl:variable name="datepicker_today">Vandaag is</xsl:variable>
+<xsl:variable name="datepicker_scrollleft">Klik hier om naar de voorgaande maand te scrollen. Houd de muisknop ingedrukt om automatisch te scrollen.</xsl:variable>
+<xsl:variable name="datepicker_scrollright">Klik hier om naar de volgende maand te scrollen. Houd de muisknop ingedrukt om automatisch te scrollen.</xsl:variable>
+<xsl:variable name="datepicker_selectmonth">Klik hier om een maand te selecteren.</xsl:variable>
+<xsl:variable name="datepicker_selectyear">Klik hier om een jaar te selecteren.</xsl:variable>
+<xsl:variable name="datepicker_selectdate">Selecteer [datum] als de datum.</xsl:variable>
 
 <xsl:variable name="time_at">om</xsl:variable>
 <!-- prompts for a binary field (upload/download) -->
