@@ -410,6 +410,28 @@ public class ReleaseStrategyTest extends BridgeTest {
         return reldef;
     }
 
+    public void testSpeed() {
+        NodeEvent event = new NodeEvent(null, "news", 0, getMap("title", "oldTitle"), getMap("title", "newtitle"), Event.TYPE_CHANGE);
+
+        Query q1 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.subtitle", "news.number < 1000", null, null, null, false);
+        Query q2 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.subtitle", "news.title = 'hallo'", null, null, null, false);
+        Query q3 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.title", "news.number < 1000", null, null, null, false);
+
+
+        ChainedReleaseStrategy chain = new ChainedReleaseStrategy(); // in reality always a chain is used;
+        chain.addReleaseStrategy(strategy);
+        System.out.println("Simple performance.");
+        long startTime = System.currentTimeMillis();
+        for (int i = 0; i < 50000; i++) {
+            chain.evaluate(event, q1, null).shouldRelease();
+            chain.evaluate(event, q2, null).shouldRelease();
+            chain.evaluate(event, q3, null).shouldRelease();
+        }
+        System.out.println("Simple performance test result: " + (System.currentTimeMillis() - startTime) + " ms");
+
+
+    }
+
     private Map getMap(Object key, Object value){
         Map m = new HashMap();
         m.put(key, value);
