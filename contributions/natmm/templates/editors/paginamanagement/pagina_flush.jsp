@@ -32,6 +32,8 @@ if ((refresh != null) && (refresh.equals("yes"))) {
       <a href="<%= referrer %>"><img src="../img/left.gif" title="Terug naar de preview"/></a>
       Pagina "<mm:node number="<%= number %>"><mm:field name="titel" /></mm:node>" is gepubliceerd.
    </h2>
+	<span style="color:red">Let op:</span> Pagina's kunnen in de beheeromgeving ook door andere redacteuren of automatisch worden gepubliceerd.<br/>
+	De door u opgeslagen wijzigingen kunnen dus voor de bezoeker van de website zichtbaar worden, zonder dat u de pagina heeft gepubliceerd.<br/>
    <%
 } else {
    String referrer = request.getHeader("referer"); // html-specs are wrong
