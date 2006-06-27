@@ -5,6 +5,7 @@
 <%
 String objectID = request.getParameter("o");
 PaginaHelper ph = new PaginaHelper(cloud);
+String rootID = ph.getRootRubriek(cloud,objectID);
 %>
 <mm:node number="<%=objectID%>">
 <mm:related path="posrel,dossier" fields="dossier.number,dossier.naam" orderby="posrel.pos">
@@ -36,9 +37,15 @@ PaginaHelper ph = new PaginaHelper(cloud);
 	<mm:list nodes="<%=dossier_number%>" path="dossier,readmore,artikel"
 	   fields="artikel.number,artikel.titel" orderby="readmore.pos" max="3">
 		<mm:field name="artikel.number" jspvar="artikel_number" vartype="String" write="false">
+			<% String relatedPage = null; %>
+			<mm:list nodes="<%= artikel_number %>" path="artikel,contentrel,pagina" fields="pagina.number">
+				<mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false">
+					<% if(rootID.equals(ph.getRootRubriek(cloud,pagina_number))) { relatedPage = pagina_number; } %>
+				</mm:field>
+			</mm:list>
 			<table style="width:100%;" border="0" cellspacing="0" cellpadding="0">
 				<tr>
-					<td style="text-align:left;vertical-align:middle;"><a href="<%= ph.createItemUrl(artikel_number, null, null, request.getContextPath()) 
+					<td style="text-align:left;vertical-align:middle;"><a href="<%= ph.createItemUrl(artikel_number,relatedPage,null, request.getContextPath()) 
 					   %>" class="hover"><mm:field name="artikel.titel" /></a></td>
 					<%-- <td width="80" align="right" valign="middle"><a href="<%=templateName%>?id=<%=artikel_number%>" class="hp_leesverder">Lees verder &raquo;</a></td> --%>
 				</tr>
