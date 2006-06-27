@@ -15,7 +15,7 @@
       <description xml:lang="en">Subscription</description>
    </descriptions>
    <properties>
-      <property name="htmlFields"></property>
+      <property name="htmlFields">description</property>
    </properties>
 
    <fieldlist>
