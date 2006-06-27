@@ -94,7 +94,7 @@ if(searchtype != 'clear' ) {
 							href += else_answer;
 						}
 					}
-            <% if (formulierveld_type.equals("3")) { %>
+            <% if (formulierveld_type.equals("3")||formulierveld_type.equals("4")||formulierveld_type.equals("5")) { %>
 						<mm:related path="posrel,formulierveldantwoord" orderby="posrel.pos" directions="UP">
 							if (answer == '<mm:field name="formulierveldantwoord.waarde" />') {
 								if (nums != '') { nums += ','; }
