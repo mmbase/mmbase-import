@@ -42,7 +42,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: ConstraintsMatchingStrategy.java,v 1.21 2006-06-24 07:12:52 michiel Exp $
+ * @version $Id: ConstraintsMatchingStrategy.java,v 1.22 2006-06-27 07:31:46 michiel Exp $
  *
  */
 public class ConstraintsMatchingStrategy extends ReleaseStrategy {
@@ -121,7 +121,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
         if(matcher == null){
             try {
                 matcher = findMatcherForConstraint(constraint);
-                if (log.isDebugEnabled()) {
+                if (log.isTraceEnabled()) {
                     log.trace("created constraint matcher: " + matcher);
                 }
                 // Unwrapping BasicQuery's. This avoids unnecessary references (mainly to BasicCloud instances).
@@ -245,7 +245,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
 
     protected final boolean doEvaluate(RelationEvent event, SearchQuery query, List cachedResult) {
         // TODO I don't think this strategy should handle these events
-        //becouse the node event that preceeds the relation event takes care of it.
+        //because the node event that preceeds the relation event takes care of it.
         return doEvaluate(event.getNodeEvent(), query, cachedResult);
     }
 

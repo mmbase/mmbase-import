@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: ReleaseStrategy.java,v 1.16 2006-06-23 16:54:23 michiel Exp $
+ * @version $Id: ReleaseStrategy.java,v 1.17 2006-06-27 07:31:46 michiel Exp $
  */
 
 public abstract class ReleaseStrategy {
@@ -70,17 +70,18 @@ public abstract class ReleaseStrategy {
      * {@link #doEvaluate(NodeEvent event, SearchQuery query, List cachedResult)}.
      *
      */
-    public final StrategyResult evaluate(NodeEvent event, SearchQuery query, List cachedResult) {
-        Timer timer = new Timer();
+    public final StrategyResult evaluate(final NodeEvent event, final SearchQuery query, final List cachedResult) {
+        final Timer timer = new Timer();
         if (isActive) {
             boolean shouldRelease = doEvaluate(event, query, cachedResult);
             totalEvaluated++;
             if (!shouldRelease) totalPreserved++;
-            totalEvaluationTimeInMillis += timer.getTimeMillis();
-            return new StrategyResult(shouldRelease, timer);
+            long cost = timer.getTimeMillis();
+            totalEvaluationTimeInMillis += cost;
+            return new StrategyResult(shouldRelease, cost);
         } else {
             // if the cache is inactive it can not prevent the flush
-            return new StrategyResult(true, timer);
+            return new StrategyResult(true, timer.getTimeMillis());
         }
     }
 
@@ -90,11 +91,12 @@ public abstract class ReleaseStrategy {
             boolean shouldRelease = doEvaluate(event, query, cachedResult);
             totalEvaluated++;
             if (!shouldRelease) totalPreserved++;
-            totalEvaluationTimeInMillis += timer.getTimeMillis();
-            return new StrategyResult(shouldRelease, timer);
+            long cost = timer.getTimeMillis();
+            totalEvaluationTimeInMillis += cost;
+            return new StrategyResult(shouldRelease, cost);
         } else {
             // if the cache is inactive it can not prevent the flush
-            return new StrategyResult(true, timer);
+            return new StrategyResult(true, timer.getTimeMillis());
         }
     }
 
@@ -177,45 +179,36 @@ public abstract class ReleaseStrategy {
      * @param constraint
      * @param query
      */
-    protected static List getConstraintsForField(String  fieldName, String builderName, Constraint constraint, SearchQuery query){
+    protected static List getConstraintsForField(String  fieldName, MMObjectBuilder builder, Constraint constraint, SearchQuery query){
         if(constraint == null) constraint = query.getConstraint();
         List result = new ArrayList();
-        if(constraint == null)return result;
-        if(constraint instanceof BasicCompositeConstraint){
+        if(constraint == null) return result;
+        if(constraint instanceof BasicCompositeConstraint) {
             log.debug("constraint is composite.");
             for (Iterator i = ((BasicCompositeConstraint)constraint).getChilds().iterator(); i.hasNext();) {
                 Constraint c = (Constraint) i.next();
-                result.addAll(getConstraintsForField(fieldName, builderName, c, query));
+                result.addAll(getConstraintsForField(fieldName, builder, c, query));
             }
-        }else if(constraint instanceof LegacyConstraint){
+        } else if (constraint instanceof LegacyConstraint) {
             log.debug("constraint is legacy.");
-            if(query.getSteps().size() > 1){
-                fieldName = builderName + "." + fieldName;
+            if(query.getSteps().size() > 1) {
+                // how about postfixing with numbers?
+                fieldName = builder.getTableName() + "." + fieldName;
             }
             if(((LegacyConstraint)constraint).getConstraint().indexOf(fieldName) > -1){
                 result.add(constraint);
                 return result;
             }
-        }else if(constraint instanceof FieldConstraint){
+        } else if (constraint instanceof FieldConstraint) {
             log.debug("constraint is field constraint.");
             StepField sf = ((FieldConstraint)constraint).getField();
-            if(sf.getFieldName().equals(fieldName) && sf.getStep().getTableName().equals(builderName)){
+            if(sf.getFieldName().equals(fieldName) && (sf.getStep().getTableName().equals(builder.getTableName()) ||
+                                                       builder.isExtensionOf(MMBase.getMMBase().getBuilder(sf.getStep().getTableName()))
+                                                       )
+               ) {
                 result.add(constraint);
                 return result;
             }
-        }
-        return result;
-    }
-
-    /**
-     * utility for specializations: get all the relation steps of a query
-     * @param query
-     */
-    protected   static List getRelationSteps(SearchQuery query) {
-        List result = new ArrayList();
-        for (Iterator i = query.getSteps().iterator(); i.hasNext();) {
-            Object step = i.next();
-            if (step instanceof RelationStep) result.add(step);
         }
         return result;
     }
@@ -233,37 +226,14 @@ public abstract class ReleaseStrategy {
         return result;
     }
 
-    /**
-     * utility for specializations: get all the steps in a query of a give type
-     * @param query
-     */
-    protected static List getStepsForType(SearchQuery query, MMObjectBuilder type){
-        List result = new ArrayList(10);
-        for (Iterator i = query.getSteps().iterator(); i.hasNext();) {
-            Step step = (Step) i.next();
-            String table = step.getTableName();
-            if( table.equals(type.getTableName()) ||
-                type.isExtensionOf(MMBase.getMMBase().getBuilder(table))
-                )
-                result.add(step);
-        }
-        return result;
-    }
-
 
     /**
      * @author Ernst Bunders This class is a bean containing shouldRelease of an
      *         event evaluation
      */
     public static class StrategyResult {
-        private boolean shouldRelease;
-        private long cost;
-
-        StrategyResult(boolean shouldRelease, Timer cost) {
-            this.shouldRelease = shouldRelease;
-            this.cost = cost.getTimeMillis();
-        }
-
+        private final boolean shouldRelease;
+        private final long cost;
 
         StrategyResult(boolean shouldRelease, long cost) {
             this.shouldRelease = shouldRelease;
@@ -278,7 +248,7 @@ public abstract class ReleaseStrategy {
         }
 
         /**
-         * XXX What means this?
+         * Whether, according to this strategy, the query must be flushed.
          */
         public boolean shouldRelease() {
             return shouldRelease;
@@ -290,7 +260,7 @@ public abstract class ReleaseStrategy {
      *         evaluation. Just create an instance before the evaluation and
      *         then use it to create the StrategyResult object
      */
-    protected static class Timer {
+    protected final static class Timer {
         private final long now;
 
         Timer() {

@@ -12,7 +12,7 @@ package org.mmbase.cache;
 import java.util.*;
 
 import org.mmbase.core.event.*;
-import org.mmbase.module.core.MMBase;
+import org.mmbase.module.core.*;
 import org.mmbase.storage.search.SearchQuery;
 import org.mmbase.storage.search.Step;
 import org.mmbase.util.logging.Logger;
@@ -29,12 +29,13 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: BasicReleaseStrategy.java,v 1.12 2006-01-24 16:08:01 michiel Exp $
+ * @version $Id: BasicReleaseStrategy.java,v 1.13 2006-06-27 07:31:45 michiel Exp $
  */
 public class BasicReleaseStrategy extends ReleaseStrategy {
 
-    private static Logger log = Logging.getLoggerInstance(BasicReleaseStrategy.class);
-	
+    private static final Logger log = Logging.getLoggerInstance(BasicReleaseStrategy.class);
+
+
     public BasicReleaseStrategy(){
     }
 
@@ -58,23 +59,21 @@ public class BasicReleaseStrategy extends ReleaseStrategy {
      */
     protected final boolean doEvaluate(NodeEvent event, SearchQuery query, List cachedResult) {
         //this simple optimization only works for nodeEvents
-        
-        int shouldKeep = 0;
-        List steps = getStepsForType(query, MMBase.getMMBase().getBuilder(event.getBuilderName()));
-        Integer number = new Integer(event.getNodeNumber());
-        for (Iterator i = steps.iterator(); i.hasNext();) {
+        MMBase mmb = MMBase.getMMBase();
+        String eventTable = event.getBuilderName();
+        MMObjectBuilder eventBuilder = mmb.getBuilder(eventTable);
+        Iterator i = query.getSteps().iterator();
+        while (i.hasNext()) {
             Step step = (Step) i.next();
+            String table = step.getTableName();
+            if (! (table.equals(eventTable) ||
+                   eventBuilder.isExtensionOf(mmb.getBuilder(table)))) continue;
             Set nodes = step.getNodes();
-            //if one of the steps for this node event has no nodes set: flush
-            if(nodes == null || nodes.size() == 0) return true;
-            //if a step defines nodes, than it does not want to invalidate the cache-entry if the node of the event is not one of them.
-            if(! nodes.contains(number)) {
-                shouldKeep++; 
+            if (nodes == null || nodes.size() == 0 ||  nodes.contains(new Integer(event.getNodeNumber()))) {
+                return true;
             }
-
         }
-        //if not all steps of this type had nodes that did not include this one, flush
-        return shouldKeep != steps.size(); //shouldrelease         
+        return false;
     }
 
     protected boolean doEvaluate(RelationEvent event, SearchQuery query, List cachedResult) {
