@@ -23,6 +23,8 @@ public class ConstraintMatcherTest extends BridgeTest {
 
     private static final Logger log = Logging.getLoggerInstance(ConstraintMatcherTest.class);
 
+    static private int nodeNumber = -1;
+
     static protected ConstraintsMatchingStrategy matchingStrategy;
 
     public ConstraintMatcherTest(String name) {
@@ -33,6 +35,10 @@ public class ConstraintMatcherTest extends BridgeTest {
         if (cloud == null) {
             startMMBase();
             cloud = getCloud();
+            Node newNode = cloud.getNodeManager("datatypes").createNode();
+            newNode.commit();
+            nodeNumber = newNode.getNumber();
+            
         }
         matchingStrategy = new ConstraintsMatchingStrategy();
     }
@@ -52,15 +58,15 @@ public class ConstraintMatcherTest extends BridgeTest {
         // type string. Allso tests non-matching events (different step, different field), and non-matching datatypes
         Query q1 = Queries.createQuery(cloud, null, "datatypes", "datatypes.number", "string = 'disco'", null, null, null, false);
 
-        NodeEvent event1a = new NodeEvent(null, "datatypes", 10, createMap(new String[][] { { "string", "disco" } }), createMap(new String[][] { { "string", "disco" } }), Event.TYPE_CHANGE);
-        NodeEvent event1b = new NodeEvent(null, "datatypes", 10, createMap(new String[][] { { "string", "disco" } }), createMap(new String[][] { { "string", "something" } }), Event.TYPE_CHANGE);
-        NodeEvent event1c = new NodeEvent(null, "datatypes", 10, new HashMap(), createMap(new String[][] { { "string", "disco" } }), Event.TYPE_CHANGE);
-        NodeEvent event1d = new NodeEvent(null, "datatypes", 10, createMap(new String[][] { { "string", "bobo" } }), createMap(new String[][] { { "string", "something" } }), Event.TYPE_CHANGE);
-        NodeEvent event1e = new NodeEvent(null, "datatypes", 10, createMap(new String[][] { { "string", "bobo" } }), createMap(new String[][] { { "string", "disco" } }), Event.TYPE_CHANGE);
-        NodeEvent event1f = new NodeEvent(null, "news", 10, createMap(new String[][] { { "string", "bobo" } }), createMap(new String[][] { { "string", "disco" } }), Event.TYPE_CHANGE);
-        NodeEvent event1g = new NodeEvent(null, "datatypes", 10, createMap(new Object[][] { { "integer", new Integer(3) } }), createMap(new String[][] { { "string", "disco" } }), Event.TYPE_CHANGE);
-        NodeEvent event1h = new NodeEvent(null, "datatypes", 10, createMap(new Object[][] { { "string", new Boolean(true) } }), createMap(new String[][] { { "string", "disco" } }), Event.TYPE_CHANGE);
-        NodeEvent event1i = new NodeEvent(null, "datatypes", 10, createMap(new Object[][] { { "string", new ArrayList() } }), createMap(new String[][] { { "string", "disco" } }), Event.TYPE_CHANGE);
+        NodeEvent event1a = new NodeEvent(null, "datatypes", nodeNumber, createMap(new String[][] { { "string", "disco" } }), createMap(new String[][] { { "string", "disco" } }), Event.TYPE_CHANGE);
+        NodeEvent event1b = new NodeEvent(null, "datatypes", nodeNumber, createMap(new String[][] { { "string", "disco" } }), createMap(new String[][] { { "string", "something" } }), Event.TYPE_CHANGE);
+        NodeEvent event1c = new NodeEvent(null, "datatypes", nodeNumber, new HashMap(), createMap(new String[][] { { "string", "disco" } }), Event.TYPE_CHANGE);
+        NodeEvent event1d = new NodeEvent(null, "datatypes", nodeNumber, createMap(new String[][] { { "string", "bobo" } }), createMap(new String[][] { { "string", "something" } }), Event.TYPE_CHANGE);
+        NodeEvent event1e = new NodeEvent(null, "datatypes", nodeNumber, createMap(new String[][] { { "string", "bobo" } }), createMap(new String[][] { { "string", "disco" } }), Event.TYPE_CHANGE);
+        NodeEvent event1f = new NodeEvent(null, "news",      nodeNumber, createMap(new String[][] { { "string", "bobo" } }), createMap(new String[][] { { "string", "disco" } }), Event.TYPE_CHANGE);
+        NodeEvent event1g = new NodeEvent(null, "datatypes", nodeNumber, createMap(new Object[][] { { "integer", new Integer(3) } }), createMap(new String[][] { { "string", "disco" } }), Event.TYPE_CHANGE);
+        NodeEvent event1h = new NodeEvent(null, "datatypes", nodeNumber, createMap(new Object[][] { { "string", new Boolean(true) } }), createMap(new String[][] { { "string", "disco" } }), Event.TYPE_CHANGE);
+        NodeEvent event1i = new NodeEvent(null, "datatypes", nodeNumber, createMap(new Object[][] { { "string", new ArrayList() } }), createMap(new String[][] { { "string", "disco" } }), Event.TYPE_CHANGE);
 
         // constraint matching tests
         // first tetst type 'changed'
@@ -81,8 +87,8 @@ public class ConstraintMatcherTest extends BridgeTest {
         assertTrue("Datatype 'List' is not supported: don't flush", matchingStrategy.evaluate(event1i, q1, null).shouldRelease());
 
         // test different operators
-        NodeEvent event2a = new NodeEvent(null, "datatypes", 10, null, createMap(new String[][] { { "string", "a" } }), Event.TYPE_NEW);
-        NodeEvent event2b = new NodeEvent(null, "datatypes", 10, null, createMap(new String[][] { { "string", "c" } }), Event.TYPE_NEW);
+        NodeEvent event2a = new NodeEvent(null, "datatypes", nodeNumber, null, createMap(new String[][] { { "string", "a" } }), Event.TYPE_NEW);
+        NodeEvent event2b = new NodeEvent(null, "datatypes", nodeNumber, null, createMap(new String[][] { { "string", "c" } }), Event.TYPE_NEW);
 
         Query q2 = Queries.createQuery(cloud, null, "datatypes", "datatypes.number", "string > 'b'", null, null, null, false);
         Query q3 = Queries.createQuery(cloud, null, "datatypes", "datatypes.number", "string < 'b'", null, null, null, false);
@@ -107,7 +113,7 @@ public class ConstraintMatcherTest extends BridgeTest {
         assertFalse("(<=) New node falls outside constraint: don't flush", matchingStrategy.evaluate(event2b, q6, null).shouldRelease());
 
         // test the like comparison
-        NodeEvent event2c = new NodeEvent(null, "datatypes", 10, null, createMap(new String[][] { { "string", "abcd" } }), Event.TYPE_NEW);
+        NodeEvent event2c = new NodeEvent(null, "datatypes", nodeNumber, null, createMap(new String[][] { { "string", "abcd" } }), Event.TYPE_NEW);
         Query q7 = Queries.createQuery(cloud, null, "datatypes", "datatypes.number", "string like 'a' ", null, null, null, false);
         Query q8 = Queries.createQuery(cloud, null, "datatypes", "datatypes.number", "string like 'a?'", null, null, null, false);
         Query q9 = Queries.createQuery(cloud, null, "datatypes", "datatypes.number", "string like 'a%'", null, null, null, false);
@@ -236,18 +242,18 @@ public class ConstraintMatcherTest extends BridgeTest {
         // type integer. allso tests event types delete and new
         Query query1 = Queries.createQuery(cloud, null, "datatypes", "datatypes.number", "datatypes.integer < 3", null, null, null, false);
 
-        NodeEvent event2a = new NodeEvent(null, "datatypes", 10, createMap(new Object[][] { { new String("integer"), new Integer(2) } }), createMap(new Object[][] { { new String("integer"), new Integer(1) } }), Event.TYPE_CHANGE);
-        NodeEvent event2b = new NodeEvent(null, "datatypes", 10, createMap(new Object[][] { { new String("integer"), new Integer(2) } }), createMap(new Object[][] { { new String("integer"), new Integer(10) } }), Event.TYPE_CHANGE);
-        NodeEvent event2c = new NodeEvent(null, "datatypes", 10, createMap(new Object[][] { { new String("integer"), new Integer(10) } }), createMap(new Object[][] { { new String("integer"), new Integer(100) } }), Event.TYPE_CHANGE);
-        NodeEvent event2d = new NodeEvent(null, "datatypes", 10, createMap(new Object[][] { { new String("integer"), new Integer(3) } }), createMap(new Object[][] { { new String("integer"), new Integer(2) } }), Event.TYPE_CHANGE);
+        NodeEvent event2a = new NodeEvent(null, "datatypes", nodeNumber, createMap(new Object[][] { { new String("integer"), new Integer(2) } }), createMap(new Object[][] { { new String("integer"), new Integer(1) } }), Event.TYPE_CHANGE);
+        NodeEvent event2b = new NodeEvent(null, "datatypes", nodeNumber, createMap(new Object[][] { { new String("integer"), new Integer(2) } }), createMap(new Object[][] { { new String("integer"), new Integer(10) } }), Event.TYPE_CHANGE);
+        NodeEvent event2c = new NodeEvent(null, "datatypes", nodeNumber, createMap(new Object[][] { { new String("integer"), new Integer(10) } }), createMap(new Object[][] { { new String("integer"), new Integer(100) } }), Event.TYPE_CHANGE);
+        NodeEvent event2d = new NodeEvent(null, "datatypes", nodeNumber, createMap(new Object[][] { { new String("integer"), new Integer(3) } }), createMap(new Object[][] { { new String("integer"), new Integer(2) } }), Event.TYPE_CHANGE);
 
         // when the event type is 'new' the new values should be checked against the constraint
-        NodeEvent event2e = new NodeEvent(null, "datatypes", 10, null, createMap(new Object[][] { { new String("integer"), new Integer(2) } }), Event.TYPE_NEW);
-        NodeEvent event2f = new NodeEvent(null, "datatypes", 10, null, createMap(new Object[][] { { new String("integer"), new Integer(4) } }), Event.TYPE_NEW);
+        NodeEvent event2e = new NodeEvent(null, "datatypes", nodeNumber, null, createMap(new Object[][] { { new String("integer"), new Integer(2) } }), Event.TYPE_NEW);
+        NodeEvent event2f = new NodeEvent(null, "datatypes", nodeNumber, null, createMap(new Object[][] { { new String("integer"), new Integer(4) } }), Event.TYPE_NEW);
 
         // event type Delete
-        NodeEvent event2g = new NodeEvent(null, "datatypes", 10, createMap(new Object[][] { { new String("integer"), new Integer(2) } }), null, Event.TYPE_DELETE);
-        NodeEvent event2h = new NodeEvent(null, "datatypes", 10, createMap(new Object[][] { { new String("integer"), new Integer(4) } }), null, Event.TYPE_DELETE);
+        NodeEvent event2g = new NodeEvent(null, "datatypes", nodeNumber, createMap(new Object[][] { { new String("integer"), new Integer(2) } }), null, Event.TYPE_DELETE);
+        NodeEvent event2h = new NodeEvent(null, "datatypes", nodeNumber, createMap(new Object[][] { { new String("integer"), new Integer(4) } }), null, Event.TYPE_DELETE);
 
         // operator >
         Query query2 = Queries.createQuery(cloud, null, "datatypes", "datatypes.number", "datatypes.integer > 3", null, null, null, false);
@@ -373,7 +379,7 @@ public class ConstraintMatcherTest extends BridgeTest {
 
         {
             // will match
-            NodeEvent event = new NodeEvent(null, "datatypes", 10, 
+            NodeEvent event = new NodeEvent(null, "datatypes", nodeNumber, 
                                             createMap(new Object[][] { { new String("integer"), new Integer(2) } }), 
                                             createMap(new Object[][] { { new String("integer"), new Integer(1) } }), Event.TYPE_CHANGE);
             assertTrue(matchingStrategy.evaluate(event, query, null).shouldRelease());
@@ -381,25 +387,63 @@ public class ConstraintMatcherTest extends BridgeTest {
 
         {
             // never matches
-            NodeEvent event = new NodeEvent(null, "datatypes", 10, 
+            NodeEvent event = new NodeEvent(null, "datatypes", nodeNumber, 
                                             createMap(new Object[][] { { new String("integer"), new Integer(2) } }), 
                                             createMap(new Object[][] { { new String("integer"), new Integer(3) } }), Event.TYPE_CHANGE);
             assertFalse(matchingStrategy.evaluate(event, query, null).shouldRelease());
         }
         {
             // did match
-            NodeEvent event = new NodeEvent(null, "datatypes", 10, 
+            NodeEvent event = new NodeEvent(null, "datatypes", nodeNumber, 
                                             createMap(new Object[][] { { new String("integer"), new Integer(1) } }), 
                                             createMap(new Object[][] { { new String("integer"), new Integer(2) } }), Event.TYPE_CHANGE);
             assertTrue(matchingStrategy.evaluate(event, query, null).shouldRelease());
         }
         {
             // still matches
-            NodeEvent event = new NodeEvent(null, "datatypes", 10, 
+            NodeEvent event = new NodeEvent(null, "datatypes", nodeNumber, 
                                             createMap(new Object[][] { { new String("integer"), new Integer(1) } }), 
                                             createMap(new Object[][] { { new String("integer"), new Integer(0) } }), Event.TYPE_CHANGE);
             assertTrue(matchingStrategy.evaluate(event, query, null).shouldRelease());
         }
     }
+
+
+    public void testSpeed() {
+        Query query = Queries.createQuery(cloud, null, "datatypes", "datatypes.number,datatypes.integer", null, null, null, null, false);
+        Set values = new HashSet();
+        values.add(new Integer(0));
+        values.add(new Integer(1));
+        query.setConstraint(Queries.createConstraint(query, "datatypes.integer", Queries.getOperator("IN"), values, null, false));
+
+        NodeEvent event1 = new NodeEvent(null, "datatypes", nodeNumber, 
+                                         createMap(new Object[][] { { new String("integer"), new Integer(2) } }), 
+                                         createMap(new Object[][] { { new String("integer"), new Integer(1) } }), Event.TYPE_CHANGE);
+        NodeEvent event2 = new NodeEvent(null, "datatypes", nodeNumber, 
+                                         createMap(new Object[][] { { new String("integer"), new Integer(2) } }), 
+                                         createMap(new Object[][] { { new String("integer"), new Integer(3) } }), Event.TYPE_CHANGE);
+        NodeEvent event3 = new NodeEvent(null, "datatypes", nodeNumber, 
+                                            createMap(new Object[][] { { new String("integer"), new Integer(1) } }), 
+                                            createMap(new Object[][] { { new String("integer"), new Integer(2) } }), Event.TYPE_CHANGE);
+        
+        NodeEvent event4 = new NodeEvent(null, "datatypes", nodeNumber, 
+                                            createMap(new Object[][] { { new String("integer"), new Integer(1) } }), 
+                                            createMap(new Object[][] { { new String("integer"), new Integer(0) } }), Event.TYPE_CHANGE);
+
+        ChainedReleaseStrategy chain = new ChainedReleaseStrategy(); // in reality always a chain is used;
+        chain.addReleaseStrategy(matchingStrategy);
+        System.out.println("Simple performance (constraint matching).");
+        long startTime = System.currentTimeMillis();
+        for (int i = 0; i < 50000; i++) {
+            chain.evaluate(event1, query, null).shouldRelease();
+            chain.evaluate(event2, query, null).shouldRelease();
+            chain.evaluate(event3, query, null).shouldRelease();
+            //chain.evaluate(event3, query, null).shouldRelease();
+        }
+        System.out.println("Simple performance test result (contraint matching): " + (System.currentTimeMillis() - startTime) + " ms");
+
+
+    }
+
 
 }
