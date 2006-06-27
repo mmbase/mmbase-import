@@ -25,7 +25,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * Cache manager manages the static methods of {@link Cache}. If you prefer you can call them on this in stead.
  *
  * @since MMBase-1.8
- * @version $Id: CacheManager.java,v 1.4 2006-02-14 22:42:32 michiel Exp $
+ * @version $Id: CacheManager.java,v 1.5 2006-06-27 07:31:46 michiel Exp $
  */
 public class CacheManager {
 
@@ -145,21 +145,26 @@ public class CacheManager {
                     cache.maxEntrySize = cache.getDefaultMaxEntrySize();
                     //now see if we have to load cache release strategies for this lovely cache...
                     if(cache instanceof QueryResultCache){
+                        QueryResultCache queryCache = (QueryResultCache) cache;
                         //first remove all present strategies (this might be a reconfiguration)
-                        ((QueryResultCache)cache).getReleaseStrategy().removeAllStrategies();
+                        queryCache.getReleaseStrategy().removeAllStrategies();
                         log.debug("found a SearchQueryCache: " + cacheName);
                         //see if there are globally configured release strategies
                         List strategies = findReleaseStrategies(xmlReader, xmlReader.getElementByPath("caches"));
                         if(strategies != null){
                             log.debug("found " + strategies.size() + " globally configured strategies");
-                            ((QueryResultCache)cache).addReleaseStrategies(strategies);
+                            queryCache.addReleaseStrategies(strategies);
                         }
 
                         //see if there are strategies configured for this cache
                         strategies = findReleaseStrategies(xmlReader, cacheElement);
                         if(strategies != null){
                             log.debug("found " + strategies.size() + " strategies for cache " + cache.getName());
-                            ((QueryResultCache)cache).addReleaseStrategies(strategies);
+                            queryCache.addReleaseStrategies(strategies);
+                        }
+                        if (queryCache.getReleaseStrategy().size() == 0) {
+                            log.warn("No release-strategies configured for cache " + queryCache + " (nor globally configured); falling back to basic release strategy");
+                            queryCache.addReleaseStrategy(new BasicReleaseStrategy());
                         }
                     }
                 }
@@ -174,7 +179,7 @@ public class CacheManager {
      * @since 1.8
      */
     private static List findReleaseStrategies(DocumentReader reader, Element parentElement) {
-        List result = new ArrayList(5);
+        List result = new ArrayList();
         Iterator strategyParentIterator = reader.getChildElements(parentElement, "releaseStrategies");
         if(!strategyParentIterator.hasNext()){
             return null;
@@ -189,8 +194,7 @@ public class CacheManager {
                 log.debug("found strategy in configuration: "+ strategyClassName);
                 try {
                     ReleaseStrategy releaseStrategy = getStrategyInstance(strategyClassName);
-                    log.debug("still there after trying to get a strategy instance... Instance is " +
-                            releaseStrategy==null ? "null" : "not null");
+                    log.debug("still there after trying to get a strategy instance... Instance is " + releaseStrategy==null ? "null" : "not null");
 
                     //check if we got something
                     if(releaseStrategy != null){
@@ -202,12 +206,9 @@ public class CacheManager {
                     }
 
                 } catch (CacheConfigurationException e1) {
-                    // here we throw a runtime exception, becouse there is
+                    // here we throw a runtime exception, because there is
                     // no way we can deal with this error.
-                    log.error("Cache configuration error: " + e1.toString());
-                    log.debug("strategy instantiation error: "+e1.toString());
-                    throw new RuntimeException("Cache configuration error: " +
-                            e1.toString());
+                    throw new RuntimeException("Cache configuration error: " + e1.toString(), e1);
                 }
             }
         }

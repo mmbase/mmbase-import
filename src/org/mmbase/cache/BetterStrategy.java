@@ -22,12 +22,11 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
- * @javadoc
- * Better than what?
+ * This release strategy is a bit better than 'BasicReleaseStrategy, and also a bit more sophisticated.
  *
  * @since MMBase 1.8
  * @author Ernst Bunders
- * @version $Id: BetterStrategy.java,v 1.21 2006-06-23 16:54:23 michiel Exp $
+ * @version $Id: BetterStrategy.java,v 1.22 2006-06-27 07:31:45 michiel Exp $
  */
 public class BetterStrategy extends ReleaseStrategy {
 
@@ -49,7 +48,7 @@ public class BetterStrategy extends ReleaseStrategy {
         return "This strategy performs all kinds of checks to test if the node or relation event actually matches the query. " +
             "For node events the type is checked, as well as some other things. For relation events the type is checked as well as " +
             "the source and destination. Then there are some other things like: 'new node events should not flush queries with " +
-            "more than one step, becouse they have no relation yet'. It allso checks if a certain change in a node actually can affect the " +
+            "more than one step, because they have no relation yet'. It also checks if a certain change in a node actually can affect the " +
             "outcome of a query.";
     }
 
@@ -78,56 +77,34 @@ public class BetterStrategy extends ReleaseStrategy {
      * @return
      */
     private boolean shouldRelease(NodeEvent event, SearchQuery query) {
-        /*
-         * Here are all the preconditions that must be met to proceed. Basic checks to determin
-         * if this event has to be evaluated on this query at all
-         */
-
-        //check if this event matches the path of the query
-        if(getStepsForType(query, MMBase.getMMBase().getBuilder(event.getBuilderName()) ).size() == 0 ){
-            logResult("no flush: type of event is not found in query path", query, event);
-            return false;
-        }
-
-        //check if the step(s) matching this event's node type have 'nodes' set, and if so, check
-        //if changed node is included
-        if(checkNodesSet(event, query)){
-            logResult("no flush: the query has nodes set and this event's node is not one of them", query, event);
-            return false;
-        }
-
         switch (event.getType()) {
         case Event.TYPE_NEW:
-            log.debug(">> node event type new");
-            /*
-             * Put all the rules that apply for new node events
-             */
-
-            // query has more than one step, all 'new node' events can be ignored, becouse this
+            // query has more than one step, all 'new node' events can be ignored, because this
             // node has no relations yet.
-            if (query.getSteps().size() > 1){
+            if (query.getSteps().size() > 1) {
                 logResult("no flush: 'new node' event in multistep query", query, event);
                 return false; // don't release
             }
-
+            if(! checkStepsAndNodesSet(event, query)){
+                logResult("no flush: the query has nodes set and this event's node is not one of them, or this step has no steps of corresponding type", query, event);
+                return false;
+            }
             break;
 
         case Event.TYPE_DELETE:
-            log.debug(">> node event type delete");
-            /*
-             * Put all rules here that apply to removed node events
-             */
-
+            if(! checkStepsAndNodesSet(event, query)){
+                logResult("no flush: the query has nodes set and this event's node is not one of them, or this step has no steps of corresponding type", query, event);
+                return false;
+            }
             break;
 
         case Event.TYPE_CHANGE:
-            log.debug(">> node event type changed");
-            /*
-             * Put all rules here that apply to changede nodes
-             */
-
+            if(! checkStepsAndNodesSet(event, query)){
+                logResult("no flush: the query has nodes set and this event's node is not one of them, or this step has no steps of corresponding type", query, event);
+                return false;
+            }
             //if the changed field(s) do not occur in the fields or constraint section
-            //of the query, it dous not have to be flushed
+            //of the query, it does not have to be flushed
             if(! checkChangedFieldsMatch(event, query)){
                 logResult("no flush: the fields that have changed are not used in the query", query, event);
                 return false;
@@ -139,6 +116,7 @@ public class BetterStrategy extends ReleaseStrategy {
                 logResult("query is aggregating and fields are of type count, changed fields do not affect the query result", query, event);
                 return false;
             }
+
 
         }
         logResult("flush: no reason not to", query, event);
@@ -168,7 +146,7 @@ public class BetterStrategy extends ReleaseStrategy {
          // if a query has more steps that one and the event is a relation event
          // we check if the role of the relation is allso in the query.
          if (! checkPathMatches(event, query)){
-             logResult("no flush: either source, destination or role dous not match to the query", query, event);
+             logResult("no flush: either source, destination or role does not match to the query", query, event);
              return false;
          }
 
@@ -197,7 +175,7 @@ public class BetterStrategy extends ReleaseStrategy {
               */
 
              //if the changed field(s) do not occur in the fields or constraint section
-             //of the query, it dous not have to be flushed
+             //of the query, it does not have to be flushed
              if(! checkChangedFieldsMatch(event.getNodeEvent(), query)) {
                  logResult("no flush: the changed relation fields do not match the fields or constraints of the query", query, event);
                  return false;
@@ -238,13 +216,14 @@ public class BetterStrategy extends ReleaseStrategy {
         if(constraint == null){
             return true;
         }
+        MMObjectBuilder eventBuilder = MMBase.getMMBase().getBuilder(event.getBuilderName());
         for (Iterator i = event.getChangedFields().iterator(); i.hasNext();) {
             String fieldName = (String) i.next();
-            if(getConstraintsForField(fieldName, event.getBuilderName(), constraint, query).size() > 0){
+            if(getConstraintsForField(fieldName, eventBuilder, constraint, query).size() > 0){
                 return false;
             }
         }
-        //all tests survived, query should not be flused
+        //all tests survived, query should not be flushed
         return true;
     }
 
@@ -268,11 +247,15 @@ public class BetterStrategy extends ReleaseStrategy {
         MMObjectBuilder eventSource     = mmb.getBuilder(eventSourceType);
         MMObjectBuilder eventDest       = mmb.getBuilder(eventDestType);
 
-        for (Iterator i = getRelationSteps(query).iterator(); i.hasNext();) {
-            RelationStep step = (RelationStep) i.next();
 
-            String stepSource = step.getPrevious().getTableName();
-            String stepDest   = step.getNext().getTableName();
+        Iterator i = query.getSteps().iterator();
+        Step prevStep = (Step) i.next();
+        String stepDest = prevStep.getTableName();
+        while (i.hasNext()) {
+            String stepSource = stepDest;
+            RelationStep step = (RelationStep) i.next();
+            Step nextStep = (Step) i.next();
+            stepDest = nextStep.getTableName();
             boolean matchesProper =
                 (eventSourceType.equals(stepSource) || eventSource.isExtensionOf(mmb.getBuilder(stepSource))) &&
                 (eventDestType.equals(stepDest)     || eventDest.isExtensionOf(mmb.getBuilder(stepDest)));
@@ -282,8 +265,9 @@ public class BetterStrategy extends ReleaseStrategy {
                  (eventSourceType.equals(stepDest)  || eventSource.isExtensionOf(mmb.getBuilder(stepDest)))
                  );
 
+            Integer role = step.getRole();
             if (matches &&
-                (step.getRole() == null || step.getRole().intValue() == event.getRole())) {
+                (role == null || role.intValue() == event.getRole())) {
                 return true;
             }
         }
@@ -308,14 +292,19 @@ public class BetterStrategy extends ReleaseStrategy {
         }
         boolean constraintsFound = false;
         boolean fieldsFound = false;
+        String eventBuilderName = event.getBuilderName();
+        MMBase mmb = MMBase.getMMBase();
+        MMObjectBuilder eventBuilder = mmb.getBuilder(eventBuilderName);
         search:
         for (Iterator i = event.getChangedFields().iterator(); i.hasNext();) {
             String fieldName = (String) i.next();
             //first test the constraints
-            List constraintsForFieldList = getConstraintsForField(fieldName, event.getBuilderName(), query.getConstraint(), query);
-            if(constraintsForFieldList.size() > 0){
+            List constraintsForFieldList = getConstraintsForField(fieldName, eventBuilder, query.getConstraint(), query);
+            if(constraintsForFieldList.size() > 0) {
                 constraintsFound = true;
-                log.debug("matching constraint found: " + constraintsForFieldList.size());
+                if (log.isDebugEnabled()) {
+                    log.debug("matching constraint found: " + constraintsForFieldList.size());
+                }
                 break search;
             }
 
@@ -323,9 +312,13 @@ public class BetterStrategy extends ReleaseStrategy {
             for (Iterator fieldIterator = query.getFields().iterator(); fieldIterator.hasNext();) {
                 StepField field = (StepField) fieldIterator.next();
                 if (field.getFieldName().equals(fieldName)
-                    && field.getStep().getTableName().equals(event.getBuilderName())) {
+                    && (field.getStep().getTableName().equals(eventBuilderName) ||
+                        eventBuilder.isExtensionOf(mmb.getBuilder(field.getStep().getTableName())))
+                        ) {
                     fieldsFound = true;
-                    if(log.isDebugEnabled())log.debug("matching field found: " + field.getStep().getTableName() + "." + field.getFieldName());
+                    if(log.isDebugEnabled()) {
+                        log.debug("matching field found: " + field.getStep().getTableName() + "." + field.getFieldName());
+                    }
                     break search;
                 }
             }
@@ -337,30 +330,38 @@ public class BetterStrategy extends ReleaseStrategy {
             log.debug(logMsg);
         }
         //now test the result
-        return (fieldsFound || constraintsFound);
+        return fieldsFound || constraintsFound;
     }
 
     /**
      * This method investigates all the steps of a query that correspond to the nodetype of the
      * node event. for each step a check is made if this step has 'nodes' set, and so, if the changed
      * node is one of them.
+     * 
+     * Also it checks if the step is of a corresponding type. It returns also false if no step
+     * matched the type of the node event.
      * @param event a NodeEvent
      * @param query
      * @return true if (all) the step(s) matching this event have nodes set, and non of these
      * match the number of the changed node (in which case the query should not be flused)
      */
-    private boolean checkNodesSet(NodeEvent event, SearchQuery query){
+    private boolean checkStepsAndNodesSet(NodeEvent event, SearchQuery query){
         //this simple optimization only works for nodeEvents
-        List steps = getStepsForType(query, MMBase.getMMBase().getBuilder(event.getBuilderName()));
-        for (Iterator i = steps.iterator(); i.hasNext();) {
+        MMBase mmb = MMBase.getMMBase();
+        String eventTable = event.getBuilderName();
+        MMObjectBuilder eventBuilder = mmb.getBuilder(eventTable);
+        Iterator i = query.getSteps().iterator();
+        while (i.hasNext()) {
             Step step = (Step) i.next();
+            String table = step.getTableName();
+            if (! (table.equals(eventTable) ||
+                   eventBuilder.isExtensionOf(mmb.getBuilder(table)))) continue;
             Set nodes = step.getNodes();
-            if (nodes == null || nodes.size() == 0 || nodes.contains(new Integer(event.getNodeNumber()))) {
-                //we're done. if one of the steps dous not meet one of the abouve conditions:
-                return false;
+            if (nodes == null || nodes.size() == 0 ||  nodes.contains(new Integer(event.getNodeNumber()))) {
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     private void logResult(String comment, SearchQuery query, Event event){

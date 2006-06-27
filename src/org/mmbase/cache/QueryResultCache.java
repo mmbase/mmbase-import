@@ -33,7 +33,7 @@ import org.mmbase.bridge.implementation.BasicQuery;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Bunst Eunders
- * @version $Id: QueryResultCache.java,v 1.33 2006-06-23 11:48:39 johannes Exp $
+ * @version $Id: QueryResultCache.java,v 1.34 2006-06-27 07:31:46 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -58,9 +58,9 @@ abstract public class QueryResultCache extends Cache {
     /**
      * this is only used for logging, to create readable queries out of query objects.
      */
-    BasicSqlHandler sqlHandler = new BasicSqlHandler();
+    final BasicSqlHandler sqlHandler = new BasicSqlHandler();
 
-    private ChainedReleaseStrategy releaseStrategy;
+    private final ChainedReleaseStrategy releaseStrategy;
 
     /**
      * Explicitely invalidates all Query caches for a certain builder. This is
@@ -75,7 +75,7 @@ abstract public class QueryResultCache extends Cache {
     // @todo I think it can be done with one Observer instance too, (in which
     // case we can as well
     // let QueryResultCache implement MMBaseObserver itself)
-    private Map observers = new HashMap();
+    private final Map observers = new HashMap();
 
     QueryResultCache(int size) {
         super(size);
@@ -101,7 +101,7 @@ abstract public class QueryResultCache extends Cache {
 
     /**
      * This method lets you add a release strategy to the cache. It will in fact
-     * be added to <code>ChainedReleaseStrategy</codde>, which
+     * be added to <code>ChainedReleaseStrategy</code>, which
      * is the default base release strategy.
      * @param releaseStrategy A releaseStrategy to add.
      */
@@ -278,31 +278,30 @@ abstract public class QueryResultCache extends Cache {
             }
             int evaluatedResults = cacheKeys.size();
             Set removeKeys = new HashSet();
-            long totalEvaluationTime = 0;
+            long startTime = System.currentTimeMillis();
             synchronized (QueryResultCache.this) {
                 Iterator i = cacheKeys.iterator();
                 if (log.isDebugEnabled()) {
-                    log.debug("Considering " + cacheKeys.size() + " objects in " + QueryResultCache.this.getName() + " for flush.");
+                    log.debug("Considering " + cacheKeys.size() + " objects in " + QueryResultCache.this.getName() + " for flush because of " + event);
                 }
                 while(i.hasNext()) {
-                    ReleaseStrategy.StrategyResult result = null;
                     SearchQuery key = (SearchQuery) i.next();
 
-                    //only if the strategy is enabled
+                    boolean shouldRelease;
                     if(releaseStrategy.isEnabled()){
-
                         if(event instanceof NodeEvent){
-                            result = releaseStrategy.evaluate((NodeEvent)event, key, (List) get(key));
+                            shouldRelease = releaseStrategy.evaluate((NodeEvent)event, key, (List) get(key)).shouldRelease();
                         } else if (event instanceof RelationEvent){
-                            result = releaseStrategy.evaluate((RelationEvent)event, key, (List) get(key));
+                            shouldRelease = releaseStrategy.evaluate((RelationEvent)event, key, (List) get(key)).shouldRelease();
                         } else {
                             log.error("event " + event.getClass() + " " + event + " is of unsupported type");
-                            continue;
+                            shouldRelease = false;
                         }
-                        totalEvaluationTime += result.getCost();
+                    } else {
+                        shouldRelease = true;
                     }
 
-                    if (!releaseStrategy.isEnabled() || (result != null &&result.shouldRelease())) {
+                    if (shouldRelease) {
                         removeKeys.add(key);
                         i.remove();
                     }
@@ -317,7 +316,7 @@ abstract public class QueryResultCache extends Cache {
                 }
             }
             if (log.isDebugEnabled()) {
-                log.debug(QueryResultCache.this.getName() + ": event analyzed in " + totalEvaluationTime + " milisecs. evaluating " + evaluatedResults + ". Flushed " + removeKeys.size());
+                log.debug(QueryResultCache.this.getName() + ": event analyzed in " + (System.currentTimeMillis() - startTime)  + " milisecs. evaluating " + evaluatedResults + ". Flushed " + removeKeys.size());
             }
             return removeKeys.size();
         }
@@ -328,7 +327,7 @@ abstract public class QueryResultCache extends Cache {
 
         public void clear() {
             cacheKeys.clear();
-        }	
+        }
     }
 
     public void clear(){
