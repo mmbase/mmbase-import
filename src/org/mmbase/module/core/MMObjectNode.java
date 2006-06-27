@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.188 2006-06-26 15:05:40 nklasens Exp $
+ * @version $Id: MMObjectNode.java,v 1.189 2006-06-27 13:18:41 johannes Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -466,7 +466,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @since MMBase-1.8
      */
     protected boolean checkFieldExistance(String fieldName) {
-        if (fieldName.startsWith("_")) {
+        if (fieldName.charAt(0) == '_') {
             // don't complain then, a lot of hackery (apps1 import/export) is based on this.
             // This is just a hack to make app1 import/export working, withough exposing the values map.
             return true;
