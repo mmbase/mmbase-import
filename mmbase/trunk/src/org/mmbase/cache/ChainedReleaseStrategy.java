@@ -23,30 +23,22 @@ import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * This class will manage a collection of <code>ReleaseStrategy</code>
- * instances, and call them hierarchically. It is not really thread safe, but I
- * suppose the cost of synchronizing access to the list of strategies does not
- * weigh up to the benefit.
+ * instances, and call them hierarchically. 
  *
  * @since MMBase-1.8
  * @author Ernst Bunders
- * @version $Id: ChainedReleaseStrategy.java,v 1.17 2006-02-14 22:42:50 michiel Exp $
+ * @version $Id: ChainedReleaseStrategy.java,v 1.18 2006-06-27 07:31:46 michiel Exp $
  */
 public class ChainedReleaseStrategy extends ReleaseStrategy {
     private static final Logger log = Logging.getLoggerInstance(ChainedReleaseStrategy.class);
 
-    private List releaseStrategies = new CopyOnWriteArrayList();
+    private final List releaseStrategies = new CopyOnWriteArrayList();
 
     //this map is used to store the 'enabled' status of wrapped strategies when this one is being disabled
     //so the old settings can be returned when it is enabled again
-    private Map childStrategyMemory = new HashMap();
-
-    private String basicStrategyName;
+    private final Map childStrategyMemory = new HashMap();
 
     public ChainedReleaseStrategy() {
-        //BetterStrategy st = new BetterStrategy();
-        BasicReleaseStrategy st = new BasicReleaseStrategy();
-        basicStrategyName = st.getName();
-        addReleaseStrategy(st);
     }
 
 
@@ -57,6 +49,7 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
      * preserved, so when it is being 'enabled' again, these settings are restored, in stead of
      * just setting all wrapped strategies to 'enabled'.
      */
+    // MM: very nice. When is this useful?
     public void setEnabled(boolean newStatus) {
         if(newStatus != isEnabled()){
             super.setEnabled(newStatus);
@@ -71,7 +64,7 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
                 if(newStatus == true){
                     Boolean memory = (Boolean) childStrategyMemory.get(strategy.getName());
                     strategy.setEnabled( memory == null ? true :  memory.booleanValue());
-                }else{
+                } else {
                     //if it must switch of, we must record the status
                     childStrategyMemory.put(strategy.getName(), new Boolean(strategy.isEnabled()));
                     strategy.setEnabled(false);
@@ -88,18 +81,16 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
      */
     public void addReleaseStrategy(ReleaseStrategy strategy) {
         if (! releaseStrategies.contains(strategy)){
-        	releaseStrategies.add(strategy);
+            releaseStrategies.add(strategy);
         }
     }
 
     public void removeStrategy(ReleaseStrategy strategy) {
-        if (!strategy.getName().equals(basicStrategyName)) {
-            releaseStrategies.remove(strategy);
-        }
+        releaseStrategies.remove(strategy);
     }
 
     /**
-     * removes all strategies but the base one
+     * removes all strategies 
      */
     public void removeAllStrategies(){
         for (Iterator i = iterator(); i.hasNext(); ){
@@ -123,9 +114,7 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
      */
     public String getDescription() {
         return "This is a wrapper for any number of strategies you would like to "
-            + "combine. it is used as the base strategy for QueryResultCache subclasses."
-            + "it will at lease contain a BasicReleaseStrategy, and leave the rest to the "
-            + "user to configure.";
+            + "combine. it is used as the base strategy for QueryResultCache subclasses.";
     }
 
     public Iterator iterator() {
@@ -167,6 +156,12 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
             ReleaseStrategy rs = (ReleaseStrategy) i.next();
             rs.clear();
         }
+    }
+    /**
+     * @since MMBase-1.8.1
+     */
+    public int size() {
+        return releaseStrategies.size();
     }
 
     public String toString() {
