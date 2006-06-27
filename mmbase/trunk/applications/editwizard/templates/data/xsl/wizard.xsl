@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.150 2006-04-03 14:52:02 pierre Exp $
+    @version $Id: wizard.xsl,v 1.151 2006-06-27 12:57:31 nklasens Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -33,7 +33,7 @@
     The following things can be overriden to customize the appearance of wizard
     ================================================================================ -->
 
-  <xsl:variable name="BodyOnLoad">doOnLoad_ew(); start_validator(); startHtmlArea();</xsl:variable>
+  <xsl:variable name="BodyOnLoad">doOnLoad_ew(); start_validator(); startHtmlArea(); initPopCalendar();</xsl:variable>
   <xsl:variable name="BodyOnunLoad">doOnUnLoad_ew();</xsl:variable>
 
   <xsl:template name="javascript">
@@ -41,6 +41,30 @@
       <xsl:comment>help IE</xsl:comment>
     </script>
     <script type="text/javascript" src="{$javascriptdir}date.js">
+      <xsl:comment>help IE</xsl:comment>
+    </script>
+    <script type="text/javascript">
+        var gotoString = '<xsl:value-of select="$datepicker_currentmonth"/>';
+        var todayString = '<xsl:value-of select="$datepicker_today"/>';
+        var weekString = 'Wk';
+        var scrollLeftMessage = '<xsl:value-of select="$datepicker_scrollleft"/>';
+        var scrollRightMessage = '<xsl:value-of select="$datepicker_scrollright"/>';
+        var selectMonthMessage = '<xsl:value-of select="$datepicker_selectmonth"/>';
+        var selectYearMessage = '<xsl:value-of select="$datepicker_selectyear"/>';
+        var selectDateMessage = '<xsl:value-of select="$datepicker_selectdate"/>'; // do not replace [date], it will be replaced by date.
+        var monthName =	new	Array(
+        					'<xsl:value-of select="$date_january"/>','<xsl:value-of select="$date_february"/>',
+        					'<xsl:value-of select="$date_march"/>','<xsl:value-of select="$date_april"/>',
+        					'<xsl:value-of select="$date_may"/>','<xsl:value-of select="$date_june"/>',
+        					'<xsl:value-of select="$date_july"/>','<xsl:value-of select="$date_august"/>',
+        					'<xsl:value-of select="$date_september"/>','<xsl:value-of select="$date_october"/>',
+        					'<xsl:value-of select="$date_november"/>','<xsl:value-of select="$date_december"/>')
+		var dayName = new Array	('<xsl:value-of select="$day_sun"/>','<xsl:value-of select="$day_mon"/>',
+								'<xsl:value-of select="$day_tue"/>','<xsl:value-of select="$day_wed"/>',
+								'<xsl:value-of select="$day_thu"/>','<xsl:value-of select="$day_fri"/>',
+								'<xsl:value-of select="$day_sat"/>')
+    </script>
+    <script language="javascript" src="{$javascriptdir}datepicker.js">
       <xsl:comment>help IE</xsl:comment>
     </script>
     <script type="text/javascript" src="{$javascriptdir}validator.js">
@@ -874,6 +898,7 @@
     </select>
     <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
     <input class="date" name="internal_{@fieldname}_year" super="{@fieldname}" type="text" value="{date:getYear(string(value), string($timezone))}" size="5" maxlength="4"/>
+    <input type="image" class="calendar" src="{$mediadir}datepicker/calendar.gif" border="0" onClick="popUpCalendar(this, 'dd-mm-yyyy', - 205 , 5 , this.form, 'internal_{@fieldname}');return false;"/>
   </xsl:template>
 
   <xsl:template name="ftype-datetime-time">
