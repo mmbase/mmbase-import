@@ -3,7 +3,7 @@
 
   This is the style specific to 'wizard' pages.
 
-  @version  $Id: wizard.css,v 1.8 2005-09-27 15:35:43 michiel Exp $
+  @version  $Id: wizard.css,v 1.9 2006-06-27 12:57:30 nklasens Exp $
 
 body
 table.head
@@ -314,6 +314,7 @@ tr.itemline
 }
 
 input.date { width: auto; }
+input.calendar { width: 17px; height: 17px; }
 input.input,
 textarea.input { width: 100%; }
 

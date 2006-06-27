@@ -6,7 +6,7 @@
     @since  MMBase-1.6
     @author Pierre van Rooden
     @author Nico Klasens
-    @version $Id: prompts.xsl,v 1.30 2005-11-28 12:41:46 michiel Exp $
+    @version $Id: prompts.xsl,v 1.31 2006-06-27 12:57:31 nklasens Exp $
 
     prompts used in this editwizard.
     Override these prompts to change the view in your own versions.
@@ -60,6 +60,22 @@
   <xsl:variable name="date_october">october</xsl:variable>
   <xsl:variable name="date_november">november</xsl:variable>
   <xsl:variable name="date_december">december</xsl:variable>
+
+  <xsl:variable name="day_sun">Sun</xsl:variable>
+  <xsl:variable name="day_mon">Mon</xsl:variable>
+  <xsl:variable name="day_tue">Tue</xsl:variable>
+  <xsl:variable name="day_wed">Wed</xsl:variable>
+  <xsl:variable name="day_thu">Thu</xsl:variable>
+  <xsl:variable name="day_fri">Fri</xsl:variable>
+  <xsl:variable name="day_sat">Sat</xsl:variable>
+
+  <xsl:variable name="datepicker_currentmonth">Go to current month</xsl:variable>
+  <xsl:variable name="datepicker_today">Today is</xsl:variable>
+  <xsl:variable name="datepicker_scrollleft">Click here to scroll to the previous month. Press the mousebutton to scroll automatically.</xsl:variable>
+  <xsl:variable name="datepicker_scrollright">Click here to scroll to the next month. Press the mousebutton to scroll automatically.</xsl:variable>
+  <xsl:variable name="datepicker_selectmonth">Click here to select a month.</xsl:variable>
+  <xsl:variable name="datepicker_selectyear">Click here to select a year.</xsl:variable>
+  <xsl:variable name="datepicker_selectdate">Select [datum] as the date.</xsl:variable>
 
   <xsl:variable name="time_daymonth" />
   <!-- Between day and month. Sadly, order cannot yet be adjusted -->
