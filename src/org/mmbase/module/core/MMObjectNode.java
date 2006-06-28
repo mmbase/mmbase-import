@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.189 2006-06-27 13:18:41 johannes Exp $
+ * @version $Id: MMObjectNode.java,v 1.190 2006-06-28 13:29:51 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -446,9 +446,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
                     int dbtype = getDBType(key);
                     String value = "" + entry.getValue();  // XXX:should be retrieveValue ?
                     if ("".equals(result.toString())) {
-                        result = new StringBuffer(key+"="+dbtype+":'"+value+"'"); // can this occur?
+                        result = new StringBuffer(key+"='"+value+"'"); // can this occur?
                     } else {
-                        result.append(","+key+"="+dbtype+":'");
+                        result.append(","+key+"='");
                         Casting.toStringBuffer(result, value).append("'");
                     }
                 }
@@ -741,7 +741,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      */
     public boolean isNull(String fieldName) {
         if (checkFieldExistance(fieldName)) {
-            if (getBuilder().getField(fieldName).getType() == Field.TYPE_NODE) {
+            Field field = getBuilder().getField(fieldName);
+            if (field != null && field.getType() == Field.TYPE_NODE) {
                 return getIntValue(fieldName) <= -1;
             }
             Object value = values.get(fieldName);
