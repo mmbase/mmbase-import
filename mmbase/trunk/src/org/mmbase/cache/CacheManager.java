@@ -25,7 +25,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * Cache manager manages the static methods of {@link Cache}. If you prefer you can call them on this in stead.
  *
  * @since MMBase-1.8
- * @version $Id: CacheManager.java,v 1.5 2006-06-27 07:31:46 michiel Exp $
+ * @version $Id: CacheManager.java,v 1.6 2006-06-28 17:37:54 michiel Exp $
  */
 public class CacheManager {
 
@@ -34,7 +34,7 @@ public class CacheManager {
     /**
      * All registered caches
      */
-    private static Map caches = new ConcurrentHashMap();
+    private static final Map caches = new ConcurrentHashMap();
 
     /**
      * Returns the Cache with a certain name. To be used in combination with getCaches(). If you
@@ -53,7 +53,7 @@ public class CacheManager {
      * @return A Set containing the names of all caches.
      */
     public static Set getCaches() {
-        return caches.keySet();
+        return Collections.unmodifiableSet(caches.keySet());
     }
 
 
@@ -286,6 +286,20 @@ public class CacheManager {
             len += sizeof.sizeof(entry.getKey()) + sizeof.sizeof(entry.getValue());
         }
         return len;
+    }
+
+    /**
+     * Clears and dereferences all caches. To be used on shutdown of MMBase.
+     * @since MMBase-1.8.1
+     */
+    public static void shutdown() {
+        log.info("Clearing all caches");
+        Iterator  i =  caches.entrySet().iterator();
+        while (i.hasNext()) {
+            Cache cache = (Cache) i.next();
+            cache.clear();
+            i.remove();
+        }
     }
 
 }
