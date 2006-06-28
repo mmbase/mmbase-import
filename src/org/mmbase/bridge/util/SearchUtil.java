@@ -221,33 +221,60 @@ public class SearchUtil {
     }
     
     public static void addEqualConstraint(NodeQuery query, NodeManager manager, String fieldname, String value) {
+        FieldValueConstraint constraint = createEqualConstraint(query, manager, fieldname, value);
+        addConstraint(query, constraint);
+
+    }
+
+    public static FieldValueConstraint createEqualConstraint(NodeQuery query, NodeManager manager, String fieldname, String value) {
         Field keyField = manager.getField(fieldname);
-        addEqualConstraint(query, keyField, value);
+        FieldValueConstraint constraint = createEqualConstraint(query, keyField, value);
+        return constraint;
     }
 
     public static void addEqualConstraint(NodeQuery query, NodeManager manager, String fieldname, Integer value) {
+        FieldValueConstraint constraint = createEqualConstraint(query, manager, fieldname, value);
+        addConstraint(query, constraint);
+    }
+
+    public static FieldValueConstraint createEqualConstraint(NodeQuery query, NodeManager manager, String fieldname, Integer value) {
         Field keyField = manager.getField(fieldname);
-        addEqualConstraint(query, keyField, value);
+        return createEqualConstraint(query, keyField, value);
     }
     
     public static  void addEqualConstraint(NodeQuery query, Field field, String value) {
+        FieldValueConstraint constraint = createEqualConstraint(query, field, value);
+        addConstraint(query, constraint);
+    }
+
+    public static FieldValueConstraint createEqualConstraint(NodeQuery query, Field field, String value) {
         FieldValueConstraint constraint = query.createConstraint(query.getStepField(field),
                 FieldCompareConstraint.EQUAL, value);
         query.setCaseSensitive(constraint, false);
-        addConstraint(query, constraint);
+        return constraint;
     }
     
     public static  void addEqualConstraint(NodeQuery query, Field field, Integer value) {
+        FieldValueConstraint constraint = createEqualConstraint(query, field, value);
+        addConstraint(query, constraint);
+    }
+
+    public static FieldValueConstraint createEqualConstraint(NodeQuery query, Field field, Integer value) {
         FieldValueConstraint constraint = query.createConstraint(query.getStepField(field),
                 FieldCompareConstraint.EQUAL, value);
-        addConstraint(query, constraint);
+        return constraint;
     }
     
     public static  void addLikeConstraint(NodeQuery query, Field field, String value) {
+        FieldValueConstraint constraint = createLikeConstraint(query, field, value);
+        addConstraint(query, constraint);
+    }
+
+    public static FieldValueConstraint createLikeConstraint(NodeQuery query, Field field, String value) {
         FieldValueConstraint constraint = query.createConstraint(query.getStepField(field),
                 FieldCompareConstraint.LIKE, "%" + value + "%");
         query.setCaseSensitive(constraint, false);
-        addConstraint(query, constraint);
+        return constraint;
     }
     
     public static  void addDayConstraint(NodeQuery query, NodeManager nodeManager, String fieldName,
@@ -271,16 +298,21 @@ public class SearchUtil {
     }
 
     public static void addDatetimeConstraint(NodeQuery query, Field field, long from, long to) {
+        FieldValueBetweenConstraint constraint = createDatetimeConstraint(query, field, from, to);
+        addConstraint(query, constraint);
+    }
+
+    public static FieldValueBetweenConstraint createDatetimeConstraint(NodeQuery query, Field field, long from, long to) {
+        FieldValueBetweenConstraint constraint = null;
         if (field.getType() == Field.TYPE_DATETIME) {
-            FieldValueBetweenConstraint constraint = query.createConstraint(query.getStepField(field),
+            constraint = query.createConstraint(query.getStepField(field),
                     new Date(from), new Date(to));
-            addConstraint(query, constraint);
         }
         else {
-            FieldValueBetweenConstraint constraint = query.createConstraint(query.getStepField(field),
+            constraint = query.createConstraint(query.getStepField(field),
                     new Long(from), new Long(to));
-            addConstraint(query, constraint);
         }
+        return constraint;
     }
 
     public static void addLimitConstraint(NodeQuery query, int offset, int maxNumber) {
@@ -291,34 +323,48 @@ public class SearchUtil {
             query.setMaxNumber(maxNumber);
         }
     }
-    
 
     public static void addTypeConstraints(NodeQuery query, List types) {
+        FieldValueInConstraint constraint = createTypeConstraints(query, types);
+        addConstraint(query, constraint);
+    }
+
+    public static FieldValueInConstraint createTypeConstraints(NodeQuery query, List types) {
         Cloud cloud = query.getCloud();
-        Field field = query.getNodeManager().getField("otype");
         SortedSet set = new TreeSet();
         for (Iterator iter = types.iterator(); iter.hasNext();) {
             String type = (String) iter.next();
             NodeManager manager = cloud.getNodeManager(type);
             set.add(new Integer(manager.getNumber()));
         }
-        addInConstraint(query, field, set);
+        Field field = query.getNodeManager().getField("otype");
+        return createInConstraint(query, field, set);
     }
 
     public static void addNodesConstraints(Query query, Field field, NodeList nodes) {
+        SortedSet set = createNodesConstraints(nodes);
+        addInConstraint(query, field, set);
+    }
+
+    public static SortedSet createNodesConstraints(NodeList nodes) {
         SortedSet set = new TreeSet();
         for (Iterator iter = nodes.iterator(); iter.hasNext();) {
             Node node = (Node) iter.next();
             set.add(new Integer(node.getNumber()));
         }
-        addInConstraint(query, field, set);
+        return set;
     }
     
     public static void addInConstraint(Query query, Field field, SortedSet set) {
+        FieldValueInConstraint constraint = createInConstraint(query, field, set);
+        addConstraint(query, constraint);
+    }
+
+    public static FieldValueInConstraint createInConstraint(Query query, Field field, SortedSet set) {
         query.getStep(field.getNodeManager().getName());
         StepField stepfield = getStepField(query, field);        
         FieldValueInConstraint constraint = query.createConstraint(stepfield, set);
-        addConstraint(query, constraint);
+        return constraint;
     }
 
     public static StepField getStepField(Query query, Field field) {
@@ -336,14 +382,35 @@ public class SearchUtil {
     }
     
     public static void addConstraint(Query query, Constraint constraint) {
+        addConstraint(query, constraint, CompositeConstraint.LOGICAL_AND);
+    }
+
+    public static Constraint createANDConstraint(Query query, Constraint one, Constraint two) {
+        return createLogicalConstraint(query, one, two, CompositeConstraint.LOGICAL_OR);
+    }
+    
+    public static void addORConstraint(Query query, Constraint constraint) {
+        addConstraint(query, constraint, CompositeConstraint.LOGICAL_OR);
+    }
+
+    public static Constraint addORConstraint(Query query, Constraint one, Constraint two) {
+        return createLogicalConstraint(query, one, two, CompositeConstraint.LOGICAL_OR);
+    }
+    
+    public static void addConstraint(Query query, Constraint constraint, int operator) {
         if (query.getConstraint() == null) {
             query.setConstraint(constraint);
         }
         else {
-            CompositeConstraint newc = query.createConstraint(query.getConstraint(),
-                    CompositeConstraint.LOGICAL_AND, constraint);
+            CompositeConstraint newc = createLogicalConstraint(query, query.getConstraint(), constraint, operator);
             query.setConstraint(newc);
         }
+    }
+
+    public static CompositeConstraint createLogicalConstraint(Query query, Constraint one, Constraint two, int operator) {
+        CompositeConstraint newc = query.createConstraint(one,
+                operator, two);
+        return newc;
     }
 
     /**
