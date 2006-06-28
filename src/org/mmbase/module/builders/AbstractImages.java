@@ -22,7 +22,7 @@ import org.mmbase.util.functions.*;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.46 2006-03-31 11:19:35 michiel Exp $
+ * @version $Id: AbstractImages.java,v 1.47 2006-06-28 11:05:25 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {
@@ -192,6 +192,13 @@ public abstract class AbstractImages extends AbstractServletBuilder {
 
 
     /**
+     * @since MMBase-1.8.1
+     */
+    protected Dimension getDimensionForEmptyHandle(MMObjectNode node) {
+        log.warn("Cannot get dimension of node with no 'handle' " + node + " (stores " + storesDimension() + ")");
+        return Dimension.UNDETERMINED;
+    }
+    /**
      * Gets the dimension of given node. Also when the fields are missing, it will result a warning then.
      */
     protected Dimension getDimension(MMObjectNode node) {
@@ -202,21 +209,23 @@ public abstract class AbstractImages extends AbstractServletBuilder {
                 return new Dimension(width, height);
             }
         }
+        Dimension dim;
         byte[] data = node.getByteValue(Imaging.FIELD_HANDLE);
         if (data == null || data.length == 0) {
-            log.warn("Cannot get dimension of node with no 'handle' " + node + " (stores " + storesDimension() + ")");
-            return new Dimension(-1, -1);
+            dim = getDimensionForEmptyHandle(node);
+        } else {
+            ImageInformer ii = Factory.getImageInformer();
+            try {
+                dim = ii.getDimension(data);
+                log.debug("Found dimension " + dim);
+            } catch (Exception ioe) {
+                log.error(ioe);
+                dim = Dimension.UNDETERMINED;
+            }
         }
-        ImageInformer ii = Factory.getImageInformer();
-        Dimension dim;
-        try {
-            dim = ii.getDimension(data);
-            log.debug("Found dimension " + dim);
-        } catch (Exception ioe) {
-            log.error(ioe);
-            dim = new Dimension(-1, -1);
-            return dim;
-        }
+
+        if (! dim.valid()) return dim;
+
         if (storesDimension()) {
             int width  = node.getIntValue(FIELD_WIDTH);
             int height = node.getIntValue(FIELD_HEIGHT);
