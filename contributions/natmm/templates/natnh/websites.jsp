@@ -34,7 +34,7 @@ function postIt() {
 			><mm:first><table width="100%" border="0" cellpadding="0" cellspacing="0" class="body"></mm:first>
 			<tr>
 				<td width="75" valign="top"><a href="index.jsp?r=<mm:field name="number" 
-					/>"><mm:relatednodes type="images"
+					/>"><mm:relatednodes type="images" path="contentrel,images"
 								><img src="<mm:image template="s(75)" />" border="0"></mm:relatednodes
 						></a></td>
 				<td><img src="media/spacer.gif" width="15" height="1"></td>
