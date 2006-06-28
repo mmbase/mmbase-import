@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: ReleaseStrategy.java,v 1.17 2006-06-27 07:31:46 michiel Exp $
+ * @version $Id: ReleaseStrategy.java,v 1.18 2006-06-28 08:10:59 nklasens Exp $
  */
 
 public abstract class ReleaseStrategy {
@@ -176,6 +176,7 @@ public abstract class ReleaseStrategy {
      * utility for specializations: get all the constraints in the query that apply to
      * a certain field
      * @param fieldName
+     * @param builder
      * @param constraint
      * @param query
      */
@@ -213,6 +214,34 @@ public abstract class ReleaseStrategy {
         return result;
     }
 
+    /**
+     * utility for specializations: get all the sortorders in the query that apply to
+     * a certain field
+     * @param fieldName
+     * @param builder
+     * @param sortOrders
+     * @param query
+     */
+    protected static List getSortordersForField(String fieldName, MMObjectBuilder builder, List sortOrders, SearchQuery query) {
+        if(sortOrders == null) sortOrders = query.getSortOrders();
+        List result = new ArrayList();
+        if(sortOrders == null) return result;
+
+        for (Iterator iter = sortOrders.iterator(); iter.hasNext();) {
+            SortOrder order = (SortOrder) iter.next();
+            StepField sf = order.getField();
+            String stepName = sf.getStep().getTableName();
+            if(sf.getFieldName().equals(fieldName) && (stepName.equals(builder.getTableName()) ||
+                                                       builder.isExtensionOf(MMBase.getMMBase().getBuilder(stepName))
+                                                       )
+               ) {
+                result.add(order);
+            }
+        }
+        return result;
+    }
+
+    
     /**
      * utility for specializations: get all the field steps of a query
      * @param query
