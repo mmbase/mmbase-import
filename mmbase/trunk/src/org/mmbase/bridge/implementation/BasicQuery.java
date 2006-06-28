@@ -29,7 +29,7 @@ import org.mmbase.security.Authorization;
  * {@link #BasicQuery(Cloud, BasicSearchQuery)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.57 2006-06-22 14:53:24 johannes Exp $
+ * @version $Id: BasicQuery.java,v 1.58 2006-06-28 14:47:25 nklasens Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -340,6 +340,7 @@ public class BasicQuery implements Query  {
                     relationDir != RelationStep.DIRECTIONS_DESTINATION &&
                     warnOnImpossibleStep) {
                     log.warn("Added an impossible relation step (" + step + " to " + otherNodeManager + ") to the query. The query-result will always be empty now (so you could as well not execute it).");
+                    log.warn(Logging.applicationStacktrace());
                 }
             }
             return step;
@@ -362,6 +363,7 @@ public class BasicQuery implements Query  {
                     warnOnImpossibleStep) {
                     // not fully specified, and nothing found, warn about that.
                     log.warn("Added an impossible relation step (" + step + " to " + otherNodeManager + ") to the query. The query-result will always be empty now (so you could as well not execute it). ");
+                    log.warn(Logging.applicationStacktrace());
                 }
             }
             return step;
