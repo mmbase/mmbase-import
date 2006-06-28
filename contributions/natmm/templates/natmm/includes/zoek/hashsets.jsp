@@ -25,6 +25,7 @@
         log.error("Error parsing field 'indexed.text' with value '" + value + "'");
       }
       if (result != null) {
+			int quarterOfAnHour = 60*15;
 			BooleanQuery constructedQuery = new BooleanQuery();
 			constructedQuery.add(result, BooleanClause.Occur.MUST);
 
