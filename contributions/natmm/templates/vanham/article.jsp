@@ -3,14 +3,6 @@
 <mm:log jspvar="log">
 <%@include file="includes/functions.jsp" %>
 <%@include file="includes/image_vars.jsp" %>
-<mm:import externid="material" jspvar="materialTypeID" vartype="String">-1</mm:import>
-<mm:import externid="orgtype" jspvar="organisationTypeID" vartype="String">-1</mm:import>
-<mm:import externid="locatie" jspvar="locatieID" vartype="String">-1</mm:import>
-<mm:import externid="projtype" jspvar="projectTypeID" vartype="String">-1</mm:import>
-<mm:import externid="dur" jspvar="durationType" vartype="String">-1</mm:import>
-<mm:import externid="a" jspvar="artikelID" vartype="String">-1</mm:import>
-<mm:import externid="showdate" jspvar="showdateID">false</mm:import>
-<mm:import externid="s" jspvar="showintroID">true</mm:import>
 <html>
 <head>
 <title>VAN HAM - CV</title>
