@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.54 2006-06-21 08:23:57 johannes Exp $
+ * @version $Id: ImageCaches.java,v 1.55 2006-06-28 11:05:25 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -356,6 +356,19 @@ public class ImageCaches extends AbstractImages {
         // not storing the result of parsing on ckey, it is cheap, and determining by handle is more
         // correct.
 
+    }
+
+    /**
+     * If icache does not yet have a filled handle field, neither filled width/heigh fields (can occur after a update). The dimension can still be given.
+     * @since MMBase-1.8.1
+     */
+    protected Dimension getDimensionForEmptyHandle(MMObjectNode node) {
+        String ckey     = node.getStringValue(Imaging.FIELD_CKEY);
+        String template = Imaging.parseCKey(ckey).template;
+        List params     = Imaging.parseTemplate(template);
+        MMObjectNode orig = originalImage(node);
+        Dimension origDimension = ((Images) orig.getBuilder()).getDimension(orig);
+        return Imaging.predictDimension(origDimension, params);
     }
 
 
