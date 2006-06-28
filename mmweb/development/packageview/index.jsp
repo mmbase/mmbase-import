@@ -25,8 +25,8 @@
 	<li>tools on sourceforge: some MMBase packages and tools have been placed on the MMBase project on sourceforge. See
 	<a href="http://mmapps.sourceforge.net/">mmapps.sourceforge.net</a>
 	</li>
-	<li>tools that are only available as downloadable zips: some applications MMBase applications developed by third parties are available as downloadable zips.
-	A good examples are the MMBase FlashChat Jircs or EGEMMAIL. See the list below and contact the developers in case you have questions, would like to know
+	<li>tools that are only available as downloadable zips: some MMBase applications developed by third parties are available as downloadable zips.
+	Good examples are the MMBase FlashChat Jircs and EGEMMAIL. See the list below and contact the developers in case you have questions, if you would like to know
 	whether there is a new version or when they are going to put there package in CVS.
 	</li>
 	<li>tools in the speeltuin (= playground, en; kindergarten, de): some of the committers maintain some utility tools
