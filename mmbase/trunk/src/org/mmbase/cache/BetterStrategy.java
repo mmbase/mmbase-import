@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase 1.8
  * @author Ernst Bunders
- * @version $Id: BetterStrategy.java,v 1.22 2006-06-27 07:31:45 michiel Exp $
+ * @version $Id: BetterStrategy.java,v 1.23 2006-06-28 08:10:59 nklasens Exp $
  */
 public class BetterStrategy extends ReleaseStrategy {
 
@@ -53,7 +53,7 @@ public class BetterStrategy extends ReleaseStrategy {
     }
 
     protected boolean doEvaluate(RelationEvent event, SearchQuery query, List cachedResult) {
-        return shouldRelease((RelationEvent) event, query);
+        return shouldRelease(event, query);
     }
 
     /**
@@ -292,12 +292,14 @@ public class BetterStrategy extends ReleaseStrategy {
         }
         boolean constraintsFound = false;
         boolean fieldsFound = false;
+        boolean sortordersFound = false;
         String eventBuilderName = event.getBuilderName();
         MMBase mmb = MMBase.getMMBase();
         MMObjectBuilder eventBuilder = mmb.getBuilder(eventBuilderName);
         search:
         for (Iterator i = event.getChangedFields().iterator(); i.hasNext();) {
             String fieldName = (String) i.next();
+
             //first test the constraints
             List constraintsForFieldList = getConstraintsForField(fieldName, eventBuilder, query.getConstraint(), query);
             if(constraintsForFieldList.size() > 0) {
@@ -322,15 +324,26 @@ public class BetterStrategy extends ReleaseStrategy {
                     break search;
                 }
             }
+
+            //test the sortorders
+            List sortordersForFieldList = getSortordersForField(fieldName, eventBuilder, query.getSortOrders(), query);
+            if(sortordersForFieldList.size() > 0) {
+                sortordersFound = true;
+                if (log.isDebugEnabled()) {
+                    log.debug("matching sortorders found: " + sortordersForFieldList.size());
+                }
+                break search;
+            }
         }
         if(log.isDebugEnabled()){
             String logMsg ="";
-            if( !fieldsFound ) logMsg = "no matching fields found, ";
-            if(!constraintsFound) logMsg = logMsg + "  no matching constraints found";
+            if (!sortordersFound) logMsg = logMsg + "  no matching sortorders found";
+            if (!fieldsFound) logMsg = "no matching fields found, ";
+            if (!constraintsFound) logMsg = logMsg + "  no matching constraints found";
             log.debug(logMsg);
         }
         //now test the result
-        return fieldsFound || constraintsFound;
+        return sortordersFound || fieldsFound || constraintsFound;
     }
 
     /**
