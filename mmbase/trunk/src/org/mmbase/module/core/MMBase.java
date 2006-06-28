@@ -46,9 +46,10 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.196 2006-06-26 09:10:20 pierre Exp $
+ * @version $Id: MMBase.java,v 1.197 2006-06-28 17:41:21 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
+
 
     /**
      * State of MMBase after shutdown
@@ -85,6 +86,7 @@ public class MMBase extends ProcessorModule {
 
     // logging
     private static final Logger log = Logging.getLoggerInstance(MMBase.class);
+
 
     /**
      * Reference to the MMBase singleton. Used for quick reference by getMMBase();
@@ -419,6 +421,21 @@ public class MMBase extends ProcessorModule {
     // javadoc inherited
     protected void shutdown() {
         mmbaseState = STATE_SHUT_DOWN;
+
+        // there all over the place static references to mmbasroot are maintained, which I cannot
+        // change presently. so let's clean up mmbaseroot itself as well as possible...
+        typeDef = null;
+        relDef = null;
+        oAlias = null;
+        insRel = null;
+        typeRel = null;
+        mmobjs.clear(); mmobjs = null;
+        cloudModel = null;
+        storageManagerFactory = null;
+        rootBuilder = null;
+        mmbaseCop = null;
+        clusterBuilder = null;
+        mmbaseroot = null;
     }
 
     /**
