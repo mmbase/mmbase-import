@@ -27,7 +27,7 @@
 	</li>
 	<li>tools that are only available as downloadable zips: some MMBase applications developed by third parties are available as downloadable zips.
 	Good examples are the MMBase FlashChat Jircs and EGEMMAIL. See the list below and contact the developers in case you have questions, if you would like to know
-	whether there is a new version or when they are going to put there package in CVS.
+	whether there is a new version or when they are going to put their package in CVS.
 	</li>
 	<li>tools in the speeltuin (= playground, en; kindergarten, de): some of the committers maintain some utility tools
 	in <a href="http://cvs.mmbase.org/viewcvs/speeltuin/">the MMBase speeltuin</a>.
