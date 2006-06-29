@@ -24,6 +24,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.parsers.DocumentBuilder;
 
 import org.mmbase.bridge.util.xml.Generator;
+import org.mmbase.bridge.Cloud;
 
 import java.net.URL;
 import java.util.*;
@@ -42,7 +43,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.65 2006-06-23 13:17:30 johannes Exp $
+ * @version $Id: FormatterTag.java,v 1.66 2006-06-29 14:32:15 michiel Exp $
  */
 public class FormatterTag extends CloudReferrerTag implements ParamHandler {
 
@@ -73,6 +74,8 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
         }
     }
     private Counter  counter; // times that formatter was called in this page, can be useful for some transformations to know.
+
+    private Cloud cloud;
 
     // formats that needs XML input, when setting these 'wantXML' will be true, and a DOM Document will be created.
 
@@ -118,7 +121,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
             documentBuilder = dfactory.newDocumentBuilder();
             dfactory.setNamespaceAware(true);
             documentBuilderNS = dfactory.newDocumentBuilder();
-            org.xml.sax.ErrorHandler handler = new org.mmbase.util.XMLErrorHandler();
+            org.xml.sax.ErrorHandler    handler = new org.mmbase.util.XMLErrorHandler();
             org.xml.sax.EntityResolver resolver = new org.mmbase.util.XMLEntityResolver();
             documentBuilder.setErrorHandler(handler);
             documentBuilder.setEntityResolver(resolver);
@@ -244,6 +247,18 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
         return xmlGenerator != null;
     }
 
+    /**
+     * return false if the cloud was set already (nothing happened);
+     * @since MMBase-1.8.1
+     */
+    public boolean setCloud(Cloud c) {
+        boolean result = cloud == null;
+        if (result) {
+            cloud = c;
+        }
+        return result;
+    }
+
 
     public void setPageContext(PageContext pageContext) {
         super.setPageContext(pageContext);
@@ -261,6 +276,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
 
     public int doStartTag() throws JspTagException {
         extraParameters.clear();
+        cloud = null;
         counter = (Counter) pageContext.getAttribute(PAGECONTEXT_COUNTER);
         if (counter == null) {
             log.debug("counter not found");
@@ -453,6 +469,9 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
         xsltSource = null;
         props = null;
         helper.doEndTag();
+        extraParameters.clear();
+        xmlGenerator = null;
+        cloud = null;
         return super.doEndTag();
     } // doEndTag
 
@@ -522,11 +541,15 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
         }
         params.put("formatter_language", locale.getLanguage());
         params.put("formatter_counter", counter.toString());
-        CloudProvider cp = findCloudProvider(false);
-        if (cp != null) {
-            params.put("cloud", cp.getCloudVar());
-            params.put("request", pageContext.getRequest());
+        if (cloud != null) {
+            params.put("cloud", cloud);
+        } else {
+            CloudProvider cp = findCloudProvider(false);
+            if (cp != null) {
+                params.put("cloud", cp.getCloudVar());
+            }
         }
+        params.put("request", pageContext.getRequest());
 
         //other options
         // a=b,c=d,e=f
@@ -576,7 +599,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
     }
 
     private String prettyXML(Document doc) throws JspTagException  {
-        if ( log.isDebugEnabled() ) {
+        if ( log.isTraceEnabled() ) {
             log.trace("pretty XML " + doc);
         }
         return xslTransform(doc, "xslt/indentxml.xslt");

@@ -21,7 +21,7 @@ import org.mmbase.bridge.Node;
  * Needs to live under a ListRelationsTag
  *
  * @author Michiel Meeuwissen
- * @version $Id: RelatedNodeTag.java,v 1.16 2005-01-30 16:46:35 nico Exp $ 
+ * @version $Id: RelatedNodeTag.java,v 1.17 2006-06-29 14:32:15 michiel Exp $ 
  */
 public class RelatedNodeTag extends AbstractNodeProviderTag implements BodyTag {
 
@@ -46,8 +46,8 @@ public class RelatedNodeTag extends AbstractNodeProviderTag implements BodyTag {
         FormatterTag f = (FormatterTag) findParentTag(FormatterTag.class, null, false);
         if (f!= null && f.wantXML() && node != null) {
             f.getGenerator().add(node);
+            f.setCloud(node.getCloud());
         }
-        
         fillVars();
         return EVAL_BODY_BUFFERED;
     }
