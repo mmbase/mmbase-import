@@ -17,6 +17,9 @@ import java.util.Iterator;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.util.Casting;
+import org.mmbase.util.transformers.CharTransformer;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * Functions for EL variables, and XSL.
@@ -36,10 +39,11 @@ import org.mmbase.util.Casting;
 </mm:cloud>
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.8
- * @version $Id: Functions.java,v 1.12 2006-03-30 17:29:07 michiel Exp $
+ * @version $Id: Functions.java,v 1.13 2006-06-29 15:06:20 michiel Exp $
  * @todo    EXPERIMENTAL
  */
 public class Functions {
+    private static final Logger log = Logging.getLoggerInstance(Functions.class);
 
     /**
      * MMBase specific 'contains' (for Collections). For strings use fn:contains.
@@ -82,9 +86,12 @@ public class Functions {
      */
     public static String escape(String escaper, String string) {
         try {
-            return ContentTag.getCharTransformer(escaper, null).transform("" + Casting.unWrap(string));
+            CharTransformer ct = ContentTag.getCharTransformer(escaper, null);
+            return ct == null ? "" + Casting.unWrap(string) : ct.transform("" + Casting.unWrap(string));
         } catch (Exception e) {
-            return "Could not escape " + string + " with escape " + escaper + " : " + e.getMessage();
+            String mes = "Could not escape " + string + " with escape " + escaper + " : " + e.getMessage();
+            log.debug(mes, e);
+            return mes;
         }
     }
 
