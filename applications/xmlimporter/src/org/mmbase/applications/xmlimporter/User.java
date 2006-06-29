@@ -15,7 +15,7 @@ package org.mmbase.applications.xmlimporter;
  *
  * @author Rob van Maris: Finalist IT Group
  * @since MMBase-1.5
- * @version $Id: User.java,v 1.3 2003-03-07 08:50:03 pierre Exp $
+ * @version $Id: User.java,v 1.4 2006-06-29 13:42:09 andre Exp $
  */
 public class User {
 
@@ -36,7 +36,8 @@ public class User {
      */
     String getName() {
         int length = name.length();
-        String tempname = "TR"+ name.substring(length-8,length);
+        // String tempname = "TR"+ name.substring(length-8,length);
+        String tempname = "import";
         return tempname;
     }
 }
