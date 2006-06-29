@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.23 2006-06-23 13:17:30 johannes Exp $
+ * @version $Id: NodeListHelper.java,v 1.24 2006-06-29 14:32:15 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -246,6 +246,7 @@ public class NodeListHelper implements ListProvider {
         FormatterTag f = (FormatterTag) thisTag.findParentTag(FormatterTag.class, null, false);
         if (f != null && f.wantXML()) {
             f.getGenerator().add(nodes);
+            f.setCloud(cloud);
         }
 
         nodeIterator = returnList.nodeIterator();
