@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
 </pre>
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: TreeTag.java,v 1.16 2006-06-23 14:40:40 michiel Exp $
+ * @version $Id: TreeTag.java,v 1.17 2006-06-29 14:32:15 michiel Exp $
  */
 public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, QueryContainerReferrer  {
     private static final Logger log = Logging.getLoggerInstance(TreeTag.class);
@@ -235,6 +235,7 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
         FormatterTag f = (FormatterTag) findParentTag(FormatterTag.class, null, false);
         if (f != null && f.wantXML()) {
             f.getGenerator().add(tree);
+            f.setCloud(tree.getCloud());
         }
 
 

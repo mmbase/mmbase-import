@@ -21,7 +21,7 @@ import org.mmbase.bridge.util.Queries;
  * ListRelationsTag, a tag around bridge.Node.getRelations.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ListRelationsTag.java,v 1.18 2006-06-23 13:17:30 johannes Exp $ 
+ * @version $Id: ListRelationsTag.java,v 1.19 2006-06-29 14:32:15 michiel Exp $
  */
 
 public class ListRelationsTag extends AbstractNodeListTag {
@@ -36,7 +36,7 @@ public class ListRelationsTag extends AbstractNodeListTag {
     private NodeQuery relatedQuery = null;
     private Node     relatedFromNode;
 
-    
+
     Node getRelatedfromNode() {
         NodeList returnList = getReturnList();
         return returnList == null ? null : (Node) returnList.getProperty("relatedFromNode");
@@ -83,10 +83,10 @@ public class ListRelationsTag extends AbstractNodeListTag {
             relatedNodes = result.nodeList;
             if (getId() != null) {
                 getRelatedQuery();
-                listHelper.getReturnList().setProperty("relatedNodes", relatedNodes); 
+                listHelper.getReturnList().setProperty("relatedNodes", relatedNodes);
             }
-            
-        } 
+
+        }
         int i = listHelper.getIndex();
         if (i >= relatedNodes.size()) i = relatedNodes.size() - 1;
         if (i < 0) i = 0;
@@ -110,23 +110,24 @@ public class ListRelationsTag extends AbstractNodeListTag {
 
         NodeQuery query;
         if (c == null || type != Attribute.NULL || role != Attribute.NULL || searchDir != Attribute.NULL) { // containerless version
-            nm = null;
-            if (type != Attribute.NULL) {
-                nm = getCloudVar().getNodeManager(type.getString(this));
-            }
-
             // obtain a reference to the node through a parent tag
             relatedFromNode = getNode();
             if (relatedFromNode == null) {
                 throw new JspTagException("Could not find parent node!!");
             }
-            query = Queries.createRelationNodesQuery(relatedFromNode, nm, (String) role.getValue(this), (String) searchDir.getValue(this)); 
+
+            nm = null;
+            if (type != Attribute.NULL) {
+                nm = relatedFromNode.getCloud().getNodeManager(type.getString(this));
+            }
+
+            query = Queries.createRelationNodesQuery(relatedFromNode, nm, (String) role.getValue(this), (String) searchDir.getValue(this));
             relatedQuery = null; // determin when needed
         } else { // working with container
             query = (NodeQuery) c.getQuery();
             relatedQuery = c.getRelatedQuery();
             relatedQuery.setOffset(query.getOffset());
-            relatedQuery.setMaxNumber(query.getMaxNumber());            
+            relatedQuery.setMaxNumber(query.getMaxNumber());
             relatedFromNode = c.getRelatedFromNode();
             if (orderby != Attribute.NULL) {
                 Queries.addSortOrders(relatedQuery, (String) orderby.getValue(this), (String) directions.getValue(this));
@@ -137,7 +138,7 @@ public class ListRelationsTag extends AbstractNodeListTag {
 
         if (orderby != Attribute.NULL) {
             Queries.addSortOrders(query,        (String) orderby.getValue(this), (String) directions.getValue(this));
-        }       
+        }
 
         Queries.sortUniquely(query);
 
@@ -147,7 +148,7 @@ public class ListRelationsTag extends AbstractNodeListTag {
 
         if (getId() != null) {
             getRelatedQuery();
-            result.nodeList.setProperty("relatedQuery", relatedQuery); 
+            result.nodeList.setProperty("relatedQuery", relatedQuery);
         }
 
         return setReturnValues(result.nodeList, result.needsTrim);

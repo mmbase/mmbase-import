@@ -27,13 +27,13 @@ import org.mmbase.util.logging.Logging;
  * example the FieldTag, needs the use the Node of the parent
  * NodeProviderTag and therefore would be a NodeReferrerTag.
  *
- * @author Michiel Meeuwissen 
- * @version $Id: NodeReferrerTag.java,v 1.24 2006-05-17 19:15:09 michiel Exp $ 
+ * @author Michiel Meeuwissen
+ * @version $Id: NodeReferrerTag.java,v 1.25 2006-06-29 14:32:15 michiel Exp $
  */
 
-public abstract class NodeReferrerTag extends CloudReferrerTag {	
+public abstract class NodeReferrerTag extends CloudReferrerTag {
 
-    private static final Logger log = Logging.getLoggerInstance(NodeReferrerTag.class); 
+    private static final Logger log = Logging.getLoggerInstance(NodeReferrerTag.class);
     protected Attribute parentNodeId = Attribute.NULL;
     private Attribute element  = Attribute.NULL;
     /**
@@ -60,16 +60,16 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
     * This method tries to find an ancestor object of type NodeProvider
     * @return the NodeProvider if found else an exception.
     *
-    */	
-    public NodeProvider findNodeProvider() throws JspTagException {        
+    */
+    public NodeProvider findNodeProvider() throws JspTagException {
         return (NodeProvider) findParentTag(NodeProvider.class, (String) parentNodeId.getValue(this));
     }
     /**
     * This method tries to find an ancestor object of type NodeProvider
     * @return the NodeProvider or null.
     *
-    */	
-    public NodeProvider findNodeProvider(boolean throwexception) throws JspTagException {        
+    */
+    public NodeProvider findNodeProvider(boolean throwexception) throws JspTagException {
         return (NodeProvider) findParentTag(NodeProvider.class, (String) parentNodeId.getValue(this), throwexception);
     }
 
@@ -81,7 +81,7 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
     protected Node getNode() throws JspTagException {
         Node node =  findNodeProvider().getNodeVar();
         if (node != null && element != Attribute.NULL) {
-            node = node.getNodeValue(element.getString(this));            
+            node = node.getNodeValue(element.getString(this));
         }
         return node;
     }
@@ -94,7 +94,7 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
             Cloud cloud = node.getCloud();
             p.setIfDefined(Parameter.CLOUD, cloud);
             p.setIfDefined(Parameter.USER, cloud.getUser());
-            
+
         }
     }
 

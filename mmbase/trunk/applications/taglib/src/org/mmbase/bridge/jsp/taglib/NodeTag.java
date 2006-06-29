@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: NodeTag.java,v 1.61 2006-06-20 12:40:49 johannes Exp $
+ * @version $Id: NodeTag.java,v 1.62 2006-06-29 14:32:15 michiel Exp $
  */
 
 public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
@@ -202,6 +202,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
         FormatterTag f = (FormatterTag) findParentTag(FormatterTag.class, null, false);
         if (f!= null && f.wantXML() && node != null) {
             f.getGenerator().add(node);
+            f.setCloud(node.getCloud());
         }
 
         fillVars();
