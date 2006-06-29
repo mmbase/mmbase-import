@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.151 2006-06-27 12:57:31 nklasens Exp $
+    @version $Id: wizard.xsl,v 1.152 2006-06-29 08:52:54 nklasens Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -1367,8 +1367,10 @@
     </tr>
     <tr style="vertical-align: top;">
       <td style="vertical-align: top; width: 1%;">
-        <!-- the image -->
-        <img src="{node:function($cloud, string(field/@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}"/>
+      	<xsl:if test="field[@name = 'handle' and @size != '0']">
+	        <!-- the image -->
+	        <img src="{node:function($cloud, string(field/@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}"/>
+        </xsl:if>
       </td>
       <td colspan="2">
         <xsl:call-template name="itemfields"/>
