@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.59 2006-03-31 08:45:43 pierre Exp $
+ * @version  $Id: editwizard.jsp,v 1.60 2006-06-29 09:57:28 nklasens Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
@@ -148,6 +148,10 @@ function doSearch(el, cmd, sessionkey) {
     var directions = el.getAttribute("directions");
     var searchdir = el.getAttribute("searchdir");
     var distinct   = el.getAttribute("distinct");
+    var pagelength = el.getAttribute("pagelength");
+    if (!pagelength) {
+        pagelength = 10;
+    }
 
     // lastobject is generally the last builder in the nodepath.
     // however, if the first field is a "<buildername>.number" field, that buildername is used
@@ -207,7 +211,7 @@ function doSearch(el, cmd, sessionkey) {
     constraints += ")";
 
     // build url
-    var url="<%= response.encodeURL("list.jsp")%>?proceed=true&popupid=search&replace=true&referrer=<%=java.net.URLEncoder.encode(request.getParameter("referrer"),"UTF-8")%>&template=xsl/searchlist.xsl&nodepath="+nodepath+"&fields="+fields+"&pagelength=10&language=<%=request.getParameter("language")%>&country=<%=request.getParameter("country")%>&timezone=<%=request.getParameter("timezone")%>";
+    var url="<%= response.encodeURL("list.jsp")%>?proceed=true&popupid=search&replace=true&referrer=<%=java.net.URLEncoder.encode(request.getParameter("referrer"),"UTF-8")%>&template=xsl/searchlist.xsl&nodepath="+nodepath+"&fields="+fields+"&pagelength="+pagelength+"&language=<%=request.getParameter("language")%>&country=<%=request.getParameter("country")%>&timezone=<%=request.getParameter("timezone")%>";
     url += setParam("searchvalue", searchterm);
     url += setParam("sessionkey", sessionkey);
     url += setParam("startnodes", startnodes);

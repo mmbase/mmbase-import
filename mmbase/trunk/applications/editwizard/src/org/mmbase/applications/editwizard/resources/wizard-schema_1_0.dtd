@@ -89,6 +89,7 @@
 <!ATTLIST command origin CDATA #IMPLIED >
 <!ATTLIST command searchdir CDATA #IMPLIED >
 <!ATTLIST command include CDATA #IMPLIED >
+<!ATTLIST command pagelength CDATA #IMPLIED >
 
 <!ELEMENT fieldset ( prompt*, field+, prompt* ) >
 
