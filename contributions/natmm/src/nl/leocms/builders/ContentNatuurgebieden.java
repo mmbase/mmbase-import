@@ -33,13 +33,13 @@ import nl.leocms.evenementen.Evenement;
  * 
  * @author Nico Klasens (Finalist IT Group)
  * @created 21-nov-2003
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class ContentNatuurgebieden extends ContentOrganisatie {
   
    public boolean commit(MMObjectNode node) {
    
-      log.debug("commiting natuurgebied " + node.getStringValue("titel"));
+      log.debug("commiting natuurgebied " + node.getStringValue("titel") + "(" + node.getStringValue("number") + ")");
 
       Cloud cloud = CloudFactory.getCloud();
       // *** setting titel_eng to list of afdelingen numbers ***
@@ -53,9 +53,9 @@ public class ContentNatuurgebieden extends ContentOrganisatie {
       }
       if(sRelatedDept.equals(",")) { sRelatedDept = ",-1,"; }
       node.setValue("titel_eng",sRelatedDept);
-
+		
       boolean bSuperCommit = super.commit(node);
-         
+      
       return bSuperCommit;
    }
    
