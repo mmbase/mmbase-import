@@ -132,9 +132,21 @@ String[] META_TAGS = {"dit", "is", "een", "test"};
    <table width="100%" background="media/dotline.gif"><tr><td height="3"></td></tr></table>
    <%
    // *** Show rubrieken
-   if (hsetCategories.size() > 0) {
-
-      for (Iterator it = hsetCategories.iterator(); it.hasNext(); ) {
+   if (hsetCategories.size() > 0) { 
+	String sNatuurgebiedenRubriekNumber = "";
+	String sNatuurinRubriekNumber = ""; %>
+	<mm:node number="natuurgebieden_rubriek" notfound="skipbody">
+		<mm:field name="number" jspvar="dummy" vartype="String" write="false">
+			<% sNatuurgebiedenRubriekNumber = dummy; %>
+		</mm:field>	
+	</mm:node>
+	<mm:node number="natuurin_rubriek" notfound="skipbody">
+		<mm:field name="number" jspvar="dummy" vartype="String" write="false">
+			<% sNatuurinRubriekNumber = dummy; %>
+		</mm:field>	
+	</mm:node>
+	
+<%    for (Iterator it = hsetCategories.iterator(); it.hasNext(); ) {
          String sRubriek = (String) it.next();
 
          HashSet hsetPagesForThisCategory = new HashSet(); %>
@@ -181,20 +193,26 @@ String[] META_TAGS = {"dit", "is", "een", "test"};
                      }
                      %></mm:field>
                   </mm:related>
-                  <mm:related path="contentrel,provincies,pos4rel,natuurgebieden,rolerel,artikel" fields="natuurgebieden.number">
-                     <mm:field name="natuurgebieden.number" jspvar="sID" vartype="String" write="false"><%
-                     if(hsetNatuurgebiedenRouteNodes.contains(sID)){
-                        %><li><a href="<%= templateUrl %>?n=<mm:field name="natuurgebieden.number"/>"><mm:field name="natuurgebieden.naam"/></a></li><%
-                     }
-                     %></mm:field>
-                  </mm:related>
-                  <mm:related path="contentrel,provincies,pos4rel,natuurgebieden,posrel,artikel" fields="natuurgebieden.number">
-                     <mm:field name="natuurgebieden.number" jspvar="sID" vartype="String" write="false"><%
-                     if(hsetNatuurgebiedenNatuurgebiedenNodes.contains(sID)){
-                        %><li><a href="<%= templateUrl %>?n=<mm:field name="natuurgebieden.number"/>"><mm:field name="natuurgebieden.naam"/></a></li><%
-                     }
-                     %></mm:field>
-                  </mm:related><% 
+					<% if (sRubriek.equals(sNatuurinRubriekNumber)) {%>
+	                  <mm:related path="contentrel,provincies,pos4rel,natuurgebieden">
+  		                  <mm:field name="natuurgebieden.number" jspvar="sID" vartype="String" write="false">
+									<mm:list nodes="<%= sID %>" path="natuurgebieden,rolerel,artikel" max="1">
+									<% if(hsetNatuurgebiedenRouteNodes.contains(sID)){
+     					               %><li><a href="<%= templateUrl %>?n=<mm:field name="natuurgebieden.number"/>"><mm:field name="natuurgebieden.naam"/></a></li><%
+        		      			   }
+              		      %></mm:list>
+								</mm:field>
+                 		</mm:related>
+					<% } 
+						if (sRubriek.equals(sNatuurgebiedenRubriekNumber)) {%>	
+	                  <mm:related path="contentrel,provincies,pos4rel,natuurgebieden,posrel,artikel" fields="natuurgebieden.number">
+  		                  <mm:field name="natuurgebieden.number" jspvar="sID" vartype="String" write="false"><%
+     		               if(hsetNatuurgebiedenNatuurgebiedenNodes.contains(sID)){
+        		               %><li><a href="<%= templateUrl %>?n=<mm:field name="natuurgebieden.number"/>"><mm:field name="natuurgebieden.naam"/></a></li><%
+           		         }
+              		      %></mm:field>
+                 		</mm:related><% 
+						}	
                   if(templateUrl.equals("events.jsp")) {
                      for(Iterator ite = hsetEvenementNodes.iterator(); ite.hasNext(); ) {
                         String thisEvent = (String) ite.next();
