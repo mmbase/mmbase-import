@@ -32,26 +32,27 @@ import org.mmbase.util.logging.*;
  * 
  * @author Nico Klasens (Finalist IT Group)
  * @created 21-nov-2003
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class ContentAfdelingen extends ContentOrganisatie {
 
   public boolean commit(MMObjectNode node) {
 
-      log.debug("commiting afdeling " + node.getStringValue("titel"));
+      log.debug("commiting afdeling " + node.getStringValue("titel") + "(" + node.getStringValue("number") + ")");
 
       Cloud cloud = CloudFactory.getCloud();
-      // *** update titel_eng of natuurgebieden to list of afdelingen numbers ***
+      // *** update titel_eng of natuurgebieden if this afdeling is not already in titel_eng ***
       NodeIterator iNodes= cloud.getList(node.getStringValue("number")
                , "afdelingen,posrel,natuurgebieden"
-               , "natuurgebieden.number", null, null, null, null, false).nodeIterator();
+               , "natuurgebieden.number,natuurgebieden.titel_eng"
+					, "natuurgebieden.titel_eng NOT LIKE '%,"+node.getStringValue("number")+ ",%'", null, null, null, false).nodeIterator();
       while(iNodes.hasNext()) {
           Node nextNode = iNodes.nextNode();
-          cloud.getNode(nextNode.getIntValue("natuurgebieden.number")).commit();
+			 // todo: the following statement results in "WARN  mmbase.module.core.MMObjectBuilder  - removeTmpNode): node with U-9_-1 didn't exists" in the logfiles. why?
+          cloud.getNode(nextNode.getIntValue("natuurgebieden.number")).commit(); 
       }
-
       boolean bSuperCommit = super.commit(node);
-         
+ 
       return bSuperCommit;
    }
    
