@@ -30,7 +30,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author Rob van Maris: Finnalist IT Group
  * @author Erik Visser: Finnalist IT Group
  * @since MMBase-1.5
- * @version $Id: TransactionsParser.java,v 1.7 2003-07-07 13:32:34 keesj Exp $
+ * @version $Id: TransactionsParser.java,v 1.8 2006-06-30 09:01:09 andre Exp $
  */
 
 public class TransactionsParser extends DefaultHandler {
@@ -95,7 +95,7 @@ public class TransactionsParser extends DefaultHandler {
     private static TransactionHandler transactionHandler = null;
 
     /** Upload module. */
-    private static Upload upload = null;
+    // private static Upload upload = null;
 
     /** TransactionManager module. */
     private TransactionManagerInterface transactionManager;
@@ -172,7 +172,7 @@ public class TransactionsParser extends DefaultHandler {
         this.uti = uti;
         mmbase = (MMBase)Module.getModule("MMBASEROOT");
         transactionHandler = (TransactionHandler)TransactionHandler.getModule("transactionhandler");
-        upload = (Upload)Module.getModule("upload");
+        //upload = (Upload)Module.getModule("upload");
         dtdDirectory = MMBaseContext.getConfigPath() + File.separator + "dtd" + File.separator;
         reportDirectory = MMBaseContext.getConfigPath() + File.separator + "import" + File.separator + "report" + File.separator;
         tmpObjectManager = new TemporaryNodeManager(mmbase);
@@ -367,10 +367,12 @@ public class TransactionsParser extends DefaultHandler {
                 url = attributes.getValue(ATTRIBUTE_URL); // url
 
                 // Url specified, then set value from file.
+                /*
                 if (url != null) {
                     Object value = upload.getFile(url);
                     tmpObject.setField(fieldName, value);
                 }
+                */
 
             } else {
                 throw new TransactionHandlerException("transaction operator \"" + name + "\" doesn't exist");
@@ -490,7 +492,7 @@ public class TransactionsParser extends DefaultHandler {
                 fieldName = null;
                 fieldValue = null;
                 if (url != null) {
-                    upload.deleteFile(url);
+                    //upload.deleteFile(url);
                     url = null;
                 }
             }
