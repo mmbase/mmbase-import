@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.163 2006-06-26 12:59:14 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.164 2006-06-30 08:09:52 johannes Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1342,7 +1342,13 @@ public class DatabaseStorageManager implements StorageManager {
         if (!setNullValue(statement, index, objectValue, field, java.sql.Types.VARBINARY)) {
             log.debug("Didn't set null");
             InputStream stream = Casting.toInputStream(objectValue);
-            long size = node.getSize(field.getName());
+            long size = -1;
+            if (objectValue instanceof byte[]) {
+                size = ((byte[])objectValue).length;
+            } else {
+                size = node.getSize(field.getName());
+            }
+            log.debug("Setting " + size + " bytes for inputstream");
             try {
                 statement.setBinaryStream(index, stream, (int) size);
                 stream.close();
