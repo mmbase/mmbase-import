@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * of the very first field the edittag encounters, with an icon to click on.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: BasicEditor.java,v 1.7 2006-06-10 11:22:37 andre Exp $
+ * @version $Id: BasicEditor.java,v 1.8 2006-07-03 20:49:56 michiel Exp $
  * @see EditTag
  * @see YAMMEditor
  * @since MMBase-1.8
@@ -87,10 +87,8 @@ public class BasicEditor extends Editor {
     }
     /**
     * Creates a string with the link (and icon) to the editor
-    *
-    * @param url        An url to an editor
-    * @param icon       An url to a graphic file
-    * @param nodenr     The nodenumber to edit
+    * @param nodenr     Node to make HTML link to.
+    * @param context    PageContex object, which must be used to write the HTML to.
     * @return           An HTML string with a link suitable for the editor yammeditor.jsp
     *
     */
