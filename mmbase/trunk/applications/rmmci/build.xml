@@ -175,6 +175,7 @@ Build-compiler: ${build.compiler}
 
         <include name="org/mmbase/cache/CachePolicy*" />                <!-- used in bridge -->
         <include name="org/mmbase/cache/Cache*" />                      <!-- used by SortedBundle, but any how it is utility -->
+        <include name="org/mmbase/cache/**" />                           <!-- used by SortedBundle, but any how it is utility -->
         <include name="org/mmbase/util/LRUHashtable*" />                <!-- cache implementation -->
 
         <!-- perhaps we need _all_ of util ? -->
