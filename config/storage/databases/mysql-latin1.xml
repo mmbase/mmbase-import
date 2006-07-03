@@ -17,6 +17,10 @@
     -->
     <option name="database-supports-transactions" value="false" />
 
+    <!-- Explictly encode text when storing it in the database  -->
+    <option name="database-force-encode-text" />
+
+
     <!-- Use Blobs  -->
     <option name="database-supports-blob" />
 
