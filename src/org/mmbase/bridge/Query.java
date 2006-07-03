@@ -19,7 +19,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: Query.java,v 1.38 2006-04-18 14:32:47 michiel Exp $
+ * @version $Id: Query.java,v 1.39 2006-07-03 20:49:29 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.bridge.util.Queries
  */
@@ -287,7 +287,7 @@ public interface Query extends SearchQuery, Cacheable, Cloneable {
      * If the first constraint is a composite constraint (with the same logical operator), then the
      * second one will simply be added.
      * @param c1 constraint one
-     * @param op operator ({@link CompositeConstraint.LOGICAL_AND}, {@link CompositeConstraint.LOGICAL_OR})
+     * @param op operator ({@link CompositeConstraint#LOGICAL_AND}, {@link CompositeConstraint#LOGICAL_OR})
      * @param c2 constraint two
      * @return a Composite constraint (might not be a new one)
      */
