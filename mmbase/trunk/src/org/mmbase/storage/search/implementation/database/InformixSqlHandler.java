@@ -10,10 +10,14 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.search.implementation.database;
 
 import java.util.*;
+import java.sql.*;
+import java.lang.reflect.Method;
 
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
+import org.mmbase.module.database.MultiConnection;
 
 /**
  * The Informix query handler, implements {@link
@@ -34,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: InformixSqlHandler.java,v 1.24 2006-06-27 07:50:02 johannes Exp $
+ * @version $Id: InformixSqlHandler.java,v 1.25 2006-07-03 11:59:16 johannes Exp $
  * @since MMBase-1.7
  */
 public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -804,6 +808,37 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                 }
             }
             log.debug("Completed generation of query:" + sb.toString());
+        }
+    }
+
+    /**
+     * Safely close a database connection and/or a database statement.
+     * @param con The connection to close. Can be <code>null</code>.
+     * @param stmt The statement to close, prior to closing the connection. Can be <code>null</code>.
+     */
+    protected void closeConnection(Connection con, Statement stmt) {
+        try {
+            if (stmt != null) {
+                stmt.close();
+            }
+        } catch (Exception g) {}
+        try {
+            if (con != null) {
+                if (con instanceof MultiConnection) {
+                    closeInformix((MultiConnection)con);
+                }
+                con.close();
+            }
+        } catch (Exception g) {}
+    }
+
+    private void closeInformix(MultiConnection activeConnection) {
+        Connection con = activeConnection.getRealConnection();
+        try {
+            Method scrub = Class.forName("com.informix.jdbc.IfxConnection").getMethod("scrubConnection", null);
+            scrub.invoke(con, null);
+        } catch (Exception e) {
+            log.error("Exception while calling releaseBlob(): " + e.getMessage());
         }
     }
 }
