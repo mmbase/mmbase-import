@@ -11,6 +11,7 @@ package org.mmbase.module.database;
 
 import java.sql.*;
 import java.util.Map;
+import java.lang.reflect.Method;
 
 import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.Logger;
@@ -30,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *      This also goes for freeing the connection once it is 'closed'.
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiConnection.java,v 1.43 2006-01-25 10:09:07 michiel Exp $
+ * @version $Id: MultiConnection.java,v 1.44 2006-07-03 11:59:16 johannes Exp $
  */
 public class MultiConnection extends ConnectionWrapper {
     // states
@@ -289,6 +290,15 @@ public class MultiConnection extends ConnectionWrapper {
         return new MultiStatement(this, con.createStatement(type, concurrency, holdability));
     }
 
+    /**
+     * Return the underlying real connection. NOTE: use with extreme caution! MMBase is supposed to look
+     * after it's own connections. This method is public only for the reason that specific database
+     * implementations need access to this connection in order to safely clear them before they 
+     * can be put back in the connection pool.
+     */
+    public Connection getRealConnection() {
+        return con;
+    }
 }
 
 
