@@ -2,7 +2,7 @@
 
 
 MMBase Build File
-$Id: build.xml,v 1.134 2006-03-03 14:43:00 michiel Exp $
+$Id: build.xml,v 1.135 2006-07-03 20:47:51 michiel Exp $
 =================
 
 This build file can be used to build the following from CVS or from the source
@@ -287,6 +287,11 @@ builddate=${builddate}
   </target>
 
 
+  <target name="lib.release.renametojar" unless="norenametojar">
+    <copy file="${xerces.jar}"         tofile="${release.lib.dir}/xercesImpl.renametojar" />
+    <copy file="${xml-apis.jar}"       tofile="${release.lib.dir}/xml-apis.renametojar" />
+  </target>
+
   <!-- =================================================================== -->
   <!-- Create the lib directories                                          -->
   <!-- =================================================================== -->
@@ -299,8 +304,6 @@ builddate=${builddate}
     <mkdir dir="${release.lib.dir}" />
     <copy file="${xalan.jar}"          todir="${release.lib.dir}" />
     <copy file="${serializer.jar}"     todir="${release.lib.dir}" />
-    <copy file="${xerces.jar}"         tofile="${release.lib.dir}/xercesImpl.renametojar" />
-    <copy file="${xml-apis.jar}"       tofile="${release.lib.dir}/xml-apis.renametojar" />
 
     <copy file="${log4j.jar}"          tofile="${release.lib.dir}/log4j.jar" />
     <copy file="${fileupload.jar}"     tofile="${release.lib.dir}/commons-fileupload.jar" />
@@ -731,25 +734,29 @@ Build-compiler: ${build.compiler}
       <param name="sourcefile" value="${j2ee-javadoc.loc}/package-list" />
       <param name="destfile"   value="${download.dir}/j2ee/package-list" />
     </antcall>
+    <mkdir dir="${mmdocs.dir}/javadoc/complete" />
+    <echo message="Generating javadocs for ${javadoc.packages} to ${mmdocs.dir}/javadoc/complete" />
     <javadoc packagenames="${javadoc.packages}"
-             destdir="${mmdocs.dir}/javadoc"
+             destdir="${mmdocs.dir}/javadoc/complete"
              author="true"
              version="true"
              use="false"
-             noindex="true"
+             noindex="false"
              windowtitle="MMBase API"
              doctitle="MMBase"
-             maxmemory="200M"
+             maxmemory="500M"
              source="1.4"
              bottom="MMBase build ${distro.version}.${builddate}">
       <link offline="true" packagelistLoc="${download.dir}/j2se" href="${j2se-javadoc.loc}" />
       <link offline="true" packagelistLoc="${download.dir}/j2ee" href="${j2ee-javadoc.loc}" />
       <link offline="true" packagelistLoc="${expand.dir}/${log4j.fullversion}/docs/api" href="http://logging.apache.org/log4j/docs/api/" />
+
       <fileset dir="${source.dir}" defaultexcludes="yes">
         <or>
           <filename name="src/**/*.java" />
           <filename name="build/src/**/*.java" />
-          <filename name="contributions/**/*.java" />
+          <filename name="contributions/aselect/**/*.java" />
+          <filename name="contributions/mmbob/**/*.java" />
           <filename name="applications/taglib/**/*.java" />
           <filename name="applications/editwizard/**/*.java" />
           <filename name="applications/cloudcontext/**/*.java" />
@@ -759,6 +766,7 @@ Build-compiler: ${build.compiler}
           <filename name="applications/media/**/*.java" />
           <filename name="applications/oscache-cache/**/*.java" />
           <filename name="applications/richtext/**/*.java" />
+
         </or>
       </fileset>
       <classpath>
@@ -788,7 +796,9 @@ Build-compiler: ${build.compiler}
       <tag name="sql" description="Warning: Contains Database Legacy Code" enabled="${javadoc.cleaning}"/>
       <tag name="duplicate" description="Warning: Contains Duplicate Code (present in other classes)" enabled="${javadoc.cleaning}"/>
       <tag name="deprecation-used" description="Warning: Calls Deprecated Code" enabled="${javadoc.cleaning}"/>
+
     </javadoc>
+    <echo message="javadoc ready" />
     <property name="did.javadocs" value="true" />
   </target>
 
