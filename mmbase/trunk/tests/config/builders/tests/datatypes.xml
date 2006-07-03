@@ -180,7 +180,7 @@
         <default value="ERROR" />
         <enumeration >
           <entry basename="org.mmbase.datatypes.resources.states"
-                 javaconstants="org.mmbase.module.builders.MMServers" 
+                 javaconstants="org.mmbase.datatypes.resources.StateConstants"
                  />
         </enumeration>
       </datatype>
@@ -196,7 +196,7 @@
         <default value="ERROR" />
         <enumeration >
           <entry basename="org.mmbase.datatypes.resources.states"
-                 javaconstants="org.mmbase.module.builders.MMServers" 
+                 javaconstants="org.mmbase.datatypes.resources.StateConstants"
                  />
         </enumeration>
       </datatype>
