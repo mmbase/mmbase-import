@@ -29,18 +29,13 @@ import org.mmbase.storage.search.*;
  * nodes caches in sync but also makes it possible to split tasks between machines. You could for example have a server that encodes video.
  *  when a change to a certain node is made one of the servers (if wel configured) can start encoding the videos.
  * @author  vpro
- * @version $Id: MMServers.java,v 1.43 2006-06-22 10:57:22 michiel Exp $
+ * @version $Id: MMServers.java,v 1.44 2006-07-03 14:22:42 michiel Exp $
  */
-public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnable {
+public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnable, org.mmbase.datatypes.resources.StateConstants {
 
     private static final Logger log = Logging.getLoggerInstance(MMServers.class);
     private int serviceTimeout = 60 * 15; // 15 minutes
     private long intervalTime = 60 * 1000; // 1 minute
-
-    public static final int UNKNOWN = -1;
-    public static final int ACTIVE = 1;
-    public static final int INACTIVE = 2;
-    public static final int ERROR = 3;
 
     private boolean checkedSystem = false;
     private String javastr;
@@ -297,11 +292,19 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
      * @javadoc
      */
     public MMObjectNode getMMServerNode(String name) {
-        Enumeration e = search("name=='" + name + "'");
-        if (e.hasMoreElements()) {
-            return (MMObjectNode)e.nextElement();
-        } else {
-            log.info("Can't find any mmserver node with name=" + name);
+        NodeSearchQuery query = new NodeSearchQuery(this);
+        BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(getField("name")), name);
+        query.setConstraint(constraint);
+        try {
+            List nodeList = getNodes(query);
+            if (nodeList.size() > 0) {
+                return (MMObjectNode) nodeList.get(0);
+            } else {
+                log.info("Can't find any mmserver node with name=" + name);
+                return null;
+            }
+        } catch (SearchQueryException sqe) {
+            log.warn(sqe);
             return null;
         }
     }
@@ -324,6 +327,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
     public String toString(MMObjectNode n) {
         return "" + n.getValue("name") + "@" + n.getValue("host");
     }
+
 
 
     protected NodeSearchQuery query = null;
