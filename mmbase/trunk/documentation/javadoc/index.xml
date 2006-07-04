@@ -7,7 +7,7 @@
 
     <date>2004-11-01</date>
 
-    <edition>$Id: index.xml,v 1.3 2006-07-03 20:49:04 michiel Exp $</edition>
+    <edition>$Id: index.xml,v 1.4 2006-07-04 07:10:24 michiel Exp $</edition>
 
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified
@@ -21,15 +21,19 @@
   <section id="javadoc">
     <title>Java API Documentation</title>
     <para>
-      This folder contains various API documentation sets. 
+      This folder contains various API documentation sets.
     </para>
    <itemizedlist>
      <listitem>
-       <para><ulink url="complete">Javadoc of all classes in mmbase.jar and of all applications (but
-       not all contribuations.</ulink></para>
+       <para><ulink url="mmci">MMCI (AKA 'bridge'). For MMBase users, the bridge is the most
+       important and stable (as in 'least likely to change in future version') part of MMBase. When
+       making new functionality based on MMBase, this subset of classes in the org.mmbase package
+       should be enough.</ulink></para>
      </listitem>
      <listitem>
-       <para><ulink url="mmci">MMCI (AKA 'bridge')</ulink></para>
+       <para><ulink url="complete">Javadoc of all classes in mmbase.jar and of all 'applications'
+       supported by the MMBase community (like email, dove, taglib etc), but not all
+       'contributions'.</ulink></para>
      </listitem>
      <listitem><para><ulink url="dove">Dove</ulink></para></listitem>
      <listitem><para><ulink url="editwizard">Editwizard</ulink></para></listitem>
