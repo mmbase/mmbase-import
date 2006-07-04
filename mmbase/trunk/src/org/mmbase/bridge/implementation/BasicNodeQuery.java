@@ -30,7 +30,7 @@ import org.mmbase.storage.search.implementation.*;
  * @todo This kind of functionality should perhaps be present in NodeSearchQuery itself because you can then use it 'under' the bridge too.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeQuery.java,v 1.26 2006-01-30 15:52:06 pierre Exp $
+ * @version $Id: BasicNodeQuery.java,v 1.27 2006-07-04 13:16:33 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.NodeSearchQuery
  */
@@ -176,11 +176,11 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
         query.removeFields();
         query.addFields(step);
         addFields(explicitFields);
+        Step prevStep = this.step;
+        this.step = step;
         if (! isDistinct() ) {
             addFields(implicitFields);
         }
-        Step prevStep = this.step;
-        this.step = step;
         return prevStep;
     }
 
