@@ -29,7 +29,7 @@ import org.mmbase.datatypes.StringDataType;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: SortedBundle.java,v 1.22 2006-04-19 20:02:28 michiel Exp $
+ * @version $Id: SortedBundle.java,v 1.23 2006-07-04 06:58:27 michiel Exp $
  */
 public class SortedBundle {
 
@@ -278,17 +278,31 @@ public class SortedBundle {
     public static HashMap getConstantsProvider(Class clazz) {
         if (clazz == null) return null;
         HashMap map  = new HashMap();
-        Field[] fields = clazz.getDeclaredFields();
-        for (int i = 0 ; i < fields.length; i++) {
-            Field constant = fields[i];
-            String key = constant.getName().toUpperCase();
-            try {
-                Object value = constant.get(null);
-                map.put(key, value);
-            } catch (IllegalAccessException ieae) {
-                log.debug("The java constant with name " + key + " is not accessible");
-            }
-        }
+        fillConstantsProvider(clazz, map);
         return map;
+    }
+    private static void fillConstantsProvider(Class clazz, HashMap map) {
+        while(clazz != null) {
+            Field[] fields = clazz.getDeclaredFields();
+            for (int i = 0 ; i < fields.length; i++) {
+                Field constant = fields[i];
+                if (Modifier.isStatic(constant.getModifiers())) {
+                    String key = constant.getName().toUpperCase();
+                    if (! map.containsKey(key)) { // super should not override this.
+                        try {
+                            Object value = constant.get(null);
+                            map.put(key, value);
+                        } catch (IllegalAccessException ieae) {
+                            log.debug("The java constant with name " + key + " is not accessible");
+                        }
+                    }
+                }
+            }
+            Class[] interfaces = clazz.getInterfaces();
+            for (int i = 0 ; i < interfaces.length; i ++) {
+                fillConstantsProvider(interfaces[i], map);
+            }
+            clazz = clazz.getSuperclass();
+        }
     }
 }
