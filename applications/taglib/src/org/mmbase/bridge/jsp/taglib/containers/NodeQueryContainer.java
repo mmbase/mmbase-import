@@ -16,7 +16,7 @@ import org.mmbase.bridge.NodeQuery;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeQueryContainer.java,v 1.2 2004-02-11 20:40:14 keesj Exp $
+ * @version $Id: NodeQueryContainer.java,v 1.3 2006-07-04 12:16:09 michiel Exp $
  */
 public interface NodeQueryContainer extends QueryContainer {
 
@@ -25,5 +25,6 @@ public interface NodeQueryContainer extends QueryContainer {
      * object to change it or to use it. 
      */
     NodeQuery getNodeQuery();
+
 
 }

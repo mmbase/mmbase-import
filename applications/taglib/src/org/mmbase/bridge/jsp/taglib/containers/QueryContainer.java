@@ -20,7 +20,7 @@ import org.mmbase.bridge.jsp.taglib.CloudProvider;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryContainer.java,v 1.7 2005-12-15 21:47:27 michiel Exp $
+ * @version $Id: QueryContainer.java,v 1.8 2006-07-04 12:16:09 michiel Exp $
  */
 public interface QueryContainer extends  CloudProvider {
 
@@ -29,5 +29,8 @@ public interface QueryContainer extends  CloudProvider {
      * object to change it or to use it. 
      */
     Query getQuery();
+
+    void setJspvar(String jv);
+
 
 }
