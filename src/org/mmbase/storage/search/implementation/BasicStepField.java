@@ -18,7 +18,7 @@ import org.mmbase.storage.search.*;
  * The field alias is not set on default.
  *
  * @author Rob van Maris
- * @version $Id: BasicStepField.java,v 1.22 2006-03-28 23:43:08 michiel Exp $
+ * @version $Id: BasicStepField.java,v 1.23 2006-07-04 13:04:00 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicStepField implements StepField {
@@ -263,18 +263,23 @@ public class BasicStepField implements StepField {
 
     // javadoc is inherited
     public String toString() {
-        StringBuffer sb = new StringBuffer("StepField(step:");
-        if (getStep() == null) {
+        StringBuffer sb = new StringBuffer("");
+        Step step = getStep();
+        if (step == null) {
             sb.append("null");
         } else {
-            if (getStep().getAlias() == null) {
+            String stepAlias = step.getAlias();
+            if (stepAlias == null) {
                 sb.append(getStep().getTableName());
             } else {
-                sb.append(getStep().getAlias());
+                sb.append(stepAlias);
             }
         }
-        sb.append(", fieldname:").append(getFieldName()).
-        append(", alias:").append(getAlias()).append(")");
+        sb.append(".").append(getFieldName());
+        String alias = getAlias();
+        if (alias != null) {
+            sb.append(" as ").append(alias);
+        }
         return sb.toString();
     }
 
