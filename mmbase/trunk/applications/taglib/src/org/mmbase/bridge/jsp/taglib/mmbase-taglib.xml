@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.362 2006-07-04 12:16:09 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.363 2006-07-04 16:09:26 johannes Exp $
 
 -->
 <taglib author="MMBase community">
@@ -887,7 +887,7 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
     <attribute>
       <name>jspvar</name>
       <required>false</required>
-      <rtexprvalue>fals</rtexprvalue>
+      <rtexprvalue>false</rtexprvalue>
       <info>
         JspVar of the type org.mmbase.bridge.Query.
       </info>
