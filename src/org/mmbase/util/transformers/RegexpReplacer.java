@@ -137,7 +137,7 @@ public class RegexpReplacer extends ChunkedTransformer {
                         while (j.hasNext()) {
                             Object n = j.next();
                             if (! (n instanceof Map.Entry)) {
-                                log.warn("Could not understand " + n);
+                                log.warn("Could not understand " + n.getClass() + " '" + n + "' (in collection " + value + "). It should be a Map.Entry.");
                                 continue;
                             }
                             Map.Entry subEntry = (Map.Entry) n;
@@ -155,7 +155,7 @@ public class RegexpReplacer extends ChunkedTransformer {
                         result   = Casting.toString(value);
                     }
                 } else {
-                    log.warn("Could understand " + next.getClass() + " '" + next + "'");
+                    log.warn("Could not understand " + next.getClass() + " '" + next + "'. It should be a Map.Entry.");
                     continue;
                 }
                 patterns.add(new Entry(p, result));
