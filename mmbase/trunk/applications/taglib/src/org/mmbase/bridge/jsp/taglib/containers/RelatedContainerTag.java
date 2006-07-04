@@ -23,7 +23,7 @@ import org.mmbase.storage.search.Step;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: RelatedContainerTag.java,v 1.17 2006-02-27 14:35:32 michiel Exp $
+ * @version $Id: RelatedContainerTag.java,v 1.18 2006-07-04 12:16:09 michiel Exp $
  */
 public class RelatedContainerTag extends NodeReferrerTag implements QueryContainer {
 
@@ -34,6 +34,7 @@ public class RelatedContainerTag extends NodeReferrerTag implements QueryContain
     private Attribute path       = Attribute.NULL;
     private Attribute searchDirs = Attribute.NULL;
     private Attribute fields     = Attribute.NULL;
+    protected String jspVar = null;
 
     public void setCachepolicy(String t) throws JspTagException {
         cachePolicy = getAttribute(t);
@@ -50,6 +51,13 @@ public class RelatedContainerTag extends NodeReferrerTag implements QueryContain
 
     public void setFields(String f) throws JspTagException {
         fields = getAttribute(f);
+    }
+
+    /**
+     * @since MMBase-1.8.1
+     */
+    public void setJspvar(String jv) {
+        jspVar = jv;
     }
 
     public Query getQuery() {
@@ -79,6 +87,10 @@ public class RelatedContainerTag extends NodeReferrerTag implements QueryContain
         if (getId() != null) { // write to context.
             getContextProvider().getContextContainer().register(getId(), query);
         }
+        if (jspVar != null) {
+            pageContext.setAttribute(jspVar, query);
+        }
+
 
         if (cachePolicy != Attribute.NULL) {
             query.setCachePolicy(CachePolicy.getPolicy(cachePolicy.getValue(this)));
