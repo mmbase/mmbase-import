@@ -17,7 +17,7 @@ import javax.servlet.jsp.tagext.TagData;
  * The TEI class belonging to the CloudTag and descendents
  *
  * @author Michiel Meeuwissen
- * @version $Id: CloudTEI.java,v 1.8 2006-03-18 07:58:38 michiel Exp $
+ * @version $Id: CloudTEI.java,v 1.9 2006-07-04 12:14:57 michiel Exp $
  */
 
 public class CloudTEI extends TagExtraInfo {
@@ -36,12 +36,8 @@ public class CloudTEI extends TagExtraInfo {
         String jspvar  = (String) data.getAttribute("jspvar");
 
         if (jspvar != null) {
-            variableInfo    =  new VariableInfo[2];
-            variableInfo[0] =  new VariableInfo(jspvar, cloudType(), true, VariableInfo.NESTED);
-            variableInfo[1] =  new VariableInfo("TAGINFO", "Integer", true, VariableInfo.NESTED);
-        } else {
             variableInfo    =  new VariableInfo[1];
-            variableInfo[0] =  new VariableInfo("TAGINFO", "Integer", true, VariableInfo.NESTED);
+            variableInfo[0] =  new VariableInfo(jspvar, cloudType(), true, VariableInfo.NESTED);
         }
         return variableInfo;
     }
