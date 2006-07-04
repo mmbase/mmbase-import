@@ -26,7 +26,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: RelatedNodesContainerTag.java,v 1.13 2006-05-17 19:15:09 michiel Exp $
+ * @version $Id: RelatedNodesContainerTag.java,v 1.14 2006-07-04 12:16:09 michiel Exp $
  */
 public class RelatedNodesContainerTag extends ListNodesContainerTag {
 
@@ -107,6 +107,9 @@ public class RelatedNodesContainerTag extends ListNodesContainerTag {
 
         if (getId() != null) { // write to context.
             getContextProvider().getContextContainer().register(getId(), query);
+        }
+        if (jspVar != null) {
+            pageContext.setAttribute(jspVar, query);
         }
         return EVAL_BODY;
     }

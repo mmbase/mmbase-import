@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.361 2006-05-23 21:12:47 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.362 2006-07-04 12:16:09 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -883,6 +883,15 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
         Used in conjuction with 'container' attribute of querycontainerreferrers.
       </info>
       <see tag="containerreferrer" attribute="container" />
+    </attribute>
+    <attribute>
+      <name>jspvar</name>
+      <required>false</required>
+      <rtexprvalue>fals</rtexprvalue>
+      <info>
+        JspVar of the type org.mmbase.bridge.Query.
+      </info>
+      <since>MMBase-1.8.1</since>
     </attribute>
     <since>MMBase-1.7</since>
   </taginterface>
@@ -6329,6 +6338,7 @@ The 0 is just counter, which starts at 0 on every page.
     <extends>querycontainer</extends>
     <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.ListNodesContainerTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.containers.QueryTEI</teiclass>
     <info>
       Surrounds a listnodes tag and provides a query object.
     </info>
@@ -6395,6 +6405,7 @@ The 0 is just counter, which starts at 0 on every page.
     <extends>querycontainer</extends>
     <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.RelatedNodesContainerTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.containers.QueryTEI</teiclass>
     <info>
        Surrounds a relatednodes tag and provides a query object. Alternatively, it can also surround
        a listnodes tag (because a relatenodescontainer is a specialized version of a
@@ -6456,6 +6467,7 @@ The 0 is just counter, which starts at 0 on every page.
     <extends>querycontainer</extends>
     <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.ListContainerTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.containers.QueryTEI</teiclass>
     <info>
       Surrounds a list tag and  provides a query object.
     </info>
@@ -6510,6 +6522,7 @@ The 0 is just counter, which starts at 0 on every page.
     <extends>nodereferrer</extends>
     <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.RelatedContainerTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.containers.QueryTEI</teiclass>
     <info>
       Surrounds a list tag and  provides a query object.
     </info>

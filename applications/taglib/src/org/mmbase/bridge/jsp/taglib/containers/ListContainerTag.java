@@ -22,7 +22,7 @@ import org.mmbase.cache.CachePolicy;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListContainerTag.java,v 1.17 2006-02-27 14:35:32 michiel Exp $
+ * @version $Id: ListContainerTag.java,v 1.18 2006-07-04 12:16:09 michiel Exp $
  */
 public class ListContainerTag extends CloudReferrerTag implements QueryContainer {
 
@@ -32,6 +32,7 @@ public class ListContainerTag extends CloudReferrerTag implements QueryContainer
     private Attribute searchDirs = Attribute.NULL;
     private Attribute fields     = Attribute.NULL;
     protected  Attribute   nodes       = Attribute.NULL;
+    protected String jspVar = null;
 
     public void setCachepolicy(String t) throws JspTagException {
         cachePolicy = getAttribute(t);
@@ -54,6 +55,13 @@ public class ListContainerTag extends CloudReferrerTag implements QueryContainer
      */
     public void setNodes(String n) throws JspTagException {
         nodes = getAttribute(n);
+    }
+
+    /**
+     * @since MMBase-1.8.1
+     */
+    public void setJspvar(String jv) {
+        jspVar = jv;
     }
 
 
@@ -82,6 +90,9 @@ public class ListContainerTag extends CloudReferrerTag implements QueryContainer
 
         if (getId() != null) { // write to context.
             getContextProvider().getContextContainer().register(getId(), query);
+        }
+        if (jspVar != null) {
+            pageContext.setAttribute(jspVar, query);
         }
 
         if (cachePolicy != Attribute.NULL) {

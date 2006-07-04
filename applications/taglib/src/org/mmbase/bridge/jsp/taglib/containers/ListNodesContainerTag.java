@@ -23,7 +23,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListNodesContainerTag.java,v 1.20 2005-12-13 10:01:00 michiel Exp $
+ * @version $Id: ListNodesContainerTag.java,v 1.21 2006-07-04 12:16:09 michiel Exp $
  */
 public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryContainer {
     // nodereferrer because RelatedNodesContainer extension
@@ -35,9 +35,10 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
     protected Attribute   nodeManager = Attribute.NULL;
     protected  Attribute   element     = Attribute.NULL;
     protected  Attribute   nodes       = Attribute.NULL;
+    protected String jspVar = null;
 
     /**
-     * @since MMBase-1.8
+     * @since MMBase-1.8.0
      */
     public void setCachepolicy(String t) throws JspTagException {
         cachePolicy = getAttribute(t);
@@ -63,6 +64,13 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
      */
     public void setNodes(String n) throws JspTagException {
         nodes = getAttribute(n);
+    }
+
+    /**
+     * @since MMBase-1.8.1
+     */
+    public void setJspvar(String jv) {
+        jspVar = jv;
     }
 
 
@@ -121,6 +129,9 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
 
         if (getId() != null) { // write to context.
             getContextProvider().getContextContainer().register(getId(), query);
+        }
+        if (jspVar != null) {
+            pageContext.setAttribute(jspVar, query);
         }
 
         return EVAL_BODY;
