@@ -11,7 +11,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class BasicStepFieldTest extends TestCase {
 
@@ -266,23 +266,16 @@ public class BasicStepFieldTest extends TestCase {
     public void testToString() {
         // Null alias.
         assertTrue(instance.toString(),
-        instance.toString().equals("StepField(step:" + step.getTableName()
-        + ", fieldname:" + instance.getFieldName() + ", alias:"
-        + instance.getAlias() + ")"));
-
+                   instance.toString().equals(step.getTableName() + "." + instance.getFieldName()));
         // Set step alias.
         step.setAlias("abdef");
         assertTrue(instance.toString(),
-        instance.toString().equals("StepField(step:" + step.getAlias()
-        + ", fieldname:" + instance.getFieldName() + ", alias:"
-        + instance.getAlias() + ")"));
+                   instance.toString().equals(step.getAlias() + "." + instance.getFieldName()));
 
         // Set field alias.
         instance.setAlias("fedbac");
         assertTrue(instance.toString(),
-        instance.toString().equals("StepField(step:" + step.getAlias()
-        + ", fieldname:" + instance.getFieldName() + ", alias:"
-        + instance.getAlias() + ")"));
+                   instance.toString().equals(step.getAlias() + "." + instance.getFieldName() + " as " + instance.getAlias()));
     }
 
     public static Test suite() {
