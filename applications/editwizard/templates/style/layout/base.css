@@ -4,12 +4,12 @@
   You can override parts (cascading), by specifying an 'extrastyle' in your own 'base.xsl'.
 
   @author Nico Klasens
-  @version	$Id: base.css,v 1.4 2005-09-27 15:35:43 michiel Exp $
+  @version	$Id: base.css,v 1.5 2006-07-05 08:56:12 pierre Exp $
 */
 
 body
 {
-	font-family: "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+	font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
 	font-weight: normal;
 	margin: 10px 10px 0px 10px;
@@ -18,8 +18,8 @@ body
 
 input, textarea, select
 {
-	font-family: "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
-	font-size: 12px;
+	font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
 	font-weight: normal;
 	text-align: left;
 	letter-spacing: 0.05em;
