@@ -124,10 +124,31 @@
         <xsd:element ref="gui"          minOccurs="0" />
         <xsd:element ref="editor"       minOccurs="0" />
         <xsd:element ref="dt:datatype"     minOccurs="0" />
-        <xsd:element ref="db" />
+        <xsd:element ref="storage"     minOccurs="0" />
+        <xsd:element ref="db"     minOccurs="0" />
       </xsd:sequence>
+      <xsd:attribute name="name" type="xsd:string" />
+      <xsd:attribute name="state">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="persistent" />
+            <xsd:enumeration value="virtual" />
+            <xsd:enumeration value="system" />
+            <xsd:enumeration value="systemvirtual" />
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:attribute>
+      <xsd:attribute name="readonly">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="true" />
+            <xsd:enumeration value="false" />
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:attribute>
     </xsd:complexType>
   </xsd:element>
+
   <xsd:element name="gui">
     <xsd:complexType>
       <xsd:sequence>
@@ -169,17 +190,18 @@
   <xsd:element name="db">
     <xsd:complexType>
       <xsd:sequence>
-        <xsd:element ref="name" />
+        <xsd:element ref="name" minOccurs="0" />
         <xsd:element ref="type" minOccurs="0" />
       </xsd:sequence>
     </xsd:complexType>
   </xsd:element>
   <xsd:element name="name" />
+
   <xsd:element name="type">
     <xsd:complexType>
       <xsd:simpleContent>
         <xsd:extension base="xsd:string">
-          <xsd:attribute name="state" use="required">
+          <xsd:attribute name="state">
             <xsd:simpleType>
               <xsd:restriction base="xsd:string">
                 <xsd:enumeration value="persistent" />
@@ -224,6 +246,25 @@
             </xsd:simpleType>
           </xsd:attribute>
           <xsd:attribute name="key">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:enumeration value="true" />
+                <xsd:enumeration value="false" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:attribute>
+        </xsd:extension>
+      </xsd:simpleContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="storage">
+    <xsd:complexType>
+      <xsd:simpleContent>
+        <xsd:extension base="xsd:string">
+          <xsd:attribute name="type" type="xsd:string" />
+          <xsd:attribute name="size" type="xsd:string" />
+          <xsd:attribute name="notnull">
             <xsd:simpleType>
               <xsd:restriction base="xsd:string">
                 <xsd:enumeration value="true" />
