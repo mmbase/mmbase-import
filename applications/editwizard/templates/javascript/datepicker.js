@@ -606,10 +606,12 @@
 		}
 	}
 
-	document.onkeypress = function hidecal1 () {
-		   if (window.event.keyCode==27) {
+	document.onkeypress = function hidecal1 (ev) {
+		ev = (window.event) ? window.event : ev;
+		var key = String.fromCharCode(HTMLArea.is_ie ? ev.keyCode : ev.charCode).toLowerCase();
+		if (key == 27) {
 			hideCalendar()
-                }
+		}
 	}
 	document.onclick = function hidecal2 () {
 		if (!bShow)
