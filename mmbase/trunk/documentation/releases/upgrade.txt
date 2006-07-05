@@ -14,6 +14,19 @@ important files (webapp, database) before upgrading.
   org.mmbase.modules.corebuilder.ObjectTypes to org.mmbase.modules.corebuilder.TypeDef
   This needs to be changed in the typdef.xml configuration file.
 
+- You can also simply throw aways all core-builder XML configuration files:
+  daymarks.xml, insrel.xml, mmservers.xml, oalias.xml, object.xml, reldef.xml
+  syncnodes.xml, typedef.xml, typerel.xml, versions.xml.
+
+  It is unlikely that you have changed anything in these.  Correct and up-to-date versions are in
+  mmbase.jar.  If a real need to override these exists (e.g. extra fields in object.xml, or
+  properties in mmservers), you can place your own versions in <config>/builders/core/
+
+  Similar arrangments are also made for various applications. E.g. for cloud-context security it is
+  likely that you can throw away all builder xml's, because up-to-date versions are in
+  mmbase-cloudcontextsecurity.jar.
+  
+
 - The storage configuration files were originally located in the mmbase.jar.
   To override them you had to place your version of the configuration file under classes/org/mmbase/storage/implementation/database/resources.
   In 1.8, these files have been moved to the storage/database directory in the mmbase config directory.
