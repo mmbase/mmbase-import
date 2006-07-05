@@ -2,7 +2,7 @@
 
 
 MMBase Build File
-$Id: build.xml,v 1.136 2006-07-04 07:12:52 michiel Exp $
+$Id: build.xml,v 1.137 2006-07-05 19:35:49 michiel Exp $
 =================
 
 This build file can be used to build the following from CVS or from the source
@@ -766,7 +766,8 @@ Build-compiler: ${build.compiler}
           <filename name="applications/media/**/*.java" />
           <filename name="applications/oscache-cache/**/*.java" />
           <filename name="applications/richtext/**/*.java" />
-
+          <filename name="applications/xmlimporter/**/*.java" />
+          <filename name="applications/clustering/**/*.java" />
         </or>
       </fileset>
       <classpath>
