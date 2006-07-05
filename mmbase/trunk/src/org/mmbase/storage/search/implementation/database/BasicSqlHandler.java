@@ -22,7 +22,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.59 2006-06-21 15:06:36 johannes Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.60 2006-07-05 20:06:16 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -130,8 +130,9 @@ public class BasicSqlHandler implements SqlHandler {
             append(stringValue).
             append("'");
         } else if (fieldType == Field.TYPE_DATETIME) {
-            if (value instanceof Integer) {
-                sb.append(((Integer) value).intValue());
+            // should this not be translated to a date first??
+            if (value instanceof Number) {
+                sb.append(((Number) value).longValue());
             } else {
                 sb.append("'");
                 appendDateValue(sb, (Date) value);
@@ -206,7 +207,7 @@ public class BasicSqlHandler implements SqlHandler {
      * @since MMBase-1.8
      */
     protected void appendRelationConstraints(StringBuffer sbRelations, RelationStep relationStep, boolean multipleSteps) {
-        
+
         Step previousStep = relationStep.getPrevious();
         Step nextStep = relationStep.getNext();
         if (sbRelations.length() > 0) {
@@ -228,7 +229,7 @@ public class BasicSqlHandler implements SqlHandler {
                 sbRelations.append("<>1");
             }
             break;
-            
+
         case RelationStep.DIRECTIONS_DESTINATION:
             sbRelations.append('(');
             appendField(sbRelations, previousStep, "number", multipleSteps);
@@ -239,7 +240,7 @@ public class BasicSqlHandler implements SqlHandler {
             sbRelations.append('=');
             appendField(sbRelations, relationStep, "dnumber", multipleSteps);
             break;
-            
+
         case RelationStep.DIRECTIONS_BOTH:
             if (relationStep.getRole() != null) {
                 sbRelations.append("(((");
@@ -272,7 +273,7 @@ public class BasicSqlHandler implements SqlHandler {
                 sbRelations.append(')');
             }
             break;
-            
+
         case RelationStep.DIRECTIONS_ALL:
             if (relationStep.getRole() != null) {
                 sbRelations.append("(((");
@@ -300,10 +301,10 @@ public class BasicSqlHandler implements SqlHandler {
                 sbRelations.append(')');
             }
             break;
-            
+
         case RelationStep.DIRECTIONS_EITHER:
             throw new UnsupportedOperationException("Directionality 'EITHER' is not (yet) supported");
-            
+
         default: // Invalid directionality value.
             throw new IllegalStateException(
                                             "Invalid directionality value: " + relationStep.getDirectionality());
@@ -334,32 +335,15 @@ public class BasicSqlHandler implements SqlHandler {
         boolean multipleSteps = query.getSteps().size() > 1;
 
         // Fields expression
-        List lFields = new ArrayList();
-        lFields.addAll(query.getFields());
+        List lFields = query.getFields();
 
-        // When 'distinct', make sure all fields used for sorting are
-        // included in the query.
-        // Some databases require this (including PostgreSQL).
-        // By fixing this here, the result of the query remains consistent
-        // across databases, while requiring no modification in the calling
-        // code.
-        if (query.isDistinct()) {
-            Iterator iSortOrder = query.getSortOrders().iterator();
-            while (iSortOrder.hasNext()) {
-                SortOrder sortOrder = (SortOrder) iSortOrder.next();
-                StepField field = sortOrder.getField();
-                if (lFields.indexOf(field) == -1) {
-                    lFields.add(field);
-                }
-            }
-        }
 
         boolean storesAsFile = MMBase.getMMBase().getStorageManagerFactory().hasOption(org.mmbase.storage.implementation.database.Attributes.STORES_BINARY_AS_FILE);
         Iterator iFields = lFields.iterator();
         boolean appended = false;
         while (iFields.hasNext()) {
             StepField field = (StepField) iFields.next();
-            if (field.getType() == Field.TYPE_BINARY) continue; 
+            if (field.getType() == Field.TYPE_BINARY) continue;
             if (appended) {
                 sb.append(',');
             }
@@ -423,6 +407,30 @@ public class BasicSqlHandler implements SqlHandler {
                 sb.append(" AS ").append(getAllowedValue(fieldAlias));
             }
 
+        }
+
+
+        // When 'distinct', make sure all fields used for sorting are
+        // included in the query.
+        // Some databases require this (including PostgreSQL).
+        // By fixing this here, the result of the query remains consistent
+        // across databases, while requiring no modification in the calling
+        // code.
+        if (query.isDistinct()) {
+            if (log.isDebugEnabled()) {
+                log.debug("Query is distinct, adding " + query.getSortOrders());
+            }
+            boolean needComma = appended;
+            Iterator iSortOrder = query.getSortOrders().iterator();
+            while (iSortOrder.hasNext()) {
+                SortOrder sortOrder = (SortOrder) iSortOrder.next();
+                StepField field = sortOrder.getField();
+                if (lFields.indexOf(field) == -1) {
+                    if (needComma) sb.append(',');
+                    appendSortOrderField(sb, sortOrder, multipleSteps);
+                    needComma = true;
+                }
+            }
         }
 
         // Tables
@@ -560,10 +568,10 @@ public class BasicSqlHandler implements SqlHandler {
         switch (sortOrder.getDirection()) {
         case SortOrder.ORDER_ASCENDING:
             sb.append(" ASC");
-            break;            
+            break;
         case SortOrder.ORDER_DESCENDING:
             sb.append(" DESC");
-            break;            
+            break;
         default: // Invalid direction value.
             throw new IllegalStateException("Invalid direction value: " + sortOrder.getDirection());
         }
