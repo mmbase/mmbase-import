@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.363 2006-07-04 16:09:26 johannes Exp $
+version: $Id: mmbase-taglib.xml,v 1.364 2006-07-05 20:39:27 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -455,6 +455,9 @@ version: $Id: mmbase-taglib.xml,v 1.363 2006-07-04 16:09:26 johannes Exp $
         <p>
           This method is similar to the behavior of the 'add()' and 'addAll()' methods from the <code>java.util.Collection</code> interface.
         </p>
+        <p>
+          It is also possible to postfix the referid with '?', in which case no error will occur if the variable with this id does not exist.
+        </p>
       </info>
     </attribute>
     <attribute>
@@ -470,6 +473,9 @@ version: $Id: mmbase-taglib.xml,v 1.363 2006-07-04 16:09:26 johannes Exp $
         <p>
           This method is similar to the behavior of the 'retainAll()' method from the <code>java.util.Collection</code> interface.
         </p>
+        <p>
+          It is also possible to postfix the referid with '?', in which case no error will occur if the variable with this id does not exist.
+        </p>
       </info>
     </attribute>
     <attribute>
@@ -477,8 +483,18 @@ version: $Id: mmbase-taglib.xml,v 1.363 2006-07-04 16:09:26 johannes Exp $
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <since>MMBase-1.8</since>
-        Removes al the elements from the list which are present in the
-        object referred by this attribute.
+      <info>
+        <p>
+          Removes al the elements from the list which are present in the
+          object referred by this attribute.
+        </p>
+        <p>
+          This method is similar to the behavior of the 'removeAll()' method from the <code>java.util.Collection</code> interface.
+        </p>
+        <p>
+          It is also possible to postfix the referid with '?', in which case no error will occur if the variable with this id does not exist.
+        </p>
+      </info>
     </attribute>
     <see tag="listreferrer" />
     <example>
