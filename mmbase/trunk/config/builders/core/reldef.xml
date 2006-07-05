@@ -27,7 +27,7 @@
   </descriptions>
 
   <fieldlist>
-    <field>
+    <field name="sname">
       <descriptions>
         <description xml:lang="en">Role</description>
         <description xml:lang="nl">Rol</description>
@@ -43,14 +43,13 @@
           <list>1</list>
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>sname</name>
-        <type required="true" size="32" state="persistent">STRING</type>
-      </db>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="true" />
+        <maxLength value="32" />
+      </datatype>
     </field>
 
-    <field>
+    <field name="dname">
       <descriptions>
         <description xml:lang="en">The role as for the destination, can only be used in combination with sname</description>
         <description xml:lang="nl">Bestemmingsrol van deze relatie definitie, kan slechts gebruikt worden in combinatie met sname</description>
@@ -66,15 +65,13 @@
           <input>2</input>
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>dname</name>
-        <type size="32" state="persistent">STRING</type>
-      </db>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="true" />
+        <maxLength value="32" />
+      </datatype>
     </field>
 
-
-    <field>
+    <field name="dir">
       <descriptions>
         <description xml:lang="en">Directionality of this relation definition. 1 or 2.</description>
         <description xml:lang="nl">Richting van deze relatie definitie. 1 of 2.</description>
@@ -91,14 +88,9 @@
         </positions>
       </editor>
       <datatype base="dirs" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>dir</name>
-        <type state="persistent">INTEGER</type>
-      </db>
     </field>
 
-
-    <field>
+    <field name="sguiname">
       <descriptions>
         <description xml:lang="en">Source guiname of this relation
           definition, will be used in editors</description>
@@ -116,15 +108,12 @@
           <list>4</list>
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>sguiname</name>
-        <type size="32" state="persistent">STRING</type>
-      </db>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <maxLength value="32" />
+      </datatype>
     </field>
 
-
-    <field>
+    <field name="dguiname">
       <descriptions>
         <description xml:lang="en">Destination guiname of this relation
           definition, will be used in editors</description>
@@ -142,15 +131,12 @@
           <list>5</list>
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>dguiname</name>
-        <type size="32" state="persistent">STRING</type>
-      </db>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <maxLength value="32" />
+      </datatype>
     </field>
 
-
-    <field>
+    <field name="builder">
       <descriptions>
         <description xml:lang="en">Builder which will be used by
           relations of this relation definition</description>
@@ -170,11 +156,9 @@
           <search>2</search>
         </positions>
       </editor>
-      <datatype base="typedef" xmlns="http://www.mmbase.org/xmlns/datatypes" /> <!-- should actually be limited to extensions of insrel, but how? -->
-      <db>
-        <name>builder</name>
-        <type required="true" state="persistent">NODE</type>
-      </db>
+      <datatype base="typedef" xmlns="http://www.mmbase.org/xmlns/datatypes" > <!-- should actually be limited to extensions of insrel, but how? -->
+        <required value="true" />
+      </datatype>
     </field>
   </fieldlist>
 </builder>

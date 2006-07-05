@@ -33,7 +33,7 @@
 
   <fieldlist>
     <!-- POS 3 : <field> 'name'  -->
-    <field>
+    <field name="name" state="system">
       <descriptions>
         <description xml:lang="en">Name of the object type</description>
         <description xml:lang="nl">Naam van het objecttype</description>
@@ -50,15 +50,15 @@
           <list>1</list>
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>name</name>
-        <type unique="true" required="true" size="32" state="system">STRING</type>
-      </db>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <unique value="true" />
+        <required value="true" />
+        <maxLength value="12" />
+      </datatype>
     </field>
 
     <!-- POS 4 : <field> 'description'  -->
-    <field>
+    <field name="description">
       <descriptions>
         <description xml:lang="en">Description of the object type</description>
         <description xml:lang="nl">Omschrijving van het objecttype</description>
@@ -75,15 +75,13 @@
           <list>2</list>
         </positions>
       </editor>
-      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>description</name>
-        <type size="255" state="persistent">STRING</type>
-      </db>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <maxLength value="255" />
+      </datatype>
     </field>
 
     <!-- POS 5 : <field> 'config'  -->
-    <field>
+    <field name="config" state="virtual">
       <descriptions>
         <description xml:lang="en">Configuration of the object type, stored as xml</description>
         <description xml:lang="nl">Configuratie van het objecttype, opgeslagen als xml</description>
@@ -95,10 +93,11 @@
         <guiname xml:lang="fy">Ynstellings</guiname>
         <guiname xml:lang="it">Configurazione</guiname>
       </gui>
-      <db>
-        <name>config</name>
-        <type required="true" notnull="false" state="virtual">XML</type>
-      </db>
+      <datatype base="xml" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="true" />
+      </datatype>
+      <!-- not sure if this is needed when state is virtual -->
+      <storage notnull="false" />
     </field>
   </fieldlist>
 </builder>
