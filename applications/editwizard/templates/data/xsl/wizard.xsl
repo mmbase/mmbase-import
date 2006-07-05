@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.152 2006-06-29 08:52:54 nklasens Exp $
+    @version $Id: wizard.xsl,v 1.153 2006-07-05 15:11:36 pierre Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -53,16 +53,16 @@
         var selectYearMessage = '<xsl:value-of select="$datepicker_selectyear"/>';
         var selectDateMessage = '<xsl:value-of select="$datepicker_selectdate"/>'; // do not replace [date], it will be replaced by date.
         var monthName =	new	Array(
-        					'<xsl:value-of select="$date_january"/>','<xsl:value-of select="$date_february"/>',
-        					'<xsl:value-of select="$date_march"/>','<xsl:value-of select="$date_april"/>',
-        					'<xsl:value-of select="$date_may"/>','<xsl:value-of select="$date_june"/>',
-        					'<xsl:value-of select="$date_july"/>','<xsl:value-of select="$date_august"/>',
-        					'<xsl:value-of select="$date_september"/>','<xsl:value-of select="$date_october"/>',
-        					'<xsl:value-of select="$date_november"/>','<xsl:value-of select="$date_december"/>')
-		var dayName = new Array	('<xsl:value-of select="$day_sun"/>','<xsl:value-of select="$day_mon"/>',
-								'<xsl:value-of select="$day_tue"/>','<xsl:value-of select="$day_wed"/>',
-								'<xsl:value-of select="$day_thu"/>','<xsl:value-of select="$day_fri"/>',
-								'<xsl:value-of select="$day_sat"/>')
+                  '<xsl:value-of select="$date_january"/>','<xsl:value-of select="$date_february"/>',
+                  '<xsl:value-of select="$date_march"/>','<xsl:value-of select="$date_april"/>',
+                  '<xsl:value-of select="$date_may"/>','<xsl:value-of select="$date_june"/>',
+                  '<xsl:value-of select="$date_july"/>','<xsl:value-of select="$date_august"/>',
+                  '<xsl:value-of select="$date_september"/>','<xsl:value-of select="$date_october"/>',
+                  '<xsl:value-of select="$date_november"/>','<xsl:value-of select="$date_december"/>')
+    var dayName = new Array	('<xsl:value-of select="$day_sun"/>','<xsl:value-of select="$day_mon"/>',
+                '<xsl:value-of select="$day_tue"/>','<xsl:value-of select="$day_wed"/>',
+                '<xsl:value-of select="$day_thu"/>','<xsl:value-of select="$day_fri"/>',
+                '<xsl:value-of select="$day_sat"/>')
     </script>
     <script language="javascript" src="{$javascriptdir}datepicker.js">
       <xsl:comment>help IE</xsl:comment>
@@ -1185,16 +1185,25 @@
           <xsl:for-each select="command[@name=&apos;startwizard&apos;]">
             <!-- The prompts.xsl adds this as a tooltip -->
             <!-- Moved prompt to the "prompt_add_wizard" template as a tooltip -->
-            <xsl:if test="@inline=&apos;true&apos;">
-              <a href="javascript:doStartWizard(&apos;{../@fid}&apos;,&apos;{../command[@name=&apos;add-item&apos;]/@value}&apos;,&apos;{@wizardname}&apos;,&apos;{@objectnumber}&apos;,&apos;{@origin}&apos;);">
-                <xsl:call-template name="prompt_add_wizard"/>
-              </a>
-            </xsl:if>
-            <xsl:if test="not(@inline=&apos;true&apos;)">
-              <a href="{$popuppage}&amp;fid={../@fid}&amp;did={../command[@name=&apos;add-item&apos;]/@value}&amp;popupid={@wizardname}_{@objectnumber}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}&amp;origin={@origin}" target="_blank">
-                <xsl:call-template name="prompt_add_wizard"/>
-              </a>
-            </xsl:if>
+            <xsl:choose>
+              <xsl:when test="@wizardjsp">
+                <a href="{$ew_context}{@wizardjsp}/?objectnumber=new&amp;origin={@origin}&amp;wizard={@wizardname}">
+                  <xsl:call-template name="prompt_add_wizard" />
+                </a>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:if test="@inline=&apos;true&apos;">
+                  <a href="javascript:doStartWizard(&apos;{../@fid}&apos;,&apos;{../command[@name=&apos;add-item&apos;]/@value}&apos;,&apos;{@wizardname}&apos;,&apos;{@objectnumber}&apos;,&apos;{@origin}&apos;);">
+                    <xsl:call-template name="prompt_add_wizard"/>
+                  </a>
+                </xsl:if>
+                <xsl:if test="not(@inline=&apos;true&apos;)">
+                  <a href="{$popuppage}&amp;fid={../@fid}&amp;did={../command[@name=&apos;add-item&apos;]/@value}&amp;popupid={@wizardname}_{@objectnumber}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}&amp;origin={@origin}" target="_blank">
+                    <xsl:call-template name="prompt_add_wizard"/>
+                  </a>
+                </xsl:if>
+              </xsl:otherwise>
+            </xsl:choose>
           </xsl:for-each>
         </xsl:if>
 
@@ -1367,9 +1376,9 @@
     </tr>
     <tr style="vertical-align: top;">
       <td style="vertical-align: top; width: 1%;">
-      	<xsl:if test="field[@name = 'handle' and @size != '0']">
-	        <!-- the image -->
-	        <img src="{node:function($cloud, string(field/@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}"/>
+        <xsl:if test="field[@name = 'handle' and @size != '0']">
+          <!-- the image -->
+          <img src="{node:function($cloud, string(field/@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}"/>
         </xsl:if>
       </td>
       <td colspan="2">
@@ -1425,27 +1434,36 @@
       <xsl:attribute name="onMouseOver">objMouseOver(this);</xsl:attribute>
       <xsl:attribute name="onMouseOut">objMouseOut(this);</xsl:attribute>
       <xsl:for-each select="field[@ftype=&apos;startwizard&apos;]">
-        <xsl:if test="not(@inline) or @inline=&apos;true&apos;">
-          <xsl:attribute name="href">
-            <xsl:text disable-output-escaping="yes">javascript:doStartWizard('</xsl:text>
-            <xsl:value-of select="../../@fid"/>
-            <xsl:text disable-output-escaping="yes">','</xsl:text>
-            <xsl:value-of select="../../command[@name=&apos;add-item&apos;]/@value"/>
-            <xsl:text disable-output-escaping="yes">','</xsl:text>
-            <xsl:value-of select="@wizardname"/>
-            <xsl:text disable-output-escaping="yes">','</xsl:text>
-            <xsl:value-of select="@objectnumber"/>
-            <xsl:text disable-output-escaping="yes">','</xsl:text>
-            <xsl:value-of select="@origin"/>
-            <xsl:text disable-output-escaping="yes">');</xsl:text>
-          </xsl:attribute>
-        </xsl:if>
-        <xsl:if test="@inline=&apos;false&apos;">
-          <xsl:attribute name="href">
-            <xsl:value-of select="$popuppage"/>&amp;fid=<xsl:value-of select="../../@fid"/>&amp;did=<xsl:value-of select="../../command[@name=&apos;add-item&apos;]/@value"/>&amp;popupid=<xsl:value-of select="@wizardname"/>_<xsl:value-of select="@objectnumber"/>&amp;wizard=<xsl:value-of select="@wizardname"/>&amp;objectnumber=<xsl:value-of select="@objectnumber"/>&amp;origin=<xsl:value-of select="@origin"/>
-          </xsl:attribute>
-          <xsl:attribute name="target">_blank</xsl:attribute>
-        </xsl:if>
+        <xsl:choose>
+          <xsl:when test="@wizardjsp">
+            <xsl:attribute name="href">
+              <xsl:value-of select="$ew_context"/><xsl:value-of select="$wizardjsp"/>?wizard=<xsl:value-of select="@wizardname"/>&amp;did=<xsl:value-of select="../../command[@name=&apos;add-item&apos;]/@value"/>&amp;objectnumber=<xsl:value-of select="@objectnumber"/>&amp;origin=<xsl:value-of select="@origin"/>
+            </xsl:attribute>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:if test="not(@inline) or @inline=&apos;true&apos;">
+              <xsl:attribute name="href">
+                <xsl:text disable-output-escaping="yes">javascript:doStartWizard('</xsl:text>
+                <xsl:value-of select="../../@fid"/>
+                <xsl:text disable-output-escaping="yes">','</xsl:text>
+                <xsl:value-of select="../../command[@name=&apos;add-item&apos;]/@value"/>
+                <xsl:text disable-output-escaping="yes">','</xsl:text>
+                <xsl:value-of select="@wizardname"/>
+                <xsl:text disable-output-escaping="yes">','</xsl:text>
+                <xsl:value-of select="@objectnumber"/>
+                <xsl:text disable-output-escaping="yes">','</xsl:text>
+                <xsl:value-of select="@origin"/>
+                <xsl:text disable-output-escaping="yes">');</xsl:text>
+              </xsl:attribute>
+            </xsl:if>
+            <xsl:if test="@inline=&apos;false&apos;">
+              <xsl:attribute name="href">
+                <xsl:value-of select="$popuppage"/>&amp;fid=<xsl:value-of select="../../@fid"/>&amp;did=<xsl:value-of select="../../command[@name=&apos;add-item&apos;]/@value"/>&amp;popupid=<xsl:value-of select="@wizardname"/>_<xsl:value-of select="@objectnumber"/>&amp;wizard=<xsl:value-of select="@wizardname"/>&amp;objectnumber=<xsl:value-of select="@objectnumber"/>&amp;origin=<xsl:value-of select="@origin"/>
+              </xsl:attribute>
+              <xsl:attribute name="target">_blank</xsl:attribute>
+            </xsl:if>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:for-each>
     </xsl:if>
   </xsl:template>
@@ -1502,20 +1520,31 @@
     <!-- The item row is the trigger for startwizard at the moment. -->
     <td>
       <xsl:for-each select="field[@ftype='startwizard']">
-        <xsl:if test="@inline='true'">
-          <span	class="imgbutton">
-            <a href="javascript:doStartWizard('{../../@fid}','{../../command[@name='add-item']/@value}','{@wizardname}','{@objectnumber}','{@origin}');">
-              <xsl:call-template name="prompt_edit_wizard"/>
-            </a>
-          </span>
-        </xsl:if>
-        <xsl:if test="not(@inline='true')">
-          <span	class="imgbutton">
-            <a href="{$popuppage}&amp;fid={../../@fid}&amp;did={../../command[@name='add-item']/@value}&amp;popupid={@wizardname}_{@objectnumber}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}&amp;origin={@origin}" target="_blank">
-              <xsl:call-template name="prompt_edit_wizard"/>
-            </a>
-          </span>
-        </xsl:if>
+        <xsl:choose>
+          <xsl:when test="@wizardjsp">
+            <span	class="imgbutton">
+              <a href="{$ew_context}{@wizardjsp}/?objectnumber={@objectnumber}&amp;origin={@origin}&amp;wizard={@wizardname}">
+                <xsl:call-template name="prompt_edit_wizard" />
+              </a>
+            </span>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:if test="@inline='true'">
+              <span	class="imgbutton">
+                <a href="javascript:doStartWizard('{../../@fid}','{../../command[@name='add-item']/@value}','{@wizardname}','{@objectnumber}','{@origin}');">
+                  <xsl:call-template name="prompt_edit_wizard"/>
+                </a>
+              </span>
+            </xsl:if>
+            <xsl:if test="not(@inline='true')">
+              <span	class="imgbutton">
+                <a href="{$popuppage}&amp;fid={../../@fid}&amp;did={../../command[@name='add-item']/@value}&amp;popupid={@wizardname}_{@objectnumber}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}&amp;origin={@origin}" target="_blank">
+                  <xsl:call-template name="prompt_edit_wizard"/>
+                </a>
+              </span>
+            </xsl:if>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:for-each>
     </td>
   </xsl:template>
