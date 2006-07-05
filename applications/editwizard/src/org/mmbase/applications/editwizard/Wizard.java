@@ -43,7 +43,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.145 2006-06-02 13:07:09 pierre Exp $
+ * @version $Id: Wizard.java,v 1.146 2006-07-05 15:14:19 pierre Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -1938,6 +1938,58 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             Utils.storeText(datanode, value);
         }
     }
+
+    /**
+     * Puts the given value in the right field (given by name) of the right node (given by did)
+     * Assumes a text field.
+     *
+     * @param  did     The data id of the node
+     * @param  fieldName   The name of the field
+     * @param  value   The (String) value what should be stored in the data.
+     */
+    public void storeFieldValue(String did, String fieldName, String value) throws WizardException {
+        if (log.isDebugEnabled()) {
+            log.debug("String value " + value + " in " + did + " for  field " + fieldName);
+        }
+
+        String xpath = ".//*[@did='" + did + "']";
+        Node objectNode = Utils.selectSingleNode(data, xpath);
+
+        xpath = "./field[@name='" + fieldName + "']";
+        Node fieldNode = Utils. selectSingleNode(objectNode, xpath);
+
+        if (fieldNode == null) {
+            throw new WizardException("Unable to store value for field with name " + fieldName + " for node with did=" + did + ", value=" + value + ", wizard:" + wizardName);
+        }
+        Utils.storeText(fieldNode, value);
+    }
+
+    /**
+     * Obtains the value form the right field (given by name) of the right node (given by did).
+     * Assumes a text field.
+     *
+     * @param  did     The data id of the node
+     * @param  fieldName   The name of the field
+     * @param  value   The (String) value what should be stored in the data.
+     */
+    public String retrieveFieldValue(String did, String fieldName) throws WizardException {
+        if (log.isDebugEnabled()) {
+            log.debug("Get value in " + did + " for  field " + fieldName);
+        }
+
+        String xpath = ".//*[@did='" + did + "']";
+        Node objectNode = Utils.selectSingleNode(data, xpath);
+
+        xpath = "./field[@name='" + fieldName + "']";
+        Node fieldNode = Utils. selectSingleNode(objectNode, xpath);
+
+        if (fieldNode == null) {
+            throw new WizardException("Unable to store value for field with name " + fieldName + " for node with did=" + did + ", wizard:" + wizardName);
+        }
+
+        return Utils.getText(fieldNode);
+    }
+
 
     /**
      * This method processes the commands sent over http.
