@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.190 2006-06-28 13:29:51 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.191 2006-07-05 09:56:45 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -642,7 +642,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         Long l = (Long) sizes.get(fieldName);
         if (l != null)  return l.intValue();
         Object value = values.get(fieldName);
-        // Value is null so it does not occupy any space. 
+        // Value is null so it does not occupy any space.
         if (value == null) return 0;
         // Value is not yet loaded from the database?
         if (VALUE_SHORTED.equals(value)) return -1;
@@ -895,13 +895,14 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * If the values map contains an InputStream, care must be taken because often an InputStream can be used only once.
      * @since MMBase-1.8
      */
-    private byte[] useInputStream(String fieldName, InputStream stream) {
-        // first, convert to byte-array
+    private byte[] useInputStream(String fieldName, InputStream stream) {        // first, convert to byte-array
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         int c;
         try {
-            while ((c = stream.read()) > -1) {
-                bos.write(c);
+            byte[] buf = new byte[1024];
+            int n;
+            while ((n = stream.read(buf)) > -1) {
+                bos.write(buf, 0, n);
             }
         } catch (IOException ioe) {
             log.error(ioe);
@@ -913,6 +914,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         if (b.length < blobs.getMaxEntrySize()) {
             blobs.put(key, b);
         }
+
         values.put(fieldName, b);
         return b;
     }
