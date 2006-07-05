@@ -26,7 +26,7 @@
 
 
   <fieldlist>
-    <field>
+    <field name="exportsource">
       <descriptions>
         <description xml:lang="en">Source of this Node, format mmbase://sourceservername/sourceapplicationname</description>
         <description xml:lang="nl">Bron van deze node,formaat: mmbase://bronservernaam/bronapplicatienaam</description>
@@ -44,19 +44,17 @@
           <search>1</search>
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>exportsource</name>
-        <type required="true" size="255" state="persistent">STRING</type>
-      </db>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="true" />
+        <maxLength value="255" />
+      </datatype>
     </field>
 
-    <field>
+    <field name="timestamp">
       <descriptions>
         <description xml:lang="en">Time of the export</description>
         <description xml:lang="nl">Tijd van de export</description>
       </descriptions>
-
       <gui>
         <guiname xml:lang="en">Time Stamp</guiname>
         <guiname xml:lang="nl">Tijdstempel</guiname>
@@ -70,13 +68,12 @@
           <search>2</search>
         </positions>
       </editor>
-      <db>
-        <name>timestamp</name>
-        <type required="true" state="persistent">INTEGER</type>
-      </db>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="true" />
+      </datatype>
     </field>
 
-    <field>
+    <field name="exportnumber">
       <descriptions>
         <description xml:lang="en">
           Remote number of this node, the remotenumber is mapped to the localnumber when importing nodes
@@ -98,13 +95,12 @@
           <search>3</search>
         </positions>
       </editor>
-      <db>
-        <name>exportnumber</name>
-        <type required="true" state="persistent">INTEGER</type>
-      </db>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="true" />
+      </datatype>
     </field>
 
-    <field>
+    <field name="localnumber">
       <descriptions>
         <description xml:lang="en">
           Local number of this node, the remotenumber is mapped to the localnumber when importing nodes
@@ -127,10 +123,9 @@
           <search>4</search>
         </positions>
       </editor>
-      <db>
-        <name>localnumber</name>
-        <type required="true" state="persistent">NODE</type>
-      </db>
+      <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="true" />
+      </datatype>
     </field>
 
   </fieldlist>

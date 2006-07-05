@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<builder 
+<builder
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
-                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
     name="versions" maintainer="mmbase.org" version="0" extends="object">
-  
+
   <class>org.mmbase.module.builders.Versions</class>
   <searchage>1000</searchage>
 
@@ -28,7 +28,7 @@
   </descriptions>
 
   <fieldlist>
-    <field>
+    <field name="name">
       <descriptions>
         <description xml:lang="en">
           Name of the object for which the version is stored
@@ -50,14 +50,13 @@
           <search>1</search>
         </positions>
       </editor>
-      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>name</name>
-        <type size="64" required="true" state="persistent">STRING</type>
-      </db>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="true" />
+        <maxLength value="64" />
+      </datatype>
     </field>
 
-    <field>
+    <field name="type">
       <descriptions>
         <description xml:lang="en">
           Type of the object for which the version is stored (can be builders, applications, etc)
@@ -79,14 +78,13 @@
           <search>2</search>
         </positions>
       </editor>
-      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>type</name>
-        <type required="true" size="64" state="persistent">STRING</type>
-      </db>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="true" />
+        <maxLength value="64" />
+      </datatype>
     </field>
 
-    <field>
+    <field name="version">
       <descriptions>
         <description xml:lang="en">Version of the object</description>
         <description xml:lang="nl">Versie van het object</description>
@@ -104,13 +102,12 @@
           <search>3</search>
         </positions>
       </editor>
-      <db>
-        <name>version</name>
-        <type required="true" state="persistent">INTEGER</type>
-      </db>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="true" />
+      </datatype>
     </field>
 
-    <field>
+    <field name="maintainer">
       <descriptions>
         <description xml:lang="en">
           Organization or person who's maintaining the the object
@@ -131,11 +128,10 @@
           <search>4</search>
         </positions>
       </editor>
-      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>maintainer</name>
-        <type required="true" size="255" state="persistent">STRING</type>
-      </db>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="true" />
+        <maxLength value="255" />
+      </datatype>
     </field>
 
   </fieldlist>

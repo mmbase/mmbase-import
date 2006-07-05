@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<builder 
+<builder
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
-                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
     name="typerel" maintainer="mmbase.org" version="0" extends="object">
 
   <class>org.mmbase.module.corebuilders.TypeRel</class>
@@ -28,7 +28,6 @@
     <description xml:lang="it">Definisce le possibili relazioni tra tipi di oggetti</description>
   </descriptions>
 
-
   <properties>
     <!-- These  properties influence cache size inside typerel -->
     <property name="art_cache_size">128</property>
@@ -38,9 +37,8 @@
     <property name="reltype_cache_active">true</property>
   </properties>
 
-
   <fieldlist>
-    <field>
+    <field name="snumber">
       <descriptions>
         <description xml:lang="en">Number of the source builder of this relationtype</description>
         <description xml:lang="nl">Nummer van de bronbuilder van dit relatietype</description>
@@ -56,14 +54,12 @@
           <list>1</list>
         </positions>
       </editor>
-      <datatype base="typedef"  xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>snumber</name>
-        <type required="true" state="persistent">NODE</type>
-      </db>
+      <datatype base="typedef"  xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="true" />
+      </datatype>
     </field>
 
-    <field>
+    <field name="dnumber">
       <descriptions>
         <description xml:lang="en">Number of the destination builder of this relationtype</description>
         <description xml:lang="nl">Nummer van de doelbuilder van dit relatietype</description>
@@ -79,14 +75,12 @@
           <list>2</list>
         </positions>
       </editor>
-      <datatype base="typedef"  xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>dnumber</name>
-        <type required="true" state="persistent">NODE</type>
-      </db>
+      <datatype base="typedef"  xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="true" />
+      </datatype>
     </field>
 
-    <field>
+    <field name="rnumber">
       <descriptions>
         <description xml:lang="en">Number of the reldef node used for this relation type</description>
         <description xml:lang="nl">Nummer van de reldef node die gebruikt wordt voor deze relatie type</description>
@@ -102,14 +96,12 @@
           <list>3</list>
         </positions>
       </editor>
-      <datatype base="reldef" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>rnumber</name>
-        <type required="true" state="persistent">NODE</type>
-      </db>
+      <datatype base="reldef" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="true" />
+      </datatype>
     </field>
 
-    <field>
+    <field name="max">
       <descriptions>
         <description xml:lang="en">Maximum number of relations of this type (unsupported)</description>
         <description xml:lang="nl">Maximaal aantal relaties van dit type (niet ondersteund)</description>
@@ -127,10 +119,7 @@
           <search>-1</search>
         </positions>
       </editor>
-      <db>
-        <name>max</name>
-        <type state="persistent">INTEGER</type>
-      </db>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
   </fieldlist>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<builder 
+<builder
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
@@ -28,7 +28,7 @@
   </descriptions>
 
   <fieldlist>
-    <field>
+    <field name="snumber" state="system">
       <descriptions>
         <description xml:lang="en">Objectnumber of this relation's source</description>
         <description xml:lang="nl">Objectnummer van de bron van deze relatie</description>
@@ -46,13 +46,12 @@
           <search>1</search>
         </positions>
       </editor>
-      <db>
-        <name>snumber</name>
-        <type notnull="true" required="true" state="system">NODE</type>
-      </db>
+      <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="true" />
+      </datatype>
     </field>
 
-    <field>
+    <field name="dnumber" state="system">
       <descriptions>
         <description xml:lang="en">Objectnumber of this relation's destination</description>
         <description xml:lang="nl">Objectnummer van het doel van deze relatie</description>
@@ -70,13 +69,12 @@
           <search>2</search>
         </positions>
       </editor>
-      <db>
-        <name>dnumber</name>
-        <type notnull="true" required="true" state="system">NODE</type>
-      </db>
+      <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="true" />
+      </datatype>
     </field>
 
-    <field>
+    <field name="rnumber" state="system">
       <descriptions>
         <description xml:lang="en">This relation's type objectnumber</description>
         <description xml:lang="nl">Objectnummer van het relatietype van deze relatie</description>
@@ -94,14 +92,12 @@
           <search>3</search>
         </positions>
       </editor>
-      <datatype base="reldef" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
-      <db>
-        <name>rnumber</name>
-        <type required="true" state="system">NODE</type>
-      </db>
+      <datatype base="reldef" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="true" />
+      </datatype>
     </field>
 
-    <field>
+    <field name="dir" state="system">
       <descriptions>
         <description xml:lang="en">
           Directionality of this relation, can be uni or bi-directional (0 or 1)
@@ -124,10 +120,6 @@
         </positions>
       </editor>
       <datatype base="dirs" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>dir</name>
-        <type state="system">INTEGER</type>
-      </db>
     </field>
   </fieldlist>
 

@@ -32,7 +32,7 @@
         You can safely set it higher if you have only one server (and spare
         some SQL-queries)    -->
     <property name="ProbeInterval">60</property>
-    <!-- 
+    <!--
          Time to take until a server is marked as 'inactive', in seconds.
          Defaults to 15 minutes (900 s)
     -->
@@ -40,7 +40,7 @@
   </properties>
 
   <fieldlist>
-    <field>
+    <field name="name">
       <descriptions>
         <description xml:lang="en">Name of MMBase servers inside this cluster</description>
         <description xml:lang="nl">Naam van de MMBase servers binnen dit cluster</description>
@@ -58,14 +58,12 @@
           <search>1</search>
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>name</name>
-        <type size="32" state="persistent">STRING</type>
-      </db>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <maxLength value="32" />
+      </datatype>
     </field>
 
-    <field>
+    <field name="state">
       <descriptions>
         <description xml:lang="en">State of MMBase servers inside this cluster</description>
         <description xml:lang="nl">Status van de MMBase servers binnen dit cluster</description>
@@ -83,19 +81,15 @@
           <search>2</search>
         </positions>
       </editor>
-      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <enumeration>
           <entry basename="org.mmbase.datatypes.resources.states"
                  javaconstants="org.mmbase.module.builders.MMServers" />
         </enumeration>
       </datatype>
-      <db>
-        <name>state</name>
-        <type state="persistent">INTEGER</type>
-      </db>
     </field>
 
-    <field>
+    <field name="atime">
       <descriptions>
         <description xml:lang="en">Time of the last check of this server</description>
         <description xml:lang="nl">De tijd dat deze server voor het laatst gecontroleerd is</description>
@@ -113,13 +107,10 @@
           <search>3</search>
         </positions>
       </editor>
-      <db>
-        <name>atime</name>
-        <type state="persistent">DATETIME</type>
-      </db>
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
-    <field>
+    <field name="host">
       <descriptions>
         <description xml:lang="en">Hostname or ipaddress of MMBase servers inside this cluster</description>
         <description xml:lang="nl">Servernaam of ip-adres van de MMBase servers binnen dit cluster</description>
@@ -137,14 +128,12 @@
           <search>4</search>
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>host</name>
-        <type size="80" state="persistent">STRING</type>
-      </db>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <maxLength value="80" />
+      </datatype>
     </field>
 
-    <field>
+    <field name="os">
       <descriptions>
         <description xml:lang="en">Operating System of MMBase servers inside this cluster</description>
         <description xml:lang="nl">Besturingssystemen van de MMBase servers binnen dit cluster</description>
@@ -162,14 +151,12 @@
           <search>5</search>
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>os</name>
-        <type size="80" state="persistent">STRING</type>
-      </db>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <maxLength value="80" />
+      </datatype>
     </field>
 
-    <field>
+    <field name="jdk">
       <descriptions>
         <description xml:lang="en">JDK (Java Developers Kit) used on the MMBase servers inside this cluster</description>
         <description xml:lang="nl">JDK (Java Developers Kit) gebruikt op de MMBase servers binnen dit cluster</description>
@@ -187,11 +174,9 @@
           <search>6</search>
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>jdk</name>
-        <type size="80" state="persistent">STRING</type>
-      </db>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <maxLength value="80" />
+      </datatype>
     </field>
 
   </fieldlist>

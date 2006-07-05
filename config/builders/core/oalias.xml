@@ -30,7 +30,7 @@
   </descriptions>
 
   <fieldlist>
-    <field>
+    <field name="name">
       <descriptions>
         <description xml:lang="en">Name which can be used instead of an objectnumber</description>
         <description xml:lang="nl">Deze naam kan gebruikt worden in plaats van een objectnummer</description>
@@ -48,14 +48,14 @@
           <search>1</search>
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>name</name>
-        <type unique="true" required="true" size="64" state="persistent">STRING</type>
-      </db>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <unique value="true" />
+        <required value="true" />
+        <maxLength value="64" />
+      </datatype>
     </field>
 
-    <field>
+    <field name="description">
       <descriptions>
         <description xml:lang="en">Description of the object alias</description>
         <description xml:lang="nl">Omschrijving van de object alias</description>
@@ -73,14 +73,12 @@
           <search>2</search>
         </positions>
       </editor>
-      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>description</name>
-        <type size="128" state="persistent">STRING</type>
-      </db>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <maxLength value="128" />
+      </datatype>
     </field>
 
-    <field>
+    <field name="destination">
       <descriptions>
         <description xml:lang="en">The objectnumber of the object this alias refers to</description>
         <description xml:lang="nl">Het objectnummer van het object waar deze alias naar verwijst</description>
@@ -98,10 +96,9 @@
           <search>3</search>
         </positions>
       </editor>
-      <db>
-        <name>destination</name>
-        <type required="true" state="persistent">NODE</type>
-      </db>
+      <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="true" />
+      </datatype>
     </field>
 
   </fieldlist>

@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<builder 
+<builder
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
@@ -23,7 +23,6 @@
     <plural xml:lang="it">Marchi del giorno</plural>
   </names>
 
-
   <descriptions>
     <description xml:lang="en">Daycount object used to keep track of ages of objects</description>
     <description xml:lang="fr">L'objet de Daycount sont employer à pour savoir l'age d'un objet</description>
@@ -32,9 +31,8 @@
     <description xml:lang="it">L'oggetto Daycount è utilizzato per definire l'eta' degli oggetti</description>
   </descriptions>
 
-
   <fieldlist>
-    <field>
+    <field name="daycount">
       <descriptions>
         <description xml:lang="en">Number of days of this daymarker</description>
         <description xml:lang="nl">Aantal dagen van deze dagmarkeerder</description>
@@ -53,13 +51,10 @@
           <search>1</search>
         </positions>
       </editor>
-      <db>
-        <name>daycount</name>
-        <type state="persistent">INTEGER</type>
-      </db>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
-    <field>
+    <field name="mark">
        <descriptions>
          <description xml:lang="en">
            Objectnumber of the last new object untill this daymark
@@ -82,10 +77,7 @@
           <search>2</search>
         </positions>
       </editor>
-      <db>
-        <name>mark</name>
-        <type state="persistent">INTEGER</type>
-      </db>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
   </fieldlist>
