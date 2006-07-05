@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: StringDataType.java,v 1.32 2006-05-16 21:11:05 michiel Exp $
+ * @version $Id: StringDataType.java,v 1.33 2006-07-05 15:19:43 pierre Exp $
  * @since MMBase-1.8
  */
 public class StringDataType extends ComparableDataType implements LengthDataType {
@@ -32,7 +32,7 @@ public class StringDataType extends ComparableDataType implements LengthDataType
 
     protected PatternRestriction patternRestriction = new PatternRestriction(Pattern.compile("(?s)\\A.*\\z"));
     private boolean isPassword = false;
-    protected AbstractLengthDataType.MinRestriction minLengthRestriction = new AbstractLengthDataType.MinRestriction(this/* I hate java, no m.i. */, 0);
+    protected AbstractLengthDataType.MinRestriction minLengthRestriction = new AbstractLengthDataType.MinRestriction(this, 0);
     protected AbstractLengthDataType.MaxRestriction maxLengthRestriction = new AbstractLengthDataType.MaxRestriction(this, Long.MAX_VALUE);
 
     /**
@@ -215,7 +215,7 @@ public class StringDataType extends ComparableDataType implements LengthDataType
         getPatternRestriction().setValue(value);
     }
 
-    
+
     /**
      * Whether or not the data represents sensitive information, in which case e.g. an input
      * interface may present asterisks in stead of letters.

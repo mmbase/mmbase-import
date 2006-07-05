@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.70 2006-06-20 20:18:06 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.71 2006-07-05 15:19:43 pierre Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -324,7 +324,11 @@ public class BuilderReader extends DocumentReader {
 
         for(Iterator ns = getChildElements("builder.fieldlist", "field"); ns.hasNext(); ) {
             Element field = (Element) ns.next();
-            CoreField def = (CoreField) oldset.get(getElementValue(getElementByPath(field, "field.db.name")));
+            String fieldName = getElementAttributeValue(field, "name");
+            if ("".equals(fieldName)) {
+                fieldName = getElementValue(getElementByPath(field,"field.db.name"));
+            }
+            CoreField def = (CoreField) oldset.get(fieldName);
             try {
                 if (def != null) {
                     def.rewrite();
@@ -378,7 +382,10 @@ public class BuilderReader extends DocumentReader {
             if (dbtype != null) {
                 String key = getElementAttributeValue(dbtype,"key");
                 if (key != null && key.equalsIgnoreCase("true")) {
-                    String fieldName = getElementValue(getElementByPath(field,"field.db.name"));
+                    String fieldName = getElementAttributeValue(field, "name");
+                    if ("".equals(fieldName)) {
+                        fieldName = getElementValue(getElementByPath(field,"field.db.name"));
+                    }
                     if (mainIndex == null ) mainIndex = new Index(builder, Index.MAIN);
                     mainIndex.add(builder.getField(fieldName));
                 }
@@ -516,7 +523,6 @@ public class BuilderReader extends DocumentReader {
             def.getLocalizedDescription().fillFromXml("description", descriptions);
         }
 
-
         // XXX: deprecated tag 'gui'
         Element gui = getElementByPath(field, "field.gui");
         if (gui != null) {
@@ -524,7 +530,6 @@ public class BuilderReader extends DocumentReader {
             // XXX: even more deprecated
             def.getLocalizedGUIName().fillFromXml("name", gui);
         }
-
 
         // Editor
         Element editorpos = getElementByPath(field, "field.editor.positions.input");
@@ -572,7 +577,7 @@ public class BuilderReader extends DocumentReader {
      * @todo  'guitype' may become deprecated in favour of the 'datatype' element
      * @param builder the MMObjectBuilder to which the field belongs
      * @param collector The DataTypeCollector of the bulider.
-     * @param fieldName unused
+     * @param fieldName the name of the field (used in log messages)
      * @param field     The 'field' element of the builder xml
      * @param type      The database type of the field
      * @param listItemType If the database type is a List, there is also a type of its element
@@ -580,10 +585,10 @@ public class BuilderReader extends DocumentReader {
      * @since MMBase-1.8
      */
     protected DataType decodeDataType(final MMObjectBuilder builder, final DataTypeCollector collector, final String fieldName, final Element field, final int type, final int listItemType, final boolean forceInstance) {
-        final BasicDataType baseDataType;
+        BasicDataType baseDataType = null;
         if (type == Field.TYPE_LIST) {
             baseDataType = DataTypes.getListDataType(listItemType);
-        } else {
+        } else if (type != Field.TYPE_UNKNOWN) {
             baseDataType = DataTypes.getDataType(type);
         }
         BasicDataType dataType = null;
@@ -596,6 +601,9 @@ public class BuilderReader extends DocumentReader {
 
         // Backwards compatible 'guitype' support
         if (guiTypeElement != null && collector != null) {
+            if (baseDataType == null) {
+                throw new IllegalArgumentException("No type defined");
+            }
             String guiType = getElementValue(guiTypeElement);
             if (!guiType.equals("")) {
                 if (guiType.indexOf('.') != -1) {
@@ -604,6 +612,8 @@ public class BuilderReader extends DocumentReader {
                     dataType = (BasicDataType) baseDataType.clone();
                     dataType.getEnumerationFactory().addBundle(guiType, getClass().getClassLoader(), null, dataType.getTypeAsClass(), null);
                 } else {
+                    // check for builder names when the type is NODE
+                    MMObjectBuilder enumerationBuilder = null;
                     // The guitype is deprecated. Normally coincides with datatype's id.
                     // The following are exceptions:
                     // 'string' is surrogated with the datatype 'line'.
@@ -612,10 +622,43 @@ public class BuilderReader extends DocumentReader {
                         if (log.isDebugEnabled()) {
                             log.debug("Converted deprecated guitype 'string' for field " + (builder != null ? builder.getTableName() + "."  : "") + fieldName + " with datatype 'line'.");
                         }
+                    } else
+                    // 'eventtime' is surrogated with the datatype 'datetime'.
+                    if ("eventtime".equals(guiType)) {
+                        guiType = "datetime";
+                        if (log.isDebugEnabled()) {
+                            log.debug("Converted deprecated guitype 'eventtime' for field " + (builder != null ? builder.getTableName() + "."  : "") + fieldName + " with datatype 'datetime'.");
+                        }
+                    } else
+                    // 'relativetime' is surrogated with the datatype 'line'.
+                    if ("relativetime".equals(guiType)) {
+                        guiType = "duration";
+                        if (log.isDebugEnabled()) {
+                            log.debug("Converted deprecated guitype 'relativetime' for field " + (builder != null ? builder.getTableName() + "."  : "") + fieldName + " with datatype 'duration'.");
+                        }
+                    } else
+                    // check for nodetypes
+                    if (type == Field.TYPE_NODE) {
+                        try {
+                            enumerationBuilder = mmbase.getBuilder(guiType);
+                        } catch (RuntimeException re) {
+                            if (log.isDebugEnabled()) log.debug("Gui type of NODE field is not a builder: " + guiType);
+                        }
                     }
-                    dataType = collector.getDataTypeInstance(guiType, baseDataType);
-                    if (dataType == null) {
-                        log.warn("Could not find data type for " + baseDataType + " / " + guiType + " for builder: '" + builder.getTableName() + "'");
+                    if (enumerationBuilder != null) {
+                        //  Create a query element of the format:
+                        //  <query type="[buildername]" xmlns="http://www.mmbase.org/xmlns/searchquery" />
+                        // and add it to the enumerationfactory using addQuery()
+                        Element queryElement = guiTypeElement.getOwnerDocument().createElementNS("http://www.mmbase.org/xmlns/searchquery", "query");
+                        queryElement.setAttribute("type", enumerationBuilder.getTableName());
+                        dataType = (BasicDataType) baseDataType.clone();
+                        Document queryDocument = DocumentReader.toDocument(queryElement);
+                        dataType.getEnumerationFactory().addQuery(LocalizedString.getLocale(queryElement), queryDocument);
+                    } else {
+                        dataType = collector.getDataTypeInstance(guiType, baseDataType);
+                        if (dataType == null) {
+                            log.warn("Could not find data type for " + baseDataType + " / " + guiType + " for builder: '" + builder.getTableName() + "'");
+                        }
                     }
                 }
             }
@@ -633,6 +676,9 @@ public class BuilderReader extends DocumentReader {
                 if (log.isDebugEnabled()) {
                     log.debug("No base defined, using '" + baseDataType + "'");
                 }
+                if (baseDataType == null) {
+                    throw new IllegalArgumentException("No base datatype given, and no field type defined");
+                }
                 requestedBaseDataType = baseDataType;
             } else {
                 requestedBaseDataType = collector == null ? null : collector.getDataType(base, true);
@@ -642,21 +688,24 @@ public class BuilderReader extends DocumentReader {
                 }
             }
             dataType = (BasicDataType) DataTypeReader.readDataType(dataTypeElement, requestedBaseDataType, collector).dataType;
-            log.debug("Found datatype " + dataType + " for field " + fieldName);
+            if (log.isDebugEnabled()) log.debug("Found datatype " + dataType + " for field " + fieldName);
         }
 
         // try to resolve any issues where the datatype differs from the database type
-        if (dataType!= null && !baseDataType.getClass().isAssignableFrom(dataType.getClass())) {
+        if (dataType != null && baseDataType != null && !baseDataType.getClass().isAssignableFrom(dataType.getClass())) {
             // the thus configured datatype is not compatible with the database type.
             // Fix that as good as possible:
             BasicDataType newDataType = (BasicDataType) dataType.clone();
             newDataType.inherit(baseDataType);
-            log.debug("" + dataType + " in '" + getSystemId() + "' field " + fieldName + " is not compatible with " + baseDataType + ". Cloning and inheriting to support gracefull fall backs -> " + newDataType);
+            if (log.isDebugEnabled()) log.debug("" + dataType + " in '" + getSystemId() + "' field " + fieldName + " is not compatible with " + baseDataType + ". Cloning and inheriting to support gracefull fall backs -> " + newDataType);
             dataType = newDataType;
         }
 
         if (dataType == null && forceInstance) {
             // DataType is null if no data type element was found
+            if (baseDataType == null) {
+                throw new IllegalArgumentException("No datatype given, and no type defined");
+            }
             dataType = (BasicDataType) baseDataType.clone(""); // clone with empty id
         }
 
@@ -670,57 +719,123 @@ public class BuilderReader extends DocumentReader {
      */
     private CoreField decodeFieldDef(MMObjectBuilder builder, DataTypeCollector collector, Element field) {
         // create a new CoreField we need to fill
-        Element db = getElementByPath(field, "field.db");
-        String fieldName = getElementValue(getElementByPath(db, "db.name"));
-        Element dbtype = getElementByPath(db, "db.type");
-        String baseType = getElementValue(dbtype);
-        int type = Fields.getType(baseType);
-        int listItemType = Field.TYPE_UNKNOWN;
-        if (type == Field.TYPE_LIST) {
-            if (baseType.length() > 5) {
-                listItemType = Fields.getType(baseType.substring(5, baseType.length() - 1));
+
+        // obtain field name.
+        // if both the field name attribute and the <db><name> tag are specified, the attribute takes precedence.
+        String fieldName = getElementAttributeValue(field, "name");
+        String fieldDBName = getElementValue(getElementByPath(field, "field.db.name"));
+        if ("".equals(fieldName)) {
+            if ("".equals(fieldDBName)) {
+                throw new IllegalArgumentException("Field name was not specified for builder " + builder.getTableName() + ".");
+            }
+            if (log.isDebugEnabled()) {
+                log.debug("<db><name> tag for field '" + fieldDBName + "' is deprecated. Use the name attribute.");
+            }
+            fieldName = fieldDBName;
+        } else if (!"".equals(fieldDBName)) {
+            log.warn("Specified field name twice: once in the name attribute ('" + fieldName + "') and once in the <name> tag ('" + fieldDBName + "'). Ignoring name tag.");
+        }
+
+        String fieldState = getElementAttributeValue(field, "state");
+        String fieldReadOnly = getElementAttributeValue(field, "readonly");
+
+        // specify in storage tag or implied by datatype
+        // use to override for specific database issues
+        String fieldType = "";
+        String fieldSize = "";
+        String fieldNotNull = "";
+
+        // defined in datatype
+        String fieldRequired = "";
+        String fieldUnique = "";
+
+        // storage tag, only contains storage specific info
+        Element storage = getElementByPath(field, "field.storage");
+        if (storage != null) {
+            fieldType = getElementAttributeValue(storage, "type");
+            fieldNotNull = getElementAttributeValue(storage, "notnull");
+            fieldSize = getElementAttributeValue(storage, "size");
+        }
+
+        // deprecated db type tag - only use if no other data is given!
+        Element dbtype = getElementByPath(field, "field.db.type");
+        if (dbtype != null) {
+            if (!"".equals(fieldType) || !"".equals(fieldState) || !"".equals(fieldReadOnly) ||
+                !"".equals(fieldNotNull) || !"".equals(fieldSize)) {
+                log.warn("Specified field type info for '" + fieldName + "' twice: once in the storage tag and once in the <name> tag.");
+            } else {
+                if (log.isDebugEnabled()) {
+                    log.debug("<db><type> tag for field '" + fieldName + "' is deprecated. Use the storage tag.");
+                }
+                fieldType = getElementValue(dbtype);
+                fieldState = getElementAttributeValue(dbtype, "state");
+                fieldReadOnly = getElementAttributeValue(dbtype, "readonly");
+                fieldNotNull = getElementAttributeValue(dbtype, "notnull");
+                fieldRequired = getElementAttributeValue(dbtype, "required");
+                fieldUnique = getElementAttributeValue(dbtype, "unique");
+                fieldSize = getElementAttributeValue(dbtype, "size");
             }
         }
-        int state = Fields.getState(getElementAttributeValue(dbtype, "state"));
 
+        // type - default unknown (derived from datatype)
+        int type = Field.TYPE_UNKNOWN;
+        int listItemType = Field.TYPE_UNKNOWN;
+        if (!"".equals(fieldType)) {
+            type = Fields.getType(fieldType);
+            if (type == Field.TYPE_LIST) {
+                if (fieldType.length() > 5) {
+                    listItemType = Fields.getType(fieldType.substring(5, fieldType.length() - 1));
+                }
+            }
+        }
+
+        // datatype
         DataType dataType = decodeDataType(builder, collector, fieldName, field, type, listItemType, true);
 
+        // determine type from datatype, if possible)
+        if (type == Field.TYPE_UNKNOWN) {
+            type = dataType.getBaseType();
+            if (type == Field.TYPE_LIST) {
+                listItemType = ((ListDataType)dataType).getItemDataType().getBaseType();
+            }
+        }
+
+        // state - default peristent
+        int state = Field.STATE_PERSISTENT;
+        if (!"".equals(fieldState)) { state = Fields.getState(fieldState); }
+
         CoreField def = Fields.createField(fieldName, type, listItemType, state, dataType);
+        dataType = def.getDataType();
 
         def.setParent(builder);
-        String size = getElementAttributeValue(dbtype, "size");
 
-
-        if (size != null && !size.equals("")) {
+        if (!fieldSize.equals("")) {
             try {
-                def.setMaxLength(Integer.parseInt(size));
+                def.setMaxLength(Integer.parseInt(fieldSize));
             } catch (NumberFormatException e) {
-                log.warn("invalid value for size : " + size);
+                log.warn("invalid value for size : " + fieldSize);
             }
         }
 
         // set readonly property, but only if given
-        String readonly = getElementAttributeValue(dbtype, "readonly");
-        if (readonly != null && !"".equals(readonly)) {
-            def.setReadOnly("true".equalsIgnoreCase(readonly));
+        if (!"".equals(fieldReadOnly)) {
+            def.setReadOnly("true".equalsIgnoreCase(fieldReadOnly));
         }
 
         // set required property, but only if given
-        String required = getElementAttributeValue(dbtype, "required");
-        if ("true".equalsIgnoreCase(required)) {
-            def.getDataType().setRequired(true);
+        if (!"".equals(fieldRequired)) {
+            dataType.setRequired("true".equalsIgnoreCase(fieldRequired));
         }
 
-        String notnull = getElementAttributeValue(dbtype, "notnull"); // default for notnull is value of required
-        def.setNotNull("true".equals(notnull) || ((notnull == null || "".equals(notnull)) && def.getDataType().isRequired()));
+        // default for notnull is value of required
+        def.setNotNull("true".equals(fieldNotNull) || ("".equals(fieldNotNull) && dataType.isRequired()));
 
         // set unique property, but only if given
-        String unique = getElementAttributeValue(dbtype, "unique");
-        if ("implied".equalsIgnoreCase(unique)) {
-            def.getDataType().setUnique(true);
-            def.getDataType().getUniqueRestriction().setEnforceStrength(DataType.ENFORCE_NEVER);
-        } else if ("true".equalsIgnoreCase(unique)) {
-            def.getDataType().setUnique(true);
+        if ("implied".equalsIgnoreCase(fieldUnique)) {
+            dataType.setUnique(true);
+            dataType.getUniqueRestriction().setEnforceStrength(DataType.ENFORCE_NEVER);
+        } else if ("true".equalsIgnoreCase(fieldUnique)) {
+            dataType.setUnique(true);
         }
 
         decodeFieldDef(field, def, collector);
