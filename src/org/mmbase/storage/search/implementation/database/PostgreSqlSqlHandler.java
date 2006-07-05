@@ -36,7 +36,7 @@ import org.mmbase.module.core.MMObjectNode;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: PostgreSqlSqlHandler.java,v 1.22 2006-06-09 12:20:34 pierre Exp $
+ * @version $Id: PostgreSqlSqlHandler.java,v 1.23 2006-07-05 20:06:16 michiel Exp $
  * @since MMBase-1.7
  */
 public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -91,6 +91,28 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
         return sb;
     }
 
+
+    /// TODO: Needs to determine the value of this (select 'a' > 'A' or so?)
+    private final boolean localeMakesCaseInsensitive = false;
+
+    /**
+     * Normally, Postgresql does not sort case senstively, so we should not sort on
+     * UPPER(fieldname). This is mainly very bad if the query is also distinct. (ERROR: for SELECT
+     * DISTINCT, ORDER BY expressions must appear in select list), may occur.
+     */
+    protected StringBuffer appendSortOrderField(StringBuffer sb, SortOrder sortOrder, boolean multipleSteps) {
+        if (localeMakesCaseInsensitive) {
+            if (sortOrder.isCaseSensitive()) {
+                log.warn("Don't now how to sort case sensitively in Postgresql for " + sortOrder + " it will be ignored.");
+            }
+            // Fieldname.
+            Step step = sortOrder.getField().getStep();
+            appendField(sb, step, sortOrder.getField().getFieldName(), multipleSteps);
+            return sb;
+        } else {
+            return super.appendSortOrderField(sb, sortOrder, multipleSteps);
+        }
+    }
     /*
     protected StringBuffer appendRegularExpressionOperator(StringBuffer sb, boolean caseSensitive) {
         if (caseSensitive) {
