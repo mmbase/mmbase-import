@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.383 2006-07-05 10:02:41 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.384 2006-07-05 15:16:06 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -723,9 +723,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
     public List getDescendants() {
         ArrayList result = new ArrayList();
-        Enumeration e = mmb.getMMObjects();
-        while(e.hasMoreElements()) {
-            MMObjectBuilder builder = (MMObjectBuilder) e.nextElement();
+        for (Iterator i = mmb.getBuilders().iterator(); i.hasNext(); ) {
+            MMObjectBuilder builder = (MMObjectBuilder) i.next();
             if (builder.isExtensionOf(this)) {
                 result.add(builder);
             }
@@ -2065,11 +2064,11 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     /**
      * Get the next object key (unique index for an object).
      * @return an <code>int</code> value that is the next available key for an object.
+     * @deprecated use MMBase.getStorageManager().createKey()
      */
     public int getDBKey() {
-        return mmb.getDBKey();
+        return mmb.getStorageManager().createKey();
     }
-
 
     /**
      * Get the name of this mmserver from the MMBase Root
@@ -2605,7 +2604,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     protected String getURLEncode(String body) {
         String rtn="";
         if (body != null) {
-            rtn = URLEncoder.encode(body);
+            rtn = URLEncoder.encode(body); // UTF8?
         }
         return rtn;
     }
