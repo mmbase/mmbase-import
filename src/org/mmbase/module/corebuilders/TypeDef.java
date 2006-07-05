@@ -23,16 +23,16 @@ import org.mmbase.util.xml.BuilderReader;
 
 /**
  * TypeDef is used to define the* object types (builders).
- * Nodes of this builder have a vitual 'config' field.
+ * Nodes of this builder have a virtual 'config' field.
  * This field contains the xml-Document of the builder represented by the node.
- * The filename used to refernce the xml document uis derived by extending the field 'name'.
+ * The filename used to reference the xml document is derived by extending the field 'name'.
  * Creating a new typedef node automatically creates a new xml file and loads a new builder.
- * Removing a node dropsa nd unloads a builder (including the xml).
+ * Removing a node drops and unloads a builder (including the xml).
  * Changes to the config will also be active on commit of the node.
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.66 2006-03-03 14:53:20 pierre Exp $
+ * @version $Id: TypeDef.java,v 1.67 2006-07-05 15:16:54 pierre Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
@@ -620,15 +620,13 @@ public class TypeDef extends MMObjectBuilder {
             throw new RuntimeException("Cannot delete this builder, it still contains nodes");
         } else if (builder == null) {
             // inactive builder, does it have nodes?
-            MMObjectBuilder object = mmb.getBuilder("object");
-            NodeSearchQuery q = new NodeSearchQuery(object);
+            MMObjectBuilder rootBuilder = mmb.getRootBuilder();
+            NodeSearchQuery q = new NodeSearchQuery(rootBuilder);
             Integer value = new Integer(typeDefNode.getNumber());
-            BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(q.getField(object.getField("otype")), value);
+            Constraint constraint = new BasicFieldValueConstraint(q.getField(rootBuilder.getField("otype")), value);
             q.setConstraint(constraint);
-            q.setMaxNumber(1);
             try {
-                List typerels = object.getNodes(q);
-                if (typerels.size() > 0) {
+                if (rootBuilder.count(q) > 0) {
                     throw new RuntimeException("Cannot delete this (inactive) builder, it still contains nodes");
                 }
             } catch (SearchQueryException sqe) {
@@ -650,12 +648,12 @@ public class TypeDef extends MMObjectBuilder {
                 NodeSearchQuery q = new NodeSearchQuery(typeRel);
                 Integer value = new Integer(typeDefNode.getNumber());
                 BasicCompositeConstraint constraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_OR);
-                BasicFieldValueConstraint constraint1 = new BasicFieldValueConstraint(q.getField(typeRel.getField("snumber")), value);
-                BasicFieldValueConstraint constraint2 = new BasicFieldValueConstraint(q.getField(typeRel.getField("dnumber")), value);
+                Constraint constraint1 = new BasicFieldValueConstraint(q.getField(typeRel.getField("snumber")), value);
+                Constraint constraint2 = new BasicFieldValueConstraint(q.getField(typeRel.getField("dnumber")), value);
                 constraint.addChild(constraint1);
                 constraint.addChild(constraint2);
                 q.setConstraint(constraint);
-                List typerels = mmb.getTypeRel().getNodes(q);
+                List typerels = typeRel.getNodes(q);
                 if (typerels.size() > 0) {
                     throw new RuntimeException("Cannot delete this builder, it is referenced by typerels: " + typerels);
                 }
