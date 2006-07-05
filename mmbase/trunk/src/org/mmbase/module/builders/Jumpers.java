@@ -10,18 +10,19 @@
 package org.mmbase.module.builders;
 
 import java.util.*;
-import org.mmbase.module.core.*;
-import org.mmbase.util.logging.*;
-import org.mmbase.cache.Cache;
-import org.mmbase.core.event.NodeEvent;
-import org.mmbase.storage.search.implementation.*;
-import org.mmbase.storage.search.*;
 
-import org.mmbase.util.functions.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import org.mmbase.module.corebuilders.FieldDefs;
+import org.mmbase.bridge.Field;
+import org.mmbase.cache.Cache;
+import org.mmbase.core.CoreField;
+import org.mmbase.core.event.NodeEvent;
+import org.mmbase.module.core.*;
+import org.mmbase.storage.search.implementation.*;
+import org.mmbase.storage.search.*;
+import org.mmbase.util.logging.*;
+import org.mmbase.util.functions.*;
 
 /**
  * Maintains jumpers for redirecting urls. The data stored in this builder is
@@ -39,11 +40,11 @@ import org.mmbase.module.corebuilders.FieldDefs;
  * XXX:Note that this builder is called directly from a servlet, and may
  * therefor be bound to the cloud context rather than a cloud. This would mean
  * that in a multi-cloud environment, this builder will be shared.
- * 
+ *
  * @application Tools, Jumpers
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Jumpers.java,v 1.35 2005-12-10 12:58:51 michiel Exp $
+ * @version $Id: Jumpers.java,v 1.36 2006-07-05 15:15:07 pierre Exp $
  */
 public class Jumpers extends MMObjectBuilder {
 
@@ -75,7 +76,7 @@ public class Jumpers extends MMObjectBuilder {
     /**
      * Initializes the builder. Determines the jumper cache size, and
      * initializes it. Also determines the default jumper url.
-     * 
+     *
      * @return always <code>true</code>
      */
     public boolean init() {
@@ -124,7 +125,7 @@ public class Jumpers extends MMObjectBuilder {
 
     /**
      * Retrieves a jumper for a specified key.
-     * 
+     *
      * @param tok teh tokenizer, in which the first token is the key to search
      * for.
      * @return the found alternate url.
@@ -136,7 +137,7 @@ public class Jumpers extends MMObjectBuilder {
 
     /**
      * Removes a specified key from the cache.
-     * 
+     *
      * @param key the key to remove
      */
     public void delJumpCache(String key) {
@@ -146,19 +147,19 @@ public class Jumpers extends MMObjectBuilder {
         }
     }
 
-    // jump on content of 'name' or 'id' field 
+    // jump on content of 'name' or 'id' field
     private String getJumpByField(String fieldName, String key) {
         NodeSearchQuery query = new NodeSearchQuery(this);
-        FieldDefs fieldDefs = getField(fieldName); // "name");
-        StepField field = query.getField(fieldDefs);
+        CoreField field = getField(fieldName); // "name");
+        StepField queryField = query.getField(field);
         StepField numberField = query.getField(getField(FIELD_NUMBER));
         BasicSortOrder sortOrder = query.addSortOrder(numberField); // use 'oldest' jumper
         BasicFieldValueConstraint cons = null;
-        if(fieldDefs.getDBType() == FieldDefs.TYPE_STRING)
-            cons = new BasicFieldValueConstraint(field, key);
-        else if(fieldDefs.getDBType() == FieldDefs.TYPE_INTEGER) {
+        if (field.getType() == Field.TYPE_STRING) {
+            cons = new BasicFieldValueConstraint(queryField, key);
+        } else if (field.getType() == Field.TYPE_INTEGER) {
             try {
-                cons = new BasicFieldValueConstraint(field, new Integer(key));
+                cons = new BasicFieldValueConstraint(queryField, new Integer(key));
             } catch(NumberFormatException e) { log.error("this key("+key+") should be a number because field("+fieldName+") is of type int!");
                 cons = null;
             }
@@ -179,7 +180,7 @@ public class Jumpers extends MMObjectBuilder {
 
     /**
      * Retrieves a jumper for a specified key.
-     * 
+     *
      * @param key the key to search for.
      * @return the found alternate url.
      */
@@ -246,7 +247,7 @@ public class Jumpers extends MMObjectBuilder {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.mmbase.module.core.MMObjectBuilder#notify(org.mmbase.core.event.NodeEvent)
      */
     public void notify(NodeEvent event) {
