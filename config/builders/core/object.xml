@@ -41,7 +41,7 @@
   </properties>
 
   <fieldlist>
-    <field>
+    <field name="number" state="system">
 
       <descriptions>
         <description xml:lang="en">Unique objectnumber</description>
@@ -68,14 +68,14 @@
           <search>100</search>
         </positions>
       </editor>
-      <db>
-        <name>number</name>
-        <type state="system" notnull="true" required="false" unique="implied">NODE</type><!-- must this be NODE, foreign key to itself??! -->
-      </db>
+      <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <unique value="true" enforce="never" />
+      </datatype>
+      <!-- need to set notnull to true as required is not true -->
+      <storage notnull="true" />
     </field>
 
-
-    <field>
+    <field name="otype" state="system">
 
       <descriptions>
         <description xml:lang="en">Object's type</description>
@@ -94,14 +94,12 @@
           <search>-1</search>
         </positions>
       </editor>
-      <datatype base="typedef" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>otype</name>
-        <type state="system"  notnull="true" required="true" >NODE</type>
-      </db>
+      <datatype base="typedef" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="false" />
+      </datatype>
     </field>
 
-    <field>
+    <field name="owner" state="system" readonly="false">
 
       <descriptions>
         <description xml:lang="en">
@@ -143,11 +141,10 @@
           <search>101</search>
         </positions>
       </editor>
-      <datatype base="owner" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>owner</name>
-        <type state="system" readonly="false" size="12" notnull="true" required="true">STRING</type>
-      </db>
+      <datatype base="owner" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="true" />
+        <maxLength value="12" />
+      </datatype>
     </field>
 
   </fieldlist>
