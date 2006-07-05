@@ -22,7 +22,7 @@ import org.mmbase.bridge.jsp.taglib.util.*;
  * This class makes a tag which can list strings.
  *
  * @author Michiel Meeuwissen
- * @version $Id: StringListTag.java,v 1.28 2006-06-23 13:17:30 johannes Exp $
+ * @version $Id: StringListTag.java,v 1.29 2006-07-05 20:39:15 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -150,27 +150,33 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
             returnList = new ArrayList(returnList);
         }
         if (add != Attribute.NULL) {
-            Object addObject = getObject(add.getString(this));
-            if (addObject instanceof Collection) {
-                returnList.addAll((Collection) addObject);
-            } else {
-                returnList.add(Casting.toString(addObject));
+            Object addObject = getObjectConditional(add.getString(this));
+            if (addObject != null) {
+                if (addObject instanceof Collection) {
+                    returnList.addAll((Collection) addObject);
+                } else {
+                    returnList.add(Casting.toString(addObject));
+                }
             }
         }
         if (retain != Attribute.NULL) {
-            Object retainObject = getObject(retain.getString(this));
-            if (retainObject instanceof Collection) {
-                returnList.retainAll((Collection) retainObject);
-            } else {
-                returnList.retainAll(Collections.singletonList(Casting.toString(retainObject)));
+            Object retainObject = getObjectConditional(retain.getString(this));
+            if (retainObject != null) {
+                if (retainObject instanceof Collection) {
+                    returnList.retainAll((Collection) retainObject);
+                } else {
+                    returnList.retainAll(Collections.singletonList(Casting.toString(retainObject)));
+                }
             }
         }
         if (remove != Attribute.NULL) {
-            Object removeObject = getObject(remove.getString(this));
-            if (removeObject instanceof Collection) {
-                returnList.removeAll((Collection) removeObject);
-            } else {
-                returnList.remove(Casting.toString(removeObject));
+            Object removeObject = getObjectConditional(remove.getString(this));
+            if (removeObject != null) {
+                if (removeObject instanceof Collection) {
+                    returnList.removeAll((Collection) removeObject);
+                } else {
+                    returnList.remove(Casting.toString(removeObject));
+                }
             }
         }
 

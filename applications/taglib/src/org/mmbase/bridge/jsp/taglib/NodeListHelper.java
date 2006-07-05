@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.24 2006-06-29 14:32:15 michiel Exp $
+ * @version $Id: NodeListHelper.java,v 1.25 2006-07-05 20:39:15 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -194,27 +194,33 @@ public class NodeListHelper implements ListProvider {
         }
 
         if (add != Attribute.NULL) {
-            Object addObject = thisTag.getObject(add.getString(thisTag));
-            if (addObject instanceof Collection) {
-                nodes.addAll((Collection) addObject);
-            } else {
-                nodes.add(Casting.toNode(addObject, cloud));
+            Object addObject = thisTag.getObjectConditional(add.getString(thisTag));
+            if (addObject != null) {
+                if (addObject instanceof Collection) {
+                    nodes.addAll((Collection) addObject);
+                } else {
+                    nodes.add(Casting.toNode(addObject, cloud));
+                }
             }
         }
         if (retain != Attribute.NULL) {
-            Object retainObject = thisTag.getObject(retain.getString(thisTag));
-            if (retainObject instanceof Collection) {
-                nodes.retainAll((Collection) retainObject);
-            } else {
-                nodes.retainAll(Collections.singletonList((Casting.toNode(retainObject, cloud))));
+            Object retainObject = thisTag.getObjectConditional(retain.getString(thisTag));
+            if (retainObject != null) {
+                if (retainObject instanceof Collection) {
+                    nodes.retainAll((Collection) retainObject);
+                } else {
+                    nodes.retainAll(Collections.singletonList((Casting.toNode(retainObject, cloud))));
+                }
             }
         }
         if (remove != Attribute.NULL) {
-            Object removeObject = thisTag.getObject(remove.getString(thisTag));
-            if (removeObject instanceof Collection) {
-                nodes.removeAll((Collection) removeObject);
-            } else {
-                nodes.remove((Casting.toNode(removeObject, cloud)));
+            Object removeObject = thisTag.getObjectConditional(remove.getString(thisTag));
+            if (removeObject != null) {
+                if (removeObject instanceof Collection) {
+                    nodes.removeAll((Collection) removeObject);
+                } else {
+                    nodes.remove((Casting.toNode(removeObject, cloud)));
+                }
             }
         }
         ListSorter.sort(nodes, (String) comparator.getValue(thisTag), thisTag);

@@ -32,7 +32,7 @@ import java.util.Locale;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.83 2006-06-22 19:00:29 johannes Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.84 2006-07-05 20:39:15 michiel Exp $
  * @see ContextTag
  */
 
@@ -490,6 +490,20 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
             if (log.isDebugEnabled()) log.debug("found: '" + r + "'");
         }
         return r;
+    }
+
+    /**
+     * Support '[key]?', which returns the object with name [key] if it is present, or simply null otherwise.
+     * If not ends with ?, it simply behaves like {@link #getObject(String)}.
+     * @since MMBase-1.8.1
+     */
+    public Object getObjectConditional(String key) throws JspTagException {
+        if (key.endsWith("?")) {
+            key = key.substring(0, key.length() - 1);
+            return getContextProvider().getContextContainer().get(key);
+        } else {
+            return getObject(key);
+        }
     }
     /**
      * Gets an object from the Context, and returns it as a
