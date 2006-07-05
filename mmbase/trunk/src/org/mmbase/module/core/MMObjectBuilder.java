@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.382 2006-06-20 21:20:53 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.383 2006-07-05 10:02:41 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -1407,7 +1407,11 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             if (fdef != null) {
                 // test if the value can be derived from the enumerationlist of a datatype
                 DataType dataType = fdef.getDataType();
-                returnValue = dataType.getEnumerationValue(locale, (Cloud) pars.get(Parameter.CLOUD), (Node) pars.get(Parameter.NODE), fdef, node.getStringValue(field));
+                if (dataType instanceof org.mmbase.datatypes.BinaryDataType) {
+                    returnValue = node.isNull(field) ? "" : "" + node.getSize(field) + " byte";
+                } else {
+                    returnValue = dataType.getEnumerationValue(locale, (Cloud) pars.get(Parameter.CLOUD), (Node) pars.get(Parameter.NODE), fdef, node.getStringValue(field));
+                }
             } else {
                 returnValue = null;
             }
