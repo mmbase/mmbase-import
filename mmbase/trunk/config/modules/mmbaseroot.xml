@@ -69,23 +69,57 @@
   <!-- property name="datasource">jdbc/MMBase</property -->
 
   <!--
-  name="database" defines which database we are using as defined in your config
-  databases directory (default : org/mmbase/config/default/databases/). It
-  is defined by a xml file for example sql92.xml or mysql.xml. This should
-  be set in combo with the jdbc.xml files (where you define the database
-  server and how to connect to it.
+  name="database" defines which database we are using.
 
-  sql92 for default SQL92 database (normally not used)
-  mysql for MySQL (www.mysql.com)
-  informix for Informix Universal Server (www.informix.com)
+  Normally it suffices to change jdbc.xml, and leave this option absent, because a logical default can be deducted
+  by the driver setting.
 
-  ** remark : more database are supported or are easy to support, check
-  www.mmbase.org's howto's on this we will complete this list
-  as soon as possble **
+  You may want to specify this option explicitely though if you want something extraordinary, like:
 
-            MyQSL:          mysql
-            PostgrSQL:      postgresql71
-            HyperSonic:     hypersonic
+  mysql-latin1 (in stead of default 'mysql'): 
+
+       Older mysqls did not support unicode. This misuses latin-1 to store utf-8 any way.
+
+  postgresql_with_views (in stead of default 'postgresql'): 
+
+       Postgresql does natively support inheritance. The implemenation is not very sound though,
+       because it is based on unions. This is bad for performance, and foreign keys and unique keys
+       don't work well any more then. 
+
+       Because of that, we can also simulate inheritance using views.
+
+ informix_without_fetchrel_function: 
+       
+       ...
+
+  mysql (default by driver):  
+      
+       MySQL support. Inheritance is simulated by duplication.
+
+  postgresql (default by driver):
+  
+       PostgreSql support. Inheritance is native.
+
+  hsqldb (default by driver):  
+
+      HsqlDB support.  Inheritance is simulated by duplication.
+
+  hypersonic:
+   
+     Hypersonic is a predecessor of hsqldb.
+
+  informix (default by driver):
+
+      Informix support: Inheritance is native.
+
+  mmsql (default by driver):
+
+      Microsoft SQL support: Inheritance is simulated by views.
+
+  oracle (default by driver):
+
+      Oracle support: Inheritance is simulated by views.
+
   -->
   <!-- property name="database">mysql</property -->
 
