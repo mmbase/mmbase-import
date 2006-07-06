@@ -2,7 +2,7 @@
 
 
 MMBase Build File
-$Id: build.xml,v 1.138 2006-07-06 09:05:10 michiel Exp $
+$Id: build.xml,v 1.139 2006-07-06 09:43:57 michiel Exp $
 =================
 
 This build file can be used to build the following from CVS or from the source
@@ -742,6 +742,8 @@ Build-compiler: ${build.compiler}
              version="true"
              use="false"
              noindex="false"
+             failonerror="true"
+             stylesheetfile="${documentation.home}/javadoc/stylesheet.css"
              windowtitle="MMBase API"
              doctitle="MMBase"
              maxmemory="500M"
@@ -750,26 +752,22 @@ Build-compiler: ${build.compiler}
       <link offline="true" packagelistLoc="${download.dir}/j2se" href="${j2se-javadoc.loc}" />
       <link offline="true" packagelistLoc="${download.dir}/j2ee" href="${j2ee-javadoc.loc}" />
       <link offline="true" packagelistLoc="${expand.dir}/${log4j.fullversion}/docs/api" href="http://logging.apache.org/log4j/docs/api/" />
+      <fileset dir="${source.dir}/src" defaultexcludes="yes" />
+      <fileset dir="${source.dir}/build/src" defaultexcludes="yes" />
+      <fileset dir="${contributions.home}/aselect/src" defaultexcludes="yes" />
+      <fileset dir="${contributions.home}/mmbob/src" defaultexcludes="yes" />
+      <fileset dir="${applications.home}/taglib/src" defaultexcludes="yes" />
+      <fileset dir="${applications.home}/editwizard/src" defaultexcludes="yes" />
+      <fileset dir="${applications.home}/cloudcontext/src" defaultexcludes="yes" />
+      <fileset dir="${applications.home}/crontab/src" defaultexcludes="yes" />
+      <fileset dir="${applications.home}/dove/src" defaultexcludes="yes" />
+      <fileset dir="${applications.home}/email/src" defaultexcludes="yes" />
+      <fileset dir="${applications.home}/media/src" defaultexcludes="yes" />
+      <fileset dir="${applications.home}/oscache-cache/src" defaultexcludes="yes" />
+      <fileset dir="${applications.home}/richtext/src" defaultexcludes="yes" />
+      <fileset dir="${applications.home}/xmlimporter/src" defaultexcludes="yes" />
+      <fileset dir="${applications.home}/clustering/src" defaultexcludes="yes" />
 
-      <fileset dir="${source.dir}" defaultexcludes="yes">
-        <or>
-          <filename name="src/**/*.java" />
-          <filename name="build/src/**/*.java" />
-          <filename name="contributions/aselect/**/*.java" />
-          <filename name="contributions/mmbob/**/*.java" />
-          <filename name="applications/taglib/**/*.java" />
-          <filename name="applications/editwizard/**/*.java" />
-          <filename name="applications/cloudcontext/**/*.java" />
-          <filename name="applications/crontab/**/*.java" />
-          <filename name="applications/dove/**/*.java" />
-          <filename name="applications/email/**/*.java" />
-          <filename name="applications/media/**/*.java" />
-          <filename name="applications/oscache-cache/**/*.java" />
-          <filename name="applications/richtext/**/*.java" />
-          <filename name="applications/xmlimporter/**/*.java" />
-          <filename name="applications/clustering/**/*.java" />
-        </or>
-      </fileset>
       <classpath>
         <fileset dir="${source.dir}">
           <include name="**/*.jar"/>
