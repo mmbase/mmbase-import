@@ -104,7 +104,7 @@
       <descriptions>
         <description xml:lang="en">
           Object's owner. Depending on the chosen security implementation this can mean different
-          thing. E.g. in the 'context' security implementations in this field the 'security context'
+          things. E.g. in the 'context' security implementations in this field the 'security context'
           of the node is stored.
         </description>
         <description xml:lang="nl">
@@ -118,7 +118,7 @@
         </description>
         <description xml:lang="eo">
           Posedanto de la objekto. Depende de la elektita sekureca realigo, la signifo de tio povas
-          varii. Ekzemple en la diversaj kontektaj realigoj, la 'sekureca konteksto' estas stokata
+          varii. Ekzemple en la diversaj kontekstaj realigoj, la 'sekureca konteksto' estas stokata
           en ĉi tiu kampo.
         </description>
       </descriptions>
