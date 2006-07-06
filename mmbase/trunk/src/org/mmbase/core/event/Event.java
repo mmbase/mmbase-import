@@ -16,7 +16,7 @@ import org.mmbase.module.core.MMBase;
  * 
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: Event.java,v 1.7 2006-04-18 13:03:30 michiel Exp $
+ * @version $Id: Event.java,v 1.8 2006-07-06 09:52:30 michiel Exp $
  */
 public abstract class Event implements Serializable, org.mmbase.util.PublicCloneable {
 
@@ -43,7 +43,7 @@ public abstract class Event implements Serializable, org.mmbase.util.PublicClone
 
     /**
      * Most events will come in certain 'types', default contants which are provided are {@link
-     * TYPE_NEW}, {@link TYPE_CHANGED} and {@link TYPE_DELETE}.
+     * #TYPE_NEW}, {@link #TYPE_CHANGE} and {@link #TYPE_DELETE}.
      */
     public int getType() {
         return eventType;
