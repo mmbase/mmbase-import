@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.71 2006-07-05 15:19:43 pierre Exp $
+ * @version $Id: BuilderReader.java,v 1.72 2006-07-06 16:35:19 pierre Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -739,8 +739,9 @@ public class BuilderReader extends DocumentReader {
         String fieldState = getElementAttributeValue(field, "state");
         String fieldReadOnly = getElementAttributeValue(field, "readonly");
 
-        // specify in storage tag or implied by datatype
-        // use to override for specific database issues
+        // implied by datatype
+        // use db/type to override for legacy database issues
+        // (mostly to prevent warnings in the log, as mmbase fixes this anyway)
         String fieldType = "";
         String fieldSize = "";
         String fieldNotNull = "";
@@ -749,23 +750,14 @@ public class BuilderReader extends DocumentReader {
         String fieldRequired = "";
         String fieldUnique = "";
 
-        // storage tag, only contains storage specific info
-        Element storage = getElementByPath(field, "field.storage");
-        if (storage != null) {
-            fieldType = getElementAttributeValue(storage, "type");
-            fieldNotNull = getElementAttributeValue(storage, "notnull");
-            fieldSize = getElementAttributeValue(storage, "size");
-        }
-
         // deprecated db type tag - only use if no other data is given!
         Element dbtype = getElementByPath(field, "field.db.type");
         if (dbtype != null) {
-            if (!"".equals(fieldType) || !"".equals(fieldState) || !"".equals(fieldReadOnly) ||
-                !"".equals(fieldNotNull) || !"".equals(fieldSize)) {
-                log.warn("Specified field type info for '" + fieldName + "' twice: once in the storage tag and once in the <name> tag.");
+            if (!"".equals(fieldType) || !"".equals(fieldNotNull) || !"".equals(fieldSize)) {
+                log.warn("Specified field type info for '" + fieldName + "' twice: once in the field tag attributes and once in the <db><type> tag.");
             } else {
                 if (log.isDebugEnabled()) {
-                    log.debug("<db><type> tag for field '" + fieldName + "' is deprecated. Use the storage tag.");
+                    log.debug("<db><type> tag for field '" + fieldName + "' is deprecated.");
                 }
                 fieldType = getElementValue(dbtype);
                 fieldState = getElementAttributeValue(dbtype, "state");

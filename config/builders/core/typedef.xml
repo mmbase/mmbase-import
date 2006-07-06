@@ -96,8 +96,6 @@
       <datatype base="xml" xmlns="http://www.mmbase.org/xmlns/datatypes" >
         <required value="true" />
       </datatype>
-      <!-- not sure if this is needed when state is virtual -->
-      <storage notnull="false" />
     </field>
   </fieldlist>
 </builder>
