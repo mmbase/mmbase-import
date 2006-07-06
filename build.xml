@@ -2,7 +2,7 @@
 
 
 MMBase Build File
-$Id: build.xml,v 1.137 2006-07-05 19:35:49 michiel Exp $
+$Id: build.xml,v 1.138 2006-07-06 09:05:10 michiel Exp $
 =================
 
 This build file can be used to build the following from CVS or from the source
@@ -586,7 +586,7 @@ mmadmin.xml
       <section name="org/mmbase">
         <attribute name="Vendor" value="MMBase Community" />
         <attribute name="URL" value="http://www.mmbase.org" />
-        <attribute name="Comment" value="The MMBase Content Managment System" />
+        <attribute name="Comment" value="The MMBase Content Management System" />
         <attribute name="Version" value="${distro}.${builddate}" />
         <attribute name="Distribution" value="${distro}" />
         <attribute name="Build-by"     value="${ant.version}" />
