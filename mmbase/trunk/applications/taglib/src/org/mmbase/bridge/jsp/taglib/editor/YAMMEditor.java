@@ -28,7 +28,7 @@ import javax.servlet.jsp.PageContext;
  * yammeditor.jsp?nrs=76&fields=76_number;76_title;76_subtitle;76_intro;80_gui();
  *
  * @author Andr&eacute; van Toly
- * @version $Id: YAMMEditor.java,v 1.9 2006-06-10 11:22:37 andre Exp $
+ * @version $Id: YAMMEditor.java,v 1.10 2006-07-06 11:36:12 michiel Exp $
  * @see EditTag
  * @see BasicEditor
  * @since MMBase-1.8
@@ -63,7 +63,7 @@ public class YAMMEditor extends Editor {
      * it calls one of the older methods i wrote, that was easier then rewriting
      * the old method.
      *
-     * @return  A String with a link and an icon to access yammeditor.jsp
+     * @param context PageContext used to write a string with a link and an icon to access yammeditor.jsp
      */
     public void getEditorHTML(PageContext context) throws IOException {
         String html = "Sorry. You should see an icon and a link to yammeditor here.";
@@ -288,7 +288,7 @@ public class YAMMEditor extends Editor {
     /**
     * Creates a string with the link (and icon) to the editor
     *
-    * @param editor     An url to an editor
+    * @param url        An url to an editor
     * @param icon       An url to a graphic file
     * @return           An HTML string with a link suitable for the editor yammeditor.jsp
     *
