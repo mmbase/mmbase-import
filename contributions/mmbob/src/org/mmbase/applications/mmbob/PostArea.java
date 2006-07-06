@@ -429,7 +429,7 @@ public class PostArea {
 
     /**
      * determine if the given accountname/nick is a moderator of this postarea
-     * @param account accountname/nick to be evaluated
+     * @param nick accountname/nick to be evaluated
      * @return <code>true</code> if the account is moderator. Also <code>true</code> if the account is administrator of the parent forum.
      */
     public boolean isModerator(String nick) {
@@ -792,7 +792,6 @@ public class PostArea {
 
     /**
      * save the postarea (add it to the SyncQueue)
-     * @return
      */
     public boolean save() {
 	// this can still give a problem since its not direct !
