@@ -182,7 +182,6 @@ public class ForumManager {
      * Get a forum by it's MMBase node number
      *
      * @param id  MMBase node number of the forum
-     * @return
      */
     public static Forum getForum(String id) {
         try {
@@ -323,7 +322,6 @@ public class ForumManager {
     /**
      * ToDo: Write docs!
      * @param id
-     * @return
      */
     protected static Map getNamePassword(String id) {
 	return config.getNamePassword(id);
@@ -343,7 +341,6 @@ public class ForumManager {
 
     /**
      * ToDo: Write docs!
-     * @return
      */
     public static Cloud getCloud() {
         if (cloud == null) cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "name/password", getNamePassword("default"));

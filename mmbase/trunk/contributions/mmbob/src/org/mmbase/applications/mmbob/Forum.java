@@ -365,7 +365,7 @@ public class Forum {
     /**
      * determine if the given account is an administrator
      *
-     * @param account
+     * @param nick
      * @return <code>true</code> if the account is an administrator
      */
     public boolean isAdministrator(String nick) {
@@ -398,7 +398,6 @@ public class Forum {
      * get a postarea of this forum  by it's MMbase objectnumber
      *
      * @param id MMbase objectnumber of the postarea
-     * @return
      */
     public PostArea getPostArea(String id) {
         Object o = postareas.get(id);
