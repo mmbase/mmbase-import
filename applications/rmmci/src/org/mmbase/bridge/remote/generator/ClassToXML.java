@@ -43,7 +43,12 @@ public class ClassToXML {
         // test op static member classes
         xmle.setAttribute("shortname", shortName);
 
-        xmle.setAttribute("serializable", java.io.Serializable.class.isAssignableFrom(clazz) ? "true" : "false");
+        // Determin which classes must be serialized, rather then RMIed.
+
+        xmle.setAttribute("serializable", 
+                          (java.io.Serializable.class.isAssignableFrom(clazz)  &&
+                           ! org.mmbase.bridge.Cloud.class.equals(clazz)) // cloud is serializable for some reasons, but it cannot really well.
+                          ? "true" : "false");
 
         Class[] interfaceClasses = clazz.getInterfaces();
         String implementsString = "";
