@@ -20,7 +20,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.48 2006-04-24 13:24:40 michiel Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.49 2006-07-06 11:24:44 michiel Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 
@@ -153,7 +153,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
     /**
      * @javadoc
      * @return An empty string if succesfull, the string {@link #UNKNOWN} if the field was not found in the node.
-     *         The string {@link INVALID_VALUE} if the value was not valid for the field's type.
+     *         The string {@link #INVALID_VALUE} if the value was not valid for the field's type.
      */
     public String setObjectField(String owner, String key, String field, Object value) {
         MMObjectNode node = getNode(owner, key);
