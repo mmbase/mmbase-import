@@ -23,7 +23,7 @@ span.change {
 }
 
 span.change:before {
-  content: url(../images/transparent.gif); /* makes it work in Mozilla */
+  content: url(../images/transparent.png); /* makes it work in Mozilla */
 }
 
 span.delete {
@@ -32,7 +32,7 @@ span.delete {
 }
 
 span.delete:before {
-  content: url(../images/transparent.gif); /* makes it work in Mozilla */
+  content: url(../images/transparent.png); /* makes it work in Mozilla */
 }
 
 span.previous {
