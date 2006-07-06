@@ -43,7 +43,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.146 2006-07-05 15:14:19 pierre Exp $
+ * @version $Id: Wizard.java,v 1.147 2006-07-06 11:41:33 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -1970,7 +1970,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      *
      * @param  did     The data id of the node
      * @param  fieldName   The name of the field
-     * @param  value   The (String) value what should be stored in the data.
      */
     public String retrieveFieldValue(String did, String fieldName) throws WizardException {
         if (log.isDebugEnabled()) {
