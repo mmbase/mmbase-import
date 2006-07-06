@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase 1.8
  * @author Ernst Bunders
- * @version $Id: BetterStrategy.java,v 1.23 2006-06-28 08:10:59 nklasens Exp $
+ * @version $Id: BetterStrategy.java,v 1.24 2006-07-06 10:55:06 michiel Exp $
  */
 public class BetterStrategy extends ReleaseStrategy {
 
@@ -85,34 +85,34 @@ public class BetterStrategy extends ReleaseStrategy {
                 logResult("no flush: 'new node' event in multistep query", query, event);
                 return false; // don't release
             }
-            if(! checkStepsAndNodesSet(event, query)){
+            if(! checkSteps(event, query)) {
                 logResult("no flush: the query has nodes set and this event's node is not one of them, or this step has no steps of corresponding type", query, event);
                 return false;
             }
             break;
 
         case Event.TYPE_DELETE:
-            if(! checkStepsAndNodesSet(event, query)){
+            if(! checkSteps(event, query)) {
                 logResult("no flush: the query has nodes set and this event's node is not one of them, or this step has no steps of corresponding type", query, event);
                 return false;
             }
             break;
 
         case Event.TYPE_CHANGE:
-            if(! checkStepsAndNodesSet(event, query)){
+            if(! checkSteps(event, query)) {
                 logResult("no flush: the query has nodes set and this event's node is not one of them, or this step has no steps of corresponding type", query, event);
                 return false;
             }
             //if the changed field(s) do not occur in the fields or constraint section
             //of the query, it does not have to be flushed
-            if(! checkChangedFieldsMatch(event, query)){
+            if(! checkChangedFieldsMatch(event, query)) {
                 logResult("no flush: the fields that have changed are not used in the query", query, event);
                 return false;
             }
 
             //if the query is aggregating, and of type count, and the changed fields(s) do
             //not occur in the constraint: don't flush the query
-            if(checkAggregationCount(event, query)){
+            if(checkAggregationCount(event, query)) {
                 logResult("query is aggregating and fields are of type count, changed fields do not affect the query result", query, event);
                 return false;
             }
@@ -350,7 +350,7 @@ public class BetterStrategy extends ReleaseStrategy {
      * This method investigates all the steps of a query that correspond to the nodetype of the
      * node event. for each step a check is made if this step has 'nodes' set, and so, if the changed
      * node is one of them.
-     * 
+     *
      * Also it checks if the step is of a corresponding type. It returns also false if no step
      * matched the type of the node event.
      * @param event a NodeEvent
@@ -358,7 +358,7 @@ public class BetterStrategy extends ReleaseStrategy {
      * @return true if (all) the step(s) matching this event have nodes set, and non of these
      * match the number of the changed node (in which case the query should not be flused)
      */
-    private boolean checkStepsAndNodesSet(NodeEvent event, SearchQuery query){
+    private boolean checkSteps(NodeEvent event, SearchQuery query){
         //this simple optimization only works for nodeEvents
         MMBase mmb = MMBase.getMMBase();
         String eventTable = event.getBuilderName();
