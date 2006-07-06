@@ -2,7 +2,7 @@
 
 
 MMBase Build File
-$Id: build.xml,v 1.139 2006-07-06 09:43:57 michiel Exp $
+$Id: build.xml,v 1.140 2006-07-06 11:29:03 michiel Exp $
 =================
 
 This build file can be used to build the following from CVS or from the source
@@ -721,7 +721,7 @@ Build-compiler: ${build.compiler}
   <!-- =================================================================== -->
   <target name="javadocs"
           description="Create the API documentation"
-          depends="init,lib.compile,javacc"
+          depends="init,init.get,lib.compile,javacc"
           unless="did.javadocs"
     >
     <mkdir dir="${download.dir}/j2se"/>
@@ -750,12 +750,13 @@ Build-compiler: ${build.compiler}
              source="1.4"
              bottom="MMBase build ${distro.version}.${builddate}">
       <link offline="true" packagelistLoc="${download.dir}/j2se" href="${j2se-javadoc.loc}" />
-      <link offline="true" packagelistLoc="${download.dir}/j2ee" href="${j2ee-javadoc.loc}" />
       <link offline="true" packagelistLoc="${expand.dir}/${log4j.fullversion}/docs/api" href="http://logging.apache.org/log4j/docs/api/" />
       <fileset dir="${source.dir}/src" defaultexcludes="yes" />
       <fileset dir="${source.dir}/build/src" defaultexcludes="yes" />
       <fileset dir="${contributions.home}/aselect/src" defaultexcludes="yes" />
       <fileset dir="${contributions.home}/mmbob/src" defaultexcludes="yes" />
+      <fileset dir="${contributions.home}/thememanager/src" defaultexcludes="yes" />
+      <fileset dir="${contributions.home}/multilanguagegui/src" defaultexcludes="yes" />
       <fileset dir="${applications.home}/taglib/src" defaultexcludes="yes" />
       <fileset dir="${applications.home}/editwizard/src" defaultexcludes="yes" />
       <fileset dir="${applications.home}/cloudcontext/src" defaultexcludes="yes" />
@@ -769,7 +770,27 @@ Build-compiler: ${build.compiler}
       <fileset dir="${applications.home}/clustering/src" defaultexcludes="yes" />
 
       <classpath>
-        <fileset dir="${source.dir}">
+        <fileset dir="${release.lib.dir}">
+          <include name="**/*.jar"/>
+          <include name="**/*.zip"/>
+        </fileset>
+        <fileset dir="${compile.lib.dir}">
+          <include name="**/*.jar"/>
+          <include name="**/*.zip"/>
+        </fileset>
+        <fileset dir="${applications.home}/clustering/">
+          <include name="**/*.jar"/>
+          <include name="**/*.zip"/>
+        </fileset>
+        <fileset dir="${applications.home}/oscache-cache/">
+          <include name="**/*.jar"/>
+          <include name="**/*.zip"/>
+        </fileset>
+        <fileset dir="${contributions.home}/aselect/">
+          <include name="**/*.jar"/>
+          <include name="**/*.zip"/>
+        </fileset>
+        <fileset dir="${applications.home}/scan/"> <!-- to avoid warning in xmlimporter javadoc -->
           <include name="**/*.jar"/>
           <include name="**/*.zip"/>
         </fileset>
