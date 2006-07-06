@@ -26,7 +26,7 @@ import org.mmbase.util.xml.UtilReader;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: Multicast.java,v 1.9 2006-07-06 11:27:27 michiel Exp $
+ * @version $Id: Multicast.java,v 1.10 2006-07-06 11:40:48 michiel Exp $
  */
 public class Multicast extends ClusterManager {
 
@@ -72,7 +72,6 @@ public class Multicast extends ClusterManager {
                                                             });
 
     /**
-     * @see org.mmbase.module.core.MMBaseChangeInterface#init(org.mmbase.module.core.MMBase)
      */
 
     public Multicast(){
