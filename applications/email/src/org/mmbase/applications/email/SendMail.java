@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.16 2006-03-10 15:13:14 michiel Exp $
+ * @version $Id: SendMail.java,v 1.17 2006-07-06 11:49:41 michiel Exp $
  */
 public class SendMail extends AbstractSendMail implements SendMailInterface {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -35,7 +35,6 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
     public static String mailEncoding = DEFAULT_MAIL_ENCODING;
 
     /**
-     * {@inheritDoc}
      */
     public boolean sendMultiPartMail(String from, String to, Map headers, MimeMultipart mmpart) {
         try {
@@ -65,7 +64,6 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
     private Session session;
 
     /**
-     * {@inheritDoc}
      */
     public void reload() {
         init();
