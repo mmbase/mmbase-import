@@ -32,7 +32,7 @@ import org.apache.commons.fileupload.FileItem;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8 (was named ByteHandler previously)
- * @version $Id: BinaryHandler.java,v 1.3 2006-04-29 13:27:14 michiel Exp $
+ * @version $Id: BinaryHandler.java,v 1.4 2006-07-06 15:02:40 michiel Exp $
  */
 
 public class BinaryHandler extends AbstractTypeHandler {
@@ -146,15 +146,19 @@ public class BinaryHandler extends AbstractTypeHandler {
             ContextContainer cc = tag.getContextProvider().getContextContainer();
             log.debug("Filename : " + fileName);
             NodeManager nm = node.getNodeManager();
+            // follwing stuff should probably be moved to commit-processors of the fields themselves.
             if (nm.hasField("mimetype") && (fileType != null) && (! fileType.equals("")) &&
                 cc.find(tag.getPageContext(), prefix("mimetype")) == null
                 ) {
-                node.setStringValue("mimetype", fileType);
+                node.setValueWithoutProcess("mimetype", fileType);
             }
-            if (nm.hasField("filename") && (fileName != null) && (! fileName.equals("")) &&
-                cc.find(tag.getPageContext(), prefix("filename")) == null
+            Object specFileName = cc.find(tag.getPageContext(), prefix("filename"));
+            if (nm.hasField("filename") && 
+                fileName != null && 
+                (! fileName.equals("")) &&
+                (specFileName == null || specFileName.equals("") || specFileName.equals(node.getStringValue("filename")))
                 ) {
-                node.setStringValue("filename", fileName);
+                node.setValueWithoutProcess("filename", fileName);
             }
             if (nm.hasField("size") &&
                 cc.find(tag.getPageContext(), prefix("size")) == null
