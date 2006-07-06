@@ -1,4 +1,4 @@
-* Javadoc style sheet */
+/* Javadoc style sheet */
 
 /* Define colors, fonts and other style attributes here to override the defaults  */
 
@@ -11,12 +11,12 @@ body { background-color: #FFFFFF }
 .TableRowColor         { background: #F7FAEF; }
 
 /* Font used in left-hand frame lists */
-.FrameTitleFont   { font-size: normal; font-family: normal }
-.FrameHeadingFont { font-size: normal; font-family: normal }
-.FrameItemFont    { font-size: normal; font-family: normal }
+.FrameTitleFont   {  }
+.FrameHeadingFont {  }
+.FrameItemFont    {  }
 
 /* Example of smaller, sans-serif font in frames */
-/* .FrameItemFont  { font-size: 10pt; font-family: Helvetica, Arial, sans-serif } */
+/* .FrameItemFont  { font-size: 10pt; font-family: Helvetica, Arial, sans-serif; } */
 
 /* Navigation bar fonts and colors */
 .NavBarCell1    { background-color:#CCEB6F;}
