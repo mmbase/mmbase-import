@@ -160,7 +160,6 @@ public class Posting {
     /**
      * get the id of this posting
      *
-     * @return
      */
     public int getId() {
         return id;

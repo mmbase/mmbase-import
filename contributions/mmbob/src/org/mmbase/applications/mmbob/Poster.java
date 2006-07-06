@@ -195,7 +195,6 @@ public class Poster {
     /**
      * get the MMBase objectnumber of the avatar (images-object)
      *
-     * @return
      */
     public int getAvatar() {
         if (avatar == 0) readImages();

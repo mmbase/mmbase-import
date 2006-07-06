@@ -385,7 +385,6 @@ public class ForumConfig {
     /**
      * ToDo: Write docs!
      * @param id
-     * @return
      */
     protected Map getNamePassword(String id) {
         Map user = new HashMap();
