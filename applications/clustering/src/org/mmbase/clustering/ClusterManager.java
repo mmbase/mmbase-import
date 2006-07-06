@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: ClusterManager.java,v 1.30 2006-06-22 07:29:12 michiel Exp $
+ * @version $Id: ClusterManager.java,v 1.31 2006-07-06 11:26:39 michiel Exp $
  */
 public abstract class ClusterManager implements AllEventListener, Runnable {
 
@@ -161,10 +161,10 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
     /**
      * Creates MMBase 1.7 parseable message. This is simple String, which is prefixed before the actual 1.8 message.
      *
+     * @param machine MMBase 'machine name'. 
      * @param nodenr node number
      * @param tableName node type (tablename)
      * @param type command type
-     * @param xml node xml
      * @return message
      */
     protected String createMessage(String machine, int nodenr, String tableName, String type) {
