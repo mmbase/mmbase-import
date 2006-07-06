@@ -19,7 +19,7 @@ import org.mmbase.security.*;
 /**
  * @javadoc
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.33 2006-04-21 16:12:02 michiel Exp $
+ * @version $Id: TransactionManager.java,v 1.34 2006-07-06 11:24:44 michiel Exp $
  */
 public class TransactionManager implements TransactionManagerInterface {
 
@@ -45,9 +45,9 @@ public class TransactionManager implements TransactionManagerInterface {
     }
     /**
      * Returns transaction with given name.
-     * @param transasctionName The name of the transaction to return
+     * @param transactionName The name of the transaction to return
      * @exception TransactionManagerExcpeption if the transaction with given name does not exist
-     * @return Collection containing the nodes in this transaction
+     * @return Collection containing the nodes in this transaction (as {@link org.mmbase.module.core.MMObjectNode}s).
      */
     synchronized public  Collection getTransaction(String transactionName) throws TransactionManagerException {
         Collection transaction = (Collection) transactions.get(transactionName);
@@ -60,7 +60,7 @@ public class TransactionManager implements TransactionManagerInterface {
 
     /**
      * Creates transaction with given name.
-     * @param transasctionName The name of the transaction to return
+     * @param transactionName The name of the transaction to return
      * @exception TransactionManagerExcpeption if the transaction with given name existed already
      * @return Collection containing the nodes in this transaction (so, this is an empty collection)
      */
@@ -83,7 +83,7 @@ public class TransactionManager implements TransactionManagerInterface {
     }
 
     /**
-     * @deprecated use {@link getTransaction()}
+     * @deprecated use {@link #getTransaction}
      */
     public Vector getNodes(Object user, String transactionName) {
         try {
@@ -96,10 +96,10 @@ public class TransactionManager implements TransactionManagerInterface {
     /**
      * Creates a new transaction with given name
      * @param user This parameter is ignored (WTF!)
-     * @param transasctionName The name of the transaction to create
+     * @param transactionName The name of the transaction to create
      * @exception TransactionManagerExcpeption if the transaction with given name already existed
      * @return transactionName
-     * @deprecated Use {@link createTransaction}
+     * @deprecated Use {@link #createTransaction}
      */
     public String create(Object user, String transactionName) throws TransactionManagerException {
         createTransaction(transactionName);
@@ -112,9 +112,9 @@ public class TransactionManager implements TransactionManagerInterface {
     /**
      * Returns the (existing) transaction with given name.
      * @param user This parameter is ignored (WTF!)
-     * @param transasctionName The name of the transaction to return
+     * @param transactionName The name of the transaction to return
      * @exception TransactionManagerExcpeption if the transaction with given name does not exist
-     * @deprecated use {@link getTransaction()}
+     * @deprecated use {@link #getTransaction}
      */
     public Collection get(Object user, String transactionName) throws TransactionManagerException {
         return getTransaction(transactionName);
