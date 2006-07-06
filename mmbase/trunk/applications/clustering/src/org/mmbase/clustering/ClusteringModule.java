@@ -20,7 +20,7 @@ import org.mmbase.util.functions.*;
  * This module bootstraps and configures MMBase clustering.
  *
  * @since MMBase-1.8
- * @version $Id: ClusteringModule.java,v 1.9 2006-06-21 05:46:00 michiel Exp $
+ * @version $Id: ClusteringModule.java,v 1.10 2006-07-06 11:28:08 michiel Exp $
  */
 public class ClusteringModule extends WatchedReloadableModule {
 
@@ -164,6 +164,13 @@ public class ClusteringModule extends WatchedReloadableModule {
         addFunction(new AbstractFunction("active", Parameter.EMPTY, ReturnType.BOOLEAN) {
                 public Object getFunctionValue(Parameters arguments) {
                     return Boolean.valueOf(clusterManager != null && clusterManager.kicker != null);
+                }
+            });
+    }
+    {
+        addFunction(new AbstractFunction("clusterManager", Parameter.EMPTY, new ReturnType(ClusterManager.class, "cluster manager")) {
+                public Object getFunctionValue(Parameters arguments) {
+                    return clusterManager;
                 }
             });
     }
