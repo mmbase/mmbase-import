@@ -1,4 +1,3 @@
-
 @import url(base.css);
 @import url(buttons_default.css);
 
@@ -20,7 +19,7 @@ a:active  { color: yellow; }
 a:hover   { color: #32AD8D; }
 
 span {
-  align: right;
+  text-align: right;
 }
 
 span.alt {
@@ -29,15 +28,14 @@ span.alt {
 
 
 table   { 
-		width : 100%; 
-        float: center;
+  width : 100%;    
 }
 
 
 td {
   color: #42BDAD;
   vertical-align : top;
-  border-width: 1;		
+  border-width: 1px;		
 }	
 
 table.list td {
