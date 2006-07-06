@@ -33,7 +33,7 @@ import javax.servlet.ServletContext;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.114 2006-07-06 11:18:00 nklasens Exp $
+ * @version $Id: Images.java,v 1.115 2006-07-06 14:34:22 pierre Exp $
  */
 public class Images extends AbstractImages {
 
@@ -93,16 +93,19 @@ public class Images extends AbstractImages {
             log.warn("Builder with name 'icaches' wasn't loaded. Cannot do image-conversions.");
         }
 
-
         Map map = new HashMap();
         map.putAll(getInitParameters());
         map.put("configfile", getConfigResource());
 
-        Map contextMap = ApplicationContextReader.getProperties("mmbase/imaging");
-        if (!contextMap.isEmpty()) {
-            map.putAll(contextMap);
+        try {
+            Map contextMap = ApplicationContextReader.getProperties("mmbase/imaging");
+            if (!contextMap.isEmpty()) {
+                map.putAll(contextMap);
+            }
+        } catch (javax.naming.NamingException ne) {
+            log.debug("Can't obtain imaging properties from application: " + ne.getMessage());
         }
-        
+
         Factory.init(map, imageCaches);
 
         return true;
@@ -303,8 +306,8 @@ public class Images extends AbstractImages {
         return
             "<a href=\"" + image + "\" class=\"mm_gui\" onclick=\"window.open(this.href); return false;\"><img src=\"" + imageThumb + "\" " +
             heightAndWidth +
-            "border=\"0\" alt=\"" + 
-            org.mmbase.util.transformers.Xml.XMLAttributeEscape(alt, '\"') + 
+            "border=\"0\" alt=\"" +
+            org.mmbase.util.transformers.Xml.XMLAttributeEscape(alt, '\"') +
             "\"" + title + " /></a>";
     }
 
