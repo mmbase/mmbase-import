@@ -17,6 +17,8 @@ import org.mmbase.util.*;
 import org.mmbase.util.images.*;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.xml.UtilReader;
+
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContext;
@@ -31,7 +33,7 @@ import javax.servlet.ServletContext;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.113 2006-04-27 16:48:49 michiel Exp $
+ * @version $Id: Images.java,v 1.114 2006-07-06 11:18:00 nklasens Exp $
  */
 public class Images extends AbstractImages {
 
@@ -95,6 +97,12 @@ public class Images extends AbstractImages {
         Map map = new HashMap();
         map.putAll(getInitParameters());
         map.put("configfile", getConfigResource());
+
+        Map contextMap = ApplicationContextReader.getProperties("mmbase/imaging");
+        if (!contextMap.isEmpty()) {
+            map.putAll(contextMap);
+        }
+        
         Factory.init(map, imageCaches);
 
         return true;
