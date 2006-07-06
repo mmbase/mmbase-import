@@ -42,4 +42,9 @@
 			url="jdbc:mysql://localhost:3306/mmbase?autoReconnect=true"
 	 -->
 
+	<Environment name="mmbase/imaging/ImageConvertClass"
+		value="org.mmbase.module.builders.ConvertImageMagick" type="java.lang.String" />
+	<Environment name="mmbase/imaging/ImageConvert.ConverterCommand" value="convert" type="java.lang.String" />
+	<Environment name="mmbase/imaging/ImageConvert.ConverterRoot" value="" type="java.lang.String" />
+
 </Context>
