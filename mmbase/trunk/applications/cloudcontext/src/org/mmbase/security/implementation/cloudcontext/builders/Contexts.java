@@ -35,7 +35,7 @@ import org.mmbase.cache.AggregatedResultCache;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.46 2005-12-19 09:39:30 michiel Exp $
+ * @version $Id: Contexts.java,v 1.47 2006-07-06 11:51:33 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -840,7 +840,7 @@ public class Contexts extends MMObjectBuilder {
 
 
     /**
-     * @untested
+     * @todo untested
      */
 
     protected boolean mayRevoke(MMObjectNode contextNode, MMObjectNode groupOrUserNode, Operation operation, MMObjectNode user) {
