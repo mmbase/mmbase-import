@@ -1,5 +1,4 @@
 /*
- * Created on 7-sep-2005. 
  * This software is OSI Certified Open Source Software.
  * OSI Certified is a certification mark of the Open Source Initiative. The
  * license (Mozilla version 1.0) can be read at the MMBase site. See
@@ -34,7 +33,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
  * for passing on constraint properties to a event broker. If you want to create
  * your own event type you can use this feature to accomplish that not all
  * events of your type are propagated to the listener.
- * 
+ *
  * @author Ernst Bunders
  * @since MMBase-1.8
  */
@@ -49,17 +48,17 @@ public abstract class AbstractEventBroker {
      * events to the listener of this type. There are no fixed criteria for this.
 
      * Most implementions do <code>event instanceof &lt;EventListener associated with this broker&gt;</code>
-     * 
+     *
      * @param listener
      */
     public abstract boolean canBrokerForListener(EventListener listener);
 
     /**
-     * this method should return true if this event broker can broker for 
+     * this method should return true if this event broker can broker for
      * events of this type. There are no fixed criteria for this.
-     * 
+     *
      * Most implementions do <code>event instanceof &lt;EvenType associated with this broker&gt;</code>
-     * 
+     *
      * @param event
      */
     public abstract boolean canBrokerForEvent(Event event);
@@ -69,11 +68,10 @@ public abstract class AbstractEventBroker {
      * the proper type and invoke the event on the listener. But it must allso
      * check if the listener has constraint properties set. if so it must use
      * them to decide if the event should be invoked on this listener.
-     * 
+     *
      * @param event
      * @param listener
      * @throws ClassCastException
-     * @return true if this broker could accept the listener
      */
     protected abstract void notifyEventListener(Event event, EventListener listener) throws ClassCastException;
 
@@ -88,7 +86,7 @@ public abstract class AbstractEventBroker {
                 log.debug("listener added to " + getClass());
             }
             return true;
-        } else {            
+        } else {
             log.warn("Ignored listener for" + getClass() + " because it cannot broker for that.");
         }
         return false;
@@ -113,11 +111,11 @@ public abstract class AbstractEventBroker {
             }
         }
     }
-    
+
     public String toString(){
         return "Abstract Event Broker";
     }
-    
+
     public boolean equals(Object o) {
         //  we can only have one instance so this will do to prevent adding more instances of an envent broker
         return this.getClass().getName().equals(o.getClass().getName());
