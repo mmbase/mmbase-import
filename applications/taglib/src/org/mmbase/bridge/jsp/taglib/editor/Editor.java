@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Andr&eacute; van Toly
  * @author Michiel Meeuwissen
- * @version $Id: Editor.java,v 1.11 2006-03-28 22:33:06 michiel Exp $
+ * @version $Id: Editor.java,v 1.12 2006-07-06 11:36:12 michiel Exp $
  * @see EditTag
  * @see YAMMEditor
  * @since MMBase-1.8
@@ -43,7 +43,7 @@ abstract public class Editor {
     protected Parameters parameters = null;
 
     /**
-     * @params A List with the parameters of the EditTag.
+     * @return A List with the parameters of the EditTag.
      */
     public final Parameters getParameters() {
         if (parameters == null) {
@@ -71,7 +71,6 @@ abstract public class Editor {
      * Should create a link to an editor or some other way to edit the data displayed.
      *
      * @param   context The PageContext
-     * @return  A String which gives access to the editor
      *
     */
     public abstract void getEditorHTML(PageContext context) throws IOException;
