@@ -95,7 +95,7 @@
         </positions>
       </editor>
       <datatype base="typedef" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <required value="false" />
+        <required value="true" />
       </datatype>
     </field>
 
