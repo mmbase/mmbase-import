@@ -15,6 +15,7 @@ import java.util.Iterator;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.*;
 
 /**
@@ -69,6 +70,12 @@ public class EmailExpireHandler implements Runnable {
                 } catch (InterruptedException f) {
                     log.debug(Thread.currentThread().getName() +" was interrupted.");
                     continue;
+                }
+                if (MMBase.getMMBase().isShutdown()) {
+                    log.service("MMBase has been shutdown, breaking out of email expire probe too");
+                    break;
+                } else {
+                    log.debug("MMBase still running");
                 }
             }
         } catch (Exception e) {

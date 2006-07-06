@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Simon Groenewolt
- * @version $Id: EmailHandler.java,v 1.17 2006-03-23 16:42:09 daniel Exp $
+ * @version $Id: EmailHandler.java,v 1.18 2006-07-06 11:50:26 michiel Exp $
  * @since  MMBase-1.7
  */
 public class EmailHandler {
@@ -151,7 +151,7 @@ public class EmailHandler {
      */
     private static Set getAttachedGroups(MMObjectNode node) {
         Set toUsers = new LinkedHashSet();
-        if (MMBase.getMMBase().getMMObject(EmailBuilder.groupsBuilder) != null) { // never mind if groups builders does not exist
+        if (MMBase.getMMBase().getBuilder(EmailBuilder.groupsBuilder) != null) { // never mind if groups builders does not exist
             List rels = node.getRelatedNodes(EmailBuilder.groupsBuilder);
             if (rels != null) {
                 Iterator i = rels.iterator();
@@ -172,7 +172,7 @@ public class EmailHandler {
     private static Set getAttachedUsers(MMObjectNode node) {
         Set toUsers = new LinkedHashSet();
         // try and find related users
-        if (MMBase.getMMBase().getMMObject(EmailBuilder.usersBuilder) != null) { // never mind if users builders does not exist
+        if (MMBase.getMMBase().getBuilder(EmailBuilder.usersBuilder) != null) { // never mind if users builders does not exist
             List rels = node.getRelatedNodes(EmailBuilder.usersBuilder);
             if (rels != null) {
                 Iterator i = rels.iterator();

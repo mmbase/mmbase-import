@@ -66,8 +66,8 @@ public class EmailBuilder extends MMObjectBuilder {
     // public final static int TYPE_REPEATMAIL  = 2; // Email will be sent and scheduled after sending for a next time (does not work?)
     public final static int TYPE_ONESHOTKEEP = 3; // Email will be sent and will not be removed.
 
-	public final static String EMAILTYPE_RESOURCE = "org.mmbase.applications.email.resources.mailtype";
-	public final static String EMAILSTATUS_RESOURCE = "org.mmbase.applications.email.resources.mailstatus";
+    public final static String EMAILTYPE_RESOURCE = "org.mmbase.applications.email.resources.mailtype";
+    public final static String EMAILSTATUS_RESOURCE = "org.mmbase.applications.email.resources.mailstatus";
 
     static String usersBuilder;
     static String usersEmailField;
@@ -104,8 +104,8 @@ public class EmailBuilder extends MMObjectBuilder {
 
         return true;
     }
-    
-   
+
+
     /**
      * {@inheritDoc}
      *
@@ -116,7 +116,7 @@ public class EmailBuilder extends MMObjectBuilder {
         if (log.isDebugEnabled()) {
             log.debug("function: " + function);
         }
-        
+
         if (function.equals("info")) {
         	List empty = new ArrayList();
         	java.util.Map info = (java.util.Map) super.executeFunction(node, function, empty);
@@ -126,12 +126,12 @@ public class EmailBuilder extends MMObjectBuilder {
         	} else {
         		return info.get(args.get(0));
         	}
-        	
+
         } else if (args != null && args.size() > 0) {
-			
+
         	String field = (String) args.get(0);
 			log.debug("field: '" + field + "'");	// mailtype, mailstatus
-		   
+
 			if (function.equals("gui") && field != null) {
 				if (field.equals("mailstatus")) {
 					String val = node.getStringValue("mailstatus");
@@ -149,7 +149,7 @@ public class EmailBuilder extends MMObjectBuilder {
 						locale = mmb.getLocale();
 					}
 					bundle = ResourceBundle.getBundle(EMAILTYPE_RESOURCE, locale, getClass().getClassLoader() );
-					
+
 					try {
 						return bundle.getString(val);
 					} catch (MissingResourceException e) {
@@ -164,11 +164,11 @@ public class EmailBuilder extends MMObjectBuilder {
 		    } else if (function.equals("setType") || function.equals("settype") ) {
 		        setType(node, args);
 		        return null;
-		    
+
 		    } else if (function.equals("mail")) {  // function mail(type) called
 	            log.debug("We're in mail - args: " + args);
 	            setType(node, args);
-	
+
 		        // get the mailtype so we can call the correct handler/method
 		        int mailType = node.getIntValue("mailtype");
 		        switch(mailType) {
@@ -181,16 +181,16 @@ public class EmailBuilder extends MMObjectBuilder {
 		        default:
 		            log.warn("Trying to mail a node with unsupported type " + mailType);
 		        }
-		        
+
 		        String val = node.getStringValue("mailtype");
 		        //return getMailtypeResource(val, args);
 		        return null;
-		        
+
 		    } else if (function.equals("startmail")) {         // function startmail(type) called (starts a background thread)
 		    	log.debug("We are in startmail - args: " + args);
 		        // check if we have arguments ifso call setType()
 		    	setType(node, args);
-		        
+
 		        // get the mailtype so we can call the correct handler/method
 		        int mailType = node.getIntValue("mailtype");
 		        log.debug("mailtype: " + mailType);
@@ -208,12 +208,12 @@ public class EmailBuilder extends MMObjectBuilder {
 				// return getMailtypeResource(val, args);
 				return null;
 		    }
-        } 
+        }
         if (log.isDebugEnabled()) {
         	log.debug("Function '" + function + "' is not found in email app.");
         }
         return super.executeFunction(node, function, args);
-        
+
     }
 
 
@@ -226,7 +226,7 @@ public class EmailBuilder extends MMObjectBuilder {
 
     /**
      * Set the mailtype based on the first argument in the list.
-     * 
+     *
      * @param node	Email node on which to set the type
      * @param args	List with arguments
      */
@@ -243,11 +243,11 @@ public class EmailBuilder extends MMObjectBuilder {
             log.debug("Setting mailtype to: " + TYPE_ONESHOT);
         }
     }
-    
+
     /**
      * Mailtype maps to an int in a resource, this method finds it,
      * if possible and available the localized version of it.
-     *  
+     *
      * @param val	The int value that maps to a mailtype (1 = oneshot etc.)
      * @param args	List with arguments containing the wanted mailtype
      * @return A String from the resource file being a mailtype
@@ -267,7 +267,7 @@ public class EmailBuilder extends MMObjectBuilder {
     			locale = mmb.getLocale();
     		}
     		bundle = ResourceBundle.getBundle(EMAILTYPE_RESOURCE, locale, getClass().getClassLoader());
-    		
+
     		try {
     			return bundle.getString(val);
     		} catch (MissingResourceException e) {
@@ -276,7 +276,7 @@ public class EmailBuilder extends MMObjectBuilder {
     	}
     	return val;
     }
-    
+
 
     /**
      * Returns all the one-shot delivered mail nodes older than a specified time.
