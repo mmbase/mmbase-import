@@ -13,7 +13,7 @@
       There is a specialized 'resource editor' available in /mmbase/admin.
 
        @since MMBase-1.8
-       @version $Id: resources.xml,v 1.4 2006-07-06 16:48:29 pierre Exp $
+       @version $Id: resources.xml,v 1.5 2006-07-06 16:53:55 michiel Exp $
     -->
   <status>active</status>
   <class>org.mmbase.module.builders.Resources</class>
@@ -133,7 +133,7 @@
       </datatype>
     </field>
 
-    <field name="size">
+    <field name="size" state="system">
       <descriptions>
         <description xml:lang="en">Size of the attachment in bytes</description>
         <description xml:lang="nl">Grootte van de bijlage in bytes</description>
