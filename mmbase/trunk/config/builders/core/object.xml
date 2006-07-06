@@ -70,9 +70,8 @@
       </editor>
       <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes" >
         <unique value="true" enforce="never" />
+        <required value="true" enforce="never" />
       </datatype>
-      <!-- need to set notnull to true as required is not true -->
-      <storage notnull="true" />
     </field>
 
     <field name="otype" state="system">

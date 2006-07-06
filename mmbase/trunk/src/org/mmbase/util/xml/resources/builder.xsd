@@ -124,7 +124,6 @@
         <xsd:element ref="gui"          minOccurs="0" />
         <xsd:element ref="editor"       minOccurs="0" />
         <xsd:element ref="dt:datatype"     minOccurs="0" />
-        <xsd:element ref="storage"     minOccurs="0" />
         <xsd:element ref="db"     minOccurs="0" />
       </xsd:sequence>
       <xsd:attribute name="name" type="xsd:string" />
@@ -246,25 +245,6 @@
             </xsd:simpleType>
           </xsd:attribute>
           <xsd:attribute name="key">
-            <xsd:simpleType>
-              <xsd:restriction base="xsd:string">
-                <xsd:enumeration value="true" />
-                <xsd:enumeration value="false" />
-              </xsd:restriction>
-            </xsd:simpleType>
-          </xsd:attribute>
-        </xsd:extension>
-      </xsd:simpleContent>
-    </xsd:complexType>
-  </xsd:element>
-
-  <xsd:element name="storage">
-    <xsd:complexType>
-      <xsd:simpleContent>
-        <xsd:extension base="xsd:string">
-          <xsd:attribute name="type" type="xsd:string" />
-          <xsd:attribute name="size" type="xsd:string" />
-          <xsd:attribute name="notnull">
             <xsd:simpleType>
               <xsd:restriction base="xsd:string">
                 <xsd:enumeration value="true" />
