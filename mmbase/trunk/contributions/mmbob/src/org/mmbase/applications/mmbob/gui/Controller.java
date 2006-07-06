@@ -791,7 +791,6 @@ public class Controller {
      * List all the posters not allready a administrator for this forum
      *
      * @param forumid MMBase node number of the forum
-     * @param postareaid MMBase node number of the new postarea
      * @return List of (map) representing all posters of the given postarea which are no moderators
      */
     public List getNonAdministrators(String forumid,String searchkey) {
@@ -1739,7 +1738,6 @@ public class Controller {
      * @param forumid
      * @param activeid
      * @param newfolder
-     * @return
      */
     public Node newFolder(String forumid, int activeid, String newfolder) {
 	Map map = new HashMap();
@@ -1757,7 +1755,6 @@ public class Controller {
      * @param forumid
      * @param activeid
      * @param foldername
-     * @return
      */
     public boolean removeFolder(String forumid, int activeid, String foldername) {
         Forum f = ForumManager.getForum(forumid);
@@ -1802,9 +1799,8 @@ public class Controller {
      * Add a moderator to a postarea within a forum
      *
      * @param forumid MMBase node number of the forum
-     * @param postareaid MMBase node number of the postarea
      * @param sactiveid MMBase node number of current Poster (on the page)
-     * @param smoderatorid MMBase node number of moderator you want to add
+     * @param sadministratorid MMBase node number of moderator you want to add
      * @return Feedback regarding the success of this action
      */
     public boolean newAdministrator(String forumid, String sactiveid, String sadministratorid) {
@@ -1853,9 +1849,8 @@ public class Controller {
      * Remove a moderator from a postarea (poster is not removed just status moderator is revoked)
      *
      * @param forumid  MMBase node number of the forum
-     * @param postareaid MMBase node number of the postarea
      * @param activeid MMBase node number of current Poster (on the page)
-     * @param moderatorid MMBase node number of moderator you want to remove
+     * @param administratorid MMBase node number of moderator you want to remove
      * @return Feedback regarding the success of this action
      */
     public boolean removeAdministrator(String forumid, int activeid, int administratorid) {
