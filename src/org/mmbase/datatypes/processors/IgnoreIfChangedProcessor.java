@@ -16,10 +16,10 @@ import org.mmbase.util.logging.Logging;
 /**
  * If this processor is used on a certain field, that you can effectively set the value only once
  * (until the commit of the node). This is based on {@link
- * org.mmbase.bridge.Node#isChanged(String)}. It that returns true, the old value is used.
+ * org.mmbase.bridge.Node#isChanged(String)}. It that returns true (and the node is not new), the old value is used.
  *
  * @author Michiel Meeuwissen
- * @version $Id: IgnoreIfChangedProcessor.java,v 1.1 2006-07-06 14:58:03 michiel Exp $
+ * @version $Id: IgnoreIfChangedProcessor.java,v 1.2 2006-07-06 15:14:59 michiel Exp $
  * @since MMBase-1.8.1
  */
 
@@ -29,8 +29,10 @@ public class IgnoreIfChangedProcessor implements Processor {
 
     public final Object process(Node node, Field field, Object value) {
         Object prevValue = node.getValue(field.getName());
-        if (node.isChanged(field.getName())) {
-            return  prevValue;
+        if (! node.isNew()) {
+            if (node.isChanged(field.getName())) {
+                return  prevValue;
+            }
         }
         return value;
     }
