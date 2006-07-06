@@ -9,9 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.clustering.multicast;
 
-import java.net.DatagramPacket;
-import java.net.InetAddress;
-import java.net.MulticastSocket;
+import java.net.*;
 
 import org.mmbase.util.Queue;
 import org.mmbase.module.core.MMBaseContext;
@@ -26,30 +24,29 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: ChangesReceiver.java,v 1.12 2006-06-20 08:05:53 michiel Exp $
+ * @version $Id: ChangesReceiver.java,v 1.13 2006-07-06 11:27:27 michiel Exp $
  */
 public class ChangesReceiver implements Runnable {
 
-    /** MMbase logging system */
     private static final Logger log = Logging.getLoggerInstance(ChangesReceiver.class);
 
     /** Thread which sends the messages */
     private Thread kicker = null;
 
     /** Queue with messages received from other MMBase instances */
-    private Queue nodesToSpawn;
+    private final Queue nodesToSpawn;
 
     /** address to send the messages to */
-    private InetAddress ia;
+    private final InetAddress ia;
 
     /** Socket to send the multicast packets */
     private MulticastSocket ms;
 
     /** Port for sending datapackets send by Multicast */
-    private int mport = 4243;
+    private final int mport;
 
     /** Datapacket receive size */
-    private int dpsize = 64*1024;
+    private final int dpsize;
 
     /**
      * Construct the MultiCast Receiver
@@ -58,15 +55,11 @@ public class ChangesReceiver implements Runnable {
      * @param dpsize datapacket receive size
      * @param nodesToSpawn Queue of received messages
      */
-    ChangesReceiver(String multicastHost, int mport, int dpsize, Queue nodesToSpawn) {
+    ChangesReceiver(String multicastHost, int mport, int dpsize, Queue nodesToSpawn)  throws UnknownHostException {
         this.mport = mport;
         this.dpsize = dpsize;
         this.nodesToSpawn = nodesToSpawn;
-        try {
-            this.ia = InetAddress.getByName(multicastHost);
-        } catch (Exception e) {
-            log.error(Logging.stackTrace(e));
-        }
+        this.ia = InetAddress.getByName(multicastHost);
         this.start();
     }
     private  void start() {

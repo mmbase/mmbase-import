@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: ChangesSender.java,v 1.10 2006-06-20 17:30:45 michiel Exp $
+ * @version $Id: ChangesSender.java,v 1.11 2006-07-06 11:27:27 michiel Exp $
  */
 public class ChangesSender implements Runnable {
 
@@ -38,34 +38,32 @@ public class ChangesSender implements Runnable {
     private Thread kicker = null;
 
     /** Queue with messages to send to other MMBase instances */
-    private Queue nodesToSend;
+    private final Queue nodesToSend;
 
     /** address to send the messages to */
-    private InetAddress ia;
+    private final InetAddress ia;
 
     /** Socket to send the multicast packets */
     private MulticastSocket ms;
 
     /** Port for sending datapackets send by Multicast */
-    private int mport=4243;
+    private final int mport;
     /** Time To Live for datapackets send by Multicast */
-    private int mTTL=1;
+    private final int mTTL;
 
-    /** Construct MultiCast Sender
+    /** 
+     * Construct MultiCast Sender
      * @param multicastHost 'channel' of the multicast
      * @param mport port of the multicast
      * @param mTTL time-to-live of the multicast packet (0-255)
      * @param nodesToSend Queue of messages to send
+     * @param send Statistics object in which to administer duration costs
      */
-    ChangesSender(String multicastHost, int mport, int mTTL, Queue nodesToSend, Statistics send) {
+    ChangesSender(String multicastHost, int mport, int mTTL, Queue nodesToSend, Statistics send) throws UnknownHostException  {
         this.mport = mport;
         this.mTTL = mTTL;
         this.nodesToSend = nodesToSend;
-        try {
-            this.ia = InetAddress.getByName(multicastHost);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
+        this.ia = InetAddress.getByName(multicastHost);
         this.send = send;
         this.start();
     }
