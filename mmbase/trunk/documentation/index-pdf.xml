@@ -5,9 +5,10 @@
   <articleinfo>
     <title>MMBase Documentation Overview</title>
 
-    <date>2006-12-16</date>
+    <date>2006-07-07</date>
 
-    <edition>$Id: index-pdf.xml,v 1.1 2006-06-16 09:21:09 andre Exp $</edition>
+    <edition>$Id: index-pdf.xml,v 1.1 2006/06/16 09:21:09 andre Exp
+    $</edition>
 
     <authorgroup>
       <author>
@@ -122,9 +123,14 @@
   <section id="introduction">
     <title>Introduction</title>
 
-    <para>This is PDF version of the documentation. Note that not all
-    documents are available as PDF. The HTML versions of these documents can
-    be accessed via this <ulink url="index.html">index page</ulink>.</para>
+    <para>This is PDF version of the documentation. To generate PDF's you need
+    to run the following command in the documentation source directory.</para>
+
+    <programlisting>ant documentation.pdf</programlisting>
+
+    <para>Note that not all documents are available as PDF. The HTML versions
+    of these documents can be accessed via this <ulink url="index.html">index
+    page</ulink>.</para>
 
     <itemizedlist>
       <listitem>
