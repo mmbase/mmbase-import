@@ -42,7 +42,7 @@ public class DateParser {
     private long prev = 0;
     private int amount = 0;
     private int field = 0;
-    private Calendar date = Calendar.getInstance(defaultTimeZone);
+    private Calendar cal = Calendar.getInstance(defaultTimeZone);
 
     public static void main(String argv[]) throws ParseException, InterruptedException {
         DateParser parser = new DateParser(new StringReader(argv[0]));
@@ -50,31 +50,31 @@ public class DateParser {
         System.out.println("" + parser.toDate());
     }
     public Date toDate()  {
-        return date.getTime();
+        return cal.getTime();
     }
     public boolean dynamic()  {
         return dynamic;
     }
     protected void beginOfHour() {
-        date.set(Calendar.MINUTE, 0);
-        date.set(Calendar.SECOND, 0);
-        date.set(Calendar.MILLISECOND, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
     }
     protected void beginOfDay() {
-        date.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
         beginOfHour();
     }
 
     protected void beginOfMonth() {
-        date.set(Calendar.DAY_OF_MONTH, 1);
+        cal.set(Calendar.DAY_OF_MONTH, 1);
         beginOfDay();
     }
     protected void beginOfYear() {
-        date.set(Calendar.MONTH, Calendar.JANUARY);
+        cal.set(Calendar.MONTH, Calendar.JANUARY);
         beginOfMonth();
     }
     protected void now() {
-        date = Calendar.getInstance(defaultTimeZone);
+        cal = Calendar.getInstance(cal.getTimeZone());
     }
 
 }
@@ -90,13 +90,13 @@ TOKEN :
 | <THIS: "this" >
 | <POSITIVE: ["0"-"9"] (["0"-"9"])* >
 | <THOUSANDS: ["0"-"9"]["0"-"9"]["0"-"9"] >
-| <TIMEZONE: "TZ" ["A"-"Z"] ["A"-"Z"] ["A"-"Z"] (["A"-"Z"])? (["-", "+"] <POSITIVE>)?>
+| <TIMEZONE: "TZ" ["A"-"Z"] (["A"-"Z","a"-"z", "/", "_"])* (["-", "+"] <POSITIVE>)?>
 }
 
 
 void start() : {}
 {
-  (date() (["T"] time())?)? (increment() | decrement())* (time_zone())? <EOF>
+    (time_zone())? (date() (["T"] time())?)? (increment() | decrement())* (time_zone())? <EOF>
       // T: only for compatibility with ISO_8601
 }
 
@@ -104,10 +104,10 @@ void start() : {}
 void time() : {}
 {
     hour_number() ":" minute_number() (":" second_number() ["." millisecond_number()])?
-    | "noon"     { beginOfHour(); date.set(Calendar.HOUR_OF_DAY, 12); }
-    | "midnight" { beginOfHour(); date.set(Calendar.HOUR_OF_DAY, 0); }
-    | "teatime"  { beginOfHour(); date.set(Calendar.HOUR_OF_DAY, 16); }
-    | hour_number() "oclock" { date.set(Calendar.MINUTE, 0);}
+    | "noon"     { beginOfHour(); cal.set(Calendar.HOUR_OF_DAY, 12); }
+    | "midnight" { beginOfHour(); cal.set(Calendar.HOUR_OF_DAY, 0); }
+    | "teatime"  { beginOfHour(); cal.set(Calendar.HOUR_OF_DAY, 16); }
+    | hour_number() "oclock" { cal.set(Calendar.MINUTE, 0);}
 }
 
 void date() :  {}
@@ -116,26 +116,26 @@ void date() :  {}
     year_number() "-" month_number() "-" day_number() { beginOfDay(); dynamic = false; }
     | day_of_week() {beginOfDay();}
     | month_of_year() {beginOfMonth();}
-    | "now"      { date = Calendar.getInstance(defaultTimeZone); }
-    | integer() { date.setTimeInMillis(Long.parseLong(token.toString()) * 1000); dynamic = false; }
-    | "today"      { date = Calendar.getInstance(defaultTimeZone); beginOfDay(); }
-    | "tomonth"     { date = Calendar.getInstance(defaultTimeZone); beginOfMonth(); }
-    | "toyear"      { date = Calendar.getInstance(defaultTimeZone); beginOfYear(); }
-    | "tomorrow" { date = Calendar.getInstance(defaultTimeZone); date.add(Calendar.DAY_OF_YEAR, 1); beginOfDay(); }
-    | "yesterday" { date = Calendar.getInstance(defaultTimeZone); date.add(Calendar.DAY_OF_YEAR, -1); beginOfDay(); }
-    | "yestermonth" { date = Calendar.getInstance(defaultTimeZone); date.add(Calendar.MONTH, -1); beginOfMonth(); }
-    | "yesteryear" { date = Calendar.getInstance(defaultTimeZone); date.add(Calendar.YEAR, -1); beginOfYear(); }
-    | "duration" { beginOfYear(); date.set(Calendar.YEAR, 1970); }
-    | "borreltijd"  { beginOfHour(); date.set(Calendar.HOUR_OF_DAY, 17); date.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
-                     if (Calendar.getInstance(defaultTimeZone).after(date)) date.add(Calendar.WEEK_OF_YEAR, 1);
+    | "now"      { cal = Calendar.getInstance(cal.getTimeZone()); }
+    | integer() { cal.setTimeInMillis(Long.parseLong(token.toString()) * 1000); dynamic = false; }
+    | "today"      { cal = Calendar.getInstance(cal.getTimeZone()); beginOfDay(); }
+    | "tomonth"     { cal = Calendar.getInstance(cal.getTimeZone()); beginOfMonth(); }
+    | "toyear"      { cal = Calendar.getInstance(cal.getTimeZone()); beginOfYear(); }
+    | "tomorrow" { cal = Calendar.getInstance(cal.getTimeZone()); cal.add(Calendar.DAY_OF_YEAR, 1); beginOfDay(); }
+    | "yesterday" { cal = Calendar.getInstance(cal.getTimeZone()); cal.add(Calendar.DAY_OF_YEAR, -1); beginOfDay(); }
+    | "yestermonth" { cal = Calendar.getInstance(cal.getTimeZone()); cal.add(Calendar.MONTH, -1); beginOfMonth(); }
+    | "yesteryear" { cal = Calendar.getInstance(cal.getTimeZone()); cal.add(Calendar.YEAR, -1); beginOfYear(); }
+    | "duration" { beginOfYear(); cal.set(Calendar.YEAR, 1970); }
+    | "borreltijd"  { beginOfHour(); cal.set(Calendar.HOUR_OF_DAY, 17); cal.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
+                     if (Calendar.getInstance(cal.getTimeZone()).after(cal)) cal.add(Calendar.WEEK_OF_YEAR, 1);
 
     }
 }
 
 void time_zone() : {}
 {
-  <TIMEZONE> {date.setTimeZone(TimeZone.getTimeZone(token.toString().substring(2)));}
-  |  "Z" { date.setTimeZone(TimeZone.getTimeZone("UTC"));} //  For compatibility ISO_8601 (with trailing 'Z')
+  <TIMEZONE> {cal.setTimeZone(TimeZone.getTimeZone(token.toString().substring(2)));}
+  |  "Z" { cal.setTimeZone(TimeZone.getTimeZone("UTC"));} //  For compatibility ISO_8601 (with trailing 'Z')
 }
 
 
@@ -148,7 +148,7 @@ void integer() : {}
 
 void year_number() : { }
 {
-    integer()  {  date.set(Calendar.YEAR, Integer.parseInt(token.toString()));}
+    integer()  {  cal.set(Calendar.YEAR, Integer.parseInt(token.toString()));}
 }
 void inc_number() : { }
 {
@@ -156,47 +156,47 @@ void inc_number() : { }
 }
 void month_number() : { }
 {
-    <POSITIVE> { date.set(Calendar.MONTH, Integer.parseInt(token.toString()) - 1);}
+    <POSITIVE> { cal.set(Calendar.MONTH, Integer.parseInt(token.toString()) - 1);}
 }
 void day_number() : { }
 {
-    <POSITIVE> { date.set(Calendar.DAY_OF_MONTH, Integer.parseInt(token.toString()));}
+    <POSITIVE> { cal.set(Calendar.DAY_OF_MONTH, Integer.parseInt(token.toString()));}
 }
 
 void hour_number() : { }
 {
-    <POSITIVE> { date.set(Calendar.HOUR_OF_DAY, Integer.parseInt(token.toString()));}
+    <POSITIVE> { cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(token.toString()));}
 }
 void minute_number() : { }
 {
-    <POSITIVE> { date.set(Calendar.MINUTE, Integer.parseInt(token.toString())); date.set(Calendar.SECOND, 0); date.set(Calendar.MILLISECOND, 0);}
+    <POSITIVE> { cal.set(Calendar.MINUTE, Integer.parseInt(token.toString())); cal.set(Calendar.SECOND, 0); cal.set(Calendar.MILLISECOND, 0);}
 }
 void second_number() : { }
 {
-    <POSITIVE> { date.set(Calendar.SECOND, Integer.parseInt(token.toString())); date.set(Calendar.MILLISECOND, 0);}
+    <POSITIVE> { cal.set(Calendar.SECOND, Integer.parseInt(token.toString())); cal.set(Calendar.MILLISECOND, 0);}
 }
 void millisecond_number() : { }
 {
-    <THOUSANDS> { date.set(Calendar.MILLISECOND, Integer.parseInt(token.toString()));}
+    <THOUSANDS> { cal.set(Calendar.MILLISECOND, Integer.parseInt(token.toString()));}
 }
 
 
 void increment() : {}
 {
-   "+"  inc_number() inc_period() { date.add(field, amount); amount = 0; }
-   | <NEXT> inc_period()  { date.add(field, 1); }
-   | <PREVIOUS> inc_period()  { date.add(field, -1); }
-   | next() day_of_week() { beginOfDay(); if (date.getTime().getTime() < prev) {date.add(Calendar.DAY_OF_YEAR, 7); } }
-   | previous() day_of_week() { beginOfDay(); if (date.getTime().getTime() > prev) {date.add(Calendar.DAY_OF_YEAR, -7); } }
+   "+"  inc_number() inc_period() { cal.add(field, amount); amount = 0; }
+   | <NEXT> inc_period()  { cal.add(field, 1); }
+   | <PREVIOUS> inc_period()  { cal.add(field, -1); }
+   | next() day_of_week() { beginOfDay(); if (cal.getTime().getTime() < prev) {cal.add(Calendar.DAY_OF_YEAR, 7); } }
+   | previous() day_of_week() { beginOfDay(); if (cal.getTime().getTime() > prev) {cal.add(Calendar.DAY_OF_YEAR, -7); } }
    | <THIS> day_of_week() { beginOfDay(); }
-   | next() month_of_year() { beginOfMonth(); if (date.getTime().getTime() < prev) {date.add(Calendar.YEAR, 1); } }
-   | previous() month_of_year() { beginOfMonth(); if (date.getTime().getTime() > prev) {date.add(Calendar.YEAR, -1); } }
+   | next() month_of_year() { beginOfMonth(); if (cal.getTime().getTime() < prev) {cal.add(Calendar.YEAR, 1); } }
+   | previous() month_of_year() { beginOfMonth(); if (cal.getTime().getTime() > prev) {cal.add(Calendar.YEAR, -1); } }
    | <THIS> month_of_year() { beginOfMonth(); }
-   | "ish"  {  date.add(Calendar.SECOND, (int) (random.nextGaussian() * 1200.0)/* 20 min */ + 300 /* 5 minutes late on average*/); dynamic = true;}
+   | "ish"  {  cal.add(Calendar.SECOND, (int) (random.nextGaussian() * 1200.0)/* 20 min */ + 300 /* 5 minutes late on average*/); dynamic = true;}
 }
 void decrement() : {}
 {
-    "-"  inc_number() inc_period() {date.add(field, -1 * amount);}
+    "-"  inc_number() inc_period() {cal.add(field, -1 * amount);}
 }
 void inc_period() : {}
 {
@@ -210,35 +210,35 @@ void inc_period() : {}
 }
 void day_of_week() : {}
 {
-  "sunday" { date.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY); }
-| "monday" { date.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY); }
-| "tuesday" { date.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY); }
-| "wednesday" { date.set(Calendar.DAY_OF_WEEK, Calendar.WEDNESDAY); }
-| "thursday" { date.set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY); }
-| "friday" { date.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY); }
-| "saturday" { date.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY); }
+  "sunday" { cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY); }
+| "monday" { cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY); }
+| "tuesday" { cal.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY); }
+| "wednesday" { cal.set(Calendar.DAY_OF_WEEK, Calendar.WEDNESDAY); }
+| "thursday" { cal.set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY); }
+| "friday" { cal.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY); }
+| "saturday" { cal.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY); }
 }
 void month_of_year() : {}
 {
-  "january" { date.set(Calendar.MONTH, Calendar.JANUARY); }
-| "february" { date.set(Calendar.MONTH, Calendar.FEBRUARY); }
-| "march" { date.set(Calendar.MONTH, Calendar.MARCH); }
-| "april" { date.set(Calendar.MONTH, Calendar.APRIL); }
-| "may" { date.set(Calendar.MONTH, Calendar.MAY); }
-| "june" { date.set(Calendar.MONTH, Calendar.JUNE); }
-| "july" { date.set(Calendar.MONTH, Calendar.JULY); }
-| "august" { date.set(Calendar.MONTH, Calendar.AUGUST); }
-| "september" { date.set(Calendar.MONTH, Calendar.SEPTEMBER); }
-| "october" { date.set(Calendar.MONTH, Calendar.OCTOBER); }
-| "november" { date.set(Calendar.MONTH, Calendar.NOVEMBER); }
-| "december" { date.set(Calendar.MONTH, Calendar.DECEMBER); }
+  "january" { cal.set(Calendar.MONTH, Calendar.JANUARY); }
+| "february" { cal.set(Calendar.MONTH, Calendar.FEBRUARY); }
+| "march" { cal.set(Calendar.MONTH, Calendar.MARCH); }
+| "april" { cal.set(Calendar.MONTH, Calendar.APRIL); }
+| "may" { cal.set(Calendar.MONTH, Calendar.MAY); }
+| "june" { cal.set(Calendar.MONTH, Calendar.JUNE); }
+| "july" { cal.set(Calendar.MONTH, Calendar.JULY); }
+| "august" { cal.set(Calendar.MONTH, Calendar.AUGUST); }
+| "september" { cal.set(Calendar.MONTH, Calendar.SEPTEMBER); }
+| "october" { cal.set(Calendar.MONTH, Calendar.OCTOBER); }
+| "november" { cal.set(Calendar.MONTH, Calendar.NOVEMBER); }
+| "december" { cal.set(Calendar.MONTH, Calendar.DECEMBER); }
 }
 
 void next() : {}
 {
-    <NEXT> { prev = date.getTime().getTime(); }
+    <NEXT> { prev = cal.getTime().getTime(); }
 }
 void previous() : {}
 {
-    <PREVIOUS> { prev = date.getTime().getTime(); }
+    <PREVIOUS> { prev = cal.getTime().getTime(); }
 }
