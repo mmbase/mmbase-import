@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.46 2006-06-07 19:22:59 michiel Exp $
+ * @version $Id: DateHandler.java,v 1.47 2006-07-08 13:04:47 michiel Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -48,7 +48,7 @@ public class DateHandler extends AbstractTypeHandler {
 
 
     private Calendar getInstance() throws JspTagException {
-        return Calendar.getInstance(tag.getCloudVar().getCloudContext().getDefaultTimeZone());
+        return Calendar.getInstance(tag.getTimeZone());
     }
 
     private void yearFieldValue(Calendar cal, StringBuffer buffer) {
