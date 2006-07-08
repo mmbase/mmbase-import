@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeProviderHelper.java,v 1.19 2006-07-08 13:00:18 michiel Exp $
+ * @version $Id: NodeProviderHelper.java,v 1.20 2006-07-08 16:43:35 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -136,7 +136,7 @@ public class NodeProviderHelper implements NodeProvider {
             pageContext.setAttribute(STACK_ATTRIBUTE, _Stack, PageContext.REQUEST_SCOPE);
         }
         _Stack.push(node);
-        pageContext.setAttribute(_NODE, org.mmbase.util.Casting.wrap(node, (org.mmbase.util.transformers.CharTransformer) pageContext.getAttribute(ContentTag.ESCAPER_KEY)), PageContext.REQUEST_SCOPE);
+        pageContext.setAttribute(_NODE, org.mmbase.util.Casting.wrap(node, (org.mmbase.util.transformers.CharTransformer) pageContext.findAttribute(ContentTag.ESCAPER_KEY)), PageContext.REQUEST_SCOPE);
     }
 
     private String getSimpleReturnValueName(String fieldName){
@@ -188,7 +188,7 @@ public class NodeProviderHelper implements NodeProvider {
             if (_Stack.empty()) {
                 pageContext.removeAttribute(_NODE, PageContext.REQUEST_SCOPE);
             } else {
-                pageContext.setAttribute(_NODE, org.mmbase.util.Casting.wrap(_Stack.peek(), (org.mmbase.util.transformers.CharTransformer) pageContext.getAttribute(ContentTag.ESCAPER_KEY)), PageContext.REQUEST_SCOPE);
+                pageContext.setAttribute(_NODE, org.mmbase.util.Casting.wrap(_Stack.peek(), (org.mmbase.util.transformers.CharTransformer) pageContext.findAttribute(ContentTag.ESCAPER_KEY)), PageContext.REQUEST_SCOPE);
             }
             _Stack = null;
         }
