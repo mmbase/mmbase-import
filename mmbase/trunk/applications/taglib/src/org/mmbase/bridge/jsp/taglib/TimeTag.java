@@ -23,7 +23,7 @@ import javax.servlet.jsp.JspException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.52 2006-03-24 15:38:50 johannes Exp $
+ * @version $Id: TimeTag.java,v 1.53 2006-07-08 13:03:50 michiel Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer, WriterReferrer {
 
@@ -108,15 +108,24 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
         return getPrecisionConstant(p);
     }
 
+    public TimeZone getTimeZone()  {
+        try {
+            String tz = timezone.getString(this);
+            if (tz != null && !"".equals(tz)) {
+                return TimeZone.getTimeZone(tz);
+            } else {
+                return super.getTimeZone();
+            }
+        } catch (JspTagException jte) {
+            return super.getTimeZone();
+        }
+    }
+
     protected DateFormat getFormat() throws JspTagException {
         if (log.isDebugEnabled()) {
             log.debug("format: '" + dateFormat + "'");
         }
-        String tz = timezone.getString(this);
-        if (tz != null && !"".equals(tz)) {
-            tz = tz.toUpperCase();
-        }
-        return  org.mmbase.util.DateFormats.getInstance(dateFormat.getString(this), tz, getLocale());
+        return  org.mmbase.util.DateFormats.getInstance(dateFormat.getString(this), getTimeZone().getID(), getLocale());
     }
 
 
@@ -228,10 +237,8 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
             useTime = time.getString(this);
         }
 
-        String tzone = timezone.getString(this);
-        if (tzone != null && !"".equals(tzone)) {
-            useTime += " TZ" + tzone.toUpperCase();
-        }
+        TimeZone tz = getTimeZone();
+        useTime = "TZ" + tz.getID() + " " + useTime;
 
         String iformat = inputFormat.getString(this);
         if (iformat.equals("")) {
