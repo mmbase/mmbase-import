@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.71 2006-06-26 15:06:22 nklasens Exp $
+ * @version $Id: ImageTag.java,v 1.72 2006-07-08 12:50:27 michiel Exp $
  */
 
 public class ImageTag extends FieldTag {
@@ -57,32 +57,32 @@ public class ImageTag extends FieldTag {
 
     /** Holds value of property width. */
     private Attribute width = Attribute.NULL;
-    
+
     /** Holds value of property height. */
     private Attribute height = Attribute.NULL;
-    
+
     /** Holds value of property crop. */
     private Attribute crop = Attribute.NULL;
-    
+
     /** Holds value of property style. */
     private Attribute style = Attribute.NULL;
-    
+
     /** Holds value of property clazz. */
     private Attribute styleClass = Attribute.NULL;
-    
+
     /** Holds value of property align. */
     private Attribute align = Attribute.NULL;
-    
+
     /** Holds value of property border. */
     private Attribute border = Attribute.NULL;
-    
+
     /** Holds value of property hspace. */
     private Attribute hspace = Attribute.NULL;
-    
+
     /** Holds value of property vspace. */
     private Attribute vspace = Attribute.NULL;
 
-    
+
     private Object prevDimension;
 
     /**
@@ -100,41 +100,41 @@ public class ImageTag extends FieldTag {
         this.align = getAttribute(align);
     }
 
-    
+
     public void setBorder(String border) throws JspTagException {
         this.border = getAttribute(border);
     }
 
-    
+
     public void setStyleClass(String styleClass) throws JspTagException {
         this.styleClass = getAttribute(styleClass);
     }
 
-    
+
     public void setCrop(String crop) throws JspTagException {
         this.crop = getAttribute(crop);
     }
 
-    
+
     public void setHeight(String height) throws JspTagException {
         this.height = getAttribute(height);
     }
 
-    
+
     public void setHspace(String hspace) throws JspTagException {
         this.hspace = getAttribute(hspace);
     }
-    
+
     public void setStyle(String style) throws JspTagException {
         this.style = getAttribute(style);
     }
 
-    
+
     public void setVspace(String vspace) throws JspTagException {
         this.vspace = getAttribute(vspace);
     }
 
-    
+
     public void setWidth(String width) throws JspTagException {
         this.width = getAttribute(width);
     }
@@ -155,7 +155,7 @@ public class ImageTag extends FieldTag {
 
     private String getCrop() throws JspTagException {
         String m = crop.getString(this).toLowerCase();
-        if (m.equals("")) { 
+        if (m.equals("")) {
             return null;
         } else if (m.equals("middle")) {
             return CROP_MIDDLE;
@@ -169,7 +169,7 @@ public class ImageTag extends FieldTag {
     }
 
     private boolean makeRelative() {
-        if (makeRelative == null) {            
+        if (makeRelative == null) {
             String setting = pageContext.getServletContext().getInitParameter("mmbase.taglib.url.makerelative");
             makeRelative = Boolean.valueOf("true".equals(setting));
         }
@@ -210,9 +210,9 @@ public class ImageTag extends FieldTag {
         Dimension dim = getDimension(originalNode, templateStr);
 
         Node node = getServletNode(originalNode, templateStr);
-        
+
         String servletArgument;
-        if (node == null) {            
+        if (node == null) {
             node = originalNode;
             log.warn("Found null from " + node + " with '" + templateStr + "'");
             servletArgument = node.getStringValue("number");
@@ -251,7 +251,7 @@ public class ImageTag extends FieldTag {
             // the node/image itself
             servletArgument = node.getStringValue("number");
         } else {
-            try {                    
+            try {
                 servletArgument = "" + node.getNumber() + "+" + java.net.URLEncoder.encode(t, "UTF-8");
             } catch (java.io.UnsupportedEncodingException uee) {
                 // cannot happen 'UTF-8' is supported.
@@ -262,7 +262,7 @@ public class ImageTag extends FieldTag {
     }
 
     public String getServletPath(Node node, String servletArgument) throws JspTagException {
-        Function servletPathFunction = getServletFunction(node);        
+        Function servletPathFunction = getServletFunction(node);
         Parameters args = getServletArguments(servletArgument, servletPathFunction);
         fillStandardParameters(args);
         return servletPathFunction.getFunctionValue( args).toString();
@@ -274,7 +274,7 @@ public class ImageTag extends FieldTag {
     }
 
     public Parameters getServletArguments(String servletArgument, Function servletPathFunction) {
-        HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();        
+        HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();
         Parameters args = servletPathFunction.createParameters();
         args.set("context",  makeRelative() ? UriParser.makeRelative(new File(req.getServletPath()).getParent(), "/") : req.getContextPath())
             .set("argument", servletArgument);
@@ -284,7 +284,7 @@ public class ImageTag extends FieldTag {
     public String getOutputValue(int mode, Node node, String servletPath, Dimension dim) throws JspTagException {
         String outputValue = null;
         switch(mode) {
-        case MODE_URL: 
+        case MODE_URL:
             outputValue = ((HttpServletResponse) pageContext.getResponse()).encodeURL(servletPath);
             break;
         case MODE_HTML_ATTRIBUTES: {
@@ -309,7 +309,7 @@ public class ImageTag extends FieldTag {
         }
         return outputValue;
     }
-    
+
     public String getSrcAttribute(String url) throws JspTagException {
         return " src=\"" + url + "\"";
     }
@@ -325,7 +325,7 @@ public class ImageTag extends FieldTag {
         }
         if ((alt == null || "".equals(alt)) && node.getNodeManager().hasField("title")) {
             alt = org.mmbase.util.transformers.Xml.XMLAttributeEscape(node.getStringValue("title"));
-        } 
+        }
         if ((alt == null || "".equals(alt)) && node.getNodeManager().hasField("name")) {
             alt = org.mmbase.util.transformers.Xml.XMLAttributeEscape(node.getStringValue("name"));
         }
@@ -333,7 +333,7 @@ public class ImageTag extends FieldTag {
             alt = org.mmbase.util.transformers.Xml.XMLAttributeEscape(node.getStringValue("description"));
         }
 
-        
+
         return (alt == null ? " alt=\"\"" : " alt=\"" + alt + "\" title=\"" + alt + "\"");
     }
 
@@ -347,7 +347,7 @@ public class ImageTag extends FieldTag {
         attributes.append((vspace != Attribute.NULL) ? (" vspace=\"" + vspace.getString(this) + "\"") : "");
         return attributes.toString();
     }
-    
+
     public Dimension getDimension(Node node, String template) {
         return new LazyDimension(node, template);
     }
@@ -365,12 +365,10 @@ public class ImageTag extends FieldTag {
         if (t == null || t.length() == 0) {
             if ((widthTemplate <= 0) && (heightTemplate <= 0)) {
                 t = "";
-            }
-            else {
+            } else {
                 if (cropTemplate != null && cropTemplate.length() != 0) {
                     t = getCropTemplate(node, widthTemplate, heightTemplate, cropTemplate);
-                }
-                else {
+                } else {
                     t = getResizeTemplate(node, widthTemplate, heightTemplate);
                 }
             }
