@@ -42,7 +42,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: ConstraintsMatchingStrategy.java,v 1.23 2006-06-27 11:09:39 michiel Exp $
+ * @version $Id: ConstraintsMatchingStrategy.java,v 1.24 2006-07-08 12:45:39 nklasens Exp $
  *
  */
 public class ConstraintsMatchingStrategy extends ReleaseStrategy {
@@ -143,41 +143,40 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
         //we should have a matcher now
         if(matcher != null){
             try {
-
-            	//because composite constraints can also cover fields that are not in the changed field list of the node
-            	//let's find the node and get all the values.
-            	MMObjectNode node = MMBase.getMMBase().getBuilder(event.getBuilderName()).getNode(event.getNodeNumber());
-            	Map oldValues;
-                Map newValues;
-            	if(node != null){
-                    //put all the (new) values in the value maps
-                    Map nodeValues = node.getValues();
-                    oldValues = new LinkMap(nodeValues, event.getOldValues());
-                    newValues = new LinkMap(nodeValues, event.getNewValues());
-            	} else {
-                    oldValues = event.getOldValues();
-                    newValues = event.getNewValues();
-                }
-
-
-
                 switch(event.getType()) {
-                case Event.TYPE_NEW:
+                case Event.TYPE_NEW: {
+                    Map newValues = event.getNewValues();
                     // we have to compare the constraint value with the new value of the changed field to see if the new
                     // node falls within the constraint. it it does: flush
                     if(matcher.eventApplies(newValues, event)){
                         boolean eventMatches =  matcher.nodeMatchesConstraint(newValues, event);
                         if (log.isDebugEnabled()) {
-                            logResult((eventMatches ? "" : "no ") + "flush: with matcher {" + matcher + "}:", query, event, node);
+                            logResult((eventMatches ? "" : "no ") + "flush: with matcher {" + matcher + "}:", query, event, null);
                         }
                         return eventMatches;
                     } else {
                         if (log.isDebugEnabled()) {
-                            logResult("flush: event does not apply to wrapper {" + matcher + "}:", query, event, node);
+                            logResult("flush: event does not apply to wrapper {" + matcher + "}:", query, event, null);
                         }
                         return true;
                     }
-                case Event.TYPE_CHANGE:
+                }
+                case Event.TYPE_CHANGE: {
+                    Map oldValues;
+                    Map newValues;
+                    //because composite constraints can also cover fields that are not in the changed field list of the node
+                    //let's find the node and get all the values.
+                    MMObjectNode node = MMBase.getMMBase().getBuilder(event.getBuilderName()).getNode(event.getNodeNumber());
+                    if(node != null){
+                        //put all the (new) values in the value maps
+                        Map nodeValues = node.getValues();
+                        oldValues = new LinkMap(nodeValues, event.getOldValues());
+                        newValues = new LinkMap(nodeValues, event.getNewValues());
+                    } else {
+                        oldValues = event.getOldValues();
+                        newValues = event.getNewValues();
+                    }
+
                     // we have to compare the old value and then the new value of the changed field to see if the status
                     // has changed. if the node used to match the constraint but now doesn't or the reverse of this, flush.
                     if(matcher.eventApplies(newValues, event)){
@@ -211,18 +210,20 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                         }
                         return true;
                     }
+                }
                 case Event.TYPE_DELETE:
+                    Map oldValues = event.getOldValues();
                     // we have to compare the old value of the field to see if the node used to fall within the
                     // constraint. If it did: flush
                     if(matcher.eventApplies(event.getOldValues(), event)){
                         boolean eventMatches = matcher.nodeMatchesConstraint(oldValues, event);
                         if (log.isDebugEnabled()) {
-                            logResult( (eventMatches ? "" : "no ") + "flush: with matcher {"+matcher+"}:", query, event, node);
+                            logResult( (eventMatches ? "" : "no ") + "flush: with matcher {"+matcher+"}:", query, event, null);
                         }
                         return eventMatches;
                     } else {
                         if (log.isDebugEnabled()) {
-                            logResult("flush: event does not apply to wrapper {" + matcher + "}:", query, event, node);
+                            logResult("flush: event does not apply to wrapper {" + matcher + "}:", query, event, null);
                         }
                         return true;
                     }
@@ -807,6 +808,35 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
         }
     }
 
+    /**
+     * @since MMBase-1.8.1
+     */
+    private static class BasicFieldValueBetweenConstraintMatcher extends AbstractConstraintMatcher {
+
+        protected final StepField stepField;
+        protected final BasicFieldValueBetweenConstraint wrappedFieldConstraint;
+
+        public BasicFieldValueBetweenConstraintMatcher(BasicFieldValueBetweenConstraint constraint)  {
+            stepField = constraint.getField();
+            wrappedFieldConstraint = constraint;
+        } 
+        
+        public boolean nodeMatchesConstraint(Map valuesToMatch, NodeEvent event) throws FieldComparisonException {
+            return true;
+        }
+
+        public boolean eventApplies(Map valuesToMatch, NodeEvent event) {
+            return true;
+        }
+
+        public String toString() {
+            return "Field Value Between Matcher.  operator: " + 
+            ", step: " +stepField.getStep().getTableName() +
+            ", field name: " + stepField.getFieldName();
+        }
+        
+    }
+    
     /**
      * @since MMBase-1.8.1
      */
