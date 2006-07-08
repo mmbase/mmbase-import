@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
 import org.mmbase.util.functions.Parameter;
 import org.mmbase.util.functions.Parameters;
 
-import java.util.Locale;
+import java.util.*;
 
 /**
  * If you want to have attributes which obtain the value from a
@@ -32,7 +32,7 @@ import java.util.Locale;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.84 2006-07-05 20:39:15 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.85 2006-07-08 12:58:17 michiel Exp $
  * @see ContextTag
  */
 
@@ -553,6 +553,12 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
                 return locale;
             }
         }
+        {
+            Locale locale = (Locale) pageContext.getAttribute(LocaleTag.KEY, LocaleTag.SCOPE);
+            if (locale != null) {
+                return locale;
+            }
+        }
 
         return  org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getDefaultLocale();
     }
@@ -560,7 +566,9 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
     /**
      * @since MMBase-1.8
      */
-    public java.util.TimeZone getTimeZone() {
+    public TimeZone getTimeZone() {
+        TimeZone timeZone = (TimeZone) pageContext.getAttribute(LocaleTag.TZ_KEY, LocaleTag.SCOPE);
+        if (timeZone != null) return timeZone;
         return  org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getDefaultTimeZone();
     }
     /**
