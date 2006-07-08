@@ -32,14 +32,14 @@ import org.w3c.dom.*;
  *</p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedString.java,v 1.23 2006-06-19 05:57:24 michiel Exp $
+ * @version $Id: LocalizedString.java,v 1.24 2006-07-08 06:55:09 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedString implements java.io.Serializable, Cloneable {
 
     private static final Logger log = Logging.getLoggerInstance(LocalizedString.class);
 
-    private static final int serialVersionUID = 1;
+    private static final long serialVersionUID = 1L;
 
     private static Locale defaultLocale = null; // means 'system default' and 'unset'.
 
@@ -68,7 +68,7 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
     /**
      * Converts a collection of localized strings to a collection of normal strings.
      * @param col    Collection of LocalizedString objects
-     * @param locale Locale to be used for the call to {@link #get(Locale)} which is needed.
+     * @param locale Locale to be used for the call to {@link #get(Locale)} which obviously is needed
      */
     public static Collection toStrings(Collection col, Locale locale) {
         if (col == null || col.size() == 0) return col;
@@ -170,7 +170,7 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
      * Sets the value for a certain locale. If the value for a more general locale is still unset,
      * it will also set that (so, it sets also nl when setting nl_BE if nl still is unset).
      */
-    public void set(String value, Locale locale) {
+    public void set(final String value, Locale locale) {
         if (key == null) key = value;
 
         if (values == null) {
@@ -235,7 +235,7 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
      * This utility takes care of reading the xml:lang attribute from an element
      * @param element a DOM element
      * @return A {@link java.util.Locale} object, or <code>null</code> if the element did not have,
-     * or had an emnpty, xml:lang attribute
+     * or had an empty, xml:lang attribute
      */
     public static Locale getLocale(Element element) {
         Locale loc = null;
@@ -255,7 +255,7 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
 
 
     /**
-     * This utility determines value of an xml:lang attribute. So, given a {@link java.util.Locale}
+     * This utility determines the value of an xml:lang attribute. So, given a {@link java.util.Locale}
      * it produces a String.
      * @param locale A java locale
      * @return A string that can be used as the value for an XML xml:lang attribute.
@@ -277,7 +277,7 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
 
     /**
      * This utility takes care of setting the xml:lang attribute on an element.
-     * @param element Element on which th xml:lang attribute is going to be set
+     * @param element Element on which the xml:lang attribute is going to be set
      * @param locale  Java's Locale object
      * @since MMBase-1.8.1
      */
