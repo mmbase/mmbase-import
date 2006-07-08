@@ -53,7 +53,7 @@
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" >
         <unique value="true" />
         <required value="true" />
-        <maxLength value="12" />
+        <maxLength value="32" />
       </datatype>
     </field>
 
