@@ -11,6 +11,7 @@ package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.PageContext;
 import javax.servlet.http.*;
 
 import java.util.*;
@@ -37,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.53 2006-03-29 11:13:11 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.54 2006-07-08 16:43:35 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -444,7 +445,7 @@ public class ContentTag extends LocaleTag  {
      */
 
     public CharTransformer getWriteEscaper() {
-        return (CharTransformer) pageContext.getAttribute(ESCAPER_KEY);
+        return (CharTransformer) pageContext.findAttribute(ESCAPER_KEY);
     }
     private CharTransformer prevEscaper = null;
 
@@ -461,13 +462,13 @@ public class ContentTag extends LocaleTag  {
                 esc = COPY;
             }
         }
-        pageContext.setAttribute(ESCAPER_KEY, esc);
+        pageContext.setAttribute(ESCAPER_KEY, esc, PageContext.REQUEST_SCOPE);
     }
     protected void unsetWriteEscaper() {
         if (prevEscaper == null) {
-            pageContext.removeAttribute(ESCAPER_KEY);
+            pageContext.removeAttribute(ESCAPER_KEY, PageContext.REQUEST_SCOPE);
         } else {
-            pageContext.setAttribute(ESCAPER_KEY, prevEscaper);
+            pageContext.setAttribute(ESCAPER_KEY, prevEscaper, PageContext.REQUEST_SCOPE);
         }
     }
 
