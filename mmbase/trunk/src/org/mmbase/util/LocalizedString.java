@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  *</p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedString.java,v 1.24 2006-07-08 06:55:09 michiel Exp $
+ * @version $Id: LocalizedString.java,v 1.25 2006-07-08 14:31:53 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedString implements java.io.Serializable, Cloneable {
@@ -238,9 +238,17 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
      * or had an empty, xml:lang attribute
      */
     public static Locale getLocale(Element element) {
+        return getLocale(element.getAttribute("xml:lang"));
+    }
+
+
+    /**
+     * @since MMBase-1.8.1
+     */
+    public static Locale getLocale(String xmlLang) {
         Locale loc = null;
-        String xmlLang = element.getAttribute("xml:lang");
-        if (! xmlLang.equals("")) {
+        if (xmlLang != null && (! xmlLang.equals(""))) {
+
             String[] split = xmlLang.split("-");
             if (split.length == 1) {
                 loc = new Locale(split[0]);
@@ -252,7 +260,6 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
         }
         return loc;
     }
-
 
     /**
      * This utility determines the value of an xml:lang attribute. So, given a {@link java.util.Locale}
