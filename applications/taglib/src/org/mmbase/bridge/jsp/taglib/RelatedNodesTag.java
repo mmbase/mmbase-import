@@ -24,7 +24,7 @@ import org.mmbase.storage.search.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: RelatedNodesTag.java,v 1.38 2006-05-17 19:15:09 michiel Exp $
+ * @version $Id: RelatedNodesTag.java,v 1.39 2006-07-08 12:51:56 michiel Exp $
  */
 public class RelatedNodesTag extends AbstractNodeListTag {
 
@@ -127,14 +127,14 @@ public class RelatedNodesTag extends AbstractNodeListTag {
             if (path == Attribute.NULL) {
                 if (type == Attribute.NULL) {
                     otherManager = cloud.getNodeManager("object");
-                } else { 
+                } else {
                     if (element != Attribute.NULL) {
                         throw new TaglibException("Cannot specify both 'element' and 'type' attributes");
                     }
                     otherManager = cloud.getNodeManager(type.getString(this));
-                }               
+                }
                 RelationStep step2 = query.addRelationStep(otherManager, (String) role.getValue(this), searchDirections);
-                Step step3 = step2.getNext();                
+                Step step3 = step2.getNext();
                 query.setNodeStep(step3); // makes it ready for use as NodeQuery
             } else {
                 if (role != Attribute.NULL) {
@@ -144,7 +144,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
                 if (element != Attribute.NULL) {
                     String alias = element.getString(this);
                     Step nodeStep = query.getStep(alias);
-                    if (nodeStep == null) { 
+                    if (nodeStep == null) {
                         throw new JspTagException("Could not set element to '" + alias + "' (no such step)");
                     }
                     query.setNodeStep(nodeStep);
