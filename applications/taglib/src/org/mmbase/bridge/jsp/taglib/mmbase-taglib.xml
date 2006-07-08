@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.365 2006-07-08 12:56:24 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.366 2006-07-08 14:38:18 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -6065,13 +6065,20 @@ The 0 is just counter, which starts at 0 on every page.
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        A two letter language code according to ISO 639, or 'client'.
+        A two letter language code according to ISO 639, or 'client'. If not country attribute is
+        given, then this attribute can also contain the country and variant, like in xml:lang attributes.
       </info>
       <examplevalue>
         <value>nl</value>
       </examplevalue>
       <examplevalue>
         <value>en</value>
+      </examplevalue>
+      <examplevalue>
+        <value>nl-BE</value>
+      </examplevalue>
+      <examplevalue>
+        <value>en-GB</value>
       </examplevalue>
     </attribute>
     <attribute>
