@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: PageContextBacking.java,v 1.10 2006-06-23 14:38:30 michiel Exp $
+ * @version $Id: PageContextBacking.java,v 1.11 2006-07-08 13:03:12 michiel Exp $
  */
 
 public  class PageContextBacking extends AbstractMap implements Backing {
@@ -92,15 +92,15 @@ public  class PageContextBacking extends AbstractMap implements Backing {
                                         }
                                         public Object getValue() {
                                             if (nul == null) {
-                                                return pageContext.getAttribute(name, SCOPE);
+                                                return pageContext.findAttribute(name);
                                             } else {
                                                 return null;
                                             }
                                         }
                                         public Object setValue(Object value) {
-                                            Object was = pageContext.getAttribute(name, SCOPE);
+                                            Object was = pageContext.findAttribute(name);
                                             if (value != null) {
-                                                pageContext.setAttribute(name, jspvars.contains(name) ? value : Casting.wrap(value, (CharTransformer) pageContext.getAttribute(ContentTag.ESCAPER_KEY)), SCOPE);
+                                                pageContext.setAttribute(name, jspvars.contains(name) ? value : Casting.wrap(value, (CharTransformer) pageContext.findAttribute(ContentTag.ESCAPER_KEY)), SCOPE);
                                             } else {
                                                 pageContext.removeAttribute(name, SCOPE);
                                                 nulls.add(name);
@@ -133,21 +133,21 @@ public  class PageContextBacking extends AbstractMap implements Backing {
             nulls.add(key);
         } else {
             String k = (String) key;
-            Object v = jspvars.contains(key) ? value : Casting.wrap(value, (CharTransformer) pageContext.getAttribute(ContentTag.ESCAPER_KEY));
+            Object v = jspvars.contains(key) ? value : Casting.wrap(value, (CharTransformer) pageContext.findAttribute(ContentTag.ESCAPER_KEY));
             pageContext.setAttribute(k, v, SCOPE);
         }
         return unwrapped.put(key, value);
     }
     public Object get(Object key) {
-        return pageContext.getAttribute((String) key, SCOPE);
+        return pageContext.findAttribute((String) key);
     }
     public Object getOriginal(Object key) {
         Object value = unwrapped.get(key);
         if (value != null) return value;
-        return pageContext.getAttribute((String) key, SCOPE);
+        return pageContext.findAttribute((String) key);
     }
     public boolean containsKey(Object key) {
-        return pageContext.getAttribute((String) key, SCOPE) != null ||  nulls.contains(key);
+        return pageContext.findAttribute((String) key) != null ||  nulls.contains(key);
     }
 
     public boolean containsOwnKey(Object key) {
