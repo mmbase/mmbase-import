@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: StorageConnector.java,v 1.8 2006-06-16 09:06:21 michiel Exp $
+ * @version $Id: StorageConnector.java,v 1.9 2006-07-08 12:44:46 nklasens Exp $
  */
 public class StorageConnector {
 
@@ -214,6 +214,29 @@ public class StorageConnector {
         MMBase mmb = builder.getMMBase();
         // not in cache. We are going to put it in.
         // retrieve node's objecttype
+        MMObjectBuilder nodeBuilder = getBuilderForNode(number);
+        // use storage factory if present
+        log.debug("Getting node from storage");
+        node = mmb.getStorageManager().getNode(nodeBuilder, number);
+        // store in cache if indicated to do so
+        if (useCache) {
+            if (log.isDebugEnabled()) {
+                log.debug("Caching node from storage" + node);
+            }
+            node = builder.safeCache(numberValue, node);
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("Returning " + node);
+        }
+        if (useCache) {
+            return node;
+        } else {
+            return new MMObjectNode(node);
+        }
+    }
+
+    public MMObjectBuilder getBuilderForNode(final int number) {
+        MMBase mmb = builder.getMMBase();
         MMObjectBuilder nodeBuilder = builder;
         int nodeType = getNodeType(number);
         if (nodeType < 0) {
@@ -236,24 +259,7 @@ public class StorageConnector {
                 nodeBuilder = mmb.getBuilder("object");
             }
         }
-        // use storage factory if present
-        log.debug("Getting node from storage");
-        node = mmb.getStorageManager().getNode(nodeBuilder, number);
-        // store in cache if indicated to do so
-        if (useCache) {
-            if (log.isDebugEnabled()) {
-                log.debug("Caching node from storage" + node);
-            }
-            node = builder.safeCache(numberValue, node);
-        }
-        if (log.isDebugEnabled()) {
-            log.debug("Returning " + node);
-        }
-        if (useCache) {
-            return node;
-        } else {
-            return new MMObjectNode(node);
-        }
+        return nodeBuilder;
     }
 
     /**
