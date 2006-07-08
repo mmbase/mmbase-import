@@ -2,7 +2,7 @@
 
 
 MMBase Build File
-$Id: build.xml,v 1.140 2006-07-06 11:29:03 michiel Exp $
+$Id: build.xml,v 1.141 2006-07-08 12:29:17 michiel Exp $
 =================
 
 This build file can be used to build the following from CVS or from the source
@@ -725,14 +725,19 @@ Build-compiler: ${build.compiler}
           unless="did.javadocs"
     >
     <mkdir dir="${download.dir}/j2se"/>
-    <mkdir dir="${download.dir}/j2ee"/>
     <antcall target="download">
       <param name="sourcefile" value="${j2se-javadoc.loc}/package-list" />
       <param name="destfile"   value="${download.dir}/j2se/package-list" />
     </antcall>
+    <mkdir dir="${download.dir}/j2ee"/>
     <antcall target="download">
       <param name="sourcefile" value="${j2ee-javadoc.loc}/package-list" />
       <param name="destfile"   value="${download.dir}/j2ee/package-list" />
+    </antcall>
+    <mkdir dir="${download.dir}/jstl"/>
+    <antcall target="download">
+      <param name="sourcefile" value="${jstl-javadoc.loc}/package-list" />
+      <param name="destfile"   value="${download.dir}/jstl/package-list" />
     </antcall>
     <mkdir dir="${mmdocs.dir}/javadoc/complete" />
     <echo message="Generating javadocs for ${javadoc.packages} to ${mmdocs.dir}/javadoc/complete" />
@@ -750,6 +755,8 @@ Build-compiler: ${build.compiler}
              source="1.4"
              bottom="MMBase build ${distro.version}.${builddate}">
       <link offline="true" packagelistLoc="${download.dir}/j2se" href="${j2se-javadoc.loc}" />
+      <link offline="true" packagelistLoc="${download.dir}/j2ee" href="${j2ee-javadoc.loc}" />
+      <link offline="true" packagelistLoc="${download.dir}/jstl" href="${jstl-javadoc.loc}" />
       <link offline="true" packagelistLoc="${expand.dir}/${log4j.fullversion}/docs/api" href="http://logging.apache.org/log4j/docs/api/" />
       <fileset dir="${source.dir}/src" defaultexcludes="yes" />
       <fileset dir="${source.dir}/build/src" defaultexcludes="yes" />
