@@ -33,7 +33,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.51 2006-06-21 15:06:36 johannes Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.52 2006-07-08 06:54:00 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -322,7 +322,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
                     if (missingFields == null) {
                         missingFields = new StringBuffer(field.getName());
                     } else {
-                        missingFields.append(" ,").append(field.getName());
+                        missingFields.append(", ").append(field.getName());
                     }
                 }
             }
