@@ -46,7 +46,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.198 2006-07-06 10:54:07 michiel Exp $
+ * @version $Id: MMBase.java,v 1.199 2006-07-08 12:44:46 nklasens Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -523,6 +523,33 @@ public class MMBase extends ProcessorModule {
         }
         return builder;
     }
+
+    public String getBuilderNameForNode(final int number) {
+        int nodeType = getMMBase().getStorageManager().getNodeType(number);
+        if (nodeType < 0) {
+            // the node does not exists, which according to javadoc should return null
+            throw new StorageNotFoundException("Cannot determine node type of node with number =" + number);
+        }
+        // if the type is not for the current builder, determine the real builder
+        return getTypeDef().getValue(nodeType);
+    }
+    
+    public MMObjectBuilder getBuilderForNode(final int number) {
+        String builderName = getBuilderNameForNode(number);
+        MMObjectBuilder nodeBuilder = null;
+        if (builderName == null) {
+            log.error("The nodetype name of node #" + number + " could not be found '");
+        }
+        else {
+            nodeBuilder = getBuilder(builderName);
+            if (nodeBuilder == null) {
+                log.warn("Node #" + number + "'s builder " + builderName + " is not loaded, taking 'object'.");
+                nodeBuilder = getBuilder("object");
+            }
+        }
+        return nodeBuilder;
+    }
+    
     /**
      * @since MMBase-1.8
      */

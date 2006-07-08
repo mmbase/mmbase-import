@@ -83,13 +83,12 @@ public class NodeEventHelper {
         }
         if(machineName == null) machineName = MMBase.getMMBase().getMachineName();
         MMObjectNode reldef = node.getNodeValue("rnumber");
-        MMObjectBuilder relationSourceBuilder = node.getNodeValue("snumber").getBuilder();
-        MMObjectBuilder relationDestinationBuilder = node.getNodeValue("dnumber").getBuilder();
-
+        
         int relationSourceNumber = node.getIntValue("snumber");
         int relationDestinationNumber = node.getIntValue("dnumber");
-        String relationSourceType = relationSourceBuilder.getTableName();
-        String relationDestinationType = relationDestinationBuilder.getTableName();
+
+        String relationSourceType = MMBase.getMMBase().getBuilderNameForNode(relationSourceNumber);
+        String relationDestinationType =MMBase.getMMBase().getBuilderNameForNode(relationDestinationNumber);
         NodeEvent nodeEvent = createNodeEventInstance(node, eventType, machineName);
         int role = reldef.getNumber();
         return new RelationEvent(nodeEvent, relationSourceNumber, relationDestinationNumber, relationSourceType, relationDestinationType, role);
