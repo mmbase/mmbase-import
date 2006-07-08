@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeProviderHelper.java,v 1.18 2006-06-23 13:17:30 johannes Exp $
+ * @version $Id: NodeProviderHelper.java,v 1.19 2006-07-08 13:00:18 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -130,13 +130,13 @@ public class NodeProviderHelper implements NodeProvider {
         }
         PageContext pageContext = thisTag.getPageContext();
 
-        _Stack = (Stack) pageContext.getAttribute(STACK_ATTRIBUTE);
+        _Stack = (Stack) pageContext.getAttribute(STACK_ATTRIBUTE, PageContext.REQUEST_SCOPE);
         if (_Stack == null) {
             _Stack = new Stack();
-            pageContext.setAttribute(STACK_ATTRIBUTE, _Stack);
+            pageContext.setAttribute(STACK_ATTRIBUTE, _Stack, PageContext.REQUEST_SCOPE);
         }
         _Stack.push(node);
-        pageContext.setAttribute(_NODE, org.mmbase.util.Casting.wrap(node, (org.mmbase.util.transformers.CharTransformer) pageContext.getAttribute(ContentTag.ESCAPER_KEY)));
+        pageContext.setAttribute(_NODE, org.mmbase.util.Casting.wrap(node, (org.mmbase.util.transformers.CharTransformer) pageContext.getAttribute(ContentTag.ESCAPER_KEY)), PageContext.REQUEST_SCOPE);
     }
 
     private String getSimpleReturnValueName(String fieldName){
@@ -186,9 +186,9 @@ public class NodeProviderHelper implements NodeProvider {
             Object pop = _Stack.pop();
             PageContext pageContext = thisTag.getPageContext();
             if (_Stack.empty()) {
-                pageContext.removeAttribute(_NODE);
+                pageContext.removeAttribute(_NODE, PageContext.REQUEST_SCOPE);
             } else {
-                pageContext.setAttribute(_NODE, org.mmbase.util.Casting.wrap(_Stack.peek(), (org.mmbase.util.transformers.CharTransformer) pageContext.getAttribute(ContentTag.ESCAPER_KEY)));
+                pageContext.setAttribute(_NODE, org.mmbase.util.Casting.wrap(_Stack.peek(), (org.mmbase.util.transformers.CharTransformer) pageContext.getAttribute(ContentTag.ESCAPER_KEY)), PageContext.REQUEST_SCOPE);
             }
             _Stack = null;
         }
