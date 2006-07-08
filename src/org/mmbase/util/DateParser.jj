@@ -73,10 +73,6 @@ public class DateParser {
         cal.set(Calendar.MONTH, Calendar.JANUARY);
         beginOfMonth();
     }
-    protected void now() {
-        cal = Calendar.getInstance(cal.getTimeZone());
-    }
-
 }
 
 PARSER_END(DateParser)
