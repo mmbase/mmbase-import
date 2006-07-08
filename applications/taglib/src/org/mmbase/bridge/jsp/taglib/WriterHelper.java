@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.84 2006-06-23 14:41:14 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.85 2006-07-08 16:43:35 michiel Exp $
  */
 
 public class WriterHelper {
@@ -269,7 +269,7 @@ public class WriterHelper {
         if (useEscaper || escape != Attribute.NULL) { 
             String e = getEscape();
             if (e == null) {
-                return (CharTransformer) thisTag.getPageContext().getAttribute(ContentTag.ESCAPER_KEY);
+                return (CharTransformer) thisTag.getPageContext().findAttribute(ContentTag.ESCAPER_KEY);
             } else {
                 return ContentTag.getCharTransformer((String) e, thisTag);
             }

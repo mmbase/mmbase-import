@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: BasicBacking.java,v 1.6 2005-06-22 19:24:40 michiel Exp $
+ * @version $Id: BasicBacking.java,v 1.7 2006-07-08 16:43:35 michiel Exp $
  */
 
 public  class BasicBacking extends AbstractMap  implements Backing {
@@ -142,7 +142,7 @@ public  class BasicBacking extends AbstractMap  implements Backing {
         }
         
         if (value != null) {
-            pageContext.setAttribute((String) key, Casting.wrap(value, (CharTransformer) pageContext.getAttribute(ContentTag.ESCAPER_KEY)), SCOPE);
+            pageContext.setAttribute((String) key, Casting.wrap(value, (CharTransformer) pageContext.findAttribute(ContentTag.ESCAPER_KEY)), SCOPE);
         } else {
             pageContext.removeAttribute((String) key, SCOPE);
         }
