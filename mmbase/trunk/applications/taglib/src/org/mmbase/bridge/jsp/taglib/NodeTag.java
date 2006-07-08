@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: NodeTag.java,v 1.62 2006-06-29 14:32:15 michiel Exp $
+ * @version $Id: NodeTag.java,v 1.63 2006-07-08 13:02:08 michiel Exp $
  */
 
 public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
@@ -125,7 +125,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
             }
         }
 
-        if (node == null) { // still found no node
+        if (node == null) { // found no node by referid
             String n = number.getString(this);
             if (log.isDebugEnabled()) {
                 log.debug("node is null, number attribute: '" + n + "'");
@@ -161,10 +161,17 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                 // get the node from a parent element.
                 NodeProvider nodeProvider = findNodeProvider(false);
                 if (nodeProvider == null) {
-                    throw new JspTagException("Could not find parent of type " + NodeProvider.class +  ", and no 'number' or 'referid' attribute specified.");
+                    node = (Node) pageContext.findAttribute(NodeProviderHelper._NODE);
+                    if (node == null) {
+                        throw new JspTagException("Could not find parent of type " + NodeProvider.class +  ", and no 'number' or 'referid' attribute specified.");
+                    }
+                } else {
+                    node = nodeProvider.getNodeVar();
                 }
+
+
                 if (element != Attribute.NULL) {
-                    node = nodeProvider.getNodeVar().getNodeValue(element.getString(this));
+                    node = node.getNodeValue(element.getString(this));
                     if (node == null) {
                         switch(Notfound.get(notfound, this)) {
                         case Notfound.MESSAGE:
@@ -188,7 +195,6 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                         }
                     }
                 } else {
-                    node = nodeProvider.getNodeVar();
                     if (node.getCloud().hasNodeManager(node.getNodeManager().getName())) { // rather clumsy way to check virtuality
                         nodeHelper.setGeneratingQuery(Queries.createNodeQuery(node));
                     }
