@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.135 2006-07-04 12:14:57 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.136 2006-07-08 12:59:13 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
@@ -692,12 +692,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
      */
 
     private final void checkLocale() throws JspTagException {
-        locale = null;
-        LocaleTag localeTag = (LocaleTag) findParentTag(LocaleTag.class, null, false);
-        if (localeTag != null) {
-            locale = localeTag.getLocale();
-        }
-
+        locale = getLocale();
     }
 
     /**
