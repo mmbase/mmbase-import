@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * NodeProviderTag and therefore would be a NodeReferrerTag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeReferrerTag.java,v 1.25 2006-06-29 14:32:15 michiel Exp $
+ * @version $Id: NodeReferrerTag.java,v 1.26 2006-07-08 13:00:54 michiel Exp $
  */
 
 public abstract class NodeReferrerTag extends CloudReferrerTag {
@@ -114,7 +114,7 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
         if (np != null) {
             return  np.getNodeVar().getCloud().getLocale();
         }
-        Locale loc = (Locale) pageContext.getAttribute(LocaleTag.KEY, PageContext.PAGE_SCOPE);
+        Locale loc = (Locale) pageContext.getAttribute(LocaleTag.KEY, LocaleTag.SCOPE);
         if (loc != null) return loc;
         return getCloudContext().getDefaultLocale();
     }
