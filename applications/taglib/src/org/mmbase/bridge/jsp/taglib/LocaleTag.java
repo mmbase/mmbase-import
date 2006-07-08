@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * Provides Locale (language, country) information  to its body.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocaleTag.java,v 1.26 2006-07-08 12:56:24 michiel Exp $
+ * @version $Id: LocaleTag.java,v 1.27 2006-07-08 14:38:18 michiel Exp $
  */
 
 public class LocaleTag extends CloudReferrerTag  {
@@ -142,7 +142,12 @@ public class LocaleTag extends CloudReferrerTag  {
             if (l.equalsIgnoreCase("client")) {
                 locale = pageContext.getRequest().getLocale();
             } else {
-                locale = new Locale(l, country.getString(this), variant.getString(this));
+                String c = country.getString(this);
+                if ("".equals(c)) {
+                    locale = org.mmbase.util.LocalizedString.getLocale(l);
+                } else {
+                    locale = new Locale(l, c, variant.getString(this));
+                }
             }
         }
     }
