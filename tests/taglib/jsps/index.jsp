@@ -1,7 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
 %><html>
-<mm:log>asdfjklasjdfkl</mm:log>
 <title>Testing MMBase/taglib</title>
 <body>
 <h1>Testing MMBase/taglib</h1>
@@ -57,6 +56,10 @@
 </p>
 <p>
   <a href="<mm:url page="url.jsp" />">mm:url</a>
+</p>
+<p>
+  <a href="<mm:url page="including.jsp" />">Including</a>,
+  <a href="<mm:url page="iincluding.jsp" />">Including (one deeper)</a>
 </p>
 <p>
   <a href="<mm:url page="vars.jsp" />">more vars</a>
