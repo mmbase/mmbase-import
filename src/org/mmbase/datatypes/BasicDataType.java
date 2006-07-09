@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.57 2006-06-26 12:27:11 pierre Exp $
+ * @version $Id: BasicDataType.java,v 1.58 2006-07-09 13:38:15 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -881,6 +881,7 @@ s     */
             ReplacingLocalizedString error = new ReplacingLocalizedString(getErrorDescription());
             error.replaceAll("\\$\\{NAME\\}",       ReplacingLocalizedString.makeLiteral(getName()));
             error.replaceAll("\\$\\{CONSTRAINT\\}", ReplacingLocalizedString.makeLiteral(toString(node, field)));
+            error.replaceAll("\\$\\{CONSTRAINTVALUE\\}", ReplacingLocalizedString.makeLiteral(valueString(node, field)));
             error.replaceAll("\\$\\{VALUE\\}",      ReplacingLocalizedString.makeLiteral("" + v));
             errors.add(error);
             return errors;
