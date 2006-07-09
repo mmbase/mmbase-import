@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.57 2006-04-27 17:37:25 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.58 2006-07-09 13:48:06 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -122,13 +122,7 @@ public class StringHandler extends AbstractTypeHandler {
      * @see TypeHandler#useHtmlInput(Node, Field)
      */
     public boolean useHtmlInput(Node node, Field field) throws JspTagException {
-        // do the xml decoding thing...
-        String fieldName = field.getName();
         String guiType = field.getGUIType();
-        String fieldValue =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName));
-        if (log.isDebugEnabled()) {
-            log.debug("Received '" + fieldValue + "' for " + field);
-        }
 
         if (guiType.indexOf('.') > 0) {
             EnumHandler eh = new EnumHandler(tag, node, field);
@@ -136,13 +130,10 @@ public class StringHandler extends AbstractTypeHandler {
                 return eh.useHtmlInput(node, field);
             }
         }
+        String fieldValue = (String) getFieldValue(field);
 
-        fieldValue = tag.encode(fieldValue, field);
         if (fieldValue != null) {
-            String opt = tag.getOptions();
-            if (opt != null && opt.indexOf("trim") > -1) {
-                fieldValue = fieldValue.trim();
-            }
+            String fieldName = field.getName();
             if (! fieldValue.equals(node.getValue(fieldName))) {
                 if (fieldValue.equals("") && node.getValue(fieldName) == null) return false;
                 node.setStringValue(fieldName,  fieldValue);
@@ -151,6 +142,22 @@ public class StringHandler extends AbstractTypeHandler {
         }
 
         return false;
+    }
+    protected Object getFieldValue(Field field) throws JspTagException {
+        String fieldName = field.getName();
+        String fieldValue =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName));
+
+        fieldValue = tag.encode(fieldValue, field);
+        if (fieldValue != null) {
+            String opt = tag.getOptions();
+            if (opt != null && opt.indexOf("trim") > -1) {
+                fieldValue = fieldValue.trim();
+            }
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("Received '" + fieldValue + "' for " + field + " " + tag.getOptions());
+        }
+        return fieldValue;
     }
 
     protected boolean interpretEmptyAsNull(Field field) {
