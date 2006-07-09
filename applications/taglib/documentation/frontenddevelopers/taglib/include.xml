@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
-"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
 <article>
-  
   <articleinfo>
 	<title>Include mechanisms with the MMBase Taglibs</title>
 	<date>2003-07</date>
-   	<edition>$Id: include.xml,v 1.3 2003-07-27 17:47:52 henk Exp $</edition>
+   	<edition>$Id: include.xml,v 1.4 2006-07-09 12:35:34 michiel Exp $</edition>
     <copyright>
       <year>This document is created under the Mozilla Public License</year>
     </copyright>
@@ -16,6 +14,10 @@
         <firstname>Johannes</firstname>
         <surname>Verelst</surname>
       </author>
+      <author>
+        <firstname>Michiel</firstname>
+        <surname>Meeuwissen</surname>
+      </author>
     </authorgroup>
 
     <revhistory>
@@ -23,6 +25,10 @@
         <revnumber>0.1</revnumber>
         <date>2003-07</date>
         <revremark>First draft</revremark>
+      </revision>
+      <revision>
+        <revnumber>0.2</revnumber>
+        <date>2006-07</date>
       </revision>
     </revhistory>
 
@@ -64,6 +70,12 @@
       are available in page 'B'. This means that all methods and
       variables need to have unique names, otherwise conflicts will occur.
     </para>
+    <note>
+      <para>
+        You can (and must if using JSPX) also use the following syntax:
+        <programlisting><![CDATA[<jsp:directive.include file="includes/header.jsp" />]]></programlisting>
+      </para>
+    </note>
     <para>
       The main benefit of using this directive is speed: inclusion is
       done at compile-time and it has no cost on execution time. The disadvantage
@@ -93,6 +105,12 @@
       new request to the servlet engine, which means there is a bit of a 
       performance impact when compared to the include directive.
     </para>
+    <note>
+      <para>
+        Actually not a complete new request is done. The same request is reused. The performance
+        overhead is probably neclectible.
+      </para>
+    </note>
   </section>
   <section>
     <title>MMBase Include</title>
@@ -252,4 +270,97 @@
       be included.
     </para>
   </section>
+  <section>
+    <title>Tag files</title>
+    <para>
+      In newer servlet containers, also the possibilities to use tag-files exists. These are very
+      similar to dynamic includes like jsp:include and mm:include but provide a nicer syntax, and
+      better way of packaging for general reuse (they can be included in jars).
+    </para>
+    <para>
+      An example of a custom image-tag. A file WEB-INF/tags/my/image.tagx was placed, containing this:
+    <programlisting><![CDATA[
+<jsp:root
+ version="1.2"
+ xmlns:jsp="http://java.sun.com/JSP/Page"
+ xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:directive.attribute name="template"   />
+  <jsp:output omit-xml-declaration="true" />
+  <mm:node>
+    <mm:image template="s(800x800&gt;)+f(png)">
+      <a
+       title="${_node.title}"
+       href="${_}" onclick="window.open(this.href, '${mm:escape('identifier', _node.title)}', 'width=${dimension.width + 20},height=${dimension.height + 20}'); return false;">
+        <mm:image template="$template" mode="img" />
+      </a>
+    </mm:image>
+  </mm:node>
+</jsp:root>
+]]></programlisting>
+    </para>
+    <para>
+      Now it can be used as follows (in a JSPX):
+    <programlisting><![CDATA[
+<sometag xmlns:vl="urn:jsptagdir:/WEB-INF/tags/my">
+  ...
+  <mm:listnodes type="images" max="5">
+    <my:image template="s(x200)" />
+  </mm:listnodes>
+  ....
+]]></programlisting>
+    
+     Which creates (maximal) 5 images in the HTML which are clickable, and produce a pop-up window
+     with a bigger version of the same image if you click on them.
+    </para>
+  </section>
+  <section>
+    <title>Dynamic includes and the REQUEST scope</title>
+    <para>
+      When using dynamic includes (like tag-files, mm:include or mm:leafinclude), you may want to
+      use the REQUEST scope to pass stuff around to this included page.
+    </para>
+    <para>
+      MMBase variables can be explicitely written to the request scope:
+      <programlisting><![CDATA[
+<mm:write referid="foo" request="bar" />
+]]></programlisting>
+    </para>
+    <para>
+      And also be explictely picked up:
+      <programlisting><![CDATA[
+<mm:import from="request" externid="bar" />
+]]></programlisting>
+      Though that is not even necessary, because EL also expresses variables on the request.
+    </para>
+    <section>
+      <title>Implicit REQUEST scope variables</title>
+      <para>
+        Since MMBase-1.8.1 several implicit variables are on default scoped in the request, which
+        makes dynamic include even easier to use. These are:
+      </para>
+      <itemizedlist>
+        <listitem>
+          <para>
+            The locale settings of mm:locale and mm:content. Effectively included pages have the
+            same locale a the including page, which makes much sense.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            The escaper parameter of the mm:content tag. No need to use a mm:content on all included
+            pages.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            The _node implicit 'current' node variable. This is also picked up by a mm:node tag with
+            no parents. The effect is that you can easily refer to the 'current' node in a include
+            page, simply by surrounding an empty mm:node. The tag-file example makes use of this.
+          </para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+  </section>
 </article>
+
