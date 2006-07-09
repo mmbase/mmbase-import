@@ -37,11 +37,11 @@
     <p>
       <% try { %>
       <mm:cloud logon="foo" pwd="wrong password" method="sessionlogon">
-        Should not see this.
+        Should not see this (<mm:cloudinfo type="user" />)
       </mm:cloud>
       Should not see this.
       <% } catch (Exception e) { %>
-      Ok this lead to an exception.
+      Ok this lead to an exception (<%= e.getMessage() %>)
       <% } %>
     </p>
     <h1>Cloud explicit login (with foo/bar)</h1>
@@ -51,7 +51,18 @@
         Should see this.
       </mm:cloud>
       <% } catch (Exception e) { %>
-    Should not see this, (at least not if user foo with password bar exists.
+      Should not see this, (at least not if user foo with password bar exists). <%= e.getMessage() %>
+      <% } %>
+    </p>
+    <mm:cloud method="logout" />
+    <h1>Cloud explicit login (with foo/bar)</h1>
+    <p>
+      <% try { %>
+      <mm:cloud logon="foo" pwd="bar">
+        Should see this. <mm:cloudinfo type="user" /> (must be 'foo')
+      </mm:cloud>
+      <% } catch (Exception e) { %>
+      Should not see this, (at least not if user foo with password bar exists). <%= e.getMessage() %>
       <% } %>
     </p>
     <h1>'asis' again</h1>

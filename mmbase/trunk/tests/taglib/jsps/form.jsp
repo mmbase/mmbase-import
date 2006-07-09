@@ -49,6 +49,20 @@
     </mm:node>
     <hr />
 
+    
+    
+    <mm:form>
+      <form action="${_}" method="post">
+        <mm:fieldlist id="newnode1" nodetype="datatypes" type="edit">
+          <mm:fieldinfo type="guiname" />: 
+          <mm:fieldinfo type="input" />
+          <mm:fieldinfo type="errors" />
+          <br />
+        </mm:fieldlist>
+        <input type="submit" />
+      </form>
+    </mm:form>
+
   </mm:hasnodemanager>
   <mm:hasnodemanager name="datatypes" inverse="true">
     <h1>The 'datatypes' nodemanager was not installed, these test cannot be performed.</h1>
