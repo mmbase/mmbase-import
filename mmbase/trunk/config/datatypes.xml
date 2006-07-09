@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
   
-  <!-- @version $Id: datatypes.xml,v 1.42 2006-07-09 14:45:25 michiel Exp $ -->
+  <!-- @version $Id: datatypes.xml,v 1.43 2006-07-09 18:44:05 michiel Exp $ -->
 
   <!--
   schematic syntax of one datatype entry:
@@ -192,15 +192,15 @@
       <setprocessor>
         <class name="org.mmbase.util.transformers.Trimmer" />
       </setprocessor>
+      <specialization id="trimmedrequiredline" >
+        <description xml:lang="en">
+          A String that may not contain newlines, after it is trimmed. After trimming, there must be at least one character
+        </description>
+        <pattern value="\A\s*+[^\n\r]{0,}\S\s*\z" />
+        <!--                          change this 0 in 1 if you want e.g. 2 required letters. -->
+      </specialization>
     </specialization>
 
-    <specialization id="trimmedrequiredline" base="trimmedline">
-      <description xml:lang="en">
-        A String that may not contain newlines, after it is trimmed. After trimming, there must be at least one character
-      </description>
-      <pattern value="\A\s*+[^\n\r]{0,}\S\s*\z" />
-      <!--                          change this 0 in 1 if you want e.g. 2 required letters. -->
-    </specialization>
 
 
 
