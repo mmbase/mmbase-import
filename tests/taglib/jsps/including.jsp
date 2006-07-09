@@ -33,6 +33,7 @@
   <tr><th colspan="3">mm:include with mm:write request </th></tr>
   <tr><td>Simple include</td><td>A | A</td><td><mm:write request="b" referid="a" /><mm:include debug="html" page="writeb.jsp" /></td></tr>
   <tr><td>Simple include/import</td><td>B | B</td><td><mm:write request="b" referid="b" /><mm:include debug="html" page="writeb.jsp" /></td></tr>
+  <tr><td>Simple include</td><td>B | B</td><td><mm:write request="b" referid="b" /><mm:include debug="html" page="writeb_noimport.jsp" /></td></tr>
   <tr><td>Simple include/import</td><td>C | C </td><td><mm:write request="b" referid="c" /><mm:include debug="html" page="writeb.jsp" /></td></tr>
   <tr><td>Simple include of list</td><td>A, B | A,B</td><td><mm:write request="b" referid="l" /><mm:include debug="html" page="writeb.jsp"  /></td></tr>
   <tr><th colspan="3">mm:include with 'attributes' attribute </th></tr>
