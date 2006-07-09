@@ -4,7 +4,7 @@
   <articleinfo >
     <title>Cloud Security Configuration</title>
     <date>2004-06-07</date>
-    <edition>$Id: cloud-security.xml,v 1.4 2006-06-21 05:24:39 michiel Exp $</edition>
+    <edition>$Id: cloud-security.xml,v 1.5 2006-07-09 12:16:46 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Henk</firstname>
@@ -91,8 +91,8 @@
         <para>
           add the builder 'mmbaseusers ' to your MMBase installation. After adding the
           builder you have to temporarily turn off security and fill the object 'mmbaseusers ' by the
-          admin user. E.g. login admin and password admin2k. See the 'Configuring the security framework
-          ' on how to switch off security.
+          admin user. E.g. login admin and password admin2k. See the 'Configuring the security framework'
+          on how to switch off security.
         </para>
         <para>
           Another way to add the builder 'mmbaseusers' to your MMBase installation is to load the
