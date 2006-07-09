@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.25 2006-07-05 20:39:15 michiel Exp $
+ * @version $Id: NodeListHelper.java,v 1.26 2006-07-09 14:16:11 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -390,7 +390,15 @@ public class NodeListHelper implements ListProvider {
         try {
             currentItemIndex ++;
             Node next = nodeIterator.nextNode();
-            if (next == null) throw new RuntimeException("Found null in node list " + returnList);
+            while (next == null) {
+                log.warn("Found null in node list " + returnList + " skipping");
+                currentItemIndex ++;
+                if (nodeIterator.hasNext()) {
+                    next = nodeIterator.nextNode();
+                } else {
+                    return;
+                }
+            }
             NodeManager nextNodeManager = next.getNodeManager();
             if (nextNodeManager == null) throw new RuntimeException("Found node " + next + " has no NodeManager");
             String orderField = getFirstOrderedField(returnList, nextNodeManager);
