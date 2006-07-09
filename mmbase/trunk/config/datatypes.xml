@@ -4,7 +4,31 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
   
-  <!-- @version $Id: datatypes.xml,v 1.40 2006-07-06 15:01:35 michiel Exp $ -->
+  <!-- @version $Id: datatypes.xml,v 1.41 2006-07-09 14:23:39 michiel Exp $ -->
+
+  <!--
+  schematic syntax of one datatype entry:
+  datatype
+    description*
+    class?
+    property*
+    default?
+    unique?
+    required?
+    minInclusive|minExclusive?
+    maxInclusive|maxExclusive?
+    minLength?
+    maxLength?
+    length?
+    pattern?
+    password?
+    enumeration?
+    setprocessor*
+    getprocessor*
+    commitprocessor*
+    specialization*
+    -->
+
 
   <datatype id="xml">
     <description xml:lang="en">
@@ -159,7 +183,6 @@
       <!-- enforced line -->
       <pattern value="\A[^\n\r]*\z" />
     </specialization>
-
 
     <specialization id="owner">
       <description xml:lang="en">
