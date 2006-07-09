@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.46 2006-04-20 00:07:02 michiel Exp $
+ * @version $Id: BasicNodeList.java,v 1.47 2006-07-09 14:14:39 michiel Exp $
  */
 public class BasicNodeList extends BasicList implements NodeList {
 
@@ -65,8 +65,17 @@ public class BasicNodeList extends BasicList implements NodeList {
             return o;
         }
         Node node = null;
-        if (o instanceof String) { // a string indicates a nodemanager by name
-            node = cloud.getNodeManager((String)o);
+        if (o instanceof String) { // a string indicates a nodemanager by name, or, if numeric, a node number..
+            String s = (String) o;
+            if (org.mmbase.datatypes.StringDataType.NON_NEGATIVE_INTEGER_PATTERN.matcher(s).matches()) {
+                node = cloud.getNode(s);
+            } else {
+                if (cloud.hasNodeManager(s)) {
+                    node = cloud.getNodeManager(s);
+                } else { // an alias?
+                    node = cloud.getNode(s);
+                }
+            }
         } else if (o instanceof MMObjectBuilder) { // a builder
             node = cloud.getNodeManager(((MMObjectBuilder)o).getTableName());
         } else if (o instanceof Map) {
@@ -75,6 +84,8 @@ public class BasicNodeList extends BasicList implements NodeList {
             } else {
                 node = new MapNode((Map) o, nodeManager);
             }
+        } else if (o instanceof Number) {
+            node = cloud.getNode(((Number) o).intValue());
         } else {
             MMObjectNode coreNode = (MMObjectNode) o;
             MMObjectBuilder coreBuilder = coreNode.getBuilder();
@@ -131,7 +142,13 @@ public class BasicNodeList extends BasicList implements NodeList {
                     node = new VirtualNode(cloud, (org.mmbase.module.core.VirtualNode) coreNode, cloud.getNodeManager(builder.getObjectType()));
                 }
             } else {
-                node = cloud.getNode(coreNode.getNumber());
+                int n = coreNode.getNumber();
+                if (cloud.hasNode(n)) {
+                    node = cloud.getNode(n);
+                } else {
+                    log.warn("No node with number " + n + " converting to null");
+                    node = null;
+                }
             }
         }
         set(index, node);
