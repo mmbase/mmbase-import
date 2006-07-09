@@ -42,7 +42,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: ConstraintsMatchingStrategy.java,v 1.24 2006-07-08 12:45:39 nklasens Exp $
+ * @version $Id: ConstraintsMatchingStrategy.java,v 1.25 2006-07-09 11:53:57 michiel Exp $
  *
  */
 public class ConstraintsMatchingStrategy extends ReleaseStrategy {
@@ -536,59 +536,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                 log.debug("**> type: String");
                 String constraintString = Casting.toString(constraintValue);
                 String stringToCompare =  Casting.toString(valueToCompare);
-                switch(operator) {
-                case FieldCompareConstraint.EQUAL: {
-                    boolean result =  stringToCompare.equals(constraintString);
-                    if (log.isTraceEnabled()) {
-                        log.trace("**value " + stringToCompare + " equals " + constraintString + ": " + result);
-                    }
-                    return result;
-                }
-                case  FieldCompareConstraint.GREATER: {
-                    boolean result = (stringToCompare.compareTo(constraintString) > 0);
-                    if (log.isTraceEnabled()) {
-                        log.trace("**value " + stringToCompare + " is greater than " + constraintString + ": " + result);
-                    }
-                    return result;
-                }
-                case FieldCompareConstraint.LESS: {
-                    boolean result = (stringToCompare.compareTo(constraintString) < 0);
-                    if (log.isTraceEnabled()) {
-                        log.trace("**value " + stringToCompare + " is less than " + constraintString + ": " + result);
-                    }
-                    return result;
-                }
-                case FieldCompareConstraint.LIKE: {
-                    boolean result = likeMatches(constraintString, stringToCompare, isCaseSensitive);
-                    if (log.isTraceEnabled()) {
-                        log.trace("**value " + stringToCompare + " LIKE " + constraintString + ": " + result);
-                    }
-                    return result;
-                }
-                case FieldCompareConstraint.LESS_EQUAL: {
-                    boolean result = (stringToCompare.compareTo(constraintString) < 0) || stringToCompare.equals(constraintString);
-                    if (log.isDebugEnabled()) {
-                        log.trace("**value " + stringToCompare + " is less then or equeals" + constraintString + ": " + result);
-                    }
-                    return result;
-                }
-                case FieldCompareConstraint.GREATER_EQUAL: {
-                    boolean result = (stringToCompare.compareTo(constraintString) > 0 || stringToCompare.equals(constraintString));
-                    if (log.isDebugEnabled()) {
-                        log.trace("**value " + stringToCompare + " is greater than or equals" + constraintString + ": " + result);
-                    }
-                    return result;
-                }
-                case FieldCompareConstraint.NOT_EQUAL: {
-                    boolean result =  ! stringToCompare.equals(constraintString);
-                    if (log.isTraceEnabled()) {
-                        log.trace("**value " + stringToCompare + " does not equal " + constraintString + ": " + result);
-                    }
-                    return result;
-                }
-                default:
-                    throw new FieldComparisonException("operator " + FieldCompareConstraint.OPERATOR_DESCRIPTIONS[operator] + "is not supported for type String");
-                }
+                return stringMatches(constraintString, stringToCompare, operator, isCaseSensitive);
             }
 
             return false;
@@ -596,48 +544,12 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
 
         private boolean floatMatches(double constraintDouble, double doubleTocompare, int operator) throws FieldComparisonException {
             switch(operator) {
-            case FieldCompareConstraint.EQUAL: {
-                boolean result = (doubleTocompare == constraintDouble);
-                if (log.isTraceEnabled()) {
-                    log.trace("**value " + doubleTocompare + " equals " + constraintDouble + ": " + result);
-                }
-                return result;
-            }
-            case FieldCompareConstraint.GREATER: {
-                boolean result =  (doubleTocompare > constraintDouble);
-                if (log.isDebugEnabled()) {
-                    log.trace("**value " + doubleTocompare + " is greater than " + constraintDouble + ": " + result);
-                }
-                return result;
-            }
-            case FieldCompareConstraint.GREATER_EQUAL: {
-                boolean result =  (doubleTocompare >= constraintDouble);
-                if (log.isTraceEnabled()) {
-                    log.trace("**value " + doubleTocompare + " is greater than or equal to " + constraintDouble + ": " + result);
-                }
-                return result;
-            }
-            case FieldCompareConstraint.LESS: {
-                boolean result = (doubleTocompare < constraintDouble);
-                if (log.isTraceEnabled()) {
-                    log.trace("**value " + doubleTocompare + " is less than " + constraintDouble + ": " + result);
-                }
-                return result;
-            }
-            case FieldCompareConstraint.LESS_EQUAL: {
-                boolean result = (doubleTocompare <= constraintDouble);
-                if (log.isTraceEnabled()) {
-                    log.trace("**value " + doubleTocompare + " is greater than or equal to" + constraintDouble + ": " + result);
-                }
-                return result;
-            }
-            case FieldCompareConstraint.NOT_EQUAL: {
-                boolean result =  (doubleTocompare != constraintDouble);
-                if (log.isTraceEnabled()) {
-                    log.trace("**value " + doubleTocompare + " is not equal to " + constraintDouble + ": " + result);
-                }
-                return result;
-            }
+            case FieldCompareConstraint.EQUAL:         return doubleTocompare == constraintDouble;
+            case FieldCompareConstraint.GREATER:       return doubleTocompare > constraintDouble;
+            case FieldCompareConstraint.GREATER_EQUAL: return doubleTocompare >= constraintDouble;
+            case FieldCompareConstraint.LESS:          return doubleTocompare < constraintDouble;
+            case FieldCompareConstraint.LESS_EQUAL:    return doubleTocompare <= constraintDouble;
+            case FieldCompareConstraint.NOT_EQUAL:     return doubleTocompare != constraintDouble;
             default:
                 throw new FieldComparisonException("operator " + FieldCompareConstraint.OPERATOR_DESCRIPTIONS[operator] + "for any numeric type");
             }
@@ -645,50 +557,29 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
 
         private boolean intMatches(long constraintLong, long longToCompare, int operator) throws FieldComparisonException {
             switch(operator) {
-            case FieldCompareConstraint.EQUAL: {
-                boolean result = (longToCompare == constraintLong);
-                if(log.isTraceEnabled()) {
-                    log.trace("**value " + longToCompare + " equals " + constraintLong + ": " + result);
-                }
-                return result;
-            }
-            case FieldCompareConstraint.GREATER: {
-                boolean result =  (longToCompare > constraintLong);
-                if (log.isDebugEnabled()) {
-                    log.trace("**value " + longToCompare + " is greater than " + constraintLong + ": " + result);
-                }
-                return result;
-            }
-            case  FieldCompareConstraint.GREATER_EQUAL: {
-                boolean result =  (longToCompare >= constraintLong);
-                if (log.isDebugEnabled()) {
-                    log.trace("**value " + longToCompare + " is greater than or equal to " + constraintLong + ": " + result);
-                }
-                return result;
-            }
-            case  FieldCompareConstraint.LESS: {
-                boolean result = (longToCompare < constraintLong);
-                if (log.isTraceEnabled()) {
-                    log.trace("**value " + longToCompare + " is less than " + constraintLong + ": " + result);
-                }
-                return result;
-            }
-            case FieldCompareConstraint.LESS_EQUAL: {
-                boolean result = (longToCompare <= constraintLong);
-                if (log.isTraceEnabled()) {
-                    log.trace("**value " + longToCompare + " is greater than or equal to" + constraintLong + ": " + result);
-                }
-                return result;
-            }
-            case FieldCompareConstraint.NOT_EQUAL: {
-                boolean result =  (longToCompare != constraintLong);
-                if (log.isTraceEnabled()) {
-                    log.trace("**value " + longToCompare + " is not equal to " + constraintLong + ": " + result);
-                }
-                return result;
-            }
+            case FieldCompareConstraint.EQUAL:         return longToCompare == constraintLong;
+            case FieldCompareConstraint.GREATER:       return longToCompare > constraintLong;
+            case FieldCompareConstraint.GREATER_EQUAL: return longToCompare >= constraintLong;
+            case FieldCompareConstraint.LESS:          return longToCompare < constraintLong;
+            case FieldCompareConstraint.LESS_EQUAL:    return longToCompare <= constraintLong;
+            case FieldCompareConstraint.NOT_EQUAL:     return longToCompare != constraintLong;
             default:
                 throw new FieldComparisonException("operator " + FieldCompareConstraint.OPERATOR_DESCRIPTIONS[operator] + "for any numeric type");
+            }
+        }
+
+        private boolean stringMatches(String constraintString, String stringToCompare, int operator, boolean isCaseSensitive) throws FieldComparisonException {
+            switch(operator) {
+            case FieldCompareConstraint.EQUAL:         return stringToCompare.equals(constraintString);
+                // TODO: MM: I think depending on the database configuration the case-sensitivity may be important in the following 4:
+            case FieldCompareConstraint.GREATER:       return stringToCompare.compareTo(constraintString) > 0;
+            case FieldCompareConstraint.LESS:          return stringToCompare.compareTo(constraintString) < 0;
+            case FieldCompareConstraint.LESS_EQUAL:    return stringToCompare.compareTo(constraintString) <= 0;
+            case FieldCompareConstraint.GREATER_EQUAL: return stringToCompare.compareTo(constraintString) >= 0;
+            case FieldCompareConstraint.LIKE:          return likeMatches(constraintString, stringToCompare, isCaseSensitive);
+            case FieldCompareConstraint.NOT_EQUAL:     return ! stringToCompare.equals(constraintString);
+            default:
+                throw new FieldComparisonException("operator " + FieldCompareConstraint.OPERATOR_DESCRIPTIONS[operator] + "is not supported for type String");
             }
         }
 
