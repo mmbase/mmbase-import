@@ -23,7 +23,7 @@ import javax.servlet.jsp.JspTagException;
  * The result can be reported with mm:valid.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FormTag.java,v 1.5 2006-04-29 13:45:01 michiel Exp $
+ * @version $Id: FormTag.java,v 1.6 2006-07-09 14:15:23 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -33,6 +33,7 @@ public class FormTag extends TransactionTag implements Writer {
     private int m;
 
     private Attribute page = Attribute.NULL;
+    private Attribute clazz = Attribute.NULL;
 
     public static final int MODE_HTML_FORM       = 0;
     public static final int MODE_URL             = 1;
@@ -49,6 +50,10 @@ public class FormTag extends TransactionTag implements Writer {
 
     public void setMode(String m) throws JspTagException {
         mode = getAttribute(m);
+    }
+
+    public void setStyleClass(String c) throws JspTagException {
+        clazz = getAttribute(c);
     }
 
     private int getMode() throws JspTagException {
@@ -79,9 +84,12 @@ public class FormTag extends TransactionTag implements Writer {
         case MODE_HTML_FORM:
             String url = page.getString(this);
             String id = getId();
+            String c  = clazz.getString(this);
             try {
                 pageContext.getOut().write("<form " + (id != null ? "id=\"" + id + "\" " : "") +
-                                           "action=\"" + url + "\" method=\"post\" enctype=\"multipart/form-data\" class=\"mm_form\" >");
+                                           "action=\"" + url + "\" method=\"post\" enctype=\"multipart/form-data\" class=\"mm_form" +
+                                           ("".equals(c) ? "" : " " + c) + 
+                                           "\" >");
             } catch (java.io.IOException ioe) {
                 throw new TaglibException(ioe);
             }
