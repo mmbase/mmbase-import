@@ -143,6 +143,8 @@
         <relation from="evenement" to="paragraaf" type="readmore" />
         <relation from="evenement" to="questions" type="readmore" />
         <relation from="evenement" to="vertrekpunten" type="posrel" />
+        <relation from="evenement" to="payment_type" type="related" />
+
         <relation from="evenement_type" to="deelnemers_categorie" type="posrel" />
         <relation from="evenement_type" to="images" type="posrel" />
         <relation from="formulier" to="formulierveld" type="posrel" />
