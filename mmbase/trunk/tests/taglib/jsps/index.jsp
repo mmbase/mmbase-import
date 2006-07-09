@@ -59,7 +59,8 @@
 </p>
 <p>
   <a href="<mm:url page="including.jsp" />">Including</a>,
-  <a href="<mm:url page="iincluding.jsp" />">Including (one deeper)</a>
+  <a href="<mm:url page="iincluding.jsp" />">Including (one deeper)</a>,
+  <a href="<mm:url page="includehttplogin.jsp" />">Including (http login). Fails?!</a>,
 </p>
 <p>
   <a href="<mm:url page="vars.jsp" />">more vars</a>
