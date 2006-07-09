@@ -12,7 +12,7 @@
 #
 # for possible mirrors.
 #
-# $Id: build.properties.default,v 1.24 2006-05-12 14:30:51 michiel Exp $
+# $Id: build.properties.default,v 1.25 2006-07-09 07:51:25 michiel Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -28,6 +28,7 @@
 
 j2se-javadoc.loc=http://java.sun.com/j2se/1.4/docs/api
 j2ee-javadoc.loc=http://java.sun.com/j2ee/sdk_1.3/techdocs/api
+jstl-javadoc.loc=http://java.sun.com/products/jsp/jstl/1.1/docs/api
 
 
 
