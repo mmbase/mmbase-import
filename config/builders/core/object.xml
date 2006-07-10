@@ -142,7 +142,7 @@
       </editor>
       <datatype base="owner" xmlns="http://www.mmbase.org/xmlns/datatypes" >
         <required value="true" />
-        <maxLength value="12" />
+        <maxLength value="12" enforce="never"/>
       </datatype>
     </field>
 
