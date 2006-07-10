@@ -22,13 +22,13 @@ span.create:before {
 }
 
 span.change {
-  background: url(../../../style/images/change.png); /* makes it work in IE */
+  background: url(../../../style/images/edit.png); /* makes it work in IE */
   width: 21px;
   height: 20px;
 }
 
 span.change:before {
-  content: url(../../../style/images/change.png); /* makes it work in Mozilla */
+  content: url(../../../style/images/edit.png); /* makes it work in Mozilla */
   background: white;
 }
 
