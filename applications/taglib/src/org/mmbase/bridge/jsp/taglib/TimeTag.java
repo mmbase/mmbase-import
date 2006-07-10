@@ -23,7 +23,7 @@ import javax.servlet.jsp.JspException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.53 2006-07-08 13:03:50 michiel Exp $
+ * @version $Id: TimeTag.java,v 1.54 2006-07-10 13:32:45 michiel Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer, WriterReferrer {
 
@@ -238,13 +238,12 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
         }
 
         TimeZone tz = getTimeZone();
-        useTime = "TZ" + tz.getID() + " " + useTime;
-
         String iformat = inputFormat.getString(this);
         if (iformat.equals("")) {
             if (date == null) {
                 try {
-                    date = DynamicDate.eval(DynamicDate.getInstance(useTime));
+                    String tzTime = "TZ" + tz.getID() + " " + useTime;
+                    date = DynamicDate.eval(DynamicDate.getInstance(tzTime));
                 } catch (Throwable e) {
                     log.debug(e);
                     // Try to parse it in three standard ways, this can be considered Legacy, because DynamicDate.getInstance can handle everything already.
@@ -253,6 +252,7 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
             }
         } else { // The input format is provided. We use that to parse the time attribute
             try {
+                // nothing to do with TIMEZONE?
                 SimpleDateFormat format = getDateFormat();
                 format.applyPattern(iformat);
                 date = format.parse(useTime);
