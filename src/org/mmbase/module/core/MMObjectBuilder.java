@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.385 2006-07-06 10:54:07 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.386 2006-07-10 17:17:23 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -1417,7 +1417,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             if (returnValue != null) {
                 rtn = returnValue.toString();
             } else {
-                if (fdef != null && ("eventtime".equals(fdef.getGUIType()) || fdef.getType() == Field.TYPE_DATETIME)) { // do something reasonable for this
+                if (fdef != null && ("eventtime".equals(fdef.getGUIType()) || 
+                                     fdef.getDataType() instanceof org.mmbase.datatypes.DateTimeDataType)) { // do something reasonable for this
                     Date date;
                     if (fdef.getType() == Field.TYPE_DATETIME) {
                         date = node.getDateValue(field);
