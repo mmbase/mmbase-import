@@ -40,7 +40,7 @@ StringBuffer msg = new StringBuffer();
         String name = (String) en.nextElement();
         msg.append(name).append(": ").append(request.getParameter(name)).append("\n");
     }
-    msg.append("\n");
+    msg.append("\n" + exception.getClass().getName());
 
     java.util.Stack stack = new java.util.Stack();
 
