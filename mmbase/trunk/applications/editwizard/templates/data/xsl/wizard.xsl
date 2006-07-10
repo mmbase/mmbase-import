@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.154 2006-07-08 13:40:57 michiel Exp $
+    @version $Id: wizard.xsl,v 1.155 2006-07-10 11:59:57 pierre Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -58,11 +58,11 @@
                   '<xsl:value-of select="$date_may"/>','<xsl:value-of select="$date_june"/>',
                   '<xsl:value-of select="$date_july"/>','<xsl:value-of select="$date_august"/>',
                   '<xsl:value-of select="$date_september"/>','<xsl:value-of select="$date_october"/>',
-                  '<xsl:value-of select="$date_november"/>','<xsl:value-of select="$date_december"/>')
+                  '<xsl:value-of select="$date_november"/>','<xsl:value-of select="$date_december"/>');
     var dayName = new Array	('<xsl:value-of select="$day_sun"/>','<xsl:value-of select="$day_mon"/>',
                 '<xsl:value-of select="$day_tue"/>','<xsl:value-of select="$day_wed"/>',
                 '<xsl:value-of select="$day_thu"/>','<xsl:value-of select="$day_fri"/>',
-                '<xsl:value-of select="$day_sat"/>')
+                '<xsl:value-of select="$day_sat"/>');
     </script>
     <script language="javascript" src="{$javascriptdir}datepicker.js">
       <xsl:comment>help IE</xsl:comment>
