@@ -7,7 +7,7 @@
     <%@include file="meta.jsp" %>
   </head>
   <body class="basic">
-    <h1>400 Bad request</h1>
+    <h1>400 Bad reques - <%= request.getAttribute("javax.servlet.error.message") %></h1>
     <h2><%=org.mmbase.Version.get()%></h2>
     <p>
       &nbsp;
