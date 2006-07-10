@@ -26,7 +26,7 @@ import org.mmbase.util.magicfile.MagicFile;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: Attachments.java,v 1.42 2006-01-27 20:00:40 michiel Exp $
+ * @version $Id: Attachments.java,v 1.43 2006-07-10 16:34:59 michiel Exp $
  */
 public class Attachments extends AbstractServletBuilder {
     private static final Logger log = Logging.getLoggerInstance(Attachments.class);
@@ -56,15 +56,15 @@ public class Attachments extends AbstractServletBuilder {
             }
 
             if (/*size == -1  || */ num == -1) { // check on size seems sensible, but size was often not filled
-                return title;               
+                return title;
             } else {
-                String ses = (String) a.get("session");
+                String ses = getSession(a, node.getNumber());
                 if (log.isDebugEnabled()) {
                     log.debug("bridge: " + usesBridgeServlet + " ses: " + ses);
                 }
                 StringBuffer servlet = new StringBuffer();
                 HttpServletRequest req = (HttpServletRequest) a.get("request");
-                if (req != null) {            
+                if (req != null) {
                     servlet.append(getServletPath(UriParser.makeRelative(new java.io.File(req.getServletPath()).getParent(), "/")));
                 } else {
                     servlet.append(getServletPath());

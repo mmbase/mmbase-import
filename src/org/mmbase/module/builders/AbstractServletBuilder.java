@@ -30,7 +30,7 @@ import org.mmbase.security.Rank;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.40 2006-06-26 15:57:34 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.41 2006-07-10 16:34:59 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -136,7 +136,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             }
             pos = result.indexOf("*");
             if (pos == 0) {
-                result = result.substring(pos+1);
+                result = result.substring(pos + 1);
             }
         } else {
             result = getDefaultPath();
@@ -305,11 +305,14 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         return super.getGUIIndicator(field, node);
     }
 
-    /**
-     * This is final, because getSGUIIndicator has to be overridden in stead
-     */
-    final public String getGUIIndicator(MMObjectNode node) {
-        return getSGUIIndicator(node, new Parameters(GUI_PARAMETERS));
+    final protected String getGUIIndicator(MMObjectNode node, Parameters pars) {
+        String field = (String) pars.get("field");
+        if (field == null || "".equals(field) || FIELD_HANDLE.equals(field)) {
+            return getSGUIIndicator(node, pars);
+        } else {
+            return super.getGUIIndicator(node, pars);
+        }
+
     }
     /**
      * This is final, because getSGUIIndicator has to be overridden in stead
@@ -387,6 +390,47 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
     }
 
 
+    /**
+     * @since MMBase-1.8.1
+     */
+    protected String getSession(Parameters a, int nodeNumber) {
+        String session = (String) a.get("session");
+        if (session == null) {
+            Cloud cloud = (Cloud) a.get(Parameter.CLOUD);
+            log.debug("No session given for " + cloud);
+            if(cloud != null && ! cloud.getUser().getRank().equals(Rank.ANONYMOUS)) {
+                log.debug("not anonymous");
+                // the user is not anonymous!
+                // Need to check if node is readable by anonymous.
+                // in that case URLs can be simpler
+                // two situations are anticipated:
+                // - node not readable by anonymous
+                // - no anonymous user defined
+                try {
+                    String cloudName;
+                    if (cloud instanceof Transaction) {
+                        cloudName = ((Transaction) cloud).getCloudName();
+                    }
+                    else {
+                        cloudName = cloud.getName();
+                    }
+                    Cloud anonymousCloud = cloud.getCloudContext().getCloud(cloudName);
+                    if (! anonymousCloud.mayRead(nodeNumber)) {
+                        session = (String) cloud.getProperty(Cloud.PROP_SESSIONNAME);
+                        log.debug("Anonymous may not read, setting session to " + session);
+
+                    }
+                } catch (org.mmbase.security.SecurityException se) {
+                    log.debug(se.getMessage());
+                    session = (String) cloud.getProperty(Cloud.PROP_SESSIONNAME);
+                }
+            }
+            if ("".equals(session)) session = null;
+        }
+
+        return session;
+    }
+
     {
         // you can of course even implement it anonymously.
         addFunction(new NodeFunction("servletpath",
@@ -427,37 +471,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                 public Object getFunctionValue(Node node, Parameters a) {
                     StringBuffer servlet = getServletPath(a);
 
-                    String session = (String) a.get("session");
-                    if (session == null) {
-                        Cloud cloud = (Cloud) a.get(Parameter.CLOUD);
-
-                        if(cloud != null && ! cloud.getUser().getRank().equals(Rank.ANONYMOUS)) {
-                            // the user is not anonymous!
-                            // Need to check if node is readable by anonymous.
-                            // in that case URLs can be simpler
-                            // two situations are anticipated:
-                            // - node not readable by anonymous
-                            // - no anonymous user defined
-                            try{
-                                String cloudName;
-                                if (cloud instanceof Transaction) {
-                                    cloudName = ((Transaction) cloud).getCloudName();
-                                }
-                                else {
-                                    cloudName = cloud.getName();
-                                }
-                                Cloud anonymousCloud = cloud.getCloudContext().getCloud(cloudName);
-                                if (! anonymousCloud.mayRead(node.getNumber())) {
-                                    session = (String) cloud.getProperty(Cloud.PROP_SESSIONNAME);
-                                }
-                            } catch (org.mmbase.security.SecurityException se) {
-                                log.debug(se.getMessage());
-                                session = (String) cloud.getProperty(Cloud.PROP_SESSIONNAME);
-                            }
-                        }
-                        if (session == null) session = "";
-                    }
-
+                    String session = getSession(a, node.getNumber());
                     String argument = (String) a.get("argument");
                     // argument representint the node-number
 
@@ -466,16 +480,20 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                         if (fieldName == null) {
                             argument = node.getStringValue("number");
                         } else {
-                            if (log.isDebugEnabled()) log.debug("Getting 'field' '" + fieldName + "'");
+                            if (log.isDebugEnabled()) {
+                                log.debug("Getting 'field' '" + fieldName + "'");
+                            }
                             argument = node.getStringValue(fieldName);
                         }
                     }
-                    MMObjectNode mmnode = node.getNumber() > 0 ? 
-                        AbstractServletBuilder.this.getNode(node.getNumber()) : 
+                    MMObjectNode mmnode = node.getNumber() > 0 ?
+                        AbstractServletBuilder.this.getNode(node.getNumber()) :
                         new MMObjectNode(AbstractServletBuilder.this, new org.mmbase.bridge.util.NodeMap(node));
                     boolean addFileName = addFileName(mmnode, servlet.toString());
 
-                    if (usesBridgeServlet && ! session.equals("")) {
+                    log.debug("Using session " + session);
+
+                    if (usesBridgeServlet &&  session != null) {
                         servlet.append("session=" + session + "+");
                     }
 
@@ -558,7 +576,9 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      */
 
     protected Object executeFunction(MMObjectNode node, String function, List args) {
-        log.debug("executefunction of abstractservletbuilder");
+        if (log.isDebugEnabled()) {
+            log.debug("executefunction of abstractservletbuilder for " + node.getNumber() + "." + function + " " + args);
+        }
         if (function.equals("info")) {
             List empty = new ArrayList();
             Map info = (Map) super.executeFunction(node, function, empty);

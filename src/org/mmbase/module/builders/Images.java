@@ -33,7 +33,7 @@ import javax.servlet.ServletContext;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.115 2006-07-06 14:34:22 pierre Exp $
+ * @version $Id: Images.java,v 1.116 2006-07-10 16:34:59 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -236,10 +236,8 @@ public class Images extends AbstractImages {
         if (num < 0) {   // image servlet cannot handle uncommited images..
             return "...";
         }
-        // NOTE that this has to be configurable instead of static like this
-        String ses = (String) args.get("session");
 
-
+        String ses = getSession(args, num);
         StringBuffer servlet = new StringBuffer();
         HttpServletRequest req = (HttpServletRequest) args.get(Parameter.REQUEST);
         if (req != null) {
