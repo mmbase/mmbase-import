@@ -47,6 +47,15 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
     private int savedHashcode = -1;
     private boolean hashcodeChanged = true;
 
+
+    /**
+     * Creates a CoreField object based on a more generic 'Field'.
+     * @since MMBase-1.8.1
+     */
+    public CoreField(Field field) {
+        this(field.getName(), field.getType(), field.getListItemType(), field.getState(), field.getDataType());
+    }
+    
     /**
      * Create a core object
      * @param name the name of the data type
