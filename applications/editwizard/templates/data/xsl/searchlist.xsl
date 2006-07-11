@@ -2,7 +2,8 @@
 <xsl:stylesheet
   version="1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-  xmlns:node="org.mmbase.bridge.util.xml.NodeFunction">
+  xmlns:node="org.mmbase.bridge.util.xml.NodeFunction"
+  extension-element-prefixes="node">
   <!--
     searchlist.xls
 
@@ -10,7 +11,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: searchlist.xsl,v 1.22 2006-03-31 08:45:43 pierre Exp $
+    @version $Id: searchlist.xsl,v 1.23 2006-07-11 08:14:05 nklasens Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
