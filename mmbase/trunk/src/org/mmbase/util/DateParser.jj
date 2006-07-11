@@ -42,6 +42,7 @@ public class DateParser {
     private long prev = 0;
     private int amount = 0;
     private int field = 0;
+    private boolean positive = true;
     private Calendar cal = Calendar.getInstance(defaultTimeZone);
 
     public static void main(String argv[]) throws ParseException, InterruptedException {
@@ -85,7 +86,6 @@ TOKEN :
 | <PREVIOUS: "previous" >
 | <THIS: "this" >
 | <POSITIVE: ["0"-"9"] (["0"-"9"])* >
-| <INTEGER:  (["-","+"])? ["0"-"9"] (["0"-"9"])* >
 | <THOUSANDS: ["0"-"9"]["0"-"9"]["0"-"9"] >
 | <TIMEZONE: "TZ" ["A"-"Z"] (["A"-"Z","a"-"z", "/", "_"])* (["-", "+"] <POSITIVE>)?>
 }
@@ -114,7 +114,7 @@ void date() :  {}
     | day_of_week() {beginOfDay();}
     | month_of_year() {beginOfMonth();}
     | "now"      { cal = Calendar.getInstance(cal.getTimeZone()); }
-    | <INTEGER> {  cal.setTimeInMillis(Long.parseLong(token.toString()) * 1000); dynamic = false; }
+    | integer() {  cal.setTimeInMillis((positive ? 1 : -1 ) * Long.parseLong(token.toString()) * 1000); dynamic = false; positive = true;}
     | "today"      { cal = Calendar.getInstance(cal.getTimeZone()); beginOfDay(); }
     | "tomonth"     { cal = Calendar.getInstance(cal.getTimeZone()); beginOfMonth(); }
     | "toyear"      { cal = Calendar.getInstance(cal.getTimeZone()); beginOfYear(); }
@@ -122,7 +122,7 @@ void date() :  {}
     | "yesterday" { cal = Calendar.getInstance(cal.getTimeZone()); cal.add(Calendar.DAY_OF_YEAR, -1); beginOfDay(); }
     | "yestermonth" { cal = Calendar.getInstance(cal.getTimeZone()); cal.add(Calendar.MONTH, -1); beginOfMonth(); }
     | "yesteryear" { cal = Calendar.getInstance(cal.getTimeZone()); cal.add(Calendar.YEAR, -1); beginOfYear(); }
-    | "duration" { beginOfYear(); cal.set(Calendar.YEAR, 1970); }
+    | "duration" { beginOfYear(); cal.setTimeZone(TimeZone.getTimeZone("UTC")); cal.set(Calendar.YEAR, 1970); }
     | "borreltijd"  { beginOfHour(); cal.set(Calendar.HOUR_OF_DAY, 17); cal.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
                      if (Calendar.getInstance(cal.getTimeZone()).after(cal)) cal.add(Calendar.WEEK_OF_YEAR, 1);
 
@@ -135,11 +135,21 @@ void time_zone() : {}
   |  "Z" { cal.setTimeZone(TimeZone.getTimeZone("UTC"));} //  For compatibility ISO_8601 (with trailing 'Z')
 }
 
+void unary() : {}
+{
+    "-" { positive = false; }
+|   "+" { positive = true; }
 
+}
+void integer() : {}
+{
+    unary() <POSITIVE> 
+|  <POSITIVE>
+}
 
 void year_number() : { }
 {
-    <INTEGER>  {  cal.set(Calendar.YEAR, Integer.parseInt(token.toString()));}
+    integer()  {  cal.set(Calendar.YEAR, (positive ? 1 : -1) * Integer.parseInt(token.toString())); positive = true;}
 }
 void inc_number() : { }
 {
