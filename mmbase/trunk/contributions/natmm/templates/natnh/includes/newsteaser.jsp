@@ -2,7 +2,7 @@
 	><mm:list nodes="news_template" path="paginatemplate,gebruikt,pagina,posrel,rubriek"
 		constraints="<%= "rubriek.number='" + rubriekId + "'" %>" max="1"
 		><mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false"><%
-			String articleConstraint = "artikel.embargo < " + nowSec	+ " AND artikel.verloopdatum > " + nowSec;
+			String articleConstraint =	"artikel.embargo < " + (nowSec + 15*60) + "  AND (artikel.use_verloopdatum='0' OR artikel.verloopdatum > '" + nowSec + "' )";
 			%><mm:list nodes="<%= pagina_number %>" path="pagina,contentrel,artikel" max="1"		
 				orderby="artikel.embargo" directions="DOWN" 
 				constraints="<%= articleConstraint %>"
