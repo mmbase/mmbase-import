@@ -196,6 +196,7 @@ public class DynamicDate extends Date {
                 "now this year", "next august", "today + 6 month next august", "tomonth", "borreltijd", "today + 5 day ish", "yesteryear",
                 "duration + 5 minute", "duration + 100 year",
                 "TZUTC today noon", "TZEurope/Amsterdam today noon", "TZUTC today", "TZEurope/Amsterdam today",
+                "TZ UTC today noon", "TZ Europe/Amsterdam today noon", "TZ UTC today", "TZ Europe/Amsterdam today",
                 "today 6 oclock", "today 23 oclock", "today 43 oclock"
 
             };

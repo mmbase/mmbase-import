@@ -87,7 +87,8 @@ TOKEN :
 | <THIS: "this" >
 | <POSITIVE: ["0"-"9"] (["0"-"9"])* >
 | <THOUSANDS: ["0"-"9"]["0"-"9"]["0"-"9"] >
-| <TIMEZONE: "TZ" ["A"-"Z"] (["A"-"Z","a"-"z", "/", "_"])* (["-", "+"] <POSITIVE>)?>
+ | <TIMEZONE: "TZ" ([" ", "\n", "\t", "\r"])* ["A"-"Z"] (["A"-"Z","a"-"z", "/", "_"])* (["-", "+"] <POSITIVE>)?>
+
 }
 
 
@@ -131,7 +132,7 @@ void date() :  {}
 
 void time_zone() : {}
 {
-  <TIMEZONE> {cal.setTimeZone(TimeZone.getTimeZone(token.toString().substring(2)));}
+ <TIMEZONE> {cal.setTimeZone(TimeZone.getTimeZone(token.toString().substring(2).trim()));}
   |  "Z" { cal.setTimeZone(TimeZone.getTimeZone("UTC"));} //  For compatibility ISO_8601 (with trailing 'Z')
 }
 
