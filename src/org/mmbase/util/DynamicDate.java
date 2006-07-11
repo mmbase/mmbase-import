@@ -181,15 +181,44 @@ public class DynamicDate extends Date {
         return date + ": " + evalDate().toString();
     }
 
+
     public static void main(String argv[]) throws java.text.ParseException, ParseException {
+
         //System.out.println("" + Arrays.asList(TimeZone.getAvailableIDs()));
         //System.out.println(TimeZone.getDefault());
-        Date d1 = getInstance(argv[0]);
-        //Date d2 = Casting.ISO_8601_UTC.parse(argv[0]);
-        Date d3 = new Date(Long.MIN_VALUE);
-        System.out.println("" + d1 + " " + d1.getTime());
-        //System.out.println("" + d2 + " " + d2.getTime());
-        System.out.println("" + d3 + " " + d3.getTime());
+        java.text.DateFormat formatter = new java.text.SimpleDateFormat("GGGG yyyy-MM-dd HH:mm:ss.SSS zzz");
+        if (argv.length == 0) {
+            String[] demo = {
+                "0", "10000", "-10000", "+1000", // just numbers a bit after 1970, a bit before
+                "1973-05-03", "2006-05-09", "-3-12-25", // absolute dates
+                "2000-01-01 16:00", "TZUTC 2001-01-01 16:00",
+                "now", "today", "tomorrow", "now + 10 minute", "today + 5 day",
+                "now this year", "next august", "today + 6 month next august", "tomonth", "borreltijd", "today + 5 day ish", "yesteryear",
+                "duration + 5 minute", "duration + 100 year",
+                "TZUTC today noon", "TZEurope/Amsterdam today noon", "TZUTC today", "TZEurope/Amsterdam today",
+                "today 6 oclock", "today 23 oclock", "today 43 oclock"
+
+            };
+            for (int i = 0; i < demo.length; i++) {
+                try {
+                    Date d1 = getInstance(demo[i]);
+                    System.out.print(formatter.format(d1) + "\t");
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
+                System.out.println(demo[i]);
+
+            }
+            System.out.println("This was demo, you can also call with an argument, to try it yourself");
+            System.out.println("Also try with different values for -Duser.timezone=");
+        } else {
+            Date d1 = getInstance(argv[0]);
+            //Date d2 = Casting.ISO_8601_UTC.parse(argv[0]);
+            //Date d3 = new Date(Long.MIN_VALUE);
+            System.out.println(formatter.format(d1) + " " + d1.getTime());
+            //System.out.println("" + d2 + " " + d2.getTime());
+            //System.out.println("" + d3 + " " + d3.getTime());
+        }
     }
 
 }
