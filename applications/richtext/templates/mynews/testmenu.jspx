@@ -38,6 +38,7 @@
       <p>
         Menu made with UL-structure.
       </p>
+
       <!--
       <ul id="my_menu" class="menu">
         <li>
@@ -68,13 +69,13 @@
           </ul>
         </li>
       </ul>
-      -->
+-->
       <div id="my_menu2" class="menu">
         <p>Menu made with DIV-structure. </p>
         <a class="mmenu" id="i" href="item">Item</a>
         <div class="i sub" id="submenu2">
-          <a class="submmenu" id="subi" href="subitem">sub</a>
-
+          <a class="mmenu" id="subi" href="subitem">sub</a>
+          
         </div>
       </div>
       <mm:import externid="debug" />

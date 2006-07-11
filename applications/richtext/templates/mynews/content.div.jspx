@@ -5,7 +5,7 @@
   <jsp:directive.page session="false" />
   <jsp:directive.include file="vars.jspx" />
   <mm:content type="application/xml" language="$language">
-    <mm:cloud>
+    <mm:cloud method="asis">
       <mm:node referid="cat">
         <mm:time id="now" time="now" precision="minutes" write="false" />
         <jsp:directive.include file="rich.jspx" />

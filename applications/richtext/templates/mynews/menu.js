@@ -42,7 +42,7 @@
  * The essential bits are the id's with the corresponding classes for the subitems.
  *
  * @author Michiel Meeuwissen <jsmenu@meeuw.org>
- * $Id: menu.js,v 1.9 2006-04-25 21:40:20 michiel Exp $
+ * $Id: menu.js,v 1.10 2006-07-11 18:49:40 michiel Exp $
  */
 
 //
@@ -90,8 +90,24 @@ function getElementsByClass(node, searchClass, tag) {
   return classElements;
 }
 
-function getSubMenus(elm) {
-    return getElementsByClass(elm, searchClass, "*");
+function getElementsByClassNonNesting(node, searchClass, tag, result) {
+    if (result == undefined) result = new Array();
+    if (! node) return result;
+    var childs = node.childNodes;
+    var pattern = new RegExp("\\b" + searchClass + "\\b");
+    tag = tag.toUpperCase();
+    for (i = 0; i < childs.length; i++) {
+        if (pattern.test(childs[i].className) && (tag == '*' || tag == childs[i].tagName.toUpperCase())) {
+            result[result.length] = childs[i];
+        } else {
+            getElementsByClassNonNesting(childs[i], searchClass, tag, result);
+        }
+    }
+    return result;
+}
+
+function getSubMenus(elm, searchClass) {
+    return getElementsByClassNonNesting(elm, searchClass, "*");
 }
 
 /**
@@ -104,7 +120,7 @@ function initMenu(menuId, reposition) {
     initMenuElement(menu, reposition, '');
 }
 function initMenuElement(menu, reposition) {
-    var menuItems = getElementsByClass(menu, MENU_CLASS, "a");
+    var menuItems = getElementsByClassNonNesting(menu, MENU_CLASS, "a");
     debug("Found " + menuItems.length + " subitems for " + menu.id);
     for (var i = 0; i < menuItems.length; i++) {
         var menuItem = menuItems[i];

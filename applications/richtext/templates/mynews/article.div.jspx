@@ -6,7 +6,7 @@
   <jsp:directive.include file="vars.jspx" />
   <mm:import externid="article" required="true" />
   <mm:content type="application/xml" language="$language">
-    <mm:cloud>
+    <mm:cloud method="asis">
       <mm:node referid="article">
         <jsp:directive.include file="rich.jspx" />
         <div class="outtro">
