@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
 <!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<!-- pools -->
 <builder version="0" name="pools" maintainer="mmbase.org" extends="object">
     <searchage>9999</searchage>
     <names>
@@ -76,9 +75,9 @@
          </gui>
          <editor>
             <positions>
-               <input>2</input>
-               <list>2</list>
-               <search>2</search>
+               <input>3</input>
+               <list>-1</list>
+               <search>3</search>
             </positions>
          </editor>
          <db>
@@ -98,9 +97,9 @@
          </gui>
          <editor>
             <positions>
-               <input>2</input>
-               <list>2</list>
-               <search>2</search>
+               <input>4</input>
+               <list>-1</list>
+               <search>4</search>
             </positions>
          </editor>
          <db>
@@ -119,9 +118,9 @@
          </gui>
          <editor>
              <positions>
-                 <input>2</input>
-                 <list>2</list>
-                 <search>2</search>
+                 <input>5</input>
+                 <list>-1</list>
+                 <search>5</search>
              </positions>
          </editor>
          <db>
@@ -140,9 +139,9 @@
          </gui>
          <editor>
              <positions>
-                 <input>1</input>
-                 <list>2</list>
-                 <search>1</search>
+                 <input>6</input>
+                 <list>-1</list>
+                 <search>6</search>
              </positions>
          </editor>
          <db>
@@ -161,14 +160,36 @@
          </gui>
          <editor>
              <positions>
-                 <input>3</input>
-                 <list>3</list>
-                 <search>3</search>
+                 <input>7</input>
+                 <list>-1</list>
+                 <search>7</search>
              </positions>
          </editor>
          <db>
              <name>view</name>
              <type size="30" key="false" state="persistent" notnull="false">STRING</type>
+         </db>
+      </field>
+		<field>
+         <descriptions>
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <gui>
+            <guiname xml:lang="nl">externid</guiname>
+            <guiname xml:lang="en">externid</guiname>
+            <guitype>string</guitype>
+         </gui>
+         <editor>
+            <positions>
+               <input>8</input>
+               <list>8</list>
+               <search>8</search>
+            </positions>
+         </editor>
+         <db>
+            <name xml:lang="nl">externid</name>
+            <type key="false" notnull="false" size="255" state="persistent">STRING</type>
          </db>
       </field>
     </fieldlist>

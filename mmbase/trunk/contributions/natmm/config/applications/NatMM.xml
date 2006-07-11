@@ -75,11 +75,13 @@
         <builder version="0" maintainer="mmbase.org">panno</builder>
         <builder version="0" maintainer="mmbase.org">paragraaf</builder>
         <builder version="0" maintainer="mmbase.org">payment_type</builder>
+		  <builder version="0" maintainer="mmbase.org">pools</builder>
         <builder version="0" maintainer="mmbase.org">provincies</builder>
         <builder version="0" maintainer="mmbase.org">questions</builder>
         <builder version="0" maintainer="mmbase.org">routebeschrijvingen</builder>
         <builder version="0" maintainer="mmbase.org">shorty</builder>
         <builder version="0" maintainer="mmbase.org">teaser</builder>
+		  <builder version="0" maintainer="mmbase.org">topics</builder>
         <builder version="0" maintainer="mmbase.org">vertrekpunten</builder>
     </neededbuilderlist>
     <neededreldeflist>
@@ -119,6 +121,7 @@
         <relation from="contentelement" to="images" type="posrel" />
         <relation from="contentelement" to="link" type="posrel" />
         <relation from="contentelement" to="persoon" type="related" />
+		  <relation from="contentelement" to="pools" type="posrel"/>
         <relation from="contentelement" to="reactie" type="reactieop" />
         <relation from="deelnemers" to="leden" type="related" />
         <relation from="deelnemers_categorie" to="deelnemers" type="related" />
@@ -144,7 +147,6 @@
         <relation from="evenement" to="questions" type="readmore" />
         <relation from="evenement" to="vertrekpunten" type="posrel" />
         <relation from="evenement" to="payment_type" type="related" />
-
         <relation from="evenement_type" to="deelnemers_categorie" type="posrel" />
         <relation from="evenement_type" to="images" type="posrel" />
         <relation from="formulier" to="formulierveld" type="posrel" />
@@ -204,6 +206,7 @@
         <relation from="shorty" to="contentelement" type="readmore" />
         <relation from="teaser" to="contentelement" type="readmore" />
         <relation from="template" to="editwizards" type="related" />
+		  <relation from="topics" to="pools" type="posrel" />
         <relation from="users" to="email" type="related" />
         <relation from="users" to="events_attachments" type="gebruikt" />
         <relation from="users" to="editwizards" type="gebruikt" />
@@ -273,11 +276,13 @@
         <datasource builder="natuurgebieden" path="NatMM/natuurgebieden.xml" />
         <datasource builder="panno" path="NatMM/panno.xml" />
         <datasource builder="paragraaf" path="NatMM/paragraaf.xml" />
+        <datasource builder="pools" path="NatMM/pools.xml"/>
         <datasource builder="provincies" path="NatMM/provincies.xml" />
         <datasource builder="questions" path="NatMM/questions.xml" />
         <datasource builder="routebeschrijvingen" path="NatMM/routebeschrijvingen.xml" />
         <datasource builder="shorty" path="NatMM/shorty.xml" />
         <datasource builder="teaser" path="NatMM/teaser.xml" />
+		  <datasource builder="topics" path="NatMM/topics.xml"/>
         <datasource builder="vertrekpunten" path="NatMM/vertrekpunten.xml" />
     </datasourcelist>
 
