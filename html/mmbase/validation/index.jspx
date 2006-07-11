@@ -3,8 +3,9 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xml:lang="en"
     lang="en">
-  <jsp:text>&lt;!-- $Id: index.jspx,v 1.1 2006-04-06 17:25:25 michiel Exp $ --&gt;</jsp:text>
-  <mm:content type="text/html" expires="0">
+  <jsp:directive.page import="org.mmbase.datatypes.*,java.util.*" />
+  <jsp:text>&lt;!-- $Id: index.jspx,v 1.2 2006-07-11 12:21:53 michiel Exp $ --&gt;</jsp:text>
+  <mm:content type="text/html">
     <head>
       <title>MMBase DataType validation</title>
       <mm:link page="/mmbase/style/css/mmbase.css">
@@ -24,6 +25,31 @@
         This directory will contain the javascript and serverside components to enable client side
         validation of MMBase data types. This is work in progress. See 'datatypes' project.
       </p>
+      <table>
+      <jsp:scriptlet>
+        
+        Set list = new TreeSet(DataTypes.getSystemCollector().getDataTypes().keySet());
+        Iterator i = list.iterator();
+        while (i.hasNext()) {
+           String key = (String) i.next();
+           DataType dataType = DataTypes.getSystemCollector().getDataType(key);
+      </jsp:scriptlet>
+      <tr>
+        <td>
+          <mm:link page="datatype.jspx">
+            <mm:param name="datatype"><jsp:expression>key</jsp:expression></mm:param>
+            <a href="${_}" class="navigate">
+              <jsp:expression>key</jsp:expression>
+              <img src="${next}" alt="see" class="navigate" />              
+            </a>
+          </mm:link>
+        </td>
+        <td>
+          <jsp:expression>dataType.getDescription(Locale.US)</jsp:expression>
+        </td>
+      </tr>
+      <jsp:scriptlet>}</jsp:scriptlet>
+      </table>
     </body>
   </mm:content>
 </html>
