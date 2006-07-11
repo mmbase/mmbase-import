@@ -161,7 +161,7 @@ public class PaginaUtil {
    public void removePagina(String paginaNodeNumber) {
       Node paginaNode = cloud.getNode(paginaNodeNumber);
       paginaNode.deleteRelations();
-      paginaNode.delete();
+      paginaNode.delete(true);
    /* hh   PublishUtil.removeNode( paginaNode.getNumber());
    */
    }

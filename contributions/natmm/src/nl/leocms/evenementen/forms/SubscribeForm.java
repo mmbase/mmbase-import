@@ -410,7 +410,7 @@ public class SubscribeForm extends ActionForm {
          thisParticipant.setStringValue("bron",thisNumber);
          thisParticipant.commit();
          RelationList relations = thisParticipant.getRelations("related","deelnemers_categorie");
-         for(int r=0; r<relations.size(); r++) { relations.getRelation(r).delete(); }
+         for(int r=0; r<relations.size(); r++) { relations.getRelation(r).delete(true); }
          if(!thisCategory.equals("-1")) {
 
            Node thisCategoryNode = cloud.getNode(thisCategory);

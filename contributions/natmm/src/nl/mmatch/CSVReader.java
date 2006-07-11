@@ -221,7 +221,7 @@ public class CSVReader implements Runnable {
                     for(int r=0; r<relations.size(); r++) {
                         Relation relation = relations.getRelation(r);
                         if(relation.getValue("readmore2").equals("inactive")) {
-                            relation.delete();
+                            relation.delete(true);
                         }
                     }
                 }

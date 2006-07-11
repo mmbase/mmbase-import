@@ -123,7 +123,7 @@ public class Updater
       //deletes old relations
       for(Iterator it = nodeEvenement.getRelations("posrel", cloud.getNodeManager("deelnemers_categorie")).iterator(); it.hasNext();){
          Node nodeRelation = (Node) it.next();
-         nodeRelation.delete();
+         nodeRelation.delete(true);
       }
 
       String sKey;
@@ -159,7 +159,7 @@ public class Updater
       //deletes old relations
       for(Iterator it = nodeEvenement.getRelations("related", nmPaymentType).iterator(); it.hasNext();){
          Node nodeRelation = (Node) it.next();
-         nodeRelation.delete();
+         nodeRelation.delete(true);
       }
 
       ArrayList arliPaymentTypes = product.getPaymentTypes();
