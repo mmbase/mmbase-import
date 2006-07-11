@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: mmxf2kupu.xslt,v 1.5 2006-04-25 22:35:06 michiel Exp $
+  @version: $Id: mmxf2kupu.xslt,v 1.6 2006-07-11 18:46:57 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -89,6 +89,24 @@
       <xsl:text>&#xA;</xsl:text>
     </body>
     <xsl:text>&#xA;</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="mmxf:td">
+    <xsl:element name="{name()}">
+      <xsl:copy-of select="@*" />
+      <xsl:choose>
+        <xsl:when test="@class = 'align-right'">
+          <xsl:attribute name="align">right</xsl:attribute>
+        </xsl:when>
+        <xsl:when test="@class = 'align-left'">
+          <xsl:attribute name="align">left</xsl:attribute>
+        </xsl:when>
+        <xsl:when test="@class = 'align-center'">
+          <xsl:attribute name="align">center</xsl:attribute>
+        </xsl:when>
+      </xsl:choose>
+      <xsl:apply-templates select="node()" />
+    </xsl:element>
   </xsl:template>
 
   <xsl:template match="mmxf:em|mmxf:strong">
