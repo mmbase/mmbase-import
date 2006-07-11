@@ -86,8 +86,8 @@ TOKEN :
 | <PREVIOUS: "previous" >
 | <THIS: "this" >
 | <POSITIVE: ["0"-"9"] (["0"-"9"])* >
-| <THOUSANDS: ["0"-"9"]["0"-"9"]["0"-"9"] >
- | <TIMEZONE: "TZ" ([" ", "\n", "\t", "\r"])* ["A"-"Z"] (["A"-"Z","a"-"z", "/", "_"])* (["-", "+"] <POSITIVE>)?>
+| <THOUSANDS: "." ["0"-"9"]["0"-"9"]["0"-"9"] >
+| <TIMEZONE: "TZ" ([" ", "\n", "\t", "\r"])* ["A"-"Z"] (["A"-"Z","a"-"z", "/", "_"])* (["-", "+"] <POSITIVE>)?>
 
 }
 
@@ -101,7 +101,7 @@ void start() : {}
 
 void time() : {}
 {
-    hour_number() ":" minute_number() (":" second_number() ["." millisecond_number()])?
+    hour_number() ":" minute_number() (":" second_number() (millisecond_number())?)?
     | "noon"     { beginOfHour(); cal.set(Calendar.HOUR_OF_DAY, 12); }
     | "midnight" { beginOfHour(); cal.set(Calendar.HOUR_OF_DAY, 0); }
     | "teatime"  { beginOfHour(); cal.set(Calendar.HOUR_OF_DAY, 16); }
@@ -179,7 +179,7 @@ void second_number() : { }
 }
 void millisecond_number() : { }
 {
-    <THOUSANDS> { cal.set(Calendar.MILLISECOND, Integer.parseInt(token.toString()));}
+    <THOUSANDS> { cal.set(Calendar.MILLISECOND, Integer.parseInt(token.toString().substring(1)));}
 }
 
 
@@ -196,7 +196,7 @@ void increment() : {}
    | <THIS> month_of_year() { beginOfMonth(); }
    | <THIS> "month" { beginOfMonth(); }
    | <THIS> "year" { beginOfYear(); }
-   | "ish"  {  cal.add(Calendar.SECOND, (int) (random.nextGaussian() * 1200.0)/* 20 min */ + 300 /* 5 minutes late on average*/); dynamic = true;}
+   | "ish"  {  cal.add(Calendar.MILLISECOND, (int) (random.nextGaussian() * 1200000.0)/* 20 min */ + 300000 /* 5 minutes late on average*/); dynamic = true;}
 }
 void decrement() : {}
 {
