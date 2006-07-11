@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DateTimePattern.java,v 1.10 2006-04-25 15:26:59 michiel Exp $
+ * @version $Id: DateTimePattern.java,v 1.11 2006-07-11 20:09:55 michiel Exp $
  */
 
 public class DateTimePattern implements Cloneable, java.io.Serializable {
@@ -171,18 +171,7 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
                 }
             }
         };
-    private static final Element ERA           = new Element("era", Calendar.ERA, 0, //BC
-                                                             1 //AD
-                                                             ) {
-            public String toString(int value, Locale locale, int length) {
-                SimpleDateFormat format = new SimpleDateFormat("GGGGGGGGGGGG".substring(0, length), locale);
-                Calendar help = Calendar.getInstance();
-                help.clear();
-                help.set(field, value);
-                return format.format(help.getTime());
-            }
 
-        };
     private static final Element AM_PM         = new Element("am_pm", Calendar.AM_PM, 0, //AM
                                                              1 //PM
                                                              ) {
@@ -209,9 +198,31 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
      */
     public static Element getElement(char c, Calendar minDate, Calendar maxDate) {
         switch(c) {
+        case 'G': {
+            int startEra = minDate.get(Calendar.ERA);
+            int endEra   = maxDate.get(Calendar.ERA);
+            return new Element("era", Calendar.ERA, startEra, //BC
+                               endEra //AD
+                               ) {
+                public String toString(int value, Locale locale, int length) {
+                    SimpleDateFormat format = new SimpleDateFormat("GGGGGGGGGGGG".substring(0, length), locale);
+                    Calendar help = Calendar.getInstance();
+                    help.clear();
+                    help.set(field, value);
+                    return format.format(help.getTime());
+                }
+            };
+        }
         case 'y': {
-            int startYear = minDate.get(Calendar.YEAR);
-            int   endYear = maxDate.get(Calendar.YEAR);
+            int startEra = minDate.get(Calendar.ERA);
+            int endEra   = maxDate.get(Calendar.ERA);
+            int startYear, endYear;
+            startYear = minDate.get(Calendar.YEAR);
+            endYear = maxDate.get(Calendar.YEAR);
+            if (startEra < endEra) { // you'll need an ERA indicator too, if this happens, and you want to be able to enter dates BC.
+                endYear = endYear > startYear ? endYear : startYear;
+                startYear = minDate.getActualMinimum(Calendar.YEAR);
+            }
             return new Element("year",  Calendar.YEAR,  startYear, endYear) {
                     public int getNullValue() {
                         return Integer.MAX_VALUE;
@@ -270,7 +281,6 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
         case 'w': return WEEK_OF_YEAR;
         case 'D': return DAY_OF_YEAR;
         case 'F': return DAY_OF_WEEK_IN_MONTH;
-        case 'G': return ERA;
         case 'a': return AM_PM;
         case 'S': return MILLISECOND;
         default:
@@ -347,6 +357,10 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
                 buf.insert(0, "0");
             }
             return buf.toString();
+        }
+
+        public String toString() {
+            return getName() + " [" + min + ", " + max + "] + " + getOffset();
         }
         /**
          * The int-value representing <code>null</code>. Some otherwise impossible value for the
