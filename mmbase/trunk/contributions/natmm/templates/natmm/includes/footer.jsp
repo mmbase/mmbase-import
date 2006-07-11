@@ -1,16 +1,18 @@
 <form action="zoek.jsp" style="margin:0px 0px 0px 0px">
-<% if(iRubriekLayout==NatMMConfig.DEFAULT_LAYOUT) { 
+<%
+if(iRubriekLayout==NatMMConfig.DEFAULT_LAYOUT || iRubriekLayout==NatMMConfig.DEMO_LAYOUT) { 
    %><table style="line-height:90%;width:744;" border="0" cellspacing="0" cellpadding="0" align="center" valign="top">
    <tr>
    	<td class="footer" style="width:544px;text-align:center;">
-      	&copy <%= Calendar.getInstance().get(Calendar.YEAR) %> Natuurmonumenten 
-      	<mm:list nodes="footer" path="rubriek,posrel,pagina"
-            fields="pagina.number,pagina.titel" orderby="posrel.pos" directions="UP">
-            <mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false">
-         	  &nbsp;&nbsp;|&nbsp;&nbsp; 
-              <a href="<%= ph.createPaginaUrl(pagina_number,request.getContextPath()) %>" class="footerlinks"><mm:field name="pagina.titel" /></a>
-            </mm:field>
-         </mm:list>
+      	&copy <%= Calendar.getInstance().get(Calendar.YEAR) %> <mm:node number="root"><mm:field name="naam"/></mm:node>
+			<mm:node number="footer" notfound="skipbody">
+			<mm:related path="posrel,pagina" fields="pagina.number,pagina.titel" orderby="posrel.pos" directions="UP">
+				<mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false">
+				  &nbsp;&nbsp;|&nbsp;&nbsp; 
+				  <a href="<%= ph.createPaginaUrl(pagina_number,request.getContextPath()) %>" class="footerlinks"><mm:field name="pagina.titel" /></a>
+				</mm:field>
+			</mm:related>
+			</mm:node>
    	</td>
    	<mm:node number="search_template" notfound="skipbody">
       <mm:related path="gebruikt,pagina,posrel,rubriek1,parent,rubriek2"

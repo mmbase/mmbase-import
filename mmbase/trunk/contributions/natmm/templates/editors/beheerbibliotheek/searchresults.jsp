@@ -142,11 +142,9 @@ if (searchIsOn) {
 	if(!objects.equals("")) {
       queryLog += ", using path=" +  path + " and rc=" + rubriekConstraint;
       %>
-      <mm:list nodes="<%= objects %>" path="<%=path%>" orderby="<%=orderColumn%>" constraints="<%=rubriekConstraint%>" id="contentresults">
-			<% if (!show_unused) { %>
-				<mm:maxnumber value="250" />
-			<% } %>	
-         <mm:first>
+      <mm:list nodes="<%= objects %>" path="<%=path%>" orderby="<%=orderColumn%>"
+		  max="<%= (!show_unused ? "250": "") %>" constraints="<%=rubriekConstraint%>" id="contentresults">
+			<mm:first>
            <mm:import jspvar="size" vartype="Integer"><mm:size /></mm:import>
            <%
             foundResults = true;
