@@ -3,16 +3,17 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xml:lang="en"
     lang="en">
-  <jsp:text>&lt;!-- MyNews in RichText and JSPX. $Id: index.jspx,v 1.9 2006-04-25 21:40:20 michiel Exp $ --&gt;</jsp:text>
+  <jsp:text>&lt;!-- MyNews in RichText and JSPX. $Id: index.jspx,v 1.10 2006-07-11 18:49:40 michiel Exp $ --&gt;</jsp:text>
   <jsp:directive.page session="false" />
   <jsp:directive.include file="vars.jspx" />
-  <mm:content type="text/html" language="en" expires="${edit == 'true' ? -1 : 60}">
+  <mm:cloud method="asis">
+    
+    <mm:content type="text/html" language="en" expires="${edit == 'true' ? -1 : 60}">
     <!-- better: application/xhtml+xml , but IE doesn't swallow that -->
     <jsp:output doctype-root-element="html"
                 doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
                 doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
     <mm:url id="valid" write="false" page="/mmbase/style/images/valid-xhtml10.png" />
-    <mm:cloud>
       <mm:notpresent referid="cat">
         <!-- no cat given (home page?), autodetermin -->
         <mm:present referid="article">
@@ -28,7 +29,7 @@
           </mm:node>
         </mm:present>
         <mm:notpresent referid="cat">
-          <mm:node number="$h">
+          <mm:node number="$h" notfound="skip">
             <mm:relatednodes  type="categories" role="posrel" orderby="posrel.pos" max="1">
               <mm:remove referid="cat" />
               <mm:node id="cat" />
@@ -119,6 +120,6 @@
           </a>
         </p>
       </body>
-    </mm:cloud>
-  </mm:content>
+    </mm:content>
+  </mm:cloud>
 </html>
