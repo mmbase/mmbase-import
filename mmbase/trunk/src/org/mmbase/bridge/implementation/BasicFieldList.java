@@ -18,7 +18,7 @@ import org.mmbase.core.CoreField;
  * A list of fields
  *
  * @author Pierre van Rooden
- * @version $Id: BasicFieldList.java,v 1.17 2005-12-29 19:14:05 michiel Exp $
+ * @version $Id: BasicFieldList.java,v 1.18 2006-07-11 09:30:26 michiel Exp $
  */
 public class BasicFieldList extends BasicList implements FieldList {
 
@@ -36,10 +36,16 @@ public class BasicFieldList extends BasicList implements FieldList {
     public Object convert(Object o, int index) {
         if (o instanceof BasicField) {
             return o;
+        } else if (o instanceof Field) {
+            // core-field does not have a node-manager, fix that.
+            Field f = new BasicField((Field)o, nodemanager);
+            set(index, f);
+            return f;
+        } else { // give it up
+            // perhaps we could anticipated DataType, String those kind of things too.
+            // but this is not used at the moment anyway.
+            return o;
         }
-        Field f = new BasicField((CoreField)o,nodemanager);
-        set(index, f);
-        return f;
     }
 
     protected Object validate(Object o) throws ClassCastException {
