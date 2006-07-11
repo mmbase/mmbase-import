@@ -49,6 +49,6 @@ public class LinkValidationUtil {
       Node linkNode = cloud.getNode(linkNodeNumber);
       PublishManager.deletePublishedNode(linkNode);
       linkNode.deleteRelations();
-      linkNode.delete();
+      linkNode.delete(true);
    }
 }

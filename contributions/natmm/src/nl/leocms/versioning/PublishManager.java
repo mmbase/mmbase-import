@@ -54,7 +54,7 @@ import java.util.List;
  * b) importing - which is the process of copying a node from cloud Y to cloud X
  *
  * @author Finalist IT
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class PublishManager extends VersioningBase {
 
@@ -881,10 +881,10 @@ public class PublishManager extends VersioningBase {
          }
          // Always delete the remote relation to keep the remote cloud stable
          // even if it is an imported relation
-         remoteRelation.delete();
+         remoteRelation.delete(true);
       }
       
       unLinkNode(localCloud, remoteNode.getCloud(), localNumber, remoteNode.getNumber());
-      remoteNode.delete();
+      remoteNode.delete(true);
    }
 }

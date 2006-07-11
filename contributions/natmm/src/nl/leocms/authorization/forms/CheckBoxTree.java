@@ -94,13 +94,13 @@ public class CheckBoxTree{
     RelationManager rmMenu = cloud.getRelationManager("menu","users","gebruikt");
     RelationList list = user.getRelations("gebruikt","menu");
     for (int i = 0; i < list.size(); i++) {
-       list.getNode(i).delete();
+       list.getNode(i).delete(true);
     }
 
     RelationManager rmEdiwizard = cloud.getRelationManager("editwizards","users","gebruikt");
     list = user.getRelations("gebruikt","editwizards");
     for (int i = 0; i < list.size(); i++) {
-       list.getNode(i).delete();
+       list.getNode(i).delete(true);
     }
 
 
