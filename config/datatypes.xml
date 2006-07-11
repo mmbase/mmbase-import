@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
   
-  <!-- @version $Id: datatypes.xml,v 1.43 2006-07-09 18:44:05 michiel Exp $ -->
+  <!-- @version $Id: datatypes.xml,v 1.44 2006-07-11 22:31:49 michiel Exp $ -->
 
   <!--
   schematic syntax of one datatype entry:
@@ -250,6 +250,7 @@
         which is automaticly filled on commit of the node.  If you define this field as unique, then
         the effect is that a handle field which already is present in the database, cannot be saved.
       </description>
+      <pattern enforce="never" value="\A[^\n\r]*\z" />
       <commitprocessor>
         <class name="org.mmbase.datatypes.processors.ChecksumProcessorFactory">
           <param name="field">handle</param>
@@ -294,7 +295,7 @@
     <class name="org.mmbase.datatypes.DateTimeDataType" />
 
     <pattern value="yyyy-MM-dd HH:mm" />
-    <pattern xml:lang="nl-NL" value="dd MMMM yyyy HH:mm" />
+    <pattern xml:lang="nl" value="dd MMMM yyyy HH:mm" />
     <pattern xml:lang="eo" value="dd'-a de' MMMM yyyy 'je' HH:mm" />
     <pattern xml:lang="en" value="dd MMMM yyyy HH:mm" />
     <pattern xml:lang="en-US" value="MMMM dd yyyy HH:mm" />
@@ -350,9 +351,9 @@
       </description>
       <default value="today" />
       <pattern value="yyyy-MM-dd" />
-      <pattern xml:lang="nl-NL" value="dd MMMM yyyy" />
+      <pattern xml:lang="nl"    value="dd MMMM yyyy" />
       <pattern xml:lang="en-US" value="MMMM dd yyyy" />
-      <pattern xml:lang="en" value="dd MMMM yyyy" />
+      <pattern xml:lang="en"    value="dd MMMM yyyy" />
 
       <specialization id="20th-century">
         <description xml:lang="en">
@@ -362,6 +363,7 @@
           Silly example (also used to test)
           Allow only dates from the previous century..
         </description>
+        <default value="1950-01-01" />
         <minInclusive value="1900-01-01"  />
         <maxExclusive value="2000-01-01"  />
       </specialization>
@@ -370,6 +372,7 @@
         <description xml:lang="en">
           Pedantic version of 20th-century. Dates in the year 1900 are rejected, dates in the year 2000 are accepted.
         </description>
+        <default value="1950-01-01" />
         <minInclusive value="1901-01-01"  />
         <maxExclusive value="2001-01-01"  />
       </specialization>
@@ -393,6 +396,16 @@
         <maxInclusive value="today"    />
       </specialization>
 
+      <specialization id="historical">
+        <description xml:lang="en">
+          Historical dates, with a ERA designator.
+        </description>
+        <pattern value="GG yyyy-MM-dd" />
+        <pattern xml:lang="nl" value="dd MMMM yyyy GG" />
+        <pattern xml:lang="en-US" value="MMMM dd yyyy GG" />
+        <pattern xml:lang="en" value="dd MMMM yyyy GG" />
+      </specialization>
+
       <specialization id="weeknumbers">
         <description xml:lang="en">
           Exotic specialization of 'date'. It will allow entering dates using the week-number and
@@ -403,6 +416,9 @@
         <pattern value="'day: 'EEEEE 'week :'ww 'year: 'yyyy" xml:lang="en" />
       </specialization>
 
+    </specialization>
+    <specialization id="eventtime">
+      <!-- just an alias for backwards compatibility -->
     </specialization>
   </datatype>
 
