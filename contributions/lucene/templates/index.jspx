@@ -9,6 +9,7 @@
       <h1>Lucene admin page</h1>
       <mm:cloud rank="administrator">
         <p>
+          <em><mm:time format="yyyy-MM-dd HH:mm:ss" time="now" /></em>
           The following indices are currently defined.
         </p>
         <mm:booleanfunction name="readOnly" module="lucene">
