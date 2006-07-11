@@ -473,7 +473,7 @@ public class SubscribeAction extends Action {
             if(!relations.isEmpty()) {
                Relation  thisRelation = relations.getRelation(0);
                if(thisRelation.getDestination().getStringValue("naam").equals("aangemeld")) {
-                  thisRelation.delete();
+                  thisRelation.delete(true);
                   Node thisStatus = cloud.getNode("confirmed");
                   if(thisStatus!=null) {
                      thisSubscription.createRelation(thisStatus,cloud.getRelationManager("related")).commit();
@@ -648,7 +648,7 @@ public class SubscribeAction extends Action {
 
             // *** update inschrijvingen,related,inschrijvings_status
             RelationList relations = thisSubscription.getRelations("related","inschrijvings_status");
-            for(int r=0; r<relations.size(); r++) { relations.getRelation(r).delete(); }
+            for(int r=0; r<relations.size(); r++) { relations.getRelation(r).delete(true); }
 
             // *** before using status, set status when necessary
             // *** possible situations:

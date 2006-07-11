@@ -263,7 +263,7 @@ public class AuthorizationHelper {
    public void setUserRights(Node user, Map rights) {
       RelationList list = user.getRelations("rolerel");
       for (RelationIterator i=list.relationIterator(); i.hasNext();) {
-         i.nextRelation().delete();
+         i.nextRelation().delete(true);
       }
       RelationManager rolemanager = cloud.getRelationManager("rubriek","users","rolerel");
       Iterator keys = rights.keySet().iterator();

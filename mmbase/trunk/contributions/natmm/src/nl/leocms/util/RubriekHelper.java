@@ -444,7 +444,7 @@ public class RubriekHelper {
    public void removeRubriek(String rubriekNodeNumber) {
       Node rubriekNode = cloud.getNode(rubriekNodeNumber);
       rubriekNode.deleteRelations();
-      rubriekNode.delete();
+      rubriekNode.delete(true);
    }
    
    /** gets the root rubriek number 
