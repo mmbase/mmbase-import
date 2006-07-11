@@ -85,6 +85,7 @@ TOKEN :
 | <PREVIOUS: "previous" >
 | <THIS: "this" >
 | <POSITIVE: ["0"-"9"] (["0"-"9"])* >
+| <INTEGER:  (["-","+"])? ["0"-"9"] (["0"-"9"])* >
 | <THOUSANDS: ["0"-"9"]["0"-"9"]["0"-"9"] >
 | <TIMEZONE: "TZ" ["A"-"Z"] (["A"-"Z","a"-"z", "/", "_"])* (["-", "+"] <POSITIVE>)?>
 }
@@ -113,7 +114,7 @@ void date() :  {}
     | day_of_week() {beginOfDay();}
     | month_of_year() {beginOfMonth();}
     | "now"      { cal = Calendar.getInstance(cal.getTimeZone()); }
-    | integer() { cal.setTimeInMillis(Long.parseLong(token.toString()) * 1000); dynamic = false; }
+    | <INTEGER> {  cal.setTimeInMillis(Long.parseLong(token.toString()) * 1000); dynamic = false; }
     | "today"      { cal = Calendar.getInstance(cal.getTimeZone()); beginOfDay(); }
     | "tomonth"     { cal = Calendar.getInstance(cal.getTimeZone()); beginOfMonth(); }
     | "toyear"      { cal = Calendar.getInstance(cal.getTimeZone()); beginOfYear(); }
@@ -135,16 +136,10 @@ void time_zone() : {}
 }
 
 
-void integer() : {}
-{
-    ["-"] <POSITIVE>
-}
-
-
 
 void year_number() : { }
 {
-    integer()  {  cal.set(Calendar.YEAR, Integer.parseInt(token.toString()));}
+    <INTEGER>  {  cal.set(Calendar.YEAR, Integer.parseInt(token.toString()));}
 }
 void inc_number() : { }
 {
@@ -188,6 +183,8 @@ void increment() : {}
    | next() month_of_year() { beginOfMonth(); if (cal.getTime().getTime() < prev) {cal.add(Calendar.YEAR, 1); } }
    | previous() month_of_year() { beginOfMonth(); if (cal.getTime().getTime() > prev) {cal.add(Calendar.YEAR, -1); } }
    | <THIS> month_of_year() { beginOfMonth(); }
+   | <THIS> "month" { beginOfMonth(); }
+   | <THIS> "year" { beginOfYear(); }
    | "ish"  {  cal.add(Calendar.SECOND, (int) (random.nextGaussian() * 1200.0)/* 20 min */ + 300 /* 5 minutes late on average*/); dynamic = true;}
 }
 void decrement() : {}
