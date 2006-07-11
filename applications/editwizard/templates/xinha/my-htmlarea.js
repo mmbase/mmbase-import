@@ -1,7 +1,7 @@
 // Code to customize the htmlarea toolbar for the editwizards (less buttons,
 // a createlink with a target dropdown and a validate button).
 // Author: Jaco de Groot.
-// Version : $Id: my-htmlarea.js,v 1.1 2006-07-05 13:03:30 nklasens Exp $;
+// Version : $Id: my-htmlarea.js,v 1.2 2006-07-11 08:14:38 nklasens Exp $;
 
 
 function getToolTip(id, defaultValue) {
@@ -42,7 +42,7 @@ createDefaultPlugins = function() {
 
 createDefaultConfig = function() {
 
-  xinha_config = xinha_config ? xinha_config() : new HTMLArea.Config();
+  var xinha_config = xinha_config ? xinha_config() : new HTMLArea.Config();
   xinha_config.registerButton({
     id        : "my-createlink",
     tooltip   : getToolTip("insertweblink","Insert Web Link"),
