@@ -41,8 +41,9 @@ public class NatMMConfig {
 	public static int SUBSITE1_LAYOUT = 1;
 	public static int SUBSITE2_LAYOUT = 2;
 	public static int SUBSITE3_LAYOUT = 3;
+	public static int DEMO_LAYOUT = 4;
 
-	public static String [] layout = { "Natuurmonumenten", "Naardermeer", "ING-Perspectief", "Actiesite" };
+	public static String [] layout = {"Natuurmonumenten", "Naardermeer", "ING-Perspectief", "Actiesite", "Demo" };
 	public static String [] style1 = {"vereniging","steun" ,"nieuws","natuurin","natuurgebieden","links" ,"fun"   ,"default","zoeken","winkel","vragen","naardermeer" };
    public static String [] color1 = {"552500"    ,"990100","4A7934","D71920"  ,"BAC42B"        ,"9C948C","EC008C","1D1E94" ,"00AEEF","F37021","6C6B5C","F37021" }; // color + line leftnavpage
    public static String [] color2 = {"E4BFA3"    ,"F7D6C3","B0DF9B","FFBDB7"  ,"EEF584"        ,"EDE9E6","FABFE2","96ADD9" ,"B2E7FA","FED9B2","D6D6D1","F9B790" }; // background leftnavpage_high

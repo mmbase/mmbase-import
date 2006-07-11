@@ -16,7 +16,7 @@ int iParCntr = 1;
 boolean showNextDotLine = false;
 %>
 <%@include file="../includes/getstyle.jsp" %>
-<mm:node number="<%=objectID%>">
+<mm:node number="<%=objectID%>" notfound="skipbody">
 <table width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr>
 	<td valign="top"><a name="0" id="0"></a>

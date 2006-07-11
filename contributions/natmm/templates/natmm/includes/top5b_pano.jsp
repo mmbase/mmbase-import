@@ -44,7 +44,9 @@ if(iRubriekLayout==NatMMConfig.SUBSITE3_LAYOUT) {
       panoTemplate = "";
       pHeight = 171;
    }
-} else if( iRubriekLayout==NatMMConfig.SUBSITE1_LAYOUT || iRubriekLayout==NatMMConfig.SUBSITE2_LAYOUT ) {
+} else if( iRubriekLayout==NatMMConfig.SUBSITE1_LAYOUT
+				|| iRubriekLayout==NatMMConfig.SUBSITE2_LAYOUT
+				|| iRubriekLayout==NatMMConfig.DEMO_LAYOUT ) {
    panoTemplate = "s(744)+part(0,0,744,75)";
    pHeight = 75;
 } else if(path.equals("index.jsp")) {
