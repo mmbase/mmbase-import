@@ -21,10 +21,10 @@ package nl.leocms.connectors.UISconnector;
 */
 
 public class UISconfig {
-  
-	public static boolean IS_ACTIVE = true;
-	public static String PRODUCT_URL = "http://212.123.241.76/mmdemo/getProducts.jsp";
-   
+
+   public static boolean IS_ACTIVE = true;
+   public static String PRODUCT_URL = "http://212.123.241.76/mmdemo/api/getProducts.jsp";
+
    public UISconfig() {
    }
 }
