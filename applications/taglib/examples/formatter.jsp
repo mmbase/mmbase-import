@@ -31,16 +31,8 @@
 
 <mm:node referid="ok">
 <mm:timer name="formatter performance">
-<caache:cache time="30">
 <form>
 <table>
-<%--
-<tr><td colspan="2">Dates. Without this tag, it was not well possible to nicely format them. With this tag, it is easy.</td></tr>
-<tr valign="top">
-  <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/date.jsp" /></mm:formatter></pre></td>
-  <td width="50%"><%@include file="codesamples/date.jsp" %></td>
-</tr>
---%>
 <tr><td colspan="2">Rich text fields. These fields can contain some basic structure information in XML. We can show XML with the formatter tag.</td></tr>
 <tr valign="top">
   <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/showrichfield.jsp" /></mm:formatter></pre></td>
@@ -114,7 +106,6 @@
 --%>
 </table>
 </form>
-</caache:cache>
 </mm:timer>
 </mm:node>
 </mm:present>

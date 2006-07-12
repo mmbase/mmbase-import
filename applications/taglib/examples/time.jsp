@@ -1,6 +1,6 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><%@page errorPage="error.jsp" session="false" language="java" contentType="text/html; charset=UTF-8" %>
-<mm:content type="text/html">
+%><%@page errorPage="error.jsp" session="false" language="java" contentType="text/html; charset=UTF-8" import="java.util.*" %>
+<mm:content type="text/html" language="client">
 <html>
 <head>
 <title>	MMBase time tag</title> 
@@ -18,6 +18,22 @@ time tag attributes see the
 </p>
 <mm:log />
 <table>
+<tr><th colspan="2">Try it your self</th></tr>
+<tr valign="top">
+  <mm:import externid="time">now</mm:import>
+  <td width="50%">
+    <form method="get">
+      <input name="time" value="<mm:write referid="time" />" />
+      <input type="submit" />
+    </form>
+  <td width="50%">
+    <% try { %>
+    <mm:time time="${time}" format=":FULL.FULL" />
+    <% } catch (Exception e) { %>
+      <%= e.getMessage() %>
+    <% } %>
+  </td>
+</tr>
 <tr><th colspan="2">Show the time in seconds from the start of the epoch</th></tr>
 <tr valign="top">
   <td width="50%"><pre>&lt;mm:time time="now" /&gt;</pre></td>
