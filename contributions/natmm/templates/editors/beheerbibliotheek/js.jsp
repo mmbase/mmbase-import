@@ -57,7 +57,8 @@ function updateHiddenValue() {
    with(document.forms[0]) {
      for (var i = 1; i<elements.length; i++) {   //skip the first checkbox
        if(elements[i].type == "checkbox" && elements[i].checked == true) {
-          hiddenValue = hiddenValue + elements[i].id + ",";
+       	  if(hiddenValue!="") { hiddenValue += ","; }
+          hiddenValue += elements[i].id;
        }
      }
    }
