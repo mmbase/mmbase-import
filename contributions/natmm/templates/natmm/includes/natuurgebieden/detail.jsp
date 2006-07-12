@@ -98,7 +98,7 @@ if(artikelID != null) {
       } %>
 		<mm:list nodes="<%=natuurgebiedID%>" path="natuurgebieden,rolerel,artikel"
 		          fields="artikel.number" distinct="true" orderby="artikel.titel"
-                constraints="<%= "(artikel.embargo < '" + (nowSec-quarterOfAnHour) + "') AND (artikel.use_verloopdatum='0' OR artikel.verloopdatum > '" + nowSec + "' )" %>">
+                constraints="<%= "(artikel.embargo < '" + (nowSec+quarterOfAnHour) + "') AND (artikel.use_verloopdatum='0' OR artikel.verloopdatum > '" + nowSec + "' )" %>">
 				<mm:first>
 					<span class="colortitle">Routes</span><br>
 					<ul>
