@@ -45,11 +45,12 @@
     <tr>
       <td>orderby</td>
       <td><input type="text" size="60" name="orderby" value="<mm:write referid="orderby"/>"></td>
+      <td colspan="2" />
     </tr>
     <tr>
       <td>directions</td>
       <td><input type="text" size="60" name="directions" value="<mm:write referid="directions"/>"></td>
-      <td colspan="3" align="center"><input type="submit" name="try" value="try"/></td>
+      <td colspan="2" align="center"><input type="submit" name="try" value="try"/></td>
     </tr>
   </table>
 </form>
