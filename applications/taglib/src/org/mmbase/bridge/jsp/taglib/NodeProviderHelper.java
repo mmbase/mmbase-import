@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeProviderHelper.java,v 1.20 2006-07-08 16:43:35 michiel Exp $
+ * @version $Id: NodeProviderHelper.java,v 1.21 2006-07-12 11:39:55 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -86,7 +86,9 @@ public class NodeProviderHelper implements NodeProvider {
      */
 
     public void setNodeVar(Node node) {
-        if (node instanceof NodeChanger) {
+        if (node == null) {
+            this.node = null;
+        } else if (node instanceof NodeChanger) {
             this.node = (NodeChanger) node;
         } else {
             this.node = new NodeChanger(node);
