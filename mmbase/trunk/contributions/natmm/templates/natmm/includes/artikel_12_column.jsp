@@ -15,22 +15,22 @@ String shortyRol = "";
 <mm:cloud jspvar="cloud">
 <%
 boolean hasRightCell = false;
-if(!lnRubriekID.equals(rubriekID)) { %>
-   <mm:list nodes="<%= rubriekID %>" path="rubriek,posrel,pagina,gebruikt,paginatemplate" fields="pagina.number,paginatemplate.url" orderby="posrel.pos" max="1">
+if(!lnRubriekID.equals(rubriekID)) { // third level navigation
+   %><mm:list nodes="<%= rubriekID %>" path="rubriek,posrel,pagina,gebruikt,paginatemplate" fields="pagina.number,paginatemplate.url" orderby="posrel.pos" max="1">
       <% hasRightCell = true; %>
    </mm:list><% 
 }
-if(!hasRightCell) { 
+if(!hasRightCell) { // right column image for artikel
    %><mm:list nodes="<%= artikelID %>" path="artikel,posrel,images" fields="images.number" constraints="posrel.pos='1' OR posrel.pos='7'" max="1">
       <% hasRightCell = true; %>
    </mm:list><%
 }
-if(!hasRightCell) { 
+if(!hasRightCell) { // right column image for paragraph
    %><mm:list nodes="<%= artikelID %>" path="artikel,posrel1,paragraaf,posrel2,images" fields="images.number" constraints="posrel2.pos='1' OR posrel2.pos='7'" max="1">
-   	 <% hasRightCell = true; %>
+      <% hasRightCell = true; %>
    </mm:list><%
 }
-if(!hasRightCell) { 
+if(!hasRightCell) { // shorty in rightcolumn
    shortyRol = "2";
    int maxShorties = 20;
    imgFormat = "shorty";
@@ -41,16 +41,22 @@ if(!hasRightCell) {
 boolean onlyShortyRelatedToArticle = false;
 if(!hasRightCell) { // special case, shorty related to article
    %>
-    <mm:listcontainer path="artikel,rolerel,shorty">
-   		<mm:constraint field="rolerel.rol" operator="EQUAL" value="2" />
-   		<mm:list nodes="<%= artikelID %>" fields="shorty.number" max="1">
-   			<% 
+   <mm:listcontainer path="artikel,rolerel,shorty">
+ 	<mm:constraint field="rolerel.rol" operator="EQUAL" value="2" />
+   	<mm:list nodes="<%= artikelID %>" fields="shorty.number" max="1">
+   	    <% 
             hasRightCell = true;
             onlyShortyRelatedToArticle = true;
             %>
-     		</mm:list>
+     	</mm:list>
    </mm:listcontainer>
    <%
+}
+if(!hasRightCell) { // navigation for weblog
+   %><mm:list nodes="<%= paginaID %>" path="pagina,gebruikt,paginatemplate" fields="pagina.number"
+   	constraints="paginatemplate.url='weblog.jsp'" max="1">
+      <% hasRightCell = true; %>
+   </mm:list><% 
 }
 if(hasRightCell) { 
    // ** the left and right padding has been taken care of by the container
