@@ -43,7 +43,7 @@
       	         if(PaginaHelper.getRootRubriek(cloud,paginaNumber).equals(rootRubriek)) {
 							if (index==1) {
 								PaginaHelper ph = new PaginaHelper(cloud);
-								String sConstraints = "(artikel.embargo < '" + (nowSec-quarterOfAnHour) + "') AND (artikel.use_verloopdatum='0' OR artikel.verloopdatum > '" + nowSec + "' )";
+								String sConstraints = "(artikel.embargo < '" + (nowSec+quarterOfAnHour) + "') AND (artikel.use_verloopdatum='0' OR artikel.verloopdatum > '" + nowSec + "' )";
 								NodeList nl = cloud.getList(docNumber,"natuurgebieden,rolerel,artikel","artikel.number",sConstraints,null,null,null,true);
 								if (ph.getPaginaTemplate(paginaNumber).getStringValue("url").equals("routes.jsp")
 									&&(nl.size()>0)){

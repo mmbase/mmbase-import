@@ -4,7 +4,7 @@
 <mm:cloud jspvar="cloud">
 <%
 String objectID = request.getParameter("o");
-String pannoConstraint = "(panno.embargo < '" + (nowSec-quarterOfAnHour) + "') AND (panno.reageer='0' OR panno.verloopdatum > '" + nowSec + "' )";
+String pannoConstraint = "(panno.embargo < '" + (nowSec+quarterOfAnHour) + "') AND (panno.reageer='0' OR panno.verloopdatum > '" + nowSec + "' )";
 %>
 <mm:node number="<%=objectID%>">
    <mm:related path="readmore,panno" constraints="<%= pannoConstraint %>" max="1">

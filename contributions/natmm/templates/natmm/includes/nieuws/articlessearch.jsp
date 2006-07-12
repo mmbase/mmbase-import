@@ -1,6 +1,6 @@
 <% // *** support both pagina,contentrel,artikel and dossier,posrel,artikel 
 articles = new TreeMap();
-String articleConstraint = "(artikel.embargo < '" + (nowSec-quarterOfAnHour) + "') AND (artikel.use_verloopdatum='0' OR artikel.verloopdatum > '" + nowSec + "' )";
+String articleConstraint = "(artikel.embargo < '" + (nowSec+quarterOfAnHour) + "') AND (artikel.use_verloopdatum='0' OR artikel.verloopdatum > '" + nowSec + "' )";
 %><mm:related path="artikel" fields="artikel.number" max="30" orderby="artikel.begindatum" directions="down"
    constraints="<%= articleConstraint %>">
 	<mm:field name="artikel.number" jspvar="article_number" vartype="String" write="false">
