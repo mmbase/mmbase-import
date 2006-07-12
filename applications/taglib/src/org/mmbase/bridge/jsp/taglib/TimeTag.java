@@ -23,7 +23,7 @@ import javax.servlet.jsp.JspException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.54 2006-07-10 13:32:45 michiel Exp $
+ * @version $Id: TimeTag.java,v 1.55 2006-07-12 09:36:50 michiel Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer, WriterReferrer {
 
@@ -242,12 +242,16 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
         if (iformat.equals("")) {
             if (date == null) {
                 try {
-                    String tzTime = "TZ" + tz.getID() + " " + useTime;
+                    String tzTime = useTime.startsWith("TZ") ? useTime : ("TZ" + tz.getID() + " " + useTime);
                     date = DynamicDate.eval(DynamicDate.getInstance(tzTime));
                 } catch (Throwable e) {
                     log.debug(e);
                     // Try to parse it in three standard ways, this can be considered Legacy, because DynamicDate.getInstance can handle everything already.
-                    date = parseTime(useTime); 
+                    try {
+                        date = parseTime(useTime); 
+                    } catch (ParseException e2) {
+                        throw new TaglibException(e);
+                    }
                 }
             }
         } else { // The input format is provided. We use that to parse the time attribute
@@ -374,28 +378,25 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
      * So, it parses the 'time' attribute without the use of 'inputformat'.
      *
      */
-    private Date parseTime(String t) throws JspTagException {
+    private Date parseTime(String t) throws ParseException, JspTagException {
 
         Date date = new Date();
-        try {
-            if (t.length() == 10) {
-                SimpleDateFormat format = getDateFormat();
-                format.applyPattern("yyyy/MM/dd");
-                date = format.parse(t);
-            } else if (t.length() == 8) {
-                SimpleDateFormat format = getDateFormat();
-                format.applyPattern("HH:mm:ss");
-                date = format.parse(t);
-            } else if (t.length() == 19) {
-                SimpleDateFormat format = getDateFormat();
-                format.applyPattern("yyyy/MM/dd HH:mm:ss");
-                date = format.parse(t);
-            } else {
-                throw new JspTagException("Time '" + t + "' could not be parsed according to yyyy/MM/dd, HH:mm:ss or yyyy/MM/dd HH:mm:ss");
-            }
-        } catch (ParseException e) {
-            throw new TaglibException(e);
+        if (t.length() == 10) {
+            SimpleDateFormat format = getDateFormat();
+            format.applyPattern("yyyy/MM/dd");
+            date = format.parse(t);
+        } else if (t.length() == 8) {
+            SimpleDateFormat format = getDateFormat();
+            format.applyPattern("HH:mm:ss");
+            date = format.parse(t);
+        } else if (t.length() == 19) {
+            SimpleDateFormat format = getDateFormat();
+            format.applyPattern("yyyy/MM/dd HH:mm:ss");
+            date = format.parse(t);
+        } else {
+            throw new ParseException("Time '" + t + "' could not be parsed  according to yyyy/MM/dd, HH:mm:ss or yyyy/MM/dd HH:mm:ss", 0);
         }
+
         return date;
 
     }
