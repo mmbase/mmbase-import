@@ -1,0 +1,259 @@
+<!-- algemeen -->
+body {
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif ; 
+	font-size: 11px; 
+	line-height : 130%;	
+	scrollbar-base-color: #EE1D25; 
+	scrollbar-arrow-color: #000000;
+	scrollbar-track-color: #F8941E;
+	scrollbar-3dlight-color: #EE1D25;
+	scrollbar-highlight-color: #ffffff;
+	scrollbar-shadow-color: #EE1D25;
+	scrollbar-darkshadow-color: #cc3300; 
+}
+p {	
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif ;
+ 	font-size: 11px; 
+	line-height : 130%;
+}
+.italic {						font-style: italic;
+}
+.bold {							font-weight: bolder;
+}
+.bold_small {					font-size : 10px;
+								font-weight: bolder;
+}
+.italic_small {					font-size : 10px;
+								font-style : italic;
+}
+table {
+	border-color: #444444;
+}
+td {
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif ;
+	font-size: 10px;
+	letter-spacing: 0px;
+	text-align: left;
+	vertical-align: top;
+	border-color: #444444;
+}
+td.center {							text-align: center;
+									vertical-align: middle; }
+td.right {							text-align: right; }
+td.white {							background-color: #FFFFFF; }
+td.black {							background-color: #000000; }
+tr.lightgrey {						background-color: #D5D5D5; }
+td.lightgrey {						background-color: #D5D5D5;
+									font-weight: bolder; 
+									font-size: 11px;
+									letter-spacing: 1px;
+									width: 100%; }
+td.darkgrey {						background-color: #656565;
+									font-weight: bolder;
+									color: #FFFFFF;
+									font-size: 11px;
+									letter-spacing: 1px; }
+td.white_center {					background-color: #FFFFFF; text-align: center; }
+.superHeader {						font-size : 17px;
+									font-weight : bolder;
+									letter-spacing : 6px;
+}
+.superHeader_red {					font-size : 17px;
+									font-weight : bolder;
+									color: #F30713;
+									letter-spacing : 6px;
+}
+.subHeader {	font-weight: bolder; letter-spacing: 5px; FONT-SIZE: 13px; COLOR: #000000;
+}
+.subHeader_red { font-weight: bolder; letter-spacing: 5px; FONT-SIZE: 13px; COLOR: #F30713;
+}
+td.superHeader {					
+									font-size : 36px;
+									font-weight : bolder;
+									color: #D5D5D5;
+									letter-spacing: 3px;
+									vertical-align: baseline;
+}
+td.superHeader_small {					
+									font-size : 22px;
+									font-weight : bolder;
+									color: #D5D5D5;
+									letter-spacing: 0px;
+									vertical-align: baseline;
+}
+td.subHeader {						font-size : 11px;
+									font-weight: bolder;
+									letter-spacing: 1px;
+}
+td.subHeader_white_center {			font-size : 11px;
+									font-weight: bolder;
+									letter-spacing: 5px;
+									text-align: center;
+									background-color: #FFFFFF;								
+}
+a.subHeaderBold:link { 				font-weight: bolder; letter-spacing: 5px; FONT-SIZE: 13px; COLOR: #000000; }
+a.subHeaderBold:visited { 			font-weight: bolder; letter-spacing: 5px; FONT-SIZE: 13px; COLOR: #000000; }
+a.subHeaderBold:active { 			font-weight: bolder; letter-spacing: 5px; FONT-SIZE: 13px; COLOR: #000000; }
+a.subHeaderBold:hover { 			font-weight: bolder; letter-spacing: 5px; FONT-SIZE: 13px; COLOR: #000000; }
+
+a.subHeader:link { 					letter-spacing: 1px; FONT-SIZE: 11px; COLOR: #000000; }
+a.subHeader:visited { 				letter-spacing: 1px; FONT-SIZE: 11px; COLOR: #000000; }
+a.subHeader:active { 				letter-spacing: 1px; FONT-SIZE: 11px; COLOR: #000000; }
+a.subHeader:hover { 				letter-spacing: 1px; FONT-SIZE: 11px; COLOR: #000000; }
+
+<!-- vara_roze -->
+body.vara_roze {					background-color: #F55414; }
+td.vara_roze_stark {				background-color: #F55414; }
+td.vara_roze_medium {				background-color: #FECCB6; }
+td.vara_roze_light {				background-color: #FEF0EA; }
+
+<!-- vara_geel -->
+body.vara_geel {					background-color: #F8E61C; }
+td.vara_geel_stark {				background-color: #F8E61C; }
+td.vara_geel_medium {				background-color: #FEFAAB; }
+td.vara_geel_light {				background-color: #FEFDEB; }
+
+<!-- vara_perzik -->
+body.vara_perzik {					background-color: #F8981C; }
+td.vara_perzik_stark {				background-color: #F8981C; }
+td.vara_perzik_medium {				background-color: #FEE0B7; }
+td.vara_perzik_light {				background-color: #FEF6EB; }
+
+<!-- vara_pink -->
+body.vara_pink {					background-color: #F30712; }
+td.vara_pink_stark {				background-color: #F30712; }
+td.vara_pink_medium {				background-color: #FDB3B6; }
+td.vara_pink_light {				background-color: #FEE9EA; }
+
+<!-- vara_zandgeel -->
+body.vara_zandgeel {				background-color: #F8C21C; }
+td.vara_zandgeel_stark {			background-color: #F8C21C; }
+td.vara_zandgeel_medium {			background-color: #F9E7B4; }
+td.vara_zandgeel_light {			background-color: #FEF6DF; }
+
+<!-- vara_donkergeel -->
+body.vara_donkergeel {				background-color: #FEB403; }
+td.vara_donkergeel_stark {			background-color: #FEB403; }
+td.vara_donkergeel_medium {			background-color: #FEF3EB; }
+td.vara_donkergeel_light {			background-color: #FFF8E8; }
+
+<!-- vara_oranje -->
+body.vara_oranje {					background-color: #F87E1C; }
+td.vara_oranje_stark {				background-color: #F87E1C; }
+td.vara_oranje_medium {				background-color: #F9E7B4; }
+td.vara_oranje_light {				background-color: #FEF3EB; }
+
+<!-- rood -->
+body.rood {							background-color: #F30713; }
+td.rood_stark {						background-color: #F30713; }
+td.rood_medium {					background-color: #F5545C; }
+td.rood_light {						background-color: #F97C82; }
+
+<!-- roodoranje -->
+body.roodoranje {					background-color: #F65414; }
+td.roodoranje_stark {				background-color: #F65414; }
+td.roodoranje_medium {				background-color: #FAA483; }
+td.roodoranje_light {				background-color: #F5885D; }
+
+<!-- oranje -->
+body.oranje {						background-color: #F87E1B; }
+td.oranje_stark {					background-color: #F87E1B; }
+td.oranje_medium {					background-color: #FABB86; }
+td.oranje_light {					background-color: #F6A563; }
+
+<!-- lichtoranje -->
+body.lichtoranje {					background-color: #F7971C; }
+td.lichtoranje_stark {				background-color: #F7971C; }
+td.lichtoranje_medium {				background-color: #FBC887; }
+td.lichtoranje_light {				background-color: #FAB965; }
+
+<!-- oranjegeel -->
+body.oranjegeel {					background-color: #FFB403; }
+td.oranjegeel_stark {				background-color: #FFB403; }
+td.oranjegeel_medium {				background-color: #FED77A; }
+td.oranjegeel_light {				background-color: #FECB55; }
+
+<!-- donkergeel -->
+body.donkergeel {					background-color: #F7C21C; }
+td.donkergeel_stark {				background-color: #F7C21C; }
+td.donkergeel_medium {				background-color: #FADF86; }
+td.donkergeel_light {				background-color: #F9D565; }
+
+<!-- lichtgeel -->
+body.lichtgeel {					background-color: #F7E61C; }
+td.lichtgeel_stark {				background-color: #F7E61C; }
+td.lichtgeel_medium {				background-color: #FAF287; }
+td.lichtgeel_light {				background-color: #FBEE64; }
+
+<!-- menu -->
+td.menuItem { 						font-family: Verdana, Geneva, Arial, Helvetica, sans-serif ; 
+									color:#FFFFFF;
+									font-size: 11px;
+									cursor: hand;
+									font-weight:bold; }
+td.menuItemTrans { 					font-family: Verdana, Geneva, Arial, Helvetica, sans-serif ; 
+									font-size: 11px;
+									cursor: hand;
+									font-weight:bold; }
+a.menuItem:link { 					COLOR: #FFFFFF; }
+a.menuItem:visited { 				COLOR: #FFFFFF; }
+a.menuItem:active { 				COLOR: #FFFFFF; }
+a.menuItem:hover {	 				COLOR: #F30713; }
+a.menuItemBlack:link { 				COLOR: #000000; }
+a.menuItemBlack:visited {			COLOR: #000000; }
+a.menuItemBlack:active {			COLOR: #000000; }
+a.menuItemBlack:hover {				COLOR: #F30713; }
+td.menuSubItem {					font-family: Verdana, Geneva, Arial, Helvetica, sans-serif ; 
+									background-color: #FFFFFF;
+									font-size: 10px;
+									color: #FFFFFF;
+									cursor: hand }
+a.menuSubItem:link { 				COLOR: #000000; }
+a.menuSubItem:visited { 			COLOR: #000000; }
+a.menuSubItem:active {	 			COLOR: #000000; }
+a.menuSubItem:hover { 				COLOR: #F30713; }
+.eiClass { 							position: absolute;	
+									left: 35px;
+									top: 350px; }
+table.poll {						background-image: url("/media/poll_background.gif");
+									background-repeat: repeat; }
+td.pollHead	{ 						background-color: #ED1C24; 
+									vertical-align: middle;
+									font-family: Verdana; 
+									font-size: 30px;
+									color: white; 
+									font-weight: bolder; }
+td.pollBottom	{ 					background-color: #ED1C24; text-align: right; vertical-align: middle; }
+td.normalPollText{ 					font-family: Verdana; font-size: 14px; color: black; font-weight: bolder; vertical-align: middle;}
+td.newinfo {						background-image: url("/media/bg_ster.gif");
+									background-repeat: no-repeat; }
+td.prikbord_title {					text-align: center;
+									font-family: Verdana;
+									font-size: 20px;
+									color: #F5E762;
+									font-weight:bold; }
+td.prikbord_text {					text-align: left;
+									font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+									font-size : 10px;
+									font-weight: bolder;
+									letter-spacing: 1px; }
+a:link { 							text-decoration: none; COLOR: #2F2F2F; }
+a:visited { 						text-decoration: none; COLOR: #2F2F2F; }
+a:active { 							text-decoration: none; COLOR: #2F2F2F; }
+a:hover { 							text-decoration: none; COLOR: #800000; }
+a.underlined:link { 				font-size : 11px; font-weight: bolder; COLOR: #2F2F2F; }
+a.underlined:visited { 				font-size : 11px; font-weight: bolder; COLOR: #2F2F2F; }
+a.underlined:active { 				font-size : 11px; font-weight: bolder; COLOR: #2F2F2F; }
+a.underlined:hover { 				font-size : 11px; font-weight: bolder; text-decoration: underline; COLOR: #800000; }
+
+
+<!-- windows css -->
+.clWin{position:absolute; z-index:2; visibility:hidden; overflow:hidden; background-color:blue}
+.clWindow{position:absolute; background-color:blue; overflow:hidden; z-index:15; width:200}
+.clWinHead{position:absolute; width:200; top:0; font-family:arial,arial,helvetica; font-size:11px; font-weight:bold; color:white; background-color:transparent}
+.clText{position:absolute; z-index:50; font-family:arial,helvetica; font-size:11px; background-color:transparent}
+.clWinResize{position:absolute; z-index:30; width:30; height:30; clip:rect(0,30,30,0); background-image:url(/media/resize.gif); layer-background-image:url(/media/resize.gif)}
+.clLogo{position:absolute}
+.clUp{position:absolute; width:12; height:12; z-index:60;}
+.clDown{position:absolute; width:12; height:12; z-index:60;}
+.clWinButtons{position:absolute; font-family:arial,helvetica; font-size:12px} 
