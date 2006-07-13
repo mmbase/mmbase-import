@@ -24,6 +24,8 @@ public class UISconfig {
 
    public static boolean IS_ACTIVE = true;
    public static String PRODUCT_URL = "http://212.123.241.76/mmdemo/api/getProducts.jsp";
+   // public static String ORDER_URL = "http://212.123.241.76/mmdemo/api/postOrders.jsp";
+   public static String ORDER_URL = "http://mc018/mmdemo/api/postOrders.jsp"; // erwins machine
 
    public UISconfig() {
    }
