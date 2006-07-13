@@ -27,6 +27,7 @@ public class Product
    private boolean membershipRequired;
    private Date embargoDate = new Date();
    private Date expireDate = new Date();
+   private ArrayList properties;
 
    public Product()
    {
@@ -62,6 +63,11 @@ public class Product
       this.membershipRequired = membershipRequired;
    }
 
+   public void setProperties(ArrayList properties)
+   {
+      this.properties = properties;
+   }
+
    public String getExternID()
    {
       return externID;
@@ -90,6 +96,11 @@ public class Product
    public boolean isMembershipRequired()
    {
       return membershipRequired;
+   }
+
+   public ArrayList getProperties()
+   {
+      return properties;
    }
 
 }
