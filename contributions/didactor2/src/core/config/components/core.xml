@@ -42,6 +42,7 @@
     <setting name="booleansetting" type="boolean" default="true"/>
     <setting name="stringsetting" type="string" />
   -->
+    <setting name="showtranslationbox" type="boolean" default="false" />
   </scope>
   <scope name="providers" referid="provider">
     <!-- reference back on provider level to settings defined on component level
