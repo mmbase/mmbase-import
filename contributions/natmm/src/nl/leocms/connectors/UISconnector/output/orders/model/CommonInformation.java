@@ -19,7 +19,7 @@ package nl.leocms.connectors.UISconnector.output.orders.model;
 
 public class CommonInformation
 {
-   private int bankAccount;
+   private int bankAccount = 0;
 
    public CommonInformation()
    {

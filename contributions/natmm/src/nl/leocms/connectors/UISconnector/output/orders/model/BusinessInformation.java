@@ -19,10 +19,10 @@ package nl.leocms.connectors.UISconnector.output.orders.model;
 
 public class BusinessInformation
 {
-   private String companyName;
-   private String vatNo;
-   private String telephoneNo;
-   private String emailAddress;
+   private String companyName = "";
+   private String vatNo = "";
+   private String telephoneNo = "";
+   private String emailAddress = "";
 
    public BusinessInformation()
    {

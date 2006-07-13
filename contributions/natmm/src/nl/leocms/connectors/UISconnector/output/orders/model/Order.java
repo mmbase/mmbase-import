@@ -21,12 +21,12 @@ import java.util.*;
 
 public class Order
 {
-   private int orderId;
-   private String externId;
-   private int quantity;
-   private String acquisitionId;
+   private int orderId = 0;
+   private String externId = "";
+   private int quantity = 0;
+   private String acquisitionId = "";
    private Date orderDate = new Date();
-   private String paymentType;
+   private String paymentType = "";
    private CustomerInformation customerInformation = new CustomerInformation();
 
    public Order()

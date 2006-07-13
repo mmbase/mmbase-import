@@ -21,14 +21,14 @@ import java.util.*;
 
 public class PersonalInformation
 {
-   private String initials;
-   private String firstName;
-   private String suffix;
-   private String lastName;
+   private String initials = "";
+   private String firstName = "";
+   private String suffix = "";
+   private String lastName = "";
    private Date birthDate = new Date();
-   private String gender;
-   private String telephoneNo;
-   private String emailAddress;
+   private String gender = "";
+   private String telephoneNo = "";
+   private String emailAddress = "";
 
    public PersonalInformation()
    {
