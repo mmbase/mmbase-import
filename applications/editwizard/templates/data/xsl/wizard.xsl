@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.156 2006-07-12 13:19:58 nklasens Exp $
+    @version $Id: wizard.xsl,v 1.157 2006-07-13 08:48:25 nklasens Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -956,8 +956,10 @@
                 <xsl:attribute name="dtrequired">true</xsl:attribute>
               </xsl:if>
             </input>
-            <img src="{upload/path}" hspace="0" vspace="0" border="0" width="128" height="128"/>
+            <xsl:if test="contains(upload/path, '/') or contains(upload/path, '\')">
+	            <img src="{upload/path}" hspace="0" vspace="0" border="0" width="128" height="128"/>
             <br/>
+            </xsl:if>
             <span>
               <xsl:value-of select="upload/@name"/>
               <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
