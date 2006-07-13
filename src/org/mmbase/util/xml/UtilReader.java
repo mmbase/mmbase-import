@@ -34,7 +34,7 @@ import org.w3c.dom.Element;
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.22 2006-06-19 17:23:32 michiel Exp $
+ * @version $Id: UtilReader.java,v 1.23 2006-07-13 08:40:18 michiel Exp $
  */
 public class UtilReader {
 
@@ -82,6 +82,7 @@ public class UtilReader {
     static {
         // doesnt startup, probably because of cyclic referecnes, if this happens in DocumentReader itself.
         DocumentReader.utilProperties = UtilReader.get("documentreader.xml").getProperties();
+
     }
 
     private class UtilFileWatcher extends ResourceWatcher {
@@ -240,7 +241,7 @@ public class UtilReader {
             }
         }
         if (properties.size() == 0) {
-            log.warn("No properties read from " + configList);
+            log.service("No properties read from " + configList);
         }
     }
 
