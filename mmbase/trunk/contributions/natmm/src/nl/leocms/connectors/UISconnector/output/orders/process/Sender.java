@@ -17,16 +17,19 @@
  */
 package nl.leocms.connectors.UISconnector.output.orders.process;
 
+
+import org.w3c.dom.Document;
+import org.mmbase.util.logging.*;
+import javax.xml.transform.*;
+import java.net.*;
+import java.io.*;
+
 import org.mmbase.bridge.*;
 
+import nl.leocms.connectors.UISconnector.output.orders.xml.Coder;
 import nl.leocms.connectors.UISconnector.output.orders.process.OrderMaker;
 import nl.leocms.connectors.UISconnector.output.orders.model.*;
-import org.w3c.dom.Document;
-import nl.leocms.connectors.UISconnector.output.orders.xml.Coder;
-import org.mmbase.util.logging.*;
-import javax.xml.transform.Transformer;
-import java.io.StringWriter;
-import javax.xml.transform.TransformerFactory;
+import nl.leocms.connectors.UISconnector.UISconfig;
 
 
 public class Sender extends Thread
@@ -43,22 +46,53 @@ public class Sender extends Thread
    public void run(){
       try{
          Order order = OrderMaker.makeOrder(nodeSubscription);
+
          Document document = Coder.code(order);
 
-         TransformerFactory tFactory = TransformerFactory.newInstance();
 
+
+         TransformerFactory tFactory = TransformerFactory.newInstance();
 //         Transformer transformer = tFactory.newTransformer(new javax.xml.transform.stream.StreamSource("z:/doc.xsl"));
-			Transformer transformer = tFactory.newTransformer();
+         Transformer transformer = tFactory.newTransformer();
 
          StringWriter result = new StringWriter();
          transformer.transform(new javax.xml.transform.dom.DOMSource(document),
                                new javax.xml.transform.stream.StreamResult(result));
-         System.out.println(result);
+
+//         System.out.println(result);
+
+
+
+
+         String sEncodedXML = URLEncoder.encode(result.toString(), "windows-1252");
+
+         URL url = new URL(UISconfig.geProductUrl());
+         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+         connection.setDoOutput(true);
+         connection.setRequestMethod("POST");
+         connection.connect();
+
+         PrintWriter out = new PrintWriter(connection.getOutputStream());
+         out.print("xml=" + sEncodedXML + "&test=test");
+         out.flush();
+         out.close();
+
+         BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+         String inputLine;
+
+         while ( (inputLine = in.readLine()) != null)
+            System.out.println(inputLine);
+
+         in.close();
 
          log.info("WSS report for Subscription=" + nodeSubscription.getNumber() + " has been sent seccessfully.");
       }
       catch(Exception e){
-         log.error("We has tried to compose an WSS report for Subscription=" + nodeSubscription.getNumber() + ". An error has occured:" + e);
+         StringWriter writer = new StringWriter();
+         PrintWriter pwriter = new PrintWriter(writer);
+         e.printStackTrace(pwriter);
+         log.error("We has tried to compose an WSS report for Subscription=" + nodeSubscription.getNumber() + ". An error has occured:\n" + writer);
       }
    }
 }
