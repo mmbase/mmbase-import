@@ -183,11 +183,21 @@
             <tr>
               <th class="listHeader"><di:translate key="progress.learnblock" /></th>
               <th class="listHeader"><di:translate key="progress.tests" /></th>
-              <th class="listHeader"><di:translate key="progress.questions" /></th>
-              <th class="listHeader"><di:translate key="progress.score" /></th>
-              <th class="listHeader"><di:translate key="progress.correct" /></th>
-              <th class="listHeader"><di:translate key="progress.needed" /></th>
-              <th class="listHeader"><di:translate key="progress.succeeded" /></th>
+              <di:ifsetting component="progress" setting="showquestionamount">
+                <th class="listHeader"><di:translate key="progress.questions" /></th>
+              </di:ifsetting>
+              <di:ifsetting component="progress" setting="showscore">
+                <th class="listHeader"><di:translate key="progress.score" /></th>
+              </di:ifsetting>
+              <di:ifsetting component="progress" setting="showcorrect">
+                <th class="listHeader"><di:translate key="progress.correct" /></th>
+              </di:ifsetting>
+              <di:ifsetting component="progress" setting="showneeded">
+                <th class="listHeader"><di:translate key="progress.needed" /></th>
+              </di:ifsetting>
+              <di:ifsetting component="progress" setting="showsucceeded">
+                <th class="listHeader"><di:translate key="progress.succeeded" /></th>
+              </di:ifsetting>
             </tr>
   
             <%-- find copybook --%>
@@ -248,6 +258,7 @@
                           </mm:compare>
                         </td>
     
+                        <di:ifsetting component="progress" setting="showquestionamount">
                         <td class="listItem">
                           <mm:field name="questionamount" write="false">
                             <mm:islessthan value="1">
@@ -263,11 +274,15 @@
                             </mm:isgreaterthan>
                           </mm:field>
                         </td>
+                        </di:ifsetting>
     
+                        <di:ifsetting component="progress" setting="showscore">
                         <td class="listItem">
                           <mm:write referid="save_madetestscore" />
                         </td>
+                        </di:ifsetting>
                         
+                        <di:ifsetting component="progress" setting="showcorrect">
                         <% int sum = 0; %>
                         <mm:relatednodes type="questions">
                           <mm:relatednodes type="givenanswers">
@@ -291,11 +306,15 @@
                             <di:translate key="progress.notQuestions" />
                           </mm:compare>
                         </td>
+                        </di:ifsetting>
     
+                        <di:ifsetting component="progress" setting="showneeded">
                         <td class="listItem">
                           <mm:write referid="requiredscore" />
                         </td>
+                        </di:ifsetting>
     
+                        <di:ifsetting component="progress" setting="showsucceeded">
                         <mm:compare referid="teststatus" value="toberated">
                           <td class="listItem"><di:translate key="progress.toberated" /></td>
                         </mm:compare>
@@ -312,6 +331,7 @@
                           <td class="listItem"><di:translate key="progress.notcompleted" /></td>
                         </mm:compare>
                       </tr>
+                      </di:ifsetting>
     
                       <mm:remove referid="madetestscore" />
                       <mm:remove referid="save_madetestscore" />
