@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder xmlns="http://www.mmbase.org/xmlns/builder" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         extends="calendar_items" maintainer="mmbase.org" 
+         name="special_days" version="0" 
+         xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+  <names>
+  </names>
+  <fieldlist>
+    <field name="start">
+      <gui>
+        <guiname xml:lang="en">Date</guiname>
+        <guiname xml:lang="nl">Datum</guiname>
+        <guiname xml:lang="eo">Dato</guiname>
+      </gui>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="birthdate" />
+    </field>
+    <field name="test">
+      <gui>
+        <guiname xml:lang="en">Test</guiname>
+      </gui>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="birthdate" />
+    </field>
+    <field name="stop">
+      <editor>
+        <positions>
+          <input>-1</input>
+          <list>-1</list>
+          <search>-1</search>
+        </positions>
+      </editor>
+    </field>
+    <field name="allday">
+      <editor>
+        <positions>
+          <input>-1</input>
+          <list>-1</list>
+          <search>-1</search>
+        </positions>
+      </editor>
+    </field>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="string">
+        <default value="birthday" />
+        <enumeration>
+          <entry name="birthday" value="Verjaardag"    xml:lang="nl" />
+          <entry name="weddingday" value="Trouwdag"    xml:lang="nl" />
+          <entry name="birthday" value="Birth day"     xml:lang="en" />
+          <entry name="weddingday" value="Wedding day" xml:lang="en" />
+        </enumeration>
+      </datatype>
+  </fieldlist>
+
+</builder>

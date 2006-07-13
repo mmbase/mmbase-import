@@ -1,0 +1,24 @@
+<jsp:root 
+    xmlns:jsp="http://java.sun.com/JSP/Page" 
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    version="2.0">
+  <mm:import externid="timeformat">:.SHORT</mm:import>
+  <mm:import externid="day" />
+  <mm:import externid="dayend" />
+  <mm:node>
+    <mm:link referids="_node@n,language,timezone" page="deleteItem.jspx">
+      <a href="${_}">-</a>
+    </mm:link>
+    <mm:field id="start" name="start" vartype="long">
+      <mm:time  format="${_ lt day ? ':MEDIUM.SHORT' : timeformat}" />
+    </mm:field>
+    <jsp:text>-</jsp:text>
+    <mm:field name="stop" vartype="long" >
+      <mm:time  format="${_ gt dayend ? ':MEDIUM.SHORT' : timeformat}" />
+    </mm:field>
+    <jsp:text> </jsp:text>
+    <mm:link referids="_node@n,language,timezone" page="editItem.jspx">
+      <a href="${_}" title="${_node.body}"><mm:field name="title" /></a>
+    </mm:link>
+  </mm:node>
+</jsp:root>

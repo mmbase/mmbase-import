@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<calendar_items exportsource="mmbase://www.mmbase.org/calendar" timestamp="20050921221010">
+ 
+  <node number="1" owner="admin" alias="UTC">
+    <title>0h UTC</title>
+    <body>The Calendar application was installed at this day.</body>
+    <start>TZUTC today</start>
+    <stop>TZUTC now</stop>
+  </node>
+
+</calendar_items>
