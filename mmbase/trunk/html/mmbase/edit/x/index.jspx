@@ -12,7 +12,7 @@
 
     <!-- 
          Produces a search-tool, and the search result with links to create and change MMBase nodes.
-         $Id: index.jspx,v 1.12 2006-05-16 18:08:48 michiel Exp $
+         $Id: index.jspx,v 1.13 2006-07-13 10:51:10 michiel Exp $
     -->
     <mm:import externid="logout" />
     <mm:present referid="logout"><mm:cloud method="logout" /></mm:present>
@@ -21,6 +21,7 @@
       <mm:include page="head.jspx" />
       <body>
         <mm:import externid="nodemanager">object</mm:import>
+        <mm:import externid="only" />
         
         <form id="searchform" action="." method="post">
           <h1>
@@ -48,6 +49,12 @@
                 </mm:hasnodemanager>
               </mm:listnodes>
             </select>
+            <mm:present referid="only">
+              <input title="descendants" name="only" type="checkbox"  onchange="this.form.submit()" checked="checked" />
+            </mm:present>
+            <mm:notpresent referid="only">
+              <input title="descendants" name="only" type="checkbox"  onchange="this.form.submit()" />
+            </mm:notpresent>
             <span class="logininfo">
               <mm:cloudinfo type="user" /> (<mm:cloudinfo type="rank" />)
               <mm:link referids="nodemanager">
@@ -78,6 +85,9 @@
             <mm:import externid="sortfields">number</mm:import>
             <mm:import externid="sortdirections">down</mm:import>
             <mm:sortorder field="$sortfields" direction="$sortdirections" />
+            <mm:present referid="only">
+              <mm:typeconstraint name="$nodemanager" descendants="false" />
+            </mm:present>
 
             <mm:link id="base" page="." referids="nodemanager">
               <mm:fieldlist nodetype="$nodemanager" type="search">
