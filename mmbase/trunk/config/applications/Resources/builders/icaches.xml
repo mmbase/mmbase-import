@@ -114,7 +114,7 @@
       </editor>
       <db>
         <name>handle</name>
-        <type state="system" notnull="false">BINARY</type>
+        <type state="persistent" size="16777215" notnull="true" key="false">BINARY</type>
       </db>
     </field>
     <field>
