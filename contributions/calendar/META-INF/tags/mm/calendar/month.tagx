@@ -1,0 +1,32 @@
+<jsp:root
+    xmlns:c="http://java.sun.com/jsp/jstl/core" 
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    version="2.0"
+    >
+  <jsp:directive.tag import="java.util.*" />
+  <jsp:directive.attribute name="date"  type="java.util.Date" required="true" />
+  <jsp:directive.variable  name-given="day" />
+  <jsp:directive.variable  name-given="noon" />
+  <jsp:directive.variable  name-given="dayend" />
+  <jsp:directive.variable  name-given="loop" />
+  <jsp:scriptlet>
+    Calendar cal = Calendar.getInstance((TimeZone) request.getAttribute("org.mmbase.timezone"), (Locale) request.getAttribute("javax.servlet.jsp.jstl.fmt.locale.request")); 
+    cal.setTime(date);
+  </jsp:scriptlet>
+  <mm:import id="minDay"><jsp:expression>cal.getActualMinimum(Calendar.DAY_OF_MONTH)</jsp:expression></mm:import>
+  <mm:import id="maxDay"><jsp:expression>cal.getActualMaximum(Calendar.DAY_OF_MONTH)</jsp:expression></mm:import>
+  <c:forEach begin="${minDay}" end="${maxDay}" var="daynumber" varStatus="loop">
+    <mm:write referid="daynumber" jspvar="daynumber" vartype="integer" write="false">
+      <jsp:scriptlet>cal.set(Calendar.DAY_OF_MONTH, daynumber.intValue());</jsp:scriptlet>
+    </mm:write>
+    <mm:context>
+      <mm:import id="time"><jsp:expression>cal.getTime().getTime() / 1000</jsp:expression></mm:import>
+      <mm:time id="day"    write="false" time="${time} this sunday" />
+      <mm:time id="noon"   write="false" referid="day" offset="${60 * 60 * 12}" />
+      <mm:time id="dayend" write="false" referid="day" offset="${60 * 60 * 24}"/>
+      <jsp:doBody />
+    </mm:context>
+  </c:forEach>
+  
+</jsp:root>

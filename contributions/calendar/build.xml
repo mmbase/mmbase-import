@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<project name="calendar"  default="package" basedir=".">
+  <property name="project.name"      value="calendar" />
+  <property name="project.comment"   value="MMBase Calendar application" />
+
+  <import file="../../applications/buildbase-include.xml" />
+
+
+</project>
