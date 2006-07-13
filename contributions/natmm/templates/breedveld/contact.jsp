@@ -25,12 +25,19 @@
 		<mm:list nodes="<%= pageId %>" path="pagina1,readmore,pagina2"
 			fields="pagina2.number">
 		<form action="page.jsp?page=<mm:field name="pagina2.number" />" method="POST">
-                <tr> 
-                  <td><img src="media/spacer.gif" width="16" height="8"></td>
+            <tr> 
+              <td><img src="media/spacer.gif" width="16" height="8"></td>
 				  <td><img src="media/spacer.gif" width="128" height="8"></td>
 				  <td><img src="media/spacer.gif" width="255" height="8"></td>
 				  <td><img src="media/spacer.gif" width="16" height="8"></td>
-                </tr>
+            </tr>
+            <tr> 
+               <td width="399" valign="top" class="background" colspan=4">
+  					<%= lan(language,"Uw vraag of reactie") %><br><br>
+  					<%= lan(language,"Met deze pagina kunt u uw reactie of vraag versturen. U ontvangt dan zo snel mogelijk antwoord.") %><br><br>
+					<%= lan(language,"De door u verstrekte gegevens zullen vertrouwelijk worden behandeld en alleen worden gebruikt voor de toezending van de door u gevraagde informatie. De gegevens zullen in geen geval aan derden worden verstrekt.") %><br><br>
+				  </td>
+              </tr>
                 <tr> 
                   <td width="144" valign="top" class="background" colspan="2">
 				  	<%= lan(language,"Uw vraag of reactie") %> 
@@ -53,6 +60,14 @@
 				  </td>
                   <td width="255" valign="top" class="background" colspan="2">
 				    <textarea rows="1" cols="40" name="email" style="FONT-FAMILY: Courier New, Courier, mono; FONT-SIZE: 11px" wrap></textarea>
+                  </td>
+				</tr>
+				<tr> 
+              <td width="16">
+					<input type="checkbox" name="privacy" value="<%= lan(language,"Ja, ik wens per e-mail van nieuws op de hoogte gehouden te worden.") %>">		
+				  </td>
+				  <td width="399" valign="center" align="left" class="background" colspan="3"> 
+				  		<%= lan(language,"Ja, ik wens per e-mail van nieuws op de hoogte gehouden te worden.") %>
                   </td>
 				</tr>
 				<tr> 

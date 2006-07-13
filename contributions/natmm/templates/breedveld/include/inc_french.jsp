@@ -117,7 +117,20 @@
 			{ translation="Résidence"; }
 		else if(wordToTranslate.equals("Zonder titel"))
 			{ translation="Sans titre"; }
-		
+		else if (wordToTranslate.equals("Met deze pagina kunt u uw reactie of vraag versturen. U ontvangt dan zo snel mogelijk antwoord."))
+			{ translation="Si vous avez un commentaire à faire ou une question à poser, n'hésitez pas à m'en faire part sur cette page. Je vous répondrai dès que possible."; }
+		else if (wordToTranslate.equals("De door u verstrekte gegevens zullen vertrouwelijk worden behandeld en alleen worden gebruikt voor de toezending van de door u gevraagde informatie. De gegevens zullen in geen geval aan derden worden verstrekt."))
+			{ translation="Je m'engage à garder confidentielles toutes informations que vous me communiquerez."; }
+		else if (wordToTranslate.equals("Ja, ik wens per e-mail van nieuws op de hoogte gehouden te worden."))
+			{ translation="Oui, je voudrais reçevoir vos informations par courriel."; }
+		else if (wordToTranslate.equals("Bedankt voor uw reactie of vraag."))
+			{ translation="Merci de votre commentaire ou question."; }
+		else if (wordToTranslate.equals("U kunt binnenkort een antwoord tegemoet zien."))
+			{ translation="Vous recevrez bientot une reponse."; }
+		else if (wordToTranslate.equals("Uw reactie of vraag kan niet worden verstuurd."))
+			{ translation="Votre commentaire ou question n'a pas pu A?tre envoyA©."; }
+		else if (wordToTranslate.equals("Voor het versturen is het nodig dat:<ul><li>u alle velden invult en</li><li>uw e-mail adres een @ en een . bevat</li></ul>"))
+			{ translation="Pour envoyer votre commentaire ou question, il est necessaire de:<ul><li>completer tous les champs <li>laisser votre adresse electronique contenir un @ et un .</ul>"; }
 	}
 	return translation;
 }

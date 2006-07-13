@@ -67,6 +67,10 @@ if(jumploc==null){
 <%= closeComment %>
 </SCRIPT>
 
+<META name="description" content="Marian Breedveld is an artist who lives and works in Rotterdam, the Netherlands. The website of Marian Breedveld provides an overview of her past and present work.">
+
+<META name="keywords" content="marian breedveld, doesburg, ateliers 63, parijs, rotterdam, painting, oil, canvas, bernard jordan, mk, rob de vries">
+
 </head>
 
 <%-- for IE ROWS=85 is sufficient --%>
