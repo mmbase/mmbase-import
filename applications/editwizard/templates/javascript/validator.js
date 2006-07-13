@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.35 2004-08-26 17:29:00 pierre Exp $
+ * @version  $Id: validator.js,v 1.36 2006-07-13 11:23:47 nklasens Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -180,45 +180,55 @@ Validator.prototype.validateElement = function (el, silent) {
     var err = "";
     var v = getValue(el);
 
-    dtpattern = el.getAttribute("dtpattern");
-    if (!isEmpty(dtpattern)) {
-        var re = new RegExp(dtpattern);
-        if (!v.match(re)) {
-           err += getToolTipValue(form,'message_pattern', "the value {0} does not match the required pattern", v);
+    required = el.getAttribute("dtrequired");
+    if (!isEmpty(required) && (required == "true")) {
+        if (isEmpty(v)) {
+            err += getToolTipValue(form,'message_required',
+                   "value is required");
         }
     }
 
-    // determine datatype
-    var dttype = el.getAttribute("dttype");
-    var ftype = el.getAttribute("ftype");
-    if (ftype=="enum") {
-        err += validateEnum(el, form, v);
-    } else switch (dttype) {
-        case "string":
-            err += validateString(el, form, v);
-            break;
-        case "long":;
-        case "int":
-            err += validateInt(el, form, v);
-            break;
-        case "float":;
-        case "double":
-            err += validateFloat(el, form, v);
-            break;
-        case "enum":
+    if (!isEmpty(v)) {
+        dtpattern = el.getAttribute("dtpattern");
+        if (!isEmpty(dtpattern)) {
+            var re = new RegExp(dtpattern);
+            if (!v.match(re)) {
+               err += getToolTipValue(form,'message_pattern', "the value {0} does not match the required pattern", v);
+            }
+        }
+
+        // determine datatype
+        var dttype = el.getAttribute("dttype");
+        var ftype = el.getAttribute("ftype");
+        if (ftype=="enum") {
             err += validateEnum(el, form, v);
-            break;
-        case "binary":
-            err += validateBinary(el, form, v);
-            break;
-        case "datetime":
-            err += validateDatetime(el, form, v);
-            break;
-        case "boolean":
-            err += validateBoolean(el, form, v);
-            break;
+        } else switch (dttype) {
+            case "string":
+                err += validateString(el, form, v);
+                break;
+            case "long":;
+            case "int":
+                err += validateInt(el, form, v);
+                break;
+            case "float":;
+            case "double":
+                err += validateFloat(el, form, v);
+                break;
+            case "enum":
+                err += validateEnum(el, form, v);
+                break;
+            case "binary":
+                err += validateBinary(el, form, v);
+                break;
+            case "datetime":
+                err += validateDatetime(el, form, v);
+                break;
+            case "boolean":
+                err += validateBoolean(el, form, v);
+                break;
+        }
+        err += validateUnknown(el, form, v);
     }
-    err += validateUnknown(el, form, v);
 
     updatePrompt(el, err, silent);
     return err.length == 0; // true == valid, false == invalid
@@ -284,12 +294,6 @@ function requiresUnknown(el, form) {
 //********************************
 
 function validateString(el, form, v) {
-    required = el.getAttribute("dtrequired");
-    if (!isEmpty(required) && (required == "true")) {
-        if (v=="")
-            return getToolTipValue(form,'message_required',
-                   "value is required");
-    }
     minlength = el.getAttribute("dtminlength");
     if (!isEmpty(minlength) && (v.length < minlength)) {
         return getToolTipValue(form,'message_minlength', "value must be at least {0} characters", minlength);
