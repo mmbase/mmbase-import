@@ -134,7 +134,7 @@
             </tr>
           </mm:node>
         </table>
-  
+        <di:ifsetting component="progress" setting="showeducationplan"> 
         <p><b><di:translate key="progress.educationplan" /></b></p>
   
         <table class="Font">
@@ -174,7 +174,7 @@
             </mm:relatednodescontainer>
           </mm:node>
         </table>
-  
+        </di:ifsetting>
   
         <mm:node referid="student">
           <p><b><di:translate key="progress.testsof" /> <mm:field name="firstname" /> <mm:field name="lastname" /></b></p>
