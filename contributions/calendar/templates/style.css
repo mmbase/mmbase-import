@@ -1,0 +1,45 @@
+.mm_calendar { 
+  background-color: white;
+  color: black;
+}
+
+.mm_calendar td { 
+  font-size: small;
+  vertical-align: top;
+}
+.mm_calendar .day h1 { 
+  font-size: small;
+}
+.mm_calendar a { 
+  text-decoration: none;
+  font-weight: bold;
+  color: black;
+
+}
+
+.mm_calendar .Saturday, .mm_calendar .Sunday { 
+  background-color: #ccc;
+}
+
+
+.event1 { 
+  background-color: #faa;
+}
+.event2 { 
+  background-color: #afa;
+}
+.event3 { 
+  background-color: #faf;
+}
+.event4 { 
+  background-color: #aaf;
+}
+ul { 
+  margin-left: 0px;
+  padding-left: 10px;
+}
+li { 
+  list-style-type: none;
+  margin-left: 0px;
+}
+
