@@ -117,7 +117,20 @@
 			{ translation="Research period"; }
 		else if(wordToTranslate.equals("Zonder titel"))
 			{ translation="Untitled"; }
-		
+		else if (wordToTranslate.equals("Met deze pagina kunt u uw reactie of vraag versturen. U ontvangt dan zo snel mogelijk antwoord."))
+			{ translation="Use this page to send your comment or question. You will receive an answer as soon as possible."; }
+		else if (wordToTranslate.equals("De door u verstrekte gegevens zullen vertrouwelijk worden behandeld en alleen worden gebruikt voor de toezending van de door u gevraagde informatie. De gegevens zullen in geen geval aan derden worden verstrekt."))
+			{ translation="The data you provide will be treated confidentially and only be used to send you the requested information. The information will not be transferred to third parties."; }
+		else if (wordToTranslate.equals("Ja, ik wens per e-mail van nieuws op de hoogte gehouden te worden."))
+			{ translation="Yes, I would like to receive news by email."; }
+		else if (wordToTranslate.equals("Bedankt voor uw reactie of vraag."))
+			{ translation="Thanks for your comment or question."; }
+		else if (wordToTranslate.equals("U kunt binnenkort een antwoord tegemoet zien."))
+			{ translation="You will soon receive an answer."; }
+		else if (wordToTranslate.equals("Uw reactie of vraag kan niet worden verstuurd."))
+			{ translation="Your comment or question could not be sent."; }
+		else if (wordToTranslate.equals("Voor het versturen is het nodig dat:<ul><li>u alle velden invult en</li><li>uw e-mail adres een @ en een . bevat</li></ul>"))
+			{ translation="To send your comment or question it is necessary to:<ul><li>fill out all the fields and</li><li>let your Email address contain a @ and a .</li></ul>"; }
 	}
 	return translation;
 }
