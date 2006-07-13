@@ -166,11 +166,25 @@ public class Updater
       for(Iterator it = arliPaymentTypes.iterator(); it.hasNext();){
          PaymentType paymentType = (PaymentType) it.next();
 
-         Node nodePaymentType = nmPaymentType.createNode();
-         nodePaymentType.setStringValue("naam", paymentType.getId());
-         nodePaymentType.commit();
-
+         //Looks for an already existing Node
+         NodeList nl = cloud.getList("",
+                                     "payment_type",
+                                     "payment_type.number,payment_type.naam",
+                                     "payment_type.naam='" + paymentType.getId() + "'",
+                                     null, null, null, true);
+         Node nodePaymentType;
+         if(nl.size() > 0){
+            //the Node already exist
+            nodePaymentType = cloud.getNode(nl.getNode(0).getStringValue("payment_type.number"));
+         }
+         else{
+            //There is no such node
+            nodePaymentType = nmPaymentType.createNode();
+            nodePaymentType.setStringValue("naam", paymentType.getId());
+            nodePaymentType.commit();
+         }
          nodeEvenement.createRelation(nodePaymentType, cloud.getRelationManager("related")).commit();
+
 
          nodeEvenement.setStringValue("titel", paymentType.getDescription());
          nodeEvenement.commit();
