@@ -88,12 +88,12 @@ public class SubscribeAction extends Action {
 
    public static String priceFormating(String sPrice, boolean isGroupExcursion) {
       String sFPrice = priceFormating(sPrice);
-      if(isGroupExcursion && sFPrice.equals("gratis")) { 
+      if(isGroupExcursion && sFPrice.equals("gratis")) {
          sFPrice = "-";
       }
       return sFPrice;
-   }   
-   
+   }
+
    private static String dearSir(Node thisParticipant, String thisParticipantName, String newline) {
       String message = "";
       if (thisParticipant.getStringValue("gender").equals("male")) {
@@ -124,7 +124,7 @@ public class SubscribeAction extends Action {
       }
       return message;
    }
-   
+
    private static String addText(String text, String newline) {
       String message = "";
       if(text!=null&&!HtmlCleaner.cleanText(text,"<",">","").trim().equals("")){
@@ -213,13 +213,13 @@ public class SubscribeAction extends Action {
 
          String sPaymentType = thisSubscription.getStringValue("betaalwijze");
          if (sPaymentType.equals(SubscribeForm.cashPaymentType)){
-            
+
             int costs = relation.getIntValue("pos");
             if(totalCosts!=-1) { totalCosts += costs; }
 
             String sCosts = priceFormating(costs);
-            if(sCosts.equals("onbekend")) { 
-               totalCosts = -1; 
+            if(sCosts.equals("onbekend")) {
+               totalCosts = -1;
             }
 
             message += "<td>&nbsp;" + sCosts + "</td></tr>";
@@ -229,7 +229,7 @@ public class SubscribeAction extends Action {
             totalCosts = -1;
          }
       }
-      message += "<tr><td>TOTAAL</td><td>&nbsp;" 
+      message += "<tr><td>TOTAAL</td><td>&nbsp;"
          + (totalCosts==-1 ?  "de prijs voor uw inschrijving kon helaas niet worden berekend" : priceFormating(totalCosts) )
          + "</td></tr>"
          + "</table>" + newline + paymentCondition + newline ;
@@ -312,10 +312,10 @@ public class SubscribeAction extends Action {
       message += "Wij zien uw betaling graag uiterlijk veertien dagen voor de afvaart tegemoet. Bij annulering binnen acht dagen voor vertrek zijn wij genoodzaakt 100% annuleringskosten te berekenen." + newline + newline;
       message += "We wensen u een mooie excursie!";
       return message;
-   }      
+   }
 
    private static String withKindRegards(Node thisParticipant, String emailAddresses, String newline) {
-      String message = "Met vriendelijke groeten," + newline + newline + newline 
+      String message = "Met vriendelijke groeten," + newline + newline + newline
                      + emailAddresses + newline + newline;
       return message;
    }
@@ -329,7 +329,7 @@ public class SubscribeAction extends Action {
    }
 
    public static String [] getPhoneAndEmail(Node thisParent, String newline) {
-      
+
       String bookPhone = "(035) 655 99 55";
       String bookEmail = NatMMConfig.fromCADAddress;
       String phoneNumbers = "";
@@ -379,11 +379,11 @@ public class SubscribeAction extends Action {
    public static String getMessage(Node thisEvent, Node thisParent, Node thisSubscription, Node thisParticipant, String confirmUrl, String type) {
 
       boolean isGroupExcursion = Evenement.isGroupExcursion(thisParent);
-      
+
       String newline = "<br/>";
       if(type.equals("plain")) { newline = "\n"; }
       String [] phoneAndEmail = getPhoneAndEmail(thisParent, newline);
-   
+
       String thisParticipantName =  thisParticipant.getStringValue("firstname")
          + (thisParticipant.getStringValue("initials").equals("") ? "" : " " +  thisParticipant.getStringValue("initials"))
          + (thisParticipant.getStringValue("suffix").equals("") ? "" : " " +  thisParticipant.getStringValue("suffix"))
@@ -398,13 +398,13 @@ public class SubscribeAction extends Action {
          message += withKindRegards(thisParticipant, phoneAndEmail[1], newline);
 
       } else {
-      
-         if(confirmUrl.equals("")||confirmUrl.equals("reminder")) { // *** after the visitor clicks the confirmation url    
+
+         if(confirmUrl.equals("")||confirmUrl.equals("reminder")) { // *** after the visitor clicks the confirmation url
             message += withThisLetter(thisParent, thisEvent, confirmUrl, isGroupExcursion, newline);
             message += subscriptionStatus(thisEvent, confirmUrl, phoneAndEmail[0], newline);
             message += newline + newline;
             message += necessaryInfo(thisParent, newline);
-      
+
          } else { // *** the visitor booked on the website
             message += "Gebruik de onderstaande link om uw aanmelding voor "  + thisEvent.getStringValue("titel") + ", " + (new DoubleDateNode(thisEvent)).getReadableValue() + " te bevestigen: " + newline + newline;
             if(type.equals("plain")) {
@@ -413,10 +413,10 @@ public class SubscribeAction extends Action {
                message += "<b><a href=\"" + confirmUrl + "\">bevestig uw aanmelding </a></b>" + newline + newline;
             }
          }
-   
+
          if(!type.equals("plain")) {
             message += youSubscribedWith(thisSubscription, newline);
-      
+
             if(confirmUrl.equals("")) {
                message += youSubscribedAs(thisParticipant, thisSubscription, thisParticipantName, isGroupExcursion, newline);
             }
@@ -466,7 +466,7 @@ public class SubscribeAction extends Action {
 
             thisSubscription.createRelation(emailNode,cloud.getRelationManager("related")).commit();
 
-            // *** update inschrijvingen,related,inschrijvings_status if present status is aangemeld 
+            // *** update inschrijvingen,related,inschrijvings_status if present status is aangemeld
             // this means the inschrijving is made by the backoffice
             // for website bookings the status is set to confirmed in includes/events_doconfirm.jsp
             RelationList relations = thisSubscription.getRelations("related","inschrijvings_status");
@@ -547,7 +547,7 @@ public class SubscribeAction extends Action {
 
            // removeObsoleteFormBean(mapping, request);
            subscribeForm.resetNumbers();
-           
+
            if(action.indexOf(subscribeForm.OTHER_DATES_ACTION)>-1) {
                subscribeForm.setAction(subscribeForm.SELECT_DATE_ACTION);
            } else if(!(action.indexOf(subscribeForm.FIX_DATE_ACTION)>-1)) {                  // *** leave fix_date unchanged ***
@@ -619,7 +619,7 @@ public class SubscribeAction extends Action {
 
             Node thisSubscription = null;
             if(!action.equals(subscribeForm.SUBSCRIBE_ACTION)) {
-               try { 
+               try {
                   thisSubscription = cloud.getNode(subscribeForm.getSubscriptionNumber());
                } catch (Exception e) {
                   log.info("Action 'Wijzig' or 'AddParticipant' for a none existing subscription."
@@ -666,7 +666,12 @@ public class SubscribeAction extends Action {
                }
                subscribeForm.setStatus(thisStatus);
             }
-            thisSubscription.createRelation(cloud.getNode(thisStatus),cloud.getRelationManager("related")).commit();
+            Node statusNode = cloud.getNode(thisStatus);
+            if(statusNode!=null) {
+            	thisSubscription.createRelation(cloud.getNode(thisStatus),cloud.getRelationManager("related")).commit();
+		    } else {
+				log.error("inschrijvings_status with number " + thisStatus + " does not exist.");
+		    }
 
             // *** add participant to subscription
             if(subscribeForm.getTicketOffice().equals("backoffice")) {

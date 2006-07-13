@@ -63,36 +63,37 @@ public class Sender extends Thread
 
 
 
+         log.info("Trying to post the following XML to WSS:");
+         log.info(result.toString());
 
          String sEncodedXML = URLEncoder.encode(result.toString(), "windows-1252");
 
-         URL url = new URL(UISconfig.geProductUrl());
+         URL url = new URL(UISconfig.ORDER_URL);
          HttpURLConnection connection = (HttpURLConnection) url.openConnection();
          connection.setDoOutput(true);
          connection.setRequestMethod("POST");
          connection.connect();
 
          PrintWriter out = new PrintWriter(connection.getOutputStream());
-         out.print("xml=" + sEncodedXML + "&test=test");
+         out.print("xml=" + sEncodedXML);
          out.flush();
          out.close();
 
+         log.info("Respons on POST by WSS:");
          BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-
          String inputLine;
-
-         while ( (inputLine = in.readLine()) != null)
-            System.out.println(inputLine);
-
+         while ( (inputLine = in.readLine()) != null) {
+            log.info(inputLine);
+	     }
          in.close();
 
-         log.info("WSS report for Subscription=" + nodeSubscription.getNumber() + " has been sent seccessfully.");
+         log.info("WSS report for Subscription=" + nodeSubscription.getNumber() + " has been sent successfully.");
       }
       catch(Exception e){
          StringWriter writer = new StringWriter();
          PrintWriter pwriter = new PrintWriter(writer);
          e.printStackTrace(pwriter);
-         log.error("We has tried to compose an WSS report for Subscription=" + nodeSubscription.getNumber() + ". An error has occured:\n" + writer);
+         log.error("Tried to compose an WSS report for Subscription=" + nodeSubscription.getNumber() + ". An error has occured:\n" + writer);
       }
    }
 }
