@@ -43,7 +43,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.147 2006-07-06 11:41:33 michiel Exp $
+ * @version $Id: Wizard.java,v 1.148 2006-07-13 13:18:14 nklasens Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -2735,8 +2735,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                 }
 
                 // manually set maxlength if given
-                // ignore sizes smaller than 1 and larger than 255
-                if ((maxlen > 0) && (maxlen < 256)) {
+                // ignore sizes smaller than 1
+                if (maxlen > 0) {
                     Utils.setAttribute(fieldDef, "dtmaxlength", "" + maxlen);
                 }
             }
