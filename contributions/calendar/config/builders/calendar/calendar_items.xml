@@ -11,7 +11,6 @@
     <plural xml:lang="en">Calendar items</plural>
     <plural xml:lang="nl">Agendaitems</plural>
     <plural xml:lang="eo">Kalendareroj</plural>
-
   </names>
   <fieldlist>
     <field name="title">
@@ -89,9 +88,9 @@
         <default value="event1" />
         <maxLength value="255" />
         <enumeration>
-          <entry name="event1" value="event1" />
-          <entry name="event2" value="event2" />
-          <entry name="event3" value="event3" />
+          <entry display="event1" value="event1" />
+          <entry display="event2" value="event2" />
+          <entry display="event3" value="event3" />
         </enumeration>
       </datatype>
     </field>
@@ -124,11 +123,6 @@
       <datatype base="lastmodified" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
     <field name="creator" state="system">
-      <descriptions>
-        <description xml:lang="en">Created by</description>
-        <description xml:lang="nl">Gecreëerd door</description>
-        <description xml:lang="nl">Kreinto</description>
-      </descriptions>
       <gui>
         <guiname xml:lang="en">Creator</guiname>
         <guiname xml:lang="nl">Creëerder</guiname>
