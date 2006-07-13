@@ -17,19 +17,19 @@
          
          TODO: Some way to edit relations? NODE-field editor?
          
-         $Id: change.jspx,v 1.14 2006-04-29 13:35:04 michiel Exp $
+         $Id: change.jspx,v 1.15 2006-07-13 10:51:10 michiel Exp $
     -->
-    <mm:include page="head.jspx" />
+    <mm:import externid="ok">init</mm:import>
+    <mm:import externid="submitted"><mm:write referid="ok" /></mm:import>
     
-    <body>
-      <mm:cloud rank="basic user">
+    <mm:cloud rank="basic user">
+      <mm:import externid="node" required="true" />
+      <mm:node referid="node" jspvar="n">
         
-        <mm:import externid="ok">init</mm:import>
-        <mm:import externid="submitted"><mm:write referid="ok" /></mm:import>
-
-        <mm:form id="changeform">
-          <mm:import externid="node" required="true" />
-          <mm:node referid="node" jspvar="n">
+        <mm:include page="head.jspx" />
+        
+        <body>          
+          <mm:form id="changeform">
             
             <h1 class="${submitted}">
               <mm:import externid="nodemanager"><mm:nodeinfo type="nodemanager" /></mm:import>
@@ -69,9 +69,10 @@
                 </mm:redirect>
               </mm:valid>
             </mm:compare>
-          </mm:node>
-        </mm:form>
-      </mm:cloud>
-    </body>
+
+          </mm:form>
+        </body>
+      </mm:node>
+    </mm:cloud>
   </html>
 </mm:content>
