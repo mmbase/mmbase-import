@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.164 2006-06-30 08:09:52 johannes Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.165 2006-07-13 08:50:43 nklasens Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -58,6 +58,12 @@ public class DatabaseStorageManager implements StorageManager {
      */
     protected static Set tableNameCache = null;
 
+    /**
+     * This sets contains all verified tables.
+     * @since MMBase-1.8.1
+     */
+    protected static Set verifiedTablesCache = new HashSet();
+    
     /**
      * Whether the warning about blob on legacy location was given.
      */
@@ -1816,7 +1822,9 @@ public class DatabaseStorageManager implements StorageManager {
         }
         String tableName = (String) factory.getStorageIdentifier(builder);
         createTable(builder, tableFields, tableName);
-        verify(builder);
+        if (!isVerified(builder)) {
+            verify(builder);
+        }
     }
 
     protected void createTable(MMObjectBuilder builder, List tableFields, String tableName) {
@@ -2109,7 +2117,9 @@ public class DatabaseStorageManager implements StorageManager {
     public boolean exists(MMObjectBuilder builder) throws StorageException {
         boolean result = exists((String)factory.getStorageIdentifier(builder));
         if (result) {
-            verify(builder);
+            if (!isVerified(builder)) {
+                verify(builder);
+            }
         }
         return result;
     }
@@ -2262,6 +2272,15 @@ public class DatabaseStorageManager implements StorageManager {
     }
 
     /**
+     * Check if builders are already verified with the database.
+     * @param builder Builder which might be verified
+     * @return <code>true</code> when already verified
+     */
+    public boolean isVerified(MMObjectBuilder builder) {
+        return verifiedTablesCache.contains(builder.getTableName().toUpperCase());
+    }
+    
+    /**
      * Tests whether a builder and the table present in the database match.
      */
     public void verify(MMObjectBuilder builder) throws StorageException {
@@ -2397,6 +2416,7 @@ public class DatabaseStorageManager implements StorageManager {
         } finally {
             releaseActiveConnection();
         }
+        verifiedTablesCache.add(builder.getTableName().toUpperCase());
     }
 
     /**
