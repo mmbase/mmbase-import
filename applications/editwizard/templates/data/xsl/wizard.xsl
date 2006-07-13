@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.157 2006-07-13 08:48:25 nklasens Exp $
+    @version $Id: wizard.xsl,v 1.158 2006-07-13 12:02:36 nklasens Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -1100,7 +1100,18 @@
 
   <xsl:template match="value" mode="inputline">
     <xsl:param name="val" select="."/>
-    <input type="text" size="80" name="{../@fieldname}" value="{$val}" class="input">
+    <input type="text" name="{../@fieldname}" value="{$val}" class="input">
+      <xsl:if test="../@dtmaxlength">
+      	<xsl:attribute name="maxlength"><xsl:value-of select="../@dtmaxlength" /></xsl:attribute>
+      	<xsl:choose>
+      		<xsl:when test="../@dtmaxlength &lt; 80">
+		      	<xsl:attribute name="size"><xsl:value-of select="../@dtmaxlength" /></xsl:attribute>      		
+      		</xsl:when>
+      		<xsl:otherwise>
+		      	<xsl:attribute name="size">80</xsl:attribute>
+      		</xsl:otherwise>
+      	</xsl:choose>
+      </xsl:if>
       <xsl:apply-templates select="../@*"/>
     </input>
   </xsl:template>
