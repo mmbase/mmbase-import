@@ -29,4 +29,7 @@ public class UISconfig {
 
    public UISconfig() {
    }
+   public static String geProductUrl(){
+      return PRODUCT_URL;
+   }
 }

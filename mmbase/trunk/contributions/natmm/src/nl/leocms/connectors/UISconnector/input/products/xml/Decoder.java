@@ -18,12 +18,12 @@
 package nl.leocms.connectors.UISconnector.input.products.xml;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.text.SimpleDateFormat;
 
 import org.w3c.dom.*;
 
 import nl.leocms.connectors.UISconnector.input.products.model.*;
+import nl.leocms.connectors.UISconnector.shared.model.*;
 
 
 
@@ -134,6 +134,66 @@ public class Decoder
                         }
                      }
 
+                  }
+               }
+               catch(Exception ex){
+               }
+
+
+               try{
+                  if ("propertyList".equals(nodeProductDataItem.getNodeName()))
+                  {
+                     ArrayList arliProperties = new ArrayList();
+                     product.setProperties(arliProperties);
+
+                     NodeList nlPropertiesNodes = nodeProductDataItem.getChildNodes();
+
+
+                     for(int i = 0; i < nlPropertiesNodes.getLength(); i++){
+                        Node nodeProperty = nlPropertiesNodes.item(i);
+
+                        if ("property".equals(nodeProperty.getNodeName())){
+                           Property property = new Property();
+                           arliProperties.add(property);
+
+
+                           NodeList nlPropertyInnerNodes = nodeProperty.getChildNodes();
+                           for (int j = 0; j < nlPropertyInnerNodes.getLength(); j++)
+                           {
+                              Node nodePropertyInnerNode = nlPropertyInnerNodes.item(j);
+
+                              ArrayList arliPropertyValues = new ArrayList();
+                              property.setPropertyValues(arliPropertyValues);
+
+                              if ("propertyId".equals(nodePropertyInnerNode.getNodeName()))
+                              {
+                                 property.setPropertyId(nodePropertyInnerNode.getFirstChild().getNodeValue());
+                              }
+                              if ("propertyDescription".equals(nodePropertyInnerNode.getNodeName()))
+                              {
+                                 property.setPropertyDescription(nodePropertyInnerNode.getFirstChild().getNodeValue());
+                              }
+                              if ("propertyValue".equals(nodePropertyInnerNode.getNodeName()))
+                              {
+                                 PropertyValue propertyValue = new PropertyValue();
+                                 arliPropertyValues.add(propertyValue);
+                                 System.out.println(arliPropertyValues.size());
+
+                                 NodeList nlPropertyValueInnerNodes = nodePropertyInnerNode.getChildNodes();
+                                 for(int k = 0; k < nlPropertyValueInnerNodes.getLength(); k++){
+                                    Node nodePropertyValueInner = nlPropertyValueInnerNodes.item(k);
+
+                                    if("propertyId".equals(nodePropertyValueInner.getNodeName())){
+                                       propertyValue.setPropertyValueId(nodePropertyValueInner.getFirstChild().getNodeValue());
+                                    }
+                                    if("propertyDescription".equals(nodePropertyValueInner.getNodeName())){
+                                       propertyValue.setPropertyValueDescription(nodePropertyValueInner.getFirstChild().getNodeValue());
+                                    }
+                                 }
+                              }
+                           }
+                        }
+                     }
                   }
                }
                catch(Exception ex){
