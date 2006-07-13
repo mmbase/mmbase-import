@@ -61,10 +61,52 @@ if(visitorsPrivacy==null){ visitorsPrivacy= lan(language,"Nee, ik wil geen nieuw
      <mm:setfield name="replyto"><%= visitorsEmail %></mm:setfield>
      <mm:setfield name="body"><%= visitorsText %></mm:setfield>
  </mm:createnode>
-<mm:node referid="thismail">
+<mm:node referid="thisemail">
 	<mm:field name="mail(oneshot)" />
 </mm:node>
-<% } 
-} %>
+<% } %>
+<table width="415" cellpadding="0" cellspacing="0">
+  <tr>
+  <td>
+	<img src="media/spacer.gif" width="415" height="8"></td>
+  </tr>
+    <% if(validQuestion) { %>
+		<tr>
+			<td width="415" valign="top" class="background">
+				<%= lan(language,"Bedankt voor uw reactie of vraag.") %><br><br>
+				<%= lan(language,"U kunt binnenkort een antwoord tegemoet zien.") %>
+			</td>
+		</tr>
+		<tr>
+			<td align="right" width="415" valign="top" class="background">
+				<a class="dark_boldlink" href="index.jsp" target="_top">
+					<IMG height=12 alt="" src="media/arrow_right_dg.gif" width=8 align=absMiddle border=0>
+					<%= lan(language,"naar de homepage") %>
+				</a>
+			</td>
+		</tr>
+	<% } else { %>
+	  	<tr>
+			<td width="415" valign="top" class="background">
+				<%= lan(language,"Uw reactie of vraag kan niet worden verstuurd.") %><br><br>
+				<%= lan(language,"Voor het versturen is het nodig dat:<ul><li>u alle velden invult en</li><li>uw e-mail adres een @ en een . bevat</li></ul>") %>
+			</td>
+		</tr>
+		<tr>
+			<td align="right" width="415" valign="top" class="background">
+				<a class="dark_boldlink" href="javascript:history.go(-1);">
+				<IMG height=12 alt="" src="media/arrow_right_dg.gif" width=8 align=absMiddle border=0>
+				<%= lan(language,"terug naar het formulier") %>
+				</a>
+			</td>
+		</tr>
+	<% } %>
+  <tr>
+	<td><img src="media/spacer.gif" width="415" height="8"></td>
+  </tr>
+</table>
+
+<% } %>
+
 
 </mm:cloud>
