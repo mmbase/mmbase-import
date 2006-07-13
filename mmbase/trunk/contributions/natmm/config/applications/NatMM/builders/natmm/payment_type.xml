@@ -65,5 +65,27 @@
             <type key="false" notnull="false" size="64" state="persistent">STRING</type>
          </db>
       </field>
+      <field>
+         <descriptions>
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <gui>
+            <guiname xml:lang="nl">externid</guiname>
+            <guiname xml:lang="en">externid</guiname>
+            <guitype>string</guitype>
+         </gui>
+         <editor>
+            <positions>
+               <input>3</input>
+               <list>3</list>
+               <search>-3</search>
+            </positions>
+         </editor>
+         <db>
+            <name xml:lang="nl">externid</name>
+            <type key="false" notnull="false" size="255" state="persistent">STRING</type>
+         </db>
+      </field>
 </fieldlist>
 </builder>
