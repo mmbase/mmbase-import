@@ -19,14 +19,14 @@ package nl.leocms.connectors.UISconnector.output.orders.model;
 
 public class Address
 {
-   private String addressType;
-   private String countryId;
-   private int houseNumber;
-   private String houseNumberExtension;
-   private String streetName;
-   private String extraInfo;
-   private String zipCode;
-   private String city;
+   private String addressType = "";
+   private String countryId = "";
+   private int houseNumber = 0;
+   private String houseNumberExtension = "";
+   private String streetName = "";
+   private String extraInfo = "";
+   private String zipCode = "";
+   private String city = "";
 
    public Address()
    {

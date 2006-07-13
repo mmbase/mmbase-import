@@ -22,37 +22,42 @@ import org.mmbase.bridge.*;
 import nl.leocms.connectors.UISconnector.output.orders.model.*;
 import java.util.Date;
 import java.util.regex.*;
+import java.io.*;
 
 
 public class OrderMaker
 {
-   public static Order makeOrder(Node nodeSubscription){
+   public static Order makeOrder(Node nodeSubscription)
+   {
 
       Order order = new Order();
-      order.setOrderId(nodeSubscription.getNumber());
-      order.setAcquisitionId(nodeSubscription.getStringValue("ticket_office"));
-      order.setOrderDate( new Date(nodeSubscription.getLongValue("datum_inschrijving") * 1000));
-      order.setPaymentType(nodeSubscription.getStringValue("betaalwijze"));
 
-      try{
+      CustomerInformation customerInformation = new CustomerInformation();
+      order.setCustomerInformation(customerInformation);
+
+      PersonalInformation personalInformation = new PersonalInformation();
+      BusinessInformation businessInformation = new BusinessInformation();
+      CommonInformation commonInformation = new CommonInformation();
+      Address address = new Address();
+
+      customerInformation.setPersonalInformation(personalInformation);
+      customerInformation.setBusinessInformation(businessInformation);
+      customerInformation.setCommonInformation(commonInformation);
+      customerInformation.setAddress(address);
+
+      try
+      {
          Node nodeEvenement = nodeSubscription.getRelatedNodes("evenement").getNode(0);
          order.setExternId(nodeEvenement.getStringValue("externid"));
+      }
+      catch (Exception e)
+      {
+      }
 
+      try
+      {
          Node nodeDeelnemers = nodeSubscription.getRelatedNodes("deelnemers").getNode(0);
          order.setQuantity(nodeDeelnemers.getIntValue("bron"));
-
-         CustomerInformation customerInformation = new CustomerInformation();
-         order.setCustomerInformation(customerInformation);
-
-         PersonalInformation personalInformation = new PersonalInformation();
-         BusinessInformation businessInformation = new BusinessInformation();
-         CommonInformation commonInformation = new CommonInformation();
-         Address address = new Address();
-
-         customerInformation.setPersonalInformation(personalInformation);
-         customerInformation.setBusinessInformation(businessInformation);
-         customerInformation.setCommonInformation(commonInformation);
-         customerInformation.setAddress(address);
 
          personalInformation.setInitials(nodeDeelnemers.getStringValue("initials"));
          personalInformation.setFirstName(nodeDeelnemers.getStringValue("firstname"));
@@ -67,19 +72,23 @@ public class OrderMaker
 
          address.setAddressType("P");
 
+         try{
+            String sCompositeHouse = nodeDeelnemers.getStringValue("huisnummer");
+            Pattern p = Pattern.compile("[\\D]*$");
+            Matcher m = p.matcher(sCompositeHouse);
 
-         String sCompositeHouse = nodeDeelnemers.getStringValue("huisnummer");
-         Pattern p = Pattern.compile("[\\D]*$");
-         Matcher m = p.matcher(sCompositeHouse);
-
-         if(m.matches())
-         {
-            int iHouseEnd = m.start();
-            address.setHouseNumber(new Integer(sCompositeHouse.substring(0, iHouseEnd)).intValue());
-            address.setHouseNumberExtension(sCompositeHouse.substring(iHouseEnd));
-         }
-         else{
-            address.setHouseNumber(new Integer(sCompositeHouse).intValue());
+            if (m.matches())
+            {
+               int iHouseEnd = m.start();
+               address.setHouseNumber(new Integer(sCompositeHouse.substring(0, iHouseEnd)).intValue());
+               address.setHouseNumberExtension(sCompositeHouse.substring(iHouseEnd));
+            }
+            else
+            {
+               address.setHouseNumber(new Integer(sCompositeHouse).intValue());
+            }
+         }catch(Exception e){
+            address.setHouseNumberExtension(nodeDeelnemers.getStringValue("huisnummer"));
          }
 
          address.setStreetName(nodeDeelnemers.getStringValue("straatnaam"));
@@ -89,10 +98,11 @@ public class OrderMaker
 
          businessInformation.setTelephoneNo("privatphone");
       }
-      catch(Exception e){
-         System.out.print(e);
+      catch (Exception e)
+      {
       }
 
       return order;
    }
 }
+
