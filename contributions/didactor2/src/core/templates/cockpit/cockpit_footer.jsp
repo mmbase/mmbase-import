@@ -4,9 +4,11 @@
 <mm:cloud jspvar="cloud" method="delegate" authenticate="asis">
 <% if (cloud.getUser().getIdentifier() != null && !"anonymous".equals(cloud.getUser().getIdentifier())) { %>
   <%@include file="/shared/setImports.jsp" %>
-  <di:hasrole role="systemadministrator">
-    <mm:treeinclude page="/translation/render.jsp" objectlist="$includePath" referids="$referids" />
-  </di:hasrole>
+  <di:ifsetting component="core" setting="showtranslationbox">
+    <di:hasrole role="systemadministrator">
+      <mm:treeinclude page="/translation/render.jsp" objectlist="$includePath" referids="$referids" />
+    </di:hasrole>
+  </di:ifsetting>
 <% } %>
 </mm:cloud>
 </mm:content>
