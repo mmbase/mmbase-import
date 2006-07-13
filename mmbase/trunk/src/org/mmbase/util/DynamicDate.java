@@ -195,7 +195,8 @@ public class DynamicDate extends Date {
             "tosecond", "tominute", "tohour", "today", "previous monday", "tomonth", "toyear", "tocentury", "tocentury_pedantic", "toera",
             "now this second", "now this minute", "now this hour", "now this day", "today previous monday", "now this month", "now this year", "now this century", "now this era",
             "now - 15 year this century", "now - 20 year this century_pedantic", "today + 2 century", "toera - 1 minute",
-            "this july", "previous july", "next july", "this sunday", "previous sunday", "next sunday"
+            "this july", "previous july", "next july", "this sunday", "previous sunday", "next sunday",
+            "2009-W01-01", "2009-W53-7", "2006-123" 
         };
     }
 
@@ -204,7 +205,7 @@ public class DynamicDate extends Date {
 
         //System.out.println("" + Arrays.asList(TimeZone.getAvailableIDs()));
         //System.out.println(TimeZone.getDefault());
-        java.text.DateFormat formatter = new java.text.SimpleDateFormat("GGGG yyyy-MM-dd HH:mm:ss.SSS zzz");
+        java.text.DateFormat formatter = new java.text.SimpleDateFormat("GGGG yyyy-MM-dd HH:mm:ss.SSS zzz E");
         if (argv.length == 0) {
             String[] demo = getDemo();
             for (int i = 0; i < demo.length; i++) {
