@@ -48,7 +48,10 @@ img {
 }
 
 #searchresult.delete tbody tr.selected.even {
- background-color: yellow;
+ background-color: #ffff00;
+}
+#searchresult.delete tbody tr.selected.odd {
+ background-color: #ffffaa;
 }
 
 .mm_check_error {
