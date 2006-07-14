@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.36 2006-07-13 11:23:47 nklasens Exp $
+ * @version  $Id: validator.js,v 1.37 2006-07-14 17:44:26 nklasens Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -179,12 +179,23 @@ Validator.prototype.removeInvalidField = function(element) {
 Validator.prototype.validateElement = function (el, silent) {
     var err = "";
     var v = getValue(el);
+    var dttype = el.getAttribute("dttype");
+    var ftype = el.getAttribute("ftype");
 
     required = el.getAttribute("dtrequired");
     if (!isEmpty(required) && (required == "true")) {
-        if (isEmpty(v)) {
-            err += getToolTipValue(form,'message_required',
+        if (ftype=="enum" || dttype=="enum") {
+            if (el.options[el.selectedIndex].value == "-") {
+                err += getToolTipValue(form,'message_required',
+                   "value is required; please select a value");
+            }
+        
+	}
+	else {
+            if (isEmpty(v)) {
+                err += getToolTipValue(form,'message_required',
                    "value is required");
+            }
         }
     }
 
@@ -198,8 +209,6 @@ Validator.prototype.validateElement = function (el, silent) {
         }
 
         // determine datatype
-        var dttype = el.getAttribute("dttype");
-        var ftype = el.getAttribute("ftype");
         if (ftype=="enum") {
             err += validateEnum(el, form, v);
         } else switch (dttype) {
@@ -354,12 +363,6 @@ function validateFloat(el, form, v) {
 }
 
 function validateEnum(el, form, v) {
-    required = el.getAttribute("dtrequired");
-    if (!isEmpty(required) && (required == "true")) {
-        if (el.options[el.selectedIndex].value == "-")
-            return getToolTipValue(form,'message_required',
-                   "value is required; please select a value");
-    }
     return "";
 }
 
