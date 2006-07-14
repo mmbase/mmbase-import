@@ -6,11 +6,13 @@
 <mm:compare referid="scope" value="provider">
   <mm:cloud method="delegate" jspvar="cloud">
   <%@include file="/shared/setImports.jsp" %>
-  <mm:compare referid="type" value="div">
-    <div class="menuSeperator"> </div>
-    <div class="menuItem" id="menuReports">
-      <a href="<mm:treefile page="/reports/index.jsp" objectlist="$includePath" referids="$referids" />" class="menubar"><di:translate key="reports.reportsmenu"/></a>
-    </div>
-  </mm:compare>
+  <di:hasrole role="teacher">
+    <mm:compare referid="type" value="div">
+      <div class="menuSeperator"> </div>
+      <div class="menuItem" id="menuReports">
+        <a href="<mm:treefile page="/reports/index.jsp" objectlist="$includePath" referids="$referids" />" class="menubar"><di:translate key="reports.reportsmenu"/></a>
+      </div>
+    </mm:compare>
+  </di:hasrole>
   </mm:cloud>
 </mm:compare>
