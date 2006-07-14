@@ -52,7 +52,7 @@
   <%-- Move the content to the new mailbox --%>
   <mm:node number="$user">
     <mm:relatednodescontainer type="mailboxes">
-      <mm:constraint field="name" referid="mailboxname"/>
+      <mm:constraint field="number" referid="mailboxname"/>
 
       <mm:relatednodes id="mynewmailbox">
         <%
@@ -135,8 +135,33 @@
 
             <%-- Ignore the current folder of the items --%>
             <mm:compare referid="mailbox" value="$mailboxnumber" inverse="true">
-              <option>
-                <mm:field name="name"/>
+              <option value="<mm:field name="number" />">
+                <mm:remove referid="mboxdisplayname" />
+                <mm:field name="type">
+                  <mm:compare value="0">
+                    <mm:import id="mboxdisplayname"><di:translate key="email.inbox" /></mm:import>
+                  </mm:compare>
+                  <mm:compare value="1">
+                    <mm:import id="mboxdisplayname"><di:translate key="email.sent" /></mm:import>
+                  </mm:compare>
+                  <mm:compare value="11">
+                    <mm:import id="mboxdisplayname"><di:translate key="email.drafts" /></mm:import>
+                  </mm:compare>
+                  <mm:compare value="2">
+                    <mm:import id="mboxdisplayname"><di:translate key="email.trash" /></mm:import>
+                  </mm:compare>
+                  <mm:compare value="3">
+                    <mm:field name="name">
+                      <mm:compare value="Persoonlijke map">
+                        <mm:import id="mboxdisplayname"><di:translate key="email.personal" /></mm:import>
+                      </mm:compare>
+                      <mm:compare value="Persoonlijke map" inverse="true">
+                        <mm:import id="mboxdisplayname"><mm:field name="name" /></mm:import>
+                      </mm:compare>
+                    </mm:field>
+                  </mm:compare>
+                </mm:field>
+                <mm:write referid="mboxdisplayname" />
               </option>
             </mm:compare>
 
