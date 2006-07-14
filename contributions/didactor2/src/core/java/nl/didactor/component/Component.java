@@ -142,7 +142,7 @@ public abstract class Component {
                             setting.setDefault(settingDefault);
                             setting.addScope(scopeName);
                             settings.put(settingName, setting);
-                            log.debug("Added setting '" + settingName + "' of type '" + settingType + "' for scope '" + scopeName + "'");
+                            log.debug("Added setting '" + settingName + "' of type '" + settingType + "' for scope '" + scopeName + "', default = '" + settingDefault + "'");
                         }
                     }
                 }

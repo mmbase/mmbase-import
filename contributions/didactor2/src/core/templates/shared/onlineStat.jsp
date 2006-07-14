@@ -29,10 +29,10 @@
                              long duration = System.currentTimeMillis() - startReading;
                              String edId = oldEducationId.substring( 0, oldEducationId.indexOf( "-" ) );
                           %>
-                             <rep:event eventtype="<%= nl.didactor.reports.data.EventType.READING_EDUCATION + "" %>" educationId="<%= edId %>" eventvalue="<%= duration + "" %>" note="read education" />
+                             <di:event eventtype="reading_education" educationId="<%= edId %>" eventvalue="<%= duration %>" note="read education" />
                           <%
                              session.removeAttribute( oldEducationId );
-													 }
+                           }
                         }
                      %>
                   </mm:field>

@@ -61,24 +61,12 @@ keepalive();
         Component c = (Component)i.next();
   %>
     <mm:import id="componentname" reset="true"><%=c.getName()%></mm:import>
-    <mm:compare referid="componentname" value="reports">
-      <di:hasrole role="teacher">
-        <mm:treeinclude page="/$componentname/cockpit/menuitem.jsp" objectlist="$includePath" referids="$referids">
-          <mm:param name="name"><%=c.getName()%></mm:param>
-          <mm:param name="number"><%=c.getNumber()%></mm:param>
-          <mm:param name="type">div</mm:param>
-          <mm:param name="scope">provider</mm:param>
-        </mm:treeinclude>
-      </di:hasrole>
-    </mm:compare>
-    <mm:compare referid="componentname" value="reports" inverse="true">
-      <mm:treeinclude page="/$componentname/cockpit/menuitem.jsp" objectlist="$includePath" referids="$referids">
-        <mm:param name="name"><%=c.getName()%></mm:param>
-        <mm:param name="number"><%=c.getNumber()%></mm:param>
-        <mm:param name="type">div</mm:param>
-        <mm:param name="scope">provider</mm:param>
-      </mm:treeinclude>
-    </mm:compare>
+    <mm:treeinclude page="/$componentname/cockpit/menuitem.jsp" objectlist="$includePath" referids="$referids">
+      <mm:param name="name"><%=c.getName()%></mm:param>
+      <mm:param name="number"><%=c.getNumber()%></mm:param>
+      <mm:param name="type">div</mm:param>
+      <mm:param name="scope">provider</mm:param>
+    </mm:treeinclude>
   	
   <% } %>
   
