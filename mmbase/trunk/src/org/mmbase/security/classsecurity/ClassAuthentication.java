@@ -30,7 +30,7 @@ import org.xml.sax.InputSource;
  * its configuration file, contains this configuration.
  *
  * @author   Michiel Meeuwissen
- * @version  $Id: ClassAuthentication.java,v 1.12 2006-01-26 16:46:57 michiel Exp $
+ * @version  $Id: ClassAuthentication.java,v 1.13 2006-07-14 08:16:49 michiel Exp $
  * @see      ClassAuthenticationWrapper
  * @since    MMBase-1.8
  */
@@ -72,8 +72,8 @@ public class ClassAuthentication {
         ListIterator it = resourceList.listIterator();
         while (it.hasNext()) it.next();
         while (it.hasPrevious()) {
+            URL u = (URL) it.previous();
             try {
-                URL u = (URL) it.previous();
                 URLConnection con = u.openConnection();
                 if (! con.getDoInput()) continue;
                 InputSource in = new InputSource(con.getInputStream());
@@ -101,7 +101,7 @@ public class ClassAuthentication {
                     authenticatedClasses.add(new Login(Pattern.compile(clazz), method, Collections.unmodifiableMap(map)));
                 }
             } catch (Exception e) {
-                log.error(e);
+                log.error(u + " " + e.getMessage(), e);
             }
         }
 
