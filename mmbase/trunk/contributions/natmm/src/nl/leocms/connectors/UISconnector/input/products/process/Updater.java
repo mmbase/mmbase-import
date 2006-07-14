@@ -49,6 +49,7 @@ public class Updater
                nodeEvenement = cloud.getNodeManager("evenement").createNode();
 
                result.setStatus(result.ADDED);
+               nodeEvenement.setStringValue("soort", "parent");
                nodeEvenement.setStringValue("externid", sExternID);
                nodeEvenement.setStringValue("begindatum", "" + product.getEmbargoDate().getTime() / 1000);
                nodeEvenement.setStringValue("einddatum", "" + product.getExpireDate().getTime() / 1000);

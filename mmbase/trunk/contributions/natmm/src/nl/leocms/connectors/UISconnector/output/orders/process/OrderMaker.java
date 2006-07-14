@@ -58,17 +58,31 @@ public class OrderMaker
 	     NodeList nlEvenement = nodeSubscription.getRelatedNodes("evenement","posrel",null);
 
 	     if(nlEvenement.size()==0) {
-
 			 log.error("There are no related evenement object for inschrijving "  + nodeSubscription.getNumber());
 
 	     } else if(nlEvenement.size()>1) {
-
 			 log.error("There is more than one evenement object for inschrijving "  + nodeSubscription.getNumber());
 
 	     } else {
 
              Node nodeEvenement = nlEvenement.getNode(0);
              order.setExternId(nodeEvenement.getStringValue("externid"));
+             if(nodeEvenement.getStringValue("externid").equals("")) {
+             	log.error("There is no externid for " + nodeEvenement.getStringValue("number") + ". Probably this isn't an event imported from UIS.");
+		     }
+
+             NodeList nlPaymentTypes = nodeEvenement.getRelatedNodes("payment_type","related",null);
+
+  			 if(nlPaymentTypes.size()==0) {
+				 log.error("There are no related payment_types object for evenement "  + nodeEvenement.getNumber());
+
+			 } else if(nlPaymentTypes.size()>1) {
+				 log.error("There is more than one related payment_types for evenement "  + nodeEvenement.getNumber());
+
+			 } else {
+				 Node nodePaymentType = nlPaymentTypes.getNode(0);
+	             order.setPaymentType(nodePaymentType.getStringValue("name"));
+		 	 }
 	     }
       }
       catch (Exception e)
