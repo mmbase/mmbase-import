@@ -1,8 +1,5 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm"%>
-
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-
-<%@taglib uri="http://www.didactor.nl/reports-taglib_1.0" prefix="rep" %>
 
 <mm:content postprocessor="reducespace">
 
@@ -12,7 +9,7 @@
 
 <mm:import externid="learnobject" jspvar="learnobject" required="true"/>
 
-<rep:event eventtype="<%= nl.didactor.reports.data.EventType.VISIT_PAGE + "" %>" eventvalue="<%= learnobject + "" %>" note="visit page"/>
+<di:event eventtype="visit_page" eventvalue="<%= learnobject  %>" note="visit page"/>
 
 
 
