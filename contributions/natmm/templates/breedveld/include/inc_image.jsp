@@ -5,7 +5,7 @@
     int marginHeight = (windowWidth/40);
     int buttonHeight = (8*windowWidth)/16;
     int imageSpaceWidth =  windowWidth-(2*marginWidth);
-    //if(thisImageLayout.equals("Staand")) {  imageSpaceWidth = windowWidth-((11*marginWidth)/4); } layout field is deleted
+    if(thisImageLayout.equals("Staand")) {  imageSpaceWidth = windowWidth-((11*marginWidth)/4); }
     // make imageWidth the highest multiple of 100 <= imageSpaceWidth
     int imageWidth = 100*(imageSpaceWidth/100);
 %>
@@ -63,7 +63,7 @@
                 <mm:field name="projecttypes.naam" jspvar="dummy05" vartype="String" write="false">
                    <% project_type = dummy05; %>
                 </mm:field>
-					 <mm:node element="projets">
+					 <mm:node element="projects">
                 <%@include file="../include/project_titel.jsp" %> 
                 <% String project_embargo = ""; %>
 	                <mm:field name="embargo" jspvar="dummy08" vartype="String" write="false">

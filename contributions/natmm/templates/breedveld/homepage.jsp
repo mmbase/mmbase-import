@@ -45,6 +45,9 @@ if(pageId==null){ pageId="";}
 <% } %>
 <mm:node number="<%= imageId %>">
 	<%  int imageSize= (4*windowWidth)/6; %>
+	<mm:field name="screensize" jspvar="images_layout" vartype="String" write="false">
+		<% if(images_layout.equals("Staand")) { imageSize = (5*windowWidth)/16; } %>
+	</mm:field>
 	<% String imageTemplate = "s(" + imageSize + ")"; %>
 		<img src=<mm:image template="<%= imageTemplate %>" /> alt="" border="0">
 </mm:node>

@@ -25,8 +25,7 @@
 
 <%@include file="include/inc_splitimagelist.jsp" %>
 
-<% //String languageConstraint = "poslang.language='"+ language + "'"; 
-	String lang = "";
+<% String lang = "";
 	if (language.equals("english")){
 		lang = "_eng";
 	} else if (language.equals("french")) {
@@ -35,11 +34,18 @@
 
 <mm:cloud>
 
+<mm:list nodes="<%= thisImage %>" path="images" fields="images.title,images.screensize">
+<mm:node element="images">
+<% String thisImageLayout = ""; %>
+<mm:field name="screensize" jspvar="dummy" vartype="String" write="false">
+	<% thisImageLayout = dummy; %>
+</mm:field>
+
 <HTML>
 <HEAD>
   <TITLE>
 	<% boolean hasTitle = false; %>
-	<mm:list nodes="<%= thisImage %>" path="images,posrel,items"
+	<mm:related path="posrel,items"
 		fields="items.titel,items.number">
 		<mm:field name="items.titel" jspvar="items_title" vartype="String" write="false">
 			<% if(items_title.indexOf("Zonder titel")>-1) { %>
@@ -55,8 +61,8 @@
 			</mm:related>
 		</mm:node>
 		<% hasTitle = true; %>
-	</mm:list>
-	<mm:list nodes="<%= thisImage %>" path="images,posrel,projects,posrel,projecttypes">
+	</mm:related>
+	<mm:related path="posrel,projects,posrel,projecttypes">
 			<% String project_type = ""; %>
 			<mm:field name="projecttypes.name" jspvar="dummy05" vartype="String" write="false">
 					<% project_type = dummy05; %>
@@ -68,12 +74,12 @@
 			<%= lan(language,project_type) %> - <%= project_title %>
 			<% hasTitle = true; %>
 			</mm:node>
-	</mm:list>
+	</mm:related>
 	<% if(!hasTitle) { %>
-		<mm:list nodes="<%= thisImage %>" path="images,posrel,organisatie,contentrel,pagina"	
+		<mm:related path="posrel,organisatie,contentrel,pagina"	
 			fields="organisatie.naam" constraints="pagina.titel='Links'">
 			<mm:field name="organisatie.naam"/>
-		</mm:list>
+		</mm:related>
 	<% } %>
   </TITLE>
   <link rel="stylesheet" type="text/css" href="css/marianbreedveld.css">
@@ -97,6 +103,8 @@
 	</div>
 </BODY>
 </HTML>
+</mm:node>
+</mm:list>
 </mm:cloud>
 
 </cache:cache>
