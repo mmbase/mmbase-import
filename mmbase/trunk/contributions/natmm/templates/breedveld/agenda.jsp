@@ -15,8 +15,7 @@
 
 <mm:cloud>
 
-<% //String languageConstraint = "poslang.language='"+ language + "'"; 
-	String lang = "";
+<% String lang = "";
 	if (language.equals("english")){
 		lang = "_eng";
 	} else if (language.equals("french")) {

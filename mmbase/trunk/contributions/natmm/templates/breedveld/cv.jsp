@@ -19,8 +19,7 @@
 
 <mm:cloud>
 
-<%	//String languageConstraint = "poslang.language='"+ language + "'";
-	String lang = "";
+<%	String lang = "";
 	if (language.equals("english")){
 		lang = "_eng";
 	} else if (language.equals("french")) {
@@ -328,7 +327,7 @@
 					'popup<%= article_number %>',
 					'yes')">
 			  	<IMG height=12 alt="" hspace=0 src="media/arrow_right_lg.gif" width=8 align=absMiddle border=0 name="pijl<%= project_number %>_article">&nbsp;<%= lan(language,"Tekst van de publicatie") %>
-				</A>**************<br>
+				</A><br>
 				</mm:field>
 			</mm:related>
 			<%-- related projects --%>
