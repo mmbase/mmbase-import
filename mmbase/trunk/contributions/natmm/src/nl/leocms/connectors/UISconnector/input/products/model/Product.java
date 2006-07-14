@@ -28,6 +28,7 @@ public class Product
    private Date embargoDate = new Date();
    private Date expireDate = new Date();
    private ArrayList properties;
+   private String description;
 
    public Product()
    {
@@ -68,6 +69,11 @@ public class Product
       this.properties = properties;
    }
 
+   public void setDescription(String description)
+   {
+      this.description = description;
+   }
+
    public String getExternID()
    {
       return externID;
@@ -101,6 +107,11 @@ public class Product
    public ArrayList getProperties()
    {
       return properties;
+   }
+
+   public String getDescription()
+   {
+      return description;
    }
 
 }

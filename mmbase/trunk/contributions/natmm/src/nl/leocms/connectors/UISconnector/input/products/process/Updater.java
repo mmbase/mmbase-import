@@ -60,7 +60,7 @@ public class Updater
             }
             nodeEvenement.setStringValue("embargo", "" + product.getEmbargoDate().getTime() / 1000);
             nodeEvenement.setStringValue("verloopdatum", "" + product.getExpireDate().getTime() / 1000);
-
+            nodeEvenement.setStringValue("titel", product.getDescription());
 
             nodeEvenement.commit();
             result.setEvenementNode(nodeEvenement);
@@ -83,8 +83,6 @@ public class Updater
                result.setStatus(Result.EXCEPTION);
                result.setException(e);
             }
-
-
          }
          catch(Exception e){
             result.setException(e);
@@ -185,8 +183,6 @@ public class Updater
          }
          nodeEvenement.createRelation(nodePaymentType, cloud.getRelationManager("related")).commit();
 
-
-         nodeEvenement.setStringValue("titel", paymentType.getDescription());
          nodeEvenement.commit();
       }
    }
