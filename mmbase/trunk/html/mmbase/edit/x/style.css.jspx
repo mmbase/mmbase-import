@@ -39,6 +39,12 @@ img {
 #searchresult tbody tr.even:hover { 
   background-color: #d8e8d8;
 }
+#searchresult tbody tr.odd.readonly:hover { 
+  background-color: #f0e0e0;
+}
+#searchresult tbody tr.even.readonly:hover { 
+  background-color: #e8d8d8;
+}
 
 .mm_check_error {
   background-color: #f0e0e0;
@@ -72,6 +78,9 @@ h1.ok {
 }
 h1.new { 
   background-color: #f0f0e0;
+}
+h1.readonly {
+  background-color: #f0a0a0;
 }
 td {
   vertical-align: top;
