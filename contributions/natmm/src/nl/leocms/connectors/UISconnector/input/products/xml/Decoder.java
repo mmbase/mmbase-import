@@ -63,6 +63,15 @@ public class Decoder
                }
 
                try{
+                  if ("description".equals(nodeProductDataItem.getNodeName()))
+                  {
+                     product.setDescription(nodeProductDataItem.getFirstChild().getNodeValue());
+                  }
+               }
+               catch(Exception ex){
+               }
+
+               try{
                   if ("price".equals(nodeProductDataItem.getNodeName()))
                   {
                      product.setPrice(new Double(nodeProductDataItem.getFirstChild().getNodeValue()).doubleValue());
