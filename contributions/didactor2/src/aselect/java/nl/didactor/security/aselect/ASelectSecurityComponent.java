@@ -13,6 +13,7 @@ import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpUtils;
 
 import org.mmbase.module.core.MMBaseContext;
@@ -101,10 +102,43 @@ public class ASelectSecurityComponent extends Component implements Authenticatio
     }
     
     public UserContext isLoggedIn(HttpServletRequest request, HttpServletResponse response) {
-        // TODO Auto-generated method stub
+        // Check the users session for a valid login component. If there's no component found
+    	// the user has been authenticated by A-Select, but the session has not been fully
+    	// initialised.
+    	HttpSession session = request.getSession(false);
+    	
+    	if (session != null) {
+	    String loginComponent = (String)session.getAttribute("didactor-logincomponent");
+    		
+	    if (loginComponent != null) {
+	        // the session seems to be initialised correctly, verify the ticket with A-Select
+		try {
+		    if (verify_ticket(request, response, "a-select")) {
+			String userName = getASelectUserId(request);
+			MMObjectNode user = users.getUser(userName);
+    	            
+			if (user == null) {
+			    try {
+				response.getWriter().println("<b>A-Select error:</b><br/>");
+				response.getWriter().println("The authorization passed, but user with id=<b>" +
+				    userName + "</b> is NOT present in Didactor's database<br/>");
+				response.getWriter().println("Can't create security context for him.");
+			    } catch (Exception ex) {
+				throw new SecurityException("no user (id = " + userName + ") in db", null);
+			    }
+			}
+ 
+			return new UserContext(user);
+		    }
+		} catch (Exception ex) {
+		    throw new SecurityException("Exception while verifying ticket: " + ex.getMessage(), null);
+		}
+	    }
+    	}
+    	
         return null;
     }
-    
+  
     public UserContext processLogin(HttpServletRequest request, HttpServletResponse response, String application) {
         if ("a-select".equals(application)) {
             checkBuilder();
