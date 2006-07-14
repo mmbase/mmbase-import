@@ -63,12 +63,12 @@ public class Sender extends Thread
 
 
 
-         log.info("Trying to post the following XML to WSS:");
+         log.info("Trying to post the following XML to WSS on " + UISconfig.postOrderUrl());
          log.info(result.toString());
 
          String sEncodedXML = URLEncoder.encode(result.toString(), "windows-1252");
 
-         URL url = new URL(UISconfig.getOrderUrl());
+         URL url = new URL(UISconfig.postOrderUrl());
          HttpURLConnection connection = (HttpURLConnection) url.openConnection();
          connection.setDoOutput(true);
          connection.setRequestMethod("POST");
