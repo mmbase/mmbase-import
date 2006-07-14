@@ -50,6 +50,25 @@ public class Updater
 
                result.setStatus(result.ADDED);
                nodeEvenement.setStringValue("soort", "parent");
+               nodeEvenement.setStringValue("isspare", "false");
+               nodeEvenement.setStringValue("isoninternet", "true");
+               nodeEvenement.setStringValue("iscanceled", "false");
+ 			   nodeEvenement.setStringValue("groepsexcursie", "0");
+               nodeEvenement.setStringValue("aanmelden_vooraf", "1");
+               nodeEvenement.setStringValue("adres_verplicht", "1");
+               nodeEvenement.setStringValue("reageer", "0");
+ 			   nodeEvenement.setStringValue("min_aantal_deelnemers", "0");
+ 			   nodeEvenement.setStringValue("max_aantal_deelnemers", "9999");
+
+			   // prevent creation of NULL values (NULL and "" are represented the same way)
+ 			   nodeEvenement.setStringValue("dagomschrijving", "");
+ 			   nodeEvenement.setStringValue("status", "-1");
+ 			   nodeEvenement.setStringValue("use_verloopdatum", "-1");
+ 			   nodeEvenement.setStringValue("aanmelden_vooraf", "-1");
+ 			   nodeEvenement.setStringValue("achteraf_bevestigen", "-1");
+ 			   nodeEvenement.setStringValue("begininschrijving", "-1");
+ 			   nodeEvenement.setStringValue("eindinschrijving", "-1");
+
                nodeEvenement.setStringValue("externid", sExternID);
                nodeEvenement.setStringValue("begindatum", "" + product.getEmbargoDate().getTime() / 1000);
                nodeEvenement.setStringValue("einddatum", "" + product.getExpireDate().getTime() / 1000);
