@@ -12,7 +12,7 @@
 
     <!-- 
          Produces a search-tool, and the search result with links to create and change MMBase nodes.
-         $Id: index.jspx,v 1.15 2006-07-14 14:48:22 michiel Exp $
+         $Id: index.jspx,v 1.16 2006-07-14 16:13:19 michiel Exp $
     -->
     <mm:cloud rank="basic user">
       
@@ -34,11 +34,11 @@
         </mm:compare>
 
         <mm:import id="thispage"><mm:url page="."  /></mm:import>
-        <form id="searchform" action="${thispage}" method="post">
+        <form id="form" action="${thispage}" method="post">
           <h1>
             <a href="javascript:void(0);" onclick="this.getElementsByTagName('input')[0].form.submit();"  class="search">
               <span class="navigate">
-                <input type="submit"  name="ok" value="ok" />
+                <input type="submit" class="hoi"  name="ok" value="ok" />
               </span>
             </a>
             <mm:maycreate type="$nodemanager">
@@ -80,112 +80,110 @@
               </mm:fieldlist>
             </tbody>
           </table>
-        </form>
 
-        <form id="searchresultform" action="${thispage}" method="post">
           <input type="hidden" name="nodemanager" value="${nodemanager}" />
           <mm:present referid="only">
             <input type="hidden" name="only" value="${only}" />
           </mm:present>
-        <table id="searchresult" summary="Search results for ${nodemanager}">
-          <mm:import id="pagesize">50</mm:import>
-          <mm:import externid="offset">0</mm:import>
-
-          <mm:listnodescontainer type="$nodemanager">
-            <mm:import externid="sortfields">number</mm:import>
-            <mm:import externid="sortdirections">down</mm:import>
-            <mm:sortorder field="$sortfields" direction="$sortdirections" />
-            <mm:present referid="only">
-              <mm:typeconstraint name="$nodemanager" descendants="false" />
-            </mm:present>
-
-            <mm:link id="base" page="." referids="$referids">
-              <mm:fieldlist nodetype="$nodemanager" type="search">
-                <mm:fieldinfo type="reusesearchinput" />
-                <mm:fieldinfo type="usesearchinput" />
-              </mm:fieldlist>
-            </mm:link>
-
-            <mm:size id="size" write="false" />
-
-            <mm:maxnumber value="$pagesize" />
-            <mm:offset    value="$offset" />
-
-
-            <thead>
-              <tr class="paging">
-                <th colspan="2">${offset} - ${offset + pagesize lt size ? offset + pagesize : size} / ${size}</th>
-                <th colspan="100">
-                  <mm:import id="paging">
-                    <mm:previousbatches max="10">
-                      <mm:first><mm:isgreaterthan value="0">...</mm:isgreaterthan></mm:first>
-                      <mm:link referids="_@offset" referid="base">
-                        <a href="${_}"><mm:index /></a>
-                      </mm:link>
-                      <jsp:text>, </jsp:text>
-                    </mm:previousbatches>
-                    <span class="currentpage"><mm:index /></span>
-                    <mm:nextbatches max="10">
-                      <jsp:text>, </jsp:text>
-                      <mm:link referids="_@offset" referid="base">
-                        <a href="${_}"><mm:index /></a>
-                      </mm:link>
-                      <mm:last><mm:islessthan value="${size - pagesize}">...</mm:islessthan></mm:last>
-                    </mm:nextbatches>
-                  </mm:import>
-                  <mm:write referid="paging" escape="none" />
-                </th>
-              </tr>
-
-              <tr class="head">
-                <th colspan="2">
-                  <select name="action" onchange="this.parentNode.parentNode.parentNode.parentNode.className = 'delete'; if (confirm('Are you sure?')) { this.form.submit();} else { this.value = '';}" >
-                    <option value="">&amp;nbsp;</option>
-                    <option value="delete">delete</option>
-                  </select>
-                </th>
-                <th />
-                <mm:fieldlist nodetype="$nodemanager" type="list">
-                  <th><mm:fieldinfo type="guiname" /></th>
+          <table id="searchresult" summary="Search results for ${nodemanager}">
+            <mm:import id="pagesize">50</mm:import>
+            <mm:import externid="offset">0</mm:import>
+            
+            <mm:listnodescontainer type="$nodemanager">
+              <mm:import externid="sortfields">number</mm:import>
+              <mm:import externid="sortdirections">down</mm:import>
+              <mm:sortorder field="$sortfields" direction="$sortdirections" />
+              <mm:present referid="only">
+                <mm:typeconstraint name="$nodemanager" descendants="false" />
+              </mm:present>
+              
+              <mm:link id="base" page="." referids="$referids">
+                <mm:fieldlist nodetype="$nodemanager" type="search">
+                  <mm:fieldinfo type="reusesearchinput" />
+                  <mm:fieldinfo type="usesearchinput" />
                 </mm:fieldlist>
-              </tr>
-            </thead>
-
-            <tfoot>
-              <tr class="paging">
-                <th colspan="2">
-                </th>
-                <th colspan="100"><mm:write referid="paging" escape="none" /></th>
-              </tr>
-            </tfoot>
-
-            <mm:listnodes id="result" />
-            <c:if test="${fn:length(result) gt 0}">
-              <tbody>
-                <mm:listnodes referid="result">
-                  <mm:index id="index" write="false" />
-                  <mm:maywrite inverse="true"><mm:import id="readonly">readonly</mm:import></mm:maywrite>
-                  <mm:maywrite ><mm:import id="readonly"></mm:import></mm:maywrite>
-                  <mm:link referids="_node@node,$referids" page="change.jspx">
-                    <mm:import id="class">${index % 2 == 0 ? 'even' : 'odd'} ${readonly}</mm:import>
-                    <tr class="${class}">
-                      <td>
-                        <input type="checkbox" name="nodes" value="${_node.number}" onchange="this.parentNode.parentNode.className = '${class}' + (this.checked ? ' selected' : '')" />
-                      </td>
-                      <td class="click"><a href="${_}"><mm:field name="number" /></a></td>
-                      <td class="click"><mm:nodeinfo type="gui" /></td>
-                      <mm:fieldlist type="list" nodetype="$nodemanager">
-                        <td  class="click">
-                          <mm:fieldinfo type="guivalue" />
+              </mm:link>
+              
+              <mm:size id="size" write="false" />
+              
+              <mm:maxnumber value="$pagesize" />
+              <mm:offset    value="$offset" />
+              
+              
+              <thead>
+                <tr class="paging">
+                  <th colspan="2">${offset} - ${offset + pagesize lt size ? offset + pagesize : size} / ${size}</th>
+                  <th colspan="100">
+                    <mm:import id="paging">
+                      <mm:previousbatches max="10">
+                        <mm:first><mm:isgreaterthan value="0">...</mm:isgreaterthan></mm:first>
+                        <mm:link referids="_@offset" referid="base">
+                          <a href="${_}"><mm:index /></a>
+                        </mm:link>
+                        <jsp:text>, </jsp:text>
+                      </mm:previousbatches>
+                      <span class="currentpage"><mm:index /></span>
+                      <mm:nextbatches max="10">
+                        <jsp:text>, </jsp:text>
+                        <mm:link referids="_@offset" referid="base">
+                          <a href="${_}"><mm:index /></a>
+                        </mm:link>
+                        <mm:last><mm:islessthan value="${size - pagesize}">...</mm:islessthan></mm:last>
+                      </mm:nextbatches>
+                    </mm:import>
+                    <mm:write referid="paging" escape="none" />
+                  </th>
+                </tr>
+                
+                <tr class="head">
+                  <th colspan="3">
+                    <select name="action" onchange="this.parentNode.parentNode.parentNode.parentNode.className = 'delete'; if (confirm('Are you sure?')) { this.form.submit();} else { this.value = ''; this.parentNode.parentNode.parentNode.parentNode.className = ''; }" >
+                      <option value="">&amp;nbsp;</option>
+                      <option value="delete">delete</option>
+                    </select>
+                    <input type="checkbox" onchange="var els = document.getElementsByTagName('input'); for (var el in els) { if (els[el].className == 'nodesbox') {  els[el].checked = this.checked; }};" />
+                  </th>
+                  <mm:fieldlist nodetype="$nodemanager" type="list">
+                    <th><mm:fieldinfo type="guiname" /></th>
+                  </mm:fieldlist>
+                </tr>
+              </thead>
+              
+              <tfoot>
+                <tr class="paging">
+                  <th colspan="2">
+                  </th>
+                  <th colspan="100"><mm:write referid="paging" escape="none" /></th>
+                </tr>
+              </tfoot>
+              
+              <mm:listnodes id="result" />
+              <c:if test="${fn:length(result) gt 0}">
+                <tbody>
+                  <mm:listnodes referid="result">
+                    <mm:index id="index" write="false" />
+                    <mm:maywrite inverse="true"><mm:import id="readonly">readonly</mm:import></mm:maywrite>
+                    <mm:maywrite ><mm:import id="readonly"></mm:import></mm:maywrite>
+                    <mm:link referids="_node@node,$referids" page="change.jspx">
+                      <mm:import id="class">${index % 2 == 0 ? 'even' : 'odd'} ${readonly}</mm:import>
+                      <tr class="${class}">
+                        <td onclick="var input = childNodes[0]; input.checked = ! input.checked; ">
+                          <input class="nodesbox" type="checkbox" name="nodes" value="${_node.number}"  onclick="event.stopPropagation();" onchange="this.parentNode.parentNode.className = '${class}' + (this.checked ? ' selected' : '')" />
                         </td>
-                      </mm:fieldlist>
-                    </tr>
-                  </mm:link>
-                </mm:listnodes>
-              </tbody>
-            </c:if>
-          </mm:listnodescontainer>
-        </table>
+                        <td class="click"><a href="${_}"><mm:field name="number" /></a></td>
+                        <td class="click"><mm:nodeinfo type="gui" /></td>
+                        <mm:fieldlist type="list" nodetype="$nodemanager">
+                          <td  class="click">
+                            <mm:fieldinfo type="guivalue" />
+                          </td>
+                        </mm:fieldlist>
+                      </tr>
+                    </mm:link>
+                  </mm:listnodes>
+                </tbody>
+              </c:if>
+            </mm:listnodescontainer>
+          </table>
         </form>
         <script type="text/javascript">
           window.addEventListener("load", function() {
