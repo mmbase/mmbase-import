@@ -2,12 +2,15 @@ package nl.didactor.builders;
 import nl.didactor.component.Component;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.core.MMBase;
 import org.mmbase.module.corebuilders.FieldDefs;
+import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import java.util.SortedSet;
 import java.util.Iterator;
 import java.util.TreeSet;
+import java.util.Vector;
 
 /**
  * This class provides a default framework for Didactor builders, where components
@@ -77,6 +80,16 @@ public class DidactorBuilder extends MMObjectBuilder {
             c.preInsert(node);
         }
         int res = super.insert(owner, node);
+
+        Vector fields = getFields();
+        for (int j=0; j<fields.size(); j++) {
+            FieldDefs fd = (FieldDefs)fields.get(j);
+            if (fd.getDBState() == FieldDefs.DBSTATE_VIRTUAL && fd.getDBPos() == 300) {
+                log.debug("Have to process set on field [" + fd.getDBName() + "] with value [" + node.values.get(fd.getDBName()) + "]");
+                setFieldValue(owner, node, fd.getDBName());
+            }
+        }
+
         i = postInsertComponents.iterator();
         while (i.hasNext()) {
             Component c = ((EventInstance)i.next()).component;
@@ -116,6 +129,16 @@ public class DidactorBuilder extends MMObjectBuilder {
      */
     public boolean commit(MMObjectNode node) {
         boolean bSuperCommit = super.commit(node);
+
+        Vector fields = getFields();
+        for (int j=0; j<fields.size(); j++) {
+            FieldDefs fd = (FieldDefs)fields.get(j);
+            if (fd.getDBState() == FieldDefs.DBSTATE_VIRTUAL && fd.getDBPos() == 300) {
+                log.debug("Have to process set on field [" + fd.getDBName() + "] with value [" + node.values.get(fd.getDBName()) + "]");
+                setFieldValue(node.getStringValue("owner"), node, fd.getDBName());
+            }
+        }
+
         Iterator i = postCommitComponents.iterator();
         while (i.hasNext()) {
             Component c = ((EventInstance)i.next()).component;
@@ -140,7 +163,61 @@ public class DidactorBuilder extends MMObjectBuilder {
         }
         return true;
     }
+    
+    /**
+     * Return the value for a field of the node. This method
+     * is overridden from MMObjectBuilder, and will return a value
+     * for the virtual 'isonline' field.
+     * @param node Node to get a value for
+     * @param field Name of the field.
+     * @return an object containing the value.
+     */
+    public Object getValue(MMObjectNode node, String field) {
+        FieldDefs fd = getField(field);
 
+        if (fd != null) {
+            if (fd.getDBState() == FieldDefs.DBSTATE_VIRTUAL && node.getNumber() != -1 && fd.getDBPos() == 300) {
+                log.debug("Getting field [" + field + "] from db fields thingie");
+                // Special Didactor case: field was added by a component.xml file, we read it from a related fields node
+                Vector fieldNodes = node.getRelatedNodes("fields");
+                for (int i=0; i<fieldNodes.size(); i++) {
+                    MMObjectNode fieldNode = (MMObjectNode)fieldNodes.get(i);
+                    if (field.equals(fieldNode.getStringValue("name"))) {
+                        log.debug("Found value: " + fieldNode.getStringValue("value"));
+                        return fieldNode.getStringValue("value");
+                    }
+                }
+                log.debug("No value found!!");
+            }
+        }
+
+        return super.getValue(node, field);
+    }
+
+    private void setFieldValue(String owner, MMObjectNode node, String field) {
+        Vector fieldNodes = node.getRelatedNodes("fields");
+        for (int i=0; i<fieldNodes.size(); i++) {
+            MMObjectNode fieldNode = (MMObjectNode)fieldNodes.get(i);
+            if (field.equals(fieldNode.getStringValue("name"))) {
+                fieldNode.setValue("value", node.values.get(field));
+                fieldNode.commit();
+                return;
+            }
+        }
+
+        // not found: create the node
+        MMObjectBuilder fieldBuilder = MMBase.getMMBase().getBuilder("fields");
+        MMObjectNode fieldNode = fieldBuilder.getNewNode(owner);
+
+        fieldNode.setValue("name", field);
+        fieldNode.setValue("value", node.values.get(field));
+        int fieldId = fieldBuilder.insert(owner, fieldNode);
+
+        int authrel = MMBase.getMMBase().getRelDef().getNumberByName("authrel");
+        InsRel insrel = (InsRel)MMBase.getMMBase().getBuilder("authrel");
+        insrel.insert(owner, node.getNumber(), fieldId, authrel);
+    }
+        
     /**
      * This small innerclass represents an event-instance. It mainly is just a wrapper
      * around the component, but also has a priority that allows the components to be
