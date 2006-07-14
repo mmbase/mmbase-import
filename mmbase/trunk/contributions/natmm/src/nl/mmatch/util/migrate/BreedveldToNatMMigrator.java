@@ -742,7 +742,7 @@ public class BreedveldToNatMMigrator {
       tmEditwizardsReplacings.put("organisatie_type.title","organisatie_type.naam");
       tmEditwizardsReplacings.put("organisatie.companyname","organisatie.naam");
       tmEditwizardsReplacings.put("organisatie.lastname,","");
-      tmEditwizardsReplacings.put("layout,quality,","");
+      tmEditwizardsReplacings.put("quality,","");
       tmEditwizardsReplacings.put("projects.title","projects.titel");
       tmEditwizardsReplacings.put("projects.fromdate","projects.embargo");
 
