@@ -124,6 +124,7 @@ Create a build.xml with a DOCTYPE like this:
 
   <target name="init" depends="">
     <available property="src.available"           file="${project.source.dir}/src"/>
+    <available property="metainf.available"           file="${project.source.dir}/META-INF"/>
     <available property="documentation.available" file="${project.source.dir}/documentation" />
     <available property="documentation.build.available" file="${project.build.dir}/documentation" />
 
@@ -138,6 +139,7 @@ Create a build.xml with a DOCTYPE like this:
       <or>
         <equals arg1="${src.available}" arg2="true" />
         <equals arg1="${config.available}" arg2="true" />
+        <equals arg1="${metainf.available}" arg2="true" />
       </or>
     </condition>
 
@@ -211,13 +213,17 @@ Create a build.xml with a DOCTYPE like this:
   </target>
 
 
+  <target name="copy.metainf.dir" depends="init" if="metainf.available">
+    <mkdir dir="${project.metainf.dir}" /><!-- make sure it exists -->
+    <copy todir="${project.metainf.dir}" failonerror="false">
+      <fileset dir="${project.source.dir}/META-INF/" />
+    </copy>
+  </target>
+
   <target name="jar" description="Create the MMBase project jar file"
-    depends="jar.check,project.manifest,jar.config" unless="jar.uptodate" if="do.jar">
-
+    depends="init,copy.metainf.dir,jar.check,project.manifest,jar.config" unless="jar.uptodate" if="do.jar">
+    <mkdir dir="${project.metainf.dir}" /><!-- make sure it exists -->
     <antcall target="compile" />
-
-    <mkdir dir="${project.metainf.dir}" /><!-- make sure his exists -->
-
     <echo message="creating jar" />
     <jar jarfile="${project.jar}"
          manifest="${project.build.dir}/manifest.mf" >
@@ -250,6 +256,7 @@ Create a build.xml with a DOCTYPE like this:
         <exclude name="documentation/**" />
         <exclude name="src/**" />
         <exclude name="build*/**" />
+        <exclude name="META-INF/**" />
         <exclude name="README*" />
       </patternset>
     </zipfileset>
