@@ -33,16 +33,28 @@
 <mm:include page="path.jsp?type=$pathtype" />
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 20px;" width="90%">
 <mm:node referid="forumid">
-<tr><th><di:translate key="mmbob.account" /></th><th><di:translate key="mmbob.location" /></th><th><di:translate key="mmbob.lastseen" /></th></tr>
-    <mm:related path="related,posters,people">
-    <tr><td><a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
-                        <mm:param name="contact"><mm:field name="people.number"/></mm:param>
-                     </mm:treefile>" target="_top">
-               <mm:field name="posters.firstname" /> <mm:field name="posters.lastname" /> (<mm:field name="posters.account" />)</a></td>
-        <td><mm:field name="posters.location" /></td><td><mm:field name="posters.lastseen"><mm:time format="<%= timeFormat %>" /></mm:field></td></tr>
-    </mm:related>
-</table>
+  <tr>
+    <th><di:translate key="mmbob.account" /></th>
+    <di:ifsetting component="mmbob" setting="showlocation">
+      <th><di:translate key="mmbob.location" /></th>
+    </di:ifsetting>
+    <th><di:translate key="mmbob.lastseen" /></th>
+  </tr>
+  <mm:related path="related,posters,people">
+    <tr>
+      <td><a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
+                     <mm:param name="contact"><mm:field name="people.number"/></mm:param>
+                   </mm:treefile>" target="_top">
+               <mm:field name="posters.firstname" /> <mm:field name="posters.lastname" /> (<mm:field name="posters.account" />)</a>
+      </td>
+      <di:ifsetting component="mmbob" setting="showlocation">
+        <td><mm:field name="posters.location" /></td>
+      </di:ifsetting>
+      <td><mm:field name="posters.lastseen"><mm:time format="<%= timeFormat %>" /></mm:field></td>
+    </tr>
+  </mm:related>
 </mm:node>
+</table>
 </center>
 </html>
 </mm:cloud>
