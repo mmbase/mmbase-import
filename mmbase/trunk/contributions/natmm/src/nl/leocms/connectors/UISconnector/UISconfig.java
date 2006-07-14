@@ -22,14 +22,22 @@ package nl.leocms.connectors.UISconnector;
 
 public class UISconfig {
 
-   public static boolean IS_ACTIVE = true;
-   public static String PRODUCT_URL = "http://212.123.241.76/mmdemo/api/getProducts.jsp";
-   // public static String ORDER_URL = "http://212.123.241.76/mmdemo/api/postOrders.jsp";
-   public static String ORDER_URL = "http://mc018/mmdemo/api/postOrders.jsp"; // erwins machine
 
    public UISconfig() {
    }
-   public static String geProductUrl(){
-      return PRODUCT_URL;
+
+   public static String getProductUrl(){
+      // return "http://212.123.241.76/mmdemo/api/getProducts.jsp"; // production
+      return "http://192.168.120.47:8080/mmdemo_test/api/getProducts.jsp"; // development
+   }
+
+   public static String getOrderUrl(){
+   	  // return "http://212.123.241.76/mmdemo/api/postOrders.jsp"; // production
+      return "http://mc018/mmdemo/api/postOrders.jsp"; // erwin
+   }
+
+   public static boolean isUISconnected() {
+	   // return false;
+	   return true;
    }
 }

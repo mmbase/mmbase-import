@@ -738,7 +738,7 @@ public class SubscribeAction extends Action {
                subscribeForm.setAction(subscribeForm.PROMPT_FOR_CONFIRMATION);
             }
 
-  		    if(UISconfig.IS_ACTIVE) {
+  		    if(UISconfig.isUISconnected()) {
 				Sender sender = new Sender(thisSubscription);
 				sender.run();
 			}
