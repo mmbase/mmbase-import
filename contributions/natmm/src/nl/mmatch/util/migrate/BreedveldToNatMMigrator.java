@@ -2,13 +2,12 @@ package nl.mmatch.util.migrate;
 
 import java.io.*;
 import java.util.*;
-import nl.leocms.applications.NMIntraConfig;
+import nl.leocms.applications.BreedveldConfig;
 import org.mmbase.util.logging.*;
 
 /*
 
-Converts the NMIntra XML to XML that fits the NatMM objectmodel.
-This script is called from RelationMigrator.run()
+Converts the Breedveld XML to XML that fits the NatMM objectmodel.
 
 This is a script that will only be used once, so it does not conform to any coding standard.
 
@@ -18,7 +17,7 @@ public class BreedveldToNatMMigrator {
 
   private static final Logger log = Logging.getLoggerInstance(BreedveldToNatMMigrator.class);
 
-  public static String sFolder = NMIntraConfig.rootDir + "BreedveldXML/";
+  public static String sFolder = BreedveldConfig.rootDir + "BreedveldXML/";
   // public static String sFolder = "E:/nmm/tmp/";
 
   public static void run() throws Exception{
@@ -73,7 +72,7 @@ public class BreedveldToNatMMigrator {
       TreeMap tmDeletingFields = new TreeMap();
       tmDeletingFields.put("article","author;creditline;quote;quote_title");
       tmDeletingFields.put("contact","type");
-      tmDeletingFields.put("images","layout;quality;note;type");
+      tmDeletingFields.put("images","quality;note;type");
       tmDeletingFields.put("project","type");
       tmDeletingFields.put("piece","source");
       tmDeletingFields.put("pijler","description");
@@ -387,7 +386,7 @@ public class BreedveldToNatMMigrator {
       tmRenamingFields.put("editwizards","title:name");
       tmRenamingFields.put("groups","name:naam;description:omschrijving");
       tmRenamingFields.put("images","title:titel;description:omschrijving;" +
-      "subtitle:titel_fra;source:bron");
+      "subtitle:titel_fra;source:bron;layout:screensize");
       tmRenamingFields.put("mmbaseusers","username:account");
       tmRenamingFields.put("page","title:titel;subtitle:titel_fra");
       tmRenamingFields.put("paragraph","title:titel;body:tekst");
