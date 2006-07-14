@@ -259,12 +259,6 @@
 		<taglib-location>/WEB-INF/oscache.tld</taglib-location>
 	</taglib>
 
-	<!-- Base taglibs for Didactor Reports-->
-	<taglib>
-		<taglib-uri>http://www.didactor.nl/reports-taglib_1.0</taglib-uri>
-		<taglib-location>/WEB-INF/reports-taglib.tld</taglib-location>
-	</taglib>    
-
 	<!-- 
 	EXTRATAGLIB
 	-->

@@ -279,6 +279,35 @@
     <!-- bodycontent>JSP</bodycontent -->
     <info>...</info>
   </tag>
+  <tag>
+   <name>event</name>
+   <tagclass>nl.didactor.taglib.reports.EventTag</tagclass>
+   <attribute>
+     <name>eventtype</name>
+     <required>true</required>
+     <rtexprvalue>true</rtexprvalue>
+   </attribute>
+   <attribute>
+     <name>educationId</name>
+     <required>false</required>
+     <rtexprvalue>true</rtexprvalue>
+   </attribute>
+   <attribute>
+     <name>eventvalue</name>
+     <required>false</required>
+     <rtexprvalue>true</rtexprvalue>
+   </attribute>
+   <attribute>
+     <required>false</required>
+     <rtexprvalue>true</rtexprvalue>
+   </attribute>
+   <attribute>
+     <name>note</name>
+     <required>false</required>
+     <rtexprvalue>true</rtexprvalue>
+   </attribute>
+  </tag>
+
   <!--
     Place for extra tags. The following token will be filled
     with extra tag definitions by the build script.

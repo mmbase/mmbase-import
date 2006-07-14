@@ -17,10 +17,11 @@
 package nl.didactor.taglib.reports;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspTagException;
 
-import nl.didactor.reports.util.EventManager;
+import nl.didactor.events.*;
 
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
@@ -62,8 +63,8 @@ public class EventTag extends CloudReferrerTag {
                 // get username from cloud
                 String username = cloud.getUser().getIdentifier();
 
-                HttpServletRequest request = (HttpServletRequest) pageContext
-                        .getRequest();
+                HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
+                HttpServletResponse response = (HttpServletResponse)pageContext.getResponse();
                 HttpSession session = request.getSession(false);
                 // get sessionId
                 String sessionId = session.getId();
@@ -71,8 +72,7 @@ public class EventTag extends CloudReferrerTag {
                 // get provider from request
                 String sProvider = request.getParameter("provider");
 
-                String sEducation = (educationId != null) ? educationId
-                        : request.getParameter("education");
+                String sEducation = (educationId != null) ? educationId : request.getParameter("education");
 
                 // get class from request
                 String sClass = request.getParameter("class");
@@ -107,26 +107,9 @@ public class EventTag extends CloudReferrerTag {
                     }
                 }
 
-                Integer etype = null;
-                Long evalue = null;
-                try {
-                    etype = Integer.decode(eventtype);
-                }
-                catch (NumberFormatException nfe) {
-                    return SKIP_BODY;
-                }
-
-                if (eventvalue != null) {
-                    try {
-                        evalue = Long.decode(eventvalue);
-                    }
-                    catch (NumberFormatException nfe) {
-                    }
-                }
-
                 // create and store Event
-                EventManager.createAndStoreEvent(username, sessionId, provider,
-                        education, classNumber, etype, evalue, note);
+                Event event = new Event(username, sessionId, provider, education, classNumber, eventtype, eventvalue, note);
+                EventDispatcher.report(event, request, response);
             }
         }
         catch (Exception ex) {

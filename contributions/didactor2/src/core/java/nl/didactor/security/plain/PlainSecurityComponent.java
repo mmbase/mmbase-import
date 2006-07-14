@@ -10,9 +10,6 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import nl.didactor.builders.PeopleBuilder;
-import nl.didactor.reports.data.EventType;
-import nl.didactor.reports.util.EventManager;
-import nl.didactor.reports.util.DidactorSessionListener;
 import nl.didactor.security.AuthenticationComponent;
 
 import nl.didactor.security.UserContext;
@@ -58,15 +55,6 @@ public class PlainSecurityComponent implements AuthenticationComponent {
         log.debug("Found matching credentials, so user is now logged in.");
         HttpSession session = request.getSession( true ); 
         session.setAttribute("didactor-plainlogin-userid", "" + user.getNumber());
-        
-        // add event 'login' to database
-        EventManager.createAndStoreEvent( sLogin, session.getId(), null, null, null, new Integer( EventType.LOGIN ), null, "login" );
-        
-        // Create SessionListener class and add ti to the session
-        DidactorSessionListener sessionListener = new DidactorSessionListener( sLogin );
-        session.setAttribute ("session_listener", sessionListener);
-        
-        session.setAttribute( sLogin + "-login-time", new Long( System.currentTimeMillis() ) );
         return new UserContext(user);
     }
 

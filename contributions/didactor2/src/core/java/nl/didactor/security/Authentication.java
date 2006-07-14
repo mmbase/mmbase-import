@@ -13,6 +13,7 @@ import org.mmbase.security.SecurityException;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import nl.didactor.events.*;
 import nl.didactor.builders.*;
 import nl.didactor.security.UserContext;
 
@@ -119,10 +120,19 @@ public class Authentication extends org.mmbase.security.Authentication {
                         AuthenticationComponent ac = (AuthenticationComponent)securityComponents.get(i);
                         if (ac != null && loginComponent.equals(ac.getName())) {
                             log.debug("Sending logout command to component '" + loginComponent + "'");
+                            UserContext uc = ac.isLoggedIn(request, response);
+                            if (uc == null) {
+                                log.warn("Logging out a user who is not logged in! This cannot be reported!");
+                            } else {
+                                Event event = new Event(uc.getIdentifier(), request.getSession(true).getId(), null, null, null, "LOGOUT", null, "logout");
+                                EventDispatcher.report(event, request, response);
+                            }
                             ac.logout(request, response);
                         }
                     }
                 }
+            } else {
+                log.warn("Cannot logout a user who's session is null");
             }
 
             return null;
@@ -146,6 +156,8 @@ public class Authentication extends org.mmbase.security.Authentication {
             log.debug("" + ac + ".processLogin() -> " + uc);
             if (uc != null) {
                 request.getSession(true).setAttribute("didactor-logincomponent", ac.getName());
+                Event event = new Event(uc.getIdentifier(), request.getSession(true).getId(), null, null, null, "LOGIN", null, "login");
+                EventDispatcher.report(event, request, response);
                 return uc;
             }
         }
