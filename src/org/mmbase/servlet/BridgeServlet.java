@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * but /img.db). Normally this is no problem, because the alias is resolved by the image-tag. But if
  * for some reason you need aliases to be working on the URL, you must map to URL's with a question mark.
  *
- * @version $Id: BridgeServlet.java,v 1.31 2006-04-10 15:27:45 michiel Exp $
+ * @version $Id: BridgeServlet.java,v 1.32 2006-07-14 15:30:24 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -107,6 +107,14 @@ public abstract class BridgeServlet extends  MMBaseServlet {
                 contextPathLength = req.getContextPath().length();
             }
             String reqString = req.getRequestURI().substring(contextPathLength); // substring needed, otherwise there may not be digits in context path.
+
+            // some silly application-servers leave jsession id it the requestURI. Take if off again, because we'll be very confused by it.
+            if (req.isRequestedSessionIdFromURL()) {
+                int jsessionid = reqString.indexOf(";jsessionid=");
+                if (jsessionid != -1) {
+                    reqString = reqString.substring(0, jsessionid);
+                }
+            }
 
             if(log.isDebugEnabled()) {
                 log.debug("using servlet URI " + reqString + " to find node number");
