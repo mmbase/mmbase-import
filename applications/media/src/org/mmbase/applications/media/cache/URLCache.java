@@ -39,7 +39,7 @@ public class URLCache extends Cache {
         cache = new URLCache(cacheSize);
         putCache(cache);
     }
-    
+
     /**
      * creates a key based of the media fragment number and the user information
      * @param mediaFragment fragment to be cached
@@ -75,6 +75,11 @@ public class URLCache extends Cache {
             log.debug("No objects are specified to expire the cache entries");
         }
     }
+
+    public void clear() {
+        super.clear();
+        cacheExpire.clear();
+    }
     
     /**
      * Invalidates cache entries based on the node that changes
@@ -104,7 +109,18 @@ public class URLCache extends Cache {
      * If an object changes it is a good idea to assume that the cache entry is invalid.
      */
     class CacheExpire {
-        private Hashtable objectNumber2Keys = new Hashtable(10000);
+        private Cache objectNumber2Keys = new Cache(10000) {
+            public String getName()        { return "Media objectnumber-to-keys cache"; }
+            public String getDescription() { return "Contains information about which objects are used to create a certain cache entry."; }
+        };
+
+        public CacheExpire() {
+            Cache.putCache(objectNumber2Keys);
+        }
+
+        public void clear() {
+            objectNumber2Keys.clear();
+        }
         
         /**
          * add objects that were needed for the creation of a cache entry
