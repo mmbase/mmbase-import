@@ -43,6 +43,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.*;
 
+import nl.leocms.connectors.UISconnector.UISconfig;
+import nl.leocms.connectors.UISconnector.output.orders.process.Sender;
+
 /**
  * SubscribeAction
  */
@@ -712,7 +715,7 @@ public class SubscribeAction extends Action {
 
                subscribeForm.setSelectedParticipant(thisParticipant.getStringValue("number"));
                subscribeForm.setSubscriptionNumber(thisSubscription.getStringValue("number"));
-	            subscribeForm.resetNumbers(); // reset validateCounter on each new booking
+	           subscribeForm.resetNumbers(); // reset validateCounter on each new booking
                subscribeForm.setAction(null);
 
             } else {
@@ -734,6 +737,12 @@ public class SubscribeAction extends Action {
                sendConfirmEmail(cloud, thisEvent, thisParent, thisSubscription, thisParticipant, confirmUrl);
                subscribeForm.setAction(subscribeForm.PROMPT_FOR_CONFIRMATION);
             }
+
+  		    if(UISconfig.IS_ACTIVE) {
+				Sender sender = new Sender(thisSubscription);
+				sender.run();
+			}
+
             forwardAction = mapping.findForward("continue");
 
        } else if(subscribeForm.getButtons().getConfirmSubscription().pressed()) {               // ******************* Confirm *************************
