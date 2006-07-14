@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.203 2006-07-14 13:27:10 nklasens Exp $
+ * @version $Id: BasicNode.java,v 1.204 2006-07-14 18:55:14 nklasens Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -619,7 +619,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     }
 
     public void deleteRelations(String type) throws NotFoundException {
-        if ("onject".equals(type)) {
+        if ("object".equals(type)) {
             deleteRelations(-1);
         }
         else {
