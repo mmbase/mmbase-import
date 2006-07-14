@@ -3,6 +3,9 @@
  */
 package nl.didactor.component;
 import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.core.MMObjectBuilder;
+import org.mmbase.module.corebuilders.FieldDefs;
+import org.mmbase.module.core.MMBase;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
@@ -144,6 +147,35 @@ public abstract class Component {
                             settings.put(settingName, setting);
                             log.debug("Added setting '" + settingName + "' of type '" + settingType + "' for scope '" + scopeName + "', default = '" + settingDefault + "'");
                         }
+                    }
+                }
+
+                NodeList builderNodes = XPathAPI.selectNodeList(componentNode, "builder");
+                log.debug("Number of builders: " + builderNodes.getLength());
+                for (int i=0; i<builderNodes.getLength(); i++) {
+                    Node builderNode = builderNodes.item(i);
+                    String builderName = getAttribute(builderNode, "name");
+                    log.debug("Builder name: " + builderName);
+                    MMObjectBuilder builder = MMBase.getMMBase().getBuilder(builderName);
+                    if (builder == null) {
+                        log.warn("Cannot load builder '" + builderName + "' for component '" + getName() + "')");
+                    }
+                    NodeList fieldNodes = XPathAPI.selectNodeList(builderNode, "field");
+                    for (int j=0; j<fieldNodes.getLength(); j++) {
+                        Node fieldNode = fieldNodes.item(j);
+                        String fieldName = getAttribute(fieldNode, "name");
+                        String fieldType = getAttribute(fieldNode, "type");
+                        int ftype = FieldDefs.TYPE_UNKNOWN;
+                        if ("string".equals(fieldType)) {
+                            ftype = FieldDefs.TYPE_STRING;
+                        } else if ("integer".equals(fieldType)) {
+                            ftype = FieldDefs.TYPE_INTEGER;
+                        }
+
+                        FieldDefs fd = new FieldDefs(fieldName, fieldType, -1, -1, fieldName, ftype, 200, FieldDefs.DBSTATE_VIRTUAL);
+                        // position 300: used later on internally to figure out which virtual fields are didactor-managed
+                        fd.setDBPos(300);
+                        builder.addField(fd);
                     }
                 }
             } catch (Exception e) {
