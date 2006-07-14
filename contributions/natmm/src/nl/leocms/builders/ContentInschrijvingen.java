@@ -7,9 +7,6 @@ import org.mmbase.bridge.NodeIterator;
 import com.finalist.mmbase.util.CloudFactory;
 import org.mmbase.util.logging.*;
 import nl.leocms.evenementen.Evenement;
-import nl.leocms.connectors.UISconnector.UISconfig;
-import nl.leocms.connectors.UISconnector.output.orders.process.Sender;
-
 
 public class ContentInschrijvingen extends HtmlBuilder {
 
@@ -34,11 +31,6 @@ public class ContentInschrijvingen extends HtmlBuilder {
       node.setValue("users",sRelatedUsers);
 
       boolean bSuperCommit = super.commit(node);
-
-      if(UISconfig.IS_ACTIVE) {
-			Sender sender = new Sender(cloud.getNode(node.getNumber()));
-			sender.run();
-		}
 
       return bSuperCommit;
    }

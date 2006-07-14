@@ -18,6 +18,7 @@
 package nl.leocms.connectors.UISconnector.output.orders.process;
 
 import org.mmbase.bridge.*;
+import org.mmbase.util.logging.*;
 
 import nl.leocms.connectors.UISconnector.output.orders.model.*;
 import java.util.Date;
@@ -27,8 +28,14 @@ import java.io.*;
 
 public class OrderMaker
 {
+
+
+   private static final Logger log = Logging.getLoggerInstance(OrderMaker.class);
+
    public static Order makeOrder(Node nodeSubscription)
    {
+
+	  log.info("Creating new order for inschrijving " + nodeSubscription.getNumber());
 
       Order order = new Order();
 
@@ -47,59 +54,88 @@ public class OrderMaker
 
       try
       {
-         Node nodeEvenement = nodeSubscription.getRelatedNodes("evenement").getNode(0);
-         order.setExternId(nodeEvenement.getStringValue("externid"));
+
+	     NodeList nlEvenement = nodeSubscription.getRelatedNodes("evenement","posrel",null);
+
+	     if(nlEvenement.size()==0) {
+
+			 log.error("There are no related evenement object for inschrijving "  + nodeSubscription.getNumber());
+
+	     } else if(nlEvenement.size()>1) {
+
+			 log.error("There is more than one evenement object for inschrijving "  + nodeSubscription.getNumber());
+
+	     } else {
+
+             Node nodeEvenement = nlEvenement.getNode(0);
+             order.setExternId(nodeEvenement.getStringValue("externid"));
+	     }
       }
       catch (Exception e)
       {
+		  log.error("Could not set externid for inschrijving " + nodeSubscription.getNumber());
       }
 
       try
       {
-         Node nodeDeelnemers = nodeSubscription.getRelatedNodes("deelnemers").getNode(0);
-         order.setQuantity(nodeDeelnemers.getIntValue("bron"));
 
-         personalInformation.setInitials(nodeDeelnemers.getStringValue("initials"));
-         personalInformation.setFirstName(nodeDeelnemers.getStringValue("firstname"));
-         personalInformation.setSuffix(nodeDeelnemers.getStringValue("suffix"));
-         personalInformation.setLastName(nodeDeelnemers.getStringValue("lastname"));
-         personalInformation.setBirthDate(new Date(nodeDeelnemers.getLongValue("dayofbirth") * 1000));
-         personalInformation.setGender(nodeDeelnemers.getStringValue("gender"));
-         personalInformation.setTelephoneNo(nodeDeelnemers.getStringValue("privatephone"));
-         personalInformation.setEmailAddress(nodeDeelnemers.getStringValue("email"));
+	     NodeList nlDeelnemers = nodeSubscription.getRelatedNodes("deelnemers","posrel",null);
 
-         System.out.println(nodeDeelnemers.getStringValue("dayofbirth"));
+	     if(nlDeelnemers.size()==0) {
 
-         address.setAddressType("P");
+			 log.error("There are no related deelnemer object for inschrijving "  + nodeSubscription.getNumber());
 
-         try{
-            String sCompositeHouse = nodeDeelnemers.getStringValue("huisnummer");
-            Pattern p = Pattern.compile("[\\D]*$");
-            Matcher m = p.matcher(sCompositeHouse);
+	     } else if(nlDeelnemers.size()>1) {
 
-            if (m.matches())
-            {
-               int iHouseEnd = m.start();
-               address.setHouseNumber(new Integer(sCompositeHouse.substring(0, iHouseEnd)).intValue());
-               address.setHouseNumberExtension(sCompositeHouse.substring(iHouseEnd));
-            }
-            else
-            {
-               address.setHouseNumber(new Integer(sCompositeHouse).intValue());
-            }
-         }catch(Exception e){
-            address.setHouseNumberExtension(nodeDeelnemers.getStringValue("huisnummer"));
-         }
+			 log.error("There is more than one deelnemer object for inschrijving "  + nodeSubscription.getNumber());
 
-         address.setStreetName(nodeDeelnemers.getStringValue("straatnaam"));
-         address.setExtraInfo(nodeDeelnemers.getStringValue("lidnummer"));
-         address.setZipCode(nodeDeelnemers.getStringValue("postcode"));
-         address.setCity(nodeDeelnemers.getStringValue("plaatsnaam"));
+	     } else {
 
-         businessInformation.setTelephoneNo("privatphone");
+			 Node nodeDeelnemers = nlDeelnemers.getNode(0);
+
+			 order.setQuantity(nodeDeelnemers.getIntValue("bron"));
+
+			 personalInformation.setInitials(nodeDeelnemers.getStringValue("initials"));
+			 personalInformation.setFirstName(nodeDeelnemers.getStringValue("firstname"));
+			 personalInformation.setSuffix(nodeDeelnemers.getStringValue("suffix"));
+			 personalInformation.setLastName(nodeDeelnemers.getStringValue("lastname"));
+			 personalInformation.setBirthDate(new Date(nodeDeelnemers.getLongValue("dayofbirth") * 1000));
+			 personalInformation.setGender(nodeDeelnemers.getStringValue("gender"));
+			 personalInformation.setTelephoneNo(nodeDeelnemers.getStringValue("privatephone"));
+			 personalInformation.setEmailAddress(nodeDeelnemers.getStringValue("email"));
+
+			 address.setAddressType("P");
+
+			 try{
+				String sCompositeHouse = nodeDeelnemers.getStringValue("huisnummer");
+				Pattern p = Pattern.compile("[\\D]*$");
+				Matcher m = p.matcher(sCompositeHouse);
+
+				if (m.matches())
+				{
+				   int iHouseEnd = m.start();
+				   address.setHouseNumber(new Integer(sCompositeHouse.substring(0, iHouseEnd)).intValue());
+				   address.setHouseNumberExtension(sCompositeHouse.substring(iHouseEnd));
+				}
+				else
+				{
+				   address.setHouseNumber(new Integer(sCompositeHouse).intValue());
+				}
+			 } catch(Exception e){
+				address.setHouseNumberExtension(nodeDeelnemers.getStringValue("huisnummer"));
+			 }
+
+			 address.setStreetName(nodeDeelnemers.getStringValue("straatnaam"));
+			 address.setExtraInfo(nodeDeelnemers.getStringValue("lidnummer"));
+			 address.setZipCode(nodeDeelnemers.getStringValue("postcode"));
+			 address.setCity(nodeDeelnemers.getStringValue("plaatsnaam"));
+
+			 businessInformation.setTelephoneNo("privatphone");
+	     }
       }
       catch (Exception e)
       {
+          log.error("Could not set customerInformation for inschrijving " + nodeSubscription.getNumber());
       }
 
       return order;
