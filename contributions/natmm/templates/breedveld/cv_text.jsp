@@ -27,8 +27,7 @@
 </div>
 <b>MARIAN BREEDVELD - Rotterdam (NL)</b><br><br>
 
-<%  //String languageConstraint = "poslang.language='"+ language + "'"; 
-	String lang = "";
+<% String lang = "";
 	if (language.equals("english")){
 		lang = "_eng";
 	} else if (language.equals("french")) {
@@ -95,7 +94,7 @@
 <mm:list nodes="<%= pageId %>" path="pagina,posrel,projecttypes,posrel,projects"
 	constraints="<%= constraints %>"
 	orderby="projects.embargo" directions="DOWN">
-	<mm:node elements="projects">	
+	<mm:node element="projects">	
 	<%-- look for translation --%>
 	<%@include file="include/project_titel.jsp" %>
 	<%@include file="include/project_subtitle.jsp" %>
@@ -107,14 +106,14 @@
 	
 		<b>
 		<% if(projecttypes_title.indexOf("tentoonstelling")>0) { %>
-			<% timeStamp = project_embargo; %>
+			<% timeStamp = project_verloopdatum; %>
 			<%@ include file="include/inc_date.jsp" %> 
 			<%= thisDay %>&nbsp;<%= monthsStr[thisMonth] %>&nbsp;<%= thisYear %>
 			<% timeStamp = project_verloopdatum; %>
 			<%@ include file="include/inc_date.jsp" %> 
 			<%= lan(language,"t/m") %> <%= thisDay %>&nbsp;<%= monthsStr[thisMonth] %>&nbsp;<%= thisYear %><br>
 		<% } else { %>
-			<% timeStamp = project_embargo; %>
+			<% timeStamp = project_verloopdatum; %>
 			<%@ include file="include/inc_date.jsp" %> 
 			<% int fromYear = thisYear; %>		
 			<% timeStamp = project_verloopdatum; %>

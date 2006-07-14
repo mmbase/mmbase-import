@@ -21,7 +21,6 @@
   <td valign="top" align="center">
   <table width="415" cellspacing="0" border="0">
 		<%-- select list from the right language --%>
-		<% //String listConstraint = "poslang.pos='1' AND poslang.language='"+ language + "'"; %>
 		<mm:list nodes="<%= pageId %>" path="pagina1,readmore,pagina2"
 			fields="pagina2.number">
 		<form action="page.jsp?page=<mm:field name="pagina2.number" />" method="POST">
