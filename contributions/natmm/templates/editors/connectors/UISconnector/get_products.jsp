@@ -18,9 +18,8 @@
    SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 
    //--------------------Let's get the document--------------------
-   URL url = new URL(UISconfig.PRODUCT_URL);
+   URL url = new URL(UISconfig.getProductUrl());
 
-//   URL url = new URL("file:///Z:/getProducts.jsp.xml");
    URLConnection connection = url.openConnection();
 
    // to do: add test on availability of url, otherwise execution ends without any output
@@ -71,7 +70,7 @@
    //Let's update the db
    ArrayList arliChanges = Updater.update(cloud, arliModel);
    if(arliChanges.size()==0) {
-   	%>No changes found in <%= UISconfig.PRODUCT_URL %><br/><%
+   	%>No changes found in <%= UISconfig.getProductUrl() %><br/><%
    } else {
 	%>
 	<table border="1" cellpadding="5" cellspacing="0">
