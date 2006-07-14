@@ -4,6 +4,20 @@
   <property name="project.comment"   value="MMBase Calendar application" />
 
   <import file="../../applications/buildbase-include.xml" />
+  <property file="build.properties.default" />
+
+
+  <target name="icu.jar" description="Get ICU jar">
+
+    <antcall target="download">
+      <param name="sourcefile" value="${icu.loc}"/>
+      <param name="destfile" value="${icu.dest}"/>
+    </antcall>
+
+    <echo message="${project.jars.dir}${project.jars.includes}" />
+    <copy file="${icu.file}" todir="${project.jar.dir}" preservelastmodified="true" />
+  </target>
+
 
 
 </project>
