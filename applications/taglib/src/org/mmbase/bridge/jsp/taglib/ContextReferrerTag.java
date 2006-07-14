@@ -32,7 +32,7 @@ import java.util.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.85 2006-07-08 12:58:17 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.86 2006-07-14 13:26:01 nklasens Exp $
  * @see ContextTag
  */
 
@@ -560,6 +560,10 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
             }
         }
 
+        return getDefaultLocale();
+    }
+
+    public Locale getDefaultLocale() {
         return  org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getDefaultLocale();
     }
 
@@ -631,7 +635,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         if (helper.getEscape() == null) {
             return value;
         } else {
-            org.mmbase.util.transformers.CharTransformer ct = ContentTag.getCharTransformer((String) helper.getEscape(), this);
+            org.mmbase.util.transformers.CharTransformer ct = ContentTag.getCharTransformer(helper.getEscape(), this);
             if (ct != null) {
                 return ct.transform(Casting.toString(value));
             } else {
