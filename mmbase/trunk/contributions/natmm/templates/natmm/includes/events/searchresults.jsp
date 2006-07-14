@@ -86,13 +86,21 @@ if(!thisEvents.equals("")) {
    %><mm:list nodes="<%= thisEvents %>" path="evenement1,partrel,evenement" searchdir="destination"
       fields="evenement.number" constraints="<%= sChildConstraints %>"
       ><mm:node element="evenement" jspvar="evenement"><% 
-         events.put(new Long(evenement.getLongValue("begindatum")),evenement.getStringValue("number"));     
+         long eventBeginDate = evenement.getLongValue("begindatum");
+	 while(events.containsKey(new Long(eventBeginDate))) {
+	    eventBeginDate++;	
+	 }
+	 events.put(new Long(eventBeginDate),evenement.getStringValue("number")); 
       %></mm:node
    ></mm:list
    ><mm:list nodes="<%= thisEvents %>" path="evenement"
       fields="evenement.number" constraints="<%= sChildConstraints %>"
       ><mm:node element="evenement" jspvar="evenement"><% 
-         events.put(new Long(evenement.getLongValue("begindatum")),evenement.getStringValue("number"));     
+         long eventBeginDate = evenement.getLongValue("begindatum");
+	 while(events.containsKey(new Long(eventBeginDate))) {
+	    eventBeginDate++;	
+	 }
+	 events.put(new Long(eventBeginDate),evenement.getStringValue("number")); 
       %></mm:node
    ></mm:list><%
 }
