@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.202 2006-04-25 19:35:20 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.203 2006-07-14 13:27:10 nklasens Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -619,12 +619,17 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     }
 
     public void deleteRelations(String type) throws NotFoundException {
-        RelDef reldef = BasicCloudContext.mmb.getRelDef();
-        int rType = reldef.getNumberByName(type);
-        if (rType == -1) {
-            throw new NotFoundException("Relation with role : " + type + " does not exist.");
-        } else {
-            deleteRelations(rType);
+        if ("onject".equals(type)) {
+            deleteRelations(-1);
+        }
+        else {
+            RelDef reldef = BasicCloudContext.mmb.getRelDef();
+            int rType = reldef.getNumberByName(type);
+            if (rType == -1) {
+                throw new NotFoundException("Relation with role : " + type + " does not exist.");
+            } else {
+                deleteRelations(rType);
+            }
         }
     }
 
