@@ -12,7 +12,7 @@
 
     <!-- 
          Produces a search-tool, and the search result with links to create and change MMBase nodes.
-         $Id: index.jspx,v 1.13 2006-07-13 10:51:10 michiel Exp $
+         $Id: index.jspx,v 1.14 2006-07-14 10:51:31 michiel Exp $
     -->
     <mm:import externid="logout" />
     <mm:present referid="logout"><mm:cloud method="logout" /></mm:present>
@@ -155,8 +155,10 @@
               <tbody>
                 <mm:listnodes referid="result">
                   <mm:index id="index" write="false" />
+                  <mm:maywrite inverse="true"><mm:import id="readonly">readonly</mm:import></mm:maywrite>
+                  <mm:maywrite ><mm:import id="readonly"></mm:import></mm:maywrite>
                   <mm:link referids="_node@node,nodemanager" page="change.jspx">
-                    <tr class="${index % 2 == 0 ? 'even' : 'odd'}">
+                    <tr class="${index % 2 == 0 ? 'even' : 'odd'} ${readonly}">
                       <td><!-- <input type="checkbox" /> --></td>
                       <td class="click"><a href="${_}"><mm:field name="number" /></a></td>
                       <td class="click"><mm:nodeinfo type="gui" /></td>
