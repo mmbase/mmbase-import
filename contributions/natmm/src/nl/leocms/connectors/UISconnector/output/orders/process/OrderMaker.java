@@ -81,7 +81,8 @@ public class OrderMaker
 
 			 } else {
 				 Node nodePaymentType = nlPaymentTypes.getNode(0);
-	             order.setPaymentType(nodePaymentType.getStringValue("name"));
+	             order.setPaymentType(nodePaymentType.getStringValue("naam"));
+	             log.info("Setting payment type to "  + nodePaymentType.getStringValue("naam"));
 		 	 }
 	     }
       }
@@ -114,7 +115,8 @@ public class OrderMaker
 			 personalInformation.setSuffix(nodeDeelnemers.getStringValue("suffix"));
 			 personalInformation.setLastName(nodeDeelnemers.getStringValue("lastname"));
 			 personalInformation.setBirthDate(new Date(nodeDeelnemers.getLongValue("dayofbirth") * 1000));
-			 personalInformation.setGender(nodeDeelnemers.getStringValue("gender"));
+			 String sGender = nodeDeelnemers.getStringValue("gender");
+			 personalInformation.setGender(sGender.substring(0,1).toUpperCase());
 			 personalInformation.setTelephoneNo(nodeDeelnemers.getStringValue("privatephone"));
 			 personalInformation.setEmailAddress(nodeDeelnemers.getStringValue("email"));
 

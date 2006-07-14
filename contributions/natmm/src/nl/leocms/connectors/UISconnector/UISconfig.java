@@ -33,7 +33,8 @@ public class UISconfig {
 
    public static String postOrderUrl(){
    	  // return "http://212.123.241.76/mmdemo/api/postOrders.jsp"; // production
-      return "http://mc018/mmdemo/api/postOrders.jsp"; // erwin
+      return "http://192.168.120.47:8080/mmdemo_test/api/postOrders.jsp"; // development
+      // return "http://mc018/mmdemo/api/postOrders.jsp"; // erwin
    }
 
    public static boolean isUISconnected() {
