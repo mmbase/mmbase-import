@@ -4,6 +4,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.InsRel;
+import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.bridge.*;
@@ -37,7 +38,7 @@ public class PeopleBuilder extends DidactorBuilder {
     
             List nodelist = getNodes(query);
             if (nodelist.size() == 0) {
-                log.info("No users with the name '" + username + "'");
+                log.service("No users with the name '" + username + "'");
                 return null;
                 // fail silently
             } else if (nodelist.size() > 1) {
@@ -63,37 +64,27 @@ public class PeopleBuilder extends DidactorBuilder {
         }
     }
  
-    public MMObjectNode getUser(String username)
-    {
-        try
-        {
+    public MMObjectNode getUser(String username) {
+        try {
             NodeSearchQuery query = new NodeSearchQuery(this);
             StepField usernameField = query.getField(getField("username"));
             query.setConstraint(new BasicFieldValueConstraint(usernameField, username));
-            //StepField passwordField = query.getField(getField("password"));
-            //query.setConstraint(new BasicFieldValueConstraint(passwordField, "{md5}" + encoder.encode(password)));
 
             List nodelist = getNodes(query);
-            if (nodelist.size() == 0)
-            {
-               log.info( "No users with the name");
+            if (nodelist.size() == 0) {
+               log.service ("No users with the name");
                 return null;
                 // fail silently
-            }
-            else if (nodelist.size() > 1)
-            {
-               for ( int i=0;i <nodelist.size() ;i++)
-               {
+            } else if (nodelist.size() > 1) {
+               for ( int i=0;i <nodelist.size() ;i++) {
                   MMObjectNode n = (MMObjectNode)nodelist.get(0);
-                  log.info( n.getStringValue("lastname") + ""+ n.getStringValue("username"));
+                  log.service("Found multiple users with username '" + username + "': " + n.getStringValue("firstname") + "" + n.getStringValue("lastname"));
                }
 
                log.error("Too many users with username '" + username + "': " + nodelist.size());
                return null;
-            }
-            else
-            {
-                log.info( "1 user found" + username);
+            } else {
+                log.service("1 user found with username '" + username + "'");
                 MMObjectNode node = (MMObjectNode)nodelist.get(0);
                 return node;
             }
@@ -133,7 +124,7 @@ public class PeopleBuilder extends DidactorBuilder {
             // forbid setting a username to an existing one
             if (originalValue != null && originalValue.equals("") && !newValue.equals("")) {
                 if (countUsernamesInCloud((String) newValue) != 0) {
-                    log.info("setValues() cleared username "+((String) newValue)+" because it already exists");
+                    log.warn("setValues() cleared username "+((String) newValue)+" because it already exists");
                     node.values.put("username", "");
                     return false;
                 }
@@ -168,6 +159,11 @@ public class PeopleBuilder extends DidactorBuilder {
      * @return an object containing the value.
      */
     public Object getValue(MMObjectNode node, String field) {
+        FieldDefs fd = getField(field);
+        if (fd != null) {
+            return super.getValue(node, field);
+        }
+
         if ("isonline".equals(field)) {
             int now = (int)(System.currentTimeMillis() / 1000);    
             int oldtime = node.getIntValue("lastactivity");
@@ -182,28 +178,19 @@ public class PeopleBuilder extends DidactorBuilder {
             }
         }
 
-        if (getField(field) == null) {
-            // Is it a component setting?
+        // No fielddefs, so it is definately a virtual field. Is it a component setting?
+        if (field.indexOf("-") > 0) {
             log.debug("Trying to get '" + field + "'");
-            if (field.indexOf("-") > 0) {
-                String componentName = field.substring(0, field.indexOf("-"));
-                String settingName = field.substring(field.indexOf("-") + 1, field.length());
-                log.debug("Component [" + componentName + "], setting [" + settingName + "]");
-                Component c = Component.getComponent(componentName);
-                Object value = c.getUserSetting(settingName, "" + node.getNumber(), LocalContext.getCloudContext().getCloud("mmbase"));
-                log.debug("Value: [" + value + "] (" + value.getClass() + ")");
-                return value;
-            } else {
-                // it is a virtual field, to be retrieved from the related 'fields' object
-                Vector fieldNodes = node.getRelatedNodes("fields");
-                for (int i=0; i<fieldNodes.size(); i++) {
-                    MMObjectNode fieldNode = (MMObjectNode)fieldNodes.get(i);
-                    if (field.equals(fieldNode.getStringValue("name"))) {
-                        return fieldNode.getStringValue("value");
-                    }
-                }
-            }
+            String componentName = field.substring(0, field.indexOf("-"));
+            String settingName = field.substring(field.indexOf("-") + 1, field.length());
+            log.debug("Component [" + componentName + "], setting [" + settingName + "]");
+            Component c = Component.getComponent(componentName);
+            Object value = c.getUserSetting(settingName, "" + node.getNumber(), LocalContext.getCloudContext().getCloud("mmbase"));
+            log.debug("Value: [" + value + "] (" + value.getClass() + ")");
+            return value;
         }
+
+        // And maybe it was a computed field on lower level?
         return super.getValue(node, field);
     }
 
