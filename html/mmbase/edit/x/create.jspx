@@ -13,21 +13,23 @@
     <!-- 
          Offers a form for one new MMBase node.
          Also handles the form, and then redirects to change.jspx, because the node is existng then.
-         $Id: create.jspx,v 1.12 2006-04-29 13:35:04 michiel Exp $
+         $Id: create.jspx,v 1.13 2006-07-14 14:48:22 michiel Exp $
     -->
     <mm:include page="head.jspx" />
     <body>
+      <mm:import id="referids">nodemanager,only?</mm:import>
       <mm:cloud rank="basic user">
         <mm:import externid="nodemanager" required="true" />        
 
         <mm:import externid="submitted">new</mm:import>
 
         <h1 class="${submitted}">
-          <mm:link page="." referids="nodemanager">
+          <mm:link page="." referids="$referids">
             <a href="${_}" class="back"><span class="navigate">back</span></a>
           </mm:link>
             <a href="javascript:document.getElementById('createform').submit();" class="ok"><span class="navigate">ok</span></a>
           <jsp:text>New <mm:nodeinfo nodetype="$nodemanager" type="guitype" /></jsp:text>
+
         </h1>
         <mm:form id="createform">
           <input type="hidden" name="nodemager" value="${nodemanager}" />
@@ -55,7 +57,7 @@
                 </mm:fieldlist>
               </mm:createnode>
               <mm:commit />
-              <mm:redirect page="change.jspx" referids="newnode@node,nodemanager">
+              <mm:redirect page="change.jspx" referids="newnode@node,$referids">
                 <mm:param name="ok" value="ok" />
               </mm:redirect>
             </mm:valid>

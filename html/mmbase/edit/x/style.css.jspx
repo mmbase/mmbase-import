@@ -24,6 +24,7 @@ table {
   width: 100%;
   
 }
+
 img { 
   border: none;
   margin: 0px 0px 0px 0px;
@@ -44,6 +45,10 @@ img {
 }
 #searchresult tbody tr.even.readonly:hover { 
   background-color: #e8d8d8;
+}
+
+#searchresult.delete tbody tr.selected.even {
+ background-color: yellow;
 }
 
 .mm_check_error {

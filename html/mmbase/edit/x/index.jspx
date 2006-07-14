@@ -12,18 +12,29 @@
 
     <!-- 
          Produces a search-tool, and the search result with links to create and change MMBase nodes.
-         $Id: index.jspx,v 1.14 2006-07-14 10:51:31 michiel Exp $
+         $Id: index.jspx,v 1.15 2006-07-14 14:48:22 michiel Exp $
     -->
-    <mm:import externid="logout" />
-    <mm:present referid="logout"><mm:cloud method="logout" /></mm:present>
     <mm:cloud rank="basic user">
       
       <mm:include page="head.jspx" />
       <body>
         <mm:import externid="nodemanager">object</mm:import>
         <mm:import externid="only" />
-        
-        <form id="searchform" action="." method="post">
+        <mm:import externid="referids">nodemanager,only?</mm:import>
+        <mm:import externid="action" />
+        <mm:compare referid="action" value="delete">
+          <mm:import externid="nodes" vartype="list"/>
+          <mm:stringlist referid="nodes">
+            <mm:node number="$_">
+              <mm:maydelete>
+                <mm:deletenode />
+              </mm:maydelete>
+            </mm:node>
+          </mm:stringlist>
+        </mm:compare>
+
+        <mm:import id="thispage"><mm:url page="."  /></mm:import>
+        <form id="searchform" action="${thispage}" method="post">
           <h1>
             <a href="javascript:void(0);" onclick="this.getElementsByTagName('input')[0].form.submit();"  class="search">
               <span class="navigate">
@@ -31,7 +42,7 @@
               </span>
             </a>
             <mm:maycreate type="$nodemanager">
-              <mm:link referids="nodemanager" page="create.jspx">
+              <mm:link referids="$referids" page="create.jspx">
                 <a href="${_}" class="create"><span class="navigate">create</span></a>
               </mm:link>
             </mm:maycreate>
@@ -55,13 +66,8 @@
             <mm:notpresent referid="only">
               <input title="descendants" name="only" type="checkbox"  onchange="this.form.submit()" />
             </mm:notpresent>
-            <span class="logininfo">
-              <mm:cloudinfo type="user" /> (<mm:cloudinfo type="rank" />)
-              <mm:link referids="nodemanager">
-                <mm:param name="logout" />
-                <a href="${_}" class="logout"><span class="navigate">logout</span></a>
-              </mm:link>
-            </span>
+
+            <jsp:directive.include file="logininfo.span.jspx" />
           </h1>
 
           <table class="search" summary="Search form">
@@ -76,8 +82,12 @@
           </table>
         </form>
 
-        <table id="searchresult" summary="Search results for ${nodemanager}"
->
+        <form id="searchresultform" action="${thispage}" method="post">
+          <input type="hidden" name="nodemanager" value="${nodemanager}" />
+          <mm:present referid="only">
+            <input type="hidden" name="only" value="${only}" />
+          </mm:present>
+        <table id="searchresult" summary="Search results for ${nodemanager}">
           <mm:import id="pagesize">50</mm:import>
           <mm:import externid="offset">0</mm:import>
 
@@ -89,7 +99,7 @@
               <mm:typeconstraint name="$nodemanager" descendants="false" />
             </mm:present>
 
-            <mm:link id="base" page="." referids="nodemanager">
+            <mm:link id="base" page="." referids="$referids">
               <mm:fieldlist nodetype="$nodemanager" type="search">
                 <mm:fieldinfo type="reusesearchinput" />
                 <mm:fieldinfo type="usesearchinput" />
@@ -129,13 +139,10 @@
 
               <tr class="head">
                 <th colspan="2">
-                  <!--
-                  <select>
-                    <option value="">&nbsp;</option>
-                    <option value="edit">edit</option>
+                  <select name="action" onchange="this.parentNode.parentNode.parentNode.parentNode.className = 'delete'; if (confirm('Are you sure?')) { this.form.submit();} else { this.value = '';}" >
+                    <option value="">&amp;nbsp;</option>
                     <option value="delete">delete</option>
                   </select>
-                  -->
                 </th>
                 <th />
                 <mm:fieldlist nodetype="$nodemanager" type="list">
@@ -146,7 +153,9 @@
 
             <tfoot>
               <tr class="paging">
-                <th colspan="2" /><th colspan="100"><mm:write referid="paging" escape="none" /></th>
+                <th colspan="2">
+                </th>
+                <th colspan="100"><mm:write referid="paging" escape="none" /></th>
               </tr>
             </tfoot>
 
@@ -157,9 +166,12 @@
                   <mm:index id="index" write="false" />
                   <mm:maywrite inverse="true"><mm:import id="readonly">readonly</mm:import></mm:maywrite>
                   <mm:maywrite ><mm:import id="readonly"></mm:import></mm:maywrite>
-                  <mm:link referids="_node@node,nodemanager" page="change.jspx">
-                    <tr class="${index % 2 == 0 ? 'even' : 'odd'} ${readonly}">
-                      <td><!-- <input type="checkbox" /> --></td>
+                  <mm:link referids="_node@node,$referids" page="change.jspx">
+                    <mm:import id="class">${index % 2 == 0 ? 'even' : 'odd'} ${readonly}</mm:import>
+                    <tr class="${class}">
+                      <td>
+                        <input type="checkbox" name="nodes" value="${_node.number}" onchange="this.parentNode.parentNode.className = '${class}' + (this.checked ? ' selected' : '')" />
+                      </td>
                       <td class="click"><a href="${_}"><mm:field name="number" /></a></td>
                       <td class="click"><mm:nodeinfo type="gui" /></td>
                       <mm:fieldlist type="list" nodetype="$nodemanager">
@@ -174,6 +186,7 @@
             </c:if>
           </mm:listnodescontainer>
         </table>
+        </form>
         <script type="text/javascript">
           window.addEventListener("load", function() {
           var els = document.getElementById("searchresult").getElementsByTagName("td");
