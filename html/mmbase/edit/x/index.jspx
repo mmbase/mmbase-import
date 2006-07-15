@@ -9,10 +9,9 @@
               doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
   <jsp:directive.page session="true" buffer="200kb" />  
   <html lang="${locale}" xmlns="http://www.w3.org/1999/xhtml">
-
     <!-- 
          Produces a search-tool, and the search result with links to create and change MMBase nodes.
-         $Id: index.jspx,v 1.16 2006-07-14 16:13:19 michiel Exp $
+         $Id: index.jspx,v 1.17 2006-07-15 15:28:30 michiel Exp $
     -->
     <mm:cloud rank="basic user">
       
@@ -21,16 +20,24 @@
         <mm:import externid="nodemanager">object</mm:import>
         <mm:import externid="only" />
         <mm:import externid="referids">nodemanager,only?</mm:import>
+
+        
+        <!-- handle delete nodes -->
         <mm:import externid="action" />
         <mm:compare referid="action" value="delete">
           <mm:import externid="nodes" vartype="list"/>
           <mm:stringlist referid="nodes">
             <mm:node number="$_">
               <mm:maydelete>
-                <mm:deletenode />
+                <mm:deletenode deleterelations="true" />
               </mm:maydelete>
             </mm:node>
           </mm:stringlist>
+        </mm:compare>
+
+        <mm:compare referid="action" value="edit">
+          <mm:import externid="nodes" vartype="list"/>
+          <mm:redirect page="multiple.jspx" referids="nodes,$referids" />
         </mm:compare>
 
         <mm:import id="thispage"><mm:url page="."  /></mm:import>
@@ -38,7 +45,7 @@
           <h1>
             <a href="javascript:void(0);" onclick="this.getElementsByTagName('input')[0].form.submit();"  class="search">
               <span class="navigate">
-                <input type="submit" class="hoi"  name="ok" value="ok" />
+                <input type="submit"  name="ok" value="ok" />
               </span>
             </a>
             <mm:maycreate type="$nodemanager">
@@ -137,11 +144,16 @@
                 
                 <tr class="head">
                   <th colspan="3">
-                    <select name="action" onchange="this.parentNode.parentNode.parentNode.parentNode.className = 'delete'; if (confirm('Are you sure?')) { this.form.submit();} else { this.value = ''; this.parentNode.parentNode.parentNode.parentNode.className = ''; }" >
-                      <option value="">&amp;nbsp;</option>
+                    <select name="action" 
+                            onchange="document.getElementById('searchresult').className = 'delete'; 
+                                      if (confirm('Are you sure?')) { this.form.submit();} else
+                                      { this.value = ''; document.getElementById('searchresult').className = 'nothing'; }" >
+                      <option value="">--</option>
                       <option value="delete">delete</option>
+                      <option value="edit">edit</option>
                     </select>
-                    <input type="checkbox" onchange="var els = document.getElementsByTagName('input'); for (var el in els) { if (els[el].className == 'nodesbox') {  els[el].checked = this.checked; }};" />
+                    <input type="checkbox" 
+                           id="selectall" />
                   </th>
                   <mm:fieldlist nodetype="$nodemanager" type="list">
                     <th><mm:fieldinfo type="guiname" /></th>
@@ -149,16 +161,18 @@
                 </tr>
               </thead>
               
-              <tfoot>
-                <tr class="paging">
-                  <th colspan="2">
-                  </th>
-                  <th colspan="100"><mm:write referid="paging" escape="none" /></th>
-                </tr>
-              </tfoot>
-              
               <mm:listnodes id="result" />
+
               <c:if test="${fn:length(result) gt 0}">
+
+                <tfoot>
+                  <tr class="paging">
+                    <th colspan="2">
+                    </th>
+                    <th colspan="100"><mm:write referid="paging" escape="none" /></th>
+                  </tr>
+                </tfoot>
+                
                 <tbody>
                   <mm:listnodes referid="result">
                     <mm:index id="index" write="false" />
@@ -167,8 +181,10 @@
                     <mm:link referids="_node@node,$referids" page="change.jspx">
                       <mm:import id="class">${index % 2 == 0 ? 'even' : 'odd'} ${readonly}</mm:import>
                       <tr class="${class}">
-                        <td onclick="var input = childNodes[0]; input.checked = ! input.checked; ">
-                          <input class="nodesbox" type="checkbox" name="nodes" value="${_node.number}"  onclick="event.stopPropagation();" onchange="this.parentNode.parentNode.className = '${class}' + (this.checked ? ' selected' : '')" />
+                        <td class="nodeselect" >
+                          <input id="checkbox_${_node.number}"  value="${_node.number}"  
+                                 class="nodesbox" type="checkbox" name="nodes"
+                                 onclick="event.stopPropagation();" />
                         </td>
                         <td class="click"><a href="${_}"><mm:field name="number" /></a></td>
                         <td class="click"><mm:nodeinfo type="gui" /></td>
@@ -186,9 +202,47 @@
           </table>
         </form>
         <script type="text/javascript">
+          function check(tr, checked) {
+             var pattern = new RegExp("\\bselected\\b");
+             if (! checked &amp;amp;&amp;amp; pattern.test(tr.className)) {
+                tr.className = tr.className.replace(pattern, "");
+             } else if (checked &amp;amp;&amp;amp; ! pattern.test(tr.className)) {
+                tr.className += " selected";
+             }
+          }
           window.addEventListener("load", function() {
           var els = document.getElementById("searchresult").getElementsByTagName("td");
-          var pattern = new RegExp("\\bclick\\b");
+          var pattern  = new RegExp("\\bclick\\b");
+          var pattern2 = new RegExp("\\bnodeselect\\b");
+          for (var i = 0; i &amp;lt; els.length; i++) {
+            if ( pattern.test(els[i].className) ) {
+               els[i].addEventListener("click", function() {
+                  document.location.href = this.parentNode.cells[1].firstChild.href;
+               }, false);
+            } 
+            if (pattern2.test(els[i].className)) {
+               els[i].addEventListener("click", function(e) {
+                  var input = this.childNodes[0];
+                  input.checked = ! input.checked;
+                  check(this.parentNode, input.checked);
+               }, false);
+               els[i].childNodes[0].addEventListener("click", function() {
+                  check(this.parentNode.parentNode, this.checked);
+               }, false);
+            }
+          }
+          var selectAll = document.getElementById("selectall");
+          selectAll.addEventListener("change", function() {
+              var els = document.getElementsByTagName('input'); 
+              for (var el in els) { 
+                 if (els[el].className == 'nodesbox') {  
+                   els[el].checked = this.checked; els[el].checked
+                   check(els[el].parentNode.parentNode, this.checked);
+                 }
+              }
+              }, false);
+          var els = document.getElementById("searchresult").getElementsByTagName("td");
+
           for (var i = 0; i &amp;lt; els.length; i++) {
             if ( pattern.test(els[i].className) ) {
                els[i].addEventListener("click", function() {
