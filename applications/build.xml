@@ -232,7 +232,7 @@ Applications build file
     <ant dir="bugtracker"     target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
-    <ant dir="vwms"        target="dependent.install" inheritAll="false">
+    <ant dir="vwms"        target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
     <ant dir="scan"        target="dependent.install" inheritAll="false">
