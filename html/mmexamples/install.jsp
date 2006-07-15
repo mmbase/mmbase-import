@@ -44,16 +44,12 @@
         /*    "MyUsers", scan, not included in distribution */
             "MyYahoo"
           };
-           boolean first=true;
-           boolean installed=false;
            NodeManager versions=cloud.getNodeManager("versions");
            Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
 
            for (int step=0; step<steps.length; step++) {             
              String app = steps[step];
              NodeList nl = versions.getList("name='" + app + "'", null, null);
-             installed = nl.size()>0;
-
              String msg="";
              if (installstep.intValue()==step) {
               // install this step
@@ -62,10 +58,15 @@
                 params.put("APPLICATION",app);
                 mmAdmin.process("LOAD",app,params,request,response);
                 msg="<p style=\"white-space:pre;\">"+mmAdmin.getInfo("LASTMSG",request,response)+"</p>";
-              } catch (Exception e ) {
-                msg="<p style=\"white-space:pre;\"> Error: "+e+"</p>";
+              } catch (java.lang.reflect.UndeclaredThrowableException ute) {
+                Throwable t = ute;
+                while (t.getCause() != null) {
+                    t = t.getCause();
+                }
+                msg="<p style=\"white-space:pre;\"> Error: "+ t + "</p>";
+              } catch (Throwable e ) {
+                msg="<p style=\"white-space:pre;\"> Error: " + e + "</p>";
               }
-              installed=true;
              }
         %>
 <tr valign="top">
