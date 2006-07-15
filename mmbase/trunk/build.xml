@@ -2,7 +2,7 @@
 
 
 MMBase Build File
-$Id: build.xml,v 1.142 2006-07-14 08:45:32 michiel Exp $
+$Id: build.xml,v 1.143 2006-07-15 10:07:34 michiel Exp $
 =================
 
 This build file can be used to build the following from CVS or from the source
@@ -262,7 +262,7 @@ builddate=${builddate}
 
     <!-- zip -->
     <zip zipfile="${build.dir}/${name}-${distro.version}.${builddate}.zip">
-      <zipfileset dir="${build.dir}/mmbase" prefix="${name}-${builddate}" includes="**">
+      <zipfileset dir="${build.dir}/mmbase" prefix="${name}-${distro.version}.${builddate}" includes="**">
         <!-- these are bloating the zip-size too much...-->
         <exclude name="**/*.pdf" />
         <exclude name="**/javadoc/**" />
