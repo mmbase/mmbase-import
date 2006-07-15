@@ -99,36 +99,28 @@
     &nbsp;&nbsp;
     <a href="<mm:url page="default.jsp?category=tools&subcategory=email" />" target="_top" >
     <span class="<%=("email".equals(subcategory)) ? "current" : ""%>menuitem">EMAIL</span></a>
-    &nbsp;&nbsp;
     <mm:haspage page="/mmbase/packagemanager/index.jsp">
+      &nbsp;&nbsp;
       <a href="<mm:url page="/mmbase/packagemanager/index.jsp" />" target="_top" >
-    </mm:haspage>    
       <span class="<%=("packagemanager".equals(subcategory)) ? "current" : ""%>menuitem">PACKAGEMANAGER</span>
-     <mm:haspage page="/mmbase/packagemanager/index.jsp">
         </a>
     </mm:haspage>    
-    &nbsp;&nbsp;
     <mm:haspage page="/mmbase/packagebuilder/index.jsp">
+      &nbsp;&nbsp;
       <a href="<mm:url page="/mmbase/packagebuilder/index.jsp" />" target="_top" >
-    </mm:haspage>
     <span class="<%=("packagebuilder".equals(subcategory)) ? "current" : ""%>menuitem">PACKAGEBUILDER</span>
-    <mm:haspage page="/mmbase/packagebuilder/index.jsp">
       </a>
     </mm:haspage>
-    &nbsp;&nbsp;
     <mm:haspage page="/mmbase/crontab/index.jspx">
+      &nbsp;&nbsp;
       <a href="<mm:url page="default.jsp?category=tools&url=/mmbase/crontab/" />" target="_top" >
-    </mm:haspage>
     <span class="<%=("crontab".equals(subcategory)) ? "current" : ""%>menuitem">CRONTAB</span>
-    <mm:haspage page="/mmbase/crontab/index.jspx">
       </a>
     </mm:haspage>
-    &nbsp;&nbsp;
     <mm:haspage page="/mmbase/clustering/index.jspx">
+      &nbsp;&nbsp;
       <a href="<mm:url page="default.jsp?category=tools&url=/mmbase/clustering/" />" target="_top" >
-    </mm:haspage>
     <span class="<%=("clustering".equals(subcategory)) ? "current" : ""%>menuitem">CLUSTERING</span>
-    <mm:haspage page="/mmbase/clustering/index.jspx">
       </a>
     </mm:haspage>
         <% } %>
