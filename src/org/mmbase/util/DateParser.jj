@@ -43,10 +43,13 @@ public class DateParser {
     private int amount = 0;
     private int factor = 1;
     private int field = 0;
+    private int monthorday = -1;
+    private int week = -1;
     private boolean positive = true;
     private Calendar cal = Calendar.getInstance(defaultTimeZone);
     {
         cal.setFirstDayOfWeek(Calendar.MONDAY); // ISO 8601
+        cal.setMinimalDaysInFirstWeek(4);      // ISO 8601
     }
 
     public static void main(String argv[]) throws ParseException, InterruptedException {
@@ -135,13 +138,16 @@ void time() : {}
 void date() :  {}
 {
     LOOKAHEAD(6)
-    year_number() "-" month_number() "-" day_number() { beginOfDay(); dynamic = false; }
-    | year_number() "-W"  week_number() "-"  day_of_week_number() { beginOfDay(); dynamic = false; }
-    | year_number() "-"  day_of_year_number()  { beginOfDay(); dynamic = false; }
+
+    year_number() "-" month_or_day_or_week_number() ("-" day_of_month_or_week_number())? { 
+         if (monthorday > 0) cal.set(Calendar.DAY_OF_YEAR, monthorday); 
+         if (week >= 0) { cal.set(Calendar.WEEK_OF_YEAR, week); cal.set(Calendar.DAY_OF_WEEK, 2);  week = -1;}
+         beginOfDay(); dynamic = false; 
+    }
     | day_of_week() {beginOfDay();}
     | month_of_year() {beginOfMonth();}
     | "now"      { cal = getInstance(); }
-    | integer() {  cal.setTimeInMillis((positive ? 1 : -1 ) * Long.parseLong(token.toString()) * 1000); dynamic = false; positive = true;}
+    | seconds()  {  }
     | <TO> to_period() {}
     | "tomorrow" { cal = getInstance(); cal.add(Calendar.DAY_OF_YEAR, 1); beginOfDay(); }
     | "yesterday" { cal = getInstance(); cal.add(Calendar.DAY_OF_YEAR, -1); beginOfDay(); }
@@ -172,33 +178,50 @@ void integer() : {}
 |  <POSITIVE>
 }
 
+void seconds() : {} 
+{
+    integer() {  cal.setTimeInMillis((positive ? 1 : -1 ) * Long.parseLong(token.toString()) * 1000); dynamic = false; positive = true;}
+}
 void year_number() : { }
 {
     integer()  {  cal.set(Calendar.YEAR, (positive ? 1 : -1) * Integer.parseInt(token.toString())); positive = true;}
 }
-void week_number() : {}
+void week_number() : { }
 {
-    integer() { cal.set(Calendar.WEEK_OF_YEAR, (positive ? 1 : -1) * Integer.parseInt(token.toString())); positive = true;}
+    <POSITIVE>  {  cal.set(Calendar.WEEK_OF_YEAR, Integer.parseInt(token.toString()));}
 }
-void day_of_week_number() : {}
-{
-    integer() { int week = (positive ? 1 : -1) * ((Integer.parseInt(token.toString()) + 1) % 7); positive = true; cal.set(Calendar.DAY_OF_WEEK, week == 0 ? 7 : week); }
-}
+
 void inc_number() : { }
 {
     <POSITIVE> { amount = Integer.parseInt(token.toString()); }
 }
-void month_number() : { }
+void month_or_day_or_week_number() : { }
 {
-    <POSITIVE> { cal.set(Calendar.MONTH, Integer.parseInt(token.toString()) - 1);}
+    <POSITIVE> { monthorday = Integer.parseInt(token.toString());  week = -1; }
+    |  "W" <POSITIVE> { monthorday = -1; week = Integer.parseInt(token.toString());  }
 }
-void day_number() : { }
+void day_of_month_or_week_number() : { }
 {
-    <POSITIVE> { cal.set(Calendar.DAY_OF_MONTH, Integer.parseInt(token.toString()));}
+    <POSITIVE> {
+        if (monthorday > 0) {
+            cal.set(Calendar.MONTH, monthorday - 1);
+            monthorday = -1;
+            cal.set(Calendar.DAY_OF_MONTH, Integer.parseInt(token.toString()));
+        } else {
+            cal.set(Calendar.WEEK_OF_YEAR, week);
+            week = -1;
+            int day = (Integer.parseInt(token.toString()) + 1) % 7; if (day == 0) day = 7;  
+            cal.set(Calendar.DAY_OF_WEEK, day);
+        }
+    }
 }
 void day_of_year_number() : { }
 {
     <POSITIVE> { cal.set(Calendar.DAY_OF_YEAR, Integer.parseInt(token.toString()));}
+}
+void day_of_week_number() : { }
+{
+    <POSITIVE> { cal.set(Calendar.DAY_OF_WEEK, Integer.parseInt(token.toString()));}
 }
 
 void hour_number() : { }
