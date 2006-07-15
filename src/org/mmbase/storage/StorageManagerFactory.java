@@ -24,7 +24,6 @@ import org.mmbase.util.ResourceLoader;
 import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.util.transformers.Transformers;
 
-
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -36,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.26 2006-03-28 23:43:08 michiel Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.27 2006-07-15 10:58:36 michiel Exp $
  */
 public abstract class StorageManagerFactory {
 
@@ -139,8 +138,7 @@ public abstract class StorageManagerFactory {
      * @throws StorageException if the StorageManagerFactory class cannot be located, accessed, or instantiated,
      *         or when something went wrong during configuration of the factory
      */
-    static public StorageManagerFactory newInstance()
-                  throws StorageException {
+    static public StorageManagerFactory newInstance() throws StorageException {
         // determine the default mmbase module.
         return newInstance(MMBase.getMMBase());
     }
@@ -155,11 +153,11 @@ public abstract class StorageManagerFactory {
     protected final void init(MMBase mmbase) throws StorageError {
         log.service("initializing Storage Manager factory " + this.getClass().getName());
         this.mmbase = mmbase;
-        attributes = Collections.synchronizedMap(new HashMap());
-        typeMappings = Collections.synchronizedList(new ArrayList());
+        attributes    = Collections.synchronizedMap(new HashMap());    // ConcurrentHashMap not possible because null-values are put (TODO)
+        typeMappings  = Collections.synchronizedList(new ArrayList()); // CopyOnWriteArrayList not possible because Collections.sort is done (TODO)
         changeManager = new ChangeManager();
         try {
-            log.service("loading Storage Manager factory " + this.getClass().getName());
+            log.debug("loading Storage Manager factory " + this.getClass().getName());
             load();
         } catch (StorageException se) {
             // pass exceptions as a StorageError to signal a serious (unrecoverable) error condition
@@ -401,7 +399,7 @@ public abstract class StorageManagerFactory {
      * @param value the value of the attribute
      */
     public void setAttribute(Object key, Object value) {
-        attributes.put(key,value);
+        attributes.put(key, value);
     }
 
     /**
@@ -412,7 +410,7 @@ public abstract class StorageManagerFactory {
      * @return the scheme value, or null if it is unknown
      */
     public Scheme getScheme(Object key) {
-        return getScheme(key,null);
+        return getScheme(key, null);
     }
 
     /**
