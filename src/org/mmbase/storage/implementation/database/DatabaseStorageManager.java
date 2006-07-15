@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.165 2006-07-13 08:50:43 nklasens Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.166 2006-07-15 18:43:43 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -178,7 +178,9 @@ public class DatabaseStorageManager implements StorageManager {
         }
         activeConnection = factory.getDataSource().getConnection();
         // set autocommit to true
-        activeConnection.setAutoCommit(true);
+        if (activeConnection != null) {
+            activeConnection.setAutoCommit(true);
+        }
         return activeConnection;
     }
 
@@ -210,6 +212,7 @@ public class DatabaseStorageManager implements StorageManager {
             if (factory.supportsTransactions()) {
                 try {
                     getActiveConnection();
+                    if (activeConnection == null) return;
                     activeConnection.setTransactionIsolation(transactionIsolation);
                     activeConnection.setAutoCommit(false);
                 } catch (SQLException se) {
@@ -291,52 +294,54 @@ public class DatabaseStorageManager implements StorageManager {
             // if sequenceKeys conatins (buffered) keys, return this
             if (sequenceKeys.size() > 0) {
                 return ((Integer)sequenceKeys.remove(0)).intValue();
-            } else try {
-                getActiveConnection();
-                Statement s;
-                String query;
-                Scheme scheme = factory.getScheme(Schemes.UPDATE_SEQUENCE, Schemes.UPDATE_SEQUENCE_DEFAULT);
-                if (scheme != null) {
-                    query = scheme.format(new Object[] { this, factory.getStorageIdentifier("number"), bufferSize });
-                    long startTime = getLogStartTime();
-                    s = activeConnection.createStatement();
-                    s.executeUpdate(query);
-                    s.close();
-                    logQuery(query, startTime);
-                }
-                scheme = factory.getScheme(Schemes.READ_SEQUENCE, Schemes.READ_SEQUENCE_DEFAULT);
-                query = scheme.format(new Object[] { this, factory.getStorageIdentifier("number"), bufferSize });
-                s = activeConnection.createStatement();
+            } else {
+                String query = "";
                 try {
-                    long startTime = getLogStartTime();
-                    ResultSet result = s.executeQuery(query);
+                    getActiveConnection();
+                    Statement s;
+                    Scheme scheme = factory.getScheme(Schemes.UPDATE_SEQUENCE, Schemes.UPDATE_SEQUENCE_DEFAULT);
+                    if (scheme != null) {
+                        query = scheme.format(new Object[] { this, factory.getStorageIdentifier("number"), bufferSize });
+                        long startTime = getLogStartTime();
+                        s = activeConnection.createStatement();
+                        s.executeUpdate(query);
+                        s.close();
                     logQuery(query, startTime);
+                    }
+                    scheme = factory.getScheme(Schemes.READ_SEQUENCE, Schemes.READ_SEQUENCE_DEFAULT);
+                    query = scheme.format(new Object[] { this, factory.getStorageIdentifier("number"), bufferSize });
+                    s = activeConnection.createStatement();
                     try {
-                        if (result.next()) {
-                            int keynr = result.getInt(1);
-                            // add remaining keys to sequenceKeys
-                            for (int i = 1; i < bufferSize.intValue(); i++) {
-                                sequenceKeys.add(new Integer(keynr+i));
+                        long startTime = getLogStartTime();
+                        ResultSet result = s.executeQuery(query);
+                        logQuery(query, startTime);
+                        try {
+                            if (result.next()) {
+                                int keynr = result.getInt(1);
+                                // add remaining keys to sequenceKeys
+                                for (int i = 1; i < bufferSize.intValue(); i++) {
+                                    sequenceKeys.add(new Integer(keynr+i));
+                                }
+                                return keynr;
+                            } else {
+                                throw new StorageException("The sequence table is empty.");
                             }
-                            return keynr;
-                        } else {
-                            throw new StorageException("The sequence table is empty.");
+                        } finally {
+                            result.close();
                         }
                     } finally {
-                        result.close();
+                        s.close();
                     }
+                } catch (SQLException se) {
+                    log.error("" + query + " " + se.getMessage(), se);
+                    // wait 2 seconds, so any locks that were claimed are released.
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException re) {}
+                    throw new StorageException(se);
                 } finally {
-                    s.close();
+                    releaseActiveConnection();
                 }
-            } catch (SQLException se) {
-                log.error(Logging.stackTrace(se));
-                // wait 2 seconds, so any locks that were claimed are released.
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException re) {}
-                throw new StorageException(se);
-            } finally {
-                releaseActiveConnection();
             }
         }
     }
@@ -630,7 +635,7 @@ public class DatabaseStorageManager implements StorageManager {
                             inStream.close();
                         }
                         catch (RuntimeException e) {
-                            log.debug("", e);
+                            log.debug("" + e.getMessage(), e);
                         }
                     }
                     return null;
@@ -641,7 +646,7 @@ public class DatabaseStorageManager implements StorageManager {
                             inStream.close();
                         }
                         catch (RuntimeException e) {
-                            log.debug("", e);
+                            log.debug("" + e.getMessage(), e);
                         }
                     }
                     return BLOB_SHORTED;
@@ -1300,7 +1305,13 @@ public class DatabaseStorageManager implements StorageManager {
             java.util.Date date = Casting.toDate(value);
             long time = date.getTime();
             // The driver will interpret the date object and convert it to the default timezone when storing.
+
             // undo that..
+            if (log.isDebugEnabled()) {
+                log.debug("Setting time " + date);
+                log.debug("Converting with defaultTime Zone  " + new java.util.Date(time - factory.getTimeZoneOffset(time)));
+                log.debug("Offset with MMBase setting " + factory.getMMBase().getTimeZone().getOffset(time));
+            }
             statement.setTimestamp(index, new Timestamp(time - factory.getTimeZoneOffset(time)));
             node.storeValue(field.getName(), date);
         }
@@ -1344,7 +1355,9 @@ public class DatabaseStorageManager implements StorageManager {
      * @throws SQLException if an error occurred while filling in the fields
      */
     protected void setBinaryValue(PreparedStatement statement, int index, Object objectValue, CoreField field, MMObjectNode node) throws StorageException, SQLException {
-        log.debug("Setting inputstream bytes into field " + field);
+        if (log.isDebugEnabled()) {
+            log.debug("Setting inputstream bytes into field " + field);
+        }
         if (!setNullValue(statement, index, objectValue, field, java.sql.Types.VARBINARY)) {
             log.debug("Didn't set null");
             InputStream stream = Casting.toInputStream(objectValue);
@@ -2372,7 +2385,11 @@ public class DatabaseStorageManager implements StorageManager {
                                       + ", but in storage " + Fields.getTypeDescription(type)
                                       + " (" + colInfo.get("TYPE_NAME") + "). Storage type will be used.");
                             // set the new type (keep the old datatype)
-                            field.setType(type);
+                            if (type == Field.TYPE_UNKNOWN) {
+                                log.warn("Storage type = 'UNKNOWN', wil not fall back to _that_");
+                            } else {
+                                field.setType(type);
+                            }
                         }
                         boolean nullable = ((Boolean)colInfo.get("NULLABLE")).booleanValue();
                         if (nullable == field.isNotNull()) {
