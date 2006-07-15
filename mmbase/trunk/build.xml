@@ -2,7 +2,7 @@
 
 
 MMBase Build File
-$Id: build.xml,v 1.143 2006-07-15 10:07:34 michiel Exp $
+$Id: build.xml,v 1.144 2006-07-15 19:32:02 michiel Exp $
 =================
 
 This build file can be used to build the following from CVS or from the source
@@ -266,6 +266,8 @@ builddate=${builddate}
         <!-- these are bloating the zip-size too much...-->
         <exclude name="**/*.pdf" />
         <exclude name="**/javadoc/**" />
+        <!-- only needed in mmbase.jar (and other jars) -->
+        <exclude name="**/INDEX" />
       </zipfileset>
     </zip>
 
@@ -483,6 +485,8 @@ builddate=${builddate}
         <include name="eventmanager.xml"/>
         <include name="datatypes.xml"/>
         <include name="applications/Basics.xml"/>
+        <include name="applications/Resources.xml"/>
+        <include name="applications/Resources/**"/>
         <include name="builders/core/*.xml"/>
         <include name="builders/INDEX" />
         <include name="functions/**/*.xml"/>
@@ -500,6 +504,7 @@ builddate=${builddate}
     </copy>
     <echo file="${build.dir}/classes/org/mmbase/config/applications/INDEX">
 Basics.xml
+Resources.xml
     </echo>
     <echo file="${build.dir}/classes/org/mmbase/config/modules/INDEX">
 mmbaseroot.xml
