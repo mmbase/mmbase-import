@@ -26,14 +26,14 @@
      </mm:first> 
      <tr>
        <td><mm:field name="title" /></td>
-       <td  class="navigate link"><a href="<mm:url referids="mag,newsid" page="newsitem.jsp" />"><img src="<mm:url page="/mmbase/style/images/next.gif" />" alt="link"></a></td>
+       <td  class="navigate link"><a href="<mm:url referids="mag,newsid" page="newsitem.jsp" />"><img src="<mm:url page="/mmbase/style/images/next.png" />" alt="link"></a></td>
      </tr> 
      <mm:last></table></mm:last>
    </mm:relatednodes>
  </table>
  <hr />
   <div class="link">
-    <a href="<mm:url referids="magid" page="." /> "><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" /> Simple news</a><br />
+    <a href="<mm:url referids="magid" page="." /> "><img src="<mm:url page="/mmbase/style/images/previous.png" />" alt="back" /> Simple news</a><br />
   </div>
   <hr /> 
   <a href="<mm:url page="../taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
