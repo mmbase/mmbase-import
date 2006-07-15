@@ -38,13 +38,16 @@
      we can use <mm:field node="mag" name="title" --%>
      <tr>
        <td><mm:field name="title"/></td>
-       <td class="navigate link"><a href="<mm:url referids="magid" page="newsitem.jsp" ><mm:param name="newsid"><mm:field name="number"/></mm:param></mm:url>"><img src="<mm:url page="/mmbase/style/images/next.gif" />" alt="link" /></a></td>
+       <td class="navigate link"><a href="<mm:url referids="magid" page="newsitem.jsp" ><mm:param name="newsid"><mm:field name="number"/></mm:param></mm:url>"><img src="<mm:url page="/mmbase/style/images/next.png" />" alt="link" /></a></td>
      </tr> 
      <mm:last></table></mm:last>
   </mm:relatednodes>
   <hr />
   <div class="link">
-   <a href="<mm:url referids="magid" page="ordered.jsp" /> ">Ordered news <img src="<mm:url page="/mmbase/style/images/next.gif"  />" alt="&gt;" /></a><br />
+   <a href="<mm:url referids="magid" page="ordered.jsp" /> ">Ordered news <img src="<mm:url page="/mmbase/style/images/next.png"  />" alt="&gt;" /></a><br />
+  </div> 
+  <div class="link">
+   <a href="<mm:url  page=".." /> "><img src="<mm:url page="/mmbase/style/images/previous.png"  />" alt="&gt;" /></a><br />
   </div> 
   <hr />
   <p>
