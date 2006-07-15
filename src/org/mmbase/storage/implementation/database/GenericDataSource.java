@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: GenericDataSource.java,v 1.11 2006-03-24 12:10:42 michiel Exp $
+ * @version $Id: GenericDataSource.java,v 1.12 2006-07-15 14:35:06 michiel Exp $
  */
 public final class GenericDataSource implements DataSource {
     private static final Logger log = Logging.getLoggerInstance(GenericDataSource.class);
@@ -43,11 +43,13 @@ public final class GenericDataSource implements DataSource {
     final private String dataDir;
     final private boolean meta;
 
+    private boolean basePathOk = false;
+
     /**
      * Constructs a datasource for accessing the database belonging to the given MMBase module.
      * The MMBase parameter is not currently used, but is included for future expansion
      * @param mmbase the MMBase instance
-     * @param A Datadir (as a string ending in a /) which may be used in some URL's (most noticably those of HSQLDB).
+     * @param A Datadir (as a string ending in a /) which may be used in some URL's (most noticably those of HSQLDB). Can be <code>null</code> if not used.
      * @throws StorageInaccessibleException if the JDBC module used in creating the datasource is inaccessible
      */
     GenericDataSource(MMBase mmbase, String dataDir) throws StorageInaccessibleException {
@@ -65,7 +67,7 @@ public final class GenericDataSource implements DataSource {
         if (jdbc == null) {
             throw new StorageInaccessibleException("Cannot load Datasource or JDBC Module");
         }
-        dataDir = "";
+        dataDir = null;
         meta = true;
     }
 
@@ -162,8 +164,11 @@ public final class GenericDataSource implements DataSource {
             }
         }
         String url = jdbc.makeUrl();
-        url = url.replaceAll("\\$DATADIR", dataDir);
-        return url;
+        String newUrl = url.replaceAll("\\$DATADIR", dataDir);
+        if ((!basePathOk) && (! newUrl.equals(url))) {
+            basePathOk = DatabaseStorageManagerFactory.checkBinaryFileBasePath(dataDir);
+        }
+        return newUrl;
     }
 
 
