@@ -34,7 +34,7 @@ import org.w3c.dom.Element;
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.23 2006-07-13 08:40:18 michiel Exp $
+ * @version $Id: UtilReader.java,v 1.24 2006-07-15 10:31:02 michiel Exp $
  */
 public class UtilReader {
 
@@ -180,7 +180,6 @@ public class UtilReader {
 
         ResourceLoader configLoader = ResourceLoader.getConfigurationRoot();
         List configList = configLoader.getResourceList(s);
-        log.service("Reading " + configList);
         Iterator configs = configList.iterator();
         while (configs.hasNext()) {
             URL url = (URL) configs.next();
@@ -242,6 +241,8 @@ public class UtilReader {
         }
         if (properties.size() == 0) {
             log.service("No properties read from " + configList);
+        } else {
+            log.service("Read " + properties.getKeys() + " from " + configList);
         }
     }
 
