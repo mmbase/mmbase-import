@@ -39,7 +39,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.36 2006-04-18 14:29:20 michiel Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.37 2006-07-15 14:35:06 michiel Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
@@ -174,7 +174,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
             // if no datasource is provided, try to obtain the generic datasource (which uses JDBC Module)
             // This datasource should only be needed in cases were MMBase runs without application server.
             if (binaryFileBasePath == null) {
-                ds = new GenericDataSource(mmbase);
+                ds = new GenericDataSource(mmbase, "");
             } else {
                 ds = new GenericDataSource(mmbase, binaryFileBasePath);
             }
@@ -281,7 +281,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
         // load configuration data (is also needing the temprary datasource in getDocumentReader..)
         super.load();
         log.service("Now creating the real data source");
-        dataSource = createDataSource(getBinaryFileBasePath());
+        dataSource = createDataSource(getBinaryFileBasePath(false));
 
         // store the datasource as an attribute
         // mm: WTF. This seems to be a rather essential property, so why it is not wrapped by a normal, comprehensible getDataSource method or so.
@@ -338,7 +338,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
                 }
             }
             // get configuration
-            log.service("Use for storage configuration :" + databaseResourcePath);
+            log.service("Configuration used for database storage: " + databaseResourcePath);
             try {
                 InputSource in = ResourceLoader.getConfigurationRoot().getInputSource(databaseResourcePath);
                 reader = new StorageReader(this, in);
@@ -350,11 +350,19 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
         return reader;
     }
 
+    /**
+     * As {@link getBinaryFileBasePath(boolean)} with <code>true</code>
+     */
+    public String getBinaryFileBasePath() {
+        return getBinaryFileBasePath(true);
+    }
 
     /**
      * Returns the base path for 'binary file'
+     * @param logError If the path is only perhaps needed, you may want to provide 'false' here.
+     * @since MMBase-1.8.1
      */
-    public String getBinaryFileBasePath() {
+    public String getBinaryFileBasePath(boolean check) {
         if (basePath == BASE_PATH_UNSET) {
             basePath = (String) getAttribute(Attributes.BINARY_FILE_PATH);
             if (basePath == null || basePath.equals("")) {
@@ -380,12 +388,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
             File baseDir = new File(basePath);
             try {
                 basePath = baseDir.getCanonicalPath();
-                if (! baseDir.mkdirs() && ! baseDir.exists()) {
-                    log.error("Cannot create the binary file path " + basePath);
-                }
-                if (! baseDir.canWrite()) {
-                    log.error("Cannot write in the binary file path " + basePath);
-                }
+                if (check) checkBinaryFileBasePath(basePath);
             } catch (IOException ioe) {
                 log.error(ioe);
             }
@@ -394,6 +397,24 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
             }
         }
         return basePath;
+    }
+
+    /**
+     * Tries to ensure that basePath existis and is writable. Logs error and returns false otherwise.
+     * @param basePath a Directory name
+     * @since MMBase-1.8.1
+     */
+    public static boolean checkBinaryFileBasePath(String basePath) {
+        File baseDir = new File(basePath);
+        if (! baseDir.mkdirs() && ! baseDir.exists()) {
+            log.error("Cannot create the binary file path " + basePath);
+        }
+        if (! baseDir.canWrite()) {
+            log.error("Cannot write in the binary file path " + basePath);
+            return false;
+        } else {
+            return true;
+        }
     }
 
     protected Object instantiateBasicHandler(Class handlerClass) {
