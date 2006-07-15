@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.137 2006-07-14 13:26:01 nklasens Exp $
+ * @version $Id: CloudTag.java,v 1.138 2006-07-15 12:16:28 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
@@ -695,10 +695,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         locale = getLocale();
     }
 
-    public Locale getDefaultLocale() {
-        return null;
-    }
-    
+
     /**
      * Checks wether the cloud is requested 'as is', meaning that is must be tried to get it from the session.
      *
