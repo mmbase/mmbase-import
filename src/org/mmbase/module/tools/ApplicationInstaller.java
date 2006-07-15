@@ -30,7 +30,7 @@ import org.xml.sax.InputSource;
  *
  * @author Nico Klasens
  * @since MMBase-1.8
- * @version $Id: ApplicationInstaller.java,v 1.7 2006-03-08 12:51:58 nklasens Exp $
+ * @version $Id: ApplicationInstaller.java,v 1.8 2006-07-15 16:02:21 michiel Exp $
  */
 public class ApplicationInstaller {
 
@@ -707,14 +707,19 @@ public class ApplicationInstaller {
                 try {
                     config = builderLoader.getDocument(name + ".xml");
                 } catch (org.xml.sax.SAXException se) {
-                    String msg = "builder '" + name + "':\n" + se.toString() + "\n" + Logging.stackTrace(se);
-                    log.error(msg);
+                    String msg = "builder '" + name + "':\n" + se.toString();
+                    log.error(msg, se);
                     result.error("A XML parsing error occurred (" + se.toString() + "). Check the log for details.");
                     continue;
                 } catch (java.io.IOException ioe) {
-                    String msg = "builder '" + name + "':\n" + ioe.toString() + "\n" + Logging.stackTrace(ioe);
-                    log.error(msg);
+                    String msg = "builder '" + name + "':\n" + ioe.toString();
+                    log.error(msg, ioe);
                     result.error("A file I/O error occurred (" + ioe.toString() + "). Check the log for details.");
+                    continue;
+                } catch (Throwable t) {
+                    String msg = "builder '" + name + "': " + t.getMessage();
+                    log.error(msg, t);
+                    result.error("An error occured " + t.getClass() + " " + msg);
                     continue;
                 }
 
