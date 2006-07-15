@@ -54,6 +54,25 @@ img {
  background-color: #ffffaa;
 }
 
+#searchresult tbody tr.selected.even {
+  background-color: #f0f0e0;
+}
+#searchresult tbody tr.selected.odd {
+  background-color: #e8e8d8;
+}
+#searchresult tbody tr.selected.even:hover {
+  background-color: #e0f0e0;
+}
+#searchresult tbody tr.selected.odd:hover {
+  background-color: #d8e8d8;
+}
+#searchresult tbody tr.selected.odd.readonly:hover { 
+  background-color: #f0e0e0;
+}
+#searchresult tbody tr.selected.even.readonly:hover { 
+  background-color: #e8d8d8;
+}
+
 .mm_check_error {
   background-color: #f0e0e0;
 }
@@ -72,12 +91,15 @@ h1 {
   font-size: medium;
   background-color: #ddd;
   margin-top: 0px;
-  padding: 0px 0px 0px 0px;
-  overflow: auto;
+  padding: 0px 0px 0px 0px;  
+  overflow: hidden;
 }
 h1 img { 
-
+  vertical-align: top;
 }
+h1 a { 
+}
+
 h1.submitted { 
   background-color: #f0e0e0;
 }
