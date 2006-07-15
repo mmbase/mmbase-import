@@ -42,6 +42,11 @@
         <td class="linkdata" colspan="2"><a href="<mm:url page="/mmbase/edit/mmeditors/" />">Classic style generic editors ('mmeditors') : <mm:url page="/mmbase/edit/mmeditors/" absolute="true" /></a></td>
       </tr>
     </mm:haspage>
+    <mm:haspage page="/mmbase/edit/x">
+      <tr>
+        <td class="linkdata" colspan="2"><a href="<mm:url page="/mmbase/edit/x/" />">'New technology' editors with JSPX, CSS, Javascript, MMBase taglib 2: <mm:url page="/mmbase/edit/x/" absolute="true" /></a>. Still experimental, and don't not work in all browers.</td>
+      </tr>
+    </mm:haspage>
     <tr class="footer">
       <td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="<mm:url page="/mmbase/style/images/back.gif" />" /></td>
       <td class="data">Return to home page</td>
