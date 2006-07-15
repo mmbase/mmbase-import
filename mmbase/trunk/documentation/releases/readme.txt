@@ -1,5 +1,5 @@
 ===================================================================
-                     MMBase 1.8.0 - Readme
+                     MMBase 1.8.1 - Readme
 ===================================================================  
   
 MMBase is an Open Source content management system that can be used
@@ -14,7 +14,7 @@ It includes the following contents:
 
 LICENSE                     MPL-1.0 license
 readme.txt                  This file
-releasenotes-1.8.0.txt      Releasenotes for this distro (contains
+releasenotes.txt            Releasenotes for this distro (contains
                             changes/bugfixes/know issues) 
 installation.txt            Instructions for installing MMBase
 upgrade.txt                 Instructions for upgrading existing MMBase
