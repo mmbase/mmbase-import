@@ -1,8 +1,0 @@
-#!/bin/bash
-
-ls ~/jars
-for i in mmbase-crontab.jar mmbase-cloudcontextsecurity.jar mmbase-editwizard.jar mmbase-media.jar mmbase-taglib-2.jar mmbase-dove.jar mmbase-richtext.jar mmbase-kupu-i18n.jar kupu-i18n.jar mmbase.jar mmbase-bugtracker.jar mmbase-rmmci-server.jar mmbase-email.jar mmbase-packaging.jar; do
-	rm $i;
-	cp -a ~/jars/$i .;
-	ls $i;
-done;
