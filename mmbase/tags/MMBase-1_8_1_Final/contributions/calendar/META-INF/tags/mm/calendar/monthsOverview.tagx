@@ -1,0 +1,92 @@
+<jsp:root
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:mm-cal="http://www.mmbase.org/tags/mm/calendar"
+    version="2.0" >
+  <!--
+     This can be useful during development
+     xmlns:mm-cal="urn:jsptagdir:/WEB-INF/tags/mm/calendar"
+  -->
+  <jsp:directive.attribute name="referids"  />
+  <jsp:directive.attribute name="maxMonth"  />
+  <jsp:directive.attribute name="dateFormat"  />
+  <jsp:directive.attribute name="timeFormat"  />
+  <jsp:directive.attribute name="stop"  />
+  <jsp:directive.attribute name="newItem" fragment="true"  />
+  <jsp:directive.attribute name="item" fragment="true"  />
+  <jsp:directive.variable  name-given="day" />
+  <jsp:directive.variable  name-given="dayend" />
+  <jsp:directive.variable  name-given="noon" />
+  <mm:import externid="offset">-1</mm:import>
+  <table class="mm_calendar monthsOverview">
+    <thead>
+      <tr>
+        <th>
+          <c:if test="${offset gt 0}">
+            <mm:link referids="${referids}">
+              <mm:param name="offset" value="-1" />
+              <a href="${_}">&amp;lt;&amp;lt;</a>
+            </mm:link>
+          </c:if>
+          <mm:link referids="${referids}">
+            <mm:param name="offset" value="${offset -1 }" />
+            <a href="${_}">&amp;lt;</a>
+          </mm:link>
+        </th>
+        <c:forEach begin="0" end="${empty maxMonth ? 3 : maxMonth}" var="_">
+          <th><mm:time time="tomonth ${_ + offset >= 0 ? '+' : ''} ${_ + offset} month" format="MMMM yyyy" /></th>
+        </c:forEach>
+        <th>
+          <mm:link referids="${referids}">
+            <mm:param name="offset" value="${offset + 1}" />
+            <a href="${_}">&amp;gt;</a>
+          </mm:link>
+          <mm:link referids="${referids}">
+            <mm:param name="offset" value="${offset + 12}" />
+            <a href="${_}">&amp;gt;&amp;gt;</a>
+          </mm:link>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <mm:cloud method="asis">
+        <tr>
+          <td />
+          <c:forEach begin="0" end="${empty maxMonth ? 3 : maxMonth}" var="_" >
+            <mm:context>
+              <td>
+                <mm:time time="tomonth ${_ + offset >= 0 ? '+' : ''} ${_ + offset} month" write="false" id="m" vartype="date" />
+                <mm-cal:month date="${m}">
+                  <mm:context>
+                    <mm:locale language="en" country="US">
+                      <mm:time id="dayofweek" format="EEEE" time="${day}" write="false" />
+                    </mm:locale>
+                    <div class="day ${loop.index % 2 == 0 ? 'even': 'odd'} ${dayofweek}">
+                      <h1><mm:time referid="day" format="${empty dateFormat ? ':FULL' : dateFormat}" /></h1>
+                      <mm:listnodescontainer type="calendar_items">
+                        <mm:sortorder field="start" />
+                        <mm:constraint field="${empty stop ? 'start' : 'stop'}" operator="GREATER" value="${day}" />
+                        <mm:constraint field="start" operator="LESS" value="$dayend" />
+                        <mm:listnodes>
+                          <mm:first>&lt;ul&gt;</mm:first>
+                          <li class="${_node.type}">
+                            <jsp:invoke fragment="item" />
+                          </li>
+                          <mm:last>&lt;/ul&gt;</mm:last>
+                        </mm:listnodes>
+                      </mm:listnodescontainer>
+                    <jsp:invoke fragment="newItem" />
+                    </div>
+                  </mm:context>
+                </mm-cal:month>
+              </td>
+            </mm:context>
+          </c:forEach>
+          <td />
+        </tr>
+      </mm:cloud>
+    </tbody>
+  </table>
+
+</jsp:root>

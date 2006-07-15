@@ -1,0 +1,21 @@
+<!--
+    principleset.dtd
+-->
+
+<!ELEMENT principleset (principle*)>
+<!ATTLIST principleset name CDATA #IMPLIED>
+<!ATTLIST principleset description CDATA #IMPLIED>
+
+<!ELEMENT principle (state*,version*,theme*,name*,qualification*,explanation*,argumentation*,consequence*,allowedimplementation*,source*)>
+<!ATTLIST principle number CDATA #IMPLIED>
+
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT state (#PCDATA)>
+<!ELEMENT version (#PCDATA)>
+<!ELEMENT theme (#PCDATA)>
+<!ELEMENT qualification (#PCDATA)>
+<!ELEMENT explanation (#PCDATA)>
+<!ELEMENT argumentation (#PCDATA)>
+<!ELEMENT consequence (#PCDATA)>
+<!ELEMENT allowedimplementation (#PCDATA)>
+<!ELEMENT source (#PCDATA)>

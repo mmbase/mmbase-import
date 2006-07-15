@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<editwizards exportsource="mmbase://127.0.0.1/tasks" timestamp="20040225000000">
+
+	<node number="33001" owner="admin">
+		<name>Task</name>
+		<description>Task </description>
+		<wizard>config/task/task</wizard>
+		<nodepath>task</nodepath>
+		<fields>creationdate,type,description</fields>
+	</node>
+
+</editwizards>

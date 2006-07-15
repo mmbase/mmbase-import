@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE application PUBLIC "-//MMBase/DTD application config 1.0//EN" "http://www.mmbase.org/dtd/application_1_0.dtd">
+<application name="BridgeTest" maintainer="mmbase.org" version="1" auto-deploy="true">
+
+  <neededbuilderlist>
+    <builder maintainer="mmbase.org" version="0">aa</builder>
+    <builder maintainer="mmbase.org" version="0">bb</builder>
+    <builder maintainer="mmbase.org" version="0">cc</builder>
+    <builder maintainer="mmbase.org" version="0">insrel</builder>
+    <builder maintainer="mmbase.org" version="0">posrel</builder>
+  </neededbuilderlist>
+
+  <neededreldeflist>
+    <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel" />
+    <reldef source="posrel" target="posrel" direction="bidirectional" guisourcename="PosRel(Parent)" guitargetname="PosRel(Child)" builder="posrel" />
+  </neededreldeflist>
+
+  <allowedrelationlist>
+    <relation from="aa" to="bb" type="related" />
+    <relation from="bb" to="aa" type="related" />
+    <relation from="bb" to="cc" type="posrel" />
+  </allowedrelationlist>
+
+  <datasourcelist>
+    <datasource builder="aa" path="BridgeTest/aa.xml" />
+    <datasource builder="bb" path="BridgeTest/bb.xml" />
+    <datasource builder="cc" path="BridgeTest/cc.xml" />
+  </datasourcelist>
+
+  <relationsourcelist>
+    <relationsource builder="insrel" path="BridgeTest/insrel.xml" />
+  </relationsourcelist>
+
+  <contextsourcelist>
+    <contextsource path="BridgeTest/backup.xml" type="depth" goal="backup"/>
+  </contextsourcelist>
+
+  <description>
+
+The BridgeTest application contains the needed builders and
+relations to run the org.mmbase.bridgetest tests.
+
+  </description>
+
+  <install-notice>
+  </install-notice>
+
+</application>

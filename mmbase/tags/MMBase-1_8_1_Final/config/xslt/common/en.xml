@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<l:l10n xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" language="en">
+
+   <!-- english localizations -->
+
+   <l:gentext key="Documentation.title" text="MMBase builder documentation"/>
+   <l:gentext key="General" text="General"/>
+   <l:gentext key="version" text="version"/>
+   <l:gentext key="maintainer" text="maintainer"/>
+   <l:gentext key="extends" text="extends"/>
+   <l:gentext key="descriptive.name" text="descriptive name"/>
+   <l:gentext key="table.name" text="table name"/>
+   <l:gentext key="fields" text="fields"/>
+   <l:gentext key="databasename" text="databasename"/>
+   <l:gentext key="description" text="description"/>
+   <l:gentext key="guitype" text="guitype"/>
+   <l:gentext key="databasetype" text="databasetype"/>
+   <l:gentext key="notnull" text="notnull"/>
+   <l:gentext key="size" text="size"/>
+
+</l:l10n>
