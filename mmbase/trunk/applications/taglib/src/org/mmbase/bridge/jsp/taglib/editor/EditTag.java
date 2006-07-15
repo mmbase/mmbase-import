@@ -47,7 +47,7 @@ import org.xml.sax.InputSource;
  *
  * @author Andr&eacute; van Toly
  * @author Michiel Meeuwissen
- * @version $Id: EditTag.java,v 1.16 2006-06-10 11:22:37 andre Exp $
+ * @version $Id: EditTag.java,v 1.17 2006-07-15 11:50:47 michiel Exp $
  * @see Editor
  * @see BasicEditor
  * @see YAMMEditor
@@ -75,17 +75,14 @@ public class EditTag extends CloudReferrerTag implements ParamHandler {
 
                     ResourceLoader taglibLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("taglib");
                     List resources = taglibLoader.getResourceList(resource);
-                    if (log.isDebugEnabled()) {
-                        log.debug("Found edittag resources: " + resources);
-                    }
-
+                    log.service("Reading edittag resources: " + resources);
                     ListIterator i = resources.listIterator();
                     while (i.hasNext()) {
                         try {
                             URL u = (URL) i.next();
                             URLConnection con = u.openConnection();
                             if (con.getDoInput()) {
-                                log.service("Reading edittag resource: " + u);
+                                log.debug("Reading edittag resource: " + u);
                                 InputSource source = new InputSource(con.getInputStream());
                                 readXML(source);
                             } else {
@@ -95,6 +92,9 @@ public class EditTag extends CloudReferrerTag implements ParamHandler {
                             log.error("Error connecting or resource not found: " + e);
                         }
                     }
+                    ArrayList l = new ArrayList(edittagTypes.keySet());
+                    Collections.sort(l);
+                    log.service("Found edit-tag types " + l);
                 }
             };
             watcher.add("edittag.xml");
@@ -123,14 +123,15 @@ public class EditTag extends CloudReferrerTag implements ParamHandler {
                 EditorDefinition newDef = new EditorDefinition(element);
                 Object original = edittagTypes.put(type, newDef);
                 if (original != null) {
-                    log.info("Replaced edittag '" + type + "'  " + original + " --> " + newDef);
+                    log.service("Replaced edittag '" + type + "'  " + original + " --> " + newDef);
                 } else {
-                    log.service("Created edittag '" + type + "': " + newDef);
+                    log.debug("Created edittag '" + type + "': " + newDef);
                 }
             } catch (Exception e) {
                 log.error("In: " + XMLWriter.write(element, true) + ": " + e.getClass() + "  " + e.getMessage());
             }
         }
+
     }
 
     private Attribute type = Attribute.NULL;

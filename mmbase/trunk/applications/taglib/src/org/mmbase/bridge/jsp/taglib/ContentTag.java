@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.54 2006-07-08 16:43:35 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.55 2006-07-15 11:50:47 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -155,18 +155,18 @@ public class ContentTag extends LocaleTag  {
         log.service("Reading taglib write-escapers");
         InputStream stream = ContentTag.class.getResourceAsStream("resources/taglibcontent.xml");
         if (stream != null) {
-            log.info("Reading backwards compatible resource " + ContentTag.class.getName() + "/resources/taglibcontent.xml");
+            log.service("Reading backwards compatible resource " + ContentTag.class.getName() + "/resources/taglibcontent.xml");
             InputSource escapersSource = new InputSource(stream);
             readXML(escapersSource);
         }
         List resources = taglibLoader.getResourceList(resource);
-        log.info("Using " + resources);
+        log.service("Using " + resources);
         ListIterator i = resources.listIterator();
         while (i.hasNext()) i.next();
         while (i.hasPrevious()) {
             try {
                 URL u = (URL) i.previous();
-                log.info("Reading " + u);
+                log.debug("Reading " + u);
                 URLConnection con = u.openConnection();
                 if (con.getDoInput()) {
                     InputSource source = new InputSource(con.getInputStream());
@@ -175,6 +175,17 @@ public class ContentTag extends LocaleTag  {
             } catch (Exception e) {
                 log.error(e);
             }
+        }
+        {
+            List l = new ArrayList(charTransformers.keySet());
+            Collections.sort(l);
+            log.service("Found escapers: " + l);
+            l = new ArrayList(parameterizedCharTransformerFactories.keySet());
+            Collections.sort(l);
+            log.service("Found parameterized escapers: " + l);
+            l = new ArrayList(contentTypes.keySet());
+            Collections.sort(l);
+            log.service("Recognized content-types: " + l);
         }
 
     }
@@ -192,36 +203,40 @@ public class ContentTag extends LocaleTag  {
             if (prev != null) {
                 log.warn("Replaced an escaper '" + id + "' : " + ct + "(was " + prev + ")");
             } else {
-                log.service("Found an escaper '" + id + "' : " + ct);
+                log.debug("Found an escaper '" + id + "' : " + ct);
             }
 
         }
-        log.service("Reading content tag parameterizedescaperss");
+
+        log.debug("Reading content tag parameterizedescaperss");
         for (Iterator iter = reader.getChildElements(root, "parameterizedescaper"); iter.hasNext();) {
             Element element = (Element) iter.next();
             String id   = element.getAttribute("id");
             ParameterizedTransformerFactory fact = readTransformerFactory(reader, element, id);
             ParameterizedTransformerFactory prev = (ParameterizedTransformerFactory) parameterizedCharTransformerFactories.put(id, fact);
             if (prev != null) {
-                log.warn("Replaced an parametrized escaper '" + id + "' : " + fact + " (was " + prev + ")");
+                log.warn("Replaced an parameterized escaper '" + id + "' : " + fact + " (was " + prev + ")");
             } else {
-                log.service("Found an parameterized escaper '" + id + "' : " + fact);
+                log.debug("Found an parameterized escaper '" + id + "' : " + fact);
             }
 
             try {
                 CharTransformer ct = (CharTransformer) fact.createTransformer(fact.createParameters());
                 if (! charTransformers.containsKey("id")) {
-                    log.service("Could be instantiated with default parameters too");
+                    log.debug("Could be instantiated with default parameters too");
                     charTransformers.put(id, ct);
                 } else {
                     log.service("Already a chartransformer with id " + id);
                 }
             } catch (Exception ex) {
-                log.service("Could not be instantiated with default parameters only: " + ex.getMessage());
+                log.debug("Could not be instantiated with default parameters only: " + ex.getMessage());
             }
 
         }
-        log.service("Reading content tag post-processors");
+
+
+        Set postProcessors = new HashSet();
+        log.debug("Reading content tag post-processors");
         for (Iterator iter = reader.getChildElements(root, "postprocessor"); iter.hasNext();) {
             Element element = (Element) iter.next();
             String id   = element.getAttribute("id");
@@ -230,9 +245,12 @@ public class ContentTag extends LocaleTag  {
             if (prev != null) {
                 log.warn("Replaced an postprocessor '" + id + "' : " + ct + " (was " + prev + ")");
             } else {
-                log.service("Found an postprocessor '" + id + "' : " + ct);
+                log.debug("Found an postprocessor '" + id + "' : " + ct);
             }
-
+            postProcessors.add(id);
+        }
+        if (postProcessors.size() > 0) {
+            log.service("Found post-processors: " + postProcessors);
         }
 
         for (Iterator iter = reader.getChildElements(root, "content"); iter.hasNext();) {
@@ -264,7 +282,6 @@ public class ContentTag extends LocaleTag  {
                 defaultEncodings.put(id, defaultEncoding);
             }
         }
-
 
     }
 
@@ -381,7 +398,7 @@ public class ContentTag extends LocaleTag  {
             } else {
                 // try if there is a factory with this name, which would work with only 'standard' parameters.
                 ParameterizedTransformerFactory factory = getTransformerFactory(id);
-                log.info("Found factory for " + id + " " + factory);
+                log.debug("Found factory for " + id + " " + factory);
                 if (factory != null) {
                     Parameters parameters = factory.createParameters();
                     parameters.setAutoCasting(true);
