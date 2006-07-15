@@ -7,15 +7,15 @@
     <h1>Cloud method='asis' attribute then loginpage.</h1>
     <p>
       Logged out in previous-page, so 'asis' must be anonymous:
-      <mm:cloud method="asis">
-        You are logged in as: <mm:cloudinfo type="user" />
+      <mm:cloud method="asis" jspvar="cloud">
+        You are logged in as: <%=cloud.getUser().getIdentifier() %>
         (must be anonymous)
       </mm:cloud>
     </p>
     <mm:log>xxx</mm:log>
     <p>
-      <mm:cloud  loginpage="login.jsp?referrer=cloud5.jsp">
-        You are logged in as: <mm:cloudinfo type="user" />
+      <mm:cloud  loginpage="login.jsp?referrer=cloud5.jsp"  jspvar="cloud">
+        You are logged in as: <%=cloud.getUser().getIdentifier() %>
         (must not be anonymous)
       </mm:cloud>
     </p>
@@ -23,8 +23,8 @@
      From: <mm:write referid="from" /> (must be '4' if you clicked from cloud4.jsp)
     </p>
   <hr />
-  <a href="<mm:url page="cloud4.jsp" />">Previous</a><br />
-  <a href="<mm:url page="cloud6.jsp" />">Next</a><br />
+  <a href="cloud4.jsp">Previous</a><br />
+  <a href="cloud6.jsp">Next</a><br />
     <a href="<mm:url page="/mmexamples/taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
   <hr />
   </body>

@@ -11,6 +11,9 @@ package org.mmbase.module.core;
 
 import java.util.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * VirtualBuilder is a builder which creates 'virtual' nodes.
  * This class is intended to facilitate practical creation of virtual
@@ -18,25 +21,27 @@ import java.util.*;
  * faulty behavior.
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualReferrerBuilder.java,v 1.5 2005-10-06 17:46:39 michiel Exp $
- * @since MMBase-1.7
+ * @version $Id: VirtualReferrerBuilder.java,v 1.1 2004-01-08 11:08:06 pierre Exp $
  */
 public class VirtualReferrerBuilder extends VirtualBuilder {
 
-    private MMObjectBuilder originalBuilder = null;
+    // logging variable
+    private static Logger log = Logging.getLoggerInstance(VirtualReferrerBuilder.class.getName());
+
+    private MMObjectBuilder originalBuilder=null;
 
     /**
      * Creates an instance of a Virtual builder.
      * A builder instantiated with this constrcutor is not registered in MMBase
      * and should only be used as a temporary parent for virtual nodes which
      * do not have a long life span.
+     * @param m the MMbase cloud creating the node
      */
     public VirtualReferrerBuilder(MMObjectBuilder originalBuilder) {
         super(originalBuilder.mmb);
-        this.originalBuilder = originalBuilder;
-        this.tableName = "virtual_" + originalBuilder.getTableName();
-        fields.clear();
-        fields.putAll(originalBuilder.fields);
+        this.originalBuilder=originalBuilder;
+        this.tableName="virtual_"+originalBuilder.getTableName();
+        fields=new Hashtable(originalBuilder.fields);
     }
 
     /**
@@ -55,11 +60,14 @@ public class VirtualReferrerBuilder extends VirtualBuilder {
      * @return the result of the 'function', or null if no valid functions could be determined.
      */
     public Object getValue(MMObjectNode node,String field) {
-        return originalBuilder.getValue(node, field);
+        return originalBuilder.getValue(node,field);
     }
 
     /**
      * Returns the original builder
+     * @param node the node who setfields are queried
+     * @param field the fieldname that is requested
+     * @return the result of the 'function', or null if no valid functions could be determined.
      */
     public Object getOriginalBuilder() {
         return originalBuilder;

@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * The implementation of the log tag.
  *
  * @author Michiel Meeuwissen 
- * @version $Id: LogTag.java,v 1.14 2006-06-22 18:15:44 johannes Exp $ 
+ * @version $Id: LogTag.java,v 1.12.2.3 2005-09-06 11:18:30 michiel Exp $ 
  */
 
 public class LogTag extends ContextReferrerTag {
@@ -75,7 +75,6 @@ public class LogTag extends ContextReferrerTag {
                 throw new JspTagException(e.toString());
             }
         }
-        super.doEndTag();
         return EVAL_PAGE;
     }    
 }

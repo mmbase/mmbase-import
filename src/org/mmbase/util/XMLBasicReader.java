@@ -9,102 +9,78 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.io.*;
+import java.util.*;
 
 import javax.xml.parsers.DocumentBuilder;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.DocumentReader;
+import org.w3c.dom.*;
 import org.xml.sax.*;
 
 /**
  * XMLBasicReader has two goals.
- *  <ul>
- *    <li>It provides a way for parsing XML</li>
- *    <li>It provides a way for searching in this XML, without the need for an XPath implementation, and without the hassle of org.w3c.dom alone.
- *    It uses dots to lay a path in the XML (XPath uses slashes).</li>
- *  </ul>
+ <ul>
+   <li>
+   It provides a way for parsing XML
+   </li>
+   <li>
+   It provides a way for searching in this XML, without the need for an XPath implementation, and without the hassle of org.w3c.dom alone.
+   It uses dots to lay a path in the XML (XPath uses slashes).
+   </li>
+ </ul>
  *
- * @deprecated use DocumentReader or DocumentWriter. Some code may need to be moved to DocumentReader
  * @author Case Roule
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: XMLBasicReader.java,v 1.46 2006-01-26 10:21:50 michiel Exp $
+ * @version $Id: XMLBasicReader.java,v 1.39 2004-02-24 17:47:00 michiel Exp $
  */
 public class XMLBasicReader extends DocumentReader {
-
-    private static Logger log = Logging.getLoggerInstance(XMLBasicReader.class);
+    private static final Logger log = Logging.getLoggerInstance(XMLBasicReader.class);
 
     public XMLBasicReader(String path) {
-        super(getInputSource(path));
+        super(path);
     }
 
     public XMLBasicReader(String path, boolean validating) {
-        super(getInputSource(path), validating, null);
+        super(path, validating, null);
     }
 
     public XMLBasicReader(String path, Class resolveBase) {
-        super(getInputSource(path), DocumentReader.validate(), resolveBase);
+        super(path, DocumentReader.validate(), resolveBase);
     }
 
-    public XMLBasicReader() {
-        super();
+    public XMLBasicReader(InputSource source) {
+        super(source, DocumentReader.validate(), null);
+    }
+
+    public XMLBasicReader(InputSource source, boolean validating) {
+        super(source, validating, null);
+    }
+
+    public XMLBasicReader(InputSource source, Class resolveBase) {
+        super(source, DocumentReader.validate(), resolveBase);
     }
 
     public XMLBasicReader(InputSource source, boolean validating, Class resolveBase) {
         super(source, validating, resolveBase);
     }
 
-    public XMLBasicReader(InputSource source, boolean validating) {
-        super(source, validating);
-    }
-
-    public XMLBasicReader(InputSource source, Class resolveBase) {
-        super(source, resolveBase);
-    }
-
-    public XMLBasicReader(InputSource source) {
-        super(source);
+    /**
+     * Obtain a DocumentBuilder
+     * @deprecated use {!link DocumentReader.getDocumentBuilder()}
+     */
+    public static DocumentBuilder getDocumentBuilder() {
+        return DocumentReader.getDocumentBuilder();
     }
 
     /**
-     * Creates an input source for a document, based on a filepath
-     * If the file cannot be opened, the method returns an inputsource of an error document describing the condition
-     * under which this failed.
-     * @param  path the path to the file containing the document
-     * @return the input source to the document.
-     * @deprecated
+     * Obtain a DocumentBuilder
+     * @deprecated use {!link DocumentReader.getDocumentBuilder(boolean)}
      */
-    public static InputSource getInputSource(String path) {
-        InputSource is;
-        try {
-            // remove file protocol if present to avoid errors in accessing file
-            if (path.startsWith("file://")) {
-                try {
-                    path = new java.net.URL(path).getPath();
-                } catch (java.net.MalformedURLException mfe) {
-                }                   
-            }
-            is = new InputSource(new FileInputStream(path));
-            try {
-                is.setSystemId(new File(path).toURL().toExternalForm());
-            } catch (java.net.MalformedURLException mfe) {
-            }                   
-            is.setSystemId("file://" + path);            
-        } catch (java.io.FileNotFoundException e) {
-            log.error("Error reading " + path + ": " + e.toString());
-            log.service("Using empty source");
-            // try to handle more or less gracefully
-            is = new InputSource();
-            is.setSystemId(FILENOTFOUND + path);
-            is.setCharacterStream(new StringReader("<?xml version=\"1.0\"?>\n" +
-                                                   "<!DOCTYPE error PUBLIC \"" + PUBLIC_ID_ERROR + "\"" +
-                                                   " \"http://www.mmbase.org/dtd/error_1_0.dtd\">\n" +
-                                                   "<error>" + path + " not found</error>"));
-         }
-        return is;
+    public static DocumentBuilder getDocumentBuilder(boolean validating) {
+        return DocumentReader.getDocumentBuilder(validating, null, null);
     }
 
     /**
@@ -137,6 +113,153 @@ public class XMLBasicReader extends DocumentReader {
      */
     public static DocumentBuilder getDocumentBuilder(Class refer) {
         return DocumentReader.getDocumentBuilder(DocumentReader.validate(), null, new XMLEntityResolver(DocumentReader.validate(), refer));
+    }
+
+    /**
+     * @param path Dot-separated list of tags describing path from root element to requested element.
+     *             NB the path starts with the name of the root element.
+     * @return Leaf element of the path
+     */
+    public Element getElementByPath(String path) {
+        if (document == null) {
+            log.error("Document is not defined, cannot get " + path);
+        }
+        return getElementByPath(document.getDocumentElement(),path);
+    }
+
+    /**
+     * @param e Element from which the "relative" path is starting.
+     *          NB the path starts with the name of the root element.
+     * @param path Dot-separated list of tags describing path from root element to requested element
+     * @return Leaf element of the path
+     */
+    public Element getElementByPath(Element e,String path) {
+        StringTokenizer st = new StringTokenizer(path,".");
+        if (!st.hasMoreTokens()) {
+            // faulty path
+            log.error("No tokens in path");
+            return null;
+        } else {
+            String root = st.nextToken();
+            if (e.getNodeName().equals("error")) {
+                // path should start with document root element
+                log.error("Error occurred : (" + getElementValue(e) + ")");
+                return null;
+            } else if (!e.getNodeName().equals(root)) {
+                // path should start with document root element
+                log.error("path ["+path+"] with root ("+root+") doesn't start with root element ("+e.getNodeName()+"): incorrect xml file" +
+                          "("+getFileName()+")");
+                return null;
+            }
+            while (st.hasMoreTokens()) {
+                String tag = st.nextToken();
+                NodeList nl = e.getElementsByTagName(tag);
+                if (nl.getLength()>0) {
+                    e = (Element)nl.item(0);
+                } else {
+                    // Handle error!
+                    return null;
+                }
+            }
+            return e;
+        }
+    }
+
+    /**
+     * @param path Path to the element
+     * @return Text value of element
+     */
+    public String getElementValue(String path) {
+        return getElementValue(getElementByPath(path));
+    }
+
+    /**
+     * @param e Element
+     * @return Text value of element
+     */
+    public String getElementValue(Element e) {
+        if (e == null) {
+            return "";
+        } else {
+            return getNodeTextValue(e);
+        }
+    }
+
+    /**
+     * @param e Element
+     * @return Tag name of the element
+     */
+    public String getElementName(Element e) {
+        return e.getTagName();
+    }
+
+    /**
+     * @param path Path to the element
+     * @param attr Attribute name
+     * @return Value of attribute
+     */
+    public String getElementAttributeValue(String path, String attr) {
+        return getElementAttributeValue(getElementByPath(path),attr);
+    }
+
+
+    /**
+     * @param e Element
+     * @param attr Attribute name
+     * @return Value of attribute
+     */
+    public String getElementAttributeValue(Element e, String attr) {
+        if (e==null)
+            return "";
+        else
+            return e.getAttribute(attr);
+    }
+
+    /**
+     * @param path Path to the element
+     * @return Enumeration of child elements
+     */
+    public Enumeration getChildElements(String path) {
+        return getChildElements(getElementByPath(path));
+    }
+
+    /**
+     * @param e Element
+     * @return Enumeration of child elements
+     */
+    public Enumeration getChildElements(Element e) {
+        return getChildElements(e,"*");
+    }
+
+    /**
+     * @param path Path to the element
+     * @param tag tag to match ("*" means all tags")
+     * @return Enumeration of child elements with the given tag
+     */
+    public Enumeration getChildElements(String path,String tag) {
+        return getChildElements(getElementByPath(path),tag);
+    }
+
+    /**
+     * @param e Element
+     * @param tag tag to match ("*" means all tags")
+     * @return Enumeration of child elements with the given tag
+     */
+    public Enumeration getChildElements(Element e,String tag) {
+        Vector v = new Vector();
+        boolean ignoretag=tag.equals("*");
+        if (e!=null) {
+            NodeList nl = e.getChildNodes();
+            for (int i=0;i<nl.getLength();i++) {
+                Node n = nl.item(i);
+                if (n.getNodeType() == Node.ELEMENT_NODE &&
+                    (ignoretag ||
+                     ((Element)n).getTagName().equalsIgnoreCase(tag))) {
+                    v.addElement(n);
+                }
+            }
+        }
+        return v.elements();
     }
 
 }

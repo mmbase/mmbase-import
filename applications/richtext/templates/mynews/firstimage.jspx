@@ -1,7 +1,0 @@
-<mm:relatednodescontainer role="posrel" type="images"   xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"   xmlns:jsp="http://java.sun.com/JSP/Page">  
-  <mm:sortorder field="posrel.pos" />
-  <mm:relatednodes max="1">
-    <mm:import id="template">s(240&gt;)</mm:import>
-    <jsp:directive.include file="showimage.jspx" />
-  </mm:relatednodes>
-</mm:relatednodescontainer>

@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Eduard Witteveen
- * @version $Id: ContextCache.java,v 1.8 2005-05-14 14:04:45 nico Exp $
+ * @version $Id: ContextCache.java,v 1.7 2003-03-04 15:29:37 nico Exp $
  */
 public class ContextCache  {
     private static Logger log = Logging.getLoggerInstance(ContextCache.class.getName());
@@ -51,7 +51,7 @@ public class ContextCache  {
         if(contextCache.containsKey(user)) {
         log.warn("rights context cache already contained this entry");
     }
-        contextCache.put(user, Boolean.valueOf(value));
+        contextCache.put(user, new Boolean(value));
         log.debug("added to cache the operation: " + operation + " for context: " + context + " with user: " + user + " with value: " + value );
         rightSize++;
     }

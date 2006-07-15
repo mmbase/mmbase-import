@@ -15,9 +15,7 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.BodyTag;
 
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.bridge.jsp.taglib.util.Notfound;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -27,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: NodeTag.java,v 1.63 2006-07-08 13:02:08 michiel Exp $
+ * @version $Id: NodeTag.java,v 1.53.2.3 2004-07-26 20:12:16 nico Exp $
  */
 
 public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
@@ -37,8 +35,37 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
     private Attribute number    = Attribute.NULL;
     private Attribute element   = Attribute.NULL;
 
+    private final static int NOT_FOUND_THROW = 0;
+    private final static int NOT_FOUND_SKIP  = 1;
+    private final static int NOT_FOUND_PROVIDENULL  = 2;
+
+
     private Attribute notfound = Attribute.NULL;
 
+
+    private int getNotfound() throws JspTagException {
+        if (notfound == Attribute.NULL) {
+            return  NOT_FOUND_THROW;
+        }
+        String is = notfound.getString(this).toLowerCase();
+        if ("skip".equals(is)) {
+            return NOT_FOUND_SKIP;
+        } else if ("skipbody".equals(is)) {
+            return NOT_FOUND_SKIP;
+        } else if ("throw".equals(is)) {
+            return NOT_FOUND_THROW;
+        } else if ("exception".equals(is)) {
+            return NOT_FOUND_THROW;
+        } else if ("throwexception".equals(is)) {
+            return NOT_FOUND_THROW;
+        } else if ("null".equals(is)) {
+            return NOT_FOUND_PROVIDENULL;
+        } else if ("providenull".equals(is)) {
+            return  NOT_FOUND_PROVIDENULL;
+        } else {
+            throw new JspTagException("Invalid value for attribute 'notfound' " + is + "(" + notfound + ")");
+        }
+    }
     /**
      * Release all allocated resources.
      */
@@ -89,33 +116,17 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
             if (log.isDebugEnabled()) {
                 log.debug("Looking up Node with " + referString + " in context");
             }
-            switch(Notfound.get(notfound, this)) {
-                case Notfound.MESSAGE:
-                    node = getNodeOrNull(referString);
-                    if (node == null) {
-                        try {
-                            getPageContext().getOut().write("Could not find node element '" + element.getString(this) + "'");
-                        } catch (java.io.IOException ioe) {
-                            log.warn(ioe);
-                        }
-                        return SKIP_BODY;
-                    }
-                    break;
-                case Notfound.SKIP:         {
-                    node = getNodeOrNull(referString);
-                    if (node == null) return SKIP_BODY;
-                    break;
-                }
-                case Notfound.PROVIDENULL:  {
-                    node = getNodeOrNull(referString);
-                    break;
-                }
-                default: node = getNode(referString);
+            switch(getNotfound()) {
+            case NOT_FOUND_SKIP:         {
+                node = getNodeOrNull(referString);
+                if (node == null) return SKIP_BODY;
+                break;
             }
-            if (node != null) {
-                if (node.getCloud().hasNodeManager(node.getNodeManager().getName())) { // rather clumsy way to check virtuality
-                    nodeHelper.setGeneratingQuery(Queries.createNodeQuery(node));
-                }
+            case NOT_FOUND_PROVIDENULL:  {
+                node = getNodeOrNull(referString);
+                break;
+            }
+            default: node = getNode(referString);
             }
 
             if(referString.equals(getId())) {
@@ -125,7 +136,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
             }
         }
 
-        if (node == null) { // found no node by referid
+        if (node == null) {
             String n = number.getString(this);
             if (log.isDebugEnabled()) {
                 log.debug("node is null, number attribute: '" + n + "'");
@@ -134,16 +145,10 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                 // explicity indicated which node (by number or alias)
                 Cloud c = getCloudVar();
                 if (! c.hasNode(n) || ! c.mayRead(n)) {
-                    switch(Notfound.get(notfound, this)) {
-                    case Notfound.MESSAGE:
-                        try {
-                            getPageContext().getOut().write("Node '" + n + "' does not exist or may not be read");
-                        } catch (java.io.IOException ioe) {
-                            log.warn(ioe);
-                        }
-                    case Notfound.SKIP:
+                    switch(getNotfound()) {
+                    case NOT_FOUND_SKIP:
                         return SKIP_BODY;
-                    case Notfound.PROVIDENULL:
+                    case NOT_FOUND_PROVIDENULL:
                         node = null;
                         break;
                     default:
@@ -152,53 +157,29 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                 } else {
                     node = c.getNode(n); // does not throw Exception
                 }
-                if (node != null) {
-                    if (node.getCloud().hasNodeManager(node.getNodeManager().getName())) { // rather clumsy way to check virtuality
-                        nodeHelper.setGeneratingQuery(Queries.createNodeQuery(node));
-                    }
-                }
             } else {
                 // get the node from a parent element.
                 NodeProvider nodeProvider = findNodeProvider(false);
                 if (nodeProvider == null) {
-                    node = (Node) pageContext.findAttribute(NodeProviderHelper._NODE);
-                    if (node == null) {
-                        throw new JspTagException("Could not find parent of type " + NodeProvider.class +  ", and no 'number' or 'referid' attribute specified.");
-                    }
-                } else {
-                    node = nodeProvider.getNodeVar();
+                    throw new JspTagException("Could not find parent of type org.mmbase.bridge.jsp.taglib.NodeProvider, and no 'number' or 'referid' attribute specified.");
                 }
-
-
                 if (element != Attribute.NULL) {
-                    node = node.getNodeValue(element.getString(this));
+                    node = nodeProvider.getNodeVar().getNodeValue(element.getString(this));
                     if (node == null) {
-                        switch(Notfound.get(notfound, this)) {
-                        case Notfound.MESSAGE:
-                            try {
-                                getPageContext().getOut().write("Could not find node element '" + element.getString(this) + "'");
-                            } catch (java.io.IOException ioe) {
-                                log.warn(ioe);
-                            }
-                        case Notfound.SKIP:
+                        switch(getNotfound()) {
+                        case NOT_FOUND_SKIP:
                             return SKIP_BODY;
-                        case Notfound.PROVIDENULL:
+                        case NOT_FOUND_PROVIDENULL:
                             node = null;
                             break;
                         default:
                             throw new JspTagException("Could not find node element '" + element.getString(this) + "'");
                         }
                     }
-                    if (nodeProvider.getNodeVar() != null) {
-                        if (nodeProvider.getNodeVar().getCloud().hasNodeManager(nodeProvider.getNodeVar().getNodeManager().getName())) {
-                            nodeHelper.setGeneratingQuery(nodeProvider.getGeneratingQuery());
-                        }
-                    }
                 } else {
-                    if (node.getCloud().hasNodeManager(node.getNodeManager().getName())) { // rather clumsy way to check virtuality
-                        nodeHelper.setGeneratingQuery(Queries.createNodeQuery(node));
-                    }
+                    node = nodeProvider.getNodeVar();
                 }
+
             }
         }
 
@@ -208,7 +189,6 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
         FormatterTag f = (FormatterTag) findParentTag(FormatterTag.class, null, false);
         if (f!= null && f.wantXML() && node != null) {
             f.getGenerator().add(node);
-            f.setCloud(node.getCloud());
         }
 
         fillVars();

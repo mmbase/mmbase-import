@@ -20,9 +20,8 @@ import org.mmbase.util.logging.*;
 /**
  * Redirects request based on information supplied by the jumpers builder.
  *
- * @application Tools, Jumpers
  * @author Jaco de Groot
- * @version $Id: JumpersFilter.java,v 1.16 2006-06-27 14:36:58 johannes Exp $
+ * @version $Id: JumpersFilter.java,v 1.9.2.4 2005-02-11 15:06:30 michiel Exp $
  */
 public class JumpersFilter implements Filter, MMBaseStarter {
     private static final Logger log = Logging.getLoggerInstance(JumpersFilter.class);
@@ -86,8 +85,10 @@ public class JumpersFilter implements Filter, MMBaseStarter {
      */
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws java.io.IOException, ServletException {
         if (mmbase == null) {
-            filterChain.doFilter(servletRequest, servletResponse);
-            return;
+            HttpServletResponse res = (HttpServletResponse) servletResponse;
+            res.setHeader("Retry-After", "60");
+            res.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "MMBase not yet, or not successfully initialized (check mmbase log)");
+            return;            
         }
         if (jumpers == null) {
             if (mmbase != null) {
@@ -114,7 +115,7 @@ public class JumpersFilter implements Filter, MMBaseStarter {
         String key = "";
         if (contextPart < reqURI.length()) {
             // also remove the leading "/", unless it's an empty string.
-            key = req.getRequestURI().substring(contextPart+1);
+            key = req.getRequestURI().substring(context.length()+1);
         }
 
         if (log.isDebugEnabled()) {

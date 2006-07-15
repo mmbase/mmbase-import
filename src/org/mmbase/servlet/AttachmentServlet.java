@@ -10,14 +10,14 @@ See http://www.MMBase.org/license
 package org.mmbase.servlet;
 
 import java.util.Map;
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.Node;
 
 /**
  * Serves attachments. An attachments can be any object, as long as it has a byte[] field named
  * 'handle'.  Also the fields 'filename', 'mimetype' and 'title' can be taken into consideration by
  * this servlet and preferably the node has also those fields.
   *
- * @version $Id: AttachmentServlet.java,v 1.10 2006-06-13 07:29:54 andre Exp $
+ * @version $Id: AttachmentServlet.java,v 1.7 2002-11-06 22:04:16 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see HandleServlet
@@ -25,14 +25,13 @@ import org.mmbase.bridge.*;
  */
 public class AttachmentServlet extends HandleServlet {
 
-
     public String getServletInfo()  {
         return "Serves MMBase nodes as attachments";
     }
 
     protected Map getAssociations() {
         Map a = super.getAssociations();
-        a.put("attachments", new Integer(50)); // Is very good in attachments (determines mime-type
+        a.put("attachments", new Integer(50)); // Is very good in attachments (determins mime-type
                                                // starting with 'attachments' builder fields),
 
         a.put("images",      new Integer(10)); // And also can do images (but is not aware of // icaches)
@@ -40,17 +39,11 @@ public class AttachmentServlet extends HandleServlet {
         return a;
     }
 
-    // just to get AttachmentServlet in the stacktrace.
-    protected final Cloud getClassCloud() {
-        return super.getClassCloud();
-    }
-
     /**
-     * Determines the mimetype. Can be overridden.
+     * Determins the mimetype. Can be overridden.
      */
     protected String getMimeType(Node node) {
-        String mimeType = null;
-        if (node.getNodeManager().hasField("mimetype")) mimeType = node.getStringValue("mimetype");
+        String mimeType = node.getStringValue("mimetype");
         if (mimeType == null || mimeType.equals("")) { 
             // mime-type missing, try to suppose that this is an image node, which has the mimetype
             // as a function.

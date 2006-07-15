@@ -1,8 +1,0 @@
-<component name="reports" templatepath="reports" templatebar="provider">
-  <scope name="component" referid="component">
-  </scope>
-  <scope name="providers" referid="provider">
-  </scope>
-  <scope name="educations" referid="education">
-  </scope>
-</component>

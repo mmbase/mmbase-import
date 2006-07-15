@@ -16,7 +16,7 @@ import java.util.ResourceBundle;
  * Some url-composers need to know where templates are. Put a properties file in classes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Config.java,v 1.5 2005-05-14 14:07:42 nico Exp $
+ * @version $Id: Config.java,v 1.4 2003-11-13 18:18:09 michiel Exp $
  */
 
 public class Config  {
@@ -24,9 +24,9 @@ public class Config  {
     // should perhaps be changed to XML, but this is easier for the moment. No time, no time!
 
 
-    public  static final String templatesDir;
-    public  static final String host;
-    public  static final String editwizardsDir;
+    public  static  String templatesDir = null;
+    public  static  String host         = null;
+    public  static  String editwizardsDir  = null;
     static {
         ResourceBundle manager =  ResourceBundle.getBundle("org.mmbase.applications.media.resources.config");
         templatesDir = manager.getString("templatesDir");

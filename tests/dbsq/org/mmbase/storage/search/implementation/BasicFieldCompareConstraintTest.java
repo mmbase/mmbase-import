@@ -9,7 +9,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.1 $
  */
 public class BasicFieldCompareConstraintTest extends TestCase {
     
@@ -74,8 +74,8 @@ public class BasicFieldCompareConstraintTest extends TestCase {
     /** Test of setOperator method, of class org.mmbase.storage.search.implementation.BasicFieldCompareConstraint. */
     public void testSetOperator() {
         // Default is EQUAL.
-        assertTrue(instance1.getOperator() == FieldCompareConstraint.EQUAL);
-        assertTrue(instance2.getOperator() == FieldCompareConstraint.EQUAL);
+        assertTrue(instance1.getOperator() == FieldValueConstraint.EQUAL);
+        assertTrue(instance2.getOperator() == FieldValueConstraint.EQUAL);
         
         // Invalid operator value, should throw IllegalArgumentException.
         try {
@@ -95,45 +95,45 @@ public class BasicFieldCompareConstraintTest extends TestCase {
             fail("Invalid operator value, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
         try {
-            instance1.setOperator(100);
+            instance1.setOperator(8);
             fail("Invalid operator value, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
         try {
-            instance2.setOperator(100);
+            instance2.setOperator(8);
             fail("Invalid operator value, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
         
-        instance1.setOperator(FieldCompareConstraint.LESS);
-        assertTrue(instance1.getOperator() == FieldCompareConstraint.LESS);
-        instance2.setOperator(FieldCompareConstraint.LESS);
-        assertTrue(instance2.getOperator() == FieldCompareConstraint.LESS);
-        instance1.setOperator(FieldCompareConstraint.LESS_EQUAL);
-        assertTrue(instance1.getOperator() == FieldCompareConstraint.LESS_EQUAL);
-        instance2.setOperator(FieldCompareConstraint.LESS_EQUAL);
-        assertTrue(instance2.getOperator() == FieldCompareConstraint.LESS_EQUAL);
-        instance1.setOperator(FieldCompareConstraint.EQUAL);
-        assertTrue(instance1.getOperator() == FieldCompareConstraint.EQUAL);
-        instance2.setOperator(FieldCompareConstraint.EQUAL);
-        assertTrue(instance2.getOperator() == FieldCompareConstraint.EQUAL);
-        instance1.setOperator(FieldCompareConstraint.NOT_EQUAL);
-        assertTrue(instance1.getOperator() == FieldCompareConstraint.NOT_EQUAL);
-        instance2.setOperator(FieldCompareConstraint.NOT_EQUAL);
-        assertTrue(instance2.getOperator() == FieldCompareConstraint.NOT_EQUAL);
-        instance1.setOperator(FieldCompareConstraint.GREATER);
-        assertTrue(instance1.getOperator() == FieldCompareConstraint.GREATER);
-        instance2.setOperator(FieldCompareConstraint.GREATER);
-        assertTrue(instance2.getOperator() == FieldCompareConstraint.GREATER);
-        instance1.setOperator(FieldCompareConstraint.GREATER_EQUAL);
-        assertTrue(instance1.getOperator() == FieldCompareConstraint.GREATER_EQUAL);
-        instance2.setOperator(FieldCompareConstraint.GREATER_EQUAL);
-        assertTrue(instance2.getOperator() == FieldCompareConstraint.GREATER_EQUAL);
+        instance1.setOperator(FieldValueConstraint.LESS);
+        assertTrue(instance1.getOperator() == FieldValueConstraint.LESS);
+        instance2.setOperator(FieldValueConstraint.LESS);
+        assertTrue(instance2.getOperator() == FieldValueConstraint.LESS);
+        instance1.setOperator(FieldValueConstraint.LESS_EQUAL);
+        assertTrue(instance1.getOperator() == FieldValueConstraint.LESS_EQUAL);
+        instance2.setOperator(FieldValueConstraint.LESS_EQUAL);
+        assertTrue(instance2.getOperator() == FieldValueConstraint.LESS_EQUAL);
+        instance1.setOperator(FieldValueConstraint.EQUAL);
+        assertTrue(instance1.getOperator() == FieldValueConstraint.EQUAL);
+        instance2.setOperator(FieldValueConstraint.EQUAL);
+        assertTrue(instance2.getOperator() == FieldValueConstraint.EQUAL);
+        instance1.setOperator(FieldValueConstraint.NOT_EQUAL);
+        assertTrue(instance1.getOperator() == FieldValueConstraint.NOT_EQUAL);
+        instance2.setOperator(FieldValueConstraint.NOT_EQUAL);
+        assertTrue(instance2.getOperator() == FieldValueConstraint.NOT_EQUAL);
+        instance1.setOperator(FieldValueConstraint.GREATER);
+        assertTrue(instance1.getOperator() == FieldValueConstraint.GREATER);
+        instance2.setOperator(FieldValueConstraint.GREATER);
+        assertTrue(instance2.getOperator() == FieldValueConstraint.GREATER);
+        instance1.setOperator(FieldValueConstraint.GREATER_EQUAL);
+        assertTrue(instance1.getOperator() == FieldValueConstraint.GREATER_EQUAL);
+        instance2.setOperator(FieldValueConstraint.GREATER_EQUAL);
+        assertTrue(instance2.getOperator() == FieldValueConstraint.GREATER_EQUAL);
         BasicFieldCompareConstraint result 
-            = instance1.setOperator(FieldCompareConstraint.LIKE);
-        assertTrue(instance1.getOperator() == FieldCompareConstraint.LIKE);
+            = instance1.setOperator(FieldValueConstraint.LIKE);
+        assertTrue(instance1.getOperator() == FieldValueConstraint.LIKE);
         assertTrue(result == instance1);
         try {
             // Like operator for integer type field, should throw IllegalArgumentException.
-            instance2.setOperator(FieldCompareConstraint.LIKE);
+            instance2.setOperator(FieldValueConstraint.LIKE);
             fail("Like operator for integer type field, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
     }

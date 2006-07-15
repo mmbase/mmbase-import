@@ -16,9 +16,9 @@ import java.io.ByteArrayInputStream;
  * The `Dummy' ImageInformer can inform about an image without any external packages. It depends
  * upon {@link org.mmbase.util.images.ImageInfo}
  *
- * @since MMBase 1.7.4
+ * @since MMBase 1.8
  * @author Michiel Meeuwissen
- * @version $Id: DummyImageInformer.java,v 1.2 2005-08-17 20:54:08 michiel Exp $
+ * @version $Id: DummyImageInformer.java,v 1.1.2.1 2005-08-17 14:31:37 michiel Exp $
  */
 public class DummyImageInformer implements ImageInformer {
 

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<rolerel exportsource="mmbase://127.0.0.1/test/v1" timestamp="20060518142750">
-	<node number="463" owner="admin" snumber="462" dnumber="417" rtype="rolerel" dir="bidirectional">
-		<role></role>
-		<rol>100</rol>
-		<pos>-1</pos>
-	</node>
-
-</rolerel>

@@ -4,7 +4,7 @@
 %><mm:content language="$language">
 <mm:import externid="context" required="true" />
 
-<mm:cloud  loginpage="login.jsp" rank="$rank">
+<mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud" rank="$rank">
   <mm:node id="context" referid="context">
     <mm:import id="current">contexts</mm:import>
     <%@include file="navigate.div.jsp" %>

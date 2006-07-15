@@ -1,4 +1,5 @@
 <%-- Relations --%>
+<mm:context id="relaties">
 <table width="230" border="0" cellspacing="0" cellpadding="3" class="table-left">
 <% // Stuff about relations: possible relations and the ones that are allready made
 Node node = wolk.getNode(nr);
@@ -23,9 +24,6 @@ while(relIterator.hasNext()) {
 	String role = relationManager.getForwardRole();
 	String otherManagerName = otherManager.getName();
 	
-    int CountRelations = node.countRelatedNodes(otherManagerName);
-    String MaxRelationsgetStringValue = relationManager.getStringValue("max");  //get maximum number of relations for this type
-    
 	if (c==1) {		// Display start of this table when parent relations are possible
 %>
 	<tr bgcolor="#CCCCCC">
@@ -41,30 +39,21 @@ while(relIterator.hasNext()) {
 	  <td nowrap="nowrap"><b><%= otherManager.getGUIName()%></b> <%= otherManagerName %><br />
   	    <%= role %> <!-- <%= relationManager.getForwardGUIName() %>/<%= relationManager.getReciprocalGUIName() %> -->
   	  </td>
-      <td nowrap="nowrap" class="right">
-        <% if (MaxRelationsgetStringValue.equals("-1") || MaxRelationsgetStringValue.equals("")
-            || (Integer.parseInt(MaxRelationsgetStringValue) > CountRelations)) { // max allowed relations %>
+	  <td nowrap="nowrap" align="right">
 		<a href="relate_object.jsp?nr=<%= nr %>&amp;ntype=<%= otherManagerName %>&amp;rkind=<%= role %>&amp;dir=nwparent" title="search node for new relation"><img src="img/mmbase-search.gif" alt="search node" width="21" height="20" border="0" /></a>
-          <% if (otherManager.mayCreateNode()) { %>
-            <a href="new_object.jsp?nr=<%= nr %>&amp;ntype=<%= otherManagerName %>&amp;rkind=<%= role %>&amp;dir=nwparent" title="create new node and relate"><img src="img/mmbase-new.gif" alt="new node" width="21" height="20" border="0" /></a>
-          <%
-          }
-        }
-        %>
-      </td>
-    </tr>
-    <mm:listrelationscontainer type="<%= otherManagerName %>" role="<%= role %>" searchdir="source">
-    <mm:listrelations>
-        <mm:context> <mm:field name="number" id="rel_nr" write="false" />
-        <mm:relatednode> <mm:nodeinfo type="type" id="my_type" write="false" />
-        <mm:compare referid="my_type" value="<%= otherManagerName %>">
-        <tr valign="bottom" bgcolor="#FFFFFF">
-          <td align="right" width="24"><mm:maywrite><a href="<mm:url page="edit_object.jsp">
-            <mm:param name="nr"><mm:field name="number" /></mm:param>
-          </mm:url>" title="edit node"><img src="img/mmbase-edit.gif" alt="edit node" width="21" height="20" border="0" /></a></mm:maywrite></td>
-          <td nowrap="nowrap"> <mm:function name="gui" /> </td>
-          <td nowrap="nowrap" align="right">
-		    <a href="<mm:url page="edit_relation.jsp">
+		<% if (otherManager.mayCreateNode()) { %><a href="new_object.jsp?nr=<%= nr %>&amp;ntype=<%= otherManagerName %>&amp;rkind=<%= role %>&amp;dir=nwparent" title="create new node and relate"><img src="img/mmbase-new.gif" alt="new node" width="21" height="20" border="0" /></a><% } %>
+	  </td>
+	</tr>
+    <%-- MMBase taglib 1.1.0 only (MMBase v1.7) --%>
+	<mm:listrelations role="<%= role %>" type="<%= otherManagerName %>" searchdir="source">
+		<mm:field name="number" id="rel_nr" write="false" />
+		<mm:relatednode>
+		<mm:nodeinfo type="type" id="my_type" write="false" />
+		<mm:compare referid="my_type" value="<%= otherManagerName %>">
+		<tr valign="bottom" bgcolor="#FFFFFF">
+		  <td align="right" width="24"><mm:maywrite><a href="edit_object.jsp?nr=<mm:field name="number" />" title="edit node"><img src="img/mmbase-edit.gif" alt="edit node" width="21" height="20" border="0" /></a></mm:maywrite></td>
+		  <td nowrap="nowrap"> <mm:field name="gui()" /> </td>
+		  <td nowrap="nowrap" align="right"><a href="<mm:url page="edit_relation.jsp">
 		  	<mm:param name="nr"><mm:write referid="rel_nr" /></mm:param>
 		  	<mm:param name="ref"><%= nr %></mm:param>
 		  	<mm:param name="ntype"><%= nodeNM.getName() %></mm:param>
@@ -72,10 +61,10 @@ while(relIterator.hasNext()) {
 		  </td>
 		</tr>
 		</mm:compare>
-        </mm:relatednode>
-        </mm:context>
-    </mm:listrelations>
-    </mm:listrelationscontainer>
+		<mm:remove referid="my_type" /><mm:remove referid="rel_nr" />
+		</mm:relatednode>
+	</mm:listrelations>
+	<%-- /MMBase taglib 1.1.0 only (MMBase v1.7) --%>
 <%   
 } // end of while
 
@@ -92,12 +81,8 @@ while(relIterator.hasNext()) {
 	} catch (NotFoundException e) {
 		continue;
 	}
-    
-    String role = relationManager.getForwardRole();
-    String otherManagerName = otherManager.getName();
-    int CountRelations = node.countRelatedNodes(otherManager, role, "destination");
-    String MaxRelationsgetStringValue = relationManager.getStringValue("max"); 
-    
+	String role = relationManager.getForwardRole();
+	String otherManagerName = otherManager.getName();
 	if (c==1) {
 %>
 	<tr bgcolor="#CCCCCC">
@@ -114,40 +99,32 @@ while(relIterator.hasNext()) {
   	    <b><%= otherManager.getGUIName()%></b> <%= otherManagerName %><br /> 
   	    <%= role %> <!-- <%= relationManager.getReciprocalGUIName() %>/<%= relationManager.getForwardGUIName() %> -->
 	  </td>
-      <td nowrap="nowrap" class="right">
-      <% if (MaxRelationsgetStringValue.equals("-1") || MaxRelationsgetStringValue.equals("")
-      	  || (Integer.parseInt(MaxRelationsgetStringValue) > CountRelations)) { 
-        %><a href="relate_object.jsp?nr=<%= nr %>&amp;ntype=<%= otherManagerName %>&amp;rkind=<%= role %>&amp;dir=nwchild" title="search node for new relation"><img src="img/mmbase-search.gif" alt="search node" width="21" height="20" border="0" /></a>
-        <% if (otherManager.mayCreateNode()) { %>
-           <a href="new_object.jsp?nr=<%= nr %>&amp;ntype=<%= otherManagerName %>&amp;rkind=<%= role %>&amp;dir=nwchild" title="create new node and relate"><img src="img/mmbase-new.gif" alt="new node" width="21" height="20" border="0" /></a>
-        <%
-        } 
-      } 
-      %>
-      </td>
-    </tr>
-    <mm:listrelationscontainer role="<%= role %>" type="<%= otherManagerName %>" searchdir="destination">
-      <mm:listrelations>
-        <mm:context> <mm:field name="number" id="rel_nr" write="false" />
-        <mm:relatednode> <mm:nodeinfo type="type" id="my_type" write="false" />
-        <mm:compare referid="my_type" value="<%= otherManagerName %>">
-        <tr valign="bottom" bgcolor="#FFFFFF">
-          <td align="right" width="24"><mm:maywrite><a href="<mm:url page="edit_object.jsp">
-            <mm:param name="nr"><mm:field name="number" /></mm:param>
-          </mm:url>" title="edit node"><img src="img/mmbase-edit.gif" alt="edit node" width="21" height="20" border="0" /></a></mm:maywrite></td>
-          <td nowrap="nowrap"> <mm:function name="gui" /> </td>
-          <td nowrap="nowrap" align="right"><a href="<mm:url page="edit_relation.jsp">
-            <mm:param name="nr"><mm:write referid="rel_nr" /></mm:param>
-            <mm:param name="ref"><%= nr %></mm:param>
-            <mm:param name="ntype"><%= nodeNM.getName() %></mm:param>
-          </mm:url>" title="edit or delete relation"><img src="img/mmbase-relation-right.gif" alt="edit relation" width="21" height="20" border="0" /></a>
-          </td>
-        </tr>
-        </mm:compare>
-        </mm:relatednode>
-        </mm:context>
-      </mm:listrelations>
-    </mm:listrelationscontainer>
+	  <td nowrap="nowrap" align="right">
+		<a href="relate_object.jsp?nr=<%= nr %>&amp;ntype=<%= otherManagerName %>&amp;rkind=<%= role %>&amp;dir=nwchild" title="search node for new relation"><img src="img/mmbase-search.gif" alt="search node" width="21" height="20" border="0" /></a>
+		<% if (otherManager.mayCreateNode()) { %><a href="new_object.jsp?nr=<%= nr %>&amp;ntype=<%= otherManagerName %>&amp;rkind=<%= role %>&amp;dir=nwchild" title="create new node and relate"><img src="img/mmbase-new.gif" alt="new node" width="21" height="20" border="0" /></a><% } %>
+	  </td>
+	</tr>
+<%-- MMBase taglib 1.1.0 only (MMBase v1.7) --%>
+	<mm:listrelations role="<%= role %>" type="<%= otherManagerName %>" searchdir="destination">
+		<mm:field name="number" id="rel_nr" write="false" />
+		<mm:relatednode><mm:nodeinfo type="type" id="my_type" write="false" />
+		<mm:compare referid="my_type" value="<%= otherManagerName %>">
+		<tr valign="bottom" bgcolor="#FFFFFF">
+		  <td align="right" width="24"><mm:maywrite><a href="edit_object.jsp?nr=<mm:field name="number" />" title="edit node"><img src="img/mmbase-edit.gif" alt="edit node" width="21" height="20" border="0" /></a></mm:maywrite></td>
+		  <td nowrap="nowrap"> <mm:field name="gui()" /> </td>
+		  <td nowrap="nowrap" align="right"><a href="<mm:url page="edit_relation.jsp">
+		  	<mm:param name="nr"><mm:write referid="rel_nr" /></mm:param>
+		  	<mm:param name="ref"><%= nr %></mm:param>
+		  	<mm:param name="ntype"><%= nodeNM.getName() %></mm:param>
+		  	</mm:url>" title="edit or delete relation"><img src="img/mmbase-relation-right.gif" alt="edit relation" width="21" height="20" border="0" /></a>
+		  </td>
+		</tr>
+		</mm:compare>
+		<mm:remove referid="my_type" /><mm:remove referid="rel_nr" />
+		</mm:relatednode>
+	</mm:listrelations>
+<%-- /MMBase taglib 1.1.0 only (MMBase v1.7) --%>
 <% } // end while %>
 </table>
-<%-- /relations --%>
+</mm:context>
+<%-- End of relations --%>

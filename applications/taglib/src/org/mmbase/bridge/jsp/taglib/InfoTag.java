@@ -16,7 +16,7 @@ import javax.servlet.jsp.JspException;
  * Calls 'doInfo' from NodeManager or from Module.
  *
  * @author Michiel Meeuwissen
- * @version $Id: InfoTag.java,v 1.26 2006-06-23 11:32:21 michiel Exp $ 
+ * @version $Id: InfoTag.java,v 1.22.2.3 2005-03-14 18:33:24 michiel Exp $ 
  * @deprecated
  */
 
@@ -72,8 +72,7 @@ public class InfoTag extends  CloudReferrerTag implements Writer {
     **/
     public int doEndTag() throws JspTagException {
         helper.doEndTag();
-        return super.doEndTag();
-
+        return super.doEndTag();        
     }
 
 }

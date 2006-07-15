@@ -11,10 +11,9 @@ package org.mmbase.storage.search.implementation.database.informix.excalibur;
 
 import java.io.*;
 import java.util.*;
-
-import org.mmbase.bridge.Field;
 import org.mmbase.module.core.*;
-import org.mmbase.storage.StorageManagerFactory;
+import org.mmbase.module.corebuilders.*;
+import org.mmbase.module.database.support.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.database.*;
 import org.mmbase.util.logging.*;
@@ -26,33 +25,33 @@ import org.xml.sax.*;
  * when used with an Informix database and an Excalibur Text Search datablade.
  * This class is provided as a coding example of a ChainedSqlHandler.
  * <p>
- * On initialization, the handler reads a list of etx-indices from a
+ * On initialization, the handler reads a list of etx-indices from a 
  * configuration file.
  * This configurationfile must be named <em>etxindices.xml</em> and located
- * inside the <em>databases</em> configuration directory.
- * It's dtd is located in the directory
+ * inside the <em>databases</em> configuration directory. 
+ * It's dtd is located in the directory 
  * <code>org.mmbase.storage.search.implementation.database.informix.excalibur.resources</code>
- * in the MMBase source tree and
- * <a href="http://www.mmbase.org/dtd/etxindices.dtd">here</a> online.
+ * in the MMBase source tree and 
+ * <a href="http://www.mmbase.org/dtd/etxindices.dtd">here</a> online. 
  *
  * @author Rob van Maris
- * @version $Id: EtxSqlHandler.java,v 1.7 2005-10-05 12:26:11 michiel Exp $
+ * @version $Id: EtxSqlHandler.java,v 1.1 2003-12-23 11:03:04 robmaris Exp $
  * @since MMBase-1.7
  */
 // TODO RvM: (later) add javadoc, elaborate on overwritten methods.
 public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
-
+    
     /** Logger instance. */
     private static Logger log
     = Logging.getLoggerInstance(EtxSqlHandler.class.getName());
-
-    /**
+    
+    /** 
      * The indexed fields, stored as {@link #BuilderField BuilderField}
      *  instances.
      */
     private Set indexedFields = new HashSet();
-
-    /**
+    
+    /** 
      * Creates a new instance of EtxueryHandler.
      *
      * @param successor Successor in chain or responsibility.
@@ -61,7 +60,7 @@ public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
         super(successor);
         init();
     }
-
+    
     // javadoc is inherited
     public void appendConstraintToSql(StringBuffer sb, Constraint constraint,
     SearchQuery query, boolean inverse, boolean inComposite)
@@ -72,12 +71,12 @@ public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
         if (constraint instanceof StringSearchConstraint) {
             // TODO: test for support, else throw exception
             // TODO: support maxNumber for query with etx constraint.
-            StringSearchConstraint stringSearchConstraint
+            StringSearchConstraint stringSearchConstraint 
                 = (StringSearchConstraint) constraint;
             StepField field = stringSearchConstraint.getField();
             Map parameters = stringSearchConstraint.getParameters();
-
-            // TODO: how to implement inverse,
+            
+            // TODO: how to implement inverse, 
             // it is actually more complicated than this:
             if (overallInverse) {
                 sb.append("NOT ");
@@ -88,7 +87,7 @@ public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
             append(getAllowedValue(field.getFieldName())).
             append(", Row('");
 
-            Iterator iSearchTerms
+            Iterator iSearchTerms 
                 = stringSearchConstraint.getSearchTerms().iterator();
             while (iSearchTerms.hasNext()) {
                 String searchTerm = (String) iSearchTerms.next();
@@ -102,13 +101,13 @@ public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
                 case StringSearchConstraint.SEARCH_TYPE_WORD_ORIENTED:
                     sb.append("SEARCH_TYPE = WORD");
                     break;
-
+                    
                 case StringSearchConstraint.SEARCH_TYPE_PHRASE_ORIENTED:
                     sb.append("SEARCH_TYPE = PHRASE_EXACT");
                     break;
-
+                    
                 case StringSearchConstraint.SEARCH_TYPE_PROXIMITY_ORIENTED:
-                    Integer proximityLimit
+                    Integer proximityLimit 
                         = (Integer) parameters.
                             get(StringSearchConstraint.PARAM_PROXIMITY_LIMIT);
                     if (proximityLimit == null) {
@@ -118,12 +117,12 @@ public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
                     }
                     sb.append("SEARCH_TYPE = PROX_SEARCH(").append(proximityLimit).append(")");
                     break;
-
+                    
                 default:
-                    throw new IllegalStateException("Invalid searchtype value: "
+                    throw new IllegalStateException("Invalid searchtype value: " 
                         + stringSearchConstraint.getSearchType());
             }
-
+            
             switch(stringSearchConstraint.getMatchType()) {
                 case StringSearchConstraint.MATCH_TYPE_FUZZY:
                     Float fuzziness =
@@ -131,27 +130,27 @@ public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
                     int wordScore = Math.round(100 * fuzziness.floatValue());
                     sb.append(" & PATTERN_ALL & WORD_SCORE = ").append(wordScore);
                     break;
-
+                    
                 case StringSearchConstraint.MATCH_TYPE_LITERAL:
                     break;
-
+                    
                 case StringSearchConstraint.MATCH_TYPE_SYNONYM:
                     log.warn("Synonym matching not supported. Executing this query with literal matching instead: " + query);
                     break;
-
+                    
                 default:
-                    throw new IllegalStateException("Invalid matchtype value: "
+                    throw new IllegalStateException("Invalid matchtype value: " 
                         + stringSearchConstraint.getMatchType());
             }
-
+            
             sb.append("'))");
-
+           
         } else {
             getSuccessor().appendConstraintToSql(sb, constraint, query,
             inverse, inComposite);
         }
     }
-
+    
     // javadoc is inherited
     public int getSupportLevel(int feature, SearchQuery query) throws SearchQueryException {
         int support;
@@ -174,21 +173,21 @@ public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
         }
         return support;
     }
-
+    
     // javadoc is inherited
-    public int getSupportLevel(Constraint constraint, SearchQuery query)
+    public int getSupportLevel(Constraint constraint, SearchQuery query) 
     throws SearchQueryException {
         int support;
-
+        
         if (constraint instanceof StringSearchConstraint
                 && hasEtxIndex(((StringSearchConstraint) constraint).getField())) {
-            StringSearchConstraint stringSearchConstraint =
+            StringSearchConstraint stringSearchConstraint = 
                 (StringSearchConstraint) constraint;
             // StringSearchConstraint on field with etx index:
             // - none if matchtype = MATCH_TYPE_SYNONYM
             // - otherwise: weak support if other stringsearch constraints are present
             // - otherwise: optimal support
-            if (stringSearchConstraint.getMatchType()
+            if (stringSearchConstraint.getMatchType() 
                     == StringSearchConstraint.MATCH_TYPE_SYNONYM) {
                 support = SearchQueryHandler.SUPPORT_NONE;
             } else if (containsOtherStringSearchConstraints(
@@ -202,7 +201,7 @@ public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
         }
         return support;
     }
-
+    
     /**
      * Tests if an Excelibur Text Search index has been made for this field.
      *
@@ -212,14 +211,14 @@ public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
      */
     public boolean hasEtxIndex(StepField field) {
         boolean result = false;
-        if (field.getType() == Field.TYPE_STRING
-        || field.getType() == Field.TYPE_XML) {
+        if (field.getType() == FieldDefs.TYPE_STRING
+        || field.getType() == FieldDefs.TYPE_XML) {
             result = indexedFields.contains(
             field.getStep().getTableName() + "." + field.getFieldName());
         }
         return result;
     }
-
+    
     /**
      * Tests if the query contains additional constraints, i.e. on relations
      * or nodes.
@@ -240,7 +239,7 @@ public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
         // No additonal constraints:
         return false;
     }
-
+    
     /**
      * Tests if a constaint is/contains another stringsearch constraint than
      * the specified one. Recursively seaches through all childs of composite
@@ -248,7 +247,7 @@ public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
      *
      * @param constraint the constraint.
      * @param searchConstraint the stringsearch constraint.
-     * @return true if the constraint is/contains another stringsearch constraint
+     * @param true if the constraint is/contains another stringsearch constraint
      *             than the given one, false otherwise.
      */
     protected boolean containsOtherStringSearchConstraints(
@@ -259,7 +258,7 @@ public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
             Iterator iChildConstraints
             = ((CompositeConstraint) constraint).getChilds().iterator();
             while (iChildConstraints.hasNext()) {
-                Constraint childConstraint
+                Constraint childConstraint 
                 = (Constraint) iChildConstraints.next();
                 if (containsOtherStringSearchConstraints(
                 childConstraint, searchConstraint)) {
@@ -269,79 +268,80 @@ public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
             }
             // No other stringsearch constraint found in childs.
             return false;
-
+            
         } else if (constraint instanceof StringSearchConstraint
         && constraint != searchConstraint) {
             // Anther stringsearch constraint.
             return true;
-
+            
         } else {
             // Not another stringsearch constraint and not a composite.
             return false;
         }
     }
-
-    /**
+    
+    /** 
      * Initializes the handler by reading the etxindices configuration file
      * to determine which fields have a etx index.
      * <p>
      * The configurationfile must be named <em>etxindices.xml</em> and located
      * inside the <em>databases</em> configuration directory.
-     *
-     * @throw IOException When a failure occurred while trying to read the
+     * 
+     * @throw IOException When a failure occurred while trying to read the 
      *        configuration file.
      */
     private void init() throws IOException {
         File etxConfigFile = new File(
             MMBaseContext.getConfigPath() + "/databases/etxindices.xml");
-        XmlEtxIndicesReader configReader =
+        XmlEtxIndicesReader configReader = 
             new XmlEtxIndicesReader(
                 new InputSource(
                     new BufferedReader(
                         new FileReader(etxConfigFile))));
-
-        for (Iterator eSbspaces = configReader.getSbspaceElements(); eSbspaces.hasNext();) {
-            Element sbspace = (Element) eSbspaces.next();
-            
-            for (Iterator eEtxIndices = configReader.getEtxindexElements(sbspace); eEtxIndices.hasNext();) {
-                Element etxIndex = (Element) eEtxIndices.next();
+        
+        Enumeration eSbspaces = configReader.getSbspaceElements();
+        while (eSbspaces.hasMoreElements()) {
+            Element sbspace = (Element) eSbspaces.nextElement();
+            Enumeration eEtxIndices = configReader.getEtxindexElements(sbspace);
+            while (eEtxIndices.hasMoreElements()) {
+                Element etxIndex = (Element) eEtxIndices.nextElement();
                 String table = configReader.getEtxindexTable(etxIndex);
                 String field = configReader.getEtxindexField(etxIndex);
                 String index = configReader.getEtxindexValue(etxIndex);
                 try {
                     String builderField = toBuilderField(table, field);
                     indexedFields.add(builderField);
-                    log.service("Registered etx index \"" + index +
+                    log.service("Registered etx index \"" + index + 
                     "\" for builderfield " + builderField);
                 } catch (IllegalArgumentException e) {
-                    log.error("Failed to register etx index \"" +
+                    log.error("Failed to register etx index \"" + 
                     index + "\": " + e);
                 }
             }
         }
     }
-
+    
     /**
      * Finds builderfield corresponding to the database table and field names.
      *
      * @param dbTable The tablename used in the database.
      * @param dbField The fieldname used in the database.
-     * @return The corresponding builderfield represented by a string of the
+     * @return The corresponding builderfield represented by a string of the 
      *         form &lt;buildername&gt;.&lt;fieldname&gt;.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
     static String toBuilderField(String dbTable, String dbField) {
         // package visibility!
         MMBase mmbase = MMBase.getMMBase();
-        StorageManagerFactory factory = mmbase.getStorageManagerFactory();
+        MMJdbc2NodeInterface database = mmbase.getDatabase();
         String tablePrefix = mmbase.getBaseName() + "_";
-
+        
         if (!dbTable.startsWith(tablePrefix)) {
             throw new IllegalArgumentException(
             "Invalid tablename: \"" + dbTable + "\". " +
             "It should start with the prefix \"" + tablePrefix + "\".");
         }
-
+        
         String builderName = dbTable.substring(tablePrefix.length());
         MMObjectBuilder builder;
         try {
@@ -350,23 +350,23 @@ public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
             // Unknown builder.
             builder = null;
         }
-
+        
         if (builder == null) {
             throw new IllegalArgumentException(
             "Unknown builder: \"" + builderName + "\".");
         }
-
+        
         Iterator iFieldNames = builder.getFieldNames().iterator();
         while (iFieldNames.hasNext()) {
             String fieldName = (String) iFieldNames.next();
-            if (factory.getStorageIdentifier(fieldName).equals(dbField)) {
+            if (database.getAllowedField(fieldName).equals(dbField)) {
                 return builderName + "." + fieldName;
             }
         }
-
+        
         throw new IllegalArgumentException(
-        "No field corresponding to database field \"" + dbField
+        "No field corresponding to database field \"" + dbField 
         + "\" found in builder \"" + builderName + "\".");
     }
-
+    
 }

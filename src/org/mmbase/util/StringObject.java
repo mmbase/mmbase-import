@@ -44,16 +44,10 @@ package org.mmbase.util;
  * the buffer is marked as shared. Any further changes to the buffer will
  * cause a copy to be made. <p>
  *
- * this is based on StringBuffer code, we have a seperate class since sun doesn't
- * allow us to extend StringBuffer for some reason and we want methods like replace
- * over the whole buffer.
- *
- * @license Sun license
  * @see     String
- * @author Daniel Ockeloen 
  * @author Johannes Verelst (bugfix)
  * @author  Arthur van Hoff
- * @version $Id: StringObject.java,v 1.11 2006-06-26 18:16:01 johannes Exp $
+ * @version $Id: StringObject.java,v 1.6 2003-03-07 09:31:15 pierre Exp $
  */
 
 public final class StringObject {
@@ -279,7 +273,7 @@ public final class StringObject {
 
     /**
      * Appends a character to the end of this buffer.
-     * @param c        the character to be appended
+     * @param ch        the character to be appended
      * @return         the StringBuffer itself, NOT a new one.
      */
     public synchronized StringObject append(char c) {
@@ -390,7 +384,7 @@ public final class StringObject {
     /**
      * Inserts a character into the String buffer.
      * @param offset        the offset at which to insert
-     * @param c                the character to insert
+     * @param ch                the character to insert
      * @return                 the StringBuffer itself, NOT a new one.
      * @exception        StringIndexOutOfBoundsException If the offset invalid.
      */
@@ -524,12 +518,11 @@ public final class StringObject {
      * replace
      */
     public synchronized StringObject replace(String oldstr,String newstr) {
-        int strlen = oldstr.length();
-        int pos=indexOf(oldstr,0,strlen);
+        int pos=indexOf(oldstr,0);
         while (pos!=-1) {
-            delete(pos,strlen);
+            delete(pos,oldstr.length());
             insert(pos,newstr);
-            pos=indexOf(oldstr,pos+newstr.length(),strlen);
+            pos=indexOf(oldstr,pos+newstr.length());
         }
         return this;
     }
@@ -582,16 +575,12 @@ public final class StringObject {
     }
 
     public int indexOf(String str, int fromIndex) {
-       return indexOf(str, fromIndex, str.length());
-    }
-
-    private int indexOf(String str, int fromIndex, int strlen) {
         char v1[] = value;
         char v2[] = str.toCharArray();
-        int max = (count - strlen);
+        int max = (count - str.length());
       test:
         for (int i = ((fromIndex < 0) ? 0 : fromIndex); i <= max ; i++) {
-            int n = strlen;
+            int n = str.length();
             int j = i;
             int k = 0;
             while (n-- != 0) {
@@ -603,11 +592,14 @@ public final class StringObject {
         }
         return -1;
     }
-    
 
-    /**
-     */
     public byte[] getBytes() {
-        return toString().getBytes();
+        int j = 0;
+        int i = 0;
+        byte[] dst=new byte[count];
+        while (j < count) {
+            dst[j++] = (byte)value[i++];
+        }
+        return dst;
     }
 }

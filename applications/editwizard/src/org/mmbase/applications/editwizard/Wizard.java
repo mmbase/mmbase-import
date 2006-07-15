@@ -17,15 +17,14 @@ import org.mmbase.cache.Cache;
 
 import org.mmbase.applications.dove.*;
 
-import org.mmbase.util.ResourceWatcher;
-import org.mmbase.util.ResourceLoader;
+import org.mmbase.util.FileWatcher;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.URIResolver;
 import org.mmbase.util.XMLEntityResolver;
 
 import org.w3c.dom.*;
 
-import java.net.URL;
+import java.io.File;
 import java.io.Writer;
 
 import java.util.*;
@@ -43,7 +42,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.148 2006-07-13 13:18:14 nklasens Exp $
+ * @version $Id: Wizard.java,v 1.121.2.13 2006-05-22 11:05:35 pierre Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -97,7 +96,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
     private String currentFormId;
 
     // filename of the stylesheet which should be used to make the html form.
-    private URL wizardStylesheetFile;
+    private File wizardStylesheetFile;
     private String sessionId;
     private String sessionKey = "editwizard";
     private String referrer = "";
@@ -246,7 +245,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
     public String getDataId() {
         return dataId;
     }
-
     public Document getData() {
         return data;
     }
@@ -381,24 +379,9 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         dataId = wizardConfig.objectNumber;
         debug = wizardConfig.debug;
 
-        URL wizardSchemaFile;
-        try {
-            wizardSchemaFile     = uriResolver.resolveToURL(wizardName + ".xml", null);
-        } catch (Exception e) {
-            throw new WizardException(e);
-        }
-        if (wizardSchemaFile == null) {
-            throw new WizardException("Could not resolve wizard " + wizardName + ".xml  with "  + uriResolver);
-        }
-        try {
-            wizardStylesheetFile = uriResolver.resolveToURL("xsl/wizard.xsl", null);
-        } catch (Exception e) {
-            throw new WizardException(e);
-        }
+        File wizardSchemaFile = uriResolver.resolveToFile(wizardName + ".xml");
+        wizardStylesheetFile = uriResolver.resolveToFile("xsl/wizard.xsl");
 
-        if (wizardStylesheetFile == null) {
-            throw new WizardException("Could not resolve XSL " + wizardStylesheetFile + "  with "  + uriResolver);
-        }
         // store variables so that these can be used in the wizard schema
         storeConfigurationAttributes(wizardConfig);
 
@@ -502,7 +485,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * of one and another.
      *
      * @param out The writer where the output (html) should be written to.
-     * @param instanceName name of the current instance
+     * @param instancename name of the current instance
      */
     public void writeHtmlForm(Writer out, String instanceName) throws WizardException, TransformerException {
         writeHtmlForm(out, instanceName, null);
@@ -515,7 +498,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * of one and another.
      *
      * @param out The writer where the output (html) should be written to.
-     * @param instanceName name of the current instance
+     * @param instancename name of the current instance
      * @param externParams sending parameters to the stylesheet which are not
      *    from the editwizards itself
      */
@@ -544,7 +527,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         params.put("cloud", cloud);
 
         if (templatesDir != null) {
-            params.put("templatedir", templatesDir);
+            params.put("templatedir", context + templatesDir);
         }
 
         if (externParams != null && !externParams.isEmpty()) {
@@ -651,6 +634,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             return "";
         }
     }
+
 
     private String buildTime(ServletRequest req, String name) {
         try {
@@ -777,7 +761,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * @param       wizardSchema    the main node of the schema to be used. Includes should already be resolved.
      * @param       formid          The id of the current form
      * @param       data            The main node of the data tree to be used
-     * @param       instanceName    The instancename of this wizard
+     * @param       instancename    The instancename of this wizard
      */
     public Document createPreHtml(Node wizardSchema, String formid, Node data,
                                   String instanceName) throws WizardException {
@@ -846,111 +830,106 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         // now, resolve optionlist values:
         // - The schema contains the list definitions, from which the values are copied.
         // - Each list may have a query attached, which is performed before the copying.
-        NodeList optionlists = Utils.selectNodeList(wizardnode, ".//field/optionlist");
+        NodeList optionlists = Utils.selectNodeList(wizardnode, ".//optionlist[@select]");
 
         for (int i = 0; i < optionlists.getLength(); i++) {
             Node optionlist = optionlists.item(i);
 
             String listname = Utils.getAttribute(optionlist, "select");
+            log.debug("Handling optionlist: " + i + ": " + listname);
 
-            // import and create list if select was set - otherwise, this optionlist is defined 'inline'
-            if (listname != null && !listname.equals("")) {
-                log.debug("Handling optionlist: " + i + ": " + listname);
+            Node list = Utils.selectSingleNode(wizardSchema, "/*/lists/optionlist[@name='" + listname + "']");
 
-                Node list = Utils.selectSingleNode(wizardSchema, "/*/lists/optionlist[@name='" + listname + "']");
+            if (list == null) {
+                // Not found in definition. Put an error in the list and proceed with the
+                // next list.
+                log.debug("Not found! Proceeding with next list.");
 
-                if (list == null) {
-                    // Not found in definition. Put an error in the list and proceed with the
-                    // next list.
-                    log.debug("Not found! Proceeding with next list.");
+                Element option = optionlist.getOwnerDocument().createElement("option");
+                option.setAttribute("id", "-");
+                Utils.storeText(option,
+                                "Error: optionlist '" + listname + "' not found");
+                optionlist.appendChild(option);
 
-                    Element option = optionlist.getOwnerDocument().createElement("option");
+                continue;
+            }
+
+            // Test if this list has a query and get the time-out related values.
+            Node query = Utils.selectSingleNode(list, "query");
+            long currentTime = new Date().getTime();
+            long queryTimeOut = 1000 * Long.parseLong(Utils.getAttribute(list,
+                                                                         "query-timeout", String.valueOf(this.listQueryTimeOut)));
+            long lastExecuted = currentTime - queryTimeOut - 1;
+
+            if (query != null) {
+                String lastExecutedString = Utils.getAttribute(query, "last-executed", "never");
+
+                if (!lastExecutedString.equals("never")) {
+                    lastExecuted = Long.parseLong(lastExecutedString);
+                }
+            }
+
+            // Execute the query if it's there and only if it has timed out.
+            if ((query != null) && ((currentTime - lastExecuted) > queryTimeOut)) {
+                log.debug("Performing query for optionlist '" + listname +
+                          "'. Cur time " + currentTime + " last executed " + lastExecuted +
+                          " timeout " + queryTimeOut + " > " + (currentTime - lastExecuted));
+
+                Node queryresult = null;
+
+                try {
+                    // replace {$origin} and such
+                    String newWhere = Utils.fillInParams(Utils.getAttribute(query, "where"), variables);
+                    Utils.setAttribute(query, "where", newWhere);
+                    queryresult = databaseConnector.getList(query);
+                    queryresult = Utils.selectSingleNode(queryresult, "/getlist/query");
+                } catch (Exception e) {
+                    // Bad luck, tell the user and try the next list.
+                    log.debug("Error during query, proceeding with next list: " + e.toString());
+
+                    Element option = list.getOwnerDocument().createElement("option");
                     option.setAttribute("id", "-");
-                    Utils.storeText(option,
-                                    "Error: optionlist '" + listname + "' not found");
+                    Utils.storeText(option, "Error: query for '" + listname + "' failed");
                     optionlist.appendChild(option);
 
                     continue;
                 }
 
-                // Test if this list has a query and get the time-out related values.
-                Node query = Utils.selectSingleNode(list, "query");
-                long currentTime = new Date().getTime();
-                long queryTimeOut = 1000 * Long.parseLong(Utils.getAttribute(list,
-                                                                             "query-timeout", String.valueOf(this.listQueryTimeOut)));
-                long lastExecuted = currentTime - queryTimeOut - 1;
+                // Remind the current time.
+                Utils.setAttribute(query, "last-executed", String.valueOf(currentTime));
 
-                if (query != null) {
-                    String lastExecutedString = Utils.getAttribute(query, "last-executed", "never");
+                // Remove any already existing options.
+                NodeList olditems = Utils.selectNodeList(list, "option");
 
-                    if (!lastExecutedString.equals("never")) {
-                        lastExecuted = Long.parseLong(lastExecutedString);
-                    }
+                for (int itemindex = 0; itemindex < olditems.getLength();
+                     itemindex++) {
+                    list.removeChild(olditems.item(itemindex));
                 }
 
-                // Execute the query if it's there and only if it has timed out.
-                if ((query != null) && ((currentTime - lastExecuted) > queryTimeOut)) {
-                    log.debug("Performing query for optionlist '" + listname +
-                              "'. Cur time " + currentTime + " last executed " + lastExecuted +
-                              " timeout " + queryTimeOut + " > " + (currentTime - lastExecuted));
+                // Loop through the queryresult and add the included objects by creating
+                // an option element for each one. The id and content of the option
+                // element are taken from the object by performing the xpaths on the object,
+                // that are given by the list definition.
+                NodeList items = Utils.selectNodeList(queryresult, "*");
+                String idPath = Utils.getAttribute(list, "optionid", "@number");
+                String contentPath = Utils.getAttribute(list, "optioncontent", "field");
 
-                    Node queryresult = null;
-
-                    try {
-                        // replace {$origin} and such
-                        String newWhere = Utils.fillInParams(Utils.getAttribute(query, "where"), variables);
-                        Utils.setAttribute(query, "where", newWhere);
-                        queryresult = databaseConnector.getList(query);
-                        queryresult = Utils.selectSingleNode(queryresult, "/getlist/query");
-                    } catch (Exception e) {
-                        // Bad luck, tell the user and try the next list.
-                        log.debug("Error during query, proceeding with next list: " + e.toString());
-
-                        Element option = optionlist.getOwnerDocument().createElement("option");
-                        option.setAttribute("id", "-");
-                        Utils.storeText(option, "Error: query for '" + listname + "' failed");
-                        optionlist.appendChild(option);
-
-                        continue;
-                    }
-
-                    // Remind the current time.
-                    Utils.setAttribute(query, "last-executed", String.valueOf(currentTime));
-
-                    // Remove any already existing options.
-                    NodeList olditems = Utils.selectNodeList(list, "option");
-
-                    for (int itemindex = 0; itemindex < olditems.getLength();
-                         itemindex++) {
-                        list.removeChild(olditems.item(itemindex));
-                    }
-
-                    // Loop through the queryresult and add the included objects by creating
-                    // an option element for each one. The id and content of the option
-                    // element are taken from the object by performing the xpaths on the object,
-                    // that are given by the list definition.
-                    NodeList items = Utils.selectNodeList(queryresult, "*");
-                    String idPath = Utils.getAttribute(list, "optionid", "@number");
-                    String contentPath = Utils.getAttribute(list, "optioncontent", "field");
-
-                    for (int itemindex = 0; itemindex < items.getLength();
-                         itemindex++) {
-                        Node item = items.item(itemindex);
-                        String optionId = Utils.transformAttribute(item, idPath, true);
-                        String optionContent = Utils.transformAttribute(item,
-                                                                        contentPath, true);
-                        Element option = list.getOwnerDocument().createElement("option");
-                        option.setAttribute("id", optionId);
-                        Utils.storeText(option, optionContent);
-                        list.appendChild(option);
-                    }
+                for (int itemindex = 0; itemindex < items.getLength();
+                     itemindex++) {
+                    Node item = items.item(itemindex);
+                    String optionId = Utils.transformAttribute(item, idPath, true);
+                    String optionContent = Utils.transformAttribute(item,
+                                                                    contentPath, true);
+                    Element option = list.getOwnerDocument().createElement("option");
+                    option.setAttribute("id", optionId);
+                    Utils.storeText(option, optionContent);
+                    list.appendChild(option);
                 }
-
-                // Now copy the items of the list definition to the preHTML list.
-                NodeList items = Utils.selectNodeList(list, "option");
-                Utils.appendNodeList(items, optionlist);
-
             }
+
+            // Now copy the items of the list definition to the preHTML list.
+            NodeList items = Utils.selectNodeList(list, "option");
+            Utils.appendNodeList(items, optionlist);
 
             // set selected=true for option which is currently selected
             String selectedValue = Utils.selectSingleNodeText(optionlist,
@@ -1083,16 +1062,16 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * resolves the includes, and 'tags' all datanodes. (Places temp. ids in the schema).
      *
      */
-    private void loadSchema(URL  wizardSchemaFile) throws WizardException {
+    private void loadSchema(File wizardSchemaFile) throws WizardException {
         schema = wizardSchemaCache.getDocument(wizardSchemaFile);
 
         if (schema == null) {
             schema = Utils.loadXMLFile(wizardSchemaFile);
 
-            List dependencies = resolveIncludes(schema.getDocumentElement());
+            List files = resolveIncludes(schema.getDocumentElement());
             resolveShortcuts(schema.getDocumentElement(), true);
 
-            wizardSchemaCache.put(wizardSchemaFile, schema, dependencies);
+            wizardSchemaCache.put(wizardSchemaFile, schema, files);
 
             log.debug("Schema loaded (and resolved): " + wizardSchemaFile);
         } else {
@@ -1149,12 +1128,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                                                           1);
                     }
 
-                    URL file;
-                    try {
-                        file = uriResolver.resolveToURL(url, null);
-                    } catch (Exception e) {
-                        throw new WizardException(e);
-                    }
+                    File file = uriResolver.resolveToFile(url);
                     result.add(file);
 
                     // Load the external file.
@@ -1431,11 +1405,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         newlist = form.getOwnerDocument().importNode(newlist, false);
         Utils.copyAllAttributes(fieldlist, newlist);
 
-        // place parent object number as attribute number
-        if (parentdatanode != null) {
-            Utils.setAttribute(newlist, "number", Utils.getAttribute(parentdatanode, "number"));
-        }
-
         // Add the title, description.
         NodeList props = Utils.selectNodeList(fieldlist,
                                               "title|description|action|command");
@@ -1452,10 +1421,9 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         // expand attribute 'startnodes' for search command
         Node command = Utils.selectSingleNode(newlist, "command[@name='search']");
 
-
+        //expand constraints attribute on search action
         if (command != null) {
             expandAttribute(command, "startnodes", null);
-            // expand constraints attribute on search action
             String cAttribute = Utils.getAttribute(command, "constraints");
             if(cAttribute != null && !cAttribute.equals("")){
                 expandAttribute(command, "constraints", dataId);
@@ -1471,7 +1439,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                 if (command!=null) {
                     expandAttribute(command,"objectnumber","new");
                     expandAttribute(command,"origin",dataId);
-                    expandAttribute(command,"wizardname",null);
                 }
             }
         }
@@ -1686,12 +1653,15 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         // place newfield in pre-html form
         form.appendChild(newField);
 
-        List exceptAttrs = new ArrayList(); // what is this?
-        exceptAttrs.add("fid");
+        {
+            List exceptAttrs = new ArrayList(); // what is this?
+            exceptAttrs.add("fid");
 
-        // copy all attributes from data to new pre-html field def
-        if ((dataNode != null) && (dataNode.getNodeType() != Node.ATTRIBUTE_NODE)) {
-            Utils.copyAllAttributes(dataNode, newField, exceptAttrs);
+            // copy all attributes from data to new pre-html field def
+            if ((dataNode != null) &&
+                (dataNode.getNodeType() != Node.ATTRIBUTE_NODE)) {
+                Utils.copyAllAttributes(dataNode, newField, exceptAttrs);
+            }
         }
 
         String ftype  = Utils.getAttribute(newField, "ftype");
@@ -1702,7 +1672,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         Utils.setAttribute(newField, "fieldname", htmlFieldName);
 
         // place objectNumber as attribute number, if not already was placed there by the copyAllAttributes method.
-        if ((dataNode != null) && (Utils.getAttribute(dataNode, "number", null) == null)) {
+        if ((dataNode != null) &&
+            (Utils.getAttribute(dataNode, "number", null) == null)) {
             Utils.setAttribute(newField, "number", Utils.getAttribute(dataNode.getParentNode(), "number"));
         }
 
@@ -1745,12 +1716,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             }
 
             Utils.setAttribute(newField, "objectnumber", wizardObjectNumber);
-
-            String wizardPath = Utils.getAttribute(newField, "wizardname", null);
-            if (wizardPath != null) {
-                wizardPath = Utils.transformAttribute(dataNode, wizardPath);
-                Utils.setAttribute(newField, "wizardname", wizardPath);
-            }
 
             String wizardOrigin = Utils.getAttribute(newField, "origin", null);
 
@@ -1940,57 +1905,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
     }
 
     /**
-     * Puts the given value in the right field (given by name) of the right node (given by did)
-     * Assumes a text field.
-     *
-     * @param  did     The data id of the node
-     * @param  fieldName   The name of the field
-     * @param  value   The (String) value what should be stored in the data.
-     */
-    public void storeFieldValue(String did, String fieldName, String value) throws WizardException {
-        if (log.isDebugEnabled()) {
-            log.debug("String value " + value + " in " + did + " for  field " + fieldName);
-        }
-
-        String xpath = ".//*[@did='" + did + "']";
-        Node objectNode = Utils.selectSingleNode(data, xpath);
-
-        xpath = "./field[@name='" + fieldName + "']";
-        Node fieldNode = Utils. selectSingleNode(objectNode, xpath);
-
-        if (fieldNode == null) {
-            throw new WizardException("Unable to store value for field with name " + fieldName + " for node with did=" + did + ", value=" + value + ", wizard:" + wizardName);
-        }
-        Utils.storeText(fieldNode, value);
-    }
-
-    /**
-     * Obtains the value form the right field (given by name) of the right node (given by did).
-     * Assumes a text field.
-     *
-     * @param  did     The data id of the node
-     * @param  fieldName   The name of the field
-     */
-    public String retrieveFieldValue(String did, String fieldName) throws WizardException {
-        if (log.isDebugEnabled()) {
-            log.debug("Get value in " + did + " for  field " + fieldName);
-        }
-
-        String xpath = ".//*[@did='" + did + "']";
-        Node objectNode = Utils.selectSingleNode(data, xpath);
-
-        xpath = "./field[@name='" + fieldName + "']";
-        Node fieldNode = Utils. selectSingleNode(objectNode, xpath);
-
-        if (fieldNode == null) {
-            throw new WizardException("Unable to store value for field with name " + fieldName + " for node with did=" + did + ", wizard:" + wizardName);
-        }
-
-        return Utils.getText(fieldNode);
-    }
-
-
-    /**
      * This method processes the commands sent over http.
      *
      * @param req The ServletRequest where the commands (name/value pairs) reside.
@@ -2046,7 +1960,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      *
      */
     public void processCommand(WizardCommand cmd) throws WizardException {
-        log.debug("Processing command " + cmd);
+        log.service("Processing command " + cmd);
         // processes the given command
         switch (cmd.getType()) {
         case WizardCommand.DELETE_ITEM: {
@@ -2264,11 +2178,11 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             break;
         }
         case WizardCommand.SAVE : {
-            log.debug("Wizard " + objectNumber + " will be saved (but not closed)");
+            log.service("Wizard " + objectNumber + " will be saved (but not closed)");
         }
 
         case WizardCommand.COMMIT: {
-            log.debug("Committing wizard " + objectNumber);
+            log.service("Committing wizard " + objectNumber);
 
             // This command takes no parameters.
             if (log.isDebugEnabled()) {
@@ -2602,7 +2516,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             // Dove returns the following Non-XML Schema conformant types:
             // - binary (minLength, maxLength)
             // - datetime
-            // - boolean
             //
             // The 'binary' type can be defined as :
             //  <xsd:simpleType name="binary">
@@ -2661,17 +2574,9 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         // in the old format, ftype was date, while dttype was date,datetime, or time
         // In the new format, this is reversed (dttype contains the base datatype,
         // ftype the format in which to enter it)
-        // since wizards only understand formats 'date', 'time', 'duartion' and 'datetime',
-        // 'ftype' values of new date guitypes (such as new datatypes) need to be converted to
-        // datetime
-        if (!"data".equals(ftype)) {
-            if ("date".equals(dttype) || "time".equals(dttype)) {
-                ftype = dttype;
-                dttype = "datetime";
-            } else if ("datetime".equals(dttype) &&
-                       (!"date".equals(ftype) && !"time".equals(ftype) && !"duration".equals(ftype))) {
-                ftype = "datetime";
-            }
+        if ("date".equals(dttype) || "time".equals(dttype)) {
+            ftype = dttype;
+            dttype = "datetime";
         }
 
         // in the old format, 'html' could also be assigned to dttype
@@ -2735,8 +2640,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                 }
 
                 // manually set maxlength if given
-                // ignore sizes smaller than 1
-                if (maxlen > 0) {
+                // ignore sizes smaller than 1 and larger than 255
+                if ((maxlen > 0) && (maxlen < 256)) {
                     Utils.setAttribute(fieldDef, "dtmaxlength", "" + maxlen);
                 }
             }
@@ -2850,7 +2755,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * Caches File to  Editwizard schema Document.
      * @since MMBase-1.6.4
      */
-    private static class WizardSchemaCache extends Cache {
+    static class WizardSchemaCache extends Cache {
         WizardSchemaCache() {
             super(100);
         }
@@ -2863,7 +2768,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             return "File -> Editwizard schema Document (resolved includes/shortcuts)";
         }
 
-        synchronized public Object put(URL f, Document doc, List dependencies) {
+        synchronized public Object put(File f, Document doc, List dependencies) {
             Object retval = super.get(f);
 
             if (retval != null) {
@@ -2874,7 +2779,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         }
 
         synchronized public Object remove(Object key) {
-            URL file = (URL) key;
+            File file = (File) key;
             Entry entry = (Entry) get(file);
 
             if ((entry != null) && (entry.fileWatcher != null)) {
@@ -2886,7 +2791,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             return super.remove(key);
         }
 
-        synchronized public Document getDocument(URL key) {
+        synchronized public Document getDocument(File key) {
             Entry entry = (Entry) super.get(key);
 
             if (entry == null) {
@@ -2896,22 +2801,23 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             return entry.doc;
         }
 
-        private class Entry {
+        class Entry {
             Document doc; // the document.
-            URL file; //the file belonging to this document (key of cache)
+            File file; // the file belonging to this document (key of cache)
 
             /**
              * Cache entries must be invalidated if (one of the) file(s) changes.
              */
-            ResourceWatcher fileWatcher = new ResourceWatcher(ResourceLoader.getWebRoot()) {
-                    public void onChange(String u) {
+            FileWatcher fileWatcher = new FileWatcher(true) {
+                    protected void onChange(File f) {
                         // invalidate this cache entry
                         WizardSchemaCache.this.remove(Entry.this.file);
+
                         // stop watching files
                     }
                 };
 
-            Entry(URL f, Document doc, List dependencies) {
+            Entry(File f, Document doc, List dependencies) {
                 this.file = f;
                 this.doc = doc;
                 fileWatcher.add(f);
@@ -2919,7 +2825,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                 Iterator i = dependencies.iterator();
 
                 while (i.hasNext()) {
-                    URL ff = (URL) i.next();
+                    File ff = (File) i.next();
                     fileWatcher.add(ff);
                 }
 

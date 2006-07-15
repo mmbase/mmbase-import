@@ -1,8 +1,8 @@
-<%@page   contentType="text/html;charset=utf-8"
-%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
+<%@page   contentType="text/html;charset=utf-8" 
+%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><html>
 <head>
-  <title>Codings examples</title>
+  <title>Codings examples</title>	 
   <link rel="stylesheet" href="<mm:url page="/mmbase/style/css/mmbase.css" />" type="text/css" />
 </head>
 <body>
@@ -10,11 +10,11 @@
   <h1>Codings examples</h1>
   <p>
     These pages serve as a test-case and example on how to deal with character-encodings.
-
+    
   </p>
   <ul>
     <li>
-      Versions with use of pageEncoding (<a href="http://java.sun.com/products/jsp/syntax/1.2/syntaxref1210.html">a JSP 1.2 feature</a>):
+      Versions with use of pageEncoding (<a href="http://java.sun.com/products/jsp/syntax/1.2/syntaxref1210.html">a JSP 1.2 feature</a>): 
       <a href="<mm:url page="default8.jsp" />">UTF-8</a>, <a href="<mm:url page="default1.jsp" />">ISO-8859-1</a>,
       ( <a href="<mm:url page="default8.jsp?postprocessor=none" />">UTF-8</a>, <a href="<mm:url page="default1.jsp?postprocessor=none" />">ISO-8859-1</a> without postprocessing)
       <p>
@@ -34,14 +34,14 @@
         then. Orion > 2.0.2 will also work with UTF-8 (provided that included page is also UTF-8).
       </p>
     </li>
-    <li>     
-      <a href="<mm:url page="poster.jsp" />">Simple tests of forms (without using database)</a>. Pushing the buttons should not result in a visual change.
+    <li>
+      <a href="index.shtml">SCAN</a>       
+      <p>
+        SCAN (the `legacy' templating language of MMBase) only supports ISO-8859-1.
+      </p>
     </li>
-  </ul>
+  </ul>  
   <hr />
-  <div class="link">
-    <a href="<mm:url page=".." />"><img alt="back" src="<mm:url page="/mmbase/style/images/back.gif" />" /></a>
-  </div>
 </mm:content>
 <address><a href="mailto:Michiel.Meeuwissen@omroep.nl">miĥil'</a></address>
 </body>

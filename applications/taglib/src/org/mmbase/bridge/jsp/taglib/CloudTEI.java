@@ -17,20 +17,20 @@ import javax.servlet.jsp.tagext.TagData;
  * The TEI class belonging to the CloudTag and descendents
  *
  * @author Michiel Meeuwissen
- * @version $Id: CloudTEI.java,v 1.9 2006-07-04 12:14:57 michiel Exp $
+ * @version $Id: CloudTEI.java,v 1.5 2003-06-06 10:03:06 pierre Exp $ 
  */
 
 public class CloudTEI extends TagExtraInfo {
-
+    
     protected String cloudType() {
-        return org.mmbase.bridge.Cloud.class.getName();
+        return "org.mmbase.bridge.Cloud";
     }
-
+        
     /**
      * Implementation of TagExtraInfo return values declared here
      * should be filled at one point, in this case with the CloudTag.
      **/
-    public VariableInfo[] getVariableInfo(TagData data){
+    public VariableInfo[] getVariableInfo(TagData data){      
         VariableInfo[] variableInfo = null;
 
         String jspvar  = (String) data.getAttribute("jspvar");
@@ -41,5 +41,5 @@ public class CloudTEI extends TagExtraInfo {
         }
         return variableInfo;
     }
-
+        
 }

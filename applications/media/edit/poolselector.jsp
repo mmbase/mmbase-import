@@ -8,7 +8,7 @@
   <link href="style/streammanager.css" type="text/css" rel="stylesheet" />
   <script src="<mm:url page="style/streammanager.js.jsp?dir=&amp;fragment=&amp;" />" language="javascript"><!--help IE--></script>
 </head>
-<mm:cloud jspvar="cloud" method="asis">  
+<mm:cloud jspvar="cloud" method="asis">
 <body class="left">
   <mm:import id="current">edit</mm:import>
   <%@include file="submenu.jsp" %>
@@ -26,17 +26,11 @@
          </mm:isempty>
       </mm:write>
     </h1>
-    <mm:import id="referrer"><%=new java.io.File(request.getServletPath()).getParentFile()%>/poolselectorholder.jsp</mm:import>
-    
     <mm:field name="description" escape="p" />
-    <p>
-      <a  href="javascript:setContentFrame('<mm:url referids="referrer,config.mediaeditors_origin@superorigin" page="search_import.jsp"><mm:param name="onlyquick" value="yes" /></mm:url>');">
-        <img border="0" src="media/quick.gif" /> Quick-knip
-      </a>
-    </p>
     <h1><%=m.getString("category")%></h1>   
-    <mm:relatedcontainer searchdirs="destination,destination" path="parent,pools1,parent,pools2">
-      <mm:sortorder field="pools1.name" />
+    <ul>
+      <mm:relatedcontainer searchdirs="destination,destination" path="parent,pools1,parent,pools2">
+        <mm:sortorder field="pools1.name" />
         <mm:sortorder field="pools2.name" />
         <mm:write referid="config.mediaeditors_origin">
           <mm:isnotempty>
@@ -45,11 +39,8 @@
         </mm:write>
         <mm:context>
         <mm:related id="related">
-          <mm:node element="pools1"><mm:field id="superorigin" name="number" write="false" /></mm:node>
-          <mm:first>
-            <ul>
-          </mm:first>
           <li>
+            <mm:node element="pools1"><mm:field id="superorigin" name="number" write="false" /></mm:node>
             <mm:node element="pools2">
               <mm:maywrite>
                 <a href="javascript:setContentFrame('<mm:url referids="superorigin" page="edit.jsp"><mm:param name="origin"><mm:field name="number" /></mm:param></mm:url>');">
@@ -63,10 +54,10 @@
               </mm:maywrite>
             </mm:node>
           </li>
-          <mm:last></ul></mm:last>
         </mm:related>
         </mm:context>
       </mm:relatedcontainer>
+    </ul>
     
   </mm:node>
 </body>

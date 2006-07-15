@@ -14,9 +14,8 @@ package org.mmbase.util;
  * @see org.mmbase.util.SortedVector
  * @see org.mmbase.util.CompareInterface
  *
- * @deprecated Should implement java.util.Comparator, or should not exist, because this is java.lang.String's 'natural' order.
  * @author Rico Jansen
- * @version $Id: StringCompare.java,v 1.7 2004-09-30 16:08:39 pierre Exp $
+ * @version $Id: StringCompare.java,v 1.5 2003-03-10 11:51:13 pierre Exp $
  */
 public class StringCompare implements CompareInterface {
 

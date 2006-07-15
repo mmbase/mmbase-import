@@ -11,6 +11,8 @@ package org.mmbase.storage.util;
 
 import java.text.MessageFormat;
 
+import org.mmbase.util.logging.*;
+
 /**
  * The TypeMapping class helps translating MMBase types to storage-specific type descriptions.
  * Examples of type mappings are mappings that convert to database field types.
@@ -27,10 +29,12 @@ import java.text.MessageFormat;
  * (using the minSize/maxSize properties).
  *
  * @author Pierre van Rooden
- * @version $Id: TypeMapping.java,v 1.5 2005-01-30 16:46:35 nico Exp $
- * @since MMBase-1.7
+ * @version $Id: TypeMapping.java,v 1.3 2003-09-01 13:29:46 pierre Exp $
  */
 public class TypeMapping implements Comparable {
+
+    // logger
+    private static Logger log = Logging.getLoggerInstance(TypeMapping.class);
 
     /**
      * The expression this type should translate to.
@@ -87,27 +91,12 @@ public class TypeMapping implements Comparable {
 
     // javadoc inherited
     public boolean equals(Object o) {
-        if (o == null) return false;
-        if (o instanceof TypeMapping) {
-            TypeMapping tm = (TypeMapping) o;
-            // A typemapping equals another type-mapping when the one contains the other. 
-            // Because of this the 'fixed' size type-mappings (created DatabaseStorageManager) are found by indexOf of the typeMappings Collection of DatabaseStorageManager.            
-            // In this typeMappings Collection there are normally only 'ranged' of sizes (as defined in th XML)
-            return (name == null ? tm.name == null : name.equals(tm.name)) &&
-               (
-                ( (minSize >= tm.minSize || (tm.minSize <= 0)) && (maxSize <= tm.maxSize || (tm.maxSize <= 0)) )  // contained by.
-                ||
-                ( (tm.minSize >= minSize || (minSize <= 0))    && (tm.maxSize <= maxSize || (maxSize <= 0)) )     // containing
-                )
-                ;   
-        } else {
-            return false;
-        }
-    }
-    // javadoc inherited
-    public int hashCode() {
-        // because of the complicated equals implementation minSize and maxSize cannot be present in hashCode
-        return name == null ? 0 : name.hashCode();
+        return o instanceof TypeMapping &&
+               name.equals(((TypeMapping)o).name) &&
+               (( (minSize >= ((TypeMapping)o).minSize || (((TypeMapping)o).minSize <= 0)) &&
+                  (maxSize <= ((TypeMapping)o).maxSize || (((TypeMapping)o).maxSize <= 0)) ) ||
+                ( (((TypeMapping)o).minSize >= minSize || (minSize <= 0)) &&
+                  (((TypeMapping)o).maxSize <= maxSize || (maxSize <= 0)) ));
     }
 
     /**

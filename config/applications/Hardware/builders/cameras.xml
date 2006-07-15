@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<builder name="cameras" maintainer="mmbase.org" version="0" extends="object">
+<!-- @version $Id: cameras.xml,v 1.2 2003-04-10 15:18:13 pierre Exp $ -->
+<!-- <status>
+		what is the status of this builder options : active or inactive
+-->
+<status>active</status>
+
+<!-- <classfile>
+		This is a optional tag, it names the classfile that allows you to add
+		support routines or changes them on a per builder base. For example
+		images has routines to image support etc etc.
+
+		possible values : Dummy or disabled tag makes mmbase use the default setup
+
+				short name : Urls will start class : org.mmbase.module.builders.Urls.class
+
+				long name : nl.vpro.mmbase.module.builders.Urls will start that class
+-->
+<classfile>Cameras</classfile>
+
+<searchage>1000</searchage>
+
+<!-- <names>
+		names defines the different names used in user visible parts, singular for
+		for talking about 1 object (Url,Person) and plurar for talking about multiple
+		<Urls, people).
+>-->
+<names>
+		<!-- singles per language as defined by ISO 639 -->
+		<singular xml:lang="en">Camera</singular>
+		<singular xml:lang="nl">Kamera</singular>
+		<!-- multiple per language as defined by ISO 639 -->
+		<plural xml:lang="en">Cameras</plural>
+		<plural xml:lang="nl">Kameras</plural>
+</names>
+
+<!-- <descriptions>
+		small description of the builder for human reading
+-->
+<descriptions>
+<!-- descriptions per language as defined by ISO 639  -->
+		<description xml:lang="en">A camera hardware device</description>
+		<description xml:lang="nl">Een kamera definitie (aan MMBase gekoppeld apparaat)</description>
+</descriptions>
+
+<!-- <properties>
+you can define properties to be used by the classfile (if used) it uses
+a key/value system. Its a optional tag.
+-->
+<properties>
+</properties>
+
+<!-- <fieldlist>
+		 defines the different fields in this object, be carefull the order is important
+		once defined keep them in the same order.
+		If you use number and owner (the 2 default fields, please check the docs for this)
+-->
+<fieldlist>
+		<!-- POS 3 : <field> 'name'  -->
+				 <field>
+				<descriptions>
+					<!-- descriptions per language as defined by ISO 639  -->
+					<description xml:lang="en">Name of the camera</description>
+					<description xml:lang="nl">Naam van de kamera</description>
+				</descriptions>
+				<!-- gui related -->
+				<gui>
+						<guiname xml:lang="en">Name</guiname>
+						<guiname xml:lang="nl">Naam</guiname>
+						<guitype>string</guitype>
+				</gui>
+				<!-- editor related  -->
+				<editor>
+						<positions>
+								<!-- position in the input area of the editor -->
+								<input>1</input>
+								<!-- position in list area of the editor -->
+								<list>1</list>
+								<!-- position in search area of the editor -->
+								<search>1</search>
+						</positions>
+				</editor>
+				<!-- database related  -->
+				<db>
+						<!-- name of the field in the database -->
+						<name>name</name>
+						<!-- MMBase datatype and demands on it -->
+						<type state="persistent" size="32" notnull="true" key="false">STRING</type>
+				</db>
+		</field>
+
+		<!-- POS 4 : <field> 'location'  -->
+				 <field>
+				<descriptions>
+					<!-- descriptions per language as defined by ISO 639  -->
+					<description xml:lang="en">Location of the camera</description>
+					<description xml:lang="nl">Lokatie van de kamera</description>
+				</descriptions>
+				<!-- gui related -->
+				<gui>
+						<guiname xml:lang="en">Location</guiname>
+						<guiname xml:lang="nl">Lokatie</guiname>
+						<guitype>string</guitype>
+				</gui>
+				<!-- editor related  -->
+				<editor>
+						<positions>
+								<!-- position in the input area of the editor -->
+								<input>2</input>
+								<!-- position in list area of the editor -->
+								<list>2</list>
+								<!-- position in search area of the editor -->
+								<search>2</search>
+						</positions>
+				</editor>
+				<!-- database related  -->
+				<db>
+						<!-- name of the field in the database -->
+						<name>location</name>
+						<!-- MMBase datatype and demands on it -->
+						<type state="persistent" size="32" notnull="false" key="false">STRING</type>
+				</db>
+		</field>
+
+		<!-- POS 5 : <field> 'directory'  -->
+				 <field>
+				<descriptions>
+					<!-- descriptions per language as defined by ISO 639  -->
+					<description xml:lang="en">Directory where the camera stores its images</description>
+					<description xml:lang="nl">Folder waar de kamera zijn afbeeldingen bewaard</description>
+				</descriptions>
+				<!-- gui related -->
+				<gui>
+						<guiname xml:lang="en">Directory</guiname>
+						<guiname xml:lang="nl">Folder</guiname>
+						<guitype>string</guitype>
+				</gui>
+				<!-- editor related  -->
+				<editor>
+						<positions>
+								<!-- position in the input area of the editor -->
+								<input>3</input>
+								<!-- position in list area of the editor -->
+								<list>3</list>
+								<!-- position in search area of the editor -->
+								<search>3</search>
+						</positions>
+				</editor>
+				<!-- database related  -->
+				<db>
+						<!-- name of the field in the database -->
+						<name>directory</name>
+						<!-- MMBase datatype and demands on it -->
+						<type state="persistent" size="200" notnull="false" key="false">STRING</type>
+				</db>
+		</field>
+
+		<!-- POS 6 : <field> 'class'  -->
+				 <field>
+				<descriptions>
+					<!-- descriptions per language as defined by ISO 639  -->
+					<description xml:lang="en">Class used to control the camera</description>
+					<description xml:lang="nl">Klasse voor het aansturen van de kamera</description>
+				</descriptions>
+				<!-- gui related -->
+				<gui>
+						<guiname xml:lang="en">Class</guiname>
+						<guiname xml:lang="nl">Klasse</guiname>
+						<guitype>string</guitype>
+				</gui>
+				<!-- editor related  -->
+				<editor>
+						<positions>
+								<!-- position in the input area of the editor -->
+								<input>4</input>
+								<!-- position in list area of the editor -->
+								<list>4</list>
+								<!-- position in search area of the editor -->
+								<search>4</search>
+						</positions>
+				</editor>
+				<!-- database related  -->
+				<db>
+						<!-- name of the field in the database -->
+						<name>class</name>
+						<!-- MMBase datatype and demands on it -->
+						<type state="persistent" size="60" notnull="false" key="false">STRING</type>
+				</db>
+		</field>
+
+</fieldlist>
+
+</builder>

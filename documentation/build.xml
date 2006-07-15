@@ -1,10 +1,7 @@
-<!--
-  $Id: build.xml,v 1.29 2006-06-24 08:37:06 michiel Exp $
--->
 <project name="MMBase-Documentation" default="documentation" basedir=".">
 
   <!-- ===================== Initialize Property Values =================== -->
-
+  
   <!-- Copy "build.properties.default" to "build.properties" if -->
   <!-- you want to customize the build                          -->
 
@@ -34,11 +31,10 @@
   <property name="release.lib.dir"      value="${web.dir}/lib"/>
   <property name="compile.lib.dir"      value="${build.dir}/lib"/>
   <property name="optional.lib.dir"     value="${source.dir}" /> <!-- just a dir that does not contain libs..-->
-  <property name="applications.dir"     value="${source.dir}/applications" />
   <property name="mmbase.jar"           value="${build.dir}/mmbase.jar"/>
 
 
-  <!-- project defaults -->
+  <!-- project defaults -->  
   <property file="build.properties.default"/>
 
   <!-- documentation related settings -->
@@ -52,10 +48,10 @@
   <!-- try xhtml/chunk.xsl (in build.properties) if you like chunks -->
   <!-- property name="docbook.stylesheet" value="xhtml/chunk.xsl" /-->
   <property name="docbook.stylesheet" value="xhtml/docbook.xsl" />
-  <property name="documentation.docbook.html.stylesheet"
+  <property name="documentation.docbook.html.stylesheet" 
             value="${download.dir}/${docbook-xsl.version}/${docbook.stylesheet}" />
-  <property name="documentation.docbook.fo.stylesheet"
-            value="${download.dir}/${docbook-xsl.version}/fo/docbook.xsl" />
+  <property name="documentation.docbook.fo.stylesheet" 
+            value="${download.dir}/${docbook-xsl.version}/fo/docbook.xsl" />  
 
 
   <!-- =============== Init  ============================================= -->
@@ -70,10 +66,10 @@
   <!-- generation will only occur when either a documentation file has     -->
   <!-- changed (or been added), or if the stylefile has changed            -->
   <target name="style.prepare">
-    <copy tofile="${documentation.build.dir}/newstyle.xslt"
+    <copy tofile="${documentation.build.dir}/newstyle.xslt" 
           file="${documentation.src.dir}/style/docbook2xhtml.xslt" />
-    <replace file="${documentation.build.dir}/newstyle.xslt"
-             token="[BASESTYLESHEET]"
+    <replace file="${documentation.build.dir}/newstyle.xslt" 
+             token="[BASESTYLESHEET]" 
              value="${documentation.docbook.html.stylesheet}" />
     <condition property="stylechanged">
       <not>
@@ -115,43 +111,28 @@
   <!-- this is documentation that hasn't been converted to docbook -->
   <!-- (yet)                                                       -->
   <target name="documentation.static.copy">
-    <!--
     <copy todir="${documentation.dest.dir}/" >
       <fileset dir="${mmbase.html.documentation.dir}" />
     </copy>
-    -->
   </target>
 
-  <target name="applications.documentation.copy"
-    description="Copies documentation from applications to documentation directory">
-    <copy todir="${documentation.src.dir}/applications">
-      <mapper type="regexp" from="(.*)/documentation(.*)" to="\1\2" />
-      <fileset dir="${applications.dir}/">
-        <include name="**"/>
-      </fileset>
-    </copy>
-  </target>
 
   <target name="lib.compile">
-    <ant inheritAll="false" dir="${source.dir}" target="lib.compile">
-      <property name="build.dir"        value="${build.dir}" />
-      <property name="download.dir"     value="${download.dir}" />
-    </ant>
+    <ant inheritAll="false" dir="${source.dir}" target="lib.compile" />
   </target>
 
   <!-- compile the XSLTransformer -->
 
-  <target name="xsltransformer" depends="jar,lib.compile">
+  <target name="xsltransformer" depends="lib.compile">
     <mkdir dir="${build.dir}/classes" />
     <javac srcdir="${source-src.dir}"
            destdir="${build.dir}/classes"
            depend="true"
            debug="${debug}"
-           source="1.4"
            optimize="${optimize}"
            deprecation="${deprecation}">
       <include name="org/mmbase/util/XSLTransformer.java" />
-      <classpath>
+      <classpath>        
         <fileset dir="${compile.lib.dir}">
           <include name="*.jar"/>
           <include name="*.zip"/>
@@ -173,7 +154,7 @@
   <!-- Perform docbook2html conversion                                                  -->
   <!-- ================================================================================ -->
   <target name="documentation.html"
-          depends="documentation.resources,applications.documentation.copy,xsltransformer,download"
+          depends="documentation.resources,xsltransformer,download"
           description="Create HTML documentation from the DocBook sources">
 
     <echo message="${documentation.dest.dir}" />
@@ -184,7 +165,7 @@
       <jvmarg value="-Djava.endorsed.dirs=${build.dir}/lib" />
       <!-- jvmarg value="-Dusecache=false" /-->
       <jvmarg value="-mx200m" />
-      <classpath>
+      <classpath>        
         <pathelement path="${build.dir}/classes" />
         <fileset dir="${compile.lib.dir}">
           <include name="*.jar"/>
@@ -197,11 +178,10 @@
       <arg value="${documentation.dest.dir}" />
       <arg value="exclude=build.xml" />
       <arg value="exclude=build" />
-      <arg value="exclude=templates" />
     </java>
   </target>
 
-
+ 
 
   <!-- ================================================================================ -->
   <!-- Perform docbook2pdf conversion                                                   -->
@@ -247,7 +227,6 @@
       <arg value="extension=fo" />
       <arg value="exclude=build" />
       <arg value="exclude=build.xml" />
-      <arg value="exclude=templates" />
       <arg value="paper.type=A4" />
     </java>
 
@@ -269,9 +248,9 @@
     <taskdef name="fop"
              classname="org.apache.fop.tools.anttasks.Fop"
              classpathref="fop.classpath"/>
-
-    <!-- transform fo-xml into pdf -->
-    <fop format="application/pdf" outdir="${documentation.dest.dir}"
+    
+    <!-- transform fo-xml into pdf --> 
+    <fop format="application/pdf" outdir="${documentation.dest.dir}" 
          messagelevel="info">
       <fileset dir="${documentation.temp.dir}">
         <include name="**/*.fo"/>
@@ -291,10 +270,10 @@
   <!-- ================================================================================ -->
   <!-- Main documentation Target                                                        -->
   <!-- ================================================================================ -->
-  <target name="documentation" depends="javadocs,documentation.html,documentation.static.copy">
+  <target name="documentation" depends="documentation.html,documentation.static.copy"> <!-- ,documentation.pdf"-->
     <!-- delete dir="${documentation.temp.dir}"/ -->
   </target>
-
+ 
   <!-- clean everything -->
   <target name="clean">
     <delete dir="${documentation.dest.dir}"/>
@@ -303,19 +282,12 @@
     <delete file="${documentation.build.dir}/newstyle.xslt"/>
   </target>
 
-  <!-- ================================================================================ -->
-  <!-- Generate javadocs                                                                -->
-  <!-- ================================================================================ -->
 
-  <target name="javadocs">
-    <ant dir="${source.dir}" target="javadocs">
-    </ant>
-  </target>
 
   <!-- ================================================================================ -->
   <!-- Download or build the required binary packages                                   -->
   <!-- ================================================================================ -->
-  <target name="download" depends="proxyflags"
+  <target name="download" depends="proxyflags" 
           description="Download binary packages" >
     <mkdir dir="${download.dir}" />
 
@@ -331,14 +303,14 @@
       <param name="sourcefile" value="${fop.loc}"/>
       <param name="destfile" value="${fop.home}"/>
     </antcall>
-
+    
     <echo message="jai" />
     <antcall target="downloadbz2">
       <param name="sourcefile" value="${jai.loc}"/>
       <param name="destfile" value="${jai.home}"/>
       <param name="destdir" value="${jai.home}"/>
     </antcall>
-
+    
   </target>
 
   <target name="proxyflags" depends="init">
@@ -351,7 +323,7 @@
   <target name="setproxy"  if="useproxy">
     <taskdef name="setproxy"
       classname="org.apache.tools.ant.taskdefs.optional.net.SetProxy" />
-    <setproxy proxyhost="${proxy.host}" proxyport="${proxy.port}"/>
+    <setproxy proxyhost="${proxy.host}" proxyport="${proxy.port}"/> 
     <echo message="Using ${proxy.host}:${proxy.port} to download ${sourcefile}"/>
   </target>
 
@@ -395,13 +367,6 @@
     <mkdir dir="${destdir}" />
     <unzip src="${download.dir}/file.zip" dest="${destdir}"/>
     <delete file="${download.dir}/file.zip"/>
-  </target>
-
-  <!-- for some reason the documentation depends on the mmbase.jar, at least
-  	the target xsltransformer i believe -->
-  <target name="jar">
-    <ant dir="${source.dir}" target="jar">
-    </ant>
   </target>
 
 </project>

@@ -13,13 +13,11 @@ package org.mmbase.util.images;
  * Represents the `dimension' of an image, i.e. its height and width.
  *
  * @author Michiel Meeuwissen
- * @since MMBase-1.7.4
+ * @since MMBase-1.8
  */
 
 
 public class Dimension {
-
-    public static final Dimension UNDETERMINED = new Dimension(-1, -1);
     protected int x;
     protected int y;
 
@@ -58,13 +56,6 @@ public class Dimension {
     }
     public int hashCode() {
         return (x + 1) * (y + 1);
-    }
-    /**
-     * Returns true of both x and y > 0.
-     * @since MMBase-1.8.1
-     */
-    public boolean valid() {
-        return x > 0 && y > 0;
     }
 
 }

@@ -13,14 +13,17 @@ package org.mmbase.bridge.util.xml;
 import org.mmbase.bridge.Cloud;
 import org.w3c.dom.Document;
 
+import org.mmbase.util.logging.*;
+
 /**
  * Tries to convert a given xml document to another document, using the Cloud if nessecary
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: DocumentConverter.java,v 1.4 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: DocumentConverter.java,v 1.3 2004-02-26 22:09:28 michiel Exp $
  */
 public  class DocumentConverter {
+    private static Logger log = Logging.getLoggerInstance(DocumentConverter.class);
     
     public static DocumentConverter getDocumentConverter(String requiredDocType) {
         return new DocumentConverter();

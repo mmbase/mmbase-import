@@ -22,10 +22,11 @@ import java.io.*;
  *
  * @since MMBase 1.7
  * @author Kees Jongenburger <keesj@dds.nl>
- * @version $Id: IECompatibleJpegInputStream.java,v 1.8 2006-06-27 14:36:38 johannes Exp $
+ * @version $Id: IECompatibleJpegInputStream.java,v 1.3 2004-04-07 14:11:08 keesj Exp $
  */
 public class IECompatibleJpegInputStream extends FilterInputStream implements Runnable {
 
+    private Thread converter;
     private PipedInputStream pis;
     private PipedOutputStream pos;
 
@@ -40,8 +41,14 @@ public class IECompatibleJpegInputStream extends FilterInputStream implements Ru
         try {
             pis.connect(pos);
         } catch (IOException ioe) {
-        }
-        ThreadPools.filterExecutor.execute(this);
+            System.out.println(ioe);
+            ioe.printStackTrace();
+        };
+
+        // I don't know if it's to heavy to start a thread
+        // maybe just calling the run method is enough(proivded that the buffers are big enough)..
+        converter = new Thread(this, "IECompatibleJpegInputStream");
+        converter.start();
     }
 
     public void run() {
@@ -92,9 +99,8 @@ public class IECompatibleJpegInputStream extends FilterInputStream implements Ru
                 }
             } else {
                 int c = 0;
-                byte[] buf = new byte[1024];
-                while ((c = in.read(buf)) != -1) {
-                    pos.write(buf, 0, c);
+                while ((c = in.read()) != -1) {
+                    pos.write(c);
                 }
             }
             in.close();
@@ -109,6 +115,8 @@ public class IECompatibleJpegInputStream extends FilterInputStream implements Ru
 
     public void close() throws IOException {
         pis.close();
+        converter.interrupt();
+        converter = null;
         super.close();
     }
 
@@ -132,16 +140,15 @@ public class IECompatibleJpegInputStream extends FilterInputStream implements Ru
      * Util method that uses the IECompatibleInputStream to convert a byte array
      * if the content is not a jpeg the content is not affected
      * @param in the byte array
-     * @return the converted (ie compatible) jpeg
+     * @returnthe converted (ie compatible) jpeg
      */
     public static byte[] process(byte[] in) {
         try {
             InputStream inputStream = new IECompatibleJpegInputStream(new ByteArrayInputStream(in));
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             int c = 0;
-            byte[] buf = new byte[1024];
-            while ((c = inputStream.read(buf)) != -1) {
-                out.write(buf, 0, c);
+            while ((c = inputStream.read()) != -1) {
+                out.write(c);
             }
             out.flush();
             return out.toByteArray();

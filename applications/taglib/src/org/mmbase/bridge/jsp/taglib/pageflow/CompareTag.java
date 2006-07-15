@@ -12,16 +12,12 @@ package org.mmbase.bridge.jsp.taglib.pageflow;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.Condition;
 import org.mmbase.bridge.jsp.taglib.WriterReferrer;
-
-import org.mmbase.bridge.Node;
-import org.mmbase.util.Casting;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import java.util.*;
-import java.util.regex.Pattern;
 import java.math.BigDecimal;
 
 /**
@@ -29,25 +25,21 @@ import java.math.BigDecimal;
  * variable equals a certain String value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CompareTag.java,v 1.43 2005-12-05 14:19:25 michiel Exp $
+ * @version $Id: CompareTag.java,v 1.35 2004-03-29 16:37:33 michiel Exp $
  */
 
 public class CompareTag extends PresentTag implements Condition, WriterReferrer {
 
-    protected static final Logger log = Logging.getLoggerInstance(CompareTag.class);
+    private static final Logger log = Logging.getLoggerInstance(CompareTag.class);
 
     private Attribute value    = Attribute.NULL;
     private Attribute valueSet = Attribute.NULL;
-    private Attribute regexp   = Attribute.NULL;
     public void setValue(String v) throws JspTagException {
         value =  getAttribute(v);
     }
 
     public void setValueset(String vs) throws JspTagException {
         valueSet =  getAttribute(vs);
-    }
-    public void setRegexp(String r) throws JspTagException {
-        regexp =  getAttribute(r);
     }
 
     private Attribute referid2 = Attribute.NULL;
@@ -73,19 +65,14 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
         if (referid2 == Attribute.NULL) {
             throw new JspTagException("Attribute 'value' or 'referid2' must be indicated");
         }
-        Object o =  getObject(referid2.getString(this));
-        if (o instanceof Node) {
-            return "" + ((Node)o).getNumber();
-        } else {
-            return o;
-        }
-        
+        return getObject(referid2.getString(this));
+
     }
 
 
     public int doStartTag() throws JspTagException {
         Object compare1;
-        
+
         // find compare1
         if (getReferid() == null) {
             compare1 =  findWriter().getWriterValue();
@@ -95,103 +82,79 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
         }
         if (compare1 instanceof Boolean) {
             compare1 = compare1.toString();
-        } else if (compare1 instanceof Date) {
-            compare1 = Casting.toInteger(compare1);
         } else if (compare1 instanceof List) {
-            compare1 = Casting.toString(compare1);
-        } else if (compare1 instanceof Node) {
-            compare1 = Casting.toString(compare1);
-        } else if (compare1 instanceof byte[]) {
-            compare1 = Casting.toString(compare1);
-        } else if (compare1 instanceof org.apache.commons.fileupload.FileItem) {
-            compare1 = Casting.toString(compare1);
+            compare1 = org.mmbase.util.Casting.toString(compare1);
         }
 
         if (! (compare1 instanceof Comparable)) {
-            throw new JspTagException("Cannot compare variable '" + getReferid() + "' of type " + compare1.getClass().getName());
+            throw new JspTagException("Cannot compare variable of type " + compare1.getClass().getName());
         }
 
-        boolean result = false;
-        if (regexp != Attribute.NULL) {
-            if (value != Attribute.NULL || valueSet != Attribute.NULL) {
-                throw new JspTagException("Cannot use 'regexp' attribute in combination with 'value' or 'valueSet' attributes");
-            }
-            Pattern pattern = Pattern.compile (regexp.getString(this));
-            result = pattern.matcher("" + compare1).matches();
-        } else {
-            // find compare2-set.
-            Set compareToSet = new HashSet();
-            if (value != Attribute.NULL) {
-                if (valueSet != Attribute.NULL) {
-                    throw new JspTagException("Can specify both 'value' and 'valueset' attributes");
-                }
-                if (referid2 != Attribute.NULL) {
-                    throw new JspTagException("Cannot indicate 'referid2' and 'value' attributes both");
-                }
-                compareToSet.add(value.getValue(this));
-            } else if (valueSet != Attribute.NULL) {
-                if (referid2 != Attribute.NULL) {
-                    throw new JspTagException("Cannot indicate 'referid2' and 'valueSet' attributes both");
-                }
-                compareToSet.addAll(valueSet.getList(this));
-            } else {
-                compareToSet.add(getCompare2());
-            }
-            
-            Iterator i = compareToSet.iterator();
-            
-            
-            if (compare1 instanceof Number) {
-                compare1 = new BigDecimal(compare1.toString()); 
-                while (i.hasNext()) {
-                    Object compare2 = i.next();         
-                    if (compare2 instanceof Date) {
-                        compare2 = Casting.toInteger(compare2);
-                    }
 
-                    if (compare2 instanceof String) {
-                        if ("".equals(compare2)) { // do something reasonable in IsEmpty
-                            compare2 = new BigDecimal("0");
-                        } else {
-                            compare2 = new BigDecimal((String)compare2);
-                        }
-                    } else if (compare2 instanceof Number) {
-                        compare2 = new BigDecimal(compare2.toString());
-                    } else if (compare2 instanceof Node) {
-                        compare2 = new BigDecimal(((Node)compare2).getNumber());
+        // find compare2-set.
+        Set compareToSet = new HashSet();
+        if (value != Attribute.NULL) {
+            if (valueSet != Attribute.NULL) {
+                throw new JspTagException("Can specify both 'value' and 'valueset' attributes");
+            }
+            if (referid2 != Attribute.NULL) {
+                throw new JspTagException("Cannot indicate 'referid2' and 'value' attributes both");
+            }
+            compareToSet.add(value.getValue(this));
+        } else if (valueSet != Attribute.NULL) {
+            if (referid2 != Attribute.NULL) {
+                throw new JspTagException("Cannot indicate 'referid2' and 'valueSet' attributes both");
+            }
+            compareToSet.addAll(valueSet.getList(this));
+        } else {
+            compareToSet.add(getCompare2());
+        }
+
+        Iterator i = compareToSet.iterator();
+
+
+        boolean result = false;
+
+        if (compare1 instanceof Number) {
+            compare1 = new BigDecimal(compare1.toString()); 
+            while (i.hasNext()) {
+                Object compare2 = i.next();         
+                if (compare2 instanceof String) {
+                    if ("".equals(compare2)) { // do something reasonable in IsEmpty
+                        compare2 = new BigDecimal(0);
+                    } else {
+                        compare2 = new BigDecimal((String)compare2);
                     }
-                    
-                    if (doCompare((Comparable)compare1, (Comparable)compare2)) {
-                        result = true; 
-                        break;
-                        
-                    }
-                    
+                } else if (compare2 instanceof Number) {
+                    compare2 = new BigDecimal(compare2.toString());
                 }
-            } else { 
-                while (i.hasNext()) {
-                    Object compare2 = i.next();         
-                    if (compare2 instanceof Date) {
-                        compare2 = Casting.toInteger(compare2);
+
+                if (doCompare((Comparable)compare1, (Comparable)compare2)) {
+                    result = true; 
+                    break;
+
+                }
+                
+            }
+        } else { 
+            while (i.hasNext()) {
+                Object compare2 = i.next();         
+                if (compare2 instanceof Number) {
+                    compare2 = new BigDecimal(compare2.toString()); 
+                    Number compare1n;
+                    if ("".equals(compare1)) { // do something reasonable in IsEmpty
+                        compare1n = new BigDecimal(0);
+                    } else {
+                        compare1n = new BigDecimal((String)compare1);
                     }
-                    if (compare2 instanceof Number) {
-                        compare2 = new BigDecimal(compare2.toString()); 
-                        Number compare1n;
-                        if ("".equals(compare1)) { // do something reasonable in IsEmpty
-                            compare1n = new BigDecimal("0");
-                        } else {
-                            compare1n = new BigDecimal((String)compare1);
-                        }
-                        if (doCompare((Comparable)compare1n, (Comparable)compare2)) {
-                            result = true;
-                            break;
-                        }
-                    } else { // both compare1 and compare2 are not Number, simply compare then
-                        if (! (compare2 instanceof Comparable)) compare2 = Casting.toString(compare2);
-                        if (doCompare((Comparable)compare1, (Comparable)compare2)) {
-                            result = true;
-                            break;
-                        }
+                    if (doCompare((Comparable)compare1n, (Comparable)compare2)) {
+                        result = true;
+                        break;
+                    }
+                } else { // both compare1 and compare2 are not Number, simply compare then
+                    if (doCompare((Comparable)compare1, (Comparable)compare2)) {
+                        result = true;
+                        break;
                     }
                 }
             }
@@ -201,5 +164,7 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
         } else {
             return SKIP_BODY;
         }
+
+       
     }
 }

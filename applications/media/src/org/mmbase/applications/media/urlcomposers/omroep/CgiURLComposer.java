@@ -1,36 +1,42 @@
 /*
-
+  
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
-
+  
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
-
+  
 */
 
 package org.mmbase.applications.media.urlcomposers.omroep;
 import org.mmbase.applications.media.Format;
 import org.mmbase.applications.media.urlcomposers.RamURLComposer;
 import org.mmbase.applications.media.urlcomposers.RealURLComposer;
+import org.mmbase.module.core.*;
 
+import java.util.*;
+import java.net.*;
+import java.text.*;
 
 
 /**
  * An example. Produces an URL to the omroep cgi-scripts (for real and wm)
  *
  * @author Michiel Meeuwissen
- * @version $Id: CgiURLComposer.java,v 1.10 2006-04-12 00:01:21 michiel Exp $
+ * @version $Id: CgiURLComposer.java,v 1.7 2004-01-07 20:54:26 michiel Exp $
  * @since MMBase-1.7
  */
 public class CgiURLComposer extends RamURLComposer {
+
 
     /**
      * These scripts actually wrap the source in a ram or wmp
      */
     public Format getFormat() {
         Format format = super.getFormat();
-        if (format.isReal())  return Format.RAM;
-        if (format.isWindowsMedia()) return Format.WMP;
+        if (format == Format.RM)  return Format.RAM;
+        if (format == Format.RA)  return Format.RAM;
+        if (format == Format.ASF) return Format.WMP;                
         return format;
     }
 
@@ -38,7 +44,7 @@ public class CgiURLComposer extends RamURLComposer {
      * Host must be cgi.omroep.nl script.
      */
     public boolean canCompose() {
-        return provider.getStringValue("host").equals("cgi.omroep.nl")  &&
+        return provider.getStringValue("host").equals("cgi.omroep.nl")  && 
             (provider.getStringValue("rootpath").charAt(0) != '%');
     }
 
@@ -52,7 +58,7 @@ public class CgiURLComposer extends RamURLComposer {
             // cgi script does not work without title (for wm)?
             buff.append('?').append("title=geen_beschrijving");
         }
-        return buff;
+        return buff;            
     }
 
 }

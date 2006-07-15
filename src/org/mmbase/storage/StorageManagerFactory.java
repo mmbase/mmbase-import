@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage;
 
+import java.io.InputStream;
 import java.util.*;
 import org.xml.sax.InputSource;
 
@@ -16,13 +17,11 @@ import org.mmbase.storage.search.SearchQueryHandler;
 import org.mmbase.storage.util.*;
 
 import org.mmbase.module.core.*;
-import org.mmbase.clustering.ChangeManager;
-import org.mmbase.clustering.MMBaseChangeInterface;
-import org.mmbase.core.CoreField;
+import org.mmbase.module.corebuilders.FieldDefs;
 
-import org.mmbase.util.ResourceLoader;
 import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.util.transformers.Transformers;
+
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -35,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.27 2006-07-15 10:58:36 michiel Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.7.2.2 2005-02-03 09:14:36 michiel Exp $
  */
 public abstract class StorageManagerFactory {
 
@@ -66,11 +65,10 @@ public abstract class StorageManagerFactory {
      */
     protected ChangeManager changeManager;
 
-
-    /**
-     * The map with disallowed fieldnames and (if given) alternates
+    /** The map with disallowed fieldnames and (if given) alternates
+     *
      */
-    protected final SortedMap disallowedFields = new TreeMap(String.CASE_INSENSITIVE_ORDER);
+    protected SortedMap disallowedFields;
 
     /**
      * The query handler to use with this factory.
@@ -95,7 +93,6 @@ public abstract class StorageManagerFactory {
      * @see #getGetSurrogator()
      */
     protected CharTransformer getSurrogator = null;
-
 
     /**
      * The default storage factory class.
@@ -138,7 +135,8 @@ public abstract class StorageManagerFactory {
      * @throws StorageException if the StorageManagerFactory class cannot be located, accessed, or instantiated,
      *         or when something went wrong during configuration of the factory
      */
-    static public StorageManagerFactory newInstance() throws StorageException {
+    static public StorageManagerFactory newInstance()
+                  throws StorageException {
         // determine the default mmbase module.
         return newInstance(MMBase.getMMBase());
     }
@@ -151,13 +149,12 @@ public abstract class StorageManagerFactory {
      * @throws StorageError when something went wrong during configuration of the factory, or when the storage cannot be accessed
      */
     protected final void init(MMBase mmbase) throws StorageError {
-        log.service("initializing Storage Manager factory " + this.getClass().getName());
         this.mmbase = mmbase;
-        attributes    = Collections.synchronizedMap(new HashMap());    // ConcurrentHashMap not possible because null-values are put (TODO)
-        typeMappings  = Collections.synchronizedList(new ArrayList()); // CopyOnWriteArrayList not possible because Collections.sort is done (TODO)
-        changeManager = new ChangeManager();
+        attributes = Collections.synchronizedMap(new HashMap());
+        disallowedFields = new TreeMap(String.CASE_INSENSITIVE_ORDER);
+        typeMappings = Collections.synchronizedList(new ArrayList());
+        changeManager = new ChangeManager(mmbase);
         try {
-            log.debug("loading Storage Manager factory " + this.getClass().getName());
             load();
         } catch (StorageException se) {
             // pass exceptions as a StorageError to signal a serious (unrecoverable) error condition
@@ -205,7 +202,7 @@ public abstract class StorageManagerFactory {
      * The specified parameter may be an actual SearchQueryHandler object, or it may be a utility class.
      * For instance, the database factory expects an org.mmbase.storage.search.implentation.database.SQLHandler object,
      * which is used as a parameter in the construction of the actual SearchQueryHandler class.
-     * @param data the object to instantuate a SearchQueryHandler object with
+     * @param handlerClass the class to instantuate teh object with
      */
     abstract protected SearchQueryHandler instantiateQueryHandler(Object data);
 
@@ -237,8 +234,7 @@ public abstract class StorageManagerFactory {
 
         // get attributes
         setAttributes(reader.getAttributes());
-
-
+        
         // get disallowed fields, and add these to the default list
         disallowedFields.putAll(reader.getDisallowedFields());
 
@@ -255,7 +251,7 @@ public abstract class StorageManagerFactory {
             }
         }
 
-        log.service("get type mappings");
+        // get type mappings
         typeMappings.addAll(reader.getTypeMappings());
         Collections.sort(typeMappings);
 
@@ -268,7 +264,6 @@ public abstract class StorageManagerFactory {
         } else if (queryHandlerClasses.size() == 0) {
             throw new StorageConfigurationException("No SearchQueryHandler class specified, and no default available.");
         }
-        log.service("Found queryhandlers " + queryHandlerClasses);
         // instantiate handler(s)
         Iterator iHandlers = reader.getSearchQueryHandlerClasses().iterator();
         Object handler = null;
@@ -283,15 +278,18 @@ public abstract class StorageManagerFactory {
         // initialize query handler.
         queryHandler = instantiateQueryHandler(handler);
 
-        String surr = (String) getAttribute(Attributes.SET_SURROGATOR);
-        if (surr != null && ! surr.equals("")) {
-            setSurrogator = Transformers.getCharTransformer(surr, null, "StorageManagerFactory#load", false);
+        {
+            String surr = (String) getAttribute(Attributes.SET_SURROGATOR);
+            if (surr != null && ! surr.equals("")) {
+                setSurrogator = Transformers.getCharTransformer(surr, null, "StorageManagerFactory#load", false);
+            }
+            
+            surr = (String) getAttribute(Attributes.GET_SURROGATOR);
+            if (surr != null && ! surr.equals("")) {
+                getSurrogator = Transformers.getCharTransformer(surr, null, "StorageManagerFactory#load", false);
+            }
         }
 
-        surr = (String) getAttribute(Attributes.GET_SURROGATOR);
-        if (surr != null && ! surr.equals("")) {
-            getSurrogator = Transformers.getCharTransformer(surr, null, "StorageManagerFactory#load", false);
-        }
     }
 
     /**
@@ -340,18 +338,16 @@ public abstract class StorageManagerFactory {
      */
     public StorageReader getDocumentReader() throws StorageException {
         // determine storage resource.
-        String storagePath = mmbase.getInitParameter("storage");
+        String storagepath = mmbase.getInitParameter("storage");
         // use the parameter set in mmbaseroot if it is given
-        if (storagePath != null) {
-            try {
-                InputSource resource = ResourceLoader.getConfigurationRoot().getInputSource(storagePath);
-                if (resource == null) {
-                    throw new StorageConfigurationException("Storage resource '" + storagePath + "' not found.");
-                }
-                return new StorageReader(this, resource);
-            } catch (java.io.IOException ioe) {
-                throw  new StorageConfigurationException(ioe);
+        if (storagepath != null) {
+            InputStream resource = this.getClass().getResourceAsStream(storagepath);
+            if (resource == null) {
+                throw new StorageConfigurationException("Storage resource '"+storagepath+"' not found.");
             }
+            InputSource in = new InputSource(resource);
+            in.setSystemId("resource://" + storagepath);
+            return new StorageReader(this, in);
         } else {
             // otherwise return null
             return null;
@@ -377,7 +373,6 @@ public abstract class StorageManagerFactory {
      */
     public void setAttributes(Map attributes) {
         this.attributes.putAll(attributes);
-        log.debug("Database attributes " + this.attributes);
     }
 
     /**
@@ -410,7 +405,7 @@ public abstract class StorageManagerFactory {
      * @return the scheme value, or null if it is unknown
      */
     public Scheme getScheme(Object key) {
-        return getScheme(key, null);
+        return getScheme(key,null);
     }
 
     /**
@@ -464,7 +459,7 @@ public abstract class StorageManagerFactory {
      * @param value the value of the option (true or false)
      */
     public void setOption(Object key, boolean value) {
-        setAttribute(key, Boolean.valueOf(value));
+        setAttribute(key,new Boolean(value));
     }
 
     /**
@@ -488,7 +483,7 @@ public abstract class StorageManagerFactory {
      * Unlike setAttributes(), this actually replaces the existing disallowed fields map.
      */
     protected void setDisallowedFields(Map disallowedFields) {
-        this.disallowedFields.clear();
+        this.disallowedFields = new TreeMap(String.CASE_INSENSITIVE_ORDER);
         this.disallowedFields.putAll(disallowedFields);
     }
 
@@ -508,9 +503,8 @@ public abstract class StorageManagerFactory {
      *  <li>For StorageManager: the basename</li>
      *  <li>For MMBase: the String '[basename]_object</li>
      *  <li>For MMObjectBuilder: the String '[basename]_[builder name]'</li>
-     *  <li>For Indices: the String '[basename]_[builder name]_[index name]_idx'</li>
      *  <li>For MMObjectNode: the object number as a Integer</li>
-     *  <li>For CoreField or String: the field name, or the replacement fieldfname (from the disallowedfields map)</li>
+     *  <li>For FieldDefs or String: the field name, or the replacement fieldfname (from the disallowedfields map)</li>
      * </ul>
      * Note that 'basename' is a property from the mmbase module, set in mmbaseroot.xml.<br />
      * You can override this method if you intend to use different ids.
@@ -530,11 +524,9 @@ public abstract class StorageManagerFactory {
             id = mmbase.getBaseName()+"_"+((MMObjectBuilder)mmobject).getTableName();
         } else if (mmobject instanceof MMObjectNode) {
             return ((MMObjectNode)mmobject).getIntegerValue("number");
-        } else if (mmobject instanceof Index) {
-            id = mmbase.getBaseName()+"_"+((Index)mmobject).getParent().getTableName() + "_" + ((Index)mmobject).getName() + "_idx";
-        } else if (mmobject instanceof String || mmobject instanceof CoreField) {
-            if (mmobject instanceof CoreField) {
-                id = ((CoreField)mmobject).getName();
+        } else if (mmobject instanceof String || mmobject instanceof FieldDefs) {
+            if (mmobject instanceof FieldDefs) {
+                id = ((FieldDefs)mmobject).getDBName();
             } else {
                 id = (String)mmobject;
             }
@@ -546,7 +538,7 @@ public abstract class StorageManagerFactory {
                 String newid = (String)disallowedFields.get(key);
                 if (newid == null) {
                     if (hasOption(Attributes.ENFORCE_DISALLOWED_FIELDS)) {
-                        throw new StorageException("The name of the field '"+((CoreField)mmobject).getName()+"' is disallowed, and no alternate value is available.");
+                        throw new StorageException("The name of the field '"+((FieldDefs)mmobject).getDBName()+"' is disallowed, and no alternate value is available.");
                     }
                 } else {
                     id = newid;
@@ -555,25 +547,6 @@ public abstract class StorageManagerFactory {
         } else {
             throw new StorageException("Cannot obtain identifier for param of type '"+mmobject.getClass().getName()+".");
         }
-
-        String maxIdentifierLength = (String)getAttribute(Attributes.MAX_IDENTIFIER_LENGTH);
-        if (maxIdentifierLength != null && !"".equals(maxIdentifierLength)) {
-          try {
-            int maxlength = Integer.parseInt(maxIdentifierLength);
-            if (id.length() > maxlength) {
-              // Truncate the id, leave 8 characters space to put the hashcode
-              String base = id.substring(0, maxlength - 8);
-              long hashcode = id.hashCode();
-              if (hashcode < 0) hashcode = Integer.MAX_VALUE + hashcode;
-
-              // This generates a 8-character hex representation of the strings hashcode
-              id = base + (new java.math.BigInteger(""+hashcode)).toString(16);
-            }
-          } catch (NumberFormatException e) {
-            log.warn("Exception parsing the 'max-identifier-length' parameter; ignoring it!");
-          }
-        }
-
         String toCase = (String)getAttribute(Attributes.STORAGE_IDENTIFIER_CASE);
         if ("lower".equals(toCase)) {
             return id.toLowerCase();
@@ -614,8 +587,6 @@ public abstract class StorageManagerFactory {
      */
     abstract public boolean supportsTransactions();
 
-
-
     /**
      * Returns a filter which can be used to filter strings taken from storage or <code>null</code> if none defined.
      * @since MMBase-1.7.4
@@ -623,6 +594,7 @@ public abstract class StorageManagerFactory {
     public CharTransformer getGetSurrogator() {
         return getSurrogator;
     }
+
     /**
      * Returns a filter which can be used to filter strings which are to be set into storage or <code>null</code> if none defined.
      * @since MMBase-1.7.4
@@ -630,18 +602,5 @@ public abstract class StorageManagerFactory {
     public CharTransformer getSetSurrogator() {
         return setSurrogator;
     }
-
-
-    /**
-     * Returns the offset which must be used in the database. Currently this is based on the system's
-     * default time zone. It is imaginable that can have configuration or database specific details later.
-     * @param time The time at which it is evaluated (summer time issues)
-     * @since MMBase-1.8
-     * @todo experimental
-     */
-    public int getTimeZoneOffset(long time) {
-        return TimeZone.getDefault().getOffset(time);
-    }
-
 
 }

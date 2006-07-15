@@ -8,22 +8,27 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib;
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
 import java.io.IOException;
 
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.BodyTag;
 
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.Node;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 /**
  * Needs to live under a ListRelationsTag
  *
  * @author Michiel Meeuwissen
- * @version $Id: RelatedNodeTag.java,v 1.17 2006-06-29 14:32:15 michiel Exp $ 
+ * @version $Id: RelatedNodeTag.java,v 1.14.2.1 2004-07-05 17:20:00 michiel Exp $ 
  */
+
 public class RelatedNodeTag extends AbstractNodeProviderTag implements BodyTag {
+
+    private static final Logger log = Logging.getLoggerInstance(RelatedNodeTag.class);
 
     private Attribute listRelationsId = Attribute.NULL;
 
@@ -46,8 +51,8 @@ public class RelatedNodeTag extends AbstractNodeProviderTag implements BodyTag {
         FormatterTag f = (FormatterTag) findParentTag(FormatterTag.class, null, false);
         if (f!= null && f.wantXML() && node != null) {
             f.getGenerator().add(node);
-            f.setCloud(node.getCloud());
         }
+        
         fillVars();
         return EVAL_BODY_BUFFERED;
     }

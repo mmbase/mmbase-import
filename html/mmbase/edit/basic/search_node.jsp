@@ -1,7 +1,7 @@
 <%@ include file="page_base.jsp"
 %><mm:import externid="userlogon" from="parameters" />
-<mm:content language="$config.lang" country="$config.country" type="text/html" expires="0">
-<mm:cloud  loginpage="login.jsp" logon="$userlogon" sessionname="$config.session" rank="$rank" jspvar="cloud">
+<mm:content language="$config.lang" type="text/html" expires="0">
+<mm:cloud method="$config.method" loginpage="login.jsp" logon="$userlogon" sessionname="$config.session" jspvar="cloud">
 <mm:write referid="style" escape="none" />
 <!-- mm:timer name="search_node"-->
 <title><%=m.getString("search_node.search")%></title>
@@ -50,7 +50,7 @@
       (<mm:nodeinfo nodetype="$node_type" type="type" />)      
       <mm:maycreate type="$node_type">
         <a href="<mm:url referids="node_type" page="create_node.jsp" />" >
-          <span class="create"><!-- needed for IE --></span><span class="alt">[create]</span>
+          <span class="create"></span><span class="alt">[create]</span>
         </a>
     </mm:maycreate>
     </th>
@@ -84,14 +84,14 @@
       	    	    	<td class="navigate">
                         <% if (nt.mayCreateNode()) { %>
 			    <a href="<mm:url page="create_node.jsp"><mm:param name="node_type"><%=nt.getName()%></mm:param></mm:url>" >
-                  <span class="create"><!-- needed for IE --></span><span class="alt">[create]</span>
+                  <span class="create"></span><span class="alt">[create]</span>
              	  </a>
                        <% } else { %>&nbsp;<% } %>
       	    	    	</td>												
       	    	    	<td class="navigate">
 			    <% if (! nt.getName().equals(node_type)) { %>
             	 <a href="<mm:url><mm:param name="node_type"><%=nt.getName()%></mm:param></mm:url>">
-                  <span class="select"><!-- needed for IE --></span><span class="alt">[list]</span>
+                  <span class="select"></span><span class="alt">[list]</span>
                </a>
 			    <% } else { %>
 			    &nbsp;
@@ -118,11 +118,10 @@
           </mm:present>
           <mm:notpresent referid="node_type">
             <form name="search" method="post" action="<mm:url page="change_node.jsp"/>">
-              <table class="search" align="center" width="100%" border="0" cellspacing="1">
-                <tr><td width="20%"><%=m.getString("aliasornumber")%></td><td width="80%"><input class="small" type="text" size="5" name="node_number" /></td></tr>
-                <tr><td colspan="2"><input class="search" type="submit" name="search" value="<%=m.getString("search")%>" /></td></tr>
-              </table>
-            </form>
+            <table class="search" align="center" width="100%" border="0" cellspacing="1">
+              <tr><td width="20%"><%=m.getString("aliasornumber")%></td><td width="80%"><input class="small" type="text" size="5" name="node_number" /></td></tr>
+              <tr><td colspan="2"><input class="search" type="submit" name="search" value="<%=m.getString("search")%>" /></td></tr>
+            </table>
           </mm:notpresent>
 	    </td>
     	</tr>

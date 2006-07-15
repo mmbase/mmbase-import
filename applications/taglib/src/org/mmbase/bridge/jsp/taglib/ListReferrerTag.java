@@ -11,17 +11,22 @@ package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.jstl.core.*;
+
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 
 /**
  * Tags that can be used inside a list tag. 
  *
  * @author Michiel Meeuwissen 
  *
- * @version $Id: ListReferrerTag.java,v 1.10 2005-12-05 17:21:17 michiel Exp $ 
+ * @version $Id: ListReferrerTag.java,v 1.8 2003-08-27 21:33:34 michiel Exp $ 
  */
 
 public abstract class ListReferrerTag extends ContextReferrerTag  {
+    
+    private static final Logger log = Logging.getLoggerInstance(ListReferrerTag.class); 
 
     protected Attribute  parentListId = Attribute.NULL;
     
@@ -33,14 +38,5 @@ public abstract class ListReferrerTag extends ContextReferrerTag  {
         // find the parent list:
         return (ListProvider) findParentTag(ListProvider.class, (String) parentListId.getValue(this));
     }
-
-    /**
-     * @since MMBase-1.8
-     */
-    protected LoopTag getLoopTag() throws JspTagException {
-        // find the parent list:
-        return (LoopTag) findParentTag(LoopTag.class, (String) parentListId.getValue(this));
-    }
- 
 
 }

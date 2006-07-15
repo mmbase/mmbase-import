@@ -6,15 +6,15 @@
  
     <h1>Cloud method='asis' but session disabled (does this make sense?)</h1>
     <p>
-      <mm:cloud method="asis">
-        You are logged in as: <mm:cloudinfo type="user" />
+      <mm:cloud method="asis" jspvar="cloud">
+        You are logged in as: <%=cloud.getUser().getIdentifier() %>
         (must be anonymous?)
       </mm:cloud>
     </p>
   <hr />
-  <a href="<mm:url page="cloud5.jsp" />">Previous</a><br />
-  <a href="<mm:url page="cloud7.jsp" />">next</a><br />
-  <a href="<mm:url page="index.jsp" />">back</a><br />
+  <a href="cloud5.jsp">Previous</a><br />
+  <a href="cloud7.jsp">next</a><br />
+  <a href="index.jsp">back</a><br />
     <a href="<mm:url page="/mmexamples/taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
   <hr />
   </body>

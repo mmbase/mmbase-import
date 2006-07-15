@@ -13,26 +13,23 @@ import java.util.*;
 
 import javax.servlet.jsp.JspTagException;
 
-import org.mmbase.util.Entry;
 import org.mmbase.bridge.jsp.taglib.functions.AbstractFunctionTag;
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.bridge.jsp.taglib.util.Referids;
 
 /**
  * Function Container can be used around Function (-like) Tags.
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: FunctionContainerTag.java,v 1.14 2006-05-17 13:26:07 michiel Exp $
+ * @version $Id: FunctionContainerTag.java,v 1.11.2.1 2004-07-05 17:20:00 michiel Exp $
  */
 public class FunctionContainerTag extends AbstractFunctionTag implements FunctionContainer {
     //private static final Logger log = Logging.getLoggerInstance(FunctionContainerTag.class);
 
-    private  List parameters ;
+    private   List parameters;
 
     // javadoc inherited (from ParamHandler)
     public void addParameter(String key, Object value) throws JspTagException {
-        parameters.add(new Entry(key, value));
+        parameters.add(new ParameterEntry(key, value));
     }
 
     // javadoc inherited (from FunctionContainer)
@@ -47,9 +44,6 @@ public class FunctionContainerTag extends AbstractFunctionTag implements Functio
 
     public int doStartTag() throws JspTagException {
         parameters = new ArrayList();
-        if (referids != Attribute.NULL) {
-            parameters.addAll(Referids.getReferids(referids, this).entrySet());
-        }
         return EVAL_BODY;
     }
 
@@ -70,5 +64,12 @@ public class FunctionContainerTag extends AbstractFunctionTag implements Functio
         return super.doEndTag();
     }
 
+    public class ParameterEntry implements FunctionContainer.Entry {
+        String key;
+        Object value;
+        ParameterEntry(String k, Object o) { key = k; value = o; }
+        public String getKey() { return key; }
+        public Object getValue() { return value; }
+    }
 
 }

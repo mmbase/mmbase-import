@@ -25,7 +25,7 @@ import org.mmbase.storage.search.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryCompositeConstraintTag.java,v 1.6 2005-12-21 11:39:25 michiel Exp $
+ * @version $Id: QueryCompositeConstraintTag.java,v 1.3.2.1 2004-07-05 17:20:01 michiel Exp $
  */
 public class QueryCompositeConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 
@@ -67,7 +67,7 @@ public class QueryCompositeConstraintTag extends CloudReferrerTag implements Que
             if (newConstraint == null) {
                 newConstraint = constraint;
             } else {
-                newConstraint = query.createConstraint(newConstraint, op, constraint);
+                newConstraint = query.createConstraint(constraint, op, newConstraint);
             }
         }
         if (newConstraint != null) {
@@ -93,7 +93,7 @@ public class QueryCompositeConstraintTag extends CloudReferrerTag implements Que
         QueryContainer c = (QueryContainer) findParentTag(QueryContainer.class, (String) container.getValue(this));
         Query query = c.getQuery();
 
-        addConstraint(query, getOperator(), constraints);
+        Constraint cons = addConstraint(query, getOperator(), constraints);
         if(EVAL_BODY == EVAL_BODY_BUFFERED) {
             try {
                 if (bodyContent != null) {

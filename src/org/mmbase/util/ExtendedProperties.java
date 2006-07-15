@@ -28,12 +28,14 @@ import java.util.Vector;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+
+
 /**
- * This is a flexible Properties version, it can handle saving of Properties with
- * the comments that will stay in your file.
- * @author Jan van Oosterom
- * @version $Id: ExtendedProperties.java,v 1.9 2005-11-30 15:58:04 pierre Exp $
- */
+* This is a flexible Properties version, it can handle saving of Properties with
+* the comments that will stay in your file.
+* @author Jan van Oosterom
+* @version $Id: ExtendedProperties.java,v 1.6 2003-03-10 11:51:06 pierre Exp $
+*/
 public class ExtendedProperties extends Properties {
     // logger
     private static Logger log = Logging.getLoggerInstance(ExtendedProperties.class.getName());
@@ -88,7 +90,7 @@ public class ExtendedProperties extends Properties {
         try {
             getProps(filename);
         } catch (IOException e) {
-            log.debug("Failed to load the ExtendedProperties from: "+ filename, e);
+            System.out.println("Failed to load the ExtendedProperties from: "+ filename);
         }
         ExtendedProperties propsToReturn = new ExtendedProperties();
         Enumeration e = keys();
@@ -167,8 +169,11 @@ public class ExtendedProperties extends Properties {
         in = Runtime.getRuntime().getLocalizedInputStream(in);
 
         int ch = in.read();
-        while (ch != -1) {
+        while (true) {
             switch (ch) {
+              case -1:
+                return;
+
               case '#':
               case '!':
                 do {
@@ -375,7 +380,7 @@ public class ExtendedProperties extends Properties {
         Enumeration names = propertyNames();
         while (names.hasMoreElements()) {
             String name = (String) names.nextElement();
-            log.debug(name + "=" + getProperty(name));
+            System.out.println(name + "=" + getProperty(name));
         }
     }
 
@@ -397,4 +402,13 @@ public class ExtendedProperties extends Properties {
         }
         return(b.toString());
     }
+
+    /**
+     * Convert a nibble to a hex character
+     * @param nibble the nibble to convert.
+     */
+    private static char toHex(int nibble) {
+        return hexDigit[(nibble & 0xF)];
+    }
+
 }

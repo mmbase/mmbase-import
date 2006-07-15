@@ -1,14 +1,13 @@
 <form action="<mm:url referids="parameters,$parameters"><mm:param name="url">commit_user.jsp</mm:param></mm:url>" method="post">
 <table>
   <mm:fieldlist type="edit" fields="owner">
-    <tr><td><mm:fieldinfo type="guiname" /></td><td colspan="3"><mm:fieldinfo options="noautocomplete" type="input" /></td></tr>
+    <tr><td><mm:fieldinfo type="guiname" /></td><td colspan="3"><mm:fieldinfo type="input" /></td></tr>
   </mm:fieldlist>
   <mm:fieldlist fields="lastlogon?">
     <tr><td><mm:fieldinfo type="guiname" /></td><td colspan="3"><mm:fieldinfo type="guivalue" /></td></tr>
   </mm:fieldlist>
-  <mm:cloudinfo type="user" id="cloudusername" write="false" />
   <mm:field name="username">
-    <mm:compare referid2="cloudusername" inverse="true">
+    <mm:compare value="<%=cloud.getUser().getIdentifier()%>" inverse="true">
     <tr>
       <td><%=getPrompt(m,"groups")%></td>
       <td>
@@ -41,7 +40,7 @@
       </td>
     </tr>
     </mm:compare>
-    <mm:compare referid2="cloudusername">
+    <mm:compare value="<%=cloud.getUser().getIdentifier()%>">
     <tr>
       <td><%=getPrompt(m,"groups")%></td>
       <td>

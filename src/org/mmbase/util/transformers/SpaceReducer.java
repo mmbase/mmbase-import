@@ -9,17 +9,17 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.transformers;
 
-import java.io.*;
+import java.io.Reader;
+import java.io.Writer;
 
 import org.mmbase.util.logging.*;
 
 /**
  * Replace 1 or more spaces by 1 space, and 1 or more newlines by 1
  * newline. Any other combination of newlines and spaces is replaced
- * by one newline.
- *
- * Except if they are in between "&lt;pre&gt;" and "&lt;/pre&gt;". (Note: perhaps this last behaviour should be made
- * configurable).
+ * by one newline. Except if they are in between "<pre>" and
+ * "</pre>". (Note: perhaps this last behaviour should be made
+ * configurable.
  *
  * @todo 'pre' stuff not yet implemented.
  *
@@ -32,24 +32,6 @@ public class SpaceReducer extends ReaderTransformer implements CharTransformer {
     private static Logger log = Logging.getLoggerInstance(SpaceReducer.class);
 
     public Writer transform(Reader r, Writer w) {
-        try {
-            BufferedReader br = new BufferedReader(r);
-            PrintWriter bw = new PrintWriter(new BufferedWriter(w));
-
-            String line;
-            while ((line = br.readLine()) != null) {
-                if (!line.trim().equals("")) {
-                    bw.println(line);
-                }
-            }
-            bw.flush();
-        } catch (java.io.IOException e) {
-            log.error(e.toString());
-        }
-        return w;
-    }
-
-    public Writer transform2(Reader r, Writer w) {
 
         int space = 1;  // 'open' spaces (on this line)
         int nl    = 1;  // 'open' newlines

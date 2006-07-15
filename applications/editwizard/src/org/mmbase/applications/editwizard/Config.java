@@ -10,14 +10,12 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.editwizard;
 
 import java.util.*;
-import java.net.*;
+import java.io.File;
+import java.net.URL;
 import org.mmbase.util.xml.URIResolver;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.mmbase.util.ResourceLoader;
-
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.Encode;
@@ -29,12 +27,10 @@ import org.mmbase.util.Encode;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.60 2006-03-30 16:40:57 michiel Exp $
+ * @version $Id: Config.java,v 1.49.2.6 2005-05-19 09:00:36 pierre Exp $
  */
 
-public class Config implements java.io.Serializable {
-
-    private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
+public class Config {
 
     /**
      * Default maximum upload size for files (4 MB).
@@ -67,13 +63,13 @@ public class Config implements java.io.Serializable {
 
     //   public String context; (contained in attributes now)
 
-    static public class SubConfig implements java.io.Serializable {
+    static public class SubConfig {
         public boolean debug = false;
         public String wizard;
         public String page;
-        public HashMap popups = new HashMap(); // all popups now in use below this (key -> Config)
+        public Map popups = new HashMap(); // all popups now in use below this (key -> Config)
 
-        public HashMap attributes = new HashMap();
+        public Map attributes = new HashMap();
 
         /**
          * Basic configuration. The configuration object passed is updated with information retrieved
@@ -93,11 +89,7 @@ public class Config implements java.io.Serializable {
         public void configure(Config.Configurator configurator) throws WizardException  {
             wizard = configurator.getParam("wizard", wizard);
             if (wizard != null && wizard.startsWith("/")) {
-                try {
-                    wizard = configurator.getResource(wizard).toString();
-                } catch(MalformedURLException mfue) {
-                    throw new WizardException(mfue);
-                }
+                wizard = "file://" + configurator.getRealPath(wizard);
             }
             configurator.fillAttributes(attributes);
 
@@ -178,7 +170,7 @@ public class Config implements java.io.Serializable {
 
 
         public String title;
-        public URL    template;
+        public File   template;
         public String fields;
         public String startNodes;
         public String nodePath;
@@ -403,11 +395,7 @@ public class Config implements java.io.Serializable {
             // only perform the following is there was no prior parsing
             if (!parsed) {
                 String templatePath = configurator.getParam("template", "xsl/list.xsl");
-                try {
-                    template = configurator.resolveToURL(templatePath);
-                } catch (Exception e) {
-                    throw new WizardException(e);
-                }
+                template = configurator.resolveToFile(templatePath);
 
                 // determine mainObjectName from main parameter
                 mainObjectName = configurator.getParam("main", (String) null); // mainObjectName);
@@ -433,16 +421,10 @@ public class Config implements java.io.Serializable {
                 if (fields == null) {
                     if (cloud != null) {
                         StringBuffer fieldsBuffer = new StringBuffer();
-                        FieldIterator i = cloud.getNodeManager(removeDigits(mainObjectName)).getFields(org.mmbase.bridge.NodeManager.ORDER_LIST).fieldIterator();
+                        FieldIterator i = cloud.getNodeManager(removeDigits(mainObjectName)).
+                            getFields(org.mmbase.bridge.NodeManager.ORDER_LIST).fieldIterator();
                         while (i.hasNext()) {
-                            Field field = i.nextField();
-                            if (multilevel && field.isVirtual()) {
-                                // cannot be queried any way. 
-                                // these fields are directly added the query. You could perhaps deterin virtual fields afterwards.
-                                // should perhaps also be valid for monolevels.
-                                continue;
-                            }
-                            fieldsBuffer.append(multilevel ? mainObjectName + "." : "" ).append(field.getName());
+                            fieldsBuffer.append(multilevel ? mainObjectName + "." : "" ).append(i.nextField().getName());
                             if (i.hasNext()) fieldsBuffer.append(',');
                         }
                         fields = fieldsBuffer.toString();
@@ -616,7 +598,7 @@ public class Config implements java.io.Serializable {
                 /* Determin the 'referring' page, and add its directory to the URIResolver.
                    That means that xml can be placed relative to this page, and xsl's int xsl-dir.
                  */
-                URL ref;
+                File refFile;
                 // capture direct reference of http:// and https:// referers
                 int protocolPos= config.backPage.indexOf(PROTOCOL);
 
@@ -625,33 +607,28 @@ public class Config implements java.io.Serializable {
 
                 if (protocolPos >=0 ) { // given absolutely
                     String path = new URL(config.backPage).getPath();
-                    ref = new URL(getResource(path.substring(request.getContextPath().length())), ".");
+                    refFile = new File(getRealPath(path.substring(request.getContextPath().length()))).getParentFile();
                     // TODO: What if it happened to be not from the same server?
                 } else {
-                    // Was given relatively, that's trickie, because cannot use URL object to take of query.
-                    String bp = config.backPage;
-                    int questionPos = bp.indexOf('?');
+                    // Was given relatively, that's trickie, becaues cannot use URL object to take of query.
+                    String path = getRealPath(config.backPage);
+                    int questionPos = path.indexOf('?');
                     if (questionPos != -1) {
-                        bp = bp.substring(0, questionPos);
+                        path = path.substring(0, questionPos);
                     }
-                    URL path = getResource(bp);
 
-                    if (path != null) {
-                        ref = new URL(path, ".");
-                    } else {
-                        ref = null;
-                    }
+                    refFile = new File(path).getParentFile();
                 }
-                if (ref != null) {
+                if (refFile.exists()) {
                     if (! config.language.equals("")) {
-                        URL refi18n = new URL(ref, "i18n/" + config.language);
-                        if (getResource(refi18n.getPath()) != null) {
+                        File refi18n = new File(refFile, "i18n" + File.separator + config.language);
+                        if (refi18n.isDirectory()) {
                             extraDirs.add("refi18n:", refi18n);
                         }
                     }
-                    extraDirs.add("ref:", ref);
+                    extraDirs.add("ref:", refFile);
                 } else {
-                    log.warn("" + ref + " does not exist");
+                    log.warn("" + refFile + " does not exist");
                 }
 
                 /* Optionally, you can indicate with a 'templates' option where the xml's and
@@ -660,9 +637,14 @@ public class Config implements java.io.Serializable {
                 config.templates = request.getParameter("templates");
 
                 if (config.templates != null) {
-                    URL templatesDir = getResource(config.templates);
-                    if (templatesDir == null) {
-                        throw new WizardException("" +  config.templates + " does not exist");
+                    File templatesDir = new File(getRealPath(config.templates));
+                    try {
+                        templatesDir = templatesDir.getCanonicalFile();
+                    } catch (java.io.IOException e) {
+                        throw new WizardException(e.toString());
+                    }
+                    if(! templatesDir.isDirectory()) {
+                        throw new WizardException("Template directory not found : " + templatesDir);
                     }
                     extraDirs.add("templates:", templatesDir);
                 }
@@ -672,17 +654,17 @@ public class Config implements java.io.Serializable {
                  * and also for 'library' editors.
                  */
 
-                URL jspFileDir = new URL(getResource(request.getServletPath()), "."); // the directory of this jsp (list, wizard)
-                URL basedir    = new URL(jspFileDir, "../data/");                      // ew default data/xsls is in ../data then
+                File jspFileDir = new File(getRealPath(request.getServletPath())).getParentFile(); // the directory of this jsp (list, wizard)
+                File basedir    = new java.io.File(jspFileDir.getParentFile().getAbsolutePath(), "data"); // ew default data/xsls is in ../data then
 
                 if (! config.language.equals("")) {
-                    URL i18n = new URL(basedir, "i18n/" + config.language + "/");
-                    if (i18n == null) {
+                    File i18n = new File(basedir, "i18n" + File.separator + config.language);
+                    if (i18n.isDirectory()) {
+                        extraDirs.add("i18n:", i18n);
+                    } else {
                         if (! "en".equals(config.language)) { // english is default anyway
                             log.warn("Tried to internationalize the editwizard for language " + config.language + " for which support is lacking (" + i18n + " is not an existing directory)");
                         }
-                    } else {
-                        extraDirs.add("i18n:", i18n);
                     }
                 }
 
@@ -692,21 +674,13 @@ public class Config implements java.io.Serializable {
             }
         }
 
-        /*
         public String getRealPath(String path) {
             return page.getServletContext().getRealPath(path);
         }
-        */
-        public URL getResource(String path) throws MalformedURLException {
-            return ResourceLoader.getWebRoot().getResource(path);
-            /// page.getServletContext().getResource(path)  (not using ResourceLoader)
+
+        public File resolveToFile(String templatePath) {
+            return config.uriResolver.resolveToFile(templatePath);
         }
-
-
-        public URL resolveToURL(String templatePath) throws javax.xml.transform.TransformerException {
-            return config.uriResolver.resolveToURL(templatePath, null);
-        }
-
 
         public PageContext getPage() {
             return page;
@@ -737,13 +711,13 @@ public class Config implements java.io.Serializable {
         protected boolean getParam(String paramName, boolean def) {
             String b = getParam(paramName);
             if (b == null) return def;
-            return Boolean.valueOf(b).booleanValue();
+            return new Boolean(b).booleanValue();
         }
 
         protected Boolean getParam(String paramName, Boolean def) {
             String b = getParam(paramName);
             if (b == null) return def;
-            return Boolean.valueOf(b);
+            return new Boolean(b);
         }
 
         /**

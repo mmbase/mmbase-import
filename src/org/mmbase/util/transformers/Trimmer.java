@@ -11,6 +11,7 @@ package org.mmbase.util.transformers;
 
 import java.io.Reader;
 import java.io.Writer;
+import java.util.*;
 
 import org.mmbase.util.logging.*;
 
@@ -19,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen 
  * @since MMBase-1.7
- * @version $Id: Trimmer.java,v 1.2 2005-01-30 16:46:37 nico Exp $
+ * @version $Id: Trimmer.java,v 1.1.2.1 2004-07-22 18:41:19 michiel Exp $
  */
 
 public class Trimmer extends ReaderTransformer implements CharTransformer {

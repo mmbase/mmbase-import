@@ -12,24 +12,20 @@ package org.mmbase.bridge.implementation;
 
 import java.util.*;
 import org.mmbase.bridge.util.Queries;
-import org.mmbase.cache.CachePolicy;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
-import org.mmbase.storage.search.implementation.database.BasicSqlHandler;
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.security.Authorization;
 
+
 /**
  * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
  *
- * This  implementation is actually ussuable with other implementations of bridge too, because it has the public constructor:
- * {@link #BasicQuery(Cloud, BasicSearchQuery)}.
- *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.58 2006-06-28 14:47:25 nklasens Exp $
+ * @version $Id: BasicQuery.java,v 1.36.2.6 2004-07-29 17:16:37 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -38,20 +34,11 @@ public class BasicQuery implements Query  {
     private static final Logger log = Logging.getLoggerInstance(BasicQuery.class);
 
     /**
-     * Whether this Query was used already. If it is used, it may not be changed any more.
+     * Wether this Query was used already. If it is used, it may not be changed any more.
      */
     protected boolean used = false;
 
-    /**
-     * Whether this Query is aggregating.
-     * @todo this member is in BasicSearchQuery too (but private).
-     */
     protected boolean aggregating = false; // ugly ugly, this member is in BasicSearchQuery too (but private).
-
-    /**
-     * Whether this Query is cacheable.
-     */
-    protected CachePolicy cachePolicy = CachePolicy.ALWAYS;
 
     /**
      * The QueryCheck object associated with this Query, or null if no such object was determined yet.
@@ -92,6 +79,8 @@ public class BasicQuery implements Query  {
      */
     protected List explicitFields = new ArrayList();
 
+
+
     BasicQuery(Cloud c) {
         query = new BasicSearchQuery();
         cloud = c;
@@ -106,11 +95,10 @@ public class BasicQuery implements Query  {
     public BasicQuery(Cloud c, BasicSearchQuery q) { // public for org.mmbase.bridge.util
         query = q;
         cloud = c;
-        this.aggregating = q.isAggregating();
     }
 
 
-    public BasicSearchQuery getQuery() {
+    BasicSearchQuery getQuery() {
         return query;
     }
 
@@ -154,19 +142,13 @@ public class BasicQuery implements Query  {
         return query.isDistinct();
     }
 
+
     // bridge.Query impl.:
 
     public boolean isAggregating() {
         return aggregating;
     }
 
-    public CachePolicy getCachePolicy() {
-        return cachePolicy;
-    }
-
-    public void setCachePolicy(CachePolicy policy) {
-        this.cachePolicy = policy;
-    }
 
     /**
      * @since MMBase-1.7.1
@@ -177,7 +159,7 @@ public class BasicQuery implements Query  {
         }
         if (queryCheck != null) {
             Constraint secureConstraint = queryCheck.getConstraint();
-            if (secureConstraint != null) {
+            if (secureConstraint != null) { 
                 Constraint constraint = clone.getConstraint();
                 // remove it from clone (by modifying the 'cloned' constraint)
                 if (secureConstraint.equals(constraint)) {
@@ -245,7 +227,6 @@ public class BasicQuery implements Query  {
         aliasSequences.put(name, seq);
         return glueAlias(name, seq);
     }
-
     /**
      * Glues a string and integer together to a new string.
      */
@@ -264,9 +245,8 @@ public class BasicQuery implements Query  {
         if (used) throw new BridgeException("Query was used already");
 
         removeSecurityConstraint(); // if present
-        MMObjectBuilder builder = MMBase.getMMBase().getBuilder(nm.getName());
-        if (builder == null) throw new BridgeException("No builder with name " + nm.getName() + " (perhaps " + nm + " is virtual?)");
-        BasicStep step = query.addStep(builder);
+
+        BasicStep step = query.addStep(((BasicNodeManager)nm).builder);
         setAlias(step, ""); // "": generate alias
         if (! aggregating) {
             addFieldImplicit(step, nm.getField("number"));
@@ -281,7 +261,7 @@ public class BasicQuery implements Query  {
 
         // check if it was the lastely 'automaticly' create alias, in which case we free the sequence number again
         // (also to fix #6547)
-
+        
         Integer currentSeq  = (Integer) aliasSequences.get(aliasBase);
         if (currentSeq != null && glueAlias(aliasBase, currentSeq).equals(currentAlias)) {
             if (currentSeq.intValue() == 0) {
@@ -336,11 +316,8 @@ public class BasicQuery implements Query  {
             InsRel insrel =  BasicCloudContext.mmb.getInsRel();
             BasicRelationStep step = addRelationStep(insrel, otherNodeManager, relationDir);
             if (!typeRel.optimizeRelationStep(step, cloud.getNodeManager(step.getPrevious().getTableName()).getNumber(), otherNodeManager.getNumber(), -1, relationDir)) {
-                if (relationDir != RelationStep.DIRECTIONS_SOURCE && 
-                    relationDir != RelationStep.DIRECTIONS_DESTINATION &&
-                    warnOnImpossibleStep) {
+                if (warnOnImpossibleStep) {
                     log.warn("Added an impossible relation step (" + step + " to " + otherNodeManager + ") to the query. The query-result will always be empty now (so you could as well not execute it).");
-                    log.warn(Logging.applicationStacktrace());
                 }
             }
             return step;
@@ -358,12 +335,8 @@ public class BasicQuery implements Query  {
                 step.setAlias(createAlias(role));
             }
             if (! typeRel.optimizeRelationStep(step, cloud.getNodeManager(step.getPrevious().getTableName()).getNumber(), otherNodeManager.getNumber(), r, relationDir)) {
-                if (relationDir != RelationStep.DIRECTIONS_SOURCE && 
-                    relationDir != RelationStep.DIRECTIONS_DESTINATION &&
-                    warnOnImpossibleStep) {
-                    // not fully specified, and nothing found, warn about that.
-                    log.warn("Added an impossible relation step (" + step + " to " + otherNodeManager + ") to the query. The query-result will always be empty now (so you could as well not execute it). ");
-                    log.warn(Logging.applicationStacktrace());
+                if (warnOnImpossibleStep) {
+                    log.warn("Added an impossible relation step (" + step + " to " + otherNodeManager + ") to the query. The query-result will always be empty now (so you could as well not execute it).");
                 }
             }
             return step;
@@ -377,7 +350,7 @@ public class BasicQuery implements Query  {
         while (i.hasNext()) {
             BasicStepField sf = (BasicStepField) i.next();
             Step addedStep = sf.getStep();
-            query.addField(addedStep, sf.getField());
+            query.addField(addedStep, sf.getFieldDefs());
         }
 
     }
@@ -385,7 +358,7 @@ public class BasicQuery implements Query  {
 
     public StepField addField(Step step, Field field) {
         if (used) throw new BridgeException("Query was used already");
-        BasicStepField sf = query.addField(step, ((BasicField)field).coreField); // XXX Casting is wrong
+        BasicStepField sf = query.addField(step, ((BasicField) field).field);
         explicitFields.add(sf);
         implicitFields.remove(sf); // it's explicitly added now
         return sf;
@@ -410,14 +383,13 @@ public class BasicQuery implements Query  {
     protected void addFieldImplicit(Step step, Field field) {
         if (used) throw new BridgeException("Query was used already");
         if (! query.isDistinct()) {
-            BasicStepField sf = query.addField(step, ((BasicField)field).coreField); /// XXX Casting is wrong
+            BasicStepField sf = query.addField(step, ((BasicField) field).field);
             implicitFields.add(sf);
         }
     }
 
-    public StepField createStepField(Step step, Field field) {        
-        if (field == null) throw new BridgeException("Field is null");
-        return new BasicStepField(step, ((BasicField)field).coreField); /// XXX Casting is wrong
+    public StepField createStepField(Step step, Field field) {
+        return new BasicStepField(step, ((BasicField) field).field);
     }
 
     public StepField createStepField(Step step, String fieldName) {
@@ -445,10 +417,10 @@ public class BasicQuery implements Query  {
 
     public AggregatedField addAggregatedField(Step step, Field field, int aggregationType) {
         if (used) throw new BridgeException("Query was used already");
-        BasicAggregatedField aggregatedField =  query.addAggregatedField(step, ((BasicField)field).coreField, aggregationType); /// XXX Casting is wrong
+        BasicAggregatedField aggregatedField =  query.addAggregatedField(step, ((BasicField) field).field, aggregationType);
         // aggregatedField.setAlias(field.getName());
 
-        if (this instanceof NodeQuery) { // UGLY!
+        if (this instanceof NodeQuery) {
             NodeQuery nodeQuery = (NodeQuery) this;
             ((BasicStep) step).setAlias(nodeQuery.getNodeManager().getName());
             // Step needs alias, because otherwise clusterbuilder chokes.
@@ -471,7 +443,7 @@ public class BasicQuery implements Query  {
             Iterator i = explicitFields.iterator();
             while (i.hasNext()) {
                 BasicStepField sf = (BasicStepField) i.next();
-                query.addField(sf.getStep(), sf.getField());
+                query.addField(sf.getStep(), sf.getFieldDefs());
             }
         }
         return this;
@@ -493,38 +465,28 @@ public class BasicQuery implements Query  {
         return new BasicLegacyConstraint(s);
     }
 
-    public FieldNullConstraint createConstraint(StepField f) {
+    public FieldNullConstraint    createConstraint(StepField f) {
         return new BasicFieldNullConstraint(f);
     }
 
-    public FieldValueConstraint createConstraint(StepField f, Object v) {
+    public FieldValueConstraint        createConstraint(StepField f, Object v) {
         return createConstraint(f, FieldCompareConstraint.EQUAL, v);
     }
 
-    public FieldValueConstraint createConstraint(StepField f, int op, Object v, int part) {
-        BasicFieldValueConstraint c = new BasicFieldValueDateConstraint(f, v, part);
-        c.setOperator(op);
-        return c;
-    }
-
-    public FieldValueConstraint createConstraint(StepField f, int op, Object v) {
-        if (v instanceof Node) v = new Integer(((Node)v).getNumber());
+    public FieldValueConstraint        createConstraint(StepField f, int op, Object v) {
         BasicFieldValueConstraint c = new BasicFieldValueConstraint(f, v);
         c.setOperator(op);
         return c;
     }
-
-    public CompareFieldsConstraint createConstraint(StepField f, int op, StepField  v) {
+    public CompareFieldsConstraint     createConstraint(StepField f, int op, StepField  v) {
         BasicCompareFieldsConstraint c = new BasicCompareFieldsConstraint(f, v);
         c.setOperator(op);
         return c;
     }
-
     public FieldValueBetweenConstraint createConstraint(StepField f, Object o1, Object o2) {
         return new BasicFieldValueBetweenConstraint(f, o1, o2);
     }
-
-    public FieldValueInConstraint createConstraint(StepField f, SortedSet v) {
+    public FieldValueInConstraint      createConstraint(StepField f, SortedSet v) {
         if (v.size() == 0) { // make sure the query becomes empty!
             Step step = f.getStep();
             StepField nf = createStepField(step, "number");
@@ -541,26 +503,27 @@ public class BasicQuery implements Query  {
         }
     }
 
-    public Constraint setInverse(Constraint c, boolean i) {
+    public Constraint                  setInverse(Constraint c, boolean i) {
         ((BasicConstraint) c).setInverse(i);
         return c;
     }
 
-    public FieldConstraint setCaseSensitive(FieldConstraint c, boolean s) {
+    public FieldConstraint             setCaseSensitive(FieldConstraint c, boolean s) {
         ((BasicFieldConstraint) c).setCaseSensitive(s);
         return c;
 
     }
-    public CompositeConstraint createConstraint(Constraint c1, int operator, Constraint c2) {
-        if ((!used) && c1 instanceof BasicCompositeConstraint && ((CompositeConstraint) c1).getLogicalOperator() == operator) {
-            if (c2 != null) ((BasicCompositeConstraint) c1).addChild(c2);
+    public CompositeConstraint        createConstraint(Constraint c1, int operator, Constraint c2) {
+        if ((!used) && c1 instanceof CompositeConstraint && ((CompositeConstraint) c1).getLogicalOperator() == operator) {
+            ((BasicCompositeConstraint) c1).addChild(c2);
             return (CompositeConstraint) c1;
         } else {
             BasicCompositeConstraint c = new BasicCompositeConstraint(operator);
-            if (c1 != null) c.addChild(c1);
-            if (c2 != null) c.addChild(c2);
+            c.addChild(c1);
+            c.addChild(c2);
             return c;
         }
+
     }
 
     public void setConstraint(Constraint c) {
@@ -568,20 +531,16 @@ public class BasicQuery implements Query  {
         query.setConstraint(c);
     }
 
-
     public SortOrder addSortOrder(StepField f, int direction) {
-        return addSortOrder(f, direction, false);
-    }
-    public SortOrder addSortOrder(StepField f, int direction, boolean caseSensitive) {
         if (used) throw new BridgeException("Query was used already");
-        if (f == null) throw new BridgeException("Cannot add sortorder on 'null' step field");
         BasicSortOrder s = query.addSortOrder(f);
         s.setDirection(direction);
-        s.setCaseSensitive(caseSensitive);
         return s;
+
     }
 
     /**
+     * @todo should this method be in the interface?
      * @since MMBase-1.7.1
      */
     public void addNode(Step  s, int nodeNumber) {
@@ -591,6 +550,7 @@ public class BasicQuery implements Query  {
         return;
     }
 
+
     public void addNode(Step  s, Node node) {
         addNode(s, node.getNumber());
     }
@@ -598,13 +558,11 @@ public class BasicQuery implements Query  {
     public boolean isUsed() {
         return used;
     }
-
     public boolean markUsed() {
         boolean wasUsed = used;
-        if (queryCheck == null) {  // if called manually
-            /// XXXX CASTING HERE. Is this really necessary!
+        if (queryCheck == null) {  // if called manually 
             // apply security constraints first, if not yet done, because the query gets unmodifiable from now on.
-            //((BasicCloud) cloud).setSecurityConstraint(this);
+            ((BasicCloud) cloud).setSecurityConstraint(this);
         }
         used = true;
         return wasUsed;
@@ -634,7 +592,7 @@ public class BasicQuery implements Query  {
             log.debug("Setting security check " + c + " TO " + this);
         }
         queryCheck = c;
-
+            
         insecureConstraint = query.getConstraint(); // current constraint
         Constraint secureConstraint = queryCheck.getConstraint();
         if (secureConstraint != null) {
@@ -669,10 +627,6 @@ public class BasicQuery implements Query  {
         return cloud;
     }
 
-    public NodeList getList() {
-        return cloud.getList(this);
-    }
-
     public boolean equals(Object obj) {
         return query.equals(obj);
     }
@@ -685,15 +639,6 @@ public class BasicQuery implements Query  {
 
     public String toString() {
         return query.toString() + (used ? "(used)" : "") + "INSECURE: " + insecureConstraint + " QUERYCHECK: " + queryCheck;
-
-    }
-    private static final BasicSqlHandler sqlHandler = new BasicSqlHandler();
-    public String toSql() {
-        try {
-            return sqlHandler.toSql(this, sqlHandler);
-        } catch (org.mmbase.storage.search.SearchQueryException sqe) {
-            return sqe.getMessage() + ": " + toString();
-        }
 
     }
 

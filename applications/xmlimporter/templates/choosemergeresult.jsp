@@ -1,7 +1,7 @@
 <%@page language="java" contentType="text/html"
  import="java.util.*, java.io.*, org.mmbase.applications.xmlimporter.Consultant,
- org.mmbase.applications.xmlimporter.TmpObject, org.mmbase.module.core.MMObjectNode, 
- org.mmbase.util.logging.Logger,
+ org.mmbase.applications.xmlimporter.TmpObject, org.mmbase.module.core.MMObjectNode,
+ java.util.Hashtable, org.mmbase.util.logging.Logger,
  org.mmbase.util.logging.Logging" %>
 
 <jsp:useBean id="consultant" scope="session"
@@ -27,19 +27,17 @@
             </tr>
 <%  try {
      TmpObject origObject = consultant.getOriginalObject();
-     
-     MMObjectNode tmpNode = origObject.getNode();
-     Iterator it = tmpNode.getValues().entrySet().iterator();
-	 while (it.hasNext()) {
-		 Map.Entry entry = (Map.Entry) it.next();
-		 String field = (String) entry.getKey();
-		 Object value = entry.getValue();
-     %>
+     Hashtable fieldValuePairs = origObject.getNode().getValues();
+     Enumeration fields = fieldValuePairs.keys();
+     Enumeration values = fieldValuePairs.elements();
+     while(fields.hasMoreElements()) {
+         String field = (String)fields.nextElement();
+         Object value = values.nextElement();%>
          <tr>
             <td><%= field + ":  " %></td>
             <td><%= value %></td>
          </tr>
-<%      }  %>
+<%      }%>
         <br>
         </table>
 
@@ -56,14 +54,12 @@
                <th>FieldValue</th>
             </tr>
 <%          TmpObject t = (TmpObject)mergeResults.get(i);
-            
-            MMObjectNode tNode = t.getNode();
-            Iterator itt = tNode.getValues().entrySet().iterator();
-            while (itt.hasNext()) {
-            	Map.Entry entry = (Map.Entry) itt.next();
-            	String field = (String) entry.getKey();
-            	Object value = entry.getValue();            
-            %>
+            fieldValuePairs = t.getNode().getValues();
+            fields = fieldValuePairs.keys();
+            values = fieldValuePairs.elements(); 
+            while(fields.hasMoreElements()) {
+               String field = (String)fields.nextElement();
+               Object value = values.nextElement(); %>
                <tr>
                   <td><%= field + ":  " %></td>
                   <td><%= value %></td>

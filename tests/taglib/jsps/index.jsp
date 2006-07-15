@@ -25,18 +25,14 @@
   Start <a title="hoi" href="<mm:url referids="a,b?@c" page="transaction.jsp" />">here for transaction-tests</a>.
 </p>
 <p>
-  <mm:import id="text">
-    bla bla The cloud-tag is a rather complex thing, it has some attributes
+  The cloud-tag is a rather complex thing, it has some attributes
   which can influence each other.
   Start <a href="<mm:url page="cloud.jsp" />">here for cloud tag
-  tests</a>. It will start with a login-popup (don't try with mMbase
+  tests</a>. It will start with a login-popup (don't try with mmbase
   1.5). Run the sequence also with cookies disabled please, or perhaps
   even better in that case start <a href="cloud.html">here</a> (with
   cookies disabled, and url not encoded, cloud-tag will detect that
-  from 1.6 on). http://www.mmbase.org
-  </mm:import>
-
-  <mm:write referid="text" escape="links,censor" />
+  from 1.6 on).
 </p>
 <p>
   <a href="<mm:url page="attributes.jsp" />">Tag attribute tests</a>
@@ -56,11 +52,6 @@
 </p>
 <p>
   <a href="<mm:url page="url.jsp" />">mm:url</a>
-</p>
-<p>
-  <a href="<mm:url page="including.jsp" />">Including</a>,
-  <a href="<mm:url page="iincluding.jsp" />">Including (one deeper)</a>,
-  <a href="<mm:url page="includehttplogin.jsp" />">Including (http login). Fails?!</a>,
 </p>
 <p>
   <a href="<mm:url page="vars.jsp" />">more vars</a>

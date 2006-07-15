@@ -31,7 +31,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.48 2006-02-17 14:08:55 pierre Exp $
+ * @version $Id: Users.java,v 1.27.2.2 2004-09-07 14:39:08 michiel Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -49,8 +49,10 @@ public class Users extends MMObjectBuilder {
 
     public final static long VALID_TO_DEFAULT      = 4102441200L; // 2100-1-1
 
-
     public final static String STATUS_RESOURCE = "org.mmbase.security.status";
+
+    public final static Parameter[] RANK_PARAMETERS = {
+    };
 
 
     protected static Cache rankCache = new Cache(20) {
@@ -63,36 +65,12 @@ public class Users extends MMObjectBuilder {
             public String getDescription() { return "Caches the users. UserName --> User Node"; }
         };
 
-
-    protected Function encodeFunction = new AbstractFunction("encode", new Parameter[] {new Parameter("password", String.class, true) }, ReturnType.STRING) {
-            {
-                setDescription("Encodes a string like it would happen with a password, when it's stored in the database.");
-            }
-            public Object getFunctionValue(Parameters parameters) {
-                return encode((String)parameters.get(0));
-            }
-    };
-
-    protected Function rankFunction = new NodeFunction("rank", Parameter.EMPTY, new ReturnType(Rank.class, "Rank")) {
-            {
-                setDescription("Returns the rank of an mmbaseusers node");
-            }
-            public Object getFunctionValue(org.mmbase.bridge.Node node, Parameters parameters) {
-                return Users.this.getRank(getCoreNode(Users.this, node));
-            }
-    };
-    {
-        addFunction(encodeFunction);
-        addFunction(rankFunction);
-    }
-
-    private boolean userNameCaseSensitive = false;
-
     // javadoc inherited
     public boolean init() {
-        rankCache.putCache();
+        rankCache.putCache(); 
         userCache.putCache();
 
+        // MM: I think this is should not be configured.
         String s = (String)getInitParameters().get("encoding");
         if (s == null) {
             log.debug("no property 'encoding' defined in '" + getTableName() + ".xml' using default encoding");
@@ -100,13 +78,7 @@ public class Users extends MMObjectBuilder {
         } else {
             encoder = new Encode(s);
         }
-        log.service("Using " + encoder.getEncoding() + " as our encoding for password");
-
-        s = (String)getInitParameters().get("userNameCaseSensitive");
-        if (s != null) {
-            userNameCaseSensitive = "true".equals(s);
-            log.debug("property 'userNameCaseSensitive' set to '" +userNameCaseSensitive);
-        }
+        log.info("Using " + encoder.getEncoding() + " as our encoding for password");
 
         return super.init();
     }
@@ -166,11 +138,19 @@ public class Users extends MMObjectBuilder {
         return rank;
     }
 
+    /**
+     * Notify the cache that the rank of user node changed
+     * this is fixed by CacheInvalidator alreayd ?
+     public void rankChanged(MMObjectNode node) {
+        rankCache.remove(node);
+    }
+    */
+
 
     //javadoc inherited
     public boolean setValue(MMObjectNode node, String field, Object originalValue) {
         if (field.equals(FIELD_USERNAME)) {
-            Object value = node.getValue(field);
+            Object value = node.values.get(field);
             if (node.getIntValue(FIELD_STATUS) >= 0) {
                 if (originalValue != null && ! originalValue.equals(value)) {
                     /*
@@ -178,7 +158,7 @@ public class Users extends MMObjectBuilder {
                     log.warn("Cannot change username (unless account is blocked)");
                     return false; // hmm?
                     */
-                    log.debug("Changing account '" + originalValue + "' to '" + value + "'");
+                    log.info("Changing account '" + originalValue + "' to '" + value + "'");
                 }
             }
         }
@@ -200,11 +180,6 @@ public class Users extends MMObjectBuilder {
      * @throws SecurityException
      */
     public MMObjectNode getUser(String userName, String password)  {
-        return getUser(userName, password, true);
-    }
-
-    public MMObjectNode getUser(String userName, String password, boolean encode) {
-
         if (log.isDebugEnabled()) {
             log.debug("username: '" + userName + "' password: '" + password + "'");
         }
@@ -222,9 +197,8 @@ public class Users extends MMObjectBuilder {
             log.debug("username: '" + userName + "' --> USERNAME NOT CORRECT");
             return null;
         }
-        String encodedPassword = encode ? encode(password) : password;
-        String dbPassword = user.getStringValue(FIELD_PASSWORD);
-        if (encodedPassword.equals(dbPassword)) {
+
+        if (encode(password).equals(user.getStringValue(FIELD_PASSWORD))) {
             if (log.isDebugEnabled()) {
                 log.debug("username: '" + userName + "' password: '" + password + "' found in node #" + user.getNumber());
             }
@@ -239,44 +213,40 @@ public class Users extends MMObjectBuilder {
                     throw new SecurityException("account for '" + userName + "' is blocked");
                 }
             }
-            if (userRank.getInt() < Rank.ADMIN_INT && getField(FIELD_VALID_FROM) != null) {
+            if (userRank.getInt()<Rank.ADMIN_INT && getField(FIELD_VALID_FROM) != null) {
                 long validFrom = user.getLongValue(FIELD_VALID_FROM);
                 if (validFrom != -1 && validFrom * 1000 > System.currentTimeMillis() ) {
                     throw new SecurityException("account for '" + userName + "' not yet active");
                 }
             }
-            if (userRank.getInt() < Rank.ADMIN_INT && getField(FIELD_VALID_TO) != null) {
+            if (userRank.getInt()<Rank.ADMIN_INT && getField(FIELD_VALID_TO) != null) {
                 long validTo = user.getLongValue(FIELD_VALID_TO);
                 if (validTo != -1 && validTo * 1000 < System.currentTimeMillis() ) {
                     throw new SecurityException("account for '" + userName + "' is expired");
                 }
             }
             if (getField(FIELD_LAST_LOGON) != null) {
-                user.setValue(FIELD_LAST_LOGON, System.currentTimeMillis() / 1000);
+                user.setValue(FIELD_LAST_LOGON,System.currentTimeMillis() / 1000);
                 user.commit();
             }
             return user;
         } else {
             if (log.isDebugEnabled()) {
-                log.debug("username: '" + userName + "' found in node #" + user.getNumber() + " --> PASSWORDS NOT EQUAL (" + encodedPassword + " != " + dbPassword + ")");
+                log.debug("username: '" + userName + "' found in node #" + user.getNumber() + " --> PASSWORDS NOT EQUAL");
             }
             return null;
         }
+
     }
     /**
      * Gets the usernode by userName (the 'identifier'). Or 'null' if not found.
      */
     public MMObjectNode getUser(String userName)  {
-        if (userName == null ) return null;
-        if (!userNameCaseSensitive) {
-            userName = userName.toLowerCase();
-        }
         MMObjectNode user = (MMObjectNode) userCache.get(userName);
         if (user == null) {
             NodeSearchQuery nsq = new NodeSearchQuery(this);
             StepField sf        = nsq.getField(getField("username"));
-            BasicFieldValueConstraint cons = new BasicFieldValueConstraint(sf, userName);
-            cons.setCaseSensitive(userNameCaseSensitive);
+            Constraint cons = new BasicFieldValueConstraint(sf, userName);
             nsq.setConstraint(cons);
             nsq.addSortOrder(nsq.getField(getField("number")));
             SearchQueryException e = null;
@@ -307,50 +277,6 @@ public class Users extends MMObjectBuilder {
     }
 
     /**
-     * @param rank Rank to be searched. Never <code>null</code>.
-     * @param userName Username to match or <code>null</code>
-     * @since MMBase-1.8
-     */
-    public MMObjectNode getUserByRank(String rank, String userName) {
-        BasicSearchQuery query = new BasicSearchQuery();
-        MMObjectBuilder ranks = mmb.getBuilder("mmbaseranks");
-        BasicStep step = query.addStep(ranks);
-        StepField sf = query.addField(step, ranks.getField("name"));
-        Constraint cons = new BasicFieldValueConstraint(sf, rank);
-        query.addField(step, ranks.getField("number"));
-        BasicRelationStep relStep = query.addRelationStep(mmb.getInsRel(), this);
-        query.addField(relStep.getNext(), this.getField("number"));
-        relStep.setDirectionality(RelationStep.DIRECTIONS_SOURCE);
-        relStep.setRole(new Integer(mmb.getRelDef().getNumberByName("rank")));
-        if (userName != null) {
-            StepField sf2 = query.addField(relStep.getNext(), this.getField("username"));
-            Constraint cons2 = new BasicFieldValueConstraint(sf2, userName);
-            BasicCompositeConstraint composite = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
-            composite.addChild(cons);
-            composite.addChild(cons2);
-            cons = composite;
-        }
-
-        query.setConstraint(cons);
-        // sometimes, I quite hate the 'core version' query-framework.
-
-        try {
-            List result = mmb.getClusterBuilder().getClusterNodes(query);
-            if (log.isDebugEnabled()) {
-                log.debug("Executing " + query + " --> " + result);
-            }
-            if (result.size() > 0) {
-                return ((MMObjectNode) result.get(0)).getNodeValue("mmbaseusers");
-            } else {
-                return null;
-            }
-        } catch (SearchQueryException sqe) {
-            log.error(sqe);
-            return null;
-        }
-    }
-
-    /**
      * UserName must be unique, check it also here (to throw nicer exceptions)
      */
     public int insert(String owner, MMObjectNode node) {
@@ -375,30 +301,27 @@ public class Users extends MMObjectBuilder {
         return res;
     }
 
+
+
     /**
      * @see org.mmbase.security.implementation.cloudcontext.User#getOwnerField
      */
+
     public String getDefaultContext(MMObjectNode node)  {
-        if (node == null) return "system";
-        MMObjectNode contextNode = node.getNodeValue(FIELD_DEFAULTCONTEXT);
-        return contextNode == null ? null : contextNode.getStringValue("name");
+        return node.getNodeValue(FIELD_DEFAULTCONTEXT).getStringValue("name");
     }
 
     /**
      * @return The string representation the username of the User node.
      */
     public String getUserName(MMObjectNode node) {
-        if (node.getBuilder().hasField(FIELD_USERNAME)) {
-            return node.getStringValue(FIELD_USERNAME);
-        } else {
-            return null;
-        }
+         return node.getStringValue(FIELD_USERNAME);
     }
 
     /**
      * Encodes a password for storage (to avoid plain text passwords).
      */
-    public String encode(String s)  {
+    protected String encode(String s)  {
         return encoder.encode(s);
     }
 
@@ -406,21 +329,15 @@ public class Users extends MMObjectBuilder {
      * @javadoc
      */
     public boolean isValid(MMObjectNode node)  {
-        if (! (node.getBuilder() instanceof Users)) {
-            log.info("Node is no Users object but " + node.getBuilder().getTableName() + ", corresponding user is invalid");
-            return false;
-        }
         boolean valid = true;
         long time = System.currentTimeMillis() / 1000;
-        if (hasField(FIELD_VALID_FROM)) {
-            long from = node.getLongValue(FIELD_VALID_FROM);
-            if (from > time) {
+        if (getField(FIELD_VALID_FROM) != null) {
+            if (node.getLongValue(FIELD_VALID_FROM) > time) {
                 valid = false;
             }
         }
-        if (hasField(FIELD_VALID_TO)) {
-            long to = node.getLongValue(FIELD_VALID_TO);
-            if (to > 0 && to < time) {
+        if (getField(FIELD_VALID_TO) != null) {
+            if (node.getLongValue(FIELD_VALID_TO) < time) {
                 valid = false;
             }
         }
@@ -437,7 +354,6 @@ public class Users extends MMObjectBuilder {
      * Makes sure unique values and not-null's are filed
      */
     public void setDefaults(MMObjectNode node) {
-        super.setDefaults(node);
         MMObjectNode defaultDefaultContext = Contexts.getBuilder().getContextNode(node.getStringValue("owner"));
         node.setValue(FIELD_DEFAULTCONTEXT, defaultDefaultContext);
         node.setValue(FIELD_PASSWORD, "");
@@ -447,13 +363,19 @@ public class Users extends MMObjectBuilder {
             currentUserName = "user";
         }
         setUniqueValue(node, FIELD_USERNAME, currentUserName);
-        if (getField(FIELD_VALID_FROM) != null && node.isNull(FIELD_VALID_FROM)) {
+        if (getField(FIELD_VALID_FROM) != null) {
             node.setValue(FIELD_VALID_FROM, System.currentTimeMillis()/1000);
         }
-        if (getField(FIELD_VALID_TO) != null && node.isNull(FIELD_VALID_TO)) {
+        if (getField(FIELD_VALID_TO) != null) {
             node.setValue(FIELD_VALID_TO, VALID_TO_DEFAULT);
         }
      }
+
+    public Parameter[] getParameterDefinition(String function) {
+        Parameter[] params = org.mmbase.util.functions.NodeFunction.getParametersByReflection(Users.class, function);
+        if (params == null) return super.getParameterDefinition(function);
+        return params;
+    }
 
     /**
      * @javadoc
@@ -467,11 +389,13 @@ public class Users extends MMObjectBuilder {
             List empty = new ArrayList();
             java.util.Map info = (java.util.Map) super.executeFunction(node, function, empty);
             info.put("gui", "(status..) Gui representation of this object.");
-                 if (args == null || args.size() == 0) {
+            if (args == null || args.size() == 0) {
                 return info;
             } else {
                 return info.get(args.get(0));
             }
+        }  else if (function.equals("rank")) {
+            return getRank(node);
         } else if (args != null && args.size() > 0) {
             if (function.equals("gui")) {
                 String field = (String) args.get(0);
@@ -480,7 +404,7 @@ public class Users extends MMObjectBuilder {
                     // THIS KIND OF STUFF SHOULD BE AVAILEBLE IN MMOBJECTBUILDER.
                     String val = node.getStringValue(field);
                     ResourceBundle bundle;
-                    Parameters pars = Functions.buildParameters(GUI_PARAMETERS, args);
+                    Parameters pars = Parameters.get(GUI_PARAMETERS, args);
                     Locale locale = (Locale) pars.get(Parameter.LOCALE);
                     if (locale == null) {
                         String lang = (String) pars.get(Parameter.LANGUAGE);
@@ -549,25 +473,15 @@ public class Users extends MMObjectBuilder {
             }
         }
     }
-
+    
 
     public boolean nodeChanged(String machine, String number, String builder, String ctype) {
         if (ctype.equals("d")) {
             int nodeNumber = Integer.parseInt(number);
             invalidateCaches(nodeNumber);
-        } else if (ctype.equals("r")) {
-            int nodeNumber = Integer.parseInt(number);
-            Map ranks = new HashMap();
-            Iterator i = rankCache.entrySet().iterator();
-            while (i.hasNext()) {
-                Map.Entry entry = (Map.Entry) i.next();
-                MMObjectNode cacheNode = (MMObjectNode) entry.getKey();
-                if (cacheNode.getNumber() == nodeNumber) {
-                    i.remove();
-                }
-            }
-        } else if (ctype.equals("c")) {
+        } else if (ctype.equals("c")) {            
             MMObjectNode node = getNode(number);
+
             Map ranks = new HashMap();
             Iterator i = rankCache.entrySet().iterator();
             while (i.hasNext()) {
@@ -578,29 +492,27 @@ public class Users extends MMObjectBuilder {
                     i.remove();
                 }
             }
+            rankCache.putAll(ranks);
 
-            if (ctype.equals("c")) {
-                rankCache.putAll(ranks);
-                Map users = new HashMap();
-                i = userCache.entrySet().iterator();
-                while (i.hasNext()) {
-                    Map.Entry entry = (Map.Entry) i.next();
-                    Object value = entry.getValue();
-                    if (value == null) {
+            Map users = new HashMap();
+            i = userCache.entrySet().iterator();
+            while (i.hasNext()) {
+                Map.Entry entry = (Map.Entry) i.next();
+                Object value = entry.getValue();
+                if (value == null) {
+                    i.remove();
+                } else {
+                    MMObjectNode cacheNode = (MMObjectNode) value;
+                    if (cacheNode.getNumber() == node.getNumber()) {
+                        users.put(entry.getKey(), node);
                         i.remove();
-                    } else {
-                        MMObjectNode cacheNode = (MMObjectNode) value;
-                        if (cacheNode.getNumber() == node.getNumber()) {
-                            users.put(entry.getKey(), node);
-                            i.remove();
-                        }
                     }
                 }
-                userCache.putAll(users);
-            }
+            }   
+            userCache.putAll(users);
         }
         return true;
-
+        
     }
 
 

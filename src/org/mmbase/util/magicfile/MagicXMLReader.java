@@ -1,19 +1,17 @@
 package org.mmbase.util.magicfile;
 
-import java.io.*;
+import java.io.File;
 import java.util.*;
 
+import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
-import org.mmbase.util.xml.DocumentReader;
 import org.w3c.dom.Element;
-import org.xml.sax.InputSource;
-import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Reads <config>/magic.xml
  */
-public class MagicXMLReader extends DocumentReader implements DetectorProvider {
+public class MagicXMLReader extends XMLBasicReader implements DetectorProvider {
 
     private static Logger log = Logging.getLoggerInstance(MagicXMLReader.class);
 
@@ -21,15 +19,13 @@ public class MagicXMLReader extends DocumentReader implements DetectorProvider {
     protected static final String MAGICXMLFILE = "magic.xml";
     // Name of the XML magic file - should reside in top config dir
 
-    private static void setReader(String config) throws IllegalArgumentException {
-        try {
-            InputSource is = ResourceLoader.getConfigurationRoot().getInputSource(config);
-            if (is != null) {
-                reader = new MagicXMLReader(is);
-            }
-        } catch (IOException ie) {
-            log.warn(ie);
+    private static FileWatcher watcher;
+
+    private static void setReader(File file) throws IllegalArgumentException {
+        if (!file.exists()) {
+            throw new IllegalArgumentException("magic file  " + file + " does not exist");
         }
+        reader = new MagicXMLReader(file.getAbsolutePath());
     }
 
     /**
@@ -39,29 +35,37 @@ public class MagicXMLReader extends DocumentReader implements DetectorProvider {
 
     public synchronized static MagicXMLReader getInstance() {
         if (reader == null) { // can only occur once.
-
-            setReader(MAGICXMLFILE);
-
-            if (reader != null) {
-                log.info("Magic XML file is: " + reader.getSystemId());
+            String configPath = null;
+            try {
+                configPath = MMBaseContext.getConfigPath();
+            } catch (RuntimeException e) {
+                return null;
+            }
+            File magicxml = new File(configPath, MAGICXMLFILE);
+            log.info("Magic XML file is: " + magicxml);
+            try {
+                setReader(magicxml);
+            } catch (IllegalArgumentException e) {
+                log.info("The file does not exist, cannot create MagicXMLReader instance");
+                return null;
             }
 
-            ResourceWatcher watcher = new ResourceWatcher() {
-                    public void onChange(String file) {
-                        // reader is replaced on every change of magic.xml
-                        setReader(file);
-                    }
-                };
+            watcher = new FileWatcher(true) {
+                protected void onChange(File file) {
+                        // reader is replace on every change of magic.xml
+    setReader(file);
+                }
+            };
+            watcher.add(magicxml);
             watcher.start();
-            watcher.add(MAGICXMLFILE);
 
         }
         return reader;
     }
     private List detectors = null;
 
-    private MagicXMLReader(InputSource is) {
-        super(is, MagicXMLReader.class);
+    private MagicXMLReader(String path) {
+        super(path, MagicXMLReader.class);
     }
 
     public String getVersion() {
@@ -82,16 +86,18 @@ public class MagicXMLReader extends DocumentReader implements DetectorProvider {
      */
     public List getDetectors() {
         if (detectors == null) {
-            detectors = new CopyOnWriteArrayList();
+            detectors = new Vector();
             Element e = getElementByPath("magic.detectorlist");
             if (e == null) {
-                log.fatal("Could not find magic/detectorlist in magic.xml");
+                log.fatal("Could not find magic/detectorlist in magix.cml");
                 // aargh!
                 return detectors;
             }
-            for (Iterator iter = getChildElements(e); iter.hasNext();) {
-                Element element = (Element) iter.next();
-                Detector d = getOneDetector(element);
+
+            Enumeration enumeration = getChildElements(e);
+            Detector d;
+            while (enumeration.hasMoreElements()) {
+                d = getOneDetector((Element)enumeration.nextElement());
                 detectors.add(d);
             }
         }
@@ -104,44 +110,37 @@ public class MagicXMLReader extends DocumentReader implements DetectorProvider {
     private String convertOctals(String s) {
         int p = 0;
         int stoppedAt = 0;
-        ByteArrayOutputStream buf = new ByteArrayOutputStream();
+        StringBuffer buf = new StringBuffer();
         char c;
-        try {
-            while (p < s.length()) {
-                c = s.charAt(p);
-                if (c == '\\') {
-                    if (p > s.length() - 4) {
-                        // Can't be a full octal representation here, let's cut it off
-                        break;
-                    } else {
-                        char c0;
-                        boolean failed = false;
-                        for (int p0 = p + 1; p0 < p + 4; p0++) {
-                            c0 = s.charAt(p0);
-                            if (!((int)c0 >= '0' && (int) c0 <= '7')) {
-                                failed = true;
-                            }
-                        }
-                        if (!failed) {
-                            byte[]  bytes = s.substring(stoppedAt, p).getBytes("US-ASCII");
-                            buf.write(bytes, 0, bytes.length);
-                            buf.write(Integer.parseInt(s.substring(p + 1, p + 4), 8));
-                            stoppedAt = p + 4;
-                            p = p + 4;
-                        } else {
-                            p++;
+        while (p < s.length()) {
+            c = s.charAt(p);
+            if (c == '\\') {
+                if (p > s.length() - 4) {
+                    // Can't be a full octal representation here, let's cut it off
+                    break;
+                } else {
+                    char c0;
+                    boolean failed = false;
+                    for (int p0 = p + 1; p0 < p + 4; p0++) {
+                        c0 = s.charAt(p0);
+                        if (!((int)c0 >= '0' && (int)c0 <= '9')) {
+                            failed = true;
                         }
                     }
-                } else {
-                    p++;
+                    if (!failed) {
+                        buf.append(s.substring(stoppedAt, p)).append((char)Integer.parseInt(s.substring(p + 1, p + 4), 8));
+                        stoppedAt = p + 4;
+                        p = p + 4;
+                    } else {
+                        p++;
+                    }
                 }
+            } else {
+                p++;
             }
-            byte[]  bytes = s.substring(stoppedAt, p).getBytes("US-ASCII");
-            buf.write(bytes, 0, bytes.length);
-            return buf.toString("US-ASCII");
-        } catch (java.io.UnsupportedEncodingException use) { // could not happen US-ASCII is supported
-            return ""; 
         }
+        buf.append(s.substring(stoppedAt, p));
+        return buf.toString();
     }
 
     private Detector getOneDetector(Element e) {
@@ -158,29 +157,30 @@ public class MagicXMLReader extends DocumentReader implements DetectorProvider {
         d.setDesignation(getElementValue(e1));
 
         e1 = getElementByPath(e, "detector.test");
-        if (e1 != null) {
-            d.setTest(convertOctals(getElementValue(e1)));
-            d.setOffset(getElementAttributeValue(e1, "offset"));
-            d.setType(getElementAttributeValue(e1, "type"));
-            String comparator = getElementAttributeValue(e1, "comparator");
-            if (comparator.equals("&gt;")) {
-                d.setComparator('>');
-            } else if (comparator.equals("&lt;")) {
-                d.setComparator('<');
-            } else if (comparator.equals("&amp;")) {
-                d.setComparator('&');
-            } else if (comparator.length() == 1) {
-                d.setComparator(comparator.charAt(0));
-            } else {
-                d.setComparator('=');
-            }
+        d.setTest(convertOctals(getElementValue(e1)));
+
+        d.setOffset(getElementAttributeValue(e1, "offset"));
+        d.setType(getElementAttributeValue(e1, "type"));
+        String comparator = getElementAttributeValue(e1, "comparator");
+        if (comparator.equals("&gt;")) {
+            d.setComparator('>');
+        } else if (comparator.equals("&lt;")) {
+            d.setComparator('<');
+        } else if (comparator.equals("&amp;")) {
+            d.setComparator('&');
+        } else if (comparator.length() == 1) {
+            d.setComparator(comparator.charAt(0));
+        } else {
+            d.setComparator('=');
         }
 
         e1 = getElementByPath(e, "detector.childlist");
         if (e1 != null) {
-            for (Iterator iter = getChildElements(e1); iter.hasNext();) {
-                Element element = (Element) iter.next();
-                Detector child = getOneDetector(element);
+            Enumeration enumeration = getChildElements(e1);
+            Detector child;
+            while (enumeration.hasMoreElements()) {
+                e1 = (Element)enumeration.nextElement();
+                child = getOneDetector(e1);
                 d.addChild(child, 1); // Not sure if this is the right thing
             }
         }

@@ -18,7 +18,7 @@
     <mm:import id="user"><%=cloud.getUser().getIdentifier()%></mm:import>
       <select name="mediaeditors_origin_<mm:write referid="user" />">
         <mm:node number="media.allstreams">
-          <mm:relatednodes id="origin" directions="down" role="parent" type="pools" orderby="pools.name">            
+          <mm:relatednodes id="origin" directions="destination" role="parent" type="pools" orderby="pools.name">            
             <option value="<mm:field name="number" />"><mm:field name="name" /></option>
           </mm:relatednodes>
         </mm:node>
@@ -26,11 +26,11 @@
       <br />
       <%=m.getString("send")%><button type="submit"><img src="media/search.gif" /></button>
     </form>
-    <%-- p>
+    <!-- p>
       U kunt ook onmiddelijk <a href="<mm:url page="login.jsp" />">inloggen</a>.
-      </p --%>
+    </p-->
   </body>
-</mm:notpresent><%-- no origin yet --%>
+</mm:notpresent>
 
 <mm:present referid="config.mediaeditors_origin_set">
 
@@ -85,7 +85,7 @@
 </table>
 </p>
 </body>
-</mm:present><%-- origin set --%>
+</mm:present>
 </html>
 </mm:cloud>
 </mm:content>

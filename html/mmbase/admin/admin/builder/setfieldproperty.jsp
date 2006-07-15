@@ -1,9 +1,7 @@
-<%@page   contentType="text/html;charset=utf-8"
-%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
-%><%@page import="org.mmbase.bridge.*" %>
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@page import="org.mmbase.bridge.*" %>
 <%@page import="java.util.*" %>
 <%@include file="../../settings.jsp" %>
-<mm:content expires="0">
 <mm:cloud method="$method" authenticate="$authenticate" rank="administrator">
 <% String builder = request.getParameter("builder");
    String field = request.getParameter("field");
@@ -14,6 +12,8 @@
 <head>
 <title>Administrate Builder <%=builder%>, <%=name%> of Field <%=field%></title>
 <link rel="stylesheet" type="text/css" href="<mm:url page="/mmbase/style/css/mmbase.css" />" />
+<meta http-equiv="pragma" value="no-cache" />
+<meta http-equiv="expires" value="0" />
 </head>
 <body class="basic" >
 <% Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
@@ -44,11 +44,11 @@
   <td class="data"><%=name%></td>
  <td class="data">
   <% if (cmd.equals("dbmmbasetype")) {%>
-
+<%@include file="properties/dbmmbasetype.jsp" %>
   <% } else if (cmd.startsWith("editor")) {%>
 <%@include file="properties/editorpos.jsp" %>
   <% } else if (cmd.equals("guitype")) {%>
-
+<%@include file="properties/guitype.jsp" %>
   <% } else if (cmd.equals("dbstate")) {%>
 <%@include file="properties/dbstate.jsp" %>
   <% } else if (cmd.equals("dbkey") || cmd.equals("dbnotnull")) {%>
@@ -58,7 +58,7 @@
         value=null;
   %>
 <% property="country"; %>
-<%@include file="properties/iso639.jsp" %> <!--hff iso639 are not countries, but languages... -->
+<%@include file="properties/iso639.jsp" %>
 / <input type="text" name="value" value="<%=value%>" />
   <% } else if (cmd.equals("newdescription")) {
         cmd="description";
@@ -93,4 +93,3 @@
 </table>
 </body></html>
 </mm:cloud>
-</mm:content>

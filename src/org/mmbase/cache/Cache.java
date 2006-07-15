@@ -11,63 +11,135 @@ package org.mmbase.cache;
 
 import java.util.*;
 
-import org.mmbase.util.*;
+import java.io.File;
+import org.mmbase.util.LRUHashtable;
+import org.mmbase.module.core.*; // MMBaseContext;
+
+import org.mmbase.util.XMLBasicReader;
+import org.w3c.dom.Element;
+
+import org.mmbase.util.FileWatcher;
+import org.mmbase.util.SizeMeasurable;
+import org.mmbase.util.SizeOf;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.mmbase.bridge.Cacheable;
+
 
 /**
  * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.35 2006-02-23 17:36:55 michiel Exp $
+ * @version $Id: Cache.java,v 1.19.2.1 2004-08-04 13:42:19 michiel Exp $
  */
-abstract public class Cache implements SizeMeasurable, Map {
+abstract public class Cache extends LRUHashtable implements SizeMeasurable  {
 
-    private static final Logger log = Logging.getLoggerInstance(Cache.class);
-
-    private boolean active = true;
-    protected int maxEntrySize = -1; // no maximum/ implementation does not support;
+    private static Logger log = Logging.getLoggerInstance(Cache.class);
 
     /**
-     * @since MMBase-1.8
+     * All registered caches
      */
-    private CacheImplementationInterface implementation;
+    private static Map caches = new Hashtable();
 
     /**
-     * The number of times an element was succesfully retrieved from this cache.
+     * Configures the caches using a config File. There is only one
+     * config file now so the argument is a little overdone, but it
+     * doesn't harm.
      */
-    private int hits = 0;
 
-    /**
-     * The number of times an element could not be retrieved from this cache.
-     */
-    private int misses = 0;
-
-    /**
-     * The number of times an element was committed to this cache.
-     */
-    private int puts = 0;
-
-    public Cache(int size) {
-        implementation = new LRUHashtable(size);
-        log.service("Creating cache " + getName() + ": " + getDescription());
+    private static void configure(XMLBasicReader file) {
+        configure(file, null);
     }
 
-    void setImplementation(String clazz, Map configValues) {
-        try {
-            Class clas = Class.forName(clazz);
-            if (implementation == null || (! clas.equals(implementation.getClass()))) {
-                implementation = (CacheImplementationInterface) clas.newInstance();
-                implementation.config(configValues);
-            }
-        } catch (ClassNotFoundException cnfe) {
-            log.error("For cache " + this + " " + cnfe.getClass().getName() + ": " + cnfe.getMessage());
-        } catch (InstantiationException ie) {
-            log.error("For cache " + this + " " + ie.getClass().getName() + ": " + ie.getMessage());
-        } catch (IllegalAccessException iae) {
-            log.error("For cache " + this + " " + iae.getClass().getName() + ": " + iae.getMessage());
+    private static XMLBasicReader configReader = null;
+
+    /**
+     * As configure, but it only changes the configuration of the cache 'only'.
+     * This is called on first use of a cache.
+     */
+    private static void configure(XMLBasicReader xmlReader, String only) {
+        if (xmlReader == null) {
+            return; // nothing can be done...
         }
+
+        if (only == null) {
+            log.service("Configuring caches with " + xmlReader.getFileName());
+        } else {
+            if (log.isDebugEnabled()) log.debug("Configuring cache " + only + " with file " + xmlReader.getFileName());
+        }
+
+        Enumeration e =  xmlReader.getChildElements("caches", "cache");
+        while (e.hasMoreElements()) {
+            Element cacheElement = (Element) e.nextElement();
+            String cacheName =  cacheElement.getAttribute("name");
+            if (only != null && ! only.equals(cacheName)) {
+                continue;
+            }
+            Cache cache = getCache(cacheName);
+            if (cache == null) {
+                log.service("No cache " + cacheName + " is present (perhaps not used yet?)");
+            } else {
+                String status = xmlReader.getElementValue(xmlReader.getElementByPath(cacheElement, "cache.status"));
+                cache.setActive(status.equalsIgnoreCase("active"));
+                try {
+                    Integer size = new Integer(xmlReader.getElementValue(xmlReader.getElementByPath(cacheElement, "cache.size")));
+                    cache.setSize(size.intValue());
+                    log.service("Setting " + cacheName + " " + status + " with size " + size);
+                } catch (NumberFormatException nfe) {
+                    log.error("Could not configure cache " + cacheName + " because the size was wrong: " + nfe.toString());
+                }
+                String maxSize = xmlReader.getElementValue(xmlReader.getElementByPath(cacheElement, "cache.maxEntrySize"));
+                if (!"".equals(maxSize)) {
+                    try {
+                        cache.maxEntrySize = Integer.parseInt(maxSize);
+                        log.service("Setting maximum entry size on " + cacheName + ": " + cache.maxEntrySize + " bytes ");
+                    } catch (NumberFormatException nfe2) {
+                        log.error("Could not set max entry size cache  of " + cacheName + " because " + nfe2.toString());
+                    }
+                } else {
+                    if (cache.getDefaultMaxEntrySize() > 0) {
+                        log.service("No max entry size specified for this cache taking default " + cache.getDefaultMaxEntrySize() + " bytes");
+                    }
+                }
+            }
+        }
+    }
+
+
+    /**
+    * The caches can be configured with an XML file, this file can
+    * be changed which causes the caches to be reconfigured automaticly.
+    */
+    private static FileWatcher configWatcher = new FileWatcher (true) {
+            protected void onChange(File file) {
+                configReader = new XMLBasicReader(file.getAbsolutePath(), Cache.class);
+                configure(configReader);
+            }
+        };
+
+    static { // configure
+        log.debug("Static init of Caches");
+        File configFile = new File(MMBaseContext.getConfigPath() + File.separator + "caches.xml");
+        if (configFile.exists()) {
+            configWatcher.add(configFile);
+            configReader = new XMLBasicReader(configFile.getAbsolutePath(), Cache.class);
+            // configure(configReader); never mind, no cache are present on start up
+        } else {
+            log.warn("No cache configuration file " + configFile + " found");
+        }
+        configWatcher.setDelay(10 * 1000); // check every 10 secs if config changed
+        configWatcher.start();
+
+    }
+
+
+    private boolean active = true;
+    protected int   maxEntrySize = -1; // no maximum/ implementation does not support;
+
+
+
+    public Cache(int size) {
+        super(size);
+        log.service("Creating cache " + getName() + ": " + getDescription());
     }
 
     /**
@@ -90,7 +162,7 @@ abstract public class Cache implements SizeMeasurable, Map {
 
     /**
      * Return the maximum entry size for the cache in bytes.  If the
-     * cache-type supports it (default no), then no values bigger then
+     * cache-type support it (default no), then no values bigger then
      * this will be stored in the cache.
      */
     public int getMaxEntrySize() {
@@ -109,130 +181,64 @@ abstract public class Cache implements SizeMeasurable, Map {
         return -1;
     }
 
-    public Set entrySet() {
-        if (! active) return new HashSet();
-        return implementation.entrySet();
-    }
-
     /**
-     * Checks whether the key object should be cached.
-     * This method returns <code>false</code> if either the current cache is inactive, or the object to cache
-     * has a cache policy associated that prohibits caching of the object.
-     * @param key the object to be cached
-     * @return <code>true</code> if the object can be cached
-     * @since MMBase-1.8
+     * Puts a cache in the caches repository. This function will be
+     * called in the static of childs, therefore it is protected.
+     *
+     * @param A cache.
+     * @return The previous cache of the same type (stored under the same name)
      */
-    protected boolean checkCachePolicy(Object key) {
-        CachePolicy policy = null;
-        if (active) {
-            if (key instanceof Cacheable) {
-                policy = ((Cacheable)key).getCachePolicy();
-                if (policy != null) {
-                    return policy.checkPolicy(key);
-                }
-            }
-            return true;
-        }
-        return false;
+    protected static Cache putCache(Cache cache) {
+        Cache old = (Cache) caches.put(cache.getName(), cache);
+        configure(configReader, cache.getName());
+        return old;
     }
 
     /**
-     * Like 'get' of Maps but considers if the cache is active or not,  and the cache policy of the key.
+     * Puts this cache in the caches repository.
+     */
+
+    public Cache putCache() {
+        return putCache(this);
+    }
+
+    /**
+     * Returns the Cache with a certain name. To be used in combination with getCaches(). If you
+     * need a certain cache, you can just as well call the non-static 'getCache' which is normally
+     * in cache singletons.
+     *
+     * @see #getCaches
+     */
+    public static Cache getCache(String name) {
+        return (Cache) caches.get(name);
+    }
+
+    /**
+     * Returns the names of all caches.
+     *
+     * @return A Set containing the names of all caches.
+     */
+    public static Set getCaches() {
+        return caches.keySet();
+    }
+
+    /**
+     * Like 'get' of LRUHashtable but considers if the cache is active or not.
+     *
      */
     public  Object get(Object key) {
-        if (!checkCachePolicy(key)) {
-            return null;
-        }
-        Object res = implementation.get(key);
-        if (res != null) {
-            hits++;
-        } else {
-            misses++;
-        }
-        return res;
+        if (! active) return null;
+        return super.get(key);
     }
 
     /**
      * Like 'put' of LRUHashtable but considers if the cache is active or not.
      *
      */
-    public Object put(Object key, Object value) {
-        if (!checkCachePolicy(key)) {
-            return null;
-        }
-        puts++;
-        return implementation.put(key, value);
+    public  Object put(Object key, Object value) {
+        if (! active) return null;
+        return super.put(key, value);
     }
-
-    /**
-     * Returns the number of times an element was succesfully retrieved
-     * from the table.
-     */
-    public int getHits() {
-        return hits;
-    }
-
-    /**
-     * Returns the number of times an element cpould not be retrieved
-     * from the table.
-     */
-    public int getMisses() {
-        return misses;
-    }
-
-    /**
-     * Returns the number of times an element was committed to the table.
-     */
-    public int getPuts() {
-        return puts;
-    }
-
-    public  void setMaxSize(int size) {
-        implementation.setMaxSize(size);
-    }
-    public  int maxSize() {
-        return implementation.maxSize();
-    }
-
-    /**
-     * @see java.util.Map#size()
-     */
-    public  int size() {
-        return implementation.size();
-    }
-    public  boolean contains(Object key) {
-        return implementation.containsKey(key);
-    }
-
-    public int getCount(Object key) {
-        return implementation.getCount(key);
-    }
-
-    /**
-     * Returns the ratio of hits and misses.
-     * The higher the ratio, the more succesfull the table retrieval is.
-     * A value of 1 means every attempt to retrieve data is succesfull,
-     * while a value nearing 0 means most times the object requested it is
-     * not available.
-     * Generally a high ratio means the table can be shrunk, while a low ratio
-     * means its size needs to be increased.
-     *
-     * @return A double between 0 and 1 or NaN.
-     */
-    public double getRatio() {
-        return ((double) hits) / (  hits + misses );
-    }
-
-
-    /**
-     * Returns statistics on this table.
-     * The information shown includes number of accesses, ratio of misses and hits,
-     * current size, and number of puts.
-     */
-    public String getStats() {
-        return "Access "+ (hits + misses) + " Ratio " + getRatio() + " Size " + size() + " Puts " + puts;
-    }
-
 
     /**
      * Sets this cache to active or passive.
@@ -240,15 +246,9 @@ abstract public class Cache implements SizeMeasurable, Map {
      */
     public void setActive(boolean a) {
         active = a;
-        if (! active) {
-            implementation.clear();
-        }
+        if (! active) clear();
         // inactive caches cannot contain anything
         // another option would be to override also the 'contains' methods (which you problable should not use any way)
-    }
-
-    public String toString() {
-        return "Cache " + getName() + ", Ratio: " + getRatio() + " " + implementation;
     }
 
     /**
@@ -263,198 +263,51 @@ abstract public class Cache implements SizeMeasurable, Map {
     }
 
     public int getByteSize(SizeOf sizeof) {
-        int size = 26;
-        if (implementation instanceof SizeMeasurable) {
-            size += ((SizeMeasurable) implementation).getByteSize(sizeof);
-        } else {
-            // sizeof.sizeof(implementation) does not work because this.equals(implementation)
-            Iterator i = implementation.entrySet().iterator();
-            while(i.hasNext()) {
-                Map.Entry entry = (Map.Entry) i.next();
-                size += sizeof.sizeof(entry.getKey());
-                size += sizeof.sizeof(entry.getValue());
-            }
-        }
-        return size;
-    }
-
-    /**
-     * Returns the sum of bytesizes of every key and value. This may count too much, because objects
-     * (like Nodes) may occur in more then one value, but this is considerably cheaper then {@link
-     * getByteSize()}, which has to keep a Collection of every counted object.
-     * @since MMBase-1.8
-     */
-    public int getCheapByteSize() {
-        int size = 0;
-        SizeOf sizeof = new SizeOf();
-        Iterator i = implementation.entrySet().iterator();
-        while(i.hasNext()) {
+        Iterator i = entrySet().iterator();
+        int len = 0;
+        while (i.hasNext()) {
             Map.Entry entry = (Map.Entry) i.next();
-            size += sizeof.sizeof(entry.getKey());
-            size += sizeof.sizeof(entry.getValue());
-            sizeof.clear();
+            len += sizeof.sizeof(entry.getKey());
+            len += sizeof.sizeof(entry.getValue());
         }
-        return size;
+        return len;
     }
 
-
-    /**
-     * @see java.util.Map#clear()
-     */
-    public void clear() {
-        implementation.clear();
-    }
-
-
-    /**
-     * @see java.util.Map#containsKey(java.lang.Object)
-     */
-    public boolean containsKey(Object key) {
-        return implementation.containsKey(key);
-    }
-
-
-    /**
-     * @see java.util.Map#containsValue(java.lang.Object)
-     */
-    public boolean containsValue(Object value) {
-        return implementation.containsValue(value);
-    }
-
-
-    /**
-     * @see java.util.Map#equals(java.lang.Object)
-     */
-    public boolean equals(Object o) {
-        // odd, but this is accordinding to javadoc of Map.
-        return implementation.equals(o);
-    }
-
-
-    /**
-     * @see java.util.Map#hashCode()
-     */
-    public int hashCode() {
-        return implementation.hashCode();
-    }
-
-
-    /**
-     * @see java.util.Map#isEmpty()
-     */
-    public boolean isEmpty() {
-        return implementation.isEmpty();
-    }
-
-
-    /**
-     * @see java.util.Map#keySet()
-     */
-    public Set keySet() {
-        return implementation.keySet();
-    }
-
-
-    /**
-     * @see java.util.Map#putAll(java.util.Map)
-     */
-    public void putAll(Map t) {
-        implementation.putAll(t);
-    }
-
-
-    /**
-     * @see java.util.Map#remove(java.lang.Object)
-     */
-    public Object remove(Object key) {
-        return implementation.remove(key);
-    }
-
-
-    /**
-     * @see java.util.Map#values()
-     */
-    public Collection values() {
-        return implementation.values();
-    }
-
-
-    /**
-     * Puts this cache in the caches repository.
-     * @see CacheManager#putCache(Cache)
-     */
-
-    public Cache putCache() {
-        return CacheManager.putCache(this);
-    }
-
-    /**
-     * @see CacheManager#getCache(String)
-     */
-    protected static Cache putCache(Cache cache) {
-        return CacheManager.putCache(cache);
-    }
-
-    /**
-     * @see CacheManager#getCache(String)
-     */
-    public static Cache getCache(String name) {
-        return CacheManager.getCache(name);
-    }
-
-    /**
-     * @see CacheManager#getCaches
-     */
-    public static Set getCaches() {
-        return CacheManager.getCaches();
-    }
-
-    /**
-     * @see CacheManager#getTotalByteSize
-     */
     public static int getTotalByteSize() {
-        return CacheManager.getTotalByteSize();
-    }
-
-
-    public static void main(String args[]) {
-        Cache mycache = new Cache(20000000) {
-                public String getName()        { return "test cache"; }
-                public String getDescription() { return ""; }
-            };
-        Runtime rt = Runtime.getRuntime();
-        rt.gc();
-        long usedBefore = rt.totalMemory() - rt.freeMemory();
-
-        System.out.println("putting some strings in cache");
-        mycache.put("aaa", "AAA"); // 6 bytes
-        mycache.put("bbb", "BBB"); // 6 bytes
-
-        System.out.println("putting an hashmap in cache");
-        Map m = new HashMap();
-        m.put("ccc", "CCCCCC"); // 9
-        m.put("ddd", "DDD");    // 6
-        m.put("abc", "EEE");    // 6
-        mycache.put("eee", m);  // 3
-
-
-        //String[] list = new String[1000000];
-        //ArrayList list = new ArrayList();
-        // should cause 16M of char
-        for (int i = 1000000; i < 2000000; i++) {
-            mycache.put("a" + 1000000 + i, "b" + 1000000 + i);
-            //list[i - 1000000] = "a" + i + "b" + i;
-            //list.add("a" + i + "b" + i);
-            //list.add(new String( new byte[] {}).intern());
+        Iterator i = caches.entrySet().iterator();
+        int len = 0;
+        SizeOf sizeof = new SizeOf();
+        while (i.hasNext()) {
+            Map.Entry entry = (Map.Entry) i.next();
+            len += sizeof.sizeof(entry.getKey()) + sizeof.sizeof(entry.getValue());
         }
-        rt.gc();
-
-        long usedAfter = rt.totalMemory() - rt.freeMemory();
-
-        System.out.println("1M of String costs "  + (usedAfter - usedBefore) + " bytes");
-        System.out.println("Sizeof reports " + SizeOf.getByteSize(mycache));
-        System.out.println("size of cache: " + mycache.getByteSize() + " ");
-
+        return len;
     }
+
+public static void main(String args[]) {
+    Cache mycache = new Cache(20) {
+            public String getName()        { return "test cache"; }
+            public String getDescription() { return ""; }
+        };
+    /*
+    System.out.println("putting some strings in cache");
+    mycache.put("aaa", "AAA"); // 6 bytes
+    mycache.put("bbb", "BBB"); // 6 bytes
+
+    System.out.println("putting an hashmap in cache");
+    Map m = new HashMap();
+    m.put("ccc", "CCCCCC");
+    m.put("ddd", "DDD");
+    m.put("abc", "EEE");
+    mycache.put("eee", m);
+    */
+
+    MMObjectNode node = new MMObjectNode(new MMObjectBuilder());
+    node.setValue("hoi", "hoi");
+    mycache.put("node", node);
+
+    System.out.println("size of cache: " + mycache.getByteSize());
+
+}
 
 }

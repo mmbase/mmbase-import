@@ -10,12 +10,19 @@
 package org.mmbase.applications.media.builders;
 
 import java.util.*;
+import java.net.URL;
+import java.net.URLConnection;
+import java.io.*;
 
+import org.mmbase.applications.media.cache.URLCache;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.core.MMObjectBuilder;
+import org.mmbase.module.core.MMBaseContext;
 
+import org.mmbase.util.FileWatcher;
+import org.mmbase.util.StringObject;
+import org.mmbase.util.XMLBasicReader;
 
-import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -25,6 +32,9 @@ import org.mmbase.applications.media.Format;
 import org.mmbase.applications.media.Codec;
 
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 
 /**
  * The MediaSource builder describes a specific type of media that can be retrieved (real/mp3/etc). Information about
@@ -35,13 +45,14 @@ import org.mmbase.applications.media.Codec;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.34 2005-10-06 11:46:31 michiel Exp $
+ * @version $Id: MediaSources.java,v 1.26.2.1 2004-05-12 14:41:46 rob Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
-    private static final Logger log = Logging.getLoggerInstance(MediaSources.class);
-       
-    // typo checks
+    private static Logger log = Logging.getLoggerInstance(MediaSources.class);
+    
+    
+    // typo check
     public static final String FUNCTION_URLS           = "urls";
     public static final String FUNCTION_FILTEREDURLS   = "filteredurls";
     public static final String FUNCTION_URL            = "url";
@@ -51,41 +62,40 @@ public class MediaSources extends MMObjectBuilder {
     public static final String FUNCTION_MIMETYPE       = "mimetype";
 
     
-    // parameter definitions (making use of reflection utitility for functions)
-    public final static Parameter[] URLS_PARAMETERS         = { new Parameter("node",  org.mmbase.bridge.Node.class), 
-                                                                new Parameter.Wrapper(MediaFragments.URLS_PARAMETERS) };
-    public final static Parameter[] FILTEREDURLS_PARAMETERS = URLS_PARAMETERS;
-    public final static Parameter[] URL_PARAMETERS          = URLS_PARAMETERS;
-    public final static Parameter[] AVAILABLE_PARAMETERS    = {};
-    public final static Parameter[] FORMAT_PARAMETERS       = URLS_PARAMETERS;
-    public final static Parameter[] CODEC_PARAMETERS        = {};
-    public final static Parameter[] MIMETYPE_PARAMETERS     = {};
-
-
-
-
-    
-    // Status (this should be helped by field-type project (resourcebundle/java-constants))
-    public final static int    STATE_DONE     = 3; // jikes
-    public final static int    STATE_SOURCE   = 4; // what does this mean?
-    public final static int    STATE_REMOVED = 10; // jikes
+    // Status
+    public final static int    STATE_DONE   = 3; // jikes
     public final static String STATES_RESOURCE = "org.mmbase.applications.media.builders.resources.states";
     
     public final static int MONO   = 1;
     public final static int STEREO = 2;
-
     
-
-
-    private String defaultProvider = null;
     
-    /**
-     * {@inheritDoc}
-     */
+    private static Map mimeMapping = null;
+    
     public boolean init() {
-        boolean result = super.init();
+        boolean result = super.init();               
+        if (mimeMapping == null) {
+            mimeMapping = new HashMap();
+           
+            File mimeMappingFile = new File(MMBaseContext.getConfigPath() + File.separator + "media" + File.separator + "mimemapping.xml");
 
-        defaultProvider = getInitParameter("default.provider.alias");
+            if (mimeMappingFile.canRead()) {
+                log.service("Reading " + mimeMappingFile);
+                XMLBasicReader reader = new XMLBasicReader(mimeMappingFile.toString(), getClass());
+                
+                for(Enumeration e = reader.getChildElements("mimemapping", "map"); e.hasMoreElements();) {
+                    Element map = (Element)e.nextElement();
+                    String format = reader.getElementAttributeValue(map, "format");
+                    String codec = reader.getElementAttributeValue(map, "codec");
+                    String mime = reader.getElementValue(map);
+                    
+                    mimeMapping.put(format + "/" + codec,mime);
+                    log.debug("Adding mime mapping " + format + "/" + codec + " -> " + mime);
+                }
+            } else {
+                log.service("The file " + mimeMappingFile + " can not be read");
+            }
+        }
         
         return result;
     }
@@ -118,8 +128,8 @@ public class MediaSources extends MMObjectBuilder {
         
         // creating relation between media source and media fragment
         MMObjectNode insrel = mmb.getInsRel().getNewNode(owner);
-        insrel.setValue("snumber", mediafragment.getIntValue("number"));
-        insrel.setValue("dnumber", source.getIntValue("number"));
+        insrel.setValue("snumber", source.getIntValue("number"));
+        insrel.setValue("dnumber", mediafragment.getIntValue("number"));
         insrel.setValue("rnumber", mmb.getRelDef().getNumberByName("related"));
         int ret = insrel.insert(owner);
         if(ret<0) {
@@ -145,7 +155,6 @@ public class MediaSources extends MMObjectBuilder {
         URLComposer ri = (URLComposer) urls.get(0);
         return ri.getURL();
     }
-
     
     /**
      * Resolve the mimetype for a certain media source
@@ -154,8 +163,31 @@ public class MediaSources extends MMObjectBuilder {
      * @return the content type
      */
     String getMimeType(MMObjectNode source) { // package because it is used in URLResolver
-        return getFormat(source).getMimeType();
-
+        String format = getFormat(source).toString();
+        if(format == null || format.equals("")) {
+            format = "*";
+        }
+        String codec = getCodec(source).toString();
+        if(codec == null || codec.equals("")) {
+            codec = "*";
+        }
+        
+        String mimetype;
+        if(mimeMapping.containsKey(format+"/"+codec)) {
+            mimetype = (String) mimeMapping.get(format + "/" + codec);
+        } else if (mimeMapping.containsKey(format + "/*")) {
+            mimetype = (String) mimeMapping.get(format + "/*");
+        } else if (mimeMapping.containsKey("*/" + codec)) {
+            mimetype = (String) mimeMapping.get("/" + codec);
+        } else if (mimeMapping.containsKey("*/*")) {
+            mimetype = (String) mimeMapping.get("*/*");
+        }  else {
+            mimetype = "application/octet-stream";
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("Mimetype for mediasource " + source.getIntValue("number") + " is "+mimetype);
+        }
+        return mimetype;
     }
     
     
@@ -164,7 +196,7 @@ public class MediaSources extends MMObjectBuilder {
      * used in the editors
      */
     public String getGUIIndicator(MMObjectNode source) {
-	return "" + Format.get(source.getIntValue("format")) + "/" + source.getStringValue("bitrate") + "/" + source.getStringValue("channels");
+	return ""+Format.get(source.getIntValue("format"))+"/"+source.getStringValue("bitrate")+"/"+source.getStringValue("channels");
 	/*
         List urls = getFilteredURLs(source, null, null);
         if (urls.size() == 0) return "[could not compose URL]";
@@ -213,9 +245,9 @@ public class MediaSources extends MMObjectBuilder {
     protected Codec getCodec(MMObjectNode source) {
         return Codec.get(source.getIntValue("codec"));
     }
-
+    
     /**
-     * {@inheritDoc}
+     * Functions.
      */
     protected Object executeFunction(MMObjectNode node, String function, List args) {
         if (log.isDebugEnabled()) {
@@ -238,15 +270,11 @@ public class MediaSources extends MMObjectBuilder {
                 return info.get(args.get(0));
             }
         } else if (FUNCTION_URLS.equals(function) || FUNCTION_FILTEREDURLS.equals(function)) {
-
-            Parameters parameters = Functions.buildParameters(URLS_PARAMETERS, args);
-
             MMObjectNode fragment;
-                                                   
-            Object f = parameters.get("node");
-            if (f == null) {
+            if (args == null || args.size() == 0) {
                 fragment = null;
-            } else {
+            } else if (args.size() == 1) {
+                Object f = args.get(0);
                 if (f instanceof MMObjectNode) {
                     fragment = (MMObjectNode) f;
                 } else if (f instanceof org.mmbase.bridge.Node) {
@@ -256,8 +284,9 @@ public class MediaSources extends MMObjectBuilder {
                 } else {
                     throw new IllegalArgumentException("Argument of function " + FUNCTION_URLS + " must be a Node");
                 }
-            } 
-
+            } else {
+                throw new IllegalArgumentException("Function " + FUNCTION_URLS + " has 0 or 1 arguments");
+            }
             if (FUNCTION_FILTEREDURLS.equals(function)) {
                 return getFilteredURLs(node, fragment, MediaFragments.translateURLArguments(args, null));
             } else {
@@ -351,28 +380,14 @@ public class MediaSources extends MMObjectBuilder {
     protected List getURLs(MMObjectNode source, MMObjectNode fragment, Map info, List urls, Set cacheExpireObjects) {
         if (urls == null) urls = new ArrayList();
         log.debug("Getting urls for source " + source.getNumber());
-        List providers = getProviders(source);
-        if (providers.size() == 0) {
-            if (defaultProvider != null) {
-                MMObjectNode provider = getNode(defaultProvider);
-                if (provider == null) {
-                    log.warn("Specified default provider '" + defaultProvider + "' is not an existing node");
-                } else {
-                    MediaProviders bul = (MediaProviders) provider.getBuilder(); // cast everytime, because it can be extended
-                    bul.getURLs(provider, source, fragment, info, urls, cacheExpireObjects);
-                }
+        Iterator i = getProviders(source).iterator();
+        while (i.hasNext()) {
+            MMObjectNode provider = (MMObjectNode) i.next();
+            if (log.isDebugEnabled()) {
+                log.debug("Found provider " + provider.getNumber() + " source: " + source.getNumber());
             }
-            
-        } else {        
-            Iterator i = providers.iterator();
-            while (i.hasNext()) {
-                MMObjectNode provider = (MMObjectNode) i.next();
-                if (log.isDebugEnabled()) {
-                    log.debug("Found provider " + provider.getNumber() + " source: " + source.getNumber());
-                }
-                MediaProviders bul = (MediaProviders) provider.getBuilder(); // cast everytime, because it can be extended
-                bul.getURLs(provider, source, fragment, info, urls, cacheExpireObjects);
-            }
+            MediaProviders bul = (MediaProviders) provider.parent; // cast everytime, because it can be extended
+            bul.getURLs(provider, source, fragment, info, urls, cacheExpireObjects);
         }
         return urls;
     }
@@ -393,7 +408,7 @@ public class MediaSources extends MMObjectBuilder {
      */
 
     public void addProvider(MMObjectNode source, String providername, String owner) {
-        MMObjectBuilder providers = mmb.getMMObject("mediaproviders");
+        MMObjectBuilder providers = (MMObjectBuilder) mmb.getMMObject("mediaproviders");
        
 	/** should be used in 1.7	
         NodeSearchQuery query = new NodeSearchQuery(providers);
@@ -460,9 +475,7 @@ public class MediaSources extends MMObjectBuilder {
             int dot = url.lastIndexOf('.');
             if (dot > 0) {
                 String extension = url.substring(dot + 1).toLowerCase();
-                if (log.isDebugEnabled()) {
-                    log.debug("Format of was unset, trying to autodetect by using 'url' field '" + url + "' with extension '" + extension + "'");
-                }
+                log.service("format was unset, trying to autodetect by using 'url' field with extension '" + extension);
                 node.setValue("format", Format.get(extension).toInt());
             }
         }
@@ -488,7 +501,4 @@ public class MediaSources extends MMObjectBuilder {
         checkFields(node);
         return super.insert(owner, node);
     }
-
-
-
 }

@@ -5,7 +5,7 @@
   title red)
 
   @author Michiel Meeuwissen   
-  @version $Id: 2xhtml.xslt,v 1.13 2005-05-18 15:45:07 michiel Exp $
+  @version $Id: 2xhtml.xslt,v 1.10.2.1 2005-04-05 20:06:43 michiel Exp $
   @since  MMBase-1.6
   
 -->
@@ -13,8 +13,7 @@
   xmlns:xsl = "http://www.w3.org/1999/XSL/Transform" 
   version = "1.0" 
   xmlns:mmxf="http://www.mmbase.org/mmxf"
-  xmlns:o = "http://www.mmbase.org/objects"
-  exclude-result-prefixes="mmxf o" 
+  exclude-result-prefixes="mmxf" 
 >
   <xsl:import href="mm:xslt/2xhtml.xslt" />  
   <xsl:output method="xml" omit-xml-declaration="yes"  /><!-- xhtml is a form of xml -->
@@ -30,37 +29,37 @@
   </xsl:template>
 
   <!-- how to present a news node -->
-  <xsl:template match="o:object[@type=$newstype and not(o:unfilledField)]">
-    <xsl:apply-templates select="o:field[@name='title']"  />
-    <xsl:if test="not(o:field[@name='subtitle'] = '')">
-      <font color="{$subtitle_color}"><xsl:apply-templates select="o:field[@name='subtitle']" /></font>
-    </xsl:if>
-    <div class="toc">
-      table of contents:<br />
-      <xsl:for-each select="o:field[@name='body']/mmxf:mmxf/mmxf:section">
-	<a>
-	  <xsl:attribute name="href">#<xsl:value-of select="$formatter_counter" /><xsl:value-of select="generate-id(.)" /></xsl:attribute>
-	  <xsl:value-of select="mmxf:h" />
-	  </a><br />
-      </xsl:for-each>
-    </div>
-    <xsl:apply-templates select="o:field[@name='body']" />
-    <p>
+  <xsl:template match="object[@type=$newstype and not(unfilledField)]">
+    <xsl:apply-templates select="field[@name='title']"  />
+      <xsl:if test="not(field[@name='subtitle'] = '')">
+        <font color="{$subtitle_color}"><xsl:apply-templates select="field[@name='subtitle']" /></font>
+      </xsl:if>
+      <div class="toc">
+        table of contents:<br />
+        <xsl:for-each select="field[@name='body']/mmxf/section">
+          <a>
+            <xsl:attribute name="href">#<xsl:value-of select="$formatter_counter" /><xsl:value-of select="generate-id(.)" /></xsl:attribute>
+            <xsl:value-of select="h" />
+            </a><br />
+        </xsl:for-each>
+      </div>
+	<xsl:apply-templates select="field[@name='body']" />
+	<p>
       <xsl:call-template name="date">     
-	<xsl:with-param name="datetime" select="o:field[@name='date']" />
+	    <xsl:with-param name="datetime" select="field[@name='date']" />
       </xsl:call-template>
-    </p>
+      </p>
   </xsl:template>
-  
-  <xsl:template match = "mmxf:h" mode="h1">
-    <h3 style="color:red;">
-      <a>
-	<xsl:attribute name="id">
-	  <xsl:value-of select="$formatter_counter" /><xsl:value-of select="generate-id(.)" />
-	</xsl:attribute>
-	<xsl:value-of select="node()" />
-      </a>
-    </h3>
-  </xsl:template>
-  
+
+   <xsl:template match = "h" mode="h1">
+     <h3 style="color:red;">
+       <a>
+         <xsl:attribute name="id">
+           <xsl:value-of select="$formatter_counter" /><xsl:value-of select="generate-id(.)" />
+         </xsl:attribute>
+         <xsl:value-of select="node()" />
+       </a>
+     </h3>
+   </xsl:template>
+     
 </xsl:stylesheet>

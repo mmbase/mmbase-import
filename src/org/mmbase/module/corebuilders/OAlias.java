@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: OAlias.java,v 1.20 2006-03-24 13:36:59 johannes Exp $
+ * @version $Id: OAlias.java,v 1.16.2.1 2004-09-02 14:52:03 pierre Exp $
  */
 
 public class OAlias extends MMObjectBuilder {
@@ -56,7 +56,7 @@ public class OAlias extends MMObjectBuilder {
 
     /**
      * Obtain the number of a node through its alias
-     * @param name the alias of the desired node
+     * @param alias the alias of the desired node
      * @return the number of the node, or -1 if the alias does not exist
      * @see #getAliasedNode
      */
@@ -138,27 +138,19 @@ public class OAlias extends MMObjectBuilder {
         }
         return node;
     }
-
     /**
      * Creates an alias for the node with the given number, and updates the alias cache.
      *
      * @since MMBase-1.7
      */
-    public void createAlias(String alias, int number) {
-        createAlias(alias, number, "system");
-    }
 
-    /**
-     * Creates an alias for the node with the given number, and updates the alias cache.
-     *
-     * @since MMBase-1.8
-     */
-    public void createAlias(String alias, int number, String owner) {
-        MMObjectNode node = getNewNode(owner);
+    public void createAlias(String alias, int number) {
+        MMObjectNode node = getNewNode("system");
         node.setValue("name", alias);
         node.setValue("destination", number);
-        node.insert(owner);
+        node.insert("system");
         numberCache.remove(alias);
+
     }
 
     /**

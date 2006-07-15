@@ -16,17 +16,17 @@ import org.xml.sax.InputSource;
 
 import org.mmbase.storage.*;
 import org.mmbase.util.xml.DocumentReader;
-import org.mmbase.util.logging.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
- * @javadoc
  * @author Pierre van Rooden
- * @version $Id: StorageReader.java,v 1.10 2005-07-04 21:25:26 michiel Exp $
- * @since MMBase-1.7
+ * @version $Id: StorageReader.java,v 1.5.2.1 2005-10-26 12:17:44 michiel Exp $
  */
 public class StorageReader extends DocumentReader  {
 
-    private static final Logger log = Logging.getLoggerInstance(StorageReader.class);
+    // logger
+    private static Logger log = Logging.getLoggerInstance(StorageReader.class);
 
     /** Public ID of the Storage DTD version 1.0 */
     public static final String PUBLIC_ID_STORAGE_1_0 = "-//MMBase//DTD storage config 1.0//EN";
@@ -38,6 +38,9 @@ public class StorageReader extends DocumentReader  {
     /** DTD resource filename of the most Database DTD */
     public static final String DTD_STORAGE = DTD_STORAGE_1_0;
 
+    /**
+     * Register the Public Ids for DTDs used by StorageReader
+     */
     static {
         org.mmbase.util.XMLEntityResolver.registerPublicID(PUBLIC_ID_STORAGE_1_0, DTD_STORAGE_1_0, StorageReader.class);
     }
@@ -53,7 +56,7 @@ public class StorageReader extends DocumentReader  {
      * Constructor.
      *
      * @param factory the factory for which to read the storage configuration
-     * @param source to the xml document.
+     * @param Inputsource to the xml document.
      * @since MMBase-1.7
      */
     public StorageReader(StorageManagerFactory factory, InputSource source) {
@@ -187,7 +190,7 @@ public class StorageReader extends DocumentReader  {
                     String optionValue = optionTag.getAttribute("value");
                     Boolean value = Boolean.TRUE;
                     if (optionValue != null && !optionValue.equals("")) {
-                        value = Boolean.valueOf(optionValue);
+                        value = new Boolean(optionValue);
                     }
                     attributes.put(optionName,value);
                 }
@@ -278,10 +281,6 @@ public class StorageReader extends DocumentReader  {
                     // get the type to convert to
                     typeMapping.type = typeMappingTag.getAttribute("type");
                     typeMappings.add(typeMapping);
-                    if (typeMapping.name.equals("BYTE")) {
-                        log.warn("In " + this + " deprecated mapping for 'BYTE' is specified. This must be changed to 'BINARY'");
-                        typeMapping.name = "BINARY";
-                    }
                 }
             }
         }

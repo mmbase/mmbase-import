@@ -11,17 +11,12 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.dove;
 
 import java.util.*;
-import java.util.*;
-import java.util.regex.Pattern;
 import org.w3c.dom.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
-import org.mmbase.datatypes.*;
 import org.mmbase.storage.search.RelationStep;
-import org.mmbase.util.Casting;
-import org.mmbase.util.Encode;
-import org.mmbase.util.xml.UtilReader;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.xml.UtilReader;
 
 /**
  * This class handles Remote Procedure Calls described using a DOM model.
@@ -54,7 +49,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.77 2006-06-22 12:07:37 michiel Exp $
+ * @version $Id: Dove.java,v 1.52.2.5 2006-06-22 12:06:56 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -63,13 +58,14 @@ public class Dove extends AbstractDove {
 
 
     /**
-     *@since MMBase-1.8.1
+     * @since MMBase-1.8.1
      */
     private static final UtilReader properties = new UtilReader("dove.xml");
     private static final String PROP_CHANGES = "changes";
     private static final String CHANGES_IGNORE = "ignore";
     private static final String CHANGES_WARN   = "warn";
     private static final String CHANGES_EXCEPTION   = "exception";
+
 
     /**
      * Constructor
@@ -87,10 +83,10 @@ public class Dove extends AbstractDove {
      * These can include virtual fields.
      * Fields number, owner, and ottype, and the relation fields snumber,dnumber, rnumber, and dir
      * are excluded; these fields should be handled through the attributes of Element.
-     * @param node  the MMBase node that owns the field (or null)
+     * @param nodeManager  the MMBase node that owns the field (or null)
      * @param f The field to check
      */
-    private boolean isDataField(NodeManager nodeManager, Field f) {
+    private boolean isDataField(org.mmbase.bridge.NodeManager nodeManager, Field f) {
         String fname = f.getName();
         return (nodeManager.hasField(fname)) && // skip temporary fields
                (!"owner".equals(fname)) && // skip owner/otype/number fields!
@@ -108,15 +104,11 @@ public class Dove extends AbstractDove {
      * These can include virtual fields.
      * Fields number, owner, and ottype, and the relation fields snumber,dnumber, and rnumber
      * are not excluded; these fields should be handled through the attributes of Element.
-     * @param node  the MMBase node that owns the field
+     * @param nodeManager  the MMBase node that owns the field
      * @param fname The name of the field to check
      */
-    private boolean isDataField(NodeManager nodeManager, String fname) {
+    private boolean isDataField(org.mmbase.bridge.NodeManager nodeManager, String fname) {
         return nodeManager.hasField(fname);
-    }
-
-    private boolean isEditableField(NodeManager nodeManager, String fname) {
-        return isDataField(nodeManager, fname) && nodeManager.getField(fname).getState() == Field.STATE_PERSISTENT;
     }
 
     /**
@@ -130,7 +122,7 @@ public class Dove extends AbstractDove {
      * If the 'in' node has no field elements, all fields are returned, with the
      * exception of some system-specific fields.
      * <br />
-     * @todo Currently, the Dove does not return values for binary (byte) fields - a binary field is
+     * @toDo Currently, the Dove does not return values for binary (byte) fields - a binary field is
      * always returned empty. This is done for optimization of the editwizards, which would otherwise
      * eat a lot of memory, but that DO need a reference to a bytefield.
      * Future versions of Dove should handle a better mechanism for handling binary fields.
@@ -154,48 +146,31 @@ public class Dove extends AbstractDove {
                 String fname = f.getName();
                 if (isDataField(nm,f)) {
                     Element fel;
-                    DataType dataType = f.getDataType();
-                    if (dataType instanceof BinaryDataType) {
+                    if (f.getType() != Field.TYPE_BYTE) {
+                        fel = addContentElement(FIELD, node.getStringValue(fname), out);
+                    } else {
                         fel = addContentElement(FIELD, "", out);
                         byte[] bytes = node.getByteValue(fname);
                         fel.setAttribute(ELM_SIZE, "" + (bytes != null ? bytes.length : 0));
-                    } else if (dataType instanceof DateTimeDataType ||
-                               dataType instanceof IntegerDataType ||
-                               dataType instanceof LongDataType
-                               ) {
-                        // have to convert ourselves because bridge will use user-defined formatting
-                        fel = addContentElement(FIELD, "" + node.getLongValue(fname), out);
-                    } else {
-                        fel = addContentElement(FIELD, node.isNull(fname) ? null : node.getStringValue(fname), out);
                     }
-                    fel.setAttribute(ELM_TYPE, dataType.getBaseTypeIdentifier());
                     fel.setAttribute(ELM_NAME, fname);
                 }
             }
         } else {
             while (field != null) { // select all child tags, should be 'field'
-                String fname = field.getAttribute(ELM_NAME);
+                String fname = (String)field.getAttribute(ELM_NAME);
                 if ((fname == null) || (fname.equals(""))) {
                     Element err = addContentElement(ERROR, "name required for field",out);
-                    err.setAttribute(ELM_TYPE, IS_PARSER);
+                    err.setAttribute(ELM_TYPE,IS_PARSER);
                 } else if (isDataField(nm,fname)) {
                     Element fel;
-                    Field f = nm.getField(fname);
-                    DataType dataType = f.getDataType();
-                    if (dataType instanceof BinaryDataType) {
+                    if (nm.getField(fname).getType() != Field.TYPE_BYTE) {
+                        fel = addContentElement(FIELD, node.getStringValue(fname), out);
+                    } else {
                         fel = addContentElement(FIELD, "", out);
                         byte[] bytes = node.getByteValue(fname);
                         fel.setAttribute(ELM_SIZE, "" + (bytes != null ? bytes.length : 0));
-                    } else if (dataType instanceof DateTimeDataType ||
-                               dataType instanceof IntegerDataType ||
-                               dataType instanceof LongDataType
-                               ) {
-                        // have to convert ourselves because bridge will use user-defined formatting
-                        fel = addContentElement(FIELD, "" + node.getLongValue(fname), out);
-                    } else {
-                        fel = addContentElement(FIELD, node.getStringValue(fname), out);
                     }
-                    fel.setAttribute(ELM_TYPE, dataType.getBaseTypeIdentifier());
                     fel.setAttribute(ELM_NAME, fname);
                 } else {
                     Element err = addContentElement(ERROR, "field with name " + fname + " does not exist", out);
@@ -257,15 +232,15 @@ public class Dove extends AbstractDove {
      */
     protected void addRelationNodes(Element relation, Element out, org.mmbase.bridge.Node nd) {
         int thisNumber=nd.getNumber();
-        String role=relation.getAttribute(ELM_ROLE);
+        String role=(String)relation.getAttribute(ELM_ROLE);
         if ("".equals(role)) role=null;
-        String destinationType = relation.getAttribute(ELM_DESTINATIONTYPE);
+        String destinationType=(String)relation.getAttribute(ELM_DESTINATIONTYPE);
         if (("".equals(destinationType)) || (destinationType==null)) {
-            destinationType = relation.getAttribute(ELM_DESTINATION);
+            destinationType=(String)relation.getAttribute(ELM_DESTINATION);
         }
         if ("".equals(destinationType)) destinationType=null;
         int searchDir=0;
-        String searchDirs = relation.getAttribute(ELM_SEARCHDIR).toLowerCase();
+        String searchDirs=(String)relation.getAttribute(ELM_SEARCHDIR).toLowerCase();
         if("destination".equals(searchDirs)) {
             searchDir=1;
         } else if("source".equals(searchDirs)) {
@@ -494,7 +469,7 @@ public class Dove extends AbstractDove {
                     }
                     data.setAttribute(ELM_ROLE,rolename);
                     out.appendChild(data);
-                    getDataNode(null, data, n);
+                    getDataNode(null,data,n);
                 } finally  {
                     n.cancel();  // have to cancel node !
                 }
@@ -550,7 +525,15 @@ public class Dove extends AbstractDove {
     }
 
     /**
-     * Handles a getconstraints call.
+     * Handles a getrelations call, by obtaining relations for each node specified.
+     * This method accepts a DOM element, which should contain as it
+     * child nodes elements describing the nodes to retrieve the relations from.
+     * The tagname of these elements should be 'object'.
+     * Each element should have an 'number' attribute that described the number
+     * or alias of the node to retrieve.
+     * The result of this call should be a list of DOM elements with a data element for
+     * each node,which are appended to the out element. The node element's children
+     * are the relations.
      *
      * @param in the element that described the <code>getconstraints</code> call.
      *           The childnodes should describe the node types to retrieve the constraints of.
@@ -626,36 +609,44 @@ public class Dove extends AbstractDove {
                         elm = addContentElement(DESCRIPTION, fielddef.getDescription(locale),field);
                         if (lang != null) elm.setAttribute(ELM_LANG, lang);
                         // guitype
-                        DataType dataType = fielddef.getDataType();
-                        String baseType = dataType.getBaseTypeIdentifier();
-                        String specialization = dataType.getName();
-                        // exceptions, for backward comp. with old guitypes
-                        if (specialization.equals("field")) {
-                            specialization = "text";
-                        } else if (specialization.equals("eventtime")) {
-                            baseType = "datetime";
-                            specialization = "datetime";
-                        } else if (specialization.equals("newimage")) {
-                            specialization = "image";
-                        } else if (specialization.equals("newfile")) {
-                            specialization = "file";
-                        } else {
-                            // backward compatibility: NODE and XML are passed as int and string
-                            // TODO: should change ?
-                            if (dataType instanceof NodeDataType) {
-                                baseType = "int";
-                            } else if (dataType instanceof XmlDataType) {
-                                baseType = "string";
-                            } else if (dataType instanceof BinaryDataType) {
-                                Pattern p = ((BinaryDataType) dataType).getValidMimeTypes();
-                                if (p.matcher("image/someimageformat").matches()) {
-                                    specialization = "image";
-                                } else {
-                                    specialization = "file";
+                        String guiType = fielddef.getGUIType();
+                        if (guiType.indexOf("/")==-1) {
+                            if (guiType.equals("field")) {
+                                guiType = "string/text";
+                            } else if (guiType.equals("string")) {
+                                guiType = "string/line";
+                            } else if (guiType.equals("eventtime")) {
+                                guiType = "datetime/datetime";
+                            } else if (guiType.equals("newimage")) {
+                                guiType = "binary/image";
+                            } else if (guiType.equals("newfile")) {
+                                guiType = "binary/file";
+                            } else {
+                                String dttype;
+                                int itype = fielddef.getType();
+                                switch(itype) {
+                                case Field.TYPE_INTEGER:
+                                case Field.TYPE_NODE:
+                                    dttype = "int";
+                                    break;
+                                case Field.TYPE_LONG:
+                                    dttype="long";
+                                    break;
+                                case Field.TYPE_FLOAT:
+                                    dttype="float";
+                                    break;
+                                case Field.TYPE_DOUBLE:
+                                    dttype="double";
+                                    break;
+                                case Field.TYPE_BYTE:
+                                    dttype="binary";
+                                    break;
+                                default:
+                                    dttype = "string";
                                 }
+                                guiType = dttype + "/" + guiType;
                             }
                         }
-                        String guiType = baseType + "/" + specialization;
                         addContentElement(GUITYPE, guiType, field);
                         int maxLength = fielddef.getMaxLength();
                         if (maxLength>0) {
@@ -747,11 +738,11 @@ public class Dove extends AbstractDove {
                                 Element field = getFirstElement(node, FIELD);
                                 nodepath = nodepath.replace('/', ',');
                                 while (field != null) {
-                                    String fname = field.getAttribute(ELM_NAME);
+                                    String fname=(String)field.getAttribute(ELM_NAME);
                                     if (!fields.equals(""))
                                         fields += ",";
                                     fields += fname;
-                                    field = getNextElement(field, FIELD);
+                                    field = getNextElement(field, FIELD);    
                                 }
                                 i = cloud.getList("", nodepath, fields, where, orderby, directions, null, true).nodeIterator();
                             }
@@ -812,38 +803,38 @@ public class Dove extends AbstractDove {
                         Map values = new HashMap();
                         if (isRelation) {
                             if (isOriginal) {
-                                originalRelations.put(node.getAttribute(ELM_NUMBER), values);
+                                originalRelations.put((String)node.getAttribute(ELM_NUMBER),values);
                             } else {
-                                newRelations.put(node.getAttribute(ELM_NUMBER), values);
+                                newRelations.put((String)node.getAttribute(ELM_NUMBER),values);
                             }
                         } else {
                             if (isOriginal) {
-                                originalNodes.put(node.getAttribute(ELM_NUMBER), values);
+                                originalNodes.put((String)node.getAttribute(ELM_NUMBER),values);
                             } else {
-                                newNodes.put(node.getAttribute(ELM_NUMBER),values);
+                                newNodes.put((String)node.getAttribute(ELM_NUMBER),values);
                             }
                         }
                         if (! isOriginal) {
-                            values.put("_status",node.getAttribute(ELM_STATUS));
+                            values.put("_status",(String)node.getAttribute(ELM_STATUS));
                         }
 
-                        String context = node.getAttribute(ELM_CONTEXT);
-                        if (context != null && !context.equals("")) {
-                            values.put("_context", context);
+                        String context = (String)node.getAttribute(ELM_CONTEXT);
+                        if (context!=null && !context.equals("")) {
+                            values.put("_context",context);
                         }
 
                         if (isRelation) {
-                            String role = node.getAttribute(ELM_ROLE);
+                            String role=node.getAttribute(ELM_ROLE);
                             if (role!=null) values.put("_role",role);
 
-                            String source = node.getAttribute(ELM_SOURCE);
+                            String source=node.getAttribute(ELM_SOURCE);
                             if (source!=null) values.put("_source",source);
 
-                            String destination = node.getAttribute(ELM_DESTINATION);
-                            if (destination!=null) values.put("_destination", destination);
+                            String destination=node.getAttribute(ELM_DESTINATION);
+                            if (destination!=null) values.put("_destination",destination);
                         } else {
-                            String type = node.getAttribute(ELM_TYPE);
-                            if (type!=null) values.put("_otype", type);
+                            String type=node.getAttribute(ELM_TYPE);
+                            if (type!=null) values.put("_otype",type);
                         }
                         Element field = getFirstElement(node);
                         while (field != null) { // select all child tags, should be 'fields'
@@ -853,21 +844,21 @@ public class Dove extends AbstractDove {
                                 String encoding = field.getAttribute(ELM_ENCODING);
                                 if (!href.equals("")) {
                                     // binary data.
-                                    Object repval = repository.get(href);
-                                    if (repval != null) {
-                                        values.put(fieldname, repval);
+                                    Object repval=repository.get(href);
+                                    if (repval!=null) {
+                                        values.put(fieldname,repval);
                                         // also retrieve and set filename
-                                        if(field.getFirstChild() != null) {
-                                            values.put("filename", field.getFirstChild().getNodeValue());
+                                        if(field.getFirstChild()!=null) {
+                                            values.put("filename",field.getFirstChild().getNodeValue());
                                         }
                                     }
                                 } else if (!encoding.equals("")) {
                                     if (encoding.toLowerCase().equals("base64")) {
-                                        values.put(fieldname, new Encode("BASE64").decodeBytes(field.getFirstChild().getNodeValue()));
+                                        values.put(fieldname, org.mmbase.util.Base64.decodeToBytes(field.getFirstChild().getNodeValue()));
                                     }
                                 } else {
                                     if(field.getFirstChild() == null) {
-                                        values.put(fieldname, "");
+                                        values.put(fieldname,"");
                                     } else {
                                         values.put(fieldname, field.getFirstChild().getNodeValue());
                                     }
@@ -897,7 +888,7 @@ public class Dove extends AbstractDove {
                         Map.Entry me=(Map.Entry)i.next();
                         org.mmbase.bridge.Node n = (org.mmbase.bridge.Node)me.getKey();
                         Element oe = (Element)me.getValue();
-                        oe.setAttribute(ELM_NUMBER, n.getStringValue("number"));
+                        oe.setAttribute(ELM_NUMBER,n.getStringValue("number"));
                     }
                     // retrieve all numbers, snumbers, dnumbers and reset them to the right value
                     for (Iterator i = addedRelations.entrySet().iterator(); i.hasNext(); ) {
@@ -970,37 +961,18 @@ public class Dove extends AbstractDove {
      * @return true if succesful, false if an error ocurred
      */
     protected boolean fillFields(String alias, org.mmbase.bridge.Node node, Element out, Map values, Map originalValues) {
-        node.getCloud().setProperty(Cloud.PROP_XMLMODE, "flat");
         for (Iterator i = values.entrySet().iterator(); i.hasNext(); ) {
             Map.Entry me = (Map.Entry)i.next();
             String key = (String)me.getKey();
-            if (isEditableField(node.getNodeManager(),key)) {
+            if (isDataField(node.getNodeManager(),key)) {
                 Object value = me.getValue();
-                DataType dt = node.getNodeManager().getField(key).getDataType();
                 String changes = (String) properties.getProperties().get(PROP_CHANGES);
                 if ((! CHANGES_IGNORE.equals(changes)) &&
                     (originalValues != null) &&
                     (!(value instanceof byte[]))) { // XXX: currently, we do not validate on byte fields
-                    String originalValue = (String) originalValues.get(key);
-                    String  mmbaseValue;
-                    if (dt instanceof DateTimeDataType ||
-                        dt instanceof LongDataType ||
-                        dt instanceof IntegerDataType) {
-                        // have to convert ourselves because bridge will use user-defined formatting
-                        mmbaseValue = "" + node.getLongValue(key);
-                    } else {
-                        mmbaseValue = node.isNull(key) ? null : node.getStringValue(key);
-                    }
-                    if (mmbaseValue == null) {
-                        if ("".equals(originalValue)) {
-                            // XML cannot make difference between NULL and empty.
-                            originalValue = null;
-                        }
-                        if ("".equals(value)) {
-                            value = null;
-                        }
-                    }
-                    if ((originalValue != null ) && !originalValue.equals(mmbaseValue)) {
+                    String originalValue = (String)originalValues.get(key);
+                    String mmbaseValue = node.getStringValue(key);
+                    if ((originalValue != null) && !originalValue.equals(mmbaseValue)) {
                         String message = "Node was changed in the cloud, node number : " + alias + " field name '" + key + "' value found: '" + mmbaseValue + "' value expected '" + originalValue + "' changes: " + changes;
                         // give error node was changed in cloud
                         if (CHANGES_WARN.equals(changes)) {
@@ -1016,15 +988,11 @@ public class Dove extends AbstractDove {
                 if (log.isDebugEnabled()) {
                     log.debug("Setting field " + key + " to '" + value + "'");
                 }
-                if (value instanceof byte[]) {
-                    node.setValue(key, value);
-                } else {
-                    node.setStringValue(key, value != null ? Casting.toString(value) : null);
-                }
+                node.setValue(key, value);
                 Element fieldElement = doc.createElement(FIELD);
                 fieldElement.setAttribute(ELM_NAME, key);
                 if (!(value instanceof byte[])) {
-                    Text tel = doc.createTextNode(value == null ? "" : value.toString());
+                    Text tel = doc.createTextNode(value.toString());
                     fieldElement.appendChild(tel);
                 }
                 out.appendChild(fieldElement);
@@ -1053,7 +1021,7 @@ public class Dove extends AbstractDove {
             org.mmbase.bridge.Node newnode = nm.createNode();
             Element objectelement = doc.createElement(OBJECT);
             objectelement.setAttribute(ELM_TYPE, type);
-            fillFields(alias, newnode, objectelement, values);
+            fillFields(alias,newnode,objectelement, values);
             try {
                 String context = (String) values.get("_context");
                 if (context!=null) {
@@ -1061,8 +1029,7 @@ public class Dove extends AbstractDove {
                 }
                 newnode.commit();
                 int number = newnode.getNumber();
-                if (log.isDebugEnabled())
-                    log.debug("Created new node " + number);
+                if (log.isServiceEnabled()) log.service("Created new node " + number);
                 aliases.put(alias,new Integer(number));
                 objectelement.setAttribute(ELM_NUMBER,""+number);
                 objectelement.setAttribute(ELM_OLDNUMBER, alias);
@@ -1299,10 +1266,10 @@ public class Dove extends AbstractDove {
         for (Iterator i = newNodes.entrySet().iterator(); i.hasNext(); ) {
             // handle the several cases we have when we have
             // a new node (merge, really new)
-            Map.Entry me = (Map.Entry)i.next();
-            String alias = (String)me.getKey();
-            Map values = (Map)me.getValue();
-            String status = (String)values.get("_status");
+            Map.Entry me=(Map.Entry)i.next();
+            String alias=(String)me.getKey();
+            Map values=(Map)me.getValue();
+            String status=(String)values.get("_status");
 
             // is it a new node if so create one and remember its alias
             if (status != null && status.equals("new")) {
@@ -1314,11 +1281,11 @@ public class Dove extends AbstractDove {
                 if (originalValues!=null) {
                     if (!putDeleteNode(alias, originalValues, newElement, cloud)) return false;;
                 }
-            } else if (status == null || status.equals("") || status.equals("change")) {
+            } else if (status==null || status.equals("") || status.equals("change")) {
                 // check if they send a original
                 Map originalValues = (Map )originalNodes.get(alias);
-                if (originalValues != null) {
-                    if(!putChangeNode(alias, values, originalValues, aliases, newElement, cloud)) return false;
+                if (originalValues!=null) {
+                    if(!putChangeNode(alias, values, originalValues,aliases, newElement, cloud)) return false;
                 } else {
                     // give error not a org. node
                     Element err = addContentElement(ERROR,"Node not defined in original tag, node number : " + alias, out);
@@ -1343,9 +1310,9 @@ public class Dove extends AbstractDove {
             String status = (String)values.get("_status");
 
             // is it a new node if so create one and remember its alias
-            if (status != null && status.equals("new")) {
+            if (status!=null && status.equals("new")) {
                 if (!putNewRelation(alias, values, aliases, addedRelations, newElement, cloud)) return false;
-            } else if (status != null && status.equals("delete")) {
+            } else if (status!=null && status.equals("delete")) {
                 Map originalValues = (Map)originalRelations.get(alias);
                 if (originalValues != null) {
                     if(!putDeleteRelation(alias, originalValues, newElement, cloud)) return false;;

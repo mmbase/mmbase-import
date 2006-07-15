@@ -8,7 +8,6 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib;
-
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.*;
@@ -16,6 +15,7 @@ import org.mmbase.bridge.jsp.taglib.containers.RelatedNodesContainerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.storage.search.*;
+import org.mmbase.util.logging.*;
 
 /**
  * RelatedNodesTag, provides functionality for listing single related nodes in MMBase
@@ -24,9 +24,11 @@ import org.mmbase.storage.search.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: RelatedNodesTag.java,v 1.39 2006-07-08 12:51:56 michiel Exp $
+ * @version $Id: RelatedNodesTag.java,v 1.32.2.4 2004-07-26 20:12:15 nico Exp $
  */
+
 public class RelatedNodesTag extends AbstractNodeListTag {
+    private static final Logger log = Logging.getLoggerInstance(RelatedNodesTag.class);
 
     protected Attribute type = Attribute.NULL;
     protected Attribute path = Attribute.NULL;
@@ -94,6 +96,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
         RelatedNodesContainerTag c = (RelatedNodesContainerTag) findParentTag(RelatedNodesContainerTag.class, (String) container.getValue(this), false);
 
         NodeQuery query;
+        Cloud cloud = getCloudVar();
         if (type != Attribute.NULL || path != Attribute.NULL || c == null || parentNodeId != Attribute.NULL) {
 
             // obtain a reference to the node through a parent tag
@@ -101,15 +104,10 @@ public class RelatedNodesTag extends AbstractNodeListTag {
             if (parentNode == null) {
                 throw new TaglibException("Could not find parent node!!");
             }
-            Cloud cloud;
-            {
-                // prefer cloud of current page, otherwise of node
-                CloudProvider cloudProvider = findCloudProvider(false);
-                cloud = cloudProvider != null ? cloudProvider.getCloudVar() : parentNode.getCloud();
-            }
+            
             query = cloud.createNodeQuery();
             Step step1 = query.addStep(parentNode.getNodeManager());
-            query.setAlias(step1, parentNode.getNodeManager().getName() + "0");
+            query.setAlias(step1, "root0");
             query.addNode(step1, parentNode);
 
 
@@ -127,14 +125,14 @@ public class RelatedNodesTag extends AbstractNodeListTag {
             if (path == Attribute.NULL) {
                 if (type == Attribute.NULL) {
                     otherManager = cloud.getNodeManager("object");
-                } else {
+                } else { 
                     if (element != Attribute.NULL) {
                         throw new TaglibException("Cannot specify both 'element' and 'type' attributes");
                     }
                     otherManager = cloud.getNodeManager(type.getString(this));
-                }
+                }               
                 RelationStep step2 = query.addRelationStep(otherManager, (String) role.getValue(this), searchDirections);
-                Step step3 = step2.getNext();
+                Step step3 = step2.getNext();                
                 query.setNodeStep(step3); // makes it ready for use as NodeQuery
             } else {
                 if (role != Attribute.NULL) {
@@ -144,7 +142,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
                 if (element != Attribute.NULL) {
                     String alias = element.getString(this);
                     Step nodeStep = query.getStep(alias);
-                    if (nodeStep == null) {
+                    if (nodeStep == null) { 
                         throw new JspTagException("Could not set element to '" + alias + "' (no such step)");
                     }
                     query.setNodeStep(nodeStep);

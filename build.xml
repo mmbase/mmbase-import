@@ -2,7 +2,6 @@
 
 
 MMBase Build File
-$Id: build.xml,v 1.145 2006-07-15 19:47:48 michiel Exp $
 =================
 
 This build file can be used to build the following from CVS or from the source
@@ -52,7 +51,7 @@ several MMBase-checkouts.
 
 ============================================================================ -->
 
-<project name="MMBase" default="jar" basedir=".">
+<project name="MMBase" default="usage" basedir=".">
 
   <!-- =================================================================== -->
   <!-- Init                                                                -->
@@ -68,19 +67,19 @@ several MMBase-checkouts.
   <property name="expand.dir"   value="${download.dir}/expanded" />
   <property name="download.zip" value="mmbase-downloads.zip"  />
 
-  <!-- project defaults -->
+  <!-- project defaults -->  
   <property file="build.properties.default"/>
 
   <property file="build.properties.version"/>
 
-  <property name="build.compiler" value="modern"/>
+  <property name="build.compiler" value="classic"/>
   <property name="optimize" value="on"/>
   <property name="debug" value="on"/>
   <property name="deprecation" value="off"/>
   <property name="nowarn" value="off"/>
   <property name="javadoc.cleaning" value="true"/>
   <property name="javadoc.packages" value="org.mmbase.*"/>
-  <property name="mmcidoc.packages" value="org.mmbase.bridge,org.mmbase.storage.search,org.mmbase.bridge.util,org.mmbase.util.functions,org.mmbase.security,org.mmbase.util"/>
+  <property name="mmcidoc.packages" value="org.mmbase.bridge,org.mmbase.storage.search"/>
 
   <!-- documentation related settings -->
   <property name="build.documentation" value="false" />
@@ -92,24 +91,12 @@ several MMBase-checkouts.
 
   <!-- applications related setting -->
   <property name="applications.home"  value="${source.dir}/applications" />
-  <property name="contributions.home"  value="${source.dir}/contributions" />
-
-  <!-- tests related setting -->
-  <property name="tests.home"  value="${source.dir}/tests" />
-
-  <!-- contributions related setting -->
-  <property name="contributions.home"  value="${source.dir}/contributions" />
 
 
-  <property name="source-config.dir"          value="${source.dir}/config"/>
-  <property name="source-config-builders.dir" value="${source.dir}/config/builders;${source.dir}/config/applications"/>
+  <property name="source-config.dir"         location="${source.dir}/config"/>
+  <property name="source-config-builders.dir" location="${source.dir}/config/builders;${source.dir}/config/applications"/>
   <!-- Don't change the following properties unless you know what you're doing -->
-  <property name="source-html.dir"            value="${source.dir}/html"/>
-
-  <property name="web.xml"                    value="web.xml"/> <!-- set it to web-2.3.xml (in build.properties) if you want a web-app 2.3 web.xml -->
-  <property name="web.xml.path"               value="${source-html.dir}/WEB-INF/${web.xml}"/>
-
-
+  <property name="source-html.dir"           location="${source.dir}/html"/>
   <property name="source-documentation.dir"  location="${source.dir}/documentation" />
   <property name="source-src.dir"       location="${source.dir}/src"/>
   <property name="generated-source-src.dir"       location="${build.dir}/src"/>
@@ -128,10 +115,25 @@ several MMBase-checkouts.
     </condition>
     <tstamp/>
     <mkdir dir="${build.dir}"/>
-    <property name="name"      value="mmbase"/>
+    <property name="name" value="mmbase"/>
     <property name="builddate" value="${DSTAMP}"/>
   </target>
 
+
+  <!-- =================================================================== -->
+  <!-- Help on usage                                                       -->
+  <!-- =================================================================== -->
+  <target name="usage" description="Help on usage">
+    <echo message=""/>
+    <echo message="MMBase Build file"/>
+    <echo message="*************************************************************"/>
+    <echo message=""/>
+    <echo message="Use the -projecthelp option to see a short description for"/>
+    <echo message="the main targets"/>
+    <echo message=""/>
+    <echo message="*************************************************************"/>
+    <echo message=""/>
+  </target>
 
   <!-- =================================================================== -->
   <!-- Create the source distribution                                      -->
@@ -178,7 +180,7 @@ several MMBase-checkouts.
     <!-- copy the test files -->
     <mkdir dir="${build.dir}/mmbase-src/tests"/>
     <copy todir="${build.dir}/mmbase-src/tests">
-      <fileset dir="${tests.home}" defaultexcludes="yes">
+      <fileset dir="${source.dir}/tests" defaultexcludes="yes">
         <exclude name="**/build/**" />
       </fileset>
     </copy>
@@ -226,11 +228,8 @@ builddate=${builddate}
 
     <!-- zip -->
     <zip zipfile="${build.dir}/${name}-src-${distro.version}.${builddate}.zip">
-      <zipfileset dir="${build.dir}/mmbase-src" prefix="${name}-src-${builddate}" includes="**">
-        <!-- too much bloat -->
-        <exclude name="**/*.pdf" />
-        <exclude name="**/javadoc/**" />
-      </zipfileset>
+     <zipfileset dir="${build.dir}/mmbase-src" prefix="${name}-src-${builddate}"
+       includes="**" />
     </zip>
   </target>
 
@@ -246,7 +245,8 @@ builddate=${builddate}
   <!-- =================================================================== -->
   <!-- Create the binary distribution                                      -->
   <!-- =================================================================== -->
-  <target name="bindist"  description="Create the binary distribution" depends="lib.release,web,applications">
+  <target name="bindist"  description="Create the binary distribution"
+          depends="lib.release,web,applications">
 
     <!-- copy a readme and other basic docs from documentation dir -->
     <copy todir="${build.dir}/mmbase" >
@@ -262,13 +262,8 @@ builddate=${builddate}
 
     <!-- zip -->
     <zip zipfile="${build.dir}/${name}-${distro.version}.${builddate}.zip">
-      <zipfileset dir="${build.dir}/mmbase" prefix="${name}-${distro.version}.${builddate}" includes="**">
-        <!-- these are bloating the zip-size too much...-->
-        <exclude name="**/*.pdf" />
-        <exclude name="**/javadoc/**" />
-        <!-- only needed in mmbase.jar (and other jars) -->
-        <exclude name="**/INDEX" />
-      </zipfileset>
+     <zipfileset dir="${build.dir}/mmbase" prefix="${name}-${builddate}"
+       includes="**" />
     </zip>
 
   </target>
@@ -289,11 +284,6 @@ builddate=${builddate}
   </target>
 
 
-  <target name="lib.release.renametojar" unless="norenametojar">
-    <copy file="${xerces.jar}"         tofile="${release.lib.dir}/xercesImpl.renametojar" />
-    <copy file="${xml-apis.jar}"       tofile="${release.lib.dir}/xml-apis.renametojar" />
-  </target>
-
   <!-- =================================================================== -->
   <!-- Create the lib directories                                          -->
   <!-- =================================================================== -->
@@ -305,29 +295,20 @@ builddate=${builddate}
 
     <mkdir dir="${release.lib.dir}" />
     <copy file="${xalan.jar}"          todir="${release.lib.dir}" />
-    <copy file="${serializer.jar}"     todir="${release.lib.dir}" />
-
-    <copy file="${log4j.jar}"          tofile="${release.lib.dir}/log4j.jar" />
-    <copy file="${fileupload.jar}"     tofile="${release.lib.dir}/commons-fileupload.jar" />
+    <copy file="${xerces.jar}"         tofile="${release.lib.dir}/xerces.renametojar" />
+    <copy file="${xml-apis.jar}"       tofile="${release.lib.dir}/xml-apis.renametojar" />
+    <copy file="${log4j.jar}"          todir="${release.lib.dir}" />
     <copy file="${hsqldb.jar}"         todir="${release.lib.dir}" />
-    <!--
     <copy file="${jai_codec.jar}"      todir="${release.lib.dir}" />
     <copy file="${jai_core.jar}"       todir="${release.lib.dir}" />
     <copy file="${javamail.jar}"       todir="${release.lib.dir}" />
-    -->
-    <!--
     <copy file="${javaactivation.jar}"  todir="${release.lib.dir}" />
-    -->
-
-    <copy file="${taglibs-standard-jstl.jar}"     todir="${release.lib.dir}" />
-    <copy file="${taglibs-standard-standard.jar}" todir="${release.lib.dir}" />
-
     <copy file="${mmbase.jar}"         todir="${release.lib.dir}" />
-
-    <copy file="${backport-util-concurrent.jar}"  todir="${release.lib.dir}" />
 
     <copy file="${source-documentation.dir}/releases/XERCES.README.txt" todir="${release.lib.dir}" />
 
+
+    
     <!-- copy licenses for included jars -->
     <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/legal">
       <fileset dir="${source-documentation.dir}/releases/legal"/>
@@ -339,23 +320,16 @@ builddate=${builddate}
           <!--depends="init,expand.servlet,expand.xalan,expand.jai,expand.log4j,expand.javamail,expand.javaactivation,get.jdbc">-->
 
     <mkdir dir="${compile.lib.dir}"/>
-
-    <!-- including xerces/xml-apis makes a huge difference in compile time for rmmci -->
-    <copy file="${xerces.jar}"   todir="${compile.lib.dir}" />
-    <copy file="${xml-apis.jar}"   todir="${compile.lib.dir}" />
-
-    <!-- org.apache.xpath.XPathAPI is used here and there. This dependency can be dropped in 1.5 (which includes xpath api itself) -->
-    <copy file="${xalan.jar}"          todir="${compile.lib.dir}" />
-    <copy file="${serializer.jar}"          todir="${compile.lib.dir}" /> <!-- used when making tld's in taglib -->
-
+    <copy file="${xalan.jar}"     todir="${compile.lib.dir}" />
+    <copy file="${xerces.jar}"    todir="${compile.lib.dir}" />
+    <copy file="${xml-apis.jar}"  todir="${compile.lib.dir}" />
     <copy file="${servlet.jar}"   todir="${compile.lib.dir}" />
-    <copy file="${fileupload.jar}" tofile="${compile.lib.dir}/commons-fileupload.jar" />
+
     <copy file="${jai_codec.jar}" todir="${compile.lib.dir}" />
     <copy file="${jai_core.jar}"  todir="${compile.lib.dir}" />
     <copy file="${log4j.jar}"     tofile="${compile.lib.dir}/log4j.jar" />
     <copy file="${javamail.jar}"  todir="${compile.lib.dir}" />
     <copy file="${javaactivation.jar}"  todir="${compile.lib.dir}" />
-    <copy file="${backport-util-concurrent.jar}"  todir="${compile.lib.dir}" />
   </target>
 
   <target name="lib.compile.zip" depends="lib.compile" description="Packages the download dir." >
@@ -473,63 +447,48 @@ builddate=${builddate}
         <include name="**/*.properties"/>
         <include name="**/LICENSE"/>
         <include name="**/*.dtd"/>
-        <include name="**/*.xsd"/>
         <include name="**/*.xml"/>
       </fileset>
     </copy>
-    <mkdir dir="${build.dir}/classes/org/mmbase/config"/>
-    <copy todir="${build.dir}/classes/org/mmbase/config"  preservelastmodified="true">
-      <fileset dir="${source-config.dir}">
-        <include name="caches.xml"/>
-        <include name="magic.xml"/>
-        <include name="eventmanager.xml"/>
-        <include name="datatypes.xml"/>
-        <include name="applications/Basics.xml"/>
-        <include name="applications/Resources.xml"/>
-        <include name="applications/Resources/**"/>
-        <include name="builders/core/*.xml"/>
-        <include name="builders/INDEX" />
-        <include name="functions/**/*.xml"/>
-        <include name="storage/**/*.xml"/>
-        <include name="modules/mmbaseroot.xml"/>
-        <include name="modules/mmadmin.xml"/>
-        <include name="security/classauthentication.xml" />
-        <include name="log/log.xml" />
-        <include name="utils/**/*.xml"/>
-        <include name="xslt/**/*.xsl"/>
-        <include name="xslt/**/*.xslt"/>
-        <include name="dtd/**"/>
-        <include name="xmlns/**"/>
-        <include name="security/classauthentication.xml"/>
-      </fileset>
-    </copy>
-    <echo file="${build.dir}/classes/org/mmbase/config/applications/INDEX">
-Basics.xml
-Resources.xml
-    </echo>
-    <echo file="${build.dir}/classes/org/mmbase/config/modules/INDEX">
-mmbaseroot.xml
-mmadmin.xml
-    </echo>
   </target>
 
-  <target name="compile" description="Compile the source directory"  depends="init.compile,javacc">
+  <target name="compile" description="Compile the source directory" depends="init.compile">
 
     <echo message="java version: ${ant.java.version}" />
-    <echo message="compiling with debug=${debug}, optimize=${optimize}, nowarn=${nowarn}, deprecation=${deprecation}"/>
 
-    <javac
+    <available property="informix.in.classpath"
+               classpathref="compile.classpath"
+               classname="com.informix.jdbc.IfxCblob" />
+    <antcall target="check.optional.informix" />
+
+    <available property="oracle.in.classpath"
+               classpathref="compile.classpath"
+               classname="oracle.jdbc.OracleDriver" />
+    <antcall target="check.optional.oracle" />
+
+    <available property="naming.in.classpath"
+      classpathref="compile.classpath"
+      classname="javax.naming.Context" />
+    <antcall target="check.optional.naming" />
+
+    <available property="sqlconnection.in.classpath"
+      classpathref="compile.classpath"
+      classname="javax.sql.DataSource" />
+    <antcall target="check.optional.sqlconnection" />
+
+    <javac srcdir="${source-src.dir}"
            destdir="${build.dir}/classes"
            classpathref="compile.classpath"
            debug="${debug}"
            optimize="${optimize}"
-           source="1.4"
            nowarn="${nowarn}"
-           deprecation="${deprecation}"
-           includeAntRuntime="false"
-           >
-      <src path="${source-src.dir}"/>
-      <src path="${generated-source-src.dir}" />
+           source="1.4"
+           deprecation="${deprecation}">
+      <exclude name="org/mmbase/module/JMSendMail.java" unless="naming.in.classpath" />
+      <exclude name="org/mmbase/module/database/Naming.java" unless="naming.in.classpath" />
+      <exclude name="org/mmbase/module/database/Naming.java" unless="sqlconnection.in.classpath" />
+      <exclude name="org/mmbase/module/database/support/MMOracle.java" unless="oracle.in.classpath" />
+      <exclude name="org/mmbase/module/database/support/MMInformix42Node.java" unless="informix.in.classpath" />
     </javac>
     <tstamp/>
     <echo file="${build.dir}/classes/org/mmbase/builddate.properties">${builddate}</echo>
@@ -559,6 +518,38 @@ mmadmin.xml
     <echo message=""/>
   </target>
 
+  <target name="check.optional.oracle" unless="oracle.in.classpath">
+    <echo message=""/>
+    <echo message="Warning: Missing optional package oracle.jdbc."/>
+    <echo message="Oracle support for MMBase will not be compiled,"/>
+    <echo message="but MMBase will run without this package."/>
+    <echo message=""/>
+  </target>
+
+  <target name="check.optional.informix" unless="informix.in.classpath">
+    <echo message=""/>
+    <echo message="Warning: Missing optional package com.informix.jdbc."/>
+    <echo message="Informix support for MMBase will not be compiled,"/>
+    <echo message="but MMBase will run without this package."/>
+    <echo message=""/>
+  </target>
+
+  <target name="check.optional.naming" unless="naming.in.classpath">
+    <echo message=""/>
+    <echo message="Warning: Missing optional package javax.naming."/>
+    <echo message="J2EE database and email support for MMBase will not be compiled,"/>
+    <echo message="but MMBase will run without this package."/>
+    <echo message=""/>
+  </target>
+
+  <target name="check.optional.sqlconnection" unless="sqlconnection.in.classpath">
+    <echo message=""/>
+    <echo message="Warning: Missing optional package javax.sql."/>
+    <echo message="J2EE database detection for MMBase will not be compiled,"/>
+    <echo message="but MMBase will run without this package."/>
+    <echo message=""/>
+  </target>
+
   <!-- =================================================================== -->
   <!-- Clean the compiled classes                                          -->
   <!-- =================================================================== -->
@@ -570,6 +561,7 @@ mmadmin.xml
   <!-- =================================================================== -->
   <!-- Create the MMBase jar file                                          -->
   <!-- =================================================================== -->
+
 
   <target name="jar.uptodatecheck">
     <uptodate property="jar.uptodate" targetfile="${mmbase.jar}" >
@@ -583,7 +575,7 @@ mmadmin.xml
 
 
   <target name="jar" description="Create the MMBase jar file"
-          depends="init,lib.compile,jar.check" unless="jar.uptodate">
+          depends="init,jar.check" unless="jar.uptodate">
     <antcall target="compile" />
     <antcall target="resources" />
 
@@ -592,7 +584,7 @@ mmadmin.xml
       <section name="org/mmbase">
         <attribute name="Vendor" value="MMBase Community" />
         <attribute name="URL" value="http://www.mmbase.org" />
-        <attribute name="Comment" value="The MMBase Content Management System" />
+        <attribute name="Comment" value="The MMBase Content Managment System" />
         <attribute name="Version" value="${distro}.${builddate}" />
         <attribute name="Distribution" value="${distro}" />
         <attribute name="Build-by"     value="${ant.version}" />
@@ -609,9 +601,54 @@ mmadmin.xml
     </jar>
 
     <delete file="${build.dir}/manifest.mf" />
-
+    
     <!-- still copy mmbase.jar to relase dir for backward compatibility-->
     <copy file="${mmbase.jar}"       todir="${release.lib.dir}" />
+  </target>
+
+
+  <property name="minconfig.build.dir" value="${build.dir}/min/config"/>
+
+
+    <!-- =================================================================== -->
+    <!-- Create the MMBase config build dir                                  -->
+    <!-- =================================================================== -->
+  <target name="minimalistic.war.config" depends="init.compile">
+        <!-- copy the jsp editors to a reasonable place -->
+        <copy todir="${minconfig.build.dir}">
+            <fileset dir="${source-config.dir}"  defaultexcludes="true">
+                <!-- the dirs/files we definitly need -->
+                <include name="databases/**"/>
+                <include name="xslt/**"/>
+                <include name="log/log.xml"/>
+                <include name="log/log4j.xml"/>
+                <include name="security/security.xml"/>
+                <include name="caches.xml"/>
+                <include name="magic.xml" /><!-- used if you switch on 'attachments' -->
+
+                <!-- the applications we definitly need -->
+                <include name="applications/CloudSecurity.xml"/>
+                <include name="applications/CloudSecurity/**"/>
+
+                <!-- the modules we definitly need -->
+                <include name="modules/mmbaseroot.xml"/><!-- tells things about mmbase instantion -->
+                <include name="modules/jdbc.xml"/><!-- tells things about jdbc connecion -->
+                <include name="modules/mmadmin.xml"/><!-- to load applications, mmadmin isnt uses further in war -->
+
+
+                <!-- the builders we definitly need -->
+                <include name="builders/core/**"/>
+            </fileset>
+        </copy>
+    </target>
+
+  <target name="war.config" depends="init.compile">
+    <copy todir="${config.build.dir}">
+      <fileset dir="${source-config.dir}"  defaultexcludes="true">
+        <include name="**"/>
+        <exclude name="dtd/**" />
+      </fileset>
+    </copy>
   </target>
 
 
@@ -654,8 +691,10 @@ Build-compiler: ${build.compiler}
 
   <target name="clean.war">
     <delete dir="${webroot.build.dir}" />
-    <delete file="${build.dir}/mmbase.war" />
-    <delete file="${build.dir}/minimalistic-mmbase.war" />
+    <delete dir="${config.build.dir}" />
+    <delete dir="${minconfig.build.dir}" />
+    <delete file="${build.dir}/mmbase/mmbase.war" />
+    <delete file="${build.dir}/mmbase/minimalistic-mmbase.war" />
   </target>
 
     <!-- =================================================================== -->
@@ -666,59 +705,22 @@ Build-compiler: ${build.compiler}
   />
 
   <target name="war" description="Create a MMBase war-file" depends="lib.release,web,jar,applications">
-    <war warfile="${build.dir}/mmbase.war" webxml="${web.xml.path}" duplicate="preserve">
+
+    <war warfile="${build.dir}/mmbase.war" webxml="${source-html.dir}/WEB-INF/web.xml">
       <lib dir="${release.lib.dir}" />
       <!-- our file's on the server -->
-      <fileset dir="${build.dir}/mmbase/mmbase-webapp">
-        <exclude name="WEB-INF/web.xml" />
-        <exclude name="WEB-INF/lib/**" />
-      </fileset>
+      <fileset dir="${build.dir}/mmbase/mmbase-webapp"/>
     </war>
   </target>
 
-  <target name="minimalistic.war" description="Create a minimalistic MMBase war-file" depends="lib.release,web,jar,applications">
-
-    <war warfile="${build.dir}/minimalistic-mmbase.war" webxml="${web.xml.path}" duplicate="preserve">
-      <lib dir="${release.lib.dir}">
-        <selector>
-          <or>
-            <filename name="mmbase.jar" />
-            <filename name="mmbase-taglib-2.jar" />
-            <filename name="backport-util*.jar" />
-            <filename name="hsqldb*.jar" />
-            <filename name="jstl*.jar" />
-            <filename name="standard*.jar" />
-            <filename name="log4j*.jar" />
-            <filename name="commons-fileupload*.jar" />
-            <!-- Xalan is used only by context security 
-                 Would be nice to drop that dependency.
-                 In real life always editwizard depend too
-                 -->
-            <filename name="xalan.jar" />
-            <filename name="serializer.jar" />
-          </or>
-        </selector>
-      </lib>
-      <fileset dir="${build.dir}/mmbase/mmbase-webapp">
-        <selector>
-          <and>
-            <or>
-              <filename name="WEB-INF/config/log/log.xml" />
-              <filename name="WEB-INF/config/log/log4j.xml" />
-              <filename name="WEB-INF/config/caches.xml" />
-              <filename name="WEB-INF/config/modules/jdbc.xml" />
-              <filename name="WEB-INF/config/security/security.xml" />
-              <filename name="WEB-INF/config/security/context/**" />
-              <filename name="mmbase/edit/basic/**" />
-              <filename name="mmbase/edit/index.*" />
-              <filename name="mmbase/admin/**" />
-              <filename name="mmbase/style/**" />
-              <filename name="mmbase/errorpages/**" />
-              <filename name="index.jsp" />
-            </or>
-          </and>
-        </selector>
-      </fileset>
+  <target name="minimalistic.war" description="Create a minimalistic MMBase war-file"
+          depends="lib.release,jar,minimalistic.war.config">
+    <war warfile="${build.dir}/minimalistic-mmbase.war" webxml="${source-html.dir}/WEB-INF/web.xml">
+      <lib dir="${release.lib.dir}" />
+      <!-- here our config has to be.. -->
+      <webinf dir="${build.dir}/min">
+        <include name="config/**"/>
+      </webinf>
     </war>
   </target>
 
@@ -727,90 +729,34 @@ Build-compiler: ${build.compiler}
   <!-- =================================================================== -->
   <target name="javadocs"
           description="Create the API documentation"
-          depends="init,init.get,lib.compile,javacc"
+          depends="init,lib.compile"
           unless="did.javadocs"
     >
-    <mkdir dir="${download.dir}/j2se"/>
-    <antcall target="download">
-      <param name="sourcefile" value="${j2se-javadoc.loc}/package-list" />
-      <param name="destfile"   value="${download.dir}/j2se/package-list" />
-    </antcall>
-    <mkdir dir="${download.dir}/j2ee"/>
-    <antcall target="download">
-      <param name="sourcefile" value="${j2ee-javadoc.loc}/package-list" />
-      <param name="destfile"   value="${download.dir}/j2ee/package-list" />
-    </antcall>
-    <mkdir dir="${download.dir}/jstl"/>
-    <antcall target="download">
-      <param name="sourcefile" value="${jstl-javadoc.loc}/package-list" />
-      <param name="destfile"   value="${download.dir}/jstl/package-list" />
-    </antcall>
-    <mkdir dir="${mmdocs.dir}/javadoc/complete" />
-    <echo message="Generating javadocs for ${javadoc.packages} to ${mmdocs.dir}/javadoc/complete" />
+    <mkdir dir="${build.dir}/mmbase-src/docs"/>
+    <mkdir dir="${build.dir}/mmbase-src/docs/api"/>
     <javadoc packagenames="${javadoc.packages}"
-             destdir="${mmdocs.dir}/javadoc/complete"
+             destdir="${build.dir}/mmbase-src/docs/api"
              author="true"
              version="true"
              use="false"
-             noindex="false"
-             failonerror="true"
-             stylesheetfile="${documentation.home}/javadoc/stylesheet.css"
+             noindex="true"
              windowtitle="MMBase API"
              doctitle="MMBase"
-             maxmemory="500M"
+             maxmemory="100M"
              source="1.4"
              bottom="MMBase build ${distro.version}.${builddate}">
-      <link offline="true" packagelistLoc="${download.dir}/j2se" href="${j2se-javadoc.loc}" />
-      <link offline="true" packagelistLoc="${download.dir}/j2ee" href="${j2ee-javadoc.loc}" />
-      <link offline="true" packagelistLoc="${download.dir}/jstl" href="${jstl-javadoc.loc}" />
-      <link offline="true" packagelistLoc="${expand.dir}/${log4j.fullversion}/docs/api" href="http://logging.apache.org/log4j/docs/api/" />
-      <fileset dir="${source.dir}/src" defaultexcludes="yes" />
-      <fileset dir="${source.dir}/build/src" defaultexcludes="yes" />
-      <fileset dir="${contributions.home}/aselect/src" defaultexcludes="yes" />
-      <fileset dir="${contributions.home}/mmbob/src" defaultexcludes="yes" />
-      <fileset dir="${contributions.home}/thememanager/src" defaultexcludes="yes" />
-      <fileset dir="${contributions.home}/multilanguagegui/src" defaultexcludes="yes" />
-      <fileset dir="${applications.home}/taglib/src" defaultexcludes="yes" />
-      <fileset dir="${applications.home}/editwizard/src" defaultexcludes="yes" />
-      <fileset dir="${applications.home}/cloudcontext/src" defaultexcludes="yes" />
-      <fileset dir="${applications.home}/crontab/src" defaultexcludes="yes" />
-      <fileset dir="${applications.home}/dove/src" defaultexcludes="yes" />
-      <fileset dir="${applications.home}/email/src" defaultexcludes="yes" />
-      <fileset dir="${applications.home}/media/src" defaultexcludes="yes" />
-      <fileset dir="${applications.home}/oscache-cache/src" defaultexcludes="yes" />
-      <fileset dir="${applications.home}/richtext/src" defaultexcludes="yes" />
-      <fileset dir="${applications.home}/xmlimporter/src" defaultexcludes="yes" />
-      <fileset dir="${applications.home}/clustering/src" defaultexcludes="yes" />
-
+      <fileset dir="${source.dir}" defaultexcludes="yes">
+        <include name="src/**/*.java" />
+        <include name="applications/*/src/**/*.java" />
+      </fileset>
       <classpath>
-        <fileset dir="${release.lib.dir}">
-          <include name="**/*.jar"/>
-          <include name="**/*.zip"/>
-        </fileset>
         <fileset dir="${compile.lib.dir}">
-          <include name="**/*.jar"/>
-          <include name="**/*.zip"/>
-        </fileset>
-        <fileset dir="${applications.home}/clustering/">
-          <include name="**/*.jar"/>
-          <include name="**/*.zip"/>
-        </fileset>
-        <fileset dir="${applications.home}/oscache-cache/">
-          <include name="**/*.jar"/>
-          <include name="**/*.zip"/>
-        </fileset>
-        <fileset dir="${contributions.home}/aselect/">
-          <include name="**/*.jar"/>
-          <include name="**/*.zip"/>
-        </fileset>
-        <fileset dir="${applications.home}/scan/"> <!-- to avoid warning in xmlimporter javadoc -->
-          <include name="**/*.jar"/>
-          <include name="**/*.zip"/>
+          <include name="*.jar"/>
+          <include name="*.zip"/>
         </fileset>
       </classpath>
       <!-- mmbase custom tags -->
       <tag name="deprecated-now" description="Warning: Deprecated now (removed in the next release):" />
-      <tag name="license" description="Warning: License conflict:" />
       <tag name="rename" description="Warning: Will be renamed to:" />
       <tag name="move" description="Warning: Will be moved to:" />
       <tag name="scope" description="Warning: Scope will be changed to:" />
@@ -829,9 +775,7 @@ Build-compiler: ${build.compiler}
       <tag name="sql" description="Warning: Contains Database Legacy Code" enabled="${javadoc.cleaning}"/>
       <tag name="duplicate" description="Warning: Contains Duplicate Code (present in other classes)" enabled="${javadoc.cleaning}"/>
       <tag name="deprecation-used" description="Warning: Calls Deprecated Code" enabled="${javadoc.cleaning}"/>
-
     </javadoc>
-    <echo message="javadoc ready" />
     <property name="did.javadocs" value="true" />
   </target>
 
@@ -844,17 +788,17 @@ Build-compiler: ${build.compiler}
           unless="did.mmcidocs"
     >
     <mkdir dir="${mmdocs.dir}"/>
-    <mkdir dir="${mmdocs.dir}/javadoc/mmci"/>
+    <mkdir dir="${mmdocs.dir}/mmci"/>
+    <mkdir dir="${mmdocs.dir}/mmci/api"/>
     <javadoc packagenames="${mmcidoc.packages}"
              sourcepath="${source-src.dir}"
-             destdir="${mmdocs.dir}/javadoc/mmci"
+             destdir="${mmdocs.dir}/mmci/api"
              author="true"
              version="true"
              use="false"
              noindex="true"
              windowtitle="MMBase MMCI API"
              doctitle="MMBase"
-             source="1.4"
              maxmemory="100M"
              bottom="MMBase build ${distro.version}.${builddate}">
       <classpath>
@@ -875,7 +819,8 @@ Build-compiler: ${build.compiler}
   <!-- html directory of the web-server. A web server specific tag can copy-->
   <!-- them from here, depending on this 'web' target                      -->
   <!-- =================================================================== -->
-  <target name="web" description="Make the things which must appear in the web-servers html directory" depends="init.compile">
+  <target name="web" description="Make the things which must appear in the web-servers html directory"
+         depends="init.compile">
 
     <antcall target="web.documentation" />
 
@@ -885,97 +830,88 @@ Build-compiler: ${build.compiler}
     <!-- copy the config -->
     <mkdir dir="${web.dir}/config"/>
     <copy todir="${web.dir}/config">
-      <fileset dir="${source-config.dir}" defaultexcludes="yes">
-        <exclude name="**/INDEX" /> <!-- only needed in jars -->
-
-        <!-- just fine in mmbase.jar: -->
-        <exclude name="builders/core/**" />
-        <exclude name="dtd/**" />
-        <exclude name="xmlns/**" />
-        <exclude name="datatypes.xml" />
-        <exclude name="eventmanager.xml" />
-        <exclude name="functions/**" />
-        <exclude name="magic.xml" />
-        <exclude name="storage/**/*.xml" />
-        <exclude name="xsl/**/*.xsl" />
-        <exclude name="xsl/**/*.xslt" />
-        <exclude name="xsl/common/*" />
-        <exclude name="security/classauthentication.xml" />
-
-        <!-- unused -->
-        <exclude name="accounts.properties" />
-      </fileset>
+      <fileset dir="${source-config.dir}"
+               defaultexcludes="yes"/>
     </copy>
-
-    <echo file="${web.dir}/config/datatypes.xml"><![CDATA[<?xml version="1.0" ?>
-<datatypes
-    xmlns="http://www.mmbase.org/xmlns/datatypes"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes
-    http://www.mmbase.org/xmlns/datatypes.xsd">
-    <!--
-    This is a template datatypes.xml
-    You can add your own datatypes here.
-    The default data types can be found in jar:file:mmbase.jar!/org/mmbase/config/datatypes.xml, and
-    can be used as an example.
-    Every jar can contains its own data types in the same fashion.
-  -->
-</datatypes>
-]]></echo>
-
-    <mkdir dir="${web.dir}/config/functions" />
-    <echo file="${web.dir}/config/functions/functionsets.xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE functionsets PUBLIC "-//MMBase//DTD functionsets config 1.0//EN" "http://www.mmbase.org/dtd/functionsets_1_0.dtd">
-<functionsets>
-    <!--
-    This is a template functionsets.xml
-    You can add your own function sets here.
-    The default function sets can be found in jar:file:mmbase.jar!/org/mmbase/config/functions/functionsets.xml, and
-    can be used as an example.
-    Every jar can contains its own sets in the same fashion.
-  -->
-</functionsets>
- ]]></echo>
-
-    <echo file="${web.dir}/config/security/classauthentication.xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE security PUBLIC "-//MMBase//DTD classsecurity config 1.0//EN" "http://www.mmbase.org/dtd/classsecurity_1_0.dtd">
-<security>
-  <!--
-    You can connect classes to security authentication here.
-    Some mmbase classes are authorized on default.
-    See jar:file:mmbase.jar!/org/mmbase/config/security/classauthentication.xml
-    Every jar can contains a classauthentication.xml of its own in the same fashion.
-  -->
-</security>
- ]]></echo>
-
 
     <!-- copy the html -->
     <copy todir="${webapp.dir}">
-      <fileset dir="${source-html.dir}" defaultexcludes="yes">
-        <exclude name="WEB-INF/classes/**" />
-        <exclude name="WEB-INF/web*.xml" />
-        <exclude name="mmdocs/**" />
+      <fileset dir="${source-html.dir}"
+               defaultexcludes="yes"
+               excludes="WEB-INF/classes/**"
+               >
       </fileset>
     </copy>
-
-    <copy tofile="${webapp.dir}/WEB-INF/web.xml" file="${web.xml.path}" />
-
   </target>
 
   <target name="web.documentation" if="do.documentation">
     <antcall target="documentation" />
-    <antcall target="javadocs" />
   </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Compile the AppTool                                                 -->
+  <!-- =================================================================== -->
+  <target name="compile.apptool" description="Compile the AppTool"
+          depends="init.compile">
+    <mkdir dir="${build.dir}/apptool/classes"/>
+    <javac srcdir="${source-src.dir}"
+           destdir="${build.dir}/apptool/classes"
+           classpathref="compile.classpath"
+           debug="${debug}"
+           optimize="${optimize}"
+           nowarn="${nowarn}"
+           deprecation="${deprecation}">
+      <include name="org/mmbase/module/tools/MMAppTool/*.java"/>
+    </javac>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Build the AppTool                                                   -->
+  <!-- =================================================================== -->
+  <target name="apptool" description="Build the AppTool"
+          depends="jar,compile.apptool">
+    <mkdir dir="${build.dir}/apptool/lib"/>
+    <copy file="${mmbase.jar}" todir="${build.dir}/apptool/lib"/>
+    <copy file="${xerces.jar}" todir="${build.dir}/apptool/lib"/>
+    <copy file="${servlet.jar}" todir="${build.dir}/apptool/lib"/>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Run the AppTool                                                     -->
+  <!-- =================================================================== -->
+  <target name="run.apptool" description="Run the AppTool"
+          depends="apptool">
+    <java classname="org.mmbase.module.tools.MMAppTool.MMAppTool" fork="true">
+      <classpath>
+        <pathelement location="${build.dir}/apptool/classes"/>
+        <fileset dir="${build.dir}/apptool/lib">
+          <include name="**/*.jar"/>
+          <include name="**/*.zip"/>
+        </fileset>
+      </classpath>
+    </java>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Clean the apptool                                                   -->
+  <!-- =================================================================== -->
+  <target name="clean.apptool" description="Clean the apptool">
+    <delete dir="${build.dir}/apptool"/>
+  </target>
+
 
   <!-- =================================================================== -->
   <!-- Various targets for automated downloads                             -->
   <!-- =================================================================== -->
-  <target name="unzipdownloadzip" if="download.zip.present"
+  <target name="unzipdownloadzip" if="download.zip.present" 
           unless="download.dir.present">
     <unzip src="${download.zip}" dest="${download.dir}" overwrite="false" />
   </target>
-
+  
   <target name="init.get" depends="proxyflags">
 
     <available property="download.zip.present" file="${download.zip}" />
@@ -1046,45 +982,6 @@ Build-compiler: ${build.compiler}
       <param name="destfile" value="${xalan.dest}"/>
       <param name="expandedfile" value="${xalan.jar}"/>
     </antcall>
-
-    <echo message="fileupload" />
-    <antcall target="downloadgz">
-      <param name="sourcefile" value="${fileupload.loc}"/>
-      <param name="destfile" value="${fileupload.dest}"/>
-      <param name="expandedfile" value="${fileupload.jar}"/>
-    </antcall>
-
-
-    <echo message="JSTL" />
-    <antcall target="downloadgz">
-      <param name="sourcefile"   value="${taglibs-standard.loc}"/>
-      <param name="destfile"     value="${taglibs-standard.dest}"/>
-      <param name="expandedfile" value="${taglibs-standard-jstl.jar}"/>
-    </antcall>
-
-    <echo message="taglib standard" />
-    <antcall target="downloadgz">
-      <param name="sourcefile"   value="${taglibs-standard.loc}" />
-      <param name="destfile"     value="${taglibs-standard.dest}" />
-      <param name="expandedfile" value="${taglibs-standard-standard.jar}"/>
-    </antcall>
-
-    <echo message="backport util/concurrent" />
-    <antcall target="downloadgz">
-      <param name="sourcefile"   value="${backport-util-concurrent.loc}" />
-      <param name="destfile"     value="${backport-util-concurrent.dest}" />
-      <param name="expandedfile" value="${backport-util-concurrent.jar}"/>
-    </antcall>
-
-    <!--
-    <echo message="commons collections" />
-    <antcall target="downloadgz">
-      <param name="sourcefile"   value="${commons-collections.loc}" />
-      <param name="destfile"     value="${commons-collections.dest}" />
-      <param name="expandedfile" value="${commons-collections.jar}"/>
-    </antcall>
-    -->
-
   </target>
 
   <target name="proxyflags" depends="init">
@@ -1097,7 +994,7 @@ Build-compiler: ${build.compiler}
   <target name="setproxy"  if="useproxy">
     <taskdef name="setproxy"
       classname="org.apache.tools.ant.taskdefs.optional.net.SetProxy" />
-    <setproxy proxyhost="${proxy.host}" proxyport="${proxy.port}"/>
+    <setproxy proxyhost="${proxy.host}" proxyport="${proxy.port}"/> 
     <echo message="Using ${proxy.host}:${proxy.port} to download ${sourcefile}"/>
   </target>
 
@@ -1120,7 +1017,7 @@ Build-compiler: ${build.compiler}
     <!-- Extract the package -->
     <gunzip src="${destfile}" dest="${download.dir}/file.tar"/>
     <untar src="${download.dir}/file.tar" dest="${expand.dir}"/>
-    <delete file="${download.dir}/file.tar"/>
+    <delete file="${download.dir}/file.tar"/>    
   </target>
 
   <target name="downloadbz2" unless="expanded" depends="download,testexpanded">
@@ -1150,7 +1047,6 @@ Build-compiler: ${build.compiler}
   <!-- =================================================================== -->
   <target name="clean.expand" description="Clean the expand directory">
     <delete dir="${expand.dir}"/>
-    <delete file="${download.dir}/file.tar" />
   </target>
 
   <target name="xsltransformer" depends="init.compile">
@@ -1161,10 +1057,7 @@ Build-compiler: ${build.compiler}
            debug="${debug}"
            optimize="${optimize}"
            nowarn="${nowarn}"
-           source="1.4"
-           deprecation="${deprecation}"
-           includeAntRuntime="false"
-           >
+           deprecation="${deprecation}">
            <include name="org/mmbase/util/XSLTransformer.java" />
     </javac>
 
@@ -1200,20 +1093,14 @@ Build-compiler: ${build.compiler}
   </target>
 
 
-  <target name="documentation"
-          depends="jar,documentation.builders,mmcidocs" if="build.documentation">
+  <target name="documentation" 
+          depends="jar,documentation.builders,mmcidocs">
 
-
-    <ant dir="${applications.home}" target="install">
-      <property name="build.documentation" value="true" />
-    </ant>
     <ant dir="${documentation.home}" target="documentation">
       <property name="mmbase.default.dir" value=".." />
       <property name="download.dir" value="${download.dir}" />
       <property name="documentation.dest.dir" value="${mmdocs.dir}"/>
     </ant>
-
-    <!-- ant target="documentation.index" / -->
 
   </target>
 
@@ -1248,7 +1135,6 @@ Build-compiler: ${build.compiler}
            debug="${debug}"
            optimize="${optimize}"
            nowarn="${nowarn}"
-           source="1.4"
            deprecation="${deprecation}">
            <include name="org/mmbase/util/BuilderList.java" />
     </javac>
@@ -1327,24 +1213,6 @@ Build-compiler: ${build.compiler}
     <delete file="${mmdocs.dir}/frontenddevelopers/builders/docbook2xhtml.xslt"/ -->
   </target>
 
-  <target name="javacc.install">
-    <antcall target="downloadgz">
-      <param name="sourcefile" value="${javacc.loc}"/>
-      <param name="destfile" value="${javacc.dest}"/>
-      <param name="expandedfile" value="${javacc.dir}"/>
-    </antcall>
-  </target>
-
-  <target name="javacc" depends="javacc.install">
-    <mkdir dir="${generated-source-src.dir}/org/mmbase/util/dateparser"/>
-    <echo message="${javacc.dir}" />
-    <javacc
-        target="${source-src.dir}/org/mmbase/util/DateParser.jj"
-        outputdirectory="${generated-source-src.dir}/org/mmbase/util/dateparser"
-        javacchome="${javacc.dir}"
-        />
-  </target>
-
   <!-- =================================================================== -->
   <!-- Clean the documentation directory                                   -->
   <!-- =================================================================== -->
@@ -1361,9 +1229,10 @@ Build-compiler: ${build.compiler}
   <!-- =================================================================== -->
   <target
     name="clean.build"
-    depends="clean.compile,clean.generatedsource,clean.lib"
+    depends="clean.compile,clean.generatedsource,clean.apptool,clean.lib"
     description="Clean all classes and generated java, safe for every recompilation"
     >
+    <!-- apptool? -->
   </target>
 
   <!-- this doesn't get clean anywhere else -->

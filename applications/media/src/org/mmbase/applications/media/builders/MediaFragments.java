@@ -6,7 +6,7 @@ OSI Certified is a certification mark of the Open Source Initiative.
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
-*/
+ */
 package org.mmbase.applications.media.builders;
 
 import org.mmbase.applications.media.filters.MainFilter;
@@ -14,14 +14,15 @@ import org.mmbase.applications.media.urlcomposers.URLComposer;
 import org.mmbase.applications.media.cache.URLCache;
 
 import java.util.*;
+import java.net.URL;
 
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.util.*;
-import org.mmbase.util.functions.*;
+import org.mmbase.util.functions.Parameters;
+import org.mmbase.util.functions.Parameter;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-
 
 /**
  * The MediaFragment builder describes a piece of media. This can be audio, or video.
@@ -33,12 +34,13 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
- * @version $Id: MediaFragments.java,v 1.44 2005-12-05 18:44:41 johannes Exp $
+ * @version $Id: MediaFragments.java,v 1.31.2.3 2005-12-05 18:43:39 johannes Exp $
  * @since MMBase-1.7
  */
 
 public class MediaFragments extends MMObjectBuilder {
 
+    // logging
     private static Logger log = Logging.getLoggerInstance(MediaFragments.class);
 
     // let the compiler check for typo's:
@@ -63,9 +65,11 @@ public class MediaFragments extends MMObjectBuilder {
     public final static Parameter[] ROOT_PARAMETERS          = {};
     public final static Parameter[] ISSUBFRAGMENT_PARAMETERS = {};
     public final static Parameter[] SUBFRAGMENT_SPARAMETERS  = {};
-    public final static Parameter[] AVAILABLE_PARAMETERS     = URLS_PARAMETERS;
+    public final static Parameter[] AVAILABLE_PARAMETERS     = URLS_PARAMETERS;    
     public final static Parameter[] FORMAT_PARAMETERS        = URLS_PARAMETERS;
     public final static Parameter[] DURATION_PARAMETERS      = {};
+
+
 
 
     // This filter is able to find the best mediasource by a mediafragment.
@@ -85,8 +89,8 @@ public class MediaFragments extends MMObjectBuilder {
         initDone = true;  // because of inheritance we do init-protections
 
         boolean result = super.init();
-        // deprecated:
-        retrieveClassificationInfo();
+        // deprecated: MM: and unused! -> removed.
+        // retrieveClassificationInfo();
 
         return result;
     }
@@ -99,16 +103,22 @@ public class MediaFragments extends MMObjectBuilder {
         if (info == null) info = new HashMap();
         if (arguments != null) {
             if (arguments instanceof Parameters) {
-                info.putAll(((Parameters) arguments).toMap());
-            } else {
+                info.putAll(((Parameters) arguments).toMap());                
+            } else {                
                 info.put("format",  arguments);
-            }
+            }            
         }
         return info;
     }
 
     /**
      * {@inheritDoc}
+     */
+    public Parameter[] getParameterDefinition(String function) {
+        return org.mmbase.util.functions.NodeFunction.getParametersByReflection(MediaFragments.class, function);
+    }
+
+    /**
      */
     protected Object executeFunction(MMObjectNode node, String function, List args) {
         if (log.isDebugEnabled()) {
@@ -136,7 +146,7 @@ public class MediaFragments extends MMObjectBuilder {
         } else if (FUNCTION_FILTEREDURLS.equals(function)) {
             return getFilteredURLs(node, translateURLArguments(args, null),null);
         } else if (FUNCTION_SUBFRAGMENT.equals(function)) {
-            return Boolean.valueOf(isSubFragment(node));
+            return new Boolean(isSubFragment(node));
         } else if (FUNCTION_ROOT.equals(function)) {
             MMObjectNode parent = getRootFragment(node);
             return parent;
@@ -145,19 +155,25 @@ public class MediaFragments extends MMObjectBuilder {
         } else if (FUNCTION_ROOT.equals(function)) {
             return "" + getRootFragment(node).getNumber();
         } else if (FUNCTION_AVAILABLE.equals(function)) {
-            List pt  = node.getRelatedNodes("publishtimes");
-            if (pt.size() == 0) {
-                return Boolean.TRUE;
-            } else {
-                MMObjectNode publishtime = (MMObjectNode) pt.get(0);
-                int now   = (int) (System.currentTimeMillis() / 1000);
-                int begin = publishtime.getIntValue("begin");
-                int end   = publishtime.getIntValue("end");
-                Boolean available = Boolean.TRUE;
-                if (begin > 0 && now < begin) available = Boolean.FALSE;
-                if (end   > 0 && now > end)   available = Boolean.FALSE;
-                return available;
+            if (mmb.getMMObject("publishtimes") == null) {
+                // publishtimes builder not installed. 
+                return Boolean.TRUE;                
+            } else {                
+                List pt  = node.getRelatedNodes("publishtimes");
+                if (pt.size() == 0) {
+                    return Boolean.TRUE;
+                } else {
+                    MMObjectNode publishtime = (MMObjectNode) pt.get(0);
+                    int now   = (int) (System.currentTimeMillis() / 1000);
+                    int begin = publishtime.getIntValue("begin");
+                    int end   = publishtime.getIntValue("end");
+                    Boolean available = Boolean.TRUE;
+                    if (begin > 0 && now < begin) available = Boolean.FALSE;
+                    if (end   > 0 && now > end)   available = Boolean.FALSE;
+                    return available;
+                }
             }
+            
         } else if (FUNCTION_URL.equals(function)) {
             return getURL(node, translateURLArguments(args, null));
         } else if (FUNCTION_NUDEURL.equals(function)) {
@@ -214,9 +230,8 @@ public class MediaFragments extends MMObjectBuilder {
         }
     }
 
-
     public String getGUIIndicator(String field, MMObjectNode node) {
-        if (getField(field).getGUIType().equals("relativetime")) { // must be delegated to a field-type implementation
+        if ("start".equals(field) || "stop".equals(field)) {
             StringBuffer buf = new StringBuffer();
             org.mmbase.applications.media.urlcomposers.RealURLComposer.appendTime(node.getIntValue(field), buf);
             return buf.toString();
@@ -237,7 +252,7 @@ public class MediaFragments extends MMObjectBuilder {
         Iterator i = getSources(fragment).iterator();
         while (i.hasNext()) {
             MMObjectNode source = (MMObjectNode) i.next();
-            MediaSources bul    = (MediaSources) source.getBuilder(); // cast everytime, because it can be extended
+            MediaSources bul    = (MediaSources) source.parent; // cast everytime, because it can be extended
             bul.getURLs(source, fragment, info, urls, cacheExpireObjects);
         }
         return urls;
@@ -271,7 +286,7 @@ public class MediaFragments extends MMObjectBuilder {
         } else {
             log.debug("No cache hit, key = " + key);
         }
-
+        
         Set cacheExpireObjects = new HashSet();
         List urls = getFilteredURLs(fragment, info, cacheExpireObjects);
         String result = "";
@@ -289,9 +304,9 @@ public class MediaFragments extends MMObjectBuilder {
 
     protected  String getFormat(MMObjectNode fragment, Map info)   {
         log.debug("Getting format of a fragment.");
-        // XXX also cache this ?
-        // XXX can be done in the same cache if we extend the key...
-        List urls = getFilteredURLs(fragment, info, null);
+    // XXX also cache this ?
+    // XXX can be done in the same cache if we extend the key...
+        List urls = getFilteredURLs(fragment, info,null);
         if (urls.size() > 0) {
             return ((URLComposer) urls.get(0)).getFormat().toString();
         } else {
@@ -392,57 +407,23 @@ public class MediaFragments extends MMObjectBuilder {
         List ms = getSources(fragment);
         for (Iterator mediaSources = ms.iterator() ;mediaSources.hasNext();) {
             MMObjectNode source = (MMObjectNode) mediaSources.next();
-            MMObjectBuilder parent = source.getBuilder();
-            parent.removeRelations(source);
-            parent.removeNode(source);
+            source.parent.removeRelations(source);
+            source.parent.removeNode(source);
         }
     }
-
-    // --------------------------------------------------------------------------------
-    // These methods are added to be backwards compatible.
-
-    private Map               classification     = null;
-
-     /**
-      * For backwards compatibility reasons, the first version of the mediafragment builder
-      * will contain the classification field. This field will contain numbers that are
-      * resolved using the lookup builder. This construction, using classification in
-      * mediafragment, was used for speeding up listings.
-      * @deprecated
-      */
-     private void retrieveClassificationInfo() {
-
-         MMObjectBuilder lookup = mmb.getMMObject("lookup");
-         if(lookup == null) {
-             log.debug("Downwards compatible classification code not used.");
-             return;
-         }
-         log.debug("Using downwards compatible classification code.");
-         classification =  new Hashtable();
-         MMObjectNode fn = getNode(mmb.getTypeDef().getIntValue("mediafragments"));
-         Vector nodes = fn.getRelatedNodes("lookup");
-         for (Enumeration e = nodes.elements();e.hasMoreElements();) {
-             MMObjectNode node = (MMObjectNode)e.nextElement();
-             String index = node.getStringValue("index");
-             String value = node.getStringValue("value");
-             log.debug("classification uses: " + index + " -> " + value);
-             classification.put(index,value);
-         }
-         return;
-     }
-
+    
     /**
      * Replace all for frontend code
      * Replace commands available are GETURL (gets mediafile url for an objectnumber),
-     * @param sp the PageInfo
+     * @param sp the scanpage
      * @param command the stringtokenizer reference with the replace command.
      * @return the result value of the replace command or null.
      */
-    public String replace(PageInfo sp,StringTokenizer command) {
+    public String replace(scanpage sp,StringTokenizer command) {
         if (command.hasMoreTokens()) {
             String token=command.nextToken();
-            
-            log.debug("scan - "+token);
+
+        log.debug("scan - "+token);
             if (token.equals("GETURL")) {
                 Integer number=null, userSpeed=null, userChannels=null;
                 if (command.hasMoreTokens()) number=new Integer(command.nextToken());
@@ -450,7 +431,7 @@ public class MediaFragments extends MMObjectBuilder {
                 if (command.hasMoreTokens()) userChannels=new Integer(command.nextToken());
                 if (number!=null) {
             MMObjectNode media = getNode(number.intValue());
-            if(!media.getBuilder().isExtensionOf(mmb.getBuilder("mediafragments"))) {
+            if(!(media.parent).isExtensionOf(mmb.getBuilder("mediafragments"))) {
                 log.error("Number "+number+" is not a media/audio/video fragment "+media);
                 return "Number "+number+" is not a media/audio/video fragment "+media;
             }
@@ -467,8 +448,8 @@ public class MediaFragments extends MMObjectBuilder {
                     return null;
                 }
             }
-            log.error("only command GETURL is supported");
-            return "only command GETURL is supported";
+        log.error("only command GETURL is supported");
+        return "only command GETURL is supported";
         }
         log.error("No commands defined.");
         return "No commands defined.";
@@ -485,7 +466,7 @@ public class MediaFragments extends MMObjectBuilder {
     public boolean setValue(MMObjectNode node,String fieldname) {
         if (fieldname.equals("lengthsec")) {
             long val=node.getLongValue("lengthsec");
-            log.info("store value in seconds: "+val);
+log.info("store value in seconds: "+val);
             node.setValue("length",new Long(val*1000));
             node.storeValue("lengthsec",null);
             return false;
@@ -493,13 +474,14 @@ public class MediaFragments extends MMObjectBuilder {
         return super.setValue(node,fieldname);
     }
 
+
     /**
      * {@inheritDoc}
      *
      * Stack.contains is used, so make sure equal node are equal.
      */
 
-    public boolean equals(MMObjectNode o1, MMObjectNode o2) {
+    public boolean equals(MMObjectNode o1, MMObjectNode o2) {        
         int n1 = o1.getNumber();
         int n2 = o2.getNumber();
         if (n1 > 0 && n2 > 0) { // both 'real' nodes.
@@ -515,5 +497,6 @@ public class MediaFragments extends MMObjectBuilder {
         }
 
     }
+
 
 }

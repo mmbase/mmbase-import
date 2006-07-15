@@ -36,9 +36,10 @@
 	<xsl:param name="chunk.section.depth" select="count(/article[@class='specification' or @class='faq'])+1" />
   <xsl:param name="use.id.as.filename" select="'$chunk.section.depth'"/>
   <xsl:param name="chunk.quietly" select="$chunk.section.depth"/>
-  <!-- set to 0 if you want to know what's happening -->
 
   <xsl:param name="glossentry.show.acronym">yes</xsl:param>
+
+  <!-- set to 0 if you want to know what's happening -->
 
   <!-- use a custom css -->
   <xsl:param name="html.stylesheet"><xsl:value-of select="$root"/>style/documentation.css</xsl:param>
@@ -68,10 +69,9 @@
         <xsl:text>: </xsl:text>
       </strong>
       <xsl:apply-templates mode="titlepage.mode"/>
-      <br /><strong class="{name(.)}"><xsl:text>Date: </xsl:text></strong> <xsl:value-of select="//*/date"/>
     </div>
   </xsl:template>
-  
+
   <!-- do not show revision history -->
   <xsl:template match="revhistory" mode="titlepage.mode" />
 

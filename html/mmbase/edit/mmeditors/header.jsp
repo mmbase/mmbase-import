@@ -18,4 +18,4 @@ response.setDateHeader("Date",  now);
         return value;
     }
   }
-%><mm:import id="rank"><%= org.mmbase.util.xml.UtilReader.get("editors.xml").getProperties().getProperty("rank", "basic user")%></mm:import>
+%>

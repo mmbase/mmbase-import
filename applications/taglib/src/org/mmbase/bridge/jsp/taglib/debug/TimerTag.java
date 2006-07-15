@@ -34,7 +34,7 @@ class LongContainer {
  * times' overview.
  *
  * @author Michiel Meeuwissen
- * @version $Id: TimerTag.java,v 1.8 2004-06-30 17:51:55 michiel Exp $ 
+ * @version $Id: TimerTag.java,v 1.7.2.1 2004-07-05 17:20:02 michiel Exp $ 
  */
 
 public class TimerTag extends ContextReferrerTag {

@@ -13,10 +13,9 @@ package org.mmbase.util;
  * Class to compare two strings, used by SortedVector.
  * @see org.mmbase.util.SortedVector
  * @see org.mmbase.util.CompareInterface
- * @deprecated Should implement java.util.Comparator, or should not exist, because this is java.lang.Integer's 'natural' order.
  *
  * @author Rico Jansen
- * @version $Id: IntegerCompare.java,v 1.6 2005-10-05 10:44:00 michiel Exp $
+ * @version $Id: IntegerCompare.java,v 1.3 2001-04-13 15:13:17 pierre Exp $
  */
 public class IntegerCompare implements CompareInterface {
 
@@ -28,7 +27,7 @@ public class IntegerCompare implements CompareInterface {
      * @param other the second object to compare. should be a <code>Integer</code>.
      * @return the result of the comparison
      */
-    public int compare(Object thisOne, Object other) {
-        return ((Integer)thisOne).intValue() - ((Integer)other).intValue();
+    public int compare(Object thisone,Object other) {
+        return ((Integer)thisone).intValue()-((Integer)other).intValue();
     }
 }

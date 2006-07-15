@@ -13,29 +13,24 @@ package org.mmbase.module.builders;
 import java.util.*;
 
 import org.mmbase.module.core.*;
-import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
-import org.mmbase.storage.search.implementation.*;
-import org.mmbase.storage.search.*;
 
 /**
  * @javadoc
- * mmservers stands for MMBase servers. It is possible to run multiple mmbase servers on one database instance.
- * Every mmserver node represent a real MMBase server(think of it as a machine where one instance of MMBase is running).
- * On startup MMBase looks in the mmservers table and looks if he is listed in the list of mmservers,
- * if not MMBase create a new node containing imfornation about itselve(name/host/os/jdk). the mmservers builder has extra behaviour,
- * it can communicate with other servers(using multicast). The basic funtionality it provides however is sending information
- * about changes of node to other mmservers (Listen !! I just have changed node 123). This mechanisme makes it possible to keep
- * nodes caches in sync but also makes it possible to split tasks between machines. You could for example have a server that encodes video.
- *  when a change to a certain node is made one of the servers (if wel configured) can start encoding the videos.
- * @author  vpro
- * @version $Id: MMServers.java,v 1.44 2006-07-03 14:22:42 michiel Exp $
+ * @author  michiel
+ * @author  nico
+ * @version $Id: MMServers.java,v 1.27.2.2 2005-11-28 18:41:40 pierre Exp $
  */
-public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnable, org.mmbase.datatypes.resources.StateConstants {
+public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnable {
 
     private static final Logger log = Logging.getLoggerInstance(MMServers.class);
     private int serviceTimeout = 60 * 15; // 15 minutes
     private long intervalTime = 60 * 1000; // 1 minute
+
+    public static final int UNKNOWN = -1;
+    public static final int ACTIVE = 1;
+    public static final int INACTIVE = 2;
+    public static final int ERROR = 3;
 
     private boolean checkedSystem = false;
     private String javastr;
@@ -44,59 +39,57 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
     private Vector possibleServices = new Vector();
 
     /**
-     * Function uptime
-     * @since MMBase-1.8
-     */
-    protected Function getUpTime = new AbstractFunction("uptime", Parameter.EMPTY, ReturnType.LONG) {
-            {
-                setDescription("The function 'uptime' returns the uptime of the current server.");
-            }
-            public Object getFunctionValue(Parameters parameters) {
-                int now = (int) (System.currentTimeMillis() / 1000);
-                return new Long(now - MMBase.startTime);
-            }
-        };
-    {
-        addFunction(getUpTime);
-    }
-
-    /**
      * @javadoc
      */
     public MMServers() {
         javastr = System.getProperty("java.version") + "/" + System.getProperty("java.vm.name");
-        osstr = System.getProperty("os.name") + "/" + System.getProperty("os.version");
+        osstr   = System.getProperty("os.name") + "/" + System.getProperty("os.version");
     }
 
     public boolean init() {
-        if (oType != -1)
-            return true; // inited already
-        if (!super.init())
-            return false;
+        if (oType != -1) return true; // inited already
+        if (!super.init()) return false;
         String tmp = getInitParameter("ProbeInterval");
         if (tmp != null) {
-            intervalTime = (long)Integer.parseInt(tmp) * 1000;
+            intervalTime = (long) Integer.parseInt(tmp) * 1000;
             log.service("ProbeInterval was configured to be " + intervalTime / 1000 + " seconds");
         } else {
             log.service("ProbeInterval defaults to " + intervalTime / 1000 + " seconds");
         }
-         tmp = getInitParameter("ServiceTimeout");
-        if (tmp != null) {
-            serviceTimeout = (int)Integer.parseInt(tmp);
-            log.service("ServiceTimeout was configured to be " + serviceTimeout + " seconds");
-        } else {
-            log.service("ServiceTimeout defaults to " + serviceTimeout + " seconds");
-        }
-        start();
+
+    start();
         return true;
+
     }
 
     /**
      * Starts the thread for the task scheduler
-     * @since MMBase-1.7
      */
     protected void start() {
         MMBaseContext.startThread(this,"MMServers");
+    }
+
+    /**
+     * @javadoc
+     * @language
+     */
+    public String getGUIIndicator(String field,MMObjectNode node) {
+        if (field.equals("state")) {
+            int val = node.getIntValue("state");
+            switch(val) {
+                case UNKNOWN: return "Unknown";
+                case ACTIVE: return "Active";
+                case INACTIVE: return "Inactive";
+                case ERROR: return "Error";
+                default: return "Unknown";
+            }
+        } else if (field.equals("atime")) {
+            int now = (int)(System.currentTimeMillis()/1000);
+            int then = node.getIntValue("atime");
+            String tmp = ""+(now-then)+"sec";
+            return tmp;
+        }
+        return null;
     }
 
     /**
@@ -109,11 +102,12 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
             return getGUIIndicator("atime", node);
         } else if (field.equals("uptime")) {
             // The 'node' object is not used, so this info makes only sense for _this_ server.
-            int now = (int) (System.currentTimeMillis() / 1000);
-            int uptime = now - MMBase.startTime;
+
+            int now= (int)(System.currentTimeMillis()/1000);
+            int uptime = now - (int) mmb.startTime;
             return getUptimeString(uptime);
         }
-        return super.getValue(node, field);
+        return super.getValue(node,field);
     }
 
     /**
@@ -122,17 +116,17 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
     private String getUptimeString(int uptime) {
         StringBuffer result = new StringBuffer();
         if (uptime >= (24 * 3600)) {
-            int d = uptime / (24 * 3600);
+            int d = uptime/(24 * 3600);
             result.append(d).append(" d ");
             uptime -= d * 24 * 3600;
         }
         if (uptime >= 3600) {
-            int h = uptime / 3600;
+            int h = uptime/3600;
             result.append(h).append(" h ");
-            uptime -= h * 3600;
+            uptime -= h*3600;
         }
-        if (uptime >= 60) {
-            int m = uptime / (60);
+        if (uptime>=60) {
+            int m = uptime/(60);
             result.append(m).append(" m ");
             uptime -= m * 60;
         }
@@ -140,10 +134,10 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
         return result.toString();
     }
 
+
     /**
      * run, checkup probe runs every intervaltime to
      * set the state of the server (used in clusters)
-     * @since MMBase-1.7
      */
     public void run() {
         while (!mmb.isShutdown()) {
@@ -159,8 +153,8 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
             try {
                 Thread.sleep(thisTime);
             } catch (InterruptedException e) {
-                log.debug(Thread.currentThread().getName() +" was interrupted.");
-                continue;
+                log.debug(e.toString());
+                break;
             }
         }
     }
@@ -169,27 +163,27 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
      * @javadoc
      */
     private void doCheckUp() {
-        try {
-            boolean imoke = false;
-            String machineName = mmb.getMachineName();
+    try {
+            boolean imoke=false;
+        String machineName = mmb.getMachineName();
             host = mmb.getHost();
-            log.debug("doCheckUp(): machine=" + machineName);
-            for (Iterator iter = getNodes().iterator(); iter.hasNext();) {
-                MMObjectNode node = (MMObjectNode) iter.next();
-                String tmpname = node.getStringValue("name");
-                log.debug("Checking " + tmpname);
+            log.debug("doCheckUp(): machine="+machineName);
+            Enumeration e=search("");
+            while (e.hasMoreElements()) {
+                MMObjectNode node=(MMObjectNode)e.nextElement();
+                String tmpname=node.getStringValue("name");
                 if (tmpname.equals(machineName)) {
                     imoke = checkMySelf(node);
                 } else {
                     checkOther(node);
                 }
             }
-            if (!imoke) {
+            if (imoke==false) {
                 createMySelf(machineName);
             }
-        } catch (Exception e) {
-            log.error("Something went wrong in MMServers Checkup Thread " + e.getMessage(), e);
-        }
+    } catch(Exception e) {
+            log.error("Something went wrong in MMServers Checkup Thread" + Logging.stackTrace(e));
+    }
     }
 
     /**
@@ -197,10 +191,16 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
      */
     private boolean checkMySelf(MMObjectNode node) {
         boolean state = true;
+        String tmphost = node.getStringValue("host");
+        /* Why ?
+        if (!tmphost.equals(host)) {
+            log.warning("MMServers-> Running on a new HOST possible problem");
+        }
+        */
         log.debug("checkMySelf() updating timestamp");
         node.setValue("state", ACTIVE);
-        node.setValue("atime", (int) (System.currentTimeMillis() / 1000));
-        if (!checkedSystem) {
+        node.setValue("atime", (int)(System.currentTimeMillis()/1000));
+        if (! checkedSystem) {
             node.setValue("os", osstr);
             node.setValue("host", host);
             node.setValue("jdk", javastr);
@@ -215,14 +215,11 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
      * @javadoc
      */
     private void checkOther(MMObjectNode node) {
-        int now = (int) (System.currentTimeMillis() / 1000);
-        int then = node.getIntValue("atime");
-        if (log.isDebugEnabled()) {
-            log.debug("" + now + ": Checking " + node.getValue("name")  + " (updated at  " + then + ", " + (now - then) + " s ago, interval: " + serviceTimeout + " s )" );
-        }
-        if ((now - then) > (serviceTimeout)) {
+        int now=(int)(System.currentTimeMillis()/1000);
+        int then=node.getIntValue("atime");
+        if ((now-then)>(serviceTimeout)) {
             if (node.getIntValue("state") != INACTIVE) {
-                log.debug("checkOther() updating state for " + node.getStringValue("host"));
+                log.debug("checkOther() updating state for "+node.getStringValue("host"));
                 node.setValue("state", INACTIVE);
                 node.commit();
 
@@ -237,38 +234,35 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
      */
     private void createMySelf(String machineName) {
         MMObjectNode node = getNewNode("system");
-        node.setValue("name", machineName);
+        node.setValue("name",machineName);
         node.setValue("state", ACTIVE);
-        node.setValue("atime", (int) (System.currentTimeMillis() / 1000));
-        node.setValue("os", osstr);
-        node.setValue("host", host);
-        node.setValue("jdk", javastr);
-        insert("system", node);
+        node.setValue("atime", (int)(System.currentTimeMillis()/1000));
+        node.setValue("os",osstr);
+        node.setValue("host",host);
+        node.setValue("jdk",javastr);
+        insert("system",node);
     }
 
     /**
      * @javadoc
      */
     private void setServicesDown(MMObjectNode node) {
-        Enumeration f = possibleServices.elements();
-        log.debug("setServicesDown() for " + node);
+        Enumeration f=possibleServices.elements();
+        log.debug("setServicesDown() for "+node);
         while (f.hasMoreElements()) {
-            String type = (String)f.nextElement();
-            Enumeration e = mmb.getInsRel().getRelated(node.getIntValue("number"), type);
+            String type=(String)f.nextElement();
+            Enumeration e=mmb.getInsRel().getRelated(node.getIntValue("number"),type);
             while (e.hasMoreElements()) {
-                MMObjectNode node2 = (MMObjectNode)e.nextElement();
-                MMObjectBuilder parent = node2.getBuilder();
-                log.info("setServicesDown(): downnode(" + node2 + ") REMOVING node");
-                parent.removeRelations(node2);
-                parent.removeNode(node2);
+                MMObjectNode node2=(MMObjectNode)e.nextElement();
+                log.info("setServicesDown(): downnode("+node2+") REMOVING node");
+                node2.parent.removeRelations(node2);
+                node2.parent.removeNode(node2);
 
                 //node2.setValue("state","down");
                 //node2.commit();
             }
         }
-        if (log.isDebugEnabled()) {
-            log.debug("setServicesDown() for " + node + " done");
-        }
+        log.debug("setServicesDown() for "+node+" done");
     }
 
     /**
@@ -281,10 +275,89 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
     }
 
     /**
+     * @deprecated-now does not add anything
+     */
+    public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
+        super.nodeRemoteChanged(machine,number,builder,ctype);
+        return nodeChanged(machine,number,builder,ctype);
+    }
+
+    /**
+     * @deprecated-now does not add anything
+     */
+    public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
+        super.nodeLocalChanged(machine,number,builder,ctype);
+        return nodeChanged(machine,number,builder,ctype);
+    }
+
+    /**
+     * @deprecated-now does not add anything
+     */
+    public boolean nodeChanged(String machine,String number,String builder,String ctype) {
+        return true;
+    }
+
+    /**
      * @javadoc
      */
-    public String getMMServerProperty(String mmserver, String key) {
-        String value = getInitParameter(mmserver + ":" + key);
+    /*
+    private void startProtocolDrivers() {
+        name2driver=new Hashtable();
+        url2driver=new Hashtable();
+        Enumeration e=search("");
+        while (e.hasMoreElements()) {
+            MMObjectNode node=(MMObjectNode)e.nextElement();
+            String name=node.getStringValue("name");
+            String url=node.getStringValue("host");
+            int pos=url.indexOf("://");
+            if (pos!=-1) {
+                // do i allready have this url driver running ?
+                ProtocolDriver pd=(ProtocolDriver)url2driver.get(url);
+                if (pd!=null) {
+                    name2driver.put(name,pd);
+                } else {
+                    String tmp=url;
+                    String protocol=tmp.substring(0,pos);
+                    tmp=tmp.substring(pos+3);
+                    pos=tmp.indexOf(':');
+                    String host;
+                    int port=80;
+                    if (pos==-1) {
+                        host=tmp;
+                    } else {
+                        host=tmp.substring(0,pos);
+                        try {
+                            port=Integer.parseInt(tmp.substring(pos+1));
+                        } catch(NumberFormatException nfe) {
+                            log.error("Can't parse portnr since value isnt integer but "+tmp.substring(pos+1));
+                            log.error(nfe.getMessage());
+                            log.error(Logging.stackTrace(nfe));
+                        }
+                    }
+
+                    try {
+                        Class newclass=Class.forName("org.mmbase.module.builders.protocoldrivers."+protocol);
+                        pd = (ProtocolDriver)newclass.newInstance();
+                        pd.init(host,port);
+                        url2driver.put(url,pd);
+                        name2driver.put(name,pd);
+                        log.info("Started driver("+pd+")");
+                    } catch (Exception f) {
+                        log.error("Can't load protocolclass("+protocol+")");
+                        log.error(f.getMessage());
+                        //log.error(Logging.stackTrace(f));
+                    }
+                }
+            }
+        }
+    }
+    */
+
+    /**
+     * @javadoc
+     */
+    public String getMMServerProperty(String mmserver,String key) {
+        String value=getInitParameter(mmserver+":"+key);
         return value;
     }
 
@@ -292,19 +365,11 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
      * @javadoc
      */
     public MMObjectNode getMMServerNode(String name) {
-        NodeSearchQuery query = new NodeSearchQuery(this);
-        BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(getField("name")), name);
-        query.setConstraint(constraint);
-        try {
-            List nodeList = getNodes(query);
-            if (nodeList.size() > 0) {
-                return (MMObjectNode) nodeList.get(0);
-            } else {
-                log.info("Can't find any mmserver node with name=" + name);
-                return null;
-            }
-        } catch (SearchQueryException sqe) {
-            log.warn(sqe);
+        Enumeration e=search("name=='"+name+"'");
+        if (e.hasMoreElements()) {
+            return (MMObjectNode)e.nextElement();
+        } else {
+            log.info("Can't find any mmserver node with name="+name);
             return null;
         }
     }
@@ -317,47 +382,23 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
     }
 
     /**
-     * MMServer object are field by field equals.
-     */
-
-    public boolean equals(MMObjectNode o1, MMObjectNode o2) {
-        return o1 == null ? o2 == null : o2 != null && (o1.getNumber() == o2.getNumber() && o1.getValue("name").equals(o2.getValue("name")) && o1.getValue("host").equals(o2.getValue("host")));
-    }
-
-    public String toString(MMObjectNode n) {
-        return "" + n.getValue("name") + "@" + n.getValue("host");
-    }
-
-
-
-    protected NodeSearchQuery query = null;
-    /**
-     * @return List of MMObjectNodes representing  active servers, which are not this server.
+     * @return
      */
     public List getActiveServers() {
-        String machineName = mmb.getMachineName();
-        if (log.isDebugEnabled()) {
-            log.debug("machine=" + machineName);
-        }
-        if (query == null) {
-            query = new NodeSearchQuery(this);
-            BasicFieldValueConstraint constraint1 = new BasicFieldValueConstraint(query.getField(getField("name")), machineName);
-            constraint1.setInverse(true);
-            BasicFieldValueConstraint constraint2 = new BasicFieldValueConstraint(query.getField(getField("state")), new Integer(ACTIVE));
-            BasicCompositeConstraint constraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
-            constraint.addChild(constraint1);
-            constraint.addChild(constraint2);
-            query.setConstraint(constraint);
-            StepField field = query.getField(getField(FIELD_NUMBER));
-            BasicSortOrder so = query.addSortOrder(field);
-            so.setDirection(SortOrder.ORDER_DESCENDING);
-        }
+        List activeServers = new ArrayList();
 
-        try {
-            return storageConnector.getNodes(query, false);
-        } catch (org.mmbase.storage.search.SearchQueryException sqe) {
-            log.error(sqe);
-            return new ArrayList();
+        String machineName = mmb.getMachineName();
+        log.debug("getActiveServers(): machine="+machineName);
+        Enumeration e=search("");
+        while (e.hasMoreElements()) {
+            MMObjectNode node = (MMObjectNode)e.nextElement();
+            String tmpname=node.getStringValue("name");
+            if (!tmpname.equals(machineName)) {
+                if (node.getIntValue("state") == ACTIVE) {
+                    activeServers.add(node);
+                }
+            }
         }
+        return activeServers;
     }
 }

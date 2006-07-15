@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Channel.java,v 1.29 2005-11-23 15:45:13 pierre Exp $
+ * @version $Id: Channel.java,v 1.22 2004-01-19 17:27:09 michiel Exp $
  */
 
 public class Channel extends MMObjectBuilder {
@@ -330,7 +330,7 @@ public class Channel extends MMObjectBuilder {
         Integer highseqObj = (Integer)openChannels.get(channelnr);
         if (highseqObj != null) {
             // The highest sequence is kept track of in the openChannels table.
-            newHighseq = highseqObj.intValue() + 1;
+            newHighseq = ((Integer)highseqObj).intValue() + 1;
             openChannels.put(channelnr, new Integer(newHighseq));
             return newHighseq;
         }
@@ -356,7 +356,7 @@ public class Channel extends MMObjectBuilder {
          * the recursive parameter set to true for all messages in the channel.
          */
         if (messageBuilder != null) {
-            for (Enumeration messages = mmb.getInsRel().getRelated(channel.getNumber(), messageBuilder.getNumber());
+            for (Enumeration messages = mmb.getInsRel().getRelated(channel.getNumber(), messageBuilder.oType);
                  messages.hasMoreElements();) {
                 messageBuilder.removeNode((MMObjectNode)messages.nextElement(), true);
             }
@@ -601,7 +601,7 @@ public class Channel extends MMObjectBuilder {
         Vector result = new Vector();
         String id = (String)params.get("CHANNEL");
         MMObjectNode node = getNode(id);
-        if ((node == null) || !(node.getBuilder() instanceof Channel)) {
+        if ((node == null) || !(node.parent instanceof Channel)) {
             log.debug("getListUsers(): no or incorrect channel specified");
             return result;
         }
@@ -678,12 +678,12 @@ public class Channel extends MMObjectBuilder {
      *  channel is not associated with a community.
      */
     public MMObjectNode communityParent(MMObjectNode channel) {
-        // During call to Channel.init(), communityBuilder.getNumber() can still be 0
+        // During call to Channel.init(), communityBuilder.oType can still be 0
         // So need to check it before using it
         // When openChannels is removed from init this can be removed
         if (communityBuilder != null) {
-            int oType = communityBuilder.getNumber();
-            if (oType == 0) oType = mmb.getTypeDef().getIntValue("community");
+            int oType = communityBuilder.oType;
+            if (oType == 0) oType = mmb.TypeDef.getIntValue("community");
             Enumeration relatedCommunity = mmb.getInsRel().getRelated(channel.getNumber(), oType);
             if (relatedCommunity.hasMoreElements()) {
                 return (MMObjectNode)relatedCommunity.nextElement();
@@ -727,10 +727,10 @@ public class Channel extends MMObjectBuilder {
         }
 
         if (field.equals(F_READLOGIN)) {
-            return Boolean.valueOf((node.getIntValue(F_STATE) & STATE_READ_LOGIN)>0);
+            return new Boolean((node.getIntValue(F_STATE) & STATE_READ_LOGIN)>0);
         }
         if (field.equals(F_WRITELOGIN)) {
-            return Boolean.valueOf((node.getIntValue(F_STATE) & STATE_WRITE_LOGIN)>0);
+            return new Boolean((node.getIntValue(F_STATE) & STATE_WRITE_LOGIN)>0);
         }
         if (field.equals(F_HASMOODS)) {
             if (node.getRelationCount("mood")>0) return "yes"; else return "no";
@@ -748,7 +748,7 @@ public class Channel extends MMObjectBuilder {
      */
     protected Object executeFunction(MMObjectNode node,String function,String field) {
         if (function.equals(F_HASMOODS)) {
-            return Boolean.valueOf(node.getRelationCount("mood")>0);
+            return new Boolean(node.getRelationCount("mood")>0);
         } else {
             return super.executeFunction(node,function,field);
         }
@@ -768,11 +768,11 @@ public class Channel extends MMObjectBuilder {
      * <li>channelnumber-STILLACTIVE-usernumber - resets the time-out before the user is
      *      automatically disconnected from the channel. </li>
      * </ul>
-     * @param sp  the current PageInfo context
+     * @param sp  the current scanpage context
      * @param tok the tokenized command
      * @return the result of the command as a String
      */
-    public String replace(PageInfo sp, StringTokenizer tok) {
+    public String replace(scanpage sp, StringTokenizer tok) {
         // The first thing we expect is a channel number.
         if (!tok.hasMoreElements()) {
             log.error("replace(): channel number expected after $MOD-BUILDER-channel-.");
@@ -831,13 +831,13 @@ public class Channel extends MMObjectBuilder {
      */
     public String getDefaultUrl(int src) {
         if (communityBuilder != null) {
-            Enumeration e = mmb.getInsRel().getRelated(src, communityBuilder.getNumber());
+            Enumeration e = mmb.getInsRel().getRelated(src, communityBuilder.oType);
             if (!e.hasMoreElements()) {
                 log.warn("GetDefaultURL Could not find related community for channel node " + src);
                 return null;
             }
             MMObjectNode commNode = (MMObjectNode)e.nextElement();
-            String url = commNode.getBuilder().getDefaultUrl(commNode.getNumber());
+            String url = commNode.parent.getDefaultUrl(commNode.getNumber());
             if (url != null) url += "+" + src;
             return url;
         } else {

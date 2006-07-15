@@ -1,11 +1,12 @@
-<%@ include file="settings.jsp"%><mm:content type="text/html" expires="0" language="<%=ewconfig.language%>"><mm:cloud method="$loginmethod"  loginpage="login.jsp" jspvar="cloud" sessionname="$loginsessionname"><mm:log jspvar="log"><%@page import="org.mmbase.bridge.*,org.mmbase.bridge.util.*,org.mmbase.util.functions.Parameters,javax.servlet.jsp.JspException"
+<%@ page errorPage="exception.jsp"
+%><%@ include file="settings.jsp"%><mm:locale language="<%=ewconfig.language%>"><mm:cloud method="$loginmethod"  loginpage="login.jsp" jspvar="cloud" sessionname="$loginsessionname"><mm:log jspvar="log"><%@page import="org.mmbase.bridge.*,org.mmbase.bridge.util.*,javax.servlet.jsp.JspException"
 %><%@ page import="org.w3c.dom.Document"
 %><%
     /**
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.64 2006-03-31 08:45:43 pierre Exp $
+     * @version  $Id: list.jsp,v 1.47.2.3 2005-03-22 09:38:28 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -96,7 +97,6 @@ boolean deletable = false;
 boolean creatable = false;
 String deletedescription = "";
 String deleteprompt = "";
-String createprompt = "";
 org.w3c.dom.NodeList titles = null;
 if (listConfig.wizard != null) {
 
@@ -107,7 +107,6 @@ if (listConfig.wizard != null) {
 
     deletedescription = Utils.selectSingleNodeText(wiz.getSchema(), "/*/action[@type='delete']/description", null, cloud);
     deleteprompt = Utils.selectSingleNodeText(wiz.getSchema(), "/*/action[@type='delete']/prompt", null, cloud);
-    createprompt = Utils.selectSingleNodeText(wiz.getSchema(), "/*/action[@type='create']/prompt", null, cloud);
     titles            = Utils.selectNodeList(wiz.getSchema(), "/wizard-schema/title");
 
 }
@@ -121,8 +120,8 @@ int len   = listConfig.pagelength;
 int resultsSize;
 
 //// do not list anything if search is forced and no searchvalue given
-if (listConfig.search == Config.ListConfig.SEARCH_FORCE && listConfig.searchFields != null && "".equals(listConfig.searchValue)) {
-    results = cloud.createNodeList();
+if (listConfig.search == listConfig.SEARCH_FORCE && listConfig.searchFields != null && "".equals(listConfig.searchValue)) {
+    results = cloud.getCloudContext().createNodeList();
     resultsSize = 0;
 } else if (listConfig.multilevel) {
     log.trace("this is a multilevel");
@@ -191,28 +190,6 @@ if (mainManager.charAt(mainManager.length()-1)<='9') mainManager=mainManager.sub
 NodeManager manager=cloud.getNodeManager(mainManager);
 if (!manager.mayCreateNode()) creatable=false;
 
-// relationmanager test for searchlists
-String roleStr = request.getParameter("relationRole");
-String originNodeNr = request.getParameter("relationOriginNode");
-boolean checkRelationRights = originNodeNr != null && !"".equals(originNodeNr) && roleStr != null && !"".equals(roleStr);
-Node originNode = null;
-RelationManager relationManager = null;
-boolean checkDestination = true;
-boolean checkSource = true;
-if (checkRelationRights) {
-    try {
-        originNode = cloud.getNode(originNodeNr);
-        relationManager = cloud.getRelationManager(roleStr);
-        String createDir  = request.getParameter("relationCreateDir");
-        if (createDir != null) {
-            checkDestination = !createDir.equals("source"); // destination or both
-            checkSource = !createDir.equals("destination"); // source or both
-        }
-    } catch (NotFoundException nfe) {
-        log.error("error:" + nfe);
-        checkRelationRights = false;
-    }
-}
 
 for (int i=0; i < results.size(); i++) {
     Node item = results.getNode(i);
@@ -223,57 +200,38 @@ for (int i=0; i < results.size(); i++) {
     } else {
         obj = addObject(docel, item.getNumber(), i+1 + start, mainManager, manager.getGUIName(2));
     }
-
     for (int j=0; j < listConfig.fieldList.size(); j++) {
-        String fieldName = (String)listConfig.fieldList.get(j);
+        String fieldname = (String)listConfig.fieldList.get(j);
 
         Field field = null;
         String value = "";
         if (listConfig.multilevel) {
-            int period = fieldName.indexOf('.');
-            String nmname = fieldName.substring(0, period);
-            if (nmname.charAt(period-1)<='9') nmname = nmname.substring(0, period - 1);
-            field = cloud.getNodeManager(nmname).getField(fieldName.substring(period + 1));
+            int period=fieldname.indexOf('.');
+            String nmname=fieldname.substring(0,period);
+            if (nmname.charAt(period-1)<='9') nmname=nmname.substring(0, period-1);
+            field=cloud.getNodeManager(nmname).getField(fieldname.substring(period+1));
         } else {
-            field = item.getNodeManager().getField(fieldName);
+            field=item.getNodeManager().getField(fieldname);
         }
         if (field.getGUIType().equals("eventtime")) {
            // eventtime is formatted lateron with xslt
-           value = "" + item.getIntValue(fieldName);
+           value = item.getStringValue(fieldname);
            if (value.equals("-1")) {
              value = "";
            }
         } else {
-            Locale locale = new Locale(ewconfig.language);
-            Parameters args = item.createParameters("gui");
-            args.set("field",    fieldName);
-            args.set("language", locale.getLanguage());
-            args.set("locale",   locale);
-            args.set("response", pageContext.getResponse());
-            args.set("request",  pageContext.getRequest());
-            value = item.getFunctionValue("gui", args).toString();
-            //value = item.getStringValue("gui(" + fieldName + ")");
+          value = item.getStringValue("gui(" + fieldname + ")");
         }
-        addField(obj, field.getGUIName(), fieldName, value, field.getGUIType());
-    }
-    if (listConfig.multilevel) {
-        item = item.getNodeValue(listConfig.mainObjectName);
-    }
-    if (checkRelationRights) {
-        boolean toDestination = checkDestination &&
-                                cloud.hasRelationManager(originNode.getNodeManager(), item.getNodeManager(), roleStr) &&
-                                relationManager.mayCreateRelation(originNode, item);
-        boolean toSource = checkSource &&
-                           cloud.hasRelationManager(item.getNodeManager(), originNode.getNodeManager(), roleStr) &&
-                           relationManager.mayCreateRelation(item, originNode);
-        Utils.setAttribute(obj, "maylink", "" + (toSource || toDestination));
-    } else {
-        Utils.setAttribute(obj, "maylink", "true");
+        addField(obj, field.getGUIName(), fieldname, value, field.getGUIType());
     }
 
-    Utils.setAttribute(obj, "mayedit", "" + item.mayWrite());
+    if (listConfig.multilevel) {
+        item=item.getNodeValue(listConfig.mainObjectName);
+    }
+    Utils.setAttribute(obj, "mayedit",   "" + item.mayWrite());
     Utils.setAttribute(obj, "maydelete", "" + item.mayDelete());
 }
+
 
 // place page information
 int pagecount = new Double(Math.floor(resultsSize / len)).intValue();
@@ -329,7 +287,6 @@ params.put("popupid",  popupId);
 
 if (deletedescription!=null) params.put("deletedescription", deletedescription);
 if (deleteprompt!=null) params.put("deleteprompt", deleteprompt);
-if (createprompt!=null) params.put("createprompt", createprompt);
 if (listConfig.title == null) {
     params.put("title", manager.getGUIName(2));
 }
@@ -337,7 +294,7 @@ if (listConfig.title == null) {
 params.put("username", cloud.getUser().getIdentifier());
 params.put("language", cloud.getLocale().getLanguage());
 params.put("ew_context", request.getContextPath());
-params.put("ew_path",  new java.net.URL(pageContext.getServletContext().getResource(request.getServletPath()), "."));
+params.put("ew_path", new File(request.getServletPath()).getParentFile().getParent() + "/");
 
 
 log.trace("Doing the transformation for " + listConfig.template);
@@ -367,4 +324,4 @@ private org.w3c.dom.Node addField(org.w3c.dom.Node el, String name, String field
     el.appendChild(n);
     return n;
 }
-%></mm:log></mm:cloud></mm:content>
+%></mm:log></mm:cloud></mm:locale>

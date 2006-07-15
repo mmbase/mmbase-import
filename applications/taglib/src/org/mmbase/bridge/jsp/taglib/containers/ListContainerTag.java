@@ -15,28 +15,26 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.util.Queries;
-import org.mmbase.cache.CachePolicy;
+import org.mmbase.util.logging.*;
 
 /**
  * Container cognate for ListTag.
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListContainerTag.java,v 1.18 2006-07-04 12:16:09 michiel Exp $
+ * @version $Id: ListContainerTag.java,v 1.7.2.4 2004-07-26 20:12:20 nico Exp $
  */
 public class ListContainerTag extends CloudReferrerTag implements QueryContainer {
 
+
+    private static final Logger log = Logging.getLoggerInstance(ListContainerTag.class);
+
     private Query   query        = null;
-    private Attribute cachePolicy  = Attribute.NULL;
     private Attribute path       = Attribute.NULL;
     private Attribute searchDirs = Attribute.NULL;
     private Attribute fields     = Attribute.NULL;
     protected  Attribute   nodes       = Attribute.NULL;
-    protected String jspVar = null;
 
-    public void setCachepolicy(String t) throws JspTagException {
-        cachePolicy = getAttribute(t);
-    }
 
     public void setPath(String t) throws JspTagException {
         path = getAttribute(t);
@@ -57,47 +55,19 @@ public class ListContainerTag extends CloudReferrerTag implements QueryContainer
         nodes = getAttribute(n);
     }
 
-    /**
-     * @since MMBase-1.8.1
-     */
-    public void setJspvar(String jv) {
-        jspVar = jv;
-    }
-
 
     public Query getQuery() {
         if (query.isUsed()) query = (Query) query.clone();
         return query;
     }
 
-    // overridden from CloudReferrer.
-    public Cloud getCloudVar() throws JspTagException {
-        if (query == null) return super.getCloudVar(); // I think that this does not happen.
-        return query.getCloud();
-    }
 
-
-    public int doStartTag() throws JspTagException {
-        if (getReferid() != null) {
-            query = (Query) getContextProvider().getContextContainer().getObject(getReferid());
-        } else {
-            if (path == Attribute.NULL) {
-                throw new JspTagException("Path attribute is mandatory");
-            }
-            Cloud cloud = getCloudVar();
-            query = cloud.createQuery();
+    public int doStartTag() throws JspTagException {        
+        if (path == Attribute.NULL) {
+            throw new JspTagException("Path attribute is mandatory");
         }
-
-        if (getId() != null) { // write to context.
-            getContextProvider().getContextContainer().register(getId(), query);
-        }
-        if (jspVar != null) {
-            pageContext.setAttribute(jspVar, query);
-        }
-
-        if (cachePolicy != Attribute.NULL) {
-            query.setCachePolicy(CachePolicy.getPolicy(cachePolicy.getValue(this)));
-        }
+        Cloud cloud = getCloudVar();
+        query = cloud.createQuery();
 
         Queries.addPath(query, (String) path.getValue(this), (String) searchDirs.getValue(this));
 
@@ -116,17 +86,13 @@ public class ListContainerTag extends CloudReferrerTag implements QueryContainer
                 }
             } catch (java.io.IOException ioe){
                 throw new JspTagException(ioe.toString());
-            }
+            } 
         }
-        return SKIP_BODY;
+        return SKIP_BODY;        
     }
     public int doEndTag() throws JspTagException {
         query = null;
         return super.doEndTag();
-    }
-
-    public Object getCurrent() {
-        return null;
     }
 
 }

@@ -10,109 +10,44 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util.functions;
 
-import org.mmbase.bridge.*;
-import org.mmbase.core.AbstractDescriptor;
-import org.mmbase.datatypes.*;
-import org.mmbase.util.*;
-import org.mmbase.util.logging.*;
 import java.util.*;
-import java.io.*;
+import org.mmbase.util.Casting;
 
 /**
- * Each (function) argument is specified by a Parameter object.
- * A Parameter contains a name and type (it does <em>not</em> contain a value). An array of this is returned by
- * {@link Function#getParameterDefinition}, and this same array is used to create new empty {@link Parameters}
- * object (by {@link Function#createParameters}), which can contain actual values for each Parameter.
+ * Entry for Parameters. A (function) argument is specified by a name and type.
  *
- * @author Daniel Ockeloen (MMFunctionParam)
  * @author Michiel Meeuwissen
+ * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.30 2006-06-20 20:13:55 michiel Exp $
+ * @version $Id: Parameter.java,v 1.6.2.2 2005-10-17 12:20:48 michiel Exp $
  * @see Parameters
  */
 
-public class Parameter extends AbstractDescriptor implements java.io.Serializable {
-    private static final Logger log = Logging.getLoggerInstance(Parameter.class);
+public class Parameter {
 
-    private static final long serialVersionUID = 1L;
     /**
-     * Parameter which might be needed in lots of Parameter definitions. These parameters are
-     * 'standard' parameters, which can be filled in by the system. E.g. the mmbase taglib uses
-     * these constants, and if it has a cloud ('mm:cloud is used'), then cloud-parameters are filled
-     * automaticly.
+     * Parameter which might be needed in lots of Parameter definitions.
      */
     public static final Parameter LANGUAGE = new Parameter("language", String.class);
     public static final Parameter LOCALE   = new Parameter("locale",   Locale.class);
-    public static final Parameter USER     = new Parameter("user",     org.mmbase.security.UserContext.class);
+    public static final Parameter USER     = new Parameter("user",     org.mmbase.bridge.User.class);
     public static final Parameter RESPONSE = new Parameter("response", javax.servlet.http.HttpServletResponse.class);
     public static final Parameter REQUEST  = new Parameter("request",  javax.servlet.http.HttpServletRequest.class);
     public static final Parameter CLOUD    = new Parameter("cloud",    org.mmbase.bridge.Cloud.class);
-
-    /**
-     * 'system' parameter set for nodefunctions.
-     * @since MMBaes-1.8
-     */    
-    public static final Parameter NODE     = new Parameter("_node",     org.mmbase.bridge.Node.class);
-    public final static Parameter CORENODE = new Parameter("_corenode", Object.class); // object because otherwise problems with RMMCI which doesn't have MMObjectNode.
-
-
-
-    public static final Parameter FIELD    = new Parameter("field",    String.class);
 
     /**
      * An empty Parameter array.
      */
     public static final Parameter[] EMPTY  = new Parameter[0];
 
+    // package for Parameters (direct access avoids function calls)
+    String key;
+    Class type;
+    String description  = "";
+    Object defaultValue = null;
+    boolean required  = false;
 
-    // implementation of serializable, I hate java. Cannot make AbstractDescriptor Serializable, so doing it here.... sigh sigh.
-    // If you would make AbstractDescriptor Serializable, CoreField will become Serializable and MMObjectBuilder needs to be serializable then (because it is a member of CoreField).
-    private void writeObject(ObjectOutputStream out) throws IOException {
-        out.writeUTF(key);
-        out.writeObject(description);
-        out.writeObject(guiName);
-        out.writeObject(dataType);
-    }
-    // implementation of serializable
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        key          = in.readUTF();
-        description  = (LocalizedString) in.readObject();
-        guiName      = (LocalizedString) in.readObject();
-        dataType     = (DataType) in.readObject();
-    }
-
-    /**
-     * The parameter's data type
-     * @since MMBase-1.8
-     */
-    protected DataType dataType;
-
-    /**
-     * Create a Parameter object
-     * @param name the name of the parameter
-     * @param dataType the datatype of the parameter to copy
-     * @since MMBase-1.8
-     */
-    public Parameter(String name, DataType dataType) {
-        this(name, dataType, true);
-    }
-
-    /**
-     * Create a Parameter object
-     * @param name the name of the parameter
-     * @param dataType the datatype of the parameter to assign or copy
-     * @param copy if <code>true</code>, teh datatype is copied. if not, it is assigned directly,
-     *        that is, changing condfiitons on the parameter changes the passed datatype instance.
-     * @since MMBase-1.8
-     */
-    public Parameter(String name, DataType dataType, boolean copy) {
-        super(name);
-        if (copy) {
-            this.dataType = (DataType)dataType.clone(name);
-        } else {
-            this.dataType = dataType;
-        }
-    }
+    protected Parameter() {}
 
     /**
      * Create a Parameter object
@@ -120,79 +55,104 @@ public class Parameter extends AbstractDescriptor implements java.io.Serializabl
      * @param type the class of the parameter's possible value
      */
     public Parameter(String name, Class type) {
-        super(name);
-        dataType = DataTypes.createDataType(name, type);
+        this.key = name;
+        this.type = type;
     }
 
     /**
      * Create a Parameter object
      * @param name the name of the parameter
      * @param type the class of the parameter's possible value
-     * @param required whether the parameter requires a value
+     * @param required whether the parameter requires a value (default is <code>false</code>)
      */
     public Parameter(String name, Class type, boolean required) {
-        this(name,type);
-        dataType.setRequired(required);
+        this.key = name;
+        this.type = type;
+        this.required = required;
     }
 
     /**
      * Create a Parameter object
      * @param name the name of the parameter
      * @param type the class of the parameter's possible value
-     * @param defaultValue the value to use if the parameter has no value set
+     * @param defaultValue the value to use if the parameter has no value set (default is <code>null</code>)
      */
     public Parameter(String name, Class type, Object defaultValue) {
-        this(name,type);
-        dataType.setDefaultValue(defaultValue);
+        this.key = name;
+        this.type = type;
+        this.defaultValue = defaultValue;
     }
+
 
     /**
      * Copy-constructor, just to copy it with different requiredness
      */
     public Parameter(Parameter p, boolean required) {
-        this(p.key, p.getDataType());
-        dataType.setRequired(required);
+        this.key = p.key;
+        this.type = p.type;
+        this.required = required; 
+        if (! required) { // otherwise it makes no sense
+            this.defaultValue = p.defaultValue;
+        }
     }
+
 
     /**
      * Copy-constructor, just to copy it with different defaultValue (which implies that it is not required now)
      */
     public Parameter(Parameter p, Object defaultValue) {
-        this(p.key, p.getDataType());
-        dataType.setDefaultValue(defaultValue);
+        this.key = p.key;
+        this.type = p.type;
+        this.defaultValue = defaultValue;
+        // not need to copy 'required', it should be 'false'.
     }
 
     /**
-     * Returns the default value of this parameter (derived from the datatype).
+     * Returns the name or 'key' of this parameter.
+     * @return the name as a String
+     */
+    public String getName () {
+        return key;
+    }
+
+    /**
+     * Returns the description of this parameter.
+     * @return the description as a String
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * Sets the description of this parameter.
+     * @param description the description as a String
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     * Returns the default value of this parameter.
      * @return the default value
      */
     public Object getDefaultValue() {
-        return dataType.getDefaultValue();
+        return defaultValue;
     }
 
     /**
      * Sets the default value of this parameter.
-     * @param defaultValue the default value
+     * @param def the default value
      */
-    public void setDefaultValue(Object defaultValue) {
-        dataType.setDefaultValue(defaultValue);
-    }
-
-    /**
-     * Returns the data type of this parameter.
-     * @return the datatype
-     * @since MMBase-1.8
-     */
-    public DataType getDataType() {
-        return dataType;
+    public void setDefaultValue(Object def) {
+        defaultValue = def;
     }
 
     /**
      * Returns the type of values that this parameter accepts.
      * @return the type as a Class
      */
-    public Class getTypeAsClass() {
-        return dataType.getTypeAsClass();
+    public Class getType() {
+        return type;
     }
 
     /**
@@ -200,7 +160,7 @@ public class Parameter extends AbstractDescriptor implements java.io.Serializabl
      * @return <code>true</code> if a value is required
      */
     public boolean isRequired() {
-        return dataType.isRequired();
+        return required;
     }
 
     /**
@@ -210,22 +170,44 @@ public class Parameter extends AbstractDescriptor implements java.io.Serializabl
      * @throws IllegalArgumentException if the type is not compatible
      */
     public void checkType(Object value) {
-        dataType.checkType(value);
+        if (type.isPrimitive()) {
+            // sigh
+            if (type.equals(Boolean.TYPE) && value instanceof Boolean) return;
+            if (type.equals(Byte.TYPE)   && value instanceof Byte) return;
+            if (type.equals(Character.TYPE) && value instanceof Character) return;
+            if (type.equals(Short.TYPE) && value instanceof Short) return;
+            if (type.equals(Integer.TYPE) && value instanceof Integer) return;
+            if (type.equals(Long.TYPE) && value instanceof Long) return;
+            if (type.equals(Float.TYPE) && value instanceof Float) return;
+            if (type.equals(Double.TYPE) && value instanceof Double) return;
+        }
+        if (! type.isInstance(value)) {
+            throw new IllegalArgumentException("Parameter '" + value + "' must be of type " + type + " (but is " + (value == null ? value : value.getClass()) + ")");
+        }
     }
 
 
     /**
      * Tries to 'cast' an object for use with this parameter. E.g. if value is a String, but this
      * parameter is of type Integer, then the string can be parsed to Integer.
-     * @param value The value to be filled in in this Parameter.
+     * @param value The value to be filled in in this Parameter.     
      */
-    protected Object autoCast(Object value) {
-        return dataType.cast(value, null, null);
+    protected Object autoCast(Object value) {        
+        if (type.equals(Integer.class)) {
+            return Casting.toInteger(value);
+        } else if (type.equals(int.class)) {
+            return Casting.toInteger(value);
+        } else if (type.equals(String.class)) {
+            return Casting.toString(value);
+        } else if (type.equals(List.class)) {
+            return Casting.toList(value);
+        } else {
+            // don't know
+            return value;
+        }
     }
 
-    public int hashCode() {
-        return getName().hashCode() + 13 * getDataType().hashCode();
-    }
+
 
     /**
      * Whether parameter equals to other parameter. Only key and type are consided. DefaultValue and
@@ -235,41 +217,32 @@ public class Parameter extends AbstractDescriptor implements java.io.Serializabl
     public boolean equals(Object o) {
         if (o instanceof Parameter) {
             Parameter a = (Parameter) o;
-            return a.getName().equals(getName()) && a.getDataType().equals(getDataType());
+            return a.key.equals(key) && a.type.equals(type);
         }
         return false;
     }
 
     public String toString() {
-        return getTypeAsClass().getName() + " " + getName();
+        return type.getName() + " " + key;
     }
 
     /**
-     * A Parameter.Wrapper wraps one Parameter around a Parameter[] (then you can put it in a
-     * Parameter[]).  Parameters will recognize this. This can be used when you 'extend'
-     * functionality, and add more parameters. The Parameter array can contain such a
-     * Parameter.Wrapper object containing the original Parameter array.
+     * A Parameter.Wrapper wraps one Parameter around a Parameter[]
+     * (then you can put it in a Parameter[]).  Parameters will
+     * recognize this.
      */
     public static class Wrapper extends Parameter {
         Parameter[] arguments;
 
         public Wrapper(Parameter[] arg) {
-            super("[ARRAYWRAPPER]", Parameter[].class);
+            key = "[ARRAYWRAPPER]";
             arguments = arg;
+            type = Parameter[].class; // should not remain null, (equals of Parameter depends on that)
         }
 
-        // this toString makes the wrapping invisible in the toString of a wrapping Parameter[]
         public String toString() {
-            StringBuffer buf = new StringBuffer();
-            for (int i = 0 ; i < arguments.length; i++) {
-                if (i > 0) buf.append(", ");
-                buf.append(arguments[i].toString());
-
-            }
-            return buf.toString();
-
+            return "WRAPPED" + Arrays.asList(arguments).toString();
         }
     }
-
 
 }

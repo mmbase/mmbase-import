@@ -11,8 +11,11 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.media.filters;
 
 import org.mmbase.applications.media.urlcomposers.URLComposer;
+import org.mmbase.applications.media.builders.MediaSources;
 import org.mmbase.applications.media.Format;
 import java.util.*;
+import org.mmbase.util.XMLBasicReader;
+import org.w3c.dom.Element;
 import org.mmbase.util.logging.*;
 
 /**
@@ -21,7 +24,7 @@ import org.mmbase.util.logging.*;
  * of the urlcomposer list.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: ClientFormatSorter.java,v 1.5 2005-01-30 16:46:35 nico Exp $ 
+ * @version $Id: ClientFormatSorter.java,v 1.4 2003-07-15 12:50:24 vpro Exp $ 
  */
 public class ClientFormatSorter extends  PreferenceSorter {
     private static Logger log = Logging.getLoggerInstance(ClientFormatSorter.class);

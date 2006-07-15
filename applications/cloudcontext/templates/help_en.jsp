@@ -3,7 +3,7 @@
 %><mm:content postprocessor="reducespace">
 <%@include file="import.jsp" %><%@include file="settings.jsp" %>
 <mm:import id="url">help.jsp</mm:import>
-<mm:cloud loginpage="login.jsp"  rank="$rank">
+<mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud" rank="$rank">
  <%@include file="you.div.jsp" %>
  <mm:import id="current">help</mm:import>
  <%@include file="navigate.div.jsp" %>
@@ -73,7 +73,7 @@
         as the 'owner' of the node.
       </dd>
     </dl>
-    <img src="<mm:url page="${location}images/Security.jpg" />" />
+    <img src="<mm:url page="$[location]images/Security.jpg" />" />
   </p>
 
 </div>

@@ -16,7 +16,7 @@ import java.util.Map;
  * Transformations related to escaping in XML.
  * @author Michiel Meeuwissen
  * @author Kees Jongenburger
- * @version $Id: Xml.java,v 1.17 2005-12-21 08:05:01 michiel Exp $
+ * @version $Id: Xml.java,v 1.11.2.1 2005-09-23 09:21:10 michiel Exp $
  */
 
 public class Xml extends ConfigurableStringTransformer implements CharTransformer {
@@ -27,14 +27,6 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
     public final static int ESCAPE_ATTRIBUTE_SINGLE = 4;
     public final static int ESCAPE_ATTRIBUTE_HTML = 5;
 
-
-
-    public Xml() {
-        super();
-    }
-    public Xml(int c) {
-        super(c);
-    }
 
     //public final static int BODYTAG = 20;
 
@@ -57,12 +49,9 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
 
 
     /**
-     * Attributes of XML tags cannot contain quotes, and also &amp; must be escaped
-     * @param att String representing the attribute
-     * @param quot Which quote (either ' or ")
+     * Attributes of XML tags cannot contain quotes.
      */
     public static String XMLAttributeEscape(String att, char quot) {
-        if (att == null) return "";
         StringBuffer sb = new StringBuffer();
         char[] data = att.toCharArray();
         char c;
@@ -83,12 +72,7 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
         }
         return sb.toString();
     }
-    /**
-     * Attributes of XML tags cannot contain quotes, and also &amp; must be escaped
-     * @param att String representing the attribute
-     */
     public static String XMLAttributeEscape(String att) {
-        if (att == null) return "";
         StringBuffer sb = new StringBuffer();
         char[] data = att.toCharArray();
         char c;
@@ -120,16 +104,7 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
      * </UL>
      **/
     public static String XMLEscape(String xml){
-        if (xml == null) return "";
         StringBuffer sb = new StringBuffer();
-        XMLEscape(xml, sb);
-        return sb.toString();
-    }
-
-    /**
-     * @since MMBase-1.8
-     */
-    public static void XMLEscape(String xml, StringBuffer sb) {
         char[] data = xml.toCharArray();
         char c;
         for (int i =0 ; i < data.length; i++){
@@ -150,6 +125,7 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
                 sb.append(c);
             }
         }
+        return sb.toString();
     }
 
     private static String removeNewlines(String incoming) {
@@ -170,7 +146,6 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
      * @return the decoded xml data
      **/
     public static String XMLUnescape(String data){
-        if (data == null) return "";
         StringBuffer sb = new StringBuffer();
         int i;
         for (i =0; i < data.length();i++){
@@ -183,6 +158,7 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
                     continue;
                 }
                 String entity = data.substring(i+1,end);
+//		System.out.println(entity);
                 i+= entity.length()  + 1;
                 if (entity.equals("amp")){
                     sb.append('&');
@@ -195,9 +171,6 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
                 }
                 else if (entity.equals("quot")){
                     sb.append('"');
-                }
-                else if (entity.equals("apos")){
-                    sb.append('\'');
                 }
                 else {
                     sb.append("&" + entity + ";");

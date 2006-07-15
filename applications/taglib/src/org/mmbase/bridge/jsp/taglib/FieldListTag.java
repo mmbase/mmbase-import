@@ -10,22 +10,27 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.*;
-import org.mmbase.bridge.jsp.taglib.containers.*;
 
 import java.io.IOException;
 
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.jstl.core.LoopTagStatus;
 
 import java.util.*;
 import org.mmbase.bridge.*;
+
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.StringSplitter;
+
 /**
  * This class makes a tag which can list the fields of a NodeManager.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldListTag.java,v 1.53 2006-06-23 13:17:30 johannes Exp $
+ * @version $Id: FieldListTag.java,v 1.40.2.5 2005-03-14 18:33:24 michiel Exp $
  */
-public class FieldListTag extends FieldReferrerTag implements ListProvider, FieldProvider, QueryContainerReferrer {
+public class FieldListTag extends FieldReferrerTag implements ListProvider, FieldProvider {
+
+    private static final Logger log = Logging.getLoggerInstance(FieldListTag.class);
 
     private FieldList     returnList;
     private FieldIterator fieldIterator;
@@ -33,14 +38,10 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     private int           currentItemIndex= -1;
 
     private Attribute   nodeManagerAtt = Attribute.NULL;
-    private Attribute   container     = Attribute.NULL;
     private NodeProvider nodeProvider = null;
 
     private  Attribute type = Attribute.NULL;
 
-    protected Attribute  add= Attribute.NULL;
-    protected Attribute  retain = Attribute.NULL;
-    protected Attribute  remove = Attribute.NULL;
     private  Attribute comparator = Attribute.NULL;
 
     public int size(){
@@ -71,9 +72,6 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
 
     public void setNodetype(String t) throws JspTagException {
         nodeManagerAtt = getAttribute(t);
-    }
-    public void setContainer(String c) throws JspTagException {
-        container = getAttribute(c);
     }
 
     public void setType(String t) throws JspTagException {
@@ -132,18 +130,11 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     }
 
 
-    public void setAdd(String a) throws JspTagException {
-        add = getAttribute(a);
+    public void setModified() {
+        if (nodeProvider != null) {
+            nodeProvider.setModified();
+        }
     }
-
-    public void setRetain(String r) throws JspTagException {
-        retain = getAttribute(r);
-    }
-
-    public void setRemove(String r) throws JspTagException {
-        remove = getAttribute(r);
-    }
-
 
     public void setComparator(String c) throws JspTagException {
         comparator = getAttribute(c);
@@ -164,17 +155,8 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
 
 
     /**
-     * @since MMBase-1.8.1
-     */
-    protected NodeManager getNodeManagerFromQuery(String id, boolean exception) throws JspTagException {
-        NodeQueryContainer qc = (NodeQueryContainer) findParentTag(NodeQueryContainer.class, container.getString(this), exception);
-        NodeQuery query = qc.getNodeQuery();
-        return query.getNodeManager();
-    }
-
-    /**
-     *
-     **/
+    *
+    **/
     public int doStartTag() throws JspTagException{
         collector = new ContextCollector(getContextProvider());
 
@@ -184,7 +166,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
             }
             Object o =  getObject(getReferid());
             if (! (o instanceof FieldList)) {
-                throw new JspTagException("Context variable " + getReferid() + " is not a FieldList, but  " + (o == null ? "NULL" : "a " + o.getClass().getName()));
+                throw new JspTagException("Context variable " + getReferid() + " is not a FieldList");
             }
             if (getReferid().equals(getId())) { // in such a case, don't whine
                 getContextProvider().getContextContainer().unRegister(getId());
@@ -193,20 +175,10 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
         } else {
             NodeManager nodeManager;
 
-            if (nodeManagerAtt == Attribute.NULL) { // living as NodeReferrer, or Query-referrer
-                if (container != Attribute.NULL) {
-                    nodeManager = getNodeManagerFromQuery(container.getString(this), true);
-                } else {
-                    Node n = getNodeVar();
-                    if (n == null) {
-                        nodeManager = getNodeManagerFromQuery(null, false);
-                        if (nodeManager == null) {
-                            throw new JspTagException("Fieldlist tag must be used either as node-referrer, or use the nodetype attribute, or 'container' attribute.");
-                        }
-                    } else {
-                        nodeManager = n.getNodeManager();
-                    }
-                }
+            if (nodeManagerAtt == Attribute.NULL) { // living as NodeReferrer
+                Node n = getNodeVar();
+                if (n == null) throw new JspTagException("Fieldlist tag must be used either as node-referrer, or use the nodetype attribute");
+                nodeManager = n.getNodeManager();
             } else {
                 nodeManager = getCloudVar().getNodeManager(nodeManagerAtt.getString(this));
             }
@@ -236,32 +208,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
                 }
             }
         }
-        if (add != Attribute.NULL) {
-            Object addObject = getObject(add.getString(this));
-            if (addObject instanceof Collection) {
-                returnList.addAll((Collection) addObject);
-            } else {
-                returnList.add(addObject);
-            }
-        }
-        if (retain != Attribute.NULL) {
-            Object retainObject = getObject(retain.getString(this));
-            if (retainObject instanceof Collection) {
-                returnList.retainAll((Collection) retainObject);
-            } else {
-                returnList.retainAll(Collections.singletonList(retainObject));
-            }
-        }
-        if (remove != Attribute.NULL) {
-            Object removeObject = getObject(remove.getString(this));
-            if (removeObject instanceof Collection) {
-                returnList.removeAll((Collection) removeObject);
-            } else {
-                returnList.remove(removeObject);
-            }
-        }
-
-        ListSorter.sort(returnList, (String) comparator.getValue(this), this);
+        ListSorter.sort(returnList, (String) comparator.getValue(this), pageContext);
         fieldIterator = returnList.fieldIterator();
 
         //this is where we do the search
@@ -308,16 +255,8 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
         returnList = null;
         fieldIterator = null;
         currentField = null;
-        super.doEndTag();
+        super.doEndTag();        
         return  EVAL_PAGE;
-    }
-
-    public void release() {
-        collector = null;
-        returnList = null;
-        fieldIterator = null;
-        currentField = null;
-        super.release();
     }
 
     public void doInitBody() throws JspTagException {
@@ -335,9 +274,6 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
                 getContextProvider().getContextContainer().register(getId(), currentField);
             }
         }
-    }
-    public LoopTagStatus getLoopStatus() {
-        return new ListProviderLoopTagStatus(this);
     }
 }
 

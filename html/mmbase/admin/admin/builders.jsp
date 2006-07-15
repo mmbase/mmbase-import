@@ -1,16 +1,19 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><mm:content expires="0">
-<mm:cloud rank="administrator">
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@page import="org.mmbase.bridge.*" 
+%><%@include file="../settings.jsp" %>
+<mm:cloud method="$method" authenticate="$authenticate" rank="administrator" jspvar="cloud">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
 <html xmlns="http://www.w3.org/TR/xhtml">
 <head>
 <title>Administrate Builders</title>
 <link rel="stylesheet" type="text/css" href="<mm:url page="/mmbase/style/css/mmbase.css" />" />
+<meta http-equiv="pragma" value="no-cache" />
+<meta http-equiv="expires" value="0" />
 </head>
 <body class="basic" >
 <table summary="builders">
 <tr>
-<th class="header" colspan="5">Builder Overview <mm:cloudinfo type="rank" />
+<th class="header" colspan="5">Builder Overview
 </th>
 </tr>
 <tr>
@@ -30,38 +33,45 @@
   <th class="header">Maintainer</th>
   <th class="navigate">Manage</th>
 </tr>
-<mm:nodelistfunction id="builders" module="mmadmin" name="BUILDERS">
-  <mm:field name="item3">
-    <mm:compare value="no" inverse="true">
-      <tr>
-        <td class="data"><mm:field id="builder" name="item1" /></td>
-        <td class="data"><mm:field name="item2" /></td>
-        <td class="data"><mm:field name="item3" /></td>
-        <td class="data"><mm:field name="item4" /></td>
-        <td class="navigate">
-          <a href="<mm:url referids="builder" page="builder/actions.jsp" />"><img src="<mm:url page="/mmbase/style/images/next.gif" />" alt="next" border="0" /></a>
-        </td>
-      </tr>
-    </mm:compare>
-  </mm:field>
-</mm:nodelistfunction>
-<mm:remove referid="builder" />
+<%
+    Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
+   java.util.Map params = new java.util.Hashtable();
+   params.put("CLOUD", cloud);
+    NodeList builders=mmAdmin.getList("BUILDERS",params,request,response);
+    for (int i=0; i<builders.size(); i++) {
+        Node builder=builders.getNode(i);
+        if (!builder.getStringValue("item3").equals("no")) {
+%>
+<tr>
+  <td class="data"><%=builder.getStringValue("item1")%></td>
+  <td class="data"><%=builder.getStringValue("item2")%></td>
+  <td class="data"><%=builder.getStringValue("item3")%></td>
+  <td class="data"><%=builder.getStringValue("item4")%></td>
+  <td class="navigate">
+    <a href="<mm:url page="<%="builder/actions.jsp?builder="+builder.getStringValue("item1")%>"/>"><img src="<mm:url page="/mmbase/style/images/next.gif" />" alt="next" border="0" /></a>
+  </td>
+</tr>
+<%      }
+    }
+%>
 <tr><td>&nbsp;</td></tr>
-<mm:listnodes referid="builders">
-  <mm:field name="item3">
-    <mm:compare value="no">
-      <tr>
-        <td class="data"><mm:field id="builder" name="item1" /></td>
-        <td class="data"><mm:field name="item2" /></td>
-        <td class="data"><mm:field name="item3" /></td>
-        <td class="data"><mm:field name="item4" /></td>
-        <td class="navigate">
-          <a href="<mm:url referids="builder" page="builder/actions.jsp" />"><img src="<mm:url page="/mmbase/style/images/next.gif" />" alt="next" border="0" /></a>
-        </td>
-      </tr>
-    </mm:compare>
-  </mm:field>
-</mm:listnodes>
+<%
+    for (int i=0; i<builders.size(); i++) {
+        Node builder=builders.getNode(i);
+        if (builder.getStringValue("item3").equals("no")) {
+%>
+<tr>
+  <td class="data"><%=builder.getStringValue("item1")%></td>
+  <td class="data"><%=builder.getStringValue("item2")%></td>
+  <td class="data"><%=builder.getStringValue("item3")%></td>
+  <td class="data"><%=builder.getStringValue("item4")%></td>
+  <td class="navigate">
+    <a href="<mm:url page="<%="builder/actions.jsp?builder="+builder.getStringValue("item1")%>"/>"><img src="<mm:url page="/mmbase/style/images/next.gif" />" alt="next" border="0" /></a>
+  </td>
+</tr>
+<%      }
+    }
+%>
 <tr><td>&nbsp;</td></tr>
 
   <tr class="footer">
@@ -71,4 +81,3 @@
 </table>
 </body></html>
 </mm:cloud>
-</mm:content>

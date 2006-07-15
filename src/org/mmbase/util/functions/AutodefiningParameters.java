@@ -10,13 +10,14 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util.functions;
 
+
 /**
- * If there is no Parameter definition array available you could try it with this specialization, which does not need one.
+ * If there is not Parameter definition array available you could try it with this specialization, which does not need one.
  * You loose al checking on type and availability. It should only be used as a last fall back and accompanied by warnings.
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: AutodefiningParameters.java,v 1.9 2005-10-18 21:51:30 michiel Exp $
+ * @version $Id: AutodefiningParameters.java,v 1.2.2.2 2004-11-15 10:52:36 michiel Exp $
  * @see Parameter
  */
 
@@ -25,7 +26,7 @@ public class AutodefiningParameters extends Parameters {
 
 
     public AutodefiningParameters() {
-        super(new Parameter[0]);
+        definition = new Parameter[0];
     }
     /**
      * Sets the value of an argument, and grows the definition array.
@@ -36,13 +37,12 @@ public class AutodefiningParameters extends Parameters {
             newDef[i] = definition[i];
         }
         newDef[newDef.length - 1] = new Parameter(arg, value == null ? Object.class : value.getClass());
-
         definition = newDef;
         backing.put(arg, value);
         return this;
     }
 
-    public boolean containsParameter(Parameter param) {
+    public boolean hasParameter(Parameter param) {
         return true;
     }
 

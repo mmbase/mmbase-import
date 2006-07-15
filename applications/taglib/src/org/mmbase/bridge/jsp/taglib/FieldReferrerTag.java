@@ -8,12 +8,15 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib;
-
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.Field;
+
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 
 /**
  * A fieldreferrer tag is a tag which needs (or can use) a 'field' to
@@ -23,12 +26,18 @@ import org.mmbase.bridge.Field;
  *
  * @author Michiel Meeuwissen
  * @see    FieldInfoTag
- * @version $Id: FieldReferrerTag.java,v 1.9 2005-07-20 14:57:55 michiel Exp $ 
+ * @version $Id: FieldReferrerTag.java,v 1.6 2003-08-27 21:33:32 michiel Exp $ 
  */
 
 public abstract class FieldReferrerTag extends NodeReferrerTag {	
 
+    private static final Logger log = Logging.getLoggerInstance(FieldReferrerTag.class.getName()); 
+
     private Attribute parentFieldId = Attribute.NULL;
+    //private NodeProvider nodeProvider = null;
+
+    /**
+     **/
 
     public void setField(String field) throws JspTagException {
         parentFieldId = getAttribute(field);
@@ -40,11 +49,7 @@ public abstract class FieldReferrerTag extends NodeReferrerTag {
     *
     */	
     public FieldProvider findFieldProvider() throws JspTagException {        
-        FieldProvider fp =  (FieldProvider) findParentTag(FieldProvider.class, (String) parentFieldId.getValue(this));
-        if (fp instanceof Writer) {
-            ((Writer) fp).haveBody();
-        }
-        return fp;
+        return (FieldProvider) findParentTag(FieldProvider.class, (String) parentFieldId.getValue(this));
     }
 
 

@@ -11,7 +11,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.2 $
  */
 public class BasicSearchQueryTest extends TestCase {
     
@@ -26,6 +26,9 @@ public class BasicSearchQueryTest extends TestCase {
     
     /** Images builder, used as builder example. */
     private MMObjectBuilder images = null;
+    
+    /** Pools builder, used as builder example. */
+    private MMObjectBuilder pools = null;
     
     /** Insrel builder, used as relation builder example. */
     private InsRel insrel = null;
@@ -46,7 +49,7 @@ public class BasicSearchQueryTest extends TestCase {
         mmbase = MMBase.getMMBase();
         images = mmbase.getBuilder("images");
         insrel = mmbase.getInsRel();
-        mmbase.getBuilder("pools");
+        pools = mmbase.getBuilder("pools");
         instance1 = new BasicSearchQuery();
         instance2 = new BasicSearchQuery(true);
     }

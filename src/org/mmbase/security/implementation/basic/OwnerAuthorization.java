@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.security.implementation.basic;
 
 import org.mmbase.bridge.Query;
+import org.mmbase.util.ExtendedProperties;
 
 import org.mmbase.module.core.*;
 import org.mmbase.security.*;
@@ -19,29 +20,19 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import java.util.*;
-import java.io.InputStream;
-import java.io.IOException;
 
 /**
- * A very simple Authorization implementation, based an a property file. Every user will be present
- * in this file as one property. Only the keys are of importance when authorizing, because it
- * determines the 'possible users' and 'possible contexts'.
- *
- * Furthermore everybody is authorized to read, you may create if you are known, (so not anonymous),
- * and you may edit, if you are either administrator or editing your 'own' node.
+ * A very simple Authorization implementation
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: OwnerAuthorization.java,v 1.13 2005-03-01 14:15:28 michiel Exp $
+ * @version $Id: OwnerAuthorization.java,v 1.11 2004-03-08 17:42:30 michiel Exp $
  */
 public class OwnerAuthorization extends Authorization {
 
     private static final Logger log = Logging.getLoggerInstance(OwnerAuthorization.class);
 
-
     private static MMObjectBuilder builder = null; // only to get Nodes from
-
-    private Set possibleContexts;
 
     private MMObjectNode getMMNode(int n) {
         if(builder == null) {
@@ -55,25 +46,18 @@ public class OwnerAuthorization extends Authorization {
     }
 
     public void load() {
-        log.service("using: '" + configResource + "' as config file for authentication");
-        InputStream in = MMBaseCopConfig.securityLoader.getResourceAsStream(configResource);
-        if ( in == null) {
-            log.warn("No '" + configResource + "', nobody will be authorized.");
+        if ( ! configFile.exists() ) {
+            log.error("file: '"+configFile+"' did not exist.");
+            throw new org.mmbase.security.SecurityException("file: '"+configFile+"' did not exist.");
         }
-        
-        Properties accounts = new Properties();
-        
-        if (in != null) {
-            try {
-                accounts.load(in);
-            } catch (IOException  io) {
-                log.error("Could read accounts! " + io, io);
-            }
-        } else {
-            log.warn("Could not find accounts!");
+        if ( ! configFile.isFile() ) {
+            log.error("file: '"+configFile+"' is not a file.");
+            throw new org.mmbase.security.SecurityException("file: '"+configFile+"' is not a file.");
         }
-
-        possibleContexts = accounts.keySet();
+        if ( ! configFile.canRead() ) {
+            log.error("file: '"+configFile+"' is not readable.");
+            throw new org.mmbase.security.SecurityException("file: '"+configFile+"' is not readable.");
+        }
         log.debug("file for accounts loaded");
     }
 
@@ -111,7 +95,7 @@ public class OwnerAuthorization extends Authorization {
 
         // if we are admin, then everything is permitted as well....
         if(user.getRank() == Rank.ADMIN) {
-            log.trace("User with rank " + Rank.ADMIN + " always has all rights.");
+            log.debug("user admin has always all rights..");
             return true;
         }
 
@@ -200,13 +184,24 @@ public class OwnerAuthorization extends Authorization {
      * Returns a list of all users in accounts.properties
      */
     public Set getPossibleContexts(UserContext user, int nodeNumber) throws org.mmbase.security.SecurityException {
+        ExtendedProperties reader = new ExtendedProperties();
 
-        if (possibleContexts == null) {
-            log.warn("Security not loaded");
-            return new HashSet();
-        } else {
-            return possibleContexts;
+        if (log.isDebugEnabled()) {
+            log.debug("reading accounts from " + configFile);
         }
+        java.util.Hashtable accounts = reader.readProperties(configFile.getAbsolutePath());
+
+        if (accounts == null) {
+            log.error("Could not find accounts!");
+        }
+
+        // return a list of the users possible..
+        Set set = accounts.keySet();
+        if (log.isDebugEnabled()) {
+            log.debug("returning possible contexts, amount of entries is:" + set.size() + " the following entries where found:" );
+            // for(java.util.Iterator i= set.iterator(); i.hasNext(); log.debug("\t"+i.next()) );
+        }
+        return set;
     }
 
     public QueryCheck check(UserContext user, Query query, Operation operation) {

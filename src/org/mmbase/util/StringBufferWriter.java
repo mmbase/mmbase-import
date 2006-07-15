@@ -14,74 +14,73 @@ import java.io.*;
 
 /**
  * Oddly enough, Java does not provide this itself. Code is nearly identical to java.io.StringWriter.
- * @see java.io.StringWriter
  *
+
  * @author	Michiel Meeuwissen
  * @since	MMBase-1.7
- * @version $Id: StringBufferWriter.java,v 1.4 2005-10-05 10:09:05 michiel Exp $
+ * @see         java.io.StringWriter
  */
+
 public class StringBufferWriter extends Writer {
 
-    protected StringBuffer buffer;
+    protected StringBuffer buf;
 
     /**
-     * Create a new StringBufferWriter
-     * @param buffer The StringBuffer to use
-     * @throws java.lang.NullPointerException if <code>buffer</code> is null.
+     * Create a new stringbufferwriter
      */
     public StringBufferWriter(StringBuffer buffer) {
-        if (buffer == null) throw new NullPointerException("Buffer may not be null");
-        this.buffer = buffer;
-        lock = buffer;
+	buf = buffer;
+	lock = buf;
     }
+
 
     /**
      * Write a single character.
      */
     public void write(int c) {
-        buffer.append((char) c);
+	buf.append((char) c);
     }
 
     /**
      * Write a portion of an array of characters.
      *
-     * @param  charArray  Array of characters
-     * @param  offset   Offset from which to start writing characters
-     * @param  length   Number of characters to write
+     * @param  cbuf  Array of characters
+     * @param  off   Offset from which to start writing characters
+     * @param  len   Number of characters to write
      */
-    public void write(char charArray[], int offset, int length) {
-        if ((offset < 0) || (offset > charArray.length) || (length < 0) ||
-            ((offset + length) > charArray.length) || ((offset + length) < 0)) {
+    public void write(char cbuf[], int off, int len) {
+        if ((off < 0) || (off > cbuf.length) || (len < 0) ||
+            ((off + len) > cbuf.length) || ((off + len) < 0)) {
             throw new IndexOutOfBoundsException();
-        } else if (length == 0) {
+        } else if (len == 0) {
             return;
         }
-        buffer.append(charArray, offset, length);
+        buf.append(cbuf, off, len);
     }
 
     /**
      * Write a string.
      */
     public void write(String str) {
-        buffer.append(str);
+	buf.append(str);
     }
 
     /**
      * Write a portion of a string.
      *
      * @param  str  String to be written
-     * @param  offset  Offset from which to start writing characters
-     * @param  length  Number of characters to write
+     * @param  off  Offset from which to start writing characters
+     * @param  len  Number of characters to write
      */
-    public void write(String str, int offset, int length)  {
-        buffer.append(str.substring(offset, offset + length));
+    public void write(String str, int off, int len)  {
+	buf.append(str.substring(off, off + len));
     }
 
     /**
      * Return the buffer's current value as a string.
      */
     public String toString() {
-        return buffer.toString();
+	return buf.toString();
     }
 
     /**
@@ -90,17 +89,17 @@ public class StringBufferWriter extends Writer {
      * @return StringBuffer holding the current buffer value.
      */
     public StringBuffer getBuffer() {
-        return buffer;
+	return buf;
     }
 
     /**
      * Flush the stream.
      */
-    public void flush() {
+    public void flush() { 
     }
 
     /**
-     * Closing a <tt>StringBufferWriter</tt> has no effect. The methods in this
+     * Closing a <tt>StringWriter</tt> has no effect. The methods in this
      * class can be called after the stream has been closed without generating
      * an <tt>IOException</tt>.
      */

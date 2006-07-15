@@ -26,7 +26,6 @@ List with posrelated fragments
 
   <!-- command name="startwizard" inline="true" wizardname="tasks/clipping/&type;item" objectnumber="new" origin="{$origin}">
   </command -->
-  <command name="insert" />
 
 	<action type="create">
      <relation role="posrel" destinationtype="&type;fragments" >

@@ -10,13 +10,12 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: index.jsp,v 1.4 2006-02-13 16:17:20 pierre Exp $
+    @version  $Id: index.jsp,v 1.2 2004-03-16 17:35:37 michiel Exp $
     -->
 
    <link rel="stylesheet" type="text/css" href="../style.css" />
 </head>
 <body>
-  <mm:cloud rank="basic user">
    <!-- We are going to set the referrer explicitely, because we don't wont to depend on the 'Referer' header (which is not mandatory) -->
   <mm:import id="referrer"><%=new java.io.File(request.getServletPath())%></mm:import>
   <mm:import id="jsps">/mmbase/edit/wizard/jsp</mm:import>
@@ -75,7 +74,7 @@
     <a href="<mm:url referids="referrer,pagelength" page="$jsps/list.jsp">
              <mm:param name="wizard">../advanced/tasks/news</mm:param>
            <mm:param name="nodepath">news</mm:param>
-           <mm:param name="fields">number,title,date</mm:param>
+           <mm:param name="fields">number,title</mm:param>
            <mm:param name="orderby">number</mm:param>
            <mm:param name="directions">down</mm:param>
            </mm:url>">News</a>
@@ -95,10 +94,9 @@
     <a href="<mm:url referids="referrer,pagelength" page="$jsps/list.jsp">
                <mm:param name="title">MyNews Magazine news</mm:param>
                <mm:param name="startnodes">default.mags</mm:param>
-               <mm:param name="origin">default.mags</mm:param>
-             <mm:param name="wizard">../advanced/tasks/news_origin</mm:param>
+             <mm:param name="wizard">../advanced/tasks/news</mm:param>
            <mm:param name="nodepath">mags,news</mm:param>
-           <mm:param name="fields">news.number,news.title,news.date</mm:param>
+           <mm:param name="fields">news.number,news.title</mm:param>
            <mm:param name="orderby">news.number</mm:param>
            <mm:param name="directions">down</mm:param>
            <mm:param name="searchdirs">destination</mm:param>
@@ -141,6 +139,5 @@
 <a href="<mm:url page="../" />">back</a>
   </td></tr>
   </table>
-  </mm:cloud>
 </body>
 </html>

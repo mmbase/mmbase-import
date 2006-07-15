@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<%@page language="java" contentType="text/html;charset=UTF-8" import="org.mmbase.applications.media.Format"
+<%@page language="java" contentType="text/html;charset=UTF-8" 
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><%@include file="config/read.jsp" %><?xml version="1.0" encoding="UTF-8"?>
 <mm:content language="$config.lang" type="text/html" expires="0">
@@ -7,23 +7,12 @@
 <head>
 <mm:import externid="fragment" required="true" />
 <mm:import externid="forceplayer" />
+
 <title>[ STREAM ]</title>
 <link href="style/wizard.css" type="text/css" rel="stylesheet" />
 <link href="style/streammanager.css" type="text/css" rel="stylesheet" />
 <script src="<mm:url page="style/streammanager.js.jsp?dir=&amp;fragment=" />" language="javascript"><!--help IE--></script>
 </head>
-<%
-String userAgent = request.getHeader("User-Agent");
-boolean isMac = false;
-boolean isMacIE = false;
-if ((userAgent.indexOf("Mac") != -1)) {
-    isMac = true;
-    if (userAgent.indexOf("MSIE") != -1) {
-        isMacIE = true;
-    }
-}
-
-%>
 <mm:cloud method="asis">
 <mm:node number="$fragment" notfound="skip">
 <%-- determin which player to use --%>
@@ -59,13 +48,13 @@ if ((userAgent.indexOf("Mac") != -1)) {
     <td valign="top" bgcolor="#717171">
           <mm:write referid="player">
           <mm:compare value="real">
-              <mm:field id="source" name="url(rm,ram)"  write="false" />
+              <mm:field id="source" name="url(ram)"  write="false" />
               <embed src="<mm:write referid="source" />"
                 width="260" 
                 height="300"   
                 type="audio/x-pn-realaudio-plugin"
-                nojava="true" 
-                <%-- controls="ImageWindow,PositionSlider,TACCtrl,StatusBar" --%>
+                nojava="false" 
+                 <%--  controls="ImageWindow,PositionSlider,TACCtrl" --%>
                 controls="ImageWindow,All"
                 console="Clip1" 
                 autostart="true" 
@@ -81,21 +70,20 @@ if ((userAgent.indexOf("Mac") != -1)) {
               codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=5,1,52,701"
               standby="Loading Microsoft Windows Media Player components..."
               type="application/x-oleobject">
-              <param name="fileName" value="<mm:field id="source" name="url(wmv,asf,wma,wmp)" />">
+              <param name="fileName" value="<mm:field id="source" name="url(asf)" />">
               <param name="animationatStart" value="true">
               <param name="transparentatStart" value="true">
               <param name="autoStart" value="true">              
               <param name="showControls" value="true">            
-              <param name="showStatusBar" value="true">            
               <!-- for netscape -->
-              <embed type="application/x-mplayer2"
-                     pluginspage = "http://www.microsoft.com/Windows/MediaPlayer/"
-                     SRC="<mm:field name="url(wmv,asf,wma,wmp)" />"
-                     enablejavascript="true"
-                     name="embeddedplayer"
-                     AutoStart="true">        
-                   </embed>
-                 </object>
+      <embed type="application/x-mplayer2"
+        pluginspage = "http://www.microsoft.com/Windows/MediaPlayer/"
+        SRC="<mm:field name="url(asf)" />"
+        enablejavascript="true"
+        name="embeddedplayer"
+        AutoStart="true">        
+      </embed>
+    </object>
     </mm:compare>
     <mm:compare value="qt">
          <object id="embeddedplayer"

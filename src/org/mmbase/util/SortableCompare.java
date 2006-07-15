@@ -16,9 +16,8 @@ package org.mmbase.util;
  * @see org.mmbase.util.SortedVector
  * @see org.mmbase.util.CompareInterface
  *
- * @deprecated Use java.util.Comparator
  * @author Rico Jansen
- * @version $Id: SortableCompare.java,v 1.9 2005-10-05 12:42:56 michiel Exp $
+ * @version $Id: SortableCompare.java,v 1.5 2003-03-10 11:51:12 pierre Exp $
  */
 public class SortableCompare implements CompareInterface {
 
@@ -30,7 +29,7 @@ public class SortableCompare implements CompareInterface {
      * @param other the second object to compare. should be a <code>Comparable</code>.
      * @return the result of the comparison
      */
-    public int compare(Object thisOne,Object other) {
-        return ((Sortable)thisOne).compare((Sortable)other);
+    public int compare(Object thisone,Object other) {
+        return ((Sortable)thisone).compare((Sortable)other);
     }
 }

@@ -10,7 +10,7 @@
 </head>
 <body>
 <form>
-<mm:cloud rank="basic user" sessionname="" >
+<mm:cloud method="http">
   <mm:write referid="language" jspvar="lang" vartype="string" >
     <h1>Editwizard - samples, '<%= new java.util.Locale(lang, "").getDisplayLanguage(java.util.Locale.US)%>' version</h1>
   </mm:write>
@@ -39,22 +39,21 @@
    You can also upload images with an editwizard. Here is shown how this can be done.
   </td></tr>
   <tr><td>
-    <a href="<mm:url referids="referrer,language" page="$ew/list.jsp?wizard=../samples/news&nodepath=news&fields=title,date,owner" />" >News</a>
+    <a href="<mm:url referids="referrer,language" page="$ew/list.jsp?wizard=../samples/news&nodepath=news&fields=title,owner" />" >News</a>
     </td><td>
    An editor for news articles. In the one step you can create or add a news article and relate people and images to it.
   </td></tr>
   </table>
   <hr />
-  <mm:cloudinfo type="user" /> (<mm:cloudinfo type="rank" />)
-  <hr />
-  <a class="navigate" href="../"><img alt="back" src="<mm:url page="/mmbase/style/images/back.png" />" /></a><br />
+
+  <a href="../">back</a><br />
   <a href="index.jsp?language=<%=java.util.Locale.getDefault().getLanguage()%>">default</a><br />
   <a href="index.jsp?language=en">english</a><br />
   <a href="index.jsp?language=nl">dutch</a><br />
   <a href="index.jsp?language=fr">french</a><br />
   <a href="index.jsp?language=it">italian</a><br />
   <a href="index.jsp?language=eo">esperanto</a><br />
-  <a href="mailto:editwizard@meeuw.org">Offer your help to improve/add support for your language</a><br />
+  <a href="mailto:mihxil@komputilo.org">Offer your help to improve/add support for your language</a><br />
 </mm:cloud>
 </form>
 </body>

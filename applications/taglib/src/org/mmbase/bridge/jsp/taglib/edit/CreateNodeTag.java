@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * can use `setField's in the body.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CreateNodeTag.java,v 1.22 2005-11-23 10:29:39 michiel Exp $
+ * @version $Id: CreateNodeTag.java,v 1.18.2.2 2004-07-26 20:12:23 nico Exp $
  */
 
 public class CreateNodeTag extends NodeTag {
@@ -29,10 +29,16 @@ public class CreateNodeTag extends NodeTag {
     private static final Logger log = Logging.getLoggerInstance(CreateNodeTag.class);
 
     private Attribute nodeManager = Attribute.NULL;
+    private Attribute makeUniques = Attribute.NULL;
 
     public void setType(String t) throws JspTagException {
         nodeManager = getAttribute(t);
     }
+
+    public void setMakeuniques(String u) throws JspTagException {
+        makeUniques = getAttribute(u);
+    }
+
 
     public int doStartTag() throws JspTagException{
         Cloud cloud = getCloudVar();
@@ -46,6 +52,10 @@ public class CreateNodeTag extends NodeTag {
         }
 
         setNodeVar(node);
+        setModified();
+        if (log.isDebugEnabled()) {
+            log.debug("created node " + node.getNumber() + ": " + node.getValue("gui()"));
+        }
         fillVars();
         return EVAL_BODY_BUFFERED;
     }

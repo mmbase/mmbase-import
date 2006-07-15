@@ -16,22 +16,30 @@ import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * Who tag, provides functionality for listing users of a channel.
  *
  * @author Pierre van Rooden
- * @version $Id: WhoTag.java,v 1.12 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: WhoTag.java,v 1.9.2.2 2004-07-26 20:12:21 nico Exp $
  */
  
 public class WhoTag extends AbstractNodeListTag {
+    private static Logger log = Logging.getLoggerInstance(WhoTag.class.getName());
 
     private String channel= null;
+    private String type   = null;
 
     protected Module community = null;
 
     public void setChannel(String channel) throws JspTagException {
         this.channel= getAttributeValue(channel);
+    }
+
+    public void setType(String type) throws JspTagException {
+        this.type=getAttributeValue(type);
     }
 
     public int doStartTag() throws JspTagException {
@@ -61,3 +69,4 @@ public class WhoTag extends AbstractNodeListTag {
         return setReturnValues(nodes,false);
     }
 }
+

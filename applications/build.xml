@@ -12,7 +12,7 @@ Applications build file
   <property file="build.properties"/>
   <!-- Default values for properties that can be customized -->
 
-  <property name="source.dir"   location=".." />
+  <property name="source.dir"   location="../" />
   <property name="share.dir"    location="./share" />
 
   <property file="${source.dir}/build.properties" />
@@ -21,7 +21,7 @@ Applications build file
   <property name="download.dir" value="${build.dir}/download" />
   <property name="expand.dir"   value="${download.dir}/expanded" />
   <property name="download.zip" value="mmbase-downloads.zip"  />
-  <property name="mmbase.jar"    value="${build.dir}/mmbase.jar"/>
+  <property name="mmbase.jar"    value="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar"/>
 
   <property name="applications.dir"       location="." />
   <property name="applications.build.dir" value="${applications.dir}/build" />
@@ -32,25 +32,24 @@ Applications build file
   </target>
 
   <target name="all16" depends="init,media,bugtracker,email" />
-  <target name="all17" depends="init,all16,taglib,cloudcontext,editwizard,dove,xmlimporter,community" />
-  <target name="all18" depends="init,all17,rmmci,crontab,vwms,scan,packaging,clustering,richtext,oscache-cache" />
 
-  <target name="all"   depends="init,all18" />
+  <!-- target name="all" depends="init,all16,cloudcontext,editwizard,community,rmmci" /-->
+  <target name="all" depends="init,all16,taglib,cloudcontext,editwizard,dove,xmlimporter,community,rmmci,scan" />
 
 
   <target name="jars" depends="all">
-    <copy todir="${applications.build.dir}/jars" flatten="true" preservelastmodified="true" >
+    <copy todir="${applications.build.dir}/jars" flatten="true">
       <fileset dir=".">
         <include name="**/*.jar" />
       </fileset>
     </copy>
-    <copy todir="${applications.build.dir}/jars" file="${mmbase.jar}" overwrite="true" preservelastmodified="true" />
+    <copy todir="${applications.build.dir}/jars" file="${mmbase.jar}" />
   </target>
 
   <target name="mmbase" depends="init">
     <ant dir="${source.dir}" target="jar" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
-      <property name="download.dir"        value="${download.dir}" />
+      <property name="download.dir"     value="${download.dir}" />
     </ant>
   </target>
 
@@ -58,23 +57,16 @@ Applications build file
      <ant dir="media"      target="package" inheritAll="false">
        <property name="project.zip.dir"        value="${applications.build.dir}" />
        <property name="build.dir"        value="${build.dir}" />
-       <property name="download.dir"        value="${download.dir}" />
+       <property name="download.dir"     value="${download.dir}" />
      </ant>
   </target>
+
 
   <target name="scan" depends="mmbase">
-     <ant dir="scan"      target="dependent.package" inheritAll="false">
+     <ant dir="scan"      target="package" inheritAll="false">
        <property name="project.zip.dir"        value="${applications.build.dir}" />
        <property name="build.dir"        value="${build.dir}" />
-       <property name="download.dir"        value="${download.dir}" />
-     </ant>
-  </target>
-
-  <target name="vwms" depends="mmbase">
-     <ant dir="vwms"      target="package" inheritAll="false">
-       <property name="project.zip.dir"        value="${applications.build.dir}" />
-       <property name="build.dir"        value="${build.dir}" />
-       <property name="download.dir"        value="${download.dir}" />
+       <property name="download.dir"     value="${download.dir}" />
      </ant>
   </target>
 
@@ -83,7 +75,7 @@ Applications build file
      <ant dir="bugtracker"      target="package" inheritAll="false">
        <property name="project.zip.dir"        value="${applications.build.dir}" />
        <property name="build.dir"        value="${build.dir}" />
-       <property name="download.dir"        value="${download.dir}" />
+       <property name="download.dir"     value="${download.dir}" />
      </ant>
   </target>
 
@@ -91,7 +83,7 @@ Applications build file
      <ant dir="email"      target="package" inheritAll="false">
        <property name="project.zip.dir"        value="${applications.build.dir}" />
        <property name="build.dir"        value="${build.dir}" />
-       <property name="download.dir"        value="${download.dir}" />
+       <property name="download.dir"     value="${download.dir}" />
      </ant>
   </target>
 
@@ -99,7 +91,7 @@ Applications build file
      <ant dir="rmmci" target="package" inheritAll="false">
        <property name="project.zip.dir"        value="${applications.build.dir}" />
        <property name="build.dir"        value="${build.dir}" />
-       <property name="download.dir"        value="${download.dir}" />
+       <property name="download.dir"     value="${download.dir}" />
      </ant>
   </target>
 
@@ -107,7 +99,7 @@ Applications build file
      <ant dir="editwizard" target="dependent.package" inheritAll="false">
        <property name="project.zip.dir"        value="${applications.build.dir}" />
        <property name="build.dir"        value="${build.dir}" />
-       <property name="download.dir"        value="${download.dir}" />
+       <property name="download.dir"     value="${download.dir}" />
      </ant>
   </target>
 
@@ -116,7 +108,7 @@ Applications build file
      <ant dir="dove" target="package" inheritAll="false">
        <property name="project.zip.dir"        value="${applications.build.dir}" />
        <property name="build.dir"        value="${build.dir}" />
-       <property name="download.dir"        value="${download.dir}" />
+       <property name="download.dir"     value="${download.dir}" />
      </ant>
   </target>
 
@@ -124,7 +116,7 @@ Applications build file
      <ant dir="cloudcontext"  target="package" inheritAll="false">
        <property name="project.zip.dir"        value="${applications.build.dir}" />
        <property name="build.dir"        value="${build.dir}" />
-       <property name="download.dir"        value="${download.dir}" />
+       <property name="download.dir"     value="${download.dir}" />
      </ant>
   </target>
 
@@ -132,7 +124,7 @@ Applications build file
      <ant dir="community"  target="dependent.package" inheritAll="false">
        <property name="project.zip.dir"        value="${applications.build.dir}" />
        <property name="build.dir"        value="${build.dir}" />
-       <property name="download.dir"        value="${download.dir}" />
+       <property name="download.dir"     value="${download.dir}" />
      </ant>
   </target>
 
@@ -140,55 +132,15 @@ Applications build file
      <ant dir="taglib"  target="dependent.package" inheritAll="false">
        <property name="project.zip.dir"        value="${applications.build.dir}" />
        <property name="build.dir"        value="${build.dir}" />
-       <property name="download.dir"        value="${download.dir}" />
+       <property name="download.dir"     value="${download.dir}" />
      </ant>
   </target>
 
   <target name="xmlimporter" depends="mmbase">
-     <ant dir="xmlimporter"  target="dependent.package" inheritAll="false">
+     <ant dir="xmlimporter"  target="package" inheritAll="false">
        <property name="project.zip.dir"        value="${applications.build.dir}" />
        <property name="build.dir"        value="${build.dir}" />
-       <property name="download.dir"        value="${download.dir}" />
-     </ant>
-  </target>
-
-  <target name="crontab" depends="mmbase">
-     <ant dir="crontab"  target="package" inheritAll="false">
-       <property name="project.zip.dir"        value="${applications.build.dir}" />
-       <property name="build.dir"        value="${build.dir}" />
-       <property name="download.dir"        value="${download.dir}" />
-     </ant>
-  </target>
-
-  <target name="packaging" depends="mmbase">
-     <ant dir="packaging"  target="package" inheritAll="false">
-       <property name="project.zip.dir"        value="${applications.build.dir}" />
-       <property name="build.dir"        value="${build.dir}" />
-       <property name="download.dir"        value="${download.dir}" />
-     </ant>
-  </target>
-
-  <target name="clustering" depends="mmbase">
-     <ant dir="clustering"  target="dependent.package" inheritAll="false">
-       <property name="project.zip.dir"        value="${applications.build.dir}" />
-       <property name="build.dir"        value="${build.dir}" />
-       <property name="download.dir"        value="${download.dir}" />
-     </ant>
-  </target>
-
-  <target name="richtext" depends="mmbase">
-     <ant dir="richtext"  target="dependent.package" inheritAll="false">
-       <property name="project.zip.dir"        value="${applications.build.dir}" />
-       <property name="build.dir"        value="${build.dir}" />
-       <property name="download.dir"        value="${download.dir}" />
-     </ant>
-  </target>
-
-  <target name="oscache-cache" depends="mmbase">
-     <ant dir="oscache-cache"  target="dependent.package" inheritAll="false">
-       <property name="project.zip.dir"        value="${applications.build.dir}" />
-       <property name="build.dir"        value="${build.dir}" />
-       <property name="download.dir"        value="${download.dir}" />
+       <property name="download.dir"     value="${download.dir}" />
      </ant>
   </target>
 
@@ -199,52 +151,18 @@ Applications build file
     <ant dir="editwizard"    target="dependent.install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
+    <ant dir="community"     target="dependent.install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>      
     <ant dir="dove"          target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
+    <ant dir="xmlimporter"   target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+    <!-- ant dir="cloudcontext"  target="install" /-->
+    <!-- ant dir="email"         target="install" /-->
     <ant dir="rmmci"         target="install" inheritAll="false">
-      <property name="build.dir"        value="${build.dir}" />
-    </ant>
-    <ant dir="oscache-cache"      target="dependent.install" inheritAll="false">
-      <property name="build.dir"        value="${build.dir}" />
-    </ant>
-  </target>
-
-  <target name="fullinstall" depends="install">
-    <ant dir="packaging"         target="install" inheritAll="false">
-      <property name="build.dir"        value="${build.dir}" />
-    </ant>
-    <ant dir="media"     target="install" inheritAll="false">
-      <property name="build.dir"        value="${build.dir}" />
-    </ant>
-    <ant dir="cloudcontext"     target="install" inheritAll="false">
-      <property name="build.dir"        value="${build.dir}" />
-    </ant>
-    <ant dir="email"     target="install" inheritAll="false">
-      <property name="build.dir"        value="${build.dir}" />
-    </ant>
-    <ant dir="crontab"     target="install" inheritAll="false">
-      <property name="build.dir"        value="${build.dir}" />
-    </ant>
-    <ant dir="community"     target="dependent.install" inheritAll="false">
-      <property name="build.dir"        value="${build.dir}" />
-    </ant>
-    <ant dir="bugtracker"     target="install" inheritAll="false">
-      <property name="build.dir"        value="${build.dir}" />
-    </ant>
-    <ant dir="vwms"        target="install" inheritAll="false">
-      <property name="build.dir"        value="${build.dir}" />
-    </ant>
-    <ant dir="scan"        target="dependent.install" inheritAll="false">
-      <property name="build.dir"        value="${build.dir}" />
-    </ant>
-    <ant dir="xmlimporter"    target="dependent.install" inheritAll="false">
-      <property name="build.dir"        value="${build.dir}" />
-    </ant>
-    <ant dir="clustering"      target="dependent.install" inheritAll="false">
-      <property name="build.dir"        value="${build.dir}" />
-    </ant>
-    <ant dir="richtext"      target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
   </target>
@@ -259,15 +177,8 @@ Applications build file
      <ant dir="bugtracker"      target="clean" inheritAll="false" />
      <ant dir="community"      target="clean" inheritAll="false" />
      <ant dir="email"      target="clean" inheritAll="false" />
-     <ant dir="packaging"      target="clean" inheritAll="false" />
      <ant dir="xmlimporter"   target="clean" inheritAll="false" />
-     <ant dir="vwms"      target="clean" inheritAll="false" />
      <ant dir="scan"      target="clean" inheritAll="false" />
-     <ant dir="crontab"      target="clean" inheritAll="false" />
-     <ant dir="clustering"      target="clean" inheritAll="false" />
-     <ant dir="richtext"      target="clean" inheritAll="false" />
-     <ant dir="oscache-cache"      target="clean" inheritAll="false" />
-
      <delete dir="${applications.build.dir}" />
   </target>
 

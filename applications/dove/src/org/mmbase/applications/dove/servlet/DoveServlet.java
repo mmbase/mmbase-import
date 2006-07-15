@@ -33,7 +33,7 @@ import org.mmbase.servlet.MMBaseServlet;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: DoveServlet.java,v 1.12 2005-01-30 16:46:40 nico Exp $
+ * @version $Id: DoveServlet.java,v 1.11 2004-03-16 14:37:28 michiel Exp $
  */
 public class DoveServlet extends MMBaseServlet { // MMBase, only to be able to use its logging
     
@@ -96,10 +96,10 @@ public class DoveServlet extends MMBaseServlet { // MMBase, only to be able to u
                 errortype="parser";
             } else {
                 Element rootin=document.getDocumentElement();
-                if (rootin.getTagName().equals(AbstractDove.REQUEST)) {
+                if (rootin.getTagName().equals(Dove.REQUEST)) {
                     DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
                     Document doc = docBuilder.newDocument();
-                    Element rootout =doc.createElement(AbstractDove.RESPONSE);
+                    Element rootout =doc.createElement(Dove.RESPONSE);
                     doc.appendChild(rootout);
                     Dove birdy = new Dove(doc);
                     birdy.doRequest(rootin, rootout);

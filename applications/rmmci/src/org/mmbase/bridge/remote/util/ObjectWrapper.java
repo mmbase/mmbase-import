@@ -4,37 +4,42 @@ import java.util.*;
 import java.rmi.*;
 import java.util.Vector;
 
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.remote.*;
+import org.mmbase.bridge.remote.rmi.*;
+import org.mmbase.bridge.remote.implementation.*;
 
+import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.Step;
 import org.mmbase.util.logging.*;
 /**
- * Utility class that performs translations of object to remote objects and
- * remote bridge node implementations.
+ * Util class that performs translations of object to remote objects and 
+ * remote bridge node implementations
  **/
 public abstract class ObjectWrapper {
     private static Logger log = Logging.getLoggerInstance(ObjectWrapper.class);
 
     /*
-     * Called to create a RMI object based on a "local" object.
+     * method called to create a RMI object based on a "local" object  
      */
     public static Object localToRMIObject(Object o) throws RemoteException {
         //if the object is null -> return null
         if (o == null) {
             return null;
         }
-        if (o.getClass().getName().indexOf("mmbase") == -1 && o instanceof SortedSet) {
-
-            SortedSet in = (SortedSet)o;
-            log.debug("convert treeset from "+ in);
-            SortedSet set = new TreeSet();
-            Iterator i = in.iterator();
-            while(i.hasNext()){
-                set.add(localToRMIObject(i.next()));
-            }
-            log.debug("convert treeset to "+ set);
-            return set;
-        }
-
+		if (o.getClass().getName().indexOf("mmbase") == -1 && o instanceof SortedSet) {
+			
+			SortedSet in = (SortedSet)o;
+			log.debug("convert treeset from "+ in);
+			SortedSet set = new TreeSet();
+			Iterator i = in.iterator();
+			while(i.hasNext()){
+				set.add(localToRMIObject(i.next()));
+			}
+			log.debug("convert treeset to "+ set);
+			return set;
+		}
+		
         if (o.getClass().getName().indexOf("mmbase") == -1 && o instanceof List) {
             List source = (List)o;
             List list = new Vector();
@@ -55,7 +60,7 @@ public abstract class ObjectWrapper {
         Object retval = ObjectWrapperHelper.localToRMIObject(o);
 
         if (retval == null) {
-            log.warn("please add a wrapper for objects of type " + className);
+            log.warn("please add a  wrapper for objects of type " + className);
         } else {
             log.debug(o.getClass().getName() + " -> " + retval.getClass().getName());
         }
@@ -63,28 +68,28 @@ public abstract class ObjectWrapper {
     }
 
     /*
-     *
+     * 
      */
     public static Object rmiObjectToRemoteImplementation(Object o) throws RemoteException {
         if (o == null) {
             return null;
         }
+        
+		if (o.getClass().getName().indexOf("mmbase") == -1 && o instanceof SortedSet) {
+			SortedSet in = (SortedSet)o;
+			System.err.println("convert treeset from "+ in);
+			SortedSet set = new TreeSet();
+			Iterator i = in.iterator();
+			while(i.hasNext()){
+				set.add(rmiObjectToRemoteImplementation(i.next()));
+			}
+			System.err.println("convert treeset to"+ in);
+			return set;
+		}
 
-        if (o.getClass().getName().indexOf("mmbase") == -1 && o instanceof SortedSet) {
-            SortedSet in = (SortedSet)o;
-            System.err.println("convert treeset from "+ in);
-            SortedSet set = new TreeSet();
-            Iterator i = in.iterator();
-            while(i.hasNext()){
-                set.add(rmiObjectToRemoteImplementation(i.next()));
-            }
-            System.err.println("convert treeset to"+ in);
-            return set;
-        }
-
-        if (o.getClass().getName().indexOf("mmbase") == -1 && o instanceof List) {
+		if (o.getClass().getName().indexOf("mmbase") == -1 && o instanceof List) {
             List source = (List)o;
-            List list = new ArrayList();
+            List list = new Vector();
             for (int x = 0; x < source.size(); x++) {
                 list.add(rmiObjectToRemoteImplementation(source.get(x)));
             }
@@ -110,6 +115,7 @@ public abstract class ObjectWrapper {
         if (o == null) {
             return null;
         }
+        String className = o.getClass().getName();
         Object retval = null;
         if (o instanceof MappedObject) {
             retval = ((MappedObject)o).getWrappedObject();

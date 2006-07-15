@@ -1,29 +1,32 @@
 /*
-
+  
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
-
+  
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
-
+  
 */
 
 package org.mmbase.applications.media.builders;
 
+import org.mmbase.applications.media.cache.URLCache;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.applications.media.urlcomposers.URLComposerFactory;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.XMLBasicReader;
+import org.w3c.dom.*;
 import java.util.*;
 import java.lang.reflect.Method;
 
 /**
  * A MediaProvider builder describes a service that offers a media service. The mediaprovider
- * is related to the mediasources that are available on the mediaprovider. A mediaprovider can
- * be online/offline.
+ * is related to the mediasources that are available on the mediaprovider. A mediaprovider can 
+ * be online/offline. 
  *
 * @author Michiel Meeuwissen
- * @version $Id: MediaProviders.java,v 1.13 2005-01-30 16:46:39 nico Exp $
+ * @version $Id: MediaProviders.java,v 1.11 2003-07-28 08:36:42 vpro Exp $
  * @since MMBase-1.7
  */
 public class MediaProviders extends MMObjectBuilder {
@@ -39,14 +42,14 @@ public class MediaProviders extends MMObjectBuilder {
             try {
                 String clazz = getInitParameter("URLComposerFactory");
                 if (clazz == null) clazz = "org.mmbase.applications.media.urlcomposers.URLComposerFactory";
-                Method m = Class.forName(clazz).getMethod("getInstance", (Class[])null);
-                urlComposerFactory = (URLComposerFactory) m.invoke(null, (Object[])null);
+                Method m = Class.forName(clazz).getMethod("getInstance", null);
+                urlComposerFactory = (URLComposerFactory) m.invoke(null, null); 
                 return true;
             } catch (Exception e) {
                 log.error("Could not get URLComposerFactory because: " + e.toString());
                 return false;
             }
-        }
+        } 
         return false;
 
     }
@@ -60,12 +63,12 @@ public class MediaProviders extends MMObjectBuilder {
     protected List getURLs(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, List urls, Set cacheExpireObjects) {
         return urlComposerFactory.createURLComposers(provider, source, fragment, info, urls, cacheExpireObjects);
     }
-
+       
     protected Object executeFunction(MMObjectNode node, String function, List args) {
         if (log.isDebugEnabled()) {
             log.debug("Executing function " + function + " on node " + node.getNumber() + " with argument " + args);
         }
-
+        
         if (function.equals("info")) {
             List empty = new ArrayList();
             Map info = (Map) super.executeFunction(node, "info", empty);
@@ -73,7 +76,7 @@ public class MediaProviders extends MMObjectBuilder {
                 return info;
             } else {
                 return info.get(args.get(0));
-            }
+            }   
         }
         return super.executeFunction(node, function, args);
     }

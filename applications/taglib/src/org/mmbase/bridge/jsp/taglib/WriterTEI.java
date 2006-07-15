@@ -19,7 +19,7 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
  * body. This is the TEI class which is needed for that.
  *
  * @author Michiel Meeuwissen 
- * @version $Id: WriterTEI.java,v 1.12 2005-08-25 12:33:18 michiel Exp $ 
+ * @version $Id: WriterTEI.java,v 1.8 2003-09-02 17:26:22 michiel Exp $ 
  */
 
 public class WriterTEI extends TagExtraInfo {
@@ -28,7 +28,7 @@ public class WriterTEI extends TagExtraInfo {
         return VariableInfo.NESTED;
     }
     protected String defaultType() {
-        return "object";
+        return "Object";
     }
 
     /**
@@ -37,55 +37,48 @@ public class WriterTEI extends TagExtraInfo {
     protected String getType(String  typeAttribute) {
         String type;
         switch (WriterHelper.stringToType(typeAttribute)) {
-        case WriterHelper.TYPE_OBJECT:
-            type = Object.class.getName(); break;
-        case WriterHelper.TYPE_STRING:
-            type = String.class.getName(); break;
-        case WriterHelper.TYPE_CHARSEQUENCE:
-            type = CharSequence.class.getName(); break;
-        case WriterHelper.TYPE_NODE:
-            type = org.mmbase.bridge.Node.class.getName(); break;
-        case WriterHelper.TYPE_CLOUD:
-            type = org.mmbase.bridge.Cloud.class.getName(); break;
-        case WriterHelper.TYPE_TRANSACTION:
-            type = org.mmbase.bridge.Transaction.class.getName(); break;
-        case WriterHelper.TYPE_DECIMAL:
-            type = java.math.BigDecimal.class.getName(); break;
-        case WriterHelper.TYPE_INTEGER:
-            type = Integer.class.getName(); break;
-        case WriterHelper.TYPE_DOUBLE:
-            type = Double.class.getName(); break;
-        case WriterHelper.TYPE_FLOAT:
-            type = Float.class.getName(); break;
-        case WriterHelper.TYPE_LONG:
-            type = Long.class.getName(); break;
-        case WriterHelper.TYPE_VECTOR:// deprecated
-            type = java.util.Vector.class.getName(); break;
-        case WriterHelper.TYPE_LIST:
-            type = java.util.List.class.getName(); break;
-        case WriterHelper.TYPE_DATE:
-            type = java.util.Date.class.getName(); break;
-        case WriterHelper.TYPE_FIELD:
-            type = org.mmbase.bridge.Field.class.getName(); break;
-        case WriterHelper.TYPE_FIELDVALUE:
-            type = org.mmbase.bridge.FieldValue.class.getName(); break;
-        case WriterHelper.TYPE_BOOLEAN:
-            type = Boolean.class.getName(); break;
-        case WriterHelper.TYPE_BYTES:
-            type = "byte[]"; break; 
-            // this doesn't work like this...
-            // How it does??
+            case WriterHelper.TYPE_OBJECT:
+                type = Object.class.getName(); break;
+            case WriterHelper.TYPE_STRING:
+                type = String.class.getName(); break;
+            case WriterHelper.TYPE_NODE:
+                type = org.mmbase.bridge.Node.class.getName(); break;
+            case WriterHelper.TYPE_CLOUD:
+                type = org.mmbase.bridge.Cloud.class.getName(); break;
+            case WriterHelper.TYPE_TRANSACTION:
+                type = org.mmbase.bridge.Transaction.class.getName(); break;
+            case WriterHelper.TYPE_DECIMAL:
+                type = java.math.BigDecimal.class.getName(); break;
+            case WriterHelper.TYPE_INTEGER:
+                type = Integer.class.getName(); break;
+            case WriterHelper.TYPE_DOUBLE:
+                type = Double.class.getName(); break;
+            case WriterHelper.TYPE_FLOAT:
+                type = Float.class.getName(); break;
+            case WriterHelper.TYPE_LONG:
+                type = Long.class.getName(); break;
+            case WriterHelper.TYPE_VECTOR:// deprecated
+                type = java.util.Vector.class.getName(); break;
+            case WriterHelper.TYPE_LIST:
+                type = java.util.List.class.getName(); break;
+            case WriterHelper.TYPE_DATE:
+                type = java.util.Date.class.getName(); break;
+            case WriterHelper.TYPE_FIELD:
+                type = org.mmbase.bridge.Field.class.getName(); break;
+            case WriterHelper.TYPE_FIELDVALUE:
+                type = org.mmbase.bridge.FieldValue.class.getName(); break;
+            case WriterHelper.TYPE_BYTES:
+                type = "[B"; break; 
+                // this doesn't work like this...
+                // How it does??
 
-            //Class.forName("[B").getName(); break;
-        case WriterHelper.TYPE_FILEITEM:
-            type = org.apache.commons.fileupload.FileItem.class.getName();
-            break; 
-        default:
-            //type = "java.lang.Object"; 
-            throw new RuntimeException("Unknown type '" + typeAttribute + "'");
-        }
+                //Class.forName("[B").getName(); break;
+            default:
+                //type = "java.lang.Object"; 
+                throw new RuntimeException("Unknown type '" + typeAttribute + "'");
+            }
         return type;
-   
+     
     }
 
     public VariableInfo[] getVariableInfo(TagData data) {

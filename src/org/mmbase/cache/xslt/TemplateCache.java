@@ -13,9 +13,8 @@ import org.mmbase.cache.Cache;
 import javax.xml.transform.Templates;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
-import org.mmbase.util.ResourceLoader;
-import org.mmbase.util.ResourceWatcher;
-
+import org.mmbase.util.FileWatcher;
+import java.io.File;
 import java.util.Map;
 import java.util.Iterator;
 import javax.xml.transform.URIResolver;
@@ -33,12 +32,12 @@ import org.mmbase.util.logging.Logging;
  * a key.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TemplateCache.java,v 1.15 2006-02-13 18:02:35 michiel Exp $
+ * @version $Id: TemplateCache.java,v 1.11 2003-07-17 17:01:17 michiel Exp $
  * @since   MMBase-1.6
  */
 public class TemplateCache extends Cache {
 
-    private static final Logger log = Logging.getLoggerInstance(TemplateCache.class);
+    private static Logger log = Logging.getLoggerInstance(TemplateCache.class);
 
     private static int cacheSize = 50;
     private static TemplateCache cache;
@@ -47,8 +46,8 @@ public class TemplateCache extends Cache {
      * The Source-s which are based on a file, are added to this FileWatcher, which wil invalidate
      * the corresponding cache entry when the file changes.
      */
-    private static ResourceWatcher templateWatcher = new ResourceWatcher(ResourceLoader.getWebRoot()) {
-            public  void onChange(String file) {
+    private static FileWatcher templateWatcher = new FileWatcher (true) {
+            protected void onChange(File file) {
                 // invalidate cache.
                 if (log.isDebugEnabled()) log.debug("Removing " + file.toString() + " from cache");
                 synchronized(cache) {
@@ -78,7 +77,7 @@ public class TemplateCache extends Cache {
 
     }
 
-    public String getName() {
+    public String getName() { 
         return "XSLTemplates";
     }
     public String getDescription() {
@@ -101,55 +100,59 @@ public class TemplateCache extends Cache {
         private String  src;
         private URIResolver uri;
         Key(Source src, URIResolver uri) {
-            this.src = src.getSystemId();
-            this.uri = uri;
+            this.src = src.getSystemId(); this.uri = uri;
         }
         public boolean equals(Object o) {
             if (o instanceof Key) {
-                Key k = (Key) o;
-                return  (src == null ? k.src == null : src.equals(k.src)) &&
+                Key k = (Key) o;                
+                return  (src == null ? k.src == null : src.equals(k.src)) && 
                         (uri == null ? k.uri == null : uri.equals(k.uri));
-            }
+            } 
             return false;
         }
         public int hashCode() {
             return 32 * (src == null ? 0 : src.hashCode()) + (uri == null ? 0 : uri.hashCode());
         }
-        /**
+        /** 
          * Returns File object or null
          */
-        String getURL() {
+        File getFile() {
             if (src == null) return null;
             try {
-                return src;
+                return new java.io.File(new java.net.URL(src).getFile());
             } catch (Exception e) {
                 return null;
             }
         }
+        boolean isFile() {
+            return src != null && src.startsWith("file://");
+        }
         public String toString() {
             return "" + src + "/" + uri;
         }
-
+       
     }
-
-    /**
-     * Remove all entries associated wit a certain url (used by FileWatcher).
+    
+    /**    
+     * Remove all entries associated wit a certain file (used by FileWatcher).
      *
      * @param  The file under concern
      * @return The number of cache entries removed
      */
 
-    private int remove(String file) {
-        int removed = 0;
-        Iterator i =  entrySet().iterator();
+    private int remove(File file) {
+        int removed = 0;        
+        Iterator i =  getOrderedEntries().iterator();
         if (log.isDebugEnabled()) log.debug("trying to remove keys containing " + file);
-        while (i.hasNext()) {
+        while (i.hasNext()) {           
             Key mapKey = (Key) ((Map.Entry) i.next()).getKey();
-            if (mapKey.getURL().equals(file)) {
-                if(remove(mapKey) != null) {
-                    removed++;
-                } else {
-                    log.warn("Could not remove " + mapKey);
+            if (mapKey.isFile()) {
+                if (file.equals(mapKey.getFile())) {
+                    if(remove(mapKey) != null) {                 
+                        removed++;
+                    } else {
+                        log.warn("Could not remove " + mapKey);
+                    }
                 }
             }
         }
@@ -167,15 +170,19 @@ public class TemplateCache extends Cache {
     }
 
     /**
-     * When removing an entry (because of LRU e.g), then also the FileWatcher must be removed.
+     * When removing an entry (because of LRU e.g), then also the FileWatchter must be removed.
      */
 
     public synchronized Object remove(Object key) {
         if (log.isDebugEnabled()) log.debug("Removing " + key);
         Object result = super.remove(key);
-        String url = ((Key) key).getURL();
-        remove(url);
-        templateWatcher.remove(url);
+        if (((Key)key).isFile()) { // this Source is a File, which might be watched. Remove the watch too.
+            templateWatcher.remove(((Key) key).getFile());
+            if (log.isDebugEnabled()) {
+                log.debug("removed watch on  " +   key);
+                log.trace("currently watching: " + templateWatcher);
+            }               
+        }
         return result;
     }
 
@@ -184,7 +191,7 @@ public class TemplateCache extends Cache {
      *
      * @throws RuntimeException
      **/
-
+    
     public Object put(Object key, Object value) {
         throw new RuntimeException("wrong types in cache");
     }
@@ -199,34 +206,36 @@ public class TemplateCache extends Cache {
             return null;
         }
         Key key = new Key(src, uri);
-        Object res = super.put(key, value);
+        Object res = super.put(key, value);        
         log.service("Put xslt in cache with key " + key);
-        templateWatcher.add(key.getURL());
-        if (log.isDebugEnabled()) {
-            log.debug("have set watch on  " + key.getURL());
-            log.trace("currently watching: " + templateWatcher);
+        if (key.isFile()) { // this Source is a File, watch it, because if it changes, the cache entry must be invalidated.
+            templateWatcher.add(key.getFile());
+            if (log.isDebugEnabled()) {
+                log.debug("have set watch on  " + key.getFile().getAbsolutePath());
+                log.trace("currently watching: " + templateWatcher);
+            }                
         }
         return res;
     }
 
-
+    
     /**
      * Invocation of the class from the commandline for testing
      */
     public static void main(String[] argv) {
         log.setLevel(org.mmbase.util.logging.Level.DEBUG);
         try {
-            java.io.File xslFile = java.io.File.createTempFile("templatecachetest", ".xsl");
+            File xslFile = File.createTempFile("templatecachetest", ".xsl");
             log.info("using file " + xslFile);
             java.io.FileWriter fw = new java.io.FileWriter(xslFile);
             fw.write("<xsl:stylesheet  version = \"1.1\" xmlns:xsl =\"http://www.w3.org/1999/XSL/Transform\"></xsl:stylesheet>");
             fw.close();
             for (int i =0; i<10; i++) {
-                TemplateCache cache = TemplateCache.getCache();
+                TemplateCache cache = TemplateCache.getCache();       
                 Source xsl = new StreamSource(xslFile);
                 org.mmbase.util.xml.URIResolver uri = new org.mmbase.util.xml.URIResolver(xslFile.getParentFile());
                 Templates cachedXslt = cache.getTemplates(xsl, uri);
-                log.info("template cache size " + cache.size() + " entries: " + cache.entrySet());
+                log.info("template cache size " + cache.size() + " entries: " + cache.getOrderedEntries());
                 if (cachedXslt == null) {
                     cachedXslt = FactoryCache.getCache().getFactory(uri).newTemplates(xsl);
                     cache.put(xsl, cachedXslt, uri);
@@ -238,7 +247,7 @@ public class TemplateCache extends Cache {
         } catch (Exception e) {
             System.err.println("hmm?" + e);
         }
-
+        
 
     }
 

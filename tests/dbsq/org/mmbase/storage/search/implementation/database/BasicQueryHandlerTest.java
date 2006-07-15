@@ -7,12 +7,18 @@ import junit.framework.*;
 import junit.textui.TestRunner;
 import java.util.*;
 import org.mmbase.module.core.*;
+import org.mmbase.module.corebuilders.*;
+import org.mmbase.module.database.support.MMJdbc2NodeInterface;
+import org.mmbase.util.logging.*;
+import org.mmbase.module.database.MultiConnection;
+import java.sql.*;
+
 
 /**
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandlerTest.java,v 1.9 2006-01-26 10:43:54 michiel Exp $
+ * @version $Id: BasicQueryHandlerTest.java,v 1.4.2.1 2004-09-07 13:12:39 pierre Exp $
  */
 public class BasicQueryHandlerTest extends TestCase {
 
@@ -24,6 +30,9 @@ public class BasicQueryHandlerTest extends TestCase {
 
     /** Test instance. */
     private BasicQueryHandler instance;
+
+    /** Disallowed values map. */
+    private Map disallowedValues = null;
 
     /** MMBase query. */
     private MMBase mmbase = null;
@@ -60,14 +69,14 @@ public class BasicQueryHandlerTest extends TestCase {
         typedef = mmbase.getBuilder("typedef");
 
         // Disallowed fields map.
-//        disallowedValues = new HashMap();
+        disallowedValues = new HashMap();
 //        disallowedValues.put("number", "m_number");
 //        disallowedValues.put("snumber", "m_snumber");
 //        disallowedValues.put("dnumber", "m_dnumber");
 //        disallowedValues.put("title", "m_title");
 //        disallowedValues.put("i", "m_i");
 
-        SqlHandler sqlHandler = new BasicSqlHandler();
+        SqlHandler sqlHandler = new BasicSqlHandler(disallowedValues);
         instance = new BasicQueryHandler(sqlHandler);
 
         // Add testnodes.
@@ -108,17 +117,21 @@ public class BasicQueryHandlerTest extends TestCase {
         // as is now the case).
         {
             query = new BasicSearchQuery();
-            BasicStep newsStep = query.addStep(news) .setAlias("news1");
+            BasicStep newsStep = query.addStep(news)
+                .setAlias("news1");
             FieldDefs newsTitle = news.getField("title");
-            BasicStepField newsTitleField = query.addField(newsStep, newsTitle) .setAlias("a_title"); // should not affect result node fieldnames!
-            query.addSortOrder(newsTitleField) .setDirection(SortOrder.ORDER_ASCENDING);
+            BasicStepField newsTitleField = query.addField(newsStep, newsTitle)
+                .setAlias("a_title"); // should not affect result node fieldnames!
+            BasicSortOrder sortOrder = query.addSortOrder(newsTitleField)
+                .setDirection(SortOrder.ORDER_ASCENDING);
             FieldDefs newsDescription = news.getField("body");
             query.addField(newsStep, newsDescription);
             FieldDefs otypeDescription = news.getField("otype");
             query.addField(newsStep, otypeDescription);
             FieldDefs newsOwner = news.getField("owner");
             BasicStepField newsOwnerField = query.addField(newsStep, newsOwner);
-            BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(newsOwnerField, JUNIT_USER);
+            BasicFieldValueConstraint constraint
+            = new BasicFieldValueConstraint(newsOwnerField, JUNIT_USER);
             query.setConstraint(constraint);
             List resultNodes = instance.getNodes(query, mmbase.getBuilder("news"));
             Iterator iResultNodes = resultNodes.iterator();
@@ -130,7 +143,7 @@ public class BasicQueryHandlerTest extends TestCase {
                 assertTrue(resultNode.getBuilder() == news);
                 assertTrue(resultNode.getStringValue("title") != null
                 && resultNode.getStringValue("title").length() > 0);
-                assertTrue("" + resultNode.getStringValue("title") + "!=" + testNode.getStringValue("title"), resultNode.getStringValue("title").equals(testNode.getStringValue("title")));
+                assertTrue(resultNode.getStringValue("title").equals(testNode.getStringValue("title")));
                 assertTrue(resultNode.getStringValue("body") != null
                 && resultNode.getStringValue("body").length() > 0);
                 assertTrue(resultNode.getStringValue("body").equals(testNode.getStringValue("body")));
@@ -149,7 +162,7 @@ public class BasicQueryHandlerTest extends TestCase {
             FieldDefs newsTitle = news.getField("title");
             BasicStepField newsTitleField = query.addField(newsStep, newsTitle)
                 .setAlias("a_title"); // should not affect result node fieldnames!
-            query.addSortOrder(newsTitleField)
+            BasicSortOrder sortOrder = query.addSortOrder(newsTitleField)
                 .setDirection(SortOrder.ORDER_ASCENDING);
             FieldDefs newsDescription = news.getField("body");
             query.addField(newsStep, newsDescription);
@@ -186,7 +199,7 @@ public class BasicQueryHandlerTest extends TestCase {
             NodeSearchQuery nodeQuery = new NodeSearchQuery(news);
             FieldDefs newsTitle = news.getField("title");
             BasicStepField newsTitleField = nodeQuery.getField(newsTitle);
-            nodeQuery.addSortOrder(newsTitleField)
+            BasicSortOrder sortOrder = nodeQuery.addSortOrder(newsTitleField)
                 .setDirection(SortOrder.ORDER_ASCENDING);
             FieldDefs newsOwner = news.getField("owner");
             BasicStepField newsOwnerField = nodeQuery.getField(newsOwner);
@@ -224,7 +237,7 @@ public class BasicQueryHandlerTest extends TestCase {
             FieldDefs newsTitle = news.getField("title");
             BasicStepField newsTitleField = query.addField(newsStep, newsTitle)
                 .setAlias("a_title");
-            query.addSortOrder(newsTitleField)
+            BasicSortOrder sortOrder = query.addSortOrder(newsTitleField)
                 .setDirection(SortOrder.ORDER_ASCENDING);
             FieldDefs newsDescription = news.getField("body");
             query.addField(newsStep, newsDescription);

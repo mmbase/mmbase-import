@@ -21,11 +21,11 @@
     background: #eee;
     visibility: hidden;
     top: 50px;
-    height: 100%;
+    heigth: 100%;
 }
  div.toc span {
    margin-left: 3ex;
-   }
+}
   </style>
 </head>
 <body>
@@ -274,7 +274,7 @@ response.setDateHeader("Last-Modified", ct);
    <mm:param name="bla">bloe</mm:param>
    <mm:booleanfunction name="isitso">
      It is true!
-   </mm:booleanfunction>
+   </mm:booleanfunction
    ..
    <mm:nodelistfunction name="listthosenodes">
       <mm:field name="blabla" /><br />
@@ -399,7 +399,7 @@ response.setDateHeader("Last-Modified", ct);
           <ul>
             <li>Tree-tag (experimental)</li>
             <li>More query-container-referrers like mm:ageconstraint, mm:previousbatches etc.</li>            
-	    <li>mmbase-taglib.jar</li>
+            <li>mmbase-taglib.jar</li>
             <li>....</li>
           </ul>
           <p>

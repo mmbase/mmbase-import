@@ -18,6 +18,9 @@
    this page.
 </mm:notpresent>
 
+<mm:present referid="ok">
+
+<mm:node referid="ok">
 <h1>The formatter tag mm:formatter</h1>
 <p>
   The formatter tag is meant to do basic formatting tasks. It's main
@@ -26,13 +29,19 @@
 <p>
   In this page we demonstrate how to use it, and what it can do. On the left you see
   the code. And on the right to what it results.
-</p>
-<mm:present referid="ok">
 
-<mm:node referid="ok">
+</p>
 <mm:timer name="formatter performance">
+<cache:cache time="30">
 <form>
 <table>
+<%--
+<tr><td colspan="2">Dates. Without this tag, it was not well possible to nicely format them. With this tag, it is easy.</td></tr>
+<tr valign="top">
+  <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/date.jsp" /></mm:formatter></pre></td>
+  <td width="50%"><%@include file="codesamples/date.jsp" %></td>
+</tr>
+--%>
 <tr><td colspan="2">Rich text fields. These fields can contain some basic structure information in XML. We can show XML with the formatter tag.</td></tr>
 <tr valign="top">
   <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/showrichfield.jsp" /></mm:formatter></pre></td>
@@ -106,18 +115,10 @@
 --%>
 </table>
 </form>
+</cache:cache>
 </mm:timer>
 </mm:node>
 </mm:present>
-<table>
-<tr><td colspan="2">
-  <a href="codesamples/node.jspx">Here</a> another nice example of a jspx generating XML..
-</td></tr>
-<tr valign="top">
-  <td width="50%"><pre><mm:include page="codesamples/node.jspx" cite="true" escape="text/xml" /></pre></td>
-  <td width="50%"><pre><mm:formatter format="escapexmlpretty"><mm:include page="codesamples/node.jspx"  /></mm:formatter></pre></td>
-</tr>
-</table>
 </mm:cloud>
 </body>
 </html>

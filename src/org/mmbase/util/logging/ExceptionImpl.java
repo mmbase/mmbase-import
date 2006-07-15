@@ -23,9 +23,8 @@ import org.apache.log4j.spi.LocationInfo;
   Logging.configure(System.getProperty("mmbase.config") + File.separator + "log" + File.separator + "log.xml");
    </pre>
  *
- * @author Michiel Meeuwissen
+ * @author Michiel Meeuwissen 
  * @since  MMBase-1.7
- * @version $Id: ExceptionImpl.java,v 1.6 2005-10-02 16:42:15 michiel Exp $
  */
 
 public class ExceptionImpl extends AbstractSimpleImpl implements Logger {
@@ -33,7 +32,6 @@ public class ExceptionImpl extends AbstractSimpleImpl implements Logger {
     private String cat;
     private static   Map instances = new HashMap();
     protected static int exceptionLevel  = Level.WARN_INT;
-    protected static Level staticLevel  = Level.WARN;
 
     private ExceptionImpl(String c) {
         cat = c;
@@ -44,7 +42,6 @@ public class ExceptionImpl extends AbstractSimpleImpl implements Logger {
             return (ExceptionImpl) instances.get(name);
         } else {
             ExceptionImpl i = new ExceptionImpl(name);
-            i.setLevel(staticLevel);
             instances.put(name, i);
             return i;
         }
@@ -53,25 +50,20 @@ public class ExceptionImpl extends AbstractSimpleImpl implements Logger {
     /**
      * The configure method of this Logger implemenation.
      *
-     * @param c A string, which can contain the output (stdout or
+     * @param A string, which can contain the output (stdout or
      * stderr) and the priority (e.g. 'info')
      */
+   
     public static  void configure(String c) {
         if (c == null) {
            return; // everything default
         } else {
-            StringTokenizer t    = new StringTokenizer(c, ",");
+            StringTokenizer t    = new StringTokenizer(c, ","); 
             if (t.hasMoreTokens()) {
                 exceptionLevel = Level.toLevel(t.nextToken()).toInt();
             }
             if (t.hasMoreTokens()) {
-                Level l  = Level.toLevel(t.nextToken());
-                staticLevel = l;
-                Iterator i = instances.values().iterator();
-                while (i.hasNext()) {
-                    Logger log = (Logger) i.next();
-                    log.setLevel(l);
-                }
+                level = Level.toLevel(t.nextToken()).toInt();
             }
         }
     }

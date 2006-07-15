@@ -1,7 +1,6 @@
 <%@ include file="page_base.jsp"
-%><mm:content language="$config.lang" country="$config.country" expires="0" type="text/html" postprocessor="none">
-<mm:cloud loginpage="login.jsp" sessionname="$config.session" jspvar="cloud" rank="$rank">
-  <mm:param name="org.mmbase.xml-mode" value="$config.xmlmode" />
+%><mm:content language="$config.lang" expires="0" type="text/html" postprocessor="none">
+<mm:cloud method="$config.method" loginpage="login.jsp" sessionname="$config.session" jspvar="cloud">
 <mm:write referid="style" escape="none" />
 <title><%= m.getString("change_node.change")%></title>
 </head>
@@ -38,68 +37,42 @@
      by the way, it is not necessary to indicate that
      enctype="multipart/form-data", this will be automatic if there is
      a input type="file". But lynx will also work like this (except for images) --%>
-   <form name="change" enctype="multipart/form-data" method="post" action='<mm:url referids="this_node@node_number" page="commit_node.jsp?pop=1" ><mm:param name="node_type"><mm:nodeinfo type="nodemanager" /></mm:param></mm:url>'>
+<form name="change" enctype="multipart/form-data" method="post" action='<mm:url referids="node_number" page="commit_node.jsp?pop=1" ><mm:param name="node_type"><mm:nodeinfo type="nodemanager" /></mm:param></mm:url>'>
   <table class="edit" summary="node editor" width="93%"  cellspacing="1" cellpadding="3" border="0">
   <tr><th colspan="3">
-
-    <div style="width: 30em; overflow: hidden;"><mm:nodeinfo type="gui" /></div>:
+  <mm:nodeinfo type="gui" />:
   <%=m.getString("Node")%> <mm:field name="number" /> <%=m.getString("oftype")%> <mm:nodeinfo type="guinodemanager"  />
   ( <mm:nodeinfo type="nodemanager" /> )
 
-    <a href="<mm:url page="navigate.jsp" referids="this_node@node_number" />">
-      <span class="tree"><!-- needed for IE --></span><span class="alt">[tree]</span>
+    <a href="<mm:url page="navigate.jsp" referids="node_number" />">
+      <span class="tree"></span><span class="alt">[tree]</span>
      </a>
-     <a href="<mm:url page="functions.jsp" referids="this_node@node_number" />">
-       Functions-view.
-     </a>
-     <mm:present referid="hasmmxf">
-       <mm:write cookie="mmjspeditors_xmlmode"       referid="config.xmlmode"      />
-       <mm:import id="xmlmodes" vartype="list">wiki,xml,prettyxml,kupu,docbook</mm:import>
-       <mm:stringlist referid="xmlmodes">
-         <mm:compare referid2="config.xmlmode" inverse="true">
-           <a href="<mm:url referids="this_node@node_number">
-             <mm:param name="mmjspeditors_xmlmode"><mm:write /></mm:param>
-             </mm:url>"><mm:write /></a>
-           </mm:compare>
-           <mm:compare referid2="config.xmlmode">
-             <mm:write />
-           </mm:compare>
-           <mm:last inverse="true"> | </mm:last>
-         </mm:stringlist>
-         | <a target="_new" href="<mm:url referids="node_number" page="mmxf_preview.jsp" />">preview</a>
-       </mm:present>
-   </th></tr>
-   <mm:fieldlist id="my_form" type="edit" fields="owner">
-     <tr>
-       <td class="data" title="<mm:fieldinfo type="description"  escape="text/html/attribute" /> (<mm:fieldinfo type="datatype" />: <mm:fieldinfo type="datatypedescription" escape="text/html/attribute" />)"><em><mm:fieldinfo type="guiname" /></em> <small>(<mm:fieldinfo type="name" />)</small></td>
-       <td class="listdata" colspan="2">
-         <mm:fieldinfo type="$showtype" />
-         <mm:fieldinfo type="errors" />
-       </td>
-     </tr>
-   </mm:fieldlist>
+     </td>
+  </th></tr>
+    <mm:fieldlist id="my_form" type="edit" fields="owner">
+      <tr>
+        <td class="data"><em><mm:fieldinfo type="guiname" /></em> <small>(<mm:fieldinfo type="name" />)</small></td>
+        <td class="listdata" colspan="2"><mm:fieldinfo type="$showtype" />&nbsp;</td>
+      </tr>
+    </mm:fieldlist>
 <tr>
 <td colspan="3" class="buttons">
-<p>
 <input class="submit"   type ="submit" name="ok" value="<%=m.getString("ok")%>" />
-<input class="submit"   type ="submit" name="save" value="save" />
 <input class="submit"   type ="submit" name="cancel" value="<%=m.getString("cancel")%>" />
 <mm:maydelete>
    <!-- input class="submit"   type ="submit" name="delete" value="<%=m.getString("delete")%>" /-->
    <input onclick="return confirm('Are you sure? This wil delete 1 node and <mm:countrelations /> relations!');" class="submit"   type ="submit" name="deleterelations"   value="<%=m.getString("change_node.deletewith")%>" />
 </mm:maydelete>
-</p>
 </td>
 </tr>
 <tr><td colspan="3" class="search"><hr /></td></tr>
 <tr>
   <th><%=m.getString("change_node.aliases")%></th>
-
   <td class="data" width="90%"><mm:aliaslist><mm:write /><mm:last inverse="true">, </mm:last></mm:aliaslist></td>
   <td class="navigate" width="0%">
  <mm:maywrite>
- <a  href="<mm:url referids="this_node@node_number"  page="edit_aliases.jsp" />">
-       <span class="select"><!-- needed for IE --></span><span class="alt">[edit aliases]</span>
+ <a  href="<mm:url referids="node_number"  page="edit_aliases.jsp" />">
+       <span class="select"></span><span class="alt">[edit aliases]</span>
 </a>     
    </mm:maywrite>    
 </tr>

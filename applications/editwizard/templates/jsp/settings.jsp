@@ -8,7 +8,7 @@
  * settings.jsp
  *
  * @since    MMBase-1.6
- * @version  $Id: settings.jsp,v 1.45 2006-05-08 18:02:49 michiel Exp $
+ * @version  $Id: settings.jsp,v 1.39.2.1 2004-05-02 15:35:17 nico Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -19,16 +19,28 @@ Config ewconfig = null;    // Stores the current configuration for the wizard as
 Config.Configurator configurator = null; // Fills the ewconfig if necessary.
 
 String popupId = "";  // default means: 'this is not a popup'
-boolean popup = false;
-String sessionKey = "editwizard";
+boolean popup = false;  
+String sessionKey = "editwizard"; 
 
  boolean done=false;
      Object closedObject=null;
 %><mm:log jspvar="log"><%  // Will log to category: org.mmbase.PAGE.LOGTAG.<context>.<path-to-editwizard>.jsp.<list|wizard>.jsp
 
 log.trace("start of settings.jsp");
+// Add some header to make sure these pages are not cached anywhere.
+response.addHeader("Cache-Control","no-cache");
+response.addHeader("Pragma","no-cache");
+
 // Set session timeout
 session.setMaxInactiveInterval(1 * 60 * 60); // 1 hour;
+
+// and make every page expired ASAP.
+long now = System.currentTimeMillis();
+response.setDateHeader("Expires",       now);
+response.setDateHeader("Last-Modified", now);
+
+//response.addHeader("Date",          now); // Jetty doesn't like if you set this.
+log.trace("done setting headers");
 
 // It is possible to specify an alternatvie 'sessionkey'
 // The sessionkey is used as a key for the session.
@@ -41,9 +53,9 @@ if (sessionKey == null) sessionKey = "editwizard";
 
 boolean proceed = "true".equals(request.getParameter("proceed")) || (request.getRequestURI().endsWith("debug.jsp"));
 
+
 // Look if there is already a configuration in the session.
 Object configObject = session.getAttribute(sessionKey);
-
 if (proceed && configObject == null) {
     throw new WizardException("Your data cannot be found anymore, you waited too long (more than an hour), or the server was restarted");
 }
@@ -82,20 +94,22 @@ if (popup) {
     log.debug("this is not a popup");
 }
 
-%><mm:import externid="loginsessionname" from="parameters" ></mm:import><%
+
 
 String refer = ewconfig.backPage;
 if (log.isDebugEnabled()) log.trace("backpage in root-config is " + refer);
 
 if (request.getParameter("logout") != null) {
+    %><mm:cloud method="logout" /><%
     // what to do if 'logout' is requested?
     // return to the deeped backpage and clear the session.
     log.debug("logout parameter given, clearing session");
     session.removeAttribute(sessionKey);
     log.debug("Redirecting to " + refer);
-    %>
-   <mm:redirect referids="loginsessionname" page="logout.jsp"><mm:param name="refer" value="<%=refer%>" /></mm:redirect>
-  <%
+    if (! refer.startsWith("http:")) {
+        refer = response.encodeRedirectURL(request.getContextPath() + refer);
+    }
+    response.sendRedirect(refer);
     return;
 }
 ewconfig.sessionKey = sessionKey;
@@ -105,8 +119,8 @@ configurator = new Config.Configurator(pageContext, ewconfig);
 if (request.getParameter("remove") != null) {
 
     if (log.isDebugEnabled()) log.debug("Removing top object requested from " + configurator.getBackPage());
-    if(! ewconfig.subObjects.empty()) {
-        if (! popup) { // remove inline
+    if(! ewconfig.subObjects.empty()) {    
+        if (! popup) { // remove inline             
             log.debug("popping one of subObjects " + ewconfig.subObjects);
             closedObject = ewconfig.subObjects.pop();
         } else { //popup
@@ -115,8 +129,8 @@ if (request.getParameter("remove") != null) {
             Stack stack =  (Stack) top.popups.get(popupId);
             closedObject = stack.pop();
             if (stack.size() == 0) {
-                top.popups.remove(popupId);
-                log.debug("going to close this window");
+                top.popups.remove(popupId);        
+                log.debug("going to close this window"); 
 %>
 <html>
 <script language="javascript">
@@ -124,8 +138,8 @@ if (request.getParameter("remove") != null) {
 <%
  if (closedObject instanceof Config.WizardConfig && ((Config.WizardConfig) closedObject).wiz.committed()) {
    // XXXX I find all this stuff in wizard.jsp too. Why??
-
-
+   
+   
    log.debug("A popup was closed (commited)");
    String sendCmd = "";
    String objnr = "";
@@ -192,5 +206,5 @@ if (!done) {
 }
 %></mm:log><%
     if (done) return;
-%><mm:import externid="loginmethod" from="parameters"></mm:import>
-
+%><mm:import externid="loginmethod" from="parameters">loginpage</mm:import>
+<mm:import externid="loginsessionname" from="parameters" ></mm:import>

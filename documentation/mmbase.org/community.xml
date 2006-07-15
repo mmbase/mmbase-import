@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<article>
+  <articleinfo>
+    <title>Community Whitepaper</title>
+
+    <date>2004-08-27</date>
+
+    <edition></edition>
+
+    <authorgroup>
+      <author>
+        <firstname>Rob</firstname>
+
+        <surname>van Maris</surname>
+      </author>
+
+      <author>
+        <firstname>Rob</firstname>
+
+        <surname>Vermeulen</surname>
+      </author>
+    </authorgroup>
+
+    <legalnotice>
+      <para>This software is OSI Certified Open Source Software. OSI Certified
+      is a certification mark of the Open Source Initiative.</para>
+
+      <para>The license (Mozilla version 1.0) can be read at the MMBase site.
+      See <ulink
+      url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
+    </legalnotice>
+  </articleinfo>
+
+  <section>
+    <title>Introduction</title>
+
+    <para>What exactly is MMBase? How is its software organized, and how will
+    it grow overtime? The number of organizations involved with MMBase is
+    increasing. This presents new opportunities to share and collaborate,
+    provided that questions like these are anwered. In this document, the
+    MMBase Management Commitee (MMC) presents guidelines for the MMBase
+    community.</para>
+  </section>
+
+  <section>
+    <title>MMBase community</title>
+
+    <para>An increasing number of people and organizations is involved with
+    MMBase in some way. Together they comprise the MMBase community, an
+    ecosystem surrounding MMBase and fostering new developments. In order to
+    ensure a healthy community, it is vital that the roles and
+    responsibilities of its citizens are clearly established. The following
+    groups can be distinguished.</para>
+
+    <section>
+      <title>MMC (MMBase Management Commitee)</title>
+
+      <para>The MMC coordinates the Open Source process, the development and
+      releases of MMBase distributions. Its mission is to maintain a stable
+      platform for MMBase developers, and ensure a good evolution of the
+      MMBase software. To achieve its goals the MMC relies on good
+      communication among the developers community.</para>
+    </section>
+
+    <section>
+      <title>MMBase developers</title>
+
+      <para>These are the developers that develop and maintain the MMBase
+      distributions. Most of these are also committers, i.e. they can modify
+      code in the MMBase CVS repository.</para>
+    </section>
+
+    <section>
+      <title>External developers</title>
+
+      <para>These are developers that develop software that extends the basic
+      functionality of MMBase. This may be complete (web) applications or
+      reusable components.</para>
+    </section>
+
+    <section>
+      <title>Users</title>
+
+      <para>Finally, these are the users of the resulting software. Often they
+      are also the owners of the finished applications and components, as
+      these result from projects commissioned by them.</para>
+    </section>
+  </section>
+
+  <section>
+    <title>MMBase parts</title>
+
+    <para>In order to enable the community to contribute to the various
+    software components, a distinction is made between different categories of
+    components. These are the following categories.</para>
+
+    <section>
+      <title>MMBase core</title>
+
+      <para>The MMBase core is the base of all MMBase software. It includes
+      Storage and the Security interfaces, as well as the MMBase Cloud
+      Interface (MMCI=Bridge), which provides a stable and backwards
+      compatible interface to the (legacy) MMBase core. See Figure 1: MMBase
+      Architectural Overview. Reusable software components that extend the
+      functionality of the core are called packages.</para>
+    </section>
+
+    <section>
+      <title>MMBase community packages</title>
+
+      <para>MMBase community packages are packages that are maintained by the
+      MMBase developers for one of several reasons:<itemizedlist>
+          <listitem>
+             Its use is (expected to be) widespread; 
+          </listitem>
+
+          <listitem>
+             As an example; 
+          </listitem>
+
+          <listitem>
+             For backwards compatibility with previous releases. 
+          </listitem>
+        </itemizedlist> The MMC and the committers can vote about what should
+      be MMBase packages.</para>
+    </section>
+
+    <section>
+      <title>MMBase external packages</title>
+
+      <para>MMBase external packages are all packages which are not MMBase
+      community packages. These are typically developed by external
+      developers, and fall outside the responsibility of the MMBase
+      Developers.</para>
+    </section>
+  </section>
+
+  <section>
+    <title>Community process</title>
+
+    <para>The community provides opportunities for organizations to contribute
+    and collaborate. The driving force behind this proces is the fact that
+    several organizations may have similar needs. Accordingly, the costs of
+    developing pieces of functionality can be shared. At present these
+    opportunities are not exploited to its full potential. The obstacles here
+    can be of a various nature. The MMC aims to facilitate such collaboration.
+    In order to do so, the MMC strives to address the technical and
+    infrastructural obstacles.</para>
+
+    <section>
+      <title>Technical</title>
+
+      <para>At present there is no easy standard way to package, distribute or
+      install a package. This will be adressed by the “packages” project,
+      which in the future will provide standard tools for the process.</para>
+    </section>
+
+    <section>
+      <title>Infrastructure</title>
+
+      <para>The MMC maintains a list of external packages on the MMBase
+      website (http://www.mmbase.org/packages). This list will include all
+      contributed packages that that are brought to the attention of MMC, when
+      they satisfy these requirements.</para>
+
+      <para>Minimal requirements: <itemizedlist>
+          <listitem>
+             available for download 
+          </listitem>
+
+          <listitem>
+             actively maintained 
+          </listitem>
+        </itemizedlist>Note that the minimal requirements do not require the
+      software to be Open Source, even though this is encouraged.</para>
+
+      <para>A community mailing list is available, where topics can be
+      discussed related to the development of external packages. The community
+      mailing list can be found at <link
+      linkend="???">http://www.mmbase.org/contact</link>.</para>
+
+      <para>The MMC and the MMBase Foundation can also be contacted with
+      questions related to the development of external packages. The
+      Foundation can help in gathering needs of users. The MMC can provide
+      more technical related information. E.g. which parts should be developed
+      as an external package and which parts should be integrated with the
+      core.</para>
+    </section>
+
+    <section>
+      <title>Open Source</title>
+
+      <para>When is software Open Source? There are different definitions in
+      use, but a general definition is provided here: <link
+      linkend="???">http://www.opensource.org/docs/definition.php</link></para>
+
+      <para>In addition to this, the MMC recommends the following best
+      practices.</para>
+
+      <para>Recommendations: <itemizedlist>
+          <listitem>
+             documentation included 
+          </listitem>
+
+          <listitem>
+             license compatible with Mozilla Public License 
+          </listitem>
+
+          <listitem>
+             contact-details available of maintainer 
+          </listitem>
+        </itemizedlist></para>
+    </section>
+
+    <section>
+      <title>How to contribute</title>
+
+      <para>Always a good start for developing MMBase software, is to launch
+      ideas within the MMBase community. Discuss which parts of the new
+      software should become an external package, and which parts should
+      become part of the MMBase core, or community packages. Notify the MMBase
+      community with your developments. This way it can be avoided that the
+      same functionality is being made twice by different community members,
+      and possibilities to collaboration can be exploited.</para>
+
+      <para>Ask the MMC to put information about your package online when the
+      package is available.</para>
+
+      <para>For the community it’s crucial to be able to rely on packages that
+      are being made available. So please don’t just offer the community
+      packages hoping that others will maintain them, but maintain the package
+      yourself. If you think the package is of great importance and should be
+      maintained by the MMBase developers you can ask the MMBase developers to
+      make it a MMBase package. The MMC and the committers will vote about
+      this.</para>
+
+      <para>Finally, you can contribute to external packages. Contacts it's
+      maintainer for this.</para>
+    </section>
+  </section>
+
+  <section>
+    <title>References</title>
+
+    <orderedlist>
+      <listitem>
+        <para>MMBase guidelines <link
+        linkend="???">http://www.mmbase.org/guidelines</link></para>
+      </listitem>
+    </orderedlist>
+
+    <para></para>
+  </section>
+</article>

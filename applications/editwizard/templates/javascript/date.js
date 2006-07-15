@@ -3,7 +3,7 @@
  * Routines for dates in the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: date.js,v 1.3 2004-05-02 15:02:01 nico Exp $
+ * @version  $Id: date.js,v 1.2.2.1 2004-05-02 15:03:12 nico Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen

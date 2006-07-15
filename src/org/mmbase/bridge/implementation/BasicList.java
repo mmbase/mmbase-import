@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * This is the base class for all basic implementations of the bridge lists.
  *
  * @author Pierre van Rooden
- * @version $Id: BasicList.java,v 1.18 2005-12-29 19:23:54 michiel Exp $
+ * @version $Id: BasicList.java,v 1.16.2.1 2005-02-25 15:52:54 michiel Exp $
  */
 public class BasicList extends ArrayList implements BridgeList  {
 
@@ -34,7 +34,7 @@ public class BasicList extends ArrayList implements BridgeList  {
          super();
     }
 
-    protected BasicList(Collection c) {
+    BasicList(Collection c) {
          super(c);
     }
 
@@ -69,6 +69,7 @@ public class BasicList extends ArrayList implements BridgeList  {
         convertAll();
         return super.removeAll(c);
     }
+
 
     /*
      * validates that an object can be converted to the excpected format
@@ -125,10 +126,10 @@ public class BasicList extends ArrayList implements BridgeList  {
         return super.toArray();
     }
 
-    protected class BasicIterator implements ListIterator {
+    protected abstract class BasicIterator implements ListIterator {
         protected ListIterator iterator;
 
-        protected BasicIterator() {
+        BasicIterator() {
             this.iterator = listIterator();
         }
 

@@ -9,87 +9,90 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.functions;
 
-import java.util.*;
+
+//import org.mmbase.util.logging.*;
 
 
 /**
- * A representation of a piece of functionality (a 'function'). A function has a name, a
- * return type, and a parameter-definition (which is a {@link Parameter} array).
+ * An abstract representation of a piece of functionality (a 'function'). A function has a name, a
+ * return type, and a parameter-definition (which is a Parameter array).
  *
- * The goal of a Function object is to call its {@link #getFunctionValue(Parameters)} method, which
- * executes it, given the specified parameters.
- *
- * @author Pierre van Rooden
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Function.java,v 1.6 2005-07-08 12:23:46 pierre Exp $
+ * @version $Id: Function.java,v 1.2 2004-03-05 12:34:46 michiel Exp $
  * @since MMBase-1.7
  * @see Parameter
  * @see Parameters
  */
-public interface Function {
+abstract public class Function {
+
+    //private static final Logger log = Logging.getLoggerInstance(Function.class);
+    
+    protected String      name;
+    protected ReturnType  returnType;
+
+    private Parameter[] parameterDefinition;
+    private String     description;
+
+
+    protected Function(String name, Parameter[] def, ReturnType returnType) {
+        this.name = name;
+        this.parameterDefinition = def;
+        this.returnType = returnType;
+    }
     /**
      * Creates an empty 'Parameters'  object for you, which you have to fill and feed back to getFunctionValue
-     * @see #getFunctionValue(Parameters)
+     * @see #getFunctionValue
      */
-    public Parameters createParameters();
+
+    public Parameters getNewParameters() {
+        if (parameterDefinition == null) {
+            throw new IllegalStateException("Definition is not set yet");
+        }
+        return new Parameters(parameterDefinition);
+    }
 
     /**
      * Executes the defined function supplying the given arguments.
-     * @see #createParameters
-     * @param parameters The parameters for the function. To specify an empty parameter list use {@link Parameters#VOID}.
-     *                   Implementors are encouraged to support <code>null</code> too.
-     * @return The function value, which can be of any type compatible to {@link #getReturnType}
+     * @see #getNewParameters
      */
-    public Object getFunctionValue(Parameters parameters);
 
-    /**
-     * Executes the defined function supplying the given List of arguments.
-     * This is a convenience method, as the List is mapped to a Parameters type and passed to {@link  #getFunctionValue(Parameters)}.
-     * @param parameters The parameters for the function. To specify an empty parameter list use {@link Parameters#VOID}.
-     *
-     * @return The function value, which can be of any type compatible to {@link #getReturnType}
-     */
-    public Object getFunctionValueWithList(List parameters);
+    abstract public Object getFunctionValue(Parameters arguments); 
+    /*
+    {
+        throw new UnsupportedOperationException("This is only an abstract representation of a function with name and cannot be actually executed. Use an extension of this class if you want that.");
+    }
+    */
 
-    /**
-     * For documentational  purposes a function object needs a description too.
-     */
-    public void setDescription(String description);
+    public void setDescription(String description)   { 
+        this.description = description;
+    }
 
-    /**
-     * @see #setDescription(String)
-     */
-    public String getDescription();
+    public String getDescription() {
+        return description;
+    }
 
-    /**
-     * A function <em>must</em> have a name. This is the name which was used to aquire the function object.
-     * @return The function's name, never <code>null</code>
-     */
-    public String getName();
-
-    /**
-     * @return The currently set Parameter definition array, or <code>null</code> if not set already.
-     */
-    public Parameter[] getParameterDefinition();
-
-    /**
-     * A function object is of no use, as long as it lacks a definition.
-     * @param params An array of Parameter objects.
-     * @throws IllegalStateException if there was already set a parameter definition for this function object.
-     */
-    public void setParameterDefinition(Parameter[] params);
-
-    /**
-     * @return The return type of the function's result value, or <code>null</code> if unknown.
-     */
-    public ReturnType getReturnType();
-
-    /**
-     * Sets the return type of the function's result value.
-     * @param type A ReturnType object. For void functions that could be {@link ReturnType#VOID}.
-     * @throws IllegalStateException if there was already set a return type for this function object.
-     */
-    public void setReturnType(ReturnType type);
+    public String getName() {
+        return name;
+    }
+    public Parameter[] getParameterDefinition() {
+        return parameterDefinition;
+    }
+    public void setParameterDefinition(Parameter[] params) {
+        if (parameterDefinition != null) {
+            throw new IllegalStateException("Definition is set already");
+        }
+        parameterDefinition = params;
+    }
+    public ReturnType getReturnType() {
+        return returnType;
+    }
+    public void setReturnType(ReturnType type) {
+        if (returnType != null) {
+            throw new IllegalStateException("Returntype is set already");
+        }
+        returnType = type;
+    }
+    
 
 }

@@ -11,7 +11,6 @@ package org.mmbase.bridge.jsp.taglib.pageflow;
 
 import java.util.*;
 import java.io.*;
-import java.net.*;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.util.Referids;
@@ -24,7 +23,6 @@ import org.mmbase.util.transformers.Url;
 import org.mmbase.util.transformers.CharTransformer;
 
 import org.mmbase.util.Casting;
-import org.mmbase.util.Entry;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -34,22 +32,23 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.79 2006-06-23 15:29:06 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.62.2.5 2005-03-14 18:33:24 michiel Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
 
-    private static final Logger log                   = Logging.getLoggerInstance(UrlTag.class);
+    private static final Logger log = Logging.getLoggerInstance(UrlTag.class);
 
-    private static final CharTransformer paramEscaper = new Url(Url.ESCAPE);
+    private static final CharTransformer paramEscaper = new Url(Url.PARAM_ESCAPE);
 
-    private static  Boolean makeRelative      = null;
-    private   Attribute  referids             = Attribute.NULL;
-    protected final List extraParameters      = new ArrayList();
-    protected Attribute  page                 = Attribute.NULL;
-    protected   Attribute  escapeAmps           = Attribute.NULL;
-    private   Attribute  absolute             = Attribute.NULL;
-    protected Attribute encode                = Attribute.NULL;
+
+    private static  Boolean makeRelative = null;
+
+    private   Attribute  referids = Attribute.NULL;
+    protected List       extraParameters = null;
+    protected Attribute  page = Attribute.NULL;
+    private   Attribute  escapeAmps = Attribute.NULL;
+
 
     public void setReferids(String r) throws JspTagException {
         referids = getAttribute(r);
@@ -63,30 +62,20 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
         escapeAmps = getAttribute(e);
     }
 
-    public void setEncode(String e) throws JspTagException {
-       encode = getAttribute(e);
-    }
-    
-    /**
-     * @since MMBase-1.8
-     */
-    public void setAbsolute(String a) throws JspTagException {
-        absolute = getAttribute(a);
-    }
-
 
     public void addParameter(String key, Object value) throws JspTagException {
         if (log.isDebugEnabled()) {
             log.debug("adding parameter " + key + "/" + value);
         }
-        extraParameters.add(new Entry(key, value));
+        extraParameters.add(new Param(key, value));
     }
 
 
 
     public int doStartTag() throws JspTagException {
         log.debug("starttag");
-        extraParameters.clear();
+        extraParameters = new ArrayList();
+        
         helper.useEscaper(false);
         return EVAL_BODY_BUFFERED;
     }
@@ -109,10 +98,8 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
         if (show.charAt(0) == '/') { // absolute on servletcontex
             if (show.length() > 1 && show.charAt(1) == '/') {
                 log.debug("'absolute' url, not making relative");
-                if (addContext()) {
-                    show.deleteCharAt(0);
-                    show.insert(0, req.getContextPath());
-                }
+                show.deleteCharAt(0);
+                show.insert(0, req.getContextPath());
             } else {
                 log.debug("'absolute' url");
                 String thisDir = new java.io.File(req.getServletPath()).getParent();
@@ -125,67 +112,26 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
     /**
      * Whether URL must be generatored relatively. This default to false, and can be configured with
      * the servlet context init parameter 'mmbase.taglib.url.makerelative'. It can be useful to be
-     * sure that url's are relative, if e.g. the context path is taken away in an URL-rewrite (e.g. by proxy).
+     * sure that url's are relative, if e.g. the context path is taken away in an URL-rewrite (e.g. by proxy). 
      * This might give problems with redirects, but if you happen to solve that too, or don't do that...
      *
      * @since MMBase-1.7
      */
     protected boolean doMakeRelative() {
-        if (makeRelative == null) {
-            String setting = pageContext.getServletContext().getInitParameter("mmbase.taglib.url.makerelative");
+        if (makeRelative == null) {            
+            String setting = pageContext.getServletContext().getInitParameter("mmbase.taglib.url.makerelative");            
             makeRelative = "true".equals(setting) ? Boolean.TRUE : Boolean.FALSE;
         }
         return makeRelative.booleanValue();
     }
 
-    protected boolean addContext() {
-        return true;
-    }
-
-    /**
-     * @since MMBase-1.8.1
-     */
-    protected boolean useAbsoluteAttribute(StringBuffer show, String page) throws JspTagException {
-        String abs = absolute.getString(this);
-        if ("".equals(abs) || "false".equals(abs)) return false;
-        javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest) pageContext.getRequest();
-
-        if (abs.equals("true")) {
-            show.append(req.getScheme()).append("://");
-            show.append(req.getServerName());
-            int port = req.getServerPort();
-            show.append(port == 80 ? "" : ":" + port);
-        } else if (abs.equals("server")) {
-            //show.append("/");
-        } else if (abs.equals("context")) {
-        } else {
-            throw new JspTagException("Unknown value for 'absolute' attribute '" + abs + "' (must be either 'true', 'false', 'server' or 'context')");
-        }
-        if (! abs.equals("context")) {
-            show.append(req.getContextPath());
-        }
-        char firstChar = page.charAt(0);
-        try {
-            URI uri;
-            if (firstChar != '/') {
-                uri = new URI("servlet", req.getServletPath() + "/../" + page, null);
-            } else {
-                uri = new URI("servlet", page, null);
-            }
-            uri = uri.normalize(); // resolves .. and so one
-            show.append(uri.getSchemeSpecificPart());
-        } catch (URISyntaxException  use) {
-            throw new TaglibException(use.getMessage(), use);
-        }
-        return true;
-    }
-
     /**
      * Returns url with the extra parameters (of referids and sub-param-tags).
      */
-    protected String getUrl(boolean writeamp, boolean encodeUrl) throws JspTagException {
+    protected String getUrl(boolean writeamp, boolean encode) throws JspTagException {
         StringWriter w = new StringWriter();
         StringBuffer show = w.getBuffer();
+
 
 
         if (referid != Attribute.NULL) {
@@ -194,38 +140,31 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
             if (writeamp) {
                 url = url.replaceAll("&", "&amp;");
             }
-            if (! useAbsoluteAttribute(show, url)) {
-                show.append(url);
-            }
+            show.append(url);
         } else {
-            String page = getPage();
+            show.append(getPage());
             javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest) pageContext.getRequest();
-            if (page.equals("")) { // means _this_ page
+            if (show.toString().equals("")) {                
+                String thisPage = null;
                 String requestURI = req.getRequestURI();
-                if (requestURI.endsWith("/")) {
-                    page = ".";
-                } else {
-                    page = new File(requestURI).getName();
-                }
 
-            }
-            if (!useAbsoluteAttribute(show, page)) {
-                if (doMakeRelative()) {
-                    show.append(page);
-                    page = "";
-                    makeRelative(show);
+                if (requestURI.endsWith("/")) { // request looks like a directory
+                    thisPage = ".";
                 } else {
-                    if (addContext() && page.charAt(0) == '/') { // absolute on servletcontex
-                        show.append(req.getContextPath());
-                    }
+                    thisPage = new File(requestURI).getName();
                 }
-                show.append(page);
+                
+                show.append(thisPage);
             }
-
+            
+            if (doMakeRelative()) { 
+                makeRelative(show);
+            } else {
+                if (show.charAt(0) == '/') { // absolute on servletcontext
+                    show.insert(0, req.getContextPath());
+                }
+            }
         }
-
-
-        // url is now complete up to query string, which we are to construct now
 
 
         String amp = (writeamp ? "&amp;" : "&");
@@ -242,14 +181,14 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
         }
         Iterator i = extraParameters.iterator();
         while (i.hasNext()) {
-            Entry param  = (Entry) i.next();
-            if (param.getValue() == null) continue;
-            show.append(connector).append(param.getKey()).append('=');
-            paramEscaper.transform(new StringReader(Casting.toString(param.getValue())), w);
+            Param param  = (Param) i.next();
+            if (param.value == null) continue;
+            show.append(connector).append(param.key).append('=');
+            paramEscaper.transform(new StringReader(param.value.toString()), w);
             connector = amp;
         }
-        if (encodeUrl) {
-            javax.servlet.http.HttpServletResponse response = (javax.servlet.http.HttpServletResponse)pageContext.getResponse();
+        if (encode) {
+            javax.servlet.http.HttpServletResponse response = (javax.servlet.http.HttpServletResponse) pageContext.getResponse();
             return response.encodeURL(show.toString());
         } else {
             return show.toString();
@@ -261,7 +200,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
     }
 
     protected String getUrl(boolean e) throws JspTagException {
-        return getUrl(e, encode.getBoolean(this, true));
+        return getUrl(e, true);
     }
 
     protected void doAfterBodySetValue() throws JspTagException {
@@ -273,8 +212,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
         return helper.doAfterBody();
     }
 
-
-    protected void initDoEndTag() throws JspTagException {
+    public int doEndTag() throws JspTagException {
         log.debug("endtag of url tag");
         if (helper.getJspvar() == null) {
             helper.overrideWrite(true);
@@ -282,17 +220,27 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
             // unless jspvar is specified, because then, perhaps the user wants that..
         }
 
-    }
-    public int doEndTag() throws JspTagException {
+
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), getUrl(false, false));  // write it as cleanly as possible.
         }
-        initDoEndTag();
         doAfterBodySetValue();
+        extraParameters = null;
         helper.doEndTag();
-        extraParameters.clear();
-        return super.doEndTag();
+        return super.doEndTag();        
     }
 
+
+    protected static class Param {
+        String key;
+        Object value;
+        Param(String k, Object v) {
+            key = k ; value = v;
+        }
+        public String getKey() { return key; }
+        public Object  getValue() { return value; }
+
+        public String toString() { return key + "=" + value; }
+    }
 
 }

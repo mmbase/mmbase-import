@@ -10,70 +10,112 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.implementation;
 
+import java.util.Locale;
 import org.mmbase.bridge.*;
-import org.mmbase.core.AbstractField;
-import org.mmbase.core.CoreField;
-import org.mmbase.util.LocalizedString;
-import java.util.Collection;
+import org.mmbase.module.corebuilders.FieldDefs;
 
 /**
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicField.java,v 1.31 2006-07-11 09:30:26 michiel Exp $
+ * @version $Id: BasicField.java,v 1.14 2003-11-20 16:22:00 pierre Exp $
  */
-public class BasicField extends AbstractField implements Field {
+public class BasicField implements Field, Comparable {
 
-    private final NodeManager nodeManager;
-    protected final CoreField coreField;
+    NodeManager nodeManager=null;
+    FieldDefs field=null;
 
-    public BasicField(Field field, NodeManager nodeManager) {
-        super(field.getName(), field);
-        this.nodeManager = nodeManager;
-        if (field instanceof CoreField) {
-            this.coreField = (CoreField) field;
-        } else {
-            this.coreField = new CoreField(field);
-        }
+    BasicField(FieldDefs field, NodeManager nodeManager) {
+        this.nodeManager=nodeManager;
+        this.field=field;
     }
 
     public NodeManager getNodeManager() {
         return nodeManager;
     }
 
-    public int getSearchPosition(){
-        return coreField.getSearchPosition();
+    public String getName() {
+        return field.getDBName();
     }
 
-    public int getListPosition(){
-        return coreField.getListPosition();
+    public String getGUIType() {
+        return field.getGUIType();
     }
 
-    public int getEditPosition(){
-        return coreField.getEditPosition();
+    public String getGUIName() {
+        return getGUIName(null);
     }
 
-    public int getStoragePosition(){
-        return coreField.getStoragePosition();
+    public String getGUIName(Locale locale) {
+        if (locale==null) locale = ((BasicCloud)nodeManager.getCloud()).getLocale();
+        return field.getGUIName(locale.getLanguage());
     }
 
-    public Collection validate(Object value) {
-        Collection errors = getDataType().validate(value, null, this);
-        return LocalizedString.toStrings(errors, getNodeManager().getCloud().getLocale());
+    public String getDescription() {
+        return getDescription(null);
+    }
+
+    public String getDescription(Locale locale) {
+        if (locale==null) locale = ((BasicCloud)nodeManager.getCloud()).getLocale();
+        return field.getDescription(locale.getLanguage());
+    }
+
+    public int getType() {
+        return field.getDBType();
+    }
+
+    public int getState() {
+        return field.getDBState();
     }
 
     public int getMaxLength() {
-        return coreField.getMaxLength();
+        return field.getDBSize();
     }
 
-
-    protected java.util.Locale getDefaultLocale() {
-        return nodeManager.getCloud().getLocale();
+    public boolean isRequired() {
+        return field.getDBNotNull();
     }
 
-    // deprecated methods
-    public String getGUIType() {
-        return coreField.getGUIType();
+    public boolean isUnique() {
+        return field.isKey();
     }
 
+    public boolean hasIndex() {
+        return (field.getDBType() == FieldDefs.TYPE_NODE) || field.getDBName().equals("number");
+    }
+
+    /**
+     * Compares this field to the passed object.
+     * Returns 0 if they are equal, -1 if the object passed is a Field and larger than this field,
+     * and +1 if the object passed is a Field and smaller than this field.
+     * A field is 'larger' than another field if its preferred GUIName is larger (alphabetically, case sensitive)
+     * than that of the other field. If GUINames are the same, the fields are compared on internal field name,
+     * and (if needed) on their NodeManagers.
+     *
+     * @param o the object to compare it with
+     */
+    public int compareTo(Object o) {
+        Field f= (Field)o;
+        int res=getGUIName().compareTo(f.getGUIName());
+        if (res!=0) {
+            return res;
+        } else {
+            res=getName().compareTo(f.getName());
+            if (res!=0) {
+                return res;
+            } else {
+                return ((Comparable)nodeManager).compareTo(f.getNodeManager());
+            }
+        }
+    }
+
+    /**
+     * Compares this field to the passed object, and returns true if they are equal.
+     * @param o the object to compare it with
+     */
+    public boolean equals(Object o) {
+        return (o instanceof Field) &&
+               nodeManager.equals(((Field)o).getNodeManager()) &&
+               getName().equals(((Field)o).getName());
+    }
 }

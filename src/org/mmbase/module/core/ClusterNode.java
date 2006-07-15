@@ -11,13 +11,13 @@ package org.mmbase.module.core;
 
 import java.util.*;
 
-import org.mmbase.bridge.Field;
+import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.Casting;
 
 
 /**
- * ClusterNode combines fields of different nodes in a single "virtual" node.
+ * ClusterNode combines fields of different nodes in a single "virtual" node.<br/>
  * This corresponds to the way that an SQL "join" select statement combines
  * fields of different tables in result rows.
  * <p>
@@ -42,7 +42,7 @@ import org.mmbase.util.Casting;
  * nodes.
  *
  * @author Pierre van Rooden
- * @version $Id: ClusterNode.java,v 1.27 2006-04-10 15:10:36 daniel Exp $
+ * @version $Id: ClusterNode.java,v 1.14.2.1 2004-06-18 12:37:22 michiel Exp $
  * @see ClusterBuilder
  */
 public class ClusterNode extends VirtualNode {
@@ -50,20 +50,27 @@ public class ClusterNode extends VirtualNode {
     private static final Logger log = Logging.getLoggerInstance(ClusterNode.class);
 
     /**
-     * Main contructor.
-     * @param parent the node's parent
+     * Holds the name - value pairs of related nodes in this virtual node.
      */
-    public ClusterNode(ClusterBuilder parent) {
+    protected Hashtable nodes = null; // why is it synchronized?
+
+    /**
+     * Main contructor.
+     * @param parent the node's parent, generally an instance of the ClusterBuilder builder.
+     */
+    public ClusterNode(MMObjectBuilder parent) {
         super(parent);
+        nodes = new Hashtable();
     }
 
     /**
      * Main contructor.
-     * @param parent the node's parent
-     * @param nrofnodes Nr of referenced nodes.
+     * @param parent the node's parent, generally an instance of the ClusterBuilder builder.
+     * @param rnofnodes Nr of referenced nodes.
      */
-    public ClusterNode(ClusterBuilder parent, int nrofnodes) {
+    public ClusterNode(MMObjectBuilder parent, int nrofnodes) {
         super(parent);
+        nodes = new Hashtable(nrofnodes);
     }
 
     /**
@@ -75,7 +82,9 @@ public class ClusterNode extends VirtualNode {
      *      (the references did not point to existing objects)
      */
     public void testValidData() throws InvalidDataException { // why is it public?
-	throw new UnsupportedOperationException("ClusterNode " + this.getClass().getName() + " removed since 1.8");
+        for (Enumeration r = nodes.elements(); r.hasMoreElements(); ) {
+          ((MMObjectNode)r.nextElement()).testValidData();
+        }
     };
 
     /**
@@ -85,20 +94,31 @@ public class ClusterNode extends VirtualNode {
       * @return <code>true</code> if the commit was succesfull, <code>false</code> is it failed
       */
     public boolean commit() {
-	throw new UnsupportedOperationException("ClusterNode " + this.getClass().getName() + " removed since 1.8");
+        boolean res = true;
+        for (Enumeration r = nodes.elements(); r.hasMoreElements(); ) {
+            MMObjectNode n = (MMObjectNode)r.nextElement();
+            if(n.isChanged()) {
+                res = res && n.commit();
+            }
+        }
+        return res;
     }
 
     /**
      * Obtain the 'real' nodes, associated with a specified objectbuilder.
-     * @param builderName the name of the builder of the requested node, as known
+     * @param buildername the name of the builder of the requested node, as known
      *        within the virtual node
      * @return the node, or <code>null</code> if it does not exist or is unknown
      */
     public MMObjectNode getRealNode(String builderName) {
         if (builderName == null) return null;
+        MMObjectNode node = (MMObjectNode) nodes.get(builderName);
+        if (node != null) return node;
         Integer number = (Integer) retrieveValue(builderName + ".number");
         if (number != null) {
-            return parent.getNode(number.intValue());
+            node = parent.getNode(number.intValue());
+            if (node != null) nodes.put(builderName, node);
+            return node;
         }
         return null;
     }
@@ -107,11 +127,16 @@ public class ClusterNode extends VirtualNode {
      * Stores a value in the values hashtable.
      * If the value is not stored in the virtualnode,
      * the 'real' node is used instead.
-     * @param fieldName the name of the field to change
+     * @param fieldname the name of the field to change
      * @param fieldValue the value to assign
      */
     public void storeValue(String fieldName, Object fieldValue) {
+        MMObjectNode node = (MMObjectNode)nodes.get(getBuilderName(fieldName));
+        if (node != null) {
+            node.storeValue(ClusterBuilder.getFieldNameFromField(fieldName), fieldValue);
+        } else {
             super.storeValue(fieldName, fieldValue);
+        }
     }
 
     /**
@@ -119,7 +144,7 @@ public class ClusterNode extends VirtualNode {
      * Note that if this node is a node in cache, the changes are immediately visible to
      * everyone, even if the changes are not committed.
      * The fieldname is added to the (public) 'changed' vector to track changes.
-     * @param fieldName the name of the field to change
+     * @param fieldname the name of the field to change
      * @param fieldValue the value to assign
      * @return always <code>true</code>
      */
@@ -127,6 +152,7 @@ public class ClusterNode extends VirtualNode {
         // Circument interference by the database during initial loading of the node
         // This is not pretty, but the alternative is rewriting all support classes...
         if (initializing) {
+            if (fieldValue == null) fieldValue = MMObjectNode.VALUE_NULL;
             if (! (parent instanceof ClusterBuilder)) {
                 values.put(ClusterBuilder.getFieldNameFromField(fieldName), fieldValue);
             } else {
@@ -150,7 +176,7 @@ public class ClusterNode extends VirtualNode {
     /**
      * Determines the builder name of a specified fieldname, i.e.
      * "news" in "news.title",
-     * @param fieldName the name of the field
+     * @param fieldname the name of the field
      * @return the buidler name of the field
      */
     protected String getBuilderName(String fieldName) {
@@ -179,7 +205,7 @@ public class ClusterNode extends VirtualNode {
 
     /**
      * Get a value of a certain field.
-     * @param fieldName the name of the field who's data to return
+     * @param fieldname the name of the field who's data to return
      * @return the field's value as an <code>Object</code>
      */
     public Object getValue(String fieldName) {
@@ -200,14 +226,12 @@ public class ClusterNode extends VirtualNode {
             String builderName = getBuilderName(fieldName);
             MMObjectNode n = getRealNode(builderName);
             if (n!=null) {
-                o = n.getValue(ClusterBuilder.getFieldNameFromField(fieldName));
+                o = n.getValue(((ClusterBuilder)parent).getFieldNameFromField(fieldName));
             } else {
                 // fall back to builder if this node doesn't contain a number to fetch te original
                 MMObjectBuilder bul = parent.mmb.getMMObject(builderName);
                 if (bul != null) {
                     o = bul.getValue(this, fieldName);
-                } else {
-                    throw new RuntimeException("Builder with name '" + builderName + "' does not exist");
                 }
             }
         }
@@ -218,7 +242,7 @@ public class ClusterNode extends VirtualNode {
     /**
      * Get a value of a certain field.
      * The value is returned as a String. Non-string values are automatically converted to String.
-     * @param fieldName the name of the field who's data to return
+     * @param fieldname the name of the field who's data to return
      * @return the field's value as a <code>String</code>
      */
     public String getStringValue(String fieldName) {
@@ -227,7 +251,7 @@ public class ClusterNode extends VirtualNode {
         String tmp =  Casting.toString(getValue(fieldName));
 
         // check if the object is shorted
-        if (tmp.equals(MMObjectNode.VALUE_SHORTED)) {
+        if (tmp.indexOf("$SHORTED")==0) {
             log.debug("getStringValue(): node=" + this + " -- fieldName " + fieldName);
             // obtain the database type so we can check if what
             // kind of object it is. this have be changed for
@@ -236,12 +260,12 @@ public class ClusterNode extends VirtualNode {
 
             log.debug("getStringValue(): fieldName " + fieldName + " has type " + type);
             // check if for known mapped types
-            if (type == Field.TYPE_STRING) {
+            if (type == FieldDefs.TYPE_STRING) {
 
                 // determine actual node number for this field
                 // takes into account when in a multilevel node
                 int number = getIntValue(getBuilderName(fieldName) + ".number");
-                tmp = parent.getShortedText(fieldName, parent.getNode(number));
+                tmp = parent.getShortedText(fieldName, number);
 
                 // did we get a result then store it in the values for next use
                 if (tmp != null) {
@@ -274,7 +298,7 @@ public class ClusterNode extends VirtualNode {
             int number = getIntValue(getBuilderName(fieldName) + ".number");
             // call our builder with the convert request this will probably
             // map it to the database we are running.
-            byte[] b = parent.getShortedByte(fieldName, parent.getNode(number));
+            byte[] b = parent.getShortedByte(fieldName,number);
 
             // we could in the future also leave it unmapped in the values
             // or make this programmable per builder ?
@@ -289,7 +313,10 @@ public class ClusterNode extends VirtualNode {
      * @return <code>true</code> if changes have been made, <code>false</code> otherwise
      */
     public boolean isChanged() {
-	throw new UnsupportedOperationException("ClusterNode " + this.getClass().getName() + " removed since 1.8");
+        for (Enumeration r = nodes.elements(); r.hasMoreElements(); ) {
+            if (((MMObjectNode)r.nextElement()).isChanged()) return true;
+        }
+        return false;
     }
 
     /**

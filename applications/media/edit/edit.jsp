@@ -70,29 +70,23 @@
           <select name="searchfields">
             <mm:write referid="videofragmentfieldoptions" escape="none" />
           </select>
-          <%-- IE sucks, it adds extra space if there are lots of hidden inputs , so therefore ugly hackery with /> on next line --%>
+          <%-- IE sucks, it adds extra space if there are lots of hidden inputs , so there ugly hackery with /> on next line --%>
           <input type="text" name="searchvalue" 
           /><input type="hidden" name="wizard" value="tasks/clipping/videofragments" 
           /><input type="hidden" name="nodepath" value="pools,related,videofragments,posrel,videofragments2" 
           /><input type="hidden" name="fields" value="pools.name,videofragments2.title,videofragments.number,videofragments.title,videofragments.owner" 
           /><input type="hidden" name="orderby" value="videofragments.number" 
           /><input type="hidden" name="directions" value="down" 
-          /><input type="hidden" name="distinct" value="false" 
+          /><input type="hidden" name="distinct" value="true" 
           /><input type="hidden" name="searchdirs" value="destination,source" 
           /><input type="hidden" name="main" value="videofragments" 
           />
         </form>
-        <a  title="Zoek in bestaande clips" href="javascript:document.forms['clippingvideo'].submit();"><img src="media/search.gif" alt="<%=m.getString("newstream")%>" border="0" /></a>
-        <a  title="Maak een nieuwe clip" href="<mm:url referids="referrer,origin,language,context,superorigin" page="${jsps}wizard.jsp">
+        <a href="javascript:document.forms['clippingvideo'].submit();"><img src="media/search.gif" alt="<%=m.getString("newstream")%>" border="0" /></a>
+        <a href="<mm:url referids="referrer,origin,language,context,superorigin" page="${jsps}wizard.jsp">
                     <mm:param name="wizard">tasks/clipping/videofragments</mm:param>
                     <mm:param name="objectnumber">new</mm:param>
                  </mm:url>"><img src="media/new.gif" border="0" alt="<%=m.getString("newitems")%>" />
-        </a>
-
-        <a  title="Maak een nieuwe clip, via stream server" href="<mm:url referids="referrer,origin,language,context,superorigin" page="search_import.jsp">
-                                                                     <mm:param name="type" value="video" />
-                                                                  </mm:url>">
-                                                                  Stream server<img src="media/new.gif" border="0" title="<%=m.getString("newitems")%>" />
         </a>
       </td>
     </tr>    
@@ -109,7 +103,7 @@
            /><input type="hidden" name="fields" value="pools.name,audiofragments.number,audiofragments.title,audiofragments.owner" 
            /><input type="hidden" name="orderby" value="audiofragments.number" 
            /><input type="hidden" name="directions" value="down" 
-           /><input type="hidden" name="distinct" value="false" 
+           /><input type="hidden" name="distinct" value="true" 
            /><input type="hidden" name="main" value="audiofragments" 
            />
         </form>
@@ -119,24 +113,9 @@
                    <mm:param name="objectnumber">new</mm:param>
                  </mm:url>"><img src="media/new.gif" border="0" alt="<%=m.getString("newitems")%>" />
         </a>
-        <a  title="Maak een nieuwe clip, via stream server" href="<mm:url referids="referrer,origin,language,context,superorigin" page="search_import.jsp">
-                                                                     <mm:param name="type" value="audio" />
-                                                                  </mm:url>">
-                                                                  Stream server<img src="media/new.gif" border="0" title="<%=m.getString("newitems")%>" />
-        </a>
       </td>
     </tr>
-    <tr>
-      <td>&nbsp;</td>
-      <td>
-        <a  title="Maak een nieuwe clip, via stream server" href="<mm:url referids="referrer,origin,language,context,superorigin" page="search_import.jsp">
-        <mm:param name="type" value="any" />
-        </mm:url>">
-        Stream server<img src="media/new.gif" border="0" title="<%=m.getString("newitems")%>" />
-        </a>
-      </td>
-    </tr>
-    <tr><th class="kop" colspan="2">Toevoegen en bewerken van bronnen</th></tr>
+    <tr><th class="kop" colspan="2">Bronnen</th></tr>
     <tr>
       <td><%=m.getString("basevideo")%></td>
       <td><form style="display:inline; " id="basevideo" 

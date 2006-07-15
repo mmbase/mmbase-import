@@ -14,10 +14,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import org.mmbase.module.core.*;
+import org.mmbase.module.gui.html.EditState;
 import org.mmbase.util.*;
-import org.mmbase.util.functions.*;
+import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.logging.*;
-import org.mmbase.util.magicfile.MagicFile;
 
 /**
  * This builder can be used for 'attachments' builders. That is
@@ -26,12 +26,11 @@ import org.mmbase.util.magicfile.MagicFile;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: Attachments.java,v 1.43 2006-07-10 16:34:59 michiel Exp $
+ * @version $Id: Attachments.java,v 1.30.2.2 2004-05-27 13:07:58 michiel Exp $
  */
 public class Attachments extends AbstractServletBuilder {
     private static final Logger log = Logging.getLoggerInstance(Attachments.class);
 
-    public static final String FIELD_SIZE       = "size";
 
     protected String getAssociation() {
         return "attachments";
@@ -40,13 +39,34 @@ public class Attachments extends AbstractServletBuilder {
         return "/attachment.db";
     }
 
+    /**
+     * this method will be invoked while uploading the file.
+     */
+    public boolean process(scanpage sp, StringTokenizer command, Hashtable cmds, Hashtable vars) {
+        if (log.isDebugEnabled()) {
+            log.debug("CMDS="+cmds);
+            log.debug("VARS="+vars);
+        }
+
+        EditState ed = (EditState)vars.get("EDITSTATE");
+        log.debug("Attachments::process() called");
+
+        String action = command.nextToken();
+        if (action.equals("SETFIELD")) {
+            String fieldname = command.nextToken();
+            if (log.isDebugEnabled()) log.debug("fieldname = "+fieldname);
+            setEditFileField(ed, fieldname, cmds, sp);
+        }
+        return false;
+    }
+
     protected String getSGUIIndicator(MMObjectNode node, Parameters a) {
         String field = a.getString("field");
         if (field.equals("handle") || field.equals("")) {
             int num  = node.getIntValue("number");
             //int size = node.getIntValue("size");
 
-            String fileName = getFileName(node, new StringBuffer()).toString();
+            String fileName = node.getStringValue("filename");
             String title;
 
             if (fileName == null || fileName.equals("")) {
@@ -56,15 +76,15 @@ public class Attachments extends AbstractServletBuilder {
             }
 
             if (/*size == -1  || */ num == -1) { // check on size seems sensible, but size was often not filled
-                return title;
+                return title;               
             } else {
-                String ses = getSession(a, node.getNumber());
+                String ses = (String) a.get("session");
                 if (log.isDebugEnabled()) {
                     log.debug("bridge: " + usesBridgeServlet + " ses: " + ses);
                 }
                 StringBuffer servlet = new StringBuffer();
                 HttpServletRequest req = (HttpServletRequest) a.get("request");
-                if (req != null) {
+                if (req != null) {            
                     servlet.append(getServletPath(UriParser.makeRelative(new java.io.File(req.getServletPath()).getParent(), "/")));
                 } else {
                     servlet.append(getServletPath());
@@ -89,24 +109,114 @@ public class Attachments extends AbstractServletBuilder {
         return super.getSuperGUIIndicator(field, node);
     }
 
-    protected final Set ATTACHMENTS_HANDLE_FIELDS = Collections.unmodifiableSet(new HashSet(Arrays.asList(new String[] {FIELD_MIMETYPE, FIELD_SIZE})));
-    // javadoc inherited
-    protected Set getHandleFields() {
-        return ATTACHMENTS_HANDLE_FIELDS;
+    /**
+     * @javadoc
+     */
+
+    protected boolean setEditFileField(EditState ed, String fieldname,Hashtable cmds,scanpage sp) {
+        try {
+            MMObjectNode node = ed.getEditNode();
+            if (node!=null) {
+                byte[] bytes=sp.poster.getPostParameterBytes("file");
+
+                // [begin] Let's see if we can get to the filename, -cjr
+                String file_name = sp.poster.getPostParameter("file_name");
+                String file_type = sp.poster.getPostParameter("file_type");
+                String file_size = sp.poster.getPostParameter("file_size");
+                if (file_name == null) {
+                    log.debug("file_name is NULL");
+                } else {
+                    log.debug("file_name = "+file_name);
+                }
+                if (file_type == null) {
+                    log.debug("file_type is NULL");
+                } else {
+                    log.debug("file_type = "+file_type);
+                }
+                if (file_size == null) {
+                    log.debug("file_size is NULL");
+                } else {
+                    log.debug("file_size = "+file_size);
+                }
+
+                // [end]
+                node.setValue(fieldname,bytes);
+
+                if (bytes != null && bytes.length > 0) {
+                    //MagicFile magic = new MagicFile();
+                    //String mimetype = magic.test(bytes);
+                    node.setValue("mimetype",file_type);
+                    node.setValue("filename",file_name);
+                    node.setValue("size",bytes.length);  // Simpler than converting "file_size"
+                }
+                else {
+                    log.debug("Attachment builder -> Grr. Got zero bytes");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return(true);
     }
 
     /**
      * If mimetype is not filled on storage in the database, then we
      * can try to do smart things.
      */
+
     protected void checkHandle(MMObjectNode node) {
-        super.checkHandle(node);
-        if (getField(FIELD_SIZE) != null) {
-            if (node.getIntValue(FIELD_SIZE) == -1) {
-                node.setValue(FIELD_SIZE, node.getByteValue(FIELD_HANDLE).length);
+        String mimetype = node.getStringValue("mimetype");
+        if (mimetype == null || mimetype.equals("")) {
+            log.service("Mimetype of attachment '" + node.getStringValue("title") + "' was not set. Using magic to determin it automaticly.");
+            Object h = node.getValue("handle");
+            if (h != null && (h instanceof byte[])) { // if unfilled h can be $SHORTED, sigh, sigh (at least when using editwizard)
+
+                // if (! (h instanceof byte[])) throw new RuntimeException("Handle field was not a byte[] but a '" + h.getClass().getName() + "'" + " with value " + h);
+                byte[] handle = (byte[]) h;
+                node.setValue("size", handle.length); // also the size, why not.
+                log.debug("Attachment size of file = " + handle.length);
+            
+                String filename = node.getStringValue("filename");
+                String extension = null;
+                int dotIndex = filename.lastIndexOf("."); 
+                if (dotIndex > -1) {
+                    extension = filename.substring(dotIndex + 1);
+                }
+
+                MagicFile magic = MagicFile.getInstance();
+                try {
+                    String mime = null;
+                    if (extension == null) {
+                        mime = magic.getMimeType(handle);
+                    } else {
+                        mime = magic.getMimeType(handle, extension);
+                    }
+                    log.service("Found mime-type: " + mime);
+                    node.setValue("mimetype", mime);
+                } catch (Throwable e) {
+                    log.warn("Exception in MagicFile  for " + node);
+                    node.setValue("mimetype", "application/octet-stream");                    
+                }            
             }
         }
     }
+
+    public int insert(String owner, MMObjectNode node) {
+        checkHandle(node);
+        return super.insert(owner, node);
+    }
+    public boolean commit(MMObjectNode node) {
+        Collection changed = node.getChanged();
+        if (changed.contains("handle")) {
+            node.setValue("mimetype", "");
+            checkHandle(node);
+        }
+        if (changed.contains("mimetype") && "".equals(node.getStringValue("mimetype"))) {
+            checkHandle(node);
+        }
+        return super.commit(node);
+    }
+
 
     /**
      * Implements 'mimetype' function (Very simply for attachments, because they have the field).
@@ -116,9 +226,9 @@ public class Attachments extends AbstractServletBuilder {
     protected Object executeFunction(MMObjectNode node, String function, List args) {
         log.debug("executeFunction of attachments builder");
         if ("mimetype".equals(function)) {
-            return node.getStringValue(FIELD_MIMETYPE);
+            return node.getStringValue("mimetype");
         } else if (function.equals("format")) {
-            String mimeType = node.getStringValue(FIELD_MIMETYPE);
+            String mimeType = node.getStringValue("mimetype");
             if (mimeType.length() > 0) {
                 MagicFile mf = MagicFile.getInstance();
                 String ext = mf.mimeTypeToExtension(mimeType);

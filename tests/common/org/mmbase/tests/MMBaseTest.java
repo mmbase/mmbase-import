@@ -9,24 +9,16 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.tests;
 import junit.framework.TestCase;
-
 import java.io.File;
-import java.sql.*;
-import org.hsqldb.Server;
-import org.mmbase.util.ResourceLoader;
 import org.mmbase.util.logging.Logging;
-import org.mmbase.module.Module;
-import org.mmbase.module.core.*;
 import org.mmbase.module.tools.MMAdmin;
 
 /**
  * This class contains static methods for MMBase tests.
- *
+ * 
  * @author Michiel Meeuwissen
  */
 public abstract class MMBaseTest extends TestCase {
-
-    static MMBase mmb;
 
     public MMBaseTest() {
         super();
@@ -35,58 +27,20 @@ public abstract class MMBaseTest extends TestCase {
         super(name);
     }
 
-    static public void startMMBase() throws Exception {
-        if (System.getProperty("nostartmmbase") == null) {
-            startMMBase(System.getProperty("nostartdb") == null);
-        }
-    }
     /**
      * If your test needs a running MMBase. Call this.
      */
-    static public void startMMBase(boolean startDatabase) throws Exception {
-        if (startDatabase) startDatabase();
-        MMBaseContext.init();
-        mmb = MMBase.getMMBase();
-
-        MMAdmin mmadmin = (MMAdmin) Module.getModule("mmadmin", true);
+    static public void startMMBase() throws Exception {
+        org.mmbase.module.core.MMBaseContext.init();
+        org.mmbase.module.core.MMBase.getMMBase();
+        MMAdmin mmadmin = (MMAdmin) org.mmbase.module.core.MMBase.getModule("mmadmin", true);
         while (! mmadmin.getState()) {
             Thread.sleep(1000);
         }
-        System.out.println("================================================================================");
-        System.out.println("Starting test");
-    }
 
-    static public void startDatabase() {
-        // first try if it is running already
-        try {
-            Thread.sleep(5000);
-            Class.forName("org.hsqldb.jdbcDriver" );
-        } catch (Exception e) {
-            System.err.println("ERROR: failed to load HSQLDB JDBC driver." + e.getMessage());
-            return;
-        }
-        while(true) {
-            try {
-                Connection c = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/test", "sa", "");
-                // ok!, already running one.
-                return;
-            } catch (SQLException sqe) {
-                Server server = new Server();
-                server.setSilent(true);
-                String dbDir = System.getProperty("test.database.dir");
-                if (dbDir == null) dbDir = System.getProperty("user.dir") + File.separator + "data";
-                server.setDatabasePath(0, dbDir + File.separator + "test");
-                server.setDatabaseName(0, "test");
-                server.start();
-                try {
-                    Thread.sleep(10000);
-                } catch (Exception e) {
-                    // I hate java
-                }
-            }
-        }
-    }
 
+        
+    }
     /**
      * If no running MMBase is needed, then you probably want at least to initialize logging.
      */
@@ -97,7 +51,7 @@ public abstract class MMBaseTest extends TestCase {
      * If no running MMBase is needed, then you probably want at least to initialize logging.
      */
     static public void startLogging(String configure) throws Exception {
-        Logging.configure(ResourceLoader.getConfigurationRoot().getChildResourceLoader("log"), configure);
+        Logging.configure(System.getProperty("mmbase.config") + File.separator + "log" + File.separator + configure);
     }
 
     /**
@@ -106,8 +60,8 @@ public abstract class MMBaseTest extends TestCase {
     public static void main(String[] args) {
         try {
             startMMBase();
-            while(!mmb.isShutdown()) {
-
+            while(true) {
+                
             }
         } catch (Exception e) {
         }

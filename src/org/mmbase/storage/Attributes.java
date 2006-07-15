@@ -15,7 +15,7 @@ package org.mmbase.storage;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Attributes.java,v 1.6 2005-10-26 13:28:08 michiel Exp $
+ * @version $Id: Attributes.java,v 1.2.2.2 2005-02-03 09:14:36 michiel Exp $
  */
 public final class Attributes {
 
@@ -59,28 +59,20 @@ public final class Attributes {
      * By default, this option is not set.
      */
     public static final String DEFAULT_STORAGE_IDENTIFIER_PREFIX = "default-storage-identifier-prefix";
-
-    
+     
     /**
      * This attribute can be used to specify a CharTransformer class of which an instance will be
      * used to filter strings which are set into the database.
      * @since MMBase-1.7.4
      */
     public static final String SET_SURROGATOR  = "storage-set-surrogator";
-
+    
     /**
      * This attribute can be used to specify a CharTransformer class of which an instance will be
      * used to filter strings which are fetched from the database.
      * @since MMBase-1.7.4
      */
     public static final String GET_SURROGATOR  = "storage-get-surrogator";
-
-
-    /**
-     * This attribute can be used to specify the maximum identifier length for
-     * table names and key names. 
-     * @since MMBase-1.8.0
-     */
-    public static final String MAX_IDENTIFIER_LENGTH = "max-identifier-length";
+    
 }
 

@@ -15,8 +15,8 @@
 
 	<form-schema id="basicss">
 		<title>Source Editor</title>
-    <list role="related" destination="mediaproviders" minoccurs="0">
-    <title>Media provider (defaults naar PO stream-server)</title>
+    <list role="related" destination="mediaproviders" minoccurs="1">
+    <title>Media provider</title>
     <title xml:lang="en">Stream server</title>
     <title xml:lang="nl">Stream server</title>
     <item>

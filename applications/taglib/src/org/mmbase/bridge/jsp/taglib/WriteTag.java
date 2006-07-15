@@ -13,8 +13,6 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.jsp.taglib.containers.FunctionContainerReferrer;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
-import org.mmbase.util.Casting;
-
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
@@ -33,15 +31,12 @@ import org.mmbase.util.logging.Logging;
  * of a 'Writer' tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriteTag.java,v 1.49 2005-05-13 09:47:12 michiel Exp $ 
+ * @version $Id: WriteTag.java,v 1.42.2.2 2005-03-14 18:33:24 michiel Exp $ 
  */
 
 public class WriteTag extends ContextReferrerTag implements Writer, FunctionContainerReferrer {
 
-    public static final int DEFAULT_MAX_COOKIE_AGE = 60 * 60 * 24 * 30 * 6; // half year
-    
-    public static final String MAX_COOKIE_AGE_KEY = "org.mmbase.taglib.max_cookie_age";
-
+    public static final int MAX_COOKIE_AGE = 60 * 60 * 24 * 30 * 6; // half year
     //public static final String COOKIE_PATH    = "/";
     private static final Logger log = Logging.getLoggerInstance(WriteTag.class);
 
@@ -75,8 +70,6 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
         requestVar = getAttribute(s);
     }
 
-
-
     /*
       // A page attribute is not needed, because we have already taglib vars, which take the same function (and are actually stored here)
       public void setPage(String s) throws JspTagException {
@@ -109,18 +102,7 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
         if (helper.getVartype() == WriterHelper.TYPE_BYTES) {
             return getContextTag().getBytes(getReferid()); // a hack..
         }
-        Object res = getObject(getReferid());
-        if (log.isDebugEnabled()) {
-            log.debug("found " + res + " " + (res == null ? "" : res.getClass().getName()) + " with " + getReferid());
-        }
-        return res;
-    }
-
-
-    protected int getMaxCookieAge() {
-        Object o = pageContext.getAttribute(MAX_COOKIE_AGE_KEY);
-        if (o == null) return DEFAULT_MAX_COOKIE_AGE;
-        return Integer.parseInt("" + o);
+        return getObject(getReferid());
     }
 
 
@@ -131,6 +113,7 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
         
         helper.setValue(getObject());
 
+
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), helper.getValue());
         }
@@ -138,20 +121,19 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
             if (pageContext.getSession() == null) {
                 throw new JspTagException("Cannot write to session if session is disabled");
             }
-            pageContext.getSession().setAttribute(sessionVar.getString(this), getEscapedValue(helper.getValue()));
+            pageContext.setAttribute(sessionVar.getString(this), helper.getValue(), PageContext.SESSION_SCOPE);
             helper.overrideWrite(false); // default behavior is not to write to page if wrote to session.
         }
         if (requestVar != Attribute.NULL) {
-            pageContext.setAttribute(requestVar.getString(this), getEscapedValue(helper.getValue()), PageContext.REQUEST_SCOPE);
+            pageContext.setAttribute(requestVar.getString(this), helper.getValue(), PageContext.REQUEST_SCOPE);
             helper.overrideWrite(false); // default behavior is not to write to page if wrote to request.
         }
         if (applicationVar != Attribute.NULL) {
-            pageContext.setAttribute(applicationVar.getString(this), getEscapedValue(helper.getValue()), PageContext.APPLICATION_SCOPE);
-            helper.overrideWrite(false); // default behavior is not to write to page if wrote to application.
+            pageContext.setAttribute(applicationVar.getString(this), helper.getValue(), PageContext.APPLICATION_SCOPE);
+            helper.overrideWrite(false); // default behavior is not to write to page if wrote to application
         }
-
         if (cookie != Attribute.NULL) {
-            Object v = getEscapedValue(helper.getValue());
+            Object v = helper.getValue();
             String cookievalue;
             if (v instanceof Node) {
                 cookievalue = "" + ((Node) v).getNumber();
@@ -162,8 +144,8 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
             }
 
             // remove all cookies with given name
-            HttpServletRequest request   = ((HttpServletRequest)  pageContext.getRequest());
-            HttpServletResponse response = ((HttpServletResponse) pageContext.getResponse());
+            HttpServletRequest request = ((HttpServletRequest)pageContext.getRequest());
+            HttpServletResponse response = ((HttpServletResponse)pageContext.getResponse());
             
             if (log.isDebugEnabled()) {
                 log.debug("Writing cookie " + cookie + " / " + v);
@@ -174,25 +156,25 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
             if (cookies != null) { 
                 for (int i = 0; i< cookies.length; i++) {
                     Cookie c = cookies[i];
-                    if (c.getName().equals(cookie.toString())) {
+                    if (c.getName().equals(cookie)) {
                         cookiecount++;
                     }
                 }
             }
 
-            int maxCookieAge = getMaxCookieAge();
+
             {  // on root (keep things simple)
                 Cookie c = new Cookie(cookie.getString(this), cookievalue);
                 String path = request.getContextPath();
                 if (path.length() == 0) path = "/";
                 c.setPath(path);            
-                c.setMaxAge(maxCookieAge);
+                c.setMaxAge(MAX_COOKIE_AGE);
                 response.addCookie(c);
 
             }
             if (cookiecount > 1) { //also in current dir (in case it was there already)
                 Cookie c = new Cookie(cookie.getString(this), cookievalue);
-                c.setMaxAge(maxCookieAge);
+                c.setMaxAge(MAX_COOKIE_AGE);
                 response.addCookie(c);
             }
             helper.overrideWrite(false);
@@ -209,7 +191,8 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
         if (log.isDebugEnabled()) {
             log.debug("End writetag id: '" +getId() + "' referid: '" + getReferid() + "' value '" + value + "'");
         }
+
         helper.doEndTag();
-        return super.doEndTag();
+        return super.doEndTag();        
     }
 }

@@ -6,17 +6,10 @@ textarea {
 }
 
 input { 
+  width: 100%;
 } 
 
-
-
-th {
- text-align: left;
-}
-
-td{
-  width: 40%;
-  background-color:#eeeeee;
+td { 
   vertical-align: top;
 }
 
@@ -31,13 +24,4 @@ table.search input.small {
 
 table.search input { 
   width: 10ex;
-}
-
-span.google {
-  background-color: yellow;
-}
-
-img {
-  /* terrible hack for IE */
-  behavior: url("../../mmbase/style/pngbehavior.htc");
 }

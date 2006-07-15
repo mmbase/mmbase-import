@@ -11,12 +11,13 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.media.urlcomposers.omroep;
 import org.mmbase.applications.media.urlcomposers.RealURLComposer;
 
+import java.util.Map;
 
 /**
  * An example. URL's from these kind of URLComposers can contain 'start' and 'end' arguments and so on.
  *
  * @author Michiel Meeuwissen
- * @version $Id: SimpleRealURLComposer.java,v 1.2 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: SimpleRealURLComposer.java,v 1.1 2003-11-26 16:48:37 michiel Exp $
  * @since MMBase-1.7
  */
 public class SimpleRealURLComposer extends RealURLComposer {

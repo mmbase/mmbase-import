@@ -9,10 +9,7 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge;
-import java.util.*;
-
-import org.mmbase.security.UserContext;
-import org.mmbase.util.functions.Function;
+import java.util.Locale;
 
 /**
  * A Cloud is a collection of Nodes (and relations that are also nodes).
@@ -21,13 +18,9 @@ import org.mmbase.util.functions.Function;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.58 2006-06-19 14:16:21 nklasens Exp $
+ * @version $Id: Cloud.java,v 1.44 2004-03-05 15:19:17 michiel Exp $
  */
 public interface Cloud {
-
-    public static final String PROP_XMLMODE     = "org.mmbase.xml-mode";
-
-    public static final String PROP_SESSIONNAME = "org.mmbase.cloud.sessionname";
 
     /**
      * Returns the node with the specified number from this cloud. The returned
@@ -149,7 +142,7 @@ public interface Cloud {
      * @throws NotFoundException  if the specified node could not be found
      * @since  MMBase-1.6
      */
-    public boolean mayRead(int number);
+    public boolean mayRead(int nodenumber);
 
     /**
      * Determines whether a node with the specified number is accessible for the user - that is,
@@ -162,7 +155,7 @@ public interface Cloud {
      * @throws NotFoundException  if the specified node could not be found
      * @since  MMBase-1.6
      */
-    public boolean mayRead(String number);
+    public boolean mayRead(String nodenumber);
 
     /**
      * Returns all node managers available in this cloud.
@@ -202,7 +195,7 @@ public interface Cloud {
     /**
      * Returns the specified relation manager.
      *
-     * @param relationManagerId       Unique ID of the RelationManager to retrieve
+     * @param nodeManagerId       Unique ID of the RelationManager to retrieve
      * @return                    the requested relation manager
      * @throws NotFoundException  if the specified relation manager could not be found
      * @since  MMBase-1.6
@@ -249,7 +242,7 @@ public interface Cloud {
     /**
      * Returns whether the specified relation manager exists.
      *
-     * @param sourceManager         name of the node manager of the source node
+     * @param sourceManage          name of the node manager of the source node
      * @param destinationManager    name of the node manager of the destination node
      * @param roleName              name of the role
      * @return                      <code>true</code> if the specified relation manager could be found
@@ -296,13 +289,14 @@ public interface Cloud {
      * Returns all relation managers available in this cloud that follow the specified filter.
      *
      * @param sourceManagerName the name of the manager for the source of the relation
-     * @param destinationManagerName the name of the manager for the destination of the relation
+     * @param destinationManagerMame the name of the manager for the destination of the relation
      * @param roleName the rolename
      * @return  a <code>RelationManagerList</code> containing all relation
-     *          managers that follow this filter
+     *          managers that follwo thsi filter
      * @throws NotFoundException     if one of the specified relation managers or the rolename could not be found
      */
-    public RelationManagerList getRelationManagers(String sourceManagerName, String destinationManagerName,  String roleName) throws NotFoundException;
+    public RelationManagerList getRelationManagers(String sourceManagerName, String destinationManagerName,
+                String roleName) throws NotFoundException;
 
     /**
      * Returns all relation managers available in this cloud that follow the specified filter.
@@ -364,16 +358,14 @@ public interface Cloud {
 
 
     /**
-     * Returns the name of this cloud. The name of the cloud is the string "mmbase" unless this
-     * Cloud is a {@link Transaction}.
+     * Returns the name of this cloud.
      *
      * @return the name of this cloud
      */
     public String getName();
 
     /**
-     * This may return {@link #getName}, but in principable it could have been localized using the
-     * value also returned by {@link #getLocale}.
+     * Returns the description of the cloud.
      *
      * @return the description of this cloud
      */
@@ -384,7 +376,7 @@ public interface Cloud {
      *
      * @return the User object describing who is using this cloud now.
      */
-    public UserContext getUser();
+    public User getUser();
 
     /**
      * Returns a list of virtual nodes that are composed by fields of other
@@ -515,10 +507,8 @@ public interface Cloud {
             String searchDir, boolean distinct);
 
     /**
-     * Executes a query and returns the result as a Cluster Node List (also if the query is a {@link NodeQuery}).
-     * @param query Query to execute
-     * @return Cluster Node List
-     *
+     * Executes a query and returns the result as a Cluster Node List (also if the query is a NodeQuery).
+     * 
      * @see org.mmbase.storage.search.SearchQuery
      * @since MMBase-1.7
      */
@@ -526,10 +516,10 @@ public interface Cloud {
 
 
     /**
-     * Create an empty Query, which can be filled, and used in {@link #getList(Query)}.
-     * @return empty Query
+     * Create an empty Query, which can be filled, and used in {getList#query}.
      * @since MMBase-1.7
      */
+
     public Query createQuery();
 
 
@@ -541,17 +531,18 @@ public interface Cloud {
 
 
     /**
-     * Create an empty NodeQuery, which can be filled, and used in {@link NodeManager#getList(NodeQuery)} or
-     * {@link #getList(Query)} (but then no 'real' node are returned). The query can be used on NodeManager only when at
-     * least one step is added, and {@link NodeQuery#setNodeStep} is called.
-     * @return empty NodeQuery
+     * Create an empty NodeQuery, which can be filled, and used in {getList#nodequery}. The query
+     * can be used only when at least one step is added, and 'setNodeStep' is called.
      * @since MMBase-1.7
      */
+
     public NodeQuery createNodeQuery();
 
 
+
+
     /**
-     * Sets a locale for this <code>Cloud</code> instance.
+     * Sets a locale for this Cloud instance.
      * @param locale To which locale it must be set. It can be null, in which case it will be reset to a default.
      *
      * @since MMBase-1.6
@@ -559,92 +550,11 @@ public interface Cloud {
     public void setLocale(Locale locale);
 
    /**
-     * Gets the locale assocatied with this <code>Cloud</code> instance.
-     * @return Locale of this Cloud instance
+     * Gets the Locale assocatied with this Cloud instance.
      *
      * @since MMBase-1.6
      */
-    public Locale getLocale();
+    public Locale  getLocale();
 
-    /**
-     * Retrieves a property previously set for this cloud.
-     * @see #setProperty(Object, Object)
-     * @param key the key of the property
-     * @return the property value
-     * @since MMBase-1.8
-     */
-    public Object getProperty(Object key);
-
-    /**
-     * Sets a property for this cloud object.
-     * This can be used as a kind of 'environment' variables.
-     * @param key the key of the property
-     * @param value the property value
-     * @since MMBase-1.8
-     */
-    public void setProperty(Object key, Object value);
-
-    /**
-     * Retrieves all properties previously set for this cloud.
-     * @since MMBase-1.8
-     */
-    public Map getProperties();
-    
-    /**
-     * Returns all Function objects from a function set.
-     * Function sets group functions by name, and are configured in the functionset.xml configuration file.
-     * In each entry in the returned map, the key is the function name, and the value is a
-     * {@link org.mmbase.util.functions.Function} object.
-     *
-     * @since MMBase-1.8
-     * @param setName name of the function set
-     * @return a Set of {@link org.mmbase.util.functions.Function} objects.
-     * @throws NotFoundException if the function set does not exist
-     */
-    public Collection getFunctions(String setName);
-
-    /**
-     * Returns a Function object from a function set.
-     * Function sets group functions by name, and are configured in the functionset.xml configuration file.
-     * The object returned is a {@link org.mmbase.util.functions.Function} object.
-     *
-     * @since MMBase-1.8
-     * @param setName name of the function set
-     * @return a {@link org.mmbase.util.functions.Function} object.
-     * @throws NotFoundException if the function set or the function do not exist
-     */
-    public Function getFunction(String setName, String functionName);
-
-    /**
-     * Returns a new, empty node list for this cloud
-     *
-     * @return  The empty list
-     * @since   MMBase-1.8
-     */
-    public NodeList createNodeList();
-
-    /**
-     * Returns a new, empty relation list for this cloud
-     *
-     * @return  The empty list
-     * @since   MMBase-1.8
-     */
-    public RelationList createRelationList();
-
-    /**
-     * Returns a new, empty node manager list for this cloud
-     *
-     * @return  The empty list
-     * @since   MMBase-1.8
-     */
-    public NodeManagerList createNodeManagerList();
-
-    /**
-     * Returns a new, empty relation manager list for this cloud
-     *
-     * @return  The empty list
-     * @since   MMBase-1.8
-     */
-    public RelationManagerList createRelationManagerList();
 
 }

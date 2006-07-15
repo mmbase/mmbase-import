@@ -29,7 +29,7 @@ import org.mmbase.module.core.MMBaseContext;
  *
  * @author Johannes Verelst
  * @author Rob Vermeulen (VPRO)
- * @version $Id: TreeHelper.java,v 1.12 2006-06-22 13:17:46 johannes Exp $
+ * @version $Id: TreeHelper.java,v 1.8.2.1 2004-06-08 12:28:54 johannes Exp $
  */
 
 public class TreeHelper {
@@ -64,13 +64,14 @@ public class TreeHelper {
      * @param session The session context can contain version information (used in getVerion).
      */
     protected String findLeafFile(String includePage, String objectlist, HttpSession session) throws JspTagException {
-        if ("".equals(objectlist)) {
-            return encodedPath(includePage);
-        }
-        String lf = getLeafFile("/", objectlist, includePage, true, session);
+    	String lf = ""; 
+    	if ("".equals(objectlist)) {
+    		return encodedPath(includePage);
+    	}
+        lf = getLeafFile("/", objectlist, includePage, true, session);
         log.debug("findLeafFile = [" + lf + "]");
         return encodedPath(lf);
-    }
+	}
 
     /**
      * Return the path to the include file. This path will start with the given prefix, appended by data calculated using
@@ -96,7 +97,7 @@ public class TreeHelper {
                 // make sure that the path we return starts with a 'file.separator'
                 return concatpath(prefix, includePage);
             } else {
-                return "";
+                return null;
             }
         }
 
@@ -162,7 +163,7 @@ public class TreeHelper {
         } else {
             return finalfile;
         }
-        return "";
+        return null;
     }
     
     /**
@@ -232,7 +233,7 @@ public class TreeHelper {
         if (new File(concatpath(htmlroot, nudePage)).isFile()) {
             return includePage;
         } else {
-            return "";
+            return null;
         }
     }
     
@@ -286,14 +287,10 @@ public class TreeHelper {
      * @returns the URL-escaped version of the path
      */
     private String encodedPath(String fileSystemPath) {
-        String fp = fileSystemPath;
-        if (fp == null) {
-            fp = "";
-        }
-        File f = new File(fp);
+        File f = new File(fileSystemPath);
         String result = f.getName();
         f = f.getParentFile();
-        while (f != null) {
+        while (!(f == null)) {
             String thisPart = f.getName();
             result = org.mmbase.util.Encode.encode("ESCAPE_URL", thisPart) + "/" + result;
             f = f.getParentFile();
@@ -315,15 +312,11 @@ public class TreeHelper {
         }
         if (path1.endsWith(File.separator) && path2.startsWith(File.separator)) {
             // we remove the File.separator from the 2nd path element
-            return path1 + path2.substring(File.separator.length());
+			return path1 + path2.substring(File.separator.length());
         } else if (!path1.endsWith(File.separator) && !path2.startsWith(File.separator)) {
             return path1 + File.separator + path2;
         } else {
             return path1 + path2;
         }
-    }
-
-    public void release() {
-        cloud = null;
-    }
+	}
 }

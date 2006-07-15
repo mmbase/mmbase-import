@@ -14,13 +14,10 @@ import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
-import org.mmbase.datatypes.StringDataType;
-import org.mmbase.datatypes.DataType;
 import org.mmbase.storage.search.*;
-import org.mmbase.util.transformers.Xml;
+import org.mmbase.util.Encode;
+import org.mmbase.util.logging.*;
 import org.mmbase.util.transformers.Sql;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
 
 /**
  * A TypeHandler for strings, textareas and text-input.
@@ -29,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.58 2006-07-09 13:48:06 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.27.2.7 2005-07-20 15:12:01 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -47,70 +44,86 @@ public class StringHandler extends AbstractTypeHandler {
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
     public String htmlInput(Node node, Field field, boolean search)        throws JspTagException {
-        eh = getEnumHandler(node, field);
-        if (eh != null) {
-            return eh.htmlInput(node, field, search);
+
+        String guiType = field.getGUIType();
+        if (guiType.indexOf('.') > 0) {
+            EnumHandler eh = new EnumHandler(tag, field);
+            if (eh.isAvailable()) {
+                return eh.htmlInput(node, field, search);
+            }
         }
-
+        StringBuffer buffer = new StringBuffer();
         if(! search) {
-            StringBuffer buffer = new StringBuffer();
-            try {
-                Object v = getFieldValue(node, field, true);
-                String value = org.mmbase.util.Casting.toString(v);
-                value = tag.decode(value, node);
-                StringDataType dataType = (StringDataType) field.getDataType();
+            if (field.getName().equals("owner")) {
+                Cloud cloud = tag.getCloudVar();
+                if (node == null) {
+                    buffer.append(cloud.getUser().getOwnerField());
+                } else if (! node.mayChangeContext()) {
+                    buffer.append(node.getContext());
+                } else {
 
-                if (dataType.getPattern().matcher("\n").matches()) {
+                    String value = node.getContext();
+                    buffer.append("<select name=\"" + prefix("owner") + "\"");
+                    addExtraAttributes(buffer);
+                    buffer.append(" >\n");
+                    StringList possibleContexts = node.getPossibleContexts();
+
+                    if (! possibleContexts.contains(value)) {
+                        possibleContexts.add(0, value);
+                    }
+                    StringIterator i = possibleContexts.stringIterator();
+                    while (i.hasNext()) {
+                        String listContext = i.nextString();
+                        buffer.append("  <option ");
+                        if (value.equals(listContext)){
+                            buffer.append("selected=\"selected\"");
+                        }
+                        buffer.append("value=\"" + listContext+ "\">");
+                        buffer.append(listContext);
+                        buffer.append("</option>\n");
+                    }
+                    buffer.append("</select>");
+                }
+            } else { // not 'owner'
+
+                if (guiType.equals("field")) {
                     if(field.getMaxLength() > 2048)  {
                         // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6
-                        // wrap attribute removed, we want to produce valid XHTML, and who is still using netscape < 6?
-                        buffer.append("<textarea class=\"big " + getClasses(field) + "\" rows=\"10\" cols=\"80\" ");
-                    } else {
-                        buffer.append("<textarea class=\"small " + getClasses(field) + "\" rows=\"5\" cols=\"80\" ");
-                    }
-                    addExtraAttributes(buffer);
-                    buffer.append("name=\"").append(prefix(field.getName())).append("\" ");
-                    buffer.append("id=\"").append(prefixID(field.getName())).append("\">");
-                    if ("".equals(value)) {
-                        String opt = tag.getOptions();
-                        if (opt != null && opt.indexOf("noempty") > -1) {
-                            // This can be needed because:
-                            // If included, e.g. with xmlhttprequest,
-                            // the textarea can collaps: <textarea />
-                            // This does not work in either FF or IE if the contenttype is text/html
-                            // The more logical contenttype application/xml or text/xml would make it behave normally in FF,
-                            // but that is absolutely not supported by IE. IE sucks. FF too, but less so.
-                            //
-                            // Any how, in short, sometimes you _must_ output one space here if empty otherwise.
-                            // I _reall_ cannot think of anything more sane then this.
-                            // e.g. <!-- empty --> would simply produce a textarea containing that...
-                            // also <![CDATA[]]> produces a textarea containing that...
-                            //
-                            // HTML is broken.
-
-                            buffer.append(" ");
+                        buffer.append("<textarea wrap=\"soft\" rows=\"10\" cols=\"80\" class=\"big\"");
+                        addExtraAttributes(buffer);
+                        buffer.append(" name=\"");
+                        buffer.append(prefix(field.getName()));
+                        buffer.append("\">");
+                        if (node != null) {
+                            buffer.append(Encode.encode("ESCAPE_XML", tag.decode(node.getStringValue(field.getName()), node)));
                         }
+                        buffer.append("</textarea>");
                     } else {
-                        Xml.XMLEscape(value, buffer);
-                    }
-                    buffer.append("</textarea>");
+                        buffer.append("<textarea wrap=\"soft\" rows=\"5\" cols=\"80\" class=\"small\" ");
+                        addExtraAttributes(buffer);
+                        buffer.append(" name=\"");
+                        buffer.append(prefix(field.getName()));
+                        buffer.append("\">");
+                        if (node != null) {
+                            buffer.append(Encode.encode("ESCAPE_XML", tag.decode(node.getStringValue(field.getName()), node)));
+                        }
+                        buffer.append("</textarea>");
+                    } 
                 } else { // not 'field' perhaps it's 'string'.
-                    buffer.append("<input class=\"small " + getClasses(field) + "\" type=\"").append(dataType.isPassword() ? "password" : "text").append("\"  size=\"80\" ");
-                    buffer.append("name=\"").append(prefix(field.getName())).append("\" ");
-                    buffer.append("id=\"").append(prefixID(field.getName())).append("\" ");
-                    String opt = tag.getOptions();
-                    if (opt != null && opt.indexOf("noautocomplete") > -1) {
-                        buffer.append("autocomplete=\"off\" ");
+                    if (guiType.indexOf("password") > -1) {
+                        buffer.append("<input type =\"password\" class=\"small\" size=\"80\" name=\"");
+                    } else {
+                        buffer.append("<input type =\"text\" class=\"small\" size=\"80\" name=\"");
                     }
+                    buffer.append(prefix(field.getName()));
+                    buffer.append("\" ");
                     addExtraAttributes(buffer);
-                    buffer.append("value=\"");
-                    Xml.XMLEscape(value, buffer);
+                    buffer.append(" value=\"");
+                    if (node != null) {
+                        buffer.append(Encode.encode("ESCAPE_XML_ATTRIBUTE_DOUBLE", tag.decode(node.getStringValue(field.getName()), node)));
+                    }
                     buffer.append("\" />");
                 }
-            } catch (ClassCastException cce) {
-                DataType dt = field.getDataType();
-                log.error("Expected StringDataType for field " + field + " but found " + dt.getClass().getName() + ":"+ dt);
-                throw cce;
             }
             return buffer.toString();
         } else { // in case of search
@@ -122,58 +135,61 @@ public class StringHandler extends AbstractTypeHandler {
      * @see TypeHandler#useHtmlInput(Node, Field)
      */
     public boolean useHtmlInput(Node node, Field field) throws JspTagException {
+        // do the xml decoding thing...
+        String fieldName = field.getName();
         String guiType = field.getGUIType();
-
-        if (guiType.indexOf('.') > 0) {
-            EnumHandler eh = new EnumHandler(tag, node, field);
-            if (eh.isAvailable()) {
-                return eh.useHtmlInput(node, field);
+        String fieldValue =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName));
+        if (fieldName.equals("owner")) {
+            if (fieldValue != null && ! fieldValue.equals(node.getContext())) {
+                node.setContext(fieldValue);
+                return true;
+            } else {
+                return false;
             }
-        }
-        String fieldValue = (String) getFieldValue(field);
-
-        if (fieldValue != null) {
-            String fieldName = field.getName();
-            if (! fieldValue.equals(node.getValue(fieldName))) {
-                if (fieldValue.equals("") && node.getValue(fieldName) == null) return false;
-                node.setStringValue(fieldName,  fieldValue);
+        } else {
+            if (guiType.indexOf("confirmpassword") > -1) {
+                // do not store 'confirm password' fields
                 return true;
             }
+            if (guiType.indexOf('.') > 0) {
+                EnumHandler eh = new EnumHandler(tag, field);
+                if (eh.isAvailable()) {
+                    return eh.useHtmlInput(node, field);
+                }
+            }
+        }
+
+        fieldValue = tag.encode(fieldValue, field);
+        if (fieldValue != null && ! fieldValue.equals(node.getValue(fieldName))) {
+            if (guiType.indexOf("password") > -1) {
+                String confirmValue =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix("confirmpassword"));
+                if (confirmValue!=null) {
+                    if (!confirmValue.equals(fieldValue)) {
+                        throw new JspTagException("Confirmation password not equal to new password value.");
+                    }
+                }
+            }
+            node.setStringValue(fieldName,  fieldValue);
+            return true;
         }
 
         return false;
-    }
-    protected Object getFieldValue(Field field) throws JspTagException {
-        String fieldName = field.getName();
-        String fieldValue =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName));
-
-        fieldValue = tag.encode(fieldValue, field);
-        if (fieldValue != null) {
-            String opt = tag.getOptions();
-            if (opt != null && opt.indexOf("trim") > -1) {
-                fieldValue = fieldValue.trim();
-            }
-        }
-        if (log.isDebugEnabled()) {
-            log.debug("Received '" + fieldValue + "' for " + field + " " + tag.getOptions());
-        }
-        return fieldValue;
-    }
-
-    protected boolean interpretEmptyAsNull(Field field) {
-        return false; //field.getDataType().isRequired();
     }
 
     /**
      * @see TypeHandler#whereHtmlInput(Field)
      */
     public String whereHtmlInput(Field field) throws JspTagException {
-        EnumHandler eh = getEnumHandler(null, field);
-        if (eh != null) {
-            return eh.whereHtmlInput(field);
-        }
         String search =  findString(field);
         if (search == null) return null;
+
+        String guiType = field.getGUIType();
+        if (guiType.indexOf('.') > 0) {
+            EnumHandler eh = new EnumHandler(tag, field);
+            if (eh.isAvailable()) {
+                return eh.whereHtmlInput(field);
+            }
+        }
 
         Sql sql = new Sql(Sql.ESCAPE_QUOTES);
         return "( UPPER( [" + field.getName() + "] ) LIKE '%" + sql.transform(search.toUpperCase()) + "%')";
@@ -187,10 +203,13 @@ public class StringHandler extends AbstractTypeHandler {
         return "%" + string.toUpperCase() + "%";
     }
    public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
-        EnumHandler eh = getEnumHandler(null, field);
-        if (eh != null) {
-            return eh.whereHtmlInput(field, query);
-        }
+       String guiType = field.getGUIType();
+       if (guiType.indexOf('.') > 0) {
+           EnumHandler eh = new EnumHandler(tag, field);
+           if (eh.isAvailable()) {
+               return eh.whereHtmlInput(field, query);
+           }
+       }
        Constraint cons =  super.whereHtmlInput(field, query);
 
        if (cons != null) {

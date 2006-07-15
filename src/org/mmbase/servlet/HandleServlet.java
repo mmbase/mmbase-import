@@ -11,12 +11,11 @@ package org.mmbase.servlet;
 
 import java.io.*;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.Node;
 
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
@@ -27,7 +26,7 @@ import org.mmbase.util.logging.*;
  * specialized servlets. The mime-type is always application/x-binary, forcing the browser to
  * download.
  *
- * @version $Id: HandleServlet.java,v 1.28 2006-06-27 13:11:51 johannes Exp $
+ * @version $Id: HandleServlet.java,v 1.15.2.1 2005-08-15 16:39:12 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see ImageServlet
@@ -42,15 +41,11 @@ public class HandleServlet extends BridgeServlet {
         Map a = super.getAssociations();
         // Can do the following:
         a.put("attachments", new Integer(0));
-        a.put("downloads",   new Integer(20)); // good at this (because it does not determine the mime-type)
+        a.put("downloads",   new Integer(20)); // good at this (because it does not determin the mime-type)
         a.put("images",      new Integer(-10)); // bad in images (no mime-type, no awareness of icaches)
         return a;
     }
 
-    /**
-     * Takes care of the 'expire' init-parameter.
-     * {@inheritDoc}
-     */
     public void init() throws ServletException {
         super.init();
         log = Logging.getLoggerInstance(HandleServlet.class);
@@ -64,78 +59,37 @@ public class HandleServlet extends BridgeServlet {
         }
     }
 
-    // just to get HandleServlet in the stacktrace.
-    protected Cloud getClassCloud() {
-        return super.getClassCloud();
-    }
-
-    /**
-     * Forces download in browsers.
-     * This is overriden in several extensions.
-     */
     protected String getMimeType(Node node) {
         return "application/x-binary";
-    }
-
-
-    protected static final Pattern legalizeFileName = Pattern.compile("[\\/\\:\\;\\\\\"]+");
-
-    /**
-     * @since MMBase-1.8
-     */
-    protected String getFileName(final Node node, Node titleNode, final String def) {
-        if (titleNode == null) titleNode = node;
-        NodeManager nm = titleNode.getNodeManager();
-        // Try to find a sensible filename to use in the content-disposition header.
-        String fileName;
-        if (node == titleNode) {
-            fileName = nm.hasField("filename") ? titleNode.getStringValue("filename") : null;
-        } else {
-            if (nm.hasField("filename")) {
-                fileName = titleNode.getStringValue("filename");
-                String ext = node.getFunctionValue("format", null).toString();
-                if (! ext.equals(titleNode.getFunctionValue("format", null).toString())) {
-                    fileName += '.' + ext;
-                }
-            } else {
-                fileName = null;
-            }
-        }
-        if (fileName != null) {
-            int backSlash = fileName.lastIndexOf("\\");
-            // if uploaded in MSIE, then the path may be in the fileName
-            // this is also fixed in the set-processor, but if that is or was missing, be gracefull here.
-            if (backSlash > -1)  {
-                fileName = fileName.substring(backSlash + 1);
-            }
-        }
-
-        if (fileName == null || fileName.equals("")) {
-            fileName = nm.hasField("title") ? titleNode.getStringValue("title") + '.' + node.getFunctionValue("format", null).toString() : null;
-        }
-        if (fileName == null || fileName.equals("")) {
-            fileName = nm.hasField("name") ? titleNode.getStringValue("name") + '.' + node.getFunctionValue("format", null).toString() : null;
-        }
-        if (fileName == null || fileName.equals("")) { // give it up
-            fileName = def + "." + node.getFunctionValue("format", null).toString();
-        }
-
-        return legalizeFileName.matcher(fileName).replaceAll("_");
     }
 
     /**
      * Sets the content disposition header.
      * @return true on success
      */
-    protected boolean setContent(QueryParts query, Node node, String mimeType) throws IOException {
-        String disposition;
-        String fileNamePart = query.getFileName();
-        if(fileNamePart != null && fileNamePart.startsWith("/inline/")) {
-            disposition = "inline";
-        } else {
-            disposition = "attachment";
+    protected boolean setContent(HttpServletRequest req, HttpServletResponse res, Node node, String mimeType) throws IOException {
+        // Try to find a sensible filename to use in the content-disposition header.
+        String fileName = node.getStringValue("filename");
+        if (fileName == null || fileName.equals("")) {
+            fileName = node.getStringValue("title");
+            if (fileName == null || fileName.equals("")) { // give it up
+                fileName = "mmbase-attachment";
+            }
+            // try to add an extension. 
+            String format = node.getFunctionValue("format", null).toString();
+            if (format != null && !format.equals("")) {
+                fileName = fileName + "." + format;
+            }
+            // could also use the mime type to guess an extension!
         }
-        query.getResponse().setHeader("Content-Disposition", disposition + "; filename=\""  + getFileName(node, null, "mmbase-attachment")+ "\"");
+        StringObject fn = new StringObject(fileName);
+        fn.replace(" ", "_");
+
+
+        // Why we don't set Content-Disposition:
+        // - IE can't handle that. (IE sucks!)
+
+        res.setHeader("Content-Disposition", "inline; filename=\""  + fn + "\"");
         //res.setHeader("X-MMBase-1", "Not sending Content-Disposition because this might confuse Microsoft Internet Explorer");
         return true;
     }
@@ -161,15 +115,14 @@ public class HandleServlet extends BridgeServlet {
      * Sets cache-controlling headers. Only nodes which are to be served to 'anonymous' might be
      * (front proxy) cached. To other nodes there might be read restrictions, so they should not be
      * stored in front-proxy caches.
-     *
+     * 
      * @return true if cacheing is disabled.
      * @since MMBase-1.7
      */
     protected boolean setCacheControl(HttpServletResponse res, Node node) {
-        if (!node.getCloud().getUser().getRank().equals(org.mmbase.security.Rank.ANONYMOUS)) {
+        if (!node.getCloud().getUser().getRank().equals(org.mmbase.security.Rank.ANONYMOUS.toString())) {
             res.setHeader("Cache-Control", "private");
             // res.setHeader("Pragma", "no-cache"); // for http 1.0 : is frustrating IE when https
-            // res.setHeader("Pragma", "no-store"); // no-cache not working in apache!
             // we really don't want this to remain in proxy caches, but the http 1.0 way is making IE not work.
             return true;
         } else {
@@ -177,7 +130,6 @@ public class HandleServlet extends BridgeServlet {
             return false;
         }
     }
-
 
     /**
      * Serves a node with a byte[] handle field as an attachment.
@@ -191,18 +143,17 @@ public class HandleServlet extends BridgeServlet {
         }
 
         //res.setHeader("X-MMBase-Version", org.mmbase.Version.get());
-        Node node = getServedNode(query, getNode(query));
+        Node node = getServedNode(query, queryNode);
 
         if (node == null) {
+            log.debug("No node found, returning");
             return;
         }
-
-        NodeManager manager = node.getNodeManager();
-        if (! manager.hasField("handle")) {
+        if (!node.getNodeManager().hasField("handle")) {
             res.sendError(HttpServletResponse.SC_NOT_FOUND, "No handle found in node " + node.getNumber());
-            req.setAttribute(MESSAGE_ATTRIBUTE, "No handle found in node " + node.getNumber());
             return;
         }
+        byte[] bytes = node.getByteValue("handle");
 
         // fill the headers
         res.setDateHeader("Date", System.currentTimeMillis());
@@ -210,54 +161,30 @@ public class HandleServlet extends BridgeServlet {
         String mimeType = getMimeType(node);
         res.setContentType(mimeType);
 
-        if (node.isNull("handle")) {
-            return;
-        }
-        InputStream bytes = node.getInputStreamValue("handle");
-
-
-        //remove additional information left by PhotoShop 7 in jpegs
-        //this information may crash Internet Exploder. that's why you need to remove it.
-        //With PS 7, Adobe decided by default to embed XML-encoded "preview" data into JPEG files,
-        //using a feature of the JPEG format that permits embedding of arbitrarily-named "profiles".
-        //In theory, these files are valid according to the JPEG specifications.
-        //However they break many applications, including Quark and, significantly,
-        //various versions of Internet Explorer on various platforms.
-
-        boolean canSendLength = true;
+        /*
+         *  remove additional information left by PhotoShop 7 in jpegs
+         * , this information may crash Internet Exploder. that's why you need to remove it.
+         * With PS 7, Adobe decided by default to embed XML-encoded "preview" data into JPEG files, 
+         * using a feature of the JPEG format that permits embedding of arbitrarily-named "profiles". 
+         * In theory, these files are valid according to the JPEG specifications. 
+         * However they break many applications, including Quark and, significantly, 
+         * various versions of Internet Explorer on various platforms. 
+         */
         if (mimeType.equals("image/jpeg") || mimeType.equals("image/jpg")) {
-            bytes = new IECompatibleJpegInputStream(bytes);
-            canSendLength = false;
-            //res.setHeader("X-MMBase-IECompatibleJpeg", "This image was filtered, because Microsoft Internet Explorer might crash otherwise");
+            bytes = IECompatibleJpegInputStream.process(bytes);
+            // res.setHeader("X-MMBase-2", "This image was filtered, because Microsoft Internet Explorer might crash otherwise");
         }
 
-        if (!setContent(query, node, mimeType)) {
+        if (!setContent(req, res, node, mimeType)) {
             return;
         }
         setExpires(res, node);
         setCacheControl(res, node);
-
-        if (canSendLength) {
-            int size = -1;
-            if (manager.hasField("size")) {
-                size = node.getIntValue("size");
-            } else if (manager.hasField("filesize")) {
-                size = node.getIntValue("filesize");
-            }
-            if (size >= 0) {
-                res.setContentLength(size);
-            }
-            log.debug("Serving node " + node.getNumber() + " with bytes " + size);
-        } else {
-            log.debug("Serving node " + node.getNumber() + " with unknown size, because IE sucks");
-        }
         sendBytes(res, bytes);
     }
 
-
     /**
      * Utility function to send bytes at the end of doGet implementation.
-     * @deprecated
      */
     final protected void sendBytes(HttpServletResponse res, byte[] bytes) throws IOException {
         int fileSize = bytes.length;
@@ -271,28 +198,7 @@ public class HandleServlet extends BridgeServlet {
         }
         out.write(bytes, 0, fileSize);
         out.flush();
-    }
-    final protected void sendBytes(HttpServletResponse res, InputStream bytes) throws IOException {
-        log.debug("Sending by " + bytes.getClass());
-        BufferedOutputStream out = null;
-        try {
-            out = new BufferedOutputStream(res.getOutputStream());
-        } catch (java.io.IOException e) {
-            log.error(Logging.stackTrace(e));
-            throw e;
-        }
-        byte[] buf = new byte[1024];
-        int b = 0;
-        while ((b = bytes.read(buf)) != -1) {
-            out.write(buf, 0, b);
-        }
-        out.flush();
         out.close();
-        bytes.close();
-    }
-
-    public static void main(String argv[]) {
-        System.out.println(legalizeFileName.matcher(argv[0]).replaceAll("_"));
     }
 
 }

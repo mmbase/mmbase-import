@@ -9,31 +9,27 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge;
-import java.util.*;
-import java.io.InputStream;
+import java.util.List;
 import org.w3c.dom.Element;
 import org.w3c.dom.Document;
-import org.mmbase.util.functions.Function;
-import org.mmbase.util.functions.Parameters;
+
 
 /**
  * Describes an object in the cloud.
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.70 2006-07-11 09:17:48 michiel Exp $
+ * @version $Id: Node.java,v 1.46 2003-12-23 20:00:31 michiel Exp $
  */
-public interface Node extends Comparable {
+public interface Node {
 
     /**
      * Returns the cloud this node belongs to.
-     * @return the Cloud
      */
     public Cloud getCloud();
 
     /**
      * Returns the node manager for this node.
-     * @return the node manager
      */
     public NodeManager getNodeManager();
 
@@ -61,7 +57,7 @@ public interface Node extends Comparable {
      * Returns this as a Relation.
      * @since MMBase-1.6
      * @return a <code>Relation</code> object
-     * @throws ClassCastException if the Node is not a Relation
+     * @throws ClasscastException if the Node is not a Relation
      */
     public Relation toRelation();
 
@@ -76,7 +72,7 @@ public interface Node extends Comparable {
      * Returns this as a NodeManager.
      * @since MMBase-1.6
      * @return a <code>NodeManager</code> object
-     * @throws ClassCastException if the Node is not a NodeManager
+     * @throws ClasscastException if the Node is not a NodeManager
      */
     public NodeManager toNodeManager();
 
@@ -91,12 +87,12 @@ public interface Node extends Comparable {
      * Returns this as a RelationManager.
      * @since MMBase-1.6
      * @return a <code>NodeManager</code> object
-     * @throws ClassCastException if the Node is not a RelationManager
+     * @throws ClasscastException if the Node is not a RelationManager
      */
     public RelationManager toRelationManager();
 
     /**
-     * Sets the value of the specified field using an object, but delegated to the right
+     * Sets the value of the specified field using an object, but delegated to the right 
      * set--Value depending on the type of the field.
      * For example a field of type <code>int</code> can be set using an
      * <code>Integer</code>.
@@ -109,19 +105,7 @@ public interface Node extends Comparable {
     public void setValue(String fieldName, Object value);
 
     /**
-     * Like setValue, but skips any processing that MMBase would normally perform on a field.
-     * You can use this to set data on fields that are 'system' defined, to prevent (among other
-     * things) infinite recursion. Use with care - in general processing of a field has a purpose!
-
-     * @param fieldName name of field
-     * @param value new value of the field
-     * @since MMBase-1.8
-     */
-    public void setValueWithoutProcess(String fieldName, Object value);
-
-    /**
-     * Sets the value of the specified field using an object, but without dispatching to the right
-     * type first.
+     * Sets the value of the specified field using an object.
      *
      * @param fieldName  the name of the field to be updated
      * @param value      the new value for the given field
@@ -192,12 +176,6 @@ public interface Node extends Comparable {
     public void setByteValue(String fieldName, byte[] value);
 
     /**
-     * Sets the value of the specified field using a <code>java.io.InputStream</code>.
-     * @since MMBase-1.8.
-     */
-    public void setInputStreamValue(String fieldName, InputStream value, long size);
-
-    /**
      * Sets the value of the specified field using a <code>long</code>.
      * This change will not be visible to the cloud until the commit method is
      * called.
@@ -218,46 +196,6 @@ public interface Node extends Comparable {
     public void setStringValue(String fieldName, String value);
 
     /**
-     * Sets the value of the specified field using a <code>Date</code>.
-     * This change will not be visible to the cloud until the commit method is
-     * called.
-     *
-     * @param fieldName  the name of the field to be updated
-     * @param value      the new value for the given field
-     * @since MMBase-1.8
-     */
-    public void setDateValue(String fieldName, Date value);
-
-
-    /**
-     * Sets the value of the specified field using a <code>List</code>.
-     * This change will not be visible to the cloud until the commit method is
-     * called.
-     *
-     * @param fieldName  the name of the field to be updated
-     * @param value      the new value for the given field
-     * // not yet working
-     * @since MMBase-1.8
-     */
-    public void setListValue(String fieldName, List value);
-
-    /**
-     * Whether the value for the speficied field is <code>null</code>. This avoids acquiring the
-     * complete value if you only want to check if for emptyness.
-     * @since MMBase-1.8
-     */
-    public boolean isNull(String fieldName);
-
-
-    /**
-     * Returns the 'size' (e.g. the number of bytes of a byte array) for the specified field. This
-     * avoids acquiring the complete value if you only want to know how big the value of the field is.
-     * @since MMBase-1.8
-     */
-    public long getSize(String fieldName);
-
-
-    /**
      * Returns the value of the specified field as an object. For example a
      * field of type <code>int</code> is returned as an <code>Integer</code>.
      * The object type may vary and is dependent on how data was stored in a field.
@@ -271,26 +209,16 @@ public interface Node extends Comparable {
 
     /**
      * Returns the field's value as an object. It is not delegated to the right get--Value.
-     * @param fieldName name of the field
-     * @return object value
      * @since MMBase-1.7
      */
-    public Object getObjectValue(String fieldName);
 
-    /**
-     * Like getObjectValue, but skips any processing that MMBase would normally perform on a field.
-     * You can use this to get data from a field for validation purposes.
-     *
-     * @param fieldName name of field
-     * @since MMBase-1.8
-     */
-    public Object getValueWithoutProcess(String fieldName);
+    public Object getObjectValue(String fieldName);
 
     /**
      * Returns the value of the specified field as a <code>boolean</code>.
      * If the actual value is numeric, this call returns <code>true</code>
      * if the value is a positive, non-zero, value. In other words, values '0'
-     * and '-1' are considered <code>false</code>.
+     * and '-1' are concidered <code>false</code>.
      * If the value is a string, this call returns <code>true</code> if
      * the value is "true" or "yes" (case-insensitive).
      * In all other cases (including calling byte fields), <code>false</code>
@@ -307,9 +235,9 @@ public interface Node extends Comparable {
      * original field value to a Node, by trying to retrieve a Node using
      * the field value as a Node number or alias.<br />
      * For instance, getNodeValue("destination"), when run on a OAlias object,
-     * returns the referenced destination node (instead of the number, which is
+     * returns the referenced destination node (instead of teh number, which is
      * what it normally holds).<br />
-     * Mostly, this call is used in cluster nodes (nodes retrieved by using the
+     * Mosty, this call is used in cluster nodes (nodes retrived by using the
      * Cloud.getList method. A cluster node returns one of its compound nodes
      * when an appropriate nodemanager name (name from the nodepath) is specified.
      * I.e. getNodeValue("people") will return the people-node in the cluster.
@@ -325,7 +253,7 @@ public interface Node extends Comparable {
      *
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
-     * @see Cloud#getList(String, String, String, String, String, String, String, boolean)
+     * @see Cloud#getList
      */
     public Node getNodeValue(String fieldName);
 
@@ -397,16 +325,6 @@ public interface Node extends Comparable {
      */
     public byte[] getByteValue(String fieldName);
 
-
-    /**
-     * Returns the value of the specified field as a <code>java.io.InputStream</code> This is
-     * especially usefull for large byte-array fields. By this you can avoid them to be completely
-     * stored in memory.
-     * @since MMBase-1.8
-     */
-    public InputStream getInputStreamValue(String fieldName);
-
-
     /**
      * Returns the value of the specified field as a <code>String</code>.
      * Byte arrays are converted to string using the default encoding (UTF8).
@@ -417,21 +335,6 @@ public interface Node extends Comparable {
      * @return           the value of the specified field
      */
     public String getStringValue(String fieldName);
-
-    /**
-     * @param fieldName  the name of the field to be returned
-     * @return           the value of the specified field
-     * @since MMBase-1.8
-     */
-    public Date getDateValue(String fieldName);
-
-    /**
-     * @param fieldName  the name of the field to be returned
-     * @return           the value of the specified field
-     * not yet working
-     * @since MMBase-1.8
-     */
-    public List getListValue(String fieldName);
 
 
     /**
@@ -454,29 +357,31 @@ public interface Node extends Comparable {
     public FieldValue getFieldValue(Field field);
 
     /**
-     * Validates a node by checking the values from it's field against the constraints of
-     * each field's datatype.
-     * This method is called by the {@link #commit} method, after commit processors are run.
-     * Note that because commit processors may make necessary changes to field values, it is possible for
-     * validate() to fail when used outside the commit process if the constraints are set too strict.
-     * @return Collection of errors as <code>String</code> (in the current locale of the cloud) or an empty collection if everything ok.
-     * @since MMBase-1.8
+     * Returns the value of the specified function on the node.  A
+     * function normally has arguments, which can be supplied with a
+     * List.
+     *
+     * @param functionName  the name of the function to be executed
+     * @param arguments     parameters to the function
+     * @return           the function value of the specified function
+     * @since MMBase-1.6
      */
-    public Collection validate();
+    public FieldValue getFunctionValue(String functionName, List arguments);
 
     /**
-     * Commit the node to the database.
-     * Prior to committing, the values are processed by any commit-processors associated with the datatype of the node's fields),
-     * then validated.
-     * Makes this node and/or the changes made to this node visible to the cloud.
-     * If this method is called for the first time on this node it will make
-     * this node visible to the cloud, otherwise the modifications made to
-     * this node using the set methods will be made visible to the cloud.
-     * This action fails if the current node is not in edit mode.
-     * If the node is in a transaction, nothing happens - actual committing occurs through the transaction.
-     * @throws BridgeException
-     * @throws IllegalArgumentException If certain value of the node are invalid according to their data type.
+     * @since MMBase-1.7
      */
+    // public FieldValue getFunctionValue(String functionName, Arguments arguments);
+
+    /**
+    * Commit the node to the database.
+    * Makes this node and/or the changes made to this node visible to the cloud.
+    * If this method is called for the first time on this node it will make
+    * this node visible to the cloud, otherwise the modifications made to
+    * this node using the set methods will be made visible to the cloud.
+    * This action fails if the current node is not in edit mode.
+    * If the node is in a transaction, nothing happens - actual committing occurs through the transaction.
+    */
     public void commit();
 
     /**
@@ -492,30 +397,6 @@ public interface Node extends Comparable {
     public void delete();
 
     /**
-     * Whether this Node is new (not yet commited).
-     * @since MMBase-1.8
-     */
-    public boolean isNew();
-
-    /**
-     * Whether a certain field's value was changed since the last commit.
-     * @since MMBase-1.8
-     */
-    public boolean isChanged(String fieldName);
-
-    /**
-     * A Set of Strings containing the names of all changed fields.
-     * @since MMBase-1.8
-     */
-    public Set getChanged();
-
-    /**
-     * Whether  field values were changed since the last commit.
-     * @since MMBase-1.8
-     */
-    public boolean isChanged();
-
-    /**
      * Removes the Node.
      * @param deleteRelations a boolean. If true, then first all
      * existing relations with this node will be removed.
@@ -525,7 +406,6 @@ public interface Node extends Comparable {
 
     /**
      * Converts the node to a string
-     * @return string representation of a node
      */
     public String toString();
 
@@ -533,12 +413,11 @@ public interface Node extends Comparable {
      * Returns the value of the specified field as a <code>dom.Document</code>
      * If the node value is not itself a Document, the method attempts to
      * attempts to convert the String value into an XML.
-     * This included the empty string, but not the 'null' value.
-     * If the value is null, this method returns <code>null</code>
+     * If the value cannot be converted, this method returns <code>null</code>
      *
      * @param fieldName  the name of the field to be returned
      * @return the value of the specified field as a DOM Element or <code>null</code>
-     * @throws  IllegalArgumentException if the value cannot be converted to xml.
+     * @throws  IllegalArgumentException if the Field is not of type TYPE_XML.
      * @since MMBase-1.6
      */
     public Document getXMLValue(String fieldName) throws IllegalArgumentException;
@@ -553,8 +432,8 @@ public interface Node extends Comparable {
      * @param fieldName  the name of the field to be returned
      * @param tree the DOM Document to which the Element is added
      *             (as the document root element)
-     * @return  the value of the specified field as a DOM Element or <code>null</code>
-     * @throws  IllegalArgumentException  if the value cannot be converted to xml.
+     * @return           the value of the specified field as a DOM Element or <code>null</code>
+     * @throws  IllegalArgumentException if the Field is not of type TYPE_XML.
      * @since MMBase-1.6
      */
 
@@ -632,12 +511,8 @@ public interface Node extends Comparable {
      */
     public RelationList getRelations(String role, NodeManager nodeManager);
 
-
+    
     /**
-     * @param role forward role of a relation
-     * @param nodeManager node manager on the other side of the relation
-     * @param searchDir the direction of the relation
-     * @return List of relations
      * @since MMBase-1.7
      */
     public RelationList getRelations(String role, NodeManager nodeManager, String searchDir);
@@ -652,7 +527,7 @@ public interface Node extends Comparable {
     /**
      * Returns the number of relation nodes attached to this node that have a
      * specific relation manager.
-     * @param relationManager relation manager
+     *
      * @return the number of relation nodes attached to this node that have a
      *         specific relation manager
      */
@@ -725,7 +600,7 @@ public interface Node extends Comparable {
 
     /**
      * Returns a query to reretrieve this node. It is not very usefull 'as is' because you already
-     * have the node. The result can however be changed (with addRelationsStep), to find 'related nodes'.
+     * have the node. The result can however be changed (with addRelationsStep), to find 'related nodes'. 
      *
      * @since MMBase-1.7.
      * @see   NodeManager#getList
@@ -744,14 +619,10 @@ public interface Node extends Comparable {
      * @return             the number of related nodes that have a specific node
      *                     manager
      */
-    public int countRelatedNodes(String nodeManager);
+    public int countRelatedNodes(String type);
 
 
     /**
-     * @param otherNodeManager the node manager the nodes should have
-     * @param role the role of the relation
-     * @param searchDir the direction of the relation
-     * @return number of related nodes
      * @since MMBase-1.7
      */
     public int countRelatedNodes(NodeManager otherNodeManager, String role, String searchDir);
@@ -810,10 +681,10 @@ public interface Node extends Comparable {
     public String getContext();
 
     /**
-     * Contacts the security implementation to find out to which other possible contexts the
+     * Contacts the security implementation to find out to which other possible contextes the
      * context of this node may be set.
      *
-     * @return A StringList containing the contexts which can be used in setContext on this node.
+     * @return A StringList containing the contextes which can be used in setContext on this node.
      * @throws SecurityException   When appropriate rights to perform this are lacking (read rights)
      */
     public StringList getPossibleContexts();
@@ -841,52 +712,5 @@ public interface Node extends Comparable {
      * @return                      Whether the current user may change the context of this node
      */
     public boolean mayChangeContext();
-
-    /**
-     * Returns all the Function objects of this Node
-     *
-     * @since MMBase-1.8
-     * @return a Collection of {@link org.mmbase.util.functions.Function} objects.
-     */
-    public Collection getFunctions();
-
-    /**
-     * Returns a Fuction object.
-     * The object returned is a {@link org.mmbase.util.functions.Function} object.
-     * You need to explixitly cast the result to this object, since not all bridge
-     * implementations (i.e. the RMMCI) support this class.
-     *
-     * @since MMBase-1.8
-     * @param functionName name of the function
-     * @return a {@link org.mmbase.util.functions.Function} object.
-     * @throws NotFoundException if the function does not exist
-     */
-    public Function getFunction(String functionName);
-
-    /**
-     * Creates a parameter list for a function.
-     * The list can be filled with parameter values by either using the List set(int, Object) method, to
-     * set values for parameters by psoition, or by using the set(String, Object) method to
-     * set parameters by name.<br />
-     * This object can then be passed to the getFunctionValue method.
-     * Note that adding extra parameters (with the add(Object) method) won't work and may cause exceptions.<br />
-     * @since MMBase-1.8
-     * @param functionName name of the function
-     * @return a {@link org.mmbase.util.functions.Parameters} object.
-     * @throws NotFoundException if the function does not exist
-     */
-    public Parameters createParameters(String functionName);
-
-    /**
-     * Returns the value of the specified function on the node.  A
-     * function normally has arguments, which can be supplied with a
-     * List.
-     * @since MMBase-1.6
-     * @param functionName name of the function
-     * @param parameters list with parameters for the fucntion
-     * @return the result value of executing the function
-     * @throws NotFoundException if the function does not exist
-     */
-    public FieldValue getFunctionValue(String functionName, List parameters);
 
 }

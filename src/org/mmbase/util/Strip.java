@@ -12,6 +12,8 @@ package org.mmbase.util;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+
+
 /**
  * Class to strip characters from the beginning and end of strings.
  *
@@ -22,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * </PRE>
  *
  * @author Rico Jansen
- * @version $Id: Strip.java,v 1.7 2004-09-30 14:07:13 pierre Exp $
+ * @version $Id: Strip.java,v 1.6 2003-03-10 11:51:14 pierre Exp $
  */
 public class Strip {
 

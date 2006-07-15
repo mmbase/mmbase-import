@@ -3,7 +3,7 @@
 
   This is the style specific to 'wizard' pages.
 
-  @version  $Id: wizard.css,v 1.5 2006-03-31 08:45:43 pierre Exp $
+  @version  $Id: wizard.css,v 1.4 2004-01-20 18:00:51 michiel Exp $
 */
 @import url("base.css"); cm,
 
@@ -12,7 +12,7 @@ td.stepcurrent {
 }
 
 td.stepother {
-  background-color: silver;
+  background-color: #CCC;
   border-color: #F0F0F0;
 }
 
@@ -36,59 +36,59 @@ td.stepother a.notvalid:link,
 td.stepother a.notvalid:visited,
 td.stepother a.notvalid:hover,
 td.stepother a.notvalid:active {
-  color: red;
+  color: #FF0000;
 }
 
 span.notvalid {
   color: #CC0000;
 }
 
-span.valid {
+span.valid { 
   color: #009900;
 }
 
 div.buttonscontent {
-        background-color: white;
-        color: black;
+	background-color: #FFFFFF;
+	color: #000000;
 }
 
 table.buttonscontent  {
-        border-color: black;
+	border-color: #000000;
 }
 
 tr.itemline  {
-        background-color: silver;
+	background-color: #CCC;
 }
 
 table.listcontent {
-        border-color: silver;
-        background-color: white;
-        color: black;
+	border-color: #CCC;
+	background-color: #FFF;
+	color: #000000;
 }
 
 td.listprompt {
-        color:black;
+	color:#000000;
 }
 
 tr.itemcanvas {
-        background-color: white;
+	background-color: #FFFFFF;
 }
 
 td.itemprefix  {
-        background-color: silver;
+	background-color: #CCC;
 }
 
 table.itemrow {
-  border-color: black;
+  border-color: #000;
 }
 
 table.itemrow-hover {
-  border-color: black;
-  background-color: silver;
+  border-color: #000;
+  background-color: #CCC;
 }
 
 table.fieldscontent  {
-  border-color: black;
+  border-color: #000;
 }
 
 a.bottombutton:link,
@@ -101,5 +101,5 @@ a.bottombutton-disabled:link,
 a.bottombutton-disabled:visited,
 a.bottombutton-disabled:hover,
 a.bottombutton-disabled:active  {
-    color: gray;
+    color: #808080;
 }

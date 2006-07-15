@@ -30,7 +30,7 @@
 
 <!--
         The class to use for instantiation of the searchqueryhandlers.
-        You can add more dan one ahndler. if you add more handlers, these
+        You can add more dan one ahndler. if you add mroe handlers, these
         are treated as chained handlers, with the first handler acting the first in the chain.
 -->
 <!ELEMENT searchqueryhandler EMPTY>
@@ -75,10 +75,8 @@
         The type attribute contains an expression the NodeManager can handle (i.e. 'varchar').
         The min-size and max-size attributes allow you to assign different expressions to MMBase types of varying length.
 -->
-
 <!ELEMENT type-mapping EMPTY>
-<!ATTLIST type-mapping name CDATA #REQUIRED>
-<!-- (INTEGER|LONG|FLOAT|DOUBLE|STRING|BYTE|BINARY|XML|NODE|DATETIME|BOOLEAN|LIST[INTEGER]|LIST[LONG]|LIST[FLOAT]|LIST[DOUBLE]|LIST[STRING]|LIST[XML]|LIST[NODE]|LIST[DATETIME]|LIST[BOOLEAN]) #REQUIRED> -->
+<!ATTLIST type-mapping name (INTEGER|LONG|FLOAT|DOUBLE|STRING|BYTE|XML|NODE) #REQUIRED>
 <!ATTLIST type-mapping type CDATA #REQUIRED>
 <!ATTLIST type-mapping min-size CDATA #IMPLIED>
 <!ATTLIST type-mapping max-size CDATA #IMPLIED>

@@ -7,13 +7,14 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.bridge.implementation;
 
+package org.mmbase.bridge.implementation;
 import java.util.*;
 
 import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
+import org.mmbase.util.logging.*;
 
 /**
  * 'Basic' implementation of bridge NodeQuery. Wraps a Query with all and only fields of one
@@ -30,13 +31,17 @@ import org.mmbase.storage.search.implementation.*;
  * @todo This kind of functionality should perhaps be present in NodeSearchQuery itself because you can then use it 'under' the bridge too.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeQuery.java,v 1.27 2006-07-04 13:16:33 michiel Exp $
+ * @version $Id: BasicNodeQuery.java,v 1.18.2.1 2004-07-29 17:16:37 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.NodeSearchQuery
  */
 public class BasicNodeQuery extends BasicQuery implements NodeQuery {
 
+
+    private static final Logger log = Logging.getLoggerInstance(BasicNodeQuery.class);
+
     protected Step step = null;
+
 
     BasicNodeQuery(Cloud c) {
         super(c);
@@ -45,13 +50,14 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
     /**
      * node query.
      */
+
     BasicNodeQuery(BasicNodeManager nodeManager) {
-        super(nodeManager.cloud);
+        super(nodeManager.getCloud());
         query = new NodeSearchQuery(nodeManager.getMMObjectBuilder());
         this.step = (Step) getSteps().get(0); // the only step
     }
     BasicNodeQuery(BasicNodeManager nodeManager, NodeSearchQuery q) {
-        super(nodeManager.cloud);
+        super(nodeManager.getCloud());
         query = q;
         this.step = (Step) getSteps().get(0); // the only step
     }
@@ -71,30 +77,8 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
 
     public NodeManager getNodeManager() {
         if (step == null) return null;
-        if (step instanceof RelationStep) {
-            RelationStep rs = (RelationStep) step;
-            int role  = -1;
-            Integer roleValue = rs.getRole();
-            if (roleValue != null) {
-                role = roleValue.intValue();
-            }
-            String roleName = role > 0 ? cloud.getNode(role).getStringValue("sname") : null;
-            NodeManager previous = cloud.getNodeManager(rs.getPrevious().getTableName());
-            NodeManager next     = cloud.getNodeManager(rs.getNext().getTableName());
-            if (cloud.hasRelationManager(previous, next, roleName)) {
-                return cloud.getRelationManager(previous, next, roleName);
-            } else {
-                if (roleName == null) {
-                    return cloud.getNodeManager("insrel"); // not a relation manager, no role known
-                } else {
-                    return cloud.getRelationManager(roleName);
-                }
-            }
-        } else {
-            return cloud.getNodeManager(step.getTableName());
-        }
+        return cloud.getNodeManager(step.getTableName());
     }
-
     public Step getNodeStep() {
         return step;
     }
@@ -114,7 +98,7 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
 
     public StepField getStepField(Field field) {
         if (query instanceof NodeSearchQuery) {
-            BasicStepField stepField = ((NodeSearchQuery) query).getField(((BasicField)field).coreField);
+            BasicStepField stepField = ((NodeSearchQuery) query).getField(((BasicField) field).field);
             return stepField;
         } else {
             Iterator fields = query.getFields().iterator();
@@ -138,12 +122,6 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
         setNodeStep(step);
     }
 
-
-    public List getExtraFields() {
-        return Collections.unmodifiableList(explicitFields);
-    }
-
-
     /**
      * Adds all fields of the gives collection, unless it is a field of the 'step' itself
      */
@@ -153,7 +131,7 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
             BasicStepField sf = (BasicStepField) i.next();
             Step addedStep = sf.getStep();
             if (addedStep.equals(step)) continue; // these are among the node-fields already
-            query.addField(addedStep, sf.getField());
+            query.addField(addedStep, sf.getFieldDefs());
         }
     }
 
@@ -176,11 +154,11 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
         query.removeFields();
         query.addFields(step);
         addFields(explicitFields);
-        Step prevStep = this.step;
-        this.step = step;
         if (! isDistinct() ) {
             addFields(implicitFields);
         }
+        Step prevStep = this.step;
+        this.step = step;
         return prevStep;
     }
 
@@ -193,10 +171,6 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
         clone.used = false;
         clone.aggregating = false;
         return clone;
-    }
-
-    public NodeList getList() {
-        return getNodeManager().getList(this);
     }
 
 

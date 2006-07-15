@@ -5,7 +5,7 @@
 	<articleinfo>
 		<title>MMBase installation on Apache Tomcat</title>
 		<date>2002-12-05</date>
-		<edition>$Id: install-tomcat.xml,v 1.15 2005-12-12 12:16:51 keesj Exp $</edition>
+		<edition>$Id: install-tomcat.xml,v 1.13 2004-02-11 22:02:45 michiel Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Michiel</firstname>
@@ -83,6 +83,7 @@
 ]]></programlisting>
 		 <!-- TODO:
 				 reloadable="false" / "true" ?
+				 Add, as an example, the configuration to let symlinks work
 		 -->
 			Be sure to fill in the right docBase, of course.
 		</para>
@@ -167,21 +168,4 @@
 			hsql). See the configuration documentation.
 		</para>
 	</section>
-
-        <section id="otherreferences">
-           <title>Other References</title>
-           <itemizedlist>
-                <listitem> 
-                  <!-- external documentation -->
-                  <para>Installation instructions for 1.6.x under Red Hat Linux + Tomcat + MySQL + Apache (<ulink
-                     id="installationredhatlinux" url="http://tldp.org/HOWTO/MMBase-Inst-HOWTO/index.html">HTML</ulink>)</para>
-                </listitem>
-                <listitem>
-                  <!-- external documentation -->
-                  <para>Installation instructions for 1.5.x under Debian GNU / Linux "woody" + Tomcat + MySQL (<ulink
-                     id="installationdebiangnulinux" url="http://tldp.org/HOWTO/MMBase.html">HTML</ulink>)</para>
-                </listitem>
-           </itemizedlist>
-       </section>
-
 </article>

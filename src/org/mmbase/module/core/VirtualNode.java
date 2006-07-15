@@ -11,6 +11,8 @@ package org.mmbase.module.core;
 
 import java.util.*;
 
+import org.mmbase.util.logging.*;
+
 /**
  * VirtualNode is a representation of a virtual objectnode.
  * Virtual Object nodes are nodes that are not stored in a databasetable.
@@ -19,28 +21,22 @@ import java.util.*;
  * access, such as obtaining relations or determining age of a node.
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualNode.java,v 1.12 2005-12-10 14:23:07 michiel Exp $
+ * @version $Id: VirtualNode.java,v 1.6 2004-02-24 17:44:02 michiel Exp $
  */
 public class VirtualNode extends MMObjectNode {
+    /**
+     * Logger routine
+     */
+    private static final Logger log = Logging.getLoggerInstance(VirtualNode.class);
 
     /**
-     * Main constructor.
-     * @param parent the node's parent
+     * Main contructor.
+     * @param parent the node's parent, generally (but not necessarily) an instance
+     * of a virtual builder.
      */
     public VirtualNode(MMObjectBuilder parent) {
-        super(parent, false);
-    }
-
-
-    public boolean isVirtual() {
-        return true;
-    }
-
-    /**
-     * Overrides to no throw exception on non-existing fields
-     */
-    protected boolean checkFieldExistance(String fieldName) {
-        return true;
+        super(parent);
+        virtual=true;
     }
 
      /**
@@ -63,7 +59,7 @@ public class VirtualNode extends MMObjectNode {
     }
 
     /**
-     * {@inheritDoc}
+     * Returns whether this node has relations.
      * A virtual node never has relations.
      * @return <code>false</code>
      */
@@ -72,7 +68,7 @@ public class VirtualNode extends MMObjectNode {
     }
 
     /**
-     * {@inheritDoc}
+     * Return the relations of this node.
      * A virtual node never has relations.
      * @return empty <code>Enumeration</code>
      */
@@ -81,19 +77,19 @@ public class VirtualNode extends MMObjectNode {
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the number of relations of this node.
      * A virtual node never has relations.
-     * @return 0, because Virtual nodes have no relations.
+     * @return 0
      */
     public int getRelationCount() {
         return 0;
     }
 
     /**
-     * {@inheritDoc}
+     * Return the number of relations of this node, filtered on a specified type.
      * A virtual node never has relations.
      * @param wantedtype the 'type' of related nodes (NOT the relations!).
-     * @return 0, because Virtual nodes have no relations.
+     * @return An <code>int</code> indicating the number of nodes found
      */
     public int getRelationCount(String wantedtype) {
         return 0;
@@ -106,10 +102,6 @@ public class VirtualNode extends MMObjectNode {
      */
     public int getAge() {
         return 0;
-    }
-
-    public int getOType() {
-        return -1;
     }
 
 }

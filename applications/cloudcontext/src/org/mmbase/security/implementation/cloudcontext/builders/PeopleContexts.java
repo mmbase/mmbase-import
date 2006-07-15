@@ -11,50 +11,24 @@ package org.mmbase.security.implementation.cloudcontext.builders;
 
 import org.mmbase.security.implementation.cloudcontext.*;
 import org.mmbase.module.core.*;
-import org.mmbase.core.CoreField;
 
 /**
- * Simple extension of Contexts. It overrides the concept of an 'own' node wich is on default only
- * the mmbaseusers object.  This adds also the people nodes where the 'account; field is the current
- * account (either as a String field containing the user's identifier), or as a NODE field refering
- * to the mmbaseusers node.
+ * Simple extension of Contexts. It overrides the concept of an 'own' node wich is on default only the mmbaseusers object.
+ * This adds also the people nodes where the account field is the current account.
+ *
  *
  * @author Michiel Meeuwissen
- * @version $Id: PeopleContexts.java,v 1.6 2005-07-14 11:48:01 michiel Exp $
+ * @version $Id: PeopleContexts.java,v 1.1 2003-11-03 13:22:31 michiel Exp $
  */
 public class PeopleContexts extends Contexts {
 
 
-
-    protected String peopleBuilder = "people";
-    public boolean init() {
-        String s = (String) getInitParameters().get("peoplebuilder");
-        if (s != null) {
-            peopleBuilder = s;
-        }
-        return super.init();
-    }
-
     // javadoc inherited
     protected boolean isOwnNode(User user, MMObjectNode node) {       
         if (super.isOwnNode(user, node)) return true;
-        if (node.getBuilder().getTableName().equals(peopleBuilder)) {
-            CoreField field = node.getBuilder().getField("account");
-            if (field != null) {
-                switch (field.getType()) {
-                case CoreField.TYPE_STRING:
-                    if (node.getStringValue("account").equals(user.getIdentifier())) {
-                        return true;
-                    }
-                    break;
-                case CoreField.TYPE_NODE:
-                    if (node.getIntValue("account") == user.getNode().getNumber()) {
-                        return true;
-                    }
-                    break;
-                default:
-                    break;
-                }
+        if (node.getBuilder().getTableName().equals("people")) {
+            if (node.getStringValue("account").equals(user.getIdentifier())) {
+                return true;
             }
         }
         return false;

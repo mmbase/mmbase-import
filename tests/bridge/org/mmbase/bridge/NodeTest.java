@@ -21,19 +21,14 @@ import org.mmbase.tests.*;
  */
 public abstract class NodeTest extends BridgeTest {
     protected Node node;
-    protected static String[] fieldTypes = {"byte", "double", "float", "int", "long", "string", "xml", "node", "datetime", "boolean"}; //, "list"};
-    //protected static String[] fieldTypes = {"datetime"};
+    protected String[] fieldTypes = {"byte", "double", "float", "int", "long", "string", "xml", "node"};
 
     public NodeTest(String name) {
         super(name);
     }
 
-    protected String getNodeManager() {
-        return "aa";
-    }
-
     abstract public void testGetValue();
-
+    
     public void testGetValueCache() {
         // Test if the first call doesn't make MMBase cache an incorrect value.
         testGetValue();
@@ -45,9 +40,6 @@ public abstract class NodeTest extends BridgeTest {
         testGetStringValue();
         testGetXMLValue();
         testGetNodeValue();
-        testGetBooleanValue();
-        testGetDateTimeValue();
-        testGetListValue();
     }
 
     abstract public void testGetByteValue();
@@ -63,9 +55,6 @@ public abstract class NodeTest extends BridgeTest {
         testGetStringValue();
         testGetXMLValue();
         testGetNodeValue();
-        testGetBooleanValue();
-        testGetDateTimeValue();
-        testGetListValue();
     }
 
     abstract public void testGetDoubleValue();
@@ -81,9 +70,6 @@ public abstract class NodeTest extends BridgeTest {
         testGetStringValue();
         testGetXMLValue();
         testGetNodeValue();
-        testGetBooleanValue();
-        testGetDateTimeValue();
-        testGetListValue();
     }
 
     abstract public void testGetFloatValue();
@@ -114,9 +100,6 @@ public abstract class NodeTest extends BridgeTest {
         testGetStringValue();
         testGetXMLValue();
         testGetNodeValue();
-        testGetBooleanValue();
-        testGetDateTimeValue();
-        testGetListValue();
     }
 
     abstract public void testGetLongValue();
@@ -132,9 +115,6 @@ public abstract class NodeTest extends BridgeTest {
         testGetStringValue();
         testGetXMLValue();
         testGetNodeValue();
-        testGetBooleanValue();
-        testGetDateTimeValue();
-        testGetListValue();
     }
 
     abstract public void testGetStringValue();
@@ -150,9 +130,6 @@ public abstract class NodeTest extends BridgeTest {
         testGetLongValue();
         testGetXMLValue();
         testGetNodeValue();
-        testGetBooleanValue();
-        testGetDateTimeValue();
-        testGetListValue();
     }
 
     abstract public void testGetXMLValue();
@@ -168,9 +145,6 @@ public abstract class NodeTest extends BridgeTest {
         testGetLongValue();
         testGetStringValue();
         testGetNodeValue();
-        testGetBooleanValue();
-        testGetDateTimeValue();
-        testGetListValue();
     }
 
     abstract public void testGetNodeValue();
@@ -186,63 +160,6 @@ public abstract class NodeTest extends BridgeTest {
         testGetLongValue();
         testGetStringValue();
         testGetXMLValue();
-        testGetBooleanValue();
-        testGetDateTimeValue();
-        testGetListValue();
-    }
-
-    abstract public void testGetBooleanValue();
-
-    public void testGetBooleanValueCache() {
-        // Test if the first call doesn't make MMBase cache an incorrect value.
-        testGetBooleanValue();
-        testGetValue();
-        testGetByteValue();
-        testGetDoubleValue();
-        testGetFloatValue();
-        testGetIntValue();
-        testGetLongValue();
-        testGetStringValue();
-        testGetXMLValue();
-        testGetNodeValue();
-        testGetDateTimeValue();
-        testGetListValue();
-    }
-
-    abstract public void testGetDateTimeValue();
-
-    public void testGetDateTimeValueCache() {
-        // Test if the first call doesn't make MMBase cache an incorrect value.
-        testGetDateTimeValue();
-        testGetValue();
-        testGetByteValue();
-        testGetDoubleValue();
-        testGetFloatValue();
-        testGetIntValue();
-        testGetLongValue();
-        testGetStringValue();
-        testGetXMLValue();
-        testGetNodeValue();
-        testGetBooleanValue();
-        testGetListValue();
-    }
-
-    abstract public void testGetListValue();
-
-    public void testGetListValueCache() {
-        // Test if the first call doesn't make MMBase cache an incorrect value.
-        testGetListValue();
-        testGetValue();
-        testGetByteValue();
-        testGetDoubleValue();
-        testGetFloatValue();
-        testGetIntValue();
-        testGetLongValue();
-        testGetStringValue();
-        testGetXMLValue();
-        testGetNodeValue();
-        testGetBooleanValue();
-        testGetDateTimeValue();
     }
 
     public void testSetSNumber() {
@@ -269,6 +186,18 @@ public abstract class NodeTest extends BridgeTest {
         }
     }
 
+    public void testSetOwner() {
+        try {
+            node.setStringValue("owner", "admin");
+            fail("Should raise a BridgeException");
+        } catch (BridgeException e) {
+        }
+        try {
+            node.setValue("owner", "admin");
+            fail("Should raise a BridgeException");
+        } catch (BridgeException e) {
+        }
+    }
 
     public void testSetOType() {
         try {
@@ -279,7 +208,7 @@ public abstract class NodeTest extends BridgeTest {
     }
 
     public void testCreateAlias() {
-        node.createAlias("node_alias");
+        node.createAlias("node_alias");       
         node.commit();
         // look it up again
         boolean found = false;
@@ -287,15 +216,15 @@ public abstract class NodeTest extends BridgeTest {
         while (i.hasNext()) {
             String alias = (String)i.next();
             if ("node_alias".equals(alias)) found = true;
-        }
+        }        
         assertTrue(found);
     }
 
-    protected String getOtherContext(Node n) {
+    protected String getOtherContext(Node n) {        
         String context = n.getContext();
         StringIterator possibleContexts = n.getPossibleContexts().stringIterator();
         while (possibleContexts.hasNext()) {
-            String listContext = possibleContexts.nextString();
+            String listContext = possibleContexts.nextString();              
             if (! context.equals(listContext)){
                 return listContext;
             }
@@ -303,58 +232,21 @@ public abstract class NodeTest extends BridgeTest {
         return context;
     }
 
-
+    
     public void testSetContext() {
-
         String context = node.getContext();
         String otherContext = getOtherContext(node);
-
+     
         if (otherContext.equals(context)) {
             otherContext = context + "other";
-            System.err.println("Could not find other context than " + context + ", setting to '" + otherContext + "'");
+            System.err.println(this.getClass().getName() + " TESTWARNING testSetContext: Could not find other context than " + context + ", setting to '" + otherContext + "'");
         }
-
+        
         // set context to something different:
         node.setContext(otherContext);
+        
         // now, the new context must be equal to otherContext
-        assertEquals("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext, node.getContext());
-        assertEquals(node.getContext(), node.getValue("owner"));
-        node.commit();
-
-        assertEquals("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext, node.getContext());
-        assertEquals(node.getContext(), node.getValue("owner"));
-    }
-
-    public void testSetOwner() {
-        String context = node.getContext();
-        String otherContext = getOtherContext(node);
-
-        if (otherContext.equals(context)) {
-            otherContext = context + "other";
-            System.err.println("Could not find other context than " + context + ", setting to '" + otherContext + "'");
-        }
-
-        // set context to something different:
-        node.setValue("owner", otherContext);
-        // now, the new context must be equal to otherContext
-        assertEquals("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext, node.getContext());
-        assertEquals(node.getContext(), node.getValue("owner"));
-
-        node.commit();
-
-        assertEquals("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext, node.getContext());
-        assertEquals(node.getContext(), node.getValue("owner"));
-
-
-    }
-
-    public void testFieldGUI() {
-        try {
-            node.getStringValue("gui()");
-            node.getValue("gui()");
-        } catch (Throwable  e) {
-            fail("Should not raise exception but gave: " + e.getMessage() + org.mmbase.util.logging.Logging.stackTrace(e, 20));
-        }
+        assertTrue("KNOWN - bug #6168:", otherContext.equals(node.getContext()));
     }
 
 }

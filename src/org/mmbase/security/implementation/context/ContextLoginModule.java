@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Eduard Witteveen
- * @version $Id: ContextLoginModule.java,v 1.19 2005-12-29 20:43:16 michiel Exp $
+ * @version $Id: ContextLoginModule.java,v 1.10 2003-08-27 19:37:12 michiel Exp $
  */
 
 public abstract class ContextLoginModule {
@@ -47,40 +47,23 @@ public abstract class ContextLoginModule {
     public abstract ContextUserContext login(Map userLoginInfo, Object[] userParameters) throws SecurityException;
 
     protected ContextUserContext getValidUserContext(String username, Rank rank) throws SecurityException{
-        return new ContextUserContext(username, rank, validKey, manager, name);
+        return new ContextUserContext(username, rank, validKey, manager);
     }
-
-
-
 
     protected Rank getRank(String username) throws SecurityException {
-        return getRank(username, name);
-    }
-
-    /**
-     * @since MMBase-1.8
-     */
-    protected Rank getRank(final String username, final String identifyType) throws SecurityException {
-        final String xpath;
-        if (identifyType != null) {
-            xpath = "/contextconfig/accounts/user[@name='" + username + "']/identify[@type='" + identifyType + "']";
-        } else {
-            xpath = "/contextconfig/accounts/user[@name='" + username + "']/identify";
-        }
-        if (log.isDebugEnabled()) {
-            log.debug("going to execute the query: " + xpath);
-        }
+        String xpath = "/contextconfig/accounts/user[@name='"+username+"']/identify[@type='"+name+"']";
+        if (log.isDebugEnabled()) log.debug("going to execute the query:" + xpath);
         Node found;
         try {
             found = XPathAPI.selectSingleNode(document, xpath);
         } catch(javax.xml.transform.TransformerException te) {
-            String msg = "error executing query: '" + xpath + "'";
+            String msg = "error executing query: '"+xpath+"'";
             log.error(msg);
             log.error( Logging.stackTrace(te));
             throw new java.lang.SecurityException(msg);
         }
         if(found == null) {
-            log.warn("user '" + username + "' was not found for module: " + name);
+            log.warn("user :" + username + " was not found for module: " + name);
             return null;
         }
 
@@ -92,73 +75,34 @@ public abstract class ContextLoginModule {
         return rank;
     }
 
-    /**
-     * Gets accounts for this authentication module
-     * @since MMBase-1.8
-     */
-    protected Element getAccount(String userName) throws SecurityException {
-        return getAccount(userName, name, null);
-    }
-    /**
-     * @deprecated Use {@link #getAccount}
-     */
-    protected String getModuleValue(String userName) throws SecurityException {
-        Element node = getAccount(userName, name, null);
-        if (node == null) return null;
-        // now we have to retrieve the value of the node.
-        return org.mmbase.util.xml.DocumentReader.getNodeTextValue(node);
-    }
-
-    /**
-     * Search an account for a given user name and identify type (the 'module').
-     * @return The user Element.
-     * @since MMBase-1.8
-     */
-    protected Element getAccount(final String userName, final String identifyType, final String rank) throws SecurityException {
-        String userCons = "";
-        if (userName != null) {
-            userCons = "[@name='" + userName + "']";
-        }
-        final String xpath;
-        if (identifyType != null || (rank != null && ! "anonymous".equals(rank))) {
-            StringBuffer identifyCons = new StringBuffer();
-            if (identifyType != null) {
-                identifyCons.append("@type='").append(identifyType).append("'");
-            }
-            if (rank != null) {
-                if (identifyCons.length() > 0) identifyCons.append(" and ");
-                identifyCons.append("@rank='").append(rank).append("'");                
-            }
-            xpath = "/contextconfig/accounts/user" + userCons + "/identify[" + identifyCons + "]";
-        } else {
-            xpath = "/contextconfig/accounts/user" + userCons;
-        }
-        
-        if (log.isDebugEnabled()) {
-            log.debug("going to execute the query: " + xpath);
-        }
-        
-        final Element found;
+    protected String getModuleValue(String username) throws SecurityException {
+        String xpath = "/contextconfig/accounts/user[@name='" + username + "']/identify[@type='" + name + "']";
+        if (log.isDebugEnabled()) log.debug("going to execute the query:" + xpath);
+        Node found;
         try {
-            found = (Element) XPathAPI.selectSingleNode(document, xpath);
+            found = XPathAPI.selectSingleNode(document, xpath);
         } catch(javax.xml.transform.TransformerException te) {
-            String msg = "error executing query: '" + xpath + "'";
+            String msg = "error executing query: '"+xpath+"'";
             log.error(msg);
-            log.error(Logging.stackTrace(te));
+            log.error( Logging.stackTrace(te));
             throw new java.lang.SecurityException(msg);
         }
         if(found == null) {
-            if (rank != null) {
-                log.warn("No user with rank '" + rank + "' " + (userName != null ? "and username '" + userName + "'": "") + "was not found for identify type: '" + identifyType  + "'");
-            } else {
-                log.warn("No user with username '" + userName + "' was not found for identify type: '" + identifyType  + "'");
-            }
+            log.warn("user :" + username + " was not found for module: " + name);
             return null;
         }
-        if (identifyType != null || rank != null) {
-            return (Element) found.getParentNode();
-        } else {
-            return (Element) found;
+        // now we have to retrieve the value of the node.
+        NodeList nl = found.getChildNodes();
+        for (int i=0;i<nl.getLength();i++) {
+            Node n = nl.item(i);
+            if (n.getNodeType() == Node.TEXT_NODE) {
+                String value = n.getNodeValue();
+                if (log.isDebugEnabled()) {
+                    log.debug("retrieved the value for user:" + username + " in module: " + name + " value: " + value);
+                }
+                return value;
+            }
         }
+        return null;
     }
 }

@@ -11,40 +11,28 @@ package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.PageContext;
-import java.util.Locale;
-import org.mmbase.util.functions.Parameter;
-import org.mmbase.util.functions.Parameters;
 
 import org.mmbase.bridge.Node;
-import org.mmbase.bridge.Cloud;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
+
 /**
  * A tag which is a 'NodeReferrerTag's can be the child of a
  * NodeProvider tag, which supplies a 'Node' to its child tags. For
  * example the FieldTag, needs the use the Node of the parent
  * NodeProviderTag and therefore would be a NodeReferrerTag.
  *
- * @author Michiel Meeuwissen
- * @version $Id: NodeReferrerTag.java,v 1.26 2006-07-08 13:00:54 michiel Exp $
+ * @author Michiel Meeuwissen 
+ * @version $Id: NodeReferrerTag.java,v 1.15 2003-09-08 12:05:13 michiel Exp $ 
  */
 
-public abstract class NodeReferrerTag extends CloudReferrerTag {
+public abstract class NodeReferrerTag extends CloudReferrerTag {	
 
-    private static final Logger log = Logging.getLoggerInstance(NodeReferrerTag.class);
+    private static final Logger log = Logging.getLoggerInstance(NodeReferrerTag.class.getName()); 
+
     protected Attribute parentNodeId = Attribute.NULL;
-    private Attribute element  = Attribute.NULL;
-    /**
-     * The element attribute is used to access elements of
-     * clusternodes.
-     * @since MMBase-1.7.4
-     */
-    public void setElement(String e) throws JspTagException {
-        element = getAttribute(e);
-    }
-
 
     /**
      * A NodeReferrer probably wants to supply the attribute 'node',
@@ -60,16 +48,16 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
     * This method tries to find an ancestor object of type NodeProvider
     * @return the NodeProvider if found else an exception.
     *
-    */
-    public NodeProvider findNodeProvider() throws JspTagException {
+    */	
+    public NodeProvider findNodeProvider() throws JspTagException {        
         return (NodeProvider) findParentTag(NodeProvider.class, (String) parentNodeId.getValue(this));
     }
     /**
     * This method tries to find an ancestor object of type NodeProvider
     * @return the NodeProvider or null.
     *
-    */
-    public NodeProvider findNodeProvider(boolean throwexception) throws JspTagException {
+    */	
+    public NodeProvider findNodeProvider(boolean throwexception) throws JspTagException {        
         return (NodeProvider) findParentTag(NodeProvider.class, (String) parentNodeId.getValue(this), throwexception);
     }
 
@@ -79,44 +67,6 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
      */
 
     protected Node getNode() throws JspTagException {
-        Node node =  findNodeProvider().getNodeVar();
-        if (node != null && element != Attribute.NULL) {
-            node = node.getNodeValue(element.getString(this));
-        }
-        return node;
+        return findNodeProvider().getNodeVar();
     }
-
-    protected void fillStandardParameters(Parameters p) throws JspTagException {
-        super.fillStandardParameters(p);
-        NodeProvider np = findNodeProvider(false);
-        if (np != null) {
-            Node node = np.getNodeVar();
-            Cloud cloud = node.getCloud();
-            p.setIfDefined(Parameter.CLOUD, cloud);
-            p.setIfDefined(Parameter.USER, cloud.getUser());
-
-        }
-    }
-
-    public Locale getLocale() throws JspTagException {
-        LocaleTag localeTag = (LocaleTag)findParentTag(LocaleTag.class, null, false);
-        if (localeTag != null) {
-            Locale locale = localeTag.getLocale();
-            if (locale != null) {
-                return locale;
-            }
-        }
-        CloudProvider cp = findCloudProvider(false);
-        if (cp != null) {
-            return  getCloudVar().getLocale();
-        }
-        NodeProvider np = findNodeProvider(false);
-        if (np != null) {
-            return  np.getNodeVar().getCloud().getLocale();
-        }
-        Locale loc = (Locale) pageContext.getAttribute(LocaleTag.KEY, LocaleTag.SCOPE);
-        if (loc != null) return loc;
-        return getCloudContext().getDefaultLocale();
-    }
-
 }

@@ -19,358 +19,472 @@ import org.mmbase.security.*;
 /**
  * @javadoc
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.34 2006-07-06 11:24:44 michiel Exp $
+ * @version $Id: TransactionManager.java,v 1.26.2.1 2004-06-23 12:39:56 pierre Exp $
  */
 public class TransactionManager implements TransactionManagerInterface {
 
     private static final Logger log = Logging.getLoggerInstance(TransactionManager.class);
 
-    public static final String EXISTS_NO = "no";
-    public static final int I_EXISTS_NO = 0;
-    public static final String EXISTS_YES = "yes";
-    public static final int I_EXISTS_YES = 1;
-    public static final String EXISTS_NOLONGER = "nolonger";
-    public static final int I_EXISTS_NOLONGER = 2;
+    public static final String EXISTS_NO="no";
+    public static final int I_EXISTS_NO=0;
+    public static final String EXISTS_YES="yes";
+    public static final int I_EXISTS_YES=1;
+    public static final String EXISTS_NOLONGER="nolonger";
+    public static final int I_EXISTS_NOLONGER=2;
 
     private TemporaryNodeManagerInterface tmpNodeManager;
+    private MMBaseCop  mmbaseCop = null;
     private MMBase mmbase;
-    protected Map transactions = new HashMap(); /* String -> Collection */
+    protected Hashtable transactions=new Hashtable();
     protected TransactionResolver transactionResolver;
 
-    public TransactionManager(MMBase mmbase, TemporaryNodeManagerInterface tmpn) {
-        this.mmbase = mmbase;
-        this.tmpNodeManager = tmpn;
-        transactionResolver = new TransactionResolver(mmbase);
-        mmbase.getMMBaseCop();
-    }
-    /**
-     * Returns transaction with given name.
-     * @param transactionName The name of the transaction to return
-     * @exception TransactionManagerExcpeption if the transaction with given name does not exist
-     * @return Collection containing the nodes in this transaction (as {@link org.mmbase.module.core.MMObjectNode}s).
-     */
-    synchronized public  Collection getTransaction(String transactionName) throws TransactionManagerException {
-        Collection transaction = (Collection) transactions.get(transactionName);
-        if (transaction == null) {
-            throw new TransactionManagerException("Transaction " + transactionName + " does not exist (existing are " + transactions.keySet() + ")");
-        } else {
-            return transaction;
-        }
+    public TransactionManager(MMBase mmbase,TemporaryNodeManagerInterface tmpn) {
+        this.mmbase=mmbase;
+        this.tmpNodeManager=tmpn;
+        transactionResolver=new TransactionResolver(mmbase);
+
+        mmbaseCop = mmbase.getMMBaseCop();
+
     }
 
-    /**
-     * Creates transaction with given name.
-     * @param transactionName The name of the transaction to return
-     * @exception TransactionManagerExcpeption if the transaction with given name existed already
-     * @return Collection containing the nodes in this transaction (so, this is an empty collection)
-     */
-    synchronized public Collection createTransaction(String transactionName) throws TransactionManagerException {
-        if (!transactions.containsKey(transactionName)) {
-            Vector transactionNodes = new Vector();
-            transactions.put(transactionName, transactionNodes);
-            return transactionNodes;
-        } else {
-            throw new TransactionManagerException("Transaction " + transactionName + " already exists");
-        }
-    }
-
-    /**
-     * Removes the transaction with given name
-     * @return the collection with nodes from the removed transaction or <code>null</code> if no transaction with this name existed
-     */
-    synchronized protected Collection deleteTransaction(String transactionName) {
-        return (Collection) transactions.remove(transactionName);
-    }
-
-    /**
-     * @deprecated use {@link #getTransaction}
-     */
-    public Vector getNodes(Object user, String transactionName) {
-        try {
-            return (Vector)getTransaction(transactionName);
-        } catch (TransactionManagerException tme) {
-            return null;
-        }
-    }
-
-    /**
-     * Creates a new transaction with given name
-     * @param user This parameter is ignored (WTF!)
-     * @param transactionName The name of the transaction to create
-     * @exception TransactionManagerExcpeption if the transaction with given name already existed
-     * @return transactionName
-     * @deprecated Use {@link #createTransaction}
-     */
-    public String create(Object user, String transactionName) throws TransactionManagerException {
-        createTransaction(transactionName);
-        if (log.isDebugEnabled()) {
-            log.debug("Create transaction for " + transactionName);
-        }
-        return transactionName;
-    }
-
-    /**
-     * Returns the (existing) transaction with given name.
-     * @param user This parameter is ignored (WTF!)
-     * @param transactionName The name of the transaction to return
-     * @exception TransactionManagerExcpeption if the transaction with given name does not exist
-     * @deprecated use {@link #getTransaction}
-     */
-    public Collection get(Object user, String transactionName) throws TransactionManagerException {
-        return getTransaction(transactionName);
-    }
-
-    public String addNode(String transactionName, String owner, String tmpnumber)
+    public String create(Object user,String transactionname)
         throws TransactionManagerException {
-        Collection transaction = getTransaction(transactionName);
-        MMObjectNode node = tmpNodeManager.getNode(owner, tmpnumber);
-        if (node != null) {
-            if (!transaction.contains(node)) {
-                transaction.add(node);
-//            } else {
-//                throw new TransactionManagerException(
-//                    "Node " + tmpnumber + " not added as it was already in transaction " + transactionName);
-            }
+        if (!transactions.containsKey(transactionname)) {
+            Vector v=new Vector();
+            transactions.put(transactionname,v);
         } else {
-            throw new TransactionManagerException("Node " + tmpnumber + " doesn't exist.");
+            throw new TransactionManagerException("transaction already exists");
         }
-        return tmpnumber;
-    }
-
-    public String removeNode(String transactionName, String owner, String tmpnumber)
-        throws TransactionManagerException {
-        Collection transaction = getTransaction(transactionName);
-        MMObjectNode node = tmpNodeManager.getNode(owner, tmpnumber);
-        if (node!=null) {
-            if (transaction.contains(node)) {
-                transaction.remove(node);
-//            } else {
-//                throw new TransactionManagerException("Node " + tmpnumber + " is not in transaction " + transactionName);
-            }
-        } else {
-            throw new TransactionManagerException("Node " + tmpnumber + " doesn't exist.");
-        }
-        return tmpnumber;
-    }
-
-    public String deleteObject(String transactionName, String owner, String tmpnumber)
-        throws TransactionManagerException    {
-        Collection transaction = getTransaction(transactionName);
-        MMObjectNode node = tmpNodeManager.getNode(owner, tmpnumber);
-        if (node!=null) {
-            if (transaction.contains(node)) {
-                // Mark it as deleted
-                node.setValue("_exists",EXISTS_NOLONGER);
-             } else {
-                throw new TransactionManagerException("Node " + tmpnumber + " is not in transaction " + transactionName);
-            }
-        } else {
-            throw new TransactionManagerException("Node " + tmpnumber + " doesn't exist.");
-        }
-        return tmpnumber;
-    }
-
-    public String cancel(Object user, String transactionName) throws TransactionManagerException {
-        Collection transaction = getTransaction(transactionName);
-        // remove nodes from the temporary node cache
-        MMObjectBuilder builder = mmbase.getTypeDef();
-        for (Iterator i = transaction.iterator(); i.hasNext(); ) {
-            MMObjectNode node=(MMObjectNode)i.next();
-            builder.removeTmpNode(node.getStringValue(MMObjectBuilder.TMP_FIELD_NUMBER));
-        }
-        deleteTransaction(transactionName);
         if (log.isDebugEnabled()) {
-            log.debug("Removed transaction (after cancel) " + transactionName + "\n" + transaction);
+            log.debug("create transaction for "+transactionname);
         }
-        return transactionName;
+        return transactionname;
     }
 
-    public String commit(Object user, String transactionName) throws TransactionManagerException {
-        Collection transaction = getTransaction(transactionName);
-        try {
-            boolean resolved = transactionResolver.resolve(transaction);
-            if (!resolved) {
-                log.error("Can't resolve transaction " + transactionName);
-                log.error("Nodes \n" + transaction);
-                throw new TransactionManagerException("Can't resolve transaction " + transactionName + "" + transaction);
+    public String addNode(String transactionname,String owner,String tmpnumber)
+        throws TransactionManagerException {
+        MMObjectNode node;
+        Vector v;
+
+        v=(Vector)transactions.get(transactionname);
+        node=tmpNodeManager.getNode(owner,tmpnumber);
+        if (node!=null) {
+            if (v==null) {
+                v=new Vector();
+                v.addElement(node);
+                transactions.put(transactionname,v);
             } else {
-                resolved = performCommits(user, transaction);
-                if (!resolved) {
-                    log.error("Can't commit transaction " + transactionName);
-                    log.error("Nodes \n" + transaction);
-                    throw new TransactionManagerException("Can't commit transaction " + transactionName);
+                int n;
+                n=v.indexOf(node);
+                if (n==-1) {
+                    v.addElement(node);
+//                } else {
+//                    throw new TransactionManagerException(
+//                        "node not added as it was already in the transaction");
                 }
             }
-        } finally {
-            // remove nodes from the temporary node cache
-            MMObjectBuilder builder = mmbase.getTypeDef();
-            for (Iterator i = transaction.iterator(); i.hasNext(); ) {
-                MMObjectNode node=(MMObjectNode)i.next();
-                builder.removeTmpNode(node.getStringValue(MMObjectBuilder.TMP_FIELD_NUMBER));
-            }
-            deleteTransaction(transactionName);
-            if (log.isDebugEnabled()) {
-                log.debug("Removed transaction (after commit) " + transactionName + "\n" + transaction);
-            }
+        } else {
+            throw new TransactionManagerException(
+                        "System error: Can't add node as it doesn't exist ");
         }
-        return transactionName;
+        return tmpnumber;
     }
 
-    private final static int UNCOMMITED = 0;
-    private final static int COMMITED = 1;
-    private final static int FAILED = 2;
-    private final static int NODE = 3;
-    private final static int RELATION = 4;
+    public String removeNode(String transactionname,String owner,String tmpnumber)
+        throws TransactionManagerException {
+        MMObjectNode node;
+        Vector v;
 
-    boolean performCommits(Object user, Collection nodes) {
-        if (nodes == null || nodes.size() == 0) {
-            log.warn("Empty list of nodes");
+        v=(Vector)transactions.get(transactionname);
+        node=tmpNodeManager.getNode(owner,tmpnumber);
+        if (node!=null) {
+            if (v!=null) {
+                int n;
+                n=v.indexOf(node);
+                if (n>=0) {
+                    v.removeElementAt(n);
+//                } else {
+//                    throw new TransactionManagerException(
+//                        "node is not in transaction ");
+                }
+            } else {
+                throw new TransactionManagerException(
+                        "transaction doesn't exist ");
+            }
+        } else {
+            throw new TransactionManagerException(
+                        "System error: node doesn't exist ");
+        }
+        return tmpnumber;
+    }
+
+
+    public String deleteObject(String transactionname,String owner,String tmpnumber)
+        throws TransactionManagerException    {
+        MMObjectNode node;
+        Vector v;
+
+        v=(Vector)transactions.get(transactionname);
+        node=tmpNodeManager.getNode(owner,tmpnumber);
+        if (node!=null) {
+            if (v!=null) {
+                int n;
+                n=v.indexOf(node);
+                if (n>=0) {
+                    // Mark it as to delete
+                    node.setValue("_exists",EXISTS_NOLONGER);
+                 } else {
+                    throw new TransactionManagerException(
+                        "node is not in transaction "+transactionname+" ,node "+tmpnumber);
+                }
+            } else {
+                throw new TransactionManagerException(
+                        "transaction doesn't exist "+transactionname);
+            }
+        } else {
+            throw new TransactionManagerException(
+                        "node doesn't exist "+tmpnumber);
+        }
+        return tmpnumber;
+    }
+
+    public Vector getNodes(Object user,String transactionname) {
+        Vector rtn;
+
+        rtn=(Vector)transactions.get(transactionname);
+        if (rtn==null) {
+            log.warn("getNodes(): can't find transaction "+transactionname);
+        }
+        return rtn;
+    }
+
+    public String cancel(Object user,String transactionname)
+            throws TransactionManagerException {
+        Vector v=(Vector)transactions.get(transactionname);
+        if (v!=null) {
+            MMObjectNode node;
+            // remove nodes from the temporary node cache
+            MMObjectBuilder bul=mmbase.getTypeDef();
+            for (int i=0;i<v.size();i++) {
+                node=(MMObjectNode)v.elementAt(i);
+                bul.removeTmpNode(node.getStringValue("_number"));
+            }
+            transactions.remove(transactionname);
+            if (log.isDebugEnabled()) {
+                log.debug("Removed transaction "+transactionname+ "\n   "+v);
+            }
+        } else {
+            throw new TransactionManagerException("transaction unknown");
+        }
+        return transactionname;
+    }
+
+
+    public String commit(Object user,String transactionname)
+        throws TransactionManagerException {
+        return commit(user,transactionname,false);
+    }
+
+    protected String commit(Object user,String transactionname,boolean debug)
+            throws TransactionManagerException {
+        Vector v=(Vector)transactions.get(transactionname);
+        if (v!=null) {
+            try {
+                boolean resolved;
+                resolved=transactionResolver.resolve(v,debug);
+                if (!resolved) {
+                    log.error("Can't resolve transaction "+transactionname);
+                    log.error("Nodes \n"+v);
+                    throw new TransactionManagerException("Can't resolve transaction "+transactionname);
+                } else {
+                    resolved=performCommits(user,v,debug);
+                    if (!resolved) {
+                        log.error("Can't commit transaction "+transactionname);
+                        log.error("Nodes \n"+v);
+                        throw new TransactionManagerException("Can't commit transaction "+transactionname);
+                    } else {
+                        if (debug) log.debug("commited "+transactionname);
+                    }
+                }
+            } finally {
+                // remove nodes from the temporary node cache
+                MMObjectNode node;
+                MMObjectBuilder bul=mmbase.getTypeDef();
+                for (int i=0;i<v.size();i++) {
+                    node=(MMObjectNode)v.elementAt(i);
+                    bul.removeTmpNode(node.getStringValue("_number"));
+                }
+                transactions.remove(transactionname);
+            }
+        } else {
+            throw new TransactionManagerException("transaction unknown");
+        }
+        return transactionname;
+    }
+
+    private final static int UNCOMMITED=0;
+    private final static int COMMITED=1;
+    private final static int FAILED=2;
+    private final static int NODE=3;
+    private final static int RELATION=4;
+
+    boolean performCommits(Object user,Vector nodes,boolean debug) {
+        if (nodes==null || nodes.size()==0) {
+            log.warn("performCommits: Empty list of nodes");
             return true;
         }
 
-        int[] nodestate = new int[nodes.size()];
-        int[] nodeexist = new int[nodes.size()];
-        String username = findUserName(user),exists;
+        MMObjectNode node;
+        MMObjectBuilder bul=mmbase.getMMObject("typedef");
+        boolean okay=false;
+        int[] nodestate=new int[nodes.size()];
+        int[] nodetype=new int[nodes.size()];
+        int[] nodeexist=new int[nodes.size()];
+        int i,tmpstate;
+        String username=findUserName(user),exists;
 
-        log.debug("Checking types and existance");
+        if (log.isDebugEnabled()) {
+            log.debug("performCommits: checking types and existence");
+        }
 
-        int i = 0;
-        for (Iterator nodeIterator = nodes.iterator(); nodeIterator.hasNext(); i++) {
-            MMObjectNode node = (MMObjectNode)nodeIterator.next();
+        for (i=0;i<nodes.size();i++) {
+            node=(MMObjectNode)nodes.elementAt(i);
             // Nodes are uncommited by default
-            nodestate[i] = UNCOMMITED;
-            exists = node.getStringValue("_exists");
-            if (exists == null) {
-                throw new IllegalStateException("The _exists field does not exist on node "+node);
-            } else if (exists.equals(EXISTS_NO)) {
-                nodeexist[i]=I_EXISTS_NO;
-            } else if (exists.equals(EXISTS_YES)) {
-                nodeexist[i]=I_EXISTS_YES;
-            } else if (exists.equals(EXISTS_NOLONGER)) {
-                nodeexist[i]=I_EXISTS_NOLONGER;
+            nodestate[i]=UNCOMMITED;
+
+            //check type (relation or normal node)
+            if (node.parent instanceof InsRel) {
+                nodetype[i]=RELATION;
             } else {
-                throw new IllegalStateException("Invalid value for _exists on node "+node);
+                nodetype[i]=NODE;
+            }
+            // check if the node already exists
+            // note: check on _number seems stupid, no errors?
+            // not really needed anyway
+            tmpstate=node.getDBState("_number");
+            if ((tmpstate==FieldDefs.DBSTATE_UNKNOWN || tmpstate==FieldDefs.DBSTATE_VIRTUAL)) {
+                 exists=node.getStringValue("_exists");
+                if (exists==null) {
+                    // should throw an exception, as it breaks the code furtheron...
+                    log.error("performCommits: exists field does not exist "+node);
+                } else if (exists.equals(EXISTS_NO)) {
+                    nodeexist[i]=I_EXISTS_NO;
+                } else if (exists.equals(EXISTS_YES)) {
+                    nodeexist[i]=I_EXISTS_YES;
+                } else if (exists.equals(EXISTS_NOLONGER)) {
+                    nodeexist[i]=I_EXISTS_NOLONGER;
+                } else {
+                    // should throw an exception, as it breaks the code furtheron...
+                    log.error("performCommits: invalid value for _exists "+node);
+                }
+            }
+            if (debug) {
+                log.debug("node "+i+" type "+nodetype[i]+" , exist "+nodeexist[i]+" node "+node.getStringValue("_number"));
             }
         }
 
-        log.debug("Commiting nodes");
-
+        if (log.isDebugEnabled()) {
+            log.debug("performCommits: commiting nodes");
+        }
         // First commit all the NODES
-        i = 0;
-        for (Iterator nodeIterator = nodes.iterator(); nodeIterator.hasNext(); i++) {
-            MMObjectNode node = (MMObjectNode)nodeIterator.next();
-            if (!(node.getBuilder() instanceof InsRel)) {
-                if (nodeexist[i] == I_EXISTS_YES ) {
-                    // use safe commit, which locks the node cache
-                    boolean commitOK;
-                    if (user instanceof UserContext) {
-                        commitOK = node.commit((UserContext)user);
-                    } else {
-                        commitOK = node.parent.safeCommit(node);
-                    }
-                    if (commitOK) {
-                        nodestate[i] = COMMITED;
-                    } else {
-                        nodestate[i] = FAILED;
-                    }
-                } else if (nodeexist[i] == I_EXISTS_NO ) {
-                    int insertOK;
-                    if (user instanceof UserContext) {
-                        insertOK = node.insert((UserContext)user);
-                    } else {
-                        insertOK = node.parent.safeInsert(node, username);
-                    }
-                    if (insertOK > 0) {
-                        nodestate[i] = COMMITED;
-                    } else {
-                        nodestate[i] = FAILED;
-                        String message = "When this failed, it is possible that the creation of an insrel went right, which leads to a database inconsistency..  stop now.. (transaction 2.0: [rollback?])";
-                        log.error(message);
-                        throw new RuntimeException(message);
-                    }
+        for (i=0;i<nodes.size();i++) {
+            if (nodetype[i]==NODE) {
+                node=(MMObjectNode)nodes.elementAt(i);
+                switch(nodeexist[i]) {
+                    case I_EXISTS_YES:
+                        if (!debug) {
+                            // use safe commit, which locks the node cache
+                            boolean commitOK;
+                            if (user instanceof UserContext) {
+                                commitOK = node.commit((UserContext)user);
+                            } else {
+                                commitOK = node.parent.safeCommit(node);
+                            }
+                            if (commitOK) {
+                                nodestate[i]=COMMITED;
+                            } else {
+                                nodestate[i]=FAILED;
+                            }
+                        } else {
+                            nodestate[i]=COMMITED;
+                        }
+                        if (log.isDebugEnabled()) {
+                            log.debug("node "+i+" commit ");
+                        }
+                        break;
+                    case I_EXISTS_NO:
+                        if (log.isDebugEnabled()) {
+                            log.debug("node "+i+" insert ");
+                        }
+                        if (!debug) {
+                            int insertOK;
+                            if (user instanceof UserContext) {
+                                insertOK = node.insert((UserContext)user);
+                            } else {
+                                insertOK = node.parent.safeInsert(node, username);
+                            }
+                            if (insertOK > 0) {
+                                nodestate[i] = COMMITED;
+                            } else {
+                                nodestate[i] = FAILED;
+                                String message = "When this failed, it is possible that the creation of an insrel went right, which leads to a database inconsistency..  stop now.. (transaction 2.0: [rollback?])";
+                                log.error(message);
+                                throw new RuntimeException(message);
+                            }
+                        } else {
+                            nodestate[i]=COMMITED;
+                        }
+                        break;
+                    case I_EXISTS_NOLONGER:
+                        break;
+                    default:
+                        nodestate[i]=FAILED;
+                        log.warn("performCommits invalid exists value "+nodeexist[i]);
+                        break;
+
                 }
             }
         }
 
-        log.debug("Commiting relations");
-
+        if (log.isDebugEnabled()) {
+            log.debug("performCommits: commiting relations");
+        }
         // Then commit all the RELATIONS
-        i = 0;
-        for (Iterator nodeIterator = nodes.iterator(); nodeIterator.hasNext(); i++) {
-            MMObjectNode node = (MMObjectNode)nodeIterator.next();
-            if (node.getBuilder() instanceof InsRel) {
-                // excactly the same code as 10 lines ago. Should be dispatched to some method..
-                if (nodeexist[i] == I_EXISTS_YES ) {
-                    boolean commitOK;
-                    if (user instanceof UserContext) {
-                        commitOK = node.commit((UserContext)user);
-                    } else {
-                        commitOK = node.parent.safeCommit(node);
-                    }
-                    if (commitOK) {
-                        nodestate[i] = COMMITED;
-                    } else {
-                        nodestate[i] = FAILED;
-                    }
-                } else if (nodeexist[i] == I_EXISTS_NO ) {
-                    int insertOK;
-                    if (user instanceof UserContext) {
-                        insertOK = node.insert((UserContext)user);
-                    } else {
-                        insertOK = node.parent.safeInsert(node, username);
-                    }
-                    if (insertOK > 0) {
-                        nodestate[i] = COMMITED;
-                    } else {
-                        nodestate[i] = FAILED;
-                        String message = "relation failed(transaction 2.0: [rollback?])";
-                        log.error(message);
-                    }
+        for (i=0;i<nodes.size();i++) {
+            if (nodetype[i]==RELATION) {
+                node=(MMObjectNode)nodes.elementAt(i);
+
+                switch(nodeexist[i]) {
+                    case I_EXISTS_YES:
+                        if (!debug) {
+                            boolean commitOK;
+                            if (user instanceof UserContext) {
+                                commitOK = node.commit((UserContext)user);
+                            } else {
+                                commitOK = node.parent.safeCommit(node);
+                            }
+                            if (commitOK) {
+                                nodestate[i]=COMMITED;
+                            } else {
+                                nodestate[i]=FAILED;
+                            }
+                        } else {
+                            nodestate[i]=COMMITED;
+                        }
+                        if (log.isDebugEnabled()) {
+                            log.debug("node "+i+" commit ");
+                        }
+                        break;
+                    case I_EXISTS_NO:
+                        if (log.isDebugEnabled()) {
+                            log.debug("node "+i+" insert ");
+                        }
+                        if (!debug) {
+                            int insertOK;
+                            if (user instanceof UserContext) {
+                                insertOK = node.insert((UserContext)user);
+                            } else {
+                                insertOK = node.parent.safeInsert(node, username);
+                            }
+                            if (insertOK > 0) {
+                                nodestate[i] = COMMITED;
+                            } else {
+                                nodestate[i] = FAILED;
+                                String message = "relation failed(transaction 2.0: [rollback?])";
+                                log.error(message);
+                            }
+                        } else {
+                            nodestate[i]=COMMITED;
+                        }
+                        break;
+                    case I_EXISTS_NOLONGER:
+                        break;
+                    default:
+                        nodestate[i]=FAILED;
+                        log.warn("performCommits invalid exists value "+nodeexist[i]);
+                        break;
                 }
             }
         }
 
-        log.debug("Deleting relations");
-
+        if (log.isDebugEnabled()) {
+            log.debug("performCommits: deleting relations");
+        }
         // Then commit all the RELATIONS that must be deleted
-        i = 0;
-        for (Iterator nodeIterator = nodes.iterator(); nodeIterator.hasNext(); i++) {
-            MMObjectNode node = (MMObjectNode)nodeIterator.next();
-            if (node.getBuilder() instanceof InsRel && nodeexist[i] == I_EXISTS_NOLONGER) {
-                // no return information
-                if (user instanceof UserContext) {
-                    node.remove((UserContext)user);
-                } else {
-                    node.parent.removeNode(node);
+        for (i=0;i<nodes.size();i++) {
+            if (nodetype[i]==RELATION) {
+                node=(MMObjectNode)nodes.elementAt(i);
+                switch(nodeexist[i]) {
+                    case I_EXISTS_YES:
+                        break;
+                    case I_EXISTS_NO:
+                        break;
+                    case I_EXISTS_NOLONGER:
+                        if (log.isDebugEnabled()) {
+                            log.debug("node "+i+" delete ");
+                        }
+                        if (!debug) {
+                            // no return information
+                            if (user instanceof UserContext) {
+                                node.remove((UserContext)user);
+                            } else {
+                                node.parent.removeNode(node);
+                            }
+                            nodestate[i]=COMMITED;
+                        } else {
+                            nodestate[i]=COMMITED;
+                        }
+                        break;
+                    default:
+                        nodestate[i]=FAILED;
+                        log.warn("performCommits invalid exists value "+nodeexist[i]);
+                        break;
                 }
-                nodestate[i]=COMMITED;
             }
         }
 
-        log.debug("Deleting nodes");
+        if (log.isDebugEnabled()) {
+            log.debug("performCommits: deleting nodes");
+        }
         // Then commit all the NODES that must be deleted
-        i = 0;
-        for (Iterator nodeIterator = nodes.iterator(); nodeIterator.hasNext(); i++) {
-            MMObjectNode node = (MMObjectNode)nodeIterator.next();
-            if (!(node.getBuilder() instanceof InsRel) && (nodeexist[i] == I_EXISTS_NOLONGER)) {
-                // no return information
-                if (user instanceof UserContext) {
-                    node.remove((UserContext)user);
-                } else {
-                    node.parent.removeNode(node);
+        for (i=0;i<nodes.size();i++) {
+            if (nodetype[i]==NODE) {
+                node=(MMObjectNode)nodes.elementAt(i);
+                switch(nodeexist[i]) {
+                    case I_EXISTS_YES:
+                        break;
+                    case I_EXISTS_NO:
+                        break;
+                    case I_EXISTS_NOLONGER:
+                        if (log.isDebugEnabled()) {
+                            log.debug("node "+i+" delete ");
+                        }
+                        if (!debug) {
+                            // no return information
+                            if (user instanceof UserContext) {
+                                node.remove((UserContext)user);
+                            } else {
+                                node.parent.removeNode(node);
+                            }
+                            nodestate[i]=COMMITED;
+                        } else {
+                            nodestate[i]=COMMITED;
+                        }
+                        break;
+                    default:
+                        nodestate[i]=FAILED;
+                        log.warn("performCommits invalid exists value "+nodeexist[i]);
+                        break;
                 }
-                nodestate[i]=COMMITED;
             }
         }
 
         // check for failures
-        boolean okay=true;
-        i = 0;
-        for (Iterator nodeIterator = nodes.iterator(); nodeIterator.hasNext(); i++) {
-            MMObjectNode node = (MMObjectNode)nodeIterator.next();
-            if (nodestate[i] == FAILED) {
+        okay=true;
+        for (i=0;i<nodes.size();i++) {
+            if (nodestate[i]==FAILED) {
                 okay=false;
-                log.error("Failed node "+node.toString());
+                log.error("Failed node "+((MMObjectNode)nodes.elementAt(i)).toString());
             }
         }
         return okay;

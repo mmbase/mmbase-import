@@ -13,27 +13,34 @@ import javax.servlet.jsp.tagext.VariableInfo;
 import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
+
 /**
  * The TEI class for NodeProviders. A NodeProvider can export one or more
  * 'Nodes', and it also can export fields (if the `fields' attribute is
  * given).
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeProviderTEI.java,v 1.13 2005-06-20 16:03:38 michiel Exp $ 
+ * @version $Id: NodeProviderTEI.java,v 1.11 2003-08-27 21:33:35 michiel Exp $ 
  */
 
 public class NodeProviderTEI extends TagExtraInfo {
+    
+    private static final Logger log = Logging.getLoggerInstance(NodeProviderTEI.class.getName());    
 
     public NodeProviderTEI() { 
         super(); 
     }
 
     /**
-     * implementation of TagExtraInfo return values declared here
-     * should be filled at one point, currently function fillVars is responsible for
-     * that and gets called before every iteration
-     **/
+    * implementation of TagExtraInfo return values declared here
+    * should be filled at one point, currently function fillVars is responsible for
+    * that and gets called before every iteration
+    **/
     public VariableInfo[] getVariableInfo(TagData data){
+        VariableInfo[] variableInfo =    null;
         //this method is called /before/ the values are set
         //so we can not use the data members in this class
         //but the TagData provides the necessary data
@@ -52,7 +59,8 @@ public class NodeProviderTEI extends TagExtraInfo {
                 id = "" + idObject;
                 nodeVariable = 1;
         }
-        VariableInfo[] variableInfo = new VariableInfo[nodeVariable];
+        
+        variableInfo =    new VariableInfo[nodeVariable];
 
         if (nodeVariable == 1) {
             variableInfo[0] = new VariableInfo(id,

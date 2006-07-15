@@ -1,6 +1,5 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><%@page errorPage="error.jsp" session="false"%><html>
-<mm:context scope="request">
 <mm:content type="text/html">
 <head>
    <title>Contexts</title>
@@ -55,26 +54,13 @@ Contextes can be nested. Lets make the contextes A, B and C.
 </tr>
 </table>
 <p>
-</p>
-<table>
-<tr><th colspan="2">
 If you are not in a context, you can still access the variables of it,
 but you have to indicate the full name.
-
-</th></tr>
+</p>
+<table>
 <tr valign="top">
   <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/context.jsp.4" /></mm:formatter></pre></td>
   <td width="50%"><%@include file="codesamples/context.jsp.4" %></td>
-</tr>
-<tr><th colspan="2">There is also an attribute 'scope'</th></tr>
-<tr valign="top">
-  <td width="50%">    
-    <pre><mm:include cite="true" page="codesamples/context.jsp.5" escape="text/xml" /></pre>
-    where context.include.jsp:
-    <pre><mm:include cite="true" page="codesamples/context.include.jsp" escape="text/xml" /></pre>
-    
-  </td>
-  <td width="50%"><%@include file="codesamples/context.jsp.5" %></td>
 </tr>
 </table>
 <p>
@@ -83,7 +69,8 @@ that case a construction with a dollar sign ($) must be used. Imagine
 for example that one of the variables 'hoi'  must be used in an url:
 </p>
 <mm:url page="${hoi}.jsp">
- <mm:param name="some_variable">value</mm:param></mm:url>, 
+ <mm:param name="some_variable">value</mm:param>
+</mm:url>, 
 <mm:url page="test.${A.hoi}.jsp">
  <mm:param name="some_variable">another_example</mm:param>
 </mm:url>,
@@ -98,4 +85,3 @@ for example that one of the variables 'hoi'  must be used in an url:
 </body>
 </html>
 </mm:content>
-</mm:context>

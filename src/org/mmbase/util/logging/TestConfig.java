@@ -9,21 +9,19 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.logging;
 
-import org.mmbase.util.ResourceLoader;
-
 /**
  * Class TestConfig
- *
+ * 
  * @javadoc
  */
 
 public class TestConfig {
-    public static void main(String[] args) {
+    public static void main(String[] args) {        
         String configuration = args[0];
         String category      = args[1];
-        Logging.configure(ResourceLoader.getConfigurationRoot(), configuration);
+        Logging.configure(configuration);
         Logger log = Logging.getLoggerInstance(category);
-
+        
         log.trace("a trace message");
         log.debug("a debug message");
         log.info("an info message");

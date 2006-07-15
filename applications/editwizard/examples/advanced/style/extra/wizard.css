@@ -1,7 +1,7 @@
 /**
   Editwizard cascading style sheet.
 
-  @version  $Id: wizard.css,v 1.2 2006-05-08 18:00:22 michiel Exp $
+  @version  $Id: wizard.css,v 1.1 2004-01-21 16:51:01 nico Exp $
 */
 body,
 table,
@@ -59,6 +59,7 @@ a.bottombutton:hover,
 a.bottombutton:active  {
    font-size: 13px;
    cursor: pointer;
+   cursor: hand;
 }
 a.bottombutton-disabled:link,
 a.bottombutton-disabled:visited,
@@ -74,4 +75,5 @@ a.step:hover,
 a.step:active  {
    font-size: 13px;
    cursor: pointer;
+   cursor: hand;
 }

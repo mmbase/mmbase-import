@@ -1,22 +1,17 @@
-<%@page   contentType="text/html;charset=utf-8"
-%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
-%><%@page import="org.mmbase.bridge.*,java.util.*,java.io.*,org.mmbase.util.*,java.net.*,org.mmbase.datatypes.*" %>
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@page import="org.mmbase.bridge.*" %>
 <%@include file="../../settings.jsp" %>
-<mm:content expires="0">
-<mm:cloud method="$method" authenticate="$authenticate" rank="administrator" jspvar="cloud">
+<mm:cloud method="$method" authenticate="$authenticate" rank="administrator">
 <% String builder = request.getParameter("builder"); %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
 <html xmlns="http://www.w3.org/TR/xhtml">
-  <head>
-    <title>Administrate Builder <%=builder%>, New Field</title>
-    <link rel="stylesheet" type="text/css" href="<mm:url page="/mmbase/style/css/mmbase.css" />" />
+<head>
+<title>Administrate Builder <%=builder%>, New Field</title>
+<link rel="stylesheet" type="text/css" href="<mm:url page="/mmbase/style/css/mmbase.css" />" />
+<meta http-equiv="pragma" value="no-cache" />
+<meta http-equiv="expires" value="0" />
 </head>
-<script type="text/javascript" src="datatypes.js">
-
-</script>
-<script type="text/javascript" src="validate.js">
-</script>
-<body class="basic" onLoad="getDataTypes(); validate();">
+<body class="basic" >
 
 <% String value=null;
    Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
@@ -27,11 +22,10 @@
 </tr>
 <tr>
  <td class="multidata" colspan="3">
- <p>
-   WARNING: this page allows you to add fields to this object.
-   Make sure that you have a backup and know what you are doing.
-   Some of this might not be tested on your database system.
-   Use at your own risk.
+ <p>WARNING: this page allows you to add fields to this object.<br />
+    Make sure that you have a backup and know what you are doing.<br />
+    Some of this might not be tested on your database system.<br />
+    Use at your own risk.
  </p>
  </td>
 </tr>
@@ -47,44 +41,35 @@
 <form action="<mm:url page="actions.jsp"/>" method="POST">
 <tr>
     <td class="data">Name</td>
-    <td class="data">
-      <input class="validateable" onKeyUp="validate()" id="dbname" type="text" name="dbname" value="" />
-      <span id="validate_dbname" class="inverse regexp" style="display: none;">^(<% 
-      FieldIterator fi = cloud.getNodeManager(builder).getFields().fieldIterator(); 
-      while (fi.hasNext()) {
-         Field f = fi.nextField();
-         out.print(f.getName());
-         out.print("|");
-      }
-      %>)$</span>
-    </td>
-    <td class="navigate"><a href="<mm:url page="/mmdocs/informationanalysts/builders.html#field_name" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
+    <td class="data"><input type="text" name="dbname" value="" /></td>
+    <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_name" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
 </tr>
 
 <tr>
     <td class="data">Type</td>
     <td class="data">
-      <jsp:directive.include file="properties/dbmmbasetype.jsp" />      
+    <% String property="mmbasetype"; %>
+<%@include file="properties/dbmmbasetype.jsp" %>
     </td>
-    <td class="navigate"><a href="<mm:url page="/mmdocs/informationanalysts/builders.html#field_type" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
+    <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_type" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
 </tr>
-
-<% String property; // strange implemetnation%> 
 
 <tr>
-  <td class="data">Data Type</td>
+    <td class="data">GUI Type</td>
     <td class="data">
-      <jsp:directive.include file="properties/datatype.jsp" />      
+    <% property="guitype"; %>
+<%@include file="properties/guitype.jsp" %>
     </td>
-    <td class="navigate"><a href="<mm:url page="/mmdocs/informationanalysts/builders.html#field_guitype" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
+    <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_guitype" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
 </tr>
+
 <tr>
     <td class="data">State</td>
     <td class="data">
     <% property="dbstate"; %>
-    <%@include file="properties/dbstate.jsp" %>
+<%@include file="properties/dbstate.jsp" %>
     </td>
-    <td class="navigate"><a href="<mm:url page="/mmdocs/informationanalysts/builders.html#field_state" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
+    <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_state" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
 </tr>
 
 <tr>
@@ -93,7 +78,7 @@
     <% property="dbnotnull"; %>
 <%@include file="properties/truefalse.jsp" %>
     </td>
-    <td class="navigate"><a href="<mm:url page="/mmdocs/informationanalysts/builders.html#field_notnull" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
+    <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_notnull" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
 </tr>
 
 <tr>
@@ -102,25 +87,22 @@
     <% property="dbkey"; %>
 <%@include file="properties/truefalse.jsp" %>
     </td>
-    <td class="navigate"><a href="<mm:url page="/mmdocs/informationanalysts/builders.html#field_key" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
+    <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_key" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
 </tr>
 
 <tr>
     <td class="data">Size</td>
-    <td class="data">
-      <input class="validateable" id="dbsize" type="text" onKeyUp="validate();" name="dbsize" value="255" />
-      <span id="validate_dbsize" style="display: none;" class="regexp">^0*[1-9][0-9]*$</span>
-    </td>
-    <td class="navigate"><a href="<mm:url page="/mmdocs/informationanalysts/builders.html#field_size" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
+    <td class="data"><input type="text" name="dbsize" value="" /></td>
+    <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_size" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
 </tr>
 
 <tr>
     <td class="data" colspan="2">
-        <p>Make sure all the settings are valid and what you want before creating this field.</p>
-        <input type="hidden" name="builder" value="<%=builder%>" />
-        <input type="hidden" name="cmd" value="BUILDER-ADDFIELD" />
+        <p>Make sure all the settings are valid and what you want before updating the object</p>
+    <input type="hidden" name="builder" value="<%=builder%>" />
+    <input type="hidden" name="cmd" value="BUILDER-ADDFIELD" />
     </td>
-    <td class="linkdata"><input id="submit" type="submit" value="Add Field" /></td>
+    <td class="linkdata"><input type="submit" value="Add Field" /></td>
 </tr>
 
 </form>
@@ -132,7 +114,5 @@
 <td class="data" colspan="3">Return to Builder Administration</td>
 </tr>
 </table>
-</body>
-</html>
+</body></html>
 </mm:cloud>
-</mm:content>

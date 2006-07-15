@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.search.implementation.database;
 
 import java.util.*;
-import org.mmbase.bridge.Field;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
 
@@ -35,7 +34,7 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: MySqlSqlHandler.java,v 1.15 2005-12-28 16:07:49 michiel Exp $
+ * @version $Id: MySqlSqlHandler.java,v 1.7 2004-02-25 11:04:47 robmaris Exp $
  * @since MMBase-1.7
  */
 public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -44,10 +43,15 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
 
     /**
      * Constructor.
+     *
+     * @param disallowedValues Map mapping disallowed table/fieldnames
+     *        to allowed alternatives.
      */
-    public MySqlSqlHandler() {
-        super();
+    public MySqlSqlHandler(Map disallowedValues) {
+        super(disallowedValues);
     }
+
+
 
     // javadoc is inherited
     public int getSupportLevel(int feature, SearchQuery query) throws SearchQueryException {
@@ -56,7 +60,7 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
         case SearchQueryHandler.FEATURE_MAX_NUMBER:
             result = SearchQueryHandler.SUPPORT_OPTIMAL;
             break;
-
+            
         case SearchQueryHandler.FEATURE_OFFSET:
             result = SearchQueryHandler.SUPPORT_OPTIMAL;
             break;
@@ -75,7 +79,7 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
     protected boolean useLower(FieldCompareConstraint constraint) {
         return true; // necessary for the larger strings which are stored in blobs
     }
-
+    
     protected StringBuffer appendLikeOperator(StringBuffer sb, boolean caseSensitive) {
         if (caseSensitive) {
             sb.append(" LIKE BINARY ");
@@ -96,48 +100,7 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
     }
     */
 
-    /**
-     * @javadoc
-     */
-    protected void appendDateField(StringBuffer sb, Step step, String fieldName, boolean multipleSteps, int datePart) {
-        String datePartFunction = null;
-        switch (datePart) {
-        case FieldValueDateConstraint.CENTURY:
-            datePartFunction = "CENTURY";
-            break;
-        case FieldValueDateConstraint.QUARTER:
-            datePartFunction = "QUARTER";
-            break;
-        case FieldValueDateConstraint.WEEK:
-            datePartFunction = "WEEK";
-            break;
-        case FieldValueDateConstraint.DAY_OF_YEAR:
-            datePartFunction = "DAYOFYEAR";
-            break;
-        case FieldValueDateConstraint.DAY_OF_WEEK:
-            datePartFunction = "DAYOFWEEK";
-                break;
-        default:
-            log.debug("Unknown datePart " + datePart);
-        }
-        if (datePartFunction != null) {
-            sb.append(datePartFunction);
-            sb.append("(");
-            appendField(sb, step, fieldName, multipleSteps);
-            sb.append(")");
-        } else {
-            super.appendDateField(sb, step, fieldName, multipleSteps, datePart);
-        }
-    }
-    protected StringBuffer appendSortOrderField(StringBuffer sb, SortOrder sortOrder, boolean multipleSteps) {
-        if (sortOrder.isCaseSensitive() && sortOrder.getField().getType() == Field.TYPE_STRING) {
-            sb.append("BINARY ");
-        }
-        // Fieldname.
-        Step step = sortOrder.getField().getStep();
-        appendField(sb, step, sortOrder.getField().getFieldName(), multipleSteps);
-        return sb;
-    }
+
 
     // javadoc is inherited
     public String toSql(SearchQuery query, SqlHandler firstInChain) throws SearchQueryException {

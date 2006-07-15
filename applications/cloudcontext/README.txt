@@ -3,29 +3,26 @@ Context security in the cloud. Works only in MMBase >= 1.7.0
 
 How to install.
 
-0) Place mmbase-cloudcontextsecurity.jar in your WEB-INF/lib
-
 1) Use this in security.xml:
 
 	<authentication class="org.mmbase.security.implementation.cloudcontext.Authenticate" url="" />
 	<authorization	class="org.mmbase.security.implementation.cloudcontext.Verify"	url="" />
 
-   or:
+2) Install the builders (The builders are not present in the application, install them by
+   hand). This means copying the files to the right spot. You might want to use a subdirectory (I
+   suggest config/builder/security or so)
 
-   remove security.xml (it is present in mmbase-cloudcontextsecurity.jar)
+3) Install the Security application. It is auto-deploy, so this means copying the files to the right
+   spot.
 
-2) The needed builders are present in mmbase-cloudcontextsecurity.jar
-   
-   If you want to change them, you may take them out and place alternate version in
-   config/builders/cloudcontext
+The needed files for step 1) to 3) can be found in the 'config' subdirectory (they correspond to the
+same files normally in WEB-INF/config)
 
-3) Restart MMBase. This will auto-deploy an application with some basic users (an 'admin' user with
-   password 'admin2'), groups and contexts.
+4) Restart MMBase.
 
-4) Under 'templates' you find a security administration tool for this implementation. You can put
+5) Under 'templates' you find a security administration tool for this implementation. You can put
    it anywhere in your web-app. I suggest under /mmbase/security/.
-   Use it to change the admin-password.
 
 
 Michiel Meeuwissen
-Publieke Omroep 2006
+Publieke Omroep 2003

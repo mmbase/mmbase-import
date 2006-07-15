@@ -12,44 +12,46 @@ package org.mmbase.bridge.implementation;
 
 import java.util.Collection;
 import org.mmbase.bridge.*;
-import org.mmbase.core.CoreField;
+import org.mmbase.module.corebuilders.*;
+import org.mmbase.util.logging.*;
 
 /**
  * A list of fields
  *
  * @author Pierre van Rooden
- * @version $Id: BasicFieldList.java,v 1.18 2006-07-11 09:30:26 michiel Exp $
+ * @version $Id: BasicFieldList.java,v 1.12 2003-08-27 21:30:35 michiel Exp $
  */
 public class BasicFieldList extends BasicList implements FieldList {
+    private static final Logger log = Logging.getLoggerInstance(BasicFieldList.class);
 
     NodeManager nodemanager=null;
 
+    /**
+     * ...
+     */
     BasicFieldList() {
         super();
     }
 
-    public BasicFieldList(Collection c, NodeManager nodemanager) {
+    BasicFieldList(Collection c, NodeManager nodemanager) {
         super(c);
-        this.nodemanager = nodemanager;
+        this.nodemanager=nodemanager;
     }
 
+    /**
+     *
+     */
     public Object convert(Object o, int index) {
-        if (o instanceof BasicField) {
-            return o;
-        } else if (o instanceof Field) {
-            // core-field does not have a node-manager, fix that.
-            Field f = new BasicField((Field)o, nodemanager);
-            set(index, f);
-            return f;
-        } else { // give it up
-            // perhaps we could anticipated DataType, String those kind of things too.
-            // but this is not used at the moment anyway.
+        if (o instanceof Field) {
             return o;
         }
+        Field f = new BasicField((FieldDefs)o,nodemanager);
+        set(index, f);
+        return f;
     }
 
     protected Object validate(Object o) throws ClassCastException {
-        if (o instanceof CoreField) {
+        if (o instanceof FieldDefs) {
             return o;
         } else {
             return (Field)o;
@@ -60,6 +62,9 @@ public class BasicFieldList extends BasicList implements FieldList {
         return (Field)get(index);
     }
 
+    /**
+     *
+     */
     public FieldIterator fieldIterator() {
         return new BasicFieldIterator();
     }

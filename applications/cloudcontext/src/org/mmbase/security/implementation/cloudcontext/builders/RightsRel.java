@@ -9,9 +9,14 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security.implementation.cloudcontext.builders;
 
+import org.mmbase.security.implementation.cloudcontext.*;
 import org.mmbase.module.core.*;
 import org.mmbase.security.*;
+import java.util.*;
+import org.mmbase.cache.Cache;
 import org.mmbase.module.corebuilders.InsRel;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * The rightsrel relation, connects a 'context' with a 'group'. The
@@ -21,7 +26,7 @@ import org.mmbase.module.corebuilders.InsRel;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: RightsRel.java,v 1.14 2005-10-06 14:00:42 michiel Exp $
+ * @version $Id: RightsRel.java,v 1.11 2004-03-08 17:43:56 michiel Exp $
  */
 public class RightsRel extends InsRel {
 
@@ -37,6 +42,8 @@ public class RightsRel extends InsRel {
      * The field of this relations which present the operation.
      */
     public static String OPERATION_FIELD = "operation";
+
+    private static final Logger log = Logging.getLoggerInstance(RightsRel.class);
 
     /**
      * Util method to get this Builder.
@@ -94,7 +101,7 @@ public class RightsRel extends InsRel {
         if (!fieldName.equals(OPERATION_FIELD)) super.setValue(node, fieldName);
 
         // mm: not sure I like this.
-        String value = (String) node.getValue(OPERATION_FIELD);
+        String value = (String) node.values.get(OPERATION_FIELD);
         if (value == null)        return true;
         if (value.equals("all"))  return true;
         if (value.equals(Operation.READ.toString())) return true;

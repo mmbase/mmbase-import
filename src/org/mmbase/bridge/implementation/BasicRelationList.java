@@ -13,25 +13,36 @@ package org.mmbase.bridge.implementation;
 import java.util.Collection;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
+import org.mmbase.util.logging.*;
 
 /**
  * A list of relations
  *
  * @author Pierre van Rooden
- * @version $Id: BasicRelationList.java,v 1.21 2006-06-13 19:08:31 michiel Exp $
+ * @version $Id: BasicRelationList.java,v 1.14 2003-03-21 17:45:06 michiel Exp $
  */
 public class BasicRelationList extends BasicNodeList implements RelationList {
+    private static Logger log = Logging.getLoggerInstance(BasicRelationList.class.getName());
 
+    /**
+     * ...
+     */
     BasicRelationList() {
         super();
     }
 
+    /**
+     * ...
+     */
     BasicRelationList(Collection c, Cloud cloud) {
-        super(c, cloud);
+        super(c,cloud);
     }
 
+    /**
+     * ...
+     */
     BasicRelationList(Collection c, NodeManager nodemanager) {
-        super(c, nodemanager);
+        super(c,nodemanager);
     }
 
     protected Object validate(Object o) throws ClassCastException,IllegalArgumentException {
@@ -39,11 +50,10 @@ public class BasicRelationList extends BasicNodeList implements RelationList {
             if (((MMObjectNode) o).getBuilder() instanceof org.mmbase.module.corebuilders.InsRel) {
                 return o;
             } else {
-                throw new IllegalArgumentException("Requires a relation node, but builder of " + o + " is " + ((MMObjectNode) o).getBuilder());
+                throw new IllegalArgumentException("requires a relation node");
             }
         } else {
-            if (! (o instanceof Relation)) throw new ClassCastException("" + o + " is not a Relation, but a "  + o.getClass());
-            return o;
+            return (Relation)o;
         }
     }
 
@@ -58,11 +68,7 @@ public class BasicRelationList extends BasicNodeList implements RelationList {
      *
      */
     public RelationList subRelationList(int fromIndex, int toIndex) {
-        if (nodeManager != null) {
-            return new BasicRelationList(subList(fromIndex, toIndex), nodeManager);
-        } else {
-            return new BasicRelationList(subList(fromIndex, toIndex), cloud);
-        }
+        return new BasicRelationList(subList(fromIndex, toIndex),nodeManager);
     }
 
     /**

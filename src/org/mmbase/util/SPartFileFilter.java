@@ -14,13 +14,9 @@ import java.io.File;
 import java.io.FilenameFilter;
 
 /**
- * Support utility for MMObjectBuilder.getSMartPath
+ * Support utility for MMObjectBuilder.getSPartPath
  * This filter filters files with the specified
  * number in its name.
- *
- * @todo move this code to a SmartPathFunction class?
- * @author Wilbert Hengst
- * @version $Id: SPartFileFilter.java,v 1.6 2004-09-30 17:19:49 pierre Exp $
  */
 public class SPartFileFilter implements FilenameFilter {
 

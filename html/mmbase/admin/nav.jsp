@@ -21,8 +21,8 @@
     <a href="<mm:url page="default.jsp?category=about&subcategory=about" />" target="_top">
       <span class="<%=("about".equals(category)) ? "current" : ""%>menuitem">ABOUT</span>
     </a>
-    <% if (pageContext.getServletContext().getResource("/mmexamples") != null) { %>
-     &nbsp;&nbsp;
+    <% if ((new java.io.File(request.getRealPath("/mmexamples"))).exists()) {%>
+         &nbsp;&nbsp;
     <a href="<mm:url page="default.jsp?category=examples" />" target="_top">
       <span class="<%=("examples".equals(category)) ? "current" : ""%>menuitem">EXAMPLES</span>
     </a>
@@ -33,7 +33,7 @@
     &nbsp;&nbsp;
     <a href="<mm:url page="default.jsp?category=admin&subcategory=servers" />" target="_top"
     ><span class="<%=("admin".equals(category)) ? "current" : ""%>menuitem">ADMIN</span></a>
-    <% if (pageContext.getServletContext().getResource("/mmdocs") != null) { %>
+    <% if ((new java.io.File(request.getRealPath("/mmdocs"))).exists()) {%>
     &nbsp;&nbsp;
     <a href="<mm:url page="default.jsp?category=documentation&subcategory=overview" />" target="_top">
       <span class="<%=("documentation".equals(category)) ? "current" : ""%>menuitem">DOCUMENTATION</span>
@@ -43,7 +43,7 @@
     <a href="<mm:url page="default.jsp?category=tools&subcategory=cache" />" target="_top">
     <span class="<%=("tools".equals(category)) ? "current" : ""%>menuitem">TOOLS</span></a>
         <hr />
-    <% if("about".equals(category)) { %>
+        <% if("about".equals(category)) { %>
     &nbsp;&nbsp;
     <a href="<mm:url page="default.jsp?category=about&subcategory=about" />" target="_top"
     ><span class="<%=("about".equals(subcategory)) ? "current" : ""%>menuitem">ABOUT</span></a>
@@ -54,19 +54,11 @@
     &nbsp;&nbsp;
     <a href="<mm:url page="default.jsp?category=editors&subcategory=basic" />" target="_top"
     ><span class="currentmenuitem">BASIC</span></a>
-    <mm:haspage page="/mmbase/security">
-      &nbsp;&nbsp;
-      <a href="<mm:url page="default.jsp?category=editors&subcategory=security" />" target="_top"
-      ><span class="currentmenuitem">SECURITY</span></a>
-    </mm:haspage>
         <% } else if("examples".equals(category)) { %>
     &nbsp;&nbsp;
     <a href="<mm:url page="default.jsp?category=examples" />" target="_top"
     ><span class="currentmenuitem">MMBASE DEMOS</span></a>
         <% } else if("admin".equals(category)) { %>
-    &nbsp;&nbsp;
-    <a href="<mm:url page="default.jsp?category=admin&subcategory=resourceedit" />" target="_top"
-    ><span class="<%=("resourceedit".equals(subcategory)) ? "current" : ""%>menuitem">RESOURCES</span></a>
     &nbsp;&nbsp;
     <a href="<mm:url page="default.jsp?category=admin&subcategory=servers" />" target="_top"
     ><span class="<%=("servers".equals(subcategory)) ? "current" : ""%>menuitem">SERVERS</span></a>
@@ -94,35 +86,8 @@
     <a href="<mm:url page="default.jsp?category=tools&subcategory=cache" />" target="_top"
     ><span class="<%=("cache".equals(subcategory)) ? "current" : ""%>menuitem">CACHE</span></a>
     &nbsp;&nbsp;
-    <a href="<mm:url page="default.jsp?category=tools&subcategory=querytool" />" target="_top"
-    ><span class="<%=("querytool".equals(subcategory)) ? "current" : ""%>menuitem">SQL</span></a>
-    &nbsp;&nbsp;
     <a href="<mm:url page="default.jsp?category=tools&subcategory=email" />" target="_top" >
     <span class="<%=("email".equals(subcategory)) ? "current" : ""%>menuitem">EMAIL</span></a>
-    <mm:haspage page="/mmbase/packagemanager/index.jsp">
-      &nbsp;&nbsp;
-      <a href="<mm:url page="/mmbase/packagemanager/index.jsp" />" target="_top" >
-      <span class="<%=("packagemanager".equals(subcategory)) ? "current" : ""%>menuitem">PACKAGEMANAGER</span>
-        </a>
-    </mm:haspage>    
-    <mm:haspage page="/mmbase/packagebuilder/index.jsp">
-      &nbsp;&nbsp;
-      <a href="<mm:url page="/mmbase/packagebuilder/index.jsp" />" target="_top" >
-    <span class="<%=("packagebuilder".equals(subcategory)) ? "current" : ""%>menuitem">PACKAGEBUILDER</span>
-      </a>
-    </mm:haspage>
-    <mm:haspage page="/mmbase/crontab/index.jspx">
-      &nbsp;&nbsp;
-      <a href="<mm:url page="default.jsp?category=tools&url=/mmbase/crontab/" />" target="_top" >
-    <span class="<%=("crontab".equals(subcategory)) ? "current" : ""%>menuitem">CRONTAB</span>
-      </a>
-    </mm:haspage>
-    <mm:haspage page="/mmbase/clustering/index.jspx">
-      &nbsp;&nbsp;
-      <a href="<mm:url page="default.jsp?category=tools&url=/mmbase/clustering/" />" target="_top" >
-    <span class="<%=("clustering".equals(subcategory)) ? "current" : ""%>menuitem">CLUSTERING</span>
-      </a>
-    </mm:haspage>
         <% } %>
 </td>
 </tr>

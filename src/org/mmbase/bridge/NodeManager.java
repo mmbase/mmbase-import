@@ -25,37 +25,15 @@ import javax.servlet.ServletRequest;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: NodeManager.java,v 1.38 2005-09-19 12:24:21 pierre Exp $
+ * @version $Id: NodeManager.java,v 1.32 2004-04-07 15:10:55 keesj Exp $
  */
 public interface NodeManager extends Node {
 
-    /**
-     * A constant for use with {@link #getFields(int)}, meaning `all fields, even those which are
-     * not stored.
-     */
     public final static int ORDER_NONE = -1;
-    /**
-     * A constant for use with {@link #getFields(int)}, meaning `all fields, in storage order (so
-     * which are in storage'.
-     */
     public final static int ORDER_CREATE = 0;
-    /**
-     * A constant for use with {@link #getFields(int)}, meaning all fields which a user may want to
-     * fill when creating or editing this node. That are normally all nodes without the `automatic'
-     * ones like `number' and `otype'.
-     */
     public final static int ORDER_EDIT = 1;
-    /**
-     * A constant for use with {@link #getFields(int)}. When presenting a Node in some list overview
-     * then less essential fields can be left out, to get a more concise presentation of the node.
-     */
     public final static int ORDER_LIST = 2;
-    /**
-     * A constant for use with {@link #getFields(int)} On some fields, like binary fields (e.g. images) it makes no sense searching. These are left
-     * out among the `search' fields.
-     */
     public final static int ORDER_SEARCH = 3;
-
     public final static int GUI_SINGULAR = 1;
     public final static int GUI_PLURAL = 2;
 
@@ -85,7 +63,6 @@ public interface NodeManager extends Node {
     /**
      * Retrieve a  list of descendant nodemanagers (the Nodemanager that - posisbly indirectly - extend from this nodemanager)
      * @return a list of NodeManagers
-     * @since MMBase-1.7
      */
     public NodeManagerList getDescendants();
 
@@ -153,7 +130,6 @@ public interface NodeManager extends Node {
      *
      * @param locale the locale that determines the language for the description
      * @return the description of this node manager
-     * @since MMBase-1.7
      */
     public String getDescription(Locale locale);
 
@@ -165,18 +141,10 @@ public interface NodeManager extends Node {
     public FieldList getFields();
 
     /**
-     * Retrieve a subset of field types of this NodeManager, depending on a given order. The order
-     * is a integer constant which symbolizes `none', `create', `edit', `list' or `search'. These last three one may recognize
-     * from builder XML's. `none' means `all fields'. The actual integer contants are present as the
-     * ORDER contants in this interface.
+     * Retrieve a subset of field types of this NodeManager, depending on a given order.
      *
      * @param order the order in which to list the fields
-     * @return a <code>FieldList</code> object, which is a specialized <code>List</code> of {@link Field} objects.
-     * @see   #ORDER_NONE
-     * @see   #ORDER_CREATE
-     * @see   #ORDER_EDIT
-     * @see   #ORDER_LIST
-     * @see   #ORDER_SEARCH
+     * @return a <code>List</code> of <code>FieldType</code> objects
      */
     public FieldList getFields(int order);
 
@@ -193,7 +161,7 @@ public interface NodeManager extends Node {
      * Tests whether the field with the specified name exists in this nodemanager.
      *
      * @since MMBase-1.6
-     * @param fieldName  the name of the field to be returned
+     * @param name  the name of the field to be returned
      * @return      <code>true</code> if the field with the requested name exists
      */
     public boolean hasField(String fieldName);
@@ -284,19 +252,17 @@ public interface NodeManager extends Node {
      * byte array) fields are added.  The query can be used  by getList of Cloud.
      *
      * You can not add steps to this NodeQuery.
-     * @return query for this NodeNanager
      *
      * @since MMBase-1.7
-     * @see #getList(NodeQuery)
+     * @see #getList
      * @see Cloud#createNodeQuery
      */
+
     public NodeQuery createQuery();
 
     /**
      * Executes a query and returns the result as nodes of this NodeManager (or of extensions)
-     * @param query query to execute
-     * @return list of nodes
-     *
+     * 
      * @since MMBase-1.7
      */
     public NodeList getList(NodeQuery query);
@@ -306,7 +272,6 @@ public interface NodeManager extends Node {
      * Retrieve info from a node manager based on a command string.
      * Similar to the $MOD command in SCAN.
      * @param command the info to obtain, i.e. "USER-OS".
-     * @return info from a node manager
      */
     public String getInfo(String command);
 
@@ -316,7 +281,6 @@ public interface NodeManager extends Node {
      * @param command the info to obtain, i.e. "USER-OS".
      * @param req the Request item to use for obtaining user information. For backward compatibility.
      * @param resp the Response item to use for redirecting users. For backward compatibility.
-     * @return info from a node manager
      */
     public String getInfo(String command, ServletRequest req,  ServletResponse resp);
 
@@ -355,7 +319,6 @@ public interface NodeManager extends Node {
      * The values retrieved are represented as fields of a virtual node, named following the fieldnames listed in the fields paramaters..
      * @param command the info to obtain, i.e. "USER-OS".
      * @param parameters a hashtable containing the named parameters of the list.
-     * @return info from a node manager (as a list of virtual nodes)
      */
     public NodeList getList(String command, Map parameters);
 
@@ -367,7 +330,6 @@ public interface NodeManager extends Node {
      * @param parameters a hashtable containing the named parameters of the list.
      * @param req the Request item to use for obtaining user information. For backward compatibility.
      * @param resp the Response item to use for redirecting users. For backward compatibility.
-     * @return info from a node manager (as a list of virtual nodes)
      */
     public NodeList getList(String command, Map parameters, ServletRequest req, ServletResponse resp);
 
@@ -378,28 +340,21 @@ public interface NodeManager extends Node {
      */
     public boolean mayCreateNode();
 
-    /**
-     * Returns a new, empty field list for this nodemanager
-     *
-     * @return  The empty list
-     * @since   MMBase-1.8
-     */
-    public FieldList createFieldList();
+
 
     /**
-     * Returns a new, empty node list for this nodemanager
+     * Returns a list of 'argument' definition of a certain function on nodes manager by this NodeManager.
      *
-     * @return  The empty list
-     * @since   MMBase-1.8
+     *
+     * @since MMBase-1.7
      */
-    public NodeList createNodeList();
 
-    /**
-     * Returns a new, empty relation list for this nodemanager
-     *
-     * @return  The empty list
-     * @since   MMBase-1.8
-     */
-    public RelationList createRelationList();
+    /*
+    public List   getFunctionParameters(String function) {
+        return new ArrayList();
+    }
+    */
+
+
 
 }

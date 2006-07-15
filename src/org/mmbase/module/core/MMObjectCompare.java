@@ -14,9 +14,6 @@ import org.mmbase.util.*;
 /**
  * MMObjectNodeCompare can me used as a compare function in Sortable
  * objects from org.mmbase.util (hitlisted)
-
- * @todo Should implement java.util.Comparator.
- * @see  org.mmbase.util.NodeComparator
  *
  */
 public class MMObjectCompare implements CompareInterface {

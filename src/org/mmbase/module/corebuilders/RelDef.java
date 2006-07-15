@@ -12,26 +12,25 @@ package org.mmbase.module.corebuilders;
 import java.util.*;
 import org.mmbase.module.core.*;
 
-import org.mmbase.storage.search.implementation.*;
-import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.implementation.NodeSearchQuery;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * RelDef, one of the meta stucture nodes, is used to define the possible relation types.
+ * RelDef ,one of the meta stucture nodes, is used to define the possible relation types.
  * <p>
  * A Relation Definition consists of a source and destination, and a descriptor
  * (direction) for it's use (unidirectional or bidirectional).
  * </p><p>
  * Relations are mapped to a builder.<br />
- * This is so that additional functionality can be added by means of a builder (i.e. AuthRel).<br />
+ * This is so that additonal functionality can be added by means of a builder (i.e. AuthRel)<br />
  * The old system mapped the relations to a builder by name.
  * Unfortunately, this means that some care need be taken when naming relations, as unintentionally
  * naming a relation to a builder can give bad (if not disastrous) results.<br />
  * Relations that are not directly mapped to a builder are mapped (internally) to the {@link InsRel} builder instead.
  * </p><p>
  * The new system uses an additional field to map to a builder.
- * This 'builder' field contains a reference (otype) to the builder to be used.
+ * This 'builder' field contains a reference (otype) to teh builder to be used.
  * If null or 0, the builder is assumed to refer to the {@link InsRel} builder.
  * <code>sname</code> is now the name of the relation and serves no function.
  * </p><p>
@@ -43,8 +42,9 @@ import org.mmbase.util.logging.Logging;
  * @todo Fix cache so it will be updated using multicast.
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: RelDef.java,v 1.40 2006-07-05 15:16:34 pierre Exp $
+ * @version $Id: RelDef.java,v 1.33.2.1 2004-09-02 14:52:03 pierre Exp $
  */
+
 public class RelDef extends MMObjectBuilder {
 
     private static final Logger log = Logging.getLoggerInstance(RelDef.class);
@@ -234,17 +234,11 @@ public class RelDef extends MMObjectBuilder {
         if (builderName == null) {
             throw new RuntimeException("Node " + node + " has no builder?");
         }
-        MMObjectBuilder builder = mmb.getBuilder(builderName);
+        InsRel builder = (InsRel) mmb.getMMObject(builderName);
         if (builder == null) {
             return mmb.getInsRel();
         } else {
-            if (builder instanceof InsRel) {
-                return (InsRel) builder;
-            } else {
-                log.warn("The builder " + builderName + " of node " + node.getNumber() + " is no InsRel (but " + builder.getClass() + ").  Perhaps it is inactive? Impossible here. Returing InsRel any way.");
-                return mmb.getInsRel();
-
-            }
+            return builder;
         }
     }
 
@@ -254,33 +248,18 @@ public class RelDef extends MMObjectBuilder {
      * @return the default reldef node, or <code>null</code> if not found.
      */
     public MMObjectNode getDefaultForBuilder(InsRel relBuilder) {
-        MMObjectNode node = null;
-        NodeSearchQuery query = new NodeSearchQuery(this);
-        if (usesbuilder) {
-            Integer value = new Integer(relBuilder.getNumber());
-            Constraint constraint = new BasicFieldValueConstraint(query.getField(getField("builder")), value);
-            query.setConstraint(constraint);
+        Enumeration e;
+          if (usesbuilder) {
+            e=search("WHERE builder="+relBuilder.oType+"");
+          } else {
+            e=search("WHERE (sname='"+relBuilder.getTableName()+"') OR (dname='"+relBuilder.getTableName()+"')");
+          }
+        if (e.hasMoreElements()) {
+            MMObjectNode node=(MMObjectNode)e.nextElement();
+            return node;
         } else {
-            // backward compatibility with older reldefs builders.
-            // this should become obsolete at some point.
-            Constraint constraint1 = new BasicFieldValueConstraint(query.getField(getField("sname")), relBuilder.getTableName());
-            Constraint constraint2 = new BasicFieldValueConstraint(query.getField(getField("dname")), relBuilder.getTableName());
-            BasicCompositeConstraint constraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_OR);
-            constraint.addChild(constraint1);
-            constraint.addChild(constraint2);
-            query.setConstraint(constraint);
+            return null;
         }
-        query.setMaxNumber(1);
-        try {
-            List reldefs = getNodes(query);
-            if (reldefs.size() != 0) {
-                node =(MMObjectNode)reldefs.get(0);
-            }
-        } catch (SearchQueryException sqe) {
-            // should never happen
-            log.error(sqe);
-        }
-        return node;
     }
 
     /**
@@ -295,7 +274,7 @@ public class RelDef extends MMObjectBuilder {
         if (usesbuilder) {
             int builder=node.getIntValue("builder");
             if (builder<=0) {
-                builder=mmb.getInsRel().getNumber();
+                builder=mmb.getInsRel().oType;
             }
             if (!isRelationBuilder(builder)) {
                 throw new InvalidDataException("Builder ("+builder+") is not a relationbuilder","builder");
@@ -345,40 +324,21 @@ public class RelDef extends MMObjectBuilder {
      * Remove a node from the cloud.
      * @param node The node to remove.
      */
-    public void removeNode(MMObjectNode node) {
-        // check occurrences in TypeRel
-        // perhaps this can also be done using getAllowedRelations() ?
-        try {
-            MMObjectBuilder typeRel = mmb.getTypeRel();
-            NodeSearchQuery query = new NodeSearchQuery(typeRel);
-            Integer value = new Integer(node.getNumber());
-            Constraint constraint = new BasicFieldValueConstraint(query.getField(typeRel.getField("rnumber")), value);
-            query.setConstraint(constraint);
-            List typerels = typeRel.getNodes(query);
-            if (typerels.size() > 0) {
-                throw new RuntimeException("Cannot delete reldef, it is referenced by typerels: " + typerels);
+     public void removeNode(MMObjectNode node) {
+        Enumeration e = mmb.getTypeRel().search("WHERE rnumber="+node.getNumber());
+        if (e.hasMoreElements()) {
+            String typerels = "#"+((MMObjectNode)e.nextElement()).getNumber();
+            while (e.hasMoreElements()) {
+              typerels = typerels + ", #"+((MMObjectNode)e.nextElement()).getNumber();
             }
-        } catch (SearchQueryException sqe) {
-            // should never happen
-            log.error(sqe);
+            throw new RuntimeException("Cannot delete reldef node, it is referenced by typerels: "+typerels);
         }
 
-        // check occurrences in the relation builders
-        try {
-            MMObjectBuilder insRel = mmb.getInsRel();
-            NodeSearchQuery query = new NodeSearchQuery(insRel);
-            Integer value = new Integer(node.getNumber());
-            Constraint constraint = new BasicFieldValueConstraint(query.getField(insRel.getField("rnumber")), value);
-            query.setConstraint(constraint);
-            int i = insRel.count(query);
-            if (i > 0) {
-                throw new RuntimeException("Cannot delete reldef node, it is still used in " + i + " relations");
-            }
-        } catch (SearchQueryException sqe) {
-            // should never happen
-            log.error(sqe);
+        int i = mmb.getInsRel().count("WHERE rnumber=" + node.getNumber());
+        if (i > 0) {
+            throw new RuntimeException("Cannot delete reldef node, it is still used in " + i + " relations");
         }
-
+        String name = node.getStringValue("sname");
         super.removeNode(node);
         removeFromCache(node);
     }
@@ -391,7 +351,7 @@ public class RelDef extends MMObjectBuilder {
     public void setDefaults(MMObjectNode node) {
         node.setValue("dir", DIR_BIDIRECTIONAL);
         if (usesbuilder) {
-            node.setValue("builder", mmb.getInsRel().getNumber());
+            node.setValue("builder", mmb.getInsRel().oType);
         }
     }
 
@@ -447,11 +407,11 @@ public class RelDef extends MMObjectBuilder {
         if (relBuilderCache == null) {
             relBuilderCache = new HashMap();
             // add all builders that descend from InsRel
-            Iterator buls = mmb.getBuilders().iterator();
-            while (buls.hasNext()) {
-                MMObjectBuilder fbul = (MMObjectBuilder) buls.next();
+            Enumeration buls = mmb.mmobjs.elements();
+            while (buls.hasMoreElements()) {
+                MMObjectBuilder fbul = (MMObjectBuilder)buls.nextElement();
                 if (fbul instanceof InsRel) {
-                    relBuilderCache.put(new Integer(fbul.getNumber()), fbul);
+                    relBuilderCache.put(new Integer(fbul.oType), fbul);
                 }
             }
         }
@@ -521,24 +481,15 @@ public class RelDef extends MMObjectBuilder {
      * @return A <code>int</code> value indicating the relation's object number, or -1 if not found.
      */
     public int getNumberByName(String role, boolean searchBidirectional) {
-        Integer number = (Integer) relCache.get(role);
+        Integer number;
+        number=(Integer) relCache.get(role);
         if (number != null) {
             return number.intValue();
         }
         if (searchBidirectional) {
-            NodeSearchQuery query = new NodeSearchQuery(this);
-            Constraint constraint = new BasicFieldValueConstraint(query.getField(getField("dname")), role);
-            query.setConstraint(constraint);
-            query.setMaxNumber(1);
-            try {
-                List reldefs = getNodes(query);
-                if (reldefs.size() != 0) {
-                    MMObjectNode node = (MMObjectNode)reldefs.get(0);
-                    return node.getNumber();
-                }
-            } catch (SearchQueryException sqe) {
-                // should never happen
-                log.error(sqe);
+            Enumeration e = search("WHERE dname='" + role + "'");
+            if (e.hasMoreElements()) {
+                return ((MMObjectNode)e.nextElement()).getNumber();
             }
         }
         return -1;
@@ -590,7 +541,7 @@ public class RelDef extends MMObjectBuilder {
     public boolean nodeRemoteChanged(String machine, String number, String builder, String ctype) {
         if (builder.equals(getTableName())) {
             if (ctype.equals("c") || ctype.equals("n")) {
-                // should remove roles referencing this number from relCache here
+                // should remove roles referencing this number from relCache here                
                 int rnumber = Integer.parseInt(number);
                 removeFromCache(rnumber);
                 addToCache(getNode(rnumber));

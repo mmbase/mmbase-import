@@ -27,20 +27,19 @@
     </tr>
     <tr>
       <td colspan="2" ><br />
-      <mm:listnodescontainer type="versions">
-          <mm:constraint field="name" value="MyNews" />
-          <mm:constraint field="type" value="application" />
-          <mm:size>
-            <mm:compare value="0">
-               The MyNews application is NOT installed. Please install before using it.<br />
-               You can install the MyNews application by going to <a href="<mm:url page="/mmbase/admin/default.jsp?category=admin&subcategory=applications" />">ADMIN -> APPLICATIONS</a>
-            </mm:compare>
-            <mm:compare value="0" inverse="true">
-               <mm:url id="url" page="mynews/" write="false" />
-               This url will show the MyNews magazine: <a href="<mm:write referid="url" />"><mm:write referid="url" /></a>
-            </mm:compare>
-          </mm:size>
-      </mm:listnodescontainer>
+      <mm:listnodes type="versions" constraints="[name]='MyNews' AND [type]='application'">
+        <mm:first>
+          <mm:import id="mynewsIsPresent" />
+        </mm:first>
+      </mm:listnodes>
+      <mm:notpresent referid="mynewsIsPresent">
+        The MyNews application is NOT installed. Please install before using it.<br />
+        You can install the MyNews application by going to <a href="<mm:url page="/mmbase/admin/default.jsp?category=admin&subcategory=applications" />">ADMIN -> APPLICATIONS</a>
+      </mm:notpresent>
+      <mm:present referid="mynewsIsPresent">
+        <mm:url id="url" page="mynews/" write="false" />
+        This url will show the MyNews magazine: <a href="<mm:write referid="url" />"><mm:write referid="url" /></a>
+      </mm:present>
       <br /><br />
     </td>
   </tr>
@@ -80,9 +79,6 @@
     <td><a href="<mm:url page="share/images/mynews_manual.jpg" />" target="img"><img src="share/images/mynews_manual.jpg" width="300" /></a></td>
   </tr>
 </table>
-  <div class="link">
-    <a href="<mm:url page="." />"><img alt="back" src="<mm:url page="/mmbase/style/images/back.gif" />" /></a>
-  </div>
 </body>
 </html>
 </mm:cloud>

@@ -10,20 +10,15 @@ See http://www.MMBase.org/license
 package org.mmbase.module.core;
 
 import java.util.*;
-import java.io.*;
 
 import org.mmbase.cache.*;
-import org.mmbase.bridge.Field;
-import org.mmbase.bridge.Node;
-import org.mmbase.module.corebuilders.InsRel;
-import org.mmbase.module.builders.DayMarkers;
+import org.mmbase.module.corebuilders.FieldDefs;
+import org.mmbase.module.gui.html.EditState;
 import org.mmbase.security.*;
 import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.implementation.*;
 import org.mmbase.util.Casting;
-import org.mmbase.util.SizeOf;
-import org.mmbase.util.DynamicDate;
 import org.mmbase.util.logging.*;
-import org.mmbase.util.functions.*;
 import org.w3c.dom.Document;
 
 /**
@@ -37,23 +32,27 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.191 2006-07-05 09:56:45 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.122.2.3 2005-08-15 16:44:47 michiel Exp $
  */
 
-public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
+public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(MMObjectNode.class);
 
     /**
-     * @deprecated Simply use <code>null</code>
+     * You cannot store real 'null's in a hashtable, so this constant can be used for this.
+     * @since MMBase-1.7
      */
-    public final static Object VALUE_NULL = null;
+    public final static Object VALUE_NULL = new Object() {
+            public String toString() { return "[FIELD VALUE NULL]"; }
+        };
+
     /**
      * Large fields (blobs) are loaded 'lazily', so only on explicit request. Until the first exlicit request this value is stored in such fields.
      * It can be set back into the field with {@link #storeValue}, to unload the field again.
      * @since MMBase-1.7.4
      */
     public final static String VALUE_SHORTED = "$SHORTED";
+
 
     /**
      * @deprecated use RelationsCache.getCache().getHits()
@@ -73,26 +72,16 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * Results of getRelatedNodes
      * @since 1.7
      */
-    protected static final RelatedNodesCache relatedCache = RelatedNodesCache.getCache();
+    protected static RelatedNodesCache relatedCache = RelatedNodesCache.getCache();
 
 
     /**
      * objectNumber -> List of all relation nodes
      * @since MMBase-1.7
      */
-    protected static final RelationsCache relationsCache = RelationsCache.getCache();
+    protected static RelationsCache relationsCache = RelationsCache.getCache();
     // < MMBase-1.7, every mmobjectnode instance had a cache for relation nodes
     // private Vector relations=null; // possibly filled with insRels
-
-
-
-    /**
-     * Map which stores the current database value for fields when
-     * then change in the node.
-     * it can be used to optimise cacheing
-     * @since MMBase-1.8
-     */
-    private Map oldValues = new HashMap();
 
 
     /**
@@ -100,15 +89,18 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * Most nodes will have a 'number' and an 'otype' field, and fields which will differ by builder.
      * This collection should not be directly queried or changed -
      * use the SetValue and getXXXValue methods instead.
+     * @todo As suggested by keesj, should be changed to HashMap, which will allow for <code>null</code> values.
      * It should then be made private, and methods that change the map (storeValue) be made synchronized.
      * Note: To avoid synchronisation conflicts, we can't really change the type until the property is made private.
+     * @scope private
      */
-    protected Map values = Collections.synchronizedMap(new HashMap());
-    private Map sizes = Collections.synchronizedMap(new HashMap());
+    public Hashtable values = new Hashtable();
+    // private Map values = Collections.synchronizedMap(new HashMap());
+
 
     /**
      * Determines whether the node is being initialized (typically when it is loaded from the database).
-     * Use {@link #start} to start initializing, use {@link #finish} to end.
+     * Use {@link #start())} to start initializing, use {@link #finish())} to end.
      * @since MMBase-1.7
      */
     protected boolean initializing = false;
@@ -121,38 +113,58 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     public Hashtable properties;
 
     /**
-     * Set which stores the keys of the fields that were changed
+     * Vector which stores the keys of the fields that were changed
      * since the last commit.
+     * @scope private, and should be a Set, not a Vector
      */
-    private Set changed = Collections.synchronizedSet(new HashSet());
+    public Vector changed = new Vector();
 
     /**
      * Pointer to the parent builder that is responsible for this node.
      * Note: this may on occasion (due to optimization) duffer for the node's original builder.
-     * Use {@link #getBuilder} instead.
+     * Use {@link #getBuilder()} instead.
      * @scope private
      */
-    protected MMObjectBuilder parent;
+    public MMObjectBuilder parent;
 
     /**
      * Pointer to the actual builder to which this node belongs.
-     * This value is initialised through the first call to {@link #getBuilder}
+     * This value is initialised through the first call to {@link #getBuilder() }
      */
     private MMObjectBuilder builder = null;
 
     /**
-     * If <code>true</code>, the node is a new node, which is not (yet) stored in storage.
-     */
-    protected boolean isNew = false;
+     * Used to make fields from multiple nodes (for multilevel for example)
+     * possible.
+     * This is a 'default' value.
+     * XXX: specifying the prefix in the fieldName SHOULD override this field.
+     *
+     * MM: The function of this variable is not very clear. I think a Node should either be
+     *     not a clusternode, in which case it does not need prefixed fields, or it should be a clusternode
+     *     and then fields might be prefixed, but anyway it should be implemented in ClusterNode itself.
+     *     Also in the comments of getStringValue someone said something about this prefix not being needed.
 
-    /**
-     * New aliases of the node
      * @scope private
      */
-    private Set aliases = null;
+    public String prefix="";
+
+
+    /**
+     * Determines whether this node is virtual.
+     * A virtual node is not persistent (that is, not stored in a table).
+     * @scope private
+     */
+    protected boolean virtual = false;
+
+    /**
+     * Alias name of this node.
+     * XXX: nodes can have multiple aliases.
+     * @scope private
+     */
+    protected String alias;
 
     // object to sync access to properties
-    private final Object properties_sync = new Object();
+    private Object properties_sync = new Object();
 
     /**
      * temporarily holds a new context for a node
@@ -161,49 +173,17 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
 
     private String newContext = null;
 
-   /**
-    * Default Main constructor, creates a node that is new and not (yet) in storage.
-    * @param parent the node's parent, an instance of the node's builder.
-    * @throws IllegalArgumentException If parent is <code>null</code>
-    */
-    public MMObjectNode(MMObjectBuilder parent) {
-        this(parent, true);
-    }
-
     /**
      * Main constructor.
      * @param parent the node's parent, an instance of the node's builder.
-     * @param isNew if the node is a newly created node
-     * @throws IllegalArgumentException If parent is <code>null</code>
      */
-    public MMObjectNode(MMObjectBuilder parent, boolean isNew) {
-        this.isNew = isNew;
+    public MMObjectNode(MMObjectBuilder parent) {
         if (parent != null) {
             this.parent = parent;
         } else {
-            throw new IllegalArgumentException("Constructor called with parent=null");
+            log.error("MMObjectNode-> contructor called with parent=null");
+            throw new NullPointerException("contructor called with parent=null");
         }
-    }
-
-    /**
-     * @since MMBase-1.8
-     */
-    public MMObjectNode(MMObjectNode node) {
-        parent = node.parent;
-        isNew  = node.isNew();
-        values.putAll(node.getValues());
-        values.putAll(node.getOldValues());
-    }
-
-    /**
-     * Creates an MMObject based on a given Map.  This can e.g. be used to make an MMObjectNode of a bridge node (use {@link org.mmbase.bridge.util.NodeMap}).
-     *
-     * @since MMBase-1.8
-     */
-    public MMObjectNode(MMObjectBuilder parent, Map map) {
-        isNew = false;
-        this.parent = parent;
-        values = map;
     }
 
     /**
@@ -219,7 +199,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     public MMObjectBuilder getBuilder() {
         if (builder == null) {
             int oType = getOType();
-            if (oType == -1 || parent.getNumber() == oType) {
+            if (oType == -1 || parent.oType == oType) {
                 builder = parent;
             } else {
                 String builderName = parent.mmb.getTypeDef().getValue(oType);
@@ -267,31 +247,12 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @return <code>true</code> if the commit was succesfull, <code>false</code> is it failed
      */
     public boolean commit() {
-        boolean success = parent.commit(this);
-        if (success) {
-            isNew = false; // perhaps it is always already false (otherwise insert is called, I think), but no matter, now it certainly isn't new!
-        } else {
-            values.putAll(oldValues);
-        }
-        oldValues.clear();
-        changed.clear();
-        return success;
+        return parent.commit(this);
     }
 
-
-    /**
-     * Undo changes made to the node.
-     *
-     * @since MMBase-1.8
-     */
-    public void cancel() {
-        values.putAll(oldValues);
-        oldValues.clear();
-        changed.clear();
-    }
     /**
      * Insert this node into the storage
-     * @param userName the name of the user who inserts the node. This value is ignored
+     * @param username the name of the user who inserts the node. This value is ignored
      * @return the new node key (number field), or -1 if the insert failed
      */
     public int insert(String userName) {
@@ -345,11 +306,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @since MMBase-1.7
      */
     public void remove(UserContext user) {
-        if (log.isDebugEnabled()) {
-            log.debug("Deleting node " + getNumber() + " because " + Logging.stackTrace(5));
-        }
         parent.removeNode(this);
-        parent.getMMBase().getMMBaseCop().getAuthorization().remove(user, getNumber());
+        parent.getMMBase().getMMBaseCop().getAuthorization().remove((UserContext)user, getNumber());
     }
 
     /**
@@ -385,21 +343,11 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @since MMBase-1.7.1
      */
     public Set getPossibleContexts(UserContext user) {
-        if (getNumber() < 0) {
-            // a new node has yet no context (except the default).
-            // instead of searching the database for data, return a
-            // standard set of values existing of the current context
-            // and the contexts "system" and "admin".
-            // A better way involves rewriting the security layer to accept
-            // MMObjectNodes instead of node numbers
-            Set contexts = new HashSet();
-            contexts.add(getContext(user));
-            contexts.add("admin");
-            contexts.add("system");
-            return contexts;
-/*
+        if (getNumber() < 0) { 
+            // that's very hard, try it on a similar node, hoping that it is the same. This is a hack.
+            // The point is that SEcurity should not request node-numbers, but nodes.
             NodeSearchQuery query = new NodeSearchQuery(parent);
-            CoreField fieldDefs = parent.getField("owner");
+            FieldDefs fieldDefs = parent.getField("owner");
             StepField field = query.getField(fieldDefs);
             BasicFieldValueConstraint cons = new BasicFieldValueConstraint(field, getContext(user));
             query.setMaxNumber(1);
@@ -407,15 +355,45 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
                 Iterator resultList = parent.getNodes(query).iterator();
                 if (resultList.hasNext()) {
                     return ((MMObjectNode) resultList.next()).getPossibleContexts(user);
-                }
+                } 
             } catch (SearchQueryException sqe) {
                 log.error(sqe.toString());
             }
             return new HashSet();
-*/
         }
         return parent.getMMBase().getMMBaseCop().getAuthorization().getPossibleContexts(user, getNumber());
+        
+        
     }
+
+    /**
+     * Once an insert is done in the editors, this method is called.
+     * @param ed Contains the current edit state (editor info). The main function of this object is to pass
+     *        'settings' and 'parameters' - value pairs that have been set during the edit process.
+     * @return An <code>int</code> value. It's meaning is undefined.
+     *        The basic routine returns -1.
+     * @deprecated This method doesn't seem to fit here, as it references a gui/html object ({@link org.mmbase.module.gui.html.EditState}),
+     *    endangering the separation between content and layout, and has an undefined return value.
+     */
+    public int insertDone(EditState ed) {
+        return parent.insertDone(ed, this);
+    }
+
+    /**
+     * Check and make last changes before calling {@link #commit} or {@link #insert}.
+     * This method is called by the editor. This differs from {@link MMObjectBuilder#preCommit}, which is called by the database system
+     * <em>during</em> the call to commit or insert.
+     * @param ed Contains the current edit state (editor info). The main function of this object is to pass
+     *        'settings' and 'parameters' - value pairs that have been the during the edit process.
+     * @return An <code>int</code> value. It's meaning is undefined.
+     *        The basic routine returns -1.
+     * @deprecated This method doesn't seem to fit here, as it references a gui/html object ({@link org.mmbase.module.gui.html.EditState}),
+     *    endangering the separation between content and layout. It also has an undefined return value (as well as a confusing name).
+     */
+    public int preEdit(EditState ed) {
+        return parent.preEdit(ed,this);
+    }
+
 
     /**
      * Returns the core of this node in a string.
@@ -435,7 +413,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @since MMBase-1.6.2
      */
     String defaultToString() {
-        StringBuffer result = new StringBuffer();
+        StringBuffer result = new StringBuffer("prefix='" + prefix + "'");
         try {
             Set entrySet = values.entrySet();
             synchronized(values) {
@@ -445,10 +423,10 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
                     String key = (String) entry.getKey();
                     int dbtype = getDBType(key);
                     String value = "" + entry.getValue();  // XXX:should be retrieveValue ?
-                    if ("".equals(result.toString())) {
-                        result = new StringBuffer(key+"='"+value+"'"); // can this occur?
+                    if (result.equals("")) {
+                        result = new StringBuffer(key+"="+dbtype+":'"+value+"'"); // can this occur?
                     } else {
-                        result.append(","+key+"='");
+                        result.append(","+key+"="+dbtype+":'");
                         Casting.toStringBuffer(result, value).append("'");
                     }
                 }
@@ -456,70 +434,46 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         } catch(Throwable e) {
             result.append("" + values); // simpler version...
         }
-        result.append(super.toString());
         return result.toString();
     }
 
-
     /**
-     * @return <code>true</code> if field exists and may be used.
-     * @since MMBase-1.8
+     * Return the node as a string in XML format.
+     * Used for data exchange, though, oddly enough, not by application export. (?)
+     * @return the contents of the node as a xml-formatted string.
      */
-    protected boolean checkFieldExistance(String fieldName) {
-        if (fieldName.charAt(0) == '_') {
-            // don't complain then, a lot of hackery (apps1 import/export) is based on this.
-            // This is just a hack to make app1 import/export working, withough exposing the values map.
-            return true;
+    public String toXML() {
+        // call is implemented by its builder so
+        // call the builder with this node
+        if (parent!=null) {
+            return parent.toXML(this);
+        } else {
+            return null;
         }
-        if (fieldName.indexOf('(') > 0) {
-            return true;
-        }
-        if (MMBase.getMMBase().inDevelopment() && ! getBuilder().hasField(fieldName)) {
-            log.error("Tried to use non-existing field '" + fieldName + "' of node '" + getNumber() + "' from " + getBuilder().getTableName() + Logging.stackTrace(5));
-            throw new IllegalArgumentException("You cannot use non-existing field '" + fieldName + "' of node '" + getNumber() + "' existing fields of '" + getBuilder().getTableName() + "' are " + getBuilder().getFieldNames());
-        }
-        return true;
     }
 
     /**
      * Stores a value in the values hashtable.
      * This is a low-level method that circumvents typechecking and the triggers of extended classes.
-     * You should normally call {@link #setValue} to change fields.
+     * You should normally call {@link #setValue()} to change fields.
      * @todo This should become a synchronized method, once values becomes a private HashMap instead of a
      * public Hashtable.
      *
-     *@param fieldName the name of the field to change
-     *@param fieldValue the value to assign
+     * @param fieldName the name of the field to change
+     * @param fieldValue the value to assign
      */
-    public void storeValue(String fieldName, Object fieldValue) {
-        if (fieldName.startsWith("_") && fieldValue == null) {
-            // This is just a hack to make app1 import/export working, withough exposing the values map.
+    public void storeValue(String fieldName,Object fieldValue) {
+        if (fieldValue == null) {
             values.remove(fieldName);
-        }
-        if (checkFieldExistance(fieldName)) {
+        } else {
             values.put(fieldName, fieldValue);
         }
     }
 
     /**
-     * this method stores a fieldvalue only once. the purpose is to
-     * store the value only the first time a field changes, so it reflects
-     * the value in the database.
-     * @param fieldName
-     * @param object
-     * @since MMBase-1.8
-     */
-    private void storeOldValue(String fieldName, Object object) {
-        if (! oldValues.containsKey(fieldName)) {
-            oldValues.put(fieldName, object);
-        }
-    }
-
-
-    /**
      * Retrieves a value from the values hashtable.
      * This is a low-level method that circumvents typechecking and the triggers of extended classes.
-     * You should normally call {@link #getValue} to load fields.
+     * You should normally call {@link #getValue()} to load fields.
      *
      * @param fieldName the name of the field to change
      * @return the value of the field
@@ -533,28 +487,16 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * A virtual node is not persistent (that is, stored in a database table).
      */
     public boolean isVirtual() {
-        return false;
+        return virtual;
     }
 
-
-    /**
-     * If a node is still 'new' you must persistify it with {@link #insert}, and otherwise with {@link #commit}.
-     * @since MMBase-1.8
-     */
-    public boolean isNew() {
-        return isNew;
-    }
     /*
      *
      * @since MMBase-1.6
      */
 
     protected Document toXML(Object value, String fieldName) {
-        Document doc = Casting.toXML(value);
-        if (doc == null && parent.getField(fieldName).isRequired()) {
-            doc = Casting.toXML("<p/>");
-        }
-        return doc;
+        return Casting.toXML(value, parent.getField(fieldName).getDBDocType(), parent.getInitParameter(fieldName + ".xmlconversion"));
     }
 
     /**
@@ -570,42 +512,26 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         // check the value also when the parent thing is null
         Object originalValue = values.get(fieldName);
 
-        if (fieldValue != VALUE_SHORTED) {
-            // make sure this value remains not in the blob-cache.
-            BlobCache blobs = parent.getBlobCache(fieldName);
-            blobs.remove(blobs.getKey(getNumber(), fieldName));
-        }
-
-        if (fieldValue instanceof DynamicDate) {
-            // 'dynamic' values can of course not be stored in database, and that is not the intentention too, so
-            // store a static version
-            fieldValue = new Date(((Date) fieldValue).getTime());
-        }
-
-        if (log.isDebugEnabled()) {
-            String string;
-            if (fieldValue instanceof byte[]) {
-                string = "byte array of size " + ((byte[])fieldValue).length;
-            } else {
-                string = Casting.toString(fieldValue);
-                if (string.length()>200) string = string.substring(0, 200);
+        // if we have an XML-dbtype field, we always have to store it inside an Element.
+        if(parent != null && getDBType(fieldName) == FieldDefs.TYPE_XML && !(fieldValue instanceof Document)) {
+            log.debug("im called far too often");
+            if (fieldValue == null && parent.getField(fieldName).getDBNotNull()) {
+                throw new RuntimeException("field with name '" + fieldName + "' may not be null");
             }
-            log.debug("Setting " + fieldName + " to " +  string);
+            String value = Casting.toString(fieldValue);
+            value = value.trim();
+            if(value.length()==0 && parent.getField(fieldName).getDBNotNull()) {
+                throw new RuntimeException("field with name '" + fieldName + "' may not be empty");
+            }
+            Document doc = toXML(value, fieldName);
+            if(doc != null) {
+                // store the document inside the field.. much faster...
+                fieldValue = doc;
+            }
         }
-
-        boolean changed =
-            (! values.containsKey(fieldName)) ||
-            (originalValue == null ? fieldValue != null : ! originalValue.equals(fieldValue));
-        if (! changed) return false;
-
         if (log.isDebugEnabled()) {
-            log.debug("" + fieldName + ":" + originalValue + " --> " + fieldValue);
+            log.debug("Setting " + fieldName + " to " +  Casting.toString(fieldValue));
         }
-
-        //store the old value
-        storeOldValue(fieldName, originalValue);
-
-
         // put the key/value in the value hashtable
         storeValue(fieldName, fieldValue);
 
@@ -623,33 +549,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     }
 
     /**
-     * Sets the size (in byte) of the given field. This is meant for byte-array fields, which you
-     * fill using an InputStream.
-     * @see #getSize(String)
-     * @since MMBase-1.8
-     */
-    public void setSize(String fieldName, long size) {
-        sizes.put(fieldName, new Long(size));
-    }
-    /**
-     * Returns the size (in byte) of the given field. This is mainly targeted at fields of the type
-     * byte array. For other fields this method will return something reasonable, but it is as yet
-     * not well defined what...
-     *
-     * @since MMBase-1.8
-     */
-    public long getSize(String fieldName) {
-        Long l = (Long) sizes.get(fieldName);
-        if (l != null)  return l.intValue();
-        Object value = values.get(fieldName);
-        // Value is null so it does not occupy any space.
-        if (value == null) return 0;
-        // Value is not yet loaded from the database?
-        if (VALUE_SHORTED.equals(value)) return -1;
-        return SizeOf.getByteSize(value);
-    }
-
-    /**
      * Sets a key/value pair in the main values of this node. The value to set is of type <code>boolean</code>.
      * Note that if this node is a node in cache, the changes are immediately visible to
      * everyone, even if the changes are not committed.
@@ -658,8 +557,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @param fieldValue the value to assign
      * @return always <code>true</code>
      */
-    public boolean setValue(String fieldName, boolean fieldValue) {
-        return setValue(fieldName, Boolean.valueOf(fieldValue));
+    public boolean setValue(String fieldName,boolean fieldValue) {
+        return setValue(fieldName, new Boolean(fieldValue));
     }
 
     /**
@@ -671,7 +570,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      *  @param fieldValue the value to assign
      *  @return always <code>true</code>
      */
-    public boolean setValue(String fieldName, int fieldValue) {
+    public boolean setValue(String fieldName,int fieldValue) {
         return setValue(fieldName, new Integer(fieldValue));
     }
 
@@ -684,7 +583,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      *  @param fieldValue the value to assign
      *  @return always <code>true</code>
      */
-    public boolean setValue(String fieldName, long fieldValue) {
+    public boolean setValue(String fieldName,long fieldValue) {
         return setValue(fieldName, new Long(fieldValue));
     }
 
@@ -697,10 +596,81 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      *  @param fieldValue the value to assign
      *  @return always <code>true</code>
      */
-    public boolean setValue(String fieldName, double fieldValue) {
+    public boolean setValue(String fieldName,double fieldValue) {
         return setValue(fieldName, new Double(fieldValue));
     }
 
+    /**
+     *  Sets a key/value pair in the main values of this node.
+     *  The value to set is converted to the indicated type.
+     *  Note that if this node is a node in cache, the changes are immediately visible to
+     *  everyone, even if the changes are not committed.
+     *  The fieldName is added to the (public) 'changed' vector to track changes.
+     *  @deprecated  This one will be moved/replaced soon...
+     *  Testing of db types will be moved to the DB specific classes
+     *  @param fieldName the name of the field to change
+     *  @param fieldValue the value to assign
+     *  @return <code>false</code> if the value is not of the indicated type, <code>true</code> otherwise
+     */
+    public boolean setValue(String fieldName, int type, String value) {
+        if (type==FieldDefs.TYPE_UNKNOWN) {
+            log.error("MMObjectNode.setValue(): unsupported fieldtype null for field "+fieldName);
+            return false;
+        }
+        switch (type) {
+        case FieldDefs.TYPE_XML:
+            setValue(fieldName, toXML(value, fieldName));
+            break;
+        case FieldDefs.TYPE_STRING:
+            setValue(fieldName, value);
+            break;
+        case FieldDefs.TYPE_NODE:
+        case FieldDefs.TYPE_INTEGER:
+            Integer i;
+            try {
+                i = new Integer(value);
+            } catch (NumberFormatException e) {
+                log.error( e.toString() ); log.error(Logging.stackTrace(e));
+                return false;
+            }
+            setValue(fieldName, i);
+            break;
+        case FieldDefs.TYPE_FLOAT:
+            Float f;
+            try {
+                f = new Float(value);
+            } catch (NumberFormatException e) {
+                log.error( e.toString() ); log.error(Logging.stackTrace(e));
+                return false;
+            }
+            setValue(fieldName, f);
+            break;
+        case FieldDefs.TYPE_LONG:
+            Long l;
+            try {
+                l = new Long(value);
+            } catch (NumberFormatException e) {
+                log.error( e.toString() ); log.error(Logging.stackTrace(e));
+                return false;
+            }
+            setValue(fieldName, l);
+            break;
+        case FieldDefs.TYPE_DOUBLE:
+            Double d;
+            try {
+                d = new Double(value);
+            } catch (NumberFormatException e) {
+                log.error( e.toString() ); log.error(Logging.stackTrace(e));
+                return false;
+            }
+            setValue(fieldName, d);
+            break;
+        default:
+            log.error("unsupported fieldtype: "+type+" for field "+fieldName);
+            return false;
+        }
+        return true;
+    }
 
     // Add the field to update to the changed Vector
     //
@@ -710,7 +680,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
 
         // add it to the changed vector so we know that we have to update it
         // on the next commit
-        if (! initializing && state != Field.STATE_VIRTUAL) {
+        if (! initializing && !changed.contains(fieldName) && state==FieldDefs.DBSTATE_PERSISTENT) {
             changed.add(fieldName);
         }
         // is it a memory only field ? then send a fieldchange
@@ -723,7 +693,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @return the number of the node
      */
     public int getNumber() {
-        return Casting.toInt(values.get(MMObjectBuilder.FIELD_NUMBER));
+        return getIntValue("number");
     }
 
     /**
@@ -732,95 +702,27 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @return the object type number of the node
      */
     public int getOType() {
-        return Casting.toInt(values.get(MMObjectBuilder.FIELD_OBJECT_TYPE));
-    }
-
-
-    /**
-     * @since MMBase-1.8
-     */
-    public boolean isNull(String fieldName) {
-        if (checkFieldExistance(fieldName)) {
-            Field field = getBuilder().getField(fieldName);
-            if (field != null && field.getType() == Field.TYPE_NODE) {
-                return getIntValue(fieldName) <= -1;
-            }
-            Object value = values.get(fieldName);
-            if (VALUE_SHORTED.equals(value)) {
-                // value is not loaded from the database. We have to check the database to be sure.
-                value = getValue(fieldName);
-            }
-            return value == null;
-        } else {
-            return true;
-        }
+        return getIntValue("otype");
     }
 
     /**
      * Get a value of a certain field.
-     * @performance do not store byte values directly in node (?)
      * @param fieldName the name of the field who's data to return
      * @return the field's value as an <code>Object</code>
      */
     public Object getValue(String fieldName) {
+
         // get the value from the values table
-        Object value = values.get(fieldName);
-
-        // explicitly load byte values if they are 'shortened'
-        if (VALUE_SHORTED.equals(value)) {   // could use == if we are sure that everybody uses the constant
-
-            BlobCache blobs = parent.getBlobCache(fieldName);
-            String key = blobs.getKey(getNumber(), fieldName);
-            value = blobs.get(key);
-            if (value == null) {
-                int type = getDBType(fieldName);
-                switch (type) {
-                case Field.TYPE_BINARY:
-                    value = parent.getShortedByte(fieldName, this);
-                    break;
-                case Field.TYPE_STRING:
-                    value = parent.getShortedText(fieldName, this);
-                    break;
-                default:
-                    throw new UnsupportedOperationException("Found shorted value for type " + type);
-                }
-                blobs.put(key, value);
-            }
-        }
-
-        // if we have an XML-dbtype field, we always have to return a Document (or null).
-        // note that if the value is null we store it as a null value
-        if (parent != null && value != null && !(value instanceof Document) &&
-            getDBType(fieldName) == Field.TYPE_XML) {
-            String string = Casting.toString(value).trim();
-            Document doc = toXML(string, fieldName);
-            if(doc != null) {
-                // store the document inside the field.. much faster...
-                value = doc;
-                values.put(fieldName, value);
-            } else {
-                values.put(fieldName, null);
-            }
-        }
+        Object o = retrieveValue(prefix + fieldName);
 
         // routine to check for indirect values
         // this are used for functions for example
         // its implemented per builder so lets give this
         // request to our builder
-        if (value == null) {
-            value = parent.getValue(this, fieldName);
-        }
-        // still null!
-        if (value == null) {
-            if (!checkFieldExistance(fieldName)) return null;
-        }
-
-        if (value instanceof InputStream) {
-            value = useInputStream(fieldName, (InputStream) value);
-        }
+        if (o == null) return parent.getValue(this, fieldName);
 
         // return the found object
-        return value;
+        return o;
     }
 
 
@@ -832,43 +734,76 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @return the field's value as a <code>String</code>
      */
     public String getStringValue(String fieldName) {
-        Object value = getValue(fieldName);
-        if (value instanceof MMObjectNode) return "" + ((MMObjectNode)value).getNumber();
-        String s = Casting.toString(value);
-        return s;
+        String tmp =  Casting.toString(getValue(fieldName));
+
+        // check if the object is shorted, shorted means that
+        // because the value can be a large text/blob object its
+        // not loaded into each object when its first obtained
+        // from the database but that we instead out a text $SHORTED
+        // in the field. Only when the field is really used does this
+        // get mapped into a real value. this saves speed and memory
+        // because every blob/text mapping is a extra request to the
+        // database
+        if (tmp.indexOf(VALUE_SHORTED) == 0) {
+            // obtain the database type so we can check if what
+            // kind of object it is. this have be changed for
+            // multiple database support.
+            int type=getDBType(fieldName);
+            if (log.isDebugEnabled()) {
+                log.debug("getStringValue(): node="+this+" -- fieldName "+fieldName);
+                log.debug("getStringValue(): fieldName "+fieldName+" has type "+type);
+            }
+            // check if for known mapped types
+            if (type==FieldDefs.TYPE_STRING) {
+                MMObjectBuilder bul;
+
+                int number=getNumber();
+                // check if its in a multilevel node (than we have no node number and
+                // XXX:Not needed, since checking takes place in MultiRelations!
+                // Can be dropped
+                if (prefix!=null && prefix.length()>0) {
+                    String tmptable="";
+                    int pos=prefix.indexOf('.');
+                    if (pos!=-1) {
+                        tmptable=prefix.substring(0,pos);
+                    } else {
+                        tmptable=prefix;
+                    }
+                    //                    number=getNumber();
+                    bul=parent.mmb.getMMObject(tmptable);
+                    log.debug("getStringValue(): "+tmptable+":"+number+":"+prefix+":"+fieldName);
+                } else {
+                    bul=parent;
+                }
+
+                // call our builder with the convert request this will probably
+                // map it to the database we are running.
+                String tmp2=bul.getShortedText(fieldName,  number);
+
+                // did we get a result then store it in the values for next use
+                // and return it.
+                // we could in the future also leave it unmapped in the values
+                // or make this programmable per builder ?
+                if (tmp2!=null) {
+                    // store the unmapped value (replacing the $SHORTED text)
+                    storeValue(prefix+fieldName,tmp2);
+                    // return the found and now unmapped value
+                    return tmp2;
+                } else {
+                    return null;
+                }
+            }
+        }
+
+        // return the found value
+        return tmp;
     }
 
     /**
-     * XXX: return type of this method make it impossible to make MMObjectNode implements Node, perhaps it needs change
-     * @javadoc
      * @since MMBase-1.6
      */
-    public Object getFunctionValue(String functionName, List parameters) {
-        return parent.getFunctionValue(this, functionName, parameters);
-    }
-
-    /**
-     * @javadoc
-     * @since MMBase-1.8
-     */
-    public Parameters createParameters(String functionName) {
-        return parent.createParameters(functionName);
-    }
-
-    /**
-     * @javadoc
-     * @since MMBase-1.8
-     */
-    public Function getFunction(String functionName) {
-        return parent.getFunction(this, functionName);
-    }
-
-    /**
-     * @javadoc
-     * @since MMBase-1.8
-     */
-    public Collection getFunctions() {
-        return parent.getFunctions(this);
+    public Object getFunctionValue(String function, List args) {
+        return  parent.getFunctionValue(this, function, args);
     }
 
     /**
@@ -879,121 +814,72 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      *
      * @param fieldName  the name of the field to be returned
      * @return  the value of the specified field as a DOM Element or <code>null</code>
-     * @throws  IllegalArgumentException if the value cannot be converted.
+     * @throws  IllegalArgumentException if the Field is not of type TYPE_XML.
      * @since MMBase-1.6
      */
     public Document getXMLValue(String fieldName) {
         Document o =  toXML(getValue(fieldName), fieldName);
-        if(o != null && getDBType(fieldName) == Field.TYPE_XML) {
-            storeValue(fieldName, o);
+        if(o != null) {
+            values.put(fieldName, o);
         }
         return o;
     }
 
-
-    /**
-     * If the values map contains an InputStream, care must be taken because often an InputStream can be used only once.
-     * @since MMBase-1.8
-     */
-    private byte[] useInputStream(String fieldName, InputStream stream) {        // first, convert to byte-array
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        int c;
-        try {
-            byte[] buf = new byte[1024];
-            int n;
-            while ((n = stream.read(buf)) > -1) {
-                bos.write(buf, 0, n);
-            }
-        } catch (IOException ioe) {
-            log.error(ioe);
-        }
-        byte[] b = bos.toByteArray();
-        // check if we can cache it.
-        BlobCache blobs = parent.getBlobCache(fieldName);
-        String key = blobs.getKey(getNumber(), fieldName);
-        if (b.length < blobs.getMaxEntrySize()) {
-            blobs.put(key, b);
-        }
-
-        values.put(fieldName, b);
-        return b;
-    }
-
     /**
      * Get a binary value of a certain field.
-     * @performance do not store byte values directly in node (?)
      * @param fieldName the name of the field who's data to return
      * @return the field's value as an <code>byte []</code> (binary/blob field)
      */
+
     public byte[] getByteValue(String fieldName) {
+        // try to get the value from the values table
+        // it might be using a prefix to allow multilevel
+        // nodes to work (if not duplicate can not be stored)
+
+        // call below also allows for byte[] type of
+        // formatting functons.
         Object obj = getValue(fieldName);
-        if (obj == null) {
-            return new byte[0];
-        } else if (obj instanceof byte[]) {
+
+        // well same as with strings we only unmap byte values when
+        // we really use them since they mean a extra request to the
+        // database most of the time.
+
+        // we signal with a empty byte[] that its not obtained yet.
+        if (obj instanceof byte[]) {
             // was already unmapped so return the value
             return (byte[]) obj;
         } else {
             byte[] b;
-            if (getDBType(fieldName) == Field.TYPE_STRING) {
-                String s = getStringValue(fieldName);
-                try {
-                    b = s.getBytes(parent.getMMBase().getEncoding());
-                } catch (UnsupportedEncodingException uee) {
-                    log.error(uee.getMessage());
-                    b = s.getBytes();
+            if (getDBType(fieldName) == FieldDefs.TYPE_BYTE) {
+                // call our builder with the convert request this will probably
+                // map it to the database we are running.
+                b = parent.getShortedByte(fieldName, getNumber());
+                if (b == null) {
+                    b = new byte[0];
+                } else {
+                    // we could in the future also leave it unmapped in the values
+                    // or make this programmable per builder ?                    
+                    storeValue(prefix + fieldName, b);
                 }
+
             } else {
-                b = new byte[0];
+                if (getDBType(fieldName) == FieldDefs.TYPE_STRING) {
+                    String s = getStringValue(fieldName);
+                    try {
+                        b = s.getBytes(parent.getMMBase().getEncoding()); 
+                    } catch (java.io.UnsupportedEncodingException uee) {
+                        log.error(uee.getMessage());
+                        b = s.getBytes();
+                    }
+                } else {
+                    b = new byte[0];
+                }
             }
+            // return the unmapped value
             return b;
         }
     }
 
-
-    public InputStream getInputStreamValue(String fieldName) {
-        Object value = values.get(fieldName);
-        if (value == null) {
-            log.debug("NUL on " + fieldName + " " + this, new Exception());
-            return new ByteArrayInputStream(new byte[0]);
-        }
-
-        if (value instanceof InputStream) {
-            // cannot return it directly, it would kill the inputstream, and perhaps it cannot be saved in db anymore then.
-            // Sad, we have a buffer always now.
-            // XXX think of something that the buffer is only needed if actually used a second time
-            //     help-file, i think
-            return new ByteArrayInputStream(useInputStream(fieldName, (InputStream) value));
-        }
-
-        if (VALUE_SHORTED.equals(value)) {
-            BlobCache blobs = parent.getBlobCache(fieldName);
-            String key = blobs.getKey(getNumber(), fieldName);
-            byte[] v = (byte[]) blobs.get(key);
-            if (v == null) {
-                if (getSize(fieldName) < blobs.getMaxEntrySize()) {
-                    v = parent.mmb.getStorageManager().getBinaryValue(this, parent.getField(fieldName));
-                    if (log.isDebugEnabled()) {
-                        log.debug("Putting in blob cache " + key);
-                    }
-                    blobs.put(key, v);
-                } else {
-                    log.debug("Too big for cache, requesting InputStream directly from storage");
-                    return parent.mmb.getStorageManager().getInputStreamValue(this, parent.getField(fieldName));
-                }
-            } else {
-                log.debug("Found in blob cache " + fieldName);
-            }
-            return new ByteArrayInputStream(v);
-        } else {
-            if (value instanceof byte[]) {
-                return new ByteArrayInputStream((byte[]) value);
-            } else {
-                // probably not a byte-array field, do something.
-                // this behavior is undefined!, don't depend on it.
-                return new ByteArrayInputStream(("" + value).getBytes());
-            }
-        }
-    }
 
 
     /**
@@ -1009,26 +895,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @return the field's value as an <code>int</code>
      */
     public MMObjectNode getNodeValue(String fieldName) {
-        if (fieldName == null || fieldName.equals(MMObjectBuilder.FIELD_NUMBER)) return this;
-        Object value = getValue(fieldName);
-        MMObjectNode res = null;
-         if (value instanceof MMObjectNode) {
-             res = (MMObjectNode) value;
-         } else if (value instanceof Node) {
-             Node node = (Node) value;
-             if (node.isNew()) {
-                 throw new UnsupportedOperationException("dropped tmpnodemanager...");
-             }
-             res = parent.getNode(node.getNumber());
-         } else if (value instanceof Number) {
-             int nodenumber = ((Number)value).intValue();
-             if (nodenumber != -1) {
-                 res = parent.getNode(nodenumber);
-             }
-         } else if (value != null && !value.equals("")) {
-             res = parent.getNode(value.toString());
-         }
-         return res;
+        if (fieldName == null || fieldName.equals("number")) return this;
+        return Casting.toNode(getValue(fieldName), parent);
     }
 
     /**
@@ -1036,15 +904,13 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * The value is returned as an int value. Values of non-int, numeric fields are converted if possible.
      * Booelan fields return 0 for false, 1 for true.
      * String fields are parsed to a number, if possible.
-     * If a value is an MMObjectNode, its numberfield is returned.
+     * If a value is an MMObjectNode, it's numberfield is returned.
      * All remaining field values return -1.
      * @param fieldName the name of the field who's data to return
      * @return the field's value as an <code>int</code>
      */
     public int getIntValue(String fieldName) {
-        Object value = getValue(fieldName);
-        if (value instanceof MMObjectNode) return ((MMObjectNode)value).getNumber();
-        return Casting.toInt(value);
+        return Casting.toInt(getValue(fieldName));
     }
 
     /**
@@ -1077,9 +943,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @return the field's value as an <code>Integer</code>
      */
     public Integer getIntegerValue(String fieldName) {
-        Object value = getValue(fieldName);
-        if (value instanceof MMObjectNode) return new Integer(((MMObjectNode)value).getNumber());
-        return Casting.toInteger(value);
+        return Casting.toInteger(getValue(fieldName));
     }
 
     /**
@@ -1090,9 +954,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @return the field's value as a <code>long</code>
      */
     public long getLongValue(String fieldName) {
-        Object value = getValue(fieldName);
-        if (value instanceof MMObjectNode) return (long) ((MMObjectNode)value).getNumber();
-        return Casting.toLong(value);
+        return Casting.toLong(getValue(fieldName));
     }
 
 
@@ -1106,9 +968,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @return the field's value as a <code>float</code>
      */
     public float getFloatValue(String fieldName) {
-        Object value = getValue(fieldName);
-        if (value instanceof MMObjectNode) return (float) ((MMObjectNode)value).getNumber();
-        return Casting.toFloat(value);
+        return Casting.toFloat(getValue(fieldName));
     }
 
 
@@ -1122,51 +982,23 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @return the field's value as a <code>double</code>
      */
     public double getDoubleValue(String fieldName) {
-        Object value = getValue(fieldName);
-        if (value instanceof MMObjectNode) return (double) ((MMObjectNode)value).getNumber();
-        return Casting.toDouble(value);
+        return Casting.toDouble(getValue(fieldName));
     }
-
-    /**
-     * Get a value of a certain field.
-     * The value is returned as a Date value. Values of numeric fields are converted as if they were
-     * time in seconds since 1/1/1970.
-     * String fields are parsed to a date, if possible.
-     * All remaining field values return -1.
-     * @since MMBase-1.8
-     * @param fieldName the name of the field who's data to return
-     * @return the field's value as a <code>Date</code>
-     */
-    public Date getDateValue(String fieldName) {
-        Object value = getValue(fieldName);
-        org.mmbase.core.CoreField cf = getBuilder().getField(fieldName);
-        if (cf != null && cf.getType() == Field.TYPE_NODE) {
-            // cannot be handled by casting, because it would receive object-number and cannot make distinction with Nodes.
-            return new Date(-1);
-        }
-        return Casting.toDate(value);
-    }
-
-    /**
-     * Get a value of a certain field.
-     * The value is returned as a List value.
-     * Strings are treated as comma-seperated value lists, and split into their component parts.
-     * Values of other fields are returned as Lists of one object.
-     * @since MMBase-1.8
-     * @param fieldName the name of the field who's data to return
-     * @return the field's value as a <code>List</code>
-     */
-    public List getListValue(String fieldName) {
-        return Casting.toList(getValue(fieldName));
-    }
-
     /**
      * Returns the DBType of a field.
      * @param fieldName the name of the field which' type to return
      * @return the field's DBType
      */
     public int getDBType(String fieldName) {
-        return parent.getDBType(fieldName);
+        if (prefix != null && prefix.length()>0) {
+            // If the prefix is set use the builder contained therein
+            int pos=prefix.indexOf('.');
+            if (pos==-1) pos=prefix.length();
+            MMObjectBuilder bul=parent.mmb.getMMObject(prefix.substring(0,pos));
+            return bul.getDBType(fieldName);
+        } else {
+            return parent.getDBType(fieldName);
+        }
     }
 
     /**
@@ -1175,19 +1007,21 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @return the field's DBState
      */
     public int getDBState(String fieldName) {
-        if (parent != null)    {
+        if (parent!=null)    {
             return parent.getDBState(fieldName);
         } else {
-            return Field.STATE_UNKNOWN;
+            return FieldDefs.DBSTATE_UNKNOWN;
         }
     }
 
     /**
      * Return the names of all persistent fields that were changed.
      * Note that this is a direct reference. Changes (i.e. clearing the vector) will affect the node's status.
-     * @return A Set containing Strings. The set is modifiable, and synchronized. Don't modify it though.
+     * @param a <code>Vector</code> containing all the fieldNames
+     * @todo  Should it not return a (unmodifiable) Collection or a Set?
+     * @todo  Should this function not be replaced by a more generic 'isChanged(String fieldName)'?
      */
-    public Set getChanged() {
+    public Vector getChanged() {
         return changed;
     }
 
@@ -1196,7 +1030,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @return <code>true</code> if changes have been made, <code>false</code> otherwise
      */
     public boolean isChanged() {
-        return newContext != null || changed.size() > 0;
+        return changed.size() > 0;
     }
 
     /**
@@ -1207,7 +1041,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      */
     public boolean clearChanged() {
         changed.clear();
-        oldValues.clear();
         return true;
     }
 
@@ -1222,14 +1055,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         }
     }
 
-    public Map getValues() {
-        return  Collections.unmodifiableMap(values);
-    }
-    /**
-     * @since MMBase-1.8
-     */
-    public Map getOldValues() {
-        return Collections.unmodifiableMap(oldValues);
+    public Hashtable getValues() {
+        return values;
     }
 
 
@@ -1240,14 +1067,14 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      */
     public Hashtable getProperties() {
         synchronized(properties_sync) {
-            if (properties == null) {
-                properties = new Hashtable();
-                MMObjectBuilder bul = parent.mmb.getMMObject("properties");
-                Enumeration e = bul.search("parent=="+getNumber());
+            if (properties==null) {
+                properties=new Hashtable();
+                MMObjectBuilder bul=parent.mmb.getMMObject("properties");
+                Enumeration e=bul.search("parent=="+getNumber());
                 while (e.hasMoreElements()) {
-                    MMObjectNode pnode = (MMObjectNode)e.nextElement();
-                    String key = pnode.getStringValue("key");
-                    properties.put(key, pnode);
+                    MMObjectNode pnode=(MMObjectNode)e.nextElement();
+                    String key=pnode.getStringValue("key");
+                    properties.put(key,pnode);
                 }
             }
         }
@@ -1263,7 +1090,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     public MMObjectNode getProperty(String key) {
         MMObjectNode n;
         synchronized(properties_sync) {
-            if (properties == null) {
+            if (properties==null) {
                 getProperties();
             }
             n=(MMObjectNode)properties.get(key);
@@ -1350,10 +1177,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     /**
      * Return the relations of this node.
      * Note that this returns the nodes describing the relation - not the nodes 'related to'.
-     *
-     *
-     * XXX: return type of this method makes it impossible to make MMObjectNode implements Node, perhaps it needs change
-     *
      * @return An <code>Enumeration</code> containing the nodes
      */
     public Enumeration getRelations() {
@@ -1439,7 +1262,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
 
     /**
      * Return the number of relations of this node, filtered on a specified type.
-     * @param wt the 'type' of related nodes (NOT the relations!).
+     * @param wantedtype the 'type' of related nodes (NOT the relations!).
      * @return An <code>int</code> indicating the number of nodes found
      */
     public int getRelationCount(String wt) {
@@ -1458,12 +1281,12 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
 
                     if (relation_number==getNumber()) {
                         relation_number = tnode.getIntValue("dnumber");
-                        nodetype = parent.getNodeType(relation_number);
+                        nodetype=parent.getNodeType(relation_number);
                     } else {
-                        nodetype = parent.getNodeType(relation_number);
+                        nodetype=parent.getNodeType(relation_number);
                     }
 
-                    // Display situation where snumber or dnumber from a relation-node does not seem to
+                    // Display situation where snumber or dnumber from a relation-node does not seem to 
                     // exsist in the database. This can be fixed by mannually removing the node out of the insrel-table
                     if(nodetype==-1) {
                         log.warn("Warning: relation_node("+tnode.getNumber()+") has a possible removed relation_number("+relation_number+"), manually check its consistency!");
@@ -1483,13 +1306,20 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
 
 
     /**
-     * Return the age of the node, determined using the daymarks builder.
-     * @return the age in days, or 0 if unknown (daymarks builder not present)
+     * Returns the node's age
+     * @return the age in days
      */
     public int getAge() {
-        DayMarkers dayMarkers = ((DayMarkers) parent.mmb.getBuilder("daymarks"));
-        if (dayMarkers == null) return 0;
-        return dayMarkers.getAge(getNumber());
+        return parent.getAge(this);
+    }
+
+    /**
+     * Returns the node's builder tablename.
+     * @return the tablename of the builder as a <code>String</code>
+     * @deprecated use getName instead
+     */
+    public String getTableName() {
+        return parent.getTableName();
     }
 
     /**
@@ -1504,40 +1334,19 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     /**
      * Sets the node's alias.
      * The code only sets a (memory) property, it does not actually add the alias to the database.
-     * Only works for uninserted Nodes. So this is actually only used for application import.
-     * No need to use this. Use {@link MMObjectBuilder#createAlias}.
+     * Does not support multiple aliases.
      */
     public void setAlias(String alias) {
-        if (aliases == null) aliases = new HashSet();
-        synchronized(aliases) {
-            aliases.add(alias);
-        }
+        this.alias=alias;
     }
 
     /**
      * Returns the node's alias.
      * Does not support multiple aliases.
-     * @return the new aliases as a <code>Set</code>
+     * @return the alias as a <code>String</code>
      */
-    void useAliases() {
-        if (aliases != null) {
-            synchronized(aliases) {
-                if (getNumber() <= 0) {
-                    log.error("Trying to set aliases for uncommited node!!");
-                    return;
-                }
-                Iterator it = aliases.iterator();
-                while(it.hasNext()) {
-                    try {
-                        String alias = (String) it.next();
-                        parent.createAlias(getNumber(), alias);
-                    } catch (org.mmbase.storage.StorageException se) {
-                        log.error(se);
-                    }
-                }
-                aliases.clear();
-            }
-        }
+    public String getAlias() {
+        return alias;
     }
 
 
@@ -1545,9 +1354,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * Get all related nodes. The returned nodes are not the
      * nodes directly attached to this node (the relation nodes) but the nodes
      * attached to the relation nodes of this node.
-     *
-     * XXX: return type of this method make it impossible to make MMObjectNode implements Node, perhaps it needs change
-     *
      * @return a <code>Vector</code> containing <code>MMObjectNode</code>s
      */
     public Vector getRelatedNodes() {
@@ -1563,7 +1369,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         Iterator  i      = v.iterator();
         while(i.hasNext()) {
             MMObjectNode node = (MMObjectNode) i.next();
-            result.put(node.getStringValue(MMObjectBuilder.FIELD_NUMBER), node);
+            result.put(node.getStringValue("number"), node);
         }
         return result;
     }
@@ -1572,9 +1378,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     /**
      * Get the related nodes of a certain type. The returned nodes are not the
      * nodes directly attached to this node (the relation nodes) but the nodes
-     * attached to the relation nodes of this
-     *
-     * XXX: return type of this method make it impossible to make MMObjectNode implements Node, perhaps it needs change
+     * attached to the relation nodes of this node.
      *
      * @param type the type of objects to be returned
      * @return a <code>Vector</code> containing <code>MMObjectNode</code>s
@@ -1584,7 +1388,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
             log.debug("Getting related nodes of " + this + " of type " + type);
         }
 
-        if(InsRel.usesdir) {
+        if(parent.mmb.InsRel.usesdir) {
             return  getRelatedNodes(type, RelationStep.DIRECTIONS_BOTH);
         } else {
             //
@@ -1631,7 +1435,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     public Vector getRelatedNodes(String type, String role, int search_type) {
         Vector result = null;
 
-        MMObjectBuilder builder = parent.mmb.getBuilder(type);
+        MMObjectBuilder builder = (MMObjectBuilder) parent.mmb.getBuilder(type);
 
         // example: we want a thisnode.relatedNodes(mediaparts) where mediaparts are of type
         // audioparts and videoparts. This method will return the real nodes (thus of type audio/videoparts)
@@ -1722,99 +1526,70 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         int             otype   = -1;
         int             ootype  = -1;
 
-        List virtualNumbers = new ArrayList();
-
         // fill the list
         while(i.hasNext()) {
             node    = (MMObjectNode)i.next();
-            Integer number = node.getIntegerValue(type + ".number");
-            if (!virtualNumbers.contains(number)) {
-                virtualNumbers.add(number);
-
-                otype   = node.getIntValue(type + ".otype");
-
-                // convert the nodes of type ootype to real numbers
-                if(otype != ootype) {
-                    // if we have nodes return real values
-                    if(ootype != -1) {
-                        result.addAll(getRealNodesFromBuilder(list, ootype));
-                        list = new ArrayList();
-                    }
-                    ootype  = otype;
-                }
-                // convert current node type.number and type.otype to number and otype
-                String builderName = parent.mmb.getTypeDef().getValue(otype);
-                if (builderName == null) {
-                    log.warn("Could not find builder of node " + node.getNumber() + " taking 'object'");
-                    builderName = "object";
-                    otype = parent.mmb.getBuilder(builderName).getObjectType();
-                }
-
-                convert = new MMObjectNode(parent.mmb.getBuilder(builderName), false);
-                // parent needs to be set or else mmbase does nag nag nag on a setValue()
-                convert.setValue(MMObjectBuilder.FIELD_NUMBER, node.getValue(type + ".number"));
-                convert.setValue(MMObjectBuilder.FIELD_OBJECT_TYPE, ootype);
-                list.add(convert);
+            otype   = node.getIntValue(type + ".otype");
+            // convert the nodes of type ootype to real numbers
+            if(otype != ootype) {
+            // if we have nodes return real values
+            if(ootype != -1) {
+                result.addAll(getRealNodesFromBuilder(list, ootype));
+                list = new ArrayList();
             }
-            // first and only list or last list, return real values
-            if(!i.hasNext()) {
-                // log.debug("subconverting last "+list.size()+" nodes of type("+otype+")");
-                result.addAll(getRealNodesFromBuilder(list, otype));
-            }
+            ootype  = otype;
         }
-
-        // check that we didnt loose any nodes
-        if(virtualNumbers.size() != result.size()) {
-            log.error("We lost a few nodes during conversion from virtualnodes(" + virtuals.size() + ") to realnodes(" + result.size() + ")");
-            StringBuffer vNumbers = new StringBuffer();
-            for (int j = 0; j < virtualNumbers.size(); j++) {
-                vNumbers.append(virtualNumbers.get(j)).append(" ");
-            }
-            log.error("Virtual node numbers: " + vNumbers.toString());
-            StringBuffer rNumbers = new StringBuffer();
-            for (int j = 0; j < result.size(); j++) {
-                int resultNumber = ((MMObjectNode) result.get(j)).getIntValue("number");
-                rNumbers.append(resultNumber).append(" ");
-            }
-            log.error("Real node numbers: " + rNumbers.toString());
+        // convert current node type.number and type.otype to number and otype
+        convert = new MMObjectNode(parent.mmb.getMMObject(parent.mmb.TypeDef.getValue(otype)));
+        // parent needs to be set or else mmbase does nag nag nag on a setValue()
+        convert.setValue("number", node.getValue(type + ".number"));
+        convert.setValue("otype", otype);
+        list.add(convert);
+        // first and only list or last list, return real values
+        if(!i.hasNext()) {
+        // log.debug("subconverting last "+list.size()+" nodes of type("+otype+")");
+            result.addAll(getRealNodesFromBuilder(list, otype));
         }
+    }
 
-        return result;
+    // check that we didnt loose any nodes
+
+    // Java 1.4
+    // assert(virtuals.size() == result.size());
+
+    // Below Java 1.4
+    if(virtuals.size() != result.size()) {
+        log.error("We lost a few nodes during conversion from virtualnodes(" + virtuals.size() + ") to realnodes(" + result.size() + ")");
+    }
+
+    return result;
     }
 
     /**
-     * Upgrade a certain list of MMObectNodes to the right type.
      * @since MMBase-1.6.2
      */
     private List getRealNodesFromBuilder(List list, int otype) {
         List result = new ArrayList();
-        String name = parent.mmb.getTypeDef().getValue(otype);
+        String name = parent.mmb.TypeDef.getValue(otype);
         if(name != null) {
             MMObjectBuilder rparent = parent.mmb.getBuilder(name);
             if(rparent != null) {
                 result.addAll(rparent.getNodes(list));
             } else {
-                log.error("This otype(" + otype + ") does not denote a valid typedef-name(" + name + ")!");
+                log.error("This otype("+otype+") does not denote a valid typedef-name("+name+")!");
             }
         } else {
-            log.error("This otype(" + otype + ") gives no name(" + name + ") from typedef!");
+            log.error("This otype("+otype+") gives no name("+name+") from typedef!");
         }
         return result;
     }
 
-
     public int getByteSize() {
-        return getByteSize(new SizeOf());
+        return getByteSize(new org.mmbase.util.SizeOf());
     }
 
-    public int getByteSize(SizeOf sizeof) {
-        return
-            sizeof.sizeof(values) +
-            sizeof.sizeof(oldValues) +
-            sizeof.sizeof(sizes) +
-            sizeof.sizeof(properties) +
-            sizeof.sizeof(changed) +
-            12 * SizeOf.SZ_REF;
+    public int getByteSize(org.mmbase.util.SizeOf sizeof) {
+        return sizeof.sizeof(values);
     }
 
 
@@ -1855,65 +1630,5 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
           }
         */
         return super.equals(n); // compare as objects.
-    }
-
-    /**
-     * Custom serialize method for MMObjectNode. The main reason this method exists is
-     * that the builder for an object will not be serialized, but the tablename for
-     * the object will be saved instead. During deserialization the builder will
-     * be recovered using that name.
-     * @since MMBase-1.8.0
-     */
-    private void writeObject(java.io.ObjectOutputStream out) throws IOException {
-        out.writeObject(oldValues);
-        out.writeObject(values);
-        out.writeObject(sizes);
-        out.writeBoolean(initializing);
-        out.writeObject(properties);
-        out.writeObject(changed);
-
-        // Save parent and builder by name, not by object
-        if (parent == null) {
-            out.writeObject(null);
-        } else {
-            out.writeObject(parent.getTableName());
-        }
-        if (builder == null) {
-            out.writeObject(null);
-        } else {
-            out.writeObject(builder.getTableName());
-        }
-        out.writeBoolean(isNew);
-        out.writeObject(aliases);
-        out.writeObject(newContext);
-    }
-
-    /**
-     * Custom deserialize method for MMObjectNode. The main reason this method exists is
-     * that the builder for an object will not be serialized, but the tablename for
-     * the object will be saved instead. During deserialization the builder will
-     * be recovered using that name.
-     * @since MMBase-1.8.0
-     */
-    private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
-        oldValues = (Map)in.readObject();
-        values = (Map)in.readObject();
-        sizes = (Map)in.readObject();
-        initializing = in.readBoolean();
-        properties = (Hashtable)in.readObject();
-        changed = (Set)in.readObject();
-
-        // Retrieve parent and builder by name, not by object
-        String parentName = (String)in.readObject();
-        if (parentName != null) {
-            parent = MMBase.getMMBase().getBuilder(parentName);
-        }
-        String builderName = (String)in.readObject();
-        if (builderName != null) {
-            builder = MMBase.getMMBase().getBuilder(builderName);
-        }
-        isNew = in.readBoolean();
-        aliases = (Set)in.readObject();
-        newContext = (String)in.readObject();
     }
 }

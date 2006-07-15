@@ -12,7 +12,9 @@ package org.mmbase.security.implementation.context;
 import org.mmbase.security.*;
 import org.mmbase.security.SecurityException;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.io.FileInputStream;
 
 import org.w3c.dom.*;
 import org.w3c.dom.traversal.NodeIterator;
@@ -29,13 +31,14 @@ import org.mmbase.util.logging.Logging;
  * contexts (used for ContextAuthorization).
  *
  * @author Eduard Witteveen
- * @version $Id: ContextAuthentication.java,v 1.22 2006-01-17 21:25:28 michiel Exp $
+ * @version $Id: ContextAuthentication.java,v 1.14 2003-08-27 19:37:12 michiel Exp $
  * @see    ContextAuthorization
  */
 public class ContextAuthentication extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(ContextAuthentication.class);
-    private Map  loginModules = new LinkedHashMap();
+    private HashMap  loginModules = new HashMap();
     private Document document;
+    private long validKey;
 
     /** Public ID of the Builder DTD version 1.0 */
     public static final String PUBLIC_ID_SECURITY_CONTEXT_CONFIG_1_0 = "-//MMBase//DTD security context config 1.0//EN";
@@ -54,29 +57,30 @@ public class ContextAuthentication extends Authentication {
     }
 
     public ContextAuthentication() {
+        validKey = System.currentTimeMillis();
     }
 
     protected void load() {
         if (log.isDebugEnabled()) {
-            log.debug("using: '" + configResource + "' as config file for context-authentication");
+            log.debug("using: '" + configFile + "' as config file for context-authentication");
         }
 
         try {
-            InputSource in = MMBaseCopConfig.securityLoader.getInputSource(configResource);
+            InputSource in = new InputSource(new FileInputStream(configFile));
             document = org.mmbase.util.XMLBasicReader.getDocumentBuilder(this.getClass()).parse(in);
         } catch(org.xml.sax.SAXException se) {
-            log.error("error parsing file :"+configResource);
-            String message = "error loading configfile :'" + configResource + "'("+se + "->"+se.getMessage()+"("+se.getMessage()+"))";
+            log.error("error parsing file :"+configFile);
+            String message = "error loading configfile :'" + configFile + "'("+se + "->"+se.getMessage()+"("+se.getMessage()+"))";
             log.error(message);
             log.error(Logging.stackTrace(se));
             throw new SecurityException(message);
         } catch(java.io.IOException ioe) {
-            log.error("error parsing file :"+configResource);
+            log.error("error parsing file :"+configFile);
             log.error(Logging.stackTrace(ioe));
-            throw new SecurityException("error loading configfile :'"+configResource+"'("+ioe+")" );
+            throw new SecurityException("error loading configfile :'"+configFile+"'("+ioe+")" );
         }
         if (log.isDebugEnabled()) {
-            log.debug("loaded: '" +  configResource + "' as config file for authentication");
+            log.debug("loaded: '" +  configFile + "' as config file for authentication");
             log.debug("going to load the modules...");
         }
 
@@ -97,27 +101,20 @@ public class ContextAuthentication extends Authentication {
             String moduleName = nnm.getNamedItem("name").getNodeValue();
             String className = nnm.getNamedItem("class").getNodeValue();
 
-            log.debug("going to try to load module with the name '" + moduleName + "' with class: " + className);
+            log.debug("going to try to load module with the name:"+moduleName+ " with class:" + className);
             ContextLoginModule module;
             try {
                 Class moduleClass = Class.forName(className);
                 module = (ContextLoginModule) moduleClass.newInstance();
             } catch(Exception e) {
-                String msg = "could not load module with the name: '" + moduleName + "' with class: " + className;
+                String msg = "could not load module with the name:"+moduleName+ " with class:" + className;
                 log.error(msg);
                 log.error( Logging.stackTrace(e));
                 throw new SecurityException(msg);
             }
-            module.load(document, getKey(), moduleName, manager);
-            log.info("loaded module with the name: '" + moduleName + "' with class: " + className);
+            module.load(document, validKey, moduleName, manager);
+            log.info("loaded module with the name:"+moduleName+ " with class:" + className);
             loginModules.put(moduleName, module);
-        }
-
-        if (!loginModules.containsKey("class")) {
-            ContextLoginModule classModule =  new ClassLogin();
-            log.info("The class login module was not configured. It is needed sometimes. Now loading module with the name 'class' with class: " + classModule.getClass());
-            classModule.load(document, getKey(), "class", manager);
-            loginModules.put("class", classModule);
         }
 
         log.debug("done loading the modules...");
@@ -127,17 +124,19 @@ public class ContextAuthentication extends Authentication {
     public UserContext login(String moduleName, Map loginInfo, Object[] parameters) throws SecurityException {
         // look if we can find our login module...
         if(!loginModules.containsKey(moduleName)) {
-            throw new UnknownAuthenticationMethodException("could not load module with name: '" +  moduleName + "'");
+            String msg = "could not load module with name:" +  moduleName;
+            log.error(msg);
+            throw new SecurityException(msg);
         }
         ContextLoginModule module = (ContextLoginModule) loginModules.get(moduleName);
         // and we do the login...
         UserContext user = module.login(loginInfo, parameters);
         if (log.isServiceEnabled()) {
             if(user == null) {
-                log.debug("login on module with name '" + moduleName + "' failed");
+                log.debug("login on module with name:" + moduleName + "failed");
             } else {
                 if (user.getRank().getInt() > Rank.ANONYMOUS_INT) {
-                    log.debug("login on module with name '" + moduleName + "' was succesfull for user with id: '" + user.getIdentifier() + "'");
+                    log.service("login on module with name:" + moduleName + " was succesfull for user with id:" + user.getIdentifier());
                 }
             }
         }
@@ -147,13 +146,7 @@ public class ContextAuthentication extends Authentication {
     /**
      * this method does nothing..
      */
-    public boolean isValid(UserContext userContext) throws SecurityException {
-        if ( getKey() == ((ContextUserContext)userContext).getKey()) return true;
-        log.debug("not valid because " + getKey () + " != " + ((ContextUserContext) userContext).getKey());
-        return false;
-    }
-
-    public String[] getTypes() {
-        return (String[]) loginModules.keySet().toArray(new String[] {});
+    public boolean isValid(UserContext usercontext) throws SecurityException {
+        return validKey == ((ContextUserContext)usercontext).getKey();
     }
 }

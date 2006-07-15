@@ -29,73 +29,69 @@ import org.mmbase.util.logging.*;
 
   </pre>
  * This writer can be instantiated with another Writer and a CharTransformer. All writing will be transformed by the given 
- * CharTransformer before arriving at the given Writer.
+ * CharTransformer before ariving at the give Writer.
  *
  * When ready, this TransformingWriter should be 'closed'. A coding example can be found in this classe's main method.
  *
  * @author Michiel Meeuwissen 
  * @since MMBase-1.7
  * @see   ChainedCharTransformer
- * @see   TransformingReader
  */
 
 public class TransformingWriter extends PipedWriter {
 
     private static final Logger log = Logging.getLoggerInstance(TransformingWriter.class);
 
+
+    private CharTransformer charTransformer;
     private Writer out;
-    private CharTransformerLink link;
+    private Thread thread;
 
 
-    public TransformingWriter(Writer out, CharTransformer charTransformer)  {
+    public TransformingWriter(Writer out, CharTransformer ct)  {
         super();
         this.out = out;
-
+        charTransformer = ct;
         PipedReader r = new PipedReader();
         try {            
             connect(r);
-            link = new CharTransformerLink(charTransformer, r, out, false);
-            org.mmbase.util.ThreadPools.filterExecutor.execute(link);    
+            thread =  new ChainedCharTransformer.TransformerLink(charTransformer, r, out, false);
+            thread.setDaemon(true);
+            if (log.isDebugEnabled()) log.debug("instantiated new tread " + thread);
+            thread.start();
+          
         } catch (IOException ioe) {
             log.error(ioe.getMessage());
         }
     }
 
    
-    /**
-     * {@inheritDoc}
-     * ALso closes the wrapped Writer.
-     */
-    public void close() throws IOException {
-        super.close(); // accept no more input
+    public void close() throws IOException {   
         try {
-            while (! link.ready()) {                
-                synchronized(link) { // make sure we have the lock
-                    link.wait();
-                }
-            }
+            super.close();
+            thread.join();
         } catch (InterruptedException ie) {
-            log.warn("" + ie);
+            log.error(ie.getMessage());
         }
-        out.close();
     }
    
   
     // main for testing purposes
-    public static void main(String[] args) {
-        Writer out = new OutputStreamWriter(System.out);
+    public static void main(String[] args) throws IOException {
+        Writer end = new StringWriter();
         ChainedCharTransformer t = new ChainedCharTransformer();
         t.add(new UpperCaser());
         t.add(new SpaceReducer());
-        t.add(new Trimmer());
-        TransformingWriter writer = new TransformingWriter(out, t);
+        TransformingWriter writer = new TransformingWriter(end, t);
         String testString = "use argument to change this string";
         if (args.length > 0) {
             testString = args[0];
         }
         try {
+            System.out.println("Transforming '" + testString + "'");
             writer.write(testString);
             writer.close();
+            System.out.println(end.toString());
         } catch(Exception e) {
             log.error("" + e + Logging.stackTrace(e));
         }

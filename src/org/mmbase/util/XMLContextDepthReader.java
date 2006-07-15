@@ -21,17 +21,13 @@ import org.w3c.dom.*;
  * The start node is identified either an alias or a combination of buildername and where clause.
  * This class can be used to easily retrive these parameters.
  *
- * @application Applications
- * @move org.mmbase.util.xml
- * @rename ContextDepthReader
- * @duplicate extend from org.mmbase.util.xml.DocumentReader
  * @author Daniel Ockeloen
- * @version $Id: XMLContextDepthReader.java,v 1.9 2006-01-06 17:59:28 michiel Exp $
+ * @version $Id: XMLContextDepthReader.java,v 1.7 2003-07-04 13:03:30 keesj Exp $
  */
 public class XMLContextDepthReader {
 
     // logger
-    private static final Logger log = Logging.getLoggerInstance(XMLContextDepthReader.class);
+    private static Logger log = Logging.getLoggerInstance(XMLContextDepthReader.class.getName());
 
     Document document;
 
@@ -40,7 +36,7 @@ public class XMLContextDepthReader {
      */
     public XMLContextDepthReader(String filename) {
         try {
-            document = XMLBasicReader.getDocumentBuilder(false, null, null).parse(new File(filename));
+            document = XMLBasicReader.getDocumentBuilder().parse(new File(filename));
         } catch (Exception e) {
             log.error(e.getMessage());
             log.error(Logging.stackTrace(e));

@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * to an output stream which is immediately flushed afterwards.
  *
  * @author Nico Klasens (Finalist IT Group)
- * @version $Id: StreamCopyThread.java,v 1.4 2005-01-30 16:46:39 nico Exp $
+ * @version $Id: StreamCopyThread.java,v 1.3 2003-05-12 13:10:47 kees Exp $
  * @since MMBase-1.6
  */
 class StreamCopyThread extends Thread {
@@ -62,6 +62,11 @@ class StreamCopyThread extends Thread {
     private boolean finished = false;
 
     /**
+     * Size of the buffer in which data is piped
+     */
+    private int bufferSize = BUFFER_SIZE;
+
+    /**
      * Create a thread to copy bytes fro one strea to the other
      * 
      * @param name the name of the new thread
@@ -70,11 +75,24 @@ class StreamCopyThread extends Thread {
      * @param pInput This thread writes to the external process
      */
     public StreamCopyThread(String name, InputStream in, OutputStream out, boolean pInput) {
-        this(null, name, in, out, pInput);
+        this(null, name, in, out, BUFFER_SIZE, pInput);
     }
 
     /**
-     * Create a thread to copy bytes fro one stream to the other
+     * Create a thread to copy bytes fro one strea to the other
+     * 
+     * @param group ThreadGroup where this thread belongs to
+     * @param name the name of the new thread
+     * @param in the stream from which to pipe the data
+     * @param out the stream to pipe the data to
+     * @param pInput This thread writes to the external process
+     */
+    public StreamCopyThread(ThreadGroup group, String name, InputStream in, OutputStream out, boolean pInput) {
+        this(group, name, in, out, BUFFER_SIZE, pInput);
+    }
+
+    /**
+     * Create a thread to copy bytes fro one strea to the other
      * 
      * @param group ThreadGroup where this thread belongs to
      * @param name the name of the new thread
@@ -88,11 +106,13 @@ class StreamCopyThread extends Thread {
         String name,
         InputStream in,
         OutputStream out,
+        int bSize,
         boolean pInput) {
         super(group, name);
         processInput = pInput;
         outputStream = out;
         inputStream = in;
+        bufferSize = bSize;
         setDaemon(true);
     }
 

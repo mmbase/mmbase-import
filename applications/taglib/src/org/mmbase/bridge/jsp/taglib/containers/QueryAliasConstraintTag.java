@@ -16,14 +16,13 @@ import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.storage.search.*;
-import java.util.*;
 
 /**
  * Alias as constraint.
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryAliasConstraintTag.java,v 1.7 2005-01-30 16:46:34 nico Exp $
+ * @version $Id: QueryAliasConstraintTag.java,v 1.2.2.2 2004-07-26 20:12:19 nico Exp $
  */
 public class QueryAliasConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 
@@ -60,38 +59,20 @@ public class QueryAliasConstraintTag extends CloudReferrerTag implements QueryCo
         return new Integer(node.getNumber());
     }
 
-    protected SortedSet getAliases(List names) throws JspTagException {
-        SortedSet set = new TreeSet();
-        Iterator i = names.iterator();
-        while (i.hasNext()) {
-            set.add(getAlias((String) i.next()));
-        }
-        return set;
-    }
-
 
 
     public int doStartTag() throws JspTagException {
         QueryContainer c = (QueryContainer) findParentTag(QueryContainer.class, (String) container.getValue(this));
         Query query = c.getQuery();
-        String elementString = element.getString(this);
-        Step step;
-        if (elementString.equals("")) {
-            if (query instanceof NodeQuery) {
-                step = ((NodeQuery) query).getNodeStep();
-            } else {
-                throw new JspTagException("Don't know on what path element the alias constraint must be applied. Use the 'element' attribute");
-            }
-        } else {
-            step = query.getStep(elementString);
-        }
 
+        Step step = query.getStep(element.getString(this));
         if (step == null) {
             throw new JspTagException("No element '" + element.getString(this) + "' in path '" + query.getSteps() + "'");
         }
         StepField stepField = query.createStepField(step, "number");
 
-        Constraint newConstraint = query.createConstraint(stepField, getAliases(name.getList(this)));
+        Constraint newConstraint = null;
+        newConstraint = query.createConstraint(stepField, getAlias(name.getString(this)));
 
         if (newConstraint != null) {
             if (inverse.getBoolean(this, false)) {

@@ -24,20 +24,15 @@ import org.mmbase.util.logging.Logging;
  *
  * Note that the interesting functionality is implemented in the 'TreeHelper' class.
  * @author Johannes Verelst
- * @version $Id: LeafFileTag.java,v 1.14 2006-06-22 13:17:46 johannes Exp $
+ * @version $Id: LeafFileTag.java,v 1.9.2.2 2004-07-26 20:12:18 nico Exp $
  */
 
 public class LeafFileTag extends UrlTag {
     
-    private static final Logger log = Logging.getLoggerInstance(LeafFileTag.class);
+    private static final Logger log = Logging.getLoggerInstance(LeafFileTag.class.getName());
     protected Attribute  objectList = Attribute.NULL;
     protected TreeHelper th = new TreeHelper();
 
-    protected Attribute notFound        = Attribute.NULL;
-
-    public void setNotfound(String n) throws JspTagException {
-        notFound = getAttribute(n);
-    }
 
     public int doStartTag() throws JspTagException {
         if (page == Attribute.NULL) {
@@ -54,35 +49,17 @@ public class LeafFileTag extends UrlTag {
         if (log.isDebugEnabled()) {
             log.debug("Retrieving page '" + leafPage + "'");
         }
-
-        if (leafPage == null || "".equals(leafPage)) {
-            throw new JspTagException("Could not find page " + orgPage);
-        }
-
+        if (leafPage == null) throw new JspTagException("Could not find page " + orgPage);
         return leafPage;
     }
 
     public int doEndTag() throws JspTagException {
         th.setCloud(getCloudVar());        
-        int retval = super.doEndTag();
-        th.release();
-        return retval;
+        return super.doEndTag();
     }
     
     public void setObjectlist(String p) throws JspTagException {
         objectList = getAttribute(p);
-    }
-
-    protected String getUrl(boolean writeamp, boolean encode) throws JspTagException {
-        String url = "";
-        try {
-            url = super.getUrl(writeamp, encode);
-        } catch (JspTagException e) {
-            if (!notFound.getString(this).equals("skip")) {
-                throw(e);
-            }
-        }
-        return url;
     }
     
     // override to cancel 

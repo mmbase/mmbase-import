@@ -12,8 +12,9 @@ package org.mmbase.bridge.jsp.taglib;
 
 import javax.servlet.jsp.JspTagException;
 
-import org.mmbase.bridge.*;
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.Node;
+import org.mmbase.util.logging.*;
+
 
 /**
  * A base class for tags which provide a node. The
@@ -28,25 +29,17 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
  *
  * @author Michiel Meeuwissen
  * @author Kees Jongenburger
- * @version $Id: AbstractNodeProviderTag.java,v 1.37 2006-06-23 13:17:30 johannes Exp $ 
+ * @version $Id: AbstractNodeProviderTag.java,v 1.30.2.1 2005-03-14 18:33:24 michiel Exp $ 
  */
 
 abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements NodeProvider {
     // a node provider is a nodereferrer as well...
     // this is especially useful for some extended classes (like 'relatednodes').
+    
+    private static final Logger log = Logging.getLoggerInstance(AbstractNodeProviderTag.class);
 
-    final protected  NodeProviderHelper nodeHelper = new NodeProviderHelper(this); // no m.i. and there are more nodeprovider which cannot extend this, they can use the same trick.
 
-
-    protected Attribute fieldEscaper;
-
-    /**
-     * @since MMBase-1.8
-     */
-    public void setFieldescape(String e) throws JspTagException {
-        fieldEscaper = getAttribute(e);
-    }
-
+    protected  NodeProviderHelper nodeHelper = new NodeProviderHelper(this); // no m.i. and there are more nodeprovider which cannot extend this, they can use the same trick.
 
     public void setJspvar(String jv) {
         nodeHelper.setJspvar(jv);
@@ -61,13 +54,6 @@ abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements
     protected void setNodeVar(Node node) {        
         nodeHelper.setNodeVar(node);
     }
-
-    /**
-     * @since MMBase-1.8
-     */
-    public void setCommitonclose(String c) throws JspTagException {
-        nodeHelper.setCommitonclose(c);
-    }
     
     /**
      * Fill the jsp and context vars
@@ -78,10 +64,16 @@ abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements
         nodeHelper.fillVars();
     }
                
-    public  Query getGeneratingQuery() throws JspTagException {
-        return nodeHelper.getGeneratingQuery();
+    public void setModified() {
+        nodeHelper.setModified();
     }
 
+    /**
+     * @since MMBase-1.7
+     */
+    protected boolean getModified() {
+        return nodeHelper.getModified();
+    }
 
     /**
     * Does everything needed on the afterbody tag of every
@@ -96,12 +88,7 @@ abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements
     }
     
     public int doEndTag() throws JspTagException {
-        super.doEndTag();
+        super.doEndTag();        
         return nodeHelper.doEndTag();
-    }
-
-    public void release() {
-        super.release();
-        nodeHelper.release();
     }
 }

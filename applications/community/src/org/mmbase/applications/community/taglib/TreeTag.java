@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TreeTag.java,v 1.17 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: TreeTag.java,v 1.14.2.2 2004-07-26 20:12:21 nico Exp $
  */
  
 public class TreeTag extends AbstractNodeListTag {
@@ -59,7 +59,7 @@ public class TreeTag extends AbstractNodeListTag {
     public void setFields(String fields) throws JspTagException {
         fieldList = getAttribute(fields);
     }
-    protected List getFields(String fields) {
+    protected List getFields(String fields) throws JspTagException {
         List res = new ArrayList();
         StringTokenizer st = new StringTokenizer(fields, ",");
         while(st.hasMoreTokens()){
@@ -68,7 +68,7 @@ public class TreeTag extends AbstractNodeListTag {
         return res;
     }
 
-    private List getDefaultFields() {
+    private List getDefaultFields() throws JspTagException {
         return getFields("number,listhead,depth,listtail,subject,timestamp,replycount,info");
     }
 

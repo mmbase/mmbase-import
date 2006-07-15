@@ -9,40 +9,40 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
+
 import org.mmbase.bridge.jsp.taglib.util.*;
 import org.mmbase.bridge.jsp.taglib.debug.TimerTag;
 
 import javax.servlet.jsp.*;
 import javax.servlet.jsp.tagext.*;
-import javax.servlet.jsp.jstl.core.*;
-
-import java.io.IOException;
-import java.util.*;
 
 import org.mmbase.bridge.*;
-import org.mmbase.storage.search.*;
-import org.mmbase.util.Casting;
+import java.io.IOException;
+
+import org.mmbase.util.StringSplitter;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
 
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.26 2006-07-09 14:16:11 michiel Exp $
+ * @version $Id: NodeListHelper.java,v 1.5.2.1 2004-07-05 17:19:59 michiel Exp $ 
  * @since MMBase-1.7
  */
 
 public class NodeListHelper implements ListProvider {
 
     private static final Logger log = Logging.getLoggerInstance(NodeListHelper.class);
-
-    private final ContextReferrerTag thisTag;
-    private final NodeProviderHelper nodeHelper;
+        
+    private ContextReferrerTag thisTag;
+    private NodeProviderHelper nodeHelper;
 
     public NodeListHelper(ContextReferrerTag thisTag, NodeProviderHelper nodeHelper) {
         this.thisTag = thisTag;
         this.nodeHelper = nodeHelper;
     }
+
 
     public String getId() {
         try {
@@ -51,6 +51,8 @@ public class NodeListHelper implements ListProvider {
             throw new RuntimeException(j);
         }
     }
+
+
 
     /**
      * The maximum number of elements in a list.
@@ -64,18 +66,14 @@ public class NodeListHelper implements ListProvider {
      */
     protected Attribute offset = Attribute.NULL;
 
-    protected Attribute comparator = Attribute.NULL;
 
-    protected Attribute add = Attribute.NULL;
-    protected Attribute retain = Attribute.NULL;
-    protected Attribute remove= Attribute.NULL;
+    protected Attribute comparator = Attribute.NULL;
 
 
     /**
      * Lists do implement ContextProvider
      */
     private   ContextCollector  collector;
-
 
     /**
      * Determines whether a field in {@link AbstractNodeListTag#orderby} changed
@@ -102,12 +100,11 @@ public class NodeListHelper implements ListProvider {
      */
     protected int timerHandle = -1;
 
-    private String previousValue = null;
+    private String previousValue = null; 
 
     public int getIndex() {
         return currentItemIndex;
     }
-
     public int getIndexOffset() {
         return 1;
     }
@@ -115,7 +112,6 @@ public class NodeListHelper implements ListProvider {
     public void remove() {
         nodeIterator.remove();
     }
-
     /**
      * Set the list maximum
      * @param m the max number of values returned
@@ -140,32 +136,10 @@ public class NodeListHelper implements ListProvider {
         return offset;
     }
 
+
     public void setComparator(String c) throws JspTagException {
         comparator = thisTag.getAttribute(c);
     }
-
-    /**
-     * @since MMBase-1.8
-     */
-    public void setAdd(String a) throws JspTagException {
-        add = thisTag.getAttribute(a);
-    }
-
-    /**
-     * @since MMBase-1.8
-     */
-    public void setRetain(String a) throws JspTagException {
-        retain = thisTag.getAttribute(a);
-    }
-
-    /**
-     * @since MMBase-1.8
-     */
-    public void setRemove(String a) throws JspTagException {
-        remove = thisTag.getAttribute(a);
-    }
-
-
 
     public String getComparator() throws JspTagException {
         return comparator.getString(thisTag);
@@ -177,53 +151,12 @@ public class NodeListHelper implements ListProvider {
 
     public ContextContainer getContextContainer() throws JspTagException {
         if (collector == null) return thisTag.getContextProvider().getContextContainer(); // to make sure old-style implemntation work (which do not initialize container)
-        return collector;
-    }
-    public PageContext getPageContext() throws JspTagException {
-        return thisTag.getPageContext();
+        return collector.getContextContainer();
     }
 
     public int setReturnValues(NodeList nodes, boolean trim) throws JspTagException {
-        Cloud cloud = null;
-        if (cloud == null) {
-            Query q = (Query) nodes.getProperty(NodeList.QUERY_PROPERTY);
-            if (q != null) cloud = q.getCloud();
-        }
-        if (cloud == null && nodes.size() > 0) {
-            cloud = nodes.getNode(0).getCloud();
-        }
-
-        if (add != Attribute.NULL) {
-            Object addObject = thisTag.getObjectConditional(add.getString(thisTag));
-            if (addObject != null) {
-                if (addObject instanceof Collection) {
-                    nodes.addAll((Collection) addObject);
-                } else {
-                    nodes.add(Casting.toNode(addObject, cloud));
-                }
-            }
-        }
-        if (retain != Attribute.NULL) {
-            Object retainObject = thisTag.getObjectConditional(retain.getString(thisTag));
-            if (retainObject != null) {
-                if (retainObject instanceof Collection) {
-                    nodes.retainAll((Collection) retainObject);
-                } else {
-                    nodes.retainAll(Collections.singletonList((Casting.toNode(retainObject, cloud))));
-                }
-            }
-        }
-        if (remove != Attribute.NULL) {
-            Object removeObject = thisTag.getObjectConditional(remove.getString(thisTag));
-            if (removeObject != null) {
-                if (removeObject instanceof Collection) {
-                    nodes.removeAll((Collection) removeObject);
-                } else {
-                    nodes.remove((Casting.toNode(removeObject, cloud)));
-                }
-            }
-        }
-        ListSorter.sort(nodes, (String) comparator.getValue(thisTag), thisTag);
+        
+        ListSorter.sort(nodes, (String) comparator.getValue(thisTag), thisTag.getPageContext());
 
         if (trim && (max != Attribute.NULL || offset != Attribute.NULL)) {
             int currentSize = nodes.size();
@@ -252,7 +185,6 @@ public class NodeListHelper implements ListProvider {
         FormatterTag f = (FormatterTag) thisTag.findParentTag(FormatterTag.class, null, false);
         if (f != null && f.wantXML()) {
             f.getGenerator().add(nodes);
-            f.setCloud(cloud);
         }
 
         nodeIterator = returnList.nodeIterator();
@@ -260,15 +192,21 @@ public class NodeListHelper implements ListProvider {
         previousValue = null;
         changed = true;
 
+
+
         if (nodeIterator.hasNext()) {
             setNext(); // because EVAL_BODY_INCLUDE is returned now (by setReturnValues), doInitBody is not called by taglib impl.
             return ContextReferrerTag.EVAL_BODY;
         } else {
-            return Tag.SKIP_BODY;
+            return BodyTagSupport.SKIP_BODY;
         }
+
+
     }
 
+
     public void doStartTagHelper() throws JspTagException {
+
         // make a (temporary) container
         collector = new ContextCollector(thisTag.getContextProvider());
 
@@ -289,7 +227,7 @@ public class NodeListHelper implements ListProvider {
     }
 
     public int doAfterBody() throws JspTagException {
-        log.debug("doafterbody");
+        log.debug("doafterbody");    
         if (getId() != null) {
             thisTag.getContextProvider().getContextContainer().unRegister(getId());
         }
@@ -300,10 +238,10 @@ public class NodeListHelper implements ListProvider {
         }
         if (nodeIterator.hasNext()){
             setNext();
-            return IterationTag.EVAL_BODY_AGAIN;
+            return BodyTagSupport.EVAL_BODY_AGAIN;
         } else {
             log.debug("writing body");
-            if (ContextReferrerTag.EVAL_BODY == BodyTag.EVAL_BODY_BUFFERED) {
+            if (ContextReferrerTag.EVAL_BODY == BodyTagSupport.EVAL_BODY_BUFFERED) {
                 BodyContent bodyContent = thisTag.getBodyContent();
                 if (bodyContent != null) {
                     try {
@@ -313,11 +251,13 @@ public class NodeListHelper implements ListProvider {
                     }
                 }
             }
-            return Tag.SKIP_BODY;
+            return BodyTagSupport.SKIP_BODY;
         }
+
     }
 
-    public int doEndTag() throws JspTagException {
+    public void doEndTag() throws JspTagException {
+
         if (getId() != null) {
             thisTag.getContextProvider().getContextContainer().register(getId(), returnList, false); // use false because check was done in doStartTag (and doAfterBody not always called).
         }
@@ -328,82 +268,25 @@ public class NodeListHelper implements ListProvider {
 
         // clean vars which will be reset in doStartTag (so it is possible with tag reuse). These
         // can be gc-ed then.
-        if (collector != null) {
-            collector.release(thisTag.getPageContext(), thisTag.getContextProvider().getContextContainer());
-            collector = null;
-        }
-        nodeHelper.doEndTag();
+        collector = null;
         nodeIterator = null;
         returnList = null;
         previousValue = null;
-        return EVAL_PAGE;
-    }
-
-
-    /**
-     * The first ordered field is used to determin the 'changed' status of a Node in a NodeList.
-     * @since MMBase-1.8
-     */
-    protected String getFirstOrderedField(NodeList returnList, NodeManager nextNodeManager) {
-        // the orderby attribute is arranged in AbstractNodeListTag#setReturnValues
-        // Perhaps its code could more logically be present here.
-        /*
-        Query query = (Query) returnList.getProperty(NodeList.QUERY_PROPERTY);
-        if (query != null && false) {
-            List sortOrders = query.getSortOrders();
-            if (sortOrders.size() > 0) {
-                SortOrder order = (SortOrder) sortOrders.get(0);
-                StepField stepField = order.getField();
-                String alias = stepField.getAlias();
-                if (alias == null) {
-                    Step step = stepField.getStep();
-                    String stepAlias = step.getAlias();
-                    if (stepAlias == null) stepAlias = step.getTableName();
-                    alias = stepAlias + "." + stepField.getFieldName();
-                }
-                return alias;
-            } else {
-                return null;
-            }
-
-        } else {
-        */
-            // use order as stored in the nodelist (the property of the tag may not be set
-            // if you use referid to get the result of a previous listtag)
-            String listOrder = (String) returnList.getProperty("orderby");
-            if (listOrder != null && ! "".equals(listOrder)) {
-                // then you can also ask if 'changed' the node
-                // look only at first field of sorted for the moment.
-                String[] fa = listOrder.trim().split("\\s*,\\s*");
-                int i = 0;
-                while(i < fa.length && ! nextNodeManager.hasField(fa[i])) {
-                    i++;
-                }
-                return i < fa.length ? fa[i] : null;
-            } else {
-                return null;
-            }
-            // }
+        
     }
 
     public void setNext() throws JspTagException {
+        currentItemIndex ++;
         try {
-            currentItemIndex ++;
             Node next = nodeIterator.nextNode();
-            while (next == null) {
-                log.warn("Found null in node list " + returnList + " skipping");
-                currentItemIndex ++;
-                if (nodeIterator.hasNext()) {
-                    next = nodeIterator.nextNode();
-                } else {
-                    return;
-                }
-            }
-            NodeManager nextNodeManager = next.getNodeManager();
-            if (nextNodeManager == null) throw new RuntimeException("Found node " + next + " has no NodeManager");
-            String orderField = getFirstOrderedField(returnList, nextNodeManager);
-            if (orderField != null) {
-                String value =  "" + next.getValue(orderField);
+            // use order as stored in the nodelist (the property of the tag may not be set
+            // if you use referid to get the result of a prevuious listtag)
+            String listOrder=(String) returnList.getProperty("orderby");
+            if (listOrder != null && ! "".equals(listOrder)) {
+                // then you can also ask if 'changed' the node
+                // look only at first field of sorted for the /moment.
+                String f = (String) StringSplitter.split(listOrder).get(0);
+                String value = "" + next.getValue(f); // cannot cast  to String, since it can also be e.g. Integer.
                 if (previousValue != null) {
                     if (value.equals(previousValue)) {
                         changed = false;
@@ -412,12 +295,11 @@ public class NodeListHelper implements ListProvider {
                     }
                 }
                 previousValue = value;
-
             }
             nodeHelper.setNodeVar(next);
             nodeHelper.fillVars();
         } catch (BridgeException be) { // e.g. NodeManager does not exist
-            log.warn(be.getMessage(), be);
+            log.warn(be.getMessage());
         }
     }
 
@@ -433,43 +315,9 @@ public class NodeListHelper implements ListProvider {
         return returnList.size();
     }
 
+
     public Object getCurrent() {
         return nodeHelper.getNodeVar();
-    }
-
-    public LoopTagStatus getLoopStatus() {
-        return new ListProviderLoopTagStatus(this);
-    }
-
-    public void release() {
-        if (collector != null) {
-            try {
-                collector.release(thisTag.getPageContext(), thisTag.getContextProvider().getContextContainer());
-                collector = null;
-            } catch (Exception e) {
-            }
-        }
-        if (nodeHelper != null) {
-            nodeHelper.release();
-        }
-        nodeIterator = null;
-        returnList = null;
-        previousValue = null;
-    }
-    // unused
-    public int doStartTag() throws JspTagException {
-        return -1;
-    }
-    // unused
-    public Tag getParent() {
-        return null;
-    }
-    // unused
-    public void setParent(Tag tag) {
-
-    }
-    // unused
-    public void setPageContext(PageContext pc) {
     }
 
 

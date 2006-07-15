@@ -11,16 +11,13 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.implementation;
 
 import java.util.*;
-import java.io.*;
-
 import org.mmbase.security.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
-import org.mmbase.datatypes.DataType;
+import org.mmbase.bridge.util.fields.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
-import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.*;
 
@@ -33,28 +30,42 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.204 2006-07-14 18:55:14 nklasens Exp $
+ * @version $Id: BasicNode.java,v 1.123.2.4 2004-07-20 13:03:08 pierre Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
-public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements Node, Comparable, SizeMeasurable {
+public class BasicNode implements Node, Comparable, SizeMeasurable {
 
+    public static final int ACTION_CREATE = 1; // create a node
+    public static final int ACTION_EDIT   = 2; // edit node, or change aliasses
+    public static final int ACTION_DELETE = 3; // delete node
+    public static final int ACTION_COMMIT = 10; // commit a node after changes
 
     private static final Logger log = Logging.getLoggerInstance(BasicNode.class);
 
+    private boolean changed = false;
+
     /**
      * Reference to the NodeManager
+     * @scope private
      */
-    protected BasicNodeManager nodeManager;
+    protected NodeManager nodeManager;
 
     /**
      * Reference to the Cloud.
+     * @scope private
      */
-    final protected BasicCloud cloud;
+    protected BasicCloud cloud;
 
+    /**
+     * Reference to MMBase root.
+     * @scope private
+     */
+    protected MMBase mmb;
 
     /**
      * Reference to actual MMObjectNode object.
+     * @scope private
      */
     protected MMObjectNode noderef;
 
@@ -64,30 +75,31 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
      * whether a node is in 'edit' mode (i.e. has a temporary node).
      * Basically, a temporarynodeid is either -1 (invalid), or a negative number smaller than -1
      * (a temporary number assigend by the system).
+     * @scope private
      */
-    private int temporaryNodeId = -1;
+    protected int temporaryNodeId = -1;
 
     /**
      * The account this node is edited under.
      * This is needed to check whether people have not switched users during an edit.
+     * @scope private
      */
-    private String account = null;
+    protected String account = null;
 
+    /**
+     * Determines whether this node was created for insert.
+     * @scope private
+     */
+    protected boolean isnew = false;
 
-
-    BasicNode(BasicCloud cloud) {
-        this.cloud = cloud;
-    }
     /**
      * Instantiates a node, linking it to a specified node manager.
      * Use this constructor if the node you create uses a NodeManager that is not readily available
      * from the cloud (such as a temporary nodemanager for a result list).
      * @param node the MMObjectNode to base the node on
      * @param nodeManager the NodeManager to use for administrating this Node
-     * @throws IllegalArgumentException If node is null
      */
-    BasicNode(MMObjectNode node, BasicNodeManager nodeManager) {
-        cloud = nodeManager.cloud;
+    BasicNode(MMObjectNode node, NodeManager nodeManager) {
         this.nodeManager = nodeManager;
         setNode(node);
         init();
@@ -97,50 +109,84 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
      * Instantiates a node, linking it to a specified cloud
      * The NodeManager for the node is requested from the Cloud.
      * @param node the MMObjectNode to base the node on
-     * @param cloud the cloud to which this node belongs
-     * @throws IllegalArgumentException If node is null
+     * @param Cloud the cloud to which this node belongs
      */
-    BasicNode(MMObjectNode node, BasicCloud cloud) {
-        this.cloud =  cloud;
+    BasicNode(MMObjectNode node, Cloud cloud) {
+        this.cloud = (BasicCloud) cloud;
         setNode(node);
-        setNodeManager(node);
         init();
     }
 
     /**
      * Instantiates a new node (for insert), using a specified nodeManager.
      * @param node a temporary MMObjectNode that is the base for the node
-     * @param cloud the cloud to create the node in
+     * @param nodeManager the node manager to create the node with
      * @param id the id of the node in the temporary cloud
      */
-    BasicNode(MMObjectNode node, BasicCloud cloud, int id) {
-        this.cloud = cloud;
+    BasicNode(MMObjectNode node, Cloud cloud, int id) {
+        this.cloud = (BasicCloud)cloud;
         setNode(node);
-        setNodeManager(node);
         temporaryNodeId = id;
+        isnew = true;
         init();
         edit(ACTION_CREATE);
     }
 
     /**
-     * @since MMBase-1.8
-     */
-    protected void setNodeManager(MMObjectNode node) {
-        nodeManager = cloud.getBasicNodeManager(node.getBuilder());
-        assert(nodeManager != null);
-    }
-
-    /**
-     * Initializes state in case of a transaction.
+     * Initializes the node.
+     * Determines nodemanager and cloud (depending on information available),
+     * Sets references to MMBase modules and initializes state in case of a transaction.
      */
     protected void init() {
+
+        if (cloud == null) {
+            cloud = (BasicCloud) nodeManager.getCloud();
+        }
+
+        if (nodeManager == null) {
+            // determine nodemanager, unless the node is the 'typedef' node
+            // (needs to point towards itself)
+            if (getNode().getBuilder().oType != getNode().getNumber()) {
+                nodeManager = cloud.getNodeManager(getNode().getBuilder().getTableName());
+            } else {
+                nodeManager = (NodeManager)this;
+            }
+        }
+
+        mmb = BasicCloudContext.mmb;
+
         // check whether the node is currently in transaction
         // and intialize temporaryNodeId if that is the case
-        if (temporaryNodeId == -1 && cloud.contains(getNode())) {
-            temporaryNodeId = getNode().getNumber();
+        if ((cloud instanceof BasicTransaction) && (((BasicTransaction)cloud).contains(getNode()))) {
+            if (temporaryNodeId == -1) {
+                temporaryNodeId = getNode().getNumber();
+            }
         }
     }
 
+    public boolean isRelation() {
+        return this instanceof Relation;
+    }
+
+    public Relation toRelation() {
+        return (Relation)this;
+    }
+
+    public boolean isNodeManager() {
+        return this instanceof NodeManager;
+    }
+
+    public NodeManager toNodeManager() {
+        return (NodeManager)this;
+    }
+
+    public boolean isRelationManager() {
+        return this instanceof RelationManager;
+    }
+
+    public RelationManager toRelationManager() {
+        return (RelationManager)this;
+    }
 
     public int getByteSize() {
         return getByteSize(new SizeOf());
@@ -155,9 +201,9 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
      * If the underlying node was deleted, this returns a virtual node with
      * no info except the (original) node number.
      * @return the underlying MMObjectNode
-     * @throws NotFoundException if no node was specified.
+     * @throws NotFoundException if no node was specified. This generally means the
      */
-    protected final MMObjectNode getNode() {
+    protected final MMObjectNode getNode() throws NotFoundException {
         return noderef;
     }
 
@@ -167,9 +213,8 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
      * @since MMBase-1.6.4
      */
     protected void invalidateNode() {
-        org.mmbase.module.core.VirtualNode n = new org.mmbase.module.core.VirtualNode(noderef.getBuilder());
+        VirtualNode n = new VirtualNode(noderef.getBuilder());
         n.setValue("number", noderef.getNumber());
-        n.clearChanged();
         noderef = n;
     }
 
@@ -181,7 +226,9 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
      */
     protected void setNode(MMObjectNode n) {
         if (n == null) {
-            throw new IllegalArgumentException("Passed Node is null");
+            String message = "Passed Node is null";
+            log.error(message);
+            throw new IllegalArgumentException(message);
         }
         noderef = n;
     }
@@ -206,21 +253,9 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
 
     /**
      * Returns whether this is a new (not yet committed) node.
-     * @return is a new node
      */
-    public boolean isNew() {
-        return getNode().isNew();
-    }
-
-    public boolean isChanged(String fieldName) {
-        return getNode().getChanged().contains(fieldName);
-    }
-
-    public boolean isChanged() {
-        return getNode().isChanged();
-    }
-    public Set getChanged() {
-        return Collections.unmodifiableSet(getNode().getChanged());
+    boolean isNew() {
+        return isnew;
     }
 
     /**
@@ -234,21 +269,22 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
      *
      * @param action The action to perform.
      */
-    // there is little common for the 4 actions (code is full of if/else code), I think it would
-    // perhaps be clearer to remove this method, and simply resolve it on the places where it is
-    // used.
     protected void edit(int action) {
         if (account == null) {
             account = cloud.getAccount();
-        } else if (!account.equals(cloud.getAccount())) {
+        } else if (account != cloud.getAccount()) {
             throw new BridgeException("User context changed. Cannot proceed to edit this node .");
+        }
+        if (nodeManager instanceof VirtualNodeManager) {
+            throw new BridgeException("Cannot make edits to a virtual node.");
         }
 
         int realnumber = getNode().getNumber();
         if (realnumber != -1) {
             if (action == ACTION_DELETE) {
                 cloud.verify(Operation.DELETE, realnumber);
-            } else if ((action == ACTION_EDIT) && (temporaryNodeId == -1)) {
+            }
+            if ((action == ACTION_EDIT) && (temporaryNodeId == -1)) {
                 cloud.verify(Operation.WRITE, realnumber);
             }
         }
@@ -263,7 +299,9 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             // this should not occur (hence internal error notice), but we test it anyway.
 
             if (action == ACTION_CREATE) {
-                throw new BridgeException("This node cannot be added. It was not correctly instantiated (internal error).");
+                String message = "This node cannot be added. It was not correctly instantiated (internal error).";
+                log.error(message);
+                throw new BridgeException(message);
             }
 
             // when editing a temporary node id must exist (otherwise create one)
@@ -274,8 +312,10 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             if ((action == ACTION_EDIT) || ((action == ACTION_DELETE) && (getCloud() instanceof BasicTransaction))) {
                 int id = getNumber();
                 String currentObjectContext = BasicCloudContext.tmpObjectManager.getObject(account, "" + id, "" + id);
-                // store new temporary node in transaction
-                cloud.add(currentObjectContext);
+                if (cloud instanceof BasicTransaction) {
+                    // store new temporary node in transaction
+                     ((BasicTransaction)cloud).add(currentObjectContext);
+                }
                 setNode(BasicCloudContext.tmpObjectManager.getNode(account, "" + id));
                 //  check nodetype afterwards?
                 temporaryNodeId = id;
@@ -284,94 +324,166 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     }
 
     /**
+     * Setting value with default method (depending on field's type)
+     */
+    public void setValue(String fieldName, Object value) {
+        int type = nodeManager.getField(fieldName).getType();
+        switch(type) {
+        case Field.TYPE_STRING:  setStringValue(fieldName, (String) value); break;
+        case Field.TYPE_INTEGER: setIntValue(fieldName, Casting.toInt(value)); break;
+        case Field.TYPE_BYTE:    setByteValue(fieldName, Casting.toByte(value)); break;
+        case Field.TYPE_FLOAT:   setFloatValue(fieldName, Casting.toFloat(value)); break;
+        case Field.TYPE_DOUBLE:  setDoubleValue(fieldName, Casting.toDouble(value)); break;
+        case Field.TYPE_LONG:    setLongValue(fieldName, Casting.toLong(value)); break;
+        case Field.TYPE_XML:     setXMLValue(fieldName, Casting.toXML(value, null, null)); break;
+        case Field.TYPE_NODE:    setNodeValue(fieldName, Casting.toNode(value, cloud)); break;
+        default:                 setValueWithoutProcess(fieldName, value);
+        }
+
+    }
+
+    /**
+     * Like setValue, but withouth the valueinterceptor, this is called by nthe other set-values.
+     * @todo setting certain specific fields (i.e. snumber) should be directed to a dedicated
+     *       method such as setSource(), where applicable.
+     * @since MMBase-1.7
+     */
+    protected void setValueWithoutProcess(String fieldName, Object value) {
+        edit(ACTION_EDIT);
+        if ("number".equals(fieldName) || "otype".equals(fieldName) || "owner".equals(fieldName)) {
+            throw new BridgeException("Not allowed to change field '" + fieldName + "'.");
+        }
+        if (this instanceof Relation) {
+            if ("rnumber".equals(fieldName)) {
+                throw new BridgeException("Not allowed to change field '" + fieldName + "'.");
+            } else if ("snumber".equals(fieldName) || "dnumber".equals(fieldName)) {
+                BasicRelation relation = (BasicRelation) this;
+                relation.relationChanged = true;
+            }
+        }
+        setValueWithoutChecks(fieldName, value);
+    }
+
+    /**
      * Protected method to be able to set rnumber when creating a relation.
-     * @param fieldName name of field
-     * @param value new value of field
      * @since MMBase-1.7
      */
     protected void setValueWithoutChecks(String fieldName, Object value) {
         String result = BasicCloudContext.tmpObjectManager.setObjectField(account, "" + temporaryNodeId, fieldName, value);
-        if (TemporaryNodeManager.UNKNOWN == result) {
-            throw new BridgeException("Can't change unknown field '" + fieldName + "', of node " + getNumber() + " of nodeManager '" + getNodeManager().getName() +"'");
-        } else if (TemporaryNodeManager.INVALID_VALUE == result) {
-            noderef.storeValue(fieldName, value); // commit() will throw that invalid.
+        if ("unknown".equals(result)) {
+            throw new BridgeException("Can't change unknown field '" + fieldName + "'.");
         }
+        changed = true;
     }
-    protected Integer toNodeNumber(Object v) {
-        if (v == null) {
-            return null;
-        } else if (v instanceof Node) {
-            return new Integer(((Node)v).getNumber());
-        } else if (v instanceof MMObjectNode) {
-            return new Integer(((MMObjectNode)v).getNumber());
+
+    public void setObjectValue(String fieldName, Object value) {
+        value = (Node) ValueIntercepter.processSet(0, this, nodeManager.getField(fieldName), value);
+        setValueWithoutProcess(fieldName, value);
+    }
+
+
+    public void setBooleanValue(String fieldName, boolean value) {
+        Boolean booleanValue = new Boolean(value);
+        setValue(fieldName, booleanValue);
+        //booleanValue = (Boolean) ValueIntercepter.processSet(Field.TYPE_BOOLEAN, this, nodeManager.getField(fieldName), booleanValue);
+        //setValueWithoutProcess(fieldName, booleanValue);
+    }
+
+    public void setNodeValue(String fieldName, Node value) {
+        value = (Node) ValueIntercepter.processSet(Field.TYPE_NODE, this, nodeManager.getField(fieldName), value);
+        if (value == null) {
+            setValueWithoutProcess(fieldName, null);
+        } else if (value instanceof BasicNode) {
+            setValueWithoutProcess(fieldName, ((BasicNode)value).getNode());
         } else {
-            // giving up
-            return new Integer(cloud.getNode(v.toString()).getNumber());
+            setValueWithoutProcess(fieldName, new Integer(value.getNumber()));
         }
     }
 
-    protected void setSize(String fieldName, long size) {
-        getNode().setSize(fieldName, size);
+    public void setIntValue(String fieldName, int value) {
+        Integer intValue = new Integer(value);
+        intValue = (Integer) ValueIntercepter.processSet(Field.TYPE_INTEGER, this, nodeManager.getField(fieldName), intValue);
+        setValueWithoutProcess(fieldName, intValue);
     }
 
-    public boolean isNull(String fieldName) {
-        return noderef.isNull(fieldName);
+    public void setFloatValue(String fieldName, float value) {
+        Float floatValue = new Float(value);
+        floatValue = (Float) ValueIntercepter.processSet(Field.TYPE_FLOAT, this, nodeManager.getField(fieldName), floatValue);
+        setValueWithoutProcess(fieldName, floatValue);
     }
 
-    public long getSize(String fieldName) {
-        return noderef.getSize(fieldName);
+    public void setDoubleValue(String fieldName, double value) {
+        Double doubleValue = new Double(value);
+        doubleValue = (Double) ValueIntercepter.processSet(Field.TYPE_DOUBLE, this, nodeManager.getField(fieldName), doubleValue);
+        setValueWithoutProcess(fieldName, doubleValue);
     }
 
-    /**
-     * Like getObjectValue, but skips any processing that MMBase would normally perform on a field.
-     * You can use this to get data from a field for validation purposes.
-     * @param fieldName name of field
-     * @since MMBase-1.8
-     */
-    public Object getValueWithoutProcess(String fieldName) {
-        // an exception is made for 'owner' field in setValueWithoutProcess, so for symmetry, we
-        // must make the same exception here (and also in (getStringValue).
-        if ("owner".equals(fieldName)) {
-            return getContext();
+    public void setByteValue(String fieldName, byte[] value) {
+        value = (byte[]) ValueIntercepter.processSet(Field.TYPE_BYTE, this, nodeManager.getField(fieldName), value);
+        setValueWithoutProcess(fieldName, value);
+    }
+
+    public void setLongValue(String fieldName, long value) {
+        Long longValue = new Long(value);
+        longValue = (Long) ValueIntercepter.processSet(Field.TYPE_LONG, this, nodeManager.getField(fieldName), longValue);
+        setValueWithoutProcess(fieldName, longValue);
+    }
+
+    public void setStringValue(String fieldName, String value) {
+//        log.info("setString on node " + getNumber());
+        value = (String) ValueIntercepter.processSet(Field.TYPE_STRING, this, nodeManager.getField(fieldName), value);
+        setValueWithoutProcess(fieldName, value);
+    }
+
+
+    public void setXMLValue(String fieldName, Document value) {
+        value = (Document) ValueIntercepter.processSet(Field.TYPE_XML, this, nodeManager.getField(fieldName), value);
+
+        // do conversion, if needed from doctype 'incoming' to doctype 'needed'
+        //DocumentConverter dc = DocumentConverter.getDocumentConverter(getNode().getBuilder().getField(fieldName).getDBDocType());
+
+        //setValueWithoutProcess(fieldName, dc.convert(value, cloud));
+        setValueWithoutProcess(fieldName, value);
+    }
+
+
+    public Object getValue(String fieldName) {
+        if (nodeManager.hasField(fieldName)) {
+            int type = nodeManager.getField(fieldName).getType();
+            Object value = noderef.getValue(fieldName);
+            if (value == null || value == MMObjectNode.VALUE_NULL) return null;
+            switch(type) {
+            case Field.TYPE_STRING:  return getStringValue(fieldName);
+            case Field.TYPE_BYTE:    return getByteValue(fieldName);
+            case Field.TYPE_INTEGER: return new Integer(getIntValue(fieldName));
+            case Field.TYPE_FLOAT:   return new Float(getFloatValue(fieldName));
+            case Field.TYPE_DOUBLE:  return new Double(getDoubleValue(fieldName));
+            case Field.TYPE_LONG:    return new Long(getLongValue(fieldName));
+            case Field.TYPE_XML:     return getXMLValue(fieldName);
+            case Field.TYPE_NODE:    return getNodeValue(fieldName);
+            default:
+                log.error("Unknown fieldtype '" + type + "'");
+                return value;
+            }
+        } else {
+            //log.warn("Requesting value of unknown field '" + fieldName + "')");
+            return noderef.getValue(fieldName);
         }
-        Object result = getNode().getValue(fieldName);
-        if (result instanceof MMObjectNode) {
-            MMObjectNode mmnode = (MMObjectNode) result;
-            result = cloud.makeNode(mmnode, "" + mmnode.getNumber());
+
+    }
+
+    public Object getObjectValue(String fieldName) {
+        Object result = noderef.getValue(fieldName);
+        if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
+            result = ValueIntercepter.processGet(0, this, nodeManager.getField(fieldName), result);
         }
         return result;
     }
-    //TODO, silly get-methods could be removed (because in AbstractNode), (calling
-    //getValueWithoutProcess) but they depend on noderef now, so I don't dare to do that right ahead.
+
 
     public boolean getBooleanValue(String fieldName) {
-        Boolean result = Boolean.valueOf(noderef.getBooleanValue(fieldName));
-        if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
-            Field field = nodeManager.getField(fieldName);
-            result = (Boolean) field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_BOOLEAN).process(this, field, result);
-        }
-        return result.booleanValue();
+        return noderef.getBooleanValue(fieldName);
     }
-
-    public Date getDateValue(String fieldName) {
-        Date result =  noderef.getDateValue(fieldName);
-        if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
-            Field field = nodeManager.getField(fieldName);
-            result = (Date) field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_DATETIME).process(this, field, result);
-        }
-        return result;
-    }
-
-    public List getListValue(String fieldName) {
-        List result =  noderef.getListValue(fieldName);
-        if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
-            Field field = nodeManager.getField(fieldName);
-            result = (List) field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_LIST).process(this, field, result);
-        }
-
-        return result;
-    }
-
 
     public Node getNodeValue(String fieldName) {
         if (fieldName == null || fieldName.equals("number")) {
@@ -392,18 +504,15 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             }
         }
         if (nodeManager.hasField(fieldName)) { // only if this is actually a field of this node-manager, otherewise it might be e.g. a request for an 'element' of a cluster node
-            Field field = nodeManager.getField(fieldName);
-            result = (Node) field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_NODE).process(this, field, result);
+            result = (Node) ValueIntercepter.processGet(Field.TYPE_NODE, this, nodeManager.getField(fieldName), result);
         }
-
         return result;
     }
 
     public int getIntValue(String fieldName) {
         Integer result = new Integer(getNode().getIntValue(fieldName));
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
-            Field field = nodeManager.getField(fieldName);
-            result = (Integer) field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_INTEGER).process(this, field, result);
+            result = (Integer) ValueIntercepter.processGet(Field.TYPE_INTEGER, this, nodeManager.getField(fieldName), result);
         }
         return result.intValue();
 
@@ -412,8 +521,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     public float getFloatValue(String fieldName) {
         Float result = new Float(getNode().getFloatValue(fieldName));
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
-            Field field = nodeManager.getField(fieldName);
-            result = (Float) field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_FLOAT).process(this, field, result);
+            result = (Float) ValueIntercepter.processGet(Field.TYPE_FLOAT, this, nodeManager.getField(fieldName), result);
         }
         return result.floatValue();
     }
@@ -421,8 +529,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     public long getLongValue(String fieldName) {
         Long result = new Long(getNode().getLongValue(fieldName));
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
-            Field field = nodeManager.getField(fieldName);
-            result = (Long) field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_LONG).process(this, field, result);
+            result = (Long) ValueIntercepter.processGet(Field.TYPE_LONG, this, nodeManager.getField(fieldName), result);
         }
         return result.longValue();
     }
@@ -430,8 +537,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     public double getDoubleValue(String fieldName) {
         Double result = new Double(getNode().getDoubleValue(fieldName));
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
-            Field field = nodeManager.getField(fieldName);
-            result = (Double) field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_DOUBLE).process(this, field, result);
+            result = (Double) ValueIntercepter.processGet(Field.TYPE_DOUBLE, this, nodeManager.getField(fieldName), result);
         }
         return result.doubleValue();
     }
@@ -439,73 +545,66 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     public byte[] getByteValue(String fieldName) {
         byte[] result = getNode().getByteValue(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
-            Field field = nodeManager.getField(fieldName);
-            result = (byte[]) field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_BINARY).process(this, field, result);
-        }
-        return result;
-    }
-    public java.io.InputStream getInputStreamValue(String fieldName) {
-        java.io.InputStream result = getNode().getInputStreamValue(fieldName);
-        if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
-            Field field = nodeManager.getField(fieldName);
-            result = (java.io.InputStream) field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_BINARY).process(this, field, result);
+            result = (byte[]) ValueIntercepter.processGet(Field.TYPE_BYTE, this, nodeManager.getField(fieldName), result);
         }
         return result;
     }
 
     public String getStringValue(String fieldName) {
-        if ("owner".equals(fieldName)) {
-            return getContext();
-        }
         String result = getNode().getStringValue(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
-            Field field = nodeManager.getField(fieldName);
-            result = (String) field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_STRING).process(this, field, result);
+            result = (String) ValueIntercepter.processGet(Field.TYPE_STRING, this, nodeManager.getField(fieldName), result);
         }
         return result;
+    }
+
+    public FieldValue getFieldValue(String fieldName) throws NotFoundException {
+        return new BasicFieldValue(this, getNodeManager().getField(fieldName));
+    }
+
+    public FieldValue getFieldValue(Field field) {
+        return new BasicFieldValue(this, field);
+    }
+
+    public FieldValue getFunctionValue(String functionName, List arguments) {
+        return new BasicFunctionValue(this, getNode(), getNode().getFunctionValue(functionName, arguments));
     }
 
     public Document getXMLValue(String fieldName) {
-        Document result = getNode().getXMLValue(fieldName);
-        if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
-            Field field = nodeManager.getField(fieldName);
-            result = (Document) field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_XML).process(this, field, result);
-        }
-        return result;
+        return getNode().getXMLValue(fieldName);
     }
 
-
+    public Element getXMLValue(String fieldName, Document tree) {
+        Document doc = getXMLValue(fieldName);
+        if (doc == null) {
+            return null;
+        }
+        return (Element)tree.importNode(doc.getDocumentElement(), true);
+    }
 
     public void commit() {
-        if (isNew()) {
-            cloud.verify(Operation.CREATE, BasicCloudContext.mmb.getTypeDef().getIntValue(getNodeManager().getName()));
+        if (isnew) {
+            cloud.verify(Operation.CREATE, mmb.getTypeDef().getIntValue(getNodeManager().getName()));
         }
         edit(ACTION_COMMIT);
-
-        Collection errors = validate();
-        if (errors.size() > 0) {
-            String mes = "node " + getNumber() + noderef.getChanged() + ", builder '" + nodeManager.getName() + "' " + errors.toString();
-            noderef.cancel();
-            throw new IllegalArgumentException(mes);
-        }
-        processCommit();
-        if (log.isDebugEnabled()) {
-            log.debug("committing " + noderef.getChanged());
-        }
         // ignore commit in transaction (transaction commits)
-        if (!(cloud instanceof Transaction)) { // sigh sigh sigh.
+        if (!(cloud instanceof Transaction)) {
             MMObjectNode node = getNode();
-            if (isNew()) {
-                node.insert(cloud.getUser());
+            if (isnew) {
+                node.insert(((BasicUser)cloud.getUser()).getUserContext());
                 // cloud.createSecurityInfo(getNumber());
+                isnew = false;
             } else {
-                node.commit(cloud.getUser());
+                node.commit(((BasicUser)cloud.getUser()).getUserContext());
                 //cloud.updateSecurityInfo(getNumber());
             }
             // remove the temporary node
             BasicCloudContext.tmpObjectManager.deleteTmpNode(account, "" + temporaryNodeId);
             temporaryNodeId = -1;
+            // invalid nodereference, so retrieve node anew
+            setNode(mmb.getTypeDef().getNode(getNode().getNumber()));
         }
+        changed = false;
     }
 
     public void cancel() {
@@ -516,24 +615,31 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         } else {
             // remove the temporary node
             BasicCloudContext.tmpObjectManager.deleteTmpNode(account, "" + temporaryNodeId);
-            if (isNew()) {
+            if (isnew) {
+                isnew = false;
                 invalidateNode();
             } else {
-                noderef.cancel();
+                // update the node, reset fields etc...
+                setNode(mmb.getTypeDef().getNode(noderef.getNumber()));
             }
             temporaryNodeId = -1;
         }
+        changed = false;
     }
 
+    public void delete() {
+        delete(false);
+    }
 
     public void delete(boolean deleteRelations) {
         edit(ACTION_DELETE);
-        if (isNew()) {
+        if (isnew) {
             // remove from the Transaction
             // note that the node is immediately destroyed !
             // possibly older edits will fail if they refernce this node
-            cloud.remove("" + temporaryNodeId);
-
+            if (cloud instanceof Transaction) {
+                ((BasicTransaction)cloud).remove("" + temporaryNodeId);
+            }
             // remove a temporary node (no true instantion yet, no relations)
             BasicCloudContext.tmpObjectManager.deleteTmpNode(account, "" + temporaryNodeId);
         } else {
@@ -545,7 +651,10 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             } else {
                 // option unset, fail if any relations exit
                 if (getNode().hasRelations()) {
-                    throw new BridgeException("This node (" + getNode().getNumber() + ") cannot be deleted. It still has relations attached to it.");
+                    throw new BridgeException(
+                        "This node ("
+                            + getNode().getNumber()
+                            + ") cannot be deleted. It still has relations attached to it.");
                 }
             }
             // remove aliases
@@ -556,7 +665,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
                 // note that the node still exists until the transaction completes
                 // a getNode() will still retrieve the node and make edits possible
                 // possibly 'older' edits will fail if they reference this node
-                ((BasicTransaction)cloud).delete("" + temporaryNodeId);
+                 ((BasicTransaction)cloud).delete("" + temporaryNodeId);
             } else {
                 // remove the node
                 if (temporaryNodeId != -1) {
@@ -564,7 +673,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
                 }
                 MMObjectNode node = getNode();
                 //node.getBuilder().removeNode(node);
-                node.remove(cloud.getUser());
+                node.remove( ((BasicUser)cloud.getUser()).getUserContext());
                 //cloud.removeSecurityInfo(number);
             }
         }
@@ -576,7 +685,6 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     public String toString() {
         //return getNode().toString() + "(" + getNode().getClass().getName() + ")";
         return getNode().toString();
-        //return "" + super.toString() + " " + getNode().getNumber();
     }
 
     /**
@@ -586,14 +694,10 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
      */
     private void deleteRelations(int type) {
         List relations = null;
-        try {
-            if (type == -1) {
-                relations = BasicCloudContext.mmb.getInsRel().getRelationNodes(getNode().getNumber(), false);
-            } else {
-                relations = BasicCloudContext.mmb.getInsRel().getRelationNodes(getNode().getNumber());
-            }
-        } catch (SearchQueryException  sqe) {
-            log.error(sqe.getMessage()); // should not happen
+        if (type == -1) {
+            relations = mmb.getInsRel().getAllRelationsVector(getNode().getNumber());
+        } else {
+            relations = mmb.getInsRel().getRelationsVector(getNode().getNumber());
         }
         if (relations != null) {
             // check first
@@ -611,64 +715,158 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
                         ((BasicTransaction)cloud).add(currentObjectContext);
                         ((BasicTransaction)cloud).delete(currentObjectContext);
                     } else {
-                        node.remove(cloud.getUser());
+                        node.remove( ((BasicUser)cloud.getUser()).getUserContext());
                     }
                 }
             }
         }
     }
 
-    public void deleteRelations(String type) throws NotFoundException {
-        if ("object".equals(type)) {
-            deleteRelations(-1);
-        }
-        else {
-            RelDef reldef = BasicCloudContext.mmb.getRelDef();
-            int rType = reldef.getNumberByName(type);
-            if (rType == -1) {
-                throw new NotFoundException("Relation with role : " + type + " does not exist.");
-            } else {
-                deleteRelations(rType);
-            }
-        }
+    public void deleteRelations() {
+        deleteRelations(-1);
     }
 
-
-    public RelationList getRelations(String role, String nodeManager) throws NotFoundException {
-        if ("".equals(nodeManager)) nodeManager = null;
-        return getRelations(role, nodeManager == null ? (NodeManager) null : cloud.getNodeManager(nodeManager), "BOTH");
+    public void deleteRelations(String type) throws NotFoundException {
+        RelDef reldef = mmb.getRelDef();
+        int rType = reldef.getNumberByName(type);
+        if (rType == -1) {
+            throw new NotFoundException("Relation with role : " + type + " does not exist.");
+        } else {
+            deleteRelations(rType);
+        }
     }
 
     /**
-     * Returns a list of relations of the given node.
-     * @param role role of the relation
-     * @param nodeManager node manager on the other side of the relation
-     * @param searchDir direction of the relation
-     * @return list of relations
-     * @throws NotFoundException
-     *
+     * Returns an enumeration of MMObjectNodes, which respresent relations of this node
+     * with specified role and otype
+     * @param role the role (reldef) number, can be -1
+     * @param otype the destination object type number, can be -1
+     * @param usedirectionality if <code>true</code> teh result si filtered on unidirectional relations.
+     *                          specify <code>false</code> if you want to show unidoerctional relations
+     *                          from destination to source.
+     * @return an Enumeration with the relations
+     */
+    private Enumeration getRelationEnumeration(int role, int otype, boolean usedirectionality) {
+        InsRel relbuilder = mmb.getInsRel();
+        if ((role != 1) || (otype != -1)) {
+            if (role != -1) {
+                relbuilder = mmb.getRelDef().getBuilder(role);
+            }
+            return relbuilder.getRelations(getNumber(), otype, role, usedirectionality);
+        } else {
+            return getNode().getRelations();
+        }
+    }
+
+    /**
+     * Returns a list of Relation objects, which represent relations of this node
+     * with specified role and otype
+     * @param role the role (reldef) number, can be -1
+     * @param otype the destination object type number, can be -1
+     * @return a RelationList with the relations
+     */
+    private RelationList getRelations(int role, int otype) {
+        Enumeration e = getRelationEnumeration(role, otype, true);
+        List relvector = new ArrayList();
+        if (e != null) {
+            while (e.hasMoreElements()) {
+                MMObjectNode mmnode = (MMObjectNode)e.nextElement();
+                if (cloud.check(Operation.READ, mmnode.getNumber())) {
+                    relvector.add(mmnode);
+                }
+            }
+        }
+        return new BasicRelationList(relvector, cloud);
+    }
+
+    public RelationList getRelations() {
+        return getRelations(null, (String) null);
+    }
+
+    public RelationList getRelations(String role) {
+        return getRelations(role, (String) null);
+    }
+
+    public RelationList getRelations(String role, String nodeManager) throws NotFoundException {
+        int otype = -1;
+        if (nodeManager != null) {
+            otype = mmb.getTypeDef().getIntValue(nodeManager);
+            if (otype == -1) {
+                throw new NotFoundException("NodeManager " + nodeManager + " does not exist.");
+            }
+        }
+        int rolenr = -1;
+        if (role != null) {
+            rolenr = mmb.getRelDef().getNumberByName(role);
+            if (rolenr == -1) {
+                throw new NotFoundException("Relation with role " + role + " does not exist.");
+            }
+        }
+        return getRelations(rolenr, otype);
+    }
+
+    public RelationList getRelations(String role, NodeManager nodeManager) {
+        if (nodeManager == null) {
+            return getRelations(role);
+        } else {
+            return getRelations(role, nodeManager.getName());
+        }
+    }
+
+
+    /**
      * @see Queries#createRelationNodesQuery Should perhaps be implemented with that
      */
     public RelationList getRelations(String role, NodeManager nodeManager, String searchDir) throws NotFoundException {
-        if (isNew()) {
-            // new nodes have no relations
-            return org.mmbase.bridge.util.BridgeCollections.EMPTY_RELATIONLIST;
+        // temporay implementation to get it working for now. Really we would want to make separate queries, I think.
+
+        RelationList  relations = getRelations(role, nodeManager);
+
+        int dir = RelationStep.DIRECTIONS_BOTH;
+        if (searchDir != null) {
+            dir = ClusterBuilder.getSearchDir(searchDir);
         }
-        if (searchDir == null) searchDir = "BOTH";
-        if (nodeManager == null) nodeManager = cloud.getNodeManager("object");
-        NodeQuery query = Queries.createRelationNodesQuery(this, nodeManager, role, searchDir);
-        NodeManager nm = query.getNodeManager();
-        assert nm instanceof RelationManager;
-        return (RelationList) nm.getList(query);
+        if (dir == RelationStep.DIRECTIONS_BOTH) return relations;
+
+        RelationIterator it = relations.relationIterator();
+
+        RelationList result = new BasicRelationList();
+
+        while (it.hasNext()) {
+            Relation relation = it.nextRelation();
+            switch(dir) {
+            case RelationStep.DIRECTIONS_DESTINATION:
+                if(relation.getSource().getNumber() == getNumber()) {
+                    result.add(relation);
+                }
+                break;
+            case RelationStep.DIRECTIONS_SOURCE:
+                if(relation.getDestination().getNumber() == getNumber()) {
+                    result.add(relation);
+                }
+                break;
+            default:
+                result.add(relation); // er..
+            }
+        }
+        return result;
     }
 
     public boolean hasRelations() {
         return getNode().hasRelations();
     }
 
+    public int countRelations() {
+        return countRelatedNodes(cloud.getNodeManager("object"), null, "BOTH");
+    }
+
+    public int countRelations(String type) {
+        //err
+        return countRelatedNodes(cloud.getNodeManager("object"), type, "BOTH");
+    }
+
 
     public int countRelatedNodes(NodeManager otherNodeManager, String role, String direction) {
-        if (isNew()) return 0;
         if (otherNodeManager == null || otherNodeManager.getName().equals("object")) {
             // can be done on only insrel, which is often much quicker.
             NodeManager insrel;
@@ -713,9 +911,6 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
                 Queries.addConstraint(query, query.createConstraint(sourceConstraint, CompositeConstraint.LOGICAL_OR, destinationConstraint));
                 break;
             }
-            default:
-                log.debug("Unknown relation direction" + dir);
-                break;
             }
             return Queries.count(query);
         } else {
@@ -730,11 +925,19 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     }
 
 
+    public NodeList getRelatedNodes() {
+        return getRelatedNodes("object", null, null);
+    }
+
+    public NodeList getRelatedNodes(String type) {
+        return getRelatedNodes(type, null, null);
+    }
+
+    public NodeList getRelatedNodes(NodeManager nodeManager) {
+        return getRelatedNodes(nodeManager, null, null);
+    }
+
     /**
-     * @param nodeManager node manager on the other side of the relation
-     * @param role role of the relation
-     * @param searchDir direction of the relation
-     * @return List of related nodes
      * @see Queries#createRelatedNodesQuery Should perhaps be implemented with that.
      * @since MMBase-1.6
      */
@@ -742,17 +945,37 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         if (log.isDebugEnabled()) {
             log.debug("type(" + nodeManager.getName() + "), role(" + role + "), dir(" + searchDir + ")");
         }
-        if (isNew()) {
-            // new nodes have no relations
-            return org.mmbase.bridge.util.BridgeCollections.EMPTY_NODELIST;
+
+        // default directionalty to query for the bridge is SEARCH_BOTH;
+        // SEARCH_EITHER is intended for SCAN - unfortunately, since SCAN does not provide directionality,
+        // the Clusterbuidler has to assume SEARCH_EITHER as a default.
+        // therefor we have to set SEARCH_BOTH manually
+        int dir = RelationStep.DIRECTIONS_BOTH;
+        if (searchDir != null) {
+            dir = ClusterBuilder.getSearchDir(searchDir);
         }
-        if (searchDir == null) searchDir = "BOTH";
-        NodeQuery query = Queries.createRelatedNodesQuery(this, nodeManager, role, searchDir);
-        return query.getNodeManager().getList(query);
+        // call list: note: role can be null
+        List mmnodes = getNode().getRelatedNodes((nodeManager != null ? nodeManager.getName() : null), role, dir);
+
+        // remove the elements which may not be read:
+        ListIterator li = mmnodes.listIterator();
+        while (li.hasNext()) {
+            MMObjectNode node = (MMObjectNode)li.next();
+            if (!cloud.check(Operation.READ, node.getNumber())) {
+                li.remove();
+            }
+        }
+        if (nodeManager != null) {
+            return new BasicNodeList(mmnodes, nodeManager);
+        } else {
+            return new BasicNodeList(mmnodes, cloud);
+        }
+    }
+    public NodeList getRelatedNodes(String type, String role, String searchDir) {
+        return getRelatedNodes(cloud.getNodeManager(type), role, searchDir);
     }
 
     public int countRelatedNodes(String type) {
-        if (isNew()) return 0;
         return getNode().getRelationCount(type);
     }
 
@@ -772,13 +995,13 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         // There might be aliases in temporary nodes
         // This is quite a dirty (and probably also slow) hack
         // for bug #6185.
-        // Usually the temporaryNodes hashtable shall not be
+        // Usually the TemporaryNodes hashtable shall not be
         // too full.
         if (cloud instanceof Transaction) {
-            Map tnodes = MMObjectBuilder.temporaryNodes;
-            for (Iterator e = tnodes.values().iterator(); e.hasNext();) {
-                MMObjectNode mynode = (MMObjectNode)e.next();
-                if (mynode.getName().equals("oalias")){
+            Hashtable tnodes = MMObjectBuilder.TemporaryNodes;
+            for (Enumeration e = tnodes.elements(); e.hasMoreElements();) {
+                MMObjectNode mynode = (MMObjectNode)e.nextElement();
+                if (mynode.getTableName().equals("oalias")){
                     String dest = mynode.getStringValue("_destination");
                     if ((account + "_" + temporaryNodeId).equals(dest)) {
                         result.add(mynode.getStringValue("name"));
@@ -794,12 +1017,11 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         edit(ACTION_EDIT);
         if (cloud instanceof Transaction) {
             String aliasContext = BasicCloudContext.tmpObjectManager.createTmpAlias(aliasName, account, "a" + temporaryNodeId, "" + temporaryNodeId);
-            ((BasicTransaction)cloud).add(aliasContext); // sigh
-        } else if (isNew()) {
+            ((BasicTransaction)cloud).add(aliasContext);
+        } else if (isnew) {
             throw new BridgeException("Cannot add alias to a new node that has not been committed.");
         } else {
-            String owner = cloud.getUser().getOwnerField();
-            if (!getNode().getBuilder().createAlias(getNumber(), aliasName, owner)) {
+            if (!getNode().getBuilder().createAlias(getNumber(), aliasName)) {
                 Node otherNode = cloud.getNode(aliasName);
                 if (otherNode != null) {
                     throw new BridgeException("Alias " + aliasName + " could not be created. It is an alias for " + otherNode.getNodeManager().getName() + " node " + otherNode.getNumber() + " already");
@@ -820,7 +1042,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         // so no attempt has been made to rectify this (cause its not worth all the trouble).
         // If people remove a node for which they created aliases in the same transaction, that transaction will fail.
         // Live with it.
-        if (!isNew()) {
+        if (!isnew) {
             NodeManager oalias = cloud.getNodeManager("oalias");
             NodeQuery q = oalias.createQuery();
             Constraint c = q.createConstraint(q.getStepField(oalias.getField("destination")), new Integer(getNumber()));
@@ -843,34 +1065,51 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         deleteAliases(aliasName);
     }
 
+    public Relation createRelation(Node destinationNode, RelationManager relationManager) {
+        Relation relation = relationManager.createRelation(this, destinationNode);
+        return relation;
+    }
+
 
     // javadoc inherited (from Node)
     public void setContext(String context) {
         // set the context on the node (run after insert).
-        getNode().setContext(cloud.getUser(), context, temporaryNodeId == -1);
+        getNode().setContext(((BasicUser)cloud.getUser()).getUserContext(),context, temporaryNodeId == -1);
     }
 
     // javadoc inherited (from Node)
     public String getContext() {
-        return getNode().getContext(cloud.getUser());
+        return getNode().getContext(((BasicUser)cloud.getUser()).getUserContext());
     }
 
 
     // javadoc inherited (from Node)
     public StringList getPossibleContexts() {
-        return new BasicStringList(getNode().getPossibleContexts(cloud.getUser()));
+        return new BasicStringList(getNode().getPossibleContexts(((BasicUser)cloud.getUser()).getUserContext()));
     }
 
     public boolean mayWrite() {
-        return isNew() || cloud.check(Operation.WRITE, getNode().getNumber());
+        if (isNew()) {
+            return true;
+        } else {
+            return cloud.check(Operation.WRITE, getNode().getNumber());
+        }
     }
 
     public boolean mayDelete() {
-        return isNew() || cloud.check(Operation.DELETE, getNode().getNumber());
+        if (isNew()) {
+            return true;
+        } else {
+            return cloud.check(Operation.DELETE, getNode().getNumber());
+        }
     }
 
     public boolean mayChangeContext() {
-        return isNew() || cloud.check(Operation.CHANGE_CONTEXT, getNode().getNumber());
+        if (isNew()) {
+            return true;
+        } else {
+            return cloud.check(Operation.CHANGE_CONTEXT, getNode().getNumber());
+        }
     }
 
     /**
@@ -882,7 +1121,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         // This is all due to the fact that Node doesnt make a copy of MMObjectNode, while editing...
         // my opinion is that this should happen, as soon as edit-ting starts,..........
         // when still has modifications.....
-        if (isChanged()) {
+        if (changed) {
             if (!(cloud instanceof Transaction)) {
                 // cancel the modifications...
                 cancel();
@@ -890,30 +1129,62 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         }
     }
 
+    /**
+     * Compares this node to the passed object.
+     * Returns 0 if they are equal, -1 if the object passed is a NodeManager and larger than this manager,
+     * and +1 if the object passed is a NodeManager and smaller than this manager.
+     * This is used to sort Nodes.
+     * A node is 'larger' than another node if its GUI() result is larger (alphabetically, case sensitive)
+     * than that of the other node. If the GUI() results are the same, the nodes are compared on number,
+     * and (if needed) on their owning clouds.
+     *
+     * @param o the object to compare it with
+     */
+    public int compareTo(Object o) {
+        Node n = (Node)o;
+        String s1 = "";
+        if (this instanceof NodeManager) {
+            s1 = ((NodeManager)this).getGUIName();
+        } else {
+            s1 = getFunctionValue("gui", null).toString();
+        }
+        String s2 = "";
+        if (n instanceof NodeManager) {
+            s2 = ((NodeManager)n).getGUIName();
+        } else {
+            s2 = n.getFunctionValue("gui", null).toString();
+        }
+        int res = s1.compareTo(s2);
+        if (res != 0) {
+            return res;
+        } else {
+            int n1 = getNumber();
+            int n2 = n.getNumber();
+            if (n2 > n1) {
+                return -1;
+            } else if (n2 < n1) {
+                return -1;
+            } else {
+                return ((Comparable)cloud).compareTo(n.getCloud());
+            }
+        }
+    }
 
     /**
-     * @see java.lang.Object#hashCode()
-     *
      * @since MMBase-1.6.2
      */
     public int hashCode() {
         return getNode().hashCode();
     }
 
-    public Collection  getFunctions() {
-        return  getNode().getFunctions();
-    }
+    /**
+     * Compares two nodes, and returns true if they are equal.
+     * This effectively means that both objects are nodes, and they both have the same number and cloud
+     * @param o the object to compare it with
+     */
+    public boolean equals(Object o) {
+        return (o instanceof Node) && getNumber() == ((Node)o).getNumber() && cloud.equals(((Node)o).getCloud());
 
-    protected Function getNodeFunction(String functionName) {
-        return getNode().getFunction(functionName);
-    }
-
-
-    public Parameters createParameters(String functionName) {
-        return getNode().getFunction(functionName).createParameters();
-    }
-    protected FieldValue createFunctionValue(Object result) {
-        return new BasicFunctionValue(getCloud(), result);
     }
 
 }

@@ -1,4 +1,5 @@
 /*
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
 
@@ -8,19 +9,13 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search.implementation.database;
 
-import java.sql.*;
-import java.util.*;
-import javax.sql.DataSource;
-
-import org.mmbase.cache.NodeCache;
-import org.mmbase.cache.Cache;
-import org.mmbase.bridge.NodeManager;
-import org.mmbase.core.CoreField;
 import org.mmbase.module.core.*;
-import org.mmbase.storage.implementation.database.DatabaseStorageManager;
-import org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory;
+import org.mmbase.module.database.support.MMJdbc2NodeInterface;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.module.database.MultiConnection;
+import java.sql.*;
+import java.util.*;
 import org.mmbase.storage.search.implementation.ModifiableQuery;
 
 
@@ -33,7 +28,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.52 2006-07-08 06:54:00 michiel Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.26.2.4 2005-04-12 13:56:02 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -63,13 +58,12 @@ public class BasicQueryHandler implements SearchQueryHandler {
 
 
     // javadoc is inherited
-    public List getNodes(SearchQuery query, MMObjectBuilder builder) throws SearchQueryException {
+    public List getNodes(SearchQuery query, MMObjectBuilder builder)     throws SearchQueryException {
 
         List results;
-        Connection con = null;
+        MultiConnection con = null;
         Statement stmt = null;
-        String sqlString = null;
-
+        String sqlString = null;        
         try {
             // Flag, set if offset must be supported by skipping results.
             boolean mustSkipResults =
@@ -89,15 +83,11 @@ public class BasicQueryHandler implements SearchQueryHandler {
 
             sqlString = createSqlString(query, mustSkipResults, sqlHandlerSupportsMaxNumber);
 
-            log.debug("sql: " + sqlString);
-            
-            // Execute the SQL... ARGH !!! Has to move!
-            // get connection...
-            DataSource dataSource = ((DatabaseStorageManagerFactory) mmbase.getStorageManagerFactory()).getDataSource();
-            con = dataSource.getConnection();
+            // Execute the SQL
+            MMJdbc2NodeInterface database = mmbase.getDatabase();
+            con = mmbase.getConnection();
             stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(sqlString);
-
             try {
                 if (mustSkipResults) {
                     log.debug("skipping results, to provide weak support for offset");
@@ -106,8 +96,10 @@ public class BasicQueryHandler implements SearchQueryHandler {
                     }
                 }
 
+
                 // Now store results as cluster-/real nodes.
                 StepField[] fields = (StepField[]) query.getFields().toArray(STEP_FIELD_ARRAY);
+
                 int maxNumber = query.getMaxNumber();
 
                 // now, we dispatch the reading of the result set to the right function wich instantiates Nodes of the right type.
@@ -118,40 +110,30 @@ public class BasicQueryHandler implements SearchQueryHandler {
                 } else {
                     results = readNodes(builder, fields, rs, sqlHandlerSupportsMaxNumber, maxNumber);
                 }
+                // TODO: (later) use alternative to decodeDBnodeField, to
+                // circumvent the code in decodeDBnodeField that tries to
+                // reverse replacement of "disallowed" fieldnames.
+
+
             } finally {
                 rs.close();
             }
         } catch (SQLException e) {
             // Something went wrong, log exception
             // and rethrow as SearchQueryException.
+            // Something went wrong, log exception
+            // and rethrow as SearchQueryException.
             if (log.isDebugEnabled()) {
                 log.debug("Query failed:" + query + "\n" + e + Logging.stackTrace(e));
             }
-            throw new SearchQueryException("Query '" + (sqlString == null ? "" + query.toString() : sqlString)  + "' failed: " + e.getClass().getName() + ": " + e.getMessage(), e);
+            throw new SearchQueryException("Query '" + sqlString == null ? "" + query : sqlString + "' failed: " + e.getClass().getName() + ": " + e.getMessage(), e);
         } finally {
-            closeConnection(con, stmt);
+            mmbase.closeConnection(con, stmt);
         }
 
         return results;
     }
 
-    /**
-     * Safely close a database connection and/or a database statement.
-     * @param con The connection to close. Can be <code>null</code>.
-     * @param stmt The statement to close, prior to closing the connection. Can be <code>null</code>.
-     */
-    protected void closeConnection(Connection con, Statement stmt) {
-        try {
-            if (stmt != null) {
-                stmt.close();
-            }
-        } catch (Exception g) {}
-        try {
-            if (con != null) {
-                con.close();
-            }
-        } catch (Exception g) {}
-    }
 
     /**
      * Makes a String of a query, taking into consideration if the database supports offset and
@@ -202,45 +184,27 @@ public class BasicQueryHandler implements SearchQueryHandler {
     /**
      * Read the result list and creates a List of ClusterNodes.
      */
-    private List readNodes(ClusterBuilder builder, StepField[] fields, ResultSet rs, boolean sqlHandlerSupportsMaxNumber, int maxNumber, int numberOfSteps) throws SQLException {
+    private List readNodes(ClusterBuilder builder, StepField[] fields,   ResultSet rs, boolean sqlHandlerSupportsMaxNumber, int maxNumber, int numberOfSteps) throws SQLException {
         List results = new ArrayList();
-        DatabaseStorageManager storageManager = (DatabaseStorageManager)mmbase.getStorageManager();
+        MMJdbc2NodeInterface database = mmbase.getDatabase();
 
-        boolean storesAsFile = builder.getMMBase().getStorageManagerFactory().hasOption(org.mmbase.storage.implementation.database.Attributes.STORES_BINARY_AS_FILE);
         // Truncate results to provide weak support for maxnumber.
-        try {
-            while (rs.next() && (results.size()<maxNumber || maxNumber==-1)) {
-                try {
-                    ClusterNode node = new ClusterNode(builder, numberOfSteps);
-                    node.start();
-
-                    int j = 1;
-                    // make use of Node-cache to fill fields
-                    // especially XML-fields can be heavy, otherwise (Documnents must be instantiated)
-                    for (int i = 0; i < fields.length; i++) {
-                        String fieldName = fields[i].getFieldName(); // why not getAlias first?
-                        Step step = fields[i].getStep();
-                        String alias = step.getAlias();
-                        if (alias == null) {
-                            // Use tablename as alias when no alias is specified.
-                            alias = step.getTableName();
-                        }
-                        CoreField field = builder.getField(alias +  '.' + fieldName);
-                        if (field.getType() == CoreField.TYPE_BINARY) continue;
-                        Object value = storageManager.getValue(rs, j++, field, false);
-                        node.storeValue(alias +  '.' + fieldName, value);
-                    }
-                    node.clearChanged();
-                    node.finish();
-                    results.add(node);
-                } catch (Exception e) {
-                    // log error, but continue with other nodes
-                    log.error(e.getMessage(), e);
+        while (rs.next() && (results.size()<maxNumber || maxNumber==-1)) {
+            ClusterNode node = new ClusterNode(builder, numberOfSteps);
+            node.start();
+            for (int i = 0; i < fields.length; i++) {
+                String fieldName = fields[i].getFieldName(); // why not getAlias first?
+                Step step = fields[i].getStep();
+                String alias = step.getAlias();
+                if (alias == null) {
+                    // Use tablename as alias when no alias is specified.
+                    alias = step.getTableName();
                 }
+                String prefix = alias +  '.';
+                database.decodeDBnodeField(node, fieldName, rs, i + 1, prefix);
             }
-        } catch (SQLException sqe) {
-            // log error, but return results.
-            log.error(sqe);
+            node.finish();
+            results.add(node);
         }
         return results;
     }
@@ -250,37 +214,22 @@ public class BasicQueryHandler implements SearchQueryHandler {
      */
     private List readNodes(ResultBuilder builder, StepField[] fields, ResultSet rs, boolean sqlHandlerSupportsMaxNumber, int maxNumber) throws SQLException {
         List results = new ArrayList();
-        DatabaseStorageManager storageManager = (DatabaseStorageManager)mmbase.getStorageManager();
+        MMJdbc2NodeInterface database = mmbase.getDatabase();
 
-        boolean storesAsFile = builder.getMMBase().getStorageManagerFactory().hasOption(org.mmbase.storage.implementation.database.Attributes.STORES_BINARY_AS_FILE);
         // Truncate results to provide weak support for maxnumber.
-        try {
-            while (rs.next() && (maxNumber>results.size() || maxNumber==-1)) {
-                try {
-                    ResultNode node = new ResultNode(builder);
-                    node.start();
-                    int j = 1;
-                    for (int i = 0; i < fields.length; i++) {
-                        String fieldName = fields[i].getAlias();
-                        if (fieldName == null) {
-                            fieldName = fields[i].getFieldName();
-                        }
-                        CoreField field = builder.getField(fieldName);
-                        if (field != null && field.getType() == CoreField.TYPE_BINARY) continue;
-                        Object value = storageManager.getValue(rs, j++, field, false);
-                        node.storeValue(fieldName, value);
-                    }
-                    node.clearChanged();
-                    node.finish();
-                    results.add(node);
-                } catch (Exception e) {
-                    // log error, but continue with other nodes
-                    log.error(e.getMessage(), e);
+        while (rs.next() && (maxNumber>results.size() || maxNumber==-1)) {
+
+            ResultNode node = new ResultNode((ResultBuilder) builder);
+            node.start();
+            for (int i = 0; i < fields.length; i++) {
+                String fieldName = fields[i].getAlias();
+                if (fieldName == null) {
+                    fieldName = fields[i].getFieldName();
                 }
+                database.decodeDBnodeField(node, fieldName, rs, i + 1, "");
             }
-        } catch (SQLException sqe) {
-            // log error, but return results.
-            log.error(sqe);
+            node.finish();
+            results.add(node);
         }
         return results;
     }
@@ -290,163 +239,66 @@ public class BasicQueryHandler implements SearchQueryHandler {
      */
     private List readNodes(MMObjectBuilder builder, StepField[] fields, ResultSet rs, boolean sqlHandlerSupportsMaxNumber, int maxNumber) throws SQLException {
         List results= new ArrayList();
-        DatabaseStorageManager storageManager = (DatabaseStorageManager)mmbase.getStorageManager();
+        MMJdbc2NodeInterface database = mmbase.getDatabase();
 
-        boolean storesAsFile = builder.getMMBase().getStorageManagerFactory().hasOption(org.mmbase.storage.implementation.database.Attributes.STORES_BINARY_AS_FILE);
-        // determine indices of queried fields
-        Map fieldIndices = new HashMap();
-        Step nodeStep = fields[0].getStep();
-        int j = 1;
-        for (int i = 0; i < fields.length; i++) {
-            if (fields[i].getType() == CoreField.TYPE_BINARY) continue;
-            Integer index = new Integer(j++);
-            if (fields[i].getStep() == nodeStep) {
-                String fieldName =  fields[i].getFieldName();
-                CoreField field = builder.getField(fieldName);
-                if (field == null) {
-                    log.warn("Did not find the field '" + fieldName + "' in builder " + builder);
-                    continue; // could this happen?
-                }
-                fieldIndices.put(field, index);
-            }
-        }
-
-        // Test if ALL fields are queried
-        List builderFields = builder.getFields(NodeManager.ORDER_CREATE);
-        StringBuffer missingFields = null;
-        for (Iterator f = builderFields.iterator(); f.hasNext();) {
-            CoreField field = (CoreField)f.next();
-            if (field.inStorage()) {
-                if (field.getType() == CoreField.TYPE_BINARY) continue;
-                if (fieldIndices.get(field) == null) {
-                    if (missingFields == null) {
-                        missingFields = new StringBuffer(field.getName());
-                    } else {
-                        missingFields.append(", ").append(field.getName());
-                    }
-                }
-            }
-        }
-
-        // if not all field are queried, this is a virtual node
-        boolean isVirtual = missingFields != null;
-        if (isVirtual) {
-            log.warn("This query returns virtual nodes (not querying: '" + missingFields + "')");
-        }
-
+        if (! rs.next()) return results;
+        
         // Truncate results to provide weak support for maxnumber.
-        try {
-            NodeCache nodeCache = NodeCache.getCache();
-            Cache typeCache = Cache.getCache("TypeCache");
-            int builderType = builder.getObjectType();
-            Integer oTypeInteger = new Integer(builderType);
-            while (rs.next() && (maxNumber > results.size() || maxNumber==-1)) {
-                try {
-                    /*
-                     * This while statement does not deal with mmbase inheritance
-                     * It creates nodes based on the builder passed in. Nodes with 
-                     * subtypes of this builder are only filled with the field values
-                     * of this builder. Builders of a subtype are not stored in the nodeCache
-                     * to limit the time scope of these nodes, because they are not complete. 
-                     */
-                    
-                    MMObjectNode node;
-                    if (!isVirtual) {
-                        node = new MMObjectNode(builder, false);
-                    } else {
-                        node = new VirtualNode(builder);
-                    }
-                    node.start();
-                    for (Iterator i = builder.getFields(NodeManager.ORDER_CREATE).iterator(); i.hasNext(); ) {
-                        CoreField field = (CoreField)i.next();
-                        if (! field.inStorage()) continue;
-                        Integer index = (Integer) fieldIndices.get(field);
-                        Object value = null;
-                        String fieldName = field.getName();
-                        if (index != null) {
-                            value = storageManager.getValue(rs, index.intValue(), field, true);
-                        } else {
-                            java.sql.Blob b = null;
-                            if (field.getType() == CoreField.TYPE_BINARY && storesAsFile) {
-                                log.debug("Storage did not return data for '" + fieldName + "', supposing it on disk");
-                                // must have been a explicitely specified 'blob' field
-                                b = storageManager.getBlobValue(node, field, true);
-                            } else if (field.getType() == CoreField.TYPE_BINARY) {
-                                // binary fields never come directly from the database
-                                value = MMObjectNode.VALUE_SHORTED;
-                            } else if (! isVirtual){
-                                // field wasn't returned by the db - this must be a Virtual node, otherwise fail!
-                                // (this shoudln't occur)
-                                throw new IllegalStateException("Storage did not return data for field '" + fieldName + "'");
-                            }
-                            if (b != null) {
-                                if (b.length() == -1) {
-                                    value = MMObjectNode.VALUE_SHORTED;
-                                } else {
-                                    value = b.getBytes(0L, (int) b.length());
-                                }
-                            }
-                        }
-                        node.storeValue(fieldName, value);
-                    }
-                    node.clearChanged();
-                    node.finish();
-
-                    // The following code fills the type- and node-cache as far as this is possible at this stage.
-                    // (provided the node is persistent)
-                    if (! isVirtual) {
-                        int otype = node.getOType();
-                        Integer number = new Integer(node.getNumber());
-                        if (otype == builderType) {
-                            MMObjectNode cacheNode = (MMObjectNode) nodeCache.get(number);
-                            if (cacheNode != null) {
-                                node = cacheNode;
-                            } else {
-                                nodeCache.put(number, node);
-                            }
-                            typeCache.put(number, oTypeInteger);
-                        } else {
-                            typeCache.put(number, new Integer(otype));
-                        }
-                    }
-
-                    results.add(node);
-                } catch (Exception e) {
-                    // log error, but continue with other nodes
-                    log.error(e.getMessage(), e);
+        while (maxNumber > results.size() || maxNumber==-1) {
+            try {                
+                MMObjectNode node = new MMObjectNode(builder);
+                node.start();
+                Step nodeStep = fields[0].getStep();
+                for (int i = 0; i < fields.length; i++) {                    
+                    if (fields[i].getStep() != nodeStep) continue;
+                    String fieldName =  fields[i].getFieldName();
+                    // if (node.retrieveValue(fieldName) != null) continue;
+                    // already set (node-query must _start_ with all nodes of the node)
+                    // XXXX If getValue can give null for _set_ values, then something must be changed here.
+                    // see also BasicNodeQuery.setNodeStep
+                    database.decodeDBnodeField(node, fieldName, rs, i + 1, "");
                 }
-            }
-        } catch (SQLException sqe) {
-            // log error, but return results.
-            log.error(sqe);
-        }
+                node.finish();
+                results.add(node);
+            } catch (Throwable t) { // this arrangement should perhaps also be ported to the two other readNodes in this class
+                log.error(t);
+                //break;
+            }         
+            try {                
+                if (! rs.next()) break;            
+            } catch (SQLException sqe) {
+                    // there are results already, don't mess up those.
+                log.error(sqe);
+                break;                
+            }   
+   
+        }    
         return results;
     }
-
 
     // javadoc is inherited
     public int getSupportLevel(int feature, SearchQuery query) throws SearchQueryException {
         int supportLevel;
         switch (feature) {
-        case SearchQueryHandler.FEATURE_OFFSET:
-            // When sql handler does not support OFFSET, this query handler
-            // provides weak support by skipping resultsets.
-            // (falls through)
-        case SearchQueryHandler.FEATURE_MAX_NUMBER:
-            // When sql handler does not support MAX NUMBER, this query
-            // handler provides weak support by truncating resultsets.
-            int handlerSupport = sqlHandler.getSupportLevel(feature, query);
-            if (handlerSupport == SearchQueryHandler.SUPPORT_NONE) {
-                // TODO: implement weak support.
-                //supportLevel = SearchQueryHandler.SUPPORT_WEAK;
-                supportLevel = SearchQueryHandler.SUPPORT_NONE;
-            } else {
-                supportLevel = handlerSupport;
-            }
-            break;
+            case SearchQueryHandler.FEATURE_OFFSET:
+                // When sql handler does not support OFFSET, this query handler
+                // provides weak support by skipping resultsets.
+                // (falls through)
+            case SearchQueryHandler.FEATURE_MAX_NUMBER:
+                // When sql handler does not support MAX NUMBER, this query
+                // handler provides weak support by truncating resultsets.
+                int handlerSupport = sqlHandler.getSupportLevel(feature, query);
+                if (handlerSupport == SearchQueryHandler.SUPPORT_NONE) {
+                    // TODO: implement weak support.
+                    //supportLevel = SearchQueryHandler.SUPPORT_WEAK;
+                     supportLevel = SearchQueryHandler.SUPPORT_NONE;
+               } else {
+                    supportLevel = handlerSupport;
+                }
+                break;
 
-        default:
-            supportLevel = sqlHandler.getSupportLevel(feature, query);
+            default:
+                supportLevel = sqlHandler.getSupportLevel(feature, query);
         }
         return supportLevel;
     }

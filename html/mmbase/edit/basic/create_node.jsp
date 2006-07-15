@@ -1,7 +1,6 @@
 <%@ include file="page_base.jsp"
-%><mm:content type="text/html" language="$config.lang" country="$config.country" expires="0">
-<mm:cloud  loginpage="login.jsp" sessionname="$config.session" rank="$rank">
-  <mm:param name="org.mmbase.xml-mode" value="$config.xmlmode" />
+%><mm:content type="text/html" language="$config.lang" expires="0">
+<mm:cloud method="$config.method" loginpage="login.jsp" sessionname="$config.session" jspvar="cloud">
 <mm:write referid="style" escape="none" />
 <title>Create a node</title>
 </head>
@@ -26,10 +25,7 @@
     <mm:fieldlist id="my_form" type="edit" nodetype="$node_type" >
        <tr>
          <td class="data"><em><mm:fieldinfo type="guiname" /></em> <small>(<mm:fieldinfo type="name" />)</small></td>
-         <td class="listdata">
-           <mm:fieldinfo type="input" />
-           <mm:fieldinfo type="errors" />
-         </td>
+         <td class="listdata"><mm:fieldinfo type="input" /></td>
        </tr>
     </mm:fieldlist>
 <%--tr><td class="data"><em><%=m.getString("change_node.context")%></em></td>

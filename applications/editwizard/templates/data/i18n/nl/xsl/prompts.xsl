@@ -9,7 +9,7 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.20 2006-06-27 12:57:31 nklasens Exp $
+  @version $Id: prompts.xsl,v 1.11.2.5 2005-05-20 10:34:52 pierre Exp $
   -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -30,22 +30,6 @@
 <xsl:variable name="date_november">november</xsl:variable>
 <xsl:variable name="date_december">december</xsl:variable>
 
-<xsl:variable name="day_sun">Sun</xsl:variable>
-<xsl:variable name="day_mon">Mon</xsl:variable>
-<xsl:variable name="day_tue">Tue</xsl:variable>
-<xsl:variable name="day_wed">Wed</xsl:variable>
-<xsl:variable name="day_thu">Thu</xsl:variable>
-<xsl:variable name="day_fri">Fri</xsl:variable>
-<xsl:variable name="day_sat">Sat</xsl:variable>
-
-<xsl:variable name="datepicker_currentmonth">Ga naar huidige maand</xsl:variable>
-<xsl:variable name="datepicker_today">Vandaag is</xsl:variable>
-<xsl:variable name="datepicker_scrollleft">Klik hier om naar de voorgaande maand te scrollen. Houd de muisknop ingedrukt om automatisch te scrollen.</xsl:variable>
-<xsl:variable name="datepicker_scrollright">Klik hier om naar de volgende maand te scrollen. Houd de muisknop ingedrukt om automatisch te scrollen.</xsl:variable>
-<xsl:variable name="datepicker_selectmonth">Klik hier om een maand te selecteren.</xsl:variable>
-<xsl:variable name="datepicker_selectyear">Klik hier om een jaar te selecteren.</xsl:variable>
-<xsl:variable name="datepicker_selectdate">Selecteer [datum] als de datum.</xsl:variable>
-
 <xsl:variable name="time_at">om</xsl:variable>
 <!-- prompts for a binary field (upload/download) -->
 <xsl:template name="prompt_file_upload">Bestand sturen</xsl:template>
@@ -65,7 +49,7 @@
 <xsl:template name="prompt_down"><img src="{$mediadir}down.gif" border="0" alt="Omlaag" title="{$tooltip_down}" /></xsl:template>
 
 <!-- new button prompts and tooltips -->
-<xsl:template name="prompt_new"><img src="{$mediadir}new.gif" border="0" title="Nieuw" alt="Nieuw"/></xsl:template>
+<xsl:template name="prompt_new"><img src="{$mediadir}new.gif" border="0" alt="Nieuw"/></xsl:template>
 <xsl:variable name="tooltip_new">Voeg een nieuw item toe aan de lijst</xsl:variable>
 <!-- remove button prompts and tooltips (for relations) -->
 <xsl:template name="prompt_remove"><img src="{$mediadir}remove.gif" border="0"  alt="Verwijder"/></xsl:template>
@@ -124,33 +108,41 @@
 <xsl:variable name="tooltip_index" >Terug naar de startpagina</xsl:variable>
 <xsl:template name="prompt_logout">Uitloggen</xsl:template>
 <xsl:variable name="tooltip_logout" >Uitloggen en terug naar de startpagina</xsl:variable>
-<!-- prompts and tooltips for lists -->
-<xsl:template name="prompt_search_age">
-  <xsl:param name="age" />
-  <xsl:if test="$age=1"> van de laatste dag</xsl:if>
-  <xsl:if test="$age=7"> van de laatste 7 dagen</xsl:if>
-  <xsl:if test="$age=31"> van de laatste maand</xsl:if>
-  <xsl:if test="$age=356"> van het afgelopen jaar</xsl:if>
-  <xsl:if test="$age=-1"> alle</xsl:if>
-</xsl:template>
 
 <!-- prompts and tooltips for lists -->
-<xsl:template name="prompt_edit_list">
-  <xsl:param name="age" />
-  <xsl:param name="searchvalue" />
-  <xsl:call-template name="prompt_search_age" >
-    <xsl:with-param name="age" select="$age" />
-  </xsl:call-template>
-  <xsl:value-of select="$title" disable-output-escaping="yes"  />
-  <xsl:if test="$searchvalue" >
-    - zoek op <xsl:value-of select="$searchvalue" />
-  </xsl:if>
-  (items <xsl:value-of select="/list/@offsetstart"/>-<xsl:value-of select="/list/@offsetend"/>/<xsl:value-of select="/list/@totalcount" />, pagina <xsl:value-of select="/list/pages/@currentpage" />/<xsl:value-of select="/list/pages/@count" />)
+<xsl:template name="prompt_search_age">
+	<xsl:param name="age" />
+	<xsl:if test="$age=1"> van de laatste dag</xsl:if>
+	<xsl:if test="$age=7"> van de laatste 7 dagen</xsl:if>
+	<xsl:if test="$age=31"> van de afgelopen maand</xsl:if>
+	<xsl:if test="$age=356"> van het afgelopen jaar</xsl:if>
+	<xsl:if test="$age=-1"> over de hele cloud</xsl:if>
 </xsl:template>
+
+<xsl:template name="prompt_edit_list">
+	<xsl:param name="age" />
+	<xsl:param name="searchvalue" />
+	<xsl:value-of select="$title" disable-output-escaping="yes"  />
+	<xsl:call-template name="prompt_search_age" >
+		<xsl:with-param name="age" select="$age" />
+	</xsl:call-template>
+	<xsl:if test="$searchvalue" >
+		- zoeken op <xsl:value-of select="$searchvalue" />
+	</xsl:if>
+	(items <xsl:value-of select="/list/@offsetstart"/>-<xsl:value-of select="/list/@offsetend"/>/<xsl:value-of select="/list/@totalcount" />, paginas <xsl:value-of select="/list/pages/@currentpage" />/<xsl:value-of select="/list/pages/@count" />)
+</xsl:template>
+
 <xsl:variable name="tooltip_edit_list" >Dit zijn de items die u kan wijzigen.</xsl:variable>
-<xsl:variable name="tooltip_sort_on">Sorteer op</xsl:variable>
-<xsl:variable name="tooltip_sort_up">omhoog</xsl:variable>
-<xsl:variable name="tooltip_sort_down">omlaag</xsl:variable>
+<xsl:variable name="tooltip_sort_on">Sort on</xsl:variable>
+<xsl:variable name="tooltip_sort_up">up</xsl:variable>
+<xsl:variable name="tooltip_sort_down">down</xsl:variable>
+<xsl:template name="prompt_sort_up">
+  <img src="{$mediadir}up.gif" alt="{$tooltip_up}" height="15" width="15" />
+</xsl:template>
+<xsl:template name="prompt_sort_down">
+  <img src="{$mediadir}down.gif" alt="{$tooltip_up}" height="15" width="15" />
+</xsl:template>
+
 <!-- searchlist prompts/tooltips -->
 <xsl:variable name="tooltip_select_search">Selecteer een of meer items uit de lijst</xsl:variable>
 <xsl:template name="prompt_no_results" >Geen items gevonden</xsl:template>
@@ -166,7 +158,7 @@
 <xsl:variable name="message_max" >Waarde moet kleiner of gelijk zijn aan {0}</xsl:variable>
 <xsl:variable name="message_mindate" >Datum moet groter of gelijk zijn aan{0}</xsl:variable>
 <xsl:variable name="message_maxdate" >Datum moet kleiner of gelijk zijn aan {0}</xsl:variable>
-<xsl:variable name="message_required" >Waarde is verplicht; Vul een waarde in</xsl:variable>
+<xsl:variable name="message_required" >Waarde is verplicht; kies een warade</xsl:variable>
 <xsl:variable name="message_dateformat" >Datum of tijd heeft fout formaat</xsl:variable>
 <xsl:variable name="message_thisnotvalid" >Dit veld is incorrect</xsl:variable>
 <xsl:variable name="message_notvalid" >{0} is incorrect</xsl:variable>

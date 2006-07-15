@@ -9,8 +9,9 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search.implementation;
 
-import org.mmbase.bridge.Field;
-import org.mmbase.core.CoreField;
+import org.mmbase.bridge.Node;
+import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.storage.search.*;
 
 /**
@@ -18,13 +19,13 @@ import org.mmbase.storage.search.*;
  * The field alias is not set on default.
  *
  * @author Rob van Maris
- * @version $Id: BasicStepField.java,v 1.23 2006-07-04 13:04:00 michiel Exp $
+ * @version $Id: BasicStepField.java,v 1.9 2004-03-15 14:54:26 robmaris Exp $
  * @since MMBase-1.7
  */
 public class BasicStepField implements StepField {
 
     /** Associated field definition. */
-    private CoreField field = null;
+    private FieldDefs fieldDefs = null;
 
     /** Associated step. */
     private Step step = null;
@@ -42,51 +43,46 @@ public class BasicStepField implements StepField {
     // package visibility!
     static void testValue(Object value, StepField field) {
         int type = field.getType();
-
+        
         // Test for null value.
         if (value == null) {
-            throw new IllegalArgumentException("Invalid value for " + org.mmbase.core.util.Fields.getTypeDescription(type) + " field: " + value);
+            throw new IllegalArgumentException("Invalid value for "
+            + FieldDefs.getDBTypeDescription(type) + " field: "
+            + value);
         }
-
+        
         // Test for compatible type.
-        boolean ok;
+        boolean ok = true;
         switch (type) {
-        case Field.TYPE_BINARY: 
-            ok = value instanceof byte[];
-            break;
-            // Numerical types.            
-        case Field.TYPE_INTEGER:
-        case Field.TYPE_FLOAT:
-        case Field.TYPE_DOUBLE:
-        case Field.TYPE_LONG:
-        case Field.TYPE_NODE:
-            ok = value instanceof Number;
-            break;
-
-            // String types.
-        case Field.TYPE_XML:
-            
-        case Field.TYPE_STRING:
-            ok = value instanceof String;
-            break;
-        case Field.TYPE_BOOLEAN:
-            ok = value instanceof Boolean;
-            break;
-        case Field.TYPE_DATETIME:
-            ok = value instanceof java.util.Date || value instanceof Number;
-            break;
-        case Field.TYPE_LIST:
-            ok = value instanceof java.util.List;
-            break;
-
-
-        default: // Unknown field type, should not occur.
-            throw new IllegalStateException("Unknown field type: " + type);
+            // Numberical types.
+            case FieldDefs.TYPE_INTEGER:
+	    case FieldDefs.TYPE_BYTE: //(keesj:) byte in mmbase stands for byte array
+                                      //I'm not shure a byte array is numerical
+            case FieldDefs.TYPE_FLOAT:
+            case FieldDefs.TYPE_DOUBLE:
+            case FieldDefs.TYPE_LONG:
+            case FieldDefs.TYPE_NODE:
+                if (!(value instanceof Number)) {
+                    ok = false;
+                }
+                break;
+                
+                // String types.
+            case FieldDefs.TYPE_STRING:
+            case FieldDefs.TYPE_XML:
+                if (!(value instanceof String)) {
+                    ok = false;
+                }
+                break;
+                
+            default: // Unknown field type, should not occur.
+                throw new IllegalStateException("Unknown field type: " + type);
         }
-
+        
         if (!ok) {
-            throw new IllegalArgumentException("Invalid value for " + org.mmbase.core.util.Fields.getTypeDescription(type) + " field: "
-                                               + value + ", of type " + value.getClass().getName());
+            throw new IllegalArgumentException("Invalid value for "
+            + FieldDefs.getDBTypeDescription(type) + " field: "
+            + value + ", of type " + value.getClass().getName());
         }
     }
 
@@ -107,7 +103,7 @@ public class BasicStepField implements StepField {
             if (value2 instanceof Number) {
                 Number number1 = (Number) value1;
                 Number number2 = (Number) value2;
-                return Double.doubleToLongBits(number1.doubleValue()) == Double.doubleToLongBits(number2.doubleValue());
+                return number1.doubleValue() == number2.doubleValue();
             } else {
                 return false;
             }
@@ -120,28 +116,28 @@ public class BasicStepField implements StepField {
      * Constructor.
      *
      * @param step The associated step.
-     * @param field The associated field.
+     * @param fieldDefs The associated fieldDefs.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
-    public BasicStepField(Step step, CoreField field) {
+    public BasicStepField(Step step, FieldDefs fieldDefs) {
         if (step == null) {
             throw new IllegalArgumentException(
             "Invalid step value: " + step);
         }
         this.step = step;
 
-        if (field == null) {
+        if (fieldDefs == null) {
             throw new IllegalArgumentException(
-            "Invalid field value: " + field);
+            "Invalid fieldDefs value: " + fieldDefs);
         }
-        // Check field belongs to step
-        if (!step.getTableName().equals(field.getParent().getTableName())) {
+        // Check fieldDefs belongs to step
+        if (!step.getTableName().equals(fieldDefs.getParent().getTableName())) {
             throw new IllegalArgumentException(
-            "Invalid field value, belongs to step " + field.getParent().getTableName()
+            "Invalid fieldDefs value, belongs to step " + fieldDefs.getParent().getTableName()
             + " instead of step " +  step.getTableName() + ": "
-            + field);
+            + fieldDefs);
         }
-        this.field = field;
+        this.fieldDefs = fieldDefs;
     }
 
     /**
@@ -153,24 +149,25 @@ public class BasicStepField implements StepField {
      */
     public BasicStepField setAlias(String alias) {
         if (alias != null && alias.trim().length() == 0) {
-            throw new IllegalArgumentException("Invalid alias value: " + alias);
+            throw new IllegalArgumentException(
+            "Invalid alias value: " + alias);
         }
         this.alias = alias;
         return this;
     }
 
     /**
-     * Gets the associated field.
+     * Gets the associated fieldDefs.
      *
-     * @return The field.
+     * @return The fieldDefs.
      */
-    public CoreField getField() {
-        return field;
+    public FieldDefs getFieldDefs() {
+        return fieldDefs;
     }
 
     // javadoc is inherited
     public String getFieldName() {
-        return field.getName();
+        return fieldDefs.getDBName();
     }
 
     // javadoc is inherited
@@ -185,7 +182,7 @@ public class BasicStepField implements StepField {
 
     // javadoc in inherited
     public int getType() {
-        return field.getType();
+        return fieldDefs.getDBType();
     }
 
     // javadoc is inherited
@@ -194,7 +191,7 @@ public class BasicStepField implements StepField {
             StepField field = (StepField) obj;
             return BasicStepField.compareSteps(getStep(), field.getStep())
                 && getFieldName().equals(field.getFieldName())
-                && (alias == null? field.getAlias() == null : alias.equals(field.getAlias()));
+                && (alias == null? true: alias.equals(field.getAlias()));
         } else {
             return false;
         }
@@ -207,6 +204,19 @@ public class BasicStepField implements StepField {
             51 * getStep().getAlias().hashCode())
         + 53 * getFieldName().hashCode()
         + (alias == null? 0: 59 * alias.hashCode());
+    }
+
+    // javadoc is inherited
+    public String toString() {
+        StringBuffer sb = new StringBuffer("StepField(step:");
+        if (getStep().getAlias() == null) {
+            sb.append(getStep().getTableName());
+        } else {
+            sb.append(getStep().getAlias());
+        }
+        sb.append(", fieldname:").append(getFieldName()).
+        append(", alias:").append(getAlias()).append(")");
+        return sb.toString();
     }
 
     /**
@@ -234,53 +244,6 @@ public class BasicStepField implements StepField {
         } else {
             return alias1.equals(step2.getAlias());
         }
-    }
-
-    /**
-     * Returns the field's fieldname, possibly extended with the step's name if known.
-     * May return null or partial fieldnames if not all data is available (for use in debugging).
-     * @param field the fieldname whose name to return
-     */
-    static public String getFieldName(StepField field) {
-        String fieldName = null;
-        if (field != null) {
-            fieldName = field.getAlias();
-            if (fieldName == null) {
-                fieldName = field.getFieldName();
-            }
-            Step step = field.getStep();
-            if (step != null)  {
-                if (step.getAlias() != null) {
-                    fieldName = step.getAlias() + "." + fieldName;
-                } else {
-                    fieldName = step.getTableName() + "." + fieldName;
-                }
-            }
-        }
-        return fieldName;
-    }
-
-
-    // javadoc is inherited
-    public String toString() {
-        StringBuffer sb = new StringBuffer("");
-        Step step = getStep();
-        if (step == null) {
-            sb.append("null");
-        } else {
-            String stepAlias = step.getAlias();
-            if (stepAlias == null) {
-                sb.append(getStep().getTableName());
-            } else {
-                sb.append(stepAlias);
-            }
-        }
-        sb.append(".").append(getFieldName());
-        String alias = getAlias();
-        if (alias != null) {
-            sb.append(" as ").append(alias);
-        }
-        return sb.toString();
     }
 
 }

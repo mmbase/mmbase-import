@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
 public class CommandLauncher {
 
     /** MMBase logging system */
-    private static final Logger log = Logging.getLoggerInstance(CommandLauncher.class);
+    private static Logger log = Logging.getLoggerInstance(CommandLauncher.class.getName());
 
     /**
      * Default buffer size.
@@ -90,7 +90,7 @@ public class CommandLauncher {
     /**
      * Constructs a command array that will be passed to the process
      *
-     * @param command path of comand
+     * @param commandPath path of comand
      * @param commandArgs arguments after the command
      */
     protected String[] constructCommandArray(String command, String[] commandArgs) {
@@ -248,7 +248,7 @@ public class CommandLauncher {
     /**
      * Reads output from the external process to the streams.
      *
-     * @param out process stdout is written to this stream
+     * @param output process stdout is written to this stream
      * @param err process stderr is written to this stream
      * @throws ProcessException if process not yet executed
      */
@@ -298,7 +298,7 @@ public class CommandLauncher {
      * Writes input to and reads output from the external process to the streams.
      *
      * @param in process stdin is read from this stream
-     * @param out process stdout is written to this stream
+     * @param output process stdout is written to this stream
      * @param err process stderr is written to this stream
      * @throws ProcessException if process not yet executed
      */

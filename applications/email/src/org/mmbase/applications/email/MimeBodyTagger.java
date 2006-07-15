@@ -10,8 +10,13 @@ See http://www.MMBase.org/license
 
 package org.mmbase.applications.email;
 
+import java.lang.*;
+import java.net.*;
 import java.util.*;
+import java.io.*;
 
+import org.mmbase.module.database.*;
+import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 
 import org.mmbase.util.logging.Logging;
@@ -45,37 +50,37 @@ public class MimeBodyTagger {
 
             MimeBodyTag tag=new MimeBodyTag();
 
-            String type = atrtagger.Value("type");
+            String type=(String)atrtagger.Value("type");
             if (type!=null) tag.setType(type);
 
-            String encoding = atrtagger.Value("encoding");
+            String encoding=(String)atrtagger.Value("encoding");
             if (encoding!=null) tag.setEncoding(encoding);
 
-            String number = atrtagger.Value("number");
+            String number=(String)atrtagger.Value("number");
             if (number!=null) tag.setNumber(number);
 
-            String field = atrtagger.Value("field");
+            String field=(String)atrtagger.Value("field");
             if (field!=null) tag.setNumber(field);
 
-            String formatter = atrtagger.Value("formatter");
+            String formatter=(String)atrtagger.Value("formatter");
             if (formatter!=null) tag.setFormatter(formatter);
 
-            String alt = atrtagger.Value("alt");
+            String alt=(String)atrtagger.Value("alt");
             if (alt!=null) tag.setAlt(alt);
 
-            String id = atrtagger.Value("id");
+            String id=(String)atrtagger.Value("id");
             if (id!=null) tag.setId(id);
 
-            String related = atrtagger.Value("related");
+            String related=(String)atrtagger.Value("related");
             if (related!=null) tag.setRelated(related);
 
-            String file = atrtagger.Value("file");
+            String file=(String)atrtagger.Value("file");
             if (file!=null) tag.setFile(file);
 
-            String filename = atrtagger.Value("filename");
+            String filename=(String)atrtagger.Value("filename");
             if (filename!=null) tag.setFileName(filename);
 
-            String attachment = atrtagger.Value("attachment");
+            String attachment=(String)atrtagger.Value("attachment");
             if (attachment!=null) tag.setAttachment(attachment);
 
             tag.setText(part);

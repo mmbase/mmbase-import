@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security;
 
-import org.mmbase.util.HashCodeUtil;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import java.util.*;
@@ -26,14 +25,10 @@ import java.util.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Rank.java,v 1.16 2005-04-25 14:25:18 michiel Exp $
+ * @version $Id: Rank.java,v 1.12 2003-07-08 09:28:44 michiel Exp $
  */
-public final class Rank implements Comparable, java.io.Serializable {
-
+public final class Rank implements Comparable {
     private static Logger log = Logging.getLoggerInstance(Rank.class);
-
-    private static final int serialVersionUID = 1; // increase this if object chages.
-
     /** int value for the anonymous Rank*/
     public final static int ANONYMOUS_INT = 0;
 
@@ -130,7 +125,7 @@ public final class Rank implements Comparable, java.io.Serializable {
     }
 
     /**
-     * Returns all ranks currently known by the security implemetation.  Default and to start with there
+     * Returns all ranks currently known by security implemetation.  Default and to start with there
      * are three ranks available: 'anonymous', 'basic user' and 'administrator'.  You probably
      * should never remove them.
      * @since MMBase-1.6.4
@@ -152,17 +147,6 @@ public final class Rank implements Comparable, java.io.Serializable {
         }
     }
 
-    
-    /**
-     * @see java.lang.Object#hashCode()
-     */
-    public int hashCode() {
-        int result = 0;
-        result = HashCodeUtil.hashCode(result, rank);
-        result = HashCodeUtil.hashCode(result, description);
-        return result;
-    }
-    
     /**
      * @since MMBase-1.6.4
      */

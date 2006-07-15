@@ -9,15 +9,12 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search.implementation.database;
 
-import java.util.*;
-import java.sql.*;
-import java.lang.reflect.Method;
-
+import org.mmbase.module.core.MMBase;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-import org.mmbase.module.database.MultiConnection;
+import java.util.*;
 
 /**
  * The Informix query handler, implements {@link
@@ -38,7 +35,7 @@ import org.mmbase.module.database.MultiConnection;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: InformixSqlHandler.java,v 1.25 2006-07-03 11:59:16 johannes Exp $
+ * @version $Id: InformixSqlHandler.java,v 1.8.2.8 2005-04-12 13:57:58 michiel Exp $
  * @since MMBase-1.7
  */
 public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -46,14 +43,22 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
     /**
      * Logger instance.
      */
-    private static Logger log
-            = Logging.getLoggerInstance(InformixSqlHandler.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(InformixSqlHandler.class);
+
+    /**
+     * MMBase instance.
+     */
+    private MMBase mmbase = null;
 
     /**
      * Constructor.
+     *
+     * @param disallowedValues Map mapping disallowed table/fieldnames
+     *                         to allowed alternatives.
      */
-    public InformixSqlHandler() {
-        super();
+    public InformixSqlHandler(Map disallowedValues) {
+        super(disallowedValues);
+        mmbase = MMBase.getMMBase();
     }
 
     /**
@@ -118,9 +123,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
         // SELECT
         StringBuffer sbQuery = new StringBuffer("SELECT ");
 
-        if (log.isDebugEnabled()) {
-            log.trace("query:" + query.toString());
-        }
+        log.trace("query:" + query.toString());
 
         if (!isUnionQuery(query)) {
             /*
@@ -189,16 +192,9 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
             }
         }
 
-        boolean storesAsFile = org.mmbase.module.core.MMBase.getMMBase().getStorageManagerFactory().hasOption(org.mmbase.storage.implementation.database.Attributes.STORES_BINARY_AS_FILE);
         Iterator iFields = lFields.iterator();
-        boolean appended = false;
         while (iFields.hasNext()) {
             StepField field = (StepField) iFields.next();
-            if (field.getType() == org.mmbase.bridge.Field.TYPE_BINARY) continue; 
-            if (appended) {
-                sb.append(',');
-            }
-            appended = true;
 
             // Fieldname prefixed by table alias.
             Step step = field.getStep();
@@ -261,11 +257,12 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                         .append(getAllowedValue(fieldAlias));
             }
 
+            if (iFields.hasNext()) {
+                sb.append(",");
+            }
         }
 
-        if (log.isDebugEnabled()) {
-            log.trace("Base field part of query : " + sb);
-        }
+        log.trace("Base field part of query : " + sb);
 
         // vector to save OR-Elements (Searchdir=BOTH) for migration to UNION-query
         List orElements = new ArrayList();
@@ -282,7 +279,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
             String tableAlias = step.getAlias();
 
             // Tablename, prefixed with basename and underscore
-            sb.append(org.mmbase.module.core.MMBase.getMMBase().getBaseName()).
+            sb.append(mmbase.getBaseName()).
                     append("_").
                     //Currently no replacement strategy is implemented for
                     //invalid tablenames.
@@ -322,9 +319,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                 }
                 sbNodes.append(")");
             }
-            if (log.isDebugEnabled()) {
-                log.trace("Node constraint string : " + sbNodes);
-            }
+            log.trace("Node constraint string : " + sbNodes);
 
             // Relation steps.
             if (step instanceof RelationStep) {
@@ -502,10 +497,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                 sbRelations.append(")");
             }
         }
-
-        if (log.isDebugEnabled()) {
-            log.trace("Relation string : " + sbRelations);
-        }
+        log.trace("Relation string : " + sbRelations);
 
         // Constraints
         StringBuffer sbConstraints = new StringBuffer();
@@ -563,9 +555,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                 }
             }
 
-            if (log.isDebugEnabled()) {
-                log.trace("Union constraint : " + unionConstraints);
-            }
+            log.trace("Union constraint : " + unionConstraints);
 
             /*
                2) Combine the OR-Elements
@@ -591,7 +581,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                     // If there are just two relation-constraint-elements, we don't need to combine
                     if (counter != counter2 && orElements.size() > 2) {
                         // also add the additinal constraints
-                        if (!skipCombination) {
+                        if (skipCombination==false ) {
                             combinedElements.add(orElements.get(counter) + " AND " + orElements.get(counter2) + unionConstraints);
                         }
                     } else {
@@ -622,9 +612,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                         append(sbConstraints.toString());
             }
 
-            if (log.isDebugEnabled()) {
-                log.trace("Base query including fields and tables : " + sb);
-            }
+            log.trace("Base query including fields and tables : " + sb);
 
             // now add the combined relation-constraints as UNIONS
             while (e.hasNext()) {
@@ -649,10 +637,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                 }
 
                 unionRelationConstraints.append(" " + combinedElement + " ");
-
-                if (log.isDebugEnabled()) {
-                    log.trace("Union relation constraint " + teller + " : " + unionRelationConstraints);
-                }
+                log.trace("Union relation constraint " + teller + " : " + unionRelationConstraints);
                 teller++;
             }
 
@@ -705,15 +690,14 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                         if (field.equals(orderByField.toString())) {
                             // match found
                             sb.append((i + 1) + " ");
-                            // prevent that the field is listed twice in this order-by
                             found = true;
+                            // prevent that the field is listed twice in this order-by
                             break;
                         }
                     }
-                      if (! found) {
-                          throw new RuntimeException("Could not find the field " + orderByField + " in " + query.getFields() + " !");
-                      }
-
+                    if (! found) {
+                        throw new RuntimeException("Could not find the field " + orderByField + " in " + query.getFields() + " !");
+                    }
 
                     // Sort direction.
                     switch (sortOrder.getDirection()) {
@@ -808,37 +792,6 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                 }
             }
             log.debug("Completed generation of query:" + sb.toString());
-        }
-    }
-
-    /**
-     * Safely close a database connection and/or a database statement.
-     * @param con The connection to close. Can be <code>null</code>.
-     * @param stmt The statement to close, prior to closing the connection. Can be <code>null</code>.
-     */
-    protected void closeConnection(Connection con, Statement stmt) {
-        try {
-            if (stmt != null) {
-                stmt.close();
-            }
-        } catch (Exception g) {}
-        try {
-            if (con != null) {
-                if (con instanceof MultiConnection) {
-                    closeInformix((MultiConnection)con);
-                }
-                con.close();
-            }
-        } catch (Exception g) {}
-    }
-
-    private void closeInformix(MultiConnection activeConnection) {
-        Connection con = activeConnection.getRealConnection();
-        try {
-            Method scrub = Class.forName("com.informix.jdbc.IfxConnection").getMethod("scrubConnection", null);
-            scrub.invoke(con, null);
-        } catch (Exception e) {
-            log.error("Exception while calling releaseBlob(): " + e.getMessage());
         }
     }
 }

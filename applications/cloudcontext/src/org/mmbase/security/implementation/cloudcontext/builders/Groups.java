@@ -11,6 +11,7 @@ package org.mmbase.security.implementation.cloudcontext.builders;
 
 import org.mmbase.security.implementation.cloudcontext.*;
 import java.util.*;
+import org.mmbase.security.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.cache.Cache;
@@ -26,7 +27,7 @@ import org.mmbase.storage.search.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Groups.java,v 1.17 2005-11-23 15:45:13 pierre Exp $
+ * @version $Id: Groups.java,v 1.14 2004-02-25 19:39:23 michiel Exp $
  */
 public class Groups extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(Groups.class);
@@ -93,27 +94,29 @@ public class Groups extends MMObjectBuilder {
             Step step = query.addStep(object);
             BasicStepField numberStepField = new BasicStepField(step, object. getField("number"));
             BasicFieldValueConstraint numberConstraint = new BasicFieldValueConstraint(numberStepField, new Integer(containedObject));
-
+            
             BasicRelationStep relationStep = query.addRelationStep(insrel, this);
             relationStep.setDirectionality(RelationStep.DIRECTIONS_SOURCE);
-
-            query.setConstraint(numberConstraint);
+            
+            query.setConstraint(numberConstraint);            
             query.addFields(relationStep.getNext());
 
             List resultList;
             try {
-                resultList = storageConnector.getNodes(query, false);
+                resultList = mmb.getDatabase().getNodes(query, this); // not cached, but no need, because total result is cached.
+                processSearchResults(resultList);
             } catch (SearchQueryException sqe) {
                 log.error(sqe.getMessage());
                 resultList = new ArrayList();
             }
+
 
             Iterator i = resultList.iterator();
 
             result = Boolean.FALSE;
             while (i.hasNext()) {
                 MMObjectNode group = (MMObjectNode) i.next();
-
+                
                 if (group.getNumber() == containingGroup) {
                     log.trace("yes!");
                     result = Boolean.TRUE;
@@ -130,10 +133,10 @@ public class Groups extends MMObjectBuilder {
                     }
                 }
             }
-
+            
             containsCache.put(key, result);
         }
-
+        
         return result.booleanValue();
     }
 

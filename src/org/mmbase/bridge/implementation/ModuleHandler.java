@@ -13,13 +13,9 @@ package org.mmbase.bridge.implementation;
 import java.util.*;
 import java.lang.reflect.*;
 import javax.servlet.*;
-import javax.servlet.http.*;
-
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.ProcessorInterface;
-import org.mmbase.util.PageInfo;
-import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -29,25 +25,28 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Rob Vermeulen
- * @version $Id: ModuleHandler.java,v 1.31 2006-01-02 19:17:47 michiel Exp $
+ * @version $Id: ModuleHandler.java,v 1.22 2003-08-27 08:24:00 pierre Exp $
  */
-public class ModuleHandler implements Module, Comparable, InvocationHandler {
-    private static final Logger log = Logging.getLoggerInstance(ModuleHandler.class);
+public class ModuleHandler implements Module, Comparable {
+    private static Logger log = Logging.getLoggerInstance(ModuleHandler.class.getName());
 
-
+    //removed InvocationHandler because this is jdk1.3, and MMBase requires 1.2
+    //
+    //, InvocationHandler {
     // link to cloud context
     private CloudContext cloudContext = null;
-    private org.mmbase.module.Module mmbaseModule;
+    private org.mmbase.module.Module mmbase_module;
 
-    private ModuleHandler(org.mmbase.module.Module mod, CloudContext cloudContext) {
-        mmbaseModule = mod;
-        this.cloudContext = cloudContext;
+    private ModuleHandler(org.mmbase.module.Module mod, CloudContext cloudcontext) {
+        mmbase_module=mod;
+        cloudContext=cloudcontext;
     }
 
     public synchronized static Module getModule(org.mmbase.module.Module mod, CloudContext cloudcontext) {
-        // turned off because it causes errors on compiling with JDK1.2
-        
-        Class[] objClasses = mod.getClass().getInterfaces();
+/*
+// turned off because it causes errors on compiling with JDK1.2
+
+        Class[] objClasses=mod.getClass().getInterfaces();
         // check for allowable interface class
         // Package bridge = Package.getPackage("org.mmbase.bridge");
         Class otherintf = null;
@@ -58,23 +57,24 @@ public class ModuleHandler implements Module, Comparable, InvocationHandler {
         }
         Class[] useintf;
         if (otherintf!=null) {
-            log.debug("alternateintf =" + otherintf.getName());
+            System.out.println("alternateintf ="+otherintf.getName());
             useintf = new Class[] {Module.class, otherintf};
         } else {
             useintf = new Class[] {Module.class};
         }
-        log.service("creating proxy for : " + mod.getName() + " = " + useintf);
+        System.out.println("creating proxy for : "+mod.getName()+" = "+useintf);
 
         return (Module)Proxy.newProxyInstance(Module.class.getClassLoader(),
-                                              useintf, new ModuleHandler(mod, cloudcontext));
-        //return new ModuleHandler(mod,cloudcontext);
+                        useintf,new ModuleHandler(mod,cloudcontext));
+*/
+        return new ModuleHandler(mod,cloudcontext);
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         if (method.getDeclaringClass().equals(Module.class)) {
             return method.invoke(this,args);
         } else {
-            return method.invoke(mmbaseModule,args);
+            return method.invoke(mmbase_module,args);
         }
     }
 
@@ -82,32 +82,20 @@ public class ModuleHandler implements Module, Comparable, InvocationHandler {
         return cloudContext;
     }
 
-    protected Cloud getCloud(Map parameters) {
-        Cloud cloud = null;
-        if (parameters != null) {
-            cloud = (Cloud) parameters.get("CLOUD");
-        }
-        if (cloud == null) {
-            // anonymous access on the cloud....
-            cloud = cloudContext.getCloud("mmbase"); // get cloud object so you can create a node list. doh.
-        }
-        return cloud;
-    }
-
     public String getName() {
-        return mmbaseModule.getName();
+        return mmbase_module.getName();
     }
 
     public String getProperty(String name) {
-        return mmbaseModule.getInitParameter(name);
+        return mmbase_module.getInitParameter(name);
     }
 
     public Map getProperties() {
-        return new HashMap(mmbaseModule.getInitParameters());
+        return new HashMap(mmbase_module.getInitParameters());
     }
 
     public String getDescription() {
-        return mmbaseModule.getModuleInfo();
+        return mmbase_module.getModuleInfo();
     }
 
     public String getInfo(String command) {
@@ -115,8 +103,8 @@ public class ModuleHandler implements Module, Comparable, InvocationHandler {
     }
 
     public String getInfo(String command, ServletRequest req,  ServletResponse resp){
-        if (mmbaseModule instanceof ProcessorInterface) {
-            return ((ProcessorInterface)mmbaseModule).replace(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp, getCloud(null)), command);
+        if (mmbase_module instanceof ProcessorInterface) {
+            return ((ProcessorInterface)mmbase_module).replace(BasicCloudContext.getScanPage(req, resp),command);
         } else {
             throw new BridgeException("getInfo() is not supported by this module.");
         }
@@ -131,48 +119,52 @@ public class ModuleHandler implements Module, Comparable, InvocationHandler {
     }
 
     public void process(String command, Object parameter, Map auxparameters, ServletRequest req,  ServletResponse resp){
-        if (mmbaseModule instanceof ProcessorInterface) {
+        if (mmbase_module instanceof ProcessorInterface) {
                 Hashtable cmds = new Hashtable();
-                if (parameter == null) { parameter = "-1"; }
+                if (parameter==null) { parameter="-1"; }
                 cmds.put(command,parameter);
                 // weird change. should be fixed soon in Module.process
-                Hashtable partab = null;
-                if (auxparameters != null) {
-                    partab = new Hashtable(auxparameters);
+                Hashtable partab=null;
+                if (auxparameters!=null) {
+                    partab=new Hashtable(auxparameters);
                 } else {
-                    partab = new Hashtable();
+                    partab=new Hashtable();
                 }
-                ((ProcessorInterface)mmbaseModule).process(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp, getCloud(auxparameters)),cmds,partab);
-                if (auxparameters != null) auxparameters.putAll(partab);
+                ((ProcessorInterface)mmbase_module).process(BasicCloudContext.getScanPage(req, resp),cmds,partab);
+                if (auxparameters!=null) auxparameters.putAll(partab);
         } else {
             throw new BridgeException("process() is not supported by this module.");
         }
     }
 
     public NodeList getList(String command, Map parameters){
-        return getList(command, parameters,null,null);
+        return getList(command,parameters,null,null);
     }
 
     public NodeList getList(String command, Map parameters, ServletRequest req, ServletResponse resp){
-        if (mmbaseModule instanceof ProcessorInterface) {
-            Cloud cloud = getCloud(parameters);
-            log.info("Found " + cloud + " " + (cloud != null ? "" + cloud.getUser() : ""));
+        if (mmbase_module instanceof ProcessorInterface) {
+            BasicCloud cloud=null;
+            if (parameters!=null) {
+                cloud = (BasicCloud) parameters.get("CLOUD");
+            }
+            if (cloud==null) {
+                // anonymous access on the cloud....
+                cloud=(BasicCloud)cloudContext.getCloud("mmbase"); // get cloud object so you can create a node list. doh.
+            }
             try {
-                List v = ((ProcessorInterface)mmbaseModule).getNodeList(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp, cloud), command, parameters);
-                log.info("Got list " + v);
-                if (v.size() == 0) {
-                    return cloud.createNodeList();
+                Vector v=((ProcessorInterface)mmbase_module).getNodeList(BasicCloudContext.getScanPage(req, resp),command,parameters);
+                MMObjectBuilder bul=((ProcessorInterface)mmbase_module).getListBuilder(command,parameters);
+                NodeManager tempNodeManager = null;
+                if (bul.isVirtual()) {
+                   tempNodeManager = new VirtualNodeManager(bul,cloud);
                 } else {
-                    MMObjectNode node = (MMObjectNode) v.get(0);
-                    if (node instanceof org.mmbase.module.core.VirtualNode) {
-                        VirtualNodeManager tempNodeManager = new VirtualNodeManager((org.mmbase.module.core.VirtualNode) node, cloud);
-                        return new BasicNodeList(v, tempNodeManager);
-                    } else {
-                        return new BasicNodeList(v, cloud.getNodeManager(node.getBuilder().getTableName()));
-                    }
+                   tempNodeManager = cloud.getNodeManager(bul.getTableName());
                 }
+                return new BasicNodeList(v,tempNodeManager);
             } catch (Exception e) {
-                throw new BridgeException(e.getMessage(), e);
+                String message = e.getMessage() + " " + Logging.stackTrace(e);
+                log.error(message);
+                throw new BridgeException(message,e);
             }
         } else {
             throw new BridgeException("getList() is not supported by this module.");
@@ -215,25 +207,5 @@ public class ModuleHandler implements Module, Comparable, InvocationHandler {
                getName().equals(((Module)o).getName()) &&
                cloudContext.equals(((Module)o).getCloudContext());
     };
-
-    public Collection getFunctions() {
-        return  mmbaseModule.getFunctions();
-    }
-
-    public Function getFunction(String functionName) {
-        Function function = mmbaseModule.getFunction(functionName);
-        if (function == null) {
-            throw new NotFoundException("Function with name " + functionName + " does not exist.");
-        }
-        return function;
-    }
-
-    public Parameters createParameters(String functionName) {
-        return getFunction(functionName).createParameters();
-    }
-
-    public FieldValue getFunctionValue(String functionName, List parameters) {
-        return (FieldValue)getFunction(functionName).getFunctionValueWithList(parameters);
-    }
 
 }

@@ -121,21 +121,24 @@ public class CloudTest extends BridgeTest {
 
     public void testGetListWithNullParameterNodePath() {
         try {
-            cloud.getList(null, null, "bytefield", "", "", "", "", false);
+            NodeList nodeList;
+            nodeList = cloud.getList(null, null, "bytefield", "", "", "", "", false);
             fail("Should raise a BridgeException");
         } catch (BridgeException e) {}
     }
 
     public void testGetListWithEmptyParameterNodePath() {
         try {
-            cloud.getList(null, "", "bytefield", "", "", "", "", false);
+            NodeList nodeList;
+            nodeList = cloud.getList(null, "", "bytefield", "", "", "", "", false);
             fail("Should raise a BridgeException");
         } catch (BridgeException e) {}
     }
 
     public void testGetListWithInvalidParameterNodePath() {
         try {
-            cloud.getList(null, "x", "bytefield", "", "", "", "", false);
+            NodeList nodeList;
+            nodeList = cloud.getList(null, "x", "bytefield", "", "", "", "", false);
             fail("Should raise a BridgeException");
         } catch (BridgeException e) {}
     }

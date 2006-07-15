@@ -15,7 +15,6 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.http.*;
 
 import java.util.*;
-import java.lang.reflect.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -25,10 +24,10 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.51 2006-06-26 18:32:46 johannes Exp $
+ * @version $Id: ContextContainer.java,v 1.21.2.4 2005-02-03 09:23:26 michiel Exp $
  **/
 
-public abstract class ContextContainer extends AbstractMap implements Map {
+public class ContextContainer extends HashMap {
     private static final Logger log = Logging.getLoggerInstance(ContextContainer.class);
 
     public static final int LOCATION_NOTSET         = -10;
@@ -39,7 +38,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
     public static final int LOCATION_SESSION        = 30;
     public static final int LOCATION_COOKIE         = 40;
     public static final int LOCATION_ATTRIBUTES     = 50;
-    public static final int LOCATION_REQUEST        = 50;
+    public static final int LOCATION_REQUEST        = 50; 
     public static final int LOCATION_APPLICATION    = 55;
     public static final int LOCATION_THIS           = 60; // current value, if there is one
 
@@ -98,34 +97,13 @@ public abstract class ContextContainer extends AbstractMap implements Map {
         return Character.isLetter(c) || Character.isDigit(c) || c == '_';
     }
     static boolean isContextIdentifierChar(char c) {
-        return isContextVarNameChar(c) || c == '.';
+        return isContextVarNameChar(c) || c == '.'; 
         // || c =='/'; // / for forward compatibility?
     }
 
 
-    /**
-     * Returns the Map which will is used for actually storing stuff.
-     *
-     * @since MMBase-1.8
-     */
-    protected abstract Backing getBacking();
-
-
-    public void release(PageContext pc, ContextContainer p) {
-        getBacking().pullPageContext(pc);
-        // restore also the parent.xb
-        parent = p;
-    }
-
-
-    public Set entrySet() {
-        return getBacking().entrySet();
-    }
-
-
-    private   final String id;
+    private String id;
     protected ContextContainer parent;
-
 
     /**
      * Since a ContextContainer can contain other ContextContainer, it
@@ -134,26 +112,20 @@ public abstract class ContextContainer extends AbstractMap implements Map {
      */
 
     public ContextContainer(String i, ContextContainer p) {
+        super();
         id = i;
         parent = p;
     }
+
 
     public String getId() {
         return id;
     }
 
     /**
-     * @since MMBase-1.8
-     */
-    public void setParent(PageContext pc, ContextContainer p) {
-        getBacking().pushPageContext(pc);
-        parent = p;
-    }
-
-    /**
      * @since MMBase-1.7
      */
-    public ContextContainer getParent() {
+    ContextContainer getParent() {        
         return parent;
     }
 
@@ -172,7 +144,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
             throw new RuntimeException("Error, key should be string in ContextContainers! (Tried " + key.getClass().getName() + ")");
         }
     }
-
+        
     /**
      * Not all Strings can be allowed as keys. Keys are like variable names.
      */
@@ -181,7 +153,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
         if (key.indexOf('.') != -1) {
             throw new JspTagException("Key may not contain dots (" + key + ")");
         }
-        return getBacking().put(key, value);
+        return super.put(key, value);
     }
     public boolean containsKey(Object key) {
         throw new RuntimeException("Error, key should be string in ContextContainers!");
@@ -196,24 +168,11 @@ public abstract class ContextContainer extends AbstractMap implements Map {
      *
      */
 
-    protected Pair getPair(String key, boolean checkParent) throws JspTagException {
+    private Pair getPair(String key, boolean checkParent) throws JspTagException {
         // checking if key contains a 'dot'.
-        int dotPos = -1;
-        {
-            int pos = 0;
-            int keyLength = key.length();
-            while (pos < keyLength) {
-                char c = key.charAt(pos);
-                if (c == '.') {
-                    dotPos = pos;
-                    break;
-                }
-                if (! isContextVarNameChar(c)) return null;
-                pos++;
-            }
-        }
-        if (dotPos > 0) {
-            String contextKey = key.substring(0, dotPos);
+        int dotpos = key.indexOf('.');
+        if (dotpos > 0) {
+            String contextKey = key.substring(0, dotpos);
             // find the Context:
             boolean wentDown = true;
             Object c = simpleGet(contextKey, checkParent);
@@ -225,15 +184,12 @@ public abstract class ContextContainer extends AbstractMap implements Map {
             if(c == null) {
                 throw new JspTagException("Context '" + contextKey+ "' could not be found.");
             }
-            String newKey = key.substring(dotPos + 1);
-            // and search with that one:
-            if (c instanceof ContextContainer) {
-                return new ContextContainerPair((ContextContainer)c, newKey, wentDown);
-            } else if (c instanceof Map) {
-                return new MapPair((Map)c, newKey, wentDown);
-            } else {
-                return new BeanPair(c, newKey, wentDown);
+            if (! (c instanceof ContextContainer)) {
+                throw new JspTagException(contextKey + " is not a Context, but a " + c.getClass().getName());
             }
+            String newKey = key.substring(dotpos + 1);
+            // and search with that one:
+            return new Pair((ContextContainer)c, newKey, wentDown);
         } else {
             return null;
         }
@@ -243,8 +199,8 @@ public abstract class ContextContainer extends AbstractMap implements Map {
      * Like containsKey but doesn't check for dots.
      */
     private boolean simpleContainsKey(String key, boolean checkParent) {
-        boolean result = getBacking().containsKey(key);
-        if (!result && checkParent && parent != null) {
+        boolean result = super.containsKey(key);
+        if (result == false && checkParent && parent != null) {
             result = parent.simpleContainsKey(key, true);
         }
         return result;
@@ -262,7 +218,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
         if (p == null) {
             return simpleContainsKey(key, checkParent);
         } else {
-            return p.containsKey(p.restKey, ! p.wentDown);
+            return p.context.containsKey(p.restKey, ! p.wentDown);
         }
     }
 
@@ -273,8 +229,8 @@ public abstract class ContextContainer extends AbstractMap implements Map {
     /**
      * Like get, but does not try to search dots, because you know already that there aren't.
      */
-    protected Object simpleGet(String key, boolean checkParent) { // already sure that there is no dot.
-        Object result =  getBacking().getOriginal(key);
+    private Object simpleGet(String key, boolean checkParent) { // already sure that there is no dot.
+        Object result =  super.get(key);
         if (result == null && checkParent && parent != null) {
             return parent.simpleGet(key, true);
         }
@@ -290,7 +246,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
         if (p == null) {
             return simpleGet(key, checkParent);
         } else {
-            return p.get(p.restKey, ! p.wentDown);
+            return p.context.get(p.restKey, ! p.wentDown);
         }
     }
 
@@ -302,20 +258,10 @@ public abstract class ContextContainer extends AbstractMap implements Map {
         return get(key, true);
     }
 
-    public Object get(Object key) {
-        if (!(key instanceof String)) {
-            return null;
-        }
-        try {
-            return get((String)key, true);
-        } catch (JspTagException e) {
-            log.warn("Exception when trying to get value '" + key + "': " + e);
-        }
-        return null;
-    }
+
 
     public Set keySet() {
-        HashSet result = new HashSet(getBacking().keySet());
+        HashSet result = new HashSet(super.keySet());
         if (parent != null) {
             result.addAll(parent.keySet());
         }
@@ -329,7 +275,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
         if (checkParent) {
             return keySet();
         } else {
-            return getBacking().keySet();
+            return super.keySet();
         }
     }
 
@@ -356,24 +302,18 @@ public abstract class ContextContainer extends AbstractMap implements Map {
     }
 
     /**
-     * @since MMBase-1.8
-     */
-    public void register(String newId, WriterHelper helper, boolean check) throws JspTagException {
-        register(newId, helper.getValue(), check, true);
-    }
-
-    /**
      * @since MMBase-1.7
      */
     protected void register(String newId, Object n, boolean check, boolean checkParent) throws JspTagException {
         if (log.isDebugEnabled()) {
-            log.trace("registering " + n + " a (" + (n != null ? n.getClass().getName() :"")+ ") under " + newId + " with context " + id);
+            log.trace("registering " + n + " a (" + (n!=null ? n.getClass().getName() :"")+ ") under " + newId + " with context " + id);
         }
         // first check if current context is specified
         Pair pair = getPair(newId, checkParent);
 
         if (pair != null) {
-            pair.register(pair.restKey, n, check, ! pair.wentDown);
+
+            pair.context.register(pair.restKey, n, check, ! pair.wentDown);
 
         } else {
 
@@ -404,10 +344,10 @@ public abstract class ContextContainer extends AbstractMap implements Map {
                 log.info(Logging.stackTrace(exception));
                 throw exception;
             }
-
+            
             log.debug("Valid");
             //pageContext.setAttribute(id, n);
-            if ((! newId.equals("_")) && check && isRegistered(newId)) {
+            if (check && isRegistered(newId)) {
                 JspTagException e = new JspTagException("Object with id " + newId + " was already registered in " + this);
                 if (log.isDebugEnabled()) {
                     log.debug(Logging.stackTrace(e));
@@ -439,7 +379,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
             String key = (String) entry.getKey();
             register(key, entry.getValue());
         }
-
+        
     }
     /**
      * @since MMBase-1.7
@@ -451,7 +391,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
             String key = (String) i.next();
             unRegister(key);
         }
-
+     
     }
     /**
      * @since MMBase-1.7 (here)
@@ -463,7 +403,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
      * @since MMBase-1.7 (here)
      */
     public boolean isRegistered(String key) throws JspTagException {
-        return getBacking().containsOwnKey(key);
+        return containsKey(key, false); // don't check parent.
     }
 
     /**
@@ -477,12 +417,12 @@ public abstract class ContextContainer extends AbstractMap implements Map {
      * @since MMBase-1.7
      */
     protected void unRegister(String key, boolean checkParent) throws JspTagException {
-        if (log.isDebugEnabled()) {
+        if (log.isDebugEnabled()) { 
             log.debug("removing object '" + key + "' from Context '" + id + "'");
         }
         Pair pair = getPair(key, checkParent);
         if (pair != null) {
-            pair.unRegister(pair.restKey, ! pair.wentDown);
+            pair.context.unRegister(pair.restKey, ! pair.wentDown);
         } else {
             remove(key);
         }
@@ -495,21 +435,18 @@ public abstract class ContextContainer extends AbstractMap implements Map {
         register(id, n);
     }
 
-    /**
+ /**
      * Java Servlet Specification Version 2.3 SRV.4.9
      * says that a servlet engine should read a request
      * as ISO-8859-1 if request.getCharacterEncoding()
      * returns null. We override this behaviour because
      * the browser propably sends the request in the
      * same encoding as the html was send to te browser
-     * And it is likely that the html was send to the
-     * browser in the same encoding as the MMBase
-     * encoding property.
-     * @since MMBase-1.8
+     * @since MMBase-1.7.4
      */
-    protected static Object fixEncoding(Object value, String encoding) throws TaglibException {
+    protected Object fixEncoding(Object value, String encoding) throws TaglibException {
         if(value instanceof String) {
-            try {
+            try {                
                 value = new String(((String)value).getBytes("ISO-8859-1"), encoding);
             } catch (java.io.UnsupportedEncodingException e) {
                 throw new TaglibException("Unsupported Encoding ", e);
@@ -524,9 +461,10 @@ public abstract class ContextContainer extends AbstractMap implements Map {
 
     }
     /**
-     * @since MMBase-1.8
+     * 
+     * @since MMBase-1.7.4
      */
-    public static Object fixEncoding(Object value, PageContext pageContext) throws TaglibException {
+    protected Object fixEncoding(Object value, PageContext pageContext) throws TaglibException {
         HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();
         String enc = req.getCharacterEncoding();
         if (enc == null) {
@@ -537,12 +475,13 @@ public abstract class ContextContainer extends AbstractMap implements Map {
         }
 
         if (enc.equalsIgnoreCase("ISO-8859-1")) {
-            enc = "CP1252";
+            enc = "CP1252";                                
         }
-        log.debug("Fixing char encoding of " + value + " to " + enc);
         return fixEncoding(value, enc);
     }
+   
 
+   
     /**
      * @since MMBase-1.7
      */
@@ -582,13 +521,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
                 if (log.isDebugEnabled()) {
                     log.debug("searching " + referId + " in multipart post");
                 }
-                MultiPart.MMultipartRequest mp = MultiPart.getMultipartRequest(pageContext);
-                if (mp.isFile(referId)) {
-                    result = mp.getFileItem(referId);
-                } else {
-                    result = fixEncoding(mp.getParameterValues(referId), pageContext);
-                }
-                //result = MultiPart.getMultipartRequest(pageContext).getParameterValues(referId);
+                result = fixEncoding(MultiPart.getMultipartRequest(pageContext).getParameterValues(referId), pageContext);
             } else {
                 throw new JspTagException("Trying to read from multipart post, while request was not a multipart post");
             }
@@ -602,7 +535,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
             if (resultvec != null) {
                 if (log.isDebugEnabled()) log.debug("Found: " + resultvec);
                 if (resultvec.length > 1) {
-                    result = (List) fixEncoding(java.util.Arrays.asList(resultvec), pageContext);
+                    result = (List) fixEncoding(java.util.Arrays.asList(resultvec), pageContext);                    
                 } else {
                     result = fixEncoding(resultvec[0], pageContext);
                 }
@@ -635,7 +568,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
             result = null;
         }
         return result;
-
+ 
     }
 
     /**
@@ -684,7 +617,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
         }
         Object result = find(pageContext, from, referId);
         // if it cannot be found, then 'null' will be put in the hashmap ('not present')
-
+  
         register(newId, result, check);
         if (log.isDebugEnabled()) {
             log.debug("found " + newId + " (" + result + ")");
@@ -700,7 +633,14 @@ public abstract class ContextContainer extends AbstractMap implements Map {
             log.debug("searching to register object " + externid + " in context " + getId() + " check: " + check);
         }
         if (check && isRegistered(newId)) {
-            throw new JspTagException("Object with id " + newId + " was already registered in " + toString());
+	    String mes;
+	    if(getId() == null) {
+		mes = "Object with id " + newId + " was already registered in the root context.";
+	    } else {
+		mes = "Object with id " + newId + " was already registered in Context '" + getId()  + "'.";
+	    }
+            log.debug(mes);
+            throw new JspTagException(mes);
         }
         // if (findAndRegister(LOCATION_PAGE, referId, id)) return true;
         Object result = find(pageContext, externid);
@@ -712,7 +652,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
         return findAndRegister(pageContext, id, id);
     }
     public String findAndRegisterString(PageContext pageContext, String id) throws JspTagException {
-        return findAndRegisterString(pageContext, id, true);
+        return (String) findAndRegisterString(pageContext, id, true);
     }
 
     public String findAndRegisterString(PageContext pageContext, String id, boolean check) throws JspTagException {
@@ -736,147 +676,34 @@ public abstract class ContextContainer extends AbstractMap implements Map {
         }
     }
 
-    /**
-     * @since MMBase-1.8
-     */
-    public void setJspVar(PageContext pageContext, String jspvar, int type,  Object value) {
-        getBacking().setJspVar(pageContext, jspvar, type, value);
-    }
-
     static String getDefaultCharacterEncoding(PageContext pageContext) {
-       String charEnc = pageContext.getResponse().getCharacterEncoding();
-       if(charEnc != null) {
-           return charEnc;
-       }
-       log.error("page encoding not specified, using iso-8859-1");
-       return "iso-8859-1";
+        String charEnc = pageContext.getResponse().getCharacterEncoding();
+        if(charEnc!=null) {
+            return charEnc;
+        }
+        log.error("page encoding not specified, using iso-8859-1");
+        return "iso-8859-1";
     }
-
 
     public String toString() {
         if (id == null) {
-            return "the context without id " + getBacking().toString();
+            return "the context without id (root?)" + super.toString();
         } else {
-            return "context '" + id  + "'" + getBacking().toString();
+            return "context '" + id  + "'" + super.toString();
         }
     }
-}
 
-/**
- * Container class, to store results of 'getPair' function, which is a 'parent' container plus
- * a key.
- * 
- * Since MMBase-1.8 three different implementations are available, to work like EL as much as possible.
- */
+    /**
+     * Container class, to store results of 'getPair' function.
+     */
 
-abstract class Pair {
-    public final String           restKey;
-    public final boolean          wentDown;
-    Pair(String k, boolean w) {
-        restKey = k; wentDown = w;
-    }
-    abstract  boolean containsKey(String key, boolean checkParent) throws JspTagException;
-    abstract  Object get(String key, boolean checkParent) throws JspTagException;
-    abstract  void register(String newId, Object n, boolean check, boolean checkParent) throws JspTagException;
-    abstract void unRegister(String key, boolean checkParent) throws JspTagException;    
-}
-
-/**
- * @since MMBase-1.8
- */
-class ContextContainerPair extends Pair {
-    private ContextContainer context;
-    ContextContainerPair(ContextContainer c, String k, boolean w) {
-        super(k, w);
-        context = c;
-    }
-    final boolean containsKey(String key, boolean checkParent) throws JspTagException {
-        return context.containsKey(key, checkParent);
-    }
-    final Object get(String key, boolean checkParent) throws JspTagException {
-        return context.get(key, checkParent);
-    }
-    final void register(String newId, Object n, boolean check, boolean checkParent) throws JspTagException {
-        context.register(newId, n, check, checkParent);
-    }
-    final void unRegister(String key, boolean checkParent) throws JspTagException {
-        context.unRegister(key, checkParent);
-    }
-
-
-}
-/**
- * @since MMBase-1.8
- */
-class MapPair extends Pair {
-    private Map map;
-    MapPair(Map c, String k, boolean w) {
-        super(k, w);
-        map = c;
-    }
-    final boolean containsKey(String key, boolean checkParent) throws JspTagException {
-        if (checkParent) throw new JspTagException("Cannot check parent of Map");
-        return map.containsKey(key);
-    }
-    final Object get(String key, boolean checkParent) throws JspTagException {
-        if (checkParent) throw new JspTagException("Cannot check parent of Map");
-        return map.get(key);
-    }
-    final void register(String newId, Object n, boolean check, boolean checkParent) throws JspTagException {
-        if (checkParent) throw new JspTagException("Cannot check parent of Map");
-        map.put(newId, n);
-    }
-    final void unRegister(String key, boolean checkParent) throws JspTagException {
-        if (checkParent) throw new JspTagException("Cannot check parent of Map");
-        map.remove(key);
-    }
-}
-
-/**
- * @since MMBase-1.8
- */
-class BeanPair extends Pair {
-    private Object bean;
-    private Class clazz;
-    BeanPair(Object c, String k, boolean w) {
-        super(k, w);
-        bean = c;
-        clazz = bean.getClass();
-    }
-
-    private Method getMethod(String key) {
-        String methodKey =  Character.toUpperCase(key.charAt(0)) + key.substring(1);
-        Method method;
-        try {
-            method = clazz.getMethod("get" + methodKey, null);
-        } catch (Exception e) {
-            try {
-                method = clazz.getMethod("is" + methodKey, null);
-            } catch (Exception f) {
-                return null;
-            }
-        }
-        return method;
-    }
-    final boolean containsKey(String key, boolean checkParent) throws JspTagException {
-        if (checkParent) throw new JspTagException("Cannot check parent of Bean");
-        return getMethod(key) != null;
-    }
-    final Object get(String key, boolean checkParent) throws JspTagException {
-        if (checkParent) throw new JspTagException("Cannot check parent of Bean");
-        try {
-            Method method = getMethod(key);
-            if (method == null) return null;
-            return method.invoke(bean, null);
-        } catch (Exception iae) {
-            throw new TaglibException(iae.getMessage(), iae);
+    private class Pair {
+        ContextContainer context;
+        String           restKey;
+        boolean          wentDown;
+        Pair(ContextContainer c, String k, boolean w) {
+            context = c; restKey = k; wentDown = w;
         }
     }
-    final void register(String newId, Object n, boolean check, boolean checkParent) throws JspTagException {
-        throw new UnsupportedOperationException("Cannot register in a bean");
-    }
-    final void unRegister(String key, boolean checkParent) throws JspTagException {
-        throw new UnsupportedOperationException("Cannot unregister in a bean");
-    }
-    
+
 }

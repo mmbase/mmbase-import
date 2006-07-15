@@ -18,7 +18,7 @@ import java.util.*;
  * Makes the 'Format' constants available.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Codec.java,v 1.3 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: Codec.java,v 1.2 2003-07-06 13:23:28 michiel Exp $
  * @since MMBase-1.7
  */
 // See http://www.javaworld.com/javaworld/jw-07-1997/jw-07-enumerated.html
@@ -99,14 +99,6 @@ public final class Codec {   // final class!!
             return c.number == number;
         }
         return false;
-    }
-    
-    
-    /**
-     * @see java.lang.Object#hashCode()
-     */
-    public int hashCode() {
-        return number;
     }
 }
     

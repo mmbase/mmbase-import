@@ -10,22 +10,24 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import javax.servlet.jsp.*;
-import javax.servlet.jsp.tagext.*;
-import javax.servlet.jsp.jstl.core.*;
 
 import org.mmbase.bridge.Query;
 import org.mmbase.bridge.jsp.taglib.containers.*;
-import org.mmbase.bridge.jsp.taglib.tree.TreeContainerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.util.Queries;
+import org.mmbase.util.logging.*;
+
 
 /**
  * The size of a list or of a nodelistcontainer (then the query is consulted).
  *
  * @author Michiel Meeuwissen
- * @version $Id: SizeTag.java,v 1.26 2006-06-22 19:00:29 johannes Exp $ 
+ * @version $Id: SizeTag.java,v 1.21.2.1 2005-03-14 18:33:24 michiel Exp $ 
  */
+
 public class SizeTag extends ListReferrerTag implements Writer, QueryContainerReferrer {
+
+    private static final Logger log = Logging.getLoggerInstance(SizeTag.class);
 
     private Attribute container = Attribute.NULL;
 
@@ -49,35 +51,32 @@ public class SizeTag extends ListReferrerTag implements Writer, QueryContainerRe
     }
 
     /**
-     * When in a looptag, the size can simply be asked from the List
+     * When in a list-provider, the size can simply be asked from the List
      * @since MMBase-1.7
      */
-    protected void listProviderSize(LoopTag list) throws JspTagException {
-        helper.setValue(new Integer(list.getLoopStatus().getCount()));
+    protected void listProviderSize(ListProvider list) throws JspTagException {
+        helper.setValue(new Integer(list.size()));
     }
 
 
     public int doStartTag() throws JspTagException{
+
+        
+
         if (container != Attribute.NULL) {
             if (parentListId != Attribute.NULL) {
                 throw new JspTagException("Cannot specify both 'container' and 'list' attributes");
             }
             QueryContainer c = (QueryContainer) findParentTag(QueryContainer.class, (String) container.getValue(this));
-            if (c instanceof TreeContainerTag) {
-                helper.setValue(new Integer(((TreeContainerTag)c).getTree().size()));
-            } else {
-                nodeListContainerSize(c);
-            }
+            nodeListContainerSize(c);            
         } else if (parentListId != Attribute.NULL) {
-            listProviderSize(getList());
+            listProviderSize(getList());            
         } else {
-            Tag tag = findLoopOrQuery(null, true);
-            if (tag instanceof TreeContainerTag) {
-                helper.setValue(new Integer(((TreeContainerTag)tag).getTree().size()));
-            } else if (tag instanceof QueryContainer) {
+            QueryContainerOrListProvider tag = (QueryContainerOrListProvider) findParentTag(QueryContainerOrListProvider.class, null);
+            if (tag instanceof QueryContainer) {
                 nodeListContainerSize((QueryContainer) tag);
             } else {
-                listProviderSize((LoopTag) tag);
+                listProviderSize((ListProvider) tag);
             }
         }
 
@@ -98,4 +97,5 @@ public class SizeTag extends ListReferrerTag implements Writer, QueryContainerRe
         helper.doEndTag();
         return super.doEndTag();
     }
+
 }

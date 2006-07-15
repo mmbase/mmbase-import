@@ -6,11 +6,11 @@
 <mm:import id="url">index_contexts.jsp</mm:import>
 
 <mm:import externid="offset">0</mm:import>
-<mm:cloud loginpage="login.jsp"  rank="$rank">
+<mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud" rank="$rank">
 <mm:import externid="context" vartype="list" />
 <mm:import externid="search" />
 <mm:import id="nodetype">mmbasecontexts</mm:import>
-<mm:import id="fields" externid="context_fields">name,description,owner</mm:import>
+<mm:import id="fields">name,description,owner</mm:import>
 <body>
 <%@include file="you.div.jsp" %>
 <mm:import id="current">contexts</mm:import>
@@ -18,7 +18,7 @@
 
 <p class="action">
   <mm:maycreate type="mmbasecontexts">
-    <a href="<mm:url referids="parameters,$parameters"><mm:param name="url">create_context.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-new.gif" />" alt="+" tooltip="create context"  /></a>
+    <a href="<mm:url referids="parameters,$parameters"><mm:param name="url">create_context.jsp</mm:param></mm:url>"><img src="<mm:url page="$[location]images/mmbase-new.gif" />" alt="+" tooltip="create context"  /></a>
   </mm:maycreate>
   <mm:maycreate type="mmbasecontexts" inverse="true">
       <%=getPrompt(m, "notallowedtocreatecontexts")%>
@@ -42,7 +42,7 @@
           </mm:fieldlist>
           <td class="commands">
             <a onclick="document.getElementById('object<mm:field name="number" />').className = 'active'; " 
-               href="<mm:url referids="parameters,$parameters,currentcontext@context,url" />"><img src="<mm:url page="${location}images/mmbase-edit.gif" />" alt="<%=getPrompt(m,"update")%>" title="<%=getPrompt(m,"update")%>" /></a>
+               href="<mm:url referids="parameters,$parameters,currentcontext@context,url" />"><img src="<mm:url page="$[location]images/mmbase-edit.gif" />" alt="<%=getPrompt(m,"update")%>" title="<%=getPrompt(m,"update")%>" /></a>
             <mm:maydelete>
               <mm:field id="curcontext"  name="name" write="false" />
               <mm:listnodescontainer type="object">
@@ -51,7 +51,7 @@
                   <mm:compare value="0">
                     <mm:import id="prompt">reallydeletecontexts</mm:import>
                     <a onclick="<%@include file="confirm.js" %>"
-                       href="<mm:url referids="currentcontext@context,parameters,$parameters"><mm:param name="url">delete_context.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-delete.gif" />" alt="<%=getPrompt(m,"delete")%>" title="<%=getPrompt(m,"delete")%>" /></a>
+                       href="<mm:url referids="currentcontext@context,parameters,$parameters"><mm:param name="url">delete_context.jsp</mm:param></mm:url>"><img src="<mm:url page="$[location]images/mmbase-delete.gif" />" alt="<%=getPrompt(m,"delete")%>" title="<%=getPrompt(m,"delete")%>" /></a>
                   </mm:compare>
                 </mm:size>
               </mm:listnodescontainer>

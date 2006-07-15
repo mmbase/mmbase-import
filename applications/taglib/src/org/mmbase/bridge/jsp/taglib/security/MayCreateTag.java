@@ -9,8 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.security;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.bridge.jsp.taglib.Condition;
-import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
+import org.mmbase.bridge.jsp.taglib.*;
+
 
 import javax.servlet.jsp.JspTagException;
 
@@ -19,7 +19,7 @@ import javax.servlet.jsp.JspTagException;
  * A very simple tag to check if node may be created
  *
  * @author Michiel Meeuwissen
- * @version $Id: MayCreateTag.java,v 1.9 2004-07-26 20:18:01 nico Exp $
+ * @version $Id: MayCreateTag.java,v 1.6.2.4 2005-03-24 12:18:26 michiel Exp $
  */
 
 public class MayCreateTag extends CloudReferrerTag implements Condition {
@@ -47,13 +47,13 @@ public class MayCreateTag extends CloudReferrerTag implements Condition {
     }
 
     public int doAfterBody() throws JspTagException {
-        if (EVAL_BODY == EVAL_BODY_BUFFERED) { // not needed if EVAL_BODY_INCLUDE
-            try{
-                if(bodyContent != null) {
+        if (EVAL_BODY == EVAL_BODY_BUFFERED) {
+            try {
+                if (bodyContent != null) {
                     bodyContent.writeOut(bodyContent.getEnclosingWriter());
                 }
-            } catch(java.io.IOException e){
-                throw new JspTagException("IO Error: " + e.getMessage());
+            } catch (java.io.IOException ioe) {
+                throw new TaglibException(ioe);
             }
         }
         return SKIP_BODY;

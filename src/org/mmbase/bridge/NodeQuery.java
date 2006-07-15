@@ -16,7 +16,7 @@ import org.mmbase.storage.search.*;
  * query 'cluster nodes' and even more generally 'result nodes' too.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeQuery.java,v 1.8 2004-10-09 09:39:32 nico Exp $
+ * @version $Id: NodeQuery.java,v 1.7 2003-09-01 13:29:42 pierre Exp $
  * @since MMBase-1.7
  */
 public interface NodeQuery extends Query {
@@ -24,27 +24,24 @@ public interface NodeQuery extends Query {
 
     /**
      * Returns the step for which the fields are added (or null)
-     * @return step for which the fields are added
      */
     Step getNodeStep();
 
     /**
      * Removes all fields and add all fields of the given step. This also can have an effect on the
      * result of getNodeManager().
-     * @param step add all fields of the this step
      * @return the previously associated step (if there was one, otherwise null).
      */
     Step setNodeStep(Step step);
 
     /**
      * Returns the node-manager. Or 'null' if this is not yet determined.
-     * @return node-manager or 'null'
      */
+
     NodeManager getNodeManager();
 
     /**
      * Since in a NodeQuery one of the steps is 'exceptional', also this function makes sense now.
-     * @param field field to get the StepField for.
      * @return null if field is not of 'the' nodemanager.
      */
     StepField getStepField(Field field);

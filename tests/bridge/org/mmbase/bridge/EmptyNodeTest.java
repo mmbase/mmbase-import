@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 import org.w3c.dom.Document;
-import java.util.*;
 
 /**
  * Test class <code>Node</code> from the bridge package. The tests are done on
@@ -60,105 +59,55 @@ public class EmptyNodeTest extends NodeTest {
             } else if (fieldTypes[i].equals("string")) {
                 assertTrue(bytes.length == 0);
             } else if (fieldTypes[i].equals("xml")) {
-                assertTrue(bytes.length == 0);
+                // I don't know..
             } else if (fieldTypes[i].equals("node")) {
-                assertTrue(bytes.length == 0);
-            } else if (fieldTypes[i].equals("boolean")) {
-                assertTrue(bytes.length == 0);
-            } else if (fieldTypes[i].equals("datetime")) {
-                assertTrue(bytes.length == 0);
-            } else if (fieldTypes[i].equals("list")) {
-                assertTrue(bytes.length == 0);
+                // undefined
             } else {
                 fail("Unknown fieldtype encountered " + fieldTypes[i]);
             }
         }
     }
-
     public void testGetDoubleValue() {
         for (int i = 0; i < fieldTypes.length; i++) {
-            double value = node.getDoubleValue(fieldTypes[i] + "field");
-            assertTrue("Empty " + fieldTypes[i] + " field queried as double did not return -1, but " + value,
-                        value == -1);
+            assertTrue(node.getDoubleValue(fieldTypes[i] + "field") == -1);
         }
     }
 
     public void testGetFloatValue() {
         for (int i = 0; i < fieldTypes.length; i++) {
-            float value = node.getFloatValue(fieldTypes[i] + "field");
-            assertTrue("Empty " + fieldTypes[i] + " field queried as float did not return -1, but " + value,
-                        value == -1);
+            assertTrue(node.getFloatValue(fieldTypes[i] + "field") == -1);
         }
     }
 
     public void testGetIntValue() {
         for (int i = 0; i < fieldTypes.length; i++) {
-            int value = node.getIntValue(fieldTypes[i] + "field");
-            assertTrue("Empty " + fieldTypes[i] + " field queried as integer did not return -1, but " + value,
-                        value == -1);
+            assertTrue(node.getIntValue(fieldTypes[i] + "field") == -1);
         }
     }
 
     public void testGetLongValue() {
         for (int i = 0; i < fieldTypes.length; i++) {
-            long value = node.getLongValue(fieldTypes[i] + "field");
-            assertTrue("Empty " + fieldTypes[i] + " field queried as long did not return -1, but " + value,
-                        value == -1);
+            assertTrue(node.getLongValue(fieldTypes[i] + "field") == -1);
         }
     }
 
     public void testGetStringValue() {
         for (int i = 0; i < fieldTypes.length; i++) {
-            Object value = node.getStringValue(fieldTypes[i] + "field");
-            assertTrue("Empty " + fieldTypes[i] + " field queried as string did not return an empty string, but " + value, "".equals(value));
+            assertTrue("".equals(node.getStringValue(fieldTypes[i] + "field")));
         }
     }
-
     public void testGetXMLValue() {
         for (int i = 0; i < fieldTypes.length; i++) {
             Document value = node.getXMLValue(fieldTypes[i] + "field");
-            assertTrue("Empty " + fieldTypes[i] + " field queried as XML not null (as javadoc sais it should) but '" + value + "'",
-                value == null);
+            assertTrue("KNOWN bug. Empty XML Field not null (as javadoc sais it should) but '" + value + "'", value == null); 
         }
     }
 
     public void testGetNodeValue() {
         for (int i = 0; i < fieldTypes.length; i++) {
             Node value = node.getNodeValue(fieldTypes[i] + "field");
-            assertTrue("Empty " + fieldTypes[i] + " field queried as Node did not return null, but " + value,
-                        value == null);
-       }
-    }
-
-    public void testGetBooleanValue() {
-        for (int i = 0; i < fieldTypes.length; i++) {
-            boolean value = node.getBooleanValue(fieldTypes[i] + "field");
-            assertTrue("Empty " + fieldTypes[i] + " field queried as boolean did not return false, but " + value,
-                        !value);
-       }
-    }
-
-    public void testGetDateTimeValue() {
-        for (int i = 0; i < fieldTypes.length; i++) {
-            Date value = node.getDateValue(fieldTypes[i] + "field");
-            assertTrue("Empty " + fieldTypes[i] + " field queried as datetime returned null", value != null);
-            assertTrue("Empty " + fieldTypes[i] + " field queried as datetime did not return "+new Date(-1)+", but " + value,
-                        value.getTime()==-1);
-       }
-    }
-
-    public void testGetListValue() {
-        for (int i = 0; i < fieldTypes.length; i++) {
-            List value = node.getListValue(fieldTypes[i] + "field");
-            assertTrue("Empty " + fieldTypes[i] + " field queried as list returned null", value != null);
-            assertTrue("Empty " + fieldTypes[i] + " field queried as list did not return [], but " + value, value.size() == 0);
-       }
-    }
-
-    public void testSetField() {
-        node.setValue("stringfield", "");
-        node.commit();
-        testGetStringValue();
+            assertTrue("KNOWN bug. Empty Node Field not null  but '" + value + "'", value == null); 
+        }
     }
 
 }

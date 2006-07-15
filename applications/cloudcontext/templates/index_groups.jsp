@@ -6,10 +6,10 @@
 <mm:import id="url">index_groups.jsp</mm:import>
 
 <mm:import externid="offset">0</mm:import>
-<mm:cloud loginpage="login.jsp" rank="$rank">
+<mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud" rank="$rank">
 <mm:import externid="group" vartype="list" />
 <mm:import id="nodetype">mmbasegroups</mm:import>
-<mm:import id="fields" externid="group_fields">name,description,owner</mm:import>
+<mm:import id="fields">name,description,owner</mm:import>
 
 <mm:import externid="search" />
 <mm:import id="current">groups</mm:import>
@@ -18,10 +18,10 @@
 
 <p class="action">
   <mm:maycreate type="mmbasegroups">
-    <a href="<mm:url referids="parameters,$parameters"><mm:param name="url">create_group.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-new.gif" />" alt="+" tooltip="create group"  /></a>
+    <a href="<mm:url referids="parameters,$parameters"><mm:param name="url">create_group.jsp</mm:param></mm:url>"><img src="<mm:url page="$[location]images/mmbase-new.gif" />" alt="+" tooltip="create group"  /></a>
   </mm:maycreate>
   <mm:maycreate type="mmbasegroups" inverse="true">
-    <%=getPrompt(m, "notallowedtocreategroups")%>
+      <%=getPrompt(m, "notallowedtocreategroups")%>
   </mm:maycreate>
 </p>
 
@@ -46,14 +46,14 @@
         </mm:fieldlist>
         <td class="commands">
           <a onclick="document.getElementById('object<mm:field name="number" />').className = 'active'; " 
-             href="<mm:url referids="currentgroup@group,parameters,$parameters,url" />"><img src="<mm:url page="${location}images/mmbase-edit.gif" />" alt="<%=getPrompt(m,"update")%>" title="<%=getPrompt(m,"update")%>" /></a>
+             href="<mm:url referids="currentgroup@group,parameters,$parameters,url" />"><img src="<mm:url page="$[location]images/mmbase-edit.gif" />" alt="<%=getPrompt(m,"update")%>" title="<%=getPrompt(m,"update")%>" /></a>
           <mm:maydelete>
             <mm:relatednodescontainer role="contains" searchdirs="destination">
               <mm:size>
                 <mm:compare value="0">
                   <mm:import id="prompt">reallydeletegroups</mm:import>
                   <a onclick="<%@include file="confirm.js" %>"
-                  href="<mm:url referids="currentgroup@group,parameters,$parameters"><mm:param name="url">delete_group.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-delete.gif" />" alt="<%=getPrompt(m,"delete")%>" title="<%=getPrompt(m,"delete")%>" /></a>
+                  href="<mm:url referids="currentgroup@group,parameters,$parameters"><mm:param name="url">delete_group.jsp</mm:param></mm:url>"><img src="<mm:url page="$[location]images/mmbase-delete.gif" />" alt="<%=getPrompt(m,"delete")%>" title="<%=getPrompt(m,"delete")%>" /></a>
                 </mm:compare>
               </mm:size>
             </mm:relatednodescontainer>
@@ -75,3 +75,4 @@
 
 </mm:cloud>
 </mm:content>
+

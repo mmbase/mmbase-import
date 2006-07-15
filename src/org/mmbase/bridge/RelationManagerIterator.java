@@ -14,20 +14,17 @@ package org.mmbase.bridge;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: RelationManagerIterator.java,v 1.6 2004-10-09 09:39:31 nico Exp $
+ * @version $Id: RelationManagerIterator.java,v 1.4 2003-03-04 09:19:05 pierre Exp $
  */
 public interface RelationManagerIterator extends NodeManagerIterator {
 
     /**
      * Returns the next element in the iterator as a RelationManager
-     * @return next RelationManager
      */
     public RelationManager nextRelationManager();
 
     /**
      * Returns the previous element in the iterator as a RelationManager
-     * @return previous RelationManager
-     * @since MMBase-1.7
      */
     public RelationManager previousRelationManager();
 

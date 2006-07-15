@@ -18,13 +18,11 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * @javadoc
- * @application Tools
  * @author Daniel Ockeloen
- * @version $Id: MMEvents.java,v 1.20 2006-06-20 20:41:30 michiel Exp $
+ * @version $Id: MMEvents.java,v 1.15 2003-07-02 06:20:45 keesj Exp $
  */
 public class MMEvents extends MMObjectBuilder {
-    private static final Logger log = Logging.getLoggerInstance(MMEvents.class);
+    private static Logger log = Logging.getLoggerInstance(MMEvents.class.getName());
     MMEventsProbe probe;
     DateStrings datestrings;
     private int notifyWindow=3600;
@@ -53,7 +51,7 @@ public class MMEvents extends MMObjectBuilder {
         return true;
     }
 
-
+    
     public String getGUIIndicator(MMObjectNode node) {
         int tmp=node.getIntValue("start");
         //String str=DateSupport.getMonthDay(tmp)+"/"+DateSupport.getMonth(tmp)+"/"+DateSupport.getYear(tmp);
@@ -75,43 +73,43 @@ public class MMEvents extends MMObjectBuilder {
         return(null);
     }
 
-    public Object getValue(MMObjectNode node, String field) {
+    public Object getValue(MMObjectNode node,String field) {
         if (field.indexOf("time_")!=-1) {
-            int str = node.getIntValue(field.substring(5));
-            return DateSupport.getTime(str);
+            int str=(int)node.getIntValue(field.substring(5));
+            return(DateSupport.getTime(str));
         } else if (field.equals("time(start)")) {
-            //node.prefix = "mmevents.";
-            int str=node.getIntValue("start");
-            //node.prefix="";
-            return DateSupport.getTime(str);
+            node.prefix="mmevents.";
+            int str=(int)node.getIntValue("start");
+            node.prefix="";
+            return(DateSupport.getTime(str));
         } else if (field.equals("time(stop)")) {
-            //node.prefix="mmevents.";
-            int str = node.getIntValue("stop");
-            //node.prefix="";
-            return DateSupport.getTime(str);
+            node.prefix="mmevents.";
+            int str=(int)node.getIntValue("stop");
+            node.prefix="";
+            return(DateSupport.getTime(str));
         } else if (field.indexOf("timesec_")!=-1) {
-            int str = node.getIntValue(field.substring(8));
-            return DateSupport.getTimeSec(str);
+            int str=(int)node.getIntValue(field.substring(8));
+            return(DateSupport.getTimeSec(str));
         } else if (field.indexOf("longmonth_")!=-1) {
-            int str = node.getIntValue(field.substring(10));
-            return datestrings.getMonth(DateSupport.getMonthInt(str));
+            int str=(int)node.getIntValue(field.substring(10));
+            return(datestrings.longmonth[DateSupport.getMonthInt(str)]);
         } else if (field.indexOf("month_")!=-1) {
-            int str = node.getIntValue(field.substring(6));
-            return datestrings.getShortMonth(DateSupport.getMonthInt(str));
+            int str=(int)node.getIntValue(field.substring(6));
+            return(datestrings.month[DateSupport.getMonthInt(str)]);
         } else if (field.indexOf("weekday_")!=-1) {
-            int str = node.getIntValue(field.substring(8));
-            return datestrings.getDay(DateSupport.getWeekDayInt(str));
+            int str=(int)node.getIntValue(field.substring(8));
+            return(datestrings.longday[DateSupport.getWeekDayInt(str)]);
         } else if (field.indexOf("shortday_")!=-1) {
-            int str = node.getIntValue(field.substring(8));
-            return datestrings.getShortDay(DateSupport.getWeekDayInt(str));
+            int str=(int)node.getIntValue(field.substring(8));
+            return(datestrings.day[DateSupport.getWeekDayInt(str)]);
         } else if (field.indexOf("day_")!=-1) {
-            int str = node.getIntValue(field.substring(4));
-            return ""+DateSupport.getDayInt(str);
+            int str=(int)node.getIntValue(field.substring(4));
+            return(""+DateSupport.getDayInt(str));
         } else if (field.indexOf("year_")!=-1) {
-            int str = node.getIntValue(field.substring(5));
-            return DateSupport.getYear(str);
-        }
-        return super.getValue(node,field);
+            int str=(int)node.getIntValue(field.substring(5));
+            return(DateSupport.getYear(str));
+        } 
+        return(super.getValue(node,field));
     }
 
     public void probeCall() {
@@ -137,7 +135,7 @@ public class MMEvents extends MMObjectBuilder {
         } catch (SearchQueryException e) {
             log.error(e);
         }
-
+            
         try {
             NodeSearchQuery query = new NodeSearchQuery(this);
             StepField stopField = query.getField(getField("stop"));
@@ -153,14 +151,14 @@ public class MMEvents extends MMObjectBuilder {
         }
         MMObjectNode wnode=null;
         int sleeptime=-1;
-        if (snode!=null && enode==null) {
+        if (snode!=null && enode==null) { 
             sleeptime=snode.getIntValue("start");
             wnode=snode;
         }
         if (snode==null && enode!=null) {
             sleeptime=enode.getIntValue("stop");
             wnode=enode;
-        }
+        }        
         if (snode!=null && enode!=null) {
             if (snode.getIntValue("start")<enode.getIntValue("stop")) {
                 sleeptime=snode.getIntValue("start");
@@ -170,8 +168,8 @@ public class MMEvents extends MMObjectBuilder {
                 wnode=enode;
             }
         }
-
-        if (sleeptime!=-1) {
+    
+        if (sleeptime!=-1) {    
             if (log.isDebugEnabled()) {
                 log.debug("SLEEPTIME="+(sleeptime-now)+" wnode="+wnode+" also="+also);
             }
@@ -190,7 +188,7 @@ public class MMEvents extends MMObjectBuilder {
                     super.nodeLocalChanged(mmb.getMachineName(),""+wnode.getIntValue("number"),tableName,"c");
                 }
             }
-        } else {
+        } else {    
             try {
                 Thread.sleep(300*1000);
             } catch (InterruptedException f) {
@@ -204,12 +202,12 @@ public class MMEvents extends MMObjectBuilder {
         int newval=(int)(System.currentTimeMillis()/1000);
         if (val==-1) {
             node.setValue("start",newval);
-
+            
         }
         val=node.getIntValue("stop");
         if (val==-1) {
             node.setValue("stop",newval);
-
+            
         }
         return(super.insert(owner,node));
     }
@@ -219,12 +217,12 @@ public class MMEvents extends MMObjectBuilder {
         int newval=(int)(System.currentTimeMillis()/1000);
         if (val==-1) {
             node.setValue("start",newval);
-
+            
         }
         val=node.getIntValue("stop");
         if (val==-1) {
             node.setValue("stop",newval);
-
+            
         }
         return(super.commit(node));
     }

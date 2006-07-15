@@ -7,7 +7,7 @@
   @author Michiel Meeuwissen
   @author Pierre van Rooden
   @author Martijn Houtman
-  @version $Id: wizard.xsl,v 1.6 2005-05-10 16:19:59 michiel Exp $
+  @version $Id: wizard.xsl,v 1.3.2.1 2004-04-16 09:04:56 pierre Exp $
   -->
 
   <xsl:import href="xsl/base.xsl"/>
@@ -567,7 +567,6 @@
         <div>
           <input type="hidden" name="{@fieldname}" value="{value}" id="{@fieldname}">
             <xsl:apply-templates select="@*"/>
-            <xsl:attribute name="type">hidden</xsl:attribute>
           </input>
 
           <xsl:if test="(@ftype='datetime') or (@ftype='date')">
@@ -887,7 +886,7 @@
             <!-- two td's -->
           </xsl:for-each>
           <xsl:if test="not(field|fieldset)">
-            <td colspan="2"> </td>
+            <td colspan="2">[]</td>
           </xsl:if>
           <td align="right" valign="top">
             <nobr>

@@ -1,4 +1,3 @@
-
 /*
 
 This software is OSI Certified Open Source Software.
@@ -11,90 +10,82 @@ See http://www.MMBase.org/license
 package org.mmbase.util;
 
 import java.io.*;
-import java.util.Locale;
-import java.util.Vector;
+import java.util.*;
 
-import org.mmbase.bridge.Field;
 import org.mmbase.module.core.*;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-import org.mmbase.util.xml.DocumentReader;
+import org.mmbase.module.corebuilders.FieldDefs;
+import org.mmbase.util.logging.*;
 import org.w3c.dom.*;
-import org.xml.sax.InputSource;
 
 /**
- * This class reads a node from an exported application.
- * @application Applications
- * @move org.mmbase.util.xml
- * @author Daniel Ockeloen
+ * This class reads a node from an exported application
+ * @version $Id: XMLNodeReader.java,v 1.26 2004-01-08 23:49:58 michiel Exp $
+ * @author ?
  * @author Michiel Meeuwissen
- * @version $Id: XMLNodeReader.java,v 1.41 2006-03-08 12:51:58 nklasens Exp $
  */
-public class XMLNodeReader extends DocumentReader {
-    private static final Logger log = Logging.getLoggerInstance(XMLNodeReader.class);
-
-    private ResourceLoader path;
+public class XMLNodeReader extends XMLBasicReader {
+    private static Logger log = Logging.getLoggerInstance(XMLNodeReader.class.getName());
+    String applicationpath;
 
     /**
-     * @since MMBase-1.8
+     * Constructor
+     * @param filename from the file to read from
+     * @param applicationpath the path where this application was exported to
+     * @param mmbase
      */
-    public XMLNodeReader(InputSource is, ResourceLoader path) {
-        super(is, false);
-        this.path = path;
+    public XMLNodeReader(String filename, String applicationpath, MMBase mmbase) {
+        super(filename, false);
+        this.applicationpath = applicationpath;
     }
 
     /**
-    * get the name of this application
+     *
      */
     public String getExportSource() {
         Node n1 = document.getFirstChild();
         if (n1.getNodeType() == Node.DOCUMENT_TYPE_NODE) {
             n1 = n1.getNextSibling();
         }
-        if (n1 != null) {
+        while (n1 != null) {
             NamedNodeMap nm = n1.getAttributes();
             if (nm != null) {
                 Node n2 = nm.getNamedItem("exportsource");
                 return (n2.getNodeValue());
             }
         }
-        else {
-            log.warn("exportsource attribute missing");
-        }
         return null;
     }
 
     /**
-     * get the name of this application
+     *
      */
     public int getTimeStamp() {
         Node n1 = document.getFirstChild();
         if (n1.getNodeType() == Node.DOCUMENT_TYPE_NODE) {
             n1 = n1.getNextSibling();
         }
-        if (n1 != null) {
+        while (n1 != null) {
             NamedNodeMap nm = n1.getAttributes();
             if (nm != null) {
                 Node n2 = nm.getNamedItem("timestamp");
                 try {
-                    java.text.SimpleDateFormat formatter =
-                  new java.text.SimpleDateFormat("yyyyMMddhhmmss", Locale.US);
-                    int times =
-                  (int) (formatter.parse(n2.getNodeValue()).getTime() / 1000);
+                    java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat("yyyyMMddhhmmss", Locale.US);
+                    int times = (int) (formatter.parse(n2.getNodeValue()).getTime() / 1000);
                     //int times=DateSupport.parsedatetime(n2.getNodeValue());
                     return times;
-                }
-                catch (java.text.ParseException e) {
+                } catch (java.text.ParseException e) {
+                    log.warn("error retrieving timestamp: " + Logging.stackTrace(e));
                     return -1;
                 }
+
             }
-        }
-        else {
-            log.warn("timestamp attribute missing");
         }
         return -1;
     }
 
+    /**
+     *
+     */
     public Vector getNodes(MMBase mmbase) {
         Vector nodes = new Vector();
         Node n1 = document.getFirstChild();
@@ -103,32 +94,27 @@ public class XMLNodeReader extends DocumentReader {
         }
         while (n1 != null) {
             MMObjectBuilder bul = mmbase.getMMObject(n1.getNodeName());
-         if (bul == null) {
-            log.error(
-               "Can't get builder with name: '" + n1.getNodeName() + "'");
-         }
-         else {
+            if (bul != null) {
                 Node n2 = n1.getFirstChild();
                 while (n2 != null) {
                     if (n2.getNodeName().equals("node")) {
                         NamedNodeMap nm = n2.getAttributes();
                         if (nm != null) {
                             Node n4 = nm.getNamedItem("owner");
-                            MMObjectNode newNode = null;
+                            MMObjectNode newnode = null;
                             if (n4 != null) {
-                                newNode = bul.getNewNode(n4.getNodeValue());
+                                newnode = bul.getNewNode(n4.getNodeValue());
                             } else {
-                                newNode = bul.getNewNode("import");
+                                newnode = bul.getNewNode("import");
                             }
                             n4 = nm.getNamedItem("alias");
-                            if (n4 != null) {
-                                log.info("Setting alias to " + n4.getNodeValue());
-                                newNode.setAlias(n4.getNodeValue());
-                            }
+                            if (n4 != null)
+                                newnode.setAlias(n4.getNodeValue());
                             n4 = nm.getNamedItem("number");
                             try {
                                 int num = Integer.parseInt(n4.getNodeValue());
-                                newNode.setValue("number", num);
+
+                                newnode.setValue("number", num);
                             } catch (Exception e) {}
                             Node n5 = n2.getFirstChild();
                             while (n5 != null) {
@@ -145,88 +131,86 @@ public class XMLNodeReader extends DocumentReader {
                                     }
                                     String value = res.toString();
 
-                                    setValue(bul, newNode, n5, key, value);
+                                    int type = bul.getDBType(key);
+                                    if (type != -1) {
+                                        if (type == FieldDefs.TYPE_STRING || type == FieldDefs.TYPE_XML) {
+                                            if (value == null) {
+                                                value = ""; 
+                                            }
+                                            newnode.setValue(key, value);
+                                            if (log.isDebugEnabled()) {
+                                                log.debug("After value " + Casting.toString(newnode.getValue(key)));
+                                            }
+                                        } else if (type == FieldDefs.TYPE_NODE) {                                            
+                                            // do not really set it, because we need syncnodes later for this.
+                                            newnode.values.put("__" + key, value); // yes, this is hackery, I'm sorry.
+                                            newnode.setValue(key, MMObjectNode.VALUE_NULL);
+                                        } else if (type == FieldDefs.TYPE_INTEGER) {
+                                           try {
+                                                newnode.setValue(key, Integer.parseInt(value));
+                                            } catch (Exception e) {
+                                                log.warn("error setting integer-field " + e);
+                                                newnode.setValue(key, -1);
+                                            }
+                                        } else if (type == FieldDefs.TYPE_FLOAT) {
+                                            try {
+                                                newnode.setValue(key, Float.parseFloat(value));
+                                            } catch (Exception e) {
+                                                log.warn("error setting float-field " + e);
+                                                newnode.setValue(key, -1);
+                                            }
+                                        } else if (type == FieldDefs.TYPE_DOUBLE) {
+                                            try {
+                                                newnode.setValue(key, Double.parseDouble(value));
+                                            } catch (Exception e) {
+                                                log.warn("error setting double-field " + e);
+                                                newnode.setValue(key, -1);
+                                            }
+                                        } else if (type == FieldDefs.TYPE_LONG) {
+                                            try {
+                                                newnode.setValue(key, Long.parseLong(value));
+                                            } catch (Exception e) {
+                                                log.warn("error setting long-field " + e);
+                                                newnode.setValue(key, -1);
+                                            }
+                                        } else if (type == FieldDefs.TYPE_BYTE) {
+                                            NamedNodeMap nm2 = n5.getAttributes();
+                                            Node n7 = nm2.getNamedItem("file");
+                                            newnode.setValue(key, readBytesFile(applicationpath + n7.getNodeValue()));
+                                        } else {
+                                            log.error("FieldDefs not found for #" + type + " was not known for field with name: '"
+                                                      + key + "' and with value: '" + value + "'");
+                                        }
+                                    }
                                 }
                                 n5 = n5.getNextSibling();
                             }
-                            nodes.add(newNode);
+                            nodes.addElement(newnode);
                         }
                     }
                     n2 = n2.getNextSibling();
                 }
+            } else {
+                log.error("Could not find builder with name: " + n1.getNodeName() + "'");
             }
             n1 = n1.getNextSibling();
         }
         return nodes;
     }
 
-    protected void setValue(MMObjectBuilder bul, MMObjectNode newNode, Node n5, String key, String value) {
-        int type = bul.getDBType(key);
-        if (type != -1) {
-            if (type == Field.TYPE_STRING || type == Field.TYPE_XML) {
-                if (value == null) {
-                    value = "";
-                }
-                newNode.setValue(key, value);
-            } else if (type == Field.TYPE_NODE) {
-                // do not really set it, because we need syncnodes later for this.
-                newNode.storeValue("__" + key, value); // yes, this is hackery, I'm sorry.
-                newNode.setValue(key, null);
-            } else if (type == Field.TYPE_INTEGER) {
-               try {
-                    newNode.setValue(key, Integer.parseInt(value));
-                } catch (Exception e) {
-                    log.warn("error setting integer-field '" + key + "' to '" + value + "' because " + e);
-                    newNode.setValue(key, -1);
-                }
-            } else if (type == Field.TYPE_FLOAT) {
-                try {
-                    newNode.setValue(key, Float.parseFloat(value));
-                } catch (Exception e) {
-                    log.warn("error setting float-field '" + key + "' to '" + value + "' because " + e);
-                    newNode.setValue(key, -1);
-                }
-            } else if (type == Field.TYPE_DOUBLE) {
-                try {
-                    newNode.setValue(key, Double.parseDouble(value));
-                } catch (Exception e) {
-                    log.warn("error setting double-field '" + key + "' to '" + value + "' because " + e);
-                    newNode.setValue(key, -1);
-                }
-            } else if (type == Field.TYPE_LONG) {
-                try {
-                    newNode.setValue(key, Long.parseLong(value));
-                } catch (Exception e) {
-                    log.warn("error setting long-field '" + key + "' to '" + value + "' because " + e);
-                    newNode.setValue(key, -1);
-                }
-            } else if (type == Field.TYPE_DATETIME) {                                            
-                newNode.setValue(key, Casting.toDate(value));
-            } else if (type == Field.TYPE_BOOLEAN) {                                            
-                newNode.setValue(key, Casting.toBoolean(value));
-            } else if (type == Field.TYPE_BINARY) {
-                NamedNodeMap nm2 = n5.getAttributes();
-                Node n7 = nm2.getNamedItem("file");
-                try {
-                    newNode.setValue(key, readBytesStream(n7.getNodeValue()));
-                } catch (IOException ioe) {
-                    log.warn("Could not set field " + key + " " + ioe);
-                }
-            } else {
-                log.error("CoreField not found for #" + type + " was not known for field with name: '"
-                		  + key + "' and with value: '" + value + "'");
-            }
+    byte[] readBytesFile(String filename) {
+        File bfile = new File(filename);
+        int filesize = (int)bfile.length();
+        byte[] buffer = new byte[filesize];
+        try {
+            FileInputStream scan = new FileInputStream(bfile);
+            int len = scan.read(buffer, 0, filesize);
+            scan.close();
+        } catch (FileNotFoundException e) {
+            log.error("error getfile : " + filename + " " + Logging.stackTrace(e));
+        } catch (IOException e) {
+            log.error("error getfile : " + filename + " " + Logging.stackTrace(e));
         }
-    }
-
-    private byte[] readBytesStream(String resourceName) throws IOException {
-        InputStream stream = path.getResourceAsStream(resourceName);
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        int c = stream.read();
-        while (c != -1) {
-            buffer.write(c);
-            c = stream.read();
-        }
-        return buffer.toByteArray();
+        return (buffer);
     }
 }

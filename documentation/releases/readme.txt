@@ -1,5 +1,5 @@
 ===================================================================
-                     MMBase 1.8.1 - Readme
+                     MMBase 1.7.4 - Readme
 ===================================================================  
   
 MMBase is an Open Source content management system that can be used
@@ -44,6 +44,8 @@ mmbase-webapp/              Webapplication dir, this dir goes into
                             modules are activated by default
       security/             Configuration for the security
       utils/                All config related to org.mmbase.util-classes 
+        httppost.xml        Config related to upload files (max size,
+                            upload-dir, etc)
       xslt/                 Some xslt's for displaying config files in
                             adminpages
     lib/                    All jars needed by MMBase
@@ -63,7 +65,11 @@ mmbase-webapp/              Webapplication dir, this dir goes into
     index.jsp               
     mpl-1.0.jsp             License
     style                 
+    xmlimporter             Xmlimporter tool pages
+  mmdocs/                   Documentation for different groups of
+                            users (templaters/administrators/etc) 
   mmexamples/               Examples directory
+     
 
 MMBase is distributed in two different 'flavours', mmbase-src and
 mmbase. First is the source distribution and the second is the binary

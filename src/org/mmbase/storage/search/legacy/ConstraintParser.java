@@ -10,10 +10,8 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.search.legacy;
 
 import java.util.*;
-import org.mmbase.bridge.Field;
-import org.mmbase.core.CoreField;
 import org.mmbase.module.core.*;
-import org.mmbase.storage.StorageManagerFactory;
+import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.util.logging.*;
@@ -112,168 +110,18 @@ import org.mmbase.bridge.NodeQuery;
  * category <code>org.mmbase.storage.search.legacyConstraintParser.fallback</code>.
  *
  * @author  Rob van Maris
- * @version $Id: ConstraintParser.java,v 1.28 2006-06-06 19:58:21 michiel Exp $
+ * @version $Id: ConstraintParser.java,v 1.20.2.1 2004-07-09 14:03:47 michiel Exp $
  * @since MMBase-1.7
  */
 public class ConstraintParser {
 
-    private final static Logger log = Logging.getLoggerInstance(ConstraintParser.class);
-
+    /** Logger instance. */
+    private final static Logger log = 
+        Logging.getLoggerInstance(ConstraintParser.class);
+    
     /** Logger instance dedicated to logging fallback to legacy constraint. */
-    private final static Logger fallbackLog = Logging.getLoggerInstance(ConstraintParser.class.getName() + ".fallback");
-
-
-    /**
-     * Converts a constraint by turning all 'quoted' fields into
-     * database supported fields.
-     * XXX: todo: escape characters for '[' and ']'.
-     * @param constraints constraint to convert
-     * @return Converted constraint
-     * @since MMBase-1.8.1 (moved from org.mmbase.bridge.util.Queries)
-     */
-    private static String convertClausePartToDBS(String constraints) {
-        StorageManagerFactory factory = MMBase.getMMBase().getStorageManagerFactory();
-        StringBuffer result = new StringBuffer();
-        int posa = constraints.indexOf('[');
-        while (posa > -1) {
-            int posb = constraints.indexOf(']', posa);
-            if (posb == -1) {
-                posa = -1;
-            } else {
-                String fieldName = constraints.substring(posa + 1, posb);
-                int posc = fieldName.indexOf('.');
-                if (posc == -1) {
-                    fieldName = factory != null ? factory.getStorageIdentifier(fieldName).toString() : fieldName;
-                } else {
-                    fieldName = fieldName.substring(0, posc + 1) + (factory !=  null ? factory.getStorageIdentifier(fieldName.substring(posc + 1)) : fieldName.substring(posc + 1));
-                }
-                result.append(constraints.substring(0, posa)).append(fieldName);
-                constraints = constraints.substring(posb + 1);
-                posa = constraints.indexOf('[');
-            }
-        }
-        result.append(constraints);
-        return result.toString();
-    }
-
-    /**
-     * Converts a constraint by turning all 'quoted' fields into
-     * database supported fields.
-     * XXX: todo: escape characters for '[' and ']'.
-     * @param constraints constraints to convert
-     * @return converted constraint
-     * @since MMBase-1.8.1 (moved from org.mmbase.bridge.util.Queries)
-     */
-    public static String convertClauseToDBS(String constraints) {
-        if (constraints.startsWith("MMNODE")) {
-            //  wil probably not work
-            // @todo check
-            return constraints;
-        } else if (constraints.startsWith("ALTA")) {
-            //  wil probably not work
-            // @todo check
-            return constraints.substring(5);
-        }
-
-        //keesj: what does this code do?
-
-        StringBuffer result = new StringBuffer();
-        //if there is a quote in the constraints posa will not be equals -1
-
-        int quoteOpen = constraints.indexOf('\'');
-        while (quoteOpen > -1) {
-            //keesj: posb can be the same a posa maybe the method should read indexOf("\"",posa) ?
-            int quoteClose = constraints.indexOf('\'', quoteOpen + 1);
-            if (quoteClose == -1) {
-                // unmatching quote?
-                log.warn("unbalanced quote in " + constraints);
-                break;
-            }
-
-            //keesj:part is now the first part of the constraints if there is a quote in the query
-            String part = constraints.substring(0, quoteOpen);
-
-            //append to the string buffer "part" the first part
-            result.append(convertClausePartToDBS(part));
-            result.append(constraints.substring(quoteOpen, quoteClose + 1));
-
-            constraints = constraints.substring(quoteClose + 1);
-            quoteOpen = constraints.indexOf('\'');
-
-        }
-        result.append(convertClausePartToDBS(constraints));
-        return result.toString();
-    }
-
-    /**
-     * returns false, when escaping wasnt closed, or when a ";" was found outside a escaped part (to prefent spoofing)
-     * This is used by createQuery (i wonder if it still makes sense)
-     * @param constraints constraint to check
-     * @return is valid constraint
-     * @since MMBase-1.8.1 (moved from org.mmbase.bridge.util.Queries)
-     */
-    static public boolean validConstraints(String constraints) {
-        // first remove all the escaped "'" ('' occurences) chars...
-        String remaining = constraints;
-        while (remaining.indexOf("''") != -1) {
-            int start = remaining.indexOf("''");
-            int stop = start + 2;
-            if (stop < remaining.length()) {
-                String begin = remaining.substring(0, start);
-                String end = remaining.substring(stop);
-                remaining = begin + end;
-            } else {
-                remaining = remaining.substring(0, start);
-            }
-        }
-        // assume we are not escaping... and search the string..
-        // Keep in mind that at this point, the remaining string could contain different information
-        // than the original string. This doesnt matter for the next sequence...
-        // but it is important to realize!
-        while (remaining.length() > 0) {
-            if (remaining.indexOf('\'') != -1) {
-                // we still contain a "'"
-                int start = remaining.indexOf('\'');
-
-                // escaping started, but no stop
-                if (start == remaining.length()) {
-                    log.warn("reached end, but we are still escaping(you should sql-escape the search query inside the jsp-page?)\noriginal:" + constraints);
-                    return false;
-                }
-
-                String notEscaped = remaining.substring(0, start);
-                if (notEscaped.indexOf(';') != -1) {
-                    log.warn("found a ';' outside the constraints(you should sql-escape the search query inside the jsp-page?)\noriginal:" + constraints + "\nnot excaped:" + notEscaped);
-                    return false;
-                }
-
-                int stop = remaining.substring(start + 1).indexOf('\'');
-                if (stop < 0) {
-                    log.warn("reached end, but we are still escaping(you should sql-escape the search query inside the jsp-page?)\noriginal:" + constraints + "\nlast escaping:" + remaining.substring(start + 1));
-                    return false;
-                }
-                // we added one to to start, thus also add this one to stop...
-                stop = start + stop + 1;
-
-                // when the last character was the stop of our escaping
-                if (stop == remaining.length()) {
-                    return true;
-                }
-
-                // cut the escaped part from the string, and continue with resting sting...
-                remaining = remaining.substring(stop + 1);
-            } else {
-                if (remaining.indexOf(';') != -1) {
-                    log.warn("found a ';' inside our constrain:" + constraints);
-                    return false;
-                }
-                return true;
-            }
-        }
-        return true;
-    }
-
-
+    private final static Logger fallbackLog = 
+        Logging.getLoggerInstance(ConstraintParser.class.getName() + ".fallback");
 
     private SearchQuery query = null;
     private List steps = null;
@@ -303,13 +151,15 @@ public class ConstraintParser {
             result = (String) iTokens.next();
             token = (String) iTokens.next();
             if (!token.equals("'")) {
-                throw new IllegalArgumentException("Unexpected token (expected \"'\"): \"" + token + "\"");
+                throw new IllegalArgumentException(
+                "Unexpected token (expected \"'\"): \""
+                + token + "\"");
              }
-
+            
             int fieldType = field.getType();
-            if (fieldType == Field.TYPE_BINARY || fieldType == Field.TYPE_DOUBLE ||
-                fieldType == Field.TYPE_FLOAT || fieldType == Field.TYPE_INTEGER ||
-                fieldType == Field.TYPE_LONG || fieldType == Field.TYPE_NODE) {
+            if (fieldType == FieldDefs.TYPE_BYTE || fieldType == FieldDefs.TYPE_DOUBLE ||
+                fieldType == FieldDefs.TYPE_FLOAT || fieldType == FieldDefs.TYPE_INTEGER ||
+                fieldType == FieldDefs.TYPE_LONG || fieldType == FieldDefs.TYPE_NODE) {
                 // String represents a numerical value.
                 result = new Double((String) result);
             }
@@ -411,7 +261,7 @@ public class ConstraintParser {
      *
      * @param token The token.
      * @param steps The steps.
-     * @param query The used query
+     * @param Query The used query
      * @return The field.
      * @since MMBase-1.7.1
      */
@@ -426,7 +276,7 @@ public class ConstraintParser {
                     step = (BasicStep) ((NodeQuery) query).getNodeStep();
                     if (step == null) {
                         throw new IllegalArgumentException( "NodeQuery has no step; Fieldname not prefixed with table alias: \"" + token + "\"");
-                    }
+                    } 
                 } else {
                     throw new IllegalArgumentException( "Fieldname not prefixed with table alias: \"" + token + "\"");
                 }
@@ -443,23 +293,18 @@ public class ConstraintParser {
         } else {
             fieldName = token.substring(idx + 1, token.length() - bracketOffset);
         }
-
-        CoreField coreField = builder.getField(fieldName);
-        // maybe the field was already escaped with getAllowedField
-        // otherwise it will definitely fail!
-        if (coreField == null) {
-            String escapedFieldName = MMBase.getMMBase().getStorageManagerFactory().getStorageIdentifier(fieldName).toString();
-            if (! escapedFieldName.equals(fieldName)) {
-                coreField = builder.getField(fieldName);
-                if (coreField == null) {
-                    throw new IllegalArgumentException("Unknown field (of builder " + builder.getTableName() + "): \"" + escapedFieldName + "\"");
-                }
-            }
+        
+        FieldDefs fieldDefs = builder.getField(fieldName);
+        if (fieldDefs == null) {
+            // maybe the fielddef was already escaped with getAllowedField
+            // otherwise it will definitly fail!
+            fieldDefs = builder.getField(builder.mmb.getDatabase().getDisallowedField(fieldName));
         }
-        if (coreField == null) {
-            throw new IllegalArgumentException("Unknown field (of builder " + builder.getTableName() + "): \"" + fieldName + "\"");
+        if (fieldDefs == null) {
+            throw new IllegalArgumentException("Unknown field (of builder " + builder.getTableName()
+                                               + "): \"" + fieldName + "\"");
         }
-        BasicStepField field = new BasicStepField(step, coreField);
+        BasicStepField field = new BasicStepField(step, fieldDefs);
         return field;
     }
 
@@ -487,9 +332,7 @@ public class ConstraintParser {
         throw new IllegalArgumentException("Unknown table alias: \"" + alias + "\"");
     }
 
-    /** Creates a new instance of ConstraintParser
-     * @param query
-     */
+    /** Creates a new instance of ConstraintParser */
     public ConstraintParser(SearchQuery query) {
         this.query = query;
         this.steps = query.getSteps();
@@ -517,23 +360,19 @@ public class ConstraintParser {
             if (fallbackLog.isServiceEnabled()) {
                 fallbackLog.service(
                     "Failed to parse Constraint from search condition string: "
-                    + "\n     sqlConstraint = " + sqlConstraint
-                    + "\n     exception: " + e.getMessage()
-                    + "\nFalling back to BasicLegacyConstraint...", e);
+                    + "\n     sqlConstraint = " + sqlConstraint 
+                    + "\n     exception: " + e + Logging.stackTrace(e)
+                    + "\nFalling back to BasicLegacyConstraint...");
             }
-            String escapedSqlConstraint = convertClauseToDBS(sqlConstraint);
-            if (! validConstraints(escapedSqlConstraint)) {
-                throw new IllegalArgumentException("Invalid constraints: " + sqlConstraint);
-            }
-            result = new BasicLegacyConstraint(escapedSqlConstraint);
+            result = new BasicLegacyConstraint(sqlConstraint);
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("Parsed constraint \"" + sqlConstraint + "\" to :\n" + result);
+            log.debug("Parsed constraint \"" + sqlConstraint
+                + "\" to :\n" + result);
         }
         return result;
     }
-
 
     /**
      * Parses a <em>field</em> string, and produces a corresponding
@@ -618,7 +457,8 @@ public class ConstraintParser {
                 }
 
                 if (!iTokens.hasNext()) {
-                    throw new IllegalArgumentException("Unexpected end of tokens after \"" + token + "\"");
+                    throw new IllegalArgumentException(
+                    "Unexpected end of tokens after \"" + token + "\"");
                 }
             }
         }
@@ -704,7 +544,7 @@ public class ConstraintParser {
                 }
             }
             result = new BasicFieldValueConstraint(field, value)
-                .setOperator(FieldCompareConstraint.LIKE)
+                .setOperator(FieldValueConstraint.LIKE)
                 .setCaseSensitive(caseSensitive);
 
         } else if (token.equalsIgnoreCase("IS")) {
@@ -786,14 +626,14 @@ public class ConstraintParser {
                     // == value
                     Object value = parseValue(iTokens, field);
                     result = new BasicFieldValueConstraint(field, value)
-                        .setOperator(FieldCompareConstraint.EQUAL);
+                        .setOperator(FieldValueConstraint.EQUAL);
                 } catch (NumberFormatException e) {
                     // == field2
                     iTokens.previous();
                     token = (String) iTokens.next();
                     StepField field2 = getField(token);
                     result = new BasicCompareFieldsConstraint(field, field2)
-                        .setOperator(FieldCompareConstraint.EQUAL);
+                        .setOperator(FieldValueConstraint.EQUAL);
                 }
             } else {
                 iTokens.previous();
@@ -811,7 +651,7 @@ public class ConstraintParser {
                         }
                     }
                     result = new BasicFieldValueConstraint(field, value)
-                        .setOperator(FieldCompareConstraint.EQUAL)
+                        .setOperator(FieldValueConstraint.EQUAL)
                         .setCaseSensitive(caseSensitive);
                 } catch (NumberFormatException e) {
                     // = field2
@@ -819,7 +659,7 @@ public class ConstraintParser {
                     token = (String) iTokens.next();
                     StepField field2 = getField(token);
                     result = new BasicCompareFieldsConstraint(field, field2)
-                        .setOperator(FieldCompareConstraint.EQUAL);
+                        .setOperator(FieldValueConstraint.EQUAL);
                 }
             }
         } else if (token.equals("<")) {
@@ -829,28 +669,28 @@ public class ConstraintParser {
                     // <= value
                     Object value = parseValue(iTokens, field);
                     result = new BasicFieldValueConstraint(field, value)
-                        .setOperator(FieldCompareConstraint.LESS_EQUAL);
+                        .setOperator(FieldValueConstraint.LESS_EQUAL);
                 } catch (NumberFormatException e) {
                     // <= field2
                     iTokens.previous();
                     token = (String) iTokens.next();
                     StepField field2 = getField(token);
                     result = new BasicCompareFieldsConstraint(field, field2)
-                        .setOperator(FieldCompareConstraint.LESS_EQUAL);
+                        .setOperator(FieldValueConstraint.LESS_EQUAL);
                 }
             } else if (token.equals(">")) {
                 try {
                     // <> value
                     Object value = parseValue(iTokens, field);
                     result = new BasicFieldValueConstraint(field, value)
-                        .setOperator(FieldCompareConstraint.NOT_EQUAL);
+                        .setOperator(FieldValueConstraint.NOT_EQUAL);
                 } catch (NumberFormatException e) {
                     // <> field2
                     iTokens.previous();
                     token = (String) iTokens.next();
                     StepField field2 = getField(token);
                     result = new BasicCompareFieldsConstraint(field, field2)
-                        .setOperator(FieldCompareConstraint.NOT_EQUAL);
+                        .setOperator(FieldValueConstraint.NOT_EQUAL);
                 }
             } else {
                 try {
@@ -858,14 +698,14 @@ public class ConstraintParser {
                     iTokens.previous();
                     Object value = parseValue(iTokens, field);
                     result = new BasicFieldValueConstraint(field, value)
-                        .setOperator(FieldCompareConstraint.LESS);
+                        .setOperator(FieldValueConstraint.LESS);
                 } catch (NumberFormatException e) {
                     // < field2
                     iTokens.previous();
                     token = (String) iTokens.next();
                     StepField field2 = getField(token);
                     result = new BasicCompareFieldsConstraint(field, field2)
-                        .setOperator(FieldCompareConstraint.LESS);
+                        .setOperator(FieldValueConstraint.LESS);
                 }
             }
         } else if (token.equals(">")) {
@@ -875,14 +715,14 @@ public class ConstraintParser {
                     // >= value
                     Object value = parseValue(iTokens, field);
                     result = new BasicFieldValueConstraint(field, value)
-                        .setOperator(FieldCompareConstraint.GREATER_EQUAL);
+                        .setOperator(FieldValueConstraint.GREATER_EQUAL);
                 } catch (NumberFormatException e) {
                     // >= field2
                     iTokens.previous();
                     token = (String) iTokens.next();
                     StepField field2 = getField(token);
                     result = new BasicCompareFieldsConstraint(field, field2)
-                        .setOperator(FieldCompareConstraint.GREATER_EQUAL);
+                        .setOperator(FieldValueConstraint.GREATER_EQUAL);
                 }
             } else {
                 try {
@@ -890,14 +730,14 @@ public class ConstraintParser {
                     iTokens.previous();
                     Object value = parseValue(iTokens, field);
                     result = new BasicFieldValueConstraint(field, value)
-                        .setOperator(FieldCompareConstraint.GREATER);
+                        .setOperator(FieldValueConstraint.GREATER);
                 } catch (NumberFormatException e) {
                     // > field2
                     iTokens.previous();
                     token = (String) iTokens.next();
                     StepField field2 = getField(token);
                     result = new BasicCompareFieldsConstraint(field, field2)
-                        .setOperator(FieldCompareConstraint.GREATER);
+                        .setOperator(FieldValueConstraint.GREATER);
                 }
             }
         } else if (token.equals("!")) {
@@ -907,20 +747,23 @@ public class ConstraintParser {
                     // != value
                     Object value = parseValue(iTokens, field);
                     result = new BasicFieldValueConstraint(field, value)
-                        .setOperator(FieldCompareConstraint.NOT_EQUAL);
+                        .setOperator(FieldValueConstraint.NOT_EQUAL);
                 } catch (NumberFormatException e) {
                     // != field2
                     iTokens.previous();
                     token = (String) iTokens.next();
                     StepField field2 = getField(token);
                     result = new BasicCompareFieldsConstraint(field, field2)
-                        .setOperator(FieldCompareConstraint.NOT_EQUAL);
+                        .setOperator(FieldValueConstraint.NOT_EQUAL);
                 }
             } else {
-                throw new IllegalArgumentException("Unexpected token (expected \"=\"): \"" + token + "\"");
+                throw new IllegalArgumentException(
+                "Unexpected token (expected \"=\"): \""
+                + token + "\"");
             }
         } else {
-            throw new IllegalArgumentException("Unexpected token: \"" + token + "\"");
+            throw new IllegalArgumentException(
+                "Unexpected token: \"" + token + "\"");
         }
 
         if (inverse) {
@@ -944,9 +787,13 @@ public class ConstraintParser {
     private BasicStringSearchConstraint parseStringSearchCondition(
             ListIterator iTokens) {
 
+        BasicStringSearchConstraint result = null;
+
         String token = (String) iTokens.next();
         if (!token.equals("(")) {
-            throw new IllegalArgumentException("Unexpected token (expected \"(\"): \"" + token + "\"");
+            throw new IllegalArgumentException(
+                "Unexpected token (expected \"(\"): \""
+                + token + "\"");
         }
 
         // Field
@@ -955,7 +802,9 @@ public class ConstraintParser {
 
         token = (String) iTokens.next();
         if (!token.equals(",")) {
-            throw new IllegalArgumentException("Unexpected token (expected \",\"): \"" + token + "\"");
+            throw new IllegalArgumentException(
+                "Unexpected token (expected \",\"): \""
+                + token + "\"");
         }
 
         // Searchtype
@@ -968,7 +817,9 @@ public class ConstraintParser {
         } else if (token.equalsIgnoreCase("WORD")) {
             searchType = StringSearchConstraint.SEARCH_TYPE_WORD_ORIENTED;
         } else {
-            throw new IllegalArgumentException("Invalid searchtype (expected \"PHRASE\", \"PROXIMITY\" or \"WORD\": \"" + token + "\"");
+            throw new IllegalArgumentException(
+                "Invalid searchtype (expected \"PHRASE\", \"PROXIMITY\" "
+                + "or \"WORD\": \"" + token + "\"");
         }
 
         token = (String) iTokens.next();
@@ -988,29 +839,39 @@ public class ConstraintParser {
         } else if (token.equalsIgnoreCase("SYNONYM")) {
             matchType = StringSearchConstraint.MATCH_TYPE_SYNONYM;
         } else {
-            throw new IllegalArgumentException("Invalid matchtype (expected \"FUZZY\", \"LITERAL\" or \"SYNONYM\": \"" + token + "\"");
+            throw new IllegalArgumentException(
+                "Invalid matchtype (expected \"FUZZY\", \"LITERAL\" "
+                + "or \"SYNONYM\": \"" + token + "\"");
         }
 
         token = (String) iTokens.next();
         if (!token.equals(",")) {
-            throw new IllegalArgumentException("Unexpected token (expected \",\"): \""                + token + "\"");
+            throw new IllegalArgumentException(
+                "Unexpected token (expected \",\"): \""
+                + token + "\"");
         }
 
         // SearchTerms
         String searchTerms;
         token = (String) iTokens.next();
         if (!token.equals("'")) {
-            throw new IllegalArgumentException("Unexpected token (expected \"'\" or \"\"\"): \"" + token + "\"");
+            throw new IllegalArgumentException(
+                "Unexpected token (expected \"'\" or \"\"\"): \""
+                + token + "\"");
         }
         searchTerms = (String) iTokens.next();
         token = (String) iTokens.next();
         if (!token.equals("'")) {
-            throw new IllegalArgumentException("Unexpected token (expected \"'\" or \"\"\"): \"" + token + "\"");
+            throw new IllegalArgumentException(
+            "Unexpected token (expected \"'\" or \"\"\"): \""
+            + token + "\"");
         }
 
         token = (String) iTokens.next();
         if (!token.equals(",")) {
-            throw new IllegalArgumentException("Unexpected token (expected \",\"): \"" + token + "\"");
+            throw new IllegalArgumentException(
+                "Unexpected token (expected \",\"): \""
+                + token + "\"");
         }
 
         // CaseSensitive property
@@ -1021,15 +882,19 @@ public class ConstraintParser {
         } else if (token.equalsIgnoreCase("false")) {
             caseSensitive = false;
         } else {
-            throw new IllegalArgumentException("Invalid caseSensitive value (expected \"true\" " + "or \"false\": \"" + token + "\"");
+            throw new IllegalArgumentException(
+                "Invalid caseSensitive value (expected \"true\" "
+                + "or \"false\": \"" + token + "\"");
         }
 
         token = (String) iTokens.next();
         if (!token.equals(")")) {
-            throw new IllegalArgumentException("Unexpected token (expected \")\"): \"" + token + "\"");
+            throw new IllegalArgumentException(
+                "Unexpected token (expected \")\"): \""
+                + token + "\"");
         }
 
-        BasicStringSearchConstraint result = (BasicStringSearchConstraint)
+        result = (BasicStringSearchConstraint)
             new BasicStringSearchConstraint(
                 field, searchType, matchType, searchTerms)
                     .setCaseSensitive(caseSensitive);
@@ -1044,21 +909,27 @@ public class ConstraintParser {
 
             token = (String) iTokens.next();
             if (!token.equals("(")) {
-                throw new IllegalArgumentException("Unexpected token (expected \"(\"): \"" + token + "\"");
+                throw new IllegalArgumentException(
+                    "Unexpected token (expected \"(\"): \""
+                    + token + "\"");
             }
 
             String parameterName = (String) iTokens.next();
 
             token = (String) iTokens.next();
             if (!token.equals(",")) {
-                throw new IllegalArgumentException("Unexpected token (expected \",\"): \"" + token + "\"");
+                throw new IllegalArgumentException(
+                    "Unexpected token (expected \",\"): \""
+                    + token + "\"");
             }
 
             String parameterValue = (String) iTokens.next();
 
             token = (String) iTokens.next();
             if (!token.equals(")")) {
-                throw new IllegalArgumentException("Unexpected token (expected \")\"): \"" + token + "\"");
+                throw new IllegalArgumentException(
+                    "Unexpected token (expected \")\"): \""
+                    + token + "\"");
             }
 
             if (parameterName.equalsIgnoreCase("FUZZINESS")) {
@@ -1069,7 +940,9 @@ public class ConstraintParser {
                     StringSearchConstraint.PARAM_PROXIMITY_LIMIT,
                         new Integer(parameterValue));
             } else {
-                throw new IllegalArgumentException("Invalid parameter name (expected \"FUZZINESS\" or \"PROXIMITY\": \"" + parameterName + "\"");
+                throw new IllegalArgumentException(
+                    "Invalid parameter name (expected \"FUZZINESS\" "
+                    + "or \"PROXIMITY\": \"" + parameterName + "\"");
             }
         }
 

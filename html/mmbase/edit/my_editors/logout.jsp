@@ -4,7 +4,6 @@
 <mm:import jspvar="ntype" externid="ntype" />
 <% String path1 = ntype;		// Eerst stukje van kruimelpad %>
 <%@ include file="inc_head.jsp" %>
-
 <p>&nbsp;</p>
 <p class="message">You were logged out.</p>
 <p>&nbsp;</p>

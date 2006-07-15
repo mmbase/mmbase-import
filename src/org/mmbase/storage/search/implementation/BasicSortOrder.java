@@ -15,19 +15,17 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSortOrder.java,v 1.8 2005-05-26 07:51:48 michiel Exp $
+ * @version $Id: BasicSortOrder.java,v 1.5 2003-07-14 20:47:11 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicSortOrder implements SortOrder {
-
+    
     /** Associated stepfield. */
     private StepField field = null;
-
+    
     /** Direction property. */
     private int direction = SortOrder.ORDER_ASCENDING;
-
-    private boolean caseSensitive = true;
-
+    
     /**
      * Constructor.
      * Creates new BasicSortOrder instance, with
@@ -38,11 +36,12 @@ public class BasicSortOrder implements SortOrder {
      */
     public BasicSortOrder(StepField field) {
         if (field == null) {
-            throw new IllegalArgumentException("Invalid field value: " + field);
+            throw new IllegalArgumentException(
+            "Invalid field value: " + field);
         }
         this.field = field;
     }
-
+    
     /**
      * Sets direction.
      *
@@ -52,71 +51,48 @@ public class BasicSortOrder implements SortOrder {
      */
     public BasicSortOrder setDirection(int direction) {
         if (direction != SortOrder.ORDER_ASCENDING
-            && direction != SortOrder.ORDER_DESCENDING) {
-            throw new IllegalArgumentException("Invalid direction value: " + direction);
+        && direction != SortOrder.ORDER_DESCENDING) {
+            throw new IllegalArgumentException(
+            "Invalid direction value: " + direction);
         }
         this.direction = direction;
         return this;
     }
-
+    
     // javadoc is inherited
     public StepField getField() {
         return field;
     }
-
+    
     // javadoc is inherited
     public int getDirection() {
         return direction;
     }
-
-    /**
-     * Returns a description of the direction of the sort order
-     */
-    public String getDirectionDescription() {
-        try {
-            return SortOrder.ORDER_DESCRIPTIONS[direction];
-        } catch (IndexOutOfBoundsException ioobe) {
-            return null;
-        }
-    }
-
-    public boolean isCaseSensitive() {
-        return caseSensitive;
-    }
-    /**
-     * @since MMBase-1.8
-     */
-    public BasicSortOrder setCaseSensitive(boolean c) {
-        caseSensitive = c;
-        return this;
-    }
-
+    
     // javadoc is inherited
     public boolean equals(Object obj) {
         if (obj instanceof SortOrder) {
             SortOrder order = (SortOrder) obj;
-            return 
-                field.getFieldName().equals(order.getField().getFieldName())
-                && BasicStepField.compareSteps(field.getStep(), order.getField().getStep())
-                && direction == order.getDirection()
-                && caseSensitive == order.isCaseSensitive()
-                ;
+            return field.getFieldName().equals(order.getField().getFieldName())
+                && BasicStepField.compareSteps(
+                    field.getStep(), order.getField().getStep())
+                && direction == order.getDirection();
         } else {
             return false;
         }
     }
-
+    
     // javadoc is inherited
     public int hashCode() {
         String alias = field.getStep().getAlias();
-        return
-            61 * field.getFieldName().hashCode()
-            + 67 * (alias != null ? alias.hashCode() : 1) + 103 * direction + (caseSensitive ? 13 : 0);
+        return 
+            61 * field.getFieldName().hashCode() 
+            + 67 * (alias != null ? alias.hashCode() : 1) + 103 * direction;
     }
 
     // javadoc is inherited
     public String toString() {
-        return "SortOrder(field:" + BasicStepField.getFieldName(getField()) + ", dir:" + getDirectionDescription() + ")";
+        return "SortOrder(field:" + getField().getAlias() + ", dir:" + getDirection() + ")";
     }
-
+    
 }

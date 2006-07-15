@@ -11,24 +11,23 @@ package org.mmbase.storage.search.implementation;
 
 import java.util.*;
 import org.mmbase.storage.search.*;
-import org.mmbase.util.logging.*;
 
 /**
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicCompositeConstraint.java,v 1.7 2005-05-02 13:02:09 michiel Exp $
+ * @version $Id: BasicCompositeConstraint.java,v 1.5 2003-11-27 17:58:41 robmaris Exp $
  * @since MMBase-1.7
  */
-public class BasicCompositeConstraint extends BasicConstraint implements CompositeConstraint {
-    private static final Logger log = Logging.getLoggerInstance(BasicCompositeConstraint.class);
-
+public class BasicCompositeConstraint extends BasicConstraint
+implements CompositeConstraint {
+    
     /** The child constraints. */
     private List childs = new ArrayList();
-
+    
     /** The logical operator. */
     private int logicalOperator = 0;
-
+    
     /**
      * Constructor.
      *
@@ -46,7 +45,7 @@ public class BasicCompositeConstraint extends BasicConstraint implements Composi
         }
         this.logicalOperator = logicalOperator;
     }
-
+    
     /**
      * Adds new child constraint.
      *
@@ -70,34 +69,23 @@ public class BasicCompositeConstraint extends BasicConstraint implements Composi
 
     public BasicCompositeConstraint removeChild(Constraint child) {
         if (! childs.remove(child)) {
-            log.info("Tried to remove non existing child");
+            // log.debug("Tried to remove non existing child");
         }
         return this;
     }
-
-
+        
+    
     // javadoc is inherited
     public List getChilds() {
         // return a unmodifiable list
         return Collections.unmodifiableList(childs);
     }
-
+    
     // javadoc is inherited
     public int getLogicalOperator() {
         return logicalOperator;
     }
-
-    /**
-     * Returns a description of the logical operator
-     */
-    public String getLogicalOperatorDescription() {
-        try {
-            return CompositeConstraint.LOGICAL_OPERATOR_DESCRIPTIONS[logicalOperator];
-        } catch (IndexOutOfBoundsException ioobe) {
-            return null;
-        }
-    }
-
+    
     // javadoc is inherited
     public int getBasicSupportLevel() {
         // Calculate support as lowest value among childs.
@@ -116,7 +104,7 @@ public class BasicCompositeConstraint extends BasicConstraint implements Composi
         }
         return result;
     }
-
+    
     // javadoc is inherited
     public boolean equals(Object obj) {
         if (obj == this) {
@@ -132,20 +120,22 @@ public class BasicCompositeConstraint extends BasicConstraint implements Composi
             return false;
         }
     }
-
+    
     // javadoc is inherited
     public int hashCode() {
-        return super.hashCode()
+        return super.hashCode() 
         + 109 * logicalOperator
         + 71 * childs.hashCode();
     }
-
+    
     // javadoc is inherited
     public String toString() {
         StringBuffer sb = new StringBuffer("CompositeConstraint(inverse:").
         append(isInverse()).
-        append(", operator:").append(getLogicalOperatorDescription()).
-        append(", childs:").append(getChilds()).
+        append(", operator:").
+        append(getLogicalOperator()).
+        append(", childs:").
+        append(getChilds()).
         append(")");
         return sb.toString();
     }

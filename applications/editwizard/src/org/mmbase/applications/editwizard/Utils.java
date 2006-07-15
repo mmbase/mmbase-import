@@ -20,10 +20,10 @@ import javax.xml.parsers.DocumentBuilder;
 import org.xml.sax.*;
 import org.apache.xpath.XPathAPI;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XNodeSet;
 
 import org.mmbase.bridge.Cloud;
 import org.mmbase.util.logging.*;
-import org.mmbase.util.ResourceLoader;
 
 import org.mmbase.cache.xslt.*;
 import org.mmbase.util.xml.URIResolver;
@@ -40,7 +40,7 @@ import org.mmbase.util.XMLEntityResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.41 2005-08-24 12:42:42 michiel Exp $
+ * @version $Id: Utils.java,v 1.37.2.1 2004-04-15 10:55:39 michiel Exp $
  */
 
 public class Utils {
@@ -80,15 +80,15 @@ public class Utils {
      * @return     The loaded xml Document
      * @throws     WizardException if the document is invalid
      */
-    public static Document loadXMLFile(URL file) throws WizardException {
+    public static Document loadXMLFile(File file) throws WizardException {
         try {
             try {
                 DocumentBuilder b = getDocumentBuilder(true);
-                return b.parse(file.openStream(), file.toExternalForm());
+                return b.parse(file);
             } catch (SAXParseException ex) {
                 // try without validating, perhaps no doc-type was specified
                 DocumentBuilder b = getDocumentBuilder(false);
-                Document d = b.parse(file.openStream(), file.toExternalForm());
+                Document d = b.parse(file);
                 if (d.getDoctype() == null) {
                     log.warn("No DocumentType specified in " + file);
                     return d;
@@ -304,12 +304,12 @@ public class Utils {
             XObject x = null;
             // select based on cloud locale setting
             if (cloud != null) {
-                x = XPathAPI.eval(node, xpath + "[lang('"+cloud.getLocale().getLanguage()+"')]");
+                x = XPathAPI.eval(node, xpath + "[lang('"+cloud.getLocale().getLanguage()+"')]");                
             }
             String xs = (x == null ? "" : x.str());
             // mm: according to javadoc of xalan 2.5.2,  x cannot be null, so I don't know if it was possible in older xalans, so just to be on the safe side
 
-            // if not found or n.a., just grab the first you can find
+            // if not found or n.a., just grab the first you can find 
             if (xs.equals("")) {
                 x = XPathAPI.eval(node, xpath);
             }
@@ -472,19 +472,12 @@ public class Utils {
      * @param       result  The place where to put the result of the transformation
      * @param       params  Optional params.
      */
-    public static void transformNode(Node node, URL xslFile, URIResolver uri, Result result, Map params) throws TransformerException {
+    public static void transformNode(Node node, File xslFile, URIResolver uri, Result result, Map params) throws TransformerException {
         TemplateCache cache= TemplateCache.getCache();
-        Source xsl;
-        try {
-            xsl = new StreamSource(xslFile.openStream());
-            xsl.setSystemId(ResourceLoader.toInternalForm(xslFile));
-        } catch (IOException io) {
-            throw new TransformerException(io);
-        }
+        Source xsl = new StreamSource(xslFile);
         Templates cachedXslt = cache.getTemplates(xsl, uri);
         if (cachedXslt == null) {
             cachedXslt = FactoryCache.getCache().getFactory(uri).newTemplates(xsl);
-            if (cachedXslt == null) throw new RuntimeException("Could not create template for " + xslFile + " and " + uri);
             cache.put(xsl, cachedXslt, uri);
         } else {
             if (log.isDebugEnabled()) log.debug("Used xslt from cache with " + xsl.getSystemId());
@@ -535,7 +528,7 @@ public class Utils {
      * @return     the documentelement of the resulting xml (of the transformation)
      */
 
-    public static Node transformNode(Node node, URL xslFile, URIResolver uri) throws TransformerException {
+    public static Node transformNode(Node node, File xslFile, URIResolver uri) throws TransformerException {
         DOMResult res = new DOMResult();
         transformNode(node, xslFile, uri, res, null);
         return res.getNode();
@@ -544,7 +537,7 @@ public class Utils {
     /**
      * same as above, but now you can supply a params hashtable.
      */
-    public static Node transformNode(Node node, URL xslFile, URIResolver uri, Map params) throws TransformerException {
+    public static Node transformNode(Node node, File xslFile, URIResolver uri, Map params) throws TransformerException {
         DOMResult res = new DOMResult();
         transformNode(node, xslFile, uri, res, params);
         return res.getNode();
@@ -554,13 +547,13 @@ public class Utils {
     /**
      * same as above, but now the result is written to the writer.
      */
-    public static void transformNode(Node node, URL xslFile, URIResolver uri, Writer out) throws TransformerException {
+    public static void transformNode(Node node, File xslFile, URIResolver uri, Writer out) throws TransformerException {
         transformNode(node, xslFile, uri, out, null);
     }
     /**
      * same as above, but now the result is written to the writer and you can use params.
      */
-    public static void transformNode(Node node, URL xslFile, URIResolver uri, Writer out, Map params) throws TransformerException {
+    public static void transformNode(Node node, File xslFile, URIResolver uri, Writer out, Map params) throws TransformerException {
         if (log.isDebugEnabled()) log.trace("transforming: " + node.toString() + " " + params);
         // UNICODE works like this...
         StringWriter res = new StringWriter();
@@ -576,7 +569,7 @@ public class Utils {
 
     public static Node transformNode(Node node, String xslFile, URIResolver uri, Writer out, Map params) throws TransformerException {
         DOMResult res = new DOMResult();
-        transformNode(node, uri.resolveToURL(xslFile, null), uri, res, params);
+        transformNode(node, uri.resolveToFile(xslFile), uri, res, params);
         return res.getNode();
     }
 
@@ -613,12 +606,10 @@ public class Utils {
        of plain data). Else the template is assumed to be a valid attribute template.
     */
     public static String transformAttribute(Node context, String attributeTemplate, boolean plainTextIsXpath, Map params) {
-        if (attributeTemplate == null) return null;
+        if (attributeTemplate==null) return null;
         StringBuffer result = new StringBuffer();
         String template = fillInParams(attributeTemplate, params);
-        if (plainTextIsXpath && template.indexOf("{") == -1) {
-            template = "{" + template + "}";
-        }
+        if (plainTextIsXpath && template.indexOf("{") == -1){template = "{" + template + "}";}
         java.util.StringTokenizer templateParts = new java.util.StringTokenizer(template,"{}",true);
         while (templateParts.hasMoreElements()){
             String part = templateParts.nextToken();

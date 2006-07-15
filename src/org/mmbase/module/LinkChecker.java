@@ -11,8 +11,7 @@ package org.mmbase.module;
 
 import java.io.IOException;
 import java.net.*;
-import java.util.Iterator;
-import java.util.List;
+import java.util.Enumeration;
 
 import org.mmbase.util.*;
 import org.mmbase.module.core.*;
@@ -27,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob vermeulen
  * @author Kees Jongenburger
- * @version $Id: LinkChecker.java,v 1.20 2005-11-30 15:58:04 pierre Exp $
+ * @version $Id: LinkChecker.java,v 1.16.2.1 2005-11-28 18:41:40 pierre Exp $
  **/
 
 public class LinkChecker extends ProcessorModule implements Runnable {
@@ -78,7 +77,7 @@ public class LinkChecker extends ProcessorModule implements Runnable {
 
     public void run() {
         long waitTime = INITIAL_WAIT_TIME;  // wait a certain time after startup (default 5 minutes)
-        while (!mmbase.isShutdown()) {
+        while (true) {
             try {
                 Thread.sleep(waitTime);
             } catch (InterruptedException ie) {
@@ -128,15 +127,16 @@ public class LinkChecker extends ProcessorModule implements Runnable {
      * @param builderName the builder to check
      * @param fieldName the fieldname of the url to check
      * @param data the StringBuffer to append error information to
-     * @since MMBase-1.7
+     * @return false if the url does not exist
+     * @return true if the url exists
      */
     protected void checkUrls(String builderName, String fieldName, StringBuffer data) {
         // Get all urls.
         MMObjectBuilder urls = mmbase.getBuilder(builderName);
         if (urls != null) {
-            List nodes = urls.getNodes();
-            for (Iterator iter = nodes.iterator(); iter.hasNext();) {
-                MMObjectNode node = (MMObjectNode) iter.next();
+            Enumeration nodes = urls.search("");
+            while (nodes.hasMoreElements()) {
+                MMObjectNode node = (MMObjectNode) nodes.nextElement();
                 long number = node.getNumber();
                 String url = "" + node.getValue(fieldName);
                 // Check if an url is correct.

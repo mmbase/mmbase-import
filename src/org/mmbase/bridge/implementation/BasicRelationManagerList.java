@@ -13,21 +13,26 @@ package org.mmbase.bridge.implementation;
 import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
+import org.mmbase.util.logging.*;
 
 /**
  * A list of relation managers
  *
  * @author Pierre van Rooden
- * @version $Id: BasicRelationManagerList.java,v 1.15 2005-10-12 00:37:05 michiel Exp $
+ * @version $Id: BasicRelationManagerList.java,v 1.12 2003-03-21 17:45:06 michiel Exp $
  */
 public class BasicRelationManagerList extends BasicNodeManagerList implements RelationManagerList {
+    private static Logger log = Logging.getLoggerInstance(BasicRelationManagerList.class.getName());
 
+    /**
+     * ...
+     */
     BasicRelationManagerList() {
         super();
     }
 
     BasicRelationManagerList(Collection c, Cloud cloud) {
-        super(c, cloud);
+        super(c,cloud);
     }
 
     protected Object validate(Object o) throws ClassCastException,IllegalArgumentException {
@@ -62,7 +67,7 @@ public class BasicRelationManagerList extends BasicNodeManagerList implements Re
      *
      */
     public RelationManagerList subRelationManagerList(int fromIndex, int toIndex) {
-        return new BasicRelationManagerList(subList(fromIndex, toIndex), cloud);
+        return new BasicRelationManagerList(subList(fromIndex, toIndex),cloud);
     }
 
     protected class BasicRelationManagerIterator extends BasicNodeManagerIterator implements RelationManagerIterator {
@@ -70,6 +75,7 @@ public class BasicRelationManagerList extends BasicNodeManagerList implements Re
         public RelationManager nextRelationManager() {
             return (RelationManager)next();
         }
+
         public RelationManager previousRelationManager() {
             return (RelationManager)previous();
         }

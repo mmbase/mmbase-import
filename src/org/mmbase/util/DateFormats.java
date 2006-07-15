@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7.1
- * @version $Id: DateFormats.java,v 1.4 2006-02-16 14:35:59 andre Exp $
+ * @version $Id: DateFormats.java,v 1.1.2.1 2004-06-02 16:25:27 michiel Exp $
  */
 public class DateFormats {
 
@@ -30,10 +30,7 @@ public class DateFormats {
      * Creates a DateFormat instance, based on a String.
      *
      * @param format The format defining the DateFormat. This can be constants like :FULL, :FULL.FULL, :LONG, :MEDIUM or :SHORT. 
-     *               It can also be 'e' for weekday. Also 'RFC822' or 'rfc822' is possible then the 
-     *               quite complicated http://www.faqs.org/rfcs/rfc822.html compliant date and time
-     *               is made, which comes in handy when you need to create a rss feed f.e.
-     *               Or none of those, then a SimpleDateFormat is instantiated.
+     *               It can also be 'e' for weekday. Of none of those, then a SimpleDateFormat is instantiated.
      * @param timeZone A String describing the timeZone (see DateFormat#setTimeZone)
      * @param locale   Most DateFormat's need a Locale too.
      * @throws IllegalArgumentException
@@ -52,16 +49,13 @@ public class DateFormats {
                                                             getDateFormatStyle(format.substring(i+1)), locale);
             }
         } else if (format.equals("e")) {
-            df = new DayOfWeekDateFormat();
-        } else if (format.equals("RFC822") || format.equals("rfc822")) {
-            df = new SimpleDateFormat("EE, dd MMM yyyy hh:mm:ss Z", Locale.US);
+            df = new DayOfWeekDateFormat();            
         } else {
             df = new SimpleDateFormat(format, locale);
         }
+        
         if (!( timeZone == null ||  timeZone.equals(""))) {
             df.setTimeZone(TimeZone.getTimeZone(timeZone));
-        } else {
-            df.setTimeZone(org.mmbase.util.dateparser.DateParser.defaultTimeZone);
         }
         return df;
 
@@ -96,15 +90,21 @@ public class DateFormats {
     protected static class DayOfWeekDateFormat extends DateFormat {
         private TimeZone zone = null;
         public Date parse(String source, ParsePosition pos) {
-            Calendar calendar = Calendar.getInstance(zone != null ? zone :  org.mmbase.util.dateparser.DateParser.defaultTimeZone);
+            Calendar calendar = Calendar.getInstance();
             int day = source.charAt(0) - '0';
-            pos.setIndex(pos.getIndex() + 1);
+            pos.setIndex(pos.getIndex() + 1);            
             calendar.set(Calendar.DAY_OF_WEEK, day);
+            if (zone != null) {
+                calendar.setTimeZone(zone);
+            }
             return calendar.getTime();
         }
         public StringBuffer format(Date date, StringBuffer toAppendTo, FieldPosition pos) {
-            Calendar calendar = Calendar.getInstance(zone != null ? zone :  org.mmbase.util.dateparser.DateParser.defaultTimeZone);
+            Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
+            if (zone != null) {
+                calendar.setTimeZone(zone);
+            }
             // pos.setBeginIndex(0); pos.setEndIndex(1);
             toAppendTo.append(calendar.get(Calendar.DAY_OF_WEEK));
             return toAppendTo;

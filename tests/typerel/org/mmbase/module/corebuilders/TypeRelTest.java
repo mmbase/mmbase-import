@@ -1,12 +1,14 @@
 package org.mmbase.module.corebuilders;
 
 import org.mmbase.bridge.*;
+import org.mmbase.module.core.*;
+import java.util.*;
 
 /**
  * JUnit tests for TypeRel
  *
  * @author  Michiel Meeuwissen 
- * @version $Id: TypeRelTest.java,v 1.11 2006-04-20 15:24:33 michiel Exp $
+ * @version $Id: TypeRelTest.java,v 1.5 2003-04-29 18:45:22 michiel Exp $
  */
 public class TypeRelTest extends org.mmbase.tests.BridgeTest {
 
@@ -47,15 +49,12 @@ public class TypeRelTest extends org.mmbase.tests.BridgeTest {
         assertTrue(rml.size() > 0);
         if (rml.size() == 0) {
             fail("cannot test");
-        }       
+        }
+        
     }
-
     protected Node createRelDefNode(String role, int dir) {
         // create a new relation-definition
         Node reldef = relDefManager.createNode();
-        assertTrue(relDefManager.getName().equals("reldef"));
-        assertTrue("Manager of reldefnode is not 'reldef' but " + reldef.getNodeManager().getName(), reldef.getNodeManager().getName().equals("reldef"));
-        assertTrue(reldef.getNodeManager().hasField("sname"));
         reldef.setValue("sname", role);
         reldef.setValue("dname", "d" + role );
         reldef.setValue("sguiname", role);
@@ -128,7 +127,7 @@ public class TypeRelTest extends org.mmbase.tests.BridgeTest {
     public void testBidirectionalNodeManagerAllowedRelations7() {
         // by source-manager
         try {
-            newsManager.getAllowedRelations(urlsManager, OTHER_ROLE, null);
+            RelationManagerList rml = newsManager.getAllowedRelations(urlsManager, OTHER_ROLE, null);
             fail("Should have thrown exception for non-existing relations");
         } catch (NotFoundException e) {
         };
@@ -181,7 +180,6 @@ public class TypeRelTest extends org.mmbase.tests.BridgeTest {
         }
         // no exception should have occured.
     }
-
 
 
     public void testBidirectionalNode4() {
@@ -262,7 +260,7 @@ public class TypeRelTest extends org.mmbase.tests.BridgeTest {
     }
     public void testUnidirectionalNodeManagerAllowedRelations7() {
         try {
-            newsManager.getAllowedRelations(urlsManager, OTHER_ROLE, null);
+            RelationManagerList rml = newsManager.getAllowedRelations(urlsManager, OTHER_ROLE, null);
             fail("Should have thrown exception for non-existing relations");
         } catch (NotFoundException e) {
         };
@@ -326,20 +324,8 @@ public class TypeRelTest extends org.mmbase.tests.BridgeTest {
         RelationManagerList rm1 = cloud.getRelationManagers(objectManager, urlsManager, INH_ROLE);
         assertTrue(rm1.size() > 0);
 
-        RelationManager rmi11 = cloud.getRelationManager(objectManager, urlsManager, INH_ROLE);
-        assertNotNull(rmi11);
-
-        RelationManager rmi12 = cloud.getRelationManager("object", "urls", INH_ROLE);
-        assertNotNull(rmi12);
-
         RelationManagerList rm2 = cloud.getRelationManagers(newsManager, urlsManager, INH_ROLE);
-        assertTrue(rm2.size() > 0);
-
-        RelationManager rmi21 = cloud.getRelationManager(newsManager, urlsManager, INH_ROLE);
-        assertNotNull(rmi21);
-
-        RelationManager rmi22 = cloud.getRelationManager("news", "urls", INH_ROLE);
-        assertNotNull(rmi22);
+        assertTrue(rm2.size() > 0);       
     }
 
 
@@ -384,59 +370,6 @@ public class TypeRelTest extends org.mmbase.tests.BridgeTest {
 
     }
 
-    private void testDestinationManagers(NodeManager sourceManager) {
-        RelationManagerList destinationManagers = sourceManager.getAllowedRelations((NodeManager) null, null, DESTINATION);
-        RelationManagerIterator i = destinationManagers.relationManagerIterator();
-        while(i.hasNext()) {
-            RelationManager rm = i.nextRelationManager();
-            assertTrue("" + rm.getSourceManager() + " is not " + sourceManager, 
-                       rm.getSourceManager().equals(sourceManager));
-        }
-    }
-
-    public void testDestinationManagers() {
-        testDestinationManagers(newsManager);
-        testDestinationManagers(urlsManager);
-        testDestinationManagers(objectManager);
-
-    }
-    private void testSourceManagers(NodeManager destinationManager) {
-        RelationManagerList sourceManagers      = destinationManager.getAllowedRelations((NodeManager) null, null, SOURCE);
-        RelationManagerIterator i = sourceManagers.relationManagerIterator();
-        while(i.hasNext()) {
-            RelationManager rm = i.nextRelationManager();
-            assertTrue("" + rm.getSourceManager() + " is not " + destinationManager, 
-                       rm.getDestinationManager().equals(destinationManager));
-        }
-    }
-    public void testSourceManagers() {
-        testSourceManagers(newsManager);
-        testSourceManagers(urlsManager);
-        testSourceManagers(objectManager);
-    }
-    
-    
-    private void testManagers(NodeManager manager) {
-        RelationManagerList managers  = manager.getAllowedRelations((NodeManager) null, null, null);
-        RelationManagerIterator i = managers.relationManagerIterator();
-        Cloud cloud = manager.getCloud();
-        while(i.hasNext()) {
-            RelationManager rm = i.nextRelationManager();
-            assertTrue("Both " + rm.getDestinationManager() + " and " + rm.getSourceManager() + " are not " + manager, 
-                       rm.getDestinationManager().equals(manager) || rm.getSourceManager().equals(manager));
-
-            RelationManager refetched = cloud.getRelationManager(rm.getSourceManager(), rm.getDestinationManager(), rm.getForwardRole());
-            assertTrue(refetched.getSourceManager().equals(rm.getSourceManager()));
-            assertTrue(refetched.getDestinationManager().equals(rm.getDestinationManager()));
-            assertTrue(refetched.getForwardRole().equals(rm.getForwardRole()));
-        }
-    }
-
-    public void testManagers() {
-        testManagers(newsManager);
-        testManagers(urlsManager);
-        testManagers(objectManager);
-    }
 
 
     public void testClearUpMess() {
@@ -458,7 +391,7 @@ public class TypeRelTest extends org.mmbase.tests.BridgeTest {
         if (cloud == null) {            
             startMMBase();
             //cloud = getRemoteCloud();
-            cloud = getCloud();
+            cloud = getLocalCloud();
             
             // needed builders for this test.
             try {
@@ -472,7 +405,7 @@ public class TypeRelTest extends org.mmbase.tests.BridgeTest {
                 throw new Exception("Test cases cannot be performed because " + e.getMessage() + " Please arrange this in your cloud before running this TestCase.");
              }
 
-            createdNodes = cloud.createNodeList();
+            createdNodes = cloud.getCloudContext().createNodeList();
             assertNotNull("Could not create remotely a nodelist" , createdNodes);
 
             news = newsManager.createNode();

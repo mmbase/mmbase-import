@@ -12,7 +12,7 @@ package org.mmbase.bridge;
 /**
  * Main class to aquire CloudContexts
  * @author Kees Jongenburger
- * @version $Id: ContextProvider.java,v 1.10 2005-11-04 23:20:25 michiel Exp $
+ * @version $Id: ContextProvider.java,v 1.8 2004-02-24 12:05:37 michiel Exp $
  * @since MMBase-1.5
  */
 public class ContextProvider {
@@ -59,10 +59,10 @@ public class ContextProvider {
      **/
      public static String getDefaultCloudContextName() {
          //first choice.. set the cloud context using system properties
-         if (defaultCloudContextName == null) {
+         if (defaultCloudContextName == null){
              defaultCloudContextName = System.getProperty("mmbase.defaultcloudcontext");
          }
-         if (defaultCloudContextName == null) {
+         if (defaultCloudContextName == null){
              defaultCloudContextName = DEFAULT_CLOUD_CONTEXT_NAME;
          }
          return defaultCloudContextName;
@@ -70,22 +70,9 @@ public class ContextProvider {
     
     /**
      * @since MMBase-1.7
-     * @return the default cloud context This is the local cloud if mmbase is running or could be started (with mmbase.config system property), 
-     *         Otherwise a default rmmci cloud, or specified with mmbase.defaultcloudtext.property
+     * @return the default cloud context
      **/
     public static CloudContext getDefaultCloudContext() {
-        String uri = System.getProperty("mmbase.defaultcloudcontext");
-        if (uri != null) {
-            return getCloudContext(uri);
-        }
-
-        try {        
-            return getCloudContext(getDefaultCloudContextName());
-        } catch (NotFoundException nfe) {
-            return getCloudContext("rmi://127.0.0.1:1111/remotecontext");
-        } catch (BridgeException be) {
-            throw new BridgeException(be.getMessage() + " You may want to specify -Dmmbase.defaultcloudcontext=<URI>", be);
-        }
+        return getCloudContext(getDefaultCloudContextName());
     }
-
 }

@@ -13,7 +13,6 @@ package org.mmbase.applications.media.urlcomposers;
 import org.mmbase.applications.media.builders.MediaProviders;
 import org.mmbase.applications.media.builders.MediaSources;
 import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.util.HashCodeUtil;
 import org.mmbase.applications.media.Format;
 
 import java.util.*;
@@ -63,16 +62,6 @@ public class URLComposer  {
     public Format       getFormat()   {
         return Format.get(source.getIntValue("format"));
     }
-
-    /**
-     * The mime-type of the produced URL. This is not necessarily the mimetype of the source.
-     * (Though it normally would be)
-     */
-    public String       getMimeType() {
-        return getFormat().getMimeType();
-    }
-
-    
     
     public String getGUIIndicator(Map options) {
         Locale locale = (Locale) options.get("locale");
@@ -80,6 +69,7 @@ public class URLComposer  {
     }
     
     public String getDescription(Map options) {
+        Locale locale = (Locale) options.get("locale");
         return null; // no informative description
     }
     
@@ -125,12 +115,7 @@ public class URLComposer  {
         }
     }
     
-    /**
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
     public boolean equals(Object o) {
-        if (o == this) return true;
-        if (o == null) return false;
         if (o.getClass().equals(getClass())) {
             URLComposer r = (URLComposer) o;
             return
@@ -139,17 +124,5 @@ public class URLComposer  {
             (info == null ? r.info == null : info.equals(r.info));
         }
         return false;
-    }
-    
-    
-    /**
-     * @see java.lang.Object#hashCode()
-     */
-    public int hashCode() {
-        int result = 0;
-        result = HashCodeUtil.hashCode(result, source == null ? 0 : source.getNumber());
-        result = HashCodeUtil.hashCode(result, provider == null ? 0 : provider.getNumber());
-        result = HashCodeUtil.hashCode(result, info == null ? 0 : info.hashCode());
-        return result;
     }
 }

@@ -10,18 +10,15 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.*;
 import javax.servlet.jsp.tagext.*;
-import javax.servlet.jsp.jstl.core.*;
-
-import java.io.*;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.bridge.jsp.taglib.containers.QueryContainer;
 import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
-import org.mmbase.util.functions.Parameter;
-import org.mmbase.util.functions.Parameters;
+import org.mmbase.util.GenericResponseWrapper;
+import org.mmbase.util.functions.*;
 
 import java.util.*;
 
@@ -32,7 +29,7 @@ import java.util.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.86 2006-07-14 13:26:01 nklasens Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.57.2.6 2005-08-15 10:05:13 michiel Exp $
  * @see ContextTag
  */
 
@@ -55,25 +52,6 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
     private static final Logger pageLog = Logging.getLoggerInstance(Logging.PAGE_CATEGORY);
 
-
-
-    protected static String getTaglibVersion() {
-        try {
-            ClassLoader cl = ContextReferrerTag.class.getClassLoader();
-            InputStream is = cl.getResourceAsStream("org/mmbase/taglib/version");
-            if (is == null) {
-                return "1.1";
-            }
-            BufferedReader r = new BufferedReader(new InputStreamReader(is));
-            return r.readLine();
-        } catch (IOException io) {
-            // should not happen
-            return "1.0";
-        }
-    }
-
-
-
     protected ContextTag pageContextTag = null;
 
     protected  Attribute  contextId = Attribute.NULL; // context to which this tagg is referring to.
@@ -81,6 +59,9 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
     protected  Attribute  id        = Attribute.NULL; // hides String id of TagSupport
 
+    /**
+     * A String representing the current page. Only used for debugging purposes.
+     */
     private String       thisPage = null;
 
     void setPageContextOnly(PageContext pc) {
@@ -88,54 +69,8 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         // the 'page' Context
     }
 
-
     public PageContext getPageContext() {
         return pageContext;
-    }
-
-    /**
-     * @since MMBase-1.7.4
-     */
-    protected ContextTag getPageContextTag() {
-        if (pageContextTag == null) {
-
-            pageContextTag = (ContextTag) pageContext.getAttribute(ContextTag.CONTEXTTAG_KEY);
-
-
-            if (pageContextTag == null) { // not yet put
-                log.debug("No pageContextTag found in pagecontext, creating..");
-                if (pageLog.isServiceEnabled()) {
-                    HttpServletRequest request = ((HttpServletRequest)pageContext.getRequest());
-                    //thisPage = request.getRequestURI();
-                    String queryString = ((HttpServletRequest)pageContext.getRequest()).getQueryString();
-                    String includedPage = (String) request.getAttribute("javax.servlet.include.servlet_path");
-                    thisPage = (includedPage == null ? "" : includedPage + " for ") + request.getRequestURI();
-                    pageLog.service("Parsing JSP page: " + thisPage +
-                                    (queryString != null ? "?" + queryString : ""));
-                }
-                pageContextTag = new ContextTag();
-                pageContextTag.setId(null);
-
-                // page context has no id, this also avoids that it tries
-                // registering itself in the parent (which it is itself)
-                // so don't change this!
-
-                pageContextTag.setPageContextOnly(pageContext);
-
-                // set the pageContextTag, before fillVars otherwise the page is not set in the fillVars
-                // register also the tag itself under __context.
-                // _must_ set __context before calling setPageContext otherwise in infinite loop.
-                pageContextTag.createContainer(null);
-                pageContextTag.pageContextTag = pageContextTag; // the 'parent' of pageContextTag is itself..
-                pageContext.setAttribute(ContextTag.CONTEXTTAG_KEY, pageContextTag);
-
-                // there is one implicit ContextTag in every page.
-                // its id is null, it is registered in the pageContext as __context.
-                //
-                // it is called pageContext, because it is similar to the pageContext, but not the same.
-            }
-        }
-        return pageContextTag;
     }
 
     public void setPageContext(PageContext pc) {
@@ -150,9 +85,43 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
             log.debug("setting page context: " + this.getClass().getName());
         }
         setPageContextOnly(pc); // make pageContext availabe
-        pageContextTag = null;
-        getPageContextTag();
+        pageContextTag = (ContextTag) pageContext.getAttribute(ContextTag.CONTEXTTAG_KEY);
 
+
+        if (pageContextTag == null) { // not yet put
+            log.debug("No pageContextTag found in pagecontext, creating..");
+            if (pageLog.isServiceEnabled()) {
+                HttpServletRequest request = ((HttpServletRequest)pageContext.getRequest());
+                //thisPage = request.getRequestURI();
+
+                String includedPage = (String) request.getAttribute("javax.servlet.include.servlet_path");
+                thisPage = (includedPage == null ? "" : includedPage + " for ") + request.getRequestURI();
+
+                String queryString = ((HttpServletRequest)pageContext.getRequest()).getQueryString();
+                pageLog.service("Parsing JSP page: " + thisPage +
+                                (queryString != null ? "?" + queryString : ""));
+            }
+            pageContextTag = new ContextTag();
+            pageContextTag.setId(null);
+            
+            // page context has no id, this also avoids that it tries
+            // registering itself in the parent (which it is itself)
+            // so don't change this!
+
+            pageContextTag.setPageContextOnly(pageContext);
+
+            // set the pageContextTag, before fillVars otherwise the page is not set in the fillVars
+            // register also the tag itself under __context.
+            // _must_ set __context before calling setPageContext otherwise in infinite loop.
+            pageContextTag.createContainer(null);
+            pageContextTag.pageContextTag = pageContextTag; // the 'parent' of pageContextTag is itself..
+            pageContext.setAttribute(ContextTag.CONTEXTTAG_KEY, pageContextTag);
+
+            // there is one implicit ContextTag in every page.
+            // its id is null, it is registered in the pageContext as __context.
+            //
+            // it is called pageContext, because it is similar to the pageContext, but not the same.
+        }
     }
 
     /**
@@ -168,9 +137,6 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
     public void setId(String i) {
         try {
-            if ("_".equals(i)) {
-                throw new RuntimeException("'_' is not a valid id (it is reserved for the 'current writer')");
-            }
             id = getAttribute(i);
         } catch (JspTagException j) {
             throw new RuntimeException(j);
@@ -249,7 +215,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
             pageLog.debug("END Parsing JSP page: " + thisPage);
             thisPage = null;
         }
-        pageContextTag = null;
+
         /*
         id = null;
         referid   = Attribute.NULL;
@@ -359,13 +325,13 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      * extended classes.
      *
      * @param clazz     the class of the Tag to find.
-     * @param tagId     the id of the Tag to find.
+     * @param id        the id of the Tag to find.
      * @param exception if it has to throw an exception if the parent can not be found (default: yes).
      * @since MMBase-1.7
      */
 
     final public TagSupport findParentTag(Class clazz, String tagId, boolean exception) throws JspTagException {
-        TagSupport cTag = (TagSupport) findAncestorWithClass(this, clazz);
+        TagSupport cTag = (TagSupport) findAncestorWithClass((Tag) this, clazz);
         if (cTag == null) {
             if (exception) {
                 throw new JspTagException ("Could not find parent of type " + clazz.getName());
@@ -382,7 +348,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
                 log.debug(" with id ("  + tagId + ")");
             }
             while (! tagId.equals(cTag.getId())) {
-                cTag = (TagSupport) findAncestorWithClass(cTag, clazz);
+                cTag = (TagSupport) findAncestorWithClass((Tag)cTag, clazz);
                 if (cTag == null) {
                     if (exception) {
                         throw new JspTagException ("Could not find parent Tag of type " + clazz.getName() + " with id " + tagId);
@@ -394,22 +360,6 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         }
         return cTag;
 
-    }
-
-    /**
-     * @since MMBase-1.8
-     */
-    public Tag findLoopOrQuery(String tagId, boolean exception) throws JspTagException {
-        Tag tag = getParent();
-        while (tag != null) {
-            if (tag instanceof LoopTag) {
-                if (tagId == null) return tag;
-            } else if (tag instanceof QueryContainer) {
-                if (tagId == null || ((QueryContainer) tag).getId().equals(tagId)) return tag;
-            }
-            tag = tag.getParent();
-        }
-        throw new JspTagException("Cloud not find parent Tag of LoopTag or QueryContainer type");
     }
     /**
      * @deprecated
@@ -457,7 +407,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         ContextProvider contextTag = (ContextProvider) findParentTag(cl, contextid, false);
         if (contextTag == null) {
             log.debug("Didn't find one, take the pageContextTag");
-            contextTag = getPageContextTag();
+            contextTag = pageContextTag;
             if (contextTag == null) {
                 throw new RuntimeException("Did not find pageContextTag!");
             }
@@ -490,20 +440,6 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
             if (log.isDebugEnabled()) log.debug("found: '" + r + "'");
         }
         return r;
-    }
-
-    /**
-     * Support '[key]?', which returns the object with name [key] if it is present, or simply null otherwise.
-     * If not ends with ?, it simply behaves like {@link #getObject(String)}.
-     * @since MMBase-1.8.1
-     */
-    public Object getObjectConditional(String key) throws JspTagException {
-        if (key.endsWith("?")) {
-            key = key.substring(0, key.length() - 1);
-            return getContextProvider().getContextContainer().get(key);
-        } else {
-            return getObject(key);
-        }
     }
     /**
      * Gets an object from the Context, and returns it as a
@@ -538,55 +474,31 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      * @since MMBase-1.7.1
      */
     public Locale getLocale() throws JspTagException {
-        // is this correct?
         LocaleTag localeTag = (LocaleTag)findParentTag(LocaleTag.class, null, false);
         if (localeTag != null) {
-            Locale locale = localeTag.getLocale();
-            if (locale != null) {
-                return locale;
-            }
+            return localeTag.getLocale();
+        } else {
+            return  org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getDefaultLocale();
         }
-        ContextReferrerTag contextReferrerTag = (ContextReferrerTag)findParentTag(ContextReferrerTag.class, null, false);
-        if (contextReferrerTag != null) {
-            Locale locale = contextReferrerTag.getLocale();
-            if (locale != null) {
-                return locale;
-            }
-        }
-        {
-            Locale locale = (Locale) pageContext.getAttribute(LocaleTag.KEY, LocaleTag.SCOPE);
-            if (locale != null) {
-                return locale;
-            }
-        }
-
-        return getDefaultLocale();
     }
 
-    public Locale getDefaultLocale() {
-        return  org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getDefaultLocale();
-    }
-
-    /**
-     * @since MMBase-1.8
-     */
-    public TimeZone getTimeZone() {
-        TimeZone timeZone = (TimeZone) pageContext.getAttribute(LocaleTag.TZ_KEY, LocaleTag.SCOPE);
-        if (timeZone != null) return timeZone;
-        return  org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getDefaultTimeZone();
-    }
     /**
      * @since MMBase-1.7.4
      */
+
     protected void fillStandardParameters(Parameters p) throws JspTagException {
         log.debug("Filling standard parameters");
-        p.setIfDefined(Parameter.RESPONSE, pageContext.getResponse());
-        p.setIfDefined(Parameter.REQUEST, pageContext.getRequest());
-        // locale parameters
-        java.util.Locale locale = getLocale();
-        if (locale != null) {
-            p.setIfDefined(Parameter.LANGUAGE, locale.getLanguage());
-            p.setIfDefined(Parameter.LOCALE, locale);
+        if (p.hasParameter(Parameter.RESPONSE)) {
+            p.set(Parameter.RESPONSE, pageContext.getResponse());
+        }
+        if (p.hasParameter(Parameter.REQUEST)) {
+            p.set(Parameter.REQUEST, pageContext.getRequest());
+        }
+        if (p.hasParameter(Parameter.LANGUAGE)) {
+            LocaleTag localeTag = (LocaleTag)findParentTag(LocaleTag.class, null, false);
+            if (localeTag != null) {
+                p.set(Parameter.LANGUAGE, localeTag.getLocale().getLanguage());
+            }
         }
     }
 
@@ -605,12 +517,6 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
     public void setVartype(String t) throws JspTagException {
         helper.setVartype(t);
     }
-    /**
-     * @since MMBase-1.8
-     */
-    final public void setListdelimiter(String l) throws JspTagException {
-        helper.setListdelimiter(getAttribute(l));
-    }
     public void setJspvar(String j) {
         helper.setJspvar(j);
     }
@@ -626,23 +532,6 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         return helper.getValue();
     }
     final public void haveBody() { helper.haveBody(); }
-
-    /**
-     * Returns the escaped value associated with this tag, but only if the escape attribute was set explicitely (so not when only inherited from content-tag).
-     * @since MMBase-1.8
-     */
-    protected Object getEscapedValue(Object value) throws JspTagException {
-        if (helper.getEscape() == null) {
-            return value;
-        } else {
-            org.mmbase.util.transformers.CharTransformer ct = ContentTag.getCharTransformer(helper.getEscape(), this);
-            if (ct != null) {
-                return ct.transform(Casting.toString(value));
-            } else {
-                return value;
-            }
-        }
-    }
 
 
 }

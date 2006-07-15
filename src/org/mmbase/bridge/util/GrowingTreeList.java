@@ -14,40 +14,40 @@ import java.util.Iterator;
 
 import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
+import org.mmbase.util.logging.*;
 
 /**
- *
- * This version of {@link TreeList} is automaticly growing with the same 'branch' every time when that is possible. For that
- * it needs a kind of template query for every branch, which is defined by the constructor.
+ * Queries a Tree from MMBase. A Tree is presented as a List of MultiLevel results (ClusterNodes),
+ * combined with a smart iterator which iterates through the elements these lists as if it was one
+ * list ordered as a Tree.
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: GrowingTreeList.java,v 1.16 2006-05-31 13:52:54 johannes Exp $
+ * @version $Id: GrowingTreeList.java,v 1.2.2.3 2004-07-29 17:19:42 michiel Exp $
  * @since   MMBase-1.7
  */
 
 public  class GrowingTreeList extends TreeList {
+    private static final Logger log = Logging.getLoggerInstance(GrowingTreeList.class);
 
     protected Constraint cleanConstraint;
     protected NodeQuery  pathElementTemplate;
-    protected Constraint cleanLeafConstraint = null;
-    protected NodeQuery  leafElementTemplate = null;
     protected int maxNumberOfSteps;
 
     /**
-     * @param q              The 'base' query defining the minimal depth of the tree elements. The trunk of the tree.
+     * @param q              The 'base' query defining the minimal depth of the tree elements
      * @param maxDepth       You must supply a maximal depth of the nodes, because MMBase is basicly a network rather then a tree, so
-     *                       tree representations could be infinitely deep.
-     * @param nodeManager    Destination Nodemanager in the tree
-     * @param role           Role of the relations in the tree
-     * @param searchDir      Direction of the relations in the tree
+     *                        tree representations could be infinitely deep.
+     * @param NodeManager
+     * @param role
+     * @param searchDir
      * @since MMBase-1.7.1
      */
+
     public GrowingTreeList(NodeQuery q, int maxDepth, NodeManager nodeManager, String role, String searchDir) {
         super(q);
-        if (nodeManager == null) nodeManager = cloud.getNodeManager("object");
+
         pathElementTemplate = cloud.createNodeQuery();
-        //shiftElementTemplate = cloud.createNodeQuery();
         Step step = pathElementTemplate.addStep(cloud.getNodeManager("object"));
         pathElementTemplate.setAlias(step, "object0");
         pathElementTemplate.setNodeStep(pathElementTemplate.addRelationStep(nodeManager, role, searchDir).getNext());
@@ -55,11 +55,6 @@ public  class GrowingTreeList extends TreeList {
         setMaxDepth(maxDepth);
     }
 
-    /**
-     * This may be used in combination with 
-     * <code>Queries.addPath(tree.getTemplate(), (String) path.getValue(this), (String) searchDirs.getValue(this));</code>
-     * So you add a template constisting of a bunch of elements.
-     */
     public GrowingTreeList(NodeQuery q, int maxDepth) {
         super(q);
         pathElementTemplate = cloud.createNodeQuery();
@@ -69,23 +64,14 @@ public  class GrowingTreeList extends TreeList {
         setMaxDepth(maxDepth);
     }
 
-    public GrowingTreeList(TreeList tl, int maxDepth) {
-        super(tl);
-        pathElementTemplate = cloud.createNodeQuery();
-        Step step = pathElementTemplate.addStep(cloud.getNodeManager("object"));
-        pathElementTemplate.setAlias(step, "object0");
-
-        setMaxDepth(maxDepth);
-    }
-
     /**
      * As long as the tree is not 'started' yet, max depth can still be changed.
-     * @param maxDepth max number of Steps
      * @since MMBase-1.7.1
      */
 
     public void setMaxDepth(int maxDepth) {
         maxNumberOfSteps = 2 * maxDepth - 1; // dont consider relation steps.
+
 
         if (maxNumberOfSteps < numberOfSteps) {
             throw new IllegalArgumentException("Query is already deeper than maxdepth");
@@ -93,34 +79,17 @@ public  class GrowingTreeList extends TreeList {
     }
 
     /**
-     * Returns the Query which is used as a template for the leaves to 'grow' the query. You can change it, add
-     * sort-orders and add constraints before the tree is 'started'.  All but the first step of this
-     * query are added. This query itself is never executed, though marked used, to avoid changes on
-     * it after the list has started.
-     *
-     * @return Query which is used as a template
+     * Returns the Query which is used as a template to 'grow' the query. You can change it, add sort-orders and add constraints before 
+     * the tree is 'started'.
+     * All but the first step of this query are added. This query itself is never used.
      * @since MMBase-1.7.1
      */
 
-    public NodeQuery getTemplate() {
+    public Query getTemplate() {
         return pathElementTemplate;
     }
 
-    /**
-     * The leave template is the 'last' template. This is the same as getTemplate, only, the
-     * constraints set on this, are only used if the template is used 'on the end'.
-     * 
-     * It boils down to the fact that constraints set on the query don't change the tree itself, but
-     * only constraint the 'leaves', so it makes for a kind of tree-search.
-     * @since MMBase-1.8
-     */
-    public NodeQuery getLeafTemplate() {
-        if (leafElementTemplate == null) {
-            leafElementTemplate = (NodeQuery) pathElementTemplate.clone();
-        }
-        return leafElementTemplate;
-    }
-
+   
 
     public int size() {
         while (! foundEnd) {
@@ -130,36 +99,24 @@ public  class GrowingTreeList extends TreeList {
     }
 
     protected NodeList getList(int queryNumber) {
-        while (queryNumber >= branches.size() && (!foundEnd)) {
+        while (queryNumber >= queries.size() && (!foundEnd)) {
             addPathElement();
         }
         return super.getList(queryNumber);
     }
-    protected NodeList getLeafList(int queryNumber) {
-        while (queryNumber >= branches.size() && (!foundEnd)) {
-            addPathElement();
-        }
-        return super.getLeafList(queryNumber);
-    }
-
 
     /**
-     * Grows the branches of the tree, with the leave.
-     *
+     * 
      */
     protected void addPathElement() {
+        if (! pathElementTemplate.isUsed()) {
+            //Queries.sortUniquely(pathElementTemplate);
+            pathElementTemplate.markUsed();
+            cleanConstraint = pathElementTemplate.getCleanConstraint();
+        }
         if (numberOfSteps + 2  > maxNumberOfSteps) {
             foundEnd = true;
         } else {
-            if (! pathElementTemplate.isUsed()) {
-                pathElementTemplate.markUsed();
-                cleanConstraint = pathElementTemplate.getCleanConstraint();
-            }
-            if (leafElementTemplate != null && ! leafElementTemplate.isUsed()) {
-                leafElementTemplate.markUsed();
-                cleanLeafConstraint = leafElementTemplate.getCleanConstraint();
-            }
-
             Iterator steps = pathElementTemplate.getSteps().iterator();;
             steps.next(); // ignore first step
             while (steps.hasNext()) {
@@ -176,16 +133,15 @@ public  class GrowingTreeList extends TreeList {
                     }
                 }
 
-                RelationStep newStep = grow(cloud.getNodeManager(stepTemplate.getTableName()),
+                RelationStep newStep = grow(cloud.getNodeManager(stepTemplate.getTableName()), 
                                             role,
-                                            RelationStep.DIRECTIONALITY_DESCRIPTIONS[relationStepTemplate.getDirectionality()]);
+                                            RelationStep.DIRECTIONALITY_NAMES[relationStepTemplate.getDirectionality()]);
                 if (newStep == null) {
                     foundEnd = true;
                     break;
                 }
                 // Step doesn't have a .getQuery() method, so we'll have to fall back to this:
-                Branch branch = (Branch) branches.get(branches.size() - 1);
-                Query newQuery = branch.getQuery();
+                Query newQuery = (Query)queries.get(queries.size() - 1);
 
                 // add sortorder to the query
                 Step nextStep = newStep.getNext();
@@ -196,26 +152,10 @@ public  class GrowingTreeList extends TreeList {
                     Queries.addConstraint(newQuery, newStepConstraint);
                     Queries.addConstraint(newQuery, newRelationStepConstraint);
                 }
-
+                
 
                 Queries.copySortOrders(pathElementTemplate.getSortOrders(), stepTemplate, newQuery, nextStep);
                 Queries.copySortOrders(pathElementTemplate.getSortOrders(), relationStepTemplate, newQuery, newStep);
-
-                if (cleanLeafConstraint != null) {
-                    Constraint newLeafStepConstraint         = Queries.copyConstraint(cleanLeafConstraint, stepTemplate, newQuery, nextStep);
-                    Constraint newLeafRelationStepConstraint = Queries.copyConstraint(cleanLeafConstraint, relationStepTemplate, newQuery, newStep);
-                    if (newLeafStepConstraint != null && newLeafRelationStepConstraint != null) {
-                        CompositeConstraint comp = newQuery.createConstraint(newLeafStepConstraint, CompositeConstraint.LOGICAL_AND, newLeafRelationStepConstraint);
-                        setLeafConstraint(comp);
-                    } else if (newLeafStepConstraint != null) {
-                        setLeafConstraint(newLeafStepConstraint);
-                    } else if (newLeafRelationStepConstraint != null) {
-                        setLeafConstraint(newLeafRelationStepConstraint);
-                    } else {
-                        // both null, ignore
-                    }
-                }
-
 
                 if (numberOfSteps + 2  > maxNumberOfSteps) {
                     foundEnd = true;
@@ -227,33 +167,18 @@ public  class GrowingTreeList extends TreeList {
 
 
     public static void  main(String[] args) {
-        Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
-        //NodeQuery q = getQuery(args);
-        NodeQuery q = Queries.createNodeQuery(cloud.getNode(args[0]));
 
-        NodeManager object = cloud.getNodeManager("segments");
+        NodeQuery q = getQuery(args);
+        Cloud    cloud = q.getCloud();
 
-        GrowingTreeList tree = new GrowingTreeList(q, 40, object, "index", "destination");
+        NodeManager object = cloud.getNodeManager("object");
 
-        String text = "Exodus 20, vers 7";
-        NodeQuery temp = tree.getTemplate();
-        Queries.addSortOrders(temp, "index.pos", "up");
-        NodeQuery template = tree.getLeafTemplate();
-        Constraint cons1 = Queries.createConstraint(template, "title", FieldCompareConstraint.LIKE, "%" + text + "%");
-        Constraint cons2 = Queries.createConstraint(template, "body",  FieldCompareConstraint.LIKE, "%" + text + "%");
-        Constraint compConstraint = template.createConstraint(cons1, CompositeConstraint.LOGICAL_OR, cons2);
-        template.setConstraint(compConstraint);
+        TreeList tree = new GrowingTreeList(q, 5, object, null, "destination");
 
-        //System.out.println("size " + tree.size());
-        System.out.println("template " + tree.getTemplate());
-        System.out.println("leaf template " + tree.getLeafTemplate());
-
-        int k = 0;
-        TreeIterator i = tree.treeIterator();
+        Iterator i = tree.iterator();
         while (i.hasNext()) {
-            Node n = i.nextNode();
-            k++;
-            System.out.println(k + " " + i.currentDepth() + " " + n.toString());
+            Node n = (Node) i.next();
+            System.out.println(n.toString());
         }
     }
 }

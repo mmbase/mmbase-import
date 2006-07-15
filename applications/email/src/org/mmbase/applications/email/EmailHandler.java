@@ -15,7 +15,8 @@ import java.util.*;
 import javax.mail.internet.MimeMultipart;
 
 import org.mmbase.util.StringObject;
-import org.mmbase.module.core.*;
+import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.core.MMBase;
 
 
 import org.mmbase.util.logging.Logger;
@@ -29,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Simon Groenewolt
- * @version $Id: EmailHandler.java,v 1.18 2006-07-06 11:50:26 michiel Exp $
+ * @verson $Id: EmailHandler.java,v 1.8.2.2 2005-10-27 15:40:32 pierre Exp $
  * @since  MMBase-1.7
  */
 public class EmailHandler {
@@ -106,18 +107,11 @@ public class EmailHandler {
     private static Map getHeaders(MMObjectNode node) {
         Map headers = new HashMap();
 
-        MMObjectBuilder email = node.getBuilder();
         // headers.put("From", node.getStringValue("from"));
-        if (email.hasField("replyto")) {
-            headers.put("Reply-To", unemptyString(node.getStringValue("replyto")));
-        }
-        if (email.hasField("cc")) {
-            headers.put("CC",       unemptyString(node.getStringValue("cc")));
-        }
-        if (email.hasField("bcc")) {
-            headers.put("BCC",      unemptyString(node.getStringValue("bcc")));
-        }
-        headers.put("Subject",  unemptyString(node.getStringValue("subject"))); // subject field is obligory
+        headers.put("Reply-To", unemptyString(node.getStringValue("replyto")));
+        headers.put("CC",       unemptyString(node.getStringValue("cc")));
+        headers.put("BCC",      unemptyString(node.getStringValue("bcc")));
+        headers.put("Subject",  unemptyString(node.getStringValue("subject")));
         return headers;
     }
 
@@ -138,7 +132,7 @@ public class EmailHandler {
     private static Set getTo(MMObjectNode node) {
         Set toUsers = new LinkedHashSet();
         String to = node.getStringValue("to");
-        if (to != null && !to.equals("")) {
+        if (to != null) {
             toUsers.add(new NodeRecipient(-1, to));
         }
         return toUsers;
@@ -151,7 +145,7 @@ public class EmailHandler {
      */
     private static Set getAttachedGroups(MMObjectNode node) {
         Set toUsers = new LinkedHashSet();
-        if (MMBase.getMMBase().getBuilder(EmailBuilder.groupsBuilder) != null) { // never mind if groups builders does not exist
+        if (MMBase.getMMBase().getMMObject(EmailBuilder.groupsBuilder) != null) { // never mind if groups builders does not exist
             List rels = node.getRelatedNodes(EmailBuilder.groupsBuilder);
             if (rels != null) {
                 Iterator i = rels.iterator();
@@ -172,7 +166,7 @@ public class EmailHandler {
     private static Set getAttachedUsers(MMObjectNode node) {
         Set toUsers = new LinkedHashSet();
         // try and find related users
-        if (MMBase.getMMBase().getBuilder(EmailBuilder.usersBuilder) != null) { // never mind if users builders does not exist
+        if (MMBase.getMMBase().getMMObject(EmailBuilder.usersBuilder) != null) { // never mind if users builders does not exist
             List rels = node.getRelatedNodes(EmailBuilder.usersBuilder);
             if (rels != null) {
                 Iterator i = rels.iterator();
@@ -388,7 +382,7 @@ public class EmailHandler {
                 return false;
             }
         }
-        public int hashCode() {
+        public int hashcode() {
             return email.hashCode() + nodeNumber;
         }
         public String toString() {

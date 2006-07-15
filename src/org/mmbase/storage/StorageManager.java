@@ -10,8 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.storage;
 
 import org.mmbase.module.core.*;
-import org.mmbase.core.CoreField;
-import java.io.InputStream;
+import org.mmbase.module.corebuilders.FieldDefs;
 
 /**
  * The StorageManager interface defines how to access a storage device.
@@ -20,7 +19,7 @@ import java.io.InputStream;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManager.java,v 1.7 2005-10-02 16:16:43 michiel Exp $
+ * @version $Id: StorageManager.java,v 1.3 2004-02-05 12:18:49 michiel Exp $
  */
 public interface StorageManager {
 
@@ -76,27 +75,21 @@ public interface StorageManager {
      * Retrieve a large text for a specified object field.
      * Implement this method to allow for optimization of storing and retrieving large texts.
      * @param node the node to retrieve the text from
-     * @param field the Type of the field to retrieve
+     * @param field the FieldDefs of the field to retrieve
      * @return the retrieved text
      * @throws StorageException if an error occurred while retrieving the text value
      */
-    public String getStringValue(MMObjectNode node, CoreField field) throws StorageException;
+    public String getStringValue(MMObjectNode node, FieldDefs field) throws StorageException;
 
     /**
      * Retrieve a large binary object (byte array) for a specified object field.
      * Implement this method to allow for optimization of storing and retrieving binary objects.
      * @param node the node to retrieve the byte array from
-     * @param field the CoreField of the field to retrieve
+     * @param field the FieldDefs of the field to retrieve
      * @return the retrieved byte array
      * @throws StorageException if an error occurred while retrieving the binary value
      */
-    public byte[] getBinaryValue(MMObjectNode node, CoreField field) throws StorageException;
-
-
-    /**
-     * @since MMBase-1.8
-     */
-    public InputStream getInputStreamValue(MMObjectNode node, CoreField field) throws StorageException;
+    public byte[] getBinaryValue(MMObjectNode node, FieldDefs field) throws StorageException;
 
     /**
      * This method creates a new object in the storage, and registers the change.
@@ -117,6 +110,7 @@ public interface StorageManager {
     /**
      * Delete a node
      * @param node The node to delete
+     * @return <code>true</code> if succesful
      * @throws StorageException if an error occurred during delete
      */
     public void delete(MMObjectNode node) throws StorageException;
@@ -147,6 +141,7 @@ public interface StorageManager {
 
     /**
      * Create the basic elements for this storage
+     * @return <code>true</code> if the storage was succesfully created
      * @throws StorageException if an error occurred during the creation of the object storage
      */
     public void create() throws StorageException;
@@ -196,21 +191,21 @@ public interface StorageManager {
 
     /**
      * Creates a field and adds it to the storage of this builder.
-     * @param field the CoreField of the field to add
+     * @param field the FieldDefs of the field to add
      */
-    public void create(CoreField field) throws StorageException;
+    public void create(FieldDefs field) throws StorageException;
 
     /**
      * Changes a field to the storage of this builder.
-     * @param field the CoreField of the field to change
+     * @param field the FieldDefs of the field to change
      */
-    public void change(CoreField field) throws StorageException;
+    public void change(FieldDefs field) throws StorageException;
 
     /**
      * Deletes a field from the storage of this builder.
-     * @param field the CoreField of the field to delete
+     * @param field the FieldDefs of the field to delete
      */
-    public void delete(CoreField field) throws StorageException;
+    public void delete(FieldDefs field) throws StorageException;
 
 }
 

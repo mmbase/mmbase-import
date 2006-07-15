@@ -9,6 +9,10 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.transformers;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,10 +24,10 @@ import sun.misc.BASE64Encoder;
  * sun.misc classes are not supported by Sun. Perhaps once we have to
  * plug in another class.
  *
- * @author Michiel Meeuwissen
+ * @author Michiel Meeuwissen 
  */
 
-public class Base64 extends ByteArrayToCharTransformer implements ByteToCharTransformer, ConfigurableTransformer {
+public class Base64 implements ByteToCharTransformer, ConfigurableTransformer {
     private final static String ENCODING = "BASE64";
     private final static int BASE_64 = 1;
 
@@ -43,11 +47,18 @@ public class Base64 extends ByteArrayToCharTransformer implements ByteToCharTran
         return h;
     }
 
+    public Writer transform(InputStream e) {
+        throw new UnsupportedOperationException("transform(InputStream) is not yet supported");
+    }
+
+    public OutputStream transformBack(Reader e) {
+        throw new UnsupportedOperationException("transformBack(Reader) is not yet supported");
+    }
 
     public String transform(byte[] bytes) {
         return new BASE64Encoder().encode(bytes);
     }
-
+    
     public byte[] transformBack(String r) {
         try {
             BASE64Decoder dec = new BASE64Decoder();

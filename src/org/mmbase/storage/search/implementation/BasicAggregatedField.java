@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search.implementation;
 
-import org.mmbase.core.CoreField;
+import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.storage.search.*;
 
 /**
@@ -17,14 +17,15 @@ import org.mmbase.storage.search.*;
  * The step alias is equal to the field name, unless it is explicitly set.
  *
  * @author Rob van Maris
- * @version $Id: BasicAggregatedField.java,v 1.8 2005-05-10 22:58:58 michiel Exp $
+ * @version $Id: BasicAggregatedField.java,v 1.4 2003-03-10 11:50:53 pierre Exp $
  * @since MMBase-1.7
  */
-public class BasicAggregatedField extends BasicStepField implements AggregatedField {
-
+public class BasicAggregatedField extends BasicStepField
+implements AggregatedField {
+    
     /** he aggregation type. */
     private int aggregationType = 0;
-
+    
     /**
      * Constructor.
      *
@@ -33,11 +34,12 @@ public class BasicAggregatedField extends BasicStepField implements AggregatedFi
      * @param aggregationType The aggregation type.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
-    public BasicAggregatedField(Step step, CoreField fieldDefs, int aggregationType) {
+    public BasicAggregatedField(Step step, FieldDefs fieldDefs, 
+    int aggregationType) {
         super(step, fieldDefs);
         setAggregationType(aggregationType);
     }
-
+    
     /**
      * Sets the aggregation type.
      *
@@ -53,26 +55,15 @@ public class BasicAggregatedField extends BasicStepField implements AggregatedFi
         }
         this.aggregationType = aggregationType;
         return this;
-    }
-
+    }        
+    
     /**
      * Gets the aggregation type.
      */
     public int getAggregationType() {
         return aggregationType;
     }
-
-    /**
-     * Gets the aggregation type.
-     */
-    public String getAggregationTypeDescription() {
-        try {
-            return AggregatedField.AGGREGATION_TYPE_DESCRIPTIONS[aggregationType];
-        } catch (IndexOutOfBoundsException ioobe) {
-            return null;
-        }
-    }
-
+    
     // javadoc is inherited
     public boolean equals(Object obj) {
         if (obj instanceof AggregatedField) {
@@ -85,7 +76,7 @@ public class BasicAggregatedField extends BasicStepField implements AggregatedFi
             return false;
         }
     }
-
+    
     // javadoc is inherited
     public int hashCode() {
         return super.hashCode()
@@ -95,20 +86,16 @@ public class BasicAggregatedField extends BasicStepField implements AggregatedFi
     // javadoc is inherited
     public String toString() {
         StringBuffer sb = new StringBuffer("AggregatedField(step:");
-        if (getStep() == null) {
-            sb.append("null");
+        if (getStep().getAlias() == null) {
+            sb.append(getStep().getTableName());
         } else {
-            if (getStep().getAlias() == null) {
-                sb.append(getStep().getTableName());
-            } else {
-                sb.append(getStep().getAlias());
-            }
+            sb.append(getStep().getAlias());
         }
         sb.append(", fieldname:").append(getFieldName()).
         append(", alias:").append(getAlias()).
-        append(", aggregationtype:").append(getAggregationTypeDescription()).
+        append(", aggregationtype:").append(aggregationType).
         append(")");
         return sb.toString();
     }
-
+    
 }

@@ -23,10 +23,10 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryConstraintTag.java,v 1.6 2005-12-27 22:17:14 michiel Exp $
+ * @version $Id: QueryConstraintTag.java,v 1.1.2.2 2004-06-18 13:02:24 michiel Exp $
  */
 public class QueryConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
-
+  
     //private static final Logger log = Logging.getLoggerInstance(NodeListConstraintTag.class);
 
     protected Attribute container  = Attribute.NULL;
@@ -35,10 +35,11 @@ public class QueryConstraintTag extends CloudReferrerTag implements QueryContain
 
     protected Attribute field      = Attribute.NULL;
     protected Attribute value      = Attribute.NULL;
-    protected Attribute referid    = Attribute.NULL;
+    protected Attribute referid     = Attribute.NULL;
 
-    protected Attribute value2     = Attribute.NULL; // needed for BETWEEN
-    protected Attribute referid2   = Attribute.NULL; // needed for BETWEEN
+    protected Attribute value2      = Attribute.NULL; // needed for BETWEEN
+    protected Attribute referid2    = Attribute.NULL; // needed for BETWEEN
+
 
     protected Attribute inverse    = Attribute.NULL;
 
@@ -46,7 +47,6 @@ public class QueryConstraintTag extends CloudReferrerTag implements QueryContain
 
     protected Attribute caseSensitive = Attribute.NULL;
 
-    protected Attribute part       = Attribute.NULL; // for dates
 
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
@@ -88,10 +88,6 @@ public class QueryConstraintTag extends CloudReferrerTag implements QueryContain
         caseSensitive = getAttribute(c);
     }
 
-    public void setPart(String p) throws JspTagException {
-        part = getAttribute(p);
-    }
-
     public boolean getCaseSensitive() throws JspTagException {
         String cs = caseSensitive.getString(this).toUpperCase();
         if (cs.equals("") || cs.equals("FALSE")) {
@@ -102,6 +98,8 @@ public class QueryConstraintTag extends CloudReferrerTag implements QueryContain
             throw new JspTagException("Unknown value '" + cs + "' for casesensitive attribute");
         }
     }
+
+
 
     private Constraint addConstraint(Query query) throws JspTagException {
         int op = Queries.getOperator(operator.getString(this));
@@ -122,7 +120,7 @@ public class QueryConstraintTag extends CloudReferrerTag implements QueryContain
         } else {
             if (op != Queries.OPERATOR_NULL) {
                 throw new JspTagException("Should specify one of value, referid and field2 attributes on constraint tag (unless operator is NULL)");
-            } else {
+            } else {                
                 compareValue = null;
             }
         }
@@ -136,11 +134,12 @@ public class QueryConstraintTag extends CloudReferrerTag implements QueryContain
                 compareValue2 = getObject(referid2.getString(this));
             } else {
                 throw new JspTagException("Should specify one of value2, referid2 attributes on constraint tag if operator is 'BETWEEN'");
-            }
-        }
+            }          
+        } 
+        
+        
+        Constraint newConstraint = Queries.createConstraint(query, field.getString(this), Queries.getOperator(operator.getString(this)), compareValue, compareValue2, getCaseSensitive());
 
-        Constraint newConstraint = Queries.createConstraint(query, field.getString(this), Queries.getOperator(operator.getString(this)),
-                                                            compareValue, compareValue2, getCaseSensitive(), Queries.getDateTimePart(part.getString(this)));
 
         //buildConstraint(query, field.getString(this), field2.getString(this), getOperator(), value.getString(this), value2.getString(this), getCaseSensitive());
 
@@ -164,8 +163,6 @@ public class QueryConstraintTag extends CloudReferrerTag implements QueryContain
         if (inverse.getBoolean(this, false)) {
             query.setInverse(cons, true);
         }
-        findWriter(false); // just to call haveBody.., because constraint is not officially a
-                           // writerreferer (but e.g. _ can be used in attributes)
         return SKIP_BODY;
     }
 

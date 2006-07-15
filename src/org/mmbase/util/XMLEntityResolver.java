@@ -9,36 +9,33 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.ByteArrayInputStream;
+import java.io.StringReader;
 import java.util.Map;
 import java.util.Hashtable;
 
-import org.mmbase.util.xml.ApplicationReader;
+import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.util.xml.BuilderReader;
-import org.mmbase.util.xml.ModuleReader;
+import org.mmbase.util.xml.DatabaseReader;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  * Take the systemId and converts it into a local file, using the MMBase config path
  *
- * @move org.mmbase.util.xml
- * @rename EntityResolver
+ * @todo remove manual Transactionhandler Public ID registration
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.59 2006-01-17 12:25:21 michiel Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.37 2003-07-21 12:19:06 pierre Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
-
-    public static final String DOMAIN = "http://www.mmbase.org/";
-    public static final String DTD_SUBPATH = "dtd/";
-    public static final String XMLNS_SUBPATH = "xmlns/";
-    private static final String XSD_SUBPATH = "xsd/"; // deprecated
 
     private static Logger log = Logging.getLoggerInstance(XMLEntityResolver.class);
 
@@ -48,10 +45,6 @@ public class XMLEntityResolver implements EntityResolver {
     // This maps public id's to classes which are know to be able to parse this XML's.
     // The package of these XML's will also contain the resources with the DTD.
 
-    /**
-     * XSD's have only system ID
-     */
-    private static Map systemIDtoResource = new Hashtable();
 
     /**
      * Container for dtd resources information
@@ -70,31 +63,29 @@ public class XMLEntityResolver implements EntityResolver {
             return file;
         }
         InputStream getAsStream() {
-            if (log.isDebugEnabled()) log.debug("Getting document definition as resource " + getResource() + " of " + clazz.getName());
-            return clazz != null ? clazz.getResourceAsStream(getResource()) : null;
-        }
-        public String toString() {
-            return file + ": " + clazz;
+            if (log.isDebugEnabled()) log.debug("Getting DTD as resource " + getResource() + " of " + clazz.getName());
+            return clazz.getResourceAsStream(getResource());
         }
 
     }
 
     static {
         // ask known (core) xml readers to register their public ids and dtds
-        // the advantage of doing it this soon, is that the 1DTD are know as early as possible.
-        org.mmbase.util.xml.DocumentReader.registerPublicIDs();
+        XMLBasicReader.registerPublicIDs();
         BuilderReader.registerPublicIDs();
-        BuilderReader.registerSystemIDs();
-        ApplicationReader.registerPublicIDs();
-        ModuleReader.registerPublicIDs();
+        XMLApplicationReader.registerPublicIDs();
+        DatabaseReader.registerPublicIDs();
+        XMLModuleReader.registerPublicIDs();
         org.mmbase.util.xml.UtilReader.registerPublicIDs();
-        org.mmbase.bridge.util.xml.query.QueryReader.registerSystemIDs();
-
-        registerSystemID("http://www.w3.org/2001/03/xml.xsd",       "xml.xsd", null);
-        registerSystemID("http://www.w3.org/2001/03/XMLSchema.dtd", "XMLSchema.dtd", null);
-        registerSystemID("http://www.w3.org/2001/03/datatypes.dtd", "datatypes.dtd", null);
+        org.mmbase.security.MMBaseCopConfig.registerPublicIDs();
+        // Manually register transaction dtd
+        // This has to be placed in registerPublicIDs() in the TransactionHandler class, but which one?
+        // There are two:
+        // - org.mmbase.module.TransactionHandler
+        // - org.mmbase.applications.xmlimporter.TransactionHandler
+        // If the latter, TransactionHandler is an application and should not be called from here.
+        registerPublicID("-//MMBase//DTD builder transactions 1.0//EN", "transactions_1_0.dtd", org.mmbase.module.TransactionHandler.class);
     }
-
 
     /**
      * Register a given publicID, binding it to a resource determined by a given class and resource filename
@@ -102,25 +93,15 @@ public class XMLEntityResolver implements EntityResolver {
      * @param dtd the name of the resourcefile
      * @param c the class indicating the location of the resource in the pacakage structure. The
      *          resource is to be found in the 'resources' package under the package of the class.
-     * @since MMBase-1.7
      */
     public static void registerPublicID(String publicID, String dtd, Class c) {
-        publicIDtoResource.put(publicID, new Resource(c, dtd));
+        publicIDtoResource.put(publicID, new Resource(c,dtd));
         if (log.isDebugEnabled()) log.debug("publicIDtoResource: " + publicID + " " + dtd + c.getName());
     }
 
-    /**
-     * It seems that in XSD's you don't have public id's. So, this makes it possible to use system id.
-     * @todo EXPERIMENTAL
-     * @since MMBase-1.8
-     */
-    public static void registerSystemID(String systemID, String xsd, Class c) {
-        systemIDtoResource.put(systemID, new Resource(c, xsd));
-    }
+    private String dtdpath;
 
-    private String definitionPath;
-
-    private boolean hasDefinition; // tells whether or not a DTD/XSD is set - if not, no validition can take place
+    private boolean hasDTD; // tells whether or not a DTD is set - if not, no validition can take place
 
     private boolean  validate;
     private Class    resolveBase;
@@ -139,108 +120,83 @@ public class XMLEntityResolver implements EntityResolver {
     }
 
     public XMLEntityResolver(boolean v, Class base) {
-        hasDefinition      = false;
-        definitionPath     = null;
+        hasDTD      = false;
+        dtdpath     = null;
         validate    = v;
         resolveBase = base;
     }
 
-
-    private InputStream getStream(Resource res) {
-        InputStream stream = null;
-       if (res != null) {
-           stream = ResourceLoader.getConfigurationRoot().getResourceAsStream(DTD_SUBPATH + res.getFileName());
-           if (stream == null) {
-               stream = ResourceLoader.getConfigurationRoot().getResourceAsStream(XMLNS_SUBPATH + res.getFileName());
-           }
-           if (stream == null) {
-               // XXX I think this was deprecated in favour in xmlns/ (all in 1.8), so perhaps this can be dropped
-               stream = ResourceLoader.getConfigurationRoot().getResourceAsStream(XSD_SUBPATH + res.getFileName());
-           }
-           if (stream == null) {
-               stream = res.getAsStream();
-           }
-       }
-       return stream;
+    private InputStream getFromConfigDir(String fileName) throws IOException {
+        if (MMBaseContext.isInitialized()) {
+            String configpath = MMBaseContext.getConfigPath();
+            if (configpath != null) {
+                File  dtdFile = new File(configpath + File.separator + "dtd" + File.separator + fileName);
+                if (dtdFile.canRead()) {
+                    if (log.isDebugEnabled()) log.debug("dtdLocation = " + dtdFile);
+                    InputStream dtdStream = new FileInputStream(dtdFile);
+                    dtdpath = dtdFile.toString();
+                    return dtdStream;
+                }
+            }
+        }
+        return null;
     }
 
     /**
-     * Takes the systemId and returns the local location of the dtd/xsd
+     * takes the systemId and returns the local location of the dtd
      */
-    public InputSource resolveEntity(String publicId, String systemId) {
+    public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
+
         if (log.isDebugEnabled()) {
             log.debug("resolving PUBLIC " + publicId + " SYSTEM " + systemId);
         }
-        if (! validate) {
-            log.debug("Not validating, not need to resolve DTD,  returning empty resource");
-            return new InputSource(new ByteArrayInputStream(new byte[0])); 
-        }
 
-        InputStream definitionStream = null;
-
-        // first try with publicID or namespace
+        InputStream dtdStream = null;
+        // first try with publicID
         if (publicId != null) {
             Resource res = (Resource) publicIDtoResource.get(publicId);
-            definitionStream = getStream(res);
-        }
-        log.debug("Get definition stream by public id: " + definitionStream);
-
-        if (definitionStream == null) {
-            Resource res = (Resource) systemIDtoResource.get(systemId);
             if (res != null) {
-                definitionStream = getStream(res);
+                dtdStream = getFromConfigDir(res.getFileName());
+                if (dtdStream == null) dtdStream = res.getAsStream();
             }
         }
 
-        if (definitionStream == null) { // not succeeded with publicid, go trying with systemId
-
+        if (dtdStream == null) { // not succeeded with publicid, go trying with systemId
             //does systemId contain a mmbase-dtd
-            if ((systemId == null) || (! systemId.startsWith(DOMAIN))) {
+            if ((systemId == null) || (systemId.indexOf("http://www.mmbase.org/") == -1)) {
+                if (! validate) {
+                    return new InputSource(new StringReader(""));
+                }
                 // it's a systemId we can't do anything with,
                 // so let the parser decide what to do
-
-                if (log.isDebugEnabled()) {
-                    log.debug("Cannot resolve " + systemId + ", but needed for validation leaving to parser.");
-                    log.debug("Find culpit: " + Logging.stackTrace(new Exception()));
-                }
                 return null;
             } else {
-                log.debug("mmbase resource");
-                String mmResource = systemId.substring(22);
+                int i = systemId.indexOf("/dtd/");
+                String dtdName = systemId.substring(i + 5);
                 // first, try MMBase config directory (if initialized)
-                definitionStream = ResourceLoader.getConfigurationRoot().getResourceAsStream(mmResource);
-                if (definitionStream == null) {
+                dtdStream = getFromConfigDir(dtdName);
+                if (dtdStream == null) {
                     Class base = resolveBase; // if resolveBase was specified, use that.
                     Resource res = null;
                     if (base != null) {
-                        if (mmResource.startsWith("xmlns/")) {
-                            res = new Resource(base, mmResource.substring(6));
-                        } else {
-                            res = new Resource(base, mmResource.substring(4));  // dtd or xsd
-                        }
+                        res = new Resource(base, dtdName);
                     }
                     if (res != null) {
-                        definitionStream = res.getAsStream();
-                        if (definitionStream == null) {
+                        dtdStream = res.getAsStream();
+                        if (dtdStream == null) {
                             log.warn("Could not find " + res.getResource() + " in " + base.getName() + ", falling back to " + MMRESOURCES);
                             base = null; // try it in org.mmbase.resources too.
                         }
                     }
 
                     if (base == null) {
-                        String resource = MMRESOURCES + mmResource;
-                        if (log.isDebugEnabled()) log.debug("Getting document definition as resource " + resource);
-                        definitionStream = getClass().getResourceAsStream(resource);
+                        String resource = MMRESOURCES + "dtd/" + dtdName;
+                        if (log.isDebugEnabled()) log.debug("Getting DTD as resource " + resource);
+                        dtdStream = getClass().getResourceAsStream(resource);
                     }
                 }
-                if (definitionStream == null) {
-                    
-                    if (resolveBase != null) {
-                        log.error("Could not find MMBase entity '" + publicId + " " +  systemId + "' (did you make a typo?), returning null, system id will be used (needing a connection, or put in config dir)");
-                    } else {
-                        log.service("Could not find MMBase entity '" + publicId + " " +  systemId + "' (did you make a typo?), returning null, system id will be used (needing a connection, or put in config dir)");
-                        
-                    }
+                if (dtdStream == null) {
+                    log.error("Could not find MMBase dtd '" + dtdName + "' (did you make a typo?), returning null, system id will be used (needing a connection, or put in config dir)");
                     // not sure, probably should return 'null' after all, then it will be resolved with internet.
                     // but this can not happen, in fact...
                     //return new InputSource(new StringReader(""));
@@ -249,31 +205,25 @@ public class XMLEntityResolver implements EntityResolver {
                 }
             }
         }
-        hasDefinition = true;
 
-        InputStreamReader definitionInputStreamReader = new InputStreamReader(definitionStream);
-        InputSource definitionInputSource = new InputSource();
-        if (systemId != null) {
-            definitionInputSource.setSystemId(systemId);
-        }
-        if (publicId != null) {
-            definitionInputSource.setPublicId(publicId);
-        }
-        definitionInputSource.setCharacterStream(definitionInputStreamReader);
-        return definitionInputSource;
+        hasDTD=true;
+        InputStreamReader dtdInputStreamReader = new InputStreamReader(dtdStream);
+        InputSource dtdInputSource = new InputSource();
+        dtdInputSource.setCharacterStream(dtdInputStreamReader);
+        return dtdInputSource;
     }
 
     /**
      * @return whether the resolver has determiend a DTD
      */
     public boolean hasDTD() {
-        return hasDefinition;
+        return hasDTD;
     }
 
     /**
      * @return The actually used path to the DTD
      */
     public String getDTDPath() {
-        return definitionPath;
+        return this.dtdpath;
     }
 }

@@ -1,7 +1,8 @@
 <%@ page isErrorPage="true"
 %><%@ page import="java.io.*,java.util.*,org.mmbase.bridge.*,org.mmbase.util.*"
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><%@include file="settings.jsp"
+%><mm:import externid="language">nl</mm:import>
+<%@include file="settings.jsp"
 %><mm:content language="$language" type="text/html">
 <mm:cloud method="asis" jspvar="cloud">
   <html>
