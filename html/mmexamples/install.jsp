@@ -50,6 +50,7 @@
            for (int step=0; step<steps.length; step++) {             
              String app = steps[step];
              NodeList nl = versions.getList("name='" + app + "'", null, null);
+             installed = nl.size() > 0;
              String msg="";
              if (installstep.intValue()==step) {
               // install this step
