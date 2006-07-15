@@ -34,7 +34,7 @@ import org.w3c.dom.Element;
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.24 2006-07-15 10:31:02 michiel Exp $
+ * @version $Id: UtilReader.java,v 1.25 2006-07-15 10:52:05 michiel Exp $
  */
 public class UtilReader {
 
@@ -242,7 +242,7 @@ public class UtilReader {
         if (properties.size() == 0) {
             log.service("No properties read from " + configList);
         } else {
-            log.service("Read " + properties.getKeys() + " from " + configList);
+            log.service("Read " + properties.keySet() + " from " + configList);
         }
     }
 
