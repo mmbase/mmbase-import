@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!DOCTYPE project 
+ [ <!ENTITY base     SYSTEM "../buildbase.xml" > ]
+>
+
+<project name="MMBase SCAN legacy stuff" default="package" basedir=".">
+  <property name="project.name"   value="scan" />
+  <property name="project.package"   value="org/mmbase/applications/scan" />
+  <property name="project.target.templates.dir" value="../" /><!-- scan stuff _must_ be in root -->
+  <property name="project.templates.dir" value="${project.source.dir}" />
+  <property name="project.templates.include" value="mmeditors/**/*" />
+  &base;
+</project>

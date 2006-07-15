@@ -1,0 +1,20 @@
+===================================================================
+                     MMBase 1.7.0 - Release Plan
+===================================================================  
+  
+TODO for 1.7.0 release of MMBase:
+
+- Query-project
+- Storage class testing (databaseproject?)
+- Removal of xerces/xalan dependencies (cleaning project)
+- Running on packed war (xml configuration as resources)
+- Media-project
+- taglib 1.0.2 (contenttype tag, function tag)
+- serving images staticly?
+- richtext?
+- testing crawlers (last-modified of objects?)
+- related-nodes optimalisation (passing queries to parent)
+- admin-tools rewrite (maybe use JMX)
+- cleaning of the html-dir (cleaning project)
+- soap-interface?
+- create a better build-process

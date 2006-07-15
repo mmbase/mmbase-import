@@ -1,0 +1,10 @@
+<!--
+     util.dtd - DTD for MMBase utils
+-->
+
+<!ELEMENT util ( properties ) >
+
+<!ELEMENT properties ( property* ) >
+
+<!ELEMENT property ( #PCDATA ) >
+<!ATTLIST property name NMTOKEN #REQUIRED >

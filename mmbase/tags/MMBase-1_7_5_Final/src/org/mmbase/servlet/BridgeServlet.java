@@ -1,0 +1,336 @@
+/*
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
+package org.mmbase.servlet;
+
+import java.io.IOException;
+import java.util.regex.*;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.*;
+
+import org.mmbase.bridge.*;
+import org.mmbase.util.logging.*;
+
+/**
+ * BridgeServlet is an MMBaseServlet with a bridge Cloud in it. Extending from this makes it easy to
+ * implement servlet implemented with the MMBase bridge interfaces.
+ *
+ * An advantage of this is that security is used, which means that you cannot unintentionly serve
+ * content to the whole world which should actually be protected by the security mechanism.
+ *
+ * Another advantage is that implementation using the bridge is easier/clearer.
+ *
+ * The query of a bridge servlet can possible start with session=<session-variable-name> in which case the
+ * cloud is taken from that session attribute with that name. Otherewise 'cloud_mmbase' is
+ * supposed. All this is only done if there was a session active at all. If not, or the session
+ * variable was not found, that an anonymous cloud is used.
+ *
+ * @version $Id: BridgeServlet.java,v 1.16.2.2 2005-10-17 12:30:08 michiel Exp $
+ * @author Michiel Meeuwissen
+ * @since  MMBase-1.6
+ */
+public abstract class BridgeServlet extends  MMBaseServlet {
+
+
+    public static final Pattern FILE_PATTERN = Pattern.compile(".*?\\D((?:session=.*?\\+)?\\d+(?:\\+.+?)?)(/.*)?"); 
+    // may not be digits in servlet mapping itself!
+    private static Logger log;
+
+    private static int contextPathLength = -1;
+
+    /**
+     */
+    protected String getCloudName() {
+        return "mmbase";
+    }
+
+    
+
+    /**
+     * Remove session information from query object, and returns session-name (or null)
+     */
+    final protected QueryParts readQuery(HttpServletRequest req, HttpServletResponse res) throws IOException  {
+        QueryParts qp = (QueryParts) req.getAttribute("org.mmbase.servlet.BridgeServlet$QueryParts");
+        if (qp != null) {
+            log.trace("no need parsing query");
+            if (qp.getResponse() == null && res != null) {
+                qp.setResponse(res);
+            }
+            return qp;
+        }
+        log.trace("parsing query");
+
+        String q = req.getQueryString();
+        String fileNamePart;
+        if (q == null) { 
+            // also possible to use /attachments/[session=abc+]<number>/filename.pdf            
+            if (contextPathLength == -1) {
+                contextPathLength = req.getContextPath().length(); 
+            }
+            String reqString = req.getRequestURI().substring(contextPathLength); // substring needed, otherwise there may not be digits in context path.
+
+            qp = readServletPath(reqString);            
+            if (qp == null) {
+                if(res != null) {
+                    res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Malformed URL: '" + reqString + "' does not match '"  + FILE_PATTERN.pattern() + "'.");
+                } else {
+                    log.error("Malformed URL: '" + reqString + "' does not match '"  + FILE_PATTERN.pattern() + "'.");
+                }
+            }
+        } else {
+            // attachment.db?[session=abc+]number       
+            qp = readQuery(q);
+            if (qp == null && res != null) {
+                res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Malformed URL: No node number found after session.");
+            }
+
+        }
+        
+        if (qp == null) return null;
+
+        qp.setRequest(req);
+        qp.setResponse(res);
+               
+        req.setAttribute("org.mmbase.servlet.BridgeServlet$QueryParts", qp);
+
+        return qp;
+    }
+
+
+    /**
+     * 
+     * @since MMBase-1.7.4
+     */
+    public static QueryParts readServletPath(String servletPath) {
+        Matcher m = FILE_PATTERN.matcher(servletPath);
+        if (! m.matches()) {
+            return null;
+        }
+        QueryParts qp = readQuery(m.group(1));
+        qp.setFileName(m.group(2));
+        return qp;
+    }
+    /**
+     * 
+     * @since MMBase-1.7.4
+     */
+    public static QueryParts readQuery(String query) {
+        String sessionName = null; // "cloud_" + getCloudName();
+        String nodeIdentifier;
+        if (query.startsWith("session=")) { 
+            // indicated the session name in the query: session=<sessionname>+<nodenumber>
+            
+            int plus = query.indexOf("+", 8);
+            if (plus == -1) {
+                sessionName = "";
+                nodeIdentifier = query;
+            } else {
+                sessionName = query.substring(8, plus);
+                nodeIdentifier  = query.substring(plus + 1);
+            }
+        } else {
+            nodeIdentifier  = query;
+        }
+        return new QueryParts(sessionName, nodeIdentifier);
+
+    }
+
+    final protected Cloud getCloud(QueryParts qp) throws IOException {
+        log.debug("getting a cloud");
+        // trying to get a cloud from the session
+        Cloud cloud = null;
+        HttpSession session = qp.getRequest().getSession(false); // false: do not create a session, only use it
+        if (session != null) { // there is a session
+            log.debug("from session");
+            String sessionName = qp.getSessionName();            
+            if (sessionName != null) {
+                cloud = (Cloud) session.getAttribute(sessionName); 
+            } else { // desperately searching for a cloud, perhaps someone forgot to specify 'session_name' to enforce using the session?
+                cloud = (Cloud) session.getAttribute("cloud_" + getCloudName()); 
+            }
+        } 
+        return cloud;
+    }
+
+    final protected Cloud getAnonymousCloud() {
+        Cloud cloud;
+        try {
+            cloud = ContextProvider.getDefaultCloudContext().getCloud(getCloudName());
+        } catch (org.mmbase.security.SecurityException e) {
+            log.debug("could not generate anonymous cloud");
+            // give it up
+            cloud = null;
+        }
+        return cloud;
+    }
+
+
+    /**
+     * Servlets would often need a node. This function will get one for you using the query string.
+     * This is convenient, and also ensures that all this kind of servlets work uniformely.
+     */
+     
+    final protected Node getNode(QueryParts query)  throws IOException {
+        try {
+            if (query == null) return null;
+            if (log.isDebugEnabled()) { 
+                log.debug("query : " + query);
+            }
+            
+            Cloud c = getAnonymousCloud(); // first try anonymously always, because then session has not to be used
+
+            String nodeNumber = query.getNodeNumber();
+            HttpServletResponse res = query.getResponse();
+            if (! c.hasNode(nodeNumber)) {
+                // ok, support for 'title' aliases too....
+                Node desperateNode = desperatelyGetNode(c, nodeNumber);
+                if (desperateNode != null) {
+                    query.setNode(desperateNode);
+                    return desperateNode;
+                }
+                res.sendError(HttpServletResponse.SC_NOT_FOUND, "Node '" + nodeNumber + "' does not exist");
+                return null;
+            }
+            
+            if (! c.mayRead(nodeNumber)) { // node may not be read by anonymous, try with a 'real' cloud now
+                c = getCloud(query);
+            }
+            if (c == null)  { // cannot find any cloud what-so-ever, 
+                res.sendError(HttpServletResponse.SC_FORBIDDEN, "Permission denied to anonymous for node '" + nodeNumber + "'");
+                return null; 
+            }        
+            
+            if (! c.mayRead(nodeNumber)) { // still not allowed? Give it up.
+                res.sendError(HttpServletResponse.SC_FORBIDDEN, "Permission denied for node '" + nodeNumber + "'");
+                return null;
+            }
+            Node n = c.getNode(nodeNumber);
+            query.setNode(n);
+            return n;
+        } catch (Exception e) {
+            query.getResponse().sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());           
+            return null;
+        }
+    }
+
+
+    /**
+     * Extensions can override this, to produce a node, even if cloud.hasNode failed. ('title aliases' e.g.).
+     * @since MMBase-1.7.5
+     */
+    protected Node desperatelyGetNode(Cloud cloud, String nodeIdentifier) {
+        return null;
+    }
+
+    /**
+     * If the node associated with the resonse is another node then the node associated with the request.\
+     * (E.g. a icache based on a url with an image node).
+     * @param qp A QueryParts object, which you must have obtained by {@link readQuery}
+     * @param node The node which is specified on the URL (obtained by {@link getNode}
+     * @since MMBase-1.7.4
+     */
+    protected Node getServedNode(QueryParts qp, Node node) throws IOException {
+        return node;
+    }
+
+    /**
+     * The idea is that a 'bridge servlet' on default serves 'nodes', and that there could be
+     * defined a 'last modified' time for nodes. This can't be determined right now, so 'now' is
+     * returned.
+     *
+     * This function is defined in HttpServlet
+     **/
+    protected long getLastModified(HttpServletRequest req) {
+        // return getNode().getLastModified(); // pseudo-code
+        return System.currentTimeMillis();
+    }
+
+    /**
+     */
+
+    public void init() throws ServletException {
+        super.init();
+        log = Logging.getLoggerInstance(BridgeServlet.class);
+    }
+
+    /**
+     * Keeps track of determined information, to avoid redetermining it.
+     */
+    final static public  class QueryParts {
+        private String sessionName;
+        private String nodeIdentifier;
+        private HttpServletRequest req;
+        private HttpServletResponse res;
+        private Node node;
+        private Node servedNode;
+        private String fileName;
+        QueryParts(String sessionName, String nodeIdentifier) {
+            this.sessionName = sessionName;
+            this.nodeIdentifier = nodeIdentifier;
+            
+        }
+        void setNode(Node node) {
+            this.node = node;
+        }
+        Node getNode() {
+            return node;
+        }
+        void setServedNode(Node node) {
+            this.servedNode = node;
+        }
+        Node getServedNode() {
+            return servedNode;
+        }
+        void setFileName(String fn) {
+            fileName = fn;
+        }
+        public String getFileName() {
+            return fileName;
+        }
+        public String getSessionName() { 
+            return sessionName; 
+        }
+        public String getNodeNumber() { 
+            int i = nodeIdentifier.indexOf('+');            
+            if (i > 0) {
+                return nodeIdentifier.substring(0, i);
+            } else {
+                return nodeIdentifier;
+            }
+        }
+        void setRequest(HttpServletRequest req) {
+            this.req = req;
+        }
+        void setResponse(HttpServletResponse res) {
+            this.res = res;
+        }
+            
+        HttpServletRequest getRequest() {
+            return req;
+        }
+        HttpServletResponse getResponse() {
+            return res;
+        }
+
+        /**           
+         * @since MMBase-1.7.4
+         */
+        public String getNodeIdentifier() { 
+            return nodeIdentifier; 
+        }
+
+        public  String toString() {
+            return sessionName == null ? nodeIdentifier : "session=" + sessionName + "+" + nodeIdentifier;
+        }
+                   
+                   
+    }
+
+}

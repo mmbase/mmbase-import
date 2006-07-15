@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application name="Hardware" maintainer="mmbase.org" version="1" auto-deploy="false">
+
+	<neededbuilderlist>
+		<builder maintainer="mmbase.org" version="0">cameras</builder>
+		<builder maintainer="mmbase.org" version="0">pccards</builder>
+		<builder maintainer="mmbase.org" version="0">scanners</builder>
+	</neededbuilderlist>
+
+	<neededreldeflist />
+
+	<allowedrelationlist />
+
+	<datasourcelist />
+
+	<relationsourcelist />
+
+	<contextsourcelist/>
+
+	<description><![CDATA[Installs input-device related builders. These builders can be used in the scan-editors, and some documentation is available on the MMBase website.
+In the future these builders will be adapted to be used in other editors, or they will be removed.
+	]]></description>
+
+	<install-notice><![CDATA[Hardware builders installed.
+	]]></install-notice>
+</application>

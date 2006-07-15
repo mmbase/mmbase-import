@@ -1,0 +1,7 @@
+<!ELEMENT realAudio (minspeed,maxspeed,minchannels,maxchannels,defaultspeed,defaultchannels)>
+<!ELEMENT minspeed (#PCDATA)>
+<!ELEMENT maxspeed (#PCDATA)>
+<!ELEMENT minchannels (#PCDATA)>
+<!ELEMENT maxchannels (#PCDATA)>
+<!ELEMENT defaultspeed (#PCDATA)>
+<!ELEMENT defaultchannels (#PCDATA)>
