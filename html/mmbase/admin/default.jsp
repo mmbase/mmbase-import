@@ -30,7 +30,11 @@
       <mm:compare referid="category" value="documentation">
         <mm:import id="url">/mmdocs/</mm:import>
       </mm:compare>
+      <mm:notpresent referid="url">        
+        <mm:import externid="url" />
+      </mm:notpresent>
       <mm:notpresent referid="url">
+        <mm:remove referid="url" />
         <mm:notpresent referid="subcategory">
           <mm:import id="url"><mm:write referid="category" />/main.jsp</mm:import>
         </mm:notpresent>
