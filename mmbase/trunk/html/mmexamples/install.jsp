@@ -46,7 +46,7 @@
           };
            NodeManager versions=cloud.getNodeManager("versions");
            Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
-
+           boolean installed = false;
            for (int step=0; step<steps.length; step++) {             
              String app = steps[step];
              NodeList nl = versions.getList("name='" + app + "'", null, null);
@@ -58,6 +58,7 @@
                 params.put("APPLICATION",app);
                 mmAdmin.process("LOAD",app,params,request,response);
                 msg="<p style=\"white-space:pre;\">"+mmAdmin.getInfo("LASTMSG",request,response)+"</p>";
+                installed = true;                                              
               } catch (java.lang.reflect.UndeclaredThrowableException ute) {
                 Throwable t = ute;
                 while (t.getCause() != null) {
