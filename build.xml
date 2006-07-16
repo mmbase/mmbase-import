@@ -2,7 +2,7 @@
 
 
 MMBase Build File
-$Id: build.xml,v 1.145 2006-07-15 19:47:48 michiel Exp $
+$Id: build.xml,v 1.146 2006-07-16 07:15:15 michiel Exp $
 =================
 
 This build file can be used to build the following from CVS or from the source
@@ -80,7 +80,7 @@ several MMBase-checkouts.
   <property name="nowarn" value="off"/>
   <property name="javadoc.cleaning" value="true"/>
   <property name="javadoc.packages" value="org.mmbase.*"/>
-  <property name="mmcidoc.packages" value="org.mmbase.bridge,org.mmbase.storage.search,org.mmbase.bridge.util,org.mmbase.util.functions,org.mmbase.security,org.mmbase.util"/>
+  <property name="mmcidoc.packages" value="org.mmbase.bridge,org.mmbase.storage.search,org.mmbase.bridge.util.*,org.mmbase.util.functions,org.mmbase.security,org.mmbase.util"/>
 
   <!-- documentation related settings -->
   <property name="build.documentation" value="false" />
