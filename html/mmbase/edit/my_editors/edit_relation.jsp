@@ -35,7 +35,7 @@ String node_man = "";		// Nodemanager?
 	  <td><a href="edit_object.jsp?nr=<%= ref %>">Back</a> to editing <b><mm:node number="<%= ref %>"><mm:nodeinfo type="type" /></mm:node></b> node</td>
 	</tr><tr valign="top">
 	  <td bgcolor="#FFFFFF">&nbsp;</td>
-	  <td bgcolor="#FFFFFF"><mm:node number="<%= ref %>"><b><mm:field name="gui()" /></b></mm:node></td>
+	  <td bgcolor="#FFFFFF"><mm:node number="<%= ref %>"><b><mm:function name="gui" /></b></mm:node></td>
 	</tr>
 	</table>
 	<!-- end table back button -->
@@ -49,7 +49,7 @@ String node_man = "";		// Nodemanager?
   <td bgcolor="#CCCCCC" class="title-s">
     Edit relation of kind
 	<mm:field name="rnumber" jspvar="r_node" vartype="String" write="false">
-		<mm:node number="<%= r_node %>"><b><mm:field name="gui()" /> </b> </mm:node>
+		<mm:node number="<%= r_node %>"><b><mm:function name="gui" /> </b> </mm:node>
 	</mm:field>  
   </td>
 </tr>
@@ -78,21 +78,21 @@ String node_man = "";		// Nodemanager?
 	  <td class="right"><span class="name">Source</span><br />parent</td>
 	  <td>
 		<mm:field name="snumber" jspvar="s_node" vartype="String" write="false">
-			<mm:node number="<%= s_node %>"><b><mm:field name="gui()" /></b><br /><mm:nodeinfo type="guinodemanager" /></mm:node>
+			<mm:node number="<%= s_node %>"><b><mm:function name="gui" /></b><br /><mm:nodeinfo type="guinodemanager" /></mm:node>
 		</mm:field>
 	  </td>
 	</tr><tr valign="top">
 	  <td class="right"><span class="name">Destination</span><br />child</td>
 	  <td>
 		<mm:field name="dnumber" jspvar="d_node" vartype="String" write="false">
-			<mm:node number="<%= d_node %>"><b><mm:field name="gui()" /></b><br /><mm:nodeinfo type="guinodemanager" /></mm:node>
+			<mm:node number="<%= d_node %>"><b><mm:function name="gui" /></b><br /><mm:nodeinfo type="guinodemanager" /></mm:node>
 		</mm:field>
 	  </td>
 	</tr><tr valign="top">
 	  <td class="name">Relation kind</td>
 	  <td>
 		<mm:field name="rnumber" jspvar="r_node" vartype="String" write="false">
-			<mm:node number="<%= r_node %>"><mm:field name="gui()" /></mm:node>
+			<mm:node number="<%= r_node %>"><mm:function name="gui" /></mm:node>
 		</mm:field>
 	  </td>
 	</tr>
