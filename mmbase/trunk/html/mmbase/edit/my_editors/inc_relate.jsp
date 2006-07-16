@@ -13,14 +13,14 @@
 		  <td class="name">Source</td>
 		  <td>
 			<mm:node number="$rnr" id="source_node">
-				<b><mm:field name="gui()" /></b><br /><mm:nodeinfo type="guinodemanager" />
+				<b><mm:function name="gui" /></b><br /><mm:nodeinfo type="guinodemanager" />
 			</mm:node> 
 		  </td>
 		</tr><tr valign="top">
 		  <td class="name">Destination</td>
 		  <td>
 			<mm:node referid="nr" id="dest_node">
-				<b><mm:field name="gui()" /></b><br /><mm:nodeinfo type="guinodemanager" />
+				<b><mm:function name="gui" /></b><br /><mm:nodeinfo type="guinodemanager" />
 			</mm:node>
 		  </td>
 		</tr>
@@ -30,14 +30,14 @@
 		  <td class="name">Source</td>
 		  <td>
 			<mm:node referid="nr" id="source_node">
-				<b><mm:field name="gui()" /></b><br /><mm:nodeinfo type="guinodemanager" />
+				<b><mm:function name="gui" /></b><br /><mm:nodeinfo type="guinodemanager" />
 			</mm:node> 
 		  </td>
 		</tr><tr valign="top">
 		  <td class="name">Destination</td>
 		  <td>
 			<mm:node number="$rnr" id="dest_node">
-				<b><mm:field name="gui()" /></b><br /><mm:nodeinfo type="guinodemanager" />
+				<b><mm:function name="gui" /></b><br /><mm:nodeinfo type="guinodemanager" />
 			</mm:node>
 		  </td>
 		</tr>
