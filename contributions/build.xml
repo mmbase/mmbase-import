@@ -29,7 +29,7 @@ Contributions build file
     <mkdir dir="${contributions.build.dir}" />
   </target>
 
-  <target name="all.compiling"   depends="init,aselect,thememanager,multilanguagegui,mmbob,mmbar,lucene,principletracker" />
+  <target name="all.compiling"   depends="init,aselect,thememanager,multilanguagegui,mmbob,mmbar,lucene,principletracker,calendar" />
   <target name="all.not.compiling" depends="" />
   <target name="all"   depends="all.compiling,all.not.compiling" />
 
@@ -107,6 +107,14 @@ Contributions build file
      </ant>
   </target>
 
+  <target name="calendar" depends="mmbase">
+     <ant dir="calendar"   inheritAll="false">
+       <property name="project.zip.dir"      value="${contributions.build.dir}" />
+       <property name="build.dir"            value="${build.dir}" />
+       <property name="download.dir"        value="${download.dir}" />
+     </ant>
+  </target>
+
   <target name="fullinstall">
     <ant dir="aselect"        target="dependent.install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
@@ -115,6 +123,9 @@ Contributions build file
       <property name="build.dir"        value="${build.dir}" />
     </ant>
     <ant dir="mmbob"    target="dependent.install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+    <ant dir="calendar"     target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
   </target>
@@ -127,6 +138,7 @@ Contributions build file
      <ant dir="mmbar"            target="clean" inheritAll="false" />
      <ant dir="principletracker" target="clean" inheritAll="false" />
      <ant dir="lucene"           target="clean" inheritAll="false" />
+     <ant dir="calendar"         target="clean" inheritAll="false" />
      <delete dir="${contributions.build.dir}" />
   </target>
 
