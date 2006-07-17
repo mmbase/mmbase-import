@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.38 2006-04-19 20:02:28 michiel Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.39 2006-07-17 07:32:29 pierre Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory implements Serializable, Cloneable {
@@ -451,7 +451,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
                 Object nk = SortedBundle.castKey(string, null, constants, wrapper);
                 if (string != nk) {
                     if (log.isDebugEnabled()) {
-                        log.debug("Casted " + key + " to " + nk);
+                        log.debug("Cast " + key + " to " + nk);
                     }
                     return nk;
                 }
