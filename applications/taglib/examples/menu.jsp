@@ -42,6 +42,8 @@
   |
   <a href="<mm:url page="content.jsp" />" >content</a>
   |
+  <a href="<mm:url page="locales.jsp" />" >locales</a>
+  |
   <a href="<mm:url page="upload.jsp" />" >upload</a>
   |
   <a href="<mm:url page="functions.jsp" />" >functions</a>
