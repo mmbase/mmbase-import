@@ -9,7 +9,7 @@
 
    @author   Eduard Witteveen
    @author   Michiel Meeuwissen
-   @version  $Id: nightly-build.xml,v 1.31 2006-07-16 06:38:01 michiel Exp $
+   @version  $Id: nightly-build.xml,v 1.32 2006-07-17 17:26:43 michiel Exp $
    @since    MMBase-1.6
 
 -->
@@ -153,6 +153,7 @@ nightly-build.xml                           Used to generate all this with ant. 
   <target name="build.distro">
     <ant antfile="${buildscript}" dir="${buildscript.dir}" target="bindist" />
     <ant antfile="${buildscript}" dir="${buildscript.dir}" target="minimalistic.war" />
+
   </target>
 
   <target name="javadocs" depends="cvs">
@@ -175,7 +176,7 @@ nightly-build.xml                           Used to generate all this with ant. 
 
   <target name="storejavadocs" depends="javadocs">
     <!-- the java docs -->
-    <mkdir dir="${build.dir}/mmbase/mmbase-webapp/mmdocs" /><!-- i hate ant -->
+    <mkdir dir="${build.dir}/mmbase/mmbase-webapp/mmdocs/complete/" /><!-- i hate ant -->
     <copy todir="${destination.dir}">
       <fileset dir="${build.dir}/mmbase/mmbase-webapp/mmdocs/complete/"/>
     </copy>
