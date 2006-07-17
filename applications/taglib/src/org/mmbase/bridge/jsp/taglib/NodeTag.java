@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: NodeTag.java,v 1.63 2006-07-08 13:02:08 michiel Exp $
+ * @version $Id: NodeTag.java,v 1.64 2006-07-17 15:38:47 johannes Exp $
  */
 
 public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
@@ -42,11 +42,12 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
     /**
      * Release all allocated resources.
      */
-    public void release() {
+    public void doFinally() {
         log.debug("releasing");
-        super.release();
+        super.doFinally();
         number = Attribute.NULL;
         element = Attribute.NULL;
+        notfound = Attribute.NULL;
     }
 
 

@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.85 2006-07-08 16:43:35 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.86 2006-07-17 15:38:47 johannes Exp $
  */
 
 public class WriterHelper {
@@ -568,12 +568,11 @@ public class WriterHelper {
             throw new TaglibException(ioe);
         }
         pop_Stack();
-        release();
         log.debug("End of doEndTag");
         return javax.servlet.jsp.tagext.Tag.EVAL_PAGE;
     }
 
-    public void release() {
+    public void doFinally() {
         overrideWrite = null; // for use next time
         hasBody       = false;
         value         = null;

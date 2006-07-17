@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * A full description of this command can be found in the mmbase-taglib.xml file.
  *
  * @author Johannes Verelst
- * @version $Id: LeafIncludeTag.java,v 1.14 2006-06-22 13:17:46 johannes Exp $
+ * @version $Id: LeafIncludeTag.java,v 1.15 2006-07-17 15:38:47 johannes Exp $
  */
 
 public class LeafIncludeTag extends IncludeTag {
@@ -56,8 +56,13 @@ public class LeafIncludeTag extends IncludeTag {
         th.setCloud(getCloudVar());
         // Let IncludeTag do the rest of the work
         includePage();
-        th.release();
     }
+
+    public void doFinally() {
+        th.doFinally();
+        super.doFinally();
+    }
+
     
     public void setObjectlist(String p) throws JspTagException {
         objectList = getAttribute(p);

@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.26 2006-07-09 14:16:11 michiel Exp $
+ * @version $Id: NodeListHelper.java,v 1.27 2006-07-17 15:38:47 johannes Exp $
  * @since MMBase-1.7
  */
 
@@ -326,16 +326,6 @@ public class NodeListHelper implements ListProvider {
             ((TimerTag)t).haltTimer(timerHandle);
         }
 
-        // clean vars which will be reset in doStartTag (so it is possible with tag reuse). These
-        // can be gc-ed then.
-        if (collector != null) {
-            collector.release(thisTag.getPageContext(), thisTag.getContextProvider().getContextContainer());
-            collector = null;
-        }
-        nodeHelper.doEndTag();
-        nodeIterator = null;
-        returnList = null;
-        previousValue = null;
         return EVAL_PAGE;
     }
 
@@ -442,6 +432,10 @@ public class NodeListHelper implements ListProvider {
     }
 
     public void release() {
+        doFinally();
+    }
+
+    public void doFinally() {
         if (collector != null) {
             try {
                 collector.release(thisTag.getPageContext(), thisTag.getContextProvider().getContextContainer());
@@ -450,7 +444,7 @@ public class NodeListHelper implements ListProvider {
             }
         }
         if (nodeHelper != null) {
-            nodeHelper.release();
+            nodeHelper.doFinally();
         }
         nodeIterator = null;
         returnList = null;

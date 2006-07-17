@@ -32,11 +32,11 @@ import java.util.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.87 2006-07-17 08:22:59 nklasens Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.88 2006-07-17 15:38:47 johannes Exp $
  * @see ContextTag
  */
 
-public abstract class ContextReferrerTag extends BodyTagSupport {
+public abstract class ContextReferrerTag extends BodyTagSupport implements TryCatchFinally {
 
     /**
      * EVAL_BODY is EVAL_BODY_INCLUDE or EVAL_BODY_BUFFERED. It wants to be EVAL_BODY_INCLUDE, but
@@ -232,9 +232,19 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
     }
 
     public int doEndTag() throws JspTagException {
-        helper.release();
-        pageContextTag = null;
         return EVAL_PAGE;
+    }
+
+    public void doFinally() {
+        helper.doFinally();
+        thisPage = null;
+        pageContextTag = null;
+        writerid = Attribute.NULL;
+    }
+
+    public void doCatch(Throwable e) throws Throwable {
+        log.warn("Cought throwable: " + e.getMessage());
+        throw(e);
     }
 
     /**
