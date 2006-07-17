@@ -8,7 +8,8 @@ import java.util.Iterator;
 
 import javax.xml.parsers.*;
 import nl.leocms.connectors.UISconnector.input.products.model.*;
-import nl.leocms.connectors.UISconnector.shared.model.*;
+import nl.leocms.connectors.UISconnector.shared.properties.model.*;
+import nl.leocms.connectors.UISconnector.UISconfig;
 
 
 public class Decoder
@@ -21,7 +22,7 @@ public class Decoder
    {
       try
       {
-         URL url = new URL("file:///Z:/in.xml");
+         URL url = new URL(UISconfig.getProductUrl());
          URLConnection connection = url.openConnection();
 
          BufferedInputStream in = new BufferedInputStream(connection.getInputStream());
@@ -50,10 +51,10 @@ public class Decoder
 
             for(Iterator it3 = product.getProperties().iterator(); it3.hasNext();){
                Property property = (Property) it3.next();
+               System.out.println("=========");
                System.out.println("property_id=" + property.getPropertyId());
                System.out.println("property_description=" + property.getPropertyDescription());
 
-               System.out.println("=========" + property.getPropertyValues().size());
                for(Iterator it4 = property.getPropertyValues().iterator(); it4.hasNext();){
                   PropertyValue propertyValue = (PropertyValue) it4.next();
 
@@ -61,9 +62,6 @@ public class Decoder
                   System.out.println("property_value_description=" + propertyValue.getPropertyValueDescription());
                }
             }
-
-
-
 
          }
 

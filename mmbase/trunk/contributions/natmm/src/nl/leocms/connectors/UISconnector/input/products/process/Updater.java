@@ -198,7 +198,8 @@ public class Updater
          else{
             //There is no such node
             nodePaymentType = nmPaymentType.createNode();
-            nodePaymentType.setStringValue("naam", paymentType.getId());
+            nodePaymentType.setStringValue("naam", paymentType.getDescription());
+            nodePaymentType.setStringValue("externid", paymentType.getId());
             nodePaymentType.commit();
          }
          nodeEvenement.createRelation(nodePaymentType, cloud.getRelationManager("related")).commit();
