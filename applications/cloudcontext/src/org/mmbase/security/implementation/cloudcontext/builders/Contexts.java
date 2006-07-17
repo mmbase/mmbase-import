@@ -35,7 +35,7 @@ import org.mmbase.cache.AggregatedResultCache;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.47 2006-07-06 11:51:33 michiel Exp $
+ * @version $Id: Contexts.java,v 1.48 2006-07-17 07:19:15 pierre Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -151,7 +151,7 @@ public class Contexts extends MMObjectBuilder {
     }
 
     /**
-     * Staticly receives the MMObjectBuilder instance (casted to Contexts). A utility function.
+     * Staticly receives the MMObjectBuilder instance (cast to Contexts). A utility function.
      */
     public static Contexts getBuilder() {
         return (Contexts) MMBase.getMMBase().getBuilder("mmbasecontexts");

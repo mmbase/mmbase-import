@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.52 2006-04-29 19:41:09 michiel Exp $
+ * @version $Id: DataType.java,v 1.53 2006-07-17 07:19:15 pierre Exp $
  */
 
 public interface DataType extends Descriptor, Cloneable, Comparable, Serializable {
@@ -141,7 +141,7 @@ public interface DataType extends Descriptor, Cloneable, Comparable, Serializabl
      * e.g. resolve java-constants to their values).
      *
      * This does not garantuee that the value has the 'proper' type, but only that it now can be
-     * casted to the right type without further problems. ({@link org.mmbase.util.Casting#toType} should do).
+     * cast to the right type without further problems. ({@link org.mmbase.util.Casting#toType} should do).
      *
      * preCast should not change the actual type of value. It is e.g. used in the
      * Node#setStringValue, and the processor may expect a String there.

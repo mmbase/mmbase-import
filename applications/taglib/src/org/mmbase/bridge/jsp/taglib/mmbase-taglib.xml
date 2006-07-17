@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.368 2006-07-11 20:07:58 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.369 2006-07-17 07:19:15 pierre Exp $
 
 -->
 <taglib author="MMBase community">
@@ -5598,7 +5598,7 @@ Of course, the default behavior of getSmartPath can still be overridden.
       <rtexprvalue>true</rtexprvalue>
       <info>
         The `vartype' of the parameter. In principle url-parameters should always be string. When
-        using this attribute, the value is first casted to this type. You could e.g. set it to
+        using this attribute, the value is first cast to this type. You could e.g. set it to
         `integer' if you want to ensure the variable is parseable as an integer.
       </info>
       <since>MMBase-1.7</since>

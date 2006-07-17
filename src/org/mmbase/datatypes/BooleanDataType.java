@@ -13,7 +13,7 @@ import org.mmbase.bridge.*;
  * The DataType associated with a boolean value.
  *
  * @author Pierre van Rooden
- * @version $Id: BooleanDataType.java,v 1.9 2006-06-19 15:55:08 pierre Exp $
+ * @version $Id: BooleanDataType.java,v 1.10 2006-07-17 07:19:15 pierre Exp $
  * @since MMBase-1.8
  */
 public class BooleanDataType extends BasicDataType {
@@ -45,15 +45,15 @@ public class BooleanDataType extends BasicDataType {
             if ("false".equals(s)) return Boolean.FALSE;
             if ("1".equals(s)) return Boolean.TRUE;
             if ("0".equals(s)) return Boolean.FALSE;
-            throw new CastException("'" + value + "' of type " + value.getClass().getName() + "  cannot be casted to boolean");
+            throw new CastException("'" + value + "' of type " + value.getClass().getName() + "  cannot be cast to boolean");
         }
         if (value instanceof Number) {
             double d = ((Number) value).doubleValue();
             if (d == 1.0) return Boolean.TRUE;
             if (d == 0.0) return Boolean.FALSE;
-            throw new CastException("The number '" + value + "' cannot be casted to boolean (boolean is 0 or 1)");
+            throw new CastException("The number '" + value + "' cannot be cast to boolean (boolean is 0 or 1)");
         }
-        throw new CastException("'" + value + "' cannot be casted to boolean (boolean is 0 or 1)");
+        throw new CastException("'" + value + "' cannot be cast to boolean (boolean is 0 or 1)");
 
     }
 }

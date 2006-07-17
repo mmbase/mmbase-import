@@ -340,7 +340,7 @@ public class DataTypesTest extends BridgeTest {
         }
     }
 
-    // Often is _is_ possible to set invalid values, which will be casted to valid values then.
+    // Often is _is_ possible to set invalid values, which will be cast to valid values then.
     // This is perhaps a backwards compatibility issue.
     // Not really happy with it though.
     /*
