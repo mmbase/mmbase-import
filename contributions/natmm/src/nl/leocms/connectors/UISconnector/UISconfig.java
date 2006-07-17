@@ -41,4 +41,7 @@ public class UISconfig {
 	   // return false;
 	   return true;
    }
+   public static String getPropertiesURL(){
+      return "file:///Z:/in2.xml";
+   }
 }

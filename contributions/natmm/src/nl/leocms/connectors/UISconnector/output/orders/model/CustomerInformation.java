@@ -17,12 +17,15 @@
  */
 package nl.leocms.connectors.UISconnector.output.orders.model;
 
+import java.util.*;
+
 public class CustomerInformation
 {
    private PersonalInformation personalInformation = new PersonalInformation();
    private BusinessInformation businessInformation = new BusinessInformation();
    private CommonInformation commonInformation = new CommonInformation();
    private Address address = new Address();
+   private ArrayList properties = new ArrayList();
 
    public CustomerInformation()
    {
@@ -48,6 +51,11 @@ public class CustomerInformation
       this.address = address;
    }
 
+   public void setProperties(ArrayList properties)
+   {
+      this.properties = properties;
+   }
+
    public PersonalInformation getPersonalInformation()
    {
       return personalInformation;
@@ -66,6 +74,11 @@ public class CustomerInformation
    public Address getAddress()
    {
       return address;
+   }
+
+   public ArrayList getProperties()
+   {
+      return properties;
    }
 
 }
