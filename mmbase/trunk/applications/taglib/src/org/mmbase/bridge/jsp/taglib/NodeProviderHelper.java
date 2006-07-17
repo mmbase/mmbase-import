@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeProviderHelper.java,v 1.21 2006-07-12 11:39:55 michiel Exp $
+ * @version $Id: NodeProviderHelper.java,v 1.22 2006-07-17 15:38:47 johannes Exp $
  * @since MMBase-1.7
  */
 
@@ -51,8 +51,6 @@ public class NodeProviderHelper implements NodeProvider {
     public NodeProviderHelper(ContextReferrerTag thisTag) {
         this.thisTag     = thisTag;
     }
-
-
 
     // general attributes for NodeProviders
     // id from TagSupport
@@ -199,14 +197,10 @@ public class NodeProviderHelper implements NodeProvider {
 
     public int doEndTag() throws JspTagException {
         // to enable gc:
-        node     = null;
-        checked  = false;
-        _Stack = null;
-        query = null;
         return BodyTagSupport.EVAL_PAGE;
     }
 
-    public void release() {
+    public void doFinally () {
         node = null;
         checked = false;
         _Stack = null;

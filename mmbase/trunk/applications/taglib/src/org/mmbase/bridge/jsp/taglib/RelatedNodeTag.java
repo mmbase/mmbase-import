@@ -21,15 +21,11 @@ import org.mmbase.bridge.Node;
  * Needs to live under a ListRelationsTag
  *
  * @author Michiel Meeuwissen
- * @version $Id: RelatedNodeTag.java,v 1.17 2006-06-29 14:32:15 michiel Exp $ 
+ * @version $Id: RelatedNodeTag.java,v 1.18 2006-07-17 15:38:47 johannes Exp $ 
  */
 public class RelatedNodeTag extends AbstractNodeProviderTag implements BodyTag {
 
     private Attribute listRelationsId = Attribute.NULL;
-
-    public void release() {
-        super.release();
-    }
 
     public void setListrelations(String l) throws JspTagException {
         listRelationsId = getAttribute(l);

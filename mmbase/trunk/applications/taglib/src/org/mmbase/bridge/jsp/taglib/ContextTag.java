@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextTag.java,v 1.86 2006-06-23 20:27:58 michiel Exp $
+ * @version $Id: ContextTag.java,v 1.87 2006-07-17 15:38:47 johannes Exp $
  * @see ImportTag
  * @see WriteTag
  */
@@ -338,10 +338,10 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
         return super.doEndTag();
     }
 
-    public void release() {
+    public void doFinally() {
         parent = null;
         cloudContext = null;
-        super.release();
+        super.doFinally();
     }
 
     public String toString() {
