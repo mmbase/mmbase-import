@@ -97,7 +97,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.38 2006-07-17 16:58:22 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.39 2006-07-17 17:26:13 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -280,12 +280,15 @@ public class ResourceLoader extends ClassLoader {
     }
 
     /**
+     * Utility method to return the name of the directory of a resource-name. This does not include
+     * any /-chars any more.
      * @since MMBase-1.8.2
      */
     public static String getDirectoryName(String path) {
         if (path == null){
             return null;
         }
+        if (path.length() > 0 && path.charAt(path.length() - 1) == '/') path = path.substring(0, path.length() - 1);
         String dir = getDirectory(path);
         int i = path.lastIndexOf('/');
         path = path.substring(i + 1);
@@ -1549,9 +1552,11 @@ public class ResourceLoader extends ClassLoader {
         }
         private String getClassResourceName(final String name) throws MalformedURLException {
             String res = root + new URL(ResourceLoader.this.context, name).getPath();
-            log.info("Name  " + name + " is resource " + res);
             while (res.startsWith("/")) {
                 res = res.substring(1);
+            }
+            if (log.isDebugEnabled()) {
+                log.debug("Name  " + name + " is resource " + res);
             }
             return res;
         }
@@ -1599,7 +1604,6 @@ public class ResourceLoader extends ClassLoader {
                                 if (line == null) break;
                                 if (line.startsWith("#")) continue; // support for comments
                                 line = line.trim();
-                                if (line.equals("")) continue;     // support for empty lines
 
                                 if (line.startsWith("./")) line = line.substring(2);
 
@@ -1614,6 +1618,8 @@ public class ResourceLoader extends ClassLoader {
                                 if (directories) {
                                     line = getDirectory(line);
                                 }
+                                if (line.equals("")) continue;     // support for empty lines
+
                                 int firstSlash = line.indexOf('/');
                                 if (firstSlash > 0 && firstSlash < line.length()  && ! recursive) continue;
 
@@ -1648,7 +1654,6 @@ public class ResourceLoader extends ClassLoader {
                         rd = "../" + rd;
 
                     }
-                    log.info("Ready searching up");
                 }
             } catch (IOException ioe) {
             }
