@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.59 2006-07-17 07:19:15 pierre Exp $
+ * @version $Id: BasicDataType.java,v 1.60 2006-07-17 07:32:29 pierre Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -472,11 +472,11 @@ s     */
             errors = enumerationRestriction.validate(errors, value, node, field);
         }
         errors = uniqueRestriction.validate(errors, castValue, node, field);
-        errors = validateCastedValue(errors, castValue, value, node, field);
+        errors = validateCastValue(errors, castValue, value, node, field);
         return errors;
     }
 
-    protected Collection validateCastedValue(Collection errors, Object castValue, Object value, Node  node, Field field) {
+    protected Collection validateCastValue(Collection errors, Object castValue, Object value, Node  node, Field field) {
         return errors;
     }
 

@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * therefore can have a minimum and a maximum value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComparableDataType.java,v 1.19 2006-07-17 07:19:15 pierre Exp $
+ * @version $Id: ComparableDataType.java,v 1.20 2006-07-17 07:32:29 pierre Exp $
  * @since MMBase-1.8
  */
 public abstract class ComparableDataType extends BasicDataType {
@@ -157,8 +157,8 @@ public abstract class ComparableDataType extends BasicDataType {
     }
 
 
-    protected Collection validateCastedValue(Collection errors, Object castValue, Object value,  Node node, Field field) {
-        errors = super.validateCastedValue(errors, castValue, value, node, field);
+    protected Collection validateCastValue(Collection errors, Object castValue, Object value,  Node node, Field field) {
+        errors = super.validateCastValue(errors, castValue, value, node, field);
         errors = minRestriction.validate(errors, castValue, node, field);
         errors = maxRestriction.validate(errors, castValue, node, field);
         return errors;
