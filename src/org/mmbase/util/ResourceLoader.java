@@ -97,7 +97,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.37 2006-06-20 20:19:08 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.38 2006-07-17 16:58:22 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -276,6 +276,20 @@ public class ResourceLoader extends ClassLoader {
         } else {
             path = "";
         }
+        return path;
+    }
+
+    /**
+     * @since MMBase-1.8.2
+     */
+    public static String getDirectoryName(String path) {
+        if (path == null){
+            return null;
+        }
+        String dir = getDirectory(path);
+        int i = path.lastIndexOf('/');
+        path = path.substring(i + 1);
+        if (path.length() > 0 && path.charAt(0) == '/') path = path.substring(1);
         return path;
     }
 
@@ -613,7 +627,7 @@ public class ResourceLoader extends ClassLoader {
      * @param directories getResourceContext supplies <code>true</code> getResourcePaths supplies <code>false</code>
      */
     protected Set getResourcePaths(final Pattern pattern, final boolean recursive, final boolean directories) {
-        Set results = new LinkedHashSet(); // a set with fixed iteration order
+        Set results = new TreeSet(); // a set with fixed iteration order
         Iterator i = roots.iterator();
         while (i.hasNext()) {
             PathURLStreamHandler cf = (PathURLStreamHandler) i.next();
@@ -974,7 +988,7 @@ public class ResourceLoader extends ClassLoader {
     public boolean equals(Object o) {
         if(this == o) return true;
         // if this is a 'root' loader, then the only equal object should be the object itself!
-        if (parent == null) return false;
+        if (parent == null) return  false;
         if (o instanceof ResourceLoader) {
             ResourceLoader rl = (ResourceLoader) o;
             return rl.parent == parent && rl.context.sameFile(context);
@@ -1533,8 +1547,9 @@ public class ResourceLoader extends ClassLoader {
         protected String getName(URL u) {
             return u.getPath().substring((root +  ResourceLoader.this.context.getPath()).length());
         }
-        private String getClassResourceName(final String name) {
-            String res = root + ResourceLoader.this.context.getPath() + name;
+        private String getClassResourceName(final String name) throws MalformedURLException {
+            String res = root + new URL(ResourceLoader.this.context, name).getPath();
+            log.info("Name  " + name + " is resource " + res);
             while (res.startsWith("/")) {
                 res = res.substring(1);
             }
@@ -1565,13 +1580,14 @@ public class ResourceLoader extends ClassLoader {
         }
 
         public Set getPaths(final Set results, final Pattern pattern,  final boolean recursive, final boolean directories) {
-            return getPaths(results, pattern, recursive, directories, "");
+            return getPaths(results, pattern, recursive, directories, "", null);
         }
 
-        private Set getPaths(final Set results, final Pattern pattern, final boolean recursive, final boolean directories, String resourceDir) {
+        private Set getPaths(final Set results, final Pattern pattern, final boolean recursive, final boolean directories, String resourceDir, String searchUp) {
             try {
                 List subDirs = new ArrayList();
                 Enumeration e = getResources("".equals(resourceDir) ? INDEX : resourceDir + INDEX);
+                if (searchUp != null && resourceDir.startsWith("..")) resourceDir = "";
                 while (e.hasMoreElements()) {
                     URL u = (URL) e.nextElement();
                     InputStream inputStream = u.openStream();
@@ -1584,9 +1600,23 @@ public class ResourceLoader extends ClassLoader {
                                 if (line.startsWith("#")) continue; // support for comments
                                 line = line.trim();
                                 if (line.equals("")) continue;     // support for empty lines
+
+                                if (line.startsWith("./")) line = line.substring(2);
+
+                                if (searchUp != null) {
+                                    if (line.startsWith(searchUp)) {
+                                        line = line.substring(searchUp.length());
+                                    } else {
+                                        continue;
+                                    }
+                                }
+
                                 if (directories) {
                                     line = getDirectory(line);
                                 }
+                                int firstSlash = line.indexOf('/');
+                                if (firstSlash > 0 && firstSlash < line.length()  && ! recursive) continue;
+
                                 if (pattern == null || pattern.matcher(line).matches()) {
                                     results.add("".equals(resourceDir) ? line : resourceDir + line);
                                 }
@@ -1604,8 +1634,21 @@ public class ResourceLoader extends ClassLoader {
                     for (Iterator iter = subDirs.iterator(); iter.hasNext();) {
                         String dir = (String) iter.next();
                         String newDir = "".equals(resourceDir) ? dir : resourceDir + dir;
-                        getPaths(results, pattern, recursive, directories, newDir);
+                        getPaths(results, pattern, recursive, directories, newDir, null);
                     }
+                }
+                if (searchUp == null) {
+                    searchUp = ResourceLoader.getDirectoryName(ResourceLoader.this.context.getFile()) + '/';
+                    ResourceLoader p = ResourceLoader.this.parent;
+                    String rd = "../";
+                    while (p != null) {
+                        getPaths(results, pattern, recursive, directories, rd, searchUp);
+                        searchUp = ResourceLoader.getDirectoryName(p.context.getFile()) + '/' + searchUp;
+                        p = p.getParentResourceLoader();
+                        rd = "../" + rd;
+
+                    }
+                    log.info("Ready searching up");
                 }
             } catch (IOException ioe) {
             }
