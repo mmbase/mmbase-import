@@ -45,10 +45,12 @@ if(iRubriekLayout==NatMMConfig.SUBSITE3_LAYOUT) {
       pHeight = 171;
    }
 } else if( iRubriekLayout==NatMMConfig.SUBSITE1_LAYOUT
-				|| iRubriekLayout==NatMMConfig.SUBSITE2_LAYOUT
-				|| iRubriekLayout==NatMMConfig.DEMO_LAYOUT ) {
+				|| iRubriekLayout==NatMMConfig.SUBSITE2_LAYOUT ) {
    panoTemplate = "s(744)+part(0,0,744,75)";
    pHeight = 75;
+} else if (iRubriekLayout==NatMMConfig.DEMO_LAYOUT) {
+  panoTemplate = "s(744)+part(0,0,744,52)";
+  pHeight = 52;
 } else if(path.equals("index.jsp")) {
    panoTemplate = "part(0,0,744,157)"; 
    pHeight = 157;

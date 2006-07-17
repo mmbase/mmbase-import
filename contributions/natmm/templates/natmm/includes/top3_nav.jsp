@@ -62,7 +62,12 @@ nodesAtLevel[0] = new TreeMap();
 nodesAtLevel[0].put(new Integer(0),rootID);
 
 int depth = 0;
-
+int top = 0;
+if(iRubriekLayout==NatMMConfig.SUBSITE1_LAYOUT || iRubriekLayout==NatMMConfig.SUBSITE1_LAYOUT) {
+	top = 76;
+} else if (iRubriekLayout==NatMMConfig.DEMO_LAYOUT ) {
+	top = 53;
+}
 // invariant: depth = level of present leafs (root has level 0)
 while(depth>-1&&depth<10) { 
    
@@ -84,7 +89,7 @@ while(depth>-1&&depth<10) {
       if(depth==1) { 
          %>
          with(milonic=new menuname("mainmenu")){
-         top=<%= (iRubriekLayout==NatMMConfig.DEFAULT_LAYOUT ? "0" : "76") %>;
+         top=<%= top %>;
          screenposition="center";
          style=style1;
          alwaysvisible=1;
