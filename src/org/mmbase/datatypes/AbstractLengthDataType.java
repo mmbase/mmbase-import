@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: AbstractLengthDataType.java,v 1.14 2006-07-17 07:19:15 pierre Exp $
+ * @version $Id: AbstractLengthDataType.java,v 1.15 2006-07-17 07:32:29 pierre Exp $
  * @since MMBase-1.8
  */
 abstract public class AbstractLengthDataType extends BasicDataType implements LengthDataType {
@@ -110,8 +110,8 @@ abstract public class AbstractLengthDataType extends BasicDataType implements Le
         getMaxLengthRestriction().setValue(new Long(value));
     }
 
-    protected Collection validateCastedValue(Collection errors, Object castValue, Object value,  Node node, Field field) {
-        errors = super.validateCastedValue(errors, castValue, value,  node, field);
+    protected Collection validateCastValue(Collection errors, Object castValue, Object value,  Node node, Field field) {
+        errors = super.validateCastValue(errors, castValue, value,  node, field);
         errors = minLengthRestriction.validate(errors, castValue, node, field);
         errors = maxLengthRestriction.validate(errors, castValue, node, field);
         return errors;
