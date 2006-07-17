@@ -1,4 +1,6 @@
-.htmlarea { background: #fff; }
+.htmlarea { background: #fff; 
+  border: 1px solid ButtonFace;
+}
 
 .htmlarea .toolbar {
   cursor: default;
