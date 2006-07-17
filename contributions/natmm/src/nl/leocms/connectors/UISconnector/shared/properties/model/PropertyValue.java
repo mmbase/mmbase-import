@@ -1,4 +1,4 @@
-package nl.leocms.connectors.UISconnector.shared.model;
+package nl.leocms.connectors.UISconnector.shared.properties.model;
 
 public class PropertyValue
 {
