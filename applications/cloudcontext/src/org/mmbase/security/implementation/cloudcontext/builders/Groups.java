@@ -26,7 +26,7 @@ import org.mmbase.storage.search.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Groups.java,v 1.17 2005-11-23 15:45:13 pierre Exp $
+ * @version $Id: Groups.java,v 1.18 2006-07-17 07:19:15 pierre Exp $
  */
 public class Groups extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(Groups.class);
@@ -49,7 +49,7 @@ public class Groups extends MMObjectBuilder {
 
 
     /**
-     * @return the MMObjectBuilder mmbasegroups casted to a Groups
+     * @return the MMObjectBuilder mmbasegroups cast to a Groups
      */
     public static Groups getBuilder() {
         return (Groups) MMBase.getMMBase().getBuilder("mmbasegroups");

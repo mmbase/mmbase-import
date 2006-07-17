@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.74 2006-06-06 19:58:21 michiel Exp $
+ * @version $Id: Queries.java,v 1.75 2006-07-17 07:19:15 pierre Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -395,7 +395,7 @@ abstract public class Queries {
     }
 
     /**
-     * Creates a constraint smartly, depending on the type of the field, the value is casted to the
+     * Creates a constraint smartly, depending on the type of the field, the value is cast to the
      * right type, and the right type of constraint is created.
      * This is used in taglib implementation, but could be useful more generally.
      *
@@ -456,7 +456,7 @@ abstract public class Queries {
 
                 }
             }
-            if (operator != OPERATOR_IN) { // should the elements of the collection then not be casted?
+            if (operator != OPERATOR_IN) { // should the elements of the collection then not be cast?
 
                 if (fieldType == Field.TYPE_XML) {
                     // XML's are treated as String in the query-handler so, let's anticipate that here...

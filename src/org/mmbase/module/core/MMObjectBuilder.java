@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.386 2006-07-10 17:17:23 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.387 2006-07-17 07:19:15 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -188,7 +188,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     public String searchAge="31";
 
     /**
-     * Determines whether changes to this builder need be broadcasted to other known mmbase servers.
+     * Determines whether changes to this builder need be broadcast to other known mmbase servers.
      */
     protected boolean broadCastChanges = true;
 
@@ -653,13 +653,13 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     }
 
     /**
-     * Determines whether changes to this builder need be broadcasted to other known mmbase servers.
+     * Determines whether changes to this builder need be broadcast to other known mmbase servers.
      * This setting also governs whether the cache for relation builders is emptied when a relation changes.
      * Actual broadcasting (and cache emptying) is initiated in the storage layer, when
      * changes are commited.
      * By default, all builders broadcast their changes, with the exception of the TypeDef builder.
      *
-     * MM: Can somebody please explain _why_ typedef node changes, like e.g. creating a new node type are _not_ broadcasted.
+     * MM: Can somebody please explain _why_ typedef node changes, like e.g. creating a new node type are _not_ broadcast.
      * @since MMBase-1.8
      */
     public boolean broadcastChanges() {

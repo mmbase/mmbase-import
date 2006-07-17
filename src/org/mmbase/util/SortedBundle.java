@@ -29,7 +29,7 @@ import org.mmbase.datatypes.StringDataType;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: SortedBundle.java,v 1.23 2006-07-04 06:58:27 michiel Exp $
+ * @version $Id: SortedBundle.java,v 1.24 2006-07-17 07:19:15 pierre Exp $
  */
 public class SortedBundle {
 
@@ -239,7 +239,7 @@ public class SortedBundle {
                         }
                     } else {
                         key = Casting.toType(wrapper, key);
-                        log.debug("wrapper is a Number, that can simply be casted " + value + " --> " + key + "(" + wrapper + ")");
+                        log.debug("wrapper is a Number, that can simply be cast " + value + " --> " + key + "(" + wrapper + ")");
                     }
                 } else if (Boolean.class.isAssignableFrom(wrapper)) {
                     if (key instanceof String) {
@@ -248,7 +248,7 @@ public class SortedBundle {
                         }
                     } else {
                         key = Casting.toType(wrapper, key);
-                        log.debug("wrapper is a Boolean, that can simply be casted " + value + " --> " + key + "(" + wrapper + ")");
+                        log.debug("wrapper is a Boolean, that can simply be cast " + value + " --> " + key + "(" + wrapper + ")");
                     }
 
                 } else {
