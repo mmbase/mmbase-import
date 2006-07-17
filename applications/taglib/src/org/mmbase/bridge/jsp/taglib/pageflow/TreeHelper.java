@@ -29,7 +29,7 @@ import org.mmbase.module.core.MMBaseContext;
  *
  * @author Johannes Verelst
  * @author Rob Vermeulen (VPRO)
- * @version $Id: TreeHelper.java,v 1.12 2006-06-22 13:17:46 johannes Exp $
+ * @version $Id: TreeHelper.java,v 1.13 2006-07-17 15:38:47 johannes Exp $
  */
 
 public class TreeHelper {
@@ -323,7 +323,7 @@ public class TreeHelper {
         }
     }
 
-    public void release() {
+    public void doFinally() {
         cloud = null;
     }
 }

@@ -22,7 +22,7 @@ import org.mmbase.util.Casting;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: NodeFunctionTag.java,v 1.11 2005-11-23 10:29:39 michiel Exp $
+ * @version $Id: NodeFunctionTag.java,v 1.12 2006-07-17 15:38:47 johannes Exp $
  */
 public class NodeFunctionTag extends AbstractFunctionTag implements NodeProvider, FunctionContainerReferrer {
 
@@ -85,4 +85,7 @@ public class NodeFunctionTag extends AbstractFunctionTag implements NodeProvider
         return nodeHelper.doAfterBody();
     }
 
+    public void doFinally() {
+        nodeHelper.doFinally();
+    }
 }

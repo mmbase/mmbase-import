@@ -21,7 +21,7 @@ import org.mmbase.bridge.util.Queries;
  * ListRelationsTag, a tag around bridge.Node.getRelations.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ListRelationsTag.java,v 1.19 2006-06-29 14:32:15 michiel Exp $
+ * @version $Id: ListRelationsTag.java,v 1.20 2006-07-17 15:38:47 johannes Exp $
  */
 
 public class ListRelationsTag extends AbstractNodeListTag {
@@ -155,20 +155,15 @@ public class ListRelationsTag extends AbstractNodeListTag {
     }
 
     public int doEndTag() throws JspTagException {
-        // dereference for easier gc
-        nm = null;
-        relatedNodes = null;
-        relatedQuery = null;
-        relatedFromNode = null;
         return super.doEndTag();
     }
 
-    public void release() {
+    public void doFinally() {
         nm = null;
         relatedNodes = null;
         relatedQuery = null;
         relatedFromNode = null;
-        super.release();
+        super.doFinally();
     }
 }
 
