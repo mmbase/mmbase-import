@@ -280,6 +280,7 @@
             ListIterator i = urls.listIterator();
             int read = 0;
             int write = 0;
+            boolean canWrite = false;
             while (i.hasNext()) {
               URL u = (URL) i.next();
               URLConnection uc = u.openConnection();
@@ -306,7 +307,7 @@
           <tr>
              <td title="<%=uc.getClass().getName()%>"><%=u.toString()%></td>
              <td <%= read == counter ? "class = 'active'" : "" %> ><%=uc.getDoInput()%></td>
-             <td <%= write == counter ? "class = 'active'" : "" %> ><%=uc.getDoOutput()%></td>
+             <td <%= write == counter ? "class = 'active'" : "" %> ><%=uc.getDoOutput()%><% if(uc.getDoOutput()) canWrite = true;%></td>
              <td>
                <% if(uc.getDoOutput() && uc.getDoInput()) { %>
                 <input type="submit" name="delete<%=counter%>" value="delete" />
@@ -321,7 +322,12 @@
             
             <tr>
               <th colspan="4">
-                Warning, current resource is not writeable. Will be upgraded on save.
+                Warning, current resource is not writeable. 
+                <% if (canWrite) { %> 
+                  Will be upgraded on save.
+                <% } else { %>
+                  Can <em>not</em> be upgraded. Saving is impossible!
+                <% } %>
               </th>
             </tr>
             <% } %>
