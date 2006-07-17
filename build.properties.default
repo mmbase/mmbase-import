@@ -12,7 +12,7 @@
 #
 # for possible mirrors.
 #
-# $Id: build.properties.default,v 1.25 2006-07-09 07:51:25 michiel Exp $
+# $Id: build.properties.default,v 1.26 2006-07-17 12:22:21 michiel Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -90,7 +90,7 @@ javaactivation.dir=${expand.dir}/${javaactivation.version}
 javaactivation.jar=${javaactivation.dir}/${javaactivation.version}/activation.jar
 
 # ----- Docbook stylesheets ----------
-docbook-xsl.version=docbook-xsl-1.62.4
+docbook-xsl.version=docbook-xsl-1.70.1
 docbook-xsl.file=${docbook-xsl.version}.tar.gz
 docbook-xsl.dest=${download.dir}/${docbook-xsl.file}
 docbook-xsl.loc=${sourceforge.loc}/docbook/${docbook-xsl.file}
