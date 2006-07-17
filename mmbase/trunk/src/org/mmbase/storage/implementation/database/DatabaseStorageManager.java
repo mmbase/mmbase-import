@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.166 2006-07-15 18:43:43 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.167 2006-07-17 07:19:15 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1168,7 +1168,7 @@ public class DatabaseStorageManager implements StorageManager {
                 statement.setNull(index, type);
                 return true;
             } else {
-                log.debug("Tried to set 'null' in field '" + field.getName() + "' but the field is 'NOT NULL', it will be casted.");
+                log.debug("Tried to set 'null' in field '" + field.getName() + "' but the field is 'NOT NULL', it will be cast.");
             }
             */
         }

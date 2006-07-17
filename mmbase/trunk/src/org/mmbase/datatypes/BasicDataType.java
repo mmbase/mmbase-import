@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.58 2006-07-09 13:38:15 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.59 2006-07-17 07:19:15 pierre Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -315,7 +315,7 @@ s     */
     }
 
     /**
-     * Before validating the value, the value will be 'casted', on default this will be to the
+     * Before validating the value, the value will be 'cast', on default this will be to the
      * 'correct' type, but it can be a more generic type sometimes. E.g. for numbers this wil simply
      * cast to Number.
      */
@@ -449,13 +449,13 @@ s     */
      */
     private final Collection /*<LocalizedString> */ validate(final Object value, final Node node, final Field field, boolean testEnum) {
         Collection errors = VALID;
-        Object castedValue;
+        Object castValue;
         try {
-            castedValue = castToValidate(value, node, field);
-            errors = typeRestriction.validate(errors, castedValue, node, field);
+            castValue = castToValidate(value, node, field);
+            errors = typeRestriction.validate(errors, castValue, node, field);
         } catch (CastException ce) {
             errors = typeRestriction.addError(errors, value, node, field);
-            castedValue = value;
+            castValue = value;
         }
 
         if (errors.size() > 0) {
@@ -471,12 +471,12 @@ s     */
         if (testEnum) {
             errors = enumerationRestriction.validate(errors, value, node, field);
         }
-        errors = uniqueRestriction.validate(errors, castedValue, node, field);
-        errors = validateCastedValue(errors, castedValue, value, node, field);
+        errors = uniqueRestriction.validate(errors, castValue, node, field);
+        errors = validateCastedValue(errors, castValue, value, node, field);
         return errors;
     }
 
-    protected Collection validateCastedValue(Collection errors, Object castedValue, Object value, Node  node, Field field) {
+    protected Collection validateCastedValue(Collection errors, Object castValue, Object value, Node  node, Field field) {
         return errors;
     }
 

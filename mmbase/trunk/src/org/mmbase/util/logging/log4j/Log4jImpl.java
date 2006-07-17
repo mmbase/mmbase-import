@@ -60,7 +60,7 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
     }
 
     /**
-     * As getLogger, but casted to MMBase Logger already. And the possible
+     * As getLogger, but cast to MMBase Logger already. And the possible
      * ClassCastException is caught.
      */
     public static Log4jImpl getLoggerInstance(String name) {

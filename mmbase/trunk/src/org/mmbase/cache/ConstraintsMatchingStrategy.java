@@ -42,7 +42,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: ConstraintsMatchingStrategy.java,v 1.25 2006-07-09 11:53:57 michiel Exp $
+ * @version $Id: ConstraintsMatchingStrategy.java,v 1.26 2006-07-17 07:19:15 pierre Exp $
  *
  */
 public class ConstraintsMatchingStrategy extends ReleaseStrategy {
@@ -480,7 +480,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                 float floatToCompare = Casting.toFloat(valueToCompare, Float.MAX_VALUE);
                 //if either value could not be cast to an int, return true, which is safe
                 if(constraintFloat == Float.MAX_VALUE || floatToCompare == Float.MAX_VALUE) {
-                    throw new FieldComparisonException("either " + constraintValue + " or " + valueToCompare + " could not be casted to type float (while that is supposed to be their type)");
+                    throw new FieldComparisonException("either " + constraintValue + " or " + valueToCompare + " could not be cast to type float (while that is supposed to be their type)");
                 }
                 return floatMatches(constraintFloat, floatToCompare, operator);
             } else if (fieldType.equals(Double.class)) {
@@ -489,7 +489,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                 double doubleToCompare = Casting.toDouble(valueToCompare, Double.MAX_VALUE);
                 //if either value could not be cast to an int, return true, which is safe
                 if(constraintDouble == Double.MAX_VALUE || doubleToCompare == Double.MAX_VALUE) { 
-                    throw new FieldComparisonException("either " + constraintValue + " or " + valueToCompare + " could not be casted to type double (while that is supposed to be their type)");
+                    throw new FieldComparisonException("either " + constraintValue + " or " + valueToCompare + " could not be cast to type double (while that is supposed to be their type)");
                 }
                 return floatMatches(constraintDouble, doubleToCompare, operator);
             } else if (fieldType.equals(Date.class)) {
@@ -499,7 +499,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
 
                 //if either value could not be cast to an int, return true, which is safe
                 if(constraintLong == Long.MAX_VALUE || longToCompare == Long.MAX_VALUE) {
-                    throw new FieldComparisonException("either " + constraintValue + " or " + valueToCompare + " could not be casted to type long (while they are supposed to be of type Date supposed to be their type)");
+                    throw new FieldComparisonException("either " + constraintValue + " or " + valueToCompare + " could not be cast to type long (while they are supposed to be of type Date supposed to be their type)");
                 }
                 return intMatches(constraintLong, longToCompare, operator);
             } else if (fieldType.equals(Integer.class)) {
@@ -509,7 +509,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
 
                 //if either value could not be cast to an int, return true, which is safe
                 if(constraintInt == Integer.MAX_VALUE || intToCompare == Integer.MAX_VALUE) {
-                    throw new FieldComparisonException("either " + constraintValue + " or " + valueToCompare + " could not be casted to type int (while that is supposed to be their type)");
+                    throw new FieldComparisonException("either " + constraintValue + " or " + valueToCompare + " could not be cast to type int (while that is supposed to be their type)");
                 }
                 return intMatches(constraintInt, intToCompare, operator);
             } else if (fieldType.equals(Long.class)) {
@@ -519,7 +519,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
 //              if either value could not be cast to a long, return true, which is safe
                 if(constraintLong == Long.MAX_VALUE || longToCompare == Long.MAX_VALUE)
                     throw new FieldComparisonException("either [" + constraintValue +"] of type " +constraintValue.getClass().getName() + " or [" + valueToCompare +
-                "] of type " + valueToCompare.getClass().getName()+" could not be casted to type long (while that is supposed to be their type)");
+                "] of type " + valueToCompare.getClass().getName()+" could not be cast to type long (while that is supposed to be their type)");
                 return intMatches(constraintLong, longToCompare, operator);
             }  else if (fieldType.equals(Node.class)) {
                 log.debug("**> type: Node");
@@ -530,7 +530,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
 //              if either value could not be cast to a Node, return true, which is safe
                 if(constraintInt == Integer.MAX_VALUE || intToCompare == Integer.MAX_VALUE)
                     throw new FieldComparisonException("either [" + constraintValue +"] of type " +constraintValue.getClass().getName() + " or [" + valueToCompare +
-                "] of type " + valueToCompare.getClass().getName()+" could not be casted to type int  (while they should be type node)");
+                "] of type " + valueToCompare.getClass().getName()+" could not be cast to type int  (while they should be type node)");
                 return intMatches(constraintInt, intToCompare, operator);
             } else if (fieldType.equals(String.class) || fieldType.equals(org.w3c.dom.Document.class)) {
                 log.debug("**> type: String");
