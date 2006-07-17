@@ -32,7 +32,7 @@ import java.util.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.86 2006-07-14 13:26:01 nklasens Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.87 2006-07-17 08:22:59 nklasens Exp $
  * @see ContextTag
  */
 
@@ -533,11 +533,29 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         }
     }
 
-
     /**
+     * Get the locale which is defined by surrounding tags or the cloud
+     * @return a locale when defined or otherwise the mmbase locale.
+     * @throws JspTagException
+
      * @since MMBase-1.7.1
      */
     public Locale getLocale() throws JspTagException {
+        Locale locale = getLocaleFromContext();
+        if (locale == null) {
+            locale = getDefaultLocale(); 
+        }
+        return locale;
+    }
+
+    /**
+     * Get the locale which is defined by surrounding tags or the cloud
+     * @return a locale when defined or otherwise <code>null</code>
+     * @throws JspTagException
+     * 
+     * @since  MMBase-1.8.1
+     */
+    public Locale getLocaleFromContext() throws JspTagException {
         // is this correct?
         LocaleTag localeTag = (LocaleTag)findParentTag(LocaleTag.class, null, false);
         if (localeTag != null) {
@@ -559,10 +577,14 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
                 return locale;
             }
         }
-
-        return getDefaultLocale();
+        return null;
     }
-
+    
+    /**
+     * Get the default locale which is set in mmbase.
+     * 
+     * @since  MMBase-1.8.1
+     */
     public Locale getDefaultLocale() {
         return  org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getDefaultLocale();
     }
