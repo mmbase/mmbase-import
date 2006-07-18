@@ -42,7 +42,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: ConstraintsMatchingStrategy.java,v 1.26 2006-07-17 07:19:15 pierre Exp $
+ * @version $Id: ConstraintsMatchingStrategy.java,v 1.27 2006-07-18 13:02:10 michiel Exp $
  *
  */
 public class ConstraintsMatchingStrategy extends ReleaseStrategy {
@@ -461,9 +461,6 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
             if (constraintValue == null) return valueToCompare == null;
 
             int operator =  getOperator();
-            {
-
-            }
 
             if (fieldType.equals(Boolean.class)) {
                 log.debug("**> type: boolean");
