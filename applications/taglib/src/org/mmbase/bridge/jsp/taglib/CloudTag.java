@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.142 2006-07-17 15:38:47 johannes Exp $
+ * @version $Id: CloudTag.java,v 1.143 2006-07-18 07:22:06 johannes Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
@@ -1335,7 +1335,6 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
 
     public void doFinally() {
         // can be cleaned for gc:
-        log.warn("CloudTag doFinally() called");
         super.doFinally();
         cookies = null;
         cloudContext = null;
