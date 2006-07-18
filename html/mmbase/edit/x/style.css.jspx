@@ -47,25 +47,27 @@ img {
   background-color: #e8d8d8;
 }
 
-#searchresult.delete tbody tr.selected.even {
- background-color: #ffff00;
-}
 #searchresult.delete tbody tr.selected.odd {
  background-color: #ffffaa;
 }
+#searchresult.delete tbody tr.selected.even {
+ background-color: #ffff00;
+}
 
-#searchresult tbody tr.selected.even {
+#searchresult tbody tr.selected.odd {
   background-color: #f0f0e0;
 }
-#searchresult tbody tr.selected.odd {
+#searchresult tbody tr.selected.even {
   background-color: #e8e8d8;
 }
-#searchresult tbody tr.selected.even:hover {
+
+#searchresult tbody tr.selected.odd:hover {
   background-color: #e0f0e0;
 }
-#searchresult tbody tr.selected.odd:hover {
+#searchresult tbody tr.selected.even:hover {
   background-color: #d8e8d8;
 }
+
 #searchresult tbody tr.selected.odd.readonly:hover { 
   background-color: #f0e0e0;
 }
@@ -73,6 +75,21 @@ img {
   background-color: #e8d8d8;
 }
 
+
+#searchresult tfoot { 
+  display: block;
+  position: fixed;
+  bottom: 0px;
+  height: 39px;
+  width: 100%;
+  padding-bottom: 0px;
+  border-top: solid black 1px;
+  background-color: #ddd;
+}
+
+#searchresult { 
+  margin-bottom: 50px;
+}
 .mm_check_error {
   background-color: #f0e0e0;
 }
@@ -87,7 +104,6 @@ h1 {
   height: 39px;
   border-bottom: solid black 1px;
   position: fixed;
-  background-color: #ddd;
   font-size: medium;
   background-color: #ddd;
   margin-top: 0px;
