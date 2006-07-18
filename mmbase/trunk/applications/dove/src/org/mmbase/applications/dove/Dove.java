@@ -11,12 +11,12 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.dove;
 
 import java.util.*;
-import java.util.*;
 import java.util.regex.Pattern;
 import org.w3c.dom.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.datatypes.*;
+import org.mmbase.module.builders.*;
 import org.mmbase.storage.search.RelationStep;
 import org.mmbase.util.Casting;
 import org.mmbase.util.Encode;
@@ -54,7 +54,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.77 2006-06-22 12:07:37 michiel Exp $
+ * @version $Id: Dove.java,v 1.78 2006-07-18 15:36:28 nklasens Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -157,8 +157,21 @@ public class Dove extends AbstractDove {
                     DataType dataType = f.getDataType();
                     if (dataType instanceof BinaryDataType) {
                         fel = addContentElement(FIELD, "", out);
-                        byte[] bytes = node.getByteValue(fname);
-                        fel.setAttribute(ELM_SIZE, "" + (bytes != null ? bytes.length : 0));
+                        
+                        int byteLength = 0;
+                        if (nm.hasField(AbstractImages.FIELD_FILESIZE)) {
+                            byteLength = node.getIntValue(AbstractImages.FIELD_FILESIZE);
+                        }
+                        else {
+                            if (nm.hasField(Attachments.FIELD_SIZE)) {
+                                byteLength = node.getIntValue(Attachments.FIELD_SIZE);
+                            }
+                            else {
+                                byte[] bytes = node.getByteValue(fname);
+                                byteLength = bytes != null ? bytes.length : 0;
+                            }
+                        }
+                        fel.setAttribute(ELM_SIZE, "" + byteLength);
                     } else if (dataType instanceof DateTimeDataType ||
                                dataType instanceof IntegerDataType ||
                                dataType instanceof LongDataType
