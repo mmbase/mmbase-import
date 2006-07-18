@@ -31,8 +31,8 @@ import org.mmbase.util.logging.*;
  * A wrapper around Lucene's {@link org.apache.lucene.search.IndexSearcher}. Every {@link Indexer} has its own Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.23 2006-05-17 20:02:51 michiel Exp $
- * @TODO  Should the StopAnalyzers be replaced by index.analyzer? Something else?
+ * @version $Id: Searcher.java,v 1.24 2006-07-18 06:30:51 michiel Exp $
+ * @todo  Should the StopAnalyzers be replaced by index.analyzer? Something else?
  **/
 public class Searcher {
     private static final Logger log = Logging.getLoggerInstance(Searcher.class);

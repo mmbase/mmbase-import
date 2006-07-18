@@ -46,7 +46,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.62 2006-06-06 11:28:05 michiel Exp $
+ * @version $Id: Lucene.java,v 1.63 2006-07-18 06:30:51 michiel Exp $
  **/
 public class Lucene extends Module implements NodeEventListener, IdEventListener {
 
@@ -59,7 +59,7 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
 
     /**
      * But we use XSD now!
-     * @TODO Support for DTD's can be dropped, it was never released.
+     * @todo Support for DTD's can be dropped, it was never released.
      */
     public static final String XSD_LUCENE_1_0 = "luceneindex.xsd";
     public static final String NAMESPACE_LUCENE_1_0 = "http://www.mmbase.org/xmlns/luceneindex";

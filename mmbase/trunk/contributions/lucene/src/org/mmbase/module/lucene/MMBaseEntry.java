@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseEntry.java,v 1.8 2006-06-06 11:24:36 michiel Exp $
+ * @version $Id: MMBaseEntry.java,v 1.9 2006-07-18 06:30:51 michiel Exp $
  **/
 public class MMBaseEntry implements IndexEntry {
     static private final Logger log = Logging.getLoggerInstance(MMBaseEntry.class);
@@ -146,8 +146,7 @@ public class MMBaseEntry implements IndexEntry {
 
     /**
      * Store data from field in a node into the cursor
-     * @param node the Node to copy data from
-     * @param cursor the cursor to hold the data
+     * @param map The map of fieldName/value mappings
      */
     protected void storeData(Map map) {
         Cloud cloud = elementManager.getCloud();
@@ -244,6 +243,7 @@ public class MMBaseEntry implements IndexEntry {
      * The data is merged with any text already stored for indexing if appropriate.
      * @param fieldname the name of the field used for indexing (the 'as' name of a field where appropriate)
      * @param value the textual value to index
+     * @param data The map of fieldName/value mappings
      */
     void storeFieldTextData(Map data, String fieldName, String value) {
         StringBuffer sb = null;
