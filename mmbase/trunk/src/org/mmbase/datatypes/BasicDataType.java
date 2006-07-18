@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.60 2006-07-17 07:32:29 pierre Exp $
+ * @version $Id: BasicDataType.java,v 1.61 2006-07-18 12:58:40 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -162,16 +162,16 @@ s     */
 
         defaultValue    = origin.getDefaultValue();
 
-        commitProcessor = origin.commitProcessor;
+        commitProcessor = (CommitProcessor) ( origin.commitProcessor instanceof PublicCloneable ? ((PublicCloneable) origin.commitProcessor).clone()  : origin.commitProcessor);
         if (origin.getProcessors == null) {
             getProcessors = null;
         } else {
-            getProcessors = (Processor[])origin.getProcessors.clone();
+            getProcessors = (Processor[]) origin.getProcessors.clone();
         }
         if (origin.setProcessors == null) {
             setProcessors = null;
         } else {
-            setProcessors = (Processor[])origin.setProcessors.clone();
+            setProcessors = (Processor[]) origin.setProcessors.clone();
         }
     }
 
@@ -362,11 +362,15 @@ s     */
         return el;
     }
 
+    protected String xmlValue(Object value) {
+        return Casting.toString(value);
+    }
+
     public void toXml(Element parent) {
         parent.setAttribute("id", getName());
         description.toXml("description", XMLNS, parent, "description");
         getElement(parent, "class",    "description,class").setAttribute("name", getClass().getName());
-        getElement(parent, "default",  "description,class,property,default").setAttribute("value", Casting.toString(defaultValue));
+        getElement(parent, "default",  "description,class,property,default").setAttribute("value", xmlValue(defaultValue));
         getElement(parent, "unique",   "description,class,property,default,unique").setAttribute("value", "" + uniqueRestriction.isUnique());
         getElement(parent, "required", "description,class,property,default,unique,required").setAttribute("value", "" + requiredRestriction.isRequired());
 
@@ -379,6 +383,7 @@ s     */
             if (nl.getLength() == 0) {
                 element = parent.getOwnerDocument().createElementNS(XMLNS, "commitprocessor");
                 Element clazz = parent.getOwnerDocument().createElementNS(XMLNS, "class");
+                clazz.setAttribute("name", getCommitProcessor().getClass().getName());
                 DocumentReader.appendChild(parent, element, "description,class,property");
                 element.appendChild(clazz);
             } else {
