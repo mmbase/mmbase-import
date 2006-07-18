@@ -50,8 +50,6 @@ public class Coder
       Element elemRoot = document.createElement("order");
       document.appendChild(elemRoot);
 
-
-
       Element elemProductID = document.createElement("productId");
       elemProductID.appendChild(document.createTextNode(order.getExternId()));
       elemRoot.appendChild(elemProductID);
@@ -208,8 +206,6 @@ public class Coder
          elemCity.appendChild(document.createTextNode(address.getCity()));
          elemAddress.appendChild(elemCity);
       }
-
-
 
 
       return document;

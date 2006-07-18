@@ -12,6 +12,8 @@
 <%@ page import = "nl.leocms.connectors.UISconnector.input.products.model.*" %>
 <%@ page import = "nl.leocms.connectors.UISconnector.input.products.process.*" %>
 
+<%@ page import = "nl.leocms.connectors.UISconnector.shared.properties.model.*" %>
+
 <mm:cloud method="http" jspvar="cloud" rank="basic user" jspvar="cloud">
 <mm:log jspvar="log">
 <%
@@ -47,85 +49,105 @@
 
    //Let's get Model
    ArrayList arliModel = Decoder.decode(document);
-/*
+   System.out.println("========" + arliModel.size());
 
-   for(Iterator it = arliModel.iterator(); it.hasNext();){
-      Product product = (Product) it.next();
-
-      %>-----<br/><%
-      %><%=product.getExternID() %><br/><%
-      %><%=product.getPrice() %><br/><%
-      %><%=product.getEmbargoDate() %><br/><%
-      %><%=product.getExpireDate() %><br/><%
-      %><%=product.isMembershipRequired() %><br/><%
-
-      %>__<br/><%
-      for(Iterator it2 = product.getPaymentTypes().iterator(); it2.hasNext();){
-         PaymentType paymentType = (PaymentType) it2.next();
-         %><%= paymentType.getId() %> - <%= paymentType.getDescription() %><br/><%
-      }
-   }
-*/
 
    //Let's update the db
    ArrayList arliChanges = Updater.update(cloud, arliModel);
    if(arliChanges.size()==0) {
-   	%>No changes found in <%= UISconfig.getProductUrl() %><br/><%
+      %>No changes found in <%= UISconfig.getProductUrl() %><br/><%
    } else {
-	%>
-	<table border="1" cellpadding="5" cellspacing="0">
-	 <tr>
-	    <td>Status</td>
-	    <td>Evenement Node</td>
-	    <td>externid</td>
-	    <td>embargo</td>
-	    <td>verloopdatum</td>
-	    <td>price</td>
-	    <td>registration</td>
-	    <td>Payment types</td>
-	 </tr>
-	<%
-	for(Iterator it = arliChanges.iterator(); it.hasNext();){
-	    Result result = (Result) it.next();
+   %>
+   <table border="1" cellpadding="5" cellspacing="0">
+    <tr>
+       <td>Status</td>
+       <td>Evenement Node</td>
+       <td>externid</td>
+       <td>embargo</td>
+       <td>verloopdatum</td>
+       <td>price</td>
+       <td>registration</td>
+       <td>Payment types</td>
+       <td>Properties</td>
+    </tr>
+   <%
+   for(Iterator it = arliChanges.iterator(); it.hasNext();){
+       Result result = (Result) it.next();
 
-  	    if(result.getStatus() == Result.EXCEPTION){
-	       %><tr><td>Exception:</td><td><%= result.getProduct().getExternID() %></td><td colspan="3"><%=result.getException() %></td></tr><%
-	    } else {
+         if(result.getStatus() == Result.EXCEPTION){
+          %><tr><td>Exception:</td><td><%= result.getProduct().getExternID() %></td><td colspan="3"><%=result.getException() %></td></tr><%
+       } else {
 
-   	        %><tr><%
+              %><tr><%
 
-	        %><td><%
-		    switch(result.getStatus()){
-		       case Result.ADDED:{
-			  %>Added<%;
-			  break;
-		       }
-		       case Result.UPDATED:{
-			  %>Updated<%;
-			  break;
-		       }
+           %><td><%
+          switch(result.getStatus()){
+             case Result.ADDED:{
+           %>Added<%;
+           break;
+             }
+             case Result.UPDATED:{
+           %>Updated<%;
+           break;
+             }
 
-		    }
-		 %></td><%
+          }
+       %></td><%
 
-		 %><td><%= result.getEvenementNode().getNumber() %></td><%
-		 %><td><%= result.getProduct().getExternID() %></td><%
-		 %><td><%= df.format(result.getProduct().getEmbargoDate()) %></td><%
-		 %><td><%= df.format(result.getProduct().getExpireDate()) %></td><%
-		 %><td><%= result.getProduct().getPrice() %></td><%
-		 %><td><%= result.getProduct().isMembershipRequired() %></td><%
+       %><td><%= result.getEvenementNode().getNumber() %></td><%
+       %><td><%= result.getProduct().getExternID() %></td><%
+       %><td><%= df.format(result.getProduct().getEmbargoDate()) %></td><%
+       %><td><%= df.format(result.getProduct().getExpireDate()) %></td><%
+       %><td><%= result.getProduct().getPrice() %></td><%
+       %><td><%= result.getProduct().isMembershipRequired() %></td><%
 
-		 %><td><%
-		    for(Iterator it2 = result.getProduct().getPaymentTypes().iterator(); it2.hasNext();){
-		       PaymentType paymentType = (PaymentType) it2.next();
-		       %><%= paymentType.getId() %> - <%= paymentType.getDescription() %><br/><%
-		    }
-		 %></td><%
+       %><td><%
+          for(Iterator it2 = result.getProduct().getPaymentTypes().iterator(); it2.hasNext();){
+             PaymentType paymentType = (PaymentType) it2.next();
+             %><%= paymentType.getId() %> - <%= paymentType.getDescription() %><br/><%
+          }
+       %></td><%
 
-   	         %></tr><%
-	    }
-	}
-	%></table><%
+
+
+       %><td><%
+
+          %>
+          <table width="100%" border="1" cellpadding="5" cellspacing="0">
+           <tr>
+              <td>Property ID</td>
+              <td>Description</td>
+              <td>Property Value</td>
+           </tr>
+          <%
+          for(Iterator it2 = result.getProduct().getProperties().iterator(); it2.hasNext();){
+              Property property = (Property) it2.next();
+
+              %></tr><%
+
+              %><td><%= property.getPropertyId() %></td><%
+              %><td><%= property.getPropertyDescription() %></td><%
+              %><td><table width="100%" border="1" cellpadding="3" cellspacing="0">
+                 <tr><td>Externid</td><td>Description</td></tr>
+                 <%
+                 for(Iterator it3 = property.getPropertyValues().iterator(); it3.hasNext();){
+                    PropertyValue propertyValue = (PropertyValue) it3.next();
+                    %><tr><td><%= propertyValue.getPropertyValueId() %></td><td><%= propertyValue.getPropertyValueDescription() %> </td></tr><%
+                 }
+              %></table></td><%
+
+              %></tr><%
+          }
+          %></table><%
+
+
+       %></td><%
+
+
+               %></tr><%
+       }
+   }
+   %></table><%
     }
 %>
 

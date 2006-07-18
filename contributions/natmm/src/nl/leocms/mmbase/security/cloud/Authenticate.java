@@ -46,28 +46,28 @@ import com.finalist.mmbase.util.CloudFactory;
  *
  * @see UserBuilder
  * @author  Ronald Kramp
- * @version '$Revision: 1.1 $, $Date: 2006-03-05 21:43:58 $'
+ * @version '$Revision: 1.2 $, $Date: 2006-07-18 18:22:38 $'
  */
 public class Authenticate extends Authentication {
-     
-   
+
+
    /** Logger. */
    private static Logger log = Logging.getLoggerInstance(Authenticate.class.getName());
-   
+
    /** The builder implementation that is used for authentication. */
    private UserBuilder builder;
-   
+
    private long validKey;
-      
-   
+
+
    /**
     * Constructor
     */
    public Authenticate() {
       validKey = System.currentTimeMillis();
    }
-      
-   
+
+
    /**
     * Checks whether the given user context is valid.
     * @param userContext the user context to check
@@ -77,18 +77,18 @@ public class Authenticate extends Authentication {
    public boolean isValid(UserContext userContext) {
       return ((User) userContext).getKey() == validKey;
    }
-   
-   
-   
+
+
+
    /**
     * Loads any additional settings for this class.
     */
    protected void load() {
       Rank.createRank(2000, "chiefeditor");
    }
-   
-   
-   
+
+
+
    /**
     * This method will verify the login, and give a UserContext back if
     * everything is valid.
@@ -104,18 +104,21 @@ public class Authenticate extends Authentication {
       throws SecurityException {
 
       log.debug("[Authenticate]: Using login module: " + moduleName);
-      
+
       if (moduleName.equals("anonymous")) {
-         
+
          return new User("anonymous", Rank.ANONYMOUS, validKey);
       }
       else if (moduleName.equals("name/password")) {
-      
+
          builder = getBuilder();
-         
+
          String username = (String) loginInfo.get("username");
          String password = (String) loginInfo.get("password");
+
+
          
+
          // Check properties in loginInfo.
          if (username == null) {
             throw new SecurityException("Property 'username' not provided in login.");
@@ -129,9 +132,9 @@ public class Authenticate extends Authentication {
             log.error(errorMessage);
             throw new SecurityException(errorMessage);
          }
-         
+
          String rankAsString = builder.getRankAsString(username, password);
-         
+
          if (rankAsString == null) { // username is treated as case insensitive
             Cloud cloud = CloudFactory.getCloud();
             NodeList nl = cloud.getNodeManager("users").getList("UPPER(account) = '" + username.toUpperCase() + "'", null, null);
@@ -158,9 +161,9 @@ public class Authenticate extends Authentication {
          throw new SecurityException(errorMessage);
       }
    }
-   
-   
-   
+
+
+
    /**
     * Returns the builder if it exists or throws a
     * <code>SecurityException</code> if it does not.
@@ -179,14 +182,14 @@ public class Authenticate extends Authentication {
       }
       return builder;
    }
-   
-   
-   
+
+
+
    /**
     *
     */
    class User extends UserContext {
-      
+
       private String username;
       private Rank rank;
       private long key;
