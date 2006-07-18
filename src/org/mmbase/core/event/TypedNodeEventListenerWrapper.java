@@ -27,7 +27,7 @@ public class TypedNodeEventListenerWrapper implements NodeEventListener {
     private final boolean descendants;
 
     /**
-     * @param nodeType should be a valid builder name
+     * @param builder The builder for which to filter events.
      * @param listener the node event listener you want to wrap
      * @param descendants Whether also descendants of the given builder must be listened to. ('true' would be the must logical value).
      */
