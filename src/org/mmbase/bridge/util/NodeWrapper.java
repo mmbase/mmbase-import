@@ -22,12 +22,12 @@ import org.mmbase.util.functions.Parameters;
  * implementation on a existing <code>Node</code> instance.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeWrapper.java,v 1.14 2006-04-18 13:54:39 michiel Exp $
+ * @version $Id: NodeWrapper.java,v 1.15 2006-07-18 13:03:19 michiel Exp $
  * @since   MMBase-1.8
  */
 
 public abstract class NodeWrapper implements Node, Comparable {
-    protected Node node;
+    protected final Node node;
     public NodeWrapper(Node node) {
         assert node != null;
         this.node = node;
