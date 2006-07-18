@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.387 2006-07-17 07:19:15 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.388 2006-07-18 12:49:01 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -807,7 +807,12 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
 
             Object defaultValue = field.getDataType().getDefaultValue();
             if ((defaultValue == null) && field.isNotNull()) {
-                defaultValue = Casting.toType(Fields.typeToClass(field.getType()), null, "");
+                Class  clazz  = Fields.typeToClass(field.getType());
+                if (clazz != null) {
+                    defaultValue = Casting.toType(clazz, null, "");
+                } else {
+                    log.warn("No class found for type of " + field);
+                }
             }
             node.setValue(field.getName(), defaultValue);
         }
