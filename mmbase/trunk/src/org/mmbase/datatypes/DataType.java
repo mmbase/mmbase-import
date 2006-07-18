@@ -38,11 +38,10 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.53 2006-07-17 07:19:15 pierre Exp $
+ * @version $Id: DataType.java,v 1.54 2006-07-18 12:56:55 michiel Exp $
  */
 
 public interface DataType extends Descriptor, Cloneable, Comparable, Serializable {
-
 
     /**
      * The XML Namespace to be used for creating datatype XML
@@ -106,7 +105,7 @@ public interface DataType extends Descriptor, Cloneable, Comparable, Serializabl
      * Return the datatype's basic (MMBase) type (i.e., STRING, INTEGER, DATETIME) as definied in the Field interface
      * Note that in some cases (i.e. with older clouds) this may differ from the basic type of the datatype's field,
      * which defines in what format the data is stored.
-     * @see Field.#getType
+     * @see Field#getType
      */
     public int getBaseType();
 
@@ -333,14 +332,14 @@ public interface DataType extends Descriptor, Cloneable, Comparable, Serializabl
 
     /**
      * Returns a DOM element describing this DataType.
-     * @TODO EXPERIMENTAL.
+     * @todo EXPERIMENTAL.
      */
     public org.w3c.dom.Element toXml();
 
     /**
      * Fills this datatype in another XML (for example in the xml of {@link #getOrigin}, to make one XML, fully describing the DataType).
      * The implementation of this method is <em>unfinished</em>!
-     * @TODO EXPERIMENTAL
+     * @todo EXPERIMENTAL
      * @param element a 'datatype' element.
      */
     public void toXml(org.w3c.dom.Element element);
