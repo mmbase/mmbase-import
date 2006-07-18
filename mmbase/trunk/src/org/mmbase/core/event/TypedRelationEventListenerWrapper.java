@@ -31,7 +31,7 @@ public class TypedRelationEventListenerWrapper implements RelationEventListener 
     /**
      * @param builder The builder which must constrain the listener
      * @param wrappedListener the relation event listener you want to wrap
-     * @param direction At which side of the relation nodes of this builders can be: {@link org.mmbase.storage.search.RelationStep#DIRECTIONS_SOURCE}, {@link org.mmbase.storage.search.RelationStep#DIRECTIONS_DESTIONATION}, or {@link org.mmbase.storage.search.RelationStep#DIRECTIONS_BOTH}
+     * @param direction At which side of the relation nodes of this builders can be: {@link org.mmbase.storage.search.RelationStep#DIRECTIONS_SOURCE}, {@link org.mmbase.storage.search.RelationStep#DIRECTIONS_DESTINATION}, or {@link org.mmbase.storage.search.RelationStep#DIRECTIONS_BOTH}
      * @param descendants Whether also descendants of the given builder must be listened to. ('true' would be the must logical value).
      */
     public TypedRelationEventListenerWrapper(MMObjectBuilder builder, RelationEventListener wrappedListener, int direction, boolean descendants) {
