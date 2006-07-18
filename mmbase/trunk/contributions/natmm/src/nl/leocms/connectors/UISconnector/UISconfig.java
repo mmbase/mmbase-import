@@ -44,4 +44,8 @@ public class UISconfig {
    public static String getPropertiesURL(){
       return "file:///Z:/in2.xml";
    }
+   public static String getCustomersURL(String sUserName, String sPassword){
+//      return "http://212.123.241.76/demo/getCustomerInformation.jsp?username=" + sUserName + "&pwd=" + sPassword;
+      return "file:///Z:/test.xml";
+   }
 }
