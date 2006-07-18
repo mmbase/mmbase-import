@@ -14,13 +14,15 @@ import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.DynamicDate;
+import org.w3c.dom.Element;
 
 /**
  * Comparable datatypes have values which are {@link java.lang.Comparable}, so can be ordered, and
  * therefore can have a minimum and a maximum value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComparableDataType.java,v 1.20 2006-07-17 07:32:29 pierre Exp $
+ * @version $Id: ComparableDataType.java,v 1.21 2006-07-18 12:58:40 michiel Exp $
  * @since MMBase-1.8
  */
 public abstract class ComparableDataType extends BasicDataType {
@@ -112,6 +114,27 @@ public abstract class ComparableDataType extends BasicDataType {
         return def;
     }
 
+
+    public void toXml(Element parent) {
+        super.toXml(parent);
+
+        if (minRestriction.isInclusive()) {
+            getElement(parent, "minInclusive",    "description,class,property,default,uniue,required,(minInclusive|minExclusive)")
+                .setAttribute("value", xmlValue(minRestriction.getValue()));
+        } else {
+            getElement(parent, "minExclusive",    "description,class,property,default,uniue,required,(minInclusive|minExclusive)")
+                .setAttribute("value", xmlValue(minRestriction.getValue()));
+        }
+        if (maxRestriction.isInclusive()) {
+            getElement(parent, "maxInclusive",    "description,class,property,default,uniue,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive)")
+                .setAttribute("value", xmlValue(maxRestriction.getValue()));
+        } else {
+            getElement(parent, "maxExclusive",    "description,class,property,default,uniue,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive)")
+                .setAttribute("value", xmlValue(maxRestriction.getValue()));
+        }
+
+    }
+
     /**
      * Sets the minimum Date value for this data type.
      * @param value the minimum as an <code>Comparable</code> (and <code>Serializable</code>), or <code>null</code> if there is no minimum.
@@ -139,22 +162,6 @@ public abstract class ComparableDataType extends BasicDataType {
         maxRestriction.setValue((java.io.Serializable) value);
     }
 
-
-    public void toXml(org.w3c.dom.Element parent) {
-        super.toXml(parent);
-        /* TODO
-        if (minRestriction.isInclusive()) {
-            getElement(parent, "min", "description,class,property,default,unique,required,minInclusive").setAttribute("value", Casting.toString(minRestriction.getValue()));
-        } else {
-            getElement(parent, "min", "description,class,property,default,unique,required,minExclusive").setAttribute("value", Casting.toString(minRestriction.getValue()));
-        }
-        if (maxRestriction.isInclusive()) {
-            getElement(parent, "re", "description,class,property,default,unique,required,minInclusive").setAttribute("value", Casting.toString(maxRestriction.getValue()));
-        } else {
-            getElement(parent, "reed", "description,class,property,default,unique,required,minExclusive").setAttribute("value", Casting.toString(maxRestriction.getValue()));
-        }
-        */
-    }
 
 
     protected Collection validateCastValue(Collection errors, Object castValue, Object value,  Node node, Field field) {

@@ -13,8 +13,7 @@ import java.util.*;
 
 import org.mmbase.bridge.*;
 import org.mmbase.util.Casting;
-import org.mmbase.util.DynamicDate
-;
+import org.mmbase.util.DynamicDate;
 import org.mmbase.util.logging.*;
 
 /**
@@ -25,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DateTimeDataType.java,v 1.33 2006-04-11 21:53:10 michiel Exp $
+ * @version $Id: DateTimeDataType.java,v 1.34 2006-07-18 12:58:40 michiel Exp $
  * @since MMBase-1.8
  */
 public class DateTimeDataType extends ComparableDataType {
@@ -48,6 +47,14 @@ public class DateTimeDataType extends ComparableDataType {
         super(name, Date.class);
         setMin(MIN_VALUE, true);
         setMax(MAX_VALUE, true);
+    }
+
+    protected String xmlValue(Object value) {
+        if (value instanceof DynamicDate) {
+            return ((DynamicDate) value).getFormat();
+        } else {
+            return super.xmlValue(value);
+        }
     }
 
     public void setDefaultValue(Object o) {

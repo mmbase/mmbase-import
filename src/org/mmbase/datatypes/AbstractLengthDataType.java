@@ -14,6 +14,7 @@ import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
+import org.w3c.dom.Element;
 
 /**
  * A LengthDataType is a datatype that defines a length for its values ({@link #getLength(Object)}) ,
@@ -21,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: AbstractLengthDataType.java,v 1.15 2006-07-17 07:32:29 pierre Exp $
+ * @version $Id: AbstractLengthDataType.java,v 1.16 2006-07-18 12:58:40 michiel Exp $
  * @since MMBase-1.8
  */
 abstract public class AbstractLengthDataType extends BasicDataType implements LengthDataType {
@@ -115,6 +116,13 @@ abstract public class AbstractLengthDataType extends BasicDataType implements Le
         errors = minLengthRestriction.validate(errors, castValue, node, field);
         errors = maxLengthRestriction.validate(errors, castValue, node, field);
         return errors;
+    }
+
+    public void toXml(Element parent) {
+        super.toXml(parent);
+        getElement(parent, "minLength",  "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxIncluse|maxExclusive),minLength").setAttribute("value", Casting.toString(minLengthRestriction.getValue()));
+        getElement(parent, "maxLength",  "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxIncluse|maxExclusive),minLength,maxLength").setAttribute("value", Casting.toString(maxLengthRestriction.getValue()));
+
     }
 
     protected StringBuffer toStringBuffer() {
