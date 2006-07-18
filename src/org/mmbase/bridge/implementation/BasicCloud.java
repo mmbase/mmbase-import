@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.160 2006-06-20 20:55:23 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.161 2006-07-18 13:22:22 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable, Serializable {
 
@@ -1079,8 +1079,12 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
                 if (BasicCloud.this.userContext.getAuthenticationType() == null) {
                     log.warn("Security implementation did not set 'authentication type' in the user object.");
                 }
-                log.service("Deserialized cloud " + BasicCloud.this + " of " + BasicCloud.this.getUser());
+                log.service("Deserialized " + BasicCloud.this);
             }
         }
+    }
+
+    public String toString() {
+        return  "BasicCloud '" + getName() + "' of " + getUser().getIdentifier() + " @" + Integer.toHexString(hashCode());
     }
 }
