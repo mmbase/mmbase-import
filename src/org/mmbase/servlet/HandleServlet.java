@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * specialized servlets. The mime-type is always application/x-binary, forcing the browser to
  * download.
  *
- * @version $Id: HandleServlet.java,v 1.28 2006-06-27 13:11:51 johannes Exp $
+ * @version $Id: HandleServlet.java,v 1.29 2006-07-18 12:36:56 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see ImageServlet
@@ -263,32 +263,23 @@ public class HandleServlet extends BridgeServlet {
         int fileSize = bytes.length;
         res.setContentLength(fileSize);
 
-        BufferedOutputStream out = null;
-        try {
-            out = new BufferedOutputStream(res.getOutputStream());
-        } catch (java.io.IOException e) {
-            log.error(Logging.stackTrace(e));
-        }
+        BufferedOutputStream out = new BufferedOutputStream(res.getOutputStream());
         out.write(bytes, 0, fileSize);
         out.flush();
     }
     final protected void sendBytes(HttpServletResponse res, InputStream bytes) throws IOException {
-        log.debug("Sending by " + bytes.getClass());
-        BufferedOutputStream out = null;
-        try {
-            out = new BufferedOutputStream(res.getOutputStream());
-        } catch (java.io.IOException e) {
-            log.error(Logging.stackTrace(e));
-            throw e;
+        if (log.isDebugEnabled()) {
+            log.debug("Sending by " + bytes.getClass());
         }
+        BufferedOutputStream out = new BufferedOutputStream(res.getOutputStream());
         byte[] buf = new byte[1024];
         int b = 0;
         while ((b = bytes.read(buf)) != -1) {
             out.write(buf, 0, b);
         }
         out.flush();
-        out.close();
         bytes.close();
+        out.close();
     }
 
     public static void main(String argv[]) {
