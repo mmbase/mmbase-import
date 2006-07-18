@@ -10,6 +10,8 @@ See http://www.MMBase.org/license
 package org.mmbase.security.implementation.context;
 
 import org.mmbase.security.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * This UserContext class provides a storage for the authentication
@@ -18,11 +20,11 @@ import org.mmbase.security.*;
  * this is possible.
  *
  * @author Eduard Witteveen
- * @version $Id: ContextUserContext.java,v 1.10 2006-02-13 18:19:55 michiel Exp $
+ * @version $Id: ContextUserContext.java,v 1.11 2006-07-18 12:46:05 michiel Exp $
  */
 public class ContextUserContext extends BasicUser implements java.io.Serializable {
-
-    private static final long serialVersionUID = 1;
+    private static final Logger   log = Logging.getLoggerInstance(ContextUserContext.class);
+    private static final long serialVersionUID = 1L;
 
     private String  username;
     private Rank    rank;
@@ -46,7 +48,13 @@ public class ContextUserContext extends BasicUser implements java.io.Serializabl
         if (manager == null) {
             manager = org.mmbase.module.core.MMBase.getMMBase().getMMBaseCop();
         }
-        return ((ContextAuthorization)manager.getAuthorization()).getDefaultContext(this);
+        Authorization auth = manager.getAuthorization();
+        if (auth instanceof ContextAuthorization) {
+            return ((ContextAuthorization)auth).getDefaultContext(this);
+        } else {
+            log.error("Authorization is not ContextAuxthorization but " + auth.getClass());
+            return getIdentifier();
+        }
     }
 
     public Rank getRank() {
