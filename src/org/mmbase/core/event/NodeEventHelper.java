@@ -17,12 +17,12 @@ import org.mmbase.module.corebuilders.InsRel;
 
 /**
  * @author Ernst Bunders
- *this is a utility class to create node event and relation event instances. the reason for it is 
+ *this is a utility class to create node event and relation event instances. the reason for it is
  *that we want to references to core classes in the NodeEvent and RelationEvent classes, to keep them bridge-friendly,
  *but we need a little help for easy instantiation.
  */
 public class NodeEventHelper {
-    
+
     public static NodeEvent createNodeEventInstance(Node node, int eventType, String machineName){
         if(machineName == null)machineName = MMBase.getMMBase().getMachineName();
         MMObjectNode coreNode = MMBase.getMMBase().getBuilder(node.getNodeManager().getName()).getNode(node.getNumber());
@@ -31,44 +31,50 @@ public class NodeEventHelper {
 
     /**
      * create an NodeEvent instance with an MMObjectNode
-     * @param node 
-     * @param eventType 
+     * @param node
+     * @param eventType
      * @param machineName or null to create a node event with local machine name
      * @return new instance of NodeEvent
      */
     public static NodeEvent createNodeEventInstance(MMObjectNode node, int eventType, String machineName){
         if(machineName == null) machineName = MMBase.getMMBase().getMachineName();
-        Map oldEventValues = new HashMap();
-        Map newEventValues = new HashMap();
-        
+        Map oldEventValues;
+        Map newEventValues;
+
         //fill the old and new values maps for the event
         switch(eventType) {
         case Event.TYPE_NEW:
-            newEventValues.putAll(node.getValues());
+            newEventValues = Collections.unmodifiableMap(node.getValues());
+            oldEventValues = Collections.EMPTY_MAP;
             break;
         case Event.TYPE_CHANGE:
-            oldEventValues.putAll(node.getOldValues());
-            for(Iterator i = node.getOldValues().keySet().iterator(); i.hasNext(); ) {
+            oldEventValues = Collections.unmodifiableMap(node.getOldValues());
+            newEventValues = new HashMap();
+            Map values = node.getValues();
+            for(Iterator i = oldEventValues.keySet().iterator(); i.hasNext(); ) {
                 Object key = i.next();
-                newEventValues.put(key, node.getValues().get(key));
+                newEventValues.put(key, values.get(key));
             }
             break;
         case Event.TYPE_DELETE:
-            oldEventValues.putAll(node.getValues());
+            newEventValues = Collections.EMPTY_MAP;
+            oldEventValues = Collections.unmodifiableMap(node.getValues());
             break;
         default: {
+            oldEventValues = Collections.EMPTY_MAP;
+            newEventValues = Collections.EMPTY_MAP;
             // err.
         }
         }
-        
+
         return new NodeEvent(machineName, node.getBuilder().getTableName(), node.getNumber(), oldEventValues, newEventValues, eventType);
     }
-    
+
     public static RelationEvent createRelationEventInstance(Relation node, int eventType, String machineName){
         MMObjectNode coreNode = MMBase.getMMBase().getBuilder(node.getNodeManager().getName()).getNode(node.getNumber());
         return createRelationEventInstance(coreNode, eventType, machineName);
     }
-    
+
     /**
      * create an RelationEvent instnce with an MMObjectNode (builder should be specialization of insrel)
      * @param node
