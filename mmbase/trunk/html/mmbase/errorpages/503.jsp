@@ -2,7 +2,7 @@
 %><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html>
   <head>
-    <title>503 temporary unavailable</title>
+    <title>503 temporarily unavailable</title>
     <%
     String url = (String) request.getAttribute("javax.servlet.forward.request_uri"); 
     String q = (String) request.getAttribute("javax.servlet.forward.query_string"); 
