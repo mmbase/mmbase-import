@@ -9,9 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.StringWriter;
+import java.io.*;
+import java.util.*;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -29,8 +28,9 @@ import org.w3c.dom.Document;
  * Gives an xml-representation of a dir structure with builders
  * Used by the build script to create documentation for builders.
  * @since mmbase 1.6
- * @author Gerard van Enk, Pierre van Rooden
- * @version $Id: BuilderList.java,v 1.7 2005-01-30 16:46:35 nico Exp $
+ * @author Gerard van Enk
+ * @author Pierre van Rooden
+ * @version $Id: BuilderList.java,v 1.8 2006-07-18 12:25:42 michiel Exp $
  */
 public class BuilderList {
     // logger not used at the moment
@@ -59,52 +59,30 @@ public class BuilderList {
      * Lists all builders within a given path, including builders in sub-paths
      * @param ipath the path to start searching. The path need be closed with a File.seperator character.
      */
-    String listBuilders(String path) {
-        String result="";
-        if (!path.endsWith(File.separator)) path+=File.separator;
-        File bdir = new File(path);
-        if (bdir.isDirectory()) {
-            //these directory-names must be excluded
-            if (!bdir.getName().equals("builders")&&!bdir.getName().equals("applications")&&!bdir.getName().equals("tools")) {
-                result+="<buildertype name=\""+bdir.getName()+"\"\n>";
-            }
-            String files[] = bdir.list();
-            if (files!=null) {
-                for (int i=0;i<files.length;i++) {
-                    String bname=files[i];
-                    if (bname.endsWith(".xml")) {
-                        try {
-                            DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-                            // get document builder AFTER setting the validation
-                            dfactory.setValidating(false);
-                            dfactory.setNamespaceAware(true);
-                            DocumentBuilder db = dfactory.newDocumentBuilder();
-                            db.setEntityResolver(new XMLEntityResolver(false,this.getClass()));
-                            Document document = db.parse(path+File.separator+bname);
-                            StringWriter strw=new StringWriter(500);
-                            //only process builder config files
-                            if (document.getDocumentElement().getTagName().equals("builder")) {
-                                write(document, new StreamResult(strw));
-                                result+=strw.toString();
-                            }
-                        } catch (Exception e) {
-                            throw new RuntimeException("", e);
-                        }
-                    } else {
-                        if (!bname.equals("CVS")) {
-                            result=result+listBuilders(path +  bname + File.separator);
-                        }
-                    }
+    void listBuilders(ResourceLoader config, Writer writer) throws IOException {
+        Set xmls = config.getResourcePaths(ResourceLoader.XML_PATTERN, false);
+        writer.write("<buildertype name=\"" + config.getContext() + "\">\n");
+        Iterator i = xmls.iterator();
+        while (i.hasNext()) {
+            String name = (String) i.next();
+            try {
+                Document document = config.getDocument(name);
+                //only process builder config files
+                if (document.getDocumentElement().getTagName().equals("builder")) {
+                    write(document, new StreamResult(writer));
                 }
-            } else {
-                throw new RuntimeException("Cannot find builders in "+path);
-            }
-            //these directory-names must be excluded
-            if (!bdir.getName().equals("builders")&&!bdir.getName().equals("applications")&&!bdir.getName().equals("tools")) {
-                result+="</buildertype>\n";
+            } catch (Exception e) {
             }
         }
-        return result;
+        writer.write("</buildertype>\n");
+        Iterator j =  config.getChildContexts(null,  false).iterator();
+        while (j.hasNext()) {
+            String sub = (String) j.next();
+            if ("CVS".equals(sub)) continue;
+            listBuilders(config.getChildResourceLoader(sub), writer);
+        }
+
+
     }
 
     /**
@@ -113,30 +91,18 @@ public class BuilderList {
      *
      * @param args base dir to start with, it's possible to use more than one dir seperated by ;
      */
-    public static void main(String[] args) throws java.io.UnsupportedEncodingException {
+    public static void main(String[] args) throws UnsupportedEncodingException, IOException {
         if (args.length != 0) {
             BuilderList bulList = new BuilderList();
-            String s="<builders>\n";
-            String builderDir = args[0];
-            if (builderDir.indexOf(';')==-1) {
-                s=s+bulList.listBuilders(builderDir);
-            } else {
-                int seperatorIndex = -1;
-                do {
-                    seperatorIndex =  builderDir.indexOf(';');
-                    //this will be the last dir
-                    if (seperatorIndex==-1) {
-                        s=s+bulList.listBuilders(builderDir.substring(0,builderDir.length()));
-                    } else {
-                        //there are more dirs
-                        s=s+bulList.listBuilders(builderDir.substring(0,seperatorIndex));
-                        builderDir=builderDir.substring(seperatorIndex+1,builderDir.length());
-                    }
-                } while (seperatorIndex!=-1) ;
+            Writer s = new OutputStreamWriter(System.out, "UTF-8");
+            s.write("<builders>\n");
+            String[] builderDirs = args[0].split(";");
+            for (int i = 0; i < builderDirs.length ; i++) {
+                ResourceLoader config = ResourceLoader.getConfigurationRoot().getChildResourceLoader(builderDirs[i]);
+                bulList.listBuilders(config, s);
             }
-            s=s+"</builders>\n";
-            byte[] bytes= s.getBytes("utf-8");
-            System.out.write(bytes,0,bytes.length);
+            s.write("</builders>\n");
+            s.flush();
         } else {
             System.out.println("usage: java BuilderList <basedirwithbuilderconfig>");
         }
