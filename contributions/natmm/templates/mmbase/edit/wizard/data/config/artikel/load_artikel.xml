@@ -20,6 +20,7 @@
    <field name="type"/>
    <field name="intro"/>
    <field name="tekst"/>
+   <relation destination="pools" role="posrel"/>
    <relation destination="artikel" role="related"/>
    <relation destination="natuurgebieden" role="rolerel"/>
    <relation destination="images" role="posrel"/>

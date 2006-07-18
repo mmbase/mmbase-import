@@ -8,6 +8,6 @@
 	<field name="view" />
 	<field name="language" />
 	<field name="description" />
-	<relation destination="items" role="posrel" />
+	<relation destination="contentelement" role="posrel" />
+	<relation destination="topics" role="posrel" />
 </action>
-

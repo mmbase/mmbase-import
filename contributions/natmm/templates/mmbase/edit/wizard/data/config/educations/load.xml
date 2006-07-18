@@ -20,8 +20,8 @@
    <relation destination="afdelingen" role="rolerel" />
 
    <relation destination="providers" role="related" />
-   <relation destination="education_keywords" role="related" />
-   <relation destination="education_pools" role="posrel" />
+   <relation destination="keywords" role="related" />
+   <relation destination="pools" role="posrel" />
    <relation destination="competencies" role="posrel" />
 
    <relation destination="feedback" role="related" />

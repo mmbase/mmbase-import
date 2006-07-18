@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<list role="related" destination="education_keywords" minoccurs="1" maxoccurs="*"
+<list role="related" destination="keywords" minoccurs="1" maxoccurs="*"
    orderby="name" ordertype="string" hidecommand="move-up|move-down">
 	<title>trefwoord</title>
 	<item>
@@ -12,10 +12,10 @@
 	 </item>
 	<action type="create">
 		<relation role="related">
-			<object type="education_keywords" />
+			<object type="keywords" />
 		</relation>
 	</action>
-	<command name="search" nodepath="education_keywords" fields="word" orderby="word" age="-1">
+	<command name="search" nodepath="keywords" fields="word" orderby="word" age="-1">
     	<prompt>zoek trefwoord</prompt>
 		<search-filter>
 			<name>trefwoord bevat</name>

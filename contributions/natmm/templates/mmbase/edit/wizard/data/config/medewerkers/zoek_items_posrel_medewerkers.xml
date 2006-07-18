@@ -1,10 +1,9 @@
 <?xml version="1.0"?>
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<list role="contentrel" destination="medewerkers" minoccurs="0" maxoccurs="*" >
-   <title>medewerkers</title>
+<list role="posrel" destination="medewerkers" minoccurs="0" maxoccurs="*" >
+   <title>eigenaar</title>
    <item>
       <field ftype="data" name="titel"><prompt>naam</prompt></field>
-	   <field ftype="startwizard" wizardname="config/medewerkers/medewerkers_peopletemplate" />
    </item>
    <command name="search" nodepath="medewerkers" age="-1" fields="titel,firstname,lastname,metatags" orderby="lastname">
       <prompt>zoek medewerker</prompt>
@@ -25,11 +24,8 @@
          <search-fields>[metatags]</search-fields>
       </search-filter>
    </command>
-   <command name="startwizard" inline="true" wizardname="config/medewerkers/medewerkers_peopletemplate" objectnumber="new">
-       <prompt></prompt>
-   </command>
    <action type="create">
-      <relation destinationtype="medewerkers" role="contentrel">
+      <relation destinationtype="medewerkers" role="posrel">
       </relation>
    </action>
 </list>
