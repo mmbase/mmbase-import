@@ -245,6 +245,7 @@
       <relation from="terms" to="terms" type="rolerel"/>
       <relation from="terms" to="terms" type="synonymrel"/>
 	   <relation from="topics" to="pools" type="posrel" />
+      <relation from="topics" to="keywords" type="posrel" />
       <relation from="users" to="medewerkers" type="related"/> 
       <relation from="users" to="menu" type="gebruikt"/>
       <relation from="vacature" to="attachments" type="posrel"/>
