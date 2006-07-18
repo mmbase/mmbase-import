@@ -28,7 +28,7 @@ public class RegexpReplacerFactory implements ParameterizedTransformerFactory {
 
 
     protected static final Parameter[] PARAMS = new Parameter[] {
-        new Parameter("patterns", Collection.class, true),
+        new Parameter("patterns", Collection.class, Collections.EMPTY_LIST),
         new Parameter("mode", String.class),
         new Parameter("replacefirst", String.class)
     };
