@@ -33,6 +33,7 @@ import nl.leocms.authorization.Roles;
 import nl.leocms.content.ContentUtil;
 import nl.leocms.util.ContentTypeHelper;
 import nl.leocms.util.PublishUtil;
+import nl.leocms.util.ApplicationHelper;
 import nl.leocms.workflow.WorkflowController;
 
 import org.mmbase.bridge.Cloud;
@@ -365,11 +366,11 @@ public class WizardController {
           }
           
           if (editNode != null && ContentTypeHelper.isContentElement(editNode)) {
+             ContentUtil cu = new ContentUtil(cloud);
+             String rubrieknr = (String) session.getAttribute("creatierubriek");
+             log.debug("Creatierubriek " + rubrieknr);
              if ("new".equals(objectnr)) {
-                String rubrieknr = (String) session.getAttribute("creatierubriek");
-                log.debug("Creatierubriek " + rubrieknr);
                 if (rubrieknr != null && !"".equals(rubrieknr)) {
-                   ContentUtil cu = new ContentUtil(cloud);
                    cu.addCreatieRubriek(editNode, rubrieknr);
                    cu.addHoofdRubriek(editNode, rubrieknr);
                    cu.addSubsite(editNode, rubrieknr);                     
@@ -380,15 +381,11 @@ public class WizardController {
                 }
              }
              else {
-                ContentUtil cu = new ContentUtil(cloud);
                 if (!cu.hasSchrijver(editNode)) {
                    cu.addSchrijver(editNode);
                 }
 
                 if (!cu.hasCreatieRubriek(editNode)) {
-                   String rubrieknr = (String) session.getAttribute("creatierubriek");
-                   log.debug("Creatierubriek " + rubrieknr);
-                   
                    if (rubrieknr != null && !"".equals(rubrieknr)) {
                       cu.addCreatieRubriek(editNode, rubrieknr);
                       cu.addHoofdRubriek(editNode, rubrieknr);
@@ -396,6 +393,12 @@ public class WizardController {
                    }
                 }
              }
+				 if (rubrieknr != null && !"".equals(rubrieknr)) {
+					 ApplicationHelper ap = new ApplicationHelper();
+					 if(ap.isInstalled(cloud,"NatMM")||ap.isInstalled(cloud,"NMIntra")) {
+						 cu.updateTopics(editNode, rubrieknr);
+					 }
+				 }
              
              contenttype = editNode.getNodeManager().getName();
           }

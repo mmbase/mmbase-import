@@ -5,13 +5,13 @@
     <classfile>Dummy</classfile>
     <searchage>9999</searchage>
     <names>
-        <singular xml:lang="nl">ShopItem</singular>
+        <singular xml:lang="nl">Item</singular>
         <singular xml:lang="en">Piece</singular>
-        <plural xml:lang="nl">ShopItems</plural>
+        <plural xml:lang="nl">Items</plural>
         <plural xml:lang="en">Pieces</plural>
     </names>
     <descriptions>
-        <description xml:lang="nl">ShopItems</description>
+        <description xml:lang="nl">Items</description>
         <description xml:lang="en">Pieces</description>
     </descriptions>
     <properties/>
@@ -106,12 +106,12 @@
       </field>
       <field>
          <descriptions>
-             <description xml:lang="nl">ShopItem nummer</description>
-             <description xml:lang="en">ShopItem id</description>
+             <description xml:lang="nl">Productnummer</description>
+             <description xml:lang="en">Externid</description>
          </descriptions>
          <gui>
-             <guiname xml:lang="nl">ShopItem nummer</guiname>
-             <guiname xml:lang="en">ShopItem id</guiname>
+             <guiname xml:lang="nl">Productnummer</guiname>
+             <guiname xml:lang="en">Externid</guiname>
              <guitype>string</guitype>
          </gui>
          <editor>

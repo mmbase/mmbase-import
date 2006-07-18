@@ -231,10 +231,12 @@
       <relation from="projects" to="projects" type="posrel" />
       <relation from="projects" to="items" type="posrel" />
       <relation from="rubriek" to="images" type="contentrel"/>
+		<relation from="rubriek" to="menu" type="related" />
       <relation from="rubriek" to="pagina" type="posrel"/>
       <relation from="rubriek" to="rubriek" type="parent"/>
       <relation from="rubriek" to="style" type="readmore"/>
       <relation from="rubriek" to="style" type="related"/>
+		<relation from="rubriek" to="topics" type="related" />
       <relation from="rubriek" to="users" type="rolerel"  />
       <relation from="teaser" to="images" type="posrel"/> 
       <relation from="teaser" to="contentelement" type="readmore"/> 
