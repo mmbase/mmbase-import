@@ -28,6 +28,10 @@ String userConstraint = "";
    <mm:remove referid="isvisible" />
    <mm:compare referid="startnodes" value="" inverse="true"><mm:import id="isvisible" /></mm:compare>
    <mm:node element="menu">
+		<mm:remove referid="creatierubriek" />
+		<mm:relatednodes type="rubriek">
+			<mm:field name="number" id="creatierubriek" write="false" /> 
+		</mm:relatednodes>
       <mm:notpresent referid="isvisible">
          <mm:related path="gebruikt,users" constraints="<%= userConstraint %>">
             <mm:import id="isvisible" />
@@ -56,7 +60,11 @@ String userConstraint = "";
                                  <mm:param name="maxpagecount"><mm:field name="maxpagecount"/></mm:param>
                                  <mm:param name="orderby"><mm:field name="orderby"/></mm:param>
                                  <mm:param name="maxsize"><%= ph.getMaxSize() %></mm:param>
-                                 <mm:param name="search">yes</mm:param>   
+                                 <mm:param name="search">yes</mm:param>
+											<mm:param name="startnodes"><mm:field name="startnodes"/></mm:param>
+											<mm:present referid="creatierubriek">
+												<mm:param name="creatierubriek"><mm:write referid="creatierubriek" /></mm:param>
+											</mm:present>
                               </mm:url>"
                               title='<mm:field name="description"/>'>
                         </mm:compare>
