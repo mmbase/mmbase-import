@@ -199,10 +199,12 @@
         <relation from="questions" to="answers" type="posrel" />
         <relation from="routebeschrijvingen" to="extra_info" type="posrel" />
         <relation from="rubriek" to="images" type="contentrel" />
+        <relation from="rubriek" to="menu" type="related" />
         <relation from="rubriek" to="panno" type="posrel" />
         <relation from="rubriek" to="rubriek" type="parent" />
         <relation from="rubriek" to="shorty" type="rolerel" />
         <relation from="rubriek" to="teaser" type="rolerel" />
+        <relation from="rubriek" to="topics" type="related" />
         <relation from="shorty" to="contentelement" type="readmore" />
         <relation from="teaser" to="contentelement" type="readmore" />
         <relation from="template" to="editwizards" type="related" />

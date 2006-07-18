@@ -173,4 +173,37 @@ public class ContentUtil {
       return content.getRelatedNodes("users", "schrijver", "DESTINATION").getNode(0);
    }
 
+	/**
+    * each pool an object is related to, should also be related to the topic of this rubriek
+    * pre-condition: each rubriek has at most one related topic
+	 *
+    * @param content - content element
+    * @param creatierubriek - creatierubriek.
+    */
+   public void updateTopics(Node content, String creatierubriek) {
+		log.info("trying to update topics");
+      Node rubriek = mmbase.getNode(creatierubriek);
+		NodeList nlTopics = rubriek.getRelatedNodes("topics","related",null);
+		if(nlTopics.size()>0) {
+			log.info("found topic");
+			Node rubriekTopic = nlTopics.getNode(0);
+			NodeList nlPools = content.getRelatedNodes("pools","posrel",null);
+			int nlPoolsSize = nlPools.size();
+			for(int i=0; i < nlPoolsSize; i++) {
+				Node pool = nlPools.getNode(i);
+  			   log.info("checking pool " + pool.getNumber());
+				nlTopics = this.mmbase.getList(
+									pool.getStringValue("number"),
+									"pools,posrel,topics",
+									"topics.number",
+									"topics.number = '" + rubriekTopic.getNumber() + "'",
+									null,null,null,false
+								);
+				if(nlTopics.size()==0) {
+				   pool.createRelation(rubriekTopic,this.mmbase.getRelationManager("posrel")).commit();
+					log.info("Create relation between pool " + pool.getNumber() + " and topic " + rubriekTopic.getNumber());
+				}
+			}
+      }
+   }
 }

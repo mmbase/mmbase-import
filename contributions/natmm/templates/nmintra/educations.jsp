@@ -81,9 +81,9 @@ public String searchResults(TreeSet searchResultList) {
 
 			if (!poolId.equals("")&&!sEducations.equals("")){
 				educations.clear();
-				searchConstraint = "(education_pools.number = '" + poolId + "')";
+				searchConstraint = "(pools.number = '" + poolId + "')";
 				%>
-				<mm:list nodes="<%= sEducations %>" path="educations,posrel,education_pools" constraints="<%= searchConstraint %>">
+				<mm:list nodes="<%= sEducations %>" path="educations,posrel,pools" constraints="<%= searchConstraint %>">
 					<%@include file="includes/education/searcheducations.jsp" %>
 				</mm:list>
 				<%
@@ -128,9 +128,9 @@ public String searchResults(TreeSet searchResultList) {
 				<% keywords.add(keyword_number); %>
 			</mm:field>
 		</mm:list>
-		<mm:list nodes="<%= sEducations %>" path="educations,posrel,education_pools">
-			<mm:field name="education_pools.number" jspvar="education_pool_number" vartype="String" write="false">
-				<% educationPools.add(education_pool_number); %>
+		<mm:list nodes="<%= sEducations %>" path="educations,posrel,pools">
+			<mm:field name="pools.number" jspvar="pool_number" vartype="String" write="false">
+				<% educationPools.add(pool_number); %>
 			</mm:field>
 		</mm:list>
 		<mm:list nodes="<%= sEducations %>" path="educations,related,providers">
