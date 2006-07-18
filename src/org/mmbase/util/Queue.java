@@ -18,7 +18,7 @@ import java.util.*;
  * In 1.5, this class need to be replaced with the java.util.concurrent.BlockingQueue&lt;E&gt; interface.
  *
  * @author vpro
- * @version $Id: Queue.java,v 1.8 2006-01-16 20:21:42 michiel Exp $
+ * @version $Id: Queue.java,v 1.9 2006-07-18 12:10:25 michiel Exp $
  * @deprecated Use edu.emory.mathcs.backport.java.util.concurrent.BlockingQueue, or some other Queue implementation.
  */
 public class Queue {
@@ -67,7 +67,7 @@ public class Queue {
     /**
      * The real number of items in the queue.
      */
-    int len=0;
+    int len = 0;
 
     /**
      * Max # of items to be allowed in queue.
@@ -78,7 +78,7 @@ public class Queue {
     // fields below are not used any more, should be removed
 
     public Vector items;
-    int flip=0;
+    int flip = 0;
     long get1,get2;
 
     //private Object[] items;
@@ -189,20 +189,20 @@ public class Queue {
     public synchronized void append(Object item) {
         // put a object in the vector and wait on it
         // it should be able to block if full
-        QueueElement p=new QueueElement();
-        p.obj=item;
+        QueueElement p = new QueueElement();
+        p.obj = item;
 
-        if (tail==null) {
-            head=p;
+        if (tail == null) {
+            head = p;
         } else {
-            tail.next=p;
+            tail.next = p;
         }
-        p.next=null;
-        tail=p;
+        p.next = null;
+        tail = p;
         len++;
         flip++;
-        if (flip>99) {
-            flip=0;
+        if (flip > 99) {
+            flip = 0;
         }
         notify(); // scream that a new one has reached us.
     }
@@ -217,16 +217,16 @@ public class Queue {
      */
     public synchronized Object get() throws InterruptedException {
 //        try {
-            while(head==null) {
-                wait();
-            }
+        while(head == null) {
+            wait();
+        }
 //        } catch(InterruptedException e) {
 //            return null;
 //        }
-        QueueElement p=head;
-        head=head.next;
-        if (head==null) {
-            tail=null;
+        QueueElement p = head;
+        head = head.next;
+        if (head == null) {
+            tail = null;
         }
         len--;
         return p.obj;
