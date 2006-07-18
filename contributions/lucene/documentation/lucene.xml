@@ -6,7 +6,7 @@
   <articleinfo>
     <title>MMBase Lucene module</title>
     <date>2005-12-24</date>
-    <edition>$Id: lucene.xml,v 1.2 2006-01-11 16:01:20 pierre Exp $</edition>
+    <edition>$Id: lucene.xml,v 1.3 2006-07-18 06:30:51 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Pierre</firstname>
@@ -61,7 +61,7 @@
       The hardest part of the configuration of the Lucene index is of course the definition of the indices itself. The luceneindex.xml configuration file basicly looks like this:
       <example>
         <title>lucenindex.xml</title>
-        <programlisting id="lucenindex.xmll"><![CDATA[
+        <programlisting id="luceneindex.xml"><![CDATA[
 <?xml version="1.0"?>
 <luceneindex
  xmlns="http://www.mmbase.org/xmlns/luceneindex"
@@ -93,7 +93,7 @@
         'list' subtags defined MMBase queries.
       <example>
         <title>lucenindex.xml</title>
-        <programlisting id="lucenindex.xmll"><![CDATA[
+        <programlisting id="luceneindex2.xml"><![CDATA[
 <?xml version="1.0"?>
 <luceneindex
  xmlns="http://www.mmbase.org/xmlns/luceneindex"
