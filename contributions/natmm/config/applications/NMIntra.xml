@@ -60,8 +60,8 @@
       <builder version="0" maintainer="mmbase.org">discounts</builder>
       <builder version="0" maintainer="mmbase.org">divisions</builder>
       <builder version="0" maintainer="mmbase.org">documents</builder>
-      <builder version="0" maintainer="mmbase.org">education_keywords</builder>
-      <builder version="0" maintainer="mmbase.org">education_pools</builder>
+      <builder version="0" maintainer="mmbase.org">education_keywords</builder>  <!-- should be removed after migration -->
+      <builder version="0" maintainer="mmbase.org">education_pools</builder>  <!-- should be removed after migration -->
       <builder version="0" maintainer="mmbase.org">educations</builder>
       <builder version="0" maintainer="mmbase.org">empupdates</builder>
       <builder version="0" maintainer="mmbase.org">evenement_blueprint</builder>
@@ -73,7 +73,7 @@
       <builder version="0" maintainer="mmbase.org">forums</builder>
       <builder version="0" maintainer="mmbase.org">imagesets</builder>
       <builder version="0" maintainer="mmbase.org">items</builder>
-      <builder version="0" maintainer="mmbase.org">item_pools</builder>
+      <builder version="0" maintainer="mmbase.org">item_pools</builder>  <!-- should be removed after migration -->
       <builder version="0" maintainer="mmbase.org">kb_answer</builder>
       <builder version="0" maintainer="mmbase.org">kb_category</builder>
       <builder version="0" maintainer="mmbase.org">kb_displayable</builder>
@@ -172,7 +172,7 @@
       <relation from="items" to="images" type="posrel"/>
       <relation from="items" to="link" type="posrel"/>
       <relation from="items" to="persoon" type="posrel"/>
-      <relation from="items" to="item_pools" type="discountrel"/>
+      <relation from="items" to="pools" type="discountrel"/>
       <relation from="items" to="products" type="posrel"/>
       <relation from="kb_category" to="kb_category" type="related"/>
       <relation from="kb_category" to="kb_question" type="related"/>
@@ -244,6 +244,7 @@
       <relation from="terms" to="projects" type="posrel"/>
       <relation from="terms" to="terms" type="rolerel"/>
       <relation from="terms" to="terms" type="synonymrel"/>
+	   <relation from="topics" to="pools" type="posrel" />
       <relation from="users" to="medewerkers" type="related"/> 
       <relation from="users" to="menu" type="gebruikt"/>
       <relation from="vacature" to="attachments" type="posrel"/>
@@ -290,8 +291,8 @@
       <datasource builder="discounts" path="NMIntra/discounts.xml"/>
       <datasource builder="divisions" path="NMIntra/divisions.xml"/>
       <datasource builder="documents" path="NMIntra/documents.xml"/>
-      <datasource builder="education_keywords" path="NMIntra/education_keywords.xml"/>
-      <datasource builder="education_pools" path="NMIntra/education_pools.xml"/>
+      <datasource builder="education_keywords" path="NMIntra/education_keywords.xml"/>  <!-- should be removed after migration -->
+      <datasource builder="education_pools" path="NMIntra/education_pools.xml"/>  <!-- should be removed after migration -->
       <datasource builder="educations" path="NMIntra/educations.xml"/>
       <datasource builder="empupdates" path="NMIntra/empupdates.xml"/>
       <datasource builder="evenement_blueprint" path="NMIntra/evenement_blueprint.xml"/>
@@ -305,7 +306,7 @@
       <datasource builder="groups" path="NMIntra/groups.xml"/>
       <datasource builder="imagesets" path="NMIntra/imagesets.xml"/>
       <datasource builder="items" path="NMIntra/items.xml"/>
-      <datasource builder="item_pools" path="NMIntra/item_pools.xml"/>
+      <datasource builder="item_pools" path="NMIntra/item_pools.xml"/>  <!-- should be removed after migration -->
       <datasource builder="kb_answer" path="NMIntra/kb_answer.xml"/>
       <datasource builder="kb_category" path="NMIntra/kb_category.xml"/>
       <datasource builder="kb_displayable" path="NMIntra/kb_displayable.xml"/>
