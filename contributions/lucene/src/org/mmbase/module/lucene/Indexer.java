@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.26 2006-06-22 17:04:39 michiel Exp $
+ * @version $Id: Indexer.java,v 1.27 2006-07-18 06:30:51 michiel Exp $
  **/
 public class Indexer {
 
@@ -121,7 +121,7 @@ public class Indexer {
      * Used in iterative indexing.
      * @return The number of deleted lucene documents.
      * @param number the number of the node whose index to delete
-     * @param 
+     * @param klass The indexes to be deleted can be restricted to a certain class of IndexDefinition's.
      */
     public int deleteIndex(String number, Class klass) {
         IndexReader reader = null;
