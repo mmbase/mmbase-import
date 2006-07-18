@@ -71,7 +71,7 @@ if(!articleId.equals("-1")) {
                 String articleConstraint = "(artikel.embargo < " + nowSec + " )";
                 if(!thisPool.equals("-1")) {
                     articlePath += ",posrel,pools";
-                    articleConstraint = " AND ( pools.number = '" + thisPool + "' )";
+                    articleConstraint += " AND ( pools.number = '" + thisPool + "' )";
                 }
 					 String sTemplateUrl = "homepage.jsp";
                 String extTemplateQueryString = templateQueryString;
