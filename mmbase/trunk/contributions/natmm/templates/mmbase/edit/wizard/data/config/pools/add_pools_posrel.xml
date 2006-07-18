@@ -8,7 +8,7 @@
 	<item>
 		<title></title>
 		<description></description>
-		<field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>positie</prompt></field>
+		<!-- <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>positie</prompt></field> -->
 		<field name="name" ftype="data"><prompt>naam</prompt></field>
 		<field ftype="startwizard" wizardname="config/pools/pools" inline="true"><prompt></prompt></field>
 	</item>
@@ -17,15 +17,15 @@
 			<object type="pools" />
 		</relation>
 	</action>
-	<command name="search" nodepath="pools" fields="name,description" orderby="name" age="-1">
+	<command name="search" nodepath="topics,posrel,pools" fields="pools.name,topics.title" orderby="pools.name" age="-1">
     	<prompt>zoek categorie</prompt>
 		<search-filter>
 			<name>naam bevat</name>
-			<search-fields>name</search-fields>
+			<search-fields>pools.name</search-fields>
 		</search-filter>
 		<search-filter>
-			<name>omschrijving bevat</name>
-			<search-fields>description</search-fields>
+			<name>onderwerp bevat</name>
+			<search-fields>topics.title</search-fields>
 		</search-filter>
 	</command>
 </list>

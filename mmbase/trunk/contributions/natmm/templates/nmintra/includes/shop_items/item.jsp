@@ -1,4 +1,4 @@
-<% shop_itemHref = ph.createItemUrl(shop_itemId,"bestel",null,request.getContextPath()); %>
+<% shop_itemHref =  "shoppingcart.jsp?p=bestel&u=" + shop_itemId; %>
 <mm:node number="<%= shop_itemId %>">
 	<table width="100%" cellspacing="0" cellpadding="0">
 		<tr>

@@ -12,5 +12,6 @@
 	<form-schema id="edit_pools">
 		<field name="name"><prompt>naam</prompt></field>
 		<field name="description" ftype="html"><prompt>Omschrijving</prompt></field>
+		<list include="config/topics/add_posrel.xml" />
 	</form-schema>
 </wizard-schema>
