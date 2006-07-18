@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DateTimePattern.java,v 1.11 2006-07-11 20:09:55 michiel Exp $
+ * @version $Id: DateTimePattern.java,v 1.12 2006-07-18 12:56:16 michiel Exp $
  */
 
 public class DateTimePattern implements Cloneable, java.io.Serializable {
@@ -66,11 +66,12 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
     }
 
     private static final char DONTAPPEND = (char) -1;
-    private List parse(String p) {
+    private static List parse(String p) {
         List parsed = new ArrayList();
         StringBuffer buf = new StringBuffer();
         boolean inString = false;
         boolean inQuote = false;
+
         char    nonStringChar = (char) -1;
         for (int i = 0; i < p.length(); i++) {
             char c = p.charAt(i);
@@ -138,6 +139,7 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
      * the quote). If the first character is e.g. 'y' you can make an input box for the year (you
      * could also attribute some meaning to the length of the string then).
      *
+     *
      */
     public List getList(Locale locale) {
         String p = pattern.get(locale);
@@ -190,13 +192,13 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
      * Returns an {@link Element} structure assiocated with the characters of the format
      * pattern. This utility function can be usefull when generating drop-downs based on the result
      * of {@link #getList}.
-     * @param c The pattern character. 'y', 'M', 'd', 'H', 'K', 'h', 'k', 'm', 's', 'E', 'w', 'D',  'F', 'G', 'a', or 'S'
+     * @param c The pattern character. 'y', 'M', 'd', 'H', 'K', 'h', 'k', 'm', 's', 'E', 'w', 'D',  'F', 'G', 'a', or 'S'. Also u is recognized (as in the ICU version of SimpleDateFormat), for years which can also be negative (targeted at GregorianCalendar with 2 era's)
      * @param minDate  If for example the parameter is 'y' then the 'getMin' property of the result
      * Element will be the year of this date.
      * @param maxDate  If for example the parameter is 'y' then the 'getMax' property of the result
      * Element will be the year of this date.
      */
-    public static Element getElement(char c, Calendar minDate, Calendar maxDate) {
+    public static Element getElement(final char c, Calendar minDate, Calendar maxDate) {
         switch(c) {
         case 'G': {
             int startEra = minDate.get(Calendar.ERA);
@@ -216,18 +218,36 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
         case 'y': {
             int startEra = minDate.get(Calendar.ERA);
             int endEra   = maxDate.get(Calendar.ERA);
-            int startYear, endYear;
-            startYear = minDate.get(Calendar.YEAR);
-            endYear = maxDate.get(Calendar.YEAR);
+            int startYear = minDate.get(Calendar.YEAR);
+            int endYear = maxDate.get(Calendar.YEAR);
             if (startEra < endEra) { // you'll need an ERA indicator too, if this happens, and you want to be able to enter dates BC.
                 endYear = endYear > startYear ? endYear : startYear;
                 startYear = minDate.getActualMinimum(Calendar.YEAR);
             }
             return new Element("year",  Calendar.YEAR,  startYear, endYear) {
-                    public int getNullValue() {
-                        return Integer.MAX_VALUE;
-                    }
-                };
+                public int getNullValue() {
+                    return Integer.MAX_VALUE; 
+                }
+            };
+        }
+        case 'u': { // this is not a SimpleDateFormat character (it is a com.ibm.icu.text.SimpleDateFormat compatible though)
+            int startEra = minDate.get(Calendar.ERA);
+            int endEra   = maxDate.get(Calendar.ERA);
+            int startYear = minDate.get(Calendar.YEAR);
+            if (minDate instanceof GregorianCalendar && startEra == GregorianCalendar.BC) startYear = -1 * (startYear - 1);
+            int endYear = maxDate.get(Calendar.YEAR);
+            if (maxDate instanceof GregorianCalendar && endEra == GregorianCalendar.BC) endYear = -1 * (endYear - 1);
+            return new Element("year",  Calendar.YEAR,  startYear, endYear) {
+                public int getValue(Calendar cal) {
+                    int era   = cal.get(Calendar.ERA);
+                    int year  = cal.get(Calendar.YEAR);
+                    if (cal instanceof GregorianCalendar && era == GregorianCalendar.BC) year = -1 * (year - 1);
+                    return year;
+                }
+                public int getNullValue() {
+                    return Integer.MAX_VALUE;
+                }
+            };
         }
         case 'M': {
             int startYear = minDate.get(Calendar.YEAR);
@@ -341,6 +361,14 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
          */
         public final int getOffset() {
             return offset;
+        }
+
+        /**
+         * Normally equivalent with <code>cal.getValue(getField())</code> 
+         * @return The value for this element for a certain Calendar instance
+         */
+        public int getValue(Calendar cal) {
+            return cal.get(getField());
         }
         /**
          * Converts a value for the Calendar field associated with this Element to a
