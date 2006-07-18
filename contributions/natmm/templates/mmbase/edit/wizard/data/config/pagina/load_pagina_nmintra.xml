@@ -39,6 +39,7 @@
          </relation>
       </object>
    </relation>
+	<relation destination="items" role="posrel"/>
    <relation destination="teaser" role="rolerel"/>
    <relation destination="images" role="posrel">
       <object>

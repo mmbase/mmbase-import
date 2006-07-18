@@ -3,5 +3,6 @@
 <action type="load">
   <field name="word"/>
   <field name="description"/>
-  <relation destination="educations" role="related" />
+  <relation destination="contentelement" role="related" />
+  <relation destination="topics" role="posrel" />
 </action>

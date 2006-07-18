@@ -46,7 +46,7 @@
 	<relation destination="attachments" role="posrel" />
 	<relation destination="images" role="posrel" />
 	<relation destination="link" role="posrel" />
-	<relation destination="pools" role="posrel" />
+	<relation destination="formulier" role="posrel" />
 	<relation destination="persoon" role="posrel" />
 </action>
 

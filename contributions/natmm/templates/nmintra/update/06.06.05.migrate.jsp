@@ -35,7 +35,7 @@
 		<mm:setfield name="name">nieuws (list)</mm:setfield>
 		<mm:setfield name="description">Bewerk de nieuws artikelen van deze pagina</mm:setfield>
 		<mm:setfield name="type">list</mm:setfield>
-		<mm:setfield name="wizard">config/artikel/artikel_nieuws</mm:setfield>
+		<mm:setfield name="wizard">config/artikel/artikel_nieuws_nmintra</mm:setfield>
 		<mm:setfield name="nodepath">pagina,contentrel,artikel</mm:setfield>
 		<mm:setfield name="fields">artikel.titel,artikel.begindatum,artikel.embargo,artikel.verloopdatum,artikel.use_verloopdatum</mm:setfield>
 		<mm:setfield name="orderby">artikel.begindatum</mm:setfield>
@@ -305,15 +305,69 @@
 		</mm:relatednodes>
 	   <mm:deletenode deleterelations="true" />
 	</mm:listnodes>
+	16. Rename education editwizard to their generic counterparts 
+	<mm:listnodes type="editwizards" constraints="wizard = 'config/education_pools/wizard'">
+		<mm:setfield name="name">opleidings categorieën</mm:setfield>
+		<mm:setfield name="wizard">config/pools/pools_education</mm:setfield>
+		<mm:setfield name="nodepath">topics,posrel,pools</mm:setfield>
+		<mm:setfield name="fields">pools.name</mm:setfield>
+		<mm:setfield name="orderby">pools.name</mm:setfield>
+		<mm:setfield name="startnodes">education</mm:setfield>
+	</mm:listnodes>
+	<mm:listnodes type="editwizards" constraints="wizard = 'config/education_keywords/wizard'">
+		<mm:setfield name="wizard">config/keywords/wizard</mm:setfield>
+		<mm:setfield name="nodepath">keywords</mm:setfield>
+	</mm:listnodes>
+	17. Rename some admin editwizards
+	<mm:listnodes type="editwizards" constraints="wizard = 'config/pools/pools'">
+		<mm:setfield name="nodepath">topics,posrel,pools</mm:setfield>
+		<mm:setfield name="fields">pools.name,topics.title</mm:setfield>
+		<mm:setfield name="orderby">pools.name</mm:setfield>
+	</mm:listnodes>
+	<mm:listnodes type="editwizards" constraints="wizard = 'config/mmbaseusers/mmbaseusers'">
+		<mm:setfield name="wizard">/editors/usermanagement/userlist.jsp</mm:setfield>
+		<mm:setfield name="type">jsp</mm:setfield>
+	</mm:listnodes>
+	18. Rename some education editwizards
+	<mm:listnodes type="editwizards" constraints="wizard = '/editors/config/items/items'">
+		<mm:setfield name="wizard">config/items/items_shop</mm:setfield>
+		<mm:setfield name="nodepath">items</mm:setfield>
+	</mm:listnodes>
+	<mm:listnodes type="editwizards" constraints="wizard = '/editors/config/pools/pools_items'">
+		<mm:setfield name="wizard">config/formulier/formulier_shop</mm:setfield>
+		<mm:setfield name="nodepath">formulier</mm:setfield>
+		<mm:setfield name="fields">titel,type,pos</mm:setfield>
+		<mm:setfield name="searchfields">titel,type</mm:setfield>
+		<mm:setfield name="orderby">pos</mm:setfield>
+		<mm:setfield name="startnodes"></mm:setfield>
+	</mm:listnodes>
 	99. Deleting unused editwizards<br/>
 	<%
 	String [] ewToDelete = {
 		"config/divisions/divisions",
 		"/editors/empupdates.jsp",
-		"/editors/employees.jsp"
+		"/editors/employees.jsp",
+		"config/pijler/pijler",
+		"config/rubriek/rubriek",
+		"config/pagina/pagina",
+		"config/menu/menu",
+		"/editors/parcleaner/cleanarticles.jsp",
+		"/mmbob/forums.jsp"
 		};
 	for(int i=0; i<ewToDelete.length;i++) {
 		%><mm:listnodes type="editwizards" constraints="<%= "wizard = '" + ewToDelete[i]  + "'" %>">
+			<mm:deletenode deleterelations="true" />
+		 </mm:listnodes><%
+	}
+	String [] menuToDelete = {
+		"Archiefkast",
+		"Bibliotheek beheer",
+		"Home",
+		"Subrubriek editors",
+		"Website beheer"
+	};
+	for(int i=0; i<menuToDelete.length;i++) {
+		%><mm:listnodes type="menu" constraints="<%= "naam = '" + menuToDelete[i]  + "'" %>">
 			<mm:deletenode deleterelations="true" />
 		 </mm:listnodes><%
 	}

@@ -19,13 +19,12 @@
     <field name="datumlaatstewijziging" ftype="data"><prompt>datumlaatstewijziging</prompt></field>
     <!-- <field name="embargo"><prompt>verschijnings datum (producten zijn pas zichtbaar op de verschijningsdatum!)</prompt></field> -->
     <!-- <field name="verloopdatum"><prompt>verwijder datum</prompt></field> -->
-    <list include="config/pagina/add_pagina_posrel.xml" />
-    <list include="config/pools/add_pools_posrel_shopitems.xml" />
-    <list include="config/images/add_images_posrel_shopitems.xml" />
-    <list include="config/artikel/add_artikel_posrel_shopitems.xml" />
-    <list include="config/attachments/add_attachments_posrel_shopitems.xml" />
+    <list include="config/formulier/zoek_items_posrel_formulier.xml" />
+    <list include="config/images/add_images_posrel_items.xml" />
+    <list include="config/artikel/zoek_artikel_posrel_items.xml" />
+    <list include="config/attachments/add_attachments_posrel.xml" />
     <list include="config/products/add_products_posrel.xml" />
-    <list include="config/link/add_link_posrel.xml" />
-    <list include="config/medewerkers/add_medewerkers_posrel_owner.xml" />
+    <list include="config/link/zoek_contentelement_posrel_link.xml" />
+    <list include="config/medewerkers/zoek_items_posrel_medewerkers.xml" />
 </form-schema>
 

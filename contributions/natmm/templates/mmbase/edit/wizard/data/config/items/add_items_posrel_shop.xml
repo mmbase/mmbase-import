@@ -4,7 +4,7 @@
 	minoccurs="0" maxoccurs="*"
 	orderby="field[@name='pos']"
 	ordertype="number">
-	<title>producten (uit de Interne Webwinkel)</title>
+	<title>producten (uit de interne webwinkel)</title>
 	<item>
 		<title></title>
 		<description>producten</description>
@@ -19,7 +19,7 @@
 	<action type="create">
 		<relation role="posrel">
 			<object type="items" />
-			<field name="pos">-1</field>
+			<field name="pos">{sum(//relation[@role=&apos;posrel&apos; and @lastitem=&apos;true&apos;]/field[@name=&apos;pos&apos;])+{$pos}}</field>
 		</relation>
 	</action>
 	<command name="search" nodepath="items" fields="titel" orderby="titel" age="-1">
