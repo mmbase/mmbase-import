@@ -11,7 +11,7 @@
   <html lang="${locale}" xmlns="http://www.w3.org/1999/xhtml">
     <!-- 
          Produces a search-tool, and the search result with links to create and change MMBase nodes.
-         $Id: index.jspx,v 1.17 2006-07-15 15:28:30 michiel Exp $
+         $Id: index.jspx,v 1.18 2006-07-18 17:21:14 michiel Exp $
     -->
     <mm:cloud rank="basic user">
       
@@ -88,10 +88,6 @@
             </tbody>
           </table>
 
-          <input type="hidden" name="nodemanager" value="${nodemanager}" />
-          <mm:present referid="only">
-            <input type="hidden" name="only" value="${only}" />
-          </mm:present>
           <table id="searchresult" summary="Search results for ${nodemanager}">
             <mm:import id="pagesize">50</mm:import>
             <mm:import externid="offset">0</mm:import>
@@ -100,9 +96,9 @@
               <mm:import externid="sortfields">number</mm:import>
               <mm:import externid="sortdirections">down</mm:import>
               <mm:sortorder field="$sortfields" direction="$sortdirections" />
-              <mm:present referid="only">
+              <mm:compare referid="only" value="on">
                 <mm:typeconstraint name="$nodemanager" descendants="false" />
-              </mm:present>
+              </mm:compare>
               
               <mm:link id="base" page="." referids="$referids">
                 <mm:fieldlist nodetype="$nodemanager" type="search">
