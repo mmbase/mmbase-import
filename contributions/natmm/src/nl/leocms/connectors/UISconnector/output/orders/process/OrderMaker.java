@@ -19,10 +19,9 @@ package nl.leocms.connectors.UISconnector.output.orders.process;
 
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
-
+import com.finalist.mmbase.util.CloudFactory;
 import nl.leocms.connectors.UISconnector.output.orders.model.*;
 import java.util.Date;
-import java.util.regex.*;
 import java.io.*;
 
 
@@ -52,6 +51,8 @@ public class OrderMaker
       customerInformation.setCommonInformation(commonInformation);
       customerInformation.setAddress(address);
 
+      order.setOrderId(nodeSubscription.getNumber());
+
       try
       {
 
@@ -71,18 +72,17 @@ public class OrderMaker
              	log.error("There is no externid for " + nodeEvenement.getStringValue("number") + ". Probably this isn't an event imported from UIS.");
 		     }
 
-             NodeList nlPaymentTypes = nodeEvenement.getRelatedNodes("payment_type","related",null);
+             Cloud cloud = CloudFactory.getCloud();
+			 NodeManager nmPaymentTypes = cloud.getNodeManager("payment_type");
+			 NodeList nlPaymentTypes = nmPaymentTypes.getList("naam='" + nodeSubscription.getStringValue("betaalwijze") + "'",null,null);
 
   			 if(nlPaymentTypes.size()==0) {
-				 log.error("There are no related payment_types object for evenement "  + nodeEvenement.getNumber());
-
-			 } else if(nlPaymentTypes.size()>1) {
-				 log.error("There is more than one related payment_types for evenement "  + nodeEvenement.getNumber());
+				 log.error("There is no related payment_types object for subscription "  + nodeSubscription.getNumber());
 
 			 } else {
 				 Node nodePaymentType = nlPaymentTypes.getNode(0);
-	             order.setPaymentType(nodePaymentType.getStringValue("naam"));
-	             log.info("Setting payment type to "  + nodePaymentType.getStringValue("naam"));
+	             order.setPaymentType(nodePaymentType.getStringValue("externid"));
+	             log.info("Setting payment type to "  + nodePaymentType.getStringValue("externid"));
 		 	 }
 	     }
       }
@@ -122,24 +122,18 @@ public class OrderMaker
 
 			 address.setAddressType("P");
 
-			 try{
-				String sCompositeHouse = nodeDeelnemers.getStringValue("huisnummer");
-				Pattern p = Pattern.compile("[\\D]*$");
-				Matcher m = p.matcher(sCompositeHouse);
-
-				if (m.matches())
-				{
-				   int iHouseEnd = m.start();
-				   address.setHouseNumber(new Integer(sCompositeHouse.substring(0, iHouseEnd)).intValue());
-				   address.setHouseNumberExtension(sCompositeHouse.substring(iHouseEnd));
-				}
-				else
-				{
-				   address.setHouseNumber(new Integer(sCompositeHouse).intValue());
-				}
-			 } catch(Exception e){
-				address.setHouseNumberExtension(nodeDeelnemers.getStringValue("huisnummer"));
-			 }
+ 			 String sCompositeNumber = nodeDeelnemers.getStringValue("huisnummer");
+ 			 int i = 0;
+ 			 while (	i < sCompositeNumber.length()
+ 			 			&& ('0'<=sCompositeNumber.charAt(i))&&(sCompositeNumber.charAt(i)<='9')) {
+				 i++;
+		     }
+		     if(i>0) {
+		     	address.setHouseNumber(new Integer(sCompositeNumber.substring(0, i)).intValue());
+		     }
+		     if(i<sCompositeNumber.length()) {
+			 	address.setHouseNumberExtension(sCompositeNumber.substring(i).trim());
+		 	 }
 
 			 address.setStreetName(nodeDeelnemers.getStringValue("straatnaam"));
 			 address.setExtraInfo(nodeDeelnemers.getStringValue("lidnummer"));

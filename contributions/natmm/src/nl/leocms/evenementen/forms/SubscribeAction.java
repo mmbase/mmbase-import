@@ -51,12 +51,19 @@ import nl.leocms.connectors.UISconnector.output.orders.process.Sender;
  */
 public class SubscribeAction extends Action {
    private static final Logger log = Logging.getLoggerInstance(EvenementAction.class);
-   private static final String BACKOFFICE_SUBSCRIPTION = "70594";
-   private static final String SITE_SUBSCRIPTION = "86035";
    public static int NO_COSTS = 0;
    public static int UNKNOWN_COSTS = -1;
    public static int GROUP_EXCURSION_COSTS = -2;
    public static int DEFAULT_COSTS = 9999;
+
+
+   public String getBackofficeSubscription(Cloud cloud) {
+	   return cloud.getNode("backoffice_subscription").getStringValue("number");
+   }
+
+   public String getSiteSubscription(Cloud cloud) {
+   	   return cloud.getNode("site_subscription").getStringValue("number");
+   }
 
    private void removeObsoleteFormBean(ActionMapping mapping, HttpServletRequest request) {
       // *** Remove the obsolete form bean ***
@@ -659,13 +666,13 @@ public class SubscribeAction extends Action {
             // (b) website booker, who subsequently books in backoffice: change status
             String thisStatus = subscribeForm.getStatus();
             if(thisStatus.equals("")
-               ||thisStatus.equals(BACKOFFICE_SUBSCRIPTION)
-               ||thisStatus.equals(SITE_SUBSCRIPTION)) {
+               ||thisStatus.equals(getBackofficeSubscription(cloud))
+               ||thisStatus.equals(getSiteSubscription(cloud))) {
 
                if(subscribeForm.getTicketOffice().equals("website")) {
-                  thisStatus = SITE_SUBSCRIPTION;
+                  thisStatus = getSiteSubscription(cloud);
                } else {
-                  thisStatus = BACKOFFICE_SUBSCRIPTION;
+                  thisStatus = getBackofficeSubscription(cloud);
                }
                subscribeForm.setStatus(thisStatus);
             }

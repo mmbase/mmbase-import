@@ -39,6 +39,7 @@ import org.mmbase.bridge.RelationList;
 import org.mmbase.util.logging.*;
 import com.finalist.mmbase.util.CloudFactory;
 import nl.leocms.evenementen.Evenement;
+import nl.leocms.applications.NatMMConfig;
 import nl.mmatch.CSVReader;
 import com.cfdev.mail.verify.EmailVerifier;
 
@@ -62,7 +63,7 @@ public class SubscribeForm extends ActionForm {
    public static String FIX_DATE_ACTION         = "fix_date";
    public static String PROMPT_FOR_CONFIRMATION = "promptforconfirmation";
 	public static String CANCELED						= "canceled";
-	
+
    private String action;
    private int validateCounter = 0;
    private String skipValidation;
@@ -515,10 +516,11 @@ public class SubscribeForm extends ActionForm {
           emailMessage = requiredMessage;
       } else if (sEmail.indexOf("@")==-1){
            emailMessage = "evenementen.email.no_at";
-      } else  if (!EmailVerifier.validateEmailAddressSyntax(sEmail)
-                  || !EmailVerifier.validateMXRecord(sEmail)
-                  || !EmailVerifier.validateMailServer(sEmail)) {
+      } else if (!EmailVerifier.validateEmailAddressSyntax(sEmail)) {
           emailMessage = "evenementen.email.invalid";
+      } else if ( NatMMConfig.checkEmailByMailHost &&
+         ( !EmailVerifier.validateMXRecord(sEmail)  || !EmailVerifier.validateMailServer(sEmail)) ) {
+         emailMessage = "evenementen.email.invalid";
       }
       return emailMessage;
    }
@@ -687,7 +689,7 @@ public class SubscribeForm extends ActionForm {
             validateCounter++;
          }
       }
-		
+
 		return errors;
    }
 }
