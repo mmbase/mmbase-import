@@ -24,6 +24,7 @@ import org.mmbase.util.transformers.*;
  *  Supported encodings are at this moment:
  *  <ul>
  *  <li>BASE64</li>
+ *  <li>HEX</li>
  *  <li>ESCAPE_XML</li>
  *  <li>ESCAPE_HTML</li>
  *  <li>ESCAPE_HTML_ATTRIBUTE</li>
@@ -47,7 +48,7 @@ import org.mmbase.util.transformers.*;
  * @rename Encoder
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Encode.java,v 1.26 2006-04-19 21:10:58 michiel Exp $
+ * @version $Id: Encode.java,v 1.27 2006-07-19 11:07:17 johannes Exp $
  **/
 public class Encode {
 
@@ -66,6 +67,7 @@ public class Encode {
         try {
             register("org.mmbase.util.transformers.MD5");
             register("org.mmbase.util.transformers.Base64");
+            register("org.mmbase.util.transformers.Hex");
             register("org.mmbase.util.transformers.Xml");
             register("org.mmbase.util.transformers.Url");
             register("org.mmbase.util.transformers.Sql");
