@@ -5,7 +5,7 @@
   It is not a good idea to change things in this XML (because this might cause portability issues), but
   you can _add_ (and propose them to the community) or _remove_ things (if you find them undesirable).
 
-  version: $Id: taglibcontent.xml,v 1.50 2006-05-18 12:18:36 andre Exp $
+  version: $Id: taglibcontent.xml,v 1.51 2006-07-19 11:09:12 johannes Exp $
   -->
 
   <!-- First per content-type default escapers and postprocessors are defined.
@@ -376,6 +376,33 @@
       Explores the request for the 'referer' http header. If this is from google, the google search
       words are highlighted in the text.
     </info>
+  </parameterizedescaper>
+
+  <parameterizedescaper id="encryption">
+    <class>org.mmbase.util.transformers.EncryptionTransformerFactory</class>
+    <info>
+      Encrypts or decrypts the given input using a cryptographic algorithm that is specified as a parameter.
+    </info>
+    <param name="key">
+      <info>
+        The key used to encrypt the data. eg. AES uses a 128 bit key.
+      </info>
+    </param>
+    <param name="format">
+      <info>
+        The in-/output format of the ecrypted data. 'hex'(default) or 'base64'
+      </info>
+    </param>
+    <param name="algorithm">
+      <info>
+        The algorithm used for the encryption. eg. 'AES'(default), 'DES', 'Blowfish', etc.
+      </info>
+    </param>
+    <param name="direction">
+      <info>
+        The direction of encryption. 'encrypt'(default) or 'decrypt' 
+      </info>
+    </param>
   </parameterizedescaper>
 
   <parameterizedescaper id="codesample">
