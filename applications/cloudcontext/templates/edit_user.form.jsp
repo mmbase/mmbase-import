@@ -1,7 +1,7 @@
 <form action="<mm:url referids="parameters,$parameters"><mm:param name="url">commit_user.jsp</mm:param></mm:url>" method="post">
 <table>
   <mm:fieldlist type="edit" fields="owner">
-    <tr><td><mm:fieldinfo type="guiname" /></td><td colspan="3"><mm:fieldinfo options="noautocomplete" type="input" /></td></tr>
+    <tr><td><mm:fieldinfo type="guiname" /></td><td colspan="3"><mm:fieldinfo options="noautocomplete" type="input" /><mm:fieldinfo type="errors" /></td></tr>
   </mm:fieldlist>
   <mm:fieldlist fields="lastlogon?">
     <tr><td><mm:fieldinfo type="guiname" /></td><td colspan="3"><mm:fieldinfo type="guivalue" /></td></tr>
