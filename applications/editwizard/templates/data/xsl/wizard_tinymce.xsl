@@ -19,7 +19,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard_tinymce.xsl,v 1.1 2006-07-13 13:03:12 pierre Exp $
+    @version $Id: wizard_tinymce.xsl,v 1.2 2006-07-19 15:29:21 pierre Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -62,11 +62,11 @@
                   '<xsl:value-of select="$date_may"/>','<xsl:value-of select="$date_june"/>',
                   '<xsl:value-of select="$date_july"/>','<xsl:value-of select="$date_august"/>',
                   '<xsl:value-of select="$date_september"/>','<xsl:value-of select="$date_october"/>',
-                  '<xsl:value-of select="$date_november"/>','<xsl:value-of select="$date_december"/>')
+                  '<xsl:value-of select="$date_november"/>','<xsl:value-of select="$date_december"/>');
     var dayName = new Array	('<xsl:value-of select="$day_sun"/>','<xsl:value-of select="$day_mon"/>',
                 '<xsl:value-of select="$day_tue"/>','<xsl:value-of select="$day_wed"/>',
                 '<xsl:value-of select="$day_thu"/>','<xsl:value-of select="$day_fri"/>',
-                '<xsl:value-of select="$day_sat"/>')
+                '<xsl:value-of select="$day_sat"/>');
     </script>
     <script language="javascript" src="{$javascriptdir}datepicker.js">
       <xsl:comment>help IE</xsl:comment>
@@ -938,8 +938,10 @@ tinyMCE.init({
                 <xsl:attribute name="dtrequired">true</xsl:attribute>
               </xsl:if>
             </input>
-            <img src="{upload/path}" hspace="0" vspace="0" border="0" width="128" height="128"/>
+            <xsl:if test="contains(upload/path, '/') or contains(upload/path, '\')">
+	            <img src="{upload/path}" hspace="0" vspace="0" border="0" width="128" height="128"/>
             <br/>
+            </xsl:if>
             <span>
               <xsl:value-of select="upload/@name"/>
               <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
@@ -1080,7 +1082,18 @@ tinyMCE.init({
 
   <xsl:template match="value" mode="inputline">
     <xsl:param name="val" select="."/>
-    <input type="text" size="80" name="{../@fieldname}" value="{$val}" class="input">
+    <input type="text" name="{../@fieldname}" value="{$val}" class="input">
+      <xsl:if test="../@dtmaxlength">
+              <xsl:attribute name="maxlength"><xsl:value-of select="../@dtmaxlength" /></xsl:attribute>
+              <xsl:choose>
+                      <xsl:when test="../@dtmaxlength &lt; 80">
+                      <xsl:attribute name="size"><xsl:value-of select="../@dtmaxlength" /></xsl:attribute>
+                      </xsl:when>
+                      <xsl:otherwise>
+                      <xsl:attribute name="size">80</xsl:attribute>
+                      </xsl:otherwise>
+              </xsl:choose>
+      </xsl:if>
       <xsl:apply-templates select="../@*"/>
     </input>
   </xsl:template>
@@ -1356,10 +1369,19 @@ tinyMCE.init({
     </tr>
     <tr style="vertical-align: top;">
       <td style="vertical-align: top; width: 1%;">
-        <xsl:if test="field[@name = 'handle' and @size != '0']">
-          <!-- the image -->
-          <img src="{node:function($cloud, string(field/@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}"/>
-        </xsl:if>
+        <xsl:choose>
+          <!-- handle field exists then it might be a new image -->
+          <xsl:when test="field[@name = 'handle']">
+            <xsl:if test="field[@name = 'handle' and @size != '0']">
+	          <!-- the image -->
+	          <img src="{node:function($cloud, string(field/@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}"/>
+            </xsl:if>
+       	  </xsl:when>
+       	  <xsl:otherwise>
+            <!-- the image -->
+            <img src="{node:function($cloud, string(field/@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}"/>
+       	  </xsl:otherwise>
+        </xsl:choose>
       </td>
       <td colspan="2">
         <xsl:call-template name="itemfields"/>
