@@ -2,14 +2,10 @@ package nl.leocms.connectors.UISconnector.input.customers.process;
 
 import java.util.*;
 import java.text.SimpleDateFormat;
-
-
 import org.mmbase.bridge.*;
 import com.finalist.mmbase.util.CloudFactory;
-
 import nl.leocms.connectors.UISconnector.input.customers.model.*;
-
-
+import nl.leocms.connectors.UISconnector.shared.properties.process.PropertyUtil;
 
 public class Updater
 {
@@ -64,69 +60,8 @@ public class Updater
       nodeDeelnemers.commit();
 
 
+	  List listProperties = customerInformation.getPropertyList().getProperty();
+	  PropertyUtil.setProperties(cloud, nodeDeelnemers, listProperties);
 
-
-
-      //Delete old values
-      nl = cloud.getList("",
-                         "deelnemers,pools,topics",
-                         "deelnemers.number,topics.number",
-                         "deelnemers.externid='" + sExternID + "'",
-                         null, null, null, true);
-
-      for (int f = 0; f < nl.size(); f++)
-      {
-         Node nodeTopic = cloud.getNode(nl.getNode(f).getStringValue("topics.number"));
-
-         NodeList nl2 = cloud.getList("" + nodeTopic.getNumber(),
-                                      "topics,pools,contentelement",
-                                      "topics.number,contentelement.number",
-                                      "contentelement.number!='" + nodeDeelnemers.getNumber() + "'",
-                                      null, null, null, true);
-         if (nl2.size() == 0)
-         {
-            nodeTopic.delete(true);
-         }
-      }
-
-      //Put new values
-      List listProperties = customerInformation.getPropertyList().getProperty();
-      for (Iterator it = listProperties.iterator(); it.hasNext(); )
-      {
-         Property property = (Property) it.next();
-
-         Node nodeTopic = cloud.getNodeManager("topics").createNode();
-         nodeTopic.setStringValue("externid", property.getPropertyId());
-         nodeTopic.setStringValue("title", property.getPropertyDescription());
-         nodeTopic.commit();
-
-         //Create pools
-         for (Iterator it2 = property.getPropertyValue().iterator(); it2.hasNext(); )
-         {
-            PropertyValue propertyValue = (PropertyValue) it2.next();
-
-            NodeList nl2 = cloud.getList("",
-                                         "pools",
-                                         "pools.number,pools.externid",
-                                         "pools.externid='" + propertyValue.getPropertyValueId() + "'",
-                                         null, null, null, true);
-            Node nodePool;
-            if (nl2.size() == 0)
-            {
-               nodePool = cloud.getNodeManager("pools").createNode();
-               nodePool.setStringValue("externid", propertyValue.getPropertyValueId());
-               nodePool.setStringValue("name", propertyValue.getPropertyValueDescription());
-               nodePool.commit();
-
-               nodeDeelnemers.createRelation(nodePool, cloud.getRelationManager("posrel")).commit();
-            }
-            else
-            {
-               nodePool = cloud.getNode(nl2.getNode(0).getStringValue("pools.number"));
-            }
-
-            nodeTopic.createRelation(nodePool, cloud.getRelationManager("posrel")).commit();
-         }
-      }
    }
 }
