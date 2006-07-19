@@ -16,6 +16,16 @@
 
 <mm:cloud method="http" jspvar="cloud" rank="basic user" jspvar="cloud">
 <mm:log jspvar="log">
+<html>
+<head>
+   <title>Import products from UIS</title>
+   <link href="<mm:url page="<%= editwizard_location %>"/>/style/color/wizard.css" type="text/css" rel="stylesheet"/>
+   <link href="<mm:url page="<%= editwizard_location %>"/>/style/layout/wizard.css" type="text/css" rel="stylesheet"/>
+   <style>
+      p { margin: 0px; }
+   </style>
+</head>
+<body style="overflow:auto;">
 <%
    SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 
@@ -49,26 +59,28 @@
 
    //Let's get Model
    ArrayList arliModel = Decoder.decode(document);
-   System.out.println("========" + arliModel.size());
-
 
    //Let's update the db
    ArrayList arliChanges = Updater.update(cloud, arliModel);
-   if(arliChanges.size()==0) {
+   
+   if(document==null) {
+      %>Could not parse <%= UISconfig.getProductUrl() %><br/><%
+   } else if(arliChanges.size()==0) {
       %>No changes found in <%= UISconfig.getProductUrl() %><br/><%
    } else {
    %>
-   <table border="1" cellpadding="5" cellspacing="0">
+   Imported products from <%= UISconfig.getProductUrl() %><br/><br/>
+   <table class="formcontent" border="1">
     <tr>
-       <td>Status</td>
-       <td>Evenement Node</td>
-       <td>externid</td>
-       <td>embargo</td>
-       <td>verloopdatum</td>
-       <td>price</td>
-       <td>registration</td>
-       <td>Payment types</td>
-       <td>Properties</td>
+       <th>status</th>
+       <th>evenement node</th>
+       <th>externid</th>
+       <th>embargo</th>
+       <th>verloopdatum</th>
+       <th>price</th>
+       <th>registration</th>
+       <th>payment types</th>
+       <th>properties</th>
     </tr>
    <%
    for(Iterator it = arliChanges.iterator(); it.hasNext();){
@@ -113,7 +125,7 @@
        %><td><%
 
           %>
-          <table width="100%" border="1" cellpadding="5" cellspacing="0">
+          <table width="100%" border="1" class="formcontent">
            <tr>
               <td>Property ID</td>
               <td>Description</td>
@@ -127,7 +139,7 @@
 
               %><td><%= property.getPropertyId() %></td><%
               %><td><%= property.getPropertyDescription() %></td><%
-              %><td><table width="100%" border="1" cellpadding="3" cellspacing="0">
+              %><td><table width="100%" border="1" class="formcontent">
                  <tr><td>Externid</td><td>Description</td></tr>
                  <%
                  for(Iterator it3 = property.getPropertyValues().iterator(); it3.hasNext();){
@@ -150,6 +162,7 @@
    %></table><%
     }
 %>
-
+</body>
+</html>
 </mm:log>
 </mm:cloud>
