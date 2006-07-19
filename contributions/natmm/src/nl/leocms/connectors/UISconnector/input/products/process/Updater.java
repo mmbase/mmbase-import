@@ -19,13 +19,18 @@ package nl.leocms.connectors.UISconnector.input.products.process;
 
 import java.util.*;
 import org.mmbase.bridge.*;
+import org.mmbase.util.logging.*;
 import nl.leocms.connectors.UISconnector.input.products.model.*;
 import nl.leocms.connectors.UISconnector.input.products.process.Result;
 import nl.leocms.connectors.UISconnector.shared.properties.model.*;
-
+import nl.leocms.connectors.UISconnector.shared.properties.process.PropertyUtil;
 
 public class Updater
 {
+
+   private static final Logger log = Logging.getLoggerInstance(Updater.class);
+
+
    public static ArrayList update(Cloud cloud, ArrayList arliProducts){
       ArrayList arliResult = new ArrayList();
 
@@ -55,13 +60,40 @@ public class Updater
                nodeEvenement.setStringValue("begindatum", "" + product.getEmbargoDate().getTime() / 1000);
                nodeEvenement.setStringValue("einddatum", "" + product.getExpireDate().getTime() / 1000);
 
+               nodeEvenement.setStringValue("isspare", "false");
+			   nodeEvenement.setStringValue("isoninternet", "true");
+			   nodeEvenement.setStringValue("iscanceled", "false");
+			   nodeEvenement.setStringValue("groepsexcursie", "0");
+			   nodeEvenement.setStringValue("aanmelden_vooraf", "1");
+			   nodeEvenement.setStringValue("adres_verplicht", "1");
+			   nodeEvenement.setStringValue("reageer", "0");
+			   nodeEvenement.setStringValue("min_aantal_deelnemers", "0");
+			   nodeEvenement.setStringValue("max_aantal_deelnemers", "9999");
+
+			   // prevent creation of NULL values (NULL and "" are represented the same way)
+			   nodeEvenement.setStringValue("dagomschrijving", "");
+			   nodeEvenement.setStringValue("status", "-1");
+			   nodeEvenement.setStringValue("use_verloopdatum", "-1");
+               nodeEvenement.setStringValue("achteraf_bevestigen", "-1");
+
+			   // these values are not used in the agenda.jsp of natmm and the editors
+			   nodeEvenement.setStringValue("begininschrijving", "" + product.getEmbargoDate().getTime() / 1000);
+			   nodeEvenement.setStringValue("eindinschrijving", "" + product.getExpireDate().getTime() / 1000);
+
+			   // workaround use expiredate from UIS as begin and end date of event
+			   nodeEvenement.setStringValue("begindatum", "" + product.getExpireDate().getTime() / 1000);
+			   nodeEvenement.setStringValue("einddatum", "" + product.getExpireDate().getTime() / 1000);
+
+			   // for events of type parent the begindatum == embargo and verloopdatum == enddatum
+			   // see nl.leocms.builders.ContenEvenement class
+               nodeEvenement.setStringValue("embargo", "" + product.getExpireDate().getTime() / 1000);
+               nodeEvenement.setStringValue("verloopdatum", "" + product.getExpireDate().getTime() / 1000);
+
             }
             else{
                //The node is already present
                result.setStatus(result.UPDATED);
             }
-            nodeEvenement.setStringValue("embargo", "" + product.getEmbargoDate().getTime() / 1000);
-            nodeEvenement.setStringValue("verloopdatum", "" + product.getExpireDate().getTime() / 1000);
             nodeEvenement.setStringValue("titel", product.getDescription());
 
             nodeEvenement.commit();
@@ -88,7 +120,8 @@ public class Updater
 
             //Set Properties
             try{
-               setProperties(cloud, nodeEvenement, product);
+			  List listProperties = product.getProperties();
+              PropertyUtil.setProperties(cloud, nodeEvenement, listProperties);
             }
             catch(Exception e){
                result.setStatus(Result.EXCEPTION);
@@ -182,8 +215,8 @@ public class Updater
          //Looks for an already existing Node
          NodeList nl = cloud.getList("",
                                      "payment_type",
-                                     "payment_type.number,payment_type.naam",
-                                     "payment_type.naam='" + paymentType.getId() + "'",
+                                     "payment_type.number,payment_type.externid",
+                                     "payment_type.externid='" + paymentType.getId() + "'",
                                      null, null, null, true);
          Node nodePaymentType;
          if(nl.size() > 0){
@@ -202,73 +235,5 @@ public class Updater
          nodeEvenement.commit();
       }
    }
-
-
-   private static void setProperties(Cloud cloud, Node nodeEvenement, Product product) throws Exception{
-
-      //Delete old values
-      NodeList nl = cloud.getList("",
-                         "evenement,pools,topics",
-                         "evenement.number,topics.number",
-                         "evenement.number='" + nodeEvenement.getNumber() + "'",
-                         null, null, null, true);
-
-      for (int f = 0; f < nl.size(); f++)
-      {
-         Node nodeTopics = cloud.getNode(nl.getNode(f).getStringValue("topics.number"));
-
-         NodeList nl2 = cloud.getList("" + nodeTopics.getNumber(),
-                                      "topics,pools,contentelement",
-                                      "topics.number,contentelement.number",
-                                      "contentelement.number!='" + nodeEvenement.getNumber() + "'",
-                                      null, null, null, true);
-         if (nl2.size() == 0)
-         {
-            nodeTopics.delete(true);
-         }
-      }
-
-      //Put new values
-      List listProperties = product.getProperties();
-      for (Iterator it = listProperties.iterator(); it.hasNext(); )
-      {
-         Property property = (Property) it.next();
-
-         Node nodeTopics = cloud.getNodeManager("topics").createNode();
-         nodeTopics.setStringValue("externid", property.getPropertyId());
-         nodeTopics.setStringValue("title", property.getPropertyDescription());
-         nodeTopics.commit();
-
-         //Create pools
-         for (Iterator it2 = property.getPropertyValues().iterator(); it2.hasNext(); )
-         {
-            PropertyValue propertyValue = (PropertyValue) it2.next();
-
-            NodeList nl2 = cloud.getList("",
-                                         "pools",
-                                         "pools.number,pools.externid",
-                                         "pools.externid='" + propertyValue.getPropertyValueId() + "'",
-                                         null, null, null, true);
-            Node nodePool;
-            if (nl2.size() == 0)
-            {
-               nodePool = cloud.getNodeManager("pools").createNode();
-               nodePool.setStringValue("externid", propertyValue.getPropertyValueId());
-               nodePool.setStringValue("name", propertyValue.getPropertyValueDescription());
-               nodePool.commit();
-
-               nodeEvenement.createRelation(nodePool, cloud.getRelationManager("posrel")).commit();
-            }
-            else
-            {
-               nodePool = cloud.getNode(nl2.getNode(0).getStringValue("pools.number"));
-            }
-
-            nodeTopics.createRelation(nodePool, cloud.getRelationManager("posrel")).commit();
-         }
-      }
-
-   }
-
 
 }
