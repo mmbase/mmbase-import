@@ -39,7 +39,7 @@
       <tr>
         <th>
           <mm:present referid="extrauserlink">
-            <mm:include  page="$extrauserlink" />
+            <mm:include  page="$extrauserlink" notfound="skip" />
           </mm:present>
         </th>
         <mm:fieldlist nodetype="$nodetype"  fields="$fields">
@@ -82,7 +82,7 @@
       <tr id="object<mm:field name="number"/>" <mm:even>class="even"</mm:even> >
         <td>
           <mm:present referid="extrauserlink">
-            <mm:include referids="user" page="$extrauserlink" />
+            <mm:include referids="user" page="$extrauserlink" notfound="skip"/>
           </mm:present>
         </td>
         <mm:fieldlist fields="$fields">
