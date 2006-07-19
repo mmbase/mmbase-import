@@ -1,9 +1,7 @@
 <%@page language="java" contentType="text/html; charset=utf-8"
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><%@page import="java.util.*" %><mm:cloud
-
-
->
+%><%@page import="java.util.*" %>
+<mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud">
 <%
    String pollId = request.getParameter("poll"); 
    if(pollId==null){ pollId="-1"; }
