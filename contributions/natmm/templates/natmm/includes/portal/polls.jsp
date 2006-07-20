@@ -3,7 +3,9 @@
                                 + "(poll.use_verloopdatum='0' OR poll.verloopdatum > '" + nowSec + "' )";
 %>
 <%--  constraints="<%= embargoPollConstraint %>" --%>
-polls<br/>
+<div style="background-color: #BDBDBD; color:black; padding-left:10px; font-weight:bold; width:100%; height:18px">
+  POLLS
+</div>
 
 <mm:list nodes="<%= paginaID %>" path="pagina,contentrel,poll">
   <mm:field name="poll.omschrijving"/><br/>
@@ -36,7 +38,7 @@ polls<br/>
     <script language="JavaScript" type="text/javascript">
     <%= "<!--" %>
       function postIt() {
-        window.open('','poll<%= poll_number %>','height=<%= 171 + (total_answers*46) %>,width=398, scrollbars=NO, menubar=0, toolbar=0, status=0, directories=0, resizable=0');
+        window.open('','poll<%= poll_number %>','height=800,width=1000, scrollbars=YES, location = 1, menubar=1, toolbar=1, status=1, directories=1, resizable=1');
         var antw = "";
         for (i = 0; i < <%= ""+total_answers %>; i++) {
           if (document.poll<%= poll_number %>.antwoord[i].checked) {

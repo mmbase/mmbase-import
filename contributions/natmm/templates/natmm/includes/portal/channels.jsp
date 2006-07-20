@@ -13,7 +13,7 @@
    int count = 0;
 %>
 <mm:node number="channels">
-  <span class="colortitle">CHANNELS<br/></span>
+  <div style="background-color: #BDBDBD; color:black; padding-left:10px; font-weight:bold; width:100%; height:18px">CHANNELS</div>
   <table>
     <mm:related path="rubriek,parent,rubriek2,posrel,pagina" orderby="parent.pos, posrel.pos" max="4">
     <mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false">
@@ -21,7 +21,7 @@
       count++;
       if (count==1 || count==3) { %><tr><% }
 %>
-      <td>
+      <td width="50%">
         <table>
         <tr>
           <td>
@@ -32,7 +32,7 @@
             </mm:node>
           </td>
           <td>
-            <a href="pagina.jsp?pagina=<%= pagina_number %>" style="text-decoration:none;">
+            <a href="<%= ph.createPaginaUrl(pagina_number,request.getContextPath()) %>" style="text-decoration:none;">
               <span class="colortitle">
                 <mm:field name="pagina.titel" jspvar="pagina_titel" vartype="String" write="false">
                   <%= pagina_titel.toUpperCase() %>
@@ -40,7 +40,8 @@
               </span>
             </a>
             <br/>
-            <a href="pagina.jsp?pagina=<%= pagina_number %>" class="hover"><mm:field name="pagina.omschrijving"/></a>
+            <a href="<%= ph.createPaginaUrl(pagina_number,request.getContextPath()) %>" 
+               class="hover"><mm:field name="pagina.omschrijving"/></a>
           </td>
         </tr>
         </table>

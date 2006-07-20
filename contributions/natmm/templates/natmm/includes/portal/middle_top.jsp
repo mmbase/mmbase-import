@@ -21,7 +21,10 @@ function changeImages() {
 // -->
 </script>
 <mm:node number="channels">
-  <span class="colortitle">LifeLine vandaag!<br/></span>
+  <div style="background-color: #BDBDBD; color:black; padding-left:10px; font-weight:bold; width:100%; height:18px">
+    <img src="includes/portal/logo.gif" border="0" />
+    VANDAAG
+  </div>
   <mm:related path="rubriek,parent,rubriek2,posrel,pagina,contentrel,artikel" orderby="artikel.embargo"
              constraints="<%= articleConstraint %>" max="3">
     <mm:field name="rubriek2.naam" jspvar="rubriek2_naam" vartype="String" write="false">
@@ -39,13 +42,13 @@ function changeImages() {
         </td>
         <td>
     </mm:first>
-          <a href="artikel.jsp?artikel=<%= artikel_number %>" style="text-decoration:none;">
+          <a href="<%= ph.createItemUrl(artikel_number,paginaID,null,request.getContextPath()) %>" style="text-decoration:none;">
             <span class="colortitle">
               <%= rubriek2_naam.toUpperCase() %>
             </span>
           </a><br/>
           <mm:node element="artikel">
-            <a href="artikel.jsp?artikel=<%= artikel_number %>"
+            <a href="<%= ph.createItemUrl(artikel_number,paginaID,null,request.getContextPath()) %>"
               <mm:relatednodes type="images" max="1">
                 onmouseover="changeImages('rollimage', '<mm:image  template="s(195)" />'); return true;"
                 onmouseout="changeImages('rollimage', '<mm:write referid="first_image"/>'); return true;"
@@ -63,7 +66,9 @@ function changeImages() {
     </mm:field>
   </mm:related>
 
-  <span class="colortitle">STYLE! laatste nieuws <br/></span>
+  <div style="background-color: #BDBDBD; color:black; padding-left:10px; font-weight:bold; width:100%; height:18px">
+    LAATSTE NIEUWS
+  </div>
   <table>
   <tr>
     <td>
@@ -71,12 +76,13 @@ function changeImages() {
                  constraints="<%= articleConstraint %>" offset="3" max="5">
         <mm:field name="rubriek2.naam" jspvar="rubriek2_naam" vartype="String" write="false">
         <mm:field name="artikel.number" jspvar="artikel_number" vartype="String" write="false">
-          <a href="artikel.jsp?artikel=<%= artikel_number %>" style="text-decoration:none;">
+          <a href="<%= ph.createItemUrl(artikel_number,paginaID,null,request.getContextPath()) %>" style="text-decoration:none;">
             <span class="colortitle">
               <%= rubriek2_naam.toUpperCase() %>
             </span>
           </a>
-          | <a href="artikel.jsp?artikel=<%= artikel_number %>" class="hover"><mm:field name="artikel.titel"/></a><br/>
+          | <a href="<%= ph.createItemUrl(artikel_number,paginaID,null,request.getContextPath()) %>" 
+               class="hover"><mm:field name="artikel.titel"/></a><br/>
         </mm:field>
         </mm:field>
       </mm:related>
