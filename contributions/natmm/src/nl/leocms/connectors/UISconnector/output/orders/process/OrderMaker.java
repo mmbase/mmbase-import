@@ -72,18 +72,35 @@ public class OrderMaker
              	log.error("There is no externid for " + nodeEvenement.getStringValue("number") + ". Probably this isn't an event imported from UIS.");
 		     }
 
+             // get the payment_type.externid for inschrijvingen.betaalwijze
              Cloud cloud = CloudFactory.getCloud();
 			 NodeManager nmPaymentTypes = cloud.getNodeManager("payment_type");
 			 NodeList nlPaymentTypes = nmPaymentTypes.getList("naam='" + nodeSubscription.getStringValue("betaalwijze") + "'",null,null);
 
   			 if(nlPaymentTypes.size()==0) {
-				 log.error("There is no related payment_types object for subscription "  + nodeSubscription.getNumber());
+				 log.error("There is no payment_type that matches '" + nodeSubscription.getStringValue("betaalwijze")
+				 	+ "' for subscription "  + nodeSubscription.getNumber());
 
 			 } else {
 				 Node nodePaymentType = nlPaymentTypes.getNode(0);
 	             order.setPaymentType(nodePaymentType.getStringValue("externid"));
 	             log.info("Setting payment type to "  + nodePaymentType.getStringValue("externid"));
 		 	 }
+
+		 	 // get the media.externid for inschrijvingen.bron
+			 NodeManager nmMedia = cloud.getNodeManager("media");
+			 NodeList nlMedia = nmMedia.getList("naam='" + nodeSubscription.getStringValue("source") + "'",null,null);
+
+			 if(nlMedia.size()==0) {
+				 log.error("There is no acquisition id that matches '" + nodeSubscription.getStringValue("source")
+				 	+ "' for subscription "  + nodeSubscription.getNumber());
+
+			 } else {
+				 Node nodeMedia = nlMedia.getNode(0);
+				 order.setAcquisitionId(nodeMedia.getStringValue("externid"));
+				 log.info("Setting acquisition id to "  + nodeMedia.getStringValue("externid"));
+			 }
+
 	     }
       }
       catch (Exception e)
