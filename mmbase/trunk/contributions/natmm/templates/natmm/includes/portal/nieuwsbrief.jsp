@@ -12,6 +12,9 @@
                               + "(artikel.use_verloopdatum='0' OR artikel.verloopdatum > '" + nowSec + "' )";
 %>
 <mm:node number="channels">
-nieuw<br/>
+  <div style="background-color: #BDBDBD; color:black; padding-left:10px; font-weight:bold; width:100%; height:18px">
+    NIEUWSBRIEF
+  </div>
+  dfsf sfsdf sdf sdf sf shd fgd 
 </mm:node>
 </mm:cloud>
