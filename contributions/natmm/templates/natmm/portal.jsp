@@ -55,7 +55,18 @@
       <jsp:param name="rs" value="<%= styleSheet %>" />
       <jsp:param name="sr" value="2" />
     </jsp:include>
+    <img src="includes/portal/video.gif" border="0" />
     <jsp:include page="includes/portal/linklijst.jsp">
+      <jsp:param name="s" value="<%= paginaID %>" />
+      <jsp:param name="r" value="<%= rubriekID %>" />
+      <jsp:param name="rs" value="<%= styleSheet %>" />
+    </jsp:include>
+    <jsp:include page="includes/portal/fun.jsp">
+      <jsp:param name="s" value="<%= paginaID %>" />
+      <jsp:param name="r" value="<%= rubriekID %>" />
+      <jsp:param name="rs" value="<%= styleSheet %>" />
+    </jsp:include>
+    <jsp:include page="includes/portal/weblogs.jsp">
       <jsp:param name="s" value="<%= paginaID %>" />
       <jsp:param name="r" value="<%= rubriekID %>" />
       <jsp:param name="rs" value="<%= styleSheet %>" />

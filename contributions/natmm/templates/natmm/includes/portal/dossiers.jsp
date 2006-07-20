@@ -8,6 +8,9 @@ PaginaHelper ph = new PaginaHelper(cloud);
 String rootID = ph.getRootRubriek(cloud,objectID);
 %>
 <mm:node number="<%=objectID%>">
+  <div style="background-color: #BDBDBD; color:black; padding-left:10px; font-weight:bold; width:100%; height:18px">
+    DOSSIERS
+  </div>
 <mm:related path="posrel,dossier" fields="dossier.number,dossier.naam" orderby="posrel.pos">
 	<mm:field name="dossier.number" jspvar="dossier_number" vartype="String" write="false">
 	<mm:field name="dossier.naam" jspvar="dossier_naam" vartype="String" write="false">
