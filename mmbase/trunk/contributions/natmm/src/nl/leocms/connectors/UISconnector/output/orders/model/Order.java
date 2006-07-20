@@ -28,6 +28,7 @@ public class Order
    private Date orderDate = new Date();
    private String paymentType = "";
    private CustomerInformation customerInformation = new CustomerInformation();
+   private String extraInformation = "";
 
    public Order()
    {
@@ -68,6 +69,10 @@ public class Order
       this.customerInformation = customerInformation;
    }
 
+   public void setExtraInformation(String extraInformation) {
+      this.extraInformation = extraInformation;
+   }
+
    public int getOrderId()
    {
       return orderId;
@@ -101,6 +106,10 @@ public class Order
    public CustomerInformation getCustomerInformation()
    {
       return customerInformation;
+   }
+
+   public String getExtraInformation() {
+      return extraInformation;
    }
 
 }

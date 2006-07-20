@@ -34,7 +34,7 @@ public class OrderMaker
    public static Order makeOrder(Node nodeSubscription)
    {
 
-	  log.info("Creating new order for inschrijving " + nodeSubscription.getNumber());
+     log.info("Creating new order for inschrijving " + nodeSubscription.getNumber());
 
       Order order = new Order();
 
@@ -52,113 +52,113 @@ public class OrderMaker
       customerInformation.setAddress(address);
 
       order.setOrderId(nodeSubscription.getNumber());
+      order.setExtraInformation(nodeSubscription.getStringValue("description"));
 
       try
       {
 
-	     NodeList nlEvenement = nodeSubscription.getRelatedNodes("evenement","posrel",null);
+        NodeList nlEvenement = nodeSubscription.getRelatedNodes("evenement","posrel",null);
 
-	     if(nlEvenement.size()==0) {
-			 log.error("There are no related evenement object for inschrijving "  + nodeSubscription.getNumber());
+        if(nlEvenement.size()==0) {
+          log.error("There are no related evenement object for inschrijving "  + nodeSubscription.getNumber());
 
-	     } else if(nlEvenement.size()>1) {
-			 log.error("There is more than one evenement object for inschrijving "  + nodeSubscription.getNumber());
+        } else if(nlEvenement.size()>1) {
+          log.error("There is more than one evenement object for inschrijving "  + nodeSubscription.getNumber());
 
-	     } else {
+        } else {
 
              Node nodeEvenement = nlEvenement.getNode(0);
              order.setExternId(nodeEvenement.getStringValue("externid"));
              if(nodeEvenement.getStringValue("externid").equals("")) {
-             	log.error("There is no externid for " + nodeEvenement.getStringValue("number") + ". Probably this isn't an event imported from UIS.");
-		     }
+                log.error("There is no externid for " + nodeEvenement.getStringValue("number") + ". Probably this isn't an event imported from UIS.");
+           }
 
              // get the payment_type.externid for inschrijvingen.betaalwijze
              Cloud cloud = CloudFactory.getCloud();
-			 NodeManager nmPaymentTypes = cloud.getNodeManager("payment_type");
-			 NodeList nlPaymentTypes = nmPaymentTypes.getList("naam='" + nodeSubscription.getStringValue("betaalwijze") + "'",null,null);
+          NodeManager nmPaymentTypes = cloud.getNodeManager("payment_type");
+          NodeList nlPaymentTypes = nmPaymentTypes.getList("naam='" + nodeSubscription.getStringValue("betaalwijze") + "'",null,null);
 
-  			 if(nlPaymentTypes.size()==0) {
-				 log.error("There is no payment_type that matches '" + nodeSubscription.getStringValue("betaalwijze")
-				 	+ "' for subscription "  + nodeSubscription.getNumber());
+            if(nlPaymentTypes.size()==0) {
+             log.error("There is no payment_type that matches '" + nodeSubscription.getStringValue("betaalwijze")
+                + "' for subscription "  + nodeSubscription.getNumber());
 
-			 } else {
-				 Node nodePaymentType = nlPaymentTypes.getNode(0);
-	             order.setPaymentType(nodePaymentType.getStringValue("externid"));
-	             log.info("Setting payment type to "  + nodePaymentType.getStringValue("externid"));
-		 	 }
+          } else {
+             Node nodePaymentType = nlPaymentTypes.getNode(0);
+                order.setPaymentType(nodePaymentType.getStringValue("externid"));
+                log.info("Setting payment type to "  + nodePaymentType.getStringValue("externid"));
+           }
 
-		 	 // get the media.externid for inschrijvingen.bron
-			 NodeManager nmMedia = cloud.getNodeManager("media");
-			 NodeList nlMedia = nmMedia.getList("naam='" + nodeSubscription.getStringValue("source") + "'",null,null);
+           // get the media.externid for inschrijvingen.bron
+          NodeManager nmMedia = cloud.getNodeManager("media");
+          NodeList nlMedia = nmMedia.getList("naam='" + nodeSubscription.getStringValue("source") + "'",null,null);
 
-			 if(nlMedia.size()==0) {
-				 log.error("There is no acquisition id that matches '" + nodeSubscription.getStringValue("source")
-				 	+ "' for subscription "  + nodeSubscription.getNumber());
+          if(nlMedia.size()==0) {
+             log.error("There is no acquisition id that matches '" + nodeSubscription.getStringValue("source")
+                + "' for subscription "  + nodeSubscription.getNumber());
 
-			 } else {
-				 Node nodeMedia = nlMedia.getNode(0);
-				 order.setAcquisitionId(nodeMedia.getStringValue("externid"));
-				 log.info("Setting acquisition id to "  + nodeMedia.getStringValue("externid"));
-			 }
+          } else {
+             Node nodeMedia = nlMedia.getNode(0);
+             order.setAcquisitionId(nodeMedia.getStringValue("externid"));
+             log.info("Setting acquisition id to "  + nodeMedia.getStringValue("externid"));
+          }
 
-	     }
+        }
       }
       catch (Exception e)
       {
-		  log.error("Could not set externid for inschrijving " + nodeSubscription.getNumber());
+        log.error("Could not set externid for inschrijving " + nodeSubscription.getNumber());
       }
 
       try
       {
+        NodeList nlDeelnemers = nodeSubscription.getRelatedNodes("deelnemers","posrel",null);
 
-	     NodeList nlDeelnemers = nodeSubscription.getRelatedNodes("deelnemers","posrel",null);
+        if(nlDeelnemers.size()==0) {
 
-	     if(nlDeelnemers.size()==0) {
+          log.error("There are no related deelnemer object for inschrijving "  + nodeSubscription.getNumber());
 
-			 log.error("There are no related deelnemer object for inschrijving "  + nodeSubscription.getNumber());
+        } else if(nlDeelnemers.size()>1) {
 
-	     } else if(nlDeelnemers.size()>1) {
+          log.error("There is more than one deelnemer object for inschrijving "  + nodeSubscription.getNumber());
 
-			 log.error("There is more than one deelnemer object for inschrijving "  + nodeSubscription.getNumber());
+        } else {
 
-	     } else {
+          Node nodeDeelnemers = nlDeelnemers.getNode(0);
 
-			 Node nodeDeelnemers = nlDeelnemers.getNode(0);
+          order.setQuantity(nodeDeelnemers.getIntValue("bron"));
 
-			 order.setQuantity(nodeDeelnemers.getIntValue("bron"));
+          personalInformation.setInitials(nodeDeelnemers.getStringValue("initials"));
+          personalInformation.setFirstName(nodeDeelnemers.getStringValue("firstname"));
+          personalInformation.setSuffix(nodeDeelnemers.getStringValue("suffix"));
+          personalInformation.setLastName(nodeDeelnemers.getStringValue("lastname"));
+          personalInformation.setBirthDate(new Date(nodeDeelnemers.getLongValue("dayofbirth") * 1000));
+          String sGender = nodeDeelnemers.getStringValue("gender");
+          personalInformation.setGender(sGender.substring(0,1).toUpperCase());
+          personalInformation.setTelephoneNo(nodeDeelnemers.getStringValue("privatephone"));
+          personalInformation.setEmailAddress(nodeDeelnemers.getStringValue("email"));
 
-			 personalInformation.setInitials(nodeDeelnemers.getStringValue("initials"));
-			 personalInformation.setFirstName(nodeDeelnemers.getStringValue("firstname"));
-			 personalInformation.setSuffix(nodeDeelnemers.getStringValue("suffix"));
-			 personalInformation.setLastName(nodeDeelnemers.getStringValue("lastname"));
-			 personalInformation.setBirthDate(new Date(nodeDeelnemers.getLongValue("dayofbirth") * 1000));
-			 String sGender = nodeDeelnemers.getStringValue("gender");
-			 personalInformation.setGender(sGender.substring(0,1).toUpperCase());
-			 personalInformation.setTelephoneNo(nodeDeelnemers.getStringValue("privatephone"));
-			 personalInformation.setEmailAddress(nodeDeelnemers.getStringValue("email"));
+          address.setAddressType("P");
 
-			 address.setAddressType("P");
+           String sCompositeNumber = nodeDeelnemers.getStringValue("huisnummer");
+           int i = 0;
+           while (	i < sCompositeNumber.length()
+                    && ('0'<=sCompositeNumber.charAt(i))&&(sCompositeNumber.charAt(i)<='9')) {
+             i++;
+           }
+           if(i>0) {
+              address.setHouseNumber(new Integer(sCompositeNumber.substring(0, i)).intValue());
+           }
+           if(i<sCompositeNumber.length()) {
+             address.setHouseNumberExtension(sCompositeNumber.substring(i).trim());
+           }
 
- 			 String sCompositeNumber = nodeDeelnemers.getStringValue("huisnummer");
- 			 int i = 0;
- 			 while (	i < sCompositeNumber.length()
- 			 			&& ('0'<=sCompositeNumber.charAt(i))&&(sCompositeNumber.charAt(i)<='9')) {
-				 i++;
-		     }
-		     if(i>0) {
-		     	address.setHouseNumber(new Integer(sCompositeNumber.substring(0, i)).intValue());
-		     }
-		     if(i<sCompositeNumber.length()) {
-			 	address.setHouseNumberExtension(sCompositeNumber.substring(i).trim());
-		 	 }
+          address.setStreetName(nodeDeelnemers.getStringValue("straatnaam"));
+          address.setExtraInfo(nodeDeelnemers.getStringValue("lidnummer"));
+          address.setZipCode(nodeDeelnemers.getStringValue("postcode"));
+          address.setCity(nodeDeelnemers.getStringValue("plaatsnaam"));
 
-			 address.setStreetName(nodeDeelnemers.getStringValue("straatnaam"));
-			 address.setExtraInfo(nodeDeelnemers.getStringValue("lidnummer"));
-			 address.setZipCode(nodeDeelnemers.getStringValue("postcode"));
-			 address.setCity(nodeDeelnemers.getStringValue("plaatsnaam"));
-
-			 businessInformation.setTelephoneNo("privatphone");
-	     }
+          businessInformation.setTelephoneNo("privatphone");
+        }
       }
       catch (Exception e)
       {

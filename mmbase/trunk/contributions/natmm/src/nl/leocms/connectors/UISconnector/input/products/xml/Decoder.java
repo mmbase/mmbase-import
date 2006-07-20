@@ -33,149 +33,158 @@ public class Decoder
 
    private static SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 
-
-   public static ArrayList decode(Document document){
+   public static ArrayList decode(Document document) {
 
       ArrayList arliResult = new ArrayList();
 
-      if(document==null) {
-		  log.error("document is null");
+      if (document == null) {
+         log.error("document is null");
 
-      } else {
+      }
+      else {
 
-		  Element elemRoot = document.getDocumentElement();
-		  NodeList nlProducts = elemRoot.getChildNodes();
+         Element elemRoot = document.getDocumentElement();
+         NodeList nlProducts = elemRoot.getChildNodes();
 
-		  for(int f = 0; f < nlProducts.getLength(); f++){
-			 Node nodeProduct = nlProducts.item(f);
+         for (int f = 0; f < nlProducts.getLength(); f++) {
+            Node nodeProduct = nlProducts.item(f);
 
-			 if("product".equals(nodeProduct.getNodeName())){
+            if ("product".equals(nodeProduct.getNodeName())) {
 
-				Product product = new Product();
-				arliResult.add(product);
+               Product product = new Product();
+               arliResult.add(product);
 
-				NodeList nlProductData = nodeProduct.getChildNodes();
+               NodeList nlProductData = nodeProduct.getChildNodes();
 
-				for (int g = 0; g < nlProductData.getLength(); g++)
-				{
-				   Node nodeProductDataItem = nlProductData.item(g);
+               for (int g = 0; g < nlProductData.getLength(); g++) {
+                  Node nodeProductDataItem = nlProductData.item(g);
 
-				   try{
-					  if ("id".equals(nodeProductDataItem.getNodeName()))
-					  {
-						 product.setExternID(nodeProductDataItem.getFirstChild().getNodeValue());
-					  }
-				   }
-				   catch(Exception ex){
-					   log.error("could not set product.externid");
-				   }
+                  try {
+                     if ("id".equals(nodeProductDataItem.getNodeName())) {
+                        product.setExternID(nodeProductDataItem.getFirstChild().getNodeValue());
+                     }
+                  }
+                  catch (Exception ex) {
+                     log.error("could not set product.externid");
+                  }
 
-				   try{
-					  if ("description".equals(nodeProductDataItem.getNodeName()))
-					  {
-						 product.setDescription(nodeProductDataItem.getFirstChild().getNodeValue());
-					  }
-				   }
-				   catch(Exception ex){
-					   log.error("could not set product.description");
-				   }
+                  try {
+                     if ("description".equals(nodeProductDataItem.getNodeName())) {
+                        product.setDescription(nodeProductDataItem.getFirstChild().getNodeValue());
+                     }
+                  }
+                  catch (Exception ex) {
+                     log.error("could not set product.description");
+                  }
 
-				   try{
-					  if ("price".equals(nodeProductDataItem.getNodeName()))
-					  {
-						 product.setPrice(new Double(nodeProductDataItem.getFirstChild().getNodeValue()).doubleValue());
-					  }
-				   }
-				   catch(Exception ex){
-					   log.error("could not set product.price");
-				   }
+                  try {
+                     if ("price".equals(nodeProductDataItem.getNodeName())) {
+                        product.setPrice(new Double(nodeProductDataItem.getFirstChild().getNodeValue()).doubleValue());
+                     }
+                  }
+                  catch (Exception ex) {
+                     log.error("could not set product.price");
+                  }
 
-				   try{
-					  if ("embargoDate".equals(nodeProductDataItem.getNodeName()))
-					  {
-						 product.setEmbargoDate(df.parse(nodeProductDataItem.getFirstChild().getNodeValue()));
-					  }
-				   }
-				   catch(Exception ex){
-					  log.error("could not set product.embargodate");
-				   }
+                  try {
+                     if ("embargoDate".equals(nodeProductDataItem.getNodeName())) {
+                        product.setEmbargoDate(df.parse(nodeProductDataItem.getFirstChild().getNodeValue()));
+                     }
+                  }
+                  catch (Exception ex) {
+                     log.error("could not set product.embargodate");
+                  }
 
-				   try{
-					  if ("expireDate".equals(nodeProductDataItem.getNodeName()))
-					  {
-						 product.setExpireDate(df.parse(nodeProductDataItem.getFirstChild().getNodeValue()));
-					  }
-				   }
-				   catch(Exception ex){
-					  log.error("could not set product.expiredate");
-				   }
+                  try {
+                     if ("expireDate".equals(nodeProductDataItem.getNodeName())) {
+                        product.setExpireDate(df.parse(nodeProductDataItem.getFirstChild().getNodeValue()));
+                     }
+                  }
+                  catch (Exception ex) {
+                     log.error("could not set product.expiredate");
+                  }
 
+                  try {
+                     if ("membershipRequired".equals(nodeProductDataItem.getNodeName())) {
+                        product.setMembershipRequired(new Boolean(nodeProductDataItem.getFirstChild().getNodeValue()).booleanValue());
+                     }
+                  }
+                  catch (Exception ex) {
+                     log.error("could not set product.membershiprequired");
+                  }
 
-				   try{
-					  if ("membershipRequired".equals(nodeProductDataItem.getNodeName()))
-					  {
-						 product.setMembershipRequired( new Boolean(nodeProductDataItem.getFirstChild().getNodeValue()).booleanValue());
-					  }
-				   }
-				   catch(Exception ex){
-					  log.error("could not set product.membershiprequired");
-				   }
+                  try {
+                     if ("productType".equals(nodeProductDataItem.getNodeName())) {
+                        String sProductType = nodeProductDataItem.getFirstChild().getNodeValue();
 
+                        if ("event".equals(sProductType)) {
+                           product.setProductType(Product.PRODUCT_TYPE_EVENT);
+                        }
+                        else if ("item".equals(sProductType)) {
+                           product.setProductType(Product.PRODUCT_TYPE_ITEM);
+                        }
+                        else if ("subscribe".equals(sProductType)) {
+                           product.setProductType(Product.PRODUCT_TYPE_SUBSCRIPTION);
+                        }
+                        else {
+                           log.error("Unsupported productType=" + sProductType);
+                           throw new Exception("Unsupported productType=" + sProductType);
+                        }
 
-				   try{
-					  if ("paymentTypes".equals(nodeProductDataItem.getNodeName()))
-					  {
-						 ArrayList arliPaymentTypes = new ArrayList();
-						 product.setPaymentTypes(arliPaymentTypes);
+                     }
+                  }
+                  catch (Exception ex) {
+                     log.error("could not set product.membershiprequired");
+                  }
 
-						 NodeList nlPaymentTypes = nodeProductDataItem.getChildNodes();
+                  try {
+                     if ("paymentTypes".equals(nodeProductDataItem.getNodeName())) {
+                        ArrayList arliPaymentTypes = new ArrayList();
+                        product.setPaymentTypes(arliPaymentTypes);
 
+                        NodeList nlPaymentTypes = nodeProductDataItem.getChildNodes();
 
-						 for(int i = 0; i < nlPaymentTypes.getLength(); i++){
-							Node nodePaymentType = nlPaymentTypes.item(i);
+                        for (int i = 0; i < nlPaymentTypes.getLength(); i++) {
+                           Node nodePaymentType = nlPaymentTypes.item(i);
 
-							if ("paymentType".equals(nodePaymentType.getNodeName())){
+                           if ("paymentType".equals(nodePaymentType.getNodeName())) {
 
-							   PaymentType paymentType = new PaymentType();
-							   arliPaymentTypes.add(paymentType);
+                              PaymentType paymentType = new PaymentType();
+                              arliPaymentTypes.add(paymentType);
 
-							   NodeList nlPaymentTypeSubnodes = nodePaymentType.getChildNodes();
-							   for (int j = 0; j < nlPaymentTypeSubnodes.getLength(); j++)
-							   {
-								  Node nlPaymentTypeSubnode = nlPaymentTypeSubnodes.item(j);
+                              NodeList nlPaymentTypeSubnodes = nodePaymentType.getChildNodes();
+                              for (int j = 0; j < nlPaymentTypeSubnodes.getLength(); j++) {
+                                 Node nlPaymentTypeSubnode = nlPaymentTypeSubnodes.item(j);
 
-								  if ("id".equals(nlPaymentTypeSubnode.getNodeName()))
-								  {
-									 paymentType.setId(nlPaymentTypeSubnode.getFirstChild().getNodeValue());
-								  }
-								  if ("desciption".equals(nlPaymentTypeSubnode.getNodeName()))
-								  {
-									 paymentType.setDescription(nlPaymentTypeSubnode.getFirstChild().getNodeValue());
-								  }
-							   }
-							}
-						 }
+                                 if ("id".equals(nlPaymentTypeSubnode.getNodeName())) {
+                                    paymentType.setId(nlPaymentTypeSubnode.getFirstChild().getNodeValue());
+                                 }
+                                 if ("desciption".equals(nlPaymentTypeSubnode.getNodeName())) {
+                                    paymentType.setDescription(nlPaymentTypeSubnode.getFirstChild().getNodeValue());
+                                 }
+                              }
+                           }
+                        }
 
-					  }
-				   }
-				   catch(Exception ex){
-					   log.error("could not set payment types");
-				   }
+                     }
+                  }
+                  catch (Exception ex) {
+                     log.error("could not set payment types");
+                  }
 
-
-				   try{
-					  if ("propertyList".equals(nodeProductDataItem.getNodeName()))
-					  {
-						 product.setProperties(nl.leocms.connectors.UISconnector.shared.properties.xml.Decoder.decode(nodeProductDataItem));
-					  }
-				   }
-				   catch(Exception ex){
-						log.error("could not set properties");
-				   }
-				}
-			 }
-		  }
+                  try {
+                     if ("propertyList".equals(nodeProductDataItem.getNodeName())) {
+                        product.setProperties(nl.leocms.connectors.UISconnector.shared.properties.xml.Decoder.decode(nodeProductDataItem));
+                     }
+                  }
+                  catch (Exception ex) {
+                     log.error("could not set properties");
+                  }
+               }
+            }
+         }
       }
       return arliResult;
    }
 }
+

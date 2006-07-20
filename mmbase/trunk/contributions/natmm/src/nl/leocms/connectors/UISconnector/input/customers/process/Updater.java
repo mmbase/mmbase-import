@@ -57,11 +57,12 @@ public class Updater
       nodeDeelnemers.setStringValue("lidnummer", customerInformation.getAddress().getExtraInfo());
       nodeDeelnemers.setStringValue("postcode", customerInformation.getAddress().getZipCode());
       nodeDeelnemers.setStringValue("plaatsnaam", customerInformation.getAddress().getCity());
+      nodeDeelnemers.setStringValue("lidnummer", customerInformation.getCommonInformation().getIsMember());
       nodeDeelnemers.commit();
 
 
-	  List listProperties = customerInformation.getPropertyList().getProperty();
-	  PropertyUtil.setProperties(cloud, nodeDeelnemers, listProperties);
+     List listProperties = customerInformation.getPropertyList().getProperty();
+     PropertyUtil.setProperties(cloud, nodeDeelnemers, listProperties);
 
    }
 }
