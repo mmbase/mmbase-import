@@ -21,6 +21,11 @@ import java.util.*;
 
 public class Product
 {
+   public static final int PRODUCT_TYPE_EVENT = 0;
+   public static final int PRODUCT_TYPE_ITEM = 1;
+   public static final int PRODUCT_TYPE_SUBSCRIPTION = 2;
+
+
    private String externID = null;
    private double price = 0.0;
    private ArrayList paymentTypes = new ArrayList();
@@ -29,6 +34,7 @@ public class Product
    private Date expireDate = new Date();
    private ArrayList properties;
    private String description;
+   private int productType = -1;
 
    public Product()
    {
@@ -74,6 +80,11 @@ public class Product
       this.description = description;
    }
 
+   public void setProductType(int productType)
+   {
+      this.productType = productType;
+   }
+
    public String getExternID()
    {
       return externID;
@@ -112,6 +123,11 @@ public class Product
    public String getDescription()
    {
       return description;
+   }
+
+   public int getProductType()
+   {
+      return productType;
    }
 
 }

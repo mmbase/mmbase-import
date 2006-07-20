@@ -49,59 +49,81 @@ public class Updater
          }
 
          try{
-            Node nodeEvenement = getEvenementNode(cloud, sExternID);
-            if(nodeEvenement == null){
+            NodeManager objectNodeManager;
+
+            switch(product.getProductType()){
+               case Product.PRODUCT_TYPE_EVENT:{
+                  objectNodeManager = cloud.getNodeManager("evenement");
+                  break;
+               }
+               case Product.PRODUCT_TYPE_ITEM:{
+                  objectNodeManager = cloud.getNodeManager("items");
+                  break;
+               }
+               case Product.PRODUCT_TYPE_SUBSCRIPTION:{
+                  objectNodeManager = cloud.getNodeManager("products");
+                  break;
+               }
+               default:{
+                  throw new Exception("Unsupported product type");
+               }
+            }
+
+
+            Node nodeObject = getObjectNode(objectNodeManager, sExternID);
+
+
+            if(nodeObject == null){
                //There is no such node in db
-               nodeEvenement = cloud.getNodeManager("evenement").createNode();
+               nodeObject = objectNodeManager.createNode();
 
                result.setStatus(result.ADDED);
-               nodeEvenement.setStringValue("soort", "parent");
-               nodeEvenement.setStringValue("externid", sExternID);
-               nodeEvenement.setStringValue("begindatum", "" + product.getEmbargoDate().getTime() / 1000);
-               nodeEvenement.setStringValue("einddatum", "" + product.getExpireDate().getTime() / 1000);
+               nodeObject.setStringValue("soort", "parent");
+               nodeObject.setStringValue("externid", sExternID);
+               nodeObject.setStringValue("begindatum", "" + product.getEmbargoDate().getTime() / 1000);
+               nodeObject.setStringValue("einddatum", "" + product.getExpireDate().getTime() / 1000);
 
-               nodeEvenement.setStringValue("isspare", "false");
-			   nodeEvenement.setStringValue("isoninternet", "true");
-			   nodeEvenement.setStringValue("iscanceled", "false");
-			   nodeEvenement.setStringValue("groepsexcursie", "0");
-			   nodeEvenement.setStringValue("aanmelden_vooraf", "1");
-			   nodeEvenement.setStringValue("adres_verplicht", "1");
-			   nodeEvenement.setStringValue("reageer", "0");
-			   nodeEvenement.setStringValue("min_aantal_deelnemers", "0");
-			   nodeEvenement.setStringValue("max_aantal_deelnemers", "9999");
+               nodeObject.setStringValue("isspare", "false");
+               nodeObject.setStringValue("isoninternet", "true");
+               nodeObject.setStringValue("iscanceled", "false");
+               nodeObject.setStringValue("groepsexcursie", "0");
+               nodeObject.setStringValue("aanmelden_vooraf", "1");
+               nodeObject.setStringValue("adres_verplicht", "1");
+               nodeObject.setStringValue("reageer", "0");
+               nodeObject.setStringValue("min_aantal_deelnemers", "0");
+               nodeObject.setStringValue("max_aantal_deelnemers", "9999");
 
-			   // prevent creation of NULL values (NULL and "" are represented the same way)
-			   nodeEvenement.setStringValue("dagomschrijving", "");
-			   nodeEvenement.setStringValue("status", "-1");
-			   nodeEvenement.setStringValue("use_verloopdatum", "-1");
-               nodeEvenement.setStringValue("achteraf_bevestigen", "-1");
+               // prevent creation of NULL values (NULL and "" are represented the same way)
+               nodeObject.setStringValue("dagomschrijving", "");
+               nodeObject.setStringValue("status", "-1");
+               nodeObject.setStringValue("use_verloopdatum", "-1");
+               nodeObject.setStringValue("achteraf_bevestigen", "-1");
 
-			   // these values are not used in the agenda.jsp of natmm and the editors
-			   nodeEvenement.setStringValue("begininschrijving", "" + product.getEmbargoDate().getTime() / 1000);
-			   nodeEvenement.setStringValue("eindinschrijving", "" + product.getExpireDate().getTime() / 1000);
+               // these values are not used in the agenda.jsp of natmm and the editors
+               nodeObject.setStringValue("begininschrijving", "" + product.getEmbargoDate().getTime() / 1000);
+               nodeObject.setStringValue("eindinschrijving", "" + product.getExpireDate().getTime() / 1000);
 
-			   // workaround use expiredate from UIS as begin and end date of event
-			   nodeEvenement.setStringValue("begindatum", "" + product.getExpireDate().getTime() / 1000);
-			   nodeEvenement.setStringValue("einddatum", "" + product.getExpireDate().getTime() / 1000);
+               // workaround use expiredate from UIS as begin and end date of event
+               nodeObject.setStringValue("begindatum", "" + product.getExpireDate().getTime() / 1000);
+               nodeObject.setStringValue("einddatum", "" + product.getExpireDate().getTime() / 1000);
 
-			   // for events of type parent the begindatum == embargo and verloopdatum == enddatum
-			   // see nl.leocms.builders.ContenEvenement class
-               nodeEvenement.setStringValue("embargo", "" + product.getExpireDate().getTime() / 1000);
-               nodeEvenement.setStringValue("verloopdatum", "" + product.getExpireDate().getTime() / 1000);
-
+               // for events of type parent the begindatum == embargo and verloopdatum == enddatum
+               // see nl.leocms.builders.ContenEvenement class
+               nodeObject.setStringValue("embargo", "" + product.getExpireDate().getTime() / 1000);
+               nodeObject.setStringValue("verloopdatum", "" + product.getExpireDate().getTime() / 1000);
             }
             else{
                //The node is already present
                result.setStatus(result.UPDATED);
             }
-            nodeEvenement.setStringValue("titel", product.getDescription());
+            nodeObject.setStringValue("titel", product.getDescription());
 
-            nodeEvenement.commit();
-            result.setEvenementNode(nodeEvenement);
+            nodeObject.commit();
+            result.setEvenementNode(nodeObject);
 
             //Sets price
             try{
-               setPrice(cloud, nodeEvenement, product);
+               setPrice(cloud, nodeObject, product);
             }
             catch(Exception e){
                result.setStatus(Result.EXCEPTION);
@@ -111,7 +133,7 @@ public class Updater
 
             //Set payments
             try{
-               setPayments(cloud, nodeEvenement, product);
+               setPayments(cloud, nodeObject, product);
             }
             catch(Exception e){
                result.setStatus(Result.EXCEPTION);
@@ -120,8 +142,8 @@ public class Updater
 
             //Set Properties
             try{
-			  List listProperties = product.getProperties();
-              PropertyUtil.setProperties(cloud, nodeEvenement, listProperties);
+           List listProperties = product.getProperties();
+              PropertyUtil.setProperties(cloud, nodeObject, listProperties);
             }
             catch(Exception e){
                result.setStatus(Result.EXCEPTION);
@@ -148,24 +170,24 @@ public class Updater
     * @param sExternID String
     * @return Node
     */
-   private static Node getEvenementNode(Cloud cloud, String sExternID){
-      NodeList nl = cloud.getList("",
-                                  "evenement",
-                                  "evenement.number",
-                                  "evenement.externid='" + sExternID + "'",
+   private static Node getObjectNode(NodeManager nodeManager, String sExternID){
+      NodeList nl = nodeManager.getCloud().getList("",
+                                  nodeManager.getName(),
+                                  nodeManager.getName() + ".number",
+                                  nodeManager.getName() + ".externid='" + sExternID + "'",
                                   null, null, null, true);
       if (nl.size() == 0){
          return null;
       }
       else{
-         return cloud.getNode(nl.getNode(0).getStringValue("evenement.number"));
+         return nodeManager.getCloud().getNode(nl.getNode(0).getStringValue(nodeManager.getName() + ".number"));
       }
    }
 
-   private static void setPrice(Cloud cloud, Node nodeEvenement, Product product) throws Exception{
+   private static void setPrice(Cloud cloud, Node nodeObject, Product product) throws Exception{
 
       //deletes old relations
-      for(Iterator it = nodeEvenement.getRelations("posrel", cloud.getNodeManager("deelnemers_categorie")).iterator(); it.hasNext();){
+      for(Iterator it = nodeObject.getRelations("posrel", cloud.getNodeManager("deelnemers_categorie")).iterator(); it.hasNext();){
          Node nodeRelation = (Node) it.next();
          nodeRelation.delete(true);
       }
@@ -186,7 +208,7 @@ public class Updater
                                   null, null, null, true);
       try{
          Node nodeDeelnemers_categorie = cloud.getNode(nl.getNode(0).getStringValue("deelnemers_categorie.number"));
-         Relation relPosrel =  nodeEvenement.createRelation(nodeDeelnemers_categorie, cloud.getRelationManager("posrel"));
+         Relation relPosrel =  nodeObject.createRelation(nodeDeelnemers_categorie, cloud.getRelationManager("posrel"));
          relPosrel.setIntValue("pos", new Double(product.getPrice() * 100).intValue());
          relPosrel.commit();
       }
@@ -199,14 +221,15 @@ public class Updater
 
 
 
-   private static void setPayments(Cloud cloud, Node nodeEvenement, Product product) throws Exception{
+   private static void setPayments(Cloud cloud, Node nodeObject, Product product) throws Exception{
       NodeManager nmPaymentType = cloud.getNodeManager("payment_type");
 
       //deletes old relations
-      for(Iterator it = nodeEvenement.getRelations("related", nmPaymentType).iterator(); it.hasNext();){
+      for(Iterator it = nodeObject.getRelations("related", nmPaymentType).iterator(); it.hasNext();){
          Node nodeRelation = (Node) it.next();
          nodeRelation.delete(true);
       }
+
 
       ArrayList arliPaymentTypes = product.getPaymentTypes();
       for(Iterator it = arliPaymentTypes.iterator(); it.hasNext();){
@@ -230,10 +253,9 @@ public class Updater
             nodePaymentType.setStringValue("externid", paymentType.getId());
             nodePaymentType.commit();
          }
-         nodeEvenement.createRelation(nodePaymentType, cloud.getRelationManager("related")).commit();
+         nodeObject.createRelation(nodePaymentType, cloud.getRelationManager("related")).commit();
 
-         nodeEvenement.commit();
+         nodeObject.commit();
       }
    }
-
 }

@@ -85,6 +85,9 @@ public class Coder
       elemRoot.appendChild(elemPaymentType);
 
 
+      Element elemExtraInformation = document.createElement("extraInformation");
+      elemExtraInformation.appendChild(document.createTextNode(order.getExtraInformation()));
+      elemRoot.appendChild(elemExtraInformation);
 
 
       Element elemPersonalInformation = document.createElement("personalInformation");
