@@ -5,15 +5,15 @@
   title red)
 
   @author Michiel Meeuwissen   
-  @version $Id: 2xhtml.xslt,v 1.13 2005-05-18 15:45:07 michiel Exp $
+  @version $Id: 2xhtml.xslt,v 1.14 2006-07-20 15:57:06 michiel Exp $
   @since  MMBase-1.6
   
 -->
 <xsl:stylesheet 
   xmlns:xsl = "http://www.w3.org/1999/XSL/Transform" 
   version = "1.0" 
-  xmlns:mmxf="http://www.mmbase.org/mmxf"
-  xmlns:o = "http://www.mmbase.org/objects"
+  xmlns:mmxf="http://www.mmbase.org/xmlns/mmxf"
+  xmlns:o = "http://www.mmbase.org/xmlns/objects"
   exclude-result-prefixes="mmxf o" 
 >
   <xsl:import href="mm:xslt/2xhtml.xslt" />  
@@ -55,10 +55,10 @@
   <xsl:template match = "mmxf:h" mode="h1">
     <h3 style="color:red;">
       <a>
-	<xsl:attribute name="id">
-	  <xsl:value-of select="$formatter_counter" /><xsl:value-of select="generate-id(.)" />
-	</xsl:attribute>
-	<xsl:value-of select="node()" />
+        <xsl:attribute name="id">
+          <xsl:value-of select="$formatter_counter" /><xsl:value-of select="generate-id(.)" />
+        </xsl:attribute>
+        <xsl:value-of select="node()" />
       </a>
     </h3>
   </xsl:template>
