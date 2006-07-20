@@ -34,7 +34,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.205 2006-07-18 15:09:33 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.206 2006-07-20 15:54:09 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -646,10 +646,10 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         RelDef relDef = BasicCloudContext.mmb.getRelDef();
         int rnumber = relDef.getNumberByName(role);
 
-        RelationList r1 = typeRel.contains(nodeManager.getNumber(), otherManager.getNumber(), rnumber, TypeRel.INCLUDE_PARENTS) ?
+        RelationList r1 = typeRel.contains(nodeManager.getNumber(), otherManager.getNumber(), rnumber, TypeRel.INCLUDE_DESCENDANTS) ?
             getRelations(role, otherManager, "destination") :
             BridgeCollections.EMPTY_RELATIONLIST;
-        RelationList r2 = typeRel.contains(otherManager.getNumber(), nodeManager.getNumber(), rnumber, TypeRel.INCLUDE_PARENTS) ?
+        RelationList r2 = typeRel.contains(otherManager.getNumber(), nodeManager.getNumber(), rnumber, TypeRel.INCLUDE_DESCENDANTS) ?
             getRelations(role, otherManager, "source") :
             BridgeCollections.EMPTY_RELATIONLIST;
 
@@ -756,7 +756,33 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         }
     }
 
+    /**
+     * @since MMBase-1.8.2
+     */
+    protected NodeList getRelatedNodes(NodeManager otherManager, String role) {
+        TypeRel typeRel = BasicCloudContext.mmb.getTypeRel();
+        RelDef relDef = BasicCloudContext.mmb.getRelDef();
+        int rnumber = relDef.getNumberByName(role);
 
+        NodeList l1 = typeRel.contains(nodeManager.getNumber(), otherManager.getNumber(), rnumber, TypeRel.INCLUDE_DESCENDANTS) ?
+            getRelatedNodes(otherManager, role, "destination") :
+            BridgeCollections.EMPTY_NODELIST;
+        NodeList l2 = typeRel.contains(otherManager.getNumber(), nodeManager.getNumber(), rnumber, TypeRel.INCLUDE_DESCENDANTS) ?
+            getRelatedNodes(otherManager, role, "source") :
+            BridgeCollections.EMPTY_RELATIONLIST;
+
+        if (l2.size() == 0) {
+            return l1;
+        } else if (l1.size() == 0) {
+            return l2;
+        } else {
+            // perhaps it would be better for performance to have some 'ChainedRelationList' implementation.
+            NodeList result = cloud.getCloudContext().createNodeList();
+            result.addAll(l1);
+            result.addAll(l2);
+            return result;
+        }
+    }
     /**
      * @param nodeManager node manager on the other side of the relation
      * @param role role of the relation
@@ -765,16 +791,19 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
      * @see Queries#createRelatedNodesQuery Should perhaps be implemented with that.
      * @since MMBase-1.6
      */
-    public NodeList getRelatedNodes(NodeManager nodeManager, String role, String searchDir) {
+    public NodeList getRelatedNodes(NodeManager otherManager, String role, String searchDir) {
         if (log.isDebugEnabled()) {
-            log.debug("type(" + nodeManager.getName() + "), role(" + role + "), dir(" + searchDir + ")");
+            log.debug("type(" + otherManager.getName() + "), role(" + role + "), dir(" + searchDir + ")");
         }
         if (isNew()) {
             // new nodes have no relations
             return org.mmbase.bridge.util.BridgeCollections.EMPTY_NODELIST;
         }
         if (searchDir == null) searchDir = "BOTH";
-        NodeQuery query = Queries.createRelatedNodesQuery(this, nodeManager, role, searchDir);
+        if ("BOTH".equalsIgnoreCase(searchDir)) {
+            return getRelatedNodes(otherManager, role);
+        }
+        NodeQuery query = Queries.createRelatedNodesQuery(this, otherManager, role, searchDir);
         return query.getNodeManager().getList(query);
     }
 
