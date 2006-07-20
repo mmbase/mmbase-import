@@ -17,7 +17,7 @@
     COLUMNS
   </div>
   <mm:related path="posrel,pagina">
-  s(48x48!)
+ <% // s(48x48!) %>
     <mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false">
       <a href="<%= ph.createPaginaUrl(pagina_number,request.getContextPath()) %>" style="text-decoration:none;">
         <mm:field name="pagina.titel_eng" jspvar="pagina_titel_eng" vartype="String" write="false">
