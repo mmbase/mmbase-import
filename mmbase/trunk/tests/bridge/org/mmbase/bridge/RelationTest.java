@@ -13,7 +13,7 @@ import org.mmbase.tests.*;
 /**
  * Test cases to test the creation of relations and the retrieval of them
  * @author Kees Jongenburger
- * @version $Id: RelationTest.java,v 1.6 2005-10-12 17:32:37 michiel Exp $
+ * @version $Id: RelationTest.java,v 1.7 2006-07-20 17:22:36 michiel Exp $
  */
 public class RelationTest extends BridgeTest {
 
@@ -70,6 +70,8 @@ public class RelationTest extends BridgeTest {
             //folow the relation in  wrong direction
             NodeList aaRelatedList = aaFirstNode.getRelatedNodes("bb", "related", "source");
             assertTrue("related list has size " + aaRelatedList.size() + " but should be 0", aaRelatedList.size() == 0);
+            RelationList aaRelationList = aaFirstNode.getRelations("related", cloud.getNodeManager("bb"), "source");
+            assertTrue("relation list has size " + aaRelationList.size() + " but should be 0", aaRelationList.size() == 0);
         }
 
         {
@@ -80,28 +82,39 @@ public class RelationTest extends BridgeTest {
                 Node sourceNode = bbRelatedListSource.getNode(0);
                 assertTrue("expected the first aa node but got " + sourceNode, sourceNode.getNumber() == aaFirstNode.getNumber());
             }
+            RelationList bbRelationListSource = bbNode.getRelations("related", cloud.getNodeManager("aa"), "source");
+            assertTrue("relation list has size " + bbRelationListSource.size() + " but should be 1", bbRelationListSource.size() == 1);
+
         }
 
         {
             //try to get the second aa node from the bb node
-            NodeList bbRelatedListSource = bbNode.getRelatedNodes("aa", "related", "destination");
-            assertTrue("relation count should be 1 but is " + bbRelatedListSource.size() + " mmbase relations dont' work", bbRelatedListSource.size() == 1);
-            if (bbRelatedListSource.size() > 0) {
-                Node sourceNode = bbRelatedListSource.getNode(0);
+            NodeList bbRelatedListDestination = bbNode.getRelatedNodes("aa", "related", "destination");
+            assertTrue("relation count should be 1 but is " + bbRelatedListDestination.size() + " mmbase relations dont' work", bbRelatedListDestination.size() == 1);
+            if (bbRelatedListDestination.size() > 0) {
+                Node sourceNode = bbRelatedListDestination.getNode(0);
                 assertTrue("expected the first aa node but got " + sourceNode, sourceNode.getNumber() == aaSecondNode.getNumber());
             }
+            RelationList bbRelationListDestination = bbNode.getRelations("related", cloud.getNodeManager("aa"), "destination");
+            assertTrue("relation count should be 1 but is " + bbRelationListDestination.size() + " mmbase relations dont' work", bbRelationListDestination.size() == 1);
         }
 
         {
             //try to get both the aa nodes using "both"
-            NodeList bbRelatedListSource = bbNode.getRelatedNodes("aa", "related", "both");
-            assertTrue("relation count should be 2 but is " + bbRelatedListSource.size() + " mmbase relatednodes(BOTH) does not work", bbRelatedListSource.size() == 2);
+            NodeList bbRelatedListBoth = bbNode.getRelatedNodes("aa", "related", "both");
+            assertTrue("relation count should be 2 but is " + bbRelatedListBoth.size() + " mmbase relatednodes(BOTH) does not work", bbRelatedListBoth.size() == 2);
+            RelationList bbRelationListBoth = bbNode.getRelations("related", cloud.getNodeManager("aa"),  "both");
+            assertTrue("relation count should be 2 but is " + bbRelationListBoth.size() + " mmbase relatednodes(BOTH) does not work", bbRelationListBoth.size() == 2);
+
         }
 
         {
             //try to get both the aa node from bb using "null"
-            NodeList bbRelatedListSource = bbNode.getRelatedNodes("aa", "related", null);
-            assertTrue("relation count should be 2 but is " + bbRelatedListSource.size() + " mmbase relatednodes() does not work", bbRelatedListSource.size() == 2);
+            NodeList bbRelatedListNull = bbNode.getRelatedNodes("aa", "related", null);
+            assertTrue("relation count should be 2 but is " + bbRelatedListNull.size() + " mmbase relatednodes() does not work", bbRelatedListNull.size() == 2);
+            NodeList bbRelationListNull = bbNode.getRelations("related", cloud.getNodeManager("aa"),  null);
+            assertTrue("relation count should be 2 but is " + bbRelationListNull.size() + " mmbase relatednodes() does not work", bbRelationListNull.size() == 2);
+
         }
         {
             try {
