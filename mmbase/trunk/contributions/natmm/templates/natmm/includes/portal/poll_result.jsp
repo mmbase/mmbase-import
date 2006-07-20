@@ -62,6 +62,7 @@
        if(ta<0) ta = 0; // default by new object = -1
        ta++;
        poll.setStringValue("stemmen" + antw, "" + ta);
+       poll.commit();
        // Set the cookie
        Cookie koekje = new Cookie(cookiestr, String.valueOf((new Date()).getTime()) );
        int expires = 60 * 60 * 12;		// Cookie expires after 12 hours
