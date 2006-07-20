@@ -417,5 +417,13 @@ public class DataTypesTest extends BridgeTest {
         }
     }
 
+    public void testIntegerDateTime() {
+        Cloud cloud = getCloud();
+        NodeManager nodeManager = cloud.getNodeManager("datatypes");
+        Field field = nodeManager.getField("integer_datetime");
+        DataType dt = field.getDataType();
+        assertTrue(dt instanceof DateTimeDataType);
+    }
+
 
 }
