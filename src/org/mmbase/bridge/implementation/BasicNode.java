@@ -34,7 +34,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.206 2006-07-20 15:54:09 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.207 2006-07-21 14:20:47 nklasens Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -640,8 +640,9 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             // new nodes have no relations
             return BridgeCollections.EMPTY_RELATIONLIST;
         }
+        
         if ("".equals(otherNodeManager)) otherNodeManager = null;
-        NodeManager otherManager = otherNodeManager == null ? (NodeManager) null : cloud.getNodeManager(otherNodeManager);
+        NodeManager otherManager = otherNodeManager == null ? cloud.getNodeManager("object") : cloud.getNodeManager(otherNodeManager);
         TypeRel typeRel = BasicCloudContext.mmb.getTypeRel();
         RelDef relDef = BasicCloudContext.mmb.getRelDef();
         int rnumber = relDef.getNumberByName(role);
