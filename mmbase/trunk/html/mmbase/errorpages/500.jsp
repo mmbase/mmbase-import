@@ -18,49 +18,65 @@ String webmasterEmail = "webmaster@"+domain;
 String title = null;
 StringBuffer msg = new StringBuffer();
 {
-
-	msg.append("Headers\n\n");
-    // request properties
-    Enumeration en = request.getHeaderNames();
-    while (en.hasMoreElements()) {
-        String name = (String) en.nextElement();
-        msg.append(name+": "+request.getHeader(name)+"\n");
-    }
-    msg.append("\n");
-    msg.append("method: ").append(request.getMethod()).append("\n");
-    msg.append("querystring: ").append(request.getQueryString()).append("\n");
-    msg.append("requesturl: ").append(request.getRequestURL()).append("\n");
-	msg.append("mmbase version: ").append(org.mmbase.Version.get()).append("\n\n");
-    
-
-    msg.append("Parameters\n\n");
-    // request parameters
-    en = request.getParameterNames();
-    while (en.hasMoreElements()) {
-        String name = (String) en.nextElement();
-        msg.append(name).append(": ").append(request.getParameter(name)).append("\n");
-    }
-    msg.append("\n" + exception.getClass().getName());
-
     java.util.Stack stack = new java.util.Stack();
 
     Throwable e = exception;
      while (e != null) {
         stack.push(e);
          if (e instanceof NotFoundException) {
-            // status = HttpServletResponse.SC_NOT_FOUND;
-            // response.setStatus(status);
+            status = HttpServletResponse.SC_NOT_FOUND;
+            response.setStatus(status);
          }
 	 if (e instanceof ServletException) {
-	     e = ((ServletException) e).getRootCause();
+	     Throwable t = ((ServletException) e).getRootCause();
+       if (t == null) t = e.getCause();
+       e = t;
+   } else if (e instanceof javax.servlet.jsp.JspException) {
+       Throwable t = ((JspException) e).getRootCause();
+       if (t == null) t = e.getCause();
+       e = t;
 	 } else {
 	 e = e.getCause();
 }
      }
 
-     msg.append("status: ").append(status).append("\n");
-     String intro = "" + stack;
+
+	msg.append("Headers\n----------\n");
+    // request properties
+    Enumeration en = request.getHeaderNames();
+    while (en.hasMoreElements()) {
+        String name = (String) en.nextElement();
+        msg.append(name+": "+request.getHeader(name)+"\n");
+    }
+
+    msg.append("\nAttributes\n----------\n");
+    Enumeration en2 = request.getAttributeNames();
+    while (en2.hasMoreElements()) {
+        String name = (String) en2.nextElement();
+        msg.append(name+": "+request.getAttribute(name)+"\n");
+    }
+    msg.append("\n");
+    msg.append("Misc. properties\n----------\n");
+
+    msg.append("method: ").append(request.getMethod()).append("\n");
+    msg.append("querystring: ").append(request.getQueryString()).append("\n");
+    msg.append("requesturl: ").append(request.getRequestURL()).append("\n");
+    msg.append("mmbase version: ").append(org.mmbase.Version.get()).append("\n");
+    msg.append("status: ").append(status).append("\n\n");
+    
+
+    msg.append("Parameters\n----------\n");
+    // request parameters
+    en = request.getParameterNames();
+    while (en.hasMoreElements()) {
+        String name = (String) en.nextElement();
+        msg.append(name).append(": ").append(request.getParameter(name)).append("\n");
+    }
+    msg.append("\nException\n----------\n\n" + (exception != null ? (exception.getClass().getName()) : "NO EXCEPTION") + ": ");
+
+
      while (! stack.isEmpty()) { 
+
          Throwable t = (Throwable) stack.pop();
          // add stack stacktraces
          if (t != null) {
@@ -72,15 +88,21 @@ StringBuffer msg = new StringBuffer();
 		  title = t.getClass().getName().substring(t.getClass().getPackage().getName().length() + 1) + " " + el.getFileName() + ":" + el.getLineNumber();
                 }
 	     }
-             msg.append(message).append("\n");
-	     msg.append(org.mmbase.util.logging.Logging.stackTrace(t)).append("\n");
+       msg.append(message).append("\n");
+       msg.append(org.mmbase.util.logging.Logging.stackTrace(t));
+       if (! stack.isEmpty()) {
+          msg.append("\n-------caused:\n");
+       }  
+
          }
 
     } 
 }
 
 // write errors to mmbase log
-log.error(ticket + ":\n" + msg);
+if (status == 500) {
+  log.error(ticket + ":\n" + msg);
+}
 
 %>
 <mm:content type="text/html"  expires="0">
