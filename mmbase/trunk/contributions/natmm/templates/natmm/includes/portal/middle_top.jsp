@@ -10,6 +10,8 @@
 
    String articleConstraint = "(artikel.embargo < '" + (nowSec+quarterOfAnHour) + "') AND "
                               + "(artikel.use_verloopdatum='0' OR artikel.verloopdatum > '" + nowSec + "' )";
+										
+	String sImageTemplate = "s(195)+part(0,0,195,113)";
 %>
 <script language="JavaScript">
 <!--
@@ -36,8 +38,8 @@ function changeImages() {
         <td>
           <mm:node element="artikel">
             <mm:relatednodes type="images" max="1">
-              <mm:import id="first_image"><mm:image  template="s(195)" /></mm:import>
-              <img src="<mm:image  template="s(195)" />" alt="" name="rollimage" border="0" />
+              <mm:import id="first_image"><mm:image template="<%= sImageTemplate %>" /></mm:import>
+              <img src="<mm:image template="<%= sImageTemplate %>" />" alt="" name="rollimage" border="0" />
             </mm:relatednodes>
           </mm:node>
         </td>
@@ -51,7 +53,7 @@ function changeImages() {
           <mm:node element="artikel">
             <a href="<%= ph.createItemUrl(artikel_number,pagina_number,null,request.getContextPath()) %>"
               <mm:relatednodes type="images" max="1">
-                onmouseover="changeImages('rollimage', '<mm:image  template="s(195)" />'); return true;"
+                onmouseover="changeImages('rollimage', '<mm:image  template="<%= sImageTemplate %>" />'); return true;"
                 onmouseout="changeImages('rollimage', '<mm:write referid="first_image"/>'); return true;"
               </mm:relatednodes>
               class="hover"><mm:field name="titel"/></a>
@@ -68,10 +70,8 @@ function changeImages() {
     </mm:field>
   </mm:related>
 
-  <div class="headerBar" style="width:100%;">
-    LAATSTE NIEUWS
-  </div>
-  <table>
+  <div class="headerBar" style="width:100%;">LAATSTE NIEUWS</div>
+  <table style="width:100%;">
   <tr>
     <td>
       <mm:related path="rubriek,parent,rubriek2,posrel,pagina,contentrel,artikel" orderby="artikel.embargo"
