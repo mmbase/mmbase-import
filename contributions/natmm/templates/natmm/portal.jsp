@@ -11,7 +11,13 @@
 <%@include file="includes/top5_breadcrumbs_and_pano.jsp" %>
 <table width="744" border="0" cellspacing="0" cellpadding="0" align="center" valign="top">
 <tr>
-  <td style="vertical-align:top;padding:10px;padding-top:0px;width:130px;">
+  <td style="vertical-align:top;padding:2px;width:165px;">
+   <jsp:include page="includes/portal/login.jsp">
+      <jsp:param name="s" value="<%= paginaID %>" />
+      <jsp:param name="r" value="<%= rubriekID %>" />
+      <jsp:param name="rs" value="<%= styleSheet %>" />
+      <jsp:param name="sr" value="0" />
+    </jsp:include>
     <jsp:include page="includes/teaser.jsp">
       <jsp:param name="s" value="<%= paginaID %>" />
       <jsp:param name="r" value="<%= rubriekID %>" />
@@ -19,8 +25,7 @@
       <jsp:param name="sr" value="0" />
     </jsp:include>
   </td>
-  <td style="vertical-align:top;width:400px;padding:10px;padding-top:0px">
-    <br/>
+  <td style="vertical-align:top;width:400px;padding:2px;">
     <jsp:include page="includes/portal/middle_top.jsp">
       <jsp:param name="s" value="<%= paginaID %>" />
       <jsp:param name="r" value="<%= rubriekID %>" />
