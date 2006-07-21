@@ -11,7 +11,7 @@ package org.mmbase.bridge.jsp.taglib.macro;
 
 import javax.servlet.jsp.JspTagException;
 
-import org.mmbase.bridge.Node;
+import org.mmbase.bridge.*;
 
 import org.mmbase.bridge.jsp.taglib.ListTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
@@ -26,7 +26,7 @@ import org.mmbase.bridge.jsp.taglib.containers.*;
  * @author Michiel Meeuwissen
  * @author Jacco de Groot
  * @author Pierre van Rooden
- * @version $Id: RelatedTag.java,v 1.30 2005-06-20 16:03:38 michiel Exp $
+ * @version $Id: RelatedTag.java,v 1.31 2006-07-21 09:24:37 michiel Exp $
  */
 public class RelatedTag extends ListTag {
     // private static final Logger log = Logging.getLoggerInstance(RelatedTag.class);
@@ -35,10 +35,17 @@ public class RelatedTag extends ListTag {
         if (nodes != Attribute.NULL && ! nodes.getString(this).equals("")) {
             // return getCloudVar().getNode((String)StringSplitter.split(nodes.getString(this), ",").get(0));
             String[] ns = nodes.getString(this).trim().split("\\s*,\\s*");
-            return getCloudVar().getNode(ns[0]);
+            return super.getCloudVar().getNode(ns[0]);
         } else {
             return getNode();
         }
+    }
+
+
+    // overridden since 1.8.2
+    public Cloud getCloudVar() throws JspTagException {
+        return getBaseNode().getCloud();
+
     }
 
     protected String getSearchNodes() throws JspTagException {
