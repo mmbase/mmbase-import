@@ -79,7 +79,7 @@ function changeImages() {
         <mm:field name="rubriek2.naam" jspvar="rubriek2_naam" vartype="String" write="false">
         <mm:field name="artikel.number" jspvar="artikel_number" vartype="String" write="false">
         <mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false">
-          <a href="<%= ph.createItemUrl(artikel_number,pagina_number,null,request.getContextPath()) %>" style="text-decoration:none;">
+          <a href="<%= ph.createItemUrl(artikel_number,pagina_number,null,request.getContextPath()) %>" class="maincolor_link_shorty">
             <span class="colortitle">
               <%= rubriek2_naam.toUpperCase() %>
             </span>
