@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.87 2006-07-20 13:02:34 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.88 2006-07-21 11:17:40 michiel Exp $
  */
 
 public class WriterHelper {
@@ -186,7 +186,7 @@ public class WriterHelper {
     public void overrideNoImplicitList() {
          overrideNoImplicitList = true;
      }
-    
+
 
     /**
      * There is a default behavior for what should happen if the 'write' attribute is not set.
@@ -216,7 +216,7 @@ public class WriterHelper {
             }
             boolean result = "".equals(getString()) && (! hasBody);
             log.debug("Result " + result + " with body-string '" + getString() + "' and hasbody " + hasBody);
-            return result; 
+            return result;
         } else {
             if (log.isDebugEnabled()) {
                 log.debug("Write: " + write);
@@ -266,7 +266,7 @@ public class WriterHelper {
      * @since MMBase-1.8
      */
     public CharTransformer getEscaper() throws JspTagException {
-        if (useEscaper || escape != Attribute.NULL) { 
+        if (useEscaper || escape != Attribute.NULL) {
             String e = getEscape();
             if (e == null) {
                 return (CharTransformer) thisTag.getPageContext().findAttribute(ContentTag.ESCAPER_KEY);
@@ -571,6 +571,9 @@ public class WriterHelper {
             throw new TaglibException(ioe);
         }
         pop_Stack();
+        _Stack = null;
+        bodyContent = null;
+        value = null;
         log.debug("End of doEndTag");
         return javax.servlet.jsp.tagext.Tag.EVAL_PAGE;
     }
