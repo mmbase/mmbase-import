@@ -154,4 +154,11 @@ A.navbutton {
    font-size: 1.0em;
 	font-weight: bold;
 }
-
+.headerBar {
+	background-color: #BDBDBD;
+	color: black;
+	font-weight: bold;
+	padding-left: 10px;
+	vertical-align: bottom;
+	height:18px;
+}

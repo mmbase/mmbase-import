@@ -10,7 +10,7 @@
    int count = 0;
 %>
 <mm:node number="channels">
-  <div style="background-color: #BDBDBD; color:black; padding-left:10px; font-weight:bold; width:100%; height:18px">CHANNELS</div>
+  <div class="headerBar" style="width:100%;">CHANNELS</div>
   <table>
     <mm:related path="rubriek,parent,rubriek2,posrel,pagina" orderby="parent.pos, posrel.pos" max="4">
     <mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false">

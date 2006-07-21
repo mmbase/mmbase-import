@@ -21,9 +21,9 @@ function changeImages() {
 // -->
 </script>
 <mm:node number="channels">
-  <div style="background-color: #BDBDBD; color:black; padding-left:10px; font-weight:bold; width:100%; height:18px">
-    <img src="includes/portal/logo.gif" border="0" />
-    VANDAAG
+  <div class="headerBar" style="width:100%;">
+  		<img src="includes/portal/logo.gif" border="0" style="vertical-align:middle;"/>
+		VANDAAG 
   </div>
   <mm:related path="rubriek,parent,rubriek2,posrel,pagina,contentrel,artikel" orderby="artikel.embargo"
              constraints="<%= articleConstraint %>" max="3">
@@ -68,7 +68,7 @@ function changeImages() {
     </mm:field>
   </mm:related>
 
-  <div style="background-color: #BDBDBD; color:black; padding-left:10px; font-weight:bold; width:100%; height:18px">
+  <div class="headerBar" style="width:100%;">
     LAATSTE NIEUWS
   </div>
   <table>
