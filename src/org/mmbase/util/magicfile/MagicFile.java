@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: MagicFile.java,v 1.1 2005-10-25 12:12:29 pierre Exp $
+ * @version $Id: MagicFile.java,v 1.2 2006-07-21 11:32:35 michiel Exp $
  */
 public class MagicFile {
     private static final Logger log = Logging.getLoggerInstance(MagicFile.class);
@@ -104,7 +104,12 @@ public class MagicFile {
             lithmus = input;
         }
 
-        Iterator i = getDetectors().iterator();
+        List list = getDetectors();
+        if (list == null) {
+            log.warn("No detectors found");
+            return FAILED;
+        }
+        Iterator i = list.iterator();
         while (i.hasNext()) {
             Detector detector = (Detector)i.next();
             log.debug("Trying " + detector.getMimeType());
