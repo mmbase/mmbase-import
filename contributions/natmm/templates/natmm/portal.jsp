@@ -11,7 +11,7 @@
 <%@include file="includes/top5_breadcrumbs_and_pano.jsp" %>
 <table width="744" border="0" cellspacing="0" cellpadding="0" align="center" valign="top">
 <tr>
-  <td style="vertical-align:top;padding:2px;width:165px;">
+  <td style="vertical-align:top;width:165px;padding:2px;">
    <jsp:include page="includes/portal/login.jsp">
       <jsp:param name="s" value="<%= paginaID %>" />
       <jsp:param name="r" value="<%= rubriekID %>" />
@@ -45,22 +45,31 @@
       <jsp:param name="r" value="<%= rubriekID %>" />
       <jsp:param name="rs" value="<%= styleSheet %>" />
     </jsp:include>
-    <br/> 
+    <br/>
     <jsp:include page="includes/teaser.jsp">
       <jsp:param name="s" value="<%= paginaID %>" />
       <jsp:param name="r" value="<%= rubriekID %>" />
       <jsp:param name="rs" value="<%= styleSheet %>" />
       <jsp:param name="sr" value="1" />
-    </jsp:include>	
+    </jsp:include>
   </td>
-  <td style="vertical-align:top;width:214px;padding:10px;padding-top:7px;">
-    <jsp:include page="includes/home/shorty_home.jsp">
+  <td style="vertical-align:top;width:214px;padding:2px;">
+    <div class="headerBar" style="width:212px;"> </div>
+    <%
+    String embargoLinkConstraint = "(link.embargo < '" + (nowSec+quarterOfAnHour) + "') AND "
+                                + "(link.use_verloopdatum='0' OR link.verloopdatum > '" + nowSec + "' )";
+    %>
+    <mm:list nodes="<%= paginaID %>" path="pagina,contentrel,link" fields="link.number" constraints="<%= embargoLinkConstraint %>">
+		<iframe src="<mm:url page="includes/portal/video.jsp">
+							<mm:param name="link"><mm:field name="link.number" /></mm:param>
+						</mm:url>" style="padding:0px;width:214px;height:177px;" id="video<mm:field name="link.number" />" scrolling="no"></iframe>
+    </mm:list>
+	 <jsp:include page="includes/home/shorty_home.jsp">
       <jsp:param name="s" value="<%= paginaID %>" />
       <jsp:param name="r" value="<%= rubriekID %>" />
       <jsp:param name="rs" value="<%= styleSheet %>" />
       <jsp:param name="sr" value="2" />
     </jsp:include>
-    <img src="includes/portal/video.gif" border="0" />
     <jsp:include page="includes/portal/linklijst.jsp">
       <jsp:param name="s" value="<%= paginaID %>" />
       <jsp:param name="r" value="<%= rubriekID %>" />
@@ -76,7 +85,6 @@
       <jsp:param name="r" value="<%= rubriekID %>" />
       <jsp:param name="rs" value="<%= styleSheet %>" />
     </jsp:include>
-    <img src="media/trans.gif" height="1px" width="165px;" />
   </td>
 </tr>
 </table>

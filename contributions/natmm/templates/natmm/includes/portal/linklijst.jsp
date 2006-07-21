@@ -13,6 +13,6 @@
 	<a class="hover" href="<mm:field name="link.url" />" title="<mm:field name="link.alt_tekst" 
 		/>" target="<mm:field name="link.target" />"><mm:field name="link.titel" /></a>
 	- <span class="colortxt" style="font-size:90%;"><mm:field name="link.omschrijving" /></span>
-	<table class="dotline" style="width:237px;"><tr><td height="3"></td></tr></table>
+	<table class="dotline" style="width:212px;"><tr><td height="3"></td></tr></table>
 </mm:list>
 </mm:cloud>

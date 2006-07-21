@@ -34,7 +34,7 @@
 		<tr><td colspan="2" style="height:2px;"></td></tr>
 		<tr>
 		  <td colspan="2" align="right">
-				<input type="submit" value="<%= submitButton %>" class="submit_image" style="width:165;" />
+				<input type="submit" value="<%= submitButton %>" class="submit_image" style="width:165;font-weight:normal;" />
 		  </td>
 	  </tr>
 		<tr><td colspan="2" style="height:2px;"></td></tr>
