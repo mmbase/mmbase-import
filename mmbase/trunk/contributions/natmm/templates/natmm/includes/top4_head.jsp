@@ -16,5 +16,17 @@
             ></mm:compare
 	      ></mm:field
 	   ></mm:node></title>
+	<% 
+	if(iRubriekLayout==NatMMConfig.DEMO_LAYOUT) {
+		// google analytics code for demo.mediacompetence.com
+		%>
+		<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+		</script>
+		<script type="text/javascript">
+			_uacct = "UA-495341-2";
+			urchinTracker();
+		</script>
+		<% 
+	} %>
 </head>
 <body style="margin:0;" id="nm_body" <mm:present referid="onload_statement">onLoad="<mm:write referid="onload_statement"/>"</mm:present>>
