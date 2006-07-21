@@ -49,7 +49,7 @@ function changeImages() {
             </span>
           </a><br/>
           <mm:node element="artikel">
-            <a href="<%= ph.createItemUrl(artikel_number,paginaID,null,request.getContextPath()) %>"
+            <a href="<%= ph.createItemUrl(artikel_number,pagina_number,null,request.getContextPath()) %>"
               <mm:relatednodes type="images" max="1">
                 onmouseover="changeImages('rollimage', '<mm:image  template="s(195)" />'); return true;"
                 onmouseout="changeImages('rollimage', '<mm:write referid="first_image"/>'); return true;"
@@ -84,7 +84,7 @@ function changeImages() {
               <%= rubriek2_naam.toUpperCase() %>
             </span>
           </a>
-          | <a href="<%= ph.createItemUrl(artikel_number,paginaID,null,request.getContextPath()) %>" 
+          | <a href="<%= ph.createItemUrl(artikel_number,pagina_number,null,request.getContextPath()) %>" 
                class="hover"><mm:field name="artikel.titel"/></a><br/>
         </mm:field>
         </mm:field>
