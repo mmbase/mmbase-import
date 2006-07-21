@@ -2,10 +2,7 @@
    String embargoPollConstraint = "(poll.embargo < '" + (nowSec+quarterOfAnHour) + "') AND "
                                 + "(poll.use_verloopdatum='0' OR poll.verloopdatum > '" + nowSec + "' )";
 %>
-<div style="background-color: #BDBDBD; color:black; padding-left:10px; font-weight:bold; width:100%; height:18px">
-  POLLS
-</div>
-
+<div class="headerBar" style="width:100%;">POLLS</div>
 <mm:list nodes="<%= paginaID %>" path="pagina,contentrel,poll" constraints="<%= embargoPollConstraint %>">
   <mm:field name="poll.omschrijving"/><br/>
   <mm:node element="poll" jspvar="poll">
@@ -13,7 +10,7 @@
     <table width="100%">
     <form name="poll<%= poll_number %>" method="post" target="poll<%= poll_number %>">
     <tr>
-      <td>
+      <td style="vertical-align:top;">
 <% 
         int total_answers = 0; 
         for(int i=1; i<=5; i++) {
@@ -27,8 +24,8 @@
         }
 %>
       </td>
-      <td align="right">
-        <input type="image" value="Kies" onclick="postIt()" src="media/buttonright_<%= NatMMConfig.style1[iRubriekStyle] %>.gif" alt="" border="0">
+      <td style="text-align:right;vertical-align:top;">
+		  <input type="submit" onclick="postIt()" class="submitbutton"  name="submit" value="Kies"> <input type="image" value="Kies" onclick="postIt()" src="media/buttonright_<%= NatMMConfig.style1[iRubriekStyle] %>.gif" alt="" border="0">
       </td>
     </tr>
     </form>
