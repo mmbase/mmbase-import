@@ -7,10 +7,6 @@
    String styleSheet = request.getParameter("rs");
    String paginaID = request.getParameter("s");
    PaginaHelper ph = new PaginaHelper(cloud);
-
-   String articleConstraint = "(artikel.embargo < '" + (nowSec+quarterOfAnHour) + "') AND "
-                              + "(artikel.use_verloopdatum='0' OR artikel.verloopdatum > '" + nowSec + "' )";
-   int count = 0;
 %>
 <mm:node number="weblogs">
   <div style="background-color: gray; color:white; padding-left:10px; font-weight:bold; width:100%; height:18px">

@@ -29,6 +29,7 @@ function changeImages() {
              constraints="<%= articleConstraint %>" max="3">
     <mm:field name="rubriek2.naam" jspvar="rubriek2_naam" vartype="String" write="false">
     <mm:field name="artikel.number" jspvar="artikel_number" vartype="String" write="false">
+    <mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false">
     <mm:first>
       <table>
       <tr>
@@ -42,7 +43,7 @@ function changeImages() {
         </td>
         <td>
     </mm:first>
-          <a href="<%= ph.createItemUrl(artikel_number,paginaID,null,request.getContextPath()) %>" style="text-decoration:none;">
+          <a href="<%= ph.createItemUrl(artikel_number,pagina_number,null,request.getContextPath()) %>" style="text-decoration:none;">
             <span class="colortitle">
               <%= rubriek2_naam.toUpperCase() %>
             </span>
@@ -64,6 +65,7 @@ function changeImages() {
     </mm:last>
     </mm:field>
     </mm:field>
+    </mm:field>
   </mm:related>
 
   <div style="background-color: #BDBDBD; color:black; padding-left:10px; font-weight:bold; width:100%; height:18px">
@@ -76,13 +78,15 @@ function changeImages() {
                  constraints="<%= articleConstraint %>" offset="3" max="5">
         <mm:field name="rubriek2.naam" jspvar="rubriek2_naam" vartype="String" write="false">
         <mm:field name="artikel.number" jspvar="artikel_number" vartype="String" write="false">
-          <a href="<%= ph.createItemUrl(artikel_number,paginaID,null,request.getContextPath()) %>" style="text-decoration:none;">
+        <mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false">
+          <a href="<%= ph.createItemUrl(artikel_number,pagina_number,null,request.getContextPath()) %>" style="text-decoration:none;">
             <span class="colortitle">
               <%= rubriek2_naam.toUpperCase() %>
             </span>
           </a>
           | <a href="<%= ph.createItemUrl(artikel_number,paginaID,null,request.getContextPath()) %>" 
                class="hover"><mm:field name="artikel.titel"/></a><br/>
+        </mm:field>
         </mm:field>
         </mm:field>
       </mm:related>
