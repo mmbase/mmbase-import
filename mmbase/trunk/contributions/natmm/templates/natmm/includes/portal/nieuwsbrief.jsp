@@ -9,9 +9,7 @@
    PaginaHelper ph = new PaginaHelper(cloud);
 %>
 <mm:node number="channels">
-  <div style="background-color: #BDBDBD; color:black; padding-left:10px; font-weight:bold; width:100%; height:18px">
-    NIEUWSBRIEF
-  </div>
+  <div class="headerBar" style="width:100%;">NIEUWSBRIEF</div>
   dfsf sfsdf sdf sdf sf shd fgd 
 </mm:node>
 </mm:cloud>
