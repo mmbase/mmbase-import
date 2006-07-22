@@ -18,8 +18,10 @@
 	 	orderby="parent.pos,posrel.pos" max="4" searchdir="destination">
     <mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false">
 <%
+      if (count%2==0 && count>1) { %><tr><td colspan=2>&nbsp;<div class="rule"></div></td></tr><% }
+
       count++;
-      if (count==1 || count==3) { %><tr><% }
+      if (count%2==1) { %><tr><% }
 %>
       <td style="vertical-align:top;width:50%;">
         <table>
@@ -49,11 +51,13 @@
         </table>
       </td>
 <%
-      if (count==2 || count==4) { %></tr><% }
-      if (count==2) { %><tr><td colspan="2">&nbsp;<div class="rule"></div></td></tr><% }
-%>
+      if (count%2==0) { %></tr><% }
+%> 
     </mm:field>
     </mm:related>
+<%
+    if (count%2==1) { %><td>&nbsp;</td></tr><% }
+%> 
   </table>
 </mm:node>
 </mm:cloud>
