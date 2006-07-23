@@ -20,6 +20,21 @@
 	if(iRubriekLayout==NatMMConfig.DEMO_LAYOUT) {
 		// google analytics code for demo.mediacompetence.com
 		%>
+		<style>
+		td {
+		 	color: black;
+			font-size: 70%; 
+		}
+		A:link {
+			color: black;
+		}
+		A:visited{
+			color: black;
+		}
+		A:hover{
+			color: black;
+		}
+		</style>
 		<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
 		</script>
 		<script type="text/javascript">
