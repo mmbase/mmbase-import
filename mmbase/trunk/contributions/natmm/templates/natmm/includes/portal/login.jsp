@@ -12,11 +12,9 @@
 	boolean isIE = (request.getHeader("User-Agent").toUpperCase().indexOf("MSIE")>-1);
 	
 %>
+ <div class="headerBar" style="width:100%;">MIJN <img src="includes/portal/logo.gif" border="0" style="vertical-align:middle;"/></div>
 	<form name="emailform" method="post" target="" action="">
 	<table cellspacing="0" cellpadding="0" border="0" style="width:165px;">
-		<tr>
-		  <td colspan="2" class="headerBar">MIJN <img src="includes/portal/logo.gif" border="0" style="vertical-align:middle;" /></td>
-		</tr>
 		<tr><td colspan="2" style="height:2px;"></td></tr>
 		<tr>
 		  <td class="maincolor" style="width:70px;padding:1px;line-height:0.85em;"><nobr>&nbsp;emailadres&nbsp;</nobr></td>

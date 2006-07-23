@@ -23,19 +23,16 @@ function changeImages() {
 // -->
 </script>
 <mm:node number="channels" notfound="skipbody">
-  <div class="headerBar" style="width:100%;">
-  		<img src="includes/portal/logo.gif" border="0" style="vertical-align:middle;"/>
-		VANDAAG 
-  </div>
+  <div class="headerBar" style="width:100%;"><img src="includes/portal/logo.gif" border="0" style="vertical-align:middle;"/> VANDAAG</div>
   <mm:related path="rubriek,parent,rubriek2,posrel,pagina,contentrel,artikel" orderby="artikel.embargo"
              constraints="<%= articleConstraint %>" max="3">
     <mm:field name="rubriek2.naam" jspvar="rubriek2_naam" vartype="String" write="false">
     <mm:field name="artikel.number" jspvar="artikel_number" vartype="String" write="false">
     <mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false">
     <mm:first>
-      <table>
+      <table style="width:100%;">
       <tr>
-        <td style="vertical-align:top;">
+        <td style="vertical-align:top;width:195px;">
           <mm:node element="artikel">
             <mm:relatednodes type="images" max="1">
               <mm:import id="first_image"><mm:image template="<%= sImageTemplate %>" /></mm:import>

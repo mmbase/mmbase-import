@@ -8,11 +8,13 @@
    PaginaHelper ph = new PaginaHelper(cloud);
 
 %>
-<mm:list  nodes="<%=paginaID%>"  path="pagina,lijstcontentrel1,linklijst,lijstcontentrel2,link" orderby="lijstcontentrel2.pos,link.titel"
-	 fields="link.titel,link.url,link.alt_tekst">
-	<a class="hover" href="<mm:field name="link.url" />" title="<mm:field name="link.alt_tekst" 
-		/>" target="<mm:field name="link.target" />"><mm:field name="link.titel" /></a>
-	- <span class="colortxt" style="font-size:90%;"><mm:field name="link.omschrijving" /></span>
-	<table class="dotline" style="width:212px;"><tr><td height="3"></td></tr></table>
-</mm:list>
+<div style="padding-left:3px;">
+  <mm:list  nodes="<%=paginaID%>"  path="pagina,lijstcontentrel1,linklijst,lijstcontentrel2,link" orderby="lijstcontentrel2.pos,link.titel"
+     fields="link.titel,link.url,link.alt_tekst">
+    <a class="hover" href="<mm:field name="link.url" />" title="<mm:field name="link.alt_tekst" 
+      />" target="<mm:field name="link.target" />"><mm:field name="link.titel" /></a>
+    - <span class="colortxt" style="font-size:90%;"><mm:field name="link.omschrijving" /></span>
+    <table class="dotline" style="width:212px;"><tr><td height="3"></td></tr></table>
+  </mm:list>
+</div>
 </mm:cloud>
