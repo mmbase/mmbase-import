@@ -18,7 +18,7 @@
 	 	orderby="parent.pos,posrel.pos" max="4" searchdir="destination">
     <mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false">
 <%
-      if (count%2==0 && count>1) { %><tr><td colspan=2>&nbsp;<div class="rule"></div></td></tr><% }
+      if (count%2==0 && count>1) { %><tr><td colspan="2" style="height:3px;"><div class="rule" style="margin:0px;"></div></td></tr><% }
 
       count++;
       if (count%2==1) { %><tr><% }
@@ -30,8 +30,8 @@
             <mm:node element="rubriek2">
               <mm:relatednodes type="images" max="1">
                 <a href="<%= ph.createPaginaUrl(pagina_number,request.getContextPath()) %>">
-					 	<img src="<mm:image template="s(68)" />" alt="<mm:field name="alt_tekst" />" border="0" />
-					</a><br/>
+                  <img src="<mm:image template="s(68)+part(0,0,68,49)" />" alt="<mm:field name="alt_tekst" />" border="0" />
+                </a><br/>
               </mm:relatednodes>
             </mm:node>
           </td>

@@ -19,27 +19,29 @@
 <%
         String linkToPagina = ph.createPaginaUrl(pagina_number,request.getContextPath());
 
-        if (count%2==0 && count>1) { %><tr><td colspan=2>&nbsp;<div class="rule"></div></td></tr><% }
+        if (count%2==0 && count>1) { %><tr><td colspan="2" style="height:3px;"><div class="rule" style="margin:0px;"></div></td></tr><% }
 
         count++;
         if (count%2==1) { %><tr><% }
 %>
-        <td width="50%">
-          <table>
+        <td width="50%" style="vertical-align:top;">
+          <table cellspacing="0">
           <tr>
-            <td>
-              <mm:list nodes="<%=pagina_number%>" path="pagina,posrel,images">
+            <mm:list nodes="<%=pagina_number%>" path="pagina,posrel,images">
+              <td style="vertical-align:top;">
                 <mm:node element="images"><img src="<mm:image  template="s(48)+part(0,0,48,48)" />" alt="" border="0" /></mm:node>
-              </mm:list>
-            </td>
-            <td>
-              <a href="<%= linkToPagina %>" class="maincolor_link_shorty">
+              </td>
+            </mm:list>
+            <td style="vertical-align:top;">
                 <mm:field name="pagina.titel_eng" jspvar="pagina_titel_eng" vartype="String" write="false">
-                  <span class="colortitle"><%= pagina_titel_eng.toUpperCase() %></span>
+                  <mm:isnotempty>
+                    <a href="<%= linkToPagina %>" class="maincolor_link_shorty">
+                      <span class="colortitle"><%= pagina_titel_eng.toUpperCase() %></span>
+                    </a>
+                  <br/>
+                  </mm:isnotempty>
                 </mm:field>
-              </a>
-              <br/>
-              <a href="<%= linkToPagina %>" class="hover"><mm:field name="pagina.titel" /></a>
+                <a href="<%= linkToPagina %>" class="hover"><mm:field name="pagina.titel" /></a>
             </td>
           </tr>
           </table>

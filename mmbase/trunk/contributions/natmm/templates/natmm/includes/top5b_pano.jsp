@@ -49,7 +49,11 @@ if(iRubriekLayout==NatMMConfig.SUBSITE3_LAYOUT) {
    panoTemplate = "s(744)+part(0,0,744,75)";
    pHeight = 75;
 } else if (iRubriekLayout==NatMMConfig.DEMO_LAYOUT) {
-  panoTemplate = "s(744)+part(0,0,744,52)";
+  if(path.equals("portal.jsp")) { 
+  	 panoTemplate = "s(784)+part(0,0,783,52)";
+  } else {
+  	 panoTemplate = "s(744)+part(0,0,744,52)";  
+  }
   pHeight = 52;
 } else if(path.equals("index.jsp")) {
    panoTemplate = "part(0,0,744,157)"; 
