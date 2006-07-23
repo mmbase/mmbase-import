@@ -45,7 +45,7 @@ function changeImages() {
         </td>
         <td>
     </mm:first>
-          <a href="<%= ph.createItemUrl(artikel_number,pagina_number,null,request.getContextPath()) %>" style="text-decoration:none;">
+          <a href="<%= ph.createItemUrl(artikel_number,pagina_number,null,request.getContextPath()) %>" class="maincolor_link_shorty">
             <span class="colortitle">
               <%= rubriek2_naam.toUpperCase() %>
             </span>

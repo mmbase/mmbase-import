@@ -9,8 +9,10 @@
    PaginaHelper ph = new PaginaHelper(cloud);
    int count = 0;
 %>
-<mm:node number="weblogs">
-  <div style="background-color: gray; color:white; padding-left:10px; font-weight:bold; width:100%; height:18px">COLUMNS</div>
+<mm:node number="weblogs" notfound="skipbody">
+  <div class="rightSideBar" style="width:100%;">
+    <mm:field name="naam" />
+  </div>
   <table>
     <mm:related path="posrel,pagina">
       <mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false">
@@ -31,17 +33,17 @@
               </mm:list>
             </td>
             <td>
-              <a href="<%= linkToPagina %>" style="text-decoration:none;">
+              <a href="<%= linkToPagina %>" class="maincolor_link_shorty">
                 <mm:field name="pagina.titel_eng" jspvar="pagina_titel_eng" vartype="String" write="false">
                   <span class="colortitle"><%= pagina_titel_eng.toUpperCase() %></span>
                 </mm:field>
               </a>
               <br/>
-              <a href="<%= linkToPagina %>" style="text-decoration:none;"><mm:field name="pagina.titel" /></a>
+              <a href="<%= linkToPagina %>" class="hover"><mm:field name="pagina.titel" /></a>
             </td>
           </tr>
           </table>
-          <a href="<%= linkToPagina %>" style="text-decoration:none;">Naar&nbsp;weblog&nbsp;></a>
+          <a href="<%= linkToPagina %>" class="hover">Naar&nbsp;weblog&nbsp;></a>
         </td>
 <%
         if (count%2==0) { %></tr><% }
