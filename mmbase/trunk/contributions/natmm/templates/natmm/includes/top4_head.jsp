@@ -35,6 +35,49 @@
 			color: black;
 		}
 		</style>
+		<script language="JavaScript">
+		<!--
+		// please keep these lines on when you copy the source
+		// made by: Nicolas - http://www.javascript-page.com
+		
+		var clockID = 0;
+		
+		function UpdateClock() {
+			if(clockID) {
+				clearTimeout(clockID);
+				clockID  = 0;
+			}
+		
+			var tDate = new Date();
+		   var minutes = tDate.getMinutes();
+			if(minutes<10) { minutes = "0" + minutes; }
+		   var seconds = tDate.getSeconds();
+			if(seconds<10) { seconds = "0" + seconds; }
+			
+			document.theClock.theTime.value = ""
+													  + tDate.getDate() + "-"
+													  + (tDate.getMonth()+1) + "-"
+													  + tDate.getYear() + "  "
+													  + tDate.getHours() + ":"
+													  + minutes + ":"
+													  + seconds;
+			
+			clockID = setTimeout("UpdateClock()", 1000);
+		}
+		function StartClock() {
+			clockID = setTimeout("UpdateClock()", 500);
+		}
+		
+		function KillClock() {
+			if(clockID) {
+				clearTimeout(clockID);
+				clockID  = 0;
+			}
+		}
+		
+		//-->
+		
+		</script>
 		<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
 		</script>
 		<script type="text/javascript">
@@ -44,4 +87,6 @@
 		<% 
 	} %>
 </head>
-<body style="margin:0;" id="nm_body" <mm:present referid="onload_statement">onLoad="<mm:write referid="onload_statement"/>"</mm:present>>
+<body style="margin:0;" id="nm_body" <mm:present referid="onload_statement">onLoad="<mm:write referid="onload_statement"/>"</mm:present
+	> <%= (iRubriekLayout==NatMMConfig.DEMO_LAYOUT ? "onload='StartClock()' onunload='KillClock()'" : "" ) 
+	%>>

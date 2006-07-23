@@ -53,8 +53,10 @@
       <jsp:param name="sr" value="1" />
     </jsp:include>
   </td>
-  <td style="vertical-align:top;width:214px;padding:2px;">
-    <div class="headerBar" style="width:212px;"> </div>
+  <td style="vertical-align:top;width:214px;padding:2px;padding-top:1px;">
+    <form name="theClock">
+	 	<input type=text name="theTime" class="headerBar" style="width:212px;border:none;font:normal;font-size:90%;text-align:right;padding-right:3px;">
+	 <form>
     <%
     String embargoLinkConstraint = "(link.embargo < '" + (nowSec+quarterOfAnHour) + "') AND "
                                 + "(link.use_verloopdatum='0' OR link.verloopdatum > '" + nowSec + "' )";
