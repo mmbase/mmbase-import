@@ -15,7 +15,7 @@
       <mm:field name="dossier.number" jspvar="dossier_number" vartype="String" write="false">
       <mm:field name="dossier.naam" jspvar="dossier_naam" vartype="String" write="false">
 <%
-        if (count%2==0 && count>1) { %><tr><td colspan=2>&nbsp;<div class="rule"></div></td></tr><% }
+        if (count%2==0 && count>1) { %><tr><td colspan="2" style="height:3px;"><div class="rule" style="margin:0px;"></div></td></tr><% }
 
         count++;
         if (count%2==1) { %><tr><% }
@@ -44,10 +44,10 @@
 <%
                 if(!readmoreURL.equals("")) {
 %>
-                  <a href="<%= readmoreURL %>" class="maincolor_link">
+                  <a href="<%= readmoreURL %>" class="maincolor_link_shorty">
 <%
                 }
-                %><%= dossier_naam.toUpperCase() %><%
+                %><span class="colortitle"><%= dossier_naam.toUpperCase() %></span><%
                 if(!readmoreURL.equals("")) {
                   %></a><%
                 }
