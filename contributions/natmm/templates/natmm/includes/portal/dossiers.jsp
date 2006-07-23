@@ -10,7 +10,7 @@
 %>
 <mm:node number="<%=objectID%>">
   <div class="headerBar" style="width:100%;">DOSSIERS</div>
-  <table>
+  <table cellspacing="0">
     <mm:related path="posrel,dossier" fields="dossier.number,dossier.naam" orderby="posrel.pos">
       <mm:field name="dossier.number" jspvar="dossier_number" vartype="String" write="false">
       <mm:field name="dossier.naam" jspvar="dossier_naam" vartype="String" write="false">
@@ -21,7 +21,7 @@
         if (count%2==1) { %><tr><% }
 %>
         <td style="vertical-align:top;width:50%;">
-          <table>
+          <table cellspacing="0">
           <tr>
             <td style="vertical-align:top;">
               <mm:list nodes="<%=dossier_number%>" path="dossier,posrel,images">

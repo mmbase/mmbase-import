@@ -1,33 +1,18 @@
-<%@page language="java" contentType="text/html; charset=utf-8"
-%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><%@page import="java.util.*" %>
+<%@include file="/taglibs.jsp" %>
+<%@include file="../request_parameters.jsp" %>
 <mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud">
+<%@include file="../getstyle.jsp" %>
 <%
+   String rootId = request.getParameter("r"); 
+   if(rootId==null){ rootId="-1"; }
    String pollId = request.getParameter("poll"); 
    if(pollId==null){ pollId="-1"; }
 %>
-
-<%-- check whether node with number pollId exists --%><%
-   try { 
-%>
-<mm:node number="<%= pollId %>" notfound="throwexception" />
+<mm:node number="<%= pollId %>" jspvar="poll" notfound="skipbody">
+<mm:nodeinfo type="type" write="false" jspvar="nType" vartype="String">
 <%
-   } catch(Exception e) { 
-     pollId = "-1";
-   }
-%>
-<%-- check whether pollId refers to a poll --%>
-<mm:list nodes="<%= pollId %>" path="poll" max="1">
-  <mm:import id="is_poll" />
-</mm:list>
-<mm:notpresent referid="is_poll"><% pollId = "-1"; %></mm:notpresent>
-<mm:remove referid="is_poll"/>
+  if(nType.equals("poll")){ // this node is a poll
 
-<% 
-   if(!pollId.equals("-1")) {
-%>
-   <mm:node number="<%= pollId %>" jspvar="poll">
-<%
      String antw = request.getParameter("antw");
 
      // Declare some variable for future use
@@ -97,112 +82,97 @@
      long[] procent = new long[5];
      long[] width = new long[5];
      for (int j = 0; j < count; j++) {
-       long uitkomst = Math.round(((double) answer_tot[j]/(double) tot_general) * 1000);
-       procent[j] = uitkomst / 10;
-       width[j] = (257*uitkomst)/1000;
+       long result = Math.round(((double) answer_tot[j]/(double) tot_general) * 1000);
+       procent[j] = result / 10;
+       width[j] = (257*result)/1000;
      }
 
-%>
-     <html>
-     <head><title>Netwerk - <mm:field name="question" /></title></head>
-     <link rel="stylesheet" type="text/css" href="../css/netwerk.css">
-     <body class="grey">
-
-     <%-- make 5 columns: 25 + 60 + 1 + 287 + 25 = 398 --%>
-     <table cellspacing="0" cellpadding="0" border="0" width="398">
-       <%-- column 1: netwerk logo, redspace, top logo --%>
-       <tr>
-         <td colspan="2"><img src="../media/netwerk_logo_small.jpg" alt="" border="0"></td>
-         <td class="black"><img src="../media/spacer.gif" alt="" border="0" width="1" height="1"></td>
-         <td class="red_middle" colspan="2"><div align="right"><div class="pagetitle">OPINIE <span class="lighter">&#124;&#124;</span>&nbsp;<span class="yellow">NETWERK</span>
-           <img src="../media/spacer.gif" alt="" border="0" width="6" height="1"></div></div>
-         </td>
-       </tr>
-       <tr>
-         <td class="black"><img src="../media/spacer.gif" alt="" border="0" width="25" height="1"></td>
-         <td class="black"><img src="../media/spacer.gif" alt="" border="0" width="60" height="1"></td>
-         <td class="black"><img src="../media/spacer.gif" alt="" border="0" width="1" height="1"></td>
-         <td class="black"><img src="../media/spacer.gif" alt="" border="0" width="287" height="1"></td>
-         <td class="black"><img src="../media/spacer.gif" alt="" border="0" width="25" height="1"></td>
-       </tr>
-       <tr>
-         <td class="grey_light"><img src="../media/spacer.gif" alt="" border="0" width="25" height="16"></td>
-         <td class="grey_middle" colspan="3"><div align="center"><span class="pagetitle"><span class="red"><%= messageString %></span></span></div></td>
-         <td class="grey_light"><img src="../media/spacer.gif" alt="" border="0" width="25" height="16"></td>
-       </tr>
-       <tr>
-         <td class="grey_light"><img src="../media/spacer.gif" alt="" border="0" width="25" height="1"></td>
-         <td class="grey_light" colspan="3">
-           <div class="title"><mm:field name="question" /></div><mm:field name="description" />
-         </td>
-         <td class="grey_light"><img src="../media/spacer.gif" alt="" border="0" width="25" height="1"></td>
-       </tr>
-       <tr>
-         <td class="grey_light" colspan="5"><img src="../media/spacer.gif" alt="" border="0" width="398" height="14"></td>
-       </tr>
-       <tr>
-         <td class="grey_light"><img src="../media/spacer.gif" alt="" border="0" width="25" height="1"></td>
-         <td class="grey_light" colspan="3">
-           <div align="center">
-             <%-- make 5 columns: 6 + 1 + 257 + 1 + 35 + 45 = 345 --%>
-<% 
-             for (int k = 0; k < count; k++) { 
-%>
-               <table cellspacing="0" cellpadding="0" border="0" width="345">
-                 <tr>
-                   <td class="grey_middle"><img src="../media/red.gif" alt="" border="0" width="2" height="2"></td>
-                   <td colspan="5"><span class="title"><%= answer_title[k] %></span></td>
-                 </tr>
-                 <tr>
-                   <td rowspan="3" class="grey_light"><img src="../media/spacer.gif" alt="" border="0" width="6" height="1"></td>
-                   <td class="black"><img src="../media/spacer.gif" alt="" border="0" width="1" height="1"></td>
-                   <td class="black"><img src="../media/spacer.gif" alt="" border="0" width="257" height="1"></td>
-                   <td class="black"><img src="../media/spacer.gif" alt="" border="0" width="1" height="1"></td>
-                   <td><img src="../media/spacer.gif" alt="" border="0" width="35" height="1"></td>
-                   <td><img src="../media/spacer.gif" alt="" border="0" width="45" height="1"></td>
-                 </tr>
-                 <tr>
-                   <td class="black"><img src="../media/spacer.gif" alt="" border="0" width="1" height="14"></td>
-                   <td class="white"><img src="../media/black.gif" alt="" border="0" width="<%= width[k] %>" height="14"></td>
-                   <td class="black"><img src="../media/spacer.gif" alt="" border="0" width="1" height="14"></td>
-                   <td><img src="../media/spacer.gif" alt="" border="0" width="5" height="1"><span class="title"><%= procent[k] %>%</span></td>
-                   <td><img src="../media/spacer.gif" alt="" border="0" width="5" height="1"><span class="title"><%-- (<%= answer_tot[k] %>) --%>&nbsp;</span></td>
-                 </tr>
-                 <tr>
-                   <td class="black"><img src="../media/spacer.gif" alt="" border="0" width="1" height="1"></td>
-                   <td class="black"><img src="../media/spacer.gif" alt="" border="0" width="257" height="1"></td>
-                   <td class="black"><img src="../media/spacer.gif" alt="" border="0" width="1" height="1"></td>
-                   <td><img src="../media/spacer.gif" alt="" border="0" width="35" height="1"></td>
-                   <td><img src="../media/spacer.gif" alt="" border="0" width="45" height="1"></td>
+%> 
+  <html>
+    <head>
+      <title><mm:node number="<%= rootId %>" notfound="skipbody"><mm:field name="naam" /></mm:node> - <mm:field name="question" /></title>
+      <link rel="stylesheet" type="text/css" href="../../hoofdsite/themas/main.css" />
+      <link rel="stylesheet" type="text/css" href="../../hoofdsite/themas/naardermeer.css" />
+      <style>
+      td {
+        color: black;
+        font-size: 70%; 
+      }
+      td.black {
+        background-color: black;
+      }
+      A:link {
+        color: black;
+      }
+      A:visited{
+        color: black;
+      }
+      A:hover{
+        color: black;
+      }
+      </style>
+    </head>
+    <body style="margin:0px;">
+     <table cellspacing="0" class="maintable">
+        <tr>
+        <td style="vertical-align:top;" style="width:338px;">
+          <div class="headerBar" style="width:100%;"><img src="logo.gif" alt="" border="0"> OPINIE</div>
+          <div style="padding:14px;">
+              <span class="colortitle"><mm:field name="omschrijving"/></span>
+              <% 
+              if(!messageString.equals("")) {
+                %>
+                <br/><br/>
+                <span style="color:red;font-weight:bold;"><%= messageString %></span>
+                <br/><br/>
+                <% 
+              } 
+              for (int k = 0; k < count; k++) { 
+                %>
+                <table cellspacing="0" cellpadding="0" border="0">
+                  <tr>
+                    <td colspan="4"><span class="title"><li><%= answer_title[k] %></span></td>
+                  </tr>
+                  <tr>
+                    <td class="black"><img src="../../media/trans.gif" alt="" border="0" width="1" height="1"></td>
+                    <td class="black"><img src="../../media/trans.gif" alt="" border="0" width="257" height="1"></td>
+                    <td class="black"><img src="../../media/trans.gif" alt="" border="0" width="1" height="1"></td>
+                    <td><img src="../../media/trans.gif" alt="" border="0" width="35" height="1"></td>
+                  </tr>
+                  <tr>
+                    <td class="black" style="width:1px;"><img src="../../media/trans.gif" alt="" border="0" width="1" height="14"></td>
+                    <td>
+                      <table cellspacing="0" cellpadding="0" border="0" width="257">
+                        <tr>
+                          <td width="<%= width[k] %>" class="maincolor"><img src="../../media/trans.gif" alt="" border="0" width="1" height="14"></td>
+                          <td width="<%= 257- width[k] %>"><img src="../../media/trans.gif" alt="" border="0" width="1" height="14"></td>
+                        </tr>
+                     </table>
+                    </td>
+                    <td class="black"><img src="../../media/trans.gif" alt="" border="0" width="1" height="14"></td>
+                    <td style="padding-left:5px;"><span class="colortitle"><%= procent[k] %>%</span></td>
+                  </tr>
+                  <tr>
+                    <td class="black"><img src="../../media/trans.gif" alt="" border="0" width="1" height="1"></td>
+                    <td class="black"><img src="../../media/trans.gif" alt="" border="0" width="257" height="1"></td>
+                    <td class="black"><img src="../../media/trans.gif" alt="" border="0" width="1" height="1"></td>
+                    <td><img src="../../media/trans.gif" alt="" border="0" width="35" height="1"></td>
                  </tr>
                </table>
-               <img src="../media/spacer.gif" alt="" border="0" width="345" height="7">
-<%
+               <%
              }
-%>
-             <img src="../media/spacer.gif" alt="" border="0" width="345" height="28">
-             <a href="javascript:self.close()"><img src="../media/buttons/sluit.gif" alt="sluit dit venster" border="0"></a>
+             %>
+             <img src="../../media/trans.gif" alt="" border="0" width="268" height="28">
+             <a href="javascript:self.close()"><img src="../../media/close_<%= NatMMConfig.style1[iRubriekStyle] %>.gif" alt="sluit dit venster" border="0"></a>
            </div>
-         </td>
-         <td class="grey_light"><img src="../media/spacer.gif" alt="" border="0" width="25" height="1"></td>
-       </tr>
-       <tr>
-         <td class="grey_light" colspan="5"><img src="../media/spacer.gif" alt="" border="0" width="398" height="32"></td>
-       </tr>
-     </table>
-     </body>
+          </td>
+        </tr>
+       </table>
+       </body>
      </html>
-   </mm:node>
 <%
-   } else { 
-%>
-     <html>
-       <head><title>Netwerk - <mm:field name="title" /></title></head>
-       <link rel="stylesheet" type="text/css" href="../css/netwerk.css">
-       <body>No valid poll number is provided in the url.</body>
-     </html>
-<% 
    }
 %>
-
+</mm:nodeinfo>
+</mm:node>
 </mm:cloud>
