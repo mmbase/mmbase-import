@@ -162,3 +162,11 @@ A.navbutton {
 	vertical-align: bottom;
 	height:18px;
 }
+.rightSideBar {
+	background-color: gray;
+	color: white;
+	font-weight: bold;
+	padding-left: 10px;
+	vertical-align: bottom;
+	height:18px;
+}
