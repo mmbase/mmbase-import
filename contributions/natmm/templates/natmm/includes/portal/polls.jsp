@@ -25,7 +25,13 @@
 %>
       </td>
       <td style="text-align:right;vertical-align:top;">
-		  <input type="submit" onclick="postIt()" class="submitbutton"  name="submit" value="Kies"> <input type="image" value="Kies" onclick="postIt()" src="media/buttonright_<%= NatMMConfig.style1[iRubriekStyle] %>.gif" alt="" border="0">
+        <table>
+          <tr><td onclick="postIt()" onmouseover="this.style.cursor='pointer'"
+                   style="height:29px; width:54px; background-color:f7f7f7; padding-left: 10px; border:1px solid A79C9F; border">
+                <b>Stem</b>&nbsp;
+                <img src="media/buttonright_<%= NatMMConfig.style1[iRubriekStyle] %>.gif" alt="" border="0"/>
+          </td></tr>
+        </table>
       </td>
     </tr>
     </form>
@@ -34,14 +40,13 @@
     <script language="JavaScript" type="text/javascript">
     <%= "<!--" %>
       function postIt() {
-        window.open('','poll<%= poll_number %>','height=<%= 171 + (total_answers*46) %>,width=398, scrollbars=NO, menubar=0, toolbar=0, status=0, directories=0, resizable=0');
         var antw = "";
         for (i = 0; i < <%= ""+total_answers %>; i++) {
           if (document.poll<%= poll_number %>.antwoord[i].checked) {
             antw = document.poll<%= poll_number %>.antwoord[i].value;
           }
         }
-        document.poll<%= poll_number %>.action = "includes/portal/poll_result.jsp?poll=<%= poll_number %>&antw="+antw;
+        window.open("includes/portal/poll_result.jsp?poll=<%= poll_number %>&antw="+antw,'poll<%= poll_number %>','height=<%= 171 + (total_answers*46) %>,width=398, scrollbars=NO, menubar=0, toolbar=0, status=0, directories=0, resizable=0');
       }
     <%= "//-->" %>
     </script>
