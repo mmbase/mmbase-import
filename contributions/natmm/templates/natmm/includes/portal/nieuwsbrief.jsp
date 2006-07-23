@@ -8,8 +8,7 @@
    String paginaID = request.getParameter("s");
    PaginaHelper ph = new PaginaHelper(cloud);
 %>
-<mm:node number="channels">
-  <div class="headerBar" style="width:100%;">NIEUWSBRIEF</div>
-  dfsf sfsdf sdf sdf sf shd fgd 
-</mm:node>
+<div class="headerBar" style="width:100%;">NIEUWSBRIEF</div>
+<span class="colortitle">NIEUWSBRIEF</span> Periodiek |
+<span class="colortitle">NIEUWSBRIEF</span> Attendering
 </mm:cloud>

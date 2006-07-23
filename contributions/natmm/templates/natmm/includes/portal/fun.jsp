@@ -8,14 +8,14 @@
    String paginaID = request.getParameter("s");
    PaginaHelper ph = new PaginaHelper(cloud);
 %>
-<mm:node number="fun">
-  <div style="background-color: gray; color:white; padding-left:10px; font-weight:bold; width:100%; height:18px">
-    SPELLETJETS
+<mm:node number="fun" notfound="skipbody">
+  <div class="rightSideBar" style="width:100%;">
+    <mm:field name="naam" />
   </div>
   <mm:related path="posrel,pagina">
     <mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false">
-      <a href="<%= ph.createPaginaUrl(pagina_number,request.getContextPath()) %>" style="text-decoration:none;">
-        <span class="colortitle">Life</span>Line 
+      <a href="<%= ph.createPaginaUrl(pagina_number,request.getContextPath()) %>"  class="maincolor_link_shorty">
+        Life <span style="color:black;">Line</span>
         <mm:field name="pagina.titel" jspvar="pagina_titel" vartype="String" write="false">
           <%= pagina_titel.toUpperCase() %>
         </mm:field>

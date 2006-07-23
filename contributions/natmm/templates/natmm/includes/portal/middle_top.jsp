@@ -22,7 +22,7 @@ function changeImages() {
 }
 // -->
 </script>
-<mm:node number="channels">
+<mm:node number="channels" notfound="skipbody">
   <div class="headerBar" style="width:100%;">
   		<img src="includes/portal/logo.gif" border="0" style="vertical-align:middle;"/>
 		VANDAAG 
