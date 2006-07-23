@@ -1,4 +1,6 @@
 <%
+   String requestURL = javax.servlet.http.HttpUtils.getRequestURL(request).toString();
+	 requestURL = requestURL.substring(0,requestURL.lastIndexOf("/")); 
    String embargoPollConstraint = "(poll.embargo < '" + (nowSec+quarterOfAnHour) + "') AND "
                                 + "(poll.use_verloopdatum='0' OR poll.verloopdatum > '" + nowSec + "' )";
 %>
@@ -45,7 +47,7 @@
             antw = document.poll<%= poll_number %>.antwoord[i].value;
           }
         }
-        javascript:launchCenter("includes/portal/poll_result.jsp?r=<%= rootID %>&rs=<%= styleSheet %>&poll=<%= poll_number %>&antw="+antw,'poll<%= poll_number %>',<%= 171 + (total_answers*46) %>,338,'location=no,directories=no,status=no,toolbars=no,scrollbars=no,resizable=yes');
+        javascript:launchCenter("<%= requestURL + "/" + (isSubDir? "../" : "" ) %>includes/portal/poll_result.jsp?r=<%= rootID %>&rs=<%= styleSheet %>&poll=<%= poll_number %>&antw="+antw,'poll<%= poll_number %>',<%= 171 + (total_answers*46) %>,338,'location=no,directories=no,status=no,toolbars=no,scrollbars=no,resizable=yes');
       }
     </script>
     </mm:field>
