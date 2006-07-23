@@ -35,7 +35,7 @@ function changeImages() {
     <mm:first>
       <table>
       <tr>
-        <td>
+        <td style="vertical-align:top;">
           <mm:node element="artikel">
             <mm:relatednodes type="images" max="1">
               <mm:import id="first_image"><mm:image template="<%= sImageTemplate %>" /></mm:import>
@@ -73,7 +73,7 @@ function changeImages() {
   <div class="headerBar" style="width:100%;">LAATSTE NIEUWS</div>
   <table style="width:100%;">
   <tr>
-    <td>
+    <td style="vertical-align:top;">
       <mm:related path="rubriek,parent,rubriek2,posrel,pagina,contentrel,artikel" orderby="artikel.embargo"
                  constraints="<%= articleConstraint %>" offset="3" max="5">
         <mm:field name="rubriek2.naam" jspvar="rubriek2_naam" vartype="String" write="false">
@@ -90,10 +90,10 @@ function changeImages() {
         </mm:field>
         </mm:field>
       </mm:related>
-      <div class="rule" style="margin-bottom:6px;"></div>
-      some links <br/>
+      <div class="rule" style="margin-bottom:6px;margin-top:6px;"></div>
+      Overzicht laatste 24 uur | Videonieuws | Radionieuws <br/>
     </td>
-    <td>
+    <td style="vertical-align:top;">
       <img src="includes/portal/beurs.gif" border="0" />
     </td>
   </tr>

@@ -46,7 +46,7 @@
             antw = document.poll<%= poll_number %>.antwoord[i].value;
           }
         }
-        window.open("includes/portal/poll_result.jsp?poll=<%= poll_number %>&antw="+antw,'poll<%= poll_number %>','height=<%= 171 + (total_answers*46) %>,width=398, scrollbars=NO, menubar=0, toolbar=0, status=0, directories=0, resizable=0');
+        window.open("includes/portal/poll_result.jsp?r=<%= rootId %>&poll=<%= poll_number %>&antw="+antw,'poll<%= poll_number %>','height=<%= 171 + (total_answers*46) %>,width=398, scrollbars=NO, menubar=0, toolbar=0, status=0, directories=0, resizable=0');
       }
     <%= "//-->" %>
     </script>
