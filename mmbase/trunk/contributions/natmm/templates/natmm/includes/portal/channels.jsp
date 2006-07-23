@@ -28,7 +28,7 @@
         <tr>
           <td style="vertical-align:top;">
             <mm:node element="rubriek2">
-              <mm:relatednodes type="images" max="1">
+              <mm:relatednodes type="images" role="contentrel" max="1">
                 <a href="<%= ph.createPaginaUrl(pagina_number,request.getContextPath()) %>">
                   <img src="<mm:image template="s(68)+part(0,0,68,49)" />" alt="<mm:field name="alt_tekst" />" border="0" />
                 </a><br/>
