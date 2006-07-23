@@ -24,6 +24,14 @@
       <jsp:param name="rs" value="<%= styleSheet %>" />
       <jsp:param name="sr" value="0" />
     </jsp:include>
+    <div style="padding-top:20px;text-align:center;">
+      <table><tr><td style="text-align:center; color:#B5B5B5; font-weight:bold;" 
+                     onClick="this.style.behavior='url(#default#homepage)'; this.setHomePage('<%= HttpUtils.getRequestURL(request) + "?" + request.getQueryString() %>');"
+                     onmouseover="this.style.cursor='pointer'">
+        Maak dit <img src="includes/portal/heart.gif" alt="" border="0" /><br/>
+        mijn startpagina
+      </td></tr></table>
+    </div>
   </td>
   <td style="vertical-align:top;width:400px;padding:2px;">
     <jsp:include page="includes/portal/middle_top.jsp">
