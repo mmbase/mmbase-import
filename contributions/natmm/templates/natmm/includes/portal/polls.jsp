@@ -34,7 +34,7 @@
     <script language="JavaScript" type="text/javascript">
     <%= "<!--" %>
       function postIt() {
-        window.open('','poll<%= poll_number %>','height=800,width=1000, scrollbars=YES, location = 1, menubar=1, toolbar=1, status=1, directories=1, resizable=1');
+        window.open('','poll<%= poll_number %>','height=<%= 171 + (total_answers*46) %>,width=398, scrollbars=NO, menubar=0, toolbar=0, status=0, directories=0, resizable=0');
         var antw = "";
         for (i = 0; i < <%= ""+total_answers %>; i++) {
           if (document.poll<%= poll_number %>.antwoord[i].checked) {

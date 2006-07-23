@@ -24,7 +24,7 @@
           <table>
           <tr>
             <td>
-              <mm:list nodes="<%=dossier_number%>" path="dossier,posrel,images">aaaaaaaaaaaa
+              <mm:list nodes="<%=dossier_number%>" path="dossier,posrel,images">
                 <mm:node element="images"><img src="<mm:image  template="s(68)+part(0,0,68,68)" />" alt="" border="0" /></mm:node>
               </mm:list>
             </td>
