@@ -20,15 +20,15 @@
         count++;
         if (count%2==1) { %><tr><% }
 %>
-        <td width="50%">
+        <td style="vertical-align:top;width:50%;">
           <table>
           <tr>
-            <td>
+            <td style="vertical-align:top;">
               <mm:list nodes="<%=dossier_number%>" path="dossier,posrel,images">
                 <mm:node element="images"><img src="<mm:image  template="s(68)+part(0,0,68,68)" />" alt="" border="0" /></mm:node>
               </mm:list>
             </td>
-            <td>
+            <td style="vertical-align:top;">
               <span class="colortitle">
                 <% readmoreURL = ""; %>
                 <mm:list nodes="<%=dossier_number%>" path="dossier,readmore,pagina,gebruikt,paginatemplate"
