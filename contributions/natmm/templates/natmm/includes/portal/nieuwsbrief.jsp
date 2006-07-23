@@ -9,6 +9,8 @@
    PaginaHelper ph = new PaginaHelper(cloud);
 %>
 <div class="headerBar" style="width:100%;">NIEUWSBRIEF</div>
-<span class="colortitle">NIEUWSBRIEF</span> Periodiek |
-<span class="colortitle">NIEUWSBRIEF</span> Attendering
+<div style="padding-left:3px;">
+  <span class="colortitle">NIEUWSBRIEF</span> Periodiek |
+  <span class="colortitle">NIEUWSBRIEF</span> Attendering
+</div>
 </mm:cloud>

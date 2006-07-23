@@ -2,9 +2,9 @@
    String embargoPollConstraint = "(poll.embargo < '" + (nowSec+quarterOfAnHour) + "') AND "
                                 + "(poll.use_verloopdatum='0' OR poll.verloopdatum > '" + nowSec + "' )";
 %>
-<div class="headerBar" style="width:100%;">POLLS</div>
+<div class="headerBar" style="width:100%;">OPINIE</div>
 <mm:list nodes="<%= paginaID %>" path="pagina,contentrel,poll" constraints="<%= embargoPollConstraint %>">
-  <mm:field name="poll.omschrijving"/><br/>
+  <div style="padding-left:3px;"><mm:field name="poll.omschrijving"/></div>
   <mm:node element="poll" jspvar="poll">
     <mm:field name="number" jspvar="poll_number" vartype="String" write="false">
     <table width="100%">
@@ -26,7 +26,7 @@
       </td>
       <td style="text-align:right;vertical-align:top;">
         <table>
-          <tr><td onclick="postIt()" onmouseover="this.style.cursor='pointer'"
+          <tr><td onclick="postIt();setTimeout('newwin.focus();',250);" onmouseover="this.style.cursor='pointer'"
                    style="height:29px; width:54px; background-color:f7f7f7; padding-left: 10px; border:1px solid A79C9F; border">
                 <b>Stem</b>&nbsp;
                 <img src="media/buttonright_<%= NatMMConfig.style1[iRubriekStyle] %>.gif" alt="" border="0"/>
@@ -38,7 +38,6 @@
     </table>
 
     <script language="JavaScript" type="text/javascript">
-    <%= "<!--" %>
       function postIt() {
         var antw = "";
         for (i = 0; i < <%= ""+total_answers %>; i++) {
@@ -46,9 +45,8 @@
             antw = document.poll<%= poll_number %>.antwoord[i].value;
           }
         }
-        window.open("includes/portal/poll_result.jsp?r=<%= rootID %>&poll=<%= poll_number %>&antw="+antw,'poll<%= poll_number %>','height=<%= 171 + (total_answers*46) %>,width=398, scrollbars=NO, menubar=0, toolbar=0, status=0, directories=0, resizable=0');
+        javascript:launchCenter("includes/portal/poll_result.jsp?r=<%= rootID %>&rs=<%= styleSheet %>&poll=<%= poll_number %>&antw="+antw,'poll<%= poll_number %>',<%= 171 + (total_answers*46) %>,338,'location=no,directories=no,status=no,toolbars=no,scrollbars=no,resizable=yes');
       }
-    <%= "//-->" %>
     </script>
     </mm:field>
   </mm:node>

@@ -13,7 +13,7 @@
   <div class="headerBar" style="width:100%;">
   		<mm:field name="naam" jspvar="name" vartype="String" write="false"><%= name.toUpperCase() %></mm:field>
   </div>
-  <table style="width:398">
+  <table cellspacing="0" style="width:398">
     <mm:related path="parent,rubriek2,posrel,pagina" fields="pagina.number,pagina.titel"
 	 	orderby="parent.pos,posrel.pos" max="4" searchdir="destination">
     <mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false">
@@ -24,7 +24,7 @@
       if (count%2==1) { %><tr><% }
 %>
       <td style="vertical-align:top;width:50%;">
-        <table>
+        <table cellspacing="0">
         <tr>
           <td style="vertical-align:top;">
             <mm:node element="rubriek2">
