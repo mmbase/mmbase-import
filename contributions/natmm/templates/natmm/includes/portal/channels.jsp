@@ -9,7 +9,7 @@
    PaginaHelper ph = new PaginaHelper(cloud);
    int count = 0;
 %>
-<mm:node number="channels">
+<mm:node number="channels" notfound="skipbody">
   <div class="headerBar" style="width:100%;">
   		<mm:field name="naam" jspvar="name" vartype="String" write="false"><%= name.toUpperCase() %></mm:field>
   </div>
