@@ -188,6 +188,9 @@ Obsolete Features:
 
 - Old database layers have been dropped.
 
+- 1.8 assumes that relation builders are extended from insrel (using the extends attribute in the builder tag).
+  Code may behave erratically if your relation builder xmls are not configured to use inheritence.
+  See upgrade.txt on how to adapt your configuration.
 
 ------------------
 Bug Fixes:
