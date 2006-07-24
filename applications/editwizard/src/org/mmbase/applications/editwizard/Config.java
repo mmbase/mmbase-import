@@ -29,7 +29,7 @@ import org.mmbase.util.Encode;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.60 2006-03-30 16:40:57 michiel Exp $
+ * @version $Id: Config.java,v 1.61 2006-07-24 08:30:05 pierre Exp $
  */
 
 public class Config implements java.io.Serializable {
@@ -398,7 +398,7 @@ public class Config implements java.io.Serializable {
             searchDir   = configurator.getParam("searchdir",  searchDir);
             directions  = configurator.getParam("directions", directions);
             orderBy     = configurator.getParam("orderby",    orderBy);
-            distinct    = configurator.getParam("distinct",   false);
+            distinct    = configurator.getParam("distinct",   distinct);
 
             // only perform the following is there was no prior parsing
             if (!parsed) {
@@ -437,7 +437,7 @@ public class Config implements java.io.Serializable {
                         while (i.hasNext()) {
                             Field field = i.nextField();
                             if (multilevel && field.isVirtual()) {
-                                // cannot be queried any way. 
+                                // cannot be queried any way.
                                 // these fields are directly added the query. You could perhaps deterin virtual fields afterwards.
                                 // should perhaps also be valid for monolevels.
                                 continue;
