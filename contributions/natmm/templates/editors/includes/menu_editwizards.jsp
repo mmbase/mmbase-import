@@ -61,10 +61,11 @@ String userConstraint = "";
                                  <mm:param name="orderby"><mm:field name="orderby"/></mm:param>
                                  <mm:param name="maxsize"><%= ph.getMaxSize() %></mm:param>
                                  <mm:param name="search">yes</mm:param>
-											<mm:param name="startnodes"><mm:field name="startnodes"/></mm:param>
-											<mm:present referid="creatierubriek">
-												<mm:param name="creatierubriek"><mm:write referid="creatierubriek" /></mm:param>
-											</mm:present>
+                                 <mm:param name="origin"><mm:field name="origin"/></mm:param>
+                                 <mm:param name="startnodes"><mm:field name="startnodes"/></mm:param>
+                                 <mm:present referid="creatierubriek">
+                                    <mm:param name="creatierubriek"><mm:write referid="creatierubriek" /></mm:param>
+                                 </mm:present>
                               </mm:url>"
                               title='<mm:field name="description"/>'>
                         </mm:compare>
