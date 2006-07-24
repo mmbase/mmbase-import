@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.369 2006-07-17 07:19:15 pierre Exp $
+version: $Id: mmbase-taglib.xml,v 1.370 2006-07-24 14:00:16 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -562,7 +562,7 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
       <rtexprvalue>true</rtexprvalue>
       <info>
         Whether the node must be committed after evaluation of the body. The
-        default is true. 
+        default is true.
       </info>
       <possiblevalue>
         <value>true</value>
@@ -3241,7 +3241,7 @@ transaction was commited, following should result anything:
         of the node (the name of the `node manager').
       </p>
       <p>
-        If the 'container' attribute is used, then it can refer to one of the 'NodeQueryContainers' which also provide a nodeManager.      
+        If the 'container' attribute is used, then it can refer to one of the 'NodeQueryContainers' which also provide a nodeManager.
       </p>
     </info>
     <see tag="fieldinfo" />
@@ -3342,7 +3342,7 @@ transaction was commited, following should result anything:
         <mm:listrelationscontainer id="container" role="$role" type="$destination" searchdir="$search">
           <tr>
             <th>${search}</th>
-            <th>#</th>                  
+            <th>#</th>
             <mm:fieldlist id="fields" container="container" type="list" remove="insrelfields">
               <th><mm:fieldinfo type="name" /></th>
             </mm:fieldlist>
@@ -3907,6 +3907,13 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
           this. `postparameters' is a synonym for this, but
           `multipart' is probably a clearer description.
         </info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>multipart?</value>
+        <info>
+          As multipart, if that is possible. Ignored otherwise. If you specify 'multipart' but the request is not a multipart post, it would otherwise give an error.
+        </info>
+        <since>MMBase-1.8.2</since>
       </possiblevalue>
       <possiblevalue>
         <value>request</value>
@@ -5895,7 +5902,7 @@ Of course, the default behavior of getSmartPath can still be overridden.
         <value>rfc822</value>
         <info>
           Date and time in the format specified in the RFC822, see http://www.faqs.org/rfcs/rfc822.html ,
-          which can be handy when creating f.e. RSS-feeds http://blogs.law.harvard.edu/tech/rss that 
+          which can be handy when creating f.e. RSS-feeds http://blogs.law.harvard.edu/tech/rss that
           require this format.
         </info>
       </possiblevalue>
