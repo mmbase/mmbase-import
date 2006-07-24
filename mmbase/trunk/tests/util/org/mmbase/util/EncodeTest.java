@@ -125,6 +125,7 @@ public class EncodeTest extends TestCase {
         documentedEncodings.add("ESCAPE_XML_ATTRIBUTE");
         documentedEncodings.add("ESCAPE_XML_ATTRIBUTE_DOUBLE");
         documentedEncodings.add("ESCAPE_XML_ATTRIBUTE_SINGLE");
+        documentedEncodings.add("HEX");
         documentedEncodings.add("MD5");
         documentedEncodings.add("MMXF_ASCII");
         documentedEncodings.add("MMXF_BODY_POOR");

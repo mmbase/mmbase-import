@@ -17,6 +17,8 @@ import java.util.Map;
  * representation, and decode the other way around.
  *
  * @author Johannes Verelst
+ * @since MMBase-1.8.1
+ * @version $Id: Hex.java,v 1.2 2006-07-24 14:36:16 pierre Exp $
  */
 
 public class Hex extends ByteArrayToCharTransformer implements ByteToCharTransformer, ConfigurableTransformer {
@@ -53,7 +55,7 @@ public class Hex extends ByteArrayToCharTransformer implements ByteToCharTransfo
         }
 
         return strbuf.toString();
-    }        
+    }
 
     /**
      * Transform a string of hexadecimal digits to a bytearray.
