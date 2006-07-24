@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.51 2006-06-26 18:32:46 johannes Exp $
+ * @version $Id: ContextContainer.java,v 1.52 2006-07-24 14:00:16 michiel Exp $
  **/
 
 public abstract class ContextContainer extends AbstractMap implements Map {
@@ -36,6 +36,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
     public static final int LOCATION_PARENT         = 5; // uses parent Contex, if there is one.
     public static final int LOCATION_PARAMETERS     = 10;
     public static final int LOCATION_MULTIPART      = 20;
+    public static final int LOCATION_MULTIPART_OPT  = 21;
     public static final int LOCATION_SESSION        = 30;
     public static final int LOCATION_COOKIE         = 40;
     public static final int LOCATION_ATTRIBUTES     = 50;
@@ -61,6 +62,8 @@ public abstract class ContextContainer extends AbstractMap implements Map {
             location = LOCATION_MULTIPART;
         } else if ("multipart".equals(s)) {
             location = LOCATION_MULTIPART;
+        } else if ("multipart?".equals(s)) {
+            location = LOCATION_MULTIPART_OPT;
         } else if ("cookie".equals(s)) {
             location = LOCATION_COOKIE;
         } else if ("attributes".equals(s)) {
@@ -84,6 +87,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
         case LOCATION_SESSION:     return "session";
         case LOCATION_PAGE:        return "page";
         case LOCATION_MULTIPART:   return "multipart";
+        case LOCATION_MULTIPART_OPT:   return "multipart?";
         case LOCATION_COOKIE:      return "cookie";
         case LOCATION_REQUEST:     return "request";
         case LOCATION_APPLICATION: return "application";
@@ -577,6 +581,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
                 result = ((HttpServletRequest) pageContext.getRequest()).getSession(false).getAttribute(referId);
             }
             break;
+        case LOCATION_MULTIPART_OPT:
         case LOCATION_MULTIPART:
             if (MultiPart.isMultipart(pageContext)) {
                 if (log.isDebugEnabled()) {
@@ -590,8 +595,10 @@ public abstract class ContextContainer extends AbstractMap implements Map {
                 }
                 //result = MultiPart.getMultipartRequest(pageContext).getParameterValues(referId);
             } else {
-                throw new JspTagException("Trying to read from multipart post, while request was not a multipart post");
-            }
+                if (from == LOCATION_MULTIPART) {
+                    throw new JspTagException("Trying to read from multipart post, while request was not a multipart post");
+                }
+                }
             break;
         case LOCATION_PARAMETERS: {
             if (log.isDebugEnabled()) {
@@ -765,7 +772,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
 /**
  * Container class, to store results of 'getPair' function, which is a 'parent' container plus
  * a key.
- * 
+ *
  * Since MMBase-1.8 three different implementations are available, to work like EL as much as possible.
  */
 
@@ -778,7 +785,7 @@ abstract class Pair {
     abstract  boolean containsKey(String key, boolean checkParent) throws JspTagException;
     abstract  Object get(String key, boolean checkParent) throws JspTagException;
     abstract  void register(String newId, Object n, boolean check, boolean checkParent) throws JspTagException;
-    abstract void unRegister(String key, boolean checkParent) throws JspTagException;    
+    abstract void unRegister(String key, boolean checkParent) throws JspTagException;
 }
 
 /**
@@ -878,5 +885,5 @@ class BeanPair extends Pair {
     final void unRegister(String key, boolean checkParent) throws JspTagException {
         throw new UnsupportedOperationException("Cannot unregister in a bean");
     }
-    
+
 }
