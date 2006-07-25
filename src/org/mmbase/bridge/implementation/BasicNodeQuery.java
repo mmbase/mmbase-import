@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @todo This kind of functionality should perhaps be present in NodeSearchQuery itself because you can then use it 'under' the bridge too.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeQuery.java,v 1.28 2006-07-25 19:53:21 michiel Exp $
+ * @version $Id: BasicNodeQuery.java,v 1.29 2006-07-25 20:05:46 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.NodeSearchQuery
  */
@@ -174,7 +174,8 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
 
     public Step setNodeStep(Step step) {
         assert query.getSteps().contains(step);
-        if (this.step.equals(step)) return this.step; // already this step.
+        if (this.step == null && step == null) return null;
+        if (this.step != null && this.step.equals(step)) return this.step; // already this step.
         // Make sure the query _starts_ with the Node-fields.
         // otherwise BasicQueryHandler.getNodes could do it wrong...
         query.removeFields();
