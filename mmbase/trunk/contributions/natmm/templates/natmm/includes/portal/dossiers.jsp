@@ -67,7 +67,7 @@
                   <table style="width:100%;" border="0" cellspacing="0" cellpadding="0">
                     <tr>
                       <td style="text-align:left;vertical-align:middle;"><a 
-                         href="<%= ph.createItemUrl(artikel_number,relatedPage,null, request.getContextPath()) %>"
+                         href="<%= (relatedPage!=null ? ph.createItemUrl(artikel_number,relatedPage,null, request.getContextPath()) : "") %>"
                          class="hover"><mm:field name="artikel.titel" /></a></td>
                     </tr>
                   </table>
