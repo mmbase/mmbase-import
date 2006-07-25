@@ -13,6 +13,9 @@
       padding = 0;
    } 
    PaginaHelper ph = new PaginaHelper(cloud);
+   
+   boolean isIE = (request.getHeader("User-Agent").toUpperCase().indexOf("MSIE")>-1);
+
 %><%@include file="../../includes/shorty_logic_1.jsp" %>
   <% 
   for (int i =0; i<shortyCnt;i++){ 
@@ -24,7 +27,7 @@
          <%
          if(!shorty_titel.equals("")&&!shorty_tz.equals("0")){ 
             %>
-            <span class="navbutton" style="text-align:right;font-weight:bold;font-size:1.0em;"><%= shorty_titel.toUpperCase() %></span>
+            <span class="navbutton" style="text-align:right;font-weight:bold;font-size:1.0em;width:<%= (isIE ? "164px;" : "154px;" ) %>"><%= shorty_titel.toUpperCase() %></span>
             <%
          }
          %>
@@ -40,11 +43,18 @@
            <a href="<%= readmoreURL %>" class="subnavbutton" style="text-align:right;"<% 
              if(!readmoreTarget.equals("")){ %> target="<%= readmoreTarget %>"<% }
              if(!altTXT.equals("")){ %> title="<%= altTXT %>"<% } 
-             %>><%= altTXT %>
+             %>>
+             <% 
+             int maxLength = 24;
+             if(altTXT.length()>maxLength) {
+               altTXT = altTXT.substring(0,maxLength) + "&hellip;";
+             } 
+             %>
+             <%= altTXT %>&nbsp;
            </a>
            <mm:last inverse="true">
-             <table cellpadding="0" cellspacing="0" style="width:100%;height:1px;"><tr>
-               <td height="1" class="leftnavline"><img src="media/trans.gif" width="100%" height="1" vspace="0" border="0" alt=""></td>
+             <table cellpadding="0" cellspacing="0" style="width:164px;height:1px;"><tr>
+               <td height="1" class="leftnavline"><img src="media/trans.gif" width="164px" height="1" vspace="0" border="0" alt=""></td>
              </tr></table>
            </mm:last>
          <%
@@ -56,7 +66,7 @@
      <%   
    }
 %>
-<table cellpadding="0" cellspacing="0" style="width:100%;height:1px;"><tr>
-  <td height="1" class="leftnavline"><img src="media/trans.gif" width="100%" height="1" vspace="0" border="0" alt=""></td>
+<table cellpadding="0" cellspacing="0" style="width:164px;height:1px;"><tr>
+  <td height="1" class="leftnavline"><img src="media/trans.gif" width="164px" height="1" vspace="0" border="0" alt=""></td>
 </tr></table>
 </mm:cloud>
