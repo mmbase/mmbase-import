@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.31 2006-06-27 13:12:54 johannes Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.32 2006-07-25 20:49:56 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
@@ -404,11 +404,29 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
             throw new UnsupportedOperationException("Adding non-aggregated field to aggregating query.");
         }
         BasicStepField field = new BasicStepField(step, fieldDefs);
+        assert ! fields.contains(field);
         fields.add(field);
         hasChangedHashcode = true;
         return field;
     }
 
+    /**
+     * @since MMBase-1.8.2
+     */
+    public BasicStepField addFieldUnlessPresent(Step step, CoreField fieldDefs) {
+        if (aggregating) {
+            throw new UnsupportedOperationException("Adding non-aggregated field to aggregating query.");
+        }
+        BasicStepField field = new BasicStepField(step, fieldDefs);
+        int i = fields.indexOf(field);
+        if (i == -1) {
+            fields.add(field);
+            hasChangedHashcode = true;
+        } else {
+            field = (BasicStepField) fields.get(i);
+        }
+        return field;
+    }
 
     // only sensible for NodeSearchQuery
     protected void mapField(CoreField field, StepField stepField) {
