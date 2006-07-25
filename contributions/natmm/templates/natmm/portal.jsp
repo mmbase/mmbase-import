@@ -1,7 +1,4 @@
 <%@include file="includes/top0.jsp" %>
-<%-- if(paginaID.equals("-1")&&ID.equals("-1")) {
-   response.sendRedirect("/100jaarlater/index.html");
-} --%>
 <mm:cloud jspvar="cloud">
 <%@include file="includes/top1_params.jsp" %>
 <%@include file="includes/top2_cacheparams.jsp" %>
@@ -69,18 +66,18 @@
   </td>
   <td style="vertical-align:top;width:214px;padding:2px;padding-top:1px;">
     <form name="theClock">
-	 	<input type=text name="theTime" class="headerBar" style="width:212px;border:none;font:normal;font-size:90%;text-align:right;padding-right:3px;">
-	 <form>
+      <input type=text name="theTime" class="headerBar" style="width:212px;border:none;font:normal;font-size:90%;text-align:right;padding-right:3px;">
+    <form>
     <%
     String embargoLinkConstraint = "(link.embargo < '" + (nowSec+quarterOfAnHour) + "') AND "
                                 + "(link.use_verloopdatum='0' OR link.verloopdatum > '" + nowSec + "' )";
     %>
     <mm:list nodes="<%= paginaID %>" path="pagina,contentrel,link" fields="link.number" constraints="<%= embargoLinkConstraint %>">
-		<iframe src="<mm:url page="includes/portal/video.jsp">
-							<mm:param name="link"><mm:field name="link.number" /></mm:param>
-						</mm:url>" style="padding:0px;width:214px;height:177px;" id="video<mm:field name="link.number" />" scrolling="no"></iframe>
+      <iframe src="<mm:url page="includes/portal/video.jsp">
+                     <mm:param name="link"><mm:field name="link.number" /></mm:param>
+                  </mm:url>" style="padding:0px;width:214px;height:177px;" id="video<mm:field name="link.number" />" scrolling="no"></iframe>
     </mm:list>
-	 <jsp:include page="includes/home/shorty_home.jsp">
+    <jsp:include page="includes/home/shorty_home.jsp">
       <jsp:param name="s" value="<%= paginaID %>" />
       <jsp:param name="r" value="<%= rubriekID %>" />
       <jsp:param name="rs" value="<%= styleSheet %>" />
