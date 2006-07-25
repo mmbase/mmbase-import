@@ -1,12 +1,12 @@
 <%
    String requestURL = javax.servlet.http.HttpUtils.getRequestURL(request).toString();
-	 requestURL = requestURL.substring(0,requestURL.lastIndexOf("/")); 
+   requestURL = requestURL.substring(0,requestURL.lastIndexOf("/")); 
    String embargoPollConstraint = "(poll.embargo < '" + (nowSec+quarterOfAnHour) + "') AND "
                                 + "(poll.use_verloopdatum='0' OR poll.verloopdatum > '" + nowSec + "' )";
 %>
 <div class="headerBar" style="width:100%;">OPINIE</div>
 <mm:list nodes="<%= paginaID %>" path="pagina,contentrel,poll" constraints="<%= embargoPollConstraint %>">
-  <div style="padding-left:3px;"><mm:field name="poll.omschrijving"/></div>
+  <div style="padding-left:3px;"><mm:field name="poll.titel"/></div>
   <mm:node element="poll" jspvar="poll">
     <mm:field name="number" jspvar="poll_number" vartype="String" write="false">
     <table width="100%">
