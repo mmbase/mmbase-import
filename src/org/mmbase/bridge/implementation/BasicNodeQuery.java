@@ -14,6 +14,7 @@ import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
+import org.mmbase.util.logging.*;
 
 /**
  * 'Basic' implementation of bridge NodeQuery. Wraps a Query with all and only fields of one
@@ -30,12 +31,13 @@ import org.mmbase.storage.search.implementation.*;
  * @todo This kind of functionality should perhaps be present in NodeSearchQuery itself because you can then use it 'under' the bridge too.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeQuery.java,v 1.27 2006-07-04 13:16:33 michiel Exp $
+ * @version $Id: BasicNodeQuery.java,v 1.28 2006-07-25 19:53:21 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.NodeSearchQuery
  */
 public class BasicNodeQuery extends BasicQuery implements NodeQuery {
 
+    private static final Logger log = Logging.getLoggerInstance(BasicNodeQuery.class);
     protected Step step = null;
 
     BasicNodeQuery(Cloud c) {
@@ -171,6 +173,8 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
     }
 
     public Step setNodeStep(Step step) {
+        assert query.getSteps().contains(step);
+        if (this.step.equals(step)) return this.step; // already this step.
         // Make sure the query _starts_ with the Node-fields.
         // otherwise BasicQueryHandler.getNodes could do it wrong...
         query.removeFields();
