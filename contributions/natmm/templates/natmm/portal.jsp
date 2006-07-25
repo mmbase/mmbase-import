@@ -24,6 +24,12 @@
       <jsp:param name="rs" value="<%= styleSheet %>" />
       <jsp:param name="sr" value="0" />
     </jsp:include>
+    <jsp:include page="includes/portal/navigation.jsp">
+      <jsp:param name="s" value="<%= paginaID %>" />
+      <jsp:param name="r" value="<%= rubriekID %>" />
+      <jsp:param name="rs" value="<%= styleSheet %>" />
+      <jsp:param name="sr" value="0" />
+    </jsp:include>
     <div style="padding-top:20px;text-align:center;">
       <table><tr><td style="text-align:center; color:#B5B5B5; font-weight:bold;" 
                      onClick="this.style.behavior='url(#default#homepage)'; this.setHomePage('<%= HttpUtils.getRequestURL(request) + "?" + request.getQueryString() %>');"
