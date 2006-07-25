@@ -1,31 +1,31 @@
 .colortitle{
-	color: #<color1>; 
-	font-weight: bold;
+   color: #<color1>; 
+   font-weight: bold;
 }
 .colortxt{
-	color: #<color1>; 
+   color: #<color1>; 
 }
 .maincolor{
-	background-color: #<color1>; 
+   background-color: #<color1>; 
 }
 .leftnavrubriek{
-	text-transform:uppercase;
-	background-color: #<color1>;
-	color: #FFFFFF; 
-	font-weight: bold;
+   text-transform:uppercase;
+   background-color: #<color1>;
+   color: #FFFFFF; 
+   font-weight: bold;
 }
 .leftnavpage{
-	background-color: #FFFFFF;
-	color: #<color1>; 
-	font-weight: normal;
+   background-color: #FFFFFF;
+   color: #<color1>; 
+   font-weight: normal;
 }
 .leftnavpage_high{
-	background-color: #<color2>;
-	color: #<color1>; 
-	font-weight: normal;
+   background-color: #<color2>;
+   color: #<color1>; 
+   font-weight: normal;
 }
 .leftnavline{
-	background-color: #<color1>;
+   background-color: #<color1>;
 }
 .rule {
    border-top-width: 1px;
@@ -38,15 +38,15 @@
    background-color: #<color1>;
 }
 .pano_shorty-header{
-	background-color: #1D1E94; 
-	color: #FFFFFF; 
-	text-decoration: none;
+   background-color: #1D1E94; 
+   color: #FFFFFF; 
+   text-decoration: none;
    font-size: 0.70em;
 }
 .pano_shorty-body{
-	background-color: #FFE75B; 
-	color: #000000; 
-	font-weight: bold;
+   background-color: #FFE75B; 
+   color: #000000; 
+   font-weight: bold;
 }
 ul {
    list-style-type: square;
@@ -56,10 +56,10 @@ ul {
    margin:0px;
 }
 .submitbutton {
-	background-color: #<color1>;
-	color: #FFFFFF;
-	font-weight: bold;
-	border : none;
+   background-color: #<color1>;
+   color: #FFFFFF;
+   font-weight: bold;
+   border : none;
 }
 span.navbutton {
    background-color: #<color1>;
@@ -68,13 +68,17 @@ A.navbutton {
    background-color: #<color1>;
    text-decoration: none;
 }
+A.navbutton:link {
+   background-color: #<color1>;
+   text-decoration: none;
+}
 A.navbutton:visited {
-   color: #FFFFFF;
+   color:  #<color1>;
    text-decoration: none;
 }
 A.navbutton:hover {
    color:#FFFFFF;
-	text-decoration: underline;
+   text-decoration: underline;
 }
 A.subnavbutton {
    padding: 3px 8px 3px 3px;
@@ -84,20 +88,26 @@ A.subnavbutton {
    color: #<color1>;
    text-decoration: none;
 }
+A.subnavbutton:link {
+   background-color: #FFFFFF;
+   color: #<color1>;
+   text-decoration: none;
+}
+A.subnavbutton:visited {
+   background-color: #FFFFFF;
+   color: #<color1>;
+   text-decoration: none;
+}
 A.subnavbutton:hover {
    background-color: #<color2>;
    color: #<color1>;
    text-decoration: none;
 }
-A.subnavbutton:visited {
-   color: #<color1>;
-   text-decoration: none;
-}
 A.subnavbutton-high {
-	background-color: #<color2>;
+   background-color: #<color2>;
 }
 A.subnavbutton-high:visited {
-	color: #<color1>;
+   color: #<color1>;
 }
 A.maincolor_link{
    text-decoration:underline;
@@ -124,23 +134,23 @@ A.maincolor_link_shorty:hover {
    color: #<color1>;
 }
 .footer {
- 	background-color: #<color2>;
-	color: #<color3>; 
+   background-color: #<color2>;
+   color: #<color3>; 
 }
 A.footerlinks {
    text-decoration:none;
-	background-color: #<color2>;
-	color: #<color3>; 
+   background-color: #<color2>;
+   color: #<color3>; 
 }
 A.footerlinks:visited { 
    text-decoration:none;
-	background-color: #<color2>;
-	color: #<color3>; 
+   background-color: #<color2>;
+   color: #<color3>; 
 }
 A.footerlinks:hover { 
-	text-decoration:underline;
+   text-decoration:underline;
    background-color: #<color2>;
-	color: #<color3>; 
+   color: #<color3>; 
 }
 A.attachment {
    background-image: url(../../media/bijlage_<style1>.gif);

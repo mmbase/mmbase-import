@@ -1,31 +1,31 @@
 .colortitle{
-	color: #EC008C; 
-	font-weight: bold;
+   color: #EC008C; 
+   font-weight: bold;
 }
 .colortxt{
-	color: #EC008C; 
+   color: #EC008C; 
 }
 .maincolor{
-	background-color: #EC008C; 
+   background-color: #EC008C; 
 }
 .leftnavrubriek{
-	text-transform:uppercase;
-	background-color: #EC008C;
-	color: #FFFFFF; 
-	font-weight: bold;
+   text-transform:uppercase;
+   background-color: #EC008C;
+   color: #FFFFFF; 
+   font-weight: bold;
 }
 .leftnavpage{
-	background-color: #FFFFFF;
-	color: #EC008C; 
-	font-weight: normal;
+   background-color: #FFFFFF;
+   color: #EC008C; 
+   font-weight: normal;
 }
 .leftnavpage_high{
-	background-color: #FABFE2;
-	color: #EC008C; 
-	font-weight: normal;
+   background-color: #FABFE2;
+   color: #EC008C; 
+   font-weight: normal;
 }
 .leftnavline{
-	background-color: #EC008C;
+   background-color: #EC008C;
 }
 .rule {
    border-top-width: 1px;
@@ -38,15 +38,15 @@
    background-color: #EC008C;
 }
 .pano_shorty-header{
-	background-color: #1D1E94; 
-	color: #FFFFFF; 
-	text-decoration: none;
+   background-color: #1D1E94; 
+   color: #FFFFFF; 
+   text-decoration: none;
    font-size: 0.70em;
 }
 .pano_shorty-body{
-	background-color: #FFE75B; 
-	color: #000000; 
-	font-weight: bold;
+   background-color: #FFE75B; 
+   color: #000000; 
+   font-weight: bold;
 }
 ul {
    list-style-type: square;
@@ -56,10 +56,10 @@ ul {
    margin:0px;
 }
 .submitbutton {
-	background-color: #EC008C;
-	color: #FFFFFF;
-	font-weight: bold;
-	border : none;
+   background-color: #EC008C;
+   color: #FFFFFF;
+   font-weight: bold;
+   border : none;
 }
 span.navbutton {
    background-color: #EC008C;
@@ -68,13 +68,17 @@ A.navbutton {
    background-color: #EC008C;
    text-decoration: none;
 }
+A.navbutton:link {
+   background-color: #EC008C;
+   text-decoration: none;
+}
 A.navbutton:visited {
-   color: #FFFFFF;
+   color:  #EC008C;
    text-decoration: none;
 }
 A.navbutton:hover {
    color:#FFFFFF;
-	text-decoration: underline;
+   text-decoration: underline;
 }
 A.subnavbutton {
    padding: 3px 8px 3px 3px;
@@ -84,20 +88,26 @@ A.subnavbutton {
    color: #EC008C;
    text-decoration: none;
 }
+A.subnavbutton:link {
+   background-color: #FFFFFF;
+   color: #EC008C;
+   text-decoration: none;
+}
+A.subnavbutton:visited {
+   background-color: #FFFFFF;
+   color: #EC008C;
+   text-decoration: none;
+}
 A.subnavbutton:hover {
    background-color: #FABFE2;
    color: #EC008C;
    text-decoration: none;
 }
-A.subnavbutton:visited {
-   color: #EC008C;
-   text-decoration: none;
-}
 A.subnavbutton-high {
-	background-color: #FABFE2;
+   background-color: #FABFE2;
 }
 A.subnavbutton-high:visited {
-	color: #EC008C;
+   color: #EC008C;
 }
 A.maincolor_link{
    text-decoration:underline;
@@ -124,23 +134,23 @@ A.maincolor_link_shorty:hover {
    color: #EC008C;
 }
 .footer {
- 	background-color: #FABFE2;
-	color: #050080; 
+   background-color: #FABFE2;
+   color: #050080; 
 }
 A.footerlinks {
    text-decoration:none;
-	background-color: #FABFE2;
-	color: #050080; 
+   background-color: #FABFE2;
+   color: #050080; 
 }
 A.footerlinks:visited { 
    text-decoration:none;
-	background-color: #FABFE2;
-	color: #050080; 
+   background-color: #FABFE2;
+   color: #050080; 
 }
 A.footerlinks:hover { 
-	text-decoration:underline;
+   text-decoration:underline;
    background-color: #FABFE2;
-	color: #050080; 
+   color: #050080; 
 }
 A.attachment {
    background-image: url(../../media/bijlage_fun.gif);
