@@ -29,7 +29,7 @@ import org.mmbase.security.Authorization;
  * {@link #BasicQuery(Cloud, BasicSearchQuery)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.58 2006-06-28 14:47:25 nklasens Exp $
+ * @version $Id: BasicQuery.java,v 1.59 2006-07-25 20:50:19 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -410,8 +410,11 @@ public class BasicQuery implements Query  {
     protected void addFieldImplicit(Step step, Field field) {
         if (used) throw new BridgeException("Query was used already");
         if (! query.isDistinct()) {
-            BasicStepField sf = query.addField(step, ((BasicField)field).coreField); /// XXX Casting is wrong
-            implicitFields.add(sf);
+            org.mmbase.core.CoreField coreField = ((BasicField)field).coreField; /// XXX Casting is wrong
+            StepField sf = query.addFieldUnlessPresent(step, coreField);
+            if (! implicitFields.contains(sf)) {
+                implicitFields.add(sf);
+            }
         }
     }
 
