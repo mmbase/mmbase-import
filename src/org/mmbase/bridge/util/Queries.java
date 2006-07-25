@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.75 2006-07-17 07:19:15 pierre Exp $
+ * @version $Id: Queries.java,v 1.76 2006-07-25 13:24:57 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -304,7 +304,7 @@ abstract public class Queries {
      * @return new Compare value
      */
     protected static Object getCompareValue(int fieldType, int operator, Object value) {
-        return getCompareValue(fieldType, operator, value, -1);
+        return getCompareValue(fieldType, operator, value, -1, null);
     }
 
     /**
@@ -312,9 +312,11 @@ abstract public class Queries {
      * @param fieldType Field Type constant (@link Field)
      * @param operator Compare operator
      * @param value value to convert
+     * @param cloud The cloud may be used to pass locale sensitive properties which may be needed for comparisions (locales, timezones)
      * @return new Compare value
+     * @since MMBase-1.8.2
      */
-    protected static Object getCompareValue(int fieldType, int operator, Object value, int datePart) {
+    protected static Object getCompareValue(int fieldType, int operator, Object value, int datePart, Cloud cloud) {
         if (operator == OPERATOR_IN) {
             SortedSet set;
             if (value instanceof SortedSet) {
@@ -340,31 +342,31 @@ abstract public class Queries {
                 }
             }
             return set;
-        }  else {
-            switch(fieldType) {
-            case Field.TYPE_INTEGER:
-            case Field.TYPE_FLOAT:
-            case Field.TYPE_LONG:
-            case Field.TYPE_DOUBLE:
-            case Field.TYPE_NODE:
-                if (value instanceof Number) {
-                    return value;
-                } else {
-                    return getNumberValue(Casting.toString(value));
-                }
-            case Field.TYPE_DATETIME:
-                if (datePart > -1) {
-                    return Casting.toInteger(value);
-                } else {
-                    return Casting.toDate(value);
-                }
-            case Field.TYPE_BOOLEAN:
-                return Casting.toBoolean(value) ? Boolean.TRUE : Boolean.FALSE;
-            default:
-                return value;
-            }
+        }  
+        switch(fieldType) {
+        case Field.TYPE_INTEGER:
+        case Field.TYPE_FLOAT:
+        case Field.TYPE_LONG:
+        case Field.TYPE_DOUBLE: 
+        case Field.TYPE_NODE:   
+        	if (value  instanceof Number) {
+        		return value;       
+        	} else {
+        		return getNumberValue(Casting.toString(value));
+        	}   
+        case Field.TYPE_DATETIME:
+        	//TimeZone     tz = cloud == null ? null : (TimeZone) cloud.getProperty("org.mmbase.timezone");
+        	if (datePart > -1) {
+        		return Casting.toInteger(value);
+        	} else {
+        		return Casting.toDate(value);
+        	}
+        case Field.TYPE_BOOLEAN:
+        	return Casting.toBoolean(value) ? Boolean.TRUE : Boolean.FALSE;
+        default:
+        	return value;
         }
-    }
+    }       
 
     /**
      * Defaulting version of {@link #createConstraint(Query, String, int, Object, Object, boolean, int)}.
@@ -468,7 +470,7 @@ abstract public class Queries {
                 }
             }
 
-            Object compareValue = getCompareValue(fieldType, operator, value, datePart);
+            Object compareValue = getCompareValue(fieldType, operator, value, datePart, cloud);
 
             if (operator > 0 && operator < OPERATOR_IN) {
                 if (fieldType == Field.TYPE_DATETIME && datePart> -1) {
@@ -1182,10 +1184,13 @@ abstract public class Queries {
         if (node == null) throw new IllegalArgumentException("No node given");
         Object value = node.getValue(fieldName);
         if (value == null) {
-            value = node.getValue(sortOrder.getField().getStep().getAlias() + "." + fieldName);
-            if (value == null) {
-                value = node.getValue(sortOrder.getField().getStep().getTableName() + "." + fieldName);
+            Step step = sortOrder.getField().getStep();
+            String pref = step.getAlias();
+            if (pref == null) {
+                pref = step.getTableName();
             }
+            value = node.getValue(pref+ "." + fieldName);
+
         }
         if (value instanceof Node) {
             value = new Integer(((Node)value).getNumber());
