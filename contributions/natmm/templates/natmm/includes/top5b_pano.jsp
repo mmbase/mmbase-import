@@ -58,6 +58,10 @@ if(iRubriekLayout==NatMMConfig.SUBSITE3_LAYOUT) {
 } else if(path.equals("index.jsp")) {
    panoTemplate = "part(0,0,744,157)"; 
    pHeight = 157;
+} 
+if(path.equals("newsletter.jsp")) {
+   panoTemplate = "s(540)+part(0,0,540,52)"; 
+   pHeight = 52;
 } %>
 <tr>
    <td style="width:48%"></td>
