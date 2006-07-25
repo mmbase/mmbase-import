@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeProviderHelper.java,v 1.22 2006-07-17 15:38:47 johannes Exp $
+ * @version $Id: NodeProviderHelper.java,v 1.23 2006-07-25 14:37:48 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -47,6 +47,8 @@ public class NodeProviderHelper implements NodeProvider {
      * @since MMBase_1.8
      */
     private   Stack _Stack;
+    // whether this tag pushed something on the stack already.
+    private   int pushed = 0;
 
     public NodeProviderHelper(ContextReferrerTag thisTag) {
         this.thisTag     = thisTag;
@@ -136,6 +138,7 @@ public class NodeProviderHelper implements NodeProvider {
             pageContext.setAttribute(STACK_ATTRIBUTE, _Stack, PageContext.REQUEST_SCOPE);
         }
         _Stack.push(node);
+        pushed++;
         pageContext.setAttribute(_NODE, org.mmbase.util.Casting.wrap(node, (org.mmbase.util.transformers.CharTransformer) pageContext.findAttribute(ContentTag.ESCAPER_KEY)), PageContext.REQUEST_SCOPE);
     }
 
@@ -156,6 +159,22 @@ public class NodeProviderHelper implements NodeProvider {
         return field;
     }
 
+    /**
+     * @since MMBase-1.8.2
+     */
+    private void pop_Stack() {
+        if (_Stack != null) {
+            Object pop = _Stack.pop();
+            pushed--;
+            PageContext pageContext = thisTag.getPageContext();
+            if (_Stack.empty()) {
+                pageContext.removeAttribute(_NODE, PageContext.REQUEST_SCOPE);
+            } else {
+                pageContext.setAttribute(_NODE, org.mmbase.util.Casting.wrap(_Stack.peek(), (org.mmbase.util.transformers.CharTransformer) pageContext.findAttribute(ContentTag.ESCAPER_KEY)), PageContext.REQUEST_SCOPE);
+            }
+            _Stack = null;
+        }
+    }
     /**
     * Does everything needed on the afterbody tag of every
     * NodeProvider.  Normally this function would be overrided with
@@ -182,27 +201,24 @@ public class NodeProviderHelper implements NodeProvider {
                 }
             }
         }
-        if (_Stack != null) {
-            Object pop = _Stack.pop();
-            PageContext pageContext = thisTag.getPageContext();
-            if (_Stack.empty()) {
-                pageContext.removeAttribute(_NODE, PageContext.REQUEST_SCOPE);
-            } else {
-                pageContext.setAttribute(_NODE, org.mmbase.util.Casting.wrap(_Stack.peek(), (org.mmbase.util.transformers.CharTransformer) pageContext.findAttribute(ContentTag.ESCAPER_KEY)), PageContext.REQUEST_SCOPE);
-            }
-            _Stack = null;
-        }
+        pop_Stack();
         return BodyTagSupport.SKIP_BODY;
     }
 
     public int doEndTag() throws JspTagException {
         // to enable gc:
+        if (_Stack != null) {
+            while (pushed > 0) {
+                pop_Stack();
+            }
+        }
+        pushed = 0;
+        checked = false;
         return BodyTagSupport.EVAL_PAGE;
     }
 
     public void doFinally () {
         node = null;
-        checked = false;
         _Stack = null;
         query = null;
     }
