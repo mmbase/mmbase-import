@@ -24,7 +24,7 @@
       <jsp:param name="rs" value="<%= styleSheet %>" />
       <jsp:param name="sr" value="0" />
     </jsp:include>
-    <jsp:include page="includes/portal/navigation.jsp">
+    <jsp:include page="includes/portal/navleft.jsp">
       <jsp:param name="s" value="<%= paginaID %>" />
       <jsp:param name="r" value="<%= rubriekID %>" />
       <jsp:param name="rs" value="<%= styleSheet %>" />
