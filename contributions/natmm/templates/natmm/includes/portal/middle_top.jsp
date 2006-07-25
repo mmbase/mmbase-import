@@ -37,25 +37,33 @@ function changeImages() {
           <mm:node element="artikel">
             <mm:relatednodes type="images" max="1">
               <mm:import id="first_image"><mm:image template="<%= sImageTemplate %>" /></mm:import>
-              <img src="<mm:image template="<%= sImageTemplate %>" />" alt="" name="rollimage" border="0" />
             </mm:relatednodes>
           </mm:node>
+          <mm:notpresent referid="first_image">
+              <mm:import id="first_image">media/trans.gif</mm:import>
+          </mm:notpresent>
+          <img src="<mm:write referid="first_image"/>" alt="" name="rollimage" border="0" />
         </td>
         <td>
     </mm:first>
-          <a href="<%= ph.createItemUrl(artikel_number,pagina_number,null,request.getContextPath()) %>" class="maincolor_link_shorty">
+          <a href="<%= ph.createItemUrl(artikel_number,pagina_number,null,request.getContextPath()) %>" 
+               <mm:node element="artikel">
+                  <mm:relatednodes type="images" max="1">
+                    onmouseover="changeImages('rollimage', '<mm:image  template="<%= sImageTemplate %>" />'); return true;"
+                    onmouseout="changeImages('rollimage', '<mm:write referid="first_image"/>'); return true;"
+                  </mm:relatednodes>
+               </mm:node>
+               class="maincolor_link_shorty">
             <span class="colortitle">
               <%= rubriek2_naam.toUpperCase() %>
             </span>
           </a><br/>
           <mm:node element="artikel">
             <a href="<%= ph.createItemUrl(artikel_number,pagina_number,null,request.getContextPath()) %>"
-              <mm:present referid="first_image">
-                 <mm:relatednodes type="images" max="1">
-                   onmouseover="changeImages('rollimage', '<mm:image  template="<%= sImageTemplate %>" />'); return true;"
-                   onmouseout="changeImages('rollimage', '<mm:write referid="first_image"/>'); return true;"
-                 </mm:relatednodes>
-              </mm:present>
+              <mm:relatednodes type="images" max="1">
+                onmouseover="changeImages('rollimage', '<mm:image  template="<%= sImageTemplate %>" />'); return true;"
+                onmouseout="changeImages('rollimage', '<mm:write referid="first_image"/>'); return true;"
+              </mm:relatednodes>
               class="hover"><mm:field name="titel"/></a>
           </mm:node>
           <br/>
