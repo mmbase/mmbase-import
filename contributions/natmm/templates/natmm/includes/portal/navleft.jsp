@@ -14,41 +14,49 @@
    } 
    PaginaHelper ph = new PaginaHelper(cloud);
 %><%@include file="../../includes/shorty_logic_1.jsp" %>
-<% 
-   for (int i =0; i<shortyCnt;i++){ 
-%>
-     <% // show the shorty %>
+  <% 
+  for (int i =0; i<shortyCnt;i++){ 
+     // show the shorty 
+     %>
      <mm:node number="<%= shortyID[i] %>">
        <mm:field name="titel" write="false" jspvar="shorty_titel" vartype="String">
        <mm:field name="titel_zichtbaar" write="false" jspvar="shorty_tz" vartype="String">
-<%
+         <%
          if(!shorty_titel.equals("")&&!shorty_tz.equals("0")){ 
-%>
-           <span class="navbutton" style="text-align:right;"><%= shorty_titel.toUpperCase() %></span>
-<%
+            %>
+            <span class="navbutton" style="text-align:right;font-weight:bold;font-size:1.0em;"><%= shorty_titel.toUpperCase() %></span>
+            <%
          }
-%>
-       <mm:related path="readmore,contentelement" fields="contentelement.number,readmore.readmore" 
-          orderby="readmore.pos">
-         <%@include file="nav_logic_2.jsp" %>
-<%
+         %>
+       </mm:field>
+       </mm:field>
+       <% int j=0; %>
+       <mm:related path="readmore,contentelement" fields="contentelement.number" orderby="readmore.pos">
+         <mm:import id="offset" reset="true"><%= j %></mm:import>
+         <%@include file="../shorty_logic_2.jsp" %>
+         <%
          linkTXT =  HtmlCleaner.cleanBRs(HtmlCleaner.cleanPs(readmoreTXT)).trim();
          if(!linkTXT.equals("")) {
-%>
+         %>
            <a href="<%= readmoreURL %>" class="subnavbutton" style="text-align:right;"<% 
              if(!readmoreTarget.equals("")){ %> target="<%= readmoreTarget %>"<% }
              if(!altTXT.equals("")){ %> title="<%= altTXT %>"<% } 
              %>><%= linkTXT %>
            </a>
-           <mm:last inverse="true"><table class="rule" style="width:100%;"><tr><td></td></tr></table></mm:last>
-<%
+           <mm:last inverse="true">
+             <table cellpadding="0" cellspacing="0" style="width:100%;height:1px;"><tr>
+               <td height="1" class="leftnavline"><img src="media/trans.gif" width="100%" height="1" vspace="0" border="0" alt=""></td>
+             </tr></table>
+           </mm:last>
+         <%
          } 
-%>
+       %>
        </mm:related>
-       </mm:field>
-       </mm:field>
      </mm:node>
-<%   
+     <%   
    }
 %>
+<table cellpadding="0" cellspacing="0" style="width:100%;height:1px;"><tr>
+  <td height="1" class="leftnavline"><img src="media/trans.gif" width="100%" height="1" vspace="0" border="0" alt=""></td>
+</tr></table>
 </mm:cloud>
