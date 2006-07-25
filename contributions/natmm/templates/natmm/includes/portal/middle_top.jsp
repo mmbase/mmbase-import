@@ -24,7 +24,8 @@ function changeImages() {
 </script>
 <mm:node number="channels" notfound="skipbody">
   <div class="headerBar" style="width:100%;"><img src="includes/portal/logo.gif" border="0" style="vertical-align:middle;"/> VANDAAG</div>
-  <mm:related path="rubriek,parent,rubriek2,posrel,pagina,contentrel,artikel" orderby="artikel.embargo" directions="DOWN"
+  <mm:related path="parent,rubriek2,posrel,pagina,contentrel,artikel"
+             orderby="artikel.embargo" directions="DOWN" searchdir="destination"
              constraints="<%= articleConstraint %>" max="3">
     <mm:field name="rubriek2.naam" jspvar="rubriek2_naam" vartype="String" write="false">
     <mm:field name="artikel.number" jspvar="artikel_number" vartype="String" write="false">
@@ -49,10 +50,12 @@ function changeImages() {
           </a><br/>
           <mm:node element="artikel">
             <a href="<%= ph.createItemUrl(artikel_number,pagina_number,null,request.getContextPath()) %>"
-              <mm:relatednodes type="images" max="1">
-                onmouseover="changeImages('rollimage', '<mm:image  template="<%= sImageTemplate %>" />'); return true;"
-                onmouseout="changeImages('rollimage', '<mm:write referid="first_image"/>'); return true;"
-              </mm:relatednodes>
+              <mm:present referid="first_image">
+                 <mm:relatednodes type="images" max="1">
+                   onmouseover="changeImages('rollimage', '<mm:image  template="<%= sImageTemplate %>" />'); return true;"
+                   onmouseout="changeImages('rollimage', '<mm:write referid="first_image"/>'); return true;"
+                 </mm:relatednodes>
+              </mm:present>
               class="hover"><mm:field name="titel"/></a>
           </mm:node>
           <br/>
@@ -71,8 +74,9 @@ function changeImages() {
   <table style="width:100%;">
   <tr>
     <td style="vertical-align:top;">
-      <mm:related path="rubriek,parent,rubriek2,posrel,pagina,contentrel,artikel" orderby="artikel.embargo"  directions="DOWN"
-                 constraints="<%= articleConstraint %>" offset="3" max="5">
+      <mm:related path="parent,rubriek2,posrel,pagina,contentrel,artikel"
+            orderby="artikel.embargo" directions="DOWN" searchdir="destination"
+            constraints="<%= articleConstraint %>" offset="3" max="5">
         <mm:field name="rubriek2.naam" jspvar="rubriek2_naam" vartype="String" write="false">
         <mm:field name="artikel.number" jspvar="artikel_number" vartype="String" write="false">
         <mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false">
