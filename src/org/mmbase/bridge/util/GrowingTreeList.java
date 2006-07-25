@@ -14,6 +14,7 @@ import java.util.Iterator;
 
 import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
+import org.mmbase.util.logging.*;
 
 /**
  *
@@ -22,12 +23,12 @@ import org.mmbase.storage.search.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: GrowingTreeList.java,v 1.16 2006-05-31 13:52:54 johannes Exp $
+ * @version $Id: GrowingTreeList.java,v 1.17 2006-07-25 18:56:24 michiel Exp $
  * @since   MMBase-1.7
  */
 
 public  class GrowingTreeList extends TreeList {
-
+    private static final Logger log = Logging.getLoggerInstance(GrowingTreeList.class);
     protected Constraint cleanConstraint;
     protected NodeQuery  pathElementTemplate;
     protected Constraint cleanLeafConstraint = null;
@@ -45,6 +46,9 @@ public  class GrowingTreeList extends TreeList {
      */
     public GrowingTreeList(NodeQuery q, int maxDepth, NodeManager nodeManager, String role, String searchDir) {
         super(q);
+        if (log.isDebugEnabled()) {
+            log.debug("Making growering tree-list with " + q.toSql());
+        }
         if (nodeManager == null) nodeManager = cloud.getNodeManager("object");
         pathElementTemplate = cloud.createNodeQuery();
         //shiftElementTemplate = cloud.createNodeQuery();
@@ -162,6 +166,10 @@ public  class GrowingTreeList extends TreeList {
 
             Iterator steps = pathElementTemplate.getSteps().iterator();;
             steps.next(); // ignore first step
+            if (! steps.hasNext()) {
+                foundEnd = true;
+                return;
+            }
             while (steps.hasNext()) {
                 RelationStep relationStepTemplate = (RelationStep) steps.next();
                 Step         stepTemplate         = (Step)         steps.next();
