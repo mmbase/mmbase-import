@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7.1
- * @version $Id: TreeContainerTag.java,v 1.8 2006-04-04 23:51:20 michiel Exp $
+ * @version $Id: TreeContainerTag.java,v 1.9 2006-07-25 19:56:23 michiel Exp $
  */
 public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQueryContainer, ContainerReferrer { // extending from relatednodescontainer only for the attributes
 
@@ -116,7 +116,12 @@ public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQu
             tree = new GrowingTreeList(query, maxDepth.getInt(this, 5));
             if (path != Attribute.NULL) {
                 Queries.addPath(tree.getTemplate(), (String) path.getValue(this), (String) searchDirs.getValue(this));
-                query.setNodeStep((Step) tree.getTemplate().getSteps().get(2));
+
+                // I'm not entirely sure why the following is necessary at all:
+                Step step = (Step) tree.getTemplate().getSteps().get(2);
+                if (query.getSteps().contains(step)) {
+                    query.setNodeStep(step);
+                }
             }
         }
         if (jspVar != null) {
