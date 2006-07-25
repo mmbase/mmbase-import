@@ -10,8 +10,8 @@
 
    String articleConstraint = "(artikel.embargo < '" + (nowSec+quarterOfAnHour) + "') AND "
                               + "(artikel.use_verloopdatum='0' OR artikel.verloopdatum > '" + nowSec + "' )";
-										
-	String sImageTemplate = "s(195)+part(0,0,195,113)";
+                              
+   String sImageTemplate = "s(195)+part(0,0,195,113)";
 %>
 <script language="JavaScript">
 <!--
@@ -24,7 +24,7 @@ function changeImages() {
 </script>
 <mm:node number="channels" notfound="skipbody">
   <div class="headerBar" style="width:100%;"><img src="includes/portal/logo.gif" border="0" style="vertical-align:middle;"/> VANDAAG</div>
-  <mm:related path="rubriek,parent,rubriek2,posrel,pagina,contentrel,artikel" orderby="artikel.embargo"
+  <mm:related path="rubriek,parent,rubriek2,posrel,pagina,contentrel,artikel" orderby="artikel.embargo" directions="DOWN"
              constraints="<%= articleConstraint %>" max="3">
     <mm:field name="rubriek2.naam" jspvar="rubriek2_naam" vartype="String" write="false">
     <mm:field name="artikel.number" jspvar="artikel_number" vartype="String" write="false">
@@ -71,7 +71,7 @@ function changeImages() {
   <table style="width:100%;">
   <tr>
     <td style="vertical-align:top;">
-      <mm:related path="rubriek,parent,rubriek2,posrel,pagina,contentrel,artikel" orderby="artikel.embargo"
+      <mm:related path="rubriek,parent,rubriek2,posrel,pagina,contentrel,artikel" orderby="artikel.embargo"  directions="DOWN"
                  constraints="<%= articleConstraint %>" offset="3" max="5">
         <mm:field name="rubriek2.naam" jspvar="rubriek2_naam" vartype="String" write="false">
         <mm:field name="artikel.number" jspvar="artikel_number" vartype="String" write="false">
