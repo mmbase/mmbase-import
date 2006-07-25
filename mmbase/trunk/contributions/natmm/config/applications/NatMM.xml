@@ -15,7 +15,7 @@
         <builder version="0" maintainer="mmbase.org">altrel</builder>
         <builder version="0" maintainer="mmbase.org">daterel</builder>
         <builder version="0" maintainer="mmbase.org">partrel</builder>
-		  <builder version="0" maintainer="mmbase.org">pos4rel</builder>
+        <builder version="0" maintainer="mmbase.org">pos4rel</builder>
         
         <!-- LeoCMS objects -->
         <builder version="0" maintainer="mmbase.org">archief</builder>
@@ -75,13 +75,13 @@
         <builder version="0" maintainer="mmbase.org">panno</builder>
         <builder version="0" maintainer="mmbase.org">paragraaf</builder>
         <builder version="0" maintainer="mmbase.org">payment_type</builder>
-		  <builder version="0" maintainer="mmbase.org">pools</builder>
+        <builder version="0" maintainer="mmbase.org">pools</builder>
         <builder version="0" maintainer="mmbase.org">provincies</builder>
         <builder version="0" maintainer="mmbase.org">questions</builder>
         <builder version="0" maintainer="mmbase.org">routebeschrijvingen</builder>
         <builder version="0" maintainer="mmbase.org">shorty</builder>
         <builder version="0" maintainer="mmbase.org">teaser</builder>
-		  <builder version="0" maintainer="mmbase.org">topics</builder>
+        <builder version="0" maintainer="mmbase.org">topics</builder>
         <builder version="0" maintainer="mmbase.org">vertrekpunten</builder>
     </neededbuilderlist>
     <neededreldeflist>
@@ -94,7 +94,7 @@
         <reldef source="maillijst" target="maillijst" direction="bidirectional" guisourcename="maillijst" guitargetname="maillijst" builder="insrel" />
         <reldef source="parent" target="parent" direction="bidirectional" guisourcename="parentrel" guitargetname="parentrel" builder="childrel" />
         <reldef source="partrel" target="partrel" direction="bidirectional" guisourcename="partrel" guitargetname="partrel" builder="partrel" />
-		  <reldef source="pos4rel" target="pos4rel" direction="bidirectional" guisourcename="pos4rel" guitargetname="pos4rel" builder="pos4rel" />
+        <reldef source="pos4rel" target="pos4rel" direction="bidirectional" guisourcename="pos4rel" guitargetname="pos4rel" builder="pos4rel" />
         <reldef source="posrel" target="posrel" direction="bidirectional" guisourcename="posrel" guitargetname="posrel" builder="posrel" />
         <reldef source="reactieop" target="reactieop" direction="bidirectional" guisourcename="reactieop" guitargetname="reactieop" builder="insrel" />
         <reldef source="readmore" target="readmore" direction="bidirectional" guisourcename="readmore" guitargetname="readmore" builder="readmore" />
@@ -103,8 +103,8 @@
         <reldef source="schrijver" target="schrijver" direction="bidirectional" guisourcename="schrijver" guitargetname="schrijver" builder="insrel" />
    </neededreldeflist>
    <allowedrelationlist>
-		  <relation from="provincies" to="natuurgebieden" type="pos4rel" />
-		  <relation from="afdelingen" to="afdelingen" type="readmore" />
+        <relation from="provincies" to="natuurgebieden" type="pos4rel" />
+        <relation from="afdelingen" to="afdelingen" type="readmore" />
         <relation from="afdelingen" to="artikel" type="posrel" />
         <relation from="afdelingen" to="medewerkers" type="readmore" />
         <relation from="artikel" to="artikel" type="related" />
@@ -121,7 +121,7 @@
         <relation from="contentelement" to="images" type="posrel" />
         <relation from="contentelement" to="link" type="posrel" />
         <relation from="contentelement" to="persoon" type="related" />
-		  <relation from="contentelement" to="pools" type="posrel"/>
+        <relation from="contentelement" to="pools" type="posrel"/>
         <relation from="contentelement" to="reactie" type="reactieop" />
         <relation from="deelnemers" to="leden" type="related" />
         <relation from="deelnemers_categorie" to="deelnemers" type="related" />
@@ -129,6 +129,7 @@
         <relation from="dossier" to="artikel" type="readmore" />
         <relation from="dossier" to="evenement" type="posrel" />
         <relation from="dossier" to="images" type="posrel" />
+        <relation from="dossier" to="persoon" type="posrel" />
         <relation from="dossier" to="pagina" type="readmore" />
         <relation from="ecard" to="images" type="related" />
         <relation from="evenement" to="afdelingen" type="readmore" />
@@ -208,7 +209,7 @@
         <relation from="shorty" to="contentelement" type="readmore" />
         <relation from="teaser" to="contentelement" type="readmore" />
         <relation from="template" to="editwizards" type="related" />
-		  <relation from="topics" to="pools" type="posrel" />
+        <relation from="topics" to="pools" type="posrel" />
         <relation from="users" to="email" type="related" />
         <relation from="users" to="events_attachments" type="gebruikt" />
         <relation from="users" to="editwizards" type="gebruikt" />
@@ -284,7 +285,7 @@
         <datasource builder="routebeschrijvingen" path="NatMM/routebeschrijvingen.xml" />
         <datasource builder="shorty" path="NatMM/shorty.xml" />
         <datasource builder="teaser" path="NatMM/teaser.xml" />
-		  <datasource builder="topics" path="NatMM/topics.xml"/>
+        <datasource builder="topics" path="NatMM/topics.xml"/>
         <datasource builder="vertrekpunten" path="NatMM/vertrekpunten.xml" />
     </datasourcelist>
 
@@ -303,7 +304,7 @@
       <relationsource builder="constraints" path="NatMM/constraints.xml"/>
       <relationsource builder="daterel" path="NatMM/daterel.xml"/>
       <relationsource builder="partrel" path="NatMM/partrel.xml"/>
-	   <relationsource builder="pos4rel" path="NatMM/pos4rel.xml"/>
+      <relationsource builder="pos4rel" path="NatMM/pos4rel.xml"/>
    </relationsourcelist>
 
    <contextsourcelist>
