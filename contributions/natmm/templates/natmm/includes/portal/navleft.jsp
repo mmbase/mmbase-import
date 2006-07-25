@@ -35,13 +35,12 @@
          <mm:import id="offset" reset="true"><%= j %></mm:import>
          <%@include file="../shorty_logic_2.jsp" %>
          <%
-         linkTXT =  HtmlCleaner.cleanBRs(HtmlCleaner.cleanPs(readmoreTXT)).trim();
-         if(!linkTXT.equals("")) {
+         if(!altTXT.equals("")) {
          %>
            <a href="<%= readmoreURL %>" class="subnavbutton" style="text-align:right;"<% 
              if(!readmoreTarget.equals("")){ %> target="<%= readmoreTarget %>"<% }
              if(!altTXT.equals("")){ %> title="<%= altTXT %>"<% } 
-             %>><%= linkTXT %>
+             %>><%= altTXT %>
            </a>
            <mm:last inverse="true">
              <table cellpadding="0" cellspacing="0" style="width:100%;height:1px;"><tr>
@@ -49,7 +48,8 @@
              </tr></table>
            </mm:last>
          <%
-         } 
+         }
+         j++;
        %>
        </mm:related>
      </mm:node>

@@ -77,12 +77,6 @@
                      <mm:param name="link"><mm:field name="link.number" /></mm:param>
                   </mm:url>" style="padding:0px;width:214px;height:177px;" id="video<mm:field name="link.number" />" scrolling="no"></iframe>
     </mm:list>
-    <jsp:include page="includes/home/shorty_home.jsp">
-      <jsp:param name="s" value="<%= paginaID %>" />
-      <jsp:param name="r" value="<%= rubriekID %>" />
-      <jsp:param name="rs" value="<%= styleSheet %>" />
-      <jsp:param name="sr" value="2" />
-    </jsp:include>
     <jsp:include page="includes/portal/linklijst.jsp">
       <jsp:param name="s" value="<%= paginaID %>" />
       <jsp:param name="r" value="<%= rubriekID %>" />

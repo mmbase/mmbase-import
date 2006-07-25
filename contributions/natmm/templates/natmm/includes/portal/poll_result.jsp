@@ -16,8 +16,8 @@
      String antw = request.getParameter("antw");
 
      // Declare some variable for future use
-     String tot_answers = "";	// Total votes for this answers
-     String messageString ="";	// String to signal already voted or no answer
+     String tot_answers = ""; // Total votes for this answers
+     String messageString ="";   // String to signal already voted or no answer
 
      String cookiestr = "poll" + pollId;
 
@@ -30,7 +30,7 @@
          if (koekje!=null&&koekje.equals(cookiestr)) {
            long timeDelta = 0;
            try { timeDelta = (new Date()).getTime() - Long.parseLong(koekjes[c].getValue()); 
-           } catch (Exception e) { }			
+           } catch (Exception e) { }         
            out.println("\n<!-- We found our cookie: " + cookiestr + " of age " + timeDelta / 1000 + " seconds -->");
            alreadyvoted = true;
          }
@@ -50,8 +50,8 @@
        poll.commit();
        // Set the cookie
        Cookie koekje = new Cookie(cookiestr, String.valueOf((new Date()).getTime()) );
-       int expires = 60 * 60 * 12;		// Cookie expires after 12 hours
-       koekje.setMaxAge(expires);		// The maximum age in seconds
+       int expires = 60 * 60 * 12;     // Cookie expires after 12 hours
+       koekje.setMaxAge(expires);      // The maximum age in seconds
        response.addCookie(koekje);
      }
      else {
@@ -118,7 +118,7 @@
         <td style="vertical-align:top;" style="width:338px;">
           <div class="headerBar" style="width:100%;"><img src="logo.gif" alt="" border="0"> OPINIE</div>
           <div style="padding:14px;">
-              <span class="colortitle"><mm:field name="omschrijving"/></span>
+              <span class="colortitle"><mm:field name="titel"/></span>
               <% 
               if(!messageString.equals("")) {
                 %>
