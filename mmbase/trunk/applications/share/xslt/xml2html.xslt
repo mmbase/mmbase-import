@@ -280,7 +280,7 @@
     </xsl:attribute>
    <xsl:if test="name()='taginterface'"><font color="{$extendscolor}"><xsl:value-of select="name" /></font></xsl:if>
    <xsl:if test="name()='tag'"><xsl:value-of select="name" /></xsl:if>
-   <xsl:if test="name()='function'">{&#x24;<xsl:value-of select="name" />}</xsl:if>
+   <xsl:if test="name()='function'">&#x24;{<xsl:value-of select="name" />}</xsl:if>
   </a>
    <xsl:if test="since='MMBase-1.8'">
      (new)
@@ -542,7 +542,7 @@
     </tr>
     <tr>
       <td colspan="2">
-        <b>{&#x24;mm:<xsl:value-of select="name"/>}</b>
+        <b>&#x24;{mm:<xsl:value-of select="name"/>}</b>
         <p><xsl:value-of select="description" /></p>
         <p><em>Signature: </em><xsl:value-of select="function-signature" /></p>
         <xsl:apply-templates select="info"/>
