@@ -12,7 +12,6 @@ String zipCodeMessage = SubscribeForm.getZipCodeMessage(zipCode);
 boolean isMember = !memberID.equals("") && (memberIDMessage.equals("") || memberIDMessage.equals("evenementen.members.nozipcode"));
 if(isMember) {
    
-   session.setAttribute("memberid",memberID);
    %><mm:redirect page="<%= request.getServletPath() + "?" + request.getQueryString() + "&status=checked" %>" /><%
    
 } else {
