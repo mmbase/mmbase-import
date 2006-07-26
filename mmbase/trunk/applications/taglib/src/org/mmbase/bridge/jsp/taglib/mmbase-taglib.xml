@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.370 2006-07-24 14:00:16 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.371 2006-07-26 11:08:54 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -75,6 +75,7 @@ version: $Id: mmbase-taglib.xml,v 1.370 2006-07-24 14:00:16 michiel Exp $
     <example>
       &lt;c:if test="${mm:contains(list, case)}">
     </example>
+    <since>MMBase-1.8</since>
   </function>
   <function>
     <description>
@@ -86,6 +87,7 @@ version: $Id: mmbase-taglib.xml,v 1.370 2006-07-24 14:00:16 michiel Exp $
     <example>
       ${mm:remove(list, case)}
     </example>
+    <since>MMBase-1.8</since>
   </function>
   <function>
     <description>
@@ -97,6 +99,7 @@ version: $Id: mmbase-taglib.xml,v 1.370 2006-07-24 14:00:16 michiel Exp $
     <example>
       &lt;a href="${node.url}" title="${mm:escape('text/html/attribute', node.title)}" .../&gt;
     </example>
+    <since>MMBase-1.8</since>
   </function>
   <function>
     <description>
@@ -108,6 +111,19 @@ version: $Id: mmbase-taglib.xml,v 1.370 2006-07-24 14:00:16 michiel Exp $
     <example>
       &lt;mm:xslt page="${mm:directory(referrer)}/bla.xml" /&gt;
     </example>
+    <since>MMBase-1.8</since>
+  </function>
+  <function>
+    <description>
+      Simple version of the 'url' tag, which can be used more consicely directly in a href attribute or so.
+    </description>
+    <name>url</name>
+    <function-class>org.mmbase.bridge.jsp.taglib.functions.Functions</function-class>
+    <function-signature>java.lang.String url(java.lang.String, javax.servlet.jsp.PageContext)</function-signature>
+    <example>
+      &lt;link media="screen" type="text/css" href="${mm:url('/css/general.css', pageContext)}" rel="stylesheet" /&gt;
+    </example>
+    <since>MMBase-1.8.2</since>
   </function>
 
 <tagtypes>
