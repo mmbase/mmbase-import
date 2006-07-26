@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.371 2006-07-26 11:08:54 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.372 2006-07-26 11:22:43 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -124,6 +124,8 @@ version: $Id: mmbase-taglib.xml,v 1.371 2006-07-26 11:08:54 michiel Exp $
       &lt;link media="screen" type="text/css" href="${mm:url('/css/general.css', pageContext)}" rel="stylesheet" /&gt;
     </example>
     <since>MMBase-1.8.2</since>
+    <see tag="url" />
+    <see tag="link" />
   </function>
 
 <tagtypes>
@@ -272,19 +274,19 @@ version: $Id: mmbase-taglib.xml,v 1.371 2006-07-26 11:08:54 michiel Exp $
     <type>util.context</type>
     <info>
       <p>
-  Contextreferrer tags refer to the context. This means that (most of) their attributes can
-  contain `context' variables (referred to by `$'). All tags are contextreferrers or
-  specializations of it.
+        Contextreferrer tags refer to the context. This means that (most of) their attributes can
+        contain `context' variables (referred to by `$'). All tags are contextreferrers or
+        specializations of it.
       </p>
       <p>
-  Note that if you use JSP 2, variables can be accessed by ${}. So this also works in MMBase
-  tags. In MMBase 1.7 the JSP2 variables did not coincide with MMBase variables. In MMBase 1.8
-  they can coincide.
+        Note that if you use JSP 2, variables can be accessed by ${}. So this also works in MMBase
+        tags. In MMBase 1.7 the JSP2 variables did not coincide with MMBase variables. In MMBase 1.8
+        they can coincide.
       </p>
       <p>
-	An example is for instance the use: &lt;mm:listnodes
-	type="$nodetype"&gt;, here the 'nodetype' variable from the
-	context is referred to.
+        An example is for instance the use: &lt;mm:listnodes
+        type="$nodetype"&gt;, here the 'nodetype' variable from the
+        context is referred to.
       </p>
     </info>
     <see tag="context" />
@@ -293,8 +295,8 @@ version: $Id: mmbase-taglib.xml,v 1.371 2006-07-26 11:08:54 michiel Exp $
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-  If you want to use variables from another context than the direct parent, then you can
-  specify the id of the parent context tag with this attribute, to indicate it.
+        If you want to use variables from another context than the direct parent, then you can
+        specify the id of the parent context tag with this attribute, to indicate it.
       </info>
     </attribute>
   </taginterface>
@@ -314,8 +316,8 @@ version: $Id: mmbase-taglib.xml,v 1.371 2006-07-26 11:08:54 michiel Exp $
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-  With the `id' attribute you define an unique identifier for this context referrer. Nested tags
-  can refer to this directly and other tags by means of a context.
+        With the `id' attribute you define an unique identifier for this context referrer. Nested tags
+        can refer to this directly and other tags by means of a context.
       </info>
     </attribute>
   </taginterface>
@@ -4106,6 +4108,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <see tag="param" />
     <see tag="image" />
     <see tag="link" />
+    <see function="url" />
     <attribute>
       <name>referids</name>
       <required>false</required>
@@ -4221,6 +4224,8 @@ like the parameter list or the session (where ever it is available) --&gt;
 &lt;/mm:link&gt;
     </example>
     <since>MMBase-1.8</since>
+    <see tag="url" />
+    <see function="url" />
   </tag>
   <tag>
     <name>redirect</name>
