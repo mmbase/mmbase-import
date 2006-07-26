@@ -22,12 +22,12 @@ import org.mmbase.util.logging.*;
 
 /**
  * A function tag for functions returning a collection.
- * The result is iterated. If a fucntion does not returna colelction, or if the result requires sorting,
- * the resultvalue is transformed into a List.
+ * The result is iterated. If a function does not return collection, or if the result requires sorting,
+ * the result value is transformed into a List (using {@link org.mmbase.util.Casting#toCollection}).
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: ListFunctionTag.java,v 1.11 2006-04-12 14:51:40 michiel Exp $
+ * @version $Id: ListFunctionTag.java,v 1.12 2006-07-26 09:07:50 michiel Exp $
  */
 public class ListFunctionTag extends AbstractFunctionTag implements ListProvider, FunctionContainerReferrer, Writer {
 
