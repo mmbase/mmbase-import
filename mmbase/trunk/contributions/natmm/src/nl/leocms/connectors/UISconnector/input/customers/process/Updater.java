@@ -11,7 +11,7 @@ public class Updater
 {
    private static SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 
-   public static void update(CustomerInformation customerInformation) throws Exception
+   public static String update(CustomerInformation customerInformation) throws Exception
    {
       String sExternID = customerInformation.getCommonInformation().getCustomerId();
 
@@ -61,8 +61,9 @@ public class Updater
       nodeDeelnemers.commit();
 
 
-     List listProperties = customerInformation.getPropertyList().getProperty();
-     PropertyUtil.setProperties(cloud, nodeDeelnemers, listProperties);
+//     List listProperties = customerInformation.getPropertyList().getProperty();
+//     PropertyUtil.setProperties(cloud, nodeDeelnemers, listProperties);
 
+     return "" + nodeDeelnemers.getNumber();
    }
 }
