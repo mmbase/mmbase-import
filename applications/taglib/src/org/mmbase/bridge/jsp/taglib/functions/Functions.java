@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
 </mm:cloud>
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.8
- * @version $Id: Functions.java,v 1.13 2006-06-29 15:06:20 michiel Exp $
+ * @version $Id: Functions.java,v 1.14 2006-07-26 11:08:55 michiel Exp $
  * @todo    EXPERIMENTAL
  */
 public class Functions {
@@ -100,15 +100,27 @@ public class Functions {
         return org.mmbase.util.ResourceLoader.getDirectory(file);
     }
 
-    /*
-    public static String url(String string) {
-        try {
-            return ContentTag.getCharTransformer(escaper, null, null).transform("" + Casting.unWrap(string));
-        } catch (Exception e) {
-            return "Could not escape " + string + " with escape " + escaper + " : " + e.getMessage();
+    /**
+     * @since MMBase-1.8.2
+     */
+    public static String url(String page, javax.servlet.jsp.PageContext pageContext) {
+        javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest) pageContext.getRequest();
+        StringBuffer show = new StringBuffer();
+        if (page.equals("")) { // means _this_ page
+            String requestURI = req.getRequestURI();
+            if (requestURI.endsWith("/")) {
+                page = ".";
+            } else {
+                page = new java.io.File(requestURI).getName();
+            }
         }
+        if (page.charAt(0) == '/') { // absolute on servletcontex
+            show.append(req.getContextPath());
+        }
+        show.append(page);
+        return show.toString();
+
     }
-    */
 
 
 
