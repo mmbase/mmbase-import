@@ -177,14 +177,20 @@ if(isFirst) {
 	</tr>
 	<tr>
 		<td>
-		<select name="newsletter" class="currentmenuitem" style="width:150px;">
-			<option value="-1"<mm:compare referid="newsletter" value="-1"> SELECTED</mm:compare>>...
-			<mm:list nodes="newsteaser_template" path="paginatemplate,gebruikt,pagina" orderby="pagina.titel" directions="UP">
-				<mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false">
-					<option value="<%= pagina_number %>"<mm:compare referid="newsletter" value="<%= pagina_number %>"> SELECTED</mm:compare>><mm:field name="pagina.titel" />
-				</mm:field>
-			</mm:list>
-		</select>
+    <mm:node number="newsteaser_template" notfound="skipbody">
+      <select name="newsletter" class="currentmenuitem" style="width:150px;">
+        <option value="-1"<mm:compare referid="newsletter" value="-1"> SELECTED</mm:compare>>...
+          <mm:related path="gebruikt,pagina" orderby="pagina.titel" directions="UP">
+            <mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false">
+              <option value="<%= pagina_number %>"<mm:compare referid="newsletter" value="<%= pagina_number %>"> SELECTED</mm:compare>><mm:field name="pagina.titel" />
+            </mm:field>
+          </mm:related>
+      </select>
+      <mm:import id="newsteaser_template_exists" />
+    </mm:node>
+    <mm:notpresent referid="newsteaser_template_exists">
+      There is no pagina_template with object alias "newsteaser_template"
+    </mm:notpresent>
 		</td>
 		<td>
 			<mm:node number="$newsletter" notfound="skipbody">
@@ -237,7 +243,7 @@ if(isFirst) {
 	<tr>
 		<td colspan="2">
 		Click the <span style="color:#00CC33;">green</span> button<br>
-		<li>to send the newsletter	"<mm:node number="$newsletter"><mm:field name="title" /></mm:node>",<br>
+		<li>to send the newsletter	"<mm:node number="$newsletter"><mm:field name="titel" /></mm:node>",<br>
 		<li>to <%= selectedDeelnemers_categorieName %>.
 		</td>
 		<td><div align="right">
