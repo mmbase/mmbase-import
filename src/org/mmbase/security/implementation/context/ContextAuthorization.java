@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: ContextAuthorization.java,v 1.33 2004-03-08 17:42:31 michiel Exp $
+ * @version $Id: ContextAuthorization.java,v 1.33.2.1 2006-07-26 10:24:57 keesj Exp $
  * @see    ContextAuthentication
  */
 public class ContextAuthorization extends Authorization {
@@ -274,6 +274,9 @@ public class ContextAuthorization extends Authorization {
     }
 
     private boolean check(UserContext user, String context, String operation) throws SecurityException {
+    	if (log.isDebugEnabled()){
+    		log.debug("security check (user,context,operation)=("+user+","+context+","+operation+")");
+    	}
         // look if we have this one already inside the positive cache...
         synchronized(cache) {
             Boolean result = cache.rightGet(operation, context, user.getIdentifier());
@@ -349,9 +352,9 @@ public class ContextAuthorization extends Authorization {
             boolean allowed = userInGroups(user.getIdentifier(), allowedGroups, new HashSet());
             if (log.isDebugEnabled()) {
                 if (allowed) {
-                    log.debug("operation " + operation + " was permitted for user with id " + user);
+                    log.debug("operation " + operation + " was permitted for user with id " + user + " on context " + context);
                 } else {
-                    log.debug("operation " + operation + " was NOT permitted for user with id " + user);
+                    log.debug("operation " + operation + " was NOT permitted for user with id " + user + " on context " + context);
                 }
             }
 
