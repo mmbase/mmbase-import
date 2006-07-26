@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.372 2006-07-26 11:22:43 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.373 2006-07-26 15:48:55 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -49,7 +49,8 @@ version: $Id: mmbase-taglib.xml,v 1.372 2006-07-26 11:22:43 michiel Exp $
   <shortname>mm</shortname>
   <info>
     <p>
-      This is the MMBase taglib reference documention. There is also a taglib tutorial.
+      This is the MMBase taglib reference documentation. There is also a 
+      <a href="http://www.mmbase.org/docs/applications/taglib/frontenddevelopers/taglib/taglib-tutorial.html">taglib tutorial.</a>
     </p>
     <p>
       In this reference documentation mmbase tags are divided intro groups. Every tag can be a
@@ -115,7 +116,7 @@ version: $Id: mmbase-taglib.xml,v 1.372 2006-07-26 11:22:43 michiel Exp $
   </function>
   <function>
     <description>
-      Simple version of the 'url' tag, which can be used more consicely directly in a href attribute or so.
+      Simple version of the 'url' tag, which can be used more concisely directly in a href attribute or so.
     </description>
     <name>url</name>
     <function-class>org.mmbase.bridge.jsp.taglib.functions.Functions</function-class>
@@ -141,8 +142,8 @@ version: $Id: mmbase-taglib.xml,v 1.372 2006-07-26 11:22:43 michiel Exp $
     <description>basic tags</description>
     <info>
       <p>
-  These are the most basic MMBase tags, which supply the basic functionality to access MMBase data
-  in you pages. An overview of all MMBase tags can be found in <a href="mmbase-taglib-all.html">here</a>.
+        These are the most basic MMBase tags, which supply the basic functionality to access MMBase data
+        in you pages. An overview of all MMBase tags can be found in <a href="mmbase-taglib-all.html">here</a>.
       </p>
     </info>
   </type>
@@ -150,9 +151,9 @@ version: $Id: mmbase-taglib.xml,v 1.372 2006-07-26 11:22:43 michiel Exp $
     <description>mmbase tags</description>
     <info>
       <p>
-  These are the MMBase tags, which supply the functionality to
-  access MMBase data. This includes e.g. security tags but not the
-  `utility' tags.
+        These are the MMBase tags, which supply the functionality to
+        access MMBase data. This includes e.g. security tags but not the
+        `utility' tags.
       </p>
     </info>
   </type>
@@ -193,7 +194,7 @@ version: $Id: mmbase-taglib.xml,v 1.372 2006-07-26 11:22:43 michiel Exp $
   <info>
     <p>
       These are the MMBase tags which do relate to lists (lists,
-      sub-tags of lists, and constainers of list).
+      sub-tags of lists, and containers of list).
     </p>
   </info>
   </type>
@@ -264,7 +265,7 @@ version: $Id: mmbase-taglib.xml,v 1.372 2006-07-26 11:22:43 michiel Exp $
 </pre>
       </p>
       <p>
-        Trees which do not need such complicated sortorders or constraints can also be used stand-alone.
+        Trees which do not need such complicated sort orders or constraints can also be used stand-alone.
       </p>
     </info>
   </type>
@@ -274,8 +275,8 @@ version: $Id: mmbase-taglib.xml,v 1.372 2006-07-26 11:22:43 michiel Exp $
     <type>util.context</type>
     <info>
       <p>
-        Contextreferrer tags refer to the context. This means that (most of) their attributes can
-        contain `context' variables (referred to by `$'). All tags are contextreferrers or
+        Context-referrer tags refer to the context. This means that (most of) their attributes can
+        contain `context' variables (referred to by `$'). All tags are context-referrers or
         specializations of it.
       </p>
       <p>
@@ -411,7 +412,7 @@ version: $Id: mmbase-taglib.xml,v 1.372 2006-07-26 11:22:43 michiel Exp $
       <possiblevalue>
         <value>CASE_INSENSITIVE</value>
         <info>
-          Sorts Strings case-insentitively.
+          Sorts Strings case-insensitively.
         </info>
         <since>MMBase-1.8</since>
       </possiblevalue>
@@ -485,7 +486,7 @@ version: $Id: mmbase-taglib.xml,v 1.372 2006-07-26 11:22:43 michiel Exp $
       <since>MMBase-1.8</since>
       <info>
         <p>
-          Removes al the elements from the list, except the ones that are also present in the
+          Removes all the elements from the list, except the ones that are also present in the
           list which is specified by this attribute.
         </p>
         <p>
@@ -503,7 +504,7 @@ version: $Id: mmbase-taglib.xml,v 1.372 2006-07-26 11:22:43 michiel Exp $
       <since>MMBase-1.8</since>
       <info>
         <p>
-          Removes al the elements from the list which are present in the
+          Removes all the elements from the list which are present in the
           object referred by this attribute.
         </p>
         <p>
@@ -684,11 +685,11 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-	Which cloud to use. This is an optional argument, and if
-	it is omitted then the tag will refer to the direct parent.
-	Only if there is more than one cloud (for instance within
-	a nested transaction tag) you might want to use this attribute
-	to refer to the main cloud.
+        Which cloud to use. This is an optional argument, and if
+        it is omitted then the tag will refer to the direct parent.
+        Only if there is more than one cloud (for instance within
+        a nested transaction tag) you might want to use this attribute
+        to refer to the main cloud.
       </info>
     </attribute>
   </taginterface>
@@ -704,8 +705,8 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-  Which writer to use. If the tag is living in more than one writer, and you want to refer
-  to another then the direct parent.
+        Which writer to use. If the tag is living in more than one writer, and you want to refer
+        to another then the direct parent.
       </info>
     </attribute>
   </taginterface>
@@ -816,7 +817,7 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
       </possiblevalue>
       <possiblevalue>
         <value>fileitem</value>
-        <info>org.apache.commons.fileupload.FileItem. Can be used in multipart fileuploads (confortable in combination with EL)</info>
+        <info>org.apache.commons.fileupload.FileItem. Can be used in multipart file uploads (comfortable in combination with EL)</info>
       </possiblevalue>
     </attribute>
     <attribute>
@@ -824,9 +825,9 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-  Whether to write to the page or not. Normally the default value will suffice. If you
-  don't write to the page, the produced string can e.g. be used by sub tags, or only written to
-  a context variable.
+        Whether to write to the page or not. Normally the default value will suffice. If you
+        don't write to the page, the produced string can e.g. be used by sub tags, or only written to
+        a context variable.
       </info>
       <possiblevalue>
         <value>true</value>
@@ -867,7 +868,7 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        Refer to the container with this id. If you want to explicitily not refer to any container
+        Refer to the container with this id. If you want to explicitly not refer to any container
         (e.g. function-tags on node), then you can specify an non-existing id.
       </info>
     </attribute>
@@ -879,7 +880,7 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
       <p>
         A `Query' container is a container for one of the `node list' tags (list providers that are
         node providers too). A query container is actually a wrapper for a `Query' on the database,
-        to which constraints can be added using the &lt;mm:constraint&gt; tag, sortorder can be specified,
+        to which constraints can be added using the &lt;mm:constraint&gt; tag, sort order can be specified,
         etc. If a 'node list tag' is inside a corresponding `nodelist container', it will use the query
         specified by the container.
       </p>
@@ -914,7 +915,7 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        Used in conjuction with 'container' attribute of querycontainerreferrers.
+        Used in conjunction with 'container' attribute of querycontainerreferrers.
       </info>
       <see tag="containerreferrer" attribute="container" />
     </attribute>
@@ -947,8 +948,8 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
         be defined in three locations:
         <ul>
           <li>The nodemanager (for functions located in builder code)</li>
-          <li>A functionset</li>
-          <li>A specific classname</li>
+          <li>A function set</li>
+          <li>A specific class name</li>
         </ul>
         Using the 'nodemanager', 'set', and 'module' attributes, you can specify from which location
         the function should be retrieved. If none of these are given, the function will be
@@ -995,7 +996,7 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
       <rtexprvalue>true</rtexprvalue>
       <info>
         The `functionset' from which the function must be taken. These are a kind of static functions (no
-        object is associated with them). These `sets' of functions are a bit like namespaces.
+        object is associated with them). These `sets' of functions are a bit like name-spaces.
       </info>
     </attribute>
     <attribute>
@@ -1149,7 +1150,7 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
         These constraints follow the syntax of the SQL where clause. It's a good
         practice to use uppercase letters for the operators and lowercase letters
         for the field names. There are also a (new) `constraint' tags, which are more flexible
-        (especially when constructing the constraints automaticly).
+        (especially when constructing the constraints automatically).
       </info>
       <see tag="constraint" />
       <examplevalue>
@@ -1344,7 +1345,7 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
       <info>
         This attribute is the same as the path attribute of the list tag except
         that the first node manager should be omitted. The first node manager
-        is implied by the parent node and prefixed to the path automaticly.
+        is implied by the parent node and prefixed to the path automatically.
       </info>
     </attribute>
     <attribute>
@@ -1759,7 +1760,7 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
           The authentication name to use (account). When used together with
           e.g. the method="http" option, validation only succeeds if
           the username equals this attribute. In this case it is also possible to
-          supply a list of usernames here (comma separated)
+          supply a list of user names here (comma separated)
         </p>
         <p>
           It can also be used in combination with the `password' attribute, in which case
@@ -1784,9 +1785,9 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
         The required rank. This is another way to force a special user when using several
         methods. Often, you should use this attribute in combination with some `method' attribute,
         because if the `current' cloud (of the session) does not have a user of at least this
-        required rank, then it needs to know how to login again then. If there is no method in that
+        required rank, then it needs to know how to log in again then. If there is no method in that
         case, then the body will be skipped, and no error will be shown (This behaviour may be
-        usefull to `check' a cloud only).
+        useful to `check' a cloud only).
       </info>
       <possiblevalue>
         <value>administrator</value>
@@ -1864,7 +1865,7 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
           causes the user to be logged out.
         </p>
         <p>
-          There are different situations on which the cloud tag with the attibute loginpage can react, they are:
+          There are different situations on which the cloud tag with the attribute loginpage can react, they are:
         </p>
         <ul>
           <li>
@@ -1873,7 +1874,7 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
             a form with parameter command with value login. Parameters
             can be specified inside a form. When the button submit is
             pressed, this parameters will be send to the referencing
-            page (foo.jsp).  The login page wil be called with a
+            page (foo.jsp).  The login page will be called with a
             `reference' attribute containing this page's URL, and a
             `reason' attribute `please'.
           </li>
@@ -1909,10 +1910,15 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
       <info>
-        The password to use to logon to the cloud. Always consider using method="pagelogon" when you
-        use this attribute, because the default method will otherwise be "sessionlogon". Then, the
-        resulting cloud-object is written to the session, and the visitor of your page can abuse
-        this to gain authorisation also on other pages.
+        <p>
+          The password to use to logon to the cloud. Always consider using method="pagelogon" when you
+          use this attribute, because the default method will otherwise be "sessionlogon". Then, the
+          resulting cloud-object is written to the session, and the visitor of your page can abuse
+          this to gain authorisation also on other pages.
+        </p>
+        <p>
+          You could also use 'class' authentication to avoid all passwords in JSP-code.
+        </p>
       </info>
     </attribute>
     <attribute>
@@ -1990,10 +1996,10 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
           <p>
             For backwards compatibility reasons this method is the default method if you use the
             `password' attribute, but a warning will be logged to encourage to state this
-            explicitely, because it is good that you are aware of the consequences.
+            explicitly, because it is good that you are aware of the consequences.
           </p>
           <p>
-            A page using a non-anymous cloud in the session should not be cached publicly, that is
+            A page using a non-anonymous cloud in the session should not be cached publicly, that is
             another reason to use `pagelogon'.
           </p>
         </info>
@@ -2005,7 +2011,7 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
         <value>delegate</value>
         <info>
           <p>
-            Delegates logging in to the security's authentication implemenation itself. The current
+            Delegates logging in to the security's authentication implementation itself. The current
             request and response objects are given as credentials (e.g. to redirect to an external
             authentication server). You can also be authenticated only based on class (if in
             classauthentication.xml this jsp's class was mentioned).
@@ -2041,7 +2047,7 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
   </p>
   <p>
     You can also use a different sessionname for editor pages, so that editors need to log in
-    seperatedly on the front-end, which makes it easier for them to see how pages look for
+    separately on the front-end, which makes it easier for them to see how pages look for
     normal users.
   </p>
       </info>
@@ -2168,7 +2174,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         JSP or other taglibs too.
       </p>
       <p>
-  Consider using function tags in stead, which offer greater possibilities and flexibility.
+        Consider using function tags in stead, which offer greater possibilities and flexibility.
       </p>
     </info>
     <attribute>
@@ -2211,7 +2217,9 @@ user hostname:  &lt;mm:info module="info" command="USER-HOSTNAME" /&gt;
       <requirednote>
         `number', `element' or `referid' specify the node. If none of them is given then the node
         refers to a parent NodeProvider, and simply mirrors it, which can e.g. be useful to assign
-        it a (new) id.
+        it a (new) id. The 'parent' node-provider can also be determined by use of the '_node'
+        variable. This last behaviour can be enforced using node="" as attribute (which can be useful
+        e.g. in tag-file fragments).
       </requirednote>
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
@@ -2277,7 +2285,7 @@ access the value of title:
     <info>
       <since>MMBase-1.8</since>
       <p>
-      Makes the fields it contains in its body 'editable' or reachable for an editor for that mather.
+      Makes the fields it contains in its body 'editable' or reachable for an editor for that matter.
       </p>
     </info>
     <example>
@@ -2372,7 +2380,7 @@ access the value of title:
       </possiblevalue>
       <possiblevalue>
         <value>message</value>
-        <info>Simply write to the page that the fiels it not available</info>
+        <info>Simply write to the page that the field it not available</info>
       </possiblevalue>
       <possiblevalue>
         <value>throw|throwexception</value>
@@ -2381,7 +2389,7 @@ access the value of title:
       <possiblevalue>
         <value>null|providenull</value>
         <info>
-          Provides null has the value for the field
+          Provides null as the value for the field
         </info>
       </possiblevalue>
       <since>MMBase-1.8</since>
@@ -2741,7 +2749,7 @@ access the value of title:
     <extends>nodereferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.CreateAliasTag</tagclass>
     <info>
-      Lives in a NodeProvider. Creates the bodycontent as an alias for the node.
+      Lives in a NodeProvider. Creates the body content as an alias for the node.
     </info>
     <attribute>
       <name>name</name>
@@ -2763,7 +2771,7 @@ access the value of title:
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.DeleteAliasTag</tagclass>
     <info>
       <p>
-        Lives in a NodeProvider. Deletes the bodycontent as an alias for the node.
+        Lives in a NodeProvider. Deletes the body content as an alias for the node.
       </p>
       <p>
         Why should deletealias live in a NodeProvider? That is because on the `bridge', deleteAlias
@@ -3259,7 +3267,7 @@ transaction was commited, following should result anything:
         of the node (the name of the `node manager').
       </p>
       <p>
-        If the 'container' attribute is used, then it can refer to one of the 'NodeQueryContainers' which also provide a nodeManager.
+        If the 'container' attribute is used, then it can refer to one of the 'NodeQueryContainers' which also provide a NodeManager.
       </p>
     </info>
     <see tag="fieldinfo" />
@@ -3282,7 +3290,7 @@ transaction was commited, following should result anything:
         </p>
         <p>
           If a field does not exist, it is ignored if you postfix it with `?'. This makes
-          it possible to make more genetric editors, or add optional fields to a nodemanager.
+          it possible to make more generic editors, or add optional fields to a nodemanager.
         </p>
       </info>
     </attribute>
@@ -3333,7 +3341,7 @@ transaction was commited, following should result anything:
       <required>false</required>
       <rtexprvalue>false</rtexprvalue>
       <info>
-        You can make a jspvar of type `Field' of `FieldValue' (only if that is logicly possible) available to the body
+        You can make a jspvar of type `Field' of `FieldValue' (only if that is logically possible) available to the body
       </info>
       <since>MMBase-1.7</since>
     </attribute>
@@ -3555,7 +3563,7 @@ transaction was commited, following should result anything:
       </examplevalue>
       <examplevalue>
         <value>trim</value>
-        <info>if the type is `useinput', then the value is trimmed first. Used in conjuction with the 'noempty' option on the corresponding input field</info>
+        <info>if the type is `useinput', then the value is trimmed first. Used in conjunction with the 'noempty' option on the corresponding input field</info>
         <since>MMBase-1.8</since>
       </examplevalue>
     </attribute>
@@ -3564,7 +3572,7 @@ transaction was commited, following should result anything:
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        On default, the datatype of the specified field is used. But this can be overriden.
+        On default, the datatype of the specified field is used. But this can be overridden.
       </info>
       <since>MMBase-1.8</since>
     </attribute>
@@ -3607,7 +3615,7 @@ transaction was commited, following should result anything:
       </possiblevalue>
       <possiblevalue>
         <value>context</value>
-        <info>The (security) conetxt of the node</info>
+        <info>The (security) context of the node</info>
       </possiblevalue>
     </attribute>
     <attribute>
@@ -3843,7 +3851,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
       <rtexprvalue>true</rtexprvalue>
       <info>
         Whether the object to be imported is required. If nothing can be found by externid and a
-        default value in the body is missing too, then an exception will follow. It is adviced to
+        default value in the body is missing too, then an exception will follow. It is advised to
         use this on pages which do nothing sensible without a value for this. Typically read-more
         pages and so on, which simply cannot show anything if they are not informed what to
         show. This also serves to document the implementation of the JSP, because the imported
@@ -3860,7 +3868,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
         <p>
           On default, this tag will throw an exception if the id to be
           registered is registered already. This will protect you against
-          accidentely using the same id twice, thus obfuscating your
+          accidentally using the same id twice, thus obfuscating your
           code.
         </p>
         <p>
@@ -3949,7 +3957,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
       <possiblevalue>
         <value>this</value>
         <info>
-          Especially when you use a list of `from' locations, then the `this' location can be usefull. It represent the current value, if there is one.
+          Especially when you use a list of `from' locations, then the `this' location can be useful. It represent the current value, if there is one.
           Using this implies reset="true" (because of course you want to reset if current value is an option).
         </info>
       </possiblevalue>
@@ -4169,7 +4177,7 @@ like the parameter list or the session (where ever it is available) --&gt;
         Whether or not to encode the url. According to the servlet
         specification all urls should be encoded, but this also adds
         a session id to the url when cookies are not supported. Many
-        webservers can not handle them and prevent caching of static
+        web servers can not handle them and prevent caching of static
         resources. Default it is true.
       </info>
       <since>MMBase-1.8</since>
@@ -4179,7 +4187,7 @@ like the parameter list or the session (where ever it is available) --&gt;
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        Whether or not to produce fully qualified absolute URL's. (http://myhost.nl/context/..). Defaults to false.
+        Whether or not to produce fully qualified absolute URLs. (http://myhost.nl/context/..). Defaults to false.
       </info>
       <possiblevalue>
         <value>false</value>
@@ -4191,11 +4199,11 @@ like the parameter list or the session (where ever it is available) --&gt;
       </possiblevalue>
       <possiblevalue>
         <value>server</value>
-        <info>Makes the URL abslute on the server, so it starts with /.</info>
+        <info>Makes the URL absolute on the server, so it starts with /.</info>
       </possiblevalue>
       <possiblevalue>
         <value>context</value>
-        <info>Makes the URL abslute on the current servlet context, so it starts with /, but it is not prefixed by the context. The result could e.g. be used as an argument for another url-tag.</info>
+        <info>Makes the URL abs-lute on the current servlet context, so it starts with /, but it is not prefixed by the context. The result could e.g. be used as an argument for another url-tag.</info>
       </possiblevalue>
       <since>MMBase-1.8</since>
     </attribute>
@@ -4215,7 +4223,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlWriterTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlTEI</teiclass>
     <info>
-      Like mm:url, but this is a true writer. Which means that it does not write if it has a body. The idea is to use this in conjuction with EL of JSP2.
+      Like mm:url, but this is a true writer. Which means that it does not write if it has a body. The idea is to use this in conjunction with EL of JSP2.
     </info>
     <example>
 &lt;mm:link&gt;
@@ -4225,6 +4233,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     </example>
     <since>MMBase-1.8</since>
     <see tag="url" />
+    <see tag="param" />
     <see function="url" />
   </tag>
   <tag>
@@ -4361,7 +4370,7 @@ like the parameter list or the session (where ever it is available) --&gt;
       <refercontext>true</refercontext>
       <info>
         <p>
-        	This width is used for a resize of the image when no `transformation' template is provided.
+        	This width is used for a re-size of the image when no `transformation' template is provided.
         </p>
       </info>
     </attribute>
@@ -4372,7 +4381,7 @@ like the parameter list or the session (where ever it is available) --&gt;
       <refercontext>true</refercontext>
       <info>
         <p>
-        	This height is used for a resize of the image when no `transformation' template is provided.
+        	This height is used for a re-size of the image when no `transformation' template is provided.
         </p>
       </info>
     </attribute>
@@ -4383,22 +4392,22 @@ like the parameter list or the session (where ever it is available) --&gt;
       <refercontext>true</refercontext>
       <info>
         <p>
-			Defines if an image should be cropped when no `transformation' template is provided.
-			The image will be cropped when it does not fit the resize area defined by the
-			height and width attributes.
+          Defines if an image should be cropped when no `transformation' template is provided.
+          The image will be cropped when it does not fit the re-size area defined by the
+          height and width attributes.
         </p>
       </info>
       <possiblevalue>
         <value>begin</value>
-        <info>The resize area wiil be positioned at the left top corner.</info>
+        <info>The re-size area will be positioned at the left top corner.</info>
       </possiblevalue>
       <possiblevalue>
         <value>middle</value>
-        <info>The resize area wiil be positioned in the middle.</info>
+        <info>The re-size area will be positioned in the middle.</info>
       </possiblevalue>
       <possiblevalue>
         <value>end</value>
-        <info>The resize area wiil be positioned at the right bottm corner.</info>
+        <info>The re-size area will be positioned at the right bottom corner.</info>
       </possiblevalue>
     </attribute>
     <attribute>
@@ -4525,7 +4534,7 @@ like the parameter list or the session (where ever it is available) --&gt;
         parameters and knows the `param' sub tag.
       </p>
       <p>
-        mm:include also can be used to include `external' URL's, so
+        mm:include also can be used to include `external' URLs, so
         you can `steal' from another server. But <em>be aware</em>
         that this causes your server to do an http-request itself to
         another server. It depends on your server's configuration and
@@ -4533,8 +4542,8 @@ like the parameter list or the session (where ever it is available) --&gt;
       </p>
       <p>
         If this version of MMBase is running on the Orion application
-        server even `internal' URL's, so pointing to files on the same
-        server, will work like this. In other words, orion will do an
+        server even `internal' URLs, so pointing to files on the same
+        server, will work like this. In other words, Orion will do an
         http-request to itself. This was the way the include-tag
         worked always in MMBase 1.5.
       </p>
@@ -4544,13 +4553,19 @@ like the parameter list or the session (where ever it is available) --&gt;
         compile it together with your page. So in that aspect it is
         much different from this tag, which "includes" a stand-alone
         page. Using the `context' tag you can still give this included
-        file its own scope. If this will do the trick for you then it
-        is perhaps best to use this rather then the mm:include tag.
+        file its own scope.
+      </p>
+      <p>
+        Also 'tagfiles' provide a nice way to make pieces of taglib code generic.
       </p>
       <p>
         See <a
         href="http://java.sun.com/products/jsp/tags/10/tags.html">JSP
         Syntax Reference</a>
+      </p>
+      <p>
+        See <a href="http://www.mmbase.org/docs/applications/taglib/frontenddevelopers/taglib/include.html">
+        MMBase documentation on include mechanisms in MMBase taglib.</a>.
       </p>
     </info>
     <attribute>
@@ -4587,7 +4602,7 @@ like the parameter list or the session (where ever it is available) --&gt;
          Whether to `cite' the page. This only works for `relative' urls on the same server. Only
          also if you have sufficiently rights to do that. Citing means that the page is acquired
          directly, so without interpreting/compiling by the web-server. Mainly useful for
-         documenation of page-creating/taglib itself.
+         documentation of page-creating/taglib itself.
       </info>
     </attribute>
     <attribute>
@@ -4598,7 +4613,7 @@ like the parameter list or the session (where ever it is available) --&gt;
       <info>
         The encoding of the to-be-included page. If the included page does provide the right
         information about this, then there should be no need to use this attribute ever. But if it
-        fails, then you can explicitely try to repair it, using this attribute.
+        fails, then you can explicitly try to repair it, using this attribute.
       </info>
       <since>MMBase-1.7.1</since>
     </attribute>
@@ -4611,7 +4626,7 @@ like the parameter list or the session (where ever it is available) --&gt;
         Like 'referids', but sets the variables as request attributes.
       </info>
       <see tag="import" attribute="from" />
-      <see tag="write" attribute="attribute" />
+      <see tag="write" attribute="request" />
       <since>MMBase-1.7.4</since>
     </attribute>
     <attribute>
@@ -4645,7 +4660,7 @@ like the parameter list or the session (where ever it is available) --&gt;
       <info>
         Specifies any resource relative to the WebRoot ResourceLoader to be included. This is more
         or less equivalent to using cite="true", and using page="..". The only difference is that,
-        when using this, there are not restrictions (so you can also show resources in WEB-INF). So,
+        when using this, there are no restrictions (so you can also show resources in WEB-INF). So,
         never use this with user input.
       </info>
       <since>MMBase-1.8</since>
@@ -4773,7 +4788,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <extends>writerreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.macro.IsNotEmptyTag</tagclass>
     <info>
-      Checks if parent writer, or contextvar, is not empty.
+      Checks if parent writer, or context-var, is not empty.
     </info>
     <see tag="isempty" />
     <attribute>
@@ -5307,6 +5322,7 @@ like the parameter list or the session (where ever it is available) --&gt;
        <see tag="nextbatches" />
     </attribute>
     <example>See the example for tag `first'.</example>
+    <example>See the example for tag `nextbatches'.</example>
   </tag>
   <tag>
     <name>timer</name>
@@ -5352,8 +5368,8 @@ like the parameter list or the session (where ever it is available) --&gt;
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.TreeFileTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlTEI</teiclass>
     <info>
-          This tag does the same as TreeIncludeTag, but instead of including the
-          page that was found, it returns the URL for that page.
+      This tag does the same as TreeIncludeTag, but instead of including the
+      page that was found, it returns the URL for that page.
     </info>
     <attribute>
       <name>objectlist</name>
@@ -5396,9 +5412,9 @@ like the parameter list or the session (where ever it is available) --&gt;
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.LeafFileTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlTEI</teiclass>
     <info>
-          This tag does the same as LeafIncludeTag, but instead of including the
-          page that was found, it returns the URL for that page. This URL can be
-          displayed using the `write' tag.
+      This tag does the same as LeafIncludeTag, but instead of including the
+      page that was found, it returns the URL for that page. This URL can be
+      displayed using the `write' tag.
     </info>
     <attribute>
       <name>objectlist</name>
@@ -5445,16 +5461,16 @@ like the parameter list or the session (where ever it is available) --&gt;
         There are two parameters: `objectlist' and `page'. The
         objectlist is a `,' separated list of objects, the `page'
         is the page to be included. (inherited from the extended `URL' tag)
-          </p>
+      </p>
       <p>
         This tag is similar in behavior as the `include' tag, but it
         will try several different paths to find a `best matching'
         file to include. An example:
-          </p>
+      </p>
       <p>
         objectlist="1,2,3,4", page="doh.jsp"
         The treeinclude tag will first try to include `/1/2/3/4/doh.jsp', if
-                that file is not available, it will try `/1/2/3/doh.jsp', etc. etc.
+        that file is not available, it will try `/1/2/3/doh.jsp', etc. etc.
         Besides the directory `/1/2/3/4', all directories starting with
         the object number will match. This means that the following paths
         will all work with the given parameters:
@@ -5665,7 +5681,7 @@ Of course, the default behavior of getSmartPath can still be overridden.
           href="mm:2xhtml.xslt" /&gt;.
         </p>
         <p>
-          So basicly, when you do specify the format attribute there
+          So basically, when you do specify the format attribute there
           can happen two different things:
           <ul>
             <li>
@@ -5726,7 +5742,7 @@ Of course, the default behavior of getSmartPath can still be overridden.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        You can give options to the transformation. Parameters can be done with 'referids' or mm:param subtags.
+        You can give options to the transformation. Parameters can be done with 'referids' or mm:param sub-tags.
       </info>
     </attribute>
     <attribute>
@@ -5788,7 +5804,7 @@ Of course, the default behavior of getSmartPath can still be overridden.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        Whether the generated DOM (if that happens) must be created with the namespace
+        Whether the generated DOM (if that happens) must be created with the name-space
         http://www.mmbase.org/objects. Defaults to true.
       </info>
       <since>MMBase-1.8</since>
@@ -5804,29 +5820,30 @@ Of course, the default behavior of getSmartPath can still be overridden.
     <tagclass>org.mmbase.bridge.jsp.taglib.XsltTag</tagclass>
     <info>
       <p>
-        This tag must live as a sub-tag of Formatter. You can add `inline' XSL with this.
-        If the surrounding &lt;xsl:stylesheet tag is missing, the following one is automatichly added:
+        This tag must live as a sub-tag of Formatter. You can add `in line' XSL with this.
+        If the surrounding &lt;xsl:stylesheet tag is missing, something like the following one is automatically added 
+        (actually it is a bit more complex)
       </p>
       <pre>
 <![CDATA[
    <xsl:stylesheet xmlns:xsl ="http://www.w3.org/1999/XSL/Transform" version ="1.0"
-                   xmlns:taglib="org.mmbase.bridge.jsp.taglib.XsltTag"
-                   extension-element-prefixes="taglib">
+                   xmlns:mm="org.mmbase.bridge.jsp.taglib.functions.Functions"
+                   extension-element-prefixes="mm">
    ...
    </xsl:stylesheet>
 ]]>
       </pre>
       <p>
-       Which means that you have access to the static functions of XsltTag too, which mean goal is to provide the `escape' moethod:
+       Which means that you have access to some static too, which main goal is to provide the `escape' method:
       </p>
       <pre>
 <![CDATA[
-   <xsl:value-of select="taglib:escape('p', mytag)"
+   <xsl:value-of select="mm:escape('p', mytag)"
                          disable-output-escaping="yes" />
 ]]>
       </pre>
       <p>
-       Which provides the same functionallity as the `escape' attribute of writes inside XSLT.
+       Which provides the same functionality as the `escape' attribute of writes inside XSLT.
       </p>
     </info>
     <extends>contextreader</extends>
@@ -5859,7 +5876,7 @@ Of course, the default behavior of getSmartPath can still be overridden.
         `inputformat' attribute is used, this is used to parse the
         content of the `time' attribute, one can define `human
         readable format' like this. 2) Specify the time in seconds
-        from EPOC (this is the way how MMBase handles times). 3) By
+        from EPOCH (this is the way how MMBase handles times). 3) By
         using keywords, such as: yesterday, tomorrow, today, now.
       </info>
     </attribute>
@@ -5894,13 +5911,13 @@ Of course, the default behavior of getSmartPath can still be overridden.
         <p>
         The format attribute specifies how to display the time. If the
         format attribute is not used the time will be displayed in
-        seconds from EPOC. The syntax of the format attribute is
+        seconds from EPOCH. The syntax of the format attribute is
         identical to the syntax of the inputformat attribute. Instead
         of using the format attribute you can also use the MMBase
         formatter taglib.
         </p>
         <p>
-          Alternatively, you can also symbolicly indicate how verbosely the date and or time must be
+          Alternatively, you can also symbolically indicate how verbosely the date and or time must be
           presented. You do this by starting this string with a semicolon (:) followed by one or two
           constants separated by a dot. The first constant is for the date part, the second for the
           time part. Both these constants can take the following values `FULL', `LONG', `MEDIUM' and `SHORT'.
@@ -5909,7 +5926,7 @@ Of course, the default behavior of getSmartPath can still be overridden.
       <possiblevalue>
         <value>y</value>
         <info>
-          Only the year part of the speficied time
+          Only the year part of the specified time
         </info>
       </possiblevalue>
       <possiblevalue>
@@ -6310,7 +6327,7 @@ The 0 is just counter, which starts at 0 on every page.
       <info>
         <p>
           The default value of the escape attribute of all writer tags in the body. The values are
-          defined in taglibcontent.xml. Reasonable defaults apply if you explicitely speficy a type.
+          defined in taglibcontent.xml. Reasonable defaults apply if you explicitly specify a type.
         </p>
         <p>
           The `escape' attribute of the surrounded writers can be used to override this. (E.g. if
@@ -6455,7 +6472,7 @@ The 0 is just counter, which starts at 0 on every page.
       <info>
         Though a relatednodescontainer is to query real nodes (so not clusternodes), this does not
         mean that there can only one node type in the query. Only one element of this path is
-        actually queried, but constraints and sortorderds can be applied to the other ones.
+        actually queried, but constraints and sort orders can be applied to the other ones.
       </info>
       <see tag="list" attribute="path" />
     </attribute>
@@ -6827,11 +6844,11 @@ The 0 is just counter, which starts at 0 on every page.
       </possiblevalue>
       <possiblevalue>
         <value>IN</value>
-        <info>The value can be a comma seperated String of values. You can also refer to some list with `referid' (e.g. to a nodelist tag)</info>
+        <info>The value can be a comma separated String of values. You can also refer to some list with `referid' (e.g. to a nodelist tag)</info>
       </possiblevalue>
       <possiblevalue>
         <value>NULL</value>
-        <info>Tests wether the value of the field is NULL (or NOT NULL if inverse="true"). The `value' attributes are ignored.</info>
+        <info>Tests whether the value of the field is NULL (or NOT NULL if inverse="true"). The `value' attributes are ignored.</info>
       </possiblevalue>
     </attribute>
     <example><![CDATA[<mm:listnodescontainer type="people">
@@ -7203,7 +7220,7 @@ The 0 is just counter, which starts at 0 on every page.
       <rtexprvalue>true</rtexprvalue>
       <info>
         Whether to sort case-sensitively or not. This is only relevant for String type fields. On
-        the database level a case insensitive sort will typically result in a sort of the uppercases
+        the database level a case insensitive sort will typically result in a sort of the uppercased
         field (unless e.g. the database sorts case insensitively on default). This defaults to
         false, because probably you want that.
       </info>
@@ -7365,6 +7382,25 @@ The 0 is just counter, which starts at 0 on every page.
         with this you can change it, e.g. set it to 1.
       </info>
     </attribute>
+    <example><![CDATA[
+<mm:relatednodescontainer type="responses">
+  <mm:maxnumber value="12" />
+  <mm:offset value="${offset}" />
+  <mm:previousbatches indexoffset="1">
+    <mm:link referids="r.s@s,_@offset,n">
+      <a href="${_}"><mm:index /></a>
+    </mm:link>
+    <jsp:text>, </jsp:text>
+  </mm:previousbatches>
+  <span class="current"><mm:index offset="1"/></span>
+  <mm:nextbatches indexoffset="1">
+    <jsp:text>, </jsp:text>
+    <mm:link referids="r.s@s,_@offset,n">
+      <a href="${_}"><mm:index /></a>
+    </mm:link>
+  </mm:nextbatches>
+</mm:relatednodescontainer>
+    ]]></example>
   </tag>
 
   <tag>
@@ -7405,7 +7441,7 @@ The 0 is just counter, which starts at 0 on every page.
       <rtexprvalue>true</rtexprvalue>
       <see tag="nextbatches" attribute="indexoffset" />
     </attribute>
-
+    <example>See the example for tag `nextbatches'.</example>
   </tag>
 
 
@@ -7446,7 +7482,7 @@ The 0 is just counter, which starts at 0 on every page.
     <tagclass>org.mmbase.bridge.jsp.taglib.tree.TreeTag</tagclass>
     <info>
       <p>
-        The Tree Tag makes it possible to show a piece of the MMBase cloud genericly. This tag never
+        The Tree Tag makes it possible to show a piece of the MMBase cloud generically. This tag never
         works alone. Firstly, it will try to find a surrounding `treecontainer' tag, which defines the
         `starting query' and other the properties of this tree. If there is no surrounding
         tree-container tag, then it can also use one of the other node list containers
@@ -7549,7 +7585,7 @@ The 0 is just counter, which starts at 0 on every page.
         The treecontainer tag is a the `container' tag for the tree-tag. It searches on the same way
         as the tree tag itself for a `starting query', the only difference being that it will not
         itself look for a surrounding tree-container (so, it will look parent node-list-containers and
-        if unsuccesfull for a parent node-providers).
+        if unsuccessfully for a parent node-providers).
       </p>
       <p>
         Just as for example in the relatednodescontainer the attributes define how the `starting'
@@ -7614,7 +7650,7 @@ The 0 is just counter, which starts at 0 on every page.
     <see type="tree" />
     <since>MMBase-1.8</since>
     <info>
-      A branch tag would grow a tree before it starts growing automaticly.
+      A branch tag would grow a tree before it starts growing automatically.
       The idea is that these extra steps can also have 'leafconstraints'.
     </info>
     <attribute>
@@ -7650,7 +7686,7 @@ The 0 is just counter, which starts at 0 on every page.
         on the 'leafs' of the tree.
       </p>
       <p>
-        Practicly, this means that it can be used to search a tree.
+        Practically, this means that it can be used to search a tree.
       </p>
     </info>
     <see type="tree" />
@@ -7660,7 +7696,7 @@ The 0 is just counter, which starts at 0 on every page.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        Decides wether the leaf-contraint is going to work on the template, or on the trunk.
+        Decides whether the leaf-constraint is going to work on the template, or on the trunk.
       </info>
       <possiblevalue>
         <value>template</value>
@@ -7820,14 +7856,14 @@ The 0 is just counter, which starts at 0 on every page.
       <name>minvalue</name>
       <required>false</required>
       <info>
-        A minimal value for the rank. If it is `anonymous' then this is no limitiation, because anonymous is the lowest possible rank. It can also be specified as an integer.
+        A minimal value for the rank. If it is `anonymous' then this is no limitation, because anonymous is the lowest possible rank. It can also be specified as an integer.
       </info>
     </attribute>
     <attribute>
       <name>maxvalue</name>
       <required>false</required>
       <info>
-        A maximal value for the rank. If it is `administrator' then this is no limitiation, because admistrator is the highest possible rank. It can also be specified as an integer.
+        A maximal value for the rank. If it is `administrator' then this is no limitation, because administrator is the highest possible rank. It can also be specified as an integer.
       </info>
     </attribute>
   </tag>
@@ -7870,7 +7906,7 @@ The 0 is just counter, which starts at 0 on every page.
       <name>styleClass</name>
       <required>false</required>
       <info>
-        If form-tag is produced, you may want to have it a class-attribute too. Btw it always has an mm_form class.
+        If form-tag is produced, you may want to have it a class-attribute too. By the way, it always has an mm_form class.
       </info>
       <since>MMBase-1.8.1</since>
       <see tag="image" attribute="styleClass" />
