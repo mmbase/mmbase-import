@@ -30,7 +30,7 @@
       <h2><mm:write referid="signuptitle"/></h2>
       <p><mm:write referid="signuptext" escape="none"/></p>
 
-      
+
       <form action="feedback_aanmeld.jsp" method="post">
          <fieldset>
             <legend>Aanmelden</legend>
@@ -45,7 +45,7 @@
 --%>
 
       <p><mm:write referid="logintext"/></p>
-      <form method="post" action="<mm:write referid="referrer" jspvar="r" vartype="string"><%=response.encodeURL(r)%></mm:write>" >
+      <form method="post" action="index.jsp" >
          <fieldset>
             <legend>Inloggen</legend>
             <div class="formcontainer">

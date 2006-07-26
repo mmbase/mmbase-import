@@ -34,14 +34,14 @@ public class Reciever
             }
             catch (Exception e)
             {
-               String sException = "Can't update the db for document from URL=" + sURL + "\n the exception is=" + e;
+               String sException = "Can't update the db for document from URL=" + sURL + "\n the exception is=" + errorReport(e);
                log.error(sException);
                return sException;
             }
          }
          catch (Exception e)
          {
-            String sException = "Can't unmarshall document" + sURL + "\n the exception is=" + e;
+            String sException = "Can't unmarshall document" + sURL + "\n the exception is=" + errorReport(e);
             log.error(sException);
             return sException;
          }
@@ -49,9 +49,16 @@ public class Reciever
       }
       catch (Exception e)
       {
-         String sException = "Can't get an XML document from URL=" + sURL + " for current user information updating\n The exception is=" + e;
+         String sException = "Can't get an XML document from URL=" + sURL + " for current user information updating\n The exception is=" + errorReport(e);
          log.error(sException);
          return sException;
       }
+   }
+
+   private static String errorReport(Exception e){
+      StringWriter writer = new StringWriter();
+      PrintWriter print = new PrintWriter(writer);
+      e.printStackTrace(print);
+      return writer.toString();
    }
 }
