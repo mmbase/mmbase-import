@@ -11,12 +11,10 @@ public class Updater
 {
    private static SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 
-   public static String update(CustomerInformation customerInformation) throws Exception
-   {
+   public static String update(CustomerInformation customerInformation) throws Exception {
       String sExternID = customerInformation.getCommonInformation().getCustomerId();
 
-      if (sExternID == null)
-      {
+      if (sExternID == null) {
          throw new Exception("Can't parse customer without externId");
       }
 
@@ -30,12 +28,10 @@ public class Updater
                                   null, null, null, true);
 
       Node nodeDeelnemers;
-      if (nl.size() > 0)
-      {
+      if (nl.size() > 0) {
          nodeDeelnemers = cloud.getNode(nl.getNode(0).getStringValue("deelnemers.number"));
       }
-      else
-      {
+      else {
          nodeDeelnemers = cloud.getNodeManager("deelnemers").createNode();
          nodeDeelnemers.setStringValue("externid", sExternID);
          nodeDeelnemers.commit();
@@ -60,10 +56,32 @@ public class Updater
       nodeDeelnemers.setStringValue("lidnummer", customerInformation.getCommonInformation().getIsMember());
       nodeDeelnemers.commit();
 
+      List listProperties = customerInformation.getPropertyList().getProperty();
+      ArrayList arliStandartPropertis = new ArrayList();
 
-//     List listProperties = customerInformation.getPropertyList().getProperty();
-//     PropertyUtil.setProperties(cloud, nodeDeelnemers, listProperties);
 
-     return "" + nodeDeelnemers.getNumber();
+      for (Iterator it = listProperties.iterator(); it.hasNext(); ) {
+         nl.leocms.connectors.UISconnector.input.customers.model.Property property = (nl.leocms.connectors.UISconnector.input.customers.model.Property) it.next();
+         nl.leocms.connectors.UISconnector.shared.properties.model.Property standartProperty = new nl.leocms.connectors.UISconnector.shared.properties.model.Property();
+         standartProperty.setPropertyId(property.getPropertyId());
+         standartProperty.setPropertyDescription(property.getPropertyDescription());
+
+         ArrayList arliStandartPropertyValues = new ArrayList();
+         standartProperty.setPropertyValues(arliStandartPropertyValues);
+
+         for(Iterator it2 = property.getPropertyValue().iterator(); it2.hasNext();){
+            nl.leocms.connectors.UISconnector.input.customers.model.PropertyValue propertyValue = (nl.leocms.connectors.UISconnector.input.customers.model.PropertyValue) it2.next();
+            nl.leocms.connectors.UISconnector.shared.properties.model.PropertyValue standartPropertyValue = new nl.leocms.connectors.UISconnector.shared.properties.model.PropertyValue();
+
+            standartPropertyValue.setPropertyValueId(propertyValue.getPropertyValueId());
+            standartPropertyValue.setPropertyValueDescription(propertyValue.getPropertyValueDescription());
+            arliStandartPropertyValues.add(standartPropertyValue);
+         }
+         arliStandartPropertis.add(standartProperty);
+      }
+      PropertyUtil.setProperties(cloud, nodeDeelnemers, arliStandartPropertis);
+
+      return "" + nodeDeelnemers.getNumber();
    }
 }
+
