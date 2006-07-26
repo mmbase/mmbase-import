@@ -12,13 +12,14 @@ public String getObjects(Cloud cloud, Logger log, String objects, String source,
          sbObjects.append(nlObjects.getNode(n).getStringValue(source + ".number"));
       }
       objects = sbObjects.toString();
-      log.info(destination + ": " + objects);
+      // log.info(destination + ": " + objects);
    }
    return objects;
 }
 
 public String getObjectsConstraint(Cloud cloud, Logger log, String objects, String source, String path, String constraint) {
    StringBuffer sbObjects = new StringBuffer();
+   log.info("getObjecsConstraint objects=" + objects + ", path=" + path + ", fields=" + source + ".number" + ", constraints=" + constraint);
    NodeList nlObjects = cloud.getList(objects, path,source + ".number","(" + constraint + ")",null,null,null,true);
    for(int n=0; n<nlObjects.size(); n++) {
       if(n>0) { sbObjects.append(','); }
@@ -32,12 +33,26 @@ public String getObjectsConstraint(Cloud cloud, Logger log, String objects, Stri
 public NodeList getRelated(Cloud cloud, Logger log, String objects, String source, String role, String destination, String field, String field2, String language) {
    String fields = destination + ".number," + destination + "." + getLangFieldName(field,language);
    if (!field2.equals("")) {
-      fields += "," + destination + "." + getLangFieldName(field,language);
-   }   
+      fields += "," + destination + "." + getLangFieldName(field2,language);
+   }
+   // log.info("getRelated objects=" + objects + ", path=" + source + "," + role + "," + destination + ", fields=" + fields + ", destination=" + destination + "." + field);
    NodeList nlRelated = cloud.getList(objects,
                                  source + "," + role + "," + destination,
                                  fields,
                                  null,destination + "." + field,"UP",null,true);
+   int n=0;
+   String lastFields = "";
+   while(n<nlRelated.size()) { // make list unique
+      String thisFields = nlRelated.getNode(n).getStringValue(destination + "." + field);
+      if (!field2.equals("")) {
+        fields += "," + nlRelated.getNode(n).getStringValue(destination + "." + field2);
+      }
+      if(thisFields.equals(lastFields)) {
+        nlRelated.remove(n);
+      }
+      lastFields = thisFields;
+      n++;
+   }
    return nlRelated;
 }
 
