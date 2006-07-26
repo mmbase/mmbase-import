@@ -50,7 +50,7 @@
   <xsl:apply-templates select="tagtypes/type" />
 
   <!-- create a seperate file for every tag -->
-  <xsl:apply-templates select="tag|taginterface" mode="file" />
+  <xsl:apply-templates select="tag|taginterface|function" mode="file" />
 
   <!-- create a toc file -->
   <!-- xsl:document href="{$basedir}/index.html"-->
@@ -76,6 +76,12 @@
         </xsl:apply-templates><br />
         tags: <br />
         <xsl:apply-templates select="tag" mode="toc" >
+          <xsl:sort select="name" />
+          <xsl:with-param name="file"  select="true()" />
+          <xsl:with-param name="subdir"  select="true()" />
+        </xsl:apply-templates><br />
+        functions: <br />
+        <xsl:apply-templates select="function" mode="toc" >
           <xsl:sort select="name" />
           <xsl:with-param name="file"  select="true()" />
           <xsl:with-param name="subdir"  select="true()" />
@@ -157,8 +163,8 @@
           <td></td>
           <td>
             <a name="toc"/>
-            <xsl:apply-templates select="tag[contains(type, $type) or $type='all']" mode="toc" >
-                <xsl:sort select="name" />
+            <xsl:apply-templates select="tag[contains(type, $type) or $type='all']|function[$type='all']" mode="toc" >
+              <xsl:sort select="name" />
             </xsl:apply-templates><br />
           </td>
           <td></td>
@@ -180,7 +186,7 @@
                 <xsl:with-param name="type" select="$type" />
                 <xsl:sort select="name" />
             </xsl:apply-templates>
-            <xsl:apply-templates select="tag[contains(type, $type) or $type='all']" mode="full">
+            <xsl:apply-templates select="tag[contains(type, $type) or $type='all']|function[$type='all']" mode="full">
                 <xsl:with-param name="type" select="$type" />
                 <xsl:with-param name="linkexamples" select="$linkexamples" />
                 <xsl:sort select="name" />
@@ -241,22 +247,48 @@
   <xsl:if test="not($anchor='')">#<xsl:value-of select="$anchor" /></xsl:if>
   <xsl:if test="$attribute">.<xsl:value-of select="$attribute" /></xsl:if>
 </xsl:template>
+<xsl:template name="functionref">
+  <xsl:param name="file" select="false()" />
+  <xsl:param name="subdir" select="false()" />
+  <xsl:param name="type" select="'all'" />
+  <xsl:param name="function"/>
+  <xsl:variable name="usefile" select="$file or (not($type='all') and not(/taglib/function[name = $function]/type and contains(/taglib/function[name = $function]/type, $type)))" />
+  <xsl:if test="$usefile"><xsl:if test="$subdir"><xsl:value-of select="$files" />/</xsl:if>function_<xsl:value-of select="$function" />.jsp</xsl:if>
+  <xsl:if test="not($usefile)">#function_<xsl:value-of select="$function" /></xsl:if>
+</xsl:template>
 
 
 <!-- Generates an entry for table of all tags or taginterfaces -->
-<xsl:template match="tag|taginterface" mode="toc">
+<xsl:template match="tag|taginterface|function" mode="toc">
   <xsl:param name="file" select="false()" />
   <xsl:param name="subdir" select="false()" />
   <a>
     <xsl:attribute name="href">
-      <xsl:call-template name="tagref">
-        <xsl:with-param name="file" select="$file" /><xsl:with-param name="subdir" select="$subdir" /><xsl:with-param name="tag"  select="name"  />
-      </xsl:call-template>
+      <xsl:choose>
+        <xsl:when test="name()='function'">
+          <xsl:call-template name="functionref">
+            <xsl:with-param name="file" select="$file" /><xsl:with-param name="subdir" select="$subdir" /><xsl:with-param name="function"  select="name"  />
+          </xsl:call-template>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:call-template name="tagref">
+            <xsl:with-param name="file" select="$file" /><xsl:with-param name="subdir" select="$subdir" /><xsl:with-param name="tag"  select="name"  />
+          </xsl:call-template>
+        </xsl:otherwise>
+      </xsl:choose>
+
     </xsl:attribute>
    <xsl:if test="name()='taginterface'"><font color="{$extendscolor}"><xsl:value-of select="name" /></font></xsl:if>
    <xsl:if test="name()='tag'"><xsl:value-of select="name" /></xsl:if>
+   <xsl:if test="name()='function'">{&#x24;<xsl:value-of select="name" />}</xsl:if>
   </a>
    <xsl:if test="since='MMBase-1.8'">
+     (new)
+   </xsl:if>
+   <xsl:if test="since='MMBase-1.8.1'">
+     (new)
+   </xsl:if>
+   <xsl:if test="since='MMBase-1.8.2'">
      (new)
    </xsl:if>
   <xsl:if test="position() != last()"> | </xsl:if>
@@ -313,7 +345,7 @@
 </xsl:template>
 
 <!-- Create a file for a tag -->
-<xsl:template match="tag|taginterface" mode="file">
+<xsl:template match="tag|taginterface|function" mode="file">
   <!-- xsl:document href="{$basedirfiles}/{name}.jsp"-->
     <xalan:write file="{$basedirfiles}/{name}.jsp"><!-- xsl:document not supported by xalan-->
   <html>
@@ -328,7 +360,7 @@
       bgcolor="#FFFFFF" text="#336699" link="#336699" vlink="#336699" alink="#336699">
      <xsl:text disable-output-escaping="yes">
       &lt;mm:cloud&gt;
-      &lt;mm:node jspvar="node" number="taglib.documentation" notfound="providenull"&gt;
+      &lt;mm:node jspvar="node" number="a.news.node" notfound="providenull"&gt;
       </xsl:text>
     <h1><xsl:value-of select="name" /></h1>
     <xsl:apply-templates select="." mode="full">
@@ -451,6 +483,88 @@
             <!-- The following will only work with xalan! -->
             <xsl:apply-templates select="rf:readExample(concat($exampledir, @href))" />
 
+            <!--
+              The following will work in XSLT 2.0, but not yet :(
+              <xsl:value-of select="unparsed-text(@href)" />
+             
+              When using 'xsltproc' to generate the documentation, you can use the
+              following, but you have to create a bunch of .xml files from the
+              codesamples:
+              <xsl:apply-templates select="document(concat(@href, '.xml'), example)" />
+            -->
+          </xsl:for-each>
+        </xsl:if>
+    </td>
+    </tr>
+    </xsl:if>
+  </table>
+</xsl:template>
+
+<xsl:template match="function" mode="full">
+  <xsl:param name="file" select="false()" /><!-- if true, reference to files -->
+  <xsl:param name="type" select="'all'" /><!-- if refering to tag of other type, must also reference to file -->
+  <xsl:param name="linkexamples" select="true()" />
+  <table bgcolor="#eeeeee" width="100%" cellpadding="5">
+    <tr>
+      <td colspan="2" bgcolor="white" align="right">
+        <a name="function_{name}"/>
+        <xsl:if test="$file">
+          <a href="../index.html">toc</a>
+        </xsl:if>
+        <xsl:if test="not($file)">
+          <a href="#toc">toc</a>
+        </xsl:if>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <b>{&#x24;mm:<xsl:value-of select="name"/>}</b>
+        <p><xsl:value-of select="description" /></p>
+        <p><em>Signature: </em><xsl:value-of select="function-signature" /></p>
+        <xsl:apply-templates select="info"/>
+        <xsl:if test="since">
+         (since: <xsl:value-of select="since" />)
+        </xsl:if>
+      </td>
+    </tr>
+    <xsl:if test="see">
+      <tr>
+        <td width="100" valign="top">see also</td>
+        <td>
+          <xsl:apply-templates select="see" >
+            <xsl:with-param name="file" select="$file" />
+            <xsl:with-param name="type" select="$type" />
+          </xsl:apply-templates>
+        </td>
+      </tr>
+    </xsl:if>
+    <xsl:apply-templates select="example[$file or not(include)]">
+      <xsl:with-param name="file" select="$file" />
+    </xsl:apply-templates>
+    <xsl:if test="not($file) and example/include">
+      <tr>
+        <td>more examples</td><td>
+        <xsl:if test="$linkexamples">
+      <xsl:for-each select="example/include">
+        <a >
+          <xsl:attribute name="href">
+            <xsl:call-template name="tagref">
+            <xsl:with-param name="file" select="true()" />
+            <xsl:with-param name="tag"  select="ancestor::tag/name" />
+            <xsl:with-param name="anchor">
+              <xsl:value-of select="ancestor::tag/name" />.example.<xsl:number level="single" count="example"  />
+            </xsl:with-param>
+        </xsl:call-template>
+      </xsl:attribute>
+      example <xsl:number level="single" count="example"  />
+        </a><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+      </xsl:for-each>
+        </xsl:if>
+        <xsl:if test="not($linkexamples)">
+          <xsl:for-each select="example/include">
+            <!-- The following will only work with xalan! -->
+            <xsl:apply-templates select="rf:readExample(concat($exampledir, @href))" />
+            
             <!--
               The following will work in XSLT 2.0, but not yet :(
               <xsl:value-of select="unparsed-text(@href)" />
