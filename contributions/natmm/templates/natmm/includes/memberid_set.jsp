@@ -1,4 +1,6 @@
 <%
+session.setAttribute("memberid",memberid);
+
 int maxAge = 10; // 60 * 60 * 24 * 365;
 if(memberid!=null && memberid.equals(NatMMConfig.tmpMemberId)) {
    maxAge = 60 * 60 * 24;
