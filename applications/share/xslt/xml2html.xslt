@@ -331,14 +331,28 @@
     <xsl:if test="not(@type)">
       <a>
         <xsl:attribute name="href">
-          <xsl:call-template name="tagref">
-            <xsl:with-param name="file" select="$file" />
-            <xsl:with-param name="type" select="$type" />
-            <xsl:with-param name="tag"  select="@tag"  />
-            <xsl:with-param name="attribute"  select="@attribute" />
-          </xsl:call-template>
+          <xsl:choose>
+            <xsl:when test="@function">
+              <xsl:call-template name="functionref">
+                <xsl:with-param name="file" select="$file" />
+                <xsl:with-param name="type" select="$type" />
+                <xsl:with-param name="function"  select="@function"  />
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:call-template name="tagref">
+                <xsl:with-param name="file" select="$file" />
+                <xsl:with-param name="type" select="$type" />
+                <xsl:with-param name="tag"  select="@tag"  />
+                <xsl:with-param name="attribute"  select="@attribute" />
+              </xsl:call-template>
+            </xsl:otherwise>
+          </xsl:choose>
         </xsl:attribute>
-        <xsl:if test="@attribute"><xsl:value-of select="@attribute" /> attribute of </xsl:if><xsl:value-of select="@tag" />
+        <xsl:if test="@attribute"><xsl:value-of select="@attribute" /> attribute of </xsl:if>
+        <xsl:value-of select="@tag" />
+        <xsl:value-of select="@function" />
+
       </a>
     </xsl:if>
   <xsl:if test="position() != last()"> | </xsl:if>
@@ -347,7 +361,17 @@
 <!-- Create a file for a tag -->
 <xsl:template match="tag|taginterface|function" mode="file">
   <!-- xsl:document href="{$basedirfiles}/{name}.jsp"-->
-    <xalan:write file="{$basedirfiles}/{name}.jsp"><!-- xsl:document not supported by xalan-->
+  <xsl:variable name="filename">
+    <xsl:choose>
+      <xsl:when test="name()='function'">
+        <xsl:text>function_</xsl:text><xsl:value-of select="name" />
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="name" />
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <xalan:write file="{$basedirfiles}/{$filename}.jsp"><!-- xsl:document not supported by xalan-->
   <html>
     <head>
       <title>MMBase taglib - mm:<xsl:value-of select="name" /></title>
