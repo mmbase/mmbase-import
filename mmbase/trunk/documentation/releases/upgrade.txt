@@ -11,7 +11,7 @@ MMBase-installation. Please make sure you have a backup of all
 important files (webapp, database) before upgrading.
 
 - The classfile for the typedef builder has changed from
-  org.mmbase.modules.corebuilder.ObjectTypes to org.mmbase.modules.corebuilder.TypeDef
+  org.mmbase.modules.corebuilder.ObjectTypes to org.mmbase.modules.corebuilders.TypeDef
   This needs to be changed in the typdef.xml configuration file.
 
 - You can also simply throw aways all core-builder XML configuration files:
