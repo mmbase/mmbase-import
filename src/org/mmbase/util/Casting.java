@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.88 2006-06-26 18:41:14 johannes Exp $
+ * @version $Id: Casting.java,v 1.89 2006-07-26 09:08:01 michiel Exp $
  */
 
 import java.util.*;
@@ -413,6 +413,10 @@ public class Casting {
     }
 
     /**
+     * Transforms an object to a collection. If the object is a collection already, then nothing
+     * happens. If it is a Map, then the 'entry set' is returned. A string is interpreted as a
+     * comma-separated list of strings. Other objects are wrapped in an ArrayList with one element.
+     * 
      * @since MMBase-1.8
      */
     public static Collection toCollection(Object o) {
