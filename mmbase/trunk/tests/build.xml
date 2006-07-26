@@ -296,6 +296,7 @@ Build-compiler: ${build.compiler}
       <arg value="org.mmbase.module.corebuilders.TypeRelTest" />
       <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
       <jvmarg value="-Duser.dir=${tests.work.dir}" />
+      <assertions><enable /></assertions>
     </java>
   </target>
 
@@ -309,6 +310,7 @@ Build-compiler: ${build.compiler}
       <arg value="org.mmbase.cache.AllTests" />
       <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
       <jvmarg value="-Duser.dir=${tests.work.dir}" />
+      <assertions><enable /></assertions>
     </java>
   </target>
 
@@ -323,6 +325,7 @@ Build-compiler: ${build.compiler}
       <arg value="org.mmbase.bridge.AllTests" />
       <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
       <jvmarg value="-Duser.dir=${tests.work.dir}" />
+      <assertions><enable /></assertions>
     </java>
   </target>
 
@@ -338,6 +341,7 @@ Build-compiler: ${build.compiler}
       <arg value="org.mmbase.bridge.util.AllTests" />
       <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
       <jvmarg value="-Duser.dir=${tests.work.dir}" />
+      <assertions><enable /></assertions>
     </java>
   </target>
   
@@ -351,6 +355,7 @@ Build-compiler: ${build.compiler}
       <arg value="org.mmbase.bridge.SimonsTests" />
       <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
       <jvmarg value="-Duser.dir=${tests.work.dir}" />
+      <assertions><enable /></assertions>
     </java>
   </target>
 
@@ -378,6 +383,7 @@ Build-compiler: ${build.compiler}
         <arg value="org.mmbase.bridge.AllTests" />
         <jvmarg value="-Dnostartmmbase=" />
         <jvmarg value="-Dmmbase.defaultcloudcontext=rmi://localhost:1221/remotecontext" />
+        <assertions><enable /></assertions>
       </java>
     </parallel>
     <antcall target="stop.database" />
@@ -393,6 +399,7 @@ Build-compiler: ${build.compiler}
       <arg value="org.mmbase.bridge.tests.ConvertImageTest" />
       <jvmarg value="-Duser.dir=${tests.work.dir}" />
       <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
+      <assertions><enable /></assertions>
     </java>
   </target>
 
@@ -407,6 +414,7 @@ Build-compiler: ${build.compiler}
       <arg value="BaseSuite" />
       <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
       <jvmarg value="-Duser.dir=${tests.work.dir}" />
+      <assertions><enable /></assertions>
     </java>
   </target>
 
@@ -418,6 +426,7 @@ Build-compiler: ${build.compiler}
       <arg value="org.mmbase.util.UtilTests" />
       <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
       <jvmarg value="-Duser.dir=${tests.work.dir}" />
+      <assertions><enable /></assertions>
     </java>
   </target>
 
@@ -438,6 +447,7 @@ Build-compiler: ${build.compiler}
           <jvmarg value="-Dmmbaseroot.machinename=mmbase1" />
           <jvmarg value="-Drmmci.port=1221" />
           <jvmarg value="-Duser.dir=${tests.work.dir}" />
+          <assertions><enable /></assertions>
         </java>
         <sequential>
           <!-- this should not be necessary, but MMBase's get a bit confused if they both at same time start to make the same tables -->
@@ -452,6 +462,7 @@ Build-compiler: ${build.compiler}
             <jvmarg value="-Dmmbaseroot.machinename=mmbase2" />
             <jvmarg value="-Drmmci.port=1222" />
             <jvmarg value="-Duser.dir=${tests.work.dir}" />
+            <assertions><enable /></assertions>          
           </java>
         </sequential>
       </daemons>
