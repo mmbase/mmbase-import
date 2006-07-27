@@ -29,7 +29,7 @@ import org.mmbase.security.Authorization;
  * {@link #BasicQuery(Cloud, BasicSearchQuery)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.60 2006-07-27 12:51:15 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.61 2006-07-27 13:12:40 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -385,9 +385,11 @@ public class BasicQuery implements Query  {
 
     public StepField addField(Step step, Field field) {
         if (used) throw new BridgeException("Query was used already");
-        BasicStepField sf = query.addField(step, ((BasicField)field).coreField); // XXX Casting is wrong
+        BasicStepField sf = new BasicStepField(step, ((BasicField)field).coreField); /// XXX Casting is wrong
+        if (! implicitFields.remove(sf)) {; // it's explicitly added now
+            sf = query.addField(step, ((BasicField)field).coreField); // XXX Casting is wrong
+        }
         explicitFields.add(sf);
-        implicitFields.remove(sf); // it's explicitly added now
         return sf;
     }
     public StepField addField(String fieldIdentifier) {
@@ -420,7 +422,8 @@ public class BasicQuery implements Query  {
 
     public StepField createStepField(Step step, Field field) {        
         if (field == null) throw new BridgeException("Field is null");
-        return new BasicStepField(step, ((BasicField)field).coreField); /// XXX Casting is wrong
+        return
+            new BasicStepField(step, ((BasicField)field).coreField); /// XXX Casting is wrong
     }
 
     public StepField createStepField(Step step, String fieldName) {
