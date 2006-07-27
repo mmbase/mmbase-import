@@ -28,27 +28,26 @@ public class PropertyUtil
 
    private static final Logger log = Logging.getLoggerInstance(PropertyUtil.class);
 
-
-   public static void setProperties(Cloud cloud, Node contentNode, List listProperties) throws Exception{
+   public static void setProperties(Cloud cloud, Node contentNode, List listProperties) throws Exception {
 
       // Delete relation of the contentNode to pools
       // We don't matter about deleting obsolete pools and topics, this will be done by a seperate process
-      String contentType = contentNode.getNodeManager().getName();
-      NodeList nl = cloud.getList("",
-                         contentType + ",posrel,pools",
-                         "posrel.number",
-                         contentType + ".number='" + contentNode.getNumber() + "'",
-                         null, null, null, true);
-	  int nlSize = nl.size();
-      for (int f = 0; f < nlSize; f++)
-      {
-         Node relation = cloud.getNode(nl.getNode(f).getStringValue("posrel.number"));
-		 relation.delete(true);
+      if (contentNode != null) {
+         String contentType = contentNode.getNodeManager().getName();
+         NodeList nl = cloud.getList("",
+                                     contentType + ",posrel,pools",
+                                     "posrel.number",
+                                     contentType + ".number='" + contentNode.getNumber() + "'",
+                                     null, null, null, true);
+         int nlSize = nl.size();
+         for (int f = 0; f < nlSize; f++) {
+            Node relation = cloud.getNode(nl.getNode(f).getStringValue("posrel.number"));
+            relation.delete(true);
+         }
       }
 
       // Add pools to contentNode
-      for (Iterator it = listProperties.iterator(); it.hasNext(); )
-      {
+      for (Iterator it = listProperties.iterator(); it.hasNext(); ) {
          Property property = (Property) it.next();
 
          NodeManager nmTopics = cloud.getNodeManager("topics");
@@ -56,57 +55,53 @@ public class PropertyUtil
          // Match topics on externid
          Node nodeTopic = null;
          NodeList nlTopics = nmTopics.getList("externid='" + property.getPropertyId() + "'", null, null);
-         if(nlTopics.size()>0)
-         {
-			 nodeTopic = nlTopics.getNode(0);
+         if (nlTopics.size() > 0) {
+            nodeTopic = nlTopics.getNode(0);
 
-	     } else
-	     {
-         	log.info("creating topic " + property.getPropertyId());
-         	nodeTopic = nmTopics.createNode();
-         	nodeTopic.setStringValue("externid", property.getPropertyId());
-	 	 }
+         }
+         else {
+            log.info("creating topic " + property.getPropertyId());
+            nodeTopic = nmTopics.createNode();
+            nodeTopic.setStringValue("externid", property.getPropertyId());
+         }
          nodeTopic.setStringValue("title", property.getPropertyDescription());
          nodeTopic.commit();
 
-
-         for (Iterator it2 = property.getPropertyValues().iterator(); it2.hasNext(); )
-         {
+         for (Iterator it2 = property.getPropertyValues().iterator(); it2.hasNext(); ) {
             PropertyValue propertyValue = (PropertyValue) it2.next();
 
             NodeManager nmPools = cloud.getNodeManager("pools");
-			// Match topics on externid
-			Node nodePool = null;
-			NodeList nlPools = nmPools.getList("externid='" + propertyValue.getPropertyValueId() + "'", null, null);
-			if(nlPools.size()>0)
-			{
-			   nodePool = nlPools.getNode(0);
+            // Match topics on externid
+            Node nodePool = null;
+            NodeList nlPools = nmPools.getList("externid='" + propertyValue.getPropertyValueId() + "'", null, null);
+            if (nlPools.size() > 0) {
+               nodePool = nlPools.getNode(0);
 
-			} else
-			{
-           	   log.info("creating pool " + propertyValue.getPropertyValueId());
-			   nodePool = nmPools.createNode();
-			   nodePool.setStringValue("externid", propertyValue.getPropertyValueId() );
-			}
+            }
+            else {
+               log.info("creating pool " + propertyValue.getPropertyValueId());
+               nodePool = nmPools.createNode();
+               nodePool.setStringValue("externid", propertyValue.getPropertyValueId());
+            }
             nodePool.setStringValue("name", propertyValue.getPropertyValueDescription());
-			nodePool.commit();
+            nodePool.commit();
 
-			// Relate pool to contentNode
-            contentNode.createRelation(nodePool, cloud.getRelationManager("posrel")).commit();
-
+            // Relate pool to contentNode
+            if (contentNode != null) {
+               contentNode.createRelation(nodePool, cloud.getRelationManager("posrel")).commit();
+            }
             // Relate pool to topic if necessary
             NodeList nl2 = cloud.getList(nodeTopic.getStringValue("number"),
                                          "topics,posrel,pools",
                                          "pools.number",
                                          "pools.number='" + nodePool.getStringValue("number") + "'",
                                          null, null, null, true);
-            if (nl2.size() == 0)
-            {
-	           nodeTopic.createRelation(nodePool, cloud.getRelationManager("posrel")).commit();
+            if (nl2.size() == 0) {
+               nodeTopic.createRelation(nodePool, cloud.getRelationManager("posrel")).commit();
             }
          }
       }
-
    }
-
 }
+
+

@@ -6,10 +6,14 @@ import org.mmbase.bridge.*;
 import com.finalist.mmbase.util.CloudFactory;
 import nl.leocms.connectors.UISconnector.input.customers.model.*;
 import nl.leocms.connectors.UISconnector.shared.properties.process.PropertyUtil;
+import org.mmbase.util.logging.*;
 
 public class Updater
 {
    private static SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+
+   private static final Logger log = Logging.getLoggerInstance(Updater.class);
+
 
    public static String update(CustomerInformation customerInformation) throws Exception {
       String sExternID = customerInformation.getCommonInformation().getCustomerId();
@@ -41,10 +45,16 @@ public class Updater
       nodeDeelnemers.setStringValue("firstname", customerInformation.getPersonalInformation().getFirstName());
       nodeDeelnemers.setStringValue("suffix", customerInformation.getPersonalInformation().getSuffix());
       nodeDeelnemers.setStringValue("lastname", customerInformation.getPersonalInformation().getLastName());
-      nodeDeelnemers.setLongValue("dayofbirth", df.parse(customerInformation.getPersonalInformation().getBirthDate()).getTime() / 1000);
+      try{
+         nodeDeelnemers.setLongValue("dayofbirth", df.parse(customerInformation.getPersonalInformation().getBirthDate()).getTime() / 1000);
+      }
+      catch(Exception e){
+         log.warn("The date in the element <customerInformation> -> <personalInformation> -> <dayofbirth> has got wrong format(" + customerInformation.getPersonalInformation().getBirthDate() + ")");
+      }
       nodeDeelnemers.setStringValue("gender", customerInformation.getPersonalInformation().getGender());
       nodeDeelnemers.setStringValue("privatephone", customerInformation.getPersonalInformation().getTelephoneNo());
       nodeDeelnemers.setStringValue("email", customerInformation.getPersonalInformation().getEmailAddress());
+      nodeDeelnemers.setStringValue("fax", customerInformation.getPersonalInformation().getFaxNo());
 
       nodeDeelnemers.setStringValue("companyphone", customerInformation.getBusinessInformation().getTelephoneNo());
 
@@ -55,6 +65,7 @@ public class Updater
       nodeDeelnemers.setStringValue("plaatsnaam", customerInformation.getAddress().getCity());
       nodeDeelnemers.setStringValue("lidnummer", customerInformation.getCommonInformation().getIsMember());
       nodeDeelnemers.commit();
+
 
       List listProperties = customerInformation.getPropertyList().getProperty();
       ArrayList arliStandartPropertis = new ArrayList();
