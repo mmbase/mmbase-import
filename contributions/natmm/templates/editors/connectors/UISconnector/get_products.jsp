@@ -62,7 +62,7 @@
 
    //Let's update the db
    ArrayList arliChanges = Updater.update(cloud, arliModel);
-   
+
    if(document==null) {
       %>Could not parse <%= UISconfig.getProductUrl() %><br/><%
    } else if(arliChanges.size()==0) {
@@ -75,6 +75,7 @@
        <th>status</th>
        <th>evenement node</th>
        <th>externid</th>
+       <th>description</th>
        <th>embargo</th>
        <th>verloopdatum</th>
        <th>price</th>
@@ -108,6 +109,7 @@
 
        %><td><%= result.getEvenementNode().getNumber() %></td><%
        %><td><%= result.getProduct().getExternID() %></td><%
+       %><td><%= result.getProduct().getDescription() %></td><%
        %><td><%= df.format(result.getProduct().getEmbargoDate()) %></td><%
        %><td><%= df.format(result.getProduct().getExpireDate()) %></td><%
        %><td><%= result.getProduct().getPrice() %></td><%

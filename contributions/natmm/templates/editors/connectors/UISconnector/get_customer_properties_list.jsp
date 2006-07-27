@@ -27,7 +27,7 @@
    SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 
    //--------------------Let's get the document--------------------
-   URL url = new URL(UISconfig.getProductPropertiesURL());
+   URL url = new URL(UISconfig.getCustomerPropertiesURL());
 
    URLConnection connection = url.openConnection();
 
