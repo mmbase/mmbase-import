@@ -140,11 +140,18 @@ String parentID = Evenement.findParentNumber(evenementID);
          && !nl.leocms.evenementen.Evenement.subscriptionClosed(parentEvent,thisEvent);
 
       if(isBookableEvent){
-         if(nl.leocms.evenementen.Evenement.isAuthenticated(thisEvent, memberid){
+         boolean isAuthenticated = true;
+         if(NatMMConfig.hasClosedUserGroup) {
+            %>
+            <%@include file="/editors/mailer/util/memberid_get.jsp" %>
+            <%
+            isAuthenticated = nl.leocms.evenementen.Evenement.isAuthenticated(parentEvent, memberid);
+         }
+         if(isAuthenticated){
             %><div style="margin:0px 0px 5px 0px"><span class="colortitle">Aanmelden via internet | </span><a href="SubscribeInitAction.eb?number=<%= evenementID %>&p=<mm:write referid="p"/>">klik hier</a></div><%
          }
          else{
-            %><div style="margin:0px 0px 5px 0px"><span class="colortitle">Dit evenement is alleen toegankelijk voor leden | </span><a href="lidworden">klik hier om lid te worden</a></div><%
+            %><div style="margin:0px 0px 5px 0px"><span class="colortitle">Dit evenement is alleen toegankelijk voor leden | </span><a href="/lidworden">klik hier om lid te worden</a></div><%
          }
       }
    %>

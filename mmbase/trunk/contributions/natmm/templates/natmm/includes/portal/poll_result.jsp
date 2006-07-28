@@ -49,20 +49,17 @@
        poll.setStringValue("stemmen" + antw, "" + ta);
        poll.commit();
        // add all categories to customer
-%>
-       <%@include file="/editors/mailer/util/memberid_get.jsp" %>
-<%
-       if (cloud.getNode(memberid) == null) {
-         memberid = null;
-       }
-       if(memberid != null){
-%>
-         <mm:import id="this_customer" reset="true"><%= memberid %></mm:import>
-         <mm:related path="posrel,pools" constraints="<%= "posrel.pos=" + antw %>">
-           <mm:import id="pools_number" reset="true"><mm:field name="pools.number"/></mm:import>
-           <mm:createrelation role="posrel" source="this_customer" destination="pools_number" />
-         </mm:related>
-<%       
+       
+       if(NatMMConfig.hasClosedUserGroup) {
+       
+         %><%@include file="/editors/mailer/util/memberid_get.jsp" %><%
+         if (cloud.getNode(memberid) == null) {
+            memberid = null;
+         }
+         if(memberid != null){
+           PoolUtil.addPools(cloud,pollId,memberid,"posrel.pos=" + antw );
+         }
+         
        }
        // Set the cookie
        Cookie koekje = new Cookie(cookiestr, String.valueOf((new Date()).getTime()) );

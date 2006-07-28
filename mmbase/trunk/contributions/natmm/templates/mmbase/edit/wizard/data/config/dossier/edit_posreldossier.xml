@@ -5,4 +5,5 @@
    <field name="naam" ftype="line"><prompt>naam</prompt></field>
    <list include="config/artikel/zoek_dossier_posrel_artikel.xml" />
    <list include="config/images/zoek_posrel_images.xml" />
+   <list include="config/pools/add_pools_posrel.xml" />
 </form-schema>

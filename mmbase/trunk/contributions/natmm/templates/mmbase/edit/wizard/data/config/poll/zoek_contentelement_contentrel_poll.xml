@@ -10,6 +10,7 @@
       <field name="antwoord4" ftype="line"><prompt>antwoord 4</prompt></field>
       <field name="embargo"><prompt>verschijnt op website vanaf</prompt></field>
       <field name="verloopdatum"><prompt>verwijderd van website op _____________________</prompt></field>
+      <list include="config/pools/add_pools_posrel_pos.xml" />
    </item>
    <command name="search" nodepath="link" age="-1" fields="titel,alt_tekst,metatags" orderby="url">
       <prompt>zoek link</prompt>

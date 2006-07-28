@@ -1,12 +1,31 @@
 <%@include file="includes/top0.jsp" %>
-<mm:cloud jspvar="cloud">
+<mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud">
 <%@include file="includes/top1_params.jsp" %>
 <%@include file="includes/top2_cacheparams.jsp" %>
+<%
+if(NatMMConfig.hasClosedUserGroup) {
+   %>
+   <%@include file="/editors/mailer/util/memberid_get.jsp" %>
+   <%
+   if (memberid==null || cloud.getNode(memberid) == null) {
+      org.mmbase.bridge.Node thisMember = cloud.getNodeManager("deelnemers").createNode();
+      thisMember.commit();
+      memberid = thisMember.getStringValue("number");
+      %>
+      <%@include file="/editors/mailer/util/memberid_set.jsp" %>
+      <%
+
+   }
+   %>
+   <!-- member is: <%= memberid %> -->
+   <%
+}
+%>
 <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
 <%@include file="includes/top3_nav.jsp" %>
 <%@include file="includes/top4_head.jsp" %>
 <%@include file="includes/top5_breadcrumbs_and_pano.jsp" %>
-<table width="744" border="0" cellspacing="0" cellpadding="0" align="center" valign="top">
+<table width="790" border="0" cellspacing="0" cellpadding="0" align="center" valign="top" style="margin-left:6px;">
 <tr>
   <td style="vertical-align:top;width:165px;padding:2px;">
    <jsp:include page="includes/portal/login.jsp">
