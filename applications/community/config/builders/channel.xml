@@ -6,7 +6,7 @@
                         http://www.mmbase.org/xmlns/builder.xsd"
     name="channel" maintainer="mmbase.org" version="0" extends="object">
   <status>active</status>
-  <class>org.mmbase.applications.community.builders.Channel</file>
+  <class>org.mmbase.applications.community.builders.Channel</class>
   <searchage>14</searchage>
   <names>
     <singular xml:lang="en">Channel</singular>
