@@ -31,4 +31,32 @@ public class PoolUtil {
 
    }
 
+
+   public static void addPools(Cloud cloud, String sSource, String sDestination, String poolsConstraint) {
+
+      NodeList nlPools = cloud.getList(
+                           sSource,
+                           "object,posrel,pools",
+                           "pools.number",
+                           poolsConstraint,
+                           null, null, "destination", true);
+
+      for(int p = 0; p<nlPools.size(); p++) {
+
+         String sPool = nlPools.getNode(p).getStringValue("pools.number");
+         NodeList nl = cloud.getList(
+                           sPool,
+                           "pools,posrel,object",
+                           "object.number",
+                           "object.number = '"  + sDestination + "'",
+                           null, null, "destination", true);
+         if(nl.size()==0) {
+            Node pool = cloud.getNode(sPool);
+            Node destination = cloud.getNode(sDestination);
+            RelationManager posrelRelMan = cloud.getRelationManager("posrel");
+            posrelRelMan.createRelation(pool,destination).commit();
+          }
+      }
+   }
+
 }
