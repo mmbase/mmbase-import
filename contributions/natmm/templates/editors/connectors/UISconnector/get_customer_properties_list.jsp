@@ -61,14 +61,16 @@
    nl.leocms.connectors.UISconnector.shared.properties.process.PropertyUtil.setProperties(cloud, null, arliProperties);
 
 
-   %><table><%
+   %>
+   Imported customer properties from <%= UISconfig.getCustomerPropertiesURL() %><br/><br/>
+   <table class="formcontent" border="1"><%
           for(Iterator it2 = arliProperties.iterator(); it2.hasNext();){
               Property property = (Property) it2.next();
 
               %><tr><%
 
-              %><td><%= property.getPropertyId() %></td><%
-              %><td><%= property.getPropertyDescription() %></td><%
+              %><td style="vertical-align:top;"><%= property.getPropertyId() %></td><%
+              %><td style="vertical-align:top;"><%= property.getPropertyDescription() %></td><%
               %><td><table width="100%" border="1" class="formcontent">
                  <tr><td>Externid</td><td>Description</td></tr>
                  <%
