@@ -12,4 +12,5 @@
       </object>
    </relation>
    <relation destination="images" role="posrel"/>
+   <relation destination="pools" role="posrel" />
 </action>

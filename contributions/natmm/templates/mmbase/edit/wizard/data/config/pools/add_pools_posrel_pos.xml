@@ -5,11 +5,11 @@
       orderby="field[@name='pos']"
       ordertype="number"
       hidecommand="move-up|move-down">
-   <title>categorie</title>
+   <title>categorie (posities corresponderen met het volgnummer van het antwoord)</title>
    <item>
       <title></title>
       <description></description>
-      <!-- <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>positie</prompt></field> -->
+      <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>positie</prompt></field>
       <field name="name" ftype="data"><prompt>naam</prompt></field>
       <field ftype="startwizard" wizardname="config/pools/pools" inline="true"><prompt></prompt></field>
    </item>

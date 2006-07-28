@@ -22,8 +22,10 @@
    <list include="config/artikel/zoek_shorty_readmore_artikel.xml" />
    <list include="config/evenement/zoek_shorty_readmore_evenement.xml" />
    <list include="config/natuurgebieden/zoek_shorty_readmore_natuurgebieden.xml" />
+   <list include="config/provincies/zoek_shorty_readmore_provincies.xml" />   
    <list include="config/provincies/zoek_shorty_readmore_provincies.xml" />
-   
+   <list include="config/pools/add_pools_posrel.xml" />
+
    <!-- list include="config/pagina/zoek_shorty_rolerel_pagina.xml" / -->
    <!-- list include="config/rubriek/zoek_shorty_rolerel_rubriek.xml" / -->
 </form-schema>

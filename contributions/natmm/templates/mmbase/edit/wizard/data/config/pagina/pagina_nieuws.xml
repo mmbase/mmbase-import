@@ -4,15 +4,15 @@
    <title>nieuws pagina</title>
    <description>
       <![CDATA[
-	<h1>Nieuws pagina</h1>
-	Deze editwizard kan worden gebruikt voor het koppelen van dossiers, panos, shorties en teasers aan de pagina.<br/>
-	Als er maar 1 artikel aan deze pagina is gekoppeld, wordt deze getoond. Bij meerdere artikelen, wordt de lijst van artikelen getoond.<br/>
-	<ul>
-	   <li>Een dossier kan een aantal nieuwsartikelen bevatten.</li>
-	   <li>Gebruik de andere editwizard om nieuwsartikelen voor deze pagina te maken en te bewerken.</li>
-	   <li>De shorties kunnen in de linker- en de middenkolom worden geplaatst.</li>
-	<ul>
-	   ]]>
+   <h1>Nieuws pagina</h1>
+   Deze editwizard kan worden gebruikt voor het koppelen van dossiers, panos, shorties en teasers aan de pagina.<br/>
+   Als er maar 1 artikel aan deze pagina is gekoppeld, wordt deze getoond. Bij meerdere artikelen, wordt de lijst van artikelen getoond.<br/>
+   <ul>
+      <li>Een dossier kan een aantal nieuwsartikelen bevatten.</li>
+      <li>Gebruik de andere editwizard om nieuwsartikelen voor deze pagina te maken en te bewerken.</li>
+      <li>De shorties kunnen in de linker- en de middenkolom worden geplaatst.</li>
+   <ul>
+      ]]>
    </description>
    <action include="config/pagina/create_pagina.xml"/>
    <action include="config/pagina/delete_pagina.xml"/>
@@ -33,6 +33,7 @@
       <relation destination="panno" role="posrel"/>
       <relation destination="shorty" role="rolerel"/>
       <relation destination="teaser" role="rolerel"/>
+      <relation destination="pools" role="posrel" />
    </action>
    <lists>
       <optionlist include="config/option_lists/ja_nee.xml" />
@@ -56,5 +57,6 @@
       <list include="config/panno/zoek_pagina_posrel_panno.xml" />
       <list include="config/shorty/zoek_pagina_rolerel_shorty.xml" />
       <list include="config/teaser/zoek_pagina_rolerel_teaser.xml" />
+      <list include="config/pools/add_pools_posrel.xml" />
    </form-schema> 
 </wizard-schema>

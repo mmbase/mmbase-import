@@ -53,7 +53,7 @@ if(path.equals("newsletter.jsp")) {
    pHeight = 75;
 } else if (iRubriekLayout==NatMMConfig.DEMO_LAYOUT) {
   if(path.equals("portal.jsp")) { 
-    panoTemplate = "s(792)+part(0,0,792,52)";
+    panoTemplate = "s(789)+part(0,0,789,52)";
   } else {
     panoTemplate = "s(744)+part(0,0,744,52)";  
   }

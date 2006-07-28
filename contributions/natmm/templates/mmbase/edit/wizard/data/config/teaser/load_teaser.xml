@@ -15,6 +15,7 @@
    <field name="size"/>
    <relation destination="contentelement" role="readmore"/>
    <relation destination="images" role="posrel"/>
+   <relation destination="pools" role="posrel"/>
    
    <!-- relation destination="pagina" role="rolerel"/ -->
    <!-- relation destination="rubriek" role="rolerel"/ -->
