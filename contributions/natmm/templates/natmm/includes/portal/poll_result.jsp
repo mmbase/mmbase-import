@@ -48,6 +48,22 @@
        ta++;
        poll.setStringValue("stemmen" + antw, "" + ta);
        poll.commit();
+       // add all categories to customer
+%>
+       <%@include file="/natmm/includes/memberid_get.jsp" %>
+<%
+       if (cloud.getNode(memberid) == null) {
+         memberid = null;
+       }
+       if(memberid != null){
+%>
+         <mm:import id="this_customer" reset="true"><%= memberid %></mm:import>
+         <mm:related path="posrel,pools" constraints="<%= "posrel.pos=" + antw %>">
+           <mm:import id="pools_number" reset="true"><mm:field name="pools.number"/></mm:import>
+           <mm:createrelation role="posrel" source="this_customer" destination="pools_number" />
+         </mm:related>
+<%       
+       }
        // Set the cookie
        Cookie koekje = new Cookie(cookiestr, String.valueOf((new Date()).getTime()) );
        int expires = 60 * 60 * 12;     // Cookie expires after 12 hours
