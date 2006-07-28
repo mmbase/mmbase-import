@@ -1,7 +1,7 @@
 <%@include file="includes/top0.jsp" %>
 <% boolean isIE = (request.getHeader("User-Agent").toUpperCase().indexOf("MSIE")>-1); %>
 <mm:cloud jspvar="cloud">
-<%@include file="includes/memberid_get.jsp" %>
+<%@include file="/editors/mailer/util/memberid_get.jsp" %>
 <%@include file="includes/top2_cacheparams.jsp" %>
 <cache:cache groups="<%= paginaID %>" key="<%= cacheKey + (memberid==null ? "~anonymous" : "~member" ) %>" time="<%= expireTime %>" scope="application">
 <!-- <%= new java.util.Date() %> -->
@@ -22,35 +22,35 @@ if(!artikelID.equals("-1")) {
       <%-- link rel="alternate stylesheet" type="text/css" href="hoofdsite/themas/fontsize1.4.css" title="groter" / --%>
       <style rel="stylesheet" type="text/css">
       @media screen, print {
-      	table.maintable{
-      		width:85%;
-      	}
-      	td.print_ico {
-      		background: url(media/images/icons/print.gif) no-repeat ;
-      	}
-      	td.close_ico {
-      		background: url(media/images/icons/close.gif) no-repeat ;
-      	}
-      	td.top_ico {
-      		background: url(media/images/icons/top.gif) no-repeat ;
-      	}
+         table.maintable{
+            width:85%;
+         }
+         td.print_ico {
+            background: url(media/images/icons/print.gif) no-repeat ;
+         }
+         td.close_ico {
+            background: url(media/images/icons/close.gif) no-repeat ;
+         }
+         td.top_ico {
+            background: url(media/images/icons/top.gif) no-repeat ;
+         }
       }
       @media print {
-      	body,td{
-      	color:#000000;
-      	}
-      	table.maintable{
-      		width:95%;
-      	}
-      	td.print_ico {
-      		display: none;
-      	}
-      	td.close_ico {
-      		display: none;
-      	}
-      	td.top_ico {
-      		display: none;
-      	}
+         body,td{
+         color:#000000;
+         }
+         table.maintable{
+            width:95%;
+         }
+         td.print_ico {
+            display: none;
+         }
+         td.close_ico {
+            display: none;
+         }
+         td.top_ico {
+            display: none;
+         }
       }
       </style>
       <script>
@@ -59,19 +59,19 @@ if(!artikelID.equals("-1")) {
           window.print() ;  
       } else {
           var WebBrowser = '<OBJECT ID="WebBrowser1" WIDTH=0 HEIGHT=0 CLASSID="CLSID:8856F961-340A-11D0-A96B-00C04FD705A2"></OBJECT>';
-      	document.body.insertAdjacentHTML('beforeEnd', WebBrowser);
+         document.body.insertAdjacentHTML('beforeEnd', WebBrowser);
           WebBrowser1.ExecWB(6, 2);//Use a 1 vs. a 2 for a prompting dialog box    
-      	WebBrowser1.outerHTML = "";  
+         WebBrowser1.outerHTML = "";  
       }
       }
       </script>
-    	<title>Natuurmonumenten: <mm:field name="status"/>. <mm:field name="titel" /></title>
+      <title>Natuurmonumenten: <mm:field name="status"/>. <mm:field name="titel" /></title>
    </head>
    <body leftmargin="0" topmargin="0" rightmargin="0" bottommargin="0" marginwidth="0" marginheight="0">
    <a name="top" id="top"></a>
    <table border="0" cellspacing="0" cellpadding="0" align="center" class="maintable">
       <tr>
-      <td valign="top">	
+      <td valign="top"> 
          <table width="100%" border="0" cellspacing="2" cellpadding="2">
             <tr>
                 <td></td>
@@ -87,106 +87,106 @@ if(!artikelID.equals("-1")) {
                    | <mm:field name="type" />
                 </td>
                 <td align="right" valign="bottom">
-            		<table width="100%" cellspacing="0" cellpadding="1">
-            		<tr>
-            			<td width="100%"></td>
-            			<td align="right" class="print_ico"><a href="javascript:printIt()"><img src="media/trans.gif" alt="" width="15" height="15" border="0"></a></td>
-            			<td>&nbsp;</td>
-            			<td align="right" class="close_ico"><a href="javascript:window.close()"><img src="media/trans.gif" alt="" width="13" height="15" border="0"></a></td>
-            		</tr>
-            		</table>
-            	</td>
+                  <table width="100%" cellspacing="0" cellpadding="1">
+                  <tr>
+                     <td width="100%"></td>
+                     <td align="right" class="print_ico"><a href="javascript:printIt()"><img src="media/trans.gif" alt="" width="15" height="15" border="0"></a></td>
+                     <td>&nbsp;</td>
+                     <td align="right" class="close_ico"><a href="javascript:window.close()"><img src="media/trans.gif" alt="" width="13" height="15" border="0"></a></td>
+                  </tr>
+                  </table>
+               </td>
             </tr>
          </table>
          <%
          if(memberid==null) {
       
             %><table class="dotline"><tr><td height="3"></td></tr></table>
-      		<div style="margin:5px 0px 5px 0px">
-      		<strong>Deze pagina is alleen toegankelijk voor leden van Natuurmonumenten.</strong><br/>
+            <div style="margin:5px 0px 5px 0px">
+            <strong>Deze pagina is alleen toegankelijk voor leden van Natuurmonumenten.</strong><br/>
             Log alstublieft eerst in op de <a href="routes">de Natuurmonumenten website</a> en open vervolgens deze pagina opnieuw.
             </div>
-      		<table class="dotline"><tr><td height="3"></td></tr></table>
+            <table class="dotline"><tr><td height="3"></td></tr></table>
             <%
       
          } else { 
       
             %>
             <table class="dotline"><tr><td height="3"></td></tr></table>
-            		<mm:field name="intro">
-            			<mm:isnotempty>
-            			<div style="margin:5px 0px 5px 0px">
-            			<strong><mm:write /></strong>
-            			<table class="dotline"><tr><td height="3"></td></tr></table>
-            			</div>
-            			</mm:isnotempty>
-            		</mm:field>
-            		
-            		<mm:field name="text">
-            			<mm:isnotempty>
-            			<div style="margin:5px 0px 5px 0px">
-            			<strong><mm:write /></strong>
-            			<table class="dotline"><tr><td height="3"></td></tr></table>
-            			</div>
-            			</mm:isnotempty>
-            		</mm:field>
+                  <mm:field name="intro">
+                     <mm:isnotempty>
+                     <div style="margin:5px 0px 5px 0px">
+                     <strong><mm:write /></strong>
+                     <table class="dotline"><tr><td height="3"></td></tr></table>
+                     </div>
+                     </mm:isnotempty>
+                  </mm:field>
+                  
+                  <mm:field name="text">
+                     <mm:isnotempty>
+                     <div style="margin:5px 0px 5px 0px">
+                     <strong><mm:write /></strong>
+                     <table class="dotline"><tr><td height="3"></td></tr></table>
+                     </div>
+                     </mm:isnotempty>
+                  </mm:field>
                   <mm:related path="posrel,paragraaf" fields="paragraaf.number" orderby="posrel.pos">
                      <mm:node element="paragraaf">
-                  		<mm:first>
-                  	   	<span class="colortitle">Inhoud</span> | 
-                  		</mm:first>
-                  		<mm:field name="titel_zichtbaar">
+                        <mm:first>
+                           <span class="colortitle">Inhoud</span> | 
+                        </mm:first>
+                        <mm:field name="titel_zichtbaar">
                            <mm:compare value="0" inverse="true">
-                     			<mm:field name="titel">
-                     				<mm:isnotempty>
-                     				   <a href="route_pop.jsp?<%= request.getQueryString() %>#<mm:field name="number" />"><mm:write /></a> | 
-                     				</mm:isnotempty>
-                     		   </mm:field>
-                     		</mm:compare>
-                     	</mm:field>
+                              <mm:field name="titel">
+                                 <mm:isnotempty>
+                                    <a href="route_pop.jsp?<%= request.getQueryString() %>#<mm:field name="number" />"><mm:write /></a> | 
+                                 </mm:isnotempty>
+                              </mm:field>
+                           </mm:compare>
+                        </mm:field>
                      </mm:node>
-            		</mm:related>	
-            		<br><br>
-            		<mm:related path="posrel,paragraaf" fields="paragraaf.number" orderby="posrel.pos">
+                  </mm:related>  
+                  <br><br>
+                  <mm:related path="posrel,paragraaf" fields="paragraaf.number" orderby="posrel.pos">
                      <mm:node element="paragraaf">
-         			   <mm:first inverse="true">
-            				<table class="dotline"><tr><td height="3"></td></tr></table>
-            			</mm:first>
-            			<a name="<mm:field name="number" />" id="<mm:field name="number" />"></a>
-            			<mm:field name="titel_zichtbaar">
+                     <mm:first inverse="true">
+                        <table class="dotline"><tr><td height="3"></td></tr></table>
+                     </mm:first>
+                     <a name="<mm:field name="number" />" id="<mm:field name="number" />"></a>
+                     <mm:field name="titel_zichtbaar">
                         <mm:compare value="0" inverse="true">
-                  			<mm:field name="titel">
-                  				<mm:isnotempty><span class="colortitle"><mm:write /></span><br></mm:isnotempty>
-                  			</mm:field>
-                  		</mm:compare>
-                  	</mm:field>
+                           <mm:field name="titel">
+                              <mm:isnotempty><span class="colortitle"><mm:write /></span><br></mm:isnotempty>
+                           </mm:field>
+                        </mm:compare>
+                     </mm:field>
                      <%@include file="includes/image_logic.jsp" %>
                      <mm:field name="tekst">
-            				<mm:isnotempty><mm:write /><br/></mm:isnotempty>
-            			</mm:field>
-            			<table width="100%" cellspacing="0" cellpadding="0" align="right">
-            				<tr>
-            					<td width="100%"></td>
-            					<td align="right" class="top_ico"><a href="#top"><img src="media/trans.gif" alt="" width="15" height="15" border="0"></a></td>
-            				</tr>
-            			</table>
-            			<br />
-            			<mm:last>
-            				<table class="dotline"><tr><td height="3"></td></tr></table>
-            			</mm:last>
+                        <mm:isnotempty><mm:write /><br/></mm:isnotempty>
+                     </mm:field>
+                     <table width="100%" cellspacing="0" cellpadding="0" align="right">
+                        <tr>
+                           <td width="100%"></td>
+                           <td align="right" class="top_ico"><a href="#top"><img src="media/trans.gif" alt="" width="15" height="15" border="0"></a></td>
+                        </tr>
+                     </table>
+                     <br />
+                     <mm:last>
+                        <table class="dotline"><tr><td height="3"></td></tr></table>
+                     </mm:last>
                      </mm:node>
-         			</mm:related>	
-               	</div>
-            	</td>
-            	</tr>
+                  </mm:related>  
+                  </div>
+               </td>
+               </tr>
                <tr>
                 <td align="right" valign="bottom">
                   <table width="100%" cellspacing="0" cellpadding="1">
                   <tr>
-                  	<td width="100%"></td>
-                  	<td align="right" class="print_ico"><a href="javascript:printIt()"><img src="media/trans.gif" alt="" width="15" height="15" border="0"></a></td>
-                  	<td>&nbsp;</td>
-                  	<td align="right" class="close_ico"><a href="javascript:window.close()"><img src="media/trans.gif" alt="" width="13" height="15" border="0"></a></td>
+                     <td width="100%"></td>
+                     <td align="right" class="print_ico"><a href="javascript:printIt()"><img src="media/trans.gif" alt="" width="15" height="15" border="0"></a></td>
+                     <td>&nbsp;</td>
+                     <td align="right" class="close_ico"><a href="javascript:window.close()"><img src="media/trans.gif" alt="" width="13" height="15" border="0"></a></td>
                   </tr>
                   </table>
                 </td>

@@ -11,20 +11,20 @@ if(request.getParameter("memberid")!=null) {
 } %>
 <%@include file="includes/top4_head.jsp" %>
 <%@include file="includes/top5_breadcrumbs_and_pano.jsp" %>
-<%@include file="includes/memberid_get.jsp" %>
+<%@include file="/editors/mailer/util/memberid_get.jsp" %>
    <br>
    <table width="744" border="0" cellspacing="0" cellpadding="0" align="center" valign="top">
    <tr>
-   	<td style="vertical-align:top;padding:10px;padding-top:0px;width:185px;">
-   	<%@include file="includes/navleft.jsp" %>
-   	<br>
-   	<jsp:include page="includes/teaser.jsp">
+      <td style="vertical-align:top;padding:10px;padding-top:0px;width:185px;">
+      <%@include file="includes/navleft.jsp" %>
+      <br>
+      <jsp:include page="includes/teaser.jsp">
          <jsp:param name="s" value="<%= paginaID %>" />
          <jsp:param name="r" value="<%= rubriekID %>" />
          <jsp:param name="rs" value="<%= styleSheet %>" />
          <jsp:param name="sr" value="0" />
       </jsp:include>
-   	</td>
+      </td>
       <%
       String statusID = request.getParameter("status"); // status is set on login action
       if(memberid==null||statusID==null) {
@@ -33,7 +33,7 @@ if(request.getParameter("memberid")!=null) {
 
       } else { // only after login send email and show "thank you" page
 
-         %><%@include file="includes/memberid_set.jsp" %>
+         %><%@include file="/editors/mailer/util/memberid_set.jsp" %>
          <%
          String emailAddresses = NatMMConfig.toEmailAddress;
          String pages_title = "";
@@ -83,7 +83,7 @@ if(request.getParameter("memberid")!=null) {
                }
                %>
             </mm:notpresent>
-         	<td style="vertical-align:top;width:374px;padding:10px;padding-top:0px;">
+            <td style="vertical-align:top;width:374px;padding:10px;padding-top:0px;">
                <mm:relatednodes type="formulier" max="1" jspvar="thisForm">
                   <span class="colortitle"><mm:field name="titel_fra" /></span><br/>
                   <div style="margin:9px 0px 0px 0px"><mm:field name="omschrijving_fra" /></div>
@@ -96,16 +96,16 @@ if(request.getParameter("memberid")!=null) {
                   <jsp:param name="r" value="<%= rubriekID %>" />
                   <jsp:param name="lnr" value="<%= lnRubriekID %>" />
                </jsp:include>
-         		<jsp:include page="includes/shorty.jsp">
-         	      <jsp:param name="s" value="<%= paginaID %>" />
-         	      <jsp:param name="r" value="<%= rubriekID %>" />
+               <jsp:include page="includes/shorty.jsp">
+                  <jsp:param name="s" value="<%= paginaID %>" />
+                  <jsp:param name="r" value="<%= rubriekID %>" />
                   <jsp:param name="rs" value="<%= styleSheet %>" />
-         	      <jsp:param name="sr" value="2" />
-         	   </jsp:include>
+                  <jsp:param name="sr" value="2" />
+               </jsp:include>
                <img src="media/trans.gif" height="1px" width="165px;" />
             </td>
          </mm:node>
-      	<%
+         <%
       } %>
    </tr>
    </table>

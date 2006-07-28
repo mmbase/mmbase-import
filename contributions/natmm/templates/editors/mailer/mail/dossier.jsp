@@ -5,7 +5,7 @@
 <mm:cloud name="mmbase">
 <mm:import id="active">profiel</mm:import>
 
-<%@include file="/natmm/includes/memberid_get.jsp" %>
+<%@include file="/editors/mailer/util/memberid_get.jsp" %>
 <mm:import externid="reason">please</mm:import>
 
 <div id="container">
