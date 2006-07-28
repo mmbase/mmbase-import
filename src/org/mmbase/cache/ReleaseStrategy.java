@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: ReleaseStrategy.java,v 1.18 2006-06-28 08:10:59 nklasens Exp $
+ * @version $Id: ReleaseStrategy.java,v 1.19 2006-07-28 09:23:07 michiel Exp $
  */
 
 public abstract class ReleaseStrategy {
@@ -175,18 +175,23 @@ public abstract class ReleaseStrategy {
     /**
      * utility for specializations: get all the constraints in the query that apply to
      * a certain field
+     * TODO MM: This method is used like this:
+     * <code> if(getConstraintsForField(fieldName, eventBuilder, constraint, query).size() > 0){  return false;}</code>
+     * IOW, only the <em>size</em> of the return list is used, and then even wheter it is 0 or not. I think it is a waste to construct a complete new list, only for that.
+     * Perhaps the method should return an Iterator?, and can be used with only 'hasNext()', constructing a longer list then necessary is avoided then.
      * @param fieldName
      * @param builder
      * @param constraint
      * @param query
      */
-    protected static List getConstraintsForField(String  fieldName, MMObjectBuilder builder, Constraint constraint, SearchQuery query){
+    protected static List getConstraintsForField(String  fieldName, final MMObjectBuilder builder, Constraint constraint, final SearchQuery query){
         if(constraint == null) constraint = query.getConstraint();
+        if(constraint == null) return Collections.EMPTY_LIST;
         List result = new ArrayList();
-        if(constraint == null) return result;
-        if(constraint instanceof BasicCompositeConstraint) {
+
+        if(constraint instanceof CompositeConstraint) {
             log.debug("constraint is composite.");
-            for (Iterator i = ((BasicCompositeConstraint)constraint).getChilds().iterator(); i.hasNext();) {
+            for (Iterator i = ((CompositeConstraint)constraint).getChilds().iterator(); i.hasNext();) {
                 Constraint c = (Constraint) i.next();
                 result.addAll(getConstraintsForField(fieldName, builder, c, query));
             }
@@ -217,16 +222,17 @@ public abstract class ReleaseStrategy {
     /**
      * utility for specializations: get all the sortorders in the query that apply to
      * a certain field
+     * TODO MM:  See remark at {@link #getConstraintsForField}
+
      * @param fieldName
      * @param builder
      * @param sortOrders
      * @param query
      */
-    protected static List getSortordersForField(String fieldName, MMObjectBuilder builder, List sortOrders, SearchQuery query) {
+    protected static List getSortordersForField(final String fieldName, final MMObjectBuilder builder, List sortOrders, final SearchQuery query) {
         if(sortOrders == null) sortOrders = query.getSortOrders();
+        if(sortOrders == null) return Collections.EMPTY_LIST;
         List result = new ArrayList();
-        if(sortOrders == null) return result;
-
         for (Iterator iter = sortOrders.iterator(); iter.hasNext();) {
             SortOrder order = (SortOrder) iter.next();
             StepField sf = order.getField();
@@ -237,20 +243,6 @@ public abstract class ReleaseStrategy {
                ) {
                 result.add(order);
             }
-        }
-        return result;
-    }
-
-    
-    /**
-     * utility for specializations: get all the field steps of a query
-     * @param query
-     */
-    protected static List getFieldSteps(SearchQuery query){
-        List result = new ArrayList();
-        for (Iterator i = query.getSteps().iterator(); i.hasNext();) {
-            Object step =  i.next();
-            if(! (step instanceof RelationStep))result.add(step);
         }
         return result;
     }
