@@ -34,7 +34,7 @@ import org.mmbase.bridge.RelationList;
  * Evenement
  *
  * @author Henk Hangyi
- * @version $Revision: 1.6 $, $Date: 2006-05-15 21:16:43 $
+ * @version $Revision: 1.7 $, $Date: 2006-07-28 10:27:05 $
  *
  */
 
@@ -66,19 +66,43 @@ public class Evenement extends DoubleDateNode {
       setIsCanceled(node.getStringValue("iscanceled"));
    }
 
-   public String getIsSpareDate() { return isSpareDate; }
+   public String getIsSpareDate() {
+      return isSpareDate;
+   }
+
    public void setIsSpareDate(String isSpareDate) {
-      if(isSpareDate!=null&&isSpareDate.equals("true")) { this.isSpareDate = "true"; } else { this.isSpareDate = "false"; }
+      if (isSpareDate != null && isSpareDate.equals("true")) {
+         this.isSpareDate = "true";
+      }
+      else {
+         this.isSpareDate = "false";
+      }
    }
 
-   public String getIsOnInternet() { return isOnInternet; }
+   public String getIsOnInternet() {
+      return isOnInternet;
+   }
+
    public void setIsOnInternet(String isOnInternet) {
-      if(isOnInternet!=null&&isOnInternet.equals("true")) { this.isOnInternet = "true"; } else { this.isOnInternet = "false"; }
+      if (isOnInternet != null && isOnInternet.equals("true")) {
+         this.isOnInternet = "true";
+      }
+      else {
+         this.isOnInternet = "false";
+      }
    }
 
-   public String getIsCanceled() { return isCanceled; }
+   public String getIsCanceled() {
+      return isCanceled;
+   }
+
    public void setIsCanceled(String isCanceled) {
-      if(isCanceled!=null&&isCanceled.equals("true")) { this.isCanceled = "true"; } else { this.isCanceled = "false"; }
+      if (isCanceled != null && isCanceled.equals("true")) {
+         this.isCanceled = "true";
+      }
+      else {
+         this.isCanceled = "false";
+      }
    }
 
    public String getCommaSeparatedValue() {
@@ -88,21 +112,20 @@ public class Evenement extends DoubleDateNode {
    public boolean hasChild() {
       boolean hasChild = false;
       // negative numbers implies virtual events
-      if(this.getNumber().indexOf("-")==-1) {
+      if (this.getNumber().indexOf("-") == -1) {
          Cloud cloud = CloudFactory.getCloud();
          Node thisEvent = cloud.getNode(this.getNumber());
-         NodeList evenementList = thisEvent.getRelatedNodes("evenement","partrel","destination");
-         hasChild = (evenementList.size()>0);
+         NodeList evenementList = thisEvent.getRelatedNodes("evenement", "partrel", "destination");
+         hasChild = (evenementList.size() > 0);
       }
-      return hasChild; 
+      return hasChild;
    }
-
 
    public static boolean isOfCategory(Node parent, String sParticipantsCategory) {
       boolean isOfCategory = false;
-      NodeList nl = parent.getRelatedNodes("deelnemers_categorie","posrel",null);
-      for(int i=0; i<nl.size(); i++) {
-         if(nl.getNode(i).getStringValue("number").equals(sParticipantsCategory)) {
+      NodeList nl = parent.getRelatedNodes("deelnemers_categorie", "posrel", null);
+      for (int i = 0; i < nl.size(); i++) {
+         if (nl.getNode(i).getStringValue("number").equals(sParticipantsCategory)) {
             isOfCategory = true;
          }
       }
@@ -111,16 +134,16 @@ public class Evenement extends DoubleDateNode {
 
    public static int getCategoryCosts(Node thisSubscription, String sParticipantsCategory) {
       int costs = 0;
-      RelationList relations = thisSubscription.getRelations("posrel","deelnemers");
-      for(int p=0; p<relations.size(); p++) {
+      RelationList relations = thisSubscription.getRelations("posrel", "deelnemers");
+      for (int p = 0; p < relations.size(); p++) {
          Relation relation = relations.getRelation(p);
          Node thisParticipant = relation.getDestination();
          log.debug("found participant " + thisParticipant.getStringValue("number"));
-         NodeList nl = thisParticipant.getRelatedNodes("deelnemers_categorie","related",null);
-         for(int dc=0; dc<nl.size(); dc++) {
+         NodeList nl = thisParticipant.getRelatedNodes("deelnemers_categorie", "related", null);
+         for (int dc = 0; dc < nl.size(); dc++) {
             log.debug("found dc " + nl.getNode(dc).getStringValue("number"));
-            if(nl.getNode(dc).getStringValue("number").equals(sParticipantsCategory)) {
-               costs += relation.getIntValue("pos"); 
+            if (nl.getNode(dc).getStringValue("number").equals(sParticipantsCategory)) {
+               costs += relation.getIntValue("pos");
                log.debug("costs is now " + costs);
             }
          }
@@ -131,8 +154,8 @@ public class Evenement extends DoubleDateNode {
    public static Node getGroupExcursion(Node parentEvent) {
       Node dc = null;
       NodeList dcl = parentEvent.getRelatedNodes("deelnemers_categorie");
-      for(int i=0; i<dcl.size(); i++) {
-         if(dcl.getNode(i).getIntValue("groepsactiviteit")==1) {
+      for (int i = 0; i < dcl.size(); i++) {
+         if (dcl.getNode(i).getIntValue("groepsactiviteit") == 1) {
             dc = dcl.getNode(i);
          }
       }
@@ -142,8 +165,8 @@ public class Evenement extends DoubleDateNode {
    public static boolean isGroupExcursion(Node parentEvent) {
       boolean isGroupExcursion = false;
       NodeList dcl = parentEvent.getRelatedNodes("deelnemers_categorie");
-      for(int i=0; i<dcl.size(); i++) {
-         if(dcl.getNode(i).getIntValue("groepsactiviteit")==1) {
+      for (int i = 0; i < dcl.size(); i++) {
+         if (dcl.getNode(i).getIntValue("groepsactiviteit") == 1) {
             isGroupExcursion = true;
          }
       }
@@ -151,80 +174,81 @@ public class Evenement extends DoubleDateNode {
    }
 
    public static boolean isGroupExcursion(Cloud cloud, String sParent) {
-      NodeList dcl = cloud.getList( sParent
-                                    ,"evenement,posrel,deelnemers_categorie"
-                                    ,"posrel.pos"
-                                    ,"deelnemers_categorie.groepsactiviteit='1'",null,null,null,false);
-      return (dcl.size()>0);
+      NodeList dcl = cloud.getList(sParent
+                                   , "evenement,posrel,deelnemers_categorie"
+                                   , "posrel.pos"
+                                   , "deelnemers_categorie.groepsactiviteit='1'", null, null, null, false);
+      return (dcl.size() > 0);
    }
 
    public static boolean isGroupBooking(Cloud cloud, String sParticipant) {
       NodeList nl = cloud.getList(sParticipant
-                  ,"deelnemers,related,deelnemers_categorie"
-                  ,"deelnemers_categorie.number"
-                  ,"deelnemers_categorie.groepsactiviteit='1'",null,null,null,false);
-      return (nl.size()>0);
+                                  , "deelnemers,related,deelnemers_categorie"
+                                  , "deelnemers_categorie.number"
+                                  , "deelnemers_categorie.groepsactiviteit='1'", null, null, null, false);
+      return (nl.size() > 0);
    }
 
    public static boolean isGroupSubscription(Cloud cloud, String sSubscription) {
       NodeList nl = cloud.getList(sSubscription
-                  ,"inschrijvingen,posrel,deelnemers,related,deelnemers_categorie"
-                  ,"deelnemers_categorie.number"
-                  ,"deelnemers_categorie.groepsactiviteit='1'",null,null,null,false);
-      return (nl.size()>0);
+                                  , "inschrijvingen,posrel,deelnemers,related,deelnemers_categorie"
+                                  , "deelnemers_categorie.number"
+                                  , "deelnemers_categorie.groepsactiviteit='1'", null, null, null, false);
+      return (nl.size() > 0);
    }
 
    public static int getGroupExcursionCosts(Cloud cloud, String sParent, String sSubscription) {
 
       int costs = -1;
-      NodeList nl = cloud.getList( sSubscription
-                                 ,"inschrijvingen,daterel,bevestigings_teksten,posrel,evenement"
-                                 ,"posrel.pos"
-                                 ,"evenement.number='"+ sParent + "'",null,null,null,false);
-      if(nl.size()>0) {
+      NodeList nl = cloud.getList(sSubscription
+                                  , "inschrijvingen,daterel,bevestigings_teksten,posrel,evenement"
+                                  , "posrel.pos"
+                                  , "evenement.number='" + sParent + "'", null, null, null, false);
+      if (nl.size() > 0) {
          costs = nl.getNode(0).getIntValue("posrel.pos");
-      } else {
-         nl = cloud.getList( sParent
-                           ,"evenement,posrel,deelnemers_categorie"
-                           ,"posrel.pos"
-                           ,"deelnemers_categorie.groepsactiviteit='1'",null,null,null,false);        
-         if(nl.size()>0) {
+      }
+      else {
+         nl = cloud.getList(sParent
+                            , "evenement,posrel,deelnemers_categorie"
+                            , "posrel.pos"
+                            , "deelnemers_categorie.groepsactiviteit='1'", null, null, null, false);
+         if (nl.size() > 0) {
             costs = nl.getNode(0).getIntValue("posrel.pos");
          }
       }
       return costs;
-   } 
-   
+   }
+
    public static void updateGroupExcursionCosts(Cloud cloud, String sParent, String sSubscription) {
 
-      RelationList relations = cloud.getNode(sSubscription).getRelations("posrel","deelnemers");
-      for(int r=0; r<relations.size(); r++) {
+      RelationList relations = cloud.getNode(sSubscription).getRelations("posrel", "deelnemers");
+      for (int r = 0; r < relations.size(); r++) {
          Relation thisRel = relations.getRelation(r);
          String sParticipant = thisRel.getDestination().getStringValue("number");
-         if(isGroupBooking(cloud,sParticipant)) {
+         if (isGroupBooking(cloud, sParticipant)) {
             int costs = getGroupExcursionCosts(cloud, sParent, sSubscription);
-            thisRel.setIntValue("pos",costs);
+            thisRel.setIntValue("pos", costs);
             thisRel.commit();
          }
       }
-   } 
+   }
 
    public static String getNextOccurence(String thisParent) {
       // *** returns the next occurence of this event, if not available it returns the parent
-      long now = (new Date().getTime())/1000- (24*60*60);
+      long now = (new Date().getTime()) / 1000 - (24 * 60 * 60);
       String nextChild = thisParent;
       String sChildConstraint =
-           " (( evenement2.dagomschrijving LIKE '' AND evenement2.begindatum > " + now + ") "
+         " (( evenement2.dagomschrijving LIKE '' AND evenement2.begindatum > " + now + ") "
          + " OR ( evenement2.dagomschrijving NOT LIKE '' AND  evenement2.einddatum > " + now + ") "
          + " AND ( evenement.isspare!='true') AND ( evenement.isoninternet='true' )";
       Cloud cloud = CloudFactory.getCloud();
       NodeList cl = cloud.getList(thisParent,
-         "evenement,partrel,evenement2","evenement.begindatum,evenement2.number,evenement2.begindatum",sChildConstraint,
-         "evenement2.begindatum","UP","DESTINATION",true);
-      if(cl.size()>0) {
+                                  "evenement,partrel,evenement2", "evenement.begindatum,evenement2.number,evenement2.begindatum", sChildConstraint,
+                                  "evenement2.begindatum", "UP", "DESTINATION", true);
+      if (cl.size() > 0) {
          long parentBegin = cl.getNode(0).getLongValue("evenement.begindatum");
          long nextChildBegin = cl.getNode(0).getLongValue("evenement2.begindatum");
-         if((parentBegin<=now) || (nextChildBegin<parentBegin)) {
+         if ( (parentBegin <= now) || (nextChildBegin < parentBegin)) {
             nextChild = cl.getNode(0).getStringValue("evenement2.number");
          }
       }
@@ -234,79 +258,87 @@ public class Evenement extends DoubleDateNode {
    public boolean hasBooking() {
       boolean hasBooking = false;
       // negative numbers implies virtual events
-      if(this.getNumber().indexOf("-")==-1) {
+      if (this.getNumber().indexOf("-") == -1) {
          Cloud cloud = CloudFactory.getCloud();
          Node thisEvent = cloud.getNode(this.getNumber());
-         NodeList bookingList = thisEvent.getRelatedNodes("inschrijvingen","posrel","destination");
-         hasBooking = (bookingList.size()>0);
+         NodeList bookingList = thisEvent.getRelatedNodes("inschrijvingen", "posrel", "destination");
+         hasBooking = (bookingList.size() > 0);
       }
       return hasBooking;
    }
 
    public static boolean isFullyBooked(Node parentEvent, Node childEvent) {
       int iMaxNumber = -1;
-      try { iMaxNumber = (new Integer(parentEvent.getStringValue("max_aantal_deelnemers"))).intValue(); } catch (Exception e) { }
-      if(iMaxNumber==-1) iMaxNumber = 9999;
+      try {
+         iMaxNumber = (new Integer(parentEvent.getStringValue("max_aantal_deelnemers"))).intValue();
+      }
+      catch (Exception e) {}
+      if (iMaxNumber == -1) iMaxNumber = 9999;
       int iChildCurParticipants = -1;
-      try { iChildCurParticipants = (new Integer (childEvent.getStringValue("cur_aantal_deelnemers"))).intValue(); } catch (Exception e) {}
-      return (iChildCurParticipants>=iMaxNumber);
+      try {
+         iChildCurParticipants = (new Integer(childEvent.getStringValue("cur_aantal_deelnemers"))).intValue();
+      }
+      catch (Exception e) {}
+      return (iChildCurParticipants >= iMaxNumber);
    }
-   
+
    public static String getStatus(Cloud cloud, String status_alias) {
       return cloud.getNode(status_alias).getStringValue("number");
    }
 
    public static boolean hasStatus(Cloud cloud, Node childEvent, String status_alias) {
       NodeList nl = cloud.getList(childEvent.getStringValue("number")
-         ,"evenement,posrel,inschrijvingen,related,inschrijvings_status","inschrijvings_status.number"
-         ,"inschrijvings_status.number = '" + getStatus(cloud,status_alias) + "'"
-         ,null,null,null,false);
-      return (nl.size()>0);
+                                  , "evenement,posrel,inschrijvingen,related,inschrijvings_status", "inschrijvings_status.number"
+                                  , "inschrijvings_status.number = '" + getStatus(cloud, status_alias) + "'"
+                                  , null, null, null, false);
+      return (nl.size() > 0);
    }
 
    public static String altEvent(Cloud cloud, String sParent, String sChild) {
       // find within the alternative for sParent, the event that takes place at the same time as sChild
       String altEvent = "-1";
       Node parent = cloud.getNode(sParent);
-      NodeList nl = parent.getRelatedNodes("evenement","altrel",null);
-      if(nl.size()!=0) {
+      NodeList nl = parent.getRelatedNodes("evenement", "altrel", null);
+      if (nl.size() != 0) {
          log.debug("there is an alternative to " + sParent);
          Node child = cloud.getNode(sChild);
-         long cBegin = child.getLongValue("begindatum")-60*60;
-         long cEnd = child.getLongValue("einddatum")+60*60;
+         long cBegin = child.getLongValue("begindatum") - 60 * 60;
+         long cEnd = child.getLongValue("einddatum") + 60 * 60;
          Node altparent = nl.getNode(0);
          String sAltParent = altparent.getStringValue("number");
          long pBegin = altparent.getLongValue("begindatum");
          long pEnd = altparent.getLongValue("einddatum");
-         if(cBegin<pBegin && pEnd < cEnd) {
+         if (cBegin < pBegin && pEnd < cEnd) {
             log.debug("the altparent " + sAltParent + " is at the same time as sChild");
             altEvent = sAltParent;
-         } else {
-            nl = cloud.getList(sAltParent,"evenement1,partrel,evenement","evenement.number"
-               ,"evenement.begindatum > " + cBegin + " AND evenement.einddatum < " + cEnd 
-               ,"evenement.begindatum","UP",null,true);
-            if(nl.size()!=0) {
+         }
+         else {
+            nl = cloud.getList(sAltParent, "evenement1,partrel,evenement", "evenement.number"
+                               , "evenement.begindatum > " + cBegin + " AND evenement.einddatum < " + cEnd
+                               , "evenement.begindatum", "UP", null, true);
+            if (nl.size() != 0) {
                log.debug("one of the childs of altparent " + sAltParent + " is at the same time as sChild " + sChild);
                altEvent = nl.getNode(0).getStringValue("evenement.number");
             }
          }
       }
-      return altEvent;      
+      return altEvent;
    }
-   
-   public static String [] altEventLink(Cloud cloud, String sParent, String sChild) {
+
+   public static String[] altEventLink(Cloud cloud, String sParent, String sChild) {
       String altEvent = altEvent(cloud, sParent, sChild);
       String altLink = "";
-      if(!altEvent.equals("-1")) {
+      if (!altEvent.equals("-1")) {
          Node altNode = cloud.getNode(altEvent);
          Node parentNode = altNode;
-         NodeList nl = altNode.getRelatedNodes("evenement","partrel","SOURCE");
-         if(nl.size()!=0) {
+         NodeList nl = altNode.getRelatedNodes("evenement", "partrel", "SOURCE");
+         if (nl.size() != 0) {
             parentNode = nl.getNode(0);
          }
          altLink = "subscribelink.jsp?p=" + parentNode.getStringValue("number") + "&e=" + altEvent;
       }
-      return new String [] { altEvent, altLink };
+      return new String[] {
+         altEvent, altLink};
    }
 
    public static boolean exceedsMaxPrice(Cloud cloud, String thisParent, String paymentTypeID) {
@@ -316,7 +348,7 @@ public class Evenement extends DoubleDateNode {
       // *** Participants categories (deelnemers_categorie)
       String sDeelnemerPlus = "90165";
       String sGezinNietLeden = "70550";
-      String sGezinLeden = "70548"; 
+      String sGezinLeden = "70548";
       String sKinderenNietLeden = "67954";
       String sKinderenLeden = "67953";
       String sKinderen = "591";
@@ -330,47 +362,66 @@ public class Evenement extends DoubleDateNode {
       String sKinderEnGezinsActiviteit = "32995";
       String sWandelen = "32992";
       boolean exceedsMaxPrice = false;
-      
+
       String activityTypeID = "";
-      NodeList activityTypeList = cloud.getList(thisParent,"evenement,related,evenement_type","evenement_type.number",null,null,null,null,false);
-      if(activityTypeList.size()>0) {
-           activityTypeID = activityTypeList.getNode(0).getStringValue("evenement_type.number");
+      NodeList activityTypeList = cloud.getList(thisParent, "evenement,related,evenement_type", "evenement_type.number", null, null, null, null, false);
+      if (activityTypeList.size() > 0) {
+         activityTypeID = activityTypeList.getNode(0).getStringValue("evenement_type.number");
       }
 
-      if(paymentTypeID!=null
-            &&paymentTypeID.equals(sINGBon)) {
-         if(activityTypeID.equals(sVaren)||activityTypeID.equals(sKinderEnGezinsActiviteit)||activityTypeID.equals(sWandelen)) {
+      if (paymentTypeID != null
+          && paymentTypeID.equals(sINGBon)) {
+         if (activityTypeID.equals(sVaren) || activityTypeID.equals(sKinderEnGezinsActiviteit) || activityTypeID.equals(sWandelen)) {
             NodeList nl = cloud.getList(thisParent,
-               "evenement,posrel,deelnemers_categorie","posrel.pos,deelnemers_categorie.number",null,null,null,"DESTINATION",true);
-            for(int n = 0; n<nl.size(); n++) {
+                                        "evenement,posrel,deelnemers_categorie", "posrel.pos,deelnemers_categorie.number", null, null, null, "DESTINATION", true);
+            for (int n = 0; n < nl.size(); n++) {
                String catNumber = nl.getNode(n).getStringValue("deelnemers_categorie.number");
-               boolean isLeden = catNumber.equals(sLeden)||catNumber.equals(sLedenMetRolstoel);
-               boolean isNietLeden = catNumber.equals(sNietLeden)||catNumber.equals(sNietLedenMetRolstoel);
-               boolean isKinderenTot12Jaar = catNumber.equals(sKinderen)||catNumber.equals(sKinderenMetRolstoel)
-                           ||catNumber.equals(sKinderenLeden)||catNumber.equals(sKinderenNietLeden);
+               boolean isLeden = catNumber.equals(sLeden) || catNumber.equals(sLedenMetRolstoel);
+               boolean isNietLeden = catNumber.equals(sNietLeden) || catNumber.equals(sNietLedenMetRolstoel);
+               boolean isKinderenTot12Jaar = catNumber.equals(sKinderen) || catNumber.equals(sKinderenMetRolstoel)
+                  || catNumber.equals(sKinderenLeden) || catNumber.equals(sKinderenNietLeden);
                int catPrice = nl.getNode(n).getIntValue("posrel.pos");
-               if(activityTypeID.equals(sWandelen)){
+               if (activityTypeID.equals(sWandelen)) {
 
-                  if(isLeden) {                                      exceedsMaxPrice = exceedsMaxPrice || (catPrice > 400);
-                  } else if(isNietLeden) {                           exceedsMaxPrice = exceedsMaxPrice || (catPrice > 700);
-                  } else if(isKinderenTot12Jaar) {                   exceedsMaxPrice = exceedsMaxPrice || (catPrice > 200); 
+                  if (isLeden) {
+                     exceedsMaxPrice = exceedsMaxPrice || (catPrice > 400);
+                  }
+                  else if (isNietLeden) {
+                     exceedsMaxPrice = exceedsMaxPrice || (catPrice > 700);
+                  }
+                  else if (isKinderenTot12Jaar) {
+                     exceedsMaxPrice = exceedsMaxPrice || (catPrice > 200);
                   }
 
-               } else if(activityTypeID.equals(sVaren)){
+               }
+               else if (activityTypeID.equals(sVaren)) {
 
-                  if(isLeden) {                                      exceedsMaxPrice = exceedsMaxPrice || (catPrice > 800);
-                  } else if(isNietLeden) {                           exceedsMaxPrice = exceedsMaxPrice || (catPrice > 1200);
-                  } else if(isKinderenTot12Jaar) {                   exceedsMaxPrice = exceedsMaxPrice || (catPrice > 400);
+                  if (isLeden) {
+                     exceedsMaxPrice = exceedsMaxPrice || (catPrice > 800);
                   }
-               } else if(activityTypeID.equals(sKinderEnGezinsActiviteit)){
-
-                  if(catNumber.equals(sGezinLeden)) {                exceedsMaxPrice = exceedsMaxPrice || (catPrice > 300);
-                  } else if(catNumber.equals(sGezinNietLeden)) {     exceedsMaxPrice = exceedsMaxPrice || (catPrice > 500);
-                  } else if(catNumber.equals(sKinderenLeden)) {      exceedsMaxPrice = exceedsMaxPrice || (catPrice > 300);
-                  } else if(catNumber.equals(sKinderenNietLeden)) {  exceedsMaxPrice = exceedsMaxPrice || (catPrice > 500);
+                  else if (isNietLeden) {
+                     exceedsMaxPrice = exceedsMaxPrice || (catPrice > 1200);
+                  }
+                  else if (isKinderenTot12Jaar) {
+                     exceedsMaxPrice = exceedsMaxPrice || (catPrice > 400);
                   }
                }
-            } 
+               else if (activityTypeID.equals(sKinderEnGezinsActiviteit)) {
+
+                  if (catNumber.equals(sGezinLeden)) {
+                     exceedsMaxPrice = exceedsMaxPrice || (catPrice > 300);
+                  }
+                  else if (catNumber.equals(sGezinNietLeden)) {
+                     exceedsMaxPrice = exceedsMaxPrice || (catPrice > 500);
+                  }
+                  else if (catNumber.equals(sKinderenLeden)) {
+                     exceedsMaxPrice = exceedsMaxPrice || (catPrice > 300);
+                  }
+                  else if (catNumber.equals(sKinderenNietLeden)) {
+                     exceedsMaxPrice = exceedsMaxPrice || (catPrice > 500);
+                  }
+               }
+            }
          }
       }
 
@@ -391,42 +442,46 @@ public class Evenement extends DoubleDateNode {
       int endDayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
       int endMonth = cal.get(Calendar.MONTH);
       int endYear = cal.get(Calendar.YEAR);
-      if(beginYear!=endYear || beginMonth!=endMonth || beginDayOfMonth!=endDayOfMonth) {
+      if (beginYear != endYear || beginMonth != endMonth || beginDayOfMonth != endDayOfMonth) {
          subscriptionClosed = false;
-      } else { // check on close date
-         int timeBeforeStart = parentEvent.getIntValue("reageer")*60*60;
-         long closeDate = (childEvent.getLongValue("begindatum")-timeBeforeStart)*1000;
-         subscriptionClosed = ((new Date()).getTime()>closeDate);
+      }
+      else { // check on close date
+         int timeBeforeStart = parentEvent.getIntValue("reageer") * 60 * 60;
+         long closeDate = (childEvent.getLongValue("begindatum") - timeBeforeStart) * 1000;
+         subscriptionClosed = ( (new Date()).getTime() > closeDate);
       }
       return subscriptionClosed;
    }
 
    public NodeList getSortedList(Cloud cloud, String sParentEvent) {
       // insert the parent into the list of childs
-      NodeList nl = cloud.getList(sParentEvent,"evenement1,partrel,evenement","evenement.number",null,"evenement.begindatum","UP",null,true);
-      if(nl.size()!=0) {
+      NodeList nl = cloud.getList(sParentEvent, "evenement1,partrel,evenement", "evenement.number", null, "evenement.begindatum", "UP", null, true);
+      if (nl.size() != 0) {
          DoubleDateNode ddnParent = new DoubleDateNode(cloud.getNode(sParentEvent));
-         NodeList parentList = cloud.getList(sParentEvent,"evenement","evenement.number",null,null,null,null,false);
-         if (ddnParent.compareTo(new DoubleDateNode(cloud.getNode(nl.getNode(0).getStringValue("evenement.number"))))==-1){
+         NodeList parentList = cloud.getList(sParentEvent, "evenement", "evenement.number", null, null, null, null, false);
+         if (ddnParent.compareTo(new DoubleDateNode(cloud.getNode(nl.getNode(0).getStringValue("evenement.number")))) == -1) {
             // parent is before first child, add parent at begin
-            nl.addAll(0,parentList);
-         } else if (ddnParent.compareTo(new DoubleDateNode(cloud.getNode(nl.getNode(nl.size()-1).getStringValue("evenement.number"))))==1){
+            nl.addAll(0, parentList);
+         }
+         else if (ddnParent.compareTo(new DoubleDateNode(cloud.getNode(nl.getNode(nl.size() - 1).getStringValue("evenement.number")))) == 1) {
             // parent is after last child, add parent at end
-            nl.addAll(nl.size(),parentList);
-         } else {
+            nl.addAll(nl.size(), parentList);
+         }
+         else {
             // parent is before i+1, but after i, add parent at i
             int i = 0;
             DoubleDateNode ddn = new DoubleDateNode(cloud.getNode(nl.getNode(i).getStringValue("evenement.number")));
-            DoubleDateNode ddn1 = new DoubleDateNode(cloud.getNode(nl.getNode(i+1).getStringValue("evenement.number")));
-            while(! ( ddnParent.compareTo(ddn)!=-1 && ddnParent.compareTo(ddn1)==-1 ) ) {
+            DoubleDateNode ddn1 = new DoubleDateNode(cloud.getNode(nl.getNode(i + 1).getStringValue("evenement.number")));
+            while (! (ddnParent.compareTo(ddn) != -1 && ddnParent.compareTo(ddn1) == -1)) {
                i++;
                ddn = ddn1;
-               ddn1 = new DoubleDateNode(cloud.getNode(nl.getNode(i+1).getStringValue("evenement.number")));
+               ddn1 = new DoubleDateNode(cloud.getNode(nl.getNode(i + 1).getStringValue("evenement.number")));
             }
-            nl.addAll(i,parentList);
+            nl.addAll(i, parentList);
          }
-      } else {
-         nl = cloud.getList(sParentEvent,"evenement","evenement.number",null,null,null,null,false);
+      }
+      else {
+         nl = cloud.getList(sParentEvent, "evenement", "evenement.number", null, null, null, null, false);
       }
       return nl;
    }
@@ -435,47 +490,47 @@ public class Evenement extends DoubleDateNode {
       // in case of a date it should fall in the period [lDateSearchFrom,lDateSearchTill]
       // in case of a period it should overlap [lDateSearchFrom,lDateSearchTill]
       String sEventConstraint =
-        " (( evenement.dagomschrijving LIKE '' AND evenement.begindatum > " + lDateSearchFrom + " AND evenement.einddatum < " + (lDateSearchTill + 24*60*60) + " ) "
-      + " OR ( evenement.dagomschrijving NOT LIKE '' AND  evenement.einddatum > " + lDateSearchFrom + " AND evenement.begindatum < " + (lDateSearchTill + 24*60*60) +  " )) "
-      + " AND ( evenement.isspare='false') AND ( evenement.isoninternet='true' )";
+         " (( evenement.dagomschrijving LIKE '' AND evenement.begindatum > " + lDateSearchFrom + " AND evenement.einddatum < " + (lDateSearchTill + 24 * 60 * 60) + " ) "
+         + " OR ( evenement.dagomschrijving NOT LIKE '' AND  evenement.einddatum > " + lDateSearchFrom + " AND evenement.begindatum < " + (lDateSearchTill + 24 * 60 * 60) + " )) "
+         + " AND ( evenement.isspare='false') AND ( evenement.isoninternet='true' )";
       return sEventConstraint;
    }
 
    public static boolean isOnInternet(Node thisEvent, long lDateSearchFrom) {
       // at least one of the dates should be on internet
       boolean isOnInternet = thisEvent.getStringValue("isoninternet").equals("true")
-               &&thisEvent.getLongValue("verloopdatum")>lDateSearchFrom;
-      if(thisEvent.getStringValue("soort").equals("parent")) {
-         NodeList evenementList = thisEvent.getRelatedNodes("evenement","partrel","destination");
-         for(int e = 0; e < evenementList.size(); e++) {
+         && thisEvent.getLongValue("verloopdatum") > lDateSearchFrom;
+      if (thisEvent.getStringValue("soort").equals("parent")) {
+         NodeList evenementList = thisEvent.getRelatedNodes("evenement", "partrel", "destination");
+         for (int e = 0; e < evenementList.size(); e++) {
             Node childEvent = evenementList.getNode(e);
-            isOnInternet = isOnInternet 
-                  || ( childEvent.getStringValue("isoninternet").equals("true")&&childEvent.getLongValue("verloopdatum")>lDateSearchFrom);
+            isOnInternet = isOnInternet
+               || (childEvent.getStringValue("isoninternet").equals("true") && childEvent.getLongValue("verloopdatum") > lDateSearchFrom);
          }
       }
       return isOnInternet;
    }
 
-   public static String getBookableEventsConstraint(long lDateSearchFrom, long lDateSearchTill){
-     // only dates, which fall in the period [lDateSearchFrom,lDateSearchTill]
-     String sEventConstraint =
-       " evenement.dagomschrijving LIKE '' "
-     + " AND evenement.begindatum > " + lDateSearchFrom
-     + " AND evenement.einddatum < " + (lDateSearchTill + 24*60*60) + " ) "
-     + " AND ( evenement.isspare='false') "
-     + " AND ( evenement.iscanceled='false') "
-     + " AND ( evenement.isoninternet='true' )";
-     return sEventConstraint;
+   public static String getBookableEventsConstraint(long lDateSearchFrom, long lDateSearchTill) {
+      // only dates, which fall in the period [lDateSearchFrom,lDateSearchTill]
+      String sEventConstraint =
+         " evenement.dagomschrijving LIKE '' "
+         + " AND evenement.begindatum > " + lDateSearchFrom
+         + " AND evenement.einddatum < " + (lDateSearchTill + 24 * 60 * 60) + " ) "
+         + " AND ( evenement.isspare='false') "
+         + " AND ( evenement.iscanceled='false') "
+         + " AND ( evenement.isoninternet='true' )";
+      return sEventConstraint;
    }
 
-   public static HashSet getEvents(Cloud cloud, long lDateSearchFrom, long lDateSearchTill){
+   public static HashSet getEvents(Cloud cloud, long lDateSearchFrom, long lDateSearchTill) {
       // all parent events that contain a date in the period [lDateSearchFrom,lDateSearchTill]
       HashSet events = new HashSet();
-      NodeList el = cloud.getList("","evenement","evenement.number",getEventsConstraint(lDateSearchFrom,lDateSearchTill),null,null,null,true);
-      for(int e=0; e<el.size(); e++) {
+      NodeList el = cloud.getList("", "evenement", "evenement.number", getEventsConstraint(lDateSearchFrom, lDateSearchTill), null, null, null, true);
+      for (int e = 0; e < el.size(); e++) {
          String event_number = el.getNode(e).getStringValue("evenement.number");
          String parent_number = Evenement.findParentNumber(event_number);
-         if(!events.contains(parent_number)) {
+         if (!events.contains(parent_number)) {
             events.add(parent_number);
          }
       }
@@ -486,15 +541,47 @@ public class Evenement extends DoubleDateNode {
       Cloud cloud = CloudFactory.getCloud();
       Node thisEvent = cloud.getNode(sEvent);
       String parentNumber = thisEvent.getStringValue("number");
-      if(thisEvent.getStringValue("soort").equals("child")) {
-         RelationList parentRelations = thisEvent.getRelations("partrel","evenement");
-         if(!parentRelations.isEmpty()) {
+      if (thisEvent.getStringValue("soort").equals("child")) {
+         RelationList parentRelations = thisEvent.getRelations("partrel", "evenement");
+         if (!parentRelations.isEmpty()) {
             Node parentEvent = parentRelations.getRelation(0).getSource();
             parentNumber = parentEvent.getStringValue("number");
-         } else {
+         }
+         else {
             log.info("Could not find parent for child " + thisEvent.getStringValue("number") + ", setting parent to child");
          }
       }
       return parentNumber;
    }
+
+   /**
+    * Can the memeber book this party?
+    *
+    * @param nodeEvent Node
+    * @param memberid String
+    * @return boolean
+    */
+   public static boolean isAuthenticated(Node nodeEvent, String memberid) {
+      Cloud cloud = nodeEvent.getCloud();
+      if (memberid == null) {
+         return false;
+      }
+      else {
+         NodeList nlPayemntTypes = nodeEvent.getRelatedNodes("deelnemers_categorie");
+         if ("Leden".equalsIgnoreCase(nlPayemntTypes.getNode(0).getStringValue("naam"))) {
+            Node nodeMember = cloud.getNode(memberid);
+            if("true".equals(nodeMember.getStringValue("lidnummer"))){
+               return true;
+            }
+            else{
+               return false;
+            }
+         }
+         else {
+            return true;
+         }
+      }
+   }
 }
+
+
