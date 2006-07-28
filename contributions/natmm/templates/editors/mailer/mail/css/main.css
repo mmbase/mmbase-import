@@ -387,6 +387,11 @@ fieldset h2 {
    border: 1px solid #EAEAEC;
 }
 
+.errormessage {
+   color: #F96A1F;
+   font-weight: bold;   
+}
+
 .button {
    background: #F96A1F;
    margin: 0;

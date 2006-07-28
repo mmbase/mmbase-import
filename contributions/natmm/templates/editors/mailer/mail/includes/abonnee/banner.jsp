@@ -13,7 +13,7 @@
 
          <mm:notpresent referid="login">
             <li><a href="over.jsp" class="about"><mm:write referid="bannerovertext" escape="none"/></a></li>
-            <li><a href="index.jsp?logout" class="logout"><mm:write referid="bannerlogouttext" escape="none"/></a></li>
+            <li><a href="index.jsp?action=logout" class="logout"><mm:write referid="bannerlogouttext" escape="none"/></a></li>
             <li><a href="help.jsp" class="help"><mm:write referid="bannerhelptext" escape="none"/></a></li>
          </mm:notpresent>
       </ul>
