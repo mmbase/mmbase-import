@@ -129,8 +129,9 @@
         <relation from="dossier" to="artikel" type="readmore" />
         <relation from="dossier" to="evenement" type="posrel" />
         <relation from="dossier" to="images" type="posrel" />
-        <relation from="dossier" to="persoon" type="posrel" />
         <relation from="dossier" to="pagina" type="readmore" />
+        <relation from="dossier" to="persoon" type="posrel" />
+        <relation from="dossier" to="pools" type="posrel" />
         <relation from="ecard" to="images" type="related" />
         <relation from="evenement" to="afdelingen" type="readmore" />
         <relation from="evenement" to="bevestigings_teksten" type="posrel" />
