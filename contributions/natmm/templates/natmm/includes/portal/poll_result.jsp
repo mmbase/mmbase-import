@@ -50,7 +50,7 @@
        poll.commit();
        // add all categories to customer
 %>
-       <%@include file="/natmm/includes/memberid_get.jsp" %>
+       <%@include file="/editors/mailer/util/memberid_get.jsp" %>
 <%
        if (cloud.getNode(memberid) == null) {
          memberid = null;

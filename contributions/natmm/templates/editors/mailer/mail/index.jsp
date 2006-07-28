@@ -10,23 +10,26 @@
     log.info("Found " + sLogin + " and " + sPassword);
     if((sLogin != null) && (sPassword != null)){
       Object object = nl.leocms.connectors.UISconnector.input.customers.process.Reciever.recieve(nl.leocms.connectors.UISconnector.UISconfig.getCustomersURL(sLogin, sPassword));
-    
+
+      String memberid="-1";    
       if(object instanceof CustomerInformation){
          CustomerInformation customerInformation = (CustomerInformation) object;
-         String memberid = nl.leocms.connectors.UISconnector.input.customers.process.Updater.update(customerInformation);
-         log.info("Set memberid " + memberid);
-         %><%@include file="/natmm/includes/memberid_set.jsp" %><%
+         memberid = nl.leocms.connectors.UISconnector.input.customers.process.Updater.update(customerInformation);
     
       }
       if(object instanceof String)
       {
          log.info("Exception " + object);
       }
+      log.info("Set memberid " + memberid);
+      %>
+      <%@include file="/editors/mailer/util/memberid_set.jsp" %>
+      <%
     }
    %>
-   <%@include file="/natmm/includes/memberid_get.jsp" %>
+   <%@include file="/editors/mailer/util/memberid_get.jsp" %>
    <%
-      if(memberid == null){
+      if(memberid == null || memberid.equals("-1")){
          log.info("Did not find a memberid");
          response.sendRedirect("login.jsp?reason=failed");
       }
@@ -38,7 +41,7 @@
    </mm:compare>
    <mm:compare referid="action" value="logout">
       <% String memberid="-1"; %>
-      <%@include file="/natmm/includes/memberid_set.jsp" %>
+      <%@include file="/editors/mailer/util/memberid_set.jsp" %>
       <% 
          response.sendRedirect("login.jsp");
       %>
