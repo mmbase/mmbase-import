@@ -39,7 +39,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.37 2006-07-15 14:35:06 michiel Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.38 2006-07-28 15:02:26 michiel Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
@@ -197,7 +197,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
         queryHandlerClasses.add(DEFAULT_QUERY_HANDLER_CLASS);
 
 
-        dataSource = createDataSource(null);
+        dataSource = createDataSource(getBinaryFileBasePath(false));
         // temporary source only used once, for the meta data.
 
         String sqlKeywords;
