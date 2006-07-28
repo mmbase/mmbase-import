@@ -3,5 +3,6 @@
 <action type="load">
       <field name="naam"/>
       <field name="omschrijving"/>
+      <field name="externid"/>
       <relation destination="artikel" role="posrel"/>
 </action>

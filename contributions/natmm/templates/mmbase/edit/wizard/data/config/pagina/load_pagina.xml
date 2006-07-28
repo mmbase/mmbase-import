@@ -15,7 +15,14 @@
    <field name="verloopdatum"/>
    <field name="reageer"/>
    <field name="status"/>
-   <relation destination="contentelement" role="contentrel"/> <!-- used for: provincie, artikel, vgv, persoon, vacature -->
+   <!-- used for: provincie, artikel, vgv, persoon, vacature, poll -->
+   <relation destination="contentelement" role="contentrel">
+      <object>
+         <relation destination="pools" role="posrel">
+            <object />
+         </relation>
+      </object>
+   </relation>
    <relation destination="dossier" role="posrel">
       <object>
          <relation destination="images" role="posrel">
@@ -39,4 +46,5 @@
    <relation destination="shorty" role="rolerel"/>
    <relation destination="teaser" role="rolerel"/>
    <relation destination="pagina" role="related"/>
+   <relation destination="pools" role="posrel" />
 </action>

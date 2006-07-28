@@ -31,12 +31,13 @@
             <td style="vertical-align:top;">
               <span class="colortitle">
                 <% readmoreURL = ""; %>
-                <mm:list nodes="<%=dossier_number%>" path="dossier,readmore,pagina,gebruikt,paginatemplate"
-                        fields="paginatemplate.url,pagina.number"  max="1">
+                <mm:list nodes="<%=dossier_number%>" path="dossier,posrel,pagina,gebruikt,paginatemplate"
+                        fields="paginatemplate.url,pagina.number" max="1"
+                        constraints="<%= "pagina.number != '" + objectID + "'" %>">
                   <mm:field name="pagina.number" write="false" jspvar="pagina_number" vartype="String">
                   <mm:field name="paginatemplate.url" write="false" jspvar="template_url" vartype="String">
 <%
-                    readmoreURL = template_url + "?p=" + pagina_number;
+                    readmoreURL = template_url + "?p=" + pagina_number + "&d=" + dossier_number;
 %>
                   </mm:field>
                   </mm:field>
@@ -67,7 +68,7 @@
                   <table style="width:100%;" border="0" cellspacing="0" cellpadding="0">
                     <tr>
                       <td style="text-align:left;vertical-align:middle;"><a 
-                         href="<%= (relatedPage!=null ? ph.createItemUrl(artikel_number,relatedPage,null, request.getContextPath()) : "") %>"
+                         href="<%= (relatedPage!=null ? ph.createItemUrl(artikel_number,relatedPage,"d="+dossier_number, request.getContextPath()) : "") %>"
                          class="hover"><mm:field name="artikel.titel" /></a></td>
                     </tr>
                   </table>

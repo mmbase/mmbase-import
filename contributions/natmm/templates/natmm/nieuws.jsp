@@ -1,7 +1,22 @@
 <% // *** article + dossiers and list of articles, which link to article *** %>
 <%@include file="includes/top0.jsp" %>
-<mm:cloud jspvar="cloud">
+<mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud">
 <%@include file="includes/top1_params.jsp" %>
+<%
+if(NatMMConfig.hasClosedUserGroup) {
+
+   %><%@include file="/editors/mailer/util/memberid_get.jsp" %><%
+   if (cloud.getNode(memberid) == null) {
+      memberid = null;
+   }
+   if(memberid != null) {
+      PoolUtil.addPools(cloud,paginaID,memberid,"" );
+      if(!dossierID.equals("-1")) {
+        PoolUtil.addPools(cloud,dossierID,memberid,"" );
+      }
+   }
+}
+%>
 <%@include file="includes/top2_cacheparams.jsp" %>
 <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
 <%@include file="includes/top3_nav.jsp" %>
@@ -24,19 +39,19 @@ if(artCnt==1&&artikelID.equals("-1")) { // *** select the unique article related
 <br>
 <table width="744" border="0" cellspacing="0" cellpadding="0" align="center" valign="top">
 <tr>
-	<td style="vertical-align:top;padding:10px;padding-top:0px;width:185px;">
-	<%@include file="includes/navleft.jsp" %>
-	<br>
-	<jsp:include page="includes/teaser.jsp">
+   <td style="vertical-align:top;padding:10px;padding-top:0px;width:185px;">
+   <%@include file="includes/navleft.jsp" %>
+   <br>
+   <jsp:include page="includes/teaser.jsp">
       <jsp:param name="s" value="<%= paginaID %>" />
       <jsp:param name="r" value="<%= rubriekID %>" />
       <jsp:param name="rs" value="<%= styleSheet %>" />
       <jsp:param name="sr" value="0" />
    </jsp:include>
-	</td>
-	<% 
-	if(!artikelID.equals("-1")&&artCnt<2) { // *** show the selected article, or the unique article related to this page
-	   %><td style="vertical-align:top;width:75%;padding:10px;padding-top:0px;">
+   </td>
+   <% 
+   if(!artikelID.equals("-1")&&artCnt<2) { // *** show the selected article, or the unique article related to this page
+      %><td style="vertical-align:top;width:75%;padding:10px;padding-top:0px;">
          <mm:list nodes="<%= artikelID %>" path="artikel,posrel,dossier" orderby="dossier.naam">
             <mm:first>Dossier: </mm:first>
             <mm:first inverse="true">, </mm:first>
@@ -51,26 +66,26 @@ if(artCnt==1&&artikelID.equals("-1")) { // *** select the unique article related
             <jsp:param name="a" value="<%= artikelID %>" />
             <jsp:param name="showdate" value="true" />
          </jsp:include>
-		</td><%
-	} else {  // *** show the dossiers if there are dossiers related to this page
-	   %><td style="vertical-align:top;width:100%;padding-left:10px;padding-right:10px;">
-   		<%@include file="includes/page_intro.jsp" %>
-   		<%@include file="includes/dossier_form.jsp" %>
-   		<% 
-   	   if(artikelID.equals("-1")&&!dossierID.equals("-1")){  // *** if there is no article selected, show the selected dossiers and its list of articles
-			
-			   %><jsp:include page="includes/nieuws/showdossier.jsp">
+      </td><%
+   } else {  // *** show the dossiers if there are dossiers related to this page
+      %><td style="vertical-align:top;width:100%;padding-left:10px;padding-right:10px;">
+         <%@include file="includes/page_intro.jsp" %>
+         <%@include file="includes/dossier_form.jsp" %>
+         <% 
+         if(artikelID.equals("-1")&&!dossierID.equals("-1")){  // *** if there is no article selected, show the selected dossiers and its list of articles
+         
+            %><jsp:include page="includes/nieuws/showdossier.jsp">
                <jsp:param name="d" value="<%= dossierID %>" />
             </jsp:include><% 
-            		   
-   		} else if(artCnt > 1){  // *** if no dossier is selected and there are more than one articles related to the page, show the list of articles
-   	   
-   	      %><mm:node number="<%=paginaID%>">
-   			   <%@include file="includes/nieuws/searchresults.jsp" %>
-      		</mm:node><%
-      		
-   	   } %>
-   	</td><%
+                     
+         } else if(artCnt > 1){  // *** if no dossier is selected and there are more than one articles related to the page, show the list of articles
+         
+            %><mm:node number="<%=paginaID%>">
+               <%@include file="includes/nieuws/searchresults.jsp" %>
+            </mm:node><%
+            
+         } %>
+      </td><%
    } %>
 </tr>
 </table>
