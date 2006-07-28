@@ -1,9 +1,10 @@
 Change log of the NatMM Builders
 
-Date        By        Builders	     Change					     Consequences
+Date        By        Builders       Change                                          Consequences
 2006-06-22  Henk      formulier      Added position and type                         position and type should be added to formulier in db
-2006-07-08  Alexey    evenement      Added externid				     externid should be added to evenement in db
-2006-07-13  Henk      payment_type   Added externid				     externid should be added to payment_type in db
-2006-07-17  Henk      deelnemers     Moved externid from medewerker to persoon	     externid should be added to persoon and deelnemers in db
+2006-07-08  Alexey    evenement      Added externid                                  externid should be added to evenement in db
+2006-07-13  Henk      payment_type   Added externid                                  externid should be added to payment_type in db
+2006-07-17  Henk      deelnemers     Moved externid from medewerker to persoon       externid should be added to persoon and deelnemers in db
 2006-07-18  Henk      pools,topics   Added menu-rubriek-topics-pools construct       construct should be added to all installations using NatMM and NMIntra
-2006-07-20  Henk      media          Added externid				     externid should be added to media in db
+2006-07-20  Henk      media          Added externid                                  externid should be added to media in db
+2006-07-28  Henk      pools          Added relation to persoon and pools             add relation pools-posrel-persoon and pools-posrel-dossier
