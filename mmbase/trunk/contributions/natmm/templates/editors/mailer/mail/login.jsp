@@ -1,6 +1,7 @@
 <%-- get header --%>
 <%@include file="includes/abonnee/top.jsp"%>
 <%-- this is a page where the user isn't logged in yet--%>
+<mm:import id="active">login</mm:import>
 <mm:import id="login"/>
 
 <mm:content type="text/html" expires="0">
@@ -18,6 +19,8 @@
 
    <%-- get header --%>
    <%@include file="includes/abonnee/banner.jsp"%>
+   <mm:include referids="active" page="includes/abonnee/sidebar.jsp"/>
+
 
    <%-- get some text, this must be changed in the next release, use something like multilanguage option --%>
    <%@include file="includes/abonnee/defaulttext.jsp"%>

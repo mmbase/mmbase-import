@@ -1,14 +1,9 @@
 <%@include file="/taglibs.jsp" %>
-<%@page import="nl.leocms.authorization.*,
-         nl.leocms.authorization.forms.ChangePasswordAction,
-         com.finalist.mmbase.util.CloudFactory,
-         org.mmbase.bridge.*" %>
-
 <%@page import="nl.leocms.connectors.UISconnector.input.customers.model.*" %>
-
-
-<mm:cloud method="http" rank="basic user" jspvar="cloud">
+<mm:cloud jspvar="cloud">
 <mm:log jspvar="log">
+   <mm:import externid="action"></mm:import>
+   <mm:compare referid="action" value="">
    <%
     String sLogin = request.getParameter("username");
     String sPassword = request.getParameter("password");    
@@ -33,12 +28,20 @@
    <%
       if(memberid == null){
          log.info("Did not find a memberid");
-         response.sendRedirect("login.jsp");
+         response.sendRedirect("login.jsp?reason=failed");
       }
       else{
          log.info("Found memberid");
-         %>You have logged in<%
+         response.sendRedirect("dossier.jsp");
       }
    %>
+   </mm:compare>
+   <mm:compare referid="action" value="logout">
+      <% String memberid="-1"; %>
+      <%@include file="/natmm/includes/memberid_set.jsp" %>
+      <% 
+         response.sendRedirect("login.jsp");
+      %>
+   </mm:compare>
 </mm:log>
 </mm:cloud>
