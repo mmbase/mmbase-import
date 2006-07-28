@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.167 2006-07-17 07:19:15 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.168 2006-07-28 15:03:35 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -2362,12 +2362,9 @@ public class DatabaseStorageManager implements StorageManager {
                     Map colInfo = (Map)columns.get(id);
                     if ((colInfo == null)) {
 
-                        // bug #6609, marcel
-                        if((field!=null) && (field.getName()!=null) && (field.getName().equals(id))) {
-                            log.error("VERIFY: Field '" + field.getName() + "' of builder '" + builder.getTableName() + "' does NOT exist in storage! Field will be considered virtual");
-                        } else {
-                            log.error("VERIFY: Field '" + field.getName() + "' (mapped to field '"+id+"') of builder '" + builder.getTableName() + "' does NOT exist in storage! Field will be considered virtual");
-                        }
+                        log.error("VERIFY: Field '" + field.getName() + "' " +
+                                  (id.equals(field.getName()) ? "" : "(mapped to field '" + id + "') ") +
+                                   "of builder '" + builder.getTableName() + "' does NOT exist in storage! Field will be considered virtual");
 
                         // set field to virtual so it will not be stored -
                         // prevents future queries or statements from failing
