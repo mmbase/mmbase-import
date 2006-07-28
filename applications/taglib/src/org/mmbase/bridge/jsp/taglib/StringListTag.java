@@ -22,7 +22,7 @@ import org.mmbase.bridge.jsp.taglib.util.*;
  * This class makes a tag which can list strings.
  *
  * @author Michiel Meeuwissen
- * @version $Id: StringListTag.java,v 1.31 2006-07-18 16:30:16 michiel Exp $
+ * @version $Id: StringListTag.java,v 1.32 2006-07-28 11:31:22 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -211,6 +211,7 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
                 if (bodyContent != null) {
                     try {
                         bodyContent.writeOut(bodyContent.getEnclosingWriter());
+                        bodyContent.clearBody();
                     } catch (IOException ioe){
                         throw new TaglibException(ioe);
                     }
@@ -230,6 +231,7 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
             collector.release(pageContext, getContextProvider().getContextContainer());
             collector  = null;
         }
+        bodyContent = null;
         helper.doEndTag();
         return  super.doEndTag();
     }
