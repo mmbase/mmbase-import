@@ -42,7 +42,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: ConstraintsMatchingStrategy.java,v 1.28 2006-07-26 08:08:14 michiel Exp $
+ * @version $Id: ConstraintsMatchingStrategy.java,v 1.29 2006-07-28 09:45:39 michiel Exp $
  *
  */
 public class ConstraintsMatchingStrategy extends ReleaseStrategy {
@@ -142,99 +142,95 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
 
         //we should have a matcher now
         if(matcher != null){
-            try {
-                switch(event.getType()) {
-                case Event.TYPE_NEW: {
-                    Map newValues = event.getNewValues();
-                    // we have to compare the constraint value with the new value of the changed field to see if the new
-                    // node falls within the constraint. it it does: flush
-                    if(matcher.eventApplies(newValues, event)){
-                        boolean eventMatches =  matcher.nodeMatchesConstraint(newValues, event);
-                        if (log.isDebugEnabled()) {
-                            logResult((eventMatches ? "" : "no ") + "flush: with matcher {" + matcher + "}:", query, event, null);
-                        }
-                        return eventMatches;
-                    } else {
-                        if (log.isDebugEnabled()) {
-                            logResult("flush: event does not apply to wrapper {" + matcher + "}:", query, event, null);
-                        }
-                        return true;
+            switch(event.getType()) {
+            case Event.TYPE_NEW: {
+                Map newValues = event.getNewValues();
+                // we have to compare the constraint value with the new value of the changed field to see if the new
+                // node falls within the constraint. it it does: flush
+                if(matcher.eventApplies(newValues, event)){
+                    boolean eventMatches =  matcher.nodeMatchesConstraint(newValues, event);
+                    if (log.isDebugEnabled()) {
+                        logResult((eventMatches ? "" : "no ") + "flush: with matcher {" + matcher + "}:", query, event, null);
                     }
+                    return eventMatches;
+                } else {
+                    if (log.isDebugEnabled()) {
+                        logResult("flush: event does not apply to wrapper {" + matcher + "}:", query, event, null);
+                    }
+                    return true;
                 }
-                case Event.TYPE_CHANGE: {
-                    Map oldValues;
-                    Map newValues;
-                    //because composite constraints can also cover fields that are not in the changed field list of the node
-                    //let's find the node and get all the values.
-                    MMObjectNode node = MMBase.getMMBase().getBuilder(event.getBuilderName()).getNode(event.getNodeNumber());
-                    if(node != null){
-                        //put all the (new) values in the value maps
-                        Map nodeValues = node.getValues();
-                        oldValues = new LinkMap(nodeValues, event.getOldValues());
-                        newValues = new LinkMap(nodeValues, event.getNewValues());
-                    } else {
-                        oldValues = event.getOldValues();
-                        newValues = event.getNewValues();
-                    }
-
-                    // we have to compare the old value and then the new value of the changed field to see if the status
-                    // has changed. if the node used to match the constraint but now doesn't or the reverse of this, flush.
-                    if(matcher.eventApplies(newValues, event)){
-                        boolean eventMatches =
-                            matcher.nodeMatchesConstraint(oldValues, event) || // used to match
-                            matcher.nodeMatchesConstraint(newValues, event); // still matches
-
-                        // It may be important to check whether the changed fields of the node are
-                        // present in the field-list of the query. If they are not, and usedToMatch
-                        // && stillMaches, then we can still return false, if at least there is no
-                        // sort-order on a changed field, because even if the field itself is not in
-                        // the result, and it matches the constraint before and after the event, it
-                        // can still change the order of the result then.
-                        // If we can garantuee that field-values alway come from the node-cache (which we cannot, at the moment), 
-                        // then things may become a bit different.
-
-                        if (log.isDebugEnabled()) {
-                            boolean usedToMatch = matcher.nodeMatchesConstraint(oldValues, event);
-                            boolean stillMatches = matcher.nodeMatchesConstraint(newValues, event);
-                            log.debug("** match with old values : " + (usedToMatch ? "match" : "no match"));
-                            log.debug("** match with new values : " + (stillMatches ? "match" : "no match"));
-                            log.debug("**old values: " + oldValues);
-                            log.debug("**new values: " + newValues);
-                            logResult((eventMatches ? "" : "no ") + "flush: with matcher {" + matcher + "}:", query, event, node);
-                        }
-
-                        return eventMatches;
-                    } else {
-                        if (log.isDebugEnabled()) {
-                            logResult("flush: event does not apply to wrapper {" + matcher + "}:", query, event, node);
-                        }
-                        return true;
-                    }
-                }
-                case Event.TYPE_DELETE:
-                    Map oldValues = event.getOldValues();
-                    // we have to compare the old value of the field to see if the node used to fall within the
-                    // constraint. If it did: flush
-                    if(matcher.eventApplies(event.getOldValues(), event)){
-                        boolean eventMatches = matcher.nodeMatchesConstraint(oldValues, event);
-                        if (log.isDebugEnabled()) {
-                            logResult( (eventMatches ? "" : "no ") + "flush: with matcher {"+matcher+"}:", query, event, null);
-                        }
-                        return eventMatches;
-                    } else {
-                        if (log.isDebugEnabled()) {
-                            logResult("flush: event does not apply to wrapper {" + matcher + "}:", query, event, null);
-                        }
-                        return true;
-                    }
-                default:
-                    log.error("Unrecognized event-type " + event.getType());
-                    break;
-                }
-            } catch (FieldComparisonException e) {
-                log.warn(e.getMessage(), e);
             }
-         }
+            case Event.TYPE_CHANGE: {
+                Map oldValues;
+                Map newValues;
+                //because composite constraints can also cover fields that are not in the changed field list of the node
+                //let's find the node and get all the values.
+                MMObjectNode node = MMBase.getMMBase().getBuilder(event.getBuilderName()).getNode(event.getNodeNumber());
+                if(node != null){
+                    //put all the (new) values in the value maps
+                    Map nodeValues = node.getValues();
+                    oldValues = new LinkMap(nodeValues, event.getOldValues());
+                    newValues = new LinkMap(nodeValues, event.getNewValues());
+                } else {
+                    oldValues = event.getOldValues();
+                    newValues = event.getNewValues();
+                }
+
+                // we have to compare the old value and then the new value of the changed field to see if the status
+                // has changed. if the node used to match the constraint but now doesn't or the reverse of this, flush.
+                if(matcher.eventApplies(newValues, event)){
+                    boolean eventMatches =
+                        matcher.nodeMatchesConstraint(oldValues, event) || // used to match
+                        matcher.nodeMatchesConstraint(newValues, event); // still matches
+
+                    // It may be important to check whether the changed fields of the node are
+                    // present in the field-list of the query. If they are not, and usedToMatch
+                    // && stillMaches, then we can still return false, if at least there is no
+                    // sort-order on a changed field, because even if the field itself is not in
+                    // the result, and it matches the constraint before and after the event, it
+                    // can still change the order of the result then.
+                    // If we can garantuee that field-values alway come from the node-cache (which we cannot, at the moment),
+                    // then things may become a bit different.
+
+                    if (log.isDebugEnabled()) {
+                        boolean usedToMatch = matcher.nodeMatchesConstraint(oldValues, event);
+                        boolean stillMatches = matcher.nodeMatchesConstraint(newValues, event);
+                        log.debug("** match with old values : " + (usedToMatch ? "match" : "no match"));
+                        log.debug("** match with new values : " + (stillMatches ? "match" : "no match"));
+                        log.debug("**old values: " + oldValues);
+                        log.debug("**new values: " + newValues);
+                        logResult((eventMatches ? "" : "no ") + "flush: with matcher {" + matcher + "}:", query, event, node);
+                    }
+
+                    return eventMatches;
+                } else {
+                    if (log.isDebugEnabled()) {
+                        logResult("flush: event does not apply to wrapper {" + matcher + "}:", query, event, node);
+                    }
+                    return true;
+                }
+            }
+            case Event.TYPE_DELETE:
+                Map oldValues = event.getOldValues();
+                // we have to compare the old value of the field to see if the node used to fall within the
+                // constraint. If it did: flush
+                if(matcher.eventApplies(event.getOldValues(), event)){
+                    boolean eventMatches = matcher.nodeMatchesConstraint(oldValues, event);
+                    if (log.isDebugEnabled()) {
+                        logResult( (eventMatches ? "" : "no ") + "flush: with matcher {"+matcher+"}:", query, event, null);
+                    }
+                    return eventMatches;
+                } else {
+                    if (log.isDebugEnabled()) {
+                        logResult("flush: event does not apply to wrapper {" + matcher + "}:", query, event, null);
+                    }
+                    return true;
+                }
+            default:
+                log.error("Unrecognized event-type " + event.getType());
+                break;
+            }
+        }
         return true; //safe: should release
     }
 
@@ -294,9 +290,8 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
          * @param valuesToMatch the field values that the constraint value will have to be matched against.
          * this will sometimes be the 'oldValues' and sometimes be the 'newValues' from the event.
          * @return true if the values of event falls within the limits of the constraint
-         * @throws FieldComparisonException
          */
-        abstract public boolean nodeMatchesConstraint(Map valuesToMatch, NodeEvent event)  throws FieldComparisonException ;
+        abstract public boolean nodeMatchesConstraint(Map valuesToMatch, NodeEvent event);
         /**
          * @param valuesToMatch map of (changed) fields with their values
          * @param event the event that has occured
@@ -331,17 +326,13 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                 if (log.isDebugEnabled()) {
                     log.debug("** relevant constraint found: " + acm);
                 }
-                try {
-                    if (acm.nodeMatchesConstraint(valuesToMatch, event)){
-                        matches ++;
-                        if (log.isDebugEnabled()) {
-                            log.debug("** constraint created a match on " + valuesToMatch);
-                        }
-                    } else if (log.isDebugEnabled()) {
-                        log.debug("** constraint created _NO_ match on " + valuesToMatch);
+                if (acm.nodeMatchesConstraint(valuesToMatch, event)){
+                    matches ++;
+                    if (log.isDebugEnabled()) {
+                        log.debug("** constraint created a match on " + valuesToMatch);
                     }
-                } catch (FieldComparisonException e) {
-                    log.warn("** field compare exception: " + e.toString());
+                } else if (log.isDebugEnabled()) {
+                    log.debug("** constraint created _NO_ match on " + valuesToMatch);
                 }
             }
             if (wrappedCompositeConstraint.getLogicalOperator() == BasicCompositeConstraint.LOGICAL_AND) {
@@ -409,8 +400,6 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
 
 
 
-
-
     private static class UnsupportedConstraintMatcher extends AbstractConstraintMatcher {
 
         final Constraint wrappedConstraint;
@@ -454,7 +443,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
 
         protected abstract int getOperator();
 
-        protected boolean valueMatches(final Class fieldType, Object constraintValue, Object valueToCompare, final boolean isCaseSensitive) throws FieldComparisonException {
+        protected boolean valueMatches(final Class fieldType, Object constraintValue, Object valueToCompare, final boolean isCaseSensitive) {
             if (log.isDebugEnabled()) {
                 log.debug("**method: valueMatches() fieldtype: " + fieldType);
             }
@@ -468,22 +457,26 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                 switch(operator) {
                 case FieldCompareConstraint.EQUAL:     return booleanToCompare == constraintBoolean;
                 case FieldCompareConstraint.NOT_EQUAL: return booleanToCompare != constraintBoolean;
-                default:   throw new FieldComparisonException("operator " + FieldCompareConstraint.OPERATOR_DESCRIPTIONS[operator] + "is not supported for type Boolean");
+                default:
+                    log.warn("operator " + FieldCompareConstraint.OPERATOR_DESCRIPTIONS[operator] + "is not supported for type Boolean");
+                    return true;
                 }
             } else if (fieldType.equals(Float.class)) {
                 float constraintFloat = Casting.toFloat(constraintValue, Float.MAX_VALUE);
                 float floatToCompare = Casting.toFloat(valueToCompare, Float.MAX_VALUE);
                 //if either value could not be cast to an int, return true, which is safe
                 if(constraintFloat == Float.MAX_VALUE || floatToCompare == Float.MAX_VALUE) {
-                    throw new FieldComparisonException("either " + constraintValue + " or " + valueToCompare + " could not be cast to type float (while that is supposed to be their type)");
+                    log.warn("either " + constraintValue + " or " + valueToCompare + " could not be cast to type float (while that is supposed to be their type)");
+                    return true;
                 }
                 return floatMatches(constraintFloat, floatToCompare, operator);
             } else if (fieldType.equals(Double.class)) {
                 double constraintDouble = Casting.toDouble(constraintValue, Double.MAX_VALUE);
                 double doubleToCompare = Casting.toDouble(valueToCompare, Double.MAX_VALUE);
                 //if either value could not be cast to an int, return true, which is safe
-                if(constraintDouble == Double.MAX_VALUE || doubleToCompare == Double.MAX_VALUE) { 
-                    throw new FieldComparisonException("either " + constraintValue + " or " + valueToCompare + " could not be cast to type double (while that is supposed to be their type)");
+                if(constraintDouble == Double.MAX_VALUE || doubleToCompare == Double.MAX_VALUE) {
+                    log.warn("either " + constraintValue + " or " + valueToCompare + " could not be cast to type double (while that is supposed to be their type)");
+                    return true;
                 }
                 return floatMatches(constraintDouble, doubleToCompare, operator);
             } else if (fieldType.equals(Date.class)) {
@@ -492,7 +485,8 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
 
                 //if either value could not be cast to an int, return true, which is safe
                 if(constraintLong == Long.MAX_VALUE || longToCompare == Long.MAX_VALUE) {
-                    throw new FieldComparisonException("either " + constraintValue + " or " + valueToCompare + " could not be cast to type long (while they are supposed to be of type Date supposed to be their type)");
+                    log.warn("either " + constraintValue + " or " + valueToCompare + " could not be cast to type long (while they are supposed to be of type Date supposed to be their type)");
+                    return true;
                 }
                 return intMatches(constraintLong, longToCompare, operator);
             } else if (fieldType.equals(Integer.class)) {
@@ -501,7 +495,8 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
 
                 //if either value could not be cast to an int, return true, which is safe
                 if(constraintInt == Integer.MAX_VALUE || intToCompare == Integer.MAX_VALUE) {
-                    throw new FieldComparisonException("either " + constraintValue + " or " + valueToCompare + " could not be cast to type int (while that is supposed to be their type)");
+                    log.warn("either " + constraintValue + " or " + valueToCompare + " could not be cast to type int (while that is supposed to be their type)");
+                    return true;
                 }
                 return intMatches(constraintInt, intToCompare, operator);
             } else if (fieldType.equals(Long.class)) {
@@ -510,10 +505,11 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
 //              if either value could not be cast to a long, return true, which is safe
                 if(constraintLong == Long.MAX_VALUE || longToCompare == Long.MAX_VALUE) {
                     // how can this ever happen?
-                    // Should these kind of thinbgs be done via an exception? Why not 'return true' as stated in the doc anyway.
-                    throw new FieldComparisonException("either [" + constraintValue +"] " + (constraintValue == null ? "": "of type "  + constraintValue.getClass().getName()) +
-                                                       " or [" + valueToCompare + "] of type " + (valueToCompare == null ? "": "of type "  + valueToCompare.getClass().getName()) +
-                                                       " could not be cast to type long (while that is supposed to be their type)");
+                    log.warn("either [" + constraintValue +"] " + (constraintValue == null ? "": "of type "  + constraintValue.getClass().getName()) +
+                             " or [" + valueToCompare + "] of type " + (valueToCompare == null ? "": "of type "  + valueToCompare.getClass().getName()) +
+                             " could not be cast to type long (while that is supposed to be their type)");
+                    return true;
+
                 }
                 return intMatches(constraintLong, longToCompare, operator);
             }  else if (fieldType.equals(Node.class)) {
@@ -523,9 +519,11 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                 int intToCompare = Casting.toInt(valueToCompare, Integer.MAX_VALUE);
 //              if either value could not be cast to a Node, return true, which is safe
                 if(constraintInt == Integer.MAX_VALUE || intToCompare == Integer.MAX_VALUE) {
-                    throw new FieldComparisonException("either [" + constraintValue +"] " + (constraintValue == null ? "": "of type "  + constraintValue.getClass().getName()) +
-                                                       " or [" + valueToCompare + "] of type " + (valueToCompare == null ? "": "of type "  + valueToCompare.getClass().getName()) +
-                                                       " could not be cast to type int  (while they should be type node)");
+                    log.warn("either [" + constraintValue +"] " + (constraintValue == null ? "": "of type "  + constraintValue.getClass().getName()) +
+                             " or [" + valueToCompare + "] of type " + (valueToCompare == null ? "": "of type "  + valueToCompare.getClass().getName()) +
+                             " could not be cast to type int  (while they should be type node)");
+                    return true;
+
                 }
                 return intMatches(constraintInt, intToCompare, operator);
             } else if (fieldType.equals(String.class) || fieldType.equals(org.w3c.dom.Document.class)) {
@@ -537,7 +535,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
             return false;
         }
 
-        private boolean floatMatches(double constraintDouble, double doubleTocompare, int operator) throws FieldComparisonException {
+        private boolean floatMatches(double constraintDouble, double doubleTocompare, int operator)  {
             switch(operator) {
             case FieldCompareConstraint.EQUAL:         return doubleTocompare == constraintDouble;
             case FieldCompareConstraint.GREATER:       return doubleTocompare > constraintDouble;
@@ -546,11 +544,13 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
             case FieldCompareConstraint.LESS_EQUAL:    return doubleTocompare <= constraintDouble;
             case FieldCompareConstraint.NOT_EQUAL:     return doubleTocompare != constraintDouble;
             default:
-                throw new FieldComparisonException("operator " + FieldCompareConstraint.OPERATOR_DESCRIPTIONS[operator] + "for any numeric type");
+                log.warn("operator " + FieldCompareConstraint.OPERATOR_DESCRIPTIONS[operator] + "for any numeric type");
+                return true;
+
             }
         }
 
-        private boolean intMatches(long constraintLong, long longToCompare, int operator) throws FieldComparisonException {
+        private boolean intMatches(long constraintLong, long longToCompare, int operator) {
             switch(operator) {
             case FieldCompareConstraint.EQUAL:         return longToCompare == constraintLong;
             case FieldCompareConstraint.GREATER:       return longToCompare > constraintLong;
@@ -559,11 +559,12 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
             case FieldCompareConstraint.LESS_EQUAL:    return longToCompare <= constraintLong;
             case FieldCompareConstraint.NOT_EQUAL:     return longToCompare != constraintLong;
             default:
-                throw new FieldComparisonException("operator " + FieldCompareConstraint.OPERATOR_DESCRIPTIONS[operator] + "for any numeric type");
+                log.warn("operator " + FieldCompareConstraint.OPERATOR_DESCRIPTIONS[operator] + "for any numeric type");
+                return true;
             }
         }
 
-        private boolean stringMatches(String constraintString, String stringToCompare, int operator, boolean isCaseSensitive) throws FieldComparisonException {
+        private boolean stringMatches(String constraintString, String stringToCompare, int operator, boolean isCaseSensitive) {
             switch(operator) {
             case FieldCompareConstraint.EQUAL:         return stringToCompare.equals(constraintString);
                 // TODO: MM: I think depending on the database configuration the case-sensitivity may be important in the following 4:
@@ -574,7 +575,8 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
             case FieldCompareConstraint.LIKE:          return likeMatches(constraintString, stringToCompare, isCaseSensitive);
             case FieldCompareConstraint.NOT_EQUAL:     return ! stringToCompare.equals(constraintString);
             default:
-                throw new FieldComparisonException("operator " + FieldCompareConstraint.OPERATOR_DESCRIPTIONS[operator] + "is not supported for type String");
+                log.warn("operator " + FieldCompareConstraint.OPERATOR_DESCRIPTIONS[operator] + "is not supported for type String");
+                return true;
             }
         }
 
@@ -656,7 +658,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
         /**
          * Check the values to see if the values of the node matches the constraint.
          */
-        public boolean nodeMatchesConstraint(Map valuesToMatch, NodeEvent event) throws FieldComparisonException {
+        public boolean nodeMatchesConstraint(Map valuesToMatch, NodeEvent event)  {
             log.debug("**method: nodeMatchesConstraint");
             //if(! eventApplies(valuesToMatch, event)) throw new FieldComparisonException("constraint " + wrappedFieldCompareConstraint.toString() + "does not match event of type " +event.getBuilderName());
             boolean matches = valueMatches(fieldTypeClass,
@@ -688,12 +690,6 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
 
 
 
-    private static class FieldComparisonException extends Exception {
-        public FieldComparisonException(String string) {
-            super(string);
-        }
-    }
-
     /**
      * @since MMBase-1.8.1
      */
@@ -705,9 +701,9 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
         public BasicFieldValueBetweenConstraintMatcher(BasicFieldValueBetweenConstraint constraint)  {
             stepField = constraint.getField();
             wrappedFieldConstraint = constraint;
-        } 
-        
-        public boolean nodeMatchesConstraint(Map valuesToMatch, NodeEvent event) throws FieldComparisonException {
+        }
+
+        public boolean nodeMatchesConstraint(Map valuesToMatch, NodeEvent event) {
             return true;
         }
 
@@ -716,13 +712,13 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
         }
 
         public String toString() {
-            return "Field Value Between Matcher.  operator: " + 
+            return "Field Value Between Matcher.  operator: " +
             ", step: " +stepField.getStep().getTableName() +
             ", field name: " + stepField.getFieldName();
         }
-        
+
     }
-    
+
     /**
      * @since MMBase-1.8.1
      */
@@ -735,7 +731,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
             stepField = constraint.getField();
             fieldTypeClass = getFieldTypeClass(stepField);
             wrappedFieldValueInConstraint = constraint;
-        } 
+        }
 
         protected int getOperator() {
             return FieldCompareConstraint.EQUAL;
@@ -744,7 +740,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
         /**
          * Check the values to see if the node's value matches the constraint.
          */
-        public boolean nodeMatchesConstraint(Map valuesToMatch, NodeEvent event) throws FieldComparisonException {
+        public boolean nodeMatchesConstraint(Map valuesToMatch, NodeEvent event) {
             log.debug("**method: nodeMatchesConstraint");
             SortedSet values = wrappedFieldValueInConstraint.getValues();
             boolean matches = false;
@@ -760,7 +756,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
         }
 
         public String toString(){
-            return "Field Value IN Matcher.  operator: " + 
+            return "Field Value IN Matcher.  operator: " +
                 ", value: " + wrappedFieldValueInConstraint.getValues().toString() + ", step: " +stepField.getStep().getTableName() +
                 ", field name: " + stepField.getFieldName();
         }
