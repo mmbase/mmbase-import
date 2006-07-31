@@ -20,7 +20,7 @@ import org.mmbase.bridge.Cacheable;
  * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.35 2006-02-23 17:36:55 michiel Exp $
+ * @version $Id: Cache.java,v 1.36 2006-07-31 13:33:05 michiel Exp $
  */
 abstract public class Cache implements SizeMeasurable, Map {
 
@@ -281,7 +281,7 @@ abstract public class Cache implements SizeMeasurable, Map {
     /**
      * Returns the sum of bytesizes of every key and value. This may count too much, because objects
      * (like Nodes) may occur in more then one value, but this is considerably cheaper then {@link
-     * getByteSize()}, which has to keep a Collection of every counted object.
+     * #getByteSize()}, which has to keep a Collection of every counted object.
      * @since MMBase-1.8
      */
     public int getCheapByteSize() {

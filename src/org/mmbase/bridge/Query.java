@@ -19,7 +19,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: Query.java,v 1.39 2006-07-03 20:49:29 michiel Exp $
+ * @version $Id: Query.java,v 1.40 2006-07-31 13:30:25 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.bridge.util.Queries
  */
@@ -303,7 +303,7 @@ public interface Query extends SearchQuery, Cacheable, Cloneable {
     /**
      * Adds an order on a certain field.
      * @param f field
-     * @param direction ASCENDING or DESCENDING
+     * @param direction {@link SortOrder#ORDER_ASCENDING} or {@link SortOrder#ORDER_DESCENDING}
      * @return new SortOrder
      * @see org.mmbase.storage.search.implementation.BasicSearchQuery#addSortOrder
      * @since MMBase-1.8
