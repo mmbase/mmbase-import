@@ -39,7 +39,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.38 2006-07-28 15:02:26 michiel Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.39 2006-07-31 13:31:43 michiel Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
@@ -351,7 +351,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
     }
 
     /**
-     * As {@link getBinaryFileBasePath(boolean)} with <code>true</code>
+     * As {@link #getBinaryFileBasePath(boolean)} with <code>true</code>
      */
     public String getBinaryFileBasePath() {
         return getBinaryFileBasePath(true);
@@ -359,7 +359,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
     /**
      * Returns the base path for 'binary file'
-     * @param logError If the path is only perhaps needed, you may want to provide 'false' here.
+     * @param check If the path is only perhaps needed, you may want to provide 'false' here.
      * @since MMBase-1.8.1
      */
     public String getBinaryFileBasePath(boolean check) {

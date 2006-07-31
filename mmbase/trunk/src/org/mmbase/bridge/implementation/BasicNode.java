@@ -34,7 +34,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.207 2006-07-21 14:20:47 nklasens Exp $
+ * @version $Id: BasicNode.java,v 1.208 2006-07-31 13:32:24 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -785,7 +785,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         }
     }
     /**
-     * @param nodeManager node manager on the other side of the relation
+     * @param otherManager node manager on the other side of the relation
      * @param role role of the relation
      * @param searchDir direction of the relation
      * @return List of related nodes
