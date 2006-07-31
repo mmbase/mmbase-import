@@ -1,4 +1,6 @@
 <%@page import="nl.leocms.evenementen.Evenement,nl.leocms.util.PaginaHelper" %>
+<%@page import="org.mmbase.bridge.*" %>
+<%@page import="nl.leocms.util.*" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@include file="../../includes/image_vars.jsp" %>
 <mm:cloud jspvar="cloud">
@@ -7,13 +9,26 @@
    PaginaHelper ph = new PaginaHelper(cloud);
    String rootID = ph.getRootRubriek(cloud,objectID);
    int count = 0;
+%>   
+<%@include file="/editors/mailer/util/memberid_get.jsp" %>
+<%
+   if (memberid == null) {
+     memberid = "-1";
+   }
 %>
 <mm:node number="<%=objectID%>">
   <div class="headerBar" style="width:100%;">DOSSIERS</div>
   <table cellspacing="0">
-    <mm:related path="posrel,dossier" fields="dossier.number,dossier.naam" orderby="posrel.pos">
-      <mm:field name="dossier.number" jspvar="dossier_number" vartype="String" write="false">
-      <mm:field name="dossier.naam" jspvar="dossier_naam" vartype="String" write="false">
+<%
+   NodeList nlDossiers = PoolUtil.getByPools(cloud,objectID,"pagina,posrel","dossier",
+                                             "","posrel.pos",memberid);
+   int maxDossiers = nlDossiers.size();
+   for(int i=0; i<maxDossiers; i++) {
+     Node node = nlDossiers.getNode(i);
+%>
+     <mm:node number="<%= node.getStringValue("dossier.number") %>">   
+      <mm:field name="number" jspvar="dossier_number" vartype="String" write="false">
+      <mm:field name="naam" jspvar="dossier_naam" vartype="String" write="false">
 <%
         if (count%2==0 && count>1) { %><tr><td colspan="2" style="height:3px;"><div class="rule" style="margin:0px;"></div></td></tr><% }
 
@@ -93,9 +108,10 @@
 %>   
       </mm:field>
       </mm:field>
-    </mm:related>
+     </mm:node>
 <%
-    if (count%2==1) { %><td>&nbsp;</td></tr><% }
+   }
+   if (count%2==1) { %><td>&nbsp;</td></tr><% }
 %>
   </table>
 </mm:node>
