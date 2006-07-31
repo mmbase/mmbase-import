@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.72 2006-07-06 16:35:19 pierre Exp $
+ * @version $Id: BuilderReader.java,v 1.73 2006-07-31 13:00:01 pierre Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -98,7 +98,7 @@ public class BuilderReader extends DocumentReader {
 
     /**
      * Parent builder.
-     * If assigned, the properties of this buidler are used as 'defaults'
+     * If assigned, the properties of this builder are used as 'defaults'
      * and the fields of the builder are inherited.
      * @since MMbase-1.6
      */
@@ -199,20 +199,16 @@ public class BuilderReader extends DocumentReader {
      * @return a String decribing the status ("active" or "inactive")
      */
     public String getStatus() {
-        if (!inheritanceResolved) return "inactive";
-        String val = getElementValue("builder.status").toLowerCase();
-        if (val.equals("")) {
-           if (parentBuilder != null) {
-               return "active";
-           } else {
-               return "";
-           }
+        if (!inheritanceResolved) {
+            return "inactive"; // extends an inactive or non-existing builder
+        } else {
+            String val = getElementValue("builder.status").toLowerCase();
+            if (!val.equals("inactive")) {
+                val = "active"; // fix invalid values, including empty value, in which case
+                                // assume it extends an active builder (i.e. object)
+            }
+            return val;
         }
-        // fix invalid values
-        if (!val.equals("active")) {
-           val = "inactive";
-        }
-        return val;
     }
 
     /**
