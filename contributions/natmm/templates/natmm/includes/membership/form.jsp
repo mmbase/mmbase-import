@@ -195,11 +195,11 @@
                  <% ti++; %>
                  <html:radio property="payment_period" style="border:0;" value="<%= MembershipForm.MONTH %>" onclick="clearPaymentRadio();setAuthorize();" tabindex="<%= "" + ti %>" 
                      />&nbsp;<bean:message bundle="LEOCMS" key="membershipform.per.maand" />
-                     <bean:message bundle="LEOCMS" key="membershipform.amount.minimum" />
+                     <bean:message bundle="LEOCMS" key="membershipform.amount.month.minimum" /><br/>
                  <% ti++; %>
                  <html:radio property="payment_period" style="border:0;" value="<%= MembershipForm.YEAR %>" onclick="clearPaymentRadio();setAuthorize();" tabindex="<%= "" + ti %>" 
                      />&nbsp;<bean:message bundle="LEOCMS" key="membershipform.per.jaar" />
-                     
+                     <bean:message bundle="LEOCMS" key="membershipform.amount.year.minimum" />                     
               </td>
             </tr>
             <tr><td colspan="2" style="height:5px;"></td></tr>
@@ -224,8 +224,7 @@
 				<tr><td colspan="2" style="height:10px;"></td></tr>
 				<tr>
               <td colspan="2">
-                  <bean:message bundle="LEOCMS" key="membershipform.required.fields.explanation" /><br/>
-                  <bean:message bundle="LEOCMS" key="membershipform.amount.minimum.explanation" />
+                  <bean:message bundle="LEOCMS" key="membershipform.required.fields.explanation" />
               </td>
            </tr>
            <tr>
