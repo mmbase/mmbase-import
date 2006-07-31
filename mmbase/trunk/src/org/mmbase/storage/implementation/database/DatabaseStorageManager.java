@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.168 2006-07-28 15:03:35 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.169 2006-07-31 12:11:52 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -63,7 +63,7 @@ public class DatabaseStorageManager implements StorageManager {
      * @since MMBase-1.8.1
      */
     protected static Set verifiedTablesCache = new HashSet();
-    
+
     /**
      * Whether the warning about blob on legacy location was given.
      */
@@ -1001,7 +1001,19 @@ public class DatabaseStorageManager implements StorageManager {
 
     // javadoc is inherited
     public void change(MMObjectNode node) throws StorageException {
+        // resolve aliases, if any.
         MMObjectBuilder builder = node.getBuilder();
+        for (Iterator i = builder.getFields().iterator(); i.hasNext(); ) {
+            CoreField field = (CoreField) i.next();
+            if (field.getName().equals(builder.FIELD_NUMBER))      continue;
+            if (field.getName().equals(builder.FIELD_OBJECT_TYPE)) continue;
+            if (field.getType() == Field.TYPE_NODE) {
+                Object value = node.getValue(field.getName());
+                if (value instanceof String) {
+                    node.setValue(field.getName(), builder.getNode((String)value));
+                }
+            }
+        }
         // precommit call, needed to convert or add things before a save
         // Should be done in MMObjectBuilder
         builder.preCommit(node);
@@ -2292,7 +2304,7 @@ public class DatabaseStorageManager implements StorageManager {
     public boolean isVerified(MMObjectBuilder builder) {
         return verifiedTablesCache.contains(builder.getTableName().toUpperCase());
     }
-    
+
     /**
      * Tests whether a builder and the table present in the database match.
      */
