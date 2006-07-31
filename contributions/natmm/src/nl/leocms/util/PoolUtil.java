@@ -21,6 +21,7 @@
 package nl.leocms.util;
 
 import org.mmbase.bridge.*;
+import java.util.ArrayList;
 
 public class PoolUtil {
 
@@ -59,4 +60,35 @@ public class PoolUtil {
       }
    }
 
+   public static NodeList getByPools(Cloud cloud, String sSource, String sPath, String sNodeType,
+                                     String sFields, String sOrderby, String sMemberId) {
+
+      NodeList nlPriority = cloud.getList(
+                            sSource,
+                            sPath + "," + sNodeType + ",posrel,pools,posrel,deelnemers",
+                            sNodeType + ".number"+sFields,
+                            "deelnemers.number=" + sMemberId,
+                            sOrderby, null, null, true);
+
+      NodeList nlAll = cloud.getList(
+                       sSource,
+                       sPath + "," + sNodeType,
+                       sNodeType + ".number"+sFields,
+                       null,
+                       sOrderby, null, "destination", true);
+
+      ArrayList priorityNumbers = new ArrayList();
+
+      for(int p = 0; p<nlPriority.size(); p++) {
+         priorityNumbers.add(nlPriority.getNode(p).getStringValue(sNodeType + ".number"));
+      }
+      
+      for(int p = 0; p<nlAll.size(); p++) {
+         Node node = nlAll.getNode(p);
+         if (!priorityNumbers.contains(node.getStringValue(sNodeType + ".number"))) {
+            nlPriority.add(node);
+         }
+      }
+      return nlPriority;
+   }
 }
