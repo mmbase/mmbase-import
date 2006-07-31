@@ -15,7 +15,7 @@ import org.mmbase.util.logging.Logging;
  * Convert a Excel file to LeoCMS navigation structure
  *
  * @author Alexey Zemskov
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class Excel2Menu {
 
@@ -107,12 +107,12 @@ public class Excel2Menu {
             log.debug("Current level=" +  iCurrentLevel + ", cell contents=" + sheet.getCell(iCurrentLevel, f).getContents());
             while((sheet.getCell(iCurrentLevel, f).getContents() == null) || ("".equals(sheet.getCell(iCurrentLevel, f).getContents()))){
                iCurrentLevel--;
-               log.debug("Rolling back to level=" + iCurrentLevel + ", our new TempRoot=" + nodeTempRootTree[iCurrentLevel - 1].getNumber());
-               log.debug("Current level=" +  iCurrentLevel + ", cell contents=" + sheet.getCell(iCurrentLevel, f).getContents());
-               if(iCurrentLevel == 0){
+                if(iCurrentLevel == 0){
                   throw new Exception ("Row with number=" + f + " has got invalid content. Is it empty?");
                }
-
+               log.debug("Rolling back to level=" + iCurrentLevel + ", our new TempRoot=" + nodeTempRootTree[iCurrentLevel - 1].getNumber());
+               log.debug("Current level=" +  iCurrentLevel + ", cell contents=" + sheet.getCell(iCurrentLevel, f).getContents());
+              
                nodeTempRoot = nodeTempRootTree[iCurrentLevel - 1];
             }
 
