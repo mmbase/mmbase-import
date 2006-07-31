@@ -91,11 +91,29 @@ if(NatMMConfig.hasClosedUserGroup) {
     String embargoLinkConstraint = "(link.embargo < '" + (nowSec+quarterOfAnHour) + "') AND "
                                 + "(link.use_verloopdatum='0' OR link.verloopdatum > '" + nowSec + "' )";
     %>
-    <mm:list nodes="<%= paginaID %>" path="pagina,contentrel,link" fields="link.number" constraints="<%= embargoLinkConstraint %>">
-      <iframe src="<mm:url page="includes/portal/video.jsp">
-                     <mm:param name="link"><mm:field name="link.number" /></mm:param>
-                  </mm:url>" style="padding:0px;width:214px;height:177px;" id="video<mm:field name="link.number" />" scrolling="no"></iframe>
+    <mm:import id="video_image_url">null</mm:import>
+    <mm:list nodes="<%= paginaID %>" path="pagina,contentrel,link,posrel,images" orderby="posrel.pos" max="1">
+       <mm:node element="images">
+          <mm:import id="video_image_url"><mm:image/></mm:import>
+       </mm:node>
     </mm:list>
+
+    <mm:compare referid="video_image_url" value="null">
+       <mm:list nodes="<%= paginaID %>" path="pagina,contentrel,link" fields="link.number" constraints="<%= embargoLinkConstraint %>">
+         <iframe src="<mm:url page="includes/portal/video.jsp">
+                        <mm:param name="link"><mm:field name="link.number" /></mm:param>
+                     </mm:url>" style="padding:0px;width:214px;height:177px;" id="video<mm:field name="link.number" />" scrolling="no"></iframe>
+       </mm:list>
+    </mm:compare>
+
+    <mm:compare referid="video_image_url" value="null" inverse="true">
+       <mm:list nodes="<%= paginaID %>" path="pagina,contentrel,link" fields="link.number" constraints="<%= embargoLinkConstraint %>">
+         <iframe src="<mm:url page="includes/portal/video_image.jsp">
+                        <mm:param name="video_image_url"><mm:write referid="video_image_url"/></mm:param>
+                        <mm:param name="link"><mm:field name="link.number" /></mm:param>
+                     </mm:url>" style="padding:0px;width:214px;height:177px;" id="video<mm:field name="link.number" />" scrolling="no"></iframe>
+       </mm:list>
+    </mm:compare>
     <jsp:include page="includes/portal/linklijst.jsp">
       <jsp:param name="s" value="<%= paginaID %>" />
       <jsp:param name="r" value="<%= rubriekID %>" />
