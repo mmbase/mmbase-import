@@ -4,6 +4,7 @@
     <neededbuilderlist>
         <builder version="1" maintainer="mmbase.org">artikel</builder>
         <builder version="0" maintainer="mmbase.org">attachments</builder>
+        <builder version="0" maintainer="mmbase.org">childrel</builder>
         <builder version="0" maintainer="mmbase.org">contentrel</builder>
         <builder version="0" maintainer="mmbase.org">editwizards</builder>
         <builder version="0" maintainer="mmbase.org">email</builder>
@@ -29,6 +30,7 @@
       </neededbuilderlist>
     <neededreldeflist>
         <reldef source="contentrel" target="contentrel" direction="bidirectional" guisourcename="contentrel" guitargetname="contentrel" builder="contentrel" />
+        <reldef source="parent" target="parent" direction="bidirectional" guisourcename="parentrel" guitargetname="parentrel" builder="childrel"/>
         <reldef source="posrel" target="posrel" direction="bidirectional" guisourcename="Posrel" guitargetname="Posrel" builder="posrel" />
         <reldef source="readmore" target="readmore" direction="bidirectional" guisourcename="ReadMore" guitargetname="ReadMore" builder="readmore" />
         <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel" />
@@ -79,6 +81,7 @@
         <datasource builder="users" path="Breedveld\users.xml"/>
     </datasourcelist>
     <relationsourcelist>
+        <relationsource builder="childrel" path="Breedveld\childrel.xml"/>
         <relationsource builder="contentrel" path="Breedveld\contentrel.xml"/>
         <relationsource builder="insrel" path="Breedveld\insrel.xml"/>
         <relationsource builder="posrel" path="Breedveld\posrel.xml"/>
