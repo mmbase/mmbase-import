@@ -14,7 +14,7 @@
       CODEBASE="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,5,715"
            standby="Loading Microsoft® Windows® Media Player components..." 
            type="application/x-oleobject">
-     <PARAM NAME="AutoStart" VALUE="False">
+     <PARAM NAME="AutoStart" VALUE="True">
      <PARAM NAME="FileName" VALUE="<mm:field name="url" />">
      <PARAM NAME="ShowControls" VALUE="True">
      <PARAM NAME="ShowStatusBar" VALUE="True">
@@ -24,7 +24,7 @@
       name="MediaPlayer1"
       width=212
       height=177
-      autostart=0
+      autostart=1
       showstatusbar=1
       showcontrols=1>
    </OBJECT>
