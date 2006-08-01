@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * If for some reason you also need to do Queries next to MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JdbcIndexDefinition.java,v 1.8 2006-04-18 13:25:40 michiel Exp $
+ * @version $Id: JdbcIndexDefinition.java,v 1.9 2006-08-01 18:06:31 michiel Exp $
  **/
 public class JdbcIndexDefinition implements IndexDefinition {
 
@@ -57,6 +57,8 @@ public class JdbcIndexDefinition implements IndexDefinition {
 
     private final Set keyWords = new HashSet();
 
+    private final Collection subQueries = new ArrayList();
+
     JdbcIndexDefinition(DataSource ds, Element element,
                         Set allIndexedFields,
                         boolean storeText,
@@ -73,11 +75,14 @@ public class JdbcIndexDefinition implements IndexDefinition {
                     if (childElement.getAttribute("keyword").equals("true")) {
                         keyWords.add(childElement.getAttribute("name"));
                     }
+                } else if ("related".equals(childElement.getLocalName())) {
+                    subQueries.add(new JdbcIndexDefinition(ds, childElement, allIndexedFields, storeText, mergeText, a));
                 }
             }
         }
         this.analyzer = a;
     }
+
 
     /**
      * Jdbc connection pooling of MMBase would kill the statement if too duratious. This produces a
@@ -95,10 +100,17 @@ public class JdbcIndexDefinition implements IndexDefinition {
         return analyzer;
     }
 
-    protected String getSql(String identifier) {
-        if (find == null) throw new RuntimeException("No find query defined");
+    protected String getFindSql(String identifier) {
+        if (find == null || "".equals(find)) throw new RuntimeException("No find query defined");
         if (identifier == null) throw new RuntimeException("No find query defined");
         String s = find.replaceAll("\\[KEY\\]", identifier);
+        return s;
+    }
+
+    protected String getSubSql(String identifier) {
+        if (sql == null || "".equals(sql)) throw new RuntimeException("No sql defined");
+        if (identifier == null) throw new RuntimeException("No query defined");
+        String s = sql.replaceAll("\\[KEY\\]", identifier);
         return s;
     }
 
@@ -113,25 +125,25 @@ public class JdbcIndexDefinition implements IndexDefinition {
                 log.debug("Executed " + s + " in " + (System.currentTimeMillis() - start) + " ms");
             }
             final ResultSetMetaData meta = results.getMetaData();
+
             return new CloseableIterator() {
+                boolean hasNext = results.isBeforeFirst();
                 int i = 0;
 
                 public boolean hasNext() {
-                    try {
-                        return ! results.isLast();
-                    } catch (java.sql.SQLException sqe) {
-                        log.warn(sqe);
-                        return false;
-                    }
+                    return hasNext;
                 }
 
                 public Object next() {
+                    if (! hasNext) {
+                        throw new NoSuchElementException();
+                    }
                     try {
-                        if (! results.next()) {
-                            throw new NoSuchElementException();
-                        }
+                        results.next();
+                        hasNext = ! results.isLast();
                     } catch (java.sql.SQLException sqe) {
-                        throw new NoSuchElementException(sqe.getMessage());
+                        log.error(sqe);
+                        hasNext = false;
                     }
                     JdbcEntry entry = new JdbcEntry(meta, results);
                     i++;
@@ -160,7 +172,7 @@ public class JdbcIndexDefinition implements IndexDefinition {
                 }
             };
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getMessage(), e);
         }
     }
 
@@ -171,7 +183,7 @@ public class JdbcIndexDefinition implements IndexDefinition {
                 final Connection connection = dataSource.getConnection();
                 final Statement statement = connection.createStatement();
                 long start = System.currentTimeMillis();
-                String s = getSql(identifier);
+                String s = getFindSql(identifier);
                 log.debug("About to execute " + s);
                 ResultSet results = statement.executeQuery(s);
                 ResultSetMetaData meta = results.getMetaData();
@@ -214,7 +226,8 @@ public class JdbcIndexDefinition implements IndexDefinition {
     }
 
     public CloseableIterator getSubCursor(String identifier) {
-        return getCursor(getSql(identifier));
+        log.debug("Using getSubCursor for " + identifier);
+        return getCursor(getSubSql(identifier));
     }
 
     public IndexEntry getParent() {
@@ -256,12 +269,12 @@ public class JdbcIndexDefinition implements IndexDefinition {
                     }
                 }
             } catch (SQLException sqe) {
-                log.error(sqe);
+                log.error(sqe.getMessage(), sqe);
             }
         }
 
         public Collection getSubDefinitions() {
-            return Collections.EMPTY_LIST;
+            return JdbcIndexDefinition.this.subQueries;
         }
 
         public String getIdentifier() {
