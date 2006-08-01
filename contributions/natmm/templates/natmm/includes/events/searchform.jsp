@@ -4,6 +4,9 @@
 <%@include file="../../includes/calendar.jsp" %>
 <%@include file="../../includes/time.jsp" %>
 <%@include file="selecteddateandtype.jsp" %>
+<%
+String sRubriekLayout = request.getParameter("rl");
+%>
 <span class="colortitle">Selecteer een periode</span>
 <form name="eventForm" action="events.jsp" method="post">
    <input type="hidden" name="p" value="<%=paginaID%>"/>
@@ -87,6 +90,7 @@
    </mm:list>
    <br>
 <% 
+if(!sRubriekLayout.equals("" + NatMMConfig.DEMO_LAYOUT)) {
    // ** Show list of provinces
    if(selectedNatuurgebieden.equals("")) { // ** don't show the provincie dropdown if a natuurgebied is selected
       %><span class="colortitle">Kies een provincie</span>
@@ -138,7 +142,8 @@
       </select>
       <br/>
       <%
-   } %>
+   } 
+ } %>
    &nbsp;<div align="right"><input type="submit" value="ZOEK IN AGENDA" class="submit_image" style="width:175px;" /></div>
    <br/>
    <br/>

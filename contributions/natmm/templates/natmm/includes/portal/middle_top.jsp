@@ -11,7 +11,7 @@
    String articleConstraint = "(artikel.embargo < '" + (nowSec+quarterOfAnHour) + "') AND "
                               + "(artikel.use_verloopdatum='0' OR artikel.verloopdatum > '" + nowSec + "' )";
                               
-   String sImageTemplate = "s(195)+part(0,0,195,113)";
+   String sImageTemplate = "s(195)+part(0,0,195,140)";
 %>
 <script language="JavaScript">
 <!--
@@ -23,7 +23,23 @@ function changeImages() {
 // -->
 </script>
 <mm:node number="channels" notfound="skipbody">
-  <div class="headerBar" style="width:100%;"><img src="includes/portal/logo.gif" border="0" style="vertical-align:middle;"/> VANDAAG</div>
+  <table style="width:100%;" cellspacing="0">
+      <tr>
+        <td class="headerBar" style="vertical-align:top;">
+           <img src="includes/portal/logo.gif" border="0" style="vertical-align:middle;"/> VANDAAG
+        </td>
+        <td class="headerBar" style="vertical-align:top;text-align:right;padding-right:10px;">
+            <%@include file="/editors/mailer/util/memberid_get.jsp" %>
+            <mm:node number="<%= memberid %>" notfound="skipbody">
+               <mm:field name="firstname">
+                  <mm:isnotempty>
+                     Welkom <mm:write />
+                  </mm:isnotempty>
+               </mm:field>
+            </mm:node>
+        </td>
+      </tr>
+  </table>     
   <mm:related path="parent,rubriek2,posrel,pagina,contentrel,artikel"
              orderby="artikel.embargo" directions="DOWN" searchdir="destination"
              constraints="<%= articleConstraint %>" max="3">

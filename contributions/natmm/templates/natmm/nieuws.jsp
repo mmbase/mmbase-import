@@ -6,9 +6,6 @@
 if(NatMMConfig.hasClosedUserGroup) {
 
    %><%@include file="/editors/mailer/util/memberid_get.jsp" %><%
-   if (cloud.getNode(memberid) == null) {
-      memberid = null;
-   }
    if(memberid != null) {
       PoolUtil.addPools(cloud,paginaID,memberid,"" );
       if(!dossierID.equals("-1")) {

@@ -11,11 +11,6 @@
    int count = 0;
 %>   
 <%@include file="/editors/mailer/util/memberid_get.jsp" %>
-<%
-   if (memberid == null) {
-     memberid = "-1";
-   }
-%>
 <mm:node number="<%=objectID%>">
   <div class="headerBar" style="width:100%;">DOSSIERS</div>
   <table cellspacing="0">

@@ -47,7 +47,7 @@ SubscribeForm subscribeForm = (SubscribeForm) session.getAttribute("SubscribeFor
       <td style="vertical-align:top;padding:10px;padding-top:0px;width:185px;">
          <%@include file="includes/navleft.jsp" %>
          <br>
-      	<jsp:include page="includes/teaser.jsp">
+         <jsp:include page="includes/teaser.jsp">
             <jsp:param name="s" value="<%= paginaID %>" />
             <jsp:param name="r" value="<%= rubriekID %>" />
             <jsp:param name="rs" value="<%= styleSheet %>" />
@@ -60,9 +60,9 @@ SubscribeForm subscribeForm = (SubscribeForm) session.getAttribute("SubscribeFor
           
             %><jsp:include page="includes/events/doconfirm.jsp">
                   <jsp:param name="s" value="<%=  request.getParameter("s") %>" />
-   			  </jsp:include><%
+              </jsp:include><%
 
-   	   } else if(subscribeForm!=null&&!subscribeForm.getAction().equals(SubscribeForm.CANCELED)) {
+         } else if(subscribeForm!=null&&!subscribeForm.getAction().equals(SubscribeForm.CANCELED)) {
          
             session.setAttribute("pagina",paginaID); 
 
@@ -74,7 +74,8 @@ SubscribeForm subscribeForm = (SubscribeForm) session.getAttribute("SubscribeFor
             } else {
                %><jsp:include page="includes/events/subscribe.jsp">
                   <jsp:param name="p" value="<%= paginaID%>" />
-   			   </jsp:include><%
+                  <jsp:param name="rl" value="<%= iRubriekLayout %>" />
+               </jsp:include><%
             }
          
          } else {
@@ -82,13 +83,13 @@ SubscribeForm subscribeForm = (SubscribeForm) session.getAttribute("SubscribeFor
             boolean containsSubscriptionClosed = false;
             if(!evenementID.equals("-1")) { 
             
-         	   %><jsp:include page="includes/events/details.jsp">
-         	      <jsp:param name="r" value="<%= rubriekID %>" />
-         	      <jsp:param name="e" value="<%= evenementID%>" />
-   			   </jsp:include><%
-         	
-         	} else { 
-         	   %><mm:node number="<%= paginaID %>" jspvar="thispage">
+               %><jsp:include page="includes/events/details.jsp">
+                  <jsp:param name="r" value="<%= rubriekID %>" />
+                  <jsp:param name="e" value="<%= evenementID%>" />
+               </jsp:include><%
+            
+            } else { 
+               %><mm:node number="<%= paginaID %>" jspvar="thispage">
                   <mm:field name="kortetitel">
                      <mm:isnotempty>
                         <span class="colortitle"><%= thispage.getStringValue("kortetitel").toUpperCase() %></span><br/>
@@ -96,28 +97,29 @@ SubscribeForm subscribeForm = (SubscribeForm) session.getAttribute("SubscribeFor
                   </mm:field>
                   <mm:field name="omschrijving">
                      <mm:isnotempty>
-      		            <div style="margin:9px 0px 0px 0px"><mm:write /></div>
+                        <div style="margin:9px 0px 0px 0px"><mm:write /></div>
                      </mm:isnotempty>
                </mm:field>
                </mm:node>
                <table class="dotline"><tr><td height="3"></td></tr></table>
                <%@include file="includes/events/searchresults.jsp" %>
-					<% 
+               <% 
             } %>
             </td>
             <td style="vertical-align:top;padding-left:10px;padding-right:10px;width:185px;<jsp:include page="includes/rightcolumn_bgimage.jsp"><jsp:param name="rnimageid" value="<%= rnImageID %>" /></jsp:include>">
                <jsp:include page="includes/events/searchform.jsp">
-         	      <jsp:param name="p" value="<%= paginaID %>" />
-         	      <jsp:param name="prov" value="<%= provID %>" />
-         	      <jsp:param name="n" value="<%= natuurgebiedID %>" />
-   			   </jsp:include>
+                  <jsp:param name="p" value="<%= paginaID %>" />
+                  <jsp:param name="prov" value="<%= provID %>" />
+                  <jsp:param name="n" value="<%= natuurgebiedID %>" />
+                  <jsp:param name="rl" value="<%= iRubriekLayout %>" />
+               </jsp:include>
                <jsp:include page="includes/shorty.jsp">
-         	      <jsp:param name="s" value="<%= paginaID %>" />
-           	      <jsp:param name="r" value="<%= rubriekID %>" />
+                  <jsp:param name="s" value="<%= paginaID %>" />
+                  <jsp:param name="r" value="<%= rubriekID %>" />
                   <jsp:param name="rs" value="<%= styleSheet %>" />
-   			      <jsp:param name="sr" value="2" />
-   			   </jsp:include>
-   			   <%
+                  <jsp:param name="sr" value="2" />
+               </jsp:include>
+               <%
                if(containsSubscriptionClosed) { 
                   %>
                   <table class="dotline"><tr><td height="3"></td></tr></table>

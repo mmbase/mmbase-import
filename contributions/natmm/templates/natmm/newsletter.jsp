@@ -1,6 +1,5 @@
 <%@include file="includes/top0.jsp" %>
 <mm:import externid="title"></mm:import>
-<mm:import externid="text"></mm:import>
 <mm:cloud jspvar="cloud">
 <%@include file="includes/top1_params.jsp" %>
 <%@include file="includes/top4_head.jsp" %>
@@ -18,7 +17,7 @@
      </td>
      <td style="vertical-align:top;width:400px;padding:2px;">
         <span class="colortitle"><mm:write referid="title" /></span><br/>
-        <mm:write referid="text" />
+        <mm:node number="<%= paginaID %>"><mm:field name="omschrijving" /></mm:node>
      </td>
    </tr>
    <tr>
