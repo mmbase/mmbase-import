@@ -120,10 +120,10 @@ public class Decoder
                         if ("event".equals(sProductType)) {
                            product.setProductType(Product.PRODUCT_TYPE_EVENT);
                         }
-                        else if ("item".equals(sProductType)) {
+                        else if ("product".equals(sProductType)) {
                            product.setProductType(Product.PRODUCT_TYPE_ITEM);
                         }
-                        else if ("subscribe".equals(sProductType)) {
+                        else if ("subscription".equals(sProductType)) {
                            product.setProductType(Product.PRODUCT_TYPE_SUBSCRIPTION);
                         }
                         else {

@@ -21,9 +21,14 @@
 package nl.leocms.util;
 
 import org.mmbase.bridge.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 import java.util.ArrayList;
 
 public class PoolUtil {
+
+   private static Logger log = Logging.getLoggerInstance(PoolUtil.class.getName());
 
    public static NodeList getPool(Cloud cloud, String sNodeNumber){
       Node n = cloud.getNode(sNodeNumber);
@@ -63,12 +68,21 @@ public class PoolUtil {
    public static NodeList getByPools(Cloud cloud, String sSource, String sPath, String sNodeType,
                                      String sFields, String sOrderby, String sMemberId) {
 
+      ArrayList priorityNumbers = new ArrayList();
+
       NodeList nlPriority = cloud.getList(
                             sSource,
                             sPath + "," + sNodeType + ",posrel,pools,posrel,deelnemers",
                             sNodeType + ".number"+sFields,
                             "deelnemers.number=" + sMemberId,
                             sOrderby, null, null, true);
+
+      log.debug("Finding priority nodes by cloud.getList(" +
+                            sSource + "," +
+                            sPath + "," + sNodeType + ",posrel,pools,posrel,deelnemers" + "," +
+                            sNodeType + ".number"+sFields + "," +
+                            "deelnemers.number=" + sMemberId + "," +
+                            sOrderby + ")");
 
       NodeList nlAll = cloud.getList(
                        sSource,
@@ -77,12 +91,11 @@ public class PoolUtil {
                        null,
                        sOrderby, null, "destination", true);
 
-      ArrayList priorityNumbers = new ArrayList();
-
       for(int p = 0; p<nlPriority.size(); p++) {
          priorityNumbers.add(nlPriority.getNode(p).getStringValue(sNodeType + ".number"));
+         log.debug("adding priority node " + nlPriority.getNode(p).getStringValue(sNodeType + ".number") );
       }
-      
+
       for(int p = 0; p<nlAll.size(); p++) {
          Node node = nlAll.getNode(p);
          if (!priorityNumbers.contains(node.getStringValue(sNodeType + ".number"))) {

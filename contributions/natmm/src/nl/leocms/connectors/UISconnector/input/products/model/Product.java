@@ -130,4 +130,27 @@ public class Product
       return productType;
    }
 
+   public String getProductTypeName()
+   {
+      String productTypeName = "";
+      switch(productType){
+         case PRODUCT_TYPE_EVENT:{
+            productTypeName = "Evenementen";
+            break;
+         }
+         case PRODUCT_TYPE_ITEM:{
+            productTypeName = "Producten";
+            break;
+         }
+         case PRODUCT_TYPE_SUBSCRIPTION:{
+            productTypeName = "Abonnementen";
+            break;
+         }
+         default:{
+            productTypeName = "Unsupported product type";
+            break;
+         }
+      }
+      return productTypeName;
+   }
 }
