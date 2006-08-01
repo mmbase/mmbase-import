@@ -12,16 +12,12 @@
 %>
 <mm:node number="channels" notfound="skipbody">
   <div class="headerBar" style="width:100%;">
-  		<mm:field name="naam" jspvar="name" vartype="String" write="false"><%= name.toUpperCase() %></mm:field>
+      <mm:field name="naam" jspvar="name" vartype="String" write="false"><%= name.toUpperCase() %></mm:field>
   </div>
   <table cellspacing="0" style="width:398">
   <mm:field name="number" jspvar="channels_number" vartype="String" write="false">
     <%@include file="/editors/mailer/util/memberid_get.jsp" %>
 <%
-    if (memberid == null) {
-      memberid = "-1";
-    }
-
     NodeList nlChannels = PoolUtil.getByPools(cloud,channels_number,"rubriek,parent,rubriek2,posrel","pagina",
                                               ",rubriek2.number","parent.pos,posrel.pos",memberid);
     int maxChannels = nlChannels.size();
@@ -62,7 +58,7 @@
             </a>
             <br/>
             <a href="<%= ph.createPaginaUrl(pagina_number,request.getContextPath()) %>" 
-               class="hover"><mm:field name="pagina.omschrijving"/></a>
+               class="hover"><mm:field name="omschrijving"/></a>
           </td>
         </tr>
         </table>
