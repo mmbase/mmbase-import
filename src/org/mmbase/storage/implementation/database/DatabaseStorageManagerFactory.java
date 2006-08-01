@@ -39,7 +39,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.39 2006-07-31 13:31:43 michiel Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.40 2006-08-01 22:26:30 michiel Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
@@ -147,6 +147,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
     }
 
     /**
+     * @param binaryFileBasePath For some datasource a file base path may be needed (some configurations of hsql). It can be <code>null</code> during bootstrap. In lookup.xml an alternative URL may be configured then which does not need the file base path.
      * @since MMBase-1.8
      */
     protected DataSource createDataSource(String binaryFileBasePath) {
@@ -174,7 +175,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
             // if no datasource is provided, try to obtain the generic datasource (which uses JDBC Module)
             // This datasource should only be needed in cases were MMBase runs without application server.
             if (binaryFileBasePath == null) {
-                ds = new GenericDataSource(mmbase, "");
+                ds = new GenericDataSource(mmbase); // one argument version triggers also 'meta' mode, which in case of hsql may give another mem-only URL (just for the meta-data).
             } else {
                 ds = new GenericDataSource(mmbase, binaryFileBasePath);
             }
@@ -197,7 +198,8 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
         queryHandlerClasses.add(DEFAULT_QUERY_HANDLER_CLASS);
 
 
-        dataSource = createDataSource(getBinaryFileBasePath(false));
+
+        dataSource = createDataSource(null);
         // temporary source only used once, for the meta data.
 
         String sqlKeywords;
