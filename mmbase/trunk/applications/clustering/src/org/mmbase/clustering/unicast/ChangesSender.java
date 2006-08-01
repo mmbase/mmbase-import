@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * sending queue over unicast connections
  *
  * @author Nico Klasens
- * @version $Id: ChangesSender.java,v 1.11 2006-06-26 13:02:20 michiel Exp $
+ * @version $Id: ChangesSender.java,v 1.12 2006-08-01 21:53:39 michiel Exp $
  */
 public class ChangesSender implements Runnable {
 
@@ -125,7 +125,7 @@ public class ChangesSender implements Runnable {
                         } catch (ConnectException ce) {
                             log.warn("Connect exception: " + hostname + ":" + unicastPort + " " + ce + ".");
                         } catch (IOException e) {
-                            log.error("can't send message " + e.getMessage() , e);
+                            log.error("can't send message to " + hostname + ":" + unicastPort + " " + e.getMessage() , e);
                         } finally {
                             if (os != null) {
                                 try {
