@@ -51,6 +51,11 @@ public class Updater
          try{
             NodeManager objectNodeManager;
 
+            /*
+            UIS uses the same object for different types of forms. Something like the following switch
+            could be used to fill the corresponding objects in NatMM. Now the distinction is made on
+            the basis on evenement_type, see below.
+
             switch(product.getProductType()){
                case Product.PRODUCT_TYPE_EVENT:{
                   objectNodeManager = cloud.getNodeManager("evenement");
@@ -61,15 +66,16 @@ public class Updater
                   break;
                }
                case Product.PRODUCT_TYPE_SUBSCRIPTION:{
-                  objectNodeManager = cloud.getNodeManager("products");
+                  objectNodeManager = cloud.getNodeManager("formulier");
                   break;
                }
                default:{
                   throw new Exception("Unsupported product type");
                }
             }
+            */
 
-
+            objectNodeManager = cloud.getNodeManager("evenement");
             Node nodeObject = getObjectNode(objectNodeManager, sExternID);
 
 
@@ -142,13 +148,23 @@ public class Updater
 
             //Set Properties
             try{
-           List listProperties = product.getProperties();
+              List listProperties = product.getProperties();
               PropertyUtil.setProperties(cloud, nodeObject, listProperties);
             }
             catch(Exception e){
                result.setStatus(Result.EXCEPTION);
                result.setException(e);
             }
+
+            //Set evenement_type
+            try {
+               setEvenementType(cloud, nodeObject, product);
+            }
+            catch(Exception e){
+               result.setStatus(Result.EXCEPTION);
+               result.setException(e);
+            }
+
 
 
          }
@@ -257,5 +273,56 @@ public class Updater
 
          nodeObject.commit();
       }
+   }
+
+
+   private static void setEvenementType(Cloud cloud, Node nodeObject, Product product) throws Exception{
+
+      NodeManager nmEvenementType = cloud.getNodeManager("evenement_type");
+
+      //deletes old relations
+      for(Iterator it = nodeObject.getRelations("related", nmEvenementType).iterator(); it.hasNext();){
+         Node nodeRelation = (Node) it.next();
+         nodeRelation.delete(true);
+      }
+
+      //Look for an already existing Node
+      NodeList nl = cloud.getList("",
+                                  "evenement_type",
+                                  "evenement_type.number,evenement_type.naam",
+                                  "evenement_type.naam='" + product.getProductTypeName() + "'",
+                                  null, null, null, true);
+      Node nodeEvenementType;
+      if(nl.size() > 0){
+         //the Node already exist
+         nodeEvenementType = cloud.getNode(nl.getNode(0).getStringValue("evenement_type.number"));
+      }
+      else{
+         //There is no such node
+         nodeEvenementType = nmEvenementType.createNode();
+         switch(product.getProductType()){
+            case Product.PRODUCT_TYPE_EVENT:{
+               nodeEvenementType.setStringValue("naam", product.getProductTypeName());
+               nodeEvenementType.setStringValue("isoninternet", "1");
+               break;
+            }
+            case Product.PRODUCT_TYPE_ITEM:{
+               nodeEvenementType.setStringValue("naam", product.getProductTypeName());
+               nodeEvenementType.setStringValue("isoninternet", "0");
+               break;
+            }
+            case Product.PRODUCT_TYPE_SUBSCRIPTION:{
+               nodeEvenementType.setStringValue("naam", product.getProductTypeName());
+               nodeEvenementType.setStringValue("isoninternet", "0");
+               break;
+            }
+            default:{
+               throw new Exception("Unsupported product type");
+            }
+         }
+         nodeEvenementType.commit();
+      }
+      nodeObject.createRelation(nodeEvenementType, cloud.getRelationManager("related")).commit();
+
    }
 }
