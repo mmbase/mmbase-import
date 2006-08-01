@@ -12,6 +12,10 @@
    PaginaHelper ph = new PaginaHelper(cloud);
 %>
 <%@include file="../includes/getstyle.jsp" %>
+<mm:import externid="teasersbypool">false</mm:import>
+<mm:compare referid="teasersbypool" value="false">
+    <mm:remove referid="teasersbypool" />
+</mm:compare>
 <mm:import id="showteaser"/>
 <mm:import id="divstyle"></mm:import>
 <%@include file="../includes/shorty_logic_1.jsp" %>

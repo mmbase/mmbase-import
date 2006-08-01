@@ -8,7 +8,27 @@ String relType = shortyPath.substring(shortyPath.indexOf(",")+1);
 // *** first find out whether there are shorties / teasers related to the pagina, natuurgebied, vgv, etc.
 %>
 <mm:present referid="showteaser"><% targetType = "teaser"; %></mm:present> 
-<mm:listcontainer path="<%= shortyPath + "," + targetType %>">
+<mm:present referid="teasersbypool">
+<%@include file="/editors/mailer/util/memberid_get.jsp" %>
+<%
+   if (memberid == null) {
+      memberid = "-1";
+   }
+   memberid="2909";
+   org.mmbase.bridge.NodeList nlTeasers = nl.leocms.util.PoolUtil.getByPools(cloud,sID,"pagina,rolerel","teaser",
+                                                            "","rolerel.rol", memberid + " AND rolerel.rol = 0");
+   if (nlTeasers.size() != 0) {
+      shortyID[shortyCnt] = nlTeasers.getNode(0).getStringValue("teaser.number");
+      shortyCnt++;
+   } else {
+%>
+      <mm:remove referid="teasersbypool"/>
+<%
+   }
+%>
+</mm:present>
+<mm:notpresent referid="teasersbypool">
+   <mm:listcontainer path="<%= shortyPath + "," + targetType %>">
 		<% 
 		if(relType.equals("rolerel")) { 
 		   %><mm:constraint field="rolerel.rol" operator="EQUAL" value="<%= shortyRol %>" /><% 
@@ -24,7 +44,8 @@ String relType = shortyPath.substring(shortyPath.indexOf(",")+1);
 			%>
 			</mm:field>
   		</mm:list>
-</mm:listcontainer>
+   </mm:listcontainer>
+</mm:notpresent>
 <% if(shortyCnt==0&&relType.equals("rolerel")){
 // if no shorties / teasers found, find out whether there are shorties / teasers related to the rubriek
    shortyPath = "rubriek,rolerel";
