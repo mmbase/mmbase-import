@@ -92,7 +92,8 @@ while(i<thisOffset+pageSize) {
             <mm:field name="intro" jspvar="intro" vartype="String" write="false"><%= viewHrefs(titel, number, "artikel", "intro", intro) %></mm:field>
          </mm:field>
          </mm:field>
-      </mm:node><% 
+      </mm:node><br/>
+		<a href="usedinitems.jsp?ID=<%= (String) articles.get(i) %>" target="_blank">used in items</a><% 
    } else {
        %><mm:node number="<%= (String) paragraphs.get(i) %>">
          <mm:field name="number" jspvar="number" vartype="String" write="false">
@@ -100,7 +101,7 @@ while(i<thisOffset+pageSize) {
             <mm:field name="tekst" jspvar="tekst" vartype="String" write="false"><%= viewHrefs(titel, number, "paragraaf", "tekst", tekst) %></mm:field>
          </mm:field>
          </mm:field>
-      </mm:node><% 
+      </mm:node><br/><a href="usedinitems.jsp?ID=<%= (String) paragraphs.get(i) %>" target="_blank">used in items</a><% 
    }
    i++;
 }%>
