@@ -3,8 +3,9 @@
 <action type="load">
    <field name="titel"/>
    <field name="kortetitel"/>
-   <field name="titel_eng"/>
-   <field name="titel_de"/>
+   <field name="titel_eng"/> <!-- archief title -->
+   <field name="titel_de"/> <!-- archief subtitle -->
+   <field name="titel_fra" /> <!-- length of period in events.jsp -->
    <field name="titel_zichtbaar"/>
    <field name="omschrijving"/>
    <field name="bron"/>
