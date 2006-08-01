@@ -50,7 +50,7 @@
    <form-schema id="right_column">
       <title>rechter kolom</title>
       <field name="titel" ftype="data"><prompt>titel</prompt></field>
-      <list include="config/link/zoek_contentelement_contentrel_link.xml" />
+      <list include="config/link/zoek_portal_contentrel_link.xml" />
       
       <list include="config/linklijst/zoek_pagina_lijstcontentrel_linklijst.xml" />
    </form-schema>

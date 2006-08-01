@@ -21,6 +21,9 @@
          <relation destination="pools" role="posrel">
             <object />
          </relation>
+         <relation destination="images" role="posrel">
+            <object />
+         </relation>
       </object>
    </relation>
    <relation destination="dossier" role="posrel">
