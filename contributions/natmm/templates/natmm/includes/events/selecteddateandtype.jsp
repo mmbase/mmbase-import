@@ -1,11 +1,18 @@
 <%
-Date nowPlusOneWeek = new Date(now.getTime() + 7*24*60*60*1000);
-int iFromDay = now.getDate();
-int iFromMonth = now.getMonth()+1;
-int iFromYear = now.getYear() + 1900;
-int iTillDay = nowPlusOneWeek.getDate();
-int iTillMonth = nowPlusOneWeek.getMonth()+1;
-int iTillYear = nowPlusOneWeek.getYear() + 1900;
+int numberOfDays = 7;
+try {
+   numberOfDays = 7 * cloud.getNode(paginaID).getIntValue("titel_fra");
+} catch (Exception e) { }
+
+cal.setTime(now);
+int iFromDay = cal.get(Calendar.DAY_OF_MONTH);
+int iFromMonth = cal.get(Calendar.MONTH);
+int iFromYear = cal.get(Calendar.YEAR);
+
+cal.add(Calendar.DATE,numberOfDays);
+int iTillDay = cal.get(Calendar.DAY_OF_MONTH);
+int iTillMonth = cal.get(Calendar.MONTH);
+int iTillYear = cal.get(Calendar.YEAR);
 try {
    iFromDay = Integer.parseInt(request.getParameter("from_day"));
    iFromMonth = Integer.parseInt(request.getParameter("from_month"));
