@@ -94,7 +94,7 @@ if(NatMMConfig.hasClosedUserGroup) {
     <mm:import id="video_image_url">null</mm:import>
     <mm:list nodes="<%= paginaID %>" path="pagina,contentrel,link,posrel,images" orderby="posrel.pos" max="1">
        <mm:node element="images">
-          <mm:import id="video_image_url"><mm:image/></mm:import>
+          <mm:import id="video_image_url" reset="true"><mm:image template="s(214!x177!)" /></mm:import>
        </mm:node>
     </mm:list>
 

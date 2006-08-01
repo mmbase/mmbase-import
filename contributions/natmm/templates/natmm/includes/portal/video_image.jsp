@@ -8,11 +8,12 @@
 
 <html>
    <head>
-      <title><mm:field name="titel" /></title>
+      <title></title>
    </head>
    <body style="margin:0px;padding:0px;">
-   <img src="<mm:write referid="video_image_url"/>" align="center"/>
-   <div><a href="#" onClick="top.video<mm:write referid="link"/>.href='video.jsp?link=<mm:write referid="link"/>'">Play video file.</a></div>
+   <div onClick="parent.frames['video<mm:write referid="link"/>'].location.href='video.jsp?link=<mm:write referid="link"/>'">
+      <img src="<mm:write referid="video_image_url"/>" align="center"/>
+   </div>
    </body>
 </html>
 
