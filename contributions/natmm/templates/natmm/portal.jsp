@@ -39,6 +39,7 @@ if(NatMMConfig.hasClosedUserGroup) {
       <jsp:param name="r" value="<%= rubriekID %>" />
       <jsp:param name="rs" value="<%= styleSheet %>" />
       <jsp:param name="sr" value="0" />
+      <jsp:param name="teasersbypool" value="true" />
     </jsp:include>
     <jsp:include page="includes/portal/navleft.jsp">
       <jsp:param name="s" value="<%= paginaID %>" />
