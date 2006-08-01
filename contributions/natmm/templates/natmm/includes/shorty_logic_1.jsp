@@ -14,7 +14,6 @@ String relType = shortyPath.substring(shortyPath.indexOf(",")+1);
    if (memberid == null) {
       memberid = "-1";
    }
-   memberid="2909";
    org.mmbase.bridge.NodeList nlTeasers = nl.leocms.util.PoolUtil.getByPools(cloud,sID,"pagina,rolerel","teaser",
                                                             "","rolerel.rol", memberid + " AND rolerel.rol = 0");
    if (nlTeasers.size() != 0) {
