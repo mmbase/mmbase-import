@@ -7,7 +7,7 @@ if(NatMMConfig.hasClosedUserGroup) {
    %>
    <%@include file="/editors/mailer/util/memberid_get.jsp" %>
    <%
-   if (memberid==null || cloud.getNode(memberid) == null) {
+   if (memberid==null) {
       org.mmbase.bridge.Node thisMember = cloud.getNodeManager("deelnemers").createNode();
       thisMember.commit();
       memberid = thisMember.getStringValue("number");
@@ -21,7 +21,7 @@ if(NatMMConfig.hasClosedUserGroup) {
    <%
 }
 %>
-<cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
+<!-- cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application" -->
 <%@include file="includes/top3_nav.jsp" %>
 <%@include file="includes/top4_head.jsp" %>
 <%@include file="includes/top5_breadcrumbs_and_pano.jsp" %>
@@ -38,8 +38,8 @@ if(NatMMConfig.hasClosedUserGroup) {
       <jsp:param name="s" value="<%= paginaID %>" />
       <jsp:param name="r" value="<%= rubriekID %>" />
       <jsp:param name="rs" value="<%= styleSheet %>" />
-      <jsp:param name="sr" value="0" />
       <jsp:param name="teasersbypool" value="true" />
+      <jsp:param name="sr" value="0" />
     </jsp:include>
     <jsp:include page="includes/portal/navleft.jsp">
       <jsp:param name="s" value="<%= paginaID %>" />
@@ -87,7 +87,7 @@ if(NatMMConfig.hasClosedUserGroup) {
   <td style="vertical-align:top;width:214px;padding:2px;padding-top:1px;">
     <form name="theClock">
       <input type=text name="theTime" class="headerBar" style="width:212px;border:none;font:normal;font-size:90%;text-align:right;padding-right:3px;">
-    <form>
+    </form>
     <%
     String embargoLinkConstraint = "(link.embargo < '" + (nowSec+quarterOfAnHour) + "') AND "
                                 + "(link.use_verloopdatum='0' OR link.verloopdatum > '" + nowSec + "' )";
@@ -134,5 +134,5 @@ if(NatMMConfig.hasClosedUserGroup) {
 </tr>
 </table>
 <%@include file="includes/footer.jsp" %>
-</cache:cache>
+<!-- /cache:cache -->
 </mm:cloud>

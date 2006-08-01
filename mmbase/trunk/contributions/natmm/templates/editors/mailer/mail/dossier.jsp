@@ -2,7 +2,7 @@
 <%@include file="includes/abonnee/top.jsp"%>
 <%-- this is a page where the user isn't logged in yet--%>
 <mm:content type="text/html" expires="0">
-<mm:cloud name="mmbase">
+<mm:cloud name="mmbase" jspvar="cloud">
 <mm:import id="active">profiel</mm:import>
 
 <%@include file="/editors/mailer/util/memberid_get.jsp" %>
