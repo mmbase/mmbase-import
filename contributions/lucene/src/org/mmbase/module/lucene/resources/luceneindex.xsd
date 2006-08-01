@@ -57,6 +57,12 @@
     <xsd:complexType>
       <xsd:sequence>
         <xsd:element ref="field" maxOccurs="unbounded" minOccurs="0" />
+        <xsd:element name="related" maxOccurs="unbounded" minOccurs="0">
+          <xsd:complexType>
+            <xsd:element ref="field" maxOccurs="unbounded" minOccurs="0" />
+          </xsd:complexType>
+          <xsd:attribute name="sql" type="xsd:string" />
+        </xsd:element>
       </xsd:sequence>
       <xsd:attribute name="sql" type="xsd:string" />
       <xsd:attribute name="key" type="xsd:string" />
