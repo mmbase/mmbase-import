@@ -8,6 +8,9 @@
     <!-- This is a completely generic tool to search in a lucene index -->
     <mm:content type="text/html">
       <mm:cloud>
+        <mm:import externid="max">100</mm:import>          
+        <mm:import externid="offset">0</mm:import>
+        <mm:import externid="sortfields" />
         <mm:import externid="value" />
         <mm:import externid="extraconstraints" />
         <mm:import externid="index" />
@@ -26,20 +29,25 @@
           <mm:write referid="value" escape="text/html/attribute">
             <input name="value" value="${_}" />
           </mm:write>
-          <mm:write referid="extraconstraints" escape="text/html/attribute">
-            <input name="extraconstraints" value="${_}" />
-          </mm:write>
           <mm:write referid="index" escape="text/html/attribute">
             <input type="hidden" name="index" value="${_}" />
           </mm:write>
           <input type="submit" />
+          <br />
+          <mm:write referid="extraconstraints" escape="text/html/attribute">
+            <jsp:text>contraints: </jsp:text><input name="extraconstraints" value="${_}" />
+          </mm:write>
+          <jsp:text>max: </jsp:text><input name="max" value="${max}" />
+          <jsp:text>offset: </jsp:text><input name="offset" value="${offset}" />
+          <mm:write referid="sortfields" escape="text/html/attribute">
+            <jsp:text>sort: </jsp:text><input name="sortfields" value="${_}" />
+          </mm:write>
+          
         </form>
         
         <mm:present referid="value" >
-          <mm:import id="max">100</mm:import>
-          <mm:import id="offset">0</mm:import>
           <table>
-            <mm:nodelistfunction module="lucene" name="search" referids="value,index,max,offset,extraconstraints">
+            <mm:nodelistfunction module="lucene" name="search" referids="value,index,max,offset,extraconstraints,sortfields">
               <mm:first>
                 <tr>
                   <th>type</th>
