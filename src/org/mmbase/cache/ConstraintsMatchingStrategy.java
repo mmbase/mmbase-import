@@ -42,7 +42,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: ConstraintsMatchingStrategy.java,v 1.29 2006-07-28 09:45:39 michiel Exp $
+ * @version $Id: ConstraintsMatchingStrategy.java,v 1.30 2006-08-01 21:38:10 michiel Exp $
  *
  */
 public class ConstraintsMatchingStrategy extends ReleaseStrategy {
@@ -851,7 +851,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                 return map1.get(key);
             }
         }
-        public boolean constainsKey(Object key) {
+        public boolean containsKey(Object key) {
             return map1.containsKey(key);
         }
     }
