@@ -3,9 +3,6 @@
   <mm:fieldlist type="edit" fields="owner">
     <tr><td><mm:fieldinfo type="guiname" /></td><td colspan="3"><mm:fieldinfo options="noautocomplete" type="input" /><mm:fieldinfo type="errors" /></td></tr>
   </mm:fieldlist>
-  <mm:fieldlist fields="lastlogon?">
-    <tr><td><mm:fieldinfo type="guiname" /></td><td colspan="3"><mm:fieldinfo type="guivalue" /></td></tr>
-  </mm:fieldlist>
   <mm:cloudinfo type="user" id="cloudusername" write="false" />
   <mm:field name="username">
     <mm:compare referid2="cloudusername" inverse="true">
