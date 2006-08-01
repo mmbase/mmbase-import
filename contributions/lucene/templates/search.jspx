@@ -13,6 +13,7 @@
         <mm:import externid="sortfields" />
         <mm:import externid="value" />
         <mm:import externid="extraconstraints" />
+        <mm:import externid="count" />
         <mm:import externid="index" />
         <mm:import externid="reindex" />
         <mm:url id="back" write="false" page="/mmbase/style/images/back.png" />
@@ -42,6 +43,13 @@
           <mm:write referid="sortfields" escape="text/html/attribute">
             <jsp:text>sort: </jsp:text><input name="sortfields" value="${_}" />
           </mm:write>
+          <jsp:text>count: </jsp:text>
+          <mm:compare referid="count" value="on">
+            <input type="checkbox" name="count" checked="checked" />
+          </mm:compare>
+          <mm:compare referid="count" value="on" inverse="true">
+            <input type="checkbox" name="count" />
+          </mm:compare>
           
         </form>
         
@@ -57,6 +65,9 @@
                   <th>
                     Search on '${value}'<br /> 
                     <mm:size /> hits
+                    <mm:compare referid="count" value="on">
+                      <mm:function module="lucene" name="searchsize" referids="value,index,extraconstraints" />
+                    </mm:compare>
                   </th>
                 </tr>
               </mm:first>
