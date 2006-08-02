@@ -10,7 +10,7 @@
 // 4. the newsletters only contain absolute urls e.g. http://www.submarine.nl/media/spacer.gif instead of media/spacer.gif
 
 String message = "";
-String newsLetterFrom = "newsletter@nimbas.com";
+String newsLetterFrom = NatMMConfig.fromEmailAddress;
 String newsLetterUri = "";
 String newsLetterUrl = HttpUtils.getRequestURL(request).toString();
 newsLetterUrl = newsLetterUrl.substring(0,newsLetterUrl.substring(7).indexOf("/")+7); 
@@ -18,17 +18,15 @@ String newsLetterSubject = "";
 
 PaginaHelper ph = new PaginaHelper(cloud);
 %>
-<% log.info("start"); %>
 <mm:import externid="newsletter">-1</mm:import>
 <mm:node number="$newsletter" notfound="skipbody">
    <mm:field name="titel" jspvar="pagina_title" vartype="String" write="false">
       <% newsLetterSubject = pagina_title; %>
    </mm:field>
    <mm:field name="number" jspvar="pagina_number" vartype="String" write="false">
-      <% newsLetterUri += ph.createPaginaUrl(pagina_number,request.getContextPath()); %>
+      <% newsLetterUri = ph.createPaginaUrl(pagina_number,request.getContextPath()); %>
    </mm:field>
 </mm:node>
-
 <mm:import externid="emailaddress" jspvar="emailaddress">you@yourprovider.com</mm:import>
 <mm:listnodes type="users" constraints="<%= "[account]='" + cloud.getUser().getIdentifier() + "'" %>" max="1" id="thisuser">
   <mm:compare referid="emailaddress" value="you@yourprovider.com">
@@ -40,22 +38,22 @@ PaginaHelper ph = new PaginaHelper(cloud);
 <mm:import externid="test">no</mm:import>
 <mm:compare referid="test" value="">
     <% log.info("Sending test email to " + emailaddress); %>
-      <mm:createnode id="thismail" type="email">
-         <mm:setfield name="from"><%= newsLetterFrom %></mm:setfield>
-         <mm:setfield name="to"><mm:write referid="emailaddress" /></mm:setfield>
-         <mm:setfield name="subject">Test: <%= newsLetterSubject %></mm:setfield>
-         <mm:setfield name="body">
-            <multipart id="plaintext" type="text/plain" encoding="UTF-8">
-               View our newsletter at: <%= newsLetterUrl + newsLetterUri %>
-            </multipart>
-            <multipart id="htmltext" alt="plaintext" type="text/html" encoding="UTF-8">
-               <mm:include page="<%= newsLetterUrl + newsLetterUri %>" />
-            </multipart>
-         </mm:setfield>
-      </mm:createnode>
-      <mm:node referid="thismail">
-         <mm:field name="mail(oneshot)" />
-      </mm:node>
+    <mm:createnode id="thismail" type="email">
+       <mm:setfield name="from"><%= newsLetterFrom %></mm:setfield>
+       <mm:setfield name="to"><mm:write referid="emailaddress" /></mm:setfield>
+       <mm:setfield name="subject">Test: <%= newsLetterSubject %></mm:setfield>
+       <mm:setfield name="body">
+          <multipart id="plaintext" type="text/plain" encoding="UTF-8">
+             View our newsletter at: <%= newsLetterUrl + newsLetterUri %>
+          </multipart>
+          <multipart id="htmltext" alt="plaintext" type="text/html" encoding="UTF-8">
+             <mm:include page="<%= newsLetterUri %>" />
+          </multipart>
+       </mm:setfield>
+    </mm:createnode>
+    <mm:node referid="thismail">
+       <mm:field name="mail(oneshot)" />
+    </mm:node>
    <% message = "A test email has been sent to your email address."; %>
    <mm:remove referid="test" />
    <mm:import id="test">yes</mm:import>
@@ -103,6 +101,7 @@ if(isFirst) {
    </mm:createnode>
    <mm:list nodes="<%= selectedDeelnemers_categorie %>" path="deelnemers_categorie,related,deelnemers" fields="deelnemers.email" distinct="true">
       <mm:import id="email"><mm:field name="deelnemers.email" /></mm:import>
+      <mm:import id="title">Beste <mm:field name="deelnemers.firstname" />,</mm:import>
       <mm:node referid="thismail">
          <mm:setfield name="body">
             <multipart id="plaintext" type="text/plain" encoding="UTF-8">
@@ -111,7 +110,7 @@ if(isFirst) {
             <multipart id="htmltext" alt="plaintext" type="text/html" encoding="UTF-8">
                <mm:import id="newsteaser" />
                <mm:include page="<%= newsLetterUri %>">
-                  <mm:param name="title"></mm:param>
+                  <mm:param name="title"><mm:write referid="title"/></mm:param>
                </mm:include>
             </multipart>
          </mm:setfield>
