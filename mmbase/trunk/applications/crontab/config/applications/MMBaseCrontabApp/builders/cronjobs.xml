@@ -98,12 +98,12 @@
     </field>
     <field>
       <descriptions>
-        <description xml:lang="en">cronjob type(1= short, 2= singleton jobs,3= multiple threads possible)</description>
-        <description xml:lang="nl">het type job (1 = kort, 2= enkelvoudig, 3= meerdere gelijktijdige jobs mogelijk)</description>
+        <description xml:lang="en">cronjob type (1 = short, 2 = singleton jobs, 3 = multiple threads possible)</description>
+        <description xml:lang="nl">het type job (1 = kort, 2 = enkelvoudig, 3 = meerdere gelijktijdige jobs mogelijk)</description>
       </descriptions>
       <gui>
-        <guiname xml:lang="nl">Tiepe jobs</guiname>
-        <guiname xml:lang="en">job type</guiname>
+        <guiname xml:lang="nl">Type jobs</guiname>
+        <guiname xml:lang="en">Job type</guiname>
       </gui>
       <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
         <enumeration>
