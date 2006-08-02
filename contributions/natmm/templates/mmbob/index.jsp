@@ -3,6 +3,7 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:content type="text/html">
 <mm:cloud jspvar="cloud">
+<mm:log jspvar="log">
 <%@ include file="thememanager/loadvars.jsp" %>
 <%@ include file="settings.jsp" %>
 <HTML>
@@ -25,12 +26,13 @@
 if(memberid!=null) {
   // Step 1: user comes with memberid: use memberid to check if member already is a poster, if not create a poster for this forum
   %>
-  <mm:node number="<%= memberid %>"> 
+  <mm:node number="<%= memberid %>">
      <mm:list path="forums,related,posters" constraints="<%= "UPPER(posters.account) = '" + memberid + "'" %>" max="1">
          <mm:import id="userisposter" />
+         <% log.info("found poster " + memberid); %>
      </mm:list>
      <mm:notpresent referid="userisposter">
-       <mm:import id="account" jspvar="dummy"><%= memberid %></mm:import>
+       <mm:import id="account"><%= memberid %></mm:import>
        <mm:import id="password"><%= memberid %></mm:import>
        <mm:import id="firstname"><mm:field name="firstname" /></mm:import>
        <mm:import id="lastname"><mm:field name="suffix" /> <mm:field name="lastname" /></mm:import>
@@ -39,6 +41,7 @@ if(memberid!=null) {
        <mm:import id="gender">male</mm:import>
        <mm:import id="feedback" reset="true"><mm:function set="mmbob" name="createPoster" referids="forumid,account,password,firstname,lastname,email,gender,location" /></mm:import>
        <mm:import id="userisposter" />
+       <% log.info("created poster " + memberid); %>
      </mm:notpresent>
   </mm:node>
   <%
@@ -46,6 +49,15 @@ if(memberid!=null) {
 // Step 2: carry out MMBob authententication
 %>
 <%@ include file="getposterid.jsp" %>
+<mm:compare referid="posterid" value="-1">
+<%
+  log.info("poster is -1");
+  if(memberid!=null) {
+    log.info("send redirect to login.jsp?forumid="+forumid+"&account="+memberid+"&password="+memberid);
+    response.sendRedirect("login.jsp?forumid="+forumid+"&account="+memberid+"&password="+memberid);
+  }
+%>
+</mm:compare>
 <mm:locale language="$lang"> 
 
 <!-- action check -->
@@ -79,7 +91,7 @@ if(memberid!=null) {
                     <p />
                     <b>inloggen</b><p />
                 </mm:notpresent>
-                account : <input size="12" name="account">
+                account : <input size="12" name="account"><p/>
                 wachtwoord : <input size="12" type="password" name="password">
                 <input type="submit" value="inloggen" />
                 </form><p />
@@ -178,6 +190,7 @@ if(memberid!=null) {
 </mm:locale>
 
 </mm:compare>
+</mm:log>
 </mm:cloud>
 </mm:content>
 </center>
