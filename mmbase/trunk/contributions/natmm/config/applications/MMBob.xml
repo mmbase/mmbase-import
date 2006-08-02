@@ -41,24 +41,24 @@
         <relation from="postthreads" to="postings" type="related" />        
     </allowedrelationlist>
     <datasourcelist>
-        <datasource builder="avatarsets" path="NMIntra/avatarsets.xml" />
-        <datasource builder="forummessagebox" path="NMIntra/forummessagebox.xml" />
-        <datasource builder="forumprivatemessage" path="NMIntra/forumprivatemessage.xml" />
-        <datasource builder="forums" path="NMIntra/forums.xml" />
-        <datasource builder="images" path="NMIntra/images.xml" />
-        <datasource builder="imagesets" path="NMIntra/imagesets.xml" />
-        <datasource builder="postareas" path="NMIntra/postareas.xml" />
-        <datasource builder="posters" path="NMIntra/posters.xml" />
-        <datasource builder="postings" path="NMIntra/postings.xml" />
-        <datasource builder="postthreads" path="NMIntra/postthreads.xml" />
+        <datasource builder="avatarsets" path="MMBob/avatarsets.xml" />
+        <datasource builder="forummessagebox" path="MMBob/forummessagebox.xml" />
+        <datasource builder="forumprivatemessage" path="MMBob/forumprivatemessage.xml" />
+        <datasource builder="forums" path="MMBob/forums.xml" />
+        <datasource builder="images" path="MMBob/images.xml" />
+        <datasource builder="imagesets" path="MMBob/imagesets.xml" />
+        <datasource builder="postareas" path="MMBob/postareas.xml" />
+        <datasource builder="posters" path="MMBob/posters.xml" />
+        <datasource builder="postings" path="MMBob/postings.xml" />
+        <datasource builder="postthreads" path="MMBob/postthreads.xml" />
     </datasourcelist>
     <relationsourcelist>
-        <relationsource builder="insrel" path="NMIntra/insrel.xml" />
-        <relationsource builder="posrel" path="NMIntra/posrel.xml" />
-        <relationsource builder="rolerel" path="NMIntra/rolerel.xml" />
+        <relationsource builder="insrel" path="MMBob/insrel.xml" />
+        <relationsource builder="posrel" path="MMBob/posrel.xml" />
+        <relationsource builder="rolerel" path="MMBob/rolerel.xml" />
     </relationsourcelist>
     <contextsourcelist>
-        <contextsource path="NMIntra/backup.xml" type="depth" goal="backup" />
+        <contextsource path="MMBob/backup.xml" type="depth" goal="backup" />
     </contextsourcelist>
     <description>
         <![CDATA[The MMBob application saves and restores MMBob.]]>
