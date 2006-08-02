@@ -150,7 +150,7 @@ public class OptionedStats {
         // *** put names on tsNames ***
         String sStatName = "";
         String sNumber = "";
-        tmNames.put("website", "");
+        tmNames.put("website", "-1");
         tmNames.put("backoffice", "");
 
         log.info("Bestelwijze: before nlUsers: "+(new Date()).getTime());
@@ -183,22 +183,29 @@ public class OptionedStats {
         String sConstraints = "";
         Set set = tmNames.entrySet();
         Iterator i = set.iterator();
+        tmStatistics.put("backoffice",new Integer(0));
         while (i.hasNext()) {
             Map.Entry me = (Map.Entry)i.next();
             sStatName = (String) me.getKey();
             sRealNumber = (String)tmNames.get(sStatName);
             sConstraints = evenementTimeConstraint;
-            if(sRealNumber.equals("")) {
+            if(sRealNumber.equals("-1")) {
                sConstraints += " AND inschrijvingen.ticket_office = '" + sStatName + "'";
             } else {
                sConstraints += " AND inschrijvingen.ticket_office = 'backoffice'";
             }
+
             int iResultCounts = getCounts(cloud,sRealNumber,sConstraints,listtype,statstype);
+
+            if (sStatName.startsWith("backoffice:")&&iResultCounts!=0){
+               tmStatistics.put("backoffice",
+               new Integer(((Integer)tmStatistics.get("backoffice")).intValue()+ iResultCounts));
+            }
             if(!removeZeros||iResultCounts!=0) {
                if(!sStatName.equals("backoffice")) { // *** prevent from counting backoffice twice
                   iTotal += iResultCounts;
+                  tmStatistics.put(sStatName,new Integer(iResultCounts));
                }
-               tmStatistics.put(sStatName,new Integer(iResultCounts));
             }
          }
 
