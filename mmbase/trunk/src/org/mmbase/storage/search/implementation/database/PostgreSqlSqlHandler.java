@@ -36,7 +36,7 @@ import org.mmbase.module.core.MMObjectNode;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: PostgreSqlSqlHandler.java,v 1.23 2006-07-05 20:06:16 michiel Exp $
+ * @version $Id: PostgreSqlSqlHandler.java,v 1.24 2006-08-02 17:26:55 michiel Exp $
  * @since MMBase-1.7
  */
 public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -100,17 +100,23 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
      * UPPER(fieldname). This is mainly very bad if the query is also distinct. (ERROR: for SELECT
      * DISTINCT, ORDER BY expressions must appear in select list), may occur.
      */
-    protected StringBuffer appendSortOrderField(StringBuffer sb, SortOrder sortOrder, boolean multipleSteps) {
+    protected StringBuffer appendSortOrderField(StringBuffer sb, SortOrder sortOrder, boolean multipleSteps, SearchQuery query) {
         if (localeMakesCaseInsensitive) {
             if (sortOrder.isCaseSensitive()) {
-                log.warn("Don't now how to sort case sensitively in Postgresql for " + sortOrder + " it will be ignored.");
+                log.warn("Don't now how to sort case sensitively if the locale make case insensitive in Postgresql for " + sortOrder + " it will be ignored.");
             }
-            // Fieldname.
-            Step step = sortOrder.getField().getStep();
-            appendField(sb, step, sortOrder.getField().getFieldName(), multipleSteps);
+            StepField sf = sortOrder.getField();
+            appendField(sb, sf.getStep(), sf.getFieldName(), multipleSteps);
             return sb;
         } else {
-            return super.appendSortOrderField(sb, sortOrder, multipleSteps);
+            if (query.isDistinct() && ! sortOrder.isCaseSensitive()) {
+                log.warn("With a case sensitive locale, it is impossible to sort a distinct query case insensitively. Will sort it case sensitively in stead: " + sortOrder);
+                StepField sf = sortOrder.getField();
+                appendField(sb, sf.getStep(), sf.getFieldName(), multipleSteps);
+                return sb;
+            } else {
+                return super.appendSortOrderField(sb, sortOrder, multipleSteps);
+            }
         }
     }
     /*
