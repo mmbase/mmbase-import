@@ -23,19 +23,9 @@ package nl.leocms.connectors.UISconnector;
 public class UISconfig {
 
    private static String baseUrl = "http://192.168.35.76/"; // internal url on server
-   // String baseUrl = "http://212.123.241.76/"; // external url for server
+   // private static String baseUrl = "http://212.123.241.76/"; // external url for server
 
    public UISconfig() {
-   }
-
-   public static String getProductUrl(){
-      return baseUrl + "mmdemo/api/getProducts.jsp"; // production
-      //return "file:///Z:/in.xml";
-   }
-
-   public static String postOrderUrl(){
-      return  baseUrl + "mmdemo/api/postOrders.jsp"; // production
-      // return "http://192.168.120.47:8080/mmdemo_test/api/postOrders.jsp"; // development
    }
 
    public static boolean isUISconnected() {
@@ -43,6 +33,14 @@ public class UISconfig {
       return true;
    }
 
+   public static String postOrderUrl(){
+      return  baseUrl + "mmdemo/api/postOrders.jsp";
+   }
+
+   public static String getProductUrl(){
+      return baseUrl + "mmdemo/api/getProducts.jsp";
+      //return "file:///Z:/in.xml";
+   }
 
    public static String getProductPropertiesURL(){
       return baseUrl + "mmdemo/api/getProductPropertyList.jsp";
@@ -52,7 +50,6 @@ public class UISconfig {
       return baseUrl + "mmdemo/api/getCustomerPropertyList.jsp";
 //      return "file:///Z:/in2.xml";
    }
-
 
    public static String getCustomersURL(String sUserName, String sPassword){
       return baseUrl + "mmdemo/api/getCustomerInformation.jsp?username=" + sUserName + "&pwd=" + sPassword;
