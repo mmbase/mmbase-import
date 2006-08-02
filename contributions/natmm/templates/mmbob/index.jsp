@@ -2,7 +2,7 @@
 <%@ page contentType="text/html; charset=utf-8" language="java" %>
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:content type="text/html">
-<mm:cloud>
+<mm:cloud jspvar="cloud">
 <%@ include file="thememanager/loadvars.jsp" %>
 <%@ include file="settings.jsp" %>
 <HTML>
@@ -20,46 +20,32 @@
 
 <mm:compare referid="forumid" value="unknown" inverse="true"><% 
 
-// Step 1: user comes with username: use username to check if user is poster if not create a poster for this forum
-%><%--@include file="/dev/includes/authenticate.jsp" --%>
-<% String username = "";
-	if(!username.equals("")) { 
-  %><mm:list path="forums,related,posters" constraints="<%= "UPPER(posters.account) = '" + username.toUpperCase() + "'" %>" max="1">
-      <mm:import id="userisposter" />
-  </mm:list>
-  <mm:notpresent referid="userisposter">
-      <mm:listnodes type="employees" constraints="<%= "UPPER(location) = '" + username.toUpperCase() + "'" %>">
-          <mm:import id="account" jspvar="dummy"><mm:field name="location" /></mm:import>
-          <mm:import id="password"><mm:field name="location" /></mm:import>
-          <mm:import id="firstname"><mm:field name="firstname" /></mm:import>
-          <mm:import id="lastname"><mm:field name="suffix" /> <mm:field name="lastname" /></mm:import>
-          <mm:import id="email"><mm:field name="email" /></mm:import>
-          <mm:import id="location"></mm:import>
-          <mm:import id="gender">male</mm:import>
-          <mm:import id="feedback" reset="true"><mm:function set="mmbob" name="createPoster" referids="forumid,account,password,firstname,lastname,email,gender,location" /></mm:import>
-          <mm:import id="userisposter" />
-      </mm:listnodes>
-  </mm:notpresent>
-  <mm:notpresent referid="userisposter">
-          <mm:import id="account" jspvar="dummy"><%= username %></mm:import>
-          <mm:import id="password"><%= username %></mm:import>
-          <mm:import id="firstname"><%= username.substring(username.length()-1) %></mm:import>
-          <mm:import id="lastname"><%= username.substring(0,username.length()-1) %></mm:import>
-          <mm:import id="email"></mm:import>
-          <mm:import id="location"></mm:import>
-          <mm:import id="gender">male</mm:import>
-          <mm:import id="feedback" reset="true"><mm:function set="mmbob" name="createPoster" referids="forumid,account,password,firstname,lastname,email,gender,location" /></mm:import>
-  </mm:notpresent>
+%><%@include file="/editors/mailer/util/memberid_get.jsp" %>
+<% 
+if(memberid!=null) {
+  // Step 1: user comes with memberid: use memberid to check if member already is a poster, if not create a poster for this forum
+  %>
+  <mm:node number="<%= memberid %>"> 
+     <mm:list path="forums,related,posters" constraints="<%= "UPPER(posters.account) = '" + memberid + "'" %>" max="1">
+         <mm:import id="userisposter" />
+     </mm:list>
+     <mm:notpresent referid="userisposter">
+       <mm:import id="account" jspvar="dummy"><%= memberid %></mm:import>
+       <mm:import id="password"><%= memberid %></mm:import>
+       <mm:import id="firstname"><mm:field name="firstname" /></mm:import>
+       <mm:import id="lastname"><mm:field name="suffix" /> <mm:field name="lastname" /></mm:import>
+       <mm:import id="email"><mm:field name="email" /></mm:import>
+       <mm:import id="location"></mm:import>
+       <mm:import id="gender">male</mm:import>
+       <mm:import id="feedback" reset="true"><mm:function set="mmbob" name="createPoster" referids="forumid,account,password,firstname,lastname,email,gender,location" /></mm:import>
+       <mm:import id="userisposter" />
+     </mm:notpresent>
+  </mm:node>
   <%
 }
-// Step 2: redirect user to MMBase-authenticated area of the website
-if(websiteName.indexOf(request.getServerName())>-1) { 
-//  response.sendRedirect("http://" +editorsName+ "/mmbob/login.jsp?forumid="+forumid+"&account="+username+"&password="+username); 
-}
-// Step 3: user has arrived on MMBase-authenticated area of the website
+// Step 2: carry out MMBob authententication
 %>
 <%@ include file="getposterid.jsp" %>
-<!-- server is <%= request.getServerName() %> -->
 <mm:locale language="$lang"> 
 
 <!-- action check -->
@@ -75,6 +61,7 @@ if(websiteName.indexOf(request.getServerName())>-1) {
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
           <mm:nodefunction set="mmbob" name="getForumInfo" referids="forumid,posterid">
           <mm:import id="adminmode"><mm:field name="isadministrator" /></mm:import>
+          
            <tr>
                 <mm:compare referid="posterid" value="-1">
                 <th width="100"><a href="newposter.jsp?forumid=<mm:write referid="forumid" />"><img src="images/guest.gif" border="0"></a></th>
