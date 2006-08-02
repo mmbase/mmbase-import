@@ -8,6 +8,31 @@
   </info>
   <detectorlist>
     <detector>
+      <mimetype>image/jpeg</mimetype>
+      <extension>jpg</extension>
+      <designation>JPEG image data</designation>
+      <test offset="0" type="beshort" comparator="=">0xffd8</test>
+      <childlist>
+        <detector>
+          <mimetype>image/jpeg</mimetype>
+          <extension>jpg</extension>
+          <designation>\b, JFIF standard</designation>
+          <test offset="6" type="string" comparator="=">JFIF</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>image/jpeg</mimetype>
+      <extension>jpg</extension>
+      <designation>JPEG image data, HSI proprietary</designation>
+      <test offset="0" type="string" comparator="=">hsi1</test>
+    </detector>
+    <detector>
+      <mimetype>image/pjpeg</mimetype>
+      <extension>jpg</extension>
+      <designation>JPEG image data</designation>
+    </detector>
+    <detector>
       <mimetype>video/mpeg</mimetype>
       <extension>mpg</extension>
       <designation>MPEG video stream data</designation>
@@ -1336,31 +1361,6 @@
           <test offset="29" type="byte" comparator="=">0x1</test>
         </detector>
       </childlist>
-    </detector>
-    <detector>
-      <mimetype>image/jpeg</mimetype>
-      <extension>jpg</extension>
-      <designation>JPEG image data</designation>
-      <test offset="0" type="beshort" comparator="=">0xffd8</test>
-      <childlist>
-        <detector>
-          <mimetype>image/jpeg</mimetype>
-          <extension>jpg</extension>
-          <designation>\b, JFIF standard</designation>
-          <test offset="6" type="string" comparator="=">JFIF</test>
-        </detector>
-      </childlist>
-    </detector>
-    <detector>
-      <mimetype>image/jpeg</mimetype>
-      <extension>jpg</extension>
-      <designation>JPEG image data, HSI proprietary</designation>
-      <test offset="0" type="string" comparator="=">hsi1</test>
-    </detector>
-    <detector>
-      <mimetype>image/pjpeg</mimetype>
-      <extension>jpg</extension>
-      <designation>JPEG image data</designation>
     </detector>
     <detector>
       <mimetype>???</mimetype>
