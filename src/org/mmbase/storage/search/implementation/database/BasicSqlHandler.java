@@ -22,7 +22,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.61 2006-08-02 10:20:30 michiel Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.62 2006-08-02 17:26:55 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -600,6 +600,12 @@ public class BasicSqlHandler implements SqlHandler {
          }
          return sb;
     }
+    /**
+     * @since MMBase-1.8.2
+     */
+    protected StringBuffer appendSortOrderField(StringBuffer sb, SortOrder sortOrder, boolean multipleSteps, SearchQuery query) {
+        return appendSortOrderField(sb, sortOrder, multipleSteps);
+    }
 
     /**
      * @since MMBase-1.8
@@ -612,7 +618,7 @@ public class BasicSqlHandler implements SqlHandler {
             Iterator iSortOrders = sortOrders.iterator();
             while (iSortOrders.hasNext()) {
                 SortOrder sortOrder = (SortOrder) iSortOrders.next();
-                appendSortOrderField(sb, sortOrder, multipleSteps);
+                appendSortOrderField(sb, sortOrder, multipleSteps, query);
                 appendSortOrderDirection(sb, sortOrder);
                 if (iSortOrders.hasNext()) {
                     sb.append(",");
