@@ -3,6 +3,8 @@
 <application auto-deploy="false" version="0" name="NMIntra" maintainer="mmbase.org">
    <requirements>
    	<requires type="application" name="LeoCMS" maintainer="mmbase.org" version="1" />
+   	<requires type="application" name="KBase" maintainer="ernst.bunders" version="1" />
+   	<requires type="application" name="MMBob" maintainer="submarine.nl" version="1" />
    </requirements>
    <neededbuilderlist>
       <!-- relations NatMM -->
@@ -49,7 +51,6 @@
       <builder version="0" maintainer="mmbase.org">vacature</builder>
 
       <!-- objects NMIntra -->
-      <builder version="0" maintainer="mmbase.org">avatarsets</builder>
       <builder version="0" maintainer="mmbase.org">community</builder>
       <builder version="0" maintainer="mmbase.org">companies</builder>
       <builder version="0" maintainer="mmbase.org">competencetypes</builder>
@@ -68,17 +69,8 @@
       <builder version="0" maintainer="mmbase.org">evenement_distance</builder>
       <builder version="0" maintainer="mmbase.org">evenement_duration</builder>
       <builder version="0" maintainer="mmbase.org">feedback</builder>
-      <builder version="0" maintainer="mmbase.org">forummessagebox</builder>
-      <builder version="0" maintainer="mmbase.org">forumprivatemessage</builder>
-      <builder version="0" maintainer="mmbase.org">forums</builder>
-      <builder version="0" maintainer="mmbase.org">imagesets</builder>
       <builder version="0" maintainer="mmbase.org">items</builder>
       <builder version="0" maintainer="mmbase.org">item_pools</builder>  <!-- should be removed after migration -->
-      <builder version="0" maintainer="mmbase.org">kb_answer</builder>
-      <builder version="0" maintainer="mmbase.org">kb_category</builder>
-      <builder version="0" maintainer="mmbase.org">kb_displayable</builder>
-      <builder version="0" maintainer="mmbase.org">kb_identifiable</builder>
-      <builder version="0" maintainer="mmbase.org">kb_question</builder>
       <builder version="0" maintainer="mmbase.org">keywords</builder>
       <builder version="0" maintainer="mmbase.org">mmevents</builder>
       <builder version="0" maintainer="mmbase.org">natuurgebieden_type</builder>
@@ -86,10 +78,6 @@
       <builder version="0" maintainer="mmbase.org">phaserel</builder>
       <builder version="0" maintainer="mmbase.org">phases</builder>
       <builder version="0" maintainer="mmbase.org">pools</builder>
-      <builder version="0" maintainer="mmbase.org">postareas</builder>
-      <builder version="0" maintainer="mmbase.org">posters</builder>
-      <builder version="0" maintainer="mmbase.org">postings</builder>
-      <builder version="0" maintainer="mmbase.org">postthreads</builder>
       <builder version="0" maintainer="mmbase.org">products</builder>
       <builder version="0" maintainer="mmbase.org">producttypes</builder>
       <builder version="0" maintainer="mmbase.org">programs</builder>
@@ -174,9 +162,6 @@
       <relation from="items" to="persoon" type="posrel"/>
       <relation from="items" to="pools" type="discountrel"/>
       <relation from="items" to="products" type="posrel"/>
-      <relation from="kb_category" to="kb_category" type="related"/>
-      <relation from="kb_category" to="kb_question" type="related"/>
-      <relation from="kb_question" to="kb_answer" type="related"/>
       <relation from="linklijst" to="contentelement" type="lijstcontentrel" />
       <relation from="medewerkers" to="images" type="posrel"/>
       <relation from="medewerkers" to="locations" type="readmore"/>
@@ -203,7 +188,7 @@
       <relation from="pagina" to="programs" type="posrel"/>
       <relation from="pagina" to="shorty" type="rolerel"/>
       <relation from="pagina" to="teaser" type="rolerel"/>
-		<relation from="pagina" to="terms" type="contentrel"/>
+		  <relation from="pagina" to="terms" type="contentrel"/>
       <relation from="pagina" to="users" type="rolerel"/>
       <relation from="paginatemplate" to="editwizards" type="related"/> 
       <relation from="paragraaf" to="attachments" type="posrel"/> 
@@ -227,16 +212,16 @@
       <relation from="projects" to="persoon" type="readmore"/>
       <relation from="projects" to="paragraaf" type="posrel"/>
       <relation from="projects" to="phases" type="phaserel"/>
-		<relation from="projects" to="projecttypes" type="posrel"/>
+		  <relation from="projects" to="projecttypes" type="posrel"/>
       <relation from="projects" to="projects" type="posrel" />
       <relation from="projects" to="items" type="posrel" />
       <relation from="rubriek" to="images" type="contentrel"/>
-		<relation from="rubriek" to="menu" type="related" />
+		  <relation from="rubriek" to="menu" type="related" />
       <relation from="rubriek" to="pagina" type="posrel"/>
       <relation from="rubriek" to="rubriek" type="parent"/>
       <relation from="rubriek" to="style" type="readmore"/>
       <relation from="rubriek" to="style" type="related"/>
-		<relation from="rubriek" to="topics" type="related" />
+		  <relation from="rubriek" to="topics" type="related" />
       <relation from="rubriek" to="users" type="rolerel"  />
       <relation from="teaser" to="images" type="posrel"/> 
       <relation from="teaser" to="contentelement" type="readmore"/> 
@@ -246,7 +231,7 @@
       <relation from="terms" to="projects" type="posrel"/>
       <relation from="terms" to="terms" type="rolerel"/>
       <relation from="terms" to="terms" type="synonymrel"/>
-	   <relation from="topics" to="pools" type="posrel" />
+	    <relation from="topics" to="pools" type="posrel" />
       <relation from="topics" to="keywords" type="posrel" />
       <relation from="users" to="medewerkers" type="related"/> 
       <relation from="users" to="menu" type="gebruikt"/>
@@ -282,7 +267,6 @@
       <datasource builder="vacature" path="NMIntra/vacature.xml"/>
 
       <!-- objects NMIntra -->
-      <datasource builder="avatarsets" path="NMIntra/avatarsets.xml"/>
       <datasource builder="community" path="NMIntra/community.xml"/>
       <datasource builder="companies" path="NMIntra/companies.xml"/>
       <datasource builder="competencetypes" path="NMIntra/competencetypes.xml"/>
@@ -303,18 +287,9 @@
       <datasource builder="evenement_duration" path="NMIntra/evenement_duration.xml"/>
       <datasource builder="evenement_type" path="NMIntra/evenement_type.xml"/>
       <datasource builder="feedback" path="NMIntra/feedback.xml"/>
-      <datasource builder="forummessagebox" path="NMIntra/forummessagebox.xml"/>
-      <datasource builder="forumprivatemessage" path="NMIntra/forumprivatemessage.xml"/>
-      <datasource builder="forums" path="NMIntra/forums.xml"/>
       <datasource builder="groups" path="NMIntra/groups.xml"/>
-      <datasource builder="imagesets" path="NMIntra/imagesets.xml"/>
       <datasource builder="items" path="NMIntra/items.xml"/>
       <datasource builder="item_pools" path="NMIntra/item_pools.xml"/>  <!-- should be removed after migration -->
-      <datasource builder="kb_answer" path="NMIntra/kb_answer.xml"/>
-      <datasource builder="kb_category" path="NMIntra/kb_category.xml"/>
-      <datasource builder="kb_displayable" path="NMIntra/kb_displayable.xml"/>
-      <datasource builder="kb_identifiable" path="NMIntra/kb_identifiable.xml"/>
-      <datasource builder="kb_question" path="NMIntra/kb_question.xml"/>
       <datasource builder="keywords" path="NMIntra/keywords.xml"/>
       <datasource builder="mmevents" path="NMIntra/mmevents.xml"/>
       <datasource builder="mmservers" path="NMIntra/mmservers.xml"/>
@@ -324,10 +299,6 @@
       <datasource builder="phases" path="NMIntra/phases.xml"/>
       <!--<datasource builder="phaserel" path="NMIntra/phaserel.xml"/>-->
       <datasource builder="pools" path="NMIntra/pools.xml"/>
-      <datasource builder="postareas" path="NMIntra/postareas.xml"/>
-      <datasource builder="posters" path="NMIntra/posters.xml"/>
-      <datasource builder="postings" path="NMIntra/postings.xml"/>
-      <datasource builder="postthreads" path="NMIntra/postthreads.xml"/>
       <datasource builder="products" path="NMIntra/products.xml"/>
       <datasource builder="producttypes" path="NMIntra/producttypes.xml"/>
       <datasource builder="programs" path="NMIntra/programs.xml"/>
