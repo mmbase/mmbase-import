@@ -22,7 +22,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.60 2006-07-05 20:06:16 michiel Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.61 2006-08-02 10:20:30 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -96,7 +96,10 @@ public class BasicSqlHandler implements SqlHandler {
 
     protected void appendDateValue(StringBuffer sb, Date value) {
         int timeZoneOffset = MMBase.getMMBase().getStorageManagerFactory().getTimeZoneOffset(value.getTime());
-        dateFormat.format(new Date(value.getTime() - timeZoneOffset), sb, dontcareFieldPosition);
+        Date date = new Date(value.getTime() - timeZoneOffset);
+        //Date date = new Date(value.getTime());
+        //log.debug("Using offset " + timeZoneOffset + " " + value + " -> " + date); 
+        dateFormat.format(date, sb, dontcareFieldPosition);
     }
 
     /**
@@ -174,12 +177,10 @@ public class BasicSqlHandler implements SqlHandler {
 
         // Test for at least 1 step and 1 field.
         if (query.getSteps().isEmpty()) {
-            throw new IllegalStateException(
-            "Searchquery has no step (at leas 1 step is required).");
+            throw new IllegalStateException("Searchquery has no step (at least 1 step is required).");
         }
         if (query.getFields().isEmpty()) {
-            throw new IllegalStateException(
-            "Searchquery has no field (at least 1 field is required).");
+            throw new IllegalStateException("Searchquery has no field (at least 1 field is required).");
         }
 
         // SELECT
@@ -591,7 +592,9 @@ public class BasicSqlHandler implements SqlHandler {
          Step step = sortOrder.getField().getStep();
          appendField(sb, step, sortOrder.getField().getFieldName(), multipleSteps);
          if (uppered) {
-             sb.append("),");
+             sb.append(")");
+             appendSortOrderDirection(sb, sortOrder);
+             sb.append(",");
              // also order by field itself, so ensure uniqueness.
              appendField(sb, step, sortOrder.getField().getFieldName(), multipleSteps);
          }
