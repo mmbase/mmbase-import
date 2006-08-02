@@ -16,7 +16,7 @@
 <mm:import id="cancel">Annuleren</mm:import>
 <mm:import id="commit">Opslaan</mm:import>
 <mm:import id="delete">Verwijderen</mm:import>
-<mm:import id="webmastermail">intranet@natuurmonumenten.nl</mm:import>
+<mm:import id="webmastermail"><%= nl.leocms.applications.NatMMConfig.fromEmailAddress %></mm:import>
 <mm:import id="numberonline">Aantal mensen online</mm:import>
 <mm:import id="numberofposts">Aantal bijdrages</mm:import>
 <% String timeFormat = "d MMMM yyyy, HH:mm"; %>
