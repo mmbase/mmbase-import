@@ -1,6 +1,6 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm"%>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<%@page import="java.util.HashMap"%>
+<%@page import="java.util.*"%>
 
 
 <script src="js/browser_version.js"></script>
@@ -23,6 +23,35 @@
 <mm:import externid="learnobjecttype" jspvar="learnObjectType"/>
 <mm:import jspvar="educationNumber"><mm:write referid="education"/></mm:import>
 <mm:import externid="fb_madetest"/>
+
+<%
+   // We are using it to show only one node in the tree
+   // For cross-education references
+
+%>
+
+<mm:import externid="the_only_node_to_show"/>
+<%
+   HashSet hsetThePath = null;
+%>
+
+<mm:present referid="the_only_node_to_show">
+   <mm:node number="$the_only_node_to_show" notfound="skip">
+      <%
+         hsetThePath = new HashSet();
+      %>
+      <mm:tree type="learnobjects" role="posrel" searchdir="source" orderby="posrel.pos" directions="up" maxdepth="15">
+         <mm:field name="number" jspvar="sLevelNumber" vartype="String">
+            <%
+               hsetThePath.add(sLevelNumber);
+            %>
+         </mm:field>
+      </mm:tree>
+   </mm:node>
+
+</mm:present>
+
+
 
 <%
     if (educationNumber != null && educationNumber.length() > 0) {
@@ -122,6 +151,7 @@
   }
 
   function openContent( type, number ) {
+
     if (document.getElementById('content-'+currentnumber)) {
       document.getElementById('content-'+currentnumber).className = "";
     }
@@ -287,89 +317,105 @@
                <mm:import id="showsubtree" reset="true">true</mm:import>
 
                <mm:tree type="learnobjects" role="posrel" searchdir="destination" orderby="posrel.pos" directions="up" maxdepth="15">
+                  <mm:import id="learnobjectnumber" jspvar="sCurrentTreeLeafID" vartype="String"><mm:field name="number"/></mm:import>
+                  <%
+                     if((hsetThePath == null) || (hsetThePath.contains(sCurrentTreeLeafID))){
+                        %>
+                           <mm:import id="nodetype"><mm:nodeinfo type="type" /></mm:import>
+                           <mm:depth id="currentdepth" write="false" />
 
-                  <mm:import id="learnobjectnumber"><mm:field name="number"/></mm:import>
-                  <mm:import id="nodetype"><mm:nodeinfo type="type" /></mm:import>
-                  <mm:depth id="currentdepth" write="false" />
-
-                  <mm:import id="block_this_first_htmlpage" reset="true">false</mm:import>
-                  <mm:compare referid="nodetype" value="htmlpages">
-                     <mm:related path="posrel,learnblocks" directions="up">
-                        <mm:node element="posrel">
-                           <mm:import id="htmlpage_number" reset="true"><mm:field name="pos"/></mm:import>
-                           <mm:compare referid="htmlpage_number" value="-1">
-                              <mm:import id="block_this_first_htmlpage" reset="true">true</mm:import>
-                           </mm:compare>
-                        </mm:node>
-                     </mm:related>
-                  </mm:compare>
-
-
-                  <mm:compare referid="showsubtree" value="false">
-                     <mm:isgreaterthan inverse="true" referid="currentdepth" referid2="ignoredepth">
-                        <%-- we are back on the same or lower level, so we must show the learnobject again --%>
-                        <mm:import id="showsubtree" reset="true">true</mm:import>
-                     </mm:isgreaterthan>
-                  </mm:compare>
-
-                  <mm:compare referid="showsubtree" value="true">
-
-                     <mm:grow>
-                        <div id="div<mm:write referid="previousnumber"/>" class="lbLevel<mm:depth/>">
-                           <mm:compare referid="nodetype" valueset="educations,learnblocks,tests,pages,flashpages,preassessments,postassessments">
-                              <script type="text/javascript">
-                                 document.getElementById("img<mm:write referid="previousnumber" />").setAttribute("haschildren", 1);
-                              </script>
-                           </mm:compare>
-                           <mm:onshrink>
-                              </div>
-                           </mm:onshrink>
-                     </mm:grow>
-
-                     <mm:remove referid="previousnumber"/>
-                     <mm:import id="previousnumber"><mm:field name="number"/></mm:import>
-
-                     <%-- determine if we may show this learnobject and its children --%>
-                     <mm:import id="mayshow"><di:getvalue component="education" name="showlo" arguments="$previousnumber" /></mm:import>
-
-                     <%-- if 'showlo' is 0, then we may not show the subtree, so we ignore everything with a depth HIGHER than the current depth --%>
-                     <mm:compare referid="mayshow" value="0">
-                        <mm:import id="showsubtree" reset="true">false</mm:import>
-                        <mm:import id="ignoredepth" reset="true"><mm:write referid="currentdepth" /></mm:import>
-                        <!-- Ignored subtree at depth <mm:write referid="currentdepth" /> -->
-                     </mm:compare>
-
-                     <mm:compare referid="showsubtree" value="true">
-
-                        <%// have to skip the first entrace in scorm tree %>
-                        <mm:compare referid="block_this_first_htmlpage" value="false">
-
-                           <mm:compare referid="nodetype" valueset="educations,learnblocks,tests,pages,flashpages,preassessments,postassessments,htmlpages">
-
-                              <mm:import jspvar="depth" vartype="Integer"><mm:depth /></mm:import>
-
-                              <div style="padding: 0px 0px 0px <%= 18 + depth.intValue() * 8 %>px;" id="content-<mm:field name="number" />">
-                                 <script type="text/javascript">
-                                 <!--
-                                    addContent('<mm:nodeinfo type="type"/>','<mm:field name="number"/>');
-                                 //-->
-                                 </script>
-                                 <img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="number"/>" onclick="openClose('div<mm:field name="number"/>','img<mm:field name="number"/>')" style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" title="" alt="" /><a href="javascript:openContent('<mm:nodeinfo type="type"/>', '<mm:field name="number"/>' ); openOnly('div<mm:field name="number"/>','img<mm:field name="number"/>');" style="padding-left: 0px"><mm:field name="name"/></a>
-
-                                 <mm:node number="component.pop" notfound="skip">
-                                    <mm:relatednodes type="providers" constraints="providers.number=$provider">
-                                       <mm:list nodes="$user" path="people,related,pop">
-                                          <mm:first><%@include file="popcheck.jsp" %></mm:first>
-                                       </mm:list>
-                                    </mm:relatednodes>
+                           <mm:import id="block_this_first_htmlpage" reset="true">false</mm:import>
+                           <mm:compare referid="nodetype" value="htmlpages">
+                              <mm:related path="posrel,learnblocks" directions="up">
+                                 <mm:node element="posrel">
+                                    <mm:import id="htmlpage_number" reset="true"><mm:field name="pos"/></mm:import>
+                                    <mm:compare referid="htmlpage_number" value="-1">
+                                       <mm:import id="block_this_first_htmlpage" reset="true">true</mm:import>
+                                    </mm:compare>
                                  </mm:node>
-                              </div>
+                              </mm:related>
                            </mm:compare>
-                        </mm:compare>
-                     </mm:compare>
-                     <mm:shrink/>
-                  </mm:compare>
 
+
+                           <mm:compare referid="showsubtree" value="false">
+                              <mm:isgreaterthan inverse="true" referid="currentdepth" referid2="ignoredepth">
+                                 <%-- we are back on the same or lower level, so we must show the learnobject again --%>
+                                 <mm:import id="showsubtree" reset="true">true</mm:import>
+                              </mm:isgreaterthan>
+                           </mm:compare>
+
+                           <mm:compare referid="showsubtree" value="true">
+
+                              <mm:grow>
+                                 <div id="div<mm:write referid="previousnumber"/>" class="lbLevel<mm:depth/>">
+                                    <mm:compare referid="nodetype" valueset="educations,learnblocks,tests,pages,flashpages,preassessments,postassessments">
+                                       <script type="text/javascript">
+                                          document.getElementById("img<mm:write referid="previousnumber" />").setAttribute("haschildren", 1);
+                                       </script>
+                                    </mm:compare>
+                                    <mm:onshrink>
+                                       </div>
+                                    </mm:onshrink>
+                              </mm:grow>
+
+                              <mm:remove referid="previousnumber"/>
+                              <mm:import id="previousnumber"><mm:field name="number"/></mm:import>
+
+                              <%-- determine if we may show this learnobject and its children --%>
+                              <mm:import id="mayshow"><di:getvalue component="education" name="showlo" arguments="$previousnumber" /></mm:import>
+
+                              <%-- if 'showlo' is 0, then we may not show the subtree, so we ignore everything with a depth HIGHER than the current depth --%>
+                              <mm:compare referid="mayshow" value="0">
+                                 <mm:import id="showsubtree" reset="true">false</mm:import>
+                                 <mm:import id="ignoredepth" reset="true"><mm:write referid="currentdepth" /></mm:import>
+                                 <!-- Ignored subtree at depth <mm:write referid="currentdepth" /> -->
+                              </mm:compare>
+
+                              <mm:compare referid="showsubtree" value="true">
+
+                                 <%// have to skip the first entrace in scorm tree %>
+                                 <mm:compare referid="block_this_first_htmlpage" value="false">
+
+                                    <mm:compare referid="nodetype" valueset="educations,learnblocks,tests,pages,flashpages,preassessments,postassessments,htmlpages">
+
+                                       <mm:import jspvar="depth" vartype="Integer"><mm:depth /></mm:import>
+
+                                       <div style="padding: 0px 0px 0px <%= 18 + depth.intValue() * 8 %>px;" id="content-<mm:field name="number" />">
+                                          <script type="text/javascript">
+                                          <!--
+                                             addContent('<mm:nodeinfo type="type"/>','<mm:field name="number"/>');
+                                          //-->
+                                          </script>
+
+                                          <mm:present referid="the_only_node_to_show">
+                                             <img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="number"/>" onclick="" style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" title="" alt="" /><a href="<mm:url referids="learnobjecttype,education,class,fb_madetest" page="index.jsp">
+                                                   <mm:param name="learnobject"><mm:write referid="learnobjectnumber"/></mm:param>
+                                                </mm:url>" style="padding-left: 0px"><mm:field name="name"/></a>
+                                          </mm:present>
+
+
+
+
+                                          <mm:notpresent referid="the_only_node_to_show">
+                                             <img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="number"/>" onclick="openClose('div<mm:field name="number"/>','img<mm:field name="number"/>')" style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" title="" alt="" /><a href="javascript:openContent('<mm:nodeinfo type="type"/>', '<mm:field name="number"/>' ); openOnly('div<mm:field name="number"/>','img<mm:field name="number"/>');" style="padding-left: 0px"><mm:field name="name"/></a>
+                                          </mm:notpresent>
+
+                                          <mm:node number="component.pop" notfound="skip">
+                                             <mm:relatednodes type="providers" constraints="providers.number=$provider">
+                                                <mm:list nodes="$user" path="people,related,pop">
+                                                   <mm:first><%@include file="popcheck.jsp" %></mm:first>
+                                                </mm:list>
+                                             </mm:relatednodes>
+                                          </mm:node>
+                                       </div>
+                                    </mm:compare>
+                                 </mm:compare>
+                              </mm:compare>
+                              <mm:shrink/>
+                           </mm:compare>
+                        <%
+                     }
+                  %>
                </mm:tree>
             </mm:relatednodescontainer>
          </mm:node>
@@ -423,6 +469,9 @@
          &nbsp;
       </div>
       <div class="contentBodywit" id="contentBodywit">
+         <mm:present referid="the_only_node_to_show">
+            <div align="right"><input type="submit" class="formbutton" value="<di:translate key="assessment.back_to_lession_button" />" onClick="history.back()"/></div>
+         </mm:present>
          <iframe width="100%" height="100%" onload="resize()" name="content" id="content" frameborder="0" style="overflow:hidden"></iframe>
       </div>
    </div>
@@ -430,18 +479,29 @@
 
 <script type="text/javascript">
    closeAll();
-   <mm:present referid="learnobject">
-      openContent('<mm:write referid="learnobjecttype"/>','<mm:write referid="learnobject"/>');
-      openOnly('div<mm:write referid="learnobject"/>','img<mm:write referid="learnobject"/>');
+
+   <%// we open need menu item in case it is a reference from another education%>
+   <mm:present referid="the_only_node_to_show">
+      openContent('<mm:write referid="learnobjecttype"/>','<mm:write referid="the_only_node_to_show"/>');
+      openOnly('div<mm:write referid="the_only_node_to_show"/>','img<mm:write referid="the_only_node_to_show"/>');
    </mm:present>
 
-   <mm:notpresent referid="learnobject">
-        if (contentnumber.length >= 1) {
-            openContent(contenttype[0],contentnumber[0]);
-            openOnly('div'+contentnumber[0],'img'+contentnumber[0]);
-        }
 
+   <mm:notpresent referid="the_only_node_to_show">
+      <mm:present referid="learnobject">
+         openContent('<mm:write referid="learnobjecttype"/>','<mm:write referid="learnobject"/>');
+         openOnly('div<mm:write referid="learnobject"/>','img<mm:write referid="learnobject"/>');
+      </mm:present>
+
+      <mm:notpresent referid="learnobject">
+           if (contentnumber.length >= 1) {
+               openContent(contenttype[0],contentnumber[0]);
+               openOnly('div'+contentnumber[0],'img'+contentnumber[0]);
+           }
+
+      </mm:notpresent>
    </mm:notpresent>
+
 </script>
 
 <br />
