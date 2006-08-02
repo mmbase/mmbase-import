@@ -16,7 +16,7 @@
      * processuploads.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: processuploads.jsp,v 1.1 2006-03-05 21:46:43 henk Exp $
+     * @version  $Id: processuploads.jsp,v 1.2 2006-08-02 16:23:03 adyubina Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
@@ -74,6 +74,11 @@ if (! ewconfig.subObjects.empty()) {
     try {
         List fileItems = fu.parseRequest(request);
         int fileCount = 0;
+        ArrayList alAllowedTypes = new ArrayList();
+        alAllowedTypes.add("image/gif");
+        alAllowedTypes.add("image/pjpeg");
+        alAllowedTypes.add("image/x-png");
+        alAllowedTypes.add("image/tiff");
         for (Iterator i = fileItems.iterator(); i.hasNext(); ) {
             FileItem fi = (FileItem)i.next();
             if (!fi.isFormField()) {
@@ -95,8 +100,12 @@ if (! ewconfig.subObjects.empty()) {
                   if (log.isDebugEnabled()) {
                      log.debug("Setting binary " + fi.get() + " " + fi.get().length + " " +  fileName + " " + fullFileName);
                   }
+                  if (!alAllowedTypes.contains(fi.getContentType()))
+                  {
+                     throw new Exception("Unsupported type");
+                  }
                   wizardConfig.wiz.setBinary(fi.getFieldName(), fi.get(), fileName, fullFileName, fi.getContentType());
-                  fileCount++;
+						fileCount++;
                 } 
             }
         }
@@ -117,15 +126,21 @@ if (! ewconfig.subObjects.empty()) {
       <a href="<mm:url page="upload.jsp" />?proceed=true&did=<%=did%>&sessionkey=<%=ewconfig.sessionKey%>&wizard=<%=wizardConfig.wizard%>&maxsize=<%=ewconfig.maxupload%>">Probeer het nogmaals</a> of
       <a href="javascript:window.close();">stop met uploaden</a>.
       
-  <%
-    } catch (FileUploadException e) {
+<%  } catch (FileUploadException e) {
       // hh: translated hardcoded english prompts
   %>
       Er is een fout opgetreden bij het uploaden van (<%=e.toString()%>).<br />
       <a href="<mm:url page="upload.jsp" />?proceed=true&did=<%=did%>&sessionkey=<%=ewconfig.sessionKey%>&wizard=<%=wizardConfig.wizard%>&maxsize=<%=ewconfig.maxupload%>">Progbeer het nogmaals</a> of
       <a href="javascript:window.close();">stop met uploaden</a>.
-  <%
-    }
+
+<%  } catch (Exception e) {
+
+%>
+      Dit beeldtype wordt niet gesteund.
+      <a href="<mm:url page="upload.jsp" />?proceed=true&did=<%=did%>&sessionkey=<%=ewconfig.sessionKey%>&wizard=<%=wizardConfig.wizard%>&maxsize=<%=ewconfig.maxupload%>">Probeer het nogmaals</a> of
+      <a href="javascript:window.close();">stop met uploaden</a>.
+
+<%  }
 
 %>
 </mm:log>
