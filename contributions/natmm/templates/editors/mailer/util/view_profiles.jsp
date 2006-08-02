@@ -18,9 +18,9 @@
    <table class="formcontent" border="1">
    <mm:listnodes type="persoon">
       <mm:import id="name" jspvar="name"><mm:field name="lastname" />, <mm:field name="firstname" /> <mm:field name="suffix" /></mm:import>
-      <mm:compare referid="name" value=",">
-         <mm:import id="name" reset="true">from cookie</mm:import>
-      </mm:compare>
+      <% if(name.trim().equals(",")) { %>
+         <mm:import id="name" reset="true">from cookie <mm:field name="creatiedatum" jspvar="cdate" vartype="String" write="false"><mm:time time="<%= cdate %>" format="dd-MM-yyyy HH:mm" /></mm:field></mm:import>
+      <% } %>
       <mm:related path="posrel,dossier">
          <mm:compare referid="action" value="clear_all"><mm:deletenode element="posrel" /></mm:compare>
          <mm:first>
