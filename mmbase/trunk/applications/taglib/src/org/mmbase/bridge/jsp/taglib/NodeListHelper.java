@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.27 2006-07-17 15:38:47 johannes Exp $
+ * @version $Id: NodeListHelper.java,v 1.28 2006-08-03 17:14:59 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -277,6 +277,7 @@ public class NodeListHelper implements ListProvider {
         if (t != null) {
             timerHandle = ((TimerTag)t).startTimer(getId(), getClass().getName());
         }
+        /*
         if (thisTag.getReferid() != null) {
             if (offset != Attribute.NULL) {
                 throw new JspTagException("'offset' attribute does not make sense with 'referid' attribute");
@@ -285,6 +286,7 @@ public class NodeListHelper implements ListProvider {
                 throw new JspTagException("'max' attribute does not make sense with 'referid' attribute");
             }
         }
+        */
 
     }
 
@@ -358,22 +360,22 @@ public class NodeListHelper implements ListProvider {
 
         } else {
         */
-            // use order as stored in the nodelist (the property of the tag may not be set
-            // if you use referid to get the result of a previous listtag)
-            String listOrder = (String) returnList.getProperty("orderby");
-            if (listOrder != null && ! "".equals(listOrder)) {
+        // use order as stored in the nodelist (the property of the tag may not be set
+        // if you use referid to get the result of a previous listtag)
+        String listOrder = (String) returnList.getProperty("orderby");
+        if (listOrder != null && ! "".equals(listOrder)) {
                 // then you can also ask if 'changed' the node
                 // look only at first field of sorted for the moment.
-                String[] fa = listOrder.trim().split("\\s*,\\s*");
-                int i = 0;
-                while(i < fa.length && ! nextNodeManager.hasField(fa[i])) {
-                    i++;
-                }
-                return i < fa.length ? fa[i] : null;
-            } else {
-                return null;
+            String[] fa = listOrder.trim().split("\\s*,\\s*");
+            int i = 0;
+            while(i < fa.length && ! nextNodeManager.hasField(fa[i])) {
+                i++;
             }
-            // }
+            return i < fa.length ? fa[i] : null;
+        } else {
+            return null;
+        }
+        // }
     }
 
     public void setNext() throws JspTagException {
