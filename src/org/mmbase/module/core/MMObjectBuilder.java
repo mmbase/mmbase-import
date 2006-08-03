@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.388 2006-07-18 12:49:01 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.389 2006-08-03 16:16:11 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -88,7 +88,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @since MMBase-1.8
      */
     public static final String TMP_FIELD_NUMBER = "_number";
-    static final String TMP_FIELD_EXISTS = "_exists";
+    public static final String TMP_FIELD_EXISTS = "_exists";
 
     /**
      * Default (system) owner name for the owner field.
@@ -121,6 +121,10 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
     public static Map temporaryNodes = new Hashtable(TEMPNODE_DEFAULT_SIZE);
 
+    /**
+     * Default output when no data is available to determine a node's GUI description
+     */
+    public static final String GUI_INDICATOR = "no info";
 
     /**
      * The cache for all blobs.
@@ -138,10 +142,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * The cache that contains the X last requested nodes
      */
     protected static org.mmbase.cache.NodeCache nodeCache = org.mmbase.cache.NodeCache.getCache();
-    /**
-     * Default output when no data is available to determine a node's GUI description
-     */
-    static String GUI_INDICATOR = "no info";
 
     /**
      * Determines whether the cache is locked.
@@ -1214,7 +1214,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     public void removeTmpNode(String key) {
         MMObjectNode node;
         node=(MMObjectNode) temporaryNodes.remove(key);
-        if (node==null) {
+        if (node == null) {
         log.debug("removeTmpNode: node with "+key+" didn't exists");
     }
     }
@@ -1385,7 +1385,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         String field = pars.getString("field");
 
         if (locale == null) {
-            if ("".equals(field)) {
+            if (field == null || "".equals(field)) {
                 rtn = getGUIIndicator(node);
                 if (rtn == GUI_INDICATOR) { // not overridden
                     rtn = getNodeGUIIndicator(node, pars);
@@ -1394,7 +1394,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                 rtn = getGUIIndicator(field, node);
             }
         } else {
-            if ("".equals(field)) {
+            if (field == null || "".equals(field)) {
                 rtn = getLocaleGUIIndicator(locale, node);
                 if (rtn == GUI_INDICATOR) { // not overridden
                     rtn = getNodeGUIIndicator(node, pars);
@@ -1422,7 +1422,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             if (returnValue != null) {
                 rtn = returnValue.toString();
             } else {
-                if (fdef != null && ("eventtime".equals(fdef.getGUIType()) || 
+                if (fdef != null && ("eventtime".equals(fdef.getGUIType()) ||
                                      fdef.getDataType() instanceof org.mmbase.datatypes.DateTimeDataType)) { // do something reasonable for this
                     Date date;
                     if (fdef.getType() == Field.TYPE_DATETIME) {
@@ -1451,7 +1451,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
 
     /**
      * Returns a GUI-indicator for the node itself.
-     * @since MMBase-1.8.1
+     * @since MMBase-1.8.2
      */
     protected String getNodeGUIIndicator(MMObjectNode node, Parameters params) {
         // do the best we can because this method was not implemented
@@ -1464,27 +1464,35 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             if (str.length() > 128) {
                 str =  str.substring(0, 128) + "...";
             }
-            params.set("field", fname);
-            params.set("stringvalue", str);
-            return getGUIIndicator(node, params);
+            if (params == null) {
+                // Needed for getGuiIndicator calls for NODE fields
+                // Temporary fix, should perhaps be solved in getGuiIndicator(node,params)
+                String result = getGUIIndicator(fname, node);
+                if (result == null) {
+                    result = str;
+                }
+                return result;
+            } else {
+                params.set("field", fname);
+                params.set("stringvalue", str);
+                return getGUIIndicator(node, params);
+            }
         } else {
             return GUI_INDICATOR;
         }
     }
 
-
     /**
      * What should a GUI display for this node.
-     * Default is the first non system field (first field after owner).
+     * Default the value returned is GUI_INDICATOR ('no info').
      * Override this to display your own choice (see Images.java).
      * You may want to override {@link #getNodeGUIIndicator} for more flexibility.
      * @param node The node to display
      * @return the display of the node as a <code>String</code>
      */
-    public  String getGUIIndicator(MMObjectNode node) {
+    public String getGUIIndicator(MMObjectNode node) {
         return GUI_INDICATOR;
     }
-
 
     /**
      * What should a GUI display for this node/field combo.
@@ -1503,7 +1511,12 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                 if (otherNode == null) {
                     return "";
                 } else {
-                    return otherNode.parent.getGUIIndicator(otherNode);
+                    // may return GUI_INDICATOR
+                    String rtn = otherNode.parent.getGUIIndicator(otherNode);
+                    if (rtn == GUI_INDICATOR) {
+                        rtn = otherNode.parent.getNodeGUIIndicator(otherNode, null);
+                    }
+                    return rtn;
                 }
             } catch (RuntimeException rte) {
                 log.warn("Cannot load node from field " + fieldName +" in node " + node.getNumber() + ":" +rte);
@@ -1522,7 +1535,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     protected String getLocaleGUIIndicator(Locale locale, String field, MMObjectNode node) {
         return getGUIIndicator(field, node);
     }
-
 
     /**
      * The GUIIndicator can depend on the locale. Override this function
@@ -2284,7 +2296,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @return the descriptions in that language, or <code>null</code> if it is not avaialble
      */
     public String getDescription(String lang) {
-        if (descriptions==null) return null;
+        if (descriptions == null) return null;
         String retval =(String)descriptions.get(lang);
         if (retval == null){
             return getDescription();
@@ -2323,13 +2335,13 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @return the short name in that language, or <code>null</code> if it is not available
      */
     public String getSingularName(String lang) {
-    String tmp =null;
-        if (singularNames !=null) {
+    String tmp = null;
+        if (singularNames != null) {
             tmp = (String)singularNames.get(lang);
-            if (tmp==null) tmp = (String)singularNames.get(mmb.getLanguage());
-            if (tmp==null) tmp = (String)singularNames.get("en");
+            if (tmp == null) tmp = (String)singularNames.get(mmb.getLanguage());
+            if (tmp == null) tmp = (String)singularNames.get("en");
     }
-        if (tmp==null) tmp = tableName;
+        if (tmp == null) tmp = tableName;
         return tmp;
     }
 
@@ -2350,13 +2362,13 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
     public String getPluralName(String lang) {
         String tmp = null;
-        if (pluralNames !=null){
+        if (pluralNames != null){
         tmp= (String)pluralNames.get(lang);
-            if (tmp==null) tmp = (String)pluralNames.get(mmb.getLanguage());
-            if (tmp==null) tmp = (String)pluralNames.get("en");
-            if (tmp==null) tmp = getSingularName(lang);
+            if (tmp == null) tmp = (String)pluralNames.get(mmb.getLanguage());
+            if (tmp == null) tmp = (String)pluralNames.get("en");
+            if (tmp == null) tmp = getSingularName(lang);
     }
-        if (tmp==null) tmp = tableName;
+        if (tmp == null) tmp = tableName;
         return tmp;
     }
 
@@ -2544,7 +2556,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
 
     protected String getHTML(String body) {
         String rtn="";
-        if (body!=null) {
+        if (body != null) {
             StringObject obj=new StringObject(body);
             // escape ampersand first
             obj.replace("&", "&amp;");
@@ -2560,7 +2572,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             String alinea=getInitParameter("html.alinea");
             String endofline=getInitParameter("html.endofline");
 
-            if (alinea!=null) {
+            if (alinea != null) {
                 obj.replace("\r\n\r\n",alinea);
                 obj.replace("\n\n",alinea);
             } else {
@@ -2568,7 +2580,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                 obj.replace("\n\n", DEFAULT_ALINEA);
             }
 
-            if (endofline!=null) {
+            if (endofline != null) {
                 obj.replace("\r\n",endofline);
                 obj.replace("\n",endofline);
             } else {
@@ -2857,14 +2869,14 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @return the substring
      */
     private String substring(String value,int len,String filler) {
-        if (filler==null) {
+        if (filler == null) {
             if (value.length()>len) {
                 return value.substring(0,len);
             } else {
                 return value;
             }
         } else {
-            int len2=filler.length();
+            int len2 = filler.length();
             if ((value.length()+len2)>len) {
                 return value.substring(0,(len-len2))+filler;
             } else {
