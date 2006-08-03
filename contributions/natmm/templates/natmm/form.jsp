@@ -19,7 +19,7 @@ if(postingStr!=null&&!postingStr.equals("")) { expireTime = 0; } %>
    <td style="width:185px;vertical-align:top;padding:10px;padding-top:0px;">
    <%@include file="includes/navleft.jsp" %>
    <br>
-	<jsp:include page="includes/teaser.jsp">
+   <jsp:include page="includes/teaser.jsp">
       <jsp:param name="s" value="<%= paginaID %>" />
       <jsp:param name="r" value="<%= rubriekID %>" />
       <jsp:param name="rs" value="<%= styleSheet %>" />
@@ -31,10 +31,10 @@ if(postingStr!=null&&!postingStr.equals("")) { expireTime = 0; } %>
    if(!artikelID.equals("-1")) { %>
 
       <jsp:include page="includes/artikel_1_column.jsp">
-		  <jsp:param name="o" value="<%= artikelID %>" />
+        <jsp:param name="o" value="<%= artikelID %>" />
         <jsp:param name="r" value="<%= rubriekID %>" />
         <jsp:param name="rs" value="<%= styleSheet %>" />
-		</jsp:include><% 
+      </jsp:include><% 
 
    } else {
 
@@ -50,10 +50,10 @@ if(postingStr!=null&&!postingStr.equals("")) { expireTime = 0; } %>
             <mm:list nodes="<%=paginaID%>" path="pagina,contentrel,artikel" max="1">
                <mm:field name="artikel.number" jspvar="artikelID" vartype="String" write="false">
                   <jsp:include page="includes/artikel_1_column.jsp">
-            	      <jsp:param name="o" value="<%=artikelID%>" />
+                     <jsp:param name="o" value="<%=artikelID%>" />
                      <jsp:param name="r" value="<%= rubriekID %>" />
                      <jsp:param name="rs" value="<%= styleSheet %>" />
-            	   </jsp:include>
+                  </jsp:include>
                </mm:field>
             </mm:list>
             <jsp:include page="includes/form/table.jsp" flush="true">
@@ -69,6 +69,7 @@ if(postingStr!=null&&!postingStr.equals("")) { expireTime = 0; } %>
                <jsp:include page="includes/form/result.jsp" flush="true">
                   <jsp:param name="p" value="<%=paginaID%>" />
                   <jsp:param name="pst" value="<%=postingStr%>" />
+                  <jsp:param name="rl" value="<%= iRubriekLayout %>" />
                </jsp:include>
             <%
          }
@@ -88,13 +89,13 @@ if(postingStr!=null&&!postingStr.equals("")) { expireTime = 0; } %>
          <jsp:param name="rs" value="<%= styleSheet %>" />
       </jsp:include>
       <jsp:include page="includes/shorty.jsp">
-	      <jsp:param name="s" value="<%= paginaID %>" />
-	      <jsp:param name="r" value="<%= rubriekID %>" />
+         <jsp:param name="s" value="<%= paginaID %>" />
+         <jsp:param name="r" value="<%= rubriekID %>" />
          <jsp:param name="rs" value="<%= styleSheet %>" />
-	      <jsp:param name="sr" value="2" />
-	   </jsp:include>
+         <jsp:param name="sr" value="2" />
+      </jsp:include>
       <img src="media/trans.gif" height="1px" width="165px;" />
-	</td>
+   </td>
 </tr>
 </table>
 <%@include file="includes/footer.jsp" %>

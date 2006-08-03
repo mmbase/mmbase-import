@@ -67,5 +67,10 @@ if(iRubriekLayout==NatMMConfig.DEFAULT_LAYOUT || iRubriekLayout==NatMMConfig.DEM
 </mm:present>
 <br/>
 </body>
-<%@include file="../includes/sitestatscript.jsp" %>
+<% 
+if(iRubriekLayout!=NatMMConfig.DEMO_LAYOUT) { 
+   %>
+   <%@include file="../includes/sitestatscript.jsp" %>
+   <%
+} %>
 </html>

@@ -2,9 +2,7 @@
 <%@include file="/taglibs.jsp" %>
 <mm:cloud jspvar="cloud">
 <%
-
 String sRubriekLayout = request.getParameter("rl");
-boolean isNotStandAlone = !sRubriekLayout.equals("" + NatMMConfig.DEMO_LAYOUT);
 
 String dateStyle = "width:40px;text-align:right;"; 
 String buttonStyle = "width:90px;";
@@ -19,6 +17,15 @@ int iCurPart = 0;
 int ti = 1;
 %>
 <mm:import externid="p" jspvar="paginaID" vartype="String"/>
+<%
+boolean isDemoLayout = sRubriekLayout.equals("" + NatMMConfig.DEMO_LAYOUT);
+boolean isEventTemplate = true;
+%>
+<mm:node number="<%= paginaID %>">
+   <mm:related path="contentrel,evenement">
+      <% isEventTemplate = false; %>
+   </mm:related>
+</mm:node>
 <html:form action="<%= localPath +  "/SubscribeAction" %>" scope="session">
 <html:hidden property="ticketOffice" value="website" />
 <html:hidden property="selectedParticipant" />
@@ -38,10 +45,10 @@ int ti = 1;
    <table style="width:559px;margin-bottom:10px;" border="0">
       <tr>
          <td colspan="2" style="width:80%;"><span class="colortitle">Aanmelden voor: <mm:field name="titel" /></span></td>
-         <td style="text-align:right;padding-right:19px;"><% if(isNotStandAlone) { %><html:submit property="action" value="<%= SubscribeForm.TO_AGENDA_ACTION %>" styleClass="submit_image" style="width:150px;" /><% } %></td>
+         <td style="text-align:right;padding-right:19px;"><% if(isEventTemplate) { %><html:submit property="action" value="<%= SubscribeForm.TO_AGENDA_ACTION %>" styleClass="submit_image" style="width:150px;" /><% } %></td>
       </tr>
       <% 
-      if(isNotStandAlone) { 
+      if(isEventTemplate) { 
          %>
          <tr>
             <td style="<%= fNStyle %>"><strong>Wanneer</strong></td>
@@ -170,7 +177,7 @@ int ti = 1;
    <table border="0" cellpadding="0" cellspacing="0" style="width:374px;">
    <% 
    int dc = 0;
-   if(isNotStandAlone) { %>
+   if(isEventTemplate) { %>
       <mm:list nodes="<%= parent_number %>" path="evenement,posrel,deelnemers_categorie" orderby="deelnemers_categorie.naam">
          <mm:first>
             <tr>
@@ -291,23 +298,42 @@ int ti = 1;
       boolean [] requiredFields = { true, false, false, true, true, true,
             true, true, true, true, false, false, false};
       for(int i= 0; i< labels.length; i++) {
+         if(isDemoLayout && labels[i].equals("Lidnummer")) {
+            // do nothing
+         } else {
+            %>
+            <tr>
+               <td class="maincolor" style="padding:5px;line-height:0.85em;">
+                  <nobr><%= labels[i] %>&nbsp;<%= (requiredFields[i] ? "*" : "") %></nobr>
+               </td>
+               <td class="maincolor" style="padding:0px;padding-right:1px;vertical-align:top;">
+                  <html:text 
+                     property="<%= properties[i] %>"
+                     style="width:100%;border:0;" tabindex="<%= "" + ti %>"
+                     onclick="<%= (labels[i].equals("Telefoon") ? phoneOnClickEvent : "") %>" />
+               </td>
+            </tr>
+            <tr><td colspan="2" style="height:5px;"></td></tr>
+            <%
+            ti++;
+         }
+      }
+      if(isDemoLayout) { 
          %>
          <tr>
             <td class="maincolor" style="padding:5px;line-height:0.85em;">
-               <nobr><%= labels[i] %>&nbsp;<%= (requiredFields[i] ? "*" : "") %></nobr>
+               <nobr>Bank- / gironummer</nobr>
             </td>
             <td class="maincolor" style="padding:0px;padding-right:1px;vertical-align:top;">
                <html:text 
-                  property="<%= properties[i] %>"
-                  style="width:100%;border:0;" tabindex="<%= "" + ti %>"
-                  onclick="<%= (labels[i].equals("Telefoon") ? phoneOnClickEvent : "") %>" />
+                  property="bankaccount"
+                  style="width:100%;border:0;" tabindex="<%= "" + ti %>" />
             </td>
          </tr>
          <tr><td colspan="2" style="height:5px;"></td></tr>
          <%
          ti++;
-      }
-      %>
+      } %>
       <tr>
          <td class="maincolor" style="padding:5px;line-height:0.85em;">
             U heeft over deze activiteit vernomen via
@@ -330,7 +356,7 @@ int ti = 1;
       <tr>
          <td>
             <%
-               if(isNotStandAlone) { %>
+               if(isEventTemplate) { %>
                   <html:submit property="action" value="<%= SubscribeForm.CANCEL_ACTION %>" styleClass="submit_image" style="width:150px;" />
                   <% 
                }
