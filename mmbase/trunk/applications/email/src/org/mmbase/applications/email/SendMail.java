@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.17 2006-07-06 11:49:41 michiel Exp $
+ * @version $Id: SendMail.java,v 1.18 2006-08-03 08:57:10 johannes Exp $
  */
 public class SendMail extends AbstractSendMail implements SendMailInterface {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -33,6 +33,9 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
     public static final String DEFAULT_MAIL_ENCODING = "ISO-8859-1";
 
     public static String mailEncoding = DEFAULT_MAIL_ENCODING;
+
+    public static long emailSent = 0;
+    public static long emailFailed = 0;
 
     /**
      */
@@ -44,9 +47,12 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
             msg.setContent(mmpart);
 
             Transport.send(msg);
+
+            emailSent++;
             log.debug("JMimeSendMail done.");
             return true;
         } catch (javax.mail.MessagingException e) {
+            emailFailed++;
             log.error("JMimeSendMail failure: " + e.getMessage());
             log.debug(Logging.stackTrace(e));
         }
