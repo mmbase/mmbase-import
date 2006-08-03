@@ -22,8 +22,7 @@ package nl.leocms.connectors.UISconnector;
 
 public class UISconfig {
 
-   private static String baseUrl = "http://192.168.35.76/"; // internal url on server
-   // private static String baseUrl = "http://212.123.241.76/"; // external url for server
+   private static String baseUrl = "http://mcweb2/"; // url of WSS server
 
    public UISconfig() {
    }

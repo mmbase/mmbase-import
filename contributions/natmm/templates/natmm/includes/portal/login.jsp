@@ -10,7 +10,11 @@
    boolean isIE = (request.getHeader("User-Agent").toUpperCase().indexOf("MSIE")>-1);
    
 %>
+<%@include file="/editors/mailer/util/memberid_get.jsp" %>
  <div class="headerBar" style="width:100%;">MIJN <img src="includes/portal/logo.gif" border="0" style="vertical-align:middle;"/></div>
+ <% 
+ if(memberid==null || cloud.getNode(memberid).getStringValue("email").equals("") ) { 
+   %>
    <form name="emailform" method="post" target="" action="/editors/mailer/mail/index.jsp">
    <table cellspacing="0" cellpadding="0" border="0" style="width:165px;">
       <tr><td colspan="2" style="height:2px;"></td></tr>
@@ -36,4 +40,6 @@
       <tr><td colspan="2" style="height:2px;"></td></tr>
    </table>
    </form>
+   <%
+ } %>
 </mm:cloud>
