@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.55 2006-07-15 11:50:47 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.56 2006-08-03 12:39:12 pierre Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -551,6 +551,7 @@ public class ContentTag extends LocaleTag  {
      *
      * @param response - http response
      * @param expire - seconds before content should expire
+     * @since MMBase 1.8.1
      */
     protected void addNoCacheHeaders(HttpServletRequest request, HttpServletResponse response, long expire) {
         if (request.getAttribute(org.mmbase.bridge.jsp.taglib.pageflow.IncludeTag.INCLUDE_PATH_KEY) == null) {
