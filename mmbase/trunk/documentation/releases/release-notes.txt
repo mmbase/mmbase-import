@@ -29,13 +29,16 @@ General New Features:
     - an mm:mayread
 
     - easier to use when reusing the request (dynamic includes).  E.g. if logicaly no mm:cloud
-       needed because the object has a cloud already (e.g. on reuse of a node), then it works withouth
+      needed because the object has a cloud already (e.g. on reuse of a node), then it works without
       errors now.
     - jspvar on querycontainers
 
     - timezone on locale-tags.
     
     - styleClass on mm:form
+
+    - Jsp included with mm:include or jsp:include now inherit content tag property from the including jsps.
+      An included jsp can no longer override the cache settings of the including jsp.
 
 - improved date-parsing  (also in mm:time)
 
