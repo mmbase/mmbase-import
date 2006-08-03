@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: AbstractNodeListTag.java,v 1.74 2006-07-17 15:38:47 johannes Exp $
+ * @version $Id: AbstractNodeListTag.java,v 1.75 2006-08-03 17:14:59 michiel Exp $
  */
 
 abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListProvider {
@@ -235,7 +235,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
             if (getReferid().equals(getId())) { // in such a case, don't whine
                 getContextProvider().getContextContainer().unRegister(getId());
             }
-            return setReturnValues((NodeList) o);
+            return setReturnValues((NodeList) o, true);
         }
         return NOT_HANDLED;
     }
