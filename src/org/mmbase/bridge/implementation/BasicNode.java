@@ -34,7 +34,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.208 2006-07-31 13:32:24 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.209 2006-08-03 13:09:37 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -686,7 +686,8 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         if (nodeManager == null) nodeManager = cloud.getNodeManager("object");
         NodeQuery query = Queries.createRelationNodesQuery(this, nodeManager, role, searchDir);
         NodeManager nm = query.getNodeManager();
-        assert nm instanceof RelationManager;
+        assert query.getNodeStep() instanceof RelationStep;
+        // assert nm instanceof RelationManager; cannot assert his, because if the role is null, no relation manager can be created (the nodemanager will be insrel).
         return (RelationList) nm.getList(query);
     }
 
