@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.158 2006-07-13 12:02:36 nklasens Exp $
+    @version $Id: wizard.xsl,v 1.159 2006-08-03 12:45:30 michiel Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -879,6 +879,10 @@
     </xsl:call-template>
   </xsl:template>
 
+  <xsl:template name="date-picker">
+    <input type="image" class="calendar" src="{$mediadir}datepicker/calendar.gif" border="0" onClick="popUpCalendar(this, 'dd-mm-yyyy', - 205 , 5 , this.form, 'internal_{@fieldname}');return false;"/>
+  </xsl:template>
+
   <xsl:template name="ftype-datetime-date">
     <select name="internal_{@fieldname}_day" super="{@fieldname}">
       <xsl:call-template name="loop-options">
@@ -896,7 +900,7 @@
     </select>
     <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
     <input class="date" name="internal_{@fieldname}_year" super="{@fieldname}" type="text" value="{date:getYear(string(value), string($timezone))}" size="5" maxlength="4"/>
-    <input type="image" class="calendar" src="{$mediadir}datepicker/calendar.gif" border="0" onClick="popUpCalendar(this, 'dd-mm-yyyy', - 205 , 5 , this.form, 'internal_{@fieldname}');return false;"/>
+    <xsl:call-template name="date-picker" />
   </xsl:template>
 
   <xsl:template name="ftype-datetime-time">
