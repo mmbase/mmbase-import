@@ -21,7 +21,7 @@ import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
 import com.finalist.mmbase.util.CloudFactory;
 import nl.leocms.connectors.UISconnector.output.orders.model.*;
-import java.util.Date;
+import java.util.*;
 import java.io.*;
 
 
@@ -34,7 +34,7 @@ public class OrderMaker
    public static Order makeOrder(Node nodeSubscription)
    {
 
-     log.info("Creating new order for inschrijving " + nodeSubscription.getNumber());
+      log.info("Creating new order for inschrijving " + nodeSubscription.getNumber());
 
       Order order = new Order();
 
@@ -50,6 +50,8 @@ public class OrderMaker
       customerInformation.setBusinessInformation(businessInformation);
       customerInformation.setCommonInformation(commonInformation);
       customerInformation.setAddress(address);
+
+      commonInformation.setBankAccount(nodeSubscription.getIntValue("bank_of_gironummer"));
 
       order.setOrderId(nodeSubscription.getNumber());
       order.setExtraInformation(nodeSubscription.getStringValue("description"));
@@ -67,42 +69,42 @@ public class OrderMaker
 
         } else {
 
-             Node nodeEvenement = nlEvenement.getNode(0);
-             order.setExternId(nodeEvenement.getStringValue("externid"));
-             if(nodeEvenement.getStringValue("externid").equals("")) {
-                log.error("There is no externid for " + nodeEvenement.getStringValue("number") + ". Probably this isn't an event imported from UIS.");
+           Node nodeEvenement = nlEvenement.getNode(0);
+           order.setExternId(nodeEvenement.getStringValue("externid"));
+           if(nodeEvenement.getStringValue("externid").equals("")) {
+              log.error("There is no externid for " + nodeEvenement.getStringValue("number") + ". Probably this isn't an event imported from UIS.");
            }
 
-             // get the payment_type.externid for inschrijvingen.betaalwijze
-             Cloud cloud = CloudFactory.getCloud();
-          NodeManager nmPaymentTypes = cloud.getNodeManager("payment_type");
-          NodeList nlPaymentTypes = nmPaymentTypes.getList("naam='" + nodeSubscription.getStringValue("betaalwijze") + "'",null,null);
+           // get the payment_type.externid for inschrijvingen.betaalwijze
+           Cloud cloud = CloudFactory.getCloud();
+           NodeManager nmPaymentTypes = cloud.getNodeManager("payment_type");
+           NodeList nlPaymentTypes = nmPaymentTypes.getList("naam='" + nodeSubscription.getStringValue("betaalwijze") + "'",null,null);
 
-            if(nlPaymentTypes.size()==0) {
-             log.error("There is no payment_type that matches '" + nodeSubscription.getStringValue("betaalwijze")
-                + "' for subscription "  + nodeSubscription.getNumber());
+           if(nlPaymentTypes.size()==0) {
+               log.error("There is no payment_type that matches '" + nodeSubscription.getStringValue("betaalwijze")
+                  + "' for subscription "  + nodeSubscription.getNumber());
 
-          } else {
-             Node nodePaymentType = nlPaymentTypes.getNode(0);
-                order.setPaymentType(nodePaymentType.getStringValue("externid"));
-                log.info("Setting payment type to "  + nodePaymentType.getStringValue("externid"));
-           }
+            } else {
+               Node nodePaymentType = nlPaymentTypes.getNode(0);
+               order.setPaymentType(nodePaymentType.getStringValue("externid"));
+               log.info("Setting payment type to "  + nodePaymentType.getStringValue("externid"));
+            }
 
-           // get the media.externid for inschrijvingen.bron
-          NodeManager nmMedia = cloud.getNodeManager("media");
-          NodeList nlMedia = nmMedia.getList("naam='" + nodeSubscription.getStringValue("source") + "'",null,null);
+            // get the media.externid for inschrijvingen.bron
+            NodeManager nmMedia = cloud.getNodeManager("media");
+            NodeList nlMedia = nmMedia.getList("naam='" + nodeSubscription.getStringValue("source") + "'",null,null);
 
-          if(nlMedia.size()==0) {
-             log.error("There is no acquisition id that matches '" + nodeSubscription.getStringValue("source")
-                + "' for subscription "  + nodeSubscription.getNumber());
+            if(nlMedia.size()==0) {
+               log.error("There is no acquisition id that matches '" + nodeSubscription.getStringValue("source")
+                 + "' for subscription "  + nodeSubscription.getNumber());
 
-          } else {
-             Node nodeMedia = nlMedia.getNode(0);
-             order.setAcquisitionId(nodeMedia.getStringValue("externid"));
-             log.info("Setting acquisition id to "  + nodeMedia.getStringValue("externid"));
-          }
+            } else {
+               Node nodeMedia = nlMedia.getNode(0);
+               order.setAcquisitionId(nodeMedia.getStringValue("externid"));
+               log.info("Setting acquisition id to "  + nodeMedia.getStringValue("externid"));
+            }
 
-        }
+         }
       }
       catch (Exception e)
       {
@@ -131,7 +133,11 @@ public class OrderMaker
           personalInformation.setFirstName(nodeDeelnemers.getStringValue("firstname"));
           personalInformation.setSuffix(nodeDeelnemers.getStringValue("suffix"));
           personalInformation.setLastName(nodeDeelnemers.getStringValue("lastname"));
-          personalInformation.setBirthDate(new Date(nodeDeelnemers.getLongValue("dayofbirth") * 1000));
+          // TODO check if dayofbirth is meaningfull
+          Calendar cal = Calendar.getInstance();
+          cal.set(1900,0,1);
+          personalInformation.setBirthDate(cal.getTime());
+          // personalInformation.setBirthDate(new Date(nodeDeelnemers.getLongValue("dayofbirth") * 1000));
           String sGender = nodeDeelnemers.getStringValue("gender");
           personalInformation.setGender(sGender.substring(0,1).toUpperCase());
           personalInformation.setTelephoneNo(nodeDeelnemers.getStringValue("privatephone"));
@@ -141,7 +147,7 @@ public class OrderMaker
 
            String sCompositeNumber = nodeDeelnemers.getStringValue("huisnummer");
            int i = 0;
-           while (	i < sCompositeNumber.length()
+           while (   i < sCompositeNumber.length()
                     && ('0'<=sCompositeNumber.charAt(i))&&(sCompositeNumber.charAt(i)<='9')) {
              i++;
            }
@@ -157,7 +163,7 @@ public class OrderMaker
           address.setZipCode(nodeDeelnemers.getStringValue("postcode"));
           address.setCity(nodeDeelnemers.getStringValue("plaatsnaam"));
 
-          businessInformation.setTelephoneNo("privatphone");
+          businessInformation.setTelephoneNo("");
         }
       }
       catch (Exception e)

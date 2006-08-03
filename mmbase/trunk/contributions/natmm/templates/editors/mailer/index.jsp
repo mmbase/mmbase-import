@@ -47,7 +47,7 @@ PaginaHelper ph = new PaginaHelper(cloud);
              View our newsletter at: <%= newsLetterUrl + newsLetterUri %>
           </multipart>
           <multipart id="htmltext" alt="plaintext" type="text/html" encoding="UTF-8">
-             <mm:include page="<%= newsLetterUri %>" />
+             <mm:include page="<%= newsLetterUrl + newsLetterUri %>" />
           </multipart>
        </mm:setfield>
     </mm:createnode>
@@ -109,7 +109,7 @@ if(isFirst) {
             </multipart>
             <multipart id="htmltext" alt="plaintext" type="text/html" encoding="UTF-8">
                <mm:import id="newsteaser" />
-               <mm:include page="<%= newsLetterUri %>">
+               <mm:include page="<%= newsLetterUrl + newsLetterUri %>">
                   <mm:param name="title"><mm:write referid="title"/></mm:param>
                </mm:include>
             </multipart>

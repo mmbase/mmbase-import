@@ -58,11 +58,11 @@ public class SubscribeAction extends Action {
 
 
    public String getBackofficeSubscription(Cloud cloud) {
-	   return cloud.getNode("backoffice_subscription").getStringValue("number");
+      return cloud.getNode("backoffice_subscription").getStringValue("number");
    }
 
    public String getSiteSubscription(Cloud cloud) {
-   	   return cloud.getNode("site_subscription").getStringValue("number");
+         return cloud.getNode("site_subscription").getStringValue("number");
    }
 
    private void removeObsoleteFormBean(ActionMapping mapping, HttpServletRequest request) {
@@ -314,7 +314,7 @@ public class SubscribeAction extends Action {
       message += ", ten name van Natuurmonumenten 's-Graveland, onder vermelding van \"";
       nl = thisParent.getRelatedNodes("natuurgebieden","related",null);
       if(nl.size()!=0) {
-			message += (type.equals("html") ? "<b><u>" : "") + nl.getNode(0).getStringValue("titel_de") + (type.equals("html") ? "</u></b>" : "");
+         message += (type.equals("html") ? "<b><u>" : "") + nl.getNode(0).getStringValue("titel_de") + (type.equals("html") ? "</u></b>" : "");
       }
       message += "\" en de ";
       message += (type.equals("html") ? "<b><u>" : "") + "datum" + (type.equals("html") ? "</u></b>" : "");
@@ -645,6 +645,7 @@ public class SubscribeAction extends Action {
             thisSubscription.setStringValue("description",subscribeForm.getDescription());
             thisSubscription.setStringValue("ticket_office",subscribeForm.getTicketOffice());
             thisSubscription.setStringValue("betaalwijze", subscribeForm.getPaymentType());
+            thisSubscription.setStringValue("bank_of_gironummer", subscribeForm.getBankaccount());
             thisSubscription.commit();
 
             if(action.equals(subscribeForm.SUBSCRIBE_ACTION)) { // *** create inschrijvingen,posrel,evenementen
@@ -678,10 +679,10 @@ public class SubscribeAction extends Action {
             }
             Node statusNode = cloud.getNode(thisStatus);
             if(statusNode!=null) {
-            	thisSubscription.createRelation(cloud.getNode(thisStatus),cloud.getRelationManager("related")).commit();
-		    } else {
-				log.error("inschrijvings_status with number " + thisStatus + " does not exist.");
-		    }
+               thisSubscription.createRelation(cloud.getNode(thisStatus),cloud.getRelationManager("related")).commit();
+          } else {
+            log.error("inschrijvings_status with number " + thisStatus + " does not exist.");
+          }
 
             // *** add participant to subscription
             if(subscribeForm.getTicketOffice().equals("backoffice")) {
@@ -722,7 +723,7 @@ public class SubscribeAction extends Action {
 
                subscribeForm.setSelectedParticipant(thisParticipant.getStringValue("number"));
                subscribeForm.setSubscriptionNumber(thisSubscription.getStringValue("number"));
-	           subscribeForm.resetNumbers(); // reset validateCounter on each new booking
+              subscribeForm.resetNumbers(); // reset validateCounter on each new booking
                subscribeForm.setAction(null);
 
             } else {
@@ -745,10 +746,10 @@ public class SubscribeAction extends Action {
                subscribeForm.setAction(subscribeForm.PROMPT_FOR_CONFIRMATION);
             }
 
-  		    if(UISconfig.isUISconnected()) {
-				Sender sender = new Sender(thisSubscription);
-				sender.run();
-			}
+          if(UISconfig.isUISconnected()) {
+            Sender sender = new Sender(thisSubscription);
+            sender.run();
+         }
 
             forwardAction = mapping.findForward("continue");
 

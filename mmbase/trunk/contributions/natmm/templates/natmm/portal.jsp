@@ -71,11 +71,13 @@ if(NatMMConfig.hasClosedUserGroup) {
       <jsp:param name="o" value="<%= paginaID %>"/>
     </jsp:include>
     <%@include file="includes/portal/polls.jsp" %>
+    <%--
     <jsp:include page="includes/portal/nieuwsbrief.jsp">
       <jsp:param name="s" value="<%= paginaID %>" />
       <jsp:param name="r" value="<%= rubriekID %>" />
       <jsp:param name="rs" value="<%= styleSheet %>" />
     </jsp:include>
+    --%>
     <br/>
     <jsp:include page="includes/teaser.jsp">
       <jsp:param name="s" value="<%= paginaID %>" />

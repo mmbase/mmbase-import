@@ -102,7 +102,7 @@ public class PosrelBuilder extends InsRel {
       String relatedPage = cloud.getNodeByAlias("dossiers").getStringValue("number");
       String title = cloud.getNode(articleNumber).getStringValue("titel");
 
-      String link = ph.createItemUrl(articleNumber,relatedPage,null, "");
+      String link = NatMMConfig.liveUrl[0] + ph.createItemUrl(articleNumber,relatedPage,null, "");
 
       for(int i=0; i<customersList.size(); i++) {
          Node customer = customersList.getNode(i);

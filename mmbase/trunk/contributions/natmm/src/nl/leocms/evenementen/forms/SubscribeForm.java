@@ -62,7 +62,7 @@ public class SubscribeForm extends ActionForm {
    public static String SELECT_DATE_ACTION      = "select_date";
    public static String FIX_DATE_ACTION         = "fix_date";
    public static String PROMPT_FOR_CONFIRMATION = "promptforconfirmation";
-	public static String CANCELED						= "canceled";
+   public static String CANCELED                = "canceled";
 
    private String action;
    private int validateCounter = 0;
@@ -89,6 +89,7 @@ public class SubscribeForm extends ActionForm {
    private String zipCode;
    private String source;
    private String description;
+   private String bankaccount;
 
    private String selectedParticipant;
    private String numberInCategory;
@@ -220,6 +221,9 @@ public class SubscribeForm extends ActionForm {
 
    public String getDescription() { return description; }
    public void setDescription(String description) { this.description = description; }
+
+   public String getBankaccount() { return bankaccount; }
+   public void setBankaccount(String bankaccount) { this.bankaccount = cleanPid(bankaccount); }
 
    public String getSelectedParticipant() { return selectedParticipant; }
    public void setSelectedParticipant(String selectedParticipant) { this.selectedParticipant = selectedParticipant; }
@@ -525,18 +529,48 @@ public class SubscribeForm extends ActionForm {
       return emailMessage;
    }
 
+   public static String getBankAccountMessage(String sBankAccount) {
+      String sMessage = "";
+      try {
+         boolean validAccount = false;
+         long iBankAccount = Long.parseLong(sBankAccount);
+         long sevenTimesNine = 9999999;
+         long eightTimesNine = 99999999;
+         long nineTimesNine  = 999999999;
+         boolean validDutchBankAccount = ( eightTimesNine <= iBankAccount ) && ( iBankAccount<= nineTimesNine );
+         boolean validDutchPostbankAccount = ( 1<=iBankAccount ) && ( iBankAccount<= sevenTimesNine );
+         if (validDutchBankAccount) {
+            int checkSum = 0;
+            for(int i = 0; i < sBankAccount.length(); i++) {
+               checkSum += (i+1)*Integer.parseInt("" + sBankAccount.charAt((sBankAccount.length()-1)-i));
+            }
+            validAccount = (checkSum%11)==0;
+         } else if (validDutchPostbankAccount) {
+            validAccount = true;
+         }
+         if(!validAccount) {
+            sMessage = "membershipform.bankaccount.notvalid";
+         }
+      } catch (Exception e) {
+         sMessage = "membershipform.bankaccount.notvalid";
+         log.error("Bank account " + sBankAccount + " is not a number.");
+      }
+      return sMessage;
+   }
+
+
    public boolean participantsCategoryIsSet(Cloud cloud, String sParent, String sParticipantsCategory) {
-		boolean pcIsNotSet = sParticipantsCategory.equals("-1");
-		if(pcIsNotSet) {
-			NodeList nl = cloud.getList(sParent,
-				"evenement,posrel,deelnemers_categorie",
-      		null,null,null,null,null,false);
-			pcIsNotSet = (nl.size()>0); // no related deelnemers_categorie also means that pc is set
-			if(pcIsNotSet) {
-				 pcIsNotSet = !Evenement.isGroupExcursion(cloud,parent); // groups excursion also means pc is set
-			}
-		}
-		return !pcIsNotSet;
+      boolean pcIsNotSet = sParticipantsCategory.equals("-1");
+      if(pcIsNotSet) {
+         NodeList nl = cloud.getList(sParent,
+            "evenement,posrel,deelnemers_categorie",
+            null,null,null,null,null,false);
+         pcIsNotSet = (nl.size()>0); // no related deelnemers_categorie also means that pc is set
+         if(pcIsNotSet) {
+             pcIsNotSet = !Evenement.isGroupExcursion(cloud,parent); // groups excursion also means pc is set
+         }
+      }
+      return !pcIsNotSet;
    }
 
    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
@@ -593,7 +627,7 @@ public class SubscribeForm extends ActionForm {
          }
 
          if(!this.participantsCategoryIsSet(cloud, this.getParent(), this.getParticipantsCategory())) {
-				errors.add("warning",new ActionError("evenementen.nodeelnemercategorie.add"));
+            errors.add("warning",new ActionError("evenementen.nodeelnemercategorie.add"));
          }
 
          String memberIdMessage = getMemberIdMessage(memberId,this.getZipCode());
@@ -626,6 +660,13 @@ public class SubscribeForm extends ActionForm {
             errors.add("warning",new ActionError(emailMessage));
          }
 
+         if(!this.getBankaccount().equals("")) {
+            String bankAccountMessage = getBankAccountMessage(this.getBankaccount());
+            if(!bankAccountMessage.equals("")) {
+               errors.add("warning",new ActionError(bankAccountMessage));
+            }
+         }
+
          if(this.getTicketOffice().equals("website")) {
 
             if(this.getFirstName().equals("")&&this.getInitials().equals("")) {
@@ -644,6 +685,7 @@ public class SubscribeForm extends ActionForm {
             if(this.getCity().equals("")) {
                errors.add("warning",new ActionError("evenementen.required.city"));
             }
+
             int iParticipants = 0;
             for(int i = 0; i<10; i++) {
                iParticipants += Integer.parseInt(this.participantsPerCat[i]);
@@ -690,7 +732,7 @@ public class SubscribeForm extends ActionForm {
          }
       }
 
-		return errors;
+      return errors;
    }
 }
 

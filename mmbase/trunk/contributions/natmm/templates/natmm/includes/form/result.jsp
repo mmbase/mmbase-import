@@ -2,6 +2,7 @@
 <%@include file="../../includes/request_parameters.jsp" %>
 <%@include file="../../includes/getresponse.jsp" %>
 <%
+String sRubriekLayout = request.getParameter("rl");
 String postingStr = request.getParameter("pst");
 String referer = request.getParameter("referer");
 String style = request.getParameter("style");
@@ -62,11 +63,11 @@ if(referer!=null) {
             } else {
                emailAddress.add(NatMMConfig.toEmailAddress);
             }
-				boolean extraLineBreak = false;
-				if(thisForm.getStringValue("titel_de")!=null&&thisForm.getStringValue("titel_de").equals("1")) {
-					extraLineBreak = true;
-				}
-				
+            boolean extraLineBreak = false;
+            if(thisForm.getStringValue("titel_de")!=null&&thisForm.getStringValue("titel_de").equals("1")) {
+               extraLineBreak = true;
+            }
+            
             String responseText = "<b>" + responseTextDefault + pages_title + "</b><br>"
                   + "<br><br>" + thisForm.getStringValue("titel").toUpperCase()+ "<br>"
                   + "--------------------------------------------------------------------------<br>";
@@ -79,19 +80,19 @@ if(referer!=null) {
                String formulierveld_type =  thisField.getStringValue("type");
                boolean isRequired = thisField.getStringValue("verplicht").equals("1"); 
                if(nums!=null&&!nums.equals("")) {
-						%>
-						<mm:related path="constraints,formulierveldantwoord" 
-							constraints="<%= "(formulierveldantwoord.number in (0," + nums + ") AND (constraints.type=1)" %>">
-							<% isRequired = true; %>
-							</mm:related>
-						<%
-					}
-					String formulierveld_warning = "U bent vergeten '" +  formulierveld_label + "' in te vullen";
+                  %>
+                  <mm:related path="constraints,formulierveldantwoord" 
+                     constraints="<%= "(formulierveldantwoord.number in (0," + nums + ") AND (constraints.type=1)" %>">
+                     <% isRequired = true; %>
+                     </mm:related>
+                  <%
+               }
+               String formulierveld_warning = "U bent vergeten '" +  formulierveld_label + "' in te vullen";
                String omschrijving = thisField.getStringValue("omschrijving");
                if(omschrijving!=null&&!HtmlCleaner.cleanText(omschrijving,"<",">","").trim().equals("")) {
                   formulierveld_warning = omschrijving;
                }
-					if(extraLineBreak) { responseText += "<br>"; }
+               if(extraLineBreak) { responseText += "<br>"; }
                responseText += "<br>" + formulierveld_label + ": ";
 
                if(formulierveld_type.equals("6")) { // *** date ***
@@ -133,22 +134,22 @@ if(referer!=null) {
                   ><mm:field name="formulierveldantwoord.number" jspvar="formulierveldantwoord_number" vartype="String" write="false"><%   
                         String answerValue = getResponseVal("q" + thisFormNumber + "_" + formulierveld_number + "_" + formulierveldantwoord_number,postingStr);
                         if(!answerValue.equals("")) {
-									if (hasSelected){
-										responseText += ", ";
-									}
+                           if (hasSelected){
+                              responseText += ", ";
+                           }
                            responseText += answerValue;
-									hasSelected = true;
+                           hasSelected = true;
                         }
                      %></mm:field
                   ></mm:related><%
-						String answer_else_Value = getResponseVal("q" + thisFormNumber + "_" + formulierveld_number + "_else",postingStr);
-						if (!answer_else_Value.equals("")){
-							if (hasSelected){
-								responseText += ", ";
-							}
-							responseText += answer_else_Value;
-							hasSelected = true;
-						}
+                  String answer_else_Value = getResponseVal("q" + thisFormNumber + "_" + formulierveld_number + "_else",postingStr);
+                  if (!answer_else_Value.equals("")){
+                     if (hasSelected){
+                        responseText += ", ";
+                     }
+                     responseText += answer_else_Value;
+                     hasSelected = true;
+                  }
                   if(!hasSelected) {
                      responseText += noAnswer;
                      if(isRequired) {
@@ -185,6 +186,9 @@ if(isValidAnswer)
 {  
    String formMessage = "";
    String formMessageHref = "index.jsp";
+   if(sRubriekLayout.equals("" + NatMMConfig.DEMO_LAYOUT)) {
+      formMessageHref = "portal.jsp";
+   }
    String formMessageLinktext = okLink;
 
    for(int i = 0; i< 1; i++) {

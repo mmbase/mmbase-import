@@ -33,7 +33,7 @@ function changeImages() {
             <mm:node number="<%= memberid %>" notfound="skipbody">
                <mm:field name="firstname">
                   <mm:isnotempty>
-                     Welkom <mm:write />
+                     <a href="/editors/mailer/mail/index.jsp">Welkom <mm:write /></a>
                   </mm:isnotempty>
                </mm:field>
             </mm:node>

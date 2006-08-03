@@ -43,7 +43,7 @@ import nl.mmatch.CSVReader;
 public class MembershipForm extends ActionForm {
 
    private static final Logger log = Logging.getLoggerInstance(MembershipForm.class);
-   public static String initAction = "PLEASE FILL IN THE FORM";                        
+   public static String initAction = "PLEASE FILL IN THE FORM";
    public static String submitAction = "JA, IK WORD LID";
    public static String correctAction = "PLEASE FILL ALL NECESSARY FIELDS IN THE FORM";
    public static String skipValidationAction = "NEGEER CONTROLE OP POSTCODE";
@@ -97,9 +97,9 @@ public class MembershipForm extends ActionForm {
    private String dayofbirthDate;
    private int dayofbirthMonth;
    private String dayofbirthYear;
-   
+
    TreeMap zipCodeMap;
-   
+
    private boolean assertZipCodeMap() {
       if(zipCodeMap==null) {
          MMBaseContext mc = new MMBaseContext();
@@ -111,7 +111,7 @@ public class MembershipForm extends ActionForm {
       }
       return country_code!=null && country_code.equals(DEFAULT_COUNTRY) && (zipCodeMap!=null);
    }
-   
+
    public String getAction() { return action; }
    public void setAction(String action ) {
          if(action==null) { action= initAction; }
@@ -130,9 +130,9 @@ public class MembershipForm extends ActionForm {
 
    public String getDigital_newsletter() {
       if(digital_newsletter==null) { digital_newsletter = "J"; }
-      return digital_newsletter; 
+      return digital_newsletter;
    }
-   public void setDigital_newsletter(String digital_newsletter) { 
+   public void setDigital_newsletter(String digital_newsletter) {
       this.digital_newsletter = digital_newsletter;
    }
 
@@ -150,7 +150,7 @@ public class MembershipForm extends ActionForm {
       int i = 0;
       while(i < initials.length() ){
          char c = initials.charAt(i);
-         if  ( !(('A'<=c)&&(c<='Z')) ) { 
+         if  ( !(('A'<=c)&&(c<='Z')) ) {
             initials = initials.substring(0,i) + initials.substring(i+1);
          }
          i++;
@@ -170,11 +170,11 @@ public class MembershipForm extends ActionForm {
    public String getLastname() { return lastname; }
    public void setLastname(String lastname) { this.lastname = SubscribeForm.cleanName(lastname); }
 
-   public String getStreet() { 
+   public String getStreet() {
       if(assertZipCodeMap()) {
          street = CSVReader.getStreet(zipCodeMap, zipcode, street);
       }
-      return street; 
+      return street;
    }
    public void setStreet(String street) { this.street = street.toUpperCase(); }
 
@@ -187,11 +187,11 @@ public class MembershipForm extends ActionForm {
    public String getZipcode() { return zipcode; }
    public void setZipcode(String zipcode) { this.zipcode = SubscribeForm.cleanZipCode(zipcode); }
 
-   public String getCity() { 
+   public String getCity() {
       if(assertZipCodeMap()) {
          city = CSVReader.getCity(zipCodeMap, zipcode, city);
       }
-      return city; 
+      return city;
    }
    public void setCity(String city) { this.city = city.toUpperCase(); }
 
@@ -217,9 +217,9 @@ public class MembershipForm extends ActionForm {
    public String getBankaccount() { return bankaccount; }
    public void setBankaccount(String bankaccount) { this.bankaccount = SubscribeForm.cleanPid(bankaccount); }
 
-   public String getPayment_type() { 
+   public String getPayment_type() {
       if(payment_type==null||payment_type.equals("")) {
-         payment_type = AUTHORIZE; 
+         payment_type = AUTHORIZE;
       } else if(payment_type.equals(INVOICE)) { // in case of invoice, no payment
          setPayment("");
          setPayment_period("");
@@ -232,7 +232,7 @@ public class MembershipForm extends ActionForm {
    /* payment vs. payment_period + amount are mutually exclusive options */
 
    public String getPayment() {
-      if(payment==null) { payment = ""; } 
+      if(payment==null) { payment = ""; }
       return payment;
    }
    public void setPayment(String payment) {
@@ -240,22 +240,22 @@ public class MembershipForm extends ActionForm {
          this.payment_period = "";
          this.amount = "";
       }
-      this.payment = payment; 
+      this.payment = payment;
    }
 
-   public String getPayment_period() { 
-      if(payment_period==null) { payment_period = ""; } 
-      return payment_period; 
+   public String getPayment_period() {
+      if(payment_period==null) { payment_period = ""; }
+      return payment_period;
    }
    public void setPayment_period(String payment_period) {
       if(payment_period!=null&&!payment_period.equals("")) {
          this.payment = "";
       }
-      this.payment_period = payment_period; 
+      this.payment_period = payment_period;
    }
 
    public String getAmount() {
-      String sAmount = null; 
+      String sAmount = null;
       if(payment!=null&&!payment.equals("")) {
          // a choice has been made by using the radio buttons
          sAmount = "";
@@ -271,7 +271,7 @@ public class MembershipForm extends ActionForm {
       if(amount!=null&&!amount.equals("")) {
          this.payment = "";
       }
-      this.amount = amount; 
+      this.amount = amount;
    }
 
    public int getIamount() {
@@ -291,8 +291,8 @@ public class MembershipForm extends ActionForm {
          try {
             iAmount = Integer.parseInt(sAmount);
          } catch (Exception e) { }
-      } 
-      return iAmount; 
+      }
+      return iAmount;
    }
 
    public String convertToString(int iAmount) {
@@ -309,8 +309,8 @@ public class MembershipForm extends ActionForm {
          sPeriod = MONTH;
       } else {
          sPeriod = payment_period;
-      } 
-      return sPeriod; 
+      }
+      return sPeriod;
    }
 
    public Date getSubscribe_date() { return subscribe_date; }
@@ -358,13 +358,13 @@ public class MembershipForm extends ActionForm {
    public String getDayofbirthYear() { return dayofbirthYear; }
    public void setDayofbirthYear(String dayofbirthYear) { this.dayofbirthYear = dayofbirthYear; }
 
-   public String getDayofbirth() { 
+   public String getDayofbirth() {
       String dayOfBirth = dayofbirthYear;
       if(dayofbirthMonth<10) { dayOfBirth += "0"; }
       dayOfBirth += dayofbirthMonth;
       if(dayofbirthDate.length()==1) { dayOfBirth += "0"; }
       dayOfBirth += dayofbirthDate;
-      return dayOfBirth; 
+      return dayOfBirth;
    }
 
    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
@@ -468,14 +468,14 @@ public class MembershipForm extends ActionForm {
 
            errors.add("warning",new ActionError("membershipform.required.dayofbirth"));
 
-         } else { // ** now see, if all subfields of this date hold 
-      
+         } else { // ** now see, if all subfields of this date hold
+
             if(this.getDayofbirthYear().equals("")) {
                errors.add("warning",new ActionError("membershipform.required.dayofbirthyear"));
             } else {
                try {
                   int year = (new Integer(this.getDayofbirthYear())).intValue();
-                  if(year<100) { 
+                  if(year<100) {
                      year += 1900;
                      setDayofbirthYear("" + year);
                   }
@@ -483,7 +483,7 @@ public class MembershipForm extends ActionForm {
                      errors.add("warning",new ActionError("membershipform.dayofbirthyear.lessthancentury"));
                   } else if(this.getDayofbirthMonth()==-1){
                         errors.add("warning",new ActionError("membershipform.required.dayofbirthmonth"));
-                  } else if(this.getDayofbirthDate().equals("")) { 
+                  } else if(this.getDayofbirthDate().equals("")) {
                         errors.add("warning",new ActionError("membershipform.required.dayofbirthdate"));
                   } else {
                      try {
@@ -509,37 +509,17 @@ public class MembershipForm extends ActionForm {
                }
             }
          }
-         
-         
+
+
          if(this.getBankaccount().equals("")) {
             if(this.getPayment_type().equals(AUTHORIZE)) {
                errors.add("warning",new ActionError("membershipform.bankaccount.mandatory_on_authorization"));
             }
          } else {
-            try {
-               boolean validAccount = false;
-               String sBankAccount = this.getBankaccount();
-               long iBankAccount = Long.parseLong(sBankAccount);
-               long sevenTimesNine = 9999999;
-               long eightTimesNine = 99999999;
-               long nineTimesNine  = 999999999;
-               boolean validDutchBankAccount = ( eightTimesNine <= iBankAccount ) && ( iBankAccount<= nineTimesNine );
-               boolean validDutchPostbankAccount = ( 1<=iBankAccount ) && ( iBankAccount<= sevenTimesNine );
-               if (validDutchBankAccount) {
-                  int checkSum = 0;
-                  for(int i = 0; i < sBankAccount.length(); i++) {
-                     checkSum += (i+1)*Integer.parseInt("" + sBankAccount.charAt((sBankAccount.length()-1)-i));
-                  }
-                  validAccount = (checkSum%11)==0;
-               } else if (validDutchPostbankAccount) {
-                  validAccount = true;
-               }
-               if(!validAccount) {                  
-                  errors.add("warning",new ActionError("membershipform.bankaccount.notvalid"));
-               }
-            } catch (Exception e) {
-               log.error("Bank account " + this.getBankaccount() + " is not a number.");
-            } 
+            String bankAccountMessage = SubscribeForm.getBankAccountMessage(this.getBankaccount());
+            if(!bankAccountMessage.equals("")) {
+               errors.add("warning",new ActionError(bankAccountMessage));
+            }
          }
 
          if(this.getPayment_type().equals(AUTHORIZE)) {
@@ -587,9 +567,9 @@ public class MembershipForm extends ActionForm {
 
      thisMember.setStringValue("refererid",getReferid());
      thisMember.setStringValue("gender",getGender());
-     thisMember.setStringValue("firstname","");     
+     thisMember.setStringValue("firstname","");
      thisMember.setStringValue("initials",getInitials());
-     thisMember.setStringValue("suffix",getSuffix());     
+     thisMember.setStringValue("suffix",getSuffix());
      thisMember.setStringValue("lastname",getLastname());
      thisMember.setStringValue("street",getStreet());
      thisMember.setStringValue("housenumber",getHousenumber());
@@ -597,14 +577,14 @@ public class MembershipForm extends ActionForm {
      thisMember.setStringValue("zipcode",getZipcode());
      thisMember.setStringValue("city",getCity());
      thisMember.setStringValue("country_code",getCountry_code());
-     thisMember.setStringValue("organisation","");     
-     thisMember.setStringValue("extra_info","");     
+     thisMember.setStringValue("organisation","");
+     thisMember.setStringValue("extra_info","");
      thisMember.setStringValue("phone",(getPhone().equals(SubscribeForm.initPhone) ? "" : getPhone()));
      thisMember.setLongValue("dayofbirth",birthDate.getTime()/1000);
      thisMember.setStringValue("bankaccount",getBankaccount());
      thisMember.setIntValue("amount",getIamount());
      thisMember.setStringValue("payment_type",(getPayment_type().equals(INVOICE) ? "A" : getPeriod()));
-     thisMember.setLongValue("subscribe_date",thisDate.getTime()/1000); 
+     thisMember.setLongValue("subscribe_date",thisDate.getTime()/1000);
      thisMember.setIntValue("memberid",0);
      thisMember.setIntValue("externid",0);
      thisMember.setStringValue("email",getEmail());
@@ -617,11 +597,11 @@ public class MembershipForm extends ActionForm {
      thisMember.setIntValue("serialnumber",20);
 
      thisMember.setStringValue("status","N");
-     
+
      thisMember.commit();
 
      this.setNode(thisMember.getStringValue("number"));
-     
+
      if(!getCountry_code().equals(DEFAULT_COUNTRY)) {
         sendSubscription(cloud, thisMember);
      }
@@ -630,9 +610,9 @@ public class MembershipForm extends ActionForm {
   }
 
   public void sendSubscription(Cloud cloud, Node thisMember) {
-      
+
       String fromEmailAddress = NatMMConfig.fromEmailAddress;
-      
+
       Node emailNode = cloud.getNodeManager("email").createNode();
       emailNode.setValue("from", fromEmailAddress);
       emailNode.setValue("subject", "Lid worden");
@@ -654,9 +634,9 @@ public class MembershipForm extends ActionForm {
      OptionedStats stats = new OptionedStats();
      String newline = "<br/>";
      if(type.equals("plain")) { newline = "\n"; }
-     String message = "E-mail verstuurd vanaf www.natuurmonumenten.nl / pagina: Lid worden" + newline + newline + 
+     String message = "E-mail verstuurd vanaf www.natuurmonumenten.nl / pagina: Lid worden" + newline + newline +
                "JA, IK WORD LID (alleen buitenlandse aanmeldingen worden per email verstuurd)" + newline +
-               "--------------------------------------------------------------------------" + newline; 
+               "--------------------------------------------------------------------------" + newline;
      message += "Dhr/Mw: " + thisMember.getStringValue("gender") + newline;
      message += "Voorletters: " + thisMember.getStringValue("initials") + newline;
      message += "Tussenvoegsel: " + thisMember.getStringValue("suffix") + newline;
@@ -672,7 +652,7 @@ public class MembershipForm extends ActionForm {
      message += "Bank-/ gironummer: " + thisMember.getStringValue("bankaccount") + newline;
      message += "Bedrag: " + convertToString(thisMember.getIntValue("amount")) + newline;
      message += "Betalingswijze: " + thisMember.getStringValue("payment_type") + newline;
-     message += "Inschrijvings datum: " + stats.dateString(thisMember.getLongValue("subscribe_date")) + newline; 
+     message += "Inschrijvings datum: " + stats.dateString(thisMember.getLongValue("subscribe_date")) + newline;
      message += "E-mail: " + thisMember.getStringValue("email") + newline;
      message += "Maandelijkse digitale nieuwsbrief :" + thisMember.getStringValue("digital_newsletter") + newline;
      return message;
@@ -730,7 +710,7 @@ public class MembershipForm extends ActionForm {
            " van rekeningnummer " + thisMember.getStringValue("bankaccount") + " af te schrijven. ";
         if(iAmount<200&&payment_type.equals(MONTH)) {
            message += "Omdat dit bedrag kleiner is dan &euro; 2,- zal het totale bedrag " +
-              "( " + SubscribeAction.price(iAmount) + " x 12 = ) " + SubscribeAction.price(iAmount*12) + 
+              "( " + SubscribeAction.price(iAmount) + " x 12 = ) " + SubscribeAction.price(iAmount*12) +
               " eenmaal per jaar worden ge&iuml;ncasseerd." + newline + newline;
         }
      }
@@ -741,7 +721,7 @@ public class MembershipForm extends ActionForm {
          message +=  NatMMConfig.infoEmailAddress;
      }
      message += " of bel 035-6559911. " + newline + newline;
-     message += 
+     message +=
         "Met vriendelijke groet," + newline + newline +
         "Jan Jaap de Graeff" + newline +
         "algemeen directeur" + newline + newline;
@@ -760,9 +740,9 @@ public class MembershipForm extends ActionForm {
   }
 
   public void generateAsciiFile(Cloud cloud, String sPresentUserName){
-    log.info("MembershipForm.generateAsciiFile()"); 
+    log.info("MembershipForm.generateAsciiFile()");
     Calendar cal = Calendar.getInstance();
-    
+
     Node nPresentUser = null;
     NodeList nlUser = cloud.getNodeManager("users").getList("account='" + sPresentUserName + "'",null,null);
     if(nlUser.size()>0) {
@@ -770,7 +750,7 @@ public class MembershipForm extends ActionForm {
     } else {
       log.error("Username in generateAsciiFile could not be found");
     }
-    
+
     LinkedHashMap llFields = new LinkedHashMap();
     llFields.put("refererid","4");              // 0
     llFields.put("gender","1");                 // 1
@@ -810,8 +790,8 @@ public class MembershipForm extends ActionForm {
     NodeList nl = notDownloadedMembersList(cloud);
     if (nl.size()!=0){
        OptionedStats stats = new OptionedStats();
-       String title = "LW" 
-		         + stats.dateString(cal.getTime().getTime() / 1000)
+       String title = "LW"
+               + stats.dateString(cal.getTime().getTime() / 1000)
                + "_"
                + stats.timeString(cal.getTime().getTime() / 1000)
                + "_leden";
@@ -836,7 +816,7 @@ public class MembershipForm extends ActionForm {
 
 
        for (int j = 0; j < nl.size(); j++) {
-          
+
           Node nMember = nl.getNode(j);
 
           nMember.setStringValue("status", "D");
@@ -858,12 +838,12 @@ public class MembershipForm extends ActionForm {
              } else if ( (i == 15) || (i == 19)) { // Date
                 sData.append(stats.dateString(nMember.getLongValue( (String) me.getKey())));
              } else if (i==11) { // write spaces instead of country_code
-					 sData.append(
+                sData.append(
                    align("",
                           Integer.parseInt( (String) me.getValue()),
                           false)
                    );
-				 } else { // String
+             } else { // String
                 sData.append(
                    align(nMember.getStringValue( (String) me.getKey()),
                           Integer.parseInt( (String) me.getValue()),
@@ -874,7 +854,7 @@ public class MembershipForm extends ActionForm {
           }
 
           if (j < nl.size() - 1) {
-             sData.append("\r\n"); // unix has '\n' as the line separator, whereas windows has '\r\n' and mac has '\r'. 
+             sData.append("\r\n"); // unix has '\n' as the line separator, whereas windows has '\r\n' and mac has '\r'.
           }
        }
 
