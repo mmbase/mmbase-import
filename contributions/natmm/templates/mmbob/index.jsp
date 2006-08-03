@@ -19,14 +19,19 @@
     </table>
 </mm:compare>
 
-<mm:compare referid="forumid" value="unknown" inverse="true"><% 
+<mm:compare referid="forumid" value="unknown" inverse="true">
 
-%><%@include file="/editors/mailer/util/memberid_get.jsp" %>
-<% 
+<% // get id from NatMM %>
+<%@include file="/editors/mailer/util/memberid_get.jsp" %>
+
+<% // get id from MMBob %>
+<%@include file="getposterid.jsp" %>
+
+<mm:compare referid="posterid" value="-1">
+<%
 if(memberid!=null) {
-  // Step 1: user comes with memberid: use memberid to check if member already is a poster, if not create a poster for this forum
-  %>
-  <mm:node number="<%= memberid %>">
+   %>
+   <mm:node number="<%= memberid %>">
      <mm:list path="forums,related,posters" constraints="<%= "UPPER(posters.account) = '" + memberid + "'" %>" max="1">
          <mm:import id="userisposter" />
          <% log.info("found poster " + memberid); %>
@@ -43,21 +48,36 @@ if(memberid!=null) {
        <mm:import id="userisposter" />
        <% log.info("created poster " + memberid); %>
      </mm:notpresent>
-  </mm:node>
-  <%
-}
-// Step 2: carry out MMBob authententication
-%>
-<%@ include file="getposterid.jsp" %>
-<mm:compare referid="posterid" value="-1">
-<%
-  log.info("poster is -1");
-  if(memberid!=null) {
-    log.info("send redirect to login.jsp?forumid="+forumid+"&account="+memberid+"&password="+memberid);
-    response.sendRedirect("login.jsp?forumid="+forumid+"&account="+memberid+"&password="+memberid);
+     <mm:field name="email">
+         <mm:isnotempty>
+         <%
+         log.info("send redirect to login.jsp?forumid="+forumid+"&account="+memberid+"&password="+memberid);
+         response.sendRedirect("login.jsp?forumid="+forumid+"&account="+memberid+"&password="+memberid);
+         %>
+         </mm:isnotempty>
+     </mm:field>
+   </mm:node>
+   <%
   }
 %>
 </mm:compare>
+<mm:compare referid="posterid" value="-1" inverse="true">
+<%
+if(memberid!=null) {
+  %>
+  <mm:compare referid="posterid" value="<%= memberid %>" inverse="true">
+     <%
+     // logout MMBob, because the posterid and the memberid do not match 
+     %>
+     TODO: user should be logged off from MMBob, because it does not match with logged in user 
+  </mm:compare>
+  <%
+}
+%>
+</mm:compare>
+
+
+
 <mm:locale language="$lang"> 
 
 <!-- action check -->
