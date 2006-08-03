@@ -31,6 +31,8 @@
 %>
 
 <mm:import externid="the_only_node_to_show"/>
+<mm:import externid="return_to"/>
+<mm:import externid="return_to_type"/>
 <%
    HashSet hsetThePath = null;
 %>
@@ -388,7 +390,7 @@
                                           </script>
 
                                           <mm:present referid="the_only_node_to_show">
-                                             <img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="number"/>" onclick="" style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" title="" alt="" /><a href="<mm:url referids="learnobjecttype,education,class,fb_madetest" page="index.jsp">
+                                             <img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="number"/>" onclick="" style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" title="" alt="" /><a href="<mm:url referids="provider,learnobjecttype,education,class,fb_madetest" page="index.jsp">
                                                    <mm:param name="learnobject"><mm:write referid="learnobjectnumber"/></mm:param>
                                                 </mm:url>" style="padding-left: 0px"><mm:field name="name"/></a>
                                           </mm:present>
@@ -470,7 +472,12 @@
       </div>
       <div class="contentBodywit" id="contentBodywit">
          <mm:present referid="the_only_node_to_show">
-            <div align="right"><input type="submit" class="formbutton" value="<di:translate key="assessment.back_to_lession_button" />" onClick="history.back()"/></div>
+            <div align="right"><input type="submit" class="formbutton" value="<di:translate key="assessment.back_to_lession_button" />"
+               onClick="parent.document.location.href='<mm:url referids="provider,learnobjecttype,education,class,fb_madetest" page="index.jsp">
+                  <mm:param name="learnobject"><mm:write referid="return_to"/></mm:param>
+                  <mm:param name="learnobjecttype"><mm:write referid="return_to_type"/></mm:param>
+               </mm:url>'"
+             /></div>
          </mm:present>
          <iframe width="100%" height="100%" onload="resize()" name="content" id="content" frameborder="0" style="overflow:hidden"></iframe>
       </div>
