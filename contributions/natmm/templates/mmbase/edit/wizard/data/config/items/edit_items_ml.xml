@@ -11,11 +11,11 @@
     <field name="material_eng"><prompt>materiaal (en)</prompt></field>
     <field name="material_fra"><prompt>materiaal (fr)</prompt></field>
     <field name="material_de"><prompt>materiaal (de)</prompt></field>
-    <field name="subtitle"><prompt>bijschrift (nl)</prompt></field>
-    <field name="subtitle_eng"><prompt>bijschrift (en)</prompt></field>
-    <field name="subtitle_fra"><prompt>bijschrift (fr)</prompt></field>
-    <field name="subtitle_de"><prompt>bijschrift (de)</prompt></field>
-    <field name="piecesize"><prompt>afmeting</prompt></field>
+    <field name="subtitle"><prompt>locatie (nl)</prompt></field>
+    <field name="subtitle_eng"><prompt>locatie (en)</prompt></field>
+    <field name="subtitle_fra"><prompt>locatie (fr)</prompt></field>
+    <field name="subtitle_de"><prompt>locatie (de)</prompt></field>
+    <field name="piecesize"><prompt>formaat</prompt></field>
     <field name="omschrijving" ftype="html"><prompt>omschrijving (nl)</prompt></field>
     <field name="omschrijving_eng" ftype="html"><prompt>omschrijving (en)</prompt></field>
     <field name="omschrijving_fra" ftype="html"><prompt>omschrijving (fr)</prompt></field>
