@@ -7,7 +7,7 @@
         <requires name="Resources" maintainer="didactor.nl" version="2" />
         
         <requires name="DidactorChat" maintainer="didactor.nl" version="4" />
-        <requires name="DidactorEducation" maintainer="didactor.nl" version="19" />
+        <requires name="DidactorEducation" maintainer="didactor.nl" version="20" />
         
     </requirements>  
 
