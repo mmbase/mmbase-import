@@ -15,6 +15,7 @@
         <!-- Didactor Assessment builders -->
         <builder maintainer="didactor.nl" version="1">goals</builder>
         <builder maintainer="didactor.nl" version="1">problems</builder>
+        <builder maintainer="didactor.nl" version="1">problemtypes</builder>
         
     </neededbuilderlist>
 
@@ -31,6 +32,7 @@
         <relation from="people" to="goals" type="posrel" />
         <relation from="people" to="problems" type="posrel" />
         <relation from="problems" to="learnblocks" type="posrel" /> <!-- the pos field is the weight of this problem for this person -->
+        <relation from="problems" to="problemtypes" type="related" />
         <relation from="learnblocks" to="learnobjects" type="posrel" />  <!-- relate learnblocks to tests for using DidactorEducation test framework -->
         
         <relation from="people" to="learnblocks" type="classrel" /> <!-- results of persons on this learnblock -->
