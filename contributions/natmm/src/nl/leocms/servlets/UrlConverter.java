@@ -36,6 +36,8 @@ import nl.leocms.util.tools.HtmlCleaner;
 import javax.servlet.ServletContext;
 import org.mmbase.module.core.MMBaseContext;
 
+import nl.leocms.applications.*;
+
 /**
  * Utility class that contains the logic that converts a URL into
  * a technical URL.
@@ -43,7 +45,7 @@ import org.mmbase.module.core.MMBaseContext;
  * is illegible for conversion in the first place.
  *
  * @author Finalist IT Group / peter
- * @version $Id: UrlConverter.java,v 1.6 2006-05-26 09:22:17 henk Exp $
+ * @version $Id: UrlConverter.java,v 1.7 2006-08-04 12:38:14 adyubina Exp $
  */
 public final class UrlConverter {
    // some constants.
@@ -73,7 +75,7 @@ public final class UrlConverter {
       }
       return cache;
    }
-   
+
 
    /**
     * Method converts the semantic URL's into usable url.
@@ -125,22 +127,26 @@ public final class UrlConverter {
       String pageName = "";
       String rubriekenPad = "";
 
-      try {
-         itemName = StringUtils.substringAfterLast(url,SEPARATOR);
-         itemName = StringUtils.substringBefore(itemName,PAGE_EXTENSION);
-         int year = (new Integer(itemName.substring(0,2))).intValue();
-         if(year<50) {
-            year += 2000;
-         } else {
-            year += 1900;
+      if(NatMMConfig.useCreationDateInURL) {
+         try {
+            itemName = StringUtils.substringAfterLast(url, SEPARATOR);
+            itemName = StringUtils.substringBefore(itemName, PAGE_EXTENSION);
+            int year = (new Integer(itemName.substring(0, 2))).intValue();
+            if (year < 50) {
+               year += 2000;
+            }
+            else {
+               year += 1900;
+            }
+            int month = (new Integer(itemName.substring(2, 4))).intValue() - 1;
+            int day_of_month = (new Integer(itemName.substring(4, 6))).intValue();
+            Calendar cal = Calendar.getInstance();
+            cal.set(year, month, day_of_month);
+            itemDate = cal.getTime();
          }
-         int month = (new Integer(itemName.substring(2,4))).intValue()-1;
-         int day_of_month = (new Integer(itemName.substring(4,6))).intValue();
-         Calendar cal = Calendar.getInstance();
-         cal.set(year,month,day_of_month);
-         itemDate = cal.getTime();
-      } catch (Exception e) {
-         log.debug("itemName does not contain valid date string");
+         catch (Exception e) {
+            log.debug("itemName does not contain valid date string");
+         }
       }
 
       if(itemDate==null) { // no itemName specified
