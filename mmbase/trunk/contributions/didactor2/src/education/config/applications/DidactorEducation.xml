@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="DidactorEducation" maintainer="didactor.nl" version="19" auto-deploy="true">
+<application name="DidactorEducation" maintainer="didactor.nl" version="20" auto-deploy="true">
     <requirements>
         <requires name="DidactorCore" maintainer="didactor.nl" version="8" />
         <requires name="DidactorComponent" maintainer="didactor.nl" version="2" />
@@ -68,6 +68,7 @@
     <neededreldeflist>
         <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel" />
         <reldef source="posrel" target="posrel" direction="bidirectional" guisourcename="PosRel" guitargetname="PosRel" builder="posrel" />
+        <reldef source="rolerel" target="rolerel" direction="bidirectional" guisourcename="RoleRel" guitargetname="RoleRel" />
         <reldef source="sizerel" target="sizerel" direction="bidirectional" guisourcename="SizeRel" guitargetname="SizeRel" builder="sizerel" />
         <reldef source="descriptionrel" target="descriptionrel" direction="bidirectional" guisourcename="DescriptionRel" guitargetname="DescriptionRel" builder="descriptionrel" />
 
@@ -207,6 +208,10 @@
 
         <relation from="packages" to="educations" type="related" />
         <relation from="learnblocks" to="htmlpages" type="posrel" />
+
+        <!-- Structure from linking forom a learnbobject to a specific component -->
+        <relation from="learnobjects" to="components" type="rolerel"/>
+
     </allowedrelationlist>
 
     <datasourcelist>
