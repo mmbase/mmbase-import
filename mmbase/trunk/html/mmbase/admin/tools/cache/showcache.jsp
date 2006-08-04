@@ -67,10 +67,10 @@ synchronized(cache) {
 %>
 <tr>
   <td class="data"><%=j%></td>
-  <td class="data"><%=cache.getCount(k)%></td>
+  <td class="data"><%=cache.getCount(entry.getKey())%></td>
   <td class="data">
 	<p><%=k%></p>
-  </td>
+ </td>
   <td class="data"><%=v%></td>
   <td class="data"><a href="<mm:url referids="cache"><mm:param name="deletekey" value="<%=k%>" /><mm:param name="deleteentry" value="<%="" + j%>" /></mm:url>">remove</a></td>
   <% j++; %>
