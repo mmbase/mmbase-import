@@ -40,18 +40,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class PaginaHelper {
-   
+
    /** Logger instance. */
    private static Logger log = Logging.getLoggerInstance(PaginaHelper.class.getName());
-   
+
    public final static int MAX_NUMBER_LINKLIJST_ELEMENTS = 7;
    public final static int MAX_NUMBER_DOSSIER_ELEMENTS = 7;
-   
+
    Cloud cloud;
 	ApplicationHelper ap;
    public HashMap pathsFromPageToElements;
    public boolean urlConversion;
-	
+
    public PaginaHelper(Cloud cloud) {
       this.cloud = cloud;
       this.pathsFromPageToElements = new HashMap();
@@ -126,7 +126,7 @@ public class PaginaHelper {
       }
       return breadcrumbs;
    }
-  
+
 	public static String getOwners(Cloud cloud, String paginaNumber, Vector breadcrumbs) {
 		ContentHelper ch = new ContentHelper(cloud);
 		String owners = ch.getOwners(paginaNumber);
@@ -135,12 +135,12 @@ public class PaginaHelper {
 		}
 		return owners;
 	}
-	
+
 	public static String getOwners(Cloud cloud, String paginaNumber) {
-		Vector bc = getBreadCrumbs(cloud,paginaNumber); 
+		Vector bc = getBreadCrumbs(cloud,paginaNumber);
 		return getOwners(cloud,paginaNumber,bc);
 	}
-	
+
    public static String getRootRubriek(Cloud cloud, String paginaNumber) {
       Vector breadcrumbs = getBreadCrumbs(cloud, paginaNumber);
       log.debug(paginaNumber + "->" + breadcrumbs);
@@ -156,7 +156,7 @@ public class PaginaHelper {
       }
       return rootRubriek;
    }
-   
+
    /**
     * Returns the subDir where the templates of this page can be found
     * @param cloud
@@ -167,7 +167,7 @@ public class PaginaHelper {
       String rootRubriek = getRootRubriek(cloud,paginaNumber);
       return (rootRubriek==null) ? null : RubriekHelper.getSubDir(cloud.getNode(rootRubriek));
    }
-   
+
   /**
      * Retrieves the rubriek node related to the given pagina node.
      *
@@ -194,7 +194,7 @@ public class PaginaHelper {
    public Node retrievePaginaNumber(String rubriekNumber, String pageName) {
       Node rubriek = cloud.getNode(rubriekNumber);
       Iterator bl = rubriek.getRelatedNodes("pagina").iterator();
-      
+
       Node winner = null;
 
       while (winner==null && bl.hasNext()) {
@@ -206,7 +206,7 @@ public class PaginaHelper {
 
       return winner;
    }
-   
+
    /**
      * Returns a node is a content page (attribute contentpagina = 1)and obeys
      * to the given urlfragment.
@@ -236,18 +236,21 @@ public class PaginaHelper {
       StringBuffer url = new StringBuffer();
       url.append(getUrlPathToRootString(paginaNode,contextPath));
       url.append('/');
-      Calendar cal = Calendar.getInstance();
-      cal.setTimeInMillis(itemNode.getLongValue("datumlaatstewijziging")*1000); // add lastmodifieddate
-      
-      if(cal.get(Calendar.YEAR)%100<10) { url.append('0'); }
-      url.append(cal.get(Calendar.YEAR)%100);
-      if(cal.get(Calendar.MONTH)+1<10) { url.append('0'); }
-      url.append(cal.get(Calendar.MONTH)+1);
-      if(cal.get(Calendar.DAY_OF_MONTH)<10) { url.append('0'); }
-      url.append(cal.get(Calendar.DAY_OF_MONTH));
+
+      if(NatMMConfig.useCreationDateInURL) {
+         Calendar cal = Calendar.getInstance();
+         cal.setTimeInMillis(itemNode.getLongValue("datumlaatstewijziging")*1000); // add lastmodifieddate
+
+         if (cal.get(Calendar.YEAR) % 100 < 10) { url.append('0'); }
+         url.append(cal.get(Calendar.YEAR) % 100);
+         if (cal.get(Calendar.MONTH) + 1 < 10) { url.append('0'); }
+         url.append(cal.get(Calendar.MONTH) + 1);
+         if (cal.get(Calendar.DAY_OF_MONTH) < 10) { url.append('0'); }
+         url.append(cal.get(Calendar.DAY_OF_MONTH));
+      }
       String itemTitle = itemNode.getStringValue((new ContentHelper(cloud)).getTitleField(itemNode));
       url.append(HtmlCleaner.forURL(HtmlCleaner.stripText(itemTitle)));
-      
+
       return url.toString();
    }
 
@@ -271,7 +274,7 @@ public class PaginaHelper {
       log.debug("getPaginaUrlPathToRootString" + url.toString());
       return url.toString();
    }
-   
+
    /**
      * Creates the url for a pagina.
      * The url consists of
@@ -283,14 +286,14 @@ public class PaginaHelper {
      * @return
      */
    public String createPaginaUrl(String paginaNumber, String contextPath) {
-      
+
       StringBuffer url = getPaginaTemplate(paginaNumber, contextPath);
       url.append(UrlConverter.PAGE_PARAM);
       url.append('=');
       url.append(paginaNumber);
 
       if(urlConversion) {
-   
+
          UrlCache cache = UrlConverter.getCache();
          String jspURL = url.toString();
          String userURL = cache.getURLEntry(jspURL);
@@ -317,10 +320,10 @@ public class PaginaHelper {
      * @return
      */
    public String createItemUrl(String itemNumber, String pageNumber, String params, String contextPath) {
-      Node itemNode = cloud.getNode(itemNumber); 
+      Node itemNode = cloud.getNode(itemNumber);
       Node paginaNode = null;
       if(pageNumber!=null && !pageNumber.equals("-1")) {
-         paginaNode = cloud.getNode(pageNumber); 
+         paginaNode = cloud.getNode(pageNumber);
       } else {
          paginaNode = getPaginaNode(itemNode);
          pageNumber = paginaNode.getStringValue("number");
@@ -329,10 +332,10 @@ public class PaginaHelper {
 
       url.append(UrlConverter.ITEM_PARAM);
       url.append('=');
-      url.append(itemNumber);  
-     
+      url.append(itemNumber);
+
       if(urlConversion) {
-   
+
          UrlCache cache = UrlConverter.getCache();
          String jspURL = url.toString();
          String userURL = cache.getURLEntry(jspURL);
@@ -358,7 +361,7 @@ public class PaginaHelper {
       log.debug("createItemUrl " + url.toString());
       return url.toString();
    }
-   
+
 	public int getMaxSize() {
 		// returns the maxsize of uploads (= images / attachments) per application
 	   int maxsize = 2*1024*1024;
@@ -367,7 +370,7 @@ public class PaginaHelper {
 		}
 		return maxsize;
 	}
-	
+
    /**
      * Creates the url to an editwizard of a page.
      * @param paginaNumber
@@ -380,7 +383,7 @@ public class PaginaHelper {
       Node templateNode = getPaginaTemplate(pageNumber);
       if(templateNode!=null) {
          NodeList editwizardNodes = templateNode.getRelatedNodes("editwizards", "related", "DESTINATION");
-         for(int e = 0; e < editwizardNodes.size(); e++) {    
+         for(int e = 0; e < editwizardNodes.size(); e++) {
             Node editwizardNode = editwizardNodes.getNode(e);
             String ewTitle = editwizardNode.getStringValue("description");
             String ewUrl = contextPath;
@@ -389,7 +392,7 @@ public class PaginaHelper {
                String ewType = editwizardNode.getStringValue("type");
                if(ewType.equals("list")) {  // ** check whether the path is used at least once ***
                   NodeList nl = null;
-                  try { 
+                  try {
                       nl = cloud.getList(pageNumber, ewNodePath, "pagina.number", null, null, null, null, false);
                   } catch (Exception thisException) {
                      log.error("The editwizard " + ewTitle + " could not be shown, because the path " + ewNodePath + " does not exist in the objectcloud.");
@@ -402,8 +405,8 @@ public class PaginaHelper {
                      } else {
                         ewUrl += "&startnodes=" + pageNumber;
                      }
-                     ewUrl += "&nodepath=" + ewNodePath 
-                         + "&fields=" + editwizardNode.getStringValue("fields")      
+                     ewUrl += "&nodepath=" + ewNodePath
+                         + "&fields=" + editwizardNode.getStringValue("fields")
                        //  + "&constraints=" + editwizardNode.getStringValue("constraints") *** empty constraint will result in don't panic ***
                        //  + "&age=" + editwizardNode.getStringValue("age")
                        //  + "&searchdir=" + editwizardNode.getStringValue("searchdir")
@@ -458,7 +461,7 @@ public class PaginaHelper {
       throws MalformedURLException {
       /* hh
        assert contentElement != null;
-      assert rubriekNumber > 0; 
+      assert rubriekNumber > 0;
       Node contentPage = getContentPagina(contentElement);
       RubriekHelper rhelper = new RubriekHelper(cloud);
       String rubriekUrl = rhelper.getUrlPathToRootString(rubriekNumber, contextPath);
@@ -491,7 +494,7 @@ public class PaginaHelper {
          throws MalformedURLException {
          /* hh
          assert contentElement != null;
-         assert rubriekNumber > 0; 
+         assert rubriekNumber > 0;
          Node contentPage = getContentPagina(contentElement);
          RubriekHelper rhelper = new RubriekHelper(cloud);
          String rubriekUrl = rhelper.getUrlPathToRootString(rubriekNumber, contextPath);
@@ -598,14 +601,14 @@ public class PaginaHelper {
    }
 
    public StringBuffer getPaginaTemplate(String paginaNumber, String contextPath) {
-      
+
       StringBuffer url = new StringBuffer();
       url.append(contextPath); // always start from the root
       url.append("/");
       url.append(getSubDir(cloud, paginaNumber));
       Node paginaTemplate = getPaginaTemplate(paginaNumber);
       if(paginaTemplate!=null) {
-         url.append(paginaTemplate.getStringValue("url"));   
+         url.append(paginaTemplate.getStringValue("url"));
       }
       url.append('?');
       return url;
@@ -960,9 +963,9 @@ public class PaginaHelper {
    }
 
    //////////// helpers ////////////////
-   
+
    /**
-    * 
+    *
     *
     * @param paginaNode
     * @return
@@ -1073,7 +1076,7 @@ public class PaginaHelper {
                NodeList rubrieken = remotePaginaNode.getRelatedNodes("rubriek", "posrel", "SOURCE");
                if (rubrieken.size() > 0) {
                   Node rubriekNode = rubrieken.getNode(0);
-                  
+
                   RubriekHelper rhelper = new RubriekHelper(cloud);
                   StringBuffer ret = rhelper.getUrlPathToRootString(rubriekNode,contextPath);
                   NodeList remoteContentList = PublishManager.getPublishedNodes(contentElement);
@@ -1102,8 +1105,8 @@ public class PaginaHelper {
     * @return page
     */
    private Node getPaginaNode(Node contentElement) {
-      
-      Node page = null;      
+
+      Node page = null;
       for (Iterator it=pathsFromPageToElements.keySet().iterator();it.hasNext() && page==null;) {
          String objecttype = (String) it.next();
          String currentPath = (String) pathsFromPageToElements.get(objecttype);
@@ -1131,13 +1134,13 @@ public class PaginaHelper {
 
       Node winner = null;
       for (Iterator it=pathsFromPageToElements.keySet().iterator();it.hasNext() && winner==null;) {
-         
+
          String objecttype = (String) it.next();
          String currentPath = (String) pathsFromPageToElements.get(objecttype);
          objecttype = objecttype.replaceAll("#","");
          String titleField = (new ContentHelper(cloud)).getTitleField(objecttype);
          currentPath = currentPath.replaceAll("object",objecttype);
-            
+
          NodeIterator objects = cloud.getList(
             null,
             currentPath,
@@ -1158,12 +1161,12 @@ public class PaginaHelper {
    }
 
     public HashMap findIDs(HashMap ids, String template, String defaultPage) {
-      
+
       // ID can be used as a generic reference to nodes of different nodetypes
       String ID =  (String) ids.get("object");
       String rubriekID = (String) ids.get("rubriek");
       String paginaID = (String) ids.get("pagina");
-      
+
       if(!ID.equals("-1")) { // if ID is set, use it to set the ID of the related nodetype
 
          String nType = cloud.getNode(ID).getNodeManager().getName();
@@ -1180,7 +1183,7 @@ public class PaginaHelper {
             }
          }
       } else { // if ID is not set, then set it
-      
+
          if(!rubriekID.equals("-1")) {
             ID = rubriekID;
          } else if(!paginaID.equals("-1")) {
@@ -1190,16 +1193,16 @@ public class PaginaHelper {
             for (Iterator it=pathsFromPageToElements.keySet().iterator();it.hasNext() && ID.equals("-1");) {
                objecttype = (String) it.next();
 					ID = (String) ids.get(objecttype.replaceAll("#",""));
-					if(ID==null) { 
+					if(ID==null) {
 						log.debug("Objecttype " + objecttype + " is not found in the list of IDs supplied to findIDs");
 						ID = "-1";
 					}
             }
-				log.debug("ID is set to " + objecttype + " " + ID); 
+				log.debug("ID is set to " + objecttype + " " + ID);
          }
       }
 
-      if(ID.equals("-1")) { 
+      if(ID.equals("-1")) {
 			// if the ID is still empty, it means that not one ID is provided in the URL
 			// set paginaID, rubriekID and ID from the template
          NodeList nlPages = cloud.getList("",
@@ -1207,21 +1210,21 @@ public class PaginaHelper {
                                           "rubriek.number,pagina.number",
                                           "template.url='" + template + "'",
                                           null, null, null, false);
-   
+
           if (nlPages.size() > 0) {
              paginaID = nlPages.getNode(0).getStringValue("pagina.number");
              rubriekID = nlPages.getNode(0).getStringValue("rubriek.number");;
              ID = rubriekID;
           }
-          
+
       }
-      
+
 		if(paginaID.equals("-1")) {
 			// update the rubriekID
-			ids.put("rubriek", rubriekID);  
+			ids.put("rubriek", rubriekID);
 			paginaID = findPageByIDs(ids,template,defaultPage);
 		}
-		
+
 		// set the rubriekID on basis of the paginaID
 		if(!paginaID.equals("-1")&&rubriekID.equals("-1")) {
 			 NodeList nlRubriek = cloud.getList(paginaID,
@@ -1232,7 +1235,7 @@ public class PaginaHelper {
 				 rubriekID = nlRubriek.getNode(0).getStringValue("rubriek.number");
 			 }
 		}
-      
+
       if(!paginaID.equals("-1")) {
          // make sure paginaID is not an alias, otherwise constraints on paginaID won't work
          paginaID = cloud.getNode(paginaID).getStringValue("number");
@@ -1242,8 +1245,8 @@ public class PaginaHelper {
       ids.put("pagina", paginaID);
       return ids;
    }
-   
-   
+
+
    /**
     * Find a page number based on nodes of different types
     */
@@ -1262,7 +1265,7 @@ public class PaginaHelper {
       for (Iterator it=pathsFromPageToElements.keySet().iterator();it.hasNext() && paginaID.equals("-1");) {
          String objecttype = (String) it.next();
          String ID = (String) ids.get(objecttype.replaceAll("#",""));
-			if(ID==null) { 
+			if(ID==null) {
 				log.warn("Objecttype " + objecttype + " is not found in the list of IDs supplied to findPageByIDs");
 				ID = "-1";
 			}
@@ -1278,7 +1281,7 @@ public class PaginaHelper {
 					if (nlTemplates.size() == 1 && nlTemplates.getNode(0).getStringValue("url").equals(template)) {
 						paginaID = nlPages.getNode(p).getStringValue("pagina.number");
 						log.debug("found pagina " + paginaID + " on basis of object " + ID + ", path " + currentPath + ", and template " + template);
-					}					
+					}
 				}
          }
       }
@@ -1288,7 +1291,7 @@ public class PaginaHelper {
 		}
       return paginaID;
    }
-   
+
    /**
     * Check whether this node is of the specified type
     */
@@ -1302,7 +1305,7 @@ public class PaginaHelper {
       }
       return isOfType;
    }
-   
+
    public String getTemplate(HttpServletRequest request) {
       String template =  request.getRequestURI();
       if(template.indexOf("/") > -1){
@@ -1313,5 +1316,5 @@ public class PaginaHelper {
       }
       return template;
    }
-   
+
 }

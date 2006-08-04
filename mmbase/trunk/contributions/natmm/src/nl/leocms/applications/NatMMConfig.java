@@ -54,6 +54,7 @@ public class NatMMConfig {
    public static boolean urlConversion = true;
    public static boolean checkEmailByMailHost = true;
    public static boolean hasClosedUserGroup = false;
+   public static boolean useCreationDateInURL = false;
 
    public static String fromEmailAddress = "website@natuurmonumenten.nl";
    public static String fromCADAddress = "denatuurin@natuurmonumenten.nl";
