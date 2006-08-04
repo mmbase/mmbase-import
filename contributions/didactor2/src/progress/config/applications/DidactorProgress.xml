@@ -2,7 +2,7 @@
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
 <application name="DidactorProgress" maintainer="didactor.nl" version="8" auto-deploy="true">
     <requirements>
-        <requires name="DidactorEducation" maintainer="didactor.nl" version="19" />
+        <requires name="DidactorEducation" maintainer="didactor.nl" version="20" />
         <requires name="Resources" maintainer="didactor.nl" version="2" />
     </requirements>  
 

@@ -3,7 +3,7 @@
 <application name="DidactorCompetence" maintainer="didactor.nl" version="12" auto-deploy="true">
     <requirements>
         <requires name="DidactorCore" maintainer="didactor.nl" version="8" />
-        <requires name="DidactorEducation" maintainer="didactor.nl" version="19" />
+        <requires name="DidactorEducation" maintainer="didactor.nl" version="20" />
         <requires name="DidactorPortfolio" maintainer="didactor.nl" version="8" />
         <requires name="DidactorComponent" maintainer="didactor.nl" version="2" />
         <requires name="Resources" maintainer="didactor.nl" version="2" />
