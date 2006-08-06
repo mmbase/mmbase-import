@@ -1,11 +1,13 @@
 <%! 
 public String getObjects(Cloud cloud, Logger log, String objects, String source, String role, String destination, String nodeId) {
    StringBuffer sbObjects = new StringBuffer();
+   String constraint =  "(" + destination + ".number = '" + nodeId + "')";
+   // log.info("getObjecs objects=" + objects + ", path=" + source + "," + role + "," + destination + ", fields=" + source + ".number" + ", constraints=" + constraint);
    if(!nodeId.equals("")) {
       NodeList nlObjects = cloud.getList(objects,
                                  source + "," + role + "," + destination,
                                  source + ".number",
-                                 "(" + destination + ".number = '" + nodeId + "')",
+                                 constraint,
                                  null,null,null,true);
       for(int n=0; n<nlObjects.size(); n++) {
          if(n>0) { sbObjects.append(','); }
@@ -19,14 +21,14 @@ public String getObjects(Cloud cloud, Logger log, String objects, String source,
 
 public String getObjectsConstraint(Cloud cloud, Logger log, String objects, String source, String path, String constraint) {
    StringBuffer sbObjects = new StringBuffer();
-   log.info("getObjecsConstraint objects=" + objects + ", path=" + path + ", fields=" + source + ".number" + ", constraints=" + constraint);
+   // log.info("getObjecsConstraint objects=" + objects + ", path=" + path + ", fields=" + source + ".number" + ", constraints=" + constraint);
    NodeList nlObjects = cloud.getList(objects, path,source + ".number","(" + constraint + ")",null,null,null,true);
    for(int n=0; n<nlObjects.size(); n++) {
       if(n>0) { sbObjects.append(','); }
       sbObjects.append(nlObjects.getNode(n).getStringValue(source + ".number"));
    }
    objects = sbObjects.toString();
-   log.info("getObjectsConstraint: " + objects);
+   // log.info("getObjectsConstraint: " + objects);
    return objects;
 }
 
@@ -49,9 +51,10 @@ public NodeList getRelated(Cloud cloud, Logger log, String objects, String sourc
       }
       if(thisFields.equals(lastFields)) {
         nlRelated.remove(n);
+      } else {
+        n++;
       }
       lastFields = thisFields;
-      n++;
    }
    return nlRelated;
 }
