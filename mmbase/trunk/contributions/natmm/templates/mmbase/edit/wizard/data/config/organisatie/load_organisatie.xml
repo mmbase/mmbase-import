@@ -23,4 +23,5 @@
    <field name="faxnummer"/>
    <field name="email"/>
    <field name="website"/>
+   <relation destination="organisatie_type" role="posrel" />
 </action>

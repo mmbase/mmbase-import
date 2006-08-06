@@ -22,4 +22,5 @@
    <field name="faxnummer"><prompt>faxnummer</prompt></field>
    <field name="email"><prompt>email</prompt></field>
    <field name="website"><prompt>website</prompt></field>
+   <list include="config/organisatie_type/add_organisatie_type_posrel_ml.xml" />
 </form-schema>
