@@ -220,26 +220,29 @@
         <div class="row">
           <span class="label">Huidige Avatar</span>
           <span class="formw">
-        <mm:field name="avatar">
-        <mm:compare value="-1" inverse="true">
-               <mm:node number="$_">
-                 <img src="<mm:image template="s(80x80)" />" width="80" border="0">
-               </mm:node>
-        </mm:compare>
-        </mm:field>
-            <mm:node number="$posterid">
-            <mm:related path="rolerel,images" 
-                        fields="rolerel.role,images.number"
-                        constraints="rolerel.role='avatar'"
-                        orderby="rolerel.number"
-                        directions="down"
-                        max="1">
-              <mm:node element="images">
-                <img src="<mm:image template="s(80x80)" />" width="80" border="0">
+            <mm:remove referid="image_is_shown" />
+            <mm:field name="avatar">
+            <mm:compare value="-1" inverse="true">
+                   <mm:node number="$_">
+                     <img src="<mm:image template="s(80x80)" />" width="80" border="0">
+                     <mm:import id="image_is_shown" />
+                   </mm:node>
+            </mm:compare>
+            </mm:field>
+            <mm:notpresent referid="image_is_shown">
+              <mm:node number="$posterid">
+                  <mm:related path="rolerel,images" 
+                              fields="rolerel.role,images.number"
+                              constraints="rolerel.role='avatar'"
+                              orderby="rolerel.number"
+                              directions="down"
+                              max="1">
+                    <mm:node element="images">
+                      <img src="<mm:image template="s(80x80)" />" width="80" border="0">
+                    </mm:node>
+                  </mm:related>
               </mm:node>
-            </mm:related>
-            </mm:node>
-
+            </mm:notpresent>
           </span>
         </div>
         </mm:nodefunction>

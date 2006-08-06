@@ -1,13 +1,18 @@
 <%-- !DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd" --%>
 <%@ page contentType="text/html; charset=utf-8" language="java" %>
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%
+response.setHeader("Cache-Control","no-cache"); //HTTP 1.1
+response.setHeader("Pragma","no-cache"); //HTTP 1.0
+response.setDateHeader ("Expires", 0); //prevents caching at the proxy server
+%>
 <mm:content type="text/html">
 <mm:cloud jspvar="cloud">
 <mm:log jspvar="log">
 <%@ include file="thememanager/loadvars.jsp" %>
 <%@ include file="settings.jsp" %>
-<HTML>
-<HEAD>
+<html>
+<head>
    <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
    <title>MMBase forums</title>
 </head>
@@ -21,62 +26,93 @@
 
 <mm:compare referid="forumid" value="unknown" inverse="true">
 
-<% // get id from NatMM %>
-<%@include file="/editors/mailer/util/memberid_get.jsp" %>
-
 <% // get id from MMBob %>
 <%@include file="getposterid.jsp" %>
+<mm:import jspvar="posterid"><mm:write referid="posterid" /></mm:import>
 
-<mm:compare referid="posterid" value="-1">
 <%
-if(memberid!=null) {
-   %>
-   <mm:node number="<%= memberid %>">
-     <mm:list path="forums,related,posters" constraints="<%= "UPPER(posters.account) = '" + memberid + "'" %>" max="1">
-         <mm:import id="userisposter" />
-         <% log.info("found poster " + memberid); %>
-     </mm:list>
-     <mm:notpresent referid="userisposter">
-       <mm:import id="account"><%= memberid %></mm:import>
-       <mm:import id="password"><%= memberid %></mm:import>
-       <mm:import id="firstname"><mm:field name="firstname" /></mm:import>
-       <mm:import id="lastname"><mm:field name="suffix" /> <mm:field name="lastname" /></mm:import>
-       <mm:import id="email"><mm:field name="email" /></mm:import>
-       <mm:import id="location"></mm:import>
-       <mm:import id="gender">male</mm:import>
-       <mm:import id="feedback" reset="true"><mm:function set="mmbob" name="createPoster" referids="forumid,account,password,firstname,lastname,email,gender,location" /></mm:import>
-       <mm:import id="userisposter" />
-       <% log.info("created poster " + memberid); %>
-     </mm:notpresent>
-     <mm:field name="email">
-         <mm:isnotempty>
-         <%
+log.info("start MMBob authentication");
+log.info("found posterid " + posterid);
+
+if(nl.leocms.applications.NatMMConfig.hasClosedUserGroup) { 
+  %>
+  <% // get id from NatMM %>
+  <%@include file="/editors/mailer/util/memberid_get.jsp" %>
+  <%
+  log.info("found memberid " + memberid);
+  %>
+  <mm:compare referid="posterid" value="-1" inverse="true">
+  <%
+  if(memberid!=null) {
+    %>
+    <mm:node number="$posterid">
+      <mm:field name="account">
+        <mm:compare value="<%= memberid %>" inverse="true">
+           <%
+           log.info("logout from MMBob, because the posterid and the memberid do not match");
+           %>
+           <mm:import id="cw3"></mm:import>
+           <mm:import id="ca3"></mm:import>
+           <mm:import id="pid3">-1</mm:import>
+           <mm:write referid="cw3" cookie="cwf$forumid" />
+           <mm:write referid="ca3" cookie="caf$forumid" />
+           <mm:write referid="pid3" session="pid$forumid" />
+           <mm:import id="posterid" reset="true">-1</mm:import>
+        </mm:compare>
+      </mm:field>
+    </mm:node>
+    <%
+  }
+  %>
+  </mm:compare>
+  <mm:compare referid="posterid" value="-1">
+  <%
+  if(memberid!=null) {
+     boolean posterExists = false;
+     %>
+     <mm:node number="<%= memberid %>">
+       <mm:list path="forums,related,posters" constraints="<%= "UPPER(posters.account) = '" + memberid + "'" %>" max="1">
+           <mm:import id="userisposter" />
+           <% 
+           posterExists = true;
+           log.info("found poster from db " + memberid); 
+           %>
+       </mm:list>
+       <mm:notpresent referid="userisposter">
+          <mm:field name="email">
+              <mm:isnotempty>
+                 <mm:import id="account"><%= memberid %></mm:import>
+                 <mm:import id="password"><%= memberid %></mm:import>
+                 <mm:import id="firstname"><mm:field name="firstname" /></mm:import>
+                 <mm:import id="lastname"><mm:field name="suffix" /> <mm:field name="lastname" /></mm:import>
+                 <mm:import id="email"><mm:field name="email" /></mm:import>
+                 <mm:import id="location"></mm:import>
+                 <mm:import id="gender">male</mm:import>
+                 <mm:import id="feedback" reset="true"><mm:function set="mmbob" name="createPoster" referids="forumid,account,password,firstname,lastname,email,gender,location" /></mm:import>
+                 <mm:import id="userisposter" />
+                 <%
+                 posterExists = true;
+                 log.info("created poster " + memberid); 
+                 %>
+              </mm:isnotempty>
+              <mm:isempty>
+                 <% log.info("can not create poster from cookie user " + memberid); %>
+              </mm:isempty>
+          </mm:field>
+       </mm:notpresent>
+       <%
+       if(posterExists) {
          log.info("send redirect to login.jsp?forumid="+forumid+"&account="+memberid+"&password="+memberid);
          response.sendRedirect("login.jsp?forumid="+forumid+"&account="+memberid+"&password="+memberid);
-         %>
-         </mm:isnotempty>
-     </mm:field>
-   </mm:node>
-   <%
-  }
-%>
-</mm:compare>
-<mm:compare referid="posterid" value="-1" inverse="true">
-<%
-if(memberid!=null) {
-  %>
-  <mm:compare referid="posterid" value="<%= memberid %>" inverse="true">
+       }
+       %>
+     </mm:node>
      <%
-     // logout MMBob, because the posterid and the memberid do not match 
-     %>
-     TODO: user should be logged off from MMBob, because it does not match with logged in user 
+    }
+  %>
   </mm:compare>
   <%
-}
-%>
-</mm:compare>
-
-
+} %>
 
 <mm:locale language="$lang"> 
 
