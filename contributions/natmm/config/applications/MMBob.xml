@@ -64,6 +64,6 @@
         <![CDATA[The MMBob application saves and restores MMBob.]]>
     </description>
     <install-notice>
-        <![CDATA[The MMBob application is installed. Please make sure that you set the password in \config\mmbob\mmbob.xml correctly, otherwise you will get unexpected error messages !!!]]>
+        <![CDATA[The MMBob application is installed. Please make sure that you set the password in \config\mmbob\mmbob.xml correctly, otherwise you will get unexpected error messages !!! Next to this for uploading the avatars, makes sure the temp directory in config\utils\httppost.xml is correct.]]>
     </install-notice>
 </application>
