@@ -101,7 +101,15 @@ public String getLangFieldName(String field, String language) {
 }
 
 public String getField(Node node, String field, String language) {
-   return node.getStringValue(getLangFieldName(field,language));
+   return getField(node, field, language, "");
+}
+
+public String getField(Node node, String field, String language, String postString) {
+   String value = node.getStringValue(getLangFieldName(field,language));
+   if(!value.equals("")) {
+    value += postString;
+   }
+   return value;
 }
 
 public boolean checkParam(String param) {
