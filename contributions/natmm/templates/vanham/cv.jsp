@@ -252,18 +252,18 @@
                        <td style="width:14%;"> </td>
                        <td class="def" style="width:1%;height:20;"> </td>
                        <td class="def" style="width:55%;line-height:120%;" colspan="2">
-                          <%= projectDesc %><br/><br>
+                          <%= (!HtmlCleaner.cleanText(projectDesc,"<",">","").trim().equals("") ? projectDesc : "" ) %>
                           <mm:relatednodes type="items" path="posrel,items" jspvar="dummy" max="1">
                              <mm:field name="titel_zichtbaar" jspvar="titelFlag" vartype="String">
                                 <% if (!"0".equals(titelFlag) && ! getField(dummy,"titel",language).equals(getField(thisProject,"titel",language)) ) { %>
-                                   <%= getField(dummy,"titel",language) %><br/>
+                                   <%= getField(dummy,"titel",language, "<br/>") %>
                                 <% } %>
                              </mm:field>
                              <mm:field name="year"><mm:compare value="<%= yearString %>" inverse="true"><mm:write /><br/></mm:compare></mm:field>
-                             <%= getField(dummy,"material",language) %><br/>
-                             <%= getField(dummy,"subtitle",language) %><br/>
+                             <%= getField(dummy,"material",language, "<br/>") %>
+                             <%= getField(dummy,"subtitle",language, "<br/>") %>
                     <mm:field name="piecesize"/><br/>
-                    <%= getField(dummy,"omschrijving",language) %><br/>
+                    <%= getField(dummy,"omschrijving",language, "<br/>") %>
                           </mm:relatednodes>
                        </td>
                        <td class="def" style="width:30%;">
