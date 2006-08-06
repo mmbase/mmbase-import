@@ -8,7 +8,7 @@
 <mm:import externid="material" jspvar="materialTypeID" vartype="String">-1</mm:import>
 <mm:import externid="orgtype" jspvar="organisationTypeID" vartype="String">-1</mm:import>
 <mm:import externid="locatie" jspvar="locatieID" vartype="String">-1</mm:import>
-<mm:import externid="projtype" jspvar="projectTypeID" vartype="String">-1</mm:import>
+<mm:import externid="projtype" jspvar="projectTypeID" vartype="String">0</mm:import> <!-- initial setting, will be replaced by default -->
 <mm:import externid="dur" jspvar="durationType" vartype="String">-1</mm:import>
 <mm:import externid="a" jspvar="artikelID" vartype="String">-1</mm:import>
 <mm:import externid="showdate" jspvar="showdateID">false</mm:import>

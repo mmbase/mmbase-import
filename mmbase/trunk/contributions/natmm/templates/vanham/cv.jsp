@@ -17,22 +17,28 @@
       eval(targ+".location='"+selObj.options[selObj.selectedIndex].value+"'");
       if (restore) selObj.selectedIndex=0;
     }
+    
+    function clearForm() {
+      document.location = "cv.jsp?p=<%= paginaID %>"; 
+      return false; 
+    }
   </script>
   <table cellpadding="0" cellspacing="0" border="0" style="width:780px;">
   <%@include file="includes/nav.jsp" %>
   <mm:node number="$paginaID" notfound="skip">
     <% 
-    if (projectTypeID.equals("-1")) { 
+     boolean debug = false;
+
+     if(projectTypeID.equals("0")) {
       %>
-        <mm:related path="contentrel,projects,posrel,projecttypes" fields="projecttypes.number" max="1">
-           <mm:field name="projecttypes.number" jspvar="dummy" vartype="String">
-              <% projectTypeID = dummy; %>
-           </mm:field>
-        </mm:related>
+      <mm:node number="commission">
+        <mm:field name="number" jspvar="dummy" vartype="String" write="false">
+          <% projectTypeID = dummy; %>
+        </mm:field>
+      </mm:node>
       <%
      }
      
-     boolean debug = false;
      String localPath = "";
      String searchUrl = localPath + "cv.jsp?p=" + paginaID
                      + "&material=" + materialTypeID
@@ -52,7 +58,7 @@
         if(debug) { %>projectType: <%= sProjects %><br/><% }
      }
      if (checkParam(materialTypeID)) {
-        sProjects = getObjects(cloud,log,sProjects,"projects","posrel,items,posrel","item_pools",materialTypeID);
+        sProjects = getObjects(cloud,log,sProjects,"projects","posrel,items,posrel","pools",materialTypeID);
         if(debug) { %>materialType: <%= sProjects %><br/><% }
      }
      if (checkParam(locatieID)) {
@@ -99,7 +105,7 @@
               </td>
            </form>
            <td class="def" style="width:30%;vertical-align:middle;">
-             <mm:node number="<%=projectTypeID %>" jspvar="dummy">
+             <mm:node number="<%=projectTypeID %>" jspvar="dummy" notfound="skipbody">
                <%= getField(dummy,"subtitle",language) %>
              </mm:node>
            </td>
@@ -108,39 +114,25 @@
            <td style="width:14%;"></td>
            <td class="def" style="width:1%;height:0%;"></td>
            <td class="def" style="width:25%;height:0%;vertical-align:middle;">
-              <bean:message bundle="<%= "VANHAM." + language %>" key="cv.material" />
-           </td>         
-           <form name="selectform" method="post" action="">
-           <td class="def" style="width:20%;padding:1px;height:0%;text-align:right;">
-              <%
-                 NodeList materialTypes = getRelated(cloud,log,paginaID,"pagina",
-                    "contentrel,projects,posrel,items,posrel",
-                    "item_pools","name","",language);
-              %>
-              <%= getSimpleSelect(cloud,log,materialTypeID,materialTypes,
-                    "item_pools","name","",searchUrl,"material",language) %>
-           </td>
-           </form>
-           <td class="def" style="width:30%;vertical-align:middle;"></td>
-        </tr>
-        <tr class="cv_sub">
-           <td style="width:14%;"></td>
-           <td class="def" style="width:1%;height:0%;"></td>
-           <td class="def" style="width:25%;height:0%;vertical-align:middle;">
               <bean:message bundle="<%= "VANHAM." + language %>" key="cv.location" />
            </td>         
            <form name="selectform" method="post" action="">
-           <td class="def" style="width:20%;padding:1px;height:0%;text-align:right;">
+           <td class="def" style="width:20%;padding:1px;height:0%;text-align:right;vertical-align:middle;">
               <%
-                 NodeList locatieList = getRelated(cloud,log,paginaID,"pagina",
-                    "contentrel,projects,readmore",
+                 NodeList locatieList = getRelated(cloud,log,sProjects,"projects",
+                    "readmore",
                     "organisatie","plaatsnaam","land","nl");
               %>
               <%= getSimpleSelect(cloud,log,locatieID,locatieList,
                     "organisatie","plaatsnaam","land",searchUrl,"locatie","nl") %>
            </td>
            </form>
-           <td class="def" style="width:30%;vertical-align:middle;"></td>
+           <td class="def" style="width:30%;vertical-align:bottom;" rowspan="4">
+              <input type="button" name="submit" value="<bean:message bundle="<%= "VANHAM." + language %>" key="cv.back" />"
+                style="font-size:0.9em;text-align:center;width:50px;height:20px;" onClick="javascript:history.go(-1);">
+      		    <input type="button" name="submit" value="<bean:message bundle="<%= "VANHAM." + language %>" key="cv.reset" />"
+                style="font-size:0.9em;text-align:center;width:50px;height:20px;" onClick="javascript:clearForm();"></td>
+           </td>
         </tr>
         <tr class="cv_sub">
            <td style="width:14%;"></td>
@@ -149,17 +141,34 @@
               <bean:message bundle="<%= "VANHAM." + language %>" key="cv.stakeholder" />
            </td>         
            <form name="selectform" method="post" action="">
-           <td class="def" style="width:20%;padding:1px;height:0%;text-align:right;">
+           <td class="def" style="width:20%;padding:1px;height:0%;text-align:right;vertical-align:middle;">
               <%
-                 NodeList organisationTypes = getRelated(cloud,log,paginaID,"pagina",
-                    "contentrel,projects,readmore,organisatie,posrel",
+                 NodeList organisationTypes = getRelated(cloud,log,sProjects,"projects",
+                    "readmore,organisatie,posrel",
                     "organisatie_type","naam","",language);
               %>
               <%= getSimpleSelect(cloud,log,organisationTypeID,organisationTypes,
                     "organisatie_type","naam","",searchUrl,"orgtype",language) %>
            </td>
            </form>
-           <td class="def" style="width:30%;vertical-align:middle;"></td>
+        </tr>
+        <tr class="cv_sub">
+           <td style="width:14%;"></td>
+           <td class="def" style="width:1%;height:0%;"></td>
+           <td class="def" style="width:25%;height:0%;vertical-align:middle;">
+              <bean:message bundle="<%= "VANHAM." + language %>" key="cv.material" />
+           </td>         
+           <form name="selectform" method="post" action="">
+           <td class="def" style="width:20%;padding:1px;height:0%;text-align:right;vertical-align:middle;">
+              <%
+                 NodeList materialTypes = getRelated(cloud,log,sProjects,"projects",
+                    "posrel,items,posrel",
+                    "pools","name","",language);
+              %>
+              <%= getSimpleSelect(cloud,log,materialTypeID,materialTypes,
+                    "pools","name","",searchUrl,"material",language) %>
+           </td>
+           </form>
         </tr>
         <tr class="cv_sub">
            <td style="width:14%;"></td>
@@ -168,7 +177,7 @@
               <bean:message bundle="<%= "VANHAM." + language %>" key="cv.length" />
            </td>         
            <form name="selectform" method="post" action="">
-           <td class="def" style="width:20%;padding:1px;height:0%;text-align:right;">
+           <td class="def" style="width:20%;padding:1px;height:0%;text-align:right;vertical-align:middle;padding-bottom:3px;">
               <select name="dur" class="cv_sub" style="width:193px;" onChange="MM_jumpMenu('document',this,0)">
                  <%
                    String durationUrl = searchUrl;
@@ -183,52 +192,15 @@
                    }
                  %>
                  <option value="<%= durationUrl %>"><bean:message bundle="<%= "VANHAM." + language %>" key="cv.select" /></option>
-                 <% 
-            if ("temp".equals(durationType)) { 
-              %>
-                    <option value="<%= durationUrl + "&dur=temp" %>" selected>TIJDELIJK</option>
-              <%
-            } else {
-              %>
-                    <option value="<%= durationUrl + "&dur=temp" %>">TIJDELIJK</option>
-              <%
-            }
-                 if ("perm".equals(durationType)) { 
-                  %>
-                    <option value="<%= durationUrl + "&dur=perm" %>" selected>PERMANENT</option>
-              <%
-            } else {
-              %>
-                    <option value="<%= durationUrl + "&dur=perm" %>">PERMANENT</option>
-              <%
-            } %>
+                 <option value="<%= durationUrl + "&dur=temp" %>" <%= ( "temp".equals(durationType) ? "selected" : "" ) %>>
+                     <bean:message bundle="<%= "VANHAM." + language %>" key="cv.temporarily" />
+                 </option>
+                 <option value="<%= durationUrl + "&dur=perm" %>" <%= ( "perm".equals(durationType) ? "selected" : "" ) %>>
+                     <bean:message bundle="<%= "VANHAM." + language %>" key="cv.permanent" />
+                 </option>
               </select>
            </td>
            </form>
-           <td class="def" style="width:30%;vertical-align:middle;"></td>
-        </tr>
-        <tr class="cv_sub">
-           <td style="width:14%;"></td>
-           <td class="def" style="width:1%;height:0%;"></td>
-           <td class="def" style="width:25%;height:0%;vertical-align:middle;">
-              <bean:message bundle="<%= "VANHAM." + language %>" key="cv.bearer" />
-           </td>         
-           <form name="selectform" method="post" action="">
-           <td class="def" style="width:20%;padding:1px;height:0%;text-align:right;">
-              <select name="subpage" class="cv_sub" style="width:193px;">
-                 <option><bean:message bundle="<%= "VANHAM." + language %>" key="cv.select" /></option>
-                 <option>MUUR</option>
-                 <option>VLOER</option>
-              </select>
-           </td>
-           </form>
-           <td class="def" style="width:30%;vertical-align:middle;"></td>
-        </tr>
-        <tr>
-           <td class="def" style="width:14%;height:20;"></td>
-           <td class="def" style="width:1%;height:20;"></td>
-           <td class="def" style="width:55%;" colspan="2"></td>
-           <td class="def" style="width:30%;height:20;"></td>
         </tr>
         <% if (!sProjects.equals("")) { %>
            <mm:list nodes="<%= sProjects %>" path="projects" orderby="projects.begindate" directions="DOWN">
@@ -242,7 +214,7 @@
                     <% hasToggle = true; %>
                  </mm:relatednodes>
                  <tr>
-              <% String yearString = ""; %>
+                 <% String yearString = ""; %>
                     <mm:field name="begindate" jspvar="beginDate" vartype="Long">
                        <mm:field name="enddate" jspvar="endDate" vartype="Long">
                           <% Calendar cal = Calendar.getInstance();
@@ -283,7 +255,7 @@
                           <%= projectDesc %><br/><br>
                           <mm:relatednodes type="items" path="posrel,items" jspvar="dummy" max="1">
                              <mm:field name="titel_zichtbaar" jspvar="titelFlag" vartype="String">
-                                <% if (!"0".equals(titelFlag)) { %>
+                                <% if (!"0".equals(titelFlag) && ! getField(dummy,"titel",language).equals(getField(thisProject,"titel",language)) ) { %>
                                    <%= getField(dummy,"titel",language) %><br/>
                                 <% } %>
                              </mm:field>
