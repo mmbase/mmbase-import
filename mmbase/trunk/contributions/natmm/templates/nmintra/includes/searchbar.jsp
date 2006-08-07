@@ -24,15 +24,19 @@ function startPhone() {
 }
 //-->
 </script><tr>
-<% // *************************************** natuurmonumenten logo ******************************* %>
+<% // *************************************** logo ******************************* %>
 <td rowspan="3"><a href="http://www.natuurmonumenten.nl" target="_blank"><img src="media/styles/<%= NMIntraConfig.style1[iRubriekStyle] %>_logo.gif" border="0" title=""></a></td>
 <td style="width:70%;"><img src="media/spacer.gif" width="1" height="12"></td>
-<% // *************************************** natuurmonumenten intranet ******************************* %>
-<td class="header" style="padding-right:10px;padding-top:5px;text-align:right;width:251px;">Natuurmonumenten <a href="index.jsp" target="_top"><span class="red"><mm:node number="<%= rootId %>"
-            ><mm:field name="naam" jspvar="website_title" vartype="String" write="false"
-                ><%= website_title.toUpperCase()
-            %></mm:field
-            ></mm:node></span></a>
+<% // *************************************** name of intranet ******************************* %>
+<td class="header" style="padding-right:10px;padding-top:5px;text-align:right;width:251px;">
+  <mm:node number="<%= rootId %>">
+    <nobr>
+      <mm:field name="naam_de" />
+      <a href="index.jsp" target="_top">
+         <span class="red"><mm:field name="naam" /></span>
+      </a>
+    </nobr>
+  </mm:node>
 </td>
 </tr>
 <tr>

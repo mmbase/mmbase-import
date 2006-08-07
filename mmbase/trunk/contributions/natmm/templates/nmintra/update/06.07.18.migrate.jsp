@@ -14,29 +14,32 @@
    <body style="width:100%;padding:5px;">
 	Things to be done in this update:<br/>
 	<mm:createnode type="topics" id="news_topic">
-		<mm:setfield name="title">news</mm:setfield>
+		<mm:setfield name="title">nieuws</mm:setfield>
 	</mm:createnode>
-	<mm:node number="news_topic">
-		<mm:setalias>nieuws</mm:setalias>
+	<mm:node number="$news_topic">
+		<mm:createalias>news</mm:createalias>
 	</mm:node>
 	<mm:listnodes type="rubriek" constraints="naam = 'Home'" id="news_rubriek">
-		<mm:creatrelation source="news_rubriek" destination="news_topic" role="related" />
+		<mm:createrelation source="news_rubriek" destination="news_topic" role="related" />
 	</mm:listnodes>
 	<mm:createnode type="topics" id="edu_topic">
 		<mm:setfield name="title">opleidingen</mm:setfield>
 	</mm:createnode>
-	<mm:node number="edu_topic">
-		<mm:setalias>education</mm:setalias>
+	<mm:node number="$edu_topic">
+		<mm:createalias>education</mm:createalias>
 	</mm:node>
-	<mm:listnodes type="rubriek" constraints="naam = 'Opleiding en ontwikkeling'" id="edu_rubriek">
-		<mm:creatrelation source="edu_rubriek" destination="edu_topic" role="related" />
+	<mm:listnodes type="rubriek" constraints="naam = 'Opleiding en ontwikkeling'">
+    <mm:node id="edu_rubriek" />
+		<mm:createrelation source="edu_rubriek" destination="edu_topic" role="related" />
 	</mm:listnodes>
-	<mm:listnodes type="menu" constraints="naam = 'Opleidingen'" id="edu_menu">
-		<mm:creatrelation source="edu_menu" destination="edu_topic" role="related" />
+	<mm:listnodes type="menu" constraints="naam = 'Opleidingen'">
+    <mm:node id="edu_menu" />
+		<mm:createrelation source="edu_menu" destination="edu_rubriek" role="related" />
 	</mm:listnodes>
 	1. Relates the already present pools to the topic "nieuws".<br/>
-   <mm:listnodes type="pools" id="news_pool">
-      <mm:createrelation role="posrel" source="news_topic" destination="news_pool" />
+  <mm:listnodes type="pools">
+      <mm:node id="news_pool" />
+      <mm:createrelation source="news_topic" destination="news_pool" role="posrel"/>
    </mm:listnodes>
 	2. Moves the education_keywords to keywords with a related topic "opleidingen".<br/>
    <mm:listnodes type="education_keywords">

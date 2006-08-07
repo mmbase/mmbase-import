@@ -18,7 +18,7 @@ session.setAttribute("pageref",paginaID);
 		<script language="javascript" src="scripts/cookies.js"></script>
 		<script language="javaScript" src="scripts/screensize.js"></script>
   </head>
-  <body scroll="auto" onUnLoad="javascript:setScreenSize()">
+  <body scroll="auto" <%-- onUnLoad="javascript:setScreenSize()" --%>>
   	<%@include file="/editors/paginamanagement/flushlink.jsp" %>
 	<table background="media/styles/<%= NMIntraConfig.style1[iRubriekStyle] %>.jpg" cellspacing="0" cellpadding="0">
 	<%@include file="../includes/searchbar.jsp" %>

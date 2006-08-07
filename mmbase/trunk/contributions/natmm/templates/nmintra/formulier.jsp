@@ -19,25 +19,26 @@
     <tr><td><img src="media/spacer.gif" width="10" height="1"></td>
         <td><%    
         
-         // See the editwizard article_form:    
-         // <option id="1">textarea</option>
-         // <option id="2">textline</option>
-         // <option id="3">dropdown</option>
-         // <option id="4">radio buttons</option>
-         // <option id="5">check boxes</option>
-         
-         String sPageRefMinOne = (String) session.getAttribute("pagerefminone");
-         // ** hack: add sDefaultValues on page "Wat vind je ervan?"
-         String sDefaultName = "";
-         String sDefaultEmail = "";
-         String sDefaultText = "";
-			String sWvjePageId = ""; %>
-			<mm:list path="rubriek,posrel,pagina" constraints="rubriek.naam = 'Wat vind je ervan?' AND pagina.titel = 'Wat vind je ervan?'">
-				<mm:field name="pagina.number" jspvar="number" vartype="String" write="false">
-					<% sWvjePageId = number; %>
-				</mm:field>
-			</mm:list>
-		<% if(paginaID.equals(sWvjePageId)) {
+        // See the editwizard article_form:    
+        // <option id="1">textarea</option>
+        // <option id="2">textline</option>
+        // <option id="3">dropdown</option>
+        // <option id="4">radio buttons</option>
+        // <option id="5">check boxes</option>
+        
+        String sPageRefMinOne = (String) session.getAttribute("pagerefminone");
+        // ** hack: add sDefaultValues on page "Wat vind je ervan?"
+        String sDefaultName = "";
+        String sDefaultEmail = "";
+        String sDefaultText = "";
+        String sWvjePageId = ""; %>
+        <mm:list path="rubriek,posrel,pagina" constraints="rubriek.naam = 'Wat vind je ervan?' AND pagina.titel = 'Wat vind je ervan?'">
+          <mm:field name="pagina.number" jspvar="number" vartype="String" write="false">
+            <% sWvjePageId = number; %>
+          </mm:field>
+        </mm:list>
+        <% 
+        if(sPageRefMinOne!=null && paginaID.equals(sWvjePageId)) {
             sDefaultText = "Het volgende wil ik melden over de rubriek ";
             %>
             <mm:node number="<%= sPageRefMinOne %>" jspvar="lastPage" notfound="skipbody">
@@ -49,11 +50,11 @@
                <%  sDefaultText += lastPage.getStringValue("titel") + ": "; %>
             </mm:node>
             <%
-         } 
-         %>
-			<%@include file="includes/form/script.jsp" %>
-			<%
-         
+        } 
+        %>
+        <%@include file="includes/form/script.jsp" %>
+        <%
+           
          if(!postingStr.equals("")){
              postingStr += "|";
              %><%@include file="includes/form/result.jsp" %><% 
