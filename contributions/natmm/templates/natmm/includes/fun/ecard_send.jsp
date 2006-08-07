@@ -1,5 +1,5 @@
-<%@page import="javax.mail.*,javax.mail.internet.*,java.util.*" %>
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@include file="/taglibs.jsp" %>
+<%@page import="javax.mail.*,javax.mail.internet.*" %>
 <%
    String imgID = request.getParameter("i");
 %>
@@ -29,13 +29,13 @@ hostName = hostName.substring(0,hostName.lastIndexOf("/"));
             
 try {
    String msg_subject = "Er ligt een ecard klaar van een vriend(in)";
-   if(NatMMConfig.companyName.equals("Natuurmonumenten") { 
+   if(NatMMConfig.companyName.equals("Natuurmonumenten")) { 
       msg_subject = "Er ligt een ecard klaar van een natuurvriend(in)";
    }
    String msg_body = "Beste " + toname + ",\n\n";
    msg_body += fromname + " heeft je een " +  NatMMConfig.companyName + " e-card gestuurd. Klik op de link om je e-card op te halen.\n\n";
    msg_body += hostName+"/ecard.jsp?id="+imgID+"&card="+account+"\n\n";
-   if(NatMMConfig.companyName.equals("Natuurmonumenten") { 
+   if(NatMMConfig.companyName.equals("Natuurmonumenten")) { 
       msg_body += "Op de hoogte blijven van de laatste natuurnieuwtjes? Meld je aan en ontvang maandelijks de Natuurbrief.\nhttp://www.natuurmonumenten.nl/natuurbrief\n\n";
       msg_body += "Natuurmonumenten beschermt de natuur in Nederland. Help mee en steun ons:\nhttp://www.natuurmonumenten.nl/steunons\n\n";
    }

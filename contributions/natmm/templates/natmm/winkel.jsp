@@ -5,6 +5,7 @@
 <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
 <%@include file="includes/top3_nav.jsp" %>
 <%@include file="includes/top4_head.jsp" %>
+</cache:cache>
 <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center" valign="top">
 <%
 if (iRubriekLayout!=NatMMConfig.DEMO_LAYOUT) {
@@ -19,7 +20,12 @@ if (iRubriekLayout!=NatMMConfig.DEMO_LAYOUT) {
 </table>
 <mm:import id="url">http://natmmww.asp4all.nl/</mm:import>
 <mm:list nodes="<%= paginaID %>" path="pagina,contentrel,link" max="1">
-   <mm:import id="url" reset="true"><mm:field name="link.url" /></mm:import>
+   <mm:field name="link.url" jspvar="link_url" vartype="String" write="false">
+      <%
+      link_url += (link_url.indexOf("?")==-1 ? "?" : "&" ) + "rnd=" + (Math.random()*1000)%1000;
+      %>
+      <mm:import id="url" reset="true"><%= link_url %></mm:import>
+   </mm:field>
 </mm:list>
 <table width="100%" height="100%" border="0" cellspacing="0" cellpadding="0">
    <tr>
@@ -30,7 +36,5 @@ if (iRubriekLayout!=NatMMConfig.DEMO_LAYOUT) {
 </table>
 <table align="center" width="100%" height="100%">
 </table>
-
 <%@include file="includes/footer.jsp" %>
-</cache:cache>
 </mm:cloud>
