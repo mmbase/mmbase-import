@@ -1,10 +1,7 @@
 <td class="listItem">
-  <mm:field name="name" jspvar="dummy" vartype="String" write="false">
+  <mm:field name="problems.name" jspvar="dummy" vartype="String" write="false">
     <%= ( "".equals(dummy) ? "&nbsp;" : dummy )%>
   </mm:field>
-</td>
-<td class="listItem">
-  <mm:field name="value"/>
 </td>
 <mm:node number="assessment.education" notfound="skip">
   <mm:relatednodes type="learnblocks" path="posrel,learnblocks">
