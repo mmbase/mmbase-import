@@ -10,13 +10,17 @@
 		<prompt xml:lang="en">Lastmodifieddate</prompt>
 		<prompt xml:lang="nl">Gewijzigd</prompt>
 	</field>
-	<field name="embargodate">
-		<prompt xml:lang="en">Embargodate</prompt>
-		<prompt xml:lang="nl">Embargodatum</prompt>
+	<field name="publishdate">
+		<prompt xml:lang="en">Publishdate</prompt>
+		<prompt xml:lang="nl">Publicatie datum</prompt>
 	</field>
 	<field name="expiredate">
 		<prompt xml:lang="en">Expiredate</prompt>
 		<prompt xml:lang="nl">Verloopdatum</prompt>
+	</field>
+	<field name="creator" ftype="data">
+		<prompt xml:lang="en">Creator</prompt>
+		<prompt xml:lang="nl">Aangemaakt door</prompt>
 	</field>
 	<field name="lastmodifier" ftype="data">
 		<prompt xml:lang="en">Lastmodifier</prompt>
@@ -56,5 +60,4 @@
 		<prompt xml:lang="nl">Status</prompt>
 	</field>
 	<list include="config/contentchannel/search_contentelement_creationrel_contentchannel.xml" />
-	<list include="config/user/search_contentelement_authorrel_user.xml" />
 </form-schema>

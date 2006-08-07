@@ -1,5 +1,7 @@
 package com.finalist.cmsc.repository.xml;
 
+import net.sf.mmapps.commons.util.HttpUtil;
+import net.sf.mmapps.commons.util.StringUtil;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.mmbase.bridge.*;
@@ -11,11 +13,9 @@ import org.mmbase.util.logging.Logging;
 import com.finalist.cmsc.repository.ContentElementUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 /**
  * The XMLServlet is a basic servlet for retrieving data from MMBase. A remote system can
@@ -64,7 +64,7 @@ public class XMLServlet extends HttpServlet {
       
       // Primary key request
       String pk = request.getParameter(PK);
-      if (!isEmptyOrWhitespace(pk)) {
+      if (!StringUtil.isEmptyOrWhitespace(pk)) {
          log.debug("PRIMARY KEY " + pk);
          String xml = "";
          try {
@@ -75,7 +75,7 @@ public class XMLServlet extends HttpServlet {
             else {
                xml = XMLController.toXml(node, RepositoryUtil.CONTENTCHANNEL);
             }
-            sendXml(xml, response);
+            HttpUtil.sendXml(xml, response);
             return;
          }
          catch (Exception e) {
@@ -88,7 +88,7 @@ public class XMLServlet extends HttpServlet {
       String contentType = request.getParameter(CONTENT_TYPE);
       log.debug("CONTENTTYPE " + contentType);
 
-      if (isEmptyOrWhitespace(contentType)) {
+      if (StringUtil.isEmptyOrWhitespace(contentType)) {
          sendError("Content type is empty", response);
          return;
       }
@@ -99,7 +99,7 @@ public class XMLServlet extends HttpServlet {
       // Check the channel
       String channel = request.getParameter(CHANNEL);
 
-      if (isEmptyOrWhitespace(channel)) {
+      if (StringUtil.isEmptyOrWhitespace(channel)) {
          sendError("Channel is empty", response);
          return;
       }
@@ -144,7 +144,7 @@ public class XMLServlet extends HttpServlet {
       Step step3 = step2.getNext();
       query.setNodeStep(step3); // makes it ready for use as NodeQuery
 
-      if (!isEmptyOrWhitespace(filterName) && !isEmptyOrWhitespace(filterValue)) {
+      if (!StringUtil.isEmptyOrWhitespace(filterName) && !StringUtil.isEmptyOrWhitespace(filterValue)) {
          Field field = contentManager.getField(filterName);
          FieldValueConstraint constraint = query.createConstraint(query.getStepField(field),
                FieldCompareConstraint.LIKE,
@@ -159,9 +159,9 @@ public class XMLServlet extends HttpServlet {
             Constraint orginal = query.getConstraint();
             Field field = contentManager.getField("expirydate");
             Constraint expirydate = query.createConstraint(query.getStepField(field), FieldCompareConstraint.GREATER_EQUAL, date);
-            field = contentManager.getField("embargodate");
-            Constraint embargodate = query.createConstraint(query.getStepField(field), FieldCompareConstraint.LESS_EQUAL, date);
-            Constraint composite = query.createConstraint(expirydate, CompositeConstraint.LOGICAL_AND, embargodate);
+            field = contentManager.getField("publishdate");
+            Constraint publishdate = query.createConstraint(query.getStepField(field), FieldCompareConstraint.LESS_EQUAL, date);
+            Constraint composite = query.createConstraint(expirydate, CompositeConstraint.LOGICAL_AND, publishdate);
 
             if (orginal == null) {
                query.setConstraint(composite);
@@ -172,7 +172,7 @@ public class XMLServlet extends HttpServlet {
          }
       }
 
-      if (!isEmptyOrWhitespace(sortName)) {
+      if (!StringUtil.isEmptyOrWhitespace(sortName)) {
           StepField sf = query.getStepField(contentManager.getField(sortName));
           int dir = SortOrder.ORDER_ASCENDING;
           if ("DOWN".equalsIgnoreCase(sortDirection)) {
@@ -187,7 +187,7 @@ public class XMLServlet extends HttpServlet {
        }
 
        int contentSize = Queries.count(query);
-       if (!isEmptyOrWhitespace(fromIndex) && !isEmptyOrWhitespace(toIndex)) {
+       if (!StringUtil.isEmptyOrWhitespace(fromIndex) && !StringUtil.isEmptyOrWhitespace(toIndex)) {
           query.setOffset(getInt(fromIndex, 0));
           query.setMaxNumber(Math.max(getInt(toIndex, -1) - getInt(fromIndex, 0), -1));
        }
@@ -209,17 +209,7 @@ public class XMLServlet extends HttpServlet {
           sendError("Creating xml failed", response);
           return;
        }
-      sendXml(xml, response);
-   }
-
-   /**
-    * Checks to see if a given String is null, empty or only contains whitespaces.
-    *
-    * @param str String to check emptiness.
-    * @return boolean is it empty.
-    */
-   public static boolean isEmptyOrWhitespace(String str) {
-      return (str == null) || "".equals(str.trim());
+       HttpUtil.sendXml(xml, response);
    }
 
    /**
@@ -246,43 +236,7 @@ public class XMLServlet extends HttpServlet {
     * @param response The HttpServletResponse to write to.
     */
    public static void sendError(String error, HttpServletResponse response) {
-      sendXml("<?xml version=\"1.0\" encoding=\"UTF-8\"?><cmserror>" + error + "</cmserror>", response);
-   }
-
-   /**
-    * Sends out the xml to the HttpServletResponse.
-    *
-    * @param xml      The xml to send.
-    * @param response The HttpServletResponse to write to.
-    */
-   public static void sendXml(String xml, HttpServletResponse response) {
-       if (log.isDebugEnabled()) {
-         log.debug("******************* RESULT");
-         log.debug(xml);
-         log.debug("*******************");
-      }
-      ServletOutputStream out = null;
-      try {
-         response.setCharacterEncoding("UTF-8");
-         out = response.getOutputStream();
-         response.setStatus(HttpServletResponse.SC_OK);
-         response.setContentType("text/xml");
-         out.println(xml);
-         out.flush();
-      }
-      catch (IOException e) {
-         log.error("IOException while sending xml to HttpServletResponse: " + e.getMessage());
-      }
-      finally {
-         try {
-            if (out != null) {
-               out.close();
-            }
-         }
-         catch (IOException e1) {
-            log.error("IOException while closing outputStream: " + e1.getMessage());
-         }
-      }
+      HttpUtil.sendXml("<?xml version=\"1.0\" encoding=\"UTF-8\"?><cmserror>" + error + "</cmserror>", response);
    }
 
 }

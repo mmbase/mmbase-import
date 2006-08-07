@@ -57,6 +57,9 @@ public class PageTreeNode {
         parent = newParent;
     }
 
+    void setPos(int pos) {
+        this.pos = pos;
+    }
     
     /**
      * Get children.
@@ -151,6 +154,8 @@ public class PageTreeNode {
             oldParent.remove(newChild);
         }
         newChild.setParent(this);
+        newChild.setPos(childIndex);
+        
         if (children == null) {
             children = new Vector<PageTreeNode>();
         }
@@ -352,35 +357,6 @@ public class PageTreeNode {
     public String getPathfragement() {
         return pathfragement;
     }
-
-    
-    /**
-     * Sets the page for this node to <code>page</code>.
-     *
-     * @param page  the page that constitutes this node's page
-     * @param childIndex  index of this page in the parent
-     */
-    void replace(Integer page, int childIndex) {
-        this.page = page;
-        if (parent != null) {
-            parent.move(this, childIndex);
-        }
-    }
-
-    /**
-     * Sets the state for this node to <code>page</code>.
-     *
-     * @param pathfragement fragment of path
-     * @param page  the page that constitutes this node's page
-     * @param childIndex  index of this page in the parent
-     */
-    void replace(String pathfragement, Integer page, int childIndex) {
-        this.pathfragement = pathfragement;
-        this.page = page;
-        if (parent != null) {
-            parent.move(this, childIndex);
-        }
-    }
     
     /**
      * Sets the state for this node.
@@ -398,9 +374,27 @@ public class PageTreeNode {
      * @param childIndex index of this page in the parent
      */
     public void move(PageTreeNode aChild, int childIndex) {
-        if (getIndex(aChild) != childIndex) {
-            children.removeElementAt(childIndex);
-            children.insertElementAt(aChild, childIndex);
+        int oldIndex = getIndex(aChild);
+        if (oldIndex != childIndex) {
+            children.removeElementAt(oldIndex);
+            
+            int childrenSize = children.size();
+            for (int i = 0; i < childrenSize; i++) {
+                PageTreeNode child = children.get(i);
+                if (childIndex < child.pos) {
+                    children.insertElementAt(aChild, i);
+                    break;
+                }
+                else {
+                    if (i == childrenSize - 1) {
+                        children.add(aChild);
+                        break;
+                    }
+                    else {
+                        continue;
+                    }
+                }
+            }
         }
     }
 

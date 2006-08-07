@@ -22,6 +22,8 @@ function getFrameWidth (win) {
         width = win.innerWidth;
     } else if (win.document.body.clientWidth) {
         width = win.document.body.clientWidth;
+    } else if (document.documentElement && document.documentElement.clientWidth) {
+       width = document.documentElement.clientWidth;
     } else {
         width = 863;   // default value for 1024x786
     }
@@ -41,6 +43,8 @@ function getFrameHeight (win) {
         height = win.innerHeight;
     } else if (win.document.body.clientHeight) {
         height = win.document.body.clientHeight;
+    } else if (document.documentElement && document.documentElement.clientWidth) {
+       height = document.documentElement.clientHeight;
     } else {
         height = 543;   // default value for 1024x786
     }

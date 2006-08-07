@@ -33,7 +33,7 @@
 
       <relation from="link" to="popupinfo" type="related" />
       <relation from="link" to="urls" type="posrel" />
-      <relation from="link" to="images" type="posrel" />
+      <relation from="link" to="images" type="imagerel" />
       <relation from="link" to="attachments" type="posrel" />
       <relation from="link" to="contentelement" type="posrel" />
 

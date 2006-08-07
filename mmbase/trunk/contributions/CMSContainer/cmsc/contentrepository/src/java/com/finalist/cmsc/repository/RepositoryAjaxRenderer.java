@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package com.finalist.cmsc.repository;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.finalist.tree.*;
 import com.finalist.tree.ajax.*;
@@ -17,8 +18,8 @@ import com.finalist.tree.ajax.*;
 
 public class RepositoryAjaxRenderer extends RepositoryRenderer implements AjaxTreeCellRenderer {
 
-    public RepositoryAjaxRenderer(HttpServletRequest request, String target) {
-        super(request, target);
+    public RepositoryAjaxRenderer(HttpServletRequest request, HttpServletResponse response, String target) {
+        super(request, response, target);
     }
 
     @Override

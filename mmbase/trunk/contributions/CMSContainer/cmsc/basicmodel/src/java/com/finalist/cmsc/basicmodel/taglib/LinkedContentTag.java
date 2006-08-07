@@ -7,6 +7,8 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.NodeReferrerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
+import com.finalist.cmsc.mmbase.ResourcesUtil;
+
 
 import java.io.IOException;
 
@@ -22,6 +24,7 @@ import javax.servlet.jsp.JspTagException;
  *
  * @author sandervl
  */
+@SuppressWarnings("serial")
 public class LinkedContentTag extends NodeReferrerTag {
 
    /** stores the nodemanager name of the related nodes that should be shown in the list */
@@ -313,8 +316,8 @@ public class LinkedContentTag extends NodeReferrerTag {
        * @return the url that should be referenced by the link
        */
       private String getHref(Node content) {
-         String href = "#";
-         throw new UnsupportedOperationException("Don't know yet how to render a link for " + content.getNodeManager().getName());
+          String servletpath = ResourcesUtil.getServletPathWithAssociation("content", "/content/*");
+          return servletpath + "/" + content.getStringValue("number") + "/" + content.getStringValue("title");
       }
 
       /**

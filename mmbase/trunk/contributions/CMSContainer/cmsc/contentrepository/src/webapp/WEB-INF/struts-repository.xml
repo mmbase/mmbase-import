@@ -45,6 +45,11 @@
 			<forward name="success" path="/editors/repository/refreshchannels.jsp" redirect="false" />
 		</action>
 
+		<action path="/editors/repository/Content" type="com.finalist.cmsc.repository.forms.ContentAction" 
+			unknown="false" validate="false">
+			<forward name="success" path="/editors/repository/content.jsp" redirect="false" />
+		</action>
+
 		<action path="/editors/repository/Navigator" type="com.finalist.cmsc.repository.forms.NavigatorAction" 
 			unknown="false" validate="false">
 			<forward name="success" path="/editors/repository/selector.jsp" redirect="false" />
@@ -65,11 +70,11 @@
 		<action path="/editors/repository/ReorderAction" type="com.finalist.cmsc.repository.forms.ReorderAction"
 			name="ReorderForm" scope="request" unknown="false" validate="false">
 			<forward name="reorder" path="/editors/repository/reordercontent.jsp" redirect="false" />
-			<forward name="success" path="/editors/repository/content.jsp" redirect="false" />
+			<forward name="success" path="/editors/repository/Content.do" redirect="false" />
 		</action>
 		<action path="/editors/repository/LinkToChannelAction"
 			type="com.finalist.cmsc.repository.forms.LinkToChannelAction" unknown="false" validate="false">
-			<forward name="success" path="/editors/repository/content.jsp" redirect="true" />
+			<forward name="success" path="/editors/repository/Content.do" redirect="true" />
 			<forward name="unlinkcreation" path="/editors/repository/unlinkcreation.jsp" redirect="false" />			
 		</action>
 
@@ -84,18 +89,19 @@
 
 		<action path="/editors/repository/LocateInitAction" type="com.finalist.cmsc.repository.forms.SearchInitAction"
 			name="SearchForm" scope="request" unknown="false" validate="false">
-			<forward name="searchoptions" path="/editors/repository/locate.jsp" redirect="false" />
+			<forward name="searchoptions" path="/editors/repository/search.jsp" redirect="false" />
 			<forward name="dosearch" path="/editors/repository/LocateAction.do" redirect="false" />
 		</action>
 		<action path="/editors/repository/LocateAction" type="com.finalist.cmsc.repository.forms.SearchAction"
-			name="SearchForm" scope="request" input="/editors/repository/locate.jsp" unknown="false" validate="true">
+			name="SearchForm" scope="request" input="/editors/repository/search.jsp" unknown="false" validate="true">
 		</action>
 
 		<!-- ==== Select repository nodes ==== -->
 	
 		<action path="/editors/repository/select/SelectorChannel" type="com.finalist.cmsc.repository.select.forms.SelectorAction" 
 			unknown="false" validate="false"
-			className="com.finalist.cmsc.struts.SelectorPopupActionMapping">
+			className="com.finalist.cmsc.struts.SelectorActionMapping">
+			<set-property property="linkPattern" value="javascript:selectItem({0},''{1}'')" />
 			<forward name="success" path="/editors/repository/select/selectorpopup.jsp" redirect="false" />
 		</action>
 
@@ -109,11 +115,11 @@
 
 		<action path="/editors/repository/select/LocateInitAction" type="com.finalist.cmsc.repository.forms.SearchInitAction"
 			name="SearchForm" scope="request" unknown="false" validate="false">
-			<forward name="searchoptions" path="/editors/repository/select/locate.jsp" redirect="false" />
+			<forward name="searchoptions" path="/editors/repository/select/search.jsp" redirect="false" />
 			<forward name="dosearch" path="/editors/repository/select/LocateAction.do" redirect="false" />
 		</action>
 		<action path="/editors/repository/select/LocateAction" type="com.finalist.cmsc.repository.forms.SearchAction"
-			name="SearchForm" scope="request" input="/editors/repository/select/locate.jsp" unknown="false" validate="true">
+			name="SearchForm" scope="request" input="/editors/repository/select/search.jsp" unknown="false" validate="true">
 		</action>
 
 		<!-- ==== Resources ==== -->

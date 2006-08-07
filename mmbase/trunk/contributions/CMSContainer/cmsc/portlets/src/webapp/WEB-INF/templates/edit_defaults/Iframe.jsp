@@ -1,8 +1,8 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp"%>
-<div>
+<div class="portlet-config-canvas">
 <h3><fmt:message key="edit_defaults.title" /></h3>
 
-<form name="<portlet:namespace />form" method="post" action="<portlet:actionURL />">
+<form name="<portlet:namespace />form" method="post" action="<portlet:actionURL />" target="_parent">
 
 <table class="editcontent">
 	<tr>

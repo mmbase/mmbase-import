@@ -22,6 +22,7 @@ import org.mmbase.bridge.*;
 import com.finalist.cmsc.mmbase.TreeUtil;
 import com.finalist.cmsc.repository.*;
 import com.finalist.cmsc.struts.*;
+import com.finalist.cmsc.util.bundles.JstlUtil;
 import com.finalist.tree.TreeInfo;
 import com.finalist.tree.ajax.AjaxTree;
 
@@ -51,11 +52,11 @@ public class NavigatorAction extends TreeAction {
         return null;
     }
 
-    protected AjaxTree getTree(HttpServletRequest request, Cloud cloud, TreeInfo info, String persistentid) {
+    protected AjaxTree getTree(HttpServletRequest request, HttpServletResponse response, Cloud cloud, TreeInfo info, String persistentid) {
         RepositoryTreeModel model = new RepositoryTreeModel(cloud);
-        RepositoryAjaxRenderer chr = new RepositoryAjaxRenderer(request, "content");
+        RepositoryAjaxRenderer chr = new RepositoryAjaxRenderer(request, response, "content");
         AjaxTree t = new AjaxTree(model, chr, info);
-        t.setImgBaseUrl("../img/");
+        t.setImgBaseUrl("../gfx/icons/");
         return t;
     }
 

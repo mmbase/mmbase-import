@@ -28,9 +28,9 @@ public abstract class ContentRepositoryService extends Service {
 
     abstract public List<ContentElement> getContentElements(String channel);
 
-    abstract public int countContentElements(String channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, int offset, int maxNumbers);
+    abstract public int countContentElements(String channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumbers);
 
-	abstract public List<ContentElement> getContentElements(String channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, int offset, int maxNumbers);
+	abstract public List<ContentElement> getContentElements(String channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumbers);
 
     abstract public List<ContentChannel> getContentChannels(ContentChannel channel);
 

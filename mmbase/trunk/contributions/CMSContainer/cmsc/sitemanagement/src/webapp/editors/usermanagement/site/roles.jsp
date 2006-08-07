@@ -7,7 +7,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
 <head>
-<link href="../style.css" type="text/css" rel="stylesheet"/>
+	<link href="../css/main.css" type="text/css" rel="stylesheet" />
 <title><fmt:message key="siteroles.title" /></title>
 </head>
 <body style="overflow: auto">
@@ -20,11 +20,17 @@
 <input type="hidden" name="channel" id="channel">
 <input type="hidden" name="expand" id="expand">
 
+<div class="content_block_pink">
+	<div class="header">
+	   <div class="title">
+			<bean:write name="RolesForm" property="name"/>
+			(<bean:write name="RolesForm" property="description"/>)	   	
+		</div>
+		<div class="header_end"></div>
+	</div>
+<div style="padding: 5px;">
+
 <div id="rollen">
-<p>
-	<bean:write name="RolesForm" property="name"/>
-	(<bean:write name="RolesForm" property="description"/>)
-</p>
 <p><b><fmt:message key="siteroles.description" /></b></p>
 <p style="padding: 0px; margin: 0px; bottom: 0px;">
 
@@ -65,12 +71,12 @@ RolesInfo info = form.getRolesInfo();
 </p>
 </div>
 <br>
-<table>
-<tr>
-	<td><html:submit style="width:90"><fmt:message key="siteroles.submit"/></html:submit></td>
-	<td><html:cancel style="width:90"><fmt:message key="siteroles.cancel"/></html:cancel></td>
-</tr>
-</table>
+<html:submit style="width:90"><fmt:message key="siteroles.submit"/></html:submit>
+<html:cancel style="width:90"><fmt:message key="siteroles.cancel"/></html:cancel>
+</div>
+<div class="side_block_end"></div>
+</div>	
+
 </html:form>
 </mm:cloud>
 </body>

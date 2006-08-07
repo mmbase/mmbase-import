@@ -11,7 +11,7 @@ package com.finalist.cmsc.richtext;
 
 import java.util.*;
 
-import net.sf.mmapps.commons.util.XmlUtil;
+import net.sf.mmapps.commons.util.StringUtil;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.Node;
@@ -33,25 +33,16 @@ public class RichTextGetProcessor implements Processor {
     public Object process(Node node, Field field, Object value) {
        String out = "";
        String in = (String) value;
-       if (in.indexOf("<"+RichText.LINK_TAGNAME) > -1 || in.indexOf("<"+RichText.IMG_TAGNAME) > -1) {
+       if (!StringUtil.isEmpty(in) && RichText.hasRichtextItems(in)) {
            try {
-               // to string and strip root node, doctype and xmldeclaration
-               if (in == null) {
-                   in = "";
+               Document doc = RichText.getRichTextDocument(in);
+               if (doc == null) {
+                   out = in;
                }
-                String txt = RichText.RICHTEXT_ROOT_OPEN + in 
-                //WordHtmlCleaner.cleanHtml(in).trim()
-                + RichText.RICHTEXT_ROOT_CLOSE;
-                log.debug("Na wordcleaner voor resolving afbeeldingen\n" + txt);
-    
-               txt = XmlUtil.escapeXMLEntities(txt);
-               Document doc = XmlUtil.toDocument(txt, false);
-               resolve(node, doc);
-               out = XmlUtil.serializeDocument(doc);
-               out = XmlUtil.unescapeXMLEntities(out);
-    
-               out = out.replaceAll("<.?richtext.?>", "");
-               out = out.replaceAll("<.?richtext.?>", "");
+               else {
+                   resolve(node, doc);
+                   out = RichText.getRichTextString(doc);
+               }
            } catch (Exception e) {
                log.error("resolve failed " +node.getNumber() + " " + field.getName(), e);
                throw new RuntimeException(e);
@@ -62,7 +53,7 @@ public class RichTextGetProcessor implements Processor {
        }
        return out;
     }
-    
+
     /**
      * Transform given richtext field data links to frontend links using given
      * navigation bean.
@@ -75,7 +66,7 @@ public class RichTextGetProcessor implements Processor {
         Cloud cloud = node.getCloud();
         
         Map<String,String> inlineLinks = new HashMap<String,String>();
-        RelationList links = node.getRelations(RichText.INLINEREL_NM);
+        RelationList links = node.getRelations(RichText.INLINEREL_NM, null, "DESTINATION");
         for (Iterator iter = links.iterator(); iter.hasNext();) {
             Relation inlineRel = (Relation) iter.next();
             inlineLinks.put(inlineRel.getStringValue(RichText.REFERID_FIELD), inlineRel.getStringValue("dnumber"));
@@ -84,11 +75,11 @@ public class RichTextGetProcessor implements Processor {
         // transform links
         NodeList linklist = doc.getElementsByTagName(RichText.LINK_TAGNAME);
         if (linklist.getLength() > 0) {
-            resolveLinks(cloud, doc, linklist, inlineLinks);
+            resolveLinks(cloud, linklist, inlineLinks);
         }
 
         Map<String,Relation> inlineImages = new HashMap<String,Relation>();
-        RelationList images = node.getRelations(RichText.IMAGEINLINEREL_NM, "images");
+        RelationList images = node.getRelations(RichText.IMAGEINLINEREL_NM, cloud.getNodeManager("images"), "DESTINATION");
         for (Iterator iter = images.iterator(); iter.hasNext();) {
             Relation inlineRel = (Relation) iter.next();
             inlineImages.put(inlineRel.getStringValue(RichText.REFERID_FIELD), inlineRel);
@@ -98,7 +89,7 @@ public class RichTextGetProcessor implements Processor {
         NodeList imglist = doc.getElementsByTagName(RichText.IMG_TAGNAME);
         log.debug("" + imglist.getLength() + " images found in richtext.");
         if (imglist.getLength() > 0) {
-            resolveImages(cloud, doc, imglist, inlineImages);
+            resolveImages(cloud, imglist, inlineImages);
         }
 
         return doc;
@@ -108,7 +99,7 @@ public class RichTextGetProcessor implements Processor {
      * Find image tags in the text and replace them with marked up blocks
      * including the corrected image tag.
      */
-    private void resolveImages(Cloud cloud, Document doc, NodeList nl, Map<String, Relation> inlineImages) {
+    private void resolveImages(Cloud cloud, NodeList nl, Map<String, Relation> inlineImages) {
        for (int j = nl.getLength() - 1; j >= 0; --j) {
           Element image = (Element) nl.item(j);
 
@@ -157,7 +148,7 @@ public class RichTextGetProcessor implements Processor {
     /**
      * Find a tags in the text and replace them with valid links
      */
-    private void resolveLinks(Cloud cloud, Document doc, NodeList nl, Map<String, String> inlineLinks) {
+    private void resolveLinks(Cloud cloud, NodeList nl, Map<String, String> inlineLinks) {
        for (int j = nl.getLength() - 1; 0 <= j; --j) {
           Element aElement = (Element) nl.item(j);
 
@@ -206,7 +197,7 @@ public class RichTextGetProcessor implements Processor {
 
     private String getContentUrl(Node node) {
         String servletpath = ResourcesUtil.getServletPathWithAssociation("content", "/content/*");
-        return servletpath + "/" + node.getStringValue("number") + "/" + node.getStringValue("title");
+        return servletpath + node.getStringValue("number") + "/" + node.getStringValue("title");
     }
 
 }

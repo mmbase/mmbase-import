@@ -25,8 +25,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * The tokenizer class generates a list of XML Tokens from a stream
@@ -34,7 +33,7 @@ import java.util.Vector;
  *
  * @see xmlbs.Token
  * @author R.W. van ' t Veer
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class Tokenizer {
     /** token we bumbed into before returning a text token */
@@ -60,6 +59,7 @@ public class Tokenizer {
     /**
      * Construct tokenizer reading from string.
      * @param data string to read
+     * @param ds Document Structure
      */
     public Tokenizer (String data, DocumentStructure ds) {
         this.in = new StringReader(data);
@@ -130,9 +130,9 @@ public class Tokenizer {
      * @return list of read tokens
      * @throws IOException when reading from stream fails
      */
-    public List readAllTokens ()
+    public List<Token> readAllTokens ()
     throws IOException {
-        List l = new Vector();
+        List<Token> l = new ArrayList<Token>();
         Token t;
         while ((t = readToken()) != null) {
             l.add(t);
@@ -169,10 +169,8 @@ public class Tokenizer {
     /**
      * Read a special tokens from stream.
      * @return a tag token or <TT>null</TT> when no special token found
-     * @throws IOException when reading from stream fails
      */
-    private Token readSpecialToken ()
-    throws IOException {
+    private Token readSpecialToken () {
         return null;
     }
 

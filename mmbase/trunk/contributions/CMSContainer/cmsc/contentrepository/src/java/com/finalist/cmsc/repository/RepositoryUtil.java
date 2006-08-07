@@ -12,6 +12,7 @@ package com.finalist.cmsc.repository;
 import java.util.*;
 
 import net.sf.mmapps.commons.bridge.*;
+import net.sf.mmapps.commons.util.StringUtil;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
@@ -377,7 +378,7 @@ public class RepositoryUtil {
        if (!ContentElementUtil.isContentElement(content)) {
           throw new IllegalArgumentException("Only contentelements are allowed.");
        }
-       RelationList list = content.getRelations(CREATIONREL);
+       RelationList list = content.getRelations(CREATIONREL, null, "DESTINATION");
        for (int i = 0; i < list.size(); i++) {
           Relation creationrel = list.getRelation(i);
           creationrel.delete();
@@ -478,16 +479,28 @@ public class RepositoryUtil {
     }
 
     public static int countLinkedElements(Node channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, int offset, int maxNumber) {
-        NodeQuery query = createLinkedContentQuery(channel, contenttypes, orderby, direction, useLifecycle, offset, maxNumber);
+        NodeQuery query = createLinkedContentQuery(channel, contenttypes, orderby, direction, useLifecycle, null, offset, maxNumber);
         return Queries.count(query);
     }
     
+    public static int countLinkedElements(Node channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber) {
+        NodeQuery query = createLinkedContentQuery(channel, contenttypes, orderby, direction, useLifecycle, archive, offset, maxNumber);
+        return Queries.count(query);
+    }
+
     public static NodeList getLinkedElements(Node channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, int offset, int maxNumber) {
-        NodeQuery query = createLinkedContentQuery(channel, contenttypes, orderby, direction, useLifecycle, offset, maxNumber);
+        NodeQuery query = createLinkedContentQuery(channel, contenttypes, orderby, direction, useLifecycle, null, offset, maxNumber);
         return query.getNodeManager().getList(query);
     }
 
-    private static NodeQuery createLinkedContentQuery(Node channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, int offset, int maxNumber) {
+
+    public static NodeList getLinkedElements(Node channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber) {
+        NodeQuery query = createLinkedContentQuery(channel, contenttypes, orderby, direction, useLifecycle, archive, offset, maxNumber);
+        return query.getNodeManager().getList(query);
+    }
+
+    
+    private static NodeQuery createLinkedContentQuery(Node channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber) {
         if (orderby == null) {
             orderby = CONTENTREL + ".pos";
         }
@@ -507,6 +520,10 @@ public class RepositoryUtil {
         if (useLifecycle) {
             Long date = new Long(System.currentTimeMillis());
             ContentElementUtil.addLifeCycleConstraint(channel, query, date);
+        }
+        if (!StringUtil.isEmpty(archive) && "all".equalsIgnoreCase(archive)) {
+            Long date = new Long(System.currentTimeMillis());
+            ContentElementUtil.addArchiveConstraint(channel, query, date, archive);
         }
         SearchUtil.addLimitConstraint(query, offset, maxNumber);
         return query;
@@ -626,16 +643,15 @@ public class RepositoryUtil {
     }
     
     public static Node createChannel(Cloud cloud, String name) {
-        String pathname = name;
-        pathname = pathname.replaceAll("\\s", "_");
-        pathname = pathname.replaceAll("[^a-zA-Z_0-9_.-]", "");
-        return createChannel(cloud, name, pathname);
+        return createChannel(cloud, name, null);
     }
 
     public static Node createChannel(Cloud cloud, String name, String pathname) {
         Node channel = getNodeManager(cloud).createNode();
         channel.setStringValue(TITLE_FIELD, name);
-        channel.setStringValue(FRAGMENT_FIELD, pathname);
+        if (!StringUtil.isEmpty(pathname)) {
+            channel.setStringValue(FRAGMENT_FIELD, pathname);
+        }
         channel.commit();
         return channel;
     }

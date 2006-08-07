@@ -341,4 +341,34 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
         return types;
     }
 
+
+    public void clearPortlet(String portletId) {
+        try {
+            getCache(PORTLET_CACHE).put(Integer.valueOf(portletId), null);
+        }
+        catch (CacheException e) {
+            log.info("" + e.getMessage(), e);
+        }
+    }
+
+    public void clearPage(String pageId) {
+        clearPage(Integer.valueOf(pageId));
+    }
+
+    public void clearPage(int pageId) {
+        try {
+            getCache(PAGE_CACHE).put(pageId, null);
+        }
+        catch (CacheException e) {
+            log.info("" + e.getMessage(), e);
+        }
+    }
+
+    public Set<String> getPagePositions(int pageId) {
+        Page page = getPage(pageId);
+        int layoutid = page.getLayout();
+        Layout layout = getLayout(layoutid);
+        return layout.getNames();
+    }
+
 }

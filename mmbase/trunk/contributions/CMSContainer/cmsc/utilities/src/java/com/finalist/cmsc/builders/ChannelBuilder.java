@@ -1,13 +1,13 @@
 package com.finalist.cmsc.builders;
 
+import net.sf.mmapps.commons.util.EncodingUtil;
 import net.sf.mmapps.commons.util.StringUtil;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
-import org.mmbase.core.event.NodeEvent;
-import org.mmbase.module.core.MMObjectBuilder;
-import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.core.event.*;
+import org.mmbase.module.core.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -27,8 +27,8 @@ public abstract class ChannelBuilder extends MMObjectBuilder {
     private String[] pathManagers;
     private String nameFieldname;
     private String[] fragmentFieldnames;
-    private String fragmentFieldname;
     private String relationName;
+    private int relationNumber;
     
    public boolean init() {
       log.debug("ChannelBuilder init");
@@ -41,16 +41,28 @@ public abstract class ChannelBuilder extends MMObjectBuilder {
 
       relationName = getRelationName();
       
-      for (int j = 0; j < pathManagers.length; j++) {
-         String treeManager = pathManagers[j];
-         if (treeManager.equals(getTableName())) {
-             fragmentFieldname = fragmentFieldnames[j];
-             break;
-         }
-     }
+      relationNumber = MMBase.getMMBase().getRelDef().getNumberByName(relationName);
+      
+      getFragmentFieldnameForBuilder();
       
       return super.init();
    }
+
+    protected String getFragmentFieldnameForBuilder() {
+        return getFragmentFieldnameForBuilder(getTableName());
+    }
+    
+    protected String getFragmentFieldnameForBuilder(String builderName) {
+        for (int j = 0; j < pathManagers.length; j++) {
+            String treeManager = pathManagers[j];
+            if (treeManager.equals(builderName)) {
+                return fragmentFieldnames[j];
+            }
+        }
+        throw new IllegalStateException("Fragment field not found for builder " + builderName);
+    }
+
+    
 
    protected abstract String[] getPathManagers();
    protected abstract String getNameFieldname();
@@ -71,7 +83,7 @@ public abstract class ChannelBuilder extends MMObjectBuilder {
 
    public boolean commit(MMObjectNode objectNode) {
       log.debug(objectNode.getChanged());
-
+      String fragmentFieldname = getFragmentFieldnameForBuilder();
       if (objectNode.getChanged().contains(fragmentFieldname)) {
          
          log.debug("getChanged " + objectNode.getStringValue(fragmentFieldname));
@@ -89,14 +101,28 @@ public abstract class ChannelBuilder extends MMObjectBuilder {
       return retval;
    }
 
-    /**
-     * @param objectNode
-     */
     private void updateEmptyNameField(MMObjectNode objectNode) {
         if (StringUtil.isEmpty(objectNode.getStringValue(nameFieldname))) {
-              String pathFragment = objectNode.getStringValue(fragmentFieldname);
-              objectNode.setValue(nameFieldname, pathFragment);
-          }
+            String fragmentFieldname = getFragmentFieldnameForBuilder();
+            String pathFragment = objectNode.getStringValue(fragmentFieldname);
+            objectNode.setValue(nameFieldname, pathFragment);
+        }
+        else {
+            String fragmentFieldname = getFragmentFieldnameForBuilder();
+            if (StringUtil.isEmpty(objectNode.getStringValue(fragmentFieldname))) {
+                String name = objectNode.getStringValue(nameFieldname);
+                String pathFragment = convertToFragment(name);
+                objectNode.setValue(fragmentFieldname, pathFragment);
+            }
+        }
+    }
+
+    private String convertToFragment(String name) {
+        String pathFragment = EncodingUtil.convertNonAscii(name);
+        pathFragment = pathFragment.replaceAll("\\s", "_");
+        pathFragment = pathFragment.replaceAll("[^a-zA-Z_0-9_.-]", "");
+        pathFragment = pathFragment.toLowerCase();
+        return pathFragment;
     }
 
    
@@ -105,6 +131,7 @@ public abstract class ChannelBuilder extends MMObjectBuilder {
     *  in the commit() 
     */
    public boolean setValue(MMObjectNode objectNode, String fieldName, Object originalValue) {
+      String fragmentFieldname = getFragmentFieldnameForBuilder();
       if (fragmentFieldname.equals(fieldName)) {
          log.debug("setValue() "+TMP_OLDPATHNAME+" to:"+originalValue);
          objectNode.setValue(TMP_OLDPATHNAME, originalValue);
@@ -155,12 +182,17 @@ public abstract class ChannelBuilder extends MMObjectBuilder {
    }
 
    private String getPath(MMObjectNode node) {
+      int number = node.getNumber();
+      return getPath(number);
+   }
+
+   private String getPath(int number) {
       // reduce creating useless cloud objects, because this code is executed in the core of MMBase 
       // and clouds belong to the bridge
-      String path = TreePathCache.getPathStringFromCache(getTableName(), node.getNumber());
+      String path = TreePathCache.getPathStringFromCache(getTableName(), number);
       if (path == null) {
          Cloud cloud = CloudProviderFactory.getCloudProvider().getAnonymousCloud();
-         Node cloudNode = cloud.getNode(String.valueOf(node.getNumber()));
+         Node cloudNode = cloud.getNode(String.valueOf(number));
          path = TreeUtil.getPathToRootString(cloudNode, pathManagers, relationName, fragmentFieldnames, true);
       }
       return path;
@@ -170,23 +202,26 @@ public abstract class ChannelBuilder extends MMObjectBuilder {
     public void notify(NodeEvent event) {
         int source = event.getNodeNumber();
         switch (event.getType()) {
-            case NodeEvent.TYPE_CHANGE:
+            case Event.TYPE_CHANGE:
                 log.debug("change " + source);
                 String path = TreePathCache.getPathStringFromCache(getTableName(), source);
                 if (path != null) {
-                   String separatedPath[] = path.split(TreeUtil.PATH_SEPARATOR);
-                   String pathname = getNode(source).getStringValue(fragmentFieldname);
-                   log.debug("Path : " + path + " for " + source + " with pathname : " + pathname);
-                   if (!pathname.equals(separatedPath[separatedPath.length - 1])) {
-                      TreePathCache.updateCache(getTableName(), source, pathname);
+                   String fragmentFieldname = getFragmentFieldnameForBuilder(event.getBuilderName());
+                   if (event.getChangedFields().contains(fragmentFieldname)) {
+                       String separatedPath[] = path.split(TreeUtil.PATH_SEPARATOR);
+                       String pathname = getNode(source).getStringValue(fragmentFieldname);
+                       log.debug("Path : " + path + " for " + source + " with pathname : " + pathname);
+                       if (!pathname.equals(separatedPath[separatedPath.length - 1])) {
+                          TreePathCache.updateCache(getTableName(), source, pathname);
+                       }
                    }
                 }
                 break;
-            case NodeEvent.TYPE_DELETE:
+            case Event.TYPE_DELETE:
                 log.debug("delete " + source);
                 TreePathCache.removeFromCache(getTableName(), source);
                 break;
-            case NodeEvent.TYPE_NEW:
+            case Event.TYPE_NEW:
                 log.debug("new " + source);
 
                 break;
@@ -200,5 +235,41 @@ public abstract class ChannelBuilder extends MMObjectBuilder {
         }
         super.notify(event);
         
+    }
+
+    @Override
+    public void notify(RelationEvent event) {
+        if (getTableName().equals(event.getRelationDestinationType()) && relationNumber == event.getRole()) {
+            int destination = event.getRelationDestinationNumber();
+            MMObjectNode destnode = getNode(destination);
+
+            String path = TreePathCache.getPathStringFromCache(getTableName(), destination);
+            switch (event.getType()) {
+                case Event.TYPE_DELETE:
+                    log.debug("delete relation to " + destination + " " + path);
+                    if (path != null) {
+                        log.debug("delete cut action " + destination + " " + path + " (this should happen after the new relation)");
+                    }
+                    break;
+                case Event.TYPE_NEW:
+                    log.debug("new relation to " + destination + " " + path);
+                    if (path != null) {
+                        int source = event.getRelationSourceNumber();
+                        String fragmentFieldname = getFragmentFieldnameForBuilder();
+                        String newparentpath = getPath(source);
+                        String pathname = destnode.getStringValue(fragmentFieldname);
+
+                        String newpath = newparentpath + TreeUtil.PATH_SEPARATOR + pathname;
+                        TreePathCache.moveCache(getTableName(), destnode.getNumber(), newpath);
+                        log.debug("new cut action " + destination + " " + path + " " + newpath);
+                    }
+                    break;
+                default:
+                    log.debug("default? " + destination);
+                    break;
+            }
+        }
+        
+        super.notify(event);
     }
 }

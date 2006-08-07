@@ -151,7 +151,7 @@ public class WizardController {
                     log.debug("Creation " + channelnr);
                     if (!StringUtil.isEmpty(channelnr)) {
                         RepositoryUtil.addCreationChannel(editNode, channelnr);
-                        ContentElementUtil.addAuthor(editNode);
+                        ContentElementUtil.addOwner(editNode);
                         if (isMainWizard(ewconfig, wizardConfig)) {
                             RepositoryUtil.addContentToChannel(editNode, channelnr);
                         }
@@ -161,8 +161,8 @@ public class WizardController {
                     }
                 }
                 else {
-                    if (!ContentElementUtil.hasAuthor(editNode)) {
-                        ContentElementUtil.addAuthor(editNode);
+                    if (!ContentElementUtil.hasOwner(editNode)) {
+                        ContentElementUtil.addOwner(editNode);
                     }
 
                     if (!RepositoryUtil.hasCreationChannel(editNode)) {

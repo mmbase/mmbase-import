@@ -12,9 +12,9 @@
 		<prompt xml:lang="en">Description</prompt>
 		<prompt xml:lang="nl">Omschrijving</prompt>
 	</field>
-	<field name="embargodate">
-		<prompt xml:lang="en">Embargodate</prompt>
-		<prompt xml:lang="nl">Embargodatum</prompt>
+	<field name="publishdate">
+		<prompt xml:lang="en">Publishdate</prompt>
+		<prompt xml:lang="nl">Publicatie datum</prompt>
 	</field>
 	<field name="use_expirydate" ftype="enum">
 		<prompt xml:lang="en">Use expirydate</prompt>

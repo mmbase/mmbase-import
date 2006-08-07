@@ -11,6 +11,13 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.TagSupport;
 import javax.servlet.jsp.tagext.VariableInfo;
 
+import net.sf.mmapps.commons.util.StringUtil;
+
+import com.finalist.cmsc.beans.om.Page;
+import com.finalist.cmsc.mmbase.ResourcesUtil;
+import com.finalist.cmsc.navigation.ServerUtil;
+import com.finalist.cmsc.portalImpl.services.sitemanagement.SiteManagement;
+
 /**
  * Supporting class for the <CODE>actionURL</CODE> and <CODE>renderURL</CODE> tag.
  * Creates a url that points to the current Portlet and triggers an action request
@@ -37,6 +44,7 @@ public abstract class BasicURLTag extends TagSupport
 
     protected String page;
     protected String window;
+    protected String elementId;
 
     protected String portletMode;
     protected String secure;
@@ -45,6 +53,8 @@ public abstract class BasicURLTag extends TagSupport
     protected PortletURL url;
     protected String var;
 
+    protected String contenturl;
+    
     /* (non-Javadoc)
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
@@ -53,6 +63,12 @@ public abstract class BasicURLTag extends TagSupport
         {
             pageContext.removeAttribute(var, PageContext.PAGE_SCOPE);
         }
+        if (StringUtil.isEmpty(page) && StringUtil.isEmpty(window) && !StringUtil.isEmpty(elementId)) {
+            String servletpath = ResourcesUtil.getServletPathWithAssociation("content", "/content/*");
+            contenturl = servletpath + elementId;
+            return EVAL_PAGE;
+        }
+        
         PortletURL renderUrl = getRenderUrl();
         if (renderUrl == null) {
             throw new JspException("RenderUrl is not found");
@@ -94,6 +110,10 @@ public abstract class BasicURLTag extends TagSupport
                     throw new JspException(e);
                 }
             }
+            if (elementId != null)
+            {
+                url.setParameter("elementId", elementId);
+            }
         }
         return EVAL_PAGE;
     }
@@ -110,7 +130,12 @@ public abstract class BasicURLTag extends TagSupport
             try
             {
                 JspWriter writer = pageContext.getOut();
-                writer.print(url); 
+                if (url == null) {
+                    writer.print(contenturl);
+                }
+                else {
+                    writer.print(url);
+                }
                 writer.flush();
             }
             catch (IOException ioe)
@@ -118,11 +143,31 @@ public abstract class BasicURLTag extends TagSupport
                 throw new JspException("actionURL/renderURL Tag Exception: cannot write to the output writer.");
             }
         } else {
+            if (url == null) {
+                pageContext.setAttribute (var, contenturl, PageContext.PAGE_SCOPE);
+            }
+            else {
                 pageContext.setAttribute (var, url.toString(), PageContext.PAGE_SCOPE);
+            }
         }
         return EVAL_PAGE;
     }
 
+    public String getLink() {
+        String link= "";
+        try {
+            Page pageObject = SiteManagement.getPage(Integer.parseInt(page));
+            if (pageObject != null) {
+                link = SiteManagement.getPath(pageObject, !ServerUtil.useServerName());
+            }
+        }
+        catch (NumberFormatException e) {
+            link = page;
+        }
+        return link;
+    }
+
+    
     /**
      * Returns the portletMode.
      * @return String
@@ -230,13 +275,19 @@ public abstract class BasicURLTag extends TagSupport
         this.page = page;
     }
 
-    
     public String getWindow() {
         return window;
     }
 
-    
     public void setWindow(String window) {
         this.window = window;
+    }
+
+    public String getElementId() {
+        return elementId;
+    }
+    
+    public void setElementId(String elementId) {
+        this.elementId = elementId;
     }
 }

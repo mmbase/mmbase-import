@@ -71,7 +71,12 @@ public class SecurityUtil {
        String path = channel.getStringValue(TreeUtil.PATH_FIELD);
        UserRole resultRole = getRoleForUser(path, channelsWithRole);
        if (resultRole == null) {
-           resultRole = new UserRole(Role.NONE, rightsInherited);
+    	   if(path.indexOf("/") == -1) {
+    		   resultRole = new UserRole(Role.NONE, rightsInherited);
+    	   }
+    	   else {
+    		   resultRole = new UserRole(Role.NONE, true);
+    	   }
        }
        return resultRole;
     }

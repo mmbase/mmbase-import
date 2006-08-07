@@ -9,8 +9,10 @@
  */
 package com.finalist.cmsc.taglib.navigation;
 
+import java.util.Iterator;
 import java.util.List;
 
+import com.finalist.cmsc.beans.om.Page;
 import com.finalist.cmsc.portalImpl.services.sitemanagement.SiteManagement;
 import com.finalist.cmsc.taglib.AbstractListTag;
 
@@ -19,8 +21,40 @@ import com.finalist.cmsc.taglib.AbstractListTag;
  */
 public class PathTag extends AbstractListTag {
 
-	protected List getList() {
+    private static final String MODE_ALL = "all";
+    private static final String MODE_HIDDEN = "hidden";
+    private static final String MODE_MENU = "menu";
+    
+    private String mode = MODE_MENU;
+
+	protected List<? extends Page> getList() {
 		String path = getPath();
-        return SiteManagement.getListFromPath(path);
+        
+        List<? extends Page> pages = SiteManagement.getListFromPath(path);
+        
+        if (pages != null ) {
+            if (MODE_MENU.equalsIgnoreCase(mode) || MODE_ALL.equalsIgnoreCase(mode)) {
+                boolean hideChildren = false;
+                for (Iterator iter = pages.iterator(); iter.hasNext();) {
+                    Page page = (Page) iter.next();
+                    if (hideChildren || !page.isInmsenu()) {
+                        iter.remove();
+                        hideChildren = true;
+                    }
+                }
+            }
+            if (MODE_HIDDEN.equalsIgnoreCase(mode) || MODE_ALL.equalsIgnoreCase(mode)) {
+                boolean showChildren = false;
+                for (Iterator iter = pages.iterator(); iter.hasNext();) {
+                    Page page = (Page) iter.next();
+                    if (showChildren || page.isInmsenu()) {
+                        iter.remove();
+                        showChildren = true;
+                    }
+                }
+            }
+        }
+
+        return pages;
 	}
 }

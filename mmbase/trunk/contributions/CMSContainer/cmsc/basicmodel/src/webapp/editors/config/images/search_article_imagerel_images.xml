@@ -18,22 +18,22 @@
 			<prompt xml:lang="nl">Afbeelding</prompt>
 		</field>
 	
-		<field fdatapath="field[@name='pos']" ftype="enum">
+		<field fdatapath="field[@name='pos']" ftype="enum" dtrequired="true">
 			<optionlist select="ImagePosition"></optionlist>
 			<prompt xml:lang="en">Position</prompt>
 			<prompt xml:lang="nl">Positie</prompt>
 		</field>
-		<field fdatapath="field[@name=&apos;popup&apos;]" ftype="enum">
+		<field fdatapath="field[@name=&apos;popup&apos;]" ftype="enum" dtrequired="true">
 			<prompt xml:lang="en">Popup</prompt>
 			<prompt xml:lang="nl">Popup</prompt>
 			<optionlist select="boolean" />
 		</field>
-		<field fdatapath="field[@name=&apos;legend&apos;]" ftype="enum">
+		<field fdatapath="field[@name=&apos;legend&apos;]" ftype="enum" dtrequired="true">
 			<prompt xml:lang="en">Legend</prompt>
 			<prompt xml:lang="nl">Bijschrift</prompt>
 			<optionlist select="Legend" />
 		</field>
-		<field fdatapath="field[@name='crop']" ftype="enum">
+		<field fdatapath="field[@name='crop']" ftype="enum" dtrequired="true">
 			<optionlist select="ImageCrop"></optionlist>
 			<prompt xml:lang="en">Crop</prompt>
 			<prompt xml:lang="nl">Afsnijden</prompt>

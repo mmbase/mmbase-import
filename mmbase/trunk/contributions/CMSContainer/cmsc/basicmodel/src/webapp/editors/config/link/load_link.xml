@@ -3,12 +3,11 @@
 <action type="load">
 	<field name="creationdate" />
 	<field name="lastmodifieddate" />
-	<field name="embargodate" />
+	<field name="publishdate" />
 	<field name="expiredate" />
+	<field name="creator" />
 	<field name="lastmodifier" />
-	<field name="use_expirydate" ftype="enum">
-		<optionlist select="boolean" />
-	</field>
+	<field name="use_expirydate"/>
 	<field name="title" />
 	<field name="description" />
 	<field name="source" />
@@ -21,10 +20,12 @@
 
 	<relation destination="popupinfo" role="related" />
 	<relation destination="urls" role="posrel" />
+	<relation destination="images" role="posrel" />
+	<relation destination="attachments" role="posrel" />
+	<relation destination="contentelement" role="posrel" />
 
 	<!-- content info relations -->
 	<relation destination="contentchannel" role="creationrel" />
 	<relation destination="contentchannel" role="contentrel" />
-	<relation destination="user" role="authorrel" />
 	
 </action>

@@ -28,7 +28,7 @@ public class ControllerFilter extends FriendlyUrlFilter {
     }
 
     protected boolean isFriendlyUrl(HttpServletRequest req, HttpServletResponse resp) {
-        return PortalServlet.isNavigation(ctx, req, resp);
+        return PortalServlet.isNavigation(req, resp);
     }
 
 }

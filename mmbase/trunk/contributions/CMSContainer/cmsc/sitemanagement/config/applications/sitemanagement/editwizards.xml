@@ -72,4 +72,20 @@
 		<nodepath>view</nodepath>
 		<fields>title</fields>
 	</node>
+ 	<node number="32010" owner="admin">
+		<name>Singleportletdefinition</name>
+		<description>Singleportletdefinition</description>
+		<wizard>config/singleportletdefinition/singleportletdefinition</wizard>
+		<nodepath>portletdefinition</nodepath>
+		<fields>title</fields>
+       <constraints>type='single'</constraints>
+	</node>
+ 	<node number="32011" owner="admin">
+		<name>Multiportletdefinition</name>
+		<description>Multiportletdefinition</description>
+		<wizard>config/multiportletdefinition/multiportletdefinition</wizard>
+		<nodepath>portletdefinition</nodepath>
+		<fields>title</fields>
+       <constraints>type='multiple'</constraints>
+	</node>
 </editwizards>

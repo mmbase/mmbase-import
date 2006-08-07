@@ -1,10 +1,15 @@
 package com.finalist.cmsc.repository.forms;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.sf.mmapps.commons.util.StringUtil;
+import net.sf.mmapps.commons.util.KeywordUtil;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.util.LabelValueBean;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.util.SearchUtil;
@@ -15,6 +20,7 @@ import org.mmbase.util.logging.Logging;
 import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.repository.ContentElementUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
+import com.finalist.cmsc.repository.KeywordProcessor;
 import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.struts.MMBaseAction;
 
@@ -50,6 +56,22 @@ public class SearchAction extends MMBaseAction {
 
         // Initialize
         SearchForm searchForm = (SearchForm) form;
+
+       // First prepare the typeList, we'll need this one anyway:
+       List<LabelValueBean> typesList = new ArrayList<LabelValueBean>();
+
+       List<NodeManager> types = ContentElementUtil.getContentTypes(cloud);
+       for (NodeManager manager : types) {
+           LabelValueBean bean = new LabelValueBean(manager.getGUIName(), manager.getName());
+           typesList.add(bean);
+       }
+       addToRequest(request, "typesList", typesList);
+
+       // Switching tab, no searching.
+       if ("false".equalsIgnoreCase(searchForm.getSearch())) {
+          return mapping.getInputForward();
+       }
+
         NodeManager nodeManager = cloud.getNodeManager(searchForm.getContenttypes());
         QueryStringComposer queryStringComposer = new QueryStringComposer();
         NodeQuery query = cloud.createNodeQuery();
@@ -81,8 +103,8 @@ public class SearchAction extends MMBaseAction {
         // Set some date constraints.
         queryStringComposer.addParameter(ContentElementUtil.CREATIONDATE_FIELD, "" + searchForm.getCreationdate());
         SearchUtil.addDayConstraint(query, nodeManager, ContentElementUtil.CREATIONDATE_FIELD, searchForm.getCreationdate());
-        queryStringComposer.addParameter(ContentElementUtil.EMBARGODATE_FIELD, "" + searchForm.getEmbargodate());
-        SearchUtil.addDayConstraint(query, nodeManager, ContentElementUtil.EMBARGODATE_FIELD, searchForm.getEmbargodate());
+        queryStringComposer.addParameter(ContentElementUtil.PUBLISHDATE_FIELD, "" + searchForm.getPublishdate());
+        SearchUtil.addDayConstraint(query, nodeManager, ContentElementUtil.PUBLISHDATE_FIELD, searchForm.getPublishdate());
         queryStringComposer.addParameter(ContentElementUtil.EXPIREDATE_FIELD, "" + searchForm.getExpiredate());
         SearchUtil.addDayConstraint(query, nodeManager, ContentElementUtil.EXPIREDATE_FIELD, searchForm.getExpiredate());
         queryStringComposer.addParameter(ContentElementUtil.LASTMODIFIEDDATE_FIELD, "" + searchForm.getLastmodifieddate());
@@ -105,11 +127,23 @@ public class SearchAction extends MMBaseAction {
             }
         }
 
-        // Add the title constraint:
+        // Add the title / keyword constraint:
         if (!StringUtil.isEmpty(searchForm.getTitle())) {
-            Field field = nodeManager.getField(ContentElementUtil.TITLE_FIELD);
-            SearchUtil.addLikeConstraint(query, field, searchForm.getTitle());
+
             queryStringComposer.addParameter(ContentElementUtil.TITLE_FIELD, searchForm.getTitle());
+            Field field = nodeManager.getField(ContentElementUtil.TITLE_FIELD);
+            Constraint titleConstraint = SearchUtil.createLikeConstraint(query, field, searchForm.getTitle());
+            SearchUtil.addConstraint(query, titleConstraint);
+
+            // And some trefwordsearching
+            queryStringComposer.addParameter(ContentElementUtil.KEYWORD_FIELD, searchForm.getTitle());
+            Field keywordField = nodeManager.getField(ContentElementUtil.KEYWORD_FIELD);
+            List keywords = KeywordUtil.getKeywords(searchForm.getTitle());
+            for (int i = 0; i < keywords.size(); i++) {
+               String keyword = (String) keywords.get(i);
+               Constraint keywordConstraint = SearchUtil.createLikeConstraint(query, keywordField, keyword);
+               SearchUtil.addORConstraint(query, keywordConstraint);
+            }
         }
         
         // Set the objectid constraint
@@ -143,14 +177,9 @@ public class SearchAction extends MMBaseAction {
             if (AUTHOR.equals(searchForm.getPersonal())) {
                 Node user = null;
                 if (StringUtil.isEmpty(useraccount)) {
-                    user = SecurityUtil.getUserNode(cloud);
+                    useraccount = cloud.getUser().getIdentifier();
                 }
-                else {
-                    user = SecurityUtil.getUserNode(cloud, useraccount);
-                }
-                NodeManager userManager = cloud.getNodeManager(ContentElementUtil.USER);
-                Step authorStep = query.addRelationStep(userManager, ContentElementUtil.AUTHORREL, "DESTINATION").getNext();
-                query.addNode(authorStep, user);
+                SearchUtil.addEqualConstraint(query, nodeManager, ContentElementUtil.CREATOR_FIELD, useraccount);
             }
             queryStringComposer.addParameter(PERSONAL, searchForm.getPersonal());
         }

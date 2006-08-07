@@ -34,7 +34,7 @@ public class ParamTag extends TagSupport
         }
         PortletURL url = urlTag.getUrl();
 
-        if (getName() != null)
+        if (url != null && getName() != null)
         {
             url.setParameter(getName(),getValue());
         }

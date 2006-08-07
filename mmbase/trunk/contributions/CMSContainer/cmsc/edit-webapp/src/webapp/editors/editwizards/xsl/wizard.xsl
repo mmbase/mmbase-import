@@ -4,7 +4,7 @@
 
    Author: Nico Klasens
    Created: 25-07-2003
-   Version: $Revision: 1.1 $
+   Version: $Revision: 1.2 $
 -->
 <xsl:stylesheet 
   version="1.0"
@@ -36,6 +36,9 @@
 <!--
 	END
 -->
+
+  <xsl:variable name="htmlareadir">../xinha/</xsl:variable>
+
 
 <!-- OVERRIDE PROMPTS.XSL
 	The prompts.xsl can not be extended, bacause that will break 
@@ -81,18 +84,51 @@
 
 <!-- END OVERRIDE PROMPTS.XSL -->
 
-  <xsl:variable name="BodyOnLoad">preLoadButtons(); doOnLoad_ew(); start_validator();  startHtmlArea();</xsl:variable>
+  <xsl:variable name="BodyOnLoad">preLoadButtons(); doOnLoad_ew(); start_validator();  xinha_init(); initPopCalendar();</xsl:variable>
+
+  <xsl:template name="javascript-html">
+    <script type="text/javascript">
+      _editor_url = '<xsl:value-of select="$htmlareadir"/>';
+      _editor_lang = '<xsl:value-of select="$language" />';
+    </script>
+    <script type="text/javascript" src="{$htmlareadir}htmlarea.js">
+      <xsl:comment>help IE</xsl:comment>
+    </script>
+    <script type="text/javascript" src="{$htmlareadir}my-htmlarea.js">
+      <xsl:comment>help IE</xsl:comment>
+    </script>
+
+    <script type="text/javascript" src="{$htmlareadir}my-lang/{$language}.js">
+      <xsl:comment>help IE</xsl:comment>
+    </script>
+
+    <script type="text/javascript">
+      <xsl:text disable-output-escaping="yes">
+        <![CDATA[
+        <!--
+          // Store htmlarea names.
+          var xinha_editors = new Array();
+        ]]></xsl:text>
+      <xsl:for-each select="//wizard/form[@id=//wizard/curform]/descendant::*[@ftype=&apos;html&apos; and @maywrite!=&apos;false&apos;]">
+        xinha_editors[xinha_editors.length] = '<xsl:value-of select="@fieldname"/>';
+      </xsl:for-each>
+      <xsl:text disable-output-escaping="yes">
+        <![CDATA[
+        //  -->
+        ]]></xsl:text>
+    </script>
+  </xsl:template>
 
   <xsl:template name="colorstyle">
-    <link rel="stylesheet" type="text/css" href="{$ew_context}/{$templatedir}style/color/wizard.css" />
+    <link rel="stylesheet" type="text/css" href="{$ew_context}{$templatedir}style/color/wizard.css" />
   </xsl:template>
 
   <xsl:template name="extrastyle">
-    <link rel="stylesheet" type="text/css" href="{$ew_context}/{$templatedir}style/extra/wizard.css" />
+    <link rel="stylesheet" type="text/css" href="{$ew_context}{$templatedir}style/extra/wizard.css" />
   </xsl:template>
 
   <xsl:template name="extrajavascript">
-    <script type="text/javascript" src="{$ew_context}/{$templatedir}javascript/override.js"><xsl:comment>help IE</xsl:comment></script>
+    <script type="text/javascript" src="{$ew_context}{$templatedir}javascript/override.js"><xsl:comment>help IE</xsl:comment></script>
 	<script type="text/javascript">
 		var isWebmaster = "<xsl:value-of select="$WEBMASTER"/>";
 	</script>
@@ -329,8 +365,19 @@
   <xsl:template name="item-image">
 		<tr>
 			<td>
-				<!-- the image -->
-				<img src="{node:function($cloud, string(field/@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,cache(&apos;, $imagesize, &apos;))&apos;))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}"/>
+		        <xsl:choose>
+		          <!-- handle field exists then it might be a new image -->
+		          <xsl:when test="field[@name = 'handle']">
+		            <xsl:if test="field[@name = 'handle' and @size != '0']">
+			          <!-- the image -->
+			          <img src="{node:function($cloud, string(field/@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}"/>
+		            </xsl:if>
+		       	  </xsl:when>
+		       	  <xsl:otherwise>
+		            <!-- the image -->
+		            <img src="{node:function($cloud, string(field/@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}"/>
+		       	  </xsl:otherwise>
+		        </xsl:choose>
 			</td>
 			<td class="itemfields">
 				<xsl:call-template name="itemfields"/>

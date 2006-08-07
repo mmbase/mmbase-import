@@ -14,6 +14,8 @@ import java.io.Serializable;
 import net.sf.mmapps.commons.beans.MMBaseNodeMapper;
 
 import org.mmbase.bridge.*;
+import org.mmbase.core.event.NodeEvent;
+import org.mmbase.core.event.RelationEvent;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -63,6 +65,7 @@ public class PageCacheEntryFactory extends MMBaseCacheEntryFactory {
 
         loadLayout(pageNode, page);
         loadStylesheet(pageNode, page);
+        loadPageImages(pageNode, page);
         return page;
     }
 
@@ -85,4 +88,23 @@ public class PageCacheEntryFactory extends MMBaseCacheEntryFactory {
         }
     }
 
+     private void loadPageImages(Node pageNode, Page page) {
+    	 RelationList relations = pageNode.getRelations(null, "images");
+    	 for(RelationIterator iter = relations.relationIterator(); iter.hasNext();) {
+    		 Relation relation = iter.nextRelation();
+    		 String name = relation.getStringValue("name");
+    		 
+    		 // this is a bit of a hack, but saves on the loading of the actual node
+    		 String image = ""+relation.getStringValue("dnumber");
+    		 page.addPageImage(name, image);
+    	 }
+     }
+     
+    protected boolean isRelationEvent(RelationEvent event, String nodeType) {
+        return super.isRelationEvent(event, nodeType) || super.isRelationEvent(event, SiteUtil.SITE);
+    }
+
+    protected boolean isNodeEvent(NodeEvent event, String nodeType) {
+        return super.isNodeEvent(event, nodeType) || super.isNodeEvent(event, SiteUtil.SITE);
+    }
 }

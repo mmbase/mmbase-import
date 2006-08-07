@@ -1,5 +1,6 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp" %>
 </div>
+<c:if test="${empty orderby}">
 <script type="text/javascript">
 function <portlet:namespace />reorder() {
 	var sortOptions = {
@@ -21,3 +22,4 @@ function <portlet:namespace />reorder() {
 }
 <portlet:namespace />reorder();
 </script>
+</c:if>

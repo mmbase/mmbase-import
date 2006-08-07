@@ -22,6 +22,7 @@ import org.mmbase.bridge.*;
 import com.finalist.cmsc.mmbase.TreeUtil;
 import com.finalist.cmsc.navigation.*;
 import com.finalist.cmsc.struts.*;
+import com.finalist.cmsc.util.bundles.JstlUtil;
 import com.finalist.tree.TreeInfo;
 import com.finalist.tree.ajax.AjaxTree;
 
@@ -51,16 +52,16 @@ public class NavigatorAction extends TreeAction {
         return null;
     }
 
-    protected AjaxTree getTree(HttpServletRequest request, Cloud cloud, TreeInfo info, String persistentid) {
+    protected AjaxTree getTree(HttpServletRequest request, HttpServletResponse response, Cloud cloud, TreeInfo info, String persistentid) {
         Node node = cloud.getNode(persistentid);
         if (!SiteUtil.isSite(node)) {
             node = NavigationUtil.getSiteFromPath(cloud, node.getStringValue(TreeUtil.PATH_FIELD));
         }
         
         NavigationTreeModel model = new NavigationTreeModel(node);
-        NavigationAjaxRenderer chr = new NavigationAjaxRenderer(request, "content");
+        NavigationAjaxRenderer chr = new NavigationAjaxRenderer(request, response, "content");
         AjaxTree t = new AjaxTree(model, chr, info);
-        t.setImgBaseUrl("../img/");
+        t.setImgBaseUrl("../gfx/icons/");
         return t;
     }
     

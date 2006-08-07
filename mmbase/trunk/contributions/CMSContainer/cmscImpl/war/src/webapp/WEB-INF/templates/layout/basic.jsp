@@ -67,10 +67,19 @@
 			<p class="HeaderSubtitle"><c:out value="${siteSubtitle}"/></p>
 		</div>
 		<div class="Content">
-			<cmsc:insert-portlet layoutid="content" />
+			<cmsc:insert-portlet layoutid="breadcrumb" />	
+				
+			<cmsc:insert-portlet layoutid="center1" />
+			<cmsc:insert-portlet layoutid="center2" />
+			<cmsc:insert-portlet layoutid="center3" />
+			<cmsc:insert-portlet layoutid="center4" />
+			<cmsc:insert-portlet layoutid="center5" />
 		</div>
 		<div class="Menu">
 			<cmsc:insert-portlet layoutid="menu" />
+			<cmsc:insert-portlet layoutid="left1" />
+			<cmsc:insert-portlet layoutid="left2" />
+			<cmsc:insert-portlet layoutid="left3" />
 		</div>
 		<div class="logo">
 			<%--

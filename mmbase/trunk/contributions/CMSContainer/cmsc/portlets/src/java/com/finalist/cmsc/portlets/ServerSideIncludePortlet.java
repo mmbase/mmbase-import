@@ -34,7 +34,7 @@ public class ServerSideIncludePortlet extends CmscPortlet {
         String portletId = preferences.getValue(PortalConstants.CMSC_OM_PORTLET_ID, null);
         if (portletId != null) {
             // get the values submitted with the form
-            setPorltetParameter(portletId, SOURCE_ATTR_PARAM, request.getParameter(SOURCE_ATTR_PARAM));
+            setPortletParameter(portletId, SOURCE_ATTR_PARAM, request.getParameter(SOURCE_ATTR_PARAM));
 
         } else {
             getLogger().error("No portletId");

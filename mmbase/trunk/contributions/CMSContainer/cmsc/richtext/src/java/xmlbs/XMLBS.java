@@ -35,7 +35,7 @@ import java.util.*;
  * </UL>
  *
  * @author R.W. van 't Veer
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class XMLBS {
 
@@ -50,8 +50,11 @@ public class XMLBS {
     /** Charset encoding of InputStream */
     private String encoding = null;
 
+    /** annotate flag */
+    private boolean removeEmptyTags = false;
+    
     /** token list */
-    private List tokens = null;
+    private List<Token> tokens = null;
 
     /** marker used for annotation */
     private static final String WARNING_MARKER = "XMLBS!";
@@ -64,9 +67,8 @@ public class XMLBS {
      * descriptor.
      * @param in input stream
      * @param ds document structure descriptor
-     * @throws IOException when reading from stream failed
      */
-    public XMLBS(InputStream in, DocumentStructure ds) throws IOException {
+    public XMLBS(InputStream in, DocumentStructure ds) {
         this(in, ds, null);
     }
 
@@ -76,9 +78,8 @@ public class XMLBS {
      * @param in input stream
      * @param ds document structure descriptor
      * @param encoding Charset encoding
-     * @throws IOException when reading from stream failed
      */
-    public XMLBS(InputStream in, DocumentStructure ds, String encoding) throws IOException {
+    public XMLBS(InputStream in, DocumentStructure ds, String encoding) {
         this.in = in;
         this.ds = ds;
         this.encoding = encoding;
@@ -89,9 +90,8 @@ public class XMLBS {
      * descriptor.
      * @param in input stream
      * @param ds document structure descriptor
-     * @throws IOException when reading from stream failed
      */
-    public XMLBS(String in, DocumentStructure ds) throws IOException {
+    public XMLBS(String in, DocumentStructure ds) {
         this.inStr = in;
         this.ds = ds;
     }
@@ -156,7 +156,7 @@ public class XMLBS {
     public void setAnnotate(boolean flag) {
         annotate = flag;
     }
-
+    
     /**
      * @return String
      */
@@ -172,7 +172,9 @@ public class XMLBS {
         this.encoding = encoding;
     }
 
-
+    public void setRemoveEmptyTags(boolean removeEmptyTags) {
+        this.removeEmptyTags = removeEmptyTags;
+    }
 
     // private stuff
     /**
@@ -204,8 +206,8 @@ public class XMLBS {
      * Remove unknown tags and unknown tag attributes.
      */
     private void cleanupTags() {
-        for (ListIterator it = tokens.listIterator(); it.hasNext();) {
-            Token tok = (Token) it.next();
+        for (ListIterator<Token> it = tokens.listIterator(); it.hasNext();) {
+            Token tok = it.next();
             if (tok instanceof TagToken) {
                 TagToken tag = (TagToken) tok;
                 if (!ds.isKnownTag(tag)) {
@@ -229,34 +231,39 @@ public class XMLBS {
     private void hierarchy() {
         CrumbTrail trail = new CrumbTrail(ds);
         for (int i = 0; i < tokens.size(); i++) {
-            Token tok = (Token) tokens.get(i);
+            Token tok = tokens.get(i);
             TagToken top = trail.getTop();
 
             if (tok instanceof TextToken) {
                 TextToken txt = (TextToken) tok;
-                if (!txt.isWhiteSpace() && !ds.canContain(top, txt)) {
-                    // handle stray text
-                    if (!trail.hasContainerFor(txt)) {
-                        // misplaced text
-                        if (annotate) {
-                            tokens.set(i, comment("misplaced text", txt));
+                if (txt.isWhiteSpace()) {
+                    tokens.remove(i--);
+                }
+                else {
+                    if (!ds.canContain(top, txt)) {
+                        // handle stray text
+                        if (!trail.hasContainerFor(txt)) {
+                            // misplaced text
+                            if (annotate) {
+                                tokens.set(i, comment("misplaced text", txt));
+                            }
+                            else {
+                                tokens.remove(i--);
+                            }
                         }
                         else {
-                            tokens.remove(i--);
-                        }
-                    }
-                    else {
-                        // add close tags till top will have us
-                        do {
-                            if (annotate) {
-                                tokens.add(i++, comment("close first", top));
+                            // add close tags till top will have us
+                            do {
+                                if (annotate) {
+                                    tokens.add(i++, comment("close first", top));
+                                }
+                                tokens.add(i++, top.closeTag());
+                                trail.pop();
+                                top = trail.getTop();
                             }
-                            tokens.add(i++, top.closeTag());
-                            trail.pop();
-                            top = trail.getTop();
+                            while (!ds.canContain(top, txt)
+                                && trail.getDepth() > 0);
                         }
-                        while (!ds.canContain(top, txt)
-                            && trail.getDepth() > 0);
                     }
                 }
             }
@@ -373,40 +380,89 @@ public class XMLBS {
         TagToken last = null;
         int lastPos = -1;
         for (int i = 0; i < tokens.size(); i++) {
-            Token tok = (Token) tokens.get(i);
+            Token tok = tokens.get(i);
             if (tok instanceof TagToken) {
                 TagToken tag = (TagToken) tok;
-                if (tag.isOpenTag()) {
-                    last = tag;
-                    lastPos = i;
-                }
-                else if (
-                    tag.isCloseTag() && last != null && tag.isSameTag(last)) {
-                    // see if what's between last and this is whitespace
-                    boolean allWhite = true;
-                    List l = tokens.subList(lastPos + 1, i);
-                    for (Iterator it = l.iterator(); it.hasNext();) {
-                        Token t = (Token) it.next();
-                        if (t instanceof CommentToken) {
-                            continue;
+                if (removeEmptyTags && tag.isEmptyTag() 
+                        && ds.canContainText(tag) && tag.getAttributes().isEmpty()) {
+                    boolean removeTag = false;
+                    Token prevtok = tokens.get(i - 1);
+                    if (prevtok instanceof TagToken) {
+                        TagToken prevtag = (TagToken) prevtok; 
+                        if (prevtag.isCloseTag()
+                                || prevtag.isEmptyTag()
+                                || (prevtag.isOpenTag() && ds.canContainText(prevtag))) {
+                            removeTag = true;
                         }
-                        if (t instanceof TextToken
-                            && ((TextToken) t).isWhiteSpace()) {
-                            continue;
-                        }
-                        allWhite = false;
-                        break;
                     }
-                    if (allWhite) {
-                        // remove close tag
+                    if (prevtok instanceof TextToken) {
+                        removeTag = true;
+                    }
+                    if (removeTag) {
                         tokens.remove(i);
-                        // replace open by empty
-                        tokens.set(lastPos, last.emptyTag());
-                        // move current position
-                        i = lastPos;
-                        // forget open tag
-                        lastPos = -1;
-                        last = null;
+                    }
+                }
+                else {
+                    if (tag.isOpenTag()) {
+                        last = tag;
+                        lastPos = i;
+                    }
+                    else {
+                        if (tag.isCloseTag() && last != null && tag.isSameTag(last)) {
+                            // see if what's between last and this is whitespace
+                            boolean allWhite = true;
+                            List l = tokens.subList(lastPos + 1, i);
+                            for (Iterator it = l.iterator(); it.hasNext();) {
+                                Token t = (Token) it.next();
+                                if (t instanceof CommentToken) {
+                                    continue;
+                                }
+                                if (t instanceof TextToken
+                                    && ((TextToken) t).isWhiteSpace()) {
+                                    continue;
+                                }
+                                allWhite = false;
+                                break;
+                            }
+                            if (allWhite) {
+                                // remove close tag
+                                tokens.remove(i);
+                                if (removeEmptyTags && ds.canContainText(last) && last.getAttributes().isEmpty()) {
+                                    boolean removeTag = false;
+                                    Token prevtok = tokens.get(lastPos - 1);
+                                    if (prevtok instanceof TagToken) {
+                                        TagToken prevtag = (TagToken) prevtok; 
+                                        if (prevtag.isCloseTag()
+                                                || prevtag.isEmptyTag()
+                                                || (prevtag.isOpenTag() && ds.canContainText(prevtag))) {
+                                            removeTag = true;
+                                        }
+                                    }
+                                    if (prevtok instanceof TextToken) {
+                                        removeTag = true;
+                                    }
+                                    if (removeTag) {
+                                        tokens.remove(lastPos);
+                                        i = lastPos - 1;
+                                    }
+                                    else {
+                                        // replace open by empty
+                                        tokens.set(lastPos, last.emptyTag());
+                                        // move current position
+                                        i = lastPos;
+                                    }
+                                }
+                                else {
+                                    // replace open by empty
+                                    tokens.set(lastPos, last.emptyTag());
+                                    // move current position
+                                    i = lastPos;
+                                }
+                                // forget open tag
+                                lastPos = -1;
+                                last = null;
+                            }
+                        }
                     }
                 }
             }
@@ -428,22 +484,22 @@ public class XMLBS {
      */
     class CrumbTrail {
         /** actual trail */
-        private List trail = new Vector();
+        private List<TagToken> trail = new ArrayList<TagToken>();
         /** document structure */
-        private DocumentStructure ds = null;
+        private DocumentStructure structure = null;
 
         /**
-         * @param ds document structure
+         * @param structure document structure
          */
-        public CrumbTrail(DocumentStructure ds) {
-            this.ds = ds;
+        public CrumbTrail(DocumentStructure structure) {
+            this.structure = structure;
         }
 
         /**
          * @return current parent tag
          */
         public TagToken getTop() {
-            return (TagToken) (trail.size() == 0 ? null : trail.get(0));
+            return (trail.size() == 0 ? null : trail.get(0));
         }
 
         /**
@@ -458,7 +514,7 @@ public class XMLBS {
          * @return last generation
          */
         public TagToken pop() {
-            return (TagToken) (trail.size() == 0 ? null : trail.remove(0));
+            return (trail.size() == 0 ? null : trail.remove(0));
         }
 
         /**
@@ -489,7 +545,7 @@ public class XMLBS {
         public boolean hasContainerFor(Token tok) {
             for (Iterator it = trail.iterator(); it.hasNext();) {
                 TagToken t = (TagToken) it.next();
-                if (ds.canContain(t, tok)) {
+                if (structure.canContain(t, tok)) {
                     return true;
                 }
             }

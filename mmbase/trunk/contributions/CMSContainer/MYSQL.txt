@@ -1,0 +1,38 @@
+mysql -u root -p mysql
+
+// Show all databases in server
+SHOW DATABASES;
+
+// create database
+CREATE DATABASE <database> CHARACTER SET latin1;
+CREATE DATABASE <database> CHARACTER SET utf8 collate utf8_unicode_ci;
+
+// After alter your database charset, you will need to remove all the tables and re-create them 
+ALTER DATABASE <database> CHARACTER SET utf-8 collate utf8_unicode_ci;
+
+// Show statement to recreate database
+SHOW CREATE DATABASE <database>;
+
+// Create user with priviliges
+GRANT ALL PRIVILEGES ON *.* TO <user>@localhost IDENTIFIED BY '<password>' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON *.* TO <user>@"%" IDENTIFIED BY '<password>' WITH GRANT OPTION;
+
+// describe objects like tables
+DESCRIBE <table_name>;
+
+// Showw all tables in database
+SHOW TABLES;
+
+// Show statement to recreate table
+SHOW CREATE TABLE <table_name>;
+
+// Alter columns
+ALTER TABLE <table_name> MODIFY <field_name> varchar(<size>);
+
+// Dump and restore databases
+mysqldump --opt database > backup-file.sql
+mysql database < backup-file.sql
+
+
+show variables
+max_allowed_packet 

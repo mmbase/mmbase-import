@@ -20,7 +20,7 @@
 	<head>
 		<title></title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<link href="../../style.css" type="text/css" rel="stylesheet"/>
+		<link href="../../css/main.css" type="text/css" rel="stylesheet" />
 		<script type="text/javascript">
 			function changeSelect() {
 				var newHref = "";
@@ -41,9 +41,9 @@
 	<body>
 		<form name="selectForm">
 			<select name="contentType" onchange="changeSelect()">
-				<option>&lt;Kies een content type&gt;</option>
+				<option value="">&lt;Kies een content type&gt;</option>
 
-				<mm:listnodes type="editwizards">
+				<mm:listnodes type="editwizards" orderby="nodepath">
 					<mm:field name="nodepath" jspvar="nodepath" vartype="String">
 						<% if (com.finalist.cmsc.repository.ContentElementUtil.isContentType(nodepath)) { %>
 							<option value="<mm:write />"><mm:field name="name"/></option>

@@ -16,6 +16,7 @@ import com.finalist.cmsc.beans.om.PortletParameter;
 import com.finalist.cmsc.beans.om.View;
 import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.cmsc.portalImpl.services.sitemanagement.SiteManagement;
+import com.finalist.cmsc.util.bundles.CombinedResourceBundle;
 import com.finalist.pluto.portalImpl.core.*;
 
 @SuppressWarnings("unused")
@@ -150,15 +151,39 @@ public abstract class CmscPortlet extends GenericPortlet {
 
     private void setResourceBundle(RenderRequest req, String baseName) {
         ResourceBundle bundle = null;
-        if (StringUtil.isEmpty(baseName)) {
-            bundle = getResourceBundle(req.getLocale());
-        }
-        else {
+        CombinedResourceBundle cbundle = null;
+        while (!StringUtil.isEmpty(baseName)) {
             try {
-                bundle = ResourceBundle.getBundle(baseName, req.getLocale());
+                ResourceBundle otherbundle = ResourceBundle.getBundle(baseName, req.getLocale());
+                if (cbundle == null) {
+                    cbundle = new CombinedResourceBundle(otherbundle);
+                }
+                else {
+                    cbundle.addBundles(otherbundle);
+                }
             }
             catch (java.util.MissingResourceException mre) {
                 log.debug("Resource bundel not found for basename " + baseName);
+            }
+            int lastIndex = baseName.lastIndexOf("/");
+            if (lastIndex > -1) {
+                baseName = baseName.substring(0, lastIndex);
+            }
+            else {
+                baseName = null;
+            }
+        }
+        ResourceBundle portletbundle = getResourceBundle(req.getLocale());
+        if (portletbundle == null) {
+            bundle = cbundle;
+        }
+        else {
+            if (cbundle == null) {
+                bundle = portletbundle;
+            }
+            else {
+                cbundle.addBundles(portletbundle);
+                bundle = cbundle;
             }
         }
         // this is JSTL specific, but the problem is that a RenderRequest is not a ServletRequest
@@ -283,7 +308,7 @@ public abstract class CmscPortlet extends GenericPortlet {
         }
     }
     
-    protected void setPorltetNodeParameter(String portletId, String key, String value) {
+    protected void setPortletNodeParameter(String portletId, String key, String value) {
         if (value != null) {
             PortletParameter param = new PortletParameter();
             param.setKey(key);
@@ -292,7 +317,7 @@ public abstract class CmscPortlet extends GenericPortlet {
         }
     }
 
-    protected void setPorltetParameter(String portletId, String key, String value) {
+    protected void setPortletParameter(String portletId, String key, String value) {
         if (value != null) {
             PortletParameter param = new PortletParameter();
             param.setKey(key);
