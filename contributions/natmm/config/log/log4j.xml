@@ -2,6 +2,7 @@
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd" [
     <!ENTITY mmlevel "org.mmbase.util.logging.log4j.Log4jPriority" >
     <!ENTITY logdir  "C:/data/natmm/logs/" >
+    <!-- <!ENTITY logdir  "E:/Intranet_Logs/" > -->
 ]>
 
 <log4j:configuration>
