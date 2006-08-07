@@ -2,9 +2,8 @@
 --%><% if(true) { 
 %><script>
 <%= "<!--" %>
-function createPosting(el) {
-var href = el.getAttribute("href");
-href += "&pst=";
+function postIt() {
+var href = "?p=<%= paginaID %>&pst=";
 <mm:list nodes="<%= paginaID %>" path="pagina,posrel,formulier" 
     orderby="posrel.pos" directions="UP"
     ><% String formulier_number = ""; 

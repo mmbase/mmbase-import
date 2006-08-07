@@ -234,24 +234,23 @@
 	14. Move news archief to main level<br/>
 	<mm:listnodes type="rubriek" constraints="naam = 'Home'">
 		<mm:node id="home_rubriek" />
-			<mm:listnodes type="users" constraints="account = 'KemperinkM'">
-				<mm:node id="news_editor" />
-				<mm:node number="archief" id="archief">
-					<mm:relatednodes type="artikel" id="this_artikel">
-						<mm:createrelation source="this_artikel" destination="natuurmonumente_subsite" role="subsite" />
-						<mm:createrelation source="this_artikel" destination="home_rubriek" role="creatierubriek" />
-						<mm:createrelation source="this_artikel" destination="home_rubriek" role="hoofdrubriek" />
-						<mm:createrelation source="this_artikel" destination="news_editor" role="schrijver" />
-					</mm:relatednodes>
-					<mm:related path="posrel,rubriek">
-						<mm:deletenode element="posrel" />
-					</mm:related>
-					<mm:createrelation source="natuurmonumente_subsite" destination="archief" role="posrel">
-						<mm:setfield name="pos">99</mm:setfield>
-					</mm:createrelation>
-				</mm:node>
-			</mm:listnodes>
-		</mm:node>
+    <mm:listnodes type="users" constraints="account = 'KemperinkM'">
+      <mm:node id="news_editor" />
+      <mm:node number="archief" id="archief">
+        <mm:relatednodes type="artikel" id="this_artikel">
+          <mm:createrelation source="this_artikel" destination="natuurmonumente_subsite" role="subsite" />
+          <mm:createrelation source="this_artikel" destination="home_rubriek" role="creatierubriek" />
+          <mm:createrelation source="this_artikel" destination="home_rubriek" role="hoofdrubriek" />
+          <mm:createrelation source="this_artikel" destination="news_editor" role="schrijver" />
+        </mm:relatednodes>
+        <mm:related path="posrel,rubriek">
+          <mm:deletenode element="posrel" />
+        </mm:related>
+        <mm:createrelation source="natuurmonumente_subsite" destination="archief" role="posrel">
+          <mm:setfield name="pos">99</mm:setfield>
+        </mm:createrelation>
+      </mm:node>
+    </mm:listnodes>
 	</mm:listnodes>
 	14. Merge library archief with news archief<br/>
 	<mm:createnode type="pools" id="bib_pool">
@@ -259,22 +258,21 @@
 	</mm:createnode>
 	<mm:listnodes type="rubriek" constraints="naam = 'Bibliotheek'">
 		<mm:node id="bib_rubriek" />
-			<mm:listnodes type="users" constraints="account = 'BieW'">
-				<mm:node id="library_editor" />
-				<mm:node number="archief" id="news_archief" />
-				<mm:node number="bibarchief">
-					<mm:relatednodes type="artikel" id="this_artikel">
-						<mm:createrelation source="this_artikel" destination="natuurmonumente_subsite" role="subsite" />
-						<mm:createrelation source="this_artikel" destination="bib_rubriek" role="creatierubriek" />
-						<mm:createrelation source="this_artikel" destination="bib_rubriek" role="hoofdrubriek" />
-						<mm:createrelation source="this_artikel" destination="library_editor" role="schrijver" />
-						<mm:createrelation source="this_artikel" destination="bib_pool" role="posrel" />
-						<mm:createrelation source="news_archief" destination="this_artikel" role="contentrel" />
-					</mm:relatednodes>
-				</mm:node>
-				<mm:deletenode number="bibarchief" deleterelations="true" />
-			</mm:listnodes>
-		</mm:node>
+    <mm:listnodes type="users" constraints="account = 'BieW'">
+      <mm:node id="library_editor" />
+      <mm:node number="archief" id="news_archief" />
+      <mm:node number="bibarchief">
+        <mm:relatednodes type="artikel" id="this_artikel">
+          <mm:createrelation source="this_artikel" destination="natuurmonumente_subsite" role="subsite" />
+          <mm:createrelation source="this_artikel" destination="bib_rubriek" role="creatierubriek" />
+          <mm:createrelation source="this_artikel" destination="bib_rubriek" role="hoofdrubriek" />
+          <mm:createrelation source="this_artikel" destination="library_editor" role="schrijver" />
+          <mm:createrelation source="this_artikel" destination="bib_pool" role="posrel" />
+          <mm:createrelation source="news_archief" destination="this_artikel" role="contentrel" />
+        </mm:relatednodes>
+      </mm:node>
+      <mm:deletenode number="bibarchief" deleterelations="true" />
+    </mm:listnodes>
 	</mm:listnodes>
 	15. artikel met info pagina<br/>
 	<mm:listnodes type="editwizards" constraints="wizard = 'config/pagina/pagina_artikel_info'">
@@ -340,6 +338,27 @@
 		<mm:setfield name="searchfields">titel,type</mm:setfield>
 		<mm:setfield name="orderby">pos</mm:setfield>
 		<mm:setfield name="startnodes"></mm:setfield>
+	</mm:listnodes>
+  19. Rename some producttype editwizards
+  <mm:listnodes type="teaser">
+    <mm:deletenode deleterelations="true" />
+  </mm:listnodes>
+  <mm:createnode type="teaser" id="hw_teaser">
+    <mm:setfield name="titel">hard-/software</mm:setfield>
+  </mm:createnode>
+	<mm:listnodes type="producttypes" constraints="title = 'Hardware' OR title = 'Software'" id="hw">
+    <mm:createrelation source="hw_teaser" destination="hw" role="posrel" />
+  </mm:listnodes>
+  <mm:listnodes type="editwizards" constraints="name = 'standaard hard-/software'">
+		<mm:setfield name="fields">producttypes.title,products.titel</mm:setfield>
+		<mm:setfield name="orderby">producttypes.title,products.titel</mm:setfield>
+	</mm:listnodes>
+  <mm:listnodes type="editwizards" constraints="name = 'hard-/software per lokatie'">
+		<mm:setfield name="fields">locations.naam,readmore.readmore,products.titel</mm:setfield>
+		<mm:setfield name="orderby">locations.naam,products.titel</mm:setfield>
+    <mm:related path="gebruikt,users" offset="1">
+      <mm:deletenode element="gebruikt" />
+    </mm:related>
 	</mm:listnodes>
 	99. Deleting unused editwizards<br/>
 	<%

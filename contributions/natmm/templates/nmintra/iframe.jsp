@@ -5,13 +5,13 @@
 <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
 <%@include file="includes/header.jsp" 
 %><td colspan="2" rowspan="2"><%
-if(session.getAttribute("editor")!=null) {
+if(isPreview) {
    session.setAttribute("root",rootId);
    session.setAttribute("rubriek",rubriekId);
    session.setAttribute("page",paginaID);
 }
 %><mm:list nodes="<%= paginaID %>" path="pagina,posrel,link" max="1"
-        ><iframe src="/nmintra<mm:field name="link.url"/>" title="<mm:field name="link.titel"/>" width="100%" height="527px" frameborder="0">
+        ><iframe src="<mm:field name="link.url"/>" title="<mm:field name="link.titel"/>" width="100%" height="527px" frameborder="0">
         <a href="<mm:field name="link.url"/>" target="_blank"><mm:field name="link.titel"/></a>
         </iframe><mm:import id="urlexists"
 /></mm:list

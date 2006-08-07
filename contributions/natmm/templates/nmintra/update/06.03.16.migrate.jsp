@@ -21,22 +21,17 @@
    4. Move the changed XML files to the NMIntra application directory<br/>
    5. Start NatMM with an empty db. Load the LeoCMS application, but don't load the data from LeoCMS<br/>
    6. Load the NMIntra application by setting auto-deploy to true and restarting the application server.<br/>
-	   Some notes:<br/>
+	   Some notes before starting the import:<br/>
       -set the max_allowed_packet large enough<br/>
       -running the import might take 1+ hour<br/>
       -check the mmbase.log and wait for the logmessage "Application 'NMIntra' deployed succesfully"<br/>
       Some todo's:
       -email.xml is not necessary<br/>
       -medewerkers.xml email address of EmmerigM and BSwarts are to long (search on X400)<br/>
-   7. Add a rubriek Natuurmonumenten with alias root and relate the Intranet and Ontwikkel rubrieken to it<br/>
-   8. Link admin to root (rolerel.iRol=100). Remove the other two rubrieken from admin.<br/>
-	9. Delete pages Nieuws and Interne Mededelingen (2x)<br/>
-	10. Delete template for "Wat vindt je ervan?" page in P&O<br/>
-	11. Delete double relation for "Zoek een opleiding" page<br/>
-   12. Run the other update scripts.
-   13. Set new passwords for all users, and set their rights<br/>
-	Note: RelationsMigrator will call NMIntraToNatMM migrator<br/>
-	<% (new nl.mmatch.util.migrate.RelationsMigrator()).run(); %>
+   7. Run the other update scripts.
+   8. Set new passwords for all users, and set their rights<br/>
+	 Note: RelationsMigrator will call NMIntraToNatMM migrator<br/>
+	 <% (new nl.mmatch.util.migrate.RelationsMigrator()).run(); %>
    Done.
 	</body>
   </html>
