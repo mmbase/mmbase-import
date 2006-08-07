@@ -37,7 +37,7 @@ PaginaHelper ph = new PaginaHelper(cloud);
 
 <mm:import externid="test">no</mm:import>
 <mm:compare referid="test" value="">
-    <% log.info("Sending test email to " + emailaddress); %>
+    <% log.info("Sending test email to " + emailaddress + "; reading from " + newsLetterUrl + newsLetterUri ); %>
     <mm:createnode id="thismail" type="email">
        <mm:setfield name="from"><%= newsLetterFrom %></mm:setfield>
        <mm:setfield name="to"><mm:write referid="emailaddress" /></mm:setfield>
@@ -94,12 +94,14 @@ if(isFirst) {
 
 <mm:import externid="sendmail">no</mm:import>
 <mm:compare referid="sendmail" value="">
-  <% log.info("Sending email"); %>
    <mm:createnode id="thismail" type="email">
       <mm:setfield name="from"><%= newsLetterFrom %></mm:setfield>
       <mm:setfield name="subject"><%= newsLetterSubject %></mm:setfield>
    </mm:createnode>
    <mm:list nodes="<%= selectedDeelnemers_categorie %>" path="deelnemers_categorie,related,deelnemers" fields="deelnemers.email" distinct="true">
+      <mm:field name="deelnemers.email" jspvar="emailaddress" vartype="String" write="false">
+         <% log.info("Sending email to " + emailaddress + "; reading from " + newsLetterUrl + newsLetterUri); %>
+      </mm:field>
       <mm:import id="email"><mm:field name="deelnemers.email" /></mm:import>
       <mm:import id="title">Beste <mm:field name="deelnemers.firstname" />,</mm:import>
       <mm:node referid="thismail">
