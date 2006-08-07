@@ -3,7 +3,7 @@
 <mm:cloud jspvar="cloud">
 <%@include file="../includes/getstyle.jsp" %>
 <%
-String pageTitle = " Natuurmonumenten: ";
+String pageTitle = " " + NatMMConfig.companyName + ": ";
 String pageText = "";
 boolean bFirst = true; 
 %>
@@ -43,20 +43,20 @@ boolean bFirst = true;
    <script type="text/javascript" language="Javascript">
    <!-- // 
    function resizeDiv() {
-		iHeight = document.images[0].height;
-		var IE=(document.all?true:false);
-   	if(IE){ 
-   		wHeight = document.body.clientHeight;
-   		// document.all['contentblock'].style.height = wHeight - iHeight;
-   	} else {
-   		wHeight = window.innerHeight;
+      iHeight = document.images[0].height;
+      var IE=(document.all?true:false);
+      if(IE){ 
+         wHeight = document.body.clientHeight;
+         // document.all['contentblock'].style.height = wHeight - iHeight;
+      } else {
+         wHeight = window.innerHeight;
          // document.getElementById('contentblock').style.height = wHeight - iHeight;
-   	}
-		<% if(!bFirst) { %>
-		   window.resizeBy(0, iHeight - wHeight + 150);
-		<% } else { %>
-		   window.resizeBy(0, iHeight - wHeight);
-      <% } %>   		
+      }
+      <% if(!bFirst) { %>
+         window.resizeBy(0, iHeight - wHeight + 150);
+      <% } else { %>
+         window.resizeBy(0, iHeight - wHeight);
+      <% } %>        
    };
    if ((navigator.appName == "Microsoft Internet Explorer") && (parseInt(navigator.appVersion) < 4 )) {
       document.write("<link rel=stylesheet href=\"../hoofdsite/themas/ie3_main.css\" type=\"text/css\">"); 
@@ -73,8 +73,8 @@ boolean bFirst = true;
    %><div style="display:block;overflow:auto;width:600px;height:150px;" id="contentblock">
    <table width="580px;" border="0" cellspacing="0" cellpadding="0">
    <tr>
-   	<td style="padding-left:7px;padding-right:7px;padding-top:9px;padding-bottom:9px;">
-   	   <%= pageText %>
+      <td style="padding-left:7px;padding-right:7px;padding-top:9px;padding-bottom:9px;">
+         <%= pageText %>
       </td>
    </tr>
    </table>

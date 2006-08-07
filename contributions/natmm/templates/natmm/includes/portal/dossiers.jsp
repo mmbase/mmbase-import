@@ -12,7 +12,7 @@
 %>   
 <%@include file="/editors/mailer/util/memberid_get.jsp" %>
 <mm:node number="<%=objectID%>">
-  <div class="headerBar" style="width:100%;">DOSSIERS</div>
+  <div class="headerBar" style="width:396px;">DOSSIERS</div>
   <table cellspacing="0">
 <%
    NodeList nlDossiers = PoolUtil.getByPools(cloud,objectID,"pagina,posrel","dossier",

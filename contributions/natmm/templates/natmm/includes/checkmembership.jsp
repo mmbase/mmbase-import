@@ -22,15 +22,15 @@ if(isMember) {
       <mm:list nodes="<%=paginaID%>" path="pagina,contentrel,artikel" max="1">
          <mm:field name="artikel.number" jspvar="artikelID" vartype="String" write="false">
             <jsp:include page="includes/artikel_1_column.jsp">
-      	      <jsp:param name="o" value="<%=artikelID%>" />
+               <jsp:param name="o" value="<%=artikelID%>" />
                <jsp:param name="r" value="<%= rubriekID %>" />
                <jsp:param name="rs" value="<%= styleSheet %>" />
-      	   </jsp:include>
+            </jsp:include>
          </mm:field>
       </mm:list>
       <%
-      String messageTitle = "Alleen toegankelijk voor Natuurmonumenten leden";
-      String messageText = "Deze pagina is alleen toegankelijk voor leden van Natuurmonumenten.<br/>";
+      String messageTitle = "Alleen toegankelijk voor " + NatMMConfig.companyName + " leden";
+      String messageText = "Deze pagina is alleen toegankelijk voor leden van " + NatMMConfig.companyName + ".<br/>";
       String messageText2 = "";
       String submitButton = "LOG IN ALS LID";
       %><mm:relatednodes type="formulier" max="1" jspvar="thisForm"><%
@@ -50,11 +50,11 @@ if(isMember) {
          Vul uw postcode en lidmaatschapsnummer in. Van het lidmaatschapsnummer 
          hoeft u alleen de cijfers in te vullen. Klik vervolgens op "<%= submitButton.substring(0,1).toUpperCase() + submitButton.substring(1).toLowerCase() %>".
          <% if(!memberID.equals("") || !zipCode.equals("")) { %>
-      	   <span class="colortitle" style="color:red;">
+            <span class="colortitle" style="color:red;">
                <%
-      	      if(!zipCodeMessage.equals("")) { 
-      	         %><bean:message bundle="LEOCMS" key="<%= zipCodeMessage %>" /><% 
-      	      } 
+               if(!zipCodeMessage.equals("")) { 
+                  %><bean:message bundle="LEOCMS" key="<%= zipCodeMessage %>" /><% 
+               } 
                if(!memberIDMessage.equals("")) { 
                   %><bean:message bundle="LEOCMS" key="<%= memberIDMessage  %>" /><% 
                }
@@ -101,12 +101,12 @@ if(isMember) {
          <jsp:param name="r" value="<%= rubriekID %>" />
          <jsp:param name="lnr" value="<%= lnRubriekID %>" />
       </jsp:include>
-		<jsp:include page="includes/shorty.jsp">
-	      <jsp:param name="s" value="<%= paginaID %>" />
-	      <jsp:param name="r" value="<%= rubriekID %>" />
+      <jsp:include page="includes/shorty.jsp">
+         <jsp:param name="s" value="<%= paginaID %>" />
+         <jsp:param name="r" value="<%= rubriekID %>" />
          <jsp:param name="rs" value="<%= styleSheet %>" />
-	      <jsp:param name="sr" value="2" />
-	   </jsp:include>
+         <jsp:param name="sr" value="2" />
+      </jsp:include>
       <img src="media/trans.gif" height="1px" width="165px;" />
    </td>
    </mm:node>

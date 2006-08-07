@@ -12,11 +12,11 @@
 <% // TODO: add functionality %>
 <h2>Wachtwoord verzonden</h2>
 <p>
-De aanvraag voor een nieuw wachtwoord is met succes verzonden. U krijgt per email een nieuw 
-wachtwoord toegestuurd.
+De aanvraag voor een nieuw wachtwoord is met succes verzonden.
+U krijgt per email een nieuw wachtwoord toegestuurd.
 </p>
 <p>
-<a href="index.jsp">terug naar home</a>
+<a href="index.jsp">terug naar inlogpagina</a>
 </p>
 
 </div>

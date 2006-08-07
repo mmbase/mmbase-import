@@ -37,14 +37,20 @@
       String unam = "";
       String pwd = "";
       %>
-      <mm:related path="posrel,pools,posrel,topics">
-         <mm:compare referid="action" value="clear_all"><mm:deletenode element="posrel" /></mm:compare>
+      <mm:related path="posrel1,pools,posrel2,topics">
+         <mm:compare referid="action" value="clear_all"><mm:deletenode element="posrel1" /></mm:compare>
          <mm:first>
             <mm:present referid="name"><tr><td colspan="2"><li><mm:write referid="name" /></td></tr></mm:present>
             <mm:remove referid="name" />
             <tr><td style="vertical-align:top;">Categorieen</td><td>
          </mm:first>
-         <mm:field name="pools.name" /> <mm:field name="pools.externid" /> (<mm:field name="topics.title" />)<br/>
+         <mm:field name="pools.name" /> <mm:field name="pools.externid" /> (<mm:field name="topics.title" />)
+         <mm:field name="posrel1.pos">
+            <mm:isgreaterthan value="1">
+               - <mm:write />
+            </mm:isgreaterthan>
+         </mm:field>
+         <br/>
          <mm:field name="topics.externid" id="topics_externid">
             <mm:compare referid="topics_externid" value="PWD">
                 <mm:field name="pools.externid" jspvar="dummy" write="false" vartype="String"><% pwd = dummy; %></mm:field>

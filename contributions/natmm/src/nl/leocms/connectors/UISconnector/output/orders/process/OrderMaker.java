@@ -51,7 +51,8 @@ public class OrderMaker
       customerInformation.setCommonInformation(commonInformation);
       customerInformation.setAddress(address);
 
-      commonInformation.setBankAccount(nodeSubscription.getIntValue("bank_of_gironummer"));
+      int bankAccount = nodeSubscription.getIntValue("bank_of_gironummer");
+      commonInformation.setBankAccount( (bankAccount!=-1 ? "" + bankAccount : "") );
 
       order.setOrderId(nodeSubscription.getNumber());
       order.setExtraInformation(nodeSubscription.getStringValue("description"));
