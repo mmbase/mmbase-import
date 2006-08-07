@@ -28,10 +28,10 @@ String userConstraint = "";
    <mm:remove referid="isvisible" />
    <mm:compare referid="startnodes" value="" inverse="true"><mm:import id="isvisible" /></mm:compare>
    <mm:node element="menu">
-		<mm:remove referid="creatierubriek" />
-		<mm:relatednodes type="rubriek">
-			<mm:field name="number" id="creatierubriek" write="false" /> 
-		</mm:relatednodes>
+      <mm:remove referid="creatierubriek" />
+      <mm:relatednodes type="rubriek">
+         <mm:field name="number" id="creatierubriek" write="false" /> 
+      </mm:relatednodes>
       <mm:notpresent referid="isvisible">
          <mm:related path="gebruikt,users" constraints="<%= userConstraint %>">
             <mm:import id="isvisible" />
@@ -63,6 +63,11 @@ String userConstraint = "";
                                  <mm:param name="search">yes</mm:param>
                                  <mm:param name="origin"><mm:field name="origin"/></mm:param>
                                  <mm:param name="startnodes"><mm:field name="startnodes"/></mm:param>
+                                 <mm:field name="constraints">
+                                    <mm:isnotempty>
+                                       <mm:param name="constraints"><mm:write /></mm:param>
+                                    </mm:isnotempty>
+                                 </mm:field>
                                  <mm:present referid="creatierubriek">
                                     <mm:param name="creatierubriek"><mm:write referid="creatierubriek" /></mm:param>
                                  </mm:present>
@@ -91,16 +96,16 @@ String userConstraint = "";
    <!--
    function showEditorsButton()
    {
-      if(document.layers)	   //NN4+
+      if(document.layers)     //NN4+
       {
        document.layers['buttondiv'].visibility = "show";
       }
-      else if(document.getElementById)	  // gecko(NN6) + IE 5+
+      else if(document.getElementById)   // gecko(NN6) + IE 5+
       {
         var obj = document.getElementById('buttondiv');
         obj.style.visibility = "visible";
       }
-      else if(document.all)	// IE 4
+      else if(document.all)   // IE 4
       {
         document.all['buttondiv'].style.visibility = "visible";
       }

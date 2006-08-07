@@ -34,7 +34,7 @@ import org.mmbase.bridge.RelationList;
  * Evenement
  *
  * @author Henk Hangyi
- * @version $Revision: 1.7 $, $Date: 2006-07-28 10:27:05 $
+ * @version $Revision: 1.8 $, $Date: 2006-08-07 14:44:00 $
  *
  */
 
@@ -555,32 +555,24 @@ public class Evenement extends DoubleDateNode {
    }
 
    /**
-    * Can the memeber book this party?
+    * Can the user book this event?
     *
     * @param nodeEvent Node
     * @param memberid String
     * @return boolean
     */
    public static boolean isAuthenticated(Node nodeEvent, String memberid) {
+      NodeList nlPaymentTypes = nodeEvent.getRelatedNodes("deelnemers_categorie");
+      boolean memberOnly = "Leden".equalsIgnoreCase(nlPaymentTypes.getNode(0).getStringValue("naam"));
+
       Cloud cloud = nodeEvent.getCloud();
-      if (memberid == null) {
-         return false;
+      boolean isMember = false;
+      if(memberid!=null) {
+         Node nodeMember = cloud.getNode(memberid);
+         isMember = "true".equals(nodeMember.getStringValue("lidnummer"));
       }
-      else {
-         NodeList nlPayemntTypes = nodeEvent.getRelatedNodes("deelnemers_categorie");
-         if ("Leden".equalsIgnoreCase(nlPayemntTypes.getNode(0).getStringValue("naam"))) {
-            Node nodeMember = cloud.getNode(memberid);
-            if("true".equals(nodeMember.getStringValue("lidnummer"))){
-               return true;
-            }
-            else{
-               return false;
-            }
-         }
-         else {
-            return true;
-         }
-      }
+
+      return !memberOnly || (memberOnly && isMember);
    }
 }
 

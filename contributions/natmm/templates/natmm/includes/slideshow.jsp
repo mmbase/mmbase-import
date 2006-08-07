@@ -15,7 +15,7 @@
    int thisImageNumber = 1;
    String imageId = request.getParameter("i");
    String offsetId = request.getParameter("o");
-   String pageTitle = " Natuurmonumenten: ";
+   String pageTitle = " " + NatMMConfig.companyName + ": ";
    String pageText = "<table cellspacing=\"0\" cellpadding=\"0\"><tr><td width=\"430\">"; %>
 <%@include file="../includes/splitimagelist.jsp"%>
 <% String pageUrl = "slideshow.jsp?o=" + offsetId + "&r=" + rubriekID; %>
@@ -28,8 +28,8 @@
    <mm:field name="title" jspvar="images_title" vartype="String" write="false">
       <% if(!images_title.equals("")){
             pageTitle += " - " + images_title; 
-	         pageText += "<strong>" + images_title + "</strong>";
-      	 } %>
+            pageText += "<strong>" + images_title + "</strong>";
+          } %>
    </mm:field>
    <% pageText += "<strong> [" + thisImageNumber + "/" + totalNumberOfImages + "]</strong>" ;%>
    <mm:field name="omschrijving" jspvar="images_omschrijving" vartype="String" write="false">
@@ -39,8 +39,8 @@
    </mm:field>
    <mm:field name="bron" jspvar="images_bron" vartype="String" write="false">
       <% if(!images_bron.equals("")){
-      	    pageText += " | " + images_bron;
-   	 } %>
+             pageText += " | " + images_bron;
+       } %>
    </mm:field>
    <% pageText += "</td><td>"; 
    if((!nextImage.equals("-1"))&&(nextImage.indexOf(",")>-1)){
@@ -68,26 +68,26 @@
    <!-- // 
       function resizeDiv() { 
          iHeight = document.images[0].height;
-      	 var IE=(document.all?true:false);
-      	 if(IE){ 
-      	    wHeight = document.body.clientHeight;
-      	    // document.all['contentblock'].style.height = wHeight - iHeight;
-      	 } else {
-      	    wHeight = window.innerHeight;
-      	    // document.getElementById('contentblock').style.height = wHeight - iHeight;
-      	 }
-      	 if (iHeight - wHeight + 75 != 0){
-      	    window.resizeBy(0, iHeight - wHeight + 75);
-      	 }
+          var IE=(document.all?true:false);
+          if(IE){ 
+             wHeight = document.body.clientHeight;
+             // document.all['contentblock'].style.height = wHeight - iHeight;
+          } else {
+             wHeight = window.innerHeight;
+             // document.getElementById('contentblock').style.height = wHeight - iHeight;
+          }
+          if (iHeight - wHeight + 75 != 0){
+             window.resizeBy(0, iHeight - wHeight + 75);
+          }
       };
-	 
+    
       if ((navigator.appName == "Microsoft Internet Explorer") && (parseInt(navigator.appVersion) < 4 )) {
          document.write("<link rel=stylesheet href=\"../hoofdsite/themas/ie3_main.css\" type=\"text/css\">"); 
       } else {
          document.write("<link rel=stylesheet href=\"../hoofdsite/themas/main.css\" type=\"text/css\">");
       }
       // -->
-		
+      
    </script>
    <% if(styleSheet!=null) { %><link rel="stylesheet" type="text/css" href="../<%= styleSheet %>" /><% } %>
    </head>
@@ -99,11 +99,11 @@
             <td style="padding-left:7px;padding-right:7px;padding-top:9px;padding-bottom:9px;">
                <%= pageText  %> 
             </td>
-   	    </tr>
+          </tr>
        </table>
        </div>
    </body>
-   </mm:node>	
+   </mm:node>  
 </html>
 </cache:cache>
 </mm:cloud>

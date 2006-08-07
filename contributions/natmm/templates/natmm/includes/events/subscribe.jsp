@@ -300,6 +300,10 @@ boolean isEventTemplate = true;
       for(int i= 0; i< labels.length; i++) {
          if(isDemoLayout && labels[i].equals("Lidnummer")) {
             // do nothing
+            %>
+            <html:hidden property="<%= properties[i] %>" value="" />
+            <%
+            
          } else {
             %>
             <tr>

@@ -11,7 +11,7 @@
       <title></title>
    </head>
    <body style="margin:0px;padding:0px;">
-   <div onClick="parent.document.getElementById('video<mm:write referid="link"/>').src='video.jsp?link=<mm:write referid="link"/>'">
+   <div onClick="parent.document.getElementById('video<mm:write referid="link"/>').src='includes/portal/video.jsp?link=<mm:write referid="link"/>'">
       <img src="<mm:write referid="video_image_url"/>" align="center"/>
    </div>
    </body>

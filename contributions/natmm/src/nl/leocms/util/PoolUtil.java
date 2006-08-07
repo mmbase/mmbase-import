@@ -38,6 +38,8 @@ public class PoolUtil {
    }
 
 
+   /* Adds the pools related to source that match poolsConstraint also to destination
+   */
    public static void addPools(Cloud cloud, String sSource, String sDestination, String poolsConstraint) {
 
       NodeList nlPools = cloud.getList(
@@ -45,7 +47,7 @@ public class PoolUtil {
                            "object,posrel,pools",
                            "pools.number",
                            poolsConstraint,
-                           null, null, "destination", true);
+                           null, null, null, true);
 
       for(int p = 0; p<nlPools.size(); p++) {
 
@@ -53,15 +55,25 @@ public class PoolUtil {
          NodeList nl = cloud.getList(
                            sPool,
                            "pools,posrel,object",
-                           "object.number",
+                           "posrel.number,object.number",
                            "object.number = '"  + sDestination + "'",
-                           null, null, "destination", true);
+                           null, null, null, true);
          if(nl.size()==0) {
+            log.info("Node" + sDestination + " is not related to pool " + sPool + ". Creating relation now.");
             Node pool = cloud.getNode(sPool);
             Node destination = cloud.getNode(sDestination);
             RelationManager posrelRelMan = cloud.getRelationManager("posrel");
-            posrelRelMan.createRelation(pool,destination).commit();
+            Relation posrel = posrelRelMan.createRelation(pool,destination);
+            posrel.setIntValue("pos",1);
+            posrel.commit();
+          } else {
+            log.info("Node" + sDestination + " already related to pool " + sPool + ". Adding one to clickcount.");
+            Node posrel = cloud.getNode(nl.getNode(0).getStringValue("posrel.number"));
+            int clickCount = posrel.getIntValue("pos");
+            posrel.setIntValue("pos",clickCount+1);
+            posrel.commit();
           }
+
       }
    }
 

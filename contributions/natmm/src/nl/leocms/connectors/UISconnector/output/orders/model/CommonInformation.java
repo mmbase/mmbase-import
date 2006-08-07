@@ -19,18 +19,18 @@ package nl.leocms.connectors.UISconnector.output.orders.model;
 
 public class CommonInformation
 {
-   private int bankAccount = 0;
+   private String bankAccount = "";
 
    public CommonInformation()
    {
    }
 
-   public void setBankAccount(int bankAccount)
+   public void setBankAccount(String bankAccount)
    {
       this.bankAccount = bankAccount;
    }
 
-   public int getBankAccount()
+   public String getBankAccount()
    {
       return bankAccount;
    }

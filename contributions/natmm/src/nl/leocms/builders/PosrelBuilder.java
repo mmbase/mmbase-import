@@ -63,7 +63,6 @@ public class PosrelBuilder extends InsRel {
                if (objectNode.getStringValue("pos").equals("1")) {
                   // notification is already send, do nothing
                } else {
-                  log.info("send email: " + sourceNumber + " -> " + destionationNumber);
                   sendMailToCustomers(cloud, sourceNumber, destionationNumber);
                   objectNode.setValue("pos",1);
                }
@@ -109,6 +108,8 @@ public class PosrelBuilder extends InsRel {
          String toEmailAddress = customer.getStringValue("deelnemers.email");
          String message = "Beste " + customer.getStringValue("deelnemers.firstname")
             + ", Er is een nieuw artikel geplaatst in een door u geselecteerd dossier: ";
+
+         log.info("send email: " + dossierNumber + " to " + toEmailAddress);
 
          Node emailNode = cloud.getNodeManager("email").createNode();
          emailNode.setValue("from", "demo@mediacompetence.com");
