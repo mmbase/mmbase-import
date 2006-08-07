@@ -20,7 +20,7 @@ if(referer!=null) {
    String okLink = "Naar de homepage";
    String okTitleDefault = "Bedankt voor uw bericht.";
    String okMessageDefault = "We zullen u zo spoedig mogelijk een reactie sturen.";
-   String responseTextDefault = "E-mail verstuurd vanaf www.natuurmonumenten.nl / pagina: ";
+   String responseTextDefault = "E-mail verstuurd vanaf " + NatMMConfig.liveUrl[0] + " / pagina: ";
 
    String noAnswer = "-";
 

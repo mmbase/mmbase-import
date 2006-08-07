@@ -25,6 +25,12 @@ if(NatMMConfig.hasClosedUserGroup) {
 <%@include file="includes/top3_nav.jsp" %>
 <%@include file="includes/top4_head.jsp" %>
 <%@include file="includes/top5_breadcrumbs_and_pano.jsp" %>
+<!-- outer table -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+  <td style="width:30%"></td>
+  <td>
+<!-- outer table -->
 <table width="790" border="0" cellspacing="0" cellpadding="0" align="center" valign="top" style="margin-left:6px;">
 <tr>
   <td style="vertical-align:top;width:165px;padding:2px;">
@@ -47,14 +53,19 @@ if(NatMMConfig.hasClosedUserGroup) {
       <jsp:param name="rs" value="<%= styleSheet %>" />
       <jsp:param name="sr" value="0" />
     </jsp:include>
-    <div style="padding-top:20px;text-align:center;">
-      <table><tr><td style="text-align:center; color:#B5B5B5; font-weight:bold;" 
-                     onClick="this.style.behavior='url(#default#homepage)'; this.setHomePage('<%= HttpUtils.getRequestURL(request) + "?" + request.getQueryString() %>');"
-                     onmouseover="this.style.cursor='pointer'">
-        Maak dit <img src="includes/portal/heart.gif" alt="" border="0" /><br/>
-        mijn startpagina
-      </td></tr></table>
-    </div>
+    <% 
+    if(isIE) { 
+      %>
+      <div style="padding-top:20px;text-align:center;">
+        <table><tr><td style="text-align:center; color:#B5B5B5; font-weight:bold;" 
+                       onClick="this.style.behavior='url(#default#homepage)'; this.setHomePage('<%= HttpUtils.getRequestURL(request) + "?" + request.getQueryString() %>');"
+                       onmouseover="this.style.cursor='pointer'">
+          Maak dit <img src="includes/portal/heart.gif" alt="" border="0" /><br/>
+          mijn startpagina
+          </td></tr></table>
+      </div>
+      <%
+    } %>
   </td>
   <td style="vertical-align:top;width:400px;padding:2px;">
     <jsp:include page="includes/portal/middle_top.jsp">
@@ -135,6 +146,14 @@ if(NatMMConfig.hasClosedUserGroup) {
   </td>
 </tr>
 </table>
+
+<!-- outer table -->
+   </td>
+   <td style="width:30%"></td>
+ </tr>
+</table>
+<!-- outer table -->
+
 <%@include file="includes/footer.jsp" %>
 <!-- /cache:cache -->
 </mm:cloud>

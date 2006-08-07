@@ -23,7 +23,7 @@ function changeImages() {
 // -->
 </script>
 <mm:node number="channels" notfound="skipbody">
-  <table style="width:100%;" cellspacing="0">
+  <table style="width:396px;" cellspacing="0">
       <tr>
         <td class="headerBar" style="vertical-align:top;">
            <img src="includes/portal/logo.gif" border="0" style="vertical-align:middle;"/> VANDAAG
@@ -47,7 +47,7 @@ function changeImages() {
     <mm:field name="artikel.number" jspvar="artikel_number" vartype="String" write="false">
     <mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false">
     <mm:first>
-      <table style="width:100%;">
+      <table style="width:396px;">
       <tr>
         <td style="vertical-align:top;width:195px;">
           <mm:node element="artikel">
@@ -94,8 +94,8 @@ function changeImages() {
     </mm:field>
   </mm:related>
 
-  <div class="headerBar" style="width:100%;">LAATSTE NIEUWS</div>
-  <table style="width:100%;">
+  <div class="headerBar" style="width:396px;">LAATSTE NIEUWS</div>
+  <table style="width:396px;">
   <tr>
     <td style="vertical-align:top;">
       <mm:related path="parent,rubriek2,posrel,pagina,contentrel,artikel"

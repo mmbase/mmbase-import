@@ -6,12 +6,12 @@ try {
 
 cal.setTime(now);
 int iFromDay = cal.get(Calendar.DAY_OF_MONTH);
-int iFromMonth = cal.get(Calendar.MONTH);
+int iFromMonth = cal.get(Calendar.MONTH)+1;
 int iFromYear = cal.get(Calendar.YEAR);
 
 cal.add(Calendar.DATE,numberOfDays);
 int iTillDay = cal.get(Calendar.DAY_OF_MONTH);
-int iTillMonth = cal.get(Calendar.MONTH);
+int iTillMonth = cal.get(Calendar.MONTH)+1;
 int iTillYear = cal.get(Calendar.YEAR);
 try {
    iFromDay = Integer.parseInt(request.getParameter("from_day"));

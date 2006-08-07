@@ -74,7 +74,7 @@ public class TestCoder
 
 
       CommonInformation commonInformation = new CommonInformation();
-      commonInformation.setBankAccount(384573985);
+      commonInformation.setBankAccount("384573985");
       customerInformation.setCommonInformation(commonInformation);
 
 
@@ -134,7 +134,7 @@ public class TestCoder
          TransformerFactory tFactory = TransformerFactory.newInstance();
 
          // Transformer transformer = tFactory.newTransformer(new javax.xml.transform.stream.StreamSource("z:/doc.xsl"));
-			Transformer transformer = tFactory.newTransformer();
+         Transformer transformer = tFactory.newTransformer();
 
          StringWriter result = new StringWriter();
          transformer.transform(new javax.xml.transform.dom.DOMSource(document),

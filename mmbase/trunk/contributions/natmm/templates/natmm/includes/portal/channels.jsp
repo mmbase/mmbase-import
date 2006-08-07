@@ -11,10 +11,10 @@
    int count = 0;
 %>
 <mm:node number="channels" notfound="skipbody">
-  <div class="headerBar" style="width:100%;">
+  <div class="headerBar" style="width:396px;">
       <mm:field name="naam" jspvar="name" vartype="String" write="false"><%= name.toUpperCase() %></mm:field>
   </div>
-  <table cellspacing="0" style="width:398">
+  <table cellspacing="0" style="width:396px;">
   <mm:field name="number" jspvar="channels_number" vartype="String" write="false">
     <%@include file="/editors/mailer/util/memberid_get.jsp" %>
 <%

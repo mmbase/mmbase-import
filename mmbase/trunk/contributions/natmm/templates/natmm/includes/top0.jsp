@@ -2,6 +2,11 @@
 <% response.setContentType("text/html; charset=UTF-8"); %>
 <base href="<%= javax.servlet.http.HttpUtils.getRequestURL(request) %>" />
 <%@include file="/taglibs.jsp" %>
+<%
+response.setHeader("Cache-Control","no-cache"); //HTTP 1.1
+response.setHeader("Pragma","no-cache"); //HTTP 1.0
+response.setDateHeader ("Expires", 0); //prevents caching at the proxy server
+%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>

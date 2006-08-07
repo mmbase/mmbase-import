@@ -16,10 +16,10 @@ String[] chars1 = new String[] {"b","c","d","f","g","h","j","k","m","n","p","r",
 String[] chars2 = new String[] {"a","e","i","o","u","y","2","3","4","5","6","7","8","9"};
 String account = "";
 for (int i=0;i<8;i++){
-	int ri1 = rand.nextInt(chars1.length);
-	int ri2 = rand.nextInt(chars2.length);
-	account += chars1[ri1];
-	account += chars2[ri2];
+   int ri1 = rand.nextInt(chars1.length);
+   int ri2 = rand.nextInt(chars2.length);
+   account += chars1[ri1];
+   account += chars2[ri2];
 }
 
 String emailNew = toemail.toLowerCase();
@@ -28,49 +28,54 @@ String hostName = HttpUtils.getRequestURL(request).toString();
 hostName = hostName.substring(0,hostName.lastIndexOf("/"));
             
 try {
-	String msg_subject = "Er ligt een ecard klaar van een natuurvriend(in)";
-	String msg_body = "Beste " + toname + ",\n\n";
-	msg_body += fromname + " heeft je een Natuurmonumenten e-card gestuurd. Klik op de link om je e-card op te halen.\n\n";
-	msg_body += hostName+"/ecard.jsp?id="+imgID+"&card="+account+"\n\n";
-   msg_body += "Op de hoogte blijven van de laatste natuurnieuwtjes? Meld je aan en ontvang maandelijks de Natuurbrief.\nhttp://www.natuurmonumenten.nl/natuurbrief\n\n";
-   msg_body += "Natuurmonumenten beschermt de natuur in Nederland. Help mee en steun ons:\nhttp://www.natuurmonumenten.nl/steunons\n\n";
+   String msg_subject = "Er ligt een ecard klaar van een vriend(in)";
+   if(NatMMConfig.companyName.equals("Natuurmonumenten") { 
+      msg_subject = "Er ligt een ecard klaar van een natuurvriend(in)";
+   }
+   String msg_body = "Beste " + toname + ",\n\n";
+   msg_body += fromname + " heeft je een " +  NatMMConfig.companyName + " e-card gestuurd. Klik op de link om je e-card op te halen.\n\n";
+   msg_body += hostName+"/ecard.jsp?id="+imgID+"&card="+account+"\n\n";
+   if(NatMMConfig.companyName.equals("Natuurmonumenten") { 
+      msg_body += "Op de hoogte blijven van de laatste natuurnieuwtjes? Meld je aan en ontvang maandelijks de Natuurbrief.\nhttp://www.natuurmonumenten.nl/natuurbrief\n\n";
+      msg_body += "Natuurmonumenten beschermt de natuur in Nederland. Help mee en steun ons:\nhttp://www.natuurmonumenten.nl/steunons\n\n";
+   }
    Properties props = new Properties();
-	props.put( "mail.smtp.host", "localhost" );
-	Session s = Session.getInstance( props, null );
-	MimeMessage message = new MimeMessage( s );
-	InternetAddress from = new InternetAddress( "ecards@natuurmonumenten.nl", "Natuurmonumenten Ecard", "iso8859-1" );
-	message.setFrom( from );
-	InternetAddress to = new InternetAddress( emailNew );
-	message.addRecipient( Message.RecipientType.TO, to );
-	message.setSubject( msg_subject );
-	message.setText( msg_body );
-	Transport.send( message );
-	sendOK = true; 
-	%>
-   <strong>Uw Natuurmonumenten e-card is verzonden!</strong><br/><br/>
+   props.put( "mail.smtp.host", "localhost" );
+   Session s = Session.getInstance( props, null );
+   MimeMessage message = new MimeMessage( s );
+   InternetAddress from = new InternetAddress(NatMMConfig.fromEmailAddress, NatMMConfig.companyName, "iso8859-1" );
+   message.setFrom( from );
+   InternetAddress to = new InternetAddress( emailNew );
+   message.addRecipient( Message.RecipientType.TO, to );
+   message.setSubject( msg_subject );
+   message.setText( msg_body );
+   Transport.send( message );
+   sendOK = true; 
+   %>
+   <strong>Uw <%= NatMMConfig.companyName %> e-card is verzonden!</strong><br/><br/>
    Verstuurd naar: <strong><%= toemail %></strong><br/>
    Inhoud tekst: <%= body %><br/><br/>
    Nog een e-card verzenden? <a href="ecard.jsp">Klik hier.</a><br/><br/>
-   <%		
+   <%    
 } catch (Exception e) { 
    sendOK = false;
 }  
 if(sendOK){%>
-   <mm:transaction id="datapost" name="my_trans" commitonclose="true">	
-   	<mm:createnode type="ecard" id="this_ecard">
-   		<mm:setfield name="toemail"><%=toemail%></mm:setfield>	
-   		<mm:setfield name="toname"><%=toname%></mm:setfield>	
-   		<mm:setfield name="mailkey"><%= account %></mm:setfield>
-   		<mm:setfield name="fromemail"><%=fromemail%></mm:setfield>	
-   		<mm:setfield name="fromname"><%=fromname%></mm:setfield>	
-   		<mm:setfield name="body"><%=body%></mm:setfield>
-   		<mm:setfield name="estat">1</mm:setfield>
-   		<mm:setfield name="viewstat">0</mm:setfield>
-   	</mm:createnode>
-   	<mm:node number="<%=imgID%>" id="this_img" />
-   	<mm:createrelation role="related" source="this_ecard" destination="this_img" />
-   	<mm:remove referid="this_img" />
-   	<mm:remove referid="this_ecard" />
+   <mm:transaction id="datapost" name="my_trans" commitonclose="true">  
+      <mm:createnode type="ecard" id="this_ecard">
+         <mm:setfield name="toemail"><%=toemail%></mm:setfield>   
+         <mm:setfield name="toname"><%=toname%></mm:setfield>  
+         <mm:setfield name="mailkey"><%= account %></mm:setfield>
+         <mm:setfield name="fromemail"><%=fromemail%></mm:setfield>  
+         <mm:setfield name="fromname"><%=fromname%></mm:setfield> 
+         <mm:setfield name="body"><%=body%></mm:setfield>
+         <mm:setfield name="estat">1</mm:setfield>
+         <mm:setfield name="viewstat">0</mm:setfield>
+      </mm:createnode>
+      <mm:node number="<%=imgID%>" id="this_img" />
+      <mm:createrelation role="related" source="this_ecard" destination="this_img" />
+      <mm:remove referid="this_img" />
+      <mm:remove referid="this_ecard" />
    </mm:transaction>
 <%} else {%>
    

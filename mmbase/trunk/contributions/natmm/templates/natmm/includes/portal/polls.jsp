@@ -4,12 +4,12 @@
    String embargoPollConstraint = "(poll.embargo < '" + (nowSec+quarterOfAnHour) + "') AND "
                                 + "(poll.use_verloopdatum='0' OR poll.verloopdatum > '" + nowSec + "' )";
 %>
-<div class="headerBar" style="width:100%;">OPINIE</div>
+<div class="headerBar" style="width:396px;;">OPINIE</div>
 <mm:list nodes="<%= paginaID %>" path="pagina,contentrel,poll" constraints="<%= embargoPollConstraint %>">
   <div style="padding-left:3px;"><mm:field name="poll.titel"/></div>
   <mm:node element="poll" jspvar="poll">
     <mm:field name="number" jspvar="poll_number" vartype="String" write="false">
-    <table width="100%">
+    <table width="396px;">
     <form name="poll<%= poll_number %>" method="post" target="poll<%= poll_number %>">
     <tr>
       <td style="vertical-align:top;">

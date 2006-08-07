@@ -280,11 +280,11 @@ public class Updater
 
       NodeManager nmEvenementType = cloud.getNodeManager("evenement_type");
 
-      //deletes old relations
-      for(Iterator it = nodeObject.getRelations("related", nmEvenementType).iterator(); it.hasNext();){
-         Node nodeRelation = (Node) it.next();
-         nodeRelation.delete(true);
-      }
+      // deletes old relations
+      // for(Iterator it = nodeObject.getRelations("related", nmEvenementType).iterator(); it.hasNext();){
+      //   Node nodeRelation = (Node) it.next();
+      //   nodeRelation.delete(true);
+      // }
 
       //Look for an already existing Node
       NodeList nl = cloud.getList("",

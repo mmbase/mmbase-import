@@ -534,11 +534,12 @@ public class SubscribeForm extends ActionForm {
       try {
          boolean validAccount = false;
          long iBankAccount = Long.parseLong(sBankAccount);
+         long twoTimesNine   = 99;
          long sevenTimesNine = 9999999;
          long eightTimesNine = 99999999;
          long nineTimesNine  = 999999999;
          boolean validDutchBankAccount = ( eightTimesNine <= iBankAccount ) && ( iBankAccount<= nineTimesNine );
-         boolean validDutchPostbankAccount = ( 1<=iBankAccount ) && ( iBankAccount<= sevenTimesNine );
+         boolean validDutchPostbankAccount = ( twoTimesNine <= iBankAccount ) && ( iBankAccount<= sevenTimesNine );
          if (validDutchBankAccount) {
             int checkSum = 0;
             for(int i = 0; i < sBankAccount.length(); i++) {
