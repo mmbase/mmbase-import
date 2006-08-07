@@ -64,5 +64,5 @@
    </relation>
    <relation destination="formulier" role="posrel"/>
    <relation destination="rubriek" role="posrel"/>
-	
+	 <relation destination="producttypes" role="posrel" />
 </action>

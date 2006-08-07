@@ -11,7 +11,7 @@
         <field fdatapath="." ftype="startwizard" inline="true" objectnumber="{object/@number}" wizardname="config/items/items">
             <prompt></prompt>
         </field>
-        <field name="name" ftype="data">
+        <field name="titel" ftype="data">
             <prompt>titel</prompt>
         </field>
         <field fdatapath="field[@name=&apos;pos&apos;]" >
@@ -25,11 +25,11 @@
              <field name="pos">{sum(//relation[@role=&apos;posrel&apos; and @lastitem=&apos;true&apos;]/field[@name=&apos;pos&apos;])+{$pos}}</field>
         </relation>
     </action>
-    <command name="search" nodepath="items" fields="name" orderby="name" age="-1">
+    <command name="search" nodepath="items" fields="titel" orderby="titel" age="-1">
         <prompt>zoek item</prompt>
         <search-filter>
             <name>titel bevat</name>
-            <search-fields>name</search-fields>
+            <search-fields>titel</search-fields>
         </search-filter>
     </command>
     <command name="startwizard" inline="true" wizardname="config/items/items" objectnumber="new"/>

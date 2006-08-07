@@ -7,12 +7,12 @@
 	<title>items (bij twee kolommen is oneven links en even rechts)</title>
 	<item>
 		<title></title>
-		<description>Items</description>
-		<field name="name" ftype="data">
-			<prompt>Titel</prompt>
+		<description></description>
+		<field name="titel" ftype="data">
+			<prompt>titel</prompt>
 		</field>
 		<field fdatapath="field[@name=&apos;pos&apos;]" >
-			 <prompt>Positie</prompt>
+			 <prompt>positie</prompt>
 		</field>
 		<list include="config/attachments/add_attachments_posrel.xml" />
    </item>
@@ -22,11 +22,11 @@
 			 <field name="pos">{sum(//relation[@role=&apos;posrel&apos; and @lastitem=&apos;true&apos;]/field[@name=&apos;pos&apos;])+{$pos}}</field>
       </relation>
 	</action>
-	<command name="search" nodepath="items" fields="name" orderby="name" age="-1">
+	<command name="search" nodepath="items" fields="titel" orderby="titel" age="-1">
     	<prompt>zoek item</prompt>
 		<search-filter>
 			<name>titel bevat</name>
-			<search-fields>name</search-fields>
+			<search-fields>titel</search-fields>
 		</search-filter>
 	</command>
 	<command name="startwizard" inline="true" wizardname="config/items/items_bijlage" objectnumber="new"/>

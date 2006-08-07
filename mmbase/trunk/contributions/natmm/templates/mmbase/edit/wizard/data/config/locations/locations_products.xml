@@ -11,7 +11,7 @@
     </steps>
     <form-schema id="edit_locations">
         <title></title>
-        <field name="name"><prompt>naam van de lokatie</prompt></field>
+        <field name="naam"><prompt>naam van de lokatie</prompt></field>
         <list include="config/products/add_products_readmore.xml" />
     </form-schema>
 </wizard-schema>

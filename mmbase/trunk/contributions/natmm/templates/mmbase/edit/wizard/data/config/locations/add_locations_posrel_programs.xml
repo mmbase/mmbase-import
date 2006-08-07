@@ -10,7 +10,7 @@
         <field fdatapath="field[@name=&apos;pos&apos;]" >
 		  		<prompt>positie</prompt>
         </field>
-        <field name="name" ftype="data">
+        <field name="naam" ftype="data">
             <prompt>naam</prompt>
         </field>
         <field fdatapath="." ftype="startwizard" inline="true" objectnumber="{object/@number}" wizardname="config/locations/locations">
@@ -22,11 +22,11 @@
             <object type="locations" />
         </relation>
     </action>
-    <command name="search" nodepath="locations" fields="name" orderby="name" age="-1">
+    <command name="search" nodepath="locations" fields="naam" orderby="naam" age="-1">
         <prompt>zoek lokatie</prompt>
         <search-filter>
             <name>naam bevat</name>
-            <search-fields>name</search-fields>
+            <search-fields>naam</search-fields>
         </search-filter>
     </command>
     <command name="startwizard" inline="true" wizardname="config/locations/locations" objectnumber="new"/>
