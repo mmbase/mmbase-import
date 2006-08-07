@@ -29,7 +29,7 @@
     <property name="ImageConvert.ConverterCommand">convert.exe</property>
     <!-- <property name="ImageConvert.ConverterRoot">c:/apps/ImageMagick</property> -->
     <!-- <property name="ImageConvert.ConverterRoot">e:/apps/imagemagick/</property> -->
-    <property name="ImageConvert.ConverterRoot">d:/win32app/imagemagick/</property>
+    <property name="ImageConvert.ConverterRoot">d:/apps/imagemagick/</property>
    
     <property name="MaxConcurrentRequests">3</property>
   </properties>
