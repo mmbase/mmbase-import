@@ -13,23 +13,26 @@ import java.util.List;
 
 @SuppressWarnings("serial")
 public class SearchForm extends ActionForm {
-    
-	private String contenttypes;
+
+	private String contenttypes = "contentelement";
 	private List results = new ArrayList();
 	private String expiredate = "0";
 	private String creationdate = "0";
 	private String lastmodifieddate = "0";
-	private String embargodate = "0";
+	private String publishdate = "0";
 	private String parentchannel;
 	private String linktochannel;
-    private String offset;
+   private String offset;
 	private int resultCount;
-	private String order;
-	private int direction;
-    private String personal;
-    private String useraccount;
+	private String order = "title";
+	private int direction = 1;
+   private String personal;
+   private String useraccount;
 	private String title;
 	private String objectid;
+   private String mode = "basic";
+   private String search = "true";
+   private String parentchannelpath = "";
 
 	public ActionErrors validate(ActionMapping actionMapping, javax.servlet.http.HttpServletRequest httpServletRequest) {
 		// ensure valid direction
@@ -86,12 +89,12 @@ public class SearchForm extends ActionForm {
 		this.lastmodifieddate = lastmodifieddate;
 	}
 
-	public String getEmbargodate() {
-		return embargodate;
+	public String getPublishdate() {
+		return publishdate;
 	}
 
-	public void setEmbargodate(String embargodate) {
-		this.embargodate = embargodate;
+	public void setPublishdate(String publishdate) {
+		this.publishdate = publishdate;
 	}
 
 	public String getParentchannel() {
@@ -158,23 +161,45 @@ public class SearchForm extends ActionForm {
       this.objectid = objectid;
    }
 
-
-public String getPersonal() {
-    return personal;
-}
-
-
-public void setPersonal(String personal) {
-    this.personal = personal;
-}
+   public String getPersonal() {
+       return personal;
+   }
 
 
-public String getUseraccount() {
-    return useraccount;
-}
+   public void setPersonal(String personal) {
+       this.personal = personal;
+   }
 
 
-public void setUseraccount(String useraccount) {
-    this.useraccount = useraccount;
-}
+   public String getUseraccount() {
+       return useraccount;
+   }
+
+   public void setUseraccount(String useraccount) {
+       this.useraccount = useraccount;
+   }
+
+   public String getMode() {
+      return mode;
+   }
+
+   public void setMode(String mode) {
+      this.mode = mode;
+   }
+
+   public String getSearch() {
+      return search;
+   }
+
+   public void setSearch(String search) {
+      this.search = search;
+   }
+
+   public String getParentchannelpath() {
+      return parentchannelpath;
+   }
+
+   public void setParentchannelpath(String parentchannelpath) {
+      this.parentchannelpath = parentchannelpath;
+   }
 }

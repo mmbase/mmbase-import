@@ -10,11 +10,11 @@ See http://www.MMBase.org/license
 package com.finalist.cmsc.portalImpl;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Properties;
 
 import javax.portlet.PortletException;
 import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
 import javax.servlet.http.HttpServlet;
@@ -26,6 +26,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.pluto.PortletContainerException;
 import org.apache.pluto.om.window.PortletWindow;
 
+import com.finalist.cmsc.beans.om.Site;
 import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.pluto.portalImpl.aggregation.ScreenFragment;
 import com.finalist.pluto.portalImpl.core.PortalControlParameter;
@@ -46,6 +47,7 @@ import com.finalist.pluto.portalImpl.servlet.ServletObjectAccess;
  * 
  * @author Wouter Heijke
  */
+@SuppressWarnings("serial")
 public class PortalServlet extends HttpServlet {
 	private static Log log = LogFactory.getLog(PortalServlet.class);
 
@@ -153,10 +155,7 @@ public class PortalServlet extends HttpServlet {
 		}
 
 		try {
-			String path = currentURL.getGlobalNavigationAsString();
-            if (ServerUtil.useServerName()) {
-                path = request.getServerName() + "/" + path;
-            }
+			String path = extractPath(request, currentURL);
 			log.debug("===>getScreen:'" + path + "'");
 			ScreenFragment screen = SiteManagement.getScreen(path);
 			if (screen != null) {
@@ -181,16 +180,29 @@ public class PortalServlet extends HttpServlet {
 		service(request, response);
 	}
 
-	public static boolean isNavigation(ServletContext ctx, HttpServletRequest request, HttpServletResponse response) {
+	public static boolean isNavigation(HttpServletRequest request, HttpServletResponse response) {
 		PortalEnvironment env = new PortalEnvironment(request, response, sc);
 		PortalURL currentURL = env.getRequestedPortalURL();
-		String path = currentURL.getGlobalNavigationAsString();
-		if (path == null) {
-			return false;
-		}
-        if (ServerUtil.useServerName()) {
-            path = request.getServerName() + "/" + path;
+        String path = extractPath(request, currentURL);
+        if (path == null) {
+            return false;
         }
 		return SiteManagement.isNavigation(path);
 	}
+    
+    private static String extractPath(HttpServletRequest request, PortalURL currentURL) {
+        String path = currentURL.getGlobalNavigationAsString();
+        if (ServerUtil.useServerName()) {
+            path = request.getServerName() + "/" + path;
+        }
+        else {
+            if (path == null || path.equals("") || path.equals("/")) {
+                List<Site> sites = SiteManagement.getSites();
+                if (!sites.isEmpty()) {
+                    path = sites.get(0).getUrlfragment();
+                }
+            }
+        }
+        return path;
+    }
 }

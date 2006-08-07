@@ -154,15 +154,20 @@ InPlaceEditor.Local.prototype = {
     this.form.appendChild(this.editField);
     
     if (this.options.htmlarea) {
-      var editor = new HTMLArea(this.editField);
-      customize(editor, _editor_url);
-      editor.config.width = this.elementWidth;
-      editor.config.height = this.options.minHeight > this.elementHeight ? this.options.minHeight: this.elementHeight;
-      editor.config.sizeIncludesToolbar = false;
-      editor.generate();
-      
-      this.editor = editor;
+        setTimeout(function() { obj.createInplaceHTMLArea(); }, 50);
     }
+  },
+  createInplaceHTMLArea: function() {
+  	    var xinha_plugins = createDefaultPlugins;
+        var xinha_config = createDefaultConfig();
+        var editor = new HTMLArea(this.editField, HTMLArea.cloneObject(xinha_config));
+        editor.registerPlugins(xinha_plugins);
+        editor.config.width = this.elementWidth;
+        editor.config.height = this.options.minHeight > this.elementHeight ? this.options.minHeight: this.elementHeight;
+        editor.config.sizeIncludesBars = false;
+        editor.generate();
+      
+       this.editor = editor;
   },
   getText: function() {
     document.getElementsByClassName(this.options.emptyClassName,this.element).each(function(child){

@@ -18,15 +18,15 @@
 
 		<action path="/editors/taskmanagement/TaskDoneAction" type="com.finalist.cmsc.tasks.forms.TaskDoneAction"
 			unknown="false" validate="false">
-			<forward name="success" path="/editors/taskmanagement/index.jsp" redirect="false" />
+			<forward name="success" path="/editors/dashboard.jsp" redirect="true" />
 		</action>
 		<action path="/editors/taskmanagement/DeleteTaskAction" type="com.finalist.cmsc.tasks.forms.DeleteTaskAction"
 			unknown="false" validate="false">
-			<forward name="success" path="/editors/taskmanagement/index.jsp" redirect="false" />
+			<forward name="success" path="/editors/dashboard.jsp" redirect="true" />
 		</action>
 		<action path="/editors/taskmanagement/TaskAction" type="com.finalist.cmsc.tasks.forms.TaskAction"
 			name="TaskForm" scope="session" input="/editors/taskmanagement/task.jsp" unknown="false" validate="true">
-			<forward name="success" path="/editors/taskmanagement/index.jsp" redirect="false" />
+			<forward name="success" path="/editors/dashboard.jsp" redirect="true" />
 		</action>
 		<action path="/editors/taskmanagement/TaskInitAction" type="com.finalist.cmsc.tasks.forms.TaskInitAction"
 			name="TaskForm" scope="session" unknown="false" validate="false">

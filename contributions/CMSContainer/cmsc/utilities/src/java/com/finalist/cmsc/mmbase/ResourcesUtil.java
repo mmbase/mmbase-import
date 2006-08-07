@@ -11,6 +11,8 @@ package com.finalist.cmsc.mmbase;
 
 import java.util.List;
 
+import net.sf.mmapps.commons.util.StringUtil;
+
 import org.mmbase.bridge.Node;
 import org.mmbase.module.builders.Images;
 import org.mmbase.module.core.MMBaseContext;
@@ -51,7 +53,7 @@ public class ResourcesUtil {
     }
 
     public static Node getImageNode(Node node, String template) {
-        if ("".equals(template)) {
+        if (StringUtil.isEmpty(template)) {
             return node;
         } else {
             // the cached image

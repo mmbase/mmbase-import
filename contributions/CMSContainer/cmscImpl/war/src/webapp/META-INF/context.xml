@@ -28,6 +28,17 @@
 		username="cmsc" 
 		password="cmsc"
 		driverClassName="com.mysql.jdbc.Driver" 
-		url="jdbc:mysql://localhost:3306/cmsc?autoReconnect=true" />
+		url="jdbc:mysql://localhost:3306/cmsc?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true" />
 	<!-- &amp;zeroDateTimeBehavior=convertToNull -->
+	
+	<Environment name="mmbase/imaging/ImageConvertClass"
+		value="org.mmbase.module.builders.ConvertImageMagick" type="java.lang.String" />
+	<Environment name="mmbase/imaging/ImageConvert.ConverterCommand" value="convert" type="java.lang.String" />
+	<Environment name="mmbase/imaging/ImageConvert.ConverterRoot" value="" type="java.lang.String" />
+
+	<!-- Contains value 'live' or 'staging' to determine whether this server is Live or Staging. -->
+	<Environment name="server/LiveOrStaging" value="staging" type="java.lang.String" />
+	<!-- This entry defines whether this server includes the servername to lookup portal pages. -->
+	<Environment name="server/useServerName" value="false" type="java.lang.String" />
+
 </Context>

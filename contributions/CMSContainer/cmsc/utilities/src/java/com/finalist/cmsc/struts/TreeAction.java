@@ -16,6 +16,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.mmapps.commons.util.HttpUtil;
 import net.sf.mmapps.commons.util.StringUtil;
 
 import org.apache.struts.action.*;
@@ -47,15 +48,15 @@ public abstract class TreeAction extends MMBaseAction {
                 info.collapse(Integer.parseInt(persistentid));
             }
             if ("inittree".equals(action)) {
-                PrintWriter out = response.getWriter();    
+                PrintWriter out = HttpUtil.getWriterForXml(response);    
                 String persistentid = request.getParameter("persistentid");
-                AjaxTree t = getTree(request, cloud, info, persistentid);
+                AjaxTree t = getTree(request, response, cloud, info, persistentid);
                 t.render(out);
             }
             if ("loadchildren".equals(action)) {
-                PrintWriter out = response.getWriter();    
+                PrintWriter out = HttpUtil.getWriterForXml(response);    
                 String persistentid = request.getParameter("persistentid");
-                AjaxTree t = getTree(request, cloud, info, persistentid);
+                AjaxTree t = getTree(request, response, cloud, info, persistentid);
                 t.renderChildren(out, persistentid);
             }
             if ("autocomplete".equals(action)) {
@@ -64,7 +65,8 @@ public abstract class TreeAction extends MMBaseAction {
                     path = null;
                 }
                 List children = getChildren(cloud, path);
-                PrintWriter out = response.getWriter();    
+
+                PrintWriter out = HttpUtil.getWriterForXml(response);    
                 out.write("<options>");
                 for (Iterator iter = children.iterator(); iter.hasNext();) {
                     String element = (String) iter.next();
@@ -76,7 +78,7 @@ public abstract class TreeAction extends MMBaseAction {
         }
         else {
             String channel = getChannelId(request, cloud);
-            if (!StringUtil.isEmpty(channel)) {
+            if (!StringUtil.isEmpty(channel) && !"notfound".equals(channel)) {
                 Node channelNode = cloud.getNode(channel);
                 List openChannels = getOpenChannels(channelNode);
                 if (openChannels != null) {
@@ -106,7 +108,7 @@ public abstract class TreeAction extends MMBaseAction {
     protected abstract TreeInfo getTreeInfo(Cloud cloud);
     protected abstract Node getRootNode(Cloud cloud);
     protected abstract List getOpenChannels(Node channelNode);
-    protected abstract AjaxTree getTree(HttpServletRequest request, Cloud cloud, TreeInfo info, String persistentid);
+    protected abstract AjaxTree getTree(HttpServletRequest request, HttpServletResponse response, Cloud cloud, TreeInfo info, String persistentid);
     protected abstract List getChildren(Cloud cloud, String path);
 
 }

@@ -37,6 +37,7 @@
 			type="com.finalist.cmsc.security.forms.ChangePasswordAction" name="ChangePasswordForm" scope="request"
 			input="/editors/usermanagement/changepassword.jsp" unknown="false" validate="true">
 			<forward name="success" path="/editors/usermanagement/changepassword.jsp" redirect="false" />
+			<forward name="cancel" path="/editors/empty.html" redirect="true" />
 		</action>
 		<action path="/editors/usermanagement/DeleteUserAction" type="com.finalist.cmsc.security.forms.DeleteUserAction"
 			unknown="false" validate="false">

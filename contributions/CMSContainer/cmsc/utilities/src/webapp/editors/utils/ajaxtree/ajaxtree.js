@@ -108,6 +108,12 @@ AjaxTreeAction.prototype.buildTree = function(request) {
 		var tree = this.createTree(treeXml);
 		var element = document.getElementById(this.elementId);
 		element.innerHTML = tree.toString();
+		try {
+			alphaImages();
+		}
+		catch(e2) {
+			// ignore
+		}
 	} catch(e) {
 		alert(e);
 	}
@@ -128,6 +134,13 @@ AjaxTreeAction.prototype.buildChildren = function(request) {
 		this.node.indent()
 		this.node.loaded = true;
 		this.node.doExpand();
+		
+		try {
+			alphaImages();
+		}
+		catch(e2) {
+			// ignore
+		}
 	} catch(e) {
 		alert(e);
 	}

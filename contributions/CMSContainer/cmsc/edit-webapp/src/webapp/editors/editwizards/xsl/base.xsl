@@ -4,7 +4,7 @@
 
    Author: yigal
    Created: 25-07-2003
-   Version: $Revision: 1.1 $, $Date: 2006-06-12 13:08:45 $
+   Version: $Revision: 1.2 $, $Date: 2006-08-07 22:36:38 $
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 
@@ -13,10 +13,10 @@
 
   <xsl:variable name="imagesize">+s(50x50)</xsl:variable>
 
-  <xsl:variable name="mediadir"><xsl:value-of select="$ew_context"/>/<xsl:value-of select="$templatedir"/>media/</xsl:variable>
+  <xsl:variable name="mediadir"><xsl:value-of select="$ew_context"/><xsl:value-of select="$templatedir"/>media/</xsl:variable>
 
   <xsl:template name="colorstyle">
-    <link rel="stylesheet" type="text/css" href="{$ew_context}/{$templatedir}style/color/base.css" />
+    <link rel="stylesheet" type="text/css" href="{$ew_context}{$templatedir}style/color/base.css" />
   </xsl:template>
 
   <xsl:variable name="searchagetype">none</xsl:variable>

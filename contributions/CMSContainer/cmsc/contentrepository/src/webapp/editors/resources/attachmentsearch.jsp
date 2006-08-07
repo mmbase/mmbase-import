@@ -7,7 +7,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
    <head>
-      <link href="../style.css" type="text/css" rel="stylesheet"/>
+ 	  <link href="../css/main.css" type="text/css" rel="stylesheet" />
       <title><fmt:message key="attachments.title" /></title>
       <script src="../repository/search.js"type="text/javascript" ></script>
       <script src="../repository/content.js"type="text/javascript" ></script>
@@ -15,22 +15,36 @@
       <script src="../utils/rowhover.js" type="text/javascript"></script>
 		<script type="text/javascript">
 			function selectElement(element, title, src) {
-				window.top.opener.selectElement(element, title, src);
-				window.top.close();
+				if(window.top.opener != undefined) {
+					window.top.opener.selectElement(element, title, src);
+					window.top.close();
+				}
 			}
 		</script>
    </head>
    <body>
       <mm:cloud jspvar="cloud" loginpage="../../editors/login.jsp">
-         <table style="width: 100%; vertical-alignment: top;">
-            <tr>
-               <td>
-                  <h3>
-                       <fmt:message key="attachments.title" />
-                  </h3>
-               </td>
-            </tr>
-         </table>
+
+      <div class="tabs">
+         <div class="tab_active">
+            <div class="body">
+               <div>
+                  <a href="#"><fmt:message key="attachments.title" /></a>
+               </div>
+            </div>
+         </div>
+         <div class="tab">
+            <div class="body">
+               <div>
+                  <a href="attachmentupload.jsp"><fmt:message key="attachments.upload.title" /></a>
+               </div>
+            </div>
+         </div>
+      </div>
+
+     <div class="editor" style="height:500px">
+      <div class="body">
+
          <mm:import id="searchinit"><c:url value='/editors/resources/AttachmentInitAction.do'/></mm:import>
          <html:form action="/editors/resources/AttachmentAction" method="post">
             <html:hidden property="offset"/>
@@ -42,31 +56,45 @@
 
          </html:form>
 
+<div class="ruler_green"><div><fmt:message key="attachments.results" /></div></div>
+
 <mm:import externid="results" jspvar="nodeList" vartype="List" />
+<mm:import externid="resultCount" jspvar="resultCount" vartype="Integer">0</mm:import>
+<mm:import externid="offset" jspvar="offset" vartype="Integer">0</mm:import>
+<c:if test="${resultCount > 0}">
 <%@include file="../repository/searchpages.jsp" %>
 
-         <table border="0" width="100%" class="listcontent">
+         <table>
             <tr class="listheader">
-               <th>                                    <a href="#" class="headerlink" onclick="orderBy('number');"><fmt:message key="attachmentsearch.numbercolumn" /></a></th>
-               <th style="width: 100px;" nowrap="true"><a href="#" class="headerlink" onclick="orderBy('title');"><fmt:message key="attachmentsearch.titlecolumn" /></a></th>
-               <th style="width: 110px;"><fmt:message key="attachmentsearch.filenamecolumn" /></th>
-               <th style="width: 110px;"><fmt:message key="attachmentsearch.mimetypecolumn" /></th>
+               <th><a href="#" class="headerlink" onclick="orderBy('number');"><fmt:message key="attachmentsearch.numbercolumn" /></a></th>
+               <th nowrap="true"><a href="#" class="headerlink" onclick="orderBy('title');"><fmt:message key="attachmentsearch.titlecolumn" /></a></th>
+               <th><fmt:message key="attachmentsearch.filenamecolumn" /></th>
+               <th><fmt:message key="attachmentsearch.mimetypecolumn" /></th>
             </tr>
-           	<mm:list referid="results">
-           	   <mm:node element="${contenttypes}" jspvar="node">
-                  <mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<mm:field name="title"/>','<mm:attachment />');</mm:import>
-                  <tr onMouseOver="objMouseOver(this);"
-                      onMouseOut="objMouseOut(this);"
-                      href="<mm:write referid="url"/>">
-                     <td onMouseDown="objClick(this);"><mm:field name="number"/></td>
-                     <td onMouseDown="objClick(this);"><mm:field name="title"/></td>
-                     <td onMouseDown="objClick(this);"><mm:field name="filename"/></td>
-                     <td onMouseDown="objClick(this);"><mm:field name="mimetype"/></td>
-                  </tr>
-               </mm:node>
-            </mm:list>
+            <tbody class="hover">
+                <c:set var="useSwapStyle">true</c:set>
+	           	<mm:list referid="results">
+	           	   <mm:node element="${contenttypes}" jspvar="node">
+	                  <mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<mm:field name="title"/>','<mm:attachment />');</mm:import>
+	                  <tr <c:if test="${useSwapStyle}">class="swap"</c:if> href="<mm:write referid="url"/>">
+	                     <td onMouseDown="objClick(this);">
+                        <a href="<mm:url page="../WizardInitAction.do">
+                                                     <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
+                                                     <mm:param name="returnurl" value="<%="../editors/resources/AttachmentAction.do" + request.getAttribute("geturl")%>" />
+                                                  </mm:url>">
+                              <img src="../gfx/icons/page_edit.png" /></a>
+                        </td>
+
+	                     <td onMouseDown="objClick(this);"><mm:field name="title"/></td>
+	                     <td onMouseDown="objClick(this);"><mm:field name="filename"/></td>
+	                     <td onMouseDown="objClick(this);"><mm:field name="mimetype"/></td>
+	                  </tr>
+	               </mm:node>
+	               <c:set var="useSwapStyle">${!useSwapStyle}</c:set>
+	            </mm:list>
+	         </tbody>
          </table>
-            <% } %> <%-- Close searchpages --%>
+</c:if>
       </mm:cloud>
    </body>
 </html:html>

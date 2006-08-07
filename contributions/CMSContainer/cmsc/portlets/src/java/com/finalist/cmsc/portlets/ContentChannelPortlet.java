@@ -33,7 +33,8 @@ import com.finalist.pluto.portalImpl.core.CmscPortletMode;
 public class ContentChannelPortlet extends CmscPortlet {
 
     private static final String ACTION_PARAM = "action";
-    
+    private static final String DISPLAYTYPE_PARAM = "displayType";
+
     private static final String ELEMENT_ID = "elementId";
     
     private static final String USE_PAGING = "usePaging";
@@ -49,6 +50,8 @@ public class ContentChannelPortlet extends CmscPortlet {
     
     private static final String USE_LIFECYCLE = "useLifecycle";
 
+    private static final String ARCHIVE = "archive";
+
     private static final String MAX_ELEMENTS = "maxElements";
     private static final String DIRECTION = "direction";
     private static final String ORDERBY = "orderby";
@@ -58,6 +61,7 @@ public class ContentChannelPortlet extends CmscPortlet {
 
 	private static final String VIEW = "view";
     private static final String VIEW_TYPE = "viewtype";
+    private static final String DISPLAY_TYPE = "displaytype";
 
     private static final String WINDOW = "window";
     private static final String PAGE = "page";
@@ -77,23 +81,24 @@ public class ContentChannelPortlet extends CmscPortlet {
             String portletId = preferences.getValue(PortalConstants.CMSC_OM_PORTLET_ID, null);
             if (portletId != null) {
                 // get the values submitted with the form
-                setPorltetNodeParameter(portletId, CONTENTCHANNEL, request.getParameter(CONTENTCHANNEL));
+                setPortletNodeParameter(portletId, CONTENTCHANNEL, request.getParameter(CONTENTCHANNEL));
 
-                setPorltetParameter(portletId, ORDERBY, request.getParameter(ORDERBY));
-                setPorltetParameter(portletId, DIRECTION, request.getParameter(DIRECTION));
-                setPorltetParameter(portletId, USE_LIFECYCLE, request.getParameter(USE_LIFECYCLE));
-                setPorltetParameter(portletId, ELEMENTS_PER_PAGE, request.getParameter(ELEMENTS_PER_PAGE));
-                setPorltetParameter(portletId, MAX_ELEMENTS, request.getParameter(MAX_ELEMENTS));
-                setPorltetParameter(portletId, SHOW_PAGES, request.getParameter(SHOW_PAGES));
-                setPorltetParameter(portletId, USE_PAGING, request.getParameter(USE_PAGING));
-                setPorltetParameter(portletId, PAGES_INDEX, request.getParameter(PAGES_INDEX));
-                setPorltetParameter(portletId, INDEX_POSITION, request.getParameter(INDEX_POSITION));
-                setPorltetParameter(portletId, VIEW_TYPE, request.getParameter(VIEW_TYPE));
+                setPortletParameter(portletId, ORDERBY, request.getParameter(ORDERBY));
+                setPortletParameter(portletId, DIRECTION, request.getParameter(DIRECTION));
+                setPortletParameter(portletId, USE_LIFECYCLE, request.getParameter(USE_LIFECYCLE));
+                setPortletParameter(portletId, ARCHIVE, request.getParameter(ARCHIVE));
+                setPortletParameter(portletId, ELEMENTS_PER_PAGE, request.getParameter(ELEMENTS_PER_PAGE));
+                setPortletParameter(portletId, MAX_ELEMENTS, request.getParameter(MAX_ELEMENTS));
+                setPortletParameter(portletId, SHOW_PAGES, request.getParameter(SHOW_PAGES));
+                setPortletParameter(portletId, USE_PAGING, request.getParameter(USE_PAGING));
+                setPortletParameter(portletId, PAGES_INDEX, request.getParameter(PAGES_INDEX));
+                setPortletParameter(portletId, INDEX_POSITION, request.getParameter(INDEX_POSITION));
+                setPortletParameter(portletId, VIEW_TYPE, request.getParameter(VIEW_TYPE));
                 
                 setPortletView(portletId, request.getParameter(VIEW));
 
-                setPorltetNodeParameter(portletId, PAGE, request.getParameter(PAGE));
-                setPorltetParameter(portletId, WINDOW, request.getParameter(WINDOW));
+                setPortletNodeParameter(portletId, PAGE, request.getParameter(PAGE));
+                setPortletParameter(portletId, WINDOW, request.getParameter(WINDOW));
             } else {
                 getLogger().error("No portletId");
             }
@@ -161,9 +166,12 @@ public class ContentChannelPortlet extends CmscPortlet {
                     }
                 }
                 if (nodesMap.size() == 1) {
-                    Iterator nodesIt = nodesMap.values().iterator();
-                    Node n = (Node) nodesIt.next();
-                    response.setRenderParameter(ELEMENT_ID, String.valueOf(n.getNumber()));
+                    String displayType  = request.getParameter(DISPLAYTYPE_PARAM);
+                    if (displayType == null || "detail".equals(displayType)) {
+                        Iterator nodesIt = nodesMap.values().iterator();
+                        Node n = (Node) nodesIt.next();
+                        response.setRenderParameter(ELEMENT_ID, String.valueOf(n.getNumber()));
+                    }
                 }
                 response.setPortletMode(PortletMode.VIEW);
             } else {
@@ -215,6 +223,20 @@ public class ContentChannelPortlet extends CmscPortlet {
     protected void doEditDefaults(RenderRequest req, RenderResponse res)
         throws IOException, PortletException {
         addViewInfo(req);
+        
+        PortletPreferences preferences = req.getPreferences();
+        String pageid = preferences.getValue(PAGE, null);
+        if (!StringUtil.isEmpty(pageid)) {
+            
+            String pagepath = SiteManagement.getPath(Integer.valueOf(pageid), true);
+            setAttribute(req, "pagepath", pagepath);
+            
+            Set<String> positions = SiteManagement.getPagePositions(pageid);
+            ArrayList<String> orderedPositions = new ArrayList<String>(positions);
+            Collections.sort(orderedPositions);
+            setAttribute(req, "pagepositions", new ArrayList<String>(orderedPositions));
+        }
+        
         super.doEditDefaults(req, res);
     }
     
@@ -237,6 +259,7 @@ public class ContentChannelPortlet extends CmscPortlet {
             String orderby = preferences.getValue(ORDERBY, null);
             String direction = preferences.getValue(DIRECTION, null);
             String useLifecycle = preferences.getValue(USE_LIFECYCLE, null);
+            String archive = preferences.getValue(ARCHIVE, null);
             
             int maxElements = Integer.parseInt( preferences.getValue(MAX_ELEMENTS, "-1") );
             if (maxElements <= 0) {
@@ -249,10 +272,10 @@ public class ContentChannelPortlet extends CmscPortlet {
             elementsPerPage = Math.min(elementsPerPage, maxElements);
             
             int totalItems = ContentRepository.countContentElements(channel, contenttypes, orderby, direction, 
-                    Boolean.valueOf(useLifecycle).booleanValue(), offset, elementsPerPage);
+                    Boolean.valueOf(useLifecycle).booleanValue(), archive, offset, elementsPerPage);
             
             List<ContentElement> elements = ContentRepository.getContentElements(channel, contenttypes, orderby, direction, 
-                    Boolean.valueOf(useLifecycle).booleanValue(), offset, elementsPerPage);
+                    Boolean.valueOf(useLifecycle).booleanValue(), archive, offset, elementsPerPage);
             
             setAttribute(req, ELEMENTS, elements);
             if (contenttypes != null && !contenttypes.isEmpty()) {
@@ -283,11 +306,14 @@ public class ContentChannelPortlet extends CmscPortlet {
             }
             String viewType = preferences.getValue(VIEW_TYPE, null);
             if (StringUtil.isEmpty(viewType)) {
-                setAttribute(req, VIEW_TYPE, "list");
+                setAttribute(req, DISPLAY_TYPE, "list");
             }
             else {
                 if ("oneDetail".equalsIgnoreCase(viewType) && totalItems == 1) {
-                    setAttribute(req, VIEW_TYPE, "detail");
+                    setAttribute(req, DISPLAY_TYPE, "detail");
+                }
+                else {
+                    setAttribute(req, DISPLAY_TYPE, "list");
                 }
             }
         }

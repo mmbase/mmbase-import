@@ -81,11 +81,12 @@
 			<forward name="success" path="/editors/site/refreshpagesandshow.jsp" redirect="false" />
 		</action>
 
-		<!-- ==== Select repository nodes ==== -->
+		<!-- ==== Select page nodes ==== -->
 	
 		<action path="/editors/site/select/SelectorPage" type="com.finalist.cmsc.navigation.select.forms.SelectorAction" 
 			unknown="false" validate="false"
-			className="com.finalist.cmsc.struts.SelectorPopupActionMapping">
+			className="com.finalist.cmsc.struts.SelectorActionMapping">
+			<set-property property="linkPattern" value="selectedpage.jsp?page={0}&amp;path={1}" />
 			<forward name="success" path="/editors/site/select/selectorpopup.jsp" redirect="false" />
 		</action>
 

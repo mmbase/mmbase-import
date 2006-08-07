@@ -4,7 +4,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
 <head>
-<link href="../style.css" type="text/css" rel="stylesheet" />
+	<link href="../css/main.css" type="text/css" rel="stylesheet" />
 <title><fmt:message key="user.title" /></title>
 </head>
 <body style="overflow: auto">
@@ -12,6 +12,13 @@
 	<style>
 	input.select { font-height: 4px;}
 </style>
+<div class="content_block_pink">
+<div class="header">
+   <div class="title"><fmt:message key="user.title" /></div>
+   <div class="header_end"></div>
+</div>
+		<div style="clear:both; height:10px;"></div>
+
 	<html:form action="/editors/usermanagement/UserAction">
 		<html:hidden property="id" />
 		<div id="user">
@@ -117,13 +124,15 @@
 		</div>
 
 		<br />
-		<table>
-			<tr>
-				<td><html:submit style="width:90"><fmt:message key="user.submit"/></html:submit></td>
-				<td><html:cancel style="width:90"><fmt:message key="user.cancel"/></html:cancel></td>
-			</tr>
-		</table>
+		<div style="padding: 5px;">
+			<html:submit style="width:90"><fmt:message key="user.submit"/></html:submit>
+			<html:cancel style="width:90"><fmt:message key="user.cancel"/></html:cancel>
+		</div>
 	</html:form>
+
+<div class="side_block_end"></div>
+</div>	
+	
 </mm:cloud>
 </body>
 </html:html>

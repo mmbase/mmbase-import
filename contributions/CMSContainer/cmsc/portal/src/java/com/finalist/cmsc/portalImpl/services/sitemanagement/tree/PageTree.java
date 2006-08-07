@@ -10,11 +10,13 @@ See http://www.MMBase.org/license
 package com.finalist.cmsc.portalImpl.services.sitemanagement.tree;
 
 import java.util.*;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class PageTree {
 
     private PageTreeNode root;
     private Map<Integer, PageTreeNode> treeNodes = new HashMap<Integer, PageTreeNode>();
+    private final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
     
     public PageTree(int id, String fragment) {
         this.root = new PageTreeNode(fragment, id, 0);
@@ -25,87 +27,152 @@ public class PageTree {
         return root;
     }
     
-    public void replace(String oldpath,  String newpath, Integer page, int childIndex) {
-        PageTreeNode oldNode = getPath(oldpath);
-        if (newpath.equals(oldpath)) {
-            // Page is still on the same position
-            oldNode.replace(page, childIndex);
-        }
-        else {
-            List<String> names = getPathElements(newpath);
-            if (names.size() > 1) {
-                String pageName = names.remove(names.size() - 1);
-                PageTreeNode newParemtNode = getPath(names);
-                if (newParemtNode.equals(oldNode.getParent())) {
-                    // Page is renamed
-                    oldNode.replace(pageName, page, childIndex);
-                }
-                else {
-                    // Page is moved to another location
-                    newParemtNode.insert(oldNode, childIndex);
-                }
-            }
-            else {
-                // Page is now a site
-                throw new IllegalArgumentException("Page is a site, call remove method");
-            }
-        }
-    }
-    
     public PageTreeNode remove(String path) {
-        PageTreeNode oldNode = getPath(path);
-        remove(oldNode);
-        return oldNode;
+        rwl.writeLock().lock();
+        try {
+            PageTreeNode oldNode = getPath(path);
+            remove(oldNode);
+            return oldNode;
+        }
+        finally {
+            rwl.writeLock().unlock();    
+        }
     }
 
     public PageTreeNode remove(String path, int destinationNumber) {
-        PageTreeNode parentNode = getPath(path);
-        PageTreeNode oldNode = parentNode.getChildById(destinationNumber);
-        remove(oldNode);
-        return oldNode;
+        rwl.writeLock().lock();
+        try {
+            PageTreeNode parentNode = getPath(path);
+            PageTreeNode oldNode = parentNode.getChildById(destinationNumber);
+            if (oldNode != null) {
+                remove(oldNode);
+            }
+            return oldNode;
+        }
+        finally {
+            rwl.writeLock().unlock();    
+        }
     }
 
     private void remove(PageTreeNode oldNode) {
-        oldNode.removeFromParent();
-        treeNodes.remove(oldNode.getPage());
+        rwl.writeLock().lock();
+        try {
+            oldNode.removeFromParent();
+            treeNodes.remove(oldNode.getPage());
+        }
+        finally {
+            rwl.writeLock().unlock();    
+        }
     }
     
     public PageTreeNode insert(String pagePath, Integer page, int childIndex) {
-        List<String> names = getPathElements(pagePath);
-        if (names.size() > 1) {
-            String pageName = names.remove(names.size() - 1);
-            PageTreeNode newParemtNode = getPath(names);
-            return insert(newParemtNode, page, pageName, childIndex);
+        rwl.writeLock().lock();
+        try {
+            List<String> names = getPathElements(pagePath);
+            if (names.size() > 1) {
+                String pageName = names.remove(names.size() - 1);
+                PageTreeNode newParemtNode = getPath(names);
+                return insert(newParemtNode, page, pageName, childIndex);
+            }
+            else {
+                // Page is a site
+                throw new IllegalArgumentException("Page is a site");
+            }
         }
-        else {
-            // Page is a site
-            throw new IllegalArgumentException("Page is a site");
+        finally {
+            rwl.writeLock().unlock();    
         }
     }
 
 
     public void replace(int sourceNumber, String pathfragement) {
-        if (treeNodes.containsKey(sourceNumber)) {
-            PageTreeNode rootTreeNode = treeNodes.get(sourceNumber);
-            rootTreeNode.replace(pathfragement);
+        rwl.writeLock().lock();
+        try {
+            if (treeNodes.containsKey(sourceNumber)) {
+                PageTreeNode rootTreeNode = treeNodes.get(sourceNumber);
+                rootTreeNode.replace(pathfragement);
+            }
+        }
+        finally {
+            rwl.writeLock().unlock();    
         }
     }
     
     public PageTreeNode insert(int sourceNumber, Integer destNumber, String fragment, int childIndex) {
-        PageTreeNode pageTreeNode = null;
-        if (treeNodes.containsKey(sourceNumber)) {
-            PageTreeNode rootTreeNode = treeNodes.get(sourceNumber);
-            pageTreeNode = insert(rootTreeNode, destNumber, fragment, childIndex);
+        rwl.writeLock().lock();
+        try {
+            PageTreeNode pageTreeNode = null;
+            if (treeNodes.containsKey(sourceNumber)) {
+                PageTreeNode rootTreeNode = treeNodes.get(sourceNumber);
+                pageTreeNode = insert(rootTreeNode, destNumber, fragment, childIndex);
+            }
+            return pageTreeNode;
         }
-        return pageTreeNode;
+        finally {
+            rwl.writeLock().unlock();    
+        }
     }
 
     private PageTreeNode insert(PageTreeNode newParemtNode, Integer page, String pageName, int childIndex) {
-        PageTreeNode newNode = new PageTreeNode(pageName, page, childIndex);
-        newParemtNode.insert(newNode, childIndex);
-        treeNodes.put(page, newNode);
-        return newNode;
+        rwl.writeLock().lock();
+        try {
+
+            PageTreeNode newNode = new PageTreeNode(pageName, page, childIndex);
+            newParemtNode.insert(newNode, childIndex);
+            treeNodes.put(page, newNode);
+            return newNode;
+        }
+        finally {
+            rwl.writeLock().unlock();    
+        }
     }
+    
+    public void move(PageTreeNode moveNode, int childIndex) {
+        rwl.writeLock().lock();
+        try {
+            PageTreeNode newParemtNode = moveNode.getParent();
+            newParemtNode.insert(moveNode, childIndex);
+        }
+        finally {
+            rwl.writeLock().unlock();    
+        }
+    }
+
+    public void move(PageTreeNode moveNode, int parentId, int childIndex) {
+        rwl.writeLock().lock();
+        try {
+            PageTreeNode newParemtNode = getPageTreeNode(parentId);
+            newParemtNode.insert(moveNode, childIndex);
+        }
+        finally {
+            rwl.writeLock().unlock();    
+        }
+    }
+
+    public void move(PageTreeNode moveNode, PageTree newTree, int parentId, int childIndex) {
+        rwl.writeLock().lock();
+        newTree.rwl.writeLock().lock();
+        try {
+            PageTreeNode newParemtNode = newTree.getPageTreeNode(parentId);
+            newParemtNode.insert(moveNode, childIndex);
+            moveToNewTree(moveNode, newTree);
+        }
+        finally {
+            rwl.writeLock().unlock();
+            newTree.rwl.writeLock().unlock();
+        }
+    }
+
+    private void moveToNewTree(PageTreeNode moveNode, PageTree newTree) {
+        treeNodes.remove(moveNode.getPage());
+        newTree.treeNodes.put(moveNode.getPage(), moveNode);
+        
+        List<PageTreeNode> children = moveNode.getChildren();
+        for (PageTreeNode node : children) {
+            moveToNewTree(node, newTree);
+        }
+    }
+
 
     /**
      * Get the PageTreeNode with the specified path.
@@ -116,8 +183,14 @@ public class PageTree {
      *     path is invalid this method will return <code>null</code>.
      */
     public PageTreeNode getPath(String path) {
-       List<String> names = getPathElements(path);
-       return getPath(names);
+        rwl.readLock().lock();
+        try {
+           List<String> names = getPathElements(path);
+           return getPath(names);
+        }
+        finally {
+            rwl.readLock().unlock();    
+        }
     }
 
     /**
@@ -128,21 +201,46 @@ public class PageTree {
      *     path is invalid this method will return <code>null</code>.
      */
     public PageTreeNode getPath(List<String> names) {
-        return root.getPath(names);
+        rwl.readLock().lock();
+        try {
+            return root.getPath(names);
+        }
+        finally {
+            rwl.readLock().unlock();    
+        }
     }
 
     public boolean containsPageTreeNode(int id) {
-        return treeNodes.containsKey(id);
+        rwl.readLock().lock();
+        try {
+            return treeNodes.containsKey(id);
+        }
+        finally {
+            rwl.readLock().unlock();    
+        }
+
     }
 
     public PageTreeNode getPageTreeNode(int id) {
-        return treeNodes.get(id);
+        rwl.readLock().lock();
+        try {
+            return treeNodes.get(id);
+        }
+        finally {
+            rwl.readLock().unlock();    
+        }
     }
 
     public void addPages(List<String> names, List<Integer> pageIds) {
-        root.addPages(names, pageIds);
+        rwl.readLock().lock();
+        try {
+            root.addPages(names, pageIds);
+        }
+        finally {
+            rwl.readLock().unlock();    
+        }
     }
-    
+
     /**
      * Convert a path into a list of the names.
      *
@@ -164,6 +262,5 @@ public class PageTree {
        }
        return elements;
     }
-
 
 }

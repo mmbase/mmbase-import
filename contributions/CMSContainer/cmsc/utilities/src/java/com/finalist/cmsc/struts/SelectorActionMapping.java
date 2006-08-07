@@ -12,8 +12,25 @@ package com.finalist.cmsc.struts;
 import org.apache.struts.action.ActionMapping;
 
 @SuppressWarnings("serial")
-public abstract class SelectorActionMapping extends ActionMapping {
+public class SelectorActionMapping extends ActionMapping {
 
-    protected abstract String getLinkPattern();
-    protected abstract String getTarget();
+    private String linkPattern;
+    private String target;
+    
+    protected String getLinkPattern() {
+        return linkPattern;
+    }
+    
+    public void setLinkPattern(String linkPattern) {
+        this.linkPattern = linkPattern;
+    }
+    
+    protected String getTarget() {
+        return target;
+    }
+    
+    public void setTarget(String target) {
+        this.target = target;
+    }
+
 }

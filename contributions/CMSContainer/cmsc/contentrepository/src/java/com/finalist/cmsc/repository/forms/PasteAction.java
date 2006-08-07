@@ -12,6 +12,7 @@ package com.finalist.cmsc.repository.forms;
 import org.mmbase.bridge.Node;
 
 import com.finalist.cmsc.repository.RepositoryUtil;
+import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.struts.TreePasteAction;
 
 
@@ -23,6 +24,7 @@ public class PasteAction extends TreePasteAction {
 
     protected void move(Node sourceChannel, Node destChannel) {
         RepositoryUtil.moveChannel(sourceChannel, destChannel);
+        SecurityUtil.clearUserRoles(sourceChannel.getCloud());
     }
 
 }

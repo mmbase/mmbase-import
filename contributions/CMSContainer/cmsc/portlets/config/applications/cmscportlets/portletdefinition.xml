@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <portletdefinition exportsource="jdbc:mysql://localhost/cmsc" timestamp="20050919142139">
 	<node number="44001" owner="default">
-		<title>ContentChannelPortlet</title>
-		<description>ContentChannelPortlet</description>
+		<title>OverzichtPortlet</title>
+		<description>Overzicht met lijst van elementen</description>
 		<definition>contentchannelportlet</definition>
 		<type>multiple</type>
 	</node>
@@ -13,8 +13,8 @@
 		<type>single</type>
 	</node>
 	<node number="44003" owner="default">
-		<title>ContentPortlet</title>
-		<description>ContentPortlet</description>
+		<title>DetailPortlet</title>
+		<description>Detailweergave van een element</description>
 		<definition>contentportlet</definition>
 		<type>multiple</type>
 	</node>

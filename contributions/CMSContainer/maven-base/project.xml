@@ -51,6 +51,22 @@
 			<url>http://www.finalist.com</url>
 			<timezone>1</timezone>
 		</developer>
+		<developer>
+			<name>Diederick Lawson</name>
+			<id>dlawson</id>
+			<email>diederick@finalist.com</email>
+			<organization>Finalist IT Group</organization>
+			<url>http://www.finalist.com</url>
+			<timezone>1</timezone>
+		</developer>
+		<developer>
+			<name>Freek Punt</name>
+			<id>fpunt</id>
+			<email>freek@finalist.com</email>
+			<organization>Finalist IT Group</organization>
+			<url>http://www.finalist.com</url>
+			<timezone>1</timezone>
+		</developer>
 	</developers>
 	<dependencies>
 		<dependency>
@@ -161,7 +177,7 @@
 		<dependency>
 			<groupId>mmapps</groupId>
 			<artifactId>mmcommons</artifactId>
-			<version>1.3</version>
+			<version>1.3.4</version>
 			<type>jar</type>
 			<properties>
 				<war.bundle>${war.bundle}</war.bundle>
@@ -265,7 +281,6 @@
 			- Both xerces and xmlApis should be located in
 			- your common/endorsed directory in Tomcat
 			- or the equivalent directory for your servlet container
-		-->
 		<dependency>
 			<groupId>xerces</groupId>
 			<artifactId>xercesImpl</artifactId>
@@ -284,6 +299,7 @@
 				<tomcat.common.endorsed>true</tomcat.common.endorsed>
 			</properties>
 		</dependency>
+		-->
 
 		<dependency>
 			<groupId>struts</groupId>

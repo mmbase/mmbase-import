@@ -1,22 +1,20 @@
-<!-- Print the paging data. -->
-<mm:import externid="offset" jspvar="offset" vartype="Integer">0</mm:import>
-<mm:import externid="resultCount" jspvar="resultCount" vartype="Integer">0</mm:import>
-
 <%
    if (nodeList == null) {
       // do nothing
    }
    else if (resultCount.intValue() == 0) {
-      %>Geen resultaten gevonden<%
+      %><p><fmt:message key="searchpages.nonefound" /></p><%
    }
-   else {
-      int resultsPerPage = 25;
-      String resultsPerPageString = PropertiesUtil.getProperty("repository.search.results.per.page");
-      if (resultsPerPageString != null && resultsPerPageString.matches("\\d+")) {
-         resultsPerPage = Integer.parseInt(resultsPerPageString);
-      }
+
+   int resultsPerPage = 50;
+   try {
+      resultsPerPage = Integer.parseInt(com.finalist.cmsc.mmbase.PropertiesUtil.getProperty("repository.search.results.per.page"));
+   }
+   catch (Exception e) {
+      // Do nothing here, the value was already set.
+   }
 %>
-<table border="0" width="100%">
+ <table border="0" width="100%">
    <tr>
       <td style="width:50%;">
 	     <fmt:message key="searchpages.showresults">
@@ -33,13 +31,13 @@
                int lastPage = Math.min(maxPage, minPage + 10);
                int firstPage= Math.max(0, offset.intValue() - 5 - (10 - (lastPage - minPage)));
                if (firstPage > 0) {
-                  %><a href="javascript:setOffset('0');">&lt;&lt;</a>&nbsp;<%
+                  %><a href="javascript:setOffset('0');">|&lt;</a>&nbsp;<%
                }
                for (int i = firstPage  ; i < lastPage ; i++) {
-                  %><a href="javascript:setOffset('<%=i%>');" <%=(i == offset.intValue())? "style=\"color:red\"":""%>><%=i+1%></a><%
+                  %><a href="javascript:setOffset('<%=i%>');" <%=(i == offset.intValue())? "style=\"color:black;text-decoration:none\"":""%>><%=i+1%></a>&nbsp;<%
                }
                if (lastPage < maxPage ) {
-                  %>&nbsp;<a href="javascript:setOffset('<%=maxPage - 1%>');">&gt;&gt;</a><%
+                  %>&nbsp;<a href="javascript:setOffset('<%=maxPage - 1%>');">&gt;|</a><%
                }
          %>
       </td>

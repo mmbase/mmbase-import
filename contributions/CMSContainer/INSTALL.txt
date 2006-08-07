@@ -37,7 +37,8 @@ maven plugin:download -DgroupId=maven -DartifactId=maven-ear-plugin -Dversion=1.
 
 The cmsc maven build will only succeed when the artifacts of the mmbase head are
 present in the local maven repository, There is not yet a remote repository 
-with up-to-date artifacts available on mmbase.org
+with up-to-date artifacts available on mmbase.org. The remote repository on finalist
+intranet site are up-to-date enough to build this project.
 
 The mmbase head artifacts can be installed by checking out the ALL module from 
 cvs.mmbase,org. After the checkout run "maven all:install" in the root.
@@ -45,24 +46,19 @@ More information is in the MMBASE.txt and MAVEN.txt files
  
 
 Step 3:
-Configure the database:
-- The cmsc uses a J2ee datasource for the database connection of mmbase. 
+Configure tomcat and the database:
+- The cmsc uses a J2ee datasource for the database connection of mmbase.
   The <TOMCAT_HOME>/common/lib should contain the following jars.
   * commons-collections-3.1.jar
   * commons-dbcp-1.2.1.jar
   * commons-pool-1.2.jar
-  * hsqldb-1.7.3.0.jar
   * mysql-connector-java-3.1.10-bin.jar
 
 - The server/tomcat directory contains a xml file which should be moved to
   <TOMCAT_HOME>/conf/Catalina/localhost.
   Alter the settings in this file to match your local database
 
-- Create and run the sql script to your database.
-  This script is cmsc.sql in the root of this project
-  NOTE: the cmsc.sql is an db with example data and is not always up 
-  to date with the sources. When you experience problems when browsing
-  the cmsc web application then start with an empty database.
+- Create an empty database
  
 Step 4:
 - Run the first-time-cmsc.bat (or .sh) in scripts directory.
@@ -70,8 +66,6 @@ Step 4:
 - And start your tomcat.
   Editors: http://localhost:8080/cmsc/editors/
   Front-end: http://localhost:8080/cmsc-webapp/TestSite/
-
-
 
 
 Tips:

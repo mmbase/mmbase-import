@@ -37,7 +37,7 @@ public class KeywordProcessor implements CommitProcessor {
                         && !ContentElementUtil.isContentElementField(managerField)) {
                     String text = node.getStringValue(managerField.getName());
                     if (!StringUtil.isEmptyOrWhitespace(text)) {
-                        text = text.replaceAll("<[^<^>]*>", "");
+                        text = text.replaceAll("<.+?>", "");
                         textFields.add(text);
                     }
                 }

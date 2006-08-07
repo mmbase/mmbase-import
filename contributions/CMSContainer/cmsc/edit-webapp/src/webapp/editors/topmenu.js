@@ -1,56 +1,45 @@
 var selected;
-function selectMenu(name) {
-
-	var cnavElement = document.getElementById('cnav');
-	if (cnavElement) {
-		var tabs = cnavElement.getElementsByTagName('div');
-		var numberOfTabs = tabs.length;
-
-		var element = document.getElementById(name);
-		element.className = 'active';
-		if(selected != undefined && selected != name) {
-			element = document.getElementById(selected);
-			element.className = '';
-		}
-		for(var i=0; i < numberOfTabs; i++) {
-			var unselected = tabs[i];
-			if(unselected && unselected.getAttribute('id') != name) {
-				unselected.className = '';
-			}
-		}
-		selected = name;
-
-	}
+function selectMenu(item) {
+   if(selected != undefined && selected != item) {
+      selected.className = '';
+   }
+   item.className = 'active';
+   selected = item;
 }
 
 function initMenu() {
-	var cnavElement = document.getElementById('cnav');
-	if (cnavElement) {
-		var tabs = cnavElement.getElementsByTagName('div');
-		var numberOfTabs = tabs.length;
 
 		var menuFrame = parent.frames[1];
 		if (menuFrame == undefined) {
 			menuFrame = document;
 		}
 		var framehref = menuFrame.location.href;
+      selectMenuByUrl(framehref);
+}
 
-		var tabFound = false;
-		for(var i=0; i < numberOfTabs; i++) {
-			var tab = tabs[i];
-			var ahref = tab.getElementsByTagName('a')[0].href;
-			if (framehref.indexOf(ahref) != -1) {
-			   selectMenu(tab.getAttribute('id'));
-			   tabFound = true;
-			   break;
-			}
-		}
-		if (!tabFound) {
-			var tab = tabs[0];
-			selectMenu(tab.getAttribute('id'));
-		}
-	}
-	else {
-		alert('tab div not found');
-	}	
+function selectMenuByUrl(url) {
+   var cnavElement = document.getElementById('menu');
+   if (cnavElement) {
+
+      var listItems = cnavElement.getElementsByTagName('li');
+      var numberOflistItems = listItems.length;
+
+      var listItemFound = false;
+      for(var i=0; i < numberOflistItems; i++) {
+         var listItem = listItems[i];
+         var ahref = listItem.getElementsByTagName('a')[0].href;
+         if (url.indexOf(ahref) != -1) {
+            selectMenu(listItem);
+            listItemFound = true;
+            break;
+         }
+      }
+      if (!listItemFound) {
+         var listItem = listItems[0];
+         selectMenu(listItem);
+      }
+   }
+   else {
+      alert('listItem div not found');
+   }
 }

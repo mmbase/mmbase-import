@@ -47,6 +47,7 @@
 		<wizard>config/attachments/attachments</wizard>
 		<nodepath>attachments</nodepath>
 		<fields>title</fields>
+		<search>yes</search>
 	</node>
 
 	<node number="33008" owner="admin">
@@ -54,7 +55,8 @@
 		<description>Images </description>
 		<wizard>config/images/images</wizard>
 		<nodepath>images</nodepath>
-		<fields>title</fields>
+		<fields>handle,title</fields>
+		<search>yes</search>
 	</node>
 
 	<node number="33009" owner="admin">
@@ -62,7 +64,8 @@
 		<description>Urls </description>
 		<wizard>config/urls/urls</wizard>
 		<nodepath>urls</nodepath>
-		<fields>name</fields>
+		<fields>name, url</fields>
+		<search>yes</search>
 	</node>
 
 </editwizards>

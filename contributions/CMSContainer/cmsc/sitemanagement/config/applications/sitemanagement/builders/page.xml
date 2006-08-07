@@ -74,8 +74,8 @@
 				<description xml:lang="en"></description>
 			</descriptions>
 			<gui>
-				<guiname xml:lang="nl">Embargodatum</guiname>
-            <guiname xml:lang="en">Embargodate</guiname>
+				<guiname xml:lang="nl">Publicatie datum</guiname>
+            <guiname xml:lang="en">Publishdate</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -88,7 +88,7 @@
 				<default value="now" />
 			</datatype>
 			<db>
-				<name>embargodate</name>
+				<name>publishdate</name>
 				<type key="false" notnull="false" state="persistent">DATETIME</type>
 			</db>
 		</field>

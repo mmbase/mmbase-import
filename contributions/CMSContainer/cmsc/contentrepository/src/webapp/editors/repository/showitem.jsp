@@ -7,11 +7,18 @@
    <mm:import externid="objectnumber" vartype="Integer" required="true"/>
    <mm:node number="$objectnumber">
          <head>
-            <title><fmt:message key="showcitem.title"><fmt:param><mm:field name="title" /></fmt:param></fmt:message></title>
-            <link href="../style.css" type="text/css" rel="stylesheet" />
+            <title><fmt:message key="showitem.title"><fmt:param><mm:field name="title" /></fmt:param></fmt:message></title>
+			<link href="../css/main.css" type="text/css" rel="stylesheet" />
          </head>
          <body>
-         	<h1><mm:nodeinfo type="guitype"/>: <mm:field name="title" /></h1>
+         
+		<div class="side_block_green" style="width:100%">
+			<!-- bovenste balkje -->
+			<div class="header">
+				<div class="title"><mm:nodeinfo type="guitype"/>: <mm:field name="title" /></div>
+				<div class="header_end"></div>
+			</div>
+			<div style="clear:both"></div>
             <table class="listcontent">
                <mm:field name="number">
                <tr>
@@ -30,6 +37,7 @@
             <table class="listcontent">
                <tr>
                   <td>
+                  	<hr/>
                      <fmt:message key="showchannels.linked">
                      	<fmt:param><mm:write referid="objectnumber" /></fmt:param>
                      </fmt:message>
@@ -75,7 +83,16 @@
                </mm:isempty>
             </table>
             <br />
-            <a href="#" onClick="window.close()" ><fmt:message key="showitem.close" /></a>
+			<ul class="shortcuts">
+               <li class="close">
+	               <a href="#" onClick="window.close()"><fmt:message key="showitem.close" /></a>
+				</li>
+			</ul>
+            
+            
+			<div class="side_block_end"></div>
+		</div>
+            
          </body>
    </mm:node>
 </mm:cloud>

@@ -14,4 +14,7 @@
 	</field>
 	<list include="config/popupinfo/search_link_related_popupinfo.xml" />
 	<list include="config/urls/search_link_posrel_urls.xml" />
+	<list include="config/images/search_link_imagerel_images.xml" />
+	<list include="config/attachments/search_link_posrel_attachments.xml" />
+	<list include="config/contentelement/search_link_posrel_contentelement.xml" />
 </form-schema>

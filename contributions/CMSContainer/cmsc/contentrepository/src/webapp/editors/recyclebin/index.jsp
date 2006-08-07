@@ -6,109 +6,121 @@
 <html:html xhtml="true">
 <head>
   <title><fmt:message key="recyclebin.title" /></title>
-  <link rel="stylesheet" type="text/css" href="../style.css" />
+	<link href="../css/main.css" type="text/css" rel="stylesheet" />
   <script src="recyclebin.js" type="text/javascript"></script>
   <script src="../utils/rowhover.js" type="text/javascript"></script>
 </head>
 <body>
+    <div class="tabs">
+        <div class="tab_active">
+            <div class="body">
+                <div>
+                    <a href="#"><fmt:message key="recyclebin.title" /></a>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<mm:cloud jspvar="cloud" rank="administrator" method='http'>
-      <mm:import id="parentchannel" jspvar="parentchannel"><%= RepositoryUtil.ALIAS_TRASH %></mm:import>
-      <mm:import jspvar="returnurl" id="returnurl">/editors/recyclebin/index.jsp</mm:import>
+	<div class="editor">
+		<div class="body">
+		<mm:cloud jspvar="cloud" rank="administrator" method='http'>
+			<mm:import id="parentchannel" jspvar="parentchannel"><%= RepositoryUtil.ALIAS_TRASH %></mm:import>
+			<mm:import jspvar="returnurl" id="returnurl">/editors/recyclebin/index.jsp</mm:import>
+                <p>
+                    <fmt:message key="recyclebin.channel" />
+                </p>
+				<form name="deleteForm" action="DeleteAction.do" method="post">
+					<input type="hidden" name="action" value="deleteall" />
+					<ul class="shortcuts">
+		            	<li class="trashbinempty">
+							<a href="javascript:deleteAll('<fmt:message key="recyclebin.removeallconfirm" />');"><fmt:message key="recyclebin.clear" /></a>
+						</li>
+					</ul>
+				</form>
+				<div style="clear:both; height:10px;"></div>
 
-   <table style="width: 100%;">
-      <tr>
-         <td>
-	         <fmt:message key="recyclebin.channel" >
-	         	<fmt:param ><mm:node number="$parentchannel"><mm:field name="name"/></mm:node></fmt:param>
-	         </fmt:message>
-            <br />
-         </td>
-      </tr>
-   </table>
-
-	<form action="DeleteAction.do" method="post" onsubmit="return deleteAll('<fmt:message key="recyclebin.removeallconfirm" />');">
-		<input type="hidden" name="action" value="deleteall" />
-		<input type="submit" value="<fmt:message key="recyclebin.clear" />" />
-	</form>
+                <div class="ruler_green"><div><fmt:message key="recyclebin.content" /></div></div>
    
-   <hr/>
-      <fmt:message key="recyclebin.content" /><br/>
-
-     <mm:import id="lastotype"/>
+			    <mm:import id="lastotype"/>
      
-<mm:node number="$parentchannel">
-<mm:relatednodescontainer path="contentrel,contentelement"
-  searchdirs="destination" element="contentelement">
-  <mm:sortorder field="contentelement.otype" direction="up" />
-  <mm:sortorder field="contentelement.title" direction="up" />
+				<mm:node number="$parentchannel">
+					<mm:relatednodescontainer path="contentrel,contentelement" searchdirs="destination" element="contentelement">
+						<mm:sortorder field="contentelement.otype" direction="up" />
+						<mm:sortorder field="contentelement.title" direction="up" />
 
-  <mm:listnodes jspvar="node">
+						<mm:listnodes jspvar="node">
 
-        <mm:field name="otype" write="false" id="otype"/>
-        <mm:field name="number" write="false" id="number"/>
+					        <mm:field name="otype" write="false" id="otype"/>
+					        <mm:field name="number" write="false" id="number"/>
 
-        <mm:compare referid="lastotype" value="" inverse="true">
-           </tr>
-        </mm:compare>
-        <mm:compare referid="otype" referid2="lastotype" inverse="true">
-           <mm:compare referid="lastotype" value="" inverse="true">
-              </table>
-           </mm:compare>
+					        <mm:compare referid="lastotype" value="" inverse="true">
+					           </tr>
+					        </mm:compare>
+					        <mm:compare referid="otype" referid2="lastotype" inverse="true">
+					           <mm:compare referid="lastotype" value="" inverse="true">
+					              </table>
+					           </mm:compare>
 
-           <mm:node referid="otype">
-              <br />
-	         <fmt:message key="recyclebin.type" >
-	         	<fmt:param><mm:field name="name" id="nodename"><mm:nodeinfo nodetype="$nodename" type="guitype"/></mm:field></fmt:param>
-	         </fmt:message>
-           </mm:node>
-           <mm:import id="lastotype" reset="true"><mm:write referid="otype"/></mm:import>
-           <mm:import id="newotype">true</mm:import>
+					           <mm:node referid="otype">
+					              <br />
+						          <fmt:message key="recyclebin.type" >
+					        		  <fmt:param><mm:field name="name" id="nodename"><mm:nodeinfo nodetype="$nodename" type="guitype"/></mm:field></fmt:param>
+						          </fmt:message>
+							   </mm:node>
+				               <mm:import id="lastotype" reset="true"><mm:write referid="otype"/></mm:import>
+                               <mm:import id="newotype">true</mm:import>
 
-           <table class="listcontent">
-        </mm:compare>
+           					   <table class="listcontent">
+				        	</mm:compare>
 
-        <mm:url page="../repository/showitem.jsp" id="url" write="false" >
-           <mm:param name="objectnumber" value="$number"/>
-        </mm:url>
-        <tr class="itemrow" onMouseOver="objMouseOver(this);"
-                    onMouseOut="objMouseOut(this);"
-                    href="<mm:write referid="url"/>"><td onMouseDown="objClickPopup(this, 500, 500);">
-           <mm:field name="number"/>
-        </td>
-        <td onMouseDown="objClickPopup(this, 500, 500);" width="100%">
-           <mm:field name="title"/>
-        </td>
+        					<mm:url page="../repository/showitem.jsp" id="url" write="false" >
+           						<mm:param name="objectnumber" value="$number"/>
+        					</mm:url>
+					        <tr class="itemrow" onMouseOver="objMouseOver(this);"
+			                    onMouseOut="objMouseOut(this);"
+            			        href="<mm:write referid="url"/>"><td onMouseDown="objClickPopup(this, 500, 500);">
+					           <mm:field name="number"/>
+					        </td>
 
-		<% if (RepositoryUtil.hasDeletionChannels(node)) { %>
-	      <td style="padding:0px">
-	      	<a href="javascript:restore('<mm:field name="number" />');">
-	      		<img src="../img/restore.gif" width="15" height="15" alt="<fmt:message key="recyclebin.restore" />"/>
-	      	</a>
-	      </td>
-        <% } %>
-        <td style="padding:0px">
-        	<a href="javascript:permanentDelete('<mm:field name="number" />', '<fmt:message key="recyclebin.removeconfirm" />');">
-        		<img src="../img/remove.gif" width="15" height="15" alt="<fmt:message key="recyclebin.remove" />"/>
-        	</a>
-        </td>
-        <mm:present referid="newotype">
-           <td></td>
-        </mm:present>
+							<% if (RepositoryUtil.hasDeletionChannels(node)) { %>
+						      <td style="padding:0px">
+						      	<a href="javascript:restore('<mm:field name="number" />');">
+						      		<img src="../gfx/icons/restore.png" width="15" height="15" alt="<fmt:message key="recyclebin.restore" />"/>
+						      	</a>
+						      </td>
+					        <% } %>
+					        <td style="padding:0px">
+					        	<a href="javascript:permanentDelete('<mm:field name="number" />', '<fmt:message key="recyclebin.removeconfirm" />');">
+					        		<img src="../gfx/icons/delete.png" width="15" height="15" alt="<fmt:message key="recyclebin.remove" />"/>
+					        	</a>
+					        </td>
 
-        <mm:remove referid="newotype"/>
+					        <td onMouseDown="objClickPopup(this, 500, 500);" width="100%">
+					           <mm:field name="title"/>
+					        </td>
 
-        <mm:last>
-           <mm:compare referid="lastotype" value="" inverse="true">
-              </tr></table>
-           </mm:compare>
-        </mm:last>
+					        <mm:present referid="newotype">
+					           <td></td>
+					        </mm:present>
+					
+					        <mm:remove referid="newotype"/>
+					
+					        <mm:last>
+					           <mm:compare referid="lastotype" value="" inverse="true">
+					              </tr></table>
+					           </mm:compare>
+					        </mm:last>
 
-  </mm:listnodes>
-</mm:relatednodescontainer>
-</mm:node>
+					  </mm:listnodes>
+					</mm:relatednodescontainer>
+				</mm:node>
 
-</mm:cloud>
+			</mm:cloud>
+
+		</div>
+		<div class="side_block_end"></div>
+	</div>	
+
 </body>
 </html:html>
 </mm:content>

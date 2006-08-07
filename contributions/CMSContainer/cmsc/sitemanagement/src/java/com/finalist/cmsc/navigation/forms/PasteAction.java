@@ -12,6 +12,7 @@ package com.finalist.cmsc.navigation.forms;
 import org.mmbase.bridge.Node;
 
 import com.finalist.cmsc.navigation.NavigationUtil;
+import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.struts.TreePasteAction;
 
 
@@ -23,6 +24,7 @@ public class PasteAction extends TreePasteAction {
 
     protected void move(Node sourcePage, Node destPage) {
         NavigationUtil.movePage(sourcePage, destPage);
+        SecurityUtil.clearUserRoles(sourcePage.getCloud());
     }
 
 }

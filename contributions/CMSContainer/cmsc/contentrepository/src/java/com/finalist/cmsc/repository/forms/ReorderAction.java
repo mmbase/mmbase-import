@@ -39,7 +39,7 @@ public class ReorderAction extends MMBaseFormlessAction {
                 if(returnurl != null) {
                    return new ActionForward(returnurl, true);
                 }
-                String url = mapping.findForward(SUCCESS).getPath() + "?parentchannel=" + parent;
+                String url = mapping.findForward(SUCCESS).getPath() + "?parentchannel=" + parent + "&direction=down";
                 return new ActionForward(url, true);
             }
             if ("reorderpartial".equals(action)) {

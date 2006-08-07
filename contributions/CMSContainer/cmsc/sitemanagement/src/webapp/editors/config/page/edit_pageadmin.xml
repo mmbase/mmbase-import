@@ -8,4 +8,5 @@
 	<list include="config/page/search_page_navrel_page.xml" />
 	<list include="config/portlet/search_page_portletrel_portlet.xml" />
 	<list include="config/stylesheet/search_page_allowrel_stylesheet.xml" />
+	<list include="config/images/search_page_namedrel_images.xml" />
 </form-schema>

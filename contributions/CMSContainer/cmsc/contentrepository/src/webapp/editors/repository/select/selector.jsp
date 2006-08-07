@@ -16,7 +16,7 @@
 
 	<script type="text/javascript">
 		ajaxTreeConfig.resources = '../../utils/ajaxtree/images/';
-		ajaxTreeConfig.url = 'SelectorContent.do';
+		ajaxTreeConfig.url = '<mm:url page="SelectorContent.do"/>';
 		ajaxTreeConfig.addressbarId = 'addressbar';
 	</script>
 	<style type="text/css">
@@ -50,7 +50,7 @@
 		</script>
 	</mm:node>
 
-	<a href="LocateInitAction.do" target="selectcontent">
+	<a href="../LocateInitAction.do" target="selectcontent">
 		<fmt:message key="selector.searchcontent" />
 	</a><br /><br />
 

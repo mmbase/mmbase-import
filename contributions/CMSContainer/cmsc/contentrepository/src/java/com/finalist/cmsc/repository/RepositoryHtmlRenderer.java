@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package com.finalist.cmsc.repository;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.finalist.tree.*;
 import com.finalist.tree.html.*;
@@ -26,14 +27,14 @@ public class RepositoryHtmlRenderer extends RepositoryRenderer implements HTMLTr
         return (HTMLTreeElement) super.getElement(model, node, id);
     }
     
-    public RepositoryHtmlRenderer(HttpServletRequest request, String target, boolean hideIcons) {
-        super(request, target);
+    public RepositoryHtmlRenderer(HttpServletRequest request, HttpServletResponse response, String target, boolean hideIcons) {
+        super(request, response, target);
         this.hideIcons = hideIcons;
         this.optionLabel = hideIcons;
     }
 
-    public RepositoryHtmlRenderer(HttpServletRequest request, String target) {
-        super(request, target);
+    public RepositoryHtmlRenderer(HttpServletRequest request, HttpServletResponse response, String target) {
+        super(request, response, target);
     }
     
     protected TreeOption createOption(String icon, String label, String action, String target) {

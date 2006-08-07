@@ -27,3 +27,23 @@
     document.forms[0].action=initUrl;
     document.forms[0].submit();
  }
+
+ function selectTab(mode) {
+    document.forms[0].mode.value=mode;
+    document.forms[0].search.value='false';
+    document.forms[0].submit();
+ }
+
+function selectAll(value, formName, elementPrefix) {
+   var elements = document.forms[formName].elements;
+   for (var i = 0; i < elements.length; i++) {
+      if (elements[i].name.indexOf(elementPrefix) == 0) {
+          elements[i].checked = value;
+      }
+   }
+}
+
+function selectChannel(channel, path) {
+   document.forms[0].parentchannel.value=channel;
+   document.forms[0].parentchannelpath.value=path;
+}

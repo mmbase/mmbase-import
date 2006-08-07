@@ -93,8 +93,10 @@ Object.extend(Ajax.InPlaceHtmlEditor.prototype, {
     }
     this.form.appendChild(this.editField);
       if (this.options.htmlarea) {
-		var editor = new HTMLArea(textArea);
-		customize(editor, _editor_url);
+        var xinha_plugins = createDefaultPlugins;
+        var xinha_config = createDefaultConfig();
+        var editor = new HTMLArea(textArea, HTMLArea.cloneObject(xinha_config));
+        editor.registerPlugins(xinha_plugins);
 		editor.config.width = this.elementWidth;
 		editor.config.height = this.elementHeight;
 		editor.config.sizeIncludesToolbar = false;

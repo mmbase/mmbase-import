@@ -142,8 +142,9 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
             String value = param.getValue();
             Cloud cloud = getUserCloud();
             PortletUtil.updatePortletParameter(cloud, portletId, key, value);
+            siteModelManager.clearPortlet(portletId);
 		}
-
+        
 		log.debug("++++ Param for portlet:'" + portletId + "'");
 		return result;
 	}
@@ -163,6 +164,7 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
                 node = cloud.getNode(value);
             }
             PortletUtil.updatePortletParameter(cloud, portletId, key, node);
+            siteModelManager.clearPortlet(portletId);
         }
 
         log.debug("++++ Param for portlet:'" + portletId + "'");
@@ -179,6 +181,7 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
 		try {
 			Cloud cloud = getUserCloud();
 			PortletUtil.updatePortletView(cloud, portletId, viewId);
+            siteModelManager.clearPortlet(portletId);
 		} catch (Exception e) {
 			log.error("something went wrong while setting view (" + viewId + ") for portlet (" + portletId + ")");
             if (log.isDebugEnabled()) {
@@ -199,6 +202,7 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
         try {
             Cloud cloud = getUserCloud();
             PortletUtil.setPagePortlet(cloud, screenId, portletId, id);
+            siteModelManager.clearPage(screenId);
         } catch (Exception e) {
             log.error("something went wrong while adding portlet (" + portletId + ")", e);
             result = false;
@@ -218,6 +222,7 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
     		Cloud cloud = getUserCloud();
     		Node newNode = PortletUtil.createPortlet(cloud, portletName, definitionName, viewId);
             PortletUtil.setPagePortlet(cloud, screenId, newNode, layoutId);
+            siteModelManager.clearPage(screenId);
         } catch (Exception e) {
             log.error("something went wrong while creating portlet (" + portletName + ")", e);
             result = false;
@@ -259,6 +264,7 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
 	public void deletePagePortlet(Page page, Portlet portlet, String layoutId) {
 		if (page != null && portlet != null) {
 			PortletUtil.deletePagePortlet(getUserCloud(), page.getId(), portlet.getId(), layoutId);
+            siteModelManager.clearPage(page.getId());
 		}
 	}
 
@@ -312,12 +318,18 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
 	}
 
 	/**
-	 * @see com.finalist.pluto.portalImpl.services.sitemanagement.SiteManagementService#getPageLink(net.sf.mmapps.commons.beans.om.Page, boolean)
+	 * @see com.finalist.pluto.portalImpl.services.sitemanagement.SiteManagementService#getPath(net.sf.mmapps.commons.beans.om.Page, boolean)
 	 */
-	public String getPageLink(Page page, boolean includeRoot) {
+	public String getPath(Page page, boolean includeRoot) {
         return siteModelManager.getPath(page, includeRoot);
 	}
 
+    public String getPath(int pageId, boolean includeRoot) {
+        Page page = siteModelManager.getPage(pageId);
+        return siteModelManager.getPath(page, includeRoot);
+    }
+
+    
     /**
      * @see com.finalist.pluto.portalImpl.services.sitemanagement.SiteManagementService#getViews(java.lang.String, java.lang.String)
      */
@@ -388,7 +400,7 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
             PortletDefinition definition = 
                 siteModelManager.getPortletDefinition(portlet.getDefinition());
             if (definition.isSingle()) {
-                result = cloud.getUser().getRank() == Rank.ADMIN;
+                result = cloud.getUser().getRank().getInt() >= definition.getRank();
             }
             else {
                 result = true;
@@ -415,5 +427,23 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
     public List<String> getContentTypes(String portletId) {
         return siteModelManager.getContentTypes(portletId);
     }
+
+    @Override
+    public Set<String> getPagePositions(String pageId) {
+        return siteModelManager.getPagePositions(Integer.valueOf(pageId));
+    }
+
+	public String getPageImageForPath(String name, String path) {
+        List<Page> pagesToRoot = getListFromPath(path);//get all pages to root
+
+        for(int count = pagesToRoot.size() - 1; count >= 0; count--){
+            Page page = pagesToRoot.get(count);
+            String image = page.getPageImage(name);
+            if(image != null) {
+            	return image;
+            }
+        }
+		return null;
+	}
 
 }

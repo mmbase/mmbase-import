@@ -30,24 +30,29 @@ public class ChangePasswordAction extends MMBaseAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
             HttpServletRequest request, HttpServletResponse response, Cloud cloud) throws Exception {
         
-        // Make sure we have the logged in user and not a user from a cloudprovider
-        Cloud userCloud = getCloudFromSession(request);
-
-        log.debug("ChangePasswordAction - doPerform()");
         if (!isCancelled(request)) {
-            ChangePasswordForm changePasswordForm = (ChangePasswordForm) form;
-            Node userNode = SecurityUtil.getUserNode(userCloud);
-            userNode.setStringValue("password", changePasswordForm.getNewpassword());
-            userNode.commit();
-
-// TODO: what should we do with an admin password change?
-//            if (userNode.getStringValue("account").equals("admin")) {
-//                UsersUtil.updateAdminPassword(changePasswordForm.getNewpassword());
-//            }
+	        // Make sure we have the logged in user and not a user from a cloudprovider
+	        Cloud userCloud = getCloudFromSession(request);
+	
+	        log.debug("ChangePasswordAction - doPerform()");
+	        if (!isCancelled(request)) {
+	            ChangePasswordForm changePasswordForm = (ChangePasswordForm) form;
+	            Node userNode = SecurityUtil.getUserNode(userCloud);
+	            userNode.setStringValue("password", changePasswordForm.getNewpassword());
+	            userNode.commit();
+	
+	// TODO: what should we do with an admin password change?
+	//            if (userNode.getStringValue("account").equals("admin")) {
+	//                UsersUtil.updateAdminPassword(changePasswordForm.getNewpassword());
+	//            }
+	        }
+	        ActionForward af = mapping.findForward(SUCCESS);
+	        af = new ActionForward(af.getPath() + "?succeeded=true");
+	        return af;
         }
-        ActionForward af = mapping.findForward(SUCCESS);
-        af = new ActionForward(af.getPath() + "?succeeded=true");
-        return af;
+        else {
+	        return mapping.findForward("cancel");
+        }
     }
 
 

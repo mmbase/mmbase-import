@@ -75,8 +75,8 @@
 				<description xml:lang="en"></description>
 			</descriptions>
 			<gui>
-				<guiname xml:lang="nl">Embargodatum</guiname>
-				<guiname xml:lang="en">Embargodate</guiname>
+				<guiname xml:lang="nl">Publicatie datum</guiname>
+				<guiname xml:lang="en">Publishdate</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -89,7 +89,7 @@
 				<default value="now" />
 			</datatype>
 			<db>
-				<name>embargodate</name>
+				<name>publishdate</name>
 				<type key="false" notnull="false" state="persistent">DATETIME</type>
 			</db>
 		</field>
@@ -145,12 +145,34 @@
 				<description xml:lang="en"></description>
 			</descriptions>
 			<gui>
+				<guiname xml:lang="nl">AAngemaakt door</guiname>
+				<guiname xml:lang="en">Creator</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>9</input>
+					<list>-1</list>
+					<search>-1</search>
+				</positions>
+			</editor>
+			<datatype base="creator" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+			<db>
+				<name>creator</name>
+				<type key="false" notnull="false" size="1024" state="system">STRING</type>
+			</db>
+		</field>
+		<field>
+			<descriptions>
+				<description xml:lang="nl"></description>
+				<description xml:lang="en"></description>
+			</descriptions>
+			<gui>
 				<guiname xml:lang="nl">use_expirydate</guiname>
 				<guiname xml:lang="en">use_expirydate</guiname>
 			</gui>
 			<editor>
 				<positions>
-					<input>9</input>
+					<input>10</input>
 					<list>-1</list>
 					<search>-1</search>
 				</positions>
@@ -172,9 +194,9 @@
 			</gui>
 			<editor>
 				<positions>
-					<input>10</input>
-					<list>10</list>
-					<search>10</search>
+					<input>11</input>
+					<list>11</list>
+					<search>11</search>
 				</positions>
 			</editor>
 			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
@@ -194,9 +216,9 @@
 			</gui>
 			<editor>
 				<positions>
-					<input>11</input>
-					<list>11</list>
-					<search>11</search>
+					<input>12</input>
+					<list>12</list>
+					<search>12</search>
 				</positions>
 			</editor>
 			<datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
@@ -216,9 +238,9 @@
 			</gui>
 			<editor>
 				<positions>
-					<input>12</input>
-					<list>12</list>
-					<search>12</search>
+					<input>13</input>
+					<list>13</list>
+					<search>13</search>
 				</positions>
 			</editor>
 			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
@@ -238,7 +260,7 @@
 			</gui>
 			<editor>
 				<positions>
-					<input>13</input>
+					<input>14</input>
 					<list>-1</list>
 					<search>-1</search>
 				</positions>
@@ -264,9 +286,9 @@
 			</gui>
 			<editor>
 				<positions>
-					<input>14</input>
-					<list>14</list>
-					<search>14</search>
+					<input>15</input>
+					<list>-1</list>
+					<search>-1</search>
 				</positions>
 			</editor>
 			<datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
@@ -286,7 +308,7 @@
 			</gui>
 			<editor>
 				<positions>
-					<input>15</input>
+					<input>16</input>
 					<list>-1</list>
 					<search>-1</search>
 				</positions>
@@ -315,7 +337,7 @@
 			</gui>
 			<editor>
 				<positions>
-					<input>16</input>
+					<input>17</input>
 					<list>-1</list>
 					<search>-1</search>
 				</positions>
@@ -325,7 +347,7 @@
 			</datatype>
 			<db>
 				<name>archivedate</name>
-				<type key="false" notnull="true" state="persistent">DATETIME</type>
+				<type key="false" notnull="false" state="persistent">DATETIME</type>
 			</db>
 		</field>
 		<field>
@@ -339,12 +361,14 @@
 			</gui>
 			<editor>
 				<positions>
-					<input>17</input>
+					<input>18</input>
 					<list>-1</list>
 					<search>-1</search>
 				</positions>
 			</editor>
-			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+				<default value="new" />
+			</datatype>
 			<db>
 				<name>status</name>
 				<type key="false" notnull="false" size="1024" state="persistent">STRING</type>

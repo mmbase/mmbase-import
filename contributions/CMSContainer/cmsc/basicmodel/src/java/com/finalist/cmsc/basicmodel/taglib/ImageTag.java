@@ -10,6 +10,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspTagException;
 
 /**
@@ -17,24 +18,29 @@ import javax.servlet.jsp.JspTagException;
  *
  * @author Hillebrand Gelderblom
  */
+@SuppressWarnings("serial")
 public class ImageTag extends org.mmbase.bridge.jsp.taglib.ImageTag {
+
    /** URL to the jsp used to display the image. */
    private final static String IMAGE_POPUP_URL = "imagePopup.jsp";
    
    /** Default title of the image which is used when the title of the image cannot be retrieved. */
-   private final static String IMAGE_POPUP_TITLE = "Afbeelding";
+   private final static String IMAGE_POPUP_WINDOW = "imagePopupWindow";
    
    /** Features of the popup window.  */
    private final static String IMAGE_POPUP_FEATURES = "toolbar=no,location=no,directories=no,status=no,menubar=no,resizable=yes,scrollbars=yes";
    
+   /** Constant that indicates that the legend shoud not be displayed. */
+   public static final String LEGEND_NONE = "none";
+   
    /** Constant that indicates that the legend shoud be displayed under the image. */
-   public final static int LEGEND_UNDER = 0;
+   public final static String LEGEND_BOTTOM = "bottom";
 
    /** Constant that indicates that the legend shoud be displayed above the image. */
-   public final static int LEGEND_ABOVE = 1;
+   public final static String LEGEND_TOP = "top";
 
    /** Constans that indicates that the legend should be displayed as an alternative text */
-   public final static int LEGEND_ALT = 2;
+   public final static String LEGEND_ALT = "alt";
 
    
    /** The logger. */
@@ -67,14 +73,14 @@ public class ImageTag extends org.mmbase.bridge.jsp.taglib.ImageTag {
      * @return html image tag
      * @throws JspTagException
      */
-    public String getOutputValue(Node node, String servletPath, Dimension dim, int legendtype, boolean popup) throws JspTagException {
+    public String getOutputValue(Node node, String servletPath, Dimension dim, String legendtype, boolean popup) throws JspTagException {
         StringBuffer sb = new StringBuffer();
-        if (legendtype == LEGEND_ABOVE) {
+        if (LEGEND_TOP.equals(legendtype)) {
            sb.append(getLegend(node, "img-txt-up"));
         }
         sb.append(super.getOutputValue(MODE_HTML_IMG, node, servletPath, dim));
     
-        if (legendtype == LEGEND_UNDER) {
+        if (LEGEND_BOTTOM.equals(legendtype)) {
            sb.append(getLegend(node, "img-txt-down"));
         }
           
@@ -87,7 +93,7 @@ public class ImageTag extends org.mmbase.bridge.jsp.taglib.ImageTag {
    
     protected String getOtherAttributes() throws JspTagException {
         if (externalAttributes == null) {
-            super.getOtherAttributes();
+            return super.getOtherAttributes();
         }
         return externalAttributes;
     }
@@ -115,13 +121,37 @@ public class ImageTag extends org.mmbase.bridge.jsp.taglib.ImageTag {
       return legend.toString();
    }
 
-   public String getAltAttribute(Node arg0) throws JspTagException {
-        if (getLegendtype() == LEGEND_ALT) {
-            return super.getAltAttribute(arg0); 
-        }
-        return "";
-    }
-   
+   public String getAltAttribute(Node node) throws JspTagException {
+	   // Issue NIJ-149: description cannot use multiple lines when used for alt tag
+	   String alt = findAltAttribute(node);
+	   if (alt == null || "".equals(alt)) {
+		   return " alt=\"\"";
+	   }
+	   alt = org.mmbase.util.transformers.Xml.XMLAttributeEscape(alt);
+	   return " alt=\"" + alt + "\" title=\"" + alt + "\"";
+   }
+
+   /** Finds the alt attribute to use */
+   private String findAltAttribute(Node node) throws JspTagException {
+	   // only use description if this option is selected
+	   if (LEGEND_ALT.equals(getLegendtype())) {
+		   if (node.getNodeManager().hasField("description")) {
+			   return replaceLineFeeds(node.getStringValue("description"), " ");
+		   }
+	   }
+	   // try another one, best match first
+	   if (node.getNodeManager().hasField("alt")) {
+		   return node.getStringValue("alt");
+	   }
+	   if (node.getNodeManager().hasField("title")) {
+		   return node.getStringValue("title");
+	   }
+	   if (node.getNodeManager().hasField("name")) {
+		   return node.getStringValue("name");
+	   }
+	   return null;
+   }
+
    /**
      * Adds html code to popup this image
      * 
@@ -132,16 +162,22 @@ public class ImageTag extends org.mmbase.bridge.jsp.taglib.ImageTag {
      */
    private String addPopup(Node image, String imgHtml, Dimension dimension) {
       log.debug("This image should popup is " + popup);
+
+      HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();        
+
+      // add some pixels for the scrollbar
+      int popupWidth = dimension.getWidth() + 20;
+      int popupHeight = (dimension.getHeight() + 20);
+      
       StringBuffer sb = new StringBuffer();
       sb.append("<a href=\"#\" onclick=\"javascript:handle = window.open('");
-      sb.append(IMAGE_POPUP_URL);
+      sb.append(req.getContextPath() + "/" + IMAGE_POPUP_URL);
       sb.append("?nodenumber=" + image.getNumber() + "' , '");
-      String title = image.getStringValue("title");
-      sb.append(!StringUtil.isEmpty(title) ? title: IMAGE_POPUP_TITLE);
+      sb.append(IMAGE_POPUP_WINDOW);
       sb.append("', '");
       sb.append(IMAGE_POPUP_FEATURES);
-      sb.append(",width=" + (dimension.getWidth() * 2));
-      sb.append(",height=" + (dimension.getHeight() * 2));
+      sb.append(",width=" + Math.min(popupWidth, 1011) );
+      sb.append(",height=" + Math.min(popupHeight, 672));
       sb.append("');handle.focus();return false;\">\n");
       sb.append(imgHtml);
       sb.append("\n</a>\n");
@@ -154,7 +190,7 @@ public class ImageTag extends org.mmbase.bridge.jsp.taglib.ImageTag {
     * @return Value of property popup.
     * @throws JspTagException 
     */
-   public boolean isPopup() throws JspTagException {
+   private boolean isPopup() throws JspTagException {
       return this.popup.getBoolean(this, false);
    }
    
@@ -172,8 +208,9 @@ public class ImageTag extends org.mmbase.bridge.jsp.taglib.ImageTag {
     * @return Value of property legendtype.
     * @throws JspTagException 
     */
-   public int getLegendtype() throws JspTagException {
-      return legendType.getInt(this, -1);
+   public String getLegendtype() throws JspTagException {
+      String temp = legendType.getString(this);
+      return StringUtil.isEmpty(temp)? LEGEND_NONE : temp;
    }
    
    /**
@@ -195,4 +232,12 @@ public class ImageTag extends org.mmbase.bridge.jsp.taglib.ImageTag {
         this.externalAttributes = externalAttributes;
     }
    
+    /** 
+     * Replaces all carriage returns and/or linefeeds in a <code>str</code> with <code>replacement</code>.
+     * Multiple consecutive CR's and/or LF's are replaced only once.
+     * TODO put this in a utility class
+     */
+    private String replaceLineFeeds(String str, String replacement) {
+    	return str.replaceAll("[\\r\\n]+", replacement);
+    }
 }

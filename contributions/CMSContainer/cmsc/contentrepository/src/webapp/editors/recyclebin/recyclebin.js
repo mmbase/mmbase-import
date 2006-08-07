@@ -17,5 +17,7 @@
     }
     
     function deleteAll(message) {
-       return confirm(message);
+       if(confirm(message)) {
+       		document.forms["deleteForm"].submit();
+       }
     }

@@ -15,11 +15,21 @@
  */
 package com.finalist.cmsc.richtext;
 
+import net.sf.mmapps.commons.util.XmlUtil;
+
+import org.mmbase.applications.wordfilter.WordHtmlCleaner;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+import org.w3c.dom.Document;
+
 /**
  * Class for storing constants for richtext handling classes.
  */
 public class RichText {
 
+    /** MMbase logging system */
+    private static Logger log = Logging.getLoggerInstance(RichText.class.getName());
+    
    public final static String RICHTEXT_ROOT_OPEN =
       "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
       "<richtext>";
@@ -49,5 +59,36 @@ public class RichText {
    public final static String INLINEREL_NM = "inlinerel";
    public final static String IMAGEINLINEREL_NM = "imageinlinerel";
    public static final String REFERID_FIELD = "referid";
+
+   public final static boolean hasRichtextItems(String in) {
+       return (in.indexOf("<"+RichText.LINK_TAGNAME) > -1 || in.indexOf("<"+RichText.IMG_TAGNAME) > -1);
+   }
+
+   public final static String cleanRichText(String originalValue) {
+       // if string is null or empty, (re)set it's value to empty string
+       String newValue = "";
+       if (originalValue != null && !"".equals(originalValue.trim())) {
+           // Edited value: clean.
+           log.debug("before cleaning: " + originalValue);
+           newValue = WordHtmlCleaner.cleanHtml(originalValue);
+           log.debug("after cleaning: " + newValue);
+       }
+       return newValue;
+   }
+
+   public final static String getRichTextString(Document doc) {
+       // to string and strip root node, doctype and xmldeclaration
+       String out = XmlUtil.serializeDocument(doc, false, false, true, true);
+       out = out.replaceAll("<.?richtext.?>", "");
+       out = XmlUtil.unescapeXMLEntities(out);
+       return out;
+   }
+
+   public final static Document getRichTextDocument(String in) {
+       String out = XmlUtil.escapeXMLEntities(in);
+       out = RichText.RICHTEXT_ROOT_OPEN + out + RichText.RICHTEXT_ROOT_CLOSE;
+       Document doc = XmlUtil.toDocument(out, false);
+       return doc;
+   }
 
 }

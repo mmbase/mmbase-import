@@ -3,8 +3,9 @@
 <action type="load">
 	<field name="creationdate" />
 	<field name="lastmodifieddate" />
-	<field name="embargodate" />
+	<field name="publishdate" />
 	<field name="expiredate" />
+	<field name="creator" />
 	<field name="lastmodifier" />
 	<field name="use_expirydate" />
 	<field name="title" />
@@ -26,6 +27,5 @@
 	<!-- content info relations -->
 	<relation destination="contentchannel" role="creationrel" />
 	<relation destination="contentchannel" role="contentrel" />
-	<relation destination="user" role="authorrel" />
 
 </action>

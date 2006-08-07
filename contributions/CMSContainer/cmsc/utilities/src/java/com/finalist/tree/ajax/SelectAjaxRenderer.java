@@ -9,13 +9,15 @@ See http://www.MMBase.org/license
 */
 package com.finalist.tree.ajax;
 
+import javax.servlet.http.HttpServletResponse;
+
 import com.finalist.tree.SelectRenderer;
 import com.finalist.tree.TreeModel;
 
 public abstract class SelectAjaxRenderer extends SelectRenderer implements AjaxTreeCellRenderer {
 
-    public SelectAjaxRenderer(String linkPattern, String target) {
-        super(linkPattern, target);
+    public SelectAjaxRenderer(HttpServletResponse response, String linkPattern, String target) {
+        super(response, linkPattern, target);
     }
 
     public AjaxTreeElement getElement(TreeModel model, Object node, String id) {

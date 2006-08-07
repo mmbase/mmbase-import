@@ -5,7 +5,7 @@
 <html:html xhtml="true">
 	<head>
 	<title><fmt:message key="selector.title" /></title>
-	<link href="../../style.css" type="text/css" rel="stylesheet" />
+	<link href="../../css/main.css" type="text/css" rel="stylesheet" />
 	<link href="../../utils/ajaxtree/addressbar.css" type="text/css" rel="stylesheet" />
 
 	<link href="../../utils/ajaxtree/ajaxtree.css" type="text/css" rel="stylesheet" />
@@ -13,10 +13,12 @@
 	<script type="text/javascript" src="../../js/scriptaculous/scriptaculous.js"></script>
 	<script type="text/javascript" src="../../utils/ajaxtree/ajaxtree.js"></script>
 	<script type="text/javascript" src="../../utils/ajaxtree/addressbar.js"></script>
+    <script type="text/javascript" src="../../utils/transparent_png.js" ></script>
+
 
 	<script type="text/javascript">
 		ajaxTreeConfig.resources = '../../utils/ajaxtree/images/';
-		ajaxTreeConfig.url = 'SelectorChannel.do';
+		ajaxTreeConfig.url = '<mm:url page="SelectorChannel.do"/>';
 		ajaxTreeConfig.addressbarId = 'addressbar';
 	</script>
 	<script type="text/javascript">
@@ -40,28 +42,42 @@
 	</style>
 	</head>
 	<body style="overflow: auto">
-	<mm:import externid="channel" from="request" />
-	<mm:node referid="channel">
-		<mm:field name="path" id="channelPath" write="false" />
 
-		<form action="SelectorChannel.do">
-			<input type="text" name="path" value="${channelPath}" id="addressbar" class="width80" />
-			<input type="submit" class="button" value=" <fmt:message key="selector.search" /> " />
-		</html>
-		<div id="addressbar_choices" class="addressbar"></div>
+   <div class="side_block">
+      <div class="header">
+         <div class="title"><fmt:message key="selector.title" /></div>
+         <div class="header_end"></div>
+      </div>
+      <div class="body">
+		<mm:import externid="channel" from="request" />
+		<mm:node referid="channel">
+			<mm:field name="path" id="channelPath" write="false" />
+	
+			<form action="SelectorChannel.do" id="addressBarForm">
+				   <div class="search_form">
+						<input type="text" name="path" value="${channelPath}" id="addressbar" class="width80" />
+					</div>
+					<div class="search_form_options">
+					   <a href="#" class="button" onclick="getElementById('addressBarForm').submit()"> <fmt:message key="selector.search" /> </a>
+					</div>
+			</form>
+			<div id="addressbar_choices" class="addressbar"></div>
+			<script type="text/javascript">
+				new AddressBar("addressbar", 
+					"addressbar_choices", 
+					ajaxTreeConfig.url + "?action=autocomplete",
+					{paramName: "path" });
+			</script>
+		</mm:node>
+		<div style="clear:both"></div>
+	
 		<script type="text/javascript">
-			new AddressBar("addressbar", 
-				"addressbar_choices", 
-				ajaxTreeConfig.url + "?action=autocomplete",
-				{paramName: "path" });
+			ajaxTreeLoader.initTree('', 'tree');
 		</script>
-	</mm:node>
-
-	<script type="text/javascript">
-		ajaxTreeLoader.initTree('', 'tree');
-	</script>
-	<div style="float: left" id="tree">Repository loading</div>
-
+		<div style="float: left" id="tree">Repository loading</div>
+      </div>
+      <div class="side_block_end"></div>
+   </div>
 	</body>
 </html:html>
 </mm:content>

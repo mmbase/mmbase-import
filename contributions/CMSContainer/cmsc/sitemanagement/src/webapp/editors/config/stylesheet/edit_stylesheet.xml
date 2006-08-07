@@ -12,7 +12,7 @@
 		<prompt xml:lang="en">Description</prompt>
 		<prompt xml:lang="nl">Omschrijving</prompt>
 	</field>
-	<field name="resource" dtmaxlength="255" ftype="text" rows="3">
+	<field name="resource" dtmaxlength="255" ftype="line">
 		<prompt xml:lang="en">Resource</prompt>
 		<prompt xml:lang="nl">Stylesheet</prompt>
 	</field>

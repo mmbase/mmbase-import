@@ -69,7 +69,7 @@
 			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
          <db>
             <name>creator</name>
-            <type key="false" notnull="true" size="150" state="persistent">STRING</type>
+            <type key="false" notnull="false" size="150" state="persistent">STRING</type>
          </db>
       </field>
       <field>
@@ -91,7 +91,7 @@
 			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
          <db>
             <name>language</name>
-            <type key="false" notnull="true" size="2" state="persistent">STRING</type>
+            <type key="false" notnull="false" size="2" state="persistent">STRING</type>
          </db>
       </field>
       <field>
@@ -100,7 +100,7 @@
             <description xml:lang="en"></description>
          </descriptions>
          <gui>
-            <guiname xml:lang="nl">Publiseerder</guiname>
+            <guiname xml:lang="nl">Publicist</guiname>
             <guiname xml:lang="en">Publisher</guiname>
          </gui>
          <editor>
@@ -113,7 +113,7 @@
 			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
          <db>
             <name>publisher</name>
-            <type key="false" notnull="true" size="150" state="persistent">STRING</type>
+            <type key="false" notnull="false" size="150" state="persistent">STRING</type>
          </db>
       </field>
       <field>
@@ -135,7 +135,7 @@
 			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
          <db>
             <name>source</name>
-            <type key="false" notnull="true" size="150" state="persistent">STRING</type>
+            <type key="false" notnull="false" size="150" state="persistent">STRING</type>
          </db>
       </field>
       <field>
@@ -157,7 +157,7 @@
 			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
          <db>
             <name>rights</name>
-            <type key="false" notnull="true" size="150" state="persistent">STRING</type>
+            <type key="false" notnull="false" size="150" state="persistent">STRING</type>
          </db>
       </field>
 </fieldlist>

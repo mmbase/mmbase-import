@@ -9,6 +9,7 @@
  */
 package com.finalist.cmsc.taglib;
 
+import java.util.Iterator;
 import java.util.List;
 
 import com.finalist.cmsc.beans.om.Page;
@@ -22,16 +23,50 @@ import com.finalist.cmsc.portalImpl.services.sitemanagement.SiteManagement;
  */
 public class ListPagesTag extends AbstractListTag {
 
-	protected List getList() {
+    private static final String MODE_ALL = "all";
+    private static final String MODE_HIDDEN = "hidden";
+    private static final String MODE_MENU = "menu";
+    
+    private String mode = MODE_MENU;
+    
+	protected List<? extends Page> getList() {
+        List<? extends Page> pages = null;
 		if (origin != null) {
 			if (origin instanceof Site) {
-				return SiteManagement.getPages((Site)origin);
+                pages = SiteManagement.getPages((Site)origin);
 	        } else if (origin instanceof Page) {
-				return SiteManagement.getPages((Page)origin);
+                pages =  SiteManagement.getPages((Page)origin);
 	        }
 		} else {
-			return SiteManagement.getSites();
+            pages = SiteManagement.getSites();
 		}
-		return null;
+        if (pages != null ) {
+            if (MODE_MENU.equalsIgnoreCase(mode) || MODE_ALL.equalsIgnoreCase(mode)) {
+                for (Iterator iter = pages.iterator(); iter.hasNext();) {
+                    Page page = (Page) iter.next();
+                    if (!page.isInmsenu()) {
+                        iter.remove();
+                    }
+                }
+            }
+            if (MODE_HIDDEN.equalsIgnoreCase(mode) || MODE_ALL.equalsIgnoreCase(mode)) {
+                for (Iterator iter = pages.iterator(); iter.hasNext();) {
+                    Page page = (Page) iter.next();
+                    if (page.isInmsenu()) {
+                        iter.remove();
+                    }
+                }
+            }
+        }
+		return pages;
 	}
+    
+    public String getMode() {
+        return mode;
+    }
+    
+    public void setMode(String mode) {
+        this.mode = mode;
+    }
+    
 }

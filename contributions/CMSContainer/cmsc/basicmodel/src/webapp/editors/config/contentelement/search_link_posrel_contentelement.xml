@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<list role="posrel" destination="contentelement" minoccurs="0" maxoccurs="*" orderby="field[@name='pos']" ordertype="number">
+	<title xml:lang="nl">Content element</title>
+	<title xml:lang="en">Content element</title>
+
+	<item>
+		<field name="name">
+			<prompt xml:lang="en">Title</prompt>
+			<prompt xml:lang="nl">Titel</prompt>
+		</field>
+	</item>
+
+	<command name="search" nodepath="contentelement" age="-1" fields="title,description">
+		<prompt xml:lang="en">Search element</prompt>
+		<prompt xml:lang="nl">Zoek element</prompt>
+		<search-filter>
+			<name xml:lang="en">Title contains</name>
+			<name xml:lang="nl">Titel bevat</name>
+			<search-fields>[title]</search-fields>
+		</search-filter>
+		<search-filter>
+			<name xml:lang="en">Description contains</name>
+			<name xml:lang="nl">Omschrijving bevat</name>
+			<search-fields>[description]</search-fields>
+		</search-filter>
+	</command>
+	
+	<action type="create">
+		<relation destinationtype="contentelement" role="posrel">
+			<field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+			<object type="contentelement" />
+		</relation>
+	</action>
+</list>

@@ -18,7 +18,7 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 import net.sf.mmapps.commons.util.StringUtil;
 
-import com.finalist.cmsc.struts.JstlUtil;
+import com.finalist.cmsc.util.bundles.JstlUtil;
 
 public class OptionTag extends SimpleTagSupport {
 

@@ -37,6 +37,12 @@ See http://www.MMBase.org/license
 			<version>${mmbase.version}</version>
 			<type>jar</type>
 		</dependency>
+   		<dependency>
+			<groupId>mmbase</groupId>
+			<artifactId>mmbase-crontab</artifactId>
+			<version>${mmbase.version}</version>
+			<type>jar</type>
+		</dependency>
 	</dependencies>
 </project>
 

@@ -11,6 +11,8 @@ package com.finalist.tree;
 
 import java.text.MessageFormat;
 
+import javax.servlet.http.HttpServletResponse;
+
 import net.sf.mmapps.commons.util.StringUtil;
 
 import org.mmbase.bridge.Node;
@@ -19,10 +21,12 @@ import com.finalist.cmsc.mmbase.TreeUtil;
 
 public abstract class SelectRenderer implements TreeCellRenderer {
 
+    private HttpServletResponse response;
     private String linkPattern;
     private String target;
     
-    protected SelectRenderer(String linkPattern, String target) {
+    protected SelectRenderer(HttpServletResponse response, String linkPattern, String target) {
+        this.response = response;
         this.linkPattern = linkPattern;
         this.target = target;
     }
@@ -42,6 +46,9 @@ public abstract class SelectRenderer implements TreeCellRenderer {
         TreeElement element = createElement(icon, id, name, fragment);
         Object[] arguments = { String.valueOf(parentNode.getNumber()), parentNode.getStringValue(TreeUtil.PATH_FIELD) };
         String link = MessageFormat.format(linkPattern, arguments);
+        if (!link.startsWith("javascript:")) {
+            link = getUrl(link);
+        }
         element.setLink(link);
         if (!StringUtil.isEmpty(target)) {
             element.setTarget(target);
@@ -49,6 +56,10 @@ public abstract class SelectRenderer implements TreeCellRenderer {
         return element;
     }
 
+    private String getUrl(String url) {
+        return response.encodeURL(url);
+    }
+    
     protected abstract TreeElement createElement(String icon, String id, String name, String fragment);
 
     protected abstract String getName(Node parentNode);

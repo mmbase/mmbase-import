@@ -92,7 +92,7 @@ public abstract class AbstractFragment implements Fragment {
     }
 
     public RequestDispatcher getMainRequestDispatcher(String resourceName) {
-        return getRequestDispatcher("cmsc.portal.layout.base.dir", "/WEB-INF/templates/layout/", resourceName);
+        return getRequestDispatcher("cmsc.portal.layout.base.dir", "/WEB-INF/templates/layout/", resourceName.trim());
     }
 
     public RequestDispatcher getRequestDispatcher(String contentName, String defaultValue, String resourceName) {
