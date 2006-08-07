@@ -25,7 +25,7 @@
     }
   </script>
 
-  <%@include file="variables.jsp" %>
+  <%@include file="includes/variables.jsp" %>
 
   <div class="rows">
     <div class="navigationbar">
@@ -87,7 +87,7 @@
           </mm:relatednodes>
         </mm:node>
         <a href="<mm:treefile page="/assessment/editgoal.jsp" objectlist="$includePath" referids="$referids"/>"
-          ><img src="<mm:treefile page="/assessment/gfx/plus.gif" objectlist="$includePath" 
+          ><img src="<mm:treefile page="/assessment/gfx/new_learnobject.gif" objectlist="$includePath" 
                referids="$referids"/>" border="0" title="add goal" alt="add goal" /></a>
         <br/>
         <br/>
@@ -99,78 +99,110 @@
             <% lessonsNum = dummy.intValue(); %>
           </mm:relatednodes>
         </mm:node>
+
         <div><table class="poplistTable">
-          <tr style="vertical-align:top;">
-            <th class="listHeader">&nbsp;</th>
-            <th class="listHeader">Problems</th>
-            <th class="listHeader">Type</th>
-            <mm:node number="assessment.education" notfound="skip">
-              <mm:relatednodes type="learnblocks" path="posrel,learnblocks">
-                <th class="listHeader"><mm:field name="name"/></th>
-              </mm:relatednodes>
-            </mm:node>
-          </tr>
-          <mm:node number="$user">
-            <mm:relatednodes type="problems" path="posrel,problems" orderby="posrel.pos">
-              <mm:field name="number" jspvar="problem_number" vartype="String" write="false">
+          <% boolean lessonShowed = false; %>
+          <mm:listnodes type="problemtypes" orderby="pos">
+            <tr style="vertical-align:top;">
+              <th class="listHeader">toggle</th>
+              <th class="listHeader"><mm:field name="key"/></th>
+              <% if (!lessonShowed) {
+                   lessonShowed = true;
+              %>
+                   <mm:node number="assessment.education" notfound="skip">
+                     <mm:relatednodes type="learnblocks" path="posrel,learnblocks">
+                       <th class="listHeader"><mm:field name="name"/></th>
+                     </mm:relatednodes>
+                   </mm:node>
+              <% } else { 
+                   for(int i=0; i<lessonsNum; i++) { %>
+                     <th class="listHeader">&nbsp;</th>
+              <%   }
+                 }
+              %>
+            </tr>
+            <mm:related path="related,problems,posrel,people" orderby="posrel.pos"
+                constraints="people.number=$user" fields="problems.number" distinct="true">
+              <mm:field name="problems.number" jspvar="problem_number" vartype="String" write="false">
               <tr style="vertical-align:top;">
                 <td class="listItem">
                   <a href="<mm:treefile page="/assessment/editproblem.jsp" objectlist="$includePath" referids="$referids">
-                             <mm:param name="problem_n"><mm:field name="number"/></mm:param>
+                             <mm:param name="problem_n"><%= problem_number %></mm:param>
                            </mm:treefile>"
                     ><img src="<mm:treefile page="/assessment/gfx/edit_learnobject.gif" objectlist="$includePath" 
                           referids="$referids"/>" border="0" title="edit problem" alt="edit problem" /></a>
                   <a href="<mm:treefile page="/assessment/deleteobject.jsp" objectlist="$includePath" referids="$referids">
-                             <mm:param name="object_n"><mm:field name="number"/></mm:param>
+                             <mm:param name="object_n"><%= problem_number %></mm:param>
                            </mm:treefile>"
                     ><img src="<mm:treefile page="/assessment/gfx/remove.gif" objectlist="$includePath" 
                           referids="$referids"/>" border="0" title="delete problem" alt="delete problem" /></a>
                 </td>
-                <%@ include file="matrixcell.jsp" %>
+                <%@ include file="includes/matrixcell.jsp" %>
               </tr>
               </mm:field>
-            </mm:relatednodes>
-          </mm:node>
-          <tr>
-            <td class="listItem">
-              <a href="<mm:treefile page="/assessment/editproblem.jsp" objectlist="$includePath" referids="$referids"/>"
-                ><img src="<mm:treefile page="/assessment/gfx/plus.gif" objectlist="$includePath" 
-                      referids="$referids"/>" border="0" title="add problem" alt="add problem" /></a>
-            </td>
-            <% for(int i=0; i<lessonsNum+2; i++) { %>
-                 <td class="listItem">&nbsp;</td>
-            <% } %>
-          </tr>
+            </mm:related>
+            <tr>
+              <td class="listItem">
+                <a href="<mm:treefile page="/assessment/editproblem.jsp" objectlist="$includePath" referids="$referids"/>"
+                  ><img src="<mm:treefile page="/assessment/gfx/new_learnobject.gif" objectlist="$includePath" 
+                        referids="$referids"/>" border="0" title="add problem" alt="add problem" /></a>
+              </td>
+              <% for(int i=0; i<lessonsNum+1; i++) { %>
+                   <td class="listItem">&nbsp;</td>
+              <% } %>
+            </tr>
+          </mm:listnodes>
           <tr>
             <td class="listItem">&nbsp;</td>
             <td class="listItem">Feedback coach</td>
             <mm:node number="assessment.education" notfound="skip">
               <mm:relatednodes type="learnblocks" path="posrel,learnblocks">
                 <td class="listItem">
-                  <% String feedback = ""; %>
+                  <% String feedback = "";
+                     String feedbackId = "-1";
+                  %>
                   <mm:relatedcontainer path="classrel,people">
                     <mm:constraint field="people.number" value="$user"/>
                     <mm:related>
                       <mm:node element="classrel">
-                        <mm:relatednodes type="feedback">
-                          <mm:field name="text" jspvar="dummy" vartype="String" write="false">
+                        <mm:relatednodes type="popfeedback">
+                          <mm:field name="status" jspvar="dummy" vartype="String" write="false">
                             <% feedback = dummy; %>
+                          </mm:field>
+                          <mm:field name="number" jspvar="dummy" vartype="String" write="false">
+                            <% feedbackId = dummy; %>
                           </mm:field>
                         </mm:relatednodes>
                       </mm:node>
                     </mm:related>
                   </mm:relatedcontainer>
-                  <%= "".equals(feedback) ? "&nbsp;" : feedback %>
+                  <% if ("".equals(feedback)) { %>
+                       &nbsp;
+                  <% } else { %>
+                       <a href="<mm:treefile page="/assessment/showfeedback.jsp" objectlist="$includePath" referids="$referids">
+                                  <mm:param name="feedback_n"><%= feedbackId %></mm:param>
+                                </mm:treefile>"
+                         ><%
+                         if ("-1".equals(feedback)) {   
+                           %><img src="<mm:treefile page="/assessment/gfx/developed.gif" objectlist="$includePath" 
+                                  referids="$referids"/>" border="0" title="read feedback" alt="read feedback" /><%
+                         } else {
+                           %><img src="<mm:treefile page="/assessment/gfx/todevelop.gif" objectlist="$includePath" 
+                                  referids="$referids"/>" border="0" title="read feedback" alt="read feedback" /><%
+                         } %>
+                       </a>
+                  <% } %>
                 </td>
               </mm:relatednodes>
             </mm:node>
           </tr>
           <tr>
-            <% for(int i=0; i<lessonsNum+3; i++) { %>
+            <% for(int i=0; i<lessonsNum+2; i++) { %>
                  <td class="listItem">&nbsp;</td>
             <% } %>
           </tr>
         </table></div>
+      </div>
     </div>
   </div>
   <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
