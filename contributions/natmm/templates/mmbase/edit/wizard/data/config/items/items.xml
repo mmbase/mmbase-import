@@ -13,9 +13,8 @@
 	<form-schema id="edit_items" extends="config/items/edit_items.xml" />
 	<form-schema id="add_info">
 		<title>metagegevens</title>
-		<field name="name" ftype="data" ><prompt>titel van dit item</prompt></field>
-		<list include="config/page/add_page_posrel.xml" />
+		<field name="titel" ftype="data" ><prompt>titel van dit item</prompt></field>
+		<list include="config/pagina/add_pagina_posrel.xml" />
 		<list include="config/mmevents/add_mmevents_posrel.xml" />
-		<list include="config/style/add_style.xml" />
 	</form-schema>
 </wizard-schema>

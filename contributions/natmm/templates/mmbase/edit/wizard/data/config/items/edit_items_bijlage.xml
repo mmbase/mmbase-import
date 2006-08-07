@@ -2,11 +2,11 @@
 <!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <form-schema id="edit_item">
 	<title>koptekst</title>
-	<field name="name" dtminlength="1" dtmaxlength="100">
+	<field name="titel" dtminlength="1" dtmaxlength="100">
 		<prompt>koptekst knipsel of bijlage</prompt>
 		<description></description>
 	</field>
-	<field name="description" dtmaxlength="1024" rows="4">
+	<field name="omschrijving" dtmaxlength="1024" rows="4">
 	      <prompt>korte omschrijving - optioneel</prompt>
 	      <description></description>
 	</field>

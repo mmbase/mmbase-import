@@ -11,14 +11,10 @@
     </steps>
     <form-schema id="edit_products">
         <title></title>
-        <field name="name" ftype="html" rows="24">
-            <prompt>naam</prompt>
-        </field>
-        <field name="description" ftype="html" rows="40">
-              <prompt>dienstenniveau</prompt>
-        </field>
+        <field name="titel" ftype="html" rows="16"><prompt>naam</prompt></field>
+        <field name="omschrijving" ftype="html" rows="16"><prompt>dienstenniveau</prompt></field>
         <list include="config/producttypes/add_producttypes_posrel.xml" />
         <list include="config/locations/add_locations_readmore_products.xml" />
-        <list include="config/shopitems/add_shopitems_posrel.xml" />
+        <list include="config/items/add_items_posrel_shop.xml" />
     </form-schema>
 </wizard-schema>
