@@ -27,7 +27,7 @@ public class Page extends NodeBean implements Comparable {
     private boolean secure;
     private Date creationdate;
     private Date lastmodifieddate;
-    private Date embargodate;
+    private Date publishdate;
     private Date expirydate;
     private boolean use_expiry;
     private String lastmodifier;
@@ -35,6 +35,7 @@ public class Page extends NodeBean implements Comparable {
     private Map<String,Integer> portlets = new HashMap<String,Integer>();
     private int layout;
     private List<Integer> stylesheet = new ArrayList<Integer>();
+    private Map<String,String> pageImages = new HashMap<String,String>();
 
     public String getTitle() {
         return title;
@@ -76,6 +77,14 @@ public class Page extends NodeBean implements Comparable {
         this.stylesheet.add(new Integer(stylesheet));
     }
     
+    public String getPageImage(String name) {
+    	return pageImages.get(name);
+    }
+    
+    public void addPageImage(String name, String image) {
+    	pageImages.put(name, image);
+    }
+    
     public void addPortlet(String layoutId, Integer p) {
         if (p != null) {
             portlets.put(layoutId, p);
@@ -105,12 +114,12 @@ public class Page extends NodeBean implements Comparable {
         this.lastmodifieddate = lastmodifieddate;
     }
 
-    public Date getEmbargodate() {
-        return embargodate;
+    public Date getPublishdate() {
+        return publishdate;
     }
 
-    public void setEmbargodate(Date embargodate) {
-        this.embargodate = embargodate;
+    public void setPublishdate(Date publishdate) {
+        this.publishdate = publishdate;
     }
 
     public Date getExpirydate() {

@@ -5,21 +5,38 @@
 <html:html xhtml="true">
 <head>
   <title><fmt:message key="channelreorder.title" /></title>
-  <link rel="stylesheet" type="text/css" href="../style.css" />
+  <link rel="stylesheet" type="text/css" href="../css/main.css" />
   <script type="text/javascript" src="reorder.js"></script>
   <style type="text/css">
     input.button { width : 100; }
   </style>
+
+  <script type="text/javascript" src="../utils/transparent_png.js" ></script>
 </head>
-<body onload="fillHidden()">
+<body onload="fillHidden();alphaImages();">
 <mm:cloud jspvar="cloud" rank="basic user" loginpage="../login.jsp">
    <mm:import externid="parent" jspvar="parent" from="parameters"/>
 <mm:node referid="parent" jspvar="node">
-<h2><fmt:message key="channelreorder.reorder" /> <mm:field name="path" /></h2>
+
+   <div class="tabs">
+      <div class="tab_active">
+         <div class="body">
+            <div>
+               <a name="activetab"><fmt:message key="channelreorder.title" /></a>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div class="editor">
+
+      <div class="body">
+         <p>
+            <fmt:message key="channelreorder.reorder" /> <mm:field name="path" />
+         </p>
 
 <mm:relatednodescontainer path="contentrel,contentelement"
   searchdirs="destination" element="contentelement">
-  <mm:sortorder field="contentrel.pos" direction="up" />
+  <mm:sortorder field="contentrel.pos" direction="down" />
   
   <script type='text/javascript'>
       var values = new Array(<mm:size />);
@@ -27,26 +44,25 @@
 		values[<mm:index/> - 1] = <mm:field name="number"/>;
   </mm:listnodes>
   </script>
-
   <html:form action="/editors/repository/ReorderAction">
    
    <mm:import externid="returnurl" from="parameters"/>
    <mm:present referid="returnurl">
       <input type="hidden" name="returnurl" value="<mm:write referid="returnurl"/>"/>
    </mm:present>
-   
+
 	<table>
 	  <tr>
-	    <td width='200'>
-	<select size='10' style="width:100%" name="channels">
+	    <td width="300">
+	<select size='20' style="width:100%" name="channels">
   <mm:listnodes>
 		<option><mm:field name="title"/></option>
   </mm:listnodes>
 	</select>
 	    </td>
-	    <td> 
-		  <img src="../img/up.gif" onClick="moveUp()" onDblClick="moveUp()" alt="" /><br />
-		  <img src="../img/down.gif" onClick="moveDown()" onDblClick="moveDown()" alt="" />
+	    <td style="padding-top:50px"> 
+		  <img src="../gfx/icons/up.png" onmouseup="moveUp()" alt="" /><br />
+		  <img src="../gfx/icons/down.png" onmouseup="moveDown()" alt="" />
 	    </td>
 	  </tr>
 	</table>
@@ -58,6 +74,8 @@
   </html:form>
   
 </mm:relatednodescontainer>
+   </div>
+   </div>
 </mm:node>
 </mm:cloud>
 

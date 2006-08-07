@@ -11,6 +11,7 @@ package com.finalist.cmsc.repository;
 
 import java.util.*;
 
+import net.sf.mmapps.commons.util.StringUtil;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.mmbase.bridge.*;
@@ -27,24 +28,26 @@ public class ContentElementUtil {
     public static final String NUMBER_FIELD = "number";
     public static final String TITLE_FIELD = "title";
     public static final String CREATIONDATE_FIELD = "creationdate";
-    public static final String EMBARGODATE_FIELD = "embargodate";
+    public static final String PUBLISHDATE_FIELD = "publishdate";
     public static final String EXPIREDATE_FIELD = "expiredate";
     public static final String LASTMODIFIEDDATE_FIELD = "lastmodifieddate";
+    public static final String CREATOR_FIELD = "creator";
     public static final String LASTMODIFIER_FIELD = "lastmodifier";
     public static final String NOTIFICATIONDATE_FIELD = "notificationdate";
     public static final String USE_EXPIRY_FIELD = "use_expirydate";
-    
+    public static final String KEYWORD_FIELD = "keywords";
+    public static final String ARCHIVEDATE_FIELD = "archivedate";
+
     public static final String CONTENTELEMENT = "contentelement";
     public static final String USER = SecurityUtil.USER;
 
-    public static final String AUTHORREL = "authorrel";
-    public static final String OWNERREL = null;
+    public static final String OWNERREL = "ownerrel";
 
     private ContentElementUtil() {
         // utility
     }
 
-    public static List getContentTypes(Cloud cloud) {
+    public static List<NodeManager> getContentTypes(Cloud cloud) {
         List<NodeManager> result = new ArrayList<NodeManager>();
         NodeManagerList nml = cloud.getNodeManagers();
         Iterator v = nml.iterator();
@@ -54,6 +57,12 @@ public class ContentElementUtil {
                 result.add(nm);
             }
         }
+        Collections.sort(result, new Comparator<NodeManager>() {
+            public int compare(NodeManager o1, NodeManager o2) {
+                return o1.getGUIName().compareTo(o2.getGUIName());
+            }
+        });
+        
         return result;
     }
     
@@ -77,7 +86,12 @@ public class ContentElementUtil {
      * @return is content type
      */
     public static boolean isContentType(NodeManager nm) {
+       if (CONTENTELEMENT.equals(nm.getName())) {
+           // contentelement manager is not a content type
+           return false;
+       }
        try {
+          nm = nm.getParent();
           while (!CONTENTELEMENT.equals(nm.getName())) {
              nm = nm.getParent();
           }
@@ -178,7 +192,7 @@ public class ContentElementUtil {
         Node content = contentManager.createNode();
         content.setStringValue(TITLE_FIELD, title);
         content.commit();
-        addAuthor(content);
+        addOwner(content);
         if (linkToChannel) {
             RepositoryUtil.addContentToChannel(content, creationChannel);
         }
@@ -188,23 +202,23 @@ public class ContentElementUtil {
         return content;
     }
 
-    /** Add Author
+    /** Add owner
      * @param content - content
      */
-    public static void addAuthor(Node content) {
+    public static void addOwner(Node content) {
        Cloud cloud = content.getCloud();
        Node user = SecurityUtil.getUserNode(cloud);
-       RelationManager author = cloud.getRelationManager(CONTENTELEMENT, USER, AUTHORREL);
-       Relation authorrel = content.createRelation(user, author);
-       authorrel.commit();
+       RelationManager author = cloud.getRelationManager(CONTENTELEMENT, USER, OWNERREL);
+       Relation ownerrel = content.createRelation(user, author);
+       ownerrel.commit();
     }
 
-    /** Check if a contentnode has an author
+    /** Check if a contentnode has an owner
      * @param content - Content Node
      * @return true if the node has a related workflowitem
      */
-    public static boolean hasAuthor(Node content) {
-       int count = content.countRelatedNodes(content.getCloud().getNodeManager(USER), AUTHORREL, DESTINATION);
+    public static boolean hasOwner(Node content) {
+       int count = content.countRelatedNodes(content.getCloud().getNodeManager(USER), OWNERREL, DESTINATION);
        return count > 0;
     }
 
@@ -214,11 +228,8 @@ public class ContentElementUtil {
      * @return Author node
      */
     public static Node getAuthor(Node content) {
-       NodeList list = content.getRelatedNodes(USER, AUTHORREL, DESTINATION);
-       if (!list.isEmpty()) {
-           return list.getNode(0);
-       }
-       return null;
+        String creator = content.getStringValue(CREATOR_FIELD);
+        return SecurityUtil.getUserNode(content.getCloud(), creator);
     }
 
     /**
@@ -231,9 +242,7 @@ public class ContentElementUtil {
         if (!list.isEmpty()) {
             return list.getNode(0);
         }
-        else {
-            return getAuthor(content);
-        }
+        return null;
     }
     
     public static void addLifeCycleConstraint(Node channel, NodeQuery query, long date) {
@@ -241,23 +250,45 @@ public class ContentElementUtil {
 
         Field useExpireField = contentManager.getField(USE_EXPIRY_FIELD);
         Field expireField = contentManager.getField(EXPIREDATE_FIELD);
-        Field embargoField = contentManager.getField(EMBARGODATE_FIELD);
+        Field publishField = contentManager.getField(PUBLISHDATE_FIELD);
 
         Constraint useExpire = query.createConstraint(query.getStepField(useExpireField),
                 FieldCompareConstraint.EQUAL, Boolean.FALSE);
         
-        Object expireDateObj = (embargoField.getType() == Field.TYPE_DATETIME) ? new Date(date) : new Long(date);
+        Object expireDateObj = (publishField.getType() == Field.TYPE_DATETIME) ? new Date(date) : new Long(date);
         Constraint expirydate = query.createConstraint(query.getStepField(expireField),
                 FieldCompareConstraint.GREATER_EQUAL, expireDateObj);
 
-        Object embargoDateObj = (embargoField.getType() == Field.TYPE_DATETIME) ? new Date(date) : new Long(date);
-        Constraint embargodate = query.createConstraint(query.getStepField(embargoField),
-                FieldCompareConstraint.LESS_EQUAL, embargoDateObj);
+        Object publishDateObj = (publishField.getType() == Field.TYPE_DATETIME) ? new Date(date) : new Long(date);
+        Constraint publishdate = query.createConstraint(query.getStepField(publishField),
+                FieldCompareConstraint.LESS_EQUAL, publishDateObj);
 
-        Constraint lifecycleComposite = query.createConstraint(expirydate, CompositeConstraint.LOGICAL_AND, embargodate);
+        Constraint lifecycleComposite = query.createConstraint(expirydate, CompositeConstraint.LOGICAL_AND, publishdate);
         
         Constraint composite = query.createConstraint(useExpire, CompositeConstraint.LOGICAL_OR, lifecycleComposite);
         SearchUtil.addConstraint(query, composite);
+    }
+
+    public static void addArchiveConstraint(Node channel, NodeQuery query, Long date, String archive) {
+        if (StringUtil.isEmpty(archive) || "all".equalsIgnoreCase(archive)) {
+            return;
+        }
+        NodeManager contentManager = channel.getCloud().getNodeManager(CONTENTELEMENT);
+
+        Field archiveDateField = contentManager.getField(ARCHIVEDATE_FIELD);
+        Object archiveDateObj = (archiveDateField.getType() == Field.TYPE_DATETIME) ? new Date(date) : new Long(date);
+
+        Constraint archivedate = null;
+        if ("old".equalsIgnoreCase(archive)) {
+            archivedate = query.createConstraint(query.getStepField(archiveDateField),
+                    FieldCompareConstraint.GREATER_EQUAL, archiveDateObj);
+        }
+        else {
+             // "new".equalsIgnoreCase(archive)
+            archivedate = query.createConstraint(query.getStepField(archiveDateField),
+                    FieldCompareConstraint.LESS_EQUAL, archiveDateObj);
+        }
+        SearchUtil.addConstraint(query, archivedate);
     }
 
 }

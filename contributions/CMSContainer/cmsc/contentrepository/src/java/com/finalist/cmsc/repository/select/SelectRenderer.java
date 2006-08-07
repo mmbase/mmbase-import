@@ -9,6 +9,8 @@
  */
 package com.finalist.cmsc.repository.select;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.mmbase.bridge.Node;
 
 import com.finalist.cmsc.repository.RepositoryUtil;
@@ -16,8 +18,8 @@ import com.finalist.tree.ajax.SelectAjaxRenderer;
 
 public class SelectRenderer extends SelectAjaxRenderer {
 
-    public SelectRenderer(String linkPattern, String target) {
-       super(linkPattern, target);
+    public SelectRenderer(HttpServletResponse response, String linkPattern, String target) {
+       super(response, linkPattern, target);
     }
     
     protected String getName(Node parentNode) {
@@ -30,6 +32,6 @@ public class SelectRenderer extends SelectAjaxRenderer {
     
     public String getIcon(Object node) {
         Node n = (Node) node;
-        return "type/" + n.getNodeManager().getName() + ".gif";
+        return "type/" + n.getNodeManager().getName() + ".png";
     }
 }

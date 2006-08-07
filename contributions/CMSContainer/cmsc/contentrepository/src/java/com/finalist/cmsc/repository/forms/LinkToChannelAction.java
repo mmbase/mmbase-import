@@ -20,6 +20,8 @@ import org.mmbase.bridge.*;
 import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
 
+import java.util.Enumeration;
+
 
 public class LinkToChannelAction extends MMBaseFormlessAction {
 
@@ -28,12 +30,15 @@ public class LinkToChannelAction extends MMBaseFormlessAction {
 
         String action = getParameter(request, "action");
         String channelnumber = getParameter(request, "channelnumber");
-        String objectnumber = getParameter(request, "objectnumber");
-
-        Node objectNode = cloud.getNode(objectnumber);
         Node channelNode = cloud.getNode(channelnumber);
 
+        String objectnumber = getParameter(request, "objectnumber");
+
+
         if (action != null && action.equals("unlink")) {
+
+           Node objectNode = cloud.getNode(objectnumber);
+
             if(RepositoryUtil.isCreationChannel(objectNode, channelNode)) {
                 NodeList contentchannels = RepositoryUtil.getContentChannels(objectNode);
                 if (contentchannels.size() <= 1) {
@@ -71,7 +76,17 @@ public class LinkToChannelAction extends MMBaseFormlessAction {
             }
         }
         else {
-            RepositoryUtil.addContentToChannel(objectNode, channelnumber);
+           // Link them all.
+
+           Enumeration parameters = request.getParameterNames();
+           while (parameters.hasMoreElements()) {
+              String parameter = (String) parameters.nextElement();
+
+              if (parameter.startsWith("link_")) {
+                 String link = request.getParameter(parameter);
+                 RepositoryUtil.addContentToChannel(cloud.getNode(link), channelnumber);
+              }
+           }
         }
 
         String returnurl = request.getParameter("returnurl");

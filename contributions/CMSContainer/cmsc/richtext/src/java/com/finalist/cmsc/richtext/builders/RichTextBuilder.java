@@ -8,7 +8,7 @@ import java.net.URL;
 import java.util.*;
 
 import net.sf.mmapps.commons.util.StringUtil;
-import net.sf.mmapps.commons.util.XmlUtil;
+
 
 import org.mmbase.applications.wordfilter.WordHtmlCleaner;
 import org.mmbase.bridge.*;
@@ -91,81 +91,95 @@ public class RichTextBuilder extends MMObjectBuilder {
         List<String> idsList = new ArrayList<String>();
         // Resolve images
         List fields = getFields(NodeManager.ORDER_EDIT);
-        Iterator iFields = fields.iterator();
-        while (iFields.hasNext()) {
-            Field field = (Field) iFields.next();
 
+        boolean htmlFieldChanged = false;
+        
+        Iterator checkFields = fields.iterator();
+        while (checkFields.hasNext()) {
+            Field field = (Field) checkFields.next();
             if (field != null) {
                 String fieldName = field.getName();
-                if(log.isDebugEnabled()) {
-                    log.debug("Got field " + fieldName + " : persistent = " + (!field.isVirtual())
-                        + ", stringtype = " + (field.getType() == Field.TYPE_STRING)
-                        + ", isHtmlField = " + htmlFields.contains(fieldName));
+                if (htmlFields.contains(fieldName) && node.getChanged().contains(fieldName)) {
+                    htmlFieldChanged = true;
                 }
-                
-                if (htmlFields.contains(fieldName)) {
-                    log.debug("Evaluating " + fieldName);
-                    if (node.getChanged().contains(fieldName)) {
-                        cleanFieldRichText(node, field);
-                        
-                        // Persistent string field.
-                        String fieldValue = (String) node.getValues().get(fieldName);
-                        try {
-                            fieldValue = XmlUtil.escapeXMLEntities(fieldValue);
-
-                            Document retDoc = XmlUtil.toDocument(RichText.RICHTEXT_ROOT_OPEN
-                                    + fieldValue + RichText.RICHTEXT_ROOT_CLOSE, false);
+            }
+        }
+        
+        if (htmlFieldChanged) {
+            Iterator iFields = fields.iterator();
+            while (iFields.hasNext()) {
+                Field field = (Field) iFields.next();
     
-                            resolveLinks(retDoc, idsList, node);
-                            resolveImages(retDoc, idsList, node);
-    
-                            String out = XmlUtil.serializeDocument(retDoc, false, false, true, true);
-                            out = WordHtmlCleaner.fixEmptyAnchors(out);
-    
-                            out = out.replaceAll("<.?richtext.?>", "");
-                            out = XmlUtil.unescapeXMLEntities(out);
-
-                            log.debug("final richtext text = " + out);
-                            // make changes
-                            node.setValue(fieldName, out);
-                        }
-                        catch (Exception e) {
-                            log.error("An error occured while resolving inline resources!", e);
-                        }
+                if (field != null) {
+                    String fieldName = field.getName();
+                    if(log.isDebugEnabled()) {
+                        log.debug("Got field " + fieldName + " : persistent = " + (!field.isVirtual())
+                            + ", stringtype = " + (field.getType() == Field.TYPE_STRING)
+                            + ", isHtmlField = " + htmlFields.contains(fieldName));
                     }
-                    else {
-                        String fieldValue = (String) node.getValues().get(fieldName);
-                        Document retDoc = XmlUtil.toDocument(RichText.RICHTEXT_ROOT_OPEN
-                                + fieldValue + RichText.RICHTEXT_ROOT_CLOSE, false);
+                    
+                    if (htmlFields.contains(fieldName)) {
+                        log.debug("Evaluating " + fieldName);
+                        if (node.getChanged().contains(fieldName)) {
+                            // Persistent string field.
+                            String fieldValue = (String) node.getValues().get(fieldName);
+                            if (!StringUtil.isEmpty(fieldValue)) {
+                                try {
+                                    if (RichText.hasRichtextItems(fieldValue)) {
+                                        Document doc = RichText.getRichTextDocument(fieldValue);
 
-                        fillIdFromLinks(retDoc, idsList);
-                        fillIdFromImages(retDoc, idsList);
+                                        resolveLinks(doc, idsList, node);
+                                        resolveImages(doc, idsList, node);
+
+                                        String out = RichText.getRichTextString(doc);
+                                        out = WordHtmlCleaner.fixEmptyAnchors(out);
+                                        log.debug("final richtext text = " + out);
+
+                                        node.setValue(fieldName, out);
+                                    }
+                                }
+                                catch (Exception e) {
+                                    log.error("An error occured while resolving inline resources!", e);
+                                }
+                            }
+                        }
+                        else {
+                            String fieldValue = (String) node.getValues().get(fieldName);
+                            if (!StringUtil.isEmpty(fieldValue) && RichText.hasRichtextItems(fieldValue)) {
+                                Document doc = RichText.getRichTextDocument(fieldValue);
+                                fillIdFromLinks(doc, idsList);
+                                fillIdFromImages(doc, idsList);
+                            }
+                        }
                     }
                 }
             }
         }
 
         boolean committed = super.commit(node);
+        
         if (committed) {
-            // remove outdated inlinerel
-            Enumeration idrels = node.getRelations(RichText.INLINEREL_NM);
-            while (idrels.hasMoreElements()) {
-                MMObjectNode rel = (MMObjectNode) idrels.nextElement();
-                String referid = rel.getStringValue(RichText.REFERID_FIELD);
-                if ((rel.getIntValue("snumber") == node.getNumber()) && !idsList.contains(referid)) {
-                    inlinerelBuilder.removeNode(rel);
-                    log.debug("removed unused inlinerel: " + referid);
+            if (htmlFieldChanged) {
+                // remove outdated inlinerel
+                Enumeration idrels = node.getRelations(RichText.INLINEREL_NM);
+                while (idrels.hasMoreElements()) {
+                    MMObjectNode rel = (MMObjectNode) idrels.nextElement();
+                    String referid = rel.getStringValue(RichText.REFERID_FIELD);
+                    if ((rel.getIntValue("snumber") == node.getNumber()) && !idsList.contains(referid)) {
+                        inlinerelBuilder.removeNode(rel);
+                        log.debug("removed unused inlinerel: " + referid);
+                    }
                 }
-            }
 
-            // remove outdated imageinlinerel
-            Enumeration imagerels = node.getRelations(RichText.IMAGEINLINEREL_NM);
-            while (imagerels.hasMoreElements()) {
-                MMObjectNode rel = (MMObjectNode) imagerels.nextElement();
-                String referid = rel.getStringValue(RichText.REFERID_FIELD);
-                if (!idsList.contains(referid)) {
-                    imagerelBuilder.removeNode(rel);
-                    log.debug("removed unused imageinlinerel: " + referid);
+                // remove outdated imageinlinerel
+                Enumeration imagerels = node.getRelations(RichText.IMAGEINLINEREL_NM);
+                while (imagerels.hasMoreElements()) {
+                    MMObjectNode rel = (MMObjectNode) imagerels.nextElement();
+                    String referid = rel.getStringValue(RichText.REFERID_FIELD);
+                    if (!idsList.contains(referid)) {
+                        imagerelBuilder.removeNode(rel);
+                        log.debug("removed unused imageinlinerel: " + referid);
+                    }
                 }
             }
         }
@@ -173,38 +187,6 @@ public class RichTextBuilder extends MMObjectBuilder {
         return committed;
     }
 
-    /**
-     * Cleans a field if it contains html junk.
-     * 
-     * @param node
-     *            Node of the field to clean
-     * @param field
-     *            Definition of field to clean
-     */
-    private void cleanFieldRichText(MMObjectNode node, Field field) {
-        String fieldName = field.getName();
-        // Persistent string field.
-        String originalValue = (String) node.getValues().get(fieldName);
-
-        if (originalValue != null && !"".equals(originalValue.trim())) {
-            // Edited value: clean.
-            log.debug("before cleaning: " + originalValue);
-            String newValue = WordHtmlCleaner.cleanHtml(originalValue);
-            log.debug("after cleaning: " + newValue);
-            node.setValue(fieldName, newValue);
-
-            if (log.isDebugEnabled() && !originalValue.equals(newValue)) {
-                log.debug("Replaced " + fieldName + " value \"" + originalValue
-                        + "\"\n \t by \n\"" + newValue + "\"");
-            }
-        }
-        else {
-            // if string is null or empty, (re)set it's value to empty string
-            node.setValue(fieldName, "");
-        }
-    }
-
-    
     private void fillIdFromImages(Document doc, List<String> idsList) {
         fillIds(doc, idsList, RichText.IMG_TAGNAME);
     }
@@ -229,6 +211,9 @@ public class RichTextBuilder extends MMObjectBuilder {
      * that the link can be resolved in the frontend en point to the correct article.
      */
     private void resolveLinks(Document doc, List<String> idsList, MMObjectNode mmObj) {
+        if (doc == null) {
+            return;
+        }
         // collect <A> tags
         NodeList nl = doc.getElementsByTagName(RichText.LINK_TAGNAME);
         log.debug("number of links: " + nl.getLength());
@@ -315,6 +300,10 @@ public class RichTextBuilder extends MMObjectBuilder {
     }
 
     private void resolveImages(Document doc, List<String> idsList, MMObjectNode mmObj) {
+        if (doc == null) {
+            return;
+        }
+
         NodeList nl = doc.getElementsByTagName(RichText.IMG_TAGNAME);
         log.debug("number of images: " + nl.getLength());
         for (int i = 0, len = nl.getLength(); i < len; i++) {
@@ -429,42 +418,43 @@ public class RichTextBuilder extends MMObjectBuilder {
                 else {
                     if (!image.hasAttribute(RichText.RELATIONID_ATTR)) {
                         String src = image.getAttribute(RichText.SRC_ATTR);
-                        try {
-                            String alt = image.getAttribute("alt");
-                            String owner = mmObj.getStringValue("owner");
-                            MMObjectNode imageNode = createImage(owner, src, alt);
-                            
-                            String width = null;
-                            if (image.hasAttribute(RichText.WIDTH_ATTR)) {
-                                width = image.getAttribute(RichText.WIDTH_ATTR);
-                                image.removeAttribute(RichText.WIDTH_ATTR);
-                            }
-                            String height = null;
-                            if (image.hasAttribute(RichText.HEIGHT_ATTR)) {
-                                height = image.getAttribute(RichText.HEIGHT_ATTR);
-                                image.removeAttribute(RichText.HEIGHT_ATTR);
-                            }
-                            String legend = null;
-                            if (image.hasAttribute(RichText.LEGEND)) {
-                                legend = image.getAttribute(RichText.LEGEND);
-                                image.removeAttribute(RichText.LEGEND);
-                            }                            
-
-                            String referid = createImageIdRel(mmObj, imageNode.getNumber(), height, width, legend);
-
-                            image.setAttribute(RichText.RELATIONID_ATTR, referid);
-                            image.setAttribute(RichText.DESTINATION_ATTR, String.valueOf(imageNode.getNumber()));
-                            image.removeAttribute(RichText.SRC_ATTR);
-
-                            idsList.add(referid);
-
-                            log.debug("imported image " + imageNode.getNumber()
-                                    + " and added imgidrel: " + referid);
-                        }
-                        catch (IOException ioe) {
-                            log.error("There was a problem while retrieving the image from " + src);
-                            log.error(ioe);
-                        }
+                        log.warn("Image found which is not linked " + src);
+//                        try {
+//                            String alt = image.getAttribute("alt");
+//                            String owner = mmObj.getStringValue("owner");
+//                            MMObjectNode imageNode = createImage(owner, src, alt);
+//                            
+//                            String width = null;
+//                            if (image.hasAttribute(RichText.WIDTH_ATTR)) {
+//                                width = image.getAttribute(RichText.WIDTH_ATTR);
+//                                image.removeAttribute(RichText.WIDTH_ATTR);
+//                            }
+//                            String height = null;
+//                            if (image.hasAttribute(RichText.HEIGHT_ATTR)) {
+//                                height = image.getAttribute(RichText.HEIGHT_ATTR);
+//                                image.removeAttribute(RichText.HEIGHT_ATTR);
+//                            }
+//                            String legend = null;
+//                            if (image.hasAttribute(RichText.LEGEND)) {
+//                                legend = image.getAttribute(RichText.LEGEND);
+//                                image.removeAttribute(RichText.LEGEND);
+//                            }                            
+//
+//                            String referid = createImageIdRel(mmObj, imageNode.getNumber(), height, width, legend);
+//
+//                            image.setAttribute(RichText.RELATIONID_ATTR, referid);
+//                            image.setAttribute(RichText.DESTINATION_ATTR, String.valueOf(imageNode.getNumber()));
+//                            image.removeAttribute(RichText.SRC_ATTR);
+//
+//                            idsList.add(referid);
+//
+//                            log.debug("imported image " + imageNode.getNumber()
+//                                    + " and added imgidrel: " + referid);
+//                        }
+//                        catch (IOException ioe) {
+//                            log.error("There was a problem while retrieving the image from " + src);
+//                            log.error(ioe);
+//                        }
                     }
                     else {
                         String referid = image.getAttribute(RichText.RELATIONID_ATTR);

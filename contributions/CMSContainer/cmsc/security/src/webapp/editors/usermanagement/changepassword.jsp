@@ -4,7 +4,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
 <head>
-<link href="../style.css" type="text/css" rel="stylesheet"/>
+	<link rel="stylesheet" type="text/css" href="../css/main.css" />
 <title><fmt:message key="changepassword.title" /></title>
 </head>
 <body>
@@ -14,7 +14,22 @@
    String username = cloud.getUser().getIdentifier();
    String succeeded = request.getParameter("succeeded");
 %>
-<h2><fmt:message key="changepassword.title" /></h2>
+
+      <div class="tabs">
+         <!-- actieve TAB -->
+         <div class="tab_active">
+            <div class="body">
+               <div>
+                  <a name="activetab"><fmt:message key="changepassword.title" /></a>
+               </div>
+            </div>
+         </div>
+      </div>
+
+    <div class="editor">
+      <div class="body">
+
+
 
 <%
    if ((succeeded != null) && (succeeded.equals("true"))) {
@@ -26,7 +41,7 @@
 <html:form action="/editors/usermanagement/ChangePasswordAction">
    <table class="formcontent">
       <tr>
-         <td class="fieldname" nowrap><fmt:message key="changepassword.current" /></td>
+         <td class="fieldname" nowrap width="150"><fmt:message key="changepassword.current" /></td>
 	      <td class="fieldname">
 	         <html:password property="password" size='15' maxlength='15'/></font>
 	         <span class="notvalid"><html:errors bundle="SECURITY" property="password"/></span>
@@ -50,11 +65,14 @@
 	      <td>&nbsp;</td>
 	      <td>
 	      <html:submit style="width:90"><fmt:message key="changepassword.submit" /></html:submit>
+ 		  <html:cancel style="width:90"><fmt:message key="user.cancel"/></html:cancel>
 	      </td>
 	   </tr>
 	</table>
 </html:form>
 </mm:cloud>
+      </div>
+   </div>
 </body>
 </html:html>
 </mm:content>

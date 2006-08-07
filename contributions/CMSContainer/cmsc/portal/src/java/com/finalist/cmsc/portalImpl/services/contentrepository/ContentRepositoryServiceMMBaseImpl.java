@@ -52,17 +52,17 @@ public class ContentRepositoryServiceMMBaseImpl extends ContentRepositoryService
 		log.info("ContentRepositoryService STARTED");
 	}
 
-    private int countContentElements(Node channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, int offset, int maxNumber) {
+    private int countContentElements(Node channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber) {
         if (channel != null) {
-            return RepositoryUtil.countLinkedElements(channel, contenttypes, orderby, direction, useLifecycle, offset, maxNumber); 
+            return RepositoryUtil.countLinkedElements(channel, contenttypes, orderby, direction, useLifecycle, archive, offset, maxNumber); 
         }
         return -1;
     }
      
-	private List<ContentElement> getContentElements(Node channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, int offset, int maxNumber) {
+	private List<ContentElement> getContentElements(Node channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber) {
 		List<ContentElement> result = new ArrayList<ContentElement>();
 		if (channel != null) {
-			NodeList l = RepositoryUtil.getLinkedElements(channel, contenttypes, orderby, direction, useLifecycle, offset, maxNumber); 
+			NodeList l = RepositoryUtil.getLinkedElements(channel, contenttypes, orderby, direction, useLifecycle, archive, offset, maxNumber); 
 			for (int i = 0; i < l.size(); i++) {
 				Node currentNode = l.getNode(i);
 				ContentElement e = (ContentElement) MMBaseNodeMapper.copyNode(currentNode, ContentElement.class);
@@ -73,7 +73,7 @@ public class ContentRepositoryServiceMMBaseImpl extends ContentRepositoryService
 	}
 	
     public List<ContentElement> getContentElements(Node channel) {
-        return getContentElements(channel, null, null, null, false, -1, -1);
+        return getContentElements(channel, null, null, null, false, null, -1, -1);
     }
     
 	public List<ContentElement> getContentElements(ContentChannel channel) {
@@ -94,20 +94,20 @@ public class ContentRepositoryServiceMMBaseImpl extends ContentRepositoryService
         return null;
     }
 
-    public int countContentElements(String channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, int offset, int maxNumber) {
+    public int countContentElements(String channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber) {
         Cloud cloud = getCloud();
         if (channel != null) {
             Node chan = cloud.getNode(channel);
-            return countContentElements(chan, contenttypes, orderby, direction, useLifecycle, offset, maxNumber);
+            return countContentElements(chan, contenttypes, orderby, direction, useLifecycle, archive, offset, maxNumber);
         }
         return -1;
     }
     
-	public List<ContentElement> getContentElements(String channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, int offset, int maxNumber) {
+	public List<ContentElement> getContentElements(String channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber) {
 		Cloud cloud = getCloud();
 		if (channel != null) {
 			Node chan = cloud.getNode(channel);
-			return getContentElements(chan, contenttypes, orderby, direction, useLifecycle, offset, maxNumber);
+			return getContentElements(chan, contenttypes, orderby, direction, useLifecycle, archive, offset, maxNumber);
 		}
 		return null;
 	}

@@ -29,6 +29,7 @@ import org.mmbase.util.images.Dimension;
  * Tag that creates a list of related image elements.
  */
 
+@SuppressWarnings("serial")
 public class LinkedImagesTag  extends NodeReferrerTag {
 
     private static final String IMAGEREL = "imagerel";
@@ -121,9 +122,6 @@ public class LinkedImagesTag  extends NodeReferrerTag {
            String outputValue = "";
            
            for (Iterator iter = list.iterator(); iter.hasNext();) {
-                ImageTag imgTag = new ImageTag();
-                imgTag.setPageContext(pageContext);
-                
                 Node imagerelNode = (Node) iter.next();
                 if (imagerelNode.isRelation()) {
                     Relation imagerel = imagerelNode.toRelation();
@@ -132,9 +130,14 @@ public class LinkedImagesTag  extends NodeReferrerTag {
                     int width = imagerel.getIntValue("width");
                     int height = imagerel.getIntValue("height");
                     String crop = imagerel.getStringValue("crop");
-                    int legendType = imagerel.getIntValue("legend");
+                    String legendType = imagerel.getStringValue("legend");
                     boolean popup = imagerel.getBooleanValue("popup");
 
+                    ImageTag imgTag = new ImageTag();
+                    imgTag.setPageContext(pageContext);
+                    // Issue NIJ-149: legendType was not set
+                    imgTag.setLegendtype(legendType);
+                    
                     imgTag.setExternalAttributes(getOtherAttributes());
                     String templateStr = imgTag.getTemplate(image, null, width, height, crop);
                     Dimension dim = imgTag.getDimension(image, templateStr);

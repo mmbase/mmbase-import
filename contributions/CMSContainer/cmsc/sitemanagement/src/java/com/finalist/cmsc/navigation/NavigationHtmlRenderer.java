@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package com.finalist.cmsc.navigation;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.finalist.tree.TreeModel;
 import com.finalist.tree.TreeOption;
@@ -27,14 +28,14 @@ public class NavigationHtmlRenderer extends NavigationRenderer implements HTMLTr
         return (HTMLTreeElement) super.getElement(model, node, id);
     }
     
-    public NavigationHtmlRenderer(HttpServletRequest request, String target, boolean hideIcons) {
-        super(request, target);
+    public NavigationHtmlRenderer(HttpServletRequest request, HttpServletResponse response, String target, boolean hideIcons) {
+        super(request, response, target);
         this.hideIcons = hideIcons;
         this.optionLabel = hideIcons;
     }
 
-    public NavigationHtmlRenderer(HttpServletRequest request, String target) {
-        super(request, target);
+    public NavigationHtmlRenderer(HttpServletRequest request, HttpServletResponse response, String target) {
+        super(request, response, target);
     }
     
     protected TreeOption createOption(String icon, String label, String action, String target) {

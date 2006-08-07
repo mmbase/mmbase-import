@@ -5,5 +5,14 @@
 		<key>repository.search.results.per.page</key>
 		<value>50</value>
 	</node>
+	<node number="104974" owner="default">
+		<key>cronjob.status.querysize</key>
+		<description>The maximum number of nodes returned by the queries </description>
+		<value>1000</value>
+		<prod></prod>
+		<preprod></preprod>
+		<test></test>
+		<dev></dev>
+	</node>
 
 </properties>

@@ -129,6 +129,15 @@ public class PortletUtil {
                 param.delete(true);
             }
         }
+        
+        paramList = getNodeParameters(portlet);
+        if (paramList != null) {
+            for (int i = 0; i < paramList.size(); i++) {
+                Node param = paramList.getNode(i);
+                log.debug("Delete node param: "+param.getStringValue(KEY_FIELD));
+                param.delete(true);
+            }
+        }
     }
 
     public static void copyPortlets(Node sourceScreen, Node newScreen) {
@@ -246,13 +255,18 @@ public class PortletUtil {
             }
             else {
                 log.debug("updating parameter node:" + foundNode.getNumber());
-                foundNode.setNodeValue(VALUE_FIELD, value);
-                foundNode.commit();
+                Node oldValue = foundNode.getNodeValue(VALUE_FIELD);
+                if (oldValue == null || oldValue.getNumber() != value.getNumber()) {
+                    foundNode.setNodeValue(VALUE_FIELD, value);
+                    foundNode.commit();
+                }
             }
         } else {
-            log.debug("creating node for node:" + portlet.getNumber());
-            Node newNode = createNodeParameter(portlet.getCloud(), key, value);
-            addPortletParameter(portlet, newNode);
+            if (value != null) {
+                log.debug("creating node for node:" + portlet.getNumber());
+                Node newNode = createNodeParameter(portlet.getCloud(), key, value);
+                addPortletParameter(portlet, newNode);
+            }
         }
     }
     

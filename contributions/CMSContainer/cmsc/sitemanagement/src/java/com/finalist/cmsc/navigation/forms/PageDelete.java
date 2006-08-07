@@ -24,28 +24,42 @@ import com.finalist.cmsc.struts.MMBaseFormlessAction;
 
 public class PageDelete extends MMBaseFormlessAction {
 
+	/** name of submit button in jsp to confirm removal */
+	private static final String ACTION_REMOVE = "remove";
+	
+	/** name of submit button in jsp to cancel removal */
+	private static final String ACTION_CANCEL = "cancel";
+	
     public ActionForward execute(ActionMapping mapping,
             HttpServletRequest request, Cloud cloud) throws Exception {
         
-        String objectnumber = getParameter(request, "number", true);
-        String action = getParameter(request, "remove");
-        Node pageNode = cloud.getNode(objectnumber);
+    	if (isRemoveAction(request)) {
+            String objectnumber = getParameter(request, "number", true);
+            Node pageNode = cloud.getNode(objectnumber);
+    		// TODO in the current situation the delete button is not present
+    		// when a page has children so this check has no use. Also there is
+    		// no pagedeletewarning.jsp view
+    		if (NavigationUtil.getChildCount(pageNode) > 0) {
+    		    return mapping.findForward("pagedeletewarning");
+    		}
+			NavigationUtil.deletePage(pageNode);
+			return mapping.findForward(SUCCESS);
+    	}
 
-        if (StringUtil.isEmptyOrWhitespace(action)) {
-            ActionForward ret = mapping.findForward("pagedelete");
-            return ret;
-        }
-        else {
-            if (NavigationUtil.getChildCount(pageNode) > 0) {
-                ActionForward ret = mapping.findForward("pagedeletewarning");
-                return ret;
-            }
-            else {
-                NavigationUtil.deletePage(pageNode);
-                ActionForward ret = mapping.findForward(SUCCESS);
-                return ret;
-            }
-        }
+    	if (isCancelAction(request)) {
+			return mapping.findForward(SUCCESS);
+    	}
+
+    	// neither remove or cancel, show confirmation page 
+		return mapping.findForward("pagedelete");
+    }
+    
+    private boolean isRemoveAction(HttpServletRequest request) {
+    	return getParameter(request, ACTION_REMOVE) != null;
+    }
+
+    private boolean isCancelAction(HttpServletRequest request) {
+    	return getParameter(request, ACTION_CANCEL) != null;
     }
 
 }

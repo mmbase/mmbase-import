@@ -51,18 +51,6 @@
 		</attribute>
 	</tag>
 	<tag>
-		<name>portlet</name>
-		<tag-class>com.finalist.cmsc.taglib.PortletTag</tag-class>
-		<body-content>scriptless</body-content>
-		<description>Container for a Portlet(Fragment) and it's modes</description>
-		<attribute>
-			<name>infovar</name>
-			<description>JSP variable name to put portlet information in.</description>
-			<required>false</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-	</tag>
-	<tag>
 		<name>protected</name>
 		<tag-class>com.finalist.cmsc.taglib.ProtectedTag</tag-class>
 		<body-content>scriptless</body-content>
@@ -82,6 +70,12 @@
 		<attribute>
 			<name>origin</name>
 			<description>Site or Page to start listing from</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>mode</name>
+			<description>Mode is all, menu, hidden. Default is menu</description>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
@@ -141,41 +135,32 @@
 		</attribute>
 	</tag>
 	<tag>
-		<name>portlet-preferences</name>
-		<tag-class>com.finalist.cmsc.taglib.PortletPreferencesTag</tag-class>
-		<body-content>scriptless</body-content>
-		<description>Helper for Portlet preferences</description>
-		<attribute>
-			<name>name</name>
-			<description>Name of preference</description>
-			<required>false</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>value</name>
-			<description>Value of preference if it has no value</description>
-			<required>false</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>var</name>
-			<description>
-				JSP variable name to put a Map of all PortletPreferences in or the value if name is
-				used.
-			</description>
-			<required>false</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-	</tag>
-	<tag>
 		<name>insert-stylesheet</name>
-		<tag-class>com.finalist.cmsc.taglib.InsertStylesheet</tag-class>
+		<tag-class>com.finalist.cmsc.taglib.InsertStylesheetTag</tag-class>
 		<body-content>empty</body-content>
 		<description>Insert related stylesheet</description>
 		<attribute>
 			<name>var</name>
 			<description>JSP variable to set stylesheet.</description>
 			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>insert-page-image</name>
+		<tag-class>com.finalist.cmsc.taglib.InsertPageImageTag</tag-class>
+		<body-content>empty</body-content>
+		<description>Insert one of the images of a page</description>
+		<attribute>
+			<name>var</name>
+			<description>JSP variable to set stylesheet.</description>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>name</name>
+			<description>The name of the position of the image (as given in namedrel builder)</description>
+			<required>true</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 	</tag>
@@ -272,6 +257,48 @@
 		</attribute>
 	</tag>
 
+	<tag>
+		<name>contenturl</name>
+		<tag-class>com.finalist.cmsc.taglib.ContentUrlTag</tag-class>
+		<tei-class>org.mmbase.bridge.jsp.taglib.StringWriterTEI</tei-class>
+		<attribute>
+			<name>element</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>node</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>number</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>jspvar</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>vartype</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>write</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>id</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+
+
 <!-- ############## -->
 <!-- Navigation Tags -->
 <!-- ############## -->
@@ -287,12 +314,18 @@
 			<required>true</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
+		<attribute>
+			<name>mode</name>
+			<description>Mode is all, menu, hidden. Default is menu</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
 	</tag>
 	<tag>
 		<name>link</name>
 		<tag-class>com.finalist.cmsc.taglib.navigation.LinkTag</tag-class>
 		<body-content>scriptless</body-content>
-		<description>Make a link to a NavChannel</description>
+		<description>Make a link to a Page</description>
 		<attribute>
 			<name>dest</name>
 			<description>
@@ -332,7 +365,7 @@
 		<tag-class>com.finalist.cmsc.taglib.navigation.LocationTag</tag-class>
 		<body-content>empty</body-content>
 		<description>
-			Tag to determine location by a given type, defaults to NavChannel.
+			Tag to determine location by a given type, defaults to Page.
 		</description>
 		<attribute>
 			<name>type</name>
@@ -373,6 +406,63 @@
 <!-- Portlet Tags -->	
 <!-- ############## -->
 
+	<tag>
+		<name>portlet</name>
+		<tag-class>com.finalist.cmsc.taglib.portlet.PortletTag</tag-class>
+		<body-content>scriptless</body-content>
+		<description>Container for a Portlet(Fragment) and it's modes</description>
+		<attribute>
+			<name>infovar</name>
+			<description>JSP variable name to put portlet information in.</description>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>portletmode</name>
+		<tag-class>com.finalist.cmsc.taglib.portlet.PortletModeTag</tag-class>
+		<body-content>scriptless</body-content>
+		<description>Conditional tag which test for mode name</description>
+		<attribute>
+			<name>name</name>
+			<description>name which should be matched</description>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>inverse</name>
+			<description>Inverse the outcome of the test</description>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>portlet-preferences</name>
+		<tag-class>com.finalist.cmsc.taglib.portlet.PortletPreferencesTag</tag-class>
+		<body-content>scriptless</body-content>
+		<description>Helper for Portlet preferences</description>
+		<attribute>
+			<name>name</name>
+			<description>Name of preference</description>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>value</name>
+			<description>Value of preference if it has no value</description>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>var</name>
+			<description>
+				JSP variable name to put a Map of all PortletPreferences in or the value if name is
+				used.
+			</description>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>
     <tag>
         <name>param</name>
         <tagclass>com.finalist.cmsc.taglib.portlet.ParamTag</tagclass>
@@ -403,6 +493,11 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+		<attribute>
+			<name>elementId</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
         <attribute>
             <name>windowState</name>
             <required>false</required>
@@ -439,6 +534,11 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+		<attribute>
+			<name>elementId</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
         <attribute>
             <name>windowState</name>
             <required>false</required>
@@ -523,5 +623,69 @@
 		<tag-class>com.finalist.cmsc.taglib.VersionTag</tag-class>
 		<body-content>scriptless</body-content>
 		<description>Writes the version of the application which is implementing the container</description>
+	</tag>
+	<tag>
+		<name>dumpdefaults</name>
+		<tag-class>com.finalist.cmsc.taglib.DumpDefaultsTag</tag-class>
+		<body-content>scriptless</body-content>
+		<description>Dumps the data of the framework builders to a certain path on the server.</description>
+		<attribute>
+			<name>path</name>
+			<description>the path to dump to.</description>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>property</name>
+		<tag-class>com.finalist.cmsc.taglib.PropertyTag</tag-class>
+		<body-content>scriptless</body-content>
+		<description>Writes a property to the output</description>
+		<attribute>
+			<name>key</name>
+			<description>the key of the property.</description>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>removehtml</name>
+		<tag-class>com.finalist.cmsc.taglib.RemoveHtmlTag</tag-class>
+		<body-content>scriptless</body-content>
+		<description>Removes all html tags from a tekst</description>
+		<attribute>
+			<name>html</name>
+			<description>The html to put into the tag.</description>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>var</name>
+			<description>JSP variable name to put the result.</description>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>maxlength</name>
+			<description>The maximum length allowed, will be cut back to the nearest '.', if not found to the nearest space.</description>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>
+	
+<!-- ################ -->
+<!-- CMSC Engine Tags -->	
+<!-- ################ -->
+	<tag>
+		<name>hasfeature</name>
+		<tag-class>com.finalist.cmsc.taglib.FeatureTag</tag-class>
+		<body-content>scriptless</body-content>
+		<description>Check if a specific feature is enabled in the CMS Container</description>
+		<attribute>
+			<name>name</name>
+			<description>Name of feature.</description>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
 	</tag>
 </taglib>

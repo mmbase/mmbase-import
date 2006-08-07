@@ -51,14 +51,16 @@ public class DateFormatterTag extends ContextReferrerTag {
             Locale locale = getLocale();
             if (enddate == null) {
                 Long outputDate = null;
+                boolean skipWrite = false;
                 if (this.begindate == null) {
                     Writer w = findWriter(false);
                     if (w != null) {
                         Object object = w.getWriterValue();
                         if (object instanceof Date) {
                             outputDate = Long.valueOf(((Date) object).getTime());
-                        } else {
-                            throw new JspTagException("Cannot evaluate time. No attribute given and no writer parent tag found.");
+                        }
+                        else {
+                        	skipWrite = true;
                         }
                     }
                 }
@@ -66,13 +68,15 @@ public class DateFormatterTag extends ContextReferrerTag {
                     outputDate = begindate;
                 }
                 
-                if (displaytime) {
-                    pageContext.getOut().write(
-                            DateUtil.displayDateWithTime(outputDate, locale));
-                }
-                else {
-                    pageContext.getOut().write(
-                            DateUtil.displayDate(outputDate, locale));
+                if (!skipWrite) {
+	                if (displaytime) {
+	                    pageContext.getOut().write(
+	                            DateUtil.displayDateWithTime(outputDate, locale));
+	                }
+	                else {
+	                    pageContext.getOut().write(
+	                            DateUtil.displayDate(outputDate, locale));
+	                }
                 }
             }
             else {

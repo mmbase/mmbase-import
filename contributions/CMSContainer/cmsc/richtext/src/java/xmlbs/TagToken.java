@@ -21,12 +21,7 @@
 
 package xmlbs;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,13 +30,13 @@ import java.util.regex.Pattern;
  *
  * @see <A href="http://www.w3.org/TR/REC-xml#sec-logical-struct">XML: Logical Structures</A>
  * @author R.W. van 't Veer
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TagToken implements Token {
     /** tag name */
     private String tagName;
     /** map of tag attributes */
-    private Map attrs = new HashMap();
+    private Map<String, String> attrs = new HashMap<String, String>();
     /** document structure this tag lives in */
     private DocumentStructure ds = null;
 
@@ -90,7 +85,7 @@ public class TagToken implements Token {
         {
             if (closeRe.matcher(raw).find()) {
                 type = CLOSE;
-            } else if (emptyRe.matcher(raw).matches()) {
+            } else if (emptyRe.matcher(raw).find()) {
                 type = EMPTY;
             } else {
                 type = OPEN;
@@ -162,7 +157,7 @@ public class TagToken implements Token {
      * @see #CLOSE
      * @see #EMPTY
      */
-    public TagToken (String tagName, Map attrs, int type) {
+    public TagToken (String tagName, Map<String, String> attrs, int type) {
         this.tagName = tagName;
         this.attrs = attrs;
         this.type = type;
@@ -250,12 +245,12 @@ public class TagToken implements Token {
         sb.append(tagName);
 
         if (attrs != null) {
-            List l = new Vector(attrs.keySet());
+            List<String> l = new ArrayList<String>(attrs.keySet());
             Collections.sort(l);
             Iterator it = l.iterator();
             while (it.hasNext()) {
                 String attr = (String) it.next();
-                String val = (String) attrs.get(attr);
+                String val = attrs.get(attr);
 
                 sb.append(' ');
                 sb.append(attr);

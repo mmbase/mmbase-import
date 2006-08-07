@@ -22,7 +22,7 @@ import org.mmbase.bridge.*;
 import com.finalist.cmsc.mmbase.TreeUtil;
 import com.finalist.cmsc.navigation.*;
 import com.finalist.cmsc.navigation.select.SelectRenderer;
-import com.finalist.cmsc.struts.JstlUtil;
+import com.finalist.cmsc.util.bundles.JstlUtil;
 import com.finalist.tree.TreeInfo;
 import com.finalist.tree.ajax.AjaxTree;
 import com.finalist.tree.ajax.SelectAjaxRenderer;
@@ -72,16 +72,16 @@ public class SelectorAction extends com.finalist.cmsc.struts.SelectorAction {
         return null;
     }
 
-    protected AjaxTree getTree(HttpServletRequest request, Cloud cloud, TreeInfo info, String persistentid) {
+    protected AjaxTree getTree(HttpServletRequest request, HttpServletResponse response, Cloud cloud, TreeInfo info, String persistentid) {
         Node node = cloud.getNode(persistentid);
         if (!SiteUtil.isSite(node)) {
             node = NavigationUtil.getSiteFromPath(cloud, node.getStringValue(TreeUtil.PATH_FIELD));
         }
 
         NavigationTreeModel model = new NavigationTreeModel(node);
-        SelectAjaxRenderer chr = new SelectRenderer(getLinkPattern(), getTarget());
+        SelectAjaxRenderer chr = new SelectRenderer(response, getLinkPattern(), getTarget());
         AjaxTree t = new AjaxTree(model, chr, info);
-        t.setImgBaseUrl("../../img/");
+        t.setImgBaseUrl("../../gfx/icons/");
         return t;
     }
     

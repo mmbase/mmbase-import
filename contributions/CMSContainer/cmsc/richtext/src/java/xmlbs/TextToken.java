@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
  *
  * @see <A href="http://www.w3.org/TR/REC-xml#syntax">XML: Character Data and Markup</A>
  * @author R.W. van 't Veer
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TextToken implements Token {
     /** processed text */
@@ -67,11 +67,13 @@ public class TextToken implements Token {
         this.txt = fixText(data, ds);
     }
 
+   
     /**
      * @return true when block only contains whitespace
      */
     public boolean isWhiteSpace() {
-        return data.trim().length() == 0;
+        String empty = data.replaceAll("&nbsp;", "");
+        return empty.trim().length() == 0;
     }
 
     /**

@@ -20,7 +20,7 @@
 	</item>
 	
 	<command name="search" nodepath="article" age="-1"
-			fields="title,description,source,editor_note,subtitle,intro">
+			fields="title" pagelength="20">
 		<prompt xml:lang="en">Search article</prompt>
 		<prompt xml:lang="nl">Zoek artikel</prompt>
 		<search-filter>

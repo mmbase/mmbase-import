@@ -9,9 +9,12 @@
  */
 package com.finalist.cmsc.portalImpl.services.sitemanagement;
 
-import java.util.List;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.finalist.cmsc.beans.om.*;
 import com.finalist.cmsc.portalImpl.security.LoginSession;
@@ -26,18 +29,32 @@ import com.finalist.pluto.portalImpl.services.ServiceManager;
  * @author Wouter Heijke
  */
 public class SiteManagement {
+    private static Log log = LogFactory.getLog(SiteManagement.class);
+    
 	private final static SiteManagementService cService = (SiteManagementService) ServiceManager
 			.getService(SiteManagementService.class);
 
 	public static boolean isNavigation(String path) {
+        if (cService == null) {
+            log.info("SiteManagementService not started");
+            return false;
+        }
 		return cService.isNavigation(path);
 	}
 
 	public static ScreenFragment getScreen(String name) {
+        if (cService == null) {
+            log.info("SiteManagementService not started");
+            return null;
+        }
 		return cService.getScreen(name);
 	}
 
 	public static LoginSession getLoginSession(HttpServletRequest request) {
+        if (cService == null) {
+            log.info("SiteManagementService not started");
+            return null;
+        }
 		return cService.getLoginSession(request);
 	}
 
@@ -62,6 +79,10 @@ public class SiteManagement {
 	}
 
 	public static List<Site> getSites() {
+        if (cService == null) {
+            log.info("SiteManagementService not started");
+            return new ArrayList<Site>();
+        }
 		return cService.getSites();
 	}
 	
@@ -99,10 +120,14 @@ public class SiteManagement {
 		return cService.getSiteFromPath(path);
 	}
 	
-	public static String getPageLink(Page page, boolean includeRoot) {
-		return cService.getPageLink(page, includeRoot);
+	public static String getPath(Page page, boolean includeRoot) {
+		return cService.getPath(page, includeRoot);
 	}
 
+    public static String getPath(int pageid, boolean includeRoot) {
+        return cService.getPath(pageid, includeRoot);
+    }
+    
 	public static List<Page> getListFromPath(String path) {
 		return cService.getListFromPath(path);
 	}
@@ -138,5 +163,13 @@ public class SiteManagement {
     public static List<String> getContentTypes(String portletId) {
         return cService.getContentTypes(portletId);
     }
+
+    public static Set<String> getPagePositions(String pageId) {
+        return cService.getPagePositions(pageId);
+    }
+
+	public static String getPageImageForPage(String name, String path) {
+		return cService.getPageImageForPath(name, path);
+	}
 
 }

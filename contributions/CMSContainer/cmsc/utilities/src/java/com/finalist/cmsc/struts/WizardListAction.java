@@ -23,18 +23,32 @@ public class WizardListAction extends MMBaseFormlessAction {
             HttpServletRequest request, Cloud cloud) throws Exception {
 
         String nodetype = request.getParameter("nodetype");
-        if (nodetype == null) { 
-            throw new RuntimeException(" Provide a nodetype"); 
+        String wizardname = request.getParameter("wizardname");
+
+
+        if (nodetype == null && wizardname == null) {
+            throw new RuntimeException(" Provide a nodetype or wizardname requestparameter");
         }
         String sessionkey = request.getParameter("sessionkey");
         if (sessionkey == null || sessionkey.length() == 0) {
             sessionkey = DEFAULT_SESSION_KEY;
         }
 
+       // We want to be able to pass constraints:
+       String constraints = request.getParameter("constraints");
+
         NodeManager manager = cloud.getNodeManager("editwizards");
-        NodeList list = manager.getList("nodepath = '" + nodetype + "'", null, null);
-        if (list.isEmpty()) { 
-            throw new RuntimeException("Unable to find a wizard for nodetype " + nodetype);
+        NodeList list = null;
+
+       if (wizardname != null) {
+          list = manager.getList("name = '" + wizardname + "'", null, null);
+       }
+       else {
+          list = manager.getList("nodepath = '" + nodetype + "'", null, null);
+
+       }
+        if (list == null || list.isEmpty()) {
+            throw new RuntimeException("Unable to find a wizard for nodetype " + nodetype + " or wizardname " + wizardname);
         }
         Node wizard = list.getNode(0);
 
@@ -48,7 +62,7 @@ public class WizardListAction extends MMBaseFormlessAction {
         addParameter(forward, wizard, "fields", "fields", null);
         addParameter(forward, wizard, "pagelength", "pagelength", "50");
         addParameter(forward, wizard, "maxpagecount", "maxpagecount", "100");
-        addParameter(forward, wizard, "constraints", "constraints", null);
+        addParameter(forward, wizard, "constraints", "constraints", constraints);
         addParameter(forward, wizard, "age", "age", null);
         addParameter(forward, wizard, "distinct", "distinctlist", null);
         addParameter(forward, wizard, "searchdir", "searchdir", null);

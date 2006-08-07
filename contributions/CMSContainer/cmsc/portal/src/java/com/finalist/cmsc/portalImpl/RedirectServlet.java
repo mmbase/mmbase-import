@@ -73,7 +73,7 @@ public class RedirectServlet extends BridgeServlet {
         if (PagesUtil.isPage(node)) {
             Page page = SiteManagement.getPage(node.getNumber());
             if (page != null) {
-                String link = SiteManagement.getPageLink(page, !ServerUtil.useServerName());
+                String link = SiteManagement.getPath(page, !ServerUtil.useServerName());
                 redirect = request.getContextPath() + "/" + link;
             }
             
@@ -123,7 +123,7 @@ public class RedirectServlet extends BridgeServlet {
                 if (pageQueryNode != null) {
                     Page page = SiteManagement.getPage(pageQueryNode.getIntValue(PagesUtil.PAGE + ".number"));
                     if (page != null) {
-                        String link = SiteManagement.getPageLink(page, !ServerUtil.useServerName());
+                        String link = SiteManagement.getPath(page, !ServerUtil.useServerName());
                         PortalURL u = new PortalURL(request, link);
 
                         String portletWindowName = pageQueryNode.getStringValue(PortletUtil.PORTLETREL + "." + PortletUtil.LAYOUTID_FIELD);

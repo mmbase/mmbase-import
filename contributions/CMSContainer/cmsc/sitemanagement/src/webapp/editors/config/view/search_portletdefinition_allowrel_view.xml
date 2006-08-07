@@ -21,7 +21,7 @@
 		<field ftype="startwizard" wizardname="config/view/view" inline="true" />
 	</item>
 	
-	<command name="search" nodepath="view" age="-1" fields="title">
+	<command name="search" nodepath="view" age="-1" fields="title" pagelength="20">
 		<prompt xml:lang="en">Search view</prompt>
 		<prompt xml:lang="nl">Zoek template</prompt>
 		<search-filter>

@@ -92,10 +92,8 @@
                               <% } %>
                            </td>
                            <td onMouseDown="objClick(this);">
-                           	  <mm:relatednodes role="authorrel" type="user">
-                           	  	<mm:field name="username" />
-                           	  </mm:relatednodes>
-                           </td>
+                           	  	<mm:field name="creator" />
+                           </td>s
                            <td onMouseDown="objClick(this);">
                               <mm:field name="lastmodifieddate"><cmsc:dateformat displaytime="true" /></mm:field>
                            </td>

@@ -96,32 +96,39 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
                 unfinishedNodes.add(navrelNode);
             }
         }
-        
-        for (Iterator iter = unfinishedNodes.iterator(); iter.hasNext();) {
-            Node navrelNode = (Node) iter.next();
+        int oldUnfinishedSize = unfinishedNodes.size() + 1;
+        while (oldUnfinishedSize > unfinishedNodes.size()) {
+            oldUnfinishedSize = unfinishedNodes.size();
 
-            int sourceNumber = navrelNode.getIntValue(NavigationUtil.NAVREL + ".snumber");
-            int destNumber = navrelNode.getIntValue(NavigationUtil.NAVREL + ".dnumber");
-            int childIndex = navrelNode.getIntValue(NavigationUtil.NAVREL + ".pos");
-            String fragment = navrelNode.getStringValue(PagesUtil.PAGE + "." + PagesUtil.FRAGMENT_FIELD);
-
-            boolean parentNotFound = true;
-            for (PageTree tree : trees.values()) {
-                tree.insert(sourceNumber, destNumber, fragment, childIndex);
-                parentNotFound = true;
-            }
-            if (parentNotFound) {
-                log.warn("Page treenode not found for navrel: " + navrelNode);
+            for (Iterator iter = unfinishedNodes.iterator(); iter.hasNext();) {
+                Node navrelNode = (Node) iter.next();
+    
+                int sourceNumber = navrelNode.getIntValue(NavigationUtil.NAVREL + ".snumber");
+                int destNumber = navrelNode.getIntValue(NavigationUtil.NAVREL + ".dnumber");
+                int childIndex = navrelNode.getIntValue(NavigationUtil.NAVREL + ".pos");
+                String fragment = navrelNode.getStringValue(PagesUtil.PAGE + "." + PagesUtil.FRAGMENT_FIELD);
+    
+                for (PageTree tree : trees.values()) {
+                    PageTreeNode pageTreeNode = tree.insert(sourceNumber, destNumber, fragment, childIndex);
+                    if (pageTreeNode != null) {
+                        iter.remove();
+                        break;
+                    }
+                }
             }
         }
         
+        for (Iterator iter = unfinishedNodes.iterator(); iter.hasNext();) {
+            Node navrelNode = (Node) iter.next();
+            log.warn("Page treenode not found for navrel: " + navrelNode);
+        }
+        
         MMBase.getMMBase().addNodeRelatedEventsListener(PagesUtil.PAGE, this);
-        MMBase.getMMBase().addNodeRelatedEventsListener(SiteUtil.SITE, this);
     }
 
     private void createTree(int siteId, String sitefragment) {
         PageTree siteTree = new PageTree(siteId, sitefragment);
-        trees.put(sitefragment, siteTree);
+        trees.put(sitefragment.toLowerCase(), siteTree);
     }
 
     protected Cloud getAdminCloud() {
@@ -162,6 +169,10 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
 
     private PageTreeNode getPageTreeNode(Page findpage) {
         int id = findpage.getId();
+        return getPageTreeNode(id);
+    }
+
+    private PageTreeNode getPageTreeNode(int id) {
         for (PageTree tree : trees.values()) {
             PageTreeNode pageTreeNode = tree.getPageTreeNode(id);
             if (pageTreeNode != null) {
@@ -171,10 +182,20 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
         return null;
     }
     
+    private PageTree getTree(int id) {
+        for (PageTree tree : trees.values()) {
+            PageTreeNode pageTreeNode = tree.getPageTreeNode(id);
+            if (pageTreeNode != null) {
+                return tree;
+            }
+        }
+        return null;
+    }
+    
     private PageTree getTree(String name) {
         PageTree tree = null;
-        if (trees.containsKey(name)) {
-            tree = trees.get(name);
+        if (trees.containsKey(name.toLowerCase())) {
+            tree = trees.get(name.toLowerCase());
         }
         return tree;
     }
@@ -220,18 +241,36 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
     }
 
     public void notify(RelationEvent event) {
-        if (PagesUtil.PAGE.equals(event.getRelationSourceType()) 
+        if (( PagesUtil.PAGE.equals(event.getRelationSourceType()) || SiteUtil.SITE.equals(event.getRelationSourceType()) ) 
                 && PagesUtil.PAGE.equals(event.getRelationDestinationType())) {
             switch (event.getType()) {
-                case NodeEvent.TYPE_CHANGE:
-                    log.info("change " + event);
-                    for (Object field : event.getNodeEvent().getChangedFields()) {
-                        log.info("changed relation field " + field);
+                case Event.TYPE_CHANGE:
+                {
+                    if (log.isDebugEnabled()) {
+                        log.debug("change " + event);
+                        for (Object field : event.getNodeEvent().getChangedFields()) {
+                            log.debug("changed relation field " + field);
+                        }
+                    }
+                    if (event.getNodeEvent().getChangedFields().contains(TreeUtil.RELATION_POS_FIELD)) {
+                        int destinationNumber = event.getRelationDestinationNumber();
+                        int childIndex = (Integer) event.getNodeEvent().getNewValue(TreeUtil.RELATION_POS_FIELD);
+                        
+                        for (PageTree tree : trees.values()) {
+                            PageTreeNode pageTreeNode = tree.getPageTreeNode(destinationNumber);
+                            if (pageTreeNode != null) {
+                                tree.move(pageTreeNode, childIndex);
+                                break;
+                            }
+                        }
                     }
                     break;
-                case NodeEvent.TYPE_DELETE:
+                }
+                case Event.TYPE_DELETE:
                     {
-                        log.info("delete " + event);
+                        if (log.isDebugEnabled()) {
+                            log.debug("delete " + event);
+                        }
                         int sourceNumber = event.getRelationSourceNumber();
                         int destinationNumber = event.getRelationDestinationNumber();
                         Node sourceNode = getCloud().getNode(sourceNumber);
@@ -244,18 +283,36 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
                         }
                     }
                     break;
-                case NodeEvent.TYPE_NEW:
+                case Event.TYPE_NEW:
                     {
-                        log.info("new " + event);
+                        if (log.isDebugEnabled()) {
+                            log.debug("new " + event);
+                        }
                         int destinationNumber = event.getRelationDestinationNumber();
+                        PageTreeNode destTreeNode = getPageTreeNode(destinationNumber);
                         int childIndex = (Integer) event.getNodeEvent().getNewValue(TreeUtil.RELATION_POS_FIELD);
-                        
-                        Node destNode = getCloud().getNode(destinationNumber);
-                        String path = destNode.getStringValue(TreeUtil.PATH_FIELD);
-                        List<String> names = PageTree.getPathElements(path);
-                        PageTree tree = getTree(names.get(0));
-                        if (tree != null) {
-                            tree.insert(path, destinationNumber, childIndex);
+                        if (destTreeNode == null) {
+                            // create new PageYreeNode
+                            Node destNode = getCloud().getNode(destinationNumber);
+                            String path = destNode.getStringValue(TreeUtil.PATH_FIELD);
+                            List<String> names = PageTree.getPathElements(path);
+                            PageTree tree = getTree(names.get(0));
+                            if (tree != null) {
+                                tree.insert(path, destinationNumber, childIndex);
+                            }
+                        }
+                        else {
+                            // move PageTreeNode
+                            int sourceNumber = event.getRelationSourceNumber();
+
+                            PageTree destTree = getTree(destinationNumber);
+                            PageTree sourceTree = getTree(sourceNumber);
+                            if (sourceTree == destTree) {
+                                destTree.move(destTreeNode, sourceNumber, childIndex);
+                            }
+                            else {
+                                destTree.move(destTreeNode, sourceTree, sourceNumber, childIndex);
+                            }
                         }
                     }
                     break;
@@ -271,34 +328,45 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
         Integer key = event.getNodeNumber();
         if (key != null) {
             switch (event.getType()) {
-                case NodeEvent.TYPE_CHANGE:
-                    if(event.getChangedFields().contains(PagesUtil.FRAGMENT_FIELD)) {
-                        for (PageTree tree : trees.values()) {
-                            if (tree.containsPageTreeNode(key)) {
-                                String newFragment = (String) event.getNewValue(PagesUtil.FRAGMENT_FIELD);
-                                if (SiteUtil.SITE.equals(event.getBuilderName())) {
-                                    trees.remove(tree.getRoot().getPathStr());
-                                    trees.put(newFragment, tree);
+                case Event.TYPE_CHANGE:
+                    if (SiteUtil.SITE.equals(event.getBuilderName())) {
+                        if(event.getChangedFields().contains(SiteUtil.FRAGMENT_FIELD)) {
+                            for (PageTree tree : trees.values()) {
+                                if (tree.containsPageTreeNode(key)) {
+                                    String newFragment = (String) event.getNewValue(SiteUtil.FRAGMENT_FIELD);
+                                    trees.remove(tree.getRoot().getPathStr().toLowerCase());
+                                    trees.put(newFragment.toLowerCase(), tree);
+                                    tree.replace(key, newFragment);
+                                    break;
                                 }
-                                tree.replace(key, newFragment);
-                                break;
+                            }
+                        }
+                    }
+                    if (PagesUtil.PAGE.equals(event.getBuilderName())) {
+                        if(event.getChangedFields().contains(PagesUtil.FRAGMENT_FIELD)) {
+                            for (PageTree tree : trees.values()) {
+                                if (tree.containsPageTreeNode(key)) {
+                                    String newFragment = (String) event.getNewValue(PagesUtil.FRAGMENT_FIELD);
+                                    tree.replace(key, newFragment);
+                                    break;
+                                }
                             }
                         }
                     }
                     break;
-                case NodeEvent.TYPE_DELETE:
+                case Event.TYPE_DELETE:
                     if (SiteUtil.SITE.equals(event.getBuilderName())) {
                         for (PageTree tree : trees.values()) {
                             if (tree.containsPageTreeNode(key)) {
-                                trees.remove(tree.getRoot().getPathStr());
+                                trees.remove(tree.getRoot().getPathStr().toLowerCase());
                                 break;
                             }
                         }
                     }
                     break;
-                case NodeEvent.TYPE_NEW:
+                case Event.TYPE_NEW:
                     if (SiteUtil.SITE.equals(event.getBuilderName())) {
-                        String newFragment = (String) event.getNewValue(PagesUtil.FRAGMENT_FIELD);
+                        String newFragment = (String) event.getNewValue(SiteUtil.FRAGMENT_FIELD);
                         createTree(event.getNodeNumber(), newFragment);
                     }
                     break;

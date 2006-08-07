@@ -24,7 +24,7 @@ public class ContentElement extends NodeBean {
     private String description;
 	private Date creationdate;
 	private Date lastmodifieddate;
-	private Date embargodate;
+	private Date publishdate;
 	private Date expirydate;
 	private boolean use_expiry;
 	private String lastmodifier;
@@ -67,12 +67,12 @@ public class ContentElement extends NodeBean {
         this.lastmodifieddate = lastmodifieddate;
     }
 
-    public Date getEmbargodate() {
-		return embargodate;
+    public Date getPublishdate() {
+		return publishdate;
 	}
 
-	public void setEmbargodate(Date embargodate) {
-		this.embargodate = embargodate;
+	public void setPublishdate(Date publishdate) {
+		this.publishdate = publishdate;
 	}
 
 	public Date getExpirydate() {

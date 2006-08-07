@@ -53,19 +53,19 @@ public class IFramePortlet extends CmscPortlet {
         String portletId = preferences.getValue(PortalConstants.CMSC_OM_PORTLET_ID, null);
         if (portletId != null) {
             // get the values submitted with the form
-            setPorltetParameter(portletId, ALIGN_ATTR_PARAM, request.getParameter(ALIGN_ATTR_PARAM));
+            setPortletParameter(portletId, ALIGN_ATTR_PARAM, request.getParameter(ALIGN_ATTR_PARAM));
 
-            setPorltetParameter(portletId, CLASS_ATTR_PARAM, request.getParameter(CLASS_ATTR_PARAM));
-            setPorltetParameter(portletId, FRAME_BORDER_ATTR_PARAM, request.getParameter(FRAME_BORDER_ATTR_PARAM));
-            setPorltetParameter(portletId, HEIGHT_ATTR_PARAM, request.getParameter(HEIGHT_ATTR_PARAM));
-            setPorltetParameter(portletId, ID_ATTR_PARAM, request.getParameter(ID_ATTR_PARAM));
-            setPorltetParameter(portletId, MARGIN_HEIGHT_ATTR_PARAM, request.getParameter(MARGIN_HEIGHT_ATTR_PARAM));
-            setPorltetParameter(portletId, MARGIN_WIDTH_ATTR_PARAM, request.getParameter(MARGIN_WIDTH_ATTR_PARAM));
-            setPorltetParameter(portletId, NAME_ATTR_PARAM, request.getParameter(NAME_ATTR_PARAM));
-            setPorltetParameter(portletId, SCROLLING_ATTR_PARAM, request.getParameter(SCROLLING_ATTR_PARAM));
-            setPorltetParameter(portletId, SOURCE_ATTR_PARAM, request.getParameter(SOURCE_ATTR_PARAM));
-            setPorltetParameter(portletId, STYLE_ATTR_PARAM, request.getParameter(STYLE_ATTR_PARAM));
-            setPorltetParameter(portletId, WIDTH_ATTR_PARAM, request.getParameter(WIDTH_ATTR_PARAM));
+            setPortletParameter(portletId, CLASS_ATTR_PARAM, request.getParameter(CLASS_ATTR_PARAM));
+            setPortletParameter(portletId, FRAME_BORDER_ATTR_PARAM, request.getParameter(FRAME_BORDER_ATTR_PARAM));
+            setPortletParameter(portletId, HEIGHT_ATTR_PARAM, request.getParameter(HEIGHT_ATTR_PARAM));
+            setPortletParameter(portletId, ID_ATTR_PARAM, request.getParameter(ID_ATTR_PARAM));
+            setPortletParameter(portletId, MARGIN_HEIGHT_ATTR_PARAM, request.getParameter(MARGIN_HEIGHT_ATTR_PARAM));
+            setPortletParameter(portletId, MARGIN_WIDTH_ATTR_PARAM, request.getParameter(MARGIN_WIDTH_ATTR_PARAM));
+            setPortletParameter(portletId, NAME_ATTR_PARAM, request.getParameter(NAME_ATTR_PARAM));
+            setPortletParameter(portletId, SCROLLING_ATTR_PARAM, request.getParameter(SCROLLING_ATTR_PARAM));
+            setPortletParameter(portletId, SOURCE_ATTR_PARAM, request.getParameter(SOURCE_ATTR_PARAM));
+            setPortletParameter(portletId, STYLE_ATTR_PARAM, request.getParameter(STYLE_ATTR_PARAM));
+            setPortletParameter(portletId, WIDTH_ATTR_PARAM, request.getParameter(WIDTH_ATTR_PARAM));
 
         } else {
             getLogger().error("No portletId");

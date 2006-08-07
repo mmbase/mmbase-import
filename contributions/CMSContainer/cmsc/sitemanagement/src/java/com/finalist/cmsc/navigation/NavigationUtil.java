@@ -100,7 +100,36 @@ public class NavigationUtil {
     public static String getPathToRootString(Node node, boolean includeRoot) {
         return TreeUtil.getPathToRootString(node, treeManagers, NAVREL, fragmentFieldnames, includeRoot);
     }
+
+    /**
+     * Creates a string that represents the root path.
+     * @param cloud - MMbase cloud
+     * @param node - MMbase node
+     * @return path to root
+     */
+    public static String[] getPathElementsToRoot(Cloud cloud, String node) {
+       return getPathElementsToRoot(cloud.getNode(node));
+    }
     
+    /**
+     * Creates a string that represents the root path.
+     * @param node - MMbase node
+     * @return path to root
+     */
+    public static String[] getPathElementsToRoot(Node node) {
+       return getPathElementsToRoot(node, true);
+    }
+
+    /**
+     * Creates a string that represents the root path.
+     * @param node - MMbase node
+     * @param includeRoot - include the root pathfragment
+     * @return path to root
+     */
+    public static String[] getPathElementsToRoot(Node node, boolean includeRoot) {
+        return TreeUtil.getPathElementsToRoot(node, treeManagers, NAVREL, fragmentFieldnames, includeRoot);
+    }
+
 
     /**
      * Creates a string that represents the titles.
@@ -222,6 +251,11 @@ public class NavigationUtil {
         RelationUtil.reorder(parent, children, NAVREL, PagesUtil.PAGE);
     }
 
+    public static void recalculateChildPositions(Node parent) {
+        RelationUtil.recalculateChildPositions(parent, NAVREL, PagesUtil.PAGE);
+    }
+
+    
     public static NodeList getVisibleChildren(Node parentNode) {
         NodeList children = getOrderedChildren(parentNode);
         for (Iterator iter = children.iterator(); iter.hasNext();) {

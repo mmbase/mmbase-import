@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package com.finalist.cmsc.navigation;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.finalist.tree.*;
 import com.finalist.tree.ajax.*;
@@ -17,8 +18,8 @@ import com.finalist.tree.ajax.*;
 
 public class NavigationAjaxRenderer extends NavigationRenderer implements AjaxTreeCellRenderer {
 
-    public NavigationAjaxRenderer(HttpServletRequest request, String target) {
-        super(request, target);
+    public NavigationAjaxRenderer(HttpServletRequest request, HttpServletResponse response, String target) {
+        super(request, response, target);
     }
 
     @Override

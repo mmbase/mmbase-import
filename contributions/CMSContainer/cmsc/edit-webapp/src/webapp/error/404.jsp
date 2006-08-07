@@ -9,8 +9,8 @@
 <pre>
 "Would you tell me, please, which way I ought to go from here?"
 "That depends a good deal on where you want to get to," said the Cat.
-"I don?t much care where ..." said Alice.
-"Then it doesn?t matter which way you go," said the Cat.
+"I don't much care where ..." said Alice.
+"Then it doesn't matter which way you go," said the Cat.
 "... so long as I get SOMEWHERE," Alice added as an explanation.
 
 -- Lewis Carroll, Alice in Wonderland

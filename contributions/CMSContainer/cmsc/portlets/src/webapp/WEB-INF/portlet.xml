@@ -18,8 +18,8 @@
 		<supports>
 			<mime-type>text/html</mime-type>
 			<portlet-mode>VIEW</portlet-mode>
-			<portlet-mode>EDIT</portlet-mode>
 			<portlet-mode>HELP</portlet-mode>
+			<portlet-mode>EDIT</portlet-mode>
 			<portlet-mode>EDIT_DEFAULTS</portlet-mode>
 			<portlet-mode>DELETE</portlet-mode>
 		</supports>
@@ -108,8 +108,8 @@
 		<supports>
 			<mime-type>text/html</mime-type>
 			<portlet-mode>VIEW</portlet-mode>
-			<portlet-mode>EDIT</portlet-mode>
 			<portlet-mode>HELP</portlet-mode>
+			<portlet-mode>EDIT</portlet-mode>
 			<portlet-mode>EDIT_DEFAULTS</portlet-mode>
 			<portlet-mode>DELETE</portlet-mode>
 		</supports>
@@ -210,6 +210,36 @@
 			<title>Jsp Portlet</title>
 			<short-title>Jsp</short-title>
 			<keywords>jsp,static</keywords>
+		</portlet-info>
+	</portlet>
+
+	<portlet>
+		<description>a search portlet, using the luceus stuff</description>
+		<portlet-name>searchportlet</portlet-name>
+		<display-name>Search Portlet</display-name>
+		<portlet-class>com.finalist.cmsc.portlets.SearchPortlet</portlet-class>
+		<init-param>
+			<name>template.edit_defaults</name>
+			<value>Search.jsp</value>
+		</init-param>
+		<init-param>
+			<name>template.help</name>
+			<value>Search.jsp</value>
+		</init-param>
+		<supports>
+			<mime-type>text/html</mime-type>
+			<portlet-mode>VIEW</portlet-mode>
+			<portlet-mode>HELP</portlet-mode>
+			<portlet-mode>EDIT_DEFAULTS</portlet-mode>
+			<portlet-mode>DELETE</portlet-mode>
+		</supports>
+		<supported-locale>en</supported-locale>
+		<supported-locale>nl</supported-locale>
+		<resource-bundle>com.finalist.cmsc.portlets.SearchPortlet</resource-bundle>
+		<portlet-info>
+			<title>Search Portlet</title>
+			<short-title>Search</short-title>
+			<keywords>search,luceus</keywords>
 		</portlet-info>
 	</portlet>
 </portlet-app>

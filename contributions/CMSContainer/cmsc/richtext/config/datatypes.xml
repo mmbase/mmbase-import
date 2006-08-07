@@ -9,6 +9,9 @@
       <description xml:lang="en">
       	Html field with inline links to other objects
       </description>
+      <setprocessor type="string">
+        <class name="com.finalist.cmsc.richtext.RichTextSetProcessor" />
+      </setprocessor>
       <getprocessor type="string">
         <class name="com.finalist.cmsc.richtext.RichTextGetProcessor" />
       </getprocessor>

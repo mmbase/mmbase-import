@@ -24,8 +24,8 @@
    <mm:param name="action" value="create" />
    <mm:param name="creation" value="${contentchannel}" />
 </mm:url>
-<a href="<mm:write referid="newurl"/>" target="cmsc_element_edit" 
-   onclick="openPopupWindow('cmsc_element_edit', '750', '750')">
-	New
+<a href="<mm:write referid="newurl"/>" onclick="openPopupWindow('cmsc_element_edit', '750', '750')"
+   class="portal_button" target="cmsc_element_edit" style="float: left;">
+	<fmt:message key="edit.new" />
 </a>
 </mm:cloud>

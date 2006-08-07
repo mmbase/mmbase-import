@@ -9,7 +9,6 @@
    </requirements>
    <neededbuilderlist>
       <!-- These are the application specific relation builders -->
-      <builder maintainer="finalist.com" version="1">authorrel</builder>
       <builder maintainer="finalist.com" version="1">contentrel</builder>
       <builder maintainer="finalist.com" version="1">creationrel</builder>
       <builder maintainer="finalist.com" version="1">deletionrel</builder>
@@ -19,7 +18,6 @@
       <builder maintainer="finalist.com" version="1">contentelement</builder>
     </neededbuilderlist>
     <neededreldeflist>
-        <reldef source="authorrel" target="authorrel" direction="bidirectional" guisourcename="authorrel" guitargetname="authorrel" builder="authorrel" />
         <reldef source="childrel" target="childrel" direction="bidirectional" guisourcename="childrel" guitargetname="childrel" builder="childrel" />
         <reldef source="contentrel" target="contentrel" direction="bidirectional" guisourcename="contentrel" guitargetname="contentrel" builder="contentrel" />
         <reldef source="creationrel" target="creationrel" direction="bidirectional" guisourcename="creationrel" guitargetname="creationrel" builder="creationrel" />
@@ -31,7 +29,6 @@
       <relation from="contentchannel" to="contentelement" type="contentrel" />
       <relation from="contentelement" to="contentchannel" type="creationrel" />
       <relation from="contentelement" to="contentchannel" type="deletionrel" />
-      <relation from="contentelement" to="user" type="authorrel" />
       <relation from="contentelement" to="user" type="ownerrel" />
       <relation from="mmbasegroups" to="contentchannel" type="rolerel" />
    </allowedrelationlist>
@@ -39,7 +36,7 @@
    <datasourcelist>
    <!-- A testdata/back up skelet is generated. If the testdata is not available, it will still work. -->
       <datasource builder="contentchannel" path="contentrepository/contentchannel.xml" />
-      <datasource builder="contentelement" path="contentrepository/contentelement.xml" />
+      <datasource builder="cronjobs" path="contentrepository/cronjobs.xml" />
       
       <datasource builder="editwizards" path="contentrepository/editwizards.xml" />
       <datasource builder="properties" path="contentrepository/properties.xml" />
@@ -47,11 +44,11 @@
 
    <relationsourcelist>
    <!-- A testdata/backup skelet is generated for relation data. If the testdata is not available, it will still work. -->
-      <relationsource builder="insrel" path="contentrepository/insrel.xml"/>
+<!--        <relationsource builder="insrel" path="contentrepository/insrel.xml"/>
       <relationsource builder="posrel" path="contentrepository/posrel.xml"/>
       <relationsource builder="childrel" path="contentrepository/childrel.xml"/>
       <relationsource builder="contentrel" path="contentrepository/contentrel.xml"/>
-      <relationsource builder="rolerel" path="contentrepository/rolerel.xml"/>
+      <relationsource builder="rolerel" path="contentrepository/rolerel.xml"/>-->
    </relationsourcelist>
 
    <contextsourcelist>

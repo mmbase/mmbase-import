@@ -18,7 +18,6 @@ import com.finalist.pluto.portalImpl.core.CmscPortletMode;
 
 /**
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
  */
 public class JspPortlet extends CmscPortlet {
 

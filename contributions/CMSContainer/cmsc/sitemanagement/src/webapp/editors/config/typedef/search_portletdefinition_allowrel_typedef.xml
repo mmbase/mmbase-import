@@ -16,7 +16,7 @@
 		</field>
 	</item>
 	
-	<command name="search" nodepath="typedef" age="-1" fields="name">
+	<command name="search" nodepath="typedef" age="-1" fields="name" pagelength="20">
 		<prompt xml:lang="en">Search contenttype</prompt>
 		<prompt xml:lang="nl">Zoek contenttype</prompt>
 		<search-filter>

@@ -11,7 +11,7 @@
 	<mm:url page="/editors/repository/select/SelectorContent.do" id="channelsurl" write="false" >
 		<mm:param name="channel" value="${channel}"/>
 	</mm:url>
-	<mm:url page="/editors/repository/select/content.jsp" id="contenturl" write="false" >
+	<mm:url page="/editors/repository/select/Content.do" id="contenturl" write="false" >
 		<mm:param name="parentchannel" value="${channel}"/>
 	</mm:url>
 </mm:present>
@@ -46,8 +46,8 @@
 	<head><title><fmt:message key="repository.title" /></title>
 	</head>
 	<frameset cols="300,*">
-		<frame src="<mm:write referid="channelsurl"/>" name="selectchannels" scrolling="yes" />
-		<frame src="<mm:write referid="contenturl"/>" name="selectcontent" />
+		<frame src="<mm:url referid="channelsurl"/>" name="selectchannels" scrolling="yes" />
+		<frame src="<mm:url referid="contenturl"/>" name="selectcontent" />
 	</frameset>
 </html:html>
 </mm:cloud>

@@ -3,7 +3,7 @@
 <action type="load">
 	<field name="creationdate" />
 	<field name="lastmodifieddate" />
-	<field name="embargodate" />
+	<field name="publishdate" />
 	<field name="expiredate" />
 	<field name="lastmodifier" />
     <field name="stagingfragment"/>
@@ -18,8 +18,8 @@
 	<field name="source" />
 	<field name="language" />
 	<field name="rights" />
-	<field name="archivedate" />
 	
+	<relation destination="images" role="namedrel" />
 	<relation destination="layout" role="allowrel" />
 	<relation destination="layout" role="layoutrel" />
 	<relation destination="page" role="navrel" />

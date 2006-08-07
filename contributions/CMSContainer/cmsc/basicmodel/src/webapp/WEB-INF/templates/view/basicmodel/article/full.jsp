@@ -10,23 +10,31 @@
 
 		<mm:field name="title"><mm:isnotempty><h1><mm:write /></h1></mm:isnotempty></mm:field>
 		<mm:field name="subtitle"><mm:isnotempty><h2><mm:write /></h2></mm:isnotempty></mm:field>
-		<mm:field name="intro"><mm:isnotempty><p class="intro"><mm:write /></p></mm:isnotempty></mm:field>
+		<mm:field name="intro"><mm:isnotempty><p class="intro"><mm:write escape="none" /></p></mm:isnotempty></mm:field>
 
-		<cmsc-bm:linkedimages position="top-left" style="float: left;" />
-		<cmsc-bm:linkedimages position="top-right" style="float: right;" />
-		<mm:field name="body" />
-		<cmsc-bm:linkedimages position="bottom-left" style="float: left;" />
-		<cmsc-bm:linkedimages position="bottom-right" style="float: right;" />
-
-		<mm:relatednodes type="attachments">
-			<mm:first><p><b>Bijlagen</b></p><ul></mm:first>
+		<cmsc-bm:linkedimages position="top-left" style="float: left; padding: 1em 1em;" />
+		<cmsc-bm:linkedimages position="top" style="display: block; clear: both; padding: 1em 0em;" />
+		<cmsc-bm:linkedimages position="top-right" style="float: right; padding: 1em 1em;" />
+		<mm:field name="body" escape="none" />
+		<cmsc-bm:linkedimages position="bottom-left" style="float: left; padding: 1em 1em;" />
+		<cmsc-bm:linkedimages position="bottom" style="display: block; clear: both; padding: 1em 0em;" />
+		<cmsc-bm:linkedimages position="bottom-right" style="float: right; padding: 1em 1em;" />
+		<p />
+		<mm:relatednodes type="attachments" role="posrel">
+			<mm:first><ul></mm:first>
 			<li><a href="<mm:attachment/>" title="<mm:field name='description'/>" target="_blank"><mm:field name="title" /></a></li>
 			<mm:last></ul></mm:last>
 		</mm:relatednodes>
-		<mm:relatednodes type="urls">
-			<mm:first><p><b>Links</b></p><ul></mm:first>
+		<mm:relatednodes type="urls" role="posrel">
+			<mm:first><ul></mm:first>
 			<mm:field name="url" id="url" write="false" />
 			<li><a href="<mm:url referid='url'/>" title="<mm:field name='name'/>" target="_blank"><mm:field name="name" /></a></li>
+			<mm:last></ul></mm:last>
+		</mm:relatednodes>
+		<mm:relatednodes type="contentelement" role="posrel">
+			<mm:first><ul></mm:first>
+			<mm:field name="number" id="elementNumber" write="false" />
+			<li><a href="<cmsc:contenturl number="${elementNumber}"/>" title="<mm:field name='title'/>"><mm:field name="title" /></a></li>
 			<mm:last></ul></mm:last>
 		</mm:relatednodes>
 	</mm:node>

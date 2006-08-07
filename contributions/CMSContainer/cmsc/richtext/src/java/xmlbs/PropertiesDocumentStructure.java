@@ -47,17 +47,17 @@ import java.util.*;
  * </pre>
  *
  * @author R.W. van 't Veer
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class PropertiesDocumentStructure implements DocumentStructure {
     /** set to keep tag names */
-    private Set tagNames = new HashSet();
+    private Set<String> tagNames = new HashSet<String>();
     /** set to keep entity names */
-    private Set entityNames = new HashSet();
+    private Set<String> entityNames = new HashSet<String>();
     /** map to keep tag attributes */
-    private Map tagAttributes = new HashMap();
+    private Map<String, List<String>> tagAttributes = new HashMap<String, List<String>>();
     /** map to keep lists of possible tag parents */
-    private Map tagHierarchy = new HashMap();
+    private Map<String, List<String>> tagHierarchy = new HashMap<String, List<String>>();
     /** ignore case flag */
     private boolean icase = false;
 
@@ -66,7 +66,7 @@ public class PropertiesDocumentStructure implements DocumentStructure {
      * and attributes
      */
     public PropertiesDocumentStructure (Properties prop) {
-	setup(prop);
+        setup(prop);
     }
 
     /**
@@ -77,9 +77,9 @@ public class PropertiesDocumentStructure implements DocumentStructure {
      */
     public PropertiesDocumentStructure (String resource)
     throws IOException {
-	Properties prop = new Properties();
-	prop.load(ClassLoader.getSystemResourceAsStream(resource));
-	setup(prop);
+    	Properties prop = new Properties();
+    	prop.load(ClassLoader.getSystemResourceAsStream(resource));
+    	setup(prop);
     }
 
     /**
@@ -89,17 +89,17 @@ public class PropertiesDocumentStructure implements DocumentStructure {
     private void setup (Properties prop) {
 	// collect tag names
 	{
-	    tagNames.addAll(prop.keySet());
-	    for (Iterator it = tagNames.iterator(); it.hasNext();) {
-		String key = (String) it.next();
-		if (key.startsWith("_")) {
-		    it.remove();
-		}
-	    }
+        Set<Object> keys = prop.keySet();
+        for (Iterator iter = keys.iterator(); iter.hasNext();) {
+            String key = (String) iter.next();
+            if (!key.startsWith("_")) {
+                tagNames.add(key);
+            }
+        }
 	}
 
 	// create "master" map by resolving all includes
-	Map master = new HashMap();
+	Map<String, List<String>> master = new HashMap<String, List<String>>();
 	for (Iterator it = tagNames.iterator(); it.hasNext();) {
 	    String key = (String) it.next();
 	    master.put(key, include(prop, key));
@@ -111,24 +111,24 @@ public class PropertiesDocumentStructure implements DocumentStructure {
 	    entityNames.add("gt");
 	    entityNames.add("lt");
 
-	    List l = (List) master.get("&");
+	    List<String> l = master.get("&");
 	    if (l != null) {
-		entityNames.addAll(l);
-		master.remove("&");
-		tagNames.remove("&");
+    		entityNames.addAll(l);
+    		master.remove("&");
+    		tagNames.remove("&");
 	    }
 	}
 
 	// create hierarchy map from master
 	for (Iterator it = tagNames.iterator(); it.hasNext();) {
 	    String key = (String) it.next();
-	    List l = new Vector((List) master.get(key));
+	    List<String> l = new ArrayList<String>(master.get(key));
 	    // remove attribute info
 	    for (Iterator it0 = l.iterator(); it0.hasNext();) {
-		String key0 = (String) it0.next();
-		if (key0.startsWith("$")) {
-		    it0.remove();
-		}
+    		String key0 = (String) it0.next();
+    		if (key0.startsWith("$")) {
+    		    it0.remove();
+    		}
 	    }
 	    tagHierarchy.put(key, l);
 	}
@@ -136,14 +136,14 @@ public class PropertiesDocumentStructure implements DocumentStructure {
 	// create attribute map from master
 	for (Iterator it = tagNames.iterator(); it.hasNext();) {
 	    String key = (String) it.next();
-	    List in = new Vector((List) master.get(key));
-	    List l = new Vector();
+	    List<String> in = new ArrayList<String>(master.get(key));
+	    List<String> l = new ArrayList<String>();
 	    // copy attribute only info to list
 	    for (Iterator it0 = in.iterator(); it0.hasNext();) {
-		String key0 = (String) it0.next();
-		if (key0.startsWith("$")) {
-		    l.add(key0.substring(1));
-		}
+    		String key0 = (String) it0.next();
+    		if (key0.startsWith("$")) {
+    		    l.add(key0.substring(1));
+    		}
 	    }
 	    tagAttributes.put(key, l);
 	}
@@ -154,18 +154,18 @@ public class PropertiesDocumentStructure implements DocumentStructure {
      * @param key to read
      * @return fully dereferenced list
      */
-    private List include(Properties prop, String key) {
-	List l = new Vector();
-	StringTokenizer st = new StringTokenizer(prop.getProperty(key));
-	while (st.hasMoreTokens()) {
-	    String v = st.nextToken();
-	    if (v.startsWith("_")) {
-		l.addAll(include(prop, v));
-	    } else {
-		l.add(v);
-	    }
-	}
-	return l;
+    private List<String> include(Properties prop, String key) {
+    	List<String> l = new ArrayList<String>();
+    	StringTokenizer st = new StringTokenizer(prop.getProperty(key));
+    	while (st.hasMoreTokens()) {
+    	    String v = st.nextToken();
+    	    if (v.startsWith("_")) {
+        		l.addAll(include(prop, v));
+       	    } else {
+        		l.add(v);
+    	    }
+    	}
+    	return l;
     }
 
     /**
@@ -174,7 +174,7 @@ public class PropertiesDocumentStructure implements DocumentStructure {
      * @param icase true where character case should be ignored
      */
     public void setIgnoreCase (boolean icase) {
-	this.icase = icase;
+        this.icase = icase;
     }
 
     /**
@@ -182,7 +182,7 @@ public class PropertiesDocumentStructure implements DocumentStructure {
      * @return true where character case should be ignored
      */
     public boolean getIgnoreCase () {
-	return icase;
+        return icase;
     }
 
     /**
@@ -193,18 +193,18 @@ public class PropertiesDocumentStructure implements DocumentStructure {
      * @return tag name in proper case
      */
     public String getTagName (String name) {
-	if (!icase) {
-	    return name;
-	}
-
-	String in = name.toLowerCase();
-	for (Iterator it = tagNames.iterator(); it.hasNext();) {
-	    String n = (String) it.next();
-	    if (n.toLowerCase().equals(in)) {
-		return n;
-	    }
-	}
-	return name;
+    	if (!icase) {
+    	    return name;
+    	}
+    
+    	String in = name.toLowerCase();
+    	for (Iterator it = tagNames.iterator(); it.hasNext();) {
+    	    String n = (String) it.next();
+    	    if (n.toLowerCase().equals(in)) {
+    	        return n;
+    	    }
+    	}
+    	return name;
     }
 
     /**
@@ -215,24 +215,24 @@ public class PropertiesDocumentStructure implements DocumentStructure {
      * <tt>null</tt> if no such entity exists
      */
     public String getEntityRef (String name) {
-	if (!icase) {
-	    return entityNames.contains(name) ? name : null;
-	}
-
-	// try exact match first
-	if (entityNames.contains(name)) {
-	    return name;
-	}
-
-	// find a lower case match
-	String in = name.toLowerCase();
-	for (Iterator it = entityNames.iterator(); it.hasNext();) {
-	    String n = (String) it.next();
-	    if (n.toLowerCase().equals(in)) {
-		return n;
-	    }
-	}
-	return null;
+    	if (!icase) {
+    	    return entityNames.contains(name) ? name : null;
+    	}
+    
+    	// try exact match first
+    	if (entityNames.contains(name)) {
+    	    return name;
+    	}
+    
+    	// find a lower case match
+    	String in = name.toLowerCase();
+    	for (Iterator it = entityNames.iterator(); it.hasNext();) {
+    	    String n = (String) it.next();
+    	    if (n.toLowerCase().equals(in)) {
+    	        return n;
+    	    }
+    	}
+    	return null;
     }
 
     /**
@@ -245,21 +245,21 @@ public class PropertiesDocumentStructure implements DocumentStructure {
      * <tt>attr</tt> when attribute is not known
      */
     public String getTagAttribute (String name, String attr) {
-	if (!icase) {
-	    return attr;
-	}
-	List names = (List) tagAttributes.get(name);
-	if (names == null) {
-	    return attr;
-	}
-	String in = attr.toLowerCase();
-	for (Iterator it = names.iterator(); it.hasNext();) {
-	    String n = (String) it.next();
-	    if (n.toLowerCase().equals(in)) {
-		return n;
-	    }
-	}
-	return attr;
+    	if (!icase) {
+    	    return attr;
+    	}
+    	List<String> names =  tagAttributes.get(name);
+    	if (names == null) {
+    	    return attr;
+    	}
+    	String in = attr.toLowerCase();
+    	for (Iterator it = names.iterator(); it.hasNext();) {
+    	    String n = (String) it.next();
+    	    if (n.toLowerCase().equals(in)) {
+    	        return n;
+    	    }
+    	}
+    	return attr;
     }
 
 
@@ -268,21 +268,21 @@ public class PropertiesDocumentStructure implements DocumentStructure {
      * @return true if tag is known
      */
     public boolean isKnownTag (TagToken tag) {
-	return tagNames.contains(tag.getName());
+        return tagNames.contains(tag.getName());
     }
 
     /**
      * @param tag retain known attributes in this tag
      */
     public void retainKnownAttributes (TagToken tag) {
-	List names = (List) tagAttributes.get(tag.getName());
-	Iterator it = tag.getAttributes().entrySet().iterator();
-	while (it.hasNext()) {
-	    Map.Entry en = (Map.Entry) it.next();
-	    if (!names.contains(en.getKey())) {
-		it.remove();
-	    }
-	}
+    	List<String> names = tagAttributes.get(tag.getName());
+    	Iterator it = tag.getAttributes().entrySet().iterator();
+    	while (it.hasNext()) {
+    	    Map.Entry en = (Map.Entry) it.next();
+    	    if (!names.contains(en.getKey())) {
+    	        it.remove();
+    	    }
+    	}
     }
 
     /**
@@ -290,25 +290,41 @@ public class PropertiesDocumentStructure implements DocumentStructure {
      * @param child possible child token
      * @return true if parent can contain child
      */
-    public boolean canContain (TagToken parent, Token child) {
-	String parentName = parent == null ? "@ROOT" : parent.getName();
+    public boolean canContain(TagToken parent, Token child) {
+        if (child instanceof TextToken) {
+            return canContainText(parent);
+        }
+        else {
+            if (child instanceof TagToken) {
+                TagToken childtag = (TagToken) child;
+                return canContainTag(parent, childtag.getName());
+            }
+        }
+        return false;
+    }
 
-	List hier = (List) tagHierarchy.get(parentName);
-	if (child instanceof TextToken) {
-	    return hier.contains("#TEXT");
-	} else if (child instanceof TagToken) {
-	    TagToken childtag = (TagToken) child;
-	    return hier.contains(childtag.getName());
-	}
-	return false;
+    private String getTagName(TagToken parent) {
+        return parent == null ? "@ROOT" : parent.getName();
+    }
+
+    public boolean canContainTag(TagToken tag, String name) {
+        String parentName = getTagName(tag);
+        List<String> hier = tagHierarchy.get(parentName);
+        return hier.contains(name);
+    }
+
+    public boolean canContainText(TagToken tag) {
+        String parentName = getTagName(tag);
+        List<String> hier = tagHierarchy.get(parentName);
+        return hier.contains("#TEXT");
     }
 
     /**
      * @return debug info
      */
     public String toString () {
-	return "names=" + tagNames + "\n"
-		+ "attributes=" + tagAttributes + "\n"
-		+ "hierarchy=" + tagHierarchy;
+    	return "names=" + tagNames + "\n"
+    		+ "attributes=" + tagAttributes + "\n"
+    		+ "hierarchy=" + tagHierarchy;
     }
 }

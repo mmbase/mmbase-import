@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package com.finalist.cmsc.navigation;
 
 import net.sf.mmapps.commons.bridge.*;
+import net.sf.mmapps.commons.util.StringUtil;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
@@ -35,7 +36,9 @@ public class PagesUtil {
     public static final String VISIBLE_FIELD = "inmenu";
     public static final String RESOURCE_FIELD = "resource";
     public static final String NAME_FIELD = "name";
-    
+    public static final String SECURE_FIELD = "secure";
+    public static final String DESCRIPTION_FIELD = "description";
+
     public static final String RELATED = "related";
     public static final String LAYOUTREL = "layoutrel";
     public static final String STYLEREL = "stylerel";
@@ -91,34 +94,46 @@ public class PagesUtil {
     }
     
     public static Node createPage(Cloud cloud, String name, String layout) {
-        String pathname = name;
-        pathname = pathname.replaceAll("\\s", "_");
-        pathname = pathname.replaceAll("[^a-zA-Z_0-9_.-]", "");
-
         Node layoutNode = findLayoutWithTitle(cloud, layout);
         if (layoutNode == null) {
             throw new IllegalArgumentException("Layout not found with title: " + layout);
         }
 
-        return createPage(cloud, name, pathname.toLowerCase(), layoutNode);
+        return createPage(cloud, name, null, layoutNode);
     }
 
     public static Node createPage(Cloud cloud, String name, String pathname, Node layout) {
+        return createPage(cloud, name, pathname, null, layout);
+    }
+    
+    public static Node createPage(Cloud cloud, String name, String pathname, String description, Node layout) {
         Node page = getNodeManager(cloud).createNode();
         page.setStringValue(TITLE_FIELD, name);
-        page.setStringValue(FRAGMENT_FIELD, pathname);
+        if (!StringUtil.isEmpty(pathname)) {
+            page.setStringValue(FRAGMENT_FIELD, pathname);
+        }
+        if (!StringUtil.isEmpty(description)) {
+            page.setStringValue(DESCRIPTION_FIELD, description);
+        }
         page.commit();
 
-        addLayout(cloud, page, layout);
-        
+        addLayout(page, layout);
+        linkPortlets(page, layout);
         return page;
     }
 
-    public static void addLayout(Cloud cloud, Node page, Node layoutNode) {
+    public static void addLayout(Node page, Node layoutNode) {
         if (layoutNode == null) {
             throw new IllegalArgumentException("Layout may not be null");
         }
         RelationUtil.createRelation(page, layoutNode, LAYOUTREL);
+    }
+    
+    public static void addStylesheet(Node page, Node stylesheetNode) {
+        if (stylesheetNode == null) {
+            throw new IllegalArgumentException("Stylesheet may not be null");
+        }
+        RelationUtil.createRelation(page, stylesheetNode, STYLEREL);
     }
     
     /**
@@ -166,6 +181,15 @@ public class PagesUtil {
         return layout;
     }
     
+    public static Node createStylesheet(Cloud cloud, String title, String resource) {
+        NodeManager stylesheetMgr = cloud.getNodeManager(STYLESHEET);
+        Node stylesheet = stylesheetMgr.createNode();
+        stylesheet.setStringValue(TITLE_FIELD, title);
+        stylesheet.setStringValue(RESOURCE_FIELD, resource);
+        stylesheet.commit();
+        return stylesheet;
+    }
+    
     public static NodeList getStylesheet(Node pageNode) {
         return pageNode.getRelatedNodes(STYLESHEET, STYLEREL, DESTINATION);
     }
@@ -184,6 +208,14 @@ public class PagesUtil {
     
     public static Node findLayoutWithResource(Cloud cloud, String layout) {
         return SearchUtil.findNode(cloud, LAYOUT, RESOURCE_FIELD, layout);
+    }
+    
+    public static Node findStylesheetWithTitle(Cloud cloud, String layout) {
+        return SearchUtil.findNode(cloud, STYLESHEET, TITLE_FIELD, layout);
+    }
+    
+    public static Node findStylesheetWithResource(Cloud cloud, String layout) {
+        return SearchUtil.findNode(cloud, STYLESHEET, RESOURCE_FIELD, layout);
     }
     
     public static Node copyPopupinfo(Node popupinfo) {

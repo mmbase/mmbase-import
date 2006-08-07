@@ -1,30 +1,37 @@
 package com.finalist.cmsc.repository.forms;
 
+import java.util.*;
+
 import net.sf.mmapps.commons.util.StringUtil;
 
-import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionForm;
+import org.apache.struts.util.LabelValueBean;
+import org.mmbase.bridge.*;
 import org.mmbase.storage.search.SortOrder;
+
+import com.finalist.cmsc.repository.ContentElementUtil;
+import com.finalist.cmsc.struts.MMBaseAction;
 
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class SearchInitAction extends Action{
+public class SearchInitAction extends MMBaseAction {
 
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm,
-            HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
-            throws Exception {
-		SearchForm searchForm = (SearchForm) actionForm;
+    @Override
+    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+                HttpServletResponse response, Cloud cloud) throws Exception {
+
+        SearchForm searchForm = (SearchForm) form;
 
 		if (StringUtil.isEmpty(searchForm.getExpiredate())) {
 			searchForm.setExpiredate("0");
 		}
 
-		if (StringUtil.isEmpty(searchForm.getEmbargodate())) {
-			searchForm.setEmbargodate("0");
+		if (StringUtil.isEmpty(searchForm.getPublishdate())) {
+			searchForm.setPublishdate("0");
 		}
 
 		if (StringUtil.isEmpty(searchForm.getOffset())) {
@@ -38,6 +45,16 @@ public class SearchInitAction extends Action{
 		if (searchForm.getDirection() != SortOrder.ORDER_DESCENDING) {
 			searchForm.setDirection(SortOrder.ORDER_ASCENDING);
 		}
-		return actionMapping.findForward("searchoptions");
+        List<LabelValueBean> typesList = new ArrayList<LabelValueBean>();
+
+        List<NodeManager> types = ContentElementUtil.getContentTypes(cloud);
+        for (NodeManager manager : types) {
+            LabelValueBean bean = new LabelValueBean(manager.getGUIName(), manager.getName());
+            typesList.add(bean);
+        }
+        addToRequest(request, "typesList", typesList);
+        
+		return mapping.findForward("searchoptions");
 	}
+
 }

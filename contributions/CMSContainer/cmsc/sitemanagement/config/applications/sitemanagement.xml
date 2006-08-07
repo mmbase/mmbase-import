@@ -17,6 +17,7 @@
       <builder maintainer="finalist.com" version="0">viewrel</builder>
       <!-- These are the application specific builders -->
       <builder maintainer="finalist.com" version="1">layout</builder>
+      <builder maintainer="finalist.com" version="0">namedrel</builder>
       <builder maintainer="finalist.com" version="0">nodeparameter</builder>
       <builder maintainer="finalist.com" version="1">page</builder>
       <builder maintainer="finalist.com" version="1">portlet</builder>
@@ -31,6 +32,7 @@
         <reldef source="allowrel" target="allowrel" direction="bidirectional" guisourcename="allowrel" guitargetname="allowrel" builder="allowrel" />
         <reldef source="definitionrel" target="definitionrel" direction="bidirectional" guisourcename="definitionrel" guitargetname="definitionrel" builder="definitionrel" />
         <reldef source="layoutrel" target="layoutrel" direction="bidirectional" guisourcename="layoutrel" guitargetname="layoutrel" builder="layoutrel" />
+        <reldef source="namedrel" target="namedrel" direction="bidirectional" guisourcename="namedrel" guitargetname="namedrel" builder="namedrel" />
         <reldef source="namedallowrel" target="namedallowrel" direction="bidirectional" guisourcename="namedallowrel" guitargetname="namedallowrel" builder="namedallowrel" />
         <reldef source="navrel" target="navrel" direction="bidirectional" guisourcename="navrel" guitargetname="navrel" builder="navrel" />
         <reldef source="parameterrel" target="parameterrel" direction="bidirectional" guisourcename="parameterrel" guitargetname="parameterrel" builder="parameterrel" />
@@ -41,6 +43,7 @@
    </neededreldeflist>
    <allowedrelationlist>
       <relation from="layout" to="portletdefinition" type="namedallowrel" />
+      <relation from="page" to="images" type="namedrel" />
       <relation from="page" to="layout" type="allowrel" />
       <relation from="page" to="layout" type="layoutrel" />
       <relation from="page" to="page" type="navrel" />

@@ -13,25 +13,14 @@ package com.finalist.cmsc.struts;
 public class SelectorLinkActionMapping extends SelectorActionMapping {
 
     private String resource;
-    private String target;
     
     protected String getLinkPattern() {
         return resource + "?parentchannel={0}"; 
-    }
-
-    protected String getTarget() {
-        return target;
     }
     
     public void setResource(String resource) {
         this.resource = resource;
     }
-
-    
-    public void setTarget(String target) {
-        this.target = target;
-    }
-
     
     public String getResource() {
         return resource;

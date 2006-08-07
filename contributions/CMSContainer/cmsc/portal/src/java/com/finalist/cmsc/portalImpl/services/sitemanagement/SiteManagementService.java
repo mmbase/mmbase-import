@@ -10,6 +10,7 @@
 package com.finalist.cmsc.portalImpl.services.sitemanagement;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -77,8 +78,10 @@ public abstract class SiteManagementService extends Service {
 
 	public abstract Site getSiteFromPath(String path);
 
-	public abstract String getPageLink(Page page, boolean includeRoot);
+	public abstract String getPath(Page page, boolean includeRoot);
 
+    public abstract String getPath(int pageid, boolean includeRoot);
+    
     public abstract List getStylesheetForPageByPath(String page);     
         
 	public abstract List<Page> getListFromPath(String path);
@@ -99,4 +102,7 @@ public abstract class SiteManagementService extends Service {
 
     public abstract List<String> getContentTypes(String portletId);
 
+    public abstract Set<String> getPagePositions(String pageId);
+
+	public abstract String getPageImageForPath(String name, String path);
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<list role="posrel" destination="urls" minoccurs="0" maxoccurs="1" orderby="field[@name='pos']" ordertype="number">
+<list role="posrel" destination="urls" minoccurs="0" maxoccurs="*" orderby="field[@name='pos']" ordertype="number">
 	<title xml:lang="nl">Url</title>
 	<title xml:lang="en">Url</title>
 

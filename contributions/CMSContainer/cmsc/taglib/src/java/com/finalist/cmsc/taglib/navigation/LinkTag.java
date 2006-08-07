@@ -19,6 +19,8 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.JspFragment;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.finalist.cmsc.beans.om.Page;
 import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.portalImpl.services.sitemanagement.SiteManagement;
@@ -29,11 +31,11 @@ import com.finalist.pluto.portalImpl.core.PortalURL;
  * 
  * @author Wouter Heijke
  * @author R.W. van 't Veer
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class LinkTag extends SimpleTagSupport {
 
-    /**
+	/**
 	 * Destination.
 	 */
 	private Object dest;
@@ -55,10 +57,10 @@ public class LinkTag extends SimpleTagSupport {
 		HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
 
 		if (channel != null) {
-			String link = SiteManagement.getPageLink(channel, !ServerUtil.useServerName());
+			String link = SiteManagement.getPath(channel, !ServerUtil.useServerName());
 			if (link != null) {
-                PortalURL u = new PortalURL(request, link);
-                String newlink = u.toString();
+				PortalURL u = new PortalURL(request, link);
+				String newlink = u.toString();
 
 				// handle body, call any nested tags
 				JspFragment frag = getJspBody();
@@ -132,7 +134,11 @@ public class LinkTag extends SimpleTagSupport {
 	 *        aliases
 	 */
 	private void setDestString(String s) {
-		channel = SiteManagement.getPage(Integer.parseInt(s));
+		if (StringUtils.isNumeric(s)) {
+			channel = SiteManagement.getPage(Integer.parseInt(s));
+		} else {
+			channel = SiteManagement.getPageFromPath(s);
+		}
 	}
 
 	public void setVar(String var) {

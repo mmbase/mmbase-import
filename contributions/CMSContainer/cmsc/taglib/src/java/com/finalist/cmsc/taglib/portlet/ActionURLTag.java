@@ -4,9 +4,6 @@ import javax.portlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.finalist.cmsc.beans.om.Page;
-import com.finalist.cmsc.navigation.ServerUtil;
-import com.finalist.cmsc.portalImpl.services.sitemanagement.SiteManagement;
 import com.finalist.pluto.PortletURLImpl;
 
 /**
@@ -21,11 +18,8 @@ public class ActionURLTag extends BasicURLTag
     protected PortletURL getRenderUrl() {
         PortletURL renderUrl = null;
         if (page != null && window != null) {
-            Page pageObject = SiteManagement.getPage(Integer.parseInt(page));
-            if (pageObject != null) {
-                String link = SiteManagement.getPageLink(pageObject, !ServerUtil.useServerName());
-                renderUrl = new PortletURLImpl(link, window, (HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse(), true);
-            }
+            String link = getLink();
+            renderUrl = new PortletURLImpl(link, window, (HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse(), true);
         }
         else {
             RenderResponse renderResponse = (RenderResponse)pageContext.getRequest().getAttribute("javax.portlet.response");

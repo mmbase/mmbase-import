@@ -5,17 +5,18 @@
 	<title xml:lang="en">Site</title>
 
 	<field name="stagingfragment" dtmaxlength="40"
-		dtpattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,38}[a-zA-Z0-9]$">
+		dtpattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,38}[a-zA-Z0-9]$"
+		dtrequired="true">
 		<prompt xml:lang="en">Staging domain</prompt>
 		<prompt xml:lang="nl">Staging domein</prompt>
 	</field>
-
 	<field name="urlfragment" dtmaxlength="40"
-		dtpattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,38}[a-zA-Z0-9]$">
+		dtpattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,38}[a-zA-Z0-9]$"
+		dtrequired="true">
 		<prompt xml:lang="en">Live domain</prompt>
 		<prompt xml:lang="nl">Live domein</prompt>
 	</field>
-	<field name="title" dtmaxlength="40">
+	<field name="title" dtmaxlength="40" dtrequired="true">
 		<prompt xml:lang="en">Title</prompt>
 		<prompt xml:lang="nl">Titel</prompt>
 	</field>
@@ -45,7 +46,7 @@
 	</field>
 	<field name="publisher" dtmaxlength="150">
 		<prompt xml:lang="en">Publisher</prompt>
-		<prompt xml:lang="nl">Publiseerder</prompt>
+		<prompt xml:lang="nl">Publicist</prompt>
 	</field>
 	<field name="source" dtmaxlength="150">
 		<prompt xml:lang="en">Source</prompt>
@@ -59,6 +60,7 @@
 	<list include="config/layout/search_page_layoutrel_layout.xml" />
 	<list include="config/popupinfo/search_page_related_popupinfo.xml" />
 	<list include="config/stylesheet/search_page_stylerel_stylesheet.xml" />
+	<list include="config/images/search_page_namedrel_images.xml" />
 
 	<list include="config/typedef/search_site_allowrel_typedef.xml" />
 </form-schema>

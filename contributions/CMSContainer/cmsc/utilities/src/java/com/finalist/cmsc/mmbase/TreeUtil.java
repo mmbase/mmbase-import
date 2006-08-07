@@ -198,20 +198,7 @@ public class TreeUtil {
     public static String getPathToRootString(Node node, String[] treeManagers, String relationName, String[] fragmentFieldnames, boolean includeRoot) {
        String pathStr = TreePathCache.getPathStringFromCache(treeManagers[0], node.getNumber());
        if (pathStr == null) {
-          pathStr = "";
-          List path = getPathToRoot(node, treeManagers, relationName) ;
-          for (Iterator i = path.iterator(); i.hasNext(); ) {
-             Node n = (Node) i.next();
-             
-             String nManagerName = n.getNodeManager().getName();
-             String fragmentFieldname = getFragmentFieldname(nManagerName, treeManagers, fragmentFieldnames);
-             
-             pathStr += n.getStringValue(fragmentFieldname);
-             
-             if (i.hasNext()) {
-                pathStr += PATH_SEPARATOR;
-             }
-          }
+          pathStr = getPathToRootStringWithoutCache(node, treeManagers, relationName, fragmentFieldnames);
           if (!StringUtil.isEmpty(pathStr)) {
               TreePathCache.addToCache(treeManagers[0], pathStr, node.getNumber());
           }
@@ -229,6 +216,30 @@ public class TreeUtil {
        }
     }
 
+    public static String getPathToRootStringWithoutCache(Node node, String[] treeManagers, String relationName, String[] fragmentFieldnames) {
+        String pathStr = "";
+        List path = getPathToRoot(node, treeManagers, relationName);
+        for (Iterator i = path.iterator(); i.hasNext();) {
+            Node n = (Node) i.next();
+
+            String nManagerName = n.getNodeManager().getName();
+            String fragmentFieldname = getFragmentFieldname(nManagerName, treeManagers, fragmentFieldnames);
+
+            pathStr += n.getStringValue(fragmentFieldname);
+
+            if (i.hasNext()) {
+                pathStr += PATH_SEPARATOR;
+            }
+        }
+        return pathStr;
+    }
+
+    public static String[] getPathElementsToRoot(Node node, String[] treeManagers, String relationName, String[] fragmentFieldnames, boolean includeRoot) {
+        String path = getPathToRootString(node, treeManagers, relationName, fragmentFieldnames, includeRoot);
+        return path.split(PATH_SEPARATOR);
+    }
+
+    
     public static String getFragmentFieldname(String nManagerName, String[] treeManagers, String[] fragmentFieldnames) {
         String fragmentFieldname = null;
          for (int j = 0; j < treeManagers.length; j++) {
@@ -394,8 +405,10 @@ public class TreeUtil {
                 NodeIterator nli = nl.nodeIterator();
                 while (nli.hasNext()) {
                     Node element = nli.nextNode();
-
-                    field = element.getStringValue(fragmentFieldname);
+                    String elementManagerName = element.getNodeManager().getName();
+                    String elementFieldname = getFragmentFieldname(elementManagerName, treeManagers, fragmentFieldnames);
+                    
+                    field = element.getStringValue(elementFieldname);
                     if (fragments[level + 1].equalsIgnoreCase(field)) { 
                         return getChannelFromPath(cloud, fragments, element, treeManagers, relationName, fragmentFieldnames, level + 1); 
                     }
@@ -478,4 +491,5 @@ public class TreeUtil {
         }
         return null;
     }
+
 }

@@ -112,13 +112,13 @@ public abstract class MMBaseCacheEntryFactory implements CacheEntryFactory, Node
             Integer key = getKey(event);
             if (key != null) {
                 switch (event.getType()) {
-                    case NodeEvent.TYPE_CHANGE:
+                    case Event.TYPE_CHANGE:
                         refreshEntry(key);
                         break;
-                    case NodeEvent.TYPE_DELETE:
+                    case Event.TYPE_DELETE:
                         deleteEntry(key);
                         break;
-                    case NodeEvent.TYPE_NEW:
+                    case Event.TYPE_NEW:
                         break;
                     case NodeEvent.TYPE_RELATION_CHANGE:
                         break;
@@ -134,13 +134,13 @@ public abstract class MMBaseCacheEntryFactory implements CacheEntryFactory, Node
             Integer key = getKey(event);
             if (key != null) {
                 switch (event.getType()) {
-                    case NodeEvent.TYPE_CHANGE:
+                    case Event.TYPE_CHANGE:
                         refreshEntry(key);
                         break;
-                    case NodeEvent.TYPE_DELETE:
+                    case Event.TYPE_DELETE:
                         refreshEntry(key);
                         break;
-                    case NodeEvent.TYPE_NEW:
+                    case Event.TYPE_NEW:
                         refreshEntry(key);
                         break;
                     case NodeEvent.TYPE_RELATION_CHANGE:

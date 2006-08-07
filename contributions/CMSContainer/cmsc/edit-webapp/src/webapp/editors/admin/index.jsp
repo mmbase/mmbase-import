@@ -6,9 +6,9 @@
 <html:html xhtml="true">
 	<head><title><fmt:message key="admin.title" /></title>
 	</head>
-	<frameset cols="200,*" framespacing="2" frameborder="1">
-		<frame src="adminmenu.jsp" name="leftpane" frameborder="0" scrolling="yes">
-		<frame src="../empty.html" name="rightpane" frameborder="0" scrolling="yes">
+	<frameset cols="321,*" framespacing="0" frameborder="0">
+		<frame src="adminmenu.jsp" name="leftpane" frameborder="0" scrolling="no">
+		<frame src="../empty.html" name="rightpane" frameborder="0">
 	</frameset>
 </html:html>
 </mm:cloud>

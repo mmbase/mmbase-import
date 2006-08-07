@@ -25,7 +25,7 @@ import xmlbs.PropertiesDocumentStructure;
  * 
  * @author Nico Klasens (Finalist IT Group)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class WordHtmlCleaner {
 
@@ -106,7 +106,6 @@ public class WordHtmlCleaner {
    public static String cleanHtml(String textStr) {
       log.debug("old value : " + textStr);
       if (textStr != null) {
-//         textStr = StringEscapeUtils.escapeXml(textStr);
          try {
             // The font tag is required to fix wordpad anchor links
             // xmlbs removes the fonttags
@@ -123,6 +122,7 @@ public class WordHtmlCleaner {
             try {
                xmlbs.XMLBS xmlbs = new xmlbs.XMLBS("<body>" + xmlStr
                      + "</body>", xmlbsDTD);
+               xmlbs.setRemoveEmptyTags(true);
                xmlbs.process();
                ByteArrayOutputStream bout = new ByteArrayOutputStream();
                xmlbs.write(bout);
@@ -139,6 +139,7 @@ public class WordHtmlCleaner {
                log.error(Logging.stackTrace(t));
             }
             xmlStr = fixEmptyAnchors(xmlStr);
+            xmlStr = shrinkBR(xmlStr);
             log.debug("new value : " + xmlStr);
             return xmlStr;
          } catch (IllegalStateException e) {
@@ -168,12 +169,17 @@ public class WordHtmlCleaner {
       // remove all remaining <p>
       text = text.replaceAll("<\\s*[pP]{1}\\s*.*?>", "");
       // replace all remaining </p> with a <br><br>
-      text = text.replaceAll("<\\s*/[pP]{1}\\s*.*?>", "<BR><BR>");
+      text = text.replaceAll("<\\s*/[pP]{1}\\s*.*?>", "<br /><br />");
       // remove all <br> at the end
-      text = text.replaceAll(
-            "(<\\s*[bB]{1}[rR]{1}\\s*[^>]*?>(\\s|(&nbsp;))*)*\\z", "");
+      text = text.replaceAll("(<\\s*[bB][rR]\\s*/?>|\\s|&nbsp;)+\\z", "");
       return text;
    }
+
+    private static String shrinkBR(String text) {
+        // remove all br's which are caused by more than one empty p
+          text = text.replaceAll("(<[bB][rR]\\s*/?>\\s*){4,}", "<br /><br />");
+        return text;
+    }
 
    /**
     * Fixes the anchors tags for Wordpad: <U><FONT color=#0000ff> ... </U></FONT>
@@ -210,40 +216,40 @@ public class WordHtmlCleaner {
       String xml = "";
       int begin = 0;
       int end = 0;
-      while ((begin = nextResult(xmlStr, "<LI>", end)) > -1) {
+      while ((begin = nextResult(xmlStr, "<li>", end)) > -1) {
          if (begin != end) {
             xml += xmlStr.substring(end, begin);
          }
 
-         end = nextResult(xmlStr, "</LI>", begin);
+         end = nextResult(xmlStr, "</li>", begin);
          if (end > -1) {
-            end += "</LI>".length();
+            end += "</li>".length();
             xml += xmlStr.substring(begin, end);
          } else {
-            end = nextResult(xmlStr, "<LI>", begin + "<LI>".length());
+            end = nextResult(xmlStr, "<li>", begin + "<li>".length());
             if (end == -1) {
                end = xmlStr.length();
             }
 
-            int endList = nextResult(xmlStr, "</OL>", begin);
+            int endList = nextResult(xmlStr, "</ol>", begin);
             if (endList == -1) {
-               endList = nextResult(xmlStr, "</UL>", begin);
+               endList = nextResult(xmlStr, "</ul>", begin);
                if (endList == -1) {
                   endList = xmlStr.length();
                }
             }
 
             if (end <= endList) {
-               xml += xmlStr.substring(begin, end) + "</LI>";
+               xml += xmlStr.substring(begin, end) + "</li>";
                end -= 1;
             } else {
                if (end > endList) {
-                  xml += xmlStr.substring(begin, endList) + "</LI>";
+                  xml += xmlStr.substring(begin, endList) + "</li>";
                   end = endList;
                   if (endList != xmlStr.length()) {
-                     xml += xmlStr.substring(endList, (endList + "</OL>"
+                     xml += xmlStr.substring(endList, (endList + "</ol>"
                            .length()));
-                     end += "</OL>".length();
+                     end += "</ol>".length();
                   }
                }
             }
@@ -266,26 +272,26 @@ public class WordHtmlCleaner {
       String xml = "";
       int begin = 0;
       int end = 0;
-      while ((begin = nextResult(xmlStr, "<A", end)) > -1) {
+      while ((begin = nextResult(xmlStr, "<a ", end)) > -1) {
          xml += xmlStr.substring(end, begin);
          int endBegin = xmlStr.indexOf(">", begin);
-         end = nextResult(xmlStr, "</A>", begin);
+         end = nextResult(xmlStr, "</a>", begin);
          if (end > -1
-               && "".equals(stripHtml(xmlStr.substring(endBegin + 1, end)))) {
+               && "".equals(stripHtmlFromBody(xmlStr.substring(endBegin + 1, end)))) {
             String atag = xmlStr.substring(begin, endBegin + 1);
             int hrefBegin = nextResult(atag, "href=\"", 0);
             int nameBegin = nextResult(atag, "name=\"", 0);
             if (hrefBegin > -1) {
                hrefBegin += "href=\"".length();
                int hrefEnd = atag.indexOf("\"", hrefBegin);
-               xml += atag + atag.substring(hrefBegin, hrefEnd) + "</A>";
+               xml += atag + atag.substring(hrefBegin, hrefEnd) + "</a>";
             } else if (nameBegin > -1) {
-               xml += atag + "</A>";
+               xml += atag + "</a>";
             }
 
-            end += "</A>".length();
+            end += "</a>".length();
          } else {
-            end += "</A>".length();
+            end += "</a>".length();
             xml += xmlStr.substring(begin, end);
          }
       }
@@ -299,7 +305,7 @@ public class WordHtmlCleaner {
       String xml = "";
       int begin = 0;
       int end = 0;
-      while ((begin = nextResult(xmlStr, "<A", end)) > -1) {
+      while ((begin = nextResult(xmlStr, "<a ", end)) > -1) {
          xml += xmlStr.substring(end, begin);
 
          int gt = xmlStr.indexOf(">", begin);
@@ -307,7 +313,7 @@ public class WordHtmlCleaner {
          boolean emptyTag = closinggt != -1 && gt >= closinggt + 1;
          if (emptyTag) {
             end = closinggt;
-            xml += xmlStr.substring(begin, end) + "></A>";
+            xml += xmlStr.substring(begin, end) + "></a>";
             end += 2;
          } else {
             end = gt + 1;
@@ -321,9 +327,11 @@ public class WordHtmlCleaner {
    }
 
    private static int nextResult(String xmlStr, String substr, int from) {
-      String upXmlStr = xmlStr.toUpperCase();
-      String upSubstr = substr.toUpperCase();
+      String upXmlStr = xmlStr.toLowerCase();
+      String upSubstr = substr.toLowerCase();
 
+      xmlStr.indexOf(upSubstr, from);
+      
       return upXmlStr.indexOf(upSubstr, from);
    }
 
@@ -332,9 +340,13 @@ public class WordHtmlCleaner {
    }
 
    private static String stripHtml(String text) {
-      return text.replaceAll("<[^<^>]*>", "");
+      return text.replaceAll("<.+?>", "");
    }
 
+   private static String stripHtmlFromBody(String text) {
+       return text.replaceAll("<(?!img\\s|IMG\\s).+?>", "");
+   }
+   
    private static String fixBR(String text) {
       return text.replaceAll("<BR>", "<BR/>");
    }

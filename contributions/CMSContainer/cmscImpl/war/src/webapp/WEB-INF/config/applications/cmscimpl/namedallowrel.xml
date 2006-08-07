@@ -4,9 +4,9 @@
       <name>menu</name>
    </node>
    <node number="401" owner="default" snumber="257" dnumber="44001" rtype="namedallowrel" dir="bidirectional">
-      <name>content</name>
+      <name>center1</name>
    </node>
    <node number="402" owner="default" snumber="257" dnumber="44003" rtype="namedallowrel" dir="bidirectional">
-      <name>content</name>
+      <name>center1</name>
    </node>
 </namedallowrel>

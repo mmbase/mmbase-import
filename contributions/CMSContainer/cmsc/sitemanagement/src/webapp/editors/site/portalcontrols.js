@@ -8,18 +8,6 @@ function frameLoaded() {
 		var jslocation = document.location.href;
 		jslocation = jslocation.replace('index.jsp', 'portaledit.js');
 		createJavascript( getDocument('content'), jslocation);
-
-		var csslocation = document.location.href;
-		csslocation = csslocation.replace('index.jsp', 'portaledit.css');
-		createStylesheet( getDocument('content'), csslocation);
-		
-//		var prototypelocation = document.location.href;
-//		prototypelocation = prototypelocation.replace('site/index.jsp', 'js/prototype.js');
-//		createJavascript( getDocument('content'), prototypelocation);
-
-//		var scriptaculouslocation = document.location.href;
-//		scriptaculouslocation = scriptaculouslocation.replace('site/index.jsp', 'js/scriptaculous/effects.js');
-//		createJavascript( getDocument('content'), scriptaculouslocation);
 	}
 }
 

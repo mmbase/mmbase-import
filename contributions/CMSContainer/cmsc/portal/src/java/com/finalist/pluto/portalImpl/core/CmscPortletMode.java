@@ -9,7 +9,7 @@ import javax.portlet.PortletMode;
  * CMSC supported Portlet modes
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmscPortletMode extends PortletMode {
 
@@ -34,17 +34,16 @@ public class CmscPortletMode extends PortletMode {
         adminModes.add(DELETE);
         adminModes.add(EDIT_DEFAULTS);
         adminModes.add(CONFIG);
-        
+
         editModes.add(EDIT);
         editModes.add(PREVIEW);
-        editModes.add(HELP);
 
         editOnlyModes.add(PREVIEW);
-        editOnlyModes.add(HELP);
-        
+
         viewModes.add(VIEW);
         viewModes.add(ABOUT);
         viewModes.add(PRINT);
+        viewModes.add(HELP);
     }
 
 	public CmscPortletMode(String name) {

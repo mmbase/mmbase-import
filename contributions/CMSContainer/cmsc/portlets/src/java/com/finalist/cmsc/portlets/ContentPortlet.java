@@ -11,9 +11,12 @@ import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.cmsc.portalImpl.services.contentrepository.ContentRepository;
+import com.finalist.cmsc.portalImpl.services.sitemanagement.SiteManagement;
 import com.finalist.pluto.portalImpl.core.CmscPortletMode;
 /**
  * Portlet to edit content elements
@@ -22,15 +25,20 @@ import com.finalist.pluto.portalImpl.core.CmscPortletMode;
  */
 public class ContentPortlet extends CmscPortlet {
 	
-	private static final String ACTION_PARAM = "action";
-    private static final String CONTENT_PARAM = "content_";
+	private static Logger log = Logging.getLoggerInstance(ContentPortlet.class.getName());
+	
+	protected static final String ACTION_PARAM = "action";
+    protected static final String CONTENT_PARAM = "content_";
 
-    private static final String ELEMENT_ID = "elementId";
-    private static final String CONTENTELEMENT = "contentelement";
-    private static final String USE_LIFECYCLE = "useLifecycle";
+    protected static final String ELEMENT_ID = "elementId";
+    protected static final String CONTENTELEMENT = "contentelement";
+    protected static final String USE_LIFECYCLE = "useLifecycle";
     
-    private static final String VIEW = "view";
+    protected static final String VIEW = "view";
     
+    protected static final String WINDOW = "window";
+    protected static final String PAGE = "page";
+
     @Override
     public void processEdit(ActionRequest request, ActionResponse response) throws PortletException, IOException {
         getLogger().debug("===>ContentChannelPortlet.EDIT mode");
@@ -105,10 +113,13 @@ public class ContentPortlet extends CmscPortlet {
             String portletId = preferences.getValue(PortalConstants.CMSC_OM_PORTLET_ID, null);
             if (portletId != null) {
                 // get the values submitted with the form
-                setPorltetNodeParameter(portletId, CONTENTELEMENT, request.getParameter(CONTENTELEMENT));
-                setPorltetParameter(portletId, USE_LIFECYCLE, request.getParameter(USE_LIFECYCLE));
+                setPortletNodeParameter(portletId, CONTENTELEMENT, request.getParameter(CONTENTELEMENT));
+                setPortletParameter(portletId, USE_LIFECYCLE, request.getParameter(USE_LIFECYCLE));
                 
                 setPortletView(portletId, request.getParameter(VIEW));
+                
+                setPortletNodeParameter(portletId, PAGE, request.getParameter(PAGE));
+                setPortletParameter(portletId, WINDOW, request.getParameter(WINDOW));
             } else {
                 getLogger().error("No portletId");
             }
@@ -153,6 +164,19 @@ public class ContentPortlet extends CmscPortlet {
     protected void doEditDefaults(RenderRequest req, RenderResponse res)
         throws IOException, PortletException {
         addViewInfo(req);
+        
+        PortletPreferences preferences = req.getPreferences();
+        String pageid = preferences.getValue(PAGE, null);
+        if (!StringUtil.isEmpty(pageid)) {
+            
+            String pagepath = SiteManagement.getPath(Integer.valueOf(pageid), true);
+            setAttribute(req, "pagepath", pagepath);
+            
+            Set<String> positions = SiteManagement.getPagePositions(pageid);
+            ArrayList<String> orderedPositions = new ArrayList<String>(positions);
+            Collections.sort(orderedPositions);
+            setAttribute(req, "pagepositions", new ArrayList<String>(orderedPositions));
+        }
         super.doEditDefaults(req, res);
     }
 

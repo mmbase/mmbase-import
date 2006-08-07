@@ -25,7 +25,7 @@ package xmlbs;
  * Interface for writing document structure descriptions.
  *
  * @author R.W. van 't Veer
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public interface DocumentStructure {
     /**
@@ -88,4 +88,19 @@ public interface DocumentStructure {
      * @return true when allowed
      */
     boolean canContain (TagToken parent, Token child);
+    
+    /**
+     * Determine if tag can be placed into other tag.
+     * @param tag top tag
+     * @param name child tag name
+     * @return true when allowed
+     */
+    boolean canContainTag(TagToken tag, String name);
+    
+    /**
+     * Determine if tag can be contain text.
+     * @param tag top tag
+     * @return true when allowed
+     */
+    boolean canContainText(TagToken tag);
 }
