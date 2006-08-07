@@ -2,9 +2,9 @@
 %><%@page language="java" contentType="text/html; charset=utf-8"%>
 <%@include file="parts/basics.jsp"%>
 <%
-  response.setHeader("Cache-Controll","no-cache");
-  response.setHeader("Cache-Controll","no-store");
-  response.setHeader("Cache-Controll","must-revalidate");
+  response.setHeader("Cache-Control","no-cache");
+  response.setHeader("Cache-Control","no-store");
+  response.setHeader("Cache-Control","must-revalidate");
   response.setDateHeader("Expires",new Date().getTime());
 %>
 <mm:cloud method="asis" jspvar="wolk">

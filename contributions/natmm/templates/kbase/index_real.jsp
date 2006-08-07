@@ -3,7 +3,7 @@
 <%
   String extraParamsUrl=getParamsFormatted(request,"url",getExtraParams(request));
 %>
-<mm:cloud jspvar="wolk" method="asis" >
+<mm:cloud jspvar="cloud" method="asis" >
 <mm:import externid="node" jspvar="node" vartype="String"><mm:node number="kbase.root"><mm:field name="number"/></mm:node></mm:import>
 <mm:import externid="qnode" jspvar="qnode" vartype="String"/>
 <mm:import externid="anode" jspvar="anode" vartype="String"/>
@@ -115,7 +115,13 @@ var possibleQnode="<mm:present referid="qnode">&qnode=<mm:write referid="qnode"/
 
 <div class="toolbar" id="toolbar" style="display:none">
 
-<%--@include file="/dev/includes/exteditcheck.jsp"--%>
+<% 
+String paginaID = (String) session.getAttribute("page"); 
+if(paginaID!=null) {
+  %>
+  <%@include file="/nmintra/includes/exteditcheck.jsp" %>
+  <%
+} %>
 <mm:present referid="isowner">
    <mm:import id="isowner" reset="true">true</mm:import>
 <%-- als er een vraag is geopend kun je die editen --%>
