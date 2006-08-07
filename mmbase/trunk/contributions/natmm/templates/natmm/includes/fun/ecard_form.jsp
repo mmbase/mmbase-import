@@ -1,4 +1,4 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@include file="/taglibs.jsp" %>
 <%
    String rubriekID = request.getParameter("r");
    String paginaID = request.getParameter("p");
