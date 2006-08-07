@@ -118,8 +118,8 @@ public class DirReader implements Runnable
          documentsList.getNode(i).delete(true);
       }
       
-      String sDocumentRoot = NMIntraConfig.sDocumentsRoot;
-      String sDocumentUrl = NMIntraConfig.sDocumentsUrl;
+      String sDocumentRoot = NMIntraConfig.sDocumentsRoot; // root directory where the documents can be found
+      String sDocumentUrl = NMIntraConfig.sDocumentsUrl; // the relative url of the root directory
       int iDocuments_rootLength = sDocumentRoot.length();
       File fDir = new File(sDocumentRoot);
       if (fDir.isDirectory()) {
