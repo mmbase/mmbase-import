@@ -31,6 +31,8 @@ response.setDateHeader ("Expires", 0); //prevents caching at the proxy server
 <mm:import jspvar="posterid"><mm:write referid="posterid" /></mm:import>
 
 <%
+boolean allowAccountCreation = false;
+
 log.info("start MMBob authentication");
 log.info("found posterid " + posterid);
 
@@ -66,50 +68,63 @@ if(nl.leocms.applications.NatMMConfig.hasClosedUserGroup) {
   %>
   </mm:compare>
   <mm:compare referid="posterid" value="-1">
-  <%
-  if(memberid!=null) {
-     boolean posterExists = false;
-     %>
-     <mm:node number="<%= memberid %>">
-       <mm:list path="forums,related,posters" constraints="<%= "UPPER(posters.account) = '" + memberid + "'" %>" max="1">
-           <mm:import id="userisposter" />
-           <% 
-           posterExists = true;
-           log.info("found poster from db " + memberid); 
-           %>
-       </mm:list>
-       <mm:notpresent referid="userisposter">
-          <mm:field name="email">
-              <mm:isnotempty>
-                 <mm:import id="account"><%= memberid %></mm:import>
-                 <mm:import id="password"><%= memberid %></mm:import>
-                 <mm:import id="firstname"><mm:field name="firstname" /></mm:import>
-                 <mm:import id="lastname"><mm:field name="suffix" /> <mm:field name="lastname" /></mm:import>
-                 <mm:import id="email"><mm:field name="email" /></mm:import>
-                 <mm:import id="location"></mm:import>
-                 <mm:import id="gender">male</mm:import>
-                 <mm:import id="feedback" reset="true"><mm:function set="mmbob" name="createPoster" referids="forumid,account,password,firstname,lastname,email,gender,location" /></mm:import>
-                 <mm:import id="userisposter" />
-                 <%
-                 posterExists = true;
-                 log.info("created poster " + memberid); 
-                 %>
-              </mm:isnotempty>
-              <mm:isempty>
-                 <% log.info("can not create poster from cookie user " + memberid); %>
-              </mm:isempty>
-          </mm:field>
-       </mm:notpresent>
-       <%
-       if(posterExists) {
-         log.info("send redirect to login.jsp?forumid="+forumid+"&account="+memberid+"&password="+memberid);
-         response.sendRedirect("login.jsp?forumid="+forumid+"&account="+memberid+"&password="+memberid);
-       }
-       %>
-     </mm:node>
      <%
-    }
-  %>
+     if(memberid!=null) {
+        boolean posterExists = false;
+        %>
+        <mm:node number="<%= memberid %>">
+          <mm:list path="forums,related,posters" constraints="<%= "UPPER(posters.account) = '" + memberid + "'" %>" max="1">
+              <mm:import id="userisposter" />
+              <% 
+              posterExists = true;
+              log.info("found poster from db " + memberid); 
+              %>
+          </mm:list>
+          <mm:notpresent referid="userisposter">
+             <mm:field name="email">
+                 <mm:isnotempty>
+                    <mm:import id="account"><%= memberid %></mm:import>
+                    <mm:import id="password"><%= memberid %></mm:import>
+                    <mm:import id="firstname"><mm:field name="firstname" /></mm:import>
+                    <mm:import id="lastname"><mm:field name="suffix" /> <mm:field name="lastname" /></mm:import>
+                    <mm:import id="email"><mm:field name="email" /></mm:import>
+                    <mm:import id="location"></mm:import>
+                    <mm:import id="gender">male</mm:import>
+                    <mm:import id="feedback" reset="true"><mm:function set="mmbob" name="createPoster" referids="forumid,account,password,firstname,lastname,email,gender,location" /></mm:import>
+                    <mm:import id="userisposter" />
+                    <%
+                    posterExists = true;
+                    log.info("created poster " + memberid); 
+                    %>
+                 </mm:isnotempty>
+                 <mm:isempty>
+                    <% log.info("can not create poster from cookie user " + memberid); %>
+                 </mm:isempty>
+             </mm:field>
+          </mm:notpresent>
+          <%
+          if(posterExists) {
+            log.info("send redirect to login.jsp?forumid="+forumid+"&account="+memberid+"&password="+memberid);
+            response.sendRedirect("login.jsp?forumid="+forumid+"&account="+memberid+"&password="+memberid);
+          }
+          %>
+        </mm:node>
+        <%
+        
+     } else {
+        
+        log.info("logout from MMBob, because the user does not have a memberid");
+        %>
+        <mm:import id="cw3"></mm:import>
+        <mm:import id="ca3"></mm:import>
+        <mm:import id="pid3">-1</mm:import>
+        <mm:write referid="cw3" cookie="cwf$forumid" />
+        <mm:write referid="ca3" cookie="caf$forumid" />
+        <mm:write referid="pid3" session="pid$forumid" />
+        <mm:import id="posterid" reset="true">-1</mm:import>
+        <%
+     } 
+     %>
   </mm:compare>
   <%
 } %>
@@ -132,36 +147,64 @@ if(nl.leocms.applications.NatMMConfig.hasClosedUserGroup) {
           
            <tr>
                 <mm:compare referid="posterid" value="-1">
-                <th width="100"><a href="newposter.jsp?forumid=<mm:write referid="forumid" />"><img src="images/guest.gif" border="0"></a></th>
-                <td align="left">
-                <form action="login.jsp?forumid=<mm:write referid="forumid" />" method="post">
-                <mm:present referid="loginfailed">
-                    <br />
-                    <center><h4>** fout loginnaam of wachtwoord, probeer opnieuw **</h4></center>
-                    <center> <a href="<mm:url page="remail.jsp" referids="forumid" />">Wachtwoord vergeten ? Klik hier.</a></center>
-
-                    <p />
-                </mm:present>
-                <mm:notpresent referid="loginfailed">
-                    <mm:field name="description" />
-                    <p />
-                    <b>inloggen</b><p />
-                </mm:notpresent>
-                account : <input size="12" name="account"><p/>
-                wachtwoord : <input size="12" type="password" name="password">
-                <input type="submit" value="inloggen" />
-                </form><p />
-                </mm:compare>
-               <mm:compare referid="posterid" value="-1" inverse="true">
                 <th width="100">
-                <a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:write referid="posterid" />">
-                <%--hh <mm:field name="active_account" />--%>Klik hier voor uw profiel<br />
-                <mm:field name="active_avatar"><mm:compare value="-1" inverse="true">
-                        <mm:node number="$_">
-                         <img src="<mm:image template="s(80x80)" />" width="80" border="0">
-                        </mm:node>
-                </mm:compare></mm:field></a>
-                <%-- hh a href="logout.jsp?forumid=<mm:write referid="forumid" />">Logout</a> --%>
+                   <% 
+                   if(allowAccountCreation) { 
+                      %>
+                      <a href="newposter.jsp?forumid=<mm:write referid="forumid" />"><img src="images/guest.gif" border="0"></a>
+                      <%
+                   } else {
+                      %>
+                      Alleen lifeline abonnees kunnen mee discussi&euml;ren op dit forum.
+                      <a href="/lidworden" target="_blank">klik hier om lid te worden</a>
+                      <%
+                   } %>
+                </th>
+                <td align="left">
+                   <% 
+                   if(!nl.leocms.applications.NatMMConfig.hasClosedUserGroup) {
+                      // use mmbob log in
+                      %>
+                      <form action="login.jsp?forumid=<mm:write referid="forumid" />" method="post">
+                      <mm:present referid="loginfailed">
+                          <br />
+                          <center><h4>** fout loginnaam of wachtwoord, probeer opnieuw **</h4></center>
+                          <center> <a href="<mm:url page="remail.jsp" referids="forumid" />">Wachtwoord vergeten ? Klik hier.</a></center>
+
+                          <p />
+                      </mm:present>
+                      <mm:notpresent referid="loginfailed">
+                          <mm:field name="description" />
+                          <p />
+                          <b>inloggen</b><p />
+                      </mm:notpresent>
+                      account : <input size="12" name="account"><p/>
+                      wachtwoord : <input size="12" type="password" name="password">
+                      <input type="submit" value="inloggen" />
+                      </form><p />
+                      <%
+                    } else { 
+                       // use closed user group log in
+                       %>
+                       <form name="emailform" method="post" target="_top" action="/editors/mailer/mail/index.jsp">
+                           account : <input size="12" name="username"><p/>
+                           wachtwoord : <input size="12" type="password" name="password">
+                           <input type="submit" value="inloggen" />
+                       </form><p />
+                       <%
+                    } %>
+                </td>
+                </mm:compare>
+                <mm:compare referid="posterid" value="-1" inverse="true">
+                <th width="100">
+                   <a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:write referid="posterid" />">
+                   <%--hh <mm:field name="active_account" />--%>Klik hier voor uw profiel<br />
+                   <mm:field name="active_avatar"><mm:compare value="-1" inverse="true">
+                           <mm:node number="$_">
+                            <img src="<mm:image template="s(80x80)" />" width="80" border="0">
+                           </mm:node>
+                   </mm:compare></mm:field></a>
+                   <%-- hh a href="logout.jsp?forumid=<mm:write referid="forumid" />">Logout</a> --%>
                 </th>
                 <td align="left" valign="top">
                     <mm:compare referid="image_logo" value="" inverse="true">
@@ -179,8 +222,8 @@ if(nl.leocms.applications.NatMMConfig.hasClosedUserGroup) {
                     Level : <mm:field name="active_level" /> 
                     <b>Je hebt 0 nieuwe en 0 ongelezen <a href="<mm:url page="privatemessages.jsp" referids="forumid" />">prive berichten</a></b>
                     <h4>Op dit moment: <mm:field name="postersonline" /> bezoekers online.</h4> --%>
-                </mm:compare>
                 </td>
+                </mm:compare>
                 <th width="250" align="left" valign="top">
                 <b>Informatie over dit forum</b><br/>
                 <b><mm:write referid="numberofareas" /></b> : <mm:field name="postareacount" /><br />
