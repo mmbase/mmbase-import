@@ -1,5 +1,6 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
+<%@page import="org.mmbase.bridge.*" %>
 
 <mm:content postprocessor="reducespace">
 <mm:cloud method="delegate" jspvar="cloud">
@@ -23,9 +24,27 @@
                                   objectlist="$includePath" referids="$referids"/>";
       }
     }
+
+    function toggleAll(image,number) {
+      var toggles = number.split(",");
+      if( document.getElementById("toggle_div" + toggles[0]).style.display=='none' ){
+        for (i=0;i<toggles.length;i++) {
+          document.getElementById("toggle_div" + toggles[i]).style.display = '';
+        }
+        document.getElementById("toggle_image" + image).src = "<mm:treefile page="/assessment/gfx/minus.gif"
+                                  objectlist="$includePath" referids="$referids"/>";
+      } else {
+        for (i=0;i<toggles.length;i++) {
+          document.getElementById("toggle_div" + toggles[i]).style.display = 'none';
+        }
+        document.getElementById("toggle_image" + image).src = "<mm:treefile page="/assessment/gfx/plus.gif"
+                                  objectlist="$includePath" referids="$referids"/>";
+      }
+    }
   </script>
 
   <%@include file="includes/variables.jsp" %>
+  <%@include file="includes/functions.jsp" %>
 
   <div class="rows">
     <div class="navigationbar">
@@ -94,7 +113,7 @@
         <br/>
         <% int lessonsNum = 0; %>
         <mm:node number="assessment.education" notfound="skip">
-          <mm:relatednodes type="learnblocks" path="posrel,learnblocks">
+          <mm:relatednodes type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos">
             <mm:import id="dummy" jspvar="dummy" vartype="Integer" reset="true"><mm:size/></mm:import>
             <% lessonsNum = dummy.intValue(); %>
           </mm:relatednodes>
@@ -103,14 +122,18 @@
         <div><table class="poplistTable">
           <% boolean lessonShowed = false; %>
           <mm:listnodes type="problemtypes" orderby="pos">
+            <mm:field name="number" jspvar="problemtypeId" vartype="String">
             <tr style="vertical-align:top;">
-              <th class="listHeader">toggle</th>
+              <th class="listHeader"><img src="<mm:treefile page="/assessment/gfx/plus.gif" objectlist="$includePath" 
+                         referids="$referids"/>" border="0" title="show goal" alt="show goal" 
+                         onClick="toggleAll(<%= problemtypeId %>,'<%= problemtypeId %><%= getProblemsByType(cloud, problemtypeId, thisUser) %>');"
+                         id="toggle_image<%= problemtypeId %>"/></th>
               <th class="listHeader"><mm:field name="key"/></th>
               <% if (!lessonShowed) {
                    lessonShowed = true;
               %>
                    <mm:node number="assessment.education" notfound="skip">
-                     <mm:relatednodes type="learnblocks" path="posrel,learnblocks">
+                     <mm:relatednodes type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos">
                        <th class="listHeader"><mm:field name="name"/></th>
                      </mm:relatednodes>
                    </mm:node>
@@ -124,7 +147,7 @@
             <mm:related path="related,problems,posrel,people" orderby="posrel.pos"
                 constraints="people.number=$user" fields="problems.number" distinct="true">
               <mm:field name="problems.number" jspvar="problem_number" vartype="String" write="false">
-              <tr style="vertical-align:top;">
+              <tr id="toggle_div<%=problem_number %>" style="display:none; vertical-align:top;">
                 <td class="listItem">
                   <a href="<mm:treefile page="/assessment/editproblem.jsp" objectlist="$includePath" referids="$referids">
                              <mm:param name="problem_n"><%= problem_number %></mm:param>
@@ -141,9 +164,11 @@
               </tr>
               </mm:field>
             </mm:related>
-            <tr>
+            <tr id="toggle_div<%=problemtypeId %>" style="display:none;">
               <td class="listItem">
-                <a href="<mm:treefile page="/assessment/editproblem.jsp" objectlist="$includePath" referids="$referids"/>"
+                <a href="<mm:treefile page="/assessment/editproblem.jsp" objectlist="$includePath" referids="$referids">
+                           <mm:param name="problemtype_n"><%= problemtypeId %></mm:param>
+                         </mm:treefile>"
                   ><img src="<mm:treefile page="/assessment/gfx/new_learnobject.gif" objectlist="$includePath" 
                         referids="$referids"/>" border="0" title="add problem" alt="add problem" /></a>
               </td>
@@ -151,12 +176,13 @@
                    <td class="listItem">&nbsp;</td>
               <% } %>
             </tr>
+            </mm:field>
           </mm:listnodes>
           <tr>
             <td class="listItem">&nbsp;</td>
             <td class="listItem">Feedback coach</td>
             <mm:node number="assessment.education" notfound="skip">
-              <mm:relatednodes type="learnblocks" path="posrel,learnblocks">
+              <mm:relatednodes type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos">
                 <td class="listItem">
                   <% String feedback = "";
                      String feedbackId = "-1";
@@ -202,6 +228,11 @@
             <% } %>
           </tr>
         </table></div>
+        <br/>
+        <form name="closelessonform" action="<mm:treefile page="/assessment/closelesson.jsp" objectlist="$includePath" 
+               referids="$referids"/>" method="post">
+          <input type="submit" class="formbutton" value="close lesson and send to coach for feedback">
+        </form>
       </div>
     </div>
   </div>
