@@ -14,7 +14,7 @@ import org.mmbase.clustering.Statistics;
 import org.jgroups.ChannelException;
 import org.jgroups.JChannel;
 import org.jgroups.Message;
-import org.mmbase.module.core.MMBaseContext;
+import org.mmbase.core.util.DaemonThread;
 import org.mmbase.util.Queue;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rico Jansen
  * @author Nico Klasens
  * @author Costyn van Dongen
- * @version $Id: ChangesSender.java,v 1.6 2006-06-20 17:30:45 michiel Exp $
+ * @version $Id: ChangesSender.java,v 1.7 2006-08-09 11:52:33 pierre Exp $
  */
 public class ChangesSender implements Runnable {
 
@@ -62,7 +62,8 @@ public class ChangesSender implements Runnable {
 
     private void start() {
         if (kicker == null) {
-            kicker = MMBaseContext.startThread(this, "MulticastSender");
+            kicker = new DaemonThread(this, "MulticastSender");
+            kicker.start();
             log.debug("MulticastSender started");
         }
     }
