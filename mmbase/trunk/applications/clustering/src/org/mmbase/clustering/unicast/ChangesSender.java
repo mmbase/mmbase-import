@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.net.*;
 import java.util.*;
 
+import org.mmbase.core.util.DaemonThread;
 import org.mmbase.module.builders.MMServers;
 import org.mmbase.module.core.*;
 
@@ -28,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * sending queue over unicast connections
  *
  * @author Nico Klasens
- * @version $Id: ChangesSender.java,v 1.12 2006-08-01 21:53:39 michiel Exp $
+ * @version $Id: ChangesSender.java,v 1.13 2006-08-09 11:14:49 pierre Exp $
  */
 public class ChangesSender implements Runnable {
 
@@ -75,7 +76,8 @@ public class ChangesSender implements Runnable {
 
     private  void start() {
         if (kicker == null) {
-            kicker = MMBaseContext.startThread(this, "UnicastSender");
+            kicker = new DaemonThread(this, "UnicastSender");
+            kicker.start();
             log.debug("UnicastSender started");
         }
     }
