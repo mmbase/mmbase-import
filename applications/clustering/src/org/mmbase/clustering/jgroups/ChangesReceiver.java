@@ -23,6 +23,7 @@ import org.jgroups.Message;
 import org.jgroups.SuspectEvent;
 import org.jgroups.TimeoutException;
 import org.jgroups.View;
+import org.mmbase.core.util.DaemonThread;
 import org.mmbase.util.Queue;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -41,7 +42,7 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Costyn van Dongen
  * @author Ronald Wildenberg
- * @version $Id: ChangesReceiver.java,v 1.5 2006-06-20 08:05:53 michiel Exp $
+ * @version $Id: ChangesReceiver.java,v 1.6 2006-08-09 11:52:33 pierre Exp $
  */
 public class ChangesReceiver implements Runnable {
 
@@ -69,8 +70,7 @@ public class ChangesReceiver implements Runnable {
 
     private void start() {
         if (kicker == null) {
-            kicker = new Thread(this, "MulticastReceiver");
-            kicker.setDaemon(true);
+            kicker = new DaemonThread(this, "MulticastReceiver");
             kicker.start();
             log.debug("MulticastReceiver started");
         }
