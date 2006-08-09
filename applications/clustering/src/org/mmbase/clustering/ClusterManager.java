@@ -14,12 +14,11 @@ import java.io.*;
 import java.util.*;
 
 import org.mmbase.core.event.*;
+import org.mmbase.core.util.DaemonThread;
 import org.mmbase.module.core.*;
 import org.mmbase.util.Queue;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-
-
 
 /**
  * ClusterManager is a thread object that reads the receive queue
@@ -30,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: ClusterManager.java,v 1.31 2006-07-06 11:26:39 michiel Exp $
+ * @version $Id: ClusterManager.java,v 1.32 2006-08-09 11:52:33 pierre Exp $
  */
 public abstract class ClusterManager implements AllEventListener, Runnable {
 
@@ -95,7 +94,8 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
     protected void start() {
         /* Start up the main thread */
         if (kicker == null) {
-            kicker = MMBaseContext.startThread(this, "ClusterManager");
+            kicker = new DaemonThread(this, "ClusterManager");
+            kicker.start();
             try {
                 kicker.setPriority(Thread.NORM_PRIORITY + 1);
             } catch (NullPointerException npe) {
@@ -161,7 +161,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
     /**
      * Creates MMBase 1.7 parseable message. This is simple String, which is prefixed before the actual 1.8 message.
      *
-     * @param machine MMBase 'machine name'. 
+     * @param machine MMBase 'machine name'.
      * @param nodenr node number
      * @param tableName node type (tablename)
      * @param type command type
