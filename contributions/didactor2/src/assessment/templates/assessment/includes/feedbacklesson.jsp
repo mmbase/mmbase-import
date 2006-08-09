@@ -1,5 +1,6 @@
-          <mm:listnodes type="problemtypes" orderby="pos">
-            <mm:field name="key"/><br/>
+        <mm:listnodes type="problemtypes" orderby="pos">
+          <mm:field name="key" jspvar="problem_type" vartype="String">
+            <%= problem_type %><br/><br/>
             <mm:related path="related,problems,posrel,learnblocks"
                 constraints="<%= "learnblocks.number=" + lessonId %>" fields="problems.number" distinct="true">
               <mm:field name="problems.name" jspvar="dummy" vartype="String" write="false">
@@ -20,6 +21,7 @@
                        referids="$referids"/>" border="0" title="<%=problemWeights[rating] %>" alt="<%=problemWeights[rating] %>" /><%
                 }
               %>
-              </mm:field>
+              </mm:field><br/>
             </mm:related>
-          </mm:listnodes>
+          </mm:field><br/><br/>
+        </mm:listnodes>

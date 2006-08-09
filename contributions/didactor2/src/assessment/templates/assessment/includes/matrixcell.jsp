@@ -4,7 +4,7 @@
   </mm:field>
 </td>
 <mm:node number="assessment.education" notfound="skip">
-  <mm:relatednodes type="learnblocks" path="posrel,learnblocks">
+  <mm:relatednodes type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos">
 <%
     int rating = -1; // not rated
     String problemConstraint = "problems.number=" + problem_number;

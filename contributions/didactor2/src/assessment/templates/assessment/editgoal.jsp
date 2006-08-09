@@ -6,16 +6,15 @@
 <%@include file="/shared/setImports.jsp" %>
 
 <mm:import externid="step">-1</mm:import>
+<mm:import externid="goal_n">-1</mm:import>
+<mm:import externid="goalname"/>
+<mm:import externid="goaldesc"/>
 
 <mm:compare referid="step" value="cancel">
   <mm:redirect page="/assessment/index.jsp" referids="$referids"/>
 </mm:compare>
 
 <mm:compare referid="step" value="save">
-  <mm:import externid="goal_n">-1</mm:import>
-  <mm:import externid="goalname"/>
-  <mm:import externid="goaldesc"/>
-
   <mm:compare referid="goal_n" value="-1">
     <mm:maycreate type="goals">
       <mm:remove referid="goal_n"/>
@@ -62,10 +61,6 @@
     <div class="mainContent">
       <div class="contentBody">
 
-  <mm:import externid="goal_n">-1</mm:import>
-
-  <mm:import id="goalname"/>
-  <mm:import id="goaldesc"/>
   <mm:node number="$goal_n" notfound="skip">
     <mm:import id="goalname" reset="true"><mm:field name="name"/></mm:import>
     <mm:import id="goaldesc" reset="true"><mm:field name="description"/></mm:import>

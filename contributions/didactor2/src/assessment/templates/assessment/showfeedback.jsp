@@ -49,8 +49,20 @@
     <%-- right section --%>
     <div class="mainContent">
       <div class="contentBody">
+        <form name="backform" action="<mm:treefile page="/assessment/index.jsp" objectlist="$includePath" 
+               referids="$referids"/>" method="post">
+          <input type="submit" class="formbutton" value="back">
+        </form>
         <mm:node referid="feedback_n" notfound="skip">
-          <% String classrelId = "-1"; %>
+          <mm:field name="status" jspvar="dummy" vartype="String" write="false">
+            <% if ("-1".equals(dummy)) { %>
+                 <mm:relatednodes type="people" max="1">
+                   Feedback by <mm:field name="firstname"/> <mm:field name="lastname"/><br/>
+                 </mm:relatednodes>
+                 <mm:field name="text"/><br/>
+            <% } %>
+          </mm:field>
+            <% String classrelId = "-1"; %>
           <mm:relatednodes type="classrel">
             <mm:field name="number" jspvar="dummy" vartype="String" write="false">
               <% classrelId = dummy; %>
