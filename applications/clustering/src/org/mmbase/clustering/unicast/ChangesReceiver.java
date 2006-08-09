@@ -12,6 +12,7 @@ package org.mmbase.clustering.unicast;
 import java.io.*;
 import java.net.*;
 
+import org.mmbase.core.util.DaemonThread;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.util.Queue;
 import org.mmbase.util.logging.Logger;
@@ -23,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * to receive changes from other MMBase Servers.
  *
  * @author Nico Klasens
- * @version $Id: ChangesReceiver.java,v 1.6 2006-06-26 13:05:42 michiel Exp $
+ * @version $Id: ChangesReceiver.java,v 1.7 2006-08-09 11:14:49 pierre Exp $
  */
 public class ChangesReceiver implements Runnable {
 
@@ -55,8 +56,7 @@ public class ChangesReceiver implements Runnable {
 
     private void start() {
         if (kicker == null) {
-            kicker = new Thread(this, "UnicastReceiver");
-            kicker.setDaemon(true);
+            kicker = new DaemonThread(this, "UnicastReceiver");
             kicker.start();
             log.debug("UnicastReceiver started");
         }
