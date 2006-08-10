@@ -337,7 +337,7 @@ public class RubriekHelper {
       if ((nodeList != null) && (nodeList.size() > 0)) {
          for (int i = 0; i < nodeList.size(); i++) {
             Node tempRubriekNode = nodeList.getNode(i);
-            boolean bIsVisible = !tempRubriekNode.getStringValue("rubriek2.url").equals("0");
+            boolean bIsVisible = !tempRubriekNode.getStringValue("rubriek2.isvisible").equals("0");
             if(showAll || bIsVisible){
                int iKey = tempRubriekNode.getIntValue("parent.pos");
                while(subObjects.containsKey(new Integer(iKey))) {

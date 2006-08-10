@@ -42,6 +42,7 @@ public class RubriekForm extends ActionForm {
    private String style;
    private String node;
    private String url_live;
+   private String isVisible;
    private int level;
    private boolean fra_active;
    private boolean eng_active;
@@ -159,6 +160,20 @@ public class RubriekForm extends ActionForm {
    public void setUrl(String url) {
       this.url = url;
    }
+   
+    /**
+    * @return Returns the isVisible.
+    */
+   public String getIsVisible() {
+      return isVisible;
+   }
+
+   /**
+    * @param isVisible Whether or not this rubriek is visible
+    */
+   public void setIsVisible(String isVisible) {
+      this.isVisible = isVisible;
+   }
 
    /**
     * @return Returns the style.
@@ -270,6 +285,9 @@ public class RubriekForm extends ActionForm {
 
 /**
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2006/03/05 21:43:58  henk
+ * First version of the NatMM contribution.
+ *
  * Revision 1.8  2004/01/30 13:01:33  jeoffrey
  * fix for jira bug LEEUW-365
  *
