@@ -1,9 +1,12 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
+<%@page import="org.mmbase.bridge.*" %>
 
 <mm:content postprocessor="reducespace">
 <mm:cloud method="delegate" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
+<%@include file="includes/variables.jsp" %>
+<%@include file="includes/functions.jsp" %>
 
 <mm:import externid="step">-1</mm:import>
 <mm:import externid="goal_n">-1</mm:import>
@@ -20,7 +23,9 @@
       <mm:remove referid="goal_n"/>
       <mm:createnode type="goals" id="goal_n">
       </mm:createnode>
-      <mm:createrelation role="posrel" source="user" destination="goal_n"/>
+      <mm:createrelation role="posrel" source="user" destination="goal_n">
+        <mm:setfield name="pos"><%= getMaxPos(cloud,thisUser,"goals")+1 %></mm:setfield>
+      </mm:createrelation>
     </mm:maycreate>
   </mm:compare>
   
@@ -38,8 +43,6 @@
       <link rel="stylesheet" type="text/css" href="css/assessment.css" />
     </mm:param>
   </mm:treeinclude>
-
-  <%@include file="includes/variables.jsp" %>
 
   <div class="rows">
     <div class="navigationbar">
