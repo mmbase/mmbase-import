@@ -179,6 +179,28 @@
             <description xml:lang="en"></description>
          </descriptions>
          <gui>
+            <guiname xml:lang="nl">AdresVerplicht</guiname>
+            <guiname xml:lang="en">AddressObliged</guiname>
+            <guitype>string</guitype>
+         </gui>
+         <editor>
+            <positions>
+               <input>10</input>
+               <list>-1</list>
+               <search>-1</search>
+            </positions>
+         </editor>
+         <db>
+            <name xml:lang="nl">adres_verplicht</name>
+            <type key="false" notnull="false" size="40" state="persistent">STRING</type>
+         </db>
+      </field>
+      <field>
+         <descriptions>
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <gui>
             <guiname xml:lang="nl">BeginInschrijving</guiname>
             <guiname xml:lang="en">BeginSubscription</guiname>
             <guitype>eventtime</guitype>
@@ -501,6 +523,29 @@
          <db>
             <name xml:lang="nl">iscanceled</name>
             <type key="false" notnull="false" size="64" state="persistent">STRING</type>
+         </db>
+      </field>
+      <field>
+         <descriptions>
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <gui>
+            <guiname xml:lang="nl">externid</guiname>
+            <guiname xml:lang="en">externid</guiname>
+            <guitype>string</guitype>
+         </gui>
+         <editor>
+            <positions>
+               <!-- position in the input area of the editor -->
+               <input>26</input>
+               <list>-1</list>
+               <search>-1</search>
+            </positions>
+         </editor>
+         <db>
+            <name xml:lang="nl">externid</name>
+            <type key="false" notnull="false" size="255" state="persistent">STRING</type>
          </db>
       </field>
 </fieldlist>
