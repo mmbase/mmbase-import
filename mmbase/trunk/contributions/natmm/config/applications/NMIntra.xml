@@ -140,6 +140,7 @@
       <relation from="evenement_blueprint" to="evenement_duration" type="related"/>
       <relation from="evenement_blueprint" to="evenement_type" type="related"/>
       <relation from="evenement_blueprint" to="feedback" type="related"/>
+      <relation from="evenement_blueprint" to="images" type="posrel"/>
       <relation from="evenement_blueprint" to="medewerkers" type="readmore"/>
       <relation from="evenement_blueprint" to="natuurgebieden_type" type="related"/>
       <relation from="evenement_blueprint" to="paragraaf" type="posrel"/>
