@@ -38,15 +38,9 @@
 %>
 
 
-
 <%
-   // It is a sad thing, but the left education menu can't be used as an include right now.
-   // So if we want to use it we have to send here an exteranl URL as a parameter.
-   // Probably the menu engine should be changed so that it become more readable and reusable.
+   //Tracing the route
 %>
-<mm:import externid="frame"/>
-
-
 <mm:present referid="the_only_node_to_show">
    <mm:node number="$the_only_node_to_show" notfound="skip">
       <%
@@ -62,6 +56,33 @@
    </mm:node>
 
 </mm:present>
+
+
+
+
+<%
+   // It is a sad thing, but the left education menu can't be used as an include right now.
+   // So if we want to use it we have to send here an exteranl URL as a parameter.
+   // Probably the menu engine should be changed so that it become more readable and reusable.
+%>
+<mm:import externid="frame"/>
+
+
+
+
+<%
+   HashSet hsetBlockedLessions = null;
+%>
+<mm:node number="component.assessment" notfound="skip">
+   <mm:node number="$education" notfound="skip" jspvar="nodeEducation">
+      <mm:node number="$user" jspvar="nodeUser">
+         <%
+            // A user can have access to only "opened" top learnblocks (lession)
+            hsetBlockedLessions = nl.didactor.component.assessment.education_menu.utils.LessionChecker.getBlockedLearnblocksForThisUser(nodeEducation, nodeUser);
+         %>
+      </mm:node>
+   </mm:node>
+</mm:node>
 
 
 
@@ -410,14 +431,33 @@ catch(err){};
                                           </script>
 
 
+
                                           <mm:present referid="the_only_node_to_show">
-                                             <img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="number"/>" onclick="" style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" title="" alt="" /><a href="<mm:url referids="provider,learnobjecttype,education,class,fb_madetest" page="index.jsp">
-                                                   <mm:param name="learnobject"><mm:write referid="learnobjectnumber"/></mm:param>
-                                                </mm:url>" style="padding-left: 0px"><mm:field name="name"/></a>
+                                             <img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="number"/>" onclick="" style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" title="" alt="" />
+                                             <a href="<mm:url referids="provider,learnobjecttype,education,class,fb_madetest" page="index.jsp">
+                                                         <mm:param name="learnobject"><mm:write referid="learnobjectnumber"/></mm:param>
+                                                      </mm:url>"
+
+                                                   style="padding-left: 0px"><mm:field name="name"/></a>
                                           </mm:present>
+
                                           <mm:notpresent referid="the_only_node_to_show">
-                                             <img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="number"/>" onclick="openClose('div<mm:field name="number"/>','img<mm:field name="number"/>')" style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" title="" alt="" /><a href="javascript:openContent('<mm:nodeinfo type="type"/>', '<mm:field name="number"/>' ); openOnly('div<mm:field name="number"/>','img<mm:field name="number"/>');" style="padding-left: 0px"><mm:field name="name"/></a>
+                                             <%
+                                                if((hsetBlockedLessions == null) || (!hsetBlockedLessions.contains(sCurrentTreeLeafID))){
+                                                   %>
+                                                      <img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="number"/>" onclick="openClose('div<mm:field name="number"/>','img<mm:field name="number"/>')" style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" title="" alt="" /><a href="javascript:openContent('<mm:nodeinfo type="type"/>', '<mm:field name="number"/>' ); openOnly('div<mm:field name="number"/>','img<mm:field name="number"/>');" style="padding-left: 0px"><mm:field name="name"/></a>
+                                                   <%
+                                                }
+                                                else{
+                                                   %>
+                                                      <img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="number"/>" style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" title="" alt="" /><a href="#" style="padding-left: 0px; color:#CCCCCC"><mm:field name="name"/></a>
+                                                   <%
+                                                }
+                                             %>
                                           </mm:notpresent>
+
+
+
 
                                           <mm:node number="component.pop" notfound="skip">
                                              <mm:relatednodes type="providers" constraints="providers.number=$provider">
