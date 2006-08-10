@@ -26,7 +26,7 @@
       <field name="namereceiver" />
       <!-- <field name="emailreceiver" /> -->
       <field name="topic" />
-      <field name="text" rows="16" />
+      <field name="text" ftype="html" rows="20" />
       <field name="begindate" />
       <!--  <field name="enddate" /> -->
       <field name="score" ftype="enum"><optionlist select="score"></optionlist></field>
