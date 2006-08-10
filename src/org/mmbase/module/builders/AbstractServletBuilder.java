@@ -30,7 +30,7 @@ import org.mmbase.security.Rank;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.41 2006-07-10 16:34:59 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.42 2006-08-10 09:39:29 nklasens Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -477,7 +477,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
 
                     if (argument == null) {
                         String fieldName   = (String) a.get("field");
-                        if (fieldName == null) {
+                        if (fieldName == null || "".equals(fieldName)) {
                             argument = node.getStringValue("number");
                         } else {
                             if (log.isDebugEnabled()) {
