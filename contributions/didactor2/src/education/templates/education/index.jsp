@@ -37,6 +37,16 @@
    HashSet hsetThePath = null;
 %>
 
+
+
+<%
+   // It is a sad thing, but the left education menu can't be used as an include right now.
+   // So if we want to use it we have to send here an exteranl URL as a parameter.
+   // Probably the menu engine should be changed so that it become more readable and reusable.
+%>
+<mm:import externid="frame"/>
+
+
 <mm:present referid="the_only_node_to_show">
    <mm:node number="$the_only_node_to_show" notfound="skip">
       <%
@@ -222,6 +232,12 @@
             // alert("level = "+level);
             var findparent = realdiv;
             var findparentClass = className;
+
+
+//There is a JS error here
+//(added try/catch)
+//Does anybody know, what the problem is?
+try{
             if (level > 1) {
                 // also open parents
                 do {
@@ -234,6 +250,10 @@
                     openOnly(divid,imgid);
                 }
             }
+}
+catch(err){};
+
+
         }
     } else { // find enclosing div
         var finddiv = realimg;
@@ -389,15 +409,12 @@
                                           //-->
                                           </script>
 
+
                                           <mm:present referid="the_only_node_to_show">
                                              <img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="number"/>" onclick="" style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" title="" alt="" /><a href="<mm:url referids="provider,learnobjecttype,education,class,fb_madetest" page="index.jsp">
                                                    <mm:param name="learnobject"><mm:write referid="learnobjectnumber"/></mm:param>
                                                 </mm:url>" style="padding-left: 0px"><mm:field name="name"/></a>
                                           </mm:present>
-
-
-
-
                                           <mm:notpresent referid="the_only_node_to_show">
                                              <img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="number"/>" onclick="openClose('div<mm:field name="number"/>','img<mm:field name="number"/>')" style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" title="" alt="" /><a href="javascript:openContent('<mm:nodeinfo type="type"/>', '<mm:field name="number"/>' ); openOnly('div<mm:field name="number"/>','img<mm:field name="number"/>');" style="padding-left: 0px"><mm:field name="name"/></a>
                                           </mm:notpresent>
@@ -484,6 +501,16 @@
    </div>
 </div>
 
+
+<mm:present referid="frame">
+   <script>
+      <mm:write referid="frame" jspvar="sFrameURL" vartype="String">
+         content.location.href='<%= sFrameURL.replaceAll("&amp;","&") %>';
+      </mm:write>
+   </script>
+</mm:present>
+
+<mm:notpresent referid="frame">
 <script type="text/javascript">
    closeAll();
 
@@ -510,6 +537,7 @@
    </mm:notpresent>
 
 </script>
+</mm:notpresent>
 
 <br />
 <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids "/>
