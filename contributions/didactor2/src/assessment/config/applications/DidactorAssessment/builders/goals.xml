@@ -46,37 +46,15 @@
         <description xml:lang="en"></description>
       </descriptions>
       <gui>
-        <guiname xml:lang="nl">Type</guiname>
-        <guiname xml:lang="en">Type</guiname>
-        <guitype>string</guitype>
-      </gui>
-      <editor>
-        <positions>
-          <input>4</input>
-          <list>4</list>
-          <search>4</search>
-        </positions>
-      </editor>
-      <db>
-        <name>value</name>
-        <type state="persistent" size="255" notnull="true" key="false">STRING</type>
-      </db>
-    </field>
-    <field>
-      <descriptions>
-        <description xml:lang="nl"></description>
-        <description xml:lang="en"></description>
-      </descriptions>
-      <gui>
         <guiname xml:lang="nl">Omschrijving</guiname>
         <guiname xml:lang="en">Description</guiname>
         <guitype>string</guitype>
       </gui>
       <editor>
         <positions>
-          <input>5</input>
-          <list>5</list>
-          <search>5</search>
+          <input>4</input>
+          <list>-1</list>
+          <search>4</search>
         </positions>
       </editor>
       <db>
