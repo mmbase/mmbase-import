@@ -178,6 +178,7 @@
       <relation from="pagina" to="pagina" type="rolerel"/> <!-- used to make redirects -->
       <relation from="pagina" to="paginatemplate" type="gebruikt"/>
       <relation from="pagina" to="producttypes" type="posrel"/>
+      <relation from="pagina" to="kb_question" type="posrel"/>
       <relation from="pagina" to="programs" type="posrel"/>
       <relation from="pagina" to="shorty" type="rolerel"/>
       <relation from="pagina" to="teaser" type="rolerel"/>
