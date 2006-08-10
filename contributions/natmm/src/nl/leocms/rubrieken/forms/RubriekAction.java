@@ -40,7 +40,7 @@ import javax.servlet.http.HttpServletResponse;
  * LoginInitAction
  *
  * @author Edwin van der Elst
- * @version $Revision: 1.3 $, $Date: 2006-05-22 10:08:48 $
+ * @version $Revision: 1.4 $, $Date: 2006-08-10 14:23:00 $
  *
  * @struts:action name="RubriekForm"
  *                path="/editors/paginamanagement/RubriekAction"
@@ -92,6 +92,7 @@ public class RubriekAction extends Action {
          node.setIntValue("de_active",de_active);
          node.setStringValue("url",rubriekForm.getUrl());
          node.setStringValue("url_live",rubriekForm.getUrl_live());
+         node.setStringValue("isvisible",rubriekForm.getIsVisible());
 
          String style = rubriekForm.getStyle();
          if (style.equals("parentstyle")) {
