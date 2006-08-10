@@ -67,19 +67,11 @@
               <mm:list nodes="<%=dossier_number%>" path="dossier,readmore,artikel"
                       fields="artikel.number,artikel.titel" orderby="readmore.pos" max="3">
                 <mm:field name="artikel.number" jspvar="artikel_number" vartype="String" write="false">
-                  <% String relatedPage = null; %>
-                  <mm:list nodes="<%= artikel_number %>" path="artikel,contentrel,pagina" fields="pagina.number">
-                    <mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false">
-<%
-                      if(rootID.equals(ph.getRootRubriek(cloud,pagina_number))) { relatedPage = pagina_number; } 
-%>
-                    </mm:field>
-                  </mm:list>
                   <table style="width:100%;" border="0" cellspacing="0" cellpadding="0">
                     <tr>
-                      <td style="text-align:left;vertical-align:middle;"><a 
-                         href="<%= (relatedPage!=null ? ph.createItemUrl(artikel_number,relatedPage,"d="+dossier_number, request.getContextPath()) : "") %>"
-                         class="hover"><mm:field name="artikel.titel" /></a></td>
+                      <td style="text-align:left;vertical-align:middle;">
+                        <a href="<%= readmoreURL + "&a=" + artikel_number %>" class="hover"><mm:field name="artikel.titel" /></a>
+                      </td>
                     </tr>
                   </table>
                 </mm:field>
@@ -89,7 +81,9 @@
                 <mm:field name="evenement.number" jspvar="evenement_number" vartype="String" write="false">
                   <table width="100%" border="0" cellspacing="0" cellpadding="0">
                     <tr>
-                      <td style="text-align:left;vertical-align:middle;"><a href="events.jsp?p=agenda&e=<%= Evenement.getNextOccurence(evenement_number) %>" class="hover"><mm:field name="evenement.titel" /></a></td>
+                      <td style="text-align:left;vertical-align:middle;">
+                        <a href="events.jsp?p=agenda&e=<%= Evenement.getNextOccurence(evenement_number) %>" class="hover"><mm:field name="evenement.titel" /></a>
+                      </td>
                     </tr>
                   </table>
                 </mm:field>
