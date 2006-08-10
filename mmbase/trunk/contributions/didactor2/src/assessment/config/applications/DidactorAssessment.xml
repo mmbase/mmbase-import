@@ -16,6 +16,7 @@
         <builder maintainer="didactor.nl" version="1">goals</builder>
         <builder maintainer="didactor.nl" version="1">problems</builder>
         <builder maintainer="didactor.nl" version="1">problemtypes</builder>
+        <builder maintainer="didactor.nl" version="1">email_notifications</builder>
         
     </neededbuilderlist>
 
@@ -40,6 +41,11 @@
 
         <!-- link from (the content in) the learnblocks to the cases -->
         <relation from="learnobjects" to="learnobjects" type="descriptionrel" />
+        
+        <!-- email notification -->
+        <relation from="email_notifications" to="classes" type="related" />
+        <relation from="email_notifications" to="people" type="related" />
+        
     </allowedrelationlist>
 
 	  <datasourcelist>
