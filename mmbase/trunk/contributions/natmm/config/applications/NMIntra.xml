@@ -8,6 +8,7 @@
    </requirements>
    <neededbuilderlist>
       <!-- relations NatMM -->
+      <builder version="0" maintainer="mmbase.org">altrel</builder>
       <builder version="0" maintainer="mmbase.org">childrel</builder>
       <builder version="0" maintainer="mmbase.org">contentrel</builder>
       <builder version="0" maintainer="mmbase.org">insrel</builder>
@@ -91,6 +92,7 @@
       <builder version="0" maintainer="mmbase.org">users</builder>
    </neededbuilderlist>
    <neededreldeflist>
+      <reldef source="altrel" target="altrel" direction="bidirectional" guisourcename="altrel" guitargetname="altrel" builder="altrel" />
       <reldef source="contentrel" target="contentrel" direction="bidirectional" guisourcename="contentrel" guitargetname="contentrel" builder="contentrel"/>
       <reldef source="discountrel" target="discountrel" direction="unidirectional" guisourcename="DiscountRel" guitargetname="DiscountRel" builder="discountrel"/>
       <reldef source="gebruikt" target="gebruikt" direction="bidirectional" guisourcename="gebruikt" guitargetname="gebruikt" builder="insrel"/>
