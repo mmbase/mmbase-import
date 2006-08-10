@@ -78,7 +78,9 @@
       <mm:node number="$user" jspvar="nodeUser">
          <%
             // A user can have access to only "opened" top learnblocks (lession)
-            hsetBlockedLessions = nl.didactor.component.assessment.education_menu.utils.LessionChecker.getBlockedLearnblocksForThisUser(nodeEducation, nodeUser);
+            Class classLessionChecker = Class.forName("nl.didactor.component.assessment.education_menu.utils.LessionChecker");
+            Object[] arrObjects = {nodeEducation, nodeUser};
+            hsetBlockedLessions = (HashSet) classLessionChecker.getMethods()[0].invoke(this, arrObjects);
          %>
       </mm:node>
    </mm:node>
