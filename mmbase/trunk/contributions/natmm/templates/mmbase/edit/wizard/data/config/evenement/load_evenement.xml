@@ -26,6 +26,10 @@
    <field name="dagomschrijving"/>
    <field name="tijd"/>
    <field name="tekst"/>
+   <field name="omschrijving"/>
+   <field name="omschrijving_eng"/>
+   <field name="omschrijving_fra"/>
+   <field name="omschrijving_de"/>
    <field name="lokatie"/>
    <field name="soort"/>
    <field name="discipline"/>
@@ -46,8 +50,8 @@
 			         <object />
 		        </relation>
 	       </object>
-	</relation>
-	<relation destination="images" role="posrel"/>
+	 </relation>
+	 <relation destination="images" role="posrel"/>
    <relation destination="afdelingen" role="readmore"/>
    <relation destination="artikel" role="related"/>
    <relation destination="bevestigings_teksten" role="posrel"/>

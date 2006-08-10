@@ -24,7 +24,7 @@
       <optionlist include="config/option_lists/medewerkers_role.xml" />
       <optionlist include="config/option_lists/evenement_closetime.xml" />
       <optionlist include="config/option_lists/confirmation_texts.xml" />
-		<optionlist include="config/option_lists/images_position.xml" />
+		  <optionlist include="config/option_lists/images_position.xml" />
    </lists>     
    <steps>   
       <step form-schema="edit_evenement"/>    
@@ -35,15 +35,15 @@
        <title>Basisgegevens</title>
        <field name="titel" ftype="line"><prompt>naam</prompt></field>
        <field name="tekst" ftype="html" rows="20"><prompt>intro</prompt></field>
-       <list include="config/images/add_images_posrel.xml" />
-       <list include="config/paragraph/add_paragraph_posrel.xml" />
+       <list include="config/images/zoek_posrel_images.xml" />
+       <list include="config/paragraaf/zoek_artikel_posrel_paragraaf.xml" />
        <field name="omschrijving" ftype="html" rows="14"><prompt>bijzondere aandachtspunten</prompt></field>
        <field name="omschrijving_eng" ftype="html" rows="14"><prompt>hulpmiddelen</prompt></field>
        <field name="omschrijving_de" ftype="html" rows="14"><prompt>inzet van de beheereenheid</prompt></field>
        <field name="omschrijving_fra" ftype="html" rows="14"><prompt>eisen die de activiteit aan het terrein stelt</prompt></field>
        <field name="min_aantal_deelnemers"><prompt>minimum aantal deelnemers</prompt></field>
        <field name="max_aantal_deelnemers"><prompt>maximum aantal deelnemers</prompt></field>
-       <list include="config/employees/add_employees_readmore_small.xml" />
+       <list include="config/medewerkers/zoek_evenement_readmore_medewerkers.xml" />
    </form-schema>
    <form-schema id="add_related">
        <title>Indeling</title>
@@ -54,7 +54,7 @@
        <list include="config/natuurgebieden_type/zoek_evenement_related_natuurgebieden_type.xml" />
        <list include="config/evenement_duration/zoek_evenement_related_evenement_duration.xml" />
        <list include="config/evenement_distance/zoek_evenement_related_evenement_distance.xml" />
-       <list include="config/departments/add_departments_readmore_small.xml" />
+       <list include="config/afdelingen/zoek_evenement_readmore_afdelingen.xml" />
    </form-schema>
    <form-schema id="feedback">
       <title>Feedback</title>
