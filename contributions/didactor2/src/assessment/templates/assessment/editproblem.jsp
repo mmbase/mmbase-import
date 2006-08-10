@@ -1,15 +1,18 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
+<%@page import="org.mmbase.bridge.*" %>
 
 <mm:content postprocessor="reducespace">
 <mm:cloud method="delegate" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
 <%@include file="includes/getlesson.jsp" %>
+<%@include file="includes/variables.jsp" %>
+<%@include file="includes/functions.jsp" %>
 
 <mm:import externid="step">-1</mm:import>
 <mm:import externid="problem_n">-1</mm:import>
 <mm:import externid="problemname"/>
-<mm:import externid="problemtype"/>
+<mm:import externid="problemtype">-1</mm:import>
 <mm:import externid="problemrating"/>
 
 <% int problemrating = -1; // not rated %>
@@ -24,7 +27,11 @@
       <mm:remove referid="problem_n"/>
       <mm:createnode type="problems" id="problem_n">
       </mm:createnode>
-      <mm:createrelation role="posrel" source="user" destination="problem_n"/>
+      <mm:createrelation role="posrel" source="user" destination="problem_n">
+        <mm:setfield name="pos"><%= getMaxPos(cloud,thisUser,"problems")+1 %></mm:setfield>
+      </mm:createrelation>
+      <mm:node number="<%= currentLesson %>" id="currentlesson"/>
+      <mm:createrelation role="posrel" source="problem_n" destination="currentlesson"/>
     </mm:maycreate>
   </mm:compare>
   
@@ -35,6 +42,12 @@
         <mm:setfield name="pos"><mm:write referid="problemrating"/></mm:setfield>
       </mm:node>
     </mm:related>
+    <mm:related path="related,problemtypes">
+      <mm:node element="related">
+        <mm:deletenode/>
+      </mm:node>
+    </mm:related>
+    <mm:createrelation role="related" source="problem_n" destination="problemtype"/>
   </mm:node>
   <% // TODO: saving q and a %>
   
@@ -48,8 +61,6 @@
       <link rel="stylesheet" type="text/css" href="css/assessment.css" />
     </mm:param>
   </mm:treeinclude>
-
-  <%@include file="includes/variables.jsp" %>
 
   <div class="rows">
     <div class="navigationbar">
@@ -84,6 +95,9 @@
 %>
       </mm:field>
     </mm:related>
+    <mm:relatednodes type="problemtypes">
+      <mm:import id="problemtype" reset="true"><mm:field name="number"/></mm:import>
+    </mm:relatednodes>
   </mm:node>
   
   <form name="newproblemform" action="<mm:treefile page="/assessment/editproblem.jsp" objectlist="$includePath" 
@@ -94,6 +108,18 @@
       <tr>
         <td width="80">problem:</td>
         <td><input name="problemname" class="popFormInput" type="text" size="50" maxlength="255" value="<mm:write referid="problemname"/>"></td>
+      </tr>
+      <tr>
+        <td>Type</td>
+        <td>
+          <select name="problemtype">
+            <mm:listnodes type="problemtypes" orderby="pos">
+              <mm:field name="number" jspvar="problemtypeId" vartype="String">
+                <option value="<%= problemtypeId %>"<mm:compare referid="problemtype" value="<%= problemtypeId %>"> selected</mm:compare>><mm:field name="key"/></option>
+              </mm:field>
+            </mm:listnodes>
+          </select>
+        </td>
       </tr>
       <tr>
         <td>How much trouble does it cause you?</td>
