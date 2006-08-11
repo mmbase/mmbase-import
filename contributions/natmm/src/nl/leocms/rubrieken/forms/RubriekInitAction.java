@@ -37,7 +37,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  *
  * @author Edwin van der Elst
- * @version $Revision: 1.4 $, $Date: 2006-08-10 14:23:00 $
+ * @version $Revision: 1.5 $, $Date: 2006-08-11 06:23:02 $
  *
  * @struts:action name="RubriekForm"
  *                path="/editors/paginamangement/RubriekInitAction"
@@ -82,7 +82,7 @@ public class RubriekInitAction extends Action {
          rubriekForm.setStyle(node.getStringValue("style"));
          rubriekForm.setLevel(node.getIntValue("level"));
          rubriekForm.setUrl_live(node.getStringValue("url_live"));
-         rubriekForm.setIsVisible(node.getStringValue("isvisible"));
+         rubriekForm.setIs_visible(node.getStringValue("isvisible"));
       } else {
          String parent = request.getParameter("parent");
          rubriekForm.setParent( parent );
