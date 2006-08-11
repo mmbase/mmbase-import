@@ -16,7 +16,7 @@
      * processuploads.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: processuploads.jsp,v 1.2 2006-08-02 16:23:03 adyubina Exp $
+     * @version  $Id: processuploads.jsp,v 1.3 2006-08-11 09:41:31 henk Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
@@ -122,7 +122,7 @@ if (! ewconfig.subObjects.empty()) {
       // hh: translated hardcoded english prompts
       long lMaxSizeInMB = maxsize / (1024*1024);    
   %>    
-      De file die u wilt uploaden is groter dan <%= lMaxSizeInMB %> MB.
+      De file die u wilt uploaden is groter dan <%= lMaxSizeInMB %> MB.<br />
       <a href="<mm:url page="upload.jsp" />?proceed=true&did=<%=did%>&sessionkey=<%=ewconfig.sessionKey%>&wizard=<%=wizardConfig.wizard%>&maxsize=<%=ewconfig.maxupload%>">Probeer het nogmaals</a> of
       <a href="javascript:window.close();">stop met uploaden</a>.
       
@@ -136,7 +136,7 @@ if (! ewconfig.subObjects.empty()) {
 <%  } catch (Exception e) {
 
 %>
-      Dit beeldtype wordt niet gesteund.
+      Afbeeldingen kunnen alleen van het formaat gif, jpeg, png of tiff zijn. De file die u wilt uploaden is niet van dit formaat.<br />
       <a href="<mm:url page="upload.jsp" />?proceed=true&did=<%=did%>&sessionkey=<%=ewconfig.sessionKey%>&wizard=<%=wizardConfig.wizard%>&maxsize=<%=ewconfig.maxupload%>">Probeer het nogmaals</a> of
       <a href="javascript:window.close();">stop met uploaden</a>.
 
