@@ -25,8 +25,7 @@ public class DidactorAssessment extends Component{
 
     public void init() {
         super.init();
-        log.error("blya");
-//        Component.getComponent("education").registerInterested(this);
+        Component.getComponent("education").registerInterested(this);
     }
 
     /**
