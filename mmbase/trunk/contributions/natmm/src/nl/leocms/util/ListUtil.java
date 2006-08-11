@@ -41,7 +41,7 @@ public class ListUtil {
   public String getObjects(String objects, String source, String role, String destination, String nodeId) {
      StringBuffer sbObjects = new StringBuffer();
      String constraint =  "(" + destination + ".number = '" + nodeId + "')";
-     log.info("getObjects objects=" + objects + ", path=" + source + "," + role + "," + destination + ", fields=" + source + ".number" + ", constraints=" + constraint);
+     log.debug("getObjects objects=" + objects + ", path=" + source + "," + role + "," + destination + ", fields=" + source + ".number" + ", constraints=" + constraint);
      if(!nodeId.equals("")) {
         NodeList nlObjects = cloud.getList(objects,
                                    source + "," + role + "," + destination,
@@ -53,21 +53,21 @@ public class ListUtil {
            sbObjects.append(nlObjects.getNode(n).getStringValue(source + ".number"));
         }
         objects = sbObjects.toString();
-        log.info(destination + ": " + objects);
+        log.debug(destination + ": " + objects);
      }
      return objects;
   }
   
   public String getObjectsConstraint(String objects, String source, String path, String constraint) {
      StringBuffer sbObjects = new StringBuffer();
-     log.info("objects=" + objects + ", path=" + path + ", fields=" + source + ".number" + ", constraints=" + constraint);
+     log.debug("objects=" + objects + ", path=" + path + ", fields=" + source + ".number" + ", constraints=" + constraint);
      NodeList nlObjects = cloud.getList(objects, path,source + ".number","(" + constraint + ")",null,null,null,true);
      for(int n=0; n<nlObjects.size(); n++) {
         if(n>0) { sbObjects.append(','); }
         sbObjects.append(nlObjects.getNode(n).getStringValue(source + ".number"));
      }
      objects = sbObjects.toString();
-     log.info("getObjectsConstraint: " + objects);
+     log.debug("getObjectsConstraint: " + objects);
      return objects;
   }
   
@@ -77,7 +77,7 @@ public class ListUtil {
      if (!field2.equals("")) {
         fields += "," + destination + "." + lu.getLangFieldName(field2,language);
      }
-     log.info("getRelated objects=" + objects + ", path=" + source + "," + role + "," + destination + ", fields=" + fields + ", destination=" + destination + "." + field);
+     log.debug("getRelated objects=" + objects + ", path=" + source + "," + role + "," + destination + ", fields=" + fields + ", destination=" + destination + "." + field);
      NodeList nlRelated = cloud.getList(objects,
                                    source + "," + role + "," + destination,
                                    fields,
@@ -128,5 +128,8 @@ public class ListUtil {
 
 /**
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2006/08/11 09:24:16  henk
+ * Moved searchform related functions to class
+ *
  *
  */
