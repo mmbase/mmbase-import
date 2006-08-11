@@ -23,12 +23,13 @@ package nl.leocms.util;
 import java.text.DateFormatSymbols;
 import java.util.Locale;
 
+import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 
 /**
  * @author Jeoffrey Bakker
- * @version $Revision: 1.2 $, $Date: 2006-03-08 22:23:51 $
+ * @version $Revision: 1.3 $, $Date: 2006-08-11 09:24:16 $
  */
 public class LocaleUtil {
 
@@ -50,10 +51,33 @@ public class LocaleUtil {
       return dateFormatSymbols;
    }
 
+    public static String getLangFieldName(String field, String language) {
+       String fieldname = field;
+       if (!"nl".equals(language)) {
+          fieldname += "_" + language;
+       }
+       return fieldname;
+    }
+    
+    public static String getField(Node node, String field, String language) {
+       return getField(node, field, language, "");
+    }
+    
+    public static String getField(Node node, String field, String language, String postString) {
+       String value = node.getStringValue(getLangFieldName(field,language));
+       if(!value.equals("")) {
+        value += postString;
+       }
+       return value;
+    }
+   
 }
 
 /**
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2006/03/08 22:23:51  henk
+ * Changed log4j into MMBase logging
+ *
  * Revision 1.1  2006/03/05 21:43:59  henk
  * First version of the NatMM contribution.
  *
