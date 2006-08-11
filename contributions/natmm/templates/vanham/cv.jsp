@@ -39,6 +39,8 @@
       <%
      }
      
+     ListUtil lu = new ListUtil(cloud);
+     
      String localPath = "";
      String searchUrl = localPath + "cv.jsp?p=" + paginaID
                      + "&material=" + materialTypeID
@@ -52,24 +54,24 @@
      
      String sProjects = "";
      // ** first determine the projects that fit the search criteria
-     sProjects = getObjects(cloud,log,sProjects,"projects","contentrel","pagina",paginaID);
+     sProjects = lu.getObjects(sProjects,"projects","contentrel","pagina",paginaID);
      if (checkParam(projectTypeID)) {
-        sProjects = getObjects(cloud,log,sProjects,"projects","posrel","projecttypes",projectTypeID);
+        sProjects = lu.getObjects(sProjects,"projects","posrel","projecttypes",projectTypeID);
         if(debug) { %>projectType: <%= sProjects %><br/><% }
      }
      if (checkParam(materialTypeID)) {
-        sProjects = getObjects(cloud,log,sProjects,"projects","posrel,items,posrel","pools",materialTypeID);
+        sProjects = lu.getObjects(sProjects,"projects","posrel,items,posrel","pools",materialTypeID);
         if(debug) { %>materialType: <%= sProjects %><br/><% }
      }
      if (checkParam(locatieID)) {
-        // wrong: sProjects = getObjects(cloud,log,sProjects,"projects","readmore","organisatie",locatieID);
+        // wrong: sProjects = lu.getObjects(sProjects,"projects","readmore","organisatie",locatieID);
         String locatieConstraint = "( organisatie.plaatsnaam = '" + cloud.getNode(locatieID).getStringValue("plaatsnaam")
                                  + "' AND organisatie.land = '" + cloud.getNode(locatieID).getStringValue("land") + "')";
-        sProjects = getObjectsConstraint(cloud,log,sProjects,"projects","projects,readmore,organisatie",locatieConstraint);
+        sProjects = lu.getObjectsConstraint(sProjects,"projects","projects,readmore,organisatie",locatieConstraint);
         if(debug) { %>locatieConstraint: <%= sProjects %><br/><% }
      }
      if (checkParam(organisationTypeID)) {
-        sProjects = getObjects(cloud,log,sProjects,"projects","readmore,organisatie,posrel","organisatie_type",organisationTypeID);
+        sProjects = lu.getObjects(sProjects,"projects","readmore,organisatie,posrel","organisatie_type",organisationTypeID);
         if(debug) { %>organisationType: <%= sProjects %><br/><% }
      }
      if (checkParam(durationType)) {
@@ -79,7 +81,7 @@
         if (durationType.equals("perm")) {
            durationConstraint = "NOT (" + durationConstraint + ")";
         }
-        sProjects = getObjectsConstraint(cloud,log,sProjects,"projects","projects",durationConstraint);
+        sProjects = lu.getObjectsConstraint(sProjects,"projects","projects",durationConstraint);
         if(debug) { %>durationConstraint: <%= sProjects %><br/><% }
      }
   %>
@@ -96,17 +98,17 @@
            <form name="selectform" method="post" action="">
               <td class="def" style="width:55%;vertical-align:middle;" colspan="2">
                  <%
-                    NodeList projectTypes = getRelated(cloud,log,paginaID,"pagina",
+                    NodeList projectTypes = lu.getRelated(paginaID,"pagina",
                        "contentrel,projects,posrel",
                        "projecttypes","name","",language);
                  %>
-                 <%= getSimpleSelect(cloud,log,projectTypeID,projectTypes,
+                 <%= getSimpleSelect(projectTypeID,projectTypes,
                        "projecttypes","name","",searchUrl,"projtype",language) %>
               </td>
            </form>
            <td class="def" style="width:30%;vertical-align:middle;">
              <mm:node number="<%=projectTypeID %>" jspvar="dummy" notfound="skipbody">
-               <%= getField(dummy,"subtitle",language) %>
+               <%= LocaleUtil.getField(dummy,"subtitle",language) %>
              </mm:node>
            </td>
         </tr>
@@ -119,11 +121,11 @@
            <form name="selectform" method="post" action="">
            <td class="def" style="width:20%;padding:1px;height:0%;text-align:right;vertical-align:middle;">
               <%
-                 NodeList locatieList = getRelated(cloud,log,sProjects,"projects",
+                 NodeList locatieList = lu.getRelated(sProjects,"projects",
                     "readmore",
                     "organisatie","plaatsnaam","land","nl");
               %>
-              <%= getSimpleSelect(cloud,log,locatieID,locatieList,
+              <%= getSimpleSelect(locatieID,locatieList,
                     "organisatie","plaatsnaam","land",searchUrl,"locatie","nl") %>
            </td>
            </form>
@@ -143,11 +145,11 @@
            <form name="selectform" method="post" action="">
            <td class="def" style="width:20%;padding:1px;height:0%;text-align:right;vertical-align:middle;">
               <%
-                 NodeList organisationTypes = getRelated(cloud,log,sProjects,"projects",
+                 NodeList organisationTypes = lu.getRelated(sProjects,"projects",
                     "readmore,organisatie,posrel",
                     "organisatie_type","naam","",language);
               %>
-              <%= getSimpleSelect(cloud,log,organisationTypeID,organisationTypes,
+              <%= getSimpleSelect(organisationTypeID,organisationTypes,
                     "organisatie_type","naam","",searchUrl,"orgtype",language) %>
            </td>
            </form>
@@ -161,11 +163,11 @@
            <form name="selectform" method="post" action="">
            <td class="def" style="width:20%;padding:1px;height:0%;text-align:right;vertical-align:middle;">
               <%
-                 NodeList materialTypes = getRelated(cloud,log,sProjects,"projects",
+                 NodeList materialTypes = lu.getRelated(sProjects,"projects",
                     "posrel,items,posrel",
                     "pools","name","",language);
               %>
-              <%= getSimpleSelect(cloud,log,materialTypeID,materialTypes,
+              <%= getSimpleSelect(materialTypeID,materialTypes,
                     "pools","name","",searchUrl,"material",language) %>
            </td>
            </form>
@@ -207,7 +209,7 @@
               <mm:node element="projects" jspvar="thisProject">
                  <mm:import id="projectID" jspvar="projectID" vartype="String" reset="true"><mm:field name="number"/></mm:import>
                  <%
-                    String projectDesc = getField(cloud.getNode(projectID),"omschrijving", language);
+                    String projectDesc = LocaleUtil.getField(cloud.getNode(projectID),"omschrijving", language);
                     boolean hasToggle = !projectDesc.equals("");
                  %>
                  <mm:relatednodes type="items" path="posrel,items" jspvar="dummy" max="1">
@@ -242,7 +244,7 @@
                           &nbsp;
                        <% } %>
                     </td>
-                    <td class="def" style="width:55%;" colspan="2"><%= getField(thisProject,"titel",language) %></td>
+                    <td class="def" style="width:55%;" colspan="2"><%= LocaleUtil.getField(thisProject,"titel",language) %></td>
                     <mm:relatednodes type="organisatie" path="readmore,organisatie">
                        <td class="def" style="width:30%;"><mm:field name="titel" /></td>
                     </mm:relatednodes>
@@ -255,15 +257,15 @@
                           <%= (!HtmlCleaner.cleanText(projectDesc,"<",">","").trim().equals("") ? projectDesc : "" ) %>
                           <mm:relatednodes type="items" path="posrel,items" jspvar="dummy" max="1">
                              <mm:field name="titel_zichtbaar" jspvar="titelFlag" vartype="String">
-                                <% if (!"0".equals(titelFlag) && ! getField(dummy,"titel",language).equals(getField(thisProject,"titel",language)) ) { %>
-                                   <%= getField(dummy,"titel",language, "<br/>") %>
+                                <% if (!"0".equals(titelFlag) && ! LocaleUtil.getField(dummy,"titel",language).equals(LocaleUtil.getField(thisProject,"titel",language)) ) { %>
+                                   <%= LocaleUtil.getField(dummy,"titel",language, "<br/>") %>
                                 <% } %>
                              </mm:field>
                              <mm:field name="year"><mm:compare value="<%= yearString %>" inverse="true"><mm:write /><br/></mm:compare></mm:field>
-                             <%= getField(dummy,"material",language, "<br/>") %>
-                             <%= getField(dummy,"subtitle",language, "<br/>") %>
+                             <%= LocaleUtil.getField(dummy,"material",language, "<br/>") %>
+                             <%= LocaleUtil.getField(dummy,"subtitle",language, "<br/>") %>
                     <mm:field name="piecesize"/><br/>
-                    <%= getField(dummy,"omschrijving",language, "<br/>") %>
+                    <%= LocaleUtil.getField(dummy,"omschrijving",language, "<br/>") %>
                           </mm:relatednodes>
                        </td>
                        <td class="def" style="width:30%;">
