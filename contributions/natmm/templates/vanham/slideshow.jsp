@@ -1,8 +1,9 @@
 <%@taglib uri="/WEB-INF/tld/struts-bean.tld" prefix="bean"%> 
 <%@include file="includes/templateheader.jsp" %>
-<mm:cloud>
+<mm:cloud jspvar="cloud">
 <%@include file="includes/functions.jsp" %>
 <% 
+
 String previousImage = "-1";
 String nextImage = "-1";
 String thisImage = "";
@@ -60,8 +61,8 @@ td {
       <mm:node number="<%= thisImage %>" jspvar="dummy">
          <a href="javascript:void(0);" onClick="window.close()" title="<bean:message bundle="<%= "VANHAM." + language %>" key="slide.click.on.photo" />">
             <img src="<mm:image template="s(350)" />" style="margin-bottom:16px;" border="0"></a><br/>
-         <b><%= getField(dummy,"titel",language) %></b><br/>
-         <%= getField(dummy,"omschrijving",language) %><br/>
+         <b><%= LocaleUtil.getField(dummy,"titel",language) %></b><br/>
+         <%= LocaleUtil.getField(dummy,"omschrijving",language) %><br/>
          <mm:field name="bron">
             <mm:isnotempty><bean:message bundle="<%= "VANHAM." + language %>" key="slide.photography" />: <mm:write /><br/></mm:isnotempty>
          </mm:field>
