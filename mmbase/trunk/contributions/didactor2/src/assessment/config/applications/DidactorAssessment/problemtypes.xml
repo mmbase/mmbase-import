@@ -13,6 +13,6 @@
     <node number="17003" owner="system">
         <name>Not solvable problems</name>
         <key>problemtype_notsolvable</key>
-        <pos>2</pos>
+        <pos>3</pos>
     </node>
 </problemtypes>
