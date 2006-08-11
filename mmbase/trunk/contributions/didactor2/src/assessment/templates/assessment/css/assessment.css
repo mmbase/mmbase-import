@@ -84,3 +84,12 @@ table.popGreyTableHeader {
     background-color: #999999;
 	text-align: left; 
 	font-size: 1.2em }
+
+.grayBar {
+	background-color: gray;
+	color: white;
+	font-weight: bold;
+	padding-left: 5px;
+	vertical-align: bottom;
+	height:22px;
+}
