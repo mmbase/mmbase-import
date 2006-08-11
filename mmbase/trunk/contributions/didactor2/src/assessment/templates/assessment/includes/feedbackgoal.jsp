@@ -1,29 +1,42 @@
-Goal<br/>
-        <mm:node number="<%= ownerId %>">
-          <mm:relatednodes type="goals" path="posrel,goals" orderby="posrel.pos">
-            <mm:first><table></mm:first>
-              <mm:field name="number" jspvar="goal_number" vartype="String" write="false">
-                <tr>
-                  <td>
-                    <img src="<mm:treefile page="/assessment/gfx/plus.gif" objectlist="$includePath" 
-                         referids="$referids"/>" border="0" title="show goal" alt="show goal" 
-                         onClick="toggle(<%=goal_number %>);" id="toggle_image<%=goal_number %>"/>
-                  </td>
-                  <td>
-                    <mm:field name="name" jspvar="dummy" vartype="String" write="false">
-                      <%= ( "".equals(dummy) ? "&nbsp;" : dummy )%>
-                    </mm:field>
-                  </td>
-                </tr>
-                <tr id="toggle_div<%=goal_number %>" style="display:none">
-                  <td>&nbsp;</td>
-                  <td>
-                    <mm:field name="description" jspvar="dummy" vartype="String" write="false">
-                      <%= ( "".equals(dummy) ? "&nbsp;" : dummy )%>
-                    </mm:field>
-                  </td>
-                </tr>
-              </mm:field>
-            <mm:last></table></mm:last>
-          </mm:relatednodes>
-        </mm:node>
+<tr>
+  <td colspan="2">
+    <div class="grayBar" style="width:100%;">
+      <img src="<mm:treefile page="/assessment/gfx/minus.gif" objectlist="$includePath" 
+           referids="$referids"/>" border="0" title="show goals" alt="show goals" 
+           onClick="toggle('goals');" id="toggle_imagegoals"/>
+      Goals
+    </div>
+  </td>
+</tr>
+<tr id="toggle_divgoals">
+  <td colspan="2">
+    <mm:node number="<%= ownerId %>">
+      <mm:relatednodes type="goals" path="posrel,goals" orderby="posrel.pos">
+        <mm:first><table></mm:first>
+          <mm:field name="number" jspvar="goal_number" vartype="String" write="false">
+            <tr>
+              <td>
+                <img src="<mm:treefile page="/assessment/gfx/plus.gif" objectlist="$includePath" 
+                     referids="$referids"/>" border="0" title="show goal" alt="show goal" 
+                     onClick="toggle(<%=goal_number %>);" id="toggle_image<%=goal_number %>"/>
+              </td>
+              <td>
+                <mm:field name="name" jspvar="dummy" vartype="String" write="false">
+                  <%= ( "".equals(dummy) ? "&nbsp;" : dummy )%>
+                </mm:field>
+              </td>
+            </tr>
+            <tr id="toggle_div<%=goal_number %>" style="display:none">
+              <td>&nbsp;</td>
+              <td>
+                <mm:field name="description" jspvar="dummy" vartype="String" write="false">
+                  <%= ( "".equals(dummy) ? "&nbsp;" : dummy )%>
+                </mm:field>
+              </td>
+            </tr>
+          </mm:field>
+        <mm:last></table></mm:last>
+      </mm:relatednodes>
+    </mm:node>
+  </td>
+</tr>
