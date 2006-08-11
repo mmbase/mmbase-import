@@ -42,7 +42,7 @@ public class RubriekForm extends ActionForm {
    private String style;
    private String node;
    private String url_live;
-   private String isVisible;
+   private String is_visible;
    private int level;
    private boolean fra_active;
    private boolean eng_active;
@@ -162,17 +162,17 @@ public class RubriekForm extends ActionForm {
    }
    
     /**
-    * @return Returns the isVisible.
+    * @return Returns the is_visible.
     */
-   public String getIsVisible() {
-      return isVisible;
+   public String getIs_visible() {
+      return is_visible;
    }
 
    /**
-    * @param isVisible Whether or not this rubriek is visible
+    * @param is_visible Whether or not this rubriek is visible
     */
-   public void setIsVisible(String isVisible) {
-      this.isVisible = isVisible;
+   public void setIs_visible(String isVisible) {
+      this.is_visible = is_visible;
    }
 
    /**
@@ -208,13 +208,13 @@ public class RubriekForm extends ActionForm {
       if ("".equals(this.getNaam()) || this.getNaam()==null) {
          errors.add("naam",new ActionError("rubrieken.naam.verplicht"));
       }
-      if ("".equals(this.getUrl()) || this.getUrl()==null) {
-         errors.add("url",new ActionError("rubrieken.url.verplicht"));
-      } else {
-         if (this.getUrl().indexOf(' ')>=0) {
-            errors.add("url",new ActionError("url.spaties"));
-         }
+      if (this.getUrl()==null && this.getUrl().indexOf(' ')>=0) {
+        errors.add("url",new ActionError("url.spaties"));
       }
+      // hh: url is only used to create Google sitemaps now, so it is not required
+      // if ("".equals(this.getUrl()) || this.getUrl()==null) {
+      //   errors.add("url",new ActionError("rubrieken.url.verplicht"));
+      // }
       return errors;
    }
 
@@ -285,6 +285,9 @@ public class RubriekForm extends ActionForm {
 
 /**
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2006/08/10 14:23:00  henk
+ * Added rubriek.isvisible
+ *
  * Revision 1.1  2006/03/05 21:43:58  henk
  * First version of the NatMM contribution.
  *
