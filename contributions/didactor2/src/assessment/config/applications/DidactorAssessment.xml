@@ -50,6 +50,7 @@
 
 	  <datasourcelist>
 	      <datasource builder="components" path="DidactorAssessment/components.xml" />
+	      <datasource builder="problemtypes" path="DidactorAssessment/problemtypes.xml" />
 	  </datasourcelist>
 
     <relationsourcelist />
