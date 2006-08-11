@@ -1,3 +1,48 @@
+<%! 
+public String getSelect(Cloud cloud, Logger log, String title, int iRubriekStyle, String nodeId, NodeList related, String destination, String field, String url, String param) {
+   String sSelect = 
+            "<table style='width:190px;margin-bottom:3px;' border='0' cellpadding='0' cellspacing='0'>" 
+         +     "<tr>"
+         +        "<td class='bold'><div align='left' class='light'>&nbsp;" + title + "</div></td>"
+         +     "</tr>"
+         +  "</table>";
+   if(!nodeId.equals("")) { // a node has been selected 
+      sSelect +=
+            "<table width='190' height='18' border='0' cellpadding='0' cellspacing='0'>" 
+         +     "<tr>"
+         +        "<td class='light'>&nbsp;" + cloud.getNode(nodeId).getStringValue(field) + "</td>"
+         +     "</tr>"
+         +  "</table>";
+   } else {
+      sSelect += 
+            "<select name='menu1' style='width:180px;' onChange=\"MM_jumpMenu('parent',this,0)\">"
+         +     "<option value='" + url + "'>Selecteer</option>";
+      int pPos = url.indexOf(param);
+      if(pPos!=-1) {
+         int ampPos = url.indexOf("&",pPos);
+         if(ampPos==-1) {
+            url = url.substring(0,pPos);
+         } else {
+            url = url.substring(0,pPos) + url.substring(ampPos);
+         }
+      } else {
+         log.error("Url " + url + " does not contain param " + param );
+      }
+      if (related!=null){
+	      for(int n=0; n<related.size(); n++) {
+   	      String name = related.getNode(n).getStringValue(destination + "." + field);
+      	  String number = related.getNode(n).getStringValue(destination + ".number");
+         	sSelect +=  "<option value='" + url + "&" + param + "=" + number + "'>" + name + "</option>";
+	      }
+      }
+      sSelect += 
+   	      "</select>"
+   	   +  "<br/>";
+   } 
+   return sSelect;
+}
+
+%>
 <%@include file="../whiteline.jsp" %>
 <table cellpadding="0" cellspacing="0" border="0" style="width:190px;" align="center">
 <tr>
