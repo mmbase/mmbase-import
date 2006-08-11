@@ -125,7 +125,7 @@
             <mm:field name="number" jspvar="problemtypeId" vartype="String">
             <tr style="vertical-align:top;">
               <th class="listHeader"><img src="<mm:treefile page="/assessment/gfx/plus.gif" objectlist="$includePath" 
-                         referids="$referids"/>" border="0" title="show goal" alt="show goal" 
+                         referids="$referids"/>" border="0" title="show problems" alt="show problems" 
                          onClick="toggleAll(<%= problemtypeId %>,'<%= problemtypeId %><%= getProblemsByType(cloud, problemtypeId, thisUser) %>');"
                          id="toggle_image<%= problemtypeId %>"/></th>
               <th class="listHeader"><mm:field name="key"/></th>
@@ -229,8 +229,15 @@
           </tr>
         </table></div>
         <br/>
+        <%@include file="includes/getlb.jsp" %>
         <form name="closelessonform" action="<mm:treefile page="/assessment/closelesson.jsp" objectlist="$includePath" 
                referids="$referids"/>" method="post">
+          <mm:node number="<%= backtolb %>" notfound="skip">
+            <input type="submit" class="formbutton" value="back to lesson"
+                onclick="closelessonform.action='<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$referids">
+                                                   <mm:param name="learnobject"><%= backtolb %></mm:param>
+                                                 </mm:treefile>'">
+          </mm:node>
           <input type="submit" class="formbutton" value="close lesson and send to coach for feedback">
         </form>
       </div>
