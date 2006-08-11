@@ -76,29 +76,31 @@
                 <mm:node number="<%= lessonId %>"><mm:field name="name"/></mm:node> by 
                 <mm:node number="<%= ownerId %>"><mm:field name="firstname"/> <mm:field name="lastname"/></mm:node>
               </b></td>
-              <td style="text-align:right">
-                <form name="backform" action="<mm:treefile page="/assessment/index.jsp" objectlist="$includePath"
-                       referids="$referids"/>" method="post">
-                  <input type="submit" class="formbutton" value="back">
-                </form>
-              </td>
+              <td></td>
             </tr>
-            <mm:field name="status" jspvar="dummy" vartype="String" write="false">
-              <% if ("-1".equals(dummy)) { %>
-                   <tr>
-                     <td colspan="2">
-                       <mm:relatednodes type="people" max="1">
-                         <div class="grayBar" style="width:100%;">
-                           Feedback by <mm:field name="firstname"/> <mm:field name="lastname"/>
-                         </div>
-                       </mm:relatednodes>
-                       <mm:field name="text"/>
-                     </td>
-                   </tr>
-              <% } %>
-            </mm:field>
             <%@ include file="includes/feedbackgoal.jsp" %>
             <%@ include file="includes/feedbacklesson.jsp" %>
+            <mm:field name="status" jspvar="dummy" vartype="String" write="false">
+            <% if ("0".equals(dummy)) { %>
+                 <tr>
+                   <td colspan="2">
+                     <div class="grayBar" style="width:100%;">
+                       Feedback
+                     </div>
+                     <br/>
+                     <form name="feedbackform" action="<mm:treefile page="/assessment/savefeedback.jsp"
+                          objectlist="$includePath" referids="$referids"/>" method="post">
+                       <input type="hidden" name="step" value="save">
+                       <input type="hidden" name="feedback_n" value="<mm:write referid="feedback_n"/>">
+                       <textarea name="feedbacktext" class="popFormInput" cols="50" rows="5"></textarea>
+                       <br/><br/>
+                       <input type="submit" class="formbutton" value="save">
+                       <input type="submit" class="formbutton" value="cancel" onClick="feedbackform.step.value='cancel'">
+                     </form>
+                   </td>
+                 </tr>
+            <% } %>
+            </mm:field>
           </table>
         </mm:node>
       </div>
