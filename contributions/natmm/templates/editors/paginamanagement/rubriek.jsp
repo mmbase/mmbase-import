@@ -103,10 +103,6 @@ Rubriek:<b>
     <tr><td class="fieldname">Naam - frans</td><td><html:text property="naam_fra" size='40' maxlength='40' /></td></tr>
     <tr><td class="fieldname">Naam - engels</td><td><html:text property="naam_eng" size='40' maxlength='40' /></td></tr>
     <tr><td class="fieldname">Naam - duits</td><td><html:text property="naam_de" size='40' maxlength='40' /></td></tr>
---%>
-    <tr><td class="fieldname">Url</td><td><html:text property="url" maxlength='100' />
-    <span class="notvalid"><html:errors bundle="LEOCMS" property="url" /></span></td></tr>
-<%--
 <logic:equal name="RubriekForm" property="level" value="1">
 </logic:equal>
     <tr><td class="fieldname">Beschikbare talen</td><td><html:checkbox property="fra_active" styleClass="check"/>Frans *</br><html:checkbox property="eng_active" styleClass="check"/>Engels *</br><html:checkbox property="de_active" styleClass="check"/>Duits *</br></td></tr>
@@ -155,12 +151,19 @@ Rubriek:<b>
    </tr>
    <tr><td class="fieldname">Rubriek is zichtbaar</td>
        <td>
-        <html:select property="isVisible">
+        <html:select property="is_visible">
           <html:option value="1">ja</html:option>
           <html:option value="0">nee</html:option>
         </html:select>
        </td>
     </tr>
+   <logic:equal name="RubriekForm" property="level" value="1">
+        <tr><td class="fieldname">Url (for Google-sitemap)</td><td><html:text property="url" maxlength='100' />
+            <span class="notvalid"><html:errors bundle="LEOCMS" property="url" /></span></td></tr>
+   </logic:equal>
+   <logic:notEqual name="RubriekForm" property="level" value="1">
+       <html:hidden property="url" value='' />
+   </logic:notEqual>
    <tr><td class="fieldname">Template subdir (only for developers)</td><td><html:text property="url_live" maxlength='100' /></td></tr>
 </table>
 <table class="formcontent">
