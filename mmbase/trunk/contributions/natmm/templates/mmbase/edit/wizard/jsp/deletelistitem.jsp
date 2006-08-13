@@ -1,6 +1,7 @@
 .<%@ include file="settings.jsp"
 %><mm:locale language="<%=ewconfig.language%>">
 <mm:cloud name="mmbase" method="http" jspvar="cloud"
+><mm:log jspvar="log"
 ><%@ page import="org.mmbase.bridge.*"
 %><%@ page import="org.w3c.dom.Node"
 %><%@ page import="org.mmbase.applications.editwizard.*"
@@ -10,28 +11,49 @@
      * deletelistitem.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: deletelistitem.jsp,v 1.1 2006-03-05 21:46:43 henk Exp $
+     * @version  $Id: deletelistitem.jsp,v 1.2 2006-08-13 21:07:47 henk Exp $
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
      */
 
     String wizard="";
+    Map attributes=null;
     Object con=ewconfig.subObjects.peek();
     if (con instanceof Config.SubConfig) {
         wizard=((Config.SubConfig)con).wizard;
+        attributes = ((Config.SubConfig)con).getAttributes();
     }
 
     Wizard wiz = new Wizard(request.getContextPath(), ewconfig.uriResolver, wizard, null, cloud);
     Node deleteaction = Utils.selectSingleNode(wiz.getSchema(), "/*/action[@type='delete']");
     if (deleteaction != null) {
+        String objectnumber = request.getParameter("objectnumber");
+        // check whether the relation should be deleted instead of the node, in case of newfromlist
+        if(attributes!=null && attributes.containsKey("startnodes") && attributes.containsKey("nodepath")) {
+          boolean isNewFromList = !"".equals(newFromListPath(cloud, (String) attributes.get("startnodes"), (String) attributes.get("nodepath")));
+          if(isNewFromList) {
+              String nodePath = (String) attributes.get("nodepath");
+              String splitNodepath[] = nodePath.split(",",0);
+              NodeList nl =
+                     cloud.getList(
+                        (String) attributes.get("startnodes"),
+                        nodePath,
+                        splitNodepath[1] + ".number",
+                        splitNodepath[2] + ".number = '" + objectnumber + "'", 
+                        null, null, null, true);
+              if(nl.size()==1) {
+                objectnumber = nl.getNode(0).getStringValue(splitNodepath[1] + ".number");
+              }
+           }
+        }
         // Ok. let's delete this object.
-        org.mmbase.bridge.Node obj = cloud.getNode(request.getParameter("objectnumber"));
+        org.mmbase.bridge.Node obj = cloud.getNode(objectnumber);
         obj.delete(true);
         response.sendRedirect(response.encodeRedirectURL("list.jsp?proceed=true&sessionkey=" + sessionKey));
     } else {
         // No delete action defined in the wizard schema. We cannot delete.
-        out.println("No delete action is defined in the wizard schema: '"+ wizard + "'. <br />You should place &lt;action type=\"delete\" /> in your schema so that delete actions will be allowed.");
+        log.error("No delete action is defined in the wizard schema: '"+ wizard + "'. <br />You should place &lt;action type=\"delete\" /> in your schema so that delete actions will be allowed.");
 
     }
 %>
-</mm:cloud></mm:locale>
+</mm:log></mm:cloud></mm:locale>
