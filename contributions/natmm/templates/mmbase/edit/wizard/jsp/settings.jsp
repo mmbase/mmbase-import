@@ -3,12 +3,26 @@
 %><%@page import="java.io.*,java.util.*, org.mmbase.bridge.Cloud, org.mmbase.util.logging.Logger"
 %><%@page import="org.mmbase.util.xml.URIResolver,org.mmbase.applications.editwizard.*"
 %><%@page import="org.mmbase.applications.editwizard.Config"
+%><%!
+public String newFromListPath(Cloud cloud, String startNodes, String nodePath) {
+  String newFromListPath = null;
+  if (startNodes != null && nodePath != null) {
+    String splitNodepath[] = nodePath.split(",",0);
+    if (!"".equals(startNodes) && splitNodepath.length == 3) {
+      if(cloud.hasRelationManager(splitNodepath[1])) {
+         newFromListPath = startNodes + "," + splitNodepath[1] + "," + splitNodepath[2];
+      }
+    }
+  }
+  return newFromListPath;
+}
+
 %><%
 /**
  * settings.jsp
  *
  * @since    MMBase-1.6
- * @version  $Id: settings.jsp,v 1.1 2006-03-05 21:46:43 henk Exp $
+ * @version  $Id: settings.jsp,v 1.2 2006-08-13 21:07:47 henk Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen

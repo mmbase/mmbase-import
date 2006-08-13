@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.1 2006-03-05 21:46:43 henk Exp $
+     * @version  $Id: list.jsp,v 1.2 2006-08-13 21:07:47 henk Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -300,16 +300,11 @@ params.put("sessionid",  ewconfig.sessionId);
 params.put("deletable",  deletable+"");
 
 // hh: added newfromlist functionality
-if (listConfig.startNodes != null && listConfig.nodePath != null) {
-   String splitNodepath[] = listConfig.nodePath.split(",",0);
-   if (!"".equals(listConfig.startNodes) && splitNodepath.length == 3) {
-      if(cloud.hasRelationManager(splitNodepath[1])) {
-         String sNewfromlist = listConfig.startNodes + "," + splitNodepath[1] + "," + splitNodepath[2];
-         params.put("newfromlist", sNewfromlist);
-      }
-   }
+String sNewFromList = newFromListPath(cloud, listConfig.startNodes, listConfig.nodePath);
+if(sNewFromList!=null) {
+  params.put("newfromlist", sNewFromList);
 }
-    
+
 params.put("creatable",  creatable+"");
 params.put("cloud",  cloud);
 params.put("popupid",  popupId);
