@@ -6,7 +6,7 @@
     @since  MMBase-1.6
     @author Pierre van Rooden
     @author Nico Klasens
-    @version $Id: prompts.xsl,v 1.1 2006-07-11 19:39:35 henk Exp $
+    @version $Id: prompts.xsl,v 1.2 2006-08-13 21:07:47 henk Exp $
 
     prompts used in this editwizard.
     Override these prompts to change the view in your own versions.
@@ -122,7 +122,7 @@
   <!-- delete button prompts and tooltips (for objects) -->
   <xsl:variable name="tooltip_delete">Delete this item</xsl:variable>
   <xsl:template name="prompt_delete">
-    <img src="{$mediadir}remove.gif" alt="{$tooltip_delete}" />
+    <img src="{$mediadir}delete.gif" alt="{$tooltip_delete}" />
   </xsl:template>
   <xsl:template name="prompt_delete_confirmation">Are you sure you want to delete this item?</xsl:template>
 

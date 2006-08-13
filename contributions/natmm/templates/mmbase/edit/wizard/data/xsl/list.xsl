@@ -7,7 +7,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: list.xsl,v 1.1 2006-03-05 21:46:43 henk Exp $
+    @version $Id: list.xsl,v 1.2 2006-08-13 21:07:47 henk Exp $
     @version added newfromlist functionality
   -->
 
@@ -301,13 +301,22 @@
       <xsl:if test="$deletable=&apos;true&apos;">
         <td class="deletebutton">
           <xsl:if test="@maydelete=&apos;true&apos;">
-            <a
-              href="{$deletepage}&amp;wizard={$wizard}&amp;objectnumber={@number}"
-              title="{$deletedescription}"
-              onmousedown="cancelClick=true;"
-              onclick="return doDelete(&apos;{$deleteprompt}&apos;);">
-              <xsl:call-template name="prompt_delete" />
-            </a>
+            <xsl:if test="$newfromlist=&apos;-1&apos;">
+              <a
+                href="{$deletepage}&amp;wizard={$wizard}&amp;objectnumber={@number}"
+                title="{$deletedescription}"
+                onmousedown="cancelClick=true;"
+                onclick="return doDelete(&apos;{$deleteprompt}&apos;);">
+                <xsl:call-template name="prompt_delete" />
+              </a>
+            </xsl:if>
+            <xsl:if test="$newfromlist!=&apos;-1&apos;">
+              <a
+                href="{$deletepage}&amp;wizard={$wizard}&amp;objectnumber={@number}"
+                title="Remove this item from the list. Removed items are still present in MMBase.">
+                <xsl:call-template name="prompt_remove" />
+              </a>
+            </xsl:if>
           </xsl:if>
         </td>
       </xsl:if>
