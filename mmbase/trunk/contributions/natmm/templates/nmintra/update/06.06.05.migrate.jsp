@@ -360,6 +360,33 @@
       <mm:deletenode element="gebruikt" />
     </mm:related>
 	</mm:listnodes>
+  <mm:list path="pagina,gebruikt,paginatemplate,related,editwizards" constraints="pagina.titel = 'Veelgestelde vragen over ICT'">
+    <mm:deletenode element="gebruikt" />
+    <mm:createnode type="paginatemplate" id="kb_cat_pt">
+      <mm:setfield name="naam">kennisbasis</mm:setfield>
+      <mm:setfield name="omschrijving">veelgestelde vragen, pagina moet ook link naar kbase bevatten</mm:setfield>
+      <mm:setfield name="url">iframe.jsp</mm:setfield>
+    </mm:createnode>
+    <mm:createnode type="editwizards" id="kb_cat_ew">
+      <mm:setfield name="name">kennisbasis vraag</mm:setfield>
+      <mm:setfield name="wizard">config/kb_question/kb_question</mm:setfield>
+      <mm:setfield name="type">list</mm:setfield>
+      <mm:setfield name="nodepath">pagina,posrel,kb_question</mm:setfield>
+      <mm:setfield name="fields">kb_question.question</mm:setfield>
+      <mm:setfield name="searchfields">kb_question.question</mm:setfield>
+      <mm:setfield name="orderby">kb_question.question</mm:setfield>
+      <mm:setfield name="search">yes</mm:setfield>
+      <mm:setfield name="startnodes"></mm:setfield>
+    </mm:createnode>
+    <mm:node element="pagina" id="kb_page" />
+    <mm:node element="editwizards" id="iframe_ew" />
+    <mm:createrelation source="kb_page" destination="kb_cat_pt" role="gebruikt" />
+    <mm:createrelation source="kb_cat_pt" destination="iframe_ew" role="related" />
+    <mm:createrelation source="kb_cat_pt" destination="kb_cat_ew" role="related" />
+    <mm:listnodes type="kb_question" id="kb_q" >
+      <mm:createrelation source="kb_page" destination="kb_q" role="posrel" />
+    </mm:listnodes>
+  </mm:list>
 	99. Deleting unused editwizards<br/>
 	<%
 	String [] ewToDelete = {

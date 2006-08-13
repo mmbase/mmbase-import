@@ -22,7 +22,11 @@
 		<mm:setfield name="dynamicmenu">0</mm:setfield>    
 		<mm:setfield name="contenttemplate">0</mm:setfield>   
 	</mm:listnodes>
-   Done.
+  Making pages deletable<br/>
+  <mm:listnodes type="pagina">
+  	<mm:setfield name="verwijderbaar">1</mm:setfield>    
+	</mm:listnodes>
+  Done.
 	</body>
   </html>
 </mm:log>
