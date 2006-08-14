@@ -49,6 +49,12 @@
    </mm:treeinclude>
 </mm:node>
 
+
+<mm:node number="$learnobject" jspvar="nodeLearnObject">
+   <%@include file="../includes/component_link.jsp"%>
+</mm:node>
+
+
 </div>
 
 </body>
