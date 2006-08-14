@@ -6,6 +6,18 @@
 <%@include file="/shared/setImports.jsp" %>
 
 <mm:import externid="feedback_n">-1</mm:import>
+
+<mm:node number="$feedback_n" notfound="skip">
+  <mm:field name="status" write="false">
+    <mm:compare value="-1">
+      <mm:import id="page"><mm:treefile page="/assessment/showfeedback.jsp" objectlist="$includePath" referids="$referids">
+                             <mm:param name="feedback_n"><mm:wirte referid="feedback_n"/></mm:param>
+                           </mm:treefile></mm:import>
+      <mm:redirect page="$page"/>
+    </mm:compare>
+  </mm:field>
+</mm:node>
+
 <% 
    String classrelId = "-1";
    String ownerId = "-1";
