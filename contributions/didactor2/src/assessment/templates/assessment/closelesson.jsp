@@ -14,6 +14,26 @@
       <mm:createrelation role="related" source="this_classrel" destination="this_feedback"/>
     </mm:maycreate>
 
+    <mm:node number="$user">
+      <mm:import id="from"><mm:field name="email"/></mm:import>
+    </mm:node>
+    <mm:import id="subject">Please give me a feedback</mm:import>
+    <mm:import id="body">Please give me a feedback - 
+      <%= request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() %>/assessment/givefeedback.jsp?feedback_n=<mm:write referid="this_feedback"/>
+    </mm:import>
+    <mm:node number="assessment.education" notfound="skip">
+      <mm:related path="classrel,people">
+        <mm:node element="people">
+
+          <mm:remove referid="to" />
+          <mm:import id="to"><mm:field name="email"/></mm:import>
+
+          <mm:related path="related,roles" constraints="roles.name='teacher'">
+            <%@ include file="includes/sendmail.jsp" %>
+          </mm:related>
+        </mm:node>
+      </mm:related>
+    </mm:node>
   </mm:node>
   <mm:redirect page="/assessment/index.jsp" referids="$referids"/>
 

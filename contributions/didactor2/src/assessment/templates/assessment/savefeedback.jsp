@@ -21,7 +21,20 @@
     <mm:setfield name="status">-1</mm:setfield>
     <mm:setfield name="text"><mm:write referid="feedbacktext"/></mm:setfield>
     <mm:createrelation role="related" source="feedback_n" destination="user"/>
-    <%// mail to student%>
+
+    <mm:node number="$user">
+      <mm:import id="from"><mm:field name="email"/></mm:import>
+    </mm:node>
+    <mm:relatednodes type="classrel">
+      <mm:field name="number" jspvar="this_classrel" vartype="String" write="false">
+        <mm:list path="people,classrel,learnblocks" constraints="<%= "classrel.number=" + this_classrel %>">
+          <mm:import id="to"><mm:field name="people.email"/></mm:import>
+        </mm:list>
+      </mm:field>
+    </mm:relatednodes>
+    <mm:import id="subject">My feedback</mm:import>
+    <mm:import id="body">Feedback is: <mm:write referid="feedbacktext"/></mm:import>
+    <%@ include file="includes/sendmail.jsp" %>
   </mm:node>
 
   <mm:redirect page="/assessment/index.jsp" referids="$referids"/>

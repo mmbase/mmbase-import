@@ -65,8 +65,7 @@
     <%-- right section --%>
     <div class="mainContent">
       <div class="contentBody">
-        Goals
-        <br/>
+        <p><b>Goals</b></p>
         <mm:node number="$user">
           <mm:relatednodes type="goals" path="posrel,goals" orderby="posrel.pos">
             <mm:first><table></mm:first>
@@ -87,7 +86,7 @@
                          referids="$referids"/>" border="0" title="show goal" alt="show goal" 
                          onClick="toggle(<%=goal_number %>);" id="toggle_image<%=goal_number %>"/>
                   </td>
-                  <td>
+                  <td style="FONT-SIZE : 0.8em">
                     <mm:field name="name" jspvar="dummy" vartype="String" write="false">
                       <%= ( "".equals(dummy) ? "&nbsp;" : dummy )%>
                     </mm:field>
@@ -123,7 +122,7 @@
           <% boolean lessonShowed = false; %>
           <mm:listnodes type="problemtypes" orderby="pos">
             <mm:field name="number" jspvar="problemtypeId" vartype="String">
-            <tr style="vertical-align:top;">
+            <tr style="vertical-align:middle;">
               <th class="listHeader"><img src="<mm:treefile page="/assessment/gfx/plus.gif" objectlist="$includePath" 
                          referids="$referids"/>" border="0" title="show problems" alt="show problems" 
                          onClick="toggleAll(<%= problemtypeId %>,'<%= problemtypeId %><%= getProblemsByType(cloud, problemtypeId, thisUser) %>');"
@@ -148,7 +147,7 @@
                 constraints="people.number=$user" fields="problems.number" distinct="true">
               <mm:field name="problems.number" jspvar="problem_number" vartype="String" write="false">
               <tr id="toggle_div<%=problem_number %>" style="display:none; vertical-align:top;">
-                <td class="listItem">
+                <td class="listItem"><nobr>
                   <a href="<mm:treefile page="/assessment/editproblem.jsp" objectlist="$includePath" referids="$referids">
                              <mm:param name="problem_n"><%= problem_number %></mm:param>
                            </mm:treefile>"
@@ -159,7 +158,7 @@
                            </mm:treefile>"
                     ><img src="<mm:treefile page="/assessment/gfx/remove.gif" objectlist="$includePath" 
                           referids="$referids"/>" border="0" title="delete problem" alt="delete problem" /></a>
-                </td>
+                </nobr></td>
                 <%@ include file="includes/matrixcell.jsp" %>
               </tr>
               </mm:field>

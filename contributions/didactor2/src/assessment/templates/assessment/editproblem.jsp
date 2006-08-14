@@ -8,12 +8,21 @@
 <%@include file="includes/getlesson.jsp" %>
 <%@include file="includes/variables.jsp" %>
 <%@include file="includes/functions.jsp" %>
+<%@include file="/education/tests/definitions.jsp" %>
+
+<%-- find users copybook --%>
+<mm:import id="class" reset="true">null</mm:import>
+<mm:import id="education" reset="true"><mm:node number="assessment.education"><mm:field name="number"/></mm:node></mm:import>
+<mm:node number="$user">
+  <%@include file="/education/tests/find_copybook.jsp"%>
+</mm:node>
 
 <mm:import externid="step">-1</mm:import>
 <mm:import externid="problem_n">-1</mm:import>
 <mm:import externid="problemname"/>
 <mm:import externid="problemtype">-1</mm:import>
 <mm:import externid="problemrating"/>
+<mm:import externid="testpos">1</mm:import>
 
 <% int problemrating = -1; // not rated %>
 
@@ -49,7 +58,21 @@
     </mm:related>
     <mm:createrelation role="related" source="problem_n" destination="problemtype"/>
   </mm:node>
-  <% // TODO: saving q and a %>
+  <mm:node number="problemtype">
+    <mm:import id="testpos" reset="true"><mm:field name="pos"/></mm:import>
+  </mm:node>
+  <mm:node number="<%= currentLesson %>" notfound="skip">
+    <%@include file="includes/getmadetest.jsp" %>
+    <mm:related path="posrel1,tests,posrel2,questions" constraints="posrel1.pos=$testpos">
+      <mm:node element="questions">
+        <mm:import id="page" reset="true">/education/<mm:nodeinfo type="type"/>/rate<mm:nodeinfo type="type"/>.jsp</mm:import>
+        <mm:treeinclude page="$page" objectlist="$includePath" referids="$referids">
+          <mm:param name="question"><mm:field name="number"/></mm:param>
+          <mm:param name="madetest"><mm:write referid="madetest"/></mm:param>
+        </mm:treeinclude>
+      </mm:node>
+    </mm:related>
+  </mm:node>
   
   
   <mm:redirect page="/assessment/index.jsp" referids="$referids"/>
@@ -95,27 +118,33 @@
 %>
       </mm:field>
     </mm:related>
-    <mm:relatednodes type="problemtypes">
-      <mm:import id="problemtype" reset="true"><mm:field name="number"/></mm:import>
-    </mm:relatednodes>
+    <mm:compare referid="problemtype" value="-1">
+      <mm:relatednodes type="problemtypes">
+        <mm:import id="problemtype" reset="true"><mm:field name="number"/></mm:import>
+      </mm:relatednodes>
+      <mm:node number="$problemtype" notfound="skip">
+        <mm:import id="testpos" reset="true"><mm:field name="pos"/></mm:import>
+      </mm:node>
+    </mm:compare>
   </mm:node>
   
-  <form name="newproblemform" action="<mm:treefile page="/assessment/editproblem.jsp" objectlist="$includePath" 
+  <form name="questionform" action="<mm:treefile page="/assessment/editproblem.jsp" objectlist="$includePath" 
           referids="$referids"/>" method="post">
     <input type="hidden" name="step" value="save">
     <input type="hidden" name="problem_n" value="<mm:write referid="problem_n"/>">
-    <table class="font" width="90%">
+    <table class="font" width="70%">
       <tr>
         <td width="80">problem:</td>
-        <td><input name="problemname" class="popFormInput" type="text" size="50" maxlength="255" value="<mm:write referid="problemname"/>"></td>
+        <td align="right"><input name="problemname" class="popFormInput" type="text" size="50" maxlength="255" value="<mm:write referid="problemname"/>"></td>
       </tr>
       <tr>
         <td>Type</td>
-        <td>
-          <select name="problemtype">
+        <td align="right">
+          <select name="problemtype" onchange="questionform.step.value='next';questionform.submit();">
             <mm:listnodes type="problemtypes" orderby="pos">
               <mm:field name="number" jspvar="problemtypeId" vartype="String">
-                <option value="<%= problemtypeId %>"<mm:compare referid="problemtype" value="<%= problemtypeId %>"> selected</mm:compare>><mm:field name="key"/></option>
+                <option value="<%= problemtypeId %>"<mm:compare referid="problemtype" value="<%= problemtypeId %>"> selected</mm:compare>
+                        ><mm:field name="key"/></option>
               </mm:field>
             </mm:listnodes>
           </select>
@@ -123,7 +152,7 @@
       </tr>
       <tr>
         <td>How much trouble does it cause you?</td>
-        <td>
+        <td align="right">
           <select name="problemrating">
             <% for(int i=2;i<=10;i+=2) { %>
               <option value="<%= i %>"<% if (problemrating == i) {%> selected<% } %>><%= problemWeights[i] %></option>
@@ -131,9 +160,29 @@
           </select>
         </td>
       </tr>
+      <mm:node number="<%= currentLesson %>" notfound="skip">
+        <tr>
+          <td><b>Form</b></td><td></td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <%@include file="includes/getmadetest.jsp" %>
+            <mm:related path="posrel1,tests,posrel2,questions" constraints="posrel1.pos=$testpos">
+              <mm:node element="questions">
+                <mm:import id="page" reset="true">/education/<mm:nodeinfo type="type"/>/index.jsp</mm:import>
+                <mm:treeinclude page="$page" objectlist="$includePath" referids="$referids">
+                  <mm:param name="question"><mm:field name="number"/></mm:param>
+                  <mm:param name="testnumber"><mm:write referid="this_test"/></mm:param>
+                  <mm:param name="madetest"><mm:write referid="madetest"/></mm:param>
+                </mm:treeinclude>
+              </mm:node>
+            </mm:related>
+          </td>
+        </tr>
+      </mm:node>
     </table>
     <input type="submit" class="formbutton" value="save">
-    <input type="submit" class="formbutton" value="cancel" onClick="newproblemform.step.value='cancel'">
+    <input type="submit" class="formbutton" value="cancel" onClick="questionform.step.value='cancel'">
   </form>
 
 
