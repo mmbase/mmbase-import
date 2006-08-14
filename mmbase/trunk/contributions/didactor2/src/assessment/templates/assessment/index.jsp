@@ -127,7 +127,11 @@
                          referids="$referids"/>" border="0" title="show problems" alt="show problems" 
                          onClick="toggleAll(<%= problemtypeId %>,'<%= problemtypeId %><%= getProblemsByType(cloud, problemtypeId, thisUser) %>');"
                          id="toggle_image<%= problemtypeId %>"/></th>
-              <th class="listHeader"><mm:field name="key"/></th>
+              <th class="listHeader">
+                <mm:field name="key" jspvar="dummy" vartype="String" write="false">
+                  <di:translate key="<%= "assessment." + dummy %>"/>
+                </mm:field>
+              </th>
               <% if (!lessonShowed) {
                    lessonShowed = true;
               %>
