@@ -10,7 +10,7 @@ public class DateUtil{
   private static final Logger log = Logging.getLoggerInstance(DateUtil.class);
 
   public String getObjectNumber(Cloud cloud, Date date) {
-  // returns the object number of the node that is created on date
+  // returns the object number of the daymarker of the day this object is created
   int today_days = (int)(date.getTime() / (60 * 60 * 24)) / 1000;
   NodeList nl = cloud.getNodeManager("daymarks").getList("daymarks.daycount = "
       + today_days,"number", "DOWN");
@@ -22,4 +22,9 @@ public class DateUtil{
 
   }
 
+  public long getObjectAge(Node nodeObject) {
+    // returns the age of the object in milliseconds
+    String sAge = nodeObject.getFunctionValue("age", null).toString();
+    return (new Date()).getTime() - (new Integer(sAge)).longValue() * 86400000;
+  }
 }
