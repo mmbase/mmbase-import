@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.159 2006-08-03 12:45:30 michiel Exp $
+    @version $Id: wizard.xsl,v 1.160 2006-08-14 07:54:35 pierre Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -672,6 +672,9 @@
       <xsl:when test="@maywrite!=&apos;false&apos;">
         <span>
           <textarea name="{@fieldname}" id="{@fieldname}" class="input" wrap="soft">
+            <xsl:if test="@ftype = &apos;html&apos;">
+              <xsl:attribute name="class">htmlarea</xsl:attribute>
+            </xsl:if>
             <xsl:if test="not(@cols)">
               <xsl:attribute name="cols"><xsl:value-of select="$default-cols" /></xsl:attribute>
             </xsl:if>
@@ -961,7 +964,7 @@
               </xsl:if>
             </input>
             <xsl:if test="contains(upload/path, '/') or contains(upload/path, '\')">
-	            <img src="{upload/path}" hspace="0" vspace="0" border="0" width="128" height="128"/>
+              <img src="{upload/path}" hspace="0" vspace="0" border="0" width="128" height="128"/>
             <br/>
             </xsl:if>
             <span>
@@ -1106,15 +1109,15 @@
     <xsl:param name="val" select="."/>
     <input type="text" name="{../@fieldname}" value="{$val}" class="input">
       <xsl:if test="../@dtmaxlength">
-      	<xsl:attribute name="maxlength"><xsl:value-of select="../@dtmaxlength" /></xsl:attribute>
-      	<xsl:choose>
-      		<xsl:when test="../@dtmaxlength &lt; 80">
-		      	<xsl:attribute name="size"><xsl:value-of select="../@dtmaxlength" /></xsl:attribute>      		
-      		</xsl:when>
-      		<xsl:otherwise>
-		      	<xsl:attribute name="size">80</xsl:attribute>
-      		</xsl:otherwise>
-      	</xsl:choose>
+        <xsl:attribute name="maxlength"><xsl:value-of select="../@dtmaxlength" /></xsl:attribute>
+        <xsl:choose>
+          <xsl:when test="../@dtmaxlength &lt; 80">
+            <xsl:attribute name="size"><xsl:value-of select="../@dtmaxlength" /></xsl:attribute>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:attribute name="size">80</xsl:attribute>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:if>
       <xsl:apply-templates select="../@*"/>
     </input>
@@ -1395,14 +1398,14 @@
           <!-- handle field exists then it might be a new image -->
           <xsl:when test="field[@name = 'handle']">
             <xsl:if test="field[@name = 'handle' and @size != '0']">
-	          <!-- the image -->
-	          <img src="{node:function($cloud, string(field/@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}"/>
-            </xsl:if>
-       	  </xsl:when>
-       	  <xsl:otherwise>
             <!-- the image -->
             <img src="{node:function($cloud, string(field/@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}"/>
-       	  </xsl:otherwise>
+            </xsl:if>
+          </xsl:when>
+          <xsl:otherwise>
+            <!-- the image -->
+            <img src="{node:function($cloud, string(field/@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}"/>
+          </xsl:otherwise>
         </xsl:choose>
       </td>
       <td colspan="2">

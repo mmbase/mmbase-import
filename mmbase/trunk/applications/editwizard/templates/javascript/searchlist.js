@@ -24,13 +24,13 @@ function doclick_search(el) {
     var cb = document.getElementById("cb_" + el.getAttribute("number"));
     cb.checked = ! cb.checked;
     if(cb.checked) {
-       if (el.className == "odd") { 
+       if (el.className == "odd") {
           el.className = "selected-odd";
        } else {
           el.className = "selected-even";
        }
     } else {
-       if (el.className == "selected-odd") { 
+       if (el.className == "selected-odd") {
           el.className = "odd";
        } else {
           el.className = "even";
@@ -66,7 +66,7 @@ function buildSelectedList() {
 function browseTo(start) {
     selected = buildSelectedList();
     var href = listpage;
-     href += "&popupid=search&template=xsl/searchlist.xsl&start="+start+"&selected="+selected+"&cmd="+cmd;
+     href += "&popupid=search&listtype=search&start="+start+"&selected="+selected+"&cmd="+cmd;
 
     document.location.replace(href);
     return false;
@@ -81,9 +81,9 @@ function doOnloadSearch() {
 }
 
 function addItem(selected) {
-	alert("Add the searchwindow.js or searchiframe.js to the searchlist.xsl");
+        alert("Add the searchwindow.js or searchiframe.js to the searchlist xsl");
 }
 
 function closeSearch() {
-	alert("Add the searchwindow.js or searchiframe.js to the searchlist.xsl");
+        alert("Add the searchwindow.js or searchiframe.js to the searchlist xsl");
 }

@@ -20,6 +20,7 @@ import org.mmbase.util.ResourceLoader;
 
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.xml.UtilReader;
 import org.mmbase.util.Encode;
 
 /**
@@ -29,7 +30,7 @@ import org.mmbase.util.Encode;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.61 2006-07-24 08:30:05 pierre Exp $
+ * @version $Id: Config.java,v 1.62 2006-08-14 07:54:35 pierre Exp $
  */
 
 public class Config implements java.io.Serializable {
@@ -46,16 +47,63 @@ public class Config implements java.io.Serializable {
     // protocol string to test referrer pages
     private final static String PROTOCOL = "http://";
 
+    // default values
+
+    public static final String CONFIG_FILE = "editwizard.xml";
+
+    public static String wizardStyleSheet = "xsl/wizard.xsl";
+    public static String listStyleSheet = "xsl/list.xsl";
+    public static String searchlistStyleSheet = "xsl/searchlist.xsl";
+    public static int maxUploadSize = DEFAULT_MAX_UPLOAD_SIZE;
+
+    /**
+     * @since MMBase-1.8.1
+     */
+    private static final UtilReader reader = new UtilReader(CONFIG_FILE,
+                                                     new Runnable() {
+                                                         public void run() {
+                                                             readConfiguration(reader.getProperties());
+                                                         }
+                                                     });
+    static {
+        readConfiguration(reader.getProperties());
+    }
+
+    synchronized static void readConfiguration(Map configuration) {
+        String tmp = (String) configuration.get("wizardStyleSheet");
+        if (tmp != null && !tmp.equals("")) {
+            wizardStyleSheet = tmp;
+            log.service("Editwizard default wizard style sheet "    + wizardStyleSheet);
+        }
+        tmp = (String) configuration.get("listStyleSheet");
+        if (tmp != null && !tmp.equals("")) {
+            listStyleSheet = tmp;
+            log.service("Editwizard default list style sheet "    + listStyleSheet);
+        }
+        tmp = (String) configuration.get("searchlistStyleSheet");
+        if (tmp != null && !tmp.equals("")) {
+            searchlistStyleSheet = tmp;
+            log.service("Editwizard default searchlist style sheet "    + searchlistStyleSheet);
+        }
+        tmp = (String) configuration.get("defaultMaxUploadSize");
+        if (tmp != null && !tmp.equals("")) {
+            try {
+                maxUploadSize = Integer.parseInt(tmp);
+            } catch (Exception e) {}
+            log.service("Editwizard default max upload size "    + maxUploadSize);
+        }
+
+    }
+
     public String sessionKey = null;
     public URIResolver uriResolver = null;
-    public int maxupload = DEFAULT_MAX_UPLOAD_SIZE;
+    public int maxupload = Config.maxUploadSize;
     public Stack subObjects = new Stack(); // stores the Lists and Wizards.
     public String sessionId;   // necessary if client doesn't accept cookies to store sessionid (this is appended to urls)
     public String backPage;
     public String templates;
     public String language;
     public String timezone;
-
 
     /**
      * Contains all auxiliary attributes to the first page. Using this map, they can be found in
@@ -64,6 +112,7 @@ public class Config implements java.io.Serializable {
      * @since MMBase-1.7
      */
     protected Map attributes;
+
 
     //   public String context; (contained in attributes now)
 
@@ -402,7 +451,11 @@ public class Config implements java.io.Serializable {
 
             // only perform the following is there was no prior parsing
             if (!parsed) {
-                String templatePath = configurator.getParam("template", "xsl/list.xsl");
+                String defaultTemplate = Config.listStyleSheet;
+                if ("search".equals(configurator.getParam("listtype"))) {
+                     defaultTemplate =Config.searchlistStyleSheet;
+                }
+                String templatePath = configurator.getParam("template", defaultTemplate);
                 try {
                     template = configurator.resolveToURL(templatePath);
                 } catch (Exception e) {
