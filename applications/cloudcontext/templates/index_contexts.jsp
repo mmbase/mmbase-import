@@ -5,6 +5,12 @@
 
 <mm:import id="url">index_contexts.jsp</mm:import>
 
+<mm:import id="orderby"    externid="orderby_cn"    from="parameters,session">name</mm:import>
+<mm:import id="directions" externid="directions_cn" from="parameters,session">UP</mm:import>
+
+<mm:write session="orderby_cn"    referid="orderby" />
+<mm:write session="directions_cn" referid="directions" />
+
 <mm:import externid="offset">0</mm:import>
 <mm:cloud loginpage="login.jsp"  rank="$rank">
 <mm:import externid="context" vartype="list" />
@@ -31,17 +37,49 @@
       <%@include file="search.jsp" %>
       <tr>
         <mm:fieldlist nodetype="$nodetype"  fields="$fields">
-          <th><mm:fieldinfo type="guiname" /></th>
+          <th>
+            <a title="order" href='<mm:url referids="url,search,parameters,$parameters" ><mm:param name="orderby_cn"><mm:fieldinfo type="name" /></mm:param>
+              <mm:fieldinfo type="name">
+                <mm:compare referid2="orderby">
+                  <mm:write referid="directions">
+                    <mm:compare value="UP">
+                      <mm:param name="directions_cn">DOWN</mm:param>
+                    </mm:compare>
+                    <mm:compare value="DOWN">
+                      <mm:param name="directions_cn">UP</mm:param>
+                    </mm:compare>
+                  </mm:write>
+                </mm:compare>
+              </mm:fieldinfo>
+              <mm:fieldlist  nodetype="$nodetype" fields="$fields"><mm:fieldinfo type="reusesearchinput" /></mm:fieldlist>
+            </mm:url>' ><mm:fieldinfo type="guiname" /></a>
+          </th>
         </mm:fieldlist>
+        <th>
+          <a title="order" href='<mm:url referids="url,search,parameters,$parameters"><mm:param name="orderby_cn">number</mm:param>
+            <mm:compare referid="orderby" value="number">
+              <mm:write referid="directions">
+                <mm:compare value="UP">
+                  <mm:param name="directions_cn">DOWN</mm:param>
+                </mm:compare>
+                <mm:compare value="DOWN">
+                  <mm:param name="directions_cn">UP</mm:param>
+                </mm:compare>
+              </mm:write>
+            </mm:compare>
+          </mm:url>'>
+          *</a>
         <th />
       </tr>
+      <mm:sortorder field="$orderby" direction="$directions" />
+
       <mm:listnodes id="currentcontext">
         <tr id="object<mm:field name="number" />" <mm:even>class="even"</mm:even> >
           <mm:fieldlist fields="$fields">
             <td><mm:fieldinfo type="guivalue" /></td>
           </mm:fieldlist>
           <td class="commands">
-            <a onclick="document.getElementById('object<mm:field name="number" />').className = 'active'; " 
+            <a onclick="document.getElementById('object<mm:field name="number" />').className = 'active'; "
                href="<mm:url referids="parameters,$parameters,currentcontext@context,url" />"><img src="<mm:url page="${location}images/mmbase-edit.gif" />" alt="<%=getPrompt(m,"update")%>" title="<%=getPrompt(m,"update")%>" /></a>
             <mm:maydelete>
               <mm:field id="curcontext"  name="name" write="false" />
