@@ -37,7 +37,7 @@
 </mm:present>
 
 <mm:node number="$learnobject" jspvar="flash">
-    <% 
+    <%
         int layout = flash.getIntValue("layout");
         int width = 770;
         int height= 440;
@@ -50,7 +50,7 @@
             if (layout == 2 || layout == 0) {
                 %><mm:field name="text" escape="none"/><%
                 if (layout == 2) {
-                    %></td><td><% 
+                    %></td><td><%
                 }
             }
         }
@@ -60,7 +60,7 @@
               <param name="movie" value="<mm:attachment/>">
               <param name="quality" value="high">
               <embed src="<mm:attachment/>" quality="high" pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash" type="application/x-shockwave-flash" width="<%= width %>" height="<%= height %>" name="flashpage" swLiveConnect="true">
-              </embed> 			  
+              </embed>
           </object>
   </mm:relatednodes>
     <%
@@ -77,11 +77,17 @@
             %><mm:field name="text" escape="none"/><%
         }
     %>
-  
+
 </mm:node>
+
+
+<mm:node number="$learnobject" jspvar="nodeLearnObject">
+   <%@include file="../includes/component_link.jsp"%>
+</mm:node>
+
 </div>
 </body>
 </html>
 </mm:cloud>
 </mm:content>
- 
+

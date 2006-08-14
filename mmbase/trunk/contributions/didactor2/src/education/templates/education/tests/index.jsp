@@ -28,17 +28,17 @@
       <mm:field id="madetestscore" name="score" write="false"/>
     </mm:relatednodes>
   </mm:relatednodescontainer>
-  <mm:listnodescontainer type="tests"> 
+  <mm:listnodescontainer type="tests">
     <mm:constraint operator="equal" field="number" referid="testNo" />
     <mm:listnodes>
-      <mm:first>  
+      <mm:first>
         <mm:node>
           <mm:field id="testIsAlwaysOnline" name="always_online" write="false" />
           <mm:field id="testStartDate" name="online_date" write="false" />
           <mm:field id="testEndDate" name="offline_date" write="false" />
-        </mm:node> 
-      </mm:first>   
-    </mm:listnodes>   
+        </mm:node>
+      </mm:first>
+    </mm:listnodes>
   </mm:listnodescontainer>
 
   <mm:present referid="testStartDate">
@@ -95,7 +95,7 @@
         </html>
     <% } %>
   </mm:present>
-    
+
   <mm:notpresent referid="testCantBeShowed">
     <mm:present referid="madetestNo">
       <html>
@@ -116,7 +116,7 @@
             <mm:compare referid="madetestscore" referid2="TESTSCORE_TBS">
               <di:translate key="education.alreadymade_tobescored" /><p/>
             </mm:compare>
-    
+
             <mm:compare referid="madetestscore" referid2="TESTSCORE_TBS" inverse="true">
               <%-- if madestestscore larger or equal than requiredscore --%>
               <mm:field id="requiredscore" name="requiredscore" write="false"/>
@@ -129,11 +129,11 @@
                   <di:translate key="education.alreadymade_fail" /><p/>
                 </mm:islessthan>
               </mm:islessthan>
-  
+
               <mm:compare referid="feedback" value="1">
                 <di:translate key="education.alreadymade" /> <p/>
               </mm:compare>
-    
+
               <table>
                 <tr>
                   <mm:compare referid="mayview" value="1">
@@ -147,7 +147,7 @@
                       </div>
                     </td>
                   </mm:compare>
-    
+
                   <mm:compare referid="maychange" value="1">
                     <td>
                       <div class="button1">
@@ -182,6 +182,11 @@
     </mm:treeinclude>
   </mm:present>
 </mm:notpresent>
+
+<mm:node number="$learnobject" jspvar="nodeLearnObject">
+   <%@include file="../includes/component_link.jsp"%>
+</mm:node>
+
 
 </mm:cloud>
 </mm:content>

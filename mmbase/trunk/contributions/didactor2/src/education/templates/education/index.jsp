@@ -546,6 +546,11 @@ catch(err){};
 
 <mm:present referid="frame">
    <script>
+      closeAll();
+      openContent('<mm:write referid="learnobjecttype"/>','<mm:write referid="education"/>');
+      openOnly('div<mm:write referid="learnobject"/>','img<mm:write referid="education"/>');
+
+
       <mm:write referid="frame" jspvar="sFrameURL" vartype="String">
          content.location.href='<%= sFrameURL.replaceAll("&amp;","&") %>';
       </mm:write>

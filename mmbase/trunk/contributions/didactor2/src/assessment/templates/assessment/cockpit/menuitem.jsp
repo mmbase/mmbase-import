@@ -10,12 +10,12 @@
 <mm:cloud method="delegate" jspvar="cloud">
 
    <mm:node number="component.assessment" notfound="skip">
-      <mm:present referid="education">
-         <div class="menuSeperator"> </div>
-         <div class="menuItem">
-            <a href='<mm:url referids="provider,education,class" page="../assessment/index.jsp"/>' class="menubar"><di:translate key="assessment.education_menu_item_assessment" /></a>
-         </div>
+      <div class="menuSeperator"> </div>
+      <div class="menuItem">
+         <a href='<mm:url referids="provider,education,class" page="../assessment/index.jsp"/>' class="menubar"><di:translate key="assessment.education_menu_item_assessment" /></a>
+      </div>
 
+      <mm:present referid="education">
          <div class="menuSeperator"> </div>
          <div class="menuItem">
             <a href="<mm:url referids="provider,education,class" page="<%= request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/education/index.jsp" %>">
