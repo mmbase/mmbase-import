@@ -11,7 +11,7 @@
   </mm:relatednodes>
   <% if (!".".equals(listCompLo)) { %>
       <%@ include file="getlesson.jsp" %>
-      <mm:node number="<%= currentLesson %>" notfound="skip">
+      <mm:node number="<%= lastClosedLesson %>" notfound="skip">
         <mm:tree type="learnobjects" role="posrel" searchdir="destination">
             <mm:field name="number" jspvar="dummy" vartype="String" write="false">
               <% if (listCompLo.indexOf("." + dummy + ".") != -1 ) { backtolb = dummy; } %>

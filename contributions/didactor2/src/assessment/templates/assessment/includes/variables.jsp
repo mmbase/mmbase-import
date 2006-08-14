@@ -1,5 +1,5 @@
 <%
-   String[] problemWeights = { "0", "1", "very much", "3", "much", "5", "much/little", "7", "little", "9", "nothing" };
+   String[] problemWeights = { "0", "1", "nothing", "3", "little", "5", "much/little", "7", "much", "9", "very much" };
    // todo - from di:translate
    String thisUser = "-1";
 %>

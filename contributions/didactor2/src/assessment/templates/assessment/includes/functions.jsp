@@ -29,4 +29,18 @@ public int getMaxPos(Cloud cloud, String start, String destination) {
    }
    return max;
 }
+
+public String getTestpath(Cloud cloud, String testId) {
+   StringBuffer sbObjects = new StringBuffer();
+   NodeList nlQuestions = cloud.getList(testId,
+                                        "tests,posrel,questions",
+                                        "questions.number",
+                                        null,
+                                        "posrel.pos",null,null,true);
+   for(int n=0; n<nlQuestions.size(); n++) {
+     if (n>0) { sbObjects.append(','); }
+     sbObjects.append(nlQuestions.getNode(n).getStringValue("questions.number"));
+   }
+   return sbObjects.toString();
+}
 %>
