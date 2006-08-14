@@ -1,4 +1,7 @@
-<% String currentLesson = "-1"; %>
+<% 
+   String currentLesson = "-1";
+   String lastClosedLesson = "-1";
+%>
 <mm:node number="assessment.education" notfound="skip">
   <mm:relatednodes type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos">
     <% boolean hasFeedback = false; %>
@@ -13,7 +16,10 @@
       </mm:related>
     </mm:relatedcontainer>
     <mm:field name="number" jspvar="dummy" vartype="String" write="false">
-      <% if(!hasFeedback && "-1".equals(currentLesson)) { currentLesson = dummy; } %>
+      <% 
+         if(!hasFeedback && "-1".equals(currentLesson)) { currentLesson = dummy; } 
+         if(hasFeedback) { lastClosedLesson = dummy; } 
+      %>
     </mm:field>
   </mm:relatednodes>
 </mm:node>

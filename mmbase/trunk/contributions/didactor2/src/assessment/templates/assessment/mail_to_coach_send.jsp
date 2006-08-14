@@ -28,13 +28,8 @@
          <mm:remove referid="to" />
          <mm:import id="to"><mm:field name="email"/></mm:import>
 
-         <mm:related path="related,roles">
-            <mm:import id="role"><mm:field name="name"/></mm:import>
-            <mm:compare referid="role" value="teacher">
-
-                <%@ include file="includes/sendmail.jsp" %>
-
-            </mm:compare>
+         <mm:related path="related,roles" constraints="roles.name='teacher'">
+            <%@ include file="includes/sendmail.jsp" %>
          </mm:related>
       </mm:node>
    </mm:related>
@@ -48,13 +43,8 @@
          <mm:remove referid="to" />
          <mm:import id="to"><mm:field name="email"/></mm:import>
 
-         <mm:related path="related,roles">
-            <mm:import id="role"><mm:field name="name"/></mm:import>
-            <mm:compare referid="role" value="teacher">
-
-                <%@ include file="includes/sendmail.jsp" %>
-
-            </mm:compare>
+         <mm:related path="related,roles" constraints="roles.name='teacher'">
+            <%@ include file="includes/sendmail.jsp" %>
          </mm:related>
       </mm:node>
    </mm:related>
