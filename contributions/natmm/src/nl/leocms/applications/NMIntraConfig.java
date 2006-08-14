@@ -56,20 +56,19 @@ public class NMIntraConfig {
    public static String fromEmailAddress = "intranet@natuurmonumenten.nl";
    public static String sDocumentsUrl = "/documents/PenO";
    
-   /*    
-   public static String sDocumentsRoot = "D:/WIN32APP/Tomcat_Intranet/webapps/ROOT/PenO";
+   public static String sDocumentsRoot = "D:/apps/Tomcat_Intranet/webapps/documents/PenO";
    public static String toEmailAddress = "beheerder@natuurmonumenten.nl";
    public static String rootDir = "E:/Intranet_Input/";
    public static String sCorporateWebsite = "http://www.natuurmonumenten.nl/";
    public static String sCorporateEditors = "http://www.natuurmonumenten.nl/editors/";
-   */
    
+   /*    
    public static String sDocumentsRoot = "C:/data/nmintra/webapps/documents/PenO";
    public static String toEmailAddress = "hangyi@xs4all.nl";    
    public static String rootDir =  "C:/data/nmintra/webapps/ROOT/WEB-INF/data/";
    public static String sCorporateWebsite = "http://www.acc.natuurmm.asp4all.nl/";
    public static String sCorporateEditors = "http://www.acc.natuurmm.asp4all.nl/editors/";
-
+   */
 
    public NMIntraConfig() {
 
