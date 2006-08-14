@@ -93,7 +93,7 @@
         </td>
         <td class="commands">
           <mm:maywrite>
-            <a onclick="document.getElementById('object<mm:field name="number" />').className = 'active'; " 
+            <a onclick="document.getElementById('object<mm:field name="number" />').className = 'active'; "
             href="<mm:url referids="user,parameters,$parameters"><mm:param name="url">edit_user.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-edit.gif" />" alt="<%=getPrompt(m,"update")%>" title="<%=getPrompt(m,"update")%>" /></a>
           </mm:maywrite>
           <mm:function name="rank" >
