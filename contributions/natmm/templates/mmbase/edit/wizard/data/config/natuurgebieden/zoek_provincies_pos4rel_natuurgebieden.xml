@@ -5,7 +5,7 @@
    <title>natuurgebieden</title>
    <item>
       <field ftype="data" name="naam"><prompt>naam</prompt></field>
-      <field ftype="line" fdatapath="field[@name=&apos;pos1&apos;]"><prompt>horizontale pixels vanaf rechts</prompt></field>
+      <field ftype="line" fdatapath="field[@name=&apos;pos1&apos;]"><prompt>horizontale pixels vanaf links</prompt></field>
       <field ftype="line" fdatapath="field[@name=&apos;pos2&apos;]"><prompt>verticale pixels vanaf boven __________________________</prompt></field>
       <field ftype="startwizard" wizardname="config/natuurgebieden/natuurgebieden" />
    </item>
