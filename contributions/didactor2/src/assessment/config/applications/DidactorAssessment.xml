@@ -34,6 +34,7 @@
         <relation from="people" to="problems" type="posrel" />
         <relation from="problems" to="learnblocks" type="posrel" /> <!-- the pos field is the weight of this problem for this person -->
         <relation from="problems" to="problemtypes" type="related" />
+        <relation from="problems" to="madetests" type="related" /> <!-- the testresults for the test carried out for this problem -->
         <relation from="problemtypes" to="tests" type="related" /> <!-- tests available for this problemtype, check education-test for language -->
         <relation from="learnblocks" to="learnobjects" type="posrel" />  <!-- relate learnblocks to tests for using DidactorEducation test framework -->
         
