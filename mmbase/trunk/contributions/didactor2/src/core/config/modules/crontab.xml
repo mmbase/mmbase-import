@@ -5,5 +5,6 @@
   <classfile>org.mmbase.applications.crontab.modules.CrontabModule</classfile>
   <properties>
     <property name="CompetenceUpdater">*/30 0-24 * * *|nl.didactor.component.competence.cron.CompetenceUpdater||</property>
+    <property name="Email Notifications">*/1 0-24 * * *|nl.didactor.component.assessment.email_notification.cron.Sender|| </property>
   </properties>
 </module>
