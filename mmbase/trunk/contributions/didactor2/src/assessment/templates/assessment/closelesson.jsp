@@ -4,8 +4,8 @@
 <mm:content>
 <mm:cloud method="delegate" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
-<%@include file="includes/getlesson.jsp" %>
 <%@include file="includes/geteducation.jsp" %>
+<%@include file="includes/getlesson.jsp" %>
   <mm:node number="<%=currentLesson %>" notfound="skip" id="this_lesson">
     <mm:createrelation role="classrel" source="user" destination="this_lesson" id="this_classrel" />
     <mm:maycreate type="popfeedback">

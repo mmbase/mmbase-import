@@ -5,10 +5,10 @@
 <mm:content postprocessor="reducespace">
 <mm:cloud method="delegate" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
+<%@include file="includes/geteducation.jsp" %>
 <%@include file="includes/getlesson.jsp" %>
 <%@include file="includes/variables.jsp" %>
 <%@include file="includes/functions.jsp" %>
-<%@include file="includes/geteducation.jsp" %>
 <%@include file="/education/tests/definitions.jsp" %>
 
 <%-- find users copybook --%>
