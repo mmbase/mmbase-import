@@ -54,6 +54,7 @@
 
   <%@include file="includes/variables.jsp" %>
   <%@include file="includes/functions.jsp" %>
+  <%@include file="includes/geteducation.jsp" %>
 
   <div class="rows">
     <div class="navigationbar">
@@ -124,7 +125,7 @@
         <br/>
         <br/>
         <% int lessonsNum = 0; %>
-        <mm:node number="assessment.education" notfound="skip">
+        <mm:node number="$assessment_education" notfound="skip">
           <mm:relatednodes type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos">
             <mm:import id="dummy" jspvar="dummy" vartype="Integer" reset="true"><mm:size/></mm:import>
             <% lessonsNum = dummy.intValue(); %>
@@ -149,7 +150,7 @@
               <% if (!lessonShowed) {
                    lessonShowed = true;
               %>
-                   <mm:node number="assessment.education" notfound="skip">
+                   <mm:node number="$assessment_education" notfound="skip">
                      <mm:relatednodes type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos">
                        <th class="listHeader"><mm:field name="name"/></th>
                      </mm:relatednodes>
@@ -201,7 +202,7 @@
           <tr>
             <td class="listItem">&nbsp;</td>
             <td class="listItem"><di:translate key="assessment.feedback_coach" /></td>
-            <mm:node number="assessment.education" notfound="skip">
+            <mm:node number="$assessment_education" notfound="skip">
               <mm:relatednodes type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos">
                 <td class="listItem">
                   <% String feedback = "";

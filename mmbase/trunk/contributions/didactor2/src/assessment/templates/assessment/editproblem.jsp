@@ -8,11 +8,12 @@
 <%@include file="includes/getlesson.jsp" %>
 <%@include file="includes/variables.jsp" %>
 <%@include file="includes/functions.jsp" %>
+<%@include file="includes/geteducation.jsp" %>
 <%@include file="/education/tests/definitions.jsp" %>
 
 <%-- find users copybook --%>
 <mm:import id="class" reset="true">null</mm:import>
-<mm:import id="education" reset="true"><mm:node number="assessment.education"><mm:field name="number"/></mm:node></mm:import>
+<mm:import id="education" reset="true"><mm:node number="$assessment_education"><mm:field name="number"/></mm:node></mm:import>
 <mm:node number="$user">
   <%@include file="/education/tests/find_copybook.jsp"%>
 </mm:node>
