@@ -5,6 +5,7 @@
 <mm:cloud method="delegate" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
 <%@include file="includes/getlesson.jsp" %>
+<%@include file="includes/geteducation.jsp" %>
   <mm:node number="<%=currentLesson %>" notfound="skip" id="this_lesson">
     <mm:createrelation role="classrel" source="user" destination="this_lesson" id="this_classrel" />
     <mm:maycreate type="popfeedback">
@@ -21,7 +22,7 @@
     <mm:import id="body"><di:translate key="assessment.give_feedback_body" /> 
       <%= request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() %>/assessment/givefeedback.jsp?feedback_n=<mm:write referid="this_feedback"/>
     </mm:import>
-    <mm:node number="assessment.education" notfound="skip">
+    <mm:node number="$assessment_education" notfound="skip">
       <mm:related path="classrel,people">
         <mm:node element="people">
 

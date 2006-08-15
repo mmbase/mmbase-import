@@ -2,7 +2,7 @@
    String currentLesson = "-1";
    String lastClosedLesson = "-1";
 %>
-<mm:node number="assessment.education" notfound="skip">
+<mm:node number="$assessment_education" notfound="skip">
   <mm:relatednodes type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos">
     <% boolean hasFeedback = false; %>
     <mm:relatedcontainer path="classrel,people">

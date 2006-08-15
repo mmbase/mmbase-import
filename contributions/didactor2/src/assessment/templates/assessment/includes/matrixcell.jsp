@@ -3,7 +3,7 @@
     <%= ( "".equals(dummy) ? "&nbsp;" : dummy )%>
   </mm:field>
 </td>
-<mm:node number="assessment.education" notfound="skip">
+<mm:node number="$assessment_education" notfound="skip">
   <mm:relatednodes type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos">
 <%
     int rating = -1; // not rated
