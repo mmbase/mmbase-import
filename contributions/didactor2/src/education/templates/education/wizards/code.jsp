@@ -608,7 +608,8 @@
                   </mm:field>
                </mm:field>
 
-               <mm:relatednodes type="questions" orderby="title">
+               <mm:related path="posrel,questions" orderby="posrel.pos">
+                  <mm:node element="questions">
                   <table border="0" cellpadding="0" cellspacing="0">
                      <tr>
                         <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
@@ -644,7 +645,8 @@
                         </mm:nodeinfo>
                      </tr>
                   </table>
-               </mm:relatednodes>
+                  </mm:node>
+               </mm:related>
             </div>
          </mm:listnodes>
       </div>
