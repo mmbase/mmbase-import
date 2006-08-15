@@ -149,7 +149,9 @@
             <mm:listnodes type="problemtypes" orderby="pos">
               <mm:field name="number" jspvar="problemtypeId" vartype="String">
                 <option value="<%= problemtypeId %>"<mm:compare referid="problemtype" value="<%= problemtypeId %>"> selected</mm:compare>
-                        ><mm:field name="key"/></option>
+                        ><mm:field name="key" jspvar="dummy" vartype="String" write="false"
+                           ><di:translate key="<%= "assessment." + dummy %>"
+                        /></mm:field></option>
               </mm:field>
             </mm:listnodes>
           </select>
