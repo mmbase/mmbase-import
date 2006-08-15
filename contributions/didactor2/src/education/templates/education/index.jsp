@@ -74,16 +74,18 @@
    HashSet hsetBlockedLessions = null;
 %>
 <mm:node number="component.assessment" notfound="skip">
-   <mm:node number="$education" notfound="skip" jspvar="nodeEducation">
-      <mm:node number="$user" jspvar="nodeUser">
-         <%
-            // A user can have access to only "opened" top learnblocks (lession)
-            Class classLessionChecker = Class.forName("nl.didactor.component.assessment.education_menu.utils.LessionChecker");
-            Object[] arrObjects = {nodeEducation, nodeUser};
-            hsetBlockedLessions = (HashSet) classLessionChecker.getMethods()[0].invoke(this, arrObjects);
-         %>
+   <mm:related path="settingrel,educations" constraints="educations.number=$education">
+      <mm:node element="educations" jspvar="nodeEducation">
+         <mm:node number="$user" jspvar="nodeUser">
+            <%
+               // A user can have access to only "opened" top learnblocks (lession)
+               Class classLessionChecker = Class.forName("nl.didactor.component.assessment.education_menu.utils.LessionChecker");
+               Object[] arrObjects = {nodeEducation, nodeUser};
+               hsetBlockedLessions = (HashSet) classLessionChecker.getMethods()[0].invoke(this, arrObjects);
+            %>
+         </mm:node>
       </mm:node>
-   </mm:node>
+   </mm:related>
 </mm:node>
 
 
