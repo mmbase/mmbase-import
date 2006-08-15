@@ -39,13 +39,18 @@
       <mm:createrelation role="posrel" source="user" destination="problem_n">
         <mm:setfield name="pos"><%= getMaxPos(cloud,thisUser,"problems")+1 %></mm:setfield>
       </mm:createrelation>
-      <mm:node number="<%= currentLesson %>" id="currentlesson"/>
-      <mm:createrelation role="posrel" source="problem_n" destination="currentlesson"/>
     </mm:maycreate>
   </mm:compare>
   
   <mm:node referid="problem_n" notfound="skip">
     <mm:setfield name="name"><mm:write referid="problemname"/></mm:setfield>
+    <mm:node number="<%= currentLesson %>" id="currentlesson"/>
+    <mm:related path="posrel,learnblocks" constraints="<%= "learnblocks.number=" + currentLesson %>">
+      <mm:node element="posrel">
+        <mm:deletenode/>
+      </mm:node>
+    </mm:related>
+    <mm:createrelation role="posrel" source="problem_n" destination="currentlesson"/>
     <mm:related path="posrel,learnblocks" constraints="<%= "learnblocks.number=" + currentLesson %>">
       <mm:node element="posrel">
         <mm:setfield name="pos"><mm:write referid="problemrating"/></mm:setfield>
@@ -58,7 +63,7 @@
     </mm:related>
     <mm:createrelation role="related" source="problem_n" destination="problemtype"/>
   </mm:node>
-  <mm:node number="problemtype">
+  <mm:node number="$problemtype">
     <mm:import id="testpos" reset="true"><mm:field name="pos"/></mm:import>
   </mm:node>
   <mm:node number="<%= currentLesson %>" notfound="skip">

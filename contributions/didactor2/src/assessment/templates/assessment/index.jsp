@@ -41,6 +41,15 @@
                                   objectlist="$includePath" referids="$referids"/>";
       }
     }
+    function doClose(prompt) {
+    var conf;
+    if (prompt && prompt!="") {
+       conf = confirm(prompt);
+    }
+    else
+      conf=true;
+      return conf;
+    }
   </script>
 
   <%@include file="includes/variables.jsp" %>
@@ -251,7 +260,18 @@
                                                    <mm:param name="learnobject"><%= backtolb %></mm:param>
                                                  </mm:treefile>'">
           </mm:node>
-          <input type="submit" class="formbutton" value="<di:translate key="assessment.close_and_send_to_coach" />">
+          <% boolean hasWeights = false; %>
+          <%@include file="includes/getlesson.jsp" %>
+          <mm:node number="<%= currentLesson %>" notfound="skip">
+            <mm:related path="posrel,problems,posrel,people" max="1" constraints="people.number=$user">
+              <% hasWeights = true; %>
+              <input type="submit" class="formbutton" value="<di:translate key="assessment.close_and_send_to_coach" />"
+                onclick="return doClose('<di:translate key="assessment.prompt_to_closing_lesson" />');">
+            </mm:related>
+          </mm:node>
+          <% if (!hasWeights) { %>
+               <input type="submit" class="formbutton" value="<di:translate key="assessment.close_and_send_to_coach" />" disabled>
+          <% } %>
         </form>
       </div>
     </div>
