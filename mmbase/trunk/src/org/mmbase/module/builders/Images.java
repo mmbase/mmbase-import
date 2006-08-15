@@ -33,7 +33,7 @@ import javax.servlet.ServletContext;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.116 2006-07-10 16:34:59 michiel Exp $
+ * @version $Id: Images.java,v 1.117 2006-08-15 09:55:54 nklasens Exp $
  */
 public class Images extends AbstractImages {
 
@@ -93,18 +93,8 @@ public class Images extends AbstractImages {
             log.warn("Builder with name 'icaches' wasn't loaded. Cannot do image-conversions.");
         }
 
-        Map map = new HashMap();
-        map.putAll(getInitParameters());
+        Map map = getInitParameters("mmbase/imaging");
         map.put("configfile", getConfigResource());
-
-        try {
-            Map contextMap = ApplicationContextReader.getProperties("mmbase/imaging");
-            if (!contextMap.isEmpty()) {
-                map.putAll(contextMap);
-            }
-        } catch (javax.naming.NamingException ne) {
-            log.debug("Can't obtain imaging properties from application: " + ne.getMessage());
-        }
 
         Factory.init(map, imageCaches);
 
