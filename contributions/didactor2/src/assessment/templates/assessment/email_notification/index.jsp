@@ -103,6 +103,8 @@
                         String sDate = null;
                      %>
                      <mm:import id="trigger" reset="true"><mm:field name="trigger_type"/></mm:import>
+
+
                      <mm:compare referid="trigger" value="0">
                         <mm:field name="senddate" jspvar="date" vartype="Date">
                            <%= sDate = df.format(date) %>
@@ -113,6 +115,14 @@
                            <di:translate key="assessment.email_notification_weeks_time" arg0="<%= "" + date.intValue() %>"/>
                         </mm:field>
                      </mm:compare>
+                     <mm:compare referid="trigger" value="-1">
+                        <di:translate key="assessment.email_notification_status_already_send" />
+                     </mm:compare>
+                     <mm:compare referid="trigger" value="-2">
+                        <di:translate key="assessment.email_notification_status_disabled" />
+                     </mm:compare>
+
+
                   </td>
                </tr>
          </mm:listnodes>
