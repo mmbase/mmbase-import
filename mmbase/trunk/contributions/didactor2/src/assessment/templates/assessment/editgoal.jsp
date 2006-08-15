@@ -39,7 +39,7 @@
 
   <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
     <mm:param name="extraheader">
-      <title>Assessment matrix</title>
+      <title><di:translate key="assessment.assessment_matrix" /></title>
       <link rel="stylesheet" type="text/css" href="css/assessment.css" />
     </mm:param>
   </mm:treeinclude>
@@ -48,7 +48,7 @@
     <div class="navigationbar">
       <div class="titlebar">
         <img src="<mm:treefile write="true" page="/gfx/icon_pop.gif" objectlist="$includePath" />" 
-            width="25" height="13" border="0" title="<di:translate key="pop.popfull" />" alt="<di:translate key="pop.popfull" />" /> <di:translate key="pop.popfull" />
+            width="25" height="13" border="0" title="<di:translate key="assessment.assessment_matrix" />" alt="<di:translate key="assessment.assessment_matrix" />" /> <di:translate key="assessment.assessment_matrix" />
       </div>		
     </div>
 
@@ -75,16 +75,16 @@
     <input type="hidden" name="goal_n" value="<mm:write referid="goal_n"/>">
     <table class="font" width="90%">
       <tr>
-        <td width="80">Goal:</td>
+        <td width="80"><di:translate key="assessment.goal" />:</td>
         <td><input name="goalname" class="popFormInput" type="text" size="50" maxlength="255" value="<mm:write referid="goalname"/>"></td>
       </tr>
       <tr>
-        <td>Description:</td>
+        <td><di:translate key="assessment.description" />:</td>
         <td><textarea name="goaldesc" class="popFormInput" cols="50" rows="5"><mm:write referid="goaldesc"/></textarea></td>
       </tr>
     </table>
-    <input type="submit" class="formbutton" value="save">
-    <input type="submit" class="formbutton" value="cancel" onClick="newgoalform.step.value='cancel'">
+    <input type="submit" class="formbutton" value="<di:translate key="assessment.save" />">
+    <input type="submit" class="formbutton" value="<di:translate key="assessment.cancel" />" onClick="newgoalform.step.value='cancel'">
   </form>
 
 

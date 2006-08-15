@@ -32,8 +32,8 @@
         </mm:list>
       </mm:field>
     </mm:relatednodes>
-    <mm:import id="subject">My feedback</mm:import>
-    <mm:import id="body">Feedback is: <mm:write referid="feedbacktext"/></mm:import>
+    <mm:import id="subject"><di:translate key="assessment.given_feedback_subj" /></mm:import>
+    <mm:import id="body"><di:translate key="assessment.given_feedback body" /> <mm:write referid="feedbacktext"/></mm:import>
     <%@ include file="includes/sendmail.jsp" %>
   </mm:node>
 

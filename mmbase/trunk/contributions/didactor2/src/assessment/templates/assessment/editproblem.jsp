@@ -80,7 +80,7 @@
 
   <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
     <mm:param name="extraheader">
-      <title>Assessment matrix</title>
+      <title><di:translate key="assessment.assessment_matrix" /></title>
       <link rel="stylesheet" type="text/css" href="css/assessment.css" />
     </mm:param>
   </mm:treeinclude>
@@ -89,7 +89,7 @@
     <div class="navigationbar">
       <div class="titlebar">
         <img src="<mm:treefile write="true" page="/gfx/icon_pop.gif" objectlist="$includePath" />" 
-            width="25" height="13" border="0" title="<di:translate key="pop.popfull" />" alt="<di:translate key="pop.popfull" />" /> <di:translate key="pop.popfull" />
+            width="25" height="13" border="0" title="<di:translate key="assessment.assessment_matrix" />" alt="<di:translate key="assessment.assessment_matrix" />" /> <di:translate key="assessment.assessment_matrix" />
       </div>		
     </div>
 
@@ -134,11 +134,11 @@
     <input type="hidden" name="problem_n" value="<mm:write referid="problem_n"/>">
     <table class="font" width="70%">
       <tr>
-        <td width="80">problem:</td>
+        <td width="80"><di:translate key="assessment.problem" />:</td>
         <td align="right"><input name="problemname" class="popFormInput" type="text" size="50" maxlength="255" value="<mm:write referid="problemname"/>"></td>
       </tr>
       <tr>
-        <td>Type</td>
+        <td><di:translate key="assessment.type" /></td>
         <td align="right">
           <select name="problemtype" onchange="questionform.step.value='next';questionform.submit();">
             <mm:listnodes type="problemtypes" orderby="pos">
@@ -151,7 +151,7 @@
         </td>
       </tr>
       <tr>
-        <td>How much trouble does it cause you?</td>
+        <td><di:translate key="assessment.how_much_trouble" /></td>
         <td align="right">
           <select name="problemrating">
             <% for(int i=2;i<=10;i+=2) { %>
@@ -162,7 +162,7 @@
       </tr>
       <mm:node number="<%= currentLesson %>" notfound="skip">
         <tr>
-          <td><b>Form</b></td><td></td>
+          <td><b><di:translate key="assessment.form" /></b></td><td></td>
         </tr>
         <tr>
           <td colspan="2">
@@ -181,8 +181,8 @@
         </tr>
       </mm:node>
     </table>
-    <input type="submit" class="formbutton" value="save">
-    <input type="submit" class="formbutton" value="cancel" onClick="questionform.step.value='cancel'">
+    <input type="submit" class="formbutton" value="<di:translate key="assessment.save" />">
+    <input type="submit" class="formbutton" value="<di:translate key="assessment.cancel" />" onClick="questionform.step.value='cancel'">
   </form>
 
 

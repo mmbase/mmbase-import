@@ -5,9 +5,10 @@
         <td colspan="2">
           <div class="grayBar" style="width:100%;">
             <img src="<mm:treefile page="/assessment/gfx/minus.gif" objectlist="$includePath" 
-                 referids="$referids"/>" border="0" title="show problems" alt="show problems"
+                 referids="$referids"/>" border="0" title="<di:translate key="assessment.show_problems" />"
+                 alt="<di:translate key="assessment.show_problems" />"
                  onClick="toggle(<%= problemtypeId %>);" id="toggle_image<%= problemtypeId %>"/>
-            <%= problem_type %>
+            <di:translate key="<%= "assessment." + problem_type %>" /></mm:import>
           </div>
         </td>
       </tr>
@@ -19,7 +20,8 @@
               <mm:list nodes="<%= problemId %>" path="problems,posrel,learnblocks" 
                   constraints="<%= "learnblocks.number=" + lessonId %>" fields="posrel.pos">
                 <img src="<mm:treefile page="/assessment/gfx/plus.gif" objectlist="$includePath" 
-                     referids="$referids"/>" border="0" title="show problem" alt="show problem" 
+                     referids="$referids"/>" border="0" title="<di:translate key="assessment.show_problem" />"
+                     alt="<di:translate key="assessment.show_problem" />" 
                      onClick="toggle(<%= problemId %>);" id="toggle_image<%= problemId %>"/>
                 <mm:field name="problems.name" jspvar="dummy" vartype="String" write="false">
                   <b><%= ( "".equals(dummy) ? "&nbsp;" : dummy ) %></b>
@@ -38,7 +40,7 @@
                       %>&nbsp;<%
                     } else {
                       %>
-                      How much trouble does it cause you? <%=problemWeights[rating]%><%
+                      <di:translate key="assessment.how_much_trouble" /> <%=problemWeights[rating]%><%
                     }
                   %>
                   </mm:field>
