@@ -169,7 +169,8 @@ public class Sender extends Thread{
             else{
                log.debug("Prevoius education=null");
             }
-            if((nodeLastEducation != null) && (nodeEducation != nodeLastEducation)){
+
+            if((nodeLastEducation != null) && (nodeEducation.getNumber() != nodeLastEducation.getNumber())){
                //We have passed all learnblocks in the nodeLastEducation
                if(bPrevousFeedbackPresent == true){
                   //The education was closed
@@ -202,6 +203,13 @@ public class Sender extends Thread{
             }
 
             nodeLastEducation = nodeEducation;
+         }
+
+         if(bPrevousFeedbackPresent){
+            //The education was closed
+            //So we removing it from the suspicious list
+            hmapSuspiciousFeedbacks.remove(nodeLastEducation);
+            log.debug("Educaiton=" + nodeLastEducation.getNumber() + " for user=" + nodeUser.getNumber() + " HAS BEEN CLOSED. No feedback needed");
          }
 
 
