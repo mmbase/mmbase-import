@@ -8,7 +8,7 @@
                  referids="$referids"/>" border="0" title="<di:translate key="assessment.show_problems" />"
                  alt="<di:translate key="assessment.show_problems" />"
                  onClick="toggle(<%= problemtypeId %>);" id="toggle_image<%= problemtypeId %>"/>
-            <di:translate key="<%= "assessment." + problem_type %>" /></mm:import>
+            <di:translate key="<%= "assessment." + problem_type %>" />
           </div>
         </td>
       </tr>
