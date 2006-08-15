@@ -1,5 +1,5 @@
 <%
-   String[] problemWeights = { "0", "1", "nothing", "3", "little", "5", "much/little", "7", "much", "9", "very much" };
+   String[] problemWeights = { "0", "1", "nothing", "3", "little", "5", "much_little", "7", "much", "9", "very_much" };
    for (int i=2; i<=10; i+=2) {
 %> 
      <mm:import id="weight" jspvar="weight" vartype="String" reset="true"><di:translate key="<%= "assessment." + problemWeights[i] %>" /></mm:import>

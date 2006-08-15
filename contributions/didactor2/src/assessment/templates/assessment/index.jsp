@@ -7,7 +7,7 @@
 <%@include file="/shared/setImports.jsp" %>
   <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
     <mm:param name="extraheader">
-      <title>Assessment matrix</title>
+      <title><di:translate key="assessment.assessment_matrix" /></title>
       <link rel="stylesheet" type="text/css" href="css/assessment.css" />
     </mm:param>
   </mm:treeinclude>
@@ -50,7 +50,7 @@
     <div class="navigationbar">
       <div class="titlebar">
         <img src="<mm:treefile write="true" page="/gfx/icon_pop.gif" objectlist="$includePath" />" 
-            width="25" height="13" border="0" title="<di:translate key="pop.popfull" />" alt="<di:translate key="pop.popfull" />" /> <di:translate key="pop.popfull" />
+            width="25" height="13" border="0" title="<di:translate key="assessment.assessment_matrix" />" alt="<di:translate key="assessment.assessment_matrix" />" /> <di:translate key="assessment.assessment_matrix" />
       </div>		
     </div>
 
@@ -65,7 +65,7 @@
     <%-- right section --%>
     <div class="mainContent">
       <div class="contentBody">
-        <p><b>Goals</b></p>
+        <p><b><di:translate key="assessment.goals" /></b></p>
         <mm:node number="$user">
           <mm:relatednodes type="goals" path="posrel,goals" orderby="posrel.pos">
             <mm:first><table></mm:first>
@@ -76,14 +76,17 @@
                                <mm:param name="goal_n"><mm:field name="number"/></mm:param>
                              </mm:treefile>"
                       ><img src="<mm:treefile page="/assessment/gfx/edit_learnobject.gif" objectlist="$includePath" 
-                            referids="$referids"/>" border="0" title="edit goal" alt="edit goal" /></a>
+                            referids="$referids"/>" border="0" title="<di:translate key="assessment.edit_goal" />"
+                            alt="<di:translate key="assessment.edit_goal" />" /></a>
                     <a href="<mm:treefile page="/assessment/deleteobject.jsp" objectlist="$includePath" referids="$referids">
                                <mm:param name="object_n"><mm:field name="number"/></mm:param>
                              </mm:treefile>"
                       ><img src="<mm:treefile page="/assessment/gfx/remove.gif" objectlist="$includePath" 
-                            referids="$referids"/>" border="0" title="delete goal" alt="delete goal" /></a>
+                            referids="$referids"/>" border="0" title="<di:translate key="assessment.delete_goal" />"
+                            alt="<di:translate key="assessment.delete_goal" />" /></a>
                     <img src="<mm:treefile page="/assessment/gfx/plus.gif" objectlist="$includePath" 
-                         referids="$referids"/>" border="0" title="show goal" alt="show goal" 
+                         referids="$referids"/>" border="0" title="<di:translate key="assessment.show_goal" />" 
+                         alt="<di:translate key="assessment.show_goal" />" 
                          onClick="toggle(<%=goal_number %>);" id="toggle_image<%=goal_number %>"/>
                   </td>
                   <td style="FONT-SIZE : 0.8em">
@@ -106,7 +109,8 @@
         </mm:node>
         <a href="<mm:treefile page="/assessment/editgoal.jsp" objectlist="$includePath" referids="$referids"/>"
           ><img src="<mm:treefile page="/assessment/gfx/new_learnobject.gif" objectlist="$includePath" 
-               referids="$referids"/>" border="0" title="add goal" alt="add goal" /></a>
+               referids="$referids"/>" border="0" title="<di:translate key="assessment.add_goal" />" 
+               alt="<di:translate key="assessment.add_goal" />" /></a>
         <br/>
         <br/>
         <br/>
@@ -124,7 +128,8 @@
             <mm:field name="number" jspvar="problemtypeId" vartype="String">
             <tr style="vertical-align:middle;">
               <th class="listHeader"><img src="<mm:treefile page="/assessment/gfx/plus.gif" objectlist="$includePath" 
-                         referids="$referids"/>" border="0" title="show problems" alt="show problems" 
+                         referids="$referids"/>" border="0" title="<di:translate key="assessment.show_problems" />" 
+                         alt="<di:translate key="assessment.show_problems" />" 
                          onClick="toggleAll(<%= problemtypeId %>,'<%= problemtypeId %><%= getProblemsByType(cloud, problemtypeId, thisUser) %>');"
                          id="toggle_image<%= problemtypeId %>"/></th>
               <th class="listHeader">
@@ -156,12 +161,14 @@
                              <mm:param name="problem_n"><%= problem_number %></mm:param>
                            </mm:treefile>"
                     ><img src="<mm:treefile page="/assessment/gfx/edit_learnobject.gif" objectlist="$includePath" 
-                          referids="$referids"/>" border="0" title="edit problem" alt="edit problem" /></a>
+                          referids="$referids"/>" border="0" title="<di:translate key="assessment.edit_problem" />"
+                          alt="<di:translate key="assessment.edit_problem" />" /></a>
                   <a href="<mm:treefile page="/assessment/deleteobject.jsp" objectlist="$includePath" referids="$referids">
                              <mm:param name="object_n"><%= problem_number %></mm:param>
                            </mm:treefile>"
                     ><img src="<mm:treefile page="/assessment/gfx/remove.gif" objectlist="$includePath" 
-                          referids="$referids"/>" border="0" title="delete problem" alt="delete problem" /></a>
+                          referids="$referids"/>" border="0" title="<di:translate key="assessment.delete_problem" />"
+                          alt="<di:translate key="assessment.delete_problem" />" /></a>
                 </nobr></td>
                 <%@ include file="includes/matrixcell.jsp" %>
               </tr>
@@ -173,7 +180,8 @@
                            <mm:param name="problemtype_n"><%= problemtypeId %></mm:param>
                          </mm:treefile>"
                   ><img src="<mm:treefile page="/assessment/gfx/new_learnobject.gif" objectlist="$includePath" 
-                        referids="$referids"/>" border="0" title="add problem" alt="add problem" /></a>
+                        referids="$referids"/>" border="0" title="<di:translate key="assessment.add_problem" />"
+                        alt="<di:translate key="assessment.add_problem" />" /></a>
               </td>
               <% for(int i=0; i<lessonsNum+1; i++) { %>
                    <td class="listItem">&nbsp;</td>
@@ -183,7 +191,7 @@
           </mm:listnodes>
           <tr>
             <td class="listItem">&nbsp;</td>
-            <td class="listItem">Feedback coach</td>
+            <td class="listItem"><di:translate key="assessment.feedback_coach" /></td>
             <mm:node number="assessment.education" notfound="skip">
               <mm:relatednodes type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos">
                 <td class="listItem">
@@ -214,10 +222,12 @@
                          ><%
                          if ("-1".equals(feedback)) {   
                            %><img src="<mm:treefile page="/assessment/gfx/developed.gif" objectlist="$includePath" 
-                                  referids="$referids"/>" border="0" title="read feedback" alt="read feedback" /><%
+                                  referids="$referids"/>" border="0" title="<di:translate key="assessment.read_feedback" />"
+                                  alt="<di:translate key="assessment.read_feedback" />" /><%
                          } else {
                            %><img src="<mm:treefile page="/assessment/gfx/todevelop.gif" objectlist="$includePath" 
-                                  referids="$referids"/>" border="0" title="read feedback" alt="read feedback" /><%
+                                  referids="$referids"/>" border="0" title="<di:translate key="assessment.read_feedback" />"
+                                  alt="<di:translate key="assessment.read_feedback" />" /><%
                          } %>
                        </a>
                   <% } %>
@@ -236,12 +246,12 @@
         <form name="closelessonform" action="<mm:treefile page="/assessment/closelesson.jsp" objectlist="$includePath" 
                referids="$referids"/>" method="post">
           <mm:node number="<%= backtolb %>" notfound="skip">
-            <input type="submit" class="formbutton" value="back to lesson"
+            <input type="submit" class="formbutton" value="<di:translate key="assessment.back_to_lesson" />"
                 onclick="closelessonform.action='<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$referids">
                                                    <mm:param name="learnobject"><%= backtolb %></mm:param>
                                                  </mm:treefile>'">
           </mm:node>
-          <input type="submit" class="formbutton" value="close lesson and send to coach for feedback">
+          <input type="submit" class="formbutton" value="<di:translate key="assessment.close_and_send_to_coach" />">
         </form>
       </div>
     </div>

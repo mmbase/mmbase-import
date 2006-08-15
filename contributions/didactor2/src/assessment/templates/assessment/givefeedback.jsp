@@ -26,7 +26,7 @@
 
   <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
     <mm:param name="extraheader">
-      <title>Assessment matrix</title>
+      <title><di:translate key="assessment.assessment_matrix" /></title>
       <link rel="stylesheet" type="text/css" href="css/assessment.css" />
     </mm:param>
   </mm:treeinclude>
@@ -51,7 +51,7 @@
     <div class="navigationbar">
       <div class="titlebar">
         <img src="<mm:treefile write="true" page="/gfx/icon_pop.gif" objectlist="$includePath" />" 
-            width="25" height="13" border="0" title="<di:translate key="pop.popfull" />" alt="<di:translate key="pop.popfull" />" /> <di:translate key="pop.popfull" />
+            width="25" height="13" border="0" title="<di:translate key="assessment.assessment_matrix" />" alt="<di:translate key="assessment.assessment_matrix" />" /> <di:translate key="assessment.assessment_matrix" />
       </div>		
     </div>
 
@@ -85,7 +85,7 @@
           <table width="600px">
             <tr>
               <td><b>
-                <mm:node number="<%= lessonId %>"><mm:field name="name"/></mm:node> by 
+                <mm:node number="<%= lessonId %>"><mm:field name="name"/></mm:node> <di:translate key="assessment.by" /> 
                 <mm:node number="<%= ownerId %>"><mm:field name="firstname"/> <mm:field name="lastname"/></mm:node>
               </b></td>
               <td></td>
@@ -97,7 +97,7 @@
                  <tr>
                    <td colspan="2">
                      <div class="grayBar" style="width:100%;">
-                       Feedback
+                       <di:translate key="assessment.feedback" />
                      </div>
                      <br/>
                      <form name="feedbackform" action="<mm:treefile page="/assessment/savefeedback.jsp"
@@ -106,8 +106,8 @@
                        <input type="hidden" name="feedback_n" value="<mm:write referid="feedback_n"/>">
                        <textarea name="feedbacktext" class="popFormInput" cols="50" rows="5"></textarea>
                        <br/><br/>
-                       <input type="submit" class="formbutton" value="save">
-                       <input type="submit" class="formbutton" value="cancel" onClick="feedbackform.step.value='cancel'">
+                       <input type="submit" class="formbutton" value="<di:translate key="assessment.save" />">
+                       <input type="submit" class="formbutton" value="<di:translate key="assessment.cancel" />" onClick="feedbackform.step.value='cancel'">
                      </form>
                    </td>
                  </tr>

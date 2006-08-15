@@ -17,8 +17,8 @@
     <mm:node number="$user">
       <mm:import id="from"><mm:field name="email"/></mm:import>
     </mm:node>
-    <mm:import id="subject">Please give me a feedback</mm:import>
-    <mm:import id="body">Please give me a feedback - 
+    <mm:import id="subject"><di:translate key="assessment.give_feedback_subj" /></mm:import>
+    <mm:import id="body"><di:translate key="assessment.give_feedback_body" /> 
       <%= request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() %>/assessment/givefeedback.jsp?feedback_n=<mm:write referid="this_feedback"/>
     </mm:import>
     <mm:node number="assessment.education" notfound="skip">

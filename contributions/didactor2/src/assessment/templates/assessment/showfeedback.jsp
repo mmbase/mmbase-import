@@ -14,7 +14,7 @@
 
   <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
     <mm:param name="extraheader">
-      <title>Assessment matrix</title>
+      <title><di:translate key="assessment.assessment_matrix" /></title>
       <link rel="stylesheet" type="text/css" href="css/assessment.css" />
     </mm:param>
   </mm:treeinclude>
@@ -39,7 +39,7 @@
     <div class="navigationbar">
       <div class="titlebar">
         <img src="<mm:treefile write="true" page="/gfx/icon_pop.gif" objectlist="$includePath" />" 
-            width="25" height="13" border="0" title="<di:translate key="pop.popfull" />" alt="<di:translate key="pop.popfull" />" /> <di:translate key="pop.popfull" />
+            width="25" height="13" border="0" title="<di:translate key="assessment.assessment_matrix" />" alt="<di:translate key="assessment.assessment_matrix" />" /> <di:translate key="assessment.assessment_matrix" />
       </div>		
     </div>
 
@@ -79,7 +79,7 @@
               <td style="text-align:right">
                 <form name="backform" action="<mm:treefile page="/assessment/index.jsp" objectlist="$includePath"
                        referids="$referids"/>" method="post">
-                  <input type="submit" class="formbutton" value="back">
+                  <input type="submit" class="formbutton" value="<di:translate key="assessment.back" />">
                 </form>
               </td>
             </tr>
@@ -89,7 +89,7 @@
                      <td colspan="2">
                        <mm:relatednodes type="people" max="1">
                          <div class="grayBar" style="width:100%;">
-                           Feedback by <mm:field name="firstname"/> <mm:field name="lastname"/>
+                           <di:translate key="assessment.feedback_by" /> <mm:field name="firstname"/> <mm:field name="lastname"/>
                          </div>
                        </mm:relatednodes>
                        <mm:field name="text"/>
