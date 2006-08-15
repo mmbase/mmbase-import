@@ -15,6 +15,10 @@
 <mm:import externid="message" />
 
 
+<head>
+   <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/base.css" objectlist="$includePath" referids="$referids" />" />
+   <link rel="stylesheet" type="text/css" href="css/assessment.css" />
+</head>
 <mm:node number="$user">
    <mm:import id="from"><mm:field name="email"/></mm:import>
 </mm:node>
