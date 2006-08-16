@@ -27,7 +27,6 @@
                   <b><%= ( "".equals(dummy) ? "&nbsp;" : dummy ) %></b>
                 </mm:field><br/>
                 <div id="toggle_div<%=problemId %>" style="padding-left:15px; display:none">
-                  <%= problem_type %><br/>
                   <% int rating = -1; // not rated %>
                   <mm:field name="posrel.pos" jspvar="problem_weight" vartype="Integer" write="false">
                   <%
