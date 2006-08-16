@@ -9,7 +9,7 @@
 // Version 3.0 developed by Mihai Bazon.
 //   http://dynarch.com/mishoo
 //
-// $Id: dialog.js,v 1.1 2006-07-05 13:03:30 nklasens Exp $
+// $Id: dialog.js,v 1.2 2006-08-16 14:24:25 nklasens Exp $
 
 // Though "Dialog" looks like an object, it isn't really an object.  Instead
 // it's just namespace for protecting global symbols.
@@ -23,8 +23,13 @@ function Dialog(url, action, init) {
 
 Dialog._parentEvent = function(ev) {
 	setTimeout( function() { if (Dialog._modal && !Dialog._modal.closed) { Dialog._modal.focus() } }, 50);
+	try {
 	if (Dialog._modal && !Dialog._modal.closed) {
 		HTMLArea._stopEvent(ev);
+	}
+	}
+	catch(e) {
+	  // IE permission exception on window close
 	}
 };
 
