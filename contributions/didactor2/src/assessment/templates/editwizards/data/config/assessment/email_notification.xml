@@ -5,7 +5,12 @@
    <title xml:lang="nl">Notificatie Edit</title>
    <title xml:lang="fr">L'avis editent</title>
 
-   <action type="create"/>
+   <action type="create">
+      <object type="email_notifications">
+         <field name="trigger_type">-2</field>
+      </object>
+   </action>
+
 
    <action type="load">
       <field name="subject" />
@@ -27,13 +32,13 @@
             <prompt xml:lang="nl">Datum</prompt>
             <prompt xml:lang="fr">Date</prompt>
          </option>
-         
+
          <option id="1">
             <prompt xml:lang="en">Number of inactive weeks</prompt>
             <prompt xml:lang="nl">Aantal inactieve weken</prompt>
             <prompt xml:lang="fr">Nombre de semaines inactives</prompt>
          </option>
-         
+
          <option id="-1">
             <prompt xml:lang="en">Already sent</prompt>
             <prompt xml:lang="nl">Reeds verzonden</prompt>
@@ -81,16 +86,16 @@
             <prompt>10</prompt>
          </option>
       </optionlist>
-      
+
    </lists>
-   
+
 
    <steps>
       <step form-schema="edit_email_notification"/>
    </steps>
 
 <form-schema id="edit_email_notification">
-   <field name="subject" dtminlength="0" dtmaxlength="255">
+   <field name="subject" dtminlength="1">
       <prompt xml:lang="en">subject</prompt>
       <prompt xml:lang="nl">onderwerp</prompt>
       <prompt xml:lang="fr">sujet</prompt>
@@ -129,7 +134,7 @@
 
       <optionlist select="trigger_setting1" />
    </field>
-   
+
 
 </form-schema>
 
