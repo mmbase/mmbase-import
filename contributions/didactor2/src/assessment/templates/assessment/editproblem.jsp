@@ -68,7 +68,7 @@
     <mm:import id="testpos" reset="true"><mm:field name="pos"/></mm:import>
   </mm:node>
   <mm:node number="$provider" notfound="skip">
-    <mm:related path="settingrel,educations,related,tests,related,problemtypes" constraints="problemtypes.number=$problemtype">
+    <mm:related path="related,educations,related,tests,related,problemtypes" constraints="problemtypes.number=$problemtype">
       <mm:node element="tests">
         <%@include file="includes/getmadetest.jsp" %>
         <mm:relatednodes type="questions" path="posrel,questions">
@@ -176,7 +176,7 @@
         <tr>
           <td colspan="2">
             <mm:node number="$provider" notfound="skip">
-              <mm:related path="settingrel,educations,related,tests,related,problemtypes" constraints="problemtypes.number=$problemtype">
+              <mm:related path="related,educations,related,tests,related,problemtypes" constraints="problemtypes.number=$problemtype">
                 <mm:node element="tests">
                   <%@include file="includes/getmadetest.jsp" %>
                   <mm:relatednodes type="questions" path="posrel,questions">
