@@ -62,74 +62,80 @@
       <td>
          <table class="listcontent" border="1" cellspacing="0" cellpadding="3" style="border:0px; padding-left:0px">
             <tr class="listheader">
-               <th class="first_cell" style="width:20%"><di:translate key="assessment.email_notification_subject" /></th>
+               <th class="first_cell" style="width:0px">&nbsp;</th>
+               <th class="cell" style="width:20%"><di:translate key="assessment.email_notification_subject" /></th>
                <th class="cell" style="width:20%"><di:translate key="assessment.email_notification_to" /></th>
                <th class="cell" style="width:40%"><di:translate key="assessment.email_notification_body" /></th>
                <th class="last_cell" style="width:20%"><di:translate key="assessment.email_notification_senddate" /></th>
             </tr>
 
          <mm:listnodes type="email_notifications" orderby="email_notifications.subject">
-               <tr class="listcontent">
-                  <td class="first_cell" style="border-top:0px">
-                     <a href='<mm:write referid="wizardjsp"/>&wizard=config/assessment/email_notification&objectnumber=<mm:field name="number"/>' style="color:#000000; text-decoration:underline">
-                        <mm:field name="subject"/>
-                     </a>
-                     &nbsp;
-                  </td>
-                  <td class="cell" style="border-top:0px">
-                     <mm:relatednodes type="classes">
-                        <nobr>
-                           <di:translate key="assessment.email_notification_class" />
-                           <mm:field name="name"/>
-                        </nobr>
-                     </mm:relatednodes>
-                     <mm:relatednodes type="people">
-                        <nobr>
-                           <di:translate key="assessment.email_notification_person" />
-                           <mm:field name="firstname"/>
-                           <mm:field name="initials"/>
-                           <mm:field name="suffix"/>
-                           <mm:field name="lastname"/>
-                        </nobr>
-                     </mm:relatednodes>
-                     &nbsp;
-                  </td>
-                  <td class="cell" style="border-top:0px">
-                     <mm:field name="body"/>
-                     &nbsp;
-                  </td>
-                  <td class="last_cell" style="border-top:0px">
-                     <%
-                        String sDate = null;
-                     %>
-                     <mm:import id="trigger" reset="true"><mm:field name="trigger_type"/></mm:import>
+            <tr class="listcontent">
+               <td class="first_cell" style="border-top:0px">
+                  <a href="delete_notification.jsp?notification_to_delete=<mm:field name="number"/>"><img src="../gfx/remove_email_notification.gif"/></a>
+               </td>
+               <td class="cell" style="border-top:0px">
+                  <a href='<mm:write referid="wizardjsp"/>&wizard=config/assessment/email_notification&objectnumber=<mm:field name="number"/>' style="color:#000000; text-decoration:underline">
+                     <mm:field name="subject"/>
+                  </a>
+                  &nbsp;
+               </td>
+               <td class="cell" style="border-top:0px">
+                  <mm:relatednodes type="classes">
+                     <nobr>
+                        <di:translate key="assessment.email_notification_class" />
+                        <mm:field name="name"/>
+                     </nobr>
+                  </mm:relatednodes>
+                  <mm:relatednodes type="people">
+                     <nobr>
+                        <di:translate key="assessment.email_notification_person" />
+                        <mm:field name="firstname"/>
+                        <mm:field name="initials"/>
+                        <mm:field name="suffix"/>
+                        <mm:field name="lastname"/>
+                     </nobr>
+                  </mm:relatednodes>
+                  &nbsp;
+               </td>
+               <td class="cell" style="border-top:0px">
+                  <mm:field name="body"/>
+                  &nbsp;
+               </td>
+               <td class="last_cell" style="border-top:0px">
+                  <%
+                     String sDate = null;
+                  %>
+                  <mm:import id="trigger" reset="true"><mm:field name="trigger_type"/></mm:import>
 
 
-                     <mm:compare referid="trigger" value="0">
-                        <mm:field name="senddate" jspvar="date" vartype="Date">
-                           <%= sDate = df.format(date) %>
-                        </mm:field>
-                     </mm:compare>
-                     <mm:compare referid="trigger" value="1">
-                        <mm:field name="trigger_setting1" jspvar="date" vartype="Integer">
-                           <di:translate key="assessment.email_notification_weeks_time" arg0="<%= "" + date.intValue() %>"/>
-                        </mm:field>
-                     </mm:compare>
-                     <mm:compare referid="trigger" value="-1">
-                        <di:translate key="assessment.email_notification_status_already_send" />
-                     </mm:compare>
-                     <mm:compare referid="trigger" value="-2">
-                        <di:translate key="assessment.email_notification_status_disabled" />
-                     </mm:compare>
+                  <mm:compare referid="trigger" value="0">
+                     <mm:field name="senddate" jspvar="date" vartype="Date">
+                        <%= sDate = df.format(date) %>
+                     </mm:field>
+                  </mm:compare>
+                  <mm:compare referid="trigger" value="1">
+                     <mm:field name="trigger_setting1" jspvar="date" vartype="Integer">
+                        <di:translate key="assessment.email_notification_weeks_time" arg0="<%= "" + date.intValue() %>"/>
+                     </mm:field>
+                  </mm:compare>
+                  <mm:compare referid="trigger" value="-1">
+                     <di:translate key="assessment.email_notification_status_already_send" />
+                  </mm:compare>
+                  <mm:compare referid="trigger" value="-2">
+                     <di:translate key="assessment.email_notification_status_disabled" />
+                  </mm:compare>
 
 
-                  </td>
-               </tr>
+               </td>
+            </tr>
          </mm:listnodes>
       </td>
    </tr>
 </table>
 
+<br/>
+<a href='<mm:write referid="wizardjsp"/>&wizard=config/assessment/email_notification&objectnumber=new'><img src="../gfx/new_email_notification.gif"/></a>
 
 </body>
 
