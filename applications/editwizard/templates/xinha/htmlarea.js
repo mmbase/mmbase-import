@@ -1148,7 +1148,7 @@ HTMLArea.prototype._createToolbar1 = function (editor, toolbar, tb_objects)
         state	: setButtonStatus, // for changing state
         context : btn[4] || null // enabled in a certain context?
       };
-      
+      HTMLArea.freeLater(el);
       HTMLArea.freeLater(obj);
 
       tb_objects[txt] = obj;
@@ -1419,25 +1419,19 @@ HTMLArea.prototype.generate = function ()
 
   if ( typeof Dialog == 'undefined' )
   {
-    // why can't we use the following line instead ?
-//    HTMLArea._loadback(_editor_url + 'dialog.js', this.generate );
-    HTMLArea._loadback(_editor_url + 'dialog.js', function() { editor.generate(); } );
+    HTMLArea._loadback(_editor_url + 'dialog.js', this.generate, this );
     return false;
   }
 
   if ( typeof HTMLArea.Dialog == 'undefined' )
   {
-    // why can't we use the following line instead ?
-//    HTMLArea._loadback(_editor_url + 'inline-dialog.js', this.generate );
-    HTMLArea._loadback(_editor_url + 'inline-dialog.js', function() { editor.generate(); } );
+    HTMLArea._loadback(_editor_url + 'inline-dialog.js', this.generate, this );
     return false;
   }
 
   if ( typeof PopupWin == 'undefined' )
   {
-    // why can't we use the following line instead ?
-//    HTMLArea._loadback(_editor_url + 'ipopupwin.js', this.generate );
-    HTMLArea._loadback(_editor_url + 'popupwin.js', function() { editor.generate(); } );
+    HTMLArea._loadback(_editor_url + 'popupwin.js', this.generate, this );
     return false;
   }
 
@@ -1719,10 +1713,6 @@ HTMLArea.prototype.initSize = function()
   }
 
   this.sizeEditor(width, height, this.config.sizeIncludesBars, this.config.sizeIncludesPanels);
-
-  // why can't we use the following line instead ?
-//  HTMLArea.addDom0Event(window, 'resize', this.sizeEditor);
-  HTMLArea.addDom0Event(window, 'resize', function(e) { editor.sizeEditor(); });
 
   // why can't we use the following line instead ?
 //  this.notifyOn('panel_change',this.sizeEditor);
@@ -2227,18 +2217,22 @@ HTMLArea.prototype.initIframe = function()
   this.setEditorEvents();
 };
   
-/** Delay a function until the document is ready for operations.  See ticket:547 */
-HTMLArea.prototype.whenDocReady = function(doFunction)
+/**
+ * Delay a function until the document is ready for operations.
+ * See ticket:547
+ * @param {object} F (Function) The function to call once the document is ready
+ * @public
+ */
+HTMLArea.prototype.whenDocReady = function(F)
 {
-  var editor = this;  
-  
-  if ( !this._doc.body )
+  var E = this;
+  if ( this._doc && this._doc.body )
   {
-    setTimeout(function() { editor.whenDocReady(doFunction); }, 50);
+    F();
   }
   else
   {
-    doFunction();
+    setTimeout(function() { E.whenDocReady(F); }, 50);
   }
 };
 
@@ -2385,6 +2379,8 @@ HTMLArea.prototype.setEditorEvents = function()
       {
         editor._onGenerate();
       }
+
+      HTMLArea.addDom0Event(window, 'resize', function(e) { editor.sizeEditor(); });
       editor.removeLoadingMessage();
     }
   );
@@ -2476,31 +2472,7 @@ HTMLArea.loadPlugin = function(pluginName, callback)
   var plugin = pluginName.replace(/([a-z])([A-Z])([a-z])/g, function (str, l1, l2, l3) { return l1 + "-" + l2.toLowerCase() + l3; }).toLowerCase() + ".js";
   var plugin_file = dir + "/" + plugin;
 
-  if ( callback )
-  {
-    HTMLArea._loadback(plugin_file, function() { callback(pluginName); });
-  }
-  else
-  {
-    /**
-    * @todo : try to avoid the use of document.write, it's evil
-    * @todo : better yet, try to update HTMLArea._loadback to let it include
-    *         the file without a callback function
-    *  try
-    *  {
-    *    var head = document.getElementsByTagName('head')[0];
-    *    var script = document.createElement('script');
-    *    script.type = "text/javascript";
-    *    script.src = plugin_file;
-    *    head.appendChild(script);
-    *  }
-    *  catch(ex)
-    *  {
-    *    document.write('<script type="text/javascript" src="' + plugin_file + '"></script>');
-    *  }
-    */
-    document.write('<script type="text/javascript" src="' + plugin_file + '"></script>');
-  }
+  HTMLArea._loadback(plugin_file, callback ? function() { callback(pluginName); } : null);
   return false;
 };
 
@@ -6467,24 +6439,33 @@ HTMLArea.hasDisplayedChildren = function(el)
   return false;
 };
 
-
-HTMLArea._loadback = function(src, callback)
+/**
+ * Load a javascript file by inserting it in the HEAD tag and eventually call a function when loaded
+ * @param {string} U (Url)      Source url of the file to load
+ * @param {object} C {Callback} Callback function to launch once ready (optional)
+ * @param {object} O (scOpe)    Application scope for the callback function (optional)
+ * @param {object} B (Bonus}    Arbitrary object send as a param to the callback function (optional)
+ * @public
+ */
+HTMLArea._loadback = function(U, C, O, B)
 {
-  var head = document.getElementsByTagName("head")[0];
-  var evt = HTMLArea.is_ie ? "onreadystatechange" : "onload";
-
-  var script = document.createElement("script");
-  script.type = "text/javascript";
-  script.src = src;
-  script[evt] = function()
+  var T = HTMLArea.is_ie ? "onreadystatechange" : "onload";
+  var S = document.createElement("script");
+  S.type = "text/javascript";
+  S.src = U;
+  if ( C )
   {
+    S[T] = function()
+    {
     if ( HTMLArea.is_ie && ! ( /loaded|complete/.test(window.event.srcElement.readyState) ) )
     {
       return;
     }
-    callback();
+      C.call(O ? O : this, B);
+      S[T] = null;
   };
-  head.appendChild(script);
+  }
+  document.getElementsByTagName("head")[0].appendChild(S);
 };
 
 HTMLArea.collectionToArray = function(collection)
@@ -6729,21 +6710,37 @@ HTMLArea.freeLater = function(obj,prop)
   HTMLArea.toFree.push({o:obj,p:prop});
 };
 
-HTMLArea.free = function(obj, prop)
+/**
+ * Release memory properties from object
+ * @param {object} O (Object)   The object to free memory
+ * @param (string} P (Property) The property to release (optional)
+ * @private
+ */
+HTMLArea.free = function(O, P)
 {
-  if ( obj && !prop )
+  if ( O && !P )
   {
-    for ( var p in obj )
+    for ( var p in O )
     {
-      HTMLArea.free(obj, p);
+      HTMLArea.free(O, p);
     }
   }
-  else if ( obj )
+  else if ( O )
   {
+    // is the try...catch really required here ?
     try
     {
-      obj[prop] = null;
-    } catch(ex) {}
+      // if it is the innerHTML property, just do nothing
+      if ( P !== 'innerHTML' )
+      {
+        // need to unhide TD cells before delete them or they will leak in IE
+        if ( O[P] && O[P].tagName && O[P].tagName.toLowerCase() == 'td' )
+        {
+          O[P].style.display = '';
+  }
+        O[P] = null;
+      }
+    } catch(x) {}
   }
 };
 
@@ -6761,6 +6758,7 @@ HTMLArea.collectGarbageForIE = function()
       alert("What is " + x + ' ' + HTMLArea.toFree[x].o);
     }
     HTMLArea.free(HTMLArea.toFree[x].o, HTMLArea.toFree[x].p);
+    HTMLArea.toFree[x].o = null;
   }
 };
 
