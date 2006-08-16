@@ -1,10 +1,12 @@
-    <mm:related path="posrel,tests" constraints="posrel.pos=$testpos">
-      <mm:field name="tests.number" jspvar="this_test" vartype="String" write="false">
-        <mm:node element="tests" id="this_test">
+        <mm:field name="tests.number" jspvar="this_test" vartype="String" write="false">
           <mm:relatednodescontainer path="madetests,copybooks" element="madetests">
             <mm:constraint field="copybooks.number" referid="copybookNo"/>
             <mm:relatednodes>
-              <mm:import id="madetest" reset="true"><mm:field name="number"/></mm:import>
+              <mm:field name="number" jspvar="this_madetest" vartype="String" write="false">
+                <mm:related path="related,problems" constraints="problems.number=$problem_n">
+                  <mm:import id="madetest" reset="true"><%= this_madetest %></mm:import>
+                </mm:related>
+              </mm:field>
             </mm:relatednodes>
           </mm:relatednodescontainer>
           <mm:notpresent referid="madetest">
@@ -16,7 +18,6 @@
             </mm:createnode>
             <mm:createrelation role="related" source="this_test" destination="madetest"/>
             <mm:createrelation role="related" source="copybookNo" destination="madetest"/>
+            <mm:createrelation role="related" source="problem_n" destination="madetest"/>
           </mm:notpresent>
-        </mm:node>
-      </mm:field>
-    </mm:related>
+        </mm:field>
