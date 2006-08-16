@@ -47,8 +47,8 @@
 
          <option id="-2">
             <prompt xml:lang="en">Disabled</prompt>
-            <prompt xml:lang="nl">Gehandicapten</prompt>
-            <prompt xml:lang="fr">Handicape</prompt>
+            <prompt xml:lang="nl">Niet actief</prompt>
+            <prompt xml:lang="fr">Ne pas active</prompt>
          </option>
       </optionlist>
 
@@ -107,30 +107,30 @@
 
    <field name="body" ftype="text">
       <prompt xml:lang="en">body</prompt>
-      <prompt xml:lang="nl">lichaam</prompt>
+      <prompt xml:lang="nl">tekst</prompt>
       <prompt xml:lang="fr">corps</prompt>
    </field>
 
 
    <field name="trigger_type" ftype="enum">
-      <prompt xml:lang="en">Trigger type</prompt>
-      <prompt xml:lang="nl">Het type van trekker</prompt>
-      <prompt xml:lang="fr">Type de declenchement</prompt>
+      <prompt xml:lang="en">trigger type</prompt>
+      <prompt xml:lang="nl">trigger type</prompt>
+      <prompt xml:lang="fr">trigger type</prompt>
 
       <optionlist select="listTriggerType" />
    </field>
 
 
    <field name="senddate" ftype="date">
-      <prompt xml:lang="en">Send Date</prompt>
-      <prompt xml:lang="nl">Verzend Datum</prompt>
-      <prompt xml:lang="fr">Envoyez la date</prompt>
+      <prompt xml:lang="en">send date</prompt>
+      <prompt xml:lang="nl">verzend datum</prompt>
+      <prompt xml:lang="fr">envoyez la date</prompt>
    </field>
 
    <field name="trigger_setting1" ftype="enum">
-      <prompt xml:lang="en">Weeks after last closed lesson</prompt>
-      <prompt xml:lang="nl">Weken na laatste gesloten les</prompt>
-      <prompt xml:lang="fr">Semaines apres derniere lecon fermee</prompt>
+      <prompt xml:lang="en">weeks after last closed lesson</prompt>
+      <prompt xml:lang="nl">weken na laatste gesloten les</prompt>
+      <prompt xml:lang="fr">semaines apres derniere lecon fermee</prompt>
 
       <optionlist select="trigger_setting1" />
    </field>
