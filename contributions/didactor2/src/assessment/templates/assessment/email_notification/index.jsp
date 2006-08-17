@@ -72,7 +72,7 @@
          <mm:listnodes type="email_notifications" orderby="email_notifications.subject">
             <tr class="listcontent">
                <td class="first_cell" style="border-top:0px">
-                  <a href="delete_notification.jsp?notification_to_delete=<mm:field name="number"/>"><img src="../gfx/remove_email_notification.gif"/></a>
+                  <a onClick="return window.confirm('<di:translate key="assessment.email_notification_are_you_sure" />')"  href="delete_notification.jsp?notification_to_delete=<mm:field name="number"/>"><img src="../gfx/remove_email_notification.gif"/></a>
                </td>
                <td class="cell" style="border-top:0px">
                   <a href='<mm:write referid="wizardjsp"/>&wizard=config/email_notification/email_notifications&objectnumber=<mm:field name="number"/>' style="color:#000000; text-decoration:underline">
