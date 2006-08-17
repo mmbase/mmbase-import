@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="pagina">
-   <title>formulier pagina</title>
+   <title>pagina (formulier)</title>
     <description>
       <![CDATA[
 	<h1>Formulier pagina</h1>

@@ -1,19 +1,19 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="pagina">
-   <title>pagina (nieuws en archief)</title>
+   <title>pagina (kiezen en delen boom)</title>
    <description>
       <![CDATA[
-	<h1>Home pagina</h1>
-	Deze editwizard kan worden gebruikt voor het bewerken van de pagina titel en omschrijving en het koppelen van panos aan de pagina.<br/>
-	   ]]>
+	<h1>Kiezen en delen boom</h1>
+	Deze editwizard kan worden gebruikt voor het vullen toevoegen van gebieden aan de kiezen en delen boom.<br/>
+	]]>
    </description>
    <action include="config/pagina/create_pagina.xml"/>
    <action include="config/pagina/delete_pagina.xml"/>
-   <action include="config/pagina/load_pagina_info.xml"/>
+   <action include="config/pagina/load_pagina_nmintra.xml"/>
    <lists>
       <optionlist include="config/option_lists/ja_nee.xml" />
-      <optionlist include="config/option_lists/pages_title.xml" />
+      <optionlist include="config/option_lists/iptree_coordinates.xml" />
    </lists>
    <steps>
       <step form-schema="edit_pagina"/>
@@ -26,5 +26,8 @@
       <field name="omschrijving" ftype="html" rows="20"><prompt>omschrijving</prompt></field>
       <field name="creatiedatum" ftype="data"><prompt>creatiedatum</prompt></field>
       <field name="datumlaatstewijziging" ftype="data"><prompt>datumlaatstewijziging</prompt></field>
+      <list include="config/images/zoek_pagina_posrel_images.xml" />
+      <list include="config/artikel/zoek_iptree_readmore_artikel.xml" />
+		  <list include="config/pagina/zoek_iptree_readmore_pagina.xml" />
    </form-schema> 
 </wizard-schema>

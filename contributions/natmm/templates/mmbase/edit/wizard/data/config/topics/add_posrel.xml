@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<list role="posrel" destination="topics" minoccurs="1" maxoccurs="*" orderby="title"  ordertype="string">
+<list role="posrel" destination="topics" minoccurs="1" maxoccurs="*"
+  orderby="title"  ordertype="string" hidecommand="move-up|move-down">
    <title>onderwerp</title>
    <item>
       <field name="title" ftype="line"><prompt>titel</prompt></field>
