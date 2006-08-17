@@ -75,7 +75,7 @@
                   <a href="delete_notification.jsp?notification_to_delete=<mm:field name="number"/>"><img src="../gfx/remove_email_notification.gif"/></a>
                </td>
                <td class="cell" style="border-top:0px">
-                  <a href='<mm:write referid="wizardjsp"/>&wizard=config/assessment/email_notification&objectnumber=<mm:field name="number"/>' style="color:#000000; text-decoration:underline">
+                  <a href='<mm:write referid="wizardjsp"/>&wizard=config/email_notification/email_notifications&objectnumber=<mm:field name="number"/>' style="color:#000000; text-decoration:underline">
                      <mm:field name="subject"/>
                   </a>
                   &nbsp;
@@ -135,7 +135,7 @@
 </table>
 
 <br/>
-<a href='<mm:write referid="wizardjsp"/>&wizard=config/assessment/email_notification&objectnumber=new'><img src="../gfx/new_email_notification.gif"/></a>
+<a href='<mm:write referid="wizardjsp"/>&wizard=config/email_notification/email_notifications&objectnumber=new'><img src="../gfx/new_email_notification.gif"/></a>
 
 </body>
 
