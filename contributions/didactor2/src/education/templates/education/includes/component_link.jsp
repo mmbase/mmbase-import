@@ -1,5 +1,5 @@
    <mm:related path="rolerel,components">
-      <mm:node element="components">
-         <a href="<%= request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() %>/<mm:field name="name"/>/index.jsp" target="_parent"><mm:field name="name"/></a>
-      </mm:node>
+      <mm:import id="page" reset="true">/<mm:field name="components.name"/>/index.jsp</mm:import>
+      <a href="<mm:treefile page="$page" objectlist="$includePath" referids="$referids"/>" 
+         target="_parent"><mm:field name="components.name"/></a>
    </mm:related>
