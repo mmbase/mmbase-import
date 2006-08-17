@@ -23,10 +23,10 @@
       <field>
          <descriptions/>
          <gui>
-             <guiname xml:lang="nl">Naam</guiname>
-             <guiname xml:lang="fr">Nom</guiname>
-             <guiname xml:lang="en">Name</guiname>
-             <guiname xml:lang="us">Name</guiname>
+             <guiname xml:lang="nl">Categorie</guiname>
+             <guiname xml:lang="fr">Regroupement</guiname>
+             <guiname xml:lang="en">Pool</guiname>
+             <guiname xml:lang="us">Pool</guiname>
              <guitype>string</guitype>
          </gui>
          <editor>
