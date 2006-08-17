@@ -1,11 +1,9 @@
 <?xml version="1.0"?>
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<list role="posrel" destination="images" minoccurs="0" maxoccurs="*" orderby="field[@name='pos']" ordertype="number" >
-	<title>afbeelding</title>
+<list role="posrel" destination="images" minoccurs="0" maxoccurs="1">
+	<title>afbeelding (eerst verwijderen voordat een nieuwe kan worden toegevoegd)</title>
 	<item displaytype="image">
 		<field name="titel" ftype="data"><prompt>titel</prompt></field>
-		<field name="filename" ftype="data"><prompt>filenaam</prompt></field>
-		<field fdatapath="field[@name='pos']" ftype="line" />
 		<field ftype="startwizard" wizardname="config/images/images" />
 	</item>
 	<command name="search" nodepath="images" fields="filename,titel,alt_tekst,titel_de,metatags" orderby="titel" age="-1">
@@ -36,7 +34,7 @@
 	</command>
 	<action type="create">
 		<relation destinationtype="images" role="posrel">
-	      <field name="pos">3</field>
+	      <field name="pos">-1</field>
       </relation>
 	</action>
 </list>

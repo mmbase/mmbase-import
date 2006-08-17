@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="pagina">
-   <title>vacature pagina</title>
+   <title>pagina (vacature)</title>
    <description>
       <![CDATA[
-	<h1>Home pagina</h1>
-	Deze editwizard kan worden gebruikt voor het bewerken van de pagina titel en omschrijving en het koppelen van panos aan de pagina.<br/>
+	<h1>Vacature pagina</h1>
+	Deze editwizard kan worden gebruikt voor het koppelen van vacatures aan de pagina.<br/>
 	   ]]>
    </description>
    <action include="config/pagina/create_pagina.xml"/>

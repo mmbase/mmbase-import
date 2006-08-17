@@ -15,7 +15,7 @@
          <field name="soort">parent</field>
       </object>
    </action>
-   <!-- action include="config/evenement/delete_evenement.xml"/ -->
+   <action include="config/evenement/delete_evenement.xml"/>
    <action include="config/evenement/load_evenement.xml"/>
    <lists>
       <optionlist include="config/option_lists/ja_nee.xml" />
@@ -49,7 +49,7 @@
        <title>Indeling</title>
        <field name="titel" ftype="data"><prompt>naam</prompt></field>
        <list include="config/evenement_type/zoek_evenement_related_evenement_type.xml" />
-       <list include="config/deelnemers_categorie/zoek_evenement_posrel_deelnemers_categorie.xml" />
+       <list include="config/deelnemers_categorie/zoek_evenement_posrel_deelnemers_categorie_nopos.xml" />
        <list include="config/deelnemers_age/zoek_evenement_posrel_deelnemers_age.xml" />
        <list include="config/natuurgebieden_type/zoek_evenement_related_natuurgebieden_type.xml" />
        <list include="config/evenement_duration/zoek_evenement_related_evenement_duration.xml" />
