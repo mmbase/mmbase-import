@@ -14,41 +14,51 @@
 
    <mm:node number="component.assessment" notfound="skip">
 
-      <mm:node number="$user">
-         <mm:related path="classes,educations,components,providers" constraints="providers.number=$provider AND components.name='assessment'" max="1">
-            <mm:node element="educations">
-               <mm:import id="link_education"><mm:field name="number"/></mm:import>
-            </mm:node>
-            <mm:node element="classes">
-               <mm:import id="link_class"><mm:field name="number"/></mm:import>
-            </mm:node>
-         </mm:related>
-      </mm:node>
+      <mm:import id="there_is_a_link">false</mm:import>
+
+      <mm:notpresent referid="eduation">
+         <mm:node number="$user">
+            <mm:related path="classrel,classes,classrel,educations,related,providers,settingrel,components" constraints="providers.number=$provider AND components.name='assessment'" max="1">
+               <mm:node element="educations">
+                  <mm:import id="link_education"><mm:field name="number"/></mm:import>
+               </mm:node>
+               <mm:node element="classes">
+                  <mm:import id="link_class"><mm:field name="number"/></mm:import>
+               </mm:node>
+               <mm:import id="there_is_a_link" reset="true">true</mm:import>
+            </mm:related>
+         </mm:node>
+      </mm:notpresent>
+      <mm:present referid="education">
+         <mm:import id="link_education"><mm:write referid="education"/></mm:import>
+         <mm:import id="link_class"><mm:write referid="class"/></mm:import>
+         <mm:import id="there_is_a_link" reset="true">true</mm:import>
+      </mm:present>
 
 
-      <div class="menuSeperator"> </div>
-      <div class="menuItem">
-         <a href='<mm:treefile page="/assessment/index.jsp" objectlist="$includePath" referids="provider?">
-                     <mm:param name="class"><mm:write referid="link_class"/></mm:param>
-                     <mm:param name="education"><mm:write referid="link_education"/></mm:param>
-                  </mm:treefile>' class="menubar"><di:translate key="assessment.education_menu_item_assessment" /></a>
-      </div>
+      <mm:compare referid="there_is_a_link" value="true">
+         <div class="menuSeperator"> </div>
+         <div class="menuItem">
+            <a href='<mm:treefile page="/assessment/index.jsp" objectlist="$includePath" referids="provider?">
+                        <mm:param name="class"><mm:write referid="link_class"/></mm:param>
+                        <mm:param name="education"><mm:write referid="link_education"/></mm:param>
+                     </mm:treefile>' class="menubar"><di:translate key="assessment.education_menu_item_assessment" /></a>
+         </div>
 
 
+         <div class="menuSeperator"> </div>
+         <div class="menuItem">
+            <a href='<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="provider?">
+                        <mm:param name="class"><mm:write referid="link_class"/></mm:param>
+                        <mm:param name="education"><mm:write referid="link_education"/></mm:param>
+                        <mm:param name="frame"><mm:url referids="provider" page="../assessment/mail_to_coach.jsp">
+                              <mm:param name="class"><mm:write referid="link_class"/></mm:param>
+                              <mm:param name="education"><mm:write referid="link_education"/></mm:param>
+                           </mm:url></mm:param>
+                     </mm:treefile>' class="menubar"><di:translate key="assessment.education_menu_item_mail_to_coach" /></a>
+         </div>
 
-      <div class="menuSeperator"> </div>
-      <div class="menuItem">
-         <a href='<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="provider?">
-                     <mm:param name="class"><mm:write referid="link_class"/></mm:param>
-                     <mm:param name="education"><mm:write referid="link_education"/></mm:param>
-                     <mm:param name="frame"><mm:url referids="provider" page="../assessment/mail_to_coach.jsp">
-                           <mm:param name="class"><mm:write referid="link_class"/></mm:param>
-                           <mm:param name="education"><mm:write referid="link_education"/></mm:param>
-                        </mm:url></mm:param>
-                  </mm:treefile>' class="menubar"><di:translate key="assessment.education_menu_item_mail_to_coach" /></a>
-      </div>
-
-
+      </mm:compare>
 
    </mm:node>
 
