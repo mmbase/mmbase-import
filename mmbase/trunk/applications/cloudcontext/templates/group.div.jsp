@@ -4,15 +4,15 @@
       <%=getPrompt(m,"current_group")%>: <mm:nodeinfo type="gui" />
     </p>
   </div>
-  
+
   <div class="users">
-   <mm:relatednodes id="user" searchdir="destination" role="contains" type="mmbaseusers">
+   <mm:relatednodes id="user" searchdir="destination" role="contains" type="mmbaseusers" orderby="username">
      <mm:first>Users: </mm:first>
      <a href="<mm:url referids="parameters,$parameters,user"><mm:param name="url">edit_user.jsp</mm:param></mm:url>"><mm:nodeinfo type="gui" /></a>
      <mm:last inverse="true">, </mm:last>
    </mm:relatednodes>
  </div>
- 
+
 
  <div class="rights">
    <form method="post" action="<mm:url referids="parameters,$parameters"><mm:param name="url">commit_group.jsp</mm:param></mm:url>">
@@ -31,10 +31,10 @@
      <td><%=getPrompt(m,"parent_groups")%></td>
      <td>
       <select name="_parentgroups"  size="15" multiple="multiple">
-        <mm:relatednodes id="ingroups" type="mmbasegroups" searchdir="source">
+        <mm:relatednodes id="ingroups" type="mmbasegroups" searchdir="source" orderby="name">
          <option selected="selected" value="<mm:field name="number" />"><mm:nodeinfo type="gui" /></option>
         </mm:relatednodes>
-        <mm:unrelatednodes type="mmbasegroups" searchdir="both" excludeself="true">
+        <mm:unrelatednodes type="mmbasegroups" searchdir="both" excludeself="true" orderby="name">
          <option value="<mm:field name="number" />"><mm:nodeinfo type="gui" /></option>
         </mm:unrelatednodes>
       </select>
@@ -47,10 +47,10 @@
      <td><%=getPrompt(m,"child_groups")%></td>
      <td>
       <select name="_childgroups"  size="15" multiple="multiple">
-        <mm:relatednodes id="fromgroups" type="mmbasegroups" searchdir="destination">
+        <mm:relatednodes id="fromgroups" type="mmbasegroups" searchdir="destination" orderby="name">
          <option selected="selected" value="<mm:field name="number" />"><mm:nodeinfo type="gui" /></option>
         </mm:relatednodes>
-        <mm:unrelatednodes type="mmbasegroups" searchdir="both" excludeself="true">
+        <mm:unrelatednodes type="mmbasegroups" searchdir="both" excludeself="true" orderby="name">
          <option value="<mm:field name="number" />"><mm:nodeinfo type="gui" /></option>
         </mm:unrelatednodes>
       </select>
