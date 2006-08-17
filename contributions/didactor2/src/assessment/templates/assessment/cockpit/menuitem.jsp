@@ -41,12 +41,10 @@
          <a href='<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="provider?">
                      <mm:param name="class"><mm:write referid="link_class"/></mm:param>
                      <mm:param name="education"><mm:write referid="link_education"/></mm:param>
-                     <mm:param name="frame">
-                        <mm:url referids="provider" page="../assessment/mail_to_coach.jsp">
+                     <mm:param name="frame"><mm:url referids="provider" page="../assessment/mail_to_coach.jsp">
                            <mm:param name="class"><mm:write referid="link_class"/></mm:param>
                            <mm:param name="education"><mm:write referid="link_education"/></mm:param>
-                        </mm:url>
-                     </mm:param>
+                        </mm:url></mm:param>
                   </mm:treefile>' class="menubar"><di:translate key="assessment.education_menu_item_mail_to_coach" /></a>
       </div>
 
