@@ -17,17 +17,17 @@
           <mm:related path="related,problems,posrel,people" constraints="<%= "people.number=" + ownerId %>"
               fields="problems.number" distinct="true">
             <mm:field name="problems.number" jspvar="problemId" vartype="String" write="false">
-              <mm:list nodes="<%= problemId %>" path="problems,posrel,learnblocks" 
-                  constraints="<%= "learnblocks.number=" + lessonId %>" fields="posrel.pos">
-                <img src="<mm:treefile page="/assessment/gfx/plus.gif" objectlist="$includePath" 
-                     referids="$referids"/>" border="0" title="<di:translate key="assessment.show_problem" />"
-                     alt="<di:translate key="assessment.show_problem" />" 
-                     onClick="toggle(<%= problemId %>);" id="toggle_image<%= problemId %>"/>
-                <mm:field name="problems.name" jspvar="dummy" vartype="String" write="false">
-                  <b><%= ( "".equals(dummy) ? "&nbsp;" : dummy ) %></b>
-                </mm:field><br/>
-                <div id="toggle_div<%=problemId %>" style="padding-left:15px; display:none">
-                  <% int rating = -1; // not rated %>
+              <img src="<mm:treefile page="/assessment/gfx/plus.gif" objectlist="$includePath" 
+                   referids="$referids"/>" border="0" title="<di:translate key="assessment.show_problem" />"
+                   alt="<di:translate key="assessment.show_problem" />" 
+                   onClick="toggle(<%= problemId %>);" id="toggle_image<%= problemId %>"/>
+              <mm:field name="problems.name" jspvar="dummy" vartype="String" write="false">
+                <b><%= ( "".equals(dummy) ? "&nbsp;" : dummy ) %></b>
+              </mm:field><br/>
+              <div id="toggle_div<%=problemId %>" style="padding-left:15px; display:none">
+                <% int rating = -1; // not rated %>
+                <mm:list nodes="<%= problemId %>" path="problems,posrel,learnblocks" 
+                    constraints="<%= "learnblocks.number=" + lessonId %>" fields="posrel.pos">
                   <mm:field name="posrel.pos" jspvar="problem_weight" vartype="Integer" write="false">
                   <%
                     try {
@@ -35,16 +35,18 @@
                     }
                     catch (Exception e) {
                     }
-                    if (rating < 0) {
-                      %>&nbsp;<%
-                    } else {
-                      %>
-                      <di:translate key="assessment.how_much_trouble" /> <%=problemWeights[rating]%><%
-                    }
                   %>
                   </mm:field>
-                </div>
-              </mm:list>
+                </mm:list>
+                <di:translate key="assessment.how_much_trouble" />
+                <%
+                  if (rating < 0) {
+                    %><di:translate key="assessment.not_filled_in" /><%
+                  } else {
+                    %><%=problemWeights[rating]%><%
+                  }
+                %>
+              </div>
             </mm:field>
           </mm:related>
         </td>
