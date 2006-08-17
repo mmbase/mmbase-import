@@ -8,7 +8,7 @@ public String getProblemsByType(Cloud cloud, String typeId, String user) {
                                        "posrel.pos",null,null,true);
    String problems = null;
    for(int n=0; n<nlProblems.size(); n++) {
-     sbObjects.append(',');
+     if (n>0) { sbObjects.append(','); }
      sbObjects.append(nlProblems.getNode(n).getStringValue("problems.number"));
    }
    return sbObjects.toString();
