@@ -2,7 +2,6 @@
 <!DOCTYPE module PUBLIC "-//MMBase//DTD module config 1.0//EN" "http://www.mmbase.org/dtd/module_1_0.dtd">
 <module maintainer="mmbase.org" version="0">
   <status>active</status>
-
   <classfile>org.mmbase.applications.crontab.modules.JCrontabModule</classfile>
   <properties>  
     <!-- 
@@ -16,8 +15,8 @@
     -->  
     <property name="import">0 2 * * *|nl.mmatch.CSVReader|read the uploaded import files</property>
     <property name="notify">0 3 * * *|nl.leocms.evenementen.EventNotifier|send reminder emails for the CAD</property>
-	 <property name="sstats">30 3 * * *|nl.leocms.util.tools.SimpleStats|write statistics from application to object cloud</property>
-	 <property name="update">0 4 * * *|nl.leocms.content.UpdateUnusedElements|update the list of unused elements for each user</property>
+	  <property name="sstats">20 3 * * *|nl.leocms.util.tools.SimpleStats|write statistics from application to object cloud</property>
+    <property name="google">40 3 * * *|nl.leocms.connectors.Google.output.sitemap.SiteMapGenerator|writes google sitemap to root dir</property>
+	  <property name="update">0 4 * * *|nl.leocms.content.UpdateUnusedElements|update the list of unused elements for each user</property>
   </properties>
- 
 </module>
