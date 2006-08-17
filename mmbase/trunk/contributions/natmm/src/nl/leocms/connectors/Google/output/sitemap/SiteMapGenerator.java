@@ -34,30 +34,27 @@ public class SiteMapGenerator implements Runnable{
 
       String sSiteUrl = NatMMConfig.liveUrl[0].substring(0,NatMMConfig.liveUrl[0].length()-1);
 
-      String sNatuurherstelNumber = cloud.getNodeByAlias("natuurherstel").getStringValue("number");
       NodeList nlRubrieks = cloud.getList(cloud.getNodeByAlias("root").getStringValue("number"),
-      "rubriek1,parent,rubriek2","rubriek2.number,rubriek2.url",null,null,null,null,true);
+        "rubriek,parent,rubriek2","rubriek2.number,rubriek2.url,rubriek2.naam",null,null,null,"DESTINATION",true);
       for (int i = 0; i < nlRubrieks.size(); i++){
          String sUrlName = nlRubrieks.getNode(i).getStringValue("rubriek2.url");
          if (sUrlName!=null&&sUrlName.indexOf(".")>-1){
             String sXMLName = getXMLName(sUrlName);
             String sContent = rubriekRun(cloud,
-                                         nlRubrieks.getNode(i).
-                                         getStringValue("rubriek2.number"),
+                                         nlRubrieks.getNode(i).getStringValue("rubriek2.number"),
                                          rubriekHelper, ph, nowSec,
-                                         quarterOfAnHour, sSiteUrl,
-                                         sNatuurherstelNumber);
+                                         quarterOfAnHour, sSiteUrl);
             sContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                "<urlset xmlns=\"http://www.google.com/schemas/sitemap/0.84\">\n\n" +
                sContent + "\n</urlset>";
             writingFile(NatMMConfig.rootDir + "/sitemap_" + sXMLName, sContent);
             createGZFile("sitemap_" + sXMLName);
-            sAllContent += "<sitemap>\n\t\t<loc>" + sSiteUrl + "/sitemap_" +
-               sXMLName + ".gz</loc>\n\t\t";
-            File f = new File(NatMMConfig.rootDir + "/sitemap_" + sXMLName +
-                              ".gz");
+            sAllContent += "<sitemap>\n\t\t<loc>" + sSiteUrl + "/sitemap_" + sXMLName + ".gz</loc>\n\t\t";
+            File f = new File(NatMMConfig.rootDir + "/sitemap_" + sXMLName + ".gz");
             long lm = f.lastModified();
             sAllContent += getLastmod(lm) + "\t</sitemap>\n\t";
+         } else {
+            log.info("Rubriek " + nlRubrieks.getNode(i).getStringValue("rubriek2.naam") + " does not contain a valid url");
          }
 
       }
@@ -68,39 +65,14 @@ public class SiteMapGenerator implements Runnable{
    }
 
    String rubriekRun (Cloud cloud, String rootID, RubriekHelper rubriekHelper, PaginaHelper ph,
-                    long nowSec, int quarterOfAnHour, String url, String sNatuurherstelNumber){
+                    long nowSec, int quarterOfAnHour, String url){
+
+      log.info("rubriekRun for " + rootID);
       TreeSet ts = new TreeSet();
       TreeMap [] nodesAtLevel = new TreeMap[10];
       nodesAtLevel[0] = new TreeMap();
       nodesAtLevel[0].put(new Integer(0),rootID);
       int depth = 0;
-
-      if (rootID.equals(sNatuurherstelNumber)){
-         //adding first page for natuurherstel
-         NodeList nlJumpers = cloud.getNodeManager("jumpers").getList("jumpers.name = 'natuurherstel'",null,null);
-         if (nlJumpers.size()>0){
-            String sTemplate = nlJumpers.getNode(0).getStringValue("url");
-            String sNewUrl = url + sTemplate;
-            if (bUrlIsAlive(sNewUrl)){
-               int iLastSlashIndex = sTemplate.lastIndexOf("/");
-               if (iLastSlashIndex>-1){
-                  sTemplate = sTemplate.substring(iLastSlashIndex+1);
-               }
-               NodeList nlPagina = cloud.getList("","paginatemplate,gebruikt,pagina","pagina.number",
-               "paginatemplate.url = '" + sTemplate + "'",null,null,null,true);
-               if (nlPagina.size()>0){
-                  String sPaginaNumber = nlPagina.getNode(0).getStringValue("pagina.number");
-                  String sUrl = "\t<url>\n\t\t<loc>" + sNewUrl
-                     + "</loc>\n\t\t" + getLastmod(cloud, sPaginaNumber) +
-                     "\t\t" + getChangefreq(cloud, sPaginaNumber, nowSec) +
-                     "\t\t<priority>" + FormattedPriority(1) +
-                     "</priority>\n\t</url>\n";
-                  ts.add(sUrl);
-               }
-            }
-         }
-      }
-
 
       while(depth>-1&&depth<10) {
          String lastSubObject = "";
@@ -200,9 +172,9 @@ public class SiteMapGenerator implements Runnable{
                      articles.remove(thisArticle);
                   }
 
-                  //finding links to natuurgebinden
-                  String sNatuurgebindenPath = "pagina,contentrel,provincies,pos4rel,natuurgebieden";
-                  NodeList nlNatuurgebieden = cloud.getList(sThisObject,sNatuurgebindenPath,
+                  //finding links to natuurgebieden
+                  String sNatuurgebiedenPath = "pagina,contentrel,provincies,pos4rel,natuurgebieden";
+                  NodeList nlNatuurgebieden = cloud.getList(sThisObject,sNatuurgebiedenPath,
                   "natuurgebieden.number","natuurgebieden.bron!=''","natuurgebieden.bron","down",null,true);
                   for (int i = 0; i < nlNatuurgebieden.size(); i++){
                      if (bUrlIsAlive(url + ph.createItemUrl(nlNatuurgebieden.getNode(i).getStringValue("natuurgebieden.number"),sThisObject,null,""))){
@@ -260,6 +232,7 @@ public class SiteMapGenerator implements Runnable{
    }
 
    void writingFile(String sFileName, String sContent){
+      log.info("writingFile " + sFileName);
       try {
          File file = new File(sFileName);
          if (file.exists()) {
@@ -275,7 +248,6 @@ public class SiteMapGenerator implements Runnable{
       } catch (Exception e){
          log.info(e.toString());
       }
-
    }
 
    String getXMLName(String sUrl){
@@ -288,6 +260,7 @@ public class SiteMapGenerator implements Runnable{
    }
 
    void createGZFile(String sFileName) {
+      log.info("createGZFile " + sFileName);
       try {
          File f = new File(NatMMConfig.rootDir + "/" + sFileName);
          int bytesIn = 0;
