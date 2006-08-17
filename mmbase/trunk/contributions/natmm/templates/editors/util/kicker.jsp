@@ -13,6 +13,7 @@
 		<a href="kicker.jsp?a=unuseditems">UpdateUnusedElements</a><br/>
 		<a href="kicker.jsp?a=csvreader">CSVReader</a><br/>
 		<a href="kicker.jsp?a=eventnotifier">EventNotifier</a><br/>
+		<a href="kicker.jsp?a=google">SiteMapGenerator</a><br/>
 	</mm:compare>
 	<mm:compare referid="a" value="unuseditems">
 		<% (new nl.leocms.content.UpdateUnusedElements()).run(); %>
@@ -22,6 +23,9 @@
 	</mm:compare>
 	<mm:compare referid="a" value="eventnotifier">
 		<% (new nl.leocms.evenementen.EventNotifier()).run(); %>
+	</mm:compare>
+	<mm:compare referid="a" value="google">
+		<% (new nl.leocms.connectors.Google.output.sitemap.SiteMapGenerator()).run(); %>
 	</mm:compare>
 </body>
 </html>
