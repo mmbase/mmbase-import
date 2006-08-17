@@ -39,7 +39,7 @@ if(!articleId.equals("-1")) {
       </tr>
       <tr>
          <td class="transperant" colspan="2" style="padding:10px;padding-top:18px;">
-         <div class="<%= infopageClass %>">
+         <div class="<%= infopageClass %>" id="infopage">
          <div class="pageheader"><mm:field name="titel"/></div>
          <% if(!postingStr.equals("|action=print")) { %>
             <div align="right" style="letter-spacing:1px;"><a href="javascript:history.go(-1);">terug</a>&nbsp/&nbsp;<a target="_blank" href="ipage.jsp<%= 
@@ -111,14 +111,14 @@ if(!articleId.equals("-1")) {
    </tr>
    <tr>
    <td class="transperant">
-   <div class="<%= infopageClass %>">
+   <div class="<%= infopageClass %>" id="infopage">
    <table border="0" cellpadding="0" cellspacing="0">
        <tr><td style="padding:10px;padding-top:18px;">
        <%@include file="includes/relatedteaser.jsp" %>
        <% // delete the expired vacatures %>
        <mm:list nodes="<%= paginaID %>" path="pagina,contentrel,vacature" fields="vacature.number" orderby="vacature.embargo" directions="DOWN"
                 constraints="<%= "vacature.verloopdatum < '" + nowSec + "'" %>"> 
-            ><mm:deletenode element="contentrel" />
+            <mm:deletenode element="contentrel" />
        </mm:list>
        <% // show vacatures the vacatures that passed their embargo %>
        <mm:list nodes="<%= paginaID %>" path="pagina,contentrel,vacature" fields="vacature.number"
@@ -151,7 +151,7 @@ if(!articleId.equals("-1")) {
    
    // *********************************** right bar *******************************
    %><td><%@include file="includes/whiteline.jsp" 
-   %><div class="smoelenboeklist" style="height:478px;">
+   %><div class="rightcolumn" id="rightcolumn">
       <table cellpadding="0" cellspacing="0">
          <tr>
             <td style="padding-bottom:10px;padding-left:19px;padding-right:9px;">

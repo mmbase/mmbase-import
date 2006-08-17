@@ -16,7 +16,7 @@ if(!articleId.equals("-1")) {
    </tr>
    <tr>
    <td colspan="2" class="transperant" valign="top">
-   <div class="<%= infopageClass %>">
+   <div class="<%= infopageClass %>" id="infopage">
       <table border="0" cellpadding="0" cellspacing="0"><tr><td style="width:550px;">
       <table border="0" cellpadding="0" cellspacing="0">
          <tr><td style="padding:10px;padding-top:18px;">

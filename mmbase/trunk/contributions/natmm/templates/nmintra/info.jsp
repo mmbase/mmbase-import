@@ -4,7 +4,6 @@
 <%@include file="includes/templateheader.jsp" %>
 <%@include file="includes/calendar.jsp" %>
 <%@include file="includes/cacheparams.jsp" %>
-<cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
 <%
 if(!articleId.equals("-1")) { 
    String articleTemplate = "article.jsp" + templateQueryString;
@@ -12,12 +11,13 @@ if(!articleId.equals("-1")) {
    <mm:present referid="newsletter_layout">
       <% articleTemplate = "news.jsp" + templateQueryString; %>
    </mm:present>
-	<% response.sendRedirect(articleTemplate); %>
-   <%--jsp:include page="<%= articleTemplate %>" /--%>
+	 <mm:redirect page="<%= articleTemplate %>" />
    <%
 
 } else {  
-      
+    %>
+    <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
+    <%
       int objectPerPage = 10;
       int thisOffset = 1;
       try{
@@ -70,7 +70,7 @@ if(!articleId.equals("-1")) {
       </tr>
       <tr>
       <td class="transperant">
-      <div class="<%= infopageClass %>">
+      <div class="<%= infopageClass %>" id="infopage">
       <table border="0" cellpadding="0" cellspacing="0">
         <tr><td colspan="3"><img src="media/spacer.gif" width="1" height="8"></td></tr>
         <tr><td><img src="media/spacer.gif" width="10" height="1"></td>
@@ -94,7 +94,7 @@ if(!articleId.equals("-1")) {
                   }
                   articleConstraint += ")";
                 }
-					 String sTemplateUrl = "info.jsp";
+                String sTemplateUrl = "info.jsp";
                 String extTemplateQueryString = templateQueryString; 
                 if(!periodId.equals("")){ extTemplateQueryString += "&d=" + periodId; }
                 int listSize = 0; 
@@ -138,9 +138,9 @@ if(!articleId.equals("-1")) {
       </div>
       </td><td><%
       // *************************************** right bar *******************************
-      %><%@include file="includes/info/relatedpools.jsp" %></td><%
+      %><%@include file="includes/info/relatedpools.jsp" %></td>
+      <%@include file="includes/footer.jsp" %>
+      </cache:cache><%
 } 
 %>
-<%@include file="includes/footer.jsp" %>
-</cache:cache>
 </mm:cloud>

@@ -53,13 +53,13 @@
    HashSet hsetTeaserNodes = new HashSet();
    HashSet hsetProducctypesNodes = new HashSet();
    HashSet hsetProductsNodes = new HashSet();
-	HashSet hsetItemsNodes = new HashSet();
-	HashSet hsetDocumentsNodes = new HashSet();
-	HashSet hsetVacatureNodes = new HashSet();
-	HashSet hsetAttachmentsParagraafNodes = new HashSet();
-	HashSet hsetAttachmentsContentblocksNodes = new HashSet();
-	HashSet hsetAttachmentsItemsNodes = new HashSet();
-	HashSet hsetAttachmentsVacaturesNodes = new HashSet();
+	 HashSet hsetItemsNodes = new HashSet();
+	 HashSet hsetDocumentsNodes = new HashSet();
+	 HashSet hsetVacatureNodes = new HashSet();
+	 HashSet hsetAttachmentsParagraafNodes = new HashSet();
+	 HashSet hsetAttachmentsContentblocksNodes = new HashSet();
+	 HashSet hsetAttachmentsItemsNodes = new HashSet();
+	 HashSet hsetAttachmentsVacaturesNodes = new HashSet();
 
    LuceneModule mod = (LuceneModule) Module.getModule("lucenemodule");
    if(mod!= null) {
@@ -78,7 +78,7 @@
 	</tr>
 	<tr>
 	<td class="transperant">
-	<div class="<%= infopageClass %>">
+	<div class="<%= infopageClass %>" id="infopage">
    <table border="0" cellpadding="0" cellspacing="0">
         <tr><td colspan="3"><img src="media/spacer.gif" width="1" height="8"></td></tr>
         <tr><td><img src="media/spacer.gif" width="10" height="1"></td>

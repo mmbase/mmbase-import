@@ -32,19 +32,22 @@
     <mm:last></table><br/><br/></mm:last> 
 </mm:relatednodes>
 <mm:notpresent referid="attachmentfound">
-   <a href="<%= readmoreUrl %><% if(!postingStr.equals("")) { %>&pst=|action=noprint<% } 
-       %>"><div class="pageheader"><%= article_title %></div>
-   <%@include file="../poolanddate.jsp" %><%
-   String summary = ""; 
-   if(article_introduction!=null) {
-           summary = article_introduction; 
-           summary = HtmlCleaner.cleanText(summary,"<",">");
-           int spacePos = summary.indexOf(" ",200); 
-           if(spacePos>-1) { 
-               summary =summary.substring(0,spacePos);
-           } 
-   }
-   %><span class="normal"><%= summary   %> ... >></span></a><br/><br/>
+   <a href="<%= readmoreUrl %><% if(!postingStr.equals("")) { %>&pst=|action=noprint<% }%>">
+      <div class="pageheader"><%= article_title %></div>
+   </a>
+   <a href="<%= readmoreUrl %><% if(!postingStr.equals("")) { %>&pst=|action=noprint<% } %>" class="hover">
+     <%@include file="../poolanddate.jsp" %><%
+     String summary = ""; 
+     if(article_introduction!=null) {
+             summary = article_introduction; 
+             summary = HtmlCleaner.cleanText(summary,"<",">");
+             int spacePos = summary.indexOf(" ",200); 
+             if(spacePos>-1) { 
+                 summary =summary.substring(0,spacePos);
+             } 
+     }
+     %><span class="normal"><%= summary   %> ... >></span>
+   </a><br/><br/>
 </mm:notpresent>
 </mm:field>
 </mm:field>

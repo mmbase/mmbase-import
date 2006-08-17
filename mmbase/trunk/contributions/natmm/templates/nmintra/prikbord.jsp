@@ -108,7 +108,7 @@ if(isPosting) {
 	</tr>
 	<tr>
 	<td class="transperant">
-		<div class="<%= infopageClass %>">
+		<div class="<%= infopageClass %>" id="infopage">
 		<%
 		if(isPosting && expiredateId.equals("")) {
 		
