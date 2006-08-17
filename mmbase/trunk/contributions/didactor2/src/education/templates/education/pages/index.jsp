@@ -50,6 +50,8 @@
 </mm:node>
 
 
+<%@include file="../includes/descriptionrel_link.jsp"%>
+
 <mm:node number="$learnobject" jspvar="nodeLearnObject">
    <%@include file="../includes/component_link.jsp"%>
 </mm:node>
