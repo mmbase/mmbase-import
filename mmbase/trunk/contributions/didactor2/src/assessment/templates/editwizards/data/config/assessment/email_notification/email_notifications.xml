@@ -29,26 +29,34 @@
          <!-- yes should be on top, because it is the default -->
          <option id="0">
             <prompt xml:lang="en">Date</prompt>
-            <prompt xml:lang="nl">Datum</prompt>
-            <prompt xml:lang="fr">Date</prompt>
+            <!--
+               <prompt xml:lang="nl">Datum</prompt>
+               <prompt xml:lang="fr">Date</prompt>
+            -->
          </option>
 
          <option id="1">
             <prompt xml:lang="en">Number of inactive weeks</prompt>
-            <prompt xml:lang="nl">Aantal inactieve weken</prompt>
-            <prompt xml:lang="fr">Nombre de semaines inactives</prompt>
+            <!--
+               <prompt xml:lang="nl">Aantal inactieve weken</prompt>
+               <prompt xml:lang="fr">Nombre de semaines inactives</prompt>
+             -->
          </option>
 
          <option id="-1">
             <prompt xml:lang="en">Already sent</prompt>
-            <prompt xml:lang="nl">Reeds verzonden</prompt>
-            <prompt xml:lang="fr">Deja envoye</prompt>
+            <!--
+               <prompt xml:lang="nl">Reeds verzonden</prompt>
+               <prompt xml:lang="fr">Deja envoye</prompt>
+             -->
          </option>
 
          <option id="-2">
             <prompt xml:lang="en">Disabled</prompt>
-            <prompt xml:lang="nl">Niet actief</prompt>
-            <prompt xml:lang="fr">Ne pas active</prompt>
+            <!--
+               <prompt xml:lang="nl">Niet actief</prompt>
+               <prompt xml:lang="fr">Ne pas active</prompt>
+             -->
          </option>
       </optionlist>
 
