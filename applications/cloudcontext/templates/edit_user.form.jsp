@@ -10,10 +10,10 @@
       <td><%=getPrompt(m,"groups")%></td>
       <td>
         <select name="_groups"  size="15" multiple="multiple">
-          <mm:relatednodes id="ingroups" type="mmbasegroups" searchdir="source">
+          <mm:relatednodes id="ingroups" type="mmbasegroups" searchdir="source" orderby="name">
             <option selected="selected" value="<mm:field name="number" />"><mm:nodeinfo type="gui" /></option>
           </mm:relatednodes>
-          <mm:unrelatednodes type="mmbasegroups" searchdir="source" role="contains">
+          <mm:unrelatednodes type="mmbasegroups" searchdir="source" role="contains" orderby="name">
             <option value="<mm:field name="number" />"><mm:nodeinfo type="gui" /></option>
           </mm:unrelatednodes>
         </select>
@@ -28,10 +28,10 @@
       <td><%=getPrompt(m,"rank")%></td>
       <td>
         <select name="_rank" size="15">
-          <mm:relatednodes type="mmbaseranks">
+          <mm:relatednodes type="mmbaseranks" orderby="name">
             <option selected="selected" value="<mm:field name="number" />"><mm:nodeinfo type="gui" /></option>
           </mm:relatednodes>
-          <mm:unrelatednodes type="mmbaseranks">
+          <mm:unrelatednodes type="mmbaseranks" orderby="name">
             <option value="<mm:field name="number" />"><mm:nodeinfo type="gui" /></option>
           </mm:unrelatednodes>
         </select>

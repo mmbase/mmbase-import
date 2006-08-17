@@ -22,7 +22,7 @@
    <table class="rights">
     <tr><th><%=getPrompt(m, "groups")%></th><mm:stringlist referid="operations"><th><mm:write /></th></mm:stringlist></tr>
     <mm:functioncontainer>
-    <mm:listnodes id="thisgroup" type="mmbasegroups">
+    <mm:listnodes id="thisgroup" type="mmbasegroups" orderby="name">
       <mm:param name="grouporuser"><mm:field name="number" /></mm:param>
       <tr><td class="text"><a href="<mm:url referids="parameters,$parameters,thisgroup@group"><mm:param name="url">index_groups.jsp</mm:param></mm:url>"><mm:nodeinfo type="gui" /><mm:field name="description"><mm:isnotempty>(<mm:write />)</mm:isnotempty></mm:field></a></td>
 

@@ -3,7 +3,7 @@
   <tr><th>Contexts</th><mm:stringlist referid="operations"><th><mm:write /></th></mm:stringlist></tr>
   <mm:functioncontainer>
     <mm:param name="grouporuser"><mm:field name="number" /></mm:param>
-    <mm:listnodes id="thiscontext" type="mmbasecontexts">
+    <mm:listnodes id="thiscontext" type="mmbasecontexts" orderby="name">
       <tr>
         <td class="text"><a href="<mm:url referids="parameters,$parameters,thiscontext@context"><mm:param name="url">index_contexts.jsp</mm:param></mm:url>"><mm:nodeinfo type="gui" /><mm:field name="description"><mm:isnotempty>(<mm:write />)</mm:isnotempty></mm:field></a></td>
         <mm:stringlist referid="operations">
@@ -12,7 +12,7 @@
            <mm:booleanfunction name="parentsallow">
              class="parent"
            </mm:booleanfunction>
-           >       
+           >
             <mm:booleanfunction name="maygrant">
               <input type="checkbox" name="<mm:write />:<mm:field name="number" />"
               <mm:booleanfunction name="allows">
