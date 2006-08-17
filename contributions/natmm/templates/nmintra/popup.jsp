@@ -33,7 +33,7 @@ if(cookies!=null){
 </tr>
 <tr>
 <td class="transperant">
-<div class="<%= infopageClass %>">
+<div class="<%= infopageClass %>" id="infopage">
     <mm:list nodes="<%= paginaID %>" path="pagina,posrel,link" max="1"
         ><body onload="javascript:launchCenter('<mm:field name="link.url"
             />', 'popup', <%= screenHeight %>,  <%= screenWidth %>, ',left=0,top=0,scrollbars,resizable=yes<mm:present referid="newwin">,toolbar=yes,menubar=yes</mm:present>');setTimeout('newwin.focus();',250)"></body>

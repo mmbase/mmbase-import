@@ -22,7 +22,7 @@
 </tr>
 <tr>
 <td class="transperant">
-<div class="<%= infopageClass %>">
+<div class="<%= infopageClass %>" id="infopage">
 <table border="0" cellpadding="0" cellspacing="0">
     <tr><td style="padding:10px;padding-top:18px;"><%
     if(!postingStr.equals("|action=print")) {

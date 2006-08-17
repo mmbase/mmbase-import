@@ -9,7 +9,7 @@
 </tr>
 <tr>
 <td colspan="2" class="transperant" valign="top">
-<div class="<%= infopageClass %>">
+<div class="<%= infopageClass %>" id="infopage">
 <table width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr><td style="padding:10px;padding-top:18px;"><%
 // like templateQueryString from templatesettings.jsp, but w/o articleId

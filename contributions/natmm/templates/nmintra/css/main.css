@@ -6,7 +6,7 @@ body {
     line-height: 130%;
     background-repeat: no-repeat;
     font-family: arial, sans-serif;
-    overflow: auto;
+    overflow: hidden;
 }
 p {
    padding: 0px;
@@ -77,27 +77,35 @@ td.transperant {
     font-weight: normal
 }
 a.menuitem:link {
+    text-decoration: none;
     color: #ffffff
 }
 a.menuitem:visited {
+    text-decoration: none;
     color: #ffffff
 }
 a.menuitem:active {
+    text-decoration: none;
     color: #ffffff
 }
 a.menuitem:hover {
+    text-decoration: none;
     color: #f30713
 }
 a.menuitemactive:link {
+    text-decoration: none;
     color: #f30713
 }
 a.menuitemactive:visited {
+    text-decoration: none;
     color: #f30713
 }
 a.menuitemactive:active {
+    text-decoration: none;
     color: #f30713
 }
 a.menuitemactive:hover {
+    text-decoration: none;
     color: #f30713
 }
 a.hover:link {
@@ -125,23 +133,29 @@ a.underlined:hover {
     text-decoration: underline
 }
 a:link {
-    font-weight: bold; color: #000000; text-decoration: none
+    font-weight: bold; color: #000000; text-decoration: underline
 }
 a:visited {
-    font-weight: bold; color: #000000; text-decoration: none
+    font-weight: bold; color: #000000; text-decoration: underline
 }
 a:active {
-    font-weight: bold; color: #000000; text-decoration: none
+    font-weight: bold; color: #000000; text-decoration: underline
 }
 a:hover {
-    font-weight: bold; color: #f30713; text-decoration: none
+    font-weight: bold; color: #f30713; text-decoration: underline
 }
+.ipage { width: 100%; height: 100%; }
 .infopage {
     position: relative; display: block; overflow: auto; width: 100%; height: 499px
 }
-.ipage { width: 100%; height: 100%; }
 .smoelenboeklist {
     display: block; overflow: auto; width: 100%; height: 213px
+}
+.rightcolumn {
+    display: block; overflow: auto; width: 100%; height: 478px
+}
+.linklist {
+    display: block; overflow: auto; width: 100%; height: 176px
 }
 .navlist {
     display: block; overflow: auto; width: 195px; height: 527px

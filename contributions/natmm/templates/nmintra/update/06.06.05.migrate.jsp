@@ -101,8 +101,16 @@
 	5. Changing editwizards because of change in builder<br/>
 	Todo: check with last version of db.
 	<mm:listnodes type="editwizards" constraints="wizard = 'config/educations/wizard'">
-		<mm:setfield name="fields">titel</mm:setfield>
-		<mm:setfield name="orderby">titel</mm:setfield>
+    <mm:field name="name" id="ew_name">
+      <mm:compare referid="ew_name" value="opleidingen">
+        <mm:setfield name="fields">titel</mm:setfield>
+        <mm:setfield name="orderby">titel</mm:setfield>
+      </mm:compare>
+      <mm:compare referid="ew_name" value="pleiding per aanbieder">
+        <mm:setfield name="fields">educations.titel,providers.name</mm:setfield>
+        <mm:setfield name="orderby">providers.name,educations.titel</mm:setfield>
+      </mm:compare>
+    </mm:field>
 	</mm:listnodes>
 	6. Renaming editwizards that should use the default page editor<br/>
 	<mm:createnode type="editwizards" id="def_ew">
@@ -122,7 +130,8 @@
 	<%
 	String [] templateToChange = {
 		"documents.jsp",
-		"docpage.jsp"
+		"docpage.jsp",
+    "event_blueprints.jsp"
 		};
 	for(int i=0; i<templateToChange.length;i++) {
 		%>
@@ -191,7 +200,7 @@
 		<mm:listnodes type="editwizards" constraints="wizard = '/editors/config/terms/terms'">
 			<mm:node id="term_ew">
 				<mm:setfield name="description">Bewerk de begrippen op deze pagina</mm:setfield>
-				<mm:setfield name="wizard">/editors/projects/project_overview.jsp</mm:setfield>
+				<mm:setfield name="wizard">config/terms/terms</mm:setfield>
 				<mm:setfield name="nodepath">pagina,contentrel,terms</mm:setfield>
 				<mm:setfield name="fields">terms.name</mm:setfield>
 				<mm:setfield name="orderby">terms.name</mm:setfield>
@@ -231,7 +240,7 @@
 			%>
 		</mm:field>
 	</mm:listnodes>
-	14. Move news archief to main level<br/>
+	14. Move news archief to seperate rubriek<br/>
 	<mm:listnodes type="rubriek" constraints="naam = 'Home'">
 		<mm:node id="home_rubriek" />
     <mm:listnodes type="users" constraints="account = 'KemperinkM'">
@@ -246,8 +255,17 @@
         <mm:related path="posrel,rubriek">
           <mm:deletenode element="posrel" />
         </mm:related>
-        <mm:createrelation source="natuurmonumente_subsite" destination="archief" role="posrel">
+        <mm:createnode type="rubriek" id="archive_rubriek">
+          <mm:setfield name="naam">Archief</mm:setfield>
+        </mm:createnode>
+        <mm:node number="$archive_rubriek">
+           <mm:createalias>archive</mm:createalias>
+        </mm:node>
+        <mm:createrelation source="natuurmonumente_subsite" destination="archive_rubriek" role="parent">
           <mm:setfield name="pos">99</mm:setfield>
+        </mm:createrelation>
+	      <mm:createrelation source="archive_rubriek" destination="archief" role="posrel">
+          <mm:setfield name="pos">1</mm:setfield>
         </mm:createrelation>
       </mm:node>
     </mm:listnodes>
@@ -318,15 +336,15 @@
 	</mm:listnodes>
 	17. Rename some admin editwizards
 	<mm:listnodes type="editwizards" constraints="wizard = 'config/pools/pools'">
-		<mm:setfield name="nodepath">topics,posrel,pools</mm:setfield>
-		<mm:setfield name="fields">pools.name,topics.title</mm:setfield>
+		<mm:setfield name="nodepath">pools</mm:setfield>
+		<mm:setfield name="fields">pools.name</mm:setfield>
 		<mm:setfield name="orderby">pools.name</mm:setfield>
 	</mm:listnodes>
 	<mm:listnodes type="editwizards" constraints="wizard = 'config/mmbaseusers/mmbaseusers'">
 		<mm:setfield name="wizard">/editors/usermanagement/userlist.jsp</mm:setfield>
 		<mm:setfield name="type">jsp</mm:setfield>
 	</mm:listnodes>
-	18. Rename some education editwizards
+	18. Rename some shop editwizards
 	<mm:listnodes type="editwizards" constraints="wizard = '/editors/config/items/items'">
 		<mm:setfield name="wizard">config/items/items_shop</mm:setfield>
 		<mm:setfield name="nodepath">items</mm:setfield>
@@ -365,6 +383,10 @@
     <mm:createnode type="paginatemplate" id="kb_cat_pt">
       <mm:setfield name="naam">kennisbasis</mm:setfield>
       <mm:setfield name="omschrijving">veelgestelde vragen, pagina moet ook link naar kbase bevatten</mm:setfield>
+      <mm:setfield name="systemtemplate">0</mm:setfield>
+      <mm:setfield name="dynamiclinklijsten">0</mm:setfield>
+      <mm:setfield name="dynamicmenu">0</mm:setfield>
+      <mm:setfield name="contenttemplate">0</mm:setfield>
       <mm:setfield name="url">iframe.jsp</mm:setfield>
     </mm:createnode>
     <mm:createnode type="editwizards" id="kb_cat_ew">
@@ -387,6 +409,22 @@
       <mm:createrelation source="kb_page" destination="kb_q" role="posrel" />
     </mm:listnodes>
   </mm:list>
+  20. Make the iptree wizard relative<br/>
+  <mm:listnodes type="editwizards" constraints="wizard = '/editors/config/pagina/pagina_iptree'">
+		<mm:setfield name="wizard">config/pagina/pagina_iptree</mm:setfield>
+	</mm:listnodes>
+  21. Make the ipmap wizard relative<br/>
+  <mm:listnodes type="editwizards" constraints="wizard = '/editors/config/pagina/pagina_ipmap'">
+		<mm:setfield name="wizard">config/pagina/pagina_ipmap</mm:setfield>
+	</mm:listnodes>
+  22. Rename menu for evenement_bleuprints<br/>
+  <mm:listnodes type="menu" constraints="naam = 'Activiteiten'">
+		<mm:setfield name="naam">Jeugdactiviteiten</mm:setfield>
+	</mm:listnodes>
+  22. Rename menu "Archiefkast" to Contentlementen
+  <mm:listnodes type="menu" constraints="naam = 'Archiefkast'">
+		<mm:setfield name="naam">Contentelementen</mm:setfield>
+	</mm:listnodes>
 	99. Deleting unused editwizards<br/>
 	<%
 	String [] ewToDelete = {
@@ -406,7 +444,6 @@
 		 </mm:listnodes><%
 	}
 	String [] menuToDelete = {
-		"Archiefkast",
 		"Bibliotheek beheer",
 		"Home",
 		"Subrubriek editors",

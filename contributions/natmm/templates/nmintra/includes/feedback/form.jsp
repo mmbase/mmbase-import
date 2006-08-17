@@ -129,7 +129,7 @@ if(!postingStr.equals("")){
    	</tr>
    	<tr>
    		<td style="padding-left:166px;padding-top:10px;padding-bottom:10px;">
-         <% String qStr = request.getParameter();
+         <% String qStr = request.getQueryString();
             int pstPos = qStr.indexOf("&pst=");
             if(pstPos>-1) {
                qStr = qStr.substring(0,pstPos);
