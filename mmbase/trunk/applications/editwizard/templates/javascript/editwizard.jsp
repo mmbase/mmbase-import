@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.61 2006-08-14 07:54:35 pierre Exp $
+ * @version  $Id: editwizard.jsp,v 1.62 2006-08-17 12:30:21 nklasens Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
@@ -345,6 +345,13 @@ function resizeEditTable() {
     else {
        var docHeight = getDimensions().windowHeight;
        document.getElementById("editform").style.height = docHeight - (divTop + divButtonsHeight);
+    }
+    var docWidth = getDimensions().windowWidth;
+    document.getElementById("editform").style.width = docWidth
+       
+    var textareas = document.getElementsByTagName("textarea");
+    for (var i = 0 ; i < textareas.length ; i++) {
+        textareas[i].style.width = docWidth -100;
     }
 }
 
