@@ -2,44 +2,57 @@
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 
 
-<mm:import externid="provider"/>
-<mm:import externid="education"/>
-<mm:import externid="class"/>
-
 
 <mm:cloud method="delegate" jspvar="cloud">
 
+   <%@include file="/shared/setImports.jsp" %>
+
+   <mm:import externid="provider" reset="true"/>
+   <mm:import externid="education" reset="true"/>
+   <mm:import externid="class" reset="true"/>
+
+
    <mm:node number="component.assessment" notfound="skip">
-      <div class="menuSeperator"> </div>
-      <div class="menuItem">
-         <a href='<mm:url referids="provider,education,class" page="<%= request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/assessment/index.jsp" %>"/>' class="menubar"><di:translate key="assessment.education_menu_item_assessment" /></a>
-      </div>
 
+      <mm:node number="$user">
+         <mm:related path="classes,educations,components,providers" constraints="providers.number=$provider AND components.name='assessment'" max="1">
+            <mm:node element="educations">
+               <mm:import id="link_education"><mm:field name="number"/></mm:import>
+            </mm:node>
+            <mm:node element="classes">
+               <mm:import id="link_class"><mm:field name="number"/></mm:import>
+            </mm:node>
+         </mm:related>
+      </mm:node>
 
-      <mm:present referid="education">
-         <mm:import id="education_link" reset="true"><mm:write referid="education" /></mm:import>
-      </mm:present>
-
-      <mm:notpresent referid="education">
-         <mm:import id="education_link" reset="true">-1</mm:import>
-         <mm:node number="component.assessment" id="component_assessment"/>
-         <mm:node number="$provider" notfound="skip">
-            <mm:related path="related,educations,settingrel,components" constraints="components.number=$component_assessment">
-               <mm:import id="education_link" reset="true"><mm:field name="educations.number"/></mm:import>
-            </mm:related>
-         </mm:node>
-      </mm:notpresent>
 
       <div class="menuSeperator"> </div>
       <div class="menuItem">
-         <a href="<mm:url referids="provider,education,class" page="<%= request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/education/index.jsp" %>">
-                     <mm:param name="frame"><mm:url referids="provider,education" page="../assessment/mail_to_coach.jsp"/></mm:param>
-                  </mm:url>"
-         class="menubar"><di:translate key="assessment.education_menu_item_mail_to_coach" /></a>
+         <a href='<mm:treefile page="/assessment/index.jsp" objectlist="$includePath" referids="provider?">
+                     <mm:param name="class"><mm:write referid="link_class"/></mm:param>
+                     <mm:param name="education"><mm:write referid="link_education"/></mm:param>
+                  </mm:treefile>' class="menubar"><di:translate key="assessment.education_menu_item_assessment" /></a>
       </div>
+
+
+
+      <div class="menuSeperator"> </div>
+      <div class="menuItem">
+         <a href='<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="provider?">
+                     <mm:param name="class"><mm:write referid="link_class"/></mm:param>
+                     <mm:param name="education"><mm:write referid="link_education"/></mm:param>
+                     <mm:param name="frame">
+                        <mm:url referids="provider" page="../assessment/mail_to_coach.jsp">
+                           <mm:param name="class"><mm:write referid="link_class"/></mm:param>
+                           <mm:param name="education"><mm:write referid="link_education"/></mm:param>
+                        </mm:url>
+                     </mm:param>
+                  </mm:treefile>' class="menubar"><di:translate key="assessment.education_menu_item_mail_to_coach" /></a>
+      </div>
+
+
+
    </mm:node>
-
-   <mm:remove referid="education_link"/>
 
 </mm:cloud>
 
