@@ -13,7 +13,7 @@
 </tr>
 <tr>
 <td class="transperant">
-<div class="<%= infopageClass %>">
+<div class="<%= infopageClass %>" id="infopage">
 <table border="0" cellpadding="0" cellspacing="0">
     <tr><td colspan="3"><img src="media/spacer.gif" width="1" height="8"></td></tr>
     <tr><td><img src="media/spacer.gif" width="10" height="1"></td>

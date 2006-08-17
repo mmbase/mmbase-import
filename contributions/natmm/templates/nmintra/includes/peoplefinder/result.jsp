@@ -35,7 +35,7 @@ if(!action.equals("print")) {
        
         // ****** start the search by including all employees, which fit the employeeConstraint ****** 
         TreeSet searchResultSet = new TreeSet();
-		  SearchUtil su = new SearchUtil();
+        SearchUtil su = new SearchUtil();
         String searchResults = "";        
         %><mm:list nodes="" path="medewerkers" constraints="<%= employeeConstraint %>"
             ><mm:field name="medewerkers.number" jspvar="employees_number" vartype="String" write="false"><%
@@ -50,7 +50,7 @@ if(!action.equals("print")) {
             String departmentConstraint = "afdelingen.number = '" + departmentId + "'";
             %><mm:list nodes="<%= searchResults %>" path="medewerkers,readmore,afdelingen" constraints="<%= departmentConstraint %>"
                 ><mm:field name="medewerkers.number" jspvar="employees_number" vartype="String" write="false"><%
-			searchResultSet.add(employees_number);
+                  searchResultSet.add(employees_number);
                 %></mm:field
             ></mm:list><%
             searchResults = su.searchResults(searchResultSet);
@@ -63,7 +63,7 @@ if(!action.equals("print")) {
                 String locationConstraint = "locations.number = '" + programId + "'";
                 %><mm:list nodes="<%= searchResults %>" path="medewerkers,readmore,locations" constraints="<%= locationConstraint %>"
                     ><mm:field name="medewerkers.number" jspvar="employees_number" vartype="String" write="false"><%
-				   searchResultSet.add(employees_number);
+                      searchResultSet.add(employees_number);
                     %></mm:field
                 ></mm:list><%
                 searchResults = su.searchResults(searchResultSet);
@@ -78,7 +78,7 @@ if(!action.equals("print")) {
                     ><mm:field name="programs.number" jspvar="programs_number" vartype="String" write="false"><%
                         if(thisPrograms.indexOf("," + programs_number + ",")>-1) { 
                             %><mm:field name="medewerkers.number" jspvar="employees_number" vartype="String" write="false"><%
-					searchResultSet.add(employees_number);
+                              searchResultSet.add(employees_number);
                             %></mm:field><%
                         }
                     %></mm:field
@@ -93,7 +93,7 @@ if(!action.equals("print")) {
                 fields="medewerkers.number,medewerkers.firstname,medewerkers.lastname,medewerkers.suffix"
             ><mm:field name="medewerkers.number" jspvar="employees_number" vartype="String" write="false"
             ><mm:first>
-                <div class="smoelenboeklist"><table cellpadding="0" cellspacing="0" align="left">
+                <div class="smoelenboeklist" id="smoelenboeklist"><table cellpadding="0" cellspacing="0" align="left">
                 <tr>
 					 	<td colspan="2" style="padding-bottom:10px;padding-left:19px;">
 					 		<span class="light"><span class="pageheader">resultaten</span><br>klik op een naam voor details</span>
@@ -120,16 +120,23 @@ if(!action.equals("print")) {
 
         } else { 
 
-            %><div class="smoelenboeklist"><table cellpadding="0" cellspacing="0" align="left">
+           %>
+           <div class="smoelenboeklist" id="smoelenboeklist">
+              <table cellpadding="0" cellspacing="0" align="left">
                 <tr>
-					 	<td colspan="2" style="padding-bottom:10px;padding-left:19px;">
-							<span class="light"><span class="pageheader">resultaten</span></span>
-						</td>
+                  <td colspan="2" style="padding-bottom:10px;padding-left:19px;">
+                    <span class="light"><span class="pageheader">resultaten</span></span>
+                  </td>
                 </tr>
                 <tr>
-                    <td style="padding-bottom:5px;padding-left:18px;"><span class="light"><li></span></td>
-                    <td style="padding-bottom:5px;padding-left:2px;padding-right:10px;"><span class="light">Er zijn geen medewerkers gevonden die aan je selectie voldoen.</span></a></td></tr>
-                </table></div><%
+                  <td style="padding-bottom:5px;padding-left:18px;"><span class="light"><li></span></td>
+                  <td style="padding-bottom:5px;padding-left:2px;padding-right:10px;">
+                    <span class="light">Er zijn geen medewerkers gevonden die aan je selectie voldoen.</span>
+                  </td>
+                </tr>
+              </table>
+           </div>
+           <%
         }
     }
 } 

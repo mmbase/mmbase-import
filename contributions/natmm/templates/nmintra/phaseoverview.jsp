@@ -8,7 +8,7 @@
 </tr>
 <tr>
 <td colspan="2" class="transperant" valign="top">
-<div class="<%= infopageClass %>">
+<div class="<%= infopageClass %>" id="infopage">
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr><td>
 <mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel" orderby="contentrel.pos" directions="UP"

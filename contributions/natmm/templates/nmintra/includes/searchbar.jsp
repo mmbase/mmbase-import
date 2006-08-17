@@ -25,19 +25,24 @@ function startPhone() {
 //-->
 </script><tr>
 <% // *************************************** logo ******************************* %>
-<td rowspan="3"><a href="http://www.natuurmonumenten.nl" target="_blank"><img src="media/styles/<%= NMIntraConfig.style1[iRubriekStyle] %>_logo.gif" border="0" title=""></a></td>
-<td style="width:70%;"><img src="media/spacer.gif" width="1" height="12"></td>
-<% // *************************************** name of intranet ******************************* %>
-<td class="header" style="padding-right:10px;padding-top:5px;text-align:right;width:251px;">
-  <mm:node number="<%= rootId %>">
+<mm:node number="<%= rootId %>">
+  <td rowspan="3">
+    <a href="http://<mm:field name="url" />" target="_blank">
+      <img src="media/styles/<%= NMIntraConfig.style1[iRubriekStyle] %>_logo.gif" title="<mm:field name="url" />" 
+        style="position:absolute;z-index:2;left:2px;top:1px;" border="0">
+    </a>
+  </td>
+  <td style="width:70%;"><img src="media/spacer.gif" width="1" height="12"></td>
+  <% // *************************************** name of intranet ******************************* %>
+  <td class="header" style="padding-right:10px;padding-top:5px;text-align:right;width:251px;">
     <nobr>
       <mm:field name="naam_de" />
-      <a href="index.jsp" target="_top">
+      <a href="index.jsp" target="_top" class="hover">
          <span class="red"><mm:field name="naam" /></span>
       </a>
     </nobr>
-  </mm:node>
-</td>
+  </td>
+</mm:node>
 </tr>
 <tr>
 <td style="width:70%;">

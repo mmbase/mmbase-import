@@ -43,7 +43,7 @@ if(!thisPrograms.equals("")) {
 </tr>
 <tr>
 <td class="transperant" valign="top">
-<div class="<%= infopageClass %>"><%
+<div class="<%= infopageClass %>" id="infopage"><%
     if(postingStr.equals("|action=back")) {
         %><div align="right" style="letter-spacing:1px;"><a href="javascript:history.go(-1);">terug</a>&nbsp;</div><% 
     } %>

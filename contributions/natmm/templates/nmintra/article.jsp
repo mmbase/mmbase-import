@@ -14,7 +14,7 @@
 </tr>
 <tr>
 <td class="transperant" <% if(NMIntraConfig.style1[iRubriekStyle].equals("bibliotheek")) { %>colspan="2"<% } %>>
-<div class="<%= infopageClass %>">
+<div class="<%= infopageClass %>" id="infopage">
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
     <tr><td style="padding:10px;padding-top:18px;">
     <% 

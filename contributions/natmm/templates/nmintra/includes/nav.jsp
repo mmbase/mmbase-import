@@ -1,9 +1,5 @@
-<div class="navlist">
-<table border="0" cellpadding="0" cellspacing="0">
-   <tr>
-      <td><img src="media/spacer.gif" width="1" height="527"></td>
-   <td>
-      <table border="0" cellpadding="0" cellspacing="0">
+<div class="navlist" id="navlist">
+  <table border="0" cellpadding="0" cellspacing="0">
       <tr>
           <td><img src="media/spacer.gif" width="158" height="25"></td>
       </tr>
@@ -29,21 +25,24 @@
 
       TreeMap [] nodesAtLevel = new TreeMap[10];
       nodesAtLevel[0] = (TreeMap) rubriekHelper.getSubObjects(rootId);
+      boolean showFirstSubpage = false;
+      boolean [] isFirstSubpage =  new boolean[10];
+      for(int i = 0; i<10; i++) { isFirstSubpage[i] = true; }
+      
       int depth = 0;
-		int iPageInRubriek = 0;
       
       // invariant: depth = level of present leafs (root has level 0)
       while(depth>-1&&depth<10) { 
          
          if(nodesAtLevel[depth].isEmpty()) {
-            
-			   // if this nodesAtLevel is empty, try one level back
-            depth--; 
+           
+			     // if this nodesAtLevel is empty, try one level back
+           depth--; 
          }
          if(depth>-1&&!nodesAtLevel[depth].isEmpty()) {
 
 			   // show all subObjects, both pages and rubrieken
-				while(! nodesAtLevel[depth].isEmpty()) { 
+				 while(! nodesAtLevel[depth].isEmpty()) { 
 
 					Integer thisKey = (Integer) nodesAtLevel[depth].firstKey();
 					String sThisObject = (String) nodesAtLevel[depth].get(thisKey);
@@ -51,12 +50,14 @@
 					%><mm:node number="<%= sThisObject %>" jspvar="thisObject"
 						><mm:nodeinfo  type="type" write="false" jspvar="nType" vartype="String"><%
 							
-							if(nType.equals("pagina")) { // show page
+              boolean showPage = showFirstSubpage||!isFirstSubpage[depth];
+              isFirstSubpage[depth] = false;
 							
-								iPageInRubriek++;
-								if(iPageInRubriek>1) { // don't show first subpage of rubriek
-								
-									// the page can be a redirect to another page
+              if(nType.equals("pagina")) { // show page
+                
+								if(showPage) { // don't show first subpage of rubriek
+
+                  // the page can be a redirect to another page
 									String sThisPage = sThisObject;
 									%><mm:related path="rolerel,pagina" searchdir="destination"
 										><mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false"><%
@@ -105,10 +106,10 @@
 								<%
 								if(breadcrumbs.contains(sThisObject)) {
 									// this rubriek is in the breadcrumbs, so show its subobjects in the next iteration
-								   depth++;
+								  depth++;
 									nodesAtLevel[depth] = (TreeMap) rubriekHelper.getSubObjects(sThisObject);
-									iPageInRubriek = 0;
 								}
+                
 							} 
 						%></mm:nodeinfo
 					></mm:node><%
@@ -120,8 +121,5 @@
       if(!refererId.equals("")) { paginaID = tmp_paginaID; }
       %>
       </mm:log>
-      </table>
-      </td>
-    </tr>
-</table>
+   </table>
 </div>

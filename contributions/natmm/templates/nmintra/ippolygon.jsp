@@ -12,7 +12,7 @@ if(!articleId.equals("-1")) {
 %><td colspan="2"><%@include file="includes/pagetitle.jsp" %></td>
 </tr><tr>
 <td colspan="2" class="transperant" valign="top">
-      <div class="<%= infopageClass %>">
+      <div class="<%= infopageClass %>" id="infopage">
       <%
          if(articleId.equals("-1")) { 
            %><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel">

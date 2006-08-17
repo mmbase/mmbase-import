@@ -26,7 +26,7 @@ if(!articleId.equals("-1")) {
    </tr>
    <tr>
    <td class="transperant">
-   <div class="<%= infopageClass %>">
+   <div class="<%= infopageClass %>" id="infopage">
    <table border="0" cellpadding="0" cellspacing="0">
        <tr>
 		 	<td style="padding:10px;padding-top:18px;">
@@ -45,7 +45,7 @@ if(!articleId.equals("-1")) {
    
    // *********************************** right bar *******************************
    %><td><%@include file="includes/whiteline.jsp" 
-   %><div class="smoelenboeklist" style="height:478px;">
+   %><div class="rightcolumn" id="rightcolumn">
    <table cellpadding="0" cellspacing="0" align="left">
    <tr><td style="padding-bottom:10px;padding-left:19px;padding-right:9px;"><%
    

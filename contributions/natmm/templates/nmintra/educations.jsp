@@ -20,7 +20,7 @@ public String searchResults(TreeSet searchResultList) {
 </tr>
 <tr>
 <td class="transperant">
-<div class="<%= infopageClass %>">
+<div class="<%= infopageClass %>" id="infopage">
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
     <tr><td style="padding:10px;padding-top:18px;">
     <% 
@@ -257,7 +257,7 @@ public String searchResults(TreeSet searchResultList) {
       </tr>
       </table>
       <%@include file="includes/whiteline.jsp" %>
-      <div class="smoelenboeklist" style="height:176px;">
+      <div class="linklist" id="linklist">
       <table cellpadding="0" cellspacing="0">
       <mm:list nodes="<%= paginaID %>" path="pagina,lijstcontentrel,linklijst">
          <tr>
