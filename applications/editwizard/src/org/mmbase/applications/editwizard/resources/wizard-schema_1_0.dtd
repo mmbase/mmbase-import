@@ -106,6 +106,7 @@
 <!ATTLIST field size NMTOKEN #IMPLIED >
 <!ATTLIST field name CDATA #IMPLIED >
 <!ATTLIST field rows NMTOKEN #IMPLIED >
+<!ATTLIST field cols NMTOKEN #IMPLIED >
 <!ATTLIST field inline NMTOKEN #IMPLIED >
 <!ATTLIST field wizardname CDATA #IMPLIED >
 <!ATTLIST field objectnumber CDATA #IMPLIED >
