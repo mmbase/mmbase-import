@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.390 2006-08-15 09:55:53 nklasens Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.391 2006-08-17 15:43:46 nklasens Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -2734,9 +2734,9 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
 
     /**
      * Get all builder properties
-     * @return a <code>Map</code> containing the current properties
+     * @return a <code>Hashtable</code> containing the current properties
      */
-    public Map getInitParameters() {
+    public Hashtable getInitParameters() {
         return properties;
     }
 
