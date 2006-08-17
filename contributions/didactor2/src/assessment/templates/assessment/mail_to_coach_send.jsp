@@ -28,30 +28,31 @@
 <mm:node number="$education" notfound="skip">
    <mm:related path="classrel,people">
       <mm:node element="people">
-
          <mm:remove referid="to" />
          <mm:import id="to"><mm:field name="email"/></mm:import>
 
          <mm:related path="related,roles" constraints="roles.name='teacher'">
+            <mm:write referid="to"/>
+            <br/>
             <%@ include file="includes/sendmail.jsp" %>
          </mm:related>
       </mm:node>
    </mm:related>
-</mm:node>
 
-
-<mm:node number="$class" notfound="skip">
-   <mm:related path="classrel,people">
+   <mm:related path="classrel,classes,classrel,people">
       <mm:node element="people">
-
          <mm:remove referid="to" />
          <mm:import id="to"><mm:field name="email"/></mm:import>
 
          <mm:related path="related,roles" constraints="roles.name='teacher'">
+            <mm:write referid="to"/>
+            <br/>
             <%@ include file="includes/sendmail.jsp" %>
          </mm:related>
       </mm:node>
    </mm:related>
+
+
 </mm:node>
 
 
