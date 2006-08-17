@@ -124,6 +124,11 @@
         <br/>
         <br/>
         <br/>
+        <p><b><di:translate key="assessment.problems" /></b></p>
+        <a href="<mm:treefile page="/assessment/editproblem.jsp" objectlist="$includePath" referids="$referids"/>"
+            ><img src="<mm:treefile page="/assessment/gfx/new_learnobject.gif" objectlist="$includePath" 
+                  referids="$referids"/>" border="0" title="<di:translate key="assessment.add_problem" />"
+                  alt="<di:translate key="assessment.add_problem" />" /></a><br/><br/>
         <% int lessonsNum = 0; %>
         <mm:node number="$assessment_education" notfound="skip">
           <mm:relatednodes type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos">
@@ -137,11 +142,17 @@
           <mm:listnodes type="problemtypes" orderby="pos">
             <mm:field name="number" jspvar="problemtypeId" vartype="String">
             <tr style="vertical-align:middle;">
-              <th class="listHeader"><img src="<mm:treefile page="/assessment/gfx/plus.gif" objectlist="$includePath" 
+              <% String problems = getProblemsByType(cloud, problemtypeId, thisUser); 
+                 if ("".equals(problems)) {
+              %>
+                   <th class="listHeader">&nbsp;</th>
+              <% } else { %>
+                   <th class="listHeader"><img src="<mm:treefile page="/assessment/gfx/plus.gif" objectlist="$includePath" 
                          referids="$referids"/>" border="0" title="<di:translate key="assessment.show_problems" />" 
                          alt="<di:translate key="assessment.show_problems" />" 
-                         onClick="toggleAll(<%= problemtypeId %>,'<%= problemtypeId %><%= getProblemsByType(cloud, problemtypeId, thisUser) %>');"
+                         onClick="toggleAll(<%= problemtypeId %>,'<%= problems %>');"
                          id="toggle_image<%= problemtypeId %>"/></th>
+              <% } %>
               <th class="listHeader">
                 <mm:field name="key" jspvar="dummy" vartype="String" write="false">
                   <di:translate key="<%= "assessment." + dummy %>"/>
@@ -184,19 +195,6 @@
               </tr>
               </mm:field>
             </mm:related>
-            <tr id="toggle_div<%=problemtypeId %>" style="display:none;">
-              <td class="listItem">
-                <a href="<mm:treefile page="/assessment/editproblem.jsp" objectlist="$includePath" referids="$referids">
-                           <mm:param name="problemtype_n"><%= problemtypeId %></mm:param>
-                         </mm:treefile>"
-                  ><img src="<mm:treefile page="/assessment/gfx/new_learnobject.gif" objectlist="$includePath" 
-                        referids="$referids"/>" border="0" title="<di:translate key="assessment.add_problem" />"
-                        alt="<di:translate key="assessment.add_problem" />" /></a>
-              </td>
-              <% for(int i=0; i<lessonsNum+1; i++) { %>
-                   <td class="listItem">&nbsp;</td>
-              <% } %>
-            </tr>
             </mm:field>
           </mm:listnodes>
           <tr>
