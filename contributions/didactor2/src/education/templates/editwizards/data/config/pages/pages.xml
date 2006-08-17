@@ -29,6 +29,7 @@
         <relation destination="urls" role="posrel" />
       </object>
     </relation>
+    <relation destination="pages" role="descriptionrel " />
     &extra_loads;
   </action>
 
@@ -44,6 +45,7 @@
   <steps>
     <step form-schema="step1" />
     <step form-schema="step2" />
+    <step form-schema="step3" />
     &extra_steps;
   </steps>
 
@@ -96,6 +98,13 @@
       <optionlist select="boolean" />
     </field>
     <list extends="config/paragraphs/add_paragraphs_posrel.xml"/>
+  </form-schema>
+
+  <form-schema id="step3">
+    <title xml:lang="en">Descriptionrel</title>
+    <title xml:lang="nl">Descriptionrel</title>
+    <title xml:lang="fr">Descriptionrel</title>
+    <list extends="config/pages/pages-list-descriptionrel.xml"/>
   </form-schema>
 
   &extra_schemas;
