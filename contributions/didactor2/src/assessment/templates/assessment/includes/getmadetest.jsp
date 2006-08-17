@@ -1,4 +1,3 @@
-        <mm:field name="tests.number" jspvar="this_test" vartype="String" write="false">
           <mm:relatednodescontainer path="madetests,copybooks" element="madetests">
             <mm:constraint field="copybooks.number" referid="copybookNo"/>
             <mm:relatednodes>
@@ -16,8 +15,9 @@
               <mm:setfield name="testpath"><%= getTestpath(cloud,this_test) %></mm:setfield>
               <mm:setfield name="score"><mm:write referid="TESTSCORE_INCOMPLETE"/></mm:setfield>
             </mm:createnode>
+            <mm:node number="<%= this_test %>" id="this_test"/>
             <mm:createrelation role="related" source="this_test" destination="madetest"/>
             <mm:createrelation role="related" source="copybookNo" destination="madetest"/>
             <mm:createrelation role="related" source="problem_n" destination="madetest"/>
+            <mm:remove referid="this_test"/>
           </mm:notpresent>
-        </mm:field>

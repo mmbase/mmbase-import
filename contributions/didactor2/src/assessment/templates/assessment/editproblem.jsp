@@ -70,14 +70,16 @@
   <mm:node number="$provider" notfound="skip">
     <mm:related path="related,educations,related,tests,related,problemtypes" constraints="problemtypes.number=$problemtype">
       <mm:node element="tests">
-        <%@include file="includes/getmadetest.jsp" %>
-        <mm:relatednodes type="questions" path="posrel,questions">
-          <mm:import id="page" reset="true">/education/<mm:nodeinfo type="type"/>/rate<mm:nodeinfo type="type"/>.jsp</mm:import>
-          <mm:treeinclude page="$page" objectlist="$includePath" referids="$referids">
-            <mm:param name="question"><mm:field name="number"/></mm:param>
-            <mm:param name="madetest"><mm:write referid="madetest"/></mm:param>
-          </mm:treeinclude>
-        </mm:relatednodes>
+        <mm:field name="tests.number" jspvar="this_test" vartype="String" write="false">
+          <%@include file="includes/getmadetest.jsp" %>
+          <mm:relatednodes type="questions" path="posrel,questions">
+            <mm:import id="page" reset="true">/education/<mm:nodeinfo type="type"/>/rate<mm:nodeinfo type="type"/>.jsp</mm:import>
+            <mm:treeinclude page="$page" objectlist="$includePath" referids="$referids">
+              <mm:param name="question"><mm:field name="number"/></mm:param>
+              <mm:param name="madetest"><mm:write referid="madetest"/></mm:param>
+            </mm:treeinclude>
+          </mm:relatednodes>
+        </mm:field>
       </mm:node>
     </mm:related>
   </mm:node>
@@ -178,15 +180,17 @@
             <mm:node number="$provider" notfound="skip">
               <mm:related path="related,educations,related,tests,related,problemtypes" constraints="problemtypes.number=$problemtype">
                 <mm:node element="tests">
-                  <%@include file="includes/getmadetest.jsp" %>
-                  <mm:relatednodes type="questions" path="posrel,questions">
-                    <mm:import id="page" reset="true">/education/<mm:nodeinfo type="type"/>/index.jsp</mm:import>
-                    <mm:treeinclude page="$page" objectlist="$includePath" referids="$referids">
-                      <mm:param name="question"><mm:field name="number"/></mm:param>
-                      <mm:param name="testnumber"><mm:write referid="this_test"/></mm:param>
-                      <mm:param name="madetest"><mm:write referid="madetest"/></mm:param>
-                    </mm:treeinclude>
-                  </mm:relatednodes>
+                  <mm:field name="tests.number" jspvar="this_test" vartype="String" write="false">
+                    <%@include file="includes/getmadetest.jsp" %>
+                    <mm:relatednodes type="questions" path="posrel,questions">
+                      <mm:import id="page" reset="true">/education/<mm:nodeinfo type="type"/>/index.jsp</mm:import>
+                      <mm:treeinclude page="$page" objectlist="$includePath" referids="$referids">
+                        <mm:param name="question"><mm:field name="number"/></mm:param>
+                        <mm:param name="testnumber"><%= this_test %></mm:param>
+                        <mm:param name="madetest"><mm:write referid="madetest"/></mm:param>
+                      </mm:treeinclude>
+                    </mm:relatednodes>
+                  </mm:field>
                 </mm:node>
               </mm:related>
             </mm:node>
