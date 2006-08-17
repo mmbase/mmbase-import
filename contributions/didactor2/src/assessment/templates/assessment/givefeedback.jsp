@@ -11,7 +11,7 @@
   <mm:field name="status" write="false">
     <mm:compare value="-1">
       <mm:import id="page"><mm:treefile page="/assessment/showfeedback.jsp" objectlist="$includePath" referids="$referids">
-                             <mm:param name="feedback_n"><mm:wirte referid="feedback_n"/></mm:param>
+                             <mm:param name="feedback_n"><mm:write referid="feedback_n"/></mm:param>
                            </mm:treefile></mm:import>
       <mm:redirect page="$page"/>
     </mm:compare>
