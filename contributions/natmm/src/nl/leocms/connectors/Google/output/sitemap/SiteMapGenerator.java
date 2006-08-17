@@ -32,63 +32,50 @@ public class SiteMapGenerator implements Runnable{
       RubriekHelper rubriekHelper = new RubriekHelper(cloud);
       PaginaHelper ph = new PaginaHelper(cloud);
 
-      HashMap ids = new HashMap();
-      ids.put("object", "-1");
-      ids.put("rubriek", "-1");
-      ids.put("pagina", "-1");
-      ids.put("dossier", "-1");
-      ids.put("natuurgebieden", "-1");
-      ids.put("provincies", "-1");
-      ids.put("artikel", "-1");
-      ids.put("images", "-1");
-      ids.put("persoon", "-1");
-      ids.put("ads", "-1");
-
-      ids = ph.findIDs(ids, "", "nm_pagina");
-
-      Vector breadcrumbs = ph.getBreadCrumbs(cloud, (String) ids.get("pagina"));
-
-      String[] sAliases = {"","naardermeer","a6a9","natuurherstel"};
       String sSiteUrl = NatMMConfig.liveUrl[0].substring(0,NatMMConfig.liveUrl[0].length()-1);
-      String rootID = (String) breadcrumbs.get(breadcrumbs.size()-2);
-      String sXMLName = getXMLName(sSiteUrl);
 
-      for (int i = 0; i < sAliases.length; i++){
-         String sContent = "";
-         if (i==0){
-            sContent = rubriekRun(cloud, rootID, rubriekHelper, ph, nowSec,
-            quarterOfAnHour,sSiteUrl);
-         } else {
-            sXMLName = getXMLName(cloud.getNodeByAlias(sAliases[i]).getStringValue("url"));
-            sContent = rubriekRun(cloud, sAliases[i], rubriekHelper, ph, nowSec,
-            quarterOfAnHour, sSiteUrl);
+      String sNatuurherstelNumber = cloud.getNodeByAlias("natuurherstel").getStringValue("number");
+      NodeList nlRubrieks = cloud.getList(cloud.getNodeByAlias("root").getStringValue("number"),
+      "rubriek1,parent,rubriek2","rubriek2.number,rubriek2.url",null,null,null,null,true);
+      for (int i = 0; i < nlRubrieks.size(); i++){
+         String sUrlName = nlRubrieks.getNode(i).getStringValue("rubriek2.url");
+         if (sUrlName!=null&&sUrlName.indexOf(".")>-1){
+            String sXMLName = getXMLName(sUrlName);
+            String sContent = rubriekRun(cloud,
+                                         nlRubrieks.getNode(i).
+                                         getStringValue("rubriek2.number"),
+                                         rubriekHelper, ph, nowSec,
+                                         quarterOfAnHour, sSiteUrl,
+                                         sNatuurherstelNumber);
+            sContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+               "<urlset xmlns=\"http://www.google.com/schemas/sitemap/0.84\">\n\n" +
+               sContent + "\n</urlset>";
+            writingFile(NatMMConfig.rootDir + "/sitemap_" + sXMLName, sContent);
+            createGZFile("sitemap_" + sXMLName);
+            sAllContent += "<sitemap>\n\t\t<loc>" + sSiteUrl + "/sitemap_" +
+               sXMLName + ".gz</loc>\n\t\t";
+            File f = new File(NatMMConfig.rootDir + "/sitemap_" + sXMLName +
+                              ".gz");
+            long lm = f.lastModified();
+            sAllContent += getLastmod(lm) + "\t</sitemap>\n\t";
          }
-         sContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-            "<urlset xmlns=\"http://www.google.com/schemas/sitemap/0.84\">\n\n" +
-            sContent + "\n</urlset>";
-         writingFile(NatMMConfig.rootDir + "/sitemap_" + sXMLName, sContent);
-         createGZFile("sitemap_" + sXMLName);
-         sAllContent += "<sitemap>\n\t\t<loc>" + sSiteUrl + "/sitemap_" +
-         sXMLName + ".gz</loc>\n\t\t";
-         File f = new File(NatMMConfig.rootDir + "/sitemap_" + sXMLName + ".gz");
-         long lm = f.lastModified();
-         sAllContent += getLastmod(lm) + "\t</sitemap>\n\t";
+
       }
+
       sAllContent += "</sitemapindex>";
       writingFile(NatMMConfig.rootDir + "/sitemap_index.xml",sAllContent);
 
    }
 
-   String rubriekRun (Cloud cloud, String alias, RubriekHelper rubriekHelper, PaginaHelper ph,
-                    long nowSec, int quarterOfAnHour, String url){
-      String rootID = cloud.getNodeByAlias(alias).getStringValue("number");
+   String rubriekRun (Cloud cloud, String rootID, RubriekHelper rubriekHelper, PaginaHelper ph,
+                    long nowSec, int quarterOfAnHour, String url, String sNatuurherstelNumber){
       TreeSet ts = new TreeSet();
       TreeMap [] nodesAtLevel = new TreeMap[10];
       nodesAtLevel[0] = new TreeMap();
       nodesAtLevel[0].put(new Integer(0),rootID);
       int depth = 0;
 
-      if (alias.equals("natuurherstel")){
+      if (rootID.equals(sNatuurherstelNumber)){
          //adding first page for natuurherstel
          NodeList nlJumpers = cloud.getNodeManager("jumpers").getList("jumpers.name = 'natuurherstel'",null,null);
          if (nlJumpers.size()>0){
