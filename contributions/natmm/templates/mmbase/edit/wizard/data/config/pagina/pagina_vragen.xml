@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="pagina">
-   <title>veelgestelde vragen pagina</title>
+   <title>pagina (veelgestelde vragen)</title>
    <description>
       <![CDATA[
 	<h1>Veelgestelde vragen pagina</h1>
