@@ -112,7 +112,9 @@
       </editor>
       <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
         <enumeration>
-          <query type="mmbasecontexts" xmlns="http://www.mmbase.org/xmlns/searchquery" />
+          <query type="mmbasecontexts" xmlns="http://www.mmbase.org/xmlns/searchquery" >
+            <sortorder field="name" />
+          </query>
         </enumeration>
       </datatype>
       <db>
