@@ -366,13 +366,13 @@
          <gui>
             <guiname xml:lang="nl">Unused items</guiname>
             <guiname xml:lang="en">Unused items</guiname>
-            <guitype>string</guitype>
+            <guitype>field</guitype>
          </gui>
          <editor>
             <positions>
                <!-- position in the input area of the editor -->
                <input>19</input>
-               <list>19</list>
+               <list>-1</list>
                <search>1</search>
             </positions>
          </editor>
