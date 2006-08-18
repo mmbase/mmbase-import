@@ -24,6 +24,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import javax.servlet.*;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
@@ -75,11 +76,28 @@ public class ServerUtil {
    }
 
    /**
-    * Creates String.from given long according to dd-MM-yyyy HH:mm:ss
+    * Returns String from given long according to dd-MM-yyyy HH:mm:ss
     * @param date the date to format
     * @return Datestring
     */
    public static String getDateTimeString(long date) {
       return DATE_TIME_FORMAT.format(new Date(date));
+   }
+
+   /**
+    * Returns String from present time according to dd-MM-yyyy HH:mm:ss
+    * @return Datestring
+    */
+   public static String getDateTimeString() {
+      return DATE_TIME_FORMAT.format(new Date());
+   }
+   
+   /**
+    * Creates returns jvm size
+    * @return Sizestring
+    */
+   public String jvmSize() {
+     Runtime rt = Runtime.getRuntime();
+     return " (total " + rt.totalMemory() / (1024 * 1024) + " Mbyte / free " + rt.freeMemory() / (1024 * 1024) + " Mbyte)";
    }
 }

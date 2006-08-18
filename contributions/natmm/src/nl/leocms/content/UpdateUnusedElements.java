@@ -5,6 +5,7 @@ import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
 import com.finalist.mmbase.util.CloudFactory;
 import nl.leocms.util.ContentHelper;
+import nl.leocms.util.ServerUtil;
 import nl.leocms.authorization.AuthorizationHelper;
 import nl.leocms.authorization.UserRole;
 import nl.leocms.authorization.Roles;
@@ -12,6 +13,7 @@ import nl.leocms.authorization.Roles;
 public class UpdateUnusedElements implements Runnable {
 
    private static final Logger log = Logging.getLoggerInstance(UpdateUnusedElements.class);
+   private static final ServerUtil su = new ServerUtil();
 
 	/*
 	* Returns the list of unused contentelements for a rubriek
@@ -34,14 +36,12 @@ public class UpdateUnusedElements implements Runnable {
 	* Returns a HashMap with for each rubriek an ArrayList of unused contentelements
 	*/
 	public HashMap getUnusedItemsForAllRubriek(Cloud cloud) {
-		log.info("finding unused items for each rubriek");
 		HashMap hmUnusedItems = new HashMap();
 		NodeList nlRubrieks = cloud.getNodeManager("rubriek").getList(null,null,null);
 		for(int j = 0; j < nlRubrieks.size(); j++){
 			String rubriekNumber = nlRubrieks.getNode(j).getStringValue("number");
 			hmUnusedItems.put(rubriekNumber,getUnusedItemsForRubriek(cloud,rubriekNumber));
 		}
-		log.info("done");
 		return hmUnusedItems;
 	}
 
@@ -52,42 +52,42 @@ public class UpdateUnusedElements implements Runnable {
       Cloud cloud = CloudFactory.getCloud();
       AuthorizationHelper authHelper = new AuthorizationHelper(cloud);
 
-		HashMap hmUnusedItemsForAllRubriek = getUnusedItemsForAllRubriek(cloud);
+		  HashMap hmUnusedItemsForAllRubriek = getUnusedItemsForAllRubriek(cloud);
 
       NodeList nlUsers = cloud.getNodeManager("users").getList(null,null,null);
       for (int i = 0; i < nlUsers.size(); i++){
-			ArrayList alUnusedItems = new ArrayList();
-         String account = nlUsers.getNode(i).getStringValue("account");
-			for (Iterator it = hmUnusedItemsForAllRubriek.keySet().iterator(); it.hasNext(); ) {
-				String rubriekNumber = (String) it.next();
-				UserRole userRole = authHelper.getRoleForUser(authHelper.getUserNode(account), cloud.getNode(rubriekNumber));
-				if (userRole.getRol() >= Roles.SCHRIJVER) {
-					alUnusedItems.addAll((ArrayList) hmUnusedItemsForAllRubriek.get(rubriekNumber));
-				}
-			}
-			if(alUnusedItems.size()>0) {
-				log.info("adding " + alUnusedItems.size() + " unused items for user " + account);
-            String user_number = nlUsers.getNode(i).getStringValue("number");
-            Node nUser = cloud.getNode(user_number);
-            nUser.setStringValue("unused_items",alUnusedItems.toString().substring(1,alUnusedItems.toString().length()-1));
-            nUser.commit();
-			}
-		}
+        ArrayList alUnusedItems = new ArrayList();
+        String account = nlUsers.getNode(i).getStringValue("account");
+        for (Iterator it = hmUnusedItemsForAllRubriek.keySet().iterator(); it.hasNext(); ) {
+          String rubriekNumber = (String) it.next();
+          UserRole userRole = authHelper.getRoleForUser(authHelper.getUserNode(account), cloud.getNode(rubriekNumber));
+          if (userRole.getRol() >= Roles.SCHRIJVER) {
+            alUnusedItems.addAll((ArrayList) hmUnusedItemsForAllRubriek.get(rubriekNumber));
+          }
+        }
+        if(alUnusedItems.size()>0) {
+          log.info("adding " + alUnusedItems.size() + " unused items for user " + account);
+          String user_number = nlUsers.getNode(i).getStringValue("number");
+          Node nUser = cloud.getNode(user_number);
+          nUser.setStringValue("unused_items",alUnusedItems.toString().substring(1,alUnusedItems.toString().length()-1));
+          nUser.commit();
+        }
+		 }
    }
 
    private Thread getKicker(){
-      Thread  kicker = Thread.currentThread();
-      if(kicker.getName().indexOf("UpdateUsedElementsThread")==-1) {
-           kicker.setName("UpdateUsedElementsThread / " + (new Date()));
-           kicker.setPriority(Thread.MIN_PRIORITY+1); // *** does this help ?? ***
-      }
-      return kicker;
+    Thread  kicker = Thread.currentThread();
+    if(kicker.getName().indexOf("UpdateUsedElementsThread")==-1) {
+       kicker.setName("UpdateUsedElementsThread / " + su.getDateTimeString());
+       kicker.setPriority(Thread.MIN_PRIORITY+1); // *** does this help ?? ***
+    }
+    return kicker;
    }
 
    public void run () {
       Thread kicker = getKicker();
-      log.info("run(): " + kicker);
+      log.info("run(): " + kicker + su.jvmSize());
       getUnusedItems();
-		log.info("done");
+		  log.info("done" + su.jvmSize());
    }
 }
