@@ -66,13 +66,13 @@ public class NatMMConfig {
    public static String tmpMemberId = "9002162";
 
    public static String toSubscribeAddress = "AanmeldingLidmaatschap@Natuurmonumenten.nl";
-   public static String rootDir = "/export/www/natuurmm/jakarta-tomcat/webapps/ROOT/WEB-INF/data/";
+   public static String rootDir = "/export/www/natuurmm/jakarta-tomcat/webapps/ROOT/";
    public static String tempDir = "/export/www/natuurmm/jakarta-tomcat/temp/";
    public static String incomingDir = "/home/import/incoming/";
 
    /*
    public static String toSubscribeAddress = "hangyi@xs4all.nl";
-   public static String rootDir =  "C:/data/natmm/incoming/";
+   public static String rootDir =  "C:/data/natmm/webapps/ROOT/";
    public static String tempDir = "C:/temp/";
    public static String incomingDir =  "C:/data/natmm/incoming/";
    */
