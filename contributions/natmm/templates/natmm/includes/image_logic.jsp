@@ -121,7 +121,7 @@ if(isShortyOrTeaserImage || fitToThirdColumn || imagePartOfColumn) {
 				</tr>
 				<mm:field name="bron"
 					><mm:isnotempty
-						><tr><td class='imagecaption'>Bron: <mm:write /></td></tr>
+						><tr><td class='imagecaption'>Foto: <mm:write /></td></tr>
 					</mm:isnotempty
 				></mm:field>
 			</table>
