@@ -25,37 +25,25 @@
 <mm:import id="subject"><di:translate key="assessment.mail_to_coach_letter___subject" /></mm:import>
 <mm:import id="body"><mm:write referid="message" /></mm:import>
 
-<mm:node number="$education" notfound="skip">
-   <mm:related path="classrel,people">
-      <mm:node element="people">
-         <mm:remove referid="to" />
-         <mm:import id="to"><mm:field name="email"/></mm:import>
 
-         <mm:related path="related,roles" constraints="roles.name='teacher'">
-            <mm:write referid="to"/>
-            <br/>
-            <%@ include file="includes/sendmail.jsp" %>
-         </mm:related>
-      </mm:node>
-   </mm:related>
+<%@ include file="includes\looks_for_coaches.jsp" %>
 
-   <mm:related path="classrel,classes,classrel,people">
-      <mm:node element="people">
-         <mm:remove referid="to" />
-         <mm:import id="to"><mm:field name="email"/></mm:import>
+<mm:compare referid="list_of_coaches" value="">
+   <di:translate key="assessment.mail_to_coach___no_coach" />
+</mm:compare>
 
-         <mm:related path="related,roles" constraints="roles.name='teacher'">
-            <mm:write referid="to"/>
-            <br/>
-            <%@ include file="includes/sendmail.jsp" %>
-         </mm:related>
-      </mm:node>
-   </mm:related>
+<mm:compare referid="list_of_coaches" value="" inverse="true">
+   <mm:list nodes="$list_of_coaches" path="people">
+      <mm:import id="to" reset="true"><mm:field name="people.email"/></mm:import>
+      <mm:write referid="to"/>
+      <br/>
+      <%@ include file="includes/sendmail.jsp" %>
+      <mm:import id="message_has_been_sent" reset="true">true</mm:import>
+   </mm:list>
 
+   <di:translate key="assessment.mail_to_coach_sent___done_message" />
 
-</mm:node>
+</mm:compare>
 
-
-<di:translate key="assessment.mail_to_coach_sent___done_message" />
 
 </mm:cloud>
