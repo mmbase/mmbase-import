@@ -1,4 +1,5 @@
 <mm:node element="artikel">
+	<%@include file="newsteaser.jsp" %>
 	<%@include file="image_logic.jsp" %>
 	<mm:field name="titel_zichtbaar"
 	   ><mm:compare value="0" inverse="true"
@@ -7,7 +8,7 @@
 	   	 /></div
 		></mm:compare
 	></mm:field>
-	<b><mm:field name="intro"/></b><br/>
+  <b><mm:field name="intro"/></b><br/>
 	<mm:field name="tekst"/><br/>
 	<mm:related path="posrel,paragraaf"
 			  orderby="posrel.pos" directions="UP"
@@ -19,10 +20,7 @@
 				<%@include file="image_logic.jsp" %>
 			</mm:node>
 			<mm:field name="paragraaf.number" jspvar="paragraaf_number" vartype="String" write="false">
-				 <mm:first
-					  ><%@include file="newsteaser.jsp" 
-				 %></mm:first
-				 ><mm:field name="paragraaf.titel_zichtbaar"
+	      <mm:field name="paragraaf.titel_zichtbaar"
 					><mm:compare value="0" inverse="true"
 					  ><div class="pageheader"><mm:field name="paragraaf.titel" /></div
 					></mm:compare

@@ -1,4 +1,4 @@
-<img src="media/logo_175.gif" align="right">
+<a href="http://www.natuurmonumenten.nl" target="_blank"><img src="media/logo_175.gif" align="right" border="0" title="www.natuurmonumenten.nl"></a>
 <mm:node number="<%= rubriekId %>" 
 	><mm:present referid="ishomepage"
 		><p><mm:field name="naam_eng"/><br><span class="projecttitle"><mm:field name="naam"/></span></p></mm:present

@@ -18,6 +18,9 @@
 	} else {
 		summary = "";
 	}
+  if(!readMore) { // check if there are paragraphs
+    %><mm:list nodes="<%= artikel_number %>" path="artikel,posrel,paragraaf" max="1"><% readMore = true; %></mm:list><%
+  }
 	%><mm:field name="artikel.titel" jspvar="artikel_titel" vartype="String" write="false"><% 
 		if(readMore) { 
 			%><a href="<%= readmoreUrl %>"><%
