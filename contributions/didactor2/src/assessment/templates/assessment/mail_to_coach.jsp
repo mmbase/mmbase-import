@@ -25,21 +25,28 @@
       <div style="padding-left:20px; padding-top:20px; font-size:15px"><di:translate key="assessment.mail_to_coach___title" /></div>
       <div class="contentBody">
 
-         <di:translate key="assessment.mail_to_coach___text_below_title" />
+         <%@ include file="includes\looks_for_coaches.jsp" %>
 
-         <form action="mail_to_coach_send.jsp" method="post">
-            <input type="hidden" name="provider" value="<mm:write referid="provider"/>"/>
-            <input type="hidden" name="education" value="<mm:write referid="education"/>"/>
-            <input type="hidden" name="class" value="<mm:write referid="class"/>"/>
-            <table class="font" width="90%">
-               <tr>
-                  <td><textarea name="message" class="popFormInput" cols="50" rows="5"></textarea></td>
-               </tr>
-            </table>
-            <br/>
-            <input type="submit" class="formbutton" value="<di:translate key="assessment.mail_to_coach___send_button_text" />">
-            <input type="reset" class="formbutton"  value="<di:translate key="assessment.mail_to_coach___cancel_button_text" />">
-         </form>
+         <mm:compare referid="list_of_coaches" value="">
+            <di:translate key="assessment.mail_to_coach___no_coach" />
+         </mm:compare>
+
+         <mm:compare referid="list_of_coaches" value="" inverse="true">
+            <di:translate key="assessment.mail_to_coach___text_below_title" />
+            <form action="mail_to_coach_send.jsp" method="post">
+               <input type="hidden" name="provider" value="<mm:write referid="provider"/>"/>
+               <input type="hidden" name="education" value="<mm:write referid="education"/>"/>
+               <input type="hidden" name="class" value="<mm:write referid="class"/>"/>
+               <table class="font" width="90%">
+                  <tr>
+                     <td><textarea name="message" class="popFormInput" cols="50" rows="5"></textarea></td>
+                  </tr>
+               </table>
+               <br/>
+               <input type="submit" class="formbutton" value="<di:translate key="assessment.mail_to_coach___send_button_text" />">
+               <input type="reset" class="formbutton"  value="<di:translate key="assessment.mail_to_coach___cancel_button_text" />">
+            </form>
+         </mm:compare>
       </div>
    </div>
 
