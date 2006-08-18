@@ -53,8 +53,8 @@ public class PaginaHelper {
    public boolean urlConversion;
 
    public PaginaHelper(Cloud cloud) {
-      this.cloud = cloud;
-      this.pathsFromPageToElements = new HashMap();
+    this.cloud = cloud;
+    this.pathsFromPageToElements = new HashMap();
 		this.ap = new ApplicationHelper();
 		// todo: create a more generic version for this piece of code
 		if(ap.isInstalled(cloud,"NatMM")) {
@@ -247,7 +247,10 @@ public class PaginaHelper {
          url.append(cal.get(Calendar.MONTH) + 1);
          if (cal.get(Calendar.DAY_OF_MONTH) < 10) { url.append('0'); }
          url.append(cal.get(Calendar.DAY_OF_MONTH));
+      } else {
+         url.append(UrlConverter.ITEM_DELIMITER);
       }
+        
       String itemTitle = itemNode.getStringValue((new ContentHelper(cloud)).getTitleField(itemNode));
       url.append(HtmlCleaner.forURL(HtmlCleaner.stripText(itemTitle)));
 
