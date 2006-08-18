@@ -3,6 +3,7 @@
     <%= ( "".equals(dummy) ? "&nbsp;" : dummy )%>
   </mm:field>
 </td>
+<% count = 0; %>
 <mm:node number="$assessment_education" notfound="skip">
   <mm:relatednodes type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos">
 <%
@@ -20,7 +21,7 @@
 %>
       </mm:field>
     </mm:related>
-    <td class="listItem">
+    <td class="listItem" <%= styles.get(count) %>>
 <%
       if (rating < 0) {
         %>&nbsp;<%
@@ -28,6 +29,7 @@
         %><img src="<mm:treefile page="<%= "/assessment/gfx/icon_rating_" + rating + ".gif"%>" objectlist="$includePath" 
                referids="$referids"/>" border="0" title="<%=problemWeights[rating] %>" alt="<%=problemWeights[rating] %>" /><%
       }
+      count++;
 %>
     </td>
   </mm:relatednodes>
