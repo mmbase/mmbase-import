@@ -14,24 +14,24 @@
 
    <mm:node number="component.assessment" notfound="skip">
 
-      <mm:import id="there_is_a_link">false</mm:import>
+      <mm:import id="there_is_a_link" reset="true">false</mm:import>
 
       <mm:notpresent referid="eduation">
          <mm:node number="$user">
             <mm:related path="classrel,classes,classrel,educations,related,providers,settingrel,components" constraints="providers.number=$provider AND components.name='assessment'" max="1">
                <mm:node element="educations">
-                  <mm:import id="link_education"><mm:field name="number"/></mm:import>
+                  <mm:import id="link_education" reset="true"><mm:field name="number"/></mm:import>
                </mm:node>
                <mm:node element="classes">
-                  <mm:import id="link_class"><mm:field name="number"/></mm:import>
+                  <mm:import id="link_class" reset="true"><mm:field name="number"/></mm:import>
                </mm:node>
                <mm:import id="there_is_a_link" reset="true">true</mm:import>
             </mm:related>
          </mm:node>
       </mm:notpresent>
       <mm:present referid="education">
-         <mm:import id="link_education"><mm:write referid="education"/></mm:import>
-         <mm:import id="link_class"><mm:write referid="class"/></mm:import>
+         <mm:import id="link_education" reset="true"><mm:write referid="education"/></mm:import>
+         <mm:import id="link_class" reset="true"><mm:write referid="class"/></mm:import>
          <mm:import id="there_is_a_link" reset="true">true</mm:import>
       </mm:present>
 
