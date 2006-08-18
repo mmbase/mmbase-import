@@ -10,7 +10,7 @@
 						<%@include file="breadcrums.jsp" %>
 					</p>
                 <mm:present referid="ishomepage"
-                ><mm:list nodes="<%= paginaID %>" path="pagina,posrel,images" orderby="posrel.pos" directions="UP"
+                ><mm:list nodes="<%= paginaID %>" path="pagina,posrel,images" constraints="posrel.pos=='2'"
                     ><mm:first><div align="right"></mm:first
                     ><mm:node element="images"
                         ><a href="<mm:relatednodes type="link"><mm:field name="url" /></mm:relatednodes
