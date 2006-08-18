@@ -1,6 +1,6 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<%@page import="org.mmbase.bridge.*" %>
+<%@page import="org.mmbase.bridge.*,java.util.ArrayList" %>
 
 <mm:content postprocessor="reducespace">
 <mm:cloud method="delegate" jspvar="cloud">
@@ -55,6 +55,10 @@
   <%@include file="includes/variables.jsp" %>
   <%@include file="includes/functions.jsp" %>
   <%@include file="includes/geteducation.jsp" %>
+  <%@include file="includes/getlb.jsp" %>
+  <%@include file="includes/getlesson.jsp" %>
+  
+  <% int count = 0; %>
 
   <div class="rows">
     <div class="navigationbar">
@@ -129,11 +133,27 @@
             ><img src="<mm:treefile page="/assessment/gfx/new_learnobject.gif" objectlist="$includePath" 
                   referids="$referids"/>" border="0" title="<di:translate key="assessment.add_problem" />"
                   alt="<di:translate key="assessment.add_problem" />" /></a><br/><br/>
-        <% int lessonsNum = 0; %>
+        <% int lessonsNum = 0;
+           ArrayList styles = new ArrayList();
+           boolean wasCurrent = false;
+        %>
         <mm:node number="$assessment_education" notfound="skip">
           <mm:relatednodes type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos">
-            <mm:import id="dummy" jspvar="dummy" vartype="Integer" reset="true"><mm:size/></mm:import>
-            <% lessonsNum = dummy.intValue(); %>
+            <mm:first>
+              <mm:import id="dummy" jspvar="dummy" vartype="Integer" reset="true"><mm:size/></mm:import>
+              <% lessonsNum = dummy.intValue(); %>
+            </mm:first>
+            <mm:field name="number" jspvar="this_lb" vartype="String" write="false">
+              <% if (!wasCurrent) {
+                   styles.add("");
+                 } else {
+                   styles.add("style=\"background-color:E7E7E7\"");
+                 }
+                 if (this_lb.equals(currentLesson)) {
+                   wasCurrent = true;
+                 }
+              %>
+            </mm:field>
           </mm:relatednodes>
         </mm:node>
 
@@ -200,9 +220,10 @@
           <tr>
             <td class="listItem">&nbsp;</td>
             <td class="listItem"><di:translate key="assessment.feedback_coach" /></td>
+            <% count = 0; %>
             <mm:node number="$assessment_education" notfound="skip">
               <mm:relatednodes type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos">
-                <td class="listItem">
+                <td class="listItem" <%= styles.get(count) %>>
                   <% String feedback = "";
                      String feedbackId = "-1";
                   %>
@@ -240,6 +261,7 @@
                        </a>
                   <% } %>
                 </td>
+                <% count++; %>
               </mm:relatednodes>
             </mm:node>
           </tr>
@@ -250,7 +272,6 @@
           </tr>
         </table></div>
         <br/>
-        <%@include file="includes/getlb.jsp" %>
         <form name="closelessonform" action="<mm:treefile page="/assessment/closelesson.jsp" objectlist="$includePath" 
                referids="$referids"/>" method="post">
           <mm:node number="<%= backtolb %>" notfound="skip">
@@ -260,7 +281,6 @@
                                                  </mm:treefile>'">
           </mm:node>
           <% boolean hasWeights = false; %>
-          <%@include file="includes/getlesson.jsp" %>
           <mm:node number="<%= currentLesson %>" notfound="skip">
             <mm:related path="posrel,problems,posrel,people" max="1" constraints="people.number=$user">
               <% hasWeights = true; %>
