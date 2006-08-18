@@ -32,30 +32,32 @@ function postIt() {
 		constraints="rubriek.url=='1'"
 		><mm:node element="rubriek" jspvar="rubriek"
 			><mm:first><table width="100%" border="0" cellpadding="0" cellspacing="0" class="body"></mm:first>
-			<tr>
-				<td width="75" valign="top"><a href="index.jsp?r=<mm:field name="number" 
-					/>"><mm:relatednodes type="images" path="contentrel,images"
-								><img src="<mm:image template="s(75)" />" border="0"></mm:relatednodes
-						></a></td>
-				<td><img src="media/spacer.gif" width="15" height="1"></td>
-				<td valign="top">
-					<mm:related path="posrel,pagina" orderby="posrel.pos" directions="UP" max="1">
-						<mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false">
-						<span class="pageheader">
-							<a href="<%= ph.createPaginaUrl(pagina_number,request.getContextPath()) %>"><%= rubriek.getStringValue("naam") %>></a>
-						</span><br/>
-						</mm:field>
-						<mm:field name="pagina.omschrijving" jspvar="pagina_omschrijving" vartype="String" write="false">
-							<mm:isnotempty>
-								<%= HtmlCleaner.cleanText(pagina_omschrijving,"<",">") %>
-							</mm:isnotempty>	
-						</mm:field>
-					</mm:related>
-				</td>
-			</tr>
-			<tr>
-				<td colspan="3"><img src="media/spacer.gif" width="1" height="17"></td>
-			</tr>
+      <mm:related path="posrel,pagina" orderby="posrel.pos" directions="UP" max="1">
+        <mm:node element="pagina">
+        <tr>
+          <td width="75" valign="top"><a href="index.jsp?r=<%= rubriek.getStringValue("number") %>"
+              ><mm:relatednodes type="images" path="posrel,images" constraints="posrel.pos=='1'"
+                  ><img src="<mm:image template="s(75)" />" border="0"></mm:relatednodes
+              ></a></td>
+          <td><img src="media/spacer.gif" width="15" height="1"></td>
+          <td valign="top">
+              <mm:field name="number" jspvar="pagina_number" vartype="String" write="false">
+              <span class="pageheader">
+                <a href="<%= ph.createPaginaUrl(pagina_number,request.getContextPath()) %>"><%= rubriek.getStringValue("naam") %></a>
+              </span><br/>
+              </mm:field>
+              <mm:field name="omschrijving" jspvar="pagina_omschrijving" vartype="String" write="false">
+                <mm:isnotempty>
+                  <%= HtmlCleaner.cleanText(pagina_omschrijving,"<",">") %>
+                </mm:isnotempty>	
+              </mm:field>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3"><img src="media/spacer.gif" width="1" height="17"></td>
+        </tr>
+        </mm:node>
+			</mm:related>
 			<mm:last></table></mm:last
 		></mm:node>
 	</mm:related>
