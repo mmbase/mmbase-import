@@ -72,7 +72,7 @@
       <mm:node element="tests">
         <mm:field name="tests.number" jspvar="this_test" vartype="String" write="false">
           <%@include file="includes/getmadetest.jsp" %>
-          <mm:relatednodes type="questions" path="posrel,questions">
+          <mm:relatednodes type="questions" path="posrel,questions" orderby="posrel.pos">
             <mm:import id="page" reset="true">/education/<mm:nodeinfo type="type"/>/rate<mm:nodeinfo type="type"/>.jsp</mm:import>
             <mm:treeinclude page="$page" objectlist="$includePath" referids="$referids">
               <mm:param name="question"><mm:field name="number"/></mm:param>
@@ -182,7 +182,7 @@
                 <mm:node element="tests">
                   <mm:field name="tests.number" jspvar="this_test" vartype="String" write="false">
                     <%@include file="includes/getmadetest.jsp" %>
-                    <mm:relatednodes type="questions" path="posrel,questions">
+                    <mm:relatednodes type="questions" path="posrel,questions" orderby="posrel.pos">
                       <mm:import id="page" reset="true">/education/<mm:nodeinfo type="type"/>/index.jsp</mm:import>
                       <mm:treeinclude page="$page" objectlist="$includePath" referids="$referids">
                         <mm:param name="question"><mm:field name="number"/></mm:param>
