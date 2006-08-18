@@ -337,6 +337,10 @@ boolean isEventTemplate = true;
          <tr><td colspan="2" style="height:5px;"></td></tr>
          <%
          ti++;
+      } else {
+        %>
+        <html:hidden property="bankaccount" value="" />
+        <%
       } %>
       <tr>
          <td class="maincolor" style="padding:5px;line-height:0.85em;">
