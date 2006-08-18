@@ -194,12 +194,10 @@
               <td class="maincolor" colspan="2" style="width:50%;padding:1px;line-height:0.85em;valign:top;">
                  <% ti++; %>
                  <html:radio property="payment_period" style="border:0;" value="<%= MembershipForm.MONTH %>" onclick="clearPaymentRadio();setAuthorize();" tabindex="<%= "" + ti %>" 
-                     />&nbsp;<bean:message bundle="LEOCMS" key="membershipform.per.maand" />
-                     <bean:message bundle="LEOCMS" key="membershipform.amount.month.minimum" /><br/>
+                     />&nbsp;<bean:message bundle="LEOCMS" key="membershipform.per.maand.minimum" /><br/>
                  <% ti++; %>
                  <html:radio property="payment_period" style="border:0;" value="<%= MembershipForm.YEAR %>" onclick="clearPaymentRadio();setAuthorize();" tabindex="<%= "" + ti %>" 
-                     />&nbsp;<bean:message bundle="LEOCMS" key="membershipform.per.jaar" />
-                     <bean:message bundle="LEOCMS" key="membershipform.amount.year.minimum" />                     
+                     />&nbsp;<bean:message bundle="LEOCMS" key="membershipform.per.jaar.minimum" />                     
               </td>
             </tr>
             <tr><td colspan="2" style="height:5px;"></td></tr>
