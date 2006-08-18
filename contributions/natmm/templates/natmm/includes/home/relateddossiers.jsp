@@ -43,10 +43,23 @@ String rootID = ph.getRootRubriek(cloud,objectID);
 					<% if(rootID.equals(ph.getRootRubriek(cloud,pagina_number))) { relatedPage = pagina_number; } %>
 				</mm:field>
 			</mm:list>
+      <% 
+      if(relatedPage==null) { 
+        %>
+        <mm:list nodes="<%= artikel_number %>" path="artikel,posrel,dossier,posrel,pagina" fields="pagina.number">
+				  <mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false">
+					  <% if(rootID.equals(ph.getRootRubriek(cloud,pagina_number))) { relatedPage = pagina_number; } %>
+          </mm:field>
+        </mm:list>
+        <%
+      } %>
 			<table style="width:100%;" border="0" cellspacing="0" cellpadding="0">
 				<tr>
-					<td style="text-align:left;vertical-align:middle;"><a href="<%= ph.createItemUrl(artikel_number,relatedPage,null, request.getContextPath()) 
-					   %>" class="hover"><mm:field name="artikel.titel" /></a></td>
+					<td style="text-align:left;vertical-align:middle;">
+            <%= (relatedPage!=null ? "<a href="+  ph.createItemUrl(artikel_number,relatedPage,null, request.getContextPath()) +" class='hover'>": "" ) %>
+            <mm:field name="artikel.titel" />
+            <%= (relatedPage!=null ? "</a>": "" ) %>
+            </td>
 					<%-- <td width="80" align="right" valign="middle"><a href="<%=templateName%>?id=<%=artikel_number%>" class="hp_leesverder">Lees verder &raquo;</a></td> --%>
 				</tr>
 			</table>

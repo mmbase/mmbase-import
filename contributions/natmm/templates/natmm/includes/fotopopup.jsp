@@ -34,7 +34,7 @@ boolean bFirst = true;
    <mm:field name="bron" jspvar="images_bron" vartype="String" write="false">
       <% 
       if(!images_bron.equals("")){
-         pageText += "<strong>Bron | </strong>" + images_bron;
+         pageText += "<strong>Foto | </strong>" + images_bron;
          bFirst = false; 
       } 
       %>

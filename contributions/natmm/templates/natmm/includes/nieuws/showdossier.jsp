@@ -19,9 +19,11 @@ TreeMap articles = new TreeMap();
 					<tr>
 						<td><img src="<mm:image template="s(170)" />"></td>
 					</tr>
-					<tr>
-						<td><div class="imagecaption"><mm:field name="bron" /></div></td>
-					</tr>
+          <mm:field name="bron"
+					  ><mm:isnotempty
+						  ><tr><td class='imagecaption'>Foto: <mm:write /></td></tr>
+            </mm:isnotempty
+          ></mm:field>
 				</table>
 			</mm:relatednodes>
 			</td>
