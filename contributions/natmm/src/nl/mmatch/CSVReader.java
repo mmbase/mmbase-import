@@ -11,26 +11,31 @@ import org.mmbase.util.logging.*;
 import com.finalist.mmbase.util.CloudFactory;
 import nl.leocms.evenementen.Evenement;
 import nl.leocms.util.ApplicationHelper;
+import nl.leocms.util.ServerUtil;
 import nl.leocms.util.tools.HtmlCleaner;
 import nl.leocms.applications.NatMMConfig;
 
 /**
- * Created by Henk Hangyi (MMatch)
+ * @author Henk Hangyi (MMatch)
  */
 
 public class CSVReader implements Runnable {
 
     int importType;
+
+    private static final Logger log = Logging.getLoggerInstance(CSVReader.class);
+    private static final ServerUtil su = new ServerUtil();
+    
     public static int FULL_IMPORT = 1;
     public static int ONLY_MEMBERLOAD = 2;
     public static int ONLY_ZIPCODELOAD = 3;
-
+    
     private BufferedReader getBufferedReader(String sFileName) throws FileNotFoundException, UnsupportedEncodingException {
       FileInputStream fin = new FileInputStream(sFileName);
       InputStreamReader isr = new InputStreamReader(fin,"ISO-8859-1");
       return new BufferedReader(isr);
     }
-
+    
     private Vector unZip(String zipFileName, String zipDestination) {
         int BUFFER = 2048;
         Vector dataFiles = new Vector();
@@ -65,6 +70,7 @@ public class CSVReader implements Runnable {
         }
         return dataFiles;
     }
+    
     private String superSearchString(String searchText) {
         for(int charPos = 0; charPos < searchText.length(); charPos++){
            char c = searchText.charAt(charPos);
@@ -81,6 +87,7 @@ public class CSVReader implements Runnable {
         }
         return searchText;
     }
+    
     private String getValue(String entry, String startStr, String endStr)
     {   String value = "";
         int sPos = entry.indexOf(startStr);
@@ -93,19 +100,23 @@ public class CSVReader implements Runnable {
         }
         return value;
     }
+    
     private Date lastModifiedDate(String dataFile) {
       return new Date( (new File(dataFile)).lastModified() );
     }
+    
     private String getShowInfo(String value) {
         String showInfo = "0";
         if(value.equals("0")) showInfo = "1";
         return showInfo;
     }
+    
     private String getReadmoreJobs(String value) {
         String readmoreJobs = "0";
         if(value.equals("1")) readmoreJobs = "1";
         return readmoreJobs;
     }
+    
     private Integer getDate(String thisDate, int defaultYear) {
         int thisDay = 1;
         int thisMonth = 0;
@@ -132,6 +143,7 @@ public class CSVReader implements Runnable {
         } catch (Exception e) { }
         return new Integer(thisYear);
     }
+    
     private Date parseDate(String thisDate, int defaultYear) {
         int thisDay = 1;
         int thisMonth = 0;
@@ -150,11 +162,13 @@ public class CSVReader implements Runnable {
         cal.set(thisYear,thisMonth,thisDay);
         return cal.getTime();
     }
+    
     private String getGender(String value) {
         String gender = "0";
         if(value.toUpperCase().equals("M")) gender = "1";
         return gender;
     }
+    
     private String createAlias(TreeMap thisPerson, String lastname, String firstname) {
         // *** create field alias, take care of ' which would ruin the search ***
         String alias = (String) thisPerson.get(lastname);
@@ -170,14 +184,17 @@ public class CSVReader implements Runnable {
         }
         return alias;
     }
+    
     private Node getNode(Cloud cloud, String path, String constraint) {
           NodeList list = cloud.getNodeManager(path).getList(constraint, null, null);
           Node node = null;
           if(!list.isEmpty()){ node = list.getNode(0); }
           return node;
     }
+    
     private int markNodesAndRelations(Cloud cloud, String thisType, String [] thisRelations, String [] thisFields) {
         // *** mark all relations for employees and departments ***
+        log.info("markNodesAndRelations " + thisType);
         NodeManager relatedNodeNM = cloud.getNodeManager(thisType);
         NodeList thisnodesList = relatedNodeNM.getList(null,null,null);
         RelationList relations = null;
@@ -190,20 +207,26 @@ public class CSVReader implements Runnable {
                 relations = thisnode.getRelations(thisRelations[t],thisRelations[t+1]);
                 for(int r=0; r<relations.size(); r++) {
                     Relation relation = relations.getRelation(r);
-                    relation.setValue("readmore2","inactive");
-                    relation.commit();
-                    nodesMarked++;
+                    if(!"inactive".equals(relation.getStringValue("readmore2"))) {
+                      relation.setValue("readmore2","inactive");
+                      relation.commit();
+                      nodesMarked++;
+                    }
                 }
             }
-            thisnode.setValue(thisFields[0],thisFields[1]);
-            nodesMarked++;
-            thisnode.commit();
+            if(!thisFields[1].equals(thisnode.getStringValue(thisFields[0]))) {
+              thisnode.setValue(thisFields[0],thisFields[1]);
+              thisnode.commit();
+              nodesMarked++;
+            }
             i++;
         }
         return nodesMarked;
     }
+    
     private int deleteNodesAndRelations(Cloud cloud, String thisType, String [] thisRelations, String [] thisFields) {
         // *** deletes all nodes relations for employees and departments, which are inactive ***
+        log.info("deleteNodesAndRelations " + thisType);
         NodeManager relatedNodeNM = cloud.getNodeManager(thisType);
         NodeList thisnodesList = relatedNodeNM.getList(null,null,null);
         RelationList relations = null;
@@ -230,9 +253,11 @@ public class CSVReader implements Runnable {
         }
         return nodesDeleted;
     }
+    
     private int updateDepartments(Cloud cloud) {
-        int numberOfEmptyDept = 0;
         // *** for the search we need a list with descendants for all deparments ***
+        log.info("updateDepartments");
+        int numberOfEmptyDept = 0;
         TreeMap departments = new TreeMap();
         NodeManager departmentNM = cloud.getNodeManager("afdelingen");
         NodeList departmentList = departmentNM.getList(null,null,null);
@@ -297,6 +322,7 @@ public class CSVReader implements Runnable {
         }
         return numberOfEmptyDept;
     }
+    
     private Node relatedNodes(
         Cloud cloud,
         TreeMap thisPerson,
@@ -347,6 +373,7 @@ public class CSVReader implements Runnable {
         }
         return destination;
     }
+    
     private Node updatePerson(Cloud cloud, TreeMap thisPerson, String thisPersonStr){
         Node personsNode = getNode(cloud, "medewerkers", "externid='" + superSearchString((String) thisPerson.get("SOFI_NR")) + "'");
         if(personsNode==null) {
@@ -387,6 +414,7 @@ public class CSVReader implements Runnable {
     }
 
     private String updateOrg(Cloud cloud, String orgFile){
+        log.info("updateOrg " + orgFile);
         String logMessage = "";
         TreeMap thisTree = new TreeMap();
         try {
@@ -438,12 +466,12 @@ public class CSVReader implements Runnable {
             log.info(thisTree);
             log.info(logMessage);
        }
-       logMessage += "\n<br>Organisational structure is read from: " + orgFile;
+       logMessage += "\n<br>" + su.getDateTimeString() + su.jvmSize() + " - Organisational structure is read from: " + orgFile;
        return logMessage;
     }
 
     private TreeMap getEmails(String emailFile){
-     // *** read the email input file ***
+     log.info("getEmails " + emailFile);
      TreeMap emails = new TreeMap();
      try {
       BufferedReader dataFileReader = getBufferedReader(emailFile);
@@ -472,7 +500,8 @@ public class CSVReader implements Runnable {
     return emails;
    }
 
-   private String updatePersons(Cloud cloud, TreeMap emails, String dataFile){
+   private String updatePersons(Cloud cloud, TreeMap emails, String dataFile) {
+    log.info("updatePersons " + dataFile);
     String logMessage = "";
     try {
       // *** read the person input file ***
@@ -585,7 +614,8 @@ public class CSVReader implements Runnable {
           entries++;
       }
       dataFileReader.close();
-      logMessage += "\n<br>Number of NM employees loaded from: " + dataFile + " is " + persons + " (number of entries is " + entries + ")"
+      logMessage += "\n<br>" + su.getDateTimeString() + su.jvmSize() 
+         + " - Number of NM employees loaded from: " + dataFile + " is " + persons + " (number of entries is " + entries + ")"
          + "\n<br>Number of email addresses parsed: " + emails.size()
          + "\n<br>Number of persons for which no email address could be found: " + noemails;
     } catch(Exception e) {
@@ -594,7 +624,8 @@ public class CSVReader implements Runnable {
     return logMessage;
    }
 
-   private String updateNMV(Cloud cloud, String dataFile){
+   private String updateNMV(Cloud cloud, String dataFile) {
+    log.info("updateNMV " + dataFile);
     String logMessage = "";
     // *** read the person input file ***
     try {
@@ -691,7 +722,8 @@ public class CSVReader implements Runnable {
           entries++;
       }
       dataFileReader.close();
-      logMessage += "\n<br>Number of NM vrijwilligers loaded from: " + dataFile + " is " + persons + " (number of entries is " + entries + ")";
+      logMessage += "\n<br>" + su.getDateTimeString() + su.jvmSize()
+          + " - Number of NM vrijwilligers loaded from: " + dataFile + " is " + persons + " (number of entries is " + entries + ")";
     } catch(Exception e) {
       log.info(e);
     }
@@ -740,11 +772,10 @@ public class CSVReader implements Runnable {
       return isInRange;
    }
 
-   public String loadZipCodes(ServletContext application, String dataFile, String temp){
+   public String loadZipCodes(ServletContext application, String zipFile, String temp) {
       // *** the zipcode table should be loaded in such a way that ***
       // *** based on zipcode and housenumber the related streetname and city can be found ***
-
-      String logMessage = "\n<br>Warning the following lines in " + dataFile + " do not contain a valid zipcode, housenumber_low, house_number_high, code, streetname, city";
+      log.info("loadZipCodes " + zipFile);
 
       TreeMap zipCodeMap = new TreeMap();      // ** mapping of zipcodes to vector of streetname;housenumber_low;house_number_high;code;city
 
@@ -756,14 +787,17 @@ public class CSVReader implements Runnable {
       String sCode = "";
       String sCity = "";
 
+      String logMessage = "";
+      
       try {
 
         Vector files = new Vector();
-        files = unZip(dataFile,temp);
+        files = unZip(zipFile,temp);
 
         if(files.size()>0) {
 
-           BufferedReader dataFileReader = getBufferedReader(temp + "/" + (String) files.get(0));
+           String dataFile = (String) files.get(0);
+           BufferedReader dataFileReader = getBufferedReader(temp + "/" + dataFile);
            nextLine = dataFileReader.readLine();
            int zipcodes = 0;
            int errors = 0;
@@ -786,6 +820,9 @@ public class CSVReader implements Runnable {
 
               } catch (Exception e) {
                 errors++;
+                if("".equals(logMessage)) {
+                  logMessage += "\n<br>Warning the following lines in " + dataFile + " do not contain a valid zipcode, housenumber_low, house_number_high, code, streetname, city";
+                }
                 logMessage += "\n<br>" + nextLine;
               }
               if(!sZipCode.equals("")&&!sStreetName.equals("POSTBUS")){
@@ -806,22 +843,23 @@ public class CSVReader implements Runnable {
            }
            dataFileReader.close();
            application.setAttribute("zipCodeMap",zipCodeMap);
-           logMessage += "\n<br>Number of persons loaded from: " + dataFile + " (lm=" + lastModifiedDate(dataFile) + ") is " + zipcodes + " (number of errors " + errors + ")";
+           logMessage += "\n<br>" + su.getDateTimeString() + su.jvmSize()
+           + " - Number of zipcodes loaded from: " + dataFile + " unzipped from " 
+           + zipFile + " (lm=" + lastModifiedDate(zipFile) + ") is " + zipcodes + " (number of errors " + errors + ")";
          }
 
       } catch(Exception e) {
-        log.info("Error in reading " + dataFile + " on zipcode " + sZipCode);
+        log.info("Error in reading " + zipFile + " on zipcode " + sZipCode);
         log.info("In line: " + nextLine);
         log.info(e);
       }
       return logMessage;
    }
 
-   public String loadNMMembers(ServletContext application, String dataFile, String temp){
+   public String loadNMMembers(ServletContext application, String zipFile, String temp){
       // *** the NM Members table should be loaded in such a way that ***
       // *** based on a memberid the related zipcode can be found and compared with the zipcode entered by the user ***
-
-      String logMessage = "\n<br>Warning the following lines in " + dataFile + " do not contain a valid memberid, zipcode, housenumber, houseextension, lastname";
+      log.info("loadNMMembers " + zipFile);
 
       TreeMap zipCodeTable = new TreeMap();      // ** mapping of memberids to zipcodes
       TreeMap invZipCodeTable = new TreeMap();   // ** mapping from zipcode to vector of memberids
@@ -836,15 +874,18 @@ public class CSVReader implements Runnable {
       String sHouseNumber = "";
       String sHouseExt = "";
       String sLastName = "";
-
+      
+      String logMessage = "";
+      
       try {
 
         Vector files = new Vector();
-        files = unZip(dataFile,temp);
+        files = unZip(zipFile,temp);
 
         if(files.size()>0) {
-
-           BufferedReader dataFileReader = getBufferedReader(temp + "/" + (String) files.get(0));
+          
+           String dataFile = (String) files.get(0);          
+           BufferedReader dataFileReader = getBufferedReader(temp + "/" + dataFile);
            nextLine = dataFileReader.readLine();
            int persons = 0;
            int errors = 0;
@@ -868,6 +909,9 @@ public class CSVReader implements Runnable {
                 sLastName = nextLine.substring(25).trim();
               } catch (Exception e) {
                 errors++;
+                if("".equals(logMessage)) { 
+                  logMessage += "\n<br>Warning the following lines in " + dataFile + " do not contain a valid memberid, zipcode, housenumber, houseextension, lastname";
+                }
                 logMessage += "\n<br>" + nextLine;
               }
               if(!sMemberId.equals("")){
@@ -905,18 +949,18 @@ public class CSVReader implements Runnable {
            application.setAttribute("houseExtTable",houseExtTable);
            application.setAttribute("lastNameTable",lastNameTable);
            application.setAttribute("invLastNameTable",invLastNameTable);
-           logMessage += "\n<br>Number of persons loaded from: " + dataFile + " (lm=" + lastModifiedDate(dataFile) + ") is " + persons + " (number of errors " + errors + ")";
+           logMessage += "\n<br>" + su.getDateTimeString() + su.jvmSize() 
+              + " - Number of persons loaded from: " + dataFile + " unzipped from "
+              + zipFile + " (lm=" + lastModifiedDate(zipFile) + ") is " + persons + " (number of errors " + errors + ")";
          }
 
       } catch(Exception e) {
-        log.info("Error in reading " + dataFile + " on memberid " + sMemberId + " & zipcode " + sZipCode);
+        log.info("Error in reading " + zipFile + " on memberid " + sMemberId + " & zipcode " + sZipCode);
         log.info("In line: " + nextLine);
         log.info(e);
       }
       return logMessage;
    }
-
-   private static final Logger log = Logging.getLoggerInstance(CSVReader.class);
 
    public void readCSV(Cloud cloud, int importType) {
 
@@ -934,7 +978,6 @@ public class CSVReader implements Runnable {
 
         String toEmailAddress = NatMMConfig.toEmailAddress;
         String fromEmailAddress = NatMMConfig.fromEmailAddress;
-        String root = NatMMConfig.rootDir;
         String incoming = NatMMConfig.incomingDir;
         String temp = NatMMConfig.tempDir;
 
@@ -944,71 +987,70 @@ public class CSVReader implements Runnable {
         String orgFile = temp + "orgschemaexport.csv";
         String nmvZip = incoming + "nmvdata.zip"; // will be unzipped to temp
         String nmvFile = temp + "nmvexport.csv";
-        String membersFile = incoming + "lrscad.zip";
-        String zipCodeFile = root + "lrspos.zip";
+        String membersZip = incoming + "lrscad.zip";
+        String zipCodeZip = incoming + "postcode.zip";
 
         String fileList = "";
         if(importType==ONLY_MEMBERLOAD) {
-             fileList = membersFile;
+             fileList = membersZip;
         } else if(importType==ONLY_ZIPCODELOAD) {
-             fileList = zipCodeFile;
+             fileList = zipCodeZip;
         } else {
-           fileList += membersFile+"\n"+zipCodeFile+"\n"+dataFile+"\n"+nmvFile+"\n"+emailFile+"\n"+orgFile;
+           fileList += membersZip+"\n"+zipCodeZip+"\n"+dataFile+"\n"+nmvFile+"\n"+emailFile+"\n"+orgFile;
         }
 
         try {
 
-            log.info("Started import of: " + fileList);
-
-            int nodesMarked = 0;
-				int nodesDeleted = 0;
-				int numberOfEmptyDept = 0;
-				String logMessage =  "\n<br>Started at " + new Date() + " import for " +  requestUrl;
-				
-            if(importType==FULL_IMPORT) {
-					
-		        Vector files = new Vector();
-  		        logMessage += "Unzipping " + beauZip + " (lm=" + lastModifiedDate(beauZip) + ")";
+              log.info("Started import of: " + fileList);
+              
+              int nodesMarked = 0;
+              int nodesDeleted = 0;
+              int numberOfEmptyDept = 0;
+              String logMessage =  "\n<br>" + su.getDateTimeString() + su.jvmSize() + " - Started import for " +  requestUrl;
+              
+              if(importType==FULL_IMPORT) {
+              
+              Vector files = new Vector();
+              logMessage += "\nUnzipping " + beauZip + " (lm=" + lastModifiedDate(beauZip) + ")";
               files.addAll(unZip(beauZip,temp));
-		        logMessage += "Unzipping " + nmvZip + " (lm=" + lastModifiedDate(nmvZip) + ")";
+              logMessage += "\nUnzipping " + nmvZip + " (lm=" + lastModifiedDate(nmvZip) + ")";
               files.addAll(unZip(nmvZip,temp));
-
 					
-               // start with marking all relations as inactive
-               String [] employeeRelations = {"readmore","afdelingen","readmore","locations"};
-               String [] employeeFields = {"importstatus","inactive"};
-               String [] departmentRelations = {"posrel","afdelingen"};
-               // the importstatus field of afdelingen can be 'inactive' or comma seperated list of descendants
-               String [] departmentFields = {"importstatus","inactive"};
-               nodesMarked = markNodesAndRelations(cloud,"medewerkers",employeeRelations,employeeFields);
-               nodesMarked += markNodesAndRelations(cloud,"afdelingen",departmentRelations,departmentFields);
-
-
-               TreeMap emails = getEmails(emailFile);
-               logMessage += "\n<br>Emails are imported from: " + emailFile;
-               logMessage += updateOrg(cloud,orgFile);
-               logMessage += updatePersons(cloud, emails, dataFile);
-               logMessage += updateNMV(cloud, nmvFile);
-
-               // finish with deleting all inactive relations; employees and departments are never deleted because then can be created manually
-               employeeFields[1] = "-1"; // prevent employees from being deleted
-               departmentFields[1] = "-1";  // prevent departments from being deleted
-               nodesDeleted = deleteNodesAndRelations(cloud,"medewerkers",employeeRelations,employeeFields);
-               nodesDeleted += deleteNodesAndRelations(cloud,"afdelingen",departmentRelations,departmentFields);
-               numberOfEmptyDept = updateDepartments(cloud);
-               logMessage +=  "\n<br>Number of nodes and relations marked as inactive before update: " + nodesMarked
-                   + "\n<br>Number of inactive nodes deleted: " + nodesDeleted
-                   + "\n<br>Number of departments without employees: " + numberOfEmptyDept;
+              // start with marking all relations as inactive
+              String [] employeeRelations = {"readmore","afdelingen","readmore","locations"};
+              String [] employeeFields = {"importstatus","inactive"};
+              String [] departmentRelations = {"posrel","afdelingen"};
+              // the importstatus field of afdelingen can be 'inactive' or comma seperated list of descendants
+              String [] departmentFields = {"importstatus","inactive"};
+              nodesMarked = markNodesAndRelations(cloud,"medewerkers",employeeRelations,employeeFields);
+              nodesMarked += markNodesAndRelations(cloud,"afdelingen",departmentRelations,departmentFields);
+              
+              
+              TreeMap emails = getEmails(emailFile);
+              logMessage += "\n<br>" + su.getDateTimeString() + su.jvmSize() + " - Emails are imported from: " + emailFile;
+              logMessage += updateOrg(cloud,orgFile);
+              logMessage += updatePersons(cloud, emails, dataFile);
+              logMessage += updateNMV(cloud, nmvFile);
+              
+              // finish with deleting all inactive relations; employees and departments are never deleted because then can be created manually
+              employeeFields[1] = "-1"; // prevent employees from being deleted
+              departmentFields[1] = "-1";  // prevent departments from being deleted
+              nodesDeleted = deleteNodesAndRelations(cloud,"medewerkers",employeeRelations,employeeFields);
+              nodesDeleted += deleteNodesAndRelations(cloud,"afdelingen",departmentRelations,departmentFields);
+              numberOfEmptyDept = updateDepartments(cloud);
+              logMessage +=  "\n<br>" + su.getDateTimeString() + su.jvmSize()
+                 + " - Number of nodes and relations marked as inactive before update: " + nodesMarked
+                 + "\n<br>Number of inactive nodes deleted: " + nodesDeleted
+                 + "\n<br>Number of departments without employees: " + numberOfEmptyDept;
             }
             if(importType==FULL_IMPORT || importType==ONLY_MEMBERLOAD) {
-               logMessage += loadNMMembers(application,membersFile,temp);
+               logMessage += loadNMMembers(application,membersZip,temp);
             }
             if(importType==FULL_IMPORT || importType==ONLY_ZIPCODELOAD) {
-               logMessage += loadZipCodes(application,zipCodeFile,temp);
+               logMessage += loadZipCodes(application,zipCodeZip,temp);
             }
 
-
-            logMessage += "\n<br>Finished import at " + new Date();
+            logMessage += "\n<br>" + su.getDateTimeString() + su.jvmSize() + " - Finished import";
 
             Node emailNode = cloud.getNodeManager("email").createNode();
             emailNode.setValue("to", toEmailAddress);
@@ -1022,7 +1064,7 @@ public class CSVReader implements Runnable {
             emailNode.commit();
             emailNode.getValue("mail(oneshot)");
 
-            log.info("Finished import of: " + fileList);
+            log.info("Finished import");
 
             // log.info(thisPerson);
             // log.info(logMessage);
@@ -1036,7 +1078,7 @@ public class CSVReader implements Runnable {
     private Thread getKicker(){
        Thread  kicker = Thread.currentThread();
        if(kicker.getName().indexOf("CSVReaderThread")==-1) {
-            kicker.setName("CSVReaderThread / " + (new Date()));
+            kicker.setName("CSVReaderThread / " + su.getDateTimeString());
             kicker.setPriority(Thread.MIN_PRIORITY+1); // *** does this help ?? ***
        }
        return kicker;
@@ -1057,10 +1099,10 @@ public class CSVReader implements Runnable {
     public void run () {
       Thread kicker = getKicker();
       log.info("run(): " + kicker);
-		Cloud cloud = CloudFactory.getCloud();
-		ApplicationHelper ap = new ApplicationHelper();
-		if(ap.isInstalled(cloud,"NatMM") || ap.isInstalled(cloud,"NMIntra")) {
-			readCSV(cloud, this.importType);
-		}
+      Cloud cloud = CloudFactory.getCloud();
+      ApplicationHelper ap = new ApplicationHelper();
+      if(ap.isInstalled(cloud,"NatMM") || ap.isInstalled(cloud,"NMIntra")) {
+        readCSV(cloud, this.importType);
+      }
     }
 }
