@@ -230,12 +230,12 @@
                          ><%
                          if ("-1".equals(feedback)) {   
                            %><img src="<mm:treefile page="/assessment/gfx/developed.gif" objectlist="$includePath" 
-                                  referids="$referids"/>" border="0" title="<di:translate key="assessment.read_feedback" />"
-                                  alt="<di:translate key="assessment.read_feedback" />" /><%
+                                  referids="$referids"/>" border="0" title="<di:translate key="assessment.goto_feedback" />"
+                                  alt="<di:translate key="assessment.goto_feedback" />" /><%
                          } else {
                            %><img src="<mm:treefile page="/assessment/gfx/todevelop.gif" objectlist="$includePath" 
-                                  referids="$referids"/>" border="0" title="<di:translate key="assessment.read_feedback" />"
-                                  alt="<di:translate key="assessment.read_feedback" />" /><%
+                                  referids="$referids"/>" border="0" title="<di:translate key="assessment.goto_feedback" />"
+                                  alt="<di:translate key="assessment.goto_feedback" />" /><%
                          } %>
                        </a>
                   <% } %>
