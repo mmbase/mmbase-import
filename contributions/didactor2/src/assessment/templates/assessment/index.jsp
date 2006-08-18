@@ -141,15 +141,15 @@
           <% boolean lessonShowed = false; %>
           <mm:listnodes type="problemtypes" orderby="pos">
             <mm:field name="number" jspvar="problemtypeId" vartype="String">
-            <tr style="vertical-align:middle;">
+            <tr style="vertical-align:top;">
               <% String problems = getProblemsByType(cloud, problemtypeId, thisUser); 
                  if ("".equals(problems)) {
               %>
                    <th class="listHeader">&nbsp;</th>
               <% } else { %>
-                   <th class="listHeader"><img src="<mm:treefile page="/assessment/gfx/plus.gif" objectlist="$includePath" 
-                         referids="$referids"/>" border="0" title="<di:translate key="assessment.show_problems" />" 
-                         alt="<di:translate key="assessment.show_problems" />" 
+                   <th class="listHeader" style="vertical-align:middle;"><img src="<mm:treefile page="/assessment/gfx/plus.gif" 
+                         objectlist="$includePath" referids="$referids"/>" border="0" 
+                         title="<di:translate key="assessment.show_problems" />" alt="<di:translate key="assessment.show_problems" />" 
                          onClick="toggleAll(<%= problemtypeId %>,'<%= problems %>');"
                          id="toggle_image<%= problemtypeId %>"/></th>
               <% } %>
