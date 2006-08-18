@@ -73,7 +73,7 @@ if (searchIsOn) {
 	
    String objects = "";
    if((contentElementConstraint!=null && !"".equals(contentElementConstraint))||show_unused) {
-     	queryLog += ", using cc=" +  contentElementConstraint; 
+     	queryLog += ", using cc=" +  (contentElementConstraint.length()>100 ? contentElementConstraint.substring(0,100) + "..." : contentElementConstraint); 
       NodeList nlObjects = cloud.getList("",
                                  "contentelement",
                                  "contentelement.number",
