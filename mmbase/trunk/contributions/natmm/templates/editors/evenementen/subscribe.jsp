@@ -185,6 +185,7 @@ String sHighLight = "style=\"background-color:#729DC2;\"";
 <html:hidden property="userId" value="<%= cloud.getUser().getIdentifier() %>" />
 <html:hidden property="selectedParticipant" />
 <html:hidden property="subscriptionNumber" />
+<html:hidden property="bankaccount" value="" />
 <%
 boolean isGroupExcursion = Evenement.isGroupExcursion(cloud,parent_number);
 boolean addressIsRequired = false;
