@@ -15,7 +15,7 @@
    <field name="alt_tekst_eng"><prompt>mouseover (en)</prompt></field>
    <field name="alt_tekst_fra"><prompt>mouseover (fr)</prompt></field>
    <field name="alt_tekst_de"><prompt>mouseover (de)</prompt></field>
-   <field name="fotografie"><prompt>bron</prompt></field>
+   <field name="bron"><prompt>foto</prompt></field>
    <field name="creatiedatum" ftype="data"><prompt>creatiedatum</prompt></field>
    <field name="datumlaatstewijziging" ftype="data"><prompt>datumlaatstewijziging</prompt></field>
    <field name="handle" ftype="image"><prompt>afbeelding</prompt></field>

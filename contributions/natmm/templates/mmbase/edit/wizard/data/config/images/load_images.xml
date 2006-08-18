@@ -7,7 +7,7 @@
    <field name="reageer"/>
    <field name="bron"/>
    <field name="filename"/>
-	<field name="handle"/>
+	 <field name="handle"/>
    <field name="screensize"/>
    <field name="creatiedatum"/>
    <field name="datumlaatstewijziging"/>
