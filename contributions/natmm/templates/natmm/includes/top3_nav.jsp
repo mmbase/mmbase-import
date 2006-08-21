@@ -63,7 +63,7 @@ nodesAtLevel[0].put(new Integer(0),rootID);
 
 int depth = 0;
 int top = 0;
-if(iRubriekLayout==NatMMConfig.SUBSITE1_LAYOUT || iRubriekLayout==NatMMConfig.SUBSITE1_LAYOUT) {
+if(iRubriekLayout==NatMMConfig.SUBSITE1_LAYOUT || iRubriekLayout==NatMMConfig.SUBSITE2_LAYOUT) {
 	top = 76;
 } else if (iRubriekLayout==NatMMConfig.DEMO_LAYOUT ) {
 	top = 53;

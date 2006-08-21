@@ -16,7 +16,7 @@
      * processuploads.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: processuploads.jsp,v 1.3 2006-08-11 09:41:31 henk Exp $
+     * @version  $Id: processuploads.jsp,v 1.4 2006-08-21 21:41:35 henk Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
@@ -100,9 +100,12 @@ if (! ewconfig.subObjects.empty()) {
                   if (log.isDebugEnabled()) {
                      log.debug("Setting binary " + fi.get() + " " + fi.get().length + " " +  fileName + " " + fullFileName);
                   }
-                  if (!alAllowedTypes.contains(fi.getContentType()))
-                  {
-                     throw new Exception("Unsupported type");
+                  String wizard = request.getParameter("wizard");
+                  if(wizard!=null && wizard.indexOf("images") > -1) {
+                     if (!alAllowedTypes.contains(fi.getContentType()))
+                     {
+                        throw new Exception("Unsupported type");
+                     }
                   }
                   wizardConfig.wiz.setBinary(fi.getFieldName(), fi.get(), fileName, fullFileName, fi.getContentType());
 						fileCount++;
