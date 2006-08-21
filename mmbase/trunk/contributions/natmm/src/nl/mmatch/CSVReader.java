@@ -732,7 +732,7 @@ public class CSVReader implements Runnable {
 
    public static String getAddress(TreeMap zipCodeMap, String zipCode) {
       String address = null;
-      if(zipCode!=null&&!zipCode.equals("")) {
+      if(zipCodeMap!=null&&zipCode!=null&&!zipCode.equals("")) {
          address = (String) zipCodeMap.get(zipCode);
       }
       return address;

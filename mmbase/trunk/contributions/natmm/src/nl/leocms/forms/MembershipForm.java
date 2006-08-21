@@ -56,7 +56,7 @@ public class MembershipForm extends ActionForm {
    public static String MONTH = "M";
    public static String DEFAULT_COUNTRY = "NEDERLAND";
    public static int MINIMUM_PER_MONTH = 200;
-   public static int MINIMUM_PER_YEAR = 1850;
+   public static int MINIMUM_PER_YEAR = 2000;
 
    private String action = initAction;
    private int validateCounter = 0;

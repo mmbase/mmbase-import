@@ -12,7 +12,10 @@ String zipCodeMessage = SubscribeForm.getZipCodeMessage(zipCode);
 boolean isMember = !memberID.equals("") && (memberIDMessage.equals("") || memberIDMessage.equals("evenementen.members.nozipcode"));
 if(isMember) {
    
-   %><mm:redirect page="<%= request.getServletPath() + "?" + request.getQueryString() + "&status=checked" %>" /><%
+   %>
+   <%@include file="/editors/mailer/util/memberid_set.jsp" %>
+   <mm:redirect page="<%= request.getServletPath() + "?" + request.getQueryString() + "&status=checked" %>" />
+   <%
    
 } else {
 
