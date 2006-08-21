@@ -11,7 +11,6 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.implementation;
 
 import java.util.*;
-import java.io.*;
 
 import org.mmbase.security.*;
 import org.mmbase.bridge.*;
@@ -25,7 +24,6 @@ import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.*;
 
-import org.w3c.dom.Element;
 import org.w3c.dom.Document;
 
 /**
@@ -34,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.209 2006-08-03 13:09:37 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.210 2006-08-21 07:32:17 nklasens Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -643,16 +641,27 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         
         if ("".equals(otherNodeManager)) otherNodeManager = null;
         NodeManager otherManager = otherNodeManager == null ? cloud.getNodeManager("object") : cloud.getNodeManager(otherNodeManager);
-        TypeRel typeRel = BasicCloudContext.mmb.getTypeRel();
-        RelDef relDef = BasicCloudContext.mmb.getRelDef();
-        int rnumber = relDef.getNumberByName(role);
 
-        RelationList r1 = typeRel.contains(nodeManager.getNumber(), otherManager.getNumber(), rnumber, TypeRel.INCLUDE_DESCENDANTS) ?
-            getRelations(role, otherManager, "destination") :
-            BridgeCollections.EMPTY_RELATIONLIST;
-        RelationList r2 = typeRel.contains(otherManager.getNumber(), nodeManager.getNumber(), rnumber, TypeRel.INCLUDE_DESCENDANTS) ?
-            getRelations(role, otherManager, "source") :
-            BridgeCollections.EMPTY_RELATIONLIST;
+        TypeRel typeRel = BasicCloudContext.mmb.getTypeRel();
+        RelationList r1 = BridgeCollections.EMPTY_RELATIONLIST;
+        RelationList r2 = BridgeCollections.EMPTY_RELATIONLIST;
+        if (role == null) {
+            if (!typeRel.getAllowedRelations(nodeManager.getNumber(), otherManager.getNumber(), 0,
+                    RelationStep.DIRECTIONS_DESTINATION).isEmpty())
+                r1 = getRelations(role, otherManager, "destination");
+            if (!typeRel.getAllowedRelations(nodeManager.getNumber(), otherManager.getNumber(), 0,
+                    RelationStep.DIRECTIONS_SOURCE).isEmpty())
+                r2 = getRelations(role, otherManager, "source");
+        }
+        else {
+            RelDef relDef = BasicCloudContext.mmb.getRelDef();
+            int rnumber = relDef.getNumberByName(role);
+            if (typeRel.contains(nodeManager.getNumber(), otherManager.getNumber(), rnumber, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS))
+                r1 = getRelations(role, otherManager, "destination");
+            if (typeRel.contains(otherManager.getNumber(), nodeManager.getNumber(), rnumber, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS))
+                r2 = getRelations(role, otherManager, "source");
+        }
+
 
         if (r2.size() == 0) {
             return r1;
@@ -762,17 +771,27 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
      * @since MMBase-1.8.2
      */
     protected NodeList getRelatedNodes(NodeManager otherManager, String role) {
+
+        NodeList l1 = BridgeCollections.EMPTY_NODELIST;
+        NodeList l2 = BridgeCollections.EMPTY_NODELIST;
+        
         TypeRel typeRel = BasicCloudContext.mmb.getTypeRel();
-        RelDef relDef = BasicCloudContext.mmb.getRelDef();
-        int rnumber = relDef.getNumberByName(role);
-
-        NodeList l1 = typeRel.contains(nodeManager.getNumber(), otherManager.getNumber(), rnumber, TypeRel.INCLUDE_DESCENDANTS) ?
-            getRelatedNodes(otherManager, role, "destination") :
-            BridgeCollections.EMPTY_NODELIST;
-        NodeList l2 = typeRel.contains(otherManager.getNumber(), nodeManager.getNumber(), rnumber, TypeRel.INCLUDE_DESCENDANTS) ?
-            getRelatedNodes(otherManager, role, "source") :
-            BridgeCollections.EMPTY_RELATIONLIST;
-
+        if (role == null) {
+            if (!typeRel.getAllowedRelations(nodeManager.getNumber(), otherManager.getNumber(), 0,
+                    RelationStep.DIRECTIONS_DESTINATION).isEmpty())
+                l1 = getRelatedNodes(otherManager, role, "destination");
+            if (!typeRel.getAllowedRelations(nodeManager.getNumber(), otherManager.getNumber(), 0,
+                    RelationStep.DIRECTIONS_SOURCE).isEmpty())
+                l2 = getRelatedNodes(otherManager, role, "source");
+        }
+        else {
+            RelDef relDef = BasicCloudContext.mmb.getRelDef();
+            int rnumber = relDef.getNumberByName(role);
+            if (typeRel.contains(nodeManager.getNumber(), otherManager.getNumber(), rnumber, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS))
+                l1 = getRelatedNodes(otherManager, role, "destination");
+            if (typeRel.contains(otherManager.getNumber(), nodeManager.getNumber(), rnumber, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS))
+                l2 = getRelatedNodes(otherManager, role, "source");
+        }
         if (l2.size() == 0) {
             return l1;
         } else if (l1.size() == 0) {
