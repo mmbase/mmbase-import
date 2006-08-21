@@ -79,7 +79,7 @@
     <%-- right section --%>
     <div class="mainContent">
       <div class="contentBody">
-        <p><b><di:translate key="assessment.goals" /></b></p>
+        <span style="FONT-SIZE : 1.5em; font-weight:bold;"><di:translate key="assessment.goals" /></span><br/>
         <mm:node number="$user">
           <mm:relatednodes type="goals" path="posrel,goals" orderby="posrel.pos">
             <mm:first><table></mm:first>
@@ -128,7 +128,7 @@
         <br/>
         <br/>
         <br/>
-        <p><b><di:translate key="assessment.problems" /></b></p>
+        <span style="FONT-SIZE : 1.5em; font-weight:bold;"><di:translate key="assessment.problems" /></span><br/>
         <a href="<mm:treefile page="/assessment/editproblem.jsp" objectlist="$includePath" referids="$referids"/>"
             ><img src="<mm:treefile page="/assessment/gfx/new_learnobject.gif" objectlist="$includePath" 
                   referids="$referids"/>" border="0" title="<di:translate key="assessment.add_problem" />"
