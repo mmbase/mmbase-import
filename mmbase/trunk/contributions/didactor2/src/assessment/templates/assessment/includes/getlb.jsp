@@ -5,8 +5,10 @@
 <mm:node number="component.assessment" notfound="skip">
   <mm:relatednodes type="learnobjects" path="rolerel,learnobjects">
     <mm:field name="number" jspvar="dummy" vartype="String" write="false">
-      <% listCompLo += dummy + ".";
-      %>
+      <mm:first>
+        <% backtolb = dummy; %>
+      </mm:first>
+      <% listCompLo += dummy + "."; %>
     </mm:field>
   </mm:relatednodes>
   <% if (!".".equals(listCompLo)) { %>
