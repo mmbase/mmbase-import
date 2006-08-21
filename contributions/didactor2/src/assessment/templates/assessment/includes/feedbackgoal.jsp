@@ -13,7 +13,7 @@
   <td colspan="2">
     <mm:node number="<%= ownerId %>">
       <mm:relatednodes type="goals" path="posrel,goals" orderby="posrel.pos">
-        <mm:first><table></mm:first>
+        <mm:first><table style="FONT-SIZE : 1.0em"></mm:first>
           <mm:field name="number" jspvar="goal_number" vartype="String" write="false">
             <tr>
               <td>

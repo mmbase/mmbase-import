@@ -82,7 +82,7 @@
             </mm:field>
           </mm:relatednodes>
           
-          <table width="600px">
+          <table width="600px" style="FONT-SIZE : 1.3em">
             <tr>
               <td><b>
                 <mm:node number="<%= lessonId %>"><mm:field name="name"/></mm:node> <di:translate key="assessment.by" /> 
