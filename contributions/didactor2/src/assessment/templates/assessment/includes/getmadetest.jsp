@@ -18,6 +18,8 @@
             <mm:node number="<%= this_test %>" id="this_test"/>
             <mm:createrelation role="related" source="this_test" destination="madetest"/>
             <mm:createrelation role="related" source="copybookNo" destination="madetest"/>
-            <mm:createrelation role="related" source="problem_n" destination="madetest"/>
+            <mm:node number="$problem_n" notfound="skip">
+              <mm:createrelation role="related" source="problem_n" destination="madetest"/>
+            </mm:node>
             <mm:remove referid="this_test"/>
           </mm:notpresent>

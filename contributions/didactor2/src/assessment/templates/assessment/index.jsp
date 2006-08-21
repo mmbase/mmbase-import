@@ -157,7 +157,7 @@
           </mm:relatednodes>
         </mm:node>
 
-        <div><table class="poplistTable">
+        <div><table class="poplistTable" style="width:100%">
           <% boolean lessonShowed = false; %>
           <mm:listnodes type="problemtypes" orderby="pos">
             <mm:field name="number" jspvar="problemtypeId" vartype="String">
@@ -165,9 +165,9 @@
               <% String problems = getProblemsByType(cloud, problemtypeId, thisUser); 
                  if ("".equals(problems)) {
               %>
-                   <th class="listHeader">&nbsp;</th>
+                   <th class="listHeader" style="width:30px;">&nbsp;</th>
               <% } else { %>
-                   <th class="listHeader" style="vertical-align:middle;"><img src="<mm:treefile page="/assessment/gfx/plus.gif" 
+                   <th class="listHeader" style="width:30px; vertical-align:middle;"><img src="<mm:treefile page="/assessment/gfx/plus.gif" 
                          objectlist="$includePath" referids="$referids"/>" border="0" 
                          title="<di:translate key="assessment.show_problems" />" alt="<di:translate key="assessment.show_problems" />" 
                          onClick="toggleAll(<%= problemtypeId %>,'<%= problems %>');"
@@ -184,7 +184,8 @@
               %>
                    <mm:node number="$assessment_education" notfound="skip">
                      <mm:relatednodes type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos">
-                       <th class="listHeader" <% if (!"".equals(styles.get(count))) { %>style="color:E7E7E7"<% } %>><mm:field name="name"/></th>
+                       <th class="listHeader" style="width:82px; padding:0 0 0 0;<% if (!"".equals(styles.get(count))) { %>color:E7E7E7<% } %>"
+                         ><mm:field name="name"/></th>
                        <% count++; %>
                      </mm:relatednodes>
                    </mm:node>
@@ -199,14 +200,14 @@
                 constraints="people.number=$user" fields="problems.number" distinct="true">
               <mm:field name="problems.number" jspvar="problem_number" vartype="String" write="false">
               <tr id="toggle_div<%=problem_number %>" style="display:none; vertical-align:top;">
-                <td class="listItem"><nobr>
+                <td class="listItem" style="padding:0 0 0 0"><nobr>
                   <a href="<mm:treefile page="/assessment/editproblem.jsp" objectlist="$includePath" referids="$referids">
                              <mm:param name="problem_n"><%= problem_number %></mm:param>
                            </mm:treefile>"
                     ><img src="<mm:treefile page="/assessment/gfx/edit_learnobject.gif" objectlist="$includePath" 
                           referids="$referids"/>" border="0" title="<di:translate key="assessment.edit_problem" />"
-                          alt="<di:translate key="assessment.edit_problem" />" /></a>
-                  <a href="<mm:treefile page="/assessment/deleteobject.jsp" objectlist="$includePath" referids="$referids">
+                          alt="<di:translate key="assessment.edit_problem" />"
+                   /></a><a href="<mm:treefile page="/assessment/deleteobject.jsp" objectlist="$includePath" referids="$referids">
                              <mm:param name="object_n"><%= problem_number %></mm:param>
                            </mm:treefile>"
                     ><img src="<mm:treefile page="/assessment/gfx/remove.gif" objectlist="$includePath" 
