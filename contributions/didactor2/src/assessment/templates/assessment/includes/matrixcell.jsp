@@ -1,6 +1,6 @@
 <td class="listItem">
   <mm:field name="problems.name" jspvar="dummy" vartype="String" write="false">
-    <%= ( "".equals(dummy) ? "&nbsp;" : dummy )%>
+    <%= ( "".equals(dummy) ? "&nbsp;" : dummy.replaceAll("\\n", "<br/>\n") ) %>
   </mm:field>
 </td>
 <% count = 0; %>

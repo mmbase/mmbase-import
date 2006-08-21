@@ -2,7 +2,6 @@
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@page import="org.mmbase.bridge.*" %>
 
-<mm:content postprocessor="reducespace">
 <mm:cloud method="delegate" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
 <%@include file="includes/geteducation.jsp" %>
@@ -45,18 +44,16 @@
   
   <mm:node referid="problem_n" notfound="skip">
     <mm:setfield name="name"><mm:write referid="problemname"/></mm:setfield>
-    <mm:node number="<%= currentLesson %>" id="currentlesson"/>
     <mm:related path="posrel,learnblocks" constraints="<%= "learnblocks.number=" + currentLesson %>">
       <mm:node element="posrel">
         <mm:deletenode/>
       </mm:node>
     </mm:related>
-    <mm:createrelation role="posrel" source="problem_n" destination="currentlesson"/>
-    <mm:related path="posrel,learnblocks" constraints="<%= "learnblocks.number=" + currentLesson %>">
-      <mm:node element="posrel">
+    <mm:node number="<%= currentLesson %>" id="currentlesson" notfound="skip">
+      <mm:createrelation role="posrel" source="problem_n" destination="currentlesson">
         <mm:setfield name="pos"><mm:write referid="problemrating"/></mm:setfield>
-      </mm:node>
-    </mm:related>
+      </mm:createrelation>
+    </mm:node>
     <mm:related path="related,problemtypes">
       <mm:node element="related">
         <mm:deletenode/>
@@ -143,8 +140,8 @@
     <input type="hidden" name="problem_n" value="<mm:write referid="problem_n"/>">
     <table class="font" width="70%">
       <tr>
-        <td width="80"><di:translate key="assessment.problem" />:</td>
-        <td align="right"><input name="problemname" class="popFormInput" type="text" size="50" maxlength="255" value="<mm:write referid="problemname"/>"></td>
+        <td width="80" style="vertical-align:top"><di:translate key="assessment.problem" />:</td>
+        <td align="right"><textarea name="problemname" class="popFormInput" cols="50" rows="4"><mm:write referid="problemname"/></textarea></td>
       </tr>
       <tr>
         <td><di:translate key="assessment.type" /></td>
@@ -209,4 +206,3 @@
   </div>
   <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
 </mm:cloud>
-</mm:content>

@@ -4,10 +4,12 @@
       <tr>
         <td colspan="2">
           <div class="grayBar" style="width:100%;">
-            <img src="<mm:treefile page="/assessment/gfx/minus.gif" objectlist="$includePath" 
-                 referids="$referids"/>" border="0" title="<di:translate key="assessment.show_problems" />"
-                 alt="<di:translate key="assessment.show_problems" />"
-                 onClick="toggle(<%= problemtypeId %>);" id="toggle_image<%= problemtypeId %>"/>
+            <mm:relatednodes type="problems" max="1">
+              <img src="<mm:treefile page="/assessment/gfx/minus.gif" objectlist="$includePath" 
+                referids="$referids"/>" border="0" title="<di:translate key="assessment.show_problems" />"
+                alt="<di:translate key="assessment.show_problems" />"
+                onClick="toggle(<%= problemtypeId %>);" id="toggle_image<%= problemtypeId %>"/>
+            </mm:relatednodes>
             <di:translate key="<%= "assessment." + problem_type %>" />
           </div>
         </td>
