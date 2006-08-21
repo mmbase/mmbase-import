@@ -30,7 +30,7 @@
 
 <mm:list nodes="$list_of_coaches" path="people">
    <mm:import id="to" reset="true"><mm:field name="people.email"/></mm:import>
-   <mm:write referid="to"/>
+   <mm:field name="people.firstname"/> <mm:field name="people.lastname"/> &lt;<mm:write referid="to"/>&gt;
    <br/>
    <%@ include file="includes/sendmail.jsp" %>
 </mm:list>
