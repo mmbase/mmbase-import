@@ -21,7 +21,7 @@
 %>
       </mm:field>
     </mm:related>
-    <td class="listItem" <%= styles.get(count) %>>
+    <td class="listItem" style="padding:0 0 0 0" <%= styles.get(count) %>>
 <%
       if (rating < 0) {
         %>&nbsp;<%
