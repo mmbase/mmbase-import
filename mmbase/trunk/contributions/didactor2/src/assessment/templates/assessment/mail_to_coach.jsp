@@ -29,29 +29,35 @@
 
          <mm:import id="tested_coaches" reset="true"></mm:import>
 
-         <mm:list nodes="$list_of_coaches" path="people">
-            <mm:node element="people" jspvar="nodePeople">
-               <mm:import id="email" reset="true"><mm:field name="email"/></mm:import>
+         <mm:compare referid="list_of_coaches" value="" inverse="true">
+            <mm:list nodes="$list_of_coaches" path="people">
+               <mm:node element="people" jspvar="nodePeople">
+                  <mm:import id="email" reset="true"><mm:field name="email"/></mm:import>
 
-               <mm:compare referid="email" value="">
-                  <di:translate key="assessment.mail_to_coach___no_email_for_coach" arg0="<%= nodePeople.getStringValue("firstname") %>" arg1="<%= nodePeople.getStringValue("lastname") %>" />
-               </mm:compare>
-
-               <mm:compare referid="email" value="" inverse="true">
-                  <mm:compare referid="tested_coaches" value="">
-                     <mm:import id="tmp" reset="true"><mm:field name="number"/></mm:import>
+                  <mm:compare referid="email" value="">
+                     <di:translate key="assessment.mail_to_coach___no_email_for_coach" arg0="<%= nodePeople.getStringValue("firstname") %>" arg1="<%= nodePeople.getStringValue("lastname") %>" />
+                     <br/>
                   </mm:compare>
-                  <mm:compare referid="tested_coaches" value="" inverse="true">
-                     <mm:import id="tmp" reset="true">,<mm:field name="number"/></mm:import>
-                  </mm:compare>
-                  <mm:import id="tested_coaches" reset="true"><mm:write referid="tmp"/></mm:import>
-               </mm:compare>
-            </mm:node>
-         </mm:list>
 
+                  <mm:compare referid="email" value="" inverse="true">
+                     <mm:compare referid="tested_coaches" value="">
+                        <mm:import id="tmp" reset="true"><mm:field name="number"/></mm:import>
+                     </mm:compare>
+                     <mm:compare referid="tested_coaches" value="" inverse="true">
+                        <mm:import id="tmp" reset="true"><mm:write referid="tested_coaches"/>,<mm:field name="number"/></mm:import>
+                     </mm:compare>
+                     <mm:import id="tested_coaches" reset="true"><mm:write referid="tmp"/></mm:import>
+                  </mm:compare>
+               </mm:node>
+            </mm:list>
+         </mm:compare>
+
+         <br/>
 
          <mm:compare referid="tested_coaches" value="">
-            <di:translate key="assessment.mail_to_coach___no_coach" />
+            <mm:compare referid="list_of_coaches" value="">
+               <di:translate key="assessment.mail_to_coach___no_coach" />
+            </mm:compare>
          </mm:compare>
 
          <mm:compare referid="tested_coaches" value="" inverse="true">
