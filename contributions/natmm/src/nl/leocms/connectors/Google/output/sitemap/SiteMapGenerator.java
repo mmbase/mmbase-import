@@ -73,6 +73,17 @@ public class SiteMapGenerator implements Runnable{
       nodesAtLevel[0] = new TreeMap();
       nodesAtLevel[0].put(new Integer(0),rootID);
       int depth = 0;
+      String[] sConstrains = {
+         "", // dossier
+         "natuurgebieden.bron!=''", // natuurgebieden
+         "", // provincies
+         "(artikel.embargo < '" + (nowSec + quarterOfAnHour) +
+         "') AND (artikel.use_verloopdatum='0' OR artikel.verloopdatum > '" + nowSec + "' )", // artikel
+         "(artikel.embargo < '" + (nowSec + quarterOfAnHour) +
+         "') AND (artikel.use_verloopdatum='0' OR artikel.verloopdatum > '" + nowSec + "' )", // artikel
+         "", // images
+         "", // persoon
+         ""}; // ads
 
       while(depth>-1&&depth<10) {
          String lastSubObject = "";
@@ -112,86 +123,39 @@ public class SiteMapGenerator implements Runnable{
 
                   nodesAtLevel[depth].remove(thisKey);
 
-                  //finding links to articles
-                  TreeMap articles = new TreeMap();
-                  String articleConstraint = "(artikel.embargo < '" +
-                     (nowSec + quarterOfAnHour) +
-                     "') AND (artikel.use_verloopdatum='0' OR artikel.verloopdatum > '" +
-                     nowSec + "' )";
-                  String articlePath = "pagina,contentrel,artikel";
-                  NodeList nlArticles = cloud.getList(sThisObject,
-                     articlePath, "artikel.number",
-                     articleConstraint, "artikel.begindatum", "down", null, true);
-
-                  for (int i = 0; i < nlArticles.size(); i++) {
-                     String article_number = nlArticles.getNode(i).
-                        getStringValue("artikel.number");
-                     Long article_begindatum = new Long(nlArticles.getNode(i).
-                        getLongValue("artikel.begindatum"));
-                     while (articles.containsKey(article_begindatum)) {
-                        article_begindatum = new Long(article_begindatum.
-                           longValue() + 1);
+                  for (int i = 0; i < NatMMConfig.CONTENTELEMENTS.length; i++){
+                     String sRealConstraints = sConstrains[i];
+                     if (!sRealConstraints.equals("")){
+                        sRealConstraints += " AND ";
                      }
-                     articles.put(article_begindatum, article_number);
-                  }
-
-                  while (articles.size() > 0) {
-                     Long thisArticle = (Long) articles.lastKey();
-                     String article_number = (String) articles.get(
-                        thisArticle);
-                     if (bUrlIsAlive(url + ph.createItemUrl(article_number, sThisObject, "", ""))){
-                        sUrl = "\t<url>\n\t\t<loc>" + url +
-                        ph.createItemUrl(article_number, sThisObject, "","")
-                        + "</loc>\n\t\t" + getLastmod(cloud, article_number) +
-                        "\t\t" + getChangefreq(cloud,sThisObject,nowSec) +
-                        "\t\t<priority>" + FormattedPriority(depth + 1) +
-                        "</priority>\n\t</url>\n";
-                        ts.add(sUrl);
+                     sRealConstraints += "pagina.number = " + sThisObject;
+                     String sBuilderName = NatMMConfig.CONTENTELEMENTS[i];
+                     if (sBuilderName.equals("artikel#")){
+                        sBuilderName = "artikel";
                      }
-
-                     //checking if article has dossier related
-                     NodeList nlDossier = cloud.getList(article_number,
-                        "artikel,posrel,dossier",
-                        "dossier.number", null, null, null, null, true);
-                     for (int j = 0; j < nlDossier.size(); j++) {
-                        String params = "d=" +
-                           nlDossier.getNode(j).
-                           getStringValue("dossier.number");
-                        if (bUrlIsAlive(url + ph.createItemUrl(article_number, sThisObject, params, ""))){
+                     String sPath = NatMMConfig.PATHS_FROM_PAGE_TO_ELEMENTS[i].
+                        replaceAll("object",sBuilderName);
+                     NodeList nlObjects = cloud.getList("", sPath,
+                     sBuilderName + ".number",sRealConstraints,
+                     null,"down",null,false);
+                     for (int j = 0; j < nlObjects.size(); j++){
+                        if (bUrlIsAlive(url + ph.createItemUrl(nlObjects.
+                        getNode(j).getStringValue(sBuilderName +
+                        ".number"),sThisObject,null,""))){
                            sUrl = "\t<url>\n\t\t<loc>" + url +
-                           ph.createItemUrl(article_number, sThisObject, params, "")
+                           ph.createItemUrl(nlObjects.getNode(j).getStringValue(
+                           sBuilderName + ".number"), sThisObject, null, "")
                            + "</loc>\n\t\t" +
-                           getLastmod(cloud, article_number) +
+                           getLastmod(cloud,nlObjects.getNode(j).getStringValue(
+                           sBuilderName + ".number")) +
                            "\t\t" + getChangefreq(cloud,sThisObject,nowSec) +
                            "\t\t<priority>" + FormattedPriority(depth + 1) +
                            "</priority>\n\t</url>\n";
                            ts.add(sUrl);
-                        }
-
-                     }
-                     articles.remove(thisArticle);
-                  }
-
-                  //finding links to natuurgebieden
-                  String sNatuurgebiedenPath = "pagina,contentrel,provincies,pos4rel,natuurgebieden";
-                  NodeList nlNatuurgebieden = cloud.getList(sThisObject,sNatuurgebiedenPath,
-                  "natuurgebieden.number","natuurgebieden.bron!=''","natuurgebieden.bron","down",null,true);
-                  for (int i = 0; i < nlNatuurgebieden.size(); i++){
-                     if (bUrlIsAlive(url + ph.createItemUrl(nlNatuurgebieden.getNode(i).getStringValue("natuurgebieden.number"),sThisObject,null,""))){
-                        sUrl = "\t<url>\n\t\t<loc>" + url +
-                           ph.createItemUrl(nlNatuurgebieden.getNode(i).
-                                            getStringValue(
-                           "natuurgebieden.number"), sThisObject, null, "")
-                           + "</loc>\n\t\t" +
-                           getLastmod(cloud,
-                                      nlNatuurgebieden.getNode(i).
-                                      getStringValue("natuurgebieden.number")) +
-                           "\t\t" + getChangefreq(cloud,sThisObject,nowSec) +
-                           "\t\t<priority>" + FormattedPriority(depth + 1) +
-                           "</priority>\n\t</url>\n";
-                        ts.add(sUrl);
+                       }
                      }
                   }
+
                }
             }
          }
