@@ -6,6 +6,6 @@
 // Distributed under the same terms as HTMLArea itself.
 // This notice MUST stay intact for use (see license.txt).
 {
-  "Insert special character": "Speciaal character invoegen",
+  "Insert special character": "Speciale tekens invoegen",
   "Cancel": "Annuleer"
 };
