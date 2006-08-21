@@ -1,33 +1,12 @@
-// Code to customize the htmlarea toolbar for the editwizards (less buttons,
-// a createlink with a target dropdown and a validate button).
-// Author: Jaco de Groot.
-// Version : $Id: my-htmlarea.js,v 1.2 2006-07-11 08:14:38 nklasens Exp $;
-
-
-function getToolTip(id, defaultValue) {
-   if (typeof MyHTMLArea_I18N != "undefined") {
-     return MyHTMLArea_I18N.tooltips[id];
-   } else {
-     return defaultValue;
-   }
-}
-
 xinha_editors = null;
 xinha_init    = null;
 
 
 xinha_init = xinha_init ? xinha_init : function() {
-  xinha_plugins = createDefaultPlugins;
-  xinha_config = createDefaultConfig();
-  xinha_editors = HTMLArea.makeEditors(xinha_editors, xinha_config, xinha_plugins);
-  HTMLArea.startEditors(xinha_editors);
-}
-
-createDefaultPlugins = function() {
-  var plugins = [
+  var xinha_plugins = [
    'CharacterMap',
    'ContextMenu',
-   'ListType'
+//   'ListType',
 //   'FullScreen',
 //   'SpellChecker',
 //   'Stylist',
@@ -35,9 +14,10 @@ createDefaultPlugins = function() {
 //   'TableOperations'
   ];
   // THIS BIT OF JAVASCRIPT LOADS THE PLUGINS, NO TOUCHING  :)
-  if(!HTMLArea.loadPlugins(plugins, createDefaultPlugins)) return;
-  
-  return plugins;
+  if(!HTMLArea.loadPlugins(xinha_plugins, xinha_init)) return;
+  xinha_config = createDefaultConfig();
+  xinha_editors = HTMLArea.makeEditors(xinha_editors, xinha_config, xinha_plugins);
+  HTMLArea.startEditors(xinha_editors);
 }
 
 createDefaultConfig = function() {
@@ -45,14 +25,14 @@ createDefaultConfig = function() {
   var xinha_config = xinha_config ? xinha_config() : new HTMLArea.Config();
   xinha_config.registerButton({
     id        : "my-createlink",
-    tooltip   : getToolTip("insertweblink","Insert Web Link"),
+    tooltip   : HTMLArea._lc("Insert Web Link"),
     image     : _editor_url + xinha_config.imgURL +  "ed_link.gif",
     textMode  : false,
     action    : myCreateLinkAction
   });
   xinha_config.registerButton({
     id        : "my-validatesave",
-    tooltip   : getToolTip("validatesave", "Validate The Form"),
+    tooltip   : HTMLArea._lc("Validate The Form"),
     image     : _editor_url + xinha_config.imgURL +  "ed_validate_save.gif",
     textMode  : true,
     action    : myValidateSaveAction
