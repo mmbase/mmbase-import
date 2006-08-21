@@ -27,16 +27,41 @@
 
          <%@ include file="includes\looks_for_coaches.jsp" %>
 
-         <mm:compare referid="list_of_coaches" value="">
+         <mm:import id="tested_coaches" reset="true"></mm:import>
+
+         <mm:list nodes="$list_of_coaches" path="people">
+            <mm:node element="people" jspvar="nodePeople">
+               <mm:import id="email" reset="true"><mm:field name="email"/></mm:import>
+
+               <mm:compare referid="email" value="">
+                  <di:translate key="assessment.mail_to_coach___no_email_for_coach" arg0="<%= nodePeople.getStringValue("firstname") %>" arg1="<%= nodePeople.getStringValue("lastname") %>" />
+               </mm:compare>
+
+               <mm:compare referid="email" value="" inverse="true">
+                  <mm:compare referid="tested_coaches" value="">
+                     <mm:import id="tmp" reset="true"><mm:field name="number"/></mm:import>
+                  </mm:compare>
+                  <mm:compare referid="tested_coaches" value="" inverse="true">
+                     <mm:import id="tmp" reset="true">,<mm:field name="number"/></mm:import>
+                  </mm:compare>
+                  <mm:import id="tested_coaches" reset="true"><mm:write referid="tmp"/></mm:import>
+               </mm:compare>
+            </mm:node>
+         </mm:list>
+
+
+         <mm:compare referid="tested_coaches" value="">
             <di:translate key="assessment.mail_to_coach___no_coach" />
          </mm:compare>
 
-         <mm:compare referid="list_of_coaches" value="" inverse="true">
+         <mm:compare referid="tested_coaches" value="" inverse="true">
             <di:translate key="assessment.mail_to_coach___text_below_title" />
+
             <form action="mail_to_coach_send.jsp" method="post">
                <input type="hidden" name="provider" value="<mm:write referid="provider"/>"/>
                <input type="hidden" name="education" value="<mm:write referid="education"/>"/>
                <input type="hidden" name="class" value="<mm:write referid="class"/>"/>
+               <input type="hidden" name="list_of_coaches" value="<mm:write referid="tested_coaches"/>" />
                <table class="font" width="90%">
                   <tr>
                      <td><textarea name="message" class="popFormInput" cols="50" rows="5"></textarea></td>
