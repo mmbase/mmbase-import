@@ -98,7 +98,7 @@
                       ><img src="<mm:treefile page="/assessment/gfx/remove.gif" objectlist="$includePath" 
                             referids="$referids"/>" border="0" title="<di:translate key="assessment.delete_goal" />"
                             alt="<di:translate key="assessment.delete_goal" />" /></a>
-                    <img src="<mm:treefile page="/assessment/gfx/plus.gif" objectlist="$includePath" 
+                    <img align="middle" src="<mm:treefile page="/assessment/gfx/plus.gif" objectlist="$includePath" 
                          referids="$referids"/>" border="0" title="<di:translate key="assessment.show_goal" />" 
                          alt="<di:translate key="assessment.show_goal" />" 
                          onClick="toggle(<%=goal_number %>);" id="toggle_image<%=goal_number %>"/>
@@ -111,7 +111,7 @@
                 </tr>
                 <tr id="toggle_div<%=goal_number %>" style="display:none">
                   <td>&nbsp;</td>
-                  <td>
+                  <td style="FONT-SIZE : 0.8em">
                     <mm:field name="description" jspvar="dummy" vartype="String" write="false">
                       <%= ( "".equals(dummy) ? "&nbsp;" : dummy )%>
                     </mm:field>
@@ -180,10 +180,12 @@
               </th>
               <% if (!lessonShowed) {
                    lessonShowed = true;
+                   count = 0;
               %>
                    <mm:node number="$assessment_education" notfound="skip">
                      <mm:relatednodes type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos">
-                       <th class="listHeader"><mm:field name="name"/></th>
+                       <th class="listHeader" <% if (!"".equals(styles.get(count))) { %>style="color:E7E7E7"<% } %>><mm:field name="name"/></th>
+                       <% count++; %>
                      </mm:relatednodes>
                    </mm:node>
               <% } else { 
@@ -267,7 +269,7 @@
           </tr>
           <tr>
             <% for(int i=0; i<lessonsNum+2; i++) { %>
-                 <td class="listItem">&nbsp;</td>
+                 <td class="listItem" <%= ( i<2 ? "" : styles.get(i-2) ) %>>&nbsp;</td>
             <% } %>
           </tr>
         </table></div>
