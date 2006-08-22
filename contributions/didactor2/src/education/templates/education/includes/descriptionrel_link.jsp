@@ -1,3 +1,6 @@
+<%@ page import = "org.mmbase.bridge.*" %>
+
+
 <mm:node number="component.assessment" notfound="skip">
    <mm:node number="$learnobject" jspvar="nodeLearnObject">
       <mm:related path="descriptionrel,object" searchdir="destination">
@@ -15,10 +18,31 @@
 
                <tr>
                   <td width="0px">
-                     <mm:node element="object">
-                        <mm:relatednodes type="images" max="1">
-                           <img src="<mm:image/>" />
-                        </mm:relatednodes>
+                     <mm:node element="object" jspvar="nodeObject">
+                        <%
+                           Node nodeParent = nodeObject;
+                           while(true){
+                              if("learnblocks".equals(cloud.getNode(nodeParent.getNumber()).getNodeManager().getName())){
+                                 break;
+                              }
+                              else{
+                                 NodeList nlParents = nodeParent.getRelatedNodes("object", "posrel", "source");
+                                 if(nlParents.size() > 0){
+                                    nodeParent = nlParents.getNode(0);
+                                 }
+                                 else{
+                                    break;
+                                 }
+                              }
+                           }
+
+                        %>
+
+                        <mm:node number="<%= "" + nodeParent.getNumber() %>">
+                           <mm:relatednodes type="images" max="1">
+                              <img src="<mm:image/>" />
+                           </mm:relatednodes>
+                        </mm:node>
                      </mm:node>
                   </td>
                   <td width="100%">
