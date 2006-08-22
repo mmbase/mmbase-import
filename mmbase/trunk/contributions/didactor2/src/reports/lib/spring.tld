@@ -3,7 +3,7 @@
 
 <taglib>
 
-	<tlib-version>1.1.1</tlib-version>
+	<tlib-version>1.1.2</tlib-version>
 
 	<jsp-version>1.2</jsp-version>
 
@@ -74,6 +74,12 @@
 		</description>
 
 		<attribute>
+			<name>message</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
 			<name>code</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
@@ -81,6 +87,12 @@
 
 		<attribute>
 			<name>arguments</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<name>argumentSeparator</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
