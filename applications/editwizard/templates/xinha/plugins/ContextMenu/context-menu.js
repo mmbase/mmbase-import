@@ -6,7 +6,7 @@
 // Distributed under the same terms as HTMLArea itself.
 // This notice MUST stay intact for use (see license.txt).
 //
-// $Id: context-menu.js,v 1.1 2006-07-05 13:03:29 nklasens Exp $
+// $Id: context-menu.js,v 1.2 2006-08-22 13:12:02 nklasens Exp $
 
 HTMLArea.loadStyle("menu.css", "ContextMenu");
 
@@ -204,7 +204,27 @@ ContextMenu.prototype.getContextMenu = function(target) {
 				);
 			break;
 		    case "body":
-			elmenus.push(null,
+		      var justify = false;
+		      for (var i = 0; i < config.toolbar.length; i++) {
+		        var toolbaritem = config.toolbar[i];
+		        if (typeof toolbaritem == 'string') {
+		          if (toolbaritem.indexOf("justify") > -1) {
+		            justify = true;
+		            break;
+		          }
+		        }
+		        else {
+		          for (var j = 0; j < toolbaritem.length; j++) {
+			        toolbarname = toolbaritem[j];
+		            if (toolbarname.indexOf("justify") > -1) {
+		              justify = true;
+		              break;
+		            }
+		          }
+		        }
+		      }
+		      if (justify) {
+				elmenus.push(null,
 				     [ HTMLArea._lc("Justify Left", "ContextMenu"),
 				       function() { editor.execCommand("justifyleft"); }, null,
 				       config.btnList["justifyleft"][1] ],
@@ -218,6 +238,7 @@ ContextMenu.prototype.getContextMenu = function(target) {
 				       function() { editor.execCommand("justifyfull"); }, null,
 				       config.btnList["justifyfull"][1] ]
 				);
+			  }
 			break;
 		}
 	}
