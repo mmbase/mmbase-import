@@ -44,7 +44,7 @@
                                   objectlist="$includePath" referids="$referids"/>";
       }
     }
-    function doClose(prompt) {
+    function doAction(prompt) {
     var conf;
     if (prompt && prompt!="") {
        conf = confirm(prompt);

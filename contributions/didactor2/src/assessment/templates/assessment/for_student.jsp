@@ -30,6 +30,7 @@
                     <a href="<mm:treefile page="/assessment/deleteobject.jsp" objectlist="$includePath" referids="$referids">
                                <mm:param name="object_n"><mm:field name="number"/></mm:param>
                              </mm:treefile>"
+                             onclick="return doAction('<di:translate key="assessment.prompt_to_delete_goal" />');"
                       ><img src="<mm:treefile page="/assessment/gfx/remove.gif" objectlist="$includePath" 
                             referids="$referids"/>" border="0" title="<di:translate key="assessment.delete_goal" />"
                             alt="<di:translate key="assessment.delete_goal" />" /></a>
@@ -145,6 +146,7 @@
                    /></a><a href="<mm:treefile page="/assessment/deleteobject.jsp" objectlist="$includePath" referids="$referids">
                              <mm:param name="object_n"><%= problem_number %></mm:param>
                            </mm:treefile>"
+                           onclick="return doAction('<di:translate key="assessment.prompt_to_delete_problem" />');"
                     ><img src="<mm:treefile page="/assessment/gfx/remove.gif" objectlist="$includePath" 
                           referids="$referids"/>" border="0" title="<di:translate key="assessment.delete_problem" />"
                           alt="<di:translate key="assessment.delete_problem" />" /></a>
@@ -223,7 +225,7 @@
             <mm:related path="posrel,problems,posrel,people" max="1" constraints="people.number=$user">
               <% hasWeights = true; %>
               <input type="submit" class="formbutton" value="<di:translate key="assessment.close_and_send_to_coach" />"
-                onclick="return doClose('<di:translate key="assessment.prompt_to_closing_lesson" />');">
+                onclick="return doAction('<di:translate key="assessment.prompt_to_closing_lesson" />');">
             </mm:related>
           </mm:node>
           <% if (!hasWeights) { %>
