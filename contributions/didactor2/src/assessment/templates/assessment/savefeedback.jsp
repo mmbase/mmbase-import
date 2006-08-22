@@ -11,9 +11,10 @@
 <mm:import externid="step">-1</mm:import>
 <mm:import externid="feedback_n">-1</mm:import>
 <mm:import externid="feedbacktext"/>
+<mm:import externid="coachmode">false</mm:import>
 
 <mm:compare referid="step" value="cancel">
-  <mm:redirect page="/assessment/index.jsp" referids="$referids"/>
+  <mm:redirect page="/assessment/index.jsp" referids="coachmode?,$referids"/>
 </mm:compare>
 
 <mm:compare referid="step" value="save">
@@ -37,7 +38,7 @@
     <%@ include file="includes/sendmail.jsp" %>
   </mm:node>
 
-  <mm:redirect page="/assessment/index.jsp" referids="$referids"/>
+  <mm:redirect page="/assessment/index.jsp" referids="coachmode?,$referids"/>
 </mm:compare>
 
 </mm:cloud>
