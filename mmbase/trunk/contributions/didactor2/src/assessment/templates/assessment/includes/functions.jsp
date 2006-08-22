@@ -14,6 +14,21 @@ public String getProblemsByType(Cloud cloud, String typeId, String user) {
    return sbObjects.toString();
 }
 
+public String getStudentsByClass(Cloud cloud, String classId) {
+   StringBuffer sbObjects = new StringBuffer();
+   NodeList nlStudents = cloud.getList(classId,
+                                       "classes,classrel,people,related,roles",
+                                       "people.number",
+                                       "roles.name='student'",
+                                       "people.lastname",null,null,true);
+   String students = null;
+   for(int n=0; n<nlStudents.size(); n++) {
+     if (n>0) { sbObjects.append(','); }
+     sbObjects.append(classId + "_" + nlStudents.getNode(n).getStringValue("people.number"));
+   }
+   return sbObjects.toString();
+}
+
 public int getMaxPos(Cloud cloud, String start, String destination) {
    int max = 0;
    NodeList nlObjects = cloud.getList(start,
