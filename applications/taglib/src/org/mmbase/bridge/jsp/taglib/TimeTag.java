@@ -23,7 +23,7 @@ import javax.servlet.jsp.JspException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.56 2006-07-17 15:38:47 johannes Exp $
+ * @version $Id: TimeTag.java,v 1.57 2006-08-22 11:21:42 michiel Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer, WriterReferrer {
 
@@ -46,6 +46,7 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
     private final static int PRECISION_WEEKS = 5;
     private final static int PRECISION_MONTHS = 6;
     private final static int PRECISION_YEARS = 7;
+    private final static int PRECISION_PARSE = 100;
 
 
     /**
@@ -71,7 +72,7 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
         precision = getAttribute(p);
     }
 
-    protected int getPrecisionConstant(String p) throws JspTagException {
+    protected static int getPrecisionConstant(String p) throws JspTagException {
         if (p.equals("")) {
             return PRECISION_UNSET;
         } else if (p.equals("seconds")) {
@@ -89,7 +90,7 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
         } else if (p.equals("years")) {
             return PRECISION_YEARS;
         } else {
-            throw new JspTagException("Unknown value for precision/significance attribute: '" + p + "'");
+            return PRECISION_PARSE;
         }
     }
 
@@ -152,7 +153,11 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
 
     public int doStartTag() throws JspTagException {
         log.debug("Start-tag of mm:time ");
-        _date = evaluateTime();
+        try {
+            _date = evaluateTime();
+        } catch (ParseException pe) {
+            throw new TaglibException(pe);
+        }
         if (log.isDebugEnabled()) {
             log.debug("Using date " + _date);
         }
@@ -196,7 +201,7 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
      * Evaluate the time attribute.
      * @javadoc
      */
-    private Date evaluateTime() throws JspTagException {
+    private Date evaluateTime() throws JspTagException, ParseException {
         if (log.isDebugEnabled()) {
             log.debug("time: '" + time + "' offset: '" + offset + "' format: '" + dateFormat + "' inputformat: '" + inputFormat + "'");
         }
@@ -248,11 +253,7 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
                 } catch (Throwable e) {
                     log.debug(e);
                     // Try to parse it in three standard ways, this can be considered Legacy, because DynamicDate.getInstance can handle everything already.
-                    try {
-                        date = parseTime(useTime); 
-                    } catch (ParseException e2) {
-                        throw new TaglibException(e);
-                    }
+                    date = parseTime(useTime); 
                 }
             }
         } else { // The input format is provided. We use that to parse the time attribute
@@ -276,7 +277,11 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
         }
 
         date = handleOffset(date);
-        date = handlePrecision(date);
+        try {
+            date = handlePrecision(date);
+        } catch (org.mmbase.util.dateparser.ParseException pe) {
+            throw new TaglibException(pe);
+        }
         date = handleRelevance(date);
         return date;
     }
@@ -307,13 +312,17 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
         return date;
     }
     
-    private Date handlePrecision(Date date) throws JspTagException  {
+    private Date handlePrecision(Date date) throws JspTagException, org.mmbase.util.dateparser.ParseException {
         // precision sets fields of date opbject to 0 starting with least relevant bits (for caching purposes)
         if (precision != Attribute.NULL) {
             Calendar cal = Calendar.getInstance(getTimeZone(), getLocale());
             cal.setTime(date);
             int prec = getPrecision();
             switch (prec) {
+            case PRECISION_PARSE:
+                long p = DynamicDate.getInstance("duration + " + precision.getString(this)).getTime();
+                cal.setTime(new Date((date.getTime() / p) * p));
+                break;
             case PRECISION_YEARS :
                 cal.set(Calendar.MONTH, Calendar.JANUARY);
             case PRECISION_MONTHS :

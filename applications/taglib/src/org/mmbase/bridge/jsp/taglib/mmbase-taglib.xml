@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.373 2006-07-26 15:48:55 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.374 2006-08-22 11:21:42 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -74,7 +74,7 @@ version: $Id: mmbase-taglib.xml,v 1.373 2006-07-26 15:48:55 michiel Exp $
     <function-class>org.mmbase.bridge.jsp.taglib.functions.Functions</function-class>
     <function-signature>boolean contains(java.util.Collection, java.lang.Object)</function-signature>
     <example>
-      &lt;c:if test="${mm:contains(list, case)}">
+      &lt;c:if test="&amp;#x24;{mm:contains(list, case)}">
     </example>
     <since>MMBase-1.8</since>
   </function>
@@ -5968,12 +5968,21 @@ Of course, the default behavior of getSmartPath can still be overridden.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        Specifies the `precision' of the produced time. Times are rounded off to the beginning of
-        the specified unit. This can have several purposes. One of them being that such a rounded of
-        time can be used in queries, without resulting to much different queries ('now' with a
-        precision of minutes, will e.g. result a new `now' only once a minute, so a query with a
-        constraint containing `now' has to be redone only once a minute (in stead of every
-        second)).
+        <p>
+          Specifies the `precision' of the produced time. Times are rounded off to the beginning of
+          the specified unit. This can have several purposes. One of them being that such a rounded of
+          time can be used in queries, without resulting to much different queries ('now' with a
+          precision of minutes, will e.g. result a new `now' only once a minute, so a query with a
+          constraint containing `now' has to be redone only once a minute (in stead of every
+          second)).
+        </p>
+        <p>
+          Since MMBase-1.8.2, if the value of this attribute does not evualate to one of the known
+          units, it will fall back by prefixing with 'duration +' and then feeding it to the MMBase
+          date parser. The specified time will be divided and multiplied by the thusly specified
+          number of seconds since 1970. Specifying e.g. '3 minute' will effectively allow you to
+          specify a preciesion of 3 minutes like this.
+        </p>
       </info>
       <possiblevalue>
         <value>seconds</value>
@@ -5999,6 +6008,12 @@ Of course, the default behavior of getSmartPath can still be overridden.
       <possiblevalue>
         <value>years</value>
       </possiblevalue>
+      <examplevalue>
+        <value>3 minute</value>
+      </examplevalue>
+      <examplevalue>
+        <value>30 second</value>
+      </examplevalue>
       <since>MMBase-1.7</since>
     </attribute>
     <attribute>
