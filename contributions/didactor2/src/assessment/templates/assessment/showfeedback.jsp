@@ -6,6 +6,8 @@
 <%@include file="/shared/setImports.jsp" %>
 
 <mm:import externid="feedback_n">-1</mm:import>
+<mm:import externid="coachmode">false</mm:import>
+
 <% 
    String classrelId = "-1";
    String ownerId = "-1";
@@ -78,7 +80,7 @@
               </b></td>
               <td style="text-align:right">
                 <form name="backform" action="<mm:treefile page="/assessment/index.jsp" objectlist="$includePath"
-                       referids="$referids"/>" method="post">
+                       referids="coachmode?,$referids"/>" method="post">
                   <input type="submit" class="formbutton" value="<di:translate key="assessment.back" />">
                 </form>
               </td>

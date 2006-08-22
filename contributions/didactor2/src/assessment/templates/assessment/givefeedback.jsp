@@ -6,12 +6,13 @@
 <%@include file="/shared/setImports.jsp" %>
 
 <mm:import externid="feedback_n">-1</mm:import>
+<mm:import externid="coachmode">false</mm:import>
 
 <mm:node number="$feedback_n" notfound="skip">
   <mm:field name="status" write="false">
     <mm:compare value="-1">
       <mm:import id="page"><mm:treefile page="/assessment/showfeedback.jsp" objectlist="$includePath" referids="$referids">
-                             <mm:param name="feedback_n"><mm:write referid="feedback_n"/></mm:param>
+                             <mm:param name="coachmode?,feedback_n"><mm:write referid="feedback_n"/></mm:param>
                            </mm:treefile></mm:import>
       <mm:redirect page="$page"/>
     </mm:compare>
@@ -101,7 +102,7 @@
                      </div>
                      <br/>
                      <form name="feedbackform" action="<mm:treefile page="/assessment/savefeedback.jsp"
-                          objectlist="$includePath" referids="$referids"/>" method="post">
+                          objectlist="$includePath" referids="coachmode?,$referids"/>" method="post">
                        <input type="hidden" name="step" value="save">
                        <input type="hidden" name="feedback_n" value="<mm:write referid="feedback_n"/>">
                        <textarea name="feedbacktext" class="popFormInput" cols="50" rows="5"></textarea>
