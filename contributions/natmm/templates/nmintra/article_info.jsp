@@ -30,12 +30,7 @@ if(!articleId.equals("-1")) {
    <table border="0" cellpadding="0" cellspacing="0">
        <tr>
 		 	<td style="padding:10px;padding-top:18px;">
-		 	<%
-			if(!postingStr.equals("|action=print")) {
-				%><div align="right" style="letter-spacing:1px;"><a href="javascript:history.go(-1);">terug</a>&nbsp/&nbsp;<a target="_blank" href="ipage.jsp<%= 
-					  templateQueryString %>&article=<%=articleId %>&pst=|action=print">print</a></div><%
-			}
-			%>
+         <%@include file="includes/back_print.jsp" %>
 			<%@include file="includes/relatedteaser.jsp" %>
 			</td>
 		</tr>

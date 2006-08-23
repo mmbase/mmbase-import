@@ -1,48 +1,41 @@
-<%
-if(hasPools||isArchive) { 
-   %><%@include file="../whiteline.jsp" %>
-   <table cellpadding="0" cellspacing="0"  align="center" border="0">
-   <form method="POST" name="infoform" action="<%= requestURL %><%= sTemplateUrl %><%= templateQueryString %>" onSubmit="return postIt();"><% 
-   if(isArchive) { 
+<%@include file="../whiteline.jsp" %>
+<table cellpadding="0" cellspacing="0"  align="center" border="0">
+   <form method="POST" name="infoform" action="<%= requestURL %><%= sTemplateUrl %><%= templateQueryString %>" onSubmit="return postIt();"> 
+   <tr>
+      <td class="bold"><span class="light">Zoekterm</span></td>
+   </tr>
+   <tr>
+      <td class="bold"><input type="text" name="termsearch" value="<%= termSearchId %>" style="width:170px;" /></td>
+   </tr>
+   <%
+   String lastpool=""; 
+   %><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel,posrel,pools" orderby="pools.name" directions="UP"
+        ><mm:first
+            ><tr>
+            	<td class="bold"><span class="light">Categorie</span></td>
+   			</tr>
+   			<tr><td>
+            <select name="pool" style="width:172px;" <% if(!isArchive) { %>onChange="javascript:postIt();"<% } %>>
+        </mm:first
+        ><mm:field name="pools.number" jspvar="thispool" vartype="String" write="false"><%
+            if(!lastpool.equals(thispool)) { 
+                %><option value="<%= thispool %>"  <% if(thisPool.equals(thispool)){ %>SELECTED<% } 
+                    %>><mm:field name="pools.name" /><% 
+            } 
+            lastpool = thispool;
+        %></mm:field
+        ><mm:last
+            ><option value="-1" <% if(thisPool.equals("-1")){ %>SELECTED<% } 
+                %>>Alles</select>
+             </td></tr>
+        </mm:last
+   ></mm:list><% 
+   if (lastpool.equals("")){
       %>
-      <tr>
-         <td class="bold"><span class="light">Zoekterm</span></td>
-      </tr>
-      <tr>
-         <td class="bold"><input type="text" name="termsearch" value="<%= termSearchId %>" style="width:170px;" /></td>
-      </tr>
+      <input type="hidden" name="pool" value=""/>
       <%
-   }
-}
-String lastpool=""; 
-%><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel,posrel,pools" orderby="pools.name" directions="UP"
-     ><mm:first
-         ><tr>
-         	<td class="bold"><span class="light">Categorie</span></td>
-			</tr>
-			<tr><td>
-         <select name="pool" style="width:172px;" <% if(!isArchive) { %>onChange="javascript:postIt();"<% } %>>
-     </mm:first
-     ><mm:field name="pools.number" jspvar="thispool" vartype="String" write="false"><%
-         if(!lastpool.equals(thispool)) { 
-             %><option value="<%= thispool %>"  <% if(thisPool.equals(thispool)){ %>SELECTED<% } 
-                 %>><mm:field name="pools.name" /><% 
-         } 
-         lastpool = thispool;
-     %></mm:field
-     ><mm:last
-         ><option value="-1" <% if(thisPool.equals("-1")){ %>SELECTED<% } 
-             %>>Alles</select>
-          </td></tr>
-     </mm:last
-></mm:list><% 
-if (lastpool.equals("")){
-   %>
-   <input type="hidden" name="pool" value=""/>
-   <% }
-   if(isArchive) { 
-      %>
-      <tr><td>
+   } %>
+   <tr><td>
       <table cellspacing="0" cellpadding="0" border="0">
       <tr>
          <td colspan="5" class="bold"><span class="light">Vanaf</span></td>
@@ -132,41 +125,36 @@ if (lastpool.equals("")){
       </tr>
       </table>
    </td></tr>
-<% 
-}
-if(hasPools||isArchive) { %>
    </form>
-   </table>
-   <%@include file="../whiteline.jsp" %>
-   <script language="JavaScript" type="text/javascript">
-   <%= "<!--" %>
-   function postIt(action) {
-       var href = document.infoform.action;
-      if(action!='clear') {
-		    var pool = document.infoform.elements["pool"].value;
-   	    if(pool != '') href += "&pool=" + pool;
-	    <% if(isArchive) { %>
-   	    var termsearch = document.infoform.elements["termsearch"].value;
-      	 if(termsearch != '') href += "&termsearch=" + termsearch;
-	       var period = "";
-   	    var v = document.infoform.elements["from_day"].value;
-      	 if(v != '') { period += v; } else { period += '00'; }
-	       v = document.infoform.elements["from_month"].value;
-   	    if(v != '') { period += v; } else { period += '00'; }
-      	 v = document.infoform.elements["from_year"].value;
-	       if(v != '') { period += v; } else { period += '0000'; }
-   	    v = document.infoform.elements["to_day"].value;
-	       if(v != '') { period += v; } else { period += '00'; }
-   	    v = document.infoform.elements["to_month"].value;
-	       if(v != '') { period += v; } else { period += '00'; }
-   	    v = document.infoform.elements["to_year"].value;
-      	 if(v != '') { period += v; } else { period += '0000'; }
-	       if(period != '0000000000000000') href += "&d=" + period;
-	   <% } %>
-      }
-       document.location = href;
-       return false;
+</table>
+<script language="JavaScript" type="text/javascript">
+<%= "<!--" %>
+function postIt(action) {
+    var href = document.infoform.action;
+   if(action!='clear') {
+	    var pool = document.infoform.elements["pool"].value;
+	    if(pool != '') href += "&pool=" + pool;
+    <% if(isArchive) { %>
+	    var termsearch = document.infoform.elements["termsearch"].value;
+   	 if(termsearch != '') href += "&termsearch=" + termsearch;
+       var period = "";
+	    var v = document.infoform.elements["from_day"].value;
+   	 if(v != '') { period += v; } else { period += '00'; }
+       v = document.infoform.elements["from_month"].value;
+	    if(v != '') { period += v; } else { period += '00'; }
+   	 v = document.infoform.elements["from_year"].value;
+       if(v != '') { period += v; } else { period += '0000'; }
+	    v = document.infoform.elements["to_day"].value;
+       if(v != '') { period += v; } else { period += '00'; }
+	    v = document.infoform.elements["to_month"].value;
+       if(v != '') { period += v; } else { period += '00'; }
+	    v = document.infoform.elements["to_year"].value;
+   	 if(v != '') { period += v; } else { period += '0000'; }
+       if(period != '0000000000000000') href += "&d=" + period;
+   <% } %>
    }
-   <%= "//-->" %>
-   </script><% 
-} %>
+    document.location = href;
+    return false;
+}
+<%= "//-->" %>
+</script>

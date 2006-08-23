@@ -44,7 +44,7 @@
 			></mm:field
 		  ><mm:field name="tekst"><mm:isnotempty><span class="black"><mm:write /></span></mm:isnotempty></mm:field>
         <%@include file="../includes/attachment.jsp" %>
-        <mm:related path="posrel,link" 
+        <mm:related path="posrel,link" orderby="posrel.pos,link.titel" directions="UP,UP"
             ><br/><a target="_blank" href="<mm:field name="link.url" />"  title="<mm:field name="alt_tekst" />" ><mm:field name="link.titel" /></a>
         </mm:related
         ><br>

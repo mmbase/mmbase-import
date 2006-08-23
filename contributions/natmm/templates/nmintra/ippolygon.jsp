@@ -50,11 +50,9 @@ if(!articleId.equals("-1")) {
             	%><%@include file="includes/relatedlinkeditems.jsp" %><%
             }
          } else { 
-            if(!postingStr.equals("|action=print")) {
-               %><div align="right" style="letter-spacing:1px;"><a href="javascript:history.go(-1);">terug</a>&nbsp/&nbsp;<a target="_blank" href="ipage.jsp<%= 
-                    templateQueryString %>&pst=|action=print">print</a></div><%
-            } 
-            %><mm:list nodes="<%= articleId %>" path="artikel"
+            %>
+            <%@include file="includes/back_print.jsp" %>
+            <mm:list nodes="<%= articleId %>" path="artikel"
                ><table border="0" cellpadding="0" cellspacing="0" width="100%">
                   <tr><td style="padding:10px;padding-top:18px;">
                      <%@include file="includes/relatedarticle.jsp" %>

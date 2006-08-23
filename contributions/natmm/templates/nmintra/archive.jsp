@@ -133,7 +133,6 @@ if(!projectId.equals("")) {
                  offset="<%= "" + (thisOffset-1)*10 %>" max="10" distinct="true" fields="projects.number"
                  ><mm:node element="projects"><%
                  String readmoreUrl = "archive.jsp";
-                 if(isIPage) readmoreUrl = "ipage.jsp";
                  readmoreUrl += "?p=" + paginaID + "&project=";
                  %><mm:field name="number" jspvar="project_number" vartype="String" write="false"><%
                      readmoreUrl += project_number; 

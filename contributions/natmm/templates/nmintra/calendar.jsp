@@ -11,19 +11,20 @@
 <td colspan="2" class="transperant" valign="top">
 <div class="<%= infopageClass %>" id="infopage">
 <table width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr><td style="padding:10px;padding-top:18px;"><%
+<tr><td style="padding:10px;padding-top:18px;">
+<%@include file="includes/back_print.jsp" %>
+<%
 // like templateQueryString from templatesettings.jsp, but w/o articleId
 templateQueryString = ""; 
 if(!paginaID.equals("-1")){ templateQueryString += "?p=" + paginaID; } 
 if(!categoryId.equals("")){ templateQueryString += "&category=" + categoryId; }
    
 if(!articleId.equals("-1")) { 
-        
-    %><div align="right" style="letter-spacing:1px;"><a href="javascript:history.go(-1);">terug</a>&nbsp/&nbsp;<a target="_blank" href="ipage.jsp<%= 
-                    templateQueryString %>&pst=|action=print">print</a></div>
-    <mm:list nodes="<%= articleId %>" path="artikel"
-        ><%@include file="includes/relatedarticle.jsp" 
-    %></mm:list><%
+   
+   %>     
+   <mm:list nodes="<%= articleId %>" path="artikel"
+      ><%@include file="includes/relatedarticle.jsp" 
+   %></mm:list><%
     
 } else {  
    %><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,teaser" constraints="contentrel.pos='3'"

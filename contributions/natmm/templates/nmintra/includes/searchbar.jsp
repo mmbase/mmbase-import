@@ -23,9 +23,10 @@ function startPhone() {
     return false; 
 }
 //-->
-</script><tr>
+</script>
 <% // *************************************** logo ******************************* %>
 <mm:node number="<%= rootId %>">
+<tr>
   <td rowspan="3">
     <a href="http://<mm:field name="url" />" target="_blank">
       <img src="media/styles/<%= NMIntraConfig.style1[iRubriekStyle] %>_logo.gif" title="<mm:field name="url" />" 
@@ -42,68 +43,68 @@ function startPhone() {
       </a>
     </nobr>
   </td>
+</tr>
 </mm:node>
+<tr>
+   <td style="width:70%;">
+   <% // *************************************** zoek box ******************************* %>
+   <table border="0" cellspacing="0" cellpadding="0" style="width:100%;">
+   	<form name="searchform" action="<%= requestURL %>search.jsp?p=search" onSubmit="return startSearch();">
+   	<tr>
+   	<td><input type="text" name="search" value="<% if(searchId.equals("")||actionId.equals("adv_search")){ %>ik zoek op ...<% } else { %><%= searchId %><% } 
+   	  %>" style="text-align:left;width:110px;" <% if(searchId.equals("")||actionId.equals("adv_search")){ %>onClick="this.value='';"<% } %> /></td>
+   	<td style="padding-left:3px;padding-top:1px;">
+   	  <input type="submit" name="Submit" value="Zoek" style="text-align:center;font-weight:bold;"></td>
+   	<td style="padding-left:3px;padding-top:1px;">
+   	  <input type="hidden" name="adv">
+   	  <input type="submit" name="AdvSubmit" value="Uitgebreid Zoeken" style="text-align:center;font-weight:bold;width:110px;" onClick="document.searchform.adv.value='adv_search';"></td>
+   	<td style="width:80%;text-align:right;">
+   	<%
+   	String owners = ph.getOwners(cloud,paginaID,breadcrumbs);
+   	String ownersEmail = "";
+   	if(!owners.equals("")) {
+   		%>
+   		<mm:list nodes="<%= owners %>" path="users" fields="users.emailadres">
+   			<mm:field name="users.emailadres" jspvar="users_email" vartype="String" write="false">
+   				<%
+   				ownersEmail += (ownersEmail.equals("") ? "" : ";") + users_email;
+   				%>
+   			</mm:field>
+   		</mm:list>
+   		<%
+   		if(!ownersEmail.equals("")) { 
+   			%>
+   			<a href="mailto:<%= ownersEmail %>?subject=Betreft <% 
+   						%><mm:node number="<%= rootId %>"><mm:field name="naam" /></mm:node
+   						> - <mm:node number="<%= paginaID %>"><mm:field name="titel" /></mm:node
+   						>" title="Email de beheerder van deze pagina">
+   				<img src="media/email.gif" alt="Email de beheerder van deze pagina" border="0">
+   			</a>
+   			<%
+   		}
+   	} %>
+   	</td>
+   	</tr>
+   	</form>
+   </table>
+   </td>
+   <td style="padding-right:10px;width:251px;">
+   <% // *************************************** phone box ******************************* %>
+   <table border=0 cellspacing="0" cellpadding="0" align="right">
+   	  <form name="phoneform" action="<%= requestURL %>smoelenboek.jsp?p=wieiswie" onSubmit="return startPhone();">
+   	  <tr>
+   	  <td><img src="media/telefoon.gif" alt="Zoeken in het smoelenboek" onclick="startPhone();"></td>
+   	  <td><input type="text" name="name" value="<% if(nameId.equals("")){ %><%= nameEntry %><% } else { %><%= nameId %><% } 
+   			%>" style="text-align:left;width:166px;" <% if(searchId.equals("")){ %>onClick="this.value='';"<% } %> /></td>
+   	  <td><img src="media/spacer.gif" width="7" height="1"></td>
+   	  <td><img src="media/spacer.gif" width="1" height="1"><br>
+   			<input type="submit" name="phone" value="Zoek"  style="text-align:center;font-weight:bold;"></td>
+   	  </tr>
+   	  </form>
+   </table>
+   </td>
 </tr>
 <tr>
-<td style="width:70%;">
-<% // *************************************** zoek box ******************************* %>
-<table border="0" cellspacing="0" cellpadding="0" style="width:100%;">
-	<form name="searchform" action="<%= requestURL %>search.jsp?p=search" onSubmit="return startSearch();">
-	<tr>
-	<td><input type="text" name="search" value="<% if(searchId.equals("")||actionId.equals("adv_search")){ %>ik zoek op ...<% } else { %><%= searchId %><% } 
-	  %>" style="text-align:left;width:110px;" <% if(searchId.equals("")||actionId.equals("adv_search")){ %>onClick="this.value='';"<% } %> /></td>
-	<td style="padding-left:3px;padding-top:1px;">
-	  <input type="submit" name="Submit" value="Zoek" style="text-align:center;font-weight:bold;"></td>
-	<td style="padding-left:3px;padding-top:1px;">
-	  <input type="hidden" name="adv">
-	  <input type="submit" name="AdvSubmit" value="Uitgebreid Zoeken" style="text-align:center;font-weight:bold;width:110px;" onClick="document.searchform.adv.value='adv_search';"></td>
-	<td style="width:80%;text-align:right;">
-	<%
-	String owners = ph.getOwners(cloud,paginaID,breadcrumbs);
-	String ownersEmail = "";
-	if(!owners.equals("")) {
-		%>
-		<mm:list nodes="<%= owners %>" path="users" fields="users.emailadres">
-			<mm:field name="users.emailadres" jspvar="users_email" vartype="String" write="false">
-				<%
-				ownersEmail += (ownersEmail.equals("") ? "" : ";") + users_email;
-				%>
-			</mm:field>
-		</mm:list>
-		<%
-		if(!ownersEmail.equals("")) { 
-			%>
-			<a href="mailto:<%= ownersEmail %>?subject=Betreft <% 
-						%><mm:node number="<%= rootId %>"><mm:field name="naam" /></mm:node
-						> - <mm:node number="<%= paginaID %>"><mm:field name="titel" /></mm:node
-						>" title="Email de beheerder van deze pagina">
-				<img src="media/email.gif" alt="Email de beheerder van deze pagina" border="0">
-			</a>
-			<%
-		}
-	} %>
-	</td>
-	</tr>
-	</form>
-</table>
-</td>
-<td style="padding-right:10px;width:251px;">
-<% // *************************************** phone box ******************************* %>
-<table border=0 cellspacing="0" cellpadding="0" align="right">
-	  <form name="phoneform" action="<%= requestURL %>smoelenboek.jsp?p=wieiswie" onSubmit="return startPhone();">
-	  <tr>
-	  <td><img src="media/telefoon.gif" alt="Zoeken in het smoelenboek" onclick="startPhone();"></td>
-	  <td><input type="text" name="name" value="<% if(nameId.equals("")){ %><%= nameEntry %><% } else { %><%= nameId %><% } 
-			%>" style="text-align:left;width:166px;" <% if(searchId.equals("")){ %>onClick="this.value='';"<% } %> /></td>
-	  <td><img src="media/spacer.gif" width="7" height="1"></td>
-	  <td><img src="media/spacer.gif" width="1" height="1"><br>
-			<input type="submit" name="phone" value="Zoek"  style="text-align:center;font-weight:bold;"></td>
-	  </tr>
-	  </form>
-</table>
-</td>
-</tr>
-<tr>
-<td style="width:70%;"><img src="media/spacer.gif" width="1" height="12"></td>
-<td style="width:251px;"><img src="media/spacer.gif" width="251" height="12"></td>
+   <td style="width:70%;"><img src="media/spacer.gif" width="1" height="12"></td>
+   <td style="width:251px;"><img src="media/spacer.gif" width="251" height="12"></td>
 </tr>
