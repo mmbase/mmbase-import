@@ -41,10 +41,7 @@ if(!articleId.equals("-1")) {
          <td class="transperant" colspan="2" style="padding:10px;padding-top:18px;">
          <div class="<%= infopageClass %>" id="infopage">
          <div class="pageheader"><mm:field name="titel"/></div>
-         <% if(!postingStr.equals("|action=print")) { %>
-            <div align="right" style="letter-spacing:1px;"><a href="javascript:history.go(-1);">terug</a>&nbsp/&nbsp;<a target="_blank" href="ipage.jsp<%= 
-                    templateQueryString %>&article=<%=articleId %>&pst=|action=print">print</a></div>
-         <% } %>
+         <%@include file="includes/back_print.jsp" %>
          <table width="100%" cellspacing="0" cellpadding="0" border="0">
          <mm:related path="posrel,ctexts" constraints="posrel.pos='1'">
             <tr><td colspan="3" style="padding-top:7px;padding-bottom:7px;"><span class="black"><mm:field name="ctexts.body" /></span></td></tr>
@@ -124,9 +121,8 @@ if(!articleId.equals("-1")) {
        <mm:list nodes="<%= paginaID %>" path="pagina,contentrel,vacature" fields="vacature.number"
                 orderby="vacature.embargo" directions="DOWN" constraints="<%= "vacature.embargo <= '" + nowSec + "'" %>"
             ><mm:node element="vacature"><%
-               if(isIPage) { readmoreUrl = "ipage.jsp"; }
                %><mm:field name="number" jspvar="vacature_number" vartype="String" write="false"><%
-                  readmoreUrl += "?p=" + paginaID + "&project=" + vacature_number; 
+                  readmoreUrl = "?p=" + paginaID + "&project=" + vacature_number; 
                %></mm:field>
                <div class="pageheader"><a href="<%= readmoreUrl %>" style="text-decoration:underline"><mm:field name="titel" /></a></div>
                <div class="black" style="margin-bottom:10px;">

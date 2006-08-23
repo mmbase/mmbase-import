@@ -18,13 +18,9 @@
 <div class="<%= infopageClass %>" id="infopage">
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
     <tr><td style="padding:10px;padding-top:18px;">
-    <%
+      <%@include file="includes/back_print.jsp" %>
+      <%
       ListUtil lu = new ListUtil(cloud);
-
-      if(!postingStr.equals("|action=print")) {
-        %><div align="right" style="letter-spacing:1px;"><a href="javascript:history.go(-1);">terug</a>&nbsp/&nbsp;<a target="_blank" href="ipage.jsp<%= 
-                    templateQueryString %>&pst=|action=print">print</a></div><%
-      } 
 
       if(departmentId.equals("default")) {   departmentId = ""; }
       String sEvents = "";      

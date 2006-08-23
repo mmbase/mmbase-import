@@ -116,10 +116,9 @@ String eDistanceId = request.getParameter("evl"); if(eDistanceId==null){ eDistan
 String eDurationId = request.getParameter("evd"); if(eDurationId==null){ eDurationId = ""; }
 
 // globals
-String uri = request.getRequestURI();
 String infopageClass = "infopage";
-boolean isIPage = (uri.indexOf("ipage.jsp")!=-1);
-if(isIPage) { infopageClass = "ipage"; }
+boolean printPage = postingStr.equals("|action=print");
+if(printPage) { infopageClass = "ipage"; }
 
 String templateQueryString = "";
 if(!paginaID.equals("-1")){ templateQueryString += "?p=" + paginaID; } 

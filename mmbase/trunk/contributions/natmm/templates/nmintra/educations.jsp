@@ -13,10 +13,15 @@ public String searchResults(TreeSet searchResultList) {
 %><%@include file="includes/header.jsp" 
 %><%@include file="includes/calendar.jsp" 
 %><td><%@include file="includes/pagetitle.jsp" %></td>
-  <td><% 
+  <% 
+  if(!printPage) { 
+   %>
+   <td><% 
       String rightBarTitle = "Zoek een opleiding";
       %><%@include file="includes/rightbartitle.jsp" %>
    </td>
+   <%
+  } %>
 </tr>
 <tr>
 <td class="transperant">
@@ -197,11 +202,9 @@ public String searchResults(TreeSet searchResultList) {
 			</mm:list>
 			<%
 		}
-      if(!postingStr.equals("|action=print")) {
-        %><div align="right" style="letter-spacing:1px;"><a href="javascript:history.go(-1);">terug</a>&nbsp/&nbsp;<a target="_blank" href="ipage.jsp<%= 
-                    templateQueryString+"&k="+keywordId+"&pool="+poolId+"&pr="+providerId+"&c="+competenceId %>&pst=|action=print">print</a></div><%
-      } 
-		
+		%>
+		<%@include file="includes/back_print.jsp" %>
+      <%
 		if (actionId.equals("feedback")){
          %><jsp:include page="includes/feedback/form.jsp">
             <jsp:param name="object" value="<%= educationId %>" />
@@ -214,7 +217,9 @@ public String searchResults(TreeSet searchResultList) {
 
 	   	if(!educationId.equals("")) {
 
-			   %><%@include file="includes/education/detail.jsp" %><%
+			   %>
+			   <%@include file="includes/education/detail.jsp" %>
+            <%
 
 			} else { 
 			   if(bSearchIsOn) {
@@ -244,10 +249,10 @@ public String searchResults(TreeSet searchResultList) {
 </table>
 </div>
 </td>
-<td>
-   <% 
-   if(!action.equals("print")) { 
-      %>
+<% 
+if(!printPage) { 
+   %>
+   <td>
       <%@include file="includes/education/searchform.jsp" %>
       <table cellpadding="0" cellspacing="0" width="100%";>
       <tr>
@@ -272,10 +277,10 @@ public String searchResults(TreeSet searchResultList) {
       </mm:list>
       </table>
       </div>
-      <%
-      } 
-   %>
-</td>
+   </td>
+   <%
+   } 
+%>
 <%@include file="includes/footer.jsp" %>
 </cache:cache>
 </mm:cloud>

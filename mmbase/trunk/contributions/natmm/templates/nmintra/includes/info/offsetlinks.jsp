@@ -6,9 +6,7 @@ int pagesCount = listSize/objectPerPage;
 if (pagesCount*objectPerPage < listSize) { pagesCount++; }
 // show navigation to other pages if there are more than objectPerPage articles
 if(listSize>objectPerPage) { 
-   %><%
-   // In archief: <%= listSize %> artikelen [<%= pagesCount %> pagina's]<br/> 
-   %><% 
+   %><%-- In archief: <%= listSize %> artikelen [<%= pagesCount %> pagina's]<br/> --%><%
    if (thisOffset == 1) {
       %><<<%
    } else {

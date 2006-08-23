@@ -37,7 +37,7 @@
 		<mm:setfield name="type">list</mm:setfield>
 		<mm:setfield name="wizard">config/artikel/artikel_nieuws_nmintra</mm:setfield>
 		<mm:setfield name="nodepath">pagina,contentrel,artikel</mm:setfield>
-		<mm:setfield name="fields">artikel.titel,artikel.begindatum,artikel.embargo,artikel.verloopdatum,artikel.use_verloopdatum</mm:setfield>
+		<mm:setfield name="fields">artikel.titel,artikel.begindatum,artikel.embargo,artikel.verloopdatum,artikel.use_verloopdatum,artikel.archive</mm:setfield>
 		<mm:setfield name="orderby">artikel.begindatum</mm:setfield>
 		<mm:setfield name="directions">down</mm:setfield>
 		<mm:setfield name="pagelength">50</mm:setfield>
@@ -69,6 +69,7 @@
 	<mm:listnodes type="artikel">
 		<mm:setfield name="begindatum"><mm:field name="embargo" /></mm:setfield>
 		<mm:setfield name="use_verloopdatum">1</mm:setfield>
+		<mm:setfield name="archive">unlimited</mm:setfield>
 	</mm:listnodes>
 	4. Prikbord<br/>
 	<mm:createnode type="editwizards" id="ads_wizard">

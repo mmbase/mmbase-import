@@ -17,8 +17,8 @@ session.setAttribute("pageref",paginaID);
 		<script language="javascript" src="scripts/launchcenter.js"></script>
 		<script language="javascript" src="scripts/cookies.js"></script>
 		<script language="javaScript" src="scripts/screensize.js"></script>
-    <script language="javaScript">
-    function resizeBlocks() {	
+      <script language="javaScript">
+      function resizeBlocks() {	
       var MZ=(document.getElementById?true:false); 
       var IE=(document.all?true:false);
       var windowHeight = 0;
@@ -48,17 +48,38 @@ session.setAttribute("pageref",paginaID);
         }
       }
       return false;
-    }
-    </script>
+      }
+      </script>
+      <% 
+      if(printPage) { 
+         %>
+         <style>
+            body {
+               overflow: auto;
+               background-color: #FFFFFF
+            }
+         </style>
+         <%
+      } %>
   </head>
-  <body onLoad="javascript:resizeBlocks();" onResize="javascript:resizeBlocks();" <%-- onUnLoad="javascript:setScreenSize()" --%>>
+  <body <% if(!printPage) { %>onLoad="javascript:resizeBlocks();" onResize="javascript:resizeBlocks();"<% } %> <%-- onUnLoad="javascript:setScreenSize()" --%>>
   	<%@include file="/editors/paginamanagement/flushlink.jsp" %>
-	<table background="media/styles/<%= NMIntraConfig.style1[iRubriekStyle] %>.jpg" cellspacing="0" cellpadding="0">
-	<%@include file="../includes/searchbar.jsp" %>
+	<table background="media/styles/<%= NMIntraConfig.style1[iRubriekStyle] %>.jpg" cellspacing="0" cellpadding="0" border="0">
+	<% 
+	if(!printPage) { 
+	   %>
+	   <%@include file="../includes/searchbar.jsp" %>
+   	<tr>
+   		<td class="black"><img src="media/spacer.gif" width="195" height="1"></td>
+   		<td class="black" style="width:70%;"><img src="media/spacer.gif" width="1" height="1"></td>
+   		<td class="black"><img src="media/spacer.gif" width="251" height="1"></td>
+   	</tr>
+   	<% 
+	} 
+	%>
 	<tr>
-		<td class="black"><img src="media/spacer.gif" width="195" height="1"></td>
-		<td class="black" style="width:70%;"><img src="media/spacer.gif" width="1" height="1"></td>
-		<td class="black"><img src="media/spacer.gif" width="251" height="1"></td>
-	</tr>
-	<tr>
-		<td rowspan="2"><%@include file="../includes/nav.jsp" %></td>
+		<% 
+	   if(!printPage) { 
+	      %><td rowspan="2"><%@include file="../includes/nav.jsp" %></td><% 
+	   } 
+	   %>

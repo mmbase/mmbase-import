@@ -186,7 +186,7 @@
 			totalNumberOfThumbs++;
 		%></mm:field
 	></mm:list
-	><mm:list nodes="<%= shop_itemId %>"	path="items,posrel,attachments"
+	><mm:list nodes="<%= shop_itemId %>" path="items,posrel,attachments"
 		orderby="posrel.pos" directions="UP"
 		><mm:field name="attachments.number" jspvar="attachments_number" vartype="String" write="false"><% 
 			if(thisIsNotFirst) { 
