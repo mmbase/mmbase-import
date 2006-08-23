@@ -17,7 +17,7 @@ if(paginaID==null || paginaID.equals("")) {
 String sReferrer = "/editors/projects/project_overview.jsp?p=" + paginaID;
 %>
 <mm:list nodes="" path="projects,phaserel,phases">
-   <mm:field name="projects.name" jspvar="project" vartype="String" write="false">
+   <mm:field name="projects.titel" jspvar="project" vartype="String" write="false">
    <mm:field name="phases.name" jspvar="phase" vartype="String" write="false">
       <mm:node element="phaserel">
          <mm:setfield name="name"><%= phase + " fase van " + project %></mm:setfield>
