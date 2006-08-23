@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<list role="posrel" destination="attachments"  minoccurs="0" maxoccurs="*" hidecommand="move-up|move-down" >
+<list role="posrel" destination="attachments"  minoccurs="0" maxoccurs="*"
+    orderby="field[@name='pos']" ordertype="number">
     <title>bijlagen</title>
     <description></description>
     <command name="search" nodepath="attachments" fields="title,filename" age="-1">
@@ -16,14 +17,13 @@
     </command>
     <command name="startwizard" inline="true" wizardname="config/attachments/attachments" objectnumber="new"/>
     <item displaytype="file">
-        <description></description>
-        <field fdatapath="." ftype="startwizard" inline="true" objectnumber="{object/@number}" wizardname="config/attachments/attachments">
-            <prompt></prompt>
-        </field>
-        <field name="filename" ftype="data" />
+        <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>positie</prompt></field>
+        <field name="titel" ftype="data"><prompt>titel</prompt></field>
+        <field name="filename" ftype="data"><prompt>bestandsnaam</prompt></field>
+  		  <field ftype="startwizard" wizardname="config/attachments/attachments" />
     </item>
     <action type="create">
-        <relation role="posrel" destinationtype="attachments" >
+        <relation role="posrel" destinationtype="attachments">
             <field name="pos">{sum(//relation[@role=&apos;posrel&apos; and @lastitem=&apos;true&apos;]/field[@name=&apos;pos&apos;])+{$pos}}</field>
         </relation>
     </action>

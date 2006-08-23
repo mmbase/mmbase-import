@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<list role="posrel" destination="topics" minoccurs="1" maxoccurs="*"
-  orderby="title"  ordertype="string" hidecommand="move-up|move-down">
-   <title>onderwerp</title>
+<list role="posrel" destination="topics" minoccurs="0" maxoccurs="*"
+  orderby="title" ordertype="string" hidecommand="move-up|move-down">
+   <title>categorie rubriek</title>
    <item>
       <field name="title" ftype="line"><prompt>titel</prompt></field>
    </item>
    <command name="search" nodepath="topics" age="-1" fields="title" orderby="title">
-      <prompt>zoek onderwerp</prompt>
+      <prompt>categorie rubriek</prompt>
       <search-filter>
          <name>titel bevat</name>
          <search-fields>[title]</search-fields>
