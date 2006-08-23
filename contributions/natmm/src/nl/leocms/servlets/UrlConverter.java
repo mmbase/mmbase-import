@@ -45,7 +45,7 @@ import nl.leocms.applications.*;
  * is illegible for conversion in the first place.
  *
  * @author Finalist IT Group / peter
- * @version $Id: UrlConverter.java,v 1.8 2006-08-18 13:42:47 henk Exp $
+ * @version $Id: UrlConverter.java,v 1.9 2006-08-23 15:45:52 henk Exp $
  */
 public final class UrlConverter {
    // some constants.
@@ -93,6 +93,29 @@ public final class UrlConverter {
       String params = request.getQueryString();
       return convertUrl(url, params);
    }
+   
+   public static Date getDate(String itemName) {
+      Date itemDate = null;
+      try {
+        int year = (new Integer(itemName.substring(0, 2))).intValue();
+        if (year < 50) {
+           year += 2000;
+        }
+        else {
+           year += 1900;
+        }
+        int month = (new Integer(itemName.substring(2, 4))).intValue() - 1;
+        int day_of_month = (new Integer(itemName.substring(4, 6))).intValue();
+        Calendar cal = Calendar.getInstance();
+        cal.set(year, month, day_of_month);
+        itemDate = cal.getTime();
+      }
+      catch (Exception e) {
+        log.debug("itemName does not contain valid date string");
+      }
+      return itemDate;
+   }
+
 
     /**
     * Method converts the semantic URL's into usable url.
@@ -105,14 +128,14 @@ public final class UrlConverter {
     * @return String the converted URL or null, if URL could not be converted.
     */
    public static String convertUrl(String url, String params) {
-      log.info("converting url: " + url);
+      log.debug("converting url: " + url);
 
       Cloud cloud = CloudFactory.getCloud();
       UrlCache cache = getCache();
 
       String jspURL = cache.getJSPEntry(url);
       if (jspURL!=null) {
-        log.info("processed from cache: " + jspURL);
+        log.debug("processed from cache: " + jspURL);
         StringBuffer sb = new StringBuffer(jspURL);
         if (params != null) {
           sb.append('&').append(params);
@@ -130,23 +153,7 @@ public final class UrlConverter {
        
       if(NatMMConfig.useCreationDateInURL) {
          // check if the itemName starts with a date
-         try {
-            int year = (new Integer(itemName.substring(0, 2))).intValue();
-            if (year < 50) {
-               year += 2000;
-            }
-            else {
-               year += 1900;
-            }
-            int month = (new Integer(itemName.substring(2, 4))).intValue() - 1;
-            int day_of_month = (new Integer(itemName.substring(4, 6))).intValue();
-            Calendar cal = Calendar.getInstance();
-            cal.set(year, month, day_of_month);
-            itemDate = cal.getTime();
-         }
-         catch (Exception e) {
-            log.info("itemName does not contain valid date string");
-         }
+         itemDate = getDate(itemName);
          if(itemDate!=null) {
            itemName = itemName.substring(6);
          } else { 
@@ -154,14 +161,16 @@ public final class UrlConverter {
          }
       } else {
          // check if the itemName starts with a ITEM_DELIMITER
-            log.info("check" + itemName);
          if(itemName.charAt(0)==ITEM_DELIMITER) {
            itemName = itemName.substring(1);
-            log.info("now" + itemName);
          } else { 
-           itemName = null;
-            log.info("now" + itemName);
-         } 
+           itemDate = getDate(itemName); // for backwards compatibility reasons
+           if(itemDate!=null) {
+             itemName = itemName.substring(6);
+           } else { 
+             itemName = null;
+           }
+        } 
       }
       
       if(itemName==null) { // no itemName specified
@@ -174,15 +183,15 @@ public final class UrlConverter {
          rubriekenPad = StringUtils.substringBeforeLast(url,SEPARATOR);
       }
 
-      log.info("itemName = " + itemName);
-      log.info("itemDate = " + itemDate);
-      log.info("pageName = " + pageName);
-      log.info("rubriekenPad = " + rubriekenPad);
+      log.debug("itemName = " + itemName);
+      log.debug("itemDate = " + itemDate);
+      log.debug("pageName = " + pageName);
+      log.debug("rubriekenPad = " + rubriekenPad);
 
       RubriekHelper rh = new RubriekHelper(cloud);
       ArrayList nlRubriek = rh.getRubriekWithRubriekenUrlPath(rubriekenPad, null);
       if (nlRubriek == null ) {
-         log.info("No matching rubriek found, interception stopped");
+         log.debug("No matching rubriek found, interception stopped");
          return null;
       }
 
@@ -194,13 +203,13 @@ public final class UrlConverter {
       while(i < nlRubriek.size() && page==null) { // get the first (= newest) rubriek to which a page with this name is connected
          rubriek = (Node) nlRubriek.get(i);
          iRubriek = rubriek.getIntValue("number");
-         log.info("rubriek: " + iRubriek + " - " + rubriek.getStringValue("naam"));
+         log.debug("rubriek: " + iRubriek + " - " + rubriek.getStringValue("naam"));
          page = pg.retrievePaginaNumber("" + iRubriek, pageName);
          i++;
       }
 
       if(page == null) {
-         log.info("No matching page found, interception stopped");
+         log.debug("No matching page found, interception stopped");
          return null;
       } else {
          int pPos = rubriekenPad.indexOf(rh.getUrlPathToRootString(rubriek,"").toString());
@@ -210,7 +219,7 @@ public final class UrlConverter {
             rubriekenPad += "/";
          }
       }
-      log.info("rubriekenPad = " + rubriekenPad);
+      log.debug("rubriekenPad = " + rubriekenPad);
 
       String pageNumber = page.getStringValue("number");
 
@@ -242,7 +251,7 @@ public final class UrlConverter {
       cache.putJSPEntry(forwardUrl.toString(),url);
       if (params != null) { forwardUrl.append('&').append(params); }
 
-      log.info(forwardUrl);
+      log.debug(forwardUrl);
       return forwardUrl.toString();
 
    }
