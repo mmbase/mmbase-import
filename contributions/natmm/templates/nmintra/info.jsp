@@ -11,7 +11,7 @@ if(!articleId.equals("-1")) {
    <mm:present referid="newsletter_layout">
       <% articleTemplate = "news.jsp" + templateQueryString; %>
    </mm:present>
-	 <mm:redirect page="<%= articleTemplate %>" />
+	<mm:redirect page="<%= articleTemplate %>" />
    <%
 
 } else {  
@@ -46,25 +46,20 @@ if(!articleId.equals("-1")) {
       boolean isArchive = false;
       %><mm:node number="<%= paginaID %>"
          ><mm:aliaslist
-            ><mm:write  jspvar="alias" vartype="String" write="false"><%
+            ><mm:write jspvar="alias" vartype="String" write="false"><%
 	            isArchive = (alias.indexOf("archief") > -1); 
 	         %></mm:write
 	      ></mm:aliaslist
       ></mm:node
-      ><%@include file="includes/info/movetoarchive.jsp" %><%
-      boolean hasPools = false;
-      %><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel,posrel,pools"
-			orderby="artikel.embargo" searchdir="destination" max="1"><%
-         hasPools = true;
-      %></mm:list
-      ><%@include file="includes/header.jsp" 
+      ><%@include file="includes/info/movetoarchive.jsp" 
+      %><%@include file="includes/header.jsp" 
       %><td><%@include file="includes/pagetitle.jsp" %></td>
       <td><%
          String rightBarTitle = "";
          if(isArchive) {
             rightBarTitle = "Zoek&nbsp;in&nbsp;archief";
-         } else if(hasPools) {
-            rightBarTitle = "Selecteer&nbsp;categorie";
+         } else {
+            rightBarTitle = "Zoek&nbsp;in&nbsp;nieuws";
          }
          %><%@include file="includes/rightbartitle.jsp" %></td>
       </tr>
@@ -113,7 +108,6 @@ if(!articleId.equals("-1")) {
                        offset="<%= "" + (thisOffset-1)*10 %>" max="<%= "" + objectPerPage %>" constraints="<%= articleConstraint %>"><%
                        String titleClass = "pageheader"; 
                        String readmoreUrl = "info.jsp";
-                       if(isIPage) readmoreUrl = "ipage.jsp";
                        %><mm:field name="artikel.number" jspvar="article_number" vartype="String" write="false"><%
                            readmoreUrl += "?p=" + paginaID + "&article=" + article_number; 
                        %></mm:field
@@ -136,9 +130,15 @@ if(!articleId.equals("-1")) {
       </tr>
       </table>
       </div>
-      </td><td><%
+      </td><%
       // *************************************** right bar *******************************
-      %><%@include file="includes/info/relatedpools.jsp" %></td>
+      %>
+      <td>
+         <%@include file="includes/info/relatedpools.jsp" %>
+         <br/>
+         <%@include file="includes/tickertape.jsp" %>
+         <%@include file="includes/itemurls.jsp" %>
+      </td>
       <%@include file="includes/footer.jsp" %>
       </cache:cache><%
 } 

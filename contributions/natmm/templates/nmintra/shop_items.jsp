@@ -31,7 +31,7 @@
         ><% hasExtraInfo = true;
       %></mm:list><%
       if(!hasExtraInfo) { 
-        %><mm:list nodes="<%= shop_itemId %>"	path="items,posrel,attachments" max="1"
+        %><mm:list nodes="<%= shop_itemId %>" path="items,posrel,attachments" max="1"
           ><% hasExtraInfo = true; 
         %></mm:list><% 
       } 

@@ -3,7 +3,8 @@
 ><mm:field name="number" jspvar="article_number" vartype="String" write="false"
 ><mm:field name="titel" jspvar="article_title" vartype="String" write="false"
 ><mm:field name="intro" jspvar="article_introduction" vartype="String" write="false"
-><mm:relatednodes type="attachments">
+><mm:related path="posrel,attachments" orderby="posrel.pos,attachments.title" directions="UP,UP">
+   <mm:node element="attachments">
      <mm:first><table border="0" cellpadding="0" cellspacing="0"></mm:first>
      <tr><td><mm:field name="filename" jspvar="attachments_filename" vartype="String" write="false">
         <a href="<mm:attachment />" target="_blank">
@@ -29,8 +30,9 @@
     </td>
     </mm:first>
     <tr>
-    <mm:last></table><br/><br/></mm:last> 
-</mm:relatednodes>
+    <mm:last></table><br/><br/></mm:last>
+    </mm:node>
+</mm:related>
 <mm:notpresent referid="attachmentfound">
    <a href="<%= readmoreUrl %><% if(!postingStr.equals("")) { %>&pst=|action=noprint<% }%>">
       <div class="pageheader"><%= article_title %></div>

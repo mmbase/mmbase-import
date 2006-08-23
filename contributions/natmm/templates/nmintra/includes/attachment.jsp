@@ -1,4 +1,5 @@
-<mm:relatednodes type="attachments" orderby="attachments.title">
+<mm:related path="posrel,attachments" orderby="posrel.pos,attachments.title" directions="UP,UP">
+    <mm:node element="attachments">
     <table>
     <tr><td style="width:60px;">
     <mm:field name="filename" jspvar="attachments_filename" vartype="String" write="false">
@@ -19,4 +20,5 @@
     </td><td><a href="<mm:attachment />" target="_blank"><mm:notpresent referid="noattachmenttitle"><mm:field name="title" /></a></mm:notpresent
     ></td></tr>
     </table>
-</mm:relatednodes>
+    </mm:node>
+</mm:related>

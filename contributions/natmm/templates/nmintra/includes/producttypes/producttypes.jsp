@@ -50,7 +50,7 @@ if(!poolId.equals("")) { // *** use mm:list to only show producttypes related to
     if(!productId.equals("")) { 
         %><mm:node number="<%= productId %>"
            ><div class="pagesubheader"><mm:field name="name" /></div>
-           <mm:field name="description" />
+           <mm:field name="omschrijving" />
            <mm:relatednodes type="items"
          		><mm:first
          		   ><div class="subtitle">Gerelateerde producten in de interne webwinkel</div>
