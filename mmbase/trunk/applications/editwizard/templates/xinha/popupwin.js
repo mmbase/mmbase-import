@@ -165,7 +165,7 @@ PopupWin.prototype.showAtElement = function()
       }
       else
       {
-        self.window.resizeTo(w + 8, h + 35);
+        self.window.resizeTo(w + 8, h + 55);
       }
     },
     25);
