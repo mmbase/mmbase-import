@@ -33,6 +33,7 @@
    <action include="config/artikel/delete_artikel.xml"/>
    <action include="config/artikel/load_artikel.xml"/>
    <lists>
+      <optionlist include="config/option_lists/archive.xml" />
       <optionlist include="config/option_lists/ja_nee.xml" />
       <optionlist include="config/option_lists/images_position.xml" />
       <optionlist include="config/option_lists/shorty_role.xml" />
@@ -50,6 +51,7 @@
 		<field name="embargo"><prompt>verschijnt op website vanaf</prompt></field>
 		<field name="verloopdatum"><prompt>verwijderd van website op</prompt></field>
 		<field name="use_verloopdatum" ftype="enum"><prompt>verwijderdatum gebruiken</prompt><optionlist select="ja_nee"/></field>
+		<field name="archive" ftype="enum"><prompt>naar archief</prompt><optionlist select="archive"/></field>
 		<list include="config/pools/add_pools_posrel.xml" />
 		<field name="intro" ftype="html" rows="14"><prompt>intro (vette tekst)</prompt></field>
 		<field name="tekst" ftype="html" rows="20"><prompt>tekst (alleen voor kleine berichten)</prompt></field>
