@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Martijn Houtman (JAI fix)
- * @version $Id: JAIImageConverter.java,v 1.3 2005-10-02 16:42:15 michiel Exp $
+ * @version $Id: JAIImageConverter.java,v 1.4 2006-08-23 15:18:56 michiel Exp $
  */
 public class JAIImageConverter implements ImageConverter {
 
@@ -127,6 +127,8 @@ public class JAIImageConverter implements ImageConverter {
                     String[] tokens = cmd.split("[x,\\n\\r]");
                     if (log.isDebugEnabled()) {
                         log.debug("getCommands(): type=" + type + " cmd=" + cmd);
+                        log.debug("Image is now " + img.getWidth() + "x" + img.getHeight());
+                        log.debug(" or " + img.getMinX() + "-" + img.getMaxX() + ".." + img.getMinY() + "-" + img.getMaxY());
                     }
                     // Following code translates some MMBase specific things
                     // to imagemagick's convert arguments.
@@ -212,8 +214,7 @@ public class JAIImageConverter implements ImageConverter {
                     }
                 }
             } catch(Exception e) {
-                log.error(e.getMessage());
-                log.error(Logging.stackTrace(e));
+                log.error(e.getMessage(), e);
             }
         }
         return img;
@@ -227,9 +228,9 @@ public class JAIImageConverter implements ImageConverter {
         ParameterBlock params = new ParameterBlock();
         params.addSource(inImg);
         params.add((float)x1);         // x
-        params.add((float)y2);         // y
-        params.add((float)(x2-x1));    // width
-        params.add((float)(y2-y1));    // height
+        params.add((float)y1);         // y
+        params.add((float)(x2 - x1));    // width
+        params.add((float)(y2 - y1));    // height
         params.add(interp);       // interpolation method
         PlanarImage outImg = JAI.create("crop", params);
         return outImg;
