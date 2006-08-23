@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.72 2006-07-08 12:50:27 michiel Exp $
+ * @version $Id: ImageTag.java,v 1.73 2006-08-23 16:28:39 michiel Exp $
  */
 
 public class ImageTag extends FieldTag {
@@ -410,18 +410,15 @@ public class ImageTag extends FieldTag {
         if (horizontalMultiplier == verticalMultiplier) {
             // only scaling
             template.append("s(").append(width).append(")");
-        }
-        else {
+        } else {
             if (horizontalMultiplier > verticalMultiplier) {
                 // scale horizontal, crop vertical
                 if (cropTemplate.equals(CROP_END)) {
                     yOffset = 0;
-                }
-                else {
+                } else {
                     if (cropTemplate.equals(CROP_BEGIN)) {
                         yOffset = (tempHeight - newHeight);
-                    }
-                    else {
+                    } else {
                         // CROP_MIDDLE
                         yOffset = (tempHeight - newHeight) / 2;
                     }
@@ -429,17 +426,14 @@ public class ImageTag extends FieldTag {
                 template.append("s(").append(newWidth).append(")");
                 template.append("+part(").append(xOffset).append(",").append(yOffset).append(",");
                 template.append(xOffset + newWidth).append(",").append(yOffset + newHeight).append(")");
-            }
-            else {
+            } else {
                 // scale vertical, crop horizontal
                 if (cropTemplate.equals(CROP_END)) {
                     xOffset = 0;
-                }
-                else {
+                } else {
                     if (cropTemplate.equals(CROP_BEGIN)) {
                         xOffset = (tempWidth - newWidth);
-                    }
-                    else {
+                    } else {
                         // CROP_MIDDLE
                         xOffset = (tempWidth - newWidth) / 2;
                     }
