@@ -1,9 +1,10 @@
 <?xml version="1.0"?>
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<list role="posrel" destination="link" minoccurs="0" maxoccurs="*" orderby="titel" ordertype="string" hidecommand="move-up|move-down">
-	<title>link (gesorteerd op titel)</title>
+<list role="posrel" destination="link" minoccurs="0" maxoccurs="*"
+   orderby="field[@name='pos']"  ordertype="number">
+	<title>link</title>
 	<item>
-      <!-- field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>positie</prompt></field -->
+      <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>positie</prompt></field>
       <field ftype="data" name="titel"><prompt>titel</prompt></field>
       <field ftype="data" name="target"><prompt>target</prompt></field>
 		<field ftype="startwizard" wizardname="config/link/link" />

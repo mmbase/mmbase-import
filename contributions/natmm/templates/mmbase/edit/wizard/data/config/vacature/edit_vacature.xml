@@ -47,5 +47,5 @@
    <field name="omschrijving_eng" ftype="html" rows="16">
       <prompt>Afsluitende tekst</prompt>
    </field>
-   <list include="config/attachments/zoek_contentelement_related_attachments.xml" />
+   <list include="config/attachments/add_attachments_posrel.xml" />
 </form-schema>

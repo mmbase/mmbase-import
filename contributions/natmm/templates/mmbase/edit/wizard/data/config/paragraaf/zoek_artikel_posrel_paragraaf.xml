@@ -8,7 +8,7 @@
       <field name="titel_zichtbaar" ftype="enum"><prompt>titel zichtbaar</prompt><optionlist select="ja_nee"/></field>
       <field name="tekst" ftype="html" rows="20"><prompt>paragraaf tekst</prompt></field>
       <list include="config/images/zoek_contentelement_posrel_images.xml" />
-      <list include="config/attachments/zoek_contentelement_related_attachments.xml" />
+      <list include="config/attachments/add_attachments_posrel.xml" />
       <list include="config/link/zoek_contentelement_posrel_link.xml" />
       <!-- field ftype="startwizard" wizardname="config/paragraaf/paragraaf" / -->
    </item>

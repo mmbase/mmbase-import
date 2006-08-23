@@ -12,6 +12,7 @@
    <field name="embargo"/>
    <field name="verloopdatum"/>
    <field name="use_verloopdatum"/>
+   <field name="archive"/>
    <field name="reageer"/>
    <field name="status"/>
    <field name="ondertitel"/>
