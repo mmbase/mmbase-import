@@ -20,6 +20,8 @@ package nl.leocms.connectors.UISconnector;
 /* This class contains settings specific for the UISConnector
 */
 
+import nl.leocms.applications.NatMMConfig;
+
 public class UISconfig {
 
    private static String baseUrl = "http://mcweb2/"; // url of WSS server
@@ -28,8 +30,7 @@ public class UISconfig {
    }
 
    public static boolean isUISconnected() {
-      // return false;
-      return true;
+      return NatMMConfig.isUISconnected;
    }
 
    public static String postOrderUrl(){
@@ -43,15 +44,15 @@ public class UISconfig {
 
    public static String getProductPropertiesURL(){
       return baseUrl + "mmdemo/api/getProductPropertyList.jsp";
-//      return "file:///Z:/in2.xml";
+      //return "file:///Z:/in2.xml";
    }
    public static String getCustomerPropertiesURL(){
       return baseUrl + "mmdemo/api/getCustomerPropertyList.jsp";
-//      return "file:///Z:/in2.xml";
+      //return "file:///Z:/in2.xml";
    }
 
    public static String getCustomersURL(String sUserName, String sPassword){
       return baseUrl + "mmdemo/api/getCustomerInformation.jsp?username=" + sUserName + "&pwd=" + sPassword;
-//      return "file:///Z:/" +sUserName + ".xml";
+      //return "file:///Z:/" +sUserName + ".xml";
    }
 }
