@@ -41,7 +41,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen.
  * @since  MMBase-1.6
- * @version $Id: URIResolver.java,v 1.26 2006-03-13 13:19:38 michiel Exp $
+ * @version $Id: URIResolver.java,v 1.27 2006-08-24 14:39:58 michiel Exp $
  */
 
 public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasurable, Serializable {
@@ -148,7 +148,7 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
         if (extraDirs != null) {
             dirs.addAll(extraDirs);
         }
-        dirs.add(new Entry("mm:", ResourceLoader.getConfigurationRoot().getResource("/")));
+        dirs.add(new Entry("mm:", ResourceLoader.getConfigurationRoot()));
         // URIResolvers  cannot be changed, the hashCode can already be calculated and stored.
 
         if (extraDirs == null || extraDirs.size() == 0) { // only mmbase config, and root cannot change
@@ -232,7 +232,7 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
                 || base.endsWith("javax.xml.transform.stream.StreamSource"))  {
                 baseURL = getCwd();
             } else {
-                baseURL = resolveToURL(base, null); // resolve URIRsolver's prefixes like mm:, ew: in base.
+                baseURL = resolveToURL(base, null); // resolve URIResolver's prefixes like mm:, ew: in base.
             }
 
             URL path = null;
@@ -242,15 +242,20 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
                     Entry entry = (Entry) i.next();
                     String pref = entry.getPrefix();
                     if (! "".equals(pref) && href.startsWith(pref)) { //explicitely stated!
-                        path = new URL(entry.getDir(), href.substring(entry.getPrefixLength()));
-                        log.trace("href matches " + entry + " returing " + path);
+                        path = entry.getPath(href.substring(entry.getPrefixLength()));
+                        if (log.isTraceEnabled()) {
+                            log.trace("href matches " + entry + " returning " + path);
+                        }
                         break;
                     }
                     try {
-                        URL u = new URL(entry.getDir(), href);
-                        log.trace("Trying " + u);
+                        URL u = entry.getPath(href);
+                        if (log.isTraceEnabled()) {
+                            log.trace("Trying " + u + " " + u.getClass());
+                        }
                         // getDoInput does not work for every connection.
                         if (u.openConnection().getInputStream() != null) {
+                            log.trace("Ok, breaking");
                             path = u;
                             break;
                         }
@@ -382,6 +387,17 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
                 return this;
             }
         }
+        /**
+         * @since MMBase-1.8.2
+         */
+        public EntryList add(String p, ClassLoader cl) {
+            try {
+                add(new Entry(p, cl));
+                return this;
+            } catch (Exception e) {
+                return this;
+            }
+        }
     }
 
     /**
@@ -395,23 +411,26 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
         private static final long serialVersionUID = 1L; 
         private String prefix;
         private URL    dir;
+        private ClassLoader classLoader;
         private int    prefixLength;
 
         Entry(String p, URL u) {
             prefix = p;
             dir = u;
+            classLoader = null;
             prefixLength = prefix.length(); // avoid calculating it again.
-
-            /*
-            if (! d.isDirectory()) {
-                throw new IllegalArgumentException(d.toString() + " is not an existing directory");
-            }
-            */
         }
+        Entry(String p, ClassLoader cl) {
+            prefix = p;
+            dir = null;
+            classLoader = cl;
+            prefixLength = prefix.length(); // avoid calculating it again.
+        }
+
         private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
             try {
                 out.writeUTF(prefix);
-                if (dir.getProtocol().equals("mm")) {
+                if (dir == null) {
                     out.writeObject("mm");
                 } else {
                     out.writeObject(dir);
@@ -425,10 +444,13 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
                 prefix = in.readUTF();
                 Object o = in.readObject();
                 if ("mm".equals(o)) {
-                    dir = ResourceLoader.getConfigurationRoot().getResource("/");
+                    classLoader = ResourceLoader.getConfigurationRoot();
+                    dir = null;
                 } else {
                     dir = (URL) o;
+                    classLoader = null;
                 }
+                log.info("dir " + dir + " claddLoader " + classLoader);
             } catch (Throwable t) {
                 log.warn(t);
             }
@@ -439,27 +461,49 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
             return prefix;
         }
         URL getDir() {
-            return dir;
+            if (dir != null) {
+                return dir;
+            } else {
+                return classLoader.getResource("");
+            }
+        }
+
+        /**
+         * Uses this entry to resolve a href
+         * @since MMBase-1.8.2
+         */
+        URL getPath(String href) throws MalformedURLException {
+            if (dir != null) {
+                return new URL(dir, href);
+            } else {
+                return classLoader.getResource(href);
+            }
         }
         int getPrefixLength() {
             return prefixLength;
         }
         public String toString() {
-            return prefix + ":" + dir.toString();
+            return prefix + ":" + (dir != null ? dir.toString() : classLoader.toString());
         }
         public boolean equals(Object o) {
             if (o instanceof File) {
-                return dir.equals(o);
+                return dir != null && dir.equals(o);
             } else if (o instanceof Entry) {
                 Entry e = (Entry) o;
-                return dir.equals(e.dir);
+                return dir != null ? 
+                    dir.equals(e.dir) :
+                    classLoader.equals(e.classLoader);
             } else {
                 return false;
             }
         }
 
         public int hashCode() {
-            return dir.hashCode();
+            if (dir != null) {
+                return dir.hashCode();
+            } else {
+                return classLoader.hashCode();
+            }
         }
 
     }
@@ -489,7 +533,13 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
         URIResolver resolver2 = (URIResolver) ois.readObject();
         ois.close();
 
-        System.out.println("r" + resolver.resolveToURL("mm:hoi", null).getProtocol());
+        System.out.println("r " + resolver2.resolveToURL("mm:hoi", null).getProtocol());
+
+        href = "xsl/list.xsl";  base = null;
+        System.out.println("href: " + href + " base: " + base + " --> " + resolver2.resolveToURL(href, base));
+        href = "xsl/prompts.xsl";  base = "file:///home/mmbase/mmbase17/mmbase/edit/wizard/data/xsl/base.xsl";
+        System.out.println("href: " + href + " base: " + base + " --> " + resolver2.resolveToURL(href, base));
+
 
 
     }
