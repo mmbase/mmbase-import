@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
  * information see the javadoc of that class.
  * @author Michiel Meeuwissen
- * @version $Id: MmxfSetString.java,v 1.8 2006-02-13 18:14:59 michiel Exp $
+ * @version $Id: MmxfSetString.java,v 1.9 2006-08-24 16:15:33 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -350,6 +350,7 @@ public class MmxfSetString implements  Processor {
 
 
     final Pattern ABSOLUTE_URL = Pattern.compile("(http[s]?://[^/]+)(.*)");
+
     /**
      * Normalizes URL to absolute on server
      */
@@ -368,11 +369,16 @@ public class MmxfSetString implements  Processor {
 
             try {
                 // based on the request as viewed by the client.
+                if (log.isDebugEnabled()) {
+                    log.debug("Request of " + request.getAttribute("time") + " " + Collections.list(request.getAttributeNames()));
+                }
                 String requestURL = (String) request.getAttribute("javax.servlet.include.servlet_path");
                 if (request.getScheme() == null) {
                     log.warn("How odd, we got a request with no scheme!!");
                 }
-                if (requestURL == null) requestURL = request.getRequestURL().toString();
+                if (requestURL == null) {
+                    requestURL = request.getRequestURL().toString();
+                }
                 u = new URL(new URL(requestURL), url).toString();
             } catch (java.net.MalformedURLException mfe) {
                 log.warn("" + mfe, mfe); // should not happen
@@ -409,7 +415,7 @@ public class MmxfSetString implements  Processor {
                     return result;
                 } else {
                     if (log.isDebugEnabled()) {
-                        log.trace("Not converting url, it is on a differnt server " + hostPart + " != " + foundHost);
+                        log.trace("Not converting url, it is on a different server " + hostPart + " != " + foundHost);
                     }
                     return url;
                 }
@@ -430,7 +436,7 @@ public class MmxfSetString implements  Processor {
      * Adds missing protocol
      */
     protected String normalizeURL(String url) {
-        if (OK_URL.matcher(url).matches()) {
+        if (OK_URL.matcher(url).matches() || (url.length() > 0 && url.charAt(0) == '/')) {
             return url;
         } else {
             return "http://" + url;
@@ -795,8 +801,8 @@ public class MmxfSetString implements  Processor {
             Iterator linkIterator = links.iterator();
             //String imageServletPath = images.getFunctionValue("servletpath", null).toString();
             while (linkIterator.hasNext()) {
+                Element a = (Element) linkIterator.next();
                 try {
-                    Element a = (Element) linkIterator.next();
                     String href = getHref(a, cloud);
                     Matcher mmbaseMatcher =  mmbaseUrl.matcher(href);
                     if (handleImage(href, a, usedImages, relatedImages, editedNode)) { // found an image!
@@ -810,41 +816,50 @@ public class MmxfSetString implements  Processor {
                     } else { // must have been really an URL
                         String klass = a.getAttribute("class");
                         String id = a.getAttribute("id");
+
                         NodeList idLinkedUrls = get(cloud, relatedUrls, "idrel.id", id);
                         if (!idLinkedUrls.isEmpty()) {
+                            // already related.
                             Node url   = idLinkedUrls.getNode(0).getNodeValue("urls");
                             Node idrel = idLinkedUrls.getNode(0).getNodeValue("idrel");
-                            log.service("" + url + " url already correctly related, nothing needs to be done");
-                            usedUrls.add(url);
-                            if (!idrel.getStringValue("class").equals(klass)) {
-                                idrel.setStringValue("class", klass);
-                                idrel.commit();
-                            }
-                        } else {
-                            String u = normalizeURL(href);
-                            NodeList nodeLinkedUrls = get(cloud, relatedUrls, "url", u);
-
-                            Node url;
-                            if (nodeLinkedUrls.isEmpty()) {
-                                url = getUrlNode(cloud, u, a);
+                            if (url.getStringValue("url").equals(href)) {
+                                log.service("" + url + " url already correctly related, nothing needs to be done");
+                                usedUrls.add(url);
+                                if (!idrel.getStringValue("class").equals(klass)) {
+                                    idrel.setStringValue("class", klass);
+                                    idrel.commit();
+                                }
+                                continue;
                             } else {
-                                url = nodeLinkedUrls.getNode(0).getNodeValue("urls");
+                                // href changed, fall through, to create a new link.
                             }
-                            usedUrls.add(url);
-                            RelationManager rm = cloud.getRelationManager(editedNode.getNodeManager(), url.getNodeManager(), "idrel");
-                            Relation newIdRel = rm.createRelation(editedNode, url);
+                        } 
 
-                            newIdRel.setStringValue("id", id);
-                            newIdRel.setStringValue("class", klass);
-                            newIdRel.commit();
+                        // create a link to an URL object.
+                        String u = normalizeURL(href);
+                        NodeList nodeLinkedUrls = get(cloud, relatedUrls, "url", u);
+                        Node url;
+                        if (nodeLinkedUrls.isEmpty()) {
+                            url = getUrlNode(cloud, u, a);
+                        } else {
+                            url = nodeLinkedUrls.getNode(0).getNodeValue("urls");
                         }
-                        a.removeAttribute("href");
-                        a.removeAttribute("title");
-                        a.removeAttribute("target");
-                        a.removeAttribute("class");
+                        usedUrls.add(url);
+                        RelationManager rm = cloud.getRelationManager(editedNode.getNodeManager(), url.getNodeManager(), "idrel");
+                        Relation newIdRel = rm.createRelation(editedNode, url);
+                        newIdRel.setStringValue("id", id);
+                        newIdRel.setStringValue("class", klass);
+                        newIdRel.commit();
+
+
                     }
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
+                } finally {
+                    a.removeAttribute("href");
+                    a.removeAttribute("title");
+                    a.removeAttribute("target");
+                    a.removeAttribute("class");
                 }
 
             }
