@@ -35,72 +35,74 @@ import org.mmbase.bridge.RelationManager;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import nl.leocms.applications.*;
+
 /**
  * @author Gerard van de Weerd
  * Nov 5, 2003
- * 
- * This class contains useful (!) methods to retrieve information from the MMBase cloud.   
- * 
+ *
+ * This class contains useful (!) methods to retrieve information from the MMBase cloud.
+ *
  */
 public class MMBaseHelper {
    /** Logger. */
    private static Logger log = Logging.getLoggerInstance(MMBaseHelper.class.getName());
-      
+
    private Cloud cloud = null;
       /**
-       * 
+       *
        */
    public MMBaseHelper(Cloud cloud) {
-      this.cloud = cloud; 
+      this.cloud = cloud;
    }
-   
+
    /**
-    * Returns the number of the first (!) relation (of the given rel type) 
+    * Returns the number of the first (!) relation (of the given rel type)
     * between the source node (identified by the given source number) and
-    * the destination node (identified by the given destination number)       
+    * the destination node (identified by the given destination number)
     * Or -1 if no relation is defined.
     * @param contentrelNumber
     * @return
     */
    public int getFirstRelationNumber(String source, String destination, String relType) {
-      
-      
+
+
       Node sourceNode = cloud.getNode(source);
       Node destinationNode = cloud.getNode(destination);
       RelationManager relTypeRelMan = cloud.getRelationManager(relType);
-      RelationList rels = relTypeRelMan.getRelations(destinationNode);         
-      RelationIterator relsIter = rels.relationIterator();   
+      RelationList rels = relTypeRelMan.getRelations(destinationNode);
+      RelationIterator relsIter = rels.relationIterator();
       if (relsIter.hasNext()) {
-         // max of 1             
+         // max of 1
          return relsIter.nextRelation().getNumber();
       }
       return -1;
    }
-   
+
    /**
-    * private helper that returns the pos relation at the given pos  
+    * private helper that returns the pos relation at the given pos
     * @param rels the relation list to search through
     * @param pos the position
     * @return the relation at pos or null if nonexistant
-    */   
-   public Node getPosRelAtPosition(RelationList rels, int pos) {      
+    */
+   public Node getPosRelAtPosition(RelationList rels, int pos) {
       RelationIterator relsIter = rels.relationIterator();
-      Relation tr;      
+      Relation tr;
       while (relsIter.hasNext()) {
          tr = relsIter.nextRelation();
          if (pos == tr.getIntValue("pos")) {
-            return tr.getDestination();            
+            return tr.getDestination();
          }
-      }      
-      return null;   
+      }
+      return null;
    }
-   
+
    /**
        * Verander de volgorde van een pos rel
        * @param parentNode - Node van de parent
        * @param childs - String met childnodenumbers bv. "170,173,178"
        */
-      public void changeOrder(Node parentNode, String childs) {     
+      public void changeOrder(Node parentNode, String childs) {
          StringTokenizer tokenizer = new StringTokenizer(childs, ",");
          List tokens = new ArrayList();
          while (tokenizer.hasMoreTokens()) {
@@ -120,4 +122,31 @@ public class MMBaseHelper {
             }
          }
       }
+
+      public void addDefaultRelations() {
+         ContentHelper ch = new ContentHelper(cloud);
+          NodeList nl = cloud.getList("","contentelement","contentelement.number",
+          null,"contentelement.number","up",null,true);
+          for (int i = 0; i < nl.size(); i++){
+             String sContentelement = nl.getNode(i).getStringValue("contentelement.number");
+             String sType = cloud.getNode(sContentelement).getNodeManager().getName();
+             int iTypeIndex = -1;
+             if (sType.equals("evenementen")){
+                iTypeIndex = NatMMConfig.CONTENTELEMENTS.length;
+             } else {
+               for (int j = 0; j < NatMMConfig.CONTENTELEMENTS.length; j++) {
+                  if (NatMMConfig.CONTENTELEMENTS[j].equals(sType)) {
+                     iTypeIndex = j;
+                  }
+               }
+             }
+             if (iTypeIndex!=-1){
+                log.info("Treating " + sType + " number " + sContentelement);
+                System.out.println("Treating " + sType + " number " + sContentelement);
+                ch.addDefaultRelations(sContentelement, iTypeIndex);
+                ch.addSchrijver(sContentelement);
+             }
+          }
+      }
+
 }

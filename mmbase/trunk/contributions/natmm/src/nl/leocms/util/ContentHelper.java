@@ -26,6 +26,7 @@ import nl.leocms.util.*;
 import nl.leocms.authorization.AuthorizationHelper;
 import nl.leocms.authorization.UserRole;
 import nl.leocms.authorization.Roles;
+import nl.leocms.applications.*;
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -171,6 +172,117 @@ public class ContentHelper {
          }
       }
       return alUnusedItems;
+   }
+
+   public void addDefaultRelations(String objectNumber, int iTypeIndex) {
+
+      if(!bRelationsExists(objectNumber)) {
+         //finding number of page related to the contentelement
+         String sPaginaNumber = "";
+         if (iTypeIndex == NatMMConfig.CONTENTELEMENTS.length){
+            sPaginaNumber = cloud.getNodeByAlias("agenda").getStringValue("number");
+         }
+         else {
+            NodeList nl = cloud.getList(objectNumber,NatMMConfig.PATHS_FROM_PAGE_TO_ELEMENTS[iTypeIndex],
+            "pagina.number",null,null,null,null,true);
+            if (nl.size()>0){
+               sPaginaNumber = nl.getNode(0).getStringValue("pagina.number");
+            }
+         }
+         Vector breadcrumbs = null;
+         if (!sPaginaNumber.equals("")){
+            //get breadcrumbs;
+            breadcrumbs = PaginaHelper.getBreadCrumbs(cloud,sPaginaNumber);
+         }
+
+         String[] sRelTypes = {"creatierubriek", "hoofdrubriek", "subsite"};
+         Node nElement = cloud.getNode(objectNumber);
+         if (breadcrumbs != null) {
+            if (breadcrumbs.size()==3){
+               for (int i = 0; i < sRelTypes.length; i++) {
+                  Relation thisRelation = null;
+                  Node nRubriek = cloud.getNode( (String) breadcrumbs.get(i));
+                  thisRelation = nRubriek.createRelation(nElement,
+                  cloud.getRelationManager(sRelTypes[i]));
+                  thisRelation.commit();
+               }
+            } else if (breadcrumbs.size()==2){
+               for (int i = 1; i < sRelTypes.length; i++) {
+                  Relation thisRelation = null;
+                  Node nRubriek = cloud.getNode( (String) breadcrumbs.get(i-1));
+                  thisRelation = nRubriek.createRelation(nElement,
+                  cloud.getRelationManager(sRelTypes[i]));
+                  thisRelation.commit();
+               }
+               Relation thisRelation = null;
+               Node nRubriek = cloud.getNode( (String) breadcrumbs.get(0));
+               thisRelation = nRubriek.createRelation(nElement,
+               cloud.getRelationManager(sRelTypes[0]));
+               thisRelation.commit();
+            }
+         }
+         else {
+            //use rubriek with alias "archive" as creatierubriek and hoofdrubriek and the parent of archive as subsite
+            Node nArchive = cloud.getNodeByAlias("archive");
+            for (int i = 0; i < 2; i++) {
+               Relation thisRelation = null;
+               thisRelation = nArchive.createRelation(nElement,cloud.getRelationManager(sRelTypes[i]));
+               thisRelation.commit();
+            }
+            NodeList nParent = nArchive.getRelatedNodes("rubriek", "parent","DESTINATION");
+            if (nParent.size() > 0) {
+               Node nArchiveParent = nParent.getNode(0);
+               Relation thisRelation = null;
+               thisRelation = nArchiveParent.createRelation(nElement,cloud.getRelationManager(sRelTypes[2]));
+               thisRelation.commit();
+            }
+         }
+      }
+   }
+
+   boolean bRelationsExists(String objectNumber){
+      NodeList nlSubsite = cloud.getList(objectNumber,"contentelement,subsite,rubriek",
+      "contentelement.number",null,null,null,null,true);
+      NodeList nlHoofdrubriek = cloud.getList(objectNumber,"contentelement,hoofdrubriek,rubriek",
+      "contentelement.number",null,null,null,null,true);
+      NodeList nlCreatierubriek = cloud.getList(objectNumber,"contentelement,creatierubriek,rubriek",
+      "contentelement.number",null,null,null,null,true);
+      if (nlSubsite.size() + nlHoofdrubriek.size() + nlCreatierubriek.size()==0){
+         return false;
+      } else {
+         if (nlSubsite.size() > 0){
+            log.info("relation contentelement,subsite,rubriek for node " +
+            objectNumber + " already exists");
+         }
+         if (nlHoofdrubriek.size() > 0){
+            log.info("relation contentelement,hoofdrubriek,rubriek for node " +
+            objectNumber + " already exists");
+         }
+         if (nlCreatierubriek.size() > 0){
+            log.info("relation contentelement,creatierubriek,rubriek for node " +
+            objectNumber + " already exists");
+         }
+         return true;
+      }
+
+   }
+
+   public void addSchrijver(String objectNumber) {
+      NodeList nl = cloud.getList(objectNumber,"contentelement,schrijver,users",
+      "users.number",null,null,null,null,true);
+      if (nl.size()==0) {
+         /*try to find user with:
+               contentelement.owner=users.account */
+         nl = cloud.getList("","contentelement,schrijver,users",
+         "users.number","contentelement.owner = users.account",null,null,null,true);
+         if (nl.size()>0) {
+            //create relation contentelement-schrijver-user
+            Node nUser = cloud.getNode(nl.getNode(0).getStringValue("users.number"));
+            Relation thisRelation = null;
+            thisRelation = (cloud.getNode(objectNumber)).createRelation(nUser,cloud.getRelationManager("schrijver"));
+            thisRelation.commit();
+         }
+      }
    }
 
 }
