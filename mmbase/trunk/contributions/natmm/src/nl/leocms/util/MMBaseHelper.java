@@ -142,7 +142,6 @@ public class MMBaseHelper {
              }
              if (iTypeIndex!=-1){
                 log.info("Treating " + sType + " number " + sContentelement);
-                System.out.println("Treating " + sType + " number " + sContentelement);
                 ch.addDefaultRelations(sContentelement, iTypeIndex);
                 ch.addSchrijver(sContentelement);
              }
