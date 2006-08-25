@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: mmxf2kupu.xslt,v 1.6 2006-07-11 18:46:57 michiel Exp $
+  @version: $Id: mmxf2kupu.xslt,v 1.7 2006-08-25 14:16:52 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -63,10 +63,18 @@
   <xsl:template match="o:field[@format='xml']">
     <xsl:choose>
       <xsl:when test="mmxf:mmxf">
-        <xsl:apply-templates  />
+        <xsl:choose>
+          <xsl:when test="*">
+            <xsl:apply-templates  />
+          </xsl:when>
+          <xsl:otherwise>
+            <!-- make sure not to spit out something empty, because that may confuse certain browers -->
+            <p />
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:when>
       <xsl:otherwise><!-- null -->
-        <p>.</p>
+        <p />
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -85,7 +93,14 @@
   <xsl:template match = "mmxf:mmxf" >
     <body>
       <xsl:text>&#xA;</xsl:text>
-      <xsl:apply-templates select="mmxf:p|mmxf:table|mmxf:section|mmxf:ul|mmxf:ol|mmxf:table" />
+      <xsl:choose>
+        <xsl:when test="*">
+          <xsl:apply-templates select="mmxf:p|mmxf:table|mmxf:section|mmxf:ul|mmxf:ol|mmxf:table" />
+        </xsl:when>
+        <xsl:otherwise>
+          <p />
+        </xsl:otherwise>
+      </xsl:choose>
       <xsl:text>&#xA;</xsl:text>
     </body>
     <xsl:text>&#xA;</xsl:text>

@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.13 2006-07-11 18:49:13 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.14 2006-08-25 14:16:52 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -12,7 +12,6 @@
     xmlns:taglib="org.mmbase.bridge.jsp.taglib.functions.Functions"
     xmlns:o="http://www.mmbase.org/xmlns/objects"
     xmlns:mmxf="http://www.mmbase.org/xmlns/mmxf"
-    xmlns:jsp="http://java.sun.com/JSP/Page"
     exclude-result-prefixes="node mmxf o taglib"
     version="1.0" >
 
@@ -74,7 +73,6 @@
   <xsl:template match="o:object[@type=$newstype]/o:field[@name='title']" >
     <h1><xsl:value-of select="." /></h1>
   </xsl:template>
-
   <xsl:template match="o:object[@type=$newstype]/o:field[@name='subtitle']" >
     <h2><xsl:value-of select="." /></h2>
   </xsl:template>
@@ -83,11 +81,19 @@
   <xsl:template match="o:field[@format='xml']">
     <xsl:choose>
       <xsl:when test="mmxf:mmxf">
-        <xsl:apply-templates  />
+        <xsl:choose>
+          <xsl:when test="*">
+            <xsl:apply-templates  />
+          </xsl:when>
+          <xsl:otherwise>
+            <!-- make sure not to spit out something empty, because that may confuse certain browers -->
+            <p />
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:when>
       <xsl:otherwise><!-- null -->
         <!-- make sure not to spit out something empty, because that may confuse certain browers -->
-        <xsl:text> </xsl:text>
+        <p />
       </xsl:otherwise>
     </xsl:choose>
 
