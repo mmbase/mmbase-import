@@ -12,7 +12,7 @@ if(memberid==null) {
       }
    }
 }
-if(memberid!=null) { // check if the member exists, otherwise set memberid to null
+if(NatMMConfig.hasClosedUserGroup && memberid!=null) { // check if the member exists, otherwise set memberid to null
    if(!cloud.hasNode(memberid)) {
       memberid = null;
    }
