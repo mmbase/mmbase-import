@@ -126,6 +126,14 @@ public class ContentHelper {
       String thisType = (String) getNameWithOtype(otype);
       ArrayList cTypes = ContentTypeHelper.getContentTypes();
       cTypes.add("dossier");
+      ApplicationHelper ap = new ApplicationHelper();
+      TreeMap tmPathToRubriek = new TreeMap();
+      if(ap.isInstalled(cloud,"NatMM")) {
+         tmPathToRubriek.put("images", "contentrel");
+         tmPathToRubriek.put("panno", "posrel");
+         tmPathToRubriek.put("shorty", "rolerel");
+         tmPathToRubriek.put("teaser", "rolerel");
+      }
       NodeList nlUsedItems = null;
       boolean isList = false;
       for(int ct=0; ct < cTypes.size(); ct++) {
@@ -136,15 +144,28 @@ public class ContentHelper {
              ! (thisType.equals("evenement") && relatedType.equals("evenement"))) {
             NodeManager thisTypeNodeManager = cloud.getNodeManager(thisType);
             if (thisTypeNodeManager.getAllowedRelations(relatedType, null, null).size() > 0) {
-               NodeList nl = node.getRelatedNodes(relatedType);
-               if (nl.size() > 0) {
+               NodeList nl = null;
+               if (relatedType.equals("rubriek")&&ap.isInstalled(cloud,"NatMM")){ //add exception to the rubriek
+                  log.info("trying to find relations between " + thisType + " " +
+                  sNodeNumber + " and rubriek");
+                  if (tmPathToRubriek.containsKey(thisType)){
+                     nl = cloud.getList(sNodeNumber, thisType + "," +
+                     tmPathToRubriek.get(thisType) + ",rubriek",thisType + ".number",
+                     null, null, null, null, true);
+                  }
+               } else {
+                  nl = node.getRelatedNodes(relatedType);
+               }
+               if (nl != null && nl.size() > 0) {
                   if (!isList) {
                      nlUsedItems = nl;
                      isList = true;
-                  } else {
+                  }
+                  else {
                      nlUsedItems.addAll(nl);
                   }
                }
+
             }
          }
       }
