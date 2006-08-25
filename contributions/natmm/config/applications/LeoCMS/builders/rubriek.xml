@@ -97,12 +97,34 @@
          <editor>
             <positions>
                <input>5</input>
-               <list>-1</list>
+               <list>5</list>
                <search>-1</search>
             </positions>
          </editor>
          <db>
             <name xml:lang="nl">isvisible</name>
+            <type key="false" notnull="false" size="255" state="persistent">STRING</type>
+         </db>
+      </field>
+      <field>
+         <descriptions>
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <gui>
+            <guiname xml:lang="nl">IsDoorzoekbaar</guiname>
+            <guiname xml:lang="en">IsSearchable</guiname>
+            <guitype>string</guitype>
+         </gui>
+         <editor>
+            <positions>
+               <input>6</input>
+               <list>6</list>
+               <search>-1</search>
+            </positions>
+         </editor>
+         <db>
+            <name xml:lang="nl">issearchable</name>
             <type key="false" notnull="false" size="255" state="persistent">STRING</type>
          </db>
       </field>
@@ -118,8 +140,8 @@
          </gui>
          <editor>
             <positions>
-               <input>6</input>
-               <list>-1</list>
+               <input>7</input>
+               <list>7</list>
                <search>-1</search>
             </positions>
          </editor>
@@ -206,7 +228,7 @@
          </gui>
          <editor>
             <positions>
-               <input>10</input>
+               <input>11</input>
                <list>-1</list>
                <search>-1</search>
             </positions>
@@ -228,7 +250,7 @@
          </gui>
          <editor>
             <positions>
-               <input>11</input>
+               <input>12</input>
                <list>-1</list>
                <search>-1</search>
             </positions>
@@ -250,7 +272,7 @@
          </gui>
          <editor>
             <positions>
-               <input>11</input>
+               <input>13</input>
                <list>-1</list>
                <search>-1</search>
             </positions>
@@ -272,7 +294,7 @@
          </gui>
          <editor>
             <positions>
-               <input>12</input>
+               <input>14</input>
                <list>-1</list>
                <search>-1</search>
             </positions>
@@ -294,7 +316,7 @@
          </gui>
          <editor>
             <positions>
-               <input>13</input>
+               <input>15</input>
                <list>-1</list>
                <search>-1</search>
             </positions>
@@ -316,7 +338,7 @@
          </gui>
          <editor>
             <positions>
-               <input>14</input>
+               <input>16</input>
                <list>-1</list>
                <search>-1</search>
             </positions>
