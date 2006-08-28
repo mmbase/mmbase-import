@@ -1,19 +1,10 @@
 <%@include file="/taglibs.jsp" %>
 <mm:cloud method="http" rank="basic user" jspvar="cloud">
 <mm:log jspvar="log">
-<html>
-   <head>
-   <LINK rel="stylesheet" type="text/css" href="/editors/css/editorstyle.css">
-   <title>Natuurmonumenten</title>
-   <style>
-     table { width: 100%; }
-     td { border: solid #000000 1px; padding: 3px; height: auto; vertical-align: top; } 
-   </style>
-   </head>
-   <body style="width:100%;padding:5px;">
+   <% log.info("06.06.05"); %>
 	Things to be done in this update:<br/>
 	<mm:node number="home" id="natuurmonumente_subsite" />
-	0. Adding users ew to admin<br/>
+	<% log.info("0. Adding users ew to admin"); %>
 	<mm:listnodes type="users" constraints="account = 'admin'">
 		<mm:node id="admin" />
 		<mm:listnodes type="editwizards" constraints="wizard = 'config/users/users'">
@@ -26,11 +17,11 @@
 			</mm:node>
 		</mm:listnodes>
 	</mm:listnodes>
-	1. Changing the wizard type of the page wizards:<br/>
+	<% log.info("1. Changing the wizard type of the page wizards:"); %>
 	<mm:listnodes type="editwizards" constraints="wizard LIKE '%pagina_%'">
 		<mm:setfield name="type">wizard</mm:setfield>
 	</mm:listnodes>
-	2. Homepage<br/>
+	<% log.info("2. Homepage"); %>
 	<mm:createnode type="editwizards" id="news_wizard">
 		<mm:setfield name="name">nieuws (list)</mm:setfield>
 		<mm:setfield name="description">Bewerk de nieuws artikelen van deze pagina</mm:setfield>
@@ -52,7 +43,7 @@
 		<mm:node id="info_template" />
 		<mm:createrelation source="info_template" destination="news_wizard" role="related" />
 	</mm:listnodes>
-	3. Archief<br/>
+	<% log.info("3. Archief"); %>
 	<mm:list nodes="" path="pagina,rolerel,teaser" constraints="pagina.titel!='Nieuws en informatie'">
 		<% String pageIntro = ""; %>
 		<mm:field name="teaser.titel" jspvar="teaser_titel" vartype="String" write="false">
@@ -71,7 +62,7 @@
 		<mm:setfield name="use_verloopdatum">1</mm:setfield>
 		<mm:setfield name="archive">unlimited</mm:setfield>
 	</mm:listnodes>
-	4. Prikbord<br/>
+	<% log.info("4. Prikbord"); %>
 	<mm:createnode type="editwizards" id="ads_wizard">
 		<mm:setfield name="name">berichten</mm:setfield>
 		<mm:setfield name="description">Berichten uit het gastenboek</mm:setfield>
@@ -99,7 +90,7 @@
 			<mm:createrelation source="bb" destination="this_ad" role="contentrel" />
 		</mm:listnodes>
 	</mm:listnodes>
-	5. Changing editwizards because of change in builder<br/>
+	<% log.info("5. Changing editwizards because of change in builder"); %>
 	Todo: check with last version of db.
 	<mm:listnodes type="editwizards" constraints="wizard = 'config/educations/wizard'">
     <mm:field name="name" id="ew_name">
@@ -113,7 +104,7 @@
       </mm:compare>
     </mm:field>
 	</mm:listnodes>
-	6. Renaming editwizards that should use the default page editor<br/>
+	<% log.info("6. Renaming editwizards that should use the default page editor"); %>
 	<mm:createnode type="editwizards" id="def_ew">
 		<mm:setfield name="name">standaard pagina</mm:setfield>
 		<mm:setfield name="description">Bewerk de basis gegevens van deze pagina</mm:setfield>
@@ -147,11 +138,11 @@
 		<%
 		}
 	%>
-	7. rename artikel ew which collapses with the natmm artikel template
+	<% log.info("7. rename artikel ew which collapses with the natmm artikel template"); %>
 	<mm:listnodes type="editwizards" constraints="wizard = 'config/pagina/pagina_artikel'">
 		<mm:setfield name="wizard">config/pagina/pagina_artikel_nmintra</mm:setfield>
 	</mm:listnodes>
-	8. move imap ew to overview
+	<% log.info("8. move imap ew to overview"); %>
 	<mm:listnodes type="editwizards" constraints="wizard = 'config/pagina/pagina_imap'">
 		<mm:setfield name="name">pagina met hotspots</mm:setfield>
 		<mm:setfield name="description">Bewerk de hotspots op deze pagina</mm:setfield>
@@ -166,7 +157,7 @@
 		<mm:setfield name="searchfields"></mm:setfield>
 		<mm:setfield name="search"></mm:setfield>
 	</mm:listnodes>
-   9. Change name of page editwizards<br/>
+   <% log.info("9. Change name of page editwizards"); %>
 	<mm:listnodes type="editwizards" constraints="name LIKE 'subr. vh genre %'">
 	   <mm:field name="name" jspvar="name" vartype="String" write="false">
 	      <% name  = name.substring(15) + " pagina"; %>
@@ -174,7 +165,7 @@
 		   <mm:setfield name="description"><%= "Bewerk deze " + name %></mm:setfield>
 		</mm:field>
 	</mm:listnodes>
-   10. Add project overview ew to project archive template<br/>
+   <% log.info("10. Add project overview ew to project archive template"); %>
 	<mm:listnodes type="editwizards" constraints="wizard = '/editors/project_overview.jsp'">
 	   <mm:node id="project_overview">
 	      <mm:setfield name="name">voorbeeld project</mm:setfield>
@@ -195,7 +186,7 @@
       	</mm:listnodes>
       </mm:node>
 	</mm:listnodes>
-	11. Add terms ew to terms template, add all terms to the page<br/>
+	<% log.info("11. Add terms ew to terms template, add all terms to the page"); %>
 	<mm:listnodes type="paginatemplate" constraints="url = 'terms.jsp'">
 		<mm:node id="term_template" />
 		<mm:listnodes type="editwizards" constraints="wizard = '/editors/config/terms/terms'">
@@ -220,15 +211,15 @@
 			</mm:listnodes>
 		</mm:relatednodes>
 	</mm:listnodes>
-	12. Set verloopdatum of pages to 2038<br/>		
+	<% log.info("12. Set verloopdatum of pages to 2038"); %>
 	<mm:listnodes type="pagina">
 		<mm:setfield name="verloopdatum">2145913200</mm:setfield>
    </mm:listnodes>
-	13. Hide pagina "Zoeken" from navigation
+	<% log.info("13. Hide pagina 'Zoeken' from navigation"); %>
 	<mm:node number="search">
 		<mm:setfield name="embargo">2145913200</mm:setfield>
 	</mm:node>
-	14. Remove duplicate users
+	<% log.info("14. Remove duplicate users"); %>
 	<% String lastAccount = ""; %>
 	<mm:listnodes type="users" orderby="account,emailadres" directions="DOWN,DOWN">
 		<mm:field name="account" jspvar="account" vartype="String" write="false">
@@ -241,7 +232,7 @@
 			%>
 		</mm:field>
 	</mm:listnodes>
-	14. Move news archief to seperate rubriek<br/>
+	<% log.info("14. Move news archief to seperate rubriek"); %>
 	<mm:listnodes type="rubriek" constraints="naam = 'Home'">
 		<mm:node id="home_rubriek" />
     <mm:listnodes type="users" constraints="account = 'KemperinkM'">
@@ -271,7 +262,7 @@
       </mm:node>
     </mm:listnodes>
 	</mm:listnodes>
-	14. Merge library archief with news archief<br/>
+	<% log.info("14. Merge library archief with news archief"); %>
 	<mm:createnode type="pools" id="bib_pool">
 		<mm:setfield name="name">Bibliotheek</mm:setfield>
 	</mm:createnode>
@@ -293,7 +284,7 @@
       <mm:deletenode number="bibarchief" deleterelations="true" />
     </mm:listnodes>
 	</mm:listnodes>
-	15. artikel met info pagina<br/>
+	<% log.info("15. artikel met info pagina"); %>
 	<mm:listnodes type="editwizards" constraints="wizard = 'config/pagina/pagina_artikel_info'">
 		<mm:relatednodes type="paginatemplate" id="artikel_info_template">
 			<mm:createrelation source="artikel_info_template" destination="def_ew" role="related" />
@@ -322,7 +313,7 @@
 		</mm:relatednodes>
 	   <mm:deletenode deleterelations="true" />
 	</mm:listnodes>
-	16. Rename education editwizard to their generic counterparts 
+	<% log.info("16. Rename education editwizard to their generic counterparts"); %> 
 	<mm:listnodes type="editwizards" constraints="wizard = 'config/education_pools/wizard'">
 		<mm:setfield name="name">opleidings categorieën</mm:setfield>
 		<mm:setfield name="wizard">config/pools/pools_education</mm:setfield>
@@ -335,7 +326,7 @@
 		<mm:setfield name="wizard">config/keywords/wizard</mm:setfield>
 		<mm:setfield name="nodepath">keywords</mm:setfield>
 	</mm:listnodes>
-	17. Rename some admin editwizards
+	<% log.info("17. Rename some admin editwizards"); %>
 	<mm:listnodes type="editwizards" constraints="wizard = 'config/pools/pools'">
 		<mm:setfield name="nodepath">pools</mm:setfield>
 		<mm:setfield name="fields">pools.name</mm:setfield>
@@ -345,7 +336,7 @@
 		<mm:setfield name="wizard">/editors/usermanagement/userlist.jsp</mm:setfield>
 		<mm:setfield name="type">jsp</mm:setfield>
 	</mm:listnodes>
-	18. Rename some shop editwizards
+	<% log.info("18. Rename some shop editwizards"); %>
 	<mm:listnodes type="editwizards" constraints="wizard = '/editors/config/items/items'">
 		<mm:setfield name="wizard">config/items/items_shop</mm:setfield>
 		<mm:setfield name="nodepath">items</mm:setfield>
@@ -358,7 +349,7 @@
 		<mm:setfield name="orderby">pos</mm:setfield>
 		<mm:setfield name="startnodes"></mm:setfield>
 	</mm:listnodes>
-  19. Rename some producttype editwizards
+  <% log.info("19. Rename some producttype editwizards"); %>
   <mm:listnodes type="teaser">
     <mm:deletenode deleterelations="true" />
   </mm:listnodes>
@@ -410,23 +401,23 @@
       <mm:createrelation source="kb_page" destination="kb_q" role="posrel" />
     </mm:listnodes>
   </mm:list>
-  20. Make the iptree wizard relative<br/>
+  <% log.info("20. Make the iptree wizard relative"); %>
   <mm:listnodes type="editwizards" constraints="wizard = '/editors/config/pagina/pagina_iptree'">
 		<mm:setfield name="wizard">config/pagina/pagina_iptree</mm:setfield>
-	</mm:listnodes>
-  21. Make the ipmap wizard relative<br/>
-  <mm:listnodes type="editwizards" constraints="wizard = '/editors/config/pagina/pagina_ipmap'">
+  </mm:listnodes>
+   <% log.info("21. Make the ipmap wizard relative"); %>
+   <mm:listnodes type="editwizards" constraints="wizard = '/editors/config/pagina/pagina_ipmap'">
 		<mm:setfield name="wizard">config/pagina/pagina_ipmap</mm:setfield>
 	</mm:listnodes>
-  22. Rename menu for evenement_bleuprints<br/>
-  <mm:listnodes type="menu" constraints="naam = 'Activiteiten'">
+   <% log.info("22. Rename menu for evenement_bleuprints"); %>
+   <mm:listnodes type="menu" constraints="naam = 'Activiteiten'">
 		<mm:setfield name="naam">Jeugdactiviteiten</mm:setfield>
 	</mm:listnodes>
-  22. Rename menu "Archiefkast" to Contentlementen
-  <mm:listnodes type="menu" constraints="naam = 'Archiefkast'">
+   <% log.info("22. Rename menu 'Archiefkast' to Contentlementen"); %>
+   <mm:listnodes type="menu" constraints="naam = 'Archiefkast'">
 		<mm:setfield name="naam">Contentelementen</mm:setfield>
 	</mm:listnodes>
-	99. Deleting unused editwizards<br/>
+	<% log.info("99. Deleting unused editwizards"); %>
 	<%
 	String [] ewToDelete = {
 		"config/divisions/divisions",
@@ -468,7 +459,5 @@
 	}
 	%>
 	Done.<br/>
-	</body>
-  </html>
 </mm:log>
 </mm:cloud>
