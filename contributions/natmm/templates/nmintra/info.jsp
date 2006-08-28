@@ -43,25 +43,21 @@ if(!articleId.equals("-1")) {
       int startYear = (int) period[11];
       boolean checkOnPeriod = (fromTime<toTime);
       // *** delete expired articles from this page (if it is not the archive) ***
+       String rightBarTitle = "";
+        
       boolean isArchive = false;
-      %><mm:node number="<%= paginaID %>"
+      %><mm:node number="<%= paginaID %>" jspvar="thisPage"
          ><mm:aliaslist
             ><mm:write jspvar="alias" vartype="String" write="false"><%
 	            isArchive = (alias.indexOf("archief") > -1); 
 	         %></mm:write
-	      ></mm:aliaslist
-      ></mm:node
+	      ></mm:aliaslist><%
+	      rightBarTitle = "Zoek in " + thisPage.getStringValue("titel");
+      %></mm:node
       ><%@include file="includes/info/movetoarchive.jsp" 
       %><%@include file="includes/header.jsp" 
       %><td><%@include file="includes/pagetitle.jsp" %></td>
-      <td><%
-         String rightBarTitle = "";
-         if(isArchive) {
-            rightBarTitle = "Zoek&nbsp;in&nbsp;archief";
-         } else {
-            rightBarTitle = "Zoek&nbsp;in&nbsp;nieuws";
-         }
-         %><%@include file="includes/rightbartitle.jsp" %></td>
+      <td><%@include file="includes/rightbartitle.jsp" %></td>
       </tr>
       <tr>
       <td class="transperant">
