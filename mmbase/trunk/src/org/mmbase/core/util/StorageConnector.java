@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: StorageConnector.java,v 1.9 2006-07-08 12:44:46 nklasens Exp $
+ * @version $Id: StorageConnector.java,v 1.10 2006-08-28 12:25:44 michiel Exp $
  */
 public class StorageConnector {
 
@@ -295,41 +295,78 @@ public class StorageConnector {
         int numbersSize = 0;
         NodeSearchQuery query = new NodeSearchQuery(builder);
         BasicStep step = (BasicStep) query.getSteps().get(0);
+        List subResult = new ArrayList();
 
         Iterator i = virtuals.iterator();
         while(i.hasNext()) {
             MMObjectNode node = (MMObjectNode) i.next();
 
             // check if this node is already in cache
-            Integer number = new Integer(node.getNumber());
+            Integer number = Integer.valueOf(node.getNumber());
             if(builder.isNodeCached(number)) {
                 result.add(builder.getNodeFromCache(number));
                 // else seek it with a search on builder in db
             } else {
                 numbersSize +=  ("," + number).length();
+                subResult.add(number);
                 step.addNode(number.intValue());
             }
 
             if(numbersSize > MAX_QUERY_SIZE) {
-                result.addAll(getRawNodes(query, true));
+                addSubResult(query, subResult, result);
                 query = new NodeSearchQuery(builder);
                 step = (BasicStep) query.getSteps().get(0);
                 numbersSize = 0;
+                subResult.clear();
             }
         }
 
         // now that we have a comma seperated string of numbers, we can
         // the search with a where-clause containing this list
         if(numbersSize > 0) {
-            result.addAll(getRawNodes(query, true));
+            addSubResult(query, subResult, result);
         } // else everything from cache
 
         // check that we didnt loose any nodes
-        assert virtuals.size() == result.size();
+        assert assertSizes(virtuals, result);
 
         return result;
     }
 
+    /**
+     * @param query Query with nodestep with added nodes.
+     * @param subResult List of Integer
+     * @param result    List to which the real nodes must be added.
+     * @since MMBase-1.8.2
+     */
+    protected void addSubResult(final NodeSearchQuery query, final List subResult, final List result) throws SearchQueryException {
+        List rawNodes = getRawNodes(query, true);
+        // convert this list to a map, for easy reference when filling result.
+         // would the creation of this Map not somehow be avoidable?
+        Map rawMap = new HashMap();
+        Iterator i = rawNodes.iterator();
+        while (i.hasNext()) {
+            MMObjectNode n = (MMObjectNode) i.next();
+            rawMap.put(Integer.valueOf(n.getNumber()), n);
+        }
+        Iterator j = subResult.iterator();
+        while (j.hasNext()) {
+            Integer n = (Integer) j.next();
+            result.add(rawMap.get(n));
+        }
+    }
+
+    /**
+     * @since MMBase-1.8.2
+     */
+    protected boolean assertSizes(Collection virtuals, Collection result) {
+        if (virtuals.size() != result.size()) {
+            log.error(" virtuals " + virtuals + " result " + result);
+            return false;
+        } else {
+            return true;
+        }
+    }
     /**
      * Counts number of nodes matching a specified constraint.
      * The constraint is specified by a query that selects nodes of
