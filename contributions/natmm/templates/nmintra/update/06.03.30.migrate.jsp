@@ -1,16 +1,7 @@
 <%@include file="/taglibs.jsp" %>
 <mm:cloud method="http" rank="basic user" jspvar="cloud">
 <mm:log jspvar="log">
-<html>
-   <head>
-   <LINK rel="stylesheet" type="text/css" href="/editors/css/editorstyle.css">
-   <title>Natuurmonumenten</title>
-   <style>
-     table { width: 100%; }
-     td { border: solid #000000 1px; padding: 3px; height: auto; vertical-align: top; } 
-   </style>
-   </head>
-   <body style="width:100%;padding:5px;">
+	<% log.info("06.03.30"); %>
 	Changing templates.url from templates/*.jsp to *.jsp<br/>
 	Setting the templates to visible in the pagina form<br/>
 	<mm:listnodes type="paginatemplate">
@@ -27,7 +18,5 @@
   	<mm:setfield name="verwijderbaar">1</mm:setfield>    
 	</mm:listnodes>
   Done.
-	</body>
-  </html>
 </mm:log>
 </mm:cloud>

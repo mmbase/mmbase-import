@@ -1,16 +1,20 @@
 <%@include file="/taglibs.jsp" %>
 <mm:cloud method="http" rank="basic user" jspvar="cloud">
 <mm:log jspvar="log">
-<html>
-   <head>
-   <LINK rel="stylesheet" type="text/css" href="/editors/css/editorstyle.css">
-   <title>Natuurmonumenten</title>
-   <style>
-     table { width: 100%; }
-     td { border: solid #000000 1px; padding: 3px; height: auto; vertical-align: top; } 
-   </style>
-   </head>
-   <body style="width:100%;padding:5px;">
+  <% log.info("06.03.24"); %>
+  0. Check whether the NMIntra application is installed succesfully
+  <%
+  ApplicationHelper ap = new ApplicationHelper();
+  if(!ap.isInstalled(cloud,"NMIntra")) {
+   %>
+   <mm:createnode type="versions">
+      <mm:setfield name="name">NMIntra</mm:setfield>   
+      <mm:setfield name="type">application</mm:setfield>   
+      <mm:setfield name="version">1</mm:setfield>   
+      <mm:setfield name="maintainer">mmbase.org</mm:setfield>   
+   </mm:createnode>
+   <%
+  } %>
   1. Add a rubriek Natuurmonumenten with alias root and relate the Intranet and Ontwikkel rubrieken to it<br/>
   <mm:createnode type="rubriek" id="root">
 		<mm:setfield name="naam">Natuurmonumenten</mm:setfield>
@@ -38,40 +42,34 @@
   <mm:createrelation source="root" destination="admin" role="rolerel">
     <mm:setfield name="rol">100</mm:setfield>
   </mm:createrelation>
-	3. Delete pages Nieuws and Interne Mededelingen (2x)<br/>
+  3. Delete pages Nieuws and Interne Mededelingen (2x)<br/>
   <mm:listnodes type="pagina" constraints="titel = 'Nieuws' OR titel = 'Interne Mededelingen'">
     <mm:deletenode deleterelations="true" />
   </mm:listnodes>
-	4. Delete template for "Wat vindt je ervan?" page in P&O<br/>
+  4. Rename page Nieuws en interne informatie<br/>
+  <mm:listnodes type="pagina" constraints="titel = 'Nieuws en interne informatie'">
+    <mm:setfield name="titel">Nieuws</mm:setfield>
+  </mm:listnodes>	
+  5. Delete template for "Wat vindt je ervan?" page in P&O<br/>
   <mm:listnodes type="pagina" constraints="titel = 'Wat vindt je ervan?'" orderby="number" directions="DOWN" max="1">
     <mm:related path="gebruikt,paginatemplate">
       <mm:deletenode element="gebruikt" />
     </mm:related>
   </mm:listnodes>
-	5. Analyzing titels of articles and paragraaf to remove #NZ# string.<br/>
+  6. Analyzing titels of articles and paragraaf to remove #NZ# string.<br/>
   Processing...<br/>
-	<mm:listnodes type="artikel">
+   <mm:listnodes type="artikel" constraints="UPPER(titel) LIKE '#NZ#'">
 		<mm:field name="titel" jspvar="titel" vartype="String" write="false">
-			<% if ((titel.indexOf("#NZ#")>-1)||(titel.indexOf("#nz#")>-1)) {
-					titel = titel.replaceAll("#NZ#","").trim();
-					titel = titel.replaceAll("#nz#","").trim(); %>
-					<mm:setfield name="titel"><%= titel %></mm:setfield>
-					<mm:setfield name="titel_zichtbaar">0</mm:setfield>
-			<% } %>
+			<mm:setfield name="titel"><%= titel.replaceAll("#NZ#","").replaceAll("#nz#","").trim() %></mm:setfield>
+			<mm:setfield name="titel_zichtbaar">0</mm:setfield>
 		</mm:field>
 	</mm:listnodes>
-	<mm:listnodes type="paragraaf">
+	<mm:listnodes type="paragraaf" constraints="UPPER(titel) LIKE '#NZ#'">
 		<mm:field name="titel" jspvar="titel" vartype="String" write="false">
-			<% if ((titel.indexOf("#NZ#")>-1)||(titel.indexOf("#nz#")>-1)) {
-					titel = titel.replaceAll("#NZ#","").trim();
-					titel = titel.replaceAll("#nz#","").trim(); %>
-					<mm:setfield name="titel"><%= titel %></mm:setfield>
-					<mm:setfield name="titel_zichtbaar">0</mm:setfield>
-			<% } %>
+			<mm:setfield name="titel"><%= titel.replaceAll("#NZ#","").replaceAll("#nz#","").trim() %></mm:setfield>
+			<mm:setfield name="titel_zichtbaar">0</mm:setfield>
 		</mm:field>
 	</mm:listnodes>
-  Done.
-	</body>
-  </html>
+   Done.
 </mm:log>
 </mm:cloud>
