@@ -60,11 +60,7 @@ for (Iterator it = hsetPagesNodes.iterator(); it.hasNext(); ) {
       continue;
    }
    %><mm:node number="<%=sPageID%>">
-      <mm:relatednodes type="rubriek">
-         <mm:field name="number" jspvar="sRubriek" vartype="String" write="false"><%
-            hsetCategories.add(sRubriek);
-         %></mm:field>
-      </mm:relatednodes>
+		<% hsetCategories.add(ph.getRootRubriek(cloud,sPageID));%>
    </mm:node><%
 }
 %>
