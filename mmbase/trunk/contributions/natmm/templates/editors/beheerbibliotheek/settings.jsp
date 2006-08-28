@@ -1,7 +1,6 @@
 <%
    Logger log = Logging.getLoggerInstance("beheerbibliotheek/index.jsp");
    ContentHelper contentHelper = new ContentHelper(cloud);
-   SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy");
    
    /**
     * Page settings.
