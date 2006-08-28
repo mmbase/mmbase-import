@@ -117,11 +117,10 @@
 
 					         HashSet hsetPagesForThisCategory = new HashSet(); %>
 					         <mm:node number="<%= sRubriek %>">
-					            <mm:relatednodes type="pagina">
-					               <mm:field name="number" jspvar="sID" vartype="String" write="false"><%
-					                     hsetPagesForThisCategory.add(sID);
-				   	            %></mm:field>
-				      	      </mm:relatednodes>
+									<%@include file="includes/search/related_pages.jsp" %>
+									<mm:relatednodes type="rubriek" constraints="rubriek.level = 2">
+										<%@include file="includes/search/related_pages.jsp" %>	
+									</mm:relatednodes>
 				         	   <a name="<mm:field name="number" />" />
 				            	<span class="colortitle"><b>
 										<mm:field name="naam" jspvar="name" vartype="String" write="false">

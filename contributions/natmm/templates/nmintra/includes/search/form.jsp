@@ -16,7 +16,7 @@
  	   <tr><td>
 		  			<select name="categorie" style="width:172px;" />
                   <option value="">Alles</option>
-                  <mm:list nodes="<%= rootId %>" path="rubriek1,parent,rubriek2" orderby="parent.pos">
+                  <mm:list nodes="<%= rootId %>" path="rubriek1,parent,rubriek2" orderby="parent.pos" constraints="rubriek2.issearchable = '1'">
                      <mm:field name="rubriek2.number" jspvar="sCategoryNumber" vartype="String">
                      <mm:field name="rubriek2.naam" jspvar="sCategoryName" vartype="String">
                         <option value="<%= sCategoryNumber %>" <%
