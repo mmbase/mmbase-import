@@ -1,16 +1,7 @@
 <%@include file="/taglibs.jsp" %>
 <mm:cloud method="http" rank="basic user" jspvar="cloud">
 <mm:log jspvar="log">
-<html>
-   <head>
-   <LINK rel="stylesheet" type="text/css" href="/editors/css/editorstyle.css">
-   <title>Natuurmonumenten</title>
-   <style>
-     table { width: 100%; }
-     td { border: solid #000000 1px; padding: 3px; height: auto; vertical-align: top; } 
-   </style>
-   </head>
-   <body style="width:100%;padding:5px;">
+   <% log.info("06.04.03"); %>
 	Things to be done in this update: <br/>
 	1. Setting correct afdelingen.omschrijving and afdelingen.importstatus value. <br/>
 	2. Making all "inactive" medewerkers "active". <br/>
@@ -48,7 +39,5 @@
 		<mm:setfield name="importstatus">active</mm:setfield>
 	</mm:listnodes>
    Done.
-	</body>
-  </html>
 </mm:log>
 </mm:cloud>
