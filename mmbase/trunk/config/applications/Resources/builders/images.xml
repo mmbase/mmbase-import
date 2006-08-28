@@ -38,11 +38,14 @@
 
      <!-- convert using JAI http://java.sun.com/products/java-media/jai/index.html
     NOTE: not all features provided by ImageMagic are implemented in the JAI converter -->
-    <!-- <property name="ImageConvertClass">org.mmbase.module.builders.ConvertJAI</property> -->
+    <!-- <property name="ImageConvertClass">org.mmbase.util.images.JAIImageConverter</property> -->
 
     <!-- convert using ImageMagick -->
-    <property name="ImageConvertClass">org.mmbase.module.builders.ConvertImageMagick</property>
+    <property name="ImageConvertClass">org.mmbase.util.images.ImageMagickImageConverter</property>
+    <!-- Defaults to 'convert' or 'convert.exe' on windows systems  -->
+    <!--
     <property name="ImageConvert.ConverterCommand">convert</property>
+    -->
     <property name="ImageConvert.ConverterRoot"></property>
 
     <property name="ImageConvert.DefaultImageFormat">asis</property> <!-- The default format of icache-objects. Defaults to jpeg if this option is missing here. 'asis' means, same format as the images object -->
@@ -57,7 +60,15 @@
      <!-- Dummy converter when both ImageMagick and JAI are unavailable.
           This converter ignores all image-altering features and simply returns the original image.
      -->
-    <!-- <property name="ImageConvertClass">org.mmbase.module.builders.ConvertDummy</property> -->
+    <!-- <property name="ImageConvertClass">org.mmbase.util.images.DummyImageConverter</property> -->
+
+    <!--
+        The 'ImageInformerClass' is the implementation of org.mmbase.util.image.ImageInformer which
+        is used to calculate height and width from byte-arrays. The default 'dummy' implementation
+        uses a simple java implementation and works pretty well.
+        Implementations based on JAI or on the 'identify' binary of ImageMagick are available too.
+    -->
+    <property name="ImageInformerClass">org.mmbase.util.images.DummyImageInformer</property>
 
     <!-- generic properties for all converters -->
     <property name="MaxConcurrentRequests">3</property>
@@ -196,6 +207,7 @@
       <gui>
         <guiname xml:lang="en">Width</guiname>
         <guiname xml:lang="nl">Breedte</guiname>
+        <guiname xml:lang="eo">Larĝo</guiname>
       </gui>
       <db>
         <name>width</name>
@@ -210,6 +222,7 @@
       <gui>
         <guiname xml:lang="en">Height</guiname>
         <guiname xml:lang="nl">Hoogte</guiname>
+        <guiname xml:lang="eo">Alto</guiname>
       </gui>
       <db>
         <name>height</name>
