@@ -3,7 +3,8 @@
 ><mm:field name="number" jspvar="article_number" vartype="String" write="false"
 ><mm:field name="titel" jspvar="article_title" vartype="String" write="false"
 ><mm:field name="intro" jspvar="article_introduction" vartype="String" write="false"
-><mm:related path="posrel,attachments" orderby="posrel.pos,attachments.title" directions="UP,UP">
+><mm:related path="posrel1,paragraaf,posrel2,attachments" max="1"
+   orderby="posrel1.pos,posrel2.pos,attachments.title" directions="UP,UP,UP">
    <mm:node element="attachments">
      <mm:first><table border="0" cellpadding="0" cellspacing="0"></mm:first>
      <tr><td><mm:field name="filename" jspvar="attachments_filename" vartype="String" write="false">
