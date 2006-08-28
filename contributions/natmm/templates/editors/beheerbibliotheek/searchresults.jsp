@@ -330,13 +330,17 @@ if (searchIsOn) {
                 <mm:field name="rubriek.naam" />
             </td>
             <td valign="top">
-                <mm:field name="contentelement.creatiedatum" jspvar="date" vartype="Long">
-                    <% out.print(sf.format( new java.util.Date(date.longValue()*1000))); %>
+                <mm:field name="contentelement.creatiedatum" jspvar="date" vartype="String">
+                  <mm:isnotempty>
+                    <mm:time time="<%=date%>" format="dd-MM-yyyy"/>
+                  </mm:isnotempty>                    
                 </mm:field>
             </td>
             <td valign="top">
-                <mm:field name="contentelement.datumlaatstewijziging" jspvar="date" vartype="Long">
-                    <% out.print(sf.format( new java.util.Date(date.longValue()*1000))); %>
+                <mm:field name="contentelement.datumlaatstewijziging" jspvar="date" vartype="String">
+                  <mm:isnotempty>
+                    <mm:time time="<%=date%>" format="dd-MM-yyyy"/>
+                  </mm:isnotempty>                    
                 </mm:field>
             </td>
             <td valign="top">
