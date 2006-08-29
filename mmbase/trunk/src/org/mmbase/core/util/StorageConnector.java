@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: StorageConnector.java,v 1.10 2006-08-28 12:25:44 michiel Exp $
+ * @version $Id: StorageConnector.java,v 1.11 2006-08-29 14:47:28 michiel Exp $
  */
 public class StorageConnector {
 
@@ -302,7 +302,8 @@ public class StorageConnector {
             MMObjectNode node = (MMObjectNode) i.next();
 
             // check if this node is already in cache
-            Integer number = Integer.valueOf(node.getNumber());
+            //Integer number = Integer.valueOf(node.getNumber()); // 1.5 only
+            Integer number = new Integer(node.getNumber());
             if(builder.isNodeCached(number)) {
                 result.add(builder.getNodeFromCache(number));
                 // else seek it with a search on builder in db
@@ -347,7 +348,8 @@ public class StorageConnector {
         Iterator i = rawNodes.iterator();
         while (i.hasNext()) {
             MMObjectNode n = (MMObjectNode) i.next();
-            rawMap.put(Integer.valueOf(n.getNumber()), n);
+            //rawMap.put(Integer.valueOf(n.getNumber()), n); // 1.5 only..
+            rawMap.put(new Integer(n.getNumber()), n);
         }
         Iterator j = subResult.iterator();
         while (j.hasNext()) {
