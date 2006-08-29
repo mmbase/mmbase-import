@@ -42,26 +42,15 @@ if(!articleId.equals("-1")) {
    %><td><%@include file="includes/whiteline.jsp" 
    %><div class="rightcolumn" id="rightcolumn">
    <table cellpadding="0" cellspacing="0" align="left">
-   <tr><td style="padding-bottom:10px;padding-left:19px;padding-right:9px;"><%
-   
-   // *** delete expired articles from this page (if it is not the archive) ***
-   boolean isArchive = false;
-   %><mm:node number="<%= paginaID %>"
-      ><mm:aliaslist
-         ><mm:write  jspvar="alias" vartype="String" write="false"><%
-            isArchive = (alias.indexOf("archief") > -1); 
-         %></mm:write
-      ></mm:aliaslist
-   ></mm:node
-   ><%@include file="includes/info/movetoarchive.jsp" 
-   %><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel" 
-        orderby="artikel.embargo" directions="DOWN" searchdir="destination" 
-        ><mm:last inverse="true"
-            ><mm:remove referid="this_article"
-            /><mm:node element="artikel" id="this_article"
-            /><%@include file="includes/relatedsummaries.jsp" 
-       %></mm:last
-   ></mm:list>
+   <tr><td style="padding-bottom:10px;padding-left:19px;padding-right:9px;">
+   <%@include file="includes/info/movetoarchive.jsp" 
+   %><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel"  searchdir="destination" 
+        orderby="artikel.embargo" directions="DOWN"
+        constraints="<%= "(artikel.embargo < '" + (nowSec+quarterOfAnHour) + "')" %>"
+         ><mm:remove referid="this_article"
+         /><mm:node element="artikel" id="this_article"
+         /><%@include file="includes/relatedsummaries.jsp" 
+   %></mm:list>
    </td></tr>
    </table>
    </div>
