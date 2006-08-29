@@ -10,7 +10,30 @@
    </description>
    <action include="config/pagina/create_pagina.xml"/>
    <action include="config/pagina/delete_pagina.xml"/>
-   <action include="config/pagina/load_pagina_nmintra.xml"/>
+   <action type="load">
+      <field name="titel"/>
+      <field name="kortetitel"/>
+      <field name="titel_eng"/>
+      <field name="titel_de"/>
+      <field name="titel_zichtbaar"/>
+      <field name="omschrijving"/>
+      <field name="bron"/>
+      <field name="metatags"/>
+      <field name="creatiedatum"/>
+      <field name="datumlaatstewijziging"/>
+      <field name="embargo"/>
+      <field name="verloopdatum"/>
+      <field name="reageer"/>
+      <field name="status"/>
+      <relation destination="vacature" role="contentrel">
+			<object>
+				  <relation destination="attachments" role="related">
+						<object />
+				  </relation>
+			</object>
+   	</relation>
+      <relation destination="artikel" role="readmore"/>
+   </action>
    <lists>
       <optionlist include="config/option_lists/ja_nee.xml" />
       <optionlist include="config/option_lists/pages_title.xml" />
@@ -27,6 +50,6 @@
       <field name="creatiedatum" ftype="data"><prompt>creatiedatum</prompt></field>
       <field name="datumlaatstewijziging" ftype="data"><prompt>datumlaatstewijziging</prompt></field>
 		<list include="config/vacature/zoek_pagina_contentrel_vacature.xml" />
-      <list include="config/vacature/zoek_pagina_contentrel_vacature.xml" />
+      <list include="config/artikel/zoek_pagina_readmore_artikel_no_embargo.xml" />
    </form-schema> 
 </wizard-schema>

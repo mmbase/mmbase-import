@@ -15,7 +15,7 @@
          String edateStr =  cal.get(Calendar.DAY_OF_MONTH)+ " " + months_lcase[(cal.get(Calendar.MONTH))] + " " + cal.get(Calendar.YEAR); 
          if(showExpireDate!=null&&!showExpireDate.equals("-1")) { 
            if(tdateStr.equals(edateStr) && showExpireDate.equals("1") ) { showExpireDate = "2"; }
-           if(!poolAndDate.equals("")) poolAndDate += " / ";
+           if(!poolAndDate.equals("")&&showExpireDate.equals("-1")) poolAndDate += " / ";
            if(showExpireDate.equals("0")) { poolAndDate += tdateStr; } 
            if(showExpireDate.equals("1")) { poolAndDate += tdateStr + " - " + edateStr; } 
            if(showExpireDate.equals("2")) { poolAndDate += edateStr; } 

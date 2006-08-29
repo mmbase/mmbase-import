@@ -102,9 +102,12 @@ if(!articleId.equals("-1")) {
 } else {  
 
    %><td><%@include file="includes/pagetitle.jsp" %></td>
-     <td><% String rightBarTitle = "P&O nieuws";
-            %><%@include file="includes/rightbartitle.jsp" 
-      %></td>
+     <td>
+         <mm:list nodes="<%= paginaID %>" path="pagina,readmore,artikel" max="1">
+            <% String rightBarTitle = "Tips";
+            %><%@include file="includes/rightbartitle.jsp" %>
+         </mm:list>
+     </td>
    </tr>
    <tr>
    <td class="transperant">
@@ -112,14 +115,17 @@ if(!articleId.equals("-1")) {
    <table border="0" cellpadding="0" cellspacing="0">
        <tr><td style="padding:10px;padding-top:18px;">
        <%@include file="includes/relatedteaser.jsp" %>
+       
        <% // delete the expired vacatures %>
-       <mm:list nodes="<%= paginaID %>" path="pagina,contentrel,vacature" fields="vacature.number" orderby="vacature.embargo" directions="DOWN"
-                constraints="<%= "vacature.verloopdatum < '" + nowSec + "'" %>"> 
+       <mm:list nodes="<%= paginaID %>" path="pagina,contentrel,vacature" fields="vacature.number"
+            orderby="contentrel.pos,vacature.embargo" directions="UP,DOWN"
+            constraints="<%= "vacature.verloopdatum < '" + nowSec + "'" %>"> 
             <mm:deletenode element="contentrel" />
        </mm:list>
        <% // show vacatures the vacatures that passed their embargo %>
        <mm:list nodes="<%= paginaID %>" path="pagina,contentrel,vacature" fields="vacature.number"
-                orderby="vacature.embargo" directions="DOWN" constraints="<%= "vacature.embargo <= '" + nowSec + "'" %>"
+                orderby="contentrel.pos,vacature.embargo" directions="UP,DOWN"
+                constraints="<%= "vacature.embargo <= '" + nowSec + "'" %>"
             ><mm:node element="vacature"><%
                %><mm:field name="number" jspvar="vacature_number" vartype="String" write="false"><%
                   readmoreUrl = "?p=" + paginaID + "&project=" + vacature_number; 
@@ -139,53 +145,38 @@ if(!articleId.equals("-1")) {
                %></mm:field><br/>
                </div>
             </mm:node
-       ></mm:list></td>
+       ></mm:list>
+       
+      <%@include file="includes/info/movetoarchive.jsp" 
+      %><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel"  searchdir="destination" 
+         orderby="artikel.embargo" directions="DOWN"
+         constraints="<%= "(artikel.embargo < '" + (nowSec+quarterOfAnHour) + "')" %>"
+         ><mm:remove referid="this_article"
+         /><mm:node element="artikel" id="this_article"
+         /><%@include file="includes/relatedsummaries.jsp" 
+      %></mm:list>
+       
+       </td>
    </tr>
    </table>
    </div>
    </td><%
    
    // *********************************** right bar *******************************
-   %><td><%@include file="includes/whiteline.jsp" 
-   %><div class="rightcolumn" id="rightcolumn">
-      <table cellpadding="0" cellspacing="0">
-         <tr>
-            <td style="padding-bottom:10px;padding-left:19px;padding-right:9px;">
-            <% // show the last three news articles related to the pools that are related to this page %>
-            <mm:list nodes="<%= paginaID %>" path="pagina,posrel,pools">
-      		<mm:node element="pools">
-                  <mm:related path="posrel,artikel" orderby="artikel.embargo" directions="DOWN" max="3"
-                       ><mm:remove referid="this_article"
-                       /><mm:node element="artikel" id="this_article"
-                       /><%@include file="includes/relatedsummaries.jsp" 
-                  %></mm:related>
-      		</mm:node>
-      		</mm:list>
-            </td>
-         </tr>
-         <tr>
-            <td style="text-align:right;padding-bottom:10px;padding-left:19px;padding-right:9px;">
-               <span class="pageheader"><span style="color:#FFFFFF;">Tips</span></div>
-            </td>
-         </tr>
-         <tr>
-            <td style="text-align:right;padding-bottom:10px;padding-left:17px;padding-right:9px;">
-               <table border="0" cellpadding="0" cellspacing="0" width="100%">
-	               <tr><td class="white"><img src="media/spacer.gif" style="height:1px;"></td></tr>
-               </table>
-            </td>
-         </tr>
-         <tr>
-            <td style="padding-bottom:10px;padding-left:19px;padding-right:9px;">
-             <mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel" orderby="contentrel.pos"
-                 ><mm:remove referid="this_article"
-                 /><mm:node element="artikel" id="this_article"
-                 /><%@include file="includes/relatedsummaries.jsp" 
-             %></mm:list>
-            </td>
-         </tr>
-      </table>
-   </div>
+   %><td>
+      <mm:import id="nodates" />
+      <mm:list nodes="<%= paginaID %>" path="pagina,readmore,artikel" orderby="readmore.pos">
+         <mm:first>
+            <%@include file="includes/whiteline.jsp" %>
+            <div class="rightcolumn" id="rightcolumn" style="padding-left:20px;padding-right:10px;">
+         </mm:first>
+            <mm:remove referid="this_article"
+            /><mm:node element="artikel" id="this_article"
+            /><%@include file="includes/relatedsummaries.jsp" %>
+         <mm:last>
+            </div>
+         </mm:last>
+      </mm:list>
    </td><%
 } 
 %>

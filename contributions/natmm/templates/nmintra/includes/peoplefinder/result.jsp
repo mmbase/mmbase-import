@@ -8,8 +8,7 @@ if(!action.equals("print")) {
         
         String employeeConstraint = "";
         if(thisPrograms.equals("")) {
-            // *** in the general who-is-who only people which are not labeled in import or have special externid 'wieiswie' ***
-            // enrolldate is set to 2114377200 at beginning of import, on update it is reset to 0
+            // *** in the general who-is-who only people which are active or have special externid 'wieiswie' ***
             employeeConstraint = "( medewerkers.importstatus != 'inactive' ) OR ( medewerkers.externid LIKE 'wieiswie' )";
         } else { 
             // *** dummy constraint to create valid query, note: <>'0' omits all updated employees ***

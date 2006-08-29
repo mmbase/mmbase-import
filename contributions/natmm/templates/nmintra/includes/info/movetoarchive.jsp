@@ -1,7 +1,16 @@
 <%
+// *** delete expired articles from this page (if it is not the archive) ***
+boolean isArchive = false;
+%><mm:node number="<%= paginaID %>"
+   ><mm:aliaslist
+      ><mm:write jspvar="alias" vartype="String" write="false"><%
+         isArchive = (alias.indexOf("archief") > -1); 
+      %></mm:write
+   ></mm:aliaslist><%
+%></mm:node><%
 if(!isArchive) {
    // move expired artikelen to archive or delete node
-   String articleConstraint = "(artikel.embargo < '" + (nowSec+quarterOfAnHour) + "') AND (artikel.use_verloopdatum='0' OR artikel.verloopdatum > '" + nowSec + "' )";
+   String articleConstraint = "(artikel.use_verloopdatum='0' OR artikel.verloopdatum > '" + nowSec + "' )";
    %><mm:list nodes="<%= paginaID %>" path="pagina1,readmore,pagina2"
       ><mm:node element="pagina2" id="archive"
       ><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel" 
@@ -31,13 +40,13 @@ if(!isArchive) {
    %><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel" 
     	orderby="artikel.embargo" searchdir="destination" 
       constraints="<%= articleConstraint %>"
-      	><mm:deletenode element="contentrel" 
-         /><mm:node element="artikel"
-            ><mm:relatednodes type="paragraaf"
-               ><mm:deletenode 
-            /></mm:relatednodes
-            ><mm:deletenode
-         /></mm:node
-      ></mm:list><%
+   	><mm:deletenode element="contentrel" 
+      /><mm:node element="artikel"
+         ><mm:relatednodes type="paragraaf"
+            ><mm:deletenode 
+         /></mm:relatednodes
+         ><mm:deletenode
+      /></mm:node
+   ></mm:list><%
 }
 %>
