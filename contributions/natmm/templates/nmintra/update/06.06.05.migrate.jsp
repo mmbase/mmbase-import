@@ -93,16 +93,18 @@
 	<% log.info("5. Changing editwizards because of change in builder"); %>
 	Todo: check with last version of db.
 	<mm:listnodes type="editwizards" constraints="wizard = 'config/educations/wizard'">
-    <mm:field name="name" id="ew_name">
-      <mm:compare referid="ew_name" value="opleidingen">
-        <mm:setfield name="fields">titel</mm:setfield>
-        <mm:setfield name="orderby">titel</mm:setfield>
-      </mm:compare>
-      <mm:compare referid="ew_name" value="pleiding per aanbieder">
-        <mm:setfield name="fields">educations.titel,providers.name</mm:setfield>
-        <mm:setfield name="orderby">providers.name,educations.titel</mm:setfield>
-      </mm:compare>
-    </mm:field>
+	 <mm:node>
+       <mm:field name="name" id="ew_name">
+         <mm:compare referid="ew_name" value="opleidingen">
+           <mm:setfield name="fields">titel</mm:setfield>
+           <mm:setfield name="orderby">titel</mm:setfield>
+         </mm:compare>
+         <mm:compare referid="ew_name" value="pleiding per aanbieder">
+           <mm:setfield name="fields">educations.titel,providers.name</mm:setfield>
+           <mm:setfield name="orderby">providers.name,educations.titel</mm:setfield>
+         </mm:compare>
+       </mm:field>
+     </mm:node>
 	</mm:listnodes>
 	<% log.info("6. Renaming editwizards that should use the default page editor"); %>
 	<mm:createnode type="editwizards" id="def_ew">

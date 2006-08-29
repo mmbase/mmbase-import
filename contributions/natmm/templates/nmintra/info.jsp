@@ -42,17 +42,10 @@ if(!articleId.equals("-1")) {
       int thisYear = (int) period[10];
       int startYear = (int) period[11];
       boolean checkOnPeriod = (fromTime<toTime);
-      // *** delete expired articles from this page (if it is not the archive) ***
-       String rightBarTitle = "";
-        
-      boolean isArchive = false;
-      %><mm:node number="<%= paginaID %>" jspvar="thisPage"
-         ><mm:aliaslist
-            ><mm:write jspvar="alias" vartype="String" write="false"><%
-	            isArchive = (alias.indexOf("archief") > -1); 
-	         %></mm:write
-	      ></mm:aliaslist><%
-	      rightBarTitle = "Zoek in " + thisPage.getStringValue("titel");
+      
+      String rightBarTitle = "";
+      %><mm:node number="<%= paginaID %>" jspvar="thisPage"><%
+         rightBarTitle = "Zoek in " + thisPage.getStringValue("titel");
       %></mm:node
       ><%@include file="includes/info/movetoarchive.jsp" 
       %><%@include file="includes/header.jsp" 
@@ -67,19 +60,17 @@ if(!articleId.equals("-1")) {
         <tr><td><img src="media/spacer.gif" width="10" height="1"></td>
             <td><%@include file="includes/relatedteaser.jsp" %><%
              
-                String articleConstraint = "";
+                String articleConstraint = "(artikel.embargo < '" + (nowSec+quarterOfAnHour) + "')";
                 String articlePath = "pagina,contentrel,artikel";
                 if(!thisPool.equals("-1")) {
-                    articleConstraint = "( pools.number = '" + thisPool + "' )";
+                    articleConstraint += " AND ( pools.number = '" + thisPool + "' )";
                     articlePath += ",posrel,pools";
                 }
                 if(checkOnPeriod) {
-                  if(!articleConstraint.equals("")) articleConstraint += " AND ";
-                  articleConstraint += "(( artikel.begindatum > '" + fromTime + "') AND (artikel.begindatum < '" + toTime + "'))";
+                  articleConstraint += " AND (( artikel.begindatum > '" + fromTime + "') AND (artikel.begindatum < '" + toTime + "'))";
                 }
                 if(!termSearchId.equals("")) {
-                  if(!articleConstraint.equals("")) articleConstraint += " AND ";
-                  articleConstraint += "(( UPPER(artikel.titel) LIKE '%" + termSearchId.toUpperCase() + "%') OR ( UPPER(artikel.intro) LIKE '%" + termSearchId.toUpperCase() + "%') ";
+                  articleConstraint += " AND (( UPPER(artikel.titel) LIKE '%" + termSearchId.toUpperCase() + "%') OR ( UPPER(artikel.intro) LIKE '%" + termSearchId.toUpperCase() + "%') ";
                   if(!thisPool.equals("-1")) {
                      articleConstraint += " OR ( UPPER(pools.name) LIKE '%" + termSearchId.toUpperCase() + "%' )";
                   }
