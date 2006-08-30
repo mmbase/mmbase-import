@@ -3,7 +3,7 @@
  * Routines for reading and writing cookies
  *
  * @since    MMBase-1.6
- * @version  $Id: tools.js,v 1.6 2004-03-11 15:11:21 nico Exp $
+ * @version  $Id: tools.js,v 1.7 2006-08-30 10:41:00 nklasens Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -16,7 +16,7 @@ var SEP = ":";
 
 //function for reading a cookie
 function readCookie_general(theWizard, theForm, theDefault) {
-    try {
+    try {    		
         var theCookie = unescape(getValueForName(document.cookie, COOKIE_ENTRY, ";", "="));
         if (theCookie == "")
             return theDefault;
@@ -49,8 +49,11 @@ function writeCookie_general(theWizard, theForm, theValue) {
         nvs[theWizard + "-" + theForm] = theValue;
         //serialize it again
         var s = "";
-        for (var n in nvs)
-            s += "|" + n + ":" + nvs[n];
+        for (var n in nvs) {
+        	if (typeof nvs[n] != "function") {
+            	s += "|" + n + ":" + nvs[n];
+          	}
+          }
         //write the cookie
         // we don't set the expiredate to let the cookie expire when the browser is closed
         var c = COOKIE_ENTRY + "=" + s + "; path=/;";
@@ -76,7 +79,9 @@ function clearCookie_general(theWizard) {
         var s = "";
         for (var n in nvs) {
             if (n.indexOf(theWizard) == -1)
-                s += "|" + n + ":" + nvs[n];
+               if (typeof nvs[n] != "function") {
+                	s += "|" + n + ":" + nvs[n];
+               }
         }
         //write the cookie
         // we don't set the expiredate to let the cookie expire when the browser is closed
