@@ -21,7 +21,10 @@
     <table>
       <mm:import id="referrer"><%=new  java.io.File(request.getServletPath())%></mm:import>
       <tr><td>
-      <a href="<mm:url referids="referrer" page="$jsps/list.jsp?wizard=../samples/people&nodepath=people&fields=firstname,lastname,owner" />" >Person-Test</a>
+      <a href='<mm:url referids="referrer" page="$jsps/list.jsp">                                                               
+        <mm:param name="wizard">../samples/people</mm:param>
+        <mm:param name="nodepath">people</mm:param>
+        <mm:param name="fields">firstname,lastname,owner</mm:param></mm:url>" >Person-Test</a>
       </td><td>
       A simple one-step person editor. First-name, last-name and related articles.
       </td></tr>
