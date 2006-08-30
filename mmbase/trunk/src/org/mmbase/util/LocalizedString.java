@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  *</p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedString.java,v 1.25 2006-07-08 14:31:53 michiel Exp $
+ * @version $Id: LocalizedString.java,v 1.26 2006-08-30 20:37:33 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedString implements java.io.Serializable, Cloneable {
@@ -70,12 +70,9 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
      * @param col    Collection of LocalizedString objects
      * @param locale Locale to be used for the call to {@link #get(Locale)} which obviously is needed
      */
-    public static Collection toStrings(Collection col, Locale locale) {
-        if (col == null || col.size() == 0) return col;
-        Collection res = new ArrayList();
-        Iterator i = col.iterator();
-        while (i.hasNext()) {
-            LocalizedString s = (LocalizedString) i.next();
+    public static Collection<String> toStrings(Collection<LocalizedString> col, Locale locale) {
+        Collection<String> res = new ArrayList<String>();
+        for (LocalizedString s : col) {
             res.add(s.get(locale));
         }
         return res;
@@ -83,7 +80,7 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
 
     private String key;
 
-    private Map    values = null;
+    private Map<Locale, String> values = null;
     private String bundle = null;
 
     // just for the contract of Serializable
@@ -119,7 +116,7 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
             locale = defaultLocale == null ? Locale.getDefault() : defaultLocale;
         }
         if (values != null) {
-            String result = (String) values.get(locale);
+            String result = values.get(locale);
 
             if (result != null) return result;
 
@@ -128,12 +125,12 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
             String language = locale.getLanguage();
 
             if (! "".equals(variant)) {
-                result = (String) values.get(new Locale(language, country));
+                result = values.get(new Locale(language, country));
                 if (result != null) return result;
             }
 
             if (! "".equals(country)) {
-                result = (String) values.get(new Locale(language));
+                result = values.get(new Locale(language));
                 if (result != null) return result;
             }
 
@@ -144,7 +141,7 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
             // It's not nice, but as a proper fix likely requires a total rewrite of Module.java and
             // MMBase.java, this will have to do for the moment.
             if (locale.equals(defaultLocale)) {
-                result = (String) values.get(null);
+                result = values.get(null);
                 if (result != null) {
                     values.put(locale, result);
                     return result;
@@ -174,7 +171,7 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
         if (key == null) key = value;
 
         if (values == null) {
-            values = new HashMap();
+            values = new HashMap<Locale, String>();
         }
 
         if (locale == null) {
@@ -331,11 +328,9 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
 
             // what if there are corresponding elements already:
             org.w3c.dom.NodeList nl  = element.getElementsByTagName(tagName);
-            Iterator i = values.entrySet().iterator();
-            while (i.hasNext()) {
-                Map.Entry entry = (Map.Entry) i.next();
-                Locale loc   = (Locale) entry.getKey();
-                String value = (String) entry.getValue();
+            for (Map.Entry<Locale, String> entry : values.entrySet()) {
+                Locale loc   = entry.getKey();
+                String value = entry.getValue();
                 String xmlLang = getXmlLang(loc);
                 // look if such an element is available
                 Element child = null;
