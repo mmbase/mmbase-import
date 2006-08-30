@@ -3,6 +3,7 @@
 String vacatureID = request.getParameter("v");
 ArrayList al = new ArrayList();
 al.add("omschrijving_fra"); 
+al.add("omschrijving_de");
 al.add("functienaam"); 
 al.add("embargo"); 
 al.add("verloopdatum"); 

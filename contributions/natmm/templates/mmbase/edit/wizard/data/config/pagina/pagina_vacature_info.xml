@@ -49,7 +49,7 @@
       <field name="omschrijving" ftype="html" rows="20"><prompt>omschrijving</prompt></field>
       <field name="creatiedatum" ftype="data"><prompt>creatiedatum</prompt></field>
       <field name="datumlaatstewijziging" ftype="data"><prompt>datumlaatstewijziging</prompt></field>
-		<list include="config/vacature/zoek_pagina_contentrel_vacature.xml" />
+		<list include="config/vacature/zoek_pagina_contentrel_vacature_nmintra.xml" />
       <list include="config/artikel/zoek_pagina_readmore_artikel_no_embargo.xml" />
    </form-schema> 
 </wizard-schema>
