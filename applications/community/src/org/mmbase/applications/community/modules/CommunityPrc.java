@@ -42,7 +42,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: CommunityPrc.java,v 1.21 2005-10-05 10:59:39 michiel Exp $
+ * @version $Id: CommunityPrc.java,v 1.22 2006-08-30 18:05:58 michiel Exp $
  */
 
 public class CommunityPrc extends ProcessorModule {
@@ -310,9 +310,9 @@ public class CommunityPrc extends ProcessorModule {
         activate();
         if (command.equals("TREE")) return treeBuilder;
         if (command.equals("WHO") || command.equals("TEMPORARYRELATIONS")) {
-            String type=(String)params.get("TYPE");
-            if (type!=null) {
-                return mmb.getMMObject(type);
+            String type = (String)params.get("TYPE");
+            if (type != null) {
+                return mmb.getBuilder(type);
             }
         }
         return new VirtualBuilder(mmb);
