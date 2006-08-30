@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: IndexFunction.java,v 1.8 2005-10-01 20:17:36 michiel Exp $
+ * @version $Id: IndexFunction.java,v 1.9 2006-08-30 17:48:52 michiel Exp $
  * @since MMBase-1.8
  */
 public class IndexFunction extends FunctionProvider {
@@ -175,6 +175,9 @@ public class IndexFunction extends FunctionProvider {
         new Parameter("newroot", Node.class, false)
     };
 
+    /**
+     * calculates a key for the cache
+     */
     private static String getKey(final Node node, final Parameters parameters) {
         Node root     = (Node)   parameters.get("root");
         final String role   = (String) parameters.get("role");
@@ -195,7 +198,6 @@ public class IndexFunction extends FunctionProvider {
     }
 
     protected static NodeFunction index = new NodeFunction("index", INDEX_ARGS, ReturnType.STRING) {
-
             {
                 setDescription("Calculates the index of a node, using the surrounding 'indexrels'");
             }
@@ -215,10 +217,15 @@ public class IndexFunction extends FunctionProvider {
 
                 initObserver();
                 String result = (String) indexCache.get(key);
-                if (result != null) return result;
+                if (result != null) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Found index '" + result + "' for node " + node.getNumber() + " from cache (key " + key + ")");
+                    }
+                    return result;
+                }
+                log.debug("Determining index for node " + node.getNumber() + " with role " + role);
 
                 final NodeManager nm = node.getNodeManager();
-
 
                 // now we have to determine the path from node to root.
 
@@ -227,7 +234,6 @@ public class IndexFunction extends FunctionProvider {
                 if (root != null) {
                     StepField sf = template.addField(role + ".root");
                     template.setConstraint(template.createConstraint(sf, root));
-
                 }
 
                 Stack stack = new Stack();
@@ -235,12 +241,17 @@ public class IndexFunction extends FunctionProvider {
                 int depth = it.currentDepth();
                 while (it.hasNext()) {
                     Node n = it.nextNode();
+                    if (log.isDebugEnabled()) {
+                        log.debug("Considering at " + it.currentDepth() + "/" + depth + " node " + n.getNodeManager().getName() + " " + n.getNumber());
+                    }
                     if (it.currentDepth() > depth) {
                         stack.push(n);
                         depth = it.currentDepth();
                     }
                     if (indexCache.contains(getKey(n, parameters))) {
-                        log.debug("Index for " + n.getNumber() + " is known already!, breaking");
+                        if (log.isDebugEnabled()) {
+                            log.debug("Index for " + n.getNumber() + " is known already!, breaking");
+                        }
                         break;
                     }
 
@@ -252,10 +263,14 @@ public class IndexFunction extends FunctionProvider {
                 }
 
                 if (stack.isEmpty()) {
+                    log.debug("Stack is empty, no root found, returning ''");
                     indexCache.put(key, "");
                     return "";
                 }
 
+                if (log.isDebugEnabled()) {
+                    log.debug("Now constructing index-number with " + stack.size() + " nodes on stack");
+                }
                 Node n = (Node) stack.pull(); // this is root, or at least _its_ index is known
                 StringBuffer buf;
                 if (! n.equals(node)) {
@@ -271,6 +286,9 @@ public class IndexFunction extends FunctionProvider {
                     StepField sf = q.addField(role + ".pos");
                     q.addSortOrder(sf, SortOrder.ORDER_ASCENDING);
                     q.addField(role + ".index");
+                    if (log.isDebugEnabled()) {
+                        log.debug("Executing " + q.toSql() + " to search " + search.getNumber());
+                    }
                     String index = null;
                     NodeIterator ni = q.getCloud().getList(q).nodeIterator();
                     boolean doRoman = roman;
@@ -280,14 +298,17 @@ public class IndexFunction extends FunctionProvider {
                         String i = clusterFound.getStringValue(role + ".index");
                         if (i == null || i.equals("")) i = index;
                         if (i == null) i = "1";
+                        log.debug("Found index " + i);
                         Matcher matcher = indexPattern.matcher(i);
                         if (matcher.matches()) {
                             buf = new StringBuffer(matcher.group(1));
                             i = matcher.group(2);
+                            log.debug("matched " + indexPattern + " --> " + i);
                         }
                         doRoman = doRoman && RomanTransformer.ROMAN.matcher(i).matches();
 
                         if (found.getNumber() == search.getNumber()) {
+                            log.debug("found sibling");
                             // found!
                             buf.append(j).append(i);
                             j = join;
@@ -295,6 +316,7 @@ public class IndexFunction extends FunctionProvider {
                             continue OUTER;
                         }
                         index = successor(i, separator, join, doRoman);
+                        log.debug("Considering next sibling, index is now " + index);
                         // can as well cache this one too.
                         indexCache.put(getKey(found, parameters), buf.toString() + j + i);
                     }
@@ -303,6 +325,7 @@ public class IndexFunction extends FunctionProvider {
                     break;
                 }
                 String r = buf.toString();
+                log.debug("Found '" + r  + "' for " + key);
                 indexCache.put(key, r);
                 return r;
             }
