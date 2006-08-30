@@ -12,6 +12,7 @@
    <field name="omschrijving" />
    <field name="omschrijving_fra" />
    <field name="omschrijving_eng" />
+   <field name="omschrijving_de" />
    <field name="datumvan" />
    <field name="datumtot" />
    <field name="afdeling" />  

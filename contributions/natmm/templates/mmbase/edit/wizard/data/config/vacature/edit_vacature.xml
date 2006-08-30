@@ -1,51 +1,54 @@
 <?xml version="1.0"?>
 <!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <form-schema id="edit_vacatures">
-   <title>Vacatures</title>
+   <title></title>
    <field name="titel">
-     <prompt>Titel</prompt>
+     <prompt>titel</prompt>
    </field>
    <field name="omschrijving_fra" ftype="html" rows="16">
-      <prompt>Inleidende tekst</prompt>
+      <prompt>inleidende tekst</prompt>
+   </field>
+   <field name="omschrijving_de" ftype="html" rows="10">
+      <prompt>inleiding tot functienaam</prompt>
    </field>
    <field name="functienaam" ftype="html" rows="16" dtrequired="false">
-      <prompt>Functienaam</prompt>
+      <prompt>functienaam</prompt>
    </field>
    <field name="embargo">
-     <prompt>PubliceerDatum</prompt>
+     <prompt>publiceerdatum</prompt>
    </field>
    <field name="verloopdatum">
-     <prompt>VerloopDatum</prompt>
+     <prompt>verloopdatum</prompt>
    </field>
    <field name="omschrijving" ftype="html" rows="16">
-      <prompt>Omschrijving</prompt>
+      <prompt>omschrijving</prompt>
    </field>
    <field name="functieinhoud" ftype="html" rows="16">
-      <prompt>Functieinhoud</prompt>
+      <prompt>functieinhoud</prompt>
    </field>
    <field name="functieomvang" ftype="html" rows="16" dtrequired="false">
-      <prompt>Functieomvang</prompt>
+      <prompt>functieomvang</prompt>
    </field>
    <field name="duur">
-      <prompt>Duur</prompt>
+      <prompt>duur</prompt>
    </field>
    <field name="afdeling" ftype="html" rows="16" dtrequired="false">
-      <prompt>Afdeling</prompt>
+      <prompt>afdeling</prompt>
    </field>
    <field name="functieeisen" ftype="html" rows="16">
-      <prompt>Functie eisen</prompt>
+      <prompt>functie eisen</prompt>
    </field>
    <field name="opleidingseisen" ftype="html" rows="16">
-      <prompt>Opleidingseisen</prompt>
+      <prompt>opleidingseisen</prompt>
    </field>
    <field name="competenties" ftype="html" rows="16">
-      <prompt>Competenties</prompt>
+      <prompt>competenties</prompt>
    </field>
    <field name="salarisschaal" ftype="html" rows="16">
-      <prompt>Salarisschaal</prompt>
+      <prompt>salarisschaal</prompt>
    </field> 
    <field name="omschrijving_eng" ftype="html" rows="16">
-      <prompt>Afsluitende tekst</prompt>
+      <prompt>afsluitende tekst</prompt>
    </field>
    <list include="config/attachments/add_attachments_posrel.xml" />
 </form-schema>

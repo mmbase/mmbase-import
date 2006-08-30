@@ -20,6 +20,7 @@ if(!articleId.equals("-1")) {
 } else if(!projectId.equals("")) { 
 
    ArrayList al = new ArrayList();
+   al.add("omschrijving_de"); 
    al.add("functienaam"); 
    al.add("embargo");
    al.add("verloopdatum"); 
@@ -38,8 +39,8 @@ if(!articleId.equals("-1")) {
          <td colspan="2"><%@include file="includes/pagetitle.jsp" %></td>
       </tr>
       <tr>
-         <td class="transperant" colspan="2" style="padding:10px;padding-top:18px;">
-         <div class="<%= infopageClass %>" id="infopage">
+         <td class="transperant" colspan="2">
+         <div class="<%= infopageClass %>" id="infopage" style="padding:10px;padding-top:18px;">
          <div class="pageheader"><mm:field name="titel"/></div>
          <%@include file="includes/back_print.jsp" %>
          <table width="100%" cellspacing="0" cellpadding="0" border="0">
@@ -52,7 +53,7 @@ if(!articleId.equals("-1")) {
          		<mm:field name="<%= sElem%>" jspvar="thisField" vartype="String" write="false">
          			<mm:isnotempty>
          				<tr>
-         					<% if (!sElem.equals("omschrijving")) {%>
+         					<% if (sElem.indexOf("omschrijving")==-1) {%>
    									<mm:fieldlist fields="<%= sElem %>">
    										<td style="width:25%;">
    											<% if(sElem.equals("embargo")) { %>
