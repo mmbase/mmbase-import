@@ -4,7 +4,7 @@
   <articleinfo>
 	<title>Include mechanisms with the MMBase Taglibs</title>
 	<date>2003-07</date>
-   	<edition>$Id: include.xml,v 1.4 2006-07-09 12:35:34 michiel Exp $</edition>
+   	<edition>$Id: include.xml,v 1.5 2006-08-30 17:59:18 michiel Exp $</edition>
     <copyright>
       <year>This document is created under the Mozilla Public License</year>
     </copyright>
@@ -285,7 +285,6 @@
  xmlns:jsp="http://java.sun.com/JSP/Page"
  xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:directive.attribute name="template"   />
-  <jsp:output omit-xml-declaration="true" />
   <mm:node>
     <mm:image template="s(800x800&gt;)+f(png)">
       <a
