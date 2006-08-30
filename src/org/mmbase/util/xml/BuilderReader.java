@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.73 2006-07-31 13:00:01 pierre Exp $
+ * @version $Id: BuilderReader.java,v 1.74 2006-08-30 17:49:19 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -553,7 +553,7 @@ public class BuilderReader extends DocumentReader {
             if (searchPos > -1) searchPositions.add(new Integer(searchPos));
             def.setSearchPosition(searchPos);
         } else {
-            // if not specified, use lowest 'free' position, unless, db-type is BYTE (non-sensical searching on that)
+            // if not specified, use lowest 'free' position, unless, db-type is BINARY (non-sensical searching on that)
             // or the field is not in storage at all (search cannot be performed by database)
             if (def.getType() != Field.TYPE_BINARY && !def.isVirtual()) {
                 int i = 1;
