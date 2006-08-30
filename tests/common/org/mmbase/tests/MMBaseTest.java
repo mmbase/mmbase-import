@@ -66,8 +66,10 @@ public abstract class MMBaseTest extends TestCase {
             return;
         }
         while(true) {
+            String database = System.getProperty("test.database");
+            if (database == null) database = "test";
             try {
-                Connection c = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/test", "sa", "");
+                Connection c = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/" + database, "sa", "");
                 // ok!, already running one.
                 return;
             } catch (SQLException sqe) {
@@ -75,8 +77,8 @@ public abstract class MMBaseTest extends TestCase {
                 server.setSilent(true);
                 String dbDir = System.getProperty("test.database.dir");
                 if (dbDir == null) dbDir = System.getProperty("user.dir") + File.separator + "data";
-                server.setDatabasePath(0, dbDir + File.separator + "test");
-                server.setDatabaseName(0, "test");
+                server.setDatabasePath(0, dbDir + File.separator + database);
+                server.setDatabaseName(0, database);
                 server.start();
                 try {
                     Thread.sleep(10000);
