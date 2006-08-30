@@ -8,19 +8,23 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.framework;
+import org.mmbase.util.LocalizedString;
 
 /**
  * A component is a piece of pluggable functionality that typically has dependencies on other
  * components, and may be requested several views.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Component.java,v 1.1 2006-08-30 19:18:09 michiel Exp $
+ * @version $Id: Component.java,v 1.2 2006-08-30 20:46:05 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Component {
 
     String getName();
 
+    LocalizedString getDescription();
+
+    void configure(org.w3c.dom.Document doc);
 
     // something like this?
 
