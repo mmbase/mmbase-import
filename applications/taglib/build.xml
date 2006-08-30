@@ -1,15 +1,12 @@
 <?xml version="1.0"?>
-<!DOCTYPE project
- [ <!ENTITY base     SYSTEM "../buildbase.xml" > ]
->
-
 <project name="taglib" default="jar2" basedir=".">
   <property name="project.name"      value="taglib" />
   <property name="project.package"   value="org/mmbase/bridge/jsp/taglib" />
   <property name="project.comment"   value="The MMBase Taglib implementation" />
 
   <property name="source-taglib.xml"    value="org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml" />
-  &base;
+
+  <import file="../buildbase-include.xml" />
 
   <property name="taglib2.jar"       value="${project.jar.dir}/mmbase-taglib-2.jar" />
 
@@ -68,8 +65,14 @@
 
     <antcall target="compile" />
 
-    <mkdir dir="${project.metainf.dir}" /><!-- make sure his exists -->
+    <mkdir dir="${project.metainf.dir}" /><!-- make sure this exists -->
 
+    <!--
+    <copy todir="${project.metainf.dir}/tags" includeEmptyDirs="false" >
+      <fileset dir="tags">
+      </fileset>
+    </copy>
+    -->
     <mkdir dir="${project.build.dir}/classes/org/mmbase/taglib" /><!-- hate ant -->
     <echo message="creating jar" />
 
