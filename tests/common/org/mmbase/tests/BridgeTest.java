@@ -32,19 +32,23 @@ public abstract class BridgeTest extends MMBaseTest {
         while(c == null) {
             CloudContext cc = null;
             try {
-                cc = ContextProvider.getDefaultCloudContext();        
+                cc = ContextProvider.getDefaultCloudContext();
                 c = cc.getCloud("mmbase", "class", null);
                 break;
             } catch (BridgeException be) {
                 if (cc instanceof LocalContext) {
                     throw be;
                 }
-                System.out.println(be.getMessage() + ". Perhaps mmbase not yet running, retrying in 5 seconds (" + tryCount + ")");
+                System.out.println(be.getMessage() + ". LOCAL. Perhaps mmbase not yet running, retrying in 5 seconds (" + tryCount + ")");
                 try {
                     tryCount ++;
                     Thread.sleep(5000);
-                } catch (Exception ie) {}
-                if (tryCount > 25) throw be;
+                } catch (Exception ie) {
+                    return null;
+                }
+                if (tryCount > 25) {
+                    throw be;
+                }
             }
         }
         ensureDeployed(c, "local cloud");
@@ -62,12 +66,14 @@ public abstract class BridgeTest extends MMBaseTest {
                 c =   ContextProvider.getCloudContext(uri).getCloud("mmbase", "class", null);
                 break;
             } catch (BridgeException be) {
-                System.out.println(be.getMessage() + ". Perhaps mmbase '" + uri + "' not yet running, retrying in 5 seconds (" + tryCount + ")");
+                System.out.println(be.getMessage() + ". " + uri + ". Perhaps mmbase '" + uri + "' not yet running, retrying in 5 seconds (" + tryCount + ")");
                 try {
                     tryCount ++;
-                    if (tryCount > 25) throw be;
                     Thread.sleep(5000);
-                } catch (Exception ie) {}
+                } catch (Exception ie) {
+                    return null;
+                }
+                if (tryCount > 25) throw be;
             }
         }
         ensureDeployed(c, uri);
@@ -93,7 +99,7 @@ public abstract class BridgeTest extends MMBaseTest {
             }
             try {
                 tryCount ++;
-                Thread.sleep(5000);                
+                Thread.sleep(5000);
                 if (tryCount > 25) {
                     System.err.println("Giving up");
                     return;
@@ -103,5 +109,5 @@ public abstract class BridgeTest extends MMBaseTest {
             }
         }
     }
-                
+
 }
