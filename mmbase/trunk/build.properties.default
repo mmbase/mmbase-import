@@ -12,7 +12,7 @@
 #
 # for possible mirrors.
 #
-# $Id: build.properties.default,v 1.26 2006-07-17 12:22:21 michiel Exp $
+# $Id: build.properties.default,v 1.27 2006-08-30 21:03:03 michiel Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -139,15 +139,6 @@ taglibs-standard.dest=${download.dir}/${taglibs-standard.file}
 taglibs-standard.loc=http://www.mmbase.org/download/jars/${taglibs-standard.file}
 taglibs-standard-jstl.jar=${expand.dir}/${taglibs-standard.version}/lib/jstl.jar
 taglibs-standard-standard.jar=${expand.dir}/${taglibs-standard.version}/lib/standard.jar
-
-
-# ----- 1.5 backport --
-#http://www.mathcs.emory.edu/dcl/util/backport-util-concurrent/dist/backport-util-concurrent-1.0/
-backport-util-concurrent.version=backport-util-concurrent-2.1
-backport-util-concurrent.file=${backport-util-concurrent.version}.tar.gz
-backport-util-concurrent.dest=${download.dir}/${backport-util-concurrent.file}
-backport-util-concurrent.loc=http://www.mathcs.emory.edu/dcl/util/backport-util-concurrent/dist/backport-util-concurrent-2.1/${backport-util-concurrent.file}
-backport-util-concurrent.jar=${expand.dir}/${backport-util-concurrent.version}/backport-util-concurrent.jar
 
 
 # ----- Jakarta commons collections ----------
