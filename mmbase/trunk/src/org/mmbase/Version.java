@@ -17,7 +17,7 @@ import java.io.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Version.java,v 1.39 2006-07-15 20:45:39 michiel Exp $
+ * @version $Id: Version.java,v 1.40 2006-08-30 18:17:07 michiel Exp $
  */
 public class Version {
 
@@ -44,7 +44,7 @@ public class Version {
      * @since MMBase-1.6
      */
     public static int getMinor() {
-        return 8;
+        return 9;
     }
 
     /**
@@ -53,7 +53,7 @@ public class Version {
      * @since MMBase-1.6
      */
     public static int getPatchLevel() {
-        return 2;
+        return 0;
     }
 
     /**
