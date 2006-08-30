@@ -2,7 +2,7 @@
 
 
 MMBase Build File
-$Id: build.xml,v 1.148 2006-08-30 18:41:09 michiel Exp $
+$Id: build.xml,v 1.149 2006-08-30 21:02:30 michiel Exp $
 =================
 
 This build file can be used to build the following from CVS or from the source
@@ -324,8 +324,6 @@ builddate=${builddate}
 
     <copy file="${mmbase.jar}"         todir="${release.lib.dir}" />
 
-    <copy file="${backport-util-concurrent.jar}"  todir="${release.lib.dir}" />
-
     <copy file="${source-documentation.dir}/releases/XERCES.README.txt" todir="${release.lib.dir}" />
 
     <!-- copy licenses for included jars -->
@@ -355,7 +353,6 @@ builddate=${builddate}
     <copy file="${log4j.jar}"     tofile="${compile.lib.dir}/log4j.jar" />
     <copy file="${javamail.jar}"  todir="${compile.lib.dir}" />
     <copy file="${javaactivation.jar}"  todir="${compile.lib.dir}" />
-    <copy file="${backport-util-concurrent.jar}"  todir="${compile.lib.dir}" />
   </target>
 
   <target name="lib.compile.zip" depends="lib.compile" description="Packages the download dir." >
@@ -689,7 +686,6 @@ Build-compiler: ${build.compiler}
           <or>
             <filename name="mmbase.jar" />
             <filename name="mmbase-taglib-2.jar" />
-            <filename name="backport-util*.jar" />
             <filename name="hsqldb*.jar" />
             <filename name="jstl*.jar" />
             <filename name="standard*.jar" />
@@ -1072,13 +1068,6 @@ Build-compiler: ${build.compiler}
       <param name="sourcefile"   value="${taglibs-standard.loc}" />
       <param name="destfile"     value="${taglibs-standard.dest}" />
       <param name="expandedfile" value="${taglibs-standard-standard.jar}"/>
-    </antcall>
-
-    <echo message="backport util/concurrent" />
-    <antcall target="downloadgz">
-      <param name="sourcefile"   value="${backport-util-concurrent.loc}" />
-      <param name="destfile"     value="${backport-util-concurrent.dest}" />
-      <param name="expandedfile" value="${backport-util-concurrent.jar}"/>
     </antcall>
 
     <!--
