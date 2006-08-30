@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
 </mm:cloud>
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.8
- * @version $Id: Functions.java,v 1.14 2006-07-26 11:08:55 michiel Exp $
+ * @version $Id: Functions.java,v 1.15 2006-08-30 18:02:35 michiel Exp $
  * @todo    EXPERIMENTAL
  */
 public class Functions {
@@ -65,6 +65,7 @@ public class Functions {
      * MMBase specific 'remove' (for Collections).
      */
     public static void remove(Collection col, Object obj) {
+        if (col == null) return;
         if (obj instanceof Collection) { // like removeAll
             Iterator i = ((Collection) obj).iterator();
             while (i.hasNext()) {
