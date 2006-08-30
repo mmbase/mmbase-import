@@ -2,7 +2,7 @@
 
 
 MMBase Build File
-$Id: build.xml,v 1.147 2006-07-17 16:59:27 michiel Exp $
+$Id: build.xml,v 1.148 2006-08-30 18:41:09 michiel Exp $
 =================
 
 This build file can be used to build the following from CVS or from the source
@@ -528,7 +528,7 @@ mmadmin.xml
            classpathref="compile.classpath"
            debug="${debug}"
            optimize="${optimize}"
-           source="1.4"
+           source="1.5"
            nowarn="${nowarn}"
            deprecation="${deprecation}"
            includeAntRuntime="false"
@@ -763,7 +763,7 @@ Build-compiler: ${build.compiler}
              windowtitle="MMBase API"
              doctitle="MMBase"
              maxmemory="500M"
-             source="1.4"
+             source="1.5"
              bottom="MMBase build ${distro.version}.${builddate}">
       <link offline="true" packagelistLoc="${download.dir}/j2se" href="${j2se-javadoc.loc}" />
       <link offline="true" packagelistLoc="${download.dir}/j2ee" href="${j2ee-javadoc.loc}" />
@@ -859,7 +859,7 @@ Build-compiler: ${build.compiler}
              noindex="true"
              windowtitle="MMBase MMCI API"
              doctitle="MMBase"
-             source="1.4"
+             source="1.5"
              maxmemory="100M"
              bottom="MMBase build ${distro.version}.${builddate}">
       <classpath>
@@ -1166,7 +1166,7 @@ Build-compiler: ${build.compiler}
            debug="${debug}"
            optimize="${optimize}"
            nowarn="${nowarn}"
-           source="1.4"
+           source="1.5"
            deprecation="${deprecation}"
            includeAntRuntime="false"
            >
@@ -1253,7 +1253,7 @@ Build-compiler: ${build.compiler}
            debug="${debug}"
            optimize="${optimize}"
            nowarn="${nowarn}"
-           source="1.4"
+           source="1.5"
            deprecation="${deprecation}">
            <include name="org/mmbase/util/BuilderList.java" />
     </javac>
