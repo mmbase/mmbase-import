@@ -156,15 +156,7 @@
    <li><a name="reuse" />
     <em>How do I reuse pieces of taglib/jsp code?</em>
     <p>
-    The standard jsp &lt;%@ include %&gt; directive can be very useful to include small pieces of
-    reusable taglib code. If for example you have lists of urls on several places in your site, you
-    can put the taglib code to lay out such a list in a separate file, and &lt;%@-include it where
-    you need it.
-    </p>
-    <p>
-     Another possibility is to use the '<a href="<mm:url page="$taglibdoc/reference/include.jsp" />">mm:include</a>' tag. The included page must be a stand alone
-     taglib page (with its own &lt;@taglib directive and so on), and the result is simply included
-     in your page. You can feed the mm:include-d page with the mm:param tag.
+      See <a href="http://www.mmbase.org/docs/applications/taglib/frontenddevelopers/taglib/include.html">MMBase documentation about include mechanisms in mmbase taglib</a>.
     </p>
   </li>
   <li><a name="listvslistnodes" />
