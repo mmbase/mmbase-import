@@ -20,8 +20,6 @@ public class NatNHConfig {
 
 	public static String cssPath = "css/";
 	
-   public static boolean urlConversion = true;
-
    /*
    public static String rootDir = "/export/www/natuurmm/jakarta-tomcat/webapps/ROOT/WEB-INF/data/";
     */

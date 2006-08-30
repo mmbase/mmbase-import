@@ -195,113 +195,95 @@ public class ContentHelper {
       return alUnusedItems;
    }
 
-   public void addDefaultRelations(String objectNumber, int iTypeIndex) {
+   public void addDefaultRelations(String objectNumber, String pathFromPageToElements) {
 
       if(!bRelationsExists(objectNumber)) {
-         //finding number of page related to the contentelement
-         String sPaginaNumber = "";
-         if (iTypeIndex == NatMMConfig.CONTENTELEMENTS.length){
+                        
+         Node nElement = cloud.getNode(objectNumber);
+         String sPaginaNumber = null;
+         Vector breadcrumbs = null;
+         String archiveParent = null;
+         
+         // finding page related to the contentelement
+         if (pathFromPageToElements.equals("evenementen")){
             sPaginaNumber = cloud.getNodeByAlias("agenda").getStringValue("number");
          }
          else {
-            NodeList nl = cloud.getList(objectNumber,NatMMConfig.PATHS_FROM_PAGE_TO_ELEMENTS[iTypeIndex],
-            "pagina.number",null,null,null,null,true);
+            NodeList nl = cloud.getList(objectNumber,pathFromPageToElements,
+               "pagina.number",null,null,null,null,true);
             if (nl.size()>0){
                sPaginaNumber = nl.getNode(0).getStringValue("pagina.number");
             }
          }
-         Vector breadcrumbs = null;
-         if (!sPaginaNumber.equals("")){
-            //get breadcrumbs;
+         // finding breadcrumbs
+         if (sPaginaNumber!=null){
             breadcrumbs = PaginaHelper.getBreadCrumbs(cloud,sPaginaNumber);
+            log.info("page " + sPaginaNumber + " has breadcrumbs " + breadcrumbs);
+         } else {
+            String otype = nElement.getStringValue("otype");
+            log.info(getNameWithOtype(otype) + " " + objectNumber + " has no relation to a page");
          }
-
-         String[] sRelTypes = {"creatierubriek", "hoofdrubriek", "subsite"};
-         Node nElement = cloud.getNode(objectNumber);
-         if (breadcrumbs != null) {
-            if (breadcrumbs.size()==3){
-               for (int i = 0; i < sRelTypes.length; i++) {
-                  Relation thisRelation = null;
-                  Node nRubriek = cloud.getNode( (String) breadcrumbs.get(i));
-                  thisRelation = nRubriek.createRelation(nElement,
-                  cloud.getRelationManager(sRelTypes[i]));
-                  thisRelation.commit();
-               }
-            } else if (breadcrumbs.size()==2){
-               for (int i = 1; i < sRelTypes.length; i++) {
-                  Relation thisRelation = null;
-                  Node nRubriek = cloud.getNode( (String) breadcrumbs.get(i-1));
-                  thisRelation = nRubriek.createRelation(nElement,
-                  cloud.getRelationManager(sRelTypes[i]));
-                  thisRelation.commit();
-               }
-               Relation thisRelation = null;
-               Node nRubriek = cloud.getNode( (String) breadcrumbs.get(0));
-               thisRelation = nRubriek.createRelation(nElement,
-               cloud.getRelationManager(sRelTypes[0]));
-               thisRelation.commit();
-            }
+         // finding parent of archive         
+         NodeList nParent = cloud.getNode("archive").getRelatedNodes("rubriek","parent","SOURCE");
+         if (nParent.size() > 0) {
+            archiveParent = nParent.getNode(0).getStringValue("number");
+         } else {
+            log.error("pagina archive does not have a parent rubriek");
+         }
+         
+         if (breadcrumbs != null && breadcrumbs.size()>3) {
+            // breadcrumbs should have at least size 3: [creatierubriek,...,subsite,root]
+            
+            createRelation(objectNumber,nElement,"creatierubriek",(String) breadcrumbs.get(0));
+            createRelation(objectNumber,nElement,"hoofdrubriek",(String) breadcrumbs.get(breadcrumbs.size()-3));
+            createRelation(objectNumber,nElement,"subsite",(String) breadcrumbs.get(breadcrumbs.size()-2));                        
          }
          else {
-            //use rubriek with alias "archive" as creatierubriek and hoofdrubriek and the parent of archive as subsite
-            Node nArchive = cloud.getNodeByAlias("archive");
-            for (int i = 0; i < 2; i++) {
-               Relation thisRelation = null;
-               thisRelation = nArchive.createRelation(nElement,cloud.getRelationManager(sRelTypes[i]));
-               thisRelation.commit();
-            }
-            NodeList nParent = nArchive.getRelatedNodes("rubriek", "parent","DESTINATION");
-            if (nParent.size() > 0) {
-               Node nArchiveParent = nParent.getNode(0);
-               Relation thisRelation = null;
-               thisRelation = nArchiveParent.createRelation(nElement,cloud.getRelationManager(sRelTypes[2]));
-               thisRelation.commit();
-            }
+
+            // use rubriek with alias "archive" as creatierubriek and hoofdrubriek and the parent of archive as subsite
+            createRelation(objectNumber,nElement,"creatierubriek","archive");
+            createRelation(objectNumber,nElement,"hoofdrubriek","archive");
+            createRelation(objectNumber,nElement,"subsite",archiveParent);
          }
       }
    }
 
-   boolean bRelationsExists(String objectNumber){
-      NodeList nlSubsite = cloud.getList(objectNumber,"contentelement,subsite,rubriek",
-      "contentelement.number",null,null,null,null,true);
-      NodeList nlHoofdrubriek = cloud.getList(objectNumber,"contentelement,hoofdrubriek,rubriek",
-      "contentelement.number",null,null,null,null,true);
-      NodeList nlCreatierubriek = cloud.getList(objectNumber,"contentelement,creatierubriek,rubriek",
-      "contentelement.number",null,null,null,null,true);
-      if (nlSubsite.size() + nlHoofdrubriek.size() + nlCreatierubriek.size()==0){
+   void createRelation(String objectNumber, Node nElement, String role, String rubriekNumber) {
+      if(!relationExists(objectNumber, role)) {
+         Node nRubriek = cloud.getNode(rubriekNumber);
+         nRubriek.createRelation(nElement, cloud.getRelationManager(role)).commit();
+         log.info("added " + role + " relation between " + objectNumber + " and rubriek " + rubriekNumber);
+      }
+   }
+
+   boolean relationExists(String objectNumber, String role) {
+      NodeList nl = cloud.getList(objectNumber,"contentelement," + role + ",rubriek",
+         "contentelement.number",null,null,null,null,true);
+      if (nl.size()==0){
          return false;
       } else {
-         if (nlSubsite.size() > 0){
-            log.info("relation contentelement,subsite,rubriek for node " +
-            objectNumber + " already exists");
-         }
-         if (nlHoofdrubriek.size() > 0){
-            log.info("relation contentelement,hoofdrubriek,rubriek for node " +
-            objectNumber + " already exists");
-         }
-         if (nlCreatierubriek.size() > 0){
-            log.info("relation contentelement,creatierubriek,rubriek for node " +
-            objectNumber + " already exists");
-         }
+         log.debug("relation contentelement," + role + ",rubriek for node " + objectNumber + " already exists");
          return true;
       }
+   }                
 
+   boolean bRelationsExists(String objectNumber) {
+      return relationExists(objectNumber,"creatierubriek")
+         && relationExists(objectNumber,"hoofdrubriek")
+         && relationExists(objectNumber,"subsite");
    }
 
    public void addSchrijver(String objectNumber) {
       NodeList nl = cloud.getList(objectNumber,"contentelement,schrijver,users",
       "users.number",null,null,null,null,true);
       if (nl.size()==0) {
-         /*try to find user with:
-               contentelement.owner=users.account */
+         // try to find user with: contentelement.owner=users.account
          nl = cloud.getList("","contentelement,schrijver,users",
-         "users.number","contentelement.owner = users.account",null,null,null,true);
+            "users.number","contentelement.owner = users.account",null,null,null,true);
          if (nl.size()>0) {
             //create relation contentelement-schrijver-user
             Node nUser = cloud.getNode(nl.getNode(0).getStringValue("users.number"));
-            Relation thisRelation = null;
-            thisRelation = (cloud.getNode(objectNumber)).createRelation(nUser,cloud.getRelationManager("schrijver"));
-            thisRelation.commit();
+            (cloud.getNode(objectNumber)).createRelation(nUser,cloud.getRelationManager("schrijver")).commit();
          }
       }
    }
