@@ -24,14 +24,12 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TreeTag.java,v 1.17 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: TreeTag.java,v 1.18 2006-08-30 18:06:26 michiel Exp $
  */
  
 public class TreeTag extends AbstractNodeListTag {
-
    
-    //this class is growing to big..
-    private static Logger log = Logging.getLoggerInstance(TreeTag.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(TreeTag.class);
 
     private Attribute thread   = Attribute.NULL;
     private Attribute fieldList= Attribute.NULL;
