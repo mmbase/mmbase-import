@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.143 2006-07-18 07:22:06 johannes Exp $
+ * @version $Id: CloudTag.java,v 1.144 2006-08-30 18:03:34 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
@@ -300,29 +300,30 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         c.setPath(path);
         c.setMaxAge((int) (60 * 60 * 24 * 365.25)); // one year
 
-
         if (cookies.length == 0) {
             cookies = new Cookie[1];
         }
         cookies[0] = c;
         response.addCookie(c);
+
         if (session != null) {
+            session.setAttribute(REALM + getSessionName(), r);
             if (session.isNew()) {
                 log.debug("New session!? That is very suspicious. Perhaps URL was not encoded, and cookies disabled, sending redirect to make sure the url is encoded.");
                 String query = request.getQueryString();
                 String thisPage = request.getRequestURI() + (query == null ? "" : "?" + query);
                 try {
                     String url = response.encodeRedirectURL(thisPage);
+                    log.debug("Redirecting to " + url);
                     response.sendRedirect(url);
                 } catch (IOException e) {
                     throw new TaglibException(e);
                 }
-                return false;
             }
+
             if (log.isDebugEnabled()) {
                 log.debug("Setting realm " + r + " in session " + REALM + getSessionName());
             }
-            session.setAttribute(REALM + getSessionName(), r);
         }
         return true;
     }
@@ -409,7 +410,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         if (realm == null) {
             realm = getRealmName();
             if (!setRealm(INITIAL_REALM_PREFIX + realm)) {
-                return SKIP_BODY;
+                return SKIP_PAGE;
             }
         } else {
 
@@ -506,6 +507,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             return SKIP_BODY;
         }
         cloud.setProperty("request", request);
+        cloud.setProperty(LocaleTag.TZ_KEY, getTimeZone());
 
         if (jspVar != null) {
             log.debug("Setting jspVar " + jspVar);
@@ -855,7 +857,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         if (realm.startsWith(INITIAL_REALM_PREFIX)) {
             realm = realm.substring(INITIAL_REALM_PREFIX.length());
             if (! setRealm(realm)) {
-                return SKIP_BODY;
+                return SKIP_PAGE;
             }
         }
         String mime_line = request.getHeader("Authorization");
