@@ -19,12 +19,12 @@ import org.mmbase.util.logging.Logging;
 /**
  * The implementation of the log tag.
  *
- * @author Michiel Meeuwissen 
- * @version $Id: LogTag.java,v 1.14 2006-06-22 18:15:44 johannes Exp $ 
+ * @author Michiel Meeuwissen
+ * @version $Id: LogTag.java,v 1.15 2006-08-30 18:02:16 michiel Exp $
  */
 
 public class LogTag extends ContextReferrerTag {
-    private Logger log;           
+    private Logger log;
     private boolean doLog;
     private int counter = 0; // A counter for every page. Because of this even <mm:log /> gets usefull.
 
@@ -41,7 +41,7 @@ public class LogTag extends ContextReferrerTag {
 
     public void setPageContext(PageContext pc) {
         /* Determin only once per page if it can log */
-        super.setPageContext(pc);        
+        super.setPageContext(pc);
         log = (Logger) pageContext.getAttribute("__logtag_logger");
         if(log == null) {
             log = Logging.getLoggerInstance(LOGTAG_CATEGORY + ((HttpServletRequest)pageContext.getRequest()).getRequestURI().replace('/', '.'));
@@ -60,15 +60,15 @@ public class LogTag extends ContextReferrerTag {
             return EVAL_BODY_BUFFERED;
         } else {
             return SKIP_BODY;
-        }        
+        }
     }
 
     public int doEndTag() throws JspTagException {
-        if (doLog && jspvar == null) { 
+        if (doLog && jspvar == null) {
             log.service(counter++ + ": " + (bodyContent != null ? bodyContent.getString() : "-"));
         }
         if (jspvar != null && EVAL_BODY == EVAL_BODY_BUFFERED) {
-            
+
             try {
                 bodyContent.writeOut(bodyContent.getEnclosingWriter());
             } catch (java.io.IOException e) {
@@ -77,5 +77,5 @@ public class LogTag extends ContextReferrerTag {
         }
         super.doEndTag();
         return EVAL_PAGE;
-    }    
+    }
 }
