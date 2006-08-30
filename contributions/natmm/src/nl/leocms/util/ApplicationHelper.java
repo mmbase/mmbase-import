@@ -15,6 +15,8 @@
  */
 package nl.leocms.util;
 
+import java.util.*;
+import nl.leocms.applications.*;
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -31,5 +33,36 @@ public class ApplicationHelper {
 		NodeManager versionManager = cloud.getNodeManager("versions");
 		return (versionManager.getList("type='application' AND name='" + sApplication + "'", null, null).size()>0);
 	}
-
+	
+	public HashMap pathsFromPageToElements(Cloud cloud) {
+	
+	   HashMap pathsFromPageToElements = new HashMap();
+		// todo: create a more generic version for this piece of code
+		if(isInstalled(cloud,"NatMM")) {
+			for(int f = 0; f < NatMMConfig.CONTENTELEMENTS.length; f++) {
+				pathsFromPageToElements.put(
+					NatMMConfig.CONTENTELEMENTS[f],
+					NatMMConfig.PATHS_FROM_PAGE_TO_ELEMENTS[f]);
+			}
+		}
+		if(isInstalled(cloud,"NatNH")) {
+			for(int f = 0; f < NatNHConfig.CONTENTELEMENTS.length; f++) {
+				pathsFromPageToElements.put(
+					NatNHConfig.CONTENTELEMENTS[f],
+					NatNHConfig.PATHS_FROM_PAGE_TO_ELEMENTS[f]);
+			}
+      }
+		if(isInstalled(cloud,"NMIntra")) {
+			for(int f = 0; f < NMIntraConfig.CONTENTELEMENTS.length; f++) {
+				pathsFromPageToElements.put(
+					NMIntraConfig.CONTENTELEMENTS[f],
+					NMIntraConfig.PATHS_FROM_PAGE_TO_ELEMENTS[f]);
+			}
+      }
+		if(pathsFromPageToElements.size()==0) {
+			log.error("CONTENTELEMENTS and PATHS_FROM_PAGE_TO_ELEMENTS are not defined by the available applications");
+		}
+		return pathsFromPageToElements;
+   }
+   			
 }

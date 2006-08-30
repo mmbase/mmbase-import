@@ -53,37 +53,10 @@ public class PaginaHelper {
    public boolean urlConversion;
 
    public PaginaHelper(Cloud cloud) {
-    this.cloud = cloud;
-    this.pathsFromPageToElements = new HashMap();
-		this.ap = new ApplicationHelper();
-		// todo: create a more generic version for this piece of code
-		if(ap.isInstalled(cloud,"NatMM")) {
-			this.urlConversion = NatMMConfig.urlConversion;
-			for(int f = 0; f < NatMMConfig.CONTENTELEMENTS.length; f++) {
-				this.pathsFromPageToElements.put(
-					NatMMConfig.CONTENTELEMENTS[f],
-					NatMMConfig.PATHS_FROM_PAGE_TO_ELEMENTS[f]);
-			}
-		}
-		if(ap.isInstalled(cloud,"NatNH")) {
-			this.urlConversion = NatNHConfig.urlConversion;
-			for(int f = 0; f < NatNHConfig.CONTENTELEMENTS.length; f++) {
-				this.pathsFromPageToElements.put(
-					NatNHConfig.CONTENTELEMENTS[f],
-					NatNHConfig.PATHS_FROM_PAGE_TO_ELEMENTS[f]);
-			}
-      }
-		if(ap.isInstalled(cloud,"NMIntra")) {
-			this.urlConversion = NMIntraConfig.urlConversion;
-			for(int f = 0; f < NMIntraConfig.CONTENTELEMENTS.length; f++) {
-				this.pathsFromPageToElements.put(
-					NMIntraConfig.CONTENTELEMENTS[f],
-					NMIntraConfig.PATHS_FROM_PAGE_TO_ELEMENTS[f]);
-			}
-      }
-		if(this.pathsFromPageToElements.size()==0) {
-			log.error("CONTENTELEMENTS and PATHS_FROM_PAGE_TO_ELEMENTS are not defined by the available applications");
-		}
+     this.cloud = cloud;
+     this.ap = new ApplicationHelper();
+     this.pathsFromPageToElements = ap.pathsFromPageToElements(cloud);
+     this.urlConversion = NatMMConfig.urlConversion;
    }
 
    ////////////// general utilities /////////////
