@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.76 2006-07-25 13:24:57 michiel Exp $
+ * @version $Id: Queries.java,v 1.77 2006-08-30 17:52:33 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -126,7 +126,7 @@ abstract public class Queries {
                 throw new BridgeException("invalid constraints:" + constraints);
             }
             if (! constraints.substring(0, 5).equalsIgnoreCase("WHERE")) {
-                /// WHERE is used in org.mmbase.util.QueryConvertor 
+                /// WHERE is used in org.mmbase.util.QueryConvertor
                 constraints = "WHERE " + constraints;
             }
         }
@@ -342,31 +342,33 @@ abstract public class Queries {
                 }
             }
             return set;
-        }  
+        }
         switch(fieldType) {
+        case Field.TYPE_STRING:
+            return value == null ? null : Casting.toString(value);
         case Field.TYPE_INTEGER:
         case Field.TYPE_FLOAT:
         case Field.TYPE_LONG:
-        case Field.TYPE_DOUBLE: 
-        case Field.TYPE_NODE:   
-        	if (value  instanceof Number) {
-        		return value;       
-        	} else {
-        		return getNumberValue(Casting.toString(value));
-        	}   
+        case Field.TYPE_DOUBLE:
+        case Field.TYPE_NODE:
+            if (value  instanceof Number) {
+                return value;
+            } else {
+                return getNumberValue(Casting.toString(value));
+            }
         case Field.TYPE_DATETIME:
-        	//TimeZone     tz = cloud == null ? null : (TimeZone) cloud.getProperty("org.mmbase.timezone");
-        	if (datePart > -1) {
-        		return Casting.toInteger(value);
-        	} else {
-        		return Casting.toDate(value);
-        	}
+            //TimeZone     tz = cloud == null ? null : (TimeZone) cloud.getProperty("org.mmbase.timezone");
+            if (datePart > -1) {
+                return Casting.toInteger(value);
+            } else {
+                return Casting.toDate(value);
+            }
         case Field.TYPE_BOOLEAN:
-        	return Casting.toBoolean(value) ? Boolean.TRUE : Boolean.FALSE;
+            return Casting.toBoolean(value) ? Boolean.TRUE : Boolean.FALSE;
         default:
-        	return value;
+            return value;
         }
-    }       
+    }
 
     /**
      * Defaulting version of {@link #createConstraint(Query, String, int, Object, Object, boolean, int)}.
@@ -574,11 +576,11 @@ abstract public class Queries {
                 case Field.TYPE_INTEGER:
                 case Field.TYPE_LONG:
                 case Field.TYPE_NODE:
-                    value = new Long((String) value);
+                    value = Long.valueOf(Casting.toLong(value));
                     break;
                 case Field.TYPE_FLOAT:
                 case Field.TYPE_DOUBLE:
-                    value = new Double((String) value);
+                    value = Double.valueOf(Casting.toDouble(value));
                     break;
                 case Field.TYPE_DATETIME:
                     value = new Date((long) 1000 * Integer.parseInt("" + value));
@@ -654,8 +656,9 @@ abstract public class Queries {
      */
     public static List addSortOrders(Query query, String sorted, String directions) {
         // following code was copied from MMObjectBuilder.setSearchQuery (bit ugly)
-        if (sorted == null)
+        if (sorted == null) {
             return query.getSortOrders().subList(0, 0);
+        }
         if (directions == null) {
             directions = "";
         }
@@ -1211,7 +1214,7 @@ abstract public class Queries {
         return compare(getSortOrderFieldValue(node1, sortOrder),
                        getSortOrderFieldValue(node2, sortOrder),
                        sortOrder);
-     
+
     }
     /**
      * @since MMBase-1.8
