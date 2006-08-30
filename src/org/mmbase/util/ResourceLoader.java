@@ -97,7 +97,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.39 2006-07-17 17:26:13 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.40 2006-08-30 19:10:20 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -537,7 +537,8 @@ public class ResourceLoader extends ClassLoader {
                         current = next;
                         next = getNext();
                     }
-                    return current.nextElement();
+                    Object n = current.nextElement();
+                    return n;
                 }
 
             };
@@ -609,7 +610,7 @@ public class ResourceLoader extends ClassLoader {
      * @param recursive If true, then also subdirectories are searched.
      * @return A Set of Strings which can be successfully loaded with the resourceloader.
      */
-    public Set getResourcePaths(final Pattern pattern, final boolean recursive) {
+    public Set<String> getResourcePaths(final Pattern pattern, final boolean recursive) {
         return getResourcePaths(pattern, recursive, false);
     }
 
@@ -619,7 +620,7 @@ public class ResourceLoader extends ClassLoader {
      * @param pattern   A Regular expression pattern to which  the file-name must match, or <code>null</code> if no restrictions apply
      * @param recursive If true, then also subdirectories are searched.
      */
-    public Set getChildContexts(final Pattern pattern, final boolean recursive) {
+    public Set<String> getChildContexts(final Pattern pattern, final boolean recursive) {
         return getResourcePaths(pattern, recursive, true);
     }
 
@@ -629,8 +630,8 @@ public class ResourceLoader extends ClassLoader {
      * @param recursive If true, then also subdirectories are searched.
      * @param directories getResourceContext supplies <code>true</code> getResourcePaths supplies <code>false</code>
      */
-    protected Set getResourcePaths(final Pattern pattern, final boolean recursive, final boolean directories) {
-        Set results = new TreeSet(); // a set with fixed iteration order
+    protected Set<String> getResourcePaths(final Pattern pattern, final boolean recursive, final boolean directories) {
+        Set<String> results = new TreeSet<String>(); // a set with fixed iteration order
         Iterator i = roots.iterator();
         while (i.hasNext()) {
             PathURLStreamHandler cf = (PathURLStreamHandler) i.next();
@@ -1050,7 +1051,7 @@ public class ResourceLoader extends ClassLoader {
             return openConnection(getName(u));
         }
 
-        abstract Set getPaths(Set results, Pattern pattern,  boolean recursive,  boolean directories);
+        abstract Set<String> getPaths(Set<String> results, Pattern pattern,  boolean recursive,  boolean directories);
     }
 
 
@@ -1099,10 +1100,10 @@ public class ResourceLoader extends ClassLoader {
             }
             return new FileConnection(u, getFile(name), writeable);
         }
-        public Set getPaths(final Set results, final Pattern pattern,  final boolean recursive, final boolean directories) {
+        public Set getPaths(final Set<String> results, final Pattern pattern,  final boolean recursive, final boolean directories) {
             return getPaths(results, pattern, recursive ? "" : null, directories);
         }
-        private  Set getPaths(final Set results, final Pattern pattern,  final String recursive, final boolean directories) {
+        private  Set getPaths(final Set<String> results, final Pattern pattern,  final String recursive, final boolean directories) {
             FilenameFilter filter = new FilenameFilter() {
                     public boolean accept(File dir, String name) {
                         File f = new File(dir, name);
@@ -1259,7 +1260,7 @@ public class ResourceLoader extends ClassLoader {
             }
             return new NodeConnection(u, name, type);
         }
-        public Set getPaths(final Set results, final Pattern pattern,  final boolean recursive, final boolean directories) {
+        public Set getPaths(final Set<String> results, final Pattern pattern,  final boolean recursive, final boolean directories) {
             if (ResourceLoader.resourceBuilder != null) {
                 try {
                     NodeQuery query = ResourceLoader.resourceBuilder.createQuery();
@@ -1464,14 +1465,14 @@ public class ResourceLoader extends ClassLoader {
                 return NOT_AVAILABLE_URLSTREAM_HANDLER.openConnection(name);
             }
         }
-        public Set getPaths(final Set results, final Pattern pattern,  final boolean recursive, final boolean directories) {
+        public Set getPaths(final Set<String> results, final Pattern pattern,  final boolean recursive, final boolean directories) {
             if (log.isDebugEnabled()) {
                 log.debug("Getting " + (directories ? "directories" : "files") + " matching '" + pattern + "' in '" + root + "'");
             }
             return getPaths(results, pattern, recursive ? "" : null, directories);
         }
 
-        private  Set getPaths(final Set results, final Pattern pattern,  final String recursive, final boolean directories) {
+        private  Set getPaths(final Set<String> results, final Pattern pattern,  final String recursive, final boolean directories) {
             if (servletContext != null) {
                 try {
                     String currentRoot  = root + ResourceLoader.this.context.getPath();
@@ -1584,11 +1585,11 @@ public class ResourceLoader extends ClassLoader {
             }
         }
 
-        public Set getPaths(final Set results, final Pattern pattern,  final boolean recursive, final boolean directories) {
+        public Set<String> getPaths(final Set<String> results, final Pattern pattern,  final boolean recursive, final boolean directories) {
             return getPaths(results, pattern, recursive, directories, "", null);
         }
 
-        private Set getPaths(final Set results, final Pattern pattern, final boolean recursive, final boolean directories, String resourceDir, String searchUp) {
+        private Set<String> getPaths(final Set results, final Pattern pattern, final boolean recursive, final boolean directories, String resourceDir, String searchUp) {
             try {
                 List subDirs = new ArrayList();
                 Enumeration e = getResources("".equals(resourceDir) ? INDEX : resourceDir + INDEX);
@@ -1668,6 +1669,9 @@ public class ResourceLoader extends ClassLoader {
                 }
             }
             */
+            if (log.isDebugEnabled()) {
+                log.debug("Returning  " + results);
+            }
             return results;
         }
 
@@ -1701,8 +1705,8 @@ public class ResourceLoader extends ClassLoader {
                 return new NotAvailableConnection(u, name);
             }
 
-            public Set getPaths(final Set results, final Pattern pattern,  final boolean recursive, final boolean directories) {
-                return new HashSet();
+            public Set<String> getPaths(final Set<String> results, final Pattern pattern,  final boolean recursive, final boolean directories) {
+                return new HashSet<String>();
             }
         };
 
