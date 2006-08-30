@@ -32,7 +32,7 @@ import java.util.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.89 2006-07-18 14:24:36 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.90 2006-08-30 18:01:30 michiel Exp $
  * @see ContextTag
  */
 
@@ -243,8 +243,8 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
     }
 
     public void doCatch(Throwable e) throws Throwable {
-        log.warn("Caught throwable: " + e.getMessage());
-        throw(e);
+        log.debug("Caught throwable: " + e.getMessage());
+        throw e;
     }
 
     /**
