@@ -16,7 +16,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronEntry.java,v 1.5 2006-01-27 20:35:16 michiel Exp $
+ * @version $Id: CronEntry.java,v 1.6 2006-08-30 18:07:28 michiel Exp $
  */
 
 public class CronEntry {
@@ -58,20 +58,20 @@ public class CronEntry {
 
     private List threads = Collections.synchronizedList(new ArrayList());
 
-    private String id;
-    private String name;
-    private String className;
-    private String cronTime;
+    private final String id;
+    private final String name;
+    private final String className;
+    private final String cronTime;
     private String configuration = null;
 
     private int count = 0;
 
-    private CronEntryField second; // 0-59
-    private CronEntryField minute; // 0-59
-    private CronEntryField hour; // 0-23
-    private CronEntryField dayOfMonth; // 1-31
-    private CronEntryField month; // 1-12
-    private CronEntryField dayOfWeek; // 0-7 (0 or 7 is sunday)
+    private final CronEntryField second      = new CronEntryField(); // 0-59
+    private final CronEntryField minute      = new CronEntryField(); // 0-59
+    private final CronEntryField hour        = new CronEntryField(); // 0-23
+    private final CronEntryField dayOfMonth  = new CronEntryField(); // 1-31
+    private final CronEntryField month       = new CronEntryField(); // 1-12
+    private final CronEntryField dayOfWeek   = new CronEntryField(); // 0-7 (0 or 7 is sunday)
 
     private int type = DEFAULT_JOB_TYPE;
 
@@ -101,13 +101,6 @@ public class CronEntry {
         } else {
             cronJob = (CronJob) runnable;
         }
-
-        second = new CronEntryField();
-        minute = new CronEntryField();
-        hour = new CronEntryField();
-        dayOfMonth = new CronEntryField();
-        month = new CronEntryField();
-        dayOfWeek = new CronEntryField();
 
         setCronTime(cronTime);
     }
