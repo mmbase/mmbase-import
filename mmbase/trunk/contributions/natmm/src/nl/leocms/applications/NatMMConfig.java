@@ -21,8 +21,8 @@ public class NatMMConfig {
       "object,pos4rel,provincies,contentrel,pagina",  // natuurgebieden
       "object,contentrel,pagina",                     // provincies
       "object,contentrel,pagina",                     // artikel
-      "object,posrel1,dossier,posrel2,pagina",          // artikel
-      "object,posrel1,dossier,posrel2,pagina",          // images
+      "object,posrel1,dossier,posrel2,pagina",        // artikel
+      "object,posrel1,dossier,posrel2,pagina",        // images
       "object,contentrel,pagina",                     // persoon
       "object,contentrel,pagina",                     // ads
    };

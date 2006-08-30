@@ -20,9 +20,7 @@
  */
 package nl.leocms.util;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
@@ -34,8 +32,6 @@ import org.mmbase.bridge.RelationList;
 import org.mmbase.bridge.RelationManager;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-
-import nl.leocms.applications.*;
 
 /**
  * @author Gerard van de Weerd
@@ -124,25 +120,28 @@ public class MMBaseHelper {
       }
 
       public void addDefaultRelations() {
-         ContentHelper ch = new ContentHelper(cloud);
+          ContentHelper ch = new ContentHelper(cloud);
+          HashMap pathsFromPageToElements = (new ApplicationHelper()).pathsFromPageToElements(cloud);
+          
           NodeList nl = cloud.getList("","contentelement","contentelement.number",
-          null,"contentelement.number","up",null,true);
+            null,"contentelement.number","up",null,true);
           for (int i = 0; i < nl.size(); i++){
              String sContentelement = nl.getNode(i).getStringValue("contentelement.number");
              String sType = cloud.getNode(sContentelement).getNodeManager().getName();
-             int iTypeIndex = -1;
+             String path = null;
              if (sType.equals("evenementen")){
-                iTypeIndex = NatMMConfig.CONTENTELEMENTS.length;
+                path = "evenementen";
              } else {
-               for (int j = 0; j < NatMMConfig.CONTENTELEMENTS.length; j++) {
-                  if (NatMMConfig.CONTENTELEMENTS[j].equals(sType)) {
-                     iTypeIndex = j;
+                for (Iterator it=pathsFromPageToElements.keySet().iterator();it.hasNext(); ) {
+                  String objecttype = (String) it.next();
+                  String currentPath = (String) pathsFromPageToElements.get(objecttype);               
+                  if (objecttype.equals(sType)) {
+                     path = currentPath;
                   }
                }
              }
-             if (iTypeIndex!=-1){
-                log.info("Treating " + sType + " number " + sContentelement);
-                ch.addDefaultRelations(sContentelement, iTypeIndex);
+             if (path!=null){
+                ch.addDefaultRelations(sContentelement, path);
                 ch.addSchrijver(sContentelement);
              }
           }
