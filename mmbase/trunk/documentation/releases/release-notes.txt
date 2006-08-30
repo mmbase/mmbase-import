@@ -1,5 +1,5 @@
 ===================================================================
-                     MMBase 1.8.1 - Release Notes
+                     MMBase 1.8.2 - Release Notes
 ===================================================================
 
 ============
@@ -7,7 +7,7 @@ INTRODUCTION:
 ============
 
 This document describes the changes that have been made in the final
-release of MMBase 1.8.1, relative to the previous release of MMBase (1.7.x).
+release of MMBase 1.8.2, relative to the previous release of MMBase (1.7.x).
 
 Bug reports should be entered at the bug reporting system for MMBase
 at:
@@ -22,6 +22,7 @@ NEW FEATURES:
 --------------------
 General New Features:
 --------------------
+[1.8.2]
 [1.8.1]
 - postgresql with views
 
@@ -31,6 +32,7 @@ General New Features:
     - easier to use when reusing the request (dynamic includes).  E.g. if logicaly no mm:cloud
       needed because the object has a cloud already (e.g. on reuse of a node), then it works without
       errors now.
+
     - jspvar on querycontainers
 
     - timezone on locale-tags.
@@ -198,6 +200,10 @@ Obsolete Features:
 ------------------
 Bug Fixes:
 ------------------
+[1.8.2]
+
+-- More memory-conversation in taglib, memory could remain in cached tag if exception occured.
+
 [1.8.1]
 
 These are the closed bugs in mmbase.org/bug.
