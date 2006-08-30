@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!--
+     builder version 2.0
+
+-->
+<xsd:schema
+    xmlns="http://www.mmbase.org/xmlns/component"
+    targetNamespace="http://www.mmbase.org/xmlns/component"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="qualified"
+    attributeFormDefault="unqualified"
+    version="1.0"
+    >
+
+  <xsd:import
+      namespace="http://www.w3.org/XML/1998/namespace"
+      schemaLocation="http://www.w3.org/2001/03/xml.xsd"
+      />
+
+  <xsd:element name="component">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="class" minOccurs="1" maxOccurs="1" />
+        <xsd:element ref="description" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+      <xsd:attribute name="name" />     
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="description">
+    <xsd:complexType>
+      <xsd:simpleContent>
+        <xsd:extension base="xsd:string">
+          <xsd:attribute ref="xml:lang" />
+        </xsd:extension>
+      </xsd:simpleContent>
+    </xsd:complexType>
+  </xsd:element>
+
+</xsd:schema>
+
+
