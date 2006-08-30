@@ -26,13 +26,13 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: User.java,v 1.21 2006-02-20 18:34:16 michiel Exp $
+ * @version $Id: User.java,v 1.22 2006-08-30 18:04:56 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Users
  */
 public class User extends BasicUser implements MMBaseObserver {
     private static final Logger log = Logging.getLoggerInstance(User.class);
 
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 1L;
 
     protected MMObjectNode node;
     protected long key;
