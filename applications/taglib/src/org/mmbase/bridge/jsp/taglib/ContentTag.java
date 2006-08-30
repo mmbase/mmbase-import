@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.56 2006-08-03 12:39:12 pierre Exp $
+ * @version $Id: ContentTag.java,v 1.57 2006-08-30 18:01:50 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -570,8 +570,7 @@ public class ContentTag extends LocaleTag  {
                 // sadly, this does not work:
                 // perhaps because tomcat overrides the date header later, so a difference of a second can occur
                 // response.setDateHeader("Date",     now);
-            }
-            else {
+            } else {
                 // calc the string in GMT not localtime and add the offset
                 response.setDateHeader ("Expires", System.currentTimeMillis() + (expire * 1000));
                 response.setHeader("Cache-Control", "public");
