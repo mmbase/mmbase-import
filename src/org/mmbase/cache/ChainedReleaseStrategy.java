@@ -19,7 +19,7 @@ import org.mmbase.storage.search.SearchQuery;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * This class will manage a collection of <code>ReleaseStrategy</code>
@@ -27,7 +27,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArrayList;
  *
  * @since MMBase-1.8
  * @author Ernst Bunders
- * @version $Id: ChainedReleaseStrategy.java,v 1.18 2006-06-27 07:31:46 michiel Exp $
+ * @version $Id: ChainedReleaseStrategy.java,v 1.19 2006-08-30 20:57:55 michiel Exp $
  */
 public class ChainedReleaseStrategy extends ReleaseStrategy {
     private static final Logger log = Logging.getLoggerInstance(ChainedReleaseStrategy.class);
