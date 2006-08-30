@@ -40,7 +40,7 @@
 					<mm:createrelation source="vacature_page" destination="this_vacature" role="contentrel" />
 			<% }%>
 		</mm:cloud>
-      <h3>Uw vacature op www.natuurmonumenten.nl geplaatst</h3>
+      <h3>Uw vacature is op www.natuurmonumenten.nl geplaatst</h3>
       Vergeet niet:
 		<ul>
 			<li>eventueele bijlagen handmatig toe te voegen</li>

@@ -1,12 +1,12 @@
 <%@ page errorPage="exception.jsp"
 %><%@ include file="settings.jsp"%><mm:locale language="<%=ewconfig.language%>"><mm:cloud method="$loginmethod"  loginpage="login.jsp" jspvar="cloud" sessionname="$loginsessionname"><mm:log jspvar="log"><%@page import="org.mmbase.bridge.*,org.mmbase.bridge.util.*,javax.servlet.jsp.JspException"
-%><%@ page import="org.w3c.dom.Document"
+%><%@ page import="org.w3c.dom.Document,nl.leocms.util.ApplicationHelper"
 %><%
     /**
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.2 2006-08-13 21:07:47 henk Exp $
+     * @version  $Id: list.jsp,v 1.3 2006-08-30 09:05:12 henk Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -235,11 +235,42 @@ for (int i=0; i < results.size(); i++) {
         }
         addField(obj, field.getGUIName(), value, field.getGUIType());
     }
+    String pathPrefix = "/editors";
     if(item.getNodeManager().getName().equals("images"))
     {  // hh: If we are showing images, we add the image_cropper
-       String pathPrefix = "../../../../editors";
-       String sURL = "<a href='" + pathPrefix + "/util/image_crop.jsp?img=" + item.getNumber() + "'><img src='" + pathPrefix + "/img/select.gif' border='0' alt='Nieuwe afbeelding uitsnijden'></a>";
+       String sURL = "<a href='"+pathPrefix+"/util/image_crop.jsp?img=" + item.getNumber() + "'><img src='" + pathPrefix + "/img/select.gif' border='0' alt='Nieuwe afbeelding uitsnijden'></a>";
        addField(obj, "ImageCropper", sURL, "string");
+    }
+    ApplicationHelper ap = new ApplicationHelper();
+    if(item.getNodeManager().getName().equals("vacature") && ap.isInstalled(cloud,"NMIntra")) {
+       
+       // hh: If we are showing vacatures, we add the vacature publish button and vacature view button
+	    String sObjectNumber = "" + item.getNumber();
+		 long nowSec = ((new Date()).getTime()) / 1000;
+       long lPublishDate = item.getLongValue("datumvan");
+       boolean isPublishable = item.getStringValue("metatags").equals("externe vacature")
+                             || item.getStringValue("metatags").equals("intern/extern");
+
+       if(isPublishable) {
+         String sPublishTitle = "Klik hier om deze vacature op de landelijke website te publiceren.";
+         if(lPublishDate<nowSec) {
+         sPublishTitle = "Deze vacature is voor het laatst op " + new Date(lPublishDate*1000) + " naar de landelijke website gepubliceerd."
+                       + "\n\nDoor hier te klikken publiceert u de vacature opnieuw en overschrijft u de huidige versie op de landelijke website."
+                       + "\n\nNeem voor het verwijderen van een vacature van de landelijke website voor de sluitingsdatum, contact op"
+                       + "\nmet een redacteur van de landelijke website.";
+         }
+         String sPublishConfirm = "Weet u zeker dat u de vacature " + item.getStringValue("titel").replaceAll("\"","").replaceAll("'","") + " op de landelijke website wilt publiceren ?";
+         String sUrlPublish = "<a href=\""+pathPrefix+"/vacatures/vacature_publish.jsp?objectnumber=" + sObjectNumber + "\" title=\"" + sPublishTitle + "\""
+         + "onmousedown=\"cancelClick=true;\" onclick=\"return doDelete('" + sPublishConfirm + "')"
+         + "\"><img src='"+pathPrefix+"/img/new.gif' border='0' alt='" + sPublishTitle + "'/></a>";
+         addField(obj, "", sUrlPublish, "string");
+       }
+		 if (lPublishDate<nowSec){
+          String sViewTitle = "Klik hier om deze vacature op de landelijke website te bekijken.";
+		 	 String sUrlView = "<a href=\"" + nl.leocms.applications.NMIntraConfig.sCorporateWebsite + "vacatures.jsp?p=vacatures&v=" + item.getIntValue("number") 
+               + "&preview=on\" title=\"" + sViewTitle + "\"><img src='"+pathPrefix+"/img/preview.gif' border='0' alt='" + sViewTitle + "'/></a>";
+			 addField(obj, "", sUrlView, "string");
+		 }
     }
 
     if (listConfig.multilevel) {
