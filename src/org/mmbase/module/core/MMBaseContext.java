@@ -27,12 +27,12 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @version $Id: MMBaseContext.java,v 1.52 2006-04-01 09:14:19 michiel Exp $
+ * @version $Id: MMBaseContext.java,v 1.53 2006-08-30 20:59:40 michiel Exp $
  */
 public class MMBaseContext {
     private static final Logger log = Logging.getLoggerInstance(MMBaseContext.class);
     private static boolean initialized = false;
-    private static boolean htmlRootInitialized = false;
+    static boolean htmlRootInitialized = false;
     private static ServletContext sx;
     private static String userDir;
     private static String javaVersion;
@@ -55,8 +55,8 @@ public class MMBaseContext {
      */
     public synchronized static void init(ServletContext servletContext) {
         if (!initialized) {
-        // get the java version we are running
-        javaVersion = System.getProperty("java.version");
+            // get the java version we are running
+            javaVersion = System.getProperty("java.version");
             // store the current context
             sx = servletContext;
             // Get the user directory using the user.dir property.
