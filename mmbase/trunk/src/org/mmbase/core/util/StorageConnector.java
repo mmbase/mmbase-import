@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: StorageConnector.java,v 1.11 2006-08-29 14:47:28 michiel Exp $
+ * @version $Id: StorageConnector.java,v 1.12 2006-08-30 18:45:27 michiel Exp $
  */
 public class StorageConnector {
 
@@ -199,7 +199,7 @@ public class StorageConnector {
         }
         MMObjectNode node = null;
 
-        Integer numberValue = new Integer(number);
+        Integer numberValue = Integer.valueOf(number);
         // try cache if indicated to do so
         node = builder.getNodeFromCache(numberValue);
         if (node != null) {
@@ -302,8 +302,7 @@ public class StorageConnector {
             MMObjectNode node = (MMObjectNode) i.next();
 
             // check if this node is already in cache
-            //Integer number = Integer.valueOf(node.getNumber()); // 1.5 only
-            Integer number = new Integer(node.getNumber());
+            Integer number = Integer.valueOf(node.getNumber());
             if(builder.isNodeCached(number)) {
                 result.add(builder.getNodeFromCache(number));
                 // else seek it with a search on builder in db
@@ -348,8 +347,7 @@ public class StorageConnector {
         Iterator i = rawNodes.iterator();
         while (i.hasNext()) {
             MMObjectNode n = (MMObjectNode) i.next();
-            //rawMap.put(Integer.valueOf(n.getNumber()), n); // 1.5 only..
-            rawMap.put(new Integer(n.getNumber()), n);
+            rawMap.put(Integer.valueOf(n.getNumber()), n); 
         }
         Iterator j = subResult.iterator();
         while (j.hasNext()) {
@@ -546,7 +544,7 @@ public class StorageConnector {
         ListIterator resultsIterator = results.listIterator();
         while (resultsIterator.hasNext()) {
             MMObjectNode node = (MMObjectNode) resultsIterator.next();
-            Integer number = new Integer(node.getNumber());
+            Integer number = Integer.valueOf(node.getNumber());
             if(number.intValue() < 0) {
                 // never happened to me, and never should!
                 log.error("invalid node found, node number was invalid:" + node.getNumber()+", storage invalid?");
@@ -575,7 +573,7 @@ public class StorageConnector {
                     // be converted..
                     // we dont request the builder here, for this we need the
                     // typedef table, which could generate an additional query..
-                    Integer nodeType = new Integer(node.getOType());
+                    Integer nodeType = Integer.valueOf(node.getOType());
                     Set nodes = (Set) convert.get(nodeType);
                     // create an new entry for the type, if not yet there...
                     if (nodes == null) {
@@ -654,7 +652,7 @@ public class StorageConnector {
                     Iterator converted = conversionBuilder.getStorageConnector().getNodes(nodes).iterator();
                     while(converted.hasNext()) {
                         MMObjectNode current = (MMObjectNode) converted.next();
-                        convertedNodes.put(new Integer(current.getNumber()), current);
+                        convertedNodes.put(Integer.valueOf(current.getNumber()), current);
                     }
                 } catch (SearchQueryException sqe) {
                     log.error(sqe.getMessage() + Logging.stackTrace(sqe));
@@ -665,7 +663,7 @@ public class StorageConnector {
             // insert all the corrected nodes that were found into the list..
             for(int i = 0; i < results.size(); i++) {
                 MMObjectNode current = (MMObjectNode) results.get(i);
-                Integer number = new Integer(current.getNumber());
+                Integer number = Integer.valueOf(current.getNumber());
                 if(convertedNodes.containsKey(number)) {
                     // converting the node...
                     results.set(i, convertedNodes.get(number));
