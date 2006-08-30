@@ -34,7 +34,7 @@ import org.mmbase.util.xml.BuilderWriter;
 import org.mmbase.util.functions.*;
 import org.xml.sax.SAXException;
 
-import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The module which provides access to the MMBase storage defined
@@ -46,7 +46,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.200 2006-07-15 10:28:15 michiel Exp $
+ * @version $Id: MMBase.java,v 1.201 2006-08-30 20:59:10 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -308,19 +308,21 @@ public class MMBase extends ProcessorModule {
         // default locale has to be known before initializing datatypes:
         DataTypes.initialize();
 
-        // default machine name is the local host name plus context-path.
-        // We suppose that that is sufficiently unique in most cases
+
+        String localHost;
         try {
-            host        = java.net.InetAddress.getLocalHost().getHostName();
-            machineName = host + MMBaseContext.getHtmlRootUrlPath();
+            localHost = java.net.InetAddress.getLocalHost().getHostName();
         } catch (java.net.UnknownHostException uhe) {
-            machineName = "UNKNOWN";
-            host        = machineName;
+            localHost = "localhost";
         }
+
+        log.service("Localhost: " + localHost);
 
         tmp = getInitParameter("HOST");
         if (tmp != null && !tmp.equals("")) {
             host = tmp;
+        } else {
+            host = localHost;
         }
 
         String machineNameParam = getInitParameter("MACHINENAME");
@@ -338,6 +340,14 @@ public class MMBase extends ProcessorModule {
                 machineNameParam = machineNameParam.substring(0, pos) + System.getProperty("user.name") + machineNameParam.substring(pos + 7);
             }
             machineName = machineNameParam;
+        } else {
+            if (! MMBaseContext.htmlRootInitialized) {
+                log.warn("HTML root not yet known. MachineName will not be correct yet.");
+            }
+            // default machine name is the local host name plus context-path.
+            // We suppose that that is sufficiently unique in most cases
+            machineName = localHost + MMBaseContext.getHtmlRootUrlPath();
+
         }
         log.service("MMBase machine name used for clustering: '" + machineName + "'");
         Logging.setMachineName(machineName);

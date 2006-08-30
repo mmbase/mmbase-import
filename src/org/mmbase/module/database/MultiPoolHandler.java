@@ -12,7 +12,7 @@ package org.mmbase.module.database;
 import java.sql.*;
 import java.util.*;
 
-import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 /**
  * MultiPoolHandler handles multi pools so we can have more than one database
  * open and they can all have a multipool.
