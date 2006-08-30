@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Message.java,v 1.32 2005-10-07 20:58:32 michiel Exp $
+ * @version $Id: Message.java,v 1.33 2006-08-30 18:05:17 michiel Exp $
  */
 
 public class Message extends MMObjectBuilder {
@@ -1211,7 +1211,7 @@ public class Message extends MMObjectBuilder {
     /**
      * Returns the channel in which the given message node is posted.
      * @param node the node to get the channel of
-     * @return teh channel of teh message as a <code>MMObjectNode</code>
+     * @return the channel of the message as an <code>MMObjectNode</code>
      */
     public MMObjectNode isPostedInChannel(MMObjectNode node) {
         while (node.getBuilder() instanceof Message) {
