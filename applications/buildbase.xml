@@ -338,7 +338,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
            deprecation="${deprecation}"
            nowarn="${nowarn}"
            excludes="${compile.excludes}"
-           source="1.4"
+           source="1.5"
            includeAntRuntime="false"
       >
       <classpath id="compile.classpath">
@@ -405,7 +405,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
              windowtitle="${project.name} API"
              doctitle="${project.name}"
              maxmemory="100M"
-             source="1.4"
+             source="1.5"
              failonerror="false"
              bottom="${project.name} build ${version}">
       <classpath>
