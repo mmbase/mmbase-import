@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * Creates a new Transaction.
  *
  * @author Michiel Meeuwissen
- * @version $Id: TransactionTag.java,v 1.22 2006-02-10 18:05:13 michiel Exp $ 
+ * @version $Id: TransactionTag.java,v 1.23 2006-08-30 18:00:15 michiel Exp $ 
  */
 
 public class TransactionTag extends CloudReferrerTag implements CloudProvider {
@@ -76,7 +76,12 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
         if (getId() != null) { // look it up from session
             log.debug("looking up transaction in context");
             try {
-                transaction = (Transaction) getObject(getId());
+                Object o = getObject(getId());
+                if (o instanceof Transaction) {
+                    transaction = (Transaction) getObject(getId());
+                } else {
+                    throw new JspTagException("The object with id " + getId() + " is not a transaction, but " + (o == null ? "NULL" : "a " + o.getClass()));
+                }
                 if (log.isDebugEnabled()) {
                     log.debug("found " + transaction);
                 }
