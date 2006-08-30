@@ -21,7 +21,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * This class manages all event related stuff. it is the place to register event brokers, and it
@@ -29,7 +29,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
  * manager is instantiated, event brokers are added for Event, NodeEvent and RelationEvent
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: EventManager.java,v 1.12 2006-06-20 21:23:15 michiel Exp $
+ * @version $Id: EventManager.java,v 1.13 2006-08-30 20:58:38 michiel Exp $
  */
 public class EventManager {
 

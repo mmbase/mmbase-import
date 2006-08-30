@@ -14,7 +14,7 @@ import java.io.File;
 import java.util.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.UtilReader;
-import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * Original javadoc.
@@ -63,7 +63,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.4
- * @version $Id: FileWatcher.java,v 1.38 2006-04-19 21:10:58 michiel Exp $
+ * @version $Id: FileWatcher.java,v 1.39 2006-08-30 21:01:39 michiel Exp $
  */
 public abstract class FileWatcher {
     private static Logger log = Logging.getLoggerInstance(FileWatcher.class);

@@ -15,7 +15,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import sun.rmi.runtime.GetThreadPoolAction;
-import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * This is the base class for all event brokers in mmbase. the function of an
