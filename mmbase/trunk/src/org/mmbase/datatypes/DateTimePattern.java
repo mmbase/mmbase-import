@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DateTimePattern.java,v 1.12 2006-07-18 12:56:16 michiel Exp $
+ * @version $Id: DateTimePattern.java,v 1.13 2006-08-30 17:47:21 michiel Exp $
  */
 
 public class DateTimePattern implements Cloneable, java.io.Serializable {
@@ -185,7 +185,7 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
                 return format.format(help.getTime());
             }
         };
-    private static final Element MILLISECOND   = new Element("millisecond", Calendar.MILLISECOND, 0, 9999);
+    private static final Element MILLISECOND   = new Element("millisecond", Calendar.MILLISECOND, 0, 999);
 
 
     /**
