@@ -7,7 +7,7 @@
   the changes are persistent then)
 
   @since   MMBase-1.6
-  @version $Id: caches.xml,v 1.19 2006-02-10 11:22:00 ernst Exp $
+  @version $Id: caches.xml,v 1.20 2006-08-30 17:40:30 michiel Exp $
   @author  Michiel Meeuwissen
   @author  Ernst Bunders
 
@@ -20,8 +20,13 @@
     For more information about the release strategies see the documentation
   -->
   <releaseStrategies>
-    <strategy>org.mmbase.cache.BetterStrategy</strategy>
+    <strategy>org.mmbase.cache.BetterStrategy</strategy>   
+    <!--
+        ConstraintsMatchingStrategy will sometimes give more CPU overhead then it is worth.
+        Therefore it is commented out. You can try it if your caches still don't perform well enough.
+
     <strategy>org.mmbase.cache.ConstraintsMatchingStrategy</strategy>
+    -->
   </releaseStrategies>
 
 
