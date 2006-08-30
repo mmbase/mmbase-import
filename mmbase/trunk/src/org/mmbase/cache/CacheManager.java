@@ -17,15 +17,14 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.util.xml.DocumentReader;
 import org.w3c.dom.Element;
 
-import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
-
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
  * Cache manager manages the static methods of {@link Cache}. If you prefer you can call them on this in stead.
  *
  * @since MMBase-1.8
- * @version $Id: CacheManager.java,v 1.6 2006-06-28 17:37:54 michiel Exp $
+ * @version $Id: CacheManager.java,v 1.7 2006-08-30 18:45:09 michiel Exp $
  */
 public class CacheManager {
 
