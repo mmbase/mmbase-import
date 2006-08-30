@@ -43,7 +43,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.67 2006-07-17 15:38:47 johannes Exp $
+ * @version $Id: FormatterTag.java,v 1.68 2006-08-30 17:59:49 michiel Exp $
  */
 public class FormatterTag extends CloudReferrerTag implements ParamHandler {
 
@@ -513,6 +513,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
                     log.debug("getting for " + cwd);
                 }
                 cachedXslt = getFactory().newTemplates(xsl);
+                assert cachedXslt != null; // according to javadoc may not happen
                 cache.put(xsl, cachedXslt);
             } catch (javax.xml.transform.TransformerConfigurationException e) {
                 return e.toString() + ": " + Logging.stackTrace(e);
@@ -523,8 +524,8 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
 
         if (cachedXslt == null) {
             // according to javadoc of TransformerFactory, this cannot happen, but
-            // I say it occur any way!
-            throw new JspTagException("Could not create Templates object from " + xsl);
+            // I say it occurs any way!
+            throw new JspTagException("Could not create Templates object from " + xsl.getSystemId() + " " + xsl);
         }
 
         // set some parameters to the XSLT style sheet.
