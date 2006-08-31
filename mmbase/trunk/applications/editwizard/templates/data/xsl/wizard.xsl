@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.160 2006-08-14 07:54:35 pierre Exp $
+    @version $Id: wizard.xsl,v 1.161 2006-08-31 14:42:47 nklasens Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -1580,7 +1580,7 @@
     <td>
       <xsl:if test="command[@name=&apos;delete-item&apos;]">
         <xsl:if test="@maydelete!=&apos;false&apos;">
-          <span class="imgbutton" title="{$tooltip_remove}" onclick="doSendCommand(&apos;{command[@name=&apos;delete-item&apos;]/@cmd}&apos;);">
+          <span class="imgbutton" title="{$tooltip_remove}" onclick="doRemove(&apos;{command[@name=&apos;delete-item&apos;]/@cmd}&apos;);">
             <xsl:call-template name="prompt_remove"/>
           </span>
         </xsl:if>
