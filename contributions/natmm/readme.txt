@@ -83,6 +83,15 @@ The minimal steps you have to carry out to add your own application to NatMM are
 7. if your application uses crontabs (see config/modules/crontab.xml), please make sure that the implementation
 	checks on the applications for which the crontab should apply (see as an example nl.mmatch.CSVReader.java).
 
+PAGINA, THE CONTAINER FOR CONTENTELEMENTS
+
+The pagina objects play a key role in LeoCMS, the are the leaves of the rubrieken tree and contain the objects and
+contentelements to be shown on the page. In different files the paths from pagina to related objects are specified.
+1. in nl.leocms.applications.*Config.PATHS_FROM_PAGE_TO_ELEMENTS
+2. in templates/mmbase/edit/wizard/data/config/pagina/load_pagina*.xml
+3. in config/lucenedatadefinition.xml
+4. and of course in the templates
+
 HINTS ON HOW TO DEVELOP WITH NATMM
 
 After installing NatMM you want to quickly develop your templates. The first step is of course to create the object model you
