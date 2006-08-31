@@ -26,11 +26,12 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Functions.java,v 1.12 2006-01-13 15:37:24 pierre Exp $
+ * @version $Id: Functions.java,v 1.13 2006-08-31 18:06:03 michiel Exp $
  */
 public class Functions {
 
     private static final Logger log = Logging.getLoggerInstance(Functions.class);
+
 
     /**
      * Converts a certain List to an Parameters if it is not already one.
@@ -49,13 +50,13 @@ public class Functions {
      * Adds the definitions to a List. Resolves the {@link Parameter.Wrapper}'s (recursively).
      * @return List with only simple Parameter's.
      */
-    public static List define(Parameter[] def, List list) {
+    public static List<Parameter> define(Parameter[] def, List list) {
         if (def == null) return list;
-        for (int i = 0; i < def.length; i++) {
-            if (def[i] instanceof Parameter.Wrapper) {
-                define(((Parameter.Wrapper) def[i]).arguments, list);
+        for (Parameter d : def) {
+            if (d instanceof Parameter.Wrapper) {
+                define(((Parameter.Wrapper) d).arguments, list);
             } else {
-                list.add(def[i]);
+                list.add(d);
             }
         }
         return list;
@@ -113,7 +114,7 @@ public class Functions {
      * @param map
      * @return A map of parameter definitions (Parameter[] objects), keys by function name (String)
     */
-    public static Map getParameterDefinitonsByReflection(Class clazz, Map map) {
+    public static Map<String, Parameter[]> getParameterDefinitonsByReflection(Class clazz, Map<String, Parameter[]> map) {
 
         log.debug("Searching " + clazz);
         Field[] fields = clazz.getDeclaredFields();

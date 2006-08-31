@@ -19,7 +19,7 @@ import java.util.*;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
 
- * @version $Id: ReturnType.java,v 1.14 2005-07-28 17:07:55 michiel Exp $
+ * @version $Id: ReturnType.java,v 1.15 2006-08-31 18:06:03 michiel Exp $
  * @since MMBase-1.7
  */
 public class ReturnType extends Parameter implements java.io.Serializable {
@@ -102,7 +102,7 @@ public class ReturnType extends Parameter implements java.io.Serializable {
      */
     public static final Object VOID_VALUE = new Object();
 
-    private Map typeStruct = new HashMap(); // key -> ReturnType
+    private Map<String, ReturnType> typeStruct = new HashMap<String, ReturnType>(); 
 
     public  ReturnType(Class type, String description) {
         super("RETURN_VALUE", type);
@@ -118,13 +118,13 @@ public class ReturnType extends Parameter implements java.io.Serializable {
      * types of the values seperately too.
      */
     public ReturnType addSubType(String name,  ReturnType type) {
-        return (ReturnType) typeStruct.put(name, type);
+        return typeStruct.put(name, type);
     }
 
     /**
      * @return Unmodifiable Map containing the 'subtypes' in case the type is Map. An empty Map otherwise.
      */
-    public Map getSubTypes() {
+    public Map<String, ReturnType> getSubTypes() {
         return Collections.unmodifiableMap(typeStruct);
     }
 
