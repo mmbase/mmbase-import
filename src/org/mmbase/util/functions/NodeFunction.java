@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * the Parameter array of the constructor.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.21 2006-03-02 17:25:13 michiel Exp $
+ * @version $Id: NodeFunction.java,v 1.22 2006-08-31 18:05:43 michiel Exp $
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
  * @see org.mmbase.util.functions.BeanFunction
@@ -70,16 +70,11 @@ public abstract class NodeFunction extends AbstractFunction {
     }
 
     protected static Parameter[] getNodeParameterDef(Parameter[] def) {
-        List defList = Arrays.asList(def);
-        if (defList.contains(Parameter.NODE) && defList.contains(Parameter.CLOUD)) {
-            return new Parameter[] { new Parameter.Wrapper(def), Parameter.CORENODE};
-        } else if (defList.contains(Parameter.NODE)) {
-            return new Parameter[] { new Parameter.Wrapper(def), Parameter.CLOUD, Parameter.CORENODE};
-        } else if (defList.contains(Parameter.CLOUD)) {
-            return new Parameter[] { new Parameter.Wrapper(def), Parameter.NODE, Parameter.CORENODE};
-        } else {
-            return new Parameter[] { new Parameter.Wrapper(def), Parameter.NODE, Parameter.CLOUD, Parameter.CORENODE};
-        }
+        List<Parameter> defList = new ArrayList(Arrays.asList(def));
+        if (! defList.contains(Parameter.NODE)) defList.add(Parameter.NODE);
+        if (! defList.contains(Parameter.CLOUD)) defList.add(Parameter.CLOUD);
+        if (! defList.contains(Parameter.CORENODE)) defList.add(Parameter.CORENODE);
+        return defList.toArray(Parameter.EMPTY);
     }
 
     /**
