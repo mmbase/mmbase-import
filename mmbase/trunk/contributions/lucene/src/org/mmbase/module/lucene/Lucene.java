@@ -46,7 +46,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.64 2006-08-31 08:42:27 michiel Exp $
+ * @version $Id: Lucene.java,v 1.65 2006-08-31 09:26:28 michiel Exp $
  **/
 public class Lucene extends Module implements NodeEventListener, IdEventListener {
 
@@ -789,8 +789,8 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
             public long  getDelay(TimeUnit unit) {
                 return unit.convert(endTime - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
             }
-            public int compareTo(Object o) {
-                return (int) (getDelay(TimeUnit.MILLISECONDS) - ((Delayed) o).getDelay(TimeUnit.MILLISECONDS));
+            public int compareTo(Delayed o) {
+                return (int) (getDelay(TimeUnit.MILLISECONDS) - o.getDelay(TimeUnit.MILLISECONDS));
             }
         }
         void assign(Assignment assignment) {
