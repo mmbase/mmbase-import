@@ -26,8 +26,7 @@
 		<% 
 	} %>
 </tr>
-<!-- temporary hack to prevent users imported without emailaddress to be listed -->
-<mm:listnodes type='users' orderby='account' constraints="emailadres != ''">
+<mm:listnodes type='users' orderby='account'>
 <tr>
    <td style="vertical-align:top;"><a href="UserInitAction.eb?id=<mm:field name='number'/>"><mm:field name="account"/></a></td>
    <td style="vertical-align:top;"><nobr><mm:field name="voornaam"/> <mm:field name="tussenvoegsel"/> <mm:field name="achternaam"/></nobr></td>
