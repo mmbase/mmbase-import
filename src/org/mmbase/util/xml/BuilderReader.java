@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.74 2006-08-30 17:49:19 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.75 2006-08-31 18:08:20 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -356,8 +356,8 @@ public class BuilderReader extends DocumentReader {
      * @param builder the MMObjectBuilder to which the fields will be added
      * @return a List of all Indices
      */
-    public List getIndices(MMObjectBuilder builder) {
-        List results = new ArrayList();
+    public List<Index> getIndices(MMObjectBuilder builder) {
+        List<Index> results = new ArrayList();
         Index mainIndex = null;
         if (parentBuilder != null) {
             // create the
@@ -366,14 +366,14 @@ public class BuilderReader extends DocumentReader {
                 mainIndex = new Index(builder, Index.MAIN);
                 mainIndex.setUnique(true);
                 for (Iterator i = parentIndex.iterator(); i.hasNext(); ) {
-                    Field field = (Field)i.next();
+                    Field field = (Field) i.next();
                     mainIndex.add(builder.getField(field.getName()));
                 }
             }
         }
 
-        for (Iterator fields = getChildElements("builder.fieldlist","field"); fields.hasNext(); ) {
-            Element field = (Element)fields.next();
+        for (Iterator<Element> fields = getChildElements("builder.fieldlist","field"); fields.hasNext(); ) {
+            Element field = fields.next();
             Element dbtype = getElementByPath(field,"field.db.type");
             if (dbtype != null) {
                 String key = getElementAttributeValue(dbtype,"key");
@@ -419,8 +419,8 @@ public class BuilderReader extends DocumentReader {
     /**
      * @since MMBase-1.8
      */
-    public Set getFunctions() {
-        Set results = new HashSet();
+    public Set<Function> getFunctions() {
+        Map<String, Function> results = new HashMap<String, Function>();
         for(Iterator ns = getChildElements("builder.functionlist","function"); ns.hasNext(); ) {
             try {
                 Element functionElement   = (Element)ns.next();
@@ -460,6 +460,19 @@ public class BuilderReader extends DocumentReader {
                             }
                         };
                 }
+                Function existing = results.get(functionName);
+                if (existing != null) {
+                    log.info("Function " + functionName + " already defined, will combine it");
+                    CombinedFunction cf;
+                    if (existing instanceof CombinedFunction) {
+                        cf = (CombinedFunction) existing;
+                    } else {
+                        cf = new CombinedFunction(functionName);
+                        cf.addFunction(existing);
+                    }
+                    cf.addFunction(function);
+                    function = cf;
+                }
                 if (! (function instanceof NodeFunction)) {
                     // if it contains a 'node' parameter, it can be wrapped into a node-function,
                     // and be available on nodes of this builder.
@@ -479,15 +492,19 @@ public class BuilderReader extends DocumentReader {
                     }
                 }
 
-                results.add(function);
+                results.put(functionName, function);
+                log.info("functions are now: " + results);
             } catch (Throwable e) {
                 log.error(e.getMessage(), e);
             }
 
         }
-
-
-        return results;
+        Set<Function> r = new HashSet<Function>();
+        for(Function fun : results.values()) {
+            r.add(fun);
+        }
+        log.info("Found functions " + r);
+        return r;
 
     }
 
