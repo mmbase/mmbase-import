@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE optionlist PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<optionlist name="workgrouptype">
-   <!-- yes should be on top, because it is the default -->
-   <option id="1">Werkgroep (alleen door docenten aan te passen)</option>
-   <option id="0">Projectgroep (ook door studenten aan te passen)</option>
-</optionlist>

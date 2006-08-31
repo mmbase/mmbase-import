@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE action PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<action type="delete">
-    <prompt>Weet u zeker dat u deze projecttype wilt verwijderen ?</prompt>
-    <description>Klik hier om deze projecttype te verwijderen.</description>
-</action>

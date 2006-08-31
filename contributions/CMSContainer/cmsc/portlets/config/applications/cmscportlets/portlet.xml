@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<portlet exportsource="jdbc:mysql://localhost/cmsc" timestamp="20050919142139">
-	<node number="44100" owner="default">
-		<title>MenuPortlet</title>
-		<description>MenuPortlet</description>
-	</node>
-</portlet>

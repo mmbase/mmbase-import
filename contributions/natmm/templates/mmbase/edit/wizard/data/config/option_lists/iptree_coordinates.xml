@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE optionlist PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<optionlist name="ippolygon_coordinates">
-	<option id="161,409,238,411,238,434,161,434">wat wil je</option>
-	<option id="161,302,238,302,238,328,161,328">wat kun je</option>
-	<option id="161,178,238,178,238,202,161,202">doen</option>
-	<option id="161,51,238,51,238,76,161,76">is het gelukt</option>
-	<option id="52,319,130,319,130,345,52,345">hoe nu verder</option>
-</optionlist>
