@@ -13,9 +13,9 @@ String messageLinkParam = "target=\"_top\"";
 
 if(date.equals("")) { // *** send an email to ask confirmation ***
     long addTime = (new Date()).getTime()/1000;
-    %><mm:createnode type="empupdates"
+    %><mm:createnode type="medewerkers_update"
         ><mm:setfield name="externid"><%= employeeId %></mm:setfield
-        ><mm:setfield name="enrolldate"><%= addTime %></mm:setfield
+        ><mm:setfield name="embargo"><%= addTime %></mm:setfield
         ><mm:setfield name="firstname"><%= firstnameId %></mm:setfield
         ><mm:setfield name="initials"><%= initialsId %></mm:setfield
         ><mm:setfield name="suffix"><%= suffixId %></mm:setfield
@@ -24,11 +24,11 @@ if(date.equals("")) { // *** send an email to ask confirmation ***
         ><mm:setfield name="cellularphone"><%= cellularphoneId %></mm:setfield
         ><mm:setfield name="fax"><%= faxId %></mm:setfield
         ><mm:setfield name="email"><%= emailId %></mm:setfield
-        ><mm:setfield name="deptdescr"><%= deptdescrId %></mm:setfield
-        ><mm:setfield name="position"><%= posdescrId %></mm:setfield
-        ><mm:setfield name="progdescr"><%= progdescrId %></mm:setfield
-        ><mm:setfield name="intro"><%= introupdateId %></mm:setfield
-        ><mm:setfield name="description"><%= descrupdateId %></mm:setfield
+        ><mm:setfield name="job"><%= jobId %></mm:setfield
+        ><mm:setfield name="omschrijving_eng"><%= omschrijving_engId %></mm:setfield
+        ><mm:setfield name="omschrijving_de"><%= omschrijving_deId %></mm:setfield
+        ><mm:setfield name="omschrijving_fra"><%= omschrijving_fraId %></mm:setfield
+        ><mm:setfield name="omschrijving"><%= omschrijvingId %></mm:setfield
     ></mm:createnode
     ><%@include file="texts.jsp" %><%
      if(emailId.indexOf("@")==-1) {
@@ -79,23 +79,23 @@ if(date.equals("")) { // *** send an email to ask confirmation ***
 
 } else { // *** changes are confirmed ***
     
-    %><mm:list path="empupdates" constraints="<%= "empupdates.enrolldate='" + date + "'" %>" max="1"
-        ><mm:node element="empupdates" id="updatefound"
-            ><mm:field name="externid" jspvar="dummy" vartype="String" write="false"><% employeeId = dummy; %></mm:field
-            ><mm:field name="firstname" jspvar="dummy" vartype="String" write="false"><% firstnameId = dummy; %></mm:field
-            ><mm:field name="initials" jspvar="dummy" vartype="String" write="false"><% initialsId = dummy; %></mm:field
-            ><mm:field name="suffix" jspvar="dummy" vartype="String" write="false"><% suffixId = dummy; %></mm:field
-            ><mm:field name="lastname" jspvar="dummy" vartype="String" write="false"><% lastnameId = dummy; %></mm:field
-            ><mm:field name="companyphone" jspvar="dummy" vartype="String" write="false"><% companyphoneId = dummy; %></mm:field
-            ><mm:field name="cellularphone" jspvar="dummy" vartype="String" write="false"><% cellularphoneId = dummy; %></mm:field
-            ><mm:field name="fax" jspvar="dummy" vartype="String" write="false"><% faxId = dummy; %></mm:field
-            ><mm:field name="email" jspvar="dummy" vartype="String" write="false"><% emailId = dummy; %></mm:field
-            ><mm:field name="deptdescr" jspvar="dummy" vartype="String" write="false"><% deptdescrId = dummy; %></mm:field
-            ><mm:field name="posdescr" jspvar="dummy" vartype="String" write="false"><% posdescrId = dummy; %></mm:field
-            ><mm:field name="progdescr" jspvar="dummy" vartype="String" write="false"><% progdescrId = dummy; %></mm:field
-            ><mm:field name="intro" jspvar="dummy" vartype="String" write="false"><% introupdateId = dummy; %></mm:field
-            ><mm:field name="description" jspvar="dummy" vartype="String" write="false"><% descrupdateId = dummy; %></mm:field
-            ><mm:deletenode 
+    %><mm:list path="medewerkers_update" constraints="<%= "medewerkers_update.embargo='" + date + "'" %>" max="1"
+        ><mm:node element="medewerkers_update" id="updatefound" jspvar="e"><%
+            employeeId = e.getStringValue("externid");
+            firstnameId = e.getStringValue("firstname");
+            initialsId = e.getStringValue("initials");
+            suffixId = e.getStringValue("externid");
+            lastnameId = e.getStringValue("suffix");
+            companyphoneId = e.getStringValue("companyphone");
+            cellularphoneId = e.getStringValue("cellularphone");
+            faxId = e.getStringValue("fax");
+            emailId = e.getStringValue("email");
+            jobId = e.getStringValue("job");
+            omschrijving_engId = e.getStringValue("omschrijving_eng");
+            omschrijving_deId = e.getStringValue("omschrijving_de");
+            omschrijving_fraId = e.getStringValue("omschrijving_fra");
+            omschrijvingId = e.getStringValue("omschrijving");
+            %><mm:deletenode 
         /></mm:node
         ><%@include file="texts.jsp" %><% 
 
@@ -137,13 +137,14 @@ if(date.equals("")) { // *** send an email to ask confirmation ***
                 /></mm:node
                 ><mm:remove referid="thismail" /><%
             }
-            %><mm:node number="<%= employeeId %>"
-                ><mm:field name="omschrijving" jspvar="dummy" vartype="String" write="false"><%
-                    if(!descrupdateId.equals(dummy)) {
-                       %><mm:setfield name="omschrijving"><%= descrupdateId %></mm:setfield><%
-                    }
-                %></mm:field
-            ></mm:node><%
+            %><mm:node number="<%= employeeId %>" jspvar="e"><%
+               if(!omschrijvingId.equals(e.getStringValue("omschrijving"))) {
+                  %><mm:setfield name="omschrijving"><%= omschrijvingId %></mm:setfield><% 
+               } 
+               if(!omschrijvingId.equals(e.getStringValue("omschrijving_fra"))) {
+                  %><mm:setfield name="omschrijving_fra"><%= omschrijving_fraId %></mm:setfield><% 
+               } 
+            %></mm:node><%
             
             messageTitle = "Je wijzigingen zijn bevestigd";
             messageBody = "Bedankt voor het doorgeven van je wijzigingen:<br><br><br>Je wijzigingen zijn:";

@@ -10,8 +10,11 @@
     <tr><td>Mobiel:&nbsp;</td>                      <td><input type="text" name="cellularphone" value="<mm:field name="cellularphone" />" style="width:300px;"></td></tr>
     <tr><td>Fax:&nbsp;</td>                         <td><input type="text" name="fax" value="<mm:field name="fax" />" style="width:300px;"></td></tr>
     <tr><td>Email (**):&nbsp;</td>                  <td><input type="text" name="email" value="<mm:field name="email" />" style="width:300px;"></td></tr>
-    <tr><td>Regio/afdeling en functie:&nbsp;</td>   <td><textarea name="deptdescr" style="width:300px;height:50px;"><%= deptdescrId %></textarea></td></tr>
-    <tr><td>En verder:&nbsp;</td>                   <td><textarea name="descrupdate" style="width:300px;height:50px;"><mm:field name="omschrijving" /></textarea></td></tr>
+    <tr><td>Regio/afdeling en functie:&nbsp;</td>   <td><textarea name="omschrijving_eng" style="width:300px;height:50px;"><%= omschrijving_engId %></textarea></td></tr>
+    <tr><td>Functie (visitekaartje):&nbsp;</td>     <td><input type="text" name="job" value="<mm:field name="job" />" style="width:300px;"></td></tr>
+    <tr><td>Lokatie:&nbsp;</td>                     <td><input type="text" name="omschrijving_de" value="<%= omschrijving_deId %>" style="width:300px;"></td></tr>
+    <tr><td>Vaste vrije dag(en):&nbsp;</td>         <td><textarea name="omschrijving_fra" style="width:300px;height:50px;"><mm:field name="omschrijving_fra" /></textarea></td></tr>
+    <tr><td>En verder:&nbsp;</td>                   <td><textarea name="omschrijving" style="width:300px;height:50px;"><mm:field name="omschrijving" /></textarea></td></tr>
     <tr><td colspan="2"><div align="right"><input type="submit" name="Submit" value="Verstuur wijzigingen"  style="text-align:center;font-weight:bold;">&nbsp;</div></td></tr>
     <tr><td colspan="2">
      <i>(*) een nieuwe foto kunt u versturen naar <a href="mailto:<%= defaultFromAddress %>"><%= defaultFromAddress %><a></i><br>
@@ -31,10 +34,15 @@ function updateIt(el) {
     var cellularphone = escape(document.whoiswhoupdate.elements["cellularphone"].value);
     var fax = escape(document.whoiswhoupdate.elements["fax"].value);
     var email = escape(document.whoiswhoupdate.elements["email"].value);
-    var descrupdate = escape(document.whoiswhoupdate.elements["descrupdate"].value);
+    var job = escape(document.whoiswhoupdate.elements["job"].value);
+    var omschrijving_eng = escape(document.whoiswhoupdate.elements["omschrijving_eng"].value);
+    var omschrijving_de = escape(document.whoiswhoupdate.elements["omschrijving_de"].value);
+    var omschrijving = escape(document.whoiswhoupdate.elements["omschrijving"].value);
+    var omschrijving_fra = escape(document.whoiswhoupdate.elements["omschrijving_fra"].value);
     href += "&employee=<%= employeeId %>&firstname=" + firstname + "&initials=" + initials + "&suffix=" + suffix  + "&lastname=" + lastname 
          + "&companyphone=" + companyphone + "&cellularphone=" + cellularphone + "&fax=" + fax + "&email=" + email
-         + "&descrupdate=" + descrupdate + "&pst=|action=commit"; 
+         + "&job=" + job + "&omschrijving_eng=" + omschrijving_eng + "&omschrijving_de=" + omschrijving_de + "&omschrijving_fra=" + omschrijving_fra
+         + "&omschrijving=" + omschrijving + "&pst=|action=commit"; 
     document.location = href; 
     return false; 
 }

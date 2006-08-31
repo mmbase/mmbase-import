@@ -26,7 +26,6 @@
       -running the import might take 1+ hour<br/>
       -check the mmbase.log and wait for the logmessage "Application 'NMIntra' deployed succesfully"<br/>
       Some todo's:
-      -email.xml is not necessary<br/>
       -medewerkers.xml email address of EmmerigM and BSwarts are to long (search on X400)<br/>
    7. Run the other update scripts.
    8. Set new passwords for all users, and set their rights<br/>
