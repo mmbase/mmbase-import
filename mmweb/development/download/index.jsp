@@ -68,7 +68,7 @@ and download with it can be found at
 </mm:list>
 
 <h3>MMBase builds</h3>
-<p>Latest builds from the stable branch (MMBase-1_7)</p>
+<p>Latest builds from the previous stable branch (MMBase-1_7, MMBase-1_8)</p>
 <ul>
 <% 
 Iterator j = getStableBuilds(3).iterator();
@@ -78,11 +78,12 @@ while (j.hasNext()) {
 <% } %>
 </ul>
 
-<p>Latest builds from the HEAD branch that is to become the 1.8 release</p>
+<p>Latest builds from the HEAD branch. The 1.8 branch was made on 2006-08-30. Builds after that are 1.9.0.</p>
 <ul>
-<% Iterator l = getReleaseBuilds(3).iterator();
-while (l.hasNext()) {
-  BuildInfo info = (BuildInfo) l.next(); %>
+<% ListIterator l = getReleaseBuilds(3).listIterator();
+while (l.hasNext()) l.next();
+while (l.hasPrevious()) {
+  BuildInfo info = (BuildInfo) l.previous(); %>
   <li><%= info.dateString %> <%= info.remarks %> <a href="<mm:url page="<%= info.link %>" />">view</a></li>
 <% } %>
 </ul>
