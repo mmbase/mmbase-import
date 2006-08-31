@@ -9,7 +9,7 @@ if(!action.equals("print")) {
         String employeeConstraint = "";
         if(thisPrograms.equals("")) {
             // *** in the general who-is-who only people which are active or have special externid 'wieiswie' ***
-            employeeConstraint = "( medewerkers.importstatus != 'inactive' ) OR ( medewerkers.externid LIKE 'wieiswie' )";
+            employeeConstraint = "( medewerkers.importstatus != 'inactive' ) OR ( medewerkers.externid LIKE 'extern' )";
         } else { 
             // *** dummy constraint to create valid query, note: <>'0' omits all updated employees ***
             employeeConstraint = "( medewerkers.importstatus != '1')";
