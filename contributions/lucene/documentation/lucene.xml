@@ -6,7 +6,7 @@
   <articleinfo>
     <title>MMBase Lucene module</title>
     <date>2005-12-24</date>
-    <edition>$Id: lucene.xml,v 1.3 2006-07-18 06:30:51 michiel Exp $</edition>
+    <edition>$Id: lucene.xml,v 1.4 2006-08-31 08:41:53 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Pierre</firstname>
@@ -138,9 +138,49 @@
       <section>
         <title>Direct access to JDBC</title>
         <para>
-          Can be defined with the 'jdbc' subtag of 'index'. At the moment the implementation supposes that the jdbc connection should go to the same database as the MMBase instance. More general jdbc connection configuration may easily be added.
+          Can be defined with the 'jdbc' subtag of 'index'. At the moment the implementation
+          supposes that the jdbc connection should go to the same database as the MMBase
+          instance. More general jdbc connection configuration may easily be added.
         </para>
-        <para>
+        <para>          
+      <example>
+        <title>Example for jdbc-tag</title>
+        <programlisting id="luceneindex2.xml"><![CDATA[
+<?xml version="1.0"?>
+  <index name="vraag">
+    <analyzer class="org.mmbase.module.lucene.analysis.nl.StandardCleaningAnalyzer" />
+    <jdbc sql="select id,parentid,threadid,title,body,authorid,ratingcount,ratingpoints,configtype,status,createdtime,modifiedtime,priority,ip from frm_forum where configtype = 'vraag' and (status != 'H' or status is null) order by id"
+          key="id"
+          find="select id, parentid, threadid, title, body, authorid,ratingcount,ratingpoints,configtype,status,createdtime,modifiedtime,priority,ip from frm_forum where configtype = 'vraag' and id = [KEY]"
+          >
+    </jdbc>
+  </index>
+
+  <index name="vraag_threads">
+    <analyzer class="org.mmbase.module.lucene.analysis.nl.StandardCleaningAnalyzer" />
+    <jdbc sql="select id,parentid,threadid,title,body,authorid,ratingcount,ratingpoints,configtype,status,createdtime,modifiedtime,priority,ip from frm_forum where configtype = 'vraag' and (status != 'H' or status is null) order by threadid,id"
+          key="threadid"
+          find="select id, parentid, threadid, title, body, authorid,ratingcount,ratingpoints,configtype,status,createdtime,modifiedtime,priority,ip from frm_forum where configtype = 'vraag' and id = [KEY]"
+          >
+      <field name="createdtime" multiple="first" />
+    </jdbc>
+  </index>
+
+  <!-- If not possible to define the document with one query, it can also be done with subqueries -->
+  <index name="vraag_threads_variant">
+    <analyzer class="org.mmbase.module.lucene.analysis.nl.StandardCleaningAnalyzer" />
+    <jdbc sql="select id,parentid,threadid,title,body,authorid,ratingcount,ratingpoints,configtype,status,createdtime,modifiedtime,priority,ip from frm_forum where configtype = 'vraag' and id == threadid and (status != 'H' or status is null) order by id"
+          key="threadid"
+          find="select id, parentid, threadid, title, body, authorid,ratingcount,ratingpoints,configtype,status,createdtime,modifiedtime,priority,ip from frm_forum where configtype = 'vraag' and id = [KEY]"
+          >
+          <related sql="select id,parentid,threadid,title,body,authorid,ratingcount,ratingpoints,configtype,status,createdtime,modifiedtime,priority,ip from frm_forum where configtype = 'vraag' and threadid == [KEY] and (status != 'H' or status is null) order by id" key="id">
+             <field name="createdtime" multiple="first" />
+          </related>
+    </jdbc>
+  </index>
+
+</luceneindex>
+]]>
         </para>
       </section>
     </section>
