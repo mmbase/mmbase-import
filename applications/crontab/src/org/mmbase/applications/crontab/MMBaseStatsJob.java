@@ -38,7 +38,7 @@ and:
   &lt;/logger&gt;
 </pre>
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseStatsJob.java,v 1.4 2006-06-23 18:11:56 michiel Exp $
+ * @version $Id: MMBaseStatsJob.java,v 1.5 2006-08-31 08:23:29 michiel Exp $
  */
 
 public class MMBaseStatsJob extends AbstractCronJob  {
@@ -69,8 +69,8 @@ public class MMBaseStatsJob extends AbstractCronJob  {
         } else if (w.equals("JOBSPOOL")) {
             job = new Runnable() {
                     public void run() {
-                        edu.emory.mathcs.backport.java.util.concurrent.ThreadPoolExecutor j = 
-                            (edu.emory.mathcs.backport.java.util.concurrent.ThreadPoolExecutor) ThreadPools.jobsExecutor;
+                        java.util.concurrent.ThreadPoolExecutor j = 
+                            (java.util.concurrent.ThreadPoolExecutor) ThreadPools.jobsExecutor;
                         statsLogger.service("" + j.getCompletedTaskCount() + '\t' + j.getActiveCount() + '\t'+ j.getQueue().size() + '\t' + 
                                             j.getPoolSize() + '\t' + j.getLargestPoolSize() + '\t' + j.getCorePoolSize() + '\t' + j.getMaximumPoolSize());
                     }
