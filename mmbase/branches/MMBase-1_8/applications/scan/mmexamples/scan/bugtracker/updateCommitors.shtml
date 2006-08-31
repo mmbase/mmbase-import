@@ -1,0 +1,20 @@
+<LIST MULTILEVEL NODE="$MOD-MMBASE-BUILDER-users-number^" TYPE="users,groups" PROCESSOR="MMBASE" FIELDS="users.number,users.firstname,users.lastname,users.email,groups.name" WHERE="groups.name=='BugTrackerCommitors'" MEMCACHE="NO" VERSION="2.0">
+<LIF $ITEML==0>
+	you are not a committor	
+</IF>
+<LISTLOOP>
+			Add maintainer <A HREF="addMaintainer.shtml?$PARAM1"><IMG SRC="beeld/pijl.gif" BORDER="0"></A><BR>
+			Remove maintainer <A HREF="removeMaintainer.shtml?$PARAM1"><IMG SRC="beeld/pijl.gif" BORDER="0"></A><BR>
+			Add Submitter <A HREF="addSubmitter.shtml?$PARAM1"><IMG SRC="beeld/pijl.gif" BORDER="0"></A><BR>
+			Remove Submitter <A HREF="removeSubmitter.shtml?$PARAM1"><IMG SRC="beeld/pijl.gif" BORDER="0"></A><BR>
+			Add Interested <A HREF="addInterested.shtml?$PARAM1"><IMG SRC="beeld/pijl.gif" BORDER="0"></A><BR>
+			Remove Interested <A HREF="removeInterested.shtml?$PARAM1"><IMG SRC="beeld/pijl.gif" BORDER="0"></A><BR>
+			Change status <A HREF="changeStatus.shtml?$PARAM1"><IMG SRC="beeld/pijl.gif" BORDER="0"></A><BR>
+			Change type <A HREF="changeType.shtml?$PARAM1"><IMG SRC="beeld/pijl.gif" BORDER="0"></A><BR>
+			Change priority <A HREF="changePriority.shtml?$PARAM1"><IMG SRC="beeld/pijl.gif" BORDER="0"></A><BR>
+			Change version <A HREF="changeVersion.shtml?$PARAM1"><IMG SRC="beeld/pijl.gif" BORDER="0"></A><BR>
+			Change issue <A HREF="changeIssue.shtml?$PARAM1"><IMG SRC="beeld/pijl.gif" BORDER="0"></A><BR>
+			Change description <A HREF="changeDescription.shtml?$PARAM1"><IMG SRC="beeld/pijl.gif" BORDER="0"></A><BR>
+			Change rationale <A HREF="changeRationale.shtml?$PARAM1"><IMG SRC="beeld/pijl.gif" BORDER="0"></A><BR>
+</LISTLOOP>
+</LIST>

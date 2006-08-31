@@ -1,0 +1,16 @@
+<jsp:root
+    version="1.2"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page">
+  <jsp:directive.page session="false" />
+  <jsp:output omit-xml-declaration="true" />
+
+  <meta name="keywords" content="mmbase mynews richtext" />
+  <mm:import externid="style">style</mm:import>
+  <link href="${param.dir}${style}.css.jspx" rel="stylesheet" title="normal" type="text/css" media="screen" /> 
+  <link href="${param.dir}print.css" rel="stylesheet" type="text/css"  media="print"/> 
+  <mm:link  page="/mmbase/style/favicon.ico">
+    <link rel="icon" href="${_}" type="image/x-icon" />
+    <link rel="shortcut icon" href="${_}" type="image/x-icon" />
+  </mm:link>
+</jsp:root>

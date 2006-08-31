@@ -1,0 +1,63 @@
+
+span.select {
+  background:  url(../images/select.gif); /* makes it work in IE */
+  width: 20px;
+}
+
+span.select:after {
+  content: url(../images/select.gif); /* makes it work in Mozilla */
+}
+
+span.create {
+  background:  url(../images/create.gif); /* makes it work in IE */
+  width: 20px;
+}
+
+span.create:before {
+  content: url(../images/create.gif); /* makes it work in Mozilla */
+}
+
+span.change {
+  background:  url(../images/select.gif); /* makes it work in IE */
+  width: 20px;
+}
+
+span.change:before {
+  content: url(../images/transparent.png); /* makes it work in Mozilla */
+}
+
+span.delete {
+  background:  url(../images/delete.gif); /* makes it work in IE */
+  width: 20px;
+}
+
+span.delete:before {
+  content: url(../images/transparent.png); /* makes it work in Mozilla */
+}
+
+span.previous {
+  background:  url(../images/previous.gif); /* makes it work in IE */
+  width: 20px;
+}
+
+span.previous:before {
+  content: url(../images/previous.gif); /* makes it work in Mozilla */
+}
+
+span.next {
+  background:  url(../images/next.gif); /* makes it work in IE */
+  width: 20px;
+}
+
+span.next:before {
+  content: url(../images/next.gif); /* makes it work in Mozilla */
+}
+
+span.tree {
+  background:  url(../images/search.gif); /* makes it work in IE */
+  width: 20px;
+}
+
+span.tree:before   { 
+  content: url(../images/search.gif);
+}

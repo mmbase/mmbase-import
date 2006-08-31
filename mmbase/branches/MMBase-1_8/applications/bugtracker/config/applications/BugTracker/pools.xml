@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pools exportsource="mmbase://127.0.0.1/mmbase/install" timestamp="20030731153742">
+	<node number="79" owner="admin" alias="BugTracker.Start">
+		<name>BugTracker pool</name>
+		<description></description>
+	</node>
+
+</pools>

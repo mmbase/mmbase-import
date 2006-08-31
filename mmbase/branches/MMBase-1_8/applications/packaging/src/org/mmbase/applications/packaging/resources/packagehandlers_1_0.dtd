@@ -1,0 +1,11 @@
+<!--
+    packagehandlers.dtd
+-->
+
+<!ELEMENT packagehandlers (packagehandler*)>
+
+<!ELEMENT packagehandler (description*)>
+<!ATTLIST packagehandler type CDATA #IMPLIED>
+<!ATTLIST packagehandler class CDATA #IMPLIED>
+
+<!ELEMENT description (#PCDATA)>

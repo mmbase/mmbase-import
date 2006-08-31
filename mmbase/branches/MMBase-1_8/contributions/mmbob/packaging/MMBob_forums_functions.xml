@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE packaging_function_set PUBLIC "-//MMBase/DTD packaging_function_set config 1.0//EN" "http://www.mmbase.org/dtd/packaging_function_set_1_0.dtd">
+<packaging_function_set>
+	<lastversion>23</lastversion>
+	<lastdate>Thu May 06 12:54:38 CEST 2004</lastdate>
+	<name>MMBob forums functions</name>
+	<maintainer>Submarine</maintainer>
+	<description>Jar's needed for the MMBob forum system</description>
+	<license type="MPL" version="1.0" name="mozzila public license" />
+	<releasenotes></releasenotes>
+	<installationnotes></installationnotes>
+	<functionsetfile>config/functions/functionsetfile.xml</functionsetfile>
+	<functionsetdir>config/functions/sets/</functionsetdir>
+	<packagedepends>
+		<package name="MMBob forums jars" maintainer="Submarine" type="java/jar" version="10" versionmode="atleast" />
+		<package name="MMBob forums model" maintainer="Submarine" type="cloud/model" version="9" versionmode="atleast" />
+	</packagedepends>
+	<initiators>
+		<initiator name="Daniel Ockeloen" company="Submarine" />
+	</initiators>
+	<supporters>
+		<supporter company="MMBase Foundation" />
+		<supporter company="Submarine" />
+		<supporter company="Kennisnet" />
+		<supporter company="Million Pieces" />
+	</supporters>
+	<developers>
+		<developer name="Daniel Ockeloen" company="Submarine" mailto="daniel@submarien.nl" />
+		<developer name="Gerard van Enk" company="Million Pieces" mailto="gerard@millionpieces.nl" />
+	</developers>
+	<contacts>
+		<contact name="Gerard van Enk" reason="Bugs Reports" mailto="gerard@millionpieces.nl" />
+		<contact name="Bruno Felix" reason="Sponser/Support questions" mailto="bruno@submarine.nl" />
+	</contacts>
+</packaging_function_set>

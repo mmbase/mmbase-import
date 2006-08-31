@@ -1,0 +1,30 @@
+<!--
+    functionset.dtd
+-->
+
+<!ELEMENT functionset (status,version,description,function*)>
+
+<!ELEMENT status (#PCDATA)>
+<!ELEMENT version (#PCDATA)>
+
+<!ELEMENT function (description,type,class,method,param*,return)>
+<!ATTLIST function name CDATA #IMPLIED>
+
+<!ELEMENT description (#PCDATA)>
+<!ELEMENT type (#PCDATA)>
+<!ELEMENT class (#PCDATA)>
+
+<!ELEMENT method (#PCDATA)>
+
+<!ELEMENT param (#PCDATA)>
+<!ATTLIST param name CDATA #IMPLIED>
+<!ATTLIST param type CDATA #IMPLIED>
+<!ATTLIST param description CDATA #IMPLIED>
+
+<!ELEMENT return (field*)>
+<!ATTLIST return type CDATA #IMPLIED>
+
+<!ELEMENT field (#PCDATA)>
+<!ATTLIST field name CDATA #IMPLIED>
+<!ATTLIST field type CDATA #IMPLIED>
+<!ATTLIST field description CDATA #IMPLIED>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<areas exportsource="mmbase://127.0.0.1/mmbase/install" timestamp="20030731153742">
+	<node number="211" owner="admin">
+		<name>bugtracker</name>
+		<description></description>
+	</node>
+
+</areas>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE packaging_display_html PUBLIC "-//MMBase/DTD packaging_display_html config 1.0//EN" "http://www.mmbase.org/dtd/packaging_display_html_1_0.dtd">
+<packaging_display_html>
+	<lastversion>11</lastversion>
+	<lastdate>Fri Jun 03 12:53:27 CEST 2005</lastdate>
+	<name>mmbar html</name>
+	<maintainer>Kennisnet</maintainer>
+	<description>mmbar tests html pages, tools and external pages for jmeter</description>
+	<license type="MPL" version="1.0" name="Mozzila Public License" />
+	<releasenotes></releasenotes>
+	<installationnotes></installationnotes>
+	<installreset>false</installreset>
+	<basedir>templates/jsp/</basedir>
+	<include>*</include>
+	<exclude>/CVS/</exclude>
+	<packagedepends>
+	</packagedepends>
+	<initiators>
+		<initiator name="Daniel Ockeloen" company="Kennisnet" />
+	</initiators>
+	<supporters>
+	</supporters>
+	<developers>
+		<developer name="Daniel Ockeloen" company="Kennisnet" />
+	</developers>
+	<contacts>
+		<contact name="Daniel Ockeloen" reason="Bugs Reports" mailto="daniel@xs4all.nl" />
+	</contacts>
+	<publishprovider name="" state="inactive" sharepassword="" />
+</packaging_display_html>
