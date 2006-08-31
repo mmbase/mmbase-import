@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.161 2006-08-31 14:42:47 nklasens Exp $
+    @version $Id: wizard.xsl,v 1.162 2006-08-31 15:30:35 nklasens Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -1597,7 +1597,7 @@
     <td>
       <xsl:choose>
         <xsl:when test="@maywrite=&apos;true&apos; and command[@name=&apos;move-up&apos;]">
-          <span class="imgbutton" title="{$tooltip_up}" onclick="doSendCommand(&apos;{command[@name=&apos;move-up&apos;]/@cmd}&apos;);">
+          <span class="imgbutton" title="{$tooltip_up}" onclick="doMoveUp(&apos;{command[@name=&apos;move-up&apos;]/@cmd}&apos;);">
             <xsl:call-template name="prompt_up"/>
           </span>
         </xsl:when>
@@ -1609,7 +1609,7 @@
     <td>
       <xsl:choose>
         <xsl:when test="@maywrite=&apos;true&apos; and command[@name=&apos;move-down&apos;]">
-          <span class="imgbutton" title="{$tooltip_down}" onclick="doSendCommand(&apos;{command[@name=&apos;move-down&apos;]/@cmd}&apos;);">
+          <span class="imgbutton" title="{$tooltip_down}" onclick="doMoveDown(&apos;{command[@name=&apos;move-down&apos;]/@cmd}&apos;);">
             <xsl:call-template name="prompt_down"/>
           </span>
         </xsl:when>
