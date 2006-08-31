@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.23 2006-03-23 19:55:06 michiel Exp $
+ * @version $Id: Parameters.java,v 1.24 2006-08-31 14:25:40 michiel Exp $
  * @see Parameter
  * @see #Parameters(Parameter[])
  */
@@ -42,7 +42,7 @@ public class Parameters extends AbstractList implements java.io.Serializable {
     /**
      * The contents of this List are stored in this HashMap.
      */
-    protected Map backing; /* String -> Value */
+    protected Map<String, Object> backing;
 
     /**
      * This array maps integers (position in array) to map keys, making it possible to implement
@@ -77,12 +77,12 @@ public class Parameters extends AbstractList implements java.io.Serializable {
      * </pre>
      */
     public Parameters(Parameter[] def) {
-        definition = (Parameter[]) Functions.define(def, new ArrayList()).toArray(Parameter.EMPTY);
+        definition = (Parameter[]) Functions.define(new ArrayList<Parameter>(), def).toArray(Parameter.EMPTY);
         toIndex = definition.length;
         if (log.isDebugEnabled()) {
             log.debug("Found definition " + Arrays.asList(definition));
         }
-        backing = new HashMap();
+        backing = new HashMap<String, Object>();
         // fill with default values, and check for non-unique keys.
         for (int i = fromIndex; i < toIndex; i++) {
             if (backing.put(definition[i].getName(), definition[i].getDefaultValue()) != null) {
@@ -101,6 +101,13 @@ public class Parameters extends AbstractList implements java.io.Serializable {
      * @see #Parameters(Parameter[])
      */
     public Parameters(Parameter[] def, Collection values) {
+        this(def);
+        setAll(values);
+    }
+    /**
+     * @since MMBase-1.9
+     */
+    public Parameters(Parameter[] def, Object... values) {
         this(def);
         setAll(values);
     }
@@ -287,12 +294,10 @@ public class Parameters extends AbstractList implements java.io.Serializable {
     /**
      * Copies all values of a map to the corresponding values of this Parameters Object.
      */
-    public Parameters setAll(Map map) {
+    public Parameters setAll(Map<String, Object> map) {
         if (map != null) {
-            Iterator i = map.entrySet().iterator();
-            while (i.hasNext()) {
-                Map.Entry entry = (Map.Entry) i.next();
-                set((String) entry.getKey(), entry.getValue());
+            for (Map.Entry<String, Object> entry : map.entrySet()) {
+                set(entry.getKey(), entry.getValue());
             }
         }
         return this;
@@ -313,6 +318,16 @@ public class Parameters extends AbstractList implements java.io.Serializable {
             while (valueIterator.hasNext()) {
                 set(i++, valueIterator.next());
             }
+        }
+        return this;
+    }
+    /**
+     * @since MMBase-1.9
+     */
+    public Parameters setAll(Object... values) {
+        int i = 0;
+        for(Object value : values) {
+            set(i++, value);
         }
         return this;
     }
@@ -392,7 +407,7 @@ public class Parameters extends AbstractList implements java.io.Serializable {
     /**
      * Gives the arguments back as a (unmodifiable) map.
      */
-    public Map toMap() {
+    public Map<String, Object> toMap() {
         return Collections.unmodifiableMap(backing);
     }
 
