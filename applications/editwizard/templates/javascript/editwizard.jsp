@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.62 2006-08-17 12:30:21 nklasens Exp $
+ * @version  $Id: editwizard.jsp,v 1.63 2006-08-31 14:42:47 nklasens Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
@@ -272,6 +272,11 @@ function doAdd(s, cmd) {
 }
 
 function doAddInline(cmd) {
+    saveScroll();
+    doSendCommand(cmd);
+}
+
+function doRemove(cmd) {
     saveScroll();
     doSendCommand(cmd);
 }
