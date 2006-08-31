@@ -19,12 +19,12 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: FunctionProvider.java,v 1.11 2005-07-28 17:07:55 michiel Exp $
+ * @version $Id: FunctionProvider.java,v 1.12 2006-08-31 18:04:37 michiel Exp $
  */
 public abstract class FunctionProvider {
     private static final Logger log = Logging.getLoggerInstance(FunctionProvider.class);
 
-    protected Map functions = Collections.synchronizedMap(new HashMap());
+    protected Map<String, Function> functions = Collections.synchronizedMap(new HashMap<String, Function>());
     /**
      * Every Function Provider provides least the 'getFunctions' function, which returns a Set of all functions which it provides.
      */
@@ -48,11 +48,10 @@ public abstract class FunctionProvider {
      */
     public FunctionProvider() {
         // determine parameters through reflection
-        Map parameterDefinitions =  Functions.getParameterDefinitonsByReflection(this.getClass(), new HashMap());
+        Map<String, Parameter[]> parameterDefinitions =  Functions.getParameterDefinitonsByReflection(this.getClass(), new HashMap<String, Parameter[]>());
         try {
-            for (Iterator i = parameterDefinitions.entrySet().iterator(); i.hasNext(); ) {
-                Map.Entry entry = (Map.Entry) i.next();
-                Function fun = newFunctionInstance((String)entry.getKey(), (Parameter[])entry.getValue(), ReturnType.UNKNOWN);
+            for (Map.Entry<String, Parameter[]> entry : parameterDefinitions.entrySet()) {
+                Function fun = newFunctionInstance(entry.getKey(), entry.getValue(), ReturnType.UNKNOWN);
                 fun.setDescription("Function automaticly found by reflection on public Parameter[] members");
                 addFunction(fun);
             }
@@ -108,13 +107,13 @@ public abstract class FunctionProvider {
      * @return Function object or <code>null</code> if no such function is provided.
      */
     public Function getFunction(String functionName) {
-        return (Function)functions.get(functionName);
+        return functions.get(functionName);
     }
 
     /**
      * Returns a Collection of all functions currently provided by the FunctionProvider.
      */
-    public Collection getFunctions() {
+    public Collection<Function> getFunctions() {
         return Collections.unmodifiableCollection(functions.values());
     }
 
