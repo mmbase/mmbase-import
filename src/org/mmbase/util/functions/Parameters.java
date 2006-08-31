@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.24 2006-08-31 14:25:40 michiel Exp $
+ * @version $Id: Parameters.java,v 1.25 2006-08-31 18:06:03 michiel Exp $
  * @see Parameter
  * @see #Parameters(Parameter[])
  */
@@ -77,7 +77,7 @@ public class Parameters extends AbstractList implements java.io.Serializable {
      * </pre>
      */
     public Parameters(Parameter[] def) {
-        definition = (Parameter[]) Functions.define(new ArrayList<Parameter>(), def).toArray(Parameter.EMPTY);
+        definition = Functions.define(def, new ArrayList<Parameter>()).toArray(Parameter.EMPTY);
         toIndex = definition.length;
         if (log.isDebugEnabled()) {
             log.debug("Found definition " + Arrays.asList(definition));
