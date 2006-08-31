@@ -21,7 +21,8 @@ if(!action.equals("print")) {
         <tr><td colspan="2" class="bold"><select name="department" style="width:195px;">
                 <option value="default" <%  if(departmentId.equals("default")) { %>SELECTED<% } 
                     %>>alle afdelingen en regio's
-            <mm:list path="afdelingen" orderby="afdelingen.naam" directions="UP" constraints="afdelingen.omschrijving!='-1'"
+            <mm:list path="afdelingen" orderby="afdelingen.naam" directions="UP"
+                  constraints="( afdelingen.importstatus != 'inactive' ) OR ( afdelingen.externid LIKE 'extern' )"
                 ><mm:field name="afdelingen.number" jspvar="departments_number" vartype="String" write="false"
                 ><mm:field name="afdelingen.naam" jspvar="departments_name" vartype="String" write="false"
                 ><option value="<%= departments_number %>" <%   if(departments_number.equals(departmentId))  { %>SELECTED<% } 

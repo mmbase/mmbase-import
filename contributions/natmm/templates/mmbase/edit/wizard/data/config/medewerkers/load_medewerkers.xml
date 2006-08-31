@@ -4,8 +4,12 @@
    <field name="titel"/>
    <field name="titel_fra"/>
    <field name="titel_de"/>
+   <field name="titel_eng"/>
    <field name="titel_zichtbaar"/>
    <field name="omschrijving"/>
+   <field name="omschrijving_fra"/>
+   <field name="omschrijving_de"/>
+   <field name="omschrijving_eng"/>
    <field name="bron"/>
    <field name="metatags"/>
    <field name="creatiedatum"/>
@@ -29,6 +33,7 @@
    <field name="job"/>
    <field name="department"/>
    <field name="externid"/>
+   <field name="updateinfo"/>
    <field name="importstatus"/>
    <field name="account"/>
    <relation destination="afdelingen" role="readmore"/>

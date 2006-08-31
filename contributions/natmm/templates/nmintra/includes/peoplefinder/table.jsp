@@ -43,6 +43,12 @@
             } %>
             <tr><td style="padding-bottom:3px;">Telefoon:&nbsp;</td>
                 <td style="padding-bottom:3px;style="padding-bottom:3px;vertical-align:bottom;""><mm:field name="companyphone" /></td></tr>
+            <mm:field name="showinfo"
+                 ><mm:compare value="0" inverse="true"
+                 ><tr><td style="padding-bottom:3px;">06-nummer:&nbsp;</td>
+                    <td style="padding-bottom:3px;vertical-align:bottom;"><mm:field name="cellularphone" /></td></tr>
+                 </mm:compare
+            ></mm:field>
             <tr><td style="padding-bottom:3px;">Fax:&nbsp;</td>
                 <td style="padding-bottom:3px;vertical-align:bottom;"><mm:field name="fax" /></td></tr>
             <tr><td style="padding-bottom:3px;">Email:</td>
@@ -59,13 +65,19 @@
                <mm:field name="readmore.readmore"><mm:isnotempty><tr><td style="padding-bottom:3px;">Functie:&nbsp;</td>
                    <td style="padding-bottom:3px;vertical-align:bottom;"><mm:write /></td></tr></mm:isnotempty></mm:field>
            </mm:related
+           ><mm:field name="job"
+               ><mm:isnotempty>
+                   <tr><td style="padding-bottom:3px;">Functie (visitekaartje):&nbsp;</td><td style="padding-bottom:3px;vertical-align:bottom;"><mm:write /></td></tr>
+               </mm:isnotempty
+           ></mm:field
            ><mm:related path="readmore,locations">
                <tr><td style="padding-bottom:3px;">Lokatie:&nbsp;</td><td style="padding-bottom:3px;vertical-align:bottom;"><mm:field name="locations.naam" /></td></tr>
            </mm:related
            >
        <%--            <tr><td style="padding-bottom:3px;">Verjaardag:&nbsp;</td><td style="padding-bottom:3px;vertical-align:bottom;"><mm:field name="birthday" id="birthday" write="false"/><mm:time format="d MMM" referid="birthday" /></td></tr>
                <tr><td style="padding-bottom:3px;">In dienst per:&nbsp;</td><td style="padding-bottom:3px;vertical-align:bottom;"><mm:field name="enrolldate" id="enroll" write="false"/><mm:time format="dd MMM yyyy" referid="enroll" /></td></tr>
-       --%>    <tr><td style="padding-bottom:3px;">En verder:&nbsp;</td><td style="padding-bottom:3px;vertical-align:bottom;"><mm:field name="omschrijving" /></td></tr>
+       --%>   <tr><td style="padding-bottom:3px;">Vrije dag:&nbsp;</td><td style="padding-bottom:3px;vertical-align:bottom;"><mm:field name="intro" /></td></tr>
+              <tr><td style="padding-bottom:3px;">En verder:&nbsp;</td><td style="padding-bottom:3px;vertical-align:bottom;"><mm:field name="omschrijving" /></td></tr>
         <% } %>
         </table>
     </mm:node>

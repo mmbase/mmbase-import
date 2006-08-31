@@ -57,13 +57,6 @@
    <relation destination="contentblocks" role="readmore"/>
 	<relation destination="artikel" role="readmore"/>
 	<relation destination="pagina" role="readmore"/>
-   <relation destination="dossier" role="posrel">
-      <object>
-         <relation destination="images" role="posrel">
-            <object />
-         </relation>
-      </object>
-   </relation>
    <relation destination="formulier" role="posrel"/>
    <relation destination="rubriek" role="posrel"/>
    <relation destination="producttypes" role="posrel" />
