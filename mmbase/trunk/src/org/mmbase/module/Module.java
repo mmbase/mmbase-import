@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.77 2006-05-22 16:26:39 michiel Exp $
+ * @version $Id: Module.java,v 1.78 2006-08-31 10:18:45 nklasens Exp $
  */
 public abstract class Module extends FunctionProvider {
 
@@ -322,6 +322,14 @@ public abstract class Module extends FunctionProvider {
         }
     }
 
+    public static boolean hasModule(String name) {
+        boolean check = modules.containsKey(name.toLowerCase());
+        if (!check) {
+            check = modules.containsKey(name);    
+        }
+        return check;
+    }
+    
     /**
      * Retrieves a reference to a Module.
      * This call does not ensure that the requested module has been initialized.
