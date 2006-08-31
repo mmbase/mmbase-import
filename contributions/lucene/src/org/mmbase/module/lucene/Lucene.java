@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
 import org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory;
 import org.mmbase.storage.StorageManagerFactory;
 
-import edu.emory.mathcs.backport.java.util.concurrent.*;
+import java.util.concurrent.*;
 
 
 import org.apache.lucene.analysis.Analyzer;
@@ -46,7 +46,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.63 2006-07-18 06:30:51 michiel Exp $
+ * @version $Id: Lucene.java,v 1.64 2006-08-31 08:42:27 michiel Exp $
  **/
 public class Lucene extends Module implements NodeEventListener, IdEventListener {
 
@@ -824,7 +824,7 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
         void deleteIndex(final String number, final Class klass) {
             assign(new Assignment() {
                     public void run() {
-                        log.service("delete index for " + number);
+                        log.debug("delete index for " + number); // already logged in indexer.deleteIndex
                         status = BUSY_INDEX;
                         for (Iterator i = indexerMap.values().iterator(); i.hasNext(); ) {
                             Indexer indexer = (Indexer) i.next();
