@@ -6,25 +6,29 @@ package nl.leocms.applications;
 public class NatMMConfig {
 
    public final static String[] CONTENTELEMENTS = {
-      "dossier",
-      "natuurgebieden",
-      "provincies",
+      "ads",             // extends object
       "artikel",
-      "artikel#", // '#' is used to denote alternative paths to this contentelement
+      "artikel#",       // '#' is used to denote alternative paths to this contentelement
+      "dossier",        // extends object
       "images",
+      "link",
+      "linklijst",      // extends object
+      "natuurgebieden",
       "persoon",
-      "ads"
+      "provincies"
    };
 
    public final static String[] PATHS_FROM_PAGE_TO_ELEMENTS = {
-      "object,posrel,pagina",                         // dossier
-      "object,pos4rel,provincies,contentrel,pagina",  // natuurgebieden
-      "object,contentrel,pagina",                     // provincies
-      "object,contentrel,pagina",                     // artikel
-      "object,posrel1,dossier,posrel2,pagina",        // artikel
-      "object,posrel1,dossier,posrel2,pagina",        // images
-      "object,contentrel,pagina",                     // persoon
-      "object,contentrel,pagina",                     // ads
+      "object,contentrel,pagina",                                    // ads
+      "object,contentrel,pagina",                                    // artikel
+      "object,posrel1,dossier,posrel2,pagina",                       // artikel
+      "object,posrel,pagina",                                        // dossier
+      "object,posrel1,dossier,posrel2,pagina",                       // images
+      "object,lijstcontentrel1,linklijst,lijstcontentrel2,pagina",   // link
+      "object,lijstcontentrel2,pagina",                              // linklijst
+      "object,pos4rel,provincies,contentrel,pagina",                 // natuurgebieden
+      "object,contentrel,pagina",                                    // persoon
+      "object,contentrel,pagina"                                     // provincies
    };
 
 

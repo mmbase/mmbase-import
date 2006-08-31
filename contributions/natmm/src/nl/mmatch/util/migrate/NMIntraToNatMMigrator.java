@@ -37,6 +37,8 @@ public class NMIntraToNatMMigrator {
       alDeletingFiles.add("message.xml");
       alDeletingFiles.add("people.xml");
       alDeletingFiles.add("poll.xml");
+      alDeletingFiles.add("email.xml"); // email that already has been send so it can be deleted
+      alDeletingFiles.add("empupdates.xml"); // not in use anymore, replaced by persoon_update
       alDeletingFiles.add("typedef.xml"); //is system data
       alDeletingFiles.add("urls.xml"); // doesn't contain any info
 
@@ -112,7 +114,7 @@ public class NMIntraToNatMMigrator {
       tmDeletingFields.put("formulier","source;quote;creditline;quote_title;" +
       "transmissiondate;expiredate");
       tmDeletingFields.put("article","creditline;quote;quote_title;copyright");
-      tmDeletingFields.put("employees","position;intro;deptdescr;progdescr;showinfo");
+      tmDeletingFields.put("employees","deptdescr;progdescr");
       tmDeletingFields.put("locations","city2;country2;mobile");
       tmDeletingFields.put("pijler","description");
       tmDeletingFields.put("readmore","readmore1");
@@ -249,7 +251,7 @@ public class NMIntraToNatMMigrator {
       tmRenamingFields.put("departments","name:naam;description:omschrijving");
       tmRenamingFields.put("editwizardgroups","name:naam;description:omschrijving");
       tmRenamingFields.put("editwizards","title:name");
-      tmRenamingFields.put("employees","location:account;birthday:dayofbirth;description:omschrijving");
+      tmRenamingFields.put("employees","position;job;showinfo;titel_zichtbaar;location:account;birthday:reageer;description:omschrijving");
       tmRenamingFields.put("formulier","copyright:titel_de;subtitle:titel_fra;title:titel;" +
       "editors_note:emailadressen;introduction:omschrijving");
       tmRenamingFields.put("images","title:titel;description:omschrijving");

@@ -15,29 +15,41 @@ public class NMIntraConfig {
    */
    
    public final static String[] CONTENTELEMENTS = {  
-      "ads",
+      "ads",            // extends object
       "artikel",
-      "medewerkers",
       "artikel#",
-      "documents",
-      "formulier",
-      "forums",
+      "artikel##",
+      "artikel###",
+      "documents",      // extends object
+      "formulier",      // extends object
+      "forums",         // extends object
       "items",
-      "producttypes",
+      "link",
+      "linklijst",      // extends object
+      "medewerkers",
+      "products",
+      "producttypes",   // extends object
+      "teaser",
       "vacature"
    };
    
    public final static String[] PATHS_FROM_PAGE_TO_ELEMENTS = {  
-      "object,contentrel,pagina",                     // ads
-      "object,contentrel,pagina",                     // artikel
-      "object,contentrel,pagina",                     // medewerkers
-      "object,readmore,pagina",                       // artikel (ippolygon.jsp)
-      "object,posrel,pagina",                         // documents
-      "object,posrel,pagina",                         // formulier
-      "object,posrel,pagina",                         // forums
-      "object,posrel,pagina",                         // items (shop_items.jsp)
-      "object,posrel,pagina",                         // producttypes
-      "object,contentrel,pagina"                      // vacature
+      "object,contentrel,pagina",                                 // ads
+      "object,contentrel,pagina",                                 // artikel
+      "object,readmore,pagina",                                   // artikel (vacature_info.jsp)
+      "object,readmore,pagina",                                   // artikel (ippolygon.jsp)
+      "object,pos4rel,images,posrel,pagina",                      // artikel (ipoverview.jsp)
+      "object,posrel,pagina",                                     // documents
+      "object,posrel,pagina",                                     // formulier
+      "object,posrel,pagina",                                     // forums
+      "object,posrel,pagina",                                     // items (shop_items.jsp)
+      "object,lijstcontentrel1,linklijst,lijstcontentrel2,pagina",// link
+      "object,lijstcontentrel2,pagina",                           // linklijst
+      "object,contentrel,pagina",                                 // medewerkers
+      "object,posrel,pagina",                                     // products (producttypes.jsp)
+      "object,posrel,producttypes,posrel,pagina",                 // producttypes
+      "object,rolerel,pagina",                                    // teaser
+      "object,contentrel,pagina"                                  // vacature      
    };
 	
    public static int PARENT_STYLE = -1;
