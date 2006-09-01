@@ -41,6 +41,8 @@ public class ContentHelper {
    private static Logger log = Logging.getLoggerInstance(ContentHelper.class.getName());
 
    private Cloud cloud;
+   private AuthorizationHelper ah;
+   private ApplicationHelper ap;
 
    /**
     * @param cloud
@@ -48,6 +50,8 @@ public class ContentHelper {
    public ContentHelper(Cloud cloud) {
       super();
       this.cloud = cloud;
+      this.ah = new AuthorizationHelper(cloud);
+      this.ap = new ApplicationHelper(cloud);
    }
 
    public String getNameWithOtype(String otype) {
@@ -121,21 +125,24 @@ public class ContentHelper {
     Returns a list of nodes that are related to this node
   */
    public NodeList usedInItems(String sNodeNumber){
+
+      NodeList nlUsedInItems = null;
+
       Node node = cloud.getNode(sNodeNumber);
       String otype = node.getStringValue("otype");
       String thisType = (String) getNameWithOtype(otype);
-      ArrayList cTypes = ContentTypeHelper.getContentTypes();
-      cTypes.add("dossier");
-      ApplicationHelper ap = new ApplicationHelper();
+            
+      ApplicationHelper ap = new ApplicationHelper(cloud);
+      
       TreeMap tmPathToRubriek = new TreeMap();
-      if(ap.isInstalled(cloud,"NatMM")) {
+      if(ap.isInstalled("NatMM")) {
          tmPathToRubriek.put("images", "contentrel");
          tmPathToRubriek.put("panno", "posrel");
          tmPathToRubriek.put("shorty", "rolerel");
          tmPathToRubriek.put("teaser", "rolerel");
       }
-      NodeList nlUsedItems = null;
-      boolean isList = false;
+      
+      ArrayList cTypes = ap.getContentTypes();
       for(int ct=0; ct < cTypes.size(); ct++) {
          String relatedType = ( (String) cTypes.get(ct)).toLowerCase();
          if (! (thisType.equals("artikel") &&
@@ -145,31 +152,28 @@ public class ContentHelper {
             NodeManager thisTypeNodeManager = cloud.getNodeManager(thisType);
             if (thisTypeNodeManager.getAllowedRelations(relatedType, null, null).size() > 0) {
                NodeList nl = null;
-               if (relatedType.equals("rubriek")&&ap.isInstalled(cloud,"NatMM")){ //add exception to the rubriek
-                  log.info("trying to find relations between " + thisType + " " +
-                  sNodeNumber + " and rubriek");
+               if (relatedType.equals("rubriek")&&ap.isInstalled("NatMM")){ 
+                  //add exception for objects related to rubriek
+                  log.info("trying to find relations between " + thisType + " " + sNodeNumber + " and rubriek");
                   if (tmPathToRubriek.containsKey(thisType)){
-                     nl = cloud.getList(sNodeNumber, thisType + "," +
-                     tmPathToRubriek.get(thisType) + ",rubriek",thisType + ".number",
-                     null, null, null, null, true);
+                     nl = node.getRelatedNodes(relatedType, (String) tmPathToRubriek.get(thisType),null);
                   }
                } else {
                   nl = node.getRelatedNodes(relatedType);
                }
                if (nl != null && nl.size() > 0) {
-                  if (!isList) {
-                     nlUsedItems = nl;
-                     isList = true;
+                  if (nlUsedInItems==null) {
+                     nlUsedInItems = nl;
                   }
                   else {
-                     nlUsedItems.addAll(nl);
+                     nlUsedInItems.addAll(nl);
                   }
                }
 
             }
          }
       }
-      return nlUsedItems;
+      return nlUsedInItems;
    }
 
   /*
@@ -200,15 +204,36 @@ public class ContentHelper {
       if(!bRelationsExists(objectNumber)) {
                         
          Node nElement = cloud.getNode(objectNumber);
+         String otype = nElement.getStringValue("otype");
+         String thisType = (String) getNameWithOtype(otype);
+         
          String sPaginaNumber = null;
          Vector breadcrumbs = null;
          String archiveParent = null;
          
-         // finding page related to the contentelement
-         if (pathFromPageToElements.equals("evenementen")){
-            sPaginaNumber = cloud.getNodeByAlias("agenda").getStringValue("number");
+         // some exceptions of objects belonging to pages, but not actually related
+         if (ap.isInstalled("NatMM")) {
+            if (thisType.equals("evenementen")) {
+               sPaginaNumber = cloud.getNodeByAlias("agenda").getStringValue("number");
+            }
          }
-         else {
+         if (ap.isInstalled("NMIntra")) {
+            if (thisType.equals("medewerkers")) {
+               sPaginaNumber = cloud.getNodeByAlias("wieiswie").getStringValue("number");
+            }
+            if (thisType.equals("educations")) {
+               sPaginaNumber = cloud.getNodeByAlias("educations").getStringValue("number");
+            }
+            if (thisType.equals("evenement_blueprint")) {
+               sPaginaNumber = cloud.getNodeByAlias("events").getStringValue("number");               
+            }
+            if (thisType.equals("projects")) {
+               sPaginaNumber = cloud.getNodeByAlias("projects").getStringValue("number");
+            }
+         }
+            
+         // finding page related to the contentelement
+         if (sPaginaNumber==null){
             NodeList nl = cloud.getList(objectNumber,pathFromPageToElements,
                "pagina.number",null,null,null,null,true);
             if (nl.size()>0){
@@ -220,7 +245,6 @@ public class ContentHelper {
             breadcrumbs = PaginaHelper.getBreadCrumbs(cloud,sPaginaNumber);
             log.info("page " + sPaginaNumber + " has breadcrumbs " + breadcrumbs);
          } else {
-            String otype = nElement.getStringValue("otype");
             log.info(getNameWithOtype(otype) + " " + objectNumber + " has no relation to a page");
          }
          // finding parent of archive         
@@ -274,16 +298,21 @@ public class ContentHelper {
    }
 
    public void addSchrijver(String objectNumber) {
-      NodeList nl = cloud.getList(objectNumber,"contentelement,schrijver,users",
-      "users.number",null,null,null,null,true);
+      Node nElement = cloud.getNode(objectNumber);
+      NodeList nl = nElement.getRelatedNodes("users","schrijver",null);
       if (nl.size()==0) {
          // try to find user with: contentelement.owner=users.account
-         nl = cloud.getList("","contentelement,schrijver,users",
-            "users.number","contentelement.owner = users.account",null,null,null,true);
-         if (nl.size()>0) {
-            //create relation contentelement-schrijver-user
-            Node nUser = cloud.getNode(nl.getNode(0).getStringValue("users.number"));
+         Node nUser = null;
+         try {
+            nUser = ah.getUserNode(nElement.getStringValue("owner")); 
+         } catch (Exception e) {
+            log.info("there is no user with account " + nElement.getStringValue("owner") + " in this base");
+         }
+         if (nUser!=null) {
+            // create relation contentelement-schrijver-user 
             (cloud.getNode(objectNumber)).createRelation(nUser,cloud.getRelationManager("schrijver")).commit();
+            String otype = nElement.getStringValue("otype");
+            log.info("added " + nUser.getStringValue("account") + " as schrijver to " + getNameWithOtype(otype) + " " + objectNumber);
          }
       }
    }

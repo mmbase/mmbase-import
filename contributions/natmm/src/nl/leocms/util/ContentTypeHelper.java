@@ -60,32 +60,6 @@ public class ContentTypeHelper {
    public final static String VACATURE = "vacature";
    public final static String VGV = "vgv";
 
-   /**
-    * Returns all content types (typedefs/names).
-    * @return
-    */
-   public static ArrayList getContentTypes() {
-      ArrayList contentTypes = new ArrayList(18);
-      contentTypes.add(AFBEELDING);
-      contentTypes.add(ARTIKEL);
-      contentTypes.add(BIJLAGE);
-      contentTypes.add(EVENEMENT);
-      contentTypes.add(FLASH);
-      contentTypes.add(LINK);
-      contentTypes.add(NATUURGEBIEDEN);
-      contentTypes.add(ORGANISATIE);
-      contentTypes.add(PAGINA);
-      contentTypes.add(PANNO);
-      contentTypes.add(PARAGRAAF);
-      contentTypes.add(PERSOON);
-      contentTypes.add(POLL);
-      contentTypes.add(PROVINCIES);
-      contentTypes.add(SHORTY);
-      contentTypes.add(TEASER);
-      contentTypes.add(VACATURE);
-      contentTypes.add(VGV);
-      return contentTypes;
-   }
 
    /** Is element from one of the content types
     *
@@ -217,24 +191,5 @@ public class ContentTypeHelper {
    public static boolean isWorkflowType(NodeManager nm) {
       return isWorkflowType(nm.getName());
    }
-
-
-   /**
-    * Returns an comma separated list for all content types names
-    * @return
-    */
-   public static String getContentTypesCommaSeparated() {
-      StringBuffer ret = new StringBuffer();
-
-      for (Iterator iter = getContentTypes().iterator(); iter.hasNext();) {
-         String t = (String) iter.next();
-         ret.append("'");
-         ret.append(t);
-         ret.append("'");
-         if (iter.hasNext()) {
-            ret.append(",");
-         }
-      }
-      return ret.toString();
-   }
+   
 }
