@@ -205,8 +205,6 @@ if (searchIsOn) {
    } else {
       %><mm:list nodes="" path="<%=path%>" orderby="<%=orderColumn%>" constraints="<%=rubriekConstraint%>" max="0" id="contentresults" /><%
    }
-   ArrayList cTypes = ContentTypeHelper.getContentTypes();
-   cTypes.add("dossier"); // dossier is not a content element, but content elements can be added to it
    int counter = 0; 
    %>
    <mm:import id="pagesString">Pagina's <b> <%= pagesLinkString %> </b></mm:import>
