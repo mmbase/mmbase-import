@@ -85,11 +85,13 @@ if(!articleId.equals("-1")) {
                 <%= articlePath %><br/>
                 <%= articleConstraint %><br/>
                 --%>
-                <mm:list nodes="<%= paginaID %>" path="<%= articlePath %>" constraints="<%= articleConstraint %>"
+                <%--mm:list nodes="<%= paginaID %>" path="<%= articlePath %>" constraints="<%= articleConstraint %>"
 				         orderby="artikel.embargo" searchdir="destination"
                   ><mm:first><mm:size jspvar="dummy" vartype="Integer" write="false"><% listSize = dummy.intValue();  %></mm:size></mm:first
                 ></mm:list
-                ><%@include file="includes/info/offsetlinks.jsp" %><%
+                --%>
+					 <% listSize = su.ArtikelsRelatedToPagina(cloud,paginaID,articleConstraint).size();%>
+					 <%@include file="includes/info/offsetlinks.jsp" %><%
                 if(listSize>0) {
                    %><mm:list nodes="<%= paginaID %>" path="<%= articlePath %>" orderby="artikel.embargo" searchdir="destination" directions="DOWN" 
                        offset="<%= "" + (thisOffset-1)*10 %>" max="<%= "" + objectPerPage %>" constraints="<%= articleConstraint %>"><%

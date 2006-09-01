@@ -44,8 +44,8 @@ if(departmentId.equals("default")&&programId.equals("default")) { // *** select 
 
 
 // *************  listing of employees  ********************
-
-String employeeConstraint = "( medewerkers.importstatus != 'inactive' ) OR ( medewerkers.externid LIKE 'wieiswie' )";
+SearchUtil su = new SearchUtil();
+String employeeConstraint = su.sEmployeeConstraint;
 String departmentNodes = ""; 
 String employeePath = "medewerkers";
 if(!departmentId.equals("default")) {
