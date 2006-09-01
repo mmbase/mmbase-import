@@ -107,7 +107,7 @@ public class DefaultContentPagesModule extends Module implements Runnable {
          PublishUtil.PublishOrUpdateNode(cloud.getNode("leocms.disclaimer"));
 //         PublishUtil.PublishOrUpdateNode(cloud.getNode("leeuwarden.contact"));
 
-//         ArrayList contentTypeList = ContentTypeHelper.getContentTypes();
+//         ArrayList contentTypeList = ApplicationHelper.getContentTypes();
 //         for (int i = 0; i < contentTypeList.size(); i++) {
 //            String contentType = (String) contentTypeList.get(i);
 //            try {

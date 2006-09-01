@@ -33,7 +33,7 @@ import nl.leocms.util.ApplicationHelper;
  * 
  * @author Nico Klasens (Finalist IT Group)
  * @created 21-nov-2003
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class ContentAfdelingen extends ContentOrganisatie {
 
@@ -41,9 +41,9 @@ public class ContentAfdelingen extends ContentOrganisatie {
 
       log.debug("commiting afdeling " + node.getStringValue("titel") + "(" + node.getStringValue("number") + ")");
       
-      ApplicationHelper ap = new ApplicationHelper();
       Cloud cloud = CloudFactory.getCloud();
-      if(ap.isInstalled(cloud,"NatMM")) {
+      ApplicationHelper ap = new ApplicationHelper(cloud);
+      if(ap.isInstalled("NatMM")) {
          // *** update titel_eng of natuurgebieden if this afdeling is not already in titel_eng ***
          NodeIterator iNodes= cloud.getList(node.getStringValue("number")
                   , "afdelingen,posrel,natuurgebieden"

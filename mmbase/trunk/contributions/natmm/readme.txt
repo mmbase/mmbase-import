@@ -52,7 +52,7 @@ Each website in the NatMM application, e.g. MySite, should consist of the follow
    before install.
 3. a java class with application specific settings in src/leocms/applications/MySiteConfig.java. See NatNHConfig.java
 	for an example of what this class should at least contain.
-   Important information provided by MySiteConfig.java is CONTENTELEMENTS and PATHS_FROM_PAGE_TO_ELEMENTS.
+   Important information provided by MySiteConfig.java is CONTENTELEMENTS, OBJECTS and PATHS_FROM_PAGE_TO_OBJECTS.
    These arrays tell LeoCMS how content is related to the pages in the MySite application. This information 
    is used in several places:
    a. to find the page if you only provide the id of a contentelement in the url
@@ -87,7 +87,7 @@ PAGINA, THE CONTAINER FOR CONTENTELEMENTS
 
 The pagina objects play a key role in LeoCMS, the are the leaves of the rubrieken tree and contain the objects and
 contentelements to be shown on the page. In different files the paths from pagina to related objects are specified.
-1. in nl.leocms.applications.*Config.PATHS_FROM_PAGE_TO_ELEMENTS
+1. in nl.leocms.applications.*Config.PATHS_FROM_PAGE_TO_OBJECTS
 2. in templates/mmbase/edit/wizard/data/config/pagina/load_pagina*.xml
 3. in config/lucenedatadefinition.xml
 4. and of course in the templates

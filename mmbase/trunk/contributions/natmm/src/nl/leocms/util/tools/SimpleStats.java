@@ -17,8 +17,8 @@ public class SimpleStats
    public void run() {
       log.info("run()");
 		Cloud cloud = CloudFactory.getCloud();
-		ApplicationHelper ap = new ApplicationHelper();
-		if(ap.isInstalled(cloud,"NMIntra")) {
+		ApplicationHelper ap = new ApplicationHelper(cloud);
+		if(ap.isInstalled("NMIntra")) {
 			MMBaseContext mc = new MMBaseContext();
 			ServletContext application = mc.getServletContext();
 			saveLast(application);
