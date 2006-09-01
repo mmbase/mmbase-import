@@ -4,8 +4,8 @@
   <% log.info("06.03.24"); %>
   0. Check whether the NMIntra application is installed succesfully
   <%
-  ApplicationHelper ap = new ApplicationHelper();
-  if(!ap.isInstalled(cloud,"NMIntra")) {
+  ApplicationHelper ap = new ApplicationHelper(cloud);
+  if(!ap.isInstalled("NMIntra")) {
    %>
    <mm:createnode type="versions">
       <mm:setfield name="name">NMIntra</mm:setfield>   
