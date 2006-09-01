@@ -65,7 +65,6 @@
       <builder version="0" maintainer="mmbase.org">education_keywords</builder>  <!-- should be removed after migration -->
       <builder version="0" maintainer="mmbase.org">education_pools</builder>  <!-- should be removed after migration -->
       <builder version="0" maintainer="mmbase.org">educations</builder>
-      <builder version="0" maintainer="mmbase.org">empupdates</builder>
       <builder version="0" maintainer="mmbase.org">evenement_blueprint</builder>
       <builder version="0" maintainer="mmbase.org">evenement_distance</builder>
       <builder version="0" maintainer="mmbase.org">evenement_duration</builder>
@@ -73,6 +72,7 @@
       <builder version="0" maintainer="mmbase.org">items</builder>
       <builder version="0" maintainer="mmbase.org">item_pools</builder>  <!-- should be removed after migration -->
       <builder version="0" maintainer="mmbase.org">keywords</builder>
+      <builder version="0" maintainer="mmbase.org">medewerkers_update</builder>
       <builder version="0" maintainer="mmbase.org">mmevents</builder>
       <builder version="0" maintainer="mmbase.org">natuurgebieden_type</builder>
       <builder version="0" maintainer="mmbase.org">organisatie_type</builder>
@@ -273,7 +273,6 @@
       <datasource builder="education_keywords" path="NMIntra/education_keywords.xml"/>  <!-- should be removed after migration -->
       <datasource builder="education_pools" path="NMIntra/education_pools.xml"/>  <!-- should be removed after migration -->
       <datasource builder="educations" path="NMIntra/educations.xml"/>
-      <datasource builder="empupdates" path="NMIntra/empupdates.xml"/>
       <datasource builder="evenement_blueprint" path="NMIntra/evenement_blueprint.xml"/>
       <datasource builder="evenement_distance" path="NMIntra/evenement_distance.xml"/>
       <datasource builder="evenement_duration" path="NMIntra/evenement_duration.xml"/>
@@ -283,8 +282,8 @@
       <datasource builder="items" path="NMIntra/items.xml"/>
       <datasource builder="item_pools" path="NMIntra/item_pools.xml"/>  <!-- should be removed after migration -->
       <datasource builder="keywords" path="NMIntra/keywords.xml"/>
+      <datasource builder="medewerkers_update" path="NMIntra/medewerkers_update.xml"/>
       <datasource builder="mmevents" path="NMIntra/mmevents.xml"/>
-      <datasource builder="mmservers" path="NMIntra/mmservers.xml"/>
       <datasource builder="natuurgebieden_type" path="NMIntra/natuurgebieden_type.xml"/>
       <datasource builder="oalias" path="NMIntra/oalias.xml"/>
       <datasource builder="organisatie_type" path="NMIntra/organisatie_type.xml" />
