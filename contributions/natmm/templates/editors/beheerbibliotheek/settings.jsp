@@ -1,7 +1,8 @@
 <%
    Logger log = Logging.getLoggerInstance("beheerbibliotheek/index.jsp");
    ContentHelper contentHelper = new ContentHelper(cloud);
-   
+   ArrayList cTypes = (new ApplicationHelper(cloud)).getContentTypes();
+
    /**
     * Page settings.
     */

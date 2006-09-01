@@ -29,7 +29,6 @@
 <mm:import id="jsps"><%= editwizard_location %>/jsp/</mm:import>
 <mm:import id="debug">false</mm:import>
 <%
-	ApplicationHelper ap = new ApplicationHelper();
 	RubriekHelper rh = new RubriekHelper(cloud);
 	PaginaHelper ph = new PaginaHelper(cloud);
 	
