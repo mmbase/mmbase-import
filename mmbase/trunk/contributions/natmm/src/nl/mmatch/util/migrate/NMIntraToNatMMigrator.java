@@ -251,7 +251,7 @@ public class NMIntraToNatMMigrator {
       tmRenamingFields.put("departments","name:naam;description:omschrijving");
       tmRenamingFields.put("editwizardgroups","name:naam;description:omschrijving");
       tmRenamingFields.put("editwizards","title:name");
-      tmRenamingFields.put("employees","position;job;showinfo;titel_zichtbaar;location:account;birthday:reageer;description:omschrijving");
+      tmRenamingFields.put("employees","position:job;showinfo:titel_zichtbaar;location:account;birthday:reageer;description:omschrijving");
       tmRenamingFields.put("formulier","copyright:titel_de;subtitle:titel_fra;title:titel;" +
       "editors_note:emailadressen;introduction:omschrijving");
       tmRenamingFields.put("images","title:titel;description:omschrijving");
