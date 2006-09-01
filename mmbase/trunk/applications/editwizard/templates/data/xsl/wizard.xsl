@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.162 2006-08-31 15:30:35 nklasens Exp $
+    @version $Id: wizard.xsl,v 1.163 2006-09-01 11:38:17 nklasens Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -941,7 +941,7 @@
           <div class="imageupload">
             <div>
               <input type="hidden" name="{@fieldname}" value="" dttype="binary" ftype="image" >
-                <xsl:if test="@dtrequired=&apos;true&apos; and @size=0">
+                <xsl:if test="@dtrequired=&apos;true&apos; and @size &lt;= 0">
                   <xsl:attribute name="dtrequired">true</xsl:attribute>
                 </xsl:if>
               </input>
@@ -949,7 +949,7 @@
                 <xsl:call-template name="prompt_image_upload"/>
               </a>
               <br/>
-              <xsl:if test="@size != 0">
+              <xsl:if test="@size &gt;= 0">
                 <img src="{node:function($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,cache(&apos;, $imagesize, &apos;))&apos;))}" hspace="0" vspace="0" border="0" title="{field[@name=&apos;description&apos;]}"/>
                 <br/>
               </xsl:if>
@@ -1004,15 +1004,15 @@
         <xsl:choose>
           <xsl:when test="not(upload)">
             <input type="hidden" name="{@fieldname}" value="" dttype="binary" ftype="file" >
-              <xsl:if test="@dtrequired=&apos;true&apos; and @size=0">
+              <xsl:if test="@dtrequired=&apos;true&apos; and @size &lt;= 0">
                 <xsl:attribute name="dtrequired">true</xsl:attribute>
               </xsl:if>
             </input>
-            <xsl:if test="@size = 0">
+            <xsl:if test="@size &lt;= 0">
               <xsl:call-template name="prompt_no_file"/>
               <br/>
             </xsl:if>
-            <xsl:if test="@size != 0">
+            <xsl:if test="@size &gt;= 0">
               <a target="_blank" href="{node:function($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,number)&apos;))}">
                 <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
                 <xsl:call-template name="prompt_do_download"/> (<xsl:value-of select="round(@size div 100) div 10"/> K)
@@ -1397,7 +1397,7 @@
         <xsl:choose>
           <!-- handle field exists then it might be a new image -->
           <xsl:when test="field[@name = 'handle']">
-            <xsl:if test="field[@name = 'handle' and @size != '0']">
+            <xsl:if test="field[@name = 'handle' and @size &gt;= 0]">
             <!-- the image -->
             <img src="{node:function($cloud, string(field/@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}"/>
             </xsl:if>
