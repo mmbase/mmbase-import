@@ -24,11 +24,13 @@ import nl.leocms.util.tools.HtmlCleaner;
  * Utilities functions for the search pages
  *
  * @author H. Hangyi
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class SearchUtil {
 
    private static final Logger log = Logging.getLoggerInstance(SearchUtil.class);
+
+   public final static String sEmployeeConstraint = "( medewerkers.importstatus != 'inactive' ) OR ( medewerkers.externid LIKE 'extern' )";
 
    public SearchUtil() {
    }
@@ -48,7 +50,7 @@ public class SearchUtil {
             // string whithin quotes ?
             searchString = searchString.substring(1);
             try{
-               searchTerm = searchString.substring(0,searchString.indexOf("\"")); 
+               searchTerm = searchString.substring(0,searchString.indexOf("\""));
                searchString = searchString.substring(searchString.indexOf("\"")+1);
             } catch (Exception e) {
                // no closing "
@@ -56,8 +58,8 @@ public class SearchUtil {
             }
          } else {
             // take next word
-            searchTerm = searchString.substring(0,searchString.indexOf(" ")); 
-            searchString = searchString.substring(searchString.indexOf(" ")+1); 
+            searchTerm = searchString.substring(0,searchString.indexOf(" "));
+            searchString = searchString.substring(searchString.indexOf(" ")+1);
          }
          searchTerm = searchTerm.replace('-',' ');
          // for 'search-fast' search on the string 'search fast'
@@ -65,7 +67,7 @@ public class SearchUtil {
             searchTermSet.add(searchTerm);
          }
       }
-      TreeMap searchTermMap = new TreeMap(); 
+      TreeMap searchTermMap = new TreeMap();
       // use SortedMap to sort on length
       Iterator searchTermList = searchTermSet.iterator();
       while(searchTermList.hasNext()) {
@@ -90,14 +92,14 @@ public class SearchUtil {
     /* Find the first occurence of searchTerm in textStr after fromIndex
     */
    public int [] findSearchTerm(String textStr, String searchTerm, int fromIndex) {
-   	
+
    	textStr = textStr.toUpperCase();
    	searchTerm = searchTerm.toUpperCase();
    	int [] fromToIndex = { -1, -1 };
-      
-   	log.debug("searchterm: " + searchTerm + "\ntext: " + textStr);  
-      
-      int sPos = textStr.indexOf(searchTerm,fromIndex);	
+
+   	log.debug("searchterm: " + searchTerm + "\ntext: " + textStr);
+
+      int sPos = textStr.indexOf(searchTerm,fromIndex);
       if(sPos>-1) {
          int ePos = sPos + searchTerm.length();
          fromToIndex[0] = sPos;
@@ -125,7 +127,7 @@ public class SearchUtil {
             fromToIndex = findSearchTerm(textStr,searchTerm,ePos);
          } else {
             log.debug("Going to highlight: " + textStr.substring(sPos,ePos));
-            textStr = textStr.substring(0,sPos) 
+            textStr = textStr.substring(0,sPos)
                   + "<" + highlight + ">" + textStr.substring(sPos,ePos) + "</" + highlight + ">"
                   + textStr.substring(ePos);
             fromToIndex = findSearchTerm(textStr,searchTerm,ePos+5+2*highlight.length());
@@ -134,9 +136,9 @@ public class SearchUtil {
       }
       return textStr;
    }
-   
+
    public int startPos(String textStr, Vector searchTerms) {
-      // find the first position of a searchTerm in the textStr	
+      // find the first position of a searchTerm in the textStr
       int maxPos = textStr.length();
       int startPos = maxPos;
       Iterator searchTermList = searchTerms.iterator();
@@ -153,13 +155,13 @@ public class SearchUtil {
 
    public String highlightSearchTerms(String textStr, Vector searchTerms, String highlight) {
 
-      //  strip textStr from html taggings 
+      //  strip textStr from html taggings
       textStr = HtmlCleaner.cleanText(textStr,"<",">");
 
       // map the &charentities; to their \uFFFF counterparts
       String rawString [] = HtmlCleaner.rawString();
       char translatedChar [] = HtmlCleaner.translatedChar();
-      for(int c= 0; c<rawString.length; c++){ 
+      for(int c= 0; c<rawString.length; c++){
          textStr = HtmlCleaner.replace(textStr,rawString[c],"" + translatedChar[c]);
       }
 
@@ -174,31 +176,31 @@ public class SearchUtil {
       if(dotPos>-1) {
          // found beginning of sentence
          startPos = dotPos+2;
-      } else { 
+      } else {
          // probably first sentence of paragraph or title
          startPos = 0;
       }
-      textStr = textStr.substring(startPos); 
-      int spacePos = textStr.indexOf(" ",180); 
-      if(spacePos>-1) { 
+      textStr = textStr.substring(startPos);
+      int spacePos = textStr.indexOf(" ",180);
+      if(spacePos>-1) {
          textStr = textStr.substring(0,spacePos);
       }
       Iterator searchTermList = searchTerms.iterator();
       while(searchTermList.hasNext()) {
          String searchTerm = (String) searchTermList.next();
          int length = textStr.length();
-         textStr = highLightSearchTerm(textStr, searchTerm, highlight, 5);         
+         textStr = highLightSearchTerm(textStr, searchTerm, highlight, 5);
       }
-      
+
       // map the \uFFFF to their &charentities; counterparts
-      for(int c= 0; c<rawString.length; c++){ 
+      for(int c= 0; c<rawString.length; c++){
          textStr = HtmlCleaner.replace(textStr,"" + translatedChar[c],rawString[c]);
       }
       return textStr;
    }
-   
+
    public long [] getPeriod(String sPeriod) {
-      
+
       Calendar cal = Calendar.getInstance();
       int fromDay = 0; int fromMonth = 0; int fromYear = 0;
       int toDay = 0; int toMonth = 0; int toYear = 0;
@@ -208,13 +210,13 @@ public class SearchUtil {
       int startYear = 2004;
       long fromTime = 0;
       long toTime = 0;
-      
+
       if(!sPeriod.equals("")) {
           try{
-              fromDay = new Integer(sPeriod.substring(0,2)).intValue(); 
+              fromDay = new Integer(sPeriod.substring(0,2)).intValue();
               fromMonth = new Integer(sPeriod.substring(2,4)).intValue();
               fromYear = new Integer(sPeriod.substring(4,8)).intValue();
-      
+
               toDay = new Integer(sPeriod.substring(8,10)).intValue();
               toMonth = new Integer(sPeriod.substring(10,12)).intValue();
               toYear = new Integer(sPeriod.substring(12)).intValue();
@@ -222,22 +224,22 @@ public class SearchUtil {
                   // if not set use defaults for day, month and year
                   if(fromDay==0) fromDay = 1;
                   if(fromMonth==0) fromMonth = 1;
-                  if(fromYear==0) fromYear = startYear; 
+                  if(fromYear==0) fromYear = startYear;
                   if(toDay==0) toDay = thisDay;
                   if(toMonth==0) toMonth = thisMonth;
                   if(toYear==0) toYear = thisYear;
-      
+
                   cal.set(fromYear,fromMonth-1,fromDay,0,0,0);
                   fromTime = (cal.getTime().getTime()/1000);
-      
+
                   cal.set(toYear,toMonth-1,toDay,23,60,0);
-                  toTime = (cal.getTime().getTime()/1000);    
+                  toTime = (cal.getTime().getTime()/1000);
               }
           } catch (Exception e) { }
       }
-      
+
       long [] period = { fromTime, toTime, fromDay, fromMonth, fromYear, toDay, toMonth, toYear, thisDay, thisMonth, thisYear, startYear };
-      
+
       return period;
    }
 
@@ -256,7 +258,7 @@ public class SearchUtil {
       HashSet hsetPagesNodes) {
 
       HashSet hsetNodes = new HashSet();
-      try { 
+      try {
          SearchIndex si = cf.getIndex(index);
          Analyzer analyzer = si.getAnalyzer();
          IndexReader ir = IndexReader.open(si.getIndex());
@@ -273,11 +275,11 @@ public class SearchUtil {
          if (result != null) {
             BooleanQuery constructedQuery = new BooleanQuery();
             constructedQuery.add(result, BooleanClause.Occur.MUST);
-   
+
             IndexSearcher searcher = new IndexSearcher(ir);
             Hits hits = searcher.search(constructedQuery);
             TreeSet includedEvents = new TreeSet();
-   
+
             for (int i = 0; i < hits.length(); i++) {
                Document doc = hits.doc(i);
                String docNumber = doc.get("node");
@@ -290,13 +292,13 @@ public class SearchUtil {
             if (searcher != null) { searcher.close(); }
             if (ir != null) { ir.close(); }
          }
-         log.info("Searching for " + sQuery + " on " + path + " results in nodes " + hsetNodes + " and pages " + hsetPagesNodes); 
-      } catch (Exception e) { 
-         log.error("Lucene index " + index + " on query " + sQuery + " throws error " + e); 
-      } 
+         log.info("Searching for " + sQuery + " on " + path + " results in nodes " + hsetNodes + " and pages " + hsetPagesNodes);
+      } catch (Exception e) {
+         log.error("Lucene index " + index + " on query " + sQuery + " throws error " + e);
+      }
       return hsetNodes;
    }
-	
+
    public HashSet addPages(
       Cloud cloud,
       String path,
@@ -376,5 +378,10 @@ public class SearchUtil {
          }
       }
       return hsetNodes;
+   }
+
+   public NodeList ArtikelsRelatedToPagina (Cloud cloud, String sPaginaID, String sConstraints){
+      return cloud.getList(sPaginaID,"pagina,contentrel,artikel","artikel.number",
+      sConstraints,"artikel.embargo",null,"destination",true);
    }
 }

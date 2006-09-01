@@ -48,7 +48,8 @@ public class SiteMapGenerator implements Runnable{
                "<urlset xmlns=\"http://www.google.com/schemas/sitemap/0.84\">\n\n" +
                sContent + "\n</urlset>";
             writingFile(NatMMConfig.rootDir + "/sitemap_" + sXMLName, sContent);
-            createGZFile("sitemap_" + sXMLName);
+            ZipUtil zu = new ZipUtil();
+            zu.createArchiveFile(NatMMConfig.rootDir + "/sitemap_" + sXMLName,"/sitemap_" + sXMLName + ".gz");
             sAllContent += "<sitemap>\n\t\t<loc>" + sSiteUrl + "/sitemap_" + sXMLName + ".gz</loc>\n\t\t";
             File f = new File(NatMMConfig.rootDir + "/sitemap_" + sXMLName + ".gz");
             long lm = f.lastModified();
