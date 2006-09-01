@@ -13,22 +13,21 @@
            <hr>
              <table border="0" cellpadding="0" cellspacing="0">
                 <tr>
-                   <td><input type="checkbox" id="<%=ContentTypeHelper.ARTIKEL%>" onClick="updateHiddenValue();">Artikel</td>
-                   <td><input type="checkbox" id="<%=ContentTypeHelper.EVENEMENT%>" onClick="updateHiddenValue();">Evenement</td>
-                   <td><input type="checkbox" id="<%=ContentTypeHelper.VGV%>" onClick="updateHiddenValue();">Veelgestelde vraag</td>
-                   <td><input type="checkbox" id="<%=ContentTypeHelper.NATUURGEBIEDEN%>" onClick="updateHiddenValue();">Natuurgebied</td>
-                   <td><input type="checkbox" id="<%=ContentTypeHelper.PROVINCIES%>" onClick="updateHiddenValue();">Provincie</td>
-                   <td><input type="checkbox" id="<%=ContentTypeHelper.ORGANISATIE%>" onClick="updateHiddenValue();">Organisatie</td>
-                   <td><input type="checkbox" id="<%=ContentTypeHelper.PERSOON%>" onClick="updateHiddenValue();">Persoon</td>
-                </tr>
-                <tr>
-                   <td><input type="checkbox" id="<%=ContentTypeHelper.AFBEELDING%>" onClick="updateHiddenValue();">Afbeelding</td>
-                   <td><input type="checkbox" id="<%=ContentTypeHelper.BIJLAGE%>" onClick="updateHiddenValue();">Bijlage</td>
-                   <td><input type="checkbox" id="<%=ContentTypeHelper.LINK%>" onClick="updateHiddenValue();">Link</td>
-                   <td><input type="checkbox" id="<%=ContentTypeHelper.PANNO%>" onClick="updateHiddenValue();">Pano</td>
-                   <td><input type="checkbox" id="<%=ContentTypeHelper.SHORTY%>" onClick="updateHiddenValue();">Shorty</td>
-                   <td><input type="checkbox" id="<%=ContentTypeHelper.TEASER%>" onClick="updateHiddenValue();">Teaser</td>
-                   <td><input type="checkbox" id="<%=ContentTypeHelper.PARAGRAAF%>" onClick="updateHiddenValue();">Paragraaf</td>
+                <%
+                Locale locale = new Locale("nl");
+                int cTypesSize = cTypes.size();
+                for (int i=0; i<cTypesSize; i++) {
+                  String ct = (String) cTypes.get(i);
+                  %>
+                  <td><input type="checkbox" id="<%=ct%>" onClick="updateHiddenValue();"><%= cloud.getNodeManager(ct).getGUIName(NodeManager.GUI_SINGULAR,locale) %></td>
+                  <%
+                  if((i+1) == cTypesSize/2) {
+                     %>
+                     </tr><tr>
+                     <%
+                  }
+                }
+                %>         
                 </tr>
                 <!-- hidden pars -->
                 <input type="hidden" name="selectedTypes" id="selectedTypes" value="<%=selectedTypes %>">
