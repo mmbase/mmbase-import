@@ -121,7 +121,7 @@ public class MMBaseHelper {
 
       public void addDefaultRelations() {
           ContentHelper ch = new ContentHelper(cloud);
-          HashMap pathsFromPageToElements = (new ApplicationHelper()).pathsFromPageToElements(cloud);
+          HashMap pathsFromPageToElements = (new ApplicationHelper(cloud)).pathsFromPageToElements();
           
           NodeList nl = cloud.getList("","contentelement","contentelement.number",
             null,"contentelement.number","up",null,true);
@@ -129,15 +129,11 @@ public class MMBaseHelper {
              String sContentelement = nl.getNode(i).getStringValue("contentelement.number");
              String sType = cloud.getNode(sContentelement).getNodeManager().getName();
              String path = null;
-             if (sType.equals("evenementen")){
-                path = "evenementen";
-             } else {
-                for (Iterator it=pathsFromPageToElements.keySet().iterator();it.hasNext(); ) {
-                  String objecttype = (String) it.next();
-                  String currentPath = (String) pathsFromPageToElements.get(objecttype);               
-                  if (objecttype.equals(sType)) {
-                     path = currentPath;
-                  }
+             for (Iterator it=pathsFromPageToElements.keySet().iterator();it.hasNext(); ) {
+               String objecttype = (String) it.next();
+               String currentPath = (String) pathsFromPageToElements.get(objecttype);               
+               if (objecttype.equals(sType)) {
+                  path = currentPath;
                }
              }
              if (path!=null){

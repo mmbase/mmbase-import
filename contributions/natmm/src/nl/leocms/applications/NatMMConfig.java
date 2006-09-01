@@ -6,7 +6,28 @@ package nl.leocms.applications;
 public class NatMMConfig {
 
    public final static String[] CONTENTELEMENTS = {
-      "ads",             // extends object
+      "artikel",
+      "attachments",
+      // "evenement",
+      // "flash",
+      "images",
+      "link",
+      "natuurgebieden",
+      "organisatie",
+      "pagina",
+      "panno",
+      "paragraaf",
+      "persoon",
+       // "poll",
+      "provincies",
+      "shorty",
+      "teaser",
+      "vacature",
+      "vgv"
+   };
+   
+   public final static String[] OBJECTS = {
+      "ads",            // extends object
       "artikel",
       "artikel#",       // '#' is used to denote alternative paths to this contentelement
       "dossier",        // extends object
@@ -15,10 +36,11 @@ public class NatMMConfig {
       "linklijst",      // extends object
       "natuurgebieden",
       "persoon",
-      "provincies"
+      "provincies",
+      "vacature"      
    };
 
-   public final static String[] PATHS_FROM_PAGE_TO_ELEMENTS = {
+   public final static String[] PATHS_FROM_PAGE_TO_OBJECTS = {
       "object,contentrel,pagina",                                    // ads
       "object,contentrel,pagina",                                    // artikel
       "object,posrel1,dossier,posrel2,pagina",                       // artikel
@@ -28,7 +50,8 @@ public class NatMMConfig {
       "object,lijstcontentrel2,pagina",                              // linklijst
       "object,pos4rel,provincies,contentrel,pagina",                 // natuurgebieden
       "object,contentrel,pagina",                                    // persoon
-      "object,contentrel,pagina"                                     // provincies
+      "object,contentrel,pagina",                                    // provincies
+      "object,contentrel,pagina"                                     // vacature
    };
 
 

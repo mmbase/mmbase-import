@@ -5,12 +5,12 @@ package nl.leocms.applications;
 
 public class VanHamConfig {
    
-   public final static String[] CONTENTELEMENTS = {  
+   public final static String[] OBJECTS = {  
       "artikel",
       "projects",
    };
    
-   public final static String[] PATHS_FROM_PAGE_TO_ELEMENTS = {  
+   public final static String[] PATHS_FROM_PAGE_TO_OBJECTS = {  
       "object,contentrel,pagina",                 // artikel
       "object,contentrel,pagina",                 // projects
    };

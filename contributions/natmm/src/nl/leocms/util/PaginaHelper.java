@@ -54,8 +54,8 @@ public class PaginaHelper {
 
    public PaginaHelper(Cloud cloud) {
      this.cloud = cloud;
-     this.ap = new ApplicationHelper();
-     this.pathsFromPageToElements = ap.pathsFromPageToElements(cloud);
+     this.ap = new ApplicationHelper(cloud);
+     this.pathsFromPageToElements = ap.pathsFromPageToElements();
      this.urlConversion = NatMMConfig.urlConversion;
    }
 
@@ -341,7 +341,7 @@ public class PaginaHelper {
 	public int getMaxSize() {
 		// returns the maxsize of uploads (= images / attachments) per application
 	   int maxsize = 2*1024*1024;
-		if(ap.isInstalled(cloud,"VanHam")) {
+		if(ap.isInstalled("VanHam")) {
 			maxsize = 3*1024*1024;
 		}
 		return maxsize;

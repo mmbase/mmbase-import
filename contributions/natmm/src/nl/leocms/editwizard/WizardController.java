@@ -394,8 +394,8 @@ public class WizardController {
                 }
              }
 				 if (rubrieknr != null && !"".equals(rubrieknr)) {
-					 ApplicationHelper ap = new ApplicationHelper();
-					 if(ap.isInstalled(cloud,"NatMM")||ap.isInstalled(cloud,"NMIntra")) {
+					 ApplicationHelper ap = new ApplicationHelper(cloud);
+					 if(ap.isInstalled("NatMM")||ap.isInstalled("NMIntra")) {
 						 cu.updateTopics(editNode, rubrieknr);
 					 }
 				 }

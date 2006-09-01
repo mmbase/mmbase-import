@@ -16,7 +16,7 @@ public class UpdateUnusedElements implements Runnable {
    private static final ServerUtil su = new ServerUtil();
 
 	/*
-	* Returns the list of unused contentelements for a rubriek
+	* Returns the list of unused objects for a rubriek
 	*/
 	public ArrayList getUnusedItemsForRubriek(Cloud cloud, String rubriekNumber) {
 		ContentHelper ch = new ContentHelper(cloud);
@@ -33,7 +33,7 @@ public class UpdateUnusedElements implements Runnable {
 	}
 
 	/*
-	* Returns a HashMap with for each rubriek an ArrayList of unused contentelements
+	* Returns a HashMap with for each rubriek an ArrayList of unused objects
 	*/
 	public HashMap getUnusedItemsForAllRubriek(Cloud cloud) {
 		HashMap hmUnusedItems = new HashMap();
@@ -46,7 +46,7 @@ public class UpdateUnusedElements implements Runnable {
 	}
 
 	/*
-	* For all users add the list of unused contentelements to the application scope
+	* For all users add the list of unused objects to users.unused_items field
 	*/
    public void getUnusedItems() {
       Cloud cloud = CloudFactory.getCloud();

@@ -123,17 +123,17 @@ public class SiteMapGenerator implements Runnable{
 
                   nodesAtLevel[depth].remove(thisKey);
 
-                  for (int i = 0; i < NatMMConfig.CONTENTELEMENTS.length; i++){
+                  for (int i = 0; i < NatMMConfig.OBJECTS.length; i++){
                      String sRealConstraints = sConstrains[i];
                      if (!sRealConstraints.equals("")){
                         sRealConstraints += " AND ";
                      }
                      sRealConstraints += "pagina.number = " + sThisObject;
-                     String sBuilderName = NatMMConfig.CONTENTELEMENTS[i];
+                     String sBuilderName = NatMMConfig.OBJECTS[i];
                      if (sBuilderName.equals("artikel#")){
                         sBuilderName = "artikel";
                      }
-                     String sPath = NatMMConfig.PATHS_FROM_PAGE_TO_ELEMENTS[i].
+                     String sPath = NatMMConfig.PATHS_FROM_PAGE_TO_OBJECTS[i].
                         replaceAll("object",sBuilderName);
                      NodeList nlObjects = cloud.getList("", sPath,
                      sBuilderName + ".number",sRealConstraints,
@@ -286,8 +286,8 @@ public class SiteMapGenerator implements Runnable{
       Thread kicker = getKicker();
       log.info("run(): " + kicker);
       Cloud cloud = CloudFactory.getCloud();
-      ApplicationHelper ap = new ApplicationHelper();
-      if(ap.isInstalled(cloud,"NatMM")) {
+      ApplicationHelper ap = new ApplicationHelper(cloud);
+      if(ap.isInstalled("NatMM")) {
          generateSiteMap(cloud);
       }
    }

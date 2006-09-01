@@ -4,13 +4,18 @@ package nl.leocms.applications;
 */
 
 public class NatNHConfig {
-   
+
    public final static String[] CONTENTELEMENTS = {  
       "artikel",
       "images",
    };
    
-   public final static String[] PATHS_FROM_PAGE_TO_ELEMENTS = {  
+   public final static String[] OBJECTS = {  
+      "artikel",
+      "images",
+   };
+   
+   public final static String[] PATHS_FROM_PAGE_TO_OBJECTS = {  
       "object,contentrel,pagina",                 // artikel
       "object,posrel,pagina",                     // images
    };

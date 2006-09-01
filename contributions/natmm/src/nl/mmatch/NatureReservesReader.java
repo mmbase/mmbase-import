@@ -150,8 +150,8 @@ public class NatureReservesReader implements Runnable {
       Thread kicker = getKicker();
       log.info("run(): " + kicker);
 		Cloud	cloud = CloudFactory.getCloud();
-		ApplicationHelper ap = new ApplicationHelper();
-		if(ap.isInstalled(cloud,"NatMM")) {
+		ApplicationHelper ap = new ApplicationHelper(cloud);
+		if(ap.isInstalled("NatMM")) {
 			readFiles(cloud);
 		}
     }
