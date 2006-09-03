@@ -1,8 +1,8 @@
 <%@page import="com.finalist.tree.*,
    nl.leocms.authorization.forms.*,
    nl.leocms.util.*,
-	nl.leocms.applications.*,
-	java.util.*,
+	 nl.leocms.applications.*,
+	 java.util.*,
    org.mmbase.bridge.*,
    nl.leocms.servlets.UrlConverter" %>
 <%@include file="/taglibs.jsp" %>
@@ -12,30 +12,30 @@
 <%
 
    RubriekHelper rubriekHelper = new RubriekHelper(cloud);
-	int DEFAULT_STYLE = -1;
-	String [] style1 = null;
-	String [] layout = null;
+	 int DEFAULT_STYLE = -1;
+	 String [] style1 = null;
+	 String [] layout = null;
    String cssPath = null;
 	
-	ApplicationHelper ap = new ApplicationHelper();
+	ApplicationHelper ap = new ApplicationHelper(cloud);
 	// todo: create a more generic version for this piece of code
-	if(ap.isInstalled(cloud,"NatMM")) {
+	if(ap.isInstalled("NatMM")) {
 		
-	   DEFAULT_STYLE = NatMMConfig.DEFAULT_STYLE;
+	  DEFAULT_STYLE = NatMMConfig.DEFAULT_STYLE;
 		layout = NatMMConfig.layout;
    	style1 = NatMMConfig.style1;
 		cssPath = NatMMConfig.cssPath;
    }
-	if(ap.isInstalled(cloud,"NatNH")) {
+	if(ap.isInstalled("NatNH")) {
 	
-	   DEFAULT_STYLE = NatNHConfig.DEFAULT_STYLE;
-	   style1 = NatNHConfig.style1;
+	  DEFAULT_STYLE = NatNHConfig.DEFAULT_STYLE;
+	  style1 = NatNHConfig.style1;
 		cssPath = NatNHConfig.cssPath;
    }
-	if(ap.isInstalled(cloud,"NMIntra")) {
+	if(ap.isInstalled("NMIntra")) {
 	
-	   DEFAULT_STYLE = NMIntraConfig.DEFAULT_STYLE;
-	   style1 = NMIntraConfig.style1;
+	  DEFAULT_STYLE = NMIntraConfig.DEFAULT_STYLE;
+	  style1 = NMIntraConfig.style1;
 		cssPath = NMIntraConfig.cssPath;
    }
 	
@@ -48,11 +48,11 @@
 		sWarning += "WARNING: cssPath is not defined by the available applications<br/>";
 		cssPath = "";
 	}
-  	HashMap leocmsStyles = new HashMap();
+  HashMap leocmsStyles = new HashMap();
 	for(int i=0; i< style1.length; i++) {
 		leocmsStyles.put(cssPath + style1[i] + ".css", style1[i]);
 	}
-   String rubriekSubsiteNodeNumber = "";
+  String rubriekSubsiteNodeNumber = "";
 %>
 <html>
 <head>
