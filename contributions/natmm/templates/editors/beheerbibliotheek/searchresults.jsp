@@ -251,31 +251,6 @@ if (searchIsOn) {
 				<mm:field name="contentelement.otype" jspvar="otype" vartype="String" >
                <% thisType = (String) contentHelper.getNameWithOtype(otype); %>
             </mm:field>
-             <%--mm:field name="otype" jspvar="otype" vartype="String" >
-               <% thisType = (String) contentHelper.getNameWithOtype(otype); %>
-             </mm:field>
-				<% 
-             for(int ct=0; ct < cTypes.size(); ct++) {
-               String relatedType = ((String) cTypes.get(ct)).toLowerCase();
-
-               if(   !(thisType.equals("artikel")&&(relatedType.equals("paragraaf")||relatedType.equals("images")))
-                  && !(thisType.equals("evenement")&&relatedType.equals("evenement"))) {
-                  NodeManager thisTypeNodeManager = cloud.getNodeManager(thisType);
-                  if(thisTypeNodeManager.getAllowedRelations(relatedType,null,null).size()>0) {
-                     %><mm:relatednodescontainer path="<%= relatedType %>">
-                           <mm:size id="size" write="false" jspvar="size" vartype="String">
-	                           <mm:compare referid="size" value="0" inverse="true">
-   	                           <% usedIn += "\n" + size + " "+ relatedType; %>
-      	                     </mm:compare>
-                           </mm:size>
-                       </mm:relatednodescontainer>
-                       <mm:remove referid="size" /><%
-                  }
-               }
-            }
-            // todo: not used content elements can not be opened in the editwizard
-            usedIn = (usedIn.equals("") ? "style=\"color:red;\" title=\"Dit " + thisType + " is niet in gebruik.\"" : "title=\"Gebruikt in: " +  usedIn + "\"" );
-            --%>
          <tr height="11">
             <td valign="top">
                <% 
