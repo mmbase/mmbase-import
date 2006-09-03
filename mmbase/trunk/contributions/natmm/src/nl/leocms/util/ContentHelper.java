@@ -134,6 +134,11 @@ public class ContentHelper {
             
       ApplicationHelper ap = new ApplicationHelper(cloud);
       
+      String paginaNumber = ap.getDefaultPage(thisType);
+      if(paginaNumber!=null) {
+         nlUsedInItems = cloud.getNodeManager("pagina").getList("number='" + paginaNumber + "'",null,null);
+      }
+      
       TreeMap tmPathToRubriek = new TreeMap();
       if(ap.isInstalled("NatMM")) {
          tmPathToRubriek.put("images", "contentrel");
@@ -145,10 +150,11 @@ public class ContentHelper {
       ArrayList cTypes = ap.getContentTypes();
       for(int ct=0; ct < cTypes.size(); ct++) {
          String relatedType = ( (String) cTypes.get(ct)).toLowerCase();
-         if (! (thisType.equals("artikel") &&
-                (relatedType.equals("paragraaf") || relatedType.equals("images")))
-             &&
-             ! (thisType.equals("evenement") && relatedType.equals("evenement"))) {
+         // subitems do not count for used in items
+         if (   ! (thisType.equals("artikel")  && relatedType.equals("images"))
+             && ! (thisType.equals("artikel")  && relatedType.equals("paragraaf"))
+             && ! (thisType.equals("vacature") && relatedType.equals("attachments"))
+             && ! (thisType.equals("evenement")&& relatedType.equals("evenement")) ) {
             NodeManager thisTypeNodeManager = cloud.getNodeManager(thisType);
             if (thisTypeNodeManager.getAllowedRelations(relatedType, null, null).size() > 0) {
                NodeList nl = null;
@@ -169,7 +175,6 @@ public class ContentHelper {
                      nlUsedInItems.addAll(nl);
                   }
                }
-
             }
          }
       }
@@ -199,38 +204,32 @@ public class ContentHelper {
       return alUnusedItems;
    }
 
-   public void addDefaultRelations(String objectNumber, String pathFromPageToElements) {
+   public void addDefaultRelations(String sContentElement, HashMap pathsFromPageToElements) {
+      String sType = cloud.getNode(sContentElement).getNodeManager().getName();
+      boolean hasDefaultRelations = false;
+      for (Iterator it=pathsFromPageToElements.keySet().iterator();it.hasNext() && !hasDefaultRelations; ) {
+         String objecttype = (String) it.next();
+         if (objecttype.equals(sType)) {
+           String path = (String) pathsFromPageToElements.get(objecttype);
+           hasDefaultRelations = addDefaultRelations(sContentElement, path);
+         }
+      }
+   }
 
+   public boolean addDefaultRelations(String objectNumber, String pathFromPageToElements) {
+      
+      boolean hasDefaultRelations = false;
+      
       if(!bRelationsExists(objectNumber)) {
                         
          Node nElement = cloud.getNode(objectNumber);
          String otype = nElement.getStringValue("otype");
          String thisType = (String) getNameWithOtype(otype);
          
-         String sPaginaNumber = null;
          Vector breadcrumbs = null;
          String archiveParent = null;
          
-         // some exceptions of objects belonging to pages, but not actually related
-         if (ap.isInstalled("NatMM")) {
-            if (thisType.equals("evenementen")) {
-               sPaginaNumber = cloud.getNodeByAlias("agenda").getStringValue("number");
-            }
-         }
-         if (ap.isInstalled("NMIntra")) {
-            if (thisType.equals("medewerkers")) {
-               sPaginaNumber = cloud.getNodeByAlias("wieiswie").getStringValue("number");
-            }
-            if (thisType.equals("educations")) {
-               sPaginaNumber = cloud.getNodeByAlias("educations").getStringValue("number");
-            }
-            if (thisType.equals("evenement_blueprint")) {
-               sPaginaNumber = cloud.getNodeByAlias("events").getStringValue("number");               
-            }
-            if (thisType.equals("projects")) {
-               sPaginaNumber = cloud.getNodeByAlias("projects").getStringValue("number");
-            }
-         }
+         String sPaginaNumber = ap.getDefaultPage(thisType);
             
          // finding page related to the contentelement
          if (sPaginaNumber==null){
@@ -260,7 +259,8 @@ public class ContentHelper {
             
             createRelation(objectNumber,nElement,"creatierubriek",(String) breadcrumbs.get(0));
             createRelation(objectNumber,nElement,"hoofdrubriek",(String) breadcrumbs.get(breadcrumbs.size()-3));
-            createRelation(objectNumber,nElement,"subsite",(String) breadcrumbs.get(breadcrumbs.size()-2));                        
+            createRelation(objectNumber,nElement,"subsite",(String) breadcrumbs.get(breadcrumbs.size()-2));
+            hasDefaultRelations = true;
          }
          else {
 
@@ -269,7 +269,10 @@ public class ContentHelper {
             createRelation(objectNumber,nElement,"hoofdrubriek","archive");
             createRelation(objectNumber,nElement,"subsite",archiveParent);
          }
+      } else {
+        hasDefaultRelations = true;
       }
+      return hasDefaultRelations;
    }
 
    void createRelation(String objectNumber, Node nElement, String role, String rubriekNumber) {

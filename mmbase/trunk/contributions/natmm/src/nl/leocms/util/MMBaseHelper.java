@@ -125,22 +125,12 @@ public class MMBaseHelper {
           
           NodeList nl = cloud.getList("","contentelement","contentelement.number",
             null,"contentelement.number","up",null,true);
-          for (int i = 0; i < nl.size(); i++){
-             String sContentelement = nl.getNode(i).getStringValue("contentelement.number");
-             String sType = cloud.getNode(sContentelement).getNodeManager().getName();
-             String path = null;
-             for (Iterator it=pathsFromPageToElements.keySet().iterator();it.hasNext(); ) {
-               String objecttype = (String) it.next();
-               String currentPath = (String) pathsFromPageToElements.get(objecttype);               
-               if (objecttype.equals(sType)) {
-                  path = currentPath;
-               }
-             }
-             if (path!=null){
-                ch.addDefaultRelations(sContentelement, path);
-                ch.addSchrijver(sContentelement);
-             }
+          int nlSize = nl.size();
+          for (int i = 0; i < nlSize; i++) {
+             String sContentElement = nl.getNode(i).getStringValue("contentelement.number");
+             ch.addDefaultRelations(sContentElement, pathsFromPageToElements);
+             ch.addSchrijver(sContentElement);
           }
       }
-
+      
 }

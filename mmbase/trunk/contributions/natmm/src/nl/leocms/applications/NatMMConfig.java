@@ -16,9 +16,9 @@ public class NatMMConfig {
       "organisatie",
       "pagina",
       "panno",
-      "paragraaf",
+      "paragraaf", // necessary to determine whether images, links and attachments are used
       "persoon",
-       // "poll",
+      // "poll",
       "provincies",
       "shorty",
       "teaser",
