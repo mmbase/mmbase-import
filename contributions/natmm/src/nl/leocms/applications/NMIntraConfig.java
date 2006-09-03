@@ -92,9 +92,11 @@ public class NMIntraConfig {
       "#799FCC",          "#F54D3F",          "#A3D568" };
 
    public static int PARENT_STYLE = -1;
-	public static int DEFAULT_STYLE = 4;
+	 public static int DEFAULT_STYLE = 4;
 
-	public static String cssPath = "css/";
+   public static String cssPath = "css/";
+
+   public static boolean showFirstSubpage = false;
 	
    public static String fromEmailAddress = "intranet@natuurmonumenten.nl";
    public static String sDocumentsUrl = "/documents/PenO";
