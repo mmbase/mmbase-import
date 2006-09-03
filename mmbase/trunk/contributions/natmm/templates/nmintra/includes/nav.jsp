@@ -25,7 +25,7 @@
 
       TreeMap [] nodesAtLevel = new TreeMap[10];
       nodesAtLevel[0] = (TreeMap) rubriekHelper.getSubObjects(rootId);
-      boolean showFirstSubpage = false;
+      boolean showFirstSubpage = nl.leocms.applications.NMIntraConfig.showFirstSubpage;
       boolean [] isFirstSubpage =  new boolean[10];
       for(int i = 0; i<10; i++) { isFirstSubpage[i] = true; }
       
