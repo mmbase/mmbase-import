@@ -69,8 +69,6 @@ public class ApplicationHelper {
       
       return contentTypes;
    }
-
-	
 	
 	public HashMap pathsFromPageToElements() {
 	
@@ -101,6 +99,32 @@ public class ApplicationHelper {
 			log.error("OBJECTS and PATHS_FROM_PAGE_TO_OBJECTS are not defined by the available applications");
 		}
 		return pathsFromPageToElements;
+   }
+   
+   public String getDefaultPage(String thisType){
+
+      // some exceptions of objects belonging to pages, but not actually related
+      String sPaginaNumber = null;
+      if (isInstalled("NatMM")) {
+         if (thisType.equals("evenementen")) {
+            sPaginaNumber = cloud.getNodeByAlias("agenda").getStringValue("number");
+         }
+      }
+      if (isInstalled("NMIntra")) {
+         if (thisType.equals("medewerkers")) {
+            sPaginaNumber = cloud.getNodeByAlias("wieiswie").getStringValue("number");
+         }
+         if (thisType.equals("educations")) {
+            sPaginaNumber = cloud.getNodeByAlias("educations").getStringValue("number");
+         }
+         if (thisType.equals("evenement_blueprint")) {
+            sPaginaNumber = cloud.getNodeByAlias("events").getStringValue("number");               
+         }
+         if (thisType.equals("projects")) {
+            sPaginaNumber = cloud.getNodeByAlias("projects").getStringValue("number");
+         }
+      }
+      return sPaginaNumber;
    }
    			
    /**
