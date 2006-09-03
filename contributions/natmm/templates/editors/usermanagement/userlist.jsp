@@ -1,7 +1,6 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@include file="/taglibs.jsp" %>
 <%@page import="nl.leocms.authorization.forms.UserForm" %>
-<% ApplicationHelper ap = new ApplicationHelper(); %>
 <html>
 <head>
 <link href="<mm:url page="<%= editwizard_location %>"/>/style/color/wizard.css" type="text/css" rel="stylesheet"/>
@@ -10,6 +9,7 @@
 </head>
 <body style="overflow:auto;">
 <mm:cloud method="http" rank="administrator" jspvar="cloud">
+<% ApplicationHelper ap = new ApplicationHelper(cloud); %>
 <h1>Alle gebruikers</h1>
 <a href="UserInitAction.eb"><img src="../img/new.gif" border='0' align='middle'/>Nieuwe gebruiker</a> 
 <table class="formcontent" style="width:auto;">
@@ -20,7 +20,7 @@
    <th style="width:10%;">&nbsp;</th>
    <th style="width:30%;">Rollen</th>
 	<%
-	if(ap.isInstalled(cloud,"NatMM")) {
+	if(ap.isInstalled("NatMM")) {
 		%>
    	<th style="width:30%;">Afdeling (tbv authorisatie in CAD)</th>
 		<% 
@@ -59,7 +59,7 @@
        </mm:related>
    </td>
 	<%
-	if(ap.isInstalled(cloud,"NatMM")) {
+	if(ap.isInstalled("NatMM")) {
 		%>
 		<td style="vertical-align:top;"><mm:related path="rolerel,afdelingen" orderby="afdelingen.naam">
 				<mm:first inverse="true">, </mm:first>
