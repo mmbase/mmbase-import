@@ -33,10 +33,10 @@ import org.mmbase.util.logging.Logging;
  * a key.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TemplateCache.java,v 1.15 2006-02-13 18:02:35 michiel Exp $
+ * @version $Id: TemplateCache.java,v 1.16 2006-09-04 12:53:51 michiel Exp $
  * @since   MMBase-1.6
  */
-public class TemplateCache extends Cache {
+public class TemplateCache extends Cache<Object, Templates> {
 
     private static final Logger log = Logging.getLoggerInstance(TemplateCache.class);
 
@@ -170,9 +170,9 @@ public class TemplateCache extends Cache {
      * When removing an entry (because of LRU e.g), then also the FileWatcher must be removed.
      */
 
-    public synchronized Object remove(Object key) {
+    public synchronized Templates remove(Object key) {
         if (log.isDebugEnabled()) log.debug("Removing " + key);
-        Object result = super.remove(key);
+        Templates result = super.remove(key);
         String url = ((Key) key).getURL();
         remove(url);
         templateWatcher.remove(url);
@@ -185,13 +185,13 @@ public class TemplateCache extends Cache {
      * @throws RuntimeException
      **/
 
-    public Object put(Object key, Object value) {
+    public Templates put(Object key, Templates value) {
         throw new RuntimeException("wrong types in cache");
     }
-    public Object put(Source src, Templates value) {
+    public Templates put(Source src, Templates value) {
         return put(src, value, null);
     }
-    public Object put(Source src, Templates value, URIResolver uri) {
+    public Templates put(Source src, Templates value, URIResolver uri) {
         if (! isActive()) {
             if (log.isDebugEnabled()) {
                 log.debug("XSLT Cache is not active");
@@ -199,7 +199,7 @@ public class TemplateCache extends Cache {
             return null;
         }
         Key key = new Key(src, uri);
-        Object res = super.put(key, value);
+        Templates res = super.put(key, value);
         log.service("Put xslt in cache with key " + key);
         templateWatcher.add(key.getURL());
         if (log.isDebugEnabled()) {
