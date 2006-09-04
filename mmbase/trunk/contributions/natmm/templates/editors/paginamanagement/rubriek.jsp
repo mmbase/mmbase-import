@@ -129,7 +129,7 @@ Rubriek:<b>
 		<%
 	} else {
 		%>
-		<html:hidden  property="naam_fra" value="-1" />
+		<html:hidden property="naam_fra" value="-1" />
 		<%
 	} %>
    <tr><td class="fieldname">Style</td>
@@ -157,6 +157,19 @@ Rubriek:<b>
         </html:select>
        </td>
     </tr>
+   <logic:equal name="RubriekForm" property="level" value="2">
+        <tr><td class="fieldname">Rubriek is doorzoekbaar</td>
+           <td>
+           <html:select property="issearchable">
+             <html:option value="1">ja</html:option>
+             <html:option value="0">nee</html:option>
+           </html:select>
+           </td>
+        </tr>
+   </logic:equal>
+   <logic:notEqual name="RubriekForm" property="level" value="2">
+       <html:hidden property="issearchable" value='' />
+   </logic:notEqual>
    <logic:equal name="RubriekForm" property="level" value="1">
         <tr><td class="fieldname">Url (for Google-sitemap)</td><td><html:text property="url" maxlength='100' />
             <span class="notvalid"><html:errors bundle="LEOCMS" property="url" /></span></td></tr>
