@@ -43,6 +43,7 @@ public class RubriekForm extends ActionForm {
    private String node;
    private String url_live;
    private String is_visible;
+   private String issearchable;
    private int level;
    private boolean fra_active;
    private boolean eng_active;
@@ -175,6 +176,21 @@ public class RubriekForm extends ActionForm {
       this.is_visible = is_visible;
    }
 
+
+  /**
+    * @return Returns the issearchable.
+    */
+   public String getIssearchable() {
+      return issearchable;
+   }
+
+   /**
+    * @param issearchable Whether or not this rubriek has searchable content
+    */
+   public void setIssearchable(String issearchable) {
+      this.issearchable = issearchable;
+   }
+
    /**
     * @return Returns the style.
     */
@@ -285,6 +301,9 @@ public class RubriekForm extends ActionForm {
 
 /**
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2006/08/11 06:23:02  henk
+ * Removed uppercase from getter/setter (does not work well with Struts)
+ *
  * Revision 1.2  2006/08/10 14:23:00  henk
  * Added rubriek.isvisible
  *
