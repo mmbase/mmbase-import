@@ -114,15 +114,15 @@ public class Exporter implements Runnable
             Element elemJobs = document.createElement("jobs");
             elemJobInfo.appendChild(elemJobs);
 
-            document = buildJob(cloud,document,elemJobs,nl.getNode(i).getStringValue("number"),"afdelingen");
-            document = buildJob(cloud,document,elemJobs,nl.getNode(i).getStringValue("number"),"locations");
+            document = buildJob(cloud,document,elemJobs,nl.getNode(i).getStringValue("number"),"afdelingen",su.sAfdelingenConstraints);
+            document = buildJob(cloud,document,elemJobs,nl.getNode(i).getStringValue("number"),"locations",null);
 
             Element elemDescr = document.createElement("description");
             elemDescr.appendChild(document.createTextNode(nl.getNode(i).getStringValue("description")));
             elemJobInfo.appendChild(elemDescr);
 
             Element elemImage = document.createElement("image");
-            elemRoot.appendChild(elemImage);
+            elemPerson.appendChild(elemImage);
 
             NodeList nlImages = nl.getNode(i).getRelatedNodes("images");
             for (int j = 0; j < nlImages.size(); j++){
@@ -159,10 +159,10 @@ public class Exporter implements Runnable
    }
 
    public Document buildJob(Cloud cloud,Document document,Element elRoot,
-   String sNodeNumber, String sBuilderName){
+   String sNodeNumber, String sBuilderName, String sConstraints){
       NodeList nl = cloud.getList(sNodeNumber,
       "medewerkers,readmore," + sBuilderName,"readmore.number,readmore.readmore, " +
-      sBuilderName + ".number, " + sBuilderName + ".naam",null,
+      sBuilderName + ".number, " + sBuilderName + ".naam",sConstraints,
       "readmore.number," + sBuilderName + ".number","up,up",null,true);
       for (int j = 0; j < nl.size(); j++){
          Element elemJob = document.createElement("job");
