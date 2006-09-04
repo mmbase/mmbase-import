@@ -206,7 +206,7 @@ public class RubriekHelper {
       if (rubriekLevel == 0 || rubriekLevel == 1) {
          return rubriekNumber;
       } else {         
-         return (new PaginaHelper(cloud)).getRootRubriek(cloud,rubriekNumber);
+         return (new PaginaHelper(cloud)).getSubsiteRubriek(cloud,rubriekNumber);
       } 
    }
 
