@@ -25,7 +25,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * Cache manager manages the static methods of {@link Cache}. If you prefer you can call them on this in stead.
  *
  * @since MMBase-1.8
- * @version $Id: CacheManager.java,v 1.6 2006-06-28 17:37:54 michiel Exp $
+ * @version $Id: CacheManager.java,v 1.6.2.1 2006-09-04 10:48:30 michiel Exp $
  */
 public class CacheManager {
 
@@ -108,7 +108,7 @@ public class CacheManager {
             if (cache == null) {
                 log.service("No cache " + cacheName + " is present (perhaps not used yet?)");
             } else {
-                String clazz = xmlReader.getElementValue(xmlReader.getElementByPath(cacheElement, "cache.implementation"));
+                String clazz = xmlReader.getElementValue(xmlReader.getElementByPath(cacheElement, "cache.implementation.class"));
                 if(!"".equals(clazz)) {
                     Element cacheImpl = xmlReader.getElementByPath(cacheElement, "cache.implementation");
                     Iterator it = xmlReader.getChildElements(cacheImpl, "param");
@@ -294,7 +294,7 @@ public class CacheManager {
      */
     public static void shutdown() {
         log.info("Clearing all caches");
-        Iterator  i =  caches.entrySet().iterator();
+        Iterator  i =  caches.values().iterator();
         while (i.hasNext()) {
             Cache cache = (Cache) i.next();
             cache.clear();
