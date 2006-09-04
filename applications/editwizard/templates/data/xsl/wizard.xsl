@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.163 2006-09-01 11:38:17 nklasens Exp $
+    @version $Id: wizard.xsl,v 1.164 2006-09-04 14:34:49 michiel Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -1464,7 +1464,7 @@
         <xsl:choose>
           <xsl:when test="@wizardjsp">
             <xsl:attribute name="href">
-              <xsl:value-of select="$ew_context"/><xsl:value-of select="$wizardjsp"/>?wizard=<xsl:value-of select="@wizardname"/>&amp;did=<xsl:value-of select="../../command[@name=&apos;add-item&apos;]/@value"/>&amp;objectnumber=<xsl:value-of select="@objectnumber"/>&amp;origin=<xsl:value-of select="@origin"/>
+              <xsl:value-of select="$ew_context"/><xsl:value-of select="@wizardjsp"/>?wizard=<xsl:value-of select="@wizardname"/>&amp;did=<xsl:value-of select="../../command[@name=&apos;add-item&apos;]/@value"/>&amp;objectnumber=<xsl:value-of select="@objectnumber"/>&amp;origin=<xsl:value-of select="@origin"/>
             </xsl:attribute>
           </xsl:when>
           <xsl:otherwise>
