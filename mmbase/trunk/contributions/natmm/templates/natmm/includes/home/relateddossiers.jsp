@@ -5,7 +5,7 @@
 <%
 String objectID = request.getParameter("o");
 PaginaHelper ph = new PaginaHelper(cloud);
-String rootID = ph.getRootRubriek(cloud,objectID);
+String rootID = ph.getSubsiteRubriek(cloud,objectID);
 %>
 <mm:node number="<%=objectID%>">
 <mm:related path="posrel,dossier" fields="dossier.number,dossier.naam" orderby="posrel.pos">

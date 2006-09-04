@@ -89,7 +89,7 @@
 					} else if (rubriek_level.equals("1")) { // this is a root rubriek
 						tsRubrieks.add(rubriek_number);
 					} else { // add the root rubriek of this rubriek
-						tsRubrieks.add(PaginaHelper.getRootRubriek(cloud,rubriek_number));
+						tsRubrieks.add(PaginaHelper.getSubsiteRubriek(cloud,rubriek_number));
 					}
 				} 
 				%>

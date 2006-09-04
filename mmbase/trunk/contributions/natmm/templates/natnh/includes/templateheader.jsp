@@ -27,7 +27,7 @@ paginaID = (String) ids.get("pagina");
 articleId = (String) ids.get("artikel");
 imageId = (String) ids.get("images");
 
-String rootId = ph.getRootRubriek(cloud, paginaID);
+String rootId = ph.getSubsiteRubriek(cloud, paginaID);
 String offsetId = request.getParameter("offset"); if(offsetId==null){ offsetId=""; }
 
 String requestURL = javax.servlet.http.HttpUtils.getRequestURL(request).toString();

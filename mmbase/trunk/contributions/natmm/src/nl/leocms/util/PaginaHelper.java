@@ -114,20 +114,38 @@ public class PaginaHelper {
 		return getOwners(cloud,paginaNumber,bc);
 	}
 
-   public static String getRootRubriek(Cloud cloud, String paginaNumber) {
+   public static String getSubsiteRubriek(Cloud cloud, String paginaNumber) {
       Vector breadcrumbs = getBreadCrumbs(cloud, paginaNumber);
       log.debug(paginaNumber + "->" + breadcrumbs);
-		String rootRubriek = null;
+		String subsiteRubriek = null;
       if (breadcrumbs!=null) {
          if (breadcrumbs.size() >= 2) {
-            rootRubriek = (String) breadcrumbs.get(breadcrumbs.size() - 2);
+            subsiteRubriek = (String) breadcrumbs.get(breadcrumbs.size() - 2);
          } else {
             log.error("Pagina " + paginaNumber +
-               " does not have a root rubriek. Setting root rubriek to 'root'");
-            rootRubriek = "root";
+               " does not belong to a subsite. Setting subsite rubriek to 'root'");
+            subsiteRubriek = "root";
          }
       }
-      return rootRubriek;
+      return subsiteRubriek;
+   }
+
+   public static String getHoofdRubriek(Cloud cloud, String paginaNumber) {
+      Vector breadcrumbs = getBreadCrumbs(cloud, paginaNumber);
+      log.debug(paginaNumber + "->" + breadcrumbs);
+		String hoofdRubriek = null;
+      if (breadcrumbs!=null) {
+         if (breadcrumbs.size() >= 3) {
+            hoofdRubriek = (String) breadcrumbs.get(breadcrumbs.size() - 3);
+         } else  if (breadcrumbs.size() >= 2) {
+            hoofdRubriek = (String) breadcrumbs.get(breadcrumbs.size() - 2);
+         } else {
+            log.error("Pagina " + paginaNumber +
+               " does not have a hoofd rubriek. Setting hoofd rubriek to 'root'");
+            hoofdRubriek = "root";
+         }
+      }
+      return hoofdRubriek;
    }
 
    /**
@@ -137,8 +155,8 @@ public class PaginaHelper {
     * @return subDir
     */
    public static String getSubDir(Cloud cloud, String paginaNumber) {
-      String rootRubriek = getRootRubriek(cloud,paginaNumber);
-      return (rootRubriek==null) ? null : RubriekHelper.getSubDir(cloud.getNode(rootRubriek));
+      String subsiteRubriek = getSubsiteRubriek(cloud,paginaNumber);
+      return (subsiteRubriek==null) ? null : RubriekHelper.getSubDir(cloud.getNode(subsiteRubriek));
    }
 
   /**

@@ -40,7 +40,7 @@
             	NodeList list = cloud.getList(docNumber,path,"pagina.number",null,null,null,"SOURCE",true);
 	            for(int j=0; j<list.size(); j++) {
    	            String paginaNumber = list.getNode(j).getStringValue("pagina.number");
-      	         if(PaginaHelper.getRootRubriek(cloud,paginaNumber).equals(rootRubriek)) {
+      	         if(PaginaHelper.getSubsiteRubriek(cloud,paginaNumber).equals(rootRubriek)) {
 							if (index==1) {
 								PaginaHelper ph = new PaginaHelper(cloud);
 								String sConstraints = "(artikel.embargo < '" + (nowSec+quarterOfAnHour) + "') AND (artikel.use_verloopdatum='0' OR artikel.verloopdatum > '" + nowSec + "' )";
@@ -67,7 +67,7 @@
          	   String sParent =  Evenement.findParentNumber(docNumber);
             	if(!includedEvents.contains(sParent) && Evenement.isOnInternet(e,nowSec)) {
                	String paginaNumber = cloud.getNode("agenda").getStringValue("number");
-	               if(PaginaHelper.getRootRubriek(cloud,paginaNumber).equals(rootRubriek)) {
+	               if(PaginaHelper.getSubsiteRubriek(cloud,paginaNumber).equals(rootRubriek)) {
    	               hsetNodes.add(docNumber);
   	   	            includedEvents.add(sParent);
          	      }
