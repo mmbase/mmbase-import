@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.3 2006-08-30 09:05:12 henk Exp $
+     * @version  $Id: list.jsp,v 1.4 2006-09-04 18:52:09 henk Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -241,8 +241,8 @@ for (int i=0; i < results.size(); i++) {
        String sURL = "<a href='"+pathPrefix+"/util/image_crop.jsp?img=" + item.getNumber() + "'><img src='" + pathPrefix + "/img/select.gif' border='0' alt='Nieuwe afbeelding uitsnijden'></a>";
        addField(obj, "ImageCropper", sURL, "string");
     }
-    ApplicationHelper ap = new ApplicationHelper();
-    if(item.getNodeManager().getName().equals("vacature") && ap.isInstalled(cloud,"NMIntra")) {
+    ApplicationHelper ap = new ApplicationHelper(cloud);
+    if(item.getNodeManager().getName().equals("vacature") && ap.isInstalled("NMIntra")) {
        
        // hh: If we are showing vacatures, we add the vacature publish button and vacature view button
 	    String sObjectNumber = "" + item.getNumber();
