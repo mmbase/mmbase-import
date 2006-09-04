@@ -31,7 +31,7 @@ import java.util.Collection;
  * </pre>
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  */
-public class OSCacheImplementation implements CacheImplementationInterface  {
+public class OSCacheImplementation<K, V> implements CacheImplementationInterface<K, V>  {
     private AbstractConcurrentReadCache cacheImpl;
     private static final String classname = "com.opensymphony.oscache.base.algorithm.LRUCache";
     private static final String persistanceclass = "com.opensymphony.oscache.plugins.diskpersistence.DiskPersistenceListener";
@@ -130,11 +130,11 @@ public class OSCacheImplementation implements CacheImplementationInterface  {
     /**
      * Wrapper around the get() method of the cache implementation.
      */
-    public Object get(Object key) {
+    public V get(Object key) {
         if (key instanceof String) {
-            return cacheImpl.get(key);
+            return (V) cacheImpl.get(key);
         } else {
-            return cacheImpl.get(computeKey(key));
+            return (V) cacheImpl.get(computeKey(key));
         }
     }
 
@@ -162,12 +162,18 @@ public class OSCacheImplementation implements CacheImplementationInterface  {
     /**
      * Wrapper around the put() method of the cache implementation.
      */
-    public Object put(Object key, Object value) {
+    public V put(K key, V value) {
+        V oldValue = (V) get(key);
+        // returning does not work because of bug CACHE-255 in oscache (http://jira.opensymphony.com/browse/CACHE-255)
         if (key instanceof String) {
-            return cacheImpl.put(key, value);
+            //return (V) cacheImpl.put(key, value);
+            cacheImpl.put(key, value);
         } else {
-            return cacheImpl.put(computeKey(key), value);
+            //return (V) cacheImpl.put(computeKey(key), value);
+            cacheImpl.put(computeKey(key), value);
+
         }
+        return oldValue;
     }
 
     /**
@@ -180,11 +186,11 @@ public class OSCacheImplementation implements CacheImplementationInterface  {
     /**
      * Wrapper around the remove() method of the cache implementation.
      */
-    public Object remove(Object key) {
+    public V remove(Object key) {
         if (key instanceof String) {
-            return cacheImpl.remove(key);
+            return (V) cacheImpl.remove(key);
         } else {
-            return cacheImpl.remove(computeKey(key));
+            return (V) cacheImpl.remove(computeKey(key));
         }
     }
 
