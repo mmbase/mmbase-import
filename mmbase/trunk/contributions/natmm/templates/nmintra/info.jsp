@@ -11,8 +11,9 @@ if(!articleId.equals("-1")) {
    <mm:present referid="newsletter_layout">
       <% articleTemplate = "news.jsp" + templateQueryString; %>
    </mm:present>
-	<mm:redirect page="<%= articleTemplate %>" />
    <%
+   articleTemplate += (articleTemplate.indexOf("?")==-1 ? "?" : "&" ) + "showteaser=false";
+   response.sendRedirect(articleTemplate);
 
 } else {  
     %>
@@ -60,7 +61,7 @@ if(!articleId.equals("-1")) {
         <tr><td><img src="media/spacer.gif" width="10" height="1"></td>
             <td><%@include file="includes/relatedteaser.jsp" %><%
              
-                String articleConstraint = "(artikel.embargo < '" + (nowSec+quarterOfAnHour) + "')";
+                String articleConstraint = su.articleConstraint(nowSec,quarterOfAnHour); 
                 String articlePath = "pagina,contentrel,artikel";
                 if(!thisPool.equals("-1")) {
                     articleConstraint += " AND ( pools.number = '" + thisPool + "' )";
@@ -85,12 +86,10 @@ if(!articleId.equals("-1")) {
                 <%= articlePath %><br/>
                 <%= articleConstraint %><br/>
                 --%>
-                <%--mm:list nodes="<%= paginaID %>" path="<%= articlePath %>" constraints="<%= articleConstraint %>"
+                <mm:list nodes="<%= paginaID %>" path="<%= articlePath %>" constraints="<%= articleConstraint %>"
 				         orderby="artikel.embargo" searchdir="destination"
                   ><mm:first><mm:size jspvar="dummy" vartype="Integer" write="false"><% listSize = dummy.intValue();  %></mm:size></mm:first
-                ></mm:list
-                --%>
-					 <% listSize = su.ArtikelsRelatedToPagina(cloud,paginaID,articleConstraint).size();%>
+                ></mm:list>
 					 <%@include file="includes/info/offsetlinks.jsp" %><%
                 if(listSize>0) {
                    %><mm:list nodes="<%= paginaID %>" path="<%= articlePath %>" orderby="artikel.embargo" searchdir="destination" directions="DOWN" 
