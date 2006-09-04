@@ -20,7 +20,7 @@ import org.mmbase.bridge.Cacheable;
  * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.37 2006-09-04 12:53:51 michiel Exp $
+ * @version $Id: Cache.java,v 1.38 2006-09-04 12:55:04 michiel Exp $
  */
 abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V>, CacheMessageListener {
 
@@ -161,7 +161,6 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V>, CacheMes
             return null;
         }
         puts++;
-        log.info("Putting " + key + " value in " + implementation);
         return implementation.put(key, value);
     }
 
