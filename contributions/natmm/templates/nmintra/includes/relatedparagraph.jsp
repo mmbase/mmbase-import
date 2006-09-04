@@ -13,8 +13,8 @@
 
 %><table cellpadding="0" cellspacing="0" width="100%">
     <tr>
-        <td>
-        <p><mm:related path="posrel,images" orderby="images.title" constraints="posrel.pos!='9'" 
+      <td>
+         <mm:related path="posrel,images" orderby="images.title" constraints="posrel.pos!='9'" 
             ><mm:first
                ><mm:field name="posrel.pos" jspvar="dummy" vartype="Integer" write="false"><%
                   int posrel_pos = dummy.intValue();  
@@ -46,10 +46,9 @@
         <%@include file="../includes/attachment.jsp" %>
         <mm:related path="posrel,link" orderby="posrel.pos,link.titel" directions="UP,UP"
             ><br/><a target="_blank" href="<mm:field name="link.url" />"  title="<mm:field name="alt_tekst" />" ><mm:field name="link.titel" /></a>
-        </mm:related
-        ><br>
-        </p>
-        </td>
-    </tr>
+        </mm:related>
+        <br/>   
+      </td>
+   </tr>
 </table>
 </mm:node>

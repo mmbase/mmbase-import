@@ -30,7 +30,7 @@ String url="";
 if(url.equals("")) { 
    %><mm:related path="readmore,pagina" fields="pagina.number"
       ><mm:field name="pagina.number" jspvar="page_number" vartype="String" write="false"><%
-         url = "homepage.jsp?p=" + page_number;
+         url = ph.createPaginaUrl(page_number,request.getContextPath());
       %></mm:field
    ></mm:related><%
 } %><table border="0" cellpadding="0" cellspacing="0">

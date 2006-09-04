@@ -15,7 +15,7 @@
             	<td class="bold"><span class="light">Categorie</span></td>
    			</tr>
    			<tr><td>
-            <select name="pool" style="width:172px;" <% if(!isArchive) { %>onChange="javascript:postIt();"<% } %>>
+            <select name="pool" style="width:172px;">
         </mm:first
         ><mm:field name="pools.number" jspvar="thispool" vartype="String" write="false"><%
             if(!lastpool.equals(thispool)) { 
@@ -134,7 +134,6 @@ function postIt(action) {
    if(action!='clear') {
 	    var pool = document.infoform.elements["pool"].value;
 	    if(pool != '') href += "&pool=" + pool;
-    <% if(isArchive) { %>
 	    var termsearch = document.infoform.elements["termsearch"].value;
    	 if(termsearch != '') href += "&termsearch=" + termsearch;
        var period = "";
@@ -151,7 +150,6 @@ function postIt(action) {
 	    v = document.infoform.elements["to_year"].value;
    	 if(v != '') { period += v; } else { period += '0000'; }
        if(period != '0000000000000000') href += "&d=" + period;
-   <% } %>
    }
     document.location = href;
     return false;

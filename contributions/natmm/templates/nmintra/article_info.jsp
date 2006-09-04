@@ -8,16 +8,17 @@
 
 // this is a special version of the article template which includes news
 // - the title of the page is Gesignaleerd
-// - articles are saved to the archive page connected to this page by a dreadmore relation
+// - articles are saved to the archive page connected to this page by a readmore relation
 // - the archive page should have an alias with %archief%
-String readmoreUrl = "article_info.jsp";
 if(!articleId.equals("-1")) { 
+ 
     String articleTemplate = "article.jsp" + templateQueryString;
+    articleTemplate += (articleTemplate.indexOf("?")==-1 ? "?" : "&" ) + "showteaser=false";
 	 response.sendRedirect(articleTemplate);
-    %><%--jsp:include page="<%= articleTemplate %>" /--%><%
 
 } else {  
 
+   String readmoreUrl = "article_info.jsp";
    %><%@include file="includes/header.jsp" 
    %><td><%@include file="includes/pagetitle.jsp" %></td>
      <td><% String rightBarTitle = "Gesignaleerd";
