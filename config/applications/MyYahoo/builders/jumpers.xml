@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<builder xmlns="http://www.mmbase.org/xmlns/builder" 
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-  extends="object" maintainer="www.mmbase.org" name="jumpers" version="0"
-  xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+<!-- version $Id: jumpers.xml,v 1.9 2006-09-04 08:41:30 pierre Exp $ -->
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    extends="object" maintainer="www.mmbase.org" name="jumpers" version="0">
 
-  <status>active</status>
-  <class>Jumpers</class>
+  <class>org.mmbase.module.builders.Jumpers</class>
   <searchage>14</searchage>
 
   <names>
@@ -34,7 +36,8 @@
   </properties>
 
   <fieldlist>
-    <field>
+
+    <field name="name">
       <descriptions>
         <description xml:lang="en">Shortcut url, used to access this jumper</description>
         <description xml:lang="nl">Verkorte link waarmee de jumper kan worden aangeroepen</description>
@@ -46,42 +49,34 @@
       </gui>
       <editor>
         <positions>
-          <input>1</input>
           <list>1</list>
-          <search>1</search>
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>name</name>
-        <type state="persistent" size="64" notnull="true" key="false">STRING</type>
-      </db>
-      </field>
-      
-      <field>
-        <descriptions>
-          <description xml:lang="en">Object number referenced by the jumper, i.e. for teasers</description>
-          <description xml:lang="nl">Objectnummerreferentie, o.a. voor teasers</description>
-        </descriptions>
-       <gui>
-         <guiname xml:lang="en">ID</guiname>
-         <guiname xml:lang="nl">ID</guiname>
-         <guiname xml:lang="eo">ID</guiname>
-       </gui>
-       <editor>
-         <positions>
-           <input>2</input>
-           <list>2</list>
-           <search>2</search>
-         </positions>
-       </editor>
-       <db>
-         <name>id</name>
-         <type state="persistent" notnull="false" key="false">NODE</type>
-       </db>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="true" enforce="never" />
+        <maxLength value="64" />
+      </datatype>
     </field>
 
-    <field>
+    <field name="id">
+      <descriptions>
+        <description xml:lang="en">Objectnumber referenced by the jumper, i.e. for teasers</description>
+        <description xml:lang="nl">Object nummer referentie, o.a. voor teasers</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">ID</guiname>
+        <guiname xml:lang="nl">ID</guiname>
+        <guiname xml:lang="eo">ID</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>2</list>
+        </positions>
+      </editor>
+      <datatype base="nodenumber" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+    <field name="url">
       <descriptions>
         <description xml:lang="en">The actual url to redirect to when the jumper is called</description>
         <description xml:lang="nl">De link waarnaar wordt gesprongen als de jumper wordt aangeroepen</description>
@@ -93,16 +88,13 @@
       </gui>
       <editor>
         <positions>
-          <input>3</input>
           <list>3</list>
-          <search>3</search>
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>url</name>
-        <type state="persistent" size="255" notnull="true" key="false">STRING</type>
-      </db>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="true" enforce="never" />
+        <maxLength value="255" />
+      </datatype>
     </field>
 
   </fieldlist>
