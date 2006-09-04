@@ -159,17 +159,12 @@
         <field name="handle" type="binary">indexed.text</field>
       </table>
    </index>
-
-<!--   <index name="natmmIndexMeta">
+   
+   <index name="natmmIndexPagina">
       <table name="pagina">
-         <field name="metatags" />
-         <related name="artikel">
-            <field name="metatags">metatags</field>
-            <related name="paragraaf">
-               <field name="metatags">metatags</field>
-            </related>
-         </related>
+        <field name="titel">indexed.text</field>
+        <field name="omschrijving">indexed.text</field>
       </table>
    </index>
-   -->
+
 </luceneindexdefinition>
