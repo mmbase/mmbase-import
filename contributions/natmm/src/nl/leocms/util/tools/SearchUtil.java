@@ -24,17 +24,23 @@ import nl.leocms.util.tools.HtmlCleaner;
  * Utilities functions for the search pages
  *
  * @author H. Hangyi
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class SearchUtil {
 
    private static final Logger log = Logging.getLoggerInstance(SearchUtil.class);
 
-   public final static String sEmployeeConstraint = "( medewerkers.importstatus != 'inactive' ) OR ( medewerkers.externid LIKE 'extern' )";
-   public final static String sAfdelingenConstraints = "( afdelingen.importstatus != 'inactive' ) OR ( afdelingen.externid LIKE 'extern' )";
-
+   
    public SearchUtil() {
    }
+
+   public final static String sEmployeeConstraint = "( medewerkers.importstatus != 'inactive' ) OR ( medewerkers.externid LIKE 'extern' )";
+   public final static String sAfdelingenConstraints = "( afdelingen.importstatus != 'inactive' ) OR ( afdelingen.externid LIKE 'extern' )";
+   
+   public String articleConstraint(long nowSec, int quarterOfAnHour) {
+      return "(artikel.embargo < '" + (nowSec+quarterOfAnHour) + "')";
+   }
+
 
    public String searchResults(TreeSet searchResultList) {
       String searchResults = searchResultList.toString();
@@ -312,7 +318,7 @@ public class SearchUtil {
       HashSet hsetPagesNodes) {
 
       HashSet hsetNodes = new HashSet();
-      String sBuiderName = path.substring(0, path.indexOf(","));
+      String sBuiderName = getBuilderName(path);
       NodeList nl = cloud.getList(null, path, sBuiderName + ".number", null, null, null, null, true);
       for (int i = 0; i < nl.size(); i++) {
          String docNumber = nl.getNode(i).getStringValue(sBuiderName +
@@ -339,7 +345,7 @@ public class SearchUtil {
       HashSet hsetPagesNodes) {
 
       HashSet hsetNodes = new HashSet();
-      String sBuiderName = path.substring(0, path.indexOf(","));
+      String sBuiderName = getBuilderName(path);
       String sConstraints = "";
       if (!sBuiderName.equals("producttypes")
           && !sBuiderName.equals("documents")) { // exclude builders that do not have embargo and verloopdatum
@@ -365,10 +371,8 @@ public class SearchUtil {
             docNumber = list.getNode(j).getStringValue(sBuiderName + ".number");
          }
          if (rootRubriek.equals("") ||
-             PaginaHelper.getRootRubriek(cloud,
-                                         paginaNumber).equals(rootRubriek)) {
-            log.info("pagina " + paginaNumber + " belongs to root " +
-                     rootRubriek);
+             PaginaHelper.getSubsiteRubriek(cloud, paginaNumber).equals(rootRubriek)) {
+            log.info("pagina " + paginaNumber + " belongs to subsite " + rootRubriek);
             NodeList nlPools = PoolUtil.getPool(cloud, docNumber);
             if (sPoolNumber.equals("") ||
                 nlPools.contains(cloud.getNode(sPoolNumber))) {
@@ -381,6 +385,14 @@ public class SearchUtil {
       return hsetNodes;
    }
 
+   public static String getBuilderName(String path) {
+      String builderName = path;
+      if(path.indexOf(",")>0) {
+         builderName = path.substring(0, path.indexOf(","));
+      }
+      return builderName;   
+   }
+   
    public NodeList ArtikelsRelatedToPagina (Cloud cloud, String sPaginaID, String sConstraints){
       return cloud.getList(sPaginaID,"pagina,contentrel,artikel","artikel.number",
       sConstraints,"artikel.embargo",null,"destination",true);

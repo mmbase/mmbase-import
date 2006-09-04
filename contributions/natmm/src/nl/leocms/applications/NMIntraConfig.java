@@ -52,22 +52,22 @@ public class NMIntraConfig {
    };
    
    public final static String[] PATHS_FROM_PAGE_TO_OBJECTS = {  
-      "object,contentrel,pagina",                                 // ads
-      "object,contentrel,pagina",                                 // artikel
+      "object,contentrel,pagina",                                 // ads, lucene index -1
+      "object,contentrel,pagina",                                 // artikel, lucene index 0
       "object,readmore,pagina",                                   // artikel (ippolygon.jsp & vacature_info.jsp)
       "object,pos4rel,images,posrel,pagina",                      // artikel (ipoverview.jsp)
-      "object,posrel,pagina",                                     // documents
-      "object,posrel,pagina",                                     // formulier
-      "object,posrel,pagina",                                     // forums
-      "object,posrel,pagina",                                     // items (shop_items.jsp)
-      "object,posrel,contentblocks,readmore,pagina",              // link
-      "object,lijstcontentrel1,linklijst,lijstcontentrel2,pagina",// link
-      "object,lijstcontentrel,pagina",                            // linklijst
-      "object,contentrel,pagina",                                 // medewerkers
-      "object,posrel1,producttypes,posrel2,pagina",               // products (producttypes.jsp)
-      "object,posrel,pagina",                                     // producttypes
-      "object,rolerel,pagina",                                    // teaser
-      "object,contentrel,pagina"                                  // vacature      
+      "object,posrel,pagina",                                     // documents, lucene index 9
+      "object,posrel,pagina",                                     // formulier, lucene index -1
+      "object,posrel,pagina",                                     // forums, lucene index -1
+      "object,posrel,pagina",                                     // items (shop_items.jsp), lucene index 8
+      "object,posrel,contentblocks,readmore,pagina",              // link, lucene index -1
+      "object,lijstcontentrel1,linklijst,lijstcontentrel2,pagina",// link, lucene index -1
+      "object,lijstcontentrel,pagina",                            // linklijst, lucene index -1
+      "object,contentrel,pagina",                                 // medewerkers, lucene index -1
+      "object,posrel1,producttypes,posrel2,pagina",               // products (producttypes.jsp), lucene index 7
+      "object,posrel,pagina",                                     // producttypes, lucene index 6
+      "object,rolerel,pagina",                                    // teaser, lucene index 5
+      "object,contentrel,pagina"                                  // vacature, lucene index 10
    };
 		
 	public static String [] style1 = {
@@ -104,6 +104,7 @@ public class NMIntraConfig {
    public static String sDocumentsRoot = "D:/apps/Tomcat_Intranet/webapps/documents/PenO";
    public static String toEmailAddress = "beheerder@natuurmonumenten.nl";
    public static String rootDir = "E:/Intranet_Input/";
+   public static String tempDir = "E:/Intranet_Input/";
    public static String sCorporateWebsite = "http://www.natuurmonumenten.nl/";
    public static String sCorporateEditors = "http://www.natuurmonumenten.nl/editors/";
    
@@ -111,6 +112,7 @@ public class NMIntraConfig {
    public static String sDocumentsRoot = "C:/data/nmintra/webapps/documents/PenO";
    public static String toEmailAddress = "hangyi@xs4all.nl";    
    public static String rootDir =  "C:/data/nmintra/webapps/ROOT/WEB-INF/data/";
+   public static String tempDir = "C:/temp/";
    public static String sCorporateWebsite = "http://www.acc.natuurmm.asp4all.nl/";
    public static String sCorporateEditors = "http://www.acc.natuurmm.asp4all.nl/editors/";
    */
