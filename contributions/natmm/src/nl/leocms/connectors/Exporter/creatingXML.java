@@ -38,14 +38,14 @@ public class creatingXML{
    }
 
    public void create(Document document, String sBuilderName){
-      log.info("creating " + sBuilderName + ".xml in " + NatMMConfig.tempDir);
+      log.info("creating " + sBuilderName + ".xml in " + NMIntraConfig.tempDir);
       try
        {
           TransformerFactory tFactory = TransformerFactory.newInstance();
 
           Transformer transformer = tFactory.newTransformer();
 
-          FileOutputStream fos = new FileOutputStream(NatMMConfig.tempDir + sBuilderName +
+          FileOutputStream fos = new FileOutputStream(NMIntraConfig.tempDir + sBuilderName +
           ".xml");
           transformer.transform(new javax.xml.transform.dom.DOMSource(document),new StreamResult(fos));
           fos.close();
@@ -59,7 +59,7 @@ public class creatingXML{
        }
 
        ZipUtil zu = new ZipUtil();
-       zu.createArchiveFile(NatMMConfig.tempDir + sBuilderName + ".xml",sBuilderName + ".zip");
+       zu.createArchiveFile(NMIntraConfig.tempDir + sBuilderName + ".xml",sBuilderName + ".zip");
 
    }
 }

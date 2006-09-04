@@ -14,7 +14,7 @@ if(!action.equals("print")) {
             &nbsp;<br><div align="right"><span class="light">en</span></div></td></tr><%
          
     if(thisPrograms.equals("")) {
-        
+        SearchUtil su = new SearchUtil();
         %><tr><td class="bold">&nbsp;<span class="light">En verder:</span>&nbsp;</td>
                     <td class="bold"><input type="text" style="width:103px;" name="description" size="13" value="<%= descriptionId %>">
             &nbsp;<br><div align="right"><span class="light">en</span></div></td></tr>
@@ -22,7 +22,7 @@ if(!action.equals("print")) {
                 <option value="default" <%  if(departmentId.equals("default")) { %>SELECTED<% } 
                     %>>alle afdelingen en regio's
             <mm:list path="afdelingen" orderby="afdelingen.naam" directions="UP"
-                  constraints="( afdelingen.importstatus != 'inactive' ) OR ( afdelingen.externid LIKE 'extern' )"
+                  constraints="<%= su.sAfdelingenConstraints %>"
                 ><mm:field name="afdelingen.number" jspvar="departments_number" vartype="String" write="false"
                 ><mm:field name="afdelingen.naam" jspvar="departments_name" vartype="String" write="false"
                 ><option value="<%= departments_number %>" <%   if(departments_number.equals(departmentId))  { %>SELECTED<% } 
