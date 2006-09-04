@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Cache manager manages the static methods of {@link Cache}. If you prefer you can call them on this in stead.
  *
  * @since MMBase-1.8
- * @version $Id: CacheManager.java,v 1.7 2006-08-30 18:45:09 michiel Exp $
+ * @version $Id: CacheManager.java,v 1.8 2006-09-04 12:53:51 michiel Exp $
  */
 public class CacheManager {
 
@@ -33,7 +33,7 @@ public class CacheManager {
     /**
      * All registered caches
      */
-    private static final Map caches = new ConcurrentHashMap();
+    private static final Map<String, Cache> caches = new ConcurrentHashMap<String, Cache>();
 
     /**
      * Returns the Cache with a certain name. To be used in combination with getCaches(). If you
@@ -43,7 +43,7 @@ public class CacheManager {
      * @see #getCaches
      */
     public static Cache getCache(String name) {
-        return (Cache) caches.get(name);
+        return caches.get(name);
     }
 
     /**
@@ -51,7 +51,7 @@ public class CacheManager {
      *
      * @return A Set containing the names of all caches.
      */
-    public static Set getCaches() {
+    public static Set<String> getCaches() {
         return Collections.unmodifiableSet(caches.keySet());
     }
 
@@ -64,7 +64,7 @@ public class CacheManager {
      * @return The previous cache of the same type (stored under the same name)
      */
     protected static Cache putCache(Cache cache) {
-        Cache old = (Cache) caches.put(cache.getName(), cache);
+        Cache old = caches.put(cache.getName(), cache);
         configure(configReader, cache.getName());
         return old;
     }
@@ -107,7 +107,7 @@ public class CacheManager {
             if (cache == null) {
                 log.service("No cache " + cacheName + " is present (perhaps not used yet?)");
             } else {
-                String clazz = xmlReader.getElementValue(xmlReader.getElementByPath(cacheElement, "cache.implementation"));
+                String clazz = xmlReader.getElementValue(xmlReader.getElementByPath(cacheElement, "cache.implementation.class"));
                 if(!"".equals(clazz)) {
                     Element cacheImpl = xmlReader.getElementByPath(cacheElement, "cache.implementation");
                     Iterator it = xmlReader.getChildElements(cacheImpl, "param");
@@ -177,19 +177,18 @@ public class CacheManager {
      * @return List of ReleaseStrategy instances
      * @since 1.8
      */
-    private static List findReleaseStrategies(DocumentReader reader, Element parentElement) {
-        List result = new ArrayList();
-        Iterator strategyParentIterator = reader.getChildElements(parentElement, "releaseStrategies");
+    private static List<ReleaseStrategy> findReleaseStrategies(DocumentReader reader, Element parentElement) {
+        List<ReleaseStrategy> result = new ArrayList();
+        Iterator<Element> strategyParentIterator = reader.getChildElements(parentElement, "releaseStrategies");
         if(!strategyParentIterator.hasNext()){
             return null;
-        }else{
-            parentElement = (Element) strategyParentIterator.next();
+        } else{
+            parentElement = strategyParentIterator.next();
 
             //now find the strategies
-            Iterator strategyIterator = reader.getChildElements(parentElement, "strategy");
+            Iterator<Element> strategyIterator = reader.getChildElements(parentElement, "strategy");
             while(strategyIterator.hasNext()){
-                String strategyClassName =
-                    reader.getElementValue((Element)strategyIterator.next());
+                String strategyClassName = reader.getElementValue(strategyIterator.next());
                 log.debug("found strategy in configuration: "+ strategyClassName);
                 try {
                     ReleaseStrategy releaseStrategy = getStrategyInstance(strategyClassName);
@@ -197,10 +196,9 @@ public class CacheManager {
 
                     //check if we got something
                     if(releaseStrategy != null){
-
                         result.add(releaseStrategy);
                         log.debug("Successfully created and added "+releaseStrategy.getName() + " instance");
-                    }else{
+                    } else {
                         log.error("release strategy instance is null.");
                     }
 
@@ -277,11 +275,9 @@ public class CacheManager {
 
 
     public static int getTotalByteSize() {
-        Iterator i = caches.entrySet().iterator();
         int len = 0;
         SizeOf sizeof = new SizeOf();
-        while (i.hasNext()) {
-            Map.Entry entry = (Map.Entry) i.next();
+        for (Map.Entry entry : caches.entrySet()) {
             len += sizeof.sizeof(entry.getKey()) + sizeof.sizeof(entry.getValue());
         }
         return len;
@@ -293,12 +289,10 @@ public class CacheManager {
      */
     public static void shutdown() {
         log.info("Clearing all caches");
-        Iterator  i =  caches.entrySet().iterator();
-        while (i.hasNext()) {
-            Cache cache = (Cache) i.next();
+        for(Cache cache : caches.values()) {
             cache.clear();
-            i.remove();
         }
+        caches.clear();
     }
 
 }
