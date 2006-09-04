@@ -5,7 +5,7 @@
    <item>
       <field ftype="data" name="titel"><prompt>titel</prompt></field>
       <!-- field fdatapath="field[@name=&apos;rol&apos;]" ftype="line"><prompt>rol</prompt></field -->
-      <field ftype="startwizard" wizardname="config/teaser/teaser" />
+      <field ftype="startwizard" wizardname="config/teaser/teaser_nmintra" />
    </item>
    <command name="search" nodepath="teaser" age="-1" fields="titel,metatags" orderby="titel">
       <prompt>zoek teaser</prompt>
@@ -18,7 +18,7 @@
          <search-fields>[metatags]</search-fields>
       </search-filter>
    </command>
-   <command name="startwizard" inline="true" wizardname="config/teaser/teaser" objectnumber="new">
+   <command name="startwizard" inline="true" wizardname="config/teaser/teaser_nmintra" objectnumber="new">
        <prompt></prompt>
    </command>
    <action type="create">
