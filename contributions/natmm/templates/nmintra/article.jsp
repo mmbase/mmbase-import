@@ -19,8 +19,12 @@ if(twoColumns) {
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
     <tr><td style="padding:10px;padding-top:18px;">
     <%@include file="includes/back_print.jsp" %>
-    <%@include file="includes/relatedteaser.jsp" %>
-    <%
+    <% 
+      if(!"false".equals(request.getParameter("showteaser"))) { 
+         %>
+         <%@include file="includes/relatedteaser.jsp" %>
+         <%
+      }
       String startnodeId = articleId;
       String articlePath = "artikel";
       String articleOrderby = "";

@@ -14,8 +14,8 @@ String readmoreUrl = "vacature_info.jsp";
 if(!articleId.equals("-1")) { 
 
    String articleTemplate = "article.jsp" + templateQueryString;
+   articleTemplate += (articleTemplate.indexOf("?")==-1 ? "?" : "&" ) + "showteaser=false";
 	response.sendRedirect(articleTemplate);
-   %><%
 
 } else if(!projectId.equals("")) { 
 
