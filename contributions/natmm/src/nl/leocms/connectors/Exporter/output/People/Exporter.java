@@ -121,40 +121,15 @@ public class Exporter implements Runnable
             elemDescr.appendChild(document.createTextNode(nl.getNode(i).getStringValue("description")));
             elemJobInfo.appendChild(elemDescr);
 
-            Element elemImage = document.createElement("image");
-            elemPerson.appendChild(elemImage);
-
             NodeList nlImages = nl.getNode(i).getRelatedNodes("images");
-            for (int j = 0; j < nlImages.size(); j++){
-               Element elemImageId = document.createElement("id");
-               elemImageId.appendChild(document.createTextNode(nlImages.getNode(j).getStringValue("number")));
-               elemImage.appendChild(elemImageId);
-
-               Element elemImageTitle = document.createElement("title");
-               String sTitel_zichtbaar = nlImages.getNode(j).getStringValue("titel_zichtbaar");
-               if (sTitel_zichtbaar!=null&&!sTitel_zichtbaar.equals("0")){
-                  elemImageTitle.appendChild(document.createTextNode(nlImages.
-                     getNode(j).getStringValue("title")));
-               }
-               elemImage.appendChild(elemImageTitle);
-
-               Element elemImageDescr = document.createElement("description");
-               elemImageDescr.appendChild(document.createTextNode(nlImages.getNode(j).getStringValue("omschrijving")));
-               elemImage.appendChild(elemImageDescr);
-
-               Element elemImageFileName = document.createElement("filename");
-               String sMimeType = nlImages.getNode(j).getStringValue("itype");
-               elemImageFileName.appendChild(document.createTextNode(nlImages.getNode(j).getStringValue("number") + "." + sMimeType));
-               elemImage.appendChild(elemImageFileName);
-            }
-
+            document = getImages(nlImages,document,elemPerson,true);
          }
          creatingXML cxml = new creatingXML();
          cxml.create(document,"people");
 
       }
       catch (Exception e){
-         System.out.println(e);
+         log.info(e.toString());
       }
    }
 
@@ -191,6 +166,39 @@ public class Exporter implements Runnable
          elemDepartmentType.appendChild(document.createTextNode(sBuilderName.substring(0,3)));
          elemDepartmment.appendChild(elemDepartmentType);
 
+      }
+      return document;
+   }
+
+   public Document getImages(NodeList nl,Document document, Element elRoot, boolean bShowTag){
+      if(nl.size()==0&bShowTag){
+         Element elemImage = document.createElement("image");
+         elRoot.appendChild(elemImage);
+      }
+      for (int j = 0; j < nl.size(); j++){
+         Element elemImage = document.createElement("image");
+         elRoot.appendChild(elemImage);
+
+         Element elemImageId = document.createElement("id");
+         elemImageId.appendChild(document.createTextNode(nl.getNode(j).getStringValue("number")));
+         elemImage.appendChild(elemImageId);
+
+         Element elemImageTitle = document.createElement("title");
+         String sTitel_zichtbaar = nl.getNode(j).getStringValue("titel_zichtbaar");
+         if (sTitel_zichtbaar!=null&&!sTitel_zichtbaar.equals("0")){
+            elemImageTitle.appendChild(document.createTextNode(nl.
+               getNode(j).getStringValue("title")));
+         }
+         elemImage.appendChild(elemImageTitle);
+
+         Element elemImageDescr = document.createElement("description");
+         elemImageDescr.appendChild(document.createTextNode(nl.getNode(j).getStringValue("omschrijving")));
+         elemImage.appendChild(elemImageDescr);
+
+         Element elemImageFileName = document.createElement("filename");
+         String sMimeType = nl.getNode(j).getStringValue("itype");
+         elemImageFileName.appendChild(document.createTextNode(nl.getNode(j).getStringValue("number") + "." + sMimeType));
+         elemImage.appendChild(elemImageFileName);
       }
       return document;
    }

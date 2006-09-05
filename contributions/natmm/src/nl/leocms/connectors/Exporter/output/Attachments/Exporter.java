@@ -49,36 +49,42 @@ public class Exporter implements Runnable
          document.appendChild(elemRoot);
          Cloud cloud = CloudFactory.getCloud();
          NodeList nl = cloud.getNodeByAlias("publications").getRelatedNodes("attachments","posrel",null);
-         for (int i = 0; i < nl.size(); i++){
-            Element elemAttachment = document.createElement("attachment");
-            elemRoot.appendChild(elemAttachment);
-
-            Element elemAttachmentId = document.createElement("id");
-            elemAttachmentId.appendChild(document.createTextNode(nl.getNode(i).getStringValue("number")));
-            elemAttachment.appendChild(elemAttachmentId);
-
-            Element elemAttachmentTitle = document.createElement("title");
-            String sTitel_zichtbaar = nl.getNode(i).getStringValue("titel_zichtbaar");
-            if (sTitel_zichtbaar!=null&&!sTitel_zichtbaar.equals("0")){
-               elemAttachmentTitle.appendChild(document.createTextNode(nl.getNode(i).getStringValue("titel")));
-            }
-            elemAttachment.appendChild(elemAttachmentTitle);
-
-            Element elemAttachmentDescr = document.createElement("description");
-            elemAttachmentDescr.appendChild(document.createTextNode(nl.getNode(i).getStringValue("omschrijving")));
-            elemAttachment.appendChild(elemAttachmentDescr);
-
-            Element elemAttachmentFileName = document.createElement("filename");
-            elemAttachmentFileName.appendChild(document.createTextNode(
-            nl.getNode(i).getStringValue("filename")));
-            elemAttachment.appendChild(elemAttachmentFileName);
-         }
+         document = getAttachments(nl,document,elemRoot);
          creatingXML cxml = new creatingXML();
          cxml.create(document,"attachments");
 
       }
       catch (Exception e){
-         System.out.println(e);
+         log.info(e.toString());
       }
+   }
+
+   public Document getAttachments(NodeList nl,Document document, Element elemRoot){
+
+      for (int i = 0; i < nl.size(); i++){
+         Element elemAttachment = document.createElement("attachment");
+         elemRoot.appendChild(elemAttachment);
+
+         Element elemAttachmentId = document.createElement("id");
+         elemAttachmentId.appendChild(document.createTextNode(nl.getNode(i).getStringValue("number")));
+         elemAttachment.appendChild(elemAttachmentId);
+
+         Element elemAttachmentTitle = document.createElement("title");
+         String sTitel_zichtbaar = nl.getNode(i).getStringValue("titel_zichtbaar");
+         if (sTitel_zichtbaar!=null&&!sTitel_zichtbaar.equals("0")){
+            elemAttachmentTitle.appendChild(document.createTextNode(nl.getNode(i).getStringValue("titel")));
+         }
+         elemAttachment.appendChild(elemAttachmentTitle);
+
+         Element elemAttachmentDescr = document.createElement("description");
+         elemAttachmentDescr.appendChild(document.createTextNode(nl.getNode(i).getStringValue("omschrijving")));
+         elemAttachment.appendChild(elemAttachmentDescr);
+
+         Element elemAttachmentFileName = document.createElement("filename");
+         elemAttachmentFileName.appendChild(document.createTextNode(
+         nl.getNode(i).getStringValue("filename")));
+         elemAttachment.appendChild(elemAttachmentFileName);
+      }
+      return document;
    }
 }

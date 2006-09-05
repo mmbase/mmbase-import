@@ -171,62 +171,16 @@ public class Exporter implements Runnable
                elemParagraph.appendChild(elemImages);
 
                NodeList nlImages = nlParagraphs.getNode(j).getRelatedNodes("images");
-               for (int k = 0; k < nlImages.size(); k++){
-                  Element elemImage = document.createElement("image");
-                  elemImages.appendChild(elemImage);
 
-                  Element elemImageId = document.createElement("id");
-                  elemImageId.appendChild(document.createTextNode(nlImages.getNode(k).getStringValue("number")));
-                  elemImage.appendChild(elemImageId);
-
-                  Element elemImageTitle = document.createElement("title");
-                  sTitel_zichtbaar = nlImages.getNode(k).getStringValue("titel_zichtbaar");
-                  if (sTitel_zichtbaar!=null&&!sTitel_zichtbaar.equals("0")){
-                     elemImageTitle.appendChild(document.createTextNode(nlImages.
-                        getNode(k).getStringValue("titel")));
-                  }
-                  elemImage.appendChild(elemImageTitle);
-
-                  Element elemImageDescr = document.createElement("description");
-                  elemImageDescr.appendChild(document.createTextNode(nlImages.getNode(k).getStringValue("omschrijving")));
-                  elemImage.appendChild(elemImageDescr);
-
-                  Element elemImageFileName = document.createElement("filename");
-                  String sMimeType = nlImages.getNode(k).getStringValue("itype");
-                  elemImageFileName.appendChild(document.createTextNode(nlImages.getNode(k).getStringValue("number") + "." + sMimeType));
-                  elemImage.appendChild(elemImageFileName);
-
-               }
+               nl.leocms.connectors.Exporter.output.People.Exporter attPeople = new nl.leocms.connectors.Exporter.output.People.Exporter();
+               document = attPeople.getImages(nlImages,document,elemImages,false);
 
                Element elemAttachments = document.createElement("attachments");
                elemParagraph.appendChild(elemAttachments);
                NodeList nlAttachments = nlParagraphs.getNode(j).getRelatedNodes("attachments");
-               for (int k = 0; k < nlAttachments.size(); k++){
-                  Element elemAttachment = document.createElement("attachment");
-                  elemAttachments.appendChild(elemAttachment);
 
-                  Element elemAttachmentId = document.createElement("id");
-                  elemAttachmentId.appendChild(document.createTextNode(nlAttachments.getNode(k).getStringValue("number")));
-                  elemAttachment.appendChild(elemAttachmentId);
-
-                  Element elemAttachmentTitle = document.createElement("title");
-                  sTitel_zichtbaar = nlAttachments.getNode(k).getStringValue("titel_zichtbaar");
-                  if (sTitel_zichtbaar!=null&&!sTitel_zichtbaar.equals("0")){
-                     elemAttachmentTitle.appendChild(document.createTextNode(nlAttachments.
-                        getNode(k).getStringValue("titel")));
-                  }
-                  elemAttachment.appendChild(elemAttachmentTitle);
-
-                  Element elemAttachmentDescr = document.createElement("description");
-                  elemAttachmentDescr.appendChild(document.createTextNode(nlAttachments.getNode(k).getStringValue("omschrijving")));
-                  elemAttachment.appendChild(elemAttachmentDescr);
-
-                  Element elemAttachmentFileName = document.createElement("filename");
-                  elemAttachmentFileName.appendChild(document.createTextNode(
-                  nlAttachments.getNode(k).getStringValue("filename")));
-                  elemAttachment.appendChild(elemAttachmentFileName);
-
-               }
+               nl.leocms.connectors.Exporter.output.Attachments.Exporter attExp = new nl.leocms.connectors.Exporter.output.Attachments.Exporter();
+               document = attExp.getAttachments(nlAttachments,document,elemAttachments);
             }
          }
 
@@ -235,7 +189,6 @@ public class Exporter implements Runnable
       }
       catch (Exception e){
          log.info(e.toString());
-         System.out.println(e);
       }
    }
 }
