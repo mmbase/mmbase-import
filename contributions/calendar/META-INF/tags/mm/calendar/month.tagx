@@ -6,27 +6,93 @@
     >
   <jsp:directive.tag import="java.util.*" />
   <jsp:directive.attribute name="date"  type="java.util.Date" required="true" />
+  <jsp:directive.attribute name="mode"  />
   <jsp:directive.variable  name-given="day" />
   <jsp:directive.variable  name-given="noon" />
   <jsp:directive.variable  name-given="dayend" />
   <jsp:directive.variable  name-given="loop" />
+  <jsp:directive.variable  name-given="dayofweek" />
   <jsp:scriptlet>
-    Calendar cal = Calendar.getInstance((TimeZone) request.getAttribute("org.mmbase.timezone"), (Locale) request.getAttribute("javax.servlet.jsp.jstl.fmt.locale.request")); 
+    Calendar cal = Calendar.getInstance((TimeZone) request.getAttribute("org.mmbase.timezone"), 
+                                        (Locale) request.getAttribute("javax.servlet.jsp.jstl.fmt.locale.request")); 
     cal.setTime(date);
+    int year = cal.get(Calendar.YEAR);
+    int month = cal.get(Calendar.MONTH);
   </jsp:scriptlet>
-  <mm:import id="minDay"><jsp:expression>cal.getActualMinimum(Calendar.DAY_OF_MONTH)</jsp:expression></mm:import>
-  <mm:import id="maxDay"><jsp:expression>cal.getActualMaximum(Calendar.DAY_OF_MONTH)</jsp:expression></mm:import>
-  <c:forEach begin="${minDay}" end="${maxDay}" var="daynumber" varStatus="loop">
-    <mm:write referid="daynumber" jspvar="daynumber" vartype="integer" write="false">
-      <jsp:scriptlet>cal.set(Calendar.DAY_OF_MONTH, daynumber.intValue());</jsp:scriptlet>
-    </mm:write>
-    <mm:context>
-      <mm:import id="time"><jsp:expression>cal.getTime().getTime() / 1000</jsp:expression></mm:import>
-      <mm:time id="day"    write="false" time="${time} this sunday" />
-      <mm:time id="noon"   write="false" referid="day" offset="${60 * 60 * 12}" />
-      <mm:time id="dayend" write="false" referid="day" offset="${60 * 60 * 24}"/>
-      <jsp:doBody />
-    </mm:context>
-  </c:forEach>
-  
+  <mm:import id="firstday"><jsp:expression>cal.getFirstDayOfWeek()</jsp:expression></mm:import>
+  <c:choose>
+    <c:when test="${mode eq 'weektable'}">
+      <mm:locale language="en" country="US">
+        <mm:time id="month" format="MMMM" time="${date}" write="false" />
+      </mm:locale>
+      <table class="mm_weektable ${month}" summary="">
+        <thead>
+          <tr>
+            <c:forEach begin="${firstday}" end="${firstday + 6}" var="daynumber">
+              <mm:context>
+                <mm:write referid="daynumber" jspvar="daynumber" vartype="integer" write="false">
+                  <jsp:scriptlet>cal.set(Calendar.DAY_OF_WEEK, daynumber);</jsp:scriptlet>
+                </mm:write>
+                <mm:import id="time"><jsp:expression>cal.getTime().getTime() / 1000</jsp:expression></mm:import>
+                <mm:locale language="en" country="US"><mm:time referid="time" format="EEEE" id="dayofweek" write="false" /></mm:locale>
+                <th class="${dayofweek}"><mm:time referid="time" format="E" /></th>
+              </mm:context>
+            </c:forEach>
+          </tr>
+        </thead>
+        <tbody>
+          <mm:import id="minWeek"><jsp:expression>cal.getActualMinimum(Calendar.WEEK_OF_MONTH)</jsp:expression></mm:import>
+          <mm:import id="maxWeek"><jsp:expression>cal.getActualMaximum(Calendar.WEEK_OF_MONTH)</jsp:expression></mm:import>
+          <c:forEach begin="${minWeek}" end="${maxWeek}" var="weeknumber" varStatus="loop">
+            <tr>
+              <c:forEach begin="${firstday}" end="${firstday + 6}" var="daynumber">
+                <mm:write referid="weeknumber" jspvar="weeknumber" vartype="integer" write="false">
+                  <jsp:scriptlet>
+                    cal.set(Calendar.YEAR, year);
+                    cal.set(Calendar.MONTH, month);
+                    cal.set(Calendar.WEEK_OF_MONTH, weeknumber);
+                  </jsp:scriptlet>
+                </mm:write>
+                <mm:write referid="daynumber" jspvar="daynumber" vartype="integer" write="false">
+                  <jsp:scriptlet>cal.set(Calendar.DAY_OF_WEEK, daynumber);</jsp:scriptlet>
+                </mm:write>
+                
+                <mm:context>
+                  <mm:import id="time"><jsp:expression>cal.getTime().getTime() / 1000</jsp:expression></mm:import>
+                  <mm:time id="day"    write="false" time="${time}" />
+                  <mm:time id="noon"   write="false" referid="day" offset="${60 * 60 * 12}" />
+                  <mm:time id="dayend" write="false" referid="day" offset="${60 * 60 * 24}"/>
+                  <mm:locale language="en" country="US">
+                    <mm:time id="dayofweek" format="EEEE" time="${day}" write="false" />
+                  </mm:locale>
+                  <td class="${dayofweek}">                    
+                    <jsp:doBody />
+                  </td>
+                  </mm:context>
+              </c:forEach>
+            </tr>
+          </c:forEach>
+        </tbody>
+      </table>
+    </c:when>
+    <c:otherwise>
+      <mm:import id="minDay"><jsp:expression>cal.getActualMinimum(Calendar.DAY_OF_MONTH)</jsp:expression></mm:import>
+      <mm:import id="maxDay"><jsp:expression>cal.getActualMaximum(Calendar.DAY_OF_MONTH)</jsp:expression></mm:import>
+      <c:forEach begin="${minDay}" end="${maxDay}" var="daynumber" varStatus="loop">
+        <mm:write referid="daynumber" jspvar="daynumber" vartype="integer" write="false">
+          <jsp:scriptlet>cal.set(Calendar.DAY_OF_MONTH, daynumber.intValue());</jsp:scriptlet>
+        </mm:write>
+        <mm:context>
+          <mm:import id="time"><jsp:expression>cal.getTime().getTime() / 1000</jsp:expression></mm:import>
+          <mm:time id="day"    write="false" time="${time}" />
+          <mm:time id="noon"   write="false" referid="day" offset="${60 * 60 * 12}" />
+          <mm:time id="dayend" write="false" referid="day" offset="${60 * 60 * 24}"/>
+          <mm:locale language="en" country="US">
+            <mm:time id="dayofweek" format="EEEE" time="${day}" write="false" />
+          </mm:locale>
+          <jsp:doBody />
+        </mm:context>
+      </c:forEach>
+    </c:otherwise>
+  </c:choose>
 </jsp:root>

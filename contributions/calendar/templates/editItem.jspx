@@ -1,6 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:c="http://java.sun.com/jsp/jstl/core" 
       xmlns:jsp="http://java.sun.com/JSP/Page" 
+      xmlns:mm-cal="http://www.mmbase.org/tags/mm/calendar"       
       xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:directive.page buffer="100kb" />
   <mm:import externid="language">client</mm:import>
@@ -10,16 +11,33 @@
               timezone="$timezone"
               postprocessor="none" expires="0">
     <head>
+      <title>Calendar editor</title>
       <link href="style.css" rel="stylesheet" title="Normaal" type="text/css" media="screen" />
+       <style>
+         <mm-cal:css />
+       </style>
     </head>
     <body>
       <mm:cloud rank="basic user">
         <mm:time time="now" format="zzzz (Z)" />
         <mm:import externid="n" required="true" />
+        <mm:node referid="n">
+          <mm:maydelete>
+            <mm:link referids="_node@n,language,timezone" page="deleteItem.jspx">
+              <a onclick="return confirm('Are you sure?');" href="${_}">Delete</a>
+            </mm:link>
+          </mm:maydelete>
+        </mm:node>
         <mm:form styleClass="mm_calendar">
           <mm:node referid="n">
             <mm:fieldlist  type="edit">
-              <mm:fieldinfo type="guiname" />: <mm:fieldinfo type="input" options="trim" />
+              <mm:fieldinfo type="description" id="des" write="false" />
+              <mm:fieldinfo type="forid">
+                <label title="${des}" for="${_}">
+                  <mm:fieldinfo type="guiname" />
+                </label>
+              </mm:fieldinfo>
+              <jsp:text>: </jsp:text><mm:fieldinfo type="input" options="trim" />
               <mm:fieldinfo type="errors" options="trim" />
               <br />
             </mm:fieldlist>
