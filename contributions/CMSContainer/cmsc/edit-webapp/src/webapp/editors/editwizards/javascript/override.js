@@ -76,3 +76,13 @@ function setFocusOnFirstInput() {
         }
     }
 }
+
+
+var select_fid = '';
+var select_did = '';
+
+function selectPage(param, path, pos) {
+   if (select_fid != null && select_did != null) {
+       doAdd(param, 'cmd/add-item/' + select_fid + '/' + select_did + '//');
+   }
+}

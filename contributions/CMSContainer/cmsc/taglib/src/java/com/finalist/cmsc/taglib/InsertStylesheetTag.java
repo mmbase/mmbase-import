@@ -11,7 +11,7 @@ package com.finalist.cmsc.taglib;
 
 import java.util.List;
 
-import com.finalist.cmsc.portalImpl.services.sitemanagement.SiteManagement;
+import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 
 /**
  * Tag to include stylesheets in Page

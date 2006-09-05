@@ -16,13 +16,13 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.JspFragment;
 
 import com.finalist.cmsc.beans.om.Page;
-import com.finalist.cmsc.portalImpl.services.sitemanagement.SiteManagement;
+import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 
 /**
  * Checks if a Site or Page is on the path
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class OnPathTag extends LocationTag {
 

@@ -12,6 +12,10 @@ body, table, div, input
 	color: #000000;
 }
 
+a {
+   color: #000000;
+}
+
 img
 {
    border: 0px none black;
@@ -133,7 +137,7 @@ img
 
 #menu ul li a
 {
-	color: #c6c963;
+	color: #313728;
 	text-decoration: none;
 }
 
@@ -148,11 +152,13 @@ img
 	background-image: url('../gfx/bullet_menu_active.gif');
 	background-repeat: no-repeat;
 	background-position: left center;
+	text-decoration: underline;
 }
 
 #menu ul li.active a
 {
 	color: #313728;
+	text-decoration: underline;
 }
 
 
@@ -391,6 +397,8 @@ ul.shortcuts li.new					{	background-image: url('../gfx/icons/new.png');}
 ul.shortcuts li.link				{	background-image: url('../gfx/icons/link.png');}
 ul.shortcuts li.reorder				{	background-image: url('../gfx/icons/reorder.png');}
 ul.shortcuts li.password			{	background-image: url('../gfx/icons/password.png');}
+ul.shortcuts li.search				{	background-image: url('../gfx/icons/select.png');}
+ul.shortcuts li.delete				{	background-image: url('../gfx/icons/delete.png');}
 
 
 
@@ -929,7 +937,8 @@ div.editor
 
 /*div.editor input[type="button"],
 div.editor input[type="submit"],*/
-div.editor input.button
+div.editor input.button,
+div.editor input[type="submit"]
 {
    background-image:url('../gfx/button_side_block.gif');
    background-position: right center;
@@ -950,7 +959,9 @@ div.editor div.body
 	margin-right: 3px;
 }
 
-div.editor div.body p {
+div.editor div.body p,
+div.editor div.body form,
+div.editor div.body div {
    padding: 10px 5px 2px 5px;
    margin: 0px;
    font-size: 12px;

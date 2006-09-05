@@ -6,15 +6,15 @@
 <link rel="stylesheet" type="text/css" href="popup.css" />
 
   <script type="text/javascript">
-    window.resizeTo(400, 100);
+    window.resizeTo(450, 100);
 
 HTMLArea = window.opener.HTMLArea;
 function i18n(str) {
-  return (HTMLArea._lc(str, 'HTMLArea'));
+  return (HTMLArea._lc(str, 'cmscrichtext'));
 }
 
 function Init() {
-  __dlg_translate('HTMLArea');
+  __dlg_translate('cmscrichtext');
   __dlg_init();
   // Make sure the translated string appears in the drop down. (for gecko)
   document.getElementById("f_align").selectedIndex = 1;
@@ -63,11 +63,11 @@ function onCancel() {
 }
 
 function onSelect() {
-  openPopupWindow('../../../../../editors/resources/ImageInitAction.do','filterwindow2',800,650);
+  openPopupWindow('../../../../../editors/resources/ImageInitAction.do?action=select','filterwindow2',750,550);
   return false;
 };
 
-function selectElement(element_id, title, url) {
+function selectElement(element_id, title, url, width, height) {
    document.getElementById("f_destination").value = element_id;
 
    if (url != undefined && url.length != 0 ) {
@@ -76,6 +76,12 @@ function selectElement(element_id, title, url) {
    if (document.getElementById("f_alt").value == undefined 
          || document.getElementById("f_alt").value.length == 0 ) {
       document.getElementById("f_alt").value = title;
+   }
+   if (width) {
+     document.getElementById("f_width").value = width;
+   }
+   if (height) {
+     document.getElementById("f_height").value = height;
    }
 }
 
@@ -117,7 +123,7 @@ function openPopupWindow(url, windowName, width, height) {
 </head>
 
 <body  class="dialog" onload="Init()">
-<div class="title">Insert Inline Image</div>
+<div class="title">Insert Image</div>
 
 <form name="inlineImageForm" action="" method="get">
       <input type="hidden" name="destination" id="f_destination" />

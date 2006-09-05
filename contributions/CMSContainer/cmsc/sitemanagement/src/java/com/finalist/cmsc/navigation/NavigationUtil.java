@@ -306,12 +306,12 @@ public class NavigationUtil {
     /**
      * Get the role for the user for a page
      *
-     * @param user Node of user
+     * @param group Node of group
      * @param page get role for this page
      * @return UserRole - rights of a user
      */
-    public static UserRole getRoleForUser(Node user, Node page) {
-        return getRoleForUser(user, page, false);
+    public static UserRole getRole(Node group, Node page) {
+        return getRole(group, page, false);
     }
 
     /**
@@ -321,8 +321,8 @@ public class NavigationUtil {
      * @param page get role for this page
      * @return UserRole - rights of a user
      */
-    public static UserRole getRoleForUser(Cloud cloud, int page) {
-        return getRoleForUser(cloud, cloud.getNode(page), false);
+    public static UserRole getRole(Cloud cloud, int page) {
+        return getRole(cloud, cloud.getNode(page), false);
     }
     
     /**
@@ -333,24 +333,24 @@ public class NavigationUtil {
      * @param rightsInherited inherit rights from parent chennal
      * @return UserRole - rights of a user
      */
-    public static UserRole getRoleForUser(Cloud cloud, Node page, boolean rightsInherited) {
+    public static UserRole getRole(Cloud cloud, Node page, boolean rightsInherited) {
         TreeMap<String,UserRole> pagesWithRole = SecurityUtil.getLoggedInRoleMap(cloud, treeManagers, NAVREL, fragmentFieldnames);
-        return SecurityUtil.getRoleForUser(page, rightsInherited, pagesWithRole);
+        return SecurityUtil.getRole(page, rightsInherited, pagesWithRole);
     }
 
     /**
      * Get the role for the user for a page
      *
-     * @param user Node of user
+     * @param group Node of group
      * @param page get role for this page
      * @param rightsInherited inherit rights from parent chennal
      * @return UserRole - rights of a user
      */
-    public static UserRole getRoleForUser(Node user, Node page, boolean rightsInherited) {
+    public static UserRole getRole(Node group, Node page, boolean rightsInherited) {
        // retrieve a TreeMap where the pages (keys) are ordered on level and path
        TreeMap<String,UserRole> pagesWithRole = SecurityUtil.getNewRolesMap();
-       SecurityUtil.fillChannelsWithRole(user, pagesWithRole, treeManagers, NAVREL, fragmentFieldnames);
-       return SecurityUtil.getRoleForUser(page, rightsInherited, pagesWithRole);
+       SecurityUtil.fillChannelsWithRole(group, pagesWithRole, treeManagers, NAVREL, fragmentFieldnames);
+       return SecurityUtil.getRole(page, rightsInherited, pagesWithRole);
     }
 
     public static void setGroupRights(Cloud cloud, Node group, Map rights) {
@@ -402,5 +402,20 @@ public class NavigationUtil {
         }
         return info;
     }
+ 
+    /**
+     * This is the method for a USER, the old ones want a GROUP...
+     * (even although the are called getRoleForUser(..)
+     * 
+     * @return
+     */
+    public static UserRole getUserRole(Node page, Node user) {
+    	TreeMap<String, UserRole> pagesWithRole = SecurityUtil.getNewRolesMap();
+    	SecurityUtil.getUserRoleMap(user, treeManagers, NAVREL, fragmentFieldnames, pagesWithRole);
+        return SecurityUtil.getRole(page, true, pagesWithRole);
+    }
 
+    public static List getUsersWithRights(Node channel, Role requiredRole) {
+        return SecurityUtil.getUsersWithRights(channel, requiredRole, treeManagers, NAVREL);
+    }
 }

@@ -36,8 +36,11 @@ function writeCookie(theCookieName, theKey, theValue) {
         nvs[theKey] = theValue;
         //serialize it again
         var s = "";
-        for (var n in nvs)
-            s += "|" + n + ":" + nvs[n];
+        for (var n in nvs) {
+            if (typeof nvs[n] == "string") {
+                s += "|" + n + ":" + nvs[n];
+            }
+        }
         //write the cookie
         // we don't set the expiredate to let the cookie expire when the browser is closed
         var c = theCookieName + "=" + s + "; path=/;";
@@ -62,8 +65,11 @@ function clearCookie(theCookieName, theKey) {
         //serialize it again
         var s = "";
         for (var n in nvs) {
-            if (n.indexOf(theKey) == -1)
-                s += "|" + n + ":" + nvs[n];
+            if (typeof nvs[n] == "string") {
+	            if (n.indexOf(theKey) == -1) {
+	                s += "|" + n + ":" + nvs[n];
+	            }
+	        }
         }
         //write the cookie
         // we don't set the expiredate to let the cookie expire when the browser is closed

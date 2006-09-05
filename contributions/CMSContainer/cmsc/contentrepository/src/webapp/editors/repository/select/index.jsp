@@ -38,16 +38,27 @@
 	<mm:url page="/editors/repository/select/SelectorContent.do" id="channelsurl" write="false" />
 </mm:notpresent>
 <mm:notpresent referid="contenturl">
-	<mm:url page="/editors/repository/select/LocateInitAction.do" id="contenturl" write="false" />
+	<mm:url page="/editors/repository/SearchInitAction.do?action=select&mode=advanced" id="contenturl" write="false" />
 </mm:notpresent>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
 <html:html xhtml="true">
-	<head><title><fmt:message key="repository.title" /></title>
+	<head>
+		<title><fmt:message key="repository.title" /></title>
+		<script>
+			window.onresize= resizeTree;
+
+			function resizeTree() {
+			  if(document.frames["selectchannels"].resizeTreeDiv) {
+			  	document.frames["selectchannels"].resizeTreeDiv();
+			  }
+			}      
+		</script>
+			
 	</head>
-	<frameset cols="300,*">
-		<frame src="<mm:url referid="channelsurl"/>" name="selectchannels" scrolling="yes" />
-		<frame src="<mm:url referid="contenturl"/>" name="selectcontent" />
+	<frameset cols="321,*" framespacing="0" border="0">
+		<frame src="<mm:url referid="channelsurl"/>" name="selectchannels" frameborder="0" scrolling="no"/>
+		<frame src="<mm:url referid="contenturl"/>" name="selectcontent" frameborder="0" />
 	</frameset>
 </html:html>
 </mm:cloud>

@@ -4,7 +4,6 @@
 
    Author: yigal
    Created: 25-07-2003
-   Version: $Revision: 1.2 $, $Date: 2006-08-07 22:36:38 $
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 

@@ -1,5 +1,5 @@
-   function callEditWizard(ce_id) {
-      var url = '../WizardInitAction.do?objectnumber=' + ce_id;
+   function callEditWizard(objectNumber) {
+      var url = '../WizardInitAction.do?objectnumber=' + objectNumber;
       url += '&returnurl=' + escape(document.location);
       document.location = url;
    }
@@ -15,13 +15,27 @@
     }
 
    function openPreview(url) {
-      return openPopupWindow("preview", 800, 800, url);
+      return openPopupWindow("preview", 750, 550, url);
    }
 
-   function showChannels(objectnumber) {
-      return openPopupWindow("showChannels", 500, 200, 'showchannels.jsp?objectnumber=' + objectnumber);
-   }
-   
    function showItem(objectnumber) {
       return openPopupWindow("showItem", 500, 500, 'showitem.jsp?objectnumber=' + objectnumber);
    }
+   
+   function info(objectNumber) {
+      openPopupWindow("info", 500, 500, "../repository/showitem.jsp?objectnumber=" + objectNumber);
+   }
+   
+   function moveUp(objectNumber, channel) {
+      move("up", objectNumber, channel);
+   }
+   
+   function moveDown(objectNumber, channel) {
+      move("down", objectNumber, channel);
+   }
+   
+   function move(direction, objectNumber, channel) {
+      var url = 'MoveContent.do?direction='+direction+'&objectnumber=' + objectNumber+'&parentchannel='+channel;
+      document.location = url;
+   }
+   

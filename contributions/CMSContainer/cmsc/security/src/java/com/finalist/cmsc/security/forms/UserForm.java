@@ -241,7 +241,11 @@ public class UserForm extends MMBaseForm {
    public void addRank(String number, String name) {
        ranks.add(new Option(name, number));
    }
-   
+
+   public void resetRanks() {
+      ranks = new ArrayList<Option>();
+   }
+
    public List getRanks() {
       return ranks; 
    }

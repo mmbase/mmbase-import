@@ -5,30 +5,44 @@
 <html:html xhtml="true">
 	<head>
 		<title><fmt:message key="channeldelete.title" /></title>
-		<link href="../style.css" type="text/css" rel="stylesheet" />
+		<link href="../css/main.css" type="text/css" rel="stylesheet" />
 		<script src="content.js" type="text/javascript"></script>
 		<script src="../utils/window.js" type="text/javascript"></script>
-		<script src="../utils/rowhover.js" type="text/javascript"></script>
 	</head>
 	<body>
 
 	<mm:cloud jspvar="cloud" rank="basic user" method='http'>
 		<mm:import externid="number" id="parentchannel" jspvar="parentchannel" vartype="Integer" from="parameters" required="true" />
 
-		<table style="width: 100%;">
-			<tr>
-				<td><fmt:message key="channeldelete.warning" /><br />
-				<b><mm:node number="$parentchannel"><mm:field name="name" /></mm:node></b>.<br />
-				</td>
-			</tr>
-		</table>
+<div class="tabs">
+    <div class="tab_active">
+        <div class="body">
+            <div>
+                <a href="#"><fmt:message key="channeldelete.title" /></a>
+            </div>
+        </div>
+    </div>
+</div>
 
-		<form action="ChannelDelete.do" method="post" onsubmit="return unlinkAll();">
+<div class="editor">
+	<div class="body">
+
+		<p>
+			<fmt:message key="channeldelete.warning" />
+			<b><mm:node number="$parentchannel"><mm:field name="name" /></mm:node></b>.
+		</p>
+		<form action="ChannelDelete.do" method="post" onsubmit="return unlinkAll();" name="deleteAllForm">
 			<input type="hidden" name="remove" value="unlinkall" /> 
 			<input type="hidden" name="number" value="<mm:write referid="parentchannel"/>" /> 
-			<input type="submit" value="<fmt:message key="channeldelete.removeall" />" />
+			<ul class="shortcuts">
+            	<li class="delete">
+					<a href="javascript:document.forms['deleteAllForm'].submit();"><fmt:message key="channeldelete.removeall" /></a>
+				</li>
+			</ul>
 		</form>
-		<hr />
+		<div style="clear:both; height:10px;"></div>
+	
+        <div class="ruler_green"><div><fmt:message key="channeldelete.content" /></div></div>
 
 		<mm:import id="lastotype" />
 
@@ -60,29 +74,22 @@
 							</fmt:message>
 						</mm:node>
 						<mm:import id="lastotype" reset="true"><mm:write referid="otype" /></mm:import>
-						<mm:import id="newotype">true</mm:import>
 
 						<table class="listcontent">
 					</mm:compare>
 
-					<mm:url page="../repository/showitem.jsp" id="url" write="false">
-						<mm:param name="objectnumber" value="$number" />
-					</mm:url>
-					<tr class="itemrow" onMouseOver="objMouseOver(this);" onMouseOut="objMouseOut(this);"
-						href="<mm:write referid="url"/>">
-						<td onMouseDown="objClickPopup(this, 500, 500);"><mm:field name="number" /></td>
-						<td onMouseDown="objClickPopup(this, 500, 500);" width="100%"><mm:field name="title" /></td>
-
-						<td style="padding:0px">
+					<tr class="itemrow" >
+						<td><mm:field name="number" /></td>
+						<td nowrap>
+							<a href="javascript:info('<mm:field name="number" />');">
+								<img src="../gfx/icons/info.png" width="16" height="16" alt="<fmt:message key="channeldelete.info" />" />
+							</a>
 							<a href="javascript:unpublish('<mm:write referid="parentchannel" />','<mm:field name="number" />');">
-								<img src="../img/remove.gif" width="15" height="15" alt="<fmt:message key="channeldelete.unlink" />" />
+								<img src="../gfx/icons/delete.png" width="16" height="16" alt="<fmt:message key="channeldelete.unlink" />" />
 							</a>
 						</td>
-						<mm:present referid="newotype">
-							<td></td>
-						</mm:present>
+						<td width="100%"><mm:field name="title" /></td>
 
-						<mm:remove referid="newotype" />
 					<mm:last>
 					<mm:compare referid="lastotype" value="" inverse="true">
 							</tr>
@@ -92,7 +99,12 @@
 				</mm:listnodes>
 			</mm:relatednodescontainer>
 		</mm:node>
-	</mm:cloud>
+
+	</div>
+	<div class="side_block_end"></div>
+</div>	
+
+</mm:cloud>
 
 	</body>
 	</html:html>

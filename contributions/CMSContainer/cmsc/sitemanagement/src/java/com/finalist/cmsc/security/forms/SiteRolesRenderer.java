@@ -1,5 +1,7 @@
 package com.finalist.cmsc.security.forms;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 
@@ -11,12 +13,12 @@ import com.finalist.cmsc.security.UserRole;
  */
 public class SiteRolesRenderer extends RolesRenderer {
 
-    public SiteRolesRenderer(Cloud cloud, RolesForm form) {
-        super(cloud, form);
+    public SiteRolesRenderer(HttpServletRequest request, Cloud cloud, RolesForm form) {
+        super(request, cloud, form);
     }
 
-    protected UserRole getRoleForUser(Node page) {
-        return NavigationUtil.getRoleForUser(user, page);
+    protected UserRole getRole(Node page) {
+        return NavigationUtil.getRole(user, page);
     }
 
     

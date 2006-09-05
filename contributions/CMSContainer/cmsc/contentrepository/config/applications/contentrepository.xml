@@ -6,6 +6,7 @@
       <requires name="Resources" maintainer="mmbase.org" version="1" type="application"/>
       <requires name="utilities" maintainer="finalist.com" version="1" type="application"/>
       <requires name="cmscsecurity" maintainer="finalist.com" version="1" type="application"/>
+      <requires name="cmscrichtext" maintainer="finalist.com" version="1" type="application"/>
    </requirements>
    <neededbuilderlist>
       <!-- These are the application specific relation builders -->
@@ -13,6 +14,8 @@
       <builder maintainer="finalist.com" version="1">creationrel</builder>
       <builder maintainer="finalist.com" version="1">deletionrel</builder>
       <builder maintainer="finalist.com" version="1">ownerrel</builder>
+
+      <builder maintainer="finalist.com" version="1">imagerel</builder>
       
       <builder maintainer="finalist.com" version="1">contentchannel</builder>
       <builder maintainer="finalist.com" version="1">contentelement</builder>
@@ -23,6 +26,7 @@
         <reldef source="creationrel" target="creationrel" direction="bidirectional" guisourcename="creationrel" guitargetname="creationrel" builder="creationrel" />
         <reldef source="deletionrel" target="deletionrel" direction="bidirectional" guisourcename="deletionrel" guitargetname="deletionrel" builder="deletionrel" />
         <reldef source="ownerrel" target="ownerrel" direction="bidirectional" guisourcename="ownerrel" guitargetname="ownerrel" builder="ownerrel" />
+        <reldef source="imagerel" target="imagerel" direction="bidirectional" guisourcename="imagerel" guitargetname="imagerel" builder="imagerel" />
    </neededreldeflist>
    <allowedrelationlist>
       <relation from="contentchannel" to="contentchannel" type="childrel" />
@@ -31,6 +35,17 @@
       <relation from="contentelement" to="contentchannel" type="deletionrel" />
       <relation from="contentelement" to="user" type="ownerrel" />
       <relation from="mmbasegroups" to="contentchannel" type="rolerel" />
+      
+      <relation from="contentelement" to="contentelement" type="posrel" />
+      <relation from="contentelement" to="attachments" type="posrel" />
+      <relation from="contentelement" to="images" type="imagerel" />
+      <relation from="contentelement" to="urls" type="posrel" />
+
+		<!--  inline links -->
+      <relation from="contentelement" to="contentelement" type="inlinerel" />
+      <relation from="contentelement" to="attachments" type="inlinerel" />
+      <relation from="contentelement" to="urls" type="inlinerel" />
+      <relation from="contentelement" to="images" type="imageinlinerel" />
    </allowedrelationlist>
 
    <datasourcelist>

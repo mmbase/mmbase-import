@@ -36,7 +36,7 @@
     // write errors to mmbase log
     log.error(ticket+":\n" + msg);
 %>
-<% request.setAttribute("title", "foutmelding 500: internal server error"); %>
+<% request.setAttribute("title", "500: internal server error"); %>
 <%@include file="header.jsp"%>
 <p>
 <fmt:message key="exception.500.message" /><br />

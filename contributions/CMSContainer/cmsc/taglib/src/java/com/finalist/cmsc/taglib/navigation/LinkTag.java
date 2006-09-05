@@ -23,7 +23,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.finalist.cmsc.beans.om.Page;
 import com.finalist.cmsc.navigation.ServerUtil;
-import com.finalist.cmsc.portalImpl.services.sitemanagement.SiteManagement;
+import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 import com.finalist.pluto.portalImpl.core.PortalURL;
 
 /**
@@ -31,7 +31,7 @@ import com.finalist.pluto.portalImpl.core.PortalURL;
  * 
  * @author Wouter Heijke
  * @author R.W. van 't Veer
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class LinkTag extends SimpleTagSupport {
 

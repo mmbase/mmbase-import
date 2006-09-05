@@ -6,7 +6,7 @@
 	extends="contentelement" maintainer="finalist.com" name="article" version="1">
 
 	<status>active</status>
-	<class>com.finalist.cmsc.richtext.builders.RichTextBuilder</class>
+	<!--  <class>BaseContentElements.Article</class> -->
 	<searchage>70</searchage>
 	<names>
 		<singular xml:lang="nl">Artikel</singular>

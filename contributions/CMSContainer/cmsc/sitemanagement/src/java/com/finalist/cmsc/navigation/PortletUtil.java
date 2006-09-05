@@ -52,8 +52,8 @@ public class PortletUtil {
     public static final String KEY_FIELD = "key";
     public static final String TYPE_FIELD = "type";
 
-    private static final String SINGLE = "single";
-    private static final String MULTIPLE = "multiple";
+    public static final String SINGLE = "single";
+    public static final String MULTIPLE = "multiple";
 
     private static final String MMBASERANKS = "mmbaseranks";
 
@@ -435,7 +435,7 @@ public class PortletUtil {
     }
 
     public static boolean isSingleDefinition(Node definition) {
-        return SINGLE.equals(definition.getStringValue(PortletUtil.TYPE_FIELD));
+        return SINGLE.equals(definition.getStringValue(TYPE_FIELD));
     }
 
     public static boolean isSinglePortlet(Node portlet) {
@@ -461,5 +461,16 @@ public class PortletUtil {
             types.add(typedef.getStringValue("name"));
         }
         return types;
+    }
+
+
+    public static Node createDefinition(Cloud cloud, String title, String definition, String type) {
+        NodeManager definitionMgr = cloud.getNodeManager(PORTLETDEFINITION);
+        Node definitionNode = definitionMgr.createNode();
+        definitionNode.setStringValue(TITLE_FIELD, title);
+        definitionNode.setStringValue(DEFINITION_FIELD, definition);
+        definitionNode.setStringValue(TYPE_FIELD, type);
+        definitionNode.commit();
+        return definitionNode;
     }
 }

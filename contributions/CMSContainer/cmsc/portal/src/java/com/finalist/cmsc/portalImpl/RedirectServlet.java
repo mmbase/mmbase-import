@@ -25,9 +25,9 @@ import org.mmbase.storage.search.Step;
 import com.finalist.cmsc.beans.om.Page;
 import com.finalist.cmsc.mmbase.ResourcesUtil;
 import com.finalist.cmsc.navigation.*;
-import com.finalist.cmsc.portalImpl.services.sitemanagement.SiteManagement;
 import com.finalist.cmsc.repository.ContentElementUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
+import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 import com.finalist.pluto.portalImpl.core.PortalURL;
 
 @SuppressWarnings("serial")

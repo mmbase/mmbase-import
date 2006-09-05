@@ -1,7 +1,7 @@
 
 function openPopupWindow(windowName, width, height, url) {      
     if (!width) {w = 750;} else { w = width; }
-    if (!height) {h = 750;} else { h = height; }
+    if (!height) {h = 550;} else { h = height; }
     if (!url) {url = "";}
 	var options = getPopupPositionProps(w, h) + ',scrollbars=yes,status=no,toolbar=no,menubar=no,location=no,resizable=yes';
     var w = window.open(url, windowName, options);    
@@ -115,10 +115,11 @@ function getPopupPositionProps(width, height) {
 
     var x = openerx + Math.round((openerw - width) / 2);
     var y = openery + Math.round((openerh - height) / 2);
+    
     // adjust to right of screen
-    if (x + width > screenMaxX) x = screenMaxX - width;
+    if (x + parseInt(width) > screenMaxX) x = screenMaxX - width;
     // adjust to bottom of screen
-    if (y + height > screenMaxY) y = screenMaxY - height;
+    if (y + parseInt(height) > screenMaxY) y = screenMaxY - height;
     // adjust to left of screen
     if (x < screenMinX) x = screenMinX;
     // adjust to top of screen

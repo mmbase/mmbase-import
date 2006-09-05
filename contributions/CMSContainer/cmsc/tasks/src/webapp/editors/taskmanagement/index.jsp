@@ -5,7 +5,7 @@
 	<html:html xhtml="true">
 	<head>
 	<title><fmt:message key="tasks.title" /></title>
-	<link rel="stylesheet" type="text/css" href="../style.css" />
+	<link href="../css/main.css" type="text/css" rel="stylesheet" />
 	<script src="../utils/rowhover.js" type="text/javascript"></script>
 	</head>
 	<body>

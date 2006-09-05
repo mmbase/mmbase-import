@@ -15,7 +15,8 @@ import org.apache.commons.logging.LogFactory;
 import com.finalist.cmsc.beans.om.PortletParameter;
 import com.finalist.cmsc.beans.om.View;
 import com.finalist.cmsc.portalImpl.PortalConstants;
-import com.finalist.cmsc.portalImpl.services.sitemanagement.SiteManagement;
+import com.finalist.cmsc.services.sitemanagement.SiteManagement;
+import com.finalist.cmsc.services.sitemanagement.SiteManagementAdmin;
 import com.finalist.cmsc.util.bundles.CombinedResourceBundle;
 import com.finalist.pluto.portalImpl.core.*;
 
@@ -313,7 +314,7 @@ public abstract class CmscPortlet extends GenericPortlet {
             PortletParameter param = new PortletParameter();
             param.setKey(key);
             param.setValue(value);
-            SiteManagement.setPortletNodeParameter(portletId, param);
+            SiteManagementAdmin.setPortletNodeParameter(portletId, param);
         }
     }
 
@@ -322,13 +323,13 @@ public abstract class CmscPortlet extends GenericPortlet {
             PortletParameter param = new PortletParameter();
             param.setKey(key);
             param.setValue(value);
-            SiteManagement.setPortletParameter(portletId, param);
+            SiteManagementAdmin.setPortletParameter(portletId, param);
         }
     }
 
     protected void setPortletView(String portletId, String viewId) {
         if (viewId != null) {
-            SiteManagement.setPortletView(portletId, viewId);
+            SiteManagementAdmin.setPortletView(portletId, viewId);
         }
     }
 

@@ -9,9 +9,7 @@
 		
 	-->
 	<status>active</status>
-	<!--
-		<class>ContentRepository.Contentelement</class>
-	-->
+	<class>com.finalist.cmsc.richtext.builders.RichTextBuilder</class>
 	<searchage>70</searchage>
 	<names>
 		<singular xml:lang="nl">contentelement</singular>
@@ -23,7 +21,9 @@
 		<description xml:lang="nl"></description>
 		<description xml:lang="en"></description>
 	</descriptions>
-	<properties></properties>
+	<properties>
+		<property name="downloadImages">true</property>
+	</properties>
 	<fieldlist>
 		<field>
 			<descriptions>
@@ -145,7 +145,7 @@
 				<description xml:lang="en"></description>
 			</descriptions>
 			<gui>
-				<guiname xml:lang="nl">AAngemaakt door</guiname>
+				<guiname xml:lang="nl">Aangemaakt door</guiname>
 				<guiname xml:lang="en">Creator</guiname>
 			</gui>
 			<editor>
@@ -343,7 +343,7 @@
 				</positions>
 			</editor>
 			<datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
-				<default value="today + 100 year" />
+				<default value="today + 1 month" />
 			</datatype>
 			<db>
 				<name>archivedate</name>

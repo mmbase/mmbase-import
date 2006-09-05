@@ -108,7 +108,7 @@ public abstract class SearchAction extends MMBaseAction {
 
         // Set everyting on the request.
         request.setAttribute(RESULT_COUNT, new Integer(Queries.count(query)));
-        request.setAttribute(RESULTS, cloud.getList(query));
+        request.setAttribute(RESULTS, nodeManager.getList(query));
         request.setAttribute(GETURL, queryStringComposer.getQueryString());
 
         return mapping.getInputForward();

@@ -29,6 +29,9 @@
 	</script>
 
 	<style type="text/css">
+		body {
+			behavior: url(../../css/hover.htc);
+		}
 		.tooltip {
 			position: absolute;
 			display: none;
@@ -49,6 +52,7 @@
          <div class="header_end"></div>
       </div>
       <div class="body">
+        <c:if test="${param.message != null}"><h2>${param.message}</h2></c:if>
 		<mm:import externid="channel" from="request" />
 		<mm:node referid="channel">
 			<mm:field name="path" id="channelPath" write="false" />

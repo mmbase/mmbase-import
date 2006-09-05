@@ -34,7 +34,8 @@ import org.mmbase.bridge.Node;
 import com.finalist.cmsc.beans.om.*;
 import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.portalImpl.PortalConstants;
-import com.finalist.cmsc.portalImpl.services.sitemanagement.SiteModelManager;
+import com.finalist.cmsc.portalImpl.headerresource.HeaderResource;
+import com.finalist.cmsc.services.sitemanagement.SiteModelManager;
 import com.finalist.pluto.portalImpl.core.*;
 import com.finalist.pluto.portalImpl.om.common.impl.PreferenceSetImpl;
 import com.finalist.pluto.portalImpl.om.entity.impl.PortletEntityImpl;
@@ -51,11 +52,8 @@ import com.finalist.pluto.portalImpl.servlet.ServletResponseImpl;
  * PortletFragmentFooter.jsp. These pages define the header and footer of the
  * portlet.
  * </p>
- * 
- * @author Stephan Hesmer
- * @author Nick Lothian
+ *
  * @author Wouter Heijke
- * @version $Revision: 1.3 $
  */
 public class PortletFragment extends AbstractFragmentSingle {
     
@@ -66,14 +64,17 @@ public class PortletFragment extends AbstractFragmentSingle {
 	private com.finalist.cmsc.beans.om.Portlet portlet;
     private String layoutId;
 	private PortletWindow portletWindow;
+    private StringWriter storedWriter = new StringWriter();
 
-	public PortletFragment(ServletConfig config, Fragment parent, String layoutId, com.finalist.cmsc.beans.om.Portlet portlet, SiteModelManager siteModelManager) throws Exception {
+    private HeaderResource headerResource;
+    
+	public PortletFragment(ServletConfig config, Fragment parent, String layoutId, 
+            com.finalist.cmsc.beans.om.Portlet portlet,
+            com.finalist.cmsc.beans.om.PortletDefinition definition,
+            View view) throws Exception {
 		super(layoutId, config, parent);
 		this.portlet = portlet;
         this.layoutId = layoutId;
-
-        com.finalist.cmsc.beans.om.PortletDefinition definition = 
-                            siteModelManager.getPortletDefinition(portlet.getDefinition());
 
         PortletEntityImpl portletEntity = new PortletEntityImpl();
         portletEntity.setId(getId());
@@ -113,10 +114,9 @@ public class PortletFragment extends AbstractFragmentSingle {
 			}
             
 			// also add the view
-			View v = siteModelManager.getView(portlet.getView());
-			if (v != null) {
-				ps.add(PortalConstants.CMSC_OM_VIEW_ID, v.getId());
-                ps.add(PortalConstants.CMSC_PORTLET_VIEW_TEMPLATE, v.getResource());
+			if (view != null) {
+				ps.add(PortalConstants.CMSC_OM_VIEW_ID, view.getId());
+                ps.add(PortalConstants.CMSC_PORTLET_VIEW_TEMPLATE, view.getResource());
 			}
 		}
 
@@ -137,10 +137,6 @@ public class PortletFragment extends AbstractFragmentSingle {
 	public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		log.debug("PortletFragment service enters");
 		HttpServletRequest wrappedRequest = ServletObjectAccess.getServletRequest(request, portletWindow);
-		ServletResponseImpl wrappedResponse = (ServletResponseImpl) ServletObjectAccess.getServletResponse(response);
-		PrintWriter responseWriter = response.getWriter();
-		StringWriter storedWriter = new StringWriter();
-
 		// load the Portlet
 		// If there is an error loading, then we will save the error message and attempt
 		// to render it inside the Portlet, so the Portal has a chance of still looking
@@ -164,9 +160,13 @@ public class PortletFragment extends AbstractFragmentSingle {
 			} else {
 				errorMsg = getErrorMsg(t);
 			}
-
 		}
 
+        if (errorMsg != null) {
+            storedWriter.write(errorMsg);
+            return;
+        }
+        
 		PortalEnvironment env = (PortalEnvironment) request.getAttribute(PortalEnvironment.REQUEST_PORTALENV);
 		PortalURL thisURL = env.getRequestedPortalURL();
 
@@ -180,29 +180,14 @@ public class PortletFragment extends AbstractFragmentSingle {
 			}
 		}
 
-        request.setAttribute(PortalConstants.FRAGMENT, this);
+        ServletDefinition servletDefinition = getServletDefinition();
 
-        ServletDefinition servletDefinition = null;
-        PortletDefinition portletDefinition = null;
-		PortletEntity portletEntity = portletWindow.getPortletEntity();
-        if (portletEntity == null) {
-            log.error("PortletEntity not found for window " + portletWindow.getId());
-        }
-        else {
-            portletDefinition = portletEntity.getPortletDefinition();
-            if (portletDefinition == null) {
-                log.error("PortletDefinition not found for entity " + portletEntity.getId());
-            }
-            else {
-                servletDefinition = portletDefinition.getServletDefinition();
-            }
-        }
-        
 		if (servletDefinition != null && !servletDefinition.isUnavailable()) {
+            request.setAttribute(PortalConstants.FRAGMENT, this);
 			PrintWriter writer2 = new PrintWriter(storedWriter);
 
 			// create a wrapped response which the Portlet will be rendered to
-			wrappedResponse = (ServletResponseImpl) ServletObjectAccess.getStoredServletResponse(response, writer2);
+            ServletResponseImpl wrappedResponse = (ServletResponseImpl) ServletObjectAccess.getStoredServletResponse(response, writer2);
 
 			try {
 				// render the Portlet to the wrapped response, to be output
@@ -211,7 +196,7 @@ public class PortletFragment extends AbstractFragmentSingle {
 			} catch (UnavailableException e) {
 				writer2.println("the portlet is currently unavailable!");
 
-				ServletDefinitionCtrl servletDefinitionCtrl = (ServletDefinitionCtrl) ControllerObjectAccess.get(portletDefinition.getServletDefinition());
+				ServletDefinitionCtrl servletDefinitionCtrl = (ServletDefinitionCtrl) ControllerObjectAccess.get(servletDefinition);
 				if (e.isPermanent()) {
 					servletDefinitionCtrl.setAvailable(Long.MAX_VALUE);
 				} else {
@@ -225,44 +210,72 @@ public class PortletFragment extends AbstractFragmentSingle {
 				writer2.println(getErrorMsg(e));
 			}
 
+            request.removeAttribute(PortalConstants.FRAGMENT);
 		} else {
 			log.error("Error no servletDefinition!!!");
 		}
+		log.debug("PortletFragment service exits");
+	}
 
-		request.setAttribute("layoutId", layoutId);
-        String portletHeaderJsp = getServletContextParameterValue("portlet.header.jsp", "PortletFragmentHeader.jsp"); 
-		// output the header JSP page
+    private ServletDefinition getServletDefinition() {
+        ServletDefinition servletDefinition = null;
+		PortletEntity portletEntity = portletWindow.getPortletEntity();
+        if (portletEntity == null) {
+            log.error("PortletEntity not found for window " + portletWindow.getId());
+        }
+        else {
+            PortletDefinition portletDefinition = portletEntity.getPortletDefinition();
+            if (portletDefinition == null) {
+                log.error("PortletDefinition not found for entity " + portletEntity.getId());
+            }
+            else {
+                servletDefinition = portletDefinition.getServletDefinition();
+            }
+        }
+        return servletDefinition;
+    }
 
-		// request.setAttribute("portletInfo", portletInfo);
-		RequestDispatcher rd = getMainRequestDispatcher(portletHeaderJsp);
-		rd.include(request, response);
-		try {
-			// output the Portlet
-			// check if there is an error message
-			if (errorMsg == null) {
+    public void writeToResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        PrintWriter responseWriter = response.getWriter();
+        try {
+            boolean unavailable = getServletDefinition().isUnavailable();
+            request.setAttribute("layoutId", layoutId);
+            request.setAttribute(PortalConstants.FRAGMENT, this);
+
+            
+            String portletHeaderJsp = getServletContextParameterValue("portlet.header.jsp", "PortletFragmentHeader.jsp"); 
+    		// output the header JSP page
+    
+    		// request.setAttribute("portletInfo", portletInfo);
+    		RequestDispatcher rd = getMainRequestDispatcher(portletHeaderJsp);
+    		rd.include(request, response);
+    		try {
+    			// output the Portlet
                 // no error message, so output the Portlet
-                if (portletDefinition.getServletDefinition()
-                        .isUnavailable()) {
+                if (unavailable) {
                     // the portlet is unavailable
                     responseWriter.println("the portlet is currently unavailable!");
                 }
                 else {
                     responseWriter.println(storedWriter.toString());
                 }
-			} else {
-				// output the errror message
-				responseWriter.println(errorMsg);
-			}
-		} finally {
-			// output the footer JSP page
-            String portletFooterJsp = getServletContextParameterValue("portlet.footer.jsp", "PortletFragmentFooter.jsp");
-			RequestDispatcher rdFooter = getMainRequestDispatcher(portletFooterJsp);
-			rdFooter.include(request, response);
-			
-			request.removeAttribute("layoutId");
-		}
-		log.debug("PortletFragment service exits");
-	}
+    		} finally {
+    			// output the footer JSP page
+                String portletFooterJsp = getServletContextParameterValue("portlet.footer.jsp", "PortletFragmentFooter.jsp");
+    			RequestDispatcher rdFooter = getMainRequestDispatcher(portletFooterJsp);
+    			rdFooter.include(request, response);
+    			
+                request.removeAttribute(PortalConstants.FRAGMENT);
+    			request.removeAttribute("layoutId");
+    		}
+        } catch (ServletException e) {
+            log.error("Error in portlet servlet");
+            responseWriter.println("Error in portlet servlet");
+        } catch (IOException e) {
+            log.error("Error in portlet");
+            responseWriter.println("Error in portlet");
+        }
+    }
 
 	public void createURL(PortalURL url) {
 		getParent().createURL(url);
@@ -297,5 +310,12 @@ public class PortletFragment extends AbstractFragmentSingle {
 	public String getKey() {
 		return getId(); // "_" + layoutId;
 	}
+
+    public HeaderResource getHeaderResource() {
+        if (headerResource == null) {
+            headerResource = new HeaderResource();
+        }
+        return headerResource;
+    }
 
 }

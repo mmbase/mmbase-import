@@ -7,9 +7,6 @@
       <requires name="sitemanagement" maintainer="finalist.com" version="1" type="application"/>
    </requirements>
    <neededbuilderlist>
-      <!-- These are the basecontentelements specific relation builders -->
-      <builder maintainer="finalist.com" version="1">imagerel</builder>
-      
      <!-- These are the basecontentelements specific builders -->
       <builder maintainer="finalist.com" version="1">article</builder>
       <builder maintainer="finalist.com" version="1">faqcategory</builder>
@@ -18,31 +15,11 @@
       <builder maintainer="finalist.com" version="1">mailform</builder>
     </neededbuilderlist>
     <neededreldeflist>
-        <reldef source="imagerel" target="imagerel" direction="bidirectional" guisourcename="imagerel" guitargetname="imagerel" builder="imagerel" />
    </neededreldeflist>
    <allowedrelationlist>
-      <relation from="article" to="article" type="posrel" />
-      <relation from="article" to="attachments" type="posrel" />
-      <relation from="article" to="images" type="imagerel" />
-      <relation from="article" to="urls" type="posrel" />
-      <relation from="article" to="link" type="posrel" />
-      <relation from="faqitem" to="attachments" type="posrel" />
-      <relation from="faqitem" to="images" type="imagerel" />
       <relation from="faqitem" to="faqcategory" type="related" />
-      <relation from="faqitem" to="urls" type="posrel" />
 
       <relation from="link" to="popupinfo" type="related" />
-      <relation from="link" to="urls" type="posrel" />
-      <relation from="link" to="images" type="imagerel" />
-      <relation from="link" to="attachments" type="posrel" />
-      <relation from="link" to="contentelement" type="posrel" />
-
-		<!--  inline links -->
-      <relation from="article" to="article" type="inlinerel" />
-      <relation from="article" to="faqitem" type="inlinerel" />
-      <relation from="article" to="attachments" type="inlinerel" />
-      <relation from="article" to="urls" type="inlinerel" />
-      <relation from="article" to="images" type="imageinlinerel" />
    </allowedrelationlist>
 
    <datasourcelist>

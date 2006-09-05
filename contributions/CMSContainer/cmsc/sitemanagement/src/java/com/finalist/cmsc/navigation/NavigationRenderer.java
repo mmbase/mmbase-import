@@ -10,6 +10,7 @@ import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.security.UserRole;
 import com.finalist.cmsc.util.bundles.JstlUtil;
 import com.finalist.tree.*;
+import com.finalist.util.module.ModuleUtil;
 
 /**
  * Renderer of the Site management tree.
@@ -18,7 +19,8 @@ import com.finalist.tree.*;
  */
 public abstract class NavigationRenderer implements TreeCellRenderer {
 
-    private String target = null;
+    private static final String FEATURE_PAGEWIZARD = "pagewizarddefinition";
+	private String target = null;
     private HttpServletRequest request;
     private HttpServletResponse response;
 
@@ -39,8 +41,7 @@ public abstract class NavigationRenderer implements TreeCellRenderer {
             id = String.valueOf(parentNode.getNumber());
         }
         
-        UserRole role = NavigationUtil.getRoleForUser(parentNode.getCloud(), parentNode, false);
-
+        UserRole role = NavigationUtil.getRole(parentNode.getCloud(), parentNode, false);
         boolean isPage = PagesUtil.isPage(parentNode);
         
         String titleFieldName = isPage ? PagesUtil.TITLE_FIELD : SiteUtil.TITLE_FIELD;
@@ -78,8 +79,8 @@ public abstract class NavigationRenderer implements TreeCellRenderer {
                     String labelPageEdit = JstlUtil.getMessage(request, "site.page.edit");
                     element.addOption(createOption("edit.png", labelPageEdit,
                         getUrl("PageEdit.do?number=" + parentNode.getNumber()), target));
-
-                    if ((model.getChildCount(parentNode) == 0)) {
+                    
+                    if ((model.getChildCount(parentNode) == 0) || SecurityUtil.isWebmaster(role)) {
                         String labelPageRemove = JstlUtil.getMessage(request, "site.page.remove");
                         element.addOption(createOption("delete.png", labelPageRemove,
                                 getUrl("PageDelete.do?number=" + parentNode.getNumber()), target));
@@ -122,8 +123,20 @@ public abstract class NavigationRenderer implements TreeCellRenderer {
                     element.addOption(createOption("paste.png", labelPagePaste, "javascript:paste('"
                             + parentNode.getNumber() + "');", null));
                 }
+                
+                
+                String labelPageRights = JstlUtil.getMessage(request, "site.page.rights");
+                element.addOption(createOption("rights.png", labelPageRights,
+                    getUrl("../usermanagement/pagerights.jsp?number=" + parentNode.getNumber()), target));
             }
         }
+        
+        if(ModuleUtil.checkFeature(FEATURE_PAGEWIZARD)) {
+	        String labelPageWizard = JstlUtil.getMessage(request, "site.page.wizard");
+	        element.addOption(createOption("wizard.png", labelPageWizard,
+	            getUrl("../pagewizard/StartPageWizardAction.do?number=" + parentNode.getNumber()), target));
+        }
+
         return element;
     }
 

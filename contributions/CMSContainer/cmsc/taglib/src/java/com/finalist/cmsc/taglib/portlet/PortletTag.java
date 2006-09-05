@@ -33,7 +33,7 @@ import org.apache.pluto.services.information.PortalContextProvider;
 import com.finalist.cmsc.beans.om.Page;
 import com.finalist.cmsc.beans.om.Portlet;
 import com.finalist.cmsc.portalImpl.PortalConstants;
-import com.finalist.cmsc.portalImpl.services.sitemanagement.SiteManagement;
+import com.finalist.cmsc.services.sitemanagement.SiteManagementAdmin;
 import com.finalist.pluto.portalImpl.aggregation.PortletFragment;
 import com.finalist.pluto.portalImpl.aggregation.ScreenFragment;
 import com.finalist.pluto.portalImpl.core.*;
@@ -110,8 +110,8 @@ public class PortletTag extends SimpleTagSupport {
         // get the list of modes this Portlet supports
         if (supported != null && portalContextProvider != null) {
             Page page = ((ScreenFragment) portletFragment.getParent()).getPage();
-            boolean mayEditPage = SiteManagement.mayEdit(page);
-            boolean mayEditPortlet = SiteManagement.mayEdit(portlet);
+            boolean mayEditPage = SiteManagementAdmin.mayEdit(page);
+            boolean mayEditPortlet = SiteManagementAdmin.mayEdit(portlet);
             
             // if portlet supports portlet modes
             Iterator modes = supported.getPortletModes();

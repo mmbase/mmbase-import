@@ -3,13 +3,25 @@
 <div class="portlet-config-canvas">
 <h3><fmt:message key="edit_defaults.title" /></h3>
 
-<form method="POST" action="<portlet:actionURL><portlet:param name="action" value="edit"/></portlet:actionURL>" target="_parent">
-<fmt:message key="edit_defaults.view" />: 
-<cmsc:select var="view">
-	<c:forEach var="v" items="${views}">
-		<cmsc:option value="${v.id}" name="${v.title}" />
-	</c:forEach>
-</cmsc:select><br />
+<form method="POST" name="<portlet:namespace />form" action="<portlet:actionURL><portlet:param name="action" value="edit"/></portlet:actionURL>" target="_parent">
 
-<input type="submit" value="<fmt:message key="edit_defaults.save" />" /></form>
+<table class="editcontent">
+	<tr>
+		<td><fmt:message key="edit_defaults.view" />:</td>
+		<td>
+			<cmsc:select var="view">
+				<c:forEach var="v" items="${views}">
+					<cmsc:option value="${v.id}" name="${v.title}" />
+				</c:forEach>
+			</cmsc:select>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<a href="javascript:document.forms['<portlet:namespace />form'].submit()" class="button">
+				<img src="<cmsc:staticurl page='/editors/gfx/icons/save.png'/>" alt=""/> <fmt:message key="edit_defaults.save" /></a>
+		</td>
+	</tr>
+</table>
+</form>
 </div>

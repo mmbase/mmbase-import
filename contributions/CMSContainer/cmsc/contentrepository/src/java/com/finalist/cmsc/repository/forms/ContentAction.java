@@ -57,12 +57,12 @@ public class ContentAction extends MMBaseAction {
             addToRequest(request, "elements", elements);
             
             NodeList created = RepositoryUtil.getCreatedElements(channel);
-            List<Integer> createdNumbers = new ArrayList<Integer>();
+            Map<String,Node> createdNumbers = new HashMap<String,Node>();
             for (Iterator iter = created.iterator(); iter.hasNext();) {
                 Node createdElement = (Node) iter.next();
-                createdNumbers.add(createdElement.getNumber());
-                addToRequest(request, "createdNumbers", createdNumbers);
+                createdNumbers.put(String.valueOf(createdElement.getNumber()), createdElement);
             }
+            addToRequest(request, "createdNumbers", createdNumbers);
         }
         
         return mapping.findForward(SUCCESS);

@@ -41,7 +41,6 @@
          <div class="title"><fmt:message key="selector.title" /></div>
          <div class="header_end"></div>
       </div>
-      <div class="body">
 		<mm:cloud jspvar="cloud" loginpage="../../login.jsp">
 			<mm:import externid="channel" from="request" />
 			<mm:compare referid="channel" value="" inverse="true">
@@ -82,7 +81,6 @@
 			<br/>
 			<% } %>
 		</mm:cloud>
-      </div>
       <div class="side_block_end"></div>
    </div>
 	</body>

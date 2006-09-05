@@ -10,6 +10,7 @@
    <link rel="stylesheet" type="text/css" href="<cmsc:staticurl page='/editors/css/main.css'/>" />
    <style type="text/css">
       body {
+         behavior: url(./css/hover.htc);
          margin: 100px;
          text-align: center;
       }

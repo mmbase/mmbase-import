@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
                         http://www.mmbase.org/xmlns/builder.xsd"
-	extends="object" maintainer="finalist.com" name="stylesheet" version="0">
+	extends="object" maintainer="finalist.com" name="stylesheet" version="1">
 <!--
  
 -->
@@ -92,6 +92,28 @@
          <db>
             <name>resource</name>
             <type key="false" notnull="false" size="255" state="persistent">STRING</type>
+         </db>
+      </field>
+      <field>
+         <descriptions>
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <gui>
+            <guiname xml:lang="nl">Media</guiname>
+            <guiname xml:lang="en">Media</guiname>
+         </gui>
+         <editor>
+            <positions>
+                   <input>7</input>
+               <list>7</list>
+               <search>7</search>
+            </positions>
+         </editor>
+			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+         <db>
+            <name>media</name>
+            <type key="false" notnull="false" size="30" state="persistent">STRING</type>
          </db>
       </field>
 </fieldlist>

@@ -1,9 +1,6 @@
 package com.finalist.cmsc.richtext.builders;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
+import java.io.*;
 import java.net.URL;
 import java.util.*;
 
@@ -19,6 +16,7 @@ import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
 import org.mmbase.storage.search.implementation.NodeSearchQuery;
+import org.mmbase.util.ApplicationContextReader;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.w3c.dom.Document;
@@ -46,12 +44,20 @@ public class RichTextBuilder extends MMObjectBuilder {
     private MMObjectBuilder imagerelBuilder = null;
     private int imagerelNumber = -1;
 
+    private boolean downloadImages = true;
+
     /**
      * @see org.mmbase.module.core.MMObjectBuilder#init()
      */
     public boolean init() {
         if (!super.init()) { return false; }
 
+        Map map = getInitParameters("cmsc/richtext");
+        String download = (String) map.get("downloadImages");
+        if (!StringUtil.isEmpty(download)) {
+            downloadImages = Boolean.valueOf(download);
+        }
+        
         Collection fields = getFields();
         for (Iterator iter = fields.iterator(); iter.hasNext();) {
             CoreField field = (CoreField) iter.next();
@@ -221,6 +227,15 @@ public class RichTextBuilder extends MMObjectBuilder {
         for (int i = 0, len = nl.getLength(); i < len; i++) {
             Element link = (Element) nl.item(i);
 
+            if (link.hasAttribute(RichText.DESTINATION_ATTR)
+                    && "undefined".equalsIgnoreCase(link.getAttribute(RichText.DESTINATION_ATTR))) {
+                link.removeAttribute(RichText.DESTINATION_ATTR);
+            }
+            if (link.hasAttribute(RichText.RELATIONID_ATTR)
+                    && "undefined".equalsIgnoreCase(link.getAttribute(RichText.RELATIONID_ATTR))) {
+                link.removeAttribute(RichText.RELATIONID_ATTR);
+            }
+            
             // handle relations to other objects
             if (isInlineAttributesComplete(link)) {
                 // get id of the link
@@ -270,6 +285,10 @@ public class RichTextBuilder extends MMObjectBuilder {
                     link.setAttribute(RichText.RELATIONID_ATTR, referid);
 
                     idsList.add(referid);
+                    
+                    if (link.hasAttribute(RichText.HREF_ATTR)) {
+                        link.removeAttribute(RichText.HREF_ATTR);
+                    }
                 }
                 else {
                     if (link.hasAttribute(RichText.RELATIONID_ATTR)) {
@@ -309,6 +328,15 @@ public class RichTextBuilder extends MMObjectBuilder {
         for (int i = 0, len = nl.getLength(); i < len; i++) {
             Element image = (Element) nl.item(i);
 
+            if (image.hasAttribute(RichText.DESTINATION_ATTR)
+                    && "undefined".equalsIgnoreCase(image.getAttribute(RichText.DESTINATION_ATTR))) {
+                image.removeAttribute(RichText.DESTINATION_ATTR);
+            }
+            if (image.hasAttribute(RichText.RELATIONID_ATTR)
+                    && "undefined".equalsIgnoreCase(image.getAttribute(RichText.RELATIONID_ATTR))) {
+                image.removeAttribute(RichText.RELATIONID_ATTR);
+            }
+            
             if (isInlineAttributesComplete(image)) {
                 // get id of the image
                 String id = image.getAttribute(RichText.RELATIONID_ATTR);
@@ -417,44 +445,9 @@ public class RichTextBuilder extends MMObjectBuilder {
                 }
                 else {
                     if (!image.hasAttribute(RichText.RELATIONID_ATTR)) {
-                        String src = image.getAttribute(RichText.SRC_ATTR);
-                        log.warn("Image found which is not linked " + src);
-//                        try {
-//                            String alt = image.getAttribute("alt");
-//                            String owner = mmObj.getStringValue("owner");
-//                            MMObjectNode imageNode = createImage(owner, src, alt);
-//                            
-//                            String width = null;
-//                            if (image.hasAttribute(RichText.WIDTH_ATTR)) {
-//                                width = image.getAttribute(RichText.WIDTH_ATTR);
-//                                image.removeAttribute(RichText.WIDTH_ATTR);
-//                            }
-//                            String height = null;
-//                            if (image.hasAttribute(RichText.HEIGHT_ATTR)) {
-//                                height = image.getAttribute(RichText.HEIGHT_ATTR);
-//                                image.removeAttribute(RichText.HEIGHT_ATTR);
-//                            }
-//                            String legend = null;
-//                            if (image.hasAttribute(RichText.LEGEND)) {
-//                                legend = image.getAttribute(RichText.LEGEND);
-//                                image.removeAttribute(RichText.LEGEND);
-//                            }                            
-//
-//                            String referid = createImageIdRel(mmObj, imageNode.getNumber(), height, width, legend);
-//
-//                            image.setAttribute(RichText.RELATIONID_ATTR, referid);
-//                            image.setAttribute(RichText.DESTINATION_ATTR, String.valueOf(imageNode.getNumber()));
-//                            image.removeAttribute(RichText.SRC_ATTR);
-//
-//                            idsList.add(referid);
-//
-//                            log.debug("imported image " + imageNode.getNumber()
-//                                    + " and added imgidrel: " + referid);
-//                        }
-//                        catch (IOException ioe) {
-//                            log.error("There was a problem while retrieving the image from " + src);
-//                            log.error(ioe);
-//                        }
+                        if (downloadImages && image.hasAttribute(RichText.SRC_ATTR) ) {
+                            importImage(image, mmObj, idsList);
+                        }
                     }
                     else {
                         String referid = image.getAttribute(RichText.RELATIONID_ATTR);
@@ -462,6 +455,42 @@ public class RichTextBuilder extends MMObjectBuilder {
                     }
                 }
             }
+        }
+    }
+
+    private void importImage(Element image, MMObjectNode mmObj, List<String> idsList) {
+        String src = image.getAttribute(RichText.SRC_ATTR);
+        log.warn("Image found which is not linked " + src);
+        String alt = image.getAttribute("alt");
+        String owner = mmObj.getStringValue("owner");
+        MMObjectNode imageNode = createImage(owner, src, alt);
+        if (imageNode != null) {
+            String width = null;
+            if (image.hasAttribute(RichText.WIDTH_ATTR)) {
+                width = image.getAttribute(RichText.WIDTH_ATTR);
+                image.removeAttribute(RichText.WIDTH_ATTR);
+            }
+            String height = null;
+            if (image.hasAttribute(RichText.HEIGHT_ATTR)) {
+                height = image.getAttribute(RichText.HEIGHT_ATTR);
+                image.removeAttribute(RichText.HEIGHT_ATTR);
+            }
+            String legend = null;
+            if (image.hasAttribute(RichText.LEGEND)) {
+                legend = image.getAttribute(RichText.LEGEND);
+                image.removeAttribute(RichText.LEGEND);
+            }                            
+   
+            String referid = createImageIdRel(mmObj, imageNode.getNumber(), height, width, legend);
+   
+            image.setAttribute(RichText.RELATIONID_ATTR, referid);
+            image.setAttribute(RichText.DESTINATION_ATTR, String.valueOf(imageNode.getNumber()));
+            image.removeAttribute(RichText.SRC_ATTR);
+   
+            idsList.add(referid);
+   
+            log.debug("imported image " + imageNode.getNumber()
+                    + " and added imgidrel: " + referid);
         }
     }
     
@@ -551,12 +580,10 @@ public class RichTextBuilder extends MMObjectBuilder {
         }
     }
 
-    private MMObjectNode createImage(String owner, String src, String alt)
-            throws MalformedURLException {
-        URL imageUrl = new URL(src);
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    private MMObjectNode createImage(String owner, String src, String alt) {
         try {
+            URL imageUrl = new URL(src);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
             BufferedInputStream is = new BufferedInputStream(imageUrl.openStream());
             int bytesRead = 0;
             byte[] temp = new byte[4096];
@@ -564,23 +591,27 @@ public class RichTextBuilder extends MMObjectBuilder {
                 baos.write(temp, 0, bytesRead);
             }
             is.close();
+
+            log.debug("image retrieved. " + src);
+            int protocolIndex = src.indexOf("://") + "://".length();
+            int imageUrlIndex = src.indexOf("/", protocolIndex);
+            String title = "Imported: " + src.substring(imageUrlIndex);
+            log.debug("Found image with title " + title + " and alt tekst " + alt);
+
+            MMObjectNode imageNode = mmb.getMMObject("images").getNewNode(owner);
+            imageNode.setValue("title", title);
+            imageNode.setValue("handle", baos.toByteArray());
+            imageNode.setValue("description", alt);
+            imageNode.insert(owner);
+            return imageNode;
+        }
+        catch (IOException t) {
+            log.error("Failed to read " + src);
         }
         catch (Throwable t) {
             log.error(Logging.stackTrace(t));
         }
-        log.debug("image retrieved. " + src);
-
-        String title = "Imported: " + src.substring(src.lastIndexOf("/") + 1, src.lastIndexOf("."));
-
-        log.debug("Found image with title " + title + " and alt tekst " + alt);
-
-        MMObjectNode imageNode = mmb.getMMObject("images").getNewNode(owner);
-
-        imageNode.setValue("title", title);
-        imageNode.setValue("handle", baos.toByteArray());
-        imageNode.setValue("description", alt);
-        imageNode.insert(owner);
-        return imageNode;
+        return null;
     }
 
     private MMObjectNode createUrl(String owner, String href, String name) {

@@ -1,5 +1,7 @@
 package com.finalist.cmsc.security.forms;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 
@@ -15,9 +17,11 @@ public abstract class RolesRenderer implements HTMLTreeCellRenderer {
 
    protected RolesForm form = null; 
    protected Node user = null;
+   private HttpServletRequest request;
 
-   public RolesRenderer(Cloud cloud, RolesForm form) {
+   public RolesRenderer(HttpServletRequest request, Cloud cloud, RolesForm form) {
       super();
+      this.request = request;
       this.form = form;
       if (form.getId() > -1) { 
          this.user = cloud.getNode(form.getId());
@@ -35,7 +39,7 @@ public abstract class RolesRenderer implements HTMLTreeCellRenderer {
       
       UserRole userRole = form.getRole(n.getNumber()); 
       if (userRole==null) {
-         userRole = getRoleForUser(n);
+         userRole = getRole(n);
          if (userRole!=null) {
             form.addRole(n.getNumber(), userRole);
          }
@@ -56,9 +60,9 @@ public abstract class RolesRenderer implements HTMLTreeCellRenderer {
           title = n.getStringValue("title");
       }
       
-      return new RoleTreeElement(null, id, title, null, "treeitem", n.getNumber(), roleId);
+      return new RoleTreeElement(request, null, id, title, null, "treeitem", n.getNumber(), roleId);
    }
    
-   protected abstract UserRole getRoleForUser(Node channel);
+   protected abstract UserRole getRole(Node channel);
 
 }

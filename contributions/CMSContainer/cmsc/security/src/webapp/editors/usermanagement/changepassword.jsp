@@ -7,13 +7,16 @@
 	<link rel="stylesheet" type="text/css" href="../css/main.css" />
 <title><fmt:message key="changepassword.title" /></title>
 </head>
+
+
+<c:choose>
+<c:when test="${param.succeeded}">
+      <body onload="alert('<fmt:message key="changepassword.succeeded" />')">
+      </body>
+</c:when>
+<c:otherwise>
 <body>
 <mm:cloud jspvar="cloud" loginpage="../../editors/login.jsp">
-
-<%
-   String username = cloud.getUser().getIdentifier();
-   String succeeded = request.getParameter("succeeded");
-%>
 
       <div class="tabs">
          <!-- actieve TAB -->
@@ -31,13 +34,6 @@
 
 
 
-<%
-   if ((succeeded != null) && (succeeded.equals("true"))) {
-%>
-      <font color="#FF0000"><b><fmt:message key="changepassword.succeeded" /></b></font>
-<%
-   }
-%>
 <html:form action="/editors/usermanagement/ChangePasswordAction">
    <table class="formcontent">
       <tr>
@@ -74,5 +70,7 @@
       </div>
    </div>
 </body>
+</c:otherwise>
+</c:choose>
 </html:html>
 </mm:content>

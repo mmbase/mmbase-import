@@ -16,6 +16,7 @@ import net.sf.mmapps.commons.util.StringUtil;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.Node;
 import org.mmbase.datatypes.processors.Processor;
+import org.mmbase.security.Rank;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.w3c.dom.*;
@@ -116,10 +117,11 @@ public class RichTextGetProcessor implements Processor {
              log.debug("Creating image by relation " + imgidrel);
 
              if (!inlineImages.containsKey(imgidrel)) {
-                log.error("Relation "
-                            + imgidrel
-                            + " for inline image not found. Ignoring this image!!! It will NOT be displayed.");
-                continue;
+                 if (cloud.getUser().getRank() == Rank.ANONYMOUS) {
+                     org.w3c.dom.Node parentNode = image.getParentNode();
+                     parentNode.removeChild(image);
+                 }
+                 continue;
              }
              Relation inlineRel = inlineImages.get(String.valueOf(imgidrel));
              String imageId = inlineRel.getStringValue("dnumber");
@@ -139,6 +141,14 @@ public class RichTextGetProcessor implements Processor {
              if (height > 0) {
                 image.setAttribute(RichText.HEIGHT_ATTR, String.valueOf(height));
              }
+             
+             if (cloud.getUser().getRank() == Rank.ANONYMOUS) {
+                 image.removeAttribute(RichText.RELATIONID_ATTR);
+                 if (image.hasAttribute(RichText.DESTINATION_ATTR)) {
+                     image.removeAttribute(RichText.DESTINATION_ATTR);
+                 }
+             }
+             
           } else {
              log.debug("ImageTag does not contain relationId attribute. Skipping this image.");
           }
@@ -153,13 +163,21 @@ public class RichTextGetProcessor implements Processor {
           Element aElement = (Element) nl.item(j);
 
           if (aElement.hasAttribute(RichText.RELATIONID_ATTR)) {
-             log.debug("Creating link to attachment/article by inlinerel");
+             log.debug("Creating link to node by inlinerel");
              String idrel = aElement.getAttribute(RichText.RELATIONID_ATTR);
 
              if (!inlineLinks.containsKey(String.valueOf(idrel))) {
-                log.error("Relation "
-                            + idrel
-                            + " for inline link not found. Ignoring this link!!! It will NOT be displayed.");
+                 if (cloud.getUser().getRank() == Rank.ANONYMOUS) {
+                     org.w3c.dom.Node parentNode = aElement.getParentNode();
+                     parentNode.removeChild(aElement);
+                     org.w3c.dom.NodeList children = aElement.getChildNodes();
+                     for (int i = 0; i < children.getLength(); i++) {
+                         org.w3c.dom.Node child = children.item(i);
+                         if (child.getNodeType() != org.w3c.dom.Node.ATTRIBUTE_NODE) {
+                             parentNode.appendChild(child);
+                         }
+                    }
+                 }
                 continue;
              }
              String aElementId = inlineLinks.get(String.valueOf(idrel));
@@ -190,6 +208,13 @@ public class RichTextGetProcessor implements Processor {
              
              if (!aElement.hasAttribute(RichText.TITLE_ATTR)) {
                  aElement.setAttribute(RichText.TITLE_ATTR, name);
+             }
+             
+             if (cloud.getUser().getRank() == Rank.ANONYMOUS) {
+                 aElement.removeAttribute(RichText.RELATIONID_ATTR);
+                 if (aElement.hasAttribute(RichText.DESTINATION_ATTR)) {
+                     aElement.removeAttribute(RichText.DESTINATION_ATTR);
+                 }
              }
           }
        }

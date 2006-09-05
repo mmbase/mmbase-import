@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 package com.finalist.cmsc.portalImpl;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.*;
 import java.util.Properties;
 
 import javax.portlet.PortletException;
@@ -26,9 +26,9 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.pluto.PortletContainerException;
 import org.apache.pluto.om.window.PortletWindow;
 
-import com.finalist.cmsc.beans.om.Site;
+import com.finalist.cmsc.beans.om.*;
 import com.finalist.cmsc.navigation.ServerUtil;
-import com.finalist.pluto.portalImpl.aggregation.ScreenFragment;
+import com.finalist.pluto.portalImpl.aggregation.*;
 import com.finalist.pluto.portalImpl.core.PortalControlParameter;
 import com.finalist.pluto.portalImpl.core.PortalEnvironment;
 import com.finalist.pluto.portalImpl.core.PortalURL;
@@ -36,8 +36,9 @@ import com.finalist.pluto.portalImpl.core.PortletContainerEnvironment;
 import com.finalist.pluto.portalImpl.core.PortletContainerFactory;
 import com.finalist.pluto.portalImpl.factory.FactoryAccess;
 import com.finalist.cmsc.portalImpl.registry.PortalRegistry;
-import com.finalist.cmsc.portalImpl.services.sitemanagement.SiteManagement;
-import com.finalist.pluto.portalImpl.services.ServiceManager;
+import com.finalist.cmsc.services.ServiceManager;
+import com.finalist.cmsc.services.sitemanagement.SiteManagement;
+import com.finalist.cmsc.services.sitemanagement.SiteModelManager;
 import com.finalist.pluto.portalImpl.services.factorymanager.FactoryManager;
 import com.finalist.pluto.portalImpl.services.log.CommonsLogging;
 import com.finalist.pluto.portalImpl.servlet.ServletObjectAccess;
@@ -49,11 +50,12 @@ import com.finalist.pluto.portalImpl.servlet.ServletObjectAccess;
  */
 @SuppressWarnings("serial")
 public class PortalServlet extends HttpServlet {
-	private static Log log = LogFactory.getLog(PortalServlet.class);
 
-	private static String CONTENT_TYPE = "text/html";
+    private static Log log = LogFactory.getLog(PortalServlet.class);
 
-	private static ServletConfig sc;
+	protected static String CONTENT_TYPE = "text/html";
+    protected static final String PATH_SP = "/";
+	protected static ServletConfig sc;
     
 	public String getServletInfo() {
 		return "CMSC Portal Driver";
@@ -136,8 +138,16 @@ public class PortalServlet extends HttpServlet {
 		log.debug("===>URL='" + currentURL.getBasePortalURL(request) + "'");
 		log.debug("===>NAV='" + currentURL.getGlobalNavigationAsString() + "'");
 
+        if (shouldRedirect(currentURL)) {
+            List<Site> sites = SiteManagement.getSites();
+            if (!sites.isEmpty()) {
+                response.sendRedirect(sites.get(0).getUrlfragment());
+                return;
+            }
+        }
+        
 		PortalControlParameter control = new PortalControlParameter(currentURL);
-		PortletWindow actionWindow = control.getPortletWindowOfAction(reg);
+		PortletWindow actionWindow = getPortletWindowOfAction(reg, control);
 		if (actionWindow != null) {
 			log.debug("===>CONTROL='" + control.toString() + "'");
 			log.debug("===>WINDOW='" + actionWindow.toString() + "'");
@@ -157,7 +167,7 @@ public class PortalServlet extends HttpServlet {
 		try {
 			String path = extractPath(request, currentURL);
 			log.debug("===>getScreen:'" + path + "'");
-			ScreenFragment screen = SiteManagement.getScreen(path);
+			ScreenFragment screen = getScreen(path);
 			if (screen != null) {
 				reg.setScreen(screen);
 				log.debug("===>SERVICE");
@@ -172,7 +182,67 @@ public class PortalServlet extends HttpServlet {
 		log.debug("===>PortalServlet.doGet EXIT!");
 	}
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected ScreenFragment getScreen(String path) {
+        try {
+            Page page = SiteManagement.getPageFromPath(path);
+            if (page != null) {
+                Layout layout = SiteManagement.getLayout(page.getLayout());
+                ScreenFragment sf = new ScreenFragment(sc, page, layout);
+                // place portletfragments and emptyfragments in the screenfragment
+                
+                Set<String> names = layout.getNames();
+                for (Iterator iter = names.iterator(); iter.hasNext();) {
+                    String layoutId = (String) iter.next();
+                    Integer portletId = page.getPortlet(layoutId);
+                    Portlet portlet = SiteManagement.getPortlet(portletId);
+                    if (portlet != null) {
+                        PortletDefinition definition = SiteManagement.getPortletDefinition(portlet.getDefinition());
+                        View view = SiteManagement.getView(portlet.getView());
+
+                        PortletFragment pf = new PortletFragment(sc, sf, layoutId, portlet, definition, view);
+                        sf.addChild(pf);
+                    } else {
+                        createDefaultPortlet(sf, page, layoutId);
+                    }
+                }
+
+                return sf;
+            }
+        } catch (Exception e) {
+            log.error("Error while constructing screen:'" + path + "'", e);
+        }
+        return null;
+    }
+    
+    private void createDefaultPortlet(ScreenFragment sf, Page page, String layoutId) {
+        try {
+            Portlet empty = SiteManagement.getPortlet(-1);
+            PortletDefinition definition = SiteManagement.getPortletDefinition(empty.getDefinition());
+            page.addPortlet(layoutId, -1);
+            EmptyFragment ef = new EmptyFragment(sc, sf, layoutId, empty, definition);
+            sf.addChild(ef);
+        } catch (Exception e) {
+            log.error("cannot create default portlet");
+            if (log.isDebugEnabled()) {
+                log.debug(e);
+            }
+        }
+    }
+
+
+    public PortletWindow getPortletWindowOfAction(PortalRegistry registry, PortalControlParameter control) {
+        String id = control.getPortletWindowOfAction();
+        if (id != null) {
+            Fragment fragment = registry.getFragment(id);
+            if (fragment instanceof PortletFragment) {
+                return ((PortletFragment) fragment).getPortletWindow();
+            }
+        }
+        return null;
+    }
+
+    
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		service(request, response);
 	}
 
@@ -180,6 +250,14 @@ public class PortalServlet extends HttpServlet {
 		service(request, response);
 	}
 
+    private boolean shouldRedirect(PortalURL currentURL) {
+        String path = currentURL.getGlobalNavigationAsString();
+        if (!ServerUtil.useServerName() && (path == null || path.equals("") || path.equals(PATH_SP))) {
+            return true;
+        }
+        return false;
+    }
+    
 	public static boolean isNavigation(HttpServletRequest request, HttpServletResponse response) {
 		PortalEnvironment env = new PortalEnvironment(request, response, sc);
 		PortalURL currentURL = env.getRequestedPortalURL();
@@ -190,13 +268,13 @@ public class PortalServlet extends HttpServlet {
 		return SiteManagement.isNavigation(path);
 	}
     
-    private static String extractPath(HttpServletRequest request, PortalURL currentURL) {
+    protected static String extractPath(HttpServletRequest request, PortalURL currentURL) {
         String path = currentURL.getGlobalNavigationAsString();
         if (ServerUtil.useServerName()) {
-            path = request.getServerName() + "/" + path;
+            path = request.getServerName() + PATH_SP + path;
         }
         else {
-            if (path == null || path.equals("") || path.equals("/")) {
+            if (path == null || path.equals("") || path.equals(PATH_SP)) {
                 List<Site> sites = SiteManagement.getSites();
                 if (!sites.isEmpty()) {
                     path = sites.get(0).getUrlfragment();

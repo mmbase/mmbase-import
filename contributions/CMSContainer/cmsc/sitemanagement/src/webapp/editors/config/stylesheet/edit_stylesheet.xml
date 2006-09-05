@@ -4,7 +4,7 @@
 	<title xml:lang="nl">Stylesheet</title>
 	<title xml:lang="en">Stylesheet</title>
 
-	<field name="title" dtmaxlength="40">
+	<field name="title" dtmaxlength="40" dtrequired="true">
 		<prompt xml:lang="en">Title</prompt>
 		<prompt xml:lang="nl">Titel</prompt>
 	</field>
@@ -12,8 +12,13 @@
 		<prompt xml:lang="en">Description</prompt>
 		<prompt xml:lang="nl">Omschrijving</prompt>
 	</field>
-	<field name="resource" dtmaxlength="255" ftype="line">
+	<field name="resource" dtmaxlength="255" ftype="line" dtrequired="true">
 		<prompt xml:lang="en">Resource</prompt>
 		<prompt xml:lang="nl">Stylesheet</prompt>
+	</field>
+	<field name="media" ftype="enum" dtrequired="true">
+		<prompt xml:lang="en">Media</prompt>
+		<prompt xml:lang="nl">Media</prompt>
+		<optionlist select="media" />
 	</field>
 </form-schema>

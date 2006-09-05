@@ -12,7 +12,7 @@ package com.finalist.cmsc.taglib;
 import java.util.List;
 
 import com.finalist.cmsc.beans.om.ContentChannel;
-import com.finalist.cmsc.portalImpl.services.contentrepository.ContentRepository;
+import com.finalist.cmsc.services.contentrepository.ContentRepository;
 
 /**
  * List the available content channels

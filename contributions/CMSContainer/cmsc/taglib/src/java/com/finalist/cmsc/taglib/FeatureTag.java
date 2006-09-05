@@ -9,13 +9,14 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mmbase.module.Module;
+
+import com.finalist.util.module.ModuleUtil;
 
 /**
  * Check if a named CMSC feature is active or installed
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class FeatureTag extends SimpleTagSupport {
 	private static Log log = LogFactory.getLog(DumpDefaultsTag.class);
@@ -28,27 +29,13 @@ public class FeatureTag extends SimpleTagSupport {
 	public void doTag() throws JspException, IOException {
 		PageContext ctx = (PageContext) getJspContext();
 
-		boolean hasFeature = checkFeature(name);
+		boolean hasFeature = ModuleUtil.checkFeature(name);
 		if (hasFeature) {
 			JspFragment frag = getJspBody();
 			if (frag != null) {
 				frag.invoke(null);
 			}
 		}
-	}
-
-	private boolean checkFeature(String featureName) {
-		// TODO move this MMBase specific code elsewhere and call it through the
-		// service layer
-		if (featureName != null) {
-			Module mod = Module.getModule(featureName);
-			if (mod != null) {
-				if (mod.hasStarted()) {
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 
 	public void setName(String name) {

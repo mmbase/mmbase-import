@@ -37,8 +37,10 @@ import org.apache.pluto.om.portlet.PortletDefinition;
 import org.apache.pluto.om.window.PortletWindow;
 import org.apache.pluto.services.PortletContainerEnvironment;
 
+import com.finalist.cmsc.beans.om.Page;
+import com.finalist.cmsc.beans.om.Portlet;
 import com.finalist.cmsc.portalImpl.registry.PortalRegistry;
-import com.finalist.cmsc.portalImpl.services.sitemanagement.SiteManagement;
+import com.finalist.cmsc.services.sitemanagement.SiteManagementAdmin;
 import com.finalist.pluto.portalImpl.aggregation.*;
 import com.finalist.pluto.portalImpl.core.CmscPortletMode;
 import com.finalist.pluto.portalImpl.om.servlet.impl.WebApplicationDefinitionImpl;
@@ -108,7 +110,14 @@ public class PortletContainerImpl extends org.apache.pluto.PortletContainerImpl 
 				if (fragment instanceof EmptyFragment) {
 					log.debug("Can't delete empty portlets of this type.");
 				} else if (fragment instanceof PortletFragment) {
-					SiteManagement.deleteScreenPortlet(registry.getScreen(), (PortletFragment) fragment);
+                    ScreenFragment screenFragment = registry.getScreen();
+                    PortletFragment portletFragment = (PortletFragment) fragment;
+                    if (screenFragment != null && portletFragment != null) {
+                        Page page = screenFragment.getPage();
+                        Portlet portlet = portletFragment.getPortlet();
+                        String layoutId = portletFragment.getLayoutId();
+                        SiteManagementAdmin.deleteScreenPortlet(page, portlet, layoutId);
+                    }
 				} else {
 					log.debug("Can't delete portlets of this type " + fragment.getClass().getName());
 				}

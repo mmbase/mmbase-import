@@ -20,8 +20,8 @@ import javax.servlet.ServletConfig;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.finalist.pluto.portalImpl.util.Parameters;
-import com.finalist.pluto.portalImpl.util.Properties;
+import com.finalist.cmsc.services.Parameters;
+import com.finalist.cmsc.services.Properties;
 
 /**
  * * The implementation of the {@link ConfigService}. * *

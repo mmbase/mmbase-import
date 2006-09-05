@@ -9,7 +9,7 @@
 			<prompt xml:lang="en">Name</prompt>
 			<prompt xml:lang="nl">Naam</prompt>
 		</field>
-		<field name="url" dtpattern="\://|javascript\:">
+		<field name="url" dtpattern="\://|javascript\:|mailto\:">
 			<prompt xml:lang="en">Url</prompt>
 			<prompt xml:lang="nl">Url</prompt>
 		</field>

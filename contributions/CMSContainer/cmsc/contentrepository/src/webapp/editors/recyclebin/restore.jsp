@@ -5,7 +5,7 @@
 <html:html xhtml="true">
 <head>
   <title><fmt:message key="recyclebin.restore.title" /></title>
-  <link rel="stylesheet" type="text/css" href="../style.css" />
+  <link href="../css/main.css" type="text/css" rel="stylesheet" />
 </head>
 <body>
 
@@ -18,22 +18,45 @@
 	<mm:import id="contentnumber"><mm:field name="number"/></mm:import>
 </mm:node>
 
-<p><fmt:message key="recyclebin.restore.selectchannel" /></p>
-<ul>
-<mm:list referid="contentchannels">
-	<mm:import id="channelnumber"><mm:field name="number"/></mm:import>
-	
-	<mm:url page="RestoreAction.do" id="url" write="false" >
-	   <mm:param name="channelnumber" value="$channelnumber"/>
-	   <mm:param name="objectnumber" value="$contentnumber"/>
-	</mm:url>
-	<li>
-		<a href="<mm:write referid="url"/>">
-			<mm:field name="path"/>
-		</a>
-	</li>
-</mm:list>
-</ul>
+    <div class="tabs">
+        <div class="tab_active">
+            <div class="body">
+                <div>
+                    <a href="#"><fmt:message key="recyclebin.restore.title" /></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+	<div class="editor">
+		<div class="body">
+		
+			<p><fmt:message key="recyclebin.restore.selectchannel" /></p>
+			<ul>
+			<mm:list referid="contentchannels">
+				<mm:import id="channelnumber"><mm:field name="number"/></mm:import>
+				
+				<mm:url page="RestoreAction.do" id="url" write="false" >
+				   <mm:param name="channelnumber" value="$channelnumber"/>
+				   <mm:param name="objectnumber" value="$contentnumber"/>
+				</mm:url>
+				<li>
+					<a href="<mm:write referid="url"/>">
+						<mm:field name="path"/>
+					</a>
+				</li>
+			</mm:list>
+			</ul>
+			
+			<ul class="shortcuts">
+               <li class="close">
+	               <a href="#" onClick="history.back()"><fmt:message key="recyclebin.restore.back" /></a>
+				</li>
+			</ul>
+			
+		</div>
+		<div class="side_block_end"></div>
+	</div>	
 
 </mm:cloud>
 </body>

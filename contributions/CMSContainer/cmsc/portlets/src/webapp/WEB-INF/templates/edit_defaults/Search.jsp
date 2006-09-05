@@ -4,7 +4,7 @@
 <div class="portlet-config-canvas">
 <h3><fmt:message key="edit_defaults.title" /></h3>
 
-<form method="POST" action="<portlet:actionURL><portlet:param name="action" value="edit"/></portlet:actionURL>" target="_parent">
+<form method="POST" name="<portlet:namespace />form" action="<portlet:actionURL><portlet:param name="action" value="edit"/></portlet:actionURL>" target="_parent">
 
 <table class="editcontent">
    <tr>
@@ -47,6 +47,15 @@
       </td>
    </tr>
 
+	<tr>
+		<td colspan="2"><fmt:message key="edit_defaults.pagesindex" />:</td>
+		<td><cmsc:select var="pagesIndex">
+			<cmsc:option value="center" message="edit_defaults.pagesindex.center" />
+			<cmsc:option value="forward" message="edit_defaults.pagesindex.forward" />
+			<cmsc:option value="half-full" message="edit_defaults.pagesindex.half-full" />
+		</cmsc:select></td>
+	</tr>
+
    <tr>
       <td><fmt:message key="edit_defaults.indexname" />:</td>
       <td><lm:listindexes var="indexes"/>
@@ -60,7 +69,8 @@
    
    <tr>
       <td colspan="2">
-         <input type="submit" value="<fmt:message key="edit_defaults.save" />" class="button" />
+			<a href="javascript:document.forms['<portlet:namespace />form'].submit()" class="button">
+				<img src="<cmsc:staticurl page='/editors/gfx/icons/save.png'/>" alt=""/> <fmt:message key="edit_defaults.save" /></a>
       </td>
    </tr>
 </table>

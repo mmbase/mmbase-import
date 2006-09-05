@@ -6,6 +6,15 @@
        document.location.href = url;
     }
     
+   function info(objectNumber) {
+      var url = "../repository/showitem.jsp";
+      url += "?objectnumber=" + objectNumber;
+      
+      var options = 'width=500,height=500,scrollbars=yes,resizable=yes'
+      var w = window.open(url, 'viewItem', options);
+      w.focus();
+    }
+    
     function permanentDelete(objectnumber, message) {
        if (confirm(message)) {
           var url = "DeleteAction.do";

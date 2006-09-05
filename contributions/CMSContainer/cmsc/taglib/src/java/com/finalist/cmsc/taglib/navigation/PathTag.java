@@ -13,7 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.finalist.cmsc.beans.om.Page;
-import com.finalist.cmsc.portalImpl.services.sitemanagement.SiteManagement;
+import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 import com.finalist.cmsc.taglib.AbstractListTag;
 
 /**

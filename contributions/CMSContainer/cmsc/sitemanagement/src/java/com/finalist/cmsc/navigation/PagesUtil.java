@@ -39,6 +39,11 @@ public class PagesUtil {
     public static final String SECURE_FIELD = "secure";
     public static final String DESCRIPTION_FIELD = "description";
 
+    public static final String CREATIONDATE_FIELD = "creationdate";
+    public static final String LASTMODIFIEDDATE_FIELD = "lastmodifieddate";
+    public static final String LASTMODIFIER_FIELD = "lastmodifier";
+
+    
     public static final String RELATED = "related";
     public static final String LAYOUTREL = "layoutrel";
     public static final String STYLEREL = "stylerel";
@@ -102,6 +107,10 @@ public class PagesUtil {
         return createPage(cloud, name, null, layoutNode);
     }
 
+    public static Node createPage(Cloud cloud, String name, Node layout) {
+        return createPage(cloud, name, null, null, layout);
+    }
+    
     public static Node createPage(Cloud cloud, String name, String pathname, Node layout) {
         return createPage(cloud, name, pathname, null, layout);
     }

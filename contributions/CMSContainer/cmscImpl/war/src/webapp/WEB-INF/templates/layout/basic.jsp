@@ -10,40 +10,16 @@
 <c:set var="siteTitle" value="CMSContainer" />
 <c:set var="siteSubtitle" value="Architecture for Repository-based Mmbase Applications"/>
 <cmsc:screen>
+<cmsc:location var="page" sitevar="site" />
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="nl" >
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<title><c:out value="${siteTitle}"/> - <cmsc:title/></title>
-		
-		<meta name="keywords" lang="nl" content="" />
-		<meta name="description" lang="nl" content="" />
-		<meta name="author" lang="nl" content="" />
-		<meta name="copyright" lang="nl" content="Copyright &amp;copy; 2005" />
-		<meta name="date" content="" />
-		<meta name="generator" content="" />
-		<meta name="rating" http-equiv="rating" content="general" />
-		<meta name="distribution" http-equiv="distribution" content="global" />
-		<meta name="robots" http-equiv="robots" content="all" />
-		<meta name="revisit-after" http-equiv="revisit-after" content="1 week" />
-		<meta name="language" http-equiv="language" content="nl" />
-		<meta name="country" http-equiv="country" content="netherlands" />
-		
-		<link rel="schema.DC" href="http://dublincore.org/documents/dces/" />
-		<meta name="DC.Publisher" content="" />
-		<meta name="DC.Type" content="text" />
-		<meta name="DC.Format" content="text/html" />
-		<meta name="DC.Language" content="nl" />
-		<meta name="DC.Title" content="" />
-		<meta name="DC.Creator" content="" />
-		<meta name="DC.Subject" content="" />
-		<meta name="DC.Description" content="" />
-		<meta name="DC.Date" content="" />
-		<meta name="DC.Identifier" scheme="URL" content="http://" />
-		<meta name="DC.Relation.IsPartOf" content="http://" />
-		<meta name="DC.Source" content="http://" />
-		<meta name="DC.Rights" content="Copyright &amp;copy; 2005" />
+
+		<cmsc:meta dublin="true" />
+		<cmsc:headercontent meta="false" />
 
 		<link rel="home" href="<cmsc:staticurl page='/' />" title="<c:out value='${siteTitle}'/>" />
 		<link rel="contents" href="<cmsc:staticurl page='/sitemap' />" title="Sitemap" />
@@ -55,7 +31,7 @@
 		
 		<cmsc:insert-stylesheet var="stylesheet"/>
 		<c:forEach var="style" items="${stylesheet}">
-			<link rel="stylesheet" type="text/css" href="<cmsc:staticurl page='/${style.resource}'/>" />
+			<link rel="stylesheet" type="text/css" href="<cmsc:staticurl page='/${style.resource}'/>" media="${style.media}"/>
 		</c:forEach>
 		<script src="<cmsc:staticurl page='/menu.js'/>" type="text/javascript"><!-- Browser --></script>
 		

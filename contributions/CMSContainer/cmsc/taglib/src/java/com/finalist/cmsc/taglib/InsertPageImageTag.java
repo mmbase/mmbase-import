@@ -9,7 +9,7 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.finalist.cmsc.portalImpl.services.sitemanagement.SiteManagement;
+import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 
 public class InsertPageImageTag extends CmscTag {
 	
