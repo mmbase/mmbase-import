@@ -8,9 +8,10 @@
       xmlns:mm-cal="urn:jsptagdir:/WEB-INF/tags/mm/calendar"     
 
   -->      
-  <jsp:directive.page buffer="100kb" />
+  <jsp:directive.page buffer="100kb" import="com.ibm.icu.text.*,java.util.*" />
   <mm:import externid="language">client</mm:import>
   <mm:import externid="timezone"></mm:import>
+  <mm:import externid="mode">weektable</mm:import>
   <mm:write request="language" referid="language" />
   <mm:write request="timezone" referid="timezone" />
   <mm:content type="application/xhtml+xml"
@@ -19,37 +20,45 @@
               postprocessor="none" expires="0">
     <head>
        <link href="style.css" rel="stylesheet" title="Normaal" type="text/css" media="screen" />
+       <style>
+         <mm-cal:css />
+         .time {
+           position: absolute;
+           left: 0px;
+           right: 0px;
+         }
+       </style>
     </head>
     <body>
       <mm:cloud method="asis">        
         <mm-cal:localeSelector />
         <mm:hasrank value="anonymous" inverse="true">
-          <mm:link page="logout.jspx" referids="language,timezone">
-            <a href="${_}">
-              <mm:cloudinfo type="user" />
-            </a>
-          </mm:link>
+          <mm:link page="logout.jspx" referids="language,timezone"><a href="${_}"><mm:cloudinfo type="user" /></a></mm:link>
         </mm:hasrank>
         <mm:hasrank value="anonymous">
-          <mm:link page="login.jspx" referids="language,timezone">
-            <a href="${_}">log in</a>
-          </mm:link>
+          <mm:link page="login.jspx" referids="language,timezone"><a href="${_}">log in</a></mm:link>
         </mm:hasrank>
         <div>
-          <mm:link page="hours.jspx" referids="language,timezone">
-            <a href="${_}">h</a>
-          </mm:link>
+          <mm:link page="hours.jspx" referids="language,timezone"><a href="${_}">h</a></mm:link>
         </div>
         
-        <mm-cal:monthsOverview referids="language,timezone" dateFormat=":FULL" stop="true">
-          <jsp:attribute name="item">
-            <mm:include referids="day,dayend" page="item.jspx" />
-          </jsp:attribute>
-          <jsp:attribute name="newItem">
+        <mm-cal:monthsOverview 
+            newItemUrl="newItem.jspx"
+            referids="language,timezone" 
+            buttons="/buttons"
+            mode="${mode}"
+            stop="true"
+            first="0"
+            maxMonth="2"
+            dateFormat="dd MMM" >
+          <!--
+          <jsp:attribute name="newItem">           
             <mm:link page="newItem.jspx" referids="noon@day,language,timezone">
-              <a href="${_}">+</a>
+              <jsp:text>+</jsp:text>
             </mm:link>
           </jsp:attribute>
+          -->
+          <mm:include page="item.jspx" />
         </mm-cal:monthsOverview>
       </mm:cloud>
     </body>

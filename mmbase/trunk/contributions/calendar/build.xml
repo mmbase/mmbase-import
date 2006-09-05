@@ -15,7 +15,7 @@
     </antcall>
 
     <echo message="${project.jars.dir}${project.jars.includes}" />
-    <copy file="${icu.file}" todir="${project.jar.dir}" preservelastmodified="true" />
+    <copy file="${icu.dest}" todir="${project.jar.dir}" preservelastmodified="true" />
   </target>
 
 
