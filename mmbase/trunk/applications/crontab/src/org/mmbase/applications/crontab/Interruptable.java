@@ -15,6 +15,7 @@ import org.mmbase.util.logging.*;
  * if the job does sleeps (InterruptedException) or check Thread.isInterrupted().
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
+ * @version $Id: Interruptable.java,v 1.3 2006-09-05 16:24:06 michiel Exp $
  */
 
 public class Interruptable implements Runnable {
@@ -22,8 +23,8 @@ public class Interruptable implements Runnable {
     private Thread runThread = null;
     private Date   startTime;
     private final Runnable runnable;
-    private final Collection collection;
-    public Interruptable(Runnable run, Collection col) {
+    private final Collection<Interruptable> collection;
+    public Interruptable(Runnable run, Collection<Interruptable> col) {
         runnable = run;
         collection = col;
     }

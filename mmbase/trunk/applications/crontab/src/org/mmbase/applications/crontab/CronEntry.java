@@ -16,7 +16,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronEntry.java,v 1.6 2006-08-30 18:07:28 michiel Exp $
+ * @version $Id: CronEntry.java,v 1.7 2006-09-05 16:24:06 michiel Exp $
  */
 
 public class CronEntry {
@@ -56,7 +56,7 @@ public class CronEntry {
 
     private CronJob cronJob;
 
-    private List threads = Collections.synchronizedList(new ArrayList());
+    private List<Interruptable> threads = Collections.synchronizedList(new ArrayList());
 
     private final String id;
     private final String name;
@@ -111,9 +111,7 @@ public class CronEntry {
 
     public void stop() {
         synchronized(threads) {
-            Iterator i = threads.iterator();
-            while (i.hasNext()) {
-                Interruptable thread = (Interruptable) i.next();
+            for(Interruptable thread : threads) {
                 thread.interrupt();
             }
         }
@@ -125,11 +123,11 @@ public class CronEntry {
     public Interruptable getThread(int i) {
         synchronized(threads) {
             if (threads.size() <= i) return null;
-            return (Interruptable) threads.get(i);
+            return threads.get(i);
         }
     }
-    public List getThreads() {
-        return new ArrayList(threads);
+    public List<Interruptable> getThreads() {
+        return new ArrayList<Interruptable>(threads);
     }
     /**
      * @since MMBase-1.8
