@@ -23,7 +23,7 @@ import org.mmbase.bridge.*;
  * This class makes a tag which can list the fields of a NodeManager.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldListTag.java,v 1.54 2006-07-17 15:38:47 johannes Exp $
+ * @version $Id: FieldListTag.java,v 1.55 2006-09-05 11:55:01 michiel Exp $
  */
 public class FieldListTag extends FieldReferrerTag implements ListProvider, FieldProvider, QueryContainerReferrer {
 
@@ -42,6 +42,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     protected Attribute  retain = Attribute.NULL;
     protected Attribute  remove = Attribute.NULL;
     private  Attribute comparator = Attribute.NULL;
+    private  Attribute varStatus = Attribute.NULL;
 
     public int size(){
         return returnList.size();
@@ -147,6 +148,9 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
 
     public void setComparator(String c) throws JspTagException {
         comparator = getAttribute(c);
+    }
+    public void setVarStatus(String s) throws JspTagException {
+        varStatus = getAttribute(s);
     }
 
 

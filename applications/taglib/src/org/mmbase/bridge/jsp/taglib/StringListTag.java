@@ -22,7 +22,7 @@ import org.mmbase.bridge.jsp.taglib.util.*;
  * This class makes a tag which can list strings.
  *
  * @author Michiel Meeuwissen
- * @version $Id: StringListTag.java,v 1.32 2006-07-28 11:31:22 michiel Exp $
+ * @version $Id: StringListTag.java,v 1.33 2006-09-05 11:55:01 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -37,6 +37,8 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
     protected Attribute  add= Attribute.NULL;
     protected Attribute  retain = Attribute.NULL;
     protected Attribute  remove = Attribute.NULL;
+    protected Attribute  varStatus = Attribute.NULL;
+    protected String varStatusName = null;
 
     public int size(){
         return returnList.size();
@@ -86,6 +88,14 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
     }
 
     /**
+     * @since MMBase-1.9
+     */
+    public void setVarStatus(String s) throws JspTagException {
+        varStatus = getAttribute(s);
+    }
+
+
+    /**
      * Lists do implement ContextProvider
      */
     private   ContextCollector collector;
@@ -124,7 +134,7 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
     public int doStartTag() throws JspTagException{
 
         collector = new ContextCollector(getContextProvider());
-
+        varStatusName = (String) varStatus.getValue(this);
 
         helper.overrideWrite(false); // default behavior is not to write to page
 
@@ -199,6 +209,9 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
             getContextProvider().getContextContainer().unRegister(getId());
         }
 
+        if (varStatusName != null) {
+            getContextProvider().getContextContainer().unRegister(varStatusName);
+        }
 
         helper.doAfterBody();
         collector.doAfterBody();
@@ -254,6 +267,9 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
         helper.setValue(iterator.next());
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), helper.getValue());
+        }
+        if (varStatusName != null) {
+            getContextProvider().getContextContainer().register(varStatusName, getLoopStatus());
         }
     }
 
