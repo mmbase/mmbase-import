@@ -24,9 +24,9 @@ public class CronDaemon extends TimerTask {
 
     private static CronDaemon cronDaemon;
     private Timer cronTimer;
-    private Set cronEntries;
-    private Set removedCronEntries;
-    private Set addedCronEntries;
+    private Set<CronEntry> cronEntries;
+    private Set<CronEntry> removedCronEntries;
+    private Set<CronEntry> addedCronEntries;
 
     /**
      * CronDaemon is a Singleton. This makes the one instance and starts the Thread.
@@ -42,10 +42,8 @@ public class CronDaemon extends TimerTask {
      * Finds in given set the CronEntry with the given id.
      * @return a CronEntry if found, <code>null</code> otherwise.
      */
-    protected static CronEntry getById(Set set, String id) {
-        Iterator i = set.iterator();
-        while (i.hasNext()) {
-            CronEntry entry = (CronEntry)i.next();
+    protected static CronEntry getById(Set<CronEntry> set, String id) {
+        for (CronEntry entry : set) {
             if (entry.getId().equals(id))
                 return entry;
         }
@@ -125,9 +123,7 @@ public class CronDaemon extends TimerTask {
         log.info("Stopping CronDaemon");
         cronTimer.cancel();
         cronTimer = null;
-        Iterator i = cronEntries.iterator();
-        while (i.hasNext()) {
-            CronEntry entry = (CronEntry)i.next();
+        for (CronEntry entry : cronEntries) {
             entry.stop();
         }
     }
@@ -161,9 +157,9 @@ public class CronDaemon extends TimerTask {
             }
 
             // remove jobs which were scheduled for removal
-            Iterator z = removedCronEntries.iterator();
+            Iterator<CronEntry> z = removedCronEntries.iterator();
             while (z.hasNext()) {
-                CronEntry entry = (CronEntry)z.next();
+                CronEntry entry = z.next();
                 if (entry.isAlive()) {
                     if (log.isDebugEnabled()) {
                         log.debug("Job " + entry + " still running, so could not yet be removed");
@@ -179,10 +175,8 @@ public class CronDaemon extends TimerTask {
                 }
             }
             // start jobs which need starting on this minute
-            z = cronEntries.iterator();
-            while (z.hasNext()) {
+            for (CronEntry entry : cronEntries) {
                 if (Thread.currentThread().isInterrupted()) return;
-                CronEntry entry = (CronEntry)z.next();
                 if (entry.mustRun(currentMinute)) {
                     if (entry.kick()) {
                         if (log.isDebugEnabled()) {
@@ -201,7 +195,7 @@ public class CronDaemon extends TimerTask {
     /**
      * @since MMBase-1.8
      */
-    public Set getEntries() {
+    public Set<CronEntry> getEntries() {
         return Collections.unmodifiableSet(cronEntries);
     }
 
