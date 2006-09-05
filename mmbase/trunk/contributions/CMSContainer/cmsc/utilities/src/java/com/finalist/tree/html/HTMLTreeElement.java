@@ -47,7 +47,7 @@ public class HTMLTreeElement extends TreeElement {
         StringBuffer buffer = new StringBuffer();
         if (icon != null) {
             buffer.append("<img src='" + imageBase + icon
-                    + "' alt='' border='0' align='middle' valign='middle'/> ");
+                    + "' alt='' border='0' align='top' valign='top'/> ");
         }
 
         buffer.append("<span id=\"treespan_" + id + "\"");

@@ -23,8 +23,7 @@
 <div class="content_block_pink">
 	<div class="header">
 	   <div class="title">
-			<bean:write name="RolesForm" property="name"/>
-			(<bean:write name="RolesForm" property="description"/>)	   	
+			<bean:write name="RolesForm" property="name"/>   	
 		</div>
 		<div class="header_end"></div>
 	</div>
@@ -62,17 +61,17 @@ RolesInfo info = form.getRolesInfo();
 	for (NodeIterator iter = SiteUtil.getSites(cloud).nodeIterator(); iter.hasNext();) {
 	    Node site = iter.nextNode();
 	   	NavigationTreeModel model = new NavigationTreeModel(site);
-		SiteRolesRenderer chr = new SiteRolesRenderer(cloud, form);
+		SiteRolesRenderer chr = new SiteRolesRenderer(request, cloud, form);
 	   	ServerHTMLTree t = new ServerHTMLTree(model, chr, info, "javascript");
-	   	t.setImgBaseUrl("../img/");
+	   	t.setImgBaseUrl("../gfx/");
 	   	t.render(out);
 	}
 %>
 </p>
 </div>
 <br>
-<html:submit style="width:90"><fmt:message key="siteroles.submit"/></html:submit>
 <html:cancel style="width:90"><fmt:message key="siteroles.cancel"/></html:cancel>
+<html:submit style="width:90"><fmt:message key="siteroles.submit"/></html:submit>
 </div>
 <div class="side_block_end"></div>
 </div>	

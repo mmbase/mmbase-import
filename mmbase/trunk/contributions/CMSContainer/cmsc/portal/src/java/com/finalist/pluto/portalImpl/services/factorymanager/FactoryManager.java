@@ -21,7 +21,7 @@ package com.finalist.pluto.portalImpl.services.factorymanager;
 
 import org.apache.pluto.factory.Factory;
 
-import com.finalist.pluto.portalImpl.services.ServiceManager;
+import com.finalist.cmsc.services.ServiceManager;
 
 /**
  * Manages the life-time of factories registered during container startup. A

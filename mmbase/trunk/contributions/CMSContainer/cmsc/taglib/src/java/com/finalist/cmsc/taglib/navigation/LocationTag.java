@@ -17,7 +17,7 @@ import javax.servlet.jsp.PageContext;
 
 import com.finalist.cmsc.beans.om.Page;
 import com.finalist.cmsc.beans.om.Site;
-import com.finalist.cmsc.portalImpl.services.sitemanagement.SiteManagement;
+import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 import com.finalist.cmsc.taglib.CmscTag;
 
 /**
@@ -27,7 +27,7 @@ import com.finalist.cmsc.taglib.CmscTag;
  * 
  * @author Wouter Heijke
  * @author R.W. van 't Veer
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class LocationTag extends CmscTag {
 
@@ -48,9 +48,8 @@ public class LocationTag extends CmscTag {
 		PageContext ctx = (PageContext) getJspContext();
 		HttpServletRequest req = (HttpServletRequest) ctx.getRequest();
 
-		Page result = null;
 		String path = getPath();
-		result = SiteManagement.getPageFromPath(path);
+        Page result = SiteManagement.getPageFromPath(path);
 
 		// handle result
 		if (result == null) {

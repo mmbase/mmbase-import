@@ -11,7 +11,7 @@ package com.finalist.cmsc.navigation.forms;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -19,6 +19,8 @@ import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 
 import com.finalist.cmsc.navigation.NavigationUtil;
+import com.finalist.cmsc.security.SecurityUtil;
+import com.finalist.cmsc.security.UserRole;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
 
 
@@ -36,10 +38,11 @@ public class PageDelete extends MMBaseFormlessAction {
     	if (isRemoveAction(request)) {
             String objectnumber = getParameter(request, "number", true);
             Node pageNode = cloud.getNode(objectnumber);
-    		// TODO in the current situation the delete button is not present
-    		// when a page has children so this check has no use. Also there is
-    		// no pagedeletewarning.jsp view
-    		if (NavigationUtil.getChildCount(pageNode) > 0) {
+
+            UserRole role = NavigationUtil.getRole(pageNode.getCloud(), pageNode, false);
+            boolean isWebMaster = (role != null && SecurityUtil.isWebmaster(role));
+            
+    		if (NavigationUtil.getChildCount(pageNode) > 0 && !isWebMaster) {
     		    return mapping.findForward("pagedeletewarning");
     		}
 			NavigationUtil.deletePage(pageNode);

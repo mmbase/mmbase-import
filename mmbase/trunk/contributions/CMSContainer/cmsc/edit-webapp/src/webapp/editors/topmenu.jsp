@@ -7,6 +7,9 @@
       <title><fmt:message key="topmenu.title" /></title>
       <script type="text/javascript" src="topmenu.js"></script>
       <link rel="stylesheet" type="text/css" href="css/main.css" />
+     <style type="text/css">
+        body { behavior: url(./css/hover.htc);}
+     </style>
    </head>
    <body onload="initMenu();">
       <mm:cloud loginpage="login.jsp" rank="basic user">

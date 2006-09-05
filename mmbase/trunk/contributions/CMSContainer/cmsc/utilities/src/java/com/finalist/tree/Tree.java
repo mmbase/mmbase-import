@@ -13,7 +13,7 @@ public class Tree {
 
     private TreeModel model;
     private TreeInfo info;
-    private String imgBaseUrl = "editors/img/";
+    private String imgBaseUrl = "editors/gfx/";
 
     public Tree(TreeModel model, TreeInfo info) {
         this.model = model;

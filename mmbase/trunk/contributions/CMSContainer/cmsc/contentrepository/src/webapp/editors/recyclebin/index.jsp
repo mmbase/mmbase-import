@@ -6,11 +6,19 @@
 <html:html xhtml="true">
 <head>
   <title><fmt:message key="recyclebin.title" /></title>
-	<link href="../css/main.css" type="text/css" rel="stylesheet" />
+  <link href="../css/main.css" type="text/css" rel="stylesheet" />
   <script src="recyclebin.js" type="text/javascript"></script>
-  <script src="../utils/rowhover.js" type="text/javascript"></script>
+	<script type="text/javascript" src="../utils/window.js"></script>
+	<script type="text/javascript">
+		function refreshChannels() {
+			refreshFrame('channels');
+			if (window.opener) {
+				window.close();
+			}
+		}
+	</script>
 </head>
-<body>
+<body onload="refreshChannels()">
     <div class="tabs">
         <div class="tab_active">
             <div class="body">
@@ -68,43 +76,26 @@
 						          </fmt:message>
 							   </mm:node>
 				               <mm:import id="lastotype" reset="true"><mm:write referid="otype"/></mm:import>
-                               <mm:import id="newotype">true</mm:import>
 
            					   <table class="listcontent">
 				        	</mm:compare>
 
-        					<mm:url page="../repository/showitem.jsp" id="url" write="false" >
-           						<mm:param name="objectnumber" value="$number"/>
-        					</mm:url>
-					        <tr class="itemrow" onMouseOver="objMouseOver(this);"
-			                    onMouseOut="objMouseOut(this);"
-            			        href="<mm:write referid="url"/>"><td onMouseDown="objClickPopup(this, 500, 500);">
+					        <tr class="itemrow"><td>
 					           <mm:field name="number"/>
 					        </td>
 
-							<% if (RepositoryUtil.hasDeletionChannels(node)) { %>
-						      <td style="padding:0px">
-						      	<a href="javascript:restore('<mm:field name="number" />');">
-						      		<img src="../gfx/icons/restore.png" width="15" height="15" alt="<fmt:message key="recyclebin.restore" />"/>
-						      	</a>
-						      </td>
-					        <% } %>
-					        <td style="padding:0px">
-					        	<a href="javascript:permanentDelete('<mm:field name="number" />', '<fmt:message key="recyclebin.removeconfirm" />');">
-					        		<img src="../gfx/icons/delete.png" width="15" height="15" alt="<fmt:message key="recyclebin.remove" />"/>
-					        	</a>
+					        <td style="padding:0px" nowrap>
+					        	<a href="javascript:info('<mm:field name="number" />')"><img src="../gfx/icons/info.png" width="16" height="16" alt="<fmt:message key="recyclebin.info" />"/></a>
+					        	<a href="javascript:permanentDelete('<mm:field name="number" />', '<fmt:message key="recyclebin.removeconfirm" />');"><img src="../gfx/icons/delete.png" width="16" height="16" alt="<fmt:message key="recyclebin.remove" />"/></a>
+							  <% if (RepositoryUtil.hasDeletionChannels(node)) { %>
+						      	<a href="javascript:restore('<mm:field name="number" />');"><img src="../gfx/icons/restore.png" width="16" height="16" alt="<fmt:message key="recyclebin.restore" />"/></a>
+					          <% } %>
 					        </td>
 
-					        <td onMouseDown="objClickPopup(this, 500, 500);" width="100%">
+					        <td width="100%">
 					           <mm:field name="title"/>
 					        </td>
 
-					        <mm:present referid="newotype">
-					           <td></td>
-					        </mm:present>
-					
-					        <mm:remove referid="newotype"/>
-					
 					        <mm:last>
 					           <mm:compare referid="lastotype" value="" inverse="true">
 					              </tr></table>

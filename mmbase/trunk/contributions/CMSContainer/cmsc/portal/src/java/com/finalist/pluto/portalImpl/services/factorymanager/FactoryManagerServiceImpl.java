@@ -33,7 +33,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.pluto.factory.Factory;
 import org.apache.pluto.util.StringUtils;
 
-import com.finalist.pluto.portalImpl.util.Properties;
+import com.finalist.cmsc.services.Properties;
 
 /**
  * Manages the life-time of factories registered during container startup. A

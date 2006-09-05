@@ -39,7 +39,4 @@ function selectMenuByUrl(url) {
          selectMenu(listItem);
       }
    }
-   else {
-      alert('listItem div not found');
-   }
 }

@@ -28,13 +28,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.pluto.om.window.PortletWindow;
 
-import com.finalist.pluto.portalImpl.aggregation.Fragment;
-
 /**
  * PortalURL to accomodate CMSC's filter/servlet setup.
  * @changes pluto-1.0.1
  * @author Wouter Heijke
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class PortalURL {
 	private static Log log = LogFactory.getLog(PortalURL.class);
@@ -97,7 +95,7 @@ public class PortalURL {
 	 * Creates and URL pointing to the home of the portal
 	 * 
 	 * @param env the portal environment
-	 */
+	 */  
 	public PortalURL(PortalEnvironment env) {
 		environment = env;
 	}
@@ -109,28 +107,6 @@ public class PortalURL {
 	 */
 	public PortalURL(HttpServletRequest request) {
 		this(PortalEnvironment.getPortalEnvironment(request));
-	}
-
-	/**
-	 * Creates and URL pointing to the given fragment of the portal
-	 * 
-	 * @param request the servlet request
-	 * @param pointTo the fragment to point to
-	 */
-	public PortalURL(HttpServletRequest request, Fragment pointTo) {
-		this(request);
-		pointTo.createURL(this);
-	}
-
-	/**
-	 * Creates and URL pointing to the given fragment of the portal
-	 * 
-	 * @param env the portal environment
-	 * @param pointTo the fragment to point to
-	 */
-	public PortalURL(PortalEnvironment env, Fragment pointTo) {
-		this(env);
-		pointTo.createURL(this);
 	}
 
 	/**
@@ -361,6 +337,13 @@ public class PortalURL {
 		// * control information
 		if (environment.getRequest().getServletPath() != null) {
 			String pathInfo = environment.getRequest().getServletPath();
+            if (environment.getRequest().getAttribute("javax.servlet.error.request_uri") != null) {
+                pathInfo = (String) environment.getRequest().getAttribute("javax.servlet.error.request_uri");
+                if (environment.getRequest().getContextPath() != null 
+                        && !environment.getRequest().getContextPath().equals("/")) {
+                    pathInfo = pathInfo.substring(environment.getRequest().getContextPath().length());
+                }
+            }
 			StringTokenizer tokenizer = new StringTokenizer(pathInfo, "/");
 
 			int mode = 0; // 0=navigation, 1=control information

@@ -18,7 +18,7 @@
 				<div class="title"><mm:nodeinfo type="guitype"/>: <mm:field name="title" /></div>
 				<div class="header_end"></div>
 			</div>
-			<div style="clear:both"></div>
+	      <div class="body">
             <table class="listcontent">
                <mm:field name="number">
                <tr>
@@ -33,7 +33,7 @@
                </tr>
                </mm:fieldlist> 
             </table>
-         
+
             <table class="listcontent">
                <tr>
                   <td>
@@ -81,6 +81,23 @@
                      </td>
                   </tr>
                </mm:isempty>
+               <mm:relatednodes type="contentchannel" role="deletionrel">
+                  <mm:first>
+	                  <tr>
+	                     <td>
+	                        <hr />
+	                        <fmt:message key="showchannels.deleted">
+	                        	<fmt:param><mm:write referid="objectnumber" /></fmt:param>
+	                        </fmt:message>
+	                     </td>
+	                  </tr>
+	              </mm:first>
+                  <tr>
+                     <td>
+                        <b><mm:field name="path" /></b>
+                     </td>
+                  </tr>
+               </mm:relatednodes>
             </table>
             <br />
 			<ul class="shortcuts">
@@ -88,8 +105,7 @@
 	               <a href="#" onClick="window.close()"><fmt:message key="showitem.close" /></a>
 				</li>
 			</ul>
-            
-            
+			</div>
 			<div class="side_block_end"></div>
 		</div>
             

@@ -47,7 +47,6 @@ import java.util.*;
  * </pre>
  *
  * @author R.W. van 't Veer
- * @version $Revision: 1.2 $
  */
 public class PropertiesDocumentStructure implements DocumentStructure {
     /** set to keep tag names */

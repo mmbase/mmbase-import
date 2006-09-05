@@ -5,24 +5,40 @@
 <html:html xhtml="true">
 	<head>
 		<title><fmt:message key="channeldelete.title" /></title>
-		<link href="../style.css" type="text/css" rel="stylesheet" />
+		<link href="../css/main.css" type="text/css" rel="stylesheet" />
 		<style type="text/css">
 			input { width: 100px;}
 		</style>
 	</head>
 	<mm:import externid="number" required="true" from="parameters" />
 	<mm:cloud jspvar="cloud" rank="basic user" method='http'>
-		<body>
-		<h2><fmt:message key="channeldelete.title" /></h2>
-		<h3><fmt:message key="channeldelete.subtitle" /> <mm:node
-			referid="number">
-			<mm:field name="name" />
-		</mm:node></h3>
-		<fmt:message key="channeldelete.confirm" />
-		<form action="?">
-			<input type="hidden" name="number" value="<mm:write referid="number"/>" /> 
-			<input type="submit" name="remove" value="<fmt:message key="channeldelete.yes" />" />
-		</form>
+		<div class="side_block_green">
+			<!-- bovenste balkje -->
+			<div class="header">
+				<div class="title"><fmt:message key="channeldelete.title" /></div>
+				<div class="header_end"></div>
+			</div>
+			
+			<div class="body"><p>
+		
+				<fmt:message key="channeldelete.subtitle" /> 
+				<mm:node referid="number">
+					<b><mm:field name="name" /></b>
+				</mm:node>
+				<br/>
+				<br/>
+				
+				<fmt:message key="channeldelete.confirm" />
+				<br/>
+				<form action="?">
+					<input type="hidden" name="number" value="<mm:write referid="number"/>" /> 
+					<input type="submit" name="remove" value="<fmt:message key="channeldelete.yes" />" />
+               <input type="button" onClick="document.location.href='Content.do?parentchannel=<mm:write referid="number"/>&direction=down'" value="<fmt:message key="channeldelete.no" />"/>
+				</form>
+
+			</p></div>
+			<div class="side_block_end"></div>
+		</div>
 		</body>
 	</mm:cloud>
 	</html:html>

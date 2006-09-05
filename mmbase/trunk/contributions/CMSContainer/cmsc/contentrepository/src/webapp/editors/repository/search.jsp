@@ -18,6 +18,7 @@
                  com.finalist.cmsc.repository.RepositoryUtil,
                  java.util.ArrayList"%>
 <mm:import id="searchinit"><c:url value='/editors/repository/SearchInitAction.do'/></mm:import>
+<mm:import externid="action">search</mm:import><%-- either: search, link, of select --%>
 <mm:import externid="mode" id="mode">basic</mm:import>
 <mm:import externid="returnurl"/>
 <mm:import externid="linktochannel"/>
@@ -60,7 +61,7 @@
    <div class="editor">
    <br />
          <%-- If we want to link content: --%>
-         <mm:compare referid="linktochannel" value="" inverse="true">
+         <mm:compare referid="action" value="link">
             <div class="ruler_red"><div><fmt:message key="searchform.link.title"/></div></div>
             <mm:notpresent referid="results">
                <fmt:message key="searchform.link.text.step1" ><fmt:param ><mm:node number="${linktochannel}"> <mm:field name="name"/></mm:node></fmt:param></fmt:message>
@@ -68,6 +69,8 @@
             <mm:present referid="results">
                <fmt:message key="searchform.link.text.step2" ><fmt:param ><mm:node number="${linktochannel}"> <mm:field name="name"/></mm:node></fmt:param></fmt:message>
             </mm:present>
+            <br />
+            <br />
             <mm:present referid="returnurl">
                <a href="<mm:url page="${returnurl}"/>" title="<fmt:message key="locate.back" />" class="button"><fmt:message key="locate.back" /></a>
             </mm:present>
@@ -77,9 +80,9 @@
          </mm:compare>
 
       <html:form action="/editors/repository/SearchAction" method="post">
+         <html:hidden property="action" value="${action}"/>
          <html:hidden property="mode"/>
          <html:hidden property="search" value="true"/>
-         <html:hidden property="parentchannel"/>
          <html:hidden property="linktochannel"/>
          <html:hidden property="offset"/>
          <html:hidden property="order"/>
@@ -89,14 +92,16 @@
          <table>
             <tr>
                <td><fmt:message key="searchform.title" /></td>
-               <td colspan="3"><html:text property="title" size="60"/></td>
+               <td colspan="3"><html:text property="title" style="width:200px"/></td>
                <td><fmt:message key="searchform.contenttype" /></td>
                <td>
                   <html:select property="contenttypes" onchange="selectContenttype('${searchinit}');" >
-                     <html:option value="contentelement">contentelement</html:option>
+                     <html:option value="contentelement">&lt;<fmt:message key="searchform.contenttypes.all" />&gt;</html:option>
                      <html:optionsCollection name="typesList" value="value" label="label"/>
                   </html:select>
-                  <input type="submit" class="button" name="submitButton" onclick="setOffset(0);" value="<fmt:message key="searchform.submit" />"/>
+                  <mm:compare referid="mode" value="advanced" inverse="true">
+                     <input type="submit" class="button" name="submitButton" onclick="setOffset(0);" value="<fmt:message key="searchform.submit" />"/>
+                  </mm:compare>
                </td>
             </tr>
 
@@ -253,12 +258,18 @@
                   <td>
                   </td>
                   <td></td>
-                  <td><fmt:message key="searchform.select.channel" /></td>
                   <td>
+                     <mm:compare referid="action" value="link">
+	                  	<fmt:message key="searchform.select.channel" />
+	                 </mm:compare>
+                  </td>
+                  <td>
+                     <mm:compare referid="action" value="link">
                      <html:hidden property="parentchannel" />
-                     <input type="text" name="parentchannelpath" value="" disabled value="..."/><br />
-                     <a href="#" onClick="window.open('select/SelectorChannel.do', 'select', 'width=300,height=600')"><img src="/nijmegen-webapp/editors/gfx/icons/select.png" alt="<fmt:message key="searchform.select.channel" />"></a>
-                     <a href="#" onClick="selectChannel('', '');" ><img src="/nijmegen-webapp/editors/gfx/icons/erase.png" alt="<fmt:message key="searchform.clear.channel.button" />"></a>
+                        <input type="text" name="parentchannelpath" value="" disabled value="..."/><br />
+                        <a href="#" onClick="window.open('select/SelectorChannel.do', 'select', 'width=300,height=600')"><img src="/nijmegen-webapp/editors/gfx/icons/select.png" alt="<fmt:message key="searchform.select.channel" />"></a>
+                        <a href="#" onClick="selectChannel('', '');" ><img src="/nijmegen-webapp/editors/gfx/icons/erase.png" alt="<fmt:message key="searchform.clear.channel.button" />"></a>
+                     </mm:compare>
                   </td>
                </tr>
                <tr>
@@ -284,17 +295,27 @@
    </mm:isempty>
 
    <%-- Now print the results --%>
+   <mm:node number="<%= RepositoryUtil.ALIAS_TRASH %>">
+	   <mm:field id="trashnumber" name="number" write="false"/>
+   </mm:node>
    <mm:list referid="results">
       <mm:first>
          <%@include file="searchpages.jsp" %>
+
+
+            <mm:compare referid="action" value="link" >
+                  <form action="LinkToChannelAction.do" name="linkForm">
+                     <input type="submit" class="button" value="<fmt:message key="searchform.link.submit" />"/>
+            </mm:compare>
+
           <table>
             <thead>
                <tr>
                   <th>
-                     <mm:compare referid="linktochannel" value="" inverse="true">
-                        <form action="LinkToChannelAction.do" name="linkForm">
+                     <mm:compare referid="action" value="link" >
                         <input type="hidden" name="channelnumber" value="<mm:write referid="linktochannel"/>" />
                         <input type="hidden" name="channel" value="<mm:write referid="linktochannel"/>" />
+                        <mm:present referid="returnurl"><input type="hidden" name="returnurl" value="<mm:write referid="returnurl"/>"/></mm:present>
                         <input type="checkbox" onChange="selectAll(this.checked, 'linkForm', 'link_');" value="on" name="selectall" />
                      </mm:compare>
                   </th>
@@ -310,28 +331,45 @@
       </mm:first>
 
       <tr <mm:even inverse="true">class="swap"</mm:even>>
-         <td width="75">
-            <mm:compare referid="linktochannel" value="">
+         <td nowrap width="60">
+	        <%-- also show the edit icon when we return from an edit wizard! --%>
+         	<mm:write referid="action" jspvar="action" write="false"/>
+         	<c:if test="${action == 'search' || action == 'save' || action == 'cancel'}">
                 <a href="<mm:url page="../WizardInitAction.do">
                                           <mm:param name="objectnumber"><mm:field name="${contenttypes}.number" /></mm:param>
                                           <mm:param name="returnurl" value="<%="../editors/repository/SearchAction.do" + request.getAttribute("geturl")%>" />
                                        </mm:url>">
-                   <img src="../gfx/icons/page_edit.png" /></a>
-            </mm:compare>
-            <mm:compare referid="linktochannel" value="" inverse="true">
+                   <img src="../gfx/icons/page_edit.png" title="<fmt:message key="searchform.icon.edit.title" />" /></a>
+			</c:if>
+            <mm:compare referid="action" value="link">
                <input type="checkbox" value="<mm:field name="${contenttypes}.number"/>" name="link_<mm:field name="${contenttypes}.number"/>" onClick="document.forms['linkForm'].elements.selectall.checked=false;"/>
             </mm:compare>
-            <a href="#" oncLick="showItem(<mm:field name="${contenttypes}.number"/>);" ><img src="../gfx/icons/info.png" /></a>
+            <mm:compare referid="action" value="select">
+               <a href="#" onClick="selectElement('<mm:field name="${contenttypes}.number" />', '<mm:field name="${contenttypes}.title" />', '<cmsc:staticurl page="/content/" /><mm:field name="${contenttypes}.number"/>');">
+                   <img src="../gfx/icons/link.png" title="<fmt:message key="searchform.icon.select.title" />" /></a>
+            </mm:compare>
+            <a href="#" oncLick="showItem(<mm:field name="${contenttypes}.number"/>);" ><img src="../gfx/icons/info.png"  title="<fmt:message key="searchform.icon.info.title" />" /></a>
             <mm:field name="${contenttypes}.number"  write="false" id="nodenumber">
-               <a href="<cmsc:contenturl number="${nodenumber}"/>" target="_blanc"><img src="../gfx/icons/preview.png" /></a>
-
+               <a href="<cmsc:contenturl number="${nodenumber}"/>" target="_blanc"><img src="../gfx/icons/preview.png" title="<fmt:message key="searchform.icon.preview.title" />" /></a>
             </mm:field>
          </td>
-         <td><mm:field name="${contenttypes}.otype" id="otype"><mm:node number="${otype}"><mm:field name="name" /></mm:node></mm:field></td>
-         <td><mm:field name="${contenttypes}.title"/></td>
          <mm:field name="${contenttypes}.number" id="number">
             <mm:node number="${number}">
-               <td width="50"><mm:relatednodes role="creationrel" type="contentchannel"><mm:field name="name"/></mm:relatednodes></td>
+               <td>
+            	  <mm:nodeinfo type="guitype"/>
+               </td>
+               <td><mm:field name="title"/></td>
+               <td width="50">
+                  <mm:relatednodes role="creationrel" type="contentchannel">
+                     <mm:field name="number" id="creationnumber" write="false"/>
+                     <mm:compare referid="trashnumber" referid2="creationnumber">
+                     	<fmt:message key="search.trash" />
+                     </mm:compare>
+                     <mm:compare referid="trashnumber" referid2="creationnumber" inverse="true">
+	                     <mm:field name="name"/>
+	                 </mm:compare>
+                  </mm:relatednodes>
+               </td>
                <td width="50"><mm:field name="lastmodifier" /></td>
             </mm:node>
          </mm:field>

@@ -14,7 +14,7 @@ import java.util.List;
 
 import com.finalist.cmsc.beans.om.Page;
 import com.finalist.cmsc.beans.om.Site;
-import com.finalist.cmsc.portalImpl.services.sitemanagement.SiteManagement;
+import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 
 /**
  * List the available Pages

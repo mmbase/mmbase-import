@@ -1,17 +1,25 @@
 .portalcontrols {
 	position:fixed;
-	top: 0px;
-	left: 0px;
-	width: 150px;
-	background-color: #ccc;
+	top: 2px;
+	left: 250px;
+	background-color: #fff;
+	border: 1px solid black;
+}
+
+.portalcontrols div {
+	height: 100%;
+	font-size: 7pt;
+	padding-top: 2px;
+	padding-left: 2px;
+	padding-right: 2px;
+	float: left;
 }
 
 * html .portalcontrols {
 	position:absolute;
-	left: expression( ( 0 + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' );
+	left: expression( ( 250 + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' );
 	top: expression( ( 0 + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
-	width: 150px;
-	background-color: #ccc;
+	background-color: #fff;
 }
 
 .portlet-config-canvas h2
@@ -71,8 +79,7 @@ html>.portlet-config-canvas
 .portlet-mode-canvas {
 	z-index: 2000;
 	background-color: #ffffff;
-	border-style: solid;
-	border-width: 1px;
+	border: 1px solid black;
 	position: absolute;
 	padding: 1px;
 	text-align: left;
@@ -147,7 +154,7 @@ a.portal_button:hover, input.portal_button:hover
   font-weight: normal;
   text-align: left;
   letter-spacing: 0.05em;
-  width: 100px;
+  width: 150px;
 }
 
 .portalcontrols input {
@@ -156,7 +163,7 @@ a.portal_button:hover, input.portal_button:hover
   font-weight: normal;
   text-align: middle;
   letter-spacing: 0.05em;
-  width: 50px;
+  width: 85px;
 }
 
 
@@ -166,19 +173,24 @@ a.portal_button:hover, input.portal_button:hover
 .k-type-edit {
 }
 
-.portlet-mode-type-view {
-}
-
 table.editcontent {
 	font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
-	padding: 2px 4px 2px 4px;
+	padding: 1px;
 	text-align:	left;
 	vertical-align:	top;
-	border-width: 1px; 
-	border-style: solid;
+	border-width: 0px; 
 	width: 100%;
 }
+
+table.editcontent tr td {
+	padding: 0px;
+	vertical-align:	bottom;
+}
+
+table.editcontent tr td select option {
+	background-color: #ffffff;
+} 
 
 table.editcontent tr td input, 
 table.editcontent tr td textarea, 
@@ -188,11 +200,30 @@ table.editcontent tr td select  {
   font-weight: normal;
   text-align: left;
   letter-spacing: 0.05em;
-  width: 100%;
+  width: 200px;
 }
 
-table.editcontent tr td input.button {
-  width: 50%;
+table.editcontent tr td input {
+	padding-left: 5px;
+}
+
+table.editcontent tr td input:disabled {
+	color: #666666;
+	background-color: #ffffff;
+}
+
+table.editcontent tr td a.button {
+	border: 1px outset black;
+	background-color: #e0e0e0;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	padding: 1px;
+	width: 100px;
+	text-align: center;
+}
+
+table.editcontent tr td a.button img {
+	vertical-align: middle;
 }
 
 /**
@@ -204,7 +235,8 @@ table.editcontent tr td h3,
 table.editcontent tr td h4,
 table.editcontent tr td h5,
 table.editcontent tr td h6  {         
-        padding-left: 3px;
+		margin-top: 10px;
+		margin-bottom: 0px;
         text-align: left;
         font-weight: bold; 
 }
@@ -241,6 +273,7 @@ table.editcontent tr td input,
 table.editcontent tr td textarea,
 table.editcontent tr td select {
 	color: black;
+	border: 1px solid #cccccc;
 }
 
 table.editcontent {

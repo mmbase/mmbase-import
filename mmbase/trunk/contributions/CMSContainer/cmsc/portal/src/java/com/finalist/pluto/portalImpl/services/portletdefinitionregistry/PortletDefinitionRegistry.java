@@ -23,7 +23,7 @@ import org.apache.pluto.om.common.ObjectID;
 import org.apache.pluto.om.portlet.PortletApplicationDefinitionList;
 import org.apache.pluto.om.portlet.PortletDefinition;
 
-import com.finalist.pluto.portalImpl.services.ServiceManager;
+import com.finalist.cmsc.services.ServiceManager;
 
 /**
  * This class is a static accessor for a <code>PortletRegistryService</code>

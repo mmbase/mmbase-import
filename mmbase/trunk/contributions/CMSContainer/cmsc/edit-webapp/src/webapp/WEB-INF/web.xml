@@ -140,6 +140,18 @@
       <servlet-class>com.finalist.cmsc.portalImpl.PortletServlet</servlet-class>
       <load-on-startup>3</load-on-startup>
    </servlet>
+
+    <servlet>
+        <servlet-name>CmscPortalErrorServlet</servlet-name>
+        <display-name>Pluto Driver</display-name>
+        <servlet-class>com.finalist.cmsc.portalImpl.PortalErrorServlet</servlet-class>
+        <init-param>
+            <param-name>charset</param-name>
+            <param-value>utf-8</param-value>
+        </init-param>
+        <load-on-startup>4</load-on-startup>
+    </servlet>
+
     
     <servlet>
         <servlet-name>CmscRedirectServlet</servlet-name>
@@ -250,6 +262,10 @@
 		<servlet-name>CmscRedirectServlet</servlet-name>
 		<url-pattern>/content/*</url-pattern>
 	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>CmscPortalErrorServlet</servlet-name>
+		<url-pattern>/PortalError</url-pattern>
+	</servlet-mapping>
 	<!-- Standard Action Servlet Mapping -->
 	<servlet-mapping>
 		<servlet-name>action</servlet-name>
@@ -290,37 +306,31 @@
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
 
-<!--
 	<error-page>
 		<error-code>400</error-code>
-		<location>/error/400.jsp</location>
+		<location>/PortalError</location>
 	</error-page>
--->
 	<!-- cloud login method http sends a 401 with an autheticate request -->
 	<!--error-page>
 		<error-code>401</error-code>
 		<location>/error/401.jsp</location>
 	</error-page-->
-<!--
 	<error-page>
 		<error-code>403</error-code>
-		<location>/error/403.jsp</location>
+		<location>/PortalError</location>
 	</error-page>
 	<error-page>
 		<error-code>404</error-code>
-		<location>/error/404.jsp</location>
+		<location>/PortalError</location>
 	</error-page>
--->
 	<error-page>
 		<exception-type>java.lang.Throwable</exception-type>
-		<location>/error/500.jsp</location>
+		<location>/PortalError</location>
 	</error-page>
-<!--
 	<error-page>
 		<error-code>500</error-code>
-		<location>/error/500.jsp</location>
+		<location>/PortalError</location>
 	</error-page>
--->
 
 	<resource-ref>
 		<description>Mail resource for MMBase</description>

@@ -10,6 +10,7 @@
    <relation destination="portlet" role="definitionrel" >
       <object type="portlet">
          <relation destination="portletparameter" role="parameterrel" />
+         <relation destination="view" role="viewrel" />
       </object>
    </relation>
    <relation destination="view" role="allowrel" />

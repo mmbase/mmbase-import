@@ -93,14 +93,16 @@ Object.extend(Ajax.InPlaceHtmlEditor.prototype, {
     }
     this.form.appendChild(this.editField);
       if (this.options.htmlarea) {
-        var xinha_plugins = createDefaultPlugins;
+        var xinha_plugins = ['CharacterMap','ContextMenu','TableOperations'];
+        HTMLArea.loadPlugins(xinha_plugins, xinha_init);
         var xinha_config = createDefaultConfig();
-        var editor = new HTMLArea(textArea, HTMLArea.cloneObject(xinha_config));
+        var editor = new HTMLArea(this.editField, HTMLArea.cloneObject(xinha_config));
+        xinha_editors = HTMLArea.makeEditors(editor, xinha_config, xinha_plugins);
         editor.registerPlugins(xinha_plugins);
-		editor.config.width = this.elementWidth;
-		editor.config.height = this.elementHeight;
-		editor.config.sizeIncludesToolbar = false;
-		editor.generate();
+        editor.config.width = this.elementWidth;
+        editor.config.height = this.options.minHeight > this.elementHeight ? this.options.minHeight: this.elementHeight;
+        editor.config.sizeIncludesBars = false;
+        editor.generate();
 	  }
   }
 });

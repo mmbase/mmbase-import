@@ -17,7 +17,8 @@ import javax.portlet.*;
 import com.finalist.cmsc.beans.om.PortletDefinition;
 import com.finalist.cmsc.beans.om.View;
 import com.finalist.cmsc.portalImpl.PortalConstants;
-import com.finalist.cmsc.portalImpl.services.sitemanagement.SiteManagement;
+import com.finalist.cmsc.services.sitemanagement.SiteManagement;
+import com.finalist.cmsc.services.sitemanagement.SiteManagementAdmin;
 import com.finalist.pluto.portalImpl.core.CmscPortletMode;
 
 /**
@@ -51,7 +52,7 @@ public class PortletSelectPortlet extends CmscPortlet {
             String selectedPortlet = request.getParameter(PORTLET);
             if (selectedPortlet != null) {
                 // add portlet to screen
-                SiteManagement.setScreenPortlet(screenId, selectedPortlet, layoutId);
+                SiteManagementAdmin.setScreenPortlet(screenId, selectedPortlet, layoutId);
                 response.setPortletMode(CmscPortletMode.VIEW);
             }
         } else if (action.equals("create")) {
@@ -59,7 +60,7 @@ public class PortletSelectPortlet extends CmscPortlet {
             if (definitionName != null) {
                 String viewId = request.getParameter(VIEW);
                 String instanceName = screenId + "_" + layoutId;
-                SiteManagement.createScreenPortlet(screenId, instanceName, definitionName, layoutId, viewId);
+                SiteManagementAdmin.createScreenPortlet(screenId, instanceName, definitionName, layoutId, viewId);
                 response.setPortletMode(CmscPortletMode.EDIT_DEFAULTS);
             }
         } else {

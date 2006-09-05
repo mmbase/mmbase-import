@@ -5,14 +5,27 @@
 <html:html xhtml="true">
 <head>
   <title><fmt:message key="unlinkcreation.title" /></title>
-  <link rel="stylesheet" type="text/css" href="../style.css" />
+  <link href="../css/main.css" type="text/css" rel="stylesheet" />
+  
   <script src="content.js" type="text/javascript"></script>
   <script src="../utils/window.js" type="text/javascript"></script>
-  <script src="../utils/rowhover.js" type="text/javascript"></script>
 </head>
 <body>
 
 <mm:cloud jspvar="cloud" rank="basic user" method='http'>
+<div class="tabs">
+    <div class="tab_active">
+        <div class="body">
+            <div>
+                <a href="#"><fmt:message key="unlinkcreation.title" /></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="editor">
+	<div class="body">
+
 
 <mm:import externid="content" vartype="Node"/>
 <mm:import externid="creationchannel" vartype="Node"/>
@@ -29,7 +42,7 @@
 <mm:node referid="content">
 	<mm:import id="contentnumber"><mm:field name="number"/></mm:import>
 
-	<fmt:message key="unlinkcreation.message">
+ 	<fmt:message key="unlinkcreation.message">
 		<fmt:param><mm:nodeinfo type="type" /></fmt:param>
 		<fmt:param><mm:field name="title"/></fmt:param>
 	</fmt:message>
@@ -38,7 +51,7 @@
 <p>
 <fmt:message key="unlinkcreation.selectchannel" />
 </p>
-<ul>
+<ul class="shortcuts">
 <mm:list referid="contentchannels">
 	<mm:import id="channelnumber"><mm:field name="number"/></mm:import>
 	
@@ -53,13 +66,12 @@
            </mm:present>
         </mm:url>
         <li>
-        <a href="<mm:write referid="url"/>">
-			<mm:field name="path"/>
-		</a>
+	        <a href="<mm:write referid="url"/>">
+				<mm:field name="path"/>
+			</a>
 		</li>
 	</mm:compare>
 </mm:list>
-</ul>
 
 <mm:node referid="trashchannel">
 	<mm:import id="trashnumber"><mm:field name="number"/></mm:import>
@@ -69,13 +81,16 @@
 		<mm:param name="objectnumber" value="$contentnumber"/>
 		<mm:param name="destionationchannel" value="$trashnumber"/>
 	</mm:url>
-	<p>
-	<a href="<mm:write referid="trashurl"/>">
-		<fmt:message key="unlinkcreation.remove" />
-		<img src="../img/trashcan.gif" width="15" height="15" alt="<fmt:message key="unlinkcreation.remove" />"/>
-	</a>
-	</p>
+	<li class="trashbin">
+		<a href="<mm:write referid="trashurl"/>"><fmt:message key="unlinkcreation.remove" /></a>
+	</li>
 </mm:node>
+
+</ul>
+	</div>
+	<div class="side_block_end"></div>
+</div>	
+
 
 </mm:cloud>
 </body>

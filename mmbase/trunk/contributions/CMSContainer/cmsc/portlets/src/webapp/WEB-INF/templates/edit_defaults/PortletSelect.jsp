@@ -4,7 +4,7 @@
 <c:if test="${not empty portlets}">
 	<h3><fmt:message key="edit_defaults.selectportlet" /></h3>
 	
-	<form method="post" target="_parent"
+	<form name="<portlet:namespace />select_form" method="post" target="_parent"
 		action="<portlet:actionURL><portlet:param name="action" value="edit"/></portlet:actionURL>">
 	<table class="editcontent">
 		<tr>
@@ -20,9 +20,9 @@
 			</td>
 		</tr>
 		<tr>
-			<td></td>
-			<td>
-				<input type="submit" value="<fmt:message key="edit_defaults.select" />" />
+			<td colspan="2">
+				<a href="javascript:document.forms['<portlet:namespace />select_form'].submit()" class="button">
+					<img src="<cmsc:staticurl page='/editors/gfx/icons/save.png'/>" alt=""/> <fmt:message key="edit_defaults.select" /></a>
 			</td>
 		</tr>
 	</table>
@@ -31,7 +31,7 @@
 
 <c:if test="${not empty definitions}">
 	<h3><fmt:message key="edit_defaults.createportlet" /></h3>
-	<form method="post" target="_parent"
+	<form name="<portlet:namespace />create_form" method="post" target="_parent"
 		action="<portlet:actionURL><portlet:param name="action" value="create"/></portlet:actionURL>">
 	
 	<table class="editcontent">
@@ -93,9 +93,9 @@
 			</td>
 		</tr>
 		<tr>
-			<td></td>
-			<td>
-				<input type="submit" value="<fmt:message key="edit_defaults.create" />" />
+			<td colspan="2">
+				<a href="javascript:document.forms['<portlet:namespace />create_form'].submit()" class="button">
+					<img src="<cmsc:staticurl page='/editors/gfx/icons/save.png'/>" alt=""/> <fmt:message key="edit_defaults.create" /></a>
 			</td>
 		</tr>
 	</table>

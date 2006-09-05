@@ -4,7 +4,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
 <head>
-<link href="../style.css" type="text/css" rel="stylesheet"/>
+<link href="../css/main.css" type="text/css" rel="stylesheet" />
 <title><fmt:message key="sitedelete.title" /></title>
 <style type="text/css">
 input { width: 100px;}
@@ -13,13 +13,27 @@ input { width: 100px;}
 <mm:import externid="number" required="true" from="parameters"/>
 <mm:cloud jspvar="cloud" rank="administrator" loginpage="../login.jsp">
 <body>
-	<h2><fmt:message key="sitedelete.title" /></h2>
-	<h3><fmt:message key="sitedelete.subtitle" /> <mm:node referid="number"> <mm:field name="title"/> </mm:node> </h3>
-	<fmt:message key="sitedelete.confirm" />
-	<form action="?">
-   	<input type="hidden" name="number" value="<mm:write referid="number"/>" />
-   	<input type="submit" name="remove" value="<fmt:message key="sitedelete.yes" />"/>&nbsp;
-	</form>
+
+<div class="side_block_green">
+	<!-- bovenste balkje -->
+	<div class="header">
+		<div class="title"><fmt:message key="sitedelete.title" /></div>
+		<div class="header_end"></div>
+	</div>
+	
+	<div class="body"><p>
+		<fmt:message key="sitedelete.subtitle" /> <mm:node referid="number"><b><mm:field name="title"/></b></mm:node>
+		<br/>
+		<br/>
+		<fmt:message key="sitedelete.confirm" />
+		<br/>
+		<form action="?">
+	   	<input type="hidden" name="number" value="<mm:write referid="number"/>" />
+	   	<input type="submit" name="remove" value="<fmt:message key="sitedelete.yes" />"/>&nbsp;
+		</form>
+	</p></div>
+	<div class="side_block_end"></div>
+</div>
 </body>
 </mm:cloud>
 </html:html>

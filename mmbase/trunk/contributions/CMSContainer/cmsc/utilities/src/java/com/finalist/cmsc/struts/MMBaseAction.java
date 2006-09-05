@@ -205,6 +205,10 @@ public abstract class MMBaseAction extends Action {
     public static void addToRequest(HttpServletRequest request, String name, Collection value) {
         request.setAttribute(name, value);
     }
+
+    public static void addToRequest(HttpServletRequest request, String name, Map value) {
+        request.setAttribute(name, value);
+    }
     
     protected void removeFromSession(HttpServletRequest request, ActionForm form) {
         HttpSession session = request.getSession();

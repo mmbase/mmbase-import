@@ -10,10 +10,10 @@
 <%@page import="org.mmbase.bridge.Cloud"%>
 <html>
 <head>
-<link href="../css/main.css" type="text/css" rel="stylesheet" />
+<link href="../css/main.css" type="text/css" rel="stylesheet"/>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Upload attachments</title>
-  <script language="javascript">
+  <script language="javascript" type="text/javascript">
     function upload() {
         var f=document.forms[0];
         f.submit();
@@ -54,7 +54,7 @@
                       <td><fmt:message key="attachments.upload.explanation" /></td>
                    </tr>
                    <tr>
-                      <td><input type="file" name="zipfile"></input></td>
+                      <td><input type="file" name="zipfile"/></td>
                    </tr>
                    <tr>
                       <td><input type="button" name="uploadButton" onclick="upload();" 
@@ -69,27 +69,67 @@
             uploading... Please wait.<br />
         </div>
 <%
+    // retrieve list op node id's from either the recent upload
+    // or from the request url to enable a return url
+    // TODO move this to a struts action there are some issue with HttpUpload
+    // in combination with struts which have to be investigated first
+    String uploadedNodes = "";
+    int numberOfUploadedNodes = -1;
     if ("post".equalsIgnoreCase(request.getMethod())) {
         NodeManager manager = cloud.getNodeManager("attachments");
-        int count = BulkUploadUtil.uploadAndStore(manager, request);
-%>
-        <table border="0">
-            <tr>
-                <td>
-                    <% if (count == 0) { %>
-                        <fmt:message key="attachments.upload.error"/>
-                    <% } else { %>
-                        <fmt:message key="attachments.upload.result">
-                            <fmt:param value="<%= count %>"/>
-                        </fmt:message>
-                    <% } %>
-                </td>
-            </tr>
-        </table>
-      </div>
-<%
+        List<Integer> nodes = BulkUploadUtil.uploadAndStore(manager, request);
+        uploadedNodes = BulkUploadUtil.convertToCommaSeparated(nodes);
+        numberOfUploadedNodes = nodes.size();
+    } else {
+        if (request.getParameter("uploadedNodes") != null) {
+            uploadedNodes = request.getParameter("uploadedNodes");
+        }
+        if (request.getParameter("numberOfUploadedNodes") != null) {
+            numberOfUploadedNodes = Integer.parseInt(request.getParameter("numberOfUploadedNodes"));
+        }
     }
 %>
+
+<% if (numberOfUploadedNodes == 0) { %>
+    <p><fmt:message key="attachments.upload.error"/></p>
+<% } else if (numberOfUploadedNodes > 0) { %>
+    <p><fmt:message key="attachments.upload.result">
+           <fmt:param value="<%= numberOfUploadedNodes %>"/>
+       </fmt:message>
+    </p>
+         <table>
+            <tr class="listheader">
+               <th></th>
+               <th nowrap="true"><fmt:message key="attachmentsearch.titlecolumn" /></th>
+               <th><fmt:message key="attachmentsearch.filenamecolumn" /></th>
+            </tr>
+            <tbody class="hover">
+                <c:set var="useSwapStyle">true</c:set>
+
+                <mm:listnodescontainer path="attachments" nodes="<%= uploadedNodes %>">
+                    <mm:listnodes>
+
+                    <mm:import id="url">javascript:selectElement("<mm:field name="number"/>", "<mm:field name="title"/>");</mm:import>
+                    <tr <c:if test="${useSwapStyle}">class="swap"</c:if> href="<mm:write referid="url"/>">
+                       <td>
+                        <%-- use uploadedNodes and numberOfUploadedNodes in return url --%>
+                        <a href="<mm:url page="../WizardInitAction.do">
+                                     <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
+                                     <mm:param name="returnurl" value="<%="../editors/resources/attachmentupload.jsp?uploadedNodes=" + uploadedNodes + "&numberOfUploadedNodes=" + numberOfUploadedNodes%>" />
+                                 </mm:url>">
+                              <img src="../gfx/icons/page_edit.png" /></a>
+                       </td>
+                       <td><mm:field name="title"/></td>
+                       <td><mm:field name="filename"/></td>
+                    </tr>
+                    <c:set var="useSwapStyle">${!useSwapStyle}</c:set>
+                    </mm:listnodes>
+                </mm:listnodescontainer>
+
+            </tbody>
+         </table>
+<% } %>
+</div>
 </div>
 </mm:cloud>
 </body>

@@ -35,7 +35,6 @@ import java.util.*;
  * </UL>
  *
  * @author R.W. van 't Veer
- * @version $Revision: 1.2 $
  */
 public class XMLBS {
 

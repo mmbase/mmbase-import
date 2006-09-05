@@ -2,7 +2,7 @@
 <html:html xhtml="true">
 	<head>
 		<title><fmt:message key="channelrefresh.title" /></title>
-		<link href="../style.css" type="text/css" rel="stylesheet"/>
+		<link href="../css/main.css" type="text/css" rel="stylesheet" />
 		<script type="text/javascript" src="../utils/window.js"></script>
 		<script type="text/javascript">
 			function refreshChannels() {

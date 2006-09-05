@@ -61,6 +61,7 @@
       <relation from="site" to="typedef" type="allowrel" />
       <relation from="mmbasegroups" to="page" type="rolerel" />
       <relation from="view" to="typedef" type="allowrel" />
+      <relation from="contentelement" to="page" type="posrel" />
    </allowedrelationlist>
 
 

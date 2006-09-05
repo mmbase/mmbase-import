@@ -1,1 +1,1 @@
-build build cmsc tools cmscImpl && build deploy-tomcat cmscImpl
+build build cmsc cmscImpl && build deploy-tomcat cmscImpl

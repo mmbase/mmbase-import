@@ -57,6 +57,42 @@
 		<description>Container for protected content</description>
 	</tag>
 	<tag>
+		<name>headercontent</name>
+		<tag-class>com.finalist.cmsc.taglib.HeaderContentTag</tag-class>
+		<body-content>scriptless</body-content>
+		<description>Injects content from portlets in the header of the page</description>
+		<attribute>
+			<name>meta</name>
+			<description>Add meta tags</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>javascript</name>
+			<description>Add meta tags</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>style</name>
+			<description>Add meta tags</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>meta</name>
+		<tag-class>com.finalist.cmsc.taglib.MetaTag</tag-class>
+		<body-content>scriptless</body-content>
+		<description>Add meta information in the header of the page</description>
+		<attribute>
+			<name>dublin</name>
+			<description>Add dublin core meta tags</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
 		<name>list-pages</name>
 		<tag-class>com.finalist.cmsc.taglib.ListPagesTag</tag-class>
 		<body-content>scriptless</body-content>

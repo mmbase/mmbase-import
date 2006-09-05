@@ -7,35 +7,49 @@
 <html:html xhtml="true">
 	<head>
 		<title><fmt:message key="content.title" /></title>
-		<link rel="stylesheet" type="text/css" href="../../style.css" />
-		<script src="../content.js" type="text/javascript"></script>
+	    <link href="../../css/main.css" type="text/css" rel="stylesheet" />
+	<style type="text/css">
+		body {
+			behavior: url(../../css/hover.htc);
+		}
+	</style>
+		<script src="content.js" type="text/javascript"></script>
 		<script src="../../utils/window.js" type="text/javascript"></script>
-		<script src="../../utils/rowhover.js" type="text/javascript"></script>
 		<script type="text/javascript">
 			function selectElement(element, title, url) {
 				window.top.opener.selectElement(element, title, url);
 				window.top.close();
 			}
 		</script>
+	  <script type="text/javascript" src="../../utils/transparent_png.js" ></script>
 	</head>
 	<body>
 <mm:cloud jspvar="cloud" rank="basic user" loginpage="../../login.jsp">
 	  <mm:import externid="parentchannel" jspvar="parentchannel" vartype="Integer" from="parameters" required="true"/>
 
 <mm:node number="$parentchannel" jspvar="parentchannelnode">
-   <table style="width: 100%;">
-	  <tr>
-		 <td>
-		 	 <fmt:message key="content.channel" >
-			 	<fmt:param ><mm:field name="name"/></fmt:param>
-			 </fmt:message>
-			 <br />
-		 </td>
-	  </tr>
-   </table>
-   
-   <hr/>
-	  <fmt:message key="content.content" /><br/>
+
+    <div class="tabs">
+        <div class="tab_active">
+            <div class="body">
+                <div>
+                    <a href="#"><fmt:message key="content.title" /></a>
+                </div>
+            </div>
+        </div>
+    </div>
+	<div class="editor">
+		<div class="body">
+		
+	<p>
+		<fmt:message key="content.channel" >
+		 	<fmt:param ><mm:field name="name"/></fmt:param>
+		 </fmt:message>	
+	</p>
+
+	<div style="clear:both; height:10px;"></div>
+
+    <div class="ruler_green"><div><fmt:message key="content.content" /></div></div>
 	  <mm:import id="lastotype"/>
 	 
 
@@ -68,13 +82,16 @@
 		   <table class="listcontent">
 		</mm:compare>
 
-		<mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<mm:field name="title"/>', '<cmsc:staticurl page="/content/" /><mm:field name="number"/>');</mm:import>
-		<tr class="itemrow" onMouseOver="objMouseOver(this);"
-					onMouseOut="objMouseOut(this);"
-					href="<mm:write referid="url"/>"><td onMouseDown="objClick(this);">
+		<tr>
+		<td>
 		   <mm:field name="number"/>
 		</td>
-		<td onMouseDown="objClick(this);" width="100%">
+		<td nowrap>
+        	<a href="javascript:info('<mm:field name="number" />')"><img src="../../gfx/icons/info.png" width="16" height="16" alt="<fmt:message key="content.info" />"/></a>
+			<mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<mm:field name="title"/>', '<cmsc:staticurl page="/content/" /><mm:field name="number"/>');</mm:import>
+        	<a href="<mm:write referid="url"/>"><img src="../../gfx/icons/link.png" width="16" height="16" alt="<fmt:message key="content.link" />"/></a>
+		</td>
+		<td width="100%">
 		   <mm:field name="title"/>
 		</td>
 		<mm:present referid="newotype">
@@ -94,6 +111,11 @@
 
 	</mm:listnodes>
 </mm:relatednodescontainer>
+
+
+		</div>
+		<div class="side_block_end"></div>
+	</div>	
 </mm:node>
 </mm:cloud>
 	</body>

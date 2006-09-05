@@ -21,8 +21,8 @@ package com.finalist.pluto.portalImpl.services.config;
 
 import java.util.Iterator;
 
-import com.finalist.pluto.portalImpl.services.Service;
-import com.finalist.pluto.portalImpl.util.Parameters;
+import com.finalist.cmsc.services.Parameters;
+import com.finalist.cmsc.services.Service;
 
 /**
  * * The <CODE>ConfigService</CODE> holds the basic portal * configuration. * *

@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package com.finalist.cmsc.taglib;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
@@ -74,17 +75,21 @@ public class ScreenTag extends CmscTag {
 		return page.getTitle();
 	}
 
-	protected Fragment getPortlet(String layoutId) {
+	protected PortletFragment getPortlet(String layoutId) {
         Iterator portlets = screenFragment.getChildFragments().iterator();
 		while(portlets.hasNext()) {
 			Fragment fragment = (Fragment) portlets.next();
             if (fragment instanceof PortletFragment) {
                 PortletFragment pf = (PortletFragment) fragment;
                 if (pf.getLayoutId().equals(layoutId)) {
-                    return fragment;
+                    return pf;
                 }
 			}
 		}
 		return null;
 	}
+    
+    protected Collection getAllPortlets() {
+        return screenFragment.getChildFragments();
+    }
 }

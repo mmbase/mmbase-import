@@ -20,7 +20,7 @@ import com.finalist.cmsc.struts.TreePasteForm;
 public class PasteForm extends TreePasteForm {
 
     protected boolean isAllowed(Cloud cloud, Node page) {
-        UserRole role = NavigationUtil.getRoleForUser(cloud, page, false);
+        UserRole role = NavigationUtil.getRole(cloud, page, false);
         return SecurityUtil.isChiefEditor(role); 
     }
 

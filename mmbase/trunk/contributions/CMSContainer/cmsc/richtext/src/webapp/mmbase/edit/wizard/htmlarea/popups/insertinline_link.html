@@ -108,17 +108,17 @@ function onCancel() {
 };
 
 function onElement() {
-  openPopupWindow('../../../../../editors/repository/select/index.jsp','filterwindow2',800,650);
+  openPopupWindow('../../../../../editors/repository/select/index.jsp','filterwindow2',750,550);
   return false;
 };
 
 function onAttachment() {
-  openPopupWindow('../../../../../editors/resources/AttachmentInitAction.do','filterwindow2',800,650);
+  openPopupWindow('../../../../../editors/resources/AttachmentInitAction.do','filterwindow2',750,550);
   return false;
 };
 
 function onUrl() {
-  openPopupWindow('../../../../../editors/resources/UrlInitAction.do','filterwindow2',800,650);
+  openPopupWindow('../../../../../editors/resources/UrlInitAction.do','filterwindow2',750,550);
   return false;
 };
 
@@ -159,7 +159,7 @@ function selectElement(element_id, title, url) {
 function openPopupWindow(url, windowName, width, height) {
    debug = false;
    if (!width) {w = 750;} else { w = width; }
-   if (!height) {h = 750;} else { h = height; }
+   if (!height) {h = 550;} else { h = height; }
    var left = (screen.availWidth - w)/2;
    var top = (screen.availHeight - h)/2;
    if (screen.availWidth < w) {
