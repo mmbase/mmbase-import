@@ -58,7 +58,7 @@
     <field name="stop">
       <gui>
         <guiname xml:lang="en">Stop time</guiname>
-        <guiname xml:lang="nl">Eindttijd</guiname>
+        <guiname xml:lang="nl">Eindtijd</guiname>
         <guiname xml:lang="eo">Fintemp</guiname>
       </gui>
       <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="datetime">
@@ -84,13 +84,9 @@
         <guiname xml:lang="nl">Type</guiname>
         <guiname xml:lang="eo">Tipo</guiname>
       </gui>
-      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="string">
-        <default value="event1" />
-        <maxLength value="255" />
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="node">
         <enumeration>
-          <entry display="event1" value="event1" />
-          <entry display="event2" value="event2" />
-          <entry display="event3" value="event3" />
+          <query type="calendar_item_types" xmlns="http://www.mmbase.org/xmlns/searchquery" />
         </enumeration>
       </datatype>
     </field>
@@ -99,6 +95,22 @@
         <guiname xml:lang="en">Location</guiname>
         <guiname xml:lang="nl">Locatie</guiname>
         <guiname xml:lang="eo">Loko</guiname>
+      </gui>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="line">
+        <maxLength value="255" />
+      </datatype>
+    </field>
+    <field name="time">
+      <descriptions>
+        <description xml:lang="en">Alternative time-indication (free text). Can e.g. be used for events for several days.</description>
+        <description xml:lang="nl">Alternatieve tijd-indicatie (free-text). Is bijvoorbeeld te gebruiken als het het over een meerdaags iets gaat, dan kan hier de tijd per dag staan.</description>
+        <description xml:lang="eo">Alternative tempoindiko (liberforma). Uzeblas ekz. ĉe plurtagaj okazoj, tiaokaze ĉi-kampo povas estis plenigata per la ĉiutaga ektempo aŭ simila.</description>
+      </descriptions>
+
+      <gui>
+        <guiname xml:lang="en">Time</guiname>
+        <guiname xml:lang="nl">Tijdstip</guiname>
+        <guiname xml:lang="eo">Tempo</guiname>
       </gui>
       <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="line">
         <maxLength value="255" />

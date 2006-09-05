@@ -1,8 +1,26 @@
+html { 
+  background-color: white;
+}
 .mm_calendar { 
   background-color: white;
   color: black;
 }
 
+.mm_weektable { 
+  
+}
+.mm_calendar table.mm_weektable td { 
+}
+.mm_calendar  table.mm_weektable { 
+  border: solid black 1px;
+}
+
+.mm_calendar h1 { 
+  white-space: nowrap;
+}
+
+.mm_calendar th {
+}
 .mm_calendar td { 
   font-size: small;
   vertical-align: top;
@@ -17,9 +35,34 @@
 
 }
 
+table.mm_calendar  { 
+  table-layout: fixed;
+  width: 1500px;
+}
+th.navigate { 
+  width: 10px;
+}
+
+.mm_calendar td, .mm_calendar th { 
+}
 .mm_calendar .Saturday, .mm_calendar .Sunday { 
   background-color: #ccc;
 }
+.mm_calendar .January, .March, .May, .July, .September, .November { 
+  background-color: #ffd;
+}
+.mm_calendar .February, .April, .June, .August, .October, .December { 
+  background-color: #dfd;
+}
+
+/* only works in safari..
+.Monday, .Wednesday, .Friday, .Sunday { 
+  background: rgba(255, 255, 255, 0.2);
+}
+.mm_calendar .February, .April, .June, .August, .October, .December .Monday, .Wednesday, .Friday, .Sunday { 
+  background-color: #efe;
+}
+*/
 
 
 .event1 { 
@@ -36,7 +79,7 @@
 }
 ul { 
   margin-left: 0px;
-  padding-left: 10px;
+  padding-left: 0px;
 }
 li { 
   list-style-type: none;
