@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.374 2006-08-22 11:21:42 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.375 2006-09-05 11:55:01 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -533,6 +533,17 @@ version: $Id: mmbase-taglib.xml,v 1.374 2006-08-22 11:21:42 michiel Exp $
 a,b,c,d,e,c,d,e,f / c,d,e / a,b
       </pre>
     </example>
+    <attribute>
+      <name>varStatus</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <since>MMBase-1.9</since>
+      <info>
+        <p>
+          Like varStatus of <a href="http://java.sun.com/products/jsp/jstl/1.1/docs/tlddocs/c/forEach.html">c:forEach</a>.
+        </p>
+      </info>
+    </attribute>
   </taginterface>
   <taginterface>
     <name>condition</name>
