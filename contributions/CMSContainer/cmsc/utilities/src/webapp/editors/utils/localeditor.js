@@ -1,4 +1,24 @@
 var InPlaceEditor = {}
+var xinha_config;
+var xinha_plugins;
+
+var inplaceeditor_xinha_init;
+
+inplaceeditor_xinha_init = inplaceeditor_xinha_init ? inplaceeditor_xinha_init : function() {
+  xinha_plugins = [
+   'CharacterMap',
+   'ContextMenu',
+//   'ListType',
+//   'FullScreen',
+//   'SpellChecker',
+//   'Stylist',
+//   'SuperClean',
+   'TableOperations'
+  ];
+  // THIS BIT OF JAVASCRIPT LOADS THE PLUGINS, NO TOUCHING  :)
+  if(!HTMLArea.loadPlugins(xinha_plugins, inplaceeditor_xinha_init)) return;
+  xinha_config = createDefaultConfig();
+}
 
 InPlaceEditor.Local = Class.create();
 InPlaceEditor.Local.defaultHighlightColor = "#FFFF99";
@@ -41,6 +61,10 @@ InPlaceEditor.Local.prototype = {
     
     if (this.options.externalControl) {
       this.options.externalControl = $(this.options.externalControl);
+    }
+
+    if (this.options.htmlarea) {
+      inplaceeditor_xinha_init();
     }
     
     this.originalBackground = Element.getStyle(this.element, 'background-color');
@@ -158,9 +182,8 @@ InPlaceEditor.Local.prototype = {
     }
   },
   createInplaceHTMLArea: function() {
-  	    var xinha_plugins = createDefaultPlugins;
-        var xinha_config = createDefaultConfig();
         var editor = new HTMLArea(this.editField, HTMLArea.cloneObject(xinha_config));
+        xinha_editors = HTMLArea.makeEditors(editor, xinha_config);
         editor.registerPlugins(xinha_plugins);
         editor.config.width = this.elementWidth;
         editor.config.height = this.options.minHeight > this.elementHeight ? this.options.minHeight: this.elementHeight;

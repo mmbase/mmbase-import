@@ -69,8 +69,8 @@
 
 		<br />
 		<div style="padding: 5px;">
-			<html:submit style="width:90"><fmt:message key="group.submit"/></html:submit>
 			<html:cancel style="width:90"><fmt:message key="group.cancel"/></html:cancel>
+			<html:submit style="width:90"><fmt:message key="group.submit"/></html:submit>
 		</div>
 	</html:form>
 	

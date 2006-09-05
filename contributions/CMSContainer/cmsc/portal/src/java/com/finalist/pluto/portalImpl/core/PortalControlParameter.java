@@ -24,17 +24,10 @@ import java.util.StringTokenizer;
 import javax.portlet.PortletMode;
 import javax.portlet.WindowState;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.pluto.om.window.PortletWindow;
 import org.apache.pluto.util.StringUtils;
 
-import com.finalist.cmsc.portalImpl.registry.PortalRegistry;
-import com.finalist.pluto.portalImpl.aggregation.Fragment;
-import com.finalist.pluto.portalImpl.aggregation.PortletFragment;
-
 public class PortalControlParameter {
-	private static Log log = LogFactory.getLog(PortalControlParameter.class);
 	
 	static public final String ACTION = "ac";
 
@@ -332,20 +325,17 @@ public class PortalControlParameter {
 		return PORTLET_ID;
 	}
 
-	public PortletWindow getPortletWindowOfAction(PortalRegistry registry) {
-		Iterator iterator = getStateLessControlParameter().keySet().iterator();
-		while (iterator.hasNext()) {
-			String name = (String) iterator.next();
-			if (name.startsWith(ACTION)) {
-				String id = name.substring(ACTION.length() + 1);
-				Fragment fragment = registry.getFragment(id);
-				if (fragment instanceof PortletFragment) {
-					return ((PortletFragment) fragment).getPortletWindow();
-				}
-			}
-		}
-		return null;
-	}
+    public String getPortletWindowOfAction() {
+        String id = null;
+        Iterator iterator = getStateLessControlParameter().keySet().iterator();
+        while (iterator.hasNext()) {
+            String name = (String) iterator.next();
+            if (name.startsWith(ACTION)) {
+                id = name.substring(ACTION.length() + 1);
+            }
+        }
+        return id;
+    }
 
 	public PortletMode getPrevMode(PortletWindow window) {
 		String mode = (String) encodedStateFullControlParameter.get(getPrevModeKey(window));

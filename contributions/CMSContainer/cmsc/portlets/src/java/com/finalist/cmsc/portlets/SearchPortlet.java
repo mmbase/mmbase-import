@@ -41,6 +41,8 @@ public class SearchPortlet extends CmscPortlet {
 
 	private static final String SEARCH_INDEX = "indexName";
 
+    private static final String PAGES_INDEX = "pagesIndex";
+
 
 	/**
 	 * @see net.sf.mmapps.commons.portlets.CmscPortlet#processEditDefaults(javax.portlet.ActionRequest,
@@ -63,6 +65,7 @@ public class SearchPortlet extends CmscPortlet {
 				setPortletParameter(portletId, SHOW_PAGES, request.getParameter(SHOW_PAGES));
 				setPortletParameter(portletId, INDEX_POSITION, request.getParameter(INDEX_POSITION));
 				setPortletParameter(portletId, SEARCH_INDEX, request.getParameter(SEARCH_INDEX));
+                setPortletParameter(portletId, PAGES_INDEX, request.getParameter(PAGES_INDEX));
 
 				setPortletView(portletId, request.getParameter(VIEW));
 
@@ -132,6 +135,11 @@ public class SearchPortlet extends CmscPortlet {
 		if (StringUtil.isEmpty(indexPosition)) {
 			setAttribute(req, INDEX_POSITION, "bottom");
 		}
+
+        String pagesIndex = preferences.getValue(PAGES_INDEX, null);
+        if (StringUtil.isEmpty(pagesIndex)) {
+            setAttribute(req, PAGES_INDEX, "center");
+        }
 
 		String indexName = preferences.getValue(SEARCH_INDEX, null);
 		if (StringUtil.isEmpty(indexName)) {

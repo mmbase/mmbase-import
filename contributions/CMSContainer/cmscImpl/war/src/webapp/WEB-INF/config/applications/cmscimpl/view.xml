@@ -8,4 +8,8 @@
 		<title>leftmenu</title>
 		<resource>leftmenu.jsp</resource>
 	</node>
+	<node number="319" owner="default">
+		<title>breadcrumb</title>
+		<resource>breadcrumb.jsp</resource>
+	</node>
 </view>

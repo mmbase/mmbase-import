@@ -2,7 +2,6 @@
 <%@page import="com.finalist.cmsc.navigation.*"%>
 <%@include file="globals.jsp"%>
 <mm:content type="text/html" encoding="UTF-8" expires="0">
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
 	<head>
 	<title><fmt:message key="selector.title" /></title>
@@ -80,12 +79,11 @@
 				<div class="title"><fmt:message key="selector.title" /></div>
 				<div class="header_end"></div>
 			</div>
-
-			<html:form action="/editors/site/QuickSearchAction" target="bottompane" styleId="addressBarForm">
-			   <div class="search_form">
-			      <html:text property="path" value="${pagepath}" styleId="addressbar"/>
-	   	      </div>
-			</html:form>
+			<div class="search_form">
+				<html:form action="/editors/site/QuickSearchAction" target="bottompane" styleId="addressBarForm">
+				      <html:text property="path" value="${pagepath}" styleId="addressbar"/>
+				</html:form>
+			</div>
 			<div class="search_form_options">
 				<a href="#" class="button" onclick="getElementById('addressBarForm').submit()"> <fmt:message key="selector.search" /> </a>
 			</div>

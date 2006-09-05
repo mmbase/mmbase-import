@@ -20,6 +20,7 @@ public class Stylesheet extends NodeBean {
 	private String title;
     private String description;
 	private String resource;
+	private String media;
 
     public String getTitle() {
         return title;
@@ -45,4 +46,11 @@ public class Stylesheet extends NodeBean {
 		this.resource = resource;
 	}
 
+	public String getMedia() {
+		return media;
+	}
+
+	public void setMedia(String media) {
+		this.media = media;
+	}
 }

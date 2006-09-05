@@ -40,7 +40,7 @@ public class DeleteAction extends MMBaseFormlessAction {
         else {
             String objectnumber = getParameter(request, "objectnumber");
             Node objectNode = cloud.getNode(objectnumber);
-            ContentElementUtil.removeContentBlock(objectNode);
+            objectNode.delete(true);
         }
         return mapping.findForward(SUCCESS);
     }

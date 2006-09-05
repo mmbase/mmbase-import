@@ -88,10 +88,10 @@ public abstract class HTMLTree extends Tree {
       String nodeName = base + "_" + level;
       if (!getModel().isLeaf(node)) {
          out.print("<a name=\"" + nodeName + "\" href=\"" + getExpandLink(node, nodeName) + "\">");
-         out.print("<img src='" + myImg + "' alt='' border='0' align='middle' valign='middle' id='img_" + nodeName + "'/>");
+         out.print("<img src='" + myImg + "' alt='' border='0' align='top' valign='top' id='img_" + nodeName + "'/>");
          out.print("</a>&nbsp;");
       } else {
-         out.print("<img src='" + myImg + "' alt='' border='0' align='middle' valign='middle'/>&nbsp;");
+         out.print("<img src='" + myImg + "' alt='' border='0' align='top' valign='top'/>&nbsp;");
       }
 
       HTMLTreeElement te = getCellRenderer().getElement(getModel(), node, nodeName);
@@ -113,9 +113,9 @@ public abstract class HTMLTree extends Tree {
          out.println("<div id='" + nodeName + "' style='" + getChildStyle() + "'>");
          // Render childs .....
          if (isLast) {
-            preHtml += "<img src='" + buildImgUrl("tree/spacer.gif") + "' alt='' align='center' valign='middle' border='0'/>";
+            preHtml += "<img src='" + buildImgUrl("tree/spacer.gif") + "' alt='' align='top' valign='top' border='0'/>";
          } else {
-            preHtml += "<img src='" + buildImgUrl("tree/vertline.gif") + "' alt='' align='center' valign='middle' border='0'/>";
+            preHtml += "<img src='" + buildImgUrl("tree/vertline.gif") + "' alt='' align='top' valign='top' border='0'/>";
          }
 
          int count = getModel().getChildCount(node);

@@ -30,7 +30,6 @@ import java.util.regex.Pattern;
  *
  * @see <A href="http://www.w3.org/TR/REC-xml#sec-logical-struct">XML: Logical Structures</A>
  * @author R.W. van 't Veer
- * @version $Revision: 1.2 $
  */
 public class TagToken implements Token {
     /** tag name */

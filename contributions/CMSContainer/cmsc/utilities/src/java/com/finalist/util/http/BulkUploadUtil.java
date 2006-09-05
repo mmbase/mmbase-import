@@ -16,6 +16,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
@@ -26,6 +27,7 @@ import java.util.zip.ZipInputStream;
 import javax.servlet.http.HttpServletRequest;
 
 import net.sf.mmapps.commons.util.UploadUtil;
+import net.sf.mmapps.commons.util.UploadUtil.BinaryData;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,6 +41,8 @@ public class BulkUploadUtil {
     private static final int MAXSIZE = 16 * 1024 * 1024;
 
     private static final String CONFIGURATION_RESOURCE_NAME = "/com/finalist/util/http/util.properties";
+    
+    private static final String ZIP_MIME_TYPES[] = new String[]{"application/x-zip-compressed", "application/zip"};
 
     private static Set<String> supportedImages;
 
@@ -56,33 +60,55 @@ public class BulkUploadUtil {
             supportedImages.add(image);
         }
     }
+    
+    public static String convertToCommaSeparated(List<?> values) {
+        StringBuffer buffer = new StringBuffer();
+        for (Object obj : values) {
+            if (obj != null) {
+                buffer.append(obj.toString());
+                buffer.append(",");
+            }
+        }
+        return buffer.toString();
+    }
 
-    public static int uploadAndStore(NodeManager manager, HttpServletRequest request) {
+    public static List<Integer> uploadAndStore(NodeManager manager, HttpServletRequest request) {
         List<UploadUtil.BinaryData> binaries = UploadUtil.uploadFiles(request, MAXSIZE);
-        int count = 0;
+        ArrayList<Integer> nodes = new ArrayList<Integer>();
+
         for (UploadUtil.BinaryData binary : binaries) {
             if (log.isDebugEnabled()) {
                 log.debug("originalFileName: " + binary.getOriginalFileName());
                 log.debug("contentType: " + binary.getContentType());
             }
-
-            if ("application/zip".equalsIgnoreCase(binary.getContentType())) {
+            
+            if (isZipFile(binary)) {
                 log.debug("unzipping content");
                 try {
-                    count = createNodesInZip(manager, new ZipInputStream(binary.getInputStream()));
+                    nodes.addAll(createNodesInZip(manager, new ZipInputStream(binary.getInputStream())));
                 } catch (IOException ex) {
                     log.error("Failed to read uploaded zipfile, skipping it", ex);
                     throw new RuntimeException(ex);
                 }
             } else {
-                createNode(manager, binary.getOriginalFileName(), binary.getInputStream(), binary.getLength());
-                count = 1;
+                Node node = createNode(manager, binary.getOriginalFileName(), binary.getInputStream(), binary.getLength());
+                nodes.add(node.getNumber());
             }
         }
-        return count;
+        return nodes;
     }
 
-    private static Node createNode(NodeManager manager, String fileName, InputStream in, long length) {
+    private static boolean isZipFile(BinaryData binary) {
+	
+    	for(int count = 0; count < ZIP_MIME_TYPES.length; count++) {
+    		if(ZIP_MIME_TYPES[count].equalsIgnoreCase(binary.getContentType())) {
+    			return true;
+    		}
+    	}
+		return false;
+	}
+
+	private static Node createNode(NodeManager manager, String fileName, InputStream in, long length) {
         Node node = manager.createNode();
         node.setValue("title", fileName);
         node.setValue("filename", fileName);
@@ -91,10 +117,11 @@ public class BulkUploadUtil {
         return node;
     }
 
-    private static int createNodesInZip(NodeManager manager, ZipInputStream zip) throws IOException {
+    private static ArrayList<Integer> createNodesInZip(NodeManager manager, ZipInputStream zip) throws IOException {
 
         ZipEntry entry = null;
         int count = 0;
+        ArrayList<Integer> nodes = new ArrayList<Integer>();
 
         try {
             while ((entry = zip.getNextEntry()) != null) {
@@ -116,21 +143,22 @@ public class BulkUploadUtil {
                 zip.closeEntry();
                 out.close();
                 FileInputStream in = new FileInputStream(tempFile);
-                createNode(manager, entry.getName(), in, tempFile.length());
+                Node node = createNode(manager, entry.getName(), in, tempFile.length());
+                nodes.add(node.getNumber());
                 in.close();
                 tempFile.delete();
             }
         } finally {
             zip.close();
         }
-        return count;
+        return nodes;
     }
 
     private static boolean isImage(String fileName) {
         if (supportedImages == null) {
             initSupportedImages();
         }
-        return fileName != null && supportedImages.contains(getExtension(fileName));
+        return fileName != null && supportedImages.contains(getExtension(fileName).toLowerCase());
     }
 
     private static String getExtension(String fileName) {

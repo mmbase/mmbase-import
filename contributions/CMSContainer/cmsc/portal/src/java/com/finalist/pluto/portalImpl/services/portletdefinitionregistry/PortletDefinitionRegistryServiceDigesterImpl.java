@@ -27,6 +27,7 @@ import org.apache.pluto.om.portlet.PortletApplicationDefinitionList;
 import org.apache.pluto.om.portlet.PortletDefinition;
 import org.xml.sax.SAXException;
 
+import com.finalist.cmsc.services.Properties;
 import com.finalist.pluto.portalImpl.om.common.impl.DescriptionImpl;
 import com.finalist.pluto.portalImpl.om.common.impl.DisplayNameImpl;
 import com.finalist.pluto.portalImpl.om.common.impl.LanguageImpl;
@@ -38,11 +39,10 @@ import com.finalist.pluto.portalImpl.om.portlet.impl.PortletApplicationDefinitio
 import com.finalist.pluto.portalImpl.om.portlet.impl.PortletApplicationDefinitionListImpl;
 import com.finalist.pluto.portalImpl.om.portlet.impl.PortletDefinitionImpl;
 import com.finalist.pluto.portalImpl.services.portletdefinitionregistry.rule.PortletApplicationRule;
-import com.finalist.pluto.portalImpl.util.Properties;
 
 /**
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class PortletDefinitionRegistryServiceDigesterImpl extends PortletDefinitionRegistryService {
 	private static Log log = LogFactory.getLog(PortletDefinitionRegistryServiceDigesterImpl.class);

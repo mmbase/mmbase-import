@@ -25,6 +25,8 @@
    <body>
       <mm:cloud jspvar="cloud" loginpage="../../editors/login.jsp">
 
+<mm:import externid="action">search</mm:import><%-- either: search of select --%>
+
       <div class="tabs">
          <div class="tab_active">
             <div class="body">
@@ -47,6 +49,7 @@
 
          <mm:import id="searchinit"><c:url value='/editors/resources/AttachmentInitAction.do'/></mm:import>
          <html:form action="/editors/resources/AttachmentAction" method="post">
+			<html:hidden property="action" value="${action}"/>
             <html:hidden property="offset"/>
             <html:hidden property="order"/>
             <html:hidden property="direction"/>
@@ -66,34 +69,43 @@
 
          <table>
             <tr class="listheader">
-               <th><a href="#" class="headerlink" onclick="orderBy('number');"><fmt:message key="attachmentsearch.numbercolumn" /></a></th>
+               <th> </th>
                <th nowrap="true"><a href="#" class="headerlink" onclick="orderBy('title');"><fmt:message key="attachmentsearch.titlecolumn" /></a></th>
                <th><fmt:message key="attachmentsearch.filenamecolumn" /></th>
                <th><fmt:message key="attachmentsearch.mimetypecolumn" /></th>
             </tr>
             <tbody class="hover">
                 <c:set var="useSwapStyle">true</c:set>
-	           	<mm:list referid="results">
-	           	   <mm:node element="${contenttypes}" jspvar="node">
+	           	<mm:listnodes referid="results">
 	                  <mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<mm:field name="title"/>','<mm:attachment />');</mm:import>
 	                  <tr <c:if test="${useSwapStyle}">class="swap"</c:if> href="<mm:write referid="url"/>">
-	                     <td onMouseDown="objClick(this);">
-                        <a href="<mm:url page="../WizardInitAction.do">
-                                                     <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
-                                                     <mm:param name="returnurl" value="<%="../editors/resources/AttachmentAction.do" + request.getAttribute("geturl")%>" />
-                                                  </mm:url>">
-                              <img src="../gfx/icons/page_edit.png" /></a>
-                        </td>
-
+	                     <td style="white-space:nowrap;">
+	                       <mm:compare referid="action" value="search">
+	                          <a href="<mm:url page="../WizardInitAction.do">
+                                         <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
+                                         <mm:param name="returnurl" value="<%="../editors/resources/AttachmentAction.do" + request.getAttribute("geturl")%>" />
+                                      </mm:url>">
+                              <img src="../gfx/icons/page_edit.png" title="<fmt:message key="attachmentsearch.icon.edit" />" /></a>
+						      <mm:hasrank minvalue="administrator">
+	                            <a href="<mm:url page="DeleteSecondaryContentAction.do" >
+                                            <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
+                                            <mm:param name="returnurl" value="<%="/editors/resources/AttachmentAction.do" + request.getAttribute("geturl")%>" />
+                                         </mm:url>">
+	                            <img src="../gfx/icons/delete.png" title="<fmt:message key="attachmentsearch.icon.delete" />"/></a>
+	                          </mm:hasrank>
+	                       </mm:compare>
+                         </td>
 	                     <td onMouseDown="objClick(this);"><mm:field name="title"/></td>
 	                     <td onMouseDown="objClick(this);"><mm:field name="filename"/></td>
 	                     <td onMouseDown="objClick(this);"><mm:field name="mimetype"/></td>
 	                  </tr>
-	               </mm:node>
 	               <c:set var="useSwapStyle">${!useSwapStyle}</c:set>
-	            </mm:list>
+	            </mm:listnodes>
 	         </tbody>
          </table>
+</c:if>
+<c:if test="${resultCount == 0 && param.title != null}">
+	<fmt:message key="attachmentsearch.noresult" />
 </c:if>
       </mm:cloud>
    </body>

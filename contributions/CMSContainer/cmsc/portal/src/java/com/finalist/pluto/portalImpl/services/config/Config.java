@@ -15,8 +15,8 @@
  */
 package com.finalist.pluto.portalImpl.services.config;
 
-import com.finalist.pluto.portalImpl.services.ServiceManager;
-import com.finalist.pluto.portalImpl.util.Parameters;
+import com.finalist.cmsc.services.Parameters;
+import com.finalist.cmsc.services.ServiceManager;
 
 /**
  * * The static accessor for the {@link ConfigService}. * *

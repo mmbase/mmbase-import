@@ -1,6 +1,7 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp"%>
 <div class="portlet-config-canvas">
 <script type="text/javascript">
+
 function selectChannel(channel, path) {
 	document.forms['<portlet:namespace />form'].contentchannel.value = channel;
 	document.forms['<portlet:namespace />form'].contentchannelpath.value = path;
@@ -24,16 +25,41 @@ function erase(field) {
 function eraseList(field) {
 	document.forms['<portlet:namespace />form'][field].selectedIndex = -1;
 }
+
+var repositoryUrl = "<cmsc:staticurl page='/editors/repository/index.jsp'/>";
+function openRepositoryWithChannel() {
+	contentchannel = document.forms['<portlet:namespace />form'].contentchannel.value;
+	if(contentchannel == undefined || contentchannel == '') {
+		alert('<fmt:message key="edit_defaults.preview.noChannel"/>');
+	}
+	else {
+		if(confirm('<fmt:message key="edit_defaults.preview.loseChanges"/>')) {
+			window.top.bottompane.location = repositoryUrl + '?channel=' + contentchannel;
+		}
+	}
+}
 </script>
-<h3><fmt:message key="edit_defaults.title" /></h3>
 
 <form name="<portlet:namespace />form" method="post" target="_parent"
 	action="<portlet:actionURL><portlet:param name="action" value="edit"/></portlet:actionURL>">
 
 <table class="editcontent">
 	<tr>
+		<td colspan="3">
+			<a href="javascript:document.forms['<portlet:namespace />form'].submit()" class="button">
+				<img src="<cmsc:staticurl page='/editors/gfx/icons/save.png'/>" alt=""/> <fmt:message key="edit_defaults.save" /></a>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="3">
+			<h3><fmt:message key="edit_defaults.title" /></h3>
+		</td>
+	</tr>
+	<tr>
 		<td><fmt:message key="edit_defaults.channel" />:</td>
 		<td align="right">
+			<a href="javascript:openRepositoryWithChannel()">
+				<img src="<cmsc:staticurl page='/editors/gfx/icons/preview.png'/>" alt="<fmt:message key="edit_defaults.preview"/>"/></a>
 			<a href="<c:url value='/editors/repository/select/SelectorChannel.do?channel=${contentchannel}' />"
 				target="selectchannel" onclick="openPopupWindow('selectchannel', 340, 400)"> 
 					<img src="<cmsc:staticurl page='/editors/gfx/icons/select.png'/>" alt="<fmt:message key="edit_defaults.channelselect" />"/></a>
@@ -83,7 +109,7 @@ function eraseList(field) {
 		<td><cmsc:select var="archive">
 			<cmsc:option value="all" message="edit_defaults.archive.all" />
 			<cmsc:option value="new" message="edit_defaults.archive.new" />
-			<cmsc:option value="new" message="edit_defaults.archive.old" />
+			<cmsc:option value="old" message="edit_defaults.archive.old" />
 		</cmsc:select></td>
 	</tr>
 	<tr>
@@ -197,7 +223,8 @@ function eraseList(field) {
 
 	<tr>
 		<td colspan="3">
-			<input type="submit" value="<fmt:message key="edit_defaults.save" />" class="button" />
+			<a href="javascript:document.forms['<portlet:namespace />form'].submit()" class="button">
+				<img src="<cmsc:staticurl page='/editors/gfx/icons/save.png'/>" alt=""/> <fmt:message key="edit_defaults.save" /></a>
 		</td>
 	</tr>
 </table>

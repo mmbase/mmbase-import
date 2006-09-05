@@ -51,6 +51,8 @@ public class UserInitAction extends MMBaseAction {
          // new 
          userForm.setId(-1);
       }
+
+      userForm.resetRanks();
       NodeList ranks = cloud.getNodeManager("mmbaseranks").getList(null, "rank", "down");
       for (NodeIterator iter = ranks.nodeIterator(); iter.hasNext();) {
         Node rankNode = iter.nextNode();

@@ -29,7 +29,7 @@
 <html:html xhtml="true">
 	<head>
 		<title><fmt:message key="site.title" /></title>
-		<script type="text/javascript" src="portalcontrols.js"></script>
+		<script type="text/javascript" src="portalcontrols.js.jsp"></script>
 	</head>
     <frameset cols="321,*" onload="window.top.toppane.initMenu();" framespacing="0" border="0">
 		<frame scrolling="auto" frameborder="0"  src="<mm:url referid="channelsurl"/>" name="pages"/>

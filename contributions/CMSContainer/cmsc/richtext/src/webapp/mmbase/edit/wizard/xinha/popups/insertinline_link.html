@@ -11,7 +11,7 @@
 HTMLArea = window.opener.HTMLArea;
 
 function i18n(str) {
-  return (HTMLArea._lc(str, 'HTMLArea'));
+  return (HTMLArea._lc(str, 'cmscrichtext'));
 }
 
 function onTargetChanged() {
@@ -24,7 +24,7 @@ function onTargetChanged() {
 }
 
 function Init() {
-  __dlg_translate('HTMLArea');
+  __dlg_translate('cmscrichtext');
   __dlg_init();
 
   // Make sure the translated string appears in the drop down. (for gecko)
@@ -68,8 +68,8 @@ function Init() {
 
 function onOK() {
   var elhref = document.getElementById("f_href");
-  
-  
+
+
   if (HTMLArea.is_ie ? elhref.readOnly : elhref.hasAttribute("readonly")) {
     var el = document.getElementById("f_destination");
     if(!el.value) {
@@ -95,7 +95,7 @@ function onOK() {
       return false;
     }
     else {
-      var re = new RegExp("\://|javascript\:");
+      var re = new RegExp("\://|javascript\:|mailto\:");
       if (!elhref.value.match(re)) {
         var message = i18n("Url is missing protocol (eg http://)");
         alert(message);
@@ -125,17 +125,23 @@ function onCancel() {
 };
 
 function onElement() {
-  openPopupWindow('../../../../../editors/repository/select/index.jsp','filterwindow2',800,650);
+  openPopupWindow('../../../../../editors/repository/select/index.jsp','filterwindow2',950,550);
   return false;
 };
 
+function onPage() {
+  openPopupWindow('../../../../../editors/site/select/SelectorPage.do','filterwindow2',340, 400);
+  return false;
+};
+
+
 function onAttachment() {
-  openPopupWindow('../../../../../editors/resources/AttachmentInitAction.do','filterwindow2',800,650);
+  openPopupWindow('../../../../../editors/resources/AttachmentInitAction.do?action=select','filterwindow2',750,550);
   return false;
 };
 
 function onUrl() {
-  openPopupWindow('../../../../../editors/resources/UrlInitAction.do','filterwindow2',800,650);
+  openPopupWindow('../../../../../editors/resources/UrlInitAction.do?action=select','filterwindow2',750,550);
   return false;
 };
 
@@ -156,20 +162,36 @@ function onNewUrl() {
 function selectElement(element_id, title, url) {
    document.getElementById("f_destination").value = element_id;
    var elhref = document.getElementById("f_href");
-   
+
    if (HTMLArea.is_ie) {
      elhref.readOnly = true;
    }
    else {
       elhref.setAttribute("readonly", "true");
    }
-  
+
    if (url != undefined && url.length != 0 ) {
       document.getElementById("f_href").value = url;
    }
-   if (document.getElementById("f_title").value == undefined 
+   if (document.getElementById("f_title").value == undefined
          || document.getElementById("f_title").value.length == 0 ) {
       document.getElementById("f_title").value = title;
+   }
+}
+
+function selectPage(element_id, url) {
+   document.getElementById("f_destination").value = element_id;
+   var elhref = document.getElementById("f_href");
+
+   if (HTMLArea.is_ie) {
+     elhref.readOnly = true;
+   }
+   else {
+      elhref.setAttribute("readonly", "true");
+   }
+
+   if (url != undefined && url.length != 0 ) {
+      document.getElementById("f_href").value = url;
    }
 }
 
@@ -199,7 +221,7 @@ function openPopupWindow(url, windowName, width, height) {
 
    obj = eval(str);
    if (document.all) {
-      // set a opener for ie because its a dialog and not a popup (unlike mozilla) 
+      // set a opener for ie because its a dialog and not a popup (unlike mozilla)
       obj.opener = this;
    }
 
@@ -238,8 +260,9 @@ function openPopupWindow(url, windowName, width, height) {
 </table>
       <button name="attachment" onclick="return onAttachment();" title="Search for an attachment">Attachment</button>
       <button name="element" onclick="return onElement();" title="Search for an element">Element</button>
+      <button name="page" onclick="return onPage();" title="Search for a page">Page</button>
       <button name="urlelement" onclick="return onUrl();" title="Search for an url">Url</button>
-      <button name="newurlelement" onclick="return onNewUrl();" title="Enter new url">New Url</button>
+      <button name="newurlelement" onclick="return onNewUrl();" title="Enter new url" style="width: 90px;">New Url</button>
 <div id="buttons">
   <button type="button" name="ok" onclick="return onOK();">OK</button>
   <button type="button" name="cancel" onclick="return onCancel();">Cancel</button>

@@ -9,7 +9,7 @@
 </mm:url>
 
 <a href="<mm:write referid="editurl"/>" target="cmsc_element_edit" 
-   onclick="openPopupWindow('cmsc_element_edit', '750', '750')" class="portal_button" style="float: left;">
+   onclick="openPopupWindow('cmsc_element_edit', '750', '550')" class="portal_button" style="float: left;">
 	<fmt:message key="edit.fulledit" />
 </a>
 

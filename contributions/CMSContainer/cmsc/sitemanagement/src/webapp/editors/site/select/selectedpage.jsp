@@ -1,4 +1,4 @@
-<%@page import="com.finalist.cmsc.portalImpl.services.sitemanagement.SiteManagement" %>
+<%@page import="com.finalist.cmsc.services.sitemanagement.SiteManagement" %>
 <%@page import="java.util.ArrayList,java.util.Collections" %>
 <%
 String pageParam = request.getParameter("page");

@@ -281,12 +281,12 @@ public class ContentElementUtil {
         Constraint archivedate = null;
         if ("old".equalsIgnoreCase(archive)) {
             archivedate = query.createConstraint(query.getStepField(archiveDateField),
-                    FieldCompareConstraint.GREATER_EQUAL, archiveDateObj);
+                    FieldCompareConstraint.LESS_EQUAL, archiveDateObj);
         }
         else {
              // "new".equalsIgnoreCase(archive)
             archivedate = query.createConstraint(query.getStepField(archiveDateField),
-                    FieldCompareConstraint.LESS_EQUAL, archiveDateObj);
+                    FieldCompareConstraint.GREATER_EQUAL, archiveDateObj);
         }
         SearchUtil.addConstraint(query, archivedate);
     }

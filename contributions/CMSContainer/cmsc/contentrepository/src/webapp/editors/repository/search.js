@@ -23,8 +23,14 @@
  }
 
  function selectContenttype(initUrl) {
-    document.forms[0].parentchannel.value='';
-    document.forms[0].action=initUrl;
+    // parentchannel is only there when linking is active...
+    try {
+       document.forms[0].parentchannel.value='';
+    } catch (e) {
+       ;
+    }
+    // This doesn't work in IE...
+    // document.forms[0].action=initUrl;
     document.forms[0].submit();
  }
 
@@ -46,4 +52,9 @@ function selectAll(value, formName, elementPrefix) {
 function selectChannel(channel, path) {
    document.forms[0].parentchannel.value=channel;
    document.forms[0].parentchannelpath.value=path;
+}
+
+function selectElement(element, title, url) {
+   window.top.opener.selectElement(element, title, url);
+   window.top.close();
 }

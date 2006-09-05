@@ -16,7 +16,7 @@ import net.sf.mmapps.commons.util.StringUtil;
 import com.finalist.cmsc.beans.om.Page;
 import com.finalist.cmsc.mmbase.ResourcesUtil;
 import com.finalist.cmsc.navigation.ServerUtil;
-import com.finalist.cmsc.portalImpl.services.sitemanagement.SiteManagement;
+import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 
 /**
  * Supporting class for the <CODE>actionURL</CODE> and <CODE>renderURL</CODE> tag.

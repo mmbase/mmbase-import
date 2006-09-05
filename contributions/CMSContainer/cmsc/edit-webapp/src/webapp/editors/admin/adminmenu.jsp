@@ -49,7 +49,7 @@
 				</li>
             <cmsc:hasfeature name="luceusmodule">
 				<li class="dumpdefaults">
-					<a href="fullindex.jsp" target="rightpane"><fmt:message key="admin.fullindex" /></a>
+					<a href="../luceus/fullindex.jsp" target="rightpane"><fmt:message key="admin.fullindex" /></a>
 				</li>
             </cmsc:hasfeature>
 				

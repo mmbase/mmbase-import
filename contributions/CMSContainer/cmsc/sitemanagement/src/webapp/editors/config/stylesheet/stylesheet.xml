@@ -8,7 +8,10 @@
    <action include="config/stylesheet/delete_stylesheet.xml"/>
    <action include="config/stylesheet/load_stylesheet.xml"/>
 
-   <lists include="config/option_lists/all_optionlists.xml"/>
+   <lists>
+      <optionlist include="config/option_lists/all_optionlists.xml"/>
+      <optionlist include="config/option_lists/media.xml"/>
+   </lists>
 
    <steps>
       <step form-schema="edit_stylesheet"/>

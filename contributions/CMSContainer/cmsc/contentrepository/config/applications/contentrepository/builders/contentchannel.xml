@@ -109,7 +109,7 @@ VIRTUAL FIELDS.
 			<editor>
 				<positions>
 					<input>-1</input>
-					<list>17</list>
+					<list>-1</list>
 					<search>-1</search>
 				</positions>
 			</editor>
@@ -130,7 +130,7 @@ VIRTUAL FIELDS.
       <editor>
          <positions>
              <input>-1</input>
-             <list>18</list>
+             <list>-1</list>
              <search>-1</search>
          </positions>
       </editor>
@@ -152,7 +152,7 @@ VIRTUAL FIELDS.
       <editor>
          <positions>
              <input>-1</input>
-             <list>18</list>
+             <list>-1</list>
              <search>-1</search>
          </positions>
       </editor>

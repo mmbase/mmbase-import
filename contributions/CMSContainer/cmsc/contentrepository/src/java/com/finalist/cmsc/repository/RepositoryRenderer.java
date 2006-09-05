@@ -35,7 +35,7 @@ public abstract class RepositoryRenderer implements TreeCellRenderer {
         if (id == null) {
             id = String.valueOf(parentNode.getNumber());
         }
-        UserRole role = RepositoryUtil.getRoleForUser(parentNode.getCloud(), parentNode, false);
+        UserRole role = RepositoryUtil.getRole(parentNode.getCloud(), parentNode, false);
 
         String name = parentNode.getStringValue("name");
         String fragment = parentNode.getStringValue( RepositoryUtil.getFragmentFieldname(parentNode) );
@@ -58,11 +58,18 @@ public abstract class RepositoryRenderer implements TreeCellRenderer {
                 }
             }
         }
+        addGlobalOptions(parentNode, element);
 
         return element;
     }
 
-    private void addWriterOptions(Node parentNode, TreeElement element) {
+    private void addGlobalOptions(Node parentNode, TreeElement element) {
+        String labelRights = JstlUtil.getMessage(request, "repository.channel.rights");
+        element.addOption(createOption("rights.png", labelRights,
+            getUrl("../usermanagement/contentrights.jsp?number=" + parentNode.getNumber()), target));
+	}
+
+	private void addWriterOptions(Node parentNode, TreeElement element) {
 //        String label = JstlUtil.getMessage(request, "repository.content.edit");
 //        element.addOption(createOption("new_content.png", label,
 //                getUrl("Content.do?parentchannel=" + parentNode.getNumber()), target));

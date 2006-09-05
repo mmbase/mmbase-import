@@ -1,11 +1,3 @@
-function getToolTip(id, defaultValue) {
-   if (typeof MyHTMLArea_I18N != "undefined") {
-     return MyHTMLArea_I18N.tooltips[id];
-   } else {
-     return defaultValue;
-   }
-}
-
 xinha_editors = null;
 xinha_init    = null;
 
@@ -14,7 +6,7 @@ xinha_init = xinha_init ? xinha_init : function() {
   var xinha_plugins = [
    'CharacterMap',
    'ContextMenu',
-   'ListType',
+//   'ListType',
 //   'FullScreen',
 //   'SpellChecker',
 //   'Stylist',
@@ -32,21 +24,21 @@ createDefaultConfig = function() {
   var xinha_config = xinha_config ? xinha_config() : new HTMLArea.Config();
   xinha_config.registerButton({
     id        : "my-validatesave",
-    tooltip   : getToolTip("validatesave", "Validate The Form"),
+    tooltip   : HTMLArea._lc("Validate The Form"),
     image     : _editor_url + xinha_config.imgURL +  "ed_validate_save.gif",
     textMode  : true,
     action    : myValidateSaveAction
   });
   xinha_config.registerButton({
-    id        : "insertinlineimage",
-    tooltip   : getToolTip("insertinlineimage","Insert Inline Image"),
+    id        : "insertimage",
+    tooltip   : HTMLArea._lc("Insert Image"),
     image     : _editor_url + xinha_config.imgURL + "ed_image.gif",
     textMode  : false,
-    action    : function(e) {e._insertInlineImage();}
+    action    : function(e) {e._insertImage();}
   });
   xinha_config.registerButton({
-    id        : "insertinlinelink",
-    tooltip   : getToolTip("insertinlinelink","Insert Inline link"),
+    id        : "createlink",
+    tooltip   : HTMLArea._lc("Insert/Modify Link"),
     image     : _editor_url + xinha_config.imgURL +  "ed_link.gif",
     textMode  : false,
     action    : function(e) {e._insertInlineLink();}
@@ -56,10 +48,11 @@ createDefaultConfig = function() {
     ['bold', 'italic', 'underline', "strikethrough", 'separator',
      'superscript', 'subscript','separator', 
      'formatblock', 'separator',
+//     'justifyleft','justifycenter','justifyright', 'separator',
      'insertorderedlist', 'insertunorderedlist', 'separator',
      'cut', 'copy', 'paste', 'separator', 'undo', 'redo'
     ],
-    ['insertinlinelink', 'insertinlineimage', 'inserttable', 'separator',
+    ['createlink', 'insertimage', 'inserttable', 'separator',
      'htmlmode', 'separator', 'my-validatesave', "separator", "showhelp", "popupeditor"
     ]
   ];
@@ -106,6 +99,7 @@ function doCheckHtml() {
 }
 
 function updateValue(editor) {
+  setWidthForTables(editor);
   value = editor.outwardHtml(editor.getHTML());
   // These two lines could cause editors to complain about responsetime
   // when they leave a form with many large htmlarea fields.
@@ -159,7 +153,7 @@ function clean(value) {
   // Remove Tags with XML namespace declarations: <o:p></o:p>
   value = value.replace(/<\/?\w+:[^>]*>/gi, "");
   // Replace the &nbsp;
-  value = value.replace(/&nbsp;/, " " );
+  value = value.replace(/&nbsp;/gi, " " );
   
   return value;
 }
@@ -180,76 +174,14 @@ function HTMLEncode(text) {
   return text ;
 }
 
-// Called when the user clicks the Insert Table button
-HTMLArea.prototype._insertTable = function() {
-        var sel = this._getSelection();
-        var range = this._createRange(sel);
-        var editor = this;	// for nested functions
-        this._popupDialog("insert_table.html", function(param) {
-                if (!param) {	// user must have pressed Cancel
-                        return false;
-                }
-                var doc = editor._doc;
-                // create the table element
-                var table = doc.createElement("table");
-                table.border = 1; // Is removed by WordFilter, but handy for first entering content!
-                // assign the given arguments
-                //for (var field in param) {
-                  //      var value = param[field];
-                    //    if (!value) {
-                      //          continue;
-                        //}
-                        
-                       // cjr: don't want any attributes in tables
-                        /* switch (field) {                        
-                            case "f_width"   : table.style.width = value + param["f_unit"]; break;
-                            case "f_align"   : table.align	 = value; break;
-                            case "f_border"  : table.border	 = parseInt(value); break;
-                            case "f_spacing" : table.cellspacing = parseInt(value); break;
-                            case "f_padding" : table.cellpadding = parseInt(value); break;
-                        }*/
-                         
-               // }
-                table.border=1;
-                // Write head row
-                if (param["f_caption"]) {
-	                var caption = doc.createElement("caption");
-    	                table.appendChild(caption);
-        	        caption.appendChild(doc.createTextNode(param["f_caption"]));
-                  }
-        	    if (param["f_header"]) {
-	                var thead = doc.createElement("thead");
-    	            table.appendChild(thead);
-        	        var tr = doc.createElement("tr");
-            	    thead.appendChild(tr);   
-                	for (var j = 0; j < param["f_cols"]; ++j) {
-                    	var td = doc.createElement("th");
-                     	tr.appendChild(td);
-                     	// Mozilla likes to see something inside the cell.
-                     	(HTMLArea.is_gecko) && td.appendChild(doc.createElement("br"));
-                	}
-                }
-                var tbody = doc.createElement("tbody");
-                table.appendChild(tbody);
-                for (var i = 0; i < param["f_rows"]; ++i) {
-                        var tr = doc.createElement("tr");
-                        tbody.appendChild(tr);
-                        for (var j = 0; j < param["f_cols"]; ++j) {
-                                var td = doc.createElement("td");
-                                tr.appendChild(td);
-                                // Mozilla likes to see something inside the cell.
-                                (HTMLArea.is_gecko) && td.appendChild(doc.createElement("br"));
-                        }
-                }
-                if (HTMLArea.is_ie) {
-                        range.pasteHTML(table.outerHTML);
-                } else {
-                        // insert the table
-                        editor.insertNodeAtSelection(table);
-                }
-                return true;
-        }, null);
-};
+function setWidthForTables(editor) {
+	var tables = editor._doc.getElementsByTagName('table');
+	for (var i = 0 ; i < tables.length ; i++) {
+		var table = tables[i];
+		if (table.style.width)
+			table.width = table.style.width;
+	}
+}
 
 HTMLArea.prototype._insertInlineLink = function(link) {
         var editor = this;
@@ -286,14 +218,25 @@ HTMLArea.prototype._insertInlineLink = function(link) {
                 } else a.href = param.f_href.trim();
 
                 a.title = param.f_title.trim();
-                HTMLArea.is_ie ? a.destination = param.f_destination.trim() : a.setAttribute("destination", param.f_destination.trim());
+                if (HTMLArea.is_ie) {
+                  a.destination = param.f_destination.trim();
+                  if (!a.destination && a.relationID) {
+                    a.relationID = "";
+                  }
+                }
+                else {
+                  a.setAttribute("destination", param.f_destination.trim());
+                  if (!a.getAttribute("destination") && a.getAttribute("relationID")) {
+                    a.removeAttribute("relationID");
+                  }
+                }
                 a.target = param.f_target.trim();
                 editor.selectNodeContents(a);
                 editor.updateToolbar();
   }, outparam, "width=398,height=220");
 };
 
-HTMLArea.prototype._insertInlineImage = function(image) {
+HTMLArea.prototype._insertImage = function(image) {
         var editor = this;	// for nested functions
         var outparam = null;
         if (typeof image == "undefined") {
@@ -345,9 +288,195 @@ HTMLArea.prototype._insertInlineImage = function(image) {
                             case "f_border" :  HTMLArea.is_ie ? img.border = parseInt(value || "0") : img.setAttribute("border", parseInt(value || "0")); break;
                             case "f_align"  :  HTMLArea.is_ie ? img.align = value : img.setAttribute("align", value); break;
                             case "f_width"  :  HTMLArea.is_ie ? img.width = parseInt(value || "100") : img.setAttribute("width", parseInt(value || "100")); break;
-                            case "f_height"  :  HTMLArea.is_ie ? img.height = parseInt(value || "100") : img.setAttribute("height", parseInt(value || "100")); break;
+                            case "f_height"  :  
+                              if (HTMLArea.is_ie) {
+                                if (!value) {
+                                  img.height = "100";
+                                }
+                                else {
+                                  img.height = parseInt(value);
+                                }
+                              }
+                              else {
+                                if (!value) {
+                                  img.removeAttribute("height");
+                                }
+                                else {
+                                  img.setAttribute("height", parseInt(value));
+                                }
+                              }
+                              break;
                             case "f_destination"  : HTMLArea.is_ie ? img.destination = value : img.setAttribute("destination", value); break;
                         }
                 }
         }, outparam);
+};
+
+// Called when the user clicks the Insert Table button
+HTMLArea.prototype._insertTable = function()
+{
+  var sel = this._getSelection();
+  var range = this._createRange(sel);
+  var editor = this;	// for nested functions
+  this._popupDialog(
+    editor.config.URIs.insert_table,
+    function(param)
+    {
+      // user must have pressed Cancel
+      if ( !param )
+      {
+        return false;
+      }
+      var doc = editor._doc;
+      // create the table element
+      var table = doc.createElement("table");
+      // assign the given arguments
+
+      for ( var field in param )
+      {
+        var value = param[field];
+        if ( !value )
+        {
+          continue;
+        }
+        switch (field)
+        {
+          case "f_width":
+            table.width = value + param.f_unit;
+          break;
+          case "f_align":
+            table.align = value;
+          break;
+          case "f_border":
+            table.border = parseInt(value, 10);
+          break;
+          case "f_spacing":
+            table.cellSpacing = parseInt(value, 10);
+          break;
+          case "f_padding":
+            table.cellPadding = parseInt(value, 10);
+          break;
+        }
+      }
+      var cellwidth = 0;
+      if ( param.f_fixed )
+      {
+        cellwidth = Math.floor(100 / parseInt(param.f_cols, 10));
+      }
+      var tbody = doc.createElement("tbody");
+      table.appendChild(tbody);
+      for ( var i = 0; i < param.f_rows; ++i )
+      {
+        var tr = doc.createElement("tr");
+        tbody.appendChild(tr);
+        for ( var j = 0; j < param.f_cols; ++j )
+        {
+          var td = doc.createElement("td");
+          // @todo : check if this line doesnt stop us to use pixel width in cells
+          if (cellwidth)
+          {
+            td.style.width = cellwidth + "%";
+          }
+          tr.appendChild(td);
+          // Browsers like to see something inside the cell (&nbsp;).
+          td.appendChild(doc.createTextNode('\u00a0'));
+        }
+      }
+      if ( HTMLArea.is_ie )
+      {
+        range.pasteHTML(table.outerHTML);
+      }
+      else
+      {
+        // insert the table
+        editor.insertNodeAtSelection(table);
+      }
+      return true;
+    },
+    null
+  );
+};
+
+HTMLArea.prototype._insertTable = function()
+{
+  var sel = this._getSelection();
+  var range = this._createRange(sel);
+  var editor = this;	// for nested functions
+  this._popupDialog(
+    editor.config.URIs.insert_table,
+    function(param)
+    {
+      // user must have pressed Cancel
+      if ( !param )
+      {
+        return false;
+      }
+      var doc = editor._doc;
+      // create the table element
+      var table = doc.createElement("table");
+      // assign the given arguments
+
+      for ( var field in param )
+      {
+        var value = param[field];
+        if ( !value )
+        {
+          continue;
+        }
+        switch (field)
+        {
+          case "f_width":
+            table.width = value + param.f_unit;
+          break;
+          case "f_align":
+            table.align = value;
+          break;
+          case "f_border":
+            table.border = parseInt(value, 10);
+          break;
+          case "f_spacing":
+            table.cellSpacing = parseInt(value, 10);
+          break;
+          case "f_padding":
+            table.cellPadding = parseInt(value, 10);
+          break;
+        }
+      }
+      var cellwidth = 0;
+      if ( param.f_fixed )
+      {
+        cellwidth = Math.floor(100 / parseInt(param.f_cols, 10));
+      }
+      var tbody = doc.createElement("tbody");
+      table.appendChild(tbody);
+      for ( var i = 0; i < param.f_rows; ++i )
+      {
+        var tr = doc.createElement("tr");
+        tbody.appendChild(tr);
+        for ( var j = 0; j < param.f_cols; ++j )
+        {
+          var td = doc.createElement("td");
+          // @todo : check if this line doesnt stop us to use pixel width in cells
+          if (cellwidth)
+          {
+            td.style.width = cellwidth + "%";
+          }
+          tr.appendChild(td);
+          // Browsers like to see something inside the cell (&nbsp;).
+          td.appendChild(doc.createTextNode('\u00a0'));
+        }
+      }
+      if ( HTMLArea.is_ie )
+      {
+        range.pasteHTML(table.outerHTML);
+      }
+      else
+      {
+        // insert the table
+        editor.insertNodeAtSelection(table);
+      }
+      return true;
+    },
+    null
+  );
 };

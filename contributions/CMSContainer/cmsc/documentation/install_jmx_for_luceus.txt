@@ -1,0 +1,11 @@
+JDK edits
+1) go to path-to-jdk5\jre\lib\management
+2) copy jmxremote.password.template to jmxremote.password
+3) enable JMX by setting the port for JMX in the JAVA_OPTS envitonment variable:
+
+-Dcom.sun.management.jmxremote.port=9999 
+
+4) edit management.properties in the same directory and set the following:
+   com.sun.management.snmp.acl=false
+   com.sun.management.jmxremote.ssl=false
+   com.sun.management.jmxremote.authenticate=false

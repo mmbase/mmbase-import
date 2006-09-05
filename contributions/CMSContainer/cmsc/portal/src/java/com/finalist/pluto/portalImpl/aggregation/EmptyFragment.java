@@ -15,19 +15,19 @@ import org.apache.pluto.om.window.PortletWindow;
 
 import com.finalist.cmsc.beans.om.Portlet;
 import com.finalist.cmsc.beans.om.PortletDefinition;
-import com.finalist.cmsc.portalImpl.services.sitemanagement.SiteModelManager;
+import com.finalist.cmsc.services.sitemanagement.SiteModelManager;
 import com.finalist.pluto.portalImpl.om.common.impl.PreferenceSetImpl;
 
 /**
  * Fragment for creating and adding portlets to a Screen
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class EmptyFragment extends PortletFragment {
 
-	public EmptyFragment(ServletConfig config, Fragment parent, String layoutId, Portlet portlet, SiteModelManager siteModelManager) throws Exception {
-		super(config, parent, layoutId, portlet, siteModelManager);
+	public EmptyFragment(ServletConfig config, Fragment parent, String layoutId, Portlet portlet, PortletDefinition definition) throws Exception {
+		super(config, parent, layoutId, portlet, definition, null);
 
 		if (portlet != null) {
 			PortletWindow pw = getPortletWindow();

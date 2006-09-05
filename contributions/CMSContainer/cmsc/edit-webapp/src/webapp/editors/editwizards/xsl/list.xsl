@@ -4,7 +4,6 @@
 
    Author: Nico Klasens
    Created: 25-07-2003
-   Version: $Revision: 1.2 $
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 

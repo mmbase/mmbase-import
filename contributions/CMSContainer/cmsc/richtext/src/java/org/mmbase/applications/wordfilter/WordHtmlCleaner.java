@@ -25,13 +25,12 @@ import xmlbs.PropertiesDocumentStructure;
  * 
  * @author Nico Klasens (Finalist IT Group)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class WordHtmlCleaner {
 
    /** MMBase logging system */
-   private static Logger log = Logging.getLoggerInstance(WordHtmlCleaner.class
-         .getName());
+   private static Logger log = Logging.getLoggerInstance(WordHtmlCleaner.class.getName());
 
    /**
     * xmlbs stuff
@@ -122,8 +121,9 @@ public class WordHtmlCleaner {
             try {
                xmlbs.XMLBS xmlbs = new xmlbs.XMLBS("<body>" + xmlStr
                      + "</body>", xmlbsDTD);
-               xmlbs.setRemoveEmptyTags(true);
+               xmlbs.setRemoveEmptyTags(false); // Uitgezet omdat de <td/><td/> onterecht werd gemerged
                xmlbs.process();
+//                xmlbs.
                ByteArrayOutputStream bout = new ByteArrayOutputStream();
                xmlbs.write(bout);
                bout.flush();
@@ -139,7 +139,8 @@ public class WordHtmlCleaner {
                log.error(Logging.stackTrace(t));
             }
             xmlStr = fixEmptyAnchors(xmlStr);
-            xmlStr = shrinkBR(xmlStr);
+            xmlStr = removeEmptyTags(xmlStr);
+//            xmlStr = shrinkBR(xmlStr);
             log.debug("new value : " + xmlStr);
             return xmlStr;
          } catch (IllegalStateException e) {

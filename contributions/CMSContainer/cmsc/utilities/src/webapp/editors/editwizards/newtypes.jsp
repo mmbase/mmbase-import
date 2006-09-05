@@ -6,7 +6,6 @@
 <html:html xhtml="true">
 	<head>
 		<title><fmt:message key="newtypes.title" /></title>
-		<link rel="stylesheet" type="text/css" href="../style.css" />
 	</head>
 	<body>
 <mm:cloud jspvar="cloud" rank="basic user" loginpage="../../login.jsp">

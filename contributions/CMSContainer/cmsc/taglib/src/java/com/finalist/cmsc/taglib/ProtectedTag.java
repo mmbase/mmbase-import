@@ -17,8 +17,8 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.JspFragment;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
-import com.finalist.cmsc.portalImpl.security.LoginSession;
-import com.finalist.cmsc.portalImpl.services.sitemanagement.SiteManagement;
+import com.finalist.cmsc.services.security.LoginSession;
+import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 
 
 public class ProtectedTag extends SimpleTagSupport {

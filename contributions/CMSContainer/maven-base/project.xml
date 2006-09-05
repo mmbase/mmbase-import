@@ -177,7 +177,7 @@
 		<dependency>
 			<groupId>mmapps</groupId>
 			<artifactId>mmcommons</artifactId>
-			<version>1.3.4</version>
+			<version>1.3.6</version>
 			<type>jar</type>
 			<properties>
 				<war.bundle>${war.bundle}</war.bundle>

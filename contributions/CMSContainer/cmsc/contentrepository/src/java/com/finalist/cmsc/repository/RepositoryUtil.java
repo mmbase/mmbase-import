@@ -521,7 +521,7 @@ public class RepositoryUtil {
             Long date = new Long(System.currentTimeMillis());
             ContentElementUtil.addLifeCycleConstraint(channel, query, date);
         }
-        if (!StringUtil.isEmpty(archive) && "all".equalsIgnoreCase(archive)) {
+        if (!StringUtil.isEmpty(archive)) {
             Long date = new Long(System.currentTimeMillis());
             ContentElementUtil.addArchiveConstraint(channel, query, date, archive);
         }
@@ -689,19 +689,19 @@ public class RepositoryUtil {
      * @param channel get role for this channel
      * @return UserRole - rights of a user
      */
-    public static UserRole getRoleForUser(Cloud cloud, int channel) {
-        return getRoleForUser(cloud, cloud.getNode(channel), false);
+    public static UserRole getRole(Cloud cloud, int channel) {
+        return getRole(cloud, cloud.getNode(channel), false);
     }
 
     /**
      * Get the role for the user for a channel
      *
-     * @param user Node of user
+     * @param group Node of group
      * @param channel get role for this channel
      * @return UserRole - rights of a user
      */
-    public static UserRole getRoleForUser(Node user, Node channel) {
-        return getRoleForUser(user, channel, false);
+    public static UserRole getRole(Node group, Node channel) {
+        return getRole(group, channel, false);
     }
 
     /**
@@ -712,24 +712,24 @@ public class RepositoryUtil {
      * @param rightsInherited inherit rights from parent chennal
      * @return UserRole - rights of a user
      */
-    public static UserRole getRoleForUser(Cloud cloud, Node channel, boolean rightsInherited) {
+    public static UserRole getRole(Cloud cloud, Node channel, boolean rightsInherited) {
         TreeMap<String,UserRole> channelsWithRole = SecurityUtil.getLoggedInRoleMap(cloud, CONTENTCHANNEL, CHILDREL, FRAGMENT_FIELD);
-        return SecurityUtil.getRoleForUser(channel, rightsInherited, channelsWithRole);
+        return SecurityUtil.getRole(channel, rightsInherited, channelsWithRole);
     }
 
     /**
      * Get the role for the user for a channel
      *
-     * @param user Node of user
+     * @param group Node of group
      * @param channel get role for this channel
      * @param rightsInherited inherit rights from parent chennal
      * @return UserRole - rights of a user
      */
-    public static UserRole getRoleForUser(Node user, Node channel, boolean rightsInherited) {
+    public static UserRole getRole(Node group, Node channel, boolean rightsInherited) {
        // retrieve a TreeMap where the channels (keys) are ordered on level and path
        TreeMap<String,UserRole> channelsWithRole = SecurityUtil.getNewRolesMap();
-       SecurityUtil.fillChannelsWithRole(user, channelsWithRole, CONTENTCHANNEL, CHILDREL, FRAGMENT_FIELD);
-       return SecurityUtil.getRoleForUser(channel, rightsInherited, channelsWithRole);
+       SecurityUtil.fillChannelsWithRole(group, channelsWithRole, CONTENTCHANNEL, CHILDREL, FRAGMENT_FIELD);
+       return SecurityUtil.getRole(channel, rightsInherited, channelsWithRole);
     }
 
     public static void setGroupRights(Cloud cloud, Node user, Map rights) {
@@ -737,7 +737,7 @@ public class RepositoryUtil {
     }
 
     public static List getUsersWithRights(Node channel, Role requiredRole) {
-        return SecurityUtil.setGroupRights(channel, requiredRole, CONTENTCHANNEL, CHILDREL);
+        return SecurityUtil.getUsersWithRights(channel, requiredRole, CONTENTCHANNEL, CHILDREL);
     }
 
     public static RepositoryInfo getRepositoryInfo(Cloud cloud) {
@@ -764,4 +764,18 @@ public class RepositoryUtil {
         return info;
     }
 
+
+    
+    /**
+     * This is the method for a USER, the old ones want a GROUP...
+     * (even although the are called getRoleForUser(..)
+     * 
+     * @return
+     */
+    public static UserRole getUserRole(Node page, Node user) {
+    	TreeMap<String, UserRole> pagesWithRole = SecurityUtil.getNewRolesMap();
+    	SecurityUtil.getUserRoleMap(user, new String[]{CONTENTCHANNEL}, CHILDREL, new String[]{FRAGMENT_FIELD}, pagesWithRole);
+        return SecurityUtil.getRole(page, true, pagesWithRole);
+    }
+    
 }
