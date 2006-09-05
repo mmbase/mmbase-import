@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.28 2006-08-03 17:14:59 michiel Exp $
+ * @version $Id: NodeListHelper.java,v 1.29 2006-09-05 11:55:01 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -69,6 +69,8 @@ public class NodeListHelper implements ListProvider {
     protected Attribute add = Attribute.NULL;
     protected Attribute retain = Attribute.NULL;
     protected Attribute remove= Attribute.NULL;
+    protected Attribute varStatus = Attribute.NULL;
+    protected String varStatusName = null;
 
 
     /**
@@ -164,7 +166,12 @@ public class NodeListHelper implements ListProvider {
     public void setRemove(String a) throws JspTagException {
         remove = thisTag.getAttribute(a);
     }
-
+    /**
+     * @since MMBase-1.9
+     */
+    public void setVarStatus(String s) throws JspTagException {
+        varStatus = thisTag.getAttribute(s);
+    }
 
 
     public String getComparator() throws JspTagException {
@@ -271,7 +278,7 @@ public class NodeListHelper implements ListProvider {
     public void doStartTagHelper() throws JspTagException {
         // make a (temporary) container
         collector = new ContextCollector(thisTag.getContextProvider());
-
+        varStatusName = (String) varStatus.getValue(thisTag);
         // serve parent timer tag:
         TagSupport t = thisTag.findParentTag(TimerTag.class, null, false);
         if (t != null) {
@@ -294,6 +301,9 @@ public class NodeListHelper implements ListProvider {
         log.debug("doafterbody");
         if (getId() != null) {
             thisTag.getContextProvider().getContextContainer().unRegister(getId());
+        }
+        if (varStatusName != null) {
+            thisTag.getContextProvider().getContextContainer().unRegister(varStatusName);
         }
 
         if (collector != null) { // might occur for some legacy extensions
@@ -408,6 +418,10 @@ public class NodeListHelper implements ListProvider {
             }
             nodeHelper.setNodeVar(next);
             nodeHelper.fillVars();
+            if (varStatusName != null) {
+                org.mmbase.bridge.jsp.taglib.util.ContextContainer cc = thisTag.getContextProvider().getContextContainer();
+                cc.register(varStatusName, getLoopStatus());
+            }
         } catch (BridgeException be) { // e.g. NodeManager does not exist
             log.warn(be.getMessage(), be);
         }
