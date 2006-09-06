@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * This is done in the MyNews examples (on the news builder), and example JSP's can be found on /mmexamples/taglib/functions.jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ExampleBuilder.java,v 1.13 2006-01-13 15:37:24 pierre Exp $
+ * @version $Id: ExampleBuilder.java,v 1.14 2006-09-06 16:56:24 michiel Exp $
  * @see   ExampleBean For examples on hot to add functions to a builder without extending it.
  * @since MMBase-1.7
  */
@@ -55,11 +55,11 @@ public final class ExampleBuilder extends MMObjectBuilder { // final to avoid th
     /**
      * Implementation of 'builder function', which can be compared with a static method in java.
      */
-    protected final Function listLatestFunction = new AbstractFunction("latest", LISTLATEST_PARAMETERS, ReturnType.NODELIST) {
+    protected final Function listLatestFunction = new AbstractFunction("latest", LISTLATEST_PARAMETERS) {
             {
                 setDescription("This (rather silly) function returns the latest instances of this builder.");
             }
-            public Object getFunctionValue(Parameters parameters) {
+            public NodeList getFunctionValue(Parameters parameters) {
                 Integer max = (Integer) parameters.get("max");
                 Cloud cloud = (Cloud) parameters.get(Parameter.CLOUD);
                 NodeManager thisManager = cloud.getNodeManager(getTableName());
@@ -77,18 +77,18 @@ public final class ExampleBuilder extends MMObjectBuilder { // final to avoid th
     /**
      * Implementation of 'node function', which can be compared with a instance method in java.
      */
-    protected final Function sumFieldsFunction = new NodeFunction("sumfields", SUMFIELDS_PARAMETERS, ReturnType.INTEGER) {
+    protected final Function sumFieldsFunction = new NodeFunction("sumfields", SUMFIELDS_PARAMETERS) {
             {
                 setDescription("This (rather silly) function returns the sum of the given fields of a certain node");
             }
-            public Object getFunctionValue(Node node, Parameters parameters) {
+            public Integer getFunctionValue(Node node, Parameters parameters) {
                 List fields = (List) parameters.get("fields");
                 int result = 0;
                 Iterator i = fields.iterator();
                 while (i.hasNext()) {
                     result += node.getIntValue((String)i.next());
                 }
-                return new Integer(result);
+                return result;
             }
     };
     {
