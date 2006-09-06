@@ -230,6 +230,7 @@ public class ContentHelper {
          String archiveParent = null;
          
          String sPaginaNumber = ap.getDefaultPage(thisType);
+         log.info(thisType + " " + objectNumber + " is related to pagina " + sPaginaNumber);
             
          // finding page related to the contentelement
          if (sPaginaNumber==null){

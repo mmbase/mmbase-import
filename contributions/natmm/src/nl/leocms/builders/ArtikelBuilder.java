@@ -35,9 +35,8 @@ public class ArtikelBuilder extends ContentElementBuilder {
       String sNodeNumber = node.getStringValue("number");
       Cloud cloud = CloudFactory.getCloud();
       NodeList nl = cloud.getList(sNodeNumber,"artikel,posrel,paragraaf",
-      "posrel.number,posrel.pos,paragraaf.number",null,"posrel.pos,paragraaf.number","up,up",null,true);
+         "posrel.number",null,"posrel.pos,paragraaf.number","up,down",null,false);
       for (int i = 0; i < nl.size(); i++){
-         String sParagraafNumber = nl.getNode(i).getStringValue("paragraaf.number");
          Node nPosrel = cloud.getNode(nl.getNode(i).getStringValue("posrel.number"));
          nPosrel.setIntValue("pos",i+1);
          nPosrel.commit();

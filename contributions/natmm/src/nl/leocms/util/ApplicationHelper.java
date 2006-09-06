@@ -27,9 +27,16 @@ public class ApplicationHelper {
    private static Logger log = Logging.getLoggerInstance(ApplicationHelper.class.getName());
    
    Cloud cloud;
+   boolean isInstalledNatMM;
+   boolean isInstalledNatNH;
+   boolean isInstalledNMIntra;
+   
    
    public ApplicationHelper(Cloud cloud) {
       this.cloud = cloud;
+      this.isInstalledNatMM = isInstalled("NatMM");
+      this.isInstalledNatNH = isInstalled("NatNH");
+      this.isInstalledNMIntra = isInstalled("NMIntra");
    }
 	
 	public boolean isInstalled(String sApplication) {
@@ -45,21 +52,21 @@ public class ApplicationHelper {
    public ArrayList getContentTypes() {
       
       ArrayList contentTypes = new ArrayList(25);
-  
+			
       // todo: create a more generic version for this piece of code
-		if(isInstalled("NatMM")) {
+		if(isInstalledNatMM) {
 			for(int f = 0; f < NatMMConfig.CONTENTELEMENTS.length; f++) {
             contentTypes.add(NatMMConfig.CONTENTELEMENTS[f]);
             contentTypes.add("dossier"); // dossier is not a content element, but content elements can be added to it
 			}
 		}
-		if(isInstalled("NatNH")) {
+		if(isInstalledNatNH) {
 			for(int f = 0; f < NatNHConfig.CONTENTELEMENTS.length; f++) {
             contentTypes.add(NatNHConfig.CONTENTELEMENTS[f]);
 			}
       }
-		if(isInstalled("NMIntra")) {
-			for(int f = 0; f < NMIntraConfig.CONTENTELEMENTS.length; f++) {
+		if(isInstalledNMIntra) {
+		   for(int f = 0; f < NMIntraConfig.CONTENTELEMENTS.length; f++) {
             contentTypes.add(NMIntraConfig.CONTENTELEMENTS[f]);
          }
       }
@@ -74,21 +81,21 @@ public class ApplicationHelper {
 	
 	   HashMap pathsFromPageToElements = new HashMap();
 		// todo: create a more generic version for this piece of code
-		if(isInstalled("NatMM")) {
+		if(isInstalledNatMM) {
 			for(int f = 0; f < NatMMConfig.OBJECTS.length; f++) {
 				pathsFromPageToElements.put(
 					NatMMConfig.OBJECTS[f],
 					NatMMConfig.PATHS_FROM_PAGE_TO_OBJECTS[f]);
 			}
 		}
-		if(isInstalled("NatNH")) {
+		if(isInstalledNatNH) {
 			for(int f = 0; f < NatNHConfig.OBJECTS.length; f++) {
 				pathsFromPageToElements.put(
 					NatNHConfig.OBJECTS[f],
 					NatNHConfig.PATHS_FROM_PAGE_TO_OBJECTS[f]);
 			}
       }
-		if(isInstalled("NMIntra")) {
+		if(isInstalledNMIntra) {
 			for(int f = 0; f < NMIntraConfig.OBJECTS.length; f++) {
 				pathsFromPageToElements.put(
 					NMIntraConfig.OBJECTS[f],
@@ -105,12 +112,12 @@ public class ApplicationHelper {
 
       // some exceptions of objects belonging to pages, but not actually related
       String sPaginaNumber = null;
-      if (isInstalled("NatMM")) {
+      if (isInstalledNatMM) {
          if (thisType.equals("evenementen")) {
             sPaginaNumber = cloud.getNodeByAlias("agenda").getStringValue("number");
          }
       }
-      if (isInstalled("NMIntra")) {
+      if (isInstalledNMIntra) {
          if (thisType.equals("medewerkers")) {
             sPaginaNumber = cloud.getNodeByAlias("wieiswie").getStringValue("number");
          }
@@ -126,7 +133,47 @@ public class ApplicationHelper {
       }
       return sPaginaNumber;
    }
-   			
+   
+   public String getIncomingDir() {
+      if (isInstalledNatMM) {
+         return NatMMConfig.incomingDir;
+      }
+      if (isInstalledNMIntra) {
+         return NMIntraConfig.incomingDir;
+      } 
+      return null;
+   }
+   
+   public String getTempDir() {
+      if (isInstalledNatMM) {
+         return NatMMConfig.tempDir;
+      }
+      if (isInstalledNMIntra) {
+         return NMIntraConfig.tempDir;
+      }
+      return null;
+   }
+
+   public String getToEmailAddress() {
+      if (isInstalledNatMM) {
+         return NatMMConfig.toEmailAddress;
+      }
+      if (isInstalledNMIntra) {
+         return NMIntraConfig.toEmailAddress;
+      }
+      return null;
+   }
+
+   public String getFromEmailAddress() {
+      if (isInstalledNatMM) {
+         return NatMMConfig.fromEmailAddress;
+      }
+      if (isInstalledNMIntra) {
+         return NMIntraConfig.fromEmailAddress;
+      }
+      return null;
+   }
+
    /**
     * Returns an comma separated list for all content types names
     * @return
