@@ -1,9 +1,5 @@
 <?xml version="1.0"?>
-<!DOCTYPE project 
- [ <!ENTITY base     SYSTEM "../buildbase.xml" > ]
->
-
-<project name="oscache" default="dependent.jar" basedir=".">
+<project name="oscache" default="jar" basedir=".">
   
   <property name="project.name"      value="oscache"/>
   <property name="project.package"   value="org/mmbase/cache/oscache" />
@@ -14,19 +10,15 @@
   <property name="project.config.jar.includes"   value="**" />
 
   <property name="project.jars.dir"        value="build" />
-  <property name="project.jars.includes"   value="oscache-2.2.jar" />
+  <property name="project.jars.includes"   value="oscache-2.3.2.jar" />
 
-  &base;
+  <import file="../buildbase-include.xml" />
+
   <property file="build.properties.default" />
   
-  <target name="dependent.package"       depends="dependent.jar,package" />
-
-  <target name="dependent.jar" description="Create mmbase-oscache.jar" depends="oscache.jar,project.manifest,jar">
+  <target name="jar" description="Create mmbase-oscache.jar" depends="oscache.jar,project.manifest,buildbase.jar">
   </target>
 
-  <target name="dependent.install" description="Install oscache implementation" 
-	  depends="dependent.jar,install" >
-  </target>
 
   <target name="oscache.jar" description="Get OSCache jar">
     <antcall target="download">
