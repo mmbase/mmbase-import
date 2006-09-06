@@ -33,7 +33,7 @@ import org.w3c.dom.Element;
  * {@link #VirtualNode(org.mmbase.module.core.VirtualNode, Cloud)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: VirtualNode.java,v 1.19 2006-02-15 12:57:46 michiel Exp $
+ * @version $Id: VirtualNode.java,v 1.20 2006-09-06 16:47:49 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.VirtualNode
  * @since MMBase-1.8
@@ -66,6 +66,7 @@ public class VirtualNode extends AbstractNode implements Node {
     /**
      * Makes a Node from a map of values. Sadly, this uses a local MMBase, so you can't use this with
      * e.g. RMMCI, but I didn't feel like reimplementating Node completely..
+     * See {@link org.mmbase.bridge.util.MapNode}, which <em>is</em> a complete reimplementation (with no core dependencies).
      */
     public VirtualNode(Map values, Cloud cloud) {
         this(getVirtualNode(values), cloud);
