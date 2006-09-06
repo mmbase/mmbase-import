@@ -331,8 +331,9 @@
 	<% log.info("17. Rename some admin editwizards"); %>
 	<mm:listnodes type="editwizards" constraints="wizard = 'config/pools/pools'">
 		<mm:setfield name="nodepath">pools</mm:setfield>
-		<mm:setfield name="fields">pools.name</mm:setfield>
-		<mm:setfield name="orderby">pools.name</mm:setfield>
+		<mm:setfield name="fields">name</mm:setfield>
+		<mm:setfield name="orderby">name</mm:setfield>
+		<mm:setfield name="searchfields">name</mm:setfield>
 	</mm:listnodes>
 	<mm:listnodes type="editwizards" constraints="wizard = 'config/mmbaseusers/mmbaseusers'">
 		<mm:setfield name="wizard">/editors/usermanagement/userlist.jsp</mm:setfield>

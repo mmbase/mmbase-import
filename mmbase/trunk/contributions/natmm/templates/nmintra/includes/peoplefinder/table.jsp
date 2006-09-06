@@ -76,7 +76,7 @@
            >
        <%--            <tr><td style="padding-bottom:3px;">Verjaardag:&nbsp;</td><td style="padding-bottom:3px;vertical-align:bottom;"><mm:field name="birthday" id="birthday" write="false"/><mm:time format="d MMM" referid="birthday" /></td></tr>
                <tr><td style="padding-bottom:3px;">In dienst per:&nbsp;</td><td style="padding-bottom:3px;vertical-align:bottom;"><mm:field name="enrolldate" id="enroll" write="false"/><mm:time format="dd MMM yyyy" referid="enroll" /></td></tr>
-       --%>   <tr><td style="padding-bottom:3px;">Vrije dag:&nbsp;</td><td style="padding-bottom:3px;vertical-align:bottom;"><mm:field name="intro" /></td></tr>
+       --%>   <tr><td style="padding-bottom:3px;">Vrije dag:&nbsp;</td><td style="padding-bottom:3px;vertical-align:bottom;"><mm:field name="omschrijving_fra" /></td></tr>
               <tr><td style="padding-bottom:3px;">En verder:&nbsp;</td><td style="padding-bottom:3px;vertical-align:bottom;"><mm:field name="omschrijving" /></td></tr>
         <% } %>
         </table>

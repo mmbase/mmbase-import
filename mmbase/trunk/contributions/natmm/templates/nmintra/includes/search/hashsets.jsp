@@ -64,7 +64,7 @@ if (!sQuery.equals("")){
 	
 	hsetPageDescrNodes = su.addPages(cloud, "pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
 }
-// *** Create list of categories from list of pages: hSetCategories ***
+// *** Create list of categories from list of pages: hsetRubrieken ***
 // *** Seems to me it is faster than create another index ***
 for (Iterator it = hsetPagesNodes.iterator(); it.hasNext(); ) {
    
@@ -74,7 +74,7 @@ for (Iterator it = hsetPagesNodes.iterator(); it.hasNext(); ) {
       continue;
    }
    %><mm:node number="<%=sPageID%>">
-		<% hsetCategories.add(ph.getHoofdRubriek(cloud,sPageID));%>
+		<% hsetRubrieken.add(ph.getHoofdRubriek(cloud,sPageID));%>
    </mm:node><%
 }
 %>
