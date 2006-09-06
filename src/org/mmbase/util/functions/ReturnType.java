@@ -19,7 +19,7 @@ import java.util.*;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
 
- * @version $Id: ReturnType.java,v 1.15 2006-08-31 18:06:03 michiel Exp $
+ * @version $Id: ReturnType.java,v 1.16 2006-09-06 13:33:56 michiel Exp $
  * @since MMBase-1.7
  */
 public class ReturnType extends Parameter implements java.io.Serializable {
@@ -28,6 +28,9 @@ public class ReturnType extends Parameter implements java.io.Serializable {
      * The return type of a function that does not return a thing.
      */
     public static final ReturnType VOID = new ReturnType(void.class, "Does not return anything");
+
+    public static final class Void {
+    }
 
     /**
      * The return type of a function that returns a String.
@@ -101,6 +104,43 @@ public class ReturnType extends Parameter implements java.io.Serializable {
      * requires you to return <em>something</em>).
      */
     public static final Object VOID_VALUE = new Object();
+
+    /**
+     * @since MMBase-1.9
+     */
+    public static final ReturnType getReturnType(Class type) {
+        if (type.equals(void.class)) {
+            return VOID;
+        } else if (type.equals(String.class)) {
+            return STRING;
+        } else if (type.equals(CharSequence.class)) {
+            return CHARSEQUENCE;
+        } else if (type.equals(Integer.class)) {
+            return INTEGER;
+        } else if (type.equals(Long.class)) {
+            return LONG;
+        } else if (type.equals(Double.class)) {
+            return DOUBLE;
+        } else if (type.equals(Boolean.class)) {
+            return BOOLEAN;
+        } else if (type.equals(List.class)) {
+            return LIST;
+        } else if (type.equals(org.mmbase.bridge.NodeList.class)) {
+            return NODELIST;
+        } else if (type.equals(org.mmbase.bridge.Node.class)) {
+            return NODE;
+        } else if (type.equals(Set.class)) {
+            return SET;
+        } else if (type.equals(Collection.class)) {
+            return COLLECTION;
+        } else if (type.equals(Map.class)) {
+            return MAP;
+        } else if (type.equals(Void.class)) {
+            return VOID;
+        } else {
+            return new ReturnType(type, type.getName());
+        }
+    }
 
     private Map<String, ReturnType> typeStruct = new HashMap<String, ReturnType>(); 
 

@@ -23,14 +23,14 @@ import org.mmbase.util.logging.Logging;
  * the Parameter array of the constructor.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.22 2006-08-31 18:05:43 michiel Exp $
+ * @version $Id: NodeFunction.java,v 1.23 2006-09-06 13:33:56 michiel Exp $
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
  * @see org.mmbase.util.functions.BeanFunction
  * @since MMBase-1.8
  */
 
-public abstract class NodeFunction extends AbstractFunction {
+public abstract class NodeFunction<R> extends AbstractFunction<R> {
 
     private static final Logger log = Logging.getLoggerInstance(NodeFunction.class);
 
@@ -80,7 +80,7 @@ public abstract class NodeFunction extends AbstractFunction {
     /**
      * Returns a new instance of NodeInstanceFunction, which represents an actual Function.
      */
-    final public Function newInstance(MMObjectNode node) {
+    final public Function<R> newInstance(MMObjectNode node) {
         return new NodeInstanceFunction(node);
     }
 
@@ -92,7 +92,7 @@ public abstract class NodeFunction extends AbstractFunction {
      *
      * XXX: made final because it does not work well if you don't implement a bridge version
      */
-    protected final Object getFunctionValue(final MMObjectNode coreNode, final Parameters parameters) {
+    protected final R getFunctionValue(final MMObjectNode coreNode, final Parameters parameters) {
         if (coreNode == null) throw new RuntimeException("No node argument given for " + this + "(" + parameters + ")!");
         Node node = (Node) parameters.get(Parameter.NODE);
         if (node == null) {
@@ -160,7 +160,7 @@ public abstract class NodeFunction extends AbstractFunction {
 
     /**
      */
-    protected abstract Object getFunctionValue(Node node, Parameters parameters);
+    protected abstract R getFunctionValue(Node node, Parameters parameters);
 
     protected Node getNode(Parameters parameters) {
         if (! parameters.containsParameter(Parameter.NODE)) {
@@ -177,7 +177,7 @@ public abstract class NodeFunction extends AbstractFunction {
      * To implement a NodeFunction, you must override {@link #getFunctionValue(Node, Parameters)}.
      * This one can be overriden if the same function must <em>also</em> be a builder function.
      */
-    public Object getFunctionValue(Parameters parameters) {
+    public R getFunctionValue(Parameters parameters) {
         return  getFunctionValue(getNode(parameters), parameters);
     }
 
@@ -185,7 +185,7 @@ public abstract class NodeFunction extends AbstractFunction {
      * This represents the function on one specific Node. This is instantiated when new Istance
      * if called on a NodeFunction.
      */
-    private class NodeInstanceFunction extends WrappedFunction {
+    private class NodeInstanceFunction extends WrappedFunction<R> {
 
         protected MMObjectNode node;
 
@@ -194,7 +194,7 @@ public abstract class NodeFunction extends AbstractFunction {
             this.node = node;
         }
         //javadoc inherited
-        public final Object getFunctionValue(Parameters parameters) {
+        public final R getFunctionValue(Parameters parameters) {
             parameters.set(Parameter.CORENODE, node);
             return NodeFunction.this.getFunctionValue(node, parameters);
 

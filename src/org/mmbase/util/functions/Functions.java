@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Functions.java,v 1.13 2006-08-31 18:06:03 michiel Exp $
+ * @version $Id: Functions.java,v 1.14 2006-09-06 13:33:56 michiel Exp $
  */
 public class Functions {
 
@@ -50,7 +50,7 @@ public class Functions {
      * Adds the definitions to a List. Resolves the {@link Parameter.Wrapper}'s (recursively).
      * @return List with only simple Parameter's.
      */
-    public static List<Parameter> define(Parameter[] def, List list) {
+    public static List<Parameter> define(Parameter[] def, List<Parameter> list) {
         if (def == null) return list;
         for (Parameter d : def) {
             if (d instanceof Parameter.Wrapper) {
