@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: StringDataType.java,v 1.35 2006-07-17 07:32:29 pierre Exp $
+ * @version $Id: StringDataType.java,v 1.36 2006-09-06 18:23:02 michiel Exp $
  * @since MMBase-1.8
  */
 public class StringDataType extends ComparableDataType implements LengthDataType {
@@ -238,6 +238,8 @@ public class StringDataType extends ComparableDataType implements LengthDataType
 
     protected Collection validateCastValue(Collection errors, Object castValue, Object value, Node node, Field field) {
         errors = super.validateCastValue(errors, castValue, value,  node, field);
+
+
         errors = patternRestriction.validate(errors, castValue, node, field);
         errors = minLengthRestriction.validate(errors, castValue, node, field);
         errors = maxLengthRestriction.validate(errors, castValue, node, field);
