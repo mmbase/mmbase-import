@@ -20,9 +20,9 @@ import org.mmbase.bridge.Cacheable;
  * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.38 2006-09-04 12:55:04 michiel Exp $
+ * @version $Id: Cache.java,v 1.39 2006-09-06 18:29:09 michiel Exp $
  */
-abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V>, CacheMessageListener {
+abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
 
     private static final Logger log = Logging.getLoggerInstance(Cache.class);
 
@@ -416,12 +416,14 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V>, CacheMes
         return CacheManager.getTotalByteSize();
     }
 
+    /*
     public void notify(CacheMessage message) {
         switch(message.getType()) {
         case CacheMessage.TYPE_CLEAR:  clear(); break;
         case CacheMessage.TYPE_DELETE: remove(message.getKey()); break;
         }
     }
+    */
 
     public static void main(String args[]) {
         Cache mycache = new Cache(20000000) {
