@@ -107,6 +107,7 @@ public class ClassToXML {
                 Element method = document.createElement("method");
                 key += "method";
                 method.setAttribute("name", methods[i].getName());
+                method.setAttribute("varargs", "" + methods[i].isVarArgs());
                 key += methods[i].getName();
 
                 Element parameters = document.createElement("input");
