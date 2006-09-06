@@ -22,7 +22,7 @@
         If false (or empty), it will do updates.
         If it starts with "host:<hostname>" it will be readonly, unless if <hostname> equals  java.net.InetAddress.getLocalHost().getHostName() 
                                        or if it cantains a @ System.getProperty("catalina.base")@java.net.InetAddress.getLocalHost().getHostName()
-        If it starts with "system:" then the remaining part will be used as a System property, and it's value is used, to start evaluation again.
+        If it starts with "system:" then the remaining part will be used as a System property, and its value is used, to start evaluation again.
     -->
     <property name="readonly">system:mmbase.lucene.readonly</property>
   </properties>
