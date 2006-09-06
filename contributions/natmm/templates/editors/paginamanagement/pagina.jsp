@@ -90,6 +90,7 @@
 <%
    RubriekHelper rubriekHelper = new RubriekHelper(cloud);
    PaginaHelper paginaHelper = new PaginaHelper(cloud);
+   ApplicationHelper applicationHelper = new ApplicationHelper(cloud);
    AuthorizationHelper authHelper = new AuthorizationHelper(cloud);
    String username = cloud.getUser().getIdentifier();
    String rubriekNodeNumber = null;
@@ -136,7 +137,16 @@ Rubriek:
 --%>
    <table class="formcontent">
       <tr><td width="200" valign="top">Titel</td><td><html:text property="titel" size='40' maxlength='64'/> <span class="notvalid"><html:errors bundle="LEOCMS" property="titel" /></span></td></tr>
-      <tr><td valign="top" nowrap>Korte titel</td><td><html:text property="kortetitel" size='40' maxlength='40'/> <span class="notvalid"><html:errors bundle="LEOCMS" property="kortetitel" /></span></td></tr>
+      <%
+      if(applicationHelper.isInstalled("NatMM")) {
+         %>
+         <tr><td valign="top" nowrap>Korte titel</td><td><html:text property="kortetitel" size='40' maxlength='40'/> <span class="notvalid"><html:errors bundle="LEOCMS" property="kortetitel" /></span></td></tr>
+         <%
+      } else {
+         %>
+         <html:hidden property="kortetitel" value=' ' />
+         <%
+      } %>
       <input type="hidden" name="urlfragment" value="dummy" />
       
 <%-- hh 
