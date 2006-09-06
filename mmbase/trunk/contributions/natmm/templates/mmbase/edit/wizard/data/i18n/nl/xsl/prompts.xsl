@@ -9,7 +9,7 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.2 2006-08-13 21:07:47 henk Exp $
+  @version $Id: prompts.xsl,v 1.3 2006-09-06 09:37:08 henk Exp $
   -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -97,6 +97,7 @@
 <!-- search : other filters -->
 <xsl:template name="prompt_search_list" >Zoek</xsl:template>
 <xsl:template name="prompt_search_term" >Termen</xsl:template>
+<xsl:template name="prompt_search_page" ><img src="{$mediadir}search_page.gif" border="0" alt="Zoek op deze pagina" /></xsl:template>
 <xsl:template name="prompt_search" ><img src="{$mediadir}search.gif" border="0" alt="Zoek" /></xsl:template>
 <xsl:variable name="tooltip_search" >Zoek een toe te voegen item</xsl:variable>
 <xsl:template name="prompt_search_title" >Titel bevat</xsl:template>
