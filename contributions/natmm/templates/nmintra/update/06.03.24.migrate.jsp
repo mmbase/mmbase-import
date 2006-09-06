@@ -58,13 +58,13 @@
   </mm:listnodes>
   6. Analyzing titels of articles and paragraaf to remove #NZ# string.<br/>
   Processing...<br/>
-   <mm:listnodes type="artikel" constraints="UPPER(titel) LIKE '#NZ#'">
+   <mm:listnodes type="artikel" constraints="UPPER(titel) LIKE '#NZ#%'">
 		<mm:field name="titel" jspvar="titel" vartype="String" write="false">
 			<mm:setfield name="titel"><%= titel.replaceAll("#NZ#","").replaceAll("#nz#","").trim() %></mm:setfield>
 			<mm:setfield name="titel_zichtbaar">0</mm:setfield>
 		</mm:field>
 	</mm:listnodes>
-	<mm:listnodes type="paragraaf" constraints="UPPER(titel) LIKE '#NZ#'">
+	<mm:listnodes type="paragraaf" constraints="UPPER(titel) LIKE '#NZ#%'">
 		<mm:field name="titel" jspvar="titel" vartype="String" write="false">
 			<mm:setfield name="titel"><%= titel.replaceAll("#NZ#","").replaceAll("#nz#","").trim() %></mm:setfield>
 			<mm:setfield name="titel_zichtbaar">0</mm:setfield>

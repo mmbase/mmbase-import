@@ -1,5 +1,8 @@
 <%
-// *** delete expired articles from this page (if it is not the archive) ***
+/*
+delete expired articles from this page (if it is not the archive)
+all archives should have an oalias with "archief" as substring
+*/
 boolean isArchive = false;
 %><mm:node number="<%= paginaID %>"
    ><mm:aliaslist
@@ -9,31 +12,43 @@ boolean isArchive = false;
    ></mm:aliaslist><%
 %></mm:node><%
 if(!isArchive) {
-   // move expired artikelen to archive or delete node
-   String articleConstraint = "(artikel.use_verloopdatum='0' OR artikel.verloopdatum > '" + nowSec + "' )";
-   %><mm:list nodes="<%= paginaID %>" path="pagina1,readmore,pagina2"
-      ><mm:node element="pagina2" id="archive"
-      ><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel" 
-	    	orderby="artikel.embargo" searchdir="destination" 
-         constraints="<%= "!( " + articleConstraint + " )" %>"
-         	><mm:deletenode element="contentrel" 
-            /><mm:node element="artikel" id="thisarticle"
-               ><mm:field name="archive"
-                  ><mm:compare value="no"
-                     ><mm:relatednodes type="paragraaf"
-                        ><mm:deletenode 
-                     /></mm:relatednodes
-                     ><mm:deletenode
+   /* 
+   move expired artikelen to archive or delete node
+   pages can have their individual archives by using a pagina,readmore,pagina relationship
+   if this relation is not present the general archive with oalias "archief" is used
+   */
+   %>
+   <mm:node number="<%= paginaID %>">
+      <mm:related path="readmore,pagina" searchdir="destination">
+         <mm:node number="archief" id="archive" />
+      </mm:related>
+      <mm:notpresent referid="archive">
+         <mm:node number="archief" id="archive" />
+      </mm:notpresent>
+      <mm:present referid="archive">
+         <%
+         String articleConstraint = "(artikel.use_verloopdatum='0' OR artikel.verloopdatum > '" + nowSec + "' )";
+         %><mm:related path="contentrel,artikel" 
+   	    	orderby="artikel.embargo" searchdir="destination" 
+            constraints="<%= "!( " + articleConstraint + " )" %>"
+            	><mm:deletenode element="contentrel" 
+               /><mm:node element="artikel" id="thisarticle"
+                  ><mm:field name="archive"
+                     ><mm:compare value="no"
+                        ><mm:relatednodes type="paragraaf"
+                           ><mm:deletenode 
+                        /></mm:relatednodes
+                        ><mm:deletenode
+                        /></mm:compare
+                     ><mm:compare value="no" inverse="true"
+                        ><mm:createrelation source="archive" destination="thisarticle" role="contentrel" 
                      /></mm:compare
-                  ><mm:compare value="no" inverse="true"
-                     ><mm:createrelation source="archive" destination="thisarticle" role="contentrel" 
-                  /></mm:compare
-              ></mm:field
-            ></mm:node
-            ><mm:remove referid="thisarticle" 
-		/></mm:list
-   ></mm:node
-  ></mm:list><% 
+                 ></mm:field
+               ></mm:node
+               ><mm:remove referid="thisarticle" 
+   		/></mm:related>
+      </mm:present>
+   </mm:node><% 
 } else {
    // check if artikelen should be removed from archive
    String articleConstraint = "(artikel.archive = 'half_year' AND artikel.verloopdatum < '" + nowSec + "' )";

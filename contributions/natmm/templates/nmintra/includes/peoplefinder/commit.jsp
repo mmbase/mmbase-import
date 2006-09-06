@@ -91,10 +91,10 @@ if(date.equals("")) { // *** send an email to ask confirmation ***
             faxId = e.getStringValue("fax");
             emailId = e.getStringValue("email");
             jobId = e.getStringValue("job");
-            omschrijving_engId = e.getStringValue("omschrijving_eng");
-            omschrijving_deId = e.getStringValue("omschrijving_de");
-            omschrijving_fraId = e.getStringValue("omschrijving_fra");
-            omschrijvingId = e.getStringValue("omschrijving");
+            omschrijving_engId = e.getStringValue("omschrijving_eng"); // regio/afdeling en functie
+            omschrijving_deId = e.getStringValue("omschrijving_de");   // lokatie
+            omschrijving_fraId = e.getStringValue("omschrijving_fra"); // vaste vrije dag(en)
+            omschrijvingId = e.getStringValue("omschrijving");         // en verder
             %><mm:deletenode 
         /></mm:node
         ><%@include file="texts.jsp" %><% 
