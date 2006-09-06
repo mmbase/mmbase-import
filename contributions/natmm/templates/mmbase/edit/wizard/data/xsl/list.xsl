@@ -7,7 +7,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: list.xsl,v 1.2 2006-08-13 21:07:47 henk Exp $
+    @version $Id: list.xsl,v 1.3 2006-09-06 09:37:08 henk Exp $
     @version added newfromlist functionality
   -->
 
@@ -168,13 +168,18 @@
                   <input type="hidden" name="language" value="${language}" />
                   <input type="text" name="searchvalue" value="{$searchvalue}" class="search" />
 
-                    <a href="javascript:document.forms[0].submit();">
-                      <xsl:call-template name="prompt_search" />
-                    </a>
+                    <xsl:if test="$newfromlist=&apos;-1&apos;">
+                       <a href="javascript:document.forms[0].submit();">
+                         <xsl:call-template name="prompt_search" />
+                       </a>
+                    </xsl:if>
                     <xsl:if test="$newfromlist!=&apos;-1&apos;">
-                     <span title="{$tooltip_search}" onClick="doMySearch(this);">
-                       <img src="{$mediadir}search_all.gif" class="imgbutton" alt="Search in MMBase"/>
-                     </span>
+                       <a href="javascript:document.forms[0].submit();">
+                         <xsl:call-template name="prompt_search_page" />
+                       </a>
+                       <span title="{$tooltip_search}" onClick="doMySearch(this);">
+                         <img src="{$mediadir}search_all.gif" class="imgbutton" alt="Zoek in de website"/>
+                       </span>
                     </xsl:if>
                     <br />
                   <span class="subscript">
