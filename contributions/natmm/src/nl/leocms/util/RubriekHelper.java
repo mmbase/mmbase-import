@@ -22,11 +22,7 @@ package nl.leocms.util;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.TreeMap;
+import java.util.*;
 
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
@@ -406,6 +402,43 @@ public class RubriekHelper {
          
       }
       return paginaNodeNumber;
+   }
+   
+   /**
+    * Returns all visible pages for rubriek or pagina with number objectNumber
+    * 
+    * @param objectNumber
+    * @return HashSet hm
+    */
+   public HashSet getAllPages(String objectNumber) {
+      
+      HashSet hm = new HashSet();
+      
+      Node n = cloud.getNode(objectNumber);
+      String nType = n.getNodeManager().getName();
+      if(nType.equals("pagina")){
+      
+         hm.add(objectNumber);
+      
+      } else {
+           
+         TreeMap subObjects = (TreeMap) getSubObjects(objectNumber);
+         while(subObjects.size()>0) {
+            Integer nextKey = (Integer) subObjects.firstKey();
+            String nextObject =  (String) subObjects.get(nextKey);
+            subObjects.remove(nextKey);
+            
+            n = cloud.getNode(nextObject);
+            nType = n.getNodeManager().getName();
+            if(nType.equals("pagina")){
+               hm.add(nextObject);
+            } else { 
+               hm.addAll(getAllPages(nextObject));
+            }
+         }
+         
+      }
+      return hm;
    }
    
    /**
