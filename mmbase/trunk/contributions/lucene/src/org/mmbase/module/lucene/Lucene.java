@@ -46,7 +46,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.65 2006-08-31 09:26:28 michiel Exp $
+ * @version $Id: Lucene.java,v 1.66 2006-09-06 16:47:14 michiel Exp $
  **/
 public class Lucene extends Module implements NodeEventListener, IdEventListener {
 
@@ -125,8 +125,8 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
     private String indexPath = null;
     private Scheduler scheduler = null;
     private String defaultIndex = null;
-    private Map indexerMap    = new ConcurrentHashMap();
-    private Map searcherMap   = new ConcurrentHashMap();
+    private Map<String, Indexer> indexerMap    = new ConcurrentHashMap();
+    private Map<String, Searcher> searcherMap   = new ConcurrentHashMap();
     private boolean readOnly = false;
 
 
@@ -154,16 +154,9 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
      * This function starts a full Index of Lucene.
      * This may take a while.
      * This function can be called through the function framework.
-     * <p>Parameters:</p>
-     * <ul>
-     * <li> - index: name of the index to reindex or empty for full indexing
-     * </ul>
-     * <p>Return: void</p>
      */
-    protected Function fullIndexFunction = new AbstractFunction("fullIndex",
-                                                                new Parameter[] {INDEX},
-                                                                ReturnType.VOID) {
-        public Object getFunctionValue(Parameters arguments) {
+    protected Function fullIndexFunction = new AbstractFunction("fullIndex", INDEX) {
+        public ReturnType.Void getFunctionValue(Parameters arguments) {
             if (scheduler == null) throw new RuntimeException("Read only");
             String index = (String) arguments.get(INDEX);
             if (index == null || "".equals(index)) {
@@ -183,10 +176,8 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
      * if the Parameter 'index' has value null, all indexes are iterated over, otherwise
      * the right index is addressed.
      */
-    protected Function deleteIndexFunction = new AbstractFunction("deleteIndex",
-                                                                  new Parameter[] {INDEX, IDENTIFIER, CLASS},
-                                                                  ReturnType.VOID) {
-            public Object getFunctionValue(Parameters arguments) {
+    protected Function deleteIndexFunction = new AbstractFunction("deleteIndex", INDEX, IDENTIFIER, CLASS) {
+            public ReturnType.Void getFunctionValue(Parameters arguments) {
                 if (scheduler == null) throw new RuntimeException("Read only");
                 if(!readOnly){
                     String index      = (String) arguments.get(INDEX);
@@ -211,10 +202,8 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
      * This function can be called through the function framework.
      * It (re)loads the index for a specific item (identified by 'identifier' parameter).
      */
-    protected Function updateIndexFunction = new AbstractFunction("updateIndex",
-                                                                  new Parameter[] { new Parameter(IDENTIFIER, true),  CLASS},
-                                                                  ReturnType.VOID) {
-            public Object getFunctionValue(Parameters arguments) {
+    protected Function updateIndexFunction = new AbstractFunction("updateIndex", new Parameter(IDENTIFIER, true),  CLASS) {
+            public ReturnType.Void getFunctionValue(Parameters arguments) {
                 if (scheduler == null) throw new RuntimeException("Read only");
                 scheduler.updateIndex(arguments.getString(IDENTIFIER), (Class) arguments.get(CLASS));
                 return null;
@@ -228,16 +217,16 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
     /**
      * This function returns the status of the scheduler. For possible values see: Lucene.Scheduler
      */
-    protected Function statusFunction = new AbstractFunction("status", Parameter.EMPTY, ReturnType.INTEGER) {
-        public Object getFunctionValue(Parameters arguments) {
-            return new Integer(scheduler == null ? Scheduler.READONLY : scheduler.getStatus());
+    protected Function statusFunction = new AbstractFunction("status") {
+        public Integer getFunctionValue(Parameters arguments) {
+            return scheduler == null ? Scheduler.READONLY : scheduler.getStatus();
         }
     };
     {
         addFunction(statusFunction);
     }
-    protected Function statusDescriptionFunction = new AbstractFunction("statusdescription", new Parameter[] {Parameter.LOCALE}, ReturnType.STRING) {
-        public Object getFunctionValue(Parameters arguments) {
+    protected Function statusDescriptionFunction = new AbstractFunction("statusdescription", Parameter.LOCALE) {
+        public String getFunctionValue(Parameters arguments) {
             Locale locale = (Locale) arguments.get(Parameter.LOCALE);
             SortedMap map = SortedBundle.getResource("org.mmbase.module.lucene.resources.status",  locale,
                                                      getClass().getClassLoader(),
@@ -250,8 +239,17 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
     {
         addFunction(statusDescriptionFunction);
     }
-    protected Function queueFunction = new AbstractFunction("queue", Parameter.EMPTY, ReturnType.COLLECTION) {
-        public Object getFunctionValue(Parameters arguments) {
+
+    protected Function assignmentFunction = new AbstractFunction("assignment") {
+        public Scheduler.Assignment getFunctionValue(Parameters arguments) {
+            return scheduler == null ? null : scheduler.getAssignment();
+        }
+    };
+    {
+        addFunction(statusDescriptionFunction);
+    }
+    protected Function queueFunction = new AbstractFunction("queue") {
+        public Collection<Scheduler.Assignment> getFunctionValue(Parameters arguments) {
             return scheduler == null ? Collections.EMPTY_LIST : scheduler.getQueue();
         }
     };
@@ -259,9 +257,9 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
         addFunction(queueFunction);
     }
 
-    protected Function readOnlyFunction = new AbstractFunction("readOnly", Parameter.EMPTY, ReturnType.BOOLEAN){
-        public Object getFunctionValue(Parameters arguments) {
-            return Boolean.valueOf(readOnly);
+    protected Function readOnlyFunction = new AbstractFunction("readOnly"){
+        public Boolean getFunctionValue(Parameters arguments) {
+            return readOnly;
         }
     };
     {
@@ -271,8 +269,8 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
     /**
      * This function returns Set with the names of all confiured indexes.
      */
-    protected Function listFunction = new AbstractFunction("list", Parameter.EMPTY, ReturnType.SET) {
-            public Object getFunctionValue(Parameters arguments) {
+    protected Function listFunction = new AbstractFunction<Set<String>>("list") {
+            public Set<String> getFunctionValue(Parameters arguments) {
                 return indexerMap.keySet();
             }
 
@@ -284,11 +282,11 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
     /**
      *This function returns the description as configured for a specific index and a specific locale.
      */
-    protected Function descriptionFunction = new AbstractFunction("description", new Parameter[] {INDEX, Parameter.LOCALE}, ReturnType.STRING ) {
-            public Object getFunctionValue(Parameters arguments) {
+    protected Function  descriptionFunction = new AbstractFunction<String>("description", INDEX, Parameter.LOCALE) {
+            public String getFunctionValue(Parameters arguments) {
                 String key = arguments.getString(INDEX);
                 Locale locale = (Locale) arguments.get(Parameter.LOCALE);
-                Indexer index = (Indexer) indexerMap.get(key);
+                Indexer index = indexerMap.get(key);
                 return index.getDescription().get(locale);
             }
 
@@ -301,10 +299,8 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
      * This function starts a search fro a given string.
      * This function can be called through the function framework.
      */
-    protected Function searchFunction = new AbstractFunction("search",
-                                                             new Parameter[] { VALUE, INDEX, SORTFIELDS, OFFSET, MAX, EXTRACONSTRAINTS, Parameter.CLOUD },
-                                                             ReturnType.NODELIST) {
-            public Object getFunctionValue(Parameters arguments) {
+    protected Function  searchFunction = new AbstractFunction("search", VALUE, INDEX, SORTFIELDS, OFFSET, MAX, EXTRACONSTRAINTS, Parameter.CLOUD) {
+            public org.mmbase.bridge.NodeList getFunctionValue(Parameters arguments) {
                 String value = arguments.getString(VALUE);
                 String index = arguments.getString(INDEX);
                 List sortFieldList = Casting.toList(arguments.getString(SORTFIELDS));
@@ -351,18 +347,49 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
      * This function returns the size of a query on an index.
      */
     protected Function searchSizeFunction = new AbstractFunction("searchsize",
-                              new Parameter[] { VALUE, INDEX, EXTRACONSTRAINTS, Parameter.CLOUD },
-                              ReturnType.INTEGER) {
-        public Object getFunctionValue(Parameters arguments) {
+                                                                 VALUE, INDEX, EXTRACONSTRAINTS, Parameter.CLOUD ) {
+        public Integer getFunctionValue(Parameters arguments) {
             String value = arguments.getString(VALUE);
             String index = arguments.getString(INDEX);
             String extraConstraints = arguments.getString(EXTRACONSTRAINTS);
             Cloud cloud = (Cloud)arguments.get(Parameter.CLOUD);
-            return new Integer(searchSize(cloud, value, index, extraConstraints));
+            return searchSize(cloud, value, index, extraConstraints);
         }
     };
     {
         addFunction(searchSizeFunction);
+    }
+    protected Function unAssignFunction = new AbstractFunction("unassign", new Parameter("id", Integer.class, true)) {
+            public Integer getFunctionValue(Parameters arguments) {
+                int id = (Integer) arguments.get("id");
+                if (scheduler != null) {
+                    return scheduler.unAssign(id);
+                } else {
+                    return 0;
+                }
+            }
+        };
+    {
+        addFunction(unAssignFunction);
+    }
+    protected Function interruptFunction = new AbstractFunction("interrupt") {
+            public String getFunctionValue(Parameters arguments) {
+                if (scheduler != null) {
+                    if (scheduler.getStatus() > Scheduler.IDLE) {
+                        scheduler.interrupt();
+                        return "Interrupted";
+                    } else {
+                        scheduler.interrupt();
+                        return "Interrupted (though idle)";
+                    }
+                } else  {
+                    return "not yet running";
+                }
+
+            }
+        };
+    {
+        addFunction(interruptFunction);
     }
 
     private ContentExtractor factory;
@@ -710,6 +737,8 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
         }
     }
 
+    private static int assignmentIds = 0;
+
     /**
      * Queue for index operations.
      */
@@ -724,10 +753,10 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
 
         // status of the scheduler
         private int status = IDLE;
-        private Runnable assignment = null;
+        private Assignment assignment = null;
 
         // assignments: tasks to run
-        private BlockingQueue indexAssignments = new DelayQueue();
+        private BlockingQueue<Scheduler.Assignment> indexAssignments = new DelayQueue<Scheduler.Assignment>();
 
         Scheduler() {
             super("Lucene.Scheduler");
@@ -738,10 +767,10 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
         public int getStatus() {
             return status;
         }
-        public Runnable getAssignment() {
+        public Assignment getAssignment() {
             return assignment;
         }
-        public Collection getQueue() {
+        public Collection<Assignment> getQueue() {
             return Collections.unmodifiableCollection(indexAssignments);
         }
 
@@ -753,38 +782,56 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
                     Thread.sleep(initialWaitTime);
                 }
             } catch (InterruptedException ie) {
-                return;
+                //return;
             }
             while (!mmbase.isShutdown()) {
                 if (log.isDebugEnabled()) {
                     log.debug("Obtain Assignment from " + indexAssignments);
                 }
                 try {
-                    assignment = (Runnable) indexAssignments.take();
+                    assignment = indexAssignments.take();
                     log.debug("Running " + assignment);
                     // do operation...
                     assignment.run();
                     status = IDLE;
-                    assignment = null;
                 } catch (InterruptedException e) {
-                    log.debug(Thread.currentThread().getName() +" was interruped.");
-                    break;
+                    log.service(Thread.currentThread().getName() +" was interruped.");
+                    status = IDLE;
+                    continue;
                 } catch (RuntimeException rte) {
                     log.error(rte.getMessage(), rte);
                     status = IDLE_AFTER_ERROR;
+                } finally {
+                    assignment = null;
                 }
             }
         }
+        public int unAssign(int id) {
+            int tot = 0;
+            Iterator<Assignment> i = indexAssignments.iterator();
+            while (i.hasNext()) {
+                if (i.next().getId() == id) { tot++; i.remove();}
+            }
+            return tot;
+        }
 
+        public abstract class Assignment implements Runnable, Delayed {
 
-        abstract class Assignment implements Runnable, Delayed {
+            private int id = assignmentIds++;
+
             private long endTime = System.currentTimeMillis() + waitTime;
+
+            public int getId() {
+                return id;
+            }
             public int hashCode() {
                 return toString().hashCode();
             }
             public boolean equals(Object o) {
                 if (o == null) return false;
-                return o.getClass().equals(getClass()) && o.toString().equals(toString());
+                if (! o.getClass().equals(getClass())) return false;
+                Assignment a = (Assignment) o;
+                return id == a.getId() || o.toString().equals(toString());
             }
             public long  getDelay(TimeUnit unit) {
                 return unit.convert(endTime - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
@@ -806,8 +853,7 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
                     public void run() {
                         log.service("Update index for " + number);
                         status = BUSY_INDEX;
-                        for (Iterator i = indexerMap.values().iterator(); i.hasNext(); ) {
-                            Indexer indexer = (Indexer) i.next();
+                        for (Indexer indexer : indexerMap.values()) {
                             int updated = indexer.updateIndex(number, klass);
                             if (updated > 0) {
                                 log.service(indexer.getName() + ": Updated " + updated + " index entr" + (updated > 1 ? "ies" : "y"));
@@ -826,8 +872,7 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
                     public void run() {
                         log.debug("delete index for " + number); // already logged in indexer.deleteIndex
                         status = BUSY_INDEX;
-                        for (Iterator i = indexerMap.values().iterator(); i.hasNext(); ) {
-                            Indexer indexer = (Indexer) i.next();
+                        for (Indexer indexer : indexerMap.values()) {
                             indexer.deleteIndex(number, klass);
                         }
                     }
@@ -842,7 +887,7 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
                     public void run() {
                         log.service("delete index for " + number);
                         status = BUSY_INDEX;
-                        Indexer indexer = (Indexer)indexerMap.get(indexName);
+                        Indexer indexer = indexerMap.get(indexName);
                         if (indexer == null) {
                             log.error("No such index '" + indexName + "'");
                         } else {
@@ -859,8 +904,7 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
                 public void run() {
                     status = BUSY_FULL_INDEX;
                     log.service("start full index");
-                    for (Iterator i = indexerMap.values().iterator(); i.hasNext(); ) {
-                        Indexer indexer = (Indexer) i.next();
+                    for (Indexer indexer : indexerMap.values()) {
                         indexer.fullIndex();
                     }
                 }
@@ -890,7 +934,7 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
                             public void run() {
                                 status = BUSY_FULL_INDEX;
                                 log.service("start full index for index '" + index + "'");
-                                Indexer indexer = (Indexer) indexerMap.get(index);
+                                Indexer indexer = indexerMap.get(index);
                                 if (indexer == null) {
                                     log.error("No such index '" + index + "'");
                                 } else {
