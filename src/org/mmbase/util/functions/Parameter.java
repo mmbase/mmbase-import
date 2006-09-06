@@ -27,11 +27,11 @@ import java.io.*;
  * @author Daniel Ockeloen (MMFunctionParam)
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.30 2006-06-20 20:13:55 michiel Exp $
+ * @version $Id: Parameter.java,v 1.31 2006-09-06 13:33:56 michiel Exp $
  * @see Parameters
  */
 
-public class Parameter extends AbstractDescriptor implements java.io.Serializable {
+public class Parameter<C> extends AbstractDescriptor implements java.io.Serializable {
     private static final Logger log = Logging.getLoggerInstance(Parameter.class);
 
     private static final long serialVersionUID = 1L;
@@ -65,6 +65,7 @@ public class Parameter extends AbstractDescriptor implements java.io.Serializabl
     public static final Parameter[] EMPTY  = new Parameter[0];
 
 
+
     // implementation of serializable, I hate java. Cannot make AbstractDescriptor Serializable, so doing it here.... sigh sigh.
     // If you would make AbstractDescriptor Serializable, CoreField will become Serializable and MMObjectBuilder needs to be serializable then (because it is a member of CoreField).
     private void writeObject(ObjectOutputStream out) throws IOException {
@@ -85,7 +86,7 @@ public class Parameter extends AbstractDescriptor implements java.io.Serializabl
      * The parameter's data type
      * @since MMBase-1.8
      */
-    protected DataType dataType;
+    protected DataType<C> dataType;
 
     /**
      * Create a Parameter object
@@ -93,7 +94,7 @@ public class Parameter extends AbstractDescriptor implements java.io.Serializabl
      * @param dataType the datatype of the parameter to copy
      * @since MMBase-1.8
      */
-    public Parameter(String name, DataType dataType) {
+    public Parameter(String name, DataType<C> dataType) {
         this(name, dataType, true);
     }
 
@@ -105,7 +106,7 @@ public class Parameter extends AbstractDescriptor implements java.io.Serializabl
      *        that is, changing condfiitons on the parameter changes the passed datatype instance.
      * @since MMBase-1.8
      */
-    public Parameter(String name, DataType dataType, boolean copy) {
+    public Parameter(String name, DataType<C> dataType, boolean copy) {
         super(name);
         if (copy) {
             this.dataType = (DataType)dataType.clone(name);
@@ -141,7 +142,7 @@ public class Parameter extends AbstractDescriptor implements java.io.Serializabl
      * @param type the class of the parameter's possible value
      * @param defaultValue the value to use if the parameter has no value set
      */
-    public Parameter(String name, Class type, Object defaultValue) {
+    public Parameter(String name, Class type, C defaultValue) {
         this(name,type);
         dataType.setDefaultValue(defaultValue);
     }
@@ -157,7 +158,7 @@ public class Parameter extends AbstractDescriptor implements java.io.Serializabl
     /**
      * Copy-constructor, just to copy it with different defaultValue (which implies that it is not required now)
      */
-    public Parameter(Parameter p, Object defaultValue) {
+    public Parameter(Parameter p, C defaultValue) {
         this(p.key, p.getDataType());
         dataType.setDefaultValue(defaultValue);
     }
@@ -166,7 +167,7 @@ public class Parameter extends AbstractDescriptor implements java.io.Serializabl
      * Returns the default value of this parameter (derived from the datatype).
      * @return the default value
      */
-    public Object getDefaultValue() {
+    public C getDefaultValue() {
         return dataType.getDefaultValue();
     }
 
@@ -174,7 +175,7 @@ public class Parameter extends AbstractDescriptor implements java.io.Serializabl
      * Sets the default value of this parameter.
      * @param defaultValue the default value
      */
-    public void setDefaultValue(Object defaultValue) {
+    public void setDefaultValue(C defaultValue) {
         dataType.setDefaultValue(defaultValue);
     }
 
@@ -183,7 +184,7 @@ public class Parameter extends AbstractDescriptor implements java.io.Serializabl
      * @return the datatype
      * @since MMBase-1.8
      */
-    public DataType getDataType() {
+    public DataType<C> getDataType() {
         return dataType;
     }
 
