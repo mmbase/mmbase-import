@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.61 2006-07-18 12:58:40 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.62 2006-09-06 18:23:02 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -535,7 +535,7 @@ s     */
      * Besides super.clone, it calls {@link #inheritProperties(BasicDataType)} and {@link
      * #cloneRestrictions(BasicDataType)}. A clone is not finished. See {@link #isFinished()}.
      */
-    public Object clone(String name) {
+    public DataType clone(String name) {
         try {
             BasicDataType clone = (BasicDataType) super.clone(name);
             // reset owner if it was set, so this datatype can be changed
