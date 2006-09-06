@@ -26,11 +26,7 @@ import nl.leocms.authorization.AuthorizationHelper;
 import nl.leocms.util.ContentTypeHelper;
 import nl.leocms.util.RubriekHelper;
 
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeIterator;
-import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.RelationManager;
+import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -43,26 +39,26 @@ public class ContentUtil {
    /** MMbase logging system */
    private static Logger log = Logging.getLoggerInstance(ContentUtil.class.getName());
 
-   private Cloud mmbase;
+   private Cloud cloud;
    
    /**
     * @param mmbase
     */
-   public ContentUtil(Cloud mmbase) {
+   public ContentUtil(Cloud cloud) {
       super();
-      this.mmbase = mmbase;
+      this.cloud = cloud;
    }
    
    
    public void addSchrijver(Node content) {
-      addSchrijver(content, mmbase.getUser().getIdentifier());
+      addSchrijver(content, cloud.getUser().getIdentifier());
    }
 
    public void addSchrijver(Node content, String username) {
       log.debug("user " + username);
-      AuthorizationHelper auth = new AuthorizationHelper(mmbase);
+      AuthorizationHelper auth = new AuthorizationHelper(cloud);
       Node user = auth.getUserNode(username);
-      RelationManager schrijver = mmbase.getRelationManager("contentelement", "users", "schrijver");
+      RelationManager schrijver = cloud.getRelationManager("contentelement", "users", "schrijver");
       content.deleteRelations("schrijver");
       content.createRelation(user, schrijver).commit();
    }
@@ -75,8 +71,8 @@ public class ContentUtil {
     */
    public void addCreatieRubriek(Node content, String rubrieknr) {
       log.debug("Creatierubriek " + rubrieknr);
-      Node rubriek = mmbase.getNode(rubrieknr);
-      RelationManager creatierubriek = mmbase.getRelationManager("contentelement", "rubriek", "creatierubriek");
+      Node rubriek = cloud.getNode(rubrieknr);
+      RelationManager creatierubriek = cloud.getRelationManager("contentelement", "rubriek", "creatierubriek");
       content.createRelation(rubriek, creatierubriek).commit();
    }
    
@@ -92,12 +88,12 @@ public class ContentUtil {
     * @param creatierubriek - creatierubriek.
     */
    public void addHoofdRubriek(Node content, String creatierubriek) {
-      RubriekHelper rubriekHelper = new RubriekHelper(this.mmbase);
-      List list = rubriekHelper.getPathToRoot( mmbase.getNode(creatierubriek));
+      RubriekHelper rubriekHelper = new RubriekHelper(cloud);
+      List list = rubriekHelper.getPathToRoot( cloud.getNode(creatierubriek));
       if (list.size() >= 3) {
          Node hoofdrubriek = (Node) list.get(2);
          log.debug("Hoofdrubriek "+hoofdrubriek);
-         RelationManager man = mmbase.getRelationManager("contentelement","rubriek","hoofdrubriek");
+         RelationManager man = cloud.getRelationManager("contentelement","rubriek","hoofdrubriek");
          content.createRelation(hoofdrubriek,man).commit();
       }
    }
@@ -114,11 +110,11 @@ public class ContentUtil {
     * @param creatierubriek - creatierubriek.
     */
    public void addSubsite(Node content, String creatierubriek) {
-      RubriekHelper rubriekHelper = new RubriekHelper(this.mmbase);
-      List list = rubriekHelper.getPathToRoot( mmbase.getNode(creatierubriek));
+      RubriekHelper rubriekHelper = new RubriekHelper(cloud);
+      List list = rubriekHelper.getPathToRoot( cloud.getNode(creatierubriek));
       if (!list.isEmpty()) {
          Node subsiteRubriek = null;
-         RelationManager subsite = mmbase.getRelationManager("contentelement","rubriek","subsite");
+         RelationManager subsite = cloud.getRelationManager("contentelement","rubriek","subsite");
          if (list.size() >= 2) {
             subsiteRubriek = (Node) list.get(1);
          }
@@ -174,36 +170,132 @@ public class ContentUtil {
    }
 
 	/**
-    * each pool an object is related to, should also be related to the topic of this rubriek
+	 * pools are grouped in topics
+	 * each topic is related to rubriek
+    * for all objects in a rubriek each pool an object is related to, should also be related to the topic of this rubriek
     * pre-condition: each rubriek has at most one related topic
 	 *
     * @param content - content element
     * @param creatierubriek - creatierubriek.
     */
    public void updateTopics(Node content, String creatierubriek) {
-		log.info("trying to update topics");
-      Node rubriek = mmbase.getNode(creatierubriek);
+		log.debug("trying to update topics");
+      Node rubriek = cloud.getNode(creatierubriek);
 		NodeList nlTopics = rubriek.getRelatedNodes("topics","related",null);
+		Node rubriekTopic = null;
+		if(nlTopics.size()==0) {
+		   rubriekTopic = cloud.getNodeManager("topics").createNode();
+		   rubriekTopic.setStringValue("title", rubriek.getStringValue("naam"));
+		   rubriekTopic.commit();
+		   rubriek.createRelation(rubriekTopic,cloud.getRelationManager("related")).commit();
+		   log.debug("created new topic and related it to rubriek " + rubriek.getStringValue("naam"));
+		}
 		if(nlTopics.size()>0) {
-			log.info("found topic");
-			Node rubriekTopic = nlTopics.getNode(0);
-			NodeList nlPools = content.getRelatedNodes("pools","posrel",null);
-			int nlPoolsSize = nlPools.size();
-			for(int i=0; i < nlPoolsSize; i++) {
-				Node pool = nlPools.getNode(i);
-  			   log.info("checking pool " + pool.getNumber());
-				nlTopics = this.mmbase.getList(
-									pool.getStringValue("number"),
-									"pools,posrel,topics",
-									"topics.number",
-									"topics.number = '" + rubriekTopic.getNumber() + "'",
-									null,null,null,false
-								);
-				if(nlTopics.size()==0) {
-				   pool.createRelation(rubriekTopic,this.mmbase.getRelationManager("posrel")).commit();
-					log.info("Create relation between pool " + pool.getNumber() + " and topic " + rubriekTopic.getNumber());
-				}
+		   rubriekTopic = nlTopics.getNode(0);
+		}
+		NodeList nlPools = content.getRelatedNodes("pools","posrel",null);
+		int nlPoolsSize = nlPools.size();
+		for(int i=0; i < nlPoolsSize; i++) {
+			Node pool = nlPools.getNode(i);
+			pool = makeUnique(pool,"name"); // for doing anything, make sure this pool is unique
+		   log.debug("checking pool " + pool.getNumber());
+			nlTopics = cloud.getList(
+								pool.getStringValue("number"),
+								"pools,posrel,topics",
+								"topics.number",
+								"topics.number = '" + rubriekTopic.getNumber() + "'",
+								null,null,null,false
+							);
+			if(nlTopics.size()==0) {
+				log.debug("create relation between pool " + pool.getNumber() + " and topic " + rubriekTopic.getNumber());
+			   pool.createRelation(rubriekTopic,cloud.getRelationManager("posrel")).commit();
 			}
+		}
+   }
+   
+  /**
+    * check if this node is unique on field (case-insensitive)
+    * if it is the case then merge the node with its sibling
+	 *
+    * @param node node to be checked
+    * @param field field to should be a unique key (case-insensitive)
+    */
+   public Node makeUnique(Node node, String field) {
+      String sConstraint = "UPPER(" + field + ") = '" + node.getStringValue(field).toUpperCase() + "' AND number!='" + node.getNumber() + "'";
+      log.debug(sConstraint);
+      NodeList nl = node.getNodeManager().getList(sConstraint,null,null);
+      for (NodeIterator it = nl.nodeIterator(); it.hasNext();) {
+         Node sibling = it.nextNode();
+         log.debug("nodes " + node.getNumber() + " and " + sibling.getNumber() + " have identical " + field + " " + node.getStringValue(field) );
+         if(sibling!=null && sibling.getNumber()!=node.getNumber()) {
+            node = mergeNodes(node,sibling);
+         }
+      }
+      return node;
+   }
+   
+  /**
+    * merges all relations from origin to target 
+    * and then deletes the origin
+	 *
+    * @param origin
+    * @param target
+    */
+   public Node mergeNodes(Node origin, Node target) {
+      log.debug("merging " + origin.getNumber() + " into " + target.getNumber());
+      RelationList rl = origin.getRelations();
+      for (RelationIterator it = rl.relationIterator(); it.hasNext();) {
+         Relation rel = it.nextRelation();
+         Node rel_source = rel.getSource();
+         Node rel_destination = rel.getDestination();
+         if(rel_source.getNumber()==origin.getNumber()) {
+            // origin is source, create a relation with the destination of the relation
+            createRelation(target,rel_destination,rel.getRelationManager());
+         } else {
+            // origin is target, create a relation with the source of the relation
+            createRelation(rel_source,target,rel.getRelationManager());
+         }
+         rel.delete(true);
+      }
+      try { 
+         origin.delete();
+      } catch (Exception e) {
+         log.error("node " + origin.getNumber() + " still contains relations, so it can not be deleted");
+      }
+      return target;
+   }
+
+  /**
+    * create relation, but only if it does not already exist
+	 *
+    * @param origin
+    * @param target
+    */
+   public void createRelation(Node source, Node destination, RelationManager rm) {
+      if(!hasRelation(source,destination,rm)) {
+         source.createRelation(destination,rm).commit();
       }
    }
+
+  /**
+    * returns true if there exists a relation from source to destination of type rm 
+	 *
+    * @param source
+    * @param destination
+    * @param rm
+    */
+   public boolean hasRelation(Node source, Node destination, RelationManager rm) {
+      
+      NodeList nl = source.getRelatedNodes(destination.getNodeManager(),rm.getName(),null);
+      int dNumber = destination.getNumber();
+      for (NodeIterator it = nl.nodeIterator(); it.hasNext();) {
+         if(it.nextNode().getNumber()==dNumber) {
+           log.debug("the relation between " + source.getNumber() + " and " + dNumber + " exists");
+           return true;
+         }
+      }
+      return false;
+   }
+   
 }
+
