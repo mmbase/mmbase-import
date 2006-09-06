@@ -61,11 +61,13 @@
    InputStream inputStream = null;
    
    if(FileUpload.isMultipartContent(request)) {
-
+     
+     ApplicationHelper ap = new ApplicationHelper(cloud);
+     
      DiskFileUpload upload = new DiskFileUpload();
      upload.setSizeMax(250*1024*1024);
      upload.setSizeThreshold(4096);
-     upload.setRepositoryPath(application.getRealPath("."));
+     upload.setRepositoryPath(ap.getTempDir());
      List items = upload.parseRequest(request);
      Iterator it = items.iterator();
      while(it.hasNext()) {
