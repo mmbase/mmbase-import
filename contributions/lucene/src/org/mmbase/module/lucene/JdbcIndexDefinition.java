@@ -16,6 +16,7 @@ import java.sql.*;
 import org.w3c.dom.*;
 import org.mmbase.util.*;
 import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.util.*;
 import org.mmbase.storage.implementation.database.GenericDataSource;
 import org.mmbase.cache.Cache;
 import org.apache.lucene.document.Document;
@@ -29,7 +30,7 @@ import org.mmbase.util.logging.*;
  * If for some reason you also need to do Queries next to MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JdbcIndexDefinition.java,v 1.9 2006-08-01 18:06:31 michiel Exp $
+ * @version $Id: JdbcIndexDefinition.java,v 1.10 2006-09-06 16:47:14 michiel Exp $
  **/
 public class JdbcIndexDefinition implements IndexDefinition {
 
@@ -55,9 +56,13 @@ public class JdbcIndexDefinition implements IndexDefinition {
     private final String find;
     private final Analyzer analyzer;
 
-    private final Set keyWords = new HashSet();
+    private final Set<String> keyWords    = new HashSet();
+    private final Map<String, Integer> nonDefaultMultiples = new HashMap();
 
-    private final Collection subQueries = new ArrayList();
+    private final Collection<IndexDefinition> subQueries = new ArrayList();
+
+    // fille on first getNode
+    private final Map fieldTypes = null;
 
     JdbcIndexDefinition(DataSource ds, Element element,
                         Set allIndexedFields,
@@ -74,6 +79,10 @@ public class JdbcIndexDefinition implements IndexDefinition {
                 if ("field".equals(childElement.getLocalName())) {
                     if (childElement.getAttribute("keyword").equals("true")) {
                         keyWords.add(childElement.getAttribute("name"));
+                    }
+                    String m = childElement.getAttribute("multiple");
+                    if (! m.equals("add")) {
+                        nonDefaultMultiples.put(childElement.getAttribute("name"),  Indexer.getMultiple(m));
                     }
                 } else if ("related".equals(childElement.getLocalName())) {
                     subQueries.add(new JdbcIndexDefinition(ds, childElement, allIndexedFields, storeText, mergeText, a));
@@ -176,47 +185,106 @@ public class JdbcIndexDefinition implements IndexDefinition {
         }
     }
 
-    public org.mmbase.bridge.Node getNode(Cloud userCloud, String identifier) {
-        Map map = (Map) nodeCache.get(identifier);
-        if (map == null) {
-            try {
-                final Connection connection = dataSource.getConnection();
-                final Statement statement = connection.createStatement();
-                long start = System.currentTimeMillis();
-                String s = getFindSql(identifier);
-                log.debug("About to execute " + s);
-                ResultSet results = statement.executeQuery(s);
-                ResultSetMetaData meta = results.getMetaData();
-                if (results.next()) {
-                    map = new HashMap();
-                    for (int i = 1; i <= meta.getColumnCount(); i++) {
-                        String value = org.mmbase.util.Casting.toString(results.getString(i));
-                        map.put(meta.getColumnName(i).toLowerCase(), value);
+
+    /**
+     * A map representing a row in a database. But only filled when actually used. So, only on first
+     * use, a query is done.
+     * @since MMBase-1.8.2
+     */
+    protected class LazyMap extends AbstractMap {
+        private  Map map = null;
+        private final String identifier;
+        LazyMap(String identifier) {
+            this.identifier = identifier;
+        }
+        protected void check() {
+            if (map == null) {
+                try {
+                    final Connection connection = dataSource.getConnection();
+                    final Statement statement = connection.createStatement();
+                    long start = System.currentTimeMillis();
+                    String s = getFindSql(identifier);
+                    if (log.isDebugEnabled()) {
+                        log.debug("About to execute " + s + " because " , new Exception());
                     }
-                } else {
-                    map = null;
+                    ResultSet results = statement.executeQuery(s);
+                    ResultSetMetaData meta = results.getMetaData();
+                    map = new HashMap();
+                    if (results.next()) {
+                        for (int i = 1; i <= meta.getColumnCount(); i++) {
+                            String value = org.mmbase.util.Casting.toString(results.getString(i));
+                            map.put(meta.getColumnName(i).toLowerCase(), value);
+                        }
+                    }
+                    long duration = (System.currentTimeMillis() - start);
+                    if (duration > 500) {
+                        log.warn("Executed " + s + " in " + duration + " ms");
+                    } else if (duration > 100) {
+                        log.debug("Executed " + s + " in " + duration + " ms");
+                    } else {
+                        log.trace("Executed " + s + " in " + duration + " ms");
+                    }
+                    if (results != null) results.close();
+                    if (statement != null) statement.close();
+                    if (connection != null) connection.close();
+                } catch (Exception e) {
+                    throw new RuntimeException(e.getMessage(), e);
                 }
-                long duration = (System.currentTimeMillis() - start);
-                if (duration > 500) {
-                    log.warn("Executed " + s + " in " + duration + " ms");
-                } else if (duration > 100) {
-                    log.debug("Executed " + s + " in " + duration + " ms");
-                } else {
-                    log.trace("Executed " + s + " in " + duration + " ms");
-                }
-                if (results != null) results.close();
-                if (statement != null) statement.close();
-                if (connection != null) connection.close();
-                if(map == null)return null;
-            } catch (Exception e) {
-                throw new RuntimeException(e.getMessage(), e);
             }
-            nodeCache.put(identifier, map);
         }
+        public Set entrySet() {
+            check();
+            return map.entrySet();
+        }
+        public int size() {
+            check();
+            return map.size();
+        }
+        public Object get(Object key) {
+            if(JdbcIndexDefinition.this.equals(key)) return identifier;
+            check();
+            return map.get(key);
+        }
+        public boolean containsKey(Object key) {
+            if(JdbcIndexDefinition.this.equals(key)) return true;
+            check();
+            return map.containsKey(key);
+        }
+        public String toString() {
+            if (map != null) {
+                return map.toString();
+            } else {
+                return "[LAZY node " + identifier + "]";
+            }
+        }
+    }
+
+    public org.mmbase.bridge.Node getNode(Cloud userCloud, final String identifier) {
+        Map m = (Map) nodeCache.get(identifier);
+        if (m == null) {
+            m = new LazyMap(identifier);
+            nodeCache.put(identifier, m);
+        }
+        org.mmbase.bridge.Node node = new MapNode(m, new MapNodeManager(userCloud, m) {
+                public boolean hasField(String name) {
+                    if (JdbcIndexDefinition.this.key.equals(name)) return true;
+                    return super.hasField(name);
+                }
+                public org.mmbase.bridge.Field getField(String name) {
+                    if (map == null && JdbcIndexDefinition.this.key.equals(name)) {
+                        org.mmbase.core.CoreField fd = org.mmbase.core.util.Fields.createField(name, org.mmbase.core.util.Fields.classToType(Object.class),
+                                                                                               org.mmbase.bridge.Field.TYPE_UNKNOWN, 
+                                                                                               org.mmbase.bridge.Field.STATE_VIRTUAL, null);
+                        return new org.mmbase.bridge.implementation.BasicField(fd, this);
+                    } else {
+                        return super.getField(name);
+                    }
+                }
+            });
         if (log.isDebugEnabled()) {
-            log.debug("Returning node for "+ map);
+            log.debug("Returning node for "+ node);
         }
-        return new org.mmbase.bridge.implementation.VirtualNode(map, userCloud);
+        return node;
 
     }
 
@@ -226,6 +294,7 @@ public class JdbcIndexDefinition implements IndexDefinition {
     }
 
     public CloseableIterator getSubCursor(String identifier) {
+        // TODO, I THINK THIS MAY BE BROKEN FOR NOTIFY_UPDATING... CHECK!
         log.debug("Using getSubCursor for " + identifier);
         return getCursor(getSubSql(identifier));
     }
@@ -262,9 +331,9 @@ public class JdbcIndexDefinition implements IndexDefinition {
                     }
                     String fieldName = meta.getColumnName(i);
                     if (keyWords.contains(fieldName)) {
-                        document.add(new Field(fieldName,  value,   Field.Store.YES, Field.Index.UN_TOKENIZED)); // keyword
+                        Indexer.addField(document, new Field(fieldName,  value,   Field.Store.YES, Field.Index.UN_TOKENIZED), nonDefaultMultiples.get(fieldName)); // keyword
                     } else {
-                        document.add(new Field(fieldName,   value,   Field.Store.YES, Field.Index.TOKENIZED));
+                        Indexer.addField(document, new Field(fieldName,   value,   Field.Store.YES, Field.Index.TOKENIZED), nonDefaultMultiples.get(fieldName));
                         document.add(new Field("fulltext",  value,   Field.Store.YES, Field.Index.TOKENIZED));
                     }
                 }

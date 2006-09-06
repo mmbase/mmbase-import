@@ -31,11 +31,55 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.27 2006-07-18 06:30:51 michiel Exp $
+ * @version $Id: Indexer.java,v 1.28 2006-09-06 16:47:14 michiel Exp $
  **/
 public class Indexer {
 
     static private final Logger log = Logging.getLoggerInstance(Indexer.class);
+
+    /**
+     * @since MMBase-1.8.2
+     */
+    static final Integer MULTIPLE_ADD   = 1;
+    static final Integer MULTIPLE_FIRST = 2;
+    static final Integer MULTIPLE_LAST  = 3;
+
+
+
+    /**
+     * Converse a String to a constant
+     * @since MMBase-1.8.2
+     */
+    public static Integer getMultiple(String s) {
+        if ("add".equals(s)) {
+            return MULTIPLE_ADD;
+        } else if ("first".equals(s)) {
+            return MULTIPLE_FIRST;
+        } else if ("last".equals(s)) {
+            return MULTIPLE_FIRST;
+        } else {
+            return null;
+        }
+    }
+    /**
+     * Adds a Field to a Document considering also a 'multiple' setting.
+     * @since MMBase-1.8.2
+     */
+    public static void addField(Document document, Field field, Object multiple) {
+        if (multiple == null || multiple == MULTIPLE_ADD) {
+            document.add(field);
+        } else if (multiple == MULTIPLE_FIRST) {
+            if (document.get(field.name()) == null) {
+                document.add(field);
+            }
+        } else if (multiple == MULTIPLE_LAST) {
+            document.removeFields(field.name());
+            document.add(field);
+        } else {
+            log.warn("Unknown multiple value " + multiple);
+            document.add(field);
+        }
+    }
 
     // reference to the cloud
     private final Cloud cloud;
@@ -47,7 +91,7 @@ public class Indexer {
     private final LocalizedString description;
 
     // Collection with queries to run
-    private final Collection queries;
+    private final Collection<IndexDefinition> queries;
 
     /**
      * Instantiates an Indexer for a specified collection of queries and options.
@@ -55,7 +99,7 @@ public class Indexer {
      * @param queries a collection of IndexDefinition objects that select the nodes to index, and contain options on the fields to index.
      * @param cloud The Cloud to use for querying
      */
-    Indexer(String path, String index, Collection queries, Cloud cloud, Analyzer analyzer, boolean readOnly) {
+    Indexer(String path, String index, Collection<IndexDefinition> queries, Cloud cloud, Analyzer analyzer, boolean readOnly) {
         this.index = index;
         this.path =  path + java.io.File.separator + index;
         if (! readOnly) {
@@ -107,9 +151,7 @@ public class Indexer {
     }
 
     public Node getNode(Cloud userCloud, String identifier) {
-        Iterator i = queries.iterator();
-        while (i.hasNext()) {
-            IndexDefinition id = (IndexDefinition) i.next();
+        for (IndexDefinition id : queries) {
             Node n = id.getNode(userCloud, identifier);
             if (n != null) return n;
         }
@@ -126,8 +168,8 @@ public class Indexer {
     public int deleteIndex(String number, Class klass) {
         IndexReader reader = null;
         try {
-            for (Iterator i = queries.iterator(); i.hasNext();) {
-                IndexDefinition indexDefinition = (IndexDefinition)i.next();
+            for (Iterator<IndexDefinition> i = queries.iterator(); i.hasNext();) {
+                IndexDefinition indexDefinition = i.next();
                 if (klass.isAssignableFrom(indexDefinition.getClass())) {
                     reader = IndexReader.open(path);
                     Term term = new Term("number", number);
@@ -165,8 +207,7 @@ public class Indexer {
         try {
             writer = new IndexWriter(path, analyzer, false);
             // process all queries
-            for (Iterator i = queries.iterator(); i.hasNext();) {
-                IndexDefinition indexDefinition = (IndexDefinition)i.next();
+            for (IndexDefinition indexDefinition :  queries) {
                 if (klass.isAssignableFrom(indexDefinition.getClass())) {
                     Iterator j = indexDefinition.getSubCursor(number);
                     if (log.isDebugEnabled()) {
@@ -204,11 +245,14 @@ public class Indexer {
         try {
             writer = new IndexWriter(path, analyzer, true);
             // process all queries
-            for (Iterator i = queries.iterator(); i.hasNext();) {
-                IndexDefinition indexDefinition = (IndexDefinition)i.next();
+            for (IndexDefinition indexDefinition : queries) {
                 log.debug("full index for " + indexDefinition);
                 Iterator j = indexDefinition.getCursor();
                 index(j, writer);
+                if (Thread.currentThread().isInterrupted()) {
+                    log.info("Interrupted");
+                    return;
+                }
             }
             writer.optimize();
 
@@ -229,7 +273,7 @@ public class Indexer {
     /**
      * Runs the queries for the given cursor, and indexes all nodes that are returned.
      */
-    protected int index(Iterator i, IndexWriter writer) throws IOException {
+    protected int index(Iterator<IndexEntry> i, IndexWriter writer) throws IOException {
         int indexed = 0;
         Document document = null;
         String   lastIdentifier = null;
@@ -239,7 +283,7 @@ public class Indexer {
             log.debug("Update " + writer);
         }
         while(i.hasNext()) {
-            IndexEntry entry = (IndexEntry) i.next();
+            IndexEntry entry = i.next();
             String newIdentifier = entry.getIdentifier();
             log.debug("Indexing for " + newIdentifier);
             // This code depends on the fact that if the same nodes appear multipible times, they are at least queried like so, that they appear next to each other
@@ -249,6 +293,10 @@ public class Indexer {
                 indexed++;
             }
             index(entry, document);
+            if (Thread.currentThread().isInterrupted()) {
+                log.debug("Interrupted");
+                return indexed;
+            }
             lastIdentifier = newIdentifier;
         }
         if (document != null) {
@@ -265,17 +313,21 @@ public class Indexer {
      */
     protected void index(IndexEntry entry, Document document) throws IOException {
         entry.index(document);
-        Iterator j = entry.getSubDefinitions().iterator();
+        Iterator<IndexDefinition> j = entry.getSubDefinitions().iterator();
         while (j.hasNext()) {
-            IndexDefinition subDef = (IndexDefinition) j.next();
+            IndexDefinition subDef = j.next();
             if (subDef == null) {
                 log.warn("Found a sub definition which is null for " + entry);
                 continue;
             }
-            Iterator i = subDef.getSubCursor(entry.getIdentifier());
+            Iterator<IndexEntry> i = subDef.getSubCursor(entry.getIdentifier());
             while(i.hasNext()) {
-                IndexEntry subEntry = (IndexEntry) i.next();
+                IndexEntry subEntry = i.next();
                 index(subEntry, document);
+                if (Thread.currentThread().isInterrupted()) {
+                    log.debug("Interrupted");
+                    return;
+                }
             }
         }
     }
