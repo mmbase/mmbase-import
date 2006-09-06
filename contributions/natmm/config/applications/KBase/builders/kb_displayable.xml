@@ -31,7 +31,7 @@
       </editor>
       <db>
         <name xml:lang="en">date</name>
-        <type key="false" notnull="false" size="50" state="persistent">INTEGER</type>
+        <type key="false" notnull="false" size="1" state="persistent">INTEGER</type>
       </db>
     </field>
     
