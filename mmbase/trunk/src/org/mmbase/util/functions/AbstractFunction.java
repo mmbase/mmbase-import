@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util.functions;
 
 import java.util.*;
-
+import org.mmbase.util.logging.*;
 /**
  * An abstract representation of a piece of functionality (a 'function'). A function has a name, a
  * return type, and a parameter-definition (which is a {@link Parameter} array).
@@ -21,15 +21,16 @@ import java.util.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: AbstractFunction.java,v 1.11 2006-02-14 22:52:33 michiel Exp $
+ * @version $Id: AbstractFunction.java,v 1.12 2006-09-06 13:33:56 michiel Exp $
  * @since MMBase-1.8
  * @see Parameter
  * @see Parameters
  */
-abstract public class AbstractFunction implements Function, Comparable, java.io.Serializable {
-
+abstract public class AbstractFunction<R> implements Function<R>, Comparable, java.io.Serializable {
+    private static final Logger log = Logging.getLoggerInstance(AbstractFunction.class);
     protected String    name;
     protected ReturnType  returnType;
+    private boolean autoReturnType = false;
 
     private Parameter[] parameterDefinition;
     private String     description;
@@ -42,11 +43,25 @@ abstract public class AbstractFunction implements Function, Comparable, java.io.
      */
     public AbstractFunction(String name, Parameter[] def, ReturnType returnType) {
         this.name = name;
-        if (def != null){
-            this.parameterDefinition = (Parameter[]) Functions.define(def, new ArrayList()).toArray(Parameter.EMPTY);
+        if (def != null) {
+            this.parameterDefinition = Functions.define(def, new ArrayList()).toArray(Parameter.EMPTY);
         }
         this.returnType = returnType;
     }
+
+    /**
+     * Determines the ReturnType automaticly using the return type of {@link getFunctionValue(Parameters)}.
+     * @since MMBase-1.9
+     */
+    public AbstractFunction(String name, Parameter... def) {
+        this(name, def, null);
+        // what would be nice:
+        // this(name, def, ReturnType.getReturnType(R.class)); 
+        // but java sucks.
+
+        autoReturnType = true;
+    }
+
 
     /**
      * Creates an empty 'Parameters'  object for you, which you have to fill and feed back to getFunctionValue
@@ -66,7 +81,7 @@ abstract public class AbstractFunction implements Function, Comparable, java.io.
      *                   Implementors are encouraged to support <code>null</code> too.
      * @return The function value, which can be of any type compatible to {@link #getReturnType}
      */
-    abstract public Object getFunctionValue(Parameters parameters);
+    abstract public R getFunctionValue(Parameters parameters);
 
     /**
      * Executes the defined function supplying the given List of arguments.
@@ -75,14 +90,19 @@ abstract public class AbstractFunction implements Function, Comparable, java.io.
      *
      * @return The function value, which can be of any type compatible to {@link #getReturnType}
      */
-     public final Object getFunctionValueWithList(List parameters) {
+     public final R getFunctionValueWithList(List parameters) {
          if (parameters instanceof Parameters) {
              return getFunctionValue((Parameters)parameters);
          } else {
              return getFunctionValue(new Parameters(parameterDefinition, parameters));
          }
      }
-
+     /**
+      * @since MMBase-1.9
+      */
+     public final R getFunctionValue(Object... parameters) {
+         return getFunctionValue(new Parameters(parameterDefinition, parameters));
+     }
     /**
      * For documentational  purposes a function object needs a description too.
      */
@@ -129,6 +149,13 @@ abstract public class AbstractFunction implements Function, Comparable, java.io.
      * @return The currently set ReturnType, or <code>null</code> if not set already.
      */
     public ReturnType getReturnType() {
+        if (returnType == null && autoReturnType) {
+            try {
+                returnType = ReturnType.getReturnType(getClass().getDeclaredMethod("getFunctionValue", Parameters.class).getReturnType());
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
+        }
         return returnType;
     }
     /**
@@ -163,7 +190,7 @@ abstract public class AbstractFunction implements Function, Comparable, java.io.
     }
 
     public String toString() {
-        return "" + returnType + " " + getName() + Arrays.asList(parameterDefinition);
+        return "" + getReturnType() + " " + getName() + Arrays.asList(parameterDefinition);
     }
 
 }

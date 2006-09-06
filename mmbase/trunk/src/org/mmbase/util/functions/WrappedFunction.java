@@ -16,17 +16,17 @@ import java.util.List;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: WrappedFunction.java,v 1.9 2005-10-18 21:51:30 michiel Exp $
+ * @version $Id: WrappedFunction.java,v 1.10 2006-09-06 13:33:56 michiel Exp $
  */
-public abstract class WrappedFunction implements Function {
+public abstract class WrappedFunction<R> implements Function<R> {
 
-    protected Function wrappedFunction;
+    protected Function<R> wrappedFunction;
 
     /**
      * Constructor for Basic Function
      * @param function The function to wrap
      */
-    public WrappedFunction(Function function) {
+    public WrappedFunction(Function<R> function) {
          wrappedFunction = function;
     }
 
@@ -34,17 +34,21 @@ public abstract class WrappedFunction implements Function {
         return wrappedFunction.createParameters();
     }
 
-    public Object getFunctionValue(Parameters parameters) {
+    public R getFunctionValue(Parameters parameters) {
          return wrappedFunction.getFunctionValue(parameters);
     }
 
-    public Object getFunctionValueWithList(List parameters) {
+    public R getFunctionValueWithList(List parameters) {
          if (parameters instanceof Parameters) {
              return getFunctionValue((Parameters)parameters);
          } else {
              Parameters params = wrappedFunction.createParameters().setAll(parameters);
              return getFunctionValue(params);
          }
+    }
+    public R getFunctionValue(Object... parameters) {
+        Parameters params = wrappedFunction.createParameters().setAll(parameters);
+        return getFunctionValue(params);
     }
 
     public void setDescription(String description) {

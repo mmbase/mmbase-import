@@ -17,14 +17,14 @@ import org.mmbase.util.logging.Logging;
  * A combined function combines other function object. Depending on the provided filled paramters it calls the right function.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CombinedFunction.java,v 1.1 2006-08-31 18:07:43 michiel Exp $
+ * @version $Id: CombinedFunction.java,v 1.2 2006-09-06 13:33:56 michiel Exp $
  * @since MMBase-1.9
  */
-public class CombinedFunction implements Function {
+public class CombinedFunction<R> implements Function<R> {
 
     private static final Logger log = Logging.getLoggerInstance(CombinedFunction.class);
 
-    private final List<Function> functions = new ArrayList<Function>();
+    private final List<Function<R>> functions = new ArrayList<Function<R>>();
 
     private Parameter[] parameterDefinition = null;
     private ReturnType returnType = null;
@@ -35,7 +35,7 @@ public class CombinedFunction implements Function {
         this.name = name;
     }
 
-    public void addFunction(Function func) {
+    public void addFunction(Function<R> func) {
         parameterDefinition = null;
         if (returnType == null) {
             returnType = func.getReturnType();
@@ -56,11 +56,11 @@ public class CombinedFunction implements Function {
         if (parameterDefinition == null) determinDefinition();
         return new Parameters(parameterDefinition);
     }
-    public Object getFunctionValue(Parameters parameters) {
+    public R getFunctionValue(Parameters parameters) {
         if (parameterDefinition == null) determinDefinition();
         float maxscore = -1;
-        Function function = null;
-        for (Function f : functions) {
+        Function<R> function = null;
+        for (Function<R> f : functions) {
             // determin score here
             int scoreCounter = 0;
             for (Parameter p : f.getParameterDefinition()) {
@@ -70,18 +70,20 @@ public class CombinedFunction implements Function {
                     break;
                 }
                 Object v = parameters.get(p);
-                if (p != null && ! "".equals(p)) {
+                if (v != null && ! "".equals(v)) {
+                    log.info("Scoring with parameter " + p);
                     scoreCounter++;
                 }
             }
             if (scoreCounter > maxscore) {
                 function = f;
                 maxscore = scoreCounter;
+                log.debug("???Using function " + function + " (with score " + maxscore + ") and parameters " + parameters);
             }
         }
-        log.info("Using function " + function + " (with score " + maxscore + ") and parameters " + parameters);
-        Object r = function.getFunctionValue(parameters);
-        log.info(" ==> '" + r + "'");
+        log.debug("Using function " + function + " (with score " + maxscore + ") and parameters " + parameters);
+        R r = function.getFunctionValue(parameters);
+        log.debug(" ==> '" + r + "'");
         return r;
     }
 
@@ -104,11 +106,17 @@ public class CombinedFunction implements Function {
         }
     }
 
-    public Object getFunctionValueWithList(List parameters) {
+    public R getFunctionValueWithList(List parameters) {
         Parameters params = createParameters();
         params.setAll(parameters);
         return getFunctionValue(params);
     }
+    public R getFunctionValue(Object... parameters) {
+        Parameters params = createParameters();
+        params.setAll(parameters);
+        return getFunctionValue(params);
+    }
+
 
     public void setDescription(String description) {
         this.description = description;

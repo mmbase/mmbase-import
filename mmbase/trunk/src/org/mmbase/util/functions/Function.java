@@ -22,12 +22,12 @@ import java.util.*;
  * @author Pierre van Rooden
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Function.java,v 1.6 2005-07-08 12:23:46 pierre Exp $
+ * @version $Id: Function.java,v 1.7 2006-09-06 13:33:56 michiel Exp $
  * @since MMBase-1.7
  * @see Parameter
  * @see Parameters
  */
-public interface Function {
+public interface Function<R> {
     /**
      * Creates an empty 'Parameters'  object for you, which you have to fill and feed back to getFunctionValue
      * @see #getFunctionValue(Parameters)
@@ -41,7 +41,7 @@ public interface Function {
      *                   Implementors are encouraged to support <code>null</code> too.
      * @return The function value, which can be of any type compatible to {@link #getReturnType}
      */
-    public Object getFunctionValue(Parameters parameters);
+    public R getFunctionValue(Parameters parameters);
 
     /**
      * Executes the defined function supplying the given List of arguments.
@@ -50,7 +50,12 @@ public interface Function {
      *
      * @return The function value, which can be of any type compatible to {@link #getReturnType}
      */
-    public Object getFunctionValueWithList(List parameters);
+    public R getFunctionValueWithList(List parameters);
+
+    /**
+     * @since MMBase-1.9
+     */
+    public R getFunctionValue(Object... parameters);
 
     /**
      * For documentational  purposes a function object needs a description too.
