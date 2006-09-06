@@ -976,10 +976,11 @@ public class CSVReader implements Runnable {
 
         String logSubject = "Log import " +  requestUrl;
 
-        String toEmailAddress = NatMMConfig.toEmailAddress;
-        String fromEmailAddress = NatMMConfig.fromEmailAddress;
-        String incoming = NatMMConfig.incomingDir;
-        String temp = NatMMConfig.tempDir;
+        ApplicationHelper ap = new ApplicationHelper(cloud);
+        String toEmailAddress = ap.getToEmailAddress();
+        String fromEmailAddress = ap.getFromEmailAddress();
+        String incoming = ap.getIncomingDir();
+        String temp = ap.getTempDir();
 
         String beauZip = incoming + "beaudata.zip"; // will be unzipped to temp
         String dataFile = temp + "beauexport.csv";
@@ -1011,11 +1012,7 @@ public class CSVReader implements Runnable {
               if(importType==FULL_IMPORT) {
               
               Vector files = new Vector();
-              logMessage += "\nUnzipping " + beauZip + " (lm=" + lastModifiedDate(beauZip) + ")";
-              files.addAll(unZip(beauZip,temp));
-              logMessage += "\nUnzipping " + nmvZip + " (lm=" + lastModifiedDate(nmvZip) + ")";
-              files.addAll(unZip(nmvZip,temp));
-					
+              
               // start with marking all relations as inactive
               String [] employeeRelations = {"readmore","afdelingen","readmore","locations"};
               String [] employeeFields = {"importstatus","inactive"};
@@ -1029,8 +1026,16 @@ public class CSVReader implements Runnable {
               TreeMap emails = getEmails(emailFile);
               logMessage += "\n<br>" + su.getDateTimeString() + su.jvmSize() + " - Emails are imported from: " + emailFile;
               logMessage += updateOrg(cloud,orgFile);
+              
+              logMessage += "\nUnzipping " + beauZip + " (lm=" + lastModifiedDate(beauZip) + ")";
+              files.addAll(unZip(beauZip,temp));
               logMessage += updatePersons(cloud, emails, dataFile);
-              logMessage += updateNMV(cloud, nmvFile);
+              
+              if(ap.isInstalled("NatMM")) {
+                 logMessage += "\nUnzipping " + nmvZip + " (lm=" + lastModifiedDate(nmvZip) + ")";
+                 files.addAll(unZip(nmvZip,temp));
+				     logMessage += updateNMV(cloud, nmvFile);
+				  }
               
               // finish with deleting all inactive relations; employees and departments are never deleted because then can be created manually
               employeeFields[1] = "-1"; // prevent employees from being deleted
@@ -1043,11 +1048,13 @@ public class CSVReader implements Runnable {
                  + "\n<br>Number of inactive nodes deleted: " + nodesDeleted
                  + "\n<br>Number of departments without employees: " + numberOfEmptyDept;
             }
-            if(importType==FULL_IMPORT || importType==ONLY_MEMBERLOAD) {
-               logMessage += loadNMMembers(application,membersZip,temp);
-            }
-            if(importType==FULL_IMPORT || importType==ONLY_ZIPCODELOAD) {
-               logMessage += loadZipCodes(application,zipCodeZip,temp);
+            if(ap.isInstalled("NatMM")) {
+               if( importType==FULL_IMPORT || importType==ONLY_MEMBERLOAD) {
+                  logMessage += loadNMMembers(application,membersZip,temp);
+               }
+               if(importType==FULL_IMPORT || importType==ONLY_ZIPCODELOAD) {
+                  logMessage += loadZipCodes(application,zipCodeZip,temp);
+               }
             }
 
             logMessage += "\n<br>" + su.getDateTimeString() + su.jvmSize() + " - Finished import";

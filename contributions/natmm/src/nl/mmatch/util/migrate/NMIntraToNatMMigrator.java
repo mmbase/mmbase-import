@@ -18,7 +18,7 @@ public class NMIntraToNatMMigrator {
 
   private static final Logger log = Logging.getLoggerInstance(NMIntraToNatMMigrator.class);
 
-  public static String sFolder = NMIntraConfig.rootDir + "NMIntraXML/";
+  public static String sFolder = NMIntraConfig.incomingDir + "NMIntraXML/";
   // public static String sFolder = "E:/nmm/tmp/";
 
   public static void run() throws Exception{
@@ -251,7 +251,7 @@ public class NMIntraToNatMMigrator {
       tmRenamingFields.put("departments","name:naam;description:omschrijving");
       tmRenamingFields.put("editwizardgroups","name:naam;description:omschrijving");
       tmRenamingFields.put("editwizards","title:name");
-      tmRenamingFields.put("employees","position:job;showinfo:titel_zichtbaar;location:account;birthday:reageer;description:omschrijving");
+      tmRenamingFields.put("employees","position:job;showinfo:titel_zichtbaar;location:account;birthday:reageer;description:omschrijving;intro:omschrijving_fra");
       tmRenamingFields.put("formulier","copyright:titel_de;subtitle:titel_fra;title:titel;" +
       "editors_note:emailadressen;introduction:omschrijving");
       tmRenamingFields.put("images","title:titel;description:omschrijving");

@@ -19,7 +19,7 @@ public class RelationsMigrator {
 
    private static final Logger log = Logging.getLoggerInstance(RelationsMigrator.class);
 
-   public static String sFolder = NMIntraConfig.rootDir + "NMIntraXML/";
+   public static String sFolder = NMIntraConfig.incomingDir + "NMIntraXML/";
    // public static String sFolder = "E:/nmm/tmp/";
 
    public static void run() throws Exception{
