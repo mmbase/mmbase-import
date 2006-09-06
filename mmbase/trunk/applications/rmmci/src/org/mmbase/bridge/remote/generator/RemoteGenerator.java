@@ -158,9 +158,17 @@ public class RemoteGenerator {
                 if (parameter != null) {
                     if (parameter.isArray) {
                         if (needsRemote(parameter)) {
-                            sb.append("Remote" + parameter.getClassName() + "[] param" + counter);
+                            if (xmlMethod.isVarArgs && ! iter.hasNext()) {
+                                sb.append("Remote" + parameter.getClassName() + "... param" + counter);
+                            } else {
+                                sb.append("Remote" + parameter.getClassName() + "[] param" + counter);
+                            }
                         } else {
-                            sb.append(parameter.getOriginalName() + "[] param" + counter);
+                            if (xmlMethod.isVarArgs && ! iter.hasNext()) {
+                                sb.append(parameter.getOriginalName() + "... param" + counter);
+                            } else {
+                                sb.append(parameter.getOriginalName() + "[] param" + counter);
+                            }
                         }
                     } else {
                         if (needsRemote(parameter)) {
@@ -282,9 +290,17 @@ public class RemoteGenerator {
                 XMLClass parameter = (XMLClass)iter.next();
                 if (parameter.isArray) {
                     if (needsRemote(parameter)) {
-                        sb.append("Remote" + parameter.getClassName() + "[] param" + counter);
+                        if (xmlMethod.isVarArgs && ! iter.hasNext()) {
+                            sb.append("Remote" + parameter.getClassName() + "... param" + counter);
+                        } else {
+                            sb.append("Remote" + parameter.getClassName() + "[] param" + counter);
+                        }
                     } else {
-                        sb.append(parameter.getOriginalName() + "[] param" + counter);
+                        if (xmlMethod.isVarArgs && ! iter.hasNext()) {
+                            sb.append(parameter.getOriginalName() + "... param" + counter);
+                        } else {
+                            sb.append(parameter.getOriginalName() + "[] param" + counter);
+                        }
                     }
                 } else {
                     if (needsRemote(parameter)) {
@@ -474,7 +490,11 @@ public class RemoteGenerator {
                     counter++;
                     XMLClass parameter = (XMLClass)iter.next();
                     if (parameter.isArray) {
-                        sb.append(parameter.getOriginalName() + "[] param" + counter);
+                        if (xmlMethod.isVarArgs && ! iter.hasNext()) {
+                            sb.append(parameter.getOriginalName() + "... param" + counter);
+                        } else {
+                            sb.append(parameter.getOriginalName() + "[] param" + counter);
+                        }
                     } else {
                         sb.append(parameter.getOriginalName() + " param" + counter);
                     }

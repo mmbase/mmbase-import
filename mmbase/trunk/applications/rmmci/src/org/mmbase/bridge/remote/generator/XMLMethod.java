@@ -18,6 +18,8 @@ import java.lang.reflect.*;
  **/
 public class XMLMethod extends XMLClass {
 
+    public boolean isVarArgs  = false;
+
     public XMLMethod(Document document) {
         super(document);
     }
@@ -26,6 +28,7 @@ public class XMLMethod extends XMLClass {
         Document doc = xml.getOwnerDocument();
         XMLMethod method = new XMLMethod(doc);
         method.setXML(xml);
+        method.isVarArgs = xml.getAttribute("varargs").equals("true");
         return method;
     }
 

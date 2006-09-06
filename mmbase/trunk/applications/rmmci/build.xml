@@ -58,7 +58,7 @@
            destdir="build/classes"
            classpathref="classpath"
            debug="yes"
-           source="1.4"
+           source="1.5"
            optimize="yes">
       <include name="org/mmbase/bridge/remote/generator/*.java"/>
       <include name="org/mmbase/servlet/rmi/*.java"/>
@@ -99,7 +99,7 @@
     <javac destdir="build/classes"
            classpathref="classpath"
            debug="yes"
-           source="1.4"
+           source="1.5"
            optimize="yes">
       <src path="build/src"/>
       <src path="src"/>
@@ -116,7 +116,7 @@
     <javac destdir="build/classes"
           classpathref="classpath"
           debug="yes"
-          source="1.4"
+          source="1.5"
           optimize="yes">
       <src path="build/src"/>
       <src path="src"/>
