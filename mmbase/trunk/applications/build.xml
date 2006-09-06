@@ -177,7 +177,7 @@ Applications build file
   </target>
 
   <target name="richtext" depends="mmbase">
-     <ant dir="richtext"  target="dependent.package" inheritAll="false">
+     <ant dir="richtext"  target="package" inheritAll="false">
        <property name="project.zip.dir"        value="${applications.build.dir}" />
        <property name="build.dir"        value="${build.dir}" />
        <property name="download.dir"        value="${download.dir}" />
@@ -185,7 +185,7 @@ Applications build file
   </target>
 
   <target name="oscache-cache" depends="mmbase">
-     <ant dir="oscache-cache"  target="dependent.package" inheritAll="false">
+     <ant dir="oscache-cache"  target="package" inheritAll="false">
        <property name="project.zip.dir"        value="${applications.build.dir}" />
        <property name="build.dir"        value="${build.dir}" />
        <property name="download.dir"        value="${download.dir}" />
@@ -205,7 +205,7 @@ Applications build file
     <ant dir="rmmci"         target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
-    <ant dir="oscache-cache"      target="dependent.install" inheritAll="false">
+    <ant dir="oscache-cache"      target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
   </target>
