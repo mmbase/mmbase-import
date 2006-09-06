@@ -18,7 +18,7 @@ import org.apache.lucene.document.Document;
  * implementations of this interface define how index entries are added to a Lucene document.
  *
  * @author Michiel Meeuwissen.
- * @version $Id: IndexEntry.java,v 1.4 2006-04-10 10:49:47 michiel Exp $
+ * @version $Id: IndexEntry.java,v 1.5 2006-09-06 16:47:14 michiel Exp $
  **/
 public interface IndexEntry {
 
@@ -31,7 +31,7 @@ public interface IndexEntry {
      * Returns a Collection of 'sub definition', probably copied from the IndexDefinition which produces this entry.
      *
      */
-    Collection getSubDefinitions();
+    Collection<IndexDefinition> getSubDefinitions();
 
 
     /**

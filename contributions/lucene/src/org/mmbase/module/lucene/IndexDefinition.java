@@ -20,18 +20,20 @@ import org.apache.lucene.analysis.Analyzer;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: IndexDefinition.java,v 1.9 2006-01-16 21:03:49 michiel Exp $
+ * @version $Id: IndexDefinition.java,v 1.10 2006-09-06 16:47:14 michiel Exp $
  **/
 interface IndexDefinition {
+
+
     /**
      * Returns an Iterator over all {@link IndexEntry}'s defined by this index.
      */
-    CloseableIterator getCursor();
+    CloseableIterator<IndexEntry> getCursor();
 
     /**
      * Returns an Iterator over all {@link IndexEntry}'s defined by this index, restricted by a certain identifier.
      */
-    CloseableIterator getSubCursor(String identifier);
+    CloseableIterator<IndexEntry> getSubCursor(String identifier);
 
     /**
      * If this indexdefinition is a 'sub definition' then, a parent IndexEntry can be available...

@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseEntry.java,v 1.9 2006-07-18 06:30:51 michiel Exp $
+ * @version $Id: MMBaseEntry.java,v 1.10 2006-09-06 16:47:14 michiel Exp $
  **/
 public class MMBaseEntry implements IndexEntry {
     static private final Logger log = Logging.getLoggerInstance(MMBaseEntry.class);
@@ -45,11 +45,11 @@ public class MMBaseEntry implements IndexEntry {
     private final boolean multiLevel; // it this not the same as node instanceof VirtualNode?
     private final NodeManager elementManager;
 
-    private final Collection subQueries;
+    private final Collection<IndexDefinition> subQueries;
 
     // set with numbers of nodes indexed so far - used to prevent the indexing
     // of fields already indexed
-    private final Set indexed = new HashSet();
+    private final Set<String> indexed = new HashSet();
 
     MMBaseEntry(Node node, Collection fields, boolean multiLevel, NodeManager elementManager, Collection subQueries) {
         this.fields = fields;
@@ -105,17 +105,17 @@ public class MMBaseEntry implements IndexEntry {
                     if (log.isDebugEnabled()) {
                         log.debug("add " + fieldName + " text, keyword" + value);
                     }
-                    document.add(new Field(fieldName, value, Field.Store.YES, Field.Index.UN_TOKENIZED));
+                    Indexer.addField(document, new Field(fieldName, value, Field.Store.YES, Field.Index.UN_TOKENIZED), fieldDefinition.multiple);
                 } else if (fieldDefinition.storeText) {
                     if (log.isDebugEnabled()) {
                         log.trace("add " + fieldName + " text, store");
                     }
-                    document.add(new Field(fieldName, value, Field.Store.YES, Field.Index.TOKENIZED));
+                    Indexer.addField(document, new Field(fieldName, value, Field.Store.YES, Field.Index.TOKENIZED), fieldDefinition.multiple);
                 } else {
                     if (log.isDebugEnabled()) {
                         log.trace("add " + fieldName + " text, no store");
                     }
-                    document.add(new Field(fieldName, value, Field.Store.NO, Field.Index.TOKENIZED));
+                    Indexer.addField(document, new Field(fieldName, value, Field.Store.NO, Field.Index.TOKENIZED), fieldDefinition.multiple);
                 }
             }
         }
