@@ -27,7 +27,9 @@ import javax.xml.transform.stream.*;
 import java.io.*;
 
 import org.mmbase.util.logging.*;
-import nl.leocms.applications.*;
+import org.mmbase.bridge.Cloud;
+import com.finalist.mmbase.util.CloudFactory;
+import nl.leocms.util.ApplicationHelper;
 import nl.leocms.util.ZipUtil;
 
 public class creatingXML{
@@ -38,14 +40,19 @@ public class creatingXML{
    }
 
    public void create(Document document, String sBuilderName){
-      log.info("creating " + sBuilderName + ".xml in " + NMIntraConfig.tempDir);
+     
+     Cloud cloud = CloudFactory.getCloud();
+     ApplicationHelper ap = new ApplicationHelper(cloud);
+     String tempDir = ap.getTempDir();
+     
+      log.info("creating " + sBuilderName + ".xml in " + tempDir);
       try
        {
           TransformerFactory tFactory = TransformerFactory.newInstance();
 
           Transformer transformer = tFactory.newTransformer();
 
-          FileOutputStream fos = new FileOutputStream(NMIntraConfig.tempDir + sBuilderName +
+          FileOutputStream fos = new FileOutputStream(tempDir + sBuilderName +
           ".xml");
           transformer.transform(new javax.xml.transform.dom.DOMSource(document),new StreamResult(fos));
           fos.close();
@@ -59,7 +66,7 @@ public class creatingXML{
        }
 
        ZipUtil zu = new ZipUtil();
-       zu.createArchiveFile(NMIntraConfig.tempDir + sBuilderName + ".xml",sBuilderName + ".zip");
+       zu.createArchiveFile(tempDir + sBuilderName + ".xml",sBuilderName + ".zip");
 
    }
 }
