@@ -31,52 +31,35 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.28 2006-09-06 16:47:14 michiel Exp $
+ * @version $Id: Indexer.java,v 1.29 2006-09-06 18:13:36 michiel Exp $
  **/
 public class Indexer {
 
     static private final Logger log = Logging.getLoggerInstance(Indexer.class);
 
     /**
-     * @since MMBase-1.8.2
+     * @since MMBase-1.9
      */
-    static final Integer MULTIPLE_ADD   = 1;
-    static final Integer MULTIPLE_FIRST = 2;
-    static final Integer MULTIPLE_LAST  = 3;
+    public enum Multiple {ADD, FIRST, LAST};
 
 
-
-    /**
-     * Converse a String to a constant
-     * @since MMBase-1.8.2
-     */
-    public static Integer getMultiple(String s) {
-        if ("add".equals(s)) {
-            return MULTIPLE_ADD;
-        } else if ("first".equals(s)) {
-            return MULTIPLE_FIRST;
-        } else if ("last".equals(s)) {
-            return MULTIPLE_FIRST;
-        } else {
-            return null;
-        }
-    }
     /**
      * Adds a Field to a Document considering also a 'multiple' setting.
      * @since MMBase-1.8.2
      */
-    public static void addField(Document document, Field field, Object multiple) {
-        if (multiple == null || multiple == MULTIPLE_ADD) {
+    public static void addField(Document document, Field field, Multiple multiple) {
+        switch(multiple) {
+        case ADD:
+        default: 
             document.add(field);
-        } else if (multiple == MULTIPLE_FIRST) {
+            break;
+        case FIRST: 
             if (document.get(field.name()) == null) {
                 document.add(field);
             }
-        } else if (multiple == MULTIPLE_LAST) {
+            break;
+        case LAST:
             document.removeFields(field.name());
-            document.add(field);
-        } else {
-            log.warn("Unknown multiple value " + multiple);
             document.add(field);
         }
     }

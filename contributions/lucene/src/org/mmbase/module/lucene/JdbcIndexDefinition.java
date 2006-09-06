@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * If for some reason you also need to do Queries next to MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JdbcIndexDefinition.java,v 1.10 2006-09-06 16:47:14 michiel Exp $
+ * @version $Id: JdbcIndexDefinition.java,v 1.11 2006-09-06 18:14:17 michiel Exp $
  **/
 public class JdbcIndexDefinition implements IndexDefinition {
 
@@ -57,12 +57,10 @@ public class JdbcIndexDefinition implements IndexDefinition {
     private final Analyzer analyzer;
 
     private final Set<String> keyWords    = new HashSet();
-    private final Map<String, Integer> nonDefaultMultiples = new HashMap();
+    private final Map<String, Indexer.Multiple> nonDefaultMultiples = new HashMap();
 
     private final Collection<IndexDefinition> subQueries = new ArrayList();
 
-    // fille on first getNode
-    private final Map fieldTypes = null;
 
     JdbcIndexDefinition(DataSource ds, Element element,
                         Set allIndexedFields,
@@ -82,7 +80,7 @@ public class JdbcIndexDefinition implements IndexDefinition {
                     }
                     String m = childElement.getAttribute("multiple");
                     if (! m.equals("add")) {
-                        nonDefaultMultiples.put(childElement.getAttribute("name"),  Indexer.getMultiple(m));
+                        nonDefaultMultiples.put(childElement.getAttribute("name"),  Indexer.Multiple.valueOf(m.toUpperCase()));
                     }
                 } else if ("related".equals(childElement.getLocalName())) {
                     subQueries.add(new JdbcIndexDefinition(ds, childElement, allIndexedFields, storeText, mergeText, a));
