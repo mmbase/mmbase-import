@@ -15,7 +15,7 @@ import org.mmbase.util.logging.Logging;
  * Convert a Excel file to LeoCMS navigation structure
  *
  * @author Alexey Zemskov
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class Excel2Menu {
 
@@ -86,7 +86,7 @@ public class Excel2Menu {
 
 
          Node nodeNewRubric =  addRubric(sSheetName,1);
-         nodeNewRubric.setStringValue("url", sSitePath);
+         nodeNewRubric.setStringValue("url_live", sSitePath);
          nodeNewRubric.commit();
          nodeRootRubric.createRelation(nodeNewRubric, rmParent).commit();
 
