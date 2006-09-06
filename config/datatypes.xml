@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
 
-  <!-- @version $Id: datatypes.xml,v 1.45 2006-08-21 11:54:37 pierre Exp $ -->
+  <!-- @version $Id: datatypes.xml,v 1.46 2006-09-06 18:23:53 michiel Exp $ -->
 
   <!--
   schematic syntax of one datatype entry:
@@ -176,6 +176,18 @@
       </description>
       <!-- enforced line -->
       <pattern value="\A[^\n\r]*\z" />
+    </specialization>
+
+    <specialization id="colors">
+      <description xml:lang="en">
+        colors as can be used in css
+      </description>
+      <default value="white" />
+      <maxLength value="64" />
+      <pattern value="(?i)\A(aqua|black|blue|fuchsia|gray|green|lime|maroon|navy|olive|purle|red|silver|teal|white|yellow|#[0-9,a-f]{3}|#[0-9,a-f]{6})\z" />
+      <enumeration>
+        <entry basename="org.mmbase.datatypes.resources.string.colors" />
+      </enumeration>
     </specialization>
 
     <specialization id="trimmedline">
