@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.64 2006-08-31 15:30:35 nklasens Exp $
+ * @version  $Id: editwizard.jsp,v 1.65 2006-09-06 08:23:24 nklasens Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
@@ -448,8 +448,12 @@ function setFocusOnFirstInput() {
         // find first editable field
         var hidden = elem.getAttribute("type"); //.toLowerCase();
         if (hidden != "hidden") {
-            elem.focus();
-            break;
+            // It is very annoying when you want to scroll with a wheel mouse
+            // when you open a wizard and the selectbox is the first field.
+            if (elem.getAttribute('ftype') != 'enum') {
+                elem.focus();
+                break;
+            }
         }
     }
 }
