@@ -204,83 +204,87 @@ public class ContentHelper {
       return alUnusedItems;
    }
 
+   /*
+   * Add the default relations to a contentelement, if they are not present
+   * First check if this type of contentelements has a default page
+   * If not check the possible paths to find its page
+   * If both options fail use the archive page to add the default relations
+   */
    public void addDefaultRelations(String sContentElement, HashMap pathsFromPageToElements) {
-      String sType = cloud.getNode(sContentElement).getNodeManager().getName();
-      boolean hasDefaultRelations = false;
-      for (Iterator it=pathsFromPageToElements.keySet().iterator();it.hasNext() && !hasDefaultRelations; ) {
-         String objecttype = (String) it.next();
-         if (objecttype.equals(sType)) {
-           String path = (String) pathsFromPageToElements.get(objecttype);
-           hasDefaultRelations = addDefaultRelations(sContentElement, path);
+
+      String sType = cloud.getNode(sContentElement).getNodeManager().getName();   
+      if(!bRelationsExists(sContentElement)&&!sType.equals("paragraaf")) {
+      
+         boolean hasDefaultRelations = false;
+         String sPaginaNumber = ap.getDefaultPage(sType);
+           
+         if(sPaginaNumber!=null) {
+            log.info(sType + " " + sContentElement + " is related to pagina " + sPaginaNumber);
+            hasDefaultRelations = createRelationToPage(sContentElement,sPaginaNumber);
+         } 
+         for (Iterator it=pathsFromPageToElements.keySet().iterator();it.hasNext() && !hasDefaultRelations; ) {
+            String objecttype = (String) it.next();
+            if (objecttype.equals(sType)) {
+              String path = (String) pathsFromPageToElements.get(objecttype);
+              hasDefaultRelations = addDefaultRelationByPath(sContentElement, path);
+            }
+         }
+         if(!hasDefaultRelations) {
+            createRelationToPage(sContentElement,cloud.getNode("archief").getStringValue("number")); 
          }
       }
    }
 
-   public boolean addDefaultRelations(String objectNumber, String pathFromPageToElements) {
+   /* Try to add the default relations for a contentelement on basis of a path
+   */
+   public boolean addDefaultRelationByPath(String objectNumber, String pathFromPageToElements) {
       
-      boolean hasDefaultRelations = false;
-      
-      if(!bRelationsExists(objectNumber)) {
-                        
-         Node nElement = cloud.getNode(objectNumber);
-         String otype = nElement.getStringValue("otype");
-         String thisType = (String) getNameWithOtype(otype);
-         
-         Vector breadcrumbs = null;
-         String archiveParent = null;
-         
-         String sPaginaNumber = ap.getDefaultPage(thisType);
-         log.info(thisType + " " + objectNumber + " is related to pagina " + sPaginaNumber);
-            
-         // finding page related to the contentelement
-         if (sPaginaNumber==null){
-            NodeList nl = cloud.getList(objectNumber,pathFromPageToElements,
-               "pagina.number",null,null,null,null,true);
-            if (nl.size()>0){
-               sPaginaNumber = nl.getNode(0).getStringValue("pagina.number");
-            }
-         }
-         // finding breadcrumbs
-         if (sPaginaNumber!=null){
-            breadcrumbs = PaginaHelper.getBreadCrumbs(cloud,sPaginaNumber);
-            log.info("page " + sPaginaNumber + " has breadcrumbs " + breadcrumbs);
-         } else {
-            log.info(getNameWithOtype(otype) + " " + objectNumber + " has no relation to a page");
-         }
-         // finding parent of archive         
-         NodeList nParent = cloud.getNode("archive").getRelatedNodes("rubriek","parent","SOURCE");
-         if (nParent.size() > 0) {
-            archiveParent = nParent.getNode(0).getStringValue("number");
-         } else {
-            log.error("pagina archive does not have a parent rubriek");
-         }
-         
-         if (breadcrumbs != null && breadcrumbs.size()>3) {
-            // breadcrumbs should have at least size 3: [creatierubriek,...,subsite,root]
-            
-            createRelation(objectNumber,nElement,"creatierubriek",(String) breadcrumbs.get(0));
-            createRelation(objectNumber,nElement,"hoofdrubriek",(String) breadcrumbs.get(breadcrumbs.size()-3));
-            createRelation(objectNumber,nElement,"subsite",(String) breadcrumbs.get(breadcrumbs.size()-2));
-            hasDefaultRelations = true;
-         }
-         else {
-
-            // use rubriek with alias "archive" as creatierubriek and hoofdrubriek and the parent of archive as subsite
-            createRelation(objectNumber,nElement,"creatierubriek","archive");
-            createRelation(objectNumber,nElement,"hoofdrubriek","archive");
-            createRelation(objectNumber,nElement,"subsite",archiveParent);
-         }
-      } else {
-        hasDefaultRelations = true;
+      boolean hasDefaultRelations = false;        
+      // finding page related to the contentelement
+      NodeList nl = cloud.getList(objectNumber,pathFromPageToElements,
+         "pagina.number",null,null,null,null,true);
+      if (nl.size()>0){
+         String sPaginaNumber = nl.getNode(0).getStringValue("pagina.number");
+         hasDefaultRelations = createRelationToPage(objectNumber, sPaginaNumber);
       }
       return hasDefaultRelations;
    }
 
-   void createRelation(String objectNumber, Node nElement, String role, String rubriekNumber) {
+
+   /* Use sPaginaNumber to add the default relations to objectNumber
+   */
+   public boolean createRelationToPage(String objectNumber, String sPaginaNumber) {
+
+      boolean hasDefaultRelations = false;
+
+      // finding breadcrumbs
+      Vector breadcrumbs = null;
+      if (sPaginaNumber!=null){
+         breadcrumbs = PaginaHelper.getBreadCrumbs(cloud,sPaginaNumber);
+         log.debug("page " + sPaginaNumber + " has breadcrumbs " + breadcrumbs);
+      }
+      
+      if (breadcrumbs != null && breadcrumbs.size()>2) {
+         // breadcrumbs should have at least size 3: [creatierubriek,...,subsite,root]
+         
+         createRelation(objectNumber,"creatierubriek",(String) breadcrumbs.get(0));
+         createRelation(objectNumber,"hoofdrubriek",(String) breadcrumbs.get(breadcrumbs.size()-3));
+         createRelation(objectNumber,"subsite",(String) breadcrumbs.get(breadcrumbs.size()-2));
+         hasDefaultRelations = true;
+      }
+      else {
+         // there is a relation to a page, however the page has no breadcrumbs
+         log.error(sPaginaNumber + " has breadcrumbs " + breadcrumbs + " probably it can be removed");
+      }
+      return hasDefaultRelations;
+   }
+
+   void createRelation(String objectNumber, String role, String rubriekNumber) {
       if(!relationExists(objectNumber, role)) {
          Node nRubriek = cloud.getNode(rubriekNumber);
+         Node nElement = cloud.getNode(objectNumber);
          nRubriek.createRelation(nElement, cloud.getRelationManager(role)).commit();
-         log.info("added " + role + " relation between " + objectNumber + " and rubriek " + rubriekNumber);
+         log.debug("added " + role + " relation between " + nElement.getNumber() + " and rubriek " + rubriekNumber);
       }
    }
 
