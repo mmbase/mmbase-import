@@ -18,11 +18,11 @@ import org.mmbase.bridge.StringIterator;
  * A list of Strings
  *
  * @author Pierre van Rooden
- * @version $Id: BasicStringList.java,v 1.11 2005-12-10 14:31:46 michiel Exp $
+ * @version $Id: BasicStringList.java,v 1.12 2006-09-06 16:48:39 michiel Exp $
  */
 public class BasicStringList extends BasicList implements StringList {
 
-    static final StringList EMPTY = new BasicStringList();
+    static final StringList EMPTY = org.mmbase.bridge.util.BridgeCollections.EMPTY_STRINGLIST;
 
     BasicStringList() {
         super();
