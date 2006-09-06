@@ -38,10 +38,10 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.54 2006-07-18 12:56:55 michiel Exp $
+ * @version $Id: DataType.java,v 1.55 2006-09-06 18:23:02 michiel Exp $
  */
 
-public interface DataType extends Descriptor, Cloneable, Comparable, Serializable {
+public interface DataType<C> extends Descriptor, Cloneable, Comparable, Serializable {
 
     /**
      * The XML Namespace to be used for creating datatype XML
@@ -84,7 +84,7 @@ public interface DataType extends Descriptor, Cloneable, Comparable, Serializabl
     /**
      * Returned by {@link #validate} if no errors: an empty (nonmodifiable) Collection.
      */
-    public static final Collection VALID = Collections.EMPTY_LIST;
+    public static final Collection<LocalizedString> VALID = Collections.EMPTY_LIST;
 
     /**
      * Inherit properties and processors from the passed datatype.
@@ -151,12 +151,12 @@ public interface DataType extends Descriptor, Cloneable, Comparable, Serializabl
      * Returns the default value of this data type.
      * @return the default value
      */
-    public Object getDefaultValue();
+    public C getDefaultValue();
 
     /**
      * @javadoc
      */
-    public void setDefaultValue(Object def);
+    public void setDefaultValue(C def);
 
     /**
      * @javadoc
@@ -179,7 +179,7 @@ public interface DataType extends Descriptor, Cloneable, Comparable, Serializabl
      * @return The error message(s) if the value is not compatible. An empty collection if valid.
      * @param value the value to be validated
      */
-    public Collection /*<LocalizedString>*/ validate(Object value);
+    public Collection<LocalizedString> validate(C value);
 
     /**
      * Checks if the passed object obeys the restrictions defined for this type.
@@ -190,7 +190,7 @@ public interface DataType extends Descriptor, Cloneable, Comparable, Serializabl
      *
      * @return The error message(s) if the value is not compatible. An empty collection if the value is valid.
      */
-    public Collection /*<LocalizedString> */ validate(Object value, Node node, Field field);
+    public Collection<LocalizedString> validate(C value, Node node, Field field);
 
     /**
      * Returns whether this field is required (should have content).
@@ -265,7 +265,7 @@ public interface DataType extends Descriptor, Cloneable, Comparable, Serializabl
      * @param field  Possibly the possible values depend on an actual field (this may be, and in the default implementation is, ignored)
      * @param key    the key for which to look up the (gui) value
      */
-    public Object getEnumerationValue(Locale locale, Cloud cloud, Node node, Field field, Object key);
+    public C getEnumerationValue(Locale locale, Cloud cloud, Node node, Field field, Object key);
 
     /**
      * @return the LocalizedEntryListFactory which will be used to produce the result of {@link
@@ -327,7 +327,7 @@ public interface DataType extends Descriptor, Cloneable, Comparable, Serializabl
      * Similar to calling clone(), but changes the data type name if one is provided.
      * @param name the new name of the copied datatype (can be <code>null</code>, in which case the name is not changed).
      */
-    public Object clone(String name);
+    public DataType<C> clone(String name);
 
 
     /**
