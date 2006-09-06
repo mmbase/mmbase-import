@@ -64,19 +64,40 @@
         <hr />
         <mm:import externid="fullindex" />
         <mm:present referid="fullindex">
-          Triggering full index for ${fullindex}.        
+          <jsp:text>Triggering full index for ${fullindex}.</jsp:text>
           <mm:voidfunction module="lucene" name="fullIndex" referids="fullindex@index" />
+        </mm:present>
+        <mm:import externid="delete" />
+        <mm:present referid="delete">
+          <jsp:text>Removing assignment ${delete}</jsp:text>
+          <mm:voidfunction module="lucene" name="unassign" referids="delete@id" />
+        </mm:present>
+        <mm:import externid="interrupt" />
+        <mm:present referid="interrupt">
+          <mm:function module="lucene" name="interrupt"/>
         </mm:present>
         <table summary="Misc. options">
           <tr>
             <th>Status</th>
-            <td><mm:function module="lucene" name="statusdescription" /></td>
+            <td>
+              <mm:function module="lucene" name="statusdescription" />
+              <mm:link>
+                <mm:param name="interrupt" value="now" />
+                <jsp:text>, </jsp:text><a onclick="return confirm('Do you want to interrupt the current process?');" href="${_}">interrupt</a>
+              </mm:link>
+            </td>
           </tr>
           <tr>
             <th>Queue</th>
             <td>
-              <mm:listfunction module="lucene" name="queue">
-                <mm:write /><mm:last inverse="true">, </mm:last>
+              <mm:listfunction module="lucene" name="queue" jspvar="assignment" vartype="org.mmbase.module.lucene.Lucene.Scheduler.Assignment">
+                <mm:link>
+                  <mm:param name="delete" value="${assignment.id}" />
+                  <a onclick="return confirm('Do you want to unschedule  ${assignment}?');" href="${_}">
+                    <jsp:text>${assignment}</jsp:text>
+                  </a>
+                </mm:link>
+                <mm:last inverse="true">, </mm:last>
               </mm:listfunction>
             </td>
           </tr>
