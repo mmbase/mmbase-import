@@ -1,5 +1,5 @@
 <mm:relatednodes type="pagina">
    <mm:field name="number" jspvar="sID" vartype="String" write="false"><%
-      hsetPagesForThisCategory.add(sID);
+      hsetPagesForThisRubriek.add(sID);
  %></mm:field>
 </mm:relatednodes>

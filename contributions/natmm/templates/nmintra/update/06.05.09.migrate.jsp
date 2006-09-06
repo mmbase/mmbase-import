@@ -10,6 +10,7 @@
          <mm:setfield name="level">1</mm:setfield>
          <mm:relatednodes type="rubriek" searchdir="destination">
             <mm:setfield name="level">2</mm:setfield>
+            <mm:setfield name="issearchable">1</mm:setfield>
             <mm:relatednodes type="rubriek" searchdir="destination">
                <mm:setfield name="level">3</mm:setfield>
             </mm:relatednodes>

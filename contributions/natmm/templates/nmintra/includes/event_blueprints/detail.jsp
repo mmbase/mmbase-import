@@ -10,6 +10,7 @@
          <br/><br/>
 		<% } %>
 	</mm:field>
+	<% boolean showNextDotLine = false; %>
    <mm:related path="posrel,paragraaf" orderby="posrel.pos" directions="UP">
       <%@include file="../relatedparagraph.jsp" %>
    </mm:related>

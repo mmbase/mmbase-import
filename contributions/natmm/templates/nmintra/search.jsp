@@ -10,6 +10,7 @@
    nl.leocms.util.tools.SearchUtil" %>
 <%@include file="/taglibs.jsp" %>
 <mm:cloud jspvar="cloud">
+<mm:log jspvar="log">
 <%@include file="includes/templateheader.jsp" %>
 <%@include file="includes/cacheparams.jsp" %>
 <%@include file="includes/calendar.jsp" %>
@@ -27,6 +28,7 @@
 	String sAdv = request.getParameter("adv");
 	if (sAdv==null) { sAdv = ""; }
 	
+	RubriekHelper rh = new RubriekHelper(cloud);
    SearchUtil su = new SearchUtil();
    
    long [] period = su.getPeriod(periodId);
@@ -47,7 +49,7 @@
 
    HashSet hsetAllowedNodes = new HashSet();
    HashSet hsetPagesNodes = new HashSet();
-   HashSet hsetCategories = new HashSet();
+   HashSet hsetRubrieken = new HashSet();
 
    HashSet hsetPageDescrNodes = new HashSet();
    HashSet hsetArticlesNodes = new HashSet();
@@ -87,13 +89,13 @@
 		  		<% if (searchId.equals("")&&sCategory.equals("")&&sPool.equals("")&&(fromTime==0)&&(toTime==0)){ %>
 					Vul een zoekterm in bij 'ik zoek op...' en klik op de 'Zoek'-knop om in het Intranet te zoeken."						
 				<% } else {
-						if(hsetCategories.size()==0) {
+						if(hsetRubrieken.size()==0) {
 				         %>Er zijn geen zoekresultaten gevonden, die voldoen aan uw zoekcriteria.<%
 					   } else { 
 					      %>De volgene zoekresultaten zijn gevonden in de categorieën <br/><% 
 					   }
 					   boolean bFirst = true;
-					   for (Iterator it = hsetCategories.iterator(); it.hasNext();)
+					   for (Iterator it = hsetRubrieken.iterator(); it.hasNext();)
 					   {
 					      String sRubriek = (String) it.next();
 					      if(!bFirst) { %> | <% }
@@ -107,22 +109,20 @@
 					   }
 
 					   // *** Show rubrieken
-				   	if (hsetCategories.size() > 0) { 
+				   	if (hsetRubrieken.size() > 0) { 
 							Vector defaultSearchTerms = new Vector(); 
 							defaultSearchTerms = su.createSearchTerms(searchId);%>
 						   <br/><br/>
 						   <table width="100%" background="media/dotline.gif"><tr><td height="3"></td></tr></table>
 					      <% 
-   	               for (Iterator it = hsetCategories.iterator(); it.hasNext(); ) {
+   	               for (Iterator it = hsetRubrieken.iterator(); it.hasNext(); ) {
 					         String sRubriek = (String) it.next();
-
-					         HashSet hsetPagesForThisCategory = new HashSet(); %>
+                        log.info(sRubriek);
+					         HashSet hsetPagesForThisRubriek = rh.getAllPages(sRubriek); 
+					         log.info(" -> " + hsetPagesForThisRubriek);
+					         %>
 					         <mm:node number="<%= sRubriek %>">
-									<%@include file="includes/search/related_pages.jsp" %>
-									<mm:relatednodes type="rubriek" constraints="rubriek.level = 2">
-										<%@include file="includes/search/related_pages.jsp" %>	
-									</mm:relatednodes>
-				         	   <a name="<mm:field name="number" />" />
+									<a name="<mm:field name="number" />" />
 				            	<span class="colortitle"><b>
 										<mm:field name="naam" jspvar="name" vartype="String" write="false">
 											<%= name.toUpperCase() %>
@@ -134,7 +134,7 @@
 				      	      for (Iterator itp = hsetPagesNodes.iterator(); itp.hasNext(); ) {
             					   String sPageID = (String) itp.next();
 
-				            	   if(!hsetPagesForThisCategory.contains(sPageID)) {
+				            	   if(!hsetPagesForThisRubriek.contains(sPageID)) {
             				   	   continue;
 					               }
 
@@ -177,10 +177,13 @@
             	   				         <mm:field name="artikel.number" jspvar="sID" vartype="String" write="false">
    													<mm:list nodes="<%= sID %>" path="artikel,posrel,paragraaf,posrel,attachments" fields="attachments.number,attachments.filename,attachments.titel">
    														<mm:field name="attachments.number" jspvar="sAttID" vartype="String" write="false">
-   															<% if (hsetAttachmentsParagraafNodes.contains(sAttID)) { 
-   																bHasAttachments = true;%>
-   															<%@include file="includes/search/show_attachments.jsp" %>															
-   															<%	}%>
+   															<% 
+   															if (hsetAttachmentsParagraafNodes.contains(sAttID)) { 
+   																bHasAttachments = true;
+   																%>
+   															   <%@include file="includes/search/show_attachments.jsp" %>															
+   															   <%	
+   															} %>
    														</mm:field>
    													</mm:list>
    												<%
@@ -399,4 +402,5 @@
    	%><% } 
 	%></td>
 <%@include file="includes/footer.jsp" %>
+</mm:log>
 </mm:cloud>
