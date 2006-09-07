@@ -144,10 +144,9 @@ public class CronDaemon  {
     }
 
     /**
-     * The main loop of the daemon, which of course is a Thread, implemented in run() to satisfy the
-     * 'Runnable' interface.
+     * The main loop of the daemon.
      */
-    public void run() {
+    protected void run() {
         long now = System.currentTimeMillis();
         try {
             Date currentMinute = new Date(now / 60000 * 60000);
