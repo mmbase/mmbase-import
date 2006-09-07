@@ -1,5 +1,5 @@
 ===================================================================
-                     MMBase 1.8.2 - Release Notes
+                     MMBase 1.9.0 - Release Notes
 ===================================================================
 
 ============
@@ -7,7 +7,7 @@ INTRODUCTION:
 ============
 
 This document describes the changes that have been made in the final
-release of MMBase 1.8.2, relative to the previous release of MMBase (1.7.x).
+release of MMBase 1.9.0, relative to the previous release of MMBase (1.8.x).
 
 Bug reports should be entered at the bug reporting system for MMBase
 at:
@@ -22,260 +22,41 @@ NEW FEATURES:
 --------------------
 General New Features:
 --------------------
-[1.8.2]
-[1.8.1]
-- postgresql with views
+[1.9.0]
 
-- several small taglib improvements, like 
-    - an mm:mayread
+- On a lot of places java 1.5 features were used in the implementation of core and applications.
+  (like generics, varargs).
 
-    - easier to use when reusing the request (dynamic includes).  E.g. if logicaly no mm:cloud
-      needed because the object has a cloud already (e.g. on reuse of a node), then it works without
-      errors now.
+- start on org.mmbase.framework
 
-    - jspvar on querycontainers
+- command server for image magick (to avoid memory doubling)
 
-    - timezone on locale-tags.
-    
-    - styleClass on mm:form
-
-    - Jsp included with mm:include or jsp:include now inherit content tag property from the including jsps.
-      An included jsp can no longer override the cache settings of the including jsp.
-
-- improved date-parsing  (also in mm:time)
-
-- clustering implementations have been reviewed, added e.g. 'admin pages' for clustering
-
-
-[1.8.0]
-- Applications:
-  Code in mmbase is more clearly separated in 'core' and 'applications'. 
-
-  Some code has moved to a separate application:
-   - Vwms (virtual web masters) have been removed from the core and placed in a
-     separate 'vwms' application.
-   - SCAN is now a separate application. The application depends on the vwms
-     application.
-
-  New applications:
-   - Crontab is a new application that provides scheduling.
-
-   - Oscache-cache is a new application that implements the MMBase cache using oscache
-     (shipped in distro)
-
-   - Packaging is an application that offers an alternative for the sharing and distribution of 
-     'packages' of mmbase code and data.
-     (stalled)
-
-   - Richtext application provides support for kupu-editor, and we basicly have 'rich text' now,
-     including inline urls, attachments, images, cross-links and 'blocks' (notes, intermezzo's)
-
-- Security improvements:
-   - Class security provides authentication wrapping based on calling class
-     -> classauthentication.xml
-
-   - It's easier to make security independent code because of new features about default authentication
-     methods.
-
-- Images improvements
-   - Support for height and width (predicted before conversion, determined after conversion, and
-     stored if corresponding fields are available) (This was ported to 1.7.4 too)
-	 'modes' of mm:image.
-	 
-   - Transformations are postponed to when actually served --> with new image-servlet it is possible to
-     set up separate image server.
-
-   - FileName of upload can be stored, and be added to the URL (/mmbase/attachments/1234/myfile.pdf)
-
-- ResourceLoader was created, MMBase can more easily be deployed as war now. Most configuration can also
-  be shipped inside jars, and be overriden. This means the most applications can principally be installed by
-  placing one jar in WEB-INF/lib plus placing jsp's if any.
-  --> Some resources are 'mergeable' now
-
-- DataTypes and Field improvements.
-   New datatypes 'datetime' and 'boolean'. Support for 'restrictions' on all types, default values,
-   uniqueness etc. All on field level.
-
-   DataType 'list' is not yet tested/working.
-
-   This gave rise to complete new package org.mmbase.datatypes which is also part of 'bridge'
-   because its classes are accessible through several methods in bridge.
-
-   --> 'typehandlers' of taglib are based on datatypes now.
-   --> DateParser
-   --> updated builder xml format (using XSD)
-
-- Functions. The function framework was completed. Among others you can now add functions in the
-  builder xml (without the need to override the builder class).
-
-- Events. Because of the 'cache release strategy' project, event object were created (in
-  org.mmbase.core.events). Work is being done release-strategies. You can also implement different
-  cache-backings --> e.g. oscache-impl of Johannes.
-
-- Several new methods on bridge. -> see api-doc
-
-- Tests. The junit test-cases will all succeed when we release 1.8.
-
-- Contributions:   aselect,  mmbar,  mmbob, multilanguagegui, thememanager, lucene
-
-- External libraries:  concurrency support (anticipating jdk 1.5)
-                       we ship jstl/standard
-
-- Support for oracle / mssql. views.
-
-- Definition of 'bridge': The classes in mmbase-rmmci.jar.
-
-- Clustering is pluggable: clustering application: jgroups, unicast, multicast.
-
-- Optimization: The optimizationproject has made some progress, and quite a lot dissappeared. Most
-  noticably the multitude of database layers. There's just one now.
-  TODO:  Additional work remains, specifically fasing out of deprecated methods, renaming of 
-  classes, improvement of performance, and the simplifixation (or elimination) of JDBC module 
-  in favor of a stand-alone datasource implementation.
-
-- maven build. This is not an improvement on the MMBase code itself, but an alternative
-  for the current ant build system. The maven build does not yet build everything the current ant
-  build does. The core and frequently-used applications are build by maven. The maven build provides
-  an eady way to use MMBase artifacts in custom projects. The maven mmbase-modules plugin creates
-  mmbase-module artifacts which include jars, config files, templates and examples. The plugin
-  can also add these mmbase-module artifacts into a war artifact (see the example-webapp).
-
-- Better blob-caching. 
-  - Support for InputStreams.
-
-- cp1252 work arounds. (also in 1.7.x)
-
-- Core improvements:
-   - MMObjectNode can now be serialized
-
-- query-logging: max-life-time setting.
 
 Taglib New Features:
 -------------------
-- Bunch of new tags/attributes (see documentation). E.g. more complete set of has- tags
- (hasnodemanager, hasfunction etc..)
 
-- FileItem. HttpPost useage was dropped. common fileupload's 'FileItem' can be gotten as a jspvar.
-
-- Compatibility with EL. MMBase Taglib variables are now EL variables.
-  This may give minor compatibility issues. If this gives too many issues for you, you can switch
-  this behaviour off (this needs some testing still though).
-
-- 'escapers' can be more easily added, and they can also be configured on the page (mm:escaper)
-  This uses the concept of TransformerFactories and so on. A bit similar to functions.
-
-- EditTag
-
+- varStatus attribute on list-tags (like c:forEach)
+- jspvar of writers can have any value.
 
 Editwizard New Features:
 ------------------------
 
-- Several small improvements
-
-- The editwizard are about to receive a refactoring, which is anticipated for 1.8.1
-
 --------------------
 Obsolete Features:
 --------------------
-[1.8.0]
-- The 'ObjectTypes' class is merged into the 'TypeDef' class. Old code
-  referencing ObjectTypes should reference TypeDef instead. This includes the
-  typedef.xml builder configuration file.
-
-- The storage configuration files were originally located in the mmbase.jar.
-  In 1.8, these files have been moved to the storage/database directory in the mmbase config 
-  directory. Files that override the storage configuration need to be moved to the new directory.
-
-- The 'Config' module and the 'AppTool' utility have been dropped from the
-  code. Both tools provided visual input regarding configuration or
-  application makeup, but were considered outdated.
-  References to these modules have been removed from the MMBase admin pages.
-
-- Old database layers have been dropped.
-
-- 1.8 assumes that relation builders are extended from insrel (using the extends attribute in the builder tag).
-  Code may behave erratically if your relation builder xmls are not configured to use inheritence.
-  See upgrade.txt on how to adapt your configuration.
+[1.9.0]
 
 ------------------
 Bug Fixes:
 ------------------
-[1.8.2]
-
--- More memory-conversation in taglib, memory could remain in cached tag if exception occured.
-
-[1.8.1]
-
-These are the closed bugs in mmbase.org/bug.
-#6844  Database Layer        Postgresql case insensitive order by on distinct query fails       
-#6840  Core                  Can occur duplicate number fields in query.      
-#6838  Core                  NodeEvents are sent twice (or even more often).      
-#6837  Misc                  WatchedReloadableModule broken.      
-#6833  Core                  Enumeration guitype does not work      
-#6827  Performance           Postgresql ONLY keyword optimization does not use directionality      
-#6826  Database Layer        getAllowedRelations() in TypeRel does not return all relations      
-#6823  Core                  If gui value of node is based on gui of 'first' field, and that field is enumeration, that the gui is the key, not the value.      
-#6822  Taglibs               id attribute missing on some query containers.      
-#6821  Taglibs               _node stack not correctly peeked after body of a nodeprovider tag.      
-#6819  Taglibs               mm:url combination of referid and absolute attribute simply ignores 'absolute' attribute.      
-#6818  Core                  Missing: 2006-05-18 13:55:43,890 ERROR org.mmbase.cache.ConstraintsMatchingStrategy findMatcherForConstraint.261 - Could not match constraint of type BasicFieldValueInConstraint      
-#6817  Applications          Media editor compilation error      
-#6816  Taglibs               mm:relatednodes does not work if no mm:cloud.      
-#6814  Taglibs               referids attribute on m:functioncontainer, documented, valid, but not implemented. 
-#6813  Utils                 QueryReader does not support 'startnodes' (though it is mentioned in the XSD). Lucene contrib suffers.       
-#6812  Security              'cloud' security does not work.      
-#6393  Applications          XMLimporter imports to context TRaticUser 
-
-More:
--- Important memory-conservation changes were done, mainly in taglib.
--- Several bugs in ReleaseStrategy were fixed, and preformance was improved
--- Clustering implementations have been reviewed, which solved several bugs.
-
-[1.8.0]
-many
+[1.9.0]
 
 ---------------------------------------------------------
-Known API incompatibilities of bridge, between 1.7 to 1.8.
+Known API incompatibilities of bridge, between 1.8 to 1.9.
 ---------------------------------------------------------
-Of course we try to mimimize this, but sometimes it happens...
 
-- org.mmbase.bridge.Cloud#getUser().getRank() does not return a String any more, but an actual Rank
-  object --> cloud.getUser().getRank().equals(Rank.ANONYMOUS.toString()); still compiles but doesn't work any
-  more!!
-  So, if grep your code for that. And see that the change is, though incompatible, a real
-  improvement... Quickest fixes are to change getUser().getRank() by getUser().getRank().toString(),
-  or remove the 'toString()' on the compared Rank-constant.
+- ..
 
-
-- Node#setValue("owner", ..) does no longer throw an exception.
-
-- Empty fields of a node in a Transaction behave excactly like empty fields of a node which is not in
-  a Transaction. In previous versions there could be a difference, more specificly with 'not null'
-  fields (which for example could still be null in a node which is only commited in the transaction,
-  and not yet to the database).
-
-- Processors have been moved to org.mmbase.datatypes.processors (from
-  org.mmbase.bridge.util.fields).
-  If you used those in 1.7, then you need to recompile, and reconfigure in datatypes.xml.
-
-
-- Implement 'node' functions on bridge, not core. This ensure awareness, and that functions can be
-  called through MMCI. It seems a bit odd to use node interfaces in an otherwise core context, but
-  functions are exposed through the bridge, and exposing core object to the outside is even odder.
-
-
-- MMBase.getConnection was dropped. This can be replaced by:
-  import javax.sql.*;
-  import org.mmbase.storage.implementation.database.Attributes;
-  DataSource dataSource = (DataSource) mmbase.getStorageManagerFactory().getAttribute(Attributes.DATA_SOURCE);
-     return dataSource.getConnection();
- }
-
-
--  The getChildElement methods on DocumentReaders (like XMLBasicReader) don't return Enumerations
-   any more but Iterators
-
--  MMBase.mmobjs has been made private.
 
 ========================
 Know Issues and Problems:
@@ -322,10 +103,6 @@ Know Issues and Problems:
   (I'm not sure where the last line has to be: web.xml or orion-web.xml).
 
 
-- Length of email field inside Users and People builder isn't
-  rfc-compliant, but with 255 it stays beyond a limit some databases
-  use before switching to a bigger string-type (eg clob).
-
 - Not all HTML is html4 or xhtml valid
 
 - Sometimes it is needed to copy xml-apis.jar to
@@ -355,11 +132,6 @@ Know Issues and Problems:
 - Jumpers jump to /index.html by default, which can e.g. shield the
   image servlet (if 'dotlessly' mapped). Remove the setting from
   jumpers.xml if you prefer nice 404's (this is like this on default)
-
-- Hsqldb uses the current dir for writing the database-files. This can
-  be the bin dir from where you're starting the servlet-engine. You
-  can change this to a dir you want, by changing the database-property
-  in jdbc.xml (perhaps using $DATADIR)
 
 - Resin provides its own XSL-transformation implementation, on this
   area are some known problems.
