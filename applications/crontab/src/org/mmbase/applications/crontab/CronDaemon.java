@@ -18,9 +18,11 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  */
-public class CronDaemon extends TimerTask {
+public class CronDaemon  {
 
     private static final Logger log = Logging.getLoggerInstance(CronDaemon.class);
+
+    private TimerTask task;
 
     private static CronDaemon cronDaemon;
     private Timer cronTimer;
@@ -113,7 +115,7 @@ public class CronDaemon extends TimerTask {
     public void start() {
         log.info("Starting CronDaemon");
         cronTimer = new Timer(true);
-        cronTimer.scheduleAtFixedRate(this, 0, 60 * 1000);
+        cronTimer.scheduleAtFixedRate(new TimerTask() { public void run() {CronDaemon.this.run();} }, 0, 60 * 1000);
     }
 
     /**
