@@ -33,14 +33,14 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.78 2006-08-31 10:18:45 nklasens Exp $
+ * @version $Id: Module.java,v 1.79 2006-09-07 17:03:58 michiel Exp $
  */
 public abstract class Module extends FunctionProvider {
 
     /**
      * @javadoc
      */
-    static Map modules;
+    static Map<String, Module> modules;
 
     private static final Logger log = Logging.getLoggerInstance(Module.class);
 
@@ -50,9 +50,9 @@ public abstract class Module extends FunctionProvider {
      * This function can be called through the function framework.
      * @since MMBase-1.8
      */
-    protected Function getVersionFunction = new AbstractFunction("getVersion", Parameter.EMPTY, ReturnType.INTEGER) {
-        public Object getFunctionValue(Parameters arguments) {
-            return new Integer(getVersion());
+    protected Function getVersionFunction = new AbstractFunction("getVersion") {
+        public Integer getFunctionValue(Parameters arguments) {
+            return getVersion();
         }
     };
 
@@ -62,17 +62,17 @@ public abstract class Module extends FunctionProvider {
      * This function can be called through the function framework.
      * @since MMBase-1.8
      */
-    protected Function getMaintainerFunction = new AbstractFunction("getMaintainer", Parameter.EMPTY, ReturnType.STRING) {
-        public Object getFunctionValue(Parameters arguments) {
+    protected Function getMaintainerFunction = new AbstractFunction("getMaintainer") {
+        public String getFunctionValue(Parameters arguments) {
             return getMaintainer();
         }
     };
 
-    String moduleName = null;
-    Hashtable state = new Hashtable();
-    Hashtable properties; // would like this to be LinkedHashMap (predictable order)
-    String maintainer;
-    int version;
+    private String moduleName = null;
+    private Map<String, String> state = new Hashtable();
+    protected Map<String, String> properties; // would like this to be LinkedHashMap (predictable order)
+    private String maintainer;
+    private int version;
 
     // startup call.
     private boolean started = false;
@@ -169,7 +169,7 @@ public abstract class Module extends FunctionProvider {
      * state, returns the state hashtable that is/can be used to debug. Should
      * be overridden when live state should be done.
      */
-    public Hashtable state() {
+    public Map<String, String> state() {
         return state;
     }
 
@@ -187,10 +187,10 @@ public abstract class Module extends FunctionProvider {
      */
     public String getInitParameter(String key) {
         if (properties != null) {
-            String value=(String)properties.get(key);
+            String value= properties.get(key);
             if (value == null) {
                 key = key.toLowerCase();
-                value = (String)properties.get(key);
+                value = properties.get(key);
                 // try the system property, set on the JVM commandline
                 // i.e. you could provide a value for the mmbaseroot "machinename" property by specifying:
                 // -Dmmbaseroot.machinename=myname
@@ -208,7 +208,7 @@ public abstract class Module extends FunctionProvider {
     /**
      * Returns the properties to the subclass.
      */
-    protected Hashtable getProperties(String propertytable) {
+    protected Map<String, String>  getProperties(String propertytable) {
         //String filename="/usr/local/vpro/james/adminopen/modules/";
         //return results;
         return null;
@@ -225,7 +225,7 @@ public abstract class Module extends FunctionProvider {
     /**
      * Gets own modules properties
      */
-    public Hashtable getInitParameters() {
+    public Map<String, String> getInitParameters() {
         return properties;
     }
 
@@ -235,7 +235,7 @@ public abstract class Module extends FunctionProvider {
      * Unlike {@link #getModule}, this method does not automatically load modules if this hadn't occurred yet.
      * @return an <code>Iterator</code> with all active modules
      */
-    public static final Iterator getModules() {
+    public static final Iterator<Module> getModules() {
         if (modules == null) {
             return null;
         } else {
@@ -271,12 +271,12 @@ public abstract class Module extends FunctionProvider {
      * @since MMBase-1.6.2
      */
     public static synchronized final void shutdownModules() {
-        Iterator i = getModules();
-        while (i != null && i.hasNext()) {
-            Module m = (Module) i.next();
-            log.service("Shutting down " + m.getName());
-            m.shutdown();
-            log.service("Shut down " + m.getName());
+        if (modules != null) {
+            for (Module m : modules.values()) {
+                log.service("Shutting down " + m.getName());
+                m.shutdown();
+                log.service("Shut down " + m.getName());
+            }
         }
         modules = null;
     }
@@ -284,12 +284,11 @@ public abstract class Module extends FunctionProvider {
     public static synchronized final void startModules() {
         // call the onload to get properties
         log.service("Starting modules " + modules.keySet());
-        for (Iterator i = modules.values().iterator(); i.hasNext();) {
+        for (Module mod : modules.values()) {
             if (Thread.currentThread().isInterrupted()) {
                 log.info("Interrupted");
                 return;
             }
-            Module mod = (Module)i.next();
             if( log.isDebugEnabled() ) {
                 log.debug("startModules(): modules.onload(" + mod + ")");
             }
@@ -303,12 +302,11 @@ public abstract class Module extends FunctionProvider {
         if (log.isDebugEnabled()) {
             log.debug("startModules(): init the modules(" + modules + ")");
         }
-        for (Iterator i = modules.values().iterator(); i.hasNext();) {
+        for (Module mod : modules.values()) {
             if (Thread.currentThread().isInterrupted()) {
                 log.info("Interrupted");
                 return;
             }
-            Module mod = (Module) i.next();
             log.info("Starting module " + mod.getName());
             if ( log.isDebugEnabled()) {
                 log.debug("startModules(): mod.startModule(" + mod + ")");
@@ -325,11 +323,11 @@ public abstract class Module extends FunctionProvider {
     public static boolean hasModule(String name) {
         boolean check = modules.containsKey(name.toLowerCase());
         if (!check) {
-            check = modules.containsKey(name);    
+            check = modules.containsKey(name);
         }
         return check;
     }
-    
+
     /**
      * Retrieves a reference to a Module.
      * This call does not ensure that the requested module has been initialized.
@@ -371,9 +369,9 @@ public abstract class Module extends FunctionProvider {
                 }
             }
         // try to obtain the ref to the wanted module
-        Module obj = (Module) modules.get(name.toLowerCase());
+        Module obj = modules.get(name.toLowerCase());
         if (obj == null) { // try case sensitivily as well?
-            obj = (Module) modules.get(name);
+            obj =  modules.get(name);
         }
         if (obj != null) {
             // make sure the module is started, as this method could
@@ -407,16 +405,13 @@ public abstract class Module extends FunctionProvider {
     /**
      * Loads all module-xml present in <mmbase-config-dir>/modules.
      * @return A HashTable with <module-name> --> Module-instance
-     * @scope  private (only called from getModule)
      */
-    private static synchronized Hashtable loadModulesFromDisk() {
-        Hashtable results = new Hashtable();
+    private static synchronized Map<String, Module>  loadModulesFromDisk() {
+        Map<String, Module> results = new HashMap();
         ResourceLoader moduleLoader = getModuleLoader();
-        Collection modules = moduleLoader.getResourcePaths(ResourceLoader.XML_PATTERN, false/* non-recursive*/);
+        Collection<String> modules = moduleLoader.getResourcePaths(ResourceLoader.XML_PATTERN, false/* non-recursive*/);
         log.info("In " + moduleLoader + " the following module XML's were found " + modules);
-        Iterator i = modules.iterator();
-        while (i.hasNext()) {
-            String file = (String) i.next();
+        for (String file : modules) {
             String fileName = ResourceLoader.getName(file);
             ModuleReader parser = null;
             try {
@@ -444,7 +439,7 @@ public abstract class Module extends FunctionProvider {
 
                     results.put(fileName, mod);
 
-                    mod.properties = new Hashtable(parser.getProperties());
+                    mod.properties = parser.getProperties();
 
                     // set the module name property using the module's filename
                     // maybe we need a parser.getName() function to improve on this
