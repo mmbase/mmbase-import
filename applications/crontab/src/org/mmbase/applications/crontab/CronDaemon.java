@@ -22,8 +22,6 @@ public class CronDaemon  {
 
     private static final Logger log = Logging.getLoggerInstance(CronDaemon.class);
 
-    private TimerTask task;
-
     private static CronDaemon cronDaemon;
     private Timer cronTimer;
     private Set<CronEntry> cronEntries;
