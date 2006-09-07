@@ -35,7 +35,7 @@ import org.mmbase.cache.AggregatedResultCache;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.48 2006-07-17 07:19:15 pierre Exp $
+ * @version $Id: Contexts.java,v 1.49 2006-09-07 12:48:41 pierre Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -701,8 +701,8 @@ public class Contexts extends MMObjectBuilder {
     }
 
     /**
-     * Wraps getPossibleContexts of Authorisation implementation Verify.
-     * @see Verify#getPossibleContexts
+     * Wraps getPossibleContexts(User, int) of Authorisation implementation Verify.
+     * @see Verify#getPossibleContexts(User, int)
      * @todo Perhaps we need a possibleContextCache.
      */
     public SortedSet getPossibleContexts(User user, int nodeId) throws SecurityException {
@@ -739,9 +739,19 @@ public class Contexts extends MMObjectBuilder {
         }
     }
 
-
-
-
+    /**
+     * Wraps getPossibleContexts(User) of Authorisation implementation Verify.
+     * @see Verify#getPossibleContexts(User)
+     * @todo Perhaps we need a possibleContextCache.
+     */
+    public SortedSet getPossibleContexts(User user) throws SecurityException {
+        if (user.getRank().getInt() >= Rank.ADMIN_INT) {
+            // admin may do everything
+            return getAllContexts();
+        } else {
+            return getAllowingContexts(user, Operation.READ);
+        }
+    }
 
     //********************************************************************************
     // EDIT FUNCTIONS
