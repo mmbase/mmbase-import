@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.88 2006-07-21 11:17:40 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.89 2006-09-07 13:55:41 michiel Exp $
  */
 
 public class WriterHelper {
@@ -456,7 +456,7 @@ public class WriterHelper {
     public void setVartype(String t) throws JspTagException {
         vartype = stringToType(t);
         if (vartype == TYPE_UNKNOWN) {
-            throw new JspTagException("Type " + t + " is not known");
+            //throw new JspTagException("Type " + t + " is not known");
         }
     }
 
