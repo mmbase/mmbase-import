@@ -17,10 +17,10 @@ import java.util.Comparator;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BridgeList.java,v 1.4 2004-06-08 08:45:16 michiel Exp $
+ * @version $Id: BridgeList.java,v 1.5 2006-09-07 13:07:29 michiel Exp $
  * @since  MMBase-1.6
  */
-public interface BridgeList extends List {
+public interface BridgeList<E> extends List<E> {
 
     /**
      * Retrieves a property previously set for this list.
