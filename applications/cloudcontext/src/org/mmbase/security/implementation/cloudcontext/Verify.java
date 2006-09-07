@@ -20,7 +20,7 @@ import org.mmbase.security.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Verify.java,v 1.11 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: Verify.java,v 1.12 2006-09-07 12:48:41 pierre Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Contexts
  */
 public class Verify extends Authorization {
@@ -51,7 +51,7 @@ public class Verify extends Authorization {
 
     // javadoc inherited
     public boolean check(UserContext userContext, int nodeId, int sourceNodeId, int destinationNodeId, Operation operation) {
-        //log.debug("check if operation: " + operation + " is valid for: " + usercontext + " for node with number # " + i + "(between 2 nodes..)");        
+        //log.debug("check if operation: " + operation + " is valid for: " + usercontext + " for node with number # " + i + "(between 2 nodes..)");
         return Contexts.getBuilder().mayDo((User) userContext, nodeId, sourceNodeId, destinationNodeId, operation);
     }
 
@@ -73,9 +73,13 @@ public class Verify extends Authorization {
         return Contexts.getBuilder().getPossibleContexts((User) userContext, nodeId);
     }
 
+    public Set getPossibleContexts(UserContext userContext) throws org.mmbase.security.SecurityException {
+        return Contexts.getBuilder().getPossibleContexts((User) userContext);
+    }
+
     // javadoc inherited
     public QueryCheck check(UserContext userContext, Query query, Operation operation) {
         return Contexts.getBuilder().check((User) userContext, query, operation);
-        
+
     }
 }
