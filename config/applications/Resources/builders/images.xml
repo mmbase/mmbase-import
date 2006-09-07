@@ -48,6 +48,25 @@
     -->
     <property name="ImageConvert.ConverterRoot"></property>
 
+    <!-- 
+         The convert 'Method' is relevant for the ImageMagickImageConverter class.  It can be
+         'launcher' or 'connector'. If launcher (default), then the convert binary will be started
+         in the current JVM (which may give issues with memory). If 'connector' then it will connect
+         to the 'command server' which will do the launching. This is ussually a small JVM on the
+         same machine which is listening to a certain TCP port. 
+         See also ImageConvert.Host and ImageConvert.Port.
+
+    -->
+    <property name="ImageConvert.Method">launcher</property>
+    <!--
+        If ImageConvert.Method is connector, then the following two properties specify where to
+        connect to. Default is localhost:1679.
+    -->
+    <!--
+    <property name="ImageConvert.Host">localhost</property>
+    <property name="ImageConvert.Port">1679</property>
+    -->
+
     <property name="ImageConvert.DefaultImageFormat">asis</property> <!-- The default format of icache-objects. Defaults to jpeg if this option is missing here. 'asis' means, same format as the images object -->
 
     <!-- convert using ImageMagick example for windows -->
