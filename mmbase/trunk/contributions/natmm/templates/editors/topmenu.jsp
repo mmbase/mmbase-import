@@ -1,5 +1,5 @@
 <%@include file="/taglibs.jsp" %>
-<%@page import="nl.leocms.util.PropertiesUtil,nl.leocms.util.ApplicationHelper,org.mmbase.bridge.*" %>
+<%@page import="nl.leocms.util.PropertiesUtil,nl.leocms.util.ApplicationHelper,org.mmbase.bridge.*,java.net.*" %>
 <mm:cloud jspvar='cloud' rank='basic user'>
 <html>
 <head>
@@ -12,6 +12,42 @@
 	     {
 	        document.forms[0].submit();
 	     }
+		  function check()
+		  {
+			  var oHttp = null;
+			  if ( window.XMLHttpRequest )
+			  {
+			     oHttp = new window.XMLHttpRequest();
+			  }
+			  else
+			  {	
+			     if ( window.ActiveXObject )
+			     {
+			        oHttp = new window.ActiveXObject( "Microsoft.XMLHTTP" );
+			     }
+			     else
+			     {
+			        throw "UNSUPPORTED PLATFORM";
+			     }
+			  }
+		     if ( !oHttp )
+           {
+	           throw "ERROR";
+           }
+           oHttp.open( "HEAD", window.location.href, true ); 
+           oHttp.onreadystatechange = function()
+           {
+              if ( oHttp.readyState == 4 && oHttp.status == 200)
+              {
+					  window.location.reload();// after server starts again blank page is shown also :-(
+              } 
+				  else
+              {
+              	  setTimeout('check()',10*60000);
+              }
+           }
+           oHttp.send( null );
+		  }
 	  </script>
      <style>
         td.fieldname {
@@ -21,7 +57,7 @@
         }
      </style>
 </head>
-<body onload="javascript:setTimeout('resubmit()',10*60000);" style="background-color:#E4F0F7;">
+<body onload="javascript:setTimeout('check()',10*60000);" style="background-color:#E4F0F7;">
 <mm:import externid="action"/>
 <!-- We are going to set the referrer explicitely, because we don't wont to depend on the 'Referer' header (which is not mandatory) -->
 <mm:import externid="language">nl</mm:import>
