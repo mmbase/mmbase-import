@@ -19,7 +19,7 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
  * body. This is the TEI class which is needed for that.
  *
  * @author Michiel Meeuwissen 
- * @version $Id: WriterTEI.java,v 1.12 2005-08-25 12:33:18 michiel Exp $ 
+ * @version $Id: WriterTEI.java,v 1.13 2006-09-07 13:55:41 michiel Exp $ 
  */
 
 public class WriterTEI extends TagExtraInfo {
@@ -80,9 +80,11 @@ public class WriterTEI extends TagExtraInfo {
         case WriterHelper.TYPE_FILEITEM:
             type = org.apache.commons.fileupload.FileItem.class.getName();
             break; 
-        default:
+        default: 
+            type = typeAttribute;
+            //default:
             //type = "java.lang.Object"; 
-            throw new RuntimeException("Unknown type '" + typeAttribute + "'");
+            //throw new RuntimeException("Unknown type '" + typeAttribute + "'");
         }
         return type;
    
