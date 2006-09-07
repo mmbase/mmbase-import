@@ -9,9 +9,11 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security;
 
+import java.util.Set;
+import java.util.HashSet;
+
 import org.mmbase.bridge.Query;
 import org.mmbase.storage.search.Constraint;
-import java.util.Set;
 
 /**
  * The abstract implementation of the Authorization. To make your own implementation of
@@ -19,7 +21,7 @@ import java.util.Set;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Authorization.java,v 1.23 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: Authorization.java,v 1.24 2006-09-07 12:48:23 pierre Exp $
  */
 public abstract class Authorization extends Configurable {
 
@@ -162,6 +164,22 @@ public abstract class Authorization extends Configurable {
      */
     public abstract Set getPossibleContexts(UserContext user, int nodeid) throws SecurityException ;
 
+
+    /**
+     *	This method could be overrided by an extending class.
+     *	This method returns a list of contexts availabel to a user when creating or searching for an object.
+     *  The default implementation returns only the user's own default context.
+     *	@param user The UserContext, containing the information
+     *	    about the user.
+     *	@return a <code>Set</code> of <code>String</code>s which
+     *	    	represent a context in readable form..
+     *	@exception SecurityException
+     */
+     public Set getPossibleContexts(UserContext user) throws SecurityException {
+         Set contexts = new HashSet();
+         contexts.add(user.getOwnerField());
+         return contexts;
+     }
 
     /**
      * Checks rights on a query. This means that the query is explored and (if possible) a

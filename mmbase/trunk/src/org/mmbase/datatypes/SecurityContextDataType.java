@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * A StringDataType with all security contexts strings as possible value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: SecurityContextDataType.java,v 1.4 2006-01-06 17:19:21 michiel Exp $
+ * @version $Id: SecurityContextDataType.java,v 1.5 2006-09-07 12:48:23 pierre Exp $
  * @since MMBase-1.8
  */
 public class SecurityContextDataType extends StringDataType {
@@ -35,38 +35,20 @@ public class SecurityContextDataType extends StringDataType {
 
     public Iterator getEnumerationValues(final Locale locale, final Cloud cloud, final Node node, final Field field) {
         if (node == null && cloud == null) return null; // we don't know..
-
-        if (node == null) {
-            return new Iterator() {
-                    private boolean next = true;
-                    public boolean hasNext() {
-                        return next;
-                    }
-                    public Object next() {
-                        String defaultContext = cloud.getUser().getOwnerField();
-                        next = false;
-                        return new Entry(defaultContext, defaultContext);
-                    }
-                    public void remove() {
-                        throw new UnsupportedOperationException();
-                    }
-                };
-        } else {
-            String value = field != null ? node.getStringValue(field.getName()) : null;
-            return new Iterator() {
-                    StringIterator i = node.getPossibleContexts().stringIterator();
-                    public boolean hasNext() {
-                        return i.hasNext();
-                    }
-                    public Object next() {
-                        String val = i.nextString();
-                        return new Entry(val, val);
-                    }
-                    public void remove() {
-                        throw new UnsupportedOperationException();
-                    }
-                };
-        }
+        return new Iterator() {
+            StringList list = node == null ? cloud.getPossibleContexts() : node.getPossibleContexts();
+            StringIterator iterator = list.stringIterator();
+            public boolean hasNext() {
+                return iterator.hasNext();
+            }
+            public Object next() {
+                String val = iterator.nextString();
+                return new Entry(val, val);
+            }
+            public void remove() {
+                throw new UnsupportedOperationException();
+            }
+        };
     }
     /*
     public LocalizedEntryListFactory getEnumerationFactory() {

@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Function;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.58 2006-06-19 14:16:21 nklasens Exp $
+ * @version $Id: Cloud.java,v 1.59 2006-09-07 12:48:23 pierre Exp $
  */
 public interface Cloud {
 
@@ -589,7 +589,7 @@ public interface Cloud {
      * @since MMBase-1.8
      */
     public Map getProperties();
-    
+
     /**
      * Returns all Function objects from a function set.
      * Function sets group functions by name, and are configured in the functionset.xml configuration file.
@@ -646,5 +646,14 @@ public interface Cloud {
      * @since   MMBase-1.8
      */
     public RelationManagerList createRelationManagerList();
+
+    /**
+     * Contacts the security implementation to find out to which possible contexts are
+     * available to the current user.
+     *
+     * @return A StringList containing the contexts which can be used by teh suer
+     * @throws SecurityException   When appropriate rights to perform this are lacking (read rights)
+     */
+    public StringList getPossibleContexts();
 
 }
