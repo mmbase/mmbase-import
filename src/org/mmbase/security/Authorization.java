@@ -21,58 +21,58 @@ import org.mmbase.storage.search.Constraint;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Authorization.java,v 1.24 2006-09-07 12:48:23 pierre Exp $
+ * @version $Id: Authorization.java,v 1.25 2006-09-07 13:03:41 michiel Exp $
  */
 public abstract class Authorization extends Configurable {
 
     /**
-     *	This method should be overrided by an extending class.
-     *	It has to be called, when a new Node has been created.
-     *	This way, the authentication can create default rights
-     *	for this object, depending on the UserContext and generate
-     *	logging information.
-     *	@param user The UserContext, containing the information
-     *	    about the user.
-     *	@param nodeid The id of the MMObjectNode, which has just been added to
+     * This method should be overrided by an extending class.
+     * It has to be called, when a new Node has been created.
+     * This way, the authentication can create default rights
+     * for this object, depending on the UserContext and generate
+     * logging information.
+     * @param user The UserContext, containing the information
+     *    about the user.
+     * @param nodeid The id of the MMObjectNode, which has just been added to
      *	    the MMBase cloud.
      */
     public abstract void create(UserContext user, int nodeid);
 
     /**
-     *	This method should be overrided by an extending class.
-     *	It has to be called, when a Node has been changed.
-     *	This way, the authentication can generate log information
-     *	for this object, which can be used for accountability
-     *	@param user The UserContext, containing the information about the user.
-     *	@param nodeid The id of the MMObjectNode, which has just been changed
-     *	    in the cloud.
+     * This method should be overrided by an extending class.
+     * It has to be called, when a Node has been changed.
+     * This way, the authentication can generate log information
+     * for this object, which can be used for accountability
+     * @param user The UserContext, containing the information about the user.
+     * @param nodeid The id of the MMObjectNode, which has just been changed
+     *    in the cloud.
      */
     public abstract void update(UserContext user, int nodeid);
 
     /**
-     *	This method should be overrided by an extending class.
-     *	It has to be called, when a Node has been removed from
-     *	the cloud.
-     *	This way, the authentication can generate log information
-     *	for this node, and remove the authorization object which
-     *	belongs to this node.
-     *	@param user The UserContext, containing the information
-     *	    about the user.
-     *	@param nodeid The id of the MMObjectNode, which has just been removed
-     *	    in the cloud.
+     * This method should be overrided by an extending class.
+     * It has to be called, when a Node has been removed from
+     * the cloud.
+     * This way, the authentication can generate log information
+     * for this node, and remove the authorization object which
+     * belongs to this node.
+     * @param user The UserContext, containing the information
+     *    about the user.
+     * @param nodeid The id of the MMObjectNode, which has just been removed
+     *   in the cloud.
      */
     public abstract void remove(UserContext user, int nodeid);
 
     /**
-     *	This method should be overrided by an extending class.
-     *	This method checks if an operation is permitted on a certain node done
-     *	by a certain user.
-     *	@param user The UserContext, containing the information the user.
-     *	@param nodeid The id of the MMObjectNode, which has to be checked.
-     *                It the action is CREATE then this will be interpreted as a typedef node.
-     *	@param operation The operation which will be performed.
-     *	@return <code>true</code> if the operation is permitted,
-     *	    	<code>false</code> if the operation is not permitted,
+     * This method should be overrided by an extending class.
+     * This method checks if an operation is permitted on a certain node done
+     * by a certain user.
+     * @param user The UserContext, containing the information the user.
+     * @param nodeid The id of the MMObjectNode, which has to be checked.
+     *               It the action is CREATE then this will be interpreted as a typedef node.
+     * @param operation The operation which will be performed.
+     * @return <code>true</code> if the operation is permitted,
+     *         <code>false</code> if the operation is not permitted,
      */
     public abstract boolean check(UserContext user, int nodeid, Operation operation);
 
@@ -139,44 +139,45 @@ public abstract class Authorization extends Configurable {
     public abstract String getContext(UserContext user, int nodeid) throws SecurityException;
 
     /**
-     *	This method could be overrided by an extending class.
-     *	This method changes the rights on a node, by telling
-     *	the authorization that it should use the context which
-     *	is defined.
-     *	@param user The UserContext, containing the information about the user.
-     *	@param nodeid The id of the MMObjectNode, which has to be asserted.
-     *	@param context The context which rights the node will get
-     *	@exception SecurityException If operation is not allowed
-     *	@exception SecurityException If context is not known
+     * This method could be overrided by an extending class.
+     * This method changes the rights on a node, by telling
+     * the authorization that it should use the context which
+     * is defined.
+     * @param user The UserContext, containing the information about the user.
+     * @param nodeid The id of the MMObjectNode, which has to be asserted.
+     * @param context The context which rights the node will get
+     * @exception SecurityException If operation is not allowed
+     * @exception SecurityException If context is not known
      */
     public abstract void setContext(UserContext user, int nodeid, String context) throws SecurityException;
 
     /**
-     *	This method could be overrided by an extending class.
-     *	This method returns a list of contexts which can be
-     *	used to change the node.
-     *	@param user The UserContext, containing the information
-     *	    about the user.
-     *	@param nodeid The id of the MMObjectNode, which has to be asserted.
-     *	@return a <code>Set</code> of <code>String</code>s which
-     *	    	represent a context in readable form..
-     *	@exception SecurityException
+     * This method could be overrided by an extending class.
+     * This method returns a list of contexts which can be
+     * used to change the node.
+     * @param user The UserContext, containing the information
+     *      about the user.
+     * @param nodeid The id of the MMObjectNode, which has to be asserted.
+     * @return a <code>Set</code> of <code>String</code>s which
+     *        represent a context in readable form..
+     * @exception SecurityException
      */
-    public abstract Set getPossibleContexts(UserContext user, int nodeid) throws SecurityException ;
+    public abstract Set<String> getPossibleContexts(UserContext user, int nodeid) throws SecurityException ;
 
 
     /**
-     *	This method could be overrided by an extending class.
-     *	This method returns a list of contexts availabel to a user when creating or searching for an object.
-     *  The default implementation returns only the user's own default context.
-     *	@param user The UserContext, containing the information
-     *	    about the user.
-     *	@return a <code>Set</code> of <code>String</code>s which
-     *	    	represent a context in readable form..
-     *	@exception SecurityException
+     * This method could be overrided by an extending class.
+     * This method returns a list of contexts availabel to a user when creating or searching for an object.
+     * The default implementation returns only the user's own default context.
+     * @param user The UserContext, containing the information
+     *      about the user.
+     * @return a <code>Set</code> of <code>String</code>s which
+     *        represent a context in readable form..
+     * @exception SecurityException
+     * @since MMBase-1.8.2
      */
-     public Set getPossibleContexts(UserContext user) throws SecurityException {
-         Set contexts = new HashSet();
+     public Set<String> getPossibleContexts(UserContext user) throws SecurityException {
+         Set<String> contexts = new HashSet<String>();
          contexts.add(user.getOwnerField());
          return contexts;
      }
