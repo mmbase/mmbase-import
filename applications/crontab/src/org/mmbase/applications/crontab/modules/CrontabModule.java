@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * Starts a crontab for MMBase as a Module.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CrontabModule.java,v 1.7 2006-09-07 15:46:28 michiel Exp $
+ * @version $Id: CrontabModule.java,v 1.8 2006-09-07 17:06:28 michiel Exp $
  */
 public class CrontabModule extends WatchedReloadableModule {
 
@@ -29,7 +29,7 @@ public class CrontabModule extends WatchedReloadableModule {
      * Need to remember which crontab entries where 'mine', to known which must be removed if
      * configuration changes.
      */
-    private Set myEntries = new LinkedHashSet();
+    private Set<CronEntry> myEntries = new LinkedHashSet();
 
     public CrontabModule() {
         cronDaemon = CronDaemon.getInstance();
@@ -47,9 +47,7 @@ public class CrontabModule extends WatchedReloadableModule {
       </pre>
      */
     public void init() {
-        Iterator i = getInitParameters().entrySet().iterator();
-        while (i.hasNext()) {
-            Map.Entry entry = (Map.Entry)i.next();
+        for (Map.Entry entry : getInitParameters().entrySet()) {
             addJob(entry);
         }
         readMoreJobs();
