@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: ReloadableModule.java,v 1.9 2005-10-09 14:55:03 ernst Exp $
+ * @version $Id: ReloadableModule.java,v 1.10 2006-09-07 17:03:58 michiel Exp $
  */
 public abstract class ReloadableModule extends Module {
 
@@ -57,7 +57,7 @@ public abstract class ReloadableModule extends Module {
             return false;
         }
 
-        properties = new Hashtable(parser.getProperties());
+        properties = parser.getProperties();
         setMaintainer(parser.getMaintainer());
         setVersion(parser.getVersion());
         return true;
