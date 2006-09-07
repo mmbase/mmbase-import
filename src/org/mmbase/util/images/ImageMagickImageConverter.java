@@ -26,20 +26,26 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Nico Klasens
  * @author Jaco de Groot
- * @version $Id: ImageMagickImageConverter.java,v 1.4 2006-06-19 14:15:13 nklasens Exp $
+ * @version $Id: ImageMagickImageConverter.java,v 1.5 2006-09-07 12:34:59 michiel Exp $
  */
 public class ImageMagickImageConverter implements ImageConverter {
     private static final Logger log = Logging.getLoggerInstance(ImageMagickImageConverter.class);
 
     // Currently only ImageMagick works, this are the default value's
-    private static String converterPath = "convert"; // in the path.
+    private String converterPath = "convert"; // in the path.
 
-    private static int colorizeHexScale = 100;
+    private  int colorizeHexScale = 100;
     // The modulate scale base holds the builder property to specify the scalebase.
     // If ModulateScaleBase property is not defined, then value stays max int.
-    private static int modulateScaleBase = Integer.MAX_VALUE;
+    private int modulateScaleBase = Integer.MAX_VALUE;
 
     // private static String CONVERT_LC_ALL= "LC_ALL=en_US.UTF-8"; I don't know how to change it.
+
+    public static final int METHOD_LAUNCHER  = 1;
+    public static final int METHOD_CONNECTOR = 2;
+    protected int method = METHOD_LAUNCHER;
+    protected String host = "localhost";
+    protected int port = 1679;
 
 
     /**
@@ -61,6 +67,27 @@ public class ImageMagickImageConverter implements ImageConverter {
         tmp = (String) params.get("ImageConvert.ConverterCommand");
         if (tmp != null && ! tmp.equals("")) {
             converterCommand = tmp;
+        }
+
+        tmp = (String) params.get("ImageConvert.Host");
+        if (tmp != null && ! tmp.equals("")) {
+            host = tmp;
+        }
+        tmp = (String) params.get("ImageConvert.Port");
+        if (tmp != null && ! tmp.equals("")) {
+            port = Integer.parseInt(tmp);
+        }
+
+        tmp = (String) params.get("ImageConvert.Method");
+        if (tmp != null && ! tmp.equals("")) {
+            if (tmp.equals("launcher")) {
+                method = METHOD_LAUNCHER;
+            } else if (tmp.equals("connector")) {
+                method = METHOD_CONNECTOR;
+                log.info("Will connect to " + host + ":" + port + " to convert images");
+            } else {
+                log.error("Unknown imageconvert method " + tmp);
+            }
         }
 
         if(System.getProperty("os.name") != null && System.getProperty("os.name").startsWith("Windows")) {
@@ -120,8 +147,8 @@ public class ImageMagickImageConverter implements ImageConverter {
                 if (result == null || "".equals(result)) {
                     result = errorStream.toString();
                 }
-                
-                log.error( "converter from location " + converterPath + ", gave strange result: " + result 
+
+                log.error( "converter from location " + converterPath + ", gave strange result: " + result
                            + "conv.root='" + converterRoot + "' conv.command='" + converterCommand + "'");
             }
         } catch (ProcessException e) {
@@ -451,26 +478,32 @@ public class ImageMagickImageConverter implements ImageConverter {
             cmd.add(format+ ":-");
 
             String command = cmd.toString(); // only for debugging.
-            log.debug("Converting image(#" + pict.length + " bytes)  to '" + format + "' ('" + command + "')");
+            if (log.isDebugEnabled()) {
+                log.debug("Converting image (" + pict.length + " bytes)  to '" + format + "' ('" + command + "') with cwd = " + cwd);
+            }
 
-            CommandLauncher launcher = new CommandLauncher("ConvertImage");
             ByteArrayOutputStream imageStream = new ByteArrayOutputStream();
+
+            String[] env;
+            if (cwd != null) {
+                // using MAGICK_HOME for mmbase config/fonts if 'font' option used (can put type.mgk)
+                env = new String[] { "MAGICK_HOME=" + cwd.toString() };
+                if (log.isDebugEnabled()) {
+                    log.debug("MAGICK_HOME " + env[0]);
+                }
+            } else {
+                env = new String[] {};
+            }
+
             ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
             ByteArrayInputStream originalStream = new ByteArrayInputStream(pict);
 
             try {
-                if (cwd != null) {
-                    // using MAGICK_HOME for mmbase config/fonts if 'font' option used (can put type.mgk)
-                    String[] env = { "MAGICK_HOME=" + cwd.toString() };
-                    if (log.isDebugEnabled()) {
-                        log.debug("MAGICK_HOME " + env[0]);
-                    }
-                    launcher.execute((String[]) cmd.toArray(new String[0]), env);
+                switch(method) {
+                case METHOD_LAUNCHER: launcherConvertImage(cmd, env, originalStream, imageStream, errorStream); break;
+                case METHOD_CONNECTOR: connectorConvertImage(cmd, env, originalStream, imageStream, errorStream); break;
+                default: log.error("unknown method " + method);
                 }
-                else {
-                    launcher.execute((String[]) cmd.toArray(new String[0]));
-                }
-                launcher.waitAndWrite(originalStream, imageStream, errorStream);
 
                 log.debug("retrieved all information");
                 byte[] image = imageStream.toByteArray();
@@ -485,44 +518,120 @@ public class ImageMagickImageConverter implements ImageConverter {
                     if (errorMessage.length() > 0) {
                         log.error( "From stderr with command '" + command + "' in '" + new File("").getAbsolutePath() + "'  --> '" + errorMessage + "'");
                     } else {
-                        log.debug("No information on stderr found");
+                        log.warn("No information on stderr found for '" + command + "' in " + cwd);
                     }
                     return null;
-                }
-                else {
+                } else {
                     // print some info and return....
                     if (log.isServiceEnabled()) {
-                        log.service("converted image(#" + pict.length + " bytes)  to '" + format + "'-image(#" + image.length + " bytes)('" + command + "')");
+                        log.service("converted image (" + pict.length + " bytes)  to '" + format + "'-image (" + image.length + " bytes)('" + command + "')");
                     }
                     return image;
                 }
-            }
-            catch (ProcessException e) {
-                log.error("converting image with command: '" + command + "' failed  with reason: '" + e.getMessage() + "'");
-                log.error(Logging.stackTrace(e));
-            }
-            finally {
+            } catch (Exception e) {
+                log.error("converting image with command: '" + command + "' failed  with reason: '" + e.getMessage() + "'"  + errorStream.toString(), e);
+            } finally {
                 try {
                     if (originalStream != null) {
                         originalStream.close();
                     }
-                }
-                catch (IOException ioe) {
+                } catch (IOException ioe) {
                 }
                 try {
                     if (imageStream != null) {
                         imageStream.close();
                     }
-                }
-                catch (IOException ioe) {
+                } catch (IOException ioe) {
                 }
             }
-        }
-        else {
+        } else {
             log.error("Converting an empty image does not make sense.");
         }
 
         return null;
+    }
+
+    protected void launcherConvertImage(List cmd, String[] env, InputStream originalStream, OutputStream imageStream, OutputStream errorStream) throws ProcessException {
+        CommandLauncher launcher = new CommandLauncher("ConvertImage");
+        launcher.execute((String[]) cmd.toArray(new String[0]), env);
+        launcher.waitAndWrite(originalStream, imageStream, errorStream);
+    }
+
+    // copy job
+    public static class Copier implements Runnable {
+        private boolean ready;
+        private int count = 0;
+        private final InputStream in;
+        private final OutputStream out;
+        private final String name;
+        public  boolean debug = false;
+
+        public Copier(InputStream i, OutputStream o, String n) {
+            in = i; out = o; name = n;
+        }
+        public void run() {
+            int size = 0;
+            try {
+                byte[] buffer = new byte[1024];
+                while ((size = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, size);
+                    count+= size;
+                }
+            } catch (Throwable t) {
+                System.err.println("Connector " + toString() +  ": " + t.getClass() + " " + t.getMessage());
+            }
+            synchronized(this) {
+                notifyAll();
+                ready = true;
+            }
+        }
+        public  boolean ready() {
+            return ready;
+        }
+        public void  waitFor() throws InterruptedException {
+            if (! ready ) {
+                synchronized(this) {
+                    if (! ready) wait();
+                }
+            }
+        }
+        public String toString() {
+            return name;
+        }
+
+    }
+
+
+    private final String[] EMPTY = new String[] {};
+    protected void connectorConvertImage(List cmd, String[] env, InputStream originalStream, OutputStream imageStream, OutputStream errorStream) throws java.net.UnknownHostException, IOException, InterruptedException   {
+        try {
+            java.net.Socket socket = new java.net.Socket(host, port);
+            final OutputStream os = socket.getOutputStream();
+            os.write(0); // version
+            final ObjectOutputStream stream = new ObjectOutputStream(os);
+            stream.writeObject(((String[]) cmd.toArray(EMPTY)));
+            stream.writeObject(env);
+
+            Copier copier = new Copier(originalStream, os, ".file -> socket");
+            org.mmbase.util.ThreadPools.jobsExecutor.execute(copier);
+
+            Copier copier2 = new Copier(socket.getInputStream(), imageStream, ";socket -> cout");
+            org.mmbase.util.ThreadPools.jobsExecutor.execute(copier2);
+
+            copier.waitFor();
+            log.info("Ready copying stuff to socket");
+            originalStream.close();
+            socket.shutdownOutput();
+            log.info("Waiting for response");
+            copier2.waitFor();
+            socket.close();
+        } catch (IOException ioe) {
+            log.error("" + host + ":" + port);
+            errorStream.write(("" + host + ":" + port).getBytes());
+            errorStream.flush();
+            throw ioe;
+        }
+
     }
 
 }
