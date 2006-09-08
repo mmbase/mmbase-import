@@ -18,9 +18,9 @@ import org.mmbase.core.CoreField;
  * A list of fields
  *
  * @author Pierre van Rooden
- * @version $Id: BasicFieldList.java,v 1.18 2006-07-11 09:30:26 michiel Exp $
+ * @version $Id: BasicFieldList.java,v 1.19 2006-09-08 12:11:21 michiel Exp $
  */
-public class BasicFieldList extends BasicList implements FieldList {
+public class BasicFieldList extends BasicList<Field> implements FieldList {
 
     NodeManager nodemanager=null;
 
@@ -33,9 +33,9 @@ public class BasicFieldList extends BasicList implements FieldList {
         this.nodemanager = nodemanager;
     }
 
-    public Object convert(Object o, int index) {
+    public Field convert(Object o, int index) {
         if (o instanceof BasicField) {
-            return o;
+            return (Field) o;
         } else if (o instanceof Field) {
             // core-field does not have a node-manager, fix that.
             Field f = new BasicField((Field)o, nodemanager);
@@ -44,20 +44,17 @@ public class BasicFieldList extends BasicList implements FieldList {
         } else { // give it up
             // perhaps we could anticipated DataType, String those kind of things too.
             // but this is not used at the moment anyway.
-            return o;
+            // shoudl not happen!
+            return (Field) o;
         }
     }
 
-    protected Object validate(Object o) throws ClassCastException {
-        if (o instanceof CoreField) {
-            return o;
-        } else {
-            return (Field)o;
-        }
+    protected Field validate(Object o) throws ClassCastException {
+        return (Field)o;
     }
 
     public Field getField(int index) {
-        return (Field)get(index);
+        return get(index);
     }
 
     public FieldIterator fieldIterator() {
@@ -67,11 +64,11 @@ public class BasicFieldList extends BasicList implements FieldList {
     protected class BasicFieldIterator extends BasicIterator implements FieldIterator {
 
         public Field nextField() {
-            return (Field) next();
+            return next();
         }
 
         public Field previousField() {
-            return (Field) previous();
+            return previous();
         }
 
     }
