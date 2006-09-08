@@ -16,19 +16,19 @@ import java.util.List;
  * This corresponds to a SELECT query in SQL syntax.
  *
  * @author Rob van Maris
- * @version $Id: SearchQuery.java,v 1.3 2004-04-01 20:57:48 robmaris Exp $
+ * @version $Id: SearchQuery.java,v 1.4 2006-09-08 14:34:08 michiel Exp $
  * @since MMBase-1.7
  */
 public interface SearchQuery {
     /**
      * Default maxNumber value, corresponds to no maximum.
-     * @see SearchQuery#getMaxNumber 
+     * @see SearchQuery#getMaxNumber
      */
     int DEFAULT_MAX_NUMBER = -1;
-    
+
     /**
      * Default offset value, corresponds to no offset.
-     * @see SearchQuery#getOffset 
+     * @see SearchQuery#getOffset
      */
     int DEFAULT_OFFSET = 0;
 
@@ -36,10 +36,10 @@ public interface SearchQuery {
      * Tests if the search request is to return distinct results. In that case duplicate nodes will be removed from the result.
      * <p>
      * This corresponds to the use of "DISTINCT" in SQL SELECT-syntax
-     * . 
+     * .
      */
     boolean isDistinct();
-    
+
     /**
      * Tests if this is an aggregating query, i.e. containing aggregated fields.
      */
@@ -48,21 +48,21 @@ public interface SearchQuery {
     /**
      * Gets the steps in the search request.
      * <p>
-     * This corresponds to the tables in SQL SELECT-syntax. 
+     * This corresponds to the tables in SQL SELECT-syntax.
      */
-    List getSteps();
+    List<Step> getSteps();
 
     /**
      * Gets the stepfields in the search request.
      * <p>
-     * This corresponds to the fields in SQL SELECT-syntax. 
+     * This corresponds to the fields in SQL SELECT-syntax.
      */
-    List getFields();
+    List<StepField> getFields();
 
     /**
      * Gets the constraints on the search results.
      * <p>
-     * This corresponds to (part of) the constraints in the WHERE-clause in SQL SELECT-syntax. 
+     * This corresponds to (part of) the constraints in the WHERE-clause in SQL SELECT-syntax.
      */
     Constraint getConstraint();
 
@@ -83,54 +83,54 @@ public interface SearchQuery {
      * Gets the SortOrder objects in the order they are to be applied.
      *  This specifies the sorting order of the search results.
      * <p>
-     * This corresponds to the ORDER BY clause in SQL SELECT syntax. 
+     * This corresponds to the ORDER BY clause in SQL SELECT syntax.
      */
-    List getSortOrders();
+    List<SortOrder> getSortOrders();
 
     /**
-     * Compares this query to the specified object. The result is 
-     * <code>true</code> if and only if the argument is a non-null 
+     * Compares this query to the specified object. The result is
+     * <code>true</code> if and only if the argument is a non-null
      * SearchQuery object representing the same query.
-     * 
+     *
      * @param obj The object to compare with.
-     * @return <code>true</code> if the objects are equal, 
+     * @return <code>true</code> if the objects are equal,
      * <code>false</code> otherwise.
      */
     public boolean equals(Object obj);
-    
+
     // javadoc is inherited
     public int hashCode();
 
     /**
-     * Returns a string representation of this SearchQuery. 
-     * The string representation has the form 
-     * "SearchQuery(distinct:&lt;distinct&gt;, 
-     *  steps:&lt;steps&gt;, fields:&lt;fields&gt;, 
+     * Returns a string representation of this SearchQuery.
+     * The string representation has the form
+     * "SearchQuery(distinct:&lt;distinct&gt;,
+     *  steps:&lt;steps&gt;, fields:&lt;fields&gt;,
      *  constraint:&lt;constraint&gt;, sortorders:&lt;sortorders&gt;,
      *  max:&lt;max&gt;, offset:&lt;offset&gt;)"
-     * where 
+     * where
      * <ul>
-     * <li><em>&lt;distinct&gt;</em> is value returned by 
+     * <li><em>&lt;distinct&gt;</em> is value returned by
      *     {@link #isDistinct isDistinct()}
-     * <li><em>&lt;steps&gt;</em> is the list returned by 
+     * <li><em>&lt;steps&gt;</em> is the list returned by
      *     {@link #getSteps getSteps()}
-     * <li><em>&lt;fields&gt;</em> is the list returned by 
+     * <li><em>&lt;fields&gt;</em> is the list returned by
      *     {@link #getFields getFields()}
-     * <li><em>&lt;constraint&gt;</em> is the constraint returned by 
+     * <li><em>&lt;constraint&gt;</em> is the constraint returned by
      *     {@link #getConstraint getConstraint()}
-     * <li><em>&lt;sortorders&gt;</em> is the list returned by 
+     * <li><em>&lt;sortorders&gt;</em> is the list returned by
      *     {@link #getSortOrders getSortOrders()}
-     * <li><em>&lt;max&gt;</em> is value returned by 
+     * <li><em>&lt;max&gt;</em> is value returned by
      *     {@link #getMaxNumber getMaxNumber()}
-     * <li><em>&lt;offset&gt;</em> is value returned by 
+     * <li><em>&lt;offset&gt;</em> is value returned by
      *     {@link #getOffset getOffset()}
      * </ul>
      *
      * @return A string representation of this SearchQuery.
      */
     public String toString();
-    
-    /** @link dependency 
+
+    /** @link dependency
      * @label constraint
      * @clientRole 0-1
      * @supplierRole 0-1*/
