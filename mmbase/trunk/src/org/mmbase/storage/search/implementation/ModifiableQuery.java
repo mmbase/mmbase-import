@@ -13,41 +13,41 @@ import java.util.*;
 import org.mmbase.storage.search.*;
 
 /**
- * A <code>ModifiedQuery</code> enables a modifiable lightweight copy of a 
+ * A <code>ModifiedQuery</code> enables a modifiable lightweight copy of a
  * {@link org.mmbase.storage.search.SearchQuery SearchQuery} to be created
- * by wrapping the original query. 
+ * by wrapping the original query.
  * <p>
- * This class is provided primarily for use by core-, security- and 
+ * This class is provided primarily for use by core-, security- and
  * storage layer classes, in those rare cases where modifications may be
  * appropriate to a query before processing it.
  * <p>
  * The <code>ModifiedQuery</code> wraps the original query, and can be modified
  * without affecting the original query. Modifications are not validated, and
- * may lead to inconsistent data in the query (e.g. sorting on fields 
+ * may lead to inconsistent data in the query (e.g. sorting on fields
  * that are not in the query), resulting in a query that can not be processed
  * by the storage.
  * Avoiding such inconsistencies is the responsibility of the user.
  *
  * @author  Rob van Maris
- * @version $Id: ModifiableQuery.java,v 1.5 2004-05-07 13:23:42 michiel Exp $
+ * @version $Id: ModifiableQuery.java,v 1.6 2006-09-08 14:46:55 michiel Exp $
  * @since MMBase-1.7
  */
 public class ModifiableQuery implements SearchQuery {
-    
+
     private SearchQuery query = null;
-    
-    /** 
+
+    /**
      * The value of the maxNumber property, -1 means: use
      * <code>query.getMaxNumber()</code>.
      */
     private int maxNumber = -1;
-    
-    /** 
+
+    /**
      * The value of the offset property, -1 means: use
-     * <code>query.getOffset()</code>. 
+     * <code>query.getOffset()</code>.
      */
     private int offset = -1;
-    
+
     /**
      * The constraint, <code>null</code> means: use
      * <code>query.getConstraint()</code>.
@@ -58,37 +58,37 @@ public class ModifiableQuery implements SearchQuery {
      * The fields, <code>null</code> means: use
      * <code>query.getFields()</code>.
      */
-    private List fields = null;
-    
+    private List<StepField> fields = null;
+
     /**
      * The sortorders, <code>null</code> means: use
      * <code>query.getSortOrders()</code>.
      */
-    private List sortOrders = null;
-    
+    private List<SortOrder> sortOrders = null;
+
     /**
      * The steps, <code>null</code> means: use
      * <code>query.getSteps()</code.
      */
-    private List steps = null;
-    
+    private List<Step> steps = null;
+
     /**
      * The value of the distinct property, <code>null</code> means: use
      * <code>query.isDistinct()</code>.
      */
     private Boolean distinct = null;
-    
+
     /**
      * The value of the aggregating property, <code>null</code> means: use
      * <code>query.isAggregating()</code>.
      */
     private Boolean aggregating = null;
-    
+
     /** Creates a new instance of ModifiedQuery */
     public ModifiableQuery(SearchQuery query) {
         this.query = query;
     }
-    
+
     /**
      * Sets the maxNumber property.
      *
@@ -100,7 +100,7 @@ public class ModifiableQuery implements SearchQuery {
         this.maxNumber = maxNumber;
         return this;
     }
-    
+
     /**
      * Sets the offset property.
      *
@@ -112,7 +112,7 @@ public class ModifiableQuery implements SearchQuery {
         this.offset = offset;
         return this;
     }
-    
+
     /**
      * Sets the constraint property.
      *
@@ -124,7 +124,7 @@ public class ModifiableQuery implements SearchQuery {
         this.constraint = constraint;
         return this;
     }
-    
+
     /**
      * Sets the fields property.
      *
@@ -132,11 +132,11 @@ public class ModifiableQuery implements SearchQuery {
      * <code>query.getFields()</code>.
      * @return This <code>ModifiableQuery</code> instance.
      */
-    public ModifiableQuery setFields(List fields) {
+    public ModifiableQuery setFields(List<StepField> fields) {
         this.fields = fields;
         return this;
     }
-    
+
     /**
      * Sets the sortOrders property.
      *
@@ -144,11 +144,11 @@ public class ModifiableQuery implements SearchQuery {
      * <code>query.getSortOrders()</code>.
      * @return This <code>ModifiableQuery</code> instance.
      */
-    public ModifiableQuery setSortOrders(List sortOrders) {
+    public ModifiableQuery setSortOrders(List<SortOrder> sortOrders) {
         this.sortOrders = sortOrders;
         return this;
     }
-    
+
     /**
      * Sets the steps property.
      *
@@ -156,15 +156,15 @@ public class ModifiableQuery implements SearchQuery {
      * <code>query.getSteps()</code.
      * @return This <code>ModifiableQuery</code> instance.
      */
-    public ModifiableQuery setSteps(List steps) {
+    public ModifiableQuery setSteps(List<Step> steps) {
         this.steps = steps;
         return this;
     }
-    
+
     /**
      * Sets the distinct property.
      *
-     * @param distinct The value of the distinct property, 
+     * @param distinct The value of the distinct property,
      *        <code>null</code> means: use <code>query.isDistinct()</code>.
      * @return This <code>ModifiableQuery</code> instance.
      */
@@ -172,11 +172,11 @@ public class ModifiableQuery implements SearchQuery {
         this.distinct = distinct;
         return this;
     }
-    
+
     /**
      * Sets the aggregating property.
      *
-     * @param aggregating The value of the aggregating property, 
+     * @param aggregating The value of the aggregating property,
      *        <code>null</code> means: use <code>query.isAggregating()</code>.
      * @return This <code>ModifiableQuery</code> instance.
      */
@@ -184,7 +184,7 @@ public class ModifiableQuery implements SearchQuery {
         this.aggregating = aggregating;
         return this;
     }
-    
+
     // javadoc is inherited
     public int getMaxNumber() {
         if (maxNumber != -1) {
@@ -193,7 +193,7 @@ public class ModifiableQuery implements SearchQuery {
             return query.getMaxNumber();
         }
     }
-    
+
     // javadoc is inherited
     public int getOffset() {
         if (offset != -1) {
@@ -202,7 +202,7 @@ public class ModifiableQuery implements SearchQuery {
             return query.getOffset();
         }
     }
-    
+
     // javadoc is inherited
     public Constraint getConstraint() {
         if (constraint != null) {
@@ -211,34 +211,34 @@ public class ModifiableQuery implements SearchQuery {
             return query.getConstraint();
         }
     }
-    
+
     // javadoc is inherited
-    public List getFields() {
+    public List<StepField> getFields() {
         if (fields != null) {
             return fields;
         } else {
             return query.getFields();
         }
     }
-    
+
     // javadoc is inherited
-    public List getSortOrders() {
+    public List<SortOrder> getSortOrders() {
         if (sortOrders != null) {
             return sortOrders;
         } else {
             return query.getSortOrders();
         }
     }
-    
+
     // javadoc is inherited
-    public List getSteps() {
+    public List<Step> getSteps() {
         if (steps != null) {
             return steps;
         } else {
             return query.getSteps();
         }
     }
-    
+
     // javadoc is inherited
     public boolean isDistinct() {
         if (distinct != null) {
@@ -247,7 +247,7 @@ public class ModifiableQuery implements SearchQuery {
             return query.isDistinct();
         }
     }
-    
+
     // javadoc is inherited
     public boolean isAggregating() {
         if (aggregating != null) {
@@ -309,5 +309,5 @@ public class ModifiableQuery implements SearchQuery {
     }
 
 
-    
+
 }
