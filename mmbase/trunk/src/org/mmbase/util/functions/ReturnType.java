@@ -19,7 +19,7 @@ import java.util.*;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
 
- * @version $Id: ReturnType.java,v 1.16 2006-09-06 13:33:56 michiel Exp $
+ * @version $Id: ReturnType.java,v 1.17 2006-09-08 19:21:23 michiel Exp $
  * @since MMBase-1.7
  */
 public class ReturnType extends Parameter implements java.io.Serializable {
@@ -28,9 +28,6 @@ public class ReturnType extends Parameter implements java.io.Serializable {
      * The return type of a function that does not return a thing.
      */
     public static final ReturnType VOID = new ReturnType(void.class, "Does not return anything");
-
-    public static final class Void {
-    }
 
     /**
      * The return type of a function that returns a String.
