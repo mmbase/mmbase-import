@@ -135,7 +135,7 @@ function postIt(action) {
 	    var pool = document.infoform.elements["pool"].value;
 	    if(pool != '') href += "&pool=" + pool;
 	    var termsearch = document.infoform.elements["termsearch"].value;
-   	 if(termsearch != '') href += "&termsearch=" + termsearch;
+   	 if(termsearch != '') href += "&termsearch=" + escape(termsearch);
        var period = "";
 	    var v = document.infoform.elements["from_day"].value;
    	 if(v != '') { period += v; } else { period += '00'; }

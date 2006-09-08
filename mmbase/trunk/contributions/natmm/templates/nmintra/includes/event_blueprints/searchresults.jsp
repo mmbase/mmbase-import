@@ -27,18 +27,22 @@ if(!sEvents.equals("")){
 	      %>
    	   <a href="<%= sUrl %>"><mm:field name="titel"/></a><br/>
      		<mm:field name="tekst" jspvar="sText" vartype="String" write="false">
-	   		<% 
-        if (sText!=null&&!HtmlCleaner.cleanText(sText,"<",">","").trim().equals("")) {
-          int spacePos = sText.indexOf(" ",200); 
-          if(spacePos>-1) { 
-           sText = sText.substring(0,spacePos);
-          } 
-          %>
-          <%= sText %>
-          <br/>
-          <% 
-        } %>
-		   </mm:field>
+	   		<%
+            if (sText!=null) {
+             sText = HtmlCleaner.cleanText(sText,"<",">","").trim();
+             if(!sText.equals("")) { 
+                int spacePos = sText.indexOf(" ",200); 
+                if(spacePos>-1) { 
+                 sText = sText.substring(0,spacePos);
+                } 
+                %>
+                <%= sText %>
+                <br/>
+                <%
+              }
+            } 
+            %>
+	      </mm:field>
       	<% int iScore = 0; %>
 	      <mm:related path="feedback">
    	      <mm:field name="feedback.score" jspvar="score" vartype="Integer" write="false">

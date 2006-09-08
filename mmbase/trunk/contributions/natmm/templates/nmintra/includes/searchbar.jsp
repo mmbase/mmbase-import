@@ -28,10 +28,10 @@ function startPhone() {
 <mm:node number="<%= rootId %>">
 <tr>
   <td rowspan="3">
-    <a href="http://<mm:field name="url" />" target="_blank">
+    <% if(!isPreview) { %><a href="http://<mm:field name="url" />" target="_blank"><% } %>
       <img src="media/styles/<%= NMIntraConfig.style1[iRubriekStyle] %>_logo.gif" title="<mm:field name="url" />" 
         style="position:absolute;z-index:2;left:2px;top:1px;" border="0">
-    </a>
+    <% if(!isPreview) { %></a><% } %>
   </td>
   <td style="width:70%;"><img src="media/spacer.gif" width="1" height="12"></td>
   <% // *************************************** name of intranet ******************************* %>

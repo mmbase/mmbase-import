@@ -2,6 +2,7 @@
 <mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud">
 <%@include file="includes/templateheader.jsp" %>
 <%@include file="includes/cacheparams.jsp" %>
+<% expireTime = newsExpireTime; %>
 <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
 <%@include file="includes/calendar.jsp"%>
 <%@include file="includes/header.jsp" %> 
@@ -147,11 +148,11 @@ if(!articleId.equals("-1")) {
                </div>
             </mm:node
        ></mm:list>
-       
+      <mm:import id="hrefclass"></mm:import>
       <%@include file="includes/info/movetoarchive.jsp" 
       %><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel"  searchdir="destination" 
          orderby="artikel.embargo" directions="DOWN"
-         constraints="<%= "(artikel.embargo < '" + (nowSec+quarterOfAnHour) + "')" %>"
+         constraints="<%= (new SearchUtil()).articleConstraint(nowSec,quarterOfAnHour) %>"
          ><mm:remove referid="this_article"
          /><mm:node element="artikel" id="this_article"
          /><%@include file="includes/relatedsummaries.jsp" 
@@ -166,6 +167,7 @@ if(!articleId.equals("-1")) {
    // *********************************** right bar *******************************
    %><td>
       <mm:import id="nodates" />
+      <mm:import id="hrefclass" reset="true">menuitem</mm:import>
       <mm:list nodes="<%= paginaID %>" path="pagina,readmore,artikel" orderby="readmore.pos">
          <mm:first>
             <%@include file="includes/whiteline.jsp" %>

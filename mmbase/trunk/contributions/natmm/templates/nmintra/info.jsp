@@ -17,6 +17,7 @@ if(!articleId.equals("-1")) {
 
 } else {  
     %>
+    <% expireTime = newsExpireTime; %>
     <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
     <%
       int objectPerPage = 10;
@@ -99,7 +100,7 @@ if(!articleId.equals("-1")) {
                        %><mm:field name="artikel.number" jspvar="article_number" vartype="String" write="false"><%
                            readmoreUrl += "?p=" + paginaID + "&article=" + article_number; 
                        %></mm:field
-                       ><mm:field name="pagina.titel_fra" jspvar="showExpireDate" vartype="String" write="false"
+                       ><mm:field name="pagina.titel_fra" jspvar="showDate" vartype="String" write="false"
                            ><%@include file="includes/info/summaryrow.jsp" 
                        %></mm:field
                      ></mm:list><%

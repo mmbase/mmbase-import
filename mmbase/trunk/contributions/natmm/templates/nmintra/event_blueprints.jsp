@@ -27,12 +27,8 @@
       boolean bSearchIsOn = !termSearchId.equals("")||!eTypeId.equals("")||!pCategorieId.equals("")||!pAgeId.equals("")||!nReserveId.equals("")
                            ||!eDistanceId.equals("")||!eDurationId.equals("")||!departmentId.equals("");
 
-      String localPath = "";
-      if(request.getRequestURI().indexOf("/editors/")!=-1) {
-         localPath = "/dev/";
-      }
-      String searchUrl = localPath + "event_blueprints.jsp?p=" + paginaID
-						 +	"&termsearch=" + termSearchId
+      String searchUrl = "event_blueprints.jsp?p=" + paginaID
+				 + "&termsearch=" + termSearchId
              + "&evt=" + eTypeId
              + "&pc=" + pCategorieId
              + "&pa=" + pAgeId

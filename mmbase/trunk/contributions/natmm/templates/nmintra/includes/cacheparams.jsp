@@ -1,5 +1,6 @@
 <%
 int expireTime =  3600*24; // cache for one day
+int newsExpireTime = 3600; // news pages are refreshed every hour
 String previewID = request.getParameter("preview");  
 boolean isPreview = false;
 if(previewID==null) { previewID = ""; }
