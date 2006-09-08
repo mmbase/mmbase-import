@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.79 2006-09-07 17:03:58 michiel Exp $
+ * @version $Id: Module.java,v 1.80 2006-09-08 14:57:12 michiel Exp $
  */
 public abstract class Module extends FunctionProvider {
 
@@ -69,7 +69,7 @@ public abstract class Module extends FunctionProvider {
     };
 
     private String moduleName = null;
-    private Map<String, String> state = new Hashtable();
+    protected Map<String, String> state = new Hashtable<String, String>();
     protected Map<String, String> properties; // would like this to be LinkedHashMap (predictable order)
     private String maintainer;
     private int version;
