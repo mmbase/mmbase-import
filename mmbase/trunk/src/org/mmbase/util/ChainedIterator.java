@@ -17,17 +17,17 @@ import java.util.*;
  *
  * @author	Michiel Meeuwissen
  * @since	MMBase-1.8
- * @version $Id: ChainedIterator.java,v 1.2 2005-11-04 23:30:01 michiel Exp $
+ * @version $Id: ChainedIterator.java,v 1.3 2006-09-08 12:12:40 michiel Exp $
  */
-public class ChainedIterator implements Iterator {
+public class ChainedIterator<E> implements Iterator<E> {
 
-    List iterators = new ArrayList();
-    Iterator iteratorIterator = null;
-    Iterator iterator = null;
+    List<Iterator<E>> iterators = new ArrayList<Iterator<E>>();
+    Iterator<Iterator<E>> iteratorIterator = null;
+    Iterator<E> iterator = null;
     public ChainedIterator() {
     }
 
-    public void addIterator(Iterator i) {
+    public void addIterator(Iterator<E> i) {
         if (iteratorIterator != null) throw new IllegalStateException();
         iterators.add(i);
     }
@@ -35,7 +35,7 @@ public class ChainedIterator implements Iterator {
 
     private void setIterator() {
        while(iteratorIterator.hasNext() && iterator == null) {
-           iterator = (Iterator) iteratorIterator.next();
+           iterator = iteratorIterator.next();
            if (! iterator.hasNext()) iterator = null;
        }
     }
@@ -49,19 +49,19 @@ public class ChainedIterator implements Iterator {
     public boolean hasNext() {
         start();
         return  (iterator != null && iterator.hasNext());
-        
+
     }
 
-    public Object next() {
+    public E next() {
         start();
         if (iterator == null) throw new NoSuchElementException();
-        Object res = iterator.next();
+        E res = iterator.next();
         if (! iterator.hasNext()) {
             iterator = null;
             setIterator();
         }
         return res;
-        
+
     }
     public void remove() {
         throw new UnsupportedOperationException();
@@ -73,7 +73,7 @@ public class ChainedIterator implements Iterator {
     public static void main(String argv[]) {
         ChainedIterator it = new ChainedIterator();
         List o = new ArrayList();
-        List a = new ArrayList(); 
+        List a = new ArrayList();
         a.add("a");
         a.add("b");
         List b = new ArrayList();
