@@ -141,7 +141,7 @@
    	         				   String templateUrl = "index.jsp";
 										String textStr = "";
 										String titleStr = "";
-									   String showExpireDate = "1";
+									   String showDate = "1";
 									   boolean bHasAttachments = false;
 				   	            %><mm:node number="<%=sPageID%>"><%
             					      if (!bFirst) { %><br/><% } %>
@@ -381,7 +381,7 @@
 					               bFirst = false;
    	         				}
 					         %></mm:node>
-					         <div align="right"><a href="#top"><img src="media/<%= NMIntraConfig.style1[iRubriekStyle] %>_up.gif" border="0" /></a></div>
+					         <div align="right"><a href="?<%= request.getQueryString() %>#top"><img src="media/<%= NMIntraConfig.style1[iRubriekStyle] %>_up.gif" border="0" /></a></div>
 					         <table width="100%" background="media/dotline.gif"><tr><td height="3"></td></tr></table><%
 				   	   }
 					   }

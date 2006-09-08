@@ -8,5 +8,6 @@ String groupName = "page" + paginaID;
 if(isPreview) {
    cacheKey += "~preview";
    expireTime = 0;
+   newsExpireTime = 0;
 }
 %>
