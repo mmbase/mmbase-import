@@ -1,8 +1,8 @@
-<%@include file="../../nmintra/includes/templateheader.jsp" %>
+<%@include file="/taglibs.jsp" %>
+
 <%@page import="java.util.*" %>
 <%@page import="java.text.*" %>
 <%@page import="org.mmbase.bridge.Node" %>
-<mm:content type="text/html">
 <%! public Calendar addPeriod(Calendar cal, int period) {
 		int offset = 1;
 		if(period<0) offset = -1; 
@@ -24,62 +24,65 @@
 		return name;
 	}
 %>
-<%	Calendar cal = Calendar.getInstance();
-	Date dd = new Date();
+<%	
+Calendar cal = Calendar.getInstance();
+Date dd = new Date();
 
-	cal.setTime(dd);
-	cal = addPeriod(cal,-7); // show last week
+cal.setTime(dd);
+cal = addPeriod(cal,-7); // show last week
 
-	int day = cal.get(Calendar.DAY_OF_MONTH);
-	String dayId = (String) request.getParameter("day");
-	if(dayId!=null){ day = (new Integer(dayId)).intValue(); }
+int day = cal.get(Calendar.DAY_OF_MONTH);
+String dayId = (String) request.getParameter("day");
+if(dayId!=null){ day = (new Integer(dayId)).intValue(); }
 
-	int month = cal.get(Calendar.MONTH);
-	String monthId = (String) request.getParameter("month");
-	if(monthId!=null){ month = (new Integer(monthId)).intValue(); }
+int month = cal.get(Calendar.MONTH);
+String monthId = (String) request.getParameter("month");
+if(monthId!=null){ month = (new Integer(monthId)).intValue(); }
 
-	int year = cal.get(Calendar.YEAR);
-	String yearId = (String) request.getParameter("year");
-	if(yearId!=null){ year = (new Integer(yearId)).intValue(); }
+int year = cal.get(Calendar.YEAR);
+String yearId = (String) request.getParameter("year");
+if(yearId!=null){ year = (new Integer(yearId)).intValue(); }
 
-	int period = 7;
-	String periodId = (String) request.getParameter("period");
-	if(periodId!=null){ period = (new Integer(periodId)).intValue(); }
+int period = 7;
+String periodId = (String) request.getParameter("period");
+if(periodId!=null){ period = (new Integer(periodId)).intValue(); }
 
-	String action = (String) request.getParameter("action");
-	if(action==null){ action = "this"; }
-	
-	int selection = 9999;
-	String selectionId = (String) request.getParameter("selection");
-	if(selectionId!=null){ selection = (new Integer(selectionId)).intValue(); }
+String action = (String) request.getParameter("action");
+if(action==null){ action = "this"; }
 
-	boolean isPast = false;
+int selection = 9999;
+String selectionId = (String) request.getParameter("selection");
+if(selectionId!=null){ selection = (new Integer(selectionId)).intValue(); }
 
-	SimpleDateFormat formatter = new SimpleDateFormat("EEE d MMM yyyy");
-	cal.set(year,month,day,0,0,0);
-	if(action.equals("next")) {	
-		cal = addPeriod(cal,period); 
-		day = cal.get(Calendar.DAY_OF_MONTH);
-		month = cal.get(Calendar.MONTH);
-		year = cal.get(Calendar.YEAR);
-	} else if(action.equals("previous")) {	
-		cal = addPeriod(cal,-period);
-		day = cal.get(Calendar.DAY_OF_MONTH);
-		month = cal.get(Calendar.MONTH);
-		year = cal.get(Calendar.YEAR);
-	}
-	long fromTime = (cal.getTime().getTime()/1000);	
-	String fromStr= formatter.format(cal.getTime());
+boolean isPast = false;
+
+SimpleDateFormat formatter = new SimpleDateFormat("EEE d MMM yyyy");
+cal.set(year,month,day,0,0,0);
+if(action.equals("next")) {	
 	cal = addPeriod(cal,period); 
-	long toTime = (cal.getTime().getTime()/1000);
-	if(toTime<(dd.getTime()/1000)) { isPast = true; }
-	cal.add(Calendar.DATE,-1);
-	String untillAndIncludingStr = formatter.format(cal.getTime());
+	day = cal.get(Calendar.DAY_OF_MONTH);
+	month = cal.get(Calendar.MONTH);
+	year = cal.get(Calendar.YEAR);
+} else if(action.equals("previous")) {	
+	cal = addPeriod(cal,-period);
+	day = cal.get(Calendar.DAY_OF_MONTH);
+	month = cal.get(Calendar.MONTH);
+	year = cal.get(Calendar.YEAR);
+}
+long fromTime = (cal.getTime().getTime()/1000);	
+String fromStr= formatter.format(cal.getTime());
+cal = addPeriod(cal,period); 
+long toTime = (cal.getTime().getTime()/1000);
+if(toTime<(dd.getTime()/1000)) { isPast = true; }
+cal.add(Calendar.DATE,-1);
+String untillAndIncludingStr = formatter.format(cal.getTime());
 
-	String templateTitle = "";
-	articleId = fromTime + "_" + toTime + "_" + selection;
+String pageId = request.getParameter("page");
+if(pageId==null) { pageId = "-1"; }
+String ownerId = request.getParameter("owner");
+if(ownerId==null) { ownerId = ""; }
 %>
-<mm:cloud>
+<mm:cloud method="http" rank="basic user" jspvar="cloud">
 <% TreeMap ownersMap = new TreeMap(); %>
 <mm:listnodes type="items">
 	<mm:relatednodes type="medewerkers" jspvar="thisEmployee">
@@ -93,7 +96,9 @@
 </mm:listnodes>
 <html>
 <head>
-	<link rel="stylesheet" type="text/css" href="../css/editors.css">
+   <link href="<mm:url page="<%= editwizard_location %>"/>/style/color/wizard.css" type="text/css" rel="stylesheet"/>
+   <link href="<mm:url page="<%= editwizard_location %>"/>/style/layout/wizard.css" type="text/css" rel="stylesheet"/>
+   <title>Shop Stats</title>
 	<script language="JavaScript1.2" src="../scripts/mouseover.js" >
 	</script>
 	<script>
@@ -113,9 +118,9 @@
 	}
 	</script>
 </head>
-<body>
+<bodystyle="overflow:auto;" leftmargin="10" topmargin="10" marginwidth="0" marginheight="0">
 <form name="date" method="post">
-<table cellspacing="0" cellpadding="0" border="0">
+<table class="formcontent" style="width:500px;">
 	<tr><td>Dag</td><td>Maand</td><td>Jaar</td><td>Periode</td></tr>
 	<tr><td>
 		<select name="day">
@@ -176,7 +181,7 @@
 		<% } %>
 	</tr>
 </table>
-<table cellspacing="0" cellpadding="0" border="0">
+<table  class="formcontent" style="width:500px;">
 	<tr><td>Selectie</td><td>Item</td><td>Eigenaar</td></tr>
 	<tr>
 		<td>
@@ -204,10 +209,12 @@
 			<option value="-1">alles</option>
 			<%	while(ownersMap.size()>0) { 
 					String thisOwner = (String) ownersMap.firstKey();
-					String ownerName = (String) ownersMap.get(thisOwner); %>
-			<option value="<%= thisOwner %>" <% if(ownerId.equals(thisOwner)) { %> selected <% } 
-			%> ><%= ownerName %></option>
-			<%		ownersMap.remove(thisOwner);
+					String ownerName = (String) ownersMap.get(thisOwner); 
+					%>
+      			<option value="<%= thisOwner %>" <%= (ownerId.equals(thisOwner)? "selected" : "" ) 
+      			      %>><%= ownerName %></option>
+      			<%
+      			ownersMap.remove(thisOwner);
 				}
 			%>
 		</select>
@@ -225,73 +232,88 @@
 <% } %>
 
 <%	// ************* Read response table ********************
-   String responseTitle = "IntraShop";
-	String timeConstraint =  "responses.responsedate > " + fromTime;
-	if(period>0) timeConstraint += " AND responses.responsedate < " + toTime; 
-	String allConstraint = timeConstraint + " AND responses.title='" + responseTitle + "'"; 
-	String pageConstraint = "";
-	if (!pageId.equals("-1")) pageConstraint = "pagina.number=" + pageId;
-	String ownerConstraint = "";
-	if (ownerId!="") ownerConstraint = "medewerkers.number=" + ownerId;
 
-	int maxPageCount = 1;
-	int totalPages = 0; 
-	Hashtable orderCounts = new Hashtable();
-	Hashtable orderSumCounts = new Hashtable();
-	String shop_itemId = null;
-	int maxSum = 1;
-	int maxWidth = 250;
+String responseTitle = "IntraShop";
+
+String timeConstraint =  "responses.responsedate > " + fromTime;
+if(period>0) timeConstraint += " AND responses.responsedate < " + toTime;
+
+String allConstraint = timeConstraint + " AND responses.title='" + responseTitle + "'"; 
+
+String pageConstraint = "";
+if (!pageId.equals("-1")) pageConstraint = "pagina.number=" + pageId;
+
+String ownerConstraint = "";
+if (ownerId!="") ownerConstraint = "medewerkers.number=" + ownerId;
+
+int maxPageCount = 1;
+int totalPages = 0; 
+Hashtable orderCounts = new Hashtable();
+Hashtable orderSumCounts = new Hashtable();
+String shop_itemId = null;
+int maxSum = 1;
+int maxWidth = 250;
 %>
 <mm:listnodes type="responses" orderby="responses.responsedate" directions="UP"
 	constraints="<%= allConstraint %>" >
-	<%	int i=0; 
-		boolean containsOrderedProduct = true; 
-		while (containsOrderedProduct) { %>
-			<mm:field name="<%= "question"+ (i+1) %>" vartype="String" jspvar="dummy" write="false">
-				<% shop_itemId = dummy; 
-				   if (shop_itemId==null || shop_itemId.equals("")) containsOrderedProduct = false; %>
-			</mm:field>
-			<mm:field name="<%= "answer"+ (i+1) %>" vartype="Integer" jspvar="dummy" write="false">
-				<%  if (containsOrderedProduct) {
-   					boolean isVisible = true;
-   			      if (!ownerId.equals("")) {
-   				      isVisible = false;
-   				      %><mm:list nodes="<%= shop_itemId %>" path="items,posrel,medewerkers" 
-   					      constraints="<%= ownerConstraint %>"><%
-   					      	isVisible = true; 
-   					   %></mm:list><%
-   					   
-   					   %><mm:list nodes="<%= shop_itemId %>" path="items,posrel,pagina,contentrel,medewerkers" 
-   					      constraints="<%= ownerConstraint %>"><%
-   					      	isVisible = true; 
-   					   %></mm:list><%
-   			      }
-   			      
-   			      if (isVisible&&!pageId.equals("")) {
-   			         isVisible = false;
-   				      %><mm:list nodes="<%= shop_itemId %>" path="items,posrel,pagina" 
-   					      constraints="<%= pageConstraint %>"><%
-   					         isVisible = true;
-   					   %></mm:list><%
-   			      }		
-				      
-						if(isVisible) {
-						   Integer tmp = (Integer) orderCounts.get(shop_itemId);
-   						if (tmp==null) tmp = new Integer(0);
-   						orderCounts.put(shop_itemId, new Integer(tmp.intValue() + 1));
-   						int sum = dummy.intValue();
-   						tmp = (Integer) orderSumCounts.get(shop_itemId);
-   						if (tmp!=null) sum += tmp.intValue();
-   						if (sum > maxSum) maxSum = sum;
-   						orderSumCounts.put(shop_itemId, new Integer(sum));
-   				   }
-   				   i++;
-   				   if (i==100) containsOrderedProduct = false;
-					}
-			%></mm:field>
-		<% } %>
+	<%	
+	int i=0; 
+	boolean containsOrderedProduct = true; 
+	while (containsOrderedProduct) {
+	   %>
+		<mm:field name="<%= "question"+ (i+1) %>" vartype="String" jspvar="dummy" write="false">
+			<%
+			shop_itemId = dummy; 
+			if (shop_itemId==null || shop_itemId.equals("")) containsOrderedProduct = false; 
+			%>
+		</mm:field>
+		<mm:field name="<%= "answer"+ (i+1) %>" vartype="Integer" jspvar="dummy" write="false">
+		   <mm:node number="<%= shop_itemId %>">
+			<%
+			if (containsOrderedProduct) {
+   			boolean isVisible = true;
+   	      if (!ownerId.equals("")) {
+   		      isVisible = false;
+   		      %><mm:related path="posrel,medewerkers" constraints="<%= ownerConstraint %>"><%
+   			      	isVisible = true; 
+   			   %></mm:related><%
+   			   
+   			   %><mm:related path="posrel,pagina,contentrel,medewerkers" constraints="<%= ownerConstraint %>"><%
+   			      	isVisible = true; 
+   			   %></mm:related><%
+   	      }
+   	      
+   	      if (isVisible&&!pageId.equals("")) {
+   	         isVisible = false;
+   		      %><mm:related path="posrel,pagina" constraints="<%= pageConstraint %>"><%
+   			         isVisible = true;
+   			   %></mm:related><%
+   	      }		
+   	      
+   			if(isVisible) {
+   			   Integer tmp = (Integer) orderCounts.get(shop_itemId);
+   				if (tmp==null) tmp = new Integer(0);
+   				orderCounts.put(shop_itemId, new Integer(tmp.intValue() + 1));
+   				int sum = dummy.intValue();
+   				tmp = (Integer) orderSumCounts.get(shop_itemId);
+   				if (tmp!=null) sum += tmp.intValue();
+   				if (sum > maxSum) maxSum = sum;
+   				orderSumCounts.put(shop_itemId, new Integer(sum));
+   		   }
+   		   i++;
+   		   if (i==100) containsOrderedProduct = false;
+   		}
+		   %>
+		   </mm:node>
+		</mm:field>
+	   <% 
+	} %>
 </mm:listnodes>
-<%-- = orderSumCounts --%>
+<%--
+shop_itemId: <%= shop_itemId %><br/>
+orderSumCounts: <%= orderSumCounts %><br/>
+orderCounts: <%= orderCounts %><br/>
+--%>
 <%
 int rowCount = 0; 
 String pageName = "";
@@ -330,8 +352,8 @@ if (count>0) {
 		tmpSepar = ",";
    }
 	String pageNumber="";
-   %><table cellpadding="0" cellspacing="0" >
-   	<tr class="lightgrey">
+   %><table class="formcontent" style="width:500px;">
+   	<tr <% if(rowCount%2==0) { %> bgcolor="EEEEEE" <% } rowCount++; %>>
    		<td width="100"><b>Item</b></td>
    		<td width="100"><b>Product</b></td>
    		<td><b>Aantal (aantal bestellingen / aantal bestelde producten)</b></td>
@@ -376,5 +398,4 @@ if (count>0) {
 </body>
 </html>
 </mm:cloud>
-</mm:content>
 
