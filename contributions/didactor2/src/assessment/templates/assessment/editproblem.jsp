@@ -4,15 +4,16 @@
 
 <mm:cloud method="delegate" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
+
 <%@include file="includes/geteducation.jsp" %>
 <%@include file="includes/getlesson.jsp" %>
 <%@include file="includes/variables.jsp" %>
 <%@include file="includes/functions.jsp" %>
 <%@include file="/education/tests/definitions.jsp" %>
 
-<%-- find users copybook --%>
-<mm:import id="class" reset="true">null</mm:import>
-<mm:import id="education" reset="true"><mm:node number="$assessment_education"><mm:field name="number"/></mm:node></mm:import>
+<% // find users copybook %>
+<mm:import externid="class" reset="true">null</mm:import>
+<mm:import externid="education" reset="true"><mm:node number="$assessment_education"><mm:field name="number"/></mm:node></mm:import>
 <mm:node number="$user">
   <%@include file="/education/tests/find_copybook.jsp"%>
 </mm:node>
@@ -25,7 +26,18 @@
 <mm:import externid="madetest_n">-1</mm:import>
 
 <% int problemrating = -1; // not rated %>
-
+<!--
+user <mm:write referid="user"/><br/>
+class <mm:write referid="class"/><br/>
+copybook <mm:write referid="copybookNo"/><br/>
+step <mm:write referid="step"/><br/>
+problem_n <mm:write referid="problem_n"/><br/>
+problemname <mm:write referid="problemname"/><br/>
+problemtype <mm:write referid="problemtype"/><br/>
+problemrating <mm:write referid="problemrating"/><br/>
+madetest_n <mm:write referid="madetest_n"/><br/>
+currentLesson <%= currentLesson %><br/> 
+-->
 <mm:compare referid="step" value="cancel">
   <mm:redirect page="/assessment/index.jsp" referids="$referids"/>
 </mm:compare>
@@ -112,7 +124,7 @@
 </div>
 
 
-    <%-- right section --%>
+    <% // right section %>
     <div class="mainContent">
       <div class="contentBody">
 
@@ -140,7 +152,7 @@
         <mm:import id="problemtype" reset="true"><mm:field name="number"/></mm:import>
     </mm:listnodes>
   </mm:compare>
-  
+
   <form name="questionform" action="<mm:treefile page="/assessment/editproblem.jsp" objectlist="$includePath" 
           referids="$referids"/>" method="post">
     <input type="hidden" name="step" value="save">
@@ -184,7 +196,7 @@
             <mm:node number="$provider" notfound="skip">
               <mm:related path="related,educations,related,tests,related,problemtypes" constraints="problemtypes.number=$problemtype">
                 <mm:node element="tests">
-                  <mm:field name="tests.number" jspvar="this_test" vartype="String" write="false">
+                  <mm:field name="number" jspvar="this_test" vartype="String" write="false">
                     <%@include file="includes/getmadetest.jsp" %>
                     <input type="hidden" name="madetest_n" value="<mm:write referid="madetest"/>">
                     <mm:relatednodes type="questions" path="posrel,questions" orderby="posrel.pos">
