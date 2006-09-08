@@ -58,21 +58,40 @@
       </body>
       <%
    } else { %>
-   <frameset rows="80,*" framespacing="2" frameborder="1">
-      <frame src="topmenu.jsp" name="toppane" frameborder="0" scrolling="auto">
-   <% String sPars = "";
-      if (passwordChecked.equals("false")) {
-         if (!"valid".equals(status)) {
-            url += "?status=" + status;
-            session.setAttribute("password_checked", "true");
-            sPars = "?warning=true";
-         }
+     <frameset rows="80,*" framespacing="2" frameborder="1">
+        <frame src="topmenu.jsp" name="toppane" frameborder="0" scrolling="auto">
+     <% String sPars = "";
+        if (passwordChecked.equals("false")) {
+           if (!"valid".equals(status)) {
+              url += "?status=" + status;
+              session.setAttribute("password_checked", "true");
+              sPars = "?warning=true";
+           }
+        }
+       %>
+        <frame src="news.jsp<%= sPars %>" name="bottompane" frameborder="0" scrolling="yes">
+     </frameset>
+     <%
+     if((new ApplicationHelper(cloud)).isInstalled("NatMM")) {
+       String siteStatUrl = "http://nl.sitestat.com/natuurmonumenten/natuurmonumenten/s?editors." + username;
+       %> 
+        <!-- Begin Sitestat4 code -->
+        <script language="JavaScript1.1">
+        <!--
+        function sitestat(ns_l){
+          ns_l+="&ns__t="+new Date().getTime();ns_pixelUrl=ns_l;
+          if(document.images){ns_1=new Image();ns_1.src=ns_l;}else
+          document.write("<img src="+ns_l+" width=1 height=1>");
+        }
+        sitestat("<%= siteStatUrl %>");
+        //-->
+        </script>
+        <noscript>
+        <img src="<%= siteStatUrl %>" width=1 height=1>
+        </noscript>
+        <%
       }
-     %>
-      <frame src="news.jsp<%= sPars %>" name="bottompane" frameborder="0" scrolling="yes">
-   </frameset>
-<%
-  }
+    }
 %>
 </html>
 </mm:cloud>
