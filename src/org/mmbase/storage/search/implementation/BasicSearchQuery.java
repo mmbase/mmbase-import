@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.32 2006-07-25 20:49:56 michiel Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.33 2006-09-08 14:34:08 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
@@ -36,14 +36,11 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
     /** Offset property. */
     private int offset = SearchQuery.DEFAULT_OFFSET;
 
-    /** Step list. */
-    private List steps = new ArrayList();
+    private List<Step> steps = new ArrayList<Step>();
 
-    /** StepField list. */
-    protected List fields = new ArrayList();
+    protected List<StepField> fields = new ArrayList<StepField>();
 
-    /** SortOrder list. */
-    private List sortOrders = new ArrayList();
+    private List<SortOrder> sortOrders = new ArrayList<SortOrder>();
 
     /** Constraint.. */
     private Constraint constraint = null;
@@ -138,10 +135,10 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
 
     protected void copySteps(SearchQuery q) {
         MMBase mmb = MMBase.getMMBase();
-        steps = new ArrayList();
-        Iterator i = q.getSteps().iterator();
-        while (i.hasNext()) {
-            Step step = (Step) i.next();
+        steps = new ArrayList<Step>();
+        Iterator<Step> i = q.getSteps().iterator();
+        while(i.hasNext()) {
+            Step step = i.next();
             if (step instanceof RelationStep) {
                 RelationStep relationStep = (RelationStep) step;
                 MMObjectBuilder dest   = mmb.getBuilder(relationStep.getNext().getTableName());
@@ -177,18 +174,16 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
         hasChangedHashcode = true;
     }
     protected void copyFields(SearchQuery q) {
-        fields = new ArrayList();
+        fields = new ArrayList<StepField>();
         MMBase mmb = MMBase.getMMBase();
-        Iterator i = q.getFields().iterator();
-        while (i.hasNext()) {
-            StepField field = (StepField) i.next();
+        for (StepField field : q.getFields()) {
             Step step = field.getStep();
             MMObjectBuilder bul = mmb.getBuilder(step.getTableName());
             int j = q.getSteps().indexOf(step);
             if (j == -1) {
                 throw new  RuntimeException("Step " + step + " could not be found in " + q.getSteps());
             }
-            Step newStep = (Step) steps.get(j);
+            Step newStep = steps.get(j);
             BasicStepField newField = addField(newStep, bul.getField(field.getFieldName()));
             newField.setAlias(field.getAlias());
         }
@@ -198,9 +193,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
     protected void copySortOrders(SearchQuery q) {
         sortOrders = new ArrayList();
         MMBase mmb = MMBase.getMMBase();
-        Iterator i = q.getSortOrders().iterator();
-        while (i.hasNext()) {
-            SortOrder sortOrder = (SortOrder) i.next();
+        for (SortOrder sortOrder : q.getSortOrders()) {
             StepField field = sortOrder.getField();
             int j = q.getFields().indexOf(field);
             StepField newField;
@@ -209,7 +202,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
                 MMObjectBuilder bul = mmb.getBuilder(step.getTableName());
                 newField = new BasicStepField(field.getStep(), bul.getField(field.getFieldName()));
             } else {
-                newField = (StepField) fields.get(j);
+                newField = fields.get(j);
             }
             BasicSortOrder newSortOrder = addSortOrder(newField);
             newSortOrder.setDirection(sortOrder.getDirection());
@@ -223,8 +216,8 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
     protected static StepField createNewStepField(SearchQuery q, StepField f) {
         Step fstep = f.getStep();
         // find existing step.
-        List steps = q.getSteps();
-        Step step = (Step) steps.get(steps.indexOf(fstep));
+        List<Step> steps = q.getSteps();
+        Step step = steps.get(steps.indexOf(fstep));
         MMObjectBuilder bul = MMBase.getMMBase().getBuilder(step.getTableName());
         return new BasicStepField(step, bul.getField(f.getFieldName()));
     }

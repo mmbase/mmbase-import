@@ -17,7 +17,7 @@ import java.util.*;
  * This corresponds to a table name and alias in SQL SELECT-syntax.
  *
  * @author Rob van Maris
- * @version $Id: Step.java,v 1.2 2003-03-10 11:50:51 pierre Exp $
+ * @version $Id: Step.java,v 1.3 2006-09-08 14:34:08 michiel Exp $
  * @since MMBase-1.7
  */
 public interface Step {
@@ -43,7 +43,7 @@ public interface Step {
      * <p>
      * Note that this can also be achieved by using a FieldValueInConstraint on the "number" field.
      */
-    SortedSet getNodes();
+    SortedSet<Integer> getNodes();
 
     /**
      * Compares this step to the specified object. The result is 

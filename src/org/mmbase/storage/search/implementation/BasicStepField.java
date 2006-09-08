@@ -18,7 +18,7 @@ import org.mmbase.storage.search.*;
  * The field alias is not set on default.
  *
  * @author Rob van Maris
- * @version $Id: BasicStepField.java,v 1.23 2006-07-04 13:04:00 michiel Exp $
+ * @version $Id: BasicStepField.java,v 1.24 2006-09-08 14:34:08 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicStepField implements StepField {
@@ -125,21 +125,18 @@ public class BasicStepField implements StepField {
      */
     public BasicStepField(Step step, CoreField field) {
         if (step == null) {
-            throw new IllegalArgumentException(
-            "Invalid step value: " + step);
+            throw new IllegalArgumentException("Invalid step value: " + step);
         }
         this.step = step;
 
         if (field == null) {
-            throw new IllegalArgumentException(
-            "Invalid field value: " + field);
+            throw new IllegalArgumentException("Invalid field value: " + field);
         }
         // Check field belongs to step
         if (!step.getTableName().equals(field.getParent().getTableName())) {
-            throw new IllegalArgumentException(
-            "Invalid field value, belongs to step " + field.getParent().getTableName()
-            + " instead of step " +  step.getTableName() + ": "
-            + field);
+            throw new IllegalArgumentException("Invalid field value, belongs to step " + field.getParent().getTableName() 
+                                               + " instead of step " +  step.getTableName() + ": "
+                                               + field);
         }
         this.field = field;
     }
