@@ -94,9 +94,22 @@
         </mm:node>
 
         <div><table class="poplistTable" style="width:100%">
-          <% boolean lessonShowed = false; %>
           <mm:listnodes type="problemtypes" orderby="pos">
             <mm:field name="number" jspvar="problemtypeId" vartype="String">
+            <mm:first>
+              <% // first row with titles of learnblocks %>
+              <tr style="vertical-align:top;">
+                <th class="listHeader" style="width:30px;">&nbsp;</th>
+                <th class="listHeader">&nbsp;</th>
+                   <mm:node number="$assessment_education" notfound="skip">
+                     <mm:relatednodes type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos">
+                       <th class="listHeader" style="width:82px; padding:0 0 0 0;<% if (!"".equals(styles.get(count))) { %>color:E7E7E7<% } %>"
+                         ><mm:field name="name"/></th>
+                       <% count++; %>
+                     </mm:relatednodes>
+                   </mm:node>
+              </tr>
+            </mm:first>
             <tr style="vertical-align:top;">
               <% String problems = getProblemsByType(cloud, problemtypeId, thisUser); 
                  if ("".equals(problems)) {
@@ -114,23 +127,7 @@
                   <di:translate key="<%= "assessment." + dummy %>"/>
                 </mm:field>
               </th>
-              <% if (!lessonShowed) {
-                   lessonShowed = true;
-                   count = 0;
-              %>
-                   <mm:node number="$assessment_education" notfound="skip">
-                     <mm:relatednodes type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos">
-                       <th class="listHeader" style="width:82px; padding:0 0 0 0;<% if (!"".equals(styles.get(count))) { %>color:E7E7E7<% } %>"
-                         ><mm:field name="name"/></th>
-                       <% count++; %>
-                     </mm:relatednodes>
-                   </mm:node>
-              <% } else { 
-                   for(int i=0; i<lessonsNum; i++) { %>
-                     <th class="listHeader">&nbsp;</th>
-              <%   }
-                 }
-              %>
+              <% for(int i=0;i<lessonsNum ;i++) { %><th class="listHeader">&nbsp;</th><% } %>
             </tr>
             <mm:related path="related,problems,posrel,people" orderby="posrel.pos"
                 constraints="people.number=$user" fields="problems.number" distinct="true">
