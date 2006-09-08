@@ -18,13 +18,14 @@ import java.lang.reflect.*;
  * method-function can come in handy on JSP's.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MethodFunction.java,v 1.4 2005-10-01 20:17:36 michiel Exp $
+ * @version $Id: MethodFunction.java,v 1.5 2006-09-08 18:34:12 michiel Exp $
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
  * @see org.mmbase.util.functions.BeanFunction
  * @since MMBase-1.7
  */
 public class MethodFunction extends AbstractFunction {
+
 
     public static Function getFunction(Method method, String name) {
         return new MethodFunction(method, name); // could be cached...
@@ -46,7 +47,7 @@ public class MethodFunction extends AbstractFunction {
 
         setParameterDefinition(def);
 
-        ReturnType returnType = new ReturnType(method.getReturnType(), "");
+        ReturnType returnType = ReturnType.getReturnType(method.getReturnType());
         setReturnType(returnType);
 
     }
