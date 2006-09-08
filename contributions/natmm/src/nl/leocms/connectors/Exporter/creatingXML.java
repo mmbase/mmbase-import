@@ -39,12 +39,16 @@ public class creatingXML{
 
    }
 
-   public void create(Document document, String sBuilderName){
-     
+   public void create(Document document, String sBuilderName, String [] sDirs){
+
      Cloud cloud = CloudFactory.getCloud();
      ApplicationHelper ap = new ApplicationHelper(cloud);
      String tempDir = ap.getTempDir();
-     
+
+     for (int i = 0; i < sDirs.length; i++){
+        sDirs[i] = tempDir + sDirs[i];
+     }
+
       log.info("creating " + sBuilderName + ".xml in " + tempDir);
       try
        {
@@ -62,11 +66,29 @@ public class creatingXML{
        catch (Exception e)
        {
           log.info(e.toString());
-          System.out.println(e.toString());
        }
 
        ZipUtil zu = new ZipUtil();
-       zu.createArchiveFile(tempDir + sBuilderName + ".xml",sBuilderName + ".zip");
+       zu.createArchiveFiles(tempDir + sBuilderName + ".xml",sBuilderName + ".zip",
+       sDirs);
 
    }
+
+   public void writingFile(String sFileName, byte[] thedata){
+      log.info("writingFile " + sFileName);
+      try {
+         File file = new File(sFileName);
+         /*if (file.exists()) {
+            file.delete();
+         }*/
+         file.createNewFile();
+
+         FileOutputStream fos = new FileOutputStream(sFileName);
+         fos.write(thedata);
+         fos.close();
+      } catch (Exception e){
+         log.info(e.toString());
+      }
+   }
+
 }
