@@ -27,7 +27,7 @@ import java.io.*;
  * @author Daniel Ockeloen (MMFunctionParam)
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.31 2006-09-06 13:33:56 michiel Exp $
+ * @version $Id: Parameter.java,v 1.32 2006-09-08 18:34:12 michiel Exp $
  * @see Parameters
  */
 
@@ -41,23 +41,23 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
      * these constants, and if it has a cloud ('mm:cloud is used'), then cloud-parameters are filled
      * automaticly.
      */
-    public static final Parameter LANGUAGE = new Parameter("language", String.class);
-    public static final Parameter LOCALE   = new Parameter("locale",   Locale.class);
-    public static final Parameter USER     = new Parameter("user",     org.mmbase.security.UserContext.class);
-    public static final Parameter RESPONSE = new Parameter("response", javax.servlet.http.HttpServletResponse.class);
-    public static final Parameter REQUEST  = new Parameter("request",  javax.servlet.http.HttpServletRequest.class);
-    public static final Parameter CLOUD    = new Parameter("cloud",    org.mmbase.bridge.Cloud.class);
+    public static final Parameter<String> LANGUAGE                                  = new Parameter("language", String.class);
+    public static final Parameter<Locale> LOCALE                                    = new Parameter("locale",   Locale.class);
+    public static final Parameter<org.mmbase.security.UserContext>         USER     = new Parameter("user", org.mmbase.security.UserContext.class);
+    public static final Parameter<javax.servlet.http.HttpServletResponse>  RESPONSE = new Parameter("response", javax.servlet.http.HttpServletResponse.class);
+    public static final Parameter<javax.servlet.http.HttpServletRequest>   REQUEST  = new Parameter("request",  javax.servlet.http.HttpServletRequest.class);
+    public static final Parameter<org.mmbase.bridge.Cloud>                 CLOUD    = new Parameter("cloud",    org.mmbase.bridge.Cloud.class);
 
     /**
      * 'system' parameter set for nodefunctions.
      * @since MMBaes-1.8
      */    
-    public static final Parameter NODE     = new Parameter("_node",     org.mmbase.bridge.Node.class);
+    public static final Parameter<org.mmbase.bridge.Node>  NODE     = new Parameter("_node",     org.mmbase.bridge.Node.class);
     public final static Parameter CORENODE = new Parameter("_corenode", Object.class); // object because otherwise problems with RMMCI which doesn't have MMObjectNode.
 
 
 
-    public static final Parameter FIELD    = new Parameter("field",    String.class);
+    public static final Parameter<String> FIELD    = new Parameter("field",    String.class);
 
     /**
      * An empty Parameter array.
@@ -115,6 +115,7 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
         }
     }
 
+
     /**
      * Create a Parameter object
      * @param name the name of the parameter
@@ -132,7 +133,7 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
      * @param required whether the parameter requires a value
      */
     public Parameter(String name, Class type, boolean required) {
-        this(name,type);
+        this(name, type);
         dataType.setRequired(required);
     }
 
@@ -143,7 +144,12 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
      * @param defaultValue the value to use if the parameter has no value set
      */
     public Parameter(String name, Class type, C defaultValue) {
-        this(name,type);
+        this(name, type);
+        dataType.setDefaultValue(defaultValue);
+    }
+
+    public Parameter(String name, C defaultValue) {
+        this(name, defaultValue.getClass());
         dataType.setDefaultValue(defaultValue);
     }
 
@@ -220,7 +226,7 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
      * parameter is of type Integer, then the string can be parsed to Integer.
      * @param value The value to be filled in in this Parameter.
      */
-    protected Object autoCast(Object value) {
+    protected C autoCast(Object value) {
         return dataType.cast(value, null, null);
     }
 
