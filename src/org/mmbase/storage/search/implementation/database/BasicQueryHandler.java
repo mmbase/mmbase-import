@@ -33,7 +33,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.53 2006-09-08 14:46:55 michiel Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.54 2006-09-08 18:42:59 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -107,7 +107,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
                 }
 
                 // Now store results as cluster-/real nodes.
-                StepField[] fields = (StepField[]) query.getFields().toArray(STEP_FIELD_ARRAY);
+                StepField[] fields = query.getFields().toArray(STEP_FIELD_ARRAY);
                 int maxNumber = query.getMaxNumber();
 
                 // now, we dispatch the reading of the result set to the right function wich instantiates Nodes of the right type.
@@ -312,10 +312,8 @@ public class BasicQueryHandler implements SearchQueryHandler {
         }
 
         // Test if ALL fields are queried
-        List builderFields = builder.getFields(NodeManager.ORDER_CREATE);
         StringBuffer missingFields = null;
-        for (Iterator f = builderFields.iterator(); f.hasNext();) {
-            CoreField field = (CoreField)f.next();
+        for (CoreField field : builder.getFields(NodeManager.ORDER_CREATE)) {
             if (field.inStorage()) {
                 if (field.getType() == CoreField.TYPE_BINARY) continue;
                 if (fieldIndices.get(field) == null) {
@@ -357,8 +355,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
                         node = new VirtualNode(builder);
                     }
                     node.start();
-                    for (Iterator i = builder.getFields(NodeManager.ORDER_CREATE).iterator(); i.hasNext(); ) {
-                        CoreField field = (CoreField)i.next();
+                    for (CoreField field :  builder.getFields(NodeManager.ORDER_CREATE)) {
                         if (! field.inStorage()) continue;
                         Integer index = fieldIndices.get(field);
                         Object value = null;
