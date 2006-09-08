@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * @application SCAN
  * @rename Sessions
  * @author Daniel Ockeloen
- * @version $Id: sessions.java,v 1.28 2005-01-25 12:45:18 pierre Exp $
+ * @version $Id: sessions.java,v 1.29 2006-09-08 14:57:39 michiel Exp $
  */
 public class sessions extends ProcessorModule implements sessionsInterface {
 
@@ -661,8 +661,8 @@ public class sessions extends ProcessorModule implements sessionsInterface {
         return sessions.size();
     }
 
-     public Hashtable state() {
-        state.put("Sessions",""+getSize());
+    public Map<String, String> state() {
+        state.put("Sessions", "" + getSize());
         return state;
      }
 
