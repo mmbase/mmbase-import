@@ -41,6 +41,7 @@ public class NMIntraToNatMMigrator {
       alDeletingFiles.add("empupdates.xml"); // not in use anymore, replaced by persoon_update
       alDeletingFiles.add("typedef.xml"); //is system data
       alDeletingFiles.add("urls.xml"); // doesn't contain any info
+      alDeletingFiles.add("responses.xml"); // responses contain node numbers, which wont be valid after conversion
 
       Iterator itDeletingFiles = alDeletingFiles.iterator();
 

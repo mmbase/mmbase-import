@@ -28,6 +28,7 @@ import nl.leocms.authorization.UserRole;
 import nl.leocms.authorization.Roles;
 import nl.leocms.authorization.AuthorizationHelper;
 import nl.leocms.util.PaginaHelper;
+import nl.leocms.util.ApplicationHelper;
 
 import org.mmbase.bridge.*;
 
@@ -86,7 +87,7 @@ public class PaginaAllRenderer extends TreeCellRendererAdapter implements TreeCe
                out.println("<font class='notactive'>" + n.getStringValue("naam") + "</font>");
             }
             
-            if (role.getRol() >= Roles.SCHRIJVER) {
+            if (role.getRol() >= Roles.SCHRIJVER && (new ApplicationHelper(cloud)).isInstalled("NatMM")) {
                String url = "/mmbase/edit/wizard/jsp/wizard.jsp?wizard=config/rubriek/rubriek&nodepath=rubriek&referrer=/editors/empty.html&objectnumber=" + n.getNumber();
                out.println("<a href='" + url + "' target='workpane'><img src='../img/edit_w.gif' border='0' align='top' title='Bewerk rubriek'/></a>");
                
