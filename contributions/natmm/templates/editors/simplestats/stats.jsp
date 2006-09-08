@@ -1,10 +1,4 @@
 <%@include file="/taglibs.jsp" %>
-<%@page import="nl.leocms.authorization.*,java.util.*,java.text.*,
-         nl.leocms.authorization.forms.ChangePasswordAction,
-         com.finalist.mmbase.util.CloudFactory,
-         org.mmbase.bridge.Cloud,
-         org.mmbase.bridge.Node" %>
-
 <mm:cloud method="http" rank="basic user" jspvar="cloud">
 
 <%! public Calendar addPeriod(Calendar cal, int period) {
@@ -21,78 +15,73 @@
     }
 %>
 
-<% Calendar cal = Calendar.getInstance();
-    Date dd = new Date();
+<% 
+Calendar cal = Calendar.getInstance();
+Date dd = new Date();
 
-    cal.setTime(dd);
-    cal = addPeriod(cal,-7); // show last week
+cal.setTime(dd);
+cal = addPeriod(cal,-7); // show last week
 
-    int day = cal.get(Calendar.DAY_OF_MONTH);
-    String dayId = (String) request.getParameter("day");
-    if(dayId!=null){ day = (new Integer(dayId)).intValue(); }
+int day = cal.get(Calendar.DAY_OF_MONTH);
+String dayId = (String) request.getParameter("day");
+if(dayId!=null){ day = (new Integer(dayId)).intValue(); }
 
-    int month = cal.get(Calendar.MONTH);
-    String monthId = (String) request.getParameter("month");
-    if(monthId!=null){ month = (new Integer(monthId)).intValue(); }
+int month = cal.get(Calendar.MONTH);
+String monthId = (String) request.getParameter("month");
+if(monthId!=null){ month = (new Integer(monthId)).intValue(); }
 
-    int year = cal.get(Calendar.YEAR);
-    String yearId = (String) request.getParameter("year");
-    if(yearId!=null){ year = (new Integer(yearId)).intValue(); }
+int year = cal.get(Calendar.YEAR);
+String yearId = (String) request.getParameter("year");
+if(yearId!=null){ year = (new Integer(yearId)).intValue(); }
 
-    int period = 7;
-    String periodId = (String) request.getParameter("period");
-    if(periodId!=null){ period = (new Integer(periodId)).intValue(); }
+int period = 7;
+String periodId = (String) request.getParameter("period");
+if(periodId!=null){ period = (new Integer(periodId)).intValue(); }
 
-    String action = (String) request.getParameter("action");
-    if(action==null){ action = "this"; }
-    
-    int selection = -1;
-    String selectionId = (String) request.getParameter("selection");
-    if(selectionId!=null){ selection = (new Integer(selectionId)).intValue(); }
+String action = (String) request.getParameter("action");
+if(action==null){ action = "this"; }
 
-    boolean isPast = false;
+int selection = -1;
+String selectionId = (String) request.getParameter("selection");
+if(selectionId!=null){ selection = (new Integer(selectionId)).intValue(); }
+
+boolean isPast = false;
+
+SimpleDateFormat formatter = new SimpleDateFormat("EEE d MMM yyyy");
+cal.set(year,month,day,0,0,0);
+if(action.equals("next")) { 
+  cal = addPeriod(cal,period); 
+  day = cal.get(Calendar.DAY_OF_MONTH);
+  month = cal.get(Calendar.MONTH);
+  year = cal.get(Calendar.YEAR);
+} else if(action.equals("previous")) {  
+  cal = addPeriod(cal,-period);
+  day = cal.get(Calendar.DAY_OF_MONTH);
+  month = cal.get(Calendar.MONTH);
+  year = cal.get(Calendar.YEAR);
+}
+long fromTime = (cal.getTime().getTime()/1000); 
+String fromStr= formatter.format(cal.getTime());
+cal = addPeriod(cal,period); 
+long toTime = (cal.getTime().getTime()/1000);
+if(toTime<(dd.getTime()/1000)) { isPast = true; }
+cal.add(Calendar.DATE,-1);
+String untillAndIncludingStr = formatter.format(cal.getTime());
+
+String cacheKey = "stats" + fromTime + "_" + toTime + "_" + selection;
+int expireTime =  3600*24*365; // cache for one year
 %>
-
-
-<%  SimpleDateFormat formatter = new SimpleDateFormat("EEE d MMM yyyy");
-    cal.set(year,month,day,0,0,0);
-    if(action.equals("next")) { 
-        cal = addPeriod(cal,period); 
-        day = cal.get(Calendar.DAY_OF_MONTH);
-        month = cal.get(Calendar.MONTH);
-        year = cal.get(Calendar.YEAR);
-    } else if(action.equals("previous")) {  
-        cal = addPeriod(cal,-period);
-        day = cal.get(Calendar.DAY_OF_MONTH);
-        month = cal.get(Calendar.MONTH);
-        year = cal.get(Calendar.YEAR);
-    }
-    long fromTime = (cal.getTime().getTime()/1000); 
-    String fromStr= formatter.format(cal.getTime());
-    cal = addPeriod(cal,period); 
-    long toTime = (cal.getTime().getTime()/1000);
-    if(toTime<(dd.getTime()/1000)) { isPast = true; }
-    cal.add(Calendar.DATE,-1);
-    String untillAndIncludingStr = formatter.format(cal.getTime());
-%>
-
-<%  String templateTitle = "";
-    String pageId = "statistieken";
-    String articleId = fromTime + "_" + toTime + "_" + selection;
-%>
-
-<%	int expireTime =  3600*24*365; // cache for one year
-	String cacheKey = templateTitle + "~" + pageId  + "~" + articleId;
-%>
-<!-- cache:cache key="<%= cacheKey %>" time="<%= expireTime %>" scope="application" -->
+<cache:cache key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
 <!-- <%= new java.util.Date() %> -->
 
 <html>
 <head>
-    <link rel="stylesheet" type="text/css" href="../css/editors.css">
-    <script language="JavaScript1.2" src="../scripts/mouseover.js" >
-    </script>
-    <script>
+   <link href="<mm:url page="<%= editwizard_location %>"/>/style/color/wizard.css" type="text/css" rel="stylesheet"/>
+   <link href="<mm:url page="<%= editwizard_location %>"/>/style/layout/wizard.css" type="text/css" rel="stylesheet"/>
+   <title>Simple Stats</title>
+   <script language="JavaScript1.2" src="../scripts/mouseover.js" >
+   </script>
+   <script>
     function startSearch(el) {
         var href = el.getAttribute("href"); 
         var day = document.forms[0].elements["day"].value;
@@ -106,9 +95,9 @@
     }
     </script>
 </head>
-<body>
+<body style="overflow:auto;" leftmargin="10" topmargin="10" marginwidth="0" marginheight="0">
 <form name="date" method="post">
-<table cellspacing="0" cellpadding="0" border="0">
+<table class="formcontent" style="width:500px;">
     <tr><td>Dag</td><td>Maand</td><td>Jaar</td><td>Periode</td><td>Selectie</td></tr>
     <tr><td>
         <select name="day">
@@ -196,81 +185,91 @@
 	 int visitorsCount = res[1];
 	
 	 int rowCount = 0; %>
-<table cellpadding="0" cellspacing="0" >
-<tr bgcolor="EEEEEE">
+<table class="formcontent" style="width:500px;">
+<tr <% if(rowCount%2==0) { %> bgcolor="EEEEEE" <% } rowCount++; %>>
     <td colspan="3">Bezoekers aantal</td>
     <td>
         <img src="media/bar-orange.gif" alt="" width="<%= (100*visitorsCount / maxPageCount) %>" height="5" border=0>&nbsp;(<%= visitorsCount %>)
     </td>
 </tr>
-<tr><td class="lightgrey" colspan="4">
-<mm:node number="home"><mm:field name="naam"/></mm:node>
-</td></tr>      
-      <%// show all subObjects for the rootId, both pages and rubrieken
-      RubriekHelper rubriekHelper = new RubriekHelper(cloud);
-
-      TreeMap [] nodesAtLevel = new TreeMap[10];
-		String rootId = "home";
-      nodesAtLevel[0] = (TreeMap) rubriekHelper.getSubObjects(rootId);
-      int depth = 0;
-      
-      // invariant: depth = level of present leafs (root has level 0)
-      while(depth>-1&&depth<10) { 
-         if(nodesAtLevel[depth].isEmpty()) {
-            
-			   // if this nodesAtLevel is empty, try one level back
-            depth--; 
-         }
-         if(depth>-1&&!nodesAtLevel[depth].isEmpty()) {
-
-			   // show all subObjects, both pages and rubrieken
-				while(! nodesAtLevel[depth].isEmpty()) { 
-
-					Integer thisKey = (Integer) nodesAtLevel[depth].firstKey();
-					String sThisObject = (String) nodesAtLevel[depth].get(thisKey);
-					nodesAtLevel[depth].remove(thisKey);
-					%><mm:node number="<%= sThisObject %>" jspvar="thisObject"
-						><mm:nodeinfo  type="type" write="false" jspvar="nType" vartype="String"><%
-							if(nType.equals("pagina")) { // show page
-								
-								// the page can be a redirect to another page
-								String sThisPage = sThisObject;
-								%><mm:related path="rolerel,pagina" searchdir="destination"
-									><mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false"><%
-										sThisPage = pagina_number; 
-									%></mm:field
-								></mm:related>
-								<mm:node number="<%= sThisPage %>">
-									<% String page_number = sThisPage; %>
-									<mm:field name="titel" jspvar="page_title" vartype="String" write="false">
-   					             <%@include file="pageStats.jsp" %>
-						        </mm:field>
-								</mm:node>
-								<%
-								
-							} else { // show rubriek, which is a link to the first page in the rubriek
-								%>
-								<tr <% if(rowCount%2==0) { %> bgcolor="EEEEEE" <% } rowCount++; %>>
-					        <td>&nbsp;</td><td><mm:field name="naam" /></td><td>&nbsp;</td><td>&nbsp;</td></tr>
-								<%
-								depth++;
-								nodesAtLevel[depth] = (TreeMap) rubriekHelper.getSubObjects(sThisObject);
-							} 
-						%></mm:nodeinfo
-					></mm:node><%
-				} 
+<mm:listnodes type="rubriek" constraints="level='1'">
+   <mm:node jspvar="subsite">
+   <tr>
+      <th colspan="4" <% if(rowCount%2==0) { %> bgcolor="EEEEEE" <% } rowCount++; %>>
+         <mm:field name="naam"/>
+      </th>
+   </tr>      
+         <%// show all subObjects for the rootId, both pages and rubrieken
+         RubriekHelper rubriekHelper = new RubriekHelper(cloud);
+   
+         TreeMap [] nodesAtLevel = new TreeMap[10];
+   		String rootId = "home";
+         nodesAtLevel[0] = (TreeMap) rubriekHelper.getSubObjects(subsite.getStringValue("number"));
+         int depth = 0;
+         
+         // invariant: depth = level of present leafs (root has level 0)
+         while(depth>-1&&depth<10) { 
+            if(nodesAtLevel[depth].isEmpty()) {
+               
+   			   // if this nodesAtLevel is empty, try one level back
+               depth--; 
+            }
+            if(depth>-1&&!nodesAtLevel[depth].isEmpty()) {
+   
+   			   // show all subObjects, both pages and rubrieken
+   				while(! nodesAtLevel[depth].isEmpty()) { 
+   
+   					Integer thisKey = (Integer) nodesAtLevel[depth].firstKey();
+   					String sThisObject = (String) nodesAtLevel[depth].get(thisKey);
+   					nodesAtLevel[depth].remove(thisKey);
+   					%><mm:node number="<%= sThisObject %>" jspvar="thisObject"
+   						><mm:nodeinfo  type="type" write="false" jspvar="nType" vartype="String"><%
+   							if(nType.equals("pagina")) { // show page
+   								
+   								// the page can be a redirect to another page
+   								String sThisPage = sThisObject;
+   								%><mm:related path="rolerel,pagina" searchdir="destination"
+   									><mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false"><%
+   										sThisPage = pagina_number; 
+   									%></mm:field
+   								></mm:related>
+   								<mm:node number="<%= sThisPage %>">
+   									<% String page_number = sThisPage; %>
+   									<mm:field name="titel" jspvar="page_title" vartype="String" write="false">
+      					             <%@include file="pageStats.jsp" %>
+   						        </mm:field>
+   								</mm:node>
+   								<%
+   								
+   							} else { // show rubriek, which is a link to the first page in the rubriek
+   								%>
+   								<tr <% if(rowCount%2==0) { %> bgcolor="EEEEEE" <% } rowCount++; %>>
+   					            <td>&nbsp;</td><td><mm:field name="naam" /></td><td>&nbsp;</td><td>&nbsp;</td>
+   					         </tr>
+   								<%
+   								depth++;
+   								nodesAtLevel[depth] = (TreeMap) rubriekHelper.getSubObjects(sThisObject);
+   							} 
+   						%></mm:nodeinfo
+   					></mm:node><%
+   				} 
+            } 
          } 
-      } 
-      %>
+         %>
+   </mm:node>
+</mm:listnodes>
 </table>
-
+<br/>
+<br/>
 </body>
 </html>
-<!-- /cache:cache -->
+</cache:cache>
 
-<%-- flush the statistics if it does not fall in the past --%>
-<% if(!isPast) { %>
-    <cache:flush key="<%= cacheKey %>" scope="application" />
-<% } %>
+<% // flush the statistics if it does not fall in the past
+if(!isPast) {
+   %>
+   <cache:flush key="<%= cacheKey %>" scope="application" />
+   <%
+} %>
 </mm:cloud>
 
