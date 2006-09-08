@@ -3,11 +3,12 @@ String titleClass = "pageheader";
 %><mm:field name="artikel.number" jspvar="article_number" vartype="String" write="false"><%
    readmoreUrl = "?p=" + paginaID + "&article=" + article_number; 
 %></mm:field
-><mm:field name="pagina.titel_fra" jspvar="showExpireDate" vartype="String" write="false"
+><mm:field name="pagina.titel_fra" jspvar="showDate" vartype="String" write="false"
    ><mm:present referid="nodates">
-      <% showExpireDate = "-1"; %>
+      <% showDate = "-1"; %>
    </mm:present>
-   <a class="menuitem" href="<%= readmoreUrl %><% if(!postingStr.equals("")) { %>&pst=|action=noprint<% } 
+   <a class="<mm:write referid="hrefclass" />"
+      href="<%= readmoreUrl %><% if(!postingStr.equals("")) { %>&pst=|action=noprint<% } 
    %>"><mm:field name="artikel.titel_zichtbaar"
 		   ><mm:compare value="0" inverse="true"
       		><mm:field name="artikel.titel" 

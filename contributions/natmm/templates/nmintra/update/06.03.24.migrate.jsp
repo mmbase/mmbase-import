@@ -22,18 +22,23 @@
 	<mm:node number="$root">
 		<mm:createalias>root</mm:createalias>
 	</mm:node>
-	<mm:listnodes type="rubriek" constraints="naam = 'Intranet'" id="rubriek1">
-    <mm:setfield name="url">www.natuurmonumenten.nl</mm:setfield>
-    <mm:setfield name="naam_de">Natuurmonumenten</mm:setfield>
-		<mm:createrelation source="root" destination="rubriek1" role="parent">
-      <mm:setfield name="pos">10</mm:setfield>
-    </mm:createrelation>
+	<mm:listnodes type="rubriek" constraints="naam = 'Intranet'">
+   	<mm:node id="rubriek1">
+         <mm:setfield name="url">www.natuurmonumenten.nl</mm:setfield>
+         <mm:setfield name="url_live">nmintra</mm:setfield>
+         <mm:setfield name="naam_de">Natuurmonumenten</mm:setfield>
+      </mm:node>
+   	<mm:createrelation source="root" destination="rubriek1" role="parent">
+         <mm:setfield name="pos">10</mm:setfield>
+      </mm:createrelation>
 	</mm:listnodes>
-  <mm:listnodes type="rubriek" constraints="naam = 'Ontwikkel'" id="rubriek2">
-    <mm:setfield name="url">www.natuurmonumenten.nl</mm:setfield>
-    <mm:setfield name="url_live">nmintra</mm:setfield>
-    <mm:setfield name="naam_de">Natuurmonumenten</mm:setfield>
-		<mm:createrelation source="root" destination="rubriek2" role="parent">
+  <mm:listnodes type="rubriek" constraints="naam = 'Ontwikkel'">
+    <mm:node id="rubriek2">
+       <mm:setfield name="url">www.natuurmonumenten.nl</mm:setfield>
+       <mm:setfield name="url_live">nmintra</mm:setfield>
+       <mm:setfield name="naam_de">Natuurmonumenten</mm:setfield>
+    </mm:node>
+	 <mm:createrelation source="root" destination="rubriek2" role="parent">
       <mm:setfield name="pos">20</mm:setfield>
     </mm:createrelation>
 	</mm:listnodes>

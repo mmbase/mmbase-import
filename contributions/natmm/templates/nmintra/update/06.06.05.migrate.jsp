@@ -393,7 +393,6 @@
       <mm:setfield name="searchfields">kb_question.question</mm:setfield>
       <mm:setfield name="orderby">kb_question.question</mm:setfield>
       <mm:setfield name="search">yes</mm:setfield>
-      <mm:setfield name="startnodes"></mm:setfield>
     </mm:createnode>
     <mm:node element="pagina" id="kb_page" />
     <mm:node element="editwizards" id="iframe_ew" />
@@ -416,9 +415,21 @@
    <mm:listnodes type="menu" constraints="naam = 'Activiteiten'">
 		<mm:setfield name="naam">Jeugdactiviteiten</mm:setfield>
 	</mm:listnodes>
-   <% log.info("22. Rename menu 'Archiefkast' to Contentlementen"); %>
+   <% log.info("23. Rename menu 'Archiefkast' to Contentlementen"); %>
    <mm:listnodes type="menu" constraints="naam = 'Archiefkast'">
 		<mm:setfield name="naam">Contentelementen</mm:setfield>
+	</mm:listnodes>
+   <% log.info("24. Rename menu 'Archiefkast' to Contentlementen"); %>
+	<mm:listnodes type="menu" constraints="naam = 'Speciaal onderhoud'">
+	    <mm:node id="so" />
+   	 <mm:createnode type="editwizards" id="stats_ew">
+         <mm:setfield name="name">statistieken</mm:setfield>
+         <mm:setfield name="wizard">/editors/simplestats/stats.jsp</mm:setfield>
+         <mm:setfield name="type">jsp</mm:setfield>
+       </mm:createnode>
+       <mm:createrelation source="so" destination="stats_ew" role="posrel">
+          <mm:setfield name="pos">80</mm:setfield>
+       </mm:createrelation>
 	</mm:listnodes>
 	<% log.info("99. Deleting unused editwizards"); %>
 	<%

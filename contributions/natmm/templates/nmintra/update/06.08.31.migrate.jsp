@@ -3,9 +3,25 @@
 <mm:cloud method="http" rank="basic user" jspvar="cloud">
 <mm:log jspvar="log">
    <% log.info("06.08.31"); %>
+   1. Setting the levels of the rubrieken<br/>
+	<mm:node number="root">
+      <mm:setfield name="level">0</mm:setfield>
+      <mm:relatednodes type="rubriek" searchdir="destination">
+         <mm:setfield name="level">1</mm:setfield>
+         <mm:relatednodes type="rubriek" searchdir="destination">
+            <mm:setfield name="level">2</mm:setfield>
+            <mm:setfield name="issearchable">1</mm:setfield>
+            <mm:relatednodes type="rubriek" searchdir="destination">
+               <mm:setfield name="level">3</mm:setfield>
+            </mm:relatednodes>
+         </mm:relatednodes>
+      </mm:relatednodes>
+   </mm:node>
+   2. Delete inactive users<br/>
 	<mm:listnodes type="users" constraints="password='inactive'">
 	   <mm:deletenode deleterelations="true" />
    </mm:listnodes>
+   3. Add extra info to set default relations correctly<br/>
    <mm:listnodes type="teaser" constraints="titel='hard-/software'">
       <mm:node id="teaser" />
       <mm:listnodes type="paginatemplate" constraints="url='producttypes.jsp'">

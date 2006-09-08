@@ -8,7 +8,7 @@
 	<table border="0" cellpadding="0" cellspacing="0" width="100%">
 		<tr>
 			<td width="80%">
-				<b><span class="pageheader"><span class="dark"><mm:field name="name"/></span></span></b>
+				<b><span class="pageheader"><span class="dark"><mm:field name="titel"/></span></span></b>
 				<table border="0" cellpadding="0" cellspacing="0" width="100%">
 					<tr>
 						<td style="width:200px;text-align:right;"><span class="black"><b>Type project&nbsp;|&nbsp;</b></span></td>

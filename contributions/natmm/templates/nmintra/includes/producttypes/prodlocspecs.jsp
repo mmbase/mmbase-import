@@ -2,8 +2,7 @@
 
 // *** are there locations which can be shown ? ***
 HashSet locations = new HashSet();
-%><mm:list nodes="" path="locations,readmore,products,posrel0,producttypes,posrel1,teaser,contentrel,pagina" 
-    constraints="<%= "contentrel.pos='3' AND pagina.number= '" + paginaID + "'" %>" 
+%><mm:list nodes="<%= paginaID %>" path="pagina,rolerel,teaser,posrel0,producttypes,posrel1,products,readmore,locations" 
     ><mm:field name="locations.number"  jspvar="locations_number" vartype="String" write="false"><%
         locations.add(locations_number);
     %></mm:field
@@ -37,8 +36,8 @@ if(!locations.isEmpty()) {
 
         // *** are there productgroups which can be shown ? ***
         HashSet productgroups = new HashSet();
-        %><mm:list nodes="<%= locationId %>" path="locations,readmore,products,posrel0,producttypes,posrel1,teaser,contentrel,pagina" 
-            constraints="<%= "contentrel.pos='3' AND pagina.number= '" + paginaID + "'" %>"
+        %><mm:list nodes="<%= locationId %>" path="locations,readmore,products,posrel0,producttypes,posrel1,teaser,rolerel,pagina" 
+            constraints="<%= "pagina.number= '" + paginaID + "'" %>"
             ><mm:field name="producttypes.number"  jspvar="producttypes_number" vartype="String" write="false"><%
                 productgroups.add(producttypes_number);
             %></mm:field

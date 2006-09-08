@@ -2,6 +2,7 @@
 <mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud">
 <%@include file="includes/templateheader.jsp" %>
 <%@include file="includes/cacheparams.jsp" %>
+<% expireTime = newsExpireTime; %>
 <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
 <%@include file="includes/calendar.jsp" %>
 <%
@@ -44,10 +45,11 @@ if(!articleId.equals("-1")) {
    %><div class="rightcolumn" id="rightcolumn">
    <table cellpadding="0" cellspacing="0" align="left">
    <tr><td style="padding-bottom:10px;padding-left:19px;padding-right:9px;">
+   <mm:import id="hrefclass">menuitem</mm:import>
    <%@include file="includes/info/movetoarchive.jsp" 
    %><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel"  searchdir="destination" 
         orderby="artikel.embargo" directions="DOWN"
-        constraints="<%= "(artikel.embargo < '" + (nowSec+quarterOfAnHour) + "')" %>"
+        constraints="<%= (new SearchUtil()).articleConstraint(nowSec,quarterOfAnHour) %>"
          ><mm:remove referid="this_article"
          /><mm:node element="artikel" id="this_article"
          /><%@include file="includes/relatedsummaries.jsp" 
