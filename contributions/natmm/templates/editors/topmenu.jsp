@@ -8,54 +8,34 @@
     <title>Menu beheeromgeving</title>
     <script>
 	     // *** refresh every X minutes , avoid session timeout ***
-        function resubmit()
-	     {
-	        document.forms[0].submit();
-	     }
-		  function check()
-		  {
-			  var oHttp = null;
-			  if ( window.XMLHttpRequest )
-			  {
-			     oHttp = new window.XMLHttpRequest();
+		  function check() {
+			  var request = false;
+			  if ( window.XMLHttpRequest ) {
+			     request = new window.XMLHttpRequest();
+			  } else if ( window.ActiveXObject ) {
+			     request = new window.ActiveXObject( "Microsoft.XMLHTTP" );
+			  } else {
+			     throw "UNSUPPORTED PLATFORM";
 			  }
-			  else
-			  {	
-			     if ( window.ActiveXObject )
-			     {
-			        oHttp = new window.ActiveXObject( "Microsoft.XMLHTTP" );
-			     }
-			     else
-			     {
-			        throw "UNSUPPORTED PLATFORM";
-			     }
-			  }
-		     if ( !oHttp )
-           {
-	           throw "ERROR";
-           }
-           oHttp.open( "HEAD", window.location.href, true ); 
-           oHttp.onreadystatechange = function()
-           {
-              if ( oHttp.readyState == 4 && oHttp.status == 200)
-              {
-					  window.location.reload();// after server starts again blank page is shown also :-(
-              } 
-				  else
-              {
-              	  setTimeout('check()',10*60000);
-              }
-           }
-           oHttp.send( null );
+		    if (!request) {
+	         throw "ERROR";
+        }
+        request.open( "HEAD", window.location.href, true ); 
+        request.onreadystatechange = function() {
+          if ( request.readyState == 4 && request.status == 200) {
+            window.location.reload();
+          }
+        }
+        request.send( null );
 		  }
 	  </script>
-     <style>
+    <style>
         td.fieldname {
             padding-left: 5px;
             padding-right: 5px;
             font-size: 14px;
         }
-     </style>
+    </style>
 </head>
 <body onload="javascript:setTimeout('check()',10*60000);" style="background-color:#E4F0F7;">
 <mm:import externid="action"/>
@@ -188,7 +168,6 @@
 		<% 
 	} %>
 	</tr>
-	<form name="dummy" method="post" target=""></form>
 </table>
 <div style="position:absolute;right:5px;top:5px;z-index:100"><small>
 <li><a class="menu" target="bottompane" href="../doc/index.jsp" title="klik hier om de gebruikershandleidingen te bekijken of te downloaden">gebruikershandleiding</a><br>
