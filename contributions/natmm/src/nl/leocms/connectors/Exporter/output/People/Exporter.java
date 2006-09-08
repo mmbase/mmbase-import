@@ -24,9 +24,11 @@ import org.mmbase.util.logging.*;
 import javax.xml.parsers.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.io.*;
 
 import org.mmbase.bridge.*;
 import com.finalist.mmbase.util.CloudFactory;
+import nl.leocms.util.ApplicationHelper;
 import nl.leocms.util.tools.*;
 import nl.leocms.connectors.Exporter.creatingXML;
 
@@ -52,9 +54,12 @@ public class Exporter implements Runnable
          Element elemRoot = document.createElement("people");
          document.appendChild(elemRoot);
          Cloud cloud = CloudFactory.getCloud();
+         ApplicationHelper ap = new ApplicationHelper(cloud);
+         String tempDir = ap.getTempDir();
 
          SearchUtil su = new SearchUtil();
          String employeeConstraint = su.sEmployeeConstraint;
+         creatingXML cxml = new creatingXML();
          NodeList nl = cloud.getNodeManager("medewerkers").getList(employeeConstraint,"medewerkers.number","up");
          for (int i = 0; i < nl.size(); i++){
             Element elemPerson = document.createElement("person");
@@ -122,10 +127,12 @@ public class Exporter implements Runnable
             elemJobInfo.appendChild(elemDescr);
 
             NodeList nlImages = nl.getNode(i).getRelatedNodes("images");
-            document = getImages(nlImages,document,elemPerson,true);
+            document = getImages(nlImages,document,elemPerson,true,tempDir,cxml);
+
          }
-         creatingXML cxml = new creatingXML();
-         cxml.create(document,"people");
+
+         String[] sDirs = {"images"};
+         cxml.create(document,"people",sDirs);
 
       }
       catch (Exception e){
@@ -170,7 +177,11 @@ public class Exporter implements Runnable
       return document;
    }
 
-   public Document getImages(NodeList nl,Document document, Element elRoot, boolean bShowTag){
+   public Document getImages(NodeList nl,Document document, Element elRoot, boolean bShowTag,String sTempDir,creatingXML cxml){
+      File fAttachmentsDir = new File(sTempDir + "images/");
+         if (!fAttachmentsDir.exists()){
+            fAttachmentsDir.mkdir();
+         }
       if(nl.size()==0&bShowTag){
          Element elemImage = document.createElement("image");
          elRoot.appendChild(elemImage);
@@ -196,10 +207,14 @@ public class Exporter implements Runnable
          elemImage.appendChild(elemImageDescr);
 
          Element elemImageFileName = document.createElement("filename");
-         String sMimeType = nl.getNode(j).getStringValue("itype");
-         elemImageFileName.appendChild(document.createTextNode(nl.getNode(j).getStringValue("number") + "." + sMimeType));
+         String sFileName = nl.getNode(j).getStringValue("number") + "." + nl.getNode(j).getStringValue("itype");
+         elemImageFileName.appendChild(document.createTextNode(sFileName));
          elemImage.appendChild(elemImageFileName);
+
+         byte[] thedata = nl.getNode(j).getByteValue("handle");
+         cxml.writingFile(sTempDir + "images/" + sFileName, thedata);
       }
+
       return document;
    }
 }
