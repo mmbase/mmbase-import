@@ -23,14 +23,14 @@ import org.mmbase.util.logging.Logging;
  * the Parameter array of the constructor.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.24 2006-09-06 16:56:24 michiel Exp $
+ * @version $Id: NodeFunction.java,v 1.25 2006-09-08 18:34:12 michiel Exp $
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
  * @see org.mmbase.util.functions.BeanFunction
  * @since MMBase-1.8
  */
 
-public abstract class NodeFunction<R> extends AbstractFunction<R> {
+public abstract class NodeFunction<R> extends AbstractFunction<R, Object> {
 
     private static final Logger log = Logging.getLoggerInstance(NodeFunction.class);
 
@@ -86,7 +86,7 @@ public abstract class NodeFunction<R> extends AbstractFunction<R> {
     /**
      * Returns a new instance of NodeInstanceFunction, which represents an actual Function.
      */
-    final public Function<R> newInstance(MMObjectNode node) {
+    final public Function<R, Object> newInstance(MMObjectNode node) {
         return new NodeInstanceFunction(node);
     }
 
@@ -130,10 +130,10 @@ public abstract class NodeFunction<R> extends AbstractFunction<R> {
                         // This happens when calling gui() in transaction.
                         // Perhaps we need something like a public new BasicNode(MMobjectNode, Cloud). Abusing VirtualNode for similar purpose now.
                         org.mmbase.module.core.VirtualNode virtual = new org.mmbase.module.core.VirtualNode(coreNode.getBuilder());
-                        Iterator i = coreNode.getValues().entrySet().iterator();
+                        Iterator<Map.Entry<String, Object>> i = coreNode.getValues().entrySet().iterator();
                         while (i.hasNext()) {
-                            Map.Entry entry = (Map.Entry) i.next();
-                            virtual.storeValue((String) entry.getKey(), entry.getValue());
+                            Map.Entry<String, Object> entry =  i.next();
+                            virtual.storeValue(entry.getKey(), entry.getValue());
                         }
                         node = new org.mmbase.bridge.implementation.VirtualNode(virtual, cloud);
                     }
@@ -191,7 +191,7 @@ public abstract class NodeFunction<R> extends AbstractFunction<R> {
      * This represents the function on one specific Node. This is instantiated when new Istance
      * if called on a NodeFunction.
      */
-    private class NodeInstanceFunction extends WrappedFunction<R> {
+    private class NodeInstanceFunction extends WrappedFunction<R, Object> {
 
         protected MMObjectNode node;
 

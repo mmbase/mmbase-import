@@ -21,18 +21,18 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: AbstractFunction.java,v 1.12 2006-09-06 13:33:56 michiel Exp $
+ * @version $Id: AbstractFunction.java,v 1.13 2006-09-08 18:34:12 michiel Exp $
  * @since MMBase-1.8
  * @see Parameter
  * @see Parameters
  */
-abstract public class AbstractFunction<R> implements Function<R>, Comparable, java.io.Serializable {
+abstract public class AbstractFunction<R, E> implements Function<R, E>, Comparable, java.io.Serializable {
     private static final Logger log = Logging.getLoggerInstance(AbstractFunction.class);
     protected String    name;
     protected ReturnType  returnType;
     private boolean autoReturnType = false;
 
-    private Parameter[] parameterDefinition;
+    private Parameter<E>[] parameterDefinition;
     private String     description;
 
     /**
@@ -41,7 +41,7 @@ abstract public class AbstractFunction<R> implements Function<R>, Comparable, ja
      * @param def  Every function must have a parameter definition. It can be left <code>null</code> and then filled later by {@link #setParameterDefinition}
      * @param returnType Every function must also specify its return type. It can be left <code>null</code> and then filled later by {@link #setReturnType}
      */
-    public AbstractFunction(String name, Parameter[] def, ReturnType returnType) {
+    public AbstractFunction(String name, Parameter<E>[] def, ReturnType returnType) {
         this.name = name;
         if (def != null) {
             this.parameterDefinition = Functions.define(def, new ArrayList()).toArray(Parameter.EMPTY);
@@ -53,7 +53,7 @@ abstract public class AbstractFunction<R> implements Function<R>, Comparable, ja
      * Determines the ReturnType automaticly using the return type of {@link getFunctionValue(Parameters)}.
      * @since MMBase-1.9
      */
-    public AbstractFunction(String name, Parameter... def) {
+    public AbstractFunction(String name, Parameter<E>... def) {
         this(name, def, null);
         // what would be nice:
         // this(name, def, ReturnType.getReturnType(R.class)); 
@@ -67,11 +67,11 @@ abstract public class AbstractFunction<R> implements Function<R>, Comparable, ja
      * Creates an empty 'Parameters'  object for you, which you have to fill and feed back to getFunctionValue
      * @see #getFunctionValue(Parameters)
      */
-    public Parameters createParameters() {
+    public Parameters<E> createParameters() {
         if (parameterDefinition == null) {
             throw new IllegalStateException("Definition is not set yet");
         }
-        return new Parameters(parameterDefinition);
+        return new Parameters<E>(parameterDefinition);
     }
 
     /**
@@ -81,7 +81,7 @@ abstract public class AbstractFunction<R> implements Function<R>, Comparable, ja
      *                   Implementors are encouraged to support <code>null</code> too.
      * @return The function value, which can be of any type compatible to {@link #getReturnType}
      */
-    abstract public R getFunctionValue(Parameters parameters);
+    abstract public R getFunctionValue(Parameters<E> parameters);
 
     /**
      * Executes the defined function supplying the given List of arguments.
@@ -90,7 +90,7 @@ abstract public class AbstractFunction<R> implements Function<R>, Comparable, ja
      *
      * @return The function value, which can be of any type compatible to {@link #getReturnType}
      */
-     public final R getFunctionValueWithList(List parameters) {
+    public final R getFunctionValueWithList(List<E> parameters) {
          if (parameters instanceof Parameters) {
              return getFunctionValue((Parameters)parameters);
          } else {
@@ -100,8 +100,8 @@ abstract public class AbstractFunction<R> implements Function<R>, Comparable, ja
      /**
       * @since MMBase-1.9
       */
-     public final R getFunctionValue(Object... parameters) {
-         return getFunctionValue(new Parameters(parameterDefinition, parameters));
+     public final R getFunctionValue(E... parameters) {
+         return getFunctionValue(new Parameters<E>(parameterDefinition, parameters));
      }
     /**
      * For documentational  purposes a function object needs a description too.
