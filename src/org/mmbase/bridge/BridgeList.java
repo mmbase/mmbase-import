@@ -17,7 +17,7 @@ import java.util.Comparator;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BridgeList.java,v 1.5 2006-09-07 13:07:29 michiel Exp $
+ * @version $Id: BridgeList.java,v 1.6 2006-09-08 12:10:41 michiel Exp $
  * @since  MMBase-1.6
  */
 public interface BridgeList<E> extends List<E> {
@@ -50,5 +50,5 @@ public interface BridgeList<E> extends List<E> {
      *
      * @param comparator the comparator defining the sort order
      */
-    public void sort(Comparator comparator);
+    public void sort(Comparator<? super E> comparator); // ?
 }

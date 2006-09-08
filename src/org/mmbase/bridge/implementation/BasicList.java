@@ -18,9 +18,9 @@ import org.mmbase.util.logging.*;
  * This is the base class for all basic implementations of the bridge lists.
  *
  * @author Pierre van Rooden
- * @version $Id: BasicList.java,v 1.18 2005-12-29 19:23:54 michiel Exp $
+ * @version $Id: BasicList.java,v 1.19 2006-09-08 12:10:41 michiel Exp $
  */
-public class BasicList extends ArrayList implements BridgeList  {
+public class BasicList<E> extends ArrayList<E> implements BridgeList<E>  {
 
     private static final Logger log = Logging.getLoggerInstance(BasicList.class);
 
@@ -47,10 +47,10 @@ public class BasicList extends ArrayList implements BridgeList  {
     }
 
     /*
-     * converts the object in teh list to the excpected format
+     * converts the object in the list to the excpected format
      */
-    protected Object convert(Object o, int index) {
-        return o;
+    protected E convert(Object o, int index) {
+        return (E) o;
     }
 
     public boolean contains(Object o ) {
@@ -73,11 +73,11 @@ public class BasicList extends ArrayList implements BridgeList  {
     /*
      * validates that an object can be converted to the excpected format
      */
-    protected Object validate(Object o) throws ClassCastException {
-        return o;
+    protected E validate(Object o) throws ClassCastException {
+        return (E) o;
     }
 
-    public Object get(int index) {
+    public E get(int index) {
         if (autoConvert) {
             return convert(super.get(index), index);
         } else {
@@ -86,23 +86,23 @@ public class BasicList extends ArrayList implements BridgeList  {
     }
 
     public void sort() {
-        Collections.sort(this);
+        Collections.sort((List) this); // casting, why?
     }
 
-    public void sort(Comparator comparator) {
-        Collections.sort(this,comparator);
+    public void sort(Comparator<? super E> comparator) {
+        Collections.sort(this, comparator);
     }
 
-    public Object set(int index, Object o) {
+    public E set(int index, E o) {
         return super.set(index,validate(o));
     }
 
-    public void add(int index, Object o) {
+    public void add(int index, E o) {
         autoConvert = true;
         super.add(index,validate(o));
     }
 
-    public boolean add(Object o) {
+    public boolean add(E o) {
         autoConvert = true;
         return super.add(validate(o));
     }
@@ -125,11 +125,11 @@ public class BasicList extends ArrayList implements BridgeList  {
         return super.toArray();
     }
 
-    protected class BasicIterator implements ListIterator {
-        protected ListIterator iterator;
+    protected class BasicIterator implements ListIterator<E> {
+        protected ListIterator<E> iterator;
 
         protected BasicIterator() {
-            this.iterator = listIterator();
+            this.iterator = BasicList.this.listIterator();
         }
 
         public boolean hasNext() {
@@ -153,11 +153,11 @@ public class BasicList extends ArrayList implements BridgeList  {
         }
 
         // These have to be implemented with a check if o is of the right type.
-        public void set(Object o) {
+        public void set(E o) {
             iterator.set(o);
         }
 
-        public void add(Object o) {
+        public void add(E o) {
             BasicList.this.autoConvert = true;
             iterator.add(o);
         }
@@ -165,11 +165,11 @@ public class BasicList extends ArrayList implements BridgeList  {
         // normally also e.g. set(Node n); and add(Node n) will be created in
         // descendant class, because that is better for performance.
 
-        public Object next() {
+        public E next() {
             return iterator.next();
         }
 
-        public Object previous() {
+        public E previous() {
             return iterator.previous();
         }
 
