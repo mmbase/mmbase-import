@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.33 2006-09-08 14:34:08 michiel Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.34 2006-09-08 18:42:59 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
@@ -422,7 +422,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
     }
 
     // only sensible for NodeSearchQuery
-    protected void mapField(CoreField field, StepField stepField) {
+    protected void mapField(CoreField field, BasicStepField stepField) {
 
     }
 
