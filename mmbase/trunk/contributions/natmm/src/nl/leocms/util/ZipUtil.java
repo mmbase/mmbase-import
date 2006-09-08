@@ -62,5 +62,57 @@ public class ZipUtil{
    }
 
 
+   public void createArchiveFiles(String sFileName, String sArchiveName,
+   String[] sDirs) {
+      //adds to archive file with name sFileName and files from directories
+      //listed in sDir
+
+      //by default archive is creating in the folder where archiving file is.
+      //sFileName should containt path to the file and it's name, sArchiveName -
+      //only archive file name
+      int iLastSlashIndex = sFileName.lastIndexOf("/");
+      String sPath = sFileName.substring(0,iLastSlashIndex + 1);
+      log.info("creating archive file " + sArchiveName + " in " + sPath + " folder");
+      try {
+         ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(
+            sPath + sArchiveName));
+
+         treating(zos, new File(sFileName));
+
+         for (int i = 0; i < sDirs.length; i++){
+            File fDir = new File(sDirs[i]);
+            File[] files = fDir.listFiles();
+            for (int j = 0; j < files.length; j++) {
+               treating(zos, files[j]);
+            }
+            fDir.delete();
+         }
+
+         zos.close();
+
+      } catch (Exception e){
+         log.info(e.toString());
+      }
+
+   }
+
+   void treating(ZipOutputStream zos, File f){
+      int bytesIn = 0;
+      byte[] readBuffer = new byte[4096];
+      try {
+         FileInputStream fis = new FileInputStream(f);
+         ZipEntry anEntry = new ZipEntry(f.getName());
+         zos.putNextEntry(anEntry);
+         while ( (bytesIn = fis.read(readBuffer)) != -1) {
+            zos.write(readBuffer, 0, bytesIn);
+         }
+         fis.close();
+         f.delete();
+      }
+      catch (Exception e){
+         log.info(e.toString());
+      }
+
+   }
 
 }

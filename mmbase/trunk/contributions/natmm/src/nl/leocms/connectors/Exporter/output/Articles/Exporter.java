@@ -28,6 +28,7 @@ import java.util.Date;
 
 import org.mmbase.bridge.*;
 import com.finalist.mmbase.util.CloudFactory;
+import nl.leocms.util.ApplicationHelper;
 import nl.leocms.util.tools.*;
 import nl.leocms.connectors.Exporter.creatingXML;
 
@@ -57,6 +58,9 @@ public class Exporter implements Runnable
          SearchUtil su = new SearchUtil();
          Cloud cloud = CloudFactory.getCloud();
          NodeList nl = su.ArtikelsRelatedToPagina(cloud,"thuispagina","");
+         creatingXML cxml = new creatingXML();
+         ApplicationHelper ap = new ApplicationHelper(cloud);
+         String tempDir = ap.getTempDir();
          for (int i = 0; i < nl.size(); i++){
             Node nArticle = cloud.getNode(nl.getNode(i).getStringValue("artikel.number"));
             Element elemArticle = document.createElement("article");
@@ -173,19 +177,19 @@ public class Exporter implements Runnable
                NodeList nlImages = nlParagraphs.getNode(j).getRelatedNodes("images");
 
                nl.leocms.connectors.Exporter.output.People.Exporter attPeople = new nl.leocms.connectors.Exporter.output.People.Exporter();
-               document = attPeople.getImages(nlImages,document,elemImages,false);
+               document = attPeople.getImages(nlImages,document,elemImages,false,tempDir,cxml);
 
                Element elemAttachments = document.createElement("attachments");
                elemParagraph.appendChild(elemAttachments);
                NodeList nlAttachments = nlParagraphs.getNode(j).getRelatedNodes("attachments");
 
                nl.leocms.connectors.Exporter.output.Attachments.Exporter attExp = new nl.leocms.connectors.Exporter.output.Attachments.Exporter();
-               document = attExp.getAttachments(nlAttachments,document,elemAttachments);
+               document = attExp.getAttachments(nlAttachments,document,elemAttachments,tempDir,cxml);
             }
          }
 
-         creatingXML cxml = new creatingXML();
-         cxml.create(document,"articles");
+         String[] sDirs = {"attachments","images"};
+         cxml.create(document,"articles",sDirs);
       }
       catch (Exception e){
          log.info(e.toString());
