@@ -4,11 +4,8 @@
    <title>pagina (artikel)</title>
    <description>
       <![CDATA[
-	<h1>Artikel pagina</h1>
-	Deze editwizard kan worden gebruikt voor het koppelen van artikelen, panos, shorties en teasers aan de pagina.<br/>
-	<ul>
-	   <li>De shorties kunnen in de linker-, de midden- en de rechterkolom worden geplaatst.</li>
-	<ul>
+	   <h1>Artikel pagina</h1>
+	   Deze editwizard kan worden gebruikt voor het koppelen van artikelen aan de pagina.<br/>
 	   ]]>
    </description>
    <action include="config/pagina/create_pagina.xml"/>

@@ -9,8 +9,7 @@
 		<field name="metatags" ftype="line"><prompt>redactionele aantekening</prompt></field>
 		<field name="creatiedatum" ftype="data"><prompt>creatiedatum</prompt></field>
 		<field name="datumlaatstewijziging" ftype="data"><prompt>datumlaatstewijziging</prompt></field>
-		<field name="intro" ftype="html" rows="14"><prompt>intro (vette tekst)</prompt></field>
-		<field name="tekst" ftype="html" rows="20"><prompt>tekst (alleen voor kleine berichten)</prompt></field>
+		<field name="intro" ftype="html" rows="14"><prompt>tekst</prompt></field>
 		<list include="config/images/zoek_contentelement_posrel_images.xml" />
 		<list include="config/paragraaf/zoek_artikel_posrel_paragraaf.xml" />
    </item>
@@ -25,7 +24,9 @@
          <search-fields>[metatags]</search-fields>
       </search-filter>
    </command>
-   <command name="insert" />
+   <command name="startwizard" inline="true" wizardname="config/artikel/artikel_no_embargo" objectnumber="new">
+       <prompt></prompt>
+   </command>
    <action type="create">
       <relation destinationtype="artikel" role="contentrel">
          <field name="pos">{sum(//relation[@role='contentrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
