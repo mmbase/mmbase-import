@@ -36,11 +36,11 @@ import org.mmbase.util.logging.Logging;
  * @application SCAN, this class will be troubelsome to move as it is used in MMObjectBuilder and ProcessorModule
  * @rename ScanPage
  * @author Daniel Ockeloen
- * @version $Id: scanpage.java,v 1.29 2006-03-09 16:38:36 michiel Exp $
+ * @version $Id: scanpage.java,v 1.30 2006-09-08 14:57:39 michiel Exp $
  */
 public class scanpage extends PageInfo {
     // logger
-    private static Logger log = Logging.getLoggerInstance(scanpage.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(scanpage.class);
 
     /**
      * The parameters of this page.
@@ -93,7 +93,7 @@ public class scanpage extends PageInfo {
      * Construct a scanpage for a servlet
      */
     public scanpage(JamesServlet servlet, HttpServletRequest req, HttpServletResponse res, sessionsInterface sessions) {
-        super(req,res);
+        super(req, res, null);
         req_line = req.getServletPath();
         querystring = req.getQueryString();
 

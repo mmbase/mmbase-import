@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  * @rename SCANCache
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: scancache.java,v 1.42 2005-09-20 19:28:29 nklasens Exp $
+ * @version $Id: scancache.java,v 1.43 2006-09-08 14:57:39 michiel Exp $
  */
 public class scancache extends Module implements scancacheInterface {
 
@@ -485,13 +485,6 @@ public class scancache extends Module implements scancacheInterface {
         return (String)pool.put(key,value);
     }
 
-    public Hashtable state() {
-        /*
-        state.put("Hits",""+hits);
-        state.put("Misses",""+miss);
-        */
-        return state;
-    }
 
     /**
      * Retrieve a description of the module's function.
