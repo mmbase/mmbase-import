@@ -223,7 +223,11 @@ public class SearchUtil {
     public static void addEqualConstraint(NodeQuery query, NodeManager manager, String fieldname, String value) {
         FieldValueConstraint constraint = createEqualConstraint(query, manager, fieldname, value);
         addConstraint(query, constraint);
+    }
 
+    public static void addEqualConstraint(Query query, NodeManager manager, String fieldname, String value) {
+        FieldValueConstraint constraint = createEqualConstraint(query, manager, fieldname, value);
+        addConstraint(query, constraint);
     }
 
     public static FieldValueConstraint createEqualConstraint(NodeQuery query, NodeManager manager, String fieldname, String value) {
@@ -232,12 +236,28 @@ public class SearchUtil {
         return constraint;
     }
 
+    public static FieldValueConstraint createEqualConstraint(Query query, NodeManager manager, String fieldname, String value) {
+        Field keyField = manager.getField(fieldname);
+        FieldValueConstraint constraint = createEqualConstraint(query, keyField, value);
+        return constraint;
+    }
+    
     public static void addEqualConstraint(NodeQuery query, NodeManager manager, String fieldname, Integer value) {
         FieldValueConstraint constraint = createEqualConstraint(query, manager, fieldname, value);
         addConstraint(query, constraint);
     }
 
+    public static void addEqualConstraint(Query query, NodeManager manager, String fieldname, Integer value) {
+        FieldValueConstraint constraint = createEqualConstraint(query, manager, fieldname, value);
+        addConstraint(query, constraint);
+    }
+    
     public static FieldValueConstraint createEqualConstraint(NodeQuery query, NodeManager manager, String fieldname, Integer value) {
+        Field keyField = manager.getField(fieldname);
+        return createEqualConstraint(query, keyField, value);
+    }
+
+    public static FieldValueConstraint createEqualConstraint(Query query, NodeManager manager, String fieldname, Integer value) {
         Field keyField = manager.getField(fieldname);
         return createEqualConstraint(query, keyField, value);
     }
@@ -247,8 +267,21 @@ public class SearchUtil {
         addConstraint(query, constraint);
     }
 
+    public static  void addEqualConstraint(Query query, Field field, String value) {
+        FieldValueConstraint constraint = createEqualConstraint(query, field, value);
+        addConstraint(query, constraint);
+    }
+    
     public static FieldValueConstraint createEqualConstraint(NodeQuery query, Field field, String value) {
         FieldValueConstraint constraint = query.createConstraint(query.getStepField(field),
+                FieldCompareConstraint.EQUAL, value);
+        query.setCaseSensitive(constraint, false);
+        return constraint;
+    }
+
+    public static FieldValueConstraint createEqualConstraint(Query query, Field field, String value) {
+        StepField equalsField = findField(query, field);
+        FieldValueConstraint constraint = query.createConstraint(equalsField,
                 FieldCompareConstraint.EQUAL, value);
         query.setCaseSensitive(constraint, false);
         return constraint;
@@ -259,10 +292,48 @@ public class SearchUtil {
         addConstraint(query, constraint);
     }
 
+    public static  void addEqualConstraint(Query query, Field field, Integer value) {
+        FieldValueConstraint constraint = createEqualConstraint(query, field, value);
+        addConstraint(query, constraint);
+    }
+    
     public static FieldValueConstraint createEqualConstraint(NodeQuery query, Field field, Integer value) {
         FieldValueConstraint constraint = query.createConstraint(query.getStepField(field),
                 FieldCompareConstraint.EQUAL, value);
         return constraint;
+    }
+    
+    public static FieldValueConstraint createEqualConstraint(Query query, Field field, Integer value) {
+        StepField equalsField = findField(query, field);
+        FieldValueConstraint constraint = query.createConstraint(equalsField,
+                FieldCompareConstraint.EQUAL, value);
+        return constraint;
+    }
+
+    public static StepField findField(Query query, Field field) {
+        StepField equalsField = null;
+        Iterator fields = query.getFields().iterator();
+        while(fields.hasNext()) {
+            StepField stepField = (StepField) fields.next();
+            if (stepField.getStep().getTableName().equals(field.getNodeManager().getName())) {
+                if (stepField.getFieldName().equals(field.getName())) {
+                    equalsField = stepField;
+                }
+            }
+        }
+        if (equalsField == null) {
+            Step equalsStep = query.getStep(field.getNodeManager().getName());
+            if (equalsStep == null) {
+                throw new IllegalArgumentException("Step " + field.getNodeManager().getName() + " not found in query");
+
+            }
+            equalsField = query.createStepField(equalsStep, field);
+        }
+        if (equalsField == null) {
+            throw new IllegalArgumentException("Field " + field.getName() + " not found in query");
+        }
+
+        return equalsField;
     }
     
     public static  void addLikeConstraint(NodeQuery query, Field field, String value) {
