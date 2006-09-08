@@ -28,7 +28,7 @@ import org.xml.sax.InputSource;
  * @move org.mmbase.util.xml
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: XMLNodeReader.java,v 1.41 2006-03-08 12:51:58 nklasens Exp $
+ * @version $Id: XMLNodeReader.java,v 1.42 2006-09-08 18:40:51 nklasens Exp $
  */
 public class XMLNodeReader extends DocumentReader {
     private static final Logger log = Logging.getLoggerInstance(XMLNodeReader.class);
@@ -47,10 +47,7 @@ public class XMLNodeReader extends DocumentReader {
     * get the name of this application
      */
     public String getExportSource() {
-        Node n1 = document.getFirstChild();
-        if (n1.getNodeType() == Node.DOCUMENT_TYPE_NODE) {
-            n1 = n1.getNextSibling();
-        }
+        Node n1 = document.getDocumentElement();
         if (n1 != null) {
             NamedNodeMap nm = n1.getAttributes();
             if (nm != null) {
@@ -97,10 +94,7 @@ public class XMLNodeReader extends DocumentReader {
 
     public Vector getNodes(MMBase mmbase) {
         Vector nodes = new Vector();
-        Node n1 = document.getFirstChild();
-        if (n1.getNodeType() == Node.DOCUMENT_TYPE_NODE) {
-            n1 = n1.getNextSibling();
-        }
+        Node n1 = document.getDocumentElement();
         while (n1 != null) {
             MMObjectBuilder bul = mmbase.getMMObject(n1.getNodeName());
          if (bul == null) {
