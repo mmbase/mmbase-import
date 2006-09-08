@@ -33,7 +33,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.52 2006-07-08 06:54:00 michiel Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.53 2006-09-08 14:46:55 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -63,9 +63,9 @@ public class BasicQueryHandler implements SearchQueryHandler {
 
 
     // javadoc is inherited
-    public List getNodes(SearchQuery query, MMObjectBuilder builder) throws SearchQueryException {
+    public List<MMObjectNode> getNodes(SearchQuery query, MMObjectBuilder builder) throws SearchQueryException {
 
-        List results;
+        List<MMObjectNode> results;
         Connection con = null;
         Statement stmt = null;
         String sqlString = null;
@@ -202,8 +202,8 @@ public class BasicQueryHandler implements SearchQueryHandler {
     /**
      * Read the result list and creates a List of ClusterNodes.
      */
-    private List readNodes(ClusterBuilder builder, StepField[] fields, ResultSet rs, boolean sqlHandlerSupportsMaxNumber, int maxNumber, int numberOfSteps) throws SQLException {
-        List results = new ArrayList();
+    private List<MMObjectNode> readNodes(ClusterBuilder builder, StepField[] fields, ResultSet rs, boolean sqlHandlerSupportsMaxNumber, int maxNumber, int numberOfSteps) throws SQLException {
+        List<MMObjectNode> results = new ArrayList<MMObjectNode>();
         DatabaseStorageManager storageManager = (DatabaseStorageManager)mmbase.getStorageManager();
 
         boolean storesAsFile = builder.getMMBase().getStorageManagerFactory().hasOption(org.mmbase.storage.implementation.database.Attributes.STORES_BINARY_AS_FILE);
@@ -248,8 +248,8 @@ public class BasicQueryHandler implements SearchQueryHandler {
     /**
      * Read the result list and creates a List of ResultNodes
      */
-    private List readNodes(ResultBuilder builder, StepField[] fields, ResultSet rs, boolean sqlHandlerSupportsMaxNumber, int maxNumber) throws SQLException {
-        List results = new ArrayList();
+    private List<MMObjectNode> readNodes(ResultBuilder builder, StepField[] fields, ResultSet rs, boolean sqlHandlerSupportsMaxNumber, int maxNumber) throws SQLException {
+        List<MMObjectNode> results = new ArrayList<MMObjectNode>();
         DatabaseStorageManager storageManager = (DatabaseStorageManager)mmbase.getStorageManager();
 
         boolean storesAsFile = builder.getMMBase().getStorageManagerFactory().hasOption(org.mmbase.storage.implementation.database.Attributes.STORES_BINARY_AS_FILE);
@@ -288,18 +288,18 @@ public class BasicQueryHandler implements SearchQueryHandler {
     /**
      * Read the result list and creates a List of normal MMObjectNodes.
      */
-    private List readNodes(MMObjectBuilder builder, StepField[] fields, ResultSet rs, boolean sqlHandlerSupportsMaxNumber, int maxNumber) throws SQLException {
-        List results= new ArrayList();
+    private List<MMObjectNode> readNodes(MMObjectBuilder builder, StepField[] fields, ResultSet rs, boolean sqlHandlerSupportsMaxNumber, int maxNumber) throws SQLException {
+        List<MMObjectNode> results= new ArrayList<MMObjectNode>();
         DatabaseStorageManager storageManager = (DatabaseStorageManager)mmbase.getStorageManager();
 
         boolean storesAsFile = builder.getMMBase().getStorageManagerFactory().hasOption(org.mmbase.storage.implementation.database.Attributes.STORES_BINARY_AS_FILE);
         // determine indices of queried fields
-        Map fieldIndices = new HashMap();
+        Map<CoreField, Integer> fieldIndices = new HashMap<CoreField, Integer>();
         Step nodeStep = fields[0].getStep();
         int j = 1;
         for (int i = 0; i < fields.length; i++) {
             if (fields[i].getType() == CoreField.TYPE_BINARY) continue;
-            Integer index = new Integer(j++);
+            Integer index = Integer.valueOf(j++);
             if (fields[i].getStep() == nodeStep) {
                 String fieldName =  fields[i].getFieldName();
                 CoreField field = builder.getField(fieldName);
@@ -339,7 +339,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
             NodeCache nodeCache = NodeCache.getCache();
             Cache typeCache = Cache.getCache("TypeCache");
             int builderType = builder.getObjectType();
-            Integer oTypeInteger = new Integer(builderType);
+            Integer oTypeInteger = Integer.valueOf(builderType);
             while (rs.next() && (maxNumber > results.size() || maxNumber==-1)) {
                 try {
                     /*
@@ -360,7 +360,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
                     for (Iterator i = builder.getFields(NodeManager.ORDER_CREATE).iterator(); i.hasNext(); ) {
                         CoreField field = (CoreField)i.next();
                         if (! field.inStorage()) continue;
-                        Integer index = (Integer) fieldIndices.get(field);
+                        Integer index = fieldIndices.get(field);
                         Object value = null;
                         String fieldName = field.getName();
                         if (index != null) {
@@ -396,9 +396,9 @@ public class BasicQueryHandler implements SearchQueryHandler {
                     // (provided the node is persistent)
                     if (! isVirtual) {
                         int otype = node.getOType();
-                        Integer number = new Integer(node.getNumber());
+                        Integer number = Integer.valueOf(node.getNumber());
                         if (otype == builderType) {
-                            MMObjectNode cacheNode = (MMObjectNode) nodeCache.get(number);
+                            MMObjectNode cacheNode = nodeCache.get(number);
                             if (cacheNode != null) {
                                 node = cacheNode;
                             } else {
@@ -406,7 +406,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
                             }
                             typeCache.put(number, oTypeInteger);
                         } else {
-                            typeCache.put(number, new Integer(otype));
+                            typeCache.put(number, Integer.valueOf(otype));
                         }
                     }
 
