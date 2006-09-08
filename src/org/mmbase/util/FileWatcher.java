@@ -63,7 +63,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.4
- * @version $Id: FileWatcher.java,v 1.39 2006-08-30 21:01:39 michiel Exp $
+ * @version $Id: FileWatcher.java,v 1.40 2006-09-08 12:12:26 michiel Exp $
  */
 public abstract class FileWatcher {
     private static Logger log = Logging.getLoggerInstance(FileWatcher.class);
@@ -127,9 +127,9 @@ public abstract class FileWatcher {
      */
     private long delay = DEFAULT_DELAY;
 
-    private Set files = new LinkedHashSet();
+    private Set<FileEntry> files = new LinkedHashSet<FileEntry>();
     private Set fileSet = new FileSet(); // (automaticly) wraps 'files'.
-    private Set removeFiles = new HashSet();
+    private Set<File> removeFiles = new HashSet<File>();
     private boolean stop = false;
     private boolean continueAfterChange = false;
     private long lastCheck = 0;
@@ -238,9 +238,7 @@ public abstract class FileWatcher {
      */
     private boolean changed() {
         synchronized (this) {
-            Iterator i = files.iterator();
-            while (i.hasNext()) {
-                FileEntry fe = (FileEntry)i.next();
+            for (FileEntry fe : files) {
                 if (fe.changed()) {
                     log.debug("the file :" + fe.getFile().getAbsolutePath() + " has changed.");
                     try {
@@ -263,15 +261,10 @@ public abstract class FileWatcher {
     private void removeFiles() {
         synchronized (this) {
             // remove files if necessary
-            Iterator ri = removeFiles.iterator();
-            while (ri.hasNext()) {
-                File f = (File)ri.next();
+            for (File f : removeFiles) {
                 FileEntry found = null;
-
                 // search the file
-                Iterator i = files.iterator();
-                while (i.hasNext()) {
-                    FileEntry fe = (FileEntry)i.next();
+                for (FileEntry fe : files) {
                     if (fe.getFile().equals(f)) {
                         if (log.isDebugEnabled()) {
                             log.debug("removing file[" + fe.getFile().getName() + "]");
@@ -359,8 +352,7 @@ public abstract class FileWatcher {
         /**
          * Set of file-watchers, which are currently active.
          */
-        private Set watchers = new CopyOnWriteArraySet();
-        private Set watchersToAdd = new HashSet();
+        private Set<FileWatcher> watchers = new CopyOnWriteArraySet<FileWatcher>();
 
         FileWatcherRunner() {
             super("MMBase FileWatcher thread");
@@ -383,9 +375,7 @@ public abstract class FileWatcher {
             while (run) {
                 try {
                     long now = System.currentTimeMillis();
-                    Iterator i = watchers.iterator();
-                    while (i.hasNext()) {
-                        FileWatcher f = (FileWatcher)i.next();
+                    for (FileWatcher f : watchers) {
                         if (now - f.lastCheck > f.delay) {
                             if (log.isDebugEnabled()) {
                                 log.trace("Filewatcher will sleep for : " + f.delay / 1000 + " s. " + "Currently watching: " + f.getClass().getName() + " " + f.toString());
@@ -528,16 +518,16 @@ public abstract class FileWatcher {
      * This FileSet makes the 'files' object of the FileWatcher look like a Set of File rather then Set of FileEntry's.
      * @since MMBase-1.8
      */
-    private class FileSet extends AbstractSet {
+    private class FileSet extends AbstractSet<File> {
         public int size() {
             return FileWatcher.this.files.size();
         }
-        public  Iterator iterator() {
+        public  Iterator<File> iterator() {
             return new FileIterator();
         }
-        public boolean add(Object o) {
+        public boolean add(File o) {
             int s = size();
-            FileWatcher.this.add((File) o);
+            FileWatcher.this.add(o);
             return s != size();
         }
     }
@@ -545,8 +535,8 @@ public abstract class FileWatcher {
      * The iterator belonging to FileSet.
      * @since MMBase-1.8
      */
-    private class FileIterator implements Iterator {
-        Iterator it;
+    private class FileIterator implements Iterator<File> {
+        Iterator<FileEntry> it;
         File lastFile;
         FileIterator() {
             it = FileWatcher.this.files.iterator();
@@ -554,8 +544,8 @@ public abstract class FileWatcher {
         public boolean hasNext() {
             return it.hasNext();
         }
-        public Object next() {
-            FileEntry f = (FileEntry) it.next();
+        public File next() {
+            FileEntry f = it.next();
             lastFile = f.getFile();
             return  lastFile;
         }
