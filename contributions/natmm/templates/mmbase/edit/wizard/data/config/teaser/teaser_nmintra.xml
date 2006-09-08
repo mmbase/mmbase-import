@@ -20,28 +20,11 @@
    </steps>
    <form-schema id="edit_teaser">
       <field name="titel" ftype="line"><prompt>titel</prompt></field>
-      <!-- field name="titel_zichtbaar" ftype="enum"><prompt>titel zichtbaar</prompt><optionlist select="ja_nee"/></field -->
-      <!-- field name="size" ftype="enum"><prompt>breedte</prompt><optionlist select="teaser_size"/></field -->
       <field name="metatags" ftype="line"><prompt>redactionele aantekening</prompt></field>
-      <!-- field name="omschrijving" ftype="html" rows="20"><prompt>omschrijving</prompt></field -->
-      <!-- field name="bron" ftype="line" ><prompt>bron</prompt></field -->
-      <!-- field name="reageer" ftype="enum"><prompt>lijn onder teaser</prompt><optionlist select="ja_nee"/></field -->
       <field name="creatiedatum" ftype="data"><prompt>creatiedatum</prompt></field>
-      <field name="datumlaatstewijziging" ftype="data"><prompt>datumlaatstewijziging</prompt></field>
-      <!-- field name="embargo" ><prompt>verschijnt op website vanaf</prompt></field -->
-      <!-- field name="verloopdatum" ><prompt>verwijderd van website op</prompt></field -->
-      <!-- field name="reageer" ><prompt>reageer</prompt></field -->
-      <!-- field name="status" ><prompt>status</prompt></field -->
-         
-      <list include="config/images/zoek_panno_posrel_images.xml" />
-      <!-- list include="config/contentelement/zoek_shorty_readmore_contentelement.xml" / -->
+      <field name="datumlaatstewijziging" ftype="data"><prompt>datumlaatstewijziging</prompt></field>         
       <list include="config/pagina/zoek_shorty_readmore_pagina.xml" />
       <list include="config/link/zoek_shorty_readmore_link.xml" />
-      <list include="config/artikel/zoek_shorty_readmore_artikel.xml" />
-      <list include="config/evenement/zoek_shorty_readmore_evenement.xml" />
-      <list include="config/pools/add_pools_posrel.xml" />
-   
-      <!-- list include="config/pagina/zoek_shorty_rolerel_pagina.xml" / -->
-      <!-- list include="config/rubriek/zoek_shorty_rolerel_rubriek.xml" / -->
+      <list include="config/pools/add_pools_posrel.xml" />   
    </form-schema>
 </wizard-schema>

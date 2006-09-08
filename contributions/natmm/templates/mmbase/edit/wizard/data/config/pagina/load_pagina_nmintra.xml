@@ -3,6 +3,7 @@
 <action type="load">
    <field name="titel"/>
    <field name="kortetitel"/>
+   <field name="titel_fra"/>
    <field name="titel_eng"/>
    <field name="titel_de"/>
    <field name="titel_zichtbaar"/>
@@ -17,7 +18,7 @@
    <field name="status"/>
    <relation destination="contentelement" role="contentrel">
 		<object>
-			<relation destination="paragraaf" role="posrel" >
+         <relation destination="paragraaf" role="posrel" >
 				<object>
 					  <relation destination="images" role="posrel">
 							<object />

@@ -5,7 +5,7 @@
    <item>
       <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>positie</prompt></field>
 		<field name="titel" ftype="data"><prompt>titel</prompt></field>
-		<field ftype="startwizard" wizardname="config/artikel/artikel" />
+		<field ftype="startwizard" wizardname="config/artikel/artikel_no_embargo" />
    </item>
    <command name="search" nodepath="artikel" age="-1" fields="titel,metatags" orderby="titel">
       <prompt>zoek artikel</prompt>
@@ -18,7 +18,9 @@
          <search-fields>[metatags]</search-fields>
       </search-filter>
    </command>
-   <command name="insert" />
+   <command name="startwizard" inline="true" wizardname="config/artikel/artikel_no_embargo" objectnumber="new">
+       <prompt></prompt>
+   </command>
    <action type="create">
       <relation destinationtype="artikel" role="readmore">
          <field name="pos">{sum(//relation[@role='readmore' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
