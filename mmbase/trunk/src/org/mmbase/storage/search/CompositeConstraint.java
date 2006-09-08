@@ -17,7 +17,7 @@ import java.util.*;
  * This corresponds to a AND- or OR-expression in SQL SELECT-syntax.
  *
  * @author Rob van Maris
- * @version $Id: CompositeConstraint.java,v 1.3 2005-04-25 14:56:57 pierre Exp $
+ * @version $Id: CompositeConstraint.java,v 1.4 2006-09-08 18:42:59 michiel Exp $
  * @since MMBase-1.7
  */
 public interface CompositeConstraint extends Constraint {
@@ -39,7 +39,7 @@ public interface CompositeConstraint extends Constraint {
     /**
      * Gets the child constraints.
      */
-    List getChilds();
+    List<Constraint> getChilds();
 
     /**
      * Gets the logical operator used to combine the child constraints. This must be either LOGICAL_AND or LOGICAL_OR.
