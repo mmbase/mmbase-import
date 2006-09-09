@@ -23,8 +23,8 @@
   </names>
 
   <descriptions>
-    <description xml:lang="en">Object Aliases name substitution for objects</description>
-    <description xml:lang="nl">Object Aliassen naam substitutie voor objecten</description>
+    <description xml:lang="en">An (object) alias can be a - more human readable - name substitution for an object</description>
+    <description xml:lang="nl">Een (object) alias vormt een - voor mensen beter leesbare - alternatieve naam voor een object</description>
     <description xml:lang="eo">Per objektkromnomoj eble doni nomojn al objektoj</description>
     <description xml:lang="it">Oggetto Aliases per sostituzione del nome per oggetti</description>
   </descriptions>
