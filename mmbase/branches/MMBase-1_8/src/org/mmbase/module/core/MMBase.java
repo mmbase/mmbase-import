@@ -46,7 +46,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.200 2006-07-15 10:28:15 michiel Exp $
+ * @version $Id: MMBase.java,v 1.200.2.1 2006-09-10 17:04:36 nklasens Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -259,6 +259,7 @@ public class MMBase extends ProcessorModule {
         // this method is run
         mmbaseroot = this;
 
+        loadInitParameters("mmbase/mmbaseroot");
 
         // is there a basename defined in MMBASE.properties ?
         String tmp = getInitParameter("BASENAME");

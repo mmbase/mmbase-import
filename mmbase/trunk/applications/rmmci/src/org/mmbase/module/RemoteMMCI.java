@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * options. Note that in the configuration of mmbaseroot.xml the host should be a valid
  * host address if the RMIRegistryServer in rmmci.xml is no set.
  * @author Kees Jongenburger <keesj@dds.nl>
- * @version $Id: RemoteMMCI.java,v 1.15 2006-02-10 16:03:40 michiel Exp $
+ * @version $Id: RemoteMMCI.java,v 1.16 2006-09-10 17:04:44 nklasens Exp $
  * @since MMBase-1.5
  */
 public class RemoteMMCI extends ProcessorModule {
@@ -54,7 +54,7 @@ public class RemoteMMCI extends ProcessorModule {
      */
     public void init() {
         super.init(); // is this required?
-
+        loadInitParameters("mmbase/rmmci");
         log.debug("Module RemoteMMCI starting");
 
         int registryPort = getPort();
