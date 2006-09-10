@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.80 2006-09-08 14:57:12 michiel Exp $
+ * @version $Id: Module.java,v 1.81 2006-09-10 17:04:44 nklasens Exp $
  */
 public abstract class Module extends FunctionProvider {
 
@@ -229,6 +229,23 @@ public abstract class Module extends FunctionProvider {
         return properties;
     }
 
+    /**
+     * override properties through application context
+     * @param contextPath path in application context where properties are located
+     * @since MMBase 1.8.2
+     */
+    public void loadInitParameters(String contextPath) {
+        try {
+            Map contextMap = ApplicationContextReader.getProperties(contextPath);
+            if (!contextMap.isEmpty()) {
+                properties.putAll(contextMap);
+            }
+        } catch (javax.naming.NamingException ne) {
+            log.debug("Can't obtain properties from application context: " + ne.getMessage());
+        }
+    }
+
+    
     /**
      * Returns an iterator of all the modules that are currently active.
      * This function <code>null</code> if no attempt has the modules have (not) yet been to loaded.
