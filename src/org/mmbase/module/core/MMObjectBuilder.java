@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.392 2006-09-08 18:35:38 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.393 2006-09-11 10:55:22 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -2022,15 +2022,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     }
 
     /**
-     * Get the next object key (unique index for an object).
-     * @return an <code>int</code> value that is the next available key for an object.
-     * @deprecated use MMBase.getStorageManager().createKey()
-     */
-    public int getDBKey() {
-        return mmb.getStorageManager().createKey();
-    }
-
-    /**
      * Get the name of this mmserver from the MMBase Root
      * @return a <code>String</code> which is the server's name
      */
@@ -2682,7 +2673,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         return properties;
     }
 
-    
+
     /**
      * Get all builder properties and override properties through application context
      * @param contextPath path in application context where properties are located
@@ -2692,7 +2683,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     public Map getInitParameters(String contextPath) {
         Map map = new HashMap();
         map.putAll(getInitParameters());
-        
+
         try {
             Map contextMap = ApplicationContextReader.getProperties(contextPath);
             if (!contextMap.isEmpty()) {
@@ -2703,7 +2694,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         }
         return map;
     }
-    
+
     /**
      * Set a single builder property
      * The propertie will not be saved.
