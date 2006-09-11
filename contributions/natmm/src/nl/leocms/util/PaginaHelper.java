@@ -182,9 +182,9 @@ public class PaginaHelper {
      * @param pageName
      * @return pagina Node
      */
-   public Node retrievePaginaNumber(String rubriekNumber, String pageName) {
+   public Node retrievePagina(String rubriekNumber, String pageName) {
       Node rubriek = cloud.getNode(rubriekNumber);
-      Iterator bl = rubriek.getRelatedNodes("pagina").iterator();
+      Iterator bl = rubriek.getRelatedNodes("pagina","posrel",null).iterator();
 
       Node winner = null;
 

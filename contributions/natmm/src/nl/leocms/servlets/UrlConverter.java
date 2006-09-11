@@ -45,7 +45,7 @@ import nl.leocms.applications.*;
  * is illegible for conversion in the first place.
  *
  * @author Finalist IT Group / peter
- * @version $Id: UrlConverter.java,v 1.9 2006-08-23 15:45:52 henk Exp $
+ * @version $Id: UrlConverter.java,v 1.10 2006-09-11 15:35:32 henk Exp $
  */
 public final class UrlConverter {
    // some constants.
@@ -204,7 +204,7 @@ public final class UrlConverter {
          rubriek = (Node) nlRubriek.get(i);
          iRubriek = rubriek.getIntValue("number");
          log.debug("rubriek: " + iRubriek + " - " + rubriek.getStringValue("naam"));
-         page = pg.retrievePaginaNumber("" + iRubriek, pageName);
+         page = pg.retrievePagina("" + iRubriek, pageName);
          i++;
       }
 
