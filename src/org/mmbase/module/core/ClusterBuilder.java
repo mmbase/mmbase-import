@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.85 2006-01-06 16:34:16 michiel Exp $
+ * @version $Id: ClusterBuilder.java,v 1.86 2006-09-11 09:51:00 michiel Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -196,7 +196,7 @@ public class ClusterBuilder extends VirtualBuilder {
      * @param pars Parameters, see {@link MMObjectBuilder#GUI_PARAMETERS}
      * @return the display of the node's field as a <code>String</code>, null if not specified
      */
-    protected String getGUIIndicator(MMObjectNode node, Parameters pars) {
+    public String getGUIIndicator(MMObjectNode node, Parameters pars) {
 
         if (node == null) throw new RuntimeException("Tried to get GUIIndicator for  " + pars + " with NULL node");
             
