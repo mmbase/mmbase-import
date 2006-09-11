@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * and so on.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Ranks.java,v 1.13 2005-07-14 11:48:01 michiel Exp $
+ * @version $Id: Ranks.java,v 1.14 2006-09-11 10:41:40 pierre Exp $
  * @since MMBase-1.7
  */
 public class Ranks extends MMObjectBuilder {
@@ -45,8 +45,8 @@ public class Ranks extends MMObjectBuilder {
     // javadoc inherited
     public boolean init() {
         boolean res = super.init();
-        mmb.addLocalObserver(getTableName(),  CacheInvalidator.getInstance());
-        mmb.addRemoteObserver(getTableName(), CacheInvalidator.getInstance());
+        addLocalObserver(CacheInvalidator.getInstance());
+        addRemoteObserver(CacheInvalidator.getInstance());
         try {
             Iterator i = getNodes(new NodeSearchQuery(this)).iterator();
             while (i.hasNext()) {
@@ -137,7 +137,7 @@ public class Ranks extends MMObjectBuilder {
         org.mmbase.core.CoreField rankFieldDefs = getField("rank");
         StepField rankField = q.getField(rankFieldDefs);
         BasicFieldValueConstraint cons = new BasicFieldValueConstraint(rankField, new Integer(rank.getInt()));
-        cons.setOperator(FieldValueConstraint.LESS_EQUAL);   
+        cons.setOperator(FieldValueConstraint.LESS_EQUAL);
         BasicSortOrder s = q.addSortOrder(rankField);
         s.setDirection(SortOrder.ORDER_DESCENDING);
         q.setConstraint(cons);

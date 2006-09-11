@@ -26,7 +26,7 @@ import org.mmbase.storage.search.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Groups.java,v 1.18 2006-07-17 07:19:15 pierre Exp $
+ * @version $Id: Groups.java,v 1.19 2006-09-11 10:41:40 pierre Exp $
  */
 public class Groups extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(Groups.class);
@@ -42,8 +42,8 @@ public class Groups extends MMObjectBuilder {
     public boolean init() {
         containsCache.putCache();
         CacheInvalidator.getInstance().addCache(containsCache);
-        mmb.addLocalObserver(getTableName(),  CacheInvalidator.getInstance());
-        mmb.addRemoteObserver(getTableName(), CacheInvalidator.getInstance());
+        addLocalObserver(CacheInvalidator.getInstance());
+        addRemoteObserver(CacheInvalidator.getInstance());
         return super.init();
     }
 
