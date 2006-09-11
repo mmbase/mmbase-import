@@ -20,7 +20,7 @@ import java.util.*;
  * @move consider moving to org.mmbase.cache
  * @author  Rico Jansen
  * @author  Michiel Meeuwissen
- * @version $Id: LRUHashtable.java,v 1.25 2006-09-04 12:53:51 michiel Exp $
+ * @version $Id: LRUHashtable.java,v 1.26 2006-09-11 11:09:27 michiel Exp $
  * @see    org.mmbase.cache.Cache
  */
 public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterface<K, V>, SizeMeasurable {
@@ -342,7 +342,7 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
      * @since MMBase-1.6
      */
 
-    public List getOrderedEntries() {
+    public List<? extends Map.Entry<K, V>> getOrderedEntries() {
         return getOrderedEntries(-1);
     }
 
@@ -353,8 +353,8 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
      * @since MMBase-1.6
      */
 
-    public List getOrderedEntries(int maxNumber) {
-        List results = new ArrayList();
+    public List<? extends Map.Entry<K, V>> getOrderedEntries(int maxNumber) {
+        List<Map.Entry<K,V>> results = new ArrayList<Map.Entry<K,V>>();
         LRUEntry current = root.next;
         int i = 0;
         while (current != null && current != dangling && (maxNumber < 0 || i < maxNumber)) {
