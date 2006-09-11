@@ -33,9 +33,10 @@ Applications build file
 
   <target name="all16" depends="init,media,bugtracker,email" />
   <target name="all17" depends="init,all16,taglib,cloudcontext,editwizard,dove,xmlimporter,community" />
-  <target name="all18" depends="init,all17,rmmci,crontab,vwms,scan,packaging,clustering,richtext,oscache-cache,commandserver" />
+  <target name="all18" depends="init,all17,crontab,vwms,scan,packaging,clustering,richtext,oscache-cache,commandserver" />
+  <target name="all19" depends="init,all18" />
 
-  <target name="all"   depends="init,all18" />
+  <target name="all"   depends="init,all19" />
 
 
   <target name="jars" depends="all">
