@@ -40,7 +40,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.145 2006-09-11 10:51:26 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.146 2006-09-11 11:40:16 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -1522,9 +1522,7 @@ public class MMAdmin extends ProcessorModule {
      */
     public Vector getMultilevelCacheEntries() {
         Vector results = new Vector();
-        Iterator res = MultilevelCache.getCache().entrySet().iterator();
-        while (res.hasNext()) {
-            Map.Entry entry = (Map.Entry)res.next();
+        for (Map.Entry<org.mmbase.storage.search.SearchQuery, List<MMObjectNode>> entry : MultilevelCache.getCache().entrySet()) {
             /*
             StringTagger tagger=en.getTagger();
             Vector type=tagger.Values("TYPE");
