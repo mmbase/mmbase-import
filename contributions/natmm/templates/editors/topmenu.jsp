@@ -121,8 +121,10 @@
 	for (Iterator it = tsRubrieks.iterator(); it.hasNext(); ) { 
 		rubriekID = (String) it.next();
 		String paginaId = rh.getFirstPage(rubriekID);
-		String contextPath = request.getContextPath(); // todo add functionality 
+		String contextPath = request.getContextPath(); 
 		String sLink = ph.createPaginaUrl(paginaId,contextPath);
+    int sPos = sLink.lastIndexOf("/");
+    if(sPos!=-1) { sLink = sLink.substring(sPos); }
 		String sRubriekName = cloud.getNode(rubriekID).getStringValue("naam");
 		%>
 		<li><a href="<%= sLink %>" target="_blank" class="menu" title="bekijk <%= sRubriekName %>"><%= sRubriekName %></a><br/>
