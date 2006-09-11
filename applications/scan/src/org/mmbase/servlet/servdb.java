@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  * @rename Servdb
  * @deprecation-used
  * @deprecated use {@link ImageServlet} or {@link AttachmentServlet} instead
- * @version $Id: servdb.java,v 1.62 2005-10-06 14:07:32 michiel Exp $
+ * @version $Id: servdb.java,v 1.63 2006-09-11 10:49:47 pierre Exp $
  * @author Daniel Ockeloen
  */
 public class servdb extends JamesServlet {
@@ -46,6 +46,7 @@ public class servdb extends JamesServlet {
     private		filebuffer 			buffer;
     private		Hashtable 			Roots 		= new Hashtable();
     private 	sessionsInterface 	sessions;
+    private String dtdbase = "http://www.mmbase.org";
 
     /**
      * Construct a servfile worker, it should be places in a worker
@@ -72,6 +73,11 @@ public class servdb extends JamesServlet {
 
     public void setMMBase(MMBase mmb) {
         super.setMMBase(mmb);
+
+        String tmp = getInitParameter("DTDBASE");
+        if (tmp != null && !tmp.equals("")) {
+            dtdbase = tmp;
+        }
 
         cache = (cacheInterface) getModule("cache");
         if (cache == null) {
@@ -586,7 +592,7 @@ public class servdb extends JamesServlet {
     private String toXML(MMObjectNode node) {
         String tableName = node.getBuilder().getTableName();
         StringBuffer body = new StringBuffer("<?xml version=\"" + node.getBuilder().getVersion()+ "\"?>\n");
-        body.append("<!DOCTYPE mmnode.").append(tableName).append(" SYSTEM \"").append(mmbase.getDTDBase()).append("/mmnode/").append(tableName).append(".dtd\">\n");
+        body.append("<!DOCTYPE mmnode.").append(tableName).append(" SYSTEM \"").append(dtdbase).append("/mmnode/").append(tableName).append(".dtd\">\n");
         body.append("<" + tableName + ">\n");
         body.append("<number>" + node.getNumber() + "</number>\n");
         for (Iterator i = node.getBuilder().getFields(NodeManager.ORDER_CREATE).iterator(); i.hasNext();) {
