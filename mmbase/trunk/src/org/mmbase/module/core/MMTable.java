@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadoc)
- * @version $Id: MMTable.java,v 1.23 2006-06-16 09:08:42 michiel Exp $
+ * @version $Id: MMTable.java,v 1.24 2006-09-11 11:08:00 michiel Exp $
  */
 public abstract class MMTable extends FunctionProvider {
 
@@ -217,12 +217,13 @@ public abstract class MMTable extends FunctionProvider {
      * @return List containing real nodes, directly from this Builders
      * @since MMBase-1.6.2
      */
-    protected List getNodes(Collection virtuals)  {
-        List result = new ArrayList();
+    protected List<MMObjectNode> getNodes(Collection virtuals)  {
+        List<MMObjectNode> result;
         try {
             result = storageConnector.getNodes(virtuals);
         } catch (SearchQueryException sqe) {
             log.error(sqe.getMessage() + Logging.stackTrace(sqe));
+            result = new ArrayList();
         }
         return result;
     }
@@ -277,7 +278,7 @@ public abstract class MMTable extends FunctionProvider {
      *         by the query is not the nodetype corresponding to this builder.
      * @since MMBase-1.7
      */
-    public List getNodes(NodeSearchQuery query) throws SearchQueryException {
+    public List<MMObjectNode> getNodes(NodeSearchQuery query) throws SearchQueryException {
         return storageConnector.getNodes(query);
     }
 
