@@ -46,7 +46,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.67 2006-09-11 10:47:36 michiel Exp $
+ * @version $Id: Lucene.java,v 1.68 2006-09-11 13:59:14 michiel Exp $
  **/
 public class Lucene extends Module implements NodeEventListener, IdEventListener {
 
@@ -547,7 +547,7 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
     /**
      * MMBase Queries and sub-queries
      */
-    protected MMBaseIndexDefinition createIndexDefinition (Element queryElement, Set allIndexedFieldsSet, boolean storeText, boolean mergeText, String relateFrom, Analyzer analyzer) {
+    protected MMBaseIndexDefinition createIndexDefinition (Element queryElement, Set<String> allIndexedFieldsSet, boolean storeText, boolean mergeText, String relateFrom, Analyzer analyzer) {
         try {
             if (Lucene.hasAttribute(queryElement,"optimize")) {
                 String optimize = Lucene.getAttribute(queryElement,"optimize");
