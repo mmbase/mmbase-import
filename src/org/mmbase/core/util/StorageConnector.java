@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: StorageConnector.java,v 1.12 2006-08-30 18:45:27 michiel Exp $
+ * @version $Id: StorageConnector.java,v 1.13 2006-09-11 11:08:16 michiel Exp $
  */
 public class StorageConnector {
 
@@ -340,7 +340,7 @@ public class StorageConnector {
      * @since MMBase-1.8.2
      */
     protected void addSubResult(final NodeSearchQuery query, final List subResult, final List result) throws SearchQueryException {
-        List rawNodes = getRawNodes(query, true);
+        List<MMObjectNode> rawNodes = getRawNodes(query, true);
         // convert this list to a map, for easy reference when filling result.
          // would the creation of this Map not somehow be avoidable?
         Map rawMap = new HashMap();
@@ -428,11 +428,11 @@ public class StorageConnector {
      * (in that case searching a result should certainly returns such a chained map, because then of
      * course you don't have those).
      */
-    protected Map getCache(SearchQuery query) {
-        List steps = query.getSteps();
+    protected Map<SearchQuery, List<MMObjectNode>> getCache(SearchQuery query) {
+        List<Step> steps = query.getSteps();
         if (steps.size() == 3) {
-            Step step0 = (Step) steps.get(0);
-            Collection nodes = step0.getNodes();
+            Step step0 = steps.get(0);
+            Collection<Integer> nodes = step0.getNodes();
             if (nodes != null && nodes.size() == 1) {
                 return RelatedNodesCache.getCache();
             }
@@ -455,10 +455,10 @@ public class StorageConnector {
      * @throws IllegalArgumentException When the nodetype specified
      *         by the query is not the nodetype corresponding to this builder.
      */
-    private List getRawNodes(SearchQuery query, boolean useCache) throws SearchQueryException {
+    private List<MMObjectNode> getRawNodes(SearchQuery query, boolean useCache) throws SearchQueryException {
         // Test if nodetype corresponds to builder.
         verifyBuilderQuery(query);
-        List results = useCache ? (List) getCache(query).get(query) : null;
+        List<MMObjectNode> results = useCache ? getCache(query).get(query) : null;
 
         // if unavailable, obtain from storage
         if (results == null) {
@@ -483,7 +483,7 @@ public class StorageConnector {
      * @throws IllegalArgumentException When the nodetype specified
      *         by the query is not the nodetype corresponding to this builder.
      */
-    public List getNodes(SearchQuery query) throws SearchQueryException {
+    public List<MMObjectNode> getNodes(SearchQuery query) throws SearchQueryException {
         return getNodes(query, true);
     }
 
@@ -499,8 +499,8 @@ public class StorageConnector {
      * @throws IllegalArgumentException When the nodetype specified
      *         by the query is not the nodetype corresponding to this builder.
      */
-    public List getNodes(SearchQuery query, boolean useCache) throws SearchQueryException {
-        List results = getRawNodes(query, useCache);
+    public List<MMObjectNode> getNodes(SearchQuery query, boolean useCache) throws SearchQueryException {
+        List<MMObjectNode> results = getRawNodes(query, useCache);
         // TODO (later): implement maximum set by maxNodesFromQuery?
         // Perform necessary postprocessing.
         processSearchResults(results);
@@ -514,7 +514,7 @@ public class StorageConnector {
      * Returns all the nodes from the associated builder.
      * @return The nodes.
      */
-    public List getNodes() throws SearchQueryException {
+    public List<MMObjectNode> getNodes() throws SearchQueryException {
         return getNodes(new NodeSearchQuery(builder));
     }
 
