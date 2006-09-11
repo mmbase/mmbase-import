@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * A wrapper around Lucene's {@link org.apache.lucene.search.IndexSearcher}. Every {@link Indexer} has its own Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.26 2006-09-11 13:37:36 michiel Exp $
+ * @version $Id: Searcher.java,v 1.27 2006-09-11 13:58:38 michiel Exp $
  * @todo  Should the StopAnalyzers be replaced by index.analyzer? Something else?
  **/
 public class Searcher {
@@ -97,7 +97,7 @@ public class Searcher {
             }
         }
 
-        List list = new LinkedList();
+        List<Node> list = new LinkedList<Node>();
         if (log.isTraceEnabled()) {
             log.trace("Searching '" + value + "' in index " + index + " for " + sort + " " + analyzer + " " + extraQuery + " " + fields + " " + offset + " " + max);
         }
@@ -268,32 +268,5 @@ public class Searcher {
         return query;
     }
 
-
-    class CombinedFilter extends Filter {
-
-        static final int AND = 0;
-        static final int OR  = 1;
-
-        Filter filterOne;
-        Filter filterTwo;
-        int operation;
-
-        CombinedFilter(Filter filterOne, Filter filterTwo, int operation) {
-            this.filterOne = filterOne;
-            this.filterTwo = filterTwo;
-            this.operation = operation;
-        }
-
-        public BitSet bits(IndexReader reader) throws IOException {
-            BitSet bitSet = filterOne.bits(reader);
-            if (operation == AND) {
-                bitSet.and(filterTwo.bits(reader));
-            } else {
-                bitSet.or(filterTwo.bits(reader));
-            }
-            return bitSet;
-        }
-
-    }
 
 }
