@@ -40,7 +40,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.144 2006-04-04 21:13:14 daniel Exp $
+ * @version $Id: MMAdmin.java,v 1.145 2006-09-11 10:51:26 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -154,12 +154,12 @@ public class MMAdmin extends ProcessorModule {
      * @param path The path of the builder to retrieve
      * @return a <code>MMObjectBuilder</code> is found, <code>null</code> otherwise
      */
-    public MMObjectBuilder getMMObject(String path) {
+    public MMObjectBuilder getBuilder(String path) {
         int pos = path.lastIndexOf(File.separator);
         if (pos != -1) {
             path = path.substring(pos + 1);
         }
-        return mmb.getMMObject(path);
+        return mmb.getBuilder(path);
     }
 
     /**
@@ -339,8 +339,8 @@ public class MMAdmin extends ProcessorModule {
                         lastmsg = "Writing finished, no problems.\n\nA clean copy of " + modulename + ".xml can be found at : " + savepath + "\n\n";
                     } else {
                         lastmsg = "Writing failed, module : " + modulename + ".xml because module is not loaded\n\n";
-			return false;
-		    }
+                        return false;
+                    }
                 }
             } else if (token.equals("BUILDERSAVE")) {
                 if (kioskmode) {
@@ -348,7 +348,7 @@ public class MMAdmin extends ProcessorModule {
                 } else {
                     String buildername = (String)cmds.get(cmdline);
                     String savepath = (String)vars.get("path");
-                    MMObjectBuilder bul = getMMObject(buildername);
+                    MMObjectBuilder bul = getBuilder(buildername);
                     if (bul != null) {
                         boolean result = false;
                         try {
@@ -372,7 +372,6 @@ public class MMAdmin extends ProcessorModule {
                     }
                 }
             }
-
         }
         return false;
     }
@@ -624,7 +623,7 @@ public class MMAdmin extends ProcessorModule {
      * @javadoc
      */
     public void probeCall() throws SearchQueryException {
-        Versions ver = (Versions)mmb.getMMObject("versions");
+        Versions ver = (Versions)mmb.getBuilder("versions");
         if (ver == null) {
             log.warn("Versions builder not installed, Can't auto deploy apps");
             return;
@@ -692,7 +691,7 @@ public class MMAdmin extends ProcessorModule {
      * @javadoc
      */
     Vector getApplicationsList() throws SearchQueryException {
-        Versions ver = (Versions) mmb.getMMObject("versions");
+        Versions ver = (Versions) mmb.getBuilder("versions");
         if (ver == null) {
             log.warn("Versions builder not installed, Can't get to apps");
             return null;
@@ -736,7 +735,7 @@ public class MMAdmin extends ProcessorModule {
      * @javadoc
      */
     Vector getBuildersList() {
-        Versions ver = (Versions)mmb.getMMObject("versions");
+        Versions ver = (Versions)mmb.getBuilder("versions");
         Vector results = new Vector();
         ResourceLoader builderLoader = mmb.getBuilderLoader();
         Iterator builders = builderLoader.getResourcePaths(ResourceLoader.XML_PATTERN, true).iterator();
@@ -840,7 +839,7 @@ public class MMAdmin extends ProcessorModule {
      * @javadoc
      */
     Vector getDatabasesList() {
-        Versions ver = (Versions)mmb.getMMObject("versions");
+        Versions ver = (Versions)mmb.getBuilder("versions");
         if (ver == null) {
             log.warn("Versions builder not installed, Can't get to builders");
             return null;
@@ -874,7 +873,7 @@ public class MMAdmin extends ProcessorModule {
      * @javadoc
      */
     private String getBuilderField(String buildername, String fieldname, String key) {
-        MMObjectBuilder bul = getMMObject(buildername);
+        MMObjectBuilder bul = getBuilder(buildername);
         if (bul != null) {
             CoreField def = bul.getField(fieldname);
             if (key.equals("dbkey")) {
@@ -935,7 +934,7 @@ public class MMAdmin extends ProcessorModule {
      */
     private Vector getISOGuiNames(String buildername, String fieldname) {
         Vector results = new Vector();
-        MMObjectBuilder bul = getMMObject(buildername);
+        MMObjectBuilder bul = getBuilder(buildername);
         if (bul != null) {
             CoreField def = bul.getField(fieldname);
             Map guinames = def.getLocalizedGUIName().asMap();
@@ -953,7 +952,7 @@ public class MMAdmin extends ProcessorModule {
      */
     private Vector getISODescriptions(String buildername, String fieldname) {
         Vector results = new Vector();
-        MMObjectBuilder bul = getMMObject(buildername);
+        MMObjectBuilder bul = getBuilder(buildername);
         if (bul != null) {
             CoreField def = bul.getField(fieldname);
             Map guinames = def.getLocalizedDescription().asMap();
@@ -970,7 +969,7 @@ public class MMAdmin extends ProcessorModule {
      * @javadoc
      */
     private String getGuiNameValue(String buildername, String fieldname, String lang) {
-        MMObjectBuilder bul = getMMObject(buildername);
+        MMObjectBuilder bul = getBuilder(buildername);
         if (bul != null) {
             CoreField def = bul.getField(fieldname);
             String value = def.getGUIName(new Locale(lang, ""));
@@ -985,7 +984,7 @@ public class MMAdmin extends ProcessorModule {
      * @javadoc
      */
     private String getDescription(String buildername, String fieldname, String lang) {
-        MMObjectBuilder bul = getMMObject(buildername);
+        MMObjectBuilder bul = getBuilder(buildername);
         if (bul != null) {
             CoreField def = bul.getField(fieldname);
             String value = def.getDescription(new Locale(lang, ""));
@@ -1051,17 +1050,17 @@ public class MMAdmin extends ProcessorModule {
         String country = (String)vars.get("COUNTRY");
         String value = (String)vars.get("VALUE");
 
-        MMObjectBuilder bul = getMMObject(builder);
+        MMObjectBuilder bul = getBuilder(builder);
         CoreField def = bul.getField(fieldname);
         if (def != null) {
             def.setGUIName(value, new Locale(country, ""));
         }
 
-	CloudModel cloudmodel = ModelsManager.getModel("default");
-	if (cloudmodel != null) {
+    CloudModel cloudmodel = ModelsManager.getModel("default");
+    if (cloudmodel != null) {
             CloudModelBuilder cloudmodelbuilder = cloudmodel.getModelBuilder(builder);
-            if (cloudmodelbuilder != null) cloudmodelbuilder.setGuiName(fieldname,country,value); 
-	}
+            if (cloudmodelbuilder != null) cloudmodelbuilder.setGuiName(fieldname,country,value);
+    }
     }
 
     /**
@@ -1078,7 +1077,7 @@ public class MMAdmin extends ProcessorModule {
         String country = (String)vars.get("COUNTRY");
         String value = (String)vars.get("VALUE");
 
-        MMObjectBuilder bul = getMMObject(builder);
+        MMObjectBuilder bul = getBuilder(builder);
         CoreField def = bul.getField(fieldname);
         if (def != null) {
             def.setDescription(value, new Locale(country, ""));
@@ -1098,7 +1097,7 @@ public class MMAdmin extends ProcessorModule {
         String fieldName = (String)vars.get("FIELDNAME");
         String guiType = (String)vars.get("VALUE");
 
-        MMObjectBuilder bul = getMMObject(builder);
+        MMObjectBuilder bul = getBuilder(builder);
         CoreField def = bul.getField(fieldName);
         if (def != null) {
             DataType dataType;
@@ -1126,7 +1125,7 @@ public class MMAdmin extends ProcessorModule {
         String fieldname = (String)vars.get("FIELDNAME");
         String value = (String)vars.get("VALUE");
 
-        MMObjectBuilder bul = getMMObject(builder);
+        MMObjectBuilder bul = getBuilder(builder);
         CoreField def = bul.getField(fieldname);
         if (def != null) {
             try {
@@ -1149,7 +1148,7 @@ public class MMAdmin extends ProcessorModule {
         String fieldname = (String)vars.get("FIELDNAME");
         String value = (String)vars.get("VALUE");
 
-        MMObjectBuilder bul = getMMObject(builder);
+        MMObjectBuilder bul = getBuilder(builder);
         CoreField def = bul.getField(fieldname);
         if (def != null) {
             try {
@@ -1172,7 +1171,7 @@ public class MMAdmin extends ProcessorModule {
         String fieldname = (String)vars.get("FIELDNAME");
         String value = (String)vars.get("VALUE");
 
-        MMObjectBuilder bul = getMMObject(builder);
+        MMObjectBuilder bul = getBuilder(builder);
         CoreField def = bul.getField(fieldname);
         if (def != null) {
             try {
@@ -1195,7 +1194,7 @@ public class MMAdmin extends ProcessorModule {
         String fieldname = (String)vars.get("FIELDNAME");
         String value = (String)vars.get("VALUE");
 
-        MMObjectBuilder bul = getMMObject(builder);
+        MMObjectBuilder bul = getBuilder(builder);
         CoreField def = bul.getField(fieldname);
         if (def != null) {
             int oldSize = def.getMaxLength();
@@ -1207,11 +1206,11 @@ public class MMAdmin extends ProcessorModule {
                         def.setMaxLength(newSize);
                         // make change in storage
                         mmb.getStorageManager().change(def);
-	                CloudModel cloudmodel = ModelsManager.getModel("default");
-	                if (cloudmodel != null) {
+                    CloudModel cloudmodel = ModelsManager.getModel("default");
+                    if (cloudmodel != null) {
                            CloudModelBuilder cloudmodelbuilder = cloudmodel.getModelBuilder(builder);
-                           if (cloudmodelbuilder != null) cloudmodelbuilder.setBuilderDBSize(fieldname,value); 
-	                }
+                           if (cloudmodelbuilder != null) cloudmodelbuilder.setBuilderDBSize(fieldname,value);
+                    }
                     } catch (StorageException se) {
                         def.setMaxLength(oldSize);
                         throw se;
@@ -1237,7 +1236,7 @@ public class MMAdmin extends ProcessorModule {
         String fieldname = (String)vars.get("FIELDNAME");
         String value = (String)vars.get("VALUE");
 
-        MMObjectBuilder bul = getMMObject(builder);
+        MMObjectBuilder bul = getBuilder(builder);
         CoreField def = bul.getField(fieldname);
         if (def != null) {
             int oldType = def.getType();
@@ -1267,12 +1266,12 @@ public class MMAdmin extends ProcessorModule {
             log.warn("Refused set DBState field, am in kiosk mode");
             return;
         }
-	log.info("SET DBDSTATE");
+    log.info("SET DBDSTATE");
         String builder = (String)vars.get("BUILDER");
         String fieldname = (String)vars.get("FIELDNAME");
         String value = (String)vars.get("VALUE");
 
-        MMObjectBuilder bul = getMMObject(builder);
+        MMObjectBuilder bul = getBuilder(builder);
         CoreField def = bul.getField(fieldname);
         if (def != null) {
             int oldState = def.getState();
@@ -1296,11 +1295,11 @@ public class MMAdmin extends ProcessorModule {
                 } finally {
                     def.finish();
                 }
-	                CloudModel cloudmodel = ModelsManager.getModel("default");
-	                if (cloudmodel != null) {
+                    CloudModel cloudmodel = ModelsManager.getModel("default");
+                    if (cloudmodel != null) {
                            CloudModelBuilder cloudmodelbuilder = cloudmodel.getModelBuilder(builder);
-                           if (cloudmodelbuilder != null) cloudmodelbuilder.setBuilderDBState(fieldname,value); 
-	                }
+                           if (cloudmodelbuilder != null) cloudmodelbuilder.setBuilderDBState(fieldname,value);
+                    }
             }
         }
     }
@@ -1313,12 +1312,12 @@ public class MMAdmin extends ProcessorModule {
             log.warn("Refused set dbkey field, am in kiosk mode");
             return;
         }
-	log.info("SET DBKEY");
+    log.info("SET DBKEY");
         String builder = (String)vars.get("BUILDER");
         String fieldname = (String)vars.get("FIELDNAME");
         String value = (String)vars.get("VALUE");
 
-        MMObjectBuilder bul = getMMObject(builder);
+        MMObjectBuilder bul = getBuilder(builder);
         CoreField def = bul.getField(fieldname);
         if (def != null) {
             def.rewrite();
@@ -1327,11 +1326,11 @@ public class MMAdmin extends ProcessorModule {
             } else {
                 def.setUnique(false);
             }
-	    CloudModel cloudmodel = ModelsManager.getModel("default");
-	    if (cloudmodel != null) {
+        CloudModel cloudmodel = ModelsManager.getModel("default");
+        if (cloudmodel != null) {
                 CloudModelBuilder cloudmodelbuilder = cloudmodel.getModelBuilder(builder);
-                if (cloudmodelbuilder != null) cloudmodelbuilder.setBuilderDBKey(fieldname,value); 
-	    }
+                if (cloudmodelbuilder != null) cloudmodelbuilder.setBuilderDBKey(fieldname,value);
+        }
             def.finish();
         }
         // TODO: when changing key, should call CHANGE
@@ -1350,7 +1349,7 @@ public class MMAdmin extends ProcessorModule {
         String fieldname = (String)vars.get("FIELDNAME");
         String value = (String)vars.get("VALUE");
 
-        MMObjectBuilder bul = getMMObject(builder);
+        MMObjectBuilder bul = getBuilder(builder);
         CoreField def = bul.getField(fieldname);
         if (def != null) {
             boolean oldNotNull = def.isRequired();
@@ -1361,11 +1360,11 @@ public class MMAdmin extends ProcessorModule {
                 try {
                     // make change in storage
                     mmb.getStorageManager().change(def);
-	            CloudModel cloudmodel = ModelsManager.getModel("default");
-	            if (cloudmodel != null) {
+                CloudModel cloudmodel = ModelsManager.getModel("default");
+                if (cloudmodel != null) {
                         CloudModelBuilder cloudmodelbuilder = cloudmodel.getModelBuilder(builder);
-                        if (cloudmodelbuilder != null) cloudmodelbuilder.setBuilderDBNotNull(fieldname,value); 
-	            }
+                        if (cloudmodelbuilder != null) cloudmodelbuilder.setBuilderDBNotNull(fieldname,value);
+                }
                     // need to be rerouted syncBuilderXML(bul, builder);
                 } catch (StorageException se) {
                     def.getDataType().setRequired(oldNotNull);
@@ -1386,7 +1385,7 @@ public class MMAdmin extends ProcessorModule {
             return;
         }
         String builder = (String)vars.get("BUILDER");
-        MMObjectBuilder bul = getMMObject(builder);
+        MMObjectBuilder bul = getBuilder(builder);
         if (bul != null) {
             // Determine position of new field.
             // This should be the number of the last field as denied in the builder xml,
@@ -1440,14 +1439,14 @@ public class MMAdmin extends ProcessorModule {
             // only then add to builder
             bul.addField(def);
 
-	    CloudModel cloudmodel = ModelsManager.getModel("default");
-	    if (cloudmodel != null) {
+        CloudModel cloudmodel = ModelsManager.getModel("default");
+        if (cloudmodel != null) {
                 log.debug("Calling cloud module builder");
-		CloudModelBuilder cloudmodelbuilder = cloudmodel.getModelBuilder(builder);
-		if (cloudmodelbuilder != null) {
-                    cloudmodelbuilder.addField(pos,fieldName, (String)vars.get("mmbasetype"), (String)vars.get("guitype"), (String)vars.get("dbstate"), (String)vars.get("dbnotnull"), (String)vars.get("dbkey"), (String)vars.get("dbsize")); 
+        CloudModelBuilder cloudmodelbuilder = cloudmodel.getModelBuilder(builder);
+        if (cloudmodelbuilder != null) {
+                    cloudmodelbuilder.addField(pos,fieldName, (String)vars.get("mmbasetype"), (String)vars.get("guitype"), (String)vars.get("dbstate"), (String)vars.get("dbnotnull"), (String)vars.get("dbkey"), (String)vars.get("dbsize"));
                 }
-	    } else {
+        } else {
                 log.warn("No cloud model 'default' found");
             }
             def.finish();
@@ -1468,9 +1467,9 @@ public class MMAdmin extends ProcessorModule {
         String fieldname = (String)vars.get("FIELDNAME");
         String value = (String)vars.get("SURE");
 
-        MMObjectBuilder bul = getMMObject(builder);
+        MMObjectBuilder bul = getBuilder(builder);
         if (bul != null && value != null && value.equals("Yes")) {
-	    
+
             CoreField def = bul.getField(fieldname);
             // make change in storage
             mmb.getStorageManager().delete(def);
@@ -1480,7 +1479,7 @@ public class MMAdmin extends ProcessorModule {
            CloudModel cloudmodel = ModelsManager.getModel("default");
            if (cloudmodel != null) {
                 CloudModelBuilder cloudmodelbuilder = cloudmodel.getModelBuilder(builder);
-                if (cloudmodelbuilder != null) cloudmodelbuilder.removeField(fieldname); 
+                if (cloudmodelbuilder != null) cloudmodelbuilder.removeField(fieldname);
             }
             def.finish();
         }
