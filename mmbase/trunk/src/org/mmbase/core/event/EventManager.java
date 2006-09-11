@@ -29,7 +29,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * manager is instantiated, event brokers are added for Event, NodeEvent and RelationEvent
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: EventManager.java,v 1.13 2006-08-30 20:58:38 michiel Exp $
+ * @version $Id: EventManager.java,v 1.14 2006-09-11 12:17:22 michiel Exp $
  */
 public class EventManager {
 
@@ -51,7 +51,7 @@ public class EventManager {
     /**
      * The collection of event brokers. There is one for every event type that can be sent/received
      */
-    private final Set eventBrokers = new CopyOnWriteArraySet();
+    private final Set<AbstractEventBroker> eventBrokers = new CopyOnWriteArraySet();
 
     private long numberOfPropagatedEvents = 0;
     private long duration = 0;
@@ -163,7 +163,7 @@ public class EventManager {
     public void addEventListener(EventListener listener) {
         BrokerIterator i =  findBrokers(listener);
         while (i.hasNext()) {
-            AbstractEventBroker broker = i.nextBroker();
+            AbstractEventBroker broker = i.next();
             if (broker.addListener(listener)) {
                 if (log.isDebugEnabled()) {
                     log.debug("listener " + listener + " added to broker " + broker );
@@ -182,7 +182,7 @@ public class EventManager {
         }
         BrokerIterator i = findBrokers(listener);
         while (i.hasNext()) {
-            i.nextBroker().removeListener(listener);
+            i.next().removeListener(listener);
         }
     }
 
@@ -198,8 +198,7 @@ public class EventManager {
             log.trace("Propagating events to " + eventBrokers);
         }
         long startTime = System.currentTimeMillis();
-        for (Iterator i = eventBrokers.iterator(); i.hasNext();) {
-            AbstractEventBroker broker = (AbstractEventBroker) i.next();
+        for (AbstractEventBroker broker :  eventBrokers) {
             if (broker.canBrokerForEvent(event)) {
                 broker.notifyForEvent(event);
                 if (log.isDebugEnabled()) {
@@ -247,12 +246,12 @@ public class EventManager {
         return new BrokerIterator(eventBrokers.iterator(), listener);
     }
 
-    private static class BrokerIterator implements Iterator {
+    private static class BrokerIterator implements Iterator<AbstractEventBroker> {
         AbstractEventBroker next;
-        final Iterator i;
+        final Iterator<AbstractEventBroker> i;
         final EventListener listener;
 
-        BrokerIterator(final Iterator i, final EventListener listener) {
+        BrokerIterator(final Iterator<AbstractEventBroker> i, final EventListener listener) {
             this.i = i;
             this.listener = listener;
             findNext();
@@ -260,21 +259,19 @@ public class EventManager {
         public void remove() {
             throw new UnsupportedOperationException();
         }
-        public Object next() {
-            return nextBroker();
-        }
-        public boolean hasNext() {
-            return next != null;
-        }
-        public AbstractEventBroker nextBroker() {
+        public AbstractEventBroker next() {
             if (next == null) throw new NoSuchElementException();
             AbstractEventBroker n = next;
             findNext();
             return n;
         }
+        public boolean hasNext() {
+            return next != null;
+        }
+
         protected void findNext() {
             while(i.hasNext()) {
-                AbstractEventBroker broker = (AbstractEventBroker) i.next();
+                AbstractEventBroker broker = i.next();
                 if (broker.canBrokerForListener(listener)) {
                     if (log.isDebugEnabled()) {
                         log.debug("broker " + broker + " can broker for eventlistener " + listener.getClass().getName());

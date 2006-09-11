@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.8
- * @version $Id: IdEvent.java,v 1.1 2006-04-18 13:03:30 michiel Exp $
+ * @version $Id: IdEvent.java,v 1.2 2006-09-11 12:17:22 michiel Exp $
  */
 public class IdEvent extends Event  {
 
@@ -44,6 +44,10 @@ public class IdEvent extends Event  {
 
     public String getId() {
         return id;
+    }
+
+    public String toString() {
+        return id + " " + eventType;
     }
 
 }
