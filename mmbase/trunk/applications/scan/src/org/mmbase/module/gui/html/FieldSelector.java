@@ -23,7 +23,7 @@ import org.mmbase.module.corebuilders.*;
  * @application SCAN
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: FieldSelector.java,v 1.11 2006-01-16 14:47:28 michiel Exp $
+ * @version $Id: FieldSelector.java,v 1.12 2006-09-11 10:04:59 michiel Exp $
  */
 public class FieldSelector implements CommandHandlerInterface {
 
@@ -151,7 +151,7 @@ public class FieldSelector implements CommandHandlerInterface {
         String language=ed.getLanguage();
         MMObjectBuilder obj=ed.getBuilder();
         String key,val;
-        Vector tempresults=obj.getEditFields();
+        Vector tempresults = new Vector(obj.getFields(org.mmbase.bridge.NodeManager.ORDER_EDIT));
         FieldDefs def;
         for (Enumeration h=tempresults.elements();h.hasMoreElements();) {
             def=(FieldDefs)h.nextElement();

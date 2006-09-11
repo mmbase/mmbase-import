@@ -32,7 +32,7 @@ import org.mmbase.util.scanpage;
  * @application SCAN
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: ObjectSelector.java,v 1.22 2005-11-23 15:45:13 pierre Exp $
+ * @version $Id: ObjectSelector.java,v 1.23 2006-09-11 10:04:59 michiel Exp $
  */
 public class ObjectSelector implements CommandHandlerInterface {
 
@@ -329,7 +329,7 @@ public class ObjectSelector implements CommandHandlerInterface {
         String HTMLString = "";
 
         if (builder != null) {
-            Vector vals = builder.getSortedListFields();
+            Vector vals = new Vector(builder.getFields(org.mmbase.bridge.NodeManager.ORDER_LIST));
             //searchResult = builder.search(conditions);
             //searchResult = builder.search(conditions,"number");
             searchResult = HtmlBase.search(builder,conditions,"number",false);
@@ -375,7 +375,7 @@ public class ObjectSelector implements CommandHandlerInterface {
         Vector fieldDefs;
 
         if (builder != null) {
-            fieldDefs = builder.getSortedListFields();
+            fieldDefs = new Vector(builder.getFields(org.mmbase.bridge.NodeManager.ORDER_LIST));
             for (Enumeration enumeration = fieldDefs.elements(); enumeration.hasMoreElements();) {
                 result.addElement(((FieldDefs)enumeration.nextElement()).getGUIName(language));
             }
