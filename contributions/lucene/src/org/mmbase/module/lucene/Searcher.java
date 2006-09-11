@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * A wrapper around Lucene's {@link org.apache.lucene.search.IndexSearcher}. Every {@link Indexer} has its own Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.24 2006-07-18 06:30:51 michiel Exp $
+ * @version $Id: Searcher.java,v 1.25 2006-09-11 13:27:57 michiel Exp $
  * @todo  Should the StopAnalyzers be replaced by index.analyzer? Something else?
  **/
 public class Searcher {
@@ -179,20 +179,24 @@ public class Searcher {
     protected Hits getHits(IndexSearcher searcher, String value, Filter filter, Sort sort, Analyzer analyzer, Query extraQuery, String[] fields) throws IOException, ParseException {
         if (analyzer == null) analyzer = index.getAnalyzer();
         Query query;
+
         if (fields == null || fields.length == 0) {
-            query = QueryParser.parse(value, "fulltext", analyzer);
+            QueryParser qp = new QueryParser("fulltext", analyzer);
+            query = qp.parse(value);
         } else if (fields.length == 0) {
-            query = QueryParser.parse(value, fields[0], analyzer);
+            QueryParser qp = new QueryParser(fields[0], analyzer);
+            query = qp.parse(value);
         } else {
-            query = MultiFieldQueryParser.parse(value, fields, analyzer);
+            MultiFieldQueryParser qp = new MultiFieldQueryParser(fields, analyzer);
+            query = qp.parse(value);
         }
         if (extraQuery != null) {
             if (log.isDebugEnabled()) {
                 log.debug("Found an extra query " + extraQuery + " for " + query + " " + BooleanQuery.getMaxClauseCount());
             }
             BooleanQuery booleanQuery = new BooleanQuery();
-            booleanQuery.add(query, true, false);
-            booleanQuery.add(extraQuery, true, false);
+            booleanQuery.add(query, BooleanClause.Occur.MUST);
+            booleanQuery.add(extraQuery, BooleanClause.Occur.MUST);
             query = booleanQuery;
         }
         return searcher.search(query, filter, sort);
@@ -253,10 +257,21 @@ public class Searcher {
                     query = subQuery;
                 } else {
                     BooleanQuery booleanQuery = new BooleanQuery();
-                    booleanQuery.add(query, true, false);
+                    booleanQuery.add(query, BooleanClause.Occur.MUST);
                     boolean prohibited = type.equals("NE");
                     boolean required   = ! prohibited;
-                    booleanQuery.add(subQuery, required, prohibited);
+                    BooleanClause.Occur occur;
+                    if (required && ! prohibited) {
+                        occur = BooleanClause.Occur.MUST;
+                    } else if (! required && ! prohibited) {
+                        occur = BooleanClause.Occur.SHOULD;
+                    } else if (! required && prohibited) {
+                        occur = BooleanClause.Occur.MUST_NOT;
+                    } else {
+                        log.error("Impossible combinatation, cannot be both required and probited, ignoring prohibited.");
+                        occur = BooleanClause.Occur.MUST;
+                    }
+                    booleanQuery.add(subQuery, occur);
                     query = booleanQuery;
                 }
             }

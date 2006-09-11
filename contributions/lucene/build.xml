@@ -7,10 +7,10 @@
 
   <import file="../../applications/buildbase-include.xml" />
 
-  <property name="lucene.extrajars.loc"    value="http://www.mmbase.org/download/jars/lucene-extrajars.tgz" />
+  <property name="lucene.extrajars.loc"    value="http://www.mmbase.org/download/jars/lucene2-extrajars.tgz" />
   <property name="lucene.extrajars"            value="${project.jar.dir}" />
-  <property name="lucene.extrajars.dest"       value="${download.dir}/lucene-extrajars.tgz" />
-  <property name="lucene.extrajars.expanded"   value="${lucene.extrajars}/lucene-core-1.9.1.jar" />
+  <property name="lucene.extrajars.dest"       value="${download.dir}/lucene2-extrajars.tgz" />
+  <property name="lucene.extrajars.expanded"   value="${lucene.extrajars}/lucene-core-2.0.0.jar" />
 
   <target name="crontab">
     <echo message="${applications.dir}/crontab" />
