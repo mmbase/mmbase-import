@@ -92,7 +92,7 @@ public class NMIntraConfig {
       "#799FCC",          "#F54D3F",          "#A3D568" };
 
    public static int PARENT_STYLE = -1;
-	public static int DEFAULT_STYLE = 4;
+	 public static int DEFAULT_STYLE = 4;
 
    public static String cssPath = "css/";
 
@@ -100,9 +100,12 @@ public class NMIntraConfig {
 	
    public static String fromEmailAddress = "intranet@natuurmonumenten.nl";
    public static String sDocumentsUrl = "/documents/PenO";
-   
+   public static String defaultPZAddress = "A.deBeer@natuurmonumenten.nl";
+   public static String defaultFZAddress = "C.Koumans@natuurmonumenten.nl";
+
    public static String sDocumentsRoot = "D:/apps/Tomcat_Intranet/webapps/documents/PenO";
    public static String toEmailAddress = "beheerder@natuurmonumenten.nl";
+   public static String newsEmailAddress = "intranieuws@natuurmonumenten.nl";
    public static String incomingDir = "E:/Intranet_Input/";
    public static String tempDir = "E:/Intranet_Input/";
    public static String sCorporateWebsite = "http://www.natuurmonumenten.nl/";
@@ -111,6 +114,7 @@ public class NMIntraConfig {
    /*
    public static String sDocumentsRoot = "C:/data/nmintra/webapps/documents/PenO";
    public static String toEmailAddress = "hangyi@xs4all.nl";    
+   public static String newsEmailAddress = "hangyi@xs4all.nl";    
    public static String incomingDir =  "C:/data/nmintra/incoming/";
    public static String tempDir = "C:/temp/";
    public static String sCorporateWebsite = "http://www.acc.natuurmm.asp4all.nl/";
