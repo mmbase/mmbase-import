@@ -1,12 +1,24 @@
 Document: installation notes for the NOISe 2 Didactor importer
 Author: H. Hangyi
-Date: April 21, 2004
+Date: September 11, 2006
+
+The utility can work both with a local cload and a remote cloud (rmi)
 
 The utility consist of the following directories and files:
 1.config: the rmmci config file (for Didactor installation)
 2.lib: the rmmci jars (for Didactor installation)
 3.java: the java classes for the remote installation
 4.noise: example configuration and input file for the remote installation (and an example run.bat for Windows systems)
+
+USING NOISE IMPORTER WITH A LOCAL CLOUD (THE FILES TO BE IMPORTERD HAVE TO BE ON THE SERVER)
+
+1. Place the compiled classes in your WEB-INF/classes directory
+2. Place the /noise directory with the ini and data files somewhere on the server.
+3. Add the the noise-importer.jsp to your webapp and set the path to the data files correctly.
+4. Call noise-importer.jsp from a browser
+5. See the log-file for the of the import
+
+USING NOISE IMPORTER FROM A REMOTE COMPUTER
 
 The NOISe 2 Didactor uploads a file from a remote computer to Didactor via RMMCI.
 
@@ -22,7 +34,7 @@ The importer can be started on the remote installation from a prompt / batch fil
    
    java nl.didactor.utils.importer.noise.Importer
 
-The Importer will output to screen: when it start and when it finishes.
+The Importer will output to screen: when it start and when it finishes. (no idea whether this still works now i replaced System.out.println by log.info)
 
 After the import the student, classes and workgroups can be inspected.
 
