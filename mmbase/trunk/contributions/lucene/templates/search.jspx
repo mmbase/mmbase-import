@@ -66,7 +66,7 @@
                     Search on '${value}'<br /> 
                     <mm:size /> hits
                     <mm:compare referid="count" value="on">
-                      <mm:function module="lucene" name="searchsize" referids="value,index,extraconstraints" />
+                      of total <mm:function module="lucene" name="searchsize" referids="value,index,extraconstraints" />
                     </mm:compare>
                   </th>
                 </tr>
@@ -77,7 +77,12 @@
                 </td>
                 <mm:fieldlist type="list">
                   <td>
-                    <mm:fieldinfo type="guivalue" />
+                    <mm:hasfunction name="gui">
+                      <mm:fieldinfo type="guivalue" />
+                    </mm:hasfunction>
+                    <mm:hasfunction name="gui" inverse="true">
+                      <mm:fieldinfo type="value" />
+                    </mm:hasfunction>
                   </td>
                 </mm:fieldlist>
                 <td>
