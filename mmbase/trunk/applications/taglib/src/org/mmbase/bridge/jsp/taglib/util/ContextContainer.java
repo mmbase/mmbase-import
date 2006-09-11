@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.53 2006-08-03 08:46:03 johannes Exp $
+ * @version $Id: ContextContainer.java,v 1.54 2006-09-11 10:00:53 pierre Exp $
  **/
 
 public abstract class ContextContainer extends AbstractMap implements Map {
@@ -856,10 +856,10 @@ class BeanPair extends Pair {
         String methodKey =  Character.toUpperCase(key.charAt(0)) + key.substring(1);
         Method method;
         try {
-            method = clazz.getMethod("get" + methodKey, null);
+            method = clazz.getMethod("get" + methodKey);
         } catch (Exception e) {
             try {
-                method = clazz.getMethod("is" + methodKey, null);
+                method = clazz.getMethod("is" + methodKey);
             } catch (Exception f) {
                 return null;
             }
@@ -875,7 +875,7 @@ class BeanPair extends Pair {
         try {
             Method method = getMethod(key);
             if (method == null) return null;
-            return method.invoke(bean, null);
+            return method.invoke(bean);
         } catch (Exception iae) {
             throw new TaglibException(iae.getMessage(), iae);
         }
