@@ -17,11 +17,10 @@ import javax.servlet.http.HttpServletResponse;
  * Performance Servlet is used as a basic Servlet to test whether the installation of succeeded.
  * It also does a very basic test to measure how fast the JVM is.
  *
- * @rename  Performance
  * @author  vpro
- * @version $Id: performance.java,v 1.15 2005-05-14 14:04:44 nico Exp $
+ * @version $Id: Performance.java,v 1.1 2006-09-11 11:17:53 pierre Exp $
  */
-public class performance extends BridgeServlet {
+public class Performance extends BridgeServlet {
 
     public static final long INT_LOOP = 20000000;
     public static final long STRING_LOOP = 2500000;
