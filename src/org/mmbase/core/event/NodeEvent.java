@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: NodeEvent.java,v 1.27 2006-06-20 21:23:57 michiel Exp $
+ * @version $Id: NodeEvent.java,v 1.28 2006-09-11 12:17:22 michiel Exp $
  */
 public class NodeEvent extends Event {
 
@@ -40,8 +40,8 @@ public class NodeEvent extends Event {
     private final int nodeNumber;
     private String builderName;
 
-    private final Map oldValues;
-    private final Map newValues;
+    private final Map<String, Object> oldValues;
+    private final Map<String, Object> newValues;
 
     /**
     *@param machineName (MMBase) name of the server
@@ -50,7 +50,7 @@ public class NodeEvent extends Event {
     *@param newValues map with new values of changed fields
     *@param eventType the type of event
     **/
-    public NodeEvent(String machineName, String builderName, int nodeNumber, Map oldValues, Map newValues, int eventType ){
+    public NodeEvent(String machineName, String builderName, int nodeNumber, Map<String, Object> oldValues, Map<String, Object> newValues, int eventType ){
         super(machineName, eventType);
         this.builderName = builderName;
         this.nodeNumber = nodeNumber;
@@ -71,14 +71,14 @@ public class NodeEvent extends Event {
     /**
      * @return a set containing the names of the fields that have changed
      */
-    public final Set getChangedFields() {
+    public final Set<String> getChangedFields() {
         switch(getType()) {
         case TYPE_NEW:
             return newValues.keySet();
         case TYPE_CHANGE:
             //for changed both old and new values are good (similar keys)
             return newValues.keySet();
-        case  TYPE_DELETE:
+        case TYPE_DELETE:
             return oldValues.keySet();
         default:
             return Collections.EMPTY_SET;
