@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: Versions.java,v 1.17 2006-03-29 14:30:23 nklasens Exp $
+ * @version $Id: Versions.java,v 1.18 2006-09-11 10:50:28 pierre Exp $
  */
 public class Versions extends MMObjectBuilder implements MMBaseObserver {
 
@@ -27,9 +27,9 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
     private Hashtable cacheVersionHandlers = new Hashtable();
 
     private Map versionsCache = new Hashtable();
-    
+
     private boolean initialized = false;
-    
+
     /**
      * @javadoc
      */
@@ -43,7 +43,7 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
                 String name = versionNode.getStringValue("name");
                 String type = versionNode.getStringValue("type");
                 Integer number = new Integer(versionNode.getNumber());
-                
+
                 String key = type + "_" + name;
                 if (versionsCache.containsKey(key)) {
                     StringBuffer sb = new StringBuffer();
@@ -61,7 +61,7 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
                     versionsCache.put(key, number);
                 }
             }
-            
+
             initialized = true;
         }
 
@@ -109,7 +109,7 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
             node.setValue("maintainer", maintainer);
             node.setValue("version", version);
             int number = insert("system", node);
-            
+
             String key = type + "_" + name;
             versionsCache.put(key, new Integer(number));
         } else {
@@ -140,8 +140,13 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
         }
         for (Enumeration e = cacheVersionHandlers.keys(); e.hasMoreElements();) {
             String bname = (String) e.nextElement();
-            mmb.addLocalObserver(bname, this);
-            mmb.addRemoteObserver(bname, this);
+            MMObjectBuilder builder = mmb.getBuilder(bname);
+            if (builder != null) {
+                builder.addLocalObserver(this);
+                builder.addRemoteObserver(this);
+            } else {
+                log.error("ERROR: Can't find builder : " + bname);
+            }
         }
     }
 
