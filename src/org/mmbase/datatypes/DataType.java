@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.55 2006-09-06 18:23:02 michiel Exp $
+ * @version $Id: DataType.java,v 1.56 2006-09-11 09:54:15 michiel Exp $
  */
 
 public interface DataType<C> extends Descriptor, Cloneable, Comparable, Serializable {
@@ -113,7 +113,7 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable, Serializ
      * Returns the type of values that this data type accepts.
      * @return the type as a Class
      */
-    public Class getTypeAsClass();
+    public Class<C> getTypeAsClass();
 
     /**
      * Checks if the passed object is of the correct class (compatible with the type of this data type),
@@ -132,7 +132,7 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable, Serializ
      * @param node  Sometimes a node might be needed.
      * @param field Sometimes a (or 'the') field might be needed.
      */
-    public Object cast(Object value, Node node, Field field);
+    public C cast(Object value, Node node, Field field);
 
     /**
      * Before actually 'cast' an object to the right type, it may undergo some conversion by the
