@@ -45,7 +45,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.203 2006-09-11 11:12:57 pierre Exp $
+ * @version $Id: MMBase.java,v 1.204 2006-09-11 11:15:05 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -136,7 +136,7 @@ public class MMBase extends ProcessorModule {
      * The map that contains all loaded builders. Includes virtual builders.
      * A collection of builders from this map can be accessed by calling {@link #getBuilders}
      */
-    private Map mmobjs = new ConcurrentHashMap();
+    private Map<String,MMObjectBuilder> mmobjs = new ConcurrentHashMap();
 
     private CloudModel cloudModel;
 
@@ -220,7 +220,7 @@ public class MMBase extends ProcessorModule {
      *
      * @since MMBase-1.6
      */
-    private Set loading = new HashSet();
+    private Set<String> loading = new HashSet();
 
     /**
      * Constructor to create the MMBase root module.
@@ -371,8 +371,7 @@ public class MMBase extends ProcessorModule {
 
         String writerpath = getInitParameter("XMLBUILDERWRITERDIR");
         if (writerpath != null && !writerpath.equals("")) {
-            for (Iterator i = getBuilders().iterator(); i.hasNext(); ) {
-                MMObjectBuilder builder = (MMObjectBuilder)i.next();
+            for (MMObjectBuilder builder : getBuilders()) {
                 if (!builder.isVirtual()) {
                     String name = builder.getTableName();
                     log.debug("WRITING BUILDER FILE =" + writerpath + File.separator + name);
@@ -591,7 +590,7 @@ public class MMBase extends ProcessorModule {
     /**
      * Retrieves a Collection of loaded builders.
      */
-    public Collection getBuilders() {
+    public Collection<MMObjectBuilder> getBuilders() {
         return mmobjs.values();
     }
 
@@ -766,11 +765,10 @@ public class MMBase extends ProcessorModule {
         }
 
 
-        Set builders = getBuilderLoader().getResourcePaths(ResourceLoader.XML_PATTERN, true/* recursive*/);
+        Set<String> builders = getBuilderLoader().getResourcePaths(ResourceLoader.XML_PATTERN, true/* recursive*/);
 
         log.info("Loading builders: " + builders);
-        for (Iterator i = builders.iterator(); i.hasNext(); ) {
-            String builderXml = (String)i.next();
+        for (String builderXml : builders) {
             if (Thread.currentThread().isInterrupted()) {
                 return;
             }
@@ -806,8 +804,8 @@ public class MMBase extends ProcessorModule {
         typeRel.init();
 
         log.debug("mmobjects, inits");
-        for (Iterator bi = getBuilders().iterator(); bi.hasNext();) {
-            MMObjectBuilder builder = (MMObjectBuilder)bi.next();
+        for (Iterator<MMObjectBuilder> bi = getBuilders().iterator(); bi.hasNext();) {
+            MMObjectBuilder builder = bi.next();
             log.debug("init " + builder);
             try {
                 initBuilder(builder);
@@ -910,13 +908,12 @@ public class MMBase extends ProcessorModule {
      *       function used to be implemented recursively (now delegated to ResourceLoader).
      */
     public String getBuilderPath(String builderName, String path) {
-        Set builders = getBuilderLoader().getResourcePaths(java.util.regex.Pattern.compile(path + ResourceLoader.XML_PATTERN.pattern()), true /*recursive*/);
+        Set<String> builders = getBuilderLoader().getResourcePaths(java.util.regex.Pattern.compile(path + ResourceLoader.XML_PATTERN.pattern()), true /*recursive*/);
         if (log.isDebugEnabled()) {
             log.debug("Found builder " + builders + " from " +  getBuilderLoader()  + " searching for " + builderName);
         }
         String xml = builderName + ".xml";
-        for (Iterator i = builders.iterator(); i.hasNext(); ) {
-            String builderXml = (String)i.next();
+        for (String builderXml : builders) {
             if (builderXml.equals(xml)) {
                 return "";
             } else if (builderXml.endsWith("/" + xml)) {
@@ -1025,16 +1022,12 @@ public class MMBase extends ProcessorModule {
                 parser.getDataTypes(builder.getDataTypeCollector());
                 builder.setFields(parser.getFields(builder, builder.getDataTypeCollector()));
                 builder.getStorageConnector().addIndices(parser.getIndices(builder));
-                Iterator f = parser.getFunctions().iterator();
-                while (f.hasNext()) {
-                    Function func = (Function) f.next();
+                for (Function func : parser.getFunctions()) {
                     builder.addFunction(func);
                     log.service("Added " + func + " to " + builder);
                 }
                 if (parent != null) {
-                    Iterator i =  parent.getFunctions().iterator();
-                    while (i.hasNext()) {
-                        Function parentFunction = (Function) i.next();
+                    for (Function parentFunction : parent.getFunctions()) {
                         if (builder.getFunction(parentFunction.getName()) == null) {
                             builder.addFunction(parentFunction);
                         }
