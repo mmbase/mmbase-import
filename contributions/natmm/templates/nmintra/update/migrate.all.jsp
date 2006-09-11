@@ -1,5 +1,5 @@
 <%@include file="/taglibs.jsp" %>
-<mm:cloud method="http" rank="basic user" jspvar="cloud">
+<mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud">
 <html>
    <head>
    <LINK rel="stylesheet" type="text/css" href="/editors/css/editorstyle.css">
@@ -15,6 +15,7 @@
 	<jsp:include page="06.04.03.migrate.jsp"/>
 	<jsp:include page="06.05.09.migrate.jsp"/>
 	<jsp:include page="06.06.05.migrate.jsp"/>
+	<jsp:include page="06.06.10.migrate.jsp"/>
 	<jsp:include page="06.06.19.migrate.jsp"/>
 	<jsp:include page="06.06.20.migrate.jsp"/>
 	<jsp:include page="06.06.22.migrate.jsp"/>

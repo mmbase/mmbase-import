@@ -1,5 +1,5 @@
 <%@include file="/taglibs.jsp" %>
-<mm:cloud method="http" rank="basic user" jspvar="cloud">
+<mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud">
 <mm:log jspvar="log">
    <% log.info("06.06.05"); %>
 	Things to be done in this update:<br/>
@@ -234,88 +234,7 @@
 			%>
 		</mm:field>
 	</mm:listnodes>
-	<% log.info("14. Move news archief to seperate rubriek"); %>
-	<mm:listnodes type="rubriek" constraints="naam = 'Home'">
-		<mm:node id="home_rubriek" />
-    <mm:listnodes type="users" constraints="account = 'KemperinkM'">
-      <mm:node id="news_editor" />
-      <mm:node number="archief" id="archief">
-        <mm:relatednodes type="artikel" id="this_artikel">
-          <mm:createrelation source="this_artikel" destination="natuurmonumente_subsite" role="subsite" />
-          <mm:createrelation source="this_artikel" destination="home_rubriek" role="creatierubriek" />
-          <mm:createrelation source="this_artikel" destination="home_rubriek" role="hoofdrubriek" />
-          <mm:createrelation source="this_artikel" destination="news_editor" role="schrijver" />
-        </mm:relatednodes>
-        <mm:related path="posrel,rubriek">
-          <mm:deletenode element="posrel" />
-        </mm:related>
-        <mm:createnode type="rubriek" id="archive_rubriek">
-          <mm:setfield name="naam">Archief</mm:setfield>
-        </mm:createnode>
-        <mm:node number="$archive_rubriek">
-           <mm:createalias>archive</mm:createalias>
-        </mm:node>
-        <mm:createrelation source="natuurmonumente_subsite" destination="archive_rubriek" role="parent">
-          <mm:setfield name="pos">99</mm:setfield>
-        </mm:createrelation>
-	      <mm:createrelation source="archive_rubriek" destination="archief" role="posrel">
-          <mm:setfield name="pos">1</mm:setfield>
-        </mm:createrelation>
-      </mm:node>
-    </mm:listnodes>
-	</mm:listnodes>
-	<% log.info("14. Merge library archief with news archief"); %>
-	<mm:createnode type="pools" id="bib_pool">
-		<mm:setfield name="name">Bibliotheek</mm:setfield>
-	</mm:createnode>
-	<mm:listnodes type="rubriek" constraints="naam = 'Bibliotheek'">
-		<mm:node id="bib_rubriek" />
-    <mm:listnodes type="users" constraints="account = 'BieW'">
-      <mm:node id="library_editor" />
-      <mm:node number="archief" id="news_archief" />
-      <mm:node number="bibarchief">
-        <mm:relatednodes type="artikel" id="this_artikel">
-          <mm:createrelation source="this_artikel" destination="natuurmonumente_subsite" role="subsite" />
-          <mm:createrelation source="this_artikel" destination="bib_rubriek" role="creatierubriek" />
-          <mm:createrelation source="this_artikel" destination="bib_rubriek" role="hoofdrubriek" />
-          <mm:createrelation source="this_artikel" destination="library_editor" role="schrijver" />
-          <mm:createrelation source="this_artikel" destination="bib_pool" role="posrel" />
-          <mm:createrelation source="news_archief" destination="this_artikel" role="contentrel" />
-        </mm:relatednodes>
-      </mm:node>
-      <mm:deletenode number="bibarchief" deleterelations="true" />
-    </mm:listnodes>
-	</mm:listnodes>
-	<% log.info("15. artikel met info pagina"); %>
-	<mm:listnodes type="editwizards" constraints="wizard = 'config/pagina/pagina_artikel_info'">
-		<mm:relatednodes type="paginatemplate" id="artikel_info_template">
-			<mm:createrelation source="artikel_info_template" destination="def_ew" role="related" />
-			<mm:relatednodes type="pagina">
-				<% String artikel_text = ""; %>
-				<mm:related path="contentrel,artikel" fields="artikel.intro" constraints="contentrel.pos='0'"
-					orderby="artikel.embargo" directions="UP" searchdir="destination" max="1">
-					<mm:field name="artikel.intro" jspvar="dummy" vartype="String" write="false">
-						<% artikel_text = dummy + "<br/><br/>"; %>
-					</mm:field>
-					<mm:node element="artikel">
-						<mm:related path="posrel,paragraaf" fields="paragraaf.titel,paragraaf.tekst"  orderby="posrel.pos" directions="UP">
-							<mm:field name="paragraaf.titel" jspvar="dummy" vartype="String" write="false">
-								<% artikel_text += "<b>" + dummy + "</b><br/>"; %>
-							</mm:field>
-							<mm:field name="paragraaf.tekst" jspvar="dummy" vartype="String" write="false">
-								<% artikel_text += dummy + "<br/><br/>"; %>
-							</mm:field>
-							<mm:deletenode element="paragraaf" deleterelations="true" />
-						</mm:related>
-					</mm:node>
-					<mm:deletenode element="artikel" deleterelations="true" />
-				</mm:related>
-				<mm:setfield name="omschrijving"><%= artikel_text %></mm:setfield>
-			</mm:relatednodes>
-		</mm:relatednodes>
-	   <mm:deletenode deleterelations="true" />
-	</mm:listnodes>
-	<% log.info("16. Rename education editwizard to their generic counterparts"); %> 
+	<% log.info("15. Rename education editwizard to their generic counterparts"); %> 
 	<mm:listnodes type="editwizards" constraints="wizard = 'config/education_pools/wizard'">
 		<mm:setfield name="name">opleidings categorieën</mm:setfield>
 		<mm:setfield name="wizard">config/pools/pools_education</mm:setfield>
@@ -328,7 +247,7 @@
 		<mm:setfield name="wizard">config/keywords/wizard</mm:setfield>
 		<mm:setfield name="nodepath">keywords</mm:setfield>
 	</mm:listnodes>
-	<% log.info("17. Rename some admin editwizards"); %>
+	<% log.info("16. Rename some admin editwizards"); %>
 	<mm:listnodes type="editwizards" constraints="wizard = 'config/pools/pools'">
 		<mm:setfield name="nodepath">pools</mm:setfield>
 		<mm:setfield name="fields">name</mm:setfield>
@@ -339,7 +258,7 @@
 		<mm:setfield name="wizard">/editors/usermanagement/userlist.jsp</mm:setfield>
 		<mm:setfield name="type">jsp</mm:setfield>
 	</mm:listnodes>
-	<% log.info("18. Rename some shop editwizards"); %>
+	<% log.info("17. Rename some shop editwizards"); %>
 	<mm:listnodes type="editwizards" constraints="wizard = '/editors/config/items/items'">
 		<mm:setfield name="wizard">config/items/items_shop</mm:setfield>
 		<mm:setfield name="nodepath">items</mm:setfield>
@@ -352,7 +271,7 @@
 		<mm:setfield name="orderby">pos</mm:setfield>
 		<mm:setfield name="startnodes"></mm:setfield>
 	</mm:listnodes>
-  <% log.info("19. Rename some producttype editwizards"); %>
+  <% log.info("18. Rename some producttype editwizards"); %>
   <mm:listnodes type="teaser">
     <mm:deletenode deleterelations="true" />
   </mm:listnodes>
@@ -403,23 +322,23 @@
       <mm:createrelation source="kb_page" destination="kb_q" role="posrel" />
     </mm:listnodes>
   </mm:list>
-  <% log.info("20. Make the iptree wizard relative"); %>
+  <% log.info("19. Make the iptree wizard relative"); %>
   <mm:listnodes type="editwizards" constraints="wizard = '/editors/config/pagina/pagina_iptree'">
 		<mm:setfield name="wizard">config/pagina/pagina_iptree</mm:setfield>
   </mm:listnodes>
-   <% log.info("21. Make the ipmap wizard relative"); %>
+   <% log.info("20. Make the ipmap wizard relative"); %>
    <mm:listnodes type="editwizards" constraints="wizard = '/editors/config/pagina/pagina_ipmap'">
 		<mm:setfield name="wizard">config/pagina/pagina_ipmap</mm:setfield>
 	</mm:listnodes>
-   <% log.info("22. Rename menu for evenement_bleuprints"); %>
+   <% log.info("21. Rename menu for evenement_bleuprints"); %>
    <mm:listnodes type="menu" constraints="naam = 'Activiteiten'">
 		<mm:setfield name="naam">Jeugdactiviteiten</mm:setfield>
 	</mm:listnodes>
-   <% log.info("23. Rename menu 'Archiefkast' to Contentlementen"); %>
+   <% log.info("22. Rename menu 'Archiefkast' to Contentlementen"); %>
    <mm:listnodes type="menu" constraints="naam = 'Archiefkast'">
 		<mm:setfield name="naam">Contentelementen</mm:setfield>
 	</mm:listnodes>
-   <% log.info("24. Rename menu 'Archiefkast' to Contentlementen"); %>
+   <% log.info("23. Rename menu 'Archiefkast' to Contentlementen"); %>
 	<mm:listnodes type="menu" constraints="naam = 'Speciaal onderhoud'">
 	    <mm:node id="so" />
    	 <mm:createnode type="editwizards" id="stats_ew">
