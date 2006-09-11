@@ -44,7 +44,7 @@ import org.mmbase.util.functions.*;
  * @application Tools, Jumpers
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Jumpers.java,v 1.36 2006-07-05 15:15:07 pierre Exp $
+ * @version $Id: Jumpers.java,v 1.37 2006-09-11 09:53:24 michiel Exp $
  */
 public class Jumpers extends MMObjectBuilder {
 
@@ -88,7 +88,7 @@ public class Jumpers extends MMObjectBuilder {
     /**
      * @since MMBase-1.7.1
      */
-    protected String getGUIIndicator(MMObjectNode node, Parameters args) {
+    public String getGUIIndicator(MMObjectNode node, Parameters args) {
         String field = (String) args.get("field");
         if (field == null || field.equals("url")) {
             String url = node.getStringValue("url");
