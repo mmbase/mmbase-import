@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * A wrapper around Lucene's {@link org.apache.lucene.search.IndexSearcher}. Every {@link Indexer} has its own Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.25 2006-09-11 13:27:57 michiel Exp $
+ * @version $Id: Searcher.java,v 1.26 2006-09-11 13:37:36 michiel Exp $
  * @todo  Should the StopAnalyzers be replaced by index.analyzer? Something else?
  **/
 public class Searcher {
@@ -258,19 +258,8 @@ public class Searcher {
                 } else {
                     BooleanQuery booleanQuery = new BooleanQuery();
                     booleanQuery.add(query, BooleanClause.Occur.MUST);
-                    boolean prohibited = type.equals("NE");
-                    boolean required   = ! prohibited;
-                    BooleanClause.Occur occur;
-                    if (required && ! prohibited) {
-                        occur = BooleanClause.Occur.MUST;
-                    } else if (! required && ! prohibited) {
-                        occur = BooleanClause.Occur.SHOULD;
-                    } else if (! required && prohibited) {
-                        occur = BooleanClause.Occur.MUST_NOT;
-                    } else {
-                        log.error("Impossible combinatation, cannot be both required and probited, ignoring prohibited.");
-                        occur = BooleanClause.Occur.MUST;
-                    }
+                    BooleanClause.Occur occur = type.equals("NE") ? BooleanClause.Occur.MUST_NOT : BooleanClause.Occur.MUST;
+                    // no support for 'SHOULD'.
                     booleanQuery.add(subQuery, occur);
                     query = booleanQuery;
                 }
