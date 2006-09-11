@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.75 2006-08-31 18:08:20 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.76 2006-09-11 11:36:25 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -493,7 +493,7 @@ public class BuilderReader extends DocumentReader {
                 }
 
                 results.put(functionName, function);
-                log.info("functions are now: " + results);
+                log.debug("functions are now: " + results);
             } catch (Throwable e) {
                 log.error(e.getMessage(), e);
             }
@@ -503,7 +503,7 @@ public class BuilderReader extends DocumentReader {
         for(Function fun : results.values()) {
             r.add(fun);
         }
-        log.info("Found functions " + r);
+        log.debug("Found functions " + r);
         return r;
 
     }
