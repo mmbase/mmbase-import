@@ -12,6 +12,7 @@ package org.mmbase.cache;
 import java.util.*;
 
 import org.mmbase.storage.search.*;
+import org.mmbase.module.core.MMObjectNode;
 
 /**
  * Query result cache used for getRelatedNodes from MMObjectNodes. Entries are invalidated on the
@@ -19,7 +20,7 @@ import org.mmbase.storage.search.*;
  * removed from the Node Cache itself.
  *
  * @author Michiel Meeuwissen
- * @version $Id: RelatedNodesCache.java,v 1.8 2006-09-04 12:53:51 michiel Exp $
+ * @version $Id: RelatedNodesCache.java,v 1.9 2006-09-11 12:03:57 michiel Exp $
  * @see   org.mmbase.module.core.MMObjectNode#getRelatedNodes
  * @since MMBase-1.7
  */
@@ -52,7 +53,7 @@ public class RelatedNodesCache extends QueryResultCache {
     private Map<Integer, Set<SearchQuery>> numberToKeys = new HashMap();
 
 
-    public synchronized List put(SearchQuery query, List queryResult) {
+    public synchronized List<MMObjectNode> put(SearchQuery query, List<MMObjectNode> queryResult) {
         // test cache policy before caching
         if (!checkCachePolicy(query)) return null;
         Integer number = (Integer) ((Step) query.getSteps().get(0)).getNodes().first();
