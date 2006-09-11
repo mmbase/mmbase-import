@@ -33,12 +33,12 @@ import org.mmbase.bridge.implementation.BasicQuery;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Bunst Eunders
- * @version $Id: QueryResultCache.java,v 1.35 2006-09-04 12:53:51 michiel Exp $
+ * @version $Id: QueryResultCache.java,v 1.36 2006-09-11 11:08:48 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
 
-abstract public class QueryResultCache extends Cache<SearchQuery, List> {
+abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectNode>> {
 
     private static final Logger log = Logging.getLoggerInstance(QueryResultCache.class);
 
