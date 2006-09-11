@@ -20,7 +20,7 @@ import org.mmbase.storage.search.*;
  * Defines options for a field to index.
  *
  * @author Pierre van Rooden
- * @version $Id: IndexFieldDefinition.java,v 1.7 2006-09-06 18:14:17 michiel Exp $
+ * @version $Id: IndexFieldDefinition.java,v 1.8 2006-09-11 13:59:14 michiel Exp $
  **/
 public class IndexFieldDefinition extends FieldDefinition {
 
@@ -47,16 +47,16 @@ public class IndexFieldDefinition extends FieldDefinition {
     public String decryptionPassword = "";
 
     // default for storing text
-    private boolean storeTextDefault = false;
+    private final boolean storeTextDefault;
 
     //d efault for merging text
-    private boolean mergeTextDefault = false;
+    private final boolean mergeTextDefault;
 
-    private Set allIndexedFieldsSet = null;
+    private final Set<String> allIndexedFieldsSet;
 
     public Indexer.Multiple multiple = Indexer.Multiple.ADD;
 
-    public IndexFieldDefinition(boolean storeTextDefault, boolean mergeTextDefault, Set allIndexedFieldsSet) {
+    public IndexFieldDefinition(boolean storeTextDefault, boolean mergeTextDefault, Set<String> allIndexedFieldsSet) {
         super();
         this.storeTextDefault = storeTextDefault;
         this.mergeTextDefault = mergeTextDefault;

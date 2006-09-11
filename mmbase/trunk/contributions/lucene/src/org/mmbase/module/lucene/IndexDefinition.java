@@ -11,8 +11,8 @@ package org.mmbase.module.lucene;
 
 import java.util.*;
 import org.mmbase.util.CloseableIterator;
-import org.mmbase.bridge.util.xml.query.QueryDefinition;
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.Cloud;
 import org.apache.lucene.analysis.Analyzer;
 
 /**
@@ -20,7 +20,7 @@ import org.apache.lucene.analysis.Analyzer;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: IndexDefinition.java,v 1.11 2006-09-11 10:47:36 michiel Exp $
+ * @version $Id: IndexDefinition.java,v 1.12 2006-09-11 13:59:14 michiel Exp $
  **/
 interface IndexDefinition {
 
@@ -38,7 +38,7 @@ interface IndexDefinition {
 
 
     /**
-     * Returns the entry with the given identifier
+     * Returns the entry(s) with the given identifier
      */
     CloseableIterator<? extends IndexEntry> getCursor(String identifier);
 
