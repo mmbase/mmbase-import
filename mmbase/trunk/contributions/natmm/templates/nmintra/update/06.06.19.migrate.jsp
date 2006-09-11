@@ -18,7 +18,7 @@
 	}
 }
 %>
-<mm:cloud method="http" rank="basic user" jspvar="cloud">
+<mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud">
 <mm:log jspvar="log">
    <% log.info("06.06.19"); %>
    Replacing all &lt;p&gt;'s by &lt;br&gt;&lt;br&gt;'s<br/> 

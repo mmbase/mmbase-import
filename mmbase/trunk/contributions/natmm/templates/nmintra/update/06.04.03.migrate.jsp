@@ -1,5 +1,5 @@
 <%@include file="/taglibs.jsp" %>
-<mm:cloud method="http" rank="basic user" jspvar="cloud">
+<mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud">
 <mm:log jspvar="log">
    <% log.info("06.04.03"); %>
 	Things to be done in this update: <br/>
