@@ -619,8 +619,8 @@ public class RemoteGenerator {
 
         StringBuffer sb = new StringBuffer();
         StringBuffer sb2 = new StringBuffer();
-        List v = new ArrayList(mmci.getClasses());
-        List w = new ArrayList();
+        List<XMLClass> v = new ArrayList<XMLClass>(mmci.getClasses());
+        List<XMLClass> w = new ArrayList<XMLClass>();
         // System.out.println("Sorting " + v);
 
         // now handle more specific classes
@@ -631,11 +631,12 @@ public class RemoteGenerator {
             // System.out.println("specificity:" + specificity);
             if (w.size() == currentSize) {
                 System.err.println("ERROR: Could not resolve order in ObjectWrapperHelper");
-                w.add(0, v);
+                w.addAll(v);
+                break;
             }
             currentSize = w.size();
-            for (Iterator i = v.iterator(); i.hasNext();) {
-                XMLClass xml = (XMLClass) i.next();
+            for (Iterator<XMLClass> i = v.iterator(); i.hasNext();) {
+                XMLClass xml = i.next();
                 if (w.containsAll(getSuperClasses(xml))) {
                     w.add(0, xml);
                     i.remove();
@@ -646,7 +647,6 @@ public class RemoteGenerator {
 
 
         //System.out.println("Result " + v);
-        Iterator i = w.iterator();
 
         sb.append("public static Object localToRMIObject(Object o) throws RemoteException {\n");
         sb.append("		Object retval = null;\n");
@@ -654,9 +654,7 @@ public class RemoteGenerator {
         sb2.append("		Object retval = null;\n");
 
         boolean isFirst = true;
-        while (i.hasNext()) {
-
-            XMLClass xmlClass = (XMLClass) i.next ();
+        for (XMLClass xmlClass : w) {
             String name = xmlClass.getName();
             String shortName = xmlClass.getShortName();
             String className = "Remote" + xmlClass.getClassName();
