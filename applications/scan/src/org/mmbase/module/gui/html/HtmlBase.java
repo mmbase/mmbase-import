@@ -16,6 +16,7 @@ import java.io.*;
 import org.mmbase.core.CoreField;
 import org.mmbase.module.*;
 import org.mmbase.module.core.*;
+import org.mmbase.module.builders.DayMarkers;
 import org.mmbase.module.builders.Jumpers;
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.storage.search.*;
@@ -32,13 +33,13 @@ import org.mmbase.util.logging.*;
  *
  * @application SCAN
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.54 2005-11-23 15:45:13 pierre Exp $
+ * @version $Id: HtmlBase.java,v 1.55 2006-09-11 10:44:27 pierre Exp $
  */
 public class HtmlBase extends ProcessorModule {
     /**
      * Logging instance
      */
-    private static Logger log = Logging.getLoggerInstance(HtmlBase.class.getName());
+    private static Logger log = Logging.getLoggerInstance(HtmlBase.class);
 
     sessionsInterface sessions;
     boolean scancache=false;
@@ -142,7 +143,7 @@ public class HtmlBase extends ProcessorModule {
         String where=tagger.Value("WHERE");
         String dbsort=tagger.Value("DBSORT");
         String dbdir=tagger.Value("DBDIR");
-        MMObjectBuilder bul=mmb.getMMObject(type);
+        MMObjectBuilder bul=mmb.getBuilder(type);
         long begin=(long)System.currentTimeMillis(),len;
         Enumeration e=null;
         if (dbsort==null) {
@@ -407,7 +408,7 @@ public class HtmlBase extends ProcessorModule {
             bul = srcnode.getBuilder();
 
             if (type!=null) {
-                bul=mmb.getMMObject(type);
+                bul=mmb.getBuilder(type);
                 if (bul==null) {
                     throw new Exception("cannot find object type : "+type);
                 }
@@ -448,7 +449,7 @@ public class HtmlBase extends ProcessorModule {
 
 
     public String doGetRelationValue(scanpage sp, StringTokenizer tok) {
-        MMObjectBuilder bul = mmb.getMMObject("typedef");
+        MMObjectBuilder bul = mmb.getBuilder("typedef");
 
         // reads $MOD-MMBASE-GETRELATIONVALUE-12-23-title where 12 is the source
         // number, 23 the target number and title the key of the relation
@@ -512,7 +513,7 @@ public class HtmlBase extends ProcessorModule {
     }
 
     public String doGetRelationCount(scanpage sp, StringTokenizer tok) {
-        MMObjectBuilder bul=mmb.getMMObject("typedef");
+        MMObjectBuilder bul=mmb.getBuilder("typedef");
         // reads $MOD-MMBASE-GETRELATIONCOUNT-12-images where 12 is the nodenumber
         // and images is optional (if not it will return the total number of
         // relations it has.
@@ -550,7 +551,7 @@ public class HtmlBase extends ProcessorModule {
     }
 
     public String doSetRelationValue(scanpage sp, StringTokenizer tok) {
-        MMObjectBuilder bul=mmb.getMMObject("typedef");
+        MMObjectBuilder bul=mmb.getBuilder("typedef");
         // reads $MOD-MMBASE-GETRELATIONVALUE-12-23-title where 12 is the source
         // number, 23 the target number and title the key of the relation
         // value you want.
@@ -624,7 +625,7 @@ public class HtmlBase extends ProcessorModule {
         Vector results=new Vector();
         try {
             String type=tok.nextToken();
-            bul=mmb.getMMObject(type);
+            bul=mmb.getBuilder(type);
             otype=bul.getNumber();
 
             snode=Integer.parseInt(tok.nextToken());
@@ -712,7 +713,7 @@ public class HtmlBase extends ProcessorModule {
             } else if (cmd.equals("CACHE")) {
                 return ""+doCache(sp,tok);
             } else if (cmd.equals("GETDAYMARKER")) {
-                return mmb.doGetAgeMarker(tok);
+                return doGetAgeMarker(tok);
                 // org.mmbase } else if (cmd.equals("FILEINFO")) {
                 // org.mmbase		return (doFile(rq, tok));
             } else if (cmd.equals("BUILDER")) {
@@ -720,7 +721,7 @@ public class HtmlBase extends ProcessorModule {
             } else if (cmd.equals("BUILDERACTIVE")) {
                 return isBuilderActive(tok);
             } else if (cmd.equals("GETJUMP")) {
-                Jumpers bul=(Jumpers)mmb.getMMObject("jumpers");
+                Jumpers bul=(Jumpers)mmb.getBuilder("jumpers");
                 String url=bul.getJump(tok);
                 if (url.startsWith("http://")) {
                     return url;
@@ -805,7 +806,7 @@ public class HtmlBase extends ProcessorModule {
             if( tok.hasMoreTokens()){
                 String fieldname=tok.nextToken();
                 String result=null;
-                MMObjectBuilder bul=mmb.getMMObject("typedef");
+                MMObjectBuilder bul=mmb.getBuilder("typedef");
                 MMObjectNode node=bul.getNode(nodeNr);
                 sessionInfo pagesession=getPageSession(sp);
                 if (pagesession!=null) {
@@ -832,7 +833,7 @@ public class HtmlBase extends ProcessorModule {
         if (tok.hasMoreTokens()) {
             String nodeNr=tok.nextToken();
             String fieldname=tok.nextToken();
-            MMObjectBuilder bul=mmb.getMMObject("fielddef");
+            MMObjectBuilder bul=mmb.getBuilder("fielddef");
             MMObjectNode node=bul.getNode(nodeNr);
             sessionInfo pagesession=getPageSession(sp);
             if (pagesession!=null) {
@@ -1036,7 +1037,7 @@ public class HtmlBase extends ProcessorModule {
     public String doBuilderReplace(scanpage sp,StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
             String type=tok.nextToken();
-            MMObjectBuilder bul=mmb.getMMObject(type);
+            MMObjectBuilder bul=mmb.getBuilder(type);
             if (bul!=null) {
                 return bul.replace(sp,tok);
             }
@@ -1052,7 +1053,7 @@ public class HtmlBase extends ProcessorModule {
     public String isBuilderActive(StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
             String type=tok.nextToken();
-            MMObjectBuilder bul=mmb.getMMObject(type);
+            MMObjectBuilder bul=mmb.getBuilder(type);
             if (bul!=null) {
                 return "TRUE";
             }
@@ -1063,7 +1064,7 @@ public class HtmlBase extends ProcessorModule {
     public Vector doBuilder(scanpage sp,StringTagger tagger, StringTokenizer tok) throws ParseException {
         if (tok.hasMoreTokens()) {
             String type=tok.nextToken();
-            MMObjectBuilder bul=mmb.getMMObject(type);
+            MMObjectBuilder bul=mmb.getBuilder(type);
             if (bul!=null) {
                 return bul.getList(sp,tagger,tok);
             }
@@ -1124,7 +1125,7 @@ public class HtmlBase extends ProcessorModule {
             String result=null;
             String nodeNr=tok.nextToken();
             String fieldname=tok.nextToken();
-            MMObjectBuilder bul=mmb.getMMObject("fielddef");
+            MMObjectBuilder bul=mmb.getBuilder("fielddef");
             MMObjectNode node=bul.getNode(nodeNr);
             if (node!=null) {
                 result=node.getStringValue(fieldname);
@@ -1148,7 +1149,7 @@ public class HtmlBase extends ProcessorModule {
         String dbsort=tagger.Value("DBSORT");
         String dbdir=tagger.Value("DBDIR");
         //log.debug("TYPE="+type);
-        MMObjectBuilder bul=mmb.getMMObject(type);
+        MMObjectBuilder bul=mmb.getBuilder(type);
         long begin=(long)System.currentTimeMillis(),len;
         Enumeration e=null;
         if (dbsort==null) {
@@ -1224,7 +1225,7 @@ public class HtmlBase extends ProcessorModule {
     public String getSearchAge(StringTokenizer tok) {
         String builder=tok.nextToken();
         log.debug("getSearchAge(): BUILDER="+builder);
-        MMObjectBuilder bul=(MMObjectBuilder)mmb.getMMObject(builder);
+        MMObjectBuilder bul=(MMObjectBuilder)mmb.getBuilder(builder);
         if (bul!=null) {
             return bul.getSearchAge();
         } else {
@@ -1236,4 +1237,23 @@ public class HtmlBase extends ProcessorModule {
         return multilevel_cache;
     }
 
+
+    /**
+     * Returns the number of marked days from a specified daycount (?)
+     */
+    public String doGetAgeMarker(StringTokenizer tok) {
+        if (tok.hasMoreTokens()) {
+            String age = tok.nextToken();
+            try {
+                int agenr = Integer.parseInt(age);
+                int agecount = ((DayMarkers)mmb.getBuilder("daymarks")).getDayCountAge(agenr);
+                return "" + agecount;
+            } catch (Exception e) {
+                log.debug(" Not a valid AGE");
+                return "No valid age given";
+            }
+        } else {
+            return "No age given";
+        }
+    }
 }
