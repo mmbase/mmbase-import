@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.29 2006-09-06 18:13:36 michiel Exp $
+ * @version $Id: Indexer.java,v 1.30 2006-09-11 10:47:36 michiel Exp $
  **/
 public class Indexer {
 
@@ -40,20 +40,19 @@ public class Indexer {
     /**
      * @since MMBase-1.9
      */
-    public enum Multiple {ADD, FIRST, LAST};
+    public enum Multiple {
+        ADD, FIRST, LAST;
+    };
 
 
     /**
      * Adds a Field to a Document considering also a 'multiple' setting.
-     * @since MMBase-1.8.2
+     * @since MMBase-1.9
      */
     public static void addField(Document document, Field field, Multiple multiple) {
+        if (multiple == null) multiple = Multiple.ADD;
         switch(multiple) {
-        case ADD:
-        default: 
-            document.add(field);
-            break;
-        case FIRST: 
+        case FIRST:
             if (document.get(field.name()) == null) {
                 document.add(field);
             }
@@ -61,6 +60,11 @@ public class Indexer {
         case LAST:
             document.removeFields(field.name());
             document.add(field);
+            break;
+        case ADD:
+        default:
+            document.add(field);
+            break;
         }
     }
 
@@ -192,7 +196,8 @@ public class Indexer {
             // process all queries
             for (IndexDefinition indexDefinition :  queries) {
                 if (klass.isAssignableFrom(indexDefinition.getClass())) {
-                    Iterator j = indexDefinition.getSubCursor(number);
+                    Iterator j = indexDefinition.getCursor(number);
+
                     if (log.isDebugEnabled()) {
                         log.debug(getName() + ": Updating index " + indexDefinition + " for " + number);
                     }
@@ -296,14 +301,12 @@ public class Indexer {
      */
     protected void index(IndexEntry entry, Document document) throws IOException {
         entry.index(document);
-        Iterator<IndexDefinition> j = entry.getSubDefinitions().iterator();
-        while (j.hasNext()) {
-            IndexDefinition subDef = j.next();
+        for (IndexDefinition subDef : entry.getSubDefinitions()) {
             if (subDef == null) {
                 log.warn("Found a sub definition which is null for " + entry);
                 continue;
             }
-            Iterator<IndexEntry> i = subDef.getSubCursor(entry.getIdentifier());
+            Iterator<? extends IndexEntry> i = subDef.getSubCursor(entry.getIdentifier());
             while(i.hasNext()) {
                 IndexEntry subEntry = i.next();
                 index(subEntry, document);

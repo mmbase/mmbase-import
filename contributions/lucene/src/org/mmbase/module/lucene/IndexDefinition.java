@@ -20,7 +20,7 @@ import org.apache.lucene.analysis.Analyzer;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: IndexDefinition.java,v 1.10 2006-09-06 16:47:14 michiel Exp $
+ * @version $Id: IndexDefinition.java,v 1.11 2006-09-11 10:47:36 michiel Exp $
  **/
 interface IndexDefinition {
 
@@ -28,12 +28,19 @@ interface IndexDefinition {
     /**
      * Returns an Iterator over all {@link IndexEntry}'s defined by this index.
      */
-    CloseableIterator<IndexEntry> getCursor();
+    CloseableIterator<? extends IndexEntry> getCursor();
 
     /**
-     * Returns an Iterator over all {@link IndexEntry}'s defined by this index, restricted by a certain identifier.
+     * Returns an Iterator over all {@link IndexEntry}'s defined by this index, restricted by a
+     * certain identifier. This is for use for 'subqueries'.
      */
-    CloseableIterator<IndexEntry> getSubCursor(String identifier);
+    CloseableIterator<? extends IndexEntry> getSubCursor(String parentIdentifier);
+
+
+    /**
+     * Returns the entry with the given identifier
+     */
+    CloseableIterator<? extends IndexEntry> getCursor(String identifier);
 
     /**
      * If this indexdefinition is a 'sub definition' then, a parent IndexEntry can be available...
@@ -51,6 +58,5 @@ interface IndexDefinition {
     Node getNode(Cloud cloud, String identifier);
 
 
-    
 }
 
