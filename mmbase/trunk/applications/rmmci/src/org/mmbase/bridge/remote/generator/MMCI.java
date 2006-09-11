@@ -22,14 +22,12 @@ import org.w3c.dom.*;
  * @author Kees Jongenburger <keesj@dds.nl>
  **/
 public class MMCI {
-    Map classes;
-    List classesList;
+    Map<String, XMLClass> classes = new HashMap<String, XMLClass>();
+    List<XMLClass> classesList = new ArrayList<XMLClass>();
 
     private static MMCI STATIC_MMCI = null;
 
     public MMCI(){
-        classes = new HashMap();
-        classesList = new ArrayList();
     }
 
     public static MMCI getDefaultMMCI() throws Exception{
@@ -60,14 +58,14 @@ public class MMCI {
         return mmci;
     }
 
-    public List getClasses(){
+    public List<XMLClass> getClasses(){
         return classesList;
     }
     public XMLClass getClass(String name)  {
         if (classes.get(name) == null) {
             return null;
         }
-        return (XMLClass)((XMLClass)classes.get(name)).clone(true);
+        return (XMLClass)(classes.get(name)).clone(true);
     }
 
     public static void addDefaultBridgeClasses(Element xmle, Document doc) throws Exception {
