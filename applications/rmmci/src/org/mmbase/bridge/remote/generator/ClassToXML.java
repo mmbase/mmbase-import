@@ -26,6 +26,24 @@ public class ClassToXML {
         return e;
     }
 
+    protected static void addType(StringBuffer buf, Type t) {
+        if (t instanceof ParameterizedType) {
+            ParameterizedType pt = (ParameterizedType) t;
+            addType(buf, pt.getRawType());
+            buf.append('<');
+            addType(buf, pt.getActualTypeArguments()[0]);
+            buf.append('>');
+        } else if (t instanceof Class) {
+            Class c = (Class) t;
+            buf.append(c.getName());
+        } else if (t instanceof TypeVariable) {
+            TypeVariable tv = (TypeVariable) t;
+            buf.append(tv.getName());
+        } else {
+            System.err.println("Don't know what to do with " + t.getClass() + " " + t);
+        }
+
+    }
     public static Element classToXML(String orgClassName, Document document) throws Exception {
         Set appendedMethods = new HashSet();
         Class clazz = Class.forName(orgClassName);
@@ -50,22 +68,23 @@ public class ClassToXML {
                            ! org.mmbase.bridge.Cloud.class.equals(clazz)) // cloud is serializable for some reasons, but it cannot really well.
                           ? "true" : "false");
 
-        Class[] interfaceClasses = clazz.getInterfaces();
-        String implementsString = "";
+        Type[] interfaceClasses = clazz.getGenericInterfaces();
+        StringBuffer implementsString = new StringBuffer();
         for (int counter = 0; counter < interfaceClasses.length; counter++) {
             if (counter != 0) {
-                implementsString += ",";
+                implementsString.append(",");
             }
-            implementsString += interfaceClasses[counter].getName();
+            Type type = interfaceClasses[counter];
+            addType(implementsString, type);
         }
         //System.out.println("" + clazz + " implements " + implementsString);
-        xmle.setAttribute("implements", implementsString);
+        xmle.setAttribute("implements", implementsString.toString());
         Method[] methods = clazz.getMethods();
         //add
         Method[] extraMethods = new Method[3];
-        extraMethods[0] = String.class.getMethod("toString", new Class[] {});
-        extraMethods[1] = String.class.getMethod("hashCode", new Class[] {});
-        extraMethods[2] = String.class.getMethod("equals", new Class[] { Object.class });
+        extraMethods[0] = String.class.getMethod("toString");
+        extraMethods[1] = String.class.getMethod("hashCode");
+        extraMethods[2] = String.class.getMethod("equals", Object.class);
         for (int x = 0; x < extraMethods.length; x++) {
             String name = extraMethods[x].getName();
             boolean add = true;
