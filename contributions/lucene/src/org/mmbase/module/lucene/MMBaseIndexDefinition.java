@@ -24,7 +24,7 @@ import org.apache.lucene.analysis.Analyzer;
  * fields can have extra attributes specific to Lucene searching.
  *
  * @author Pierre van Rooden
- * @version $Id: MMBaseIndexDefinition.java,v 1.10 2006-04-18 13:25:40 michiel Exp $
+ * @version $Id: MMBaseIndexDefinition.java,v 1.11 2006-09-11 10:47:36 michiel Exp $
  **/
 class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
     static private final Logger log = Logging.getLoggerInstance(MMBaseIndexDefinition.class);
@@ -42,7 +42,7 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
      * Subqueries for this index. The subqueries are lists whose starting element is the element node from the
      * current index result.
      */
-    List subQueries = new ArrayList();
+    List<IndexDefinition> subQueries = new ArrayList<IndexDefinition>();
 
     protected Analyzer analyzer;
 
@@ -83,7 +83,7 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
     /**
      * Converts an MMBase Node Iterator to an Iterator of IndexEntry-s.
      */
-    protected CloseableIterator getCursor(final NodeIterator nodeIterator, final Collection f) {
+    protected CloseableIterator<MMBaseEntry> getCursor(final NodeIterator nodeIterator, final Collection f) {
         return new CloseableIterator() {
                 int i = 0;
                 public boolean hasNext() {
@@ -92,7 +92,7 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
                 public void remove() {
                     nodeIterator.remove();
                 }
-                public Object next() {
+                public MMBaseEntry next() {
                     Node node = nodeIterator.nextNode();
                     MMBaseEntry entry = new MMBaseEntry(node, f, isMultiLevel, elementManager, subQueries);
                     i++;
@@ -111,12 +111,16 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
             };
     }
 
-    public CloseableIterator getCursor() {
+    public CloseableIterator<MMBaseEntry> getCursor() {
         String id = parent != null ? parent.getIdentifier() : null;
         return getCursor(getNodeIterator(id), fields);
     }
 
-    public CloseableIterator getSubCursor(String identifier) {
+    public CloseableIterator<MMBaseEntry> getSubCursor(String identifier) {
+        return getCursor(getNodeIterator(identifier), fields);
+    }
+
+    public CloseableIterator<MMBaseEntry> getCursor(String identifier) {
         return getCursor(getNodeIterator(identifier), fields);
     }
 

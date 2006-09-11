@@ -46,7 +46,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.66 2006-09-06 16:47:14 michiel Exp $
+ * @version $Id: Lucene.java,v 1.67 2006-09-11 10:47:36 michiel Exp $
  **/
 public class Lucene extends Module implements NodeEventListener, IdEventListener {
 
@@ -73,10 +73,10 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
     /**
      * Parameter constants for Lucene functions.
      */
-    protected final static Parameter VALUE = new Parameter("value", String.class);
+    protected final static Parameter<String> VALUE = new Parameter("value", String.class);
     static { VALUE.setDescription("the search term(s)"); }
 
-    protected final static Parameter INDEX = new Parameter("index", String.class);
+    protected final static Parameter<String> INDEX = new Parameter("index", String.class);
     static { INDEX.setDescription("the name of the index to search in"); }
 
     protected final static Parameter CLASS = new Parameter("class", Class.class, IndexDefinition.class);
@@ -125,8 +125,8 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
     private String indexPath = null;
     private Scheduler scheduler = null;
     private String defaultIndex = null;
-    private Map<String, Indexer> indexerMap    = new ConcurrentHashMap();
-    private Map<String, Searcher> searcherMap   = new ConcurrentHashMap();
+    private final Map<String, Indexer>  indexerMap    = new ConcurrentHashMap();
+    private final Map<String, Searcher> searcherMap   = new ConcurrentHashMap();
     private boolean readOnly = false;
 
 
@@ -155,10 +155,10 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
      * This may take a while.
      * This function can be called through the function framework.
      */
-    protected Function fullIndexFunction = new AbstractFunction("fullIndex", INDEX) {
-        public ReturnType.Void getFunctionValue(Parameters arguments) {
+    protected Function fullIndexFunction = new AbstractFunction<Void, String>("fullIndex", INDEX) {
+        public Void getFunctionValue(Parameters<String> arguments) {
             if (scheduler == null) throw new RuntimeException("Read only");
-            String index = (String) arguments.get(INDEX);
+            String index = arguments.get(INDEX);
             if (index == null || "".equals(index)) {
                 scheduler.fullIndex();
             } else {
@@ -177,7 +177,7 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
      * the right index is addressed.
      */
     protected Function deleteIndexFunction = new AbstractFunction("deleteIndex", INDEX, IDENTIFIER, CLASS) {
-            public ReturnType.Void getFunctionValue(Parameters arguments) {
+            public Void getFunctionValue(Parameters arguments) {
                 if (scheduler == null) throw new RuntimeException("Read only");
                 if(!readOnly){
                     String index      = (String) arguments.get(INDEX);
@@ -203,7 +203,7 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
      * It (re)loads the index for a specific item (identified by 'identifier' parameter).
      */
     protected Function updateIndexFunction = new AbstractFunction("updateIndex", new Parameter(IDENTIFIER, true),  CLASS) {
-            public ReturnType.Void getFunctionValue(Parameters arguments) {
+            public Void getFunctionValue(Parameters arguments) {
                 if (scheduler == null) throw new RuntimeException("Read only");
                 scheduler.updateIndex(arguments.getString(IDENTIFIER), (Class) arguments.get(CLASS));
                 return null;
@@ -225,9 +225,9 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
     {
         addFunction(statusFunction);
     }
-    protected Function statusDescriptionFunction = new AbstractFunction("statusdescription", Parameter.LOCALE) {
-        public String getFunctionValue(Parameters arguments) {
-            Locale locale = (Locale) arguments.get(Parameter.LOCALE);
+    protected Function statusDescriptionFunction = new AbstractFunction<String, Locale>("statusdescription", Parameter.LOCALE) {
+        public String getFunctionValue(Parameters<Locale> arguments) {
+            Locale locale = arguments.get(Parameter.LOCALE);
             SortedMap map = SortedBundle.getResource("org.mmbase.module.lucene.resources.status",  locale,
                                                      getClass().getClassLoader(),
                                                      SortedBundle.getConstantsProvider(Scheduler.class), Integer.class, null);
@@ -269,7 +269,7 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
     /**
      * This function returns Set with the names of all confiured indexes.
      */
-    protected Function listFunction = new AbstractFunction<Set<String>>("list") {
+    protected Function listFunction = new AbstractFunction("list") {
             public Set<String> getFunctionValue(Parameters arguments) {
                 return indexerMap.keySet();
             }
@@ -282,7 +282,7 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
     /**
      *This function returns the description as configured for a specific index and a specific locale.
      */
-    protected Function  descriptionFunction = new AbstractFunction<String>("description", INDEX, Parameter.LOCALE) {
+    protected Function  descriptionFunction = new AbstractFunction("description", INDEX, Parameter.LOCALE) {
             public String getFunctionValue(Parameters arguments) {
                 String key = arguments.getString(INDEX);
                 Locale locale = (Locale) arguments.get(Parameter.LOCALE);
@@ -534,7 +534,11 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
             log.service("Stopping Lucene Scheduler");
             scheduler.interrupt();
         }
-}
+        indexerMap.clear();
+        searcherMap.clear();
+        scheduler = null;
+        mmbase = null;
+    }
 
     public String getModuleInfo() {
         return "This module performs lucene searches and maintains indices";
@@ -605,13 +609,11 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
         };
 
     protected void readConfiguration(String resource) {
-        indexerMap = new HashMap();
-        searcherMap = new HashMap();
-        List configList = ResourceLoader.getConfigurationRoot().getResourceList(resource);
+        indexerMap.clear();
+        searcherMap.clear();
+        List<URL> configList = ResourceLoader.getConfigurationRoot().getResourceList(resource);
         log.service("Reading " + configList);
-        Iterator configs = configList.iterator();
-        while (configs.hasNext()) {
-            URL url = (URL) configs.next();
+        for(URL url : configList) {
             try {
                 if (! url.openConnection().getDoInput()) continue;
                 Document config = ResourceLoader.getDocument(url, true, Lucene.class);
@@ -638,8 +640,8 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
                             defaultIndex = indexName;
                             log.service("Default index: " + defaultIndex);
                         }
-                        Set allIndexedFieldsSet = new HashSet();
-                        Collection queries = new ArrayList();
+                        Set<String> allIndexedFieldsSet = new HashSet<String>();
+                        Collection<IndexDefinition> queries = new ArrayList<IndexDefinition>();
                         // lists
                         NodeList childNodes = indexElement.getChildNodes();
                         Analyzer analyzer = null;
@@ -675,7 +677,7 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
                         indexer.getDescription().fillFromXml("description", indexElement);
                         log.service("Add lucene index with name " + indexName);
                         indexerMap.put(indexName, indexer);
-                        String[]  allIndexedFields = (String[]) allIndexedFieldsSet.toArray(new String[0]);
+                        String[]  allIndexedFields = allIndexedFieldsSet.toArray(new String[0]);
                         Searcher searcher = new Searcher(indexer, allIndexedFields);
                         searcherMap.put(indexName, searcher);
                     }

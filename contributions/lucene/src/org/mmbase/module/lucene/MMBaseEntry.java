@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseEntry.java,v 1.10 2006-09-06 16:47:14 michiel Exp $
+ * @version $Id: MMBaseEntry.java,v 1.11 2006-09-11 10:47:36 michiel Exp $
  **/
 public class MMBaseEntry implements IndexEntry {
     static private final Logger log = Logging.getLoggerInstance(MMBaseEntry.class);
@@ -40,7 +40,7 @@ public class MMBaseEntry implements IndexEntry {
     // format for dates to index
     public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMddHHmmss");
 
-    private final Collection fields;
+    private final Collection<IndexFieldDefinition> fields;
     private final Node node;
     private final boolean multiLevel; // it this not the same as node instanceof VirtualNode?
     private final NodeManager elementManager;
@@ -49,9 +49,9 @@ public class MMBaseEntry implements IndexEntry {
 
     // set with numbers of nodes indexed so far - used to prevent the indexing
     // of fields already indexed
-    private final Set<String> indexed = new HashSet();
+    private final Set<String> indexed = new HashSet<String>();
 
-    MMBaseEntry(Node node, Collection fields, boolean multiLevel, NodeManager elementManager, Collection subQueries) {
+    MMBaseEntry(Node node, Collection<IndexFieldDefinition> fields, boolean multiLevel, NodeManager elementManager, Collection<IndexDefinition> subQueries) {
         this.fields = fields;
         this.multiLevel = multiLevel;
         this.elementManager = elementManager;
@@ -73,9 +73,7 @@ public class MMBaseEntry implements IndexEntry {
         document.add(new Field("number",   id,  Field.Store.YES, Field.Index.UN_TOKENIZED)); 
         if (multiLevel) {
             document.add(new Field("builder", elementManager.getName(),    Field.Store.YES, Field.Index.UN_TOKENIZED)); // keyword
-            Iterator fields = node.getNodeManager().getFields().iterator();
-            while (fields.hasNext()) {
-                org.mmbase.bridge.Field field = (org.mmbase.bridge.Field) fields.next();
+            for (org.mmbase.bridge.Field field : node.getNodeManager().getFields()) {
                 if (field.getName().indexOf(".") >=0 ) continue;
                 if (id.equals(field.getName())) continue; // was added already
                 Node subNode = node.getNodeValue(field.getName());
@@ -95,8 +93,7 @@ public class MMBaseEntry implements IndexEntry {
         }
         storeData(data);
         addStandardKeys(document);
-        for (Iterator i = fields.iterator(); i.hasNext(); ) {
-            IndexFieldDefinition fieldDefinition = (IndexFieldDefinition)i.next();
+        for (IndexFieldDefinition fieldDefinition : fields) {
             String fieldName = fieldDefinition.alias;
             if (fieldName == null)  fieldName = fieldDefinition.fieldName;
             if (document.getField(fieldName) == null || !fieldDefinition.keyWord) {
@@ -124,7 +121,7 @@ public class MMBaseEntry implements IndexEntry {
         }
     }
 
-    public Collection getSubDefinitions() {
+    public Collection<IndexDefinition> getSubDefinitions() {
         return subQueries != null ? subQueries : Collections.EMPTY_LIST;
     }
 
