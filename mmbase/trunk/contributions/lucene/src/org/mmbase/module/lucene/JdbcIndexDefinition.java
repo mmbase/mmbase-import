@@ -30,14 +30,14 @@ import org.mmbase.util.logging.*;
  * If for some reason you also need to do Queries next to MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JdbcIndexDefinition.java,v 1.11 2006-09-06 18:14:17 michiel Exp $
+ * @version $Id: JdbcIndexDefinition.java,v 1.12 2006-09-11 10:47:36 michiel Exp $
  **/
 public class JdbcIndexDefinition implements IndexDefinition {
 
     static private final Logger log = Logging.getLoggerInstance(JdbcIndexDefinition.class);
 
     private static final int CACHE_SIZE = 10 * 1024;
-    protected static Cache nodeCache = new Cache(CACHE_SIZE) {
+    protected static Cache<String, LazyMap> nodeCache = new Cache(CACHE_SIZE) {
             {
                 putCache();
             }
@@ -121,15 +121,15 @@ public class JdbcIndexDefinition implements IndexDefinition {
         return s;
     }
 
-    protected CloseableIterator getCursor(String s) {
+    protected CloseableIterator<JdbcEntry> getSqlCursor(String sql) {
         try {
             long start = System.currentTimeMillis();
-            log.debug("About to execute " + s);
+            log.debug("About to execute " + sql);
             final Connection con = getDirectConnection();
             final Statement statement = con.createStatement();
-            final ResultSet results = statement.executeQuery(s);
+            final ResultSet results = statement.executeQuery(sql);
             if (log.isDebugEnabled()) {
-                log.debug("Executed " + s + " in " + (System.currentTimeMillis() - start) + " ms");
+                log.debug("Executed " + sql + " in " + (System.currentTimeMillis() - start) + " ms");
             }
             final ResultSetMetaData meta = results.getMetaData();
 
@@ -141,7 +141,7 @@ public class JdbcIndexDefinition implements IndexDefinition {
                     return hasNext;
                 }
 
-                public Object next() {
+                public JdbcEntry next() {
                     if (! hasNext) {
                         throw new NoSuchElementException();
                     }
@@ -187,25 +187,28 @@ public class JdbcIndexDefinition implements IndexDefinition {
     /**
      * A map representing a row in a database. But only filled when actually used. So, only on first
      * use, a query is done.
-     * @since MMBase-1.8.2
+     * @since MMBase-1.9
      */
-    protected class LazyMap extends AbstractMap {
-        private  Map map = null;
+    protected class LazyMap extends AbstractMap<String, String> {
+        private  Map<String, String> map = null;
         private final String identifier;
         LazyMap(String identifier) {
             this.identifier = identifier;
         }
         protected void check() {
             if (map == null) {
+                Connection connection = null;
+                Statement statement = null;
+                ResultSet results = null;
                 try {
-                    final Connection connection = dataSource.getConnection();
-                    final Statement statement = connection.createStatement();
+                    connection = dataSource.getConnection();
+                    statement = connection.createStatement();
                     long start = System.currentTimeMillis();
                     String s = getFindSql(identifier);
                     if (log.isDebugEnabled()) {
                         log.debug("About to execute " + s + " because " , new Exception());
                     }
-                    ResultSet results = statement.executeQuery(s);
+                    results = statement.executeQuery(s);
                     ResultSetMetaData meta = results.getMetaData();
                     map = new HashMap();
                     if (results.next()) {
@@ -222,15 +225,16 @@ public class JdbcIndexDefinition implements IndexDefinition {
                     } else {
                         log.trace("Executed " + s + " in " + duration + " ms");
                     }
-                    if (results != null) results.close();
-                    if (statement != null) statement.close();
-                    if (connection != null) connection.close();
                 } catch (Exception e) {
                     throw new RuntimeException(e.getMessage(), e);
+                } finally {
+                    if (results != null) try { results.close();} catch (Exception e) {}
+                    if (statement != null) try { statement.close();} catch (Exception e) {}
+                    if (connection != null) try { connection.close();} catch (Exception e) {}
                 }
             }
         }
-        public Set entrySet() {
+        public Set<Map.Entry<String, String>> entrySet() {
             check();
             return map.entrySet();
         }
@@ -238,7 +242,7 @@ public class JdbcIndexDefinition implements IndexDefinition {
             check();
             return map.size();
         }
-        public Object get(Object key) {
+        public String get(String key) {
             if(JdbcIndexDefinition.this.equals(key)) return identifier;
             check();
             return map.get(key);
@@ -257,8 +261,8 @@ public class JdbcIndexDefinition implements IndexDefinition {
         }
     }
 
-    public org.mmbase.bridge.Node getNode(Cloud userCloud, final String identifier) {
-        Map m = (Map) nodeCache.get(identifier);
+    public org.mmbase.bridge.Node getNode(final Cloud userCloud, final String identifier) {
+        LazyMap m =  nodeCache.get(identifier);
         if (m == null) {
             m = new LazyMap(identifier);
             nodeCache.put(identifier, m);
@@ -287,14 +291,18 @@ public class JdbcIndexDefinition implements IndexDefinition {
     }
 
 
-    public CloseableIterator getCursor() {
-        return getCursor(sql);
+    public CloseableIterator<JdbcEntry> getCursor() {
+        return getSqlCursor(sql);
     }
 
-    public CloseableIterator getSubCursor(String identifier) {
+    public CloseableIterator<JdbcEntry> getSubCursor(String identifier) {
         // TODO, I THINK THIS MAY BE BROKEN FOR NOTIFY_UPDATING... CHECK!
         log.debug("Using getSubCursor for " + identifier);
-        return getCursor(getSubSql(identifier));
+        return getSqlCursor(getSubSql(identifier));
+    }
+
+    public CloseableIterator<JdbcEntry> getCursor(String identifier) {
+        return  getSqlCursor(getFindSql(identifier));
     }
 
     public IndexEntry getParent() {
@@ -319,8 +327,11 @@ public class JdbcIndexDefinition implements IndexDefinition {
             if (log.isDebugEnabled()) {
                 log.trace("Indexing "+ results + " with " + keyWords);
             }
-            document.add(new Field("builder", "VIRTUAL BUILDER", Field.Store.YES, Field.Index.UN_TOKENIZED)); // keyword
-            document.add(new Field("number",  getIdentifier(),   Field.Store.YES, Field.Index.UN_TOKENIZED)); // keyword
+            String id  = getIdentifier();
+            if (id != null) {
+                document.add(new Field("builder", "VIRTUAL BUILDER", Field.Store.YES, Field.Index.UN_TOKENIZED)); // keyword
+                document.add(new Field("number",  getIdentifier(),   Field.Store.YES, Field.Index.UN_TOKENIZED)); // keyword
+            }
             try {
                 for (int i = 1; i <= meta.getColumnCount(); i++) {
                     String value = org.mmbase.util.Casting.toString(results.getString(i));
@@ -340,20 +351,24 @@ public class JdbcIndexDefinition implements IndexDefinition {
             }
         }
 
-        public Collection getSubDefinitions() {
+        public Collection<IndexDefinition> getSubDefinitions() {
             return JdbcIndexDefinition.this.subQueries;
         }
 
         public String getIdentifier() {
-            try {
-                return results.getString(JdbcIndexDefinition.this.key);
-            } catch (SQLException sqe) {
-                log.error(sqe);
-                return "";
+            if (JdbcIndexDefinition.this.key != null && ! JdbcIndexDefinition.this.key.equals("")) {
+                try {
+                    return results.getString(JdbcIndexDefinition.this.key);
+                } catch (SQLException sqe) {
+                    log.error(sqe.getMessage(), sqe);
+                    return "";
+                }
+            } else {
+                return null;
             }
         }
-        public Set getIdentifiers() {
-            Set ids = new HashSet();
+        public Set<String> getIdentifiers() {
+            Set<String> ids = new HashSet();
             ids.add(getIdentifier());
             return ids;
         }
