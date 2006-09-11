@@ -210,9 +210,11 @@ Applications build file
     <ant dir="dove"          target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
+    <!-- temporary turned off - RMMCI fails to compile
     <ant dir="rmmci"         target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
+    -->
     <ant dir="oscache-cache"      target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
