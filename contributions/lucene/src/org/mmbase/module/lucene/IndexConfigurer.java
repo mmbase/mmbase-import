@@ -20,15 +20,15 @@ import org.mmbase.bridge.util.xml.query.*;
  * noticeably, it produces fields with a few new attributes.
  * 
  * @author Pierre van Rooden
- * @version $Id: IndexConfigurer.java,v 1.3 2005-12-27 15:45:06 michiel Exp $
+ * @version $Id: IndexConfigurer.java,v 1.4 2006-09-11 13:59:14 michiel Exp $
  **/
 public class IndexConfigurer extends QueryConfigurer {
 
-    Set allIndexedFieldsSet = null;
-    boolean storeText = false;
-    boolean mergeText = false;
+    final Set<String> allIndexedFieldsSet;
+    final boolean storeText;
+    final boolean mergeText;
 
-    IndexConfigurer(Set allIndexedFieldsSet, boolean storeText, boolean mergeText) {
+    IndexConfigurer(Set<String> allIndexedFieldsSet, boolean storeText, boolean mergeText) {
         this.allIndexedFieldsSet = allIndexedFieldsSet;
         this.storeText = storeText;
         this.mergeText = mergeText;
