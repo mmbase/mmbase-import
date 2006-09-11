@@ -24,98 +24,81 @@ import org.mmbase.util.logging.*;
 
 public class Importer
 {
+  
+   private static Logger log = Logging.getLoggerInstance(Importer.class);
+
    public static void main(String[] args) throws Exception
-   {  //.ini file
-      String sLocalPath = new File (".").getCanonicalPath ();
+   {  
+      //.ini file
+      String sLocalPath = null;
+      if(args==null) {
+        sLocalPath = new File (".").getCanonicalPath ();
+      } else {
+        sLocalPath = args[0];
+      }
       INIFile iniFile = new INIFile();
+      log.info("reading ini file " + sLocalPath + IFileConstants.PATH_SEPARATOR + "config.ini");
       iniFile.loadFile(sLocalPath + IFileConstants.PATH_SEPARATOR + "config.ini");
+      
       //Access to the cloud
       HashMap user = new HashMap();
       user.put("username","admin");
       user.put("password","admin2k");
 
-      CloudContext cloudContext = null;
       Cloud cloud = null;
       try
       {
-         cloudContext = ContextProvider.getCloudContext(iniFile.getProperty("Options", "rmi", null));
+         log.info("trying remote cloud");
+         CloudContext cloudContext = ContextProvider.getCloudContext(iniFile.getProperty("Options", "rmi", null));
          cloud = cloudContext.getCloud("mmbase");
       }
-      catch(Exception ex)
+      catch(Exception ex1)
       {
-         System.out.println("Failed to connect to the cloud: " + iniFile.getProperty("Options", "rmi", null));
-         System.out.println(ex.toString());
-         System.exit(1);
+        try {
+          
+          log.info("trying locale cloud");
+          cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase","name/password",user);
+          
+        } catch(Exception ex2) {
+        
+          log.error("Could not connect to a local or remote cloud");
+          log.error(ex2.toString());
+          System.exit(1);
+        }
       }
-
-/*
-      NodeManager nmPeople = cloud.getNodeManager("people");
-      NodeList nlPeople = nmPeople.getList(null, null, null);
-      System.out.println(nlPeople.size());
-      Node node = (Node) nlPeople.get(0);
-      System.out.print(node.getNumber());
-      System.out.print(node.getStringValue("firstname"));
-      node.setStringValue("firstname", "44444444444");
-      node.commit();
-
-      Node nodPeople = nmPeople.createNode();
-      nodPeople.setValue("firstname", "333333");
-      nodPeople.commit();
-*/
-/*
-      JFrame Main_Frame = new JFrame("Import script     rev 0.002");
-      Main_Frame.setSize(320,200);
-      Main_Frame.setBackground(new Color (0, 0, 0));
-      JPanel View = new JPanel();
-      JProgressBar test = new JProgressBar();
-      test.setString("test");
-      test.setForeground(new Color(255, 255, 255));
-      View.setBackground(new Color (0, 0, 0));
-      View.setForeground(new Color (255, 255, 255));
-      View.add(test);
-      Main_Frame.getContentPane().add(View);
-
-      Main_Frame.show();
-      Main_Frame.addWindowListener(new WindowAdapter()
-      {
-         public void windowClosing(WindowEvent e)
-         {
-            System.exit(0);
-         }
-      });
-*/
 
 
       for(int f = 0; f < 1000; f++)
       {//Main cycle for reading [File_xxx] groups
          String sPath = iniFile.getProperty("File_" + f, "path", null);
          String sType = iniFile.getProperty("File_" + f, "type", null);
-
+         log.info("reading " + sPath + " of type " + sType);
+         
          //If there are no any of these parameters
          if((sPath == null) || (sType == null)) break;
 
-         System.out.println("Task " + f + " started!");
+         log.info("Task " + f + " started!");
 
          if(sType.equals("2"))
          {//ROC Zeeland koppelingDidactor
             boolean bFirstLine = true;
             RandomAccessFile rfileInput = new RandomAccessFile(sLocalPath + IFileConstants.PATH_SEPARATOR + sPath, "r");
 
-            System.out.println("Collecting groups from file. Please wait.");
+            log.info("Collecting groups from file. Please wait.");
             HashSet hsGroups = collectGroupsTypeC(rfileInput);
 
-            System.out.println("Store groups in MMBase.");
+            log.info("Store groups in MMBase.");
             HashMap hmGroups = storeGroupsInMMBase(cloud, hsGroups);
 
             rfileInput.seek(0);
-            System.out.println("Collecting classes from file. Please wait.");
+            log.info("Collecting classes from file. Please wait.");
             HashSet hsClasses = collectClassesTypeC(rfileInput);
-            System.out.println("Store classes in MMBase.");
+            log.info("Store classes in MMBase.");
             HashMap hmClases = storeClassesInMMBase(cloud, hsClasses);
 
 
 
-            System.out.println("Reading people from file.");
+            log.info("Reading people from file.");
             //Rewind file to 0
             rfileInput.seek(0);
             ArrayList arliPeople = new ArrayList();
@@ -125,7 +108,7 @@ public class Importer
                if(lPrev != rfileInput.getFilePointer() * 100 / rfileInput.length())
                {
                   lPrev = rfileInput.getFilePointer() * 100 / rfileInput.length();
-                  System.out.println(lPrev + "%");
+                  log.info(lPrev + "%");
                }
 
                String sFullDataString = new String(rfileInput.readLine().getBytes("cp1252"));
@@ -153,12 +136,9 @@ public class Importer
 
                arliPeople.add(people);
             }
-            System.out.println("Store people in MMbase.");
+            log.info("Store people in MMbase.");
             storePeopleInMMBase(cloud, arliPeople, hmGroups, hmClases);
          }
-
-
-
 
          if(sType.equals("1"))
          {//ROC Zeeland
@@ -192,10 +172,6 @@ public class Importer
             }
             storePeopleInMMBase(cloud, arliPeople, hmGroups, hmClases);
          }
-
-
-
-
 
          if(sType.equals("0"))
          {//BC
@@ -247,9 +223,9 @@ public class Importer
             storePeopleInMMBase(cloud, arliPeople, hmGroups, hmClases);
          }
       }
-      System.out.println("----------------------------");
-      System.out.println("Done.");
-      System.out.println("All task have been finished.");
+      log.info("----------------------------");
+      log.info("Done.");
+      log.info("All task have been finished.");
    }
 
 
@@ -309,7 +285,7 @@ public class Importer
          if(lPrev != rfInput.getFilePointer() * 100 / rfInput.length())
          {
             lPrev = rfInput.getFilePointer() * 100 / rfInput.length();
-            System.out.println(lPrev + "%");
+            log.info(lPrev + "%");
          }
 
          String sFullDataString = new String(rfInput.readLine().getBytes("cp1252"));
@@ -377,7 +353,7 @@ public class Importer
          if(lPrev != rfInput.getFilePointer() * 100 / rfInput.length())
          {
             lPrev = rfInput.getFilePointer() * 100 / rfInput.length();
-            System.out.println(lPrev + "%");
+            log.info(lPrev + "%");
          }
 
          String sFullDataString = new String(rfInput.readLine().getBytes("cp1252"));
@@ -405,7 +381,7 @@ public class Importer
          if( iCounter * 100 / hsGroups.size() != iPrev)
          {
             iPrev = iCounter * 100 / hsGroups.size();
-            System.out.println(iPrev + "%");
+            log.info(iPrev + "%");
          }
          iCounter++;
 
@@ -440,7 +416,7 @@ public class Importer
          if( iCounter * 100 / hsClasses.size() != iPrev)
          {
             iPrev = iCounter * 100 / hsClasses.size();
-            System.out.println(iPrev + "%");
+            log.info(iPrev + "%");
          }
          iCounter++;
 
@@ -566,7 +542,7 @@ public class Importer
          if(iPrev != iCounter / arliPeople.size())
          {
             iPrev = iCounter / arliPeople.size();
-            System.out.println(iPrev + "%");
+            log.info(iPrev + "%");
          }
          iCounter++;
 
