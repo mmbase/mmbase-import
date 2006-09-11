@@ -38,7 +38,7 @@ import org.mmbase.module.database.MultiConnection;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: InformixSqlHandler.java,v 1.25 2006-07-03 11:59:16 johannes Exp $
+ * @version $Id: InformixSqlHandler.java,v 1.26 2006-09-11 10:53:27 pierre Exp $
  * @since MMBase-1.7
  */
 public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -194,7 +194,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
         boolean appended = false;
         while (iFields.hasNext()) {
             StepField field = (StepField) iFields.next();
-            if (field.getType() == org.mmbase.bridge.Field.TYPE_BINARY) continue; 
+            if (field.getType() == org.mmbase.bridge.Field.TYPE_BINARY) continue;
             if (appended) {
                 sb.append(',');
             }
@@ -696,7 +696,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                     }
 
                     // Loop through the fields until we find a match
-                    boolean found = false;                    
+                    boolean found = false;
                     for (int i = 0; i < query.getFields().size(); i++) {
                         StepField sf = (StepField) query.getFields().get(i);
                         String field = sf.getStep().getAlias() + "." + sf.getFieldName();
@@ -835,8 +835,8 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
     private void closeInformix(MultiConnection activeConnection) {
         Connection con = activeConnection.getRealConnection();
         try {
-            Method scrub = Class.forName("com.informix.jdbc.IfxConnection").getMethod("scrubConnection", null);
-            scrub.invoke(con, null);
+            Method scrub = Class.forName("com.informix.jdbc.IfxConnection").getMethod("scrubConnection");
+            scrub.invoke(con);
         } catch (Exception e) {
             log.error("Exception while calling releaseBlob(): " + e.getMessage());
         }
