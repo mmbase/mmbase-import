@@ -28,7 +28,6 @@ import org.mmbase.storage.search.SearchQueryHandler;
 import org.mmbase.util.ResourceLoader;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.mmbase.util.platform.setUser;
 import org.mmbase.util.xml.BuilderReader;
 import org.mmbase.util.xml.BuilderWriter;
 import org.mmbase.util.functions.*;
@@ -46,10 +45,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.202 2006-09-10 17:04:44 nklasens Exp $
+ * @version $Id: MMBase.java,v 1.203 2006-09-11 11:12:57 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
-
 
     /**
      * State of MMBase after shutdown
@@ -106,8 +104,8 @@ public class MMBase extends ProcessorModule {
 
     /**
      * Base name for the storage  to be accessed using this instance of MMBase.
-     * Retrieved from the mmbaseroot module configuration setUser
-     * If not specified the default is "def1"
+     * Retrieved from the mmbaseroot module configuration.
+     * If not specified the default is "def1".
      * Should be made private and accessed instead using getBaseName()
      * @scope private
      */
@@ -135,7 +133,7 @@ public class MMBase extends ProcessorModule {
     private TypeRel typeRel;
 
     /**
-     * The table that contains all loaded builders. Includes virtual builders.
+     * The map that contains all loaded builders. Includes virtual builders.
      * A collection of builders from this map can be accessed by calling {@link #getBuilders}
      */
     private Map mmobjs = new ConcurrentHashMap();
@@ -143,7 +141,7 @@ public class MMBase extends ProcessorModule {
     private CloudModel cloudModel;
 
     /**
-     * Determines whether MMBase is in development mode. 
+     * Determines whether MMBase is in development mode.
      * @see #inDevelopment()
      * @since MMBase-1.8.1
      */
@@ -179,12 +177,6 @@ public class MMBase extends ProcessorModule {
      * This can be null (does not exist) in older systems
      */
     private MMObjectBuilder rootBuilder;
-
-    /**
-     * Base url for the location of the DTDs. obtained using getDTDBase()
-     * @deprecated
-     */
-    private String dtdbase = "http://www.mmbase.org";
 
     /**
      * our securityManager (MMBaseCop)
@@ -223,15 +215,12 @@ public class MMBase extends ProcessorModule {
     private int mmbaseState = STATE_START_UP;
 
     /**
-     * The table that indexes builders being loaded.
-     * This map does not actually contian builders - it merely contains
-     * a reference that the builder is in the process of being loaded.
+     * This set contains the names of buidlers that are in the process of being loaded.
      * The map is used to prevent circular references when extending builders.
      *
      * @since MMBase-1.6
      */
     private Set loading = new HashSet();
-
 
     /**
      * Constructor to create the MMBase root module.
@@ -301,14 +290,8 @@ public class MMBase extends ProcessorModule {
             encoding = tmp;
         }
 
-        tmp = getInitParameter("DTDBASE");
-        if (tmp != null && !tmp.equals("")) {
-            dtdbase = tmp;
-        }
-
         // default locale has to be known before initializing datatypes:
         DataTypes.initialize();
-
 
         String localHost;
         try {
@@ -361,7 +344,7 @@ public class MMBase extends ProcessorModule {
 
         log.debug("Loading builders:");
 
-	cloudModel = ModelsManager.addModel("default","default.xml");
+        cloudModel = ModelsManager.addModel("default","default.xml");
 
         loadBuilders();
 
@@ -388,9 +371,8 @@ public class MMBase extends ProcessorModule {
 
         String writerpath = getInitParameter("XMLBUILDERWRITERDIR");
         if (writerpath != null && !writerpath.equals("")) {
-            Iterator t = mmobjs.values().iterator();
-            while (t.hasNext()) {
-                MMObjectBuilder builder = (MMObjectBuilder)t.next();
+            for (Iterator i = getBuilders().iterator(); i.hasNext(); ) {
+                MMObjectBuilder builder = (MMObjectBuilder)i.next();
                 if (!builder.isVirtual()) {
                     String name = builder.getTableName();
                     log.debug("WRITING BUILDER FILE =" + writerpath + File.separator + name);
@@ -425,8 +407,6 @@ public class MMBase extends ProcessorModule {
         // signal that MMBase is up and running
         mmbaseState = STATE_UP;
         log.info("MMBase is up and running");
-        checkUserLevel();
-
     }
 
     // javadoc inherited
@@ -455,13 +435,13 @@ public class MMBase extends ProcessorModule {
     public boolean isShutdown() {
         return  mmbaseState == STATE_SHUT_DOWN;
     }
-   
+
     /**
      * Returns <code>true</code> when MMBase is in development mode.
      * This can be used to determine behavior with regards to common errors,
-     * such as whether or not to throw an exception when a non-existing field 
+     * such as whether or not to throw an exception when a non-existing field
      * in a buidler is referenced.
-     * The value for this property ('true' or 'false') can be set in the "development" 
+     * The value for this property ('true' or 'false') can be set in the "development"
      * property in the mmbaseroot.xml configuration file.
      * The default value is <code>false</code>.
      * @since MMBase-1.8.1
@@ -544,7 +524,7 @@ public class MMBase extends ProcessorModule {
         // if the type is not for the current builder, determine the real builder
         return getTypeDef().getValue(nodeType);
     }
-    
+
     public MMObjectBuilder getBuilderForNode(final int number) {
         String builderName = getBuilderNameForNode(number);
         MMObjectBuilder nodeBuilder = null;
@@ -560,7 +540,7 @@ public class MMBase extends ProcessorModule {
         }
         return nodeBuilder;
     }
-    
+
     /**
      * @since MMBase-1.8
      */
@@ -570,7 +550,7 @@ public class MMBase extends ProcessorModule {
 
     /**
      * Retrieves a specified builder.
-     * Note: may get deprecated in the future - use getBuilder instead.
+     * @scope protected
      * @param name The name of the builder to retrieve
      * @return a <code>MMObjectBuilder</code> if found, <code>null</code> otherwise
      */
@@ -606,15 +586,6 @@ public class MMBase extends ProcessorModule {
      */
     public MMBaseCop getMMBaseCop() {
         return mmbaseCop;
-    }
-
-    /**
-     * Retrieves the loaded builders.
-     * @deprecated use {@link #getBuilders()}
-     * @return an <code>Enumeration</code> listing the loaded builders
-     */
-    public Enumeration getMMObjects() {
-        return Collections.enumeration(mmobjs.values());
     }
 
     /**
@@ -726,65 +697,12 @@ public class MMBase extends ProcessorModule {
      * Performs periodic maintenance.
      */
     public void maintainance() {
-        DayMarkers dayMarkers = (DayMarkers)getMMObject("daymarks");
+        DayMarkers dayMarkers = (DayMarkers)getBuilder("daymarks");
         if (dayMarkers != null) {
             dayMarkers.probe();
         } else {
             log.error("Can't access builder : daymarks");
         }
-    }
-
-    /**
-     * Converts a vector containing nodes to a hashmap,
-     * using a specified (unique) integer field as the hash key.
-     * @param se The vector containing the nodes
-     * @param mapper the name of the (integer) field that determines the hash key, i.e. "number"
-     * @return the node list mapped to a <code>Hashtable</code>
-     */
-    public Hashtable getSearchHash(Vector se, String mapper) {
-        Hashtable results = new Hashtable();
-        Enumeration t = se.elements();
-        MMObjectNode node;
-        while (t.hasMoreElements()) {
-            node = (MMObjectNode)t.nextElement();
-            results.put(new Integer(node.getIntValue(mapper)), node);
-        }
-        return results;
-    }
-
-    /**
-     * Converts a vector containing nodes to a comma seperated list of values,
-     * obtained from a specified integer field.
-     * @param se The vector containing the nodes
-     * @param mapper the name of the (integer) field whose value to include in the list
-     * @return a parenthised, comma-seperated list of values, as a <code>String</code>
-     */
-    public String getWhereList(Vector se, String mapper) {
-        if (se == null)
-            return null;
-        StringBuffer inlist = new StringBuffer();
-        inlist.append(" (");
-        Enumeration t = se.elements();
-        MMObjectNode node;
-        while (t.hasMoreElements()) {
-            node = (MMObjectNode)t.nextElement();
-            inlist.append(node.getIntValue(mapper) + ",");
-        }
-        if (inlist.length() >= 1)
-            inlist.setLength(inlist.length() - 1);
-        inlist.append(") ");
-        return inlist.toString();
-    }
-
-    /**
-     * Retrieves a reference to the sendmail module.
-     * @deprecated use getModule("sendmail") instead
-     *      SendMail will become a separate application.
-     *      In MMBase 1.8. this method will be removed
-     * @return a <code>SendMailInterface</code> object if the module was loaded, <code>null</code> otherwise.
-     */
-    public SendMailInterface getSendMail() {
-        return  (SendMailInterface)getModule("sendmail");
     }
 
     /**
@@ -803,67 +721,6 @@ public class MMBase extends ProcessorModule {
      */
     public String getHost() {
         return host;
-    }
-
-    /**
-     * Adds a remote observer to a specified builder.
-     * The observer is notified whenever an object of that builder is changed, added, or removed.
-     * @return <code>true</code> if adding the observer succeeded, <code>false</code> otherwise.
-     */
-    public boolean addRemoteObserver(String type, MMBaseObserver obs) {
-        MMObjectBuilder builder = getMMObject(type);
-        if (builder != null) {
-            return builder.addRemoteObserver(obs);
-        } else {
-            log.error("addRemoteObserver(): ERROR: Can't find builder : " + type);
-            return false;
-        }
-    }
-
-    /**
-     * Adds a local observer to a specified builder.
-     * The observer is notified whenever an object of that builder is changed, added, or removed.
-     * @return <code>true</code> if adding the observer succeeded, <code>false</code> otherwise.
-     */
-    public boolean addLocalObserver(String type, MMBaseObserver obs) {
-        MMObjectBuilder builder = getMMObject(type);
-        if (builder != null) {
-            return builder.addLocalObserver(obs);
-        } else {
-            log.error("addLocalObserver(): ERROR: Can't find builder : " + type);
-            return false;
-        }
-    }
-
-    /**
-     * Returns the number of marked days from a specified daycount (?)
-     * @deprecated SCAN related, should not be in this module.
-     */
-    public String doGetAgeMarker(StringTokenizer tok) {
-        if (tok.hasMoreTokens()) {
-            String age = tok.nextToken();
-            try {
-                int agenr = Integer.parseInt(age);
-                int agecount = ((DayMarkers)getMMObject("daymarks")).getDayCountAge(agenr);
-                return "" + agecount;
-            } catch (Exception e) {
-                log.debug(" Not a valid AGE");
-                return "No valid age given";
-            }
-        } else {
-            return "No age given";
-        }
-    }
-
-    /**
-     * Retrieves an unique key to use for a new node's number.
-     * Calls the storage to request the key. <code>Sychronized</code> so the same number cannot be dealt out to different nodes.
-     * Does possibly not work well with multiple mmbase systems that work on the same database.
-     * @return the new unique key as an <code>int</code> value
-     * @deprecated use getStorageManager().createKey()
-     */
-    public synchronized int getDBKey() {
-        return getStorageManager().createKey();
     }
 
     /**
@@ -912,16 +769,15 @@ public class MMBase extends ProcessorModule {
         Set builders = getBuilderLoader().getResourcePaths(ResourceLoader.XML_PATTERN, true/* recursive*/);
 
         log.info("Loading builders: " + builders);
-        Iterator i = builders.iterator();
-        while (i.hasNext()) {
+        for (Iterator i = builders.iterator(); i.hasNext(); ) {
+            String builderXml = (String)i.next();
             if (Thread.currentThread().isInterrupted()) {
                 return;
             }
-            String builderXml  = (String) i.next();
             String resourceName = ResourceLoader.getName(builderXml);
             String resourceDirectory = ResourceLoader.getDirectory(builderXml) + "/";
             loadBuilderFromXML(resourceName, resourceDirectory);
-	    if (cloudModel != null) {
+        if (cloudModel != null) {
                 cloudModel.addBuilder(resourceName,"builders/" + resourceDirectory + resourceName + ".xml");
             }
         }
@@ -929,24 +785,6 @@ public class MMBase extends ProcessorModule {
         log.debug("Starting Cluster Builder");
         clusterBuilder = new ClusterBuilder(this);
     }
-
-//    private void initClustering(){
-//        String clusterClass = getInitParameter("CLUSTERING");
-//        if (clusterClass != null) {
-//            log.debug("Starting ClusterManager: " + clusterClass);
-//
-//            Class newclass;
-//            try {
-//                newclass = Class.forName(clusterClass);
-//                clusterManager = (ClusterManager) newclass.newInstance();
-//            } catch (Exception e) {
-//                log.error("Failed to start MMBaseChangeInterface: " + e.getMessage());
-//                clusterManager = null;
-//            }
-//        } else {
-//            log.debug("Not starting a ClusterManager");
-//        }
-//    }
 
     /**
      * Initializes the builders, using the builder xml files in the config directory
@@ -958,7 +796,7 @@ public class MMBase extends ProcessorModule {
 
         // first initialize versions, if available (table must exist for quereis to succeed)
         log.debug("Versions:");
-        Versions versions = (Versions)getMMObject("versions");
+        Versions versions = (Versions)getBuilder("versions");
         if (versions != null) {
             versions.init();
         }
@@ -967,12 +805,9 @@ public class MMBase extends ProcessorModule {
         insRel.init();
         typeRel.init();
 
-
         log.debug("mmobjects, inits");
-        Iterator bi = mmobjs.entrySet().iterator();
-        while (bi.hasNext()) {
-            Map.Entry me = (Map.Entry)bi.next();
-            MMObjectBuilder builder = (MMObjectBuilder)me.getValue();
+        for (Iterator bi = getBuilders().iterator(); bi.hasNext();) {
+            MMObjectBuilder builder = (MMObjectBuilder)bi.next();
             log.debug("init " + builder);
             try {
                 initBuilder(builder);
@@ -1000,7 +835,7 @@ public class MMBase extends ProcessorModule {
         if (!builder.isVirtual()) {
             builder.init();
             typeDef.loadTypeDef(builder.getTableName());
-            Versions versions = (Versions)getMMObject("versions");
+            Versions versions = (Versions)getBuilder("versions");
             if (versions != null && versions.created()) {
                 checkBuilderVersion(builder.getTableName(), versions);
             }
@@ -1076,13 +911,12 @@ public class MMBase extends ProcessorModule {
      */
     public String getBuilderPath(String builderName, String path) {
         Set builders = getBuilderLoader().getResourcePaths(java.util.regex.Pattern.compile(path + ResourceLoader.XML_PATTERN.pattern()), true /*recursive*/);
-        Iterator i = builders.iterator();
         if (log.isDebugEnabled()) {
             log.debug("Found builder " + builders + " from " +  getBuilderLoader()  + " searching for " + builderName);
         }
         String xml = builderName + ".xml";
-        while (i.hasNext()) {
-            String builderXml = (String) i.next();
+        for (Iterator i = builders.iterator(); i.hasNext(); ) {
+            String builderXml = (String)i.next();
             if (builderXml.equals(xml)) {
                 return "";
             } else if (builderXml.endsWith("/" + xml)) {
@@ -1110,7 +944,7 @@ public class MMBase extends ProcessorModule {
         }
         String path = getBuilderPath(builderName, ipath);
         if (path != null) {
-	    if (cloudModel != null) {
+        if (cloudModel != null) {
                 cloudModel.addBuilder(builderName,path+builderName+".xml");
             }
             return loadBuilderFromXML(builderName, path);
@@ -1217,18 +1051,6 @@ public class MMBase extends ProcessorModule {
     }
 
     /**
-     * Retrieves the DTD base url.
-     * This value is set using the configuration file.
-     * @deprecated keesj: This method is not used. Document type definitions
-     * should contain a fully qualified url.
-     * I think the author was thinking of a dtdpath wich makes sence
-     * @return the dtd base as a <code>String</code>
-     */
-    public String getDTDBase() {
-        return dtdbase;
-    }
-
-    /**
      * Loads either the storage manager factory or the appropriate support class using the configuration parameters.
      * @since MMBase-1.7
      */
@@ -1281,25 +1103,7 @@ public class MMBase extends ProcessorModule {
         }
     }
 
-    /**
-     * Loads a Node again, using its 'right' parent.
-     * Reloading may retrieve extra fields if the original node was not loaded accurately.
-     * @deprecated Not necessary in most cases, with the possible exception of lists obtained from InsRel.
-     *   However, in the later case using this method is probably too costly.
-     */
-    public MMObjectNode castNode(MMObjectNode node) {
-        /* fake because solved
-         */
-        int otype = node.getOType();
-        String ename = typeDef.getValue(otype);
-        if (ename == null) {
-            return null;
-        }
-        MMObjectBuilder res = getMMObject(ename);
-        return res.getNode(node.getNumber());
-    }
-
-    /**
+    /*
      * Retrieves the autorisation type.
      * This value is set using the configuration file.
      * Examples are 'none' or 'basic'.
@@ -1341,7 +1145,6 @@ public class MMBase extends ProcessorModule {
         return timeZone;
     }
 
-
     /**
      * Retrieves the encoding.
      * This value is set using the configuration file.
@@ -1360,27 +1163,6 @@ public class MMBase extends ProcessorModule {
      */
     public boolean getState() {
         return mmbaseState == STATE_UP;
-    }
-
-    /**
-     * Checks and switches the user/grouplevel in which MMBase runs.
-     * The userlevel is set using the -Dmmbase:userlevel=user:group commandline parameter.
-     * Should probably be changed to <code>private</code>.
-     */
-    public void checkUserLevel() {
-        String level = System.getProperty("mmbase.userlevel");
-        if (level != null) {
-            log.info("CheckUserLevel ->  mmmbase.userlevel=" + System.getProperty("mmbase.userlevel"));
-            int pos = level.indexOf(':');
-            if (pos != -1) {
-                String user = level.substring(0, pos);
-                String group = level.substring(pos + 1);
-                setUser setuser = new setUser();
-                setuser.setUserGroup(user, group);
-            } else {
-                log.info("CheckUserLevel ->  mmmbase.userlevel= not defined as user:group");
-            }
-        }
     }
 
     /**
@@ -1460,6 +1242,5 @@ public class MMBase extends ProcessorModule {
             }
         }
     }
-
 
 }
