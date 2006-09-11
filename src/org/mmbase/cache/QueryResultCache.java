@@ -33,7 +33,7 @@ import org.mmbase.bridge.implementation.BasicQuery;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Bunst Eunders
- * @version $Id: QueryResultCache.java,v 1.36 2006-09-11 11:08:48 michiel Exp $
+ * @version $Id: QueryResultCache.java,v 1.37 2006-09-11 12:03:57 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -110,8 +110,8 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
     /**
      * @return an iterator of all observer instances
      */
-    public Iterator observerIterator(){
-        List observerList = new ArrayList();
+    public Iterator<Observer> observerIterator(){
+        List<Observer> observerList = new ArrayList<Observer>();
         synchronized(this){
             observerList.addAll(observers.values());
         }
@@ -122,7 +122,7 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
     /**
      * Puts a search result in this cache.
      */
-    public synchronized List put(SearchQuery query, List queryResult) {
+    public synchronized List<MMObjectNode> put(SearchQuery query, List<MMObjectNode> queryResult) {
         if (!checkCachePolicy(query)) return null;
         if (query instanceof BasicQuery) {
             query = ((BasicQuery) query).getQuery();
@@ -140,7 +140,7 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
      *
      * @param key A SearchQuery object.
      */
-    public synchronized List remove(Object key) {
+    public synchronized List<MMObjectNode> remove(Object key) {
         List result = super.remove(key);
 
         if (result != null) { // remove the key also from the observers.
