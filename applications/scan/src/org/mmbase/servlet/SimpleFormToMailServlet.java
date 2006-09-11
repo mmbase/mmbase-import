@@ -32,10 +32,10 @@ import org.mmbase.util.logging.*;
  * @application SCAN (depends from JamesServlet). Also depends on Email.
  * @deprecated Abstract and not used anywhere.
  * @author  marmaa@vpro.nl (Marcel Maatkamp)
- * @version $Id: SimpleFormToMailServlet.java,v 1.11 2004-10-01 08:41:48 pierre Exp $
+ * @version $Id: SimpleFormToMailServlet.java,v 1.12 2006-09-11 10:48:36 pierre Exp $
  */
 public abstract class SimpleFormToMailServlet extends JamesServlet {
-    static Logger log = Logging.getLoggerInstance(performance.class.getName());
+    static Logger log = Logging.getLoggerInstance(SimpleFormToMailServlet.class);
 
     protected SendMailInterface sendmail;
     boolean first=true;
