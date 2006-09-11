@@ -46,7 +46,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.68 2006-09-11 13:59:14 michiel Exp $
+ * @version $Id: Lucene.java,v 1.69 2006-09-11 14:33:43 michiel Exp $
  **/
 public class Lucene extends Module implements NodeEventListener, IdEventListener {
 
@@ -908,6 +908,10 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
                     log.service("start full index");
                     for (Indexer indexer : indexerMap.values()) {
                         indexer.fullIndex();
+                        if (Thread.currentThread().isInterrupted()) {
+                            log.info("Interrupted");
+                            return;
+                        }
                     }
                 }
                 public String toString() {
