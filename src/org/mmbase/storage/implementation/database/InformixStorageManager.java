@@ -37,8 +37,8 @@ public class InformixStorageManager extends DatabaseStorageManager {
     private void closeInformix() {
         Connection con = ((MultiConnection)activeConnection).getRealConnection();
         try {
-            Method scrub = Class.forName("com.informix.jdbc.IfxConnection").getMethod("scrubConnection", null);
-            scrub.invoke(con, null);
+            Method scrub = Class.forName("com.informix.jdbc.IfxConnection").getMethod("scrubConnection");
+            scrub.invoke(con);
         } catch (Exception e) {
             log.error("Exception while calling releaseBlob(): " + e.getMessage());
         }
