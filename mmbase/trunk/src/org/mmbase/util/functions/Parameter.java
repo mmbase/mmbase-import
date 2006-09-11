@@ -27,7 +27,7 @@ import java.io.*;
  * @author Daniel Ockeloen (MMFunctionParam)
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.32 2006-09-08 18:34:12 michiel Exp $
+ * @version $Id: Parameter.java,v 1.33 2006-09-11 11:37:28 michiel Exp $
  * @see Parameters
  */
 
@@ -121,7 +121,7 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
      * @param name the name of the parameter
      * @param type the class of the parameter's possible value
      */
-    public Parameter(String name, Class type) {
+    public Parameter(String name, Class<C> type) {
         super(name);
         dataType = DataTypes.createDataType(name, type);
     }
@@ -132,7 +132,7 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
      * @param type the class of the parameter's possible value
      * @param required whether the parameter requires a value
      */
-    public Parameter(String name, Class type, boolean required) {
+    public Parameter(String name, Class<C> type, boolean required) {
         this(name, type);
         dataType.setRequired(required);
     }
@@ -143,13 +143,13 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
      * @param type the class of the parameter's possible value
      * @param defaultValue the value to use if the parameter has no value set
      */
-    public Parameter(String name, Class type, C defaultValue) {
+    public Parameter(String name, Class<C> type, C defaultValue) {
         this(name, type);
         dataType.setDefaultValue(defaultValue);
     }
 
     public Parameter(String name, C defaultValue) {
-        this(name, defaultValue.getClass());
+        this(name, (Class<C>) defaultValue.getClass());
         dataType.setDefaultValue(defaultValue);
     }
 
@@ -198,7 +198,7 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
      * Returns the type of values that this parameter accepts.
      * @return the type as a Class
      */
-    public Class getTypeAsClass() {
+    public Class<C> getTypeAsClass() {
         return dataType.getTypeAsClass();
     }
 
