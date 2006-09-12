@@ -24,7 +24,7 @@ import org.mmbase.bridge.*;
  * {@link Module}, or {@link Node}) or to simply instantiate the Function object (e.g. {@link BeanFunction})
  *
  * @author Michiel Meeuwissen
- * @version $Id: FunctionFactory.java,v 1.8 2005-12-10 11:47:41 michiel Exp $
+ * @version $Id: FunctionFactory.java,v 1.9 2006-09-12 18:39:15 michiel Exp $
  * @since  MMBase-1.7
  */
 public class FunctionFactory {
@@ -77,7 +77,7 @@ public class FunctionFactory {
      * Gets a function object for a Bean
      */
     public static Function getFunction(Class claz, String functionName) throws java.lang.IllegalAccessException, InstantiationException, InvocationTargetException {
-        return BeanFunction.getFunction(claz,functionName);
+        return BeanFunction.getFunction(claz, functionName);
     }
 
 }
