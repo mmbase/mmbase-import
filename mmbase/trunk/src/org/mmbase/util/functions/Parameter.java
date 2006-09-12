@@ -17,6 +17,7 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import java.util.*;
 import java.io.*;
+import org.w3c.dom.*;
 
 /**
  * Each (function) argument is specified by a Parameter object.
@@ -27,7 +28,7 @@ import java.io.*;
  * @author Daniel Ockeloen (MMFunctionParam)
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.33 2006-09-11 11:37:28 michiel Exp $
+ * @version $Id: Parameter.java,v 1.34 2006-09-12 18:38:10 michiel Exp $
  * @see Parameters
  */
 
@@ -64,6 +65,61 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
      */
     public static final Parameter[] EMPTY  = new Parameter[0];
 
+    /**
+     * @since MMBase-1.9
+     */
+    public static Parameter[] readArrayFromXml(Element element) {
+        List<Parameter> list = new ArrayList();
+        org.w3c.dom.NodeList params = element.getElementsByTagName("param");
+        for (int i = 0 ; i < params.getLength(); i++) {
+            Parameter parameter = readFromXml((Element)params.item(i));
+            list.add(parameter);
+        }
+        return  list.toArray(Parameter.EMPTY);
+    }
+
+    /**
+     * @since MMBase-1.9
+     */
+    public static Parameter readFromXml(Element element) {
+        String name = element.getAttribute("name");
+        String type = element.getAttribute("type");
+        String description   = element.getAttribute("description");
+        Parameter parameter = new Parameter(name, getClassForName(type));
+
+        // check for a default value
+        if (element.getFirstChild() != null) {
+            parameter.setDefaultValue(parameter.autoCast(org.mmbase.util.xml.DocumentReader.getNodeTextValue(element)));
+        }
+        return parameter;
+    }
+
+    /**
+     * @since MMBase-1.9
+     */
+    public static Class getClassForName(String type) {
+        Class clazz;
+        try {
+            boolean fullyQualified = type.indexOf('.') > -1;
+            if (!fullyQualified) {
+                if (type.equals("int")) { // needed?
+                    clazz = int.class;
+                    } else if (type.equals("NodeList")) {
+                    clazz = org.mmbase.bridge.NodeList.class;
+                } else if (type.equals("Node")) {
+                    clazz =  org.mmbase.bridge.Node.class;
+                } else {
+                    clazz = Class.forName("java.lang." + type);
+                }
+                } else {
+                clazz = Class.forName(type);
+            }
+        } catch (ClassNotFoundException cne) {
+            log.warn("Cannot determine parameter type : '" + type + ", using Object as type instead.");
+            clazz = Object.class;
+        }
+        return clazz;
+    }
 
 
     // implementation of serializable, I hate java. Cannot make AbstractDescriptor Serializable, so doing it here.... sigh sigh.
@@ -260,7 +316,7 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
     public static class Wrapper extends Parameter {
         Parameter[] arguments;
 
-        public Wrapper(Parameter[] arg) {
+        public Wrapper(Parameter... arg) {
             super("[ARRAYWRAPPER]", Parameter[].class);
             arguments = arg;
         }
