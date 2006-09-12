@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.26 2006-09-08 18:34:12 michiel Exp $
+ * @version $Id: Parameters.java,v 1.27 2006-09-12 18:39:15 michiel Exp $
  * @see Parameter
  * @see #Parameters(Parameter[])
  */
@@ -76,7 +76,7 @@ public class Parameters<E> extends AbstractList<E> implements java.io.Serializab
      *   </code>
      * </pre>
      */
-    public Parameters(Parameter<E>[] def) {
+    public Parameters(Parameter<E>... def) {
         definition = Functions.define(def, new ArrayList<Parameter>()).toArray(Parameter.EMPTY);
         toIndex = definition.length;
         if (log.isDebugEnabled()) {
@@ -332,7 +332,7 @@ public class Parameters<E> extends AbstractList<E> implements java.io.Serializab
         return this;
     }
 
-    public List<E> subList(int fromIndex, int toIndex) {
+    public Parameters<E> subList(int fromIndex, int toIndex) {
         return new Parameters<E>(this, fromIndex, toIndex);
     }
 
