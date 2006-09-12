@@ -8,6 +8,7 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.framework;
+import java.util.*;
 import org.mmbase.util.LocalizedString;
 
 /**
@@ -15,7 +16,7 @@ import org.mmbase.util.LocalizedString;
  * components, and may be requested several views.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Component.java,v 1.2 2006-08-30 20:46:05 michiel Exp $
+ * @version $Id: Component.java,v 1.3 2006-09-12 19:25:59 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Component {
@@ -24,11 +25,14 @@ public interface Component {
 
     LocalizedString getDescription();
 
-    void configure(org.w3c.dom.Document doc);
+    void configure(org.w3c.dom.Element doc);
+
+    Map<String, View> getViews();
+
 
     // something like this?
 
-    // View getAdminView();
+    // View getAdminView(Parameters);
     // View getView();
     // Collection<Component> getDependencies();
 }
