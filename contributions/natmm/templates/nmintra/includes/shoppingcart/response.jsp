@@ -56,8 +56,8 @@ String thisForm = null;
    	   ><mm:notpresent referid="emailfound"><%
               responseText += "Er is geen email-adres gevonden voor het onderstaande product. " 
                   + "De bestelling wordt daarom verstuurd naar het standaard email adres van FZ: "
-                  + defaultFZAddress + "<br><br>";
-              putEmails(emails, defaultFZAddress, thisShop_item);
+                  + NMIntraConfig.defaultFZAddress + "<br><br>";
+              putEmails(emails, NMIntraConfig.defaultFZAddress, thisShop_item);
          %></mm:notpresent
       ></mm:isempty
    ></mm:field

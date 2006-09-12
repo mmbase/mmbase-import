@@ -9,7 +9,14 @@ String messageTitle = "";
 String messageBody = "";
 String messageHref = "index.jsp";
 String messageLinktext = "naar de homepage";
-String messageLinkParam = "target=\"_top\"";    
+String messageLinkParam = "target=\"_top\"";
+
+String emailHelpText = 
+    "<br><br>N.B. Op sommige computers binnen Natuurmonumenten is het niet mogelijk om direct op een link in de email te klikken."
+  + "<br>Als dit bij jou het geval is moet je de volgende handelingen uitvoeren:"
+  + "<br>1.open het programma Internet Explorer"
+  + "<br>2.kopieer de bovenstaande link uit deze email naar de adres balk van Internet Explorer"
+  + "<br>3.druk op de \"Enter\" toets";
 
 if(date.equals("")) { // *** send an email to ask confirmation ***
     long addTime = (new Date()).getTime()/1000;
@@ -48,9 +55,9 @@ if(date.equals("")) { // *** send an email to ask confirmation ***
         String commitLink = HttpUtils.getRequestURL(request) + templateQueryString + "&pst=|action=commit|date=" + addTime;
         %><mm:createnode type="email" id="thismail"
             ><mm:setfield name="subject">Bevestigen wijziging gegevens op de Wie-is-wie.</mm:setfield
-            ><mm:setfield name="from"><%= defaultFromAddress %></mm:setfield
+            ><mm:setfield name="from"><%= ap.getFromEmailAddress() %></mm:setfield
             ><mm:setfield name="to"><%= emailId %></mm:setfield
-            ><mm:setfield name="replyto"><%= defaultFromAddress %></mm:setfield
+            ><mm:setfield name="replyto"><%= ap.getFromEmailAddress() %></mm:setfield
             ><mm:setfield name="body">
                 <multipart id="plaintext" type="text/plain" encoding="UTF-8">
                 </multipart>
@@ -102,9 +109,9 @@ if(date.equals("")) { // *** send an email to ask confirmation ***
             if(!pzText.equals("")) { 
                 %><mm:createnode type="email" id="thismail" 
                     ><mm:setfield name="subject"><%= "Beaufort wijzigingen voor " + thisPerson %></mm:setfield
-                    ><mm:setfield name="from"><%= defaultFromAddress %></mm:setfield
-                    ><mm:setfield name="to"><%= defaultPZAddress %></mm:setfield
-                    ><mm:setfield name="replyto"><%= defaultFromAddress %></mm:setfield
+                    ><mm:setfield name="from"><%= ap.getFromEmailAddress() %></mm:setfield
+                    ><mm:setfield name="to"><%= NMIntraConfig.defaultPZAddress %></mm:setfield
+                    ><mm:setfield name="replyto"><%= ap.getFromEmailAddress() %></mm:setfield
                     ><mm:setfield name="body">
                         <multipart id="plaintext" type="text/plain" encoding="UTF-8">
                         </multipart>
@@ -121,9 +128,9 @@ if(date.equals("")) { // *** send an email to ask confirmation ***
             if(!fzText.equals("")) { 
                 %><mm:createnode type="email" id="thismail" 
                     ><mm:setfield name="subject"><%= "Telefoonboek wijzigingen voor " + thisPerson %></mm:setfield
-                    ><mm:setfield name="from"><%= defaultFromAddress %></mm:setfield
-                    ><mm:setfield name="to"><%= defaultFZAddress %></mm:setfield
-                    ><mm:setfield name="replyto"><%= defaultFromAddress %></mm:setfield
+                    ><mm:setfield name="from"><%= ap.getFromEmailAddress() %></mm:setfield
+                    ><mm:setfield name="to"><%= NMIntraConfig.defaultFZAddress %></mm:setfield
+                    ><mm:setfield name="replyto"><%= ap.getFromEmailAddress() %></mm:setfield
                     ><mm:setfield name="body">
                         <multipart id="plaintext" type="text/plain" encoding="UTF-8">
                         </multipart>
@@ -148,8 +155,8 @@ if(date.equals("")) { // *** send an email to ask confirmation ***
             
             messageTitle = "Je wijzigingen zijn bevestigd";
             messageBody = "Bedankt voor het doorgeven van je wijzigingen:<br><br><br>Je wijzigingen zijn:";
-            if(!pzText.equals("")) messageBody += "<br><li>verstuurd aan de afdeling Personeelszaken (" + defaultPZAddress + ")";
-            if(!fzText.equals("")) messageBody += "<br><li>verstuurd aan de afdeling Facilitaire Zaken (" + defaultFZAddress + ")";
+            if(!pzText.equals("")) messageBody += "<br><li>verstuurd aan de afdeling Personeelszaken (" + NMIntraConfig.defaultPZAddress + ")";
+            if(!fzText.equals("")) messageBody += "<br><li>verstuurd aan de afdeling Facilitaire Zaken (" + NMIntraConfig.defaultFZAddress + ")";
             if(!dcText.equals("")) messageBody += "<br><li>verwerkt in \"Vaste vrije dagen\" en/of \"En verder\"";
             if(!pzText.equals("")||!fzText.equals("")) {
                     messageBody += "<br><br><br>Afhankelijk van de bezetting en hoeveelheid werk op deze afdelingen zullen je wijzigingen "
@@ -161,7 +168,7 @@ if(date.equals("")) { // *** send an email to ask confirmation ***
         messageTitle = "Geen wijzigingen die bevestigd kunnen worden";
         messageBody = "Op dit moment bevat het Intranet geen wijzigigen die bevestigd kunnen worden. " 
                 + "Als je de wijzigingen reeds hebt bevestigd heb je hiervan per email een bevestiging ontvangen. "
-                + "Zo niet, dan kun je contact opnemen met <a href=\"mailto:" + defaultFromAddress + "\">" + defaultFromAddress + "</a>.";
+                + "Zo niet, dan kun je contact opnemen met <a href=\"mailto:" + ap.getFromEmailAddress() + "\">" + ap.getFromEmailAddress() + "</a>.";
         %><%@include file="../showmessage.jsp" 
     %></mm:notpresent><%
 } %>

@@ -51,38 +51,42 @@ function startPhone() {
    <table border="0" cellspacing="0" cellpadding="0" style="width:100%;">
    	<form name="searchform" action="<%= requestURL %>search.jsp?p=search" onSubmit="return startSearch();">
    	<tr>
-   	<td><input type="text" name="search" value="<% if(searchId.equals("")||actionId.equals("adv_search")){ %>ik zoek op ...<% } else { %><%= searchId %><% } 
-   	  %>" style="text-align:left;width:110px;" <% if(searchId.equals("")||actionId.equals("adv_search")){ %>onClick="this.value='';"<% } %> /></td>
+   	<td><input type="text" name="search" value="<%= (searchId.equals("")||actionId.equals("adv_search") ? defaultSearchText : searchId )
+      %>" onClick="if(this.value=='<%= defaultSearchText %>') { this.value=''; }" style="text-align:left;width:110px;" /></td>
    	<td style="padding-left:3px;padding-top:1px;">
    	  <input type="submit" name="Submit" value="Zoek" style="text-align:center;font-weight:bold;"></td>
    	<td style="padding-left:3px;padding-top:1px;">
    	  <input type="hidden" name="adv">
    	  <input type="submit" name="AdvSubmit" value="Uitgebreid Zoeken" style="text-align:center;font-weight:bold;width:110px;" onClick="document.searchform.adv.value='adv_search';"></td>
    	<td style="width:80%;text-align:right;">
-   	<%
-   	String owners = ph.getOwners(cloud,paginaID,breadcrumbs);
-   	String ownersEmail = "";
-   	if(!owners.equals("")) {
-   		%>
-   		<mm:list nodes="<%= owners %>" path="users" fields="users.emailadres">
-   			<mm:field name="users.emailadres" jspvar="users_email" vartype="String" write="false">
-   				<%
-   				ownersEmail += (ownersEmail.equals("") ? "" : ";") + users_email;
-   				%>
-   			</mm:field>
-   		</mm:list>
-   		<%
-   		if(!ownersEmail.equals("")) { 
-   			%>
-   			<a href="mailto:<%= ownersEmail %>?subject=Betreft <% 
-   						%><mm:node number="<%= rootId %>"><mm:field name="naam" /></mm:node
-   						> - <mm:node number="<%= paginaID %>"><mm:field name="titel" /></mm:node
-   						>" title="Email de beheerder van deze pagina">
-   				<img src="media/email.gif" alt="Email de beheerder van deze pagina" border="0">
-   			</a>
-   			<%
-   		}
-   	} %>
+      <%--
+      String owners = ph.getOwners(cloud,paginaID,breadcrumbs);
+      String ownersEmail = "";
+      if(!owners.equals("")) {
+        %>
+        <mm:list nodes="<%= owners %>" path="users" fields="users.emailadres">
+          <mm:field name="users.emailadres" jspvar="users_email" vartype="String" write="false">
+            <%
+            ownersEmail += (ownersEmail.equals("") ? "" : ";") + users_email;
+            %>
+          </mm:field>
+        </mm:list>
+        <%
+        if(!ownersEmail.equals("")) { 
+          %>
+          <a href="mailto:<%= ownersEmail %>?subject=Betreft <% 
+                %><mm:node number="<%= rootId %>"><mm:field name="naam" /></mm:node
+                > - <mm:node number="<%= paginaID %>"><mm:field name="titel" /></mm:node
+                >" title="Email de beheerder van deze pagina">
+            <img src="media/email.gif" alt="Email de beheerder van deze pagina" border="0">
+          </a>
+          <%
+        }
+      }
+      --%>
+      <a href="<%= ph.createPaginaUrl("feedback",request.getContextPath()) %>">
+   				<img src="media/email.gif" alt="Email nieuws of vragen" border="0" style="margin-top:5px;">
+   		</a>
    	</td>
    	</tr>
    	</form>
@@ -95,7 +99,7 @@ function startPhone() {
    	  <tr>
    	  <td><img src="media/telefoon.gif" alt="Zoeken in het smoelenboek" onclick="startPhone();"></td>
    	  <td><input type="text" name="name" value="<% if(nameId.equals("")){ %><%= nameEntry %><% } else { %><%= nameId %><% } 
-   			%>" style="text-align:left;width:166px;" <% if(searchId.equals("")){ %>onClick="this.value='';"<% } %> /></td>
+   			%>" style="text-align:left;width:166px;" onClick="if(this.value=='<%= nameEntry %>') { this.value=''; }" /></td>
    	  <td><img src="media/spacer.gif" width="7" height="1"></td>
    	  <td><img src="media/spacer.gif" width="1" height="1"><br>
    			<input type="submit" name="phone" value="Zoek"  style="text-align:center;font-weight:bold;"></td>

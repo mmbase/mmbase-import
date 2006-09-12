@@ -1,130 +1,100 @@
-<%  String responseText = "Deze email is verstuurd via een formulier uit het intranet.<br><br>";
-    String subjectText = "";
-    boolean isValidAnswer = true;
-    String warningMessage = "U bent vergeten de volgende velden in te vullen:<ul>";
-    String visitorAddress = "";
+<% 
+String responseText = "Deze email is verstuurd via een formulier uit het intranet.<br><br>";
+String subjectText = "";
+boolean isValidAnswer = true;
+String warningMessage = "U bent vergeten de volgende velden in te vullen:<ul>";
+String visitorAddress = "";
 
-    int q = 0;
-    Vector questions = new Vector();
-    Vector answers = new Vector();
-    String username =  ""; 
+int q = 0;
+Vector questions = new Vector();
+Vector answers = new Vector();
+String username =  ""; 
+
 %><mm:list nodes="<%= paginaID %>" path="pagina,posrel,formulier" 
     fields="formulier.number,formulier.titel,formulier.emailadressen" 
     orderby="posrel.pos" directions="UP"
 
-    ><% String formulier_number = ""; 
-    %><mm:field name="formulier.number" jspvar="dummy" vartype="String" write="false"
-        ><% formulier_number= dummy; 
-    %></mm:field
-
-    ><% String formulier_title = ""; 
-    %><mm:field name="formulier.titel" jspvar="dummy" vartype="String" write="false"
-        ><% formulier_title = dummy;
-            subjectText = formulier_title;
-    %></mm:field
+    ><mm:node element="formulier" jspvar="thisForm"><% 
     
-    ><% String formulier_editors_note = ""; 
-    %><mm:field name="formulier.emailadressen" jspvar="dummy" vartype="String" write="false"
-        ><% formulier_editors_note = dummy; 
-    %></mm:field
+    String formulier_number = thisForm.getStringValue("number");
+    String formulier_title = thisForm.getStringValue("titel");
+    subjectText = formulier_title;
+    String formulier_emailaddresses = thisForm.getStringValue("emailadressen"); 
+    String formulier_subjectlist = ";" + thisForm.getStringValue("titel_de") + ";";
+    String formulier_confirmtitle = thisForm.getStringValue("titel_fra"); 
+    String formulier_omschrijving = thisForm.getStringValue("omschrijving"); 
     
-    ><% String formulier_copyright = ""; 
-    %><mm:field name="formulier.titel_de" jspvar="dummy" vartype="String" write="false"
-        ><% formulier_copyright = ";" + dummy + ";"; 
-    %></mm:field
-
-    ><% String formulier_titel_fra = ""; 
-    %><mm:field name="formulier.titel_fra" jspvar="dummy" vartype="String" write="false"
-        ><% formulier_titel_fra = dummy; 
-    %></mm:field
-	 
-	 ><% String formulier_omschrijving = ""; 
-    %><mm:field name="formulier.omschrijving" jspvar="dummy" vartype="String" write="false"
-        ><% formulier_omschrijving = dummy; 
-    %></mm:field
-	 
-	 ><mm:list nodes="<%= formulier_number %>" path="formulier,posrel,formulierveld"
-        orderby="posrel.pos" directions="UP"
-
-        ><% String questions_type = ""; 
-        %><mm:field name="formulierveld.type" jspvar="dummy" vartype="String" write="false"
-            ><% questions_type = dummy; 
-        %></mm:field
+	  %><mm:related path="posrel,formulierveld" orderby="posrel.pos" directions="UP"><% 
         
-        ><% boolean isRequired = false; 
-        %><mm:field name="formulierveld.verplicht" jspvar="dummy" vartype="String" write="false"
-            ><% isRequired = dummy.equals("1"); 
-        %></mm:field
-        
-        ><% String questions_number = ""; 
-        %><mm:field name="formulierveld.number" jspvar="dummy" vartype="String" write="false"
-            ><% questions_number= dummy; 
-        %></mm:field
-        
-        ><% boolean inSubject = false;
-        
-        // *** add the answers to the following questions to the subject ***
+        // *** add the answers to the following questions to the subject
+        boolean inSubject = false;
         %><mm:field name="posrel.pos" jspvar="position" vartype="String" write="false"><%
-            if(formulier_copyright.indexOf(";" + position + ";")>-1) {
-                inSubject = true; 
-            }
-        %></mm:field><%
-
+            inSubject = (formulier_subjectlist.indexOf(";" + position + ";")>-1); 
+        %></mm:field>
+        <mm:node element="formulierveld" jspvar="thisField"><% 
+        
+        String questions_type = thisField.getStringValue("type");
+        String questions_number = thisField.getStringValue("number");
+        boolean isRequired = "1".equals(thisField.getStringValue("verplicht"));
+        
         // ********** check boxes ******************
-        if(questions_type.equals("5")) { 
-            %><mm:field name="formulierveld.label" jspvar="questions_title" vartype="String" write="false"><%
-                responseText += "<br>" + questions_title + ": "; 
-                boolean hasSelected = false; 
-                String csAnswers = "";
-                %><mm:list nodes="<%= questions_number %>" path="formulierveld,posrel,formulierantwoord" orderby="posrel.pos" directions="UP"
-                ><mm:field name="formulierantwoord.number" jspvar="answer_number" vartype="String" write="false"><%
-                    String answerValue = getResponseVal("q" + questions_number + "_" + answer_number,postingStr);
-                    if(!answerValue.equals("")) { 
-                        hasSelected = true;
-                        responseText += "<br>-&nbsp;" + answerValue;
-                        if(inSubject) { subjectText += " " + answerValue; }
-                    }
-                    if(!csAnswers.equals("")) { csAnswers += ","; }
-                    csAnswers += answerValue;
-                %></mm:field
-                ></mm:list><%
-                if(!hasSelected) {
-                    responseText += "niet ingevuld";
-                    if(isRequired) {
-                        isValidAnswer = false;
-                        warningMessage += "<li>" + questions_title + "</li>";
-                    }
-                } 
-                // extra break after checkboxes
-                responseText += "<br>";
-                questions.add(questions_title);
-                answers.add(csAnswers);
-                q++;    
-            %></mm:field><% 
+        if(questions_type.equals("5")) {
+            String questions_title = thisField.getStringValue("label");
+            responseText += "<br>" + questions_title + ": "; 
+            boolean hasSelected = false; 
+            String csAnswers = "";
+            %><mm:related path="posrel,formulierantwoord" orderby="posrel.pos" directions="UP"
+            ><mm:field name="formulierantwoord.number" jspvar="answer_number" vartype="String" write="false"><%
+                String answerValue = getResponseVal("q" + questions_number + "_" + answer_number,postingStr);
+                if(!answerValue.equals("")) { 
+                    hasSelected = true;
+                    responseText += "<br>-&nbsp;" + answerValue;
+                    if(inSubject) { subjectText += " " + answerValue; }
+                }
+                if(!csAnswers.equals("")) { csAnswers += ","; }
+                csAnswers += answerValue;
+            %></mm:field
+            ></mm:related><%
+            if(!hasSelected) {
+                responseText += "niet ingevuld";
+                if(isRequired) {
+                    isValidAnswer = false;
+                    warningMessage += "<li>" + questions_title + "</li>";
+                }
+            } 
+            // extra break after checkboxes
+            responseText += "<br>";
+            questions.add(questions_title);
+            answers.add(csAnswers);
+            q++;    
         } 
         
         // ********* textarea, textline, dropdown, radio buttons **********
-        if(!questions_type.equals("5")) { 
-            %><mm:field name="formulierveld.label" jspvar="questions_title" vartype="String" write="false"><%
-                responseText += "<br>" + questions_title + ": ";
-                String answerValue = getResponseVal("q" + questions_number,postingStr);
-                if(answerValue.equals("")) {
-                    responseText += "niet ingevuld";
-                    if(isRequired) {
-                        isValidAnswer = false;
-                        warningMessage += "<li>" + questions_title + "</li>";
-                    }
-                }
-                responseText +=  answerValue;
-                if(inSubject) { subjectText += " " + answerValue; }
-                // *** hack: to find out email address of visitor ***
-                if(questions_title.toUpperCase().indexOf("EMAIL")>-1) { visitorAddress = answerValue; }
-                questions.add(questions_title);
-                answers.add(answerValue);
-                q++;
-            %></mm:field><% 
+        if(!questions_type.equals("5")) {
+          String questions_title = thisField.getStringValue("label");
+          responseText += "<br>" + questions_title + ": ";
+          String answerValue = getResponseVal("q" + questions_number,postingStr);
+          if(answerValue.equals("")) {
+              responseText += "niet ingevuld";
+              if(isRequired) {
+                  isValidAnswer = false;
+                  warningMessage += "<li>" + questions_title + "</li>";
+              }
+          }
+          responseText +=  answerValue;
+          if(inSubject) { subjectText += " " + answerValue; }
+          // *** hack: to find out email address of visitor ***
+          if(questions_title.toUpperCase().indexOf("EMAIL")>-1) { visitorAddress = answerValue; }
+          questions.add(questions_title);
+          answers.add(answerValue);
+          // *** hack: to send email about news to specific address ***
+          if(paginaID.equals(sWvjePageId)&&answerValue.equals("nieuws voor op de homepage")) {
+            formulier_emailaddresses = NMIntraConfig.newsEmailAddress;
+          }
+          q++;
         } 
-    %></mm:list
+        %></mm:node
+    ></mm:related
     ><mm:createnode type="responses"
         ><mm:setfield name="title"><%= formulier_title %></mm:setfield
         ><mm:setfield name="account"><%= username %></mm:setfield
@@ -138,19 +108,19 @@
     if(isValidAnswer) { 
         
         %><mm:createnode type="email" id="thismail"
-                ><mm:setfield name="subject"><%= subjectText %></mm:setfield
-                ><mm:setfield name="from"><%= defaultFromAddress %></mm:setfield
-                ><mm:setfield name="replyto"><%= defaultFromAddress %></mm:setfield
-                ><mm:setfield name="body">
-                    <multipart id="plaintext" type="text/plain" encoding="UTF-8">
-                    </multipart>
-                    <multipart id="htmltext" alt="plaintext" type="text/html" encoding="UTF-8">
-                        <%= "<html>" + responseText + "</html>" %>
-                    </multipart>
-                </mm:setfield
+              ><mm:setfield name="subject"><%= subjectText %></mm:setfield
+              ><mm:setfield name="from"><%= ap.getFromEmailAddress() %></mm:setfield
+              ><mm:setfield name="replyto"><%= ap.getFromEmailAddress() %></mm:setfield
+              ><mm:setfield name="body">
+                  <multipart id="plaintext" type="text/plain" encoding="UTF-8">
+                  </multipart>
+                  <multipart id="htmltext" alt="plaintext" type="text/html" encoding="UTF-8">
+                      <%= "<html>" + responseText + "</html>" %>
+                  </multipart>
+              </mm:setfield
         ></mm:createnode><%
         
-        String emailAdresses = formulier_editors_note + ";"; 
+        String emailAdresses = formulier_emailaddresses + ";"; 
         int semicolon = emailAdresses.indexOf(";");
         while(semicolon>-1) { 
             String emailAdress = emailAdresses.substring(0,semicolon);
@@ -164,38 +134,37 @@
         
         %><mm:createnode type="email" id="mailtovisitor"
               ><mm:setfield name="subject"><%= subjectText %></mm:setfield
-              ><mm:setfield name="from"><%= defaultFromAddress %></mm:setfield
-              ><mm:setfield name="replyto"><%= defaultFromAddress %></mm:setfield
+              ><mm:setfield name="from"><%= ap.getFromEmailAddress() %></mm:setfield
+              ><mm:setfield name="replyto"><%= ap.getFromEmailAddress() %></mm:setfield
               ><mm:setfield name="body">
                   <multipart id="plaintext" type="text/plain" encoding="UTF-8">
                   </multipart>
                   <multipart id="htmltext" alt="plaintext" type="text/html" encoding="UTF-8">
-                       <%= "<html><b>" + formulier_titel_fra + "</b><br/>" + formulier_omschrijving + "</html>" %>
+                       <%= "<html><b>" + formulier_confirmtitle + "</b><br/>" + responseText + "</html>" %>
                   </multipart>
               </mm:setfield
-          ></mm:createnode
-          ><mm:node referid="mailtovisitor"
+         ></mm:createnode
+         ><mm:node referid="mailtovisitor"
              ><mm:setfield name="to"><%= visitorAddress %></mm:setfield
              ><mm:field name="mail(oneshot)" 
-          /></mm:node>
-
-		  <%
+         /></mm:node>
+         <%
         
-        String messageTitle = subjectText;
-        String messageBody = "Uw formulier is per email verstuurd naar: " + formulier_editors_note;
-        String messageHref = "";
-        String messageLinktext = "naar de homepage";
-        if(sPageRefMinOne!=null) {
+         String messageTitle = subjectText;
+         String messageBody = "Uw formulier is per email verstuurd naar: " + formulier_emailaddresses;
+         String messageHref = "";
+         String messageLinktext = "naar de homepage";
+         if(sPageRefMinOne!=null) {
             %><mm:node number="<%= sPageRefMinOne %>" jspvar="lastPage" notfound="skipbody"><%
                messageLinktext = "terug naar pagina \"" + lastPage.getStringValue("titel") + "\""; %>
-					<mm:list nodes="<%= sPageRefMinOne %>" path="pagina,gebruikt,paginatemplate">
-						<mm:field name="paginatemplate.url" jspvar="url" vartype="String" write="false">
-							<% messageHref += url; %>
-						</mm:field>	
-					</mm:list>
-            <% messageHref  += "?p=" + sPageRefMinOne;
+					    <mm:list nodes="<%= sPageRefMinOne %>" path="pagina,gebruikt,paginatemplate">
+                <mm:field name="paginatemplate.url" jspvar="url" vartype="String" write="false">
+                  <% messageHref += url; %>
+                </mm:field>	
+              </mm:list>
+              <% messageHref  += "?p=" + sPageRefMinOne;
 	         %></mm:node><%
-	     }
+	       }
         String messageLinkParam = "target=\"_top\"";
 
         %><%@include file="../showmessage.jsp" %><%
@@ -207,4 +176,5 @@
         String messageLinkParam = "";
     %><%@include file="../showmessage.jsp" %><% 
     } 
-%></mm:list>
+    %></mm:node
+></mm:list>

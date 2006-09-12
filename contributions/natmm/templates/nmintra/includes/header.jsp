@@ -1,12 +1,5 @@
 <% (new SimpleStats()).pageCounter(cloud,application,paginaID,request); %>
 <%@include file="../includes/getresponse.jsp" %>
-<% 
-String sPageRef = (String) session.getAttribute("pageref");
-if(sPageRef!=null&&!sPageRef.equals(paginaID)) { // set pagerefminone to sPagRef, set pageref to paginaID
-	session.setAttribute("pagerefminone",sPageRef);
-}
-session.setAttribute("pageref",paginaID);
-%>
 <html>
   <head>
 		<link rel="stylesheet" type="text/css" href="css/main.css">
