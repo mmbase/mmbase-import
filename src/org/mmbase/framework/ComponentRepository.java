@@ -10,9 +10,9 @@ See http://www.MMBase.org/license
 package org.mmbase.framework;
 
 import java.util.*;
-import org.mmbase.util.*;
-
+import java.lang.reflect.*;
 import org.w3c.dom.*;
+import org.mmbase.util.*;
 
 
 import org.mmbase.util.logging.Logger;
@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * The class maintains all compoments which are registered in the current MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentRepository.java,v 1.2 2006-08-30 20:46:05 michiel Exp $
+ * @version $Id: ComponentRepository.java,v 1.3 2006-09-12 19:25:59 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentRepository {
@@ -79,11 +79,31 @@ public class ComponentRepository {
 
     }
 
+    public static Object getInstance(Element classElement, Object... args) throws org.xml.sax.SAXException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException {
+        Class claz = Class.forName(classElement.getAttribute("name"));
+        List<Class> argTypes = new ArrayList<Class>(args.length);
+        for (Object arg : argTypes) {
+            argTypes.add(arg.getClass());
+        }
+        Object o = claz.getConstructor(argTypes.toArray(new Class[] {})).newInstance(args);
+
+        NodeList params = classElement.getElementsByTagName("param");
+        for (int i = 0 ; i < params.getLength(); i++) {
+            Element param = (Element) params.item(i);
+            String name = param.getAttribute("name");
+            String value = org.mmbase.util.xml.DocumentReader.getNodeTextValue(param);
+            Method method = claz.getMethod("set" + name.substring(0, 1).toUpperCase() + name.substring(1), String.class);
+            method.invoke(o, value);
+        }
+        return o;
+    }
+
+
     protected Component getComponent(String name, Document doc) throws org.xml.sax.SAXException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException {
-        Class claz = Class.forName(org.mmbase.util.xml.DocumentReader.getNodeTextValue(doc.getDocumentElement().getElementsByTagName("class").item(0)));
-        Component comp = (Component) claz.getConstructor(String.class).newInstance(name);
-        comp.configure(doc);
-        return comp;
+        Element classElement = (Element) doc.getDocumentElement().getElementsByTagName("class").item(0);
+        Component component = (Component) getInstance(classElement, name);
+        component.configure(doc.getDocumentElement()); 
+        return component;
     }
 
 }
