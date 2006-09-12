@@ -265,16 +265,20 @@ public class ContentHelper {
       }
       
       if (breadcrumbs != null && breadcrumbs.size()>2) {
+        
          // breadcrumbs should have at least size 3: [creatierubriek,...,subsite,root]
-         
          createRelation(objectNumber,"creatierubriek",(String) breadcrumbs.get(0));
          createRelation(objectNumber,"hoofdrubriek",(String) breadcrumbs.get(breadcrumbs.size()-3));
          createRelation(objectNumber,"subsite",(String) breadcrumbs.get(breadcrumbs.size()-2));
          hasDefaultRelations = true;
-      }
-      else {
-         // there is a relation to a page, however the page has no breadcrumbs
-         log.error(sPaginaNumber + " has breadcrumbs " + breadcrumbs + " probably it can be removed");
+         
+      } else {
+         
+         // there is a relation to a page, however the page has no valid breadcrumbs
+         log.error(sPaginaNumber + " is not connected to root, all objects from breadcrumbs " + breadcrumbs + " will be removed");
+         for(int i=0; i<breadcrumbs.size(); i++) {
+            cloud.getNode((String) breadcrumbs.get(i)).delete(true);
+         }
       }
       return hasDefaultRelations;
    }

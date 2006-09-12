@@ -319,6 +319,27 @@ public class RubriekHelper {
    }
    
    /**
+    * Returns a sorted list of all nodes from the (sub)tree of rubriekNode
+    * 
+    * @param rubriekNodeNumber
+    * @return NodeList nodeList
+    */
+   public NodeList getTreeNodes(String rubriekNodeNumber) {
+      NodeList nodeList = cloud.getList(rubriekNodeNumber, 
+          "rubriek1,parent,rubriek", "rubriek.number,rubriek.isvisible",null,"parent.pos","UP","DESTINATION",true);
+      for (int i = 0; i < nodeList.size(); i++) {
+          Node node = nodeList.getNode(i);
+          boolean bIsVisible = node.getStringValue("rubriek.isvisible").equals("0");
+          if(bIsVisible) {
+            nodeList.addAll(i+1,getTreeNodes(node.getStringValue("rubriek.number")));
+         }
+      }
+      // add the rubriekNode itself as a NodeList of one element
+      nodeList.add(0,cloud.getList(rubriekNodeNumber,"rubriek", "rubriek.number,rubriek.isvisible",null,null,null,null,true).getNode(0));
+      return nodeList;
+   }
+   
+   /**
     * Returns the rubrieken and pages related to this rubriek. 
     * The key in the TreeMap is the position of the object
     * The value in the TreeMap is the object number
@@ -329,7 +350,8 @@ public class RubriekHelper {
    public TreeMap getSubObjects(String rubriekNodeNumber, boolean showAll) {
       TreeMap subObjects = new TreeMap();
       // add sub-rubrieken (if any)
-      NodeList nodeList = cloud.getList(rubriekNodeNumber, "rubriek,parent,rubriek2", "rubriek2.number,rubriek2.url,parent.pos", null, "parent.pos", null, "DESTINATION", true);
+      NodeList nodeList = cloud.getList(rubriekNodeNumber,
+          "rubriek,parent,rubriek2", "rubriek2.number,rubriek2.isvisible", null, "parent.pos", null, "DESTINATION", true);
       if ((nodeList != null) && (nodeList.size() > 0)) {
          for (int i = 0; i < nodeList.size(); i++) {
             Node tempRubriekNode = nodeList.getNode(i);
