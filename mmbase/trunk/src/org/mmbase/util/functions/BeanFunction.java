@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * delegates to a static method in this class).
  *
  * @author Michiel Meeuwissen
- * @version $Id: BeanFunction.java,v 1.8 2005-12-08 16:18:21 michiel Exp $
+ * @version $Id: BeanFunction.java,v 1.9 2006-09-12 18:38:51 michiel Exp $
  * @see org.mmbase.util.functions.MethodFunction
  * @see org.mmbase.util.functions.FunctionFactory
  * @since MMBase-1.8
@@ -108,9 +108,7 @@ public class BeanFunction extends AbstractFunction {
         this.claz = claz;
 
         // Finding the  methods to be used.
-        Method[] methods = claz.getMethods();
-        for (int i = 0 ; i < methods.length; i++) {
-            Method m = methods[i];
+        for (Method m : claz.getMethods()) {
             String methodName = m.getName();
             if (methodName.equals(name) && m.getParameterTypes().length == 0) {
                 method = m;
@@ -128,9 +126,8 @@ public class BeanFunction extends AbstractFunction {
         // need a sample instance to get the default values from.
         Object sampleInstance = claz.newInstance();
 
-        List parameters = new ArrayList();
-        for (int i = 0 ; i < methods.length; i++) {
-            Method method = methods[i];
+        List<Parameter> parameters = new ArrayList();
+        for (Method m : claz.getMethods()) {
             String methodName = method.getName();
             Class[] parameterTypes = method.getParameterTypes();
             if (parameterTypes.length == 1 && methodName.startsWith("set")) {
@@ -138,8 +135,8 @@ public class BeanFunction extends AbstractFunction {
                 // find a corresponding getter method, which can be used for a default value;
                 Object defaultValue;
                 try {
-                    Method getter = claz.getMethod("get" + parameterName, new Class[] {});
-                    defaultValue = getter.invoke(sampleInstance, new Object[] {});
+                    Method getter = claz.getMethod("get" + parameterName);
+                    defaultValue = getter.invoke(sampleInstance);
                 } catch (NoSuchMethodException nsme) {
                     defaultValue = null;
                 }
@@ -160,7 +157,7 @@ public class BeanFunction extends AbstractFunction {
                 setMethods.add(method);
             }
         }
-        setParameterDefinition((Parameter[]) parameters.toArray(new Parameter[0]));
+        setParameterDefinition(parameters.toArray(Parameter.EMPTY));
         ReturnType returnType = new ReturnType(method.getReturnType(), "");
         setReturnType(returnType);
 
