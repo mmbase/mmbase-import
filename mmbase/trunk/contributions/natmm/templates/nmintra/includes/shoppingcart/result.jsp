@@ -23,7 +23,7 @@ public TreeSet unify(TreeSet ts1, TreeSet ts2){
 %><%
 	String username = "";
 
-   String shopEmailAddress = defaultFromAddress;
+   String shopEmailAddress = ap.getFromEmailAddress();
 	String emailSubject = "Interne Webwinkel: ordernr. ";
 	
 	String noAnswer = "-";

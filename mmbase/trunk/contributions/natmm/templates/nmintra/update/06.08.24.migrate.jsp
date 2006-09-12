@@ -74,5 +74,43 @@
       <mm:setfield name="titel">Nieuws</mm:setfield>
       
    </mm:listnodes>
+   2. Add an extra question to the "Wat vind je ervan?" form
+   <mm:listnodes type="formulier" constraints="titel = 'Wat vind je ervan?'">
+      <mm:node id="form" />
+      <mm:setfield name="titel_fra">Bedankt voor uw nieuwsbericht of commentaar.</mm:setfield>
+      <mm:createnode type="formulierveld" id="field">
+          <mm:setfield name="label">Ik heb een</mm:setfield>
+          <mm:setfield name="type">4</mm:setfield>
+          <mm:setfield name="verplicht">1</mm:setfield>
+       </mm:createnode>
+       <mm:createrelation source="form" destination="field" role="posrel">
+          <mm:setfield name="pos">3</mm:setfield>
+       </mm:createrelation>
+       <mm:createnode type="formulierveldantwoord" id="a1">
+          <mm:setfield name="waarde">nieuws voor op de homepage</mm:setfield>
+       </mm:createnode>
+       <mm:createrelation source="field" destination="a1" role="posrel">
+          <mm:setfield name="pos">1</mm:setfield>
+       </mm:createrelation>
+       <mm:createnode type="formulierveldantwoord" id="a2">
+          <mm:setfield name="waarde">vraag of opmerking</mm:setfield>
+       </mm:createnode>
+       <mm:createrelation source="field" destination="a2" role="posrel">
+          <mm:setfield name="pos">2</mm:setfield>
+       </mm:createrelation>
+       <mm:related path="posrel,formulierveld"  constraints="label = 'Je commentaar op de nieuwe intranet site'">
+          <mm:node element="formulierveld">
+            <mm:setfield name="label">Je nieuwsbericht of commentaar</mm:setfield>
+          </mm:node>
+          <mm:node element="posrel">
+            <mm:setfield name="pos">4</mm:setfield>
+          </mm:node>
+       </mm:related>
+       <mm:relatednodes type="pagina">
+          <mm:node>
+            <mm:createalias>feedback</mm:createalias>
+          </mm:node>
+       </mm:relatednodes>
+   </mm:listnodes>
 </mm:log>
 </mm:cloud>

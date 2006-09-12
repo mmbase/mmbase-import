@@ -7,8 +7,8 @@
      <td class="bold"><span class="light">Zoekterm</span></td>
   </tr>
   <tr>
-     <td class="bold"><input type="text" name="search" value="<% if (searchId.equals("")&&sCategory.equals("")&&sPool.equals("")&&(fromTime==0)&&(toTime==0)){ %>ik zoek op ...<% } else { %><%= searchId %><% } %>"
-     style="width:170px;" onClick="if(this.value=='ik zoek op ...') { this.value=''; }" /></td>
+     <td class="bold"><input type="text" name="search" value="<%= (searchIsOn ? defaultSearchText : searchId )
+       %>" style="width:170px;" onClick="if(this.value=='<%= defaultSearchText %>') { this.value=''; }" /></td>
   </tr>
   <tr>
      <td class="bold"><span class="light">Rubrieken</span></td>

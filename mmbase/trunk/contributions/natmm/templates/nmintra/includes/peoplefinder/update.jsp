@@ -17,7 +17,7 @@
     <tr><td>En verder:&nbsp;</td>                   <td><textarea name="omschrijving" style="width:300px;height:50px;"><mm:field name="omschrijving" /></textarea></td></tr>
     <tr><td colspan="2"><div align="right"><input type="submit" name="Submit" value="Verstuur wijzigingen"  style="text-align:center;font-weight:bold;">&nbsp;</div></td></tr>
     <tr><td colspan="2">
-     <i>(*) een nieuwe foto kunt u versturen naar <a href="mailto:<%= defaultFromAddress %>"><%= defaultFromAddress %><a></i><br>
+     <i>(*) een nieuwe foto kunt u versturen naar <a href="mailto:<%= ap.getFromEmailAddress() %>"><%= ap.getFromEmailAddress() %><a></i><br>
      <i>(**) alleen een intern "...@natuurmonumenten.nl" emailadres is toegestaan.</i></td></tr>
     </table>
 </mm:node>

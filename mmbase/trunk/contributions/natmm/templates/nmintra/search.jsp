@@ -39,6 +39,8 @@
   int thisYear = (int) period[10];
   int startYear = (int) period[11];
   
+  boolean searchIsOn = (searchId.equals("")||searchId.equals(defaultSearchText))&&sCategory.equals("")&&sPool.equals("")&&(fromTime==0)&&(toTime==0);
+  
   boolean categorieExists = false;
   %><mm:node number="<%=  sCategory %>" notfound="skipbody"
     ><mm:nodeinfo type="type" write="false" jspvar="nType" vartype="String"><%
@@ -87,9 +89,9 @@
         <tr><td><img src="media/spacer.gif" width="10" height="1"></td>
         <td><a name="top"/>
         <% 
-        if (searchId.equals("")&&sCategory.equals("")&&sPool.equals("")&&(fromTime==0)&&(toTime==0)){
+        if (searchIsOn){
           %>
-          Vul een zoekterm in bij 'ik zoek op...' en klik op de 'Zoek'-knop om in het Intranet te zoeken."						
+          Vul een zoekterm in bij '<%= defaultSearchText %>' en klik op de 'Zoek'-knop om in het Intranet te zoeken."						
           <% 
         } else {
 						if(hsetRubrieken.size()==0) {
@@ -97,106 +99,66 @@
 					  } else { 
 					     %>De volgende zoekresultaten zijn gevonden in:<br/><% 
 					  }
+            NodeList rubriekenList = (NodeList) rh.getTreeNodes(rootId);
+
+					  // *** show anchors to rubrieken
 					  boolean bFirst = true;
-					  for (Iterator it = hsetRubrieken.iterator(); it.hasNext();) {
-              String sRubriek = (String) it.next();
-              if(!bFirst) { %> | <% }
-              %><mm:node number="<%=sRubriek%>">
-              <mm:field name="naam" jspvar="name" vartype="String" write="false">
-                   <a href="search.jsp?<%= request.getQueryString() %>#<mm:field name="number" />">
-                  <span class="colortitle" style="text-decoration:underline;"><%= name.toUpperCase() %></span></a>
-              </mm:field>	
-              </mm:node><%
-              bFirst = false;
+					  for (Iterator it = rubriekenList.iterator(); it.hasNext();) {
+              String sRubriek = ((Node) it.next()).getStringValue("rubriek.number");
+              if(hsetRubrieken.contains(sRubriek)) {
+                if(!bFirst) { %> | <% }
+                %><mm:node number="<%=sRubriek%>">
+                  <mm:field name="naam" jspvar="name" vartype="String" write="false">
+                      <a href="search.jsp?<%= request.getQueryString() %>#<mm:field name="number" />">
+                         <span class="colortitle" style="text-decoration:underline;"><%= name.toUpperCase() %></span></a>
+                  </mm:field>	
+                </mm:node><%
+                bFirst = false;
+              }
 					  }
 
-					  // *** Show rubrieken
+					  // *** show rubrieken
 				   	if (hsetRubrieken.size() > 0) { 
-							Vector defaultSearchTerms = new Vector(); 
-							defaultSearchTerms = su.createSearchTerms(searchId);%>
-						   <br/><br/>
-						   <table width="100%" background="media/dotline.gif"><tr><td height="3"></td></tr></table>
-					      <% 
-   	               for (Iterator it = hsetRubrieken.iterator(); it.hasNext(); ) {
-					         String sRubriek = (String) it.next();
-                        log.info(sRubriek);
-					         HashSet hsetPagesForThisRubriek = rh.getAllPages(sRubriek); 
-					         log.info(" -> " + hsetPagesForThisRubriek);
-					         %>
-					         <mm:node number="<%= sRubriek %>">
+              Vector defaultSearchTerms = new Vector(); 
+              defaultSearchTerms = su.createSearchTerms(searchId);
+              %>
+              <br/><br/>
+              <table width="100%" background="media/dotline.gif"><tr><td height="3"></td></tr></table>
+              <% 
+              for (Iterator it = rubriekenList.iterator(); it.hasNext(); ) {
+                String sRubriek = ((Node) it.next()).getStringValue("rubriek.number");
+                if(hsetRubrieken.contains(sRubriek)) {
+                  log.info(sRubriek);
+                  HashSet hsetPagesForThisRubriek = rh.getAllPages(sRubriek); 
+                  log.info(" -> " + hsetPagesForThisRubriek);
+                  %>
+                  <mm:node number="<%= sRubriek %>">
                     <a name="<mm:field name="number" />" />
                     <span class="colortitle"><b>
-                      <mm:field name="naam" jspvar="name" vartype="String" write="false">
-                        <%= name.toUpperCase() %>
-                      </mm:field></b>
+                    <mm:field name="naam" jspvar="name" vartype="String" write="false">
+                      <%= name.toUpperCase() %>
+                    </mm:field></b>
                     </span>
-					          <br/>
+                    <br/>
                     <%
                     bFirst = true;
                     for (Iterator itp = hsetPagesNodes.iterator(); itp.hasNext(); ) {
                       String sPageID = (String) itp.next();
-                      
-                      if(!hsetPagesForThisRubriek.contains(sPageID)) {
-                       continue;
-                      }
-                      
-                      String templateUrl = "index.jsp";
-                      String textStr = "";
-                      String titleStr = "";
-                      String showDate = "1";
-                      boolean bHasAttachments = false;
-				   	          %><mm:node number="<%=sPageID%>">
-                          <%= (!bFirst ? "<br/>": "" ) %>
-                          <mm:related path="gebruikt,template">
-                             <mm:field name="template.url" jspvar="url" vartype="String" write="false">
-                                <% templateUrl = url; %>
-                             </mm:field>
-                           </mm:related>
-                           <%
-                           if(hsetPageDescrNodes.contains(sPageID)){
-                             %>
-                             <mm:field name="titel" jspvar="titel" vartype="String" write="false">
-                                <li><a href="<%= templateUrl %>?p=<%=sPageID%>">
-                                  <span class="normal" style="text-decoration:underline;"><%= su.highlightSearchTerms(titel,defaultSearchTerms,"b") %></span></a></li>
-                              </mm:field>	
-                              <mm:field name="omschrijving" jspvar="dummy" vartype="String" write="false">
-                                <% textStr = dummy; %>
-                              </mm:field>
-                              <br/><%= su.highlightSearchTerms(textStr,defaultSearchTerms,"b") %>
-                              <% 
-	                          } else {
-	                            %>
-				         	            <b><mm:field name="titel"/></b>
-				         	            <%
-				         	          } %>
-            					      <ul style="margin:0px;margin-left:16px;">
-                              <%@include file="includes/search/artikel.jsp" %>
-                              <%@include file="includes/search/teaser.jsp" %>
-                              <%@include file="includes/search/producttypes.jsp" %>
-                              <%@include file="includes/search/products.jsp" %>
-                              <%@include file="includes/search/items.jsp" %>
-                              <%@include file="includes/search/documents.jsp" %>
-                              <%@include file="includes/search/vacature.jsp" %>
-                              <%@include file="includes/search/attachments.jsp" %>
-                              <% 
-                              if (bHasAttachments) {
-                                %>
-                                <a href="<%= templateUrl %>?p=<%=sPageID%>">
-                                <span class="normal" style="text-decoration:underline;"><mm:field name="titel"/></span></a><br/>
-                                <% 
-                              } 
-                              bHasAttachments = false; %>	
-                            </ul>
-            				   	</mm:node>
-                        <%
-					              bFirst = false;
-   	         			 }
-					         %></mm:node>
-					         <div align="right"><a href="?<%= request.getQueryString() %>#top"><img src="media/<%= NMIntraConfig.style1[iRubriekStyle] %>_up.gif" border="0" /></a></div>
-					         <table width="100%" background="media/dotline.gif"><tr><td height="3"></td></tr></table><%
-				   	   }
-					  }
-				  }	
+                    
+                      %><%@include file="includes/search/page.jsp" %><%
+                      bFirst = false;
+                    }
+                    %>
+                  </mm:node>
+                  <div align="right">
+                    <a href="?<%= request.getQueryString() %>#top"><img src="media/<%= NMIntraConfig.style1[iRubriekStyle] %>_up.gif" border="0" /></a>
+                  </div>
+                  <table width="100%" background="media/dotline.gif"><tr><td height="3"></td></tr></table>
+                  <%
+                }
+              }
+            }
+          }
 					%><br/>
 				  </td>
 	        <td><img src="media/spacer.gif" width="10" height="1"></td>
