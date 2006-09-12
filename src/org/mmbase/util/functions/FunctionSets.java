@@ -37,7 +37,7 @@ import java.net.*;
  * @author Dani&euml;l Ockeloen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: FunctionSets.java,v 1.22 2006-02-10 14:52:17 michiel Exp $
+ * @version $Id: FunctionSets.java,v 1.23 2006-09-12 18:38:10 michiel Exp $
  */
 public class FunctionSets {
 
@@ -49,7 +49,7 @@ public class FunctionSets {
 
     private static final Logger log = Logging.getLoggerInstance(FunctionSets.class);
 
-    private static final Map functionSets = new HashMap();
+    private static final Map<String, FunctionSet> functionSets = new HashMap();
 
     static {
         XMLEntityResolver.registerPublicID(PUBLIC_ID_FUNCTIONSET_1_0,  DTD_FUNCTIONSET_1_0,  FunctionSets.class);
@@ -108,7 +108,13 @@ public class FunctionSets {
      * @return the {@link FunctionSet}, or <code>null</code> if the set is not defined
      */
     public static FunctionSet getFunctionSet(String setName) {
-        return (FunctionSet)functionSets.get(setName);
+        return functionSets.get(setName);
+    }
+    /**
+     * @since MMBase-1.9
+     */
+    public static Map<String, FunctionSet> getFunctionSets() {
+        return Collections.unmodifiableMap(functionSets);
     }
 
     /**
@@ -190,8 +196,7 @@ public class FunctionSets {
                     String returnTypeClassName = reader.getElementAttributeValue(a, "type");
                     if (returnTypeClassName != null) {
                         try {
-                            Class returnTypeClass = getClassFromName(returnTypeClassName);
-                            returnType = new ReturnType(returnTypeClass, "");
+                            returnType = new ReturnType(Parameter.getClassForName(returnTypeClassName), "");
                         } catch (Exception e) {
                             log.warn("Cannot determine return type : " + returnTypeClassName + ", will auto-detect");
                         }
@@ -214,28 +219,8 @@ public class FunctionSets {
                 */
 
                 // read the parameters
-                List parameterList = new ArrayList();
-                for (Iterator parameterElements = reader.getChildElements(element,"param"); parameterElements.hasNext();) {
-                    Element parameterElement = (Element)parameterElements.next();
-                    String parameterName = reader.getElementAttributeValue(parameterElement, "name");
-                    String parameterType = reader.getElementAttributeValue(parameterElement, "type");
-                    description = reader.getElementAttributeValue(parameterElement, "description");
 
-                    Parameter parameter = null;
-
-                    Class parameterClass = getClassFromName(parameterType);
-                    parameter = new Parameter(parameterName, parameterClass);
-
-                    // check for a default value
-                    org.w3c.dom.Node n3 = parameterElement.getFirstChild();
-                    if (n3 != null) {
-                        parameter.setDefaultValue(parameter.autoCast(n3.getNodeValue()));
-                    }
-                    parameterList.add(parameter);
-
-                }
-
-                Parameter[] parameters = (Parameter[]) parameterList.toArray(new Parameter[0]);
+                Parameter[] parameters = Parameter.readArrayFromXml(element);
 
                 try {
                     SetFunction fun = new SetFunction(functionName, parameters, returnType, className, methodName);
@@ -251,29 +236,5 @@ public class FunctionSets {
         }
     }
 
-    /**
-     * Tries to determine the correct class from a given classname.
-     * Classnames that are not fully expanded are expanded to the java.lang package.
-     */
-    private static Class getClassFromName(String className) {
-        String fullClassName = className;
-        boolean fullyQualified = className.indexOf('.') > -1;
-        if (!fullyQualified) {
-            if (className.equals("int")) { // needed?
-                return int.class;
-            } else if (className.equals("NodeList")) {
-                return org.mmbase.bridge.NodeList.class;
-            } else if (className.equals("Node")) {
-                return org.mmbase.bridge.Node.class;
-            }
-            fullClassName = "java.lang." + fullClassName;
-        }
-        try {
-            return Class.forName(fullClassName);
-        } catch (ClassNotFoundException cne) {
-            log.warn("Cannot determine parameter type : '" + className + "' (expanded to: '" + fullClassName + "'), using Object as type instead.");
-            return Object.class;
-        }
-    }
 
 }
