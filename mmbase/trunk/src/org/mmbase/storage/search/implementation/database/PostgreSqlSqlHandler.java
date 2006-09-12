@@ -12,6 +12,8 @@ package org.mmbase.storage.search.implementation.database;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
 import java.util.*;
+import javax.sql.DataSource;
+import java.sql.*;
 import org.mmbase.module.corebuilders.RelDef;
 import org.mmbase.module.core.MMObjectNode;
 
@@ -36,18 +38,42 @@ import org.mmbase.module.core.MMObjectNode;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: PostgreSqlSqlHandler.java,v 1.24 2006-08-02 17:26:55 michiel Exp $
+ * @version $Id: PostgreSqlSqlHandler.java,v 1.25 2006-09-12 19:31:34 michiel Exp $
  * @since MMBase-1.7
  */
 public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
 
     private static final Logger log = Logging.getLoggerInstance(PostgreSqlSqlHandler.class);
 
+
+    private boolean localeMakesCaseInsensitive = false;
+
     /**
      * Constructor.
      */
     public PostgreSqlSqlHandler() {
         super();
+        /* TODO: make this work..
+        DataSource ds =  ((org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory) org.mmbase.module.core.MMBase.getMMBase().getStorageManagerFactory()).getDataSource();
+        Connection con = null;
+        Statement statement = null;
+        ResultSet results = null;
+        try {
+            con = ds.getConnection();
+            statement = con.createStatement();
+            results = statement.executeQuery("select 'ab' > 'Ac'");
+            results.next();
+            localeMakesCaseInsensitive = results.getBoolean(0);
+        } catch (Exception e) {
+            log.error(e);
+        } finally {
+            if (results != null) try { results.close(); } catch (Exception e) {};
+            if (statement != null) try { statement.close(); } catch (Exception e) {};
+            if (con != null) try { con.close(); } catch (Exception e) {};
+        }
+        log.info("Postgresql database instance is case " + (localeMakesCaseInsensitive ? "INSENSITIVE" : "SENSITIVE") + " (because of Locale settings)");
+        */
+
     }
 
     // javadoc is inherited
@@ -91,9 +117,6 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
         return sb;
     }
 
-
-    /// TODO: Needs to determine the value of this (select 'a' > 'A' or so?)
-    private final boolean localeMakesCaseInsensitive = false;
 
     /**
      * Normally, Postgresql does not sort case senstively, so we should not sort on
