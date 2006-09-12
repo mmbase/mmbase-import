@@ -4,8 +4,7 @@ import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
 import com.finalist.mmbase.util.CloudFactory;
-import nl.leocms.util.ContentHelper;
-import nl.leocms.util.ServerUtil;
+import nl.leocms.util.*;
 import nl.leocms.authorization.AuthorizationHelper;
 import nl.leocms.authorization.UserRole;
 import nl.leocms.authorization.Roles;
@@ -15,11 +14,14 @@ public class UpdateUnusedElements implements Runnable {
    private static final Logger log = Logging.getLoggerInstance(UpdateUnusedElements.class);
    private static final ServerUtil su = new ServerUtil();
 
+   ContentHelper ch;
+   ApplicationHelper ap;
+   Cloud cloud;
+
 	/*
 	* Returns the list of unused objects for a rubriek
 	*/
-	public ArrayList getUnusedItemsForRubriek(Cloud cloud, String rubriekNumber) {
-		ContentHelper ch = new ContentHelper(cloud);
+	public ArrayList getUnusedItemsForRubriek(String rubriekNumber) {
 		ArrayList alUnusedItems = new ArrayList();
 
 		NodeList nlElements = cloud.getList(rubriekNumber,"rubriek,creatierubriek,contentelement","contentelement.number",null,null,null,null,false);
@@ -35,25 +37,85 @@ public class UpdateUnusedElements implements Runnable {
 	/*
 	* Returns a HashMap with for each rubriek an ArrayList of unused objects
 	*/
-	public HashMap getUnusedItemsForAllRubriek(Cloud cloud) {
+	public HashMap getUnusedItemsForAllRubriek() {
 		HashMap hmUnusedItems = new HashMap();
 		NodeList nlRubrieks = cloud.getNodeManager("rubriek").getList(null,null,null);
 		for(int j = 0; j < nlRubrieks.size(); j++){
 			String rubriekNumber = nlRubrieks.getNode(j).getStringValue("number");
-			hmUnusedItems.put(rubriekNumber,getUnusedItemsForRubriek(cloud,rubriekNumber));
+			hmUnusedItems.put(rubriekNumber,getUnusedItemsForRubriek(rubriekNumber));
 		}
 		return hmUnusedItems;
 	}
 
+  
+  /*
+	* Deletes all unused objects of nodeType i.e. objects that do not have a parent
+	*/
+	public void deleteUnusedObjects(String nodeType) {
+    
+    ArrayList cTypes = ap.getContentTypes();
+		NodeList nl = cloud.getNodeManager(nodeType).getList(null,null,null);
+
+		for(Iterator it = nl.iterator(); it.hasNext();){
+      Node node = (Node) it.next();
+      NodeManager thisNodeManager = node.getNodeManager();
+      
+      int iParents = 0;
+      for(int ct=0; ct < cTypes.size() && iParents==0; ct++) {
+         String relatedType = (String) cTypes.get(ct);
+         if (thisNodeManager.getAllowedRelations(relatedType, null, "SOURCE").size() > 0) {
+           iParents += node.getRelatedNodes(relatedType,null,"SOURCE").size();
+         }
+      }
+      if(iParents==0) {
+        log.info("deleting " + nodeType + " " + node.getStringValue("titel") + " (" + node.getNumber() + ")"); 
+        node.delete(true);
+      }
+		}
+	}
+  
+  /*
+	* Checks whether each object has at most 3 archived copies, and deletes all other copies
+	*/
+	public void cleanUpArchive() {
+    
+    HashSet set = new HashSet();
+    
+    int batchStart = 0;
+    int batchSize = 10000;
+    int copiesDeleted = 0;
+    String sMax =  (new DateUtil()).getObjectNumber(cloud, (new Date()));
+    int maxObjectNumber = (new Integer(sMax)).intValue();
+    while(batchStart<maxObjectNumber) {
+      NodeList nl = cloud.getList("","archief",
+          "archief.original_node,archief.number",
+          "archief.number >= '" + batchStart + "' AND archief.number < '" + (batchStart+batchSize) + "'",
+          "archief.number","DOWN",null,false);
+    
+      log.debug("checking batch [" + batchStart + "," + (batchStart+batchSize) + ">, number of archief nodes in batch is " + nl.size()); 
+      for(Iterator it = nl.iterator(); it.hasNext();) {
+        Node node = (Node) it.next();
+        if(set.contains(node.getStringValue("archief.original_node"))) {
+          log.debug("deleting copy of node " + node.getStringValue("archief.original_node"));
+          cloud.getNode((String) node.getStringValue("archief.number")).delete();
+          copiesDeleted++;
+        } else {
+          set.add(node.getStringValue("archief.original_node"));
+        }
+      }
+      batchStart += batchSize;
+    }
+    log.info("cleaned up archive an deleted " + copiesDeleted + " copies, total size of archive is now " + set.size());
+	}
+  
 	/*
 	* For all users add the list of unused objects to users.unused_items field
 	*/
    public void getUnusedItems() {
-      Cloud cloud = CloudFactory.getCloud();
+
       AuthorizationHelper authHelper = new AuthorizationHelper(cloud);
-
-		  HashMap hmUnusedItemsForAllRubriek = getUnusedItemsForAllRubriek(cloud);
-
+      HashMap hmUnusedItemsForAllRubriek = getUnusedItemsForAllRubriek();
+      
       NodeList nlUsers = cloud.getNodeManager("users").getList(null,null,null);
       for (int i = 0; i < nlUsers.size(); i++){
         ArrayList alUnusedItems = new ArrayList();
@@ -72,7 +134,9 @@ public class UpdateUnusedElements implements Runnable {
           nUser.setStringValue("unused_items",alUnusedItems.toString().substring(1,alUnusedItems.toString().length()-1));
           nUser.commit();
         }
-		 }
+      }
+      deleteUnusedObjects("paragraaf");
+      cleanUpArchive();
    }
 
    private Thread getKicker(){
@@ -85,6 +149,10 @@ public class UpdateUnusedElements implements Runnable {
    }
 
    public void run () {
+      this.cloud = CloudFactory.getCloud();
+      this.ch = new ContentHelper(cloud);
+      this.ap = new ApplicationHelper(cloud);
+      
       Thread kicker = getKicker();
       log.info("run(): " + kicker + su.jvmSize());
       getUnusedItems();
