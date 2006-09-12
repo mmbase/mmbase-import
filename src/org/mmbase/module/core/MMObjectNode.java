@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.194 2006-08-31 16:50:58 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.195 2006-09-12 19:32:49 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -1033,7 +1033,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      */
     public Integer getIntegerValue(String fieldName) {
         Object value = getValue(fieldName);
-        if (value instanceof MMObjectNode) return new Integer(((MMObjectNode)value).getNumber());
+        if (value instanceof MMObjectNode) return ((MMObjectNode)value).getNumber();
         return Casting.toInteger(value);
     }
 
@@ -1274,7 +1274,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * This means it will be reloaded from the database/storage on next use.
      */
     public void delRelationsCache() {
-        relationsCache.remove(new Integer(getNumber()));
+        relationsCache.remove(getNumber());
     }
 
     /**
@@ -1325,7 +1325,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @scope public?
      */
     protected List getRelationNodes() {
-        Integer number = new Integer(getNumber());
+        Integer number = Integer.valueOf(getNumber());
         List relations;
         if (! relationsCache.contains(number)) {
             relations = parent.getRelations_main(getNumber());
