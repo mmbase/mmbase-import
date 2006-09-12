@@ -266,7 +266,6 @@ public class EventNotifier implements Runnable {
       }
       Node emailNode = cloud.getNodeManager("email").createNode();
       emailNode.setValue("from", NatMMConfig.toEmailAddress);
-      emailNode.setValue("subject", "Controle op in de website gebruikte emailaddressen");
       emailNode.setValue("replyto", NatMMConfig.toEmailAddress);
       emailNode.setValue("body",
              "<multipart id=\"plaintext\" type=\"text/plain\" encoding=\"UTF-8\">"
@@ -284,6 +283,7 @@ public class EventNotifier implements Runnable {
       while(!emailAccounts.isEmpty()) {
         String emailAddress = (String) emailAccounts.first();
         if(com.cfdev.mail.verify.EmailVerifier.validateEmailAddressSyntax(emailAddress)) {
+           emailNode.setValue("subject", "Controle op in de website gebruikte emailadres " + emailAddress);
            emailNode.setValue("to", emailAddress);
            emailNode.commit();
            emailNode.getValue("mail(oneshot)");
