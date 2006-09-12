@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @author Pierre van Rooden
  * @author Kees Jongenburger
- * @version $Id: StringSplitter.java,v 1.7 2006-06-26 18:15:22 johannes Exp $
+ * @version $Id: StringSplitter.java,v 1.8 2006-09-12 19:33:30 michiel Exp $
  */
 public class StringSplitter {
 
@@ -28,8 +28,8 @@ public class StringSplitter {
      * @param delimiter
      * @return a (modifiable) List containing the elements
      */
-    static public List split(String string, String delimiter) {
-        List result = new ArrayList();
+    static public List<String> split(String string, String delimiter) {
+        List<String> result = new ArrayList();
         if (string == null) return result;
         String[] values = string.split(delimiter);
         for (int i = 0; i < values.length; i++) {
@@ -45,7 +45,7 @@ public class StringSplitter {
      * @param string the string to split
      * @return a List containing the elements
      */
-    static public List split(String string) {
+    static public List<String> split(String string) {
         return split(string, ",");
     }
 
@@ -54,10 +54,10 @@ public class StringSplitter {
      * a(b,c,d),e,f(g) will be split up in a(b,c,d) and e and f(g).
      * @since MMBase-1.8
      */
-    static public List splitFunctions(CharSequence attribute) {
+    static public List<String> splitFunctions(CharSequence attribute) {
         int commaPos =  0;
         int nested   =  0;
-        List  result = new ArrayList();
+        List<String>  result = new ArrayList();
         int i;
         int length   =  attribute.length();
         for(i = 0; i < length; i++) {
