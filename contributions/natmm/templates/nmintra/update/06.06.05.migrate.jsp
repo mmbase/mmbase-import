@@ -380,10 +380,12 @@
 		 </mm:listnodes><%
 	}
 	String [] ewToRename = {
-		"/editors/cache/flush.jsp?command=all"
+		"/editors/cache/flush.jsp?command=all",
+    "config/pagina/pagina_form"
 		};
 	String [] ewNewName = {
-		"/editors/util/flushcache.jsp"
+		"/editors/util/flushcache.jsp",
+    "config/pagina/pagina_formulier"
 		};
 	for(int i=0; i<ewToRename.length;i++) {
 		%><mm:listnodes type="editwizards" constraints="<%= "wizard = '" + ewToRename[i]  + "'" %>">

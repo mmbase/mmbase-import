@@ -8,6 +8,7 @@
 <mm:import jspvar="employeeId" externid="employee">-1</mm:import>
 <%
 
+ApplicationHelper ap = new ApplicationHelper(cloud);
 PaginaHelper ph = new PaginaHelper(cloud);
 String path = ph.getTemplate(request);
 
@@ -95,6 +96,7 @@ String locationId = request.getParameter("location"); if(locationId==null){ loca
 // searchresults
 String searchId = request.getParameter("search"); if(searchId==null) { searchId=""; }
 String categoryId = request.getParameter("category"); if(categoryId==null){ categoryId = ""; }
+String defaultSearchText = "ik zoek op ...";
 
 // formulier
 String postingStr = request.getParameter("pst"); if(postingStr==null) { postingStr=""; }
@@ -131,16 +133,11 @@ String requestURL = javax.servlet.http.HttpUtils.getRequestURL(request).toString
 requestURL = requestURL.substring(0,requestURL.lastIndexOf("/")) + "/";
 
 String imageTemplate = "";
-
-// email addresses
-String defaultFromAddress = "intranet@natuurmonumenten.nl";
-String defaultPZAddress = "A.deBeer@Natuurmonumenten.nl";
-String defaultFZAddress = "C.Koumans@natuurmonumenten.nl";
-
-String emailHelpText = "<br><br>N.B. Op sommige computers binnen Natuurmonumenten is het niet mogelijk om direct op een link in de email te klikken."
-                    + "<br>Als dit bij jou het geval is moet je de volgende handelingen uitvoeren:"
-                    + "<br>1.open het programma Internet Explorer"
-                    + "<br>2.kopieer de bovenstaande link uit deze email naar de adres balk van Internet Explorer"
-                    + "<br>3.druk op de \"Enter\" toets";
+ 
+String sPageRef = (String) session.getAttribute("pageref");
+if(sPageRef!=null&&!sPageRef.equals(paginaID)) { // set pagerefminone to sPagRef, set pageref to paginaID
+	session.setAttribute("pagerefminone",sPageRef);
+}
+session.setAttribute("pageref",paginaID);
 
 %>

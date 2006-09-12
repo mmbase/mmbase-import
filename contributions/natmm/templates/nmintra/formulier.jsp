@@ -2,8 +2,11 @@
 <mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud">
 <%@include file="includes/templateheader.jsp" %>
 <%@include file="includes/cacheparams.jsp" %>
-<% if(!postingStr.equals("|")) { expireTime = 0; } %>
-<cache:cache groups="<%= paginaID %>" key="<%= cacheKey + "~" + session.getAttribute("pagerefminone") %>" time="<%= expireTime %>" scope="application">
+<%
+String sPageRefMinOne = (String) session.getAttribute("pagerefminone");
+if(!postingStr.equals("|")) { expireTime = 0; } 
+%>
+<cache:cache groups="<%= paginaID %>" key="<%= cacheKey + "~" + sPageRefMinOne %>" time="<%= expireTime %>" scope="application">
 <%@include file="includes/calendar.jsp" %>
 <%@include file="includes/header.jsp" %>
 <td><%@include file="includes/pagetitle.jsp" %></td>
@@ -26,7 +29,6 @@
         // <option id="4">radio buttons</option>
         // <option id="5">check boxes</option>
         
-        String sPageRefMinOne = (String) session.getAttribute("pagerefminone");
         // ** hack: add sDefaultValues on page "Wat vind je ervan?"
         String sDefaultName = "";
         String sDefaultEmail = "";
@@ -54,17 +56,16 @@
         %>
         <%@include file="includes/form/script.jsp" %>
         <%
-           
-         if(!postingStr.equals("")){
-             postingStr += "|";
-             %><%@include file="includes/form/result.jsp" %><% 
-         } else {
-             %>
-				 <%@include file="includes/form/table.jsp" %>
-             <%
-         } %></td>
-    <td><img src="media/spacer.gif" width="10" height="1"></td>
-</tr>
+        if(!postingStr.equals("")){
+            postingStr += "|";
+            %><%@include file="includes/form/result.jsp" %><% 
+        } else {
+            %><%@include file="includes/form/table.jsp" %><%
+        } 
+        %>
+        </td>
+        <td><img src="media/spacer.gif" width="10" height="1"></td>
+    </tr>
 </table>
 </div>
 </td><%
