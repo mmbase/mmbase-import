@@ -286,11 +286,5 @@
    <mm:listnodes type="editwizards" constraints="wizard = 'config/vacature/vacature'">
       <mm:setfield name="wizard">config/vacature/vacature_nmintra</mm:setfield>
    </mm:listnodes>
-   <% log.info("Setting default fields for users"); %>
-   <mm:listnodes type="users" constraints="account!='admin'">
-      <mm:setfield name="password">admin2k</mm:setfield>
-      <mm:setfield name="gracelogins">3</mm:setfield>
-      <mm:setfield name="rank">chiefeditor</mm:setfield>
-   </mm:listnodes>
 </mm:log>
 </mm:cloud>
