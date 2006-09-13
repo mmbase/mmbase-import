@@ -18,11 +18,11 @@ import java.util.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: AbstractSequentialBridgeList.java,v 1.1 2003-12-17 08:49:20 michiel Exp $
+ * @version $Id: AbstractSequentialBridgeList.java,v 1.2 2006-09-13 09:46:00 michiel Exp $
  * @since   MMBase-1.7
  */
 
-abstract public  class AbstractSequentialBridgeList extends AbstractSequentialList implements BridgeList {
+abstract public  class AbstractSequentialBridgeList<E> extends AbstractSequentialList<E> implements BridgeList<E> {
 
     private Map properties = new HashMap();
 
@@ -38,7 +38,7 @@ abstract public  class AbstractSequentialBridgeList extends AbstractSequentialLi
 
     // javadoc inherited
     public void sort() {
-        Collections.sort(this);
+        Collections.sort((List) this);
     }
 
     // javadoc inherited
