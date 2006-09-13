@@ -46,13 +46,28 @@ th.navigate {
 .mm_calendar td, .mm_calendar th { 
 }
 .mm_calendar .Saturday, .mm_calendar .Sunday { 
-  background-color: #ccc;
+  background-color: #ccc !important;
 }
-.mm_calendar .January, .March, .May, .July, .September, .November { 
+.mm_calendar .January, 
+.mm_calendar .March, 
+.mm_calendar .May,
+.mm_calendar .July, 
+.mm_calendar .September, 
+.mm_calendar .November { 
   background-color: #ffd;
 }
-.mm_calendar .February, .April, .June, .August, .October, .December { 
+.mm_calendar .February, 
+.mm_calendar .April, 
+.mm_calendar .June,
+.mm_calendar .August, 
+.mm_calendar .October, 
+.mm_calendar .December { 
   background-color: #dfd;
+}
+
+.mm_calendar .other_month { 
+  background-color: black;
+  visibility: collapse;
 }
 
 /* only works in safari..
