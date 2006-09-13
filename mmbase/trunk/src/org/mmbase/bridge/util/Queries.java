@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.77 2006-08-30 17:52:33 michiel Exp $
+ * @version $Id: Queries.java,v 1.78 2006-09-13 09:45:30 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -42,7 +42,7 @@ abstract public class Queries {
      * Translates a string to a search direction constant. If the string is <code>null</code> then
      * 'BOTH' is returned.
      * @param search string representation of the searchdir constant
-     * @return Searchdir constant (@link RelationStep)
+     * @return Searchdir constant as in {@link RelationStep}
      * @see ClusterBuilder#getSearchDir The same function, only with another return value if String is <code>null</code>
      */
     public static int getRelationStepDirection(String search) {
