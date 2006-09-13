@@ -1,4 +1,5 @@
 <%@include file="/taglibs.jsp" %>
+<%@page import="java.text.SimpleDateFormat" %>
 <mm:cloud method="http" rank="basic user" jspvar="cloud">
 
 <%! public Calendar addPeriod(Calendar cal, int period) {

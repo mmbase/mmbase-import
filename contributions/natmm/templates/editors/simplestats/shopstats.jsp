@@ -236,81 +236,83 @@ if(ownerId==null) { ownerId = ""; }
 String responseTitle = "IntraShop";
 
 String timeConstraint =  "responses.responsedate > " + fromTime;
-if(period>0) timeConstraint += " AND responses.responsedate < " + toTime;
+if(period>0) { timeConstraint += " AND responses.responsedate < " + toTime; }
 
 String allConstraint = timeConstraint + " AND responses.title='" + responseTitle + "'"; 
 
 String pageConstraint = "";
-if (!pageId.equals("-1")) pageConstraint = "pagina.number=" + pageId;
+if (!pageId.equals("-1")) { pageConstraint = "pagina.number=" + pageId; }
 
 String ownerConstraint = "";
-if (ownerId!="") ownerConstraint = "medewerkers.number=" + ownerId;
+if (ownerId!="") { ownerConstraint = "medewerkers.number=" + ownerId; }
 
 int maxPageCount = 1;
 int totalPages = 0; 
 Hashtable orderCounts = new Hashtable();
 Hashtable orderSumCounts = new Hashtable();
-String shop_itemId = null;
 int maxSum = 1;
 int maxWidth = 250;
+
+boolean checkOnOwner = false;
 %>
-<mm:listnodes type="responses" orderby="responses.responsedate" directions="UP"
-	constraints="<%= allConstraint %>" >
+<mm:listnodes type="responses" orderby="responses.responsedate" directions="UP" constraints="<%= allConstraint %>" >
 	<%	
 	int i=0; 
 	boolean containsOrderedProduct = true; 
 	while (containsOrderedProduct) {
-	   %>
-		<mm:field name="<%= "question"+ (i+1) %>" vartype="String" jspvar="dummy" write="false">
+	  %>
+		<mm:field name="<%= "question"+ (i+1) %>" vartype="String" jspvar="shop_itemId" write="false">
 			<%
-			shop_itemId = dummy; 
-			if (shop_itemId==null || shop_itemId.equals("")) containsOrderedProduct = false; 
-			%>
-		</mm:field>
-		<mm:field name="<%= "answer"+ (i+1) %>" vartype="Integer" jspvar="dummy" write="false">
-		   <mm:node number="<%= shop_itemId %>">
-			<%
-			if (containsOrderedProduct) {
-   			boolean isVisible = true;
-   	      if (!ownerId.equals("")) {
-   		      isVisible = false;
-   		      %><mm:related path="posrel,medewerkers" constraints="<%= ownerConstraint %>"><%
-   			      	isVisible = true; 
-   			   %></mm:related><%
-   			   
-   			   %><mm:related path="posrel,pagina,contentrel,medewerkers" constraints="<%= ownerConstraint %>"><%
-   			      	isVisible = true; 
-   			   %></mm:related><%
-   	      }
-   	      
-   	      if (isVisible&&!pageId.equals("")) {
-   	         isVisible = false;
-   		      %><mm:related path="posrel,pagina" constraints="<%= pageConstraint %>"><%
-   			         isVisible = true;
-   			   %></mm:related><%
-   	      }		
-   	      
-   			if(isVisible) {
-   			   Integer tmp = (Integer) orderCounts.get(shop_itemId);
-   				if (tmp==null) tmp = new Integer(0);
-   				orderCounts.put(shop_itemId, new Integer(tmp.intValue() + 1));
-   				int sum = dummy.intValue();
-   				tmp = (Integer) orderSumCounts.get(shop_itemId);
-   				if (tmp!=null) sum += tmp.intValue();
-   				if (sum > maxSum) maxSum = sum;
-   				orderSumCounts.put(shop_itemId, new Integer(sum));
-   		   }
-   		   i++;
-   		   if (i==100) containsOrderedProduct = false;
-   		}
-		   %>
-		   </mm:node>
-		</mm:field>
-	   <% 
-	} %>
+			if (shop_itemId==null || shop_itemId.equals("")) {
+        containsOrderedProduct = false;
+      } else {
+        %>
+        <mm:field name="<%= "answer"+ (i+1) %>" vartype="Integer" jspvar="numberOfItems" write="false">
+          <mm:node number="<%= shop_itemId %>">
+          <%
+          boolean isVisible = true;
+          if (!ownerId.equals("")) {
+            isVisible = false;
+            %><mm:related path="posrel,medewerkers" constraints="<%= ownerConstraint %>"><%
+              isVisible = true; 
+            %></mm:related><%
+           
+            %><mm:related path="posrel,pagina,contentrel,medewerkers" constraints="<%= ownerConstraint %>"><%
+              isVisible = true; 
+            %></mm:related><%
+          }
+          
+          if (isVisible&&!pageId.equals("")) {
+            isVisible = false;
+            %><mm:related path="posrel,pagina" constraints="<%= pageConstraint %>"><%
+              isVisible = true;
+            %></mm:related><%
+          }		
+            
+          if(!checkOnOwner||isVisible) {
+            Integer tmp = (Integer) orderCounts.get(shop_itemId);
+            if (tmp==null) { tmp = new Integer(0); }
+            orderCounts.put(shop_itemId, new Integer(tmp.intValue() + 1));
+            int sum = numberOfItems.intValue();
+            tmp = (Integer) orderSumCounts.get(shop_itemId);
+            if (tmp!=null) { sum += tmp.intValue(); }
+            if (sum > maxSum) { maxSum = sum; }
+            orderSumCounts.put(shop_itemId, new Integer(sum));
+           }
+           i++;
+           if (i==100) { containsOrderedProduct = false; }
+          %>
+          </mm:node>
+        </mm:field>
+        <%
+      }
+      %>
+    </mm:field>
+    <%
+  }
+  %>
 </mm:listnodes>
 <%--
-shop_itemId: <%= shop_itemId %><br/>
 orderSumCounts: <%= orderSumCounts %><br/>
 orderCounts: <%= orderCounts %><br/>
 --%>
@@ -345,29 +347,28 @@ while(it.hasNext()) {
 	}
 }
 if (count>0) {
-	String allShopItems = "";
-	String tmpSepar = "";
-	for(int i=0;i<count;i++) {
-		allShopItems += tmpSepar + tmp[i][0];
-		tmpSepar = ",";
+	 String allShopItems = "";
+	 String tmpSepar = "";
+	 for(int i=0;i<count;i++) {
+		 allShopItems += tmpSepar + tmp[i][0];
+		 tmpSepar = ",";
    }
-	String pageNumber="";
-   %><table class="formcontent" style="width:500px;">
+   // *** for all pages related to a selected shop_item
+   %>
+   <table class="formcontent" style="width:500px;">
    	<tr <% if(rowCount%2==0) { %> bgcolor="EEEEEE" <% } rowCount++; %>>
-   		<td width="100"><b>Item</b></td>
+   		<td width="100"><b>Pagina</b></td>
    		<td width="100"><b>Product</b></td>
    		<td><b>Aantal (aantal bestellingen / aantal bestelde producten)</b></td>
    	</tr>
-   	<% // *** for all pages related to a selected shop_item *** %>
-      <mm:list nodes="<%= allShopItems %>" path="items,posrel,pagina"
+    <mm:list nodes="<%= allShopItems %>" path="items,posrel,pagina"
             orderby="pagina.titel" directions="UP" distinct="yes" fields="pagina.number">
-      	<mm:field name="pagina.number" vartype="String" jspvar="dummy" write="false">
-      		<%	pageNumber = dummy; %>
-      	</mm:field>
-      	<% isOutpage = false; 
+      	<mm:field name="pagina.number" vartype="String" jspvar="pageNumber" write="false">
+      	   <% 
+           isOutpage = false; 
       	   for(int i=0;i<count;i++) { // *** show all the items that belong to this page **
       	      
-      	      shop_itemId = tmp[i][0];
+      	      String shop_itemId = tmp[i][0];
       	      boolean belongsToPage = false;
       	      %><mm:list nodes="<%= shop_itemId %>" path="items,posrel,pagina" constraints="<%= "pagina.number = '" + pageNumber + "'" %>"><%
       	         belongsToPage = true;
@@ -375,23 +376,29 @@ if (count>0) {
       	      
       	      if(belongsToPage) {   	      
          	   	if (!isOutpage) { 
-         				isOutpage = true; %>
-         			   <tr <% if(rowCount%2==0) { %> bgcolor="EEEEEE" <% } rowCount++; %>><td colspan="3"><mm:field name="page.title" /></td></tr>
-         			<%	}
-         				Integer thisCounts = (Integer) orderCounts.get(shop_itemId);
-         				Integer thisSumCounts = (Integer) orderSumCounts.get(shop_itemId);
-         				if (thisCounts==null) thisCounts = new Integer(0);
-         				if (thisSumCounts==null) thisSumCounts = new Integer(0);
-         			%>
-         			<tr <% if(rowCount%2==0) { %> bgcolor="EEEEEE" <% } rowCount++; %>>
-         				<td></td><td><mm:node number="<%= shop_itemId %>"><mm:field name="titel" /></mm:node>&nbsp;</td>
-         				<td><img src="../media/bar-orange.gif" alt="" width="<%= maxWidth*thisSumCounts.intValue()/maxSum %>" height="5" border=0>
-         					&nbsp;(<%= thisCounts %>/<%= thisSumCounts %>)</td>
-         			</tr><% 
+         				isOutpage = true; 
+                %>
+         			  <tr <% if(rowCount%2==0) { %> bgcolor="EEEEEE" <% } rowCount++; %>><td colspan="3"><mm:field name="pagina.titel" /></td></tr>
+                <%	
+              }
+              Integer thisCounts = (Integer) orderCounts.get(shop_itemId);
+              Integer thisSumCounts = (Integer) orderSumCounts.get(shop_itemId);
+              if (thisCounts==null) { thisCounts = new Integer(0); }
+              if (thisSumCounts==null) { thisSumCounts = new Integer(0); }
+              %>
+              <tr <% if(rowCount%2==0) { %> bgcolor="EEEEEE" <% } rowCount++; %>>
+                <td></td>
+                <td><mm:node number="<%= shop_itemId %>"><mm:field name="titel" /></mm:node>&nbsp;</td>
+                <td><img src="../img/bar-orange.gif" alt="" width="<%= maxWidth*thisSumCounts.intValue()/maxSum %>" height="5" border=0>
+                  &nbsp;(<%= thisCounts %>/<%= thisSumCounts %>)</td>
+              </tr>
+              <% 
          	   } 
-      	   } %>
-      </mm:list>
-   </table><%	
+      	   } 
+           %>
+      	</mm:field>
+    </mm:list>
+    </table><%	
 }
 %>
 
