@@ -27,12 +27,17 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionError;
 
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.Logger;
 /**
  * @author Edwin van der Elst Date :Oct 17, 2003
  *
  * @struts:form name="RubriekForm"
  */
 public class RubriekForm extends ActionForm {
+  
+   private static final Logger log = Logging.getLoggerInstance(RubriekForm.class);
+  
    private String parent;
    private String naam;
    private String naam_fra;
@@ -172,7 +177,7 @@ public class RubriekForm extends ActionForm {
    /**
     * @param is_visible Whether or not this rubriek is visible
     */
-   public void setIs_visible(String isVisible) {
+   public void setIs_visible(String is_visible) {
       this.is_visible = is_visible;
    }
 
@@ -301,6 +306,9 @@ public class RubriekForm extends ActionForm {
 
 /**
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2006/09/04 18:51:00  henk
+ * Added issearchable
+ *
  * Revision 1.3  2006/08/11 06:23:02  henk
  * Removed uppercase from getter/setter (does not work well with Struts)
  *
