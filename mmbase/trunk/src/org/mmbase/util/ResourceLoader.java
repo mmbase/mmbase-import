@@ -97,11 +97,15 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.40 2006-08-30 19:10:20 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.41 2006-09-13 09:47:36 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
-    private static final Logger log = Logging.getLoggerInstance(ResourceLoader.class);
+    private static Logger log = Logging.getLoggerInstance(ResourceLoader.class);
+
+    public static void initLogging() {
+        log = Logging.getLoggerInstance(ResourceLoader.class);
+    }
 
     /**
      * Protocol prefix used by URL objects in this class.
@@ -139,7 +143,7 @@ public class ResourceLoader extends ClassLoader {
      */
     protected static final String INDEX = "INDEX";
 
-    private static  ResourceLoader configRoot = null;
+    public static  ResourceLoader configRoot = null;
     private static  ResourceLoader webRoot = null;
     private static  ResourceLoader systemRoot = null;
     private static ServletContext  servletContext = null;
@@ -203,7 +207,7 @@ public class ResourceLoader extends ClassLoader {
     }
 
 
-    private List /* <ResolverFactory> */ roots;
+    private List<PathURLStreamHandler> roots;
 
 
     static {
@@ -439,7 +443,7 @@ public class ResourceLoader extends ClassLoader {
      */
     protected ResourceLoader() {
         super();
-        roots        = new ArrayList();
+        roots        = new ArrayList<PathURLStreamHandler>();
         try {
             context = newURL(PROTOCOL + ":/");
         } catch (MalformedURLException mue) {
@@ -455,7 +459,7 @@ public class ResourceLoader extends ClassLoader {
     protected  ResourceLoader(final ResourceLoader cl, final String context)  {
         super(ResourceLoader.class.getClassLoader());
         this.context = cl.findResource(context + "/");
-        roots   = new ArrayList();
+        roots   = new ArrayList<PathURLStreamHandler>();
         Iterator i = cl.roots.iterator();
         // hmm, don't like this code, but don't know how else to copy the inner object.
         while (i.hasNext()) {
@@ -504,21 +508,21 @@ public class ResourceLoader extends ClassLoader {
      * {@inheritDoc}
      * @see #getResourceList
      */
-    protected Enumeration findResources(final String name) throws IOException {
-        final Iterator i = roots.iterator();
-        return new Enumeration() {
-                private Enumeration current = null;
-                private Enumeration next;
+    protected Enumeration<URL> findResources(final String name) throws IOException {
+        final Iterator<PathURLStreamHandler> i = roots.iterator();
+        return new Enumeration<URL>() {
+                private Enumeration<URL> current = null;
+                private Enumeration<URL> next;
                 {
                     current = getNext();
                     next = getNext();
                 }
 
-                protected Enumeration getNext() {
+                protected Enumeration<URL> getNext() {
                     if (i.hasNext()) {
                         try {
-                            PathURLStreamHandler ush = (PathURLStreamHandler) i.next();
-                            Enumeration e = ush.getResources(name);
+                            PathURLStreamHandler ush = i.next();
+                            Enumeration<URL> e = ush.getResources(name);
                             return e;
                         } catch (IOException io) {
                             log.warn(io);
@@ -532,12 +536,12 @@ public class ResourceLoader extends ClassLoader {
                 public boolean hasMoreElements() {
                     return current.hasMoreElements() || next.hasMoreElements();
                 }
-                public Object nextElement() {
+                public URL nextElement() {
                     if (! current.hasMoreElements()) {
                         current = next;
                         next = getNext();
                     }
-                    Object n = current.nextElement();
+                    URL n = current.nextElement();
                     return n;
                 }
 
@@ -549,7 +553,7 @@ public class ResourceLoader extends ClassLoader {
      * given resource. This can be used to show what resource whould be loaded and what resource
      * whould be masked, or one can also simply somehow 'merge' all these resources.
      */
-    public List getResourceList(final String name) {
+    public List<URL> getResourceList(final String name) {
         try {
             return Collections.list(getResources(name));
         } catch (IOException io) {
@@ -885,13 +889,11 @@ public class ResourceLoader extends ClassLoader {
      * Used by {@link ResourceWatcher}. And by some deprecated code that wants to produce File objects.
      * @return A List of all files associated with the resource.
      */
-    public List/*<File>*/ getFiles(String name) {
+    public List<File> getFiles(String name) {
 
 
-        List result = new ArrayList();
-        Iterator i = roots.iterator();
-        while (i.hasNext()) {
-            Object o = i.next();
+        List<File> result = new ArrayList();
+        for (PathURLStreamHandler o : roots) {
             if (o instanceof FileURLStreamHandler) {
                 result.add(((FileURLStreamHandler) o).getFile(name));
             }
@@ -1035,11 +1037,11 @@ public class ResourceLoader extends ClassLoader {
         /**
          * Returns a List of URL's with the same name. Defaults to one URL.
          */
-        Enumeration getResources(final String name) throws IOException {
-            return new Enumeration() {
+        Enumeration<URL> getResources(final String name) throws IOException {
+            return new Enumeration<URL>() {
                     private boolean hasMore = true;
                     public boolean hasMoreElements() { return hasMore; };
-                    public Object nextElement() {
+                    public URL nextElement() {
                         hasMore = false;
                         return openConnection(name).getURL();
                     }
@@ -1562,7 +1564,7 @@ public class ResourceLoader extends ClassLoader {
             return res;
         }
 
-        Enumeration getResources(final String name) throws IOException {
+        Enumeration<URL> getResources(final String name) throws IOException {
             try {
                 return getClassLoader().getResources(getClassResourceName(name));
             } catch (IOException ioe) {
@@ -1592,10 +1594,10 @@ public class ResourceLoader extends ClassLoader {
         private Set<String> getPaths(final Set results, final Pattern pattern, final boolean recursive, final boolean directories, String resourceDir, String searchUp) {
             try {
                 List subDirs = new ArrayList();
-                Enumeration e = getResources("".equals(resourceDir) ? INDEX : resourceDir + INDEX);
+                Enumeration<URL> e = getResources("".equals(resourceDir) ? INDEX : resourceDir + INDEX);
                 if (searchUp != null && resourceDir.startsWith("..")) resourceDir = "";
                 while (e.hasMoreElements()) {
-                    URL u = (URL) e.nextElement();
+                    URL u = e.nextElement();
                     InputStream inputStream = u.openStream();
                     if (inputStream != null) {
                         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
