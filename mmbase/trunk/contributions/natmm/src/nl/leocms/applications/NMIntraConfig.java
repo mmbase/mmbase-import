@@ -113,7 +113,7 @@ public class NMIntraConfig {
    public static String toEmailAddress = "beheerder@natuurmonumenten.nl";
    public static String newsEmailAddress = "intranieuws@natuurmonumenten.nl";
    public static String incomingDir = "E:/Intranet_Input/";
-   public static String tempDir = "E:/Intranet_Input/";
+   public static String tempDir = "E:/Intranet_Temp/";
    public static String sCorporateWebsite = "http://www.natuurmonumenten.nl/";
    public static String sCorporateEditors = "http://www.natuurmonumenten.nl/editors/";
    
