@@ -147,7 +147,7 @@ public class ContentHelper {
          tmPathToRubriek.put("teaser", "rolerel");
       }
       
-      ArrayList cTypes = ap.getContentTypes();
+      ArrayList cTypes = ap.getContentTypes(true);
       for(int ct=0; ct < cTypes.size(); ct++) {
          String relatedType = ( (String) cTypes.get(ct)).toLowerCase();
          // subitems do not count for used in items

@@ -1,9 +1,8 @@
 <%
    Logger log = Logging.getLoggerInstance("beheerbibliotheek/index.jsp");
    ContentHelper contentHelper = new ContentHelper(cloud);
-   ArrayList cTypes = (new ApplicationHelper(cloud)).getContentTypes();
-   cTypes.remove(cTypes.indexOf("paragraaf"));
-
+   ArrayList cTypes = (new ApplicationHelper(cloud)).getContentTypes(false);
+   
    /**
     * Page settings.
     */

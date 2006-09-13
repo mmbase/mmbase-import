@@ -53,7 +53,7 @@ public class UpdateUnusedElements implements Runnable {
 	*/
 	public void deleteUnusedObjects(String nodeType) {
     
-    ArrayList cTypes = ap.getContentTypes();
+    ArrayList cTypes = ap.getContentTypes(true);
 		NodeList nl = cloud.getNodeManager(nodeType).getList(null,null,null);
 
 		for(Iterator it = nl.iterator(); it.hasNext();){
@@ -68,7 +68,7 @@ public class UpdateUnusedElements implements Runnable {
          }
       }
       if(iParents==0) {
-        log.info("deleting " + nodeType + " " + node.getStringValue("titel") + " (" + node.getNumber() + ")"); 
+        log.info("deleting " + nodeType + " " + node.getStringValue(ch.getTitleField(thisNodeManager)) + " (" + node.getNumber() + ")"); 
         node.delete(true);
       }
 		}
@@ -113,6 +113,11 @@ public class UpdateUnusedElements implements Runnable {
 	*/
    public void getUnusedItems() {
 
+      ArrayList containers = ap.getContainerTypes();
+      for (int i = 0; i < containers.size(); i++){
+        deleteUnusedObjects((String) containers.get(i));
+      }
+
       AuthorizationHelper authHelper = new AuthorizationHelper(cloud);
       HashMap hmUnusedItemsForAllRubriek = getUnusedItemsForAllRubriek();
       
@@ -135,7 +140,6 @@ public class UpdateUnusedElements implements Runnable {
           nUser.commit();
         }
       }
-      deleteUnusedObjects("paragraaf");
       cleanUpArchive();
    }
 

@@ -44,68 +44,94 @@ public class ApplicationHelper {
 		return (versionManager.getList("type='application' AND name='" + sApplication + "'", null, null).size()>0);
 	}
 	
-	
    /**
-    * Returns all content types (typedefs/names) for the installed applications.
+    * Returns all "meaningfull" content types (typedefs/names) for the installed application.
+    * The list of all contentelements ( cloud.getNodeManager("contentelement").getDescendants() ) contains to many entries to be usefull
     * @return
     */
-   public ArrayList getContentTypes() {
-      
+   public ArrayList getContentTypes(boolean addContainers) {
+     
       ArrayList contentTypes = new ArrayList(25);
-			
-      // todo: create a more generic version for this piece of code
-		if(isInstalledNatMM) {
-			for(int f = 0; f < NatMMConfig.CONTENTELEMENTS.length; f++) {
-            contentTypes.add(NatMMConfig.CONTENTELEMENTS[f]);
-            contentTypes.add("dossier"); // dossier is not a content element, but content elements can be added to it
-			}
-		}
-		if(isInstalledNatNH) {
-			for(int f = 0; f < NatNHConfig.CONTENTELEMENTS.length; f++) {
-            contentTypes.add(NatNHConfig.CONTENTELEMENTS[f]);
-			}
-      }
-		if(isInstalledNMIntra) {
-		   for(int f = 0; f < NMIntraConfig.CONTENTELEMENTS.length; f++) {
-            contentTypes.add(NMIntraConfig.CONTENTELEMENTS[f]);
-         }
-      }
-		if(contentTypes.isEmpty()) {
-			log.error("CONTENTELEMENTS not defined by the available applications");
-		}
       
+      // todo: create a more generic version for this piece of code
+      if(isInstalledNatMM) {
+        for(int f = 0; f < NatMMConfig.CONTENTELEMENTS.length; f++) {
+          contentTypes.add(NatMMConfig.CONTENTELEMENTS[f]);
+        }
+      }
+      if(isInstalledNatNH) {
+        for(int f = 0; f < NatNHConfig.CONTENTELEMENTS.length; f++) {
+          contentTypes.add(NatNHConfig.CONTENTELEMENTS[f]);
+        }
+      }
+      if(isInstalledNMIntra) {
+        for(int f = 0; f < NMIntraConfig.CONTENTELEMENTS.length; f++) {
+          contentTypes.add(NMIntraConfig.CONTENTELEMENTS[f]);
+        }
+      }
+      if(addContainers) {
+        contentTypes.addAll(getContainerTypes());
+      }
+      if(contentTypes.isEmpty()) {
+        log.error("CONTENTELEMENTS not defined by the available applications");
+      }
+
       return contentTypes;
    }
 	
-	public HashMap pathsFromPageToElements() {
+   
+   /**
+    * Returns all list of containers for the installed application.
+    * Containers are types that are no contentelement but are used as containers for contelements
+    * @return
+    */
+   public ArrayList getContainerTypes() {
+     
+      ArrayList containerTypes = new ArrayList(25);
+      
+      // todo: create a more generic version for this piece of code
+      if(isInstalledNatMM) {
+        for(int f = 0; f < NatMMConfig.CONTAINERS.length; f++) {
+          containerTypes.add(NatMMConfig.CONTAINERS[f]);
+        }
+      }
+      if(isInstalledNMIntra) {
+        for(int f = 0; f < NMIntraConfig.CONTAINERS.length; f++) {
+          containerTypes.add(NMIntraConfig.CONTAINERS[f]);
+        }
+      }
+      return containerTypes;
+   }
+   
+	 public HashMap pathsFromPageToElements() {
 	
-	   HashMap pathsFromPageToElements = new HashMap();
-		// todo: create a more generic version for this piece of code
-		if(isInstalledNatMM) {
-			for(int f = 0; f < NatMMConfig.OBJECTS.length; f++) {
-				pathsFromPageToElements.put(
-					NatMMConfig.OBJECTS[f],
-					NatMMConfig.PATHS_FROM_PAGE_TO_OBJECTS[f]);
-			}
-		}
-		if(isInstalledNatNH) {
-			for(int f = 0; f < NatNHConfig.OBJECTS.length; f++) {
-				pathsFromPageToElements.put(
-					NatNHConfig.OBJECTS[f],
-					NatNHConfig.PATHS_FROM_PAGE_TO_OBJECTS[f]);
-			}
+      HashMap pathsFromPageToElements = new HashMap();
+      // todo: create a more generic version for this piece of code
+      if(isInstalledNatMM) {
+        for(int f = 0; f < NatMMConfig.OBJECTS.length; f++) {
+          pathsFromPageToElements.put(
+            NatMMConfig.OBJECTS[f],
+            NatMMConfig.PATHS_FROM_PAGE_TO_OBJECTS[f]);
+        }
       }
-		if(isInstalledNMIntra) {
-			for(int f = 0; f < NMIntraConfig.OBJECTS.length; f++) {
-				pathsFromPageToElements.put(
-					NMIntraConfig.OBJECTS[f],
-					NMIntraConfig.PATHS_FROM_PAGE_TO_OBJECTS[f]);
-			}
+      if(isInstalledNatNH) {
+        for(int f = 0; f < NatNHConfig.OBJECTS.length; f++) {
+          pathsFromPageToElements.put(
+            NatNHConfig.OBJECTS[f],
+            NatNHConfig.PATHS_FROM_PAGE_TO_OBJECTS[f]);
+        }
       }
-		if(pathsFromPageToElements.size()==0) {
-			log.error("OBJECTS and PATHS_FROM_PAGE_TO_OBJECTS are not defined by the available applications");
-		}
-		return pathsFromPageToElements;
+      if(isInstalledNMIntra) {
+        for(int f = 0; f < NMIntraConfig.OBJECTS.length; f++) {
+          pathsFromPageToElements.put(
+            NMIntraConfig.OBJECTS[f],
+            NMIntraConfig.PATHS_FROM_PAGE_TO_OBJECTS[f]);
+        }
+      }
+      if(pathsFromPageToElements.size()==0) {
+        log.error("OBJECTS and PATHS_FROM_PAGE_TO_OBJECTS are not defined by the available applications");
+      }
+      return pathsFromPageToElements;
    }
    
    public String getDefaultPage(String thisType){
@@ -181,7 +207,7 @@ public class ApplicationHelper {
    public String getContentTypesCommaSeparated() {
       StringBuffer ret = new StringBuffer();
 
-      for (Iterator iter = getContentTypes().iterator(); iter.hasNext();) {
+      for (Iterator iter = getContentTypes(false).iterator(); iter.hasNext();) {
          String t = (String) iter.next();
          ret.append("'");
          ret.append(t);

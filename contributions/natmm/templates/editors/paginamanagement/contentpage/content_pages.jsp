@@ -25,7 +25,7 @@
    </tr>    
    
    <%
-      ArrayList contentTypeList = ApplicationHelper.getContentTypes();
+      ArrayList contentTypeList = ApplicationHelper.getContentTypes(false);
       for (int i = 0; i < contentTypeList.size(); i++) {
          String contentType = (String) contentTypeList.get(i);
          Node paginaNode = null;
