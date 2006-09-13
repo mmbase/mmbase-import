@@ -1,0 +1,42 @@
+<jsp:root
+    xmlns:c="http://java.sun.com/jsp/jstl/core" 
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    version="2.0"
+    >
+  <jsp:directive.tag import="java.util.*" />
+  <jsp:directive.attribute name="day"     type="java.util.Date" required="true" />
+  <jsp:directive.attribute name="dayend"  type="java.util.Date" />
+  <jsp:directive.attribute name="stop"  /><!-- if true, then the entry will also be shown if the start time is on a previous day, but the stop time is on this day or later.-->
+  <jsp:directive.attribute name="newItem" fragment="true"  />
+
+
+  <jsp:scriptlet>
+    if (dayend == null) {
+
+      Calendar cal = Calendar.getInstance((TimeZone) request.getAttribute("org.mmbase.timezone"), 
+      (Locale) request.getAttribute("javax.servlet.jsp.jstl.fmt.locale.request")); 
+      cal.setTime(day);
+      cal.add(Calendar.DAY_OF_YEAR, 1);
+      dayend = cal.getTime();
+    }
+  </jsp:scriptlet>
+  <mm:import id="dayend"><jsp:expression>dayend.getTime() / 1000</jsp:expression></mm:import>
+  <mm:cloud method="asis">
+
+    <mm:listnodescontainer type="calendar_items">
+      <mm:typeconstraint name="calendar_items" descendants="false" />
+      <mm:sortorder field="start" />
+      <mm:constraint field="${empty stop ? 'start' : 'stop'}" operator="GREATER" value="${day}" />
+      <mm:constraint field="start" operator="LESS" value="${dayend}" />
+      <mm:listnodes>
+        <mm:first>&lt;ul&gt;</mm:first>
+        <li class="ct${_node.type}">
+          <jsp:doBody />
+        </li>
+        <mm:last>&lt;/ul&gt;</mm:last>
+      </mm:listnodes>
+    </mm:listnodescontainer>
+    <jsp:invoke fragment="newItem" />
+  </mm:cloud>
+</jsp:root>

@@ -42,15 +42,20 @@
           <mm:link page="hours.jspx" referids="language,timezone"><a href="${_}">h</a></mm:link>
         </div>
         
+        <mm:time id="date" time="now" vartype="date" write="false" />
+
         <mm-cal:monthsOverview 
             newItemUrl="newItem.jspx"
             referids="language,timezone" 
             buttons="/buttons"
-            mode="${mode}"
             stop="true"
-            first="0"
-            maxMonth="2"
+            offset="0"
+            rows="3"
+            cols="1"
             dateFormat="dd MMM" >
+          <mm:time referid="day" format="EEE dd" />
+        </mm-cal:monthsOverview>
+
           <!--
           <jsp:attribute name="newItem">           
             <mm:link page="newItem.jspx" referids="noon@day,language,timezone">
@@ -58,8 +63,6 @@
             </mm:link>
           </jsp:attribute>
           -->
-          <mm:include page="item.jspx" />
-        </mm-cal:monthsOverview>
       </mm:cloud>
     </body>
   </mm:content>
