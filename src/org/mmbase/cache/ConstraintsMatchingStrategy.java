@@ -18,6 +18,7 @@ import org.mmbase.core.CoreField;
 import org.mmbase.core.event.*;
 import org.mmbase.datatypes.DataType;
 import org.mmbase.module.core.*;
+import org.mmbase.util.LinkMap;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.storage.search.implementation.database.BasicSqlHandler;
@@ -42,7 +43,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: ConstraintsMatchingStrategy.java,v 1.30 2006-08-01 21:38:10 michiel Exp $
+ * @version $Id: ConstraintsMatchingStrategy.java,v 1.31 2006-09-13 17:46:23 michiel Exp $
  *
  */
 public class ConstraintsMatchingStrategy extends ReleaseStrategy {
@@ -794,66 +795,5 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
         }
     }
 
-    /**
-     * Combines to Maps to one new map. One map is 'leading' and determins wich keys are mapped. The second map can override values, if it contains the same mapping.
-     * @since MMBase-1.8.1
-     */
-    private static class LinkMap extends AbstractMap {
-        private final Map map1;
-        private final Map map2;
-        LinkMap(Map m1, Map m2) {
-            map1 = m1; map2 = m2;
-        }
-        public Set entrySet() {
-            return new AbstractSet() {
-                public Iterator iterator() {
-                    final Iterator i = map1.entrySet().iterator();
-                    return new Iterator() {
-                        public boolean hasNext() {
-                            return i.hasNext();
-                        }
-                        public Object next() {
-                            final Map.Entry entry1 = (Map.Entry) i.next();
-                            final Object key = entry1.getKey();
-                            return new Map.Entry() {
-                                public Object getKey() {
-                                    return key;
-                                }
-                                public Object getValue() {
-                                    if (map2.containsKey(key)) {
-                                        return map2.get(key);
-                                    } else {
-                                        return entry1.getValue();
-                                    }
-                                }
-                                public Object setValue(Object v) {
-                                    throw new UnsupportedOperationException();
-                                }
-                            };
-                        }
-                        public void remove() {
-                            throw new UnsupportedOperationException();
-                        }
-                    };
-                }
-                public int size() {
-                    return map1.size();
-                }
-            };
-        }
-        public int size() {
-            return map1.size();
-        }
-        public Object get(Object key) {
-            if (map2.containsKey(key)) {
-                return map2.get(key);
-            } else {
-                return map1.get(key);
-            }
-        }
-        public boolean containsKey(Object key) {
-            return map1.containsKey(key);
-        }
-    }
 
 }
