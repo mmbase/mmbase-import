@@ -45,7 +45,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.204 2006-09-11 11:15:05 pierre Exp $
+ * @version $Id: MMBase.java,v 1.205 2006-09-13 15:22:15 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -136,7 +136,7 @@ public class MMBase extends ProcessorModule {
      * The map that contains all loaded builders. Includes virtual builders.
      * A collection of builders from this map can be accessed by calling {@link #getBuilders}
      */
-    private Map<String,MMObjectBuilder> mmobjs = new ConcurrentHashMap();
+    private Map<String, MMObjectBuilder> mmobjs = new ConcurrentHashMap();
 
     private CloudModel cloudModel;
 
@@ -544,7 +544,7 @@ public class MMBase extends ProcessorModule {
      * @since MMBase-1.8
      */
     public MMObjectBuilder addBuilder(String name, MMObjectBuilder bul) {
-        return (MMObjectBuilder) mmobjs.put(name, bul);
+        return mmobjs.put(name, bul);
     }
 
     /**
@@ -555,11 +555,11 @@ public class MMBase extends ProcessorModule {
      */
     public MMObjectBuilder getMMObject(String name) {
         if (name == null) throw new RuntimeException("Cannot get builder with name 'NULL' in " + machineName);
-        Object o = mmobjs.get(name);
+        MMObjectBuilder o = mmobjs.get(name);
         if (o == null) {
             log.trace("MMObject " + name + " could not be found"); // can happen...
         }
-        return (MMObjectBuilder) o;
+        return  o;
     }
 
     /**
@@ -569,7 +569,7 @@ public class MMBase extends ProcessorModule {
     public static MMBase getMMBase() {
         if (mmbaseroot == null) {
             synchronized(builderLoader) { // make sure only one mmbaseroot is instantiated (synchronized on random static member...)
-                mmbaseroot = (MMBase) getModule("mmbaseroot");
+                mmbaseroot = getModule(MMBase.class);
                 if (mmbaseroot == null) {
                     log.fatal("The mmbaseroot module could not be found. Perhaps 'mmbaseroot.xml' is missing?");
                 }
@@ -1165,7 +1165,7 @@ public class MMBase extends ProcessorModule {
      */
     private boolean checkBuilderVersion(String builderName, Versions ver) {
 
-        MMObjectBuilder tmp = (MMObjectBuilder) mmobjs.get(builderName);
+        MMObjectBuilder tmp = mmobjs.get(builderName);
 
         if (tmp == null) {
             return false;
