@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
 <builder name="email" maintainer="mmbase.org" version="0" extends="object">
-	<!-- @version $Id: email.xml,v 1.1 2006-03-05 21:43:57 henk Exp $ -->
+	<!-- @version $Id: email.xml,v 1.2 2006-09-13 17:13:51 henk Exp $ -->
 	<status>active</status>
 	<classfile>org.mmbase.applications.email.EmailBuilder</classfile>
 	<searchage>9999</searchage>
@@ -21,7 +21,6 @@
 	<fieldlist>
 		<field>
 			<descriptions>
-				<!-- descriptions per language as defined by ISO 639  -->
 				<description xml:lang="en">Subject of the message</description>
 				<description xml:lang="nl">Onderwerp van het bericht</description>
 			</descriptions>
@@ -45,7 +44,6 @@
 		</field>
 		<field>
 			<descriptions>
-				<!-- descriptions per language as defined by ISO 639  -->
 				<description xml:lang="en">Sender email address</description>
 				<description xml:lang="nl">Email adres van de verzender</description>
 			</descriptions>
@@ -69,7 +67,6 @@
 		</field>
 		<field>
 			<descriptions>
-				<!-- descriptions per language as defined by ISO 639  -->
 				<description xml:lang="en">Recipient email adress(es)</description>
 				<description xml:lang="nl">Email adres(sen) van de ontvanger(s)</description>
 			</descriptions>
@@ -93,7 +90,6 @@
 		</field>
 		<field>
 			<descriptions>
-				<!-- descriptions per language as defined by ISO 639  -->
 				<description xml:lang="en">Email address to which replies on this message are to be sent</description>
 				<description xml:lang="nl">Email adres waar een antwoord naartoe moet worden verstuurd</description>
 			</descriptions>
@@ -117,7 +113,6 @@
 		</field>
 		<field>
 			<descriptions>
-				<!-- descriptions per language as defined by ISO 639  -->
 				<description xml:lang="en">URL to a script that generates the message to send</description>
 				<description xml:lang="nl">URL naar een script dat het te verzenden bericht samenstelt</description>
 			</descriptions>
@@ -141,7 +136,6 @@
 		</field>
 		<field>
 			<descriptions>
-				<!-- descriptions per language as defined by ISO 639  -->
 				<description xml:lang="en">Main message text</description>
 				<description xml:lang="nl">Hoofdtext van het bericht</description>
 			</descriptions>
@@ -149,7 +143,7 @@
 				<guiname xml:lang="en">Body</guiname>
 				<guiname xml:lang="nl">Tekst</guiname>
 				<guiname xml:lang="eo">Teksto</guiname>
-				<guitype>string</guitype>
+				<guitype>field</guitype>
 			</gui>
 			<editor>
 				<positions>
@@ -165,7 +159,6 @@
 		</field>
 		<field>
 			<descriptions>
-				<!-- descriptions per language as defined by ISO 639  -->
 				<description xml:lang="en">Type of the email: 1:one shot email, 2: repeat email, 3: oneshot email, but keep result</description>
 				<description xml:lang="nl">Berichttype: 1: eenmalig bericht, 2: herhaald bericht, 3: eenmalig bericht, bewaar resultaat</description>
 			</descriptions>
@@ -178,7 +171,7 @@
 			<editor>
 				<positions>
 					<input>7</input>
-					<list>-1</list>
+					<list>7</list>
 					<search>7</search>
 				</positions>
 			</editor>
@@ -189,7 +182,6 @@
 		</field>
 		<field>
 			<descriptions>
-				<!-- descriptions per language as defined by ISO 639  -->
 				<description xml:lang="en">State of the message: 0:waiting to be scheduled, 1:delivered, 2:delivery failed, 3:marked as SPAM, 4:scheduled, wating to bedelivered</description>
 				<description xml:lang="nl">Status van het bericht: 0:wacht op verwerking, 1:afgeleverd, 2: aflevering faalde, 3=gemarkeerd als SPAM, 4:wordt verwerkt, wacht op verzending</description>
 			</descriptions>
@@ -202,7 +194,7 @@
 			<editor>
 				<positions>
 					<input>8</input>
-					<list>-1</list>
+					<list>8</list>
 					<search>8</search>
 				</positions>
 			</editor>
@@ -213,7 +205,6 @@
 		</field>
 		<field>
 			<descriptions>
-				<!-- descriptions per language as defined by ISO 639  -->
 				<description xml:lang="en">Time to send thsie mail</description>
 				<description xml:lang="nl">Tijd waarop het bericht moet worden verzonden</description>
 			</descriptions>
@@ -237,7 +228,6 @@
 		</field>
 		<field>
 			<descriptions>
-				<!-- descriptions per language as defined by ISO 639  -->
 				<description xml:lang="en">Time on which the email was created</description>
 				<description xml:lang="nl">Tijd waarop het bericht was aangemaakt</description>
 			</descriptions>
@@ -261,7 +251,6 @@
 		</field>
 		<field>
 			<descriptions>
-				<!-- descriptions per language as defined by ISO 639  -->
 				<description xml:lang="en">Time period over which the sending of the email is repeated</description>
 				<description xml:lang="nl">Periode waarover het bericht wordt herhaalt</description>
 			</descriptions>
@@ -285,7 +274,6 @@
 		</field>
 		<field>
 			<descriptions>
-				<!-- descriptions per language as defined by ISO 639  -->
 				<description xml:lang="en">Last time on which the email was send</description>
 				<description xml:lang="nl">Laatste tijdstip waarop het bericht was verzonden</description>
 			</descriptions>
