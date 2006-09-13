@@ -17,9 +17,14 @@
          </mm:relatednodes>
       </mm:relatednodes>
    </mm:node>
-   2. Delete inactive users<br/>
-	<mm:listnodes type="users" constraints="password='inactive'">
+   2. Delete inactive users and setting default fields for remaining users<br/>
+	 <mm:listnodes type="users" constraints="password='inactive'">
 	   <mm:deletenode deleterelations="true" />
+   </mm:listnodes>
+   <mm:listnodes type="users" constraints="account!='admin'">
+      <mm:setfield name="password">admin2k</mm:setfield>
+      <mm:setfield name="gracelogins">3</mm:setfield>
+      <mm:setfield name="rank">chiefeditor</mm:setfield>
    </mm:listnodes>
    3. Add extra info to set default relations correctly<br/>
    <mm:listnodes type="teaser" constraints="titel='hard-/software'">
