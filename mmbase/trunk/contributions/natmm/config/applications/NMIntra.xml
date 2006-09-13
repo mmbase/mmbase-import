@@ -196,8 +196,8 @@
       <relation from="phaserel" to="contentblocks" type="readmore"/>
       <relation from="phaserel" to="medewerkers" type="readmore"/> 
       <relation from="products" to="locations" type="readmore"/>
-      <relation from="products" to="producttypes" type="posrel"/>
       <relation from="products" to="programs" type="posrel"/>
+      <relation from="producttypes" to="products" type="posrel"/>
       <relation from="programs" to="locations" type="posrel"/>
       <relation from="projects" to="organisatie" type="readmore"/>
       <relation from="projects" to="contentblocks" type="readmore"/>
