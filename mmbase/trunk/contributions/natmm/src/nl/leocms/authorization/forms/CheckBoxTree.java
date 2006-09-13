@@ -70,23 +70,21 @@ public class CheckBoxTree{
 
   public void setRelations(Cloud cloud, Node user, HttpServletRequest request){
 
-    //Map menus = new HashMap();
-    //Map editwizards = new HashMap();
-    ArrayList alMenus = new ArrayList();
-    ArrayList alEditwizards = new ArrayList();
+    Set alMenus = new HashSet();
+    Set alEditwizards = new HashSet();
     Enumeration pNames = request.getParameterNames();
     while (pNames.hasMoreElements()) {
       String name = (String) pNames.nextElement();
       if (name.startsWith("menu_")) {
         String rol = request.getParameter(name);
         if (!rol.equals("-1")) {
-               alMenus.add(name.substring(5));
+          alMenus.add(name.substring(5));
         }
-      } else if (name.startsWith("ed_")){
+      } else if (name.startsWith("ed_")) {
         String rol = request.getParameter(name);
         if (!rol.equals("-1")) {
           int iBeg = name.lastIndexOf("_");
-               alEditwizards.add(name.substring(iBeg+1));
+          alEditwizards.add(name.substring(iBeg+1));
         }
       }
     }
@@ -97,34 +95,28 @@ public class CheckBoxTree{
        list.getNode(i).delete(true);
     }
 
-    RelationManager rmEdiwizard = cloud.getRelationManager("editwizards","users","gebruikt");
+    RelationManager rmEditwizard = cloud.getRelationManager("editwizards","users","gebruikt");
     list = user.getRelations("gebruikt","editwizards");
     for (int i = 0; i < list.size(); i++) {
        list.getNode(i).delete(true);
     }
 
-
     Iterator it = alMenus.iterator();
     while (it.hasNext()){
-      String sMenuNumber = (String)it.next();
+      String sMenuNumber = (String) it.next();
       NodeList nlEditwizards = cloud.getList(sMenuNumber,"menu,posrel,editwizards","editwizards.number,editwizards.name","","posrel.pos","UP","",false);
+      // add all editwizards related to the selected menus
       for (int i=0; i<nlEditwizards.size();i++){
         String sEditwizardNumber = nlEditwizards.getNode(i).getStringValue("editwizards.number");
-        if(alEditwizards.contains(sEditwizardNumber)) {
-            alEditwizards.remove(sEditwizardNumber);
-        }
-        Relation relation = rmEdiwizard.createRelation(cloud.getNode(sEditwizardNumber),user);
-        relation.commit();
+        alEditwizards.add(sEditwizardNumber);
       }
-      Relation relation = rmMenu.createRelation(cloud.getNode(sMenuNumber),user);
-      relation.commit();
+      rmMenu.createRelation(cloud.getNode(sMenuNumber),user).commit();
     }
 
     it = alEditwizards.iterator();
     while (it.hasNext()){
       String sEditwizardNumber = (String)it.next();
-      Relation relation = rmEdiwizard.createRelation(cloud.getNode(sEditwizardNumber),user);
-      relation.commit();
+      rmEditwizard.createRelation(cloud.getNode(sEditwizardNumber),user).commit();
     }
 
   }
