@@ -7,4 +7,11 @@
     <link rel="icon" href="${_}" type="image/x-icon" />
     <link rel="shortcut icon" href="${_}" type="image/x-icon" />
   </mm:link>
+  <style>
+    tr.head th{
+    background-image: url("<mm:url page="/mmbase/style/images/reload.png" />");
+    background-repeat: no-repeat;
+    background-position: center right;
+    }
+  </style>
 </head>
