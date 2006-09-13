@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseEntry.java,v 1.11 2006-09-11 10:47:36 michiel Exp $
+ * @version $Id: MMBaseEntry.java,v 1.12 2006-09-13 09:51:14 michiel Exp $
  **/
 public class MMBaseEntry implements IndexEntry {
     static private final Logger log = Logging.getLoggerInstance(MMBaseEntry.class);
@@ -67,6 +67,11 @@ public class MMBaseEntry implements IndexEntry {
         }
     }
 
+    // For MMBase indexing the 'key' for sub-queries is always equal to the identifier of the current node ('related nodes')
+    public String getKey() {
+        return getIdentifier();
+    }
+
     protected void addStandardKeys(Document document) {
         // always add the 'element' number first, because that ensures that document.get("number") returns 'the' node
         String id = getIdentifier();
@@ -87,7 +92,7 @@ public class MMBaseEntry implements IndexEntry {
 
 
     public void index(Document document) {
-        Map data = new HashMap();
+        Map<String, Object> data = new HashMap<String, Object>();
         if (log.isTraceEnabled()) {
             log.trace("Indexing " + getIdentifier() + "(" + node.getNodeManager().getName() + ")");
         }
@@ -145,10 +150,9 @@ public class MMBaseEntry implements IndexEntry {
      * Store data from field in a node into the cursor
      * @param map The map of fieldName/value mappings
      */
-    protected void storeData(Map map) {
+    protected void storeData(Map<String, Object> map) {
         Cloud cloud = elementManager.getCloud();
-        for (Iterator i = fields.iterator(); i.hasNext(); ) {
-            IndexFieldDefinition fieldDefinition = (IndexFieldDefinition)i.next();
+        for (IndexFieldDefinition fieldDefinition : fields) {
             String fieldName = fieldDefinition.fieldName;
             String alias = fieldDefinition.alias;
             if (alias == null)  alias = fieldDefinition.fieldName;
@@ -242,10 +246,10 @@ public class MMBaseEntry implements IndexEntry {
      * @param value the textual value to index
      * @param data The map of fieldName/value mappings
      */
-    void storeFieldTextData(Map data, String fieldName, String value) {
+    void storeFieldTextData(Map<String, Object> data, String fieldName, String value) {
         StringBuffer sb = null;
         try {
-            sb = (StringBuffer)data.get(fieldName);
+            sb = (StringBuffer) data.get(fieldName);
         } catch (ClassCastException cce) {
             log.warn("Tried to store data of '" + fieldName + "' as a standard index, but data was already stored as a special index");
         }
@@ -264,7 +268,7 @@ public class MMBaseEntry implements IndexEntry {
      * @param fieldname the name of the field used for indexing (the 'as' name of a field where appropriate)
      * @param value the value to index
      */
-    void storeFieldData(Map data, String fieldName, Object value) {
+    void storeFieldData(Map<String, Object> data, String fieldName, Object value) {
         Object o = data.get(fieldName);
         if (o == null)  {
             data.put(fieldName, value);
@@ -277,7 +281,7 @@ public class MMBaseEntry implements IndexEntry {
      * Return the data of a field as a string.
      * @param fieldname the name of the field used for indexing (the 'as' name of a field where appropriate)
      */
-    String getFieldDataAsString(Map data, String fieldName) {
+    String getFieldDataAsString(Map<String, ?> data, String fieldName) {
         Object o = data.get(fieldName);
         if (o != null)  {
             return o.toString();
@@ -304,6 +308,10 @@ public class MMBaseEntry implements IndexEntry {
      */
     boolean isIndexed(int number, String fieldName, String alias) {
         return indexed.contains(number + "_" + fieldName + "_" + alias);
+    }
+
+    public String toString() {
+        return node.getNumber() + " " + subQueries;
     }
 
 }

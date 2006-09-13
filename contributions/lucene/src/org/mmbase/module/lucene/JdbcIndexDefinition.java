@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * If for some reason you also need to do Queries next to MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JdbcIndexDefinition.java,v 1.12 2006-09-11 10:47:36 michiel Exp $
+ * @version $Id: JdbcIndexDefinition.java,v 1.13 2006-09-13 09:51:14 michiel Exp $
  **/
 public class JdbcIndexDefinition implements IndexDefinition {
 
@@ -51,9 +51,10 @@ public class JdbcIndexDefinition implements IndexDefinition {
         };
 
     private final DataSource dataSource;
-    private final String sql;
     private final String key;
-    private final String find;
+    private final String identifier;
+    private final String indexSql;
+    private final String findSql;
     private final Analyzer analyzer;
 
     private final Set<String> keyWords    = new HashSet();
@@ -61,15 +62,19 @@ public class JdbcIndexDefinition implements IndexDefinition {
 
     private final Collection<IndexDefinition> subQueries = new ArrayList();
 
+    private final boolean isSub;
+
 
     JdbcIndexDefinition(DataSource ds, Element element,
                         Set allIndexedFields,
                         boolean storeText,
-                        boolean mergeText, Analyzer a) {
+                        boolean mergeText, Analyzer a,
+                        boolean isSub) {
         this.dataSource = ds;
-        sql = element.getAttribute("sql");
+        indexSql = element.getAttribute("sql");
         key = element.getAttribute("key");
-        find = element.getAttribute("find");
+        identifier = element.getAttribute("identifier");
+        findSql = element.getAttribute("find");
         NodeList childNodes = element.getChildNodes();
         for (int k = 0; k < childNodes.getLength(); k++) {
             if (childNodes.item(k) instanceof Element) {
@@ -83,11 +88,13 @@ public class JdbcIndexDefinition implements IndexDefinition {
                         nonDefaultMultiples.put(childElement.getAttribute("name"),  Indexer.Multiple.valueOf(m.toUpperCase()));
                     }
                 } else if ("related".equals(childElement.getLocalName())) {
-                    subQueries.add(new JdbcIndexDefinition(ds, childElement, allIndexedFields, storeText, mergeText, a));
+                    subQueries.add(new JdbcIndexDefinition(ds, childElement, allIndexedFields, storeText, mergeText, a, true));
                 }
             }
         }
         this.analyzer = a;
+        this.isSub = isSub;
+        assert ! isSub  || "".equals(findSql);
     }
 
 
@@ -108,20 +115,23 @@ public class JdbcIndexDefinition implements IndexDefinition {
     }
 
     protected String getFindSql(String identifier) {
-        if (find == null || "".equals(find)) throw new RuntimeException("No find query defined");
+        assert ! isSub;
+        if (findSql== null || "".equals(findSql)) throw new RuntimeException("No find query defined");
         if (identifier == null) throw new RuntimeException("No find query defined");
-        String s = find.replaceAll("\\[KEY\\]", identifier);
+        String s = findSql.replaceAll("\\[IDENTIFIER\\]", identifier);
+        s = s.replaceAll("\\[KEY\\]", identifier); // deprecated
         return s;
     }
 
-    protected String getSubSql(String identifier) {
-        if (sql == null || "".equals(sql)) throw new RuntimeException("No sql defined");
+    protected String getSql(String identifier) {
+        if (indexSql == null || "".equals(indexSql)) throw new RuntimeException("No sql defined");
         if (identifier == null) throw new RuntimeException("No query defined");
-        String s = sql.replaceAll("\\[KEY\\]", identifier);
+        String s = indexSql.replaceAll("\\[PARENTKEY\\]", identifier);
+        s = s.replaceAll("\\[KEY\\]", identifier); // deprecated
         return s;
     }
 
-    protected CloseableIterator<JdbcEntry> getSqlCursor(String sql) {
+    protected CloseableIterator<JdbcEntry> getSqlCursor(final String sql) {
         try {
             long start = System.currentTimeMillis();
             log.debug("About to execute " + sql);
@@ -133,7 +143,7 @@ public class JdbcIndexDefinition implements IndexDefinition {
             }
             final ResultSetMetaData meta = results.getMetaData();
 
-            return new CloseableIterator() {
+            return new CloseableIterator<JdbcEntry>() {
                 boolean hasNext = results.isBeforeFirst();
                 int i = 0;
 
@@ -152,7 +162,7 @@ public class JdbcIndexDefinition implements IndexDefinition {
                         log.error(sqe);
                         hasNext = false;
                     }
-                    JdbcEntry entry = new JdbcEntry(meta, results);
+                    JdbcEntry entry = new JdbcEntry(meta, results, sql);
                     i++;
                     if (log.isServiceEnabled()) {
                         if (i % 100 == 0) {
@@ -186,7 +196,7 @@ public class JdbcIndexDefinition implements IndexDefinition {
 
     /**
      * A map representing a row in a database. But only filled when actually used. So, only on first
-     * use, a query is done.
+     * use, a query is done. And not before that.
      * @since MMBase-1.9
      */
     protected class LazyMap extends AbstractMap<String, String> {
@@ -210,7 +220,7 @@ public class JdbcIndexDefinition implements IndexDefinition {
                     }
                     results = statement.executeQuery(s);
                     ResultSetMetaData meta = results.getMetaData();
-                    map = new HashMap();
+                    map = new HashMap<String, String>();
                     if (results.next()) {
                         for (int i = 1; i <= meta.getColumnCount(); i++) {
                             String value = org.mmbase.util.Casting.toString(results.getString(i));
@@ -228,8 +238,8 @@ public class JdbcIndexDefinition implements IndexDefinition {
                 } catch (Exception e) {
                     throw new RuntimeException(e.getMessage(), e);
                 } finally {
-                    if (results != null) try { results.close();} catch (Exception e) {}
-                    if (statement != null) try { statement.close();} catch (Exception e) {}
+                    if (results != null)    try { results.close();   } catch (Exception e) {}
+                    if (statement != null)  try { statement.close(); } catch (Exception e) {}
                     if (connection != null) try { connection.close();} catch (Exception e) {}
                 }
             }
@@ -243,12 +253,12 @@ public class JdbcIndexDefinition implements IndexDefinition {
             return map.size();
         }
         public String get(String key) {
-            if(JdbcIndexDefinition.this.equals(key)) return identifier;
+            //if(JdbcIndexDefinition.this.equals(key)) return identifier;
             check();
             return map.get(key);
         }
         public boolean containsKey(Object key) {
-            if(JdbcIndexDefinition.this.equals(key)) return true;
+            //if(JdbcIndexDefinition.this.equals(key)) return true;
             check();
             return map.containsKey(key);
         }
@@ -275,7 +285,7 @@ public class JdbcIndexDefinition implements IndexDefinition {
                 public org.mmbase.bridge.Field getField(String name) {
                     if (map == null && JdbcIndexDefinition.this.key.equals(name)) {
                         org.mmbase.core.CoreField fd = org.mmbase.core.util.Fields.createField(name, org.mmbase.core.util.Fields.classToType(Object.class),
-                                                                                               org.mmbase.bridge.Field.TYPE_UNKNOWN, 
+                                                                                               org.mmbase.bridge.Field.TYPE_UNKNOWN,
                                                                                                org.mmbase.bridge.Field.STATE_VIRTUAL, null);
                         return new org.mmbase.bridge.implementation.BasicField(fd, this);
                     } else {
@@ -292,40 +302,38 @@ public class JdbcIndexDefinition implements IndexDefinition {
 
 
     public CloseableIterator<JdbcEntry> getCursor() {
-        return getSqlCursor(sql);
+        assert ! isSub;
+        return getSqlCursor(indexSql);
     }
 
     public CloseableIterator<JdbcEntry> getSubCursor(String identifier) {
-        // TODO, I THINK THIS MAY BE BROKEN FOR NOTIFY_UPDATING... CHECK!
-        log.debug("Using getSubCursor for " + identifier);
-        return getSqlCursor(getSubSql(identifier));
-    }
-
-    public CloseableIterator<JdbcEntry> getCursor(String identifier) {
-        return  getSqlCursor(getFindSql(identifier));
-    }
-
-    public IndexEntry getParent() {
-        return null;
+        if (isSub) {
+            log.debug("Using getSubCursor for " + identifier);
+            return getSqlCursor(getSql(identifier));
+        } else {
+            return  getSqlCursor(getFindSql(identifier));
+        }
     }
 
     public String toString() {
-        return sql;
+        return indexSql;
     }
 
     class JdbcEntry implements IndexEntry {
         final ResultSetMetaData meta;
         final ResultSet results;
+        final String sql;
 
-        JdbcEntry(ResultSetMetaData m, ResultSet r) {
+        JdbcEntry(ResultSetMetaData m, ResultSet r, String s) {
             log.trace("new JDBC Entry");
             meta = m;
             results = r;
+            sql = s;
         }
 
         public void index(Document document) {
-            if (log.isDebugEnabled()) {
-                log.trace("Indexing "+ results + " with " + keyWords);
+            if (log.isTraceEnabled()) {
+                log.trace("Indexing " + sql + " id=" + JdbcIndexDefinition.this.identifier + ", key = " + JdbcIndexDefinition.this.key);
             }
             String id  = getIdentifier();
             if (id != null) {
@@ -356,6 +364,18 @@ public class JdbcIndexDefinition implements IndexDefinition {
         }
 
         public String getIdentifier() {
+            if (JdbcIndexDefinition.this.identifier != null && ! JdbcIndexDefinition.this.identifier.equals("")) {
+                try {
+                    return results.getString(JdbcIndexDefinition.this.identifier);
+                } catch (SQLException sqe) {
+                    log.error(meta + " " + sqe.getMessage(), sqe);
+                    return "";
+                }
+            } else {
+                return null;
+            }
+        }
+        public String getKey() {
             if (JdbcIndexDefinition.this.key != null && ! JdbcIndexDefinition.this.key.equals("")) {
                 try {
                     return results.getString(JdbcIndexDefinition.this.key);

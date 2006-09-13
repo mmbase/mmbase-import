@@ -24,7 +24,7 @@ import org.apache.lucene.analysis.Analyzer;
  * fields can have extra attributes specific to Lucene searching.
  *
  * @author Pierre van Rooden
- * @version $Id: MMBaseIndexDefinition.java,v 1.11 2006-09-11 10:47:36 michiel Exp $
+ * @version $Id: MMBaseIndexDefinition.java,v 1.12 2006-09-13 09:51:14 michiel Exp $
  **/
 class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
     static private final Logger log = Logging.getLoggerInstance(MMBaseIndexDefinition.class);
@@ -36,20 +36,18 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
     /**
      * The maximum number of nodes that are returned by a call to the searchqueryhandler.
      */
-    int maxNodesInQuery = MAX_NODES_IN_QUERY;
+    protected int maxNodesInQuery = MAX_NODES_IN_QUERY;
 
     /**
      * Subqueries for this index. The subqueries are lists whose starting element is the element node from the
      * current index result.
      */
-    List<IndexDefinition> subQueries = new ArrayList<IndexDefinition>();
+    protected List<IndexDefinition> subQueries = new ArrayList<IndexDefinition>();
 
     protected Analyzer analyzer;
 
-    IndexEntry parent;
 
-    MMBaseIndexDefinition(IndexEntry parent) {
-        this.parent = parent;
+    MMBaseIndexDefinition() {
     }
 
     public void setAnalyzer(Analyzer a) {
@@ -76,15 +74,11 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
 
     }
 
-    public IndexEntry getParent() {
-        return parent;
-    }
-
     /**
      * Converts an MMBase Node Iterator to an Iterator of IndexEntry-s.
      */
-    protected CloseableIterator<MMBaseEntry> getCursor(final NodeIterator nodeIterator, final Collection f) {
-        return new CloseableIterator() {
+    protected CloseableIterator<MMBaseEntry> getCursor(final NodeIterator nodeIterator, final Collection<? extends FieldDefinition> f) {
+        return new CloseableIterator<MMBaseEntry>() {
                 int i = 0;
                 public boolean hasNext() {
                     return nodeIterator != null && nodeIterator.hasNext();
@@ -94,7 +88,7 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
                 }
                 public MMBaseEntry next() {
                     Node node = nodeIterator.nextNode();
-                    MMBaseEntry entry = new MMBaseEntry(node, f, isMultiLevel, elementManager, subQueries);
+                    MMBaseEntry entry = new MMBaseEntry(node, (Collection<IndexFieldDefinition>) f, isMultiLevel, elementManager, subQueries);
                     i++;
                     if (log.isServiceEnabled()) {
                         if (i % 100 == 0) {
@@ -112,15 +106,10 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
     }
 
     public CloseableIterator<MMBaseEntry> getCursor() {
-        String id = parent != null ? parent.getIdentifier() : null;
-        return getCursor(getNodeIterator(id), fields);
+        return getCursor(getNodeIterator((String) null), fields);
     }
 
     public CloseableIterator<MMBaseEntry> getSubCursor(String identifier) {
-        return getCursor(getNodeIterator(identifier), fields);
-    }
-
-    public CloseableIterator<MMBaseEntry> getCursor(String identifier) {
         return getCursor(getNodeIterator(identifier), fields);
     }
 
@@ -137,14 +126,12 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
                 elementNumberFieldName = elementManager.getName() + ".number";
             }
             if (id != null) {
-                Integer number = new Integer(id);
+                Integer number = Integer.valueOf(id);
                 Constraint comp = null;
                 if (query.getCloud().hasNode(number.intValue())) {
                     Node node = query.getCloud().getNode(number.intValue());
                     NodeManager nm = node.getNodeManager();
-                    Iterator i = q.getSteps().iterator();
-                    while(i.hasNext()) {
-                        Step step = (Step) i.next();
+                    for (Step step : q.getSteps()) {
                         NodeManager stepManager = query.getCloud().getNodeManager(step.getTableName());
                         if (stepManager.equals(nm) || stepManager.getDescendants().contains(nm)) {
                             StepField numberField = q.createStepField(step, "number");
