@@ -14,8 +14,7 @@ import java.util.*;
 import java.io.InputStream;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.implementation.BasicField;
-import org.mmbase.util.Casting;
-import org.mmbase.util.SizeOf;
+import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.functions.*;
 import org.w3c.dom.Document;
@@ -26,7 +25,7 @@ import org.w3c.dom.Element;
  * MMBase Node. E.g. because then it can be accessed in MMBase taglib using mm:field tags.
 
  * @author  Michiel Meeuwissen
- * @version $Id: MapNode.java,v 1.7 2006-09-06 13:49:35 michiel Exp $
+ * @version $Id: MapNode.java,v 1.8 2006-09-13 17:47:49 michiel Exp $
  * @since   MMBase-1.8
  */
 
@@ -40,15 +39,16 @@ public class MapNode extends AbstractNode implements Node {
      */
     final protected NodeManager nodeManager;
     final protected Map values;
-    final protected Map sizes = new HashMap();
-    final protected Map originalValues = new HashMap();
+    final protected Map<String, Long> sizes = new HashMap();
+    final protected Map<String, Object> wrapper;
+    final protected Map<String, Object> originals = new HashMap();
 
     /**
      * This constructor explicitely specifies the node manager of the Node. This is used for {#getNodeManager} and {#getCloud}.
      */
-    public MapNode(Map v, NodeManager nm) {
+    public MapNode(Map<String, ?> v, NodeManager nm) {
         values = v;
-        originalValues.putAll(values);
+        wrapper = new LinkMap(values, originals, LinkMap.Changes.CONSERVE);
         nodeManager = nm;
     }
     /**
@@ -89,12 +89,10 @@ public class MapNode extends AbstractNode implements Node {
     }
 
     public boolean isChanged(String fieldName) {
-        Object originalValue = originalValues.get(fieldName);
-        Object value            = values.get(fieldName);
-        return originalValue == null ? value == null : originalValue.equals(value);
+        return originals.containsKey(fieldName);
     }
     public boolean isChanged() {
-        return ! values.equals(originalValues);
+        return ! originals.isEmpty();
     }
 
 
@@ -105,26 +103,26 @@ public class MapNode extends AbstractNode implements Node {
         return values.get(fieldName);
     }
     public void setValueWithoutProcess(String fieldName, Object value) {
-        values.put(fieldName, value);
+        wrapper.put(fieldName, value);
     }
     public void setValueWithoutChecks(String fieldName, Object value) {
-        values.put(fieldName, value);
+        wrapper.put(fieldName, value);
     }
 
     public boolean isNull(String fieldName) {
         return values.get(fieldName) == null;
     }
     protected void setSize(String fieldName, long size) {
-        sizes.put(fieldName, new Long(size));
+        sizes.put(fieldName, size);
     }
 
     public long getSize(String fieldName) {
-        Long size = (Long) sizes.get(fieldName);
+        Long size = sizes.get(fieldName);
         if (size != null) {
             return size.longValue();
         } else {
             int s =  SizeOf.getByteSize(values.get(fieldName));
-            sizes.put(fieldName, new Long(s));
+            sizes.put(fieldName, (long) s);
             return s;
         }
     }
