@@ -22,36 +22,58 @@ import org.mmbase.bridge.*;
  * This happens lazily.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: MapNodeManager.java,v 1.1 2006-09-06 13:49:36 michiel Exp $
+ * @version $Id: MapNodeManager.java,v 1.2 2006-09-13 17:47:49 michiel Exp $
  * @since   MMBase-1.9
  */
 
 public class MapNodeManager extends AbstractNodeManager  {
 
-    protected final Map map;
-    private Map fieldTypes = null;
+    protected final Map<String, Object> map;
+    private final Map<String, Field> fieldTypes = new HashMap<String, Field>();
+    private boolean checked = false;
+
     public MapNodeManager(Cloud cloud, Map m) {
         super(cloud);
         map = m;
     }
     protected void check() {
-        if (fieldTypes == null) {
-            fieldTypes = new HashMap();
-            Iterator i = map.entrySet().iterator();
-            while (i.hasNext()) {
-                Map.Entry entry = (Map.Entry) i.next();
-                String fieldName = (String) entry.getKey();
+        if (! checked) {
+            for (Map.Entry<String, Object> entry : map.entrySet()) {
+                String fieldName = entry.getKey();
                 Object value = entry.getValue();
-                CoreField fd = Fields.createField(fieldName, Fields.classToType(value == null ? Object.class : value.getClass()),
-                                                  Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL, null);
-                Field ft = new BasicField(fd, this);
-                fieldTypes.put(fieldName, ft);
+                mapField(fieldName, value);
             }
+            checked = true;
         }
     }
-    protected Map getFieldTypes() {
+    private Field mapField(String fieldName, Object value) {
+        Field field = fieldTypes.get(fieldName);
+        if (field == null) {
+            CoreField fd = Fields.createField(fieldName, Fields.classToType(value == null ? Object.class : value.getClass()),
+                                              Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL, null);
+            field = new BasicField(fd, this);
+            fieldTypes.put(fieldName, field);
+        }
+        return field;
+    }
+    protected Map<String, Field> getFieldTypes() {
         check();
         return fieldTypes;
+    }
+    // override for performance
+    public boolean hasField(String fieldName) {
+        return map.containsKey(fieldName);
+    }
+    // override for performance
+    public Field getField(String fieldName) throws NotFoundException {
+        Field f = fieldTypes.get(fieldName);
+        if (f == null) {
+            if (map.containsKey(fieldName)) {
+                f = mapField(fieldName, map.get(fieldName));
+            }
+        }
+        if (f == null) throw new NotFoundException("Field '" + fieldName + "' does not exist in NodeManager '" + getName() + "'.(" + getFieldTypes() + ")");
+        return f;
     }
 
 }
