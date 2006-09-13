@@ -42,6 +42,13 @@ Note the link "Naar archiefkast" at the top of the left column in the "Pagina-ed
 the user to the special purpose editors selected for him. See the config/applications/NatMM/editwizards.xml file
 for a full list of possible editors in LeoCMS.
 
+CREATING AN ADDITIONAL INDEX FOR THE ARCHIVE
+
+All indexes on key fields are created by MMBase automatically. For the archive object an index on the original_node field should be added to guarantee
+good performs when searching for stored versions of nodes. In MySQL the query for this is:
+
+ALTER TABLE v1_archief ADD INDEX original_node (number);
+
 IMPORTANT NOTE: The NatMM makes use of OSCache for caching.
 Items cached are:
 1. the templates, you can use /editors/paginamanagement/flushlink.jsp to provide preview and publish functionality
