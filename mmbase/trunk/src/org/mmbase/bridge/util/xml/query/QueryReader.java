@@ -22,8 +22,9 @@ import org.mmbase.util.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: QueryReader.java,v 1.8 2006-05-17 11:30:22 michiel Exp $
+ * @version $Id: QueryReader.java,v 1.9 2006-09-13 09:44:20 michiel Exp $
  * @since MMBase-1.8
+ * @javadoc
  **/
 public class QueryReader {
 
@@ -210,14 +211,13 @@ public class QueryReader {
 
     protected static Integer getAlias(Cloud cloud, String name) {
         org.mmbase.bridge.Node node = cloud.getNode(name);
-        return new Integer(node.getNumber());
+        return node.getNumber();
     }
 
-    protected static SortedSet getAliases(Cloud cloud, List names) {
-        SortedSet set = new TreeSet();
-        Iterator i = names.iterator();
-        while (i.hasNext()) {
-            set.add(getAlias(cloud, (String) i.next()));
+    protected static SortedSet<Integer> getAliases(Cloud cloud, List<String> names) {
+        SortedSet<Integer> set = new TreeSet();
+        for (String name : names) {
+            set.add(getAlias(cloud, name));
         }
         return set;
     }
