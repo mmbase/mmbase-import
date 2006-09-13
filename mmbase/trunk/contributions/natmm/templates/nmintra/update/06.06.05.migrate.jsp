@@ -381,11 +381,13 @@
 	}
 	String [] ewToRename = {
 		"/editors/cache/flush.jsp?command=all",
-    "config/pagina/pagina_form"
+    "config/pagina/pagina_form",
+    "/editors/stats/shopstats.jsp"
 		};
 	String [] ewNewName = {
 		"/editors/util/flushcache.jsp",
-    "config/pagina/pagina_formulier"
+    "config/pagina/pagina_formulier",
+    "/editors/simplestats/shopstats.jsp"
 		};
 	for(int i=0; i<ewToRename.length;i++) {
 		%><mm:listnodes type="editwizards" constraints="<%= "wizard = '" + ewToRename[i]  + "'" %>">
