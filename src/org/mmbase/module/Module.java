@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.81 2006-09-10 17:04:44 nklasens Exp $
+ * @version $Id: Module.java,v 1.82 2006-09-13 15:21:26 michiel Exp $
  */
 public abstract class Module extends FunctionProvider {
 
@@ -358,6 +358,41 @@ public abstract class Module extends FunctionProvider {
     }
 
     /**
+     * Since modules normally all have a different class, you can also obtain a module by its
+     * Class, in stead of by its name. The advantage is that you don't need to cast.
+     * @param clazz The class of the desired Module
+     * @return A Module instance or <code>null</code> if no such module.
+     * @since MMBase-1.9
+     */
+    public static <C extends Module> C getModule(Class<C> clazz) {
+        checkModules();
+        for (Module m : modules.values()) {
+            if (clazz.isInstance(m)) {
+                return (C) m;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Makes sure that modules are loaded and started.
+     * @since MMBase-1.9
+     */
+    private static synchronized void checkModules() {
+        // are the modules loaded yet ? if not load them
+        if (modules == null) { // still null after obtaining lock
+            log.service("Loading MMBase modules...");
+            modules = loadModulesFromDisk();
+            if (log.isDebugEnabled()) {
+                log.debug("Modules not loaded, loading them..");
+            }
+            startModules();
+            // also start the maintaince thread that calls all modules 'maintanance' method every x seconds
+            new ModuleProbe().start();
+        }
+    }
+
+    /**
      * Retrieves a reference to a Module.
      * If you set the <code>startOnLoad</code> to <code>true</code>,
      * this call ensures that the requested module has been initialized by
@@ -372,19 +407,7 @@ public abstract class Module extends FunctionProvider {
      *      module does not exist or is inactive.
      */
     public static Module getModule(String name, boolean startOnLoad) {
-        // are the modules loaded yet ? if not load them
-            synchronized(Module.class) {
-                if (modules == null) { // still null after obtaining lock
-                    log.service("Loading MMBase modules...");
-                    modules = loadModulesFromDisk();
-                    if (log.isDebugEnabled()) {
-                        log.debug("getModule(" + name + "): Modules not loaded, loading them..");
-                    }
-                    startModules();
-                    // also start the maintaince thread that calls all modules 'maintanance' method every x seconds
-                    new ModuleProbe().start();
-                }
-            }
+        checkModules();
         // try to obtain the ref to the wanted module
         Module obj = modules.get(name.toLowerCase());
         if (obj == null) { // try case sensitivily as well?
