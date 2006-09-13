@@ -24,7 +24,7 @@ import org.mmbase.util.*;
  * org.mmbase.bridge.implementation.VirtualNodeManager}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNodeManager.java,v 1.3 2006-09-06 21:24:35 michiel Exp $
+ * @version $Id: AbstractNodeManager.java,v 1.4 2006-09-13 17:48:14 michiel Exp $
  * @see org.mmbase.bridge.NodeManager
  * @since MMBase-1.8
  */
@@ -102,7 +102,7 @@ public abstract class AbstractNodeManager extends AbstractNode implements NodeMa
     public String getInfo(String command, ServletRequest req,  ServletResponse resp){ throw new UnsupportedOperationException();}
 
 
-    protected abstract Map getFieldTypes();
+    protected abstract Map<String, Field> getFieldTypes();
 
 
     public boolean hasField(String fieldName) {
