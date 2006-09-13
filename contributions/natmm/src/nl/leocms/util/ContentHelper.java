@@ -275,10 +275,12 @@ public class ContentHelper {
       } else {
          
          // there is a relation to a page, however the page has no valid breadcrumbs
-         log.error(sPaginaNumber + " is not connected to root, all objects from breadcrumbs " + breadcrumbs + " will be removed");
+         log.error(sPaginaNumber + " is not connected to root, pagina " + sPaginaNumber 
+            + " and all objects from breadcrumbs " + breadcrumbs + " will be removed");
          for(int i=0; i<breadcrumbs.size(); i++) {
             cloud.getNode((String) breadcrumbs.get(i)).delete(true);
          }
+         cloud.getNode(sPaginaNumber).delete(true);
       }
       return hasDefaultRelations;
    }
