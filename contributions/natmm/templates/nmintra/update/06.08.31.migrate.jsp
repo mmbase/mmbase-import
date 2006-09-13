@@ -25,6 +25,11 @@
       <mm:setfield name="password">admin2k</mm:setfield>
       <mm:setfield name="gracelogins">3</mm:setfield>
       <mm:setfield name="rank">chiefeditor</mm:setfield>
+      <mm:related path="rolerel,rubriek">
+        <mm:node element="rolerel">
+          <mm:setfield name="rol">3</mm:setfield>
+        </mm:node>
+      </mm:related>
    </mm:listnodes>
    3. Add extra info to set default relations correctly<br/>
    <mm:listnodes type="teaser" constraints="titel='hard-/software'">

@@ -139,44 +139,41 @@ public class ContentHelper {
          nlUsedInItems = cloud.getNodeManager("pagina").getList("number='" + paginaNumber + "'",null,null);
       }
       
+      ArrayList cTypes = ap.getContentTypes(true);
       TreeMap tmPathToRubriek = new TreeMap();
+      
+      // in the NatMM application objects can also be related to a rubriek
       if(ap.isInstalled("NatMM")) {
          tmPathToRubriek.put("images", "contentrel");
          tmPathToRubriek.put("panno", "posrel");
          tmPathToRubriek.put("shorty", "rolerel");
          tmPathToRubriek.put("teaser", "rolerel");
+         cTypes.add("rubriek");
       }
       
-      ArrayList cTypes = ap.getContentTypes(true);
       for(int ct=0; ct < cTypes.size(); ct++) {
-         String relatedType = ( (String) cTypes.get(ct)).toLowerCase();
-         // subitems do not count for used in items
-         if (   ! (thisType.equals("artikel")  && relatedType.equals("images"))
-             && ! (thisType.equals("artikel")  && relatedType.equals("paragraaf"))
-             && ! (thisType.equals("vacature") && relatedType.equals("attachments"))
-             && ! (thisType.equals("evenement")&& relatedType.equals("evenement")) ) {
-            NodeManager thisTypeNodeManager = cloud.getNodeManager(thisType);
-            if (thisTypeNodeManager.getAllowedRelations(relatedType, null, null).size() > 0) {
-               NodeList nl = null;
-               if (relatedType.equals("rubriek")&&ap.isInstalled("NatMM")){ 
-                  //add exception for objects related to rubriek
-                  log.info("trying to find relations between " + thisType + " " + sNodeNumber + " and rubriek");
-                  if (tmPathToRubriek.containsKey(thisType)){
-                     nl = node.getRelatedNodes(relatedType, (String) tmPathToRubriek.get(thisType),null);
-                  }
-               } else {
-                  nl = node.getRelatedNodes(relatedType);
-               }
-               if (nl != null && nl.size() > 0) {
-                  if (nlUsedInItems==null) {
-                     nlUsedInItems = nl;
-                  }
-                  else {
-                     nlUsedInItems.addAll(nl);
-                  }
-               }
+        String parentType = (String) cTypes.get(ct);
+        // subitems do not count for used in items, lets assumet that subitems are always connected with direction "destination"
+        NodeManager thisTypeNodeManager = cloud.getNodeManager(thisType);
+        if (thisTypeNodeManager.getAllowedRelations(parentType, null, "source").size() > 0) {
+          NodeList nl = null;
+          if (parentType.equals("rubriek")){ 
+            if (tmPathToRubriek.containsKey(thisType)) {
+               log.debug("checking if there exists a relation between " + thisType + " " + sNodeNumber + " and rubriek");
+               nl = node.getRelatedNodes(parentType, (String) tmPathToRubriek.get(thisType),"source");
             }
-         }
+          } else {
+            nl = node.getRelatedNodes(parentType,null,"source");
+          }
+          if (nl != null && nl.size() > 0) {
+            if (nlUsedInItems==null) {
+               nlUsedInItems = nl;
+            }
+            else {
+               nlUsedInItems.addAll(nl);
+            }
+          }
+        }
       }
       return nlUsedInItems;
    }
