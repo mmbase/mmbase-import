@@ -81,12 +81,12 @@ public class UpdateUnusedElements implements Runnable {
     
     HashSet set = new HashSet();
     
-    int batchStart = 0;
-    int batchSize = 10000;
-    int copiesDeleted = 0;
     String sMax =  (new DateUtil()).getObjectNumber(cloud, (new Date()));
-    int maxObjectNumber = (new Integer(sMax)).intValue();
-    while(batchStart<maxObjectNumber) {
+    
+    int batchSize = 10000;
+    int batchStart = (new Integer(sMax)).intValue()-batchSize;
+    int copiesDeleted = 0;
+    while(batchStart+batchSize > 0) {
       NodeList nl = cloud.getList("","archief",
           "archief.original_node,archief.number",
           "archief.number >= '" + batchStart + "' AND archief.number < '" + (batchStart+batchSize) + "'",
@@ -103,7 +103,7 @@ public class UpdateUnusedElements implements Runnable {
           set.add(node.getStringValue("archief.original_node"));
         }
       }
-      batchStart += batchSize;
+      batchStart -= batchSize;
     }
     log.info("cleaned up archive an deleted " + copiesDeleted + " copies, total size of archive is now " + set.size());
 	}
