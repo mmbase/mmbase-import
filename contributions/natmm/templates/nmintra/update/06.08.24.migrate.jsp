@@ -3,7 +3,7 @@
 <mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud">
 <mm:log jspvar="log">
   <% log.info("06.08.24"); %>
-	Moving the present articles from contentrel to readmore<br/>
+	<% log.info("Moving the present articles from contentrel to readmore"); %>
 	<mm:listnodes type="pagina" constraints="titel = 'Nieuws en vacatures'">
 	   <mm:node id="news_page" />
 	   <mm:relatednodes type="rubriek">
@@ -74,7 +74,7 @@
       <mm:setfield name="titel">Nieuws</mm:setfield>
       
    </mm:listnodes>
-   2. Add an extra question to the "Wat vind je ervan?" form
+   <% log.info("Add an extra question to the 'Wat vind je ervan?' form"); %>
    <mm:listnodes type="formulier" constraints="titel = 'Wat vind je ervan?'">
       <mm:node id="form" />
       <mm:setfield name="titel_fra">Bedankt voor uw nieuwsbericht of commentaar.</mm:setfield>
@@ -108,12 +108,11 @@
        </mm:related>
        <mm:relatednodes type="pagina">
           <mm:node>
-            <mm:setfield name="isvisible">0</mm:setfield>
             <mm:createalias>feedback</mm:createalias>
           </mm:node>
        </mm:relatednodes>
    </mm:listnodes>
-   3. Some changes to the existing navigation<br/>
+   <% log.info("Some changes to the existing navigation"); %>
    <mm:listnodes type="pagina" constraints="titel = 'Intervisie en coaching'">
      <mm:node id="c1" />
      <mm:listnodes type="pagina" constraints="titel = 'Loopbaan coaching'">
@@ -246,8 +245,49 @@
         </mm:field>
       </mm:related>
    </mm:node>
-   4. Setting default fields for users<br/>
-   <mm:listnodes type="users">
+   <% log.info("Add default editwizard for pages"); %>
+   <mm:createnode type="editwizards">
+      <mm:setfield name="name">pagina</mm:setfield>
+      <mm:setfield name="wizard">config/pagina/pagina_default</mm:setfield>
+      <mm:setfield name="type">wizard</mm:setfield>
+      <mm:setfield name="nodepath">pagina</mm:setfield>
+      <mm:setfield name="fields">titel</mm:setfield>
+      <mm:setfield name="searchfields">titel</mm:setfield>
+      <mm:setfield name="orderby">titel</mm:setfield>
+      <mm:setfield name="search">yes</mm:setfield>
+   </mm:createnode>
+   <% log.info("Add default editwizard for projects"); %>
+   <mm:createnode type="editwizards">
+      <mm:setfield name="name">projecten</mm:setfield>
+      <mm:setfield name="wizard">config/projects/projects</mm:setfield>
+      <mm:setfield name="type">wizard</mm:setfield>
+      <mm:setfield name="nodepath">projects</mm:setfield>
+      <mm:setfield name="fields">titel</mm:setfield>
+      <mm:setfield name="searchfields">titel</mm:setfield>
+      <mm:setfield name="orderby">titel</mm:setfield>
+      <mm:setfield name="search">yes</mm:setfield>
+   </mm:createnode>
+   <% log.info("Change wizard for urls"); %>
+   <mm:listnodes type="editwizards" constraints="name = 'links'">
+      <mm:setfield name="name">pagina</mm:setfield>
+      <mm:setfield name="wizard">config/link/link</mm:setfield>
+      <mm:setfield name="type">wizard</mm:setfield>
+      <mm:setfield name="nodepath">link</mm:setfield>
+      <mm:setfield name="fields">titel,url</mm:setfield>
+      <mm:setfield name="searchfields">titel</mm:setfield>
+      <mm:setfield name="orderby">titel</mm:setfield>
+      <mm:setfield name="search">yes</mm:setfield>
+   </mm:listnodes>
+   <% log.info("Change wizard for teaser"); %>
+   <mm:listnodes type="editwizards" constraints="wizard = 'config/teaser/teaser_quote'">
+      <mm:setfield name="wizard">config/teaser/teaser_nmintra</mm:setfield>
+   </mm:listnodes>
+   <% log.info("Change wizard for vacatures"); %>
+   <mm:listnodes type="editwizards" constraints="wizard = 'config/vacature/vacature'">
+      <mm:setfield name="wizard">config/vacature/vacature_nmintra</mm:setfield>
+   </mm:listnodes>
+   <% log.info("Setting default fields for users"); %>
+   <mm:listnodes type="users" constraints="account!='admin'">
       <mm:setfield name="password">admin2k</mm:setfield>
       <mm:setfield name="gracelogins">3</mm:setfield>
       <mm:setfield name="rank">chiefeditor</mm:setfield>
