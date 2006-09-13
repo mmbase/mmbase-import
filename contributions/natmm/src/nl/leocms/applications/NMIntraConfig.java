@@ -19,11 +19,17 @@ public class NMIntraConfig {
       "link",
       "medewerkers",
       "pagina",
-      "paragraaf", // necessary to determine whether images, links and attachments are used
       "products",
       "projects",
       "teaser",
       "vacature"
+   };
+   
+   public final static String[] CONTAINERS = {
+      "paragraaf",
+      "producttypes",
+      "contentblocks",
+      "linklijst"
    };
    
    /*

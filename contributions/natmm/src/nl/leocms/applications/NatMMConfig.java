@@ -8,17 +8,13 @@ public class NatMMConfig {
    public final static String[] CONTENTELEMENTS = {
       "artikel",
       "attachments",
-      // "evenement",
-      // "flash",
       "images",
       "link",
       "natuurgebieden",
       "organisatie",
       "pagina",
       "panno",
-      "paragraaf", // necessary to determine whether images, links and attachments are used
       "persoon",
-      // "poll",
       "provincies",
       "shorty",
       "teaser",
@@ -26,6 +22,12 @@ public class NatMMConfig {
       "vgv"
    };
    
+   public final static String[] CONTAINERS = {
+      "dossier",
+      "linklijst",
+      "paragraaf"
+   };
+
    public final static String[] OBJECTS = {
       "ads",            // extends object
       "artikel",
