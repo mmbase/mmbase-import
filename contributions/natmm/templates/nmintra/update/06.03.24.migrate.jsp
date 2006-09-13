@@ -55,11 +55,9 @@
   <mm:listnodes type="pagina" constraints="titel = 'Nieuws en interne informatie'">
     <mm:setfield name="titel">Nieuws</mm:setfield>
   </mm:listnodes>	
-  5. Delete template for "Wat vindt je ervan?" page in P&O<br/>
+  5. Delete "Wat vindt je ervan?" page in P&O<br/>
   <mm:listnodes type="pagina" constraints="titel = 'Wat vindt je ervan?'" orderby="number" directions="DOWN" max="1">
-    <mm:related path="gebruikt,paginatemplate">
-      <mm:deletenode element="gebruikt" />
-    </mm:related>
+      <mm:deletenode deleterelations="true" />
   </mm:listnodes>
   6. Analyzing titels of articles and paragraaf to remove #NZ# string.<br/>
   Processing...<br/>
