@@ -20,7 +20,7 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.storage.search.*;
 import org.mmbase.cache.CachePolicy;
-import org.mmbase.module.Module;
+import org.mmbase.module.ReloadableModule;
 
 import org.mmbase.core.event.*;
 import org.mmbase.module.core.*;
@@ -46,9 +46,9 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.69 2006-09-11 14:33:43 michiel Exp $
+ * @version $Id: Lucene.java,v 1.70 2006-09-13 09:51:14 michiel Exp $
  **/
-public class Lucene extends Module implements NodeEventListener, IdEventListener {
+public class Lucene extends ReloadableModule implements NodeEventListener, IdEventListener {
 
     public static final String PUBLIC_ID_LUCENE_2_0 = "-//MMBase//DTD luceneindex config 2.0//EN";
     public static final String DTD_LUCENE_2_0 = "luceneindex_2_0.dtd";
@@ -125,8 +125,8 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
     private String indexPath = null;
     private Scheduler scheduler = null;
     private String defaultIndex = null;
-    private final Map<String, Indexer>  indexerMap    = new ConcurrentHashMap();
-    private final Map<String, Searcher> searcherMap   = new ConcurrentHashMap();
+    private final Map<String, Indexer>  indexerMap    = new ConcurrentHashMap<String, Indexer>();
+    private final Map<String, Searcher> searcherMap   = new ConcurrentHashMap<String, Searcher>();
     private boolean readOnly = false;
 
 
@@ -540,6 +540,11 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
         mmbase = null;
     }
 
+    public void reload() {
+        shutdown();
+        init();
+    }
+
     public String getModuleInfo() {
         return "This module performs lucene searches and maintains indices";
     }
@@ -566,9 +571,7 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
             // And of course, the new event-mechanism must be used.
             if (!readOnly) {
                 // register. Unfortunately this can currently only be done through the core
-                Iterator i = queryDefinition.query.getSteps().iterator();
-                while(i.hasNext()) {
-                    Step step = (Step) i.next();
+                for (Step step : queryDefinition.query.getSteps() ) {
                     MMObjectBuilder builder = mmbase.getBuilder(step.getTableName());
                     log.service("Observing for builder " + builder.getTableName() + " for index " + queryElement.getAttribute("name"));
                     builder.addEventListener(this);
@@ -658,7 +661,7 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
                                 } else if ("jdbc".equals(name)) {
                                     DataSource ds =  ((DatabaseStorageManagerFactory) mmbase.getStorageManagerFactory()).getDataSource();
                                     IndexDefinition id = new JdbcIndexDefinition(ds, childElement,
-                                                                                 allIndexedFieldsSet, storeText, mergeText, analyzer);
+                                                                                 allIndexedFieldsSet, storeText, mergeText, analyzer, false);
                                     queries.add(id);
                                     EventManager.getInstance().addEventListener(idListener);
                                     log.service("Added mmbase jdbc definition " + id);
@@ -786,9 +789,9 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
             } catch (InterruptedException ie) {
                 //return;
             }
-            while (!mmbase.isShutdown()) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Obtain Assignment from " + indexAssignments);
+            while (mmbase != null && !mmbase.isShutdown()) {
+                if (log.isTraceEnabled()) {
+                    log.trace("Obtain Assignment from " + indexAssignments);
                 }
                 try {
                     assignment = indexAssignments.take();

@@ -20,7 +20,7 @@ import org.mmbase.bridge.util.xml.query.*;
  * noticeably, it produces fields with a few new attributes.
  * 
  * @author Pierre van Rooden
- * @version $Id: IndexConfigurer.java,v 1.4 2006-09-11 13:59:14 michiel Exp $
+ * @version $Id: IndexConfigurer.java,v 1.5 2006-09-13 09:51:14 michiel Exp $
  **/
 public class IndexConfigurer extends QueryConfigurer {
 
@@ -35,7 +35,7 @@ public class IndexConfigurer extends QueryConfigurer {
     }
 
     public QueryDefinition getQueryDefinition() {
-        return new MMBaseIndexDefinition(null);
+        return new MMBaseIndexDefinition();
     }
 
     public FieldDefinition getFieldDefinition() {
