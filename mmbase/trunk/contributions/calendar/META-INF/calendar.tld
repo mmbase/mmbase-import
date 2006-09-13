@@ -6,6 +6,14 @@
   <short-name>mm-cal</short-name>
   <uri>http://www.mmbase.org/tags/mm/calendar</uri>
   <tag-file>
+    <name>items</name>
+    <path>/META-INF/tags/mm/calendar/items.tagx</path>
+  </tag-file>
+  <tag-file>
+    <name>axis</name>
+    <path>/META-INF/tags/mm/calendar/axis.tagx</path>
+  </tag-file>
+  <tag-file>
     <name>month</name>
     <path>/META-INF/tags/mm/calendar/month.tagx</path>
   </tag-file>
