@@ -11,9 +11,7 @@ package org.mmbase.module.lucene;
 
 import java.util.*;
 import java.io.*;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.Term;
+import org.apache.lucene.index.*;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -31,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.30 2006-09-11 10:47:36 michiel Exp $
+ * @version $Id: Indexer.java,v 1.31 2006-09-13 09:51:14 michiel Exp $
  **/
 public class Indexer {
 
@@ -47,6 +45,7 @@ public class Indexer {
 
     /**
      * Adds a Field to a Document considering also a 'multiple' setting.
+     * This arranges what must happen if a certain field with the same name is already present in the Document.
      * @since MMBase-1.9
      */
     public static void addField(Document document, Field field, Multiple multiple) {
@@ -147,72 +146,105 @@ public class Indexer {
 
     /**
      * Delete the index for the main element node with the given number.
-     * Used in iterative indexing.
      * @return The number of deleted lucene documents.
      * @param number the number of the node whose index to delete
      * @param klass The indexes to be deleted can be restricted to a certain class of IndexDefinition's.
      */
-    public int deleteIndex(String number, Class klass) {
-        IndexReader reader = null;
-        try {
-            for (Iterator<IndexDefinition> i = queries.iterator(); i.hasNext();) {
-                IndexDefinition indexDefinition = i.next();
-                if (klass.isAssignableFrom(indexDefinition.getClass())) {
+    public int deleteIndex(String number, Class<? extends IndexDefinition> klass) {
+        int deleted = 0;
+        int updated = 0;
+        for (IndexDefinition indexDefinition : queries) {
+            if (klass.isAssignableFrom(indexDefinition.getClass())) {
+                IndexReader reader = null;
+                Set<String> mains = new HashSet();
+                int d = 0;
+                int u = 0;
+
+                try {
                     reader = IndexReader.open(path);
                     Term term = new Term("number", number);
-                    int deleted = reader.deleteDocuments(term);
-                    if (deleted > 0) {
-                        log.service(getName() + ": Deleted " + deleted + " for '" + number + "'");
+                    TermDocs docs = reader.termDocs(term);
+                    while(docs.next()) {
+                        int i = docs.doc();
+                        String main = reader.document(i).get("number");
+                        reader.deleteDocument(i);
+                        if (main.equals(number)) {
+                            d++;
+                        } else {
+                            mains.add(main);
+                        }
                     }
-                    return deleted;
+                } catch (Exception e) {
+                    log.error(e);
+                } finally {
+                    if (reader != null) { try { reader.close(); } catch (IOException ioe) { log.error("Can't close index reader: " + ioe.getMessage()); } }
                 }
-            }
-            return 0;
-        } catch (Exception e) {
-            log.error(getName() + ": Cannot delete Index:" + e.getMessage() + " for index entry '" + number + "'");
-            return 0;
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException ioe) {
-                    log.error("Can't close index reader: " + ioe.getMessage());
+                if (mains.size() > 0) {
+                    u += update(indexDefinition, mains);
                 }
+                if (d > 0 || u > 0) {
+                    updated += u;
+                    deleted += d;
+                    log.service(getName() + ": Deleted " + d + " for '" + number + "', updated '" + u + "'");
+                }
+
             }
         }
+        return deleted;
+
+    }
+
+    protected int update(IndexDefinition indexDefinition, Set<String> mains) {
+        int updated = 0;
+        IndexWriter writer = null;
+        try {
+            writer = new IndexWriter(path, analyzer, false);
+            for (String mainNumber : mains) {
+                Iterator<? extends IndexEntry> j = indexDefinition.getSubCursor(mainNumber);
+                if (log.isDebugEnabled()) {
+                    log.debug(getName() + ": Updating index " + indexDefinition + " for " + mainNumber);
+                }
+                updated += index(j, writer);
+            }
+                } catch (IOException ioe) {
+            log.error(ioe);
+        } finally {
+            if (writer != null) try { writer.close();} catch (IOException ioe) { log.error(ioe); }
+        }
+        return updated;
     }
 
     /**
      * Update the index for the main element node with the given number.
-     * Used in iterative indexing.
      * @param number the number of the node whose index to update
      */
-    public int updateIndex(String number, Class klass) {
+    public int updateIndex(final String number, final Class<? extends IndexDefinition> klass) {
         int updated = 0;
-        int deleted = deleteIndex(number, klass);
-        IndexWriter writer = null;
-        try {
-            writer = new IndexWriter(path, analyzer, false);
-            // process all queries
-            for (IndexDefinition indexDefinition :  queries) {
-                if (klass.isAssignableFrom(indexDefinition.getClass())) {
-                    Iterator j = indexDefinition.getCursor(number);
-
-                    if (log.isDebugEnabled()) {
-                        log.debug(getName() + ": Updating index " + indexDefinition + " for " + number);
-                    }
-                    updated += index(j, writer);
-                }
-            }
-        } catch (Exception e) {
-            log.error("Cannot update Index: " + e.getMessage(), e);
-        } finally {
-            if (writer != null) {
+        // process all queries
+        for (IndexDefinition indexDefinition :  queries) {
+            if (klass.isAssignableFrom(indexDefinition.getClass())) {
+                Set<String> mains = new HashSet<String>();
+                mains.add(number); // at least the object itself must be tried, it may be 
+                IndexReader reader = null;
                 try {
-                    writer.close();
+                    reader = IndexReader.open(path);
+                    Term term = new Term("number", number);
+                    TermDocs docs = reader.termDocs(term);
+                    if (log.isDebugEnabled()) {
+                        log.debug(getName() + ": Will find " + reader.docFreq(term));
+                    }
+                    while(docs.next()) {
+                        int i = docs.doc();
+                        mains.add(reader.document(i).get("number"));
+                        reader.deleteDocument(i);
+                    }
+                    docs.close();
                 } catch (IOException ioe) {
-                    log.error("Can't close index writer: " + ioe.getMessage());
+                    log.error(ioe);
+                } finally {
+                    if (reader != null) try {reader.close(); } catch (IOException ioe) { log.error(ioe);}
                 }
+                updated += update(indexDefinition, mains);
             }
         }
         if (updated > 0) {
@@ -235,7 +267,7 @@ public class Indexer {
             // process all queries
             for (IndexDefinition indexDefinition : queries) {
                 log.debug("full index for " + indexDefinition);
-                Iterator j = indexDefinition.getCursor();
+                Iterator<? extends IndexEntry> j = indexDefinition.getCursor();
                 index(j, writer);
                 if (Thread.currentThread().isInterrupted()) {
                     log.info("Interrupted");
@@ -248,20 +280,14 @@ public class Indexer {
         } catch (Exception e) {
             log.error("Cannot run FullIndex: " + e.getMessage(), e);
         } finally {
-            if (writer != null) {
-                try {
-                    writer.close();
-                } catch (IOException ioe) {
-                    log.error("Can't close index writer: " + ioe.getMessage());
-                }
-            }
+            if (writer != null) { try { writer.close(); } catch (IOException ioe) { log.error("Can't close index writer: " + ioe.getMessage()); } }
         }
     }
 
     /**
      * Runs the queries for the given cursor, and indexes all nodes that are returned.
      */
-    protected int index(Iterator<IndexEntry> i, IndexWriter writer) throws IOException {
+    protected int index(Iterator<? extends IndexEntry> i, IndexWriter writer) throws IOException {
         int indexed = 0;
         Document document = null;
         String   lastIdentifier = null;
@@ -276,14 +302,16 @@ public class Indexer {
             log.debug("Indexing for " + newIdentifier);
             // This code depends on the fact that if the same nodes appear multipible times, they are at least queried like so, that they appear next to each other
             if (! newIdentifier.equals(lastIdentifier)) {
-                if (document != null) writer.addDocument(document);
+                if (document != null) {
+                    writer.addDocument(document);
+                }
                 document = new Document();
                 indexed++;
             }
             index(entry, document);
             if (Thread.currentThread().isInterrupted()) {
                 log.debug("Interrupted");
-                return indexed;
+                break;
             }
             lastIdentifier = newIdentifier;
         }
@@ -297,16 +325,19 @@ public class Indexer {
     }
 
     /**
-     * Indexes an entry, and its sub-indexes.
+     * Indexes an entry, and its sub-indexes (recursively).
      */
     protected void index(IndexEntry entry, Document document) throws IOException {
+        // writes the entry itself:
         entry.index(document);
+
+        // and it's sub entries (recursively).
         for (IndexDefinition subDef : entry.getSubDefinitions()) {
             if (subDef == null) {
                 log.warn("Found a sub definition which is null for " + entry);
                 continue;
             }
-            Iterator<? extends IndexEntry> i = subDef.getSubCursor(entry.getIdentifier());
+            Iterator<? extends IndexEntry> i = subDef.getSubCursor(entry.getKey());
             while(i.hasNext()) {
                 IndexEntry subEntry = i.next();
                 index(subEntry, document);
