@@ -5,7 +5,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.65 2006-09-14 11:53:31 pierre Exp $
+     * @version  $Id: list.jsp,v 1.66 2006-09-14 13:00:52 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -194,6 +194,7 @@ if (!manager.mayCreateNode()) creatable=false;
 // relationmanager test for searchlists
 String roleStr = request.getParameter("relationRole");
 String originNodeNr = request.getParameter("relationOriginNode");
+String createDir  = request.getParameter("relationCreateDir");
 boolean checkRelationRights = originNodeNr != null && !"".equals(originNodeNr) && roleStr != null && !"".equals(roleStr);
 Node originNode = null;
 RelationManager relationManager = null;
@@ -203,7 +204,6 @@ if (checkRelationRights) {
     try {
         originNode = cloud.getNode(originNodeNr);
         relationManager = cloud.getRelationManager(roleStr);
-        String createDir  = request.getParameter("relationCreateDir");
         if (createDir != null) {
             checkDestination = !createDir.equals("source"); // destination or both
             checkSource = !createDir.equals("destination"); // source or both
@@ -324,6 +324,10 @@ params.put("deletable",  deletable+"");
 params.put("creatable",  creatable+"");
 params.put("cloud",  cloud);
 params.put("popupid",  popupId);
+
+if (roleStr != null) params.put("relationRole",  roleStr);
+if (originNodeNr != null) params.put("relationOriginNode",  originNodeNr);
+if (createDir != null) params.put("relationCreateDir",  createDir);
 
 if (deletedescription!=null) params.put("deletedescription", deletedescription);
 if (deleteprompt!=null) params.put("deleteprompt", deleteprompt);
