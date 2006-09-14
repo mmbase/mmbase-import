@@ -17,6 +17,7 @@ package nl.leocms.util;
 
 import java.util.*;
 import nl.leocms.applications.*;
+import nl.leocms.util.tools.SearchUtil;
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -134,7 +135,7 @@ public class ApplicationHelper {
       return pathsFromPageToElements;
    }
    
-   public String getDefaultPage(String thisType){
+   public String getDefaultPage(String thisNode, String thisType){
 
       // some exceptions of objects belonging to pages, but not actually related
       String sPaginaNumber = null;
@@ -144,7 +145,12 @@ public class ApplicationHelper {
          }
       }
       if (isInstalledNMIntra) {
-         if (thisType.equals("medewerkers")) {
+         if (thisType.equals("medewerkers")
+            && cloud.getList(thisNode,"medewerkers","medewerkers.number",SearchUtil.sEmployeeConstraint,null,null,null,false).size()==1 ) {
+            sPaginaNumber = cloud.getNodeByAlias("wieiswie").getStringValue("number");
+         }
+         if (thisType.equals("afdelingen") 
+            && cloud.getList(thisNode,"afdelingen","afdelingen.number",SearchUtil.sAfdelingenConstraints,null,null,null,false).size()==1 ) {
             sPaginaNumber = cloud.getNodeByAlias("wieiswie").getStringValue("number");
          }
          if (thisType.equals("educations")) {

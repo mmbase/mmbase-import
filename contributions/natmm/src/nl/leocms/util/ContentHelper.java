@@ -122,7 +122,7 @@ public class ContentHelper {
 	}
 
   /*
-    Returns a list of nodes that are related to this node
+    Returns a list of ApplicationHelper.getContentTypes that are parents of this node
   */
    public NodeList usedInItems(String sNodeNumber){
 
@@ -134,21 +134,21 @@ public class ContentHelper {
             
       ApplicationHelper ap = new ApplicationHelper(cloud);
       
-      String paginaNumber = ap.getDefaultPage(thisType);
+      String paginaNumber = ap.getDefaultPage(sNodeNumber, thisType);
       if(paginaNumber!=null) {
          nlUsedInItems = cloud.getNodeManager("pagina").getList("number='" + paginaNumber + "'",null,null);
       }
       
       ArrayList cTypes = ap.getContentTypes(true);
-      TreeMap tmPathToRubriek = new TreeMap();
+      cTypes.add("rubriek");
       
-      // in the NatMM application objects can also be related to a rubriek
+      TreeMap tmPathToRubriek = new TreeMap();
+      tmPathToRubriek.put("pagina", "posrel");
       if(ap.isInstalled("NatMM")) {
          tmPathToRubriek.put("images", "contentrel");
          tmPathToRubriek.put("panno", "posrel");
          tmPathToRubriek.put("shorty", "rolerel");
          tmPathToRubriek.put("teaser", "rolerel");
-         cTypes.add("rubriek");
       }
       
       for(int ct=0; ct < cTypes.size(); ct++) {
@@ -179,8 +179,8 @@ public class ContentHelper {
    }
 
   /*
-    Returns ArrayList with contentelements used by user account
-	 See also: UpdateUnusedElements.getUnusedItems()
+    Returns ArrayList with unused contentelements, related to this account
+	  See also: UpdateUnusedElements.getUnusedItems()
   */
    public ArrayList getUnusedItems(String account){
       ArrayList alUnusedItems = new ArrayList();
@@ -190,7 +190,8 @@ public class ContentHelper {
          AuthorizationHelper authHelper = new AuthorizationHelper(cloud);
          UserRole userRole = authHelper.getRoleForUser(authHelper.getUserNode(account), rubriek);
          if (userRole.getRol() >= Roles.SCHRIJVER) {
-            NodeList nlElements = cloud.getList(rubriek.getStringValue("number"),"rubriek,creatierubriek,contentelement","contentelement.number",null,null,null,null,false);
+            NodeList nlElements = cloud.getList(rubriek.getStringValue("number"),
+              "rubriek,creatierubriek,contentelement","contentelement.number",null,null,null,null,false);
             for (int j = 0; j < nlElements.size(); j++){
                if (usedInItems(nlElements.getNode(j).getStringValue("contentelement.number"))==null){
                   alUnusedItems.add(nlElements.getNode(j).getStringValue("contentelement.number"));
@@ -207,21 +208,22 @@ public class ContentHelper {
    * If not check the possible paths to find its page
    * If both options fail use the archive page to add the default relations
    */
-   public void addDefaultRelations(String sContentElement, HashMap pathsFromPageToElements) {
+   public void addDefaultRelations(String sContentElement, HashMap pathsFromPageToElements, ArrayList containerTypes) {
 
-      String sType = cloud.getNode(sContentElement).getNodeManager().getName();   
-      if(!bRelationsExists(sContentElement)&&!sType.equals("paragraaf")) {
+      String sType = cloud.getNode(sContentElement).getNodeManager().getName();
+      // container types are not used in /editors/beheerbibliotheek/ and do not have to have default relations
+      if(!bRelationsExists(sContentElement) && !containerTypes.contains(sType)) {
       
          boolean hasDefaultRelations = false;
-         String sPaginaNumber = ap.getDefaultPage(sType);
+         String sPaginaNumber = ap.getDefaultPage(sContentElement,sType);
            
          if(sPaginaNumber!=null) {
-            log.info(sType + " " + sContentElement + " is related to pagina " + sPaginaNumber);
+            log.debug(sType + " " + sContentElement + " is related to pagina " + sPaginaNumber);
             hasDefaultRelations = createRelationToPage(sContentElement,sPaginaNumber);
          } 
          for (Iterator it=pathsFromPageToElements.keySet().iterator();it.hasNext() && !hasDefaultRelations; ) {
             String objecttype = (String) it.next();
-            if (objecttype.equals(sType)) {
+            if ((objecttype.replaceAll("#","")).equals(sType)) {
               String path = (String) pathsFromPageToElements.get(objecttype);
               hasDefaultRelations = addDefaultRelationByPath(sContentElement, path);
             }
@@ -238,10 +240,11 @@ public class ContentHelper {
       
       boolean hasDefaultRelations = false;        
       // finding page related to the contentelement
-      NodeList nl = cloud.getList(objectNumber,pathFromPageToElements,
-         "pagina.number",null,null,null,null,true);
+      NodeList nl = cloud.getList(objectNumber,pathFromPageToElements,"pagina.number",null,null,null,null,false);
       if (nl.size()>0){
          String sPaginaNumber = nl.getNode(0).getStringValue("pagina.number");
+         log.debug(cloud.getNode(objectNumber).getNodeManager().getName() + objectNumber 
+            + " is related to pagina " + sPaginaNumber + " via " + pathFromPageToElements);
          hasDefaultRelations = createRelationToPage(objectNumber, sPaginaNumber);
       }
       return hasDefaultRelations;
@@ -317,13 +320,13 @@ public class ContentHelper {
          try {
             nUser = ah.getUserNode(nElement.getStringValue("owner")); 
          } catch (Exception e) {
-            log.info("there is no user with account " + nElement.getStringValue("owner") + " in this base");
+            log.debug("there is no user with account " + nElement.getStringValue("owner") + " in this base");
          }
          if (nUser!=null) {
             // create relation contentelement-schrijver-user 
             (cloud.getNode(objectNumber)).createRelation(nUser,cloud.getRelationManager("schrijver")).commit();
             String otype = nElement.getStringValue("otype");
-            log.info("added " + nUser.getStringValue("account") + " as schrijver to " + getNameWithOtype(otype) + " " + objectNumber);
+            log.debug("added " + nUser.getStringValue("account") + " as schrijver to " + getNameWithOtype(otype) + " " + objectNumber);
          }
       }
    }

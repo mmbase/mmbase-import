@@ -26,8 +26,10 @@ public class UpdateUnusedElements implements Runnable {
 
 		NodeList nlElements = cloud.getList(rubriekNumber,"rubriek,creatierubriek,contentelement","contentelement.number",null,null,null,null,false);
 		for (int k = 0; k < nlElements.size(); k++){
-			if (ch.usedInItems(nlElements.getNode(k).getStringValue("contentelement.number"))==null){
-				alUnusedItems.add(nlElements.getNode(k).getStringValue("contentelement.number"));
+      String node =  nlElements.getNode(k).getStringValue("contentelement.number");
+			if (ch.usedInItems(node)==null){
+        log.debug(cloud.getNode(node).getNodeManager().getName() + " " + node + " belongs to rubriek " + rubriekNumber + " and is not used");
+				alUnusedItems.add(node);
 			}
 		}
 		log.info("found " + alUnusedItems.size() + " unused items for rubriek " + rubriekNumber);
