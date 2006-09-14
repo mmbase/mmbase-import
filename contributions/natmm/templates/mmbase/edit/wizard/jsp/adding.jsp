@@ -1,7 +1,7 @@
 <%@ page errorPage="exception.jsp"%>
 <%@ include file="settings.jsp"%>
 <mm:locale language="<%=ewconfig.language%>">
-<mm:cloud method="$loginmethod"  loginpage="login.jsp" jspvar="cloud" sessionname="$loginsessionname">
+<mm:cloud method="http" rank="basic user" jspvar="cloud">
 <mm:log jspvar="log">
 <%@page import="org.mmbase.bridge.*,org.mmbase.bridge.util.*,javax.servlet.jsp.JspException"%>
 

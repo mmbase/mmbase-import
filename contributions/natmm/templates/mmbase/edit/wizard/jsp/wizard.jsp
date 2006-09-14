@@ -1,7 +1,7 @@
 <%@page import="nl.leocms.editwizard.*"
 %><%@ include file="settings.jsp"
 %><mm:locale language="<%=ewconfig.language%>"
-><mm:cloud method="$loginmethod"  loginpage="login.jsp" sessionname="$loginsessionname" jspvar="cloud"
+><mm:cloud method="http" rank="basic user" jspvar="cloud"
 ><%@ page errorPage="exception.jsp"
 %><mm:log jspvar="log">
 <%
