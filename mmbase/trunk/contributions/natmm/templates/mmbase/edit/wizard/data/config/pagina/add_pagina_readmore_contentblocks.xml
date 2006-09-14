@@ -17,7 +17,7 @@
 		<field fdatapath="field[@name=&apos;readmore&apos;]" >
 			 <prompt>aantal kolommen</prompt>
 		</field>
-		<field fdatapath="." ftype="startwizard" inline="true" objectnumber="{object/@number}" wizardname="config/pagina/pagina">
+		<field fdatapath="." ftype="startwizard" inline="true" objectnumber="{object/@number}" wizardname="config/pagina/pagina_phaseoverview">
             <prompt></prompt>
       </field>
    </item>
