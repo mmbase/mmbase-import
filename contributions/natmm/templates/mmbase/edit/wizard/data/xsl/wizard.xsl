@@ -10,7 +10,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.1 2006-03-05 21:46:43 henk Exp $
+    @version $Id: wizard.xsl,v 1.2 2006-09-14 12:57:28 henk Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -376,11 +376,12 @@
           <!-- cancel -->
           <xsl:call-template name="cancelbutton"/>
           <xsl:text> - </xsl:text>
+          <!-- hh: changed order of save buttons -->
+          <!-- saveonly  -->
+          <xsl:call-template name="saveonlybutton"/>
+          <xsl:text> - </xsl:text>
           <!-- commit  -->
           <xsl:call-template name="savebutton"/>
-          <xsl:text> - </xsl:text>
-          <!-- Saveonly  -->
-          <xsl:call-template name="saveonlybutton"/>
         </td>
       </tr>
     </table>
