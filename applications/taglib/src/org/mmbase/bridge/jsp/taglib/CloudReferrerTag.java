@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * class.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CloudReferrerTag.java,v 1.29 2006-03-09 13:24:31 nklasens Exp $
+ * @version $Id: CloudReferrerTag.java,v 1.30 2006-09-14 11:07:21 michiel Exp $
  */
 
 public abstract class CloudReferrerTag extends ContextReferrerTag {
@@ -150,7 +150,8 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
                 return locale;
             }
         }
-        return  getCloudVar().getLocale();
+        CloudProvider cloudProvider = findCloudProvider(false);
+        return cloudProvider == null ? null : cloudProvider.getCloudVar().getLocale();
     }
 
 }
