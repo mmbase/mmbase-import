@@ -78,7 +78,7 @@
 												</mm:node> 									
 												<td><a href='javascript:clickNodePortal("help_node_<%=nb%>")'><img src="gfx/adds/tree_plus.gif" border="0" align="middle" id='img_help_node_<%=nb%>'/></a></td>
 												<td><img src="gfx/folder_closed.gif" border="0" align="middle" id='img2_help_node_<%=nb%>'/></td>
-												<td><a href='<mm:write referid="wizardjsp"/>&wizard=config/help/helpnodes&objectnumber=<mm:field name="number"/>&path=Help > <mm:field name="name"/>' title="edit" target="text"><mm:field name="name"/></a></td>																								
+												<td><a href='<mm:write referid="wizardjsp"/>&wizard=config/help/helpnodes&objectnumber=<mm:field name="number"/>&path=Help > <mm:field name="name"/>' title="edit" target="text"><mm:field name="name"/></a></td>
 										</tr>	
 										</table>	
 										<div id='help_node_<%=nb%>' style="display:none">							
@@ -109,7 +109,7 @@
 														      <%}%>														      
 														      <td><img src="gfx/adds/tree_vertline-leaf.gif" border="0" align="center" valign="middle"/></td>													      
 														      <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-														      <td><nobr>&nbsp;<a href='<mm:write referid="wizardjsp"/>&wizard=config/help/newhelpnodes&objectnumber=<mm:write referid="this"/>&path=Help > <mm:field name="name"/>' title="nieuwe help map" target="text">nieuwe help map</a></nobr></td>
+														      <td><nobr>&nbsp;<a href='<mm:write referid="wizardjsp"/>&wizard=config/help/leafmaphelpnodes-origin&origin=<mm:write referid="this"/>&objectnumber=new&path=Help > <mm:field name="name"/>' title="nieuwe help map" target="text">nieuwe help map</a></nobr></td>
 														   </tr>
 														</table> 														
 														<table border="0" cellpadding="0" cellspacing="0">
@@ -127,7 +127,7 @@
 														         <td><img src="gfx/tree_leaflast.gif" border="0" align="center" valign="middle"/></td>
 														      <%}%>														      
 														      <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-														      <td><nobr>&nbsp;<a href='<mm:write referid="wizardjsp"/>&wizard=config/portalpages/newsimplecontents&origin=<mm:write referid="this"/>&objectnumber=new&path=Help > <mm:field name="name"/>' title="nieuwe help content" target="text">nieuwe help content</a></nobr></td>
+														      <td><nobr>&nbsp;<a href='<mm:write referid="wizardjsp"/>&wizard=config/help/newsimplecontents&origin=<mm:write referid="this"/>&objectnumber=new&path=Help > <mm:field name="name"/>' title="nieuwe help content" target="text">nieuwe help content</a></nobr></td>
 														   </tr>
 														</table> 																																																																													
 												    <%levelTwoLast = false; %>

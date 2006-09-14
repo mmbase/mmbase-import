@@ -7,9 +7,9 @@
   <mm:import externid="simplecontents"/>
   <mm:import externid="node"/>
   <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
-  <mm:param name="extraheader">
-  <link rel="stylesheet" type="text/css" href="<mm:treefile page="/portalpages/css/base.css" objectlist="$includePath" referids="$referids" />" />
-  </mm:param>
+    <mm:param name="extraheader">
+      <link rel="stylesheet" type="text/css" href="<mm:treefile page="/cmshelp/css/cmshelp.css" objectlist="$includePath" referids="$referids" />" />
+    </mm:param>
   </mm:treeinclude>
   <div class="rows">
     <div class="navigationbar">
@@ -20,11 +20,13 @@
     </div>
     <div class="contentHeader">
     </div>
-    <div class="contentBodywit">
-	  <mm:treeinclude page="/cmshelp/frontoffice/show_help.jsp" objectlist="$includePath" referids="$referids">
-	    <mm:param name="node2"><mm:write referid="simplecontents"/></mm:param>
-      <mm:param name="node"><mm:write referid="node"/></mm:param>
-	  </mm:treeinclude> 
+    <div class="contentBodywit" style="">
+      <div class="learnenvironment">
+    	  <mm:treeinclude page="/cmshelp/frontoffice/show_help.jsp" objectlist="$includePath" referids="$referids">
+    	    <mm:param name="node2"><mm:write referid="simplecontents"/></mm:param>
+          <mm:param name="node"><mm:write referid="node"/></mm:param>
+    	  </mm:treeinclude>
+      </div> 	  
     </div>
   </div>
   <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids"/>
