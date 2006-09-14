@@ -17,9 +17,9 @@
 		<field fdatapath="field[@name=&apos;readmore&apos;]" >
 			 <prompt>Aantal kolommen</prompt>
 		</field>
-		<field fdatapath="." ftype="startwizard" inline="true" objectnumber="{object/@number}" wizardname="config/contentblocks/contentblocks">
-            <prompt></prompt>
-      </field>
+		<field fdatapath="." ftype="startwizard" inline="true" objectnumber="{object/@number}" wizardname="config/contentblocks/contentblocks_nopage">
+       <prompt></prompt>
+    </field>
    </item>	
 	<action type="create">
 		<relation role="readmore">
@@ -28,7 +28,7 @@
 			 <field name="readmore">1</field>
       </relation>
 	</action>
-	<command name="startwizard" inline="true" wizardname="config/contentblocks/contentblocks" objectnumber="new"/>
+	<command name="startwizard" inline="true" wizardname="config/contentblocks/contentblocks_nopage" objectnumber="new"/>
 	<command name="search" nodepath="contentblocks" fields="title,subtitle" orderby="title" age="-1">
     	<prompt>zoek blok</prompt>
 		<search-filter>

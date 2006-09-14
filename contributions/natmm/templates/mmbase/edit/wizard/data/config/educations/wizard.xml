@@ -12,7 +12,7 @@
 
 	<action include="config/educations/load.xml" />
 
-   <lists>
+  <lists>
 		<optionlist include="config/option_lists/edu_types.xml" /> 
 		<optionlist include="config/option_lists/boolean_text.xml" /> 
 	</lists>
@@ -30,7 +30,7 @@
       <field name="content" ftype="html" rows="16" />
       <!-- <field name="description" ftype="html" rows="16"/> -->
       <field name="targetgroup" />
-      <field name="goal" />
+      <field name="goal" ftype="html" rows="16" />
       <field name="duration" />
       <field name="weight" />
       <field name="dates" ftype="html" rows="16" />
