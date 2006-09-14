@@ -14,20 +14,33 @@
 
 <mm:node number="$helpcontainer" notfound="skipbody">
   <mm:relatednodes type="helpnodes">
-    <mm:import id="helpname" reset="true"><mm:field name="name"/></mm:import> 
-    <mm:import id="helpnumber" jspvar="helpNumber" reset="true"><mm:field name="number"/></mm:import>
-    <mm:relatednodes type="roles">
-      <mm:import id="role" jspvar="role" reset="true"><mm:field name="name"/></mm:import>
-      <mm:node number="$user" notfound="skipbody">
-      <di:hasrole role="<%=role%>">
-        <div class="menuSeperatorApplicationMenubar"></div>
-        <div class="menuItemApplicationMenubar">
-          <a title="<mm:write referid="helpname"/>" href="<%=link%><%=helpNumber%>"  class="menubar"><mm:write referid="helpname"/></a>
-        </div>
-      </di:hasrole>         
-    </mm:node>
-  </mm:relatednodes>    
-</mm:relatednodes> 
-</mm:node> 
+  
+<!--     in application bar should be shown only help with roles set education not set. -->
+    
+    <mm:remove referid="educationRelated" />
+    <mm:relatednodes type="educations">
+      <mm:first>
+        <mm:import id="educationRelated" />
+      </mm:first>
+    </mm:relatednodes>
+  
+    <mm:notpresent referid="educationRelated">        
+      <mm:import id="helpname" reset="true"><mm:field name="name"/></mm:import> 
+      <mm:import id="helpnumber" jspvar="helpNumber" reset="true"><mm:field name="number"/></mm:import>
+      <mm:relatednodes type="roles">
+        <mm:import id="role" jspvar="role" reset="true"><mm:field name="name"/></mm:import>
+        <mm:node number="$user" notfound="skipbody">
+          <di:hasrole role="<%=role%>">
+            <div class="menuSeperatorApplicationMenubar"></div>
+            <div class="menuItemApplicationMenubar">
+              <a title="<mm:write referid="helpname"/>" href="<%=link%><%=helpNumber%>"  class="menubar"><mm:write referid="helpname"/></a>
+            </div>
+          </di:hasrole>
+        </mm:node>         
+      </mm:relatednodes>
+    </mm:notpresent>
+  </mm:relatednodes> 
+</mm:node>
+ 
 </mm:cloud>
 </mm:content>

@@ -42,6 +42,10 @@
         <relation from="paragraphs" to="images"      type="pos2rel" />
         <relation from="paragraphs" to="attachments" type="posrel" />
         <relation from="paragraphs" to="urls"        type="posrel" />
+        
+        <relation from="simplecontents" to="videotapes" type="related" />
+        <relation from="simplecontents" to="attachments" type="related" />
+        <relation from="simplecontents" to="audiotapes" type="related" />
     </allowedrelationlist>
 
     <datasourcelist>
