@@ -7,22 +7,27 @@
       This can be useful during development
       xmlns:mm-cal="urn:jsptagdir:/WEB-INF/tags/mm/calendar"     
 
-  -->      
-  <jsp:directive.page buffer="100kb" import="com.ibm.icu.text.*,java.util.*" />
-  <mm:import externid="language">client</mm:import>
-  <mm:import externid="timezone"></mm:import>
-  <mm:import externid="mode">weektable</mm:import>
-  <mm:write request="language" referid="language" />
-  <mm:write request="timezone" referid="timezone" />
+  -->
+  <mm:context id="config">
+    <mm:import externid="language">client</mm:import>
+    <mm:import externid="timezone"></mm:import>
+    <mm:import externid="weekend"></mm:import>
+    <mm:import externid="cols">2</mm:import>
+    <mm:import externid="rows">6</mm:import>
+    <mm:import externid="offset">0</mm:import>
+    <mm:import id="referids" vartype="list">language,timezone,weekend,cols,rows,offset</mm:import>
+  </mm:context>
+    
   <mm:content type="application/xhtml+xml"
-              language="$language" 
-              timezone="$timezone"
+              language="$config.language" 
+              timezone="$config.timezone"
               postprocessor="none" expires="0">
-    <head>
+    <head class="${config.weekend}">
        <link href="style.css" rel="stylesheet" title="Normaal" type="text/css" media="screen" />
        <style>
-         <mm-cal:css />
+         <mm-cal:css weekend="${config.weekend}" months="seasons"/>
          .time {
+         display: none;
            position: absolute;
            left: 0px;
            right: 0px;
@@ -31,38 +36,54 @@
     </head>
     <body>
       <mm:cloud method="asis">        
-        <mm-cal:localeSelector />
+        <mm-cal:localeSelector  language="${config.language}" timezone="${config.timezone}" context="${config}"/>
+        <form action="." method="post">
+          <mm:hiddens context="${config}" except="weekend,cols,rows" />
+          <select onchange="this.form.submit()" name="weekend">
+            <mm:option value="hide" compare="${config.weekend}">Hide weekend</mm:option>
+            <mm:option value="#ccc" compare="${config.weekend}">Gray weekend</mm:option>
+            <mm:option value=""     compare="${config.weekend}">Whole week</mm:option>
+          </select>
+          <select onchange="this.form.submit()" name="cols">
+            <c:forEach begin="1" end="6" var="c">
+              <mm:option value="${c}" compare="${config.cols}">${c}</mm:option>
+            </c:forEach>
+          </select>
+          <jsp:text>X</jsp:text>
+          <select onchange="this.form.submit()" name="rows">
+            <c:forEach begin="1" end="12" var="r">
+              <mm:option value="${r}" compare="${config.rows}">${r}</mm:option>
+            </c:forEach>
+          </select>
+        </form>
+        
+
         <mm:hasrank value="anonymous" inverse="true">
-          <mm:link page="logout.jspx" referids="language,timezone"><a href="${_}"><mm:cloudinfo type="user" /></a></mm:link>
+          <mm:link page="logout.jspx" referids="${referids}"><a href="${_}"><mm:cloudinfo type="user" /></a></mm:link>
         </mm:hasrank>
         <mm:hasrank value="anonymous">
-          <mm:link page="login.jspx" referids="language,timezone"><a href="${_}">log in</a></mm:link>
+          <mm:link page="login.jspx" referids="${referids}"><a href="${_}">log in</a></mm:link>
         </mm:hasrank>
         <div>
-          <mm:link page="hours.jspx" referids="language,timezone"><a href="${_}">h</a></mm:link>
+          <mm:link page="hours.jspx" referids="${referids}"><a href="${_}">h</a></mm:link>
         </div>
         
         <mm:time id="date" time="now" vartype="date" write="false" />
 
         <mm-cal:monthsOverview 
-            newItemUrl="newItem.jspx"
-            referids="language,timezone" 
+            context="${config}"
             buttons="/buttons"
-            stop="true"
-            offset="0"
-            rows="3"
-            cols="1"
-            dateFormat="dd MMM" >
-          <mm:time referid="day" format="EEE dd" />
+            offset="${config.offset}"
+            rows="${config.rows}"
+            cols="${config.cols}"
+            >
+          <mm:link page="newItem.jspx" referids="noon@day,${referids}">
+            <a href="${_}"><mm:time referid="day" format="d" /></a>
+          </mm:link>
+          <mm-cal:items day="${day}" stop="true">
+            <mm:include page="item.jspx" />
+          </mm-cal:items>
         </mm-cal:monthsOverview>
-
-          <!--
-          <jsp:attribute name="newItem">           
-            <mm:link page="newItem.jspx" referids="noon@day,language,timezone">
-              <jsp:text>+</jsp:text>
-            </mm:link>
-          </jsp:attribute>
-          -->
       </mm:cloud>
     </body>
   </mm:content>

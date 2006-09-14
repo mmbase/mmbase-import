@@ -15,6 +15,7 @@
   <jsp:directive.attribute name="right" fragment="true" />
   <jsp:directive.attribute name="index" type="java.lang.Integer" required="true" /> <!-- 0 ... -->
   <jsp:directive.variable  name-given="day" />
+  <jsp:directive.variable  name-given="noon" />
   <jsp:directive.variable  name-given="dayofweek" />
   <jsp:directive.variable  name-given="monthname" />
   <jsp:directive.variable  name-given="whichmonth" />
@@ -34,20 +35,20 @@
   <c:choose>
     <c:when test="${name eq 'week'}">
       <jsp:scriptlet>
-        int indexOffset = cal.getActualMinimum(Calendar.WEEK_OF_MONTH);
         int firstDay = cal.getFirstDayOfWeek();
         int lastDay  = firstDay + 6;
         for (int dayofweek = firstDay; dayofweek &lt;= lastDay; dayofweek++) {
           cal.clear();
           cal.set(Calendar.YEAR, year);
           cal.set(Calendar.MONTH, month - 1);
-          cal.set(Calendar.WEEK_OF_MONTH, indexOffset + index);
+          cal.set(Calendar.WEEK_OF_MONTH, index);
           cal.set(Calendar.DAY_OF_WEEK, dayofweek);
       </jsp:scriptlet>
       <mm:context>
         <mm:import id="whichmonth"><jsp:expression>cal.get(Calendar.MONTH) == month - 1 ? "same" : "other"</jsp:expression></mm:import>
         <mm:import id="time"><jsp:expression>cal.getTime().getTime() / 1000</jsp:expression></mm:import>
         <mm:time id="day" time="${time}" write="false" vartype="date" />
+        <mm:time id="noon" time="${time} noon" write="false" vartype="date" />
         <mm:locale language="en" country="US">
           <mm:time referid="day" format="EEEE" id="dayofweek" write="false" />
           <mm:time referid="day" format="MMMM" id="monthname" write="false" />
@@ -66,12 +67,13 @@
     </c:when>
     <c:otherwise>
       <jsp:scriptlet>
+        int indexOffset = cal.getFirstDayOfWeek();
+        cal.clear();
+        cal.set(Calendar.YEAR, year);
+        cal.set(Calendar.MONTH, month - 1);
         int min = cal.getActualMinimum(Calendar.WEEK_OF_MONTH);
         int max = cal.getActualMaximum(Calendar.WEEK_OF_MONTH);
-        int indexOffset = cal.getFirstDayOfWeek();
-        cal.set(Calendar.DAY_OF_WEEK, index);
         for (int week = min; week &lt;= max; week++) {
-          cal.clear();
           cal.set(Calendar.YEAR, year);
           cal.set(Calendar.MONTH, month - 1);
           cal.set(Calendar.WEEK_OF_MONTH, week);
@@ -80,6 +82,7 @@
       <mm:context>        
         <mm:import id="time"><jsp:expression>cal.getTime().getTime() / 1000</jsp:expression></mm:import>
         <mm:time id="day" time="${time}" write="false" vartype="date" />
+        <mm:time id="noon" time="${time} noon" write="false" vartype="date" />
         <mm:import id="whichmonth"><jsp:expression>cal.get(Calendar.MONTH) == month - 1 ? "same" : "other"</jsp:expression></mm:import>
         <mm:locale language="en" country="US">
           <mm:time referid="day" format="EEEE" id="dayofweek" write="false" />

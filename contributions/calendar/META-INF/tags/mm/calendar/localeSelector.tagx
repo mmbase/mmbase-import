@@ -6,31 +6,24 @@
     version="2.0"
     >
   <jsp:directive.tag import="java.util.*" />
-  <jsp:directive.attribute name="referids"   />
+  <jsp:directive.attribute name="context" type="java.util.Map"  />
   <jsp:directive.attribute name="language"   />
   <jsp:directive.attribute name="languages" />
   <jsp:directive.attribute name="timezones"   />
   <jsp:directive.attribute name="timezone"   />
+  
   <div class="mm_calendar" id="localeSelector">
     <form name="localeform" method="get">
+      <mm:hiddens context="${context}" except="language,timezone"  />
       <mm:import id="languages" vartype="list">${empty languages ? 'en-US,en-GB,zh,ja,de-DE,fr-FR,fr-CA,it,es,pt-PT,pt-BR,nl-NL,nl-BE,da,cs,fi,el,sr,eo' : languages}</mm:import>
-
+      
       <c:if test="${fn:length(languages) gt 1}">
         <select onchange="document.forms['localeform'].submit();" name="language">
-          <mm:compare referid="language" value="client">
-            <option value="client" selected="selected">--</option>
-          </mm:compare>
-          <mm:compare referid="language" value="client" inverse="true">
-            <option value="client">--</option>
-          </mm:compare>
+          <mm:option  compare="${language}" value="client">--</mm:option>
           <mm:stringlist referid="languages">
             <mm:locale language="${_}" jspvar="locale">
-              <mm:compare referid2="language">
-                <option  value="${_}" selected="selected"><jsp:expression>locale.getDisplayName(locale)</jsp:expression></option>
-              </mm:compare>
-              <mm:compare referid2="language" inverse="true">
-                <option  value="${_}"><jsp:expression>locale.getDisplayName(locale)</jsp:expression></option>
-              </mm:compare>
+              <mm:import id="lang"><jsp:expression>locale.getDisplayName(locale)</jsp:expression></mm:import>
+              <mm:option value="${_}" compare="${language}">${lang}</mm:option>
             </mm:locale>
           </mm:stringlist>
         </select>
@@ -38,22 +31,11 @@
       <mm:import id="timezones" vartype="list">${empty timezones ? 'UTC,Europe/London,Europe/Paris,America/New_York,Asia/Chongqing' : timezones}</mm:import>
       <c:if test="${fn:length(timezones) gt 1}">
         <select onchange="document.forms['localeform'].submit();" name="timezone">
-          <mm:compare referid="timezone" value="">
-            <option value="" selected="selected">--</option>
-          </mm:compare>
-          <mm:compare referid="timezone" value="" inverse="true">
-            <option value="">--</option>
-          </mm:compare>
+          <mm:option compare="${timezone}" value="">--</mm:option>
           <mm:locale language="${language}" jspvar="locale">
             <mm:stringlist referid="timezones" jspvar="tz">
-              <c:choose>
-                <c:when test="${timezone == _}">
-                  <option  value="${_}" selected="selected"><jsp:expression>TimeZone.getTimeZone(tz).getDisplayName(locale)</jsp:expression></option>
-                </c:when>
-                <c:otherwise>
-                  <option value="${_}"><jsp:expression>TimeZone.getTimeZone(tz).getDisplayName(locale)</jsp:expression></option>
-                </c:otherwise>
-              </c:choose>
+              <mm:import id="timez"><jsp:expression>TimeZone.getTimeZone(tz).getDisplayName(locale)</jsp:expression></mm:import>
+              <mm:option compare="${timezone}" value="${_}">${timez}</mm:option>
             </mm:stringlist>
           </mm:locale>
         </select>
