@@ -9,6 +9,7 @@ import org.mmbase.util.logging.Logging;
 
 public class NMIntraConfig {
    
+   // used for creating the options in the /editors/beheerbibliotheek
    public final static String[] CONTENTELEMENTS = {  
       "artikel",
       "attachments",
@@ -25,6 +26,7 @@ public class NMIntraConfig {
       "vacature"
    };
    
+   // used to determine in which objects a contentelement is used (ContentHelper.usedInItems)
    public final static String[] CONTAINERS = {
       "paragraaf",
       "producttypes",
@@ -32,12 +34,8 @@ public class NMIntraConfig {
       "linklijst"
    };
    
-   /*
-   Some remarks:
-   - not related to a page are: educations, event_blueprints, terms, projects
-   - id finding on documents related to documents is not supported
-   */
-   
+   // used to determine to which pagina an object belongs
+   // see ContentHelper.addDefaultRelations and PaginaHelper.getContentElementNode, findIDs, etc
    public final static String[] OBJECTS = {  
       "ads",            // extends object
       "artikel",
@@ -50,30 +48,34 @@ public class NMIntraConfig {
       "link",
       "link#",
       "linklijst",      // extends object
+      "locations",
       "medewerkers",
       "products",
+      "products#",
       "producttypes",   // extends object
       "teaser",
       "vacature"
    };
    
    public final static String[] PATHS_FROM_PAGE_TO_OBJECTS = {  
-      "object,contentrel,pagina",                                 // ads, lucene index -1
-      "object,contentrel,pagina",                                 // artikel, lucene index 0
-      "object,readmore,pagina",                                   // artikel (ippolygon.jsp & vacature_info.jsp)
-      "object,pos4rel,images,posrel,pagina",                      // artikel (ipoverview.jsp)
-      "object,posrel,pagina",                                     // documents, lucene index 9
-      "object,posrel,pagina",                                     // formulier, lucene index -1
-      "object,posrel,pagina",                                     // forums, lucene index -1
-      "object,posrel,pagina",                                     // items (shop_items.jsp), lucene index 8
-      "object,posrel,contentblocks,readmore,pagina",              // link, lucene index -1
-      "object,lijstcontentrel1,linklijst,lijstcontentrel2,pagina",// link, lucene index -1
-      "object,lijstcontentrel,pagina",                            // linklijst, lucene index -1
-      "object,contentrel,pagina",                                 // medewerkers, lucene index -1
-      "object,posrel1,producttypes,posrel2,pagina",               // products (producttypes.jsp), lucene index 7
-      "object,posrel,pagina",                                     // producttypes, lucene index 6
-      "object,rolerel,pagina",                                    // teaser, lucene index 5
-      "object,contentrel,pagina"                                  // vacature, lucene index 10
+      "object,contentrel,pagina",                                     // ads, lucene index -1
+      "object,contentrel,pagina",                                     // artikel, lucene index 0
+      "object,readmore,pagina",                                       // artikel (ippolygon.jsp & vacature_info.jsp)
+      "object,pos4rel,images,posrel,pagina",                          // artikel (ipoverview.jsp)
+      "object,posrel,pagina",                                         // documents, lucene index 9
+      "object,posrel,pagina",                                         // formulier, lucene index -1
+      "object,posrel,pagina",                                         // forums, lucene index -1
+      "object,posrel,pagina",                                         // items (shop_items.jsp), lucene index 8
+      "object,posrel,contentblocks,readmore,pagina",                  // link, lucene index -1
+      "object,lijstcontentrel1,linklijst,lijstcontentrel2,pagina",    // link, lucene index -1
+      "object,lijstcontentrel,pagina",                                // linklijst, lucene index -1
+      "object,readmore,products,posrel1,producttypes,posrel2,pagina", // locations (producttypes.jsp), lucene index -1
+      "object,contentrel,pagina",                                     // medewerkers, lucene index -1
+      "object,posrel1,producttypes,posrel2,pagina",                   // products (producttypes.jsp), lucene index 7
+      "object,posrel1,producttypes,posrel2,teaser,rolerel,pagina",    // products (producttypes.jsp), lucene index 7
+      "object,posrel,pagina",                                         // producttypes, lucene index 6
+      "object,rolerel,pagina",                                        // teaser, lucene index 5
+      "object,contentrel,pagina"                                      // vacature, lucene index 10
    };
 		
 	public static String [] style1 = {

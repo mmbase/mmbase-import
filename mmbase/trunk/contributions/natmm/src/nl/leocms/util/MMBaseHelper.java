@@ -121,14 +121,17 @@ public class MMBaseHelper {
 
       public void addDefaultRelations() {
           ContentHelper ch = new ContentHelper(cloud);
-          HashMap pathsFromPageToElements = (new ApplicationHelper(cloud)).pathsFromPageToElements();
+          ApplicationHelper ap = new ApplicationHelper(cloud);
+          
+          HashMap pathsFromPageToElements = ap.pathsFromPageToElements();
+          ArrayList containerTypes = ap.getContainerTypes();
           
           NodeList nl = cloud.getList("","contentelement","contentelement.number",
             null,"contentelement.number","up",null,true);
           int nlSize = nl.size();
           for (int i = 0; i < nlSize; i++) {
              String sContentElement = nl.getNode(i).getStringValue("contentelement.number");
-             ch.addDefaultRelations(sContentElement, pathsFromPageToElements);
+             ch.addDefaultRelations(sContentElement, pathsFromPageToElements, containerTypes);
              ch.addSchrijver(sContentElement);
           }
       }
