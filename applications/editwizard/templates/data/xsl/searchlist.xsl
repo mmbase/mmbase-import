@@ -11,7 +11,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: searchlist.xsl,v 1.23 2006-07-11 08:14:05 nklasens Exp $
+    @version $Id: searchlist.xsl,v 1.24 2006-09-14 13:00:52 pierre Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -34,6 +34,9 @@
       var searchterm = getParameter_general("searchterm", "nothing");
       var cmd = getParameter_general("cmd", "");
       var selected = getParameter_general("selected", "");
+      var relationRole = getParameter_general("relationRole", "");
+      var relationOriginNode = getParameter_general("relationOriginNode", "");
+      var relationCreateDir = getParameter_general("relationCreateDir", "");
     </script>
 
     <!-- SEARCH_LIST_TYPE is defined in the base.xsl-->
