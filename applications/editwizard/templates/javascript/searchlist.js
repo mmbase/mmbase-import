@@ -66,8 +66,16 @@ function buildSelectedList() {
 function browseTo(start) {
     selected = buildSelectedList();
     var href = listpage;
-     href += "&popupid=search&listtype=search&start="+start+"&selected="+selected+"&cmd="+cmd;
-
+    href += "&popupid=search&listtype=search&start="+start+"&selected="+selected+"&cmd="+cmd;
+    if (relationRole != "") {
+      href += "&relationRole=" + relationRole;
+    }
+    if (relationOriginNode != "") {
+      href += "&relationOriginNode=" + relationOriginNode;
+    }
+    if (relationCreateDir != "") {
+      href += "&relationCreateDir=" + relationCreateDir;
+    }
     document.location.replace(href);
     return false;
 }
