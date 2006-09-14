@@ -37,7 +37,9 @@
     </steps>
 
     <form-schema id="step1">
-        <title>Naame</title>
+        <title xml:lang="nl">Naam</title>
+        <title xml:lang="en">Name</title>
+        
         <field name="name" >
             <prompt>Naam</prompt>
         </field>        
@@ -52,9 +54,9 @@
 											<prompt>Titel</prompt>
 											<description></description>
 										</field>
-										<field wizardname="config/portalpages/simplecontents" ftype="startwizard" />
+										<field wizardname="config/help/simplecontents" ftype="startwizard" />
 									</item>	
-									<command name="startwizard" inline="true" wizardname="config/portalpages/simplecontents" objectnumber="new" />
+									<command name="startwizard" inline="true" wizardname="config/help/simplecontents" objectnumber="new" />
 									<command name="search" nodepath="simplecontents" fields="title" age="-1">
 										<prompt>Search Content</prompt>
 										<search-filter>
@@ -79,9 +81,9 @@
 											<prompt>Naam</prompt>
 											<description></description>
 										</field>
-										<field wizardname="config/help/helpnodes" ftype="startwizard" />
+										<field wizardname="config/help/leafhelpnodes" ftype="startwizard" />
 									</item>	
-									<command name="startwizard" inline="true" wizardname="config/help/helpnodes" objectnumber="new" />
+									<command name="startwizard" inline="true" wizardname="config/help/leafhelpnodes-origin" objectnumber="new" />
 									<action type="create">
 										<relation destinationtype="helpnodes" role="childhnn" >
     										<object type="helpnodes"/>
