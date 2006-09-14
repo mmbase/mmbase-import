@@ -38,13 +38,19 @@ import nl.didactor.events.*;
 public class EventManager implements EventListener {
 
     public void report(Event event, HttpServletRequest request, HttpServletResponse response) {
+        
+        if ( event == null )
+            return;
+        
         String eType = event.getEventType();
         String eValue = event.getEventValue();
 
         Long eventvalue = null;
         try {
             eventvalue = Long.decode(eValue);
-        } catch (NumberFormatException e) {}
+        } 
+        catch (NumberFormatException e) {return;}
+        catch (NullPointerException e1) {return;}
 
         Integer eventtype = new Integer(EventType.getEvent(eType));
 
