@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.375 2006-09-05 11:55:01 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.376 2006-09-14 17:35:43 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -5988,7 +5988,7 @@ Of course, the default behavior of getSmartPath can still be overridden.
           second)).
         </p>
         <p>
-          Since MMBase-1.8.2, if the value of this attribute does not evualate to one of the known
+          Since MMBase-1.8.2, if the value of this attribute does not evaluate to one of the known
           units, it will fall back by prefixing with 'duration +' and then feeding it to the MMBase
           date parser. The specified time will be divided and multiplied by the thusly specified
           number of seconds since 1970. Specifying e.g. '3 minute' will effectively allow you to
@@ -7969,11 +7969,29 @@ The 0 is just counter, which starts at 0 on every page.
     </attribute>
   </tag>
   -->
-
   <!--
   <tag-file>
     <name>search</name>
     <path>/META-INF/tags/mml/search.tagx</path>
   </tag-file>
   -->
+  <tag-file>
+    <type>util.html</type>
+    <name>option</name>
+    <path>/META-INF/tags/mm/u/option.tagx</path>
+    <info>
+      Like the HTML option tag, which it produces. It only support also a 'referid' attribute to support added selected="selected" or not.     
+    </info>
+    <since>MMBase-1.9</since>
+  </tag-file>
+  <tag-file>
+    <type>util.html</type>
+    <name>hiddens</name>
+    <path>/META-INF/tags/mm/u/hiddens.tagx</path>
+    <info>
+      With the referids attribute it produces 'hidden' form-entries.
+    </info>
+    <since>MMBase-1.9</since>
+  </tag-file>
+
 </taglib>
