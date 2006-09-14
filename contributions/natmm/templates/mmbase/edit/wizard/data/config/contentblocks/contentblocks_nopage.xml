@@ -29,6 +29,6 @@
     <list include="config/projects/add_projects_posrel.xml" />
     <list include="config/link/zoek_contentelement_posrel_link.xml" />
     <list include="config/attachments/zoek_contentelement_readmore_attachments.xml" />
-    <list include="config/pagina/add_pagina_readmore_contentblocks.xml" />
+    <!-- <list include="config/pagina/add_pagina_readmore_contentblocks.xml" /> -->
   </form-schema>
 </wizard-schema>

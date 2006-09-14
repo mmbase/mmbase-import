@@ -15,11 +15,11 @@
 			<object type="providers" />
 		</relation>
 	</action>
-	<command name="search" nodepath="providers" fields="naam,omschrijving" orderby="name" age="-1">
+	<command name="search" nodepath="providers" fields="naam,omschrijving" orderby="naam" age="-1">
     	<prompt>zoek aanbieder</prompt>
 		<search-filter>
 			<name>naam bevat</name>
-			<search-fields>name</search-fields>
+			<search-fields>naam</search-fields>
 		</search-filter>
 		<search-filter>
 			<name>omschrijving bevat</name>
