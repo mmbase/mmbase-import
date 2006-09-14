@@ -5,7 +5,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.64 2006-03-31 08:45:43 pierre Exp $
+     * @version  $Id: list.jsp,v 1.65 2006-09-14 11:53:31 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -261,10 +261,8 @@ for (int i=0; i < results.size(); i++) {
     }
     if (checkRelationRights) {
         boolean toDestination = checkDestination &&
-                                cloud.hasRelationManager(originNode.getNodeManager(), item.getNodeManager(), roleStr) &&
                                 relationManager.mayCreateRelation(originNode, item);
         boolean toSource = checkSource &&
-                           cloud.hasRelationManager(item.getNodeManager(), originNode.getNodeManager(), roleStr) &&
                            relationManager.mayCreateRelation(item, originNode);
         Utils.setAttribute(obj, "maylink", "" + (toSource || toDestination));
     } else {
