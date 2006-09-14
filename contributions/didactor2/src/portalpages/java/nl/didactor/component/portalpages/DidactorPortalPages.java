@@ -12,6 +12,7 @@ public class DidactorPortalPages extends Component {
     /**
      * Returns the version of the component
      */
+    
     public String getVersion() {
         return "0.1";
     } /**
