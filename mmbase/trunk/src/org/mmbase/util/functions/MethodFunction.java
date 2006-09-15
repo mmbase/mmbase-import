@@ -19,7 +19,7 @@ import java.lang.annotation.*;
  * method-function can come in handy on JSP's.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MethodFunction.java,v 1.6 2006-09-15 14:55:51 michiel Exp $
+ * @version $Id: MethodFunction.java,v 1.7 2006-09-15 17:03:30 michiel Exp $
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
  * @see org.mmbase.util.functions.BeanFunction
@@ -30,6 +30,50 @@ public class MethodFunction extends AbstractFunction {
 
     public static Function getFunction(Method method, String name) {
         return new MethodFunction(method, name); // could be cached...
+    }
+    
+    /**
+     * @since MMBase-1.9
+     */
+    public static Function getFunction(Method method, String name, Object instance) {
+        return new MethodFunction(method, name, instance); // could be cached...
+    }
+
+    /**
+     * Returns the MethodFunction representing the method 'name' in class 'clazz'. If there are more
+     * methods whith that name, the one with the largest number of by name annotated parameters is taken.
+     * @since MMBase-1.9
+     */
+    public static Function getFunction(Class clazz, String name) {
+        // Finding method to use
+        Method method = getMethod(clazz, name);
+        return getFunction(method, method.getName());
+    }
+    public static Method getMethod(Class clazz, String name) {
+        // Finding method to use
+        Method method = null;
+        float score = 0;
+        for (Method m : clazz.getMethods()) {
+            String methodName = m.getName();
+            if (methodName.equals(name)) {
+                Annotation[][] annots = m.getParameterAnnotations();
+                int found = 0; 
+                int total = 1; // avoids NPE and ensures that methods with more parameters are better.
+                for (Annotation[] anot : annots) {
+                    for (Annotation a : anot) {
+                        if (a.annotationType().equals(Name.class)) {
+                            found ++;
+                        }
+                    }
+                    total++;
+                }
+                if ((float) found / total > score) {
+                    method = m;
+                    score = (float) found / total;
+                }
+            }
+        }
+        return method;
     }
 
     private final Method method;
