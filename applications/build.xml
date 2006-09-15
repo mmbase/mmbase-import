@@ -138,7 +138,7 @@ Applications build file
   </target>
 
   <target name="taglib" depends="mmbase">
-     <ant dir="taglib"  target="dependent.package" inheritAll="false">
+     <ant dir="taglib"  target="package" inheritAll="false">
        <property name="project.zip.dir"        value="${applications.build.dir}" />
        <property name="build.dir"        value="${build.dir}" />
        <property name="download.dir"        value="${download.dir}" />
@@ -201,7 +201,7 @@ Applications build file
   </target>
 
   <target name="install">
-    <ant dir="taglib"        target="dependent.install" inheritAll="false">
+    <ant dir="taglib"        target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
     <ant dir="editwizard"    target="dependent.install" inheritAll="false">
