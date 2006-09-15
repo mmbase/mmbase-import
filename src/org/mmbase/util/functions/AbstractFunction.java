@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: AbstractFunction.java,v 1.13 2006-09-08 18:34:12 michiel Exp $
+ * @version $Id: AbstractFunction.java,v 1.14 2006-09-15 14:56:28 michiel Exp $
  * @since MMBase-1.8
  * @see Parameter
  * @see Parameters
@@ -30,7 +30,7 @@ abstract public class AbstractFunction<R, E> implements Function<R, E>, Comparab
     private static final Logger log = Logging.getLoggerInstance(AbstractFunction.class);
     protected String    name;
     protected ReturnType  returnType;
-    private boolean autoReturnType = false;
+    protected boolean autoReturnType = false;
 
     private Parameter<E>[] parameterDefinition;
     private String     description;
@@ -50,7 +50,7 @@ abstract public class AbstractFunction<R, E> implements Function<R, E>, Comparab
     }
 
     /**
-     * Determines the ReturnType automaticly using the return type of {@link getFunctionValue(Parameters)}.
+     * Determines the ReturnType automaticly using the return type of {@link #getFunctionValue(Parameters)}.
      * @since MMBase-1.9
      */
     public AbstractFunction(String name, Parameter<E>... def) {

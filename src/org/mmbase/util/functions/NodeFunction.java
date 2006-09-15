@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * the Parameter array of the constructor.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.25 2006-09-08 18:34:12 michiel Exp $
+ * @version $Id: NodeFunction.java,v 1.26 2006-09-15 14:56:28 michiel Exp $
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
  * @see org.mmbase.util.functions.BeanFunction
@@ -33,6 +33,20 @@ import org.mmbase.util.logging.Logging;
 public abstract class NodeFunction<R> extends AbstractFunction<R, Object> {
 
     private static final Logger log = Logging.getLoggerInstance(NodeFunction.class);
+
+    /**
+     * @return The currently set ReturnType, or <code>null</code> if not set already.
+     */
+    public ReturnType getReturnType() {
+        if (returnType == null && autoReturnType) {
+            try {
+                returnType = ReturnType.getReturnType(getClass().getDeclaredMethod("getFunctionValue", Node.class, Parameters.class).getReturnType());
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
+        }
+        return returnType;
+    }
 
     /**
      * Utility function, for easy call of function on node by one string.
