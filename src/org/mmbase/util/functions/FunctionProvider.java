@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: FunctionProvider.java,v 1.13 2006-09-06 16:56:24 michiel Exp $
+ * @version $Id: FunctionProvider.java,v 1.14 2006-09-15 17:03:30 michiel Exp $
  */
 public abstract class FunctionProvider {
     private static final Logger log = Logging.getLoggerInstance(FunctionProvider.class);
@@ -42,8 +42,7 @@ public abstract class FunctionProvider {
 
 
     /**
-     * The constructor of an FunctionProvider two things. It adds the 'getFunction' function, and it
-     * guesses other function using reflection.
+     * The constructor of an FunctionProvider  guesses the functions using reflection.
      * @todo Should this last thing not only be done on MMObjectBuilders?
      */
     public FunctionProvider() {
