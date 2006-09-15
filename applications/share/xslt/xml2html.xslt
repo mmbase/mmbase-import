@@ -50,7 +50,7 @@
     <xsl:apply-templates select="tagtypes/type" />
 
     <!-- create a seperate file for every tag -->
-    <xsl:apply-templates select="tag|taginterface|function" mode="file" />
+    <xsl:apply-templates select="tag-file|tag|taginterface|function" mode="file" />
 
     <!-- create a toc file -->
     <!-- xsl:document href="{$basedir}/index.html"-->
@@ -59,8 +59,7 @@
         <head>
           <title>MMBase taglib - Table Of Contents</title>
         </head>
-        <body
-            bgcolor="#FFFFFF" text="#336699" link="#336699" vlink="#336699" alink="#336699">
+        <body bgcolor="#FFFFFF" text="#336699" link="#336699" vlink="#336699" alink="#336699">
           <h1>MMBase taglib <xsl:value-of select="/taglib/tlibversion" /> documentation</h1>
           <xsl:apply-templates select="info" />
           <xsl:for-each select="/taglib/tagtypes/type">
@@ -73,19 +72,22 @@
             <xsl:sort select="name" />
             <xsl:with-param name="file"  select="true()" />
             <xsl:with-param name="subdir"  select="true()" />
-            </xsl:apply-templates><br />
-            tags: <br />
-            <xsl:apply-templates select="tag" mode="toc" >
-              <xsl:sort select="name" />
-              <xsl:with-param name="file"  select="true()" />
-              <xsl:with-param name="subdir"  select="true()" />
-              </xsl:apply-templates><br />
-              functions: <br />
-              <xsl:apply-templates select="function" mode="toc" >
-                <xsl:sort select="name" />
-                <xsl:with-param name="file"  select="true()" />
-                <xsl:with-param name="subdir"  select="true()" />
-                </xsl:apply-templates><br />
+          </xsl:apply-templates>
+          <br />
+          tags: <br />
+          <xsl:apply-templates select="tag|tag-file" mode="toc" >
+            <xsl:sort select="name" />
+            <xsl:with-param name="file"  select="true()" />
+            <xsl:with-param name="subdir"  select="true()" />
+          </xsl:apply-templates>
+          <br />
+          functions: <br />
+          <xsl:apply-templates select="function" mode="toc" >
+            <xsl:sort select="name" />
+            <xsl:with-param name="file"  select="true()" />
+            <xsl:with-param name="subdir"  select="true()" />
+          </xsl:apply-templates>
+          <br />
         </body>
       </html>
     </xalan:write>
@@ -186,7 +188,7 @@
                 <xsl:with-param name="type" select="$type" />
                 <xsl:sort select="name" />
               </xsl:apply-templates>
-              <xsl:apply-templates select="tag[contains(type, $type) or $type='all']|function[$type='all']" mode="full">
+              <xsl:apply-templates select="tag-file[contains(type, $type) or $type='all']|tag[contains(type, $type) or $type='all']|function[$type='all']" mode="full">
                 <xsl:with-param name="type" select="$type" />
                 <xsl:with-param name="linkexamples" select="$linkexamples" />
                 <xsl:sort select="name" />
@@ -259,7 +261,7 @@
 
 
   <!-- Generates an entry for table of all tags or taginterfaces -->
-  <xsl:template match="tag|taginterface|function" mode="toc">
+  <xsl:template match="tag-file|tag|taginterface|function" mode="toc">
     <xsl:param name="file" select="false()" />
     <xsl:param name="subdir" select="false()" />
     <a>
@@ -280,6 +282,7 @@
       </xsl:attribute>
       <xsl:if test="name()='taginterface'"><font color="{$extendscolor}"><xsl:value-of select="name" /></font></xsl:if>
       <xsl:if test="name()='tag'"><xsl:value-of select="name" /></xsl:if>
+      <xsl:if test="name()='tag-file'"><xsl:value-of select="name" /></xsl:if>
       <xsl:if test="name()='function'"><xsl:text disable-output-escaping="yes">&amp;#x24;</xsl:text>{<xsl:value-of select="name" />}</xsl:if>
     </a>
     <xsl:if test="since='MMBase-1.9'">(new)</xsl:if>
@@ -287,7 +290,7 @@
   </xsl:template>
 
   <!-- -->
-  <xsl:template match="tag|taginterface" mode="tocext">
+  <xsl:template match="tag-file|tag|taginterface" mode="tocext">
     <xsl:param name="testlast" select="false()" />
     <xsl:param name="file" select="false()" />
     <xsl:param name="type" select="'all'" />
@@ -295,7 +298,7 @@
       <xsl:with-param name="file" select="$file" />
       <xsl:with-param name="type" select="$type" />
     </xsl:apply-templates>
-    <xsl:if test="name()='tag'">
+    <xsl:if test="name()='tag' or name()='tag-file'">
       <a>
         <xsl:attribute name="href">
           <xsl:call-template name="tagref">
@@ -351,7 +354,7 @@
   </xsl:template>
 
   <!-- Create a file for a tag -->
-  <xsl:template match="tag|taginterface|function" mode="file">
+  <xsl:template match="tag-file|tag|taginterface|function" mode="file">
     <xsl:variable name="filename">
       <xsl:choose>
         <xsl:when test="name()='function'">
@@ -392,7 +395,7 @@
   </xsl:template>
 
   <!-- A description for one tag -->
-  <xsl:template match="tag|taginterface" mode="full">
+  <xsl:template match="tag-file|tag|taginterface" mode="full">
     <xsl:param name="file" select="false()" /><!-- if true, reference to files -->
     <xsl:param name="type" select="'all'" /><!-- if refering to tag of other type, must also reference to file -->
     <xsl:param name="linkexamples" select="true()" />
@@ -411,6 +414,7 @@
       <tr>
         <td colspan="2">
           <xsl:if test="name()='tag'"><b>&lt;mm:<xsl:value-of select="name"/>&gt;</b></xsl:if>
+          <xsl:if test="name()='tag-file'"><b>&lt;mm:<xsl:value-of select="name"/>&gt;</b></xsl:if>
           <xsl:if test="name()='taginterface'"><b><font color="{$extendscolor}">`<xsl:value-of select="name"/>' tags</font></b></xsl:if>
           <xsl:apply-templates select="info"/>
           <xsl:if test="since">
@@ -661,7 +665,7 @@
         </xsl:attribute>
       <font color="{$extendscolor}"><xsl:value-of select="." /></font></a></xsl:if> attributes</td>
       <td>
-        <xsl:if test="/taglib/*[name()='tag' or name()='taginterface']/name[.=current()]/parent::*/attribute">
+        <xsl:if test="/taglib/*[name()='tag' or name()='taginterface' or name()='tag-file']/name[.=current()]/parent::*/attribute">
           <ul>
             <xsl:apply-templates select="/taglib/*[starts-with(name(), 'tag')]/name[.=current()]/parent::*/attribute"  mode="extends">
               <xsl:with-param name="file" select="$file" />
@@ -671,7 +675,7 @@
         </xsl:if>
       </td>
     </tr>
-    <xsl:apply-templates select="/taglib/*[name()='tag' or name()='taginterface']/name[.=current()]/parent::*/extends" >
+    <xsl:apply-templates select="/taglib/*[name()='tag' or name()='taginterface' or name()='tag-file']/name[.=current()]/parent::*/extends" >
       <xsl:with-param name="file" select="$file" />
       <xsl:with-param name="type" select="$type" />
     </xsl:apply-templates>

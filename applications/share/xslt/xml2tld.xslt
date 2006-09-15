@@ -178,14 +178,21 @@
   <xsl:template match="bodycontent|body-content">
     <xsl:choose>
       <xsl:when test="$version &gt;= 2.0">
-        <body-content xmlns="http://java.sun.com/xml/ns/j2ee"><xsl:value-of select="." /></body-content>
+        <body-content xmlns="http://java.sun.com/xml/ns/j2ee">
+        <xsl:value-of select="." />
+        </body-content>
       </xsl:when>
       <xsl:otherwise>
         <bodycontent><xsl:value-of select="." /></bodycontent>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  <xsl:template match="description|display-name|icon|uri|name|required|rtexprvalue|example|function-class|function-signature|tag-file">
+  <xsl:template match="tag-file">
+    <tag-file xmlns="http://java.sun.com/xml/ns/j2ee">
+      <xsl:apply-templates select="name|path" />
+    </tag-file>
+  </xsl:template>
+  <xsl:template match="description|display-name|icon|uri|name|required|rtexprvalue|example|function-class|function-signature|path">
     <xsl:copy-of select="." />
   </xsl:template>
   
