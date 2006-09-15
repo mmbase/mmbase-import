@@ -12,7 +12,7 @@
 #
 # for possible mirrors.
 #
-# $Id: build.properties.default,v 1.27 2006-08-30 21:03:03 michiel Exp $
+# $Id: build.properties.default,v 1.28 2006-09-15 17:24:40 michiel Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -26,7 +26,7 @@
 
 # ----- download-path for packages-list and argument for -link of javadoc --
 
-j2se-javadoc.loc=http://java.sun.com/j2se/1.4/docs/api
+j2se-javadoc.loc=http://java.sun.com/j2se/1.5/docs/api
 j2ee-javadoc.loc=http://java.sun.com/j2ee/sdk_1.3/techdocs/api
 jstl-javadoc.loc=http://java.sun.com/products/jsp/jstl/1.1/docs/api
 
