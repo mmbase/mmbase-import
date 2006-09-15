@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.76 2006-09-11 11:36:25 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.77 2006-09-15 17:04:48 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -419,7 +419,7 @@ public class BuilderReader extends DocumentReader {
     /**
      * @since MMBase-1.8
      */
-    public Set<Function> getFunctions() {
+    public Set<Function> getFunctions(MMObjectBuilder builder) {
         Map<String, Function> results = new HashMap<String, Function>();
         for(Iterator ns = getChildElements("builder.functionlist","function"); ns.hasNext(); ) {
             try {
@@ -450,7 +450,16 @@ public class BuilderReader extends DocumentReader {
                         log.error("Speficied class " + claz + " in " + getSystemId() + "/functionslist/function is not a Function or FunctionProvider and can not be wrapped in a BeanFunction, because neither key nor name attribute were specified.");
                         continue;
                     }
-                    function = BeanFunction.getFunction(claz, providerKey);
+                    java.lang.reflect.Method method = MethodFunction.getMethod(claz, providerKey);
+                    if (method.getParameterTypes().length == 0) {
+                        function = BeanFunction.getFunction(claz, providerKey);
+                    } else {
+                        if (method.getClass().isInstance(builder)) {
+                            function = MethodFunction.getFunction(method, providerKey, builder);
+                        } else {
+                            function = MethodFunction.getFunction(method, providerKey);
+                        }
+                    }
                 }
                 if (! functionName.equals("") && ! function.getName().equals(functionName)) {
                     log.service("Wrapping " + function.getName() + " to " + functionName);
