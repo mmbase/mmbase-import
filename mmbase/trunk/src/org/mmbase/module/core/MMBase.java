@@ -45,7 +45,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.205 2006-09-13 15:22:15 michiel Exp $
+ * @version $Id: MMBase.java,v 1.206 2006-09-15 17:04:48 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -1022,7 +1022,7 @@ public class MMBase extends ProcessorModule {
                 parser.getDataTypes(builder.getDataTypeCollector());
                 builder.setFields(parser.getFields(builder, builder.getDataTypeCollector()));
                 builder.getStorageConnector().addIndices(parser.getIndices(builder));
-                for (Function func : parser.getFunctions()) {
+                for (Function func : parser.getFunctions(builder)) {
                     builder.addFunction(func);
                     log.service("Added " + func + " to " + builder);
                 }
