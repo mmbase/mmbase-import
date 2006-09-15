@@ -10,16 +10,16 @@
 
   <property name="taglib2.jar"       value="${project.jar.dir}/mmbase-taglib-2.jar" />
 
-  <target name="dependent.jar"           depends="jar1,jar2" />
-  <target name="dependent.package"       depends="dependent.jar,taglib.doc,package" />
-  <target name="dependent.install"       depends="install.dependencies,dependent.jar,dependent.install.documentation,install.taglib2.tld">    
+  <target name="jar"           depends="jar1,jar2" />
+  <target name="package"       depends="jar,taglib.doc,buildbase.package" />
+  <target name="install"       depends="install.dependencies,jar,install.documentation,install.taglib2.tld">    
     <copy file="${taglib2.jar}"          todir="${release.lib.dir}" />
     <!-- web-app 2.3 compatibility
     <copy file="${project.jar}"          todir="${release.lib.dir}" />
     -->
   </target>
-  <target name="dependent.documentation"         depends="taglib.doc,documentation" />
-  <target name="dependent.install.documentation" depends="dependent.documentation,install.documentation" />
+  <target name="documentation"         depends="taglib.doc,buildbase.documentation" />
+  <target name="install.documentation" depends="documentation,buildbase.install.documentation" />
 
 
 
@@ -58,7 +58,6 @@
     -->
   </target>
 
-  <!-- currently unused -->
   <target name="jar2" description="Create mmbase-taglib-2.jar"
           depends="copy.metainf.dir,taglib.tld,jar.check,project.manifest,jar.config"
           >
