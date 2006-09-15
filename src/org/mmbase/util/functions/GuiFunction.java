@@ -19,10 +19,10 @@ import org.mmbase.util.logging.Logging;
  * The gui function of MMObjectBuilder
  *
  * @author Michiel Meeuwissen
- * @version $Id: GuiFunction.java,v 1.1 2006-09-08 18:34:12 michiel Exp $
+ * @version $Id: GuiFunction.java,v 1.2 2006-09-15 14:56:28 michiel Exp $
  * @since MMBase-1.9
  */
-public class GuiFunction extends NodeFunction<String> {
+public class GuiFunction extends NodeFunction {
 
     private static final Logger log = Logging.getLoggerInstance(GuiFunction.class);
     public static final Parameter[] PARAMETERS = {
@@ -39,7 +39,7 @@ public class GuiFunction extends NodeFunction<String> {
     };
 
     public GuiFunction() {
-        super("gui", PARAMETERS, ReturnType.STRING);
+        super("gui", PARAMETERS);
     }
 
     protected String getFunctionValue(Node node, Parameters parameters) {
