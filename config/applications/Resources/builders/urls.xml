@@ -5,7 +5,6 @@
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
                         http://www.mmbase.org/xmlns/builder.xsd"                        
     name="urls" maintainer="www.mmbase.org" version="0" extends="object">
-  <status>active</status>
   <class>org.mmbase.module.builders.Urls</class>
   <searchage>14</searchage>
   <names>
@@ -26,7 +25,7 @@
 
   <fieldlist>
 
-    <field>
+    <field name="name">
       <descriptions>
         <description xml:lang="en">The name of the site or page this url links to</description>
         <description xml:lang="nl">De naam van de pagina of website waar deze link naar wijst</description>
@@ -40,14 +39,14 @@
           <list>2</list>
         </positions>
       </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <default value="1" />
+        <maxLength value="255" enforce="never"/>
+      </datatype>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>name</name>
-        <type state="persistent" size="255" notnull="true" key="false">STRING</type>
-      </db>
     </field>
 
-    <field>
+    <field name="url">
       <descriptions>
         <description xml:lang="en">The link or site internet address</description>
         <description xml:lang="nl">Het internet adres avnd e link of website</description>
@@ -61,14 +60,13 @@
           <list>3</list>
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>url</name>
-        <type state="persistent" size="255" notnull="true" key="false">STRING</type>
-      </db>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <default value="http://abc.com" />
+        <maxLength value="255" enforce="never"/>
+      </datatype>
     </field>
     
-    <field>
+    <field name="description">
       <descriptions>
         <description xml:lang="en">A short description of the website of page</description>
         <description xml:lang="nl">Een korte omschrijving van de website of pagina</description>
@@ -77,11 +75,9 @@
         <guiname xml:lang="en">Description</guiname>
         <guiname xml:lang="nl">Omschrijving</guiname>
       </gui> 
-     <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>description</name>
-        <type state="persistent" size="255" notnull="true" key="false">STRING</type>
-      </db>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <maxLength value="255" enforce="never"/>
+      </datatype>
     </field>
     
   </fieldlist>
