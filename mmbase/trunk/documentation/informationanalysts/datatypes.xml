@@ -1,0 +1,569 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<article>
+  <articleinfo>
+    <title>Datatypes in MMBase</title>
+
+    <date>2006-09-18</date>
+
+    <edition>$Id: datatypes.xml,v 1.1 2006-09-18 12:07:56 andre Exp $</edition>
+
+    <authorgroup>
+      <author>
+        <firstname>André</firstname>
+
+        <surname>van Toly</surname>
+      </author>
+    </authorgroup>
+
+    <legalnotice>
+      <para>This software is OSI Certified Open Source Software. OSI Certified
+      is a certification mark of the Open Source Initiative.</para>
+
+      <para>The license (Mozilla version 1.0) can be read at the MMBase site.
+      See <ulink
+      url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
+    </legalnotice>
+  </articleinfo>
+
+  <section id="datatypes">
+    <title>Datatypes in MMBase since 1.8</title>
+
+    <para>This is a summary of all MMBase datatypes and their specializations
+    found in 'datatypes.xml' and as such are per default available. The
+    datatypes are xml, string, datetime, long, boolean, integer, long, float,
+    double, binary and node, below their respective titles you will find their
+    specializations. </para>
+
+    <para>A datatype specialization needs to be added to a field in a builder
+    configuration file just before the database definition. The following
+    example creates a lastmodified field for a node that is automatically
+    adjusted every time a node is saved.</para>
+
+    <programlisting>  &lt;datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="lastmodified" /&gt;
+  &lt;db&gt;
+    &lt;name&gt;updated&lt;/name&gt;
+    &lt;type key="false" notnull="false" state="system"&gt;DATETIME&lt;/type&gt;
+  &lt;/db&gt;</programlisting>
+  </section>
+
+  <section id="xml">
+    <title>XML</title>
+
+    <para>XML fields can be used for 'richtext' fields, or other fields which
+    are (supposed to be) valid XML.</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>html</term>
+
+        <listitem>
+          <para>HTML. Principally, HTML could be valid XML.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>xmlfield</term>
+
+        <listitem>
+          <para>Adds processor to getting and setting as String, so that it
+          looks like plain text then.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </section>
+
+  <section id="string">
+    <title>String</title>
+
+    <para>String fields contain text.</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>lastmodifier</term>
+
+        <listitem>
+          <para>A ready-only field, which contains the user id of the last
+          user that changed the node to which the field belongs.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>creator</term>
+
+        <listitem>
+          <para>A ready-only field, which contains the user id of the user
+          that created the node to wich the field belongs.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>md5password</term>
+
+        <listitem>
+          <para>In the database an MD5 of the value which is set into this
+          field is set. If you try to get this value as a String, the empty
+          String is returned.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>confirmpassword</term>
+
+        <listitem>
+          <para>This is a field datatype that of which the value is only
+          valid, if it is equal to the value of another field in this node.
+          The other field's name is default 'password' but it can be changed
+          by overriding the property 'field'.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>lowercaseuppercase</term>
+
+        <listitem>
+          <para>Silly example (also used to test) Strings are stored all
+          lowercase, but showed all uppercase</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>dutch-zipcode</term>
+
+        <listitem>
+          <para>The valid values of such a field, are zip-codes as they are
+          used in the Netherlands.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>emailaddress</term>
+
+        <listitem>
+          <para>The valid values of such a field must be a valid email
+          address. The current implemenation is by a rather simple regular
+          expression.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>field</term>
+
+        <listitem>
+          <para>Mainly supplied for backwards compatibility. A String without
+          further restrications. Practicly this will result in textarea form
+          entries.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>line</term>
+
+        <listitem>
+          <para>A String that may not contain newlines (though this is not
+          enforced). Practicly this will result in 'input type="text"' form
+          entries.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>eline</term>
+
+        <listitem>
+          <para>A String that may not contain newlines (this is enforced).
+          Practicly this will result in 'input type="text"' form
+          entries.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>colors</term>
+
+        <listitem>
+          <para>Colors as can be used in css</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>trimmedline</term>
+
+        <listitem>
+          <para>A String that may not contain newlines, after it is trimmed.
+          Practicly this will result in 'input type="text"' form
+          entries.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>trimmedrequiredline</term>
+
+        <listitem>
+          <para>A String that may not contain newlines, after it is trimmed.
+          After trimming, there must be at least one character</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>owner</term>
+
+        <listitem>
+          <para>The values of this field are restricted to the possible
+          'security contexts' of the current user as defined by the MMBase
+          Security implementation.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>whitespacereplacer</term>
+
+        <listitem>
+          <para>If you set a value in a field with this datatype, then all
+          occurences of one or more whitespace characters are replaced by one
+          space before the value is committed to the database.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>whitespacecollapser</term>
+
+        <listitem>
+          <para>If you set a value in a field with this datatype, then all
+          occurences of one or more whitespace characters are removed before
+          the value is committed to the database.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>checksum</term>
+
+        <listitem>
+          <para>The default 'checksum' datatype checksums the 'handle' field,
+          but you can of course define your own (anonymously in the builder
+          xml e.g.) for other fields. This is a read-only field which is
+          automaticly filled on commit of the node. If you define this field
+          as unique, then the effect is that a handle field which already is
+          present in the database, cannot be saved.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>filename</term>
+
+        <listitem>
+          <para>A filename field removes directory information on set.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>iso639</term>
+
+        <listitem>
+          <para>ISO 639 language 2-letter codes (sorted alphabeticly on the
+          name of the language in the current locale)</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </section>
+
+  <section id="datetime">
+    <title>Datetime</title>
+
+    <para>DateTime fields contain absolute points in time. TODO: say something
+    about timezones here. Getting it as a String results in a formatted
+    datetime according to the locale (of the cloud e.g.).</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>created</term>
+
+        <listitem>
+          <para>Read-only date-time field that contains the time of creation
+          of the node.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>lastmodified</term>
+
+        <listitem>
+          <para>Read-only date-time field that contains the most recent time
+          at which this node was changed .</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>time</term>
+
+        <listitem>
+          <para>A date-time field that ignores the date part. Actually this is
+          stored as a time on 1970-01-01, but you can use this to indicate an
+          hour of any day. Generic editors will not offer to edit the date
+          parts of the date-time.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>date</term>
+
+        <listitem>
+          <para>A date-time field that ignores the time part.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>20th-century</term>
+
+        <listitem>
+          <para>A specialization of 'date', so it ignores the time part. The
+          only allowed values are dates which are in the 20th century.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>20th-century-pedantic</term>
+
+        <listitem>
+          <para>Pedantic version of 20th-century. Dates in the year 1900 are
+          rejected, dates in the year 2000 are accepted.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>birthdate</term>
+
+        <listitem>
+          <para>DataType specialized for storing birthdates. So, no times.
+          Defaults to 30 years ago. No future dates are accepted.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>living-birthdate</term>
+
+        <listitem>
+          <para>DataType specialized for storing birthdates for people
+          currently alive. Minimal value 140 years ago. Because this gives
+          limited number of possible years, a dropdown for the year field
+          becomes possible.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>historical</term>
+
+        <listitem>
+          <para>Historical dates, with a ERA designator.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>weeknumbers</term>
+
+        <listitem>
+          <para>Exotic specialization of 'date'. It will allow entering dates
+          using the week-number and the name of the day. In controdiction to a
+          more conventional notation with month and day of the month.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>eventtime</term>
+
+        <listitem>
+          <para>Same as datetime, an alias for backwards compatibility.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </section>
+
+  <section>
+    <title>Long</title>
+
+    <para>Longs can contain very big (positive and negative) integer
+    numbers.</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>duration</term>
+
+        <listitem>
+          <para>Durations are positive longs, which present a number of
+          seconds. (for other units, we may have to introduce other
+          datatypes).</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </section>
+
+  <section>
+    <title>Boolean</title>
+
+    <para>Boolean fields can always contain only two possible values which
+    could be interpreted in several ways (defaults to 'true' and
+    'false').</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>yesno</term>
+
+        <listitem>
+          <para>Boolean interpreted as yes/no</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>onoff</term>
+
+        <listitem>
+          <para>Boolean interpreted as on/off</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </section>
+
+  <section>
+    <title>Integer</title>
+
+    <para>Not so very big integer numbers. Common base for all kind of
+    enumerations.</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>dirs</term>
+
+        <listitem>
+          <para>Enumeration for the 'dir' field of certain MMBase system
+          builders.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>spells</term>
+
+        <listitem>
+          <para>Demo-enumeration for wizards.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>media</term>
+
+        <listitem>
+          <para>Media types.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ordinals</term>
+
+        <listitem>
+          <para>'first', 'second' etc. Implemented by a drop-down, so don't
+          expect 'twothousandeth' to work.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>filesize</term>
+
+        <listitem>
+          <para>Integer interpreted as a filesize. Results in a 'string'
+          representation postfixed by 'kb' etc.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>byte</term>
+
+        <listitem>
+          <para>The values 0 - 255 are possible.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>weekdays</term>
+
+        <listitem>
+          <para>Stores a day of the week (so a number from 1 to 7).</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>hour_of_day</term>
+
+        <listitem>
+          <para>Stores an hour of the day (so a number from 0 to 23)</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>minute_of_hour</term>
+
+        <listitem>
+          <para>Stores a minute in an hour (so a number from 0 to 59)</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </section>
+
+  <section>
+    <title>Float</title>
+
+    <para>Floating point numbers.</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>scale1-10</term>
+
+        <listitem>
+          <para>A scale from 1 to 10.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </section>
+
+  <section>
+    <title>Double</title>
+
+    <para>Double precision floating point numbers.</para>
+  </section>
+
+  <section>
+    <title>Binary</title>
+
+    <para>Blobs. Images, attachments, those kind of things.</para>
+  </section>
+
+  <section>
+    <title>Node</title>
+
+    <para>Reference to an MMBase node.</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>typedef</term>
+
+        <listitem>
+          <para>Reference to an MMBase node of the type 'typedef'.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>reldef</term>
+
+        <listitem>
+          <para>Reference to an MMBase node of the type 'reldef'.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>nodenumber</term>
+
+        <listitem>
+          <para>Just a node-field, but getting it as a String returns the
+          node-number, rather then some odd toString of a Node object.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </section>
+</article>
