@@ -19,7 +19,7 @@ import java.lang.annotation.*;
  * method-function can come in handy on JSP's.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MethodFunction.java,v 1.7 2006-09-15 17:03:30 michiel Exp $
+ * @version $Id: MethodFunction.java,v 1.8 2006-09-18 17:48:05 michiel Exp $
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
  * @see org.mmbase.util.functions.BeanFunction
@@ -52,7 +52,7 @@ public class MethodFunction extends AbstractFunction {
     public static Method getMethod(Class clazz, String name) {
         // Finding method to use
         Method method = null;
-        float score = 0;
+        float score = -1.0f;
         for (Method m : clazz.getMethods()) {
             String methodName = m.getName();
             if (methodName.equals(name)) {
