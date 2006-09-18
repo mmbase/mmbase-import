@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.53 2006-08-03 08:46:03 johannes Exp $
+ * @version $Id: ContextContainer.java,v 1.53.2.1 2006-09-18 12:05:43 johannes Exp $
  **/
 
 public abstract class ContextContainer extends AbstractMap implements Map {
@@ -538,7 +538,6 @@ public abstract class ContextContainer extends AbstractMap implements Map {
         } else {
             // I think this happens seldom, if ever.
             log.debug("form encoding specified: " + enc);
-            return value;
         }
 
         if (enc.equalsIgnoreCase("ISO-8859-1")) {
