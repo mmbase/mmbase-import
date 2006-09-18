@@ -460,6 +460,11 @@
       </listitem>
 
       <listitem>
+        <para><ulink url="informationanalysts/datatypes.pdf">Datatypes in
+        MMBase</ulink>, summary of datatypes and their specializations.</para>
+      </listitem>
+      
+      <listitem>
         <para><ulink url="informationanalysts/relations.pdf">Relations in
         MMBase</ulink></para>
       </listitem>
