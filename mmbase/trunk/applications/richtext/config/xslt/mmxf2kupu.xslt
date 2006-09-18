@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: mmxf2kupu.xslt,v 1.7 2006-08-25 14:16:52 michiel Exp $
+  @version: $Id: mmxf2kupu.xslt,v 1.8 2006-09-18 15:07:42 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -239,7 +239,7 @@
       <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
       <xsl:attribute name="alt"><xsl:apply-templates select="." mode="title" /></xsl:attribute>
       <xsl:attribute name="title"><xsl:apply-templates select="." mode="title" /></xsl:attribute>
-      <xsl:if test="$body = ''">
+      <xsl:if test="not($body)">
         <xsl:attribute name="class">generated</xsl:attribute>
       </xsl:if>
       <xsl:apply-templates select="$body"  />
@@ -254,7 +254,7 @@
       <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
       <xsl:attribute name="alt">External: <xsl:apply-templates select="." mode="title" /></xsl:attribute>
       <xsl:attribute name="title">External: <xsl:apply-templates select="." mode="title" /></xsl:attribute>
-      <xsl:if test="$body = ''">
+      <xsl:if test="not($body)">
         <xsl:attribute name="class">generated</xsl:attribute>
       </xsl:if>
       <xsl:apply-templates select="$body"  />
