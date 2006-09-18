@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: mmxf2kupu.xslt,v 1.8 2006-09-18 15:07:42 michiel Exp $
+  @version: $Id: mmxf2kupu.xslt,v 1.9 2006-09-18 16:47:19 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -260,6 +260,7 @@
       <xsl:apply-templates select="$body"  />
     </a>
   </xsl:template>
+
 
   <xsl:template match="o:object[@type = 'blocks']" mode="id">
     <xsl:param name="relation" />
