@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.15 2006-09-18 15:07:42 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.16 2006-09-18 16:47:19 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -100,6 +100,13 @@
   </xsl:template>
 
 
+  <!--
+      Produces an URL to point to a certain object.
+  -->
+  <xsl:template match="o:object" mode="url">
+    <xsl:value-of select="node:function($cloud, string(@id ), 'url', $request)" />
+  </xsl:template>
+
   <xsl:template match="o:object[@type = 'images' or @type ='attachments' or @type='icaches']" mode="url">   
     <xsl:value-of select="node:function($cloud, string(@id), 'servletpath')" />
   </xsl:template>
@@ -109,14 +116,47 @@
     <xsl:value-of select="./o:field[@name='url']" />
   </xsl:template>
 
-  <xsl:template match="o:object" mode="url">
-    <xsl:value-of select="node:function($cloud, string(@id ), 'url', $request)" />
+
+  <!-- Produces output for one object 
+       Required argument: relation, the relation object which made this necessary.
+       position, last: if used in a list, these can be provided.
+  -->
+  <xsl:template match="o:object" mode="inline">
+    <xsl:param name="relation" />
+    <xsl:param name="position" />
+    <xsl:param name="last" />
+    <a>
+      <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
+      <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
+      <xsl:attribute name="class">generated</xsl:attribute>
+      <xsl:apply-templates select="." mode="title" />
+    </a>
+    <xsl:if test="$position != $last">,</xsl:if>
   </xsl:template>
+
+
+  <!-- Produces output for one object, given a body for the resulting a-tag.
+       Required argument: relation, the relation object which made this necessary
+       Required argument: body, the body element
+  -->
+  <xsl:template match="o:object" mode="inline_body">
+    <xsl:param name="relation" />
+    <xsl:param name="body" />
+    <a>
+      <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
+      <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
+      <xsl:if test="not($body)">
+        <xsl:attribute name="class">generated</xsl:attribute>
+      </xsl:if>
+      <xsl:apply-templates select="$body" />
+    </a>
+  </xsl:template>
+
 
 
   <!--
        Produces one img-tag for an o:object of type images.
-       params: relation, position, last
+       params: relation
   -->
   <xsl:template match="o:object[@type = 'images']" mode="img">
     <xsl:param name="relation" />    
@@ -132,11 +172,34 @@
   </xsl:template>
 
   <!-- 
-       For links to other type of objects it should only mean to display the object (no a href creating!).
+       Produces the presentation for an object which is related somewhere already inside an a
+       tag. This means that it has to be careful to produces more a-tags.
   -->
-  <xsl:template match="o:object" mode="img">
+  <xsl:template match="o:object" mode="in_a">
     <xsl:param name="relation" />    
-    <xsl:apply-templates select="." mode="url" />
+    <xsl:apply-templates select="." mode="title" />
+    <xsl:apply-templates select="." mode="inline">
+      <xsl:with-param name="relation" select="$relation" />
+    </xsl:apply-templates>
+  </xsl:template>
+
+  <xsl:template match="o:object[@type = 'images']" mode="in_a">
+    <xsl:param name="relation" />    
+    <xsl:apply-templates select="." mode="img" />
+  </xsl:template>
+
+
+
+
+  <!-- 
+       produces an icon for an object 
+       Used for nodes of the type attachments, of course, but it can als be imaginable for other objects
+  -->
+  <xsl:template match="o:object" mode="icon">
+    <img width="16" height="16" class="icon">
+      <xsl:attribute name="alt"><xsl:apply-templates select="." mode="title" /></xsl:attribute>
+      <xsl:attribute name="src"><xsl:value-of select="node:function($cloud, string(@id), 'iconurl')" /></xsl:attribute>
+    </img>
   </xsl:template>
 
   <!--
@@ -216,10 +279,8 @@
       <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
       <xsl:attribute name="title"><xsl:apply-templates select="." mode="title" /></xsl:attribute>
       <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
-      <img width="16" height="16" class="icon">
-        <xsl:attribute name="alt"><xsl:apply-templates select="." mode="title" /></xsl:attribute>
-        <xsl:attribute name="src"><xsl:value-of select="node:function($cloud, string(@id), 'iconurl')" /></xsl:attribute>
-      </img>
+      <xsl:attribute name="class">generated</xsl:attribute>
+      <xsl:apply-templates select="." mode="icon" />
     </a>
     <xsl:if test="$position != $last">,</xsl:if>
   </xsl:template>
@@ -266,7 +327,6 @@
     <xsl:param name="relation" />
     <xsl:param name="position" />
     <xsl:param name="last" />
-    kolere!
     <a>
       <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
       <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
@@ -275,6 +335,7 @@
     <xsl:if test="$position != $last">,</xsl:if>
   </xsl:template>
 
+  <!-- produces output for one url object,   -->
   <xsl:template match="o:object[@type='urls']" mode="inline_body">
     <xsl:param name="relation" />
     <xsl:param name="body" />
@@ -282,23 +343,12 @@
       <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
       <xsl:attribute name="title"><xsl:apply-templates select="." mode="title" /></xsl:attribute>
       <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
-      <xsl:apply-templates select="$body"  />
+      <xsl:apply-templates select="$body"  mode="in_a">
+        <xsl:with-param name="relation" select="$relation" />
+      </xsl:apply-templates>
     </xsl:element>
   </xsl:template>
 
-
-  <!-- other inline objects? -->
-  <xsl:template match="o:object" mode="inline">
-    <xsl:param name="relation" />
-    <xsl:param name="position" />
-    <xsl:param name="last" />
-    <a>
-      <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
-      <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
-      <xsl:apply-templates select="." mode="title" />
-    </a>
-    <xsl:if test="$position != $last">,</xsl:if>
-  </xsl:template>
 
 
 
@@ -398,6 +448,12 @@
         <xsl:apply-templates select="//o:objects/o:object[@id = $toNodeNumber]" mode="inline_body">
           <xsl:with-param name="relation" select="$relations[1]" />
           <xsl:with-param name="body"     select="node()" />
+        </xsl:apply-templates>
+      </xsl:when>
+      <xsl:when test="not(node()) and count($relations) = 1">
+        <xsl:variable name="toNodeNumber" select="ancestor::o:object/o:relation[@object = $relations[1]/@id]/@related" />
+        <xsl:apply-templates select="//o:objects/o:object[@id = $toNodeNumber]" mode="inline">
+          <xsl:with-param name="relation" select="$relations[0]" />
         </xsl:apply-templates>
       </xsl:when>
       <!-- otherwise, things get a bit different -->
