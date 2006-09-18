@@ -50,6 +50,7 @@
         in which you have fully automatic index numbers on your objects, if there are present in
         tree-structure by 'indexrel'.
       </description>
+      <pattern value="\A[^\n\r]*\z" />
       <getprocessor>
         <class name="org.mmbase.richtext.processors.GetIndex" />
       </getprocessor>

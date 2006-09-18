@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.14 2006-08-25 14:16:52 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.15 2006-09-18 15:07:42 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -131,8 +131,12 @@
     </img>
   </xsl:template>
 
+  <!-- 
+       For links to other type of objects it should only mean to display the object (no a href creating!).
+  -->
   <xsl:template match="o:object" mode="img">
-    ???
+    <xsl:param name="relation" />    
+    <xsl:apply-templates select="." mode="url" />
   </xsl:template>
 
   <!--
@@ -146,7 +150,7 @@
     <xsl:choose>
       <xsl:when test="o:field[@name='width'] &gt; $thumbwidth + 20">
         <!-- if thumb is smaller than actual image, produce a link to popup -->
-        <xsl:choose>
+        <xsl:choose>         
           <xsl:when test="$popupwidth = ''">
             <!-- original image -->
             <xsl:variable name="width"><xsl:value-of select="node:function($cloud, string(@id ), 'width')" /></xsl:variable>
@@ -262,6 +266,7 @@
     <xsl:param name="relation" />
     <xsl:param name="position" />
     <xsl:param name="last" />
+    kolere!
     <a>
       <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
       <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
@@ -270,14 +275,14 @@
     <xsl:if test="$position != $last">,</xsl:if>
   </xsl:template>
 
-  <xsl:template match="o:object" mode="inline_body">
+  <xsl:template match="o:object[@type='urls']" mode="inline_body">
     <xsl:param name="relation" />
     <xsl:param name="body" />
     <xsl:element name="a">
       <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
       <xsl:attribute name="title"><xsl:apply-templates select="." mode="title" /></xsl:attribute>
       <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
-      <xsl:apply-templates select="$body" />
+      <xsl:apply-templates select="$body"  />
     </xsl:element>
   </xsl:template>
 
@@ -392,13 +397,15 @@
         <xsl:variable name="toNodeNumber" select="ancestor::o:object/o:relation[@object = $relations[1]/@id]/@related" />
         <xsl:apply-templates select="//o:objects/o:object[@id = $toNodeNumber]" mode="inline_body">
           <xsl:with-param name="relation" select="$relations[1]" />
-          <xsl:with-param name="body" select="node()" />
+          <xsl:with-param name="body"     select="node()" />
         </xsl:apply-templates>
       </xsl:when>
+      <!-- otherwise, things get a bit different -->
       <xsl:otherwise>
         <xsl:apply-templates select="node()" />
-        <xsl:apply-templates select="." mode="relations">
+        <xsl:apply-templates select="." mode="relations">          
           <xsl:with-param name="relations" select="$relations" />
+          <xsl:with-param name="body"     select="node()" />
         </xsl:apply-templates>
       </xsl:otherwise>
     </xsl:choose>
@@ -414,6 +421,7 @@
   -->
   <xsl:template match="mmxf:section|mmxf:p|mmxf:a" mode="relations">
     <xsl:param name="relations" />
+    <xsl:param name="body" />
     <xsl:variable name="fromNode" select="ancestor::o:object" />
     <xsl:for-each select="$relations">
       <xsl:variable name="toNodeNumber" select="$fromNode/o:relation[@object = current()/@id]/@related" />
@@ -423,6 +431,7 @@
         <xsl:with-param name="relation" select="." />
         <xsl:with-param name="position" select="$position" />
         <xsl:with-param name="last"     select="$last" />
+        <xsl:with-param name="body"     select="$body" />
       </xsl:apply-templates>
     </xsl:for-each>
   </xsl:template>
