@@ -4,8 +4,8 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
                         http://www.mmbase.org/xmlns/builder.xsd"
-    name="attachments" maintainer="www.mmbase.org" version="0" extends="object">
-  <status>active</status>
+    name="attachments" maintainer="www.mmbase.org" version="1" extends="object">
+
   <class>org.mmbase.module.builders.Attachments</class>
 
   <searchage>31</searchage>
@@ -45,7 +45,7 @@
       </datatype>
     </field>
 
-    <field name-="description">
+    <field name="description">
       <descriptions>
         <description xml:lang="en">Description of the attachment</description>
         <description xml:lang="nl">Omschrijving van de bijlage</description>
@@ -65,7 +65,7 @@
       </datatype>
     </field>
 
-    <field>
+    <field name="mimetype">
       <descriptions>
         <description xml:lang="en">Mimetype of the attachment, default: application/octet-stream</description>
         <description xml:lang="nl">Mimetype van de bijlage, standaard: application/octet-stream</description>
@@ -76,15 +76,12 @@
       </gui>
       <editor>
         <positions>
-          <input>-1</input>
           <list>3</list>
         </positions>
       </editor>
-      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>mimetype</name>
-        <type state="persistent" size="32" notnull="true" key="false">STRING</type>
-      </db>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="32" enforce="never"/>
+      </datatype>
     </field>
 
     <field name="filename">
@@ -102,7 +99,7 @@
       </datatype>
     </field>
 
-    <field name="size">
+    <field name="size" state="system">
       <descriptions>
         <description xml:lang="en">Size of the attachment in bytes</description>
         <description xml:lang="nl">Grootte van de bijlage in bytes</description>
@@ -114,9 +111,7 @@
       </gui>
       <editor>
         <positions>
-          <input>-1</input>
           <list>4</list>
-          <search>-1</search>
         </positions>
       </editor>
       <datatype base="filesize" xmlns="http://www.mmbase.org/xmlns/datatypes" />
