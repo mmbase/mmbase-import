@@ -7,7 +7,7 @@
 
     <date>2006-07-07</date>
 
-    <edition>$Id: index.xml,v 1.58 2006-07-07 09:24:09 andre Exp $</edition>
+    <edition>$Id: index.xml,v 1.59 2006-09-18 12:12:05 andre Exp $</edition>
 
     <authorgroup>
       <author>
@@ -102,11 +102,12 @@
       <revision>
         <revnumber>0.2</revnumber>
 
-        <date>2006-06-16</date>
+        <date>2006-09-18</date>
 
         <authorinitials>AvT</authorinitials>
 
-        <revremark>Moved pdf to seperate document.</revremark>
+        <revremark>New doc describing datatypes and
+        specializations.</revremark>
       </revision>
     </revhistory>
 
@@ -451,6 +452,11 @@
       <listitem>
         <para><ulink url="informationanalysts/builders.html">MMBase Builder
         Configuration</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para><ulink url="informationanalysts/datatypes.html">Datatypes in
+        MMBase</ulink>, summary of datatypes and their specializations.</para>
       </listitem>
 
       <listitem>
