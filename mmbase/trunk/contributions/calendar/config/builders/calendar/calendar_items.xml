@@ -153,4 +153,9 @@
       <datatype base="created" xmlns="http://www.mmbase.org/xmlns/datatypes"  />
     </field>
   </fieldlist>
+  <functionlist>
+    <function name="gui" >
+      <class>org.mmbase.calendar.GuiFunction</class>
+    </function>
+  </functionlist>
 </builder>

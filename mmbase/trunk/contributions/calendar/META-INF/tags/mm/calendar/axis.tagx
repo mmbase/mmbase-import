@@ -18,6 +18,7 @@
   <jsp:directive.variable  name-given="noon" />
   <jsp:directive.variable  name-given="dayofweek" />
   <jsp:directive.variable  name-given="monthname" />
+  <jsp:directive.variable  name-given="formonthname" />
   <jsp:directive.variable  name-given="whichmonth" />
 
   <jsp:scriptlet xmlns:jsp="http://java.sun.com/JSP/Page"> 
@@ -31,6 +32,9 @@
     }                                        
     
   </jsp:scriptlet>
+  <mm:locale language="en" country="US">
+    <mm:time referid="date" format="MMMM" id="formonthname" write="false" />
+  </mm:locale>
 
   <c:choose>
     <c:when test="${name eq 'week'}">
