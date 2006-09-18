@@ -11,26 +11,15 @@
     <list startnodes="my.rich.magazine" path="categories,content" element="content" searchdirs="destination">
       <mmsq:field name="content.begin"      keyword="true" />
       <mmsq:field name="content.end"        keyword="true" />
-      <mmsq:field name="content.title"      />
-      <mmsq:field name="content.subtitle" />
-      <mmsq:field name="content.intro" />
-      <mmsq:field name="content.body" />
     </list>
     <list startnodes="my.rich.magazine" path="categories,posrel,categories,content" element="content" searchdirs="destination">
       <mmsq:field name="content.begin"      keyword="true" />
       <mmsq:field name="content.end"        keyword="true" />
-      <mmsq:field name="content.title"      />
-      <mmsq:field name="content.subtitle" />
-      <mmsq:field name="content.intro" />
-      <mmsq:field name="content.body" />
     </list>
-    <list startnodes="my.rich.magazine" path="categories,posrel,categories,posrel,categories,content" element="content" searchdirs="destination,destination,destination">
+    <list startnodes="my.rich.magazine" path="categories,posrel,categories,posrel,categories,content" element="content"
+          searchdirs="destination,destination,destination">
       <mmsq:field name="content.begin"      keyword="true" />
       <mmsq:field name="content.end"        keyword="true" />
-      <mmsq:field name="content.title"      />
-      <mmsq:field name="content.subtitle" />
-      <mmsq:field name="content.intro" />
-      <mmsq:field name="content.body" />
     </list>
   </index>
 
