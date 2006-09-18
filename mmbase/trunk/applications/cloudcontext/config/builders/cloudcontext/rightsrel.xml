@@ -20,7 +20,7 @@
   </descriptions>
   <properties/>
   <fieldlist>
-    <field>
+    <field name="operation">
       <gui>
         <guiname xml:lang="fr">Operation</guiname>
         <guiname xml:lang="nl">Operatie</guiname>
@@ -33,6 +33,7 @@
         </positions>
       </editor>
       <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="read" />
         <enumeration>
           <entry value="read" />
           <entry value="write" />
@@ -43,7 +44,6 @@
         </enumeration>
       </datatype>
       <db>
-        <name>operation</name>
         <type notnull="true" size="15" state="persistent">STRING</type>
       </db>
     </field>
