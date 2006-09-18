@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: GenericResponseWrapper.java,v 1.17 2006-03-24 16:51:27 nklasens Exp $
+ * @version $Id: GenericResponseWrapper.java,v 1.18 2006-09-18 11:40:29 johannes Exp $
  */
 public class GenericResponseWrapper extends HttpServletResponseWrapper {
     private static final Logger log = Logging.getLoggerInstance(GenericResponseWrapper.class);
@@ -44,6 +44,8 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
     public static String TEXT_XML_DEFAULT_CHARSET = "US-ASCII";
 
     private static String DEFAULT_CONTENTTYPE = "text/html";
+
+    private static String[] IGNORED_HEADERS = new String[]{"Last-Modified", "ETag"};
 
     private PrintWriter         writer;
     private StringWriter        string; // wrapped by writer
@@ -89,6 +91,14 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
         return response;
     }
 
+    private boolean mayAddHeader(String header) {
+        for (int i=0; i<IGNORED_HEADERS.length; i++) {
+            if (IGNORED_HEADERS[i].equalsIgnoreCase(header)) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     public void sendRedirect(String location) throws IOException  {
         getHttpServletResponse().sendRedirect(location);
@@ -103,28 +113,36 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
     }
 
     public void setHeader(String header, String value) {
-        getHttpServletResponse().setHeader(header,value);
+        if (mayAddHeader(header)) {
+            getHttpServletResponse().setHeader(header,value);
+        }
     }
     
-    
-
     /**
      * @see javax.servlet.http.HttpServletResponse#addDateHeader(java.lang.String, long)
      */
     public void addDateHeader(String arg0, long arg1) {
-        getHttpServletResponse().addDateHeader(arg0, arg1);
+        if (mayAddHeader(arg0)) {
+            getHttpServletResponse().addDateHeader(arg0, arg1);
+        }
     }
+
     /**
      * @see javax.servlet.http.HttpServletResponse#addHeader(java.lang.String, java.lang.String)
      */
     public void addHeader(String arg0, String arg1) {
-        getHttpServletResponse().addHeader(arg0, arg1);
+        if (mayAddHeader(arg0)) {
+            getHttpServletResponse().addHeader(arg0, arg1);
+        }
     }
+    
     /**
      * @see javax.servlet.http.HttpServletResponse#addIntHeader(java.lang.String, int)
      */
     public void addIntHeader(String arg0, int arg1) {
-        getHttpServletResponse().addIntHeader(arg0, arg1);
+        if (mayAddHeader(arg0)) {
+            getHttpServletResponse().addIntHeader(arg0, arg1);
+        }
     }
     /**
      * @see javax.servlet.http.HttpServletResponse#containsHeader(java.lang.String)
@@ -166,13 +184,17 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
      * @see javax.servlet.http.HttpServletResponse#setDateHeader(java.lang.String, long)
      */
     public void setDateHeader(String arg0, long arg1) {
-        getHttpServletResponse().setDateHeader(arg0, arg1);
+        if (mayAddHeader(arg0)) {
+            getHttpServletResponse().setDateHeader(arg0, arg1);
+        }
     }
     /**
      * @see javax.servlet.http.HttpServletResponse#setIntHeader(java.lang.String, int)
      */
     public void setIntHeader(String arg0, int arg1) {
-        getHttpServletResponse().setIntHeader(arg0, arg1);
+        if (mayAddHeader(arg0)) {
+            getHttpServletResponse().setIntHeader(arg0, arg1);
+        }
     }
     /**
      * @see javax.servlet.ServletResponse#setLocale(java.util.Locale)
