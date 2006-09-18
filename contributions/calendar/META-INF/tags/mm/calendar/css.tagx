@@ -6,13 +6,15 @@
     >
   <jsp:directive.attribute name="weekend"  />
   <jsp:directive.attribute name="months"  />
-  <mm:cloud>
+  <mm:cloud method="asis">
     <mm:listnodes type="calendar_item_types">
       .ct${_node},
-      select.mm_validate option[value="${_node}"] {
+      select.mm_validate.mm_f_type.mm_nm_calendar_items option[value="${_node}"]
+      {
         background-color: ${_node.color};
       }
     </mm:listnodes>
+    
   </mm:cloud>
   <c:choose>
     <c:when test="${empty weekend}">
