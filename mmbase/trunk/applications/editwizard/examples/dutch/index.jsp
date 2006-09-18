@@ -34,7 +34,7 @@
   A simple one-step person editor. First-name, last-name and related articles.
   </td></tr>
   <tr><td>
-      <a href="<mm:url referids="referrer,language" page="$ew/list.jsp?wizard=../samples/imageupload&nodepath=images&fields=title" /> " >Images</a>
+    <a href="<mm:url referids="referrer,language" page="$ew/list.jsp?wizard=lib/createimage&nodepath=images&fields=title,handle" /> " >Images</a>
   </td><td>
    You can also upload images with an editwizard. Here is shown how this can be done.
   </td></tr>
