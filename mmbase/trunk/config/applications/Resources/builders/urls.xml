@@ -61,7 +61,7 @@
         </positions>
       </editor>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <default value="http://abc.com" />
+        <default value="http://" />
         <maxLength value="255" enforce="never"/>
       </datatype>
     </field>
