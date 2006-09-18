@@ -39,8 +39,17 @@
         <guiname xml:lang="nl">Kleur</guiname>
         <guiname xml:lang="eo">Koloro</guiname>
       </gui>
+      <editor>
+        <positions>
+          <list>2</list>
+        </positions>
+      </editor>
       <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="colors" />
     </field>
   </fieldlist>
-
+  <functionlist>
+    <function name="gui" >
+      <class>org.mmbase.calendar.GuiFunction</class>
+    </function>
+  </functionlist>  
 </builder>

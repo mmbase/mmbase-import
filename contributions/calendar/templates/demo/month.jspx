@@ -8,7 +8,6 @@
       xmlns:mm-cal="http://www.mmbase.org/tags/mm/calendar"       
 
   -->      
-  <jsp:directive.page buffer="100kb" import="com.ibm.icu.text.*,java.util.*" />
   <mm:import externid="language">client</mm:import>
   <mm:import externid="timezone"></mm:import>
   <mm:import externid="mode">weektable</mm:import>
@@ -23,7 +22,7 @@
     </head>
     <body>
       <mm:cloud method="asis">        
-        <mm-cal:localeSelector />
+
         
         <mm:time id="date" time="now" vartype="date" write="false" />
         

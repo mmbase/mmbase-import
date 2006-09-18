@@ -43,7 +43,10 @@ table.mm_calendar  {
 .mm_calendar col.weeknr.year {
   width: 2em;
 }
-.mm_calendar td.weeknr {
+.mm_calendar col.monthname { 
+  width: 0px;
+}
+.mm_calendar th.weeknr {
   background-color: #000;
   color: white;
   text-align: center;
@@ -65,6 +68,10 @@ table.mm_calendar  {
 }
 .mm_calendar td, .mm_calendar th {
   overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mm_calendar td { 
+
 }
 
 .mm_calendar td {
@@ -122,3 +129,6 @@ table.mm_calendar  {
   margin-left: 0px;
 }
 
+.mm_calendar .monthname { 
+  background-color: yellow;
+}
