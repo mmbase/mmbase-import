@@ -43,7 +43,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.68 2006-08-30 17:59:49 michiel Exp $
+ * @version $Id: FormatterTag.java,v 1.69 2006-09-18 12:54:39 michiel Exp $
  */
 public class FormatterTag extends CloudReferrerTag implements ParamHandler {
 
@@ -199,7 +199,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
         String ww = wants.getString(this).toLowerCase();
         if ("default".equals(ww)) {
             return WANTS_DEFAULT;
-        } else if ("DOM".equals(ww)) {
+        } else if ("dom".equals(ww)) {
             return  WANTS_DOM;
         } else if ( "string".equals(ww)) {
             return WANTS_STRING;
