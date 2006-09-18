@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: InsRel.java,v 1.49 2006-01-17 09:36:47 michiel Exp $
+ * @version $Id: InsRel.java,v 1.50 2006-09-18 09:17:45 michiel Exp $
  */
 public class InsRel extends MMObjectBuilder {
 
@@ -763,6 +763,7 @@ public class InsRel extends MMObjectBuilder {
     * @param node The node whose defaults to set.
     */
     public void setDefaults(MMObjectNode node) {
+        super.setDefaults(node);
         if (tableName.equals(INSREL_BUILDER)) return;
 
         if (relnumber == -1) {
