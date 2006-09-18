@@ -42,7 +42,6 @@
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" >
         <maxLength value="255" enforce="never"/>
       </datatype>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
     <field name="url">
