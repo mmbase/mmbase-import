@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.16 2006-09-18 16:47:19 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.17 2006-09-19 08:46:46 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -31,6 +31,10 @@
   <xsl:param name="thumbwidth">100</xsl:param>
   <xsl:param name="thumbheight"></xsl:param>
   <xsl:param name="thumbsize">s(<xsl:value-of select="$thumbwidth" /><xsl:value-of select="$thumbheight" />&gt;)</xsl:param>
+
+  <xsl:param name="thumbwidth-big">300</xsl:param>
+  <xsl:param name="thumbheight-big"></xsl:param>
+  <xsl:param name="thumbsize-big">s(<xsl:value-of select="$thumbwidth-big" /><xsl:value-of select="$thumbheight-big" />&gt;)</xsl:param>
 
 
   <!--
@@ -148,9 +152,27 @@
       <xsl:if test="not($body)">
         <xsl:attribute name="class">generated</xsl:attribute>
       </xsl:if>
-      <xsl:apply-templates select="$body" />
+      <xsl:apply-templates select="$body">
+        <xsl:with-param name="in_a">yes</xsl:with-param>
+      </xsl:apply-templates>
     </a>
   </xsl:template>
+
+  <!-- produces output for one url object,   -->
+  <xsl:template match="o:object[@type='urls']" mode="inline_body">
+    <xsl:param name="relation" />
+    <xsl:param name="body" />
+    <xsl:element name="a">
+      <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
+      <xsl:attribute name="title"><xsl:apply-templates select="." mode="title" /></xsl:attribute>
+      <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
+      <xsl:apply-templates select="$body" >
+        <xsl:with-param name="relation" select="$relation" />
+        <xsl:with-param name="in_a">yes</xsl:with-param>
+      </xsl:apply-templates>
+    </xsl:element>
+  </xsl:template>
+
 
 
 
@@ -159,8 +181,18 @@
        params: relation
   -->
   <xsl:template match="o:object[@type = 'images']" mode="img">
-    <xsl:param name="relation" />    
-    <xsl:variable name="icache" select="node:nodeFunction(., $cloud, string(./@id), 'cachednode', $thumbsize)" />
+    <xsl:param name="relation" />
+    <xsl:variable name="thumb">
+      <xsl:choose>
+        <xsl:when test="contains($relation/o:field[@name = 'class'], 'big')">
+          <xsl:value-of select="$thumbsize-big" />
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="$thumbsize" />
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="icache" select="node:nodeFunction(., $cloud, string(./@id), 'cachednode', $thumb)" />
     <img src="{node:function($cloud, string($icache/@id ), 'servletpath')}" >
       <xsl:attribute name="alt"><xsl:apply-templates select="." mode="title" /></xsl:attribute>
       <xsl:attribute name="class"><xsl:value-of select="$relation/o:field[@name='class']"  /></xsl:attribute>
@@ -185,7 +217,9 @@
 
   <xsl:template match="o:object[@type = 'images']" mode="in_a">
     <xsl:param name="relation" />    
-    <xsl:apply-templates select="." mode="img" />
+    <xsl:apply-templates select="." mode="img" >
+      <xsl:with-param name="relation" select="$relation" />
+    </xsl:apply-templates>
   </xsl:template>
 
 
@@ -210,8 +244,18 @@
     <xsl:param name="relation" />
     <xsl:param name="position" />
     <xsl:param name="last" />
+    <xsl:variable name="thumbw">
+      <xsl:choose>
+        <xsl:when test="contains($relation/o:field[@name = 'class'], 'big')">
+          <xsl:value-of select="$thumbwidth-big" />
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="$thumbwidth" />
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
     <xsl:choose>
-      <xsl:when test="o:field[@name='width'] &gt; $thumbwidth + 20">
+      <xsl:when test="o:field[@name='width'] &gt; $thumbw + 20">
         <!-- if thumb is smaller than actual image, produce a link to popup -->
         <xsl:choose>         
           <xsl:when test="$popupwidth = ''">
@@ -335,19 +379,6 @@
     <xsl:if test="$position != $last">,</xsl:if>
   </xsl:template>
 
-  <!-- produces output for one url object,   -->
-  <xsl:template match="o:object[@type='urls']" mode="inline_body">
-    <xsl:param name="relation" />
-    <xsl:param name="body" />
-    <xsl:element name="a">
-      <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
-      <xsl:attribute name="title"><xsl:apply-templates select="." mode="title" /></xsl:attribute>
-      <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
-      <xsl:apply-templates select="$body"  mode="in_a">
-        <xsl:with-param name="relation" select="$relation" />
-      </xsl:apply-templates>
-    </xsl:element>
-  </xsl:template>
 
 
 
@@ -388,12 +419,19 @@
   </xsl:template>
 
 
+  <xsl:template match="mmxf:*" mode="in_a">
+    <xsl:apply-templates select=".">      
+      <xsl:with-param name="in_a">yes</xsl:with-param>
+    </xsl:apply-templates>
+  </xsl:template>
+
   <!--
        Template to override mmxf tags with an 'id', we support links to it here This contains code
        to determine the relations and calls jumps to with_relations mode, where the 'relations'
        parameter becomes available (all relations pointing to this element).
   -->
   <xsl:template match="mmxf:section[@id != '']|mmxf:p[@id != '']|mmxf:a" >
+    <xsl:param name="in_a" />
     <!-- store all 'relation' nodes of this node for convenience in $rels:-->
     <xsl:variable name="rels"   select="ancestor::o:object/o:relation[@role='idrel']" />
 
@@ -404,6 +442,7 @@
 
     <xsl:apply-templates select="." mode="with_relations">
       <xsl:with-param name="relations" select="$relations" />
+      <xsl:with-param name="in_a" select="$in_a" />
     </xsl:apply-templates>
   </xsl:template>
 
@@ -413,11 +452,15 @@
   -->
   <xsl:template match="mmxf:section" mode="with_relations">
     <xsl:param name="relations" />
+    <xsl:param name="in_a" />
     <xsl:apply-templates select="mmxf:h" />
     <xsl:apply-templates select="." mode="relations">
       <xsl:with-param name="relations" select="$relations" />
+      <xsl:with-param name="in_a" select="$in_a" />
     </xsl:apply-templates>
-    <xsl:apply-templates select="mmxf:section|mmxf:p|mmxf:ul|mmxf:ol|mmxf:table|mmxf:sub|mmxf:sup"  />
+    <xsl:apply-templates select="mmxf:section|mmxf:p|mmxf:ul|mmxf:ol|mmxf:table|mmxf:sub|mmxf:sup">
+      <xsl:with-param name="in_a" select="$in_a" />
+    </xsl:apply-templates>
   </xsl:template>
 
   <!--
@@ -426,10 +469,12 @@
   -->
   <xsl:template match="mmxf:p" mode="with_relations">
     <xsl:param name="relations" />
+    <xsl:param name="in_a" />
     <xsl:element name="{name()}">
       <xsl:copy-of select="@class" />
       <xsl:apply-templates select="." mode="relations">
         <xsl:with-param name="relations" select="$relations" />
+        <xsl:with-param name="in_a" select="$in_a" />
       </xsl:apply-templates>
       <xsl:apply-templates select="node()" />
     </xsl:element>
@@ -441,6 +486,7 @@
   -->
   <xsl:template match="mmxf:a" mode="with_relations">
     <xsl:param name="relations" />
+    <xsl:param name="in_a" />
     <xsl:choose>
       <!-- it has body, and precisely one relation, make body clickable -->
       <xsl:when test="node() and count($relations) = 1">
@@ -450,10 +496,16 @@
           <xsl:with-param name="body"     select="node()" />
         </xsl:apply-templates>
       </xsl:when>
+      <xsl:when test="not(node()) and count($relations) = 1 and $in_a = 'yes'">
+        <xsl:variable name="toNodeNumber" select="ancestor::o:object/o:relation[@object = $relations[1]/@id]/@related" />
+        <xsl:apply-templates select="//o:objects/o:object[@id = $toNodeNumber]" mode="in_a">
+          <xsl:with-param name="relation" select="$relations[1]" />
+        </xsl:apply-templates>
+      </xsl:when>
       <xsl:when test="not(node()) and count($relations) = 1">
         <xsl:variable name="toNodeNumber" select="ancestor::o:object/o:relation[@object = $relations[1]/@id]/@related" />
         <xsl:apply-templates select="//o:objects/o:object[@id = $toNodeNumber]" mode="inline">
-          <xsl:with-param name="relation" select="$relations[0]" />
+          <xsl:with-param name="relation" select="$relations[1]" />
         </xsl:apply-templates>
       </xsl:when>
       <!-- otherwise, things get a bit different -->
@@ -478,17 +530,30 @@
   <xsl:template match="mmxf:section|mmxf:p|mmxf:a" mode="relations">
     <xsl:param name="relations" />
     <xsl:param name="body" />
+    <xsl:param name="in_a" />
     <xsl:variable name="fromNode" select="ancestor::o:object" />
     <xsl:for-each select="$relations">
       <xsl:variable name="toNodeNumber" select="$fromNode/o:relation[@object = current()/@id]/@related" />
       <xsl:variable name="position" select="position()" />
       <xsl:variable name="last"     select="last()" />
-      <xsl:apply-templates select="//o:objects/o:object[@id = $toNodeNumber]" mode="inline">
-        <xsl:with-param name="relation" select="." />
-        <xsl:with-param name="position" select="$position" />
-        <xsl:with-param name="last"     select="$last" />
-        <xsl:with-param name="body"     select="$body" />
-      </xsl:apply-templates>
+      <xsl:choose>
+        <xsl:when test="$in_a = 'yes'">
+          <xsl:apply-templates select="//o:objects/o:object[@id = $toNodeNumber]" mode="in_a">
+            <xsl:with-param name="relation" select="." />
+            <xsl:with-param name="position" select="$position" />
+            <xsl:with-param name="last"     select="$last" />
+            <xsl:with-param name="body"     select="$body" />
+          </xsl:apply-templates>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:apply-templates select="//o:objects/o:object[@id = $toNodeNumber]" mode="inline">
+            <xsl:with-param name="relation" select="." />
+            <xsl:with-param name="position" select="$position" />
+            <xsl:with-param name="last"     select="$last" />
+            <xsl:with-param name="body"     select="$body" />
+          </xsl:apply-templates>
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:for-each>
   </xsl:template>
 
