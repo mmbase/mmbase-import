@@ -24,7 +24,7 @@
       <prompt>omschrijving</prompt>
    </field>
    <field name="functieinhoud" ftype="html" rows="16">
-      <prompt>functieinhoud</prompt>
+      <prompt>wat houdt de functie in?</prompt>
    </field>
    <field name="functieomvang" ftype="html" rows="16" dtrequired="false">
       <prompt>functieomvang</prompt>
@@ -36,7 +36,7 @@
       <prompt>afdeling</prompt>
    </field>
    <field name="functieeisen" ftype="html" rows="16">
-      <prompt>functie eisen</prompt>
+      <prompt>wat verwachten wij?</prompt>
    </field>
    <field name="opleidingseisen" ftype="html" rows="16">
       <prompt>opleidingseisen</prompt>
@@ -45,7 +45,7 @@
       <prompt>competenties</prompt>
    </field>
    <field name="salarisschaal" ftype="html" rows="16">
-      <prompt>salarisschaal</prompt>
+      <prompt>wat bieden wij?</prompt>
    </field> 
    <field name="omschrijving_eng" ftype="html" rows="16">
       <prompt>afsluitende tekst</prompt>
