@@ -67,7 +67,7 @@ try{
 
 // show navigation to other pages if there are more than 10 articles
 int listSize = 0; 
-%><mm:list nodes="<%= paginaID %>" path="pagina,lijstcontentrel,linklijst"
+%><mm:list nodes="<%= paginaID %>" path="pagina,posrel,linklijst"
 	><mm:first><mm:size jspvar="dummy" vartype="Integer" write="false"><% listSize = dummy.intValue();  %></mm:size></mm:first
 ></mm:list><% if(listSize>10) { 
 %><table cellpadding="0" cellspacing="0" border="0" align="center">

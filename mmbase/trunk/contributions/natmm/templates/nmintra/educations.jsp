@@ -264,7 +264,7 @@ if(!printPage) {
       <%@include file="includes/whiteline.jsp" %>
       <div class="linklist" id="linklist">
       <table cellpadding="0" cellspacing="0">
-      <mm:list nodes="<%= paginaID %>" path="pagina,lijstcontentrel,linklijst">
+      <mm:list nodes="<%= paginaID %>" path="pagina,posrel,linklijst">
          <tr>
              <td style="padding-left:20px;">
              <mm:node element="linklijst"

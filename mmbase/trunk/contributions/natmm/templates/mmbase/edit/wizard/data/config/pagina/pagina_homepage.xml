@@ -27,7 +27,7 @@
       <field name="datumlaatstewijziging" ftype="data"><prompt>datumlaatstewijziging</prompt></field>
       <field name="titel_fra" ftype="enum"><prompt>data bij nieuwsartikelen zichtbaar? ______________________</prompt><optionlist select="ja_nee"/></field>
       <list include="config/pagina/add_pagina_readmore_summary.xml" />
-      <list include="config/linklijst/zoek_pagina_lijstcontentrel_linklijst.xml" />
+      <list include="config/linklijst/zoek_pagina_posrel_linklijst.xml" />
       <list include="config/teaser/zoek_pagina_tickertape_teaser.xml" />
    </form-schema> 
 </wizard-schema>

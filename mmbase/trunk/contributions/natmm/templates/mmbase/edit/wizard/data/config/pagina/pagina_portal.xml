@@ -51,7 +51,6 @@
       <title>rechter kolom</title>
       <field name="titel" ftype="data"><prompt>titel</prompt></field>
       <list include="config/link/zoek_portal_contentrel_link.xml" />
-      
-      <list include="config/linklijst/zoek_pagina_lijstcontentrel_linklijst.xml" />
+      <list include="config/linklijst/zoek_pagina_posrel_linklijst.xml" />
    </form-schema>
 </wizard-schema>

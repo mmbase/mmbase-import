@@ -67,6 +67,6 @@
       <field name="creatiedatum" ftype="data"><prompt>creatiedatum</prompt></field>
       <field name="datumlaatstewijziging" ftype="data"><prompt>datumlaatstewijziging</prompt></field>
 		  <list include="config/artikel/zoek_pagina_contentrel_artikel.xml" />
-		  <list include="config/linklijst/zoek_pagina_lijstcontentrel_linklijst.xml" />
+		  <list include="config/linklijst/zoek_pagina_posrel_linklijst.xml" />
    </form-schema> 
 </wizard-schema>
