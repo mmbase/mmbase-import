@@ -1,4 +1,4 @@
-<!ELEMENT wizard-schema ( title*, task-description*, description*, action*, lists?, steps?, form-schema+ ) >
+<!ELEMENT wizard-schema ( title*, task-description*, description*, action*, lists*, steps?, form-schema+ ) >
 <!ATTLIST wizard-schema id NMTOKEN #IMPLIED >
 
 <!ELEMENT title ( #PCDATA ) >
@@ -23,7 +23,7 @@
 <!ELEMENT step EMPTY >
 <!ATTLIST step form-schema NMTOKEN #REQUIRED >
 
-<!ELEMENT optionlist ( option* | query ) >
+<!ELEMENT optionlist ( option* | query )? >
 <!ATTLIST optionlist name NMTOKEN #IMPLIED >
 <!ATTLIST optionlist select NMTOKEN #IMPLIED >
 <!ATTLIST optionlist optionid CDATA #IMPLIED >
