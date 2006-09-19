@@ -351,7 +351,7 @@ public class RubriekHelper {
       TreeMap subObjects = new TreeMap();
       // add sub-rubrieken (if any)
       NodeList nodeList = cloud.getList(rubriekNodeNumber,
-          "rubriek,parent,rubriek2", "rubriek2.number,rubriek2.isvisible", null, "parent.pos", null, "DESTINATION", true);
+          "rubriek,parent,rubriek2","rubriek2.number,rubriek2.isvisible,parent.pos",null,"parent.pos","up","DESTINATION",false);
       if ((nodeList != null) && (nodeList.size() > 0)) {
          for (int i = 0; i < nodeList.size(); i++) {
             Node tempRubriekNode = nodeList.getNode(i);
@@ -370,7 +370,7 @@ public class RubriekHelper {
       if(!showAll) {
          paginaConstraint = "pagina.embargo <= '" + System.currentTimeMillis() / 1000 + "' AND pagina.verloopdatum > '" + System.currentTimeMillis() / 1000 + "'";
       }
-      nodeList = cloud.getList(rubriekNodeNumber, "rubriek,posrel,pagina", "pagina.number,posrel.pos",paginaConstraint,"posrel.pos", null, "DESTINATION", true);
+      nodeList = cloud.getList(rubriekNodeNumber,"rubriek,posrel,pagina","pagina.number,posrel.pos",paginaConstraint,"posrel.pos","up","DESTINATION",false);
       if ((nodeList != null) && (nodeList.size() > 0)) {
          for (int i = 0; i < nodeList.size(); i++) {
             Node tempRubriekNode = nodeList.getNode(i);
