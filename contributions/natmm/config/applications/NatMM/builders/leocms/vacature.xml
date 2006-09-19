@@ -166,7 +166,7 @@
             <description xml:lang="en"></description>
          </descriptions>
          <gui>
-            <guiname xml:lang="nl">Functieinhoud</guiname>
+            <guiname xml:lang="nl">Wat houdt de functie in?</guiname>
             <guiname xml:lang="en">JobDescription</guiname>
             <guitype>field</guitype>
          </gui>
@@ -188,7 +188,7 @@
             <description xml:lang="en"></description>
          </descriptions>
          <gui>
-            <guiname xml:lang="nl">Functie-eisen</guiname>
+            <guiname xml:lang="nl">Wat verwachten wij?</guiname>
             <guiname xml:lang="en">JobCriteria</guiname>
             <guitype>field</guitype>
          </gui>
@@ -254,7 +254,7 @@
             <description xml:lang="en"></description>
          </descriptions>
          <gui>
-            <guiname xml:lang="nl">Salarisschaal</guiname>
+            <guiname xml:lang="nl">Wat bieden wij?</guiname>
             <guiname xml:lang="en">Salary</guiname>
             <guitype>string</guitype>
          </gui>
