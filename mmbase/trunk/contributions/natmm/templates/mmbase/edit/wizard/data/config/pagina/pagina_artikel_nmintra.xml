@@ -39,6 +39,9 @@
               <relation destination="attachments" role="related">
                 <object />
               </relation>
+              <relation destination="pagina" role="readmore">
+                <object />
+              </relation>
           </object>
         </relation>
       </object>
