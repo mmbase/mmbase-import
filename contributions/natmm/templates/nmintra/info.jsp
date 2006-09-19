@@ -6,16 +6,16 @@
 <%@include file="includes/cacheparams.jsp" %>
 <%
 if(!articleId.equals("-1")) { 
-   String articleTemplate = "article.jsp" + templateQueryString;
+   String articleTemplate = "/" + ph.getSubDir(cloud,paginaID) + "article.jsp" + templateQueryString;
    %>
    <mm:present referid="newsletter_layout">
-      <% articleTemplate = "news.jsp" + templateQueryString; %>
+      <% articleTemplate = "/" + ph.getSubDir(cloud,paginaID) + "news.jsp" + templateQueryString; %>
    </mm:present>
    <%
    articleTemplate += (articleTemplate.indexOf("?")==-1 ? "?" : "&" ) + "showteaser=false";
    response.sendRedirect(articleTemplate);
 
-} else {  
+} else {
     %>
     <% expireTime = newsExpireTime; %>
     <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">

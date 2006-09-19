@@ -4,7 +4,7 @@
   <head>
 		<link rel="stylesheet" type="text/css" href="css/main.css">
 	   <link rel="stylesheet" type="text/css" href="<%= styleSheet %>" />
-		<title><mm:node number="<%= rootId %>" notfound="skipbody"><mm:field name="naam" /></mm:node
+		<title><mm:node number="<%= subsiteID %>" notfound="skipbody"><mm:field name="naam" /></mm:node
 			 > - <mm:node number="<%= paginaID %>" notfound="skipbody"><mm:field name="titel" /></mm:node></title>
 		<meta http-equiv="imagetoolbar" content="no">
 		<script language="javascript" src="scripts/launchcenter.js"></script>
