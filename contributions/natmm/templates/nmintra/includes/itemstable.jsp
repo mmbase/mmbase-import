@@ -1,5 +1,5 @@
 <table cellpadding="0" cellspacing="0" border="0">
-	<mm:list nodes="<%= paginaID %>" path="pagina,lijstcontentrel,linklijst" fields="linklijst.number"
+	<mm:list nodes="<%= paginaID %>" path="pagina,posrel,linklijst" fields="linklijst.number"
 		orderby="lijstcontentrel.pos,contentrel.number" directions="UP,DOWN" offset="<%= "" + thisOffset*10 %>" max="10"
 	><mm:field name="lijstcontentrel.pos" jspvar="contentrel_pos" vartype="String" write="false"><%	
          if(contentrel_pos.equals("")) contentrel_pos = "1";

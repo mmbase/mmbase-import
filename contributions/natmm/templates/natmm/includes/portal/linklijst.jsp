@@ -9,7 +9,7 @@
 
 %>
 <div style="padding-left:3px;">
-  <mm:list  nodes="<%=paginaID%>"  path="pagina,lijstcontentrel1,linklijst,lijstcontentrel2,link" orderby="lijstcontentrel2.pos,link.titel"
+  <mm:list  nodes="<%=paginaID%>"  path="pagina,posrel,linklijst,lijstcontentrel,link" orderby="lijstcontentrel.pos,link.titel"
      fields="link.titel,link.url,link.alt_tekst">
     <a class="hover" href="<mm:field name="link.url" />" title="<mm:field name="link.alt_tekst" 
       />" target="<mm:field name="link.target" />"><mm:field name="link.titel" /></a>
