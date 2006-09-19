@@ -176,6 +176,7 @@
       <relation from="pagina" to="images" type="posrel"/>
       <relation from="pagina" to="items" type="posrel"/>
       <relation from="pagina" to="link" type="posrel"/>
+      <relation from="pagina" to="linklijst" type="posrel" />
       <relation from="pagina" to="mmevents" type="posrel"/>
       <relation from="pagina" to="pagina" type="readmore"/> <!-- used to relate archives to pages -->
       <relation from="pagina" to="pagina" type="rolerel"/> <!-- used to make redirects -->

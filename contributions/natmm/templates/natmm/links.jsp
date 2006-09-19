@@ -42,7 +42,7 @@
 			</tr>
 		</table>
 		<table class="dotline" style="width:539px;"><tr><td height="3"></td></tr></table>
-		<mm:list  nodes="<%=paginaID%>"  path="pagina,lijstcontentrel1,linklijst,lijstcontentrel2,link" orderby="lijstcontentrel2.pos,link.titel"
+		<mm:list  nodes="<%=paginaID%>"  path="pagina,posrel,linklijst,lijstcontentrel,link" orderby="lijstcontentrel.pos,link.titel"
 		    fields="link.titel,link.url,link.alt_tekst">
    		<table width="539px;" cellspacing="2" cellpadding="2">
    			<tr>

@@ -1,4 +1,4 @@
-<mm:list nodes="<%= paginaID %>" path="pagina,lijstcontentrel,linklijst"
+<mm:list nodes="<%= paginaID %>" path="pagina,posrel,linklijst"
 	orderby="lijstcontentrel.pos" directions="UP"
 	><mm:field name="lijstcontentrel.pos" jspvar="posrel_pos" vartype="String" write="false"
 	><% if(((Integer.parseInt(posrel_pos)-1) % numberOfColumns) == (colNumber-1)){ 

@@ -6,7 +6,7 @@
 ></mm:list>
 <%@include file="../includes/whiteline.jsp" %>
 <div class="smoelenboeklist" id="smoelenboeklist" style="padding-left:20px;margin-bottom:5px;">
-<mm:list nodes="<%= paginaID %>" path="pagina,lijstcontentrel,linklijst"
+<mm:list nodes="<%= paginaID %>" path="pagina,posrel,linklijst"
        ><mm:node element="linklijst"
        ><mm:related path="lijstcontentrel,link" orderby="lijstcontentrel.pos" directions="UP"
            ><a target="_blank" href="<mm:field name="link.url" />" class="menuItem">
