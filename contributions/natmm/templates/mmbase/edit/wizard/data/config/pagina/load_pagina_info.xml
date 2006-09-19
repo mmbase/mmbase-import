@@ -16,7 +16,7 @@
    <field name="verloopdatum"/>
    <field name="reageer"/>
    <field name="status"/>
-	<relation destination="linklijst" role="lijstcontentrel">
+	 <relation destination="linklijst" role="lijstcontentrel">
       <object>
          <relation destination="link" role="lijstcontentrel">
             <object />
@@ -24,4 +24,5 @@
       </object>
    </relation>
    <relation destination="teaser" role="rolerel"/>
+   <relation destination="pagina" role="readmore"/>
 </action>

@@ -55,8 +55,7 @@
    </steps>
    <form-schema id="edit_pagina">
       <field name="titel" ftype="data"><prompt>titel</prompt></field>
-      <!-- <field name="kortetitel" ftype="data"><prompt>korte titel</prompt></field> -->
-      <!-- <field name="titel_zichtbaar" ftype="enum"><prompt>getoonde titel</prompt><optionlist select="pages_title"/></field> -->
+      <field name="titel_zichtbaar" ftype="enum"><prompt>titel zichtbaar</prompt><optionlist select="ja_nee"/></field>
       <field name="metatags" ftype="line"><prompt>redactionele aantekening</prompt></field>
       <field name="omschrijving" ftype="html" rows="20"><prompt>omschrijving</prompt></field>
       <field name="creatiedatum" ftype="data"><prompt>creatiedatum</prompt></field>

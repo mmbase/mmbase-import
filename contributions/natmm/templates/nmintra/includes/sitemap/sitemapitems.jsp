@@ -1,5 +1,5 @@
 <% // note: this implementation will only show pages on two levels %>
-<mm:node number="<%= rootId %>">
+<mm:node number="<%= subsiteID %>">
 	<mm:related path="parent,rubriek" searchdir="destination" orderby="parent.pos" directions="UP">
 	<mm:field name="parent.pos" jspvar="parent_pos" vartype="String" write="false">
 	<% 

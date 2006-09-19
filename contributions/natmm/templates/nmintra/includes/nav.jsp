@@ -20,11 +20,11 @@
          if(!pageIsVisible) { paginaID = refererId; }
       }
       
-      // show all subObjects for the rootId, both pages and rubrieken
+      // show all subObjects for the subsiteID, both pages and rubrieken
       RubriekHelper rubriekHelper = new RubriekHelper(cloud);
 
       TreeMap [] nodesAtLevel = new TreeMap[10];
-      nodesAtLevel[0] = (TreeMap) rubriekHelper.getSubObjects(rootId);
+      nodesAtLevel[0] = (TreeMap) rubriekHelper.getSubObjects(subsiteID);
       boolean showFirstSubpage = nl.leocms.applications.NMIntraConfig.showFirstSubpage;
       boolean [] isFirstSubpage =  new boolean[10];
       for(int i = 0; i<10; i++) { isFirstSubpage[i] = true; }
