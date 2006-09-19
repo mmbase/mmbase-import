@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: mmxf2kupu.xslt,v 1.9 2006-09-18 16:47:19 michiel Exp $
+  @version: $Id: mmxf2kupu.xslt,v 1.10 2006-09-19 08:46:46 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -185,10 +185,12 @@
         <xsl:value-of select="$relation/o:field[@name='id']" />
         <xsl:if test="$position &gt; 1">bla<xsl:value-of select="$position" /></xsl:if>
       </xsl:attribute>
+      <!--
       <xsl:if test="$icache/o:field[@name='width']">
         <xsl:attribute name="height"><xsl:value-of select="$icache/o:field[@name='height']" /></xsl:attribute>
         <xsl:attribute name="width"><xsl:value-of select="$icache/o:field[@name='width']" /></xsl:attribute>
       </xsl:if>
+      -->
     </img>
   </xsl:template>
 
