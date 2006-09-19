@@ -13,10 +13,17 @@
 		<mm:setfield name="dynamicmenu">0</mm:setfield>    
 		<mm:setfield name="contenttemplate">0</mm:setfield>   
 	</mm:listnodes>
-  Making pages deletable<br/>
+  Making pages deletable and dont show title<br/>
   <mm:listnodes type="pagina">
-  	<mm:setfield name="verwijderbaar">1</mm:setfield>    
+  	<mm:setfield name="verwijderbaar">1</mm:setfield>
+  	<mm:setfield name="titel_zichtbaar">0</mm:setfield>    
 	</mm:listnodes>
+	<mm:list path="pagina,lijstcontentrel,linklijst">
+	   <mm:node element="pagina" id="pagina" />
+	   <mm:node element="linklijst" id="linklijst" />
+	   <mm:createrelation source="pagina" destination="linklijst" role="posrel" />
+	   <mm:deletenode element="lijstcontentrel" />
+	</mm:list>
   Done.
 </mm:log>
 </mm:cloud>
