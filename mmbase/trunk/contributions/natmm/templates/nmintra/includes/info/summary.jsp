@@ -1,0 +1,18 @@
+<mm:node element="pagina">
+  <mm:field name="number" jspvar="page_number" vartype="String" write="false">
+  <mm:field name="titel_fra" jspvar="showDate" vartype="String" write="false">
+  <a href="<%= ph.createPaginaUrl(page_number,request.getContextPath()) %>" class="pageheader" style=" text-decoration:none;" title="<mm:field name="titel" />">
+    <span class="dark"><mm:field name="titel" /></span>
+  </a><br/>
+	<mm:related path="contentrel,artikel" orderby="artikel.embargo"
+      directions="DOWN" max="<%= "" + numberOfMessages %>" constraints="<%= articleConstraint %>"
+		  ><mm:field name="artikel.number" jspvar="artikel_number" vartype="String" write="false"><%
+        String readmoreUrl = ph.createItemUrl(artikel_number,page_number,null,request.getContextPath());
+        // "?p=" +  page_number  + "&article=" +  artikel_number;
+				%><%@include file="summaryrow.jsp" 
+
+			%></mm:field
+		></mm:related
+	></mm:field
+	></mm:field>
+</mm:node>

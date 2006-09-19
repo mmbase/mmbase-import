@@ -35,7 +35,7 @@ String refererId = request.getParameter("referer"); if(refererId==null){ referer
 
 // *** find the root rubriek the present page is related to
 Vector breadcrumbs = ph.getBreadCrumbs(cloud, paginaID);
-String rootId = (String) breadcrumbs.get(breadcrumbs.size()-2);
+String subsiteID = (String) breadcrumbs.get(breadcrumbs.size()-2);
 
 int iRubriekStyle = NMIntraConfig.PARENT_STYLE;
 String styleSheet = "hoofdsite/themas/default.css"; 

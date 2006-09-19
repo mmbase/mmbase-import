@@ -25,7 +25,7 @@ function startPhone() {
 //-->
 </script>
 <% // *************************************** logo ******************************* %>
-<mm:node number="<%= rootId %>">
+<mm:node number="<%= subsiteID %>">
 <tr>
   <td rowspan="3">
     <% if(!isPreview) { %><a href="http://<mm:field name="url" />" target="_blank"><% } %>
@@ -38,7 +38,7 @@ function startPhone() {
   <td class="header" style="padding-right:10px;padding-top:5px;text-align:right;width:251px;">
     <nobr>
       <mm:field name="naam_de" />
-      <a href="index.jsp" target="_top" class="hover">
+      <a href="/index.jsp?r=<%= subsiteID %>" target="_top" class="hover">
          <span class="red"><mm:field name="naam" /></span>
       </a>
     </nobr>
@@ -75,7 +75,7 @@ function startPhone() {
         if(!ownersEmail.equals("")) { 
           %>
           <a href="mailto:<%= ownersEmail %>?subject=Betreft <% 
-                %><mm:node number="<%= rootId %>"><mm:field name="naam" /></mm:node
+                %><mm:node number="<%= subsiteID %>"><mm:field name="naam" /></mm:node
                 > - <mm:node number="<%= paginaID %>"><mm:field name="titel" /></mm:node
                 >" title="Email de beheerder van deze pagina">
             <img src="media/email.gif" alt="Email de beheerder van deze pagina" border="0">

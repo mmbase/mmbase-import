@@ -6,7 +6,7 @@
 <%@include file="includes/header.jsp" 
 %><td colspan="2" rowspan="2"><%
 if(isPreview) {
-   session.setAttribute("root",rootId);
+   session.setAttribute("root",subsiteID);
    session.setAttribute("rubriek",rubriekId);
    session.setAttribute("page",paginaID);
 }

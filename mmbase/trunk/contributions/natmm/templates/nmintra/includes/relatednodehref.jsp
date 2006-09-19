@@ -5,7 +5,7 @@
 ><mm:field name="pagina.titel" jspvar="page_title" vartype="String" write="false"
 ><mm:field name="pagina.number" jspvar="page_number" vartype="String" write="false"><%
     rubriekId = rubriek_number;
-    rootId = site_number; %>
+    subsiteID = site_number; %>
 	 <mm:list nodes="<%= page_number %>" path="pagina,gebruikt,paginatemplate">
 	 	<mm:field name="paginatemplate.url" jspvar="url" vartype="String" write="false">	
 		    <%  nodeUrl = url + "?p=" + page_number; %>
