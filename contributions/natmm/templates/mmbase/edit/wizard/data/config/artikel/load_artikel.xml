@@ -29,7 +29,7 @@
    <relation destination="evenement" role="related"/>
    <relation destination="formulier" role="related"/>
    <relation destination="shorty" role="rolerel"/>
-   <relation destination="paragraaf" role="posrel" >
+   <relation destination="paragraaf" role="posrel">
 		<object>
 	        <relation destination="images" role="posrel">
 		         <object />
@@ -37,7 +37,10 @@
 	        <relation destination="link" role="posrel">
 		         <object />
 	        </relation>
-	        <relation destination="attachments" role="related">
+	        <relation destination="attachments" role="posrel">
+		         <object />
+	        </relation>
+	        <relation destination="pagina" role="readmore">
 		         <object />
 	        </relation>
        </object>
