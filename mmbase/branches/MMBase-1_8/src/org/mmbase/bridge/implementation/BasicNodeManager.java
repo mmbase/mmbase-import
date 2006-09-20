@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.121 2006-03-03 14:52:50 pierre Exp $
+ * @version $Id: BasicNodeManager.java,v 1.121.2.1 2006-09-20 18:14:37 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -175,7 +175,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
                 CoreField f = (CoreField) i.next();
                 Field ft = new BasicField(f, nodeManager);
                 if (f.getStoragePosition() > 0) {
-                    fieldTypes.put(ft.getName(),ft);
+                    fieldTypes.put(ft.getName().toLowerCase(), ft);
                 }
             }
         }
@@ -347,13 +347,13 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     }
 
     public Field getField(String fieldName) throws NotFoundException {
-        Field f = (Field) getFieldTypes().get(fieldName);
+        Field f = (Field) getFieldTypes().get(fieldName.toLowerCase());
         if (f == null) throw new NotFoundException("Field '" + fieldName + "' does not exist in NodeManager '" + getName() + "'.(" + getFieldTypes() + ")");
         return f;
     }
 
     public boolean hasField(String fieldName) {
-        return getFieldTypes().containsKey(fieldName);
+        return getFieldTypes().containsKey(fieldName.toLowerCase());
     }
 
 

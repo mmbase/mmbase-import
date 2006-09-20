@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.121 2006-03-03 14:52:50 pierre Exp $
+ * @version $Id: BasicNodeManager.java,v 1.122 2006-09-20 18:12:53 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -53,7 +53,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     protected MMObjectBuilder builder;
 
     // field types
-    protected Map fieldTypes = new HashMap();
+    protected Map<String, Field> fieldTypes = new HashMap();
 
     /**
      * Instantiates a new NodeManager (for insert) based on a newly created node which either represents or references a builder.
@@ -167,15 +167,14 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     /**
      * @since MMBase-1.8
      */
-    protected static void sync(MMObjectBuilder builder, Map fieldTypes, NodeManager nodeManager) {
-        Collection fields = builder.getFields();
+    protected static void sync(MMObjectBuilder builder, Map<String, Field> fieldTypes, NodeManager nodeManager) {
+        Collection<CoreField> fields = builder.getFields();
         if (fields != null) { // when is it null?
             fieldTypes.clear();
-            for(Iterator i = fields.iterator(); i.hasNext();){
-                CoreField f = (CoreField) i.next();
+            for (CoreField f : fields) {
                 Field ft = new BasicField(f, nodeManager);
                 if (f.getStoragePosition() > 0) {
-                    fieldTypes.put(ft.getName(),ft);
+                    fieldTypes.put(ft.getName().toLowerCase(), ft);
                 }
             }
         }
@@ -199,7 +198,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
      * Returns the fieldlist of this nodemanager after making sure the manager is synced with the builder.
      * @since MMBase-1.8
      */
-    protected Map getFieldTypes() {
+    protected Map<String, Field> getFieldTypes() {
         sync();
         return fieldTypes;
     }
@@ -294,7 +293,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
 
     public Map getProperties() {
         if (builder != null) {
-            return new HashMap(builder.getInitParameters());
+            return Collections.unmodifiableMap(builder.getInitParameters());
         } else {
             return Collections.EMPTY_MAP;
         }
@@ -347,13 +346,13 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     }
 
     public Field getField(String fieldName) throws NotFoundException {
-        Field f = (Field) getFieldTypes().get(fieldName);
+        Field f =  getFieldTypes().get(fieldName.toLowerCase());
         if (f == null) throw new NotFoundException("Field '" + fieldName + "' does not exist in NodeManager '" + getName() + "'.(" + getFieldTypes() + ")");
         return f;
     }
 
     public boolean hasField(String fieldName) {
-        return getFieldTypes().containsKey(fieldName);
+        return getFieldTypes().containsKey(fieldName.toLowerCase());
     }
 
 
