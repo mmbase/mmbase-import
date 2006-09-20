@@ -1,4 +1,5 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm" %>
+<%@page import="nl.leocms.util.tools.*" %>
 <%@include file="parts/basics.jsp"%>
 <%
   String extraParamsUrl=getParamsFormatted(request,"url",getExtraParams(request));
@@ -14,11 +15,45 @@
 
 <mm:import id="realpath"><%=getRealPath(request)%></mm:import>
 <table width="100%" height="80%" border="0" cellpadding="0" cellspacing="0" bordercolor="red">
-  <mm:present referid="title">
-    <tr>
-      <td colspan="2" height="50" style="border-bottom:1px solid #797868"><h1><mm:write referid="title"/></h1></td>
-    </tr>
-  </mm:present>
+  <%
+  String paginaID = (String) session.getAttribute("page");
+  if(paginaID!=null) {
+    boolean isFirst = true;
+    %>
+    <mm:node number="<%= paginaID %>">
+      <mm:field name="titel_zichtbaar">
+         <mm:compare value="0" inverse="true">
+            <% isFirst = false; %>
+            <tr>
+              <td colspan="2" height="50" style="border-bottom:1px solid #797868">
+                <h3><mm:field name="titel" /></h3>
+         </mm:compare>
+      </mm:field>
+      <mm:field name="omschrijving" jspvar="text" vartype="String" write="false">
+      <% 
+        if(text!=null&&!HtmlCleaner.cleanText(text,"<",">","").trim().equals("")) { 
+           if(isFirst) {
+              isFirst = false;
+              %>
+              <tr>
+                <td colspan="2" height="50" style="border-bottom:1px solid #797868">
+              <%
+           } %>
+           <mm:write /><br/><br/>
+           <%
+        }
+      %>
+      </mm:field>
+    </mm:node>
+    <%
+    if(!isFirst) {
+      %>
+         </td>
+      </tr>
+      <%
+    }
+  }
+  %>
   <tr>
     <td valign="top" style="width:300px; overflow:auto">
     <%--  ############## begin tree ############# --%>
@@ -116,7 +151,6 @@ var possibleQnode="<mm:present referid="qnode">&qnode=<mm:write referid="qnode"/
 <div class="toolbar" id="toolbar" style="display:none">
 
 <% 
-String paginaID = (String) session.getAttribute("page"); 
 if(paginaID!=null) {
   %>
   <%@include file="/nmintra/includes/exteditcheck.jsp" %>
