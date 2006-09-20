@@ -1,6 +1,7 @@
 <%-- !DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd" --%>
 <%@ page contentType="text/html; charset=utf-8" language="java" %>
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@ page import="nl.leocms.applications.*" %>
 <%
 response.setHeader("Cache-Control","no-cache"); //HTTP 1.1
 response.setHeader("Pragma","no-cache"); //HTTP 1.0
@@ -31,12 +32,12 @@ response.setDateHeader ("Expires", 0); //prevents caching at the proxy server
 <mm:import jspvar="posterid"><mm:write referid="posterid" /></mm:import>
 
 <%
-boolean allowAccountCreation = false;
+boolean allowAccountCreation = true;
 
 log.info("start MMBob authentication");
 log.info("found posterid " + posterid);
 
-if(nl.leocms.applications.NatMMConfig.hasClosedUserGroup) { 
+if(NatMMConfig.hasClosedUserGroup) { 
   %>
   <% // get id from NatMM %>
   <%@include file="/editors/mailer/util/memberid_get.jsp" %>
@@ -155,7 +156,7 @@ if(nl.leocms.applications.NatMMConfig.hasClosedUserGroup) {
                       <%
                    } else {
                       %>
-                      Alleen lifeline abonnees kunnen mee discussi&euml;ren op dit forum.
+                      Alleen <%= NatMMConfig.companyName %> abonnees kunnen mee discussi&euml;ren op dit forum.
                       <a href="/lidworden" target="_blank">klik hier om lid te worden</a>
                       <%
                    } %>
