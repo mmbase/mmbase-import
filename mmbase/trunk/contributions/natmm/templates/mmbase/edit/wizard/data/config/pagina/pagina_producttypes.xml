@@ -50,9 +50,7 @@
    </action>
    <lists>
       <optionlist include="config/option_lists/ja_nee.xml" />
-      <optionlist include="config/option_lists/pages_title.xml" />
-      <optionlist include="config/option_lists/shorty_role.xml" />
-      <optionlist include="config/option_lists/teaser_size.xml" />
+      <optionlist include="config/option_lists/images_position.xml" />
    </lists>
    <steps>
       <step form-schema="edit_pagina"/>

@@ -48,7 +48,7 @@ public class PaginaHelper {
    public final static int MAX_NUMBER_DOSSIER_ELEMENTS = 7;
 
    Cloud cloud;
-	ApplicationHelper ap;
+	 ApplicationHelper ap;
    public HashMap pathsFromPageToElements;
    public boolean urlConversion;
 
@@ -81,18 +81,23 @@ public class PaginaHelper {
       return null;
    }
 
-   public static Vector getBreadCrumbs(Cloud cloud, String paginaNumber) {
-      if (paginaNumber==null || paginaNumber.equals("-1")){
-         log.error("No such pagina with number: " + paginaNumber + ". Returning null.");
+   public static Vector getBreadCrumbs(Cloud cloud, String objectNumber) {
+      if (objectNumber==null || objectNumber.equals("-1")){
+         log.error("No such pagina/rubriek with number: " +objectNumber + ". Returning null.");
          return null;
       }
-      Node paginaNode = cloud.getNode(paginaNumber);
-      if (paginaNode==null) {
-         log.error("No such pagina with number: " + paginaNumber + ". Returning null.");
+      Node node = cloud.getNode(objectNumber);
+      if (node==null) {
+         log.error("No such pagina/rubriek with number: " + objectNumber + ". Returning null.");
          return null;
       }
       Vector breadcrumbs = new Vector();
-      NodeList rubriekL = paginaNode.getRelatedNodes("rubriek", "posrel", "SOURCE");
+      NodeList rubriekL = null;
+      if(node.getNodeManager().getName().equals("pagina")) {
+        rubriekL = node.getRelatedNodes("rubriek", "posrel", "SOURCE");
+      } else {
+        rubriekL = node.getRelatedNodes("rubriek", "parent", "SOURCE");
+      }
       while (rubriekL.size() == 1 && !breadcrumbs.contains(rubriekL.getNode(0).getStringValue("number"))) {
          breadcrumbs.add(rubriekL.getNode(0).getStringValue("number"));
          rubriekL = rubriekL.getNode(0).getRelatedNodes("rubriek", "parent", "SOURCE");
@@ -384,14 +389,19 @@ public class PaginaHelper {
             String ewNodePath = editwizardNode.getStringValue("nodepath");
             if(editwizardNode!=null) {
                String ewType = editwizardNode.getStringValue("type");
-               if(ewType.equals("list")) {  // ** check whether the path is used at least once ***
-                  NodeList nl = null;
-                  try {
-                      nl = cloud.getList(pageNumber, ewNodePath, "pagina.number", null, null, null, null, false);
-                  } catch (Exception thisException) {
-                     log.error("The editwizard " + ewTitle + " could not be shown, because the path " + ewNodePath + " does not exist in the objectcloud.");
+               if(ewType.equals("list")) {
+                  boolean showEw = true;
+                  if(ap.isInstalled("NatMM")) {   // ** check whether the path is used at least once
+                    showEw = false;
+                    NodeList nl = null;
+                    try {
+                        nl = cloud.getList(pageNumber, ewNodePath, "pagina.number", null, null, null, null, false);
+                    } catch (Exception thisException) {
+                       log.error("The editwizard " + ewTitle + " could not be shown, because the path " + ewNodePath + " does not exist in the objectcloud.");
+                    }
+                    showEw = (nl!=null && nl.size()>0);
                   }
-                  if(nl!=null && nl.size()>0) {
+                  if(showEw) {
                      ewUrl += "/mmbase/edit/wizard/jsp/list.jsp?wizard=" + editwizardNode.getStringValue("wizard");
                      String startnodes = editwizardNode.getStringValue("startnodes");
                      if(startnodes!=null&&!startnodes.equals("")) {
