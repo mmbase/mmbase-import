@@ -21,7 +21,7 @@ public class NatMMConfig {
       "vacature",
       "vgv"
    };
-   
+
    public final static String[] CONTAINERS = {
       "dossier",
       "linklijst",
@@ -39,7 +39,7 @@ public class NatMMConfig {
       "natuurgebieden",
       "persoon",
       "provincies",
-      "vacature"      
+      "vacature"
    };
 
    public final static String[] PATHS_FROM_PAGE_TO_OBJECTS = {
@@ -80,6 +80,7 @@ public class NatMMConfig {
 
    public static String cssPath = "hoofdsite/themas/";
 
+   // Natuurmonumenten
    public static boolean urlConversion = true;
    public static boolean checkEmailByMailHost = true;
    public static boolean hasClosedUserGroup = false;
@@ -100,11 +101,26 @@ public class NatMMConfig {
    public static String tempDir = "/export/www/natuurmm/jakarta-tomcat/temp/";
    public static String incomingDir = "/home/import/incoming/";
 
+   // Life Line demo site
    /*
-   public static String toSubscribeAddress = "hangyi@xs4all.nl";
-   public static String rootDir =  "C:/data/natmm/webapps/ROOT/";
-   public static String tempDir = "C:/temp/";
-   public static String incomingDir =  "C:/data/natmm/incoming/";
+   public static boolean urlConversion = true;
+   public static boolean checkEmailByMailHost = false;
+   public static boolean hasClosedUserGroup = true;
+   public static boolean useCreationDateInURL = true;
+   public static boolean isUISconnected = true;
+
+   public static String companyName = "Life Line";
+   public static String fromEmailAddress = "demo@mediacompetence.com";
+   public static String fromCADAddress = "demo@mediacompetence.com";
+   public static String infoEmailAddress = "info@mediacompetence.com";
+   public static String toEmailAddress = "hangyi@xs4all.nl";
+   public static String [] liveUrl = { "http://demo.mediacompetence.com/" };
+   public static String tmpMemberId = "9002162";
+
+   public static String toSubscribeAddress = "AanmeldingLidmaatschap@mediacompetence.com";
+   public static String rootDir = "/export/www/natuurmm/jakarta-tomcat/webapps/ROOT/";
+   public static String tempDir = "/export/www/natuurmm/jakarta-tomcat/temp/";
+   public static String incomingDir = "/home/import/incoming/";
    */
 
    public NatMMConfig() {
