@@ -35,7 +35,7 @@
       </object>
    </relation>
    <relation destination="formulier" role="posrel"/>
-   <relation destination="linklijst" role="lijstcontentrel">
+   <relation destination="linklijst" role="posrel">
       <object>
          <relation destination="link" role="lijstcontentrel">
             <object />

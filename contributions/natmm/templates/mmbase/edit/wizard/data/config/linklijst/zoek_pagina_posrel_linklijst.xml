@@ -3,11 +3,16 @@
 <list role="posrel" destination="linklijst" minoccurs="0" maxoccurs="*" orderby="field[@name='pos']" ordertype="number">
    <title>linklijst</title>
    <item>
+      <field name="naam" ftype="data"><prompt>naam</prompt></field>
       <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>positie</prompt></field>
       <field ftype="startwizard" wizardname="config/linklijst/linklijst" />
    </item>
-   <command name="search" nodepath="linklijst" age="-1" fields="">
+   <command name="search" nodepath="linklijst" age="-1" fields="naam">
       <prompt>zoek linklijst</prompt>
+      <search-filter>
+         <name>naam bevat</name>
+         <search-fields>naam</search-fields>
+      </search-filter>
    </command>
    <command name="startwizard" inline="true" wizardname="config/linklijst/linklijst" objectnumber="new">
        <prompt></prompt>

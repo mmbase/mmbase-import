@@ -4,9 +4,9 @@
    <title>pagina (opleiding)</title>
    <description>
       <![CDATA[
-	<h1>Opleiding pagina</h1>
-	Deze editwizard kan worden gebruikt voor het bewerken van de pagina titel en omschrijving.<br/>
-	   ]]>
+   <h1>Opleiding pagina</h1>
+   Deze editwizard kan worden gebruikt voor het bewerken van de pagina titel en omschrijving.<br/>
+      ]]>
    </description>
    <action include="config/pagina/create_pagina.xml"/>
    <action include="config/pagina/delete_pagina.xml"/>
@@ -46,7 +46,7 @@
           </relation>
         </object>
       </relation>
-      <relation destination="linklijst" role="lijstcontentrel">
+      <relation destination="linklijst" role="posrel">
         <object>
            <relation destination="link" role="lijstcontentrel">
               <object />
@@ -69,7 +69,7 @@
       <field name="omschrijving" ftype="html" rows="20"><prompt>omschrijving</prompt></field>
       <field name="creatiedatum" ftype="data"><prompt>creatiedatum</prompt></field>
       <field name="datumlaatstewijziging" ftype="data"><prompt>datumlaatstewijziging</prompt></field>
-		  <list include="config/artikel/zoek_pagina_contentrel_artikel.xml" />
-		  <list include="config/linklijst/zoek_pagina_posrel_linklijst.xml" />
+        <list include="config/artikel/zoek_pagina_contentrel_artikel.xml" />
+        <list include="config/linklijst/zoek_pagina_posrel_linklijst.xml" />
    </form-schema> 
 </wizard-schema>
