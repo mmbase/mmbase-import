@@ -18,8 +18,7 @@
     <property name="max-nodes-from-query">1000</property>
   </properties>
   <fieldlist>
-    
-        <field>
+    <field>
       <gui>
         <guiname xml:lang="en">name</guiname>
         <guiname xml:lang="nl">naam</guiname>
@@ -37,8 +36,25 @@
         <type key="false" notnull="false" size="255" state="persistent">STRING</type>
       </db>
     </field>
-
-        <field>
+    <field>
+      <gui>
+        <guiname xml:lang="en">position</guiname>
+        <guiname xml:lang="nl">positie</guiname>
+        <guitype>string</guitype>
+      </gui>
+      <editor>
+        <positions>
+          <input>5</input>
+          <list>5</list>
+          <search>5</search>
+        </positions>
+      </editor>
+      <db>
+        <name xml:lang="en">pos</name>
+        <type key="false" notnull="false" size="255" state="persistent">STRING</type>
+      </db>
+    </field>
+    <field>
       <gui>
         <guiname xml:lang="en">description</guiname>
         <guiname xml:lang="nl">omschrijving</guiname>
@@ -57,5 +73,4 @@
       </db>
     </field>
   </fieldlist>
-
   </builder>
