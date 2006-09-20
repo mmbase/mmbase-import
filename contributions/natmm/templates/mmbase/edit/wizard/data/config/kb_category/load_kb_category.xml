@@ -4,6 +4,7 @@
 	<field name="name" />
 	<field name="date" />
 	<field name="description" />
+  <field name="pos" />
 	<field name="visible" />
 	<relation destination="kb_question" role="related" />
 	<relation destination="kb_category" role="related" />

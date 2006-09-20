@@ -10,7 +10,7 @@
       <list include="config/images/zoek_contentelement_posrel_images.xml" />
       <list include="config/attachments/add_attachments_posrel.xml" />
       <list include="config/link/zoek_contentelement_posrel_link.xml" />
-      <list include="config/pagina/zoek_contentelement_posrel_link.xml" />
+      <list include="config/pagina/add_pagina_readmore_example.xml" />
       <!-- field ftype="startwizard" wizardname="config/paragraaf/paragraaf" / -->
    </item>
    <command name="search" nodepath="paragraaf" age="-1" fields="titel,metatags" orderby="titel">

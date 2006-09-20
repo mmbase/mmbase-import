@@ -6,6 +6,7 @@
 		<title></title>
 		<description>pagina</description>
     <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>positie</prompt></field>
+    <field fdatapath="field[@name=&apos;readmore&apos;]" ftype="line"><prompt>inleidend tekst</prompt></field>
 		<field name="titel" ftype="data"><prompt>naam</prompt></field>
   </item>
 	<action type="create">
