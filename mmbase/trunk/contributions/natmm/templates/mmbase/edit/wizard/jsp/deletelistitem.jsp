@@ -11,7 +11,7 @@
      * deletelistitem.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: deletelistitem.jsp,v 1.2 2006-08-13 21:07:47 henk Exp $
+     * @version  $Id: deletelistitem.jsp,v 1.3 2006-09-20 09:46:54 henk Exp $
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
      */
@@ -49,7 +49,17 @@
         // Ok. let's delete this object.
         org.mmbase.bridge.Node obj = cloud.getNode(objectnumber);
         obj.delete(true);
-        response.sendRedirect(response.encodeRedirectURL("list.jsp?proceed=true&sessionkey=" + sessionKey));
+        // prevent from losing nodepath
+        String params = "";
+        if(attributes!=null) {
+          String [] keys = { "startnodes", "nodepath", "fields", "search", "wizard" };
+          for(int i=0; i<keys.length; i++) {
+            if(attributes.containsKey(keys[i]) ) {
+              params += "&" + keys[i] + "=" + (String) attributes.get(keys[i]);
+            }
+          }
+        }
+        response.sendRedirect(response.encodeRedirectURL("list.jsp?proceed=true&sessionkey=" + sessionKey + params));
     } else {
         // No delete action defined in the wizard schema. We cannot delete.
         log.error("No delete action is defined in the wizard schema: '"+ wizard + "'. <br />You should place &lt;action type=\"delete\" /> in your schema so that delete actions will be allowed.");
