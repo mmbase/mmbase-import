@@ -1,6 +1,30 @@
 <%@include file="/taglibs.jsp" %>
 <%@page import="nl.leocms.util.PropertiesUtil,nl.leocms.util.ApplicationHelper,org.mmbase.bridge.*,java.net.*" %>
-<mm:cloud jspvar='cloud' rank='basic user'>
+<mm:cloud jspvar="cloud" rank="basic user">
+<%
+String account = cloud.getUser().getIdentifier();
+
+String unused_items = cloud.getNodeManager("users").getList("users.account = '" + account + "'",null,null).getNode(0).getStringValue("unused_items");
+
+int iTotalNotUsed = 0;
+if (unused_items!=null&&(!unused_items.equals(""))){
+  String contentElementConstraint = " contentelement.number IN (0, " + unused_items + ") ";
+  NodeList nlObjects = cloud.getList("",
+                               "contentelement",
+                               "contentelement.number",
+                               contentElementConstraint,
+                               null,null,null,true);
+  iTotalNotUsed = nlObjects.size();
+  application.setAttribute("unused_items",unused_items);
+}
+
+String unusedItemsLink = "";
+if (iTotalNotUsed>0) {
+  unusedItemsLink = "<td><a href='beheerbibliotheek/view_unused_items.jsp' target='bottompane' title='bekijk niet gebruikte contentelementen uit de door u beheerde rubrieken'>"
+    + "<img src='img/delete.gif' style='vertical-align:bottom;'>(" + iTotalNotUsed + ")</a><td>";
+}
+%>
+<cache:cache groups="pagina_all" key="<%= "pagina_all_" + account + "~" + iTotalNotUsed %>" time="<%= 3600*24*7 %>" scope="application">
 <html>
 <head>
     <link href="<mm:url page="<%= editwizard_location %>"/>/style/color/wizard.css" type="text/css" rel="stylesheet"/>
@@ -45,44 +69,26 @@
 <mm:import id="jsps"><%= editwizard_location %>/jsp/</mm:import>
 <mm:import id="debug">false</mm:import>
 <%
-	RubriekHelper rh = new RubriekHelper(cloud);
-	PaginaHelper ph = new PaginaHelper(cloud);
-	
-   String contentModusProperty = PropertiesUtil.getProperty("content.modus");
-   if ((contentModusProperty != null) && (contentModusProperty.equals("on"))) {
-      session.setAttribute("contentmodus", contentModusProperty);
-   }
-   else {
-      session.removeAttribute("contentmodus.contentnodenumber");
-      session.setAttribute("contentmodus", "off");
-   }
-   boolean isAdmin = cloud.getUser().getRank().equals("administrator");
-   boolean isChiefEditor = cloud.getUser().getRank().equals("chiefeditor");
-   String rubriekID = "";
-   boolean hasEditwizards = false;
-	
-	int iTotalNotUsed = 0;
-	String account = cloud.getUser().getIdentifier();
-	String unused_items = cloud.getNodeManager("users").getList("users.account = '" + account + "'",null,null).getNode(0).getStringValue("unused_items");
-	if (unused_items!=null&&(!unused_items.equals(""))){
-		String contentElementConstraint = " contentelement.number IN (0, " + unused_items + ") ";
-		NodeList nlObjects = cloud.getList("",
-                                 "contentelement",
-                                 "contentelement.number",
-                                 contentElementConstraint,
-                                 null,null,null,true);
-		iTotalNotUsed = nlObjects.size();
-		application.setAttribute("unused_items",unused_items);
-	}
-	String unusedItemsLink = "";
-	if (iTotalNotUsed>0) {
-		unusedItemsLink = "<td><a href='beheerbibliotheek/view_unused_items.jsp' target='bottompane' title='bekijk niet gebruikte contentelementen uit de door u beheerde rubrieken'>"
-			+ "<img src='img/delete.gif' style='vertical-align:bottom;'>(" + iTotalNotUsed + ")</a><td>";
-	}
-	TreeSet tsRubrieks = new TreeSet();
-	boolean isEventUser = false;
-	String sNatuurinNumber = "";
-	%>
+RubriekHelper rh = new RubriekHelper(cloud);
+PaginaHelper ph = new PaginaHelper(cloud);
+
+String contentModusProperty = PropertiesUtil.getProperty("content.modus");
+if ((contentModusProperty != null) && (contentModusProperty.equals("on"))) {
+  session.setAttribute("contentmodus", contentModusProperty);
+}
+else {
+  session.removeAttribute("contentmodus.contentnodenumber");
+  session.setAttribute("contentmodus", "off");
+}
+boolean isAdmin = cloud.getUser().getRank().equals("administrator");
+boolean isChiefEditor = cloud.getUser().getRank().equals("chiefeditor");
+String rubriekID = "";
+boolean hasEditwizards = false;
+
+TreeSet tsRubrieks = new TreeSet();
+boolean isEventUser = false;
+String sNatuurinNumber = "";
+%>
 <mm:node number="natuurin_rubriek" notfound="skipbody" jspvar="natmmEventsRubriek">
  <% sNatuurinNumber = natmmEventsRubriek.getStringValue("number"); %>
 </mm:node>
@@ -94,7 +100,7 @@
 				if(rubriek_number.equals(sNatuurinNumber)){ // special purpose rubriek, do not use for general functionality
 					isEventUser = true;
 				} else {
-					if(rubriek_level.equals("0")) { //put children of this rubriek in list 
+					if(rubriek_level.equals("0")) { // put children of the root rubriek in list 
 						%>
 						<mm:list nodes="<%= rubriek_number %>" path="rubriek1,parent,rubriek2">
 							<mm:field name="rubriek2.number" jspvar="rubriek2_number" vartype="String" write="false">
@@ -102,9 +108,9 @@
 							</mm:field>
 						</mm:list>
 						<% 
-					} else if (rubriek_level.equals("1")) { // this is a root rubriek
+					} else if (rubriek_level.equals("1")) { // this is a subsite rubriek
 						tsRubrieks.add(rubriek_number);
-					} else { // add the root rubriek of this rubriek
+					} else { // add the subsite rubriek of this rubriek
 						tsRubrieks.add(PaginaHelper.getSubsiteRubriek(cloud,rubriek_number));
 					}
 				} 
@@ -186,4 +192,5 @@
    /></mm:node></a></small></div>
 </body>
 </html>
+</cache:cache>
 </mm:cloud>
