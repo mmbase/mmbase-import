@@ -42,88 +42,88 @@ document.getElementById(id).value = "";
  <script language="JavaScript"> 
  <!-- 
  if (document.images) { 
-	nav_promos_events_off    	= new Image(); 
-	nav_promos_events_off.src 	= "media/1025200517351155.gif"; 
-	nav_promos_events_on      	= new Image(); 
-	nav_promos_events_on.src 	= "media/1025200517351389.gif"; 
-	nav_sweeps_off    			= new Image(); 
-	nav_sweeps_off.src 			= "media/1025200517351588.gif"; 
-	nav_sweeps_on      			= new Image(); 
-	nav_sweeps_on.src 			= "media/1025200517351639.gif"; 
-	nav_forums_off    			= new Image(); 
-	nav_forums_off.src 			= "media/1025200517350806.gif"; 
-	nav_forums_on      			= new Image(); 
-	nav_forums_on.src 			= "media/1025200517350921.gif"; 
-	nav_about_us_off    		= new Image(); 
-	nav_about_us_off.src 		= "media/1025200517350570.gif"; 
-	nav_about_us_on      		= new Image(); 
-	nav_about_us_on.src 		= "media/1025200517350681.gif"; 
-	nav_search_off    			= new Image(); 
-	nav_search_off.src 			= "media/search.gif"; 
-	nav_search_on      			= new Image(); 
-	nav_search_on.src 			= "media/0927200518462776.gif"; 
-	nav_go_off    				= new Image(); 
-	nav_go_off.src 				= "media/0927200518462375.gif"; 
-	nav_go_on      				= new Image(); 
-	nav_go_on.src 				= "media/0927200518472711.gif"; 
-	nav_back_off    			= new Image(); 
-	nav_back_off.src 			= "media/1101200518414044.gif"; 
-	nav_back_on      			= new Image(); 
-	nav_back_on.src 			= "media/1101200518414339.gif"; 
-	nav_next_off    			= new Image(); 
-	nav_next_off.src 			= "media/1101200518413722.gif"; 
-	nav_next_on      			= new Image(); 
-	nav_next_on.src 			= "media/1101200518413878.gif"; 
-	nav_more_off    			= new Image(); 
-	nav_more_off.src 			= "media/more.jpg"; 
-	nav_more_on      			= new Image(); 
-	nav_more_on.src 			= "media/more_on.jpg"; 
-	nav_archives_off    		= new Image(); 
-	nav_archives_off.src 		= "media/archives.jpg"; 
-	nav_archives_on      		= new Image(); 
-	nav_archives_on.src 		= "media/archives_on.jpg"; 
-	nav_fashion_off     		= new Image(); 
-	nav_fashion_off.src 		= "media/1028200512355339.gif"; 
-	nav_fashion_on      		= new Image(); 
-	nav_fashion_on.src 			= "media/1028200512355453.gif"; 
-	nav_shop_off     			= new Image(); 
-	nav_shop_off.src 			= "media/1028200512360325.gif"; 
-	nav_shop_on      			= new Image(); 
-	nav_shop_on.src 			= "media/1028200512360518.gif"; 
-	nav_runway_off     			= new Image(); 
-	nav_runway_off.src 			= "media/1028200512355960.gif"; 
-	nav_runway_on      			= new Image(); 
-	nav_runway_on.src 			= "media/1028200512360016.gif"; 
-	nav_beauty_off     			= new Image(); 
-	nav_beauty_off.src 			= "media/1028200512355039.gif"; 
-	nav_beauty_on      			= new Image(); 
-	nav_beauty_on.src 			= "media/1028200512355111.gif"; 
-	nav_bfeatnews_off			= new Image(); 
-	nav_bfeatnews_off.src		= "media/0923200516374907.gif"; 
-	nav_bfeatnews_on			= new Image(); 
-	nav_bfeatnews_on.src		= "media/0923200516443466.gif"; 
-	nav_astrology_off     		= new Image(); 
-	nav_astrology_off.src 		= "media/1028200512354602.gif"; 
-	nav_astrology_on      		= new Image(); 
-	nav_astrology_on.src 		= "media/1028200512354890.gif"; 
-	nav_books_off     			= new Image(); 
-	nav_books_off.src 			= "media/0923200516375091.gif"; 
-	nav_books_on      			= new Image(); 
-	nav_books_on.src 			= "media/0923200516443608.gif"; 
-	nav_in_the_mag_off     		= new Image(); 
-	nav_in_the_mag_off.src 		= "media/1028200512355632.gif"; 
-	nav_in_the_mag_on      		= new Image(); 
-	nav_in_the_mag_on.src 		= "media/1028200512355728.gif"; 
-	} 
+   nav_promos_events_off      = new Image(); 
+   nav_promos_events_off.src  = "media/1025200517351155.gif"; 
+   nav_promos_events_on       = new Image(); 
+   nav_promos_events_on.src   = "media/1025200517351389.gif"; 
+   nav_sweeps_off             = new Image(); 
+   nav_sweeps_off.src         = "media/1025200517351588.gif"; 
+   nav_sweeps_on              = new Image(); 
+   nav_sweeps_on.src          = "media/1025200517351639.gif"; 
+   nav_forums_off             = new Image(); 
+   nav_forums_off.src         = "media/1025200517350806.gif"; 
+   nav_forums_on              = new Image(); 
+   nav_forums_on.src          = "media/1025200517350921.gif"; 
+   nav_about_us_off        = new Image(); 
+   nav_about_us_off.src       = "media/1025200517350570.gif"; 
+   nav_about_us_on            = new Image(); 
+   nav_about_us_on.src     = "media/1025200517350681.gif"; 
+   nav_search_off             = new Image(); 
+   nav_search_off.src         = "media/search.gif"; 
+   nav_search_on              = new Image(); 
+   nav_search_on.src          = "media/0927200518462776.gif"; 
+   nav_go_off              = new Image(); 
+   nav_go_off.src             = "media/0927200518462375.gif"; 
+   nav_go_on                  = new Image(); 
+   nav_go_on.src           = "media/0927200518472711.gif"; 
+   nav_back_off            = new Image(); 
+   nav_back_off.src        = "media/1101200518414044.gif"; 
+   nav_back_on             = new Image(); 
+   nav_back_on.src         = "media/1101200518414339.gif"; 
+   nav_next_off            = new Image(); 
+   nav_next_off.src        = "media/1101200518413722.gif"; 
+   nav_next_on             = new Image(); 
+   nav_next_on.src         = "media/1101200518413878.gif"; 
+   nav_more_off            = new Image(); 
+   nav_more_off.src        = "media/more.jpg"; 
+   nav_more_on             = new Image(); 
+   nav_more_on.src         = "media/more_on.jpg"; 
+   nav_archives_off        = new Image(); 
+   nav_archives_off.src       = "media/archives.jpg"; 
+   nav_archives_on            = new Image(); 
+   nav_archives_on.src     = "media/archives_on.jpg"; 
+   nav_fashion_off         = new Image(); 
+   nav_fashion_off.src     = "media/1028200512355339.gif"; 
+   nav_fashion_on          = new Image(); 
+   nav_fashion_on.src         = "media/1028200512355453.gif"; 
+   nav_shop_off            = new Image(); 
+   nav_shop_off.src        = "media/1028200512360325.gif"; 
+   nav_shop_on             = new Image(); 
+   nav_shop_on.src         = "media/1028200512360518.gif"; 
+   nav_runway_off             = new Image(); 
+   nav_runway_off.src         = "media/1028200512355960.gif"; 
+   nav_runway_on              = new Image(); 
+   nav_runway_on.src          = "media/1028200512360016.gif"; 
+   nav_beauty_off             = new Image(); 
+   nav_beauty_off.src         = "media/1028200512355039.gif"; 
+   nav_beauty_on              = new Image(); 
+   nav_beauty_on.src          = "media/1028200512355111.gif"; 
+   nav_bfeatnews_off       = new Image(); 
+   nav_bfeatnews_off.src      = "media/0923200516374907.gif"; 
+   nav_bfeatnews_on        = new Image(); 
+   nav_bfeatnews_on.src    = "media/0923200516443466.gif"; 
+   nav_astrology_off          = new Image(); 
+   nav_astrology_off.src      = "media/1028200512354602.gif"; 
+   nav_astrology_on           = new Image(); 
+   nav_astrology_on.src       = "media/1028200512354890.gif"; 
+   nav_books_off              = new Image(); 
+   nav_books_off.src          = "media/0923200516375091.gif"; 
+   nav_books_on               = new Image(); 
+   nav_books_on.src        = "media/0923200516443608.gif"; 
+   nav_in_the_mag_off         = new Image(); 
+   nav_in_the_mag_off.src     = "media/1028200512355632.gif"; 
+   nav_in_the_mag_on          = new Image(); 
+   nav_in_the_mag_on.src      = "media/1028200512355728.gif"; 
+   } 
  function rollover(sel,img) { 
-	if (document.images) { 
-		document.images[sel].src = eval(img + ".src") 
-	} 
+   if (document.images) { 
+      document.images[sel].src = eval(img + ".src") 
+   } 
  } 
  //--> 
  </script> 
 <% String language = request.getParameter("languages");
-   if (language==null) { language = "en"; } %>
+   if (language==null) { language = "eng"; } %>
 <table width="991" border="0" cellspacing="0" cellpadding="0" summary="logo, newsletter signup, page title, and search" ID="Table1">
   <tr>
     <td width="271" align="left" valign="middle" bgcolor="#000000"><img src="media/1028200514555001.gif" width="271" height="64" border="0"></td>
@@ -131,41 +131,41 @@ document.getElementById(id).value = "";
   </tr>
   <tr>
      <td valign="center" align="left" background="media/1028200514555233.gif" colspan="2" height="29">
-		 <table cellSpacing=0 cellPadding=0>
-		 <tr>
-	 	  <form method="post" action="/searcher.asp?section_id=43&article_id=0" ID="Form1">
-			 	<mm:list nodes="elle_root" path="rubriek,posrel,pagina" fields="pagina.number" orderby="posrel.pos" directions="up">
-		         <mm:first inverse="true"><td align="center"><img src="media/divider.gif" border="0"></td></mm:first>
-						 <mm:node element="pagina" jspvar="dummy" notfound="skipbody">
-							<td width="109" align="center"><nobr>
-							 <% String value = LocaleUtil.getField(dummy,"titel",language); %>
-								 <mm:last>
-									 <input class="inputGrey" maxLength="50" size="15" value=" <%= value %> " name="search_value">
-			   		           </td><td align="left" valign="middle">
-      				          <input value="GO" type="submit" style="cursor: hand;font-family: Arial; font-size: 10px; color: #CFCFCF; font-weight: bold; border-style: solid; border-width: 0; width: 15; height: 29;background-position: center; background: url('media/1028200514555233.gif')" name="submit">
-				                <input type="image" height="7" width="4" src="media/go.gif" align="absMiddle" border="0" name="submit">
-								 </mm:last>	 
-								 <mm:last inverse="true">
-								 	<a href="#" class="menuitem"><font face="Arial" size="1"><b>
-				              <%= value.toUpperCase() %></b></font></a>
-					    		</mm:last>	
-						 </nobr>
-						</td>
-					</mm:node>
-				</mm:list>
-		  </form>
-		  <form method="post">
-				<td width="109" align="center">
-					<select class="inputGrey" style="width:90px" name="languages" onchange="document.forms[2].submit();">
-						<option value="en" <% if (language.equals("en")) {%>selected<% } %>>English</option>
-						<option value="nl" <% if (language.equals("nl")) {%>selected<% } %>>Nederlands</option>
-						<option value="de" <% if (language.equals("de")) {%>selected<% } %>>Deutsch</option>
-						<option value="fra" <% if (language.equals("fra")) {%>selected<% } %>>Fran&ccedil;ais</option>
-					</select>
-				</td>
-		 </form>
-		 </tr></table>
-		</td>
+       <table cellSpacing=0 cellPadding=0>
+       <tr>
+        <form method="post" action="/searcher.asp?section_id=43&article_id=0" ID="Form1">
+            <mm:list nodes="elle_root" path="rubriek,posrel,pagina" fields="pagina.number" orderby="posrel.pos" directions="up">
+               <mm:first inverse="true"><td align="center"><img src="media/divider.gif" border="0"></td></mm:first>
+                   <mm:node element="pagina" jspvar="dummy" notfound="skipbody">
+                     <td width="109" align="center"><nobr>
+                      <% String value = LocaleUtil.getField(dummy,"titel",language); %>
+                         <mm:last>
+                            <input class="inputGrey" maxLength="50" size="15" value=" <%= value %> " name="search_value">
+                             </td><td align="left" valign="middle">
+                            <input value="GO" type="submit" style="cursor: hand;font-family: Arial; font-size: 10px; color: #CFCFCF; font-weight: bold; border-style: solid; border-width: 0; width: 15; height: 29;background-position: center; background: url('media/1028200514555233.gif')" name="submit">
+                            <input type="image" height="7" width="4" src="media/go.gif" align="absMiddle" border="0" name="submit">
+                         </mm:last>  
+                         <mm:last inverse="true">
+                           <a href="#" class="menuitem"><font face="Arial" size="1"><b>
+                          <%= value.toUpperCase() %></b></font></a>
+                        </mm:last>  
+                   </nobr>
+                  </td>
+               </mm:node>
+            </mm:list>
+        </form>
+        <form method="post">
+            <td width="109" align="center">
+               <select class="inputGrey" style="width:90px" name="languages" onchange="document.forms[2].submit();">
+                  <option value="eng" <% if (language.equals("eng")) {%>selected<% } %>>English</option>
+                  <option value="nl" <% if (language.equals("nl")) {%>selected<% } %>>Nederlands</option>
+                  <option value="de" <% if (language.equals("de")) {%>selected<% } %>>Deutsch</option>
+                  <option value="fra" <% if (language.equals("fra")) {%>selected<% } %>>Fran&ccedil;ais</option>
+               </select>
+            </td>
+       </form>
+       </tr></table>
+      </td>
   </tr>
 </table>
 <table width="991" border="0" cellpadding="0" cellspacing="0" bgcolor="#FAFAFA" summary="left nav, main content, and 336x600 banner" ID="Table2">
@@ -174,10 +174,10 @@ document.getElementById(id).value = "";
       <object
         classid='clsid:D27CDB6E-AE6D-11cf-96B8-444553540000'
         codebase='http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=5,0,30,0' width='431' height='441'>
-        <param name=movie value='swf/NewYorkFashionWeekDay8v4.swf'>
+        <param name=movie value='swf/NewYorkFashionWeekDay8v4<%= (!language.equals("eng") ? language : "" ) %>.swf'>
         <param name='quality' value='high'> 
           <param name='menu' value='0'>
-          <embed src='swf/NewYorkFashionWeekDay8v4.swf' quality='high' width='431' height='441' name='menu'
+          <embed src='swf/NewYorkFashionWeekDay8v4<%= (!language.equals("eng") ? language : "" ) %>.swf' quality='high' width='431' height='441' name='menu'
             TYPE='application/x-shockwave-flash' PLUGINSPAGE='http://www.macromedia.com/go/getflashplayer'></embed>
       </object>
 
@@ -192,16 +192,16 @@ document.getElementById(id).value = "";
       <a href="http://www.elle.com/features/9176/transition-in-style.html"><img src="media/99200613319.jpg" border="0"></a>
 
     </td>
-	  
+     
     <td width="251" class="hpTd3"> 
       <script>
 //<!--
-	var adstring	=	"<SCRIPT LANGUAGE='JavaScript1.1' SRC='http://ad.doubleclick.net/adj/elle.lana.com/;kw=samsung_elle;sz=233x54;tile=1;loc=right;ord="  + myNum798 + "?'></" + "script>";
-	document.write(adstring)
-		if ((!document.images && navigator.userAgent.indexOf("Mozilla/2.") >= 0)  || navigator.userAgent.indexOf("WebTV")>= 0) {
+   var adstring   =  "<SCRIPT LANGUAGE='JavaScript1.1' SRC='http://ad.doubleclick.net/adj/elle.lana.com/;kw=samsung_elle;sz=233x54;tile=1;loc=right;ord="  + myNum798 + "?'></" + "script>";
+   document.write(adstring)
+      if ((!document.images && navigator.userAgent.indexOf("Mozilla/2.") >= 0)  || navigator.userAgent.indexOf("WebTV")>= 0) {
 document.write('<A HREF="http://ad.doubleclick.net/jump/elle.lana.com/;kw=samsung_elle;sz=233x54;tile=1;loc=right;ord=" +myNum798+ "?" TARGET="_blank">');
 document.write('<IMG SRC="http://ad.doubleclick.net/ad/elle.lana.com/;kw=samsung_elle;sz=233x54;tile=1;loc=right;ord=" +myNum798+ "?" WIDTH="233" HEIGHT="54" BORDER="0" ALT=""></A>');
-		}
+      }
 //-->
 </script>
 <NOSCRIPT><A HREF="http://ad.doubleclick.net/jump/elle.lana.com/;kw=samsung_elle;sz=233x54;tile=1;loc=right;ord=[timestamp]?" TARGET="_blank"><IMG SRC="http://ad.doubleclick.net/ad/elle.lana.com/;kw=samsung_elle;sz=233x54;tile=1;loc=right;ord=[timestamp]?" WIDTH="233" HEIGHT="54" BORDER="0" ALT=""></A></NOSCRIPT>
@@ -210,48 +210,49 @@ document.write('<IMG SRC="http://ad.doubleclick.net/ad/elle.lana.com/;kw=samsung
   <input type="hidden" value="elle@elle.email-publisher.com" name="lists" />
   <tr><td colspan="2"><img src="media/11820061941.gif" border="0" alt="divider"></td></tr>
   <tr valign="top">
-  <mm:list nodes="elle_root" path="rubriek,posrel,pagina" orderby="posrel.pos" directions="up" max="1">
-	  <mm:node element="pagina">
-		  <td>
-				<mm:related path="posrel,linklijst,lijstcontentrel,images" constraints="<%= "images.bron = '" + language + "'"%>">
-					<mm:node element="images">
-						<img src=<mm:image/> width="92" height="126" border="0">
-					</mm:node>
-				</mm:related>
-		  </td>
-		  <td>
-		  	<p><img src="media/title-subscribe.gif" width="132" height="15"><br>
-				<mm:related path="posrel,linklijst,lijstcontentrel,link" orderby="lijstcontentrel.pos" directions="up">
-					<mm:node element="link" jspvar="dummy" notfound="skipbody">
-						<mm:last inverse="true">
-							<% String color = "#4B4B4B"; %>
-							<mm:first><% color = "#A81B32"; %></mm:first>
-						<%	String value = LocaleUtil.getField(dummy,"titel",language); %>
-							<img src="media/shim.gif" width="9" height="9"><a href="<mm:field name="url"/>" target="_blank"><img src="media/clickhere.gif" height="7" width="4" align="absMiddle" border="0"></a>
-							<a href="<mm:field name="url"/>" style="text-decoration: none;" target="_blank">
-							<font size="1" face="Arial Narrow" color="<%= color %>"><b><%= value.toUpperCase() %></b></font></a><br>
-						</mm:last>
-						<mm:last>
-							<% String sTitel = LocaleUtil.getField(dummy,"titel",language); 
-								String sDescr = LocaleUtil.getField(dummy,"omschrijving",language);
-								String sAltText = LocaleUtil.getField(dummy,"alt_tekst",language);%>
-							<IMG alt=divider src="media/divider_h.gif" border=0 width="142" height="5">
-							<img src="media/shim.gif" width="9" height="9"><font face="Tahoma" size="1"><b><%= sTitel.toUpperCase() %></b></font>
-
-							<br/>
-  							<img src="media/shim.gif" width="6" height="9">
-					   	<input class="inputGrey" maxlength="50" size="20" value="<%= sDescr %>" name="email">
-					   	<br/>
-							<img src="media/shim.gif" width="3" height="9"><input type="submit" value="<%= sAltText.toUpperCase() %>" name="B1" style="border:0px solid #FAFAFA; font-family: Tahoma; font-weight: bold; font-size: 10px; padding: 0; background-color: #FAFAFA; cursor: hand;"><INPUT type=image src="media/clickhere.gif" height="7" width="4" align="absMiddle" border="0" name="submit">
-						</mm:last>
-					</mm:node>	
-			  </mm:related>		
-								
-
-   	</p>
-	  </td>
-
-	  </mm:node>
+  <mm:list nodes="elle_root" path="rubriek,posrel,pagina,posrel,linklijst" max="1">
+     <mm:node element="linklijst" jspvar="ll">
+        <td>
+            <mm:related path="lijstcontentrel,images" constraints="<%= "images.bron = '" + language + "'"%>">
+               <mm:node element="images">
+                  <img src=<mm:image/> width="92" height="126" border="0">
+               </mm:node>
+            </mm:related>
+        </td>
+        <td>
+         <p><img src="media/shim.gif" width="6" height="9"><span style="font:Verdana;font-weight:bold;font-size:14px;font-variant:small-caps"><%= LocaleUtil.getField(ll,"naam",language) %><span><br>
+            <mm:related path="lijstcontentrel,link" orderby="lijstcontentrel.pos" directions="up">
+               <mm:node element="link" jspvar="dummy" notfound="skipbody">
+                  <mm:last inverse="true">
+                     <% 
+                     // *** these are the links
+                     String color = "#4B4B4B"; 
+                     %>
+                     <mm:first><% color = "#A81B32"; %></mm:first>
+                     <% String value = LocaleUtil.getField(dummy,"titel",language); %>
+                     <img src="media/shim.gif" width="9" height="9"><a href="<mm:field name="url"/>" target="_blank"><%
+                        %><img src="media/clickhere.gif" height="7" width="4" align="absMiddle" border="0"></a><%
+                        %><a href="<mm:field name="url"/>" style="text-decoration: none;" target="_blank">
+                     <font size="1" face="Arial Narrow" color="<%= color %>"><b><%= value.toUpperCase() %></b></font></a><br>
+                  </mm:last>
+                  <mm:last>
+                     <%
+                     // *** this is the subscribe from
+                     String sTitel = LocaleUtil.getField(dummy,"titel",language); 
+                     String sDescr = LocaleUtil.getField(dummy,"omschrijving",language);
+                     String sAltText = LocaleUtil.getField(dummy,"alt_tekst",language);
+                     %>
+                     <img alt=divider src="media/divider_h.gif" border=0 width="142" height="5"><br/>
+                     <img src="media/shim.gif" width="9" height="9"><font face="Tahoma" size="1"><b><%= sTitel.toUpperCase() %></b></font><br/>
+                     <img src="media/shim.gif" width="9" height="9"><input class="inputGrey" maxlength="50" size="20" value="<%= sDescr %>" name="email"><br/>
+                     <img src="media/shim.gif" width="9" height="9"><input type="submit" value="<%= sAltText.toUpperCase() %>" name="B1" style="border:0px solid #FAFAFA; font-family: Tahoma; font-weight: bold; font-size: 10px; padding: 0; background-color: #FAFAFA; cursor: hand; width:<%= sAltText.length()*6 + 4 %>px"><%
+                     %><input type=image src="media/clickhere.gif" height="7" width="4" align="absMiddle" border="0" name="submit">                     
+                  </mm:last>
+               </mm:node>  
+           </mm:related>
+      </p>
+     </td>
+     </mm:node>
   </mm:list>
 </tr><tr><td colspan="2"><img src="media/11820061941.gif" border="0" alt="divider"></td></tr>
 </form>
@@ -292,7 +293,7 @@ document.write('<IMG SRC="http://ad.doubleclick.net/ad/elle.lana.com/;kw=samsung
             <br><br>
           </td>
         </tr>
-		<tr> 
+      <tr> 
           <td valign="top"> 
             <select name="select" size="1" class="formfields1" onChange="window.open(this.options[this.selectedIndex].value,'_top')">
                <option selected>Fall  2006 Ready-To-Wear</option>
@@ -302,7 +303,7 @@ document.write('<IMG SRC="http://ad.doubleclick.net/ad/elle.lana.com/;kw=samsung
             <br><br>
           </td>
         </tr>
-		<tr> 
+      <tr> 
           <td colspan="2" valign="top"><img src="media/shim.gif" width="411" height="9" border="0">
           </td>
         </tr>
@@ -327,7 +328,7 @@ document.write('<IMG SRC="http://ad.doubleclick.net/ad/elle.lana.com/;kw=samsung
     <td colspan="3" align="left" valign="middle" bgcolor="#7E7E7E"><img src="media/shim.gif" width="991" height="1" border="0"></td>
   </tr>
   <tr>
-	<td colspan="3" align="left" valign="middle" bgcolor="#949494" class="footer">
+   <td colspan="3" align="left" valign="middle" bgcolor="#949494" class="footer">
       <img src="media/shim.gif" width="9" height="23" align="absmiddle"> <a href="http://aboutus.hfmus.com/copyright.asp" target="_blank" class="footer">
       Copyright&copy; 2006 Hachette Filipacchi Media, U.S., Inc.</a> / <a href="http://aboutus.hfmus.com/terms.asp" target="_blank" class="footer">
       Terms &amp; Conditions</a> / <a href="http://aboutus.hfmus.com/privacy.asp" target="_blank" class="footer">
@@ -352,30 +353,30 @@ document.write('<IMG SRC="http://ad.doubleclick.net/ad/elle.lana.com/;kw=samsung
 <!--
 function dcs_6_0(dcs_URI,dcs_QRY,dcs_EXT)
 {
-	var dCurrent = new Date();
-	var P = "";
-	//P+="http"+(window.location.protocol.indexOf('https:')==0?'s':'')+"://63.240.88.247/dcs.gif?";
-	if (window.location.protocol.indexOf('https:')==0)
-	{
-	P+="https://secure.hfmus.com/dcs.gif?";
-	}
+   var dCurrent = new Date();
+   var P = "";
+   //P+="http"+(window.location.protocol.indexOf('https:')==0?'s':'')+"://63.240.88.247/dcs.gif?";
+   if (window.location.protocol.indexOf('https:')==0)
+   {
+   P+="https://secure.hfmus.com/dcs.gif?";
+   }
 else
-	{
-	P+="http://63.240.88.247/dcs.gif?";
-	}
-	P+="dcsuri="+escape(dcs_URI);
-	P+="&dcsqry="+escape(dcs_QRY);
-	if ((window.document.referrer != "") && (window.document.referrer != "-"))
-	{
-		if (!(navigator.appName == "Microsoft Internet Explorer" && parseInt(navigator.appVersion) < 4) )
-		{
-			P+="&dcsref="+escape(window.document.referrer);
-		}
-	}
-	P+=dcs_EXT;
-	P+="&dcssip=www.elle.com";
-	P+="&dcsdat="+escape(dCurrent.getTime());
-	document.write('<IMG BORDER="0" NAME="DCSIMG" WIDTH="1" HEIGHT="1" SRC="'+P+'">');
+   {
+   P+="http://63.240.88.247/dcs.gif?";
+   }
+   P+="dcsuri="+escape(dcs_URI);
+   P+="&dcsqry="+escape(dcs_QRY);
+   if ((window.document.referrer != "") && (window.document.referrer != "-"))
+   {
+      if (!(navigator.appName == "Microsoft Internet Explorer" && parseInt(navigator.appVersion) < 4) )
+      {
+         P+="&dcsref="+escape(window.document.referrer);
+      }
+   }
+   P+=dcs_EXT;
+   P+="&dcssip=www.elle.com";
+   P+="&dcsdat="+escape(dCurrent.getTime());
+   document.write('<IMG BORDER="0" NAME="DCSIMG" WIDTH="1" HEIGHT="1" SRC="'+P+'">');
 }
 //-->
 </script>
@@ -383,31 +384,31 @@ else
 <!--
 function dcsExtend(N,V)
 {
-	dcsEXT+="&"+N+"="+escape(V);
+   dcsEXT+="&"+N+"="+escape(V);
 }
 function dcsMeta() 
 {
-	var F=false;
-	var myDocumentElements;
-	if (document.all)
-	{
-		F = true;
-		myDocumentElements=document.all.tags("meta");
-	}
-	if (!F && document.documentElement)
-	{
-		F = true;    
-		myDocumentElements=document.getElementsByTagName("meta");
-	}
-	if (F)
-	{
-		for (var i=1; i<=myDocumentElements.length;i++)
-		{
-			myMeta=myDocumentElements.item(i-1);
-			if (myMeta.name.indexOf('WT.')==0)
-				dcsExtend(myMeta.name,myMeta.content);
-		}
-	}	
+   var F=false;
+   var myDocumentElements;
+   if (document.all)
+   {
+      F = true;
+      myDocumentElements=document.all.tags("meta");
+   }
+   if (!F && document.documentElement)
+   {
+      F = true;    
+      myDocumentElements=document.getElementsByTagName("meta");
+   }
+   if (F)
+   {
+      for (var i=1; i<=myDocumentElements.length;i++)
+      {
+         myMeta=myDocumentElements.item(i-1);
+         if (myMeta.name.indexOf('WT.')==0)
+            dcsExtend(myMeta.name,myMeta.content);
+      }
+   }  
 }
 
 var dcsURI=window.location.pathname;
@@ -419,15 +420,15 @@ var dcsEXT="";
 
 // CMS custom parameters - start
 
-	// Section Index Grabber
+   // Section Index Grabber
 dcsExtend ("cmsSectionIndex","home")
 
-	 	dcsExtend ("cmsSection","home")
+      dcsExtend ("cmsSection","home")
 
 dcsExtend ("cmsArticle","home")
-	
+   
 dcsExtend ("cmsPage","1")
-	
+   
 
 // Page Link
 
@@ -459,7 +460,7 @@ dcs_6_0(dcsURI,dcsQRY,dcsEXT);
 <noscript>
 <img border="0" name="dcsimg" width="1" height="1" SRC="http://63.240.88.247/njs.gif?dcsuri=/nojavascript">
 </noscript>
-<!-- END OF SmartSource Data Collector TAG -->	
+<!-- END OF SmartSource Data Collector TAG -->  
 
 
 <!--Connors Tracking Code-->
