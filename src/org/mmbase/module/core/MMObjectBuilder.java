@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.391 2006-08-17 15:43:46 nklasens Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.391.2.1 2006-09-20 17:44:07 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -2656,7 +2656,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             CoreField def = (CoreField) i.next();
             String name = def.getName();
             def.setParent(this);
-            fields.put(name, def);
+            fields.put(name.toLowerCase(), def);
         }
 
         // should be TYPE_NODE ???
