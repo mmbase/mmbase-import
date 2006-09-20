@@ -1,3 +1,4 @@
+<%@page import="java.util.*,nl.leocms.util.*,nl.leocms.util.tools.*,nl.leocms.applications.*" %>
 <%@ page language="java" contentType="text/html; charset=utf-8" import="java.util.*" %>
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
 <%-- weet niet of d'r wat omvalt zonder session is true ?? @ page session="true" --%>
