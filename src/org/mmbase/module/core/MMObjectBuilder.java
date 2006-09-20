@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.393 2006-09-11 10:55:22 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.394 2006-09-20 17:43:15 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -2581,15 +2581,13 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      *
      * @param f A List with fields (as CoreField objects) as defined by MMBase. This may not be in sync with the actual database table, about which Storage will report then.
      */
-    public void setFields(List f) {
+    public void setFields(List<CoreField> f) {
         fields.clear();
 
-        Iterator i = f.iterator();
-        while (i.hasNext()) {
-            CoreField def = (CoreField) i.next();
+        for (CoreField def : f) {
             String name = def.getName();
             def.setParent(this);
-            fields.put(name, def);
+            fields.put(name.toLowerCase(), def);
         }
 
         // should be TYPE_NODE ???
@@ -2602,9 +2600,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             // here, we should set the DBPos to 2 and adapt those of the others fields
             def.setStoragePosition(2);
             def.getDataType().setRequired(true);
-            i = f.iterator();
-            while (i.hasNext()) {
-                CoreField field = (CoreField) i.next();
+            for (CoreField field : f) {
                 int pos = field.getStoragePosition();
                 if (pos > 1) field.setStoragePosition(pos + 1);
             }
