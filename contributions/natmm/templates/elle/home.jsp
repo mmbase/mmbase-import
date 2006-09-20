@@ -122,53 +122,50 @@ document.getElementById(id).value = "";
  } 
  //--> 
  </script> 
-
+<% String language = request.getParameter("languages");
+   if (language==null) { language = "en"; } %>
 <table width="991" border="0" cellspacing="0" cellpadding="0" summary="logo, newsletter signup, page title, and search" ID="Table1">
   <tr>
     <td width="271" align="left" valign="middle" bgcolor="#000000"><img src="media/1028200514555001.gif" width="271" height="64" border="0"></td>
     <td width="720" align="left" valign="middle" bgcolor="#000000"><!-- advertisement 1 --></td>
   </tr>
   <tr>
-  <form method="post" action="/searcher.asp?section_id=43&article_id=0" ID="Form1">
      <td valign="center" align="left" background="media/1028200514555233.gif" colspan="2" height="29">
 		 <table cellSpacing=0 cellPadding=0>
 		 <tr>
-			 <mm:list nodes="elle_root" path="rubriek,posrel,pagina" fields="pagina.number" orderby="posrel.pos" directions="up">
-         <mm:first inverse="true"><td align="center"><img src="media/divider.gif" border="0"></td></mm:first>
-				 <mm:node element="pagina" jspvar="dummy" notfound="skipbody">
-					<td width="109" align="center"><nobr>
-					 <%
-					 String language = "nl";
-					 String value = LocaleUtil.getField(dummy,"titel",language);
-					 if (value.equals("search")) { //may be distinguishing should be implemented by alias? 
-					    %>
-                <input class="inputGrey" maxLength="50" size="15" value=" <%= value %> " name="search_value">
-              </td>
-              <td align="left" valign="middle">
-                <input value="GO" type="button" style="cursor: hand;font-family: Arial; font-size: 10px; color: #CFCFCF; font-weight: bold; border-style: solid; border-width: 0; width: 15; height: 29;background-position: center; background: url('media/1028200514555233.gif')" name="submit">
-                <input type="image" height="7" width="4" src="media/go.gif" align="absMiddle" border="0" name="submit">
-				      <%
-				    } else {
-				      %>
-              <a href="#" class="menuitem"><font face="Arial" size="1"><b>
-              <%= value.toUpperCase() %></b></font></a>
-					    <% 
-					 }
-					 %></nobr>
-					</td>
-				</mm:node>
-			</mm:list>
-			<td width="109" align="center">
-				<select class="inputGrey" style="width:90px" name="languages" onchange="jumpPage(this.form)">
-					<option value="en">English</option>
-					<option value="nl">Nederlands</option>
-					<option value="de">Deutsch</option>
-					<option value="fra">Fran&ccedil;ais</option>
-				</select>
-			</td>
+	 	  <form method="post" action="/searcher.asp?section_id=43&article_id=0" ID="Form1">
+			 	<mm:list nodes="elle_root" path="rubriek,posrel,pagina" fields="pagina.number" orderby="posrel.pos" directions="up">
+		         <mm:first inverse="true"><td align="center"><img src="media/divider.gif" border="0"></td></mm:first>
+						 <mm:node element="pagina" jspvar="dummy" notfound="skipbody">
+							<td width="109" align="center"><nobr>
+							 <% String value = LocaleUtil.getField(dummy,"titel",language); %>
+								 <mm:last>
+									 <input class="inputGrey" maxLength="50" size="15" value=" <%= value %> " name="search_value">
+			   		           </td><td align="left" valign="middle">
+      				          <input value="GO" type="submit" style="cursor: hand;font-family: Arial; font-size: 10px; color: #CFCFCF; font-weight: bold; border-style: solid; border-width: 0; width: 15; height: 29;background-position: center; background: url('media/1028200514555233.gif')" name="submit">
+				                <input type="image" height="7" width="4" src="media/go.gif" align="absMiddle" border="0" name="submit">
+								 </mm:last>	 
+								 <mm:last inverse="true">
+								 	<a href="#" class="menuitem"><font face="Arial" size="1"><b>
+				              <%= value.toUpperCase() %></b></font></a>
+					    		</mm:last>	
+						 </nobr>
+						</td>
+					</mm:node>
+				</mm:list>
+		  </form>
+		  <form method="post">
+				<td width="109" align="center">
+					<select class="inputGrey" style="width:90px" name="languages" onchange="document.forms[2].submit();">
+						<option value="en" <% if (language.equals("en")) {%>selected<% } %>>English</option>
+						<option value="nl" <% if (language.equals("nl")) {%>selected<% } %>>Nederlands</option>
+						<option value="de" <% if (language.equals("de")) {%>selected<% } %>>Deutsch</option>
+						<option value="fra" <% if (language.equals("fra")) {%>selected<% } %>>Fran&ccedil;ais</option>
+					</select>
+				</td>
+		 </form>
 		 </tr></table>
 		</td>
-  </form>
   </tr>
 </table>
 <table width="991" border="0" cellpadding="0" cellspacing="0" bgcolor="#FAFAFA" summary="left nav, main content, and 336x600 banner" ID="Table2">
@@ -213,17 +210,49 @@ document.write('<IMG SRC="http://ad.doubleclick.net/ad/elle.lana.com/;kw=samsung
   <input type="hidden" value="elle@elle.email-publisher.com" name="lists" />
   <tr><td colspan="2"><img src="media/11820061941.gif" border="0" alt="divider"></td></tr>
   <tr valign="top">
-  <td><img src="media/1101200518411437.jpg" width="92" height="126"></td>
-  <td><p><img src="media/title-subscribe.gif" width="132" height="15"><br>
-      <a href="http://ad.doubleclick.net/clk;10299221;6248430;a?https://www.neodata.com/ITPS2.cgi?OrderType=Reply+Only&ItemCode=ELLE&iResponse=ELLE.MAIN" target="_blank"><img src="media/magsub-btn-click.gif" width="132" height="11" border="0"></a><br>
-      <a href="http://ad.doubleclick.net/clk;10299221;6248430;a?https://www.neodata.com/ITPS2.cgi?OrderType=Reply+Only&ItemCode=ELLE&iResponse=ELLE.MAIN" target="_blank"><img src="media/magsub-btn-gift.gif" width="141" height="11" border="0"></a><br>
-      <a href="http://ad.doubleclick.net/clk;10299221;6248430;a?https://www.neodata.com/ITPS2.cgi?OrderType=Reply+Only&ItemCode=ELLE&iResponse=ELLE.MAIN" target="_blank"><img src="media/magsub-btn-service.gif" width="132" height="11" border="0"></a><br>
-      <img src="media/ellecom-newsltr-title.gif" width="141" height="34"><br>
-      <img src="media/shim.gif" width="6" height="9">
-      <input class="inputGrey" maxlength="50" size="20" value="Enter email address " name="email">
-      <br>
-	<img src="media/shim.gif" width="6" height="9">  <input type="image" name="submit" src="media/12272005144657.gif">
-	  </p></td>
+  <mm:list nodes="elle_root" path="rubriek,posrel,pagina" orderby="posrel.pos" directions="up" max="1">
+	  <mm:node element="pagina">
+		  <td>
+				<mm:related path="posrel,linklijst,lijstcontentrel,images" constraints="<%= "images.bron = '" + language + "'"%>">
+					<mm:node element="images">
+						<img src=<mm:image/> width="92" height="126" border="0">
+					</mm:node>
+				</mm:related>
+		  </td>
+		  <td>
+		  	<p><img src="media/title-subscribe.gif" width="132" height="15"><br>
+				<mm:related path="posrel,linklijst,lijstcontentrel,link" orderby="lijstcontentrel.pos" directions="up">
+					<mm:node element="link" jspvar="dummy" notfound="skipbody">
+						<mm:last inverse="true">
+							<% String color = "#4B4B4B"; %>
+							<mm:first><% color = "#A81B32"; %></mm:first>
+						<%	String value = LocaleUtil.getField(dummy,"titel",language); %>
+							<img src="media/shim.gif" width="9" height="9"><a href="<mm:field name="url"/>" target="_blank"><img src="media/clickhere.gif" height="7" width="4" align="absMiddle" border="0"></a>
+							<a href="<mm:field name="url"/>" style="text-decoration: none;" target="_blank">
+							<font size="1" face="Arial Narrow" color="<%= color %>"><b><%= value.toUpperCase() %></b></font></a><br>
+						</mm:last>
+						<mm:last>
+							<% String sTitel = LocaleUtil.getField(dummy,"titel",language); 
+								String sDescr = LocaleUtil.getField(dummy,"omschrijving",language);
+								String sAltText = LocaleUtil.getField(dummy,"alt_tekst",language);%>
+							<IMG alt=divider src="media/divider_h.gif" border=0 width="142" height="5">
+							<img src="media/shim.gif" width="9" height="9"><font face="Tahoma" size="1"><b><%= sTitel.toUpperCase() %></b></font>
+
+							<br/>
+  							<img src="media/shim.gif" width="6" height="9">
+					   	<input class="inputGrey" maxlength="50" size="20" value="<%= sDescr %>" name="email">
+					   	<br/>
+							<img src="media/shim.gif" width="3" height="9"><input type="submit" value="<%= sAltText.toUpperCase() %>" name="B1" style="border:0px solid #FAFAFA; font-family: Tahoma; font-weight: bold; font-size: 10px; padding: 0; background-color: #FAFAFA; cursor: hand;"><INPUT type=image src="media/clickhere.gif" height="7" width="4" align="absMiddle" border="0" name="submit">
+						</mm:last>
+					</mm:node>	
+			  </mm:related>		
+								
+
+   	</p>
+	  </td>
+
+	  </mm:node>
+  </mm:list>
 </tr><tr><td colspan="2"><img src="media/11820061941.gif" border="0" alt="divider"></td></tr>
 </form>
 </table>
