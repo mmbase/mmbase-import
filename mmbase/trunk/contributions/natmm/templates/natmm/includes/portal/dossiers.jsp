@@ -1,7 +1,5 @@
-<%@page import="nl.leocms.evenementen.Evenement,nl.leocms.util.PaginaHelper" %>
-<%@page import="org.mmbase.bridge.*" %>
-<%@page import="nl.leocms.util.*" %>
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@include file="/taglibs.jsp" %>
+<%@page import="nl.leocms.evenementen.Evenement,org.mmbase.bridge.*" %>
 <%@include file="../../includes/image_vars.jsp" %>
 <mm:cloud jspvar="cloud">
 <%
