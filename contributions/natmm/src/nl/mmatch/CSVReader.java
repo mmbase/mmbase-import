@@ -1012,41 +1012,41 @@ public class CSVReader implements Runnable {
               if(importType==FULL_IMPORT) {
               
               Vector files = new Vector();
-              
-              // start with marking all relations as inactive
-              String [] employeeRelations = {"readmore","afdelingen","readmore","locations"};
-              String [] employeeFields = {"importstatus","inactive"};
-              String [] departmentRelations = {"posrel","afdelingen"};
-              // the importstatus field of afdelingen can be 'inactive' or comma seperated list of descendants
-              String [] departmentFields = {"importstatus","inactive"};
-              nodesMarked = markNodesAndRelations(cloud,"medewerkers",employeeRelations,employeeFields);
-              nodesMarked += markNodesAndRelations(cloud,"afdelingen",departmentRelations,departmentFields);
-              
-              
-              TreeMap emails = getEmails(emailFile);
-              logMessage += "\n<br>" + su.getDateTimeString() + su.jvmSize() + " - Emails are imported from: " + emailFile;
-              logMessage += updateOrg(cloud,orgFile);
-              
               logMessage += "\nUnzipping " + beauZip + " (lm=" + lastModifiedDate(beauZip) + ")";
               files.addAll(unZip(beauZip,temp));
-              logMessage += updatePersons(cloud, emails, dataFile);
-              
+              if(files.size()!=0) {
+               
+                // start with marking all relations as inactive
+                String [] employeeRelations = {"readmore","afdelingen","readmore","locations"};
+                String [] employeeFields = {"importstatus","inactive"};
+                String [] departmentRelations = {"posrel","afdelingen"};
+                // the importstatus field of afdelingen can be 'inactive' or comma seperated list of descendants
+                String [] departmentFields = {"importstatus","inactive"};
+                nodesMarked = markNodesAndRelations(cloud,"medewerkers",employeeRelations,employeeFields);
+                nodesMarked += markNodesAndRelations(cloud,"afdelingen",departmentRelations,departmentFields);
+                                
+                TreeMap emails = getEmails(emailFile);
+                logMessage += "\n<br>" + su.getDateTimeString() + su.jvmSize() + " - Emails are imported from: " + emailFile;
+                logMessage += updateOrg(cloud,orgFile);
+                logMessage += updatePersons(cloud, emails, dataFile);
+                                
+                // finish with deleting all inactive relations; employees and departments are never deleted because then can be created manually
+                employeeFields[1] = "-1"; // prevent employees from being deleted
+                departmentFields[1] = "-1";  // prevent departments from being deleted
+                nodesDeleted = deleteNodesAndRelations(cloud,"medewerkers",employeeRelations,employeeFields);
+                nodesDeleted += deleteNodesAndRelations(cloud,"afdelingen",departmentRelations,departmentFields);
+                numberOfEmptyDept = updateDepartments(cloud);
+                logMessage +=  "\n<br>" + su.getDateTimeString() + su.jvmSize()
+                   + " - Number of nodes and relations marked as inactive before update: " + nodesMarked
+                   + "\n<br>Number of inactive nodes deleted: " + nodesDeleted
+                   + "\n<br>Number of departments without employees: " + numberOfEmptyDept;
+              }
+
               if(ap.isInstalled("NatMM")) {
                  logMessage += "\nUnzipping " + nmvZip + " (lm=" + lastModifiedDate(nmvZip) + ")";
                  files.addAll(unZip(nmvZip,temp));
-				     logMessage += updateNMV(cloud, nmvFile);
-				  }
-              
-              // finish with deleting all inactive relations; employees and departments are never deleted because then can be created manually
-              employeeFields[1] = "-1"; // prevent employees from being deleted
-              departmentFields[1] = "-1";  // prevent departments from being deleted
-              nodesDeleted = deleteNodesAndRelations(cloud,"medewerkers",employeeRelations,employeeFields);
-              nodesDeleted += deleteNodesAndRelations(cloud,"afdelingen",departmentRelations,departmentFields);
-              numberOfEmptyDept = updateDepartments(cloud);
-              logMessage +=  "\n<br>" + su.getDateTimeString() + su.jvmSize()
-                 + " - Number of nodes and relations marked as inactive before update: " + nodesMarked
-                 + "\n<br>Number of inactive nodes deleted: " + nodesDeleted
-                 + "\n<br>Number of departments without employees: " + numberOfEmptyDept;
+                 logMessage += updateNMV(cloud, nmvFile);
+              }
             }
             if(ap.isInstalled("NatMM")) {
                if( importType==FULL_IMPORT || importType==ONLY_MEMBERLOAD) {
