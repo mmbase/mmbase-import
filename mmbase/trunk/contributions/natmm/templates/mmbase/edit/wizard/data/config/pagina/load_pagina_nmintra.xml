@@ -32,8 +32,8 @@
           <object />
         </relation>
         <relation destination="pagina" role="readmore">
-		      <object />
-	      </relation>
+            <object />
+         </relation>
       </object>
     </relation>
     </object>
@@ -51,7 +51,7 @@
   </relation>
   <relation destination="items" role="posrel"/>
   <relation destination="link" role="posrel"/>
-  <relation destination="linklijst" role="lijstcontentrel">
+  <relation destination="linklijst" role="posrel">
     <object>
       <relation destination="link" role="lijstcontentrel">
         <object />
