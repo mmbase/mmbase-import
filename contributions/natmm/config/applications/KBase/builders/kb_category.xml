@@ -40,7 +40,7 @@
       <gui>
         <guiname xml:lang="en">position</guiname>
         <guiname xml:lang="nl">positie</guiname>
-        <guitype>string</guitype>
+        <guitype>integer</guitype>
       </gui>
       <editor>
         <positions>
@@ -51,7 +51,7 @@
       </editor>
       <db>
         <name xml:lang="en">pos</name>
-        <type key="false" notnull="false" size="255" state="persistent">STRING</type>
+        <type state="persistent" notnull="false" key="false">INTEGER</type>
       </db>
     </field>
     <field>
@@ -62,9 +62,9 @@
       </gui>
       <editor>
         <positions>
-          <input>6</input>
-          <list>6</list>
-          <search>6</search>
+          <input>7</input>
+          <list>7</list>
+          <search>7</search>
         </positions>
       </editor>
       <db>
