@@ -46,7 +46,7 @@
     //eerst alle child categorien ophalen
     //alleen doen als huidige node zichtbaar is of editor='true'
 
-      NodeIterator childCategories=wolk.getList(category.getStringValue("number"),"kb_category,kb_category1","kb_category1.number,kb_category1.name", null,"kb_category1.name","up","destination",false).nodeIterator(); 
+      NodeIterator childCategories=wolk.getList(category.getStringValue("number"),"kb_category,kb_category1","kb_category1.number,kb_category1.name", null,"kb_category1.pos,kb_category1.name","up,up","destination",false).nodeIterator(); 
       //en nu aan de xml toevoegen
       Node child;
       boolean visible;
