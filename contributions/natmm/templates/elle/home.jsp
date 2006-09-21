@@ -141,7 +141,7 @@ document.getElementById(id).value = "";
                       <% String value = LocaleUtil.getField(dummy,"titel",language); %>
                          <mm:last>
                             <input class="inputGrey" maxLength="50" size="15" value=" <%= value %> " name="search_value">
-                             </td><td align="left" valign="middle">
+                             </td><td width="109" align="left" valign="middle">
                             <input value="GO" type="submit" style="cursor: hand;font-family: Arial; font-size: 10px; color: #CFCFCF; font-weight: bold; border-style: solid; border-width: 0; width: 15; height: 29;background-position: center; background: url('media/1028200514555233.gif')" name="submit">
                             <input type="image" height="7" width="4" src="media/go.gif" align="absMiddle" border="0" name="submit">
                          </mm:last>  
@@ -155,12 +155,12 @@ document.getElementById(id).value = "";
             </mm:list>
         </form>
         <form method="post">
-            <td width="109" align="center">
+            <td width="109" align="right">
                <select class="inputGrey" style="width:90px" name="languages" onchange="document.forms[2].submit();">
                   <option value="eng" <% if (language.equals("eng")) {%>selected<% } %>>English</option>
-                  <option value="nl" <% if (language.equals("nl")) {%>selected<% } %>>Nederlands</option>
-                  <option value="de" <% if (language.equals("de")) {%>selected<% } %>>Deutsch</option>
                   <option value="fra" <% if (language.equals("fra")) {%>selected<% } %>>Fran&ccedil;ais</option>
+                  <option value="de" <% if (language.equals("de")) {%>selected<% } %>>Deutsch</option>
+                  <option value="nl" <% if (language.equals("nl")) {%>selected<% } %>>Nederlands</option>
                </select>
             </td>
        </form>
@@ -220,7 +220,7 @@ document.write('<IMG SRC="http://ad.doubleclick.net/ad/elle.lana.com/;kw=samsung
             </mm:related>
         </td>
         <td>
-         <p><img src="media/shim.gif" width="6" height="9"><span style="font:Verdana;font-weight:bold;font-size:14px;font-variant:small-caps"><%= LocaleUtil.getField(ll,"naam",language) %><span><br>
+         <p><img src="media/shim.gif" width="6" height="9"><span style="font:Verdana;font-weight:bold;font-size:14px;font-variant:small-caps"><%= LocaleUtil.getField(ll,"naam",language) %></span><br>
             <mm:related path="lijstcontentrel,link" orderby="lijstcontentrel.pos" directions="up">
                <mm:node element="link" jspvar="dummy" notfound="skipbody">
                   <mm:last inverse="true">
@@ -233,7 +233,8 @@ document.write('<IMG SRC="http://ad.doubleclick.net/ad/elle.lana.com/;kw=samsung
                      <img src="media/shim.gif" width="9" height="9"><a href="<mm:field name="url"/>" target="_blank"><%
                         %><img src="media/clickhere.gif" height="7" width="4" align="absMiddle" border="0"></a><%
                         %><a href="<mm:field name="url"/>" style="text-decoration: none;" target="_blank">
-                     <font size="1" face="Arial Narrow" color="<%= color %>"><b><%= value.toUpperCase() %></b></font></a><br>
+								<font face="Nina" size="1.5" color="<%= color %>">
+								<span style="font-variant:small-caps;"><%= value.toUpperCase() %></span></font></a><br>
                   </mm:last>
                   <mm:last>
                      <%
@@ -245,7 +246,7 @@ document.write('<IMG SRC="http://ad.doubleclick.net/ad/elle.lana.com/;kw=samsung
                      <img alt=divider src="media/divider_h.gif" border=0 width="142" height="5"><br/>
                      <img src="media/shim.gif" width="9" height="9"><font face="Tahoma" size="1"><b><%= sTitel.toUpperCase() %></b></font><br/>
                      <img src="media/shim.gif" width="9" height="9"><input class="inputGrey" maxlength="50" size="20" value="<%= sDescr %>" name="email"><br/>
-                     <img src="media/shim.gif" width="9" height="9"><input type="submit" value="<%= sAltText.toUpperCase() %>" name="B1" style="border:0px solid #FAFAFA; font-family: Tahoma; font-weight: bold; font-size: 10px; padding: 0; background-color: #FAFAFA; cursor: hand; width:<%= sAltText.length()*6 + 4 %>px"><%
+                     <img src="media/shim.gif" width="9" height="9"><input type="submit" value="<%= sAltText.toUpperCase() %>" style="border:0px solid #FAFAFA; font-family: Tahoma; font-weight: bold; font-size: 10px; padding: 0; background-color: #FAFAFA; cursor: hand; width:<%= sAltText.length()*6 + 4 %>px"><%
                      %><input type=image src="media/clickhere.gif" height="7" width="4" align="absMiddle" border="0" name="submit">                     
                   </mm:last>
                </mm:node>  
@@ -414,45 +415,10 @@ function dcsMeta()
 var dcsURI=window.location.pathname;
 var dcsQRY=window.location.search;
 var dcsEXT="";
-
-// /Default.asp
-
-
-// CMS custom parameters - start
-
-   // Section Index Grabber
 dcsExtend ("cmsSectionIndex","home")
-
-      dcsExtend ("cmsSection","home")
-
+dcsExtend ("cmsSection","home")
 dcsExtend ("cmsArticle","home")
-   
 dcsExtend ("cmsPage","1")
-   
-
-// Page Link
-
-
-
-//No PL Found
-
-
-
-// Page Link End
-
-// CMS custom parameters - end
-
-//##############################################################################
-// Site Specific custom parameters - start
-
-
-
-
-// Site Specific custom parameters - end
-//##############################################################################
-
-
-
 dcsMeta();
 dcs_6_0(dcsURI,dcsQRY,dcsEXT);
 //-->
@@ -460,13 +426,7 @@ dcs_6_0(dcsURI,dcsQRY,dcsEXT);
 <noscript>
 <img border="0" name="dcsimg" width="1" height="1" SRC="http://63.240.88.247/njs.gif?dcsuri=/nojavascript">
 </noscript>
-<!-- END OF SmartSource Data Collector TAG -->  
-
-
-<!--Connors Tracking Code-->
 <script src="http://web.elle.com/elle.js" type="text/javascript"></script>
-<!--End Connors Tracking Code-->
-
 
 </body>
 </html>
