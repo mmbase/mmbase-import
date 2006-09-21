@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
  * information see the javadoc of that class.
  * @author Michiel Meeuwissen
- * @version $Id: MmxfSetString.java,v 1.9 2006-08-24 16:15:33 michiel Exp $
+ * @version $Id: MmxfSetString.java,v 1.10 2006-09-21 11:17:34 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -101,8 +101,7 @@ public class MmxfSetString implements  Processor {
         int level = 0;
         int offset = 0;
         int mode;
-        List subSections;
-        List sparedTags;
+        List<Element> subSections;
         ParseState(int sl, int m) {
             this(sl, m, 0);
         }
@@ -110,7 +109,7 @@ public class MmxfSetString implements  Processor {
             level = sl;
             mode = m;
             offset = of;
-            if (m == MODE_SECTION)  subSections = new ArrayList();
+            if (m == MODE_SECTION)  subSections = new ArrayList<Element>();
         }
 
         public String level() {
@@ -155,6 +154,25 @@ public class MmxfSetString implements  Processor {
     }
 
     /**
+     * @since MMBase-1.9
+     */
+    protected String getCssClass(String cl) {
+        List<String> classes = new ArrayList();
+        for (String c : cl.split("\\s+")) {
+            if (! classes.contains(c)) classes.add(c);
+        }
+        StringBuffer c = new StringBuffer();
+        Iterator<String> i = classes.iterator();
+        while (i.hasNext()) {
+            c.append(i.next());
+            if (i.hasNext()) {
+                c.append(" ");
+            }
+        }
+        return c.toString();
+    }
+
+    /**
      * First stage of parsing kupu-output. Does nothing with relations, only cleans up to 'mmxf' XML.
      *
      * @param source       XML as received from kupu
@@ -163,7 +181,7 @@ public class MmxfSetString implements  Processor {
      * @param state        The function is called recursively, and this object remembers the state then (where it was while parsing e.g.).
      */
 
-    private void parseKupu(Element source, Element destination, List links, ParseState state) {
+    private void parseKupu(Element source, Element destination, List<Element> links, ParseState state) {
         org.w3c.dom.NodeList nl = source.getChildNodes();
         if (log.isDebugEnabled()) {
             log.trace(state.level() + state.level + " Appending to " + destination.getNodeName() + " at " + state.offset + " of " + nl.getLength());
@@ -210,7 +228,7 @@ public class MmxfSetString implements  Processor {
                 Element imp = destination.getOwnerDocument().createElement("a");
                 copyAttributes((Element) node, imp);
                 if (name.equals("div")) {
-                    imp.setAttribute("class", "div " + imp.getAttribute("class"));
+                    imp.setAttribute("class", getCssClass("div " + imp.getAttribute("class")));
                 }
                 if (state.mode == MODE_SECTION) {
                     Element p = destination.getOwnerDocument().createElement("p");
@@ -745,7 +763,7 @@ public class MmxfSetString implements  Processor {
         Element body = (Element) bodies.item(0);
         body.normalize();
         Element mmxf = xml.getDocumentElement();
-        List links = new ArrayList();
+        List<Element> links = new ArrayList();
 
         // first stage.
         parseKupu(body, mmxf, links, new ParseState(0, MODE_SECTION));
@@ -798,10 +816,8 @@ public class MmxfSetString implements  Processor {
             }
 
 
-            Iterator linkIterator = links.iterator();
+            for (Element a : links) {
             //String imageServletPath = images.getFunctionValue("servletpath", null).toString();
-            while (linkIterator.hasNext()) {
-                Element a = (Element) linkIterator.next();
                 try {
                     String href = getHref(a, cloud);
                     Matcher mmbaseMatcher =  mmbaseUrl.matcher(href);
