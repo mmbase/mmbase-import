@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: StorageConnector.java,v 1.13 2006-09-11 11:08:16 michiel Exp $
+ * @version $Id: StorageConnector.java,v 1.14 2006-09-21 16:24:16 michiel Exp $
  */
 public class StorageConnector {
 
@@ -289,20 +289,18 @@ public class StorageConnector {
      * @param virtuals containing virtual nodes
      * @return List containing real nodes, directly from this Builders
      */
-    public List getNodes(Collection virtuals) throws SearchQueryException  {
-        List result = new ArrayList();
+    public List<MMObjectNode> getNodes(Collection<MMObjectNode> virtuals) throws SearchQueryException  {
+        List<MMObjectNode> result = new ArrayList();
 
         int numbersSize = 0;
         NodeSearchQuery query = new NodeSearchQuery(builder);
-        BasicStep step = (BasicStep) query.getSteps().get(0);
-        List subResult = new ArrayList();
+        BasicStep step = (BasicStep) query.getSteps().get(0); // casting is ugly !!
 
-        Iterator i = virtuals.iterator();
-        while(i.hasNext()) {
-            MMObjectNode node = (MMObjectNode) i.next();
+        List<Integer> subResult = new ArrayList();
 
+        for (MMObjectNode node : virtuals) {
             // check if this node is already in cache
-            Integer number = Integer.valueOf(node.getNumber());
+            Integer number = node.getNumber();
             if(builder.isNodeCached(number)) {
                 result.add(builder.getNodeFromCache(number));
                 // else seek it with a search on builder in db
@@ -339,19 +337,15 @@ public class StorageConnector {
      * @param result    List to which the real nodes must be added.
      * @since MMBase-1.8.2
      */
-    protected void addSubResult(final NodeSearchQuery query, final List subResult, final List result) throws SearchQueryException {
+    protected void addSubResult(final NodeSearchQuery query, final List<Integer> subResult, final List<MMObjectNode> result) throws SearchQueryException {
         List<MMObjectNode> rawNodes = getRawNodes(query, true);
         // convert this list to a map, for easy reference when filling result.
          // would the creation of this Map not somehow be avoidable?
-        Map rawMap = new HashMap();
-        Iterator i = rawNodes.iterator();
-        while (i.hasNext()) {
-            MMObjectNode n = (MMObjectNode) i.next();
-            rawMap.put(Integer.valueOf(n.getNumber()), n); 
+        Map<Integer, MMObjectNode> rawMap = new HashMap();
+        for (MMObjectNode n : rawNodes) {
+            rawMap.put(n.getNumber(), n); 
         }
-        Iterator j = subResult.iterator();
-        while (j.hasNext()) {
-            Integer n = (Integer) j.next();
+        for (Integer n : subResult) {
             result.add(rawMap.get(n));
         }
     }
@@ -387,13 +381,13 @@ public class StorageConnector {
         Step step = (Step) query.getSteps().get(0);
         CoreField numberField = builder.getField(MMObjectBuilder.FIELD_NUMBER);
         AggregatedField field = new BasicAggregatedField(step, numberField, AggregatedField.AGGREGATION_TYPE_COUNT);
-        List newFields = new ArrayList(1);
+        List<StepField> newFields = new ArrayList(1);
         newFields.add(field);
         modifiedQuery.setFields(newFields);
 
         AggregatedResultCache cache = AggregatedResultCache.getCache();
 
-        List results = (List) cache.get(modifiedQuery);
+        List<MMObjectNode>  results = cache.get(modifiedQuery);
         if (results == null) {
             // Execute query, return result.
             results = builder.getMMBase().getSearchQueryHandler().getNodes(modifiedQuery, new ResultBuilder(builder.getMMBase(), modifiedQuery));
@@ -534,17 +528,17 @@ public class StorageConnector {
      * @param results The nodes. After returning, partially retrieved nodes
      *        in the result are replaced <em>in place</em> by complete nodes.
      */
-    private void processSearchResults(List results) {
-        Map convert = new HashMap();
+    private void processSearchResults(List<MMObjectNode> results) {
+        Map<Integer, Set<MMObjectNode>> convert = new HashMap();
         int convertCount = 0;
         int convertedCount = 0;
         int cacheGetCount = 0;
         int cachePutCount = 0;
 
-        ListIterator resultsIterator = results.listIterator();
+        ListIterator<MMObjectNode> resultsIterator = results.listIterator();
         while (resultsIterator.hasNext()) {
-            MMObjectNode node = (MMObjectNode) resultsIterator.next();
-            Integer number = Integer.valueOf(node.getNumber());
+            MMObjectNode node = resultsIterator.next();
+            Integer number = node.getNumber();
             if(number.intValue() < 0) {
                 // never happened to me, and never should!
                 log.error("invalid node found, node number was invalid:" + node.getNumber()+", storage invalid?");
@@ -573,8 +567,8 @@ public class StorageConnector {
                     // be converted..
                     // we dont request the builder here, for this we need the
                     // typedef table, which could generate an additional query..
-                    Integer nodeType = Integer.valueOf(node.getOType());
-                    Set nodes = (Set) convert.get(nodeType);
+                    Integer nodeType = node.getOType();
+                    Set<MMObjectNode> nodes = convert.get(nodeType);
                     // create an new entry for the type, if not yet there...
                     if (nodes == null) {
                         nodes = new HashSet();
@@ -617,14 +611,12 @@ public class StorageConnector {
             // and put them into one big hashmap (integer/node)
             // after that replace all the nodes in result, that
             // were invalid.
-            Map convertedNodes = new HashMap();
+            Map<Integer, MMObjectNode> convertedNodes = new HashMap();
 
             // process all the different types (builders)
-            Iterator types = convert.entrySet().iterator();
-            while(types.hasNext()){
-                Map.Entry typeEntry = (Map.Entry) types.next();
-                int nodeType = ((Integer)typeEntry.getKey()).intValue();
-                Set nodes = (Set) typeEntry.getValue();
+            for (Map.Entry<Integer, Set<MMObjectNode>> typeEntry : convert.entrySet()) {
+                int nodeType = typeEntry.getKey();
+                Set<MMObjectNode> nodes =    typeEntry.getValue();
                 MMObjectNode typedefNode;
                 try {
                     typedefNode = getNode(nodeType, true);
@@ -649,13 +641,15 @@ public class StorageConnector {
                     continue;
                 }
                 try {
-                    Iterator converted = conversionBuilder.getStorageConnector().getNodes(nodes).iterator();
-                    while(converted.hasNext()) {
-                        MMObjectNode current = (MMObjectNode) converted.next();
-                        convertedNodes.put(Integer.valueOf(current.getNumber()), current);
+                    for (MMObjectNode current : conversionBuilder.getStorageConnector().getNodes(nodes)) {
+                        if (current == null) {
+                            log.warn("Found a node which is NULL!");
+                            continue;
+                        }
+                        convertedNodes.put(current.getNumber(), current);
                     }
                 } catch (SearchQueryException sqe) {
-                    log.error(sqe.getMessage() + Logging.stackTrace(sqe));
+                    log.error(sqe.getMessage(),  sqe);
                     // no nodes
                 }
             }
