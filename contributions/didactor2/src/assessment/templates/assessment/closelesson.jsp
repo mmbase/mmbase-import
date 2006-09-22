@@ -36,7 +36,9 @@
       </mm:related>
     </mm:node>
   </mm:node>
-  <mm:redirect page="/assessment/index.jsp" referids="$referids"/>
+  <mm:redirect page="/assessment/index.jsp" referids="$referids">
+    <mm:param name="step">lessonclosed</mm:param>
+  </mm:redirect>
 
 </mm:cloud>
 </mm:content>

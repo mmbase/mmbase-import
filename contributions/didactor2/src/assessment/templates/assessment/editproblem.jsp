@@ -190,7 +190,8 @@ currentLesson <%= currentLesson %><br/>
           </select>
         </td>
       </tr>
-      <% // first lesson does not have a form %>
+      <% // first lesson does not have a form 
+      %>
       <mm:compare referid="i_lesson" value="0" inverse="true">
         <mm:node number="<%= currentLesson %>" notfound="skip">
           <tr>
