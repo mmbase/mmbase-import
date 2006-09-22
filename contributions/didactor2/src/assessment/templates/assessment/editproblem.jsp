@@ -194,14 +194,13 @@ currentLesson <%= currentLesson %><br/>
       <mm:compare referid="i_lesson" value="0" inverse="true">
         <mm:node number="<%= currentLesson %>" notfound="skip">
           <tr>
-            <td style="padding-top:30px;">
+            <td style="padding-top:30px;" colspan="2">
               <mm:node number="$problemtype">
                  <mm:field name="key" jspvar="dummy" vartype="String" write="false">
                    <h2><di:translate key="<%= "assessment.strategy_for_" + dummy %>" /></h2>
                  </mm:field>
               </mm:node>
             </td>
-            <td></td>
           </tr>
           <tr>
             <td colspan="2">

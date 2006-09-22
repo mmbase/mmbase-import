@@ -9,17 +9,24 @@
   <%@include file="includes/geteducation.jsp" %>
 
   <% int lessonsNum = 0; %>
+  <mm:node number="$assessment_education" notfound="skip">
+    <mm:relatednodes type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos">
+      <mm:first>
+        <mm:import id="dummy" jspvar="dummy" vartype="Integer" reset="true"><mm:size/></mm:import>
+        <% lessonsNum = dummy.intValue(); %>
+      </mm:first>
+    </mm:relatednodes>
+  </mm:node>
+  <% lessonsNum = lessonsNum - 2; %>
   <mm:node number="$user" notfound="skip">
     <div><table class="poplistTable" style="width:100%">
       <tr style="vertical-align:top">
         <th class="listHeader" style="width:70%">&nbsp;</th>
+        <% int count = 0; %>
         <mm:node number="$assessment_education" notfound="skip">
-          <mm:relatednodes type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos">
-            <mm:first>
-              <mm:import id="dummy" jspvar="dummy" vartype="Integer" reset="true"><mm:size/></mm:import>
-              <% lessonsNum = dummy.intValue(); %>
-            </mm:first>
-            <th class="listHeader"><mm:field name="name"/></th>
+          <mm:relatednodes type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos"  max="<%=  "" + lessonsNum %>">
+            <th class="listHeader"><di:translate key="assessment.period" />&nbsp;<%= count+1 %></th>
+            <% count++; %>
           </mm:relatednodes>
         </mm:node>
       </tr>
@@ -49,7 +56,7 @@
                   <mm:field name="people.lastname"/>, <mm:field name="people.firstname"/> <mm:field name="people.suffix"/>
                 </td>
                 <mm:node number="$assessment_education" notfound="skip">
-                  <mm:relatednodes type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos">
+                  <mm:relatednodes type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos"  max="<%=  "" + lessonsNum %>">
                     <td class="listItem">
                       <% String feedback = "";
                          String feedbackId = "-1";
