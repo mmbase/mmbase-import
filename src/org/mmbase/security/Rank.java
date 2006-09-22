@@ -26,9 +26,9 @@ import java.util.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Rank.java,v 1.16 2005-04-25 14:25:18 michiel Exp $
+ * @version $Id: Rank.java,v 1.17 2006-09-22 13:12:18 michiel Exp $
  */
-public final class Rank implements Comparable, java.io.Serializable {
+public final class Rank implements Comparable<Rank>, java.io.Serializable {
 
     private static Logger log = Logging.getLoggerInstance(Rank.class);
 
@@ -52,7 +52,7 @@ public final class Rank implements Comparable, java.io.Serializable {
     /** Identifier for admin rank*/
     public final static Rank ADMIN = new Rank(ADMIN_INT, "administrator");
 
-    private static Map ranks = new HashMap();
+    private static Map<String, Rank> ranks = new HashMap();
 
 
     static {
@@ -92,14 +92,14 @@ public final class Rank implements Comparable, java.io.Serializable {
     private String description;
 
     public static Rank getRank(String rankDesc) {
-        return (Rank) ranks.get(rankDesc);
+        return ranks.get(rankDesc);
     }
 
     /**
      * @since MMBase-1.6.4
      */
     protected static Rank registerRank(Rank rank) {
-        Rank prev = (Rank) ranks.put(rank.toString(), rank);
+        Rank prev = ranks.put(rank.toString(), rank);
         if (prev == null) {
             log.service("Registered rank " + rank);
         } else {
@@ -126,7 +126,7 @@ public final class Rank implements Comparable, java.io.Serializable {
      */
 
     public static Rank deleteRank(String rankDesc) {
-        return (Rank) ranks.remove(rankDesc);
+        return ranks.remove(rankDesc);
     }
 
     /**
@@ -135,8 +135,8 @@ public final class Rank implements Comparable, java.io.Serializable {
      * should never remove them.
      * @since MMBase-1.6.4
      */
-    public static SortedSet getRanks() {
-        return new TreeSet(ranks.values());
+    public static SortedSet<Rank> getRanks() {
+        return new TreeSet<Rank>(ranks.values());
     }
 
     /**
@@ -167,8 +167,7 @@ public final class Rank implements Comparable, java.io.Serializable {
      * @since MMBase-1.6.4
      */
     // see javadoc of Comparable
-    public int compareTo (Object o) {
-        Rank r = (Rank) o;
+    public int compareTo (Rank r) {
         return rank - r.rank;
     }
 }
