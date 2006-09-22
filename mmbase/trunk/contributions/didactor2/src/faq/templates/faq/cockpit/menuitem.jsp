@@ -16,19 +16,14 @@
     <mm:relatednodes type="faqnodes">   
       <mm:import id="faqname" reset="true"><mm:field name="name"/></mm:import> 
       <mm:import id="faqnumber" jspvar="faqNumber" reset="true"><mm:field name="number"/></mm:import>
-      <mm:relatednodes type="educations">
-        <mm:import id="education" jspvar="education" reset="true"><mm:field name="name"/></mm:import>
-        <mm:node number="$user" notfound="skipbody">
-          <mm:relatednodes type="educations" constraints="educations.name='${education}'">
-            <div class="menuSeperator"></div>
-            <div class="menuItem">
-              <a title="<mm:write referid="faqname"/>" href="<%=link%><%=faqNumber%>"  class="menubar"><mm:write referid="faqname"/></a>
-            </div>
-          </mm:relatednodes>       
-        </mm:node>
-      </mm:relatednodes>    
-    </mm:relatednodes> 
-  </mm:node>          
-</mm:compare>      
+      <mm:related path="educations,people" constraints="people.number='$user'">
+          <div class="menuSeperator"></div>
+          <div class="menuItem">
+            <a title="<mm:write referid="faqname"/>" href="<%=link%><%=faqNumber%>" class="menubar"><mm:write referid="faqname"/></a>
+          </div>
+      </mm:related>
+    </mm:relatednodes>
+  </mm:node>
+</mm:compare>
 </mm:cloud>
 </mm:content>

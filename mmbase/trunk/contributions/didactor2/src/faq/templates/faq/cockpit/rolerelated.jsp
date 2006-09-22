@@ -16,18 +16,22 @@
   <mm:relatednodes type="faqnodes">
     <mm:import id="faqname" reset="true"><mm:field name="name"/></mm:import> 
     <mm:import id="faqnumber" jspvar="faqNumber" reset="true"><mm:field name="number"/></mm:import>
+    <mm:remove referid="faqnodeshown" />
     <mm:relatednodes type="roles">
       <mm:import id="role" jspvar="role" reset="true"><mm:field name="name"/></mm:import>
       <mm:node number="$user" notfound="skipbody">
         <di:hasrole role="<%=role%>">
-          <div class="menuSeperatorApplicationMenubar"></div>
-          <div class="menuItemApplicationMenubar">
-            <a title="<mm:write referid="faqname"/>" href="<%=link%><%=faqNumber%>"  class="menubar"><mm:write referid="faqname"/></a>
-          </div>
-        </di:hasrole>         
+          <mm:notpresent referid="faqnodeshown">
+            <div class="menuSeperatorApplicationMenubar"></div>
+            <div class="menuItemApplicationMenubar">
+              <a title="<mm:write referid="faqname"/>" href="<%=link%><%=faqNumber%>"  class="menubar"><mm:write referid="faqname"/></a>
+            </div>
+            <mm:import id="faqnodeshown" />
+          </mm:notpresent>
+        </di:hasrole>
       </mm:node>
-    </mm:relatednodes>    
-  </mm:relatednodes> 
+    </mm:relatednodes>
+  </mm:relatednodes>
 </mm:node> 
 </mm:cloud>
 </mm:content>
