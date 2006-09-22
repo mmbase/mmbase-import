@@ -93,30 +93,7 @@
          <iframe width="100%" height="100%" src="<mm:treefile page="/firstcontent.jsp" objectlist="$includePath" referids="$referids" escapeamps="false"/>" name="content" frameborder="0">
          </iframe>
        </div>
-       <div class="columnRight">
-         <div class="titlefield2">
-           <di:translate key="core.news" />
-         </div>
-         <!-- IF THERE IS NO PORTALPAGES -->
-         <mm:present referid="hasPortalPages" inverse="true">
-           <div class="ListRight">
-             <mm:node number="component.news" notfound="skipbody">
-               <mm:treeinclude page="/news/frontoffice/index.jsp" objectlist="$includePath" referids="$referids" />
-             </mm:node>
-            </div>
-          </mm:present>
-          <!-- IF THERE IS PORTALPAGES -->
-          <mm:present referid="hasPortalPages">
-            <div class="ListRightHalf">
-              <mm:node number="component.news" notfound="skipbody">
-                 <mm:treeinclude page="/news/frontoffice/index.jsp" objectlist="$includePath" referids="$referids" />
-              </mm:node>
-           </div>
-           <div class="ListRight">
-             <mm:include page="loginbox.jsp"/>
-           </div>
-          </mm:present>
-        </div>
+       <mm:treeinclude page="/rightcolumn.jsp" objectlist="$includePath" referids="$referids" />
       </div>
     </div>
   </body>
