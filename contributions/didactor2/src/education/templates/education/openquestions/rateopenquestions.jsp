@@ -32,7 +32,7 @@
     			<mm:setfield name="score"><mm:write referid="TESTSCORE_COR"/></mm:setfield>
   			</mm:createnode>
 		</mm:compare> 
-<		
+		
 		<mm:compare value="1">
 		 <%-- Save the answer if type_of_score=1 --%> 
 			<mm:relatednodes type="openanswers" id="openanswers">
