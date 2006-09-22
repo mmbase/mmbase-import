@@ -20,7 +20,7 @@ import org.mmbase.util.GenericResponseWrapper;
  * A View implmentation based on a jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JspView.java,v 1.1 2006-09-12 19:25:59 michiel Exp $
+ * @version $Id: JspView.java,v 1.2 2006-09-22 11:18:56 michiel Exp $
  * @since MMBase-1.9
  */
 public class JspView extends AbstractView {
@@ -37,13 +37,12 @@ public class JspView extends AbstractView {
     public Parameters createParameters() {
         return new Parameters(ESSENTIAL, getSpecificParameters()); 
     }
-    public void render(Parameters parameters, Writer w) throws IOException {
+    public void render(Parameters<Object> parameters, Writer w) throws IOException {
         try {
-            HttpServletResponse response = (HttpServletResponse) parameters.get(Parameter.RESPONSE);
+            HttpServletResponse response = parameters.get(Parameter.RESPONSE);
             GenericResponseWrapper respw = new GenericResponseWrapper(response);
-            HttpServletRequest request = (HttpServletRequest) parameters.get(Parameter.REQUEST);
-            Set<Map.Entry<String, ?>> entries = parameters.toMap().entrySet();
-            for (Map.Entry<String, ?> entry : entries) {
+            HttpServletRequest request = parameters.get(Parameter.REQUEST);
+            for (Map.Entry<String, Object> entry : parameters.toMap().entrySet()) {
                 request.setAttribute(entry.getKey(), entry.getValue());
             }
             RequestDispatcher requestDispatcher = request.getRequestDispatcher(path);
