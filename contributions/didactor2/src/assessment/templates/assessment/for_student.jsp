@@ -224,11 +224,13 @@ lessonsNum = count-2; // hack: don't show the last two lessons in the matrix
 </div>
 
 <br/>
+<mm:import externid="step" jspvar="step">-1</mm:import>
 <% 
-if(iLesson<lessonsNum) { 
+if(iLesson<lessonsNum || step.equals("lessonclosed")) {
   %>
   <form name="closelessonform" action="<mm:treefile page="/assessment/closelesson.jsp" objectlist="$includePath" 
-         referids="$referids"/>" method="post">
+         referids="$referids">
+         </mm:treefile>" method="post">
     <mm:node number="<%= backtolb %>" notfound="skip">
       <input type="submit" class="formbutton" value="<di:translate key="assessment.back_to_lesson" />"
           onclick="closelessonform.action='<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$referids">
@@ -243,14 +245,29 @@ if(iLesson<lessonsNum) {
           onclick="return doAction('<di:translate key="assessment.prompt_to_closing_lesson" />');">
       </mm:related>
     </mm:node>
-    <% if (!hasWeights) { %>
+    <% if (!hasWeights) {
+         // show disabled button
+         %>
          <input type="submit" class="formbutton" value="<di:translate key="assessment.close_and_send_to_coach" />" disabled>
     <% } %>
   </form>
   <%
 } else {
+  // looking for the test that is not related to a problemtype
   %>
-  TODO: here comes the final test
+  <mm:node number="$provider" notfound="skip">
+    <mm:related path="related,educations,related,tests">
+      <mm:node element="tests">
+        <mm:import id="isnotproblemtyperelated" reset="true" />
+        <mm:related path="related,problemtypes">
+          <mm:remove referid="isnotproblemtyperelated" />
+        </mm:related>
+        <mm:present referid="isnotproblemtyperelated">
+          <%@include file="includes/evaluationtest.jsp"%>
+        </mm:present>
+      </mm:node>
+    </mm:related>
+  </mm:node>
   <%
 } %>
 
