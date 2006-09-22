@@ -12,8 +12,9 @@ package org.mmbase.security.implementation.basic;
 import java.util.Map;
 import java.io.File;
 
-import org.mmbase.util.ExtendedProperties;
+import org.mmbase.security.Rank;
 
+import org.mmbase.util.ExtendedProperties;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -21,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * Simple implemetation, to provide authentication from files...
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: FileLoginModule.java,v 1.4 2005-01-30 16:46:37 nico Exp $
+ * @version $Id: FileLoginModule.java,v 1.5 2006-09-22 14:48:22 andre Exp $
  */
 public class FileLoginModule implements LoginModule {
     private static Logger log=Logging.getLoggerInstance(FileLoginModule.class.getName());
@@ -90,7 +91,12 @@ public class FileLoginModule implements LoginModule {
         // set the identifier
         user.setIdentifier((String)loginInfo.get("username"));
 
-        log.info("user: '"+loginInfo.get("username")+" passed this login module");
+        // Admins are admins
+		if ("admin".equals(loginInfo.get("username"))) {
+			user.setRank(Rank.getRank("administrator"));
+		}
+
+        log.info("user: '" + loginInfo.get("username") + "' passed this login module");
         return true;
     }
 }
