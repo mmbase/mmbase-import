@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.27 2006-09-12 18:39:15 michiel Exp $
+ * @version $Id: Parameters.java,v 1.28 2006-09-22 11:18:33 michiel Exp $
  * @see Parameter
  * @see #Parameters(Parameter[])
  */
@@ -246,7 +246,7 @@ public class Parameters<E> extends AbstractList<E> implements java.io.Serializab
      * @param parameter the parameter
      * @return <code>true</code> if a parameter exists.
      */
-    public boolean containsParameter(Parameter parameter) {
+    public boolean containsParameter(Parameter<E> parameter) {
         return indexOfParameter(parameter) != -1;
     }
 
@@ -369,10 +369,9 @@ public class Parameters<E> extends AbstractList<E> implements java.io.Serializab
      * @param parameter the parameter to get
      * @return value the parameter value
      */
-    public E get(Parameter parameter) {
-        return get(parameter.getName());
+    public <F extends E> F get(Parameter<F> parameter) {
+        return (F) get(parameter.getName());
     }
-
 
     /**
      * Gets the value of a parameter.
