@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE security PUBLIC "-//MMBase//DTD securityabasicauth config 1.0//EN" "http://www.mmbase.org/dtd/securitybasicauth_1_0.dtd">
+<!DOCTYPE authentication PUBLIC "-//MMBase//DTD securityabasicauth config 1.0//EN" "http://www.mmbase.org/dtd/securitybasicauth_1_0.dtd">
 <authentication>
 
   <loginmodule  name="anonymous"     class="org.mmbase.security.implementation.basic.AnonymousLoginModule" rank="anonymous" />
@@ -16,7 +16,7 @@
     <!-- properties are username -> rank -->
     <property name="anonymous">anonymous</property>
     <property name="admin">administrator</property>
-    <property name="*">basic user</property>
+    <property name="foo">basic user</property>
   </loginmodule>
   
 </authentication>
