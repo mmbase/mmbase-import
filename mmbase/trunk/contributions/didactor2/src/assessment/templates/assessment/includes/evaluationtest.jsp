@@ -7,7 +7,7 @@
   <mm:relatednodescontainer path="madetests,copybooks" element="madetests">
     <mm:constraint field="copybooks.number" referid="copybookNo"/>
     <mm:relatednodes>
-      <mm:field name="number" jspvar="this_madetest" vartype="String" write="true">
+      <mm:field name="number" jspvar="this_madetest" vartype="String" write="false">
         <mm:import id="madetest" reset="true"><%= this_madetest %></mm:import>
       </mm:field>
     </mm:relatednodes>
