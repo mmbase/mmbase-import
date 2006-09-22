@@ -40,7 +40,7 @@
 
                         <mm:node number="<%= "" + nodeParent.getNumber() %>">
                            <mm:relatednodes type="images" max="1">
-                              <img src="<mm:image/>" />
+                              <img src="<mm:image template="s(200)"/>" />
                            </mm:relatednodes>
                         </mm:node>
                      </mm:node>

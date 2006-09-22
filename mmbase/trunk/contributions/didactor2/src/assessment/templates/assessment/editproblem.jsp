@@ -20,23 +20,26 @@
 
 <mm:import externid="step">-1</mm:import>
 <mm:import externid="problem_n">-1</mm:import>
+<mm:import externid="i_lesson">-1</mm:import>
 <mm:import externid="problemname"/>
 <mm:import externid="problemtype">-1</mm:import>
 <mm:import externid="problemrating"/>
 <mm:import externid="madetest_n">-1</mm:import>
 
 <% int problemrating = -1; // not rated %>
+
 <!--
 user <mm:write referid="user"/><br/>
 class <mm:write referid="class"/><br/>
 copybook <mm:write referid="copybookNo"/><br/>
 step <mm:write referid="step"/><br/>
 problem_n <mm:write referid="problem_n"/><br/>
+i_lesson <mm:write referid="i_lesson"/><br/>
 problemname <mm:write referid="problemname"/><br/>
 problemtype <mm:write referid="problemtype"/><br/>
 problemrating <mm:write referid="problemrating"/><br/>
 madetest_n <mm:write referid="madetest_n"/><br/>
-currentLesson <%= currentLesson %><br/> 
+currentLesson <%= currentLesson %><br/>
 -->
 <mm:compare referid="step" value="cancel">
   <mm:redirect page="/assessment/index.jsp" referids="$referids"/>
@@ -187,33 +190,43 @@ currentLesson <%= currentLesson %><br/>
           </select>
         </td>
       </tr>
-      <mm:node number="<%= currentLesson %>" notfound="skip">
-        <tr>
-          <td><b><di:translate key="assessment.form" /></b></td><td></td>
-        </tr>
-        <tr>
-          <td colspan="2">
-            <mm:node number="$provider" notfound="skip">
-              <mm:related path="related,educations,related,tests,related,problemtypes" constraints="problemtypes.number=$problemtype">
-                <mm:node element="tests">
-                  <mm:field name="number" jspvar="this_test" vartype="String" write="false">
-                    <%@include file="includes/getmadetest.jsp" %>
-                    <input type="hidden" name="madetest_n" value="<mm:write referid="madetest"/>">
-                    <mm:relatednodes type="questions" path="posrel,questions" orderby="posrel.pos">
-                      <mm:import id="page" reset="true">/education/<mm:nodeinfo type="type"/>/index.jsp</mm:import>
-                      <mm:treeinclude page="$page" objectlist="$includePath" referids="$referids">
-                        <mm:param name="question"><mm:field name="number"/></mm:param>
-                        <mm:param name="testnumber"><%= this_test %></mm:param>
-                        <mm:param name="madetest"><mm:write referid="madetest"/></mm:param>
-                      </mm:treeinclude>
-                    </mm:relatednodes>
-                  </mm:field>
-                </mm:node>
-              </mm:related>
-            </mm:node>
-          </td>
-        </tr>
-      </mm:node>
+      <% // first lesson does not have a form %>
+      <mm:compare referid="i_lesson" value="0" inverse="true">
+        <mm:node number="<%= currentLesson %>" notfound="skip">
+          <tr>
+            <td style="padding-top:30px;">
+              <mm:node number="$problemtype">
+                 <mm:field name="key" jspvar="dummy" vartype="String" write="false">
+                   <h2><di:translate key="<%= "assessment.strategy_for_" + dummy %>" /></h2>
+                 </mm:field>
+              </mm:node>
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <mm:node number="$provider" notfound="skip">
+                <mm:related path="related,educations,related,tests,related,problemtypes" constraints="problemtypes.number=$problemtype">
+                  <mm:node element="tests">
+                    <mm:field name="number" jspvar="this_test" vartype="String" write="false">
+                      <%@include file="includes/getmadetest.jsp" %>
+                      <input type="hidden" name="madetest_n" value="<mm:write referid="madetest"/>">
+                      <mm:relatednodes type="questions" path="posrel,questions" orderby="posrel.pos">
+                        <mm:import id="page" reset="true">/education/<mm:nodeinfo type="type"/>/index.jsp</mm:import>
+                        <mm:treeinclude page="$page" objectlist="$includePath" referids="$referids">
+                          <mm:param name="question"><mm:field name="number"/></mm:param>
+                          <mm:param name="testnumber"><%= this_test %></mm:param>
+                          <mm:param name="madetest"><mm:write referid="madetest"/></mm:param>
+                        </mm:treeinclude>
+                      </mm:relatednodes>
+                    </mm:field>
+                  </mm:node>
+                </mm:related>
+              </mm:node>
+            </td>
+          </tr>
+        </mm:node>
+      </mm:compare>
     </table>
     <input type="submit" class="formbutton" value="<di:translate key="assessment.save" />">
     <input type="submit" class="formbutton" value="<di:translate key="assessment.cancel" />" onClick="questionform.step.value='cancel'">

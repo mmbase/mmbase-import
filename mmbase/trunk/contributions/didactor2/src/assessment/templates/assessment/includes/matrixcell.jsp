@@ -5,7 +5,7 @@
 </td>
 <% count = 0; %>
 <mm:node number="$assessment_education" notfound="skip">
-  <mm:relatednodes type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos">
+  <mm:relatednodes type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos"  max="<%= "" + lessonsNum %>">
 <%
     int rating = -1; // not rated
     String problemConstraint = "problems.number=" + problem_number;
@@ -21,7 +21,7 @@
 %>
       </mm:field>
     </mm:related>
-    <td class="listItem" style="padding:0 0 0 0" <%= styles.get(count) %>>
+    <td class="listItem" style="padding:0 0 0 0;text-align:center;" <%= styles.get(count) %>>
 <%
       if (rating < 0) {
         %>&nbsp;<%

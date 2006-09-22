@@ -3,7 +3,7 @@
   <title xml:lang="nl">Verwijzingen</title>
   <title xml:lang="fr">Cross-reference</title>
   <list destination="pages" role="descriptionrel" minoccurs="0" maxoccurs="*"
-    ordertype="string" orderby="name" hidecommand="move-up|move-down">
+    ordertype="string" orderby="name" hidecommand="move-up|move-down" searchdir="destination">
     <title xml:lang="nl">Paginas waarnaar verwezen wordt</title>
     <title xml:lang="en">Cross-refered pages</title>
     <item>
