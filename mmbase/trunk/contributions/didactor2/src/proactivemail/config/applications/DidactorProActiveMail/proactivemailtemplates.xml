@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<proactivemailtemplates exportsource="mmbase://www.didactor.org/version2.0" timestamp="20060910021535">
+    <node number="18091" owner="system">
+        <name>twomonthsnologin</name>
+        <frompart>Didactor</frompart>
+        <subject>No login to didactor for two months</subject>
+        <body>Did not login 2 months</body>
+        <active>1</active>
+    </node>
+    <node number="18092" owner="system">
+        <name>monthafterregistration</name>
+        <frompart>Didactor</frompart>
+        <subject>Thaks for registering</subject>
+        <body>Just registered user</body>
+        <active>1</active>
+    </node>
+</proactivemailtemplates>
