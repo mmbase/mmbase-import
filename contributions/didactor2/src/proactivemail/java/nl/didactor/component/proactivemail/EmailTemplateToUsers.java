@@ -199,7 +199,6 @@ public class EmailTemplateToUsers {
                                 Node message = cloud.getNodeManager("emails").createNode();
                                 
                                 if ( message != null ) {
-                                    System.out.println("MESSAGE IS NOT NULL");
                                     message.setStringValue("from", "Didactor");
                                     message.setStringValue("to", "g.kostadinov@levi9.com");
                                     message.setStringValue("subject", "Srecno");
