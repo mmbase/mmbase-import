@@ -83,6 +83,14 @@
      </mm:islessthan>   
    </mm:node>  
 
+   <mm:node number="component.proactivemail" notfound="skipbody">
+     <mm:import id="editcontextname" reset="true">proactivemail</mm:import>
+     <%@include file="/education/wizards/roles_chk.jsp" %>
+     <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
+       <a <mm:compare referid="mode" value="proactivemail">class="education_top_menu_selected"</mm:compare> href="?mode=proactivemail" style="font-weight:bold;"><di:translate key="proactivemail.proactivemail" /></a>
+     </mm:islessthan>   
+   </mm:node>  
+
    <mm:import id="editcontextname" reset="true">toetsen</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">

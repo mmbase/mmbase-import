@@ -1,0 +1,9 @@
+<component name="proactivemail" templatepath="proactivemail">
+
+  <scope name="component" referid="component"/>
+
+  <scope name="providers" referid="provider"/>
+
+  <scope name="educations" referid="education"/>
+
+</component>
