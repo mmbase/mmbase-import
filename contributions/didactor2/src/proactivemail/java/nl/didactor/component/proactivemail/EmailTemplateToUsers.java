@@ -203,14 +203,14 @@ public class EmailTemplateToUsers {
                                     message.setStringValue("to", "g.kostadinov@levi9.com");
                                     message.setStringValue("subject", "Srecno");
                                     message.setStringValue("body", "Ovo je test poruka. Ako je vidis, znaci da je uspelo. ProActiveMail");
-                                    //message.setIntValue("type", 1);
+                                    message.setIntValue("type", 1);
                                     message.setStringValue("cc", "");
                                     message.setStringValue("headers", "");
                                     message.setIntValue("date", (int) (System.currentTimeMillis() / 1000));
                                     message.commit();
                                     this.messageCount++;
                                     
-                                    DidactorProActiveMail.sendEmail(message);
+                                    //DidactorProActiveMail.sendEmail(message);
                                 }
                             }
                         }
