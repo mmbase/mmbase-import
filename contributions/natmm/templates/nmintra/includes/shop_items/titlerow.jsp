@@ -9,7 +9,7 @@
 </tr>
 <tr>
 	<mm:node number="<%= leftShop_itemNumber %>"
-		><td style="padding-right:3px;"><a href="<mm:url page="<%= leftShop_itemHref %>" />" class="bold"><mm:field name="title" /></a><br>
+		><td style="padding-right:3px;"><a href="<mm:url page="<%= leftShop_itemHref %>" />" class="bold"><mm:field name="titel" /></a><br>
 		<mm:notpresent referid="nointro"><mm:field name="intro" jspvar="shop_item_intro" vartype="String" write="false"><%
 			shop_item_intro = HtmlCleaner.replace(shop_item_intro,"<p>","");
 			shop_item_intro = HtmlCleaner.replace(shop_item_intro,"<P>","");
@@ -20,7 +20,7 @@
 	<td width="8"><img src="media/spacer.gif" height="1" width="8" border="0" alt=""></td>
 	<% if(rightShop_itemExists) { 
 		%><mm:node number="<%= rightShop_itemNumber %>" 
-			><td style="padding-right:3px;"><a href="<mm:url page="<%= rightShop_itemHref %>" />" class="bold"><mm:field name="title" /></a><br>
+			><td style="padding-right:3px;"><a href="<mm:url page="<%= rightShop_itemHref %>" />" class="bold"><mm:field name="titel" /></a><br>
 			<mm:notpresent referid="nointro"><mm:field name="intro" jspvar="shop_item_intro" vartype="String" write="false"><%
 			shop_item_intro = HtmlCleaner.replace(shop_item_intro,"<p>","");
 			shop_item_intro = HtmlCleaner.replace(shop_item_intro,"<P>","");

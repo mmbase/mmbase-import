@@ -15,7 +15,7 @@ public String getSelect(Cloud cloud, Logger log, String title, int iRubriekStyle
          +  "</table>";
    } else {
       sSelect += 
-            "<select name='menu1' style='width:180px;' onChange=\"MM_jumpMenu('parent',this,0)\">"
+            "<select name='menu1' style='width:180px;' onChange=\"MM_jumpMenu('document',this,0)\">"
          +     "<option value='" + url + "'>Selecteer</option>";
       int pPos = url.indexOf(param);
       if(pPos!=-1) {

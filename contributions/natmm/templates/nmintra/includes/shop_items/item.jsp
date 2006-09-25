@@ -3,7 +3,7 @@
 	<table width="100%" cellspacing="0" cellpadding="0">
 		<tr>
 			<td style="padding-left:3px;padding-right:3px;">
-				<strong><mm:field name="title" /></strong><br>
+				<strong><mm:field name="titel" /></strong><br>
 				<mm:field name="intro" jspvar="articles_intro" vartype="String" write="false"
 						><mm:isnotempty><span class="black"><%@include file="../cleanarticlesintro.jsp" %></span></mm:isnotempty
 				></mm:field>
