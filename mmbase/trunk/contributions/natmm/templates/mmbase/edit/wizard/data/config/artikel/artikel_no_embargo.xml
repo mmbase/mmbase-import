@@ -28,10 +28,8 @@
    <action include="config/artikel/delete_artikel.xml"/>
    <action include="config/artikel/load_artikel.xml"/>
    <lists>
-      <optionlist include="config/option_lists/archive.xml" />
       <optionlist include="config/option_lists/ja_nee.xml" />
-      <optionlist include="config/option_lists/images_position.xml" />
-      <optionlist include="config/option_lists/shorty_role.xml" />
+      <optionlist include="config/option_lists/images_position_nmintra.xml" />
    </lists>
    <steps>
       <step form-schema="edit_artikel"/>

@@ -28,6 +28,9 @@
      <field name="status"/>
      <relation destination="contentelement" role="contentrel">
       <object>
+         <relation destination="images" role="posrel">
+            <object />
+         </relation>
          <relation destination="paragraaf" role="posrel" >
           <object>
               <relation destination="images" role="posrel">
@@ -49,7 +52,7 @@
    </action>
    <lists>
       <optionlist include="config/option_lists/ja_nee.xml" />
-      <optionlist include="config/option_lists/images_position.xml" />
+      <optionlist include="config/option_lists/images_position_nmintra.xml" />
    </lists>
    <steps>
       <step form-schema="edit_pagina"/>
