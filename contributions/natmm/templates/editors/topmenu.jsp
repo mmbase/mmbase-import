@@ -131,7 +131,10 @@ String sNatuurinNumber = "";
 		String sLink = ph.createPaginaUrl(paginaId,contextPath);
 		String sRubriekName = cloud.getNode(rubriekID).getStringValue("naam");
 		%>
-		<li><a href="<%= sLink %>" target="_blank" class="menu" title="bekijk <%= sRubriekName %>"><%= sRubriekName %></a><br/>
+		<li>
+    <a href="<%= sLink + (sLink.indexOf("?")==-1 ? "?" : "&") + "preview=off" %>" target="_blank" class="menu" title="bekijk <%= sRubriekName %>">
+        <%= sRubriekName %>
+    </a><br/>
 		<%
 	}
 %>
