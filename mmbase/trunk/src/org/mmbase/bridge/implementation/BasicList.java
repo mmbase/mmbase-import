@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * This is the base class for all basic implementations of the bridge lists.
  *
  * @author Pierre van Rooden
- * @version $Id: BasicList.java,v 1.19 2006-09-08 12:10:41 michiel Exp $
+ * @version $Id: BasicList.java,v 1.20 2006-09-25 10:17:36 pierre Exp $
  */
 public class BasicList<E> extends ArrayList<E> implements BridgeList<E>  {
 
@@ -26,7 +26,7 @@ public class BasicList<E> extends ArrayList<E> implements BridgeList<E>  {
 
     private Map properties = new HashMap();
 
-    // during inititializion of the list, you sometimes want to switch off 
+    // during inititializion of the list, you sometimes want to switch off
     // also when everything is certainly converted
     boolean autoConvert = true;
 

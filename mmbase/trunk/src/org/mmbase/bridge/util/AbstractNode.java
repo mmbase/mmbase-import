@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * here, to minimalize the implementation effort of fully implemented Nodes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNode.java,v 1.14 2006-05-26 18:32:06 nklasens Exp $
+ * @version $Id: AbstractNode.java,v 1.15 2006-09-25 10:17:36 pierre Exp $
  * @see org.mmbase.bridge.Node
  * @since MMBase-1.8
  */
@@ -547,7 +547,7 @@ public abstract class AbstractNode implements Node {
      * @return 0 if they are equal, -1 if the object passed is a NodeManager and larger than this manager,
      * and +1 if the object passed is a NodeManager and smaller than this manager.
      */
-    public final int compareTo(Object o) {
+    public final int compareTo(Node o) {
         Node n = (Node)o;
         String s1 = "";
         if (this instanceof NodeManager) {
