@@ -41,8 +41,6 @@ public class DidactorProActiveMail extends Component{
    private static Scheduler scheduler = null;
    private static String groupName = "DidactorGroup";
    
-   private static ExtendedJMSendMail sendmail;
-
     /**
      * Returns the version of the component
      */
@@ -62,24 +60,10 @@ public class DidactorProActiveMail extends Component{
         return groupName;
     }
 
-    public static boolean sendEmail(Node n) {
-        if (sendmail.sendMail(n)) {
-            log.debug("Succeeded sending mail!");
-            return true;
-        } else {
-            log.error("Cannot send mail '" + n + "'");
-            // TODO: we have to notify the user that something went wrong. Ideally, a bounce message
-            return false;
-        }        
-    }
-    
     public void init() {
         super.init();
         
         Component.getComponent("email").registerInterested(this);
-        
-        sendmail = (ExtendedJMSendMail)Module.getModule("sendmail");
-        sendmail.startModule();
         
         initRelations();
         restartJobs();
@@ -266,7 +250,5 @@ public class DidactorProActiveMail extends Component{
             log.error("Can't initialize editcontext table with new value 'proactivemail'.");
         }
     }      
-    
-    // some usefull functions, escpecily for use from scripts
     
 }
