@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Functions.java,v 1.14 2006-09-06 13:33:56 michiel Exp $
+ * @version $Id: Functions.java,v 1.15 2006-09-25 14:00:01 michiel Exp $
  */
 public class Functions {
 
@@ -60,6 +60,12 @@ public class Functions {
             }
         }
         return list;
+    }
+    /**
+     * @since MMBase-1.9
+     */
+    public static List<Parameter> define(Parameter[] def) {
+        return define(def, new ArrayList<Parameter>());
     }
 
     /**

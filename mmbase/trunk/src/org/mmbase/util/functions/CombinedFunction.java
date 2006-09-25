@@ -17,16 +17,16 @@ import org.mmbase.util.logging.Logging;
  * A combined function combines other function object. Depending on the provided filled paramters it calls the right function.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CombinedFunction.java,v 1.3 2006-09-08 18:34:12 michiel Exp $
+ * @version $Id: CombinedFunction.java,v 1.4 2006-09-25 14:00:01 michiel Exp $
  * @since MMBase-1.9
  */
-public class CombinedFunction<R, E> implements Function<R, E> {
+public class CombinedFunction<R> implements Function<R> {
 
     private static final Logger log = Logging.getLoggerInstance(CombinedFunction.class);
 
-    private final List<Function<R, E>> functions = new ArrayList<Function<R, E>>();
+    private final List<Function<R>> functions = new ArrayList<Function<R>>();
 
-    private Parameter<E>[] parameterDefinition = null;
+    private Parameter<?>[] parameterDefinition = null;
     private ReturnType returnType = null;
     private final String name;
     private String description;
@@ -35,7 +35,7 @@ public class CombinedFunction<R, E> implements Function<R, E> {
         this.name = name;
     }
 
-    public void addFunction(Function<R, E> func) {
+    public void addFunction(Function<R> func) {
         parameterDefinition = null;
         if (returnType == null) {
             returnType = func.getReturnType();
@@ -52,15 +52,15 @@ public class CombinedFunction<R, E> implements Function<R, E> {
         functions.add(func);
     }
 
-    public Parameters<E> createParameters() {
+    public Parameters createParameters() {
         if (parameterDefinition == null) determinDefinition();
-        return new Parameters<E>(parameterDefinition);
+        return new Parameters(parameterDefinition);
     }
-    public R getFunctionValue(Parameters<E> parameters) {
+    public R getFunctionValue(Parameters parameters) {
         if (parameterDefinition == null) determinDefinition();
         float maxscore = -1;
-        Function<R, E> function = null;
-        for (Function<R, E> f : functions) {
+        Function<R> function = null;
+        for (Function<R> f : functions) {
             // determin score here
             int scoreCounter = 0;
             for (Parameter p : f.getParameterDefinition()) {
@@ -106,13 +106,13 @@ public class CombinedFunction<R, E> implements Function<R, E> {
         }
     }
 
-    public R getFunctionValueWithList(List<E> parameters) {
+    public R getFunctionValueWithList(List<?> parameters) {
         Parameters params = createParameters();
         params.setAll(parameters);
         return getFunctionValue(params);
     }
-    public R getFunctionValue(E... parameters) {
-        Parameters<E> params = createParameters();
+    public R getFunctionValue(Object... parameters) {
+        Parameters params = createParameters();
         params.setAll(parameters);
         return getFunctionValue(params);
     }
@@ -129,12 +129,12 @@ public class CombinedFunction<R, E> implements Function<R, E> {
         return name;
     }
 
-    public Parameter<E>[] getParameterDefinition(){
+    public Parameter<?>[] getParameterDefinition(){
         if (parameterDefinition == null) determinDefinition();
         return parameterDefinition;
     }
 
-    public void setParameterDefinition(Parameter<E>[] params) {
+    public void setParameterDefinition(Parameter<?>[] params) {
         throw new UnsupportedOperationException();
     }
 

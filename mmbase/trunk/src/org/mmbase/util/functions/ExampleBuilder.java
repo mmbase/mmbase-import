@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * This is done in the MyNews examples (on the news builder), and example JSP's can be found on /mmexamples/taglib/functions.jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ExampleBuilder.java,v 1.14 2006-09-06 16:56:24 michiel Exp $
+ * @version $Id: ExampleBuilder.java,v 1.15 2006-09-25 14:00:01 michiel Exp $
  * @see   ExampleBean For examples on hot to add functions to a builder without extending it.
  * @since MMBase-1.7
  */
@@ -44,8 +44,8 @@ public final class ExampleBuilder extends MMObjectBuilder { // final to avoid th
      * otherwise it is pickup up by the automatich function detection.
      */
     protected final static Parameter[] LISTLATEST_PARAMETERS = {
-        new Parameter("max", Integer.class, new Integer(10)), /* name, type, default value */
-        new Parameter(Parameter.CLOUD, true)                  /* true: required! */
+        new Parameter<Integer>("max", Integer.class, new Integer(10)), /* name, type, default value */
+        new Parameter<Cloud>(Parameter.CLOUD, true)                  /* true: required! */
     };
 
     protected final static Parameter[] SUMFIELDS_PARAMETERS = {
@@ -61,7 +61,7 @@ public final class ExampleBuilder extends MMObjectBuilder { // final to avoid th
             }
             public NodeList getFunctionValue(Parameters parameters) {
                 Integer max = (Integer) parameters.get("max");
-                Cloud cloud = (Cloud) parameters.get(Parameter.CLOUD);
+                Cloud cloud = parameters.get(Parameter.CLOUD);
                 NodeManager thisManager = cloud.getNodeManager(getTableName());
                 NodeQuery q = thisManager.createQuery();
                 q.setMaxNumber(max.intValue());
@@ -101,18 +101,16 @@ public final class ExampleBuilder extends MMObjectBuilder { // final to avoid th
 
         // you can of course even implement it anonymously.
         addFunction(new AbstractFunction("showparameter",
-                                         new Parameter[]  {
-                                             new Parameter("collectionparam", Collection.class),
-                                             new Parameter("mapparam", Map.class),
-                                             new Parameter("integerparam", Integer.class),
-                                             new Parameter("numberparam", Number.class)
-                                         },
-                                         ReturnType.LIST) {
+                                         new Parameter("collectionparam", Collection.class),
+                                         new Parameter("mapparam", Map.class),
+                                         new Parameter("integerparam", Integer.class),
+                                         new Parameter("numberparam", Number.class)
+                                         ) {
                 {
                     setDescription("With this function one can demonstrate how to create parameters of several types, and in what excactly that results");
                 }
-                public Object getFunctionValue(Parameters parameters) {
-                    List result = new ArrayList();
+                public List<String> getFunctionValue(Parameters parameters) {
+                    List<String>  result = new ArrayList();
                     Parameter[] def = parameters.getDefinition();
                     for (int i = 0 ; i < def.length; i++) {
                         Object value = parameters.get(i);
@@ -129,27 +127,24 @@ public final class ExampleBuilder extends MMObjectBuilder { // final to avoid th
         // an example of a function which is both node-function and builder-function
         // it also demonstrate that you may use bridge to implement a node-function.
 
-        addFunction(new NodeFunction("predecessor",
-                                     new Parameter[] {
-                                         Parameter.CLOUD // makes it possible to implement by bridge.
-                                     },
-                                     ReturnType.NODE) {
-                {
+        addFunction(new NodeFunction<Node>("predecessor", Parameter.CLOUD // makes it possible to implement by bridge.
+                                           ) {
+                        {
                     setDescription("Returns the node older then the current node, or null if this node is the oldest (if called on node), or the newest node of this type, or null of there are no nodes of this type (if called on builder)");
                 }
-                public Object getFunctionValue(Node node, Parameters parameters) {
+                protected Node getFunctionValue(Node node, Parameters parameters) {
                     NodeManager nm = node.getNodeManager();
                     NodeQuery q = nm.createQuery();
                     StepField field = q.getStepField(nm.getField("number"));
-                    q.setConstraint(q.createConstraint(field, FieldCompareConstraint.LESS, new Integer(node.getNumber())));
+                    q.setConstraint(q.createConstraint(field, FieldCompareConstraint.LESS, Integer.valueOf(node.getNumber())));
                     q.addSortOrder(field, SortOrder.ORDER_DESCENDING);
                     q.setMaxNumber(1);
                     NodeIterator i = nm.getList(q).nodeIterator();
                     return i.hasNext() ? i.nextNode() : null;
                 }
 
-                public Object getFunctionValue(Parameters parameters) {
-                    Cloud cloud = (Cloud) parameters.get(Parameter.CLOUD);
+                public Node getFunctionValue(Parameters parameters) {
+                    Cloud cloud = parameters.get(Parameter.CLOUD);
                     NodeManager nm = cloud.getNodeManager(ExampleBuilder.this.getTableName());
                     NodeQuery q = nm.createQuery();
                     StepField field = q.getStepField(nm.getField("number"));
