@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageLookup.java,v 1.7 2005-12-17 15:47:49 michiel Exp $
+ * @version $Id: DatabaseStorageLookup.java,v 1.8 2006-09-25 14:08:45 michiel Exp $
  */
 public class DatabaseStorageLookup extends DocumentReader {
 
@@ -62,9 +62,12 @@ public class DatabaseStorageLookup extends DocumentReader {
         try {
             is = ResourceLoader.getConfigurationRoot().getInputSource(DATABASE_STORAGE_LOOKUP_RESOURCE_PATH);
         } catch (java.io.IOException ioe) {
+            log.service(ioe);
         }
         if (is == null) { // 1.7 compatibility
-            return new InputSource(DatabaseStorageLookup.class.getResourceAsStream(DATABASE_STORAGE_LOOKUP_RESOURCE_PATH_FALLBACK));
+            is = new InputSource(DatabaseStorageLookup.class.getResourceAsStream(DATABASE_STORAGE_LOOKUP_RESOURCE_PATH_FALLBACK));
+            is.setSystemId(DATABASE_STORAGE_LOOKUP_RESOURCE_PATH_FALLBACK);
+            return is;
         } else {
             return is;
         }
