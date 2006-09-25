@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.34 2006-09-08 18:42:59 michiel Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.35 2006-09-25 14:08:45 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
@@ -219,7 +219,11 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
         List<Step> steps = q.getSteps();
         Step step = steps.get(steps.indexOf(fstep));
         MMObjectBuilder bul = MMBase.getMMBase().getBuilder(step.getTableName());
-        return new BasicStepField(step, bul.getField(f.getFieldName()));
+        CoreField field = bul.getField(f.getFieldName());
+        if (field == null) {
+            throw new IllegalStateException("Did not find field " + f.getFieldName() + " in builder " + step.getTableName() + " " + bul.getFields());
+        }
+        return new BasicStepField(step, field);
     }
 
 
@@ -230,9 +234,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
         if (c instanceof CompositeConstraint) {
             CompositeConstraint constraint = (CompositeConstraint) c;
             BasicCompositeConstraint newConstraint = new BasicCompositeConstraint(constraint.getLogicalOperator());
-            Iterator i = constraint.getChilds().iterator();
-            while (i.hasNext()) {
-                Constraint cons = (Constraint) i.next();
+            for (Constraint cons : constraint.getChilds()) {
                 newConstraint.addChild(copyConstraint(q, cons));
             }
             newConstraint.setInverse(constraint.isInverse());
