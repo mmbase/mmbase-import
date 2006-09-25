@@ -1,10 +1,16 @@
 <mm:node element="artikel" id="this_article">
-   <mm:related path="posrel1,paragraaf,posrel2,images"
-      constraints="posrel2.pos='9'" orderby="images.title"
-      ><div align="center"><img src="<mm:node element="images"><mm:image template="s(535x300)" /></mm:node
+  <mm:related path="posrel,images"
+      constraints="posrel.pos='9'" orderby="images.title"
+      ><div align="center"><img src="<mm:node element="images"><mm:image template="s(535)" /></mm:node
          >" alt="<mm:field name="images.title" />" border="0" ></div>
-   </mm:related
-   ><p>
+  </mm:related>
+  <mm:related path="posrel1,paragraaf,posrel2,images"
+      constraints="posrel2.pos='9'" orderby="images.title"
+      ><div align="center"><img src="<mm:node element="images"><mm:image template="s(535)" /></mm:node
+         >" alt="<mm:field name="images.title" />" border="0" ></div>
+  </mm:related>
+  <%@include file="../includes/relatedimage.jsp" %>
+  <p>
 	<mm:field name="titel_zichtbaar"
 	   ><mm:compare value="0" inverse="true"
    	   ><div class="pageheader"><mm:field name="titel" 
