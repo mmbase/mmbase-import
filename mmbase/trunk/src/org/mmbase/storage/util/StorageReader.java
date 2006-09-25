@@ -21,10 +21,10 @@ import org.mmbase.util.logging.*;
 /**
  * @javadoc
  * @author Pierre van Rooden
- * @version $Id: StorageReader.java,v 1.10 2005-07-04 21:25:26 michiel Exp $
+ * @version $Id: StorageReader.java,v 1.11 2006-09-25 14:08:45 michiel Exp $
  * @since MMBase-1.7
  */
-public class StorageReader extends DocumentReader  {
+public class StorageReader<SM extends StorageManager> extends DocumentReader  {
 
     private static final Logger log = Logging.getLoggerInstance(StorageReader.class);
 
@@ -67,7 +67,7 @@ public class StorageReader extends DocumentReader  {
      * @return the storage manager Class, or null if none was configured
      * @throws StorageConfigurationException if the factory version did not match, or the class configured is invalid
      */
-    public Class getStorageManagerClass() throws StorageConfigurationException {
+    public Class<SM> getStorageManagerClass() throws StorageConfigurationException {
         Element root = document.getDocumentElement();
         if (factory != null) {
             // verify if the storagemanagerfactory is of the correct class, and
@@ -78,7 +78,7 @@ public class StorageReader extends DocumentReader  {
                 try {
                     // obtain and check class
                     String factoryClassName = factoryTag.getAttribute("classname");
-                    Class factoryClass = Class.forName(factoryClassName);
+                    Class<SM> factoryClass = (Class<SM>) Class.forName(factoryClassName);
                     if (!factoryClass.isInstance(factory)) {
                         throw new StorageConfigurationException("StorageManager Configuration requires factory class '"+factoryClassName+"'.");
                     }
@@ -103,8 +103,8 @@ public class StorageReader extends DocumentReader  {
             String managerClassName = managerTag.getAttribute("classname");
             // intantiate storage manager and check version
             try {
-                Class managerClass = Class.forName(managerClassName);
-                StorageManager manager = (StorageManager)managerClass.newInstance();
+                Class<SM> managerClass = (Class<SM>) Class.forName(managerClassName);
+                StorageManager manager = managerClass.newInstance();
                 // obtain and check version
                 String storageManagerVersion = managerTag.getAttribute("version");
                 if (storageManagerVersion != null) {
@@ -135,9 +135,9 @@ public class StorageReader extends DocumentReader  {
      * @return A List of Class objects, each being the SearchQueryHandler class, or an empty list if none was configured
      * @throws StorageConfigurationException if the class configured is invalid
      */
-    public List getSearchQueryHandlerClasses() throws StorageConfigurationException {
+    public List<Class> getSearchQueryHandlerClasses() throws StorageConfigurationException {
         // override if otherwise specified
-        List classes = new ArrayList();
+        List<Class> classes = new ArrayList();
         Element root = document.getDocumentElement();
         NodeList handlerTagList = root.getElementsByTagName("searchqueryhandler");
         for(int i=0; i<handlerTagList.getLength(); i++) {
@@ -161,8 +161,8 @@ public class StorageReader extends DocumentReader  {
      * </ul>
      * @return attributes as a map
      */
-    public Map getAttributes() {
-        Map attributes = new HashMap();
+    public Map<String, Object> getAttributes() {
+        Map<String, Object> attributes = new HashMap();
         Element root = document.getDocumentElement();
         NodeList attributesTagList = root.getElementsByTagName("attributes");
         if (attributesTagList.getLength()>0) {
@@ -224,8 +224,8 @@ public class StorageReader extends DocumentReader  {
      * the alternate name is the value (null if no name is given).
      * @return disallowed fields as a map
      */
-    public Map getDisallowedFields() {
-        Map disallowedFields = new HashMap();
+    public Map<String, String> getDisallowedFields() {
+        Map<String, String>  disallowedFields = new HashMap();
         Element root = document.getDocumentElement();
         NodeList disallowedFieldsList = root.getElementsByTagName("disallowed-fields");
         if (disallowedFieldsList.getLength() > 0) {
@@ -240,7 +240,7 @@ public class StorageReader extends DocumentReader  {
                 if (fieldName != null) {
                     if (!casesensitive) fieldName = fieldName.toLowerCase();
                     String replacement = fieldTag.getAttribute("replacement");
-                    disallowedFields.put(fieldName,replacement);
+                    disallowedFields.put(fieldName, replacement);
                 }
             }
         }
@@ -254,8 +254,8 @@ public class StorageReader extends DocumentReader  {
      * Calling code should sort this list if they want to use TypoMapping fuzzy matching.
      * @return a List of TypeMapping objects
      */
-    public List getTypeMappings() {
-        List typeMappings = new ArrayList();
+    public List<TypeMapping> getTypeMappings() {
+        List<TypeMapping> typeMappings = new ArrayList();
         Element root = document.getDocumentElement();
         NodeList typeMappingsTagList = root.getElementsByTagName("type-mappings");
         if (typeMappingsTagList.getLength()>0) {

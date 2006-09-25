@@ -39,9 +39,9 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.40 2006-08-01 22:26:30 michiel Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.41 2006-09-25 14:08:45 michiel Exp $
  */
-public class DatabaseStorageManagerFactory extends StorageManagerFactory {
+public class DatabaseStorageManagerFactory extends StorageManagerFactory<DatabaseStorageManager> {
 
     private static final Logger log = Logging.getLoggerInstance(DatabaseStorageManagerFactory.class);
 
@@ -422,8 +422,8 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
     protected Object instantiateBasicHandler(Class handlerClass) {
         // first handler
         try {
-            java.lang.reflect.Constructor constructor = handlerClass.getConstructor(new Class[] {});
-            SqlHandler sqlHandler = (SqlHandler) constructor.newInstance( new Object[] {} );
+            java.lang.reflect.Constructor constructor = handlerClass.getConstructor();
+            SqlHandler sqlHandler = (SqlHandler) constructor.newInstance();
             log.service("Instantiated SqlHandler of type " + handlerClass.getName());
             return sqlHandler;
         } catch (NoSuchMethodException nsme) {

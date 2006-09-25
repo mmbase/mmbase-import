@@ -35,9 +35,9 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.27 2006-07-15 10:58:36 michiel Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.28 2006-09-25 14:08:45 michiel Exp $
  */
-public abstract class StorageManagerFactory {
+public abstract class StorageManagerFactory<SM extends StorageManager> {
 
     private static final Logger log = Logging.getLoggerInstance(StorageManagerFactory.class);
 
@@ -49,17 +49,17 @@ public abstract class StorageManagerFactory {
      * The class used to instantiate storage managers.
      * The classname is retrieved from the storage configuration file
      */
-    protected Class storageManagerClass;
+    protected Class<SM> storageManagerClass;
 
     /**
      * The map with configuration data
      */
-    protected Map attributes;
+    protected Map<String, Object> attributes;
 
     /**
      * The list with type mappings
      */
-    protected List typeMappings;
+    protected List<TypeMapping> typeMappings;
 
     /**
      * The ChangeManager object, used to register/broadcast changes to a node or set of nodes.
@@ -70,7 +70,7 @@ public abstract class StorageManagerFactory {
     /**
      * The map with disallowed fieldnames and (if given) alternates
      */
-    protected final SortedMap disallowedFields = new TreeMap(String.CASE_INSENSITIVE_ORDER);
+    protected final SortedMap<String, String> disallowedFields = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
 
     /**
      * The query handler to use with this factory.
@@ -84,7 +84,7 @@ public abstract class StorageManagerFactory {
      * The query handler classes.
      * Assign a value to this class if you want to set a default query handler.
      */
-    protected List queryHandlerClasses = new ArrayList();
+    protected List<Class> queryHandlerClasses = new ArrayList<Class>();
 
     /**
      * @see #getSetSurrogator()
@@ -153,8 +153,8 @@ public abstract class StorageManagerFactory {
     protected final void init(MMBase mmbase) throws StorageError {
         log.service("initializing Storage Manager factory " + this.getClass().getName());
         this.mmbase = mmbase;
-        attributes    = Collections.synchronizedMap(new HashMap());    // ConcurrentHashMap not possible because null-values are put (TODO)
-        typeMappings  = Collections.synchronizedList(new ArrayList()); // CopyOnWriteArrayList not possible because Collections.sort is done (TODO)
+        attributes    = Collections.synchronizedMap(new HashMap<String, Object>()); // ConcurrentHashMap not possible because null-values are put (TODO)
+        typeMappings  = Collections.synchronizedList(new ArrayList<TypeMapping>()); // CopyOnWriteArrayList not possible because Collections.sort is done (TODO)
         changeManager = new ChangeManager();
         try {
             log.debug("loading Storage Manager factory " + this.getClass().getName());
@@ -215,20 +215,20 @@ public abstract class StorageManagerFactory {
      * @throws StorageException if the storage could not be accessed or necessary configuration data is missing or invalid
      */
     protected void load() throws StorageException {
-        StorageReader reader = getDocumentReader();
+        StorageReader<SM> reader = getDocumentReader();
         if (reader == null) {
             if (storageManagerClass == null || queryHandlerClasses.size() == 0) {
                 throw new StorageConfigurationException("No storage reader specified, and no default values available.");
             } else {
                 log.warn("No storage reader specified, continue using default values.");
                 log.debug("Default storage manager : " + storageManagerClass.getName());
-                log.debug("Default query handler : " + ((Class)queryHandlerClasses.get(0)).getName());
+                log.debug("Default query handler : " + queryHandlerClasses.get(0).getName());
                 return;
             }
         }
 
         // get the storage manager class
-        Class configuredClass = reader.getStorageManagerClass();
+        Class<SM> configuredClass = reader.getStorageManagerClass();
         if (configuredClass != null) {
             storageManagerClass = configuredClass;
         } else if (storageManagerClass == null) {
@@ -243,12 +243,11 @@ public abstract class StorageManagerFactory {
         disallowedFields.putAll(reader.getDisallowedFields());
 
         // add default replacements when DEFAULT_STORAGE_IDENTIFIER_PREFIX is given
-        String prefix = (String)getAttribute(Attributes.DEFAULT_STORAGE_IDENTIFIER_PREFIX);
-        if (prefix !=null) {
-            for (Iterator i = disallowedFields.entrySet().iterator(); i.hasNext();) {
-                Map.Entry e = (Map.Entry)i.next();
-                String name = (String) e.getKey();
-                String replacement = (String) e.getValue();
+        String prefix = (String) getAttribute(Attributes.DEFAULT_STORAGE_IDENTIFIER_PREFIX);
+        if (prefix != null) {
+            for (Map.Entry<String, String> e : disallowedFields.entrySet()) {
+                String name = e.getKey();
+                String replacement =  e.getValue();
                 if (replacement == null ) {
                     e.setValue(prefix + "_" + name);
                 }
@@ -262,7 +261,7 @@ public abstract class StorageManagerFactory {
         // get the queryhandler class
         // has to be done last, as we have to passing the disallowedfields map (doh!)
         // need to move this to DatabaseStorageManagerFactory
-        List configuredClasses = reader.getSearchQueryHandlerClasses();
+        List <Class> configuredClasses = reader.getSearchQueryHandlerClasses();
         if (configuredClasses.size() != 0) {
             queryHandlerClasses = configuredClasses;
         } else if (queryHandlerClasses.size() == 0) {
@@ -270,10 +269,8 @@ public abstract class StorageManagerFactory {
         }
         log.service("Found queryhandlers " + queryHandlerClasses);
         // instantiate handler(s)
-        Iterator iHandlers = reader.getSearchQueryHandlerClasses().iterator();
         Object handler = null;
-        while (iHandlers.hasNext()) {
-            Class handlerClass = (Class) iHandlers.next();
+        for (Class handlerClass : reader.getSearchQueryHandlerClasses()) {
             if (handler == null) {
                 handler = instantiateBasicHandler(handlerClass);
             } else {
@@ -301,9 +298,9 @@ public abstract class StorageManagerFactory {
      * @return a StorageManager instance
      * @throws StorageException when the storagemanager cannot be created
      */
-    public StorageManager getStorageManager() throws StorageException {
+    public SM getStorageManager() throws StorageException {
         try {
-            StorageManager storageManager = (StorageManager)storageManagerClass.newInstance();
+            SM storageManager = storageManagerClass.newInstance();
             storageManager.init(this);
             return storageManager;
         } catch(InstantiationException ie) {
@@ -323,7 +320,7 @@ public abstract class StorageManagerFactory {
      * @throws StorageException when the handler cannot be created
      */
     public SearchQueryHandler getSearchQueryHandler() throws StorageException {
-        if (queryHandler==null) {
+        if (queryHandler == null) {
             throw new StorageException("Cannot obtain a query handler.");
         } else {
             return queryHandler;
@@ -338,7 +335,7 @@ public abstract class StorageManagerFactory {
      * @throws StorageException if something went wrong while obtaining the document reader
      * @return a StorageReader instance, or null if no reader has been configured
      */
-    public StorageReader getDocumentReader() throws StorageException {
+    public StorageReader<SM> getDocumentReader() throws StorageException {
         // determine storage resource.
         String storagePath = mmbase.getInitParameter("storage");
         // use the parameter set in mmbaseroot if it is given
@@ -348,7 +345,7 @@ public abstract class StorageManagerFactory {
                 if (resource == null) {
                     throw new StorageConfigurationException("Storage resource '" + storagePath + "' not found.");
                 }
-                return new StorageReader(this, resource);
+                return new StorageReader<SM>(this, resource);
             } catch (java.io.IOException ioe) {
                 throw  new StorageConfigurationException(ioe);
             }
@@ -375,7 +372,7 @@ public abstract class StorageManagerFactory {
      * The attributes are added to any attributes already knwon to the factory.
      * @param attributes the map of attributes to add
      */
-    public void setAttributes(Map attributes) {
+    public void setAttributes(Map<String, Object> attributes) {
         this.attributes.putAll(attributes);
         log.debug("Database attributes " + this.attributes);
     }
@@ -386,7 +383,7 @@ public abstract class StorageManagerFactory {
      * @param key the key of the attribute
      * @return the attribute value, or null if it is unknown
      */
-    public Object getAttribute(Object key) {
+    public Object getAttribute(String key) {
         return attributes.get(key);
     }
 
@@ -398,7 +395,7 @@ public abstract class StorageManagerFactory {
      * @param key the key of the attribute
      * @param value the value of the attribute
      */
-    public void setAttribute(Object key, Object value) {
+    public void setAttribute(String  key, Object value) {
         attributes.put(key, value);
     }
 
@@ -409,7 +406,7 @@ public abstract class StorageManagerFactory {
      * @param key the key of the attribute
      * @return the scheme value, or null if it is unknown
      */
-    public Scheme getScheme(Object key) {
+    public Scheme getScheme(String key) {
         return getScheme(key, null);
     }
 
@@ -422,12 +419,12 @@ public abstract class StorageManagerFactory {
      * @param defaultPattern the pattern to use for the default scheme, <code>null</code> if there is no default
      * @return the scheme value, <code>null</code> if there is no scheme
      */
-    public Scheme getScheme(Object key, String defaultPattern) {
-        Scheme scheme =(Scheme)getAttribute(key);
+    public Scheme getScheme(String key, String defaultPattern) {
+        Scheme scheme = (Scheme) getAttribute(key);
         if (scheme == null && defaultPattern != null) {
             if (attributes.containsKey(key)) return null;
-            scheme = new Scheme(this,defaultPattern);
-            setAttribute(key,scheme);
+            scheme = new Scheme(this, defaultPattern);
+            setAttribute(key, scheme);
         }
         return scheme;
     }
@@ -439,11 +436,11 @@ public abstract class StorageManagerFactory {
      * @param key the key of the scheme
      * @param pattern the pattern to use for the scheme
      */
-    public void setScheme(Object key, String pattern) {
+    public void setScheme(String key, String pattern) {
         if (pattern == null || pattern.equals("")) {
-            setAttribute(key,null);
+            setAttribute(key, null);
         } else {
-            setAttribute(key,new Scheme(this,pattern));
+            setAttribute(key, new Scheme(this,pattern));
         }
     }
 
@@ -453,7 +450,7 @@ public abstract class StorageManagerFactory {
      * @param key the key of the option
      * @return <code>true</code> if the option was set
      */
-    public boolean hasOption(Object key) {
+    public boolean hasOption(String key) {
         Object o = getAttribute(key);
         return (o instanceof Boolean) && ((Boolean)o).booleanValue();
     }
@@ -463,7 +460,7 @@ public abstract class StorageManagerFactory {
      * @param key the key of the option
      * @param value the value of the option (true or false)
      */
-    public void setOption(Object key, boolean value) {
+    public void setOption(String key, boolean value) {
         setAttribute(key, Boolean.valueOf(value));
     }
 
@@ -471,7 +468,7 @@ public abstract class StorageManagerFactory {
      * Returns a sorted list of type mappings for this storage.
      * @return  the list of TypeMapping objects
      */
-    public List getTypeMappings() {
+    public List<TypeMapping> getTypeMappings() {
         return Collections.unmodifiableList(typeMappings);
     }
 
@@ -479,7 +476,7 @@ public abstract class StorageManagerFactory {
      * Returns a map of disallowed field names and their possible alternate values.
      * @return  A Map of disallowed field names
      */
-    public Map getDisallowedFields() {
+    public Map<String, String> getDisallowedFields() {
         return Collections.unmodifiableSortedMap(disallowedFields);
     }
 
