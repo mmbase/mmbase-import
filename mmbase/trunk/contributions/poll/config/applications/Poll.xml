@@ -1,0 +1,39 @@
+<?xml version="1.0" ?>
+<!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application name="Poll" maintainer="mmbase.org" version="2" auto-deploy="true">
+
+  <requirements>
+    <requires name="Resources" maintainer="mmbase.org" version="1" />
+  </requirements>
+
+	<neededbuilderlist>
+    <builder maintainer="mmbase.org" version="1">poll</builder>
+    <builder maintainer="mmbase.org" version="1">answer</builder>
+    <builder maintainer="mmbase.org" version="1">posrel</builder>
+  </neededbuilderlist>
+
+	<neededreldeflist>
+    <reldef source="posrel" target="posrel" direction="bidirectional" guisourcename="PosRel" guitargetname="PosRel" />
+	</neededreldeflist>
+
+	<allowedrelationlist>
+    <relation from="poll" to="answer" type="posrel" />
+	</allowedrelationlist>
+
+	<datasourcelist>
+	</datasourcelist>
+
+	<relationsourcelist>
+	</relationsourcelist>
+
+	<contextsourcelist>
+	</contextsourcelist>
+
+	<description>
+		A poll application in MMBase.
+	</description>
+
+  <install-notice>
+    Thanks for installing this poll.
+	</install-notice>
+</application>

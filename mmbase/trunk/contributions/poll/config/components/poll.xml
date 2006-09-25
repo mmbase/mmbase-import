@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component
+    name="poll"
+    xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
+  <class name="org.mmbase.framework.BasicComponent">
+    
+  </class>
+  <description xml:lang="nl">Enquetes</description>
+  <description xml:lang="en">Polls</description>
+  <!--
+      No dependencies.
+      Views by taglib.
+  -->
+  <view name="frontend">
+    <class name="org.mmbase.framework.JspComponent">
+    </class>
+    <param name="path">/poll/index.jspx</param>
+  </view>
+
+  <view name="editors">
+    <class name="org.mmbase.framework.EditwizardCompoment">
+    </class>
+    <param name="list">/poll/tasks/poll</param>
+  </view>
+
+</component>
