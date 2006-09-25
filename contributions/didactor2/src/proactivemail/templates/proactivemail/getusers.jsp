@@ -63,9 +63,11 @@ Collect all users which should be email using this template, XML output
                 long twomonthssec = 2*30*24*60*60;
                 if ( lastact > 1 ) {
                     if ( !( (currtime - lastact > twomonthssec) && (lastSent - lastact < twomonthssec)) ) {
+                        it.remove();
                     }
                 }
                 else {
+                    it.remove();
                 }
               }
               %>
