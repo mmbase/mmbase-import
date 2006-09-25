@@ -10,6 +10,7 @@
 
 </mm:createnode>
 
+<!-- send the email node (Didactor way) -->                
 <mm:node referid="mail1">
-   <mm:field name="startmail(oneshot)" />
+   <mm:setfield name="type">1</mm:setfield>
 </mm:node>
