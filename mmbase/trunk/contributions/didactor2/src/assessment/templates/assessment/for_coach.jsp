@@ -17,7 +17,7 @@
       </mm:first>
     </mm:relatednodes>
   </mm:node>
-  <% lessonsNum = lessonsNum - 2; %>
+  <% lessonsNum = lessonsNum - 1; %>
   <mm:node number="$user" notfound="skip">
     <div><table class="poplistTable" style="width:100%">
       <tr style="vertical-align:top">
@@ -39,7 +39,7 @@
             <mm:first>
               <tr style="vertical-align:top;">
                 <th class="listHeader" style="text-align:left">
-                  <img src="<mm:treefile page="/assessment/gfx/plus.gif" objectlist="$includePath" referids="$referids"/>"
+                  <img src="<mm:treefile page="/assessment/gfx/minus.gif" objectlist="$includePath" referids="$referids"/>"
                        border="0" title="<di:translate key="assessment.show_problems" />" alt="<di:translate key="assessment.show_problems" />" 
                        onClick="toggleAll(<%= classId %>,'<%= getStudentsByClass(cloud, classId) %>');"
                        id="toggle_image<%= classId %>"/>
@@ -50,55 +50,85 @@
                 <% } %>
               </tr>
             </mm:first>
-            <mm:field name="people.number" jspvar="studentId" vartype="String">
+            <mm:field name="people.number" jspvar="studentId" id="student" vartype="String">
               <tr id="toggle_div<%= classId %>_<%= studentId %>">
                 <td class="listItem">
                   <mm:field name="people.lastname"/>, <mm:field name="people.firstname"/> <mm:field name="people.suffix"/>
                 </td>
+                <% count = 0; %>
                 <mm:node number="$assessment_education" notfound="skip">
                   <mm:relatednodes type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos"  max="<%=  "" + lessonsNum %>">
                     <td class="listItem">
-                      <% String feedback = "";
-                         String feedbackId = "-1";
-                      %>
-                      <mm:relatedcontainer path="classrel,people">
-                        <mm:constraint field="people.number" value="<%= studentId %>"/>
-                        <mm:related>
-                          <mm:node element="classrel">
-                            <mm:relatednodes type="popfeedback">
-                              <mm:field name="status" jspvar="dummy" vartype="String" write="false">
-                                <% feedback = dummy; %>
-                              </mm:field>
-                              <mm:field name="number" jspvar="dummy" vartype="String" write="false">
-                                <% feedbackId = dummy; %>
-                              </mm:field>
-                            </mm:relatednodes>
-                          </mm:node>
-                        </mm:related>
-                      </mm:relatedcontainer>
-                      <% if ("".equals(feedback)) { %>
-                           &nbsp;
-                      <% } else { 
-                           if ("-1".equals(feedback)) {   
-                             %><a href="<mm:treefile page="/assessment/showfeedback.jsp" objectlist="$includePath" referids="$referids">
-                                          <mm:param name="feedback_n"><%= feedbackId %></mm:param>
-                                          <mm:param name="coachmode">true</mm:param>
-                                        </mm:treefile>"
-                                 ><img src="<mm:treefile page="/assessment/gfx/developed.gif" objectlist="$includePath" 
-                                              referids="$referids"/>" border="0" title="<di:translate key="assessment.goto_feedback" />"
-                                       alt="<di:translate key="assessment.goto_feedback" />" /></a><%
-                           } else {
-                             %><a href="<mm:treefile page="/assessment/givefeedback.jsp" objectlist="$includePath" referids="$referids">
-                                          <mm:param name="feedback_n"><%= feedbackId %></mm:param>
-                                          <mm:param name="coachmode">true</mm:param>
-                                        </mm:treefile>"
-                                 ><img src="<mm:treefile page="/assessment/gfx/todevelop.gif" objectlist="$includePath" 
-                                              referids="$referids"/>" border="0" title="<di:translate key="assessment.goto_feedback" />"
-                                       alt="<di:translate key="assessment.goto_feedback" />" /></a><%
+                      <%
+                      if(count<lessonsNum-1) {
+                        String feedback = "";
+                        String feedbackId = "-1";
+                        %>
+                        <mm:relatedcontainer path="classrel,people">
+                          <mm:constraint field="people.number" value="<%= studentId %>"/>
+                          <mm:related>
+                            <mm:node element="classrel">
+                              <mm:relatednodes type="popfeedback">
+                                <mm:field name="status" jspvar="dummy" vartype="String" write="false">
+                                  <% feedback = dummy; %>
+                                </mm:field>
+                                <mm:field name="number" jspvar="dummy" vartype="String" write="false">
+                                  <% feedbackId = dummy; %>
+                                </mm:field>
+                              </mm:relatednodes>
+                            </mm:node>
+                          </mm:related>
+                        </mm:relatedcontainer>
+                        <% 
+                        if ("".equals(feedback)) {
+                          %>
+                          &nbsp;
+                          <%
+                        } else { 
+                             if ("-1".equals(feedback)) {   
+                               %><a href="<mm:treefile page="/assessment/showfeedback.jsp" objectlist="$includePath" referids="$referids">
+                                            <mm:param name="feedback_n"><%= feedbackId %></mm:param>
+                                            <mm:param name="coachmode">true</mm:param>
+                                          </mm:treefile>"
+                                   ><img src="<mm:treefile page="/assessment/gfx/developed.gif" objectlist="$includePath" 
+                                                referids="$referids"/>" border="0" title="<di:translate key="assessment.goto_feedback" />"
+                                         alt="<di:translate key="assessment.goto_feedback" />" /></a><%
+                             } else {
+                               %><a href="<mm:treefile page="/assessment/givefeedback.jsp" objectlist="$includePath" referids="$referids">
+                                            <mm:param name="feedback_n"><%= feedbackId %></mm:param>
+                                            <mm:param name="coachmode">true</mm:param>
+                                          </mm:treefile>"
+                                   ><img src="<mm:treefile page="/assessment/gfx/todevelop.gif" objectlist="$includePath" 
+                                                referids="$referids"/>" border="0" title="<di:translate key="assessment.goto_feedback" />"
+                                         alt="<di:translate key="assessment.goto_feedback" />" /></a><%
+                             }
                            }
-                         }
+                      } else {
+                        %>
+                        <mm:node number="$student">
+                          <%@include file="/education/tests/find_copybook.jsp"%>
+                        </mm:node>
+                        <mm:node number="$assessment_evaluationtest" notfound="skip">
+                          <!-- get madetest -->
+                          <mm:relatednodescontainer path="madetests,copybooks" element="madetests">
+                            <mm:constraint field="copybooks.number" referid="copybookNo"/>
+                            <mm:relatednodes>
+                              <a href="<mm:treefile page="/assessment/showtest.jsp" objectlist="$includePath" referids="$referids">
+                                          <mm:param name="test"><mm:write referid="assessment_evaluationtest" /></mm:param>
+                                          <mm:param name="madetest"><mm:field name="number" /></mm:param>
+                                          <mm:param name="coachmode">true</mm:param>
+                                        </mm:treefile>"
+                                ><img src="<mm:treefile page="/assessment/gfx/present.gif" objectlist="$includePath" 
+                                            referids="$referids"/>" border="0" title="<di:translate key="assessment.view_evaluationtest" />"
+                                      alt="<di:translate key="assessment.view_evaluationtest" />" /></a>
+                            </mm:relatednodes>
+                          </mm:relatednodescontainer>
+                        </mm:node>
+                        <%                     
+                      }
                       %>
                     </td>
+                    <% count++; %>
                   </mm:relatednodes>
                 </mm:node>
               </tr>
