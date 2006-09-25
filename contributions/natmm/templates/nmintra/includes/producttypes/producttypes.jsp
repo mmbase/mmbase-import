@@ -1,3 +1,4 @@
+<% String thisPage = ph.createPaginaUrl(paginaID,request.getContextPath()); %>
 <div class="pageheader" style="margin-top:15px;"><mm:node number="<%= paginaID %>"><mm:field name="titel"/></mm:node> Dienstenniveau</div>
 <div class="pagesubheader" style="margin-top:10px;">Kies een productgroep om de diensten en het dienstenniveau over op te vragen</div>
 <form name="producttypeform" method="post" action="">
@@ -16,7 +17,7 @@
 <!--
 function postPG() {
     var pool = document.producttypeform.elements["producttype"].value;
-    document.location = "producttypes.jsp<%= templateQueryString %>&pool=" + pool;
+    document.location = "<%= thisPage %>?pool=" + pool;
 }
 //-->
 </script><%
@@ -41,7 +42,7 @@ if(!poolId.equals("")) { // *** use mm:list to only show producttypes related to
     <!--
     function postP() {
         var product = document.productform.elements["producttype"].value;
-        document.location = "producttypes.jsp<%= templateQueryString %>&pool=<%= poolId %>&product=" + product;
+        document.location = "<%= thisPage %>?pool=<%= poolId %>&product=" + product;
     }
     //-->
     </script>
