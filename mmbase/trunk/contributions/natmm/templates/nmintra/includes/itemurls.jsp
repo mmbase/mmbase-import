@@ -1,4 +1,4 @@
-<mm:list nodes="<%= paginaID %>" path="pagina,lijstcontentrel,linklijst"
+<mm:list nodes="<%= paginaID %>" path="pagina,posrel,linklijst"
    ><mm:field name="linklijst.naam" jspvar="items_name" vartype="String" write="false"><%
       rightBarTitle = items_name;
       %><%@include file="../includes/rightbartitle.jsp" 
