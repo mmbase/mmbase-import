@@ -45,7 +45,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.206 2006-09-15 17:04:48 michiel Exp $
+ * @version $Id: MMBase.java,v 1.207 2006-09-25 15:01:47 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -62,10 +62,11 @@ public class MMBase extends ProcessorModule {
     private static final int STATE_START_UP = -2;
 
     /**
-     * State of MMBase
+     * State of MMBase at the start of the initialization
      * @since MMBase-1.8
      */
     private static final int STATE_STARTED_INIT = -1;
+
     /**
      * State of MMBase before builders are loaded
      * @since MMBase-1.6
