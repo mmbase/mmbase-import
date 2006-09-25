@@ -15,9 +15,9 @@ import java.util.ListIterator;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: FieldIterator.java,v 1.6 2006-09-08 12:10:41 michiel Exp $
+ * @version $Id: FieldIterator.java,v 1.7 2006-09-25 10:17:36 pierre Exp $
  */
-public interface FieldIterator extends ListIterator<Field> {
+public interface FieldIterator<E extends Field> extends ListIterator<E> {
 
     /**
      * Returns the next element in the iterator as a Field
