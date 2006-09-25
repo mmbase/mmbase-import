@@ -23,12 +23,12 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.28 2006-09-22 11:18:33 michiel Exp $
+ * @version $Id: Parameters.java,v 1.29 2006-09-25 14:00:01 michiel Exp $
  * @see Parameter
  * @see #Parameters(Parameter[])
  */
 
-public class Parameters<E> extends AbstractList<E> implements java.io.Serializable {
+public class Parameters extends AbstractList<Object> implements java.io.Serializable {
     private static final Logger log = Logging.getLoggerInstance(Parameters.class);
 
     private static final int serialVersionUID = 1;
@@ -42,13 +42,13 @@ public class Parameters<E> extends AbstractList<E> implements java.io.Serializab
     /**
      * The contents of this List are stored in this HashMap.
      */
-    protected Map<String, E> backing;
+    protected Map<String, Object> backing;
 
     /**
      * This array maps integers (position in array) to map keys, making it possible to implement
      * List.
      */
-    protected Parameter<E>[] definition = null;
+    protected Parameter<Object>[] definition = null;
 
     /**
      * If <code>true</code>, values are automatically cast to the right type (if possible) when set.
@@ -76,13 +76,13 @@ public class Parameters<E> extends AbstractList<E> implements java.io.Serializab
      *   </code>
      * </pre>
      */
-    public Parameters(Parameter<E>... def) {
+    public Parameters(Parameter<?>... def) {
         definition = Functions.define(def, new ArrayList<Parameter>()).toArray(Parameter.EMPTY);
         toIndex = definition.length;
         if (log.isDebugEnabled()) {
             log.debug("Found definition " + Arrays.asList(definition));
         }
-        backing = new HashMap<String, E>();
+        backing = new HashMap<String, Object>();
         // fill with default values, and check for non-unique keys.
         for (int i = fromIndex; i < toIndex; i++) {
             if (backing.put(definition[i].getName(), definition[i].getDefaultValue()) != null) {
@@ -100,14 +100,14 @@ public class Parameters<E> extends AbstractList<E> implements java.io.Serializab
      * @throws NullPointerException if definition is null
      * @see #Parameters(Parameter[])
      */
-    public Parameters(Parameter<E>[] def, Collection values) {
+    public Parameters(Parameter<?>[] def, Collection values) {
         this(def);
         setAll(values);
     }
     /**
      * @since MMBase-1.9
      */
-    public Parameters(Parameter<E>[] def, E... values) {
+    public Parameters(Parameter<?>[] def, Object... values) {
         this(def);
         setAll(values);
     }
@@ -115,7 +115,7 @@ public class Parameters<E> extends AbstractList<E> implements java.io.Serializab
     /**
      * Used for nicer implemenation  of subList (which we want to also be instanceof Parameters).
      */
-    protected Parameters(Parameters<E> params, int from, int to) {
+    protected Parameters(Parameters  params, int from, int to) {
         backing = params.backing;
         definition = params.definition;
         fromIndex = from + params.fromIndex;
@@ -178,14 +178,14 @@ public class Parameters<E> extends AbstractList<E> implements java.io.Serializab
 
     // implementation of List
     // @throws NullPointerException if definition not set
-    public E get(int i) {
+    public Object get(int i) {
         return backing.get(definition[i + fromIndex].getName());
     }
 
     // implementation of (modifiable) List
     // @throws NullPointerException if definition not set
-    public E set(int i, E value) {
-        Parameter<E> a = definition[i + fromIndex];
+    public Object set(int i, Object value) {
+        Parameter<?> a = definition[i + fromIndex];
         if (autoCasting) value = a.autoCast(value);
         a.checkType(value);
         return backing.put(a.getName(), value);
@@ -246,7 +246,7 @@ public class Parameters<E> extends AbstractList<E> implements java.io.Serializab
      * @param parameter the parameter
      * @return <code>true</code> if a parameter exists.
      */
-    public boolean containsParameter(Parameter<E> parameter) {
+    public boolean containsParameter(Parameter<?> parameter) {
         return indexOfParameter(parameter) != -1;
     }
 
@@ -265,7 +265,7 @@ public class Parameters<E> extends AbstractList<E> implements java.io.Serializab
      * @param value the object value to set
      * @throws IllegalArgumentException if either the argument name is unknown to this Parameters, or the value is of the wrong type.
      */
-    public Parameters<E> set(Parameter parameter, E value) {
+    public Parameters set(Parameter<?> parameter, Object value) {
         int index = indexOfParameter(parameter);
         if (index > -1) {
             set(index, value);
@@ -281,7 +281,7 @@ public class Parameters<E> extends AbstractList<E> implements java.io.Serializab
      * @param value the object value to set
      * @throws IllegalArgumentException if either the argument name is unknown to this Parameters, or the value is of the wrong type.
      */
-    public Parameters<E> set(String parameterName, E value) {
+    public Parameters set(String parameterName, Object value) {
         int index = indexOfParameter(parameterName);
         if (index > -1) {
             set(index, value);
@@ -294,9 +294,9 @@ public class Parameters<E> extends AbstractList<E> implements java.io.Serializab
     /**
      * Copies all values of a map to the corresponding values of this Parameters Object.
      */
-    public Parameters<E> setAll(Map<String, ? extends E> map) {
+    public Parameters  setAll(Map<String, ?> map) {
         if (map != null) {
-            for (Map.Entry<String, ? extends E> entry : map.entrySet()) {
+            for (Map.Entry<String, ?> entry : map.entrySet()) {
                 set(entry.getKey(), entry.getValue());
             }
         }
@@ -306,14 +306,14 @@ public class Parameters<E> extends AbstractList<E> implements java.io.Serializab
     /**
      * Copies all values of a collection to the corresponding values of this Parameters Object.
      */
-    public Parameters<E> setAll(Collection<E> values) {
+    public Parameters setAll(Collection values) {
         if (values != null) {
             if (log.isDebugEnabled()) {
                 if (values.size() > definition.length) {
                     log.debug("Given too many values. " + values + " does not match " + Arrays.asList(definition));
                 }
             }
-            Iterator<E> valueIterator = values.iterator();
+            Iterator<?> valueIterator = values.iterator();
             int i = 0;
             while (valueIterator.hasNext()) {
                 set(i++, valueIterator.next());
@@ -324,16 +324,16 @@ public class Parameters<E> extends AbstractList<E> implements java.io.Serializab
     /**
      * @since MMBase-1.9
      */
-    public Parameters<E> setAll(E... values) {
+    public Parameters setAll(Object... values) {
         int i = 0;
-        for(E value : values) {
+        for(Object value : values) {
             set(i++, value);
         }
         return this;
     }
 
-    public Parameters<E> subList(int fromIndex, int toIndex) {
-        return new Parameters<E>(this, fromIndex, toIndex);
+    public Parameters subList(int fromIndex, int toIndex) {
+        return new Parameters(this, fromIndex, toIndex);
     }
 
 
@@ -342,7 +342,7 @@ public class Parameters<E> extends AbstractList<E> implements java.io.Serializab
      * @param parameter the parameter to set
      * @param value the object value to set
      */
-    public Parameters<E> setIfDefined(Parameter<E> parameter, E value) {
+    public Parameters setIfDefined(Parameter<?> parameter, Object value) {
         int index = indexOfParameter(parameter);
         if (index > -1) {
             set(index, value);
@@ -356,7 +356,7 @@ public class Parameters<E> extends AbstractList<E> implements java.io.Serializab
      * @param parameterName the name of the parameter to set
      * @param value the object value to set
      */
-    public Parameters<E> setIfDefined(String parameterName, E value) {
+    public Parameters setIfDefined(String parameterName, Object value) {
         int index = indexOfParameter(parameterName);
         if (index > -1) {
             set(index, value);
@@ -369,7 +369,7 @@ public class Parameters<E> extends AbstractList<E> implements java.io.Serializab
      * @param parameter the parameter to get
      * @return value the parameter value
      */
-    public <F extends E> F get(Parameter<F> parameter) {
+    public <F> F get(Parameter<F> parameter) {
         return (F) get(parameter.getName());
     }
 
@@ -378,7 +378,7 @@ public class Parameters<E> extends AbstractList<E> implements java.io.Serializab
      * @param parameterName the name of the parameter to get
      * @return value the parameter value
      */
-    public E get(String parameterName) {
+    public Object get(String parameterName) {
         return backing.get(parameterName);
     }
 
@@ -406,7 +406,7 @@ public class Parameters<E> extends AbstractList<E> implements java.io.Serializab
     /**
      * Gives the arguments back as a (unmodifiable) map.
      */
-    public Map<String, E> toMap() {
+    public Map<String, ?> toMap() {
         return Collections.unmodifiableMap(backing);
     }
 
