@@ -23,14 +23,14 @@ import org.mmbase.util.logging.Logging;
  * the Parameter array of the constructor.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.26 2006-09-15 14:56:28 michiel Exp $
+ * @version $Id: NodeFunction.java,v 1.27 2006-09-25 14:00:01 michiel Exp $
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
  * @see org.mmbase.util.functions.BeanFunction
  * @since MMBase-1.8
  */
 
-public abstract class NodeFunction<R> extends AbstractFunction<R, Object> {
+public abstract class NodeFunction<R> extends AbstractFunction<R> {
 
     private static final Logger log = Logging.getLoggerInstance(NodeFunction.class);
 
@@ -100,7 +100,7 @@ public abstract class NodeFunction<R> extends AbstractFunction<R, Object> {
     /**
      * Returns a new instance of NodeInstanceFunction, which represents an actual Function.
      */
-    final public Function<R, Object> newInstance(MMObjectNode node) {
+    final public Function<R> newInstance(MMObjectNode node) {
         return new NodeInstanceFunction(node);
     }
 
@@ -114,9 +114,9 @@ public abstract class NodeFunction<R> extends AbstractFunction<R, Object> {
      */
     protected final R getFunctionValue(final MMObjectNode coreNode, final Parameters parameters) {
         if (coreNode == null) throw new RuntimeException("No node argument given for " + this + "(" + parameters + ")!");
-        Node node = (Node) parameters.get(Parameter.NODE);
+        Node node = parameters.get(Parameter.NODE);
         if (node == null) {
-            Cloud cloud   = (Cloud)  parameters.get(Parameter.CLOUD);
+            Cloud cloud   = parameters.get(Parameter.CLOUD);
             if (cloud == null) {
                 // lets try this
                 try {
@@ -186,7 +186,7 @@ public abstract class NodeFunction<R> extends AbstractFunction<R, Object> {
         if (! parameters.containsParameter(Parameter.NODE)) {
             throw new IllegalArgumentException("The function " + toString() + " requires a node argument");
         }
-        Node node = (Node) parameters.get(Parameter.NODE);
+        Node node = parameters.get(Parameter.NODE);
         if (node == null) {
             throw new IllegalArgumentException("The '" + Parameter.NODE + "' argument of  " + getClass() + " " + toString() + " must not be null ");
         }
@@ -197,7 +197,7 @@ public abstract class NodeFunction<R> extends AbstractFunction<R, Object> {
      * To implement a NodeFunction, you must override {@link #getFunctionValue(Node, Parameters)}.
      * This one can be overriden if the same function must <em>also</em> be a builder function.
      */
-    public R getFunctionValue(Parameters parameters) {
+    public  R getFunctionValue(Parameters parameters) {
         return  getFunctionValue(getNode(parameters), parameters);
     }
 
@@ -205,7 +205,7 @@ public abstract class NodeFunction<R> extends AbstractFunction<R, Object> {
      * This represents the function on one specific Node. This is instantiated when new Istance
      * if called on a NodeFunction.
      */
-    private class NodeInstanceFunction extends WrappedFunction<R, Object> {
+    private class NodeInstanceFunction extends WrappedFunction<R> {
 
         protected MMObjectNode node;
 
