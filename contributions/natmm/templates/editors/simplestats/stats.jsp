@@ -194,70 +194,71 @@ int expireTime =  3600*24*365; // cache for one year
     </td>
 </tr>
 <mm:listnodes type="rubriek" constraints="level='1'">
-   <mm:node jspvar="subsite">
-   <tr>
+  <mm:node jspvar="subsite">
+    <tr>
       <th colspan="4" <% if(rowCount%2==0) { %> bgcolor="EEEEEE" <% } rowCount++; %>>
          <mm:field name="naam"/>
       </th>
-   </tr>      
-         <%// show all subObjects for the rootId, both pages and rubrieken
-         RubriekHelper rubriekHelper = new RubriekHelper(cloud);
-   
-         TreeMap [] nodesAtLevel = new TreeMap[10];
-   		String rootId = "home";
-         nodesAtLevel[0] = (TreeMap) rubriekHelper.getSubObjects(subsite.getStringValue("number"));
-         int depth = 0;
+    </tr>      
+    <%
+    // show all subObjects for the rootId, both pages and rubrieken
+    RubriekHelper rubriekHelper = new RubriekHelper(cloud);
+    
+    TreeMap [] nodesAtLevel = new TreeMap[10];
+    String rootId = "home";
+    nodesAtLevel[0] = (TreeMap) rubriekHelper.getSubObjects(subsite.getStringValue("number"),true);
+    int depth = 0;
+    
+    // invariant: depth = level of present leafs (root has level 0)
+    while(depth>-1&&depth<10) { 
+      if(nodesAtLevel[depth].isEmpty()) {
          
-         // invariant: depth = level of present leafs (root has level 0)
-         while(depth>-1&&depth<10) { 
-            if(nodesAtLevel[depth].isEmpty()) {
-               
-   			   // if this nodesAtLevel is empty, try one level back
-               depth--; 
-            }
-            if(depth>-1&&!nodesAtLevel[depth].isEmpty()) {
-   
-   			   // show all subObjects, both pages and rubrieken
-   				while(! nodesAtLevel[depth].isEmpty()) { 
-   
-   					Integer thisKey = (Integer) nodesAtLevel[depth].firstKey();
-   					String sThisObject = (String) nodesAtLevel[depth].get(thisKey);
-   					nodesAtLevel[depth].remove(thisKey);
-   					%><mm:node number="<%= sThisObject %>" jspvar="thisObject"
-   						><mm:nodeinfo  type="type" write="false" jspvar="nType" vartype="String"><%
-   							if(nType.equals("pagina")) { // show page
-   								
-   								// the page can be a redirect to another page
-   								String sThisPage = sThisObject;
-   								%><mm:related path="rolerel,pagina" searchdir="destination"
-   									><mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false"><%
-   										sThisPage = pagina_number; 
-   									%></mm:field
-   								></mm:related>
-   								<mm:node number="<%= sThisPage %>">
-   									<% String page_number = sThisPage; %>
-   									<mm:field name="titel" jspvar="page_title" vartype="String" write="false">
-      					             <%@include file="pageStats.jsp" %>
-   						        </mm:field>
-   								</mm:node>
-   								<%
-   								
-   							} else { // show rubriek, which is a link to the first page in the rubriek
-   								%>
-   								<tr <% if(rowCount%2==0) { %> bgcolor="EEEEEE" <% } rowCount++; %>>
-   					            <td>&nbsp;</td><td><mm:field name="naam" /></td><td>&nbsp;</td><td>&nbsp;</td>
-   					         </tr>
-   								<%
-   								depth++;
-   								nodesAtLevel[depth] = (TreeMap) rubriekHelper.getSubObjects(sThisObject);
-   							} 
-   						%></mm:nodeinfo
-   					></mm:node><%
-   				} 
-            } 
-         } 
-         %>
-   </mm:node>
+     // if this nodesAtLevel is empty, try one level back
+         depth--; 
+      }
+      if(depth>-1&&!nodesAtLevel[depth].isEmpty()) {
+    
+        // show all subObjects, both pages and rubrieken
+        while(! nodesAtLevel[depth].isEmpty()) { 
+      
+          Integer thisKey = (Integer) nodesAtLevel[depth].firstKey();
+          String sThisObject = (String) nodesAtLevel[depth].get(thisKey);
+          nodesAtLevel[depth].remove(thisKey);
+          %><mm:node number="<%= sThisObject %>" jspvar="thisObject"
+            ><mm:nodeinfo  type="type" write="false" jspvar="nType" vartype="String"><%
+              if(nType.equals("pagina")) { // show page
+                
+                // the page can be a redirect to another page
+                String sThisPage = sThisObject;
+                %><mm:related path="rolerel,pagina" searchdir="destination"
+                  ><mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false"><%
+                    sThisPage = pagina_number; 
+                  %></mm:field
+                ></mm:related>
+                <mm:node number="<%= sThisPage %>">
+                  <% String page_number = sThisPage; %>
+                  <mm:field name="titel" jspvar="page_title" vartype="String" write="false">
+                           <%@include file="pageStats.jsp" %>
+                    </mm:field>
+                </mm:node>
+                <%
+                
+              } else { // show rubriek, which is a link to the first page in the rubriek
+                %>
+                <tr <% if(rowCount%2==0) { %> bgcolor="EEEEEE" <% } rowCount++; %>>
+                      <td>&nbsp;</td><td><mm:field name="naam" /></td><td>&nbsp;</td><td>&nbsp;</td>
+                </tr>
+                <%
+                depth++;
+                nodesAtLevel[depth] = (TreeMap) rubriekHelper.getSubObjects(sThisObject,true);
+              }
+            %></mm:nodeinfo
+          ></mm:node><%
+        }
+      }
+    }
+    %>
+  </mm:node>
 </mm:listnodes>
 </table>
 <br/>
