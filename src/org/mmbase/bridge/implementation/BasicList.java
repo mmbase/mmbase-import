@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * This is the base class for all basic implementations of the bridge lists.
  *
  * @author Pierre van Rooden
- * @version $Id: BasicList.java,v 1.20 2006-09-25 10:17:36 pierre Exp $
+ * @version $Id: BasicList.java,v 1.21 2006-09-25 13:58:29 michiel Exp $
  */
 public class BasicList<E> extends ArrayList<E> implements BridgeList<E>  {
 
@@ -161,9 +161,6 @@ public class BasicList<E> extends ArrayList<E> implements BridgeList<E>  {
             BasicList.this.autoConvert = true;
             iterator.add(o);
         }
-
-        // normally also e.g. set(Node n); and add(Node n) will be created in
-        // descendant class, because that is better for performance.
 
         public E next() {
             return iterator.next();
