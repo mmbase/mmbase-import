@@ -93,7 +93,9 @@
          <iframe width="100%" height="100%" src="<mm:treefile page="/firstcontent.jsp" objectlist="$includePath" referids="$referids" escapeamps="false"/>" name="content" frameborder="0">
          </iframe>
        </div>
-       <mm:treeinclude page="/rightcolumn.jsp" objectlist="$includePath" referids="$referids" />
+       <mm:treeinclude page="/rightcolumn.jsp" objectlist="$includePath" referids="$referids" >
+        <mm:param name="hasPortalPages" value="$hasPortalPages" />
+       </mm:treeinclude>
       </div>
     </div>
   </body>
