@@ -40,7 +40,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.146 2006-09-11 11:40:16 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.147 2006-09-25 14:06:19 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -812,10 +812,7 @@ public class MMAdmin extends ProcessorModule {
         Vector results = new Vector();
         ResourceLoader moduleLoader = getModuleLoader();
         // new code checks all the *.xml files in modules dir
-        Set modules = moduleLoader.getResourcePaths(ResourceLoader.XML_PATTERN, false);
-        Iterator i = modules.iterator();
-        while (i.hasNext()) {
-            String path = (String) i.next();
+        for (String path : moduleLoader.getResourcePaths(ResourceLoader.XML_PATTERN, false)) {;
             String sname = ResourceLoader.getName(path);
             ModuleReader reader = getModuleReader(sname);
             if (reader == null) {
