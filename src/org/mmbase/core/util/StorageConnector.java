@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: StorageConnector.java,v 1.14 2006-09-21 16:24:16 michiel Exp $
+ * @version $Id: StorageConnector.java,v 1.15 2006-09-25 17:15:45 michiel Exp $
  */
 public class StorageConnector {
 
@@ -94,7 +94,7 @@ public class StorageConnector {
     protected final MMObjectBuilder builder;
 
     // indices for the storage layer
-    private Map indices = new HashMap();
+    private Map<String, Index> indices = new HashMap();
 
     /**
      * @javadoc
@@ -131,33 +131,33 @@ public class StorageConnector {
         }
     }
 
-    public Map getIndices() {
+    public Map<String, Index> getIndices() {
         return indices;
     }
 
     public void addIndex(Index index) {
         if (index != null && index.getParent() == builder) {
-            indices.put(index.getName(),index);
+            indices.put(index.getName(), index);
         }
     }
 
-    public void addIndices(List indexList) {
+    public void addIndices(List<Index> indexList) {
         if (indexList != null ) {
-            for (Iterator i = indexList.iterator(); i.hasNext(); ) {
-                addIndex((Index)i.next());
+            for (Index i : indexList) {
+                addIndex(i);
             }
         }
     }
 
     public Index getIndex(String key) {
-        return (Index)indices.get(key);
+        return indices.get(key);
     }
 
     public synchronized Index createIndex(String key) {
         Index index = getIndex(key);
         if (index == null) {
             index = new Index(builder, key);
-            indices.put(key,index);
+            indices.put(key, index);
         }
         return index;
     }
