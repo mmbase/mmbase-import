@@ -21,9 +21,9 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.70 2006-07-11 09:17:48 michiel Exp $
+ * @version $Id: Node.java,v 1.71 2006-09-25 10:17:36 pierre Exp $
  */
-public interface Node extends Comparable {
+public interface Node extends Comparable<Node> {
 
     /**
      * Returns the cloud this node belongs to.

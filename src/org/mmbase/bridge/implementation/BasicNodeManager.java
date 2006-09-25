@@ -38,10 +38,10 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.122 2006-09-20 18:12:53 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.123 2006-09-25 10:17:36 pierre Exp $
 
  */
-public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
+public class BasicNodeManager extends BasicNode implements NodeManager {
     private static final  Logger log = Logging.getLoggerInstance(BasicNodeManager.class);
 
     /**

@@ -32,11 +32,11 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.210 2006-08-21 07:32:17 nklasens Exp $
+ * @version $Id: BasicNode.java,v 1.211 2006-09-25 10:17:36 pierre Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
-public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements Node, Comparable, SizeMeasurable {
+public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements Node, SizeMeasurable {
 
 
     private static final Logger log = Logging.getLoggerInstance(BasicNode.class);
@@ -638,7 +638,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             // new nodes have no relations
             return BridgeCollections.EMPTY_RELATIONLIST;
         }
-        
+
         if ("".equals(otherNodeManager)) otherNodeManager = null;
         NodeManager otherManager = otherNodeManager == null ? cloud.getNodeManager("object") : cloud.getNodeManager(otherNodeManager);
 
@@ -774,7 +774,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
 
         NodeList l1 = BridgeCollections.EMPTY_NODELIST;
         NodeList l2 = BridgeCollections.EMPTY_NODELIST;
-        
+
         TypeRel typeRel = BasicCloudContext.mmb.getTypeRel();
         if (role == null) {
             if (!typeRel.getAllowedRelations(nodeManager.getNumber(), otherManager.getNumber(), 0,
