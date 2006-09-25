@@ -16,7 +16,7 @@ function f(){
     </node>
     <node number="18102" owner="system" alias="proactivemailscheduler.monthafterregistration">
         <name>monthafterregistrationscript</name>
-        <code></code>
+        <code> </code>
         <active>1</active>
         <description>Email users one month after registration</description>
     </node>
