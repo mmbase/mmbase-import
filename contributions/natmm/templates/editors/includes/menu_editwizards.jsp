@@ -59,6 +59,7 @@ String userConstraint = "";
                                  <mm:param name="pagelength"><mm:field name="pagelength"/></mm:param>
                                  <mm:param name="maxpagecount"><mm:field name="maxpagecount"/></mm:param>
                                  <mm:param name="orderby"><mm:field name="orderby"/></mm:param>
+                                 <mm:param name="directions"><mm:field name="directions"/></mm:param>
                                  <mm:param name="maxsize"><%= ph.getMaxSize() %></mm:param>
                                  <mm:param name="search">yes</mm:param>
                                  <mm:param name="origin"><mm:field name="origin"/></mm:param>
