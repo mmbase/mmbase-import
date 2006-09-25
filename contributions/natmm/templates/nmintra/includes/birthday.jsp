@@ -12,10 +12,11 @@ String next_shown = "";
 
 // an object alias with name homepagesmoel and destination an employee should exist in the cloud
 %><mm:list path="oalias" fields="oalias.destination" constraints="oalias.name='homepagesmoel'"
-	><mm:field name="oalias.destination" jspvar="oalias_destination" vartype="String" write="false"><% last_shown = oalias_destination; 
+	><mm:field name="oalias.destination" jspvar="oalias_destination" vartype="String" write="false"><% 
+    last_shown = oalias_destination; 
 	%></mm:field
-	><mm:field name="oalias.number" jspvar="dummy" vartype="String" write="false"
-		><% oalias_number = dummy;
+	><mm:field name="oalias.number" jspvar="dummy" vartype="String" write="false"><%
+    oalias_number = dummy;
 	%></mm:field
 ></mm:list><%
 
@@ -54,7 +55,14 @@ if("".equals(oalias_number)) {
       ></mm:field
 	></mm:present
   ></mm:relatednodes
-></mm:listnodes><%
+></mm:listnodes>
+<%--
+oalias_number <%= oalias_number %><br/>
+first_shown <%= first_shown %><br/>
+next_shown <%= next_shown %><br/>
+last_shown <%= last_shown %><br/>
+--%>
+<%
 
 String employees_number = "";
 if(number_of_birthdays>0) {
@@ -62,7 +70,13 @@ if(number_of_birthdays>0) {
   employees_number = employees[selectedEmployee];
 } else {
   // no birthday today
-  if(next_shown.equals("")||next_shown.equals("-1")) { next_shown = first_shown; }
+  if(next_shown.equals("")||next_shown.equals("-1")) {
+    if(!first_shown.equals("")) {
+      next_shown = first_shown;
+    } else {
+      next_shown = last_shown;
+    }
+  }
   employees_number = next_shown; 
   %><mm:node number="<%= oalias_number %>" notfound="skipbody"
     ><mm:setfield name="destination"><%= next_shown %></mm:setfield
@@ -97,4 +111,3 @@ if(number_of_birthdays>0) {
     </tr>
   </table>
 </mm:node>
-
