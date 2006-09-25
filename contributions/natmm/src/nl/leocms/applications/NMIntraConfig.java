@@ -88,7 +88,7 @@ public class NMIntraConfig {
 	   "lnh_stjansvlinder","lnh_spreeuwenverg","lnh_wierdijk"  , "lnh_mieren",  "lnh_libellegeel" };
 	 public static String [] color1 = {
      "#1E0064",          "#2C620C",          "#6585DF",        "#1E0064",     "#458FC9",    "#1E0064",  "#999A01",
-	   "#A95500",          "#FF8E00",          "#FD7F00",        "#1E0064",     "#3FAFB3",    "#A37C1C",  "#84854C",
+	   "#A95500",          "#FF8E00",          "#FD7F00",        "#3F9D20",     "#3FAFB3",    "#A37C1C",  "#84854C",
 	   "#224D7E",          "#B94036",          "#76A043",        "#76A043",     "#A17C1B" };
    public static String [] color2 = {
       "#963A29",          "#3F9D20",          "#506BB5",        "#1E0064",     "#458FC9",    "#E15603",  "#6C6D01",
