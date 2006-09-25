@@ -18,11 +18,11 @@ import org.mmbase.core.CoreField;
  * A list of fields
  *
  * @author Pierre van Rooden
- * @version $Id: BasicFieldList.java,v 1.19 2006-09-08 12:11:21 michiel Exp $
+ * @version $Id: BasicFieldList.java,v 1.20 2006-09-25 13:58:29 michiel Exp $
  */
-public class BasicFieldList extends BasicList<Field> implements FieldList {
+public class BasicFieldList extends BasicList<Field> implements FieldList<Field> {
 
-    NodeManager nodemanager=null;
+    NodeManager nodemanager = null;
 
     BasicFieldList() {
         super();
@@ -61,7 +61,7 @@ public class BasicFieldList extends BasicList<Field> implements FieldList {
         return new BasicFieldIterator();
     }
 
-    protected class BasicFieldIterator extends BasicIterator implements FieldIterator {
+    protected class BasicFieldIterator extends BasicIterator implements FieldIterator<Field> {
 
         public Field nextField() {
             return next();
