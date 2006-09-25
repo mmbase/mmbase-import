@@ -22,10 +22,10 @@ import org.mmbase.util.logging.*;
  * one.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CollectionNodeList.java,v 1.3 2005-12-30 10:38:10 michiel Exp $
+ * @version $Id: CollectionNodeList.java,v 1.4 2006-09-25 15:00:56 michiel Exp $
  * @since MMBase-1.8
  */
-public class CollectionNodeList extends AbstractBridgeList implements NodeList {
+public class CollectionNodeList<E extends Node> extends AbstractBridgeList<E> implements NodeList<E> {
 
     private static final Logger log = Logging.getLoggerInstance(CollectionNodeList.class);
     protected Cloud cloud;
@@ -64,19 +64,21 @@ public class CollectionNodeList extends AbstractBridgeList implements NodeList {
     public int size() {
         return wrappedCollection.size();
     }
-    public Object get(int index) {
-        return convert(wrappedCollection.get(index), index);
+    public E get(int index) {
+        return (E) convert(wrappedCollection.get(index), index);
     }
 
-    public Object set(int index, Object o) {
-        return wrappedCollection.set(index, o);
+    public E set(int index, E o) {
+        E prev = get(index);
+        wrappedCollection.set(index, o);
+        return prev;
     }
 
     /**
      */
     protected Object convert(Object o, int index) {
         if (o instanceof Node || o == null) {
-            return o;
+            return (Node) o;
         }
         Node node = null;
         if (o instanceof String) { // a string indicates a nodemanager by name
@@ -98,7 +100,7 @@ public class CollectionNodeList extends AbstractBridgeList implements NodeList {
                 node = cloud.getNode(Casting.toString(o));
             }
         }
-        set(index, node);
+        set(index, (E) node);
         return node;
     }
 
@@ -124,7 +126,7 @@ public class CollectionNodeList extends AbstractBridgeList implements NodeList {
     }
 
 
-    protected class BasicNodeIterator extends BasicIterator implements NodeIterator {
+    protected class BasicNodeIterator extends BasicIterator implements NodeIterator<E> {
 
         public Node nextNode() {
             return (Node)next();
