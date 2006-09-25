@@ -72,12 +72,20 @@ public class EmailTemplateToUsers {
 
     // purpose is to get template from db, and all related people to this template
     //  relation via provider, education, classes, role, people. People will be filtered
+    
     public Document getRelatedPeople(String url) {
+        return this.getRelatedPeople(url, null);
+    }
+        
+    public Document getRelatedPeople(String url, String param) {
         Document result = null;
         if (  templateName.length() == 0 ) 
             return result;
         if ( url == null )
             url = "/proactivemail/getusers.jsp";
+        if ( param == null ) param = "";
+        if ( param.trim().length() > 0 && param.trim().charAt(0) != '&' )
+            param = "&"+param;
         try {
           URL didactor = new URL(EmailTemplateToUsers.internalUrl+
                                  url+"?"+
@@ -85,7 +93,9 @@ public class EmailTemplateToUsers {
                                  "password=admin2k&"+
                                  "authenticate=plain&"+
                                  "command=login&"+
-                                 "templatename="+this.templateName);
+                                 "templatename="+this.templateName + 
+                                 param
+                                 );
           SAXReader reader = new SAXReader();
           result = reader.read(didactor);
       } catch (Exception e) {
@@ -203,15 +213,12 @@ public class EmailTemplateToUsers {
                                     message.setStringValue("to", "g.kostadinov@levi9.com");
                                     message.setStringValue("subject", "Srecno");
                                     message.setStringValue("body", "Ovo je test poruka. Ako je vidis, znaci da je uspelo. ProActiveMail");
-                                    message.setIntValue("type", 1);
-                                    message.setStringValue("cc", "");
-                                    message.setStringValue("headers", "");
                                     message.setIntValue("date", (int) (System.currentTimeMillis() / 1000));
                                     message.commit();
+                                    message.setIntValue("type", 1);
+                                    message.commit();
                                     this.messageCount++;
-                                    
-                                    //DidactorProActiveMail.sendEmail(message);
-                                }
+                                 }
                             }
                         }
                     }
