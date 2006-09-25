@@ -304,7 +304,7 @@ public class Sender extends Thread{
       emailNode.commit();
 
       // send the email node (Didactor way)
-      emailNode.setValue("type", 1);
+      emailNode.setValue("type", "1");
    }
 
 }
