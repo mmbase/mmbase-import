@@ -26,7 +26,6 @@
   </mm:notpresent>
       
   <!-- rate answers -->
-  <mm:import externid="step">-1</mm:import>
   <mm:compare referid="step" value="save">
     <mm:relatednodes type="questions" path="posrel,questions" orderby="posrel.pos">
       <mm:import id="page" reset="true">/education/<mm:nodeinfo type="type"/>/rate<mm:nodeinfo type="type"/>.jsp</mm:import>

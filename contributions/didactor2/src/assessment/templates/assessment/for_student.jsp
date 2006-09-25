@@ -255,19 +255,20 @@ if(iLesson<lessonsNum || step.equals("lessonclosed")) {
 } else {
   // looking for the test that is not related to a problemtype
   %>
-  <mm:node number="$provider" notfound="skip">
-    <mm:related path="related,educations,related,tests">
-      <mm:node element="tests">
-        <mm:import id="isnotproblemtyperelated" reset="true" />
-        <mm:related path="related,problemtypes">
-          <mm:remove referid="isnotproblemtyperelated" />
-        </mm:related>
-        <mm:present referid="isnotproblemtyperelated">
-          <%@include file="includes/evaluationtest.jsp"%>
-        </mm:present>
-      </mm:node>
-    </mm:related>
+  <mm:node number="$assessment_evaluationtest" notfound="skip">
+    <%@include file="includes/evaluationtest.jsp"%>
   </mm:node>
+  <br/><br/>
+  <form name="closelessonform" action="<mm:treefile page="/assessment/closelesson.jsp" objectlist="$includePath" 
+         referids="$referids">
+         </mm:treefile>" method="post">
+    <mm:node number="<%= backtolb %>" notfound="skip">
+      <input type="submit" class="formbutton" value="<di:translate key="assessment.back_to_lesson" />"
+          onclick="closelessonform.action='<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$referids">
+                                             <mm:param name="learnobject"><%= backtolb %></mm:param>
+                                           </mm:treefile>'">
+    </mm:node>
+  </form>
   <%
 } %>
 
