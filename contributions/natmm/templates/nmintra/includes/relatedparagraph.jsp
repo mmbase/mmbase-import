@@ -45,9 +45,20 @@
 		  ><mm:field name="tekst"><mm:isnotempty><span class="black"><mm:write /></span></mm:isnotempty></mm:field>
         <%@include file="../includes/attachment.jsp" %>
         <mm:related path="posrel,link" orderby="posrel.pos,link.titel" directions="UP,UP"
-            ><br/><a target="_blank" href="<mm:field name="link.url" />"  title="<mm:field name="alt_tekst" />" ><mm:field name="link.titel" /></a>
+            ><br/>
+            <a target="<mm:field name="link.target" />" href="<mm:field name="link.url" />" title="<mm:field name="link.alt_tekst" />" >
+              <mm:field name="link.titel" />
+            </a>
         </mm:related>
-        <br/>   
+        <mm:related path="readmore,pagina" orderby="readmore.pos,pagina.titel" directions="UP,UP"
+            ><br/>
+            <a href="<mm:node element="pagina" jspvar="p"><%= ph.createPaginaUrl(p.getStringValue("number"),request.getContextPath()) %></mm:node>"
+               title="<mm:field name="pagina.titel" />" >
+                <mm:field name="readmore.readmore" /> <mm:field name="pagina.titel" />
+            </a>
+        </mm:related>
+        <br/>
+        <br/>
       </td>
    </tr>
 </table>
