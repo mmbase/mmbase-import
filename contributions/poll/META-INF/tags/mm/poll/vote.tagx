@@ -1,0 +1,70 @@
+<jsp:root
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    version="2.0">
+  <jsp:directive.attribute name="poll"     />
+  <jsp:directive.attribute name="answer"   />
+  <jsp:directive.attribute name="redirect"  />
+  <jsp:directive.attribute name="checkip" />
+  <c:if test="${empty poll}">
+    <mm:import externid="poll" />
+  </c:if>
+  <c:if test="${! empty poll}">
+    <c:if test="${empty answer}">
+      <mm:import externid="answer" required="true" />
+    </c:if>
+
+    <mm:import id="havethis" from="session" externid="havethis$poll" />
+    <mm:compare referid="havethis" value="Hello World">
+      <mm:import id="cookie" from="cookie" externid="poll$poll" />
+      <mm:compare referid="cookie" value="canvote">
+        <mm:cloud method="delegate" authenticate="class" rank="basic user">
+          <c:choose>
+
+            <c:when test="${empty checkip}">
+              <mm:import id="ips">0</mm:import>
+            </c:when>
+
+            <c:otherwise>
+              <jsp:scriptlet>
+                String ip = request.getHeader("X-Forwarded-For");
+                if (ip == null || "".equals(ip)) {
+                ip = request.getRemoteAddr();
+                }
+              </jsp:scriptlet>
+              <mm:import id="ip"><jsp:expression>ip</jsp:expression></mm:import>
+              <mm:time id="now" time="now" precision="minutes" write="false" />
+              <mm:listnodescontainer type="ip">
+                <mm:constraint field="IP" value="$ip" />
+                <mm:constraint field="poll" value="${poll}" />
+                <mm:time id="yesterday" time="now ${checkip}" />
+                <mm:constraint field="date" operator="GREATER" value="$yesterday" />
+                <mm:size id="ips" write="false" />
+              </mm:listnodescontainer>
+            </c:otherwise>
+          </c:choose>
+
+          <mm:compare referid="ips" value="0">
+            <mm:node referid="answer">
+              <mm:setfield name="total_answers"><mm:write value="${_node.total_answers + 1}" /></mm:setfield>
+            </mm:node>
+            <mm:present referid="ip">
+              <mm:createnode type="ip">
+                <mm:setfield name="IP"><mm:write referid="ip" /></mm:setfield>
+                <mm:setfield name="poll"><mm:write referid="poll" /></mm:setfield>
+                <mm:setfield name="answer"><mm:write referid="answer" /></mm:setfield>
+              </mm:createnode>
+            </mm:present>
+          </mm:compare>
+          <mm:write cookie="poll$poll" value="$answer" />
+          <mm:write session="havethis$poll" value="Good bye" />
+          <c:if test="${! empty redirect}">
+            <mm:redirect referid="redirect" />
+          </c:if>
+        </mm:cloud>
+      </mm:compare>
+    </mm:compare>
+  </c:if>
+</jsp:root>
+  
