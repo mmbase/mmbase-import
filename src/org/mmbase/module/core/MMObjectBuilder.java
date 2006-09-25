@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.394 2006-09-20 17:43:15 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.395 2006-09-25 14:05:52 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -233,7 +233,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * The famous GUI function as a function object.
      * @since MMBase-1.8
      */
-    protected Function<String, Object> guiFunction = new GuiFunction();
+    protected Function<String> guiFunction = new GuiFunction();
     {
         addFunction(guiFunction);
     }

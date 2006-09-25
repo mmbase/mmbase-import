@@ -45,9 +45,9 @@ public class ProcessorModule extends Module implements ProcessorInterface {
     private static PageInfo getPageInfo(Parameters arguments) {
         PageInfo pageInfo = null;
         if (arguments.indexOfParameter(Parameter.REQUEST)> -1) {
-            HttpServletRequest req  = (HttpServletRequest) arguments.get(Parameter.REQUEST);
-            HttpServletResponse res = (HttpServletResponse) arguments.get(Parameter.RESPONSE);
-            Cloud cloud = (Cloud) arguments.get(Parameter.CLOUD);
+            HttpServletRequest req  = arguments.get(Parameter.REQUEST);
+            HttpServletResponse res = arguments.get(Parameter.RESPONSE);
+            Cloud cloud = arguments.get(Parameter.CLOUD);
             pageInfo = new PageInfo(req, res, cloud);
         }
         return pageInfo;
