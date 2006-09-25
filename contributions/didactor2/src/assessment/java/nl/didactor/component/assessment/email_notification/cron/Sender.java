@@ -303,7 +303,8 @@ public class Sender extends Thread{
       emailNode.setValue("date", "" + (new Date()).getTime() / 1000);
       emailNode.commit();
 
-      emailNode.getValue("mail(oneshot)");
+      // send the email node (Didactor way)
+      emailNode.setValue("type", 1);
    }
 
 }
