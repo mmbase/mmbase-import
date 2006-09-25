@@ -4,13 +4,15 @@
 
 <mm:content postprocessor="reducespace">
 <mm:cloud jspvar="cloud">
+<%@include file="/shared/setImports.jsp"%>
 <div class="columnRight">
  <div class="titlefield2">
    <di:translate key="core.news" />
  </div>
  <!-- IF THERE IS NO PORTALPAGES -->
- <mm:present referid="hasPortalPages" inverse="true">
-   <div class="ListRight">
+  <mm:import id="hasPortalPages" externid="hasPortalPages" required="true"/>
+  <mm:present referid="hasPortalPages" inverse="true">
+    <div class="ListRight">
      <mm:node number="component.news" notfound="skipbody">
        <mm:treeinclude page="/news/frontoffice/index.jsp" objectlist="$includePath" referids="$referids" />
      </mm:node>
