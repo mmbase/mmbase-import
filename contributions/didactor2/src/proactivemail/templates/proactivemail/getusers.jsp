@@ -57,17 +57,15 @@ Collect all users which should be email using this template, XML output
               <% 
               Iterator it = emailUsers.values().iterator();
               while ( it.hasNext() ) {
-                Object[] o = (Object[])it.next(); 
+                Object[] o = (Object[])it.next();
                 long lastact = Long.parseLong((String)o[5]);
                 long currtime = System.currentTimeMillis()/1000;
                 long twomonthssec = 2*30*24*60*60;
                 if ( lastact > 1 ) {
                     if ( !( (currtime - lastact > twomonthssec) && (lastSent - lastact < twomonthssec)) ) {
-                        it.remove();
                     }
                 }
                 else {
-                    it.remove();
                 }
               }
               %>

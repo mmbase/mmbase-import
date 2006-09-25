@@ -67,7 +67,7 @@
               Iterator it = emailUsers.values().iterator();
               while ( it.hasNext() ) {
                 Object[] o = (Object[])it.next();
-                if ( o[4] != null && ((String)o[4]).trim().length() > 0 && "admin".compareTo((String)o[3]) != 0 ) {
+                if ( o[4] != null && ((String)o[4]).trim().length() > 0 && o[3] != null && "admin".compareTo((String)o[3]) != 0 ) {
             %>
                   <mm:import id="userNumber" reset="true"><%=o[0]%></mm:import>
                   <mm:relatednodescontainer type="roles">
