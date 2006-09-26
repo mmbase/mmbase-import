@@ -59,6 +59,7 @@ String nameEntry = "voor- en/of achternaam";
 String nameId = request.getParameter("name"); if(nameId==null) { nameId=""; }
 String departmentId = request.getParameter("department"); if(departmentId==null){ departmentId="default"; }
 String programId = request.getParameter("program"); if(programId==null){ programId="default"; }
+String locationId = request.getParameter("location"); if(locationId==null){ locationId="default"; }
 
 //String visitorGroup = request.getParameter("vg"); if(visitorGroup==null){ visitorGroup = ""; }
 
@@ -91,7 +92,6 @@ String periodId = request.getParameter("d"); if(periodId==null){ periodId =""; }
 // info & producttypes
 String poolId = request.getParameter("pool"); if(poolId==null){ poolId=""; }
 String productId = request.getParameter("product"); if(productId==null){ productId=""; }
-String locationId = request.getParameter("location"); if(locationId==null){ locationId=""; }
 
 // searchresults
 String searchId = request.getParameter("search"); if(searchId==null) { searchId=""; }

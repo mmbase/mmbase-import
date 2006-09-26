@@ -25,8 +25,8 @@
    <field name="email" ><prompt>email</prompt></field>
    <field name="website" ><prompt>website</prompt></field>
    <field name="type" ftype="enum"><prompt>type afdeling</prompt><optionlist select="afdelings_type"/></field>
-   <field name="externid" ><prompt>externid</prompt></field>
-   <field name="importstatus" ><prompt>importstatus</prompt></field>
+   <field name="externid" ><prompt>externid (afdelingen met importstatus inactive staan niet in de wie-is-wie; vul "extern" als externid in als dit wel gewenst is)</prompt></field>
+   <field name="importstatus" ><prompt>importstatus _____________________________</prompt></field>
    <!--      <list include="config/evenement/zoek_afdelingen_readmore_evenement.xml" /> -->
    <list include="config/users/zoek_rolerel_users.xml" />
    <list include="config/medewerkers/zoek_afdelingen_readmore_medewerkers.xml" />
