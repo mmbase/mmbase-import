@@ -46,7 +46,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.71 2006-09-26 09:22:32 michiel Exp $
+ * @version $Id: Lucene.java,v 1.72 2006-09-26 12:06:51 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, IdEventListener {
 
@@ -330,7 +330,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
                     extraConstraints = ec.toString().trim();
                 }
                 */
-                Cloud cloud = (Cloud)arguments.get(Parameter.CLOUD);
+                Cloud cloud = arguments.get(Parameter.CLOUD);
                 try {
                     return search(cloud, value, index, extraConstraints, sortFieldList, offset, max);
                 } catch (ParseException pe) {
@@ -722,10 +722,11 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
         return searcher;
     }
 
-    public org.mmbase.bridge.NodeList search(Cloud cloud, String value, String indexName, String extraConstraints, List sortFieldList, int offset, int max) throws ParseException {
+    public org.mmbase.bridge.NodeList search(Cloud cloud, String value, String indexName, String extraConstraints, 
+                                             List<String> sortFieldList, int offset, int max) throws ParseException {
         String[] sortFields = null;
         if (sortFieldList != null) {
-            sortFields = (String[]) sortFieldList.toArray(new String[sortFieldList.size()]);
+            sortFields = sortFieldList.toArray(new String[sortFieldList.size()]);
         }
         return getSearcher(indexName).search(cloud, value, sortFields, Searcher.createQuery(extraConstraints), offset, max);
     }
