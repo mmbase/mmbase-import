@@ -405,8 +405,7 @@
         }
         return replaceNewLn(sn);
     }
-%><mm:import id="title">Veelgestelde vragen</mm:import
-><mm:import id="expandall">alles uitklappen</mm:import
+%><mm:import id="expandall">alles uitklappen</mm:import
 ><mm:import id="colapseall">alles inklappen</mm:import
 ><mm:import id="answerissubmittedby">dit antwoord is toegevoegd door</mm:import
 ><mm:import id="questionsissubmittedby">deze vraag is toegevoegd door</mm:import
