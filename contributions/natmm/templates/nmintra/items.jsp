@@ -76,16 +76,16 @@ int listSize = 0;
         <td><img src="media/spacer.gif" width="1" height="1"></td>
         <td><div><%
             if(thisOffset>0) { 
-                %><a target="_top" href="items.jsp<%= templateQueryString  %>&offset=<%= thisOffset-1 %>">[<<- vorige ]</a>&nbsp;&nbsp;<%
+                %><a href="items.jsp<%= templateQueryString  %>&offset=<%= thisOffset-1 %>">[<<- vorige ]</a>&nbsp;&nbsp;<%
             }for(int i=0; i < (listSize/10 + 1); i++) { 
                 if(i==thisOffset) {
                     %><%= i+1 %>&nbsp;&nbsp;<%
                 } else { 
-                    %><a target="_top" href="items.jsp<%=  templateQueryString  %>&offset=<%= i %>"><%= i+1 %></a>&nbsp;&nbsp;<%
+                    %><a href="items.jsp<%=  templateQueryString  %>&offset=<%= i %>"><%= i+1 %></a>&nbsp;&nbsp;<%
                 } 
             }
             if(thisOffset+1<(listSize/10 + 1)) { 
-                %><a  target="_top" href="items.jsp<%= templateQueryString %>&offset=<%= thisOffset+1 %>">[volgende ->>]</a><%
+                %><a href="items.jsp<%= templateQueryString %>&offset=<%= thisOffset+1 %>">[volgende ->>]</a><%
             } 
         %></div>
         </td>

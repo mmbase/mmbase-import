@@ -16,9 +16,9 @@
 		   <table width="180" cellspacing="0" cellpadding="0">
             <tr>
             <td class="titlebar" style="vertical-align:middle;padding-left:4px;padding-right:2px;" width="100%">
-            	<nowrap><a target="_top" href="<%= formMessageHref %>" class="white"><%= formMessageLinktext %></a></td>
+            	<nowrap><a href="<%= formMessageHref %>" class="white"><%= formMessageLinktext %></a></td>
             <td class="titlebar" style="padding:2px;" width="100%">
-            	<a target="_top" href="<%= formMessageHref %>"><img src="media/pijl_wit_op_oranje.gif" border="0" alt=""></a></td>
+            	<a href="<%= formMessageHref %>"><img src="media/pijl_wit_op_oranje.gif" border="0" alt=""></a></td>
             </tr>
       	</table>	
 		</td>

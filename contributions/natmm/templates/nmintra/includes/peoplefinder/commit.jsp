@@ -9,7 +9,7 @@ String messageTitle = "";
 String messageBody = "";
 String messageHref = "index.jsp";
 String messageLinktext = "naar de homepage";
-String messageLinkParam = "target=\"_top\"";
+String messageLinkParam = "";
 
 String emailHelpText = 
     "<br><br>N.B. Op sommige computers binnen Natuurmonumenten is het niet mogelijk om direct op een link in de email te klikken."

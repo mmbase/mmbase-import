@@ -131,7 +131,7 @@ String sPageRefMinOne = (String) session.getAttribute("pagerefminone");
 if(sPageRefMinOne!=null) {
   %>
   <mm:list nodes="<%= sPageRefMinOne %>" path="pagina,gebruikt,paginatemplate">
-    <a href="<mm:field name="paginatemplate.url"/>?p=<%= sPageRefMinOne %>" target="_top" style="color:#FFFFFF;margin-left:20px;">
+    <a href="<mm:field name="paginatemplate.url"/>?p=<%= sPageRefMinOne %>" style="color:#FFFFFF;margin-left:20px;">
       Terug naar vorige pagina
     </a>
   </mm:list>

@@ -15,7 +15,7 @@
             			%><%= readmoreUrl + number %><%
             		 } 
          	   %></mm:field
-            >" target="_top" shape="POLYGON"><%
+            >" shape="POLYGON"><%
       }
    %></mm:field>
 </mm:list>

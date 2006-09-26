@@ -4,40 +4,60 @@
          ><div align="center" style="margin-top:8px;"><img src="<mm:node element="images"><mm:image template="+s(400)" /></mm:node
          >" alt="<mm:field name="images.title" />" border="0"></div>
    </mm:related>
-	<mm:field name="tekst" jspvar="sText" vartype="String" write="false">
-		<% if (sText!=null&&!HtmlCleaner.cleanText(sText,"<",">","").trim().equals("")) { %>
-			<span class="black"><%= sText %></span>
-         <br/><br/>
-		<% } %>
-	</mm:field>
-	<% boolean showNextDotLine = false; %>
+	 <mm:field name="tekst" jspvar="sText" vartype="String" write="false">
+     <% 
+     if (sText!=null&&!HtmlCleaner.cleanText(sText,"<",">","").trim().equals("")) {
+       %>
+			 <span class="black"><%= sText %></span>
+       <br/><br/>
+       <%
+     } %>
+	 </mm:field>
+	 <% boolean showNextDotLine = false; %>
    <mm:related path="posrel,paragraaf" orderby="posrel.pos" directions="UP">
       <%@include file="../relatedparagraph.jsp" %>
    </mm:related>
    <table cellpadding="5" cellspacing="0" style="border:solid #000000 1px;border-collapse:collapse;width:100%;">
+    <%
+    String [] type_paths = { "related,evenement_type", "posrel,deelnemers_categorie", "posrel,deelnemers_age", "related,natuurgebieden_type",
+                               "related,evenement_duration", "related,evenement_distance", "readmore,afdelingen"}; 
+    String [] type_fields = { "evenement_type.naam", "deelnemers_categorie.naam", "deelnemers_age.name", "natuurgebieden_type.name",
+                               "evenement_duration.name", "evenement_distance.name", "afdelingen.naam" }; 
+    String [] type_titles = { "Type activiteit", "Doelgroep", "Leeftijd", "Type terrein", 
+                               "Tijdsduur", "Afstand", "Bezoekerscentrum" }; 
+    for(int i=0; i<type_paths.length; i++) {
+      %>
+      <mm:related path="<%= type_paths[i] %>"
+          ><mm:first><tr><td class="solid" style="width:150px;"><%= type_titles[i] %></td><td class="solid"></mm:first
+          ><mm:first inverse="true">,</mm:first>
+          <mm:field name="<%= type_fields[i] %>"/>
+          <mm:last></td></tr></mm:last
+      ></mm:related>	
       <%
-      String [] type_paths = { "related,evenement_type", "posrel,deelnemers_categorie", "posrel,deelnemers_age", "related,natuurgebieden_type",
-                                 "related,evenement_duration", "related,evenement_distance", "readmore,afdelingen"}; 
-      String [] type_fields = { "evenement_type.naam", "deelnemers_categorie.naam", "deelnemers_age.name", "natuurgebieden_type.name",
-                                 "evenement_duration.name", "evenement_distance.name", "afdelingen.naam" }; 
-      String [] type_titles = { "Type activiteit", "Doelgroep", "Leeftijd", "Type terrein", 
-                                 "Tijdsduur", "Afstand", "Bezoekerscentrum" }; 
-      for(int i=0; i<type_paths.length; i++) {
-         %>
-   		<mm:related path="<%= type_paths[i] %>"
-            ><mm:first><tr><td class="solid" style="width:150px;"><%= type_titles[i] %></td><td class="solid"></mm:first
-            ><mm:first inverse="true">,</mm:first>
-            <mm:field name="<%= type_fields[i] %>"/>
-            <mm:last></td></tr></mm:last
-         ></mm:related>	
-         <%
-   }
+    }
+    
+    String [] int_fields = { "min_aantal_deelnemers", "max_aantal_deelnemers" };
+    String [] int_titles = { "Minimum aantal deelnemers", "Maximum aantal deelnemers" };
+    for(int i=0; i<int_fields.length; i++) {
+      %>
+      <mm:field name="<%= int_fields[i] %>" jspvar="number" vartype="Integer" write="false">
+      <% 
+      int iNumber = number.intValue();
+      if (iNumber>0) {
+        %>
+        <tr><td class="solid" style="width:150px;"><%= int_titles[i] %></td><td class="solid"><%= iNumber %></td></tr>
+        <% 
+      } %>
+      </mm:field>	
+    <% 
+   } 
+    
    %>
    </table>
    <%
 
-   String [] text_fields = { "omschrijving", "omschrijving_eng", "omschrijving_de", "omschrijving_fra"}; 
-   String [] text_titles = { "bijzondere aandachtspunten", "hulpmiddelen", "inzet van de beheereenheid", "eisen die de activiteit aan het terrein stelt"}; 
+   String [] text_fields = { "omschrijving", "omschrijving_eng", "omschrijving_de", "omschrijving_fra"};
+   String [] text_titles = { "bijzondere aandachtspunten", "hulpmiddelen", "inzet van de beheereenheid", "eisen die de activiteit aan het terrein stelt"};
    for(int i=0; i<text_fields.length; i++) {
       %>
       <mm:field name="<%= text_fields[i] %>" jspvar="sText" vartype="String" write="false">
@@ -46,9 +66,11 @@
             <div class="pageheader"><%= text_titles[i] %></div>
    			<span class="black"><%= sText %></span>
    		<% } %>
-   	</mm:field>	
+   	  </mm:field>	
       <% 
-   } %>
+   } 
+   
+   %>
    <br/>
    <span class="black">
    <mm:list nodes="<%= paginaID %>" path="pagina,rolerel,users" orderby="rolerel.pos">

@@ -38,7 +38,7 @@ function startPhone() {
   <td class="header" style="padding-right:10px;padding-top:5px;text-align:right;width:251px;">
     <nobr>
       <mm:field name="naam_de" />
-      <a href="/index.jsp?r=<%= subsiteID %>" target="_top" class="hover">
+      <a href="/index.jsp?r=<%= subsiteID %>" class="hover">
          <span class="red"><mm:field name="naam" /></span>
       </a>
     </nobr>

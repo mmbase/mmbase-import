@@ -180,7 +180,7 @@
 		if(sPageRefMinOne!=null) {
       %>
       <mm:list nodes="<%= sPageRefMinOne %>" path="pagina,gebruikt,paginatemplate">
-        <a href="<mm:field name="paginatemplate.url"/>?p=<%= sPageRefMinOne %>" target="_top" style="color:#FFFFFF;margin-left:10px;">
+        <a href="<mm:field name="paginatemplate.url"/>?p=<%= sPageRefMinOne %>" style="color:#FFFFFF;margin-left:10px;">
           Terug naar vorige pagina
         </a>
       </mm:list>
