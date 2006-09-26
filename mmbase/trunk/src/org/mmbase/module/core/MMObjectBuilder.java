@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.395 2006-09-25 14:05:52 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.396 2006-09-26 13:10:44 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -279,7 +279,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                 return MMObjectBuilder.this.getFunctions(getCoreNode(MMObjectBuilder.this, node));
             }
             public Object getFunctionValue(Parameters parameters) {
-                Node node = (Node) parameters.get(Parameter.NODE);
+                Node node = parameters.get(Parameter.NODE);
                 if (node == null) {
                     return MMObjectBuilder.this.getFunctions();
                 } else {
@@ -299,13 +299,11 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             {
                 setDescription("Returns information about available functions");
             }
-            protected Object getFunctionValue(Collection functions, Parameters parameters) {
+            protected Object getFunctionValue(Collection<Function> functions, Parameters parameters) {
                 String function = (String) parameters.get("function");
                 if (function == null || function.equals("")) {
-                    Map info = new HashMap();
-                    Iterator i = functions.iterator();
-                    while (i.hasNext()) {
-                        Function f = (Function) i.next();
+                    Map<String, String> info = new HashMap();
+                    for (Function f : functions) {
                         info.put(f.getName(), f.getDescription());
                     }
                     return info;
@@ -319,7 +317,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                 return getFunctionValue(MMObjectBuilder.this.getFunctions(getCoreNode(MMObjectBuilder.this, node)), parameters);
             }
             public Object getFunctionValue(Parameters parameters) {
-                MMObjectNode node = (MMObjectNode) parameters.get(Parameter.NODE);
+                MMObjectNode node = (MMObjectNode) parameters.get(Parameter.CORENODE);
                 if (node == null) {
                     return getFunctionValue(MMObjectBuilder.this.getFunctions(), parameters);
                 } else {
@@ -342,12 +340,12 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     /**
      *  Set of remote observers, which are notified when a node of this type changes
      */
-    private Set remoteObservers = Collections.synchronizedSet(new HashSet());
+    private final Set<MMBaseObserver> remoteObservers = Collections.synchronizedSet(new HashSet());
 
     /**
      * Set of local observers, which are notified when a node of this type changes
      */
-    private Set localObservers = Collections.synchronizedSet(new HashSet());
+    private final Set<MMBaseObserver> localObservers = Collections.synchronizedSet(new HashSet());
 
     /**
      * Reference to the builders that this builder extends.
@@ -388,7 +386,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
 
     private void initAncestors() {
         if (! ancestors.empty()) {
-            ((MMObjectBuilder) ancestors.peek()).init();
+            ancestors.peek().init();
         }
     }
 
@@ -448,10 +446,10 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                     }
 
                     log.debug("Got key " + oType);
-                    node.storeValue(FIELD_NUMBER, new Integer(oType));
+                    node.storeValue(FIELD_NUMBER, oType);
                     // for typedef, set otype explictly, as it wasn't set in getNewNode()
                     if (this == typeDef) {
-                        node.storeValue(FIELD_OBJECT_TYPE, new Integer(oType));
+                        node.storeValue(FIELD_OBJECT_TYPE, oType);
                     }
                     typeDef.insert(SYSTEM_OWNER, node, false);
                     // for typedef, call it's parents init again, as otype is only now set
@@ -595,7 +593,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         if (n <= 0) {
             log.warn("Did not get valid nodeNumber of storage " + n);
         }
-        Integer nodeNumber = new Integer(n);
+        Integer nodeNumber = Integer.valueOf(n);
         if (isNodeCached(nodeNumber)) {
             // it seems that something put the node in the cache already.
             // This is usually because the ChangeManager indirectly called 'getNode'
@@ -680,7 +678,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
     public MMObjectBuilder getParentBuilder() {
         if (ancestors.empty()) return null;
-        return (MMObjectBuilder) ancestors.peek();
+        return ancestors.peek();
     }
     /**
      * Gives the list of parent-builders.
@@ -688,7 +686,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @since MMBase-1.6.2
 
      */
-    public List  getAncestors() {
+    public List<MMObjectBuilder>  getAncestors() {
         return Collections.unmodifiableList(ancestors);
     }
 
@@ -697,10 +695,9 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      *
      * @since MMBase-1.6.2
      */
-    public List getDescendants() {
-        ArrayList result = new ArrayList();
-        for (Iterator i = mmb.getBuilders().iterator(); i.hasNext(); ) {
-            MMObjectBuilder builder = (MMObjectBuilder) i.next();
+    public List<MMObjectBuilder> getDescendants() {
+        List<MMObjectBuilder> result = new ArrayList();
+        for (MMObjectBuilder builder : mmb.getBuilders()) {
             if (builder.isExtensionOf(this)) {
                 result.add(builder);
             }
@@ -830,7 +827,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         try {
             while (! found) {
                 NodeSearchQuery query = new NodeSearchQuery(this);
-                BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(getField(field)), new Integer(seq));
+                BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(getField(field)), Integer.valueOf(seq));
                 query.setConstraint(constraint);
                 if (getNodes(query).size() == 0) {
                     found = true;
@@ -883,14 +880,12 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         try {
             MMObjectBuilder syncnodes = mmb.getBuilder("syncnodes");
             NodeSearchQuery query = new NodeSearchQuery(syncnodes);
-            Object numericalValue = new Integer(node.getNumber());
+            Integer numericalValue = node.getNumber();
             BasicStepField field = query.getField(syncnodes.getField("localnumber"));
             BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(field,
                                                                                  numericalValue);
             query.setConstraint(constraint);
-            Iterator syncs = syncnodes.getNodes(query).iterator();
-            while (syncs.hasNext()) {
-                MMObjectNode syncnode = (MMObjectNode) syncs.next();
+            for (MMObjectNode syncnode : syncnodes.getNodes(query)) {
                 syncnode.parent.removeNode(syncnode);
                 if (log.isDebugEnabled()) {
                     log.debug("Removed syncnode " + syncnode);
@@ -939,7 +934,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @since MMBase-1.8
      */
     public MMObjectNode getNodeFromCache(Integer number) {
-        return (MMObjectNode) nodeCache.get(number);
+        return nodeCache.get(number);
     }
 
     /**
@@ -975,8 +970,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                 cacheLocked++;
             }
             if (node.getNumber() > 0 ) {
-                Integer number = new Integer(node.getNumber());
-                nodeCache.remove(number);
+                nodeCache.remove(node.getNumber());
             }
 
             res = node.commit();
@@ -2041,8 +2035,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
     public boolean nodeRemoteChanged(String machine, String number, String builder, String ctype) {
         // signal all the other objects that have shown interest in changes of nodes of this builder type.
-        for (Iterator i = remoteObservers.iterator(); i.hasNext();) {
-            MMBaseObserver o = (MMBaseObserver) i.next();
+        for (MMBaseObserver o : remoteObservers) {
             if (o != this) {
                 o.nodeRemoteChanged(machine, number, builder, ctype);
             } else {
@@ -2066,8 +2059,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
    public boolean nodeLocalChanged(String machine, String number, String builder, String ctype) {
        // signal all the other objects that have shown interest in changes of nodes of this builder type.
        synchronized(localObservers) {
-           for (Iterator i = localObservers.iterator(); i.hasNext();) {
-               MMBaseObserver o = (MMBaseObserver)i.next();
+           for (MMBaseObserver o : localObservers) {
                if (o != this) {
                    o.nodeLocalChanged(machine, number, builder, ctype);
                } else {
