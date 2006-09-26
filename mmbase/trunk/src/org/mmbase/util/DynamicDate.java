@@ -197,7 +197,8 @@ public class DynamicDate extends Date {
             "now this second", "now this minute", "now this hour", "now this day", "today previous monday", "now this month", "now this year", "now this century", "now this era",
             "now - 15 year this century", "now - 20 year this century_pedantic", "today + 2 century", "toera - 1 minute",
             "this july", "previous july", "next july", "this sunday", "previous sunday", "next sunday",
-            "2009-W01-01", "2009-W53-7", "2006-123" 
+            "2009-W01-01", "2009-W53-7", "2006-123",
+            "2005-01-01 this monday"
         };
     }
 
