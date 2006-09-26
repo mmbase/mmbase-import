@@ -100,8 +100,8 @@
            <mm:setfield name="orderby">titel</mm:setfield>
          </mm:compare>
          <mm:compare referid="ew_name" value="pleiding per aanbieder">
-           <mm:setfield name="fields">educations.titel,providers.name</mm:setfield>
-           <mm:setfield name="orderby">providers.name,educations.titel</mm:setfield>
+           <mm:setfield name="fields">educations.titel,providers.naam</mm:setfield>
+           <mm:setfield name="orderby">providers.naam,educations.titel</mm:setfield>
          </mm:compare>
        </mm:field>
      </mm:node>
@@ -112,7 +112,7 @@
 		<mm:setfield name="description">Bewerk de basis gegevens van deze pagina</mm:setfield>
 		<mm:setfield name="type">wizard</mm:setfield>
 		<mm:setfield name="wizard">config/pagina/pagina_default</mm:setfield>
-		<mm:setfield name="nodepath"></mm:setfield>
+		<mm:setfield name="nodepath">pagina</mm:setfield>
 		<mm:setfield name="fields">pagina.titel</mm:setfield>
 		<mm:setfield name="orderby">pagina.titel</mm:setfield>
 		<mm:setfield name="directions">up</mm:setfield>
@@ -350,6 +350,12 @@
           <mm:setfield name="pos">80</mm:setfield>
        </mm:createrelation>
 	</mm:listnodes>
+	<% log.info("24. Resize image of project phases"); %>
+  <mm:listnodes type="images" constraints="titel = 'Fasen'">
+	  <mm:node>
+      <mm:setfield name="screensize">1</mm:setfield>
+    </mm:node>
+	</mm:listnodes>
 	<% log.info("99. Deleting unused editwizards"); %>
 	<%
 	String [] ewToDelete = {
@@ -361,7 +367,8 @@
 		"config/pagina/pagina",
 		"config/menu/menu",
 		"/editors/parcleaner/cleanarticles.jsp",
-		"/mmbob/forums.jsp"
+    "config/feedback/wizard",
+    "/editors/items.jsp"
 		};
 	for(int i=0; i<ewToDelete.length;i++) {
 		%><mm:listnodes type="editwizards" constraints="<%= "wizard = '" + ewToDelete[i]  + "'" %>">
@@ -372,7 +379,8 @@
 		"Bibliotheek beheer",
 		"Home",
 		"Subrubriek editors",
-		"Website beheer"
+		"Website beheer",
+    "Interne Webwinkel (redactie)"
 	};
 	for(int i=0; i<menuToDelete.length;i++) {
 		%><mm:listnodes type="menu" constraints="<%= "naam = '" + menuToDelete[i]  + "'" %>">
@@ -395,6 +403,47 @@
 		 </mm:listnodes><%
 	}
 	%>
+  <% log.info("100. Create feedback editwizard per template (should come after deletion of general feedback ew)"); %>
+  <mm:listnodes type="menu" constraints="naam = 'Opleidingen'">
+    <mm:node id="mo" />
+    <mm:createnode type="editwizards" id="edu_feedback">
+      <mm:setfield name="name">feedback op opleidingen</mm:setfield>
+      <mm:setfield name="description"></mm:setfield>
+      <mm:setfield name="type">wizard</mm:setfield>
+      <mm:setfield name="wizard">config/feedback/wizard</mm:setfield>
+      <mm:setfield name="nodepath">educations,feedback</mm:setfield>
+      <mm:setfield name="fields">feedback.namesender,feedback.emailsender,feedback.topic</mm:setfield>
+      <mm:setfield name="orderby">feedback.namesender</mm:setfield>
+      <mm:setfield name="directions">up</mm:setfield>
+      <mm:setfield name="pagelength">50</mm:setfield>
+      <mm:setfield name="maxpagecount">100</mm:setfield>
+      <mm:setfield name="searchfields">feedback.namesender,feedback.emailsender,feedback.topic</mm:setfield>
+      <mm:setfield name="search">yes</mm:setfield>
+    </mm:createnode>
+  	<mm:createrelation source="mo" destination="edu_feedback" role="posrel">
+       <mm:setfield name="pos">80</mm:setfield>
+    </mm:createrelation>
+	</mm:listnodes>
+  <mm:listnodes type="menu" constraints="naam = 'Jeugdactiviteiten'">
+    <mm:node id="jo" />
+    <mm:createnode type="editwizards" id="ev_feedback">
+      <mm:setfield name="name">feedback op activiteiten</mm:setfield>
+      <mm:setfield name="description"></mm:setfield>
+      <mm:setfield name="type">wizard</mm:setfield>
+      <mm:setfield name="wizard">config/feedback/wizard</mm:setfield>
+      <mm:setfield name="nodepath">evenement_blueprint,feedback</mm:setfield>
+      <mm:setfield name="fields">feedback.namesender,feedback.emailsender,feedback.topic</mm:setfield>
+      <mm:setfield name="orderby">feedback.namesender</mm:setfield>
+      <mm:setfield name="directions">up</mm:setfield>
+      <mm:setfield name="pagelength">50</mm:setfield>
+      <mm:setfield name="maxpagecount">100</mm:setfield>
+      <mm:setfield name="searchfields">feedback.namesender,feedback.emailsender,feedback.topic</mm:setfield>
+      <mm:setfield name="search">yes</mm:setfield>
+    </mm:createnode>
+  	<mm:createrelation source="jo" destination="ev_feedback" role="posrel">
+       <mm:setfield name="pos">80</mm:setfield>
+    </mm:createrelation>
+	</mm:listnodes>  
 	Done.<br/>
 </mm:log>
 </mm:cloud>
