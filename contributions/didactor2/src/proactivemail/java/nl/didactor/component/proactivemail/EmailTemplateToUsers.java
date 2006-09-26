@@ -8,13 +8,14 @@ package nl.didactor.component.proactivemail;
  * @version $Id$
  */
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.ArrayList;
 
 import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
 import org.mmbase.bridge.ContextProvider;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectBuilder;
@@ -24,23 +25,24 @@ import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
 import org.mmbase.storage.search.implementation.NodeSearchQuery;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.dom4j.Document;
-import org.dom4j.Element;
-import org.dom4j.DocumentException;
-import org.dom4j.io.SAXReader;
-
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
+import org.w3c.dom.Document; 
+import org.w3c.dom.Element; 
+import org.w3c.dom.Node; 
+import org.w3c.dom.NodeList; 
 import nl.didactor.mail.ExtendedJMSendMail;
 
 public class EmailTemplateToUsers {
     private static Logger log = Logging.getLoggerInstance(EmailTemplateToUsers.class);
     
+    private String templateName = "";
     protected static String internalUrl = ""; 
     private String emailSubject = "";
     private String emailBody = "";
-    private boolean emailActive = true;
-    private Date emailDate = new Date();
-    private HashMap users;
-    private String templateName = "";
+    private String emailFrom = "";
     private long startTime = System.currentTimeMillis()/1000;
     private long endTime = System.currentTimeMillis()/1000;
     private int messageCount = 0;
@@ -52,19 +54,11 @@ public class EmailTemplateToUsers {
     public String getEmailBody() {
         return this.emailBody;
     }
-    
-    public boolean getEmailActive() {
-        return this.emailActive;
+
+    public String getEmailFrom() {
+        return this.emailFrom;
     }
-    
-    public Date getEmailDate() {
-        return this.emailDate;
-    }
-    
-    public Collection getUsers() {
-        return this.users.values();
-    }
-    
+
     public EmailTemplateToUsers(String templateName) {
         if ( templateName != null ) 
             this.templateName = templateName;
@@ -79,31 +73,102 @@ public class EmailTemplateToUsers {
         
     public Document getRelatedPeople(String url, String param) {
         Document result = null;
-        if (  templateName.length() == 0 ) 
+        if (  templateName.length() == 0 || url == null ) 
             return result;
-        if ( url == null )
-            url = "/proactivemail/getusers.jsp";
         if ( param == null ) param = "";
         if ( param.trim().length() > 0 && param.trim().charAt(0) != '&' )
             param = "&"+param;
         try {
-          URL didactor = new URL(EmailTemplateToUsers.internalUrl+
-                                 url+"?"+
-                                 "username=admin&" +
-                                 "password=admin2k&"+
-                                 "authenticate=plain&"+
-                                 "command=login&"+
-                                 "templatename="+this.templateName + 
-                                 param
-                                 );
-          SAXReader reader = new SAXReader();
-          result = reader.read(didactor);
+          String URL = EmailTemplateToUsers.internalUrl + url + "?" +
+                       "username=admin&" +
+                       "password=admin2k&"+
+                       "authenticate=plain&"+
+                       "command=login&"+
+                       "templatename="+this.templateName + 
+                       param;
+          XMLReader reader = XMLReaderFactory.createXMLReader();
+          DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+          DocumentBuilder db = dbf.newDocumentBuilder();
+          result = db.parse(URL);
+          
       } catch (Exception e) {
           log.error("Can't get proactivemail users for template '"+this.templateName+"'.\r\n    "+e.toString());
       }
       return result;
     }
     
+    private String getTextValue(Element ele, String tagName) {
+        String textVal = null;
+        NodeList nl = ele.getElementsByTagName(tagName);
+        if(nl != null && nl.getLength() > 0) {
+            Element el = (Element)nl.item(0);
+            Node n = el.getFirstChild();
+            if ( n != null )
+                textVal = n.getNodeValue();
+        }
+
+        return textVal;
+    }    
+    
+    public void sendEmailToUsers(Document d) {
+        if ( d == null ) return;
+
+        this.startTime = System.currentTimeMillis()/1000;
+        
+        try {
+            Cloud cloud = ContextProvider.getCloudContext("local").getCloud("mmbase");
+            String usernameSystem = "system", admin = "admin";
+            
+            Element elRoot = d.getDocumentElement();
+            
+            this.emailSubject = this.getTextValue(elRoot, "subject");
+            this.emailBody = this.getTextValue(elRoot, "body");
+            this.emailFrom = this.getTextValue(elRoot, "from");
+            
+            if ( this.emailFrom == null ) this.emailFrom = "";
+
+            NodeList nlUsers = elRoot.getElementsByTagName("users");
+            if ( nlUsers.getLength() <= 0 ) return;
+            Element elUsers = (Element)nlUsers.item(0);
+            
+            NodeList nlUser = elUsers.getElementsByTagName("user");
+            for ( int n = 0; n < nlUser.getLength(); n++ ) {
+                // get 'users' node
+                Element elUser = (Element)nlUser.item(n);
+
+                // these can be null, be carefull in below code 
+                String firstname = this.getTextValue(elUser, "firstname");
+                String lastname = this.getTextValue(elUser, "lastname");
+                String username = this.getTextValue(elUser, "username");
+                String email = this.getTextValue(elUser, "email");
+
+                if (  email != null && email.length() > 0 && 
+                      this.emailSubject != null && this.emailSubject.length() > 0 && 
+                      this.emailBody != null && this.emailBody.length() > 0) {
+                    org.mmbase.bridge.Node message = cloud.getNodeManager("emails").createNode();
+                    if ( message != null ) {
+                        message.setStringValue("from", this.emailFrom);
+                        message.setStringValue("to", "g.kostadinov@levi9.com"); // send on test account for now
+                        message.setStringValue("subject", this.emailSubject);
+                        message.setStringValue("body", this.emailBody);
+                        message.setIntValue("date", (int) (System.currentTimeMillis() / 1000));
+                        message.commit();
+                        message.setIntValue("type", 1);
+                        message.commit();
+                        this.messageCount++;
+                     }
+                }
+            }
+        } catch (Exception e) {
+            log.error("Error parsing XML for template '"+this.templateName+"'.\r\n    "+e.toString());
+        } finally {
+            this.endTime = System.currentTimeMillis()/1000;
+            if ( this.messageCount > 0 )
+                this.setBatches();
+        }
+    }
+    
+
     public long getBatches() {
         try {
             MMBase mmb = (MMBase) org.mmbase.module.Module.getModule("mmbaseroot");
@@ -156,81 +221,5 @@ public class EmailTemplateToUsers {
             log.error("Error while setting batches for template '"+this.templateName+"'.\r\n    "+e.toString());
         }
     }
-
-    public void sendEmailToUsers(Document d) {
-        if ( d == null ) return;
-        
-        this.startTime = System.currentTimeMillis()/1000;
-        Element root = d.getRootElement();
-        
-        try {
-            MMBase mmb = (MMBase) org.mmbase.module.Module.getModule("mmbaseroot");
-            Cloud cloud = ContextProvider.getCloudContext("local").getCloud("mmbase");
-            String subject = "";
-            String from = "";
-            String body = "";
-            ArrayList userAddress = new ArrayList();
-            Iterator elements = root.elementIterator();
-            while (elements.hasNext()) {
-                Element element = (Element) elements.next();
-                if( element.getName().equals( "subject" ) )
-                    subject = element.getText();
-                else if( element.getName().equals( "body" ) )
-                    body = element.getText();
-                else if( element.getName().equals( "from" ) )
-                    from = element.getText();
-                else if ( element.getName().equals( "users" ) )  {
-                    Iterator users = element.elementIterator();
-                    int i = 1;
-                    while (users.hasNext()) {
-                        Element user = (Element) users.next();
-                        if( user.getName().equals( "user" ) ) {
-                            String firstname = "";
-                            String lastname = "";
-                            String username = "";
-                            String email = "";
-                            Iterator userInfos = user.elementIterator();
-                            while (userInfos.hasNext()) {
-                                Element userInfo = (Element) userInfos.next();
-                                if( userInfo.getName().equals( "firstname" ) )
-                                    firstname = userInfo.getText();
-                                else if( userInfo.getName().equals( "lastname" ) )
-                                    lastname = userInfo.getText();
-                                else if( userInfo.getName().equals( "username" ) )
-                                    username = userInfo.getText();
-                                else if( userInfo.getName().equals( "email" ) )
-                                    email = userInfo.getText();
-                            }
-                            if ( email.length() > 0 && subject.length() > 0 && body.length() > 0) {
-                                // Wait for mmbase to be up and running.
-                                String usernameSystem = "system";
-                                String admin = "admin";
-                                
-                                Node message = cloud.getNodeManager("emails").createNode();
-                                
-                                if ( message != null ) {
-                                    message.setStringValue("from", "Didactor");
-                                    message.setStringValue("to", "g.kostadinov@levi9.com");
-                                    message.setStringValue("subject", "Srecno");
-                                    message.setStringValue("body", "Ovo je test poruka. Ako je vidis, znaci da je uspelo. ProActiveMail");
-                                    message.setIntValue("date", (int) (System.currentTimeMillis() / 1000));
-                                    message.commit();
-                                    message.setIntValue("type", 1);
-                                    message.commit();
-                                    this.messageCount++;
-                                 }
-                            }
-                        }
-                    }
-                }
-            }
-            
-        } catch (Exception e) {
-            log.error("Error parsing XML for template '"+this.templateName+"'.\r\n    "+e.toString());
-        } finally {
-            this.endTime = System.currentTimeMillis()/1000;
-            if ( this.messageCount > 0 )
-                this.setBatches();
-        }
-    }
+    
 }
