@@ -17,17 +17,24 @@ if(!articleId.equals("-1")) {
    <tr>
    <td colspan="2" class="transperant" valign="top">
    <div class="<%= infopageClass %>" id="infopage">
-      <table border="0" cellpadding="0" cellspacing="0"><tr><td style="width:550px;">
       <table border="0" cellpadding="0" cellspacing="0">
-         <tr><td style="padding:10px;padding-top:18px;">
-         <%@include file="includes/relatedteaser.jsp" %>
-			<% String sUrl = "ipoverview.jsp"; %>
-			<%@include file="includes/imap/relatedimap.jsp" %></td></tr>
-      </table>
-      <mm:node number="<%= paginaID %>">
-         <%@include file="includes/contentblocks.jsp" %>
-      </mm:node>
-   </td></tr></table>
+      <tr>
+        <td style="width:550px;">
+          <table border="0" cellpadding="0" cellspacing="0">
+            <tr>
+              <td style="padding:10px;padding-top:18px;">
+                <%@include file="includes/relatedteaser.jsp" %>
+                <% String sUrl = "ipoverview.jsp"; %>
+                <%@include file="includes/imap/relatedimap.jsp" %>
+              </td>
+            </tr>
+          </table>
+          <mm:node number="<%= paginaID %>">
+             <%@include file="includes/contentblocks.jsp" %>
+          </mm:node>
+        </td>
+      </tr>
+   </table>
    </div>
    </td><%
 } %>

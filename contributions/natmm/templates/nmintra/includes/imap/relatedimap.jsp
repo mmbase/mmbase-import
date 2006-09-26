@@ -1,9 +1,12 @@
-<mm:list nodes="<%= paginaID %>" path="pagina,posrel,images" max="1"><%
-	if(isPreview) { %><a href=""><% } 
-		%><img src="<mm:node element="images"><mm:image /></mm:node>" alt="" border="0" usemap="#imagemap"<% 
-		if(isPreview) { %>ismap<% } %>><% 
-	if(isPreview) { %></a><% } 
-%></mm:list>
+<mm:list nodes="<%= paginaID %>" path="pagina,posrel,images" max="1"
+  ><mm:node element="images" jspvar="image"><%
+    if(isPreview) { %><a href=""><% } 
+      boolean resize = "1".equals(image.getStringValue("screensize"));
+      %><img src="<mm:image template="<%= (resize ? "s(550)" : "" ) %>" />" alt="" border="0" usemap="#imagemap"<% 
+      if(isPreview) { %>ismap<% } %>><% 
+    if(isPreview) { %></a><% } 
+  %></mm:node
+></mm:list>
 <map name="imagemap"><%
 	String targetObject = "artikel";
 	String readmoreUrl = sUrl + "?p" + paginaID + "&article=";
