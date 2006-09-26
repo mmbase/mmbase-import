@@ -2,15 +2,15 @@
 if(!action.equals("print")) { 
   
   if(!(nameId.equals("")&&firstnameId.equals("")&&lastnameId.equals("")&&descriptionId.equals("")
-                &&departmentId.equals("default")&&programId.equals("default"))||!thisPrograms.equals("")){
+                &&departmentId.equals("default")&&locationId.equals("default")&&programId.equals("default"))){
         
-        String debugStr = "";
+        boolean debug = true;;
         
         String employeeConstraint = "";
-        if(thisPrograms.equals("")) {
-            // *** in the general who-is-who only people which are active or have special externid 'wieiswie' ***
-				SearchUtil su = new SearchUtil();
-				employeeConstraint = su.sEmployeeConstraint;
+        if(showAllSelect) {
+          // *** in the general who-is-who only people which are active or have special externid 'extern' ***
+          SearchUtil su = new SearchUtil();
+          employeeConstraint = su.sEmployeeConstraint;
         } else { 
             // *** dummy constraint to create valid query, note: <>'0' omits all updated employees ***
             employeeConstraint = "( medewerkers.importstatus != '1')";
@@ -43,9 +43,9 @@ if(!action.equals("print")) {
             %></mm:field
         ></mm:list><%
         searchResults = su.searchResults(searchResultSet);
-        debugStr += employeeConstraint + " : " + searchResults + "\n";
+        if(debug) { log.info(employeeConstraint + " : " + searchResults); }
 
-        if(!departmentId.equals("default")&&!searchResults.equals("")){ // ****** add the department to the search ****** 
+        if(!departmentId.equals("default")&&!searchResults.equals("")) { // ****** add the department to the search ****** 
             searchResultSet.clear();
             String departmentConstraint = "afdelingen.number = '" + departmentId + "'";
             %><mm:list nodes="<%= searchResults %>" path="medewerkers,readmore,afdelingen" constraints="<%= departmentConstraint %>"
@@ -54,40 +54,38 @@ if(!action.equals("print")) {
                 %></mm:field
             ></mm:list><%
             searchResults = su.searchResults(searchResultSet);
-            debugStr += departmentConstraint + " : " + searchResults + "\n";
+            if(debug) { log.info(departmentConstraint + " : " + searchResults); }
         }
         
-        if(thisPrograms.equals("")) {
-            if(!programId.equals("default")&&!searchResults.equals("")){ // ****** add the location to the search ****** 
-                searchResultSet.clear();
-                String locationConstraint = "locations.number = '" + programId + "'";
-                %><mm:list nodes="<%= searchResults %>" path="medewerkers,readmore,locations" constraints="<%= locationConstraint %>"
-                    ><mm:field name="medewerkers.number" jspvar="employees_number" vartype="String" write="false"><%
-                      searchResultSet.add(employees_number);
-                    %></mm:field
-                ></mm:list><%
-                searchResults = su.searchResults(searchResultSet);
-                debugStr += locationConstraint + " : " + searchResults + "\n";
-            }
-        } else {
-            if(!searchResults.equals("")){ // ****** add the program to the search ****** 
-                if(!programId.equals("default")) { thisPrograms = programId; }
-                thisPrograms = "," + thisPrograms + ",";
-                searchResultSet.clear();
-                %><mm:list nodes="<%= searchResults %>" path="medewerkers,readmore,programs" 
-                    ><mm:field name="programs.number" jspvar="programs_number" vartype="String" write="false"><%
-                        if(thisPrograms.indexOf("," + programs_number + ",")>-1) { 
-                            %><mm:field name="medewerkers.number" jspvar="employees_number" vartype="String" write="false"><%
-                              searchResultSet.add(employees_number);
-                            %></mm:field><%
-                        }
-                    %></mm:field
-                ></mm:list><%
-                searchResults = su.searchResults(searchResultSet);
-                debugStr += "programs " + thisPrograms + " : " + searchResults + "\n";
-            }        
+        if(!locationId.equals("default")&&!searchResults.equals("")) { // ****** add the location to the search ****** 
+            searchResultSet.clear();
+            String locationConstraint = "locations.number = '" + locationId + "'";
+            %><mm:list nodes="<%= searchResults %>" path="medewerkers,readmore,locations" constraints="<%= locationConstraint %>"
+                ><mm:field name="medewerkers.number" jspvar="employees_number" vartype="String" write="false"><%
+                  searchResultSet.add(employees_number);
+                %></mm:field
+            ></mm:list><%
+            searchResults = su.searchResults(searchResultSet);
+            if(debug) { log.info(locationConstraint + " : " + searchResults); }
         }
-        %><%-- = debugStr --%><%
+        
+        if(!programId.equals("default")&&!searchResults.equals("")) { // ****** add the program to the search ****** 
+            if(!programId.equals("default")) { thisPrograms = programId; }
+            thisPrograms = "," + thisPrograms + ",";
+            searchResultSet.clear();
+            %><mm:list nodes="<%= searchResults %>" path="medewerkers,readmore,programs" 
+                ><mm:field name="programs.number" jspvar="programs_number" vartype="String" write="false"><%
+                    if(thisPrograms.indexOf("," + programs_number + ",")>-1) { 
+                        %><mm:field name="medewerkers.number" jspvar="employees_number" vartype="String" write="false"><%
+                          searchResultSet.add(employees_number);
+                        %></mm:field><%
+                    }
+                %></mm:field
+            ></mm:list><%
+            searchResults = su.searchResults(searchResultSet);
+            if(debug) { log.info("programs " + thisPrograms + " : " + searchResults); }
+        }
+        
         if(!searchResults.equals("")) { 
             %><mm:list nodes="<%= searchResults %>" path="medewerkers" orderby="medewerkers.firstname,medewerkers.lastname" directions="UP,UP"
                 fields="medewerkers.number,medewerkers.firstname,medewerkers.lastname,medewerkers.suffix"

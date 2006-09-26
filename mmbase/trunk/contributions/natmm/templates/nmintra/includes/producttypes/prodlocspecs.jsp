@@ -13,14 +13,13 @@ if(!locations.isEmpty()) {
 
     %><form name="locationform" method="post" action="">
         <select name="location" onChange="javascript:postL();" style="width:300px;">
-        <option value="" >...
+        <option value="default" >...
         <mm:list nodes="<%= locationsStr %>" path="locations" orderby="locations.naam" directions="UP">
             <mm:field name="locations.number" jspvar="locations_number" vartype="String" write="false"
                 ><option <% if(locations_number.equals(locationId)) { %>SELECTED<% } %>                   
                     value="<%= locations_number %>" ><mm:field name="locations.titel" 
             /></mm:field
-            ><mm:field name="locations.naam" 
-        /></mm:list>
+        ></mm:list>
     </select>
     </form>
     <script language="JavaScript" type="text/javascript">
@@ -32,7 +31,7 @@ if(!locations.isEmpty()) {
     //-->
     </script><%
 
-    if(!locationId.equals("")) {
+    if(!locationId.equals("default")) {
 
         // *** are there productgroups which can be shown ? ***
         HashSet productgroups = new HashSet();
