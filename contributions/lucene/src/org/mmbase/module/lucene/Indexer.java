@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.31 2006-09-13 09:51:14 michiel Exp $
+ * @version $Id: Indexer.java,v 1.32 2006-09-26 09:22:32 michiel Exp $
  **/
 public class Indexer {
 
@@ -78,6 +78,8 @@ public class Indexer {
 
     // Collection with queries to run
     private final Collection<IndexDefinition> queries;
+
+    private Date lastFullIndex = new Date(0);
 
     /**
      * Instantiates an Indexer for a specified collection of queries and options.
@@ -136,12 +138,16 @@ public class Indexer {
         return analyzer;
     }
 
-    public Node getNode(Cloud userCloud, String identifier) {
+    public Node getNode(Cloud userCloud, Document doc) {
         for (IndexDefinition id : queries) {
-            Node n = id.getNode(userCloud, identifier);
+            Node n = id.getNode(userCloud, doc);
             if (n != null) return n;
         }
         return null;
+    }
+
+    public Date getLastFullIndex() {
+        return lastFullIndex;
     }
 
     /**
@@ -261,6 +267,7 @@ public class Indexer {
      */
     public void fullIndex() {
         log.service("Doing full index for " + toString());
+        lastFullIndex = new Date();
         IndexWriter writer = null;
         try {
             writer = new IndexWriter(path, analyzer, true);

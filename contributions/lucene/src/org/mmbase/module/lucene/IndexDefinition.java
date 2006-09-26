@@ -14,13 +14,14 @@ import org.mmbase.util.CloseableIterator;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.Cloud;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.document.Document;
 
 /**
  * Defines a query and possible options for the fields to index.
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: IndexDefinition.java,v 1.13 2006-09-13 09:51:14 michiel Exp $
+ * @version $Id: IndexDefinition.java,v 1.14 2006-09-26 09:22:32 michiel Exp $
  **/
 interface IndexDefinition {
 
@@ -47,7 +48,7 @@ interface IndexDefinition {
      * Defines how a Node for this index must be produced. For MMBase indices this is of course
      * quite straight-forward, but other indices may create virtual nodes here.
      */
-    Node getNode(Cloud cloud, String identifier);
+    Node getNode(Cloud cloud, Document doc);
 
 
 }

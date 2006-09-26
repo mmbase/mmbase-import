@@ -46,7 +46,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.70 2006-09-13 09:51:14 michiel Exp $
+ * @version $Id: Lucene.java,v 1.71 2006-09-26 09:22:32 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, IdEventListener {
 
@@ -79,17 +79,17 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
     protected final static Parameter<String> INDEX = new Parameter("index", String.class);
     static { INDEX.setDescription("the name of the index to search in"); }
 
-    protected final static Parameter CLASS = new Parameter("class", Class.class, IndexDefinition.class);
+    protected final static Parameter<Class> CLASS = new Parameter("class", Class.class, IndexDefinition.class);
     static { INDEX.setDescription("the class of indices to search in (default to all classes)"); }
-
-    protected final static Parameter SORTFIELDS = new Parameter("sortfields", String.class);
-    protected final static Parameter OFFSET = new Parameter("offset", Integer.class);
+ 
+    protected final static Parameter<String> SORTFIELDS = new Parameter("sortfields", String.class);
+    protected final static Parameter<Integer>  OFFSET = new Parameter("offset", Integer.class);
     static { OFFSET.setDescription("for creating sublists"); }
 
-    protected final static Parameter MAX = new Parameter("max", Integer.class);
+    protected final static Parameter<Integer> MAX = new Parameter("max", Integer.class);
     static { MAX.setDescription("for creating sublists"); }
 
-    protected final static Parameter EXTRACONSTRAINTS = new Parameter("extraconstraints", String.class);
+    protected final static Parameter<String>  EXTRACONSTRAINTS = new Parameter("extraconstraints", String.class);
     static { EXTRACONSTRAINTS.setDescription("@see org.mmbase.module.lucene.Searcher#createQuery()"); }
 
     /*
@@ -97,7 +97,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
     static { EXTRACONSTRAINTSLIST.setDescription("@see org.mmbase.module.lucene.Searcher#createQuery()"); }
     */
 
-    protected final static Parameter IDENTIFIER = new Parameter("identifier", String.class);
+    protected final static Parameter<String> IDENTIFIER = new Parameter("identifier", String.class);
     static { IDENTIFIER.setDescription("Normally a node number, identifier (a number of) lucene document(s) in an index."); }
 
     static {
@@ -114,6 +114,10 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
     private static final String INDEX_CONFIG_FILE = "utils/luceneindex.xml";
 
     private static final Logger log = Logging.getLoggerInstance(Lucene.class);
+
+    public static Lucene getLucene() {
+        return getModule(Lucene.class);
+    }
 
     /**
      * The MMBase instance, used for low-level access
@@ -155,8 +159,8 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
      * This may take a while.
      * This function can be called through the function framework.
      */
-    protected Function fullIndexFunction = new AbstractFunction<Void, String>("fullIndex", INDEX) {
-        public Void getFunctionValue(Parameters<String> arguments) {
+    protected Function fullIndexFunction = new AbstractFunction<Void>("fullIndex", INDEX) {
+        public Void getFunctionValue(Parameters arguments) {
             if (scheduler == null) throw new RuntimeException("Read only");
             String index = arguments.get(INDEX);
             if (index == null || "".equals(index)) {
@@ -180,9 +184,9 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
             public Void getFunctionValue(Parameters arguments) {
                 if (scheduler == null) throw new RuntimeException("Read only");
                 if(!readOnly){
-                    String index      = (String) arguments.get(INDEX);
-                    String identifier = (String) arguments.get(IDENTIFIER);
-                    Class  klass = (Class) arguments.get(CLASS);
+                    String index      = arguments.get(INDEX);
+                    String identifier = arguments.get(IDENTIFIER);
+                    Class  klass      = arguments.get(CLASS);
                     if(index == null || "".equals(index)){
                         scheduler.deleteIndex(identifier, klass);
                     } else {
@@ -225,8 +229,8 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
     {
         addFunction(statusFunction);
     }
-    protected Function statusDescriptionFunction = new AbstractFunction<String, Locale>("statusdescription", Parameter.LOCALE) {
-        public String getFunctionValue(Parameters<Locale> arguments) {
+    protected Function statusDescriptionFunction = new AbstractFunction("statusdescription", Parameter.LOCALE) {
+        public String getFunctionValue(Parameters arguments) {
             Locale locale = arguments.get(Parameter.LOCALE);
             SortedMap map = SortedBundle.getResource("org.mmbase.module.lucene.resources.status",  locale,
                                                      getClass().getClassLoader(),
@@ -267,11 +271,11 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
     }
 
     /**
-     * This function returns Set with the names of all confiured indexes.
+     * This function returns Set with the names of all configured indexes (ordered alphabeticly)
      */
     protected Function listFunction = new AbstractFunction("list") {
             public Set<String> getFunctionValue(Parameters arguments) {
-                return indexerMap.keySet();
+                return new TreeSet<String>(indexerMap.keySet());
             }
 
         };
@@ -284,8 +288,8 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
      */
     protected Function  descriptionFunction = new AbstractFunction("description", INDEX, Parameter.LOCALE) {
             public String getFunctionValue(Parameters arguments) {
-                String key = arguments.getString(INDEX);
-                Locale locale = (Locale) arguments.get(Parameter.LOCALE);
+                String key    = arguments.getString(INDEX);
+                Locale locale = arguments.get(Parameter.LOCALE);
                 Indexer index = indexerMap.get(key);
                 return index.getDescription().get(locale);
             }
@@ -306,12 +310,12 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
                 List sortFieldList = Casting.toList(arguments.getString(SORTFIELDS));
                 // offset
                 int offset = 0;
-                Integer offsetParameter = (Integer)arguments.get(OFFSET);
+                Integer offsetParameter = arguments.get(OFFSET);
                 if (offsetParameter != null) offset = offsetParameter.intValue();
                 if (offset < 0) offset = 0;
                 // max
                 int max = -1;
-                Integer maxParameter = (Integer)arguments.get(MAX);
+                Integer maxParameter = arguments.get(MAX);
                 if (maxParameter != null) max = maxParameter.intValue();
                 String extraConstraints = arguments.getString(EXTRACONSTRAINTS);
                 /*
@@ -352,7 +356,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
             String value = arguments.getString(VALUE);
             String index = arguments.getString(INDEX);
             String extraConstraints = arguments.getString(EXTRACONSTRAINTS);
-            Cloud cloud = (Cloud)arguments.get(Parameter.CLOUD);
+            Cloud cloud  =  arguments.get(Parameter.CLOUD);
             return searchSize(cloud, value, index, extraConstraints);
         }
     };
@@ -390,6 +394,21 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
         };
     {
         addFunction(interruptFunction);
+    }
+
+    protected Function lastFullIndexFunction = new AbstractFunction("last", INDEX) {
+        public Date getFunctionValue(Parameters arguments) {
+            String key = arguments.get(INDEX);
+            Indexer index = indexerMap.get(key);
+            if (index != null) {
+                return index.getLastFullIndex();
+            } else {
+                return null;
+            }
+        }
+    };
+    {
+        addFunction(lastFullIndexFunction);
     }
 
     private ContentExtractor factory;
@@ -535,6 +554,9 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
             scheduler.interrupt();
         }
         indexerMap.clear();
+        for (Searcher searcher : searcherMap.values()) {
+            searcher.shutdown();
+        }
         searcherMap.clear();
         scheduler = null;
         mmbase = null;
@@ -693,7 +715,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
 
     public Searcher getSearcher(String indexName) {
         if (indexName == null || indexName.equals("")) indexName = defaultIndex;
-        Searcher searcher = (Searcher)searcherMap.get(indexName);
+        Searcher searcher = searcherMap.get(indexName);
         if (searcher == null) {
             throw new IllegalArgumentException("Index with name "+indexName+" does not exist.");
         }

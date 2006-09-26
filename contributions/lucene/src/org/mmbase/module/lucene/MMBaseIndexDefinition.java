@@ -16,7 +16,7 @@ import org.mmbase.bridge.util.*;
 import org.mmbase.bridge.util.xml.query.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
-
+import org.apache.lucene.document.Document;
 import org.apache.lucene.analysis.Analyzer;
 
 /**
@@ -24,7 +24,7 @@ import org.apache.lucene.analysis.Analyzer;
  * fields can have extra attributes specific to Lucene searching.
  *
  * @author Pierre van Rooden
- * @version $Id: MMBaseIndexDefinition.java,v 1.12 2006-09-13 09:51:14 michiel Exp $
+ * @version $Id: MMBaseIndexDefinition.java,v 1.13 2006-09-26 09:22:32 michiel Exp $
  **/
 class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
     static private final Logger log = Logging.getLoggerInstance(MMBaseIndexDefinition.class);
@@ -58,7 +58,8 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
         return analyzer;
     }
 
-    public Node getNode(Cloud userCloud, String identifier) {
+    public Node getNode(Cloud userCloud, Document doc) {
+        String identifier = doc.get("number");
         if (userCloud.hasNode(identifier)) {
             if (log.isTraceEnabled()) {
                 log.trace("a node (" + identifier + ")");
