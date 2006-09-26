@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * If for some reason you also need to do Queries next to MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JdbcIndexDefinition.java,v 1.13 2006-09-13 09:51:14 michiel Exp $
+ * @version $Id: JdbcIndexDefinition.java,v 1.14 2006-09-26 09:22:32 michiel Exp $
  **/
 public class JdbcIndexDefinition implements IndexDefinition {
 
@@ -65,15 +65,18 @@ public class JdbcIndexDefinition implements IndexDefinition {
     private final boolean isSub;
 
 
-    JdbcIndexDefinition(DataSource ds, Element element,
+    JdbcIndexDefinition(DataSource ds, 
+                        Element element,
                         Set allIndexedFields,
                         boolean storeText,
-                        boolean mergeText, Analyzer a,
+                        boolean mergeText, 
+                        Analyzer a,
                         boolean isSub) {
         this.dataSource = ds;
         indexSql = element.getAttribute("sql");
         key = element.getAttribute("key");
-        identifier = element.getAttribute("identifier");
+        String id = element.getAttribute("identifier");
+        identifier = "".equals(id) ? key : id;
         findSql = element.getAttribute("find");
         NodeList childNodes = element.getChildNodes();
         for (int k = 0; k < childNodes.getLength(); k++) {
@@ -84,6 +87,7 @@ public class JdbcIndexDefinition implements IndexDefinition {
                         keyWords.add(childElement.getAttribute("name"));
                     }
                     String m = childElement.getAttribute("multiple");
+                    if ("".equals(m)) m = "add";
                     if (! m.equals("add")) {
                         nonDefaultMultiples.put(childElement.getAttribute("name"),  Indexer.Multiple.valueOf(m.toUpperCase()));
                     }
@@ -201,9 +205,11 @@ public class JdbcIndexDefinition implements IndexDefinition {
      */
     protected class LazyMap extends AbstractMap<String, String> {
         private  Map<String, String> map = null;
+        private final Map<String, String> keys ;
         private final String identifier;
-        LazyMap(String identifier) {
+        LazyMap(String identifier, Map<String, String> keys) {
             this.identifier = identifier;
+            this.keys = keys;
         }
         protected void check() {
             if (map == null) {
@@ -252,13 +258,15 @@ public class JdbcIndexDefinition implements IndexDefinition {
             check();
             return map.size();
         }
-        public String get(String key) {
-            //if(JdbcIndexDefinition.this.equals(key)) return identifier;
+        public String get(Object key) {
+            if(JdbcIndexDefinition.this.identifier.equals(key)) return identifier;
+            if(keys.containsKey(key)) return keys.get(key);
             check();
             return map.get(key);
         }
         public boolean containsKey(Object key) {
-            //if(JdbcIndexDefinition.this.equals(key)) return true;
+            if(JdbcIndexDefinition.this.identifier.equals(key)) return true;
+            if(keys.containsKey(key)) return true;
             check();
             return map.containsKey(key);
         }
@@ -271,11 +279,19 @@ public class JdbcIndexDefinition implements IndexDefinition {
         }
     }
 
-    public org.mmbase.bridge.Node getNode(final Cloud userCloud, final String identifier) {
-        LazyMap m =  nodeCache.get(identifier);
+    public org.mmbase.bridge.Node getNode(final Cloud userCloud, final Document doc) {
+        String id = doc.get("number");
+        if (id == null) {
+            throw new IllegalArgumentException("No number found in " + doc);
+        }
+        LazyMap m =  nodeCache.get(id);
         if (m == null) {
-            m = new LazyMap(identifier);
-            nodeCache.put(identifier, m);
+            Map<String, String> keys = new HashMap();
+            for (String keyWord : keyWords) {
+                keys.put(keyWord, doc.get(keyWord));
+            }
+            m = new LazyMap(id, keys);
+            nodeCache.put(id, m);
         }
         org.mmbase.bridge.Node node = new MapNode(m, new MapNodeManager(userCloud, m) {
                 public boolean hasField(String name) {
