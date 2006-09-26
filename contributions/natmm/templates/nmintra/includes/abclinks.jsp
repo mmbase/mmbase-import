@@ -12,7 +12,7 @@
 						if(abcId.indexOf(i)!=-1) {
 							%><%= i %>&nbsp;&nbsp;<%
 						} else { 
-							%><a target="_top" href="terms.jsp<%= templateQueryString %>&abc=<%= i %>"><%= i 
+							%><a href="terms.jsp<%= templateQueryString %>&abc=<%= i %>"><%= i 
 	                        %></a>&nbsp;&nbsp;<%
 						} 
 					%></mm:first
