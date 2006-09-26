@@ -1,99 +1,113 @@
 <% 
 // **************** people finder: right bar with the form *****************
 
-if(!action.equals("print")) { 
-    %><%@include file="../whiteline.jsp" 
-    %><form method="POST" action="<%= requestURL %>smoelenboek.jsp<%= templateQueryString %>" name="smoelenboek" onSubmit="return postIt('submit');">
-        <input type="hidden" name="name" value="<%= nameId %>">
-    <table cellpadding="0" cellspacing="0"  align="center">
-        <tr><td class="bold">&nbsp;<span class="light">Voornaam:</span></td>
-            <td class="bold"><input type="text" style="width:103px;" name="firstname" value="<%= firstnameId %>">
-            &nbsp;<br><div align="right"><span class="light"><% if(nameId.equals("")){ %>en<% } else { %>of<% } %></span></div></td></tr>
-        <tr><td class="bold">&nbsp;<span class="light">Achternaam:</span>&nbsp;</td>
-            <td class="bold"><input type="text" style="width:103px;" name="lastname" value="<%= lastnameId %>">
-            &nbsp;<br><div align="right"><span class="light">en</span></div></td></tr><%
-         
-    if(thisPrograms.equals("")) {
-        SearchUtil su = new SearchUtil();
-        %><tr><td class="bold">&nbsp;<span class="light">En verder:</span>&nbsp;</td>
-                    <td class="bold"><input type="text" style="width:103px;" name="description" size="13" value="<%= descriptionId %>">
-            &nbsp;<br><div align="right"><span class="light">en</span></div></td></tr>
-        <tr><td colspan="2" class="bold"><select name="department" style="width:195px;">
+if(!action.equals("print")) {
+    SearchUtil su = new SearchUtil();
+    %>
+    <%@include file="../whiteline.jsp" %>
+    <form method="POST" action="<%= ph.createPaginaUrl(paginaID,request.getContextPath()) %>" name="smoelenboek">
+      <input type="hidden" name="name" value="<%= nameId %>">
+      <table cellpadding="0" cellspacing="0"  align="center">
+        <tr>
+          <td class="bold">&nbsp;<span class="light">Voornaam:</span></td>
+          <td class="bold"><input type="text" style="width:103px;" name="firstname" value="<%= firstnameId %>">
+            &nbsp;<br><div align="right"><span class="light"><% if(nameId.equals("")){ %>en<% } else { %>of<% } %></span></div>
+          </td>
+        </tr>
+        <tr>
+          <td class="bold">&nbsp;<span class="light">Achternaam:</span>&nbsp;</td>
+          <td class="bold"><input type="text" style="width:103px;" name="lastname" value="<%= lastnameId %>">
+             <%  
+             if(showAllSelect || showProgramSelect) {
+                %>&nbsp;<br><div align="right"><span class="light">en</span></div><%          
+             }
+             %>
+          </td>
+        </tr>
+        <%
+        if(showAllSelect) { 
+          %>
+          <tr>
+            <td class="bold">&nbsp;<span class="light">En verder:</span>&nbsp;</td>
+            <td class="bold"><input type="text" style="width:103px;" name="description" size="13" value="<%= descriptionId %>">
+              &nbsp;<br><div align="right"><span class="light">en</span></div>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2" class="bold">
+              <select name="department" style="width:195px;">
                 <option value="default" <%  if(departmentId.equals("default")) { %>SELECTED<% } 
                     %>>alle afdelingen en regio's
-            <mm:list path="afdelingen" orderby="afdelingen.naam" directions="UP"
-                  constraints="<%= su.sAfdelingenConstraints %>"
-                ><mm:field name="afdelingen.number" jspvar="departments_number" vartype="String" write="false"
-                ><mm:field name="afdelingen.naam" jspvar="departments_name" vartype="String" write="false"
-                ><option value="<%= departments_number %>" <%   if(departments_number.equals(departmentId))  { %>SELECTED<% } 
-                        %>><%= departments_name 
-                %></mm:field
-                ></mm:field
-            ></mm:list
-        ></select>&nbsp;<br><div align="right"><span class="light">en</span></div></td></tr>
-        <tr><td colspan="2"><select name="program" style="width:195px;">
+                <mm:list path="afdelingen" orderby="afdelingen.naam" directions="UP"
+                    constraints="<%= su.sAfdelingenConstraints %>"
+                  ><mm:field name="afdelingen.number" jspvar="departments_number" vartype="String" write="false"
+                  ><mm:field name="afdelingen.naam" jspvar="departments_name" vartype="String" write="false"
+                  ><option value="<%= departments_number %>" <%   if(departments_number.equals(departmentId))  { %>SELECTED<% } 
+                      %>><%= departments_name 
+                  %></mm:field
+                  ></mm:field
+                ></mm:list
+              ></select>&nbsp;<br><div align="right"><span class="light">en</span></div>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2" class="bold">
+              <select name="location" style="width:195px;">
                 <option value="default" <%  if(programId.equals("default")) { %>SELECTED<% } 
                     %>>alle lokaties
-            <mm:list path="locations" orderby="locations.naam" directions="UP"
-                ><mm:field name="locations.number" jspvar="locations_number" vartype="String" write="false"
-                ><mm:field name="locations.naam" jspvar="locations_name" vartype="String" write="false"
-                    ><mm:list nodes="<%= locations_number %>" path="locations,readmore,medewerkers" max="1"
-                        ><option value="<%= locations_number %>" <%  if(locations_number.equals(programId))  { %>SELECTED<% } 
-                            %>><%= locations_name
-                    %></mm:list
-                ></mm:field>
-                </mm:field
-            ></mm:list
-        ></select></td></tr><%
-        
-     } else if(thisPrograms.indexOf(",")>-1) {
-
-        %><tr><td colspan="2"><select name="program" style="width:195px;">
-                <option value="default" <%  if(programId.equals("default")) { %>SELECTED<% } 
-                    %>>alle teams
-            <mm:list nodes="<%= thisPrograms %>" path="programs" orderby="programs.title" directions="UP"
-                ><mm:field name="programs.number" jspvar="programs_number" vartype="String" write="false"
-                ><mm:field name="programs.title" jspvar="programs_title" vartype="String" write="false"
-                    ><mm:list nodes="<%= programs_number %>" path="programs,readmore,medewerkers" max="1"
-                        ><option value="<%= programs_number %>" <%  if(programs_number.equals(programId))  { %>SELECTED<% } 
-                            %>><%= programs_title
-                    %></mm:list
-                ></mm:field>
-                </mm:field
-            ></mm:list
-        ></select></td></tr><%          
-     }
-        %><tr><td colspan="2"><img src="media/spacer.gif" width="1" height="20"></td></tr>
-        <tr><td>
-            <input type="reset" name="clear" value="Wis" style="text-align:center;font-weight:bold;width:42px;" onClick="postIt('clear');">
+                <mm:list path="locations" orderby="locations.naam" directions="UP"
+                  ><mm:field name="locations.number" jspvar="locations_number" vartype="String" write="false"
+                  ><mm:field name="locations.naam" jspvar="locations_name" vartype="String" write="false"
+                      ><mm:list nodes="<%= locations_number %>" path="locations,readmore,medewerkers" max="1"
+                          ><option value="<%= locations_number %>" <%  if(locations_number.equals(locationId))  { %>SELECTED<% } 
+                              %>><%= locations_name
+                      %></mm:list
+                  ></mm:field>
+                  </mm:field
+                ></mm:list
+              ></select>
+              <%  
+              if(showProgramSelect) {
+                %>&nbsp;<br><div align="right"><span class="light">en</span></div><%
+              } %>
             </td>
-            <td>
-                <div align="right"><input type="submit" name="submit" value="Zoek" style="text-align:center;font-weight:bold;width:42px;">&nbsp;</div>
-            </td></tr>
-    </table></form>
-    <script>
-    <!--
-    function postIt(action) {
-        var href = document.smoelenboek.action;
-        if(action!='clear') {
-            var name = escape(document.smoelenboek.elements["name"].value);
-            var firstname = escape(document.smoelenboek.elements["firstname"].value);
-            var lastname = escape(document.smoelenboek.elements["lastname"].value);
-            <% if(thisPrograms.equals("")) { %>
-                var description = escape(document.smoelenboek.elements["description"].value);
-                var department = escape(document.smoelenboek.elements["department"].value);
-                var program = escape(document.smoelenboek.elements["program"].value);
-                href += "&name=" + name +"&firstname=" + firstname + "&lastname=" + lastname + "&description=" + description + "&department=" + department + "&program=" + program;<%
-           } else if(thisPrograms.indexOf(",")>-1) {  %>
-                var program = escape(document.smoelenboek.elements["program"].value);
-                href += "&name=" + name +"&firstname=" + firstname + "&lastname=" + lastname + "&program=" + program;<%
-           } else { %>
-                href += "&name=" + name +"&firstname=" + firstname + "&lastname=" + lastname;<%
-           } %>   
+          </tr>
+          <%
         }
-        document.location = href; 
-        return false; 
-    }
-    //-->
-    </script><% 
+        
+        if(showProgramSelect) {
+          %>
+          <tr>
+            <td colspan="2">
+              <select name="program" style="width:195px;">
+                <option value="default" <%  if(programId.equals("default")) { %>SELECTED<% } 
+                    %>><%= (showAllSelect ? "alle overige groepen" : "alle teams") %>
+                <mm:list nodes="<%= thisPrograms %>" path="programs" orderby="programs.title" directions="UP"
+                    ><mm:field name="programs.number" jspvar="programs_number" vartype="String" write="false"
+                    ><mm:field name="programs.title" jspvar="programs_title" vartype="String" write="false"
+                        ><mm:list nodes="<%= programs_number %>" path="programs,readmore,medewerkers" max="1"
+                            ><option value="<%= programs_number %>" <%  if(programs_number.equals(programId))  { %>SELECTED<% } 
+                                %>><%= programs_title
+                        %></mm:list
+                    ></mm:field>
+                    </mm:field
+                ></mm:list
+              ></select>
+            </td>
+          </tr>
+          <%          
+        }
+        %>
+        <tr><td colspan="2"><img src="media/spacer.gif" width="1" height="20"></td></tr>
+        <tr>
+          <td>
+            <input type="reset" name="clear" value="Wis" style="text-align:center;font-weight:bold;width:42px;">
+          </td>
+          <td>
+            <div align="right"><input type="submit" name="submit" value="Zoek" style="text-align:center;font-weight:bold;width:42px;">&nbsp;</div>
+          </td>
+        </tr>
+      </table>
+    </form>
+   <% 
 } %>

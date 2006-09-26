@@ -51,6 +51,7 @@
       <field name="omschrijving" ftype="html" rows="20"><prompt>omschrijving</prompt></field>
       <field name="creatiedatum" ftype="data"><prompt>creatiedatum</prompt></field>
       <field name="datumlaatstewijziging" ftype="data"><prompt>datumlaatstewijziging</prompt></field>
+      <field name="bron" ftype="enum"><prompt>toon afdeling en lokatie selectie _______________________</prompt><optionlist select="ja_nee"/></field>
       <list include="config/images/zoek_posrel_images.xml" />
       <list include="config/programs/add_teams_posrel.xml" />
    </form-schema> 
