@@ -4,14 +4,29 @@
         <name>twomonthsnologin</name>
         <frompart>Didactor</frompart>
         <subject>No login to didactor for two months</subject>
-        <body>Did not login 2 months</body>
+        <body>
+Dear user,
+
+You have not been login to didactor for last two months. 
+This is just a reminder message. 
+
+Thanks,
+Didactor Group
+        </body>
         <active>1</active>
     </node>
     <node number="18092" owner="system">
         <name>monthafterregistration</name>
         <frompart>Didactor</frompart>
         <subject>Thaks for registering</subject>
-        <body>Just registered user</body>
+        <body>
+Dear user,
+
+Now is exactly one month after Your registration in Didactor System. 
+
+Thanks,
+Didactor Group
+        </body>
         <active>1</active>
     </node>
 </proactivemailtemplates>
