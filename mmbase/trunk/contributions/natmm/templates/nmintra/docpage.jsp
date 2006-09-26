@@ -12,7 +12,7 @@
       <mm:import id="page_contains_document" />
    </mm:related>
    <mm:notpresent referid="page_contains_document">
-      <mm:listnodes type="documents" constraints="<%= "filename LIKE '%" + thisPage.getStringValue("title") + "%'" %>" jspvar="subtreeDoc">
+      <mm:listnodes type="documents" constraints="<%= "filename LIKE '%" + thisPage.getStringValue("titel") + "%'" %>" jspvar="subtreeDoc">
       <% nl.leocms.util.tools.documents.DirReader.mergeSubtree(cloud,thisPage,subtreeDoc); %>
       </mm:listnodes>
    </mm:notpresent>
