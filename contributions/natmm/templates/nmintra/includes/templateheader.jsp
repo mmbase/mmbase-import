@@ -1,3 +1,4 @@
+<%@page language="java" contentType="text/html;charset=UTF-8"%>
 <base href="<%= javax.servlet.http.HttpUtils.getRequestURL(request) %>" />
 <%@page import="java.text.*,java.io.*,org.mmbase.bridge.*" %>
 <mm:import jspvar="ID" externid="id">-1</mm:import>

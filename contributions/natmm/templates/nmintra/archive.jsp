@@ -18,7 +18,6 @@ if(!projectId.equals("")) {
        }
    } catch(Exception e) {} 
    
-   String sTemplateUrl = "archive.jsp";
    String extTemplateQueryString = templateQueryString; 
    String allConstraint = "";
    String employeeConstraint = "";

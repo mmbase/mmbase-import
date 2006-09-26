@@ -4,7 +4,7 @@ if(!action.equals("print")) {
   if(!(nameId.equals("")&&firstnameId.equals("")&&lastnameId.equals("")&&descriptionId.equals("")
                 &&departmentId.equals("default")&&locationId.equals("default")&&programId.equals("default"))){
         
-        boolean debug = true;;
+        boolean debug = false;
         
         String employeeConstraint = "";
         if(showAllSelect) {
