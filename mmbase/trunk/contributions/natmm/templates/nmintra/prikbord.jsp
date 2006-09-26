@@ -129,7 +129,7 @@ if(isPosting) {
 				messageBody = "Je ontvangt een mail in je mailbox waarmee je het plaatsen van de juist verstuurde advertentie kunt bevestigen.";
 				messageHref = "/index.jsp?r=" + subsiteID;
 				messageLinktext = "naar de homepage";
-				messageLinkParam = "target=\"_top\"";  
+				messageLinkParam = "";  
 			}
 			
 			%><%@include file="includes/showmessage.jsp" %><%

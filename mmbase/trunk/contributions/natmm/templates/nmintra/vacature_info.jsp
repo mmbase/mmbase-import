@@ -1,8 +1,6 @@
 <%@include file="/taglibs.jsp" %>
 <mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud">
 <%@include file="includes/templateheader.jsp" %>
-<%@include file="includes/cacheparams.jsp" %>
-<% expireTime = newsExpireTime; %>
 <%
 
 // using the "project" request parameter for vacatures
@@ -17,6 +15,8 @@ if(!articleId.equals("-1")) {
 } else {
 
   %>
+  <%@include file="includes/cacheparams.jsp" %>
+  <% expireTime = newsExpireTime; %>
   <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
   <%@include file="includes/calendar.jsp"%>
   <%@include file="includes/header.jsp" %> 

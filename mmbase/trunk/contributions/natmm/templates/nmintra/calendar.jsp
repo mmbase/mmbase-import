@@ -130,9 +130,8 @@ if(!articleId.equals("-1")) {
                           %><%= endDay %><% 
                       } %></td>
                   <td class="content">
-                      <a target="_top" href="<mm:url page="<%= templateQueryString + "&article=" + article_number %>" 
-                                  />"><span <% if(tb>nowSec) { %>class="red"<% } else { %>class="black"<% 
-                                      } %>><mm:field name="titel" /></span></a></td>
+                      <a href="<mm:url page="<%= templateQueryString + "&article=" + article_number %>" 
+                                  />"><span class="<%= (tb>nowSec ? "red" : "black" ) %>"><mm:field name="titel" /></span></a></td>
                   <td class="content">&nbsp;</td>
                </tr>
                </mm:field

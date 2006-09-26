@@ -23,12 +23,9 @@
 			   if (!beginUL) { beginUL = true; 
 			      %><ul type="square" class="black" style="margin:0px;margin-left:15px;"><% 
 			   }
-			   %><li><a href="<mm:field name="link.url"
-						/>" <mm:field name="link.target"
-						      ><mm:compare value="1">target="_blank"</mm:compare
-						      ><mm:compare value="2">target="_top"</mm:compare
-						    ></mm:field>><span style="text-decoration:underline;" class="dark"><mm:field name="link.titel"/>
-					</span></a></li>
+			   %><li><a href="<mm:field name="link.url"	/>" target="<mm:field name="link.target" />">
+            <span style="text-decoration:underline;" class="dark"><mm:field name="link.titel"/></span>
+          </a></li>
 		</mm:related>
 		<mm:related path="posrel,projects" orderby="posrel.pos" directions="UP"><%
 			   if (!beginUL) { beginUL = true; 

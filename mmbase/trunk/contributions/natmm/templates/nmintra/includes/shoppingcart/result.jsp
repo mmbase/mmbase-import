@@ -193,9 +193,10 @@ public TreeSet unify(TreeSet ts1, TreeSet ts2){
          pcIterator.remove(thisProductGroup);
       }
 		
-	   String formTitle =  okTitle;
+	    String formTitle =  okTitle;
       String formMessage =  okMessage;
-      String formMessageHref = "shoppingcart.jsp";
+      String homePage = (new RubriekHelper(cloud)).getFirstPage(rubriekId);
+      String formMessageHref = ph.createPaginaUrl(homePage,request.getContextPath()); 
       String formMessageLinktext = okLink;
       
       %><jsp:include page="includes/shoppingcart/message.jsp">

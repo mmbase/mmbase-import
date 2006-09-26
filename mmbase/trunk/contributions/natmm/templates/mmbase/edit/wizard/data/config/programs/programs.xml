@@ -8,13 +8,13 @@
     <action include="config/programs/load_programs.xml" />
     <steps>
         <step form-schema="edit_programs" />
-        <!-- step form-schema="add_info" / -->
+        <step form-schema="add_info" />
     </steps>
     <form-schema id="edit_programs" extends="config/programs/edit_programs.xml" />
     <form-schema id="add_info">
         <title>items en medewerkers</title>
         <field name="title" ftype="data" ><prompt>titel van dit programma</prompt></field>
         <list include="config/items/add_items_posrel.xml" />
-        <list include="config/medewerkers/zoek_posrel_medewerkers.xml" />
+        <list include="config/medewerkers/zoek_items_posrel_medewerkers.xml" />
     </form-schema>
 </wizard-schema>
