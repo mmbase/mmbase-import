@@ -50,7 +50,26 @@
    <mm:listnodes type="pagina" constraints="titel='Jeugdactiviteiten'">
    		<mm:createalias>events</mm:createalias>
 	</mm:listnodes>
+  4. Hide titles of pages and articles<br/>
+  <%
+	String [] pageTitle = {
+		"Opleiding en ontwikkeling"
+		};
+	for(int i=0; i<pageTitle.length;i++) {
+		%><mm:listnodes type="pagina" constraints="<%= "titel = '" + pageTitle[i]  + "'" %>">
+			<mm:setfield name="titel_zichtbaar">0</mm:setfield>
+		 </mm:listnodes><%
+	}
+  String [] articleTitle = {
+		"Opleiding en ontwikkeling"
+		};
+	for(int i=0; i<articleTitle.length;i++) {
+		%><mm:listnodes type="artikel" constraints="<%= "titel = '" + articleTitle[i]  + "'" %>">
+			<mm:setfield name="titel_zichtbaar">0</mm:setfield>
+		 </mm:listnodes><%
+	}
+  %>
 	<% (new nl.leocms.util.MMBaseHelper(cloud)).addDefaultRelations(); %>
-	<% (new nl.leocms.content.UpdateUnusedElements()).run(); %> 
+	<% (new nl.leocms.content.UpdateUnusedElements()).run(); %>
 </mm:log>
 </mm:cloud>
