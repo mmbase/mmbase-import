@@ -154,14 +154,12 @@
 		"Wie-is-wie?",
     "Personeel & organisatie",
     "De Vraagbaak",
-    "Projectmatig werken",
     "Huisstijl Handboek"
 		};
 	String [] rubriekNewName = {
 		"Wie-is-wie",
     "P&O",
     "Vraagbaak",
-    "Projectmatigwerken",
     "Huisstijl"
 		};
 	for(int i=0; i<rubriekToRename.length;i++) {
@@ -230,7 +228,7 @@
           if(rname.equals("Huisstijl")) { pos = 8; }
           if(rname.equals("Vraagbaak")) { pos = 9; }
           if(rname.equals("Bibliotheek")) { pos = 10; }
-          if(rname.equals("Projectmatigwerken")) { pos = 11; }
+          if(rname.equals("Projectmatig werken")) { pos = 11; }
           if(rname.equals("Kiezen & Delen")) { pos = 12; }
           if(rname.equals("Sjacherhoek")) { pos = 13; }
           if(rname.equals("Archief")) { pos = 14; }
