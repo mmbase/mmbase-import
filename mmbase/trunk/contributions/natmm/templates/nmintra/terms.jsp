@@ -49,11 +49,13 @@
 										<table border="0" cellpadding="0" cellspacing="0" width="100%">
 								</mm:first
 								><mm:node element="terms"
-                        	><mm:field name="name" jspvar="term_name" vartype="String" write="false">
+                  ><mm:field name="name" jspvar="term_name" vartype="String" write="false">
 									<tr style="padding-top:15px;"><td>
 										<a name="<mm:field name="number" />"></a>
 										<p>
+                    <mm:remove referid="readmore_page" />
 										<mm:related path="readmore,pagina" orderby="pagina.titel">
+                      <mm:first><mm:import id="readmore_page" /></mm:first>
 											<mm:first inverse="true">, </mm:first>
 											<mm:field name="pagina.number" jspvar="sThisPage" vartype="String" write="false">
 												<b>
@@ -65,13 +67,14 @@
 												</b><br/>
 											</mm:field>
 										</mm:related>
+                    <mm:notpresent referid="readmore_page">
+                      <b><%= term_name %></b>
+                    </mm:notpresent>
 										<span class="black"><mm:field name="description"/></span>
 										</p>
 										<mm:related path="posrel,projects" orderby="posrel.pos" directions="UP" 
 											  ><mm:first>[lees meer over <%= term_name %> in project: </mm:first><% 
-											  String readmoreUrl = "terms.jsp";
-											  if(isIPage) readmoreUrl = "ipage.jsp";
-											  readmoreUrl += "?p=" + projectArchive + "&project=";
+											  String readmoreUrl = "terms.jsp?p=" + projectArchive + "&project=";
 											  %><mm:field name="projects.number" jspvar="project_number" vartype="String" write="false"><%
 													readmoreUrl += project_number; 
 											  %></mm:field
@@ -84,10 +87,7 @@
 													><mm:field name="rolerel.role"><mm:isnotempty><mm:write/> </mm:isnotempty></mm:field
 													><mm:field name="terms.name" jspvar="terms_word" vartype="String" write="false"
 													><mm:field name="terms.number" jspvar="terms_number" vartype="String" write="false"><%
-														String readmoreUrl = "terms.jsp";
-														if(isIPage) readmoreUrl = "ipage.jsp";
-														readmoreUrl += templateQueryString;
-														readmoreUrl +=  "&abc=" + terms_word.substring(0,1).toUpperCase() + "#" + terms_number;
+														String readmoreUrl = "terms.jsp" +templateQueryString +"&abc=" +terms_word.substring(0,1).toUpperCase() +"#" +terms_number;
 														%><a href="<%= readmoreUrl %>"><%= terms_word %></a>
 												</mm:field>
 												</mm:field>
@@ -99,10 +99,7 @@
 												><mm:first inverse="true">, </mm:first
 												><mm:field name="terms.name" jspvar="terms_word" vartype="String" write="false"
 												><mm:field name="terms.number" jspvar="terms_number" vartype="String" write="false"><%
-													String readmoreUrl = "terms.jsp";
-													if(isIPage) readmoreUrl = "ipage.jsp";
-													readmoreUrl += templateQueryString;
-													readmoreUrl +=  "&abc=" + terms_word.substring(0,1).toUpperCase() + "#" + terms_number;
+													String readmoreUrl = "terms.jsp" +templateQueryString +"&abc=" +terms_word.substring(0,1).toUpperCase() +"#" +terms_number;
 													%><a href="<%= readmoreUrl %>"><%= terms_word %></a>
 												</mm:field>
 												</mm:field>
