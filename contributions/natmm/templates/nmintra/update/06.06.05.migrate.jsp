@@ -33,7 +33,7 @@
 		<mm:setfield name="directions">down</mm:setfield>
 		<mm:setfield name="pagelength">50</mm:setfield>
 		<mm:setfield name="maxpagecount">100</mm:setfield>
-		<mm:setfield name="searchfields">artikel.titel</mm:setfield>
+		<mm:setfield name="searchfields">artikel.titel,artikel.metatags</mm:setfield>
 		<mm:setfield name="search">yes</mm:setfield>
 	</mm:createnode>
 	<mm:node number="homepage_template" id="homepage_template" />

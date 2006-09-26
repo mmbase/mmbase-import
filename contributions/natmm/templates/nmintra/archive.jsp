@@ -1,6 +1,7 @@
 <%@page import="nl.leocms.util.tools.SearchUtil" %>
 <%@include file="/taglibs.jsp" %>
 <mm:cloud jspvar="cloud">
+<mm:log jspvar="log">
 <%@include file="includes/templateheader.jsp" %>
 <%@include file="includes/cacheparams.jsp" %>
 <%@include file="includes/calendar.jsp" %>
@@ -18,6 +19,8 @@ if(!projectId.equals("")) {
        }
    } catch(Exception e) {} 
    
+   boolean debug = true;
+   
    String extTemplateQueryString = templateQueryString; 
    String allConstraint = "";
    String employeeConstraint = "";
@@ -34,7 +37,7 @@ if(!projectId.equals("")) {
    int thisYear = (int) period[10];
    int startYear = (int) period[11];
    boolean checkOnPeriod = (fromTime<toTime);
-
+   
    if(checkOnPeriod) {
        extTemplateQueryString += "&d=" + periodId;
        if(!allConstraint.equals("")) allConstraint += " AND ";
@@ -52,6 +55,7 @@ if(!projectId.equals("")) {
        allPath += ",readmore,afdelingen";
    }
    if(!employeeId.equals("-1")) {
+       employeeConstraint = "medewerkers.number= '" + employeeId + "'";
        extTemplateQueryString += "&employee=" + employeeId;
    }
    if(!typeId.equals("-1")) {
@@ -65,29 +69,31 @@ if(!projectId.equals("")) {
   int listSize = 0;
   TreeSet searchResultSet = new TreeSet();
   String searchResults = ""; 
-   %><mm:list path="<%= allPath %>" constraints="<%= allConstraint %>"
-               distinct="true" fields="projects.number"
-      ><mm:field name="projects.number" jspvar="projects_number" vartype="String" write="false"
-         ><% searchResultSet.add(projects_number); 
+   %><mm:list path="<%= allPath %>" constraints="<%= allConstraint %>" distinct="true" fields="projects.number"
+      ><mm:field name="projects.number" jspvar="projects_number" vartype="String" write="false"><%
+        searchResultSet.add(projects_number); 
       %></mm:field
    ></mm:list><%
    listSize = searchResultSet.size();
    searchResults = su.searchResults(searchResultSet);
    searchResultSet = new TreeSet();
+   if(debug) { log.info(allConstraint + " : " + searchResultSet); }
+   
    if (!typeConstraint.equals("")) {
       %><mm:list nodes="<%= searchResults %>" path="projects,posrel,projecttypes"
             constraints="<%= typeConstraint %>" distinct="true" fields="projects.number"
-         ><mm:field name="projects.number" jspvar="projects_number" vartype="String" write="false"
-            ><% searchResultSet.add(projects_number); 
+         ><mm:field name="projects.number" jspvar="projects_number" vartype="String" write="false"><%
+            searchResultSet.add(projects_number); 
          %></mm:field
          ></mm:list><%
       listSize = searchResultSet.size();
       searchResults = su.searchResults(searchResultSet); 
       searchResultSet = new TreeSet();
+      if(debug) { log.info(typeConstraint + " : " + searchResultSet); }
    }
    if(!employeeId.equals("")) {
       %><mm:list nodes="<%= searchResults %>" path="projects,readmore,medewerkers"
-         constraints="<%= "medewerkers.number= '" + employeeId + "'" %>"
+         constraints="<%= employeeConstraint %>"
          ><mm:field name="projects.number" jspvar="projects_number" vartype="String" write="false"><%
             searchResultSet.add(projects_number);
          %></mm:field
@@ -95,6 +101,7 @@ if(!projectId.equals("")) {
       listSize = searchResultSet.size();
       searchResults = su.searchResults(searchResultSet);
       searchResultSet = new TreeSet();
+      if(debug) { log.info(employeeConstraint + " : " + searchResultSet); }
    }
    if (!groupConstraint.equals("")) { 
       %><mm:list nodes="<%= searchResults %>" path="projects,phaserel,phases"
@@ -102,8 +109,8 @@ if(!projectId.equals("")) {
          ><mm:field name="phaserel.number" jspvar="phaserel_number" vartype="String" write="false"
             ><mm:list nodes="<%= phaserel_number %>" 
                   path="phaserel,readmore1,contentblocks,readmore2,attachments"
-                  constraints="<%= groupConstraint %>"
-               ><% searchResultSet.add(projects_number); 
+                  constraints="<%= groupConstraint %>"><%
+                searchResultSet.add(projects_number); 
             %></mm:list
          ></mm:field
          ></mm:field
@@ -111,13 +118,16 @@ if(!projectId.equals("")) {
       listSize = searchResultSet.size();
       searchResults = su.searchResults(searchResultSet);
       searchResultSet = new TreeSet();
+      if(debug) { log.info(groupConstraint + " : " + searchResultSet); }
    }
    %>
       <td><%@include file="includes/pagetitle.jsp" %></td>
       <td><%
          String rightBarTitle = "";
-         rightBarTitle = "Zoek&nbsp;in&nbsp;archief";
-         %><%@include file="includes/rightbartitle.jsp" %></td>
+         %><mm:node number="<%= paginaID %>" jspvar="thisPage"><%
+            rightBarTitle = "Zoek in " + thisPage.getStringValue("titel");
+         %></mm:node
+         ><%@include file="includes/rightbartitle.jsp" %></td>
    </tr>
    <tr>
       <td class="transperant">
@@ -159,13 +169,13 @@ if(!projectId.equals("")) {
                   </mm:node
                ></mm:list><%
         } else {
-            %><mm:listnodes type="projects" max="1"
-   				>Er zijn geen projecten gevonden, die voldoen aan uw selectie criteria.
-               <mm:import id="hasprojects"
-		     /></mm:listnodes
-			  ><mm:notpresent referid="hasprojects"
-				   >Dit archief bevat geen projecten.
-			  </mm:notpresent><%
+            %><mm:listnodes type="projects" max="1">
+                Er zijn geen projecten gevonden, die voldoen aan uw selectie criteria.
+                <mm:import id="hasprojects"
+             /></mm:listnodes
+             ><mm:notpresent referid="hasprojects">
+                Dit archief bevat geen projecten.
+             </mm:notpresent><%
         }
         %></td>
         <td><img src="media/spacer.gif" width="10" height="1"></td>
@@ -179,4 +189,5 @@ if(!projectId.equals("")) {
 } 
 %>
 <%@include file="includes/footer.jsp" %>
+</mm:log>
 </mm:cloud>
