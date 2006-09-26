@@ -119,8 +119,10 @@ public class NMIntraConfig {
    public static String sDocumentsRoot = "D:/apps/Tomcat_Intranet/webapps/documents/PenO";
    public static String incomingDir = "E:/Intranet_Input/";
    public static String tempDir = "E:/Intranet_Temp/";
-   public static String sCorporateWebsite = "http://www.natuurmonumenten.nl/";
-   public static String sCorporateEditors = "http://www.natuurmonumenten.nl/editors/";
+   // public static String sCorporateWebsite = "http://www.natuurmonumenten.nl/";
+   // public static String sCorporateEditors = "http://www.natuurmonumenten.nl/editors/";
+   public static String sCorporateWebsite = "http://www.acc.natuurmm.asp4all.nl/";
+   public static String sCorporateEditors = "http://www.acc.natuurmm.asp4all.nl/editors/";
    
    // Landschap Noord-Holland
    /*
@@ -142,7 +144,7 @@ public class NMIntraConfig {
    
    // Development
    /*
-   public static boolean showFirstSubpage = true;
+   public static boolean showFirstSubpage = false;
 
    public static String fromEmailAddress = "intranet@natuurmonumenten.nl";
    public static String defaultPZAddress = "hangyi@xs4all.nl";
