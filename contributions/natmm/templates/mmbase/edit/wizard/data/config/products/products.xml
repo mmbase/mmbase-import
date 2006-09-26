@@ -11,7 +11,9 @@
     </steps>
     <form-schema id="edit_products">
         <title></title>
-        <field name="titel" ftype="html" rows="16"><prompt>naam</prompt></field>
+        <field name="creatiedatum" ftype="data"><prompt>creatiedatum</prompt></field>
+		    <field name="datumlaatstewijziging" ftype="data"><prompt>datumlaatstewijziging</prompt></field>
+        <field name="titel" ftype="html" rows="16" dtrequired="false"><prompt>naam</prompt></field>
         <field name="omschrijving" ftype="html" rows="16"><prompt>dienstenniveau</prompt></field>
         <list include="config/producttypes/add_producttypes_posrel.xml" />
         <list include="config/locations/add_locations_readmore_products.xml" />
