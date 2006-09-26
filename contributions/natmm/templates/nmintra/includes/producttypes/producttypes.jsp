@@ -1,4 +1,3 @@
-<% String thisPage = ph.createPaginaUrl(paginaID,request.getContextPath()); %>
 <div class="pageheader" style="margin-top:15px;"><mm:node number="<%= paginaID %>"><mm:field name="titel"/></mm:node> Dienstenniveau</div>
 <div class="pagesubheader" style="margin-top:10px;">Kies een productgroep om de diensten en het dienstenniveau over op te vragen</div>
 <form name="producttypeform" method="post" action="">

@@ -27,7 +27,7 @@ if(!locations.isEmpty()) {
     <!--
     function postL() {
         var location = document.locationform.elements["location"].value;
-        document.location = "producttypes.jsp<%= templateQueryString %>&pool=<%= poolId %>&location=" + location;
+        document.location = "<%= thisPage %>?pool=<%= poolId %>&location=" + location;
     }
     //-->
     </script><%
@@ -63,7 +63,7 @@ if(!locations.isEmpty()) {
             <!--
             function postLPG() {
                 var pool = document.lpgform.elements["producttype"].value;
-                document.location = "producttypes.jsp<%= templateQueryString %>&location=<%= locationId %>&pool=" + pool;
+                document.location = "<%= thisPage %>?location=<%= locationId %>&pool=" + pool;
             }
             //-->
             </script><%
