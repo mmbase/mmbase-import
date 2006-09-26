@@ -41,8 +41,8 @@
          ><option value="<%= thisemployee %>" <% if(employeeId.equals(thisemployee)) { %> selected <% } 
              %>><mm:field name="medewerkers.titel" /></option>
      </mm:field
-     ><mm:last
-         ><option value="default" <% if (employeeId.equals("default")) { %> selected <% } %>>Alles</option>
+     ><mm:last>
+         <option value="-1" <% if (employeeId.equals("-1")) { %> selected <% } %>>Alles</option>
          </select>
          </td></tr>
      <mm:import id="employeefound" 
