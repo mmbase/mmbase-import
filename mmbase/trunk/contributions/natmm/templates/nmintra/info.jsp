@@ -78,7 +78,6 @@ if(!articleId.equals("-1")) {
                   }
                   articleConstraint += ")";
                 }
-                String sTemplateUrl = "info.jsp";
                 String extTemplateQueryString = templateQueryString; 
                 if(!periodId.equals("")){ extTemplateQueryString += "&d=" + periodId; }
                 int listSize = 0; 
