@@ -13,6 +13,11 @@
 			<prompt xml:lang="nl">naam</prompt>
 			<prompt xml:lang="en">title</prompt>
 		</field>
+    <field name="screensize" ftype="enum">
+			<prompt xml:lang="nl">schalen op pagina grootte</prompt>
+			<prompt xml:lang="en">resize to page size</prompt>
+      <optionlist select="ja_nee"/>
+		</field>
 		<field fdatapath="." ftype="startwizard" inline="true" objectnumber="{object/@number}" wizardname="config/images/images">
 			<prompt></prompt>
 		</field>		
