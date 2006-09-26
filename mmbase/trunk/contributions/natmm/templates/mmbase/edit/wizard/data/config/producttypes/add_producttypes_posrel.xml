@@ -4,7 +4,7 @@
     minoccurs="0" maxoccurs="*"
     ordertype="string" orderby="title"
     hidecommand="move-up|move-down">
-    <title>productgroep</title>
+    <title>productgroep (voor hard-/software per lokatie, selecteer hardware of software als productgroep)</title>
     <item>
         <title></title>
         <field name="title" ftype="data">
