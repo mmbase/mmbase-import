@@ -126,6 +126,9 @@
        <mm:deletenode deleterelations="true" />
      </mm:listnodes>
    </mm:listnodes>
+   <mm:listnodes type="pagina" constraints="titel = 'Wie-is-wie?'">
+     <mm:setfield name="bron">1</mm:setfield>
+   </mm:listnodes>
    <%
    String [] pageToRename = {
 		"Nieuws en informatie",
