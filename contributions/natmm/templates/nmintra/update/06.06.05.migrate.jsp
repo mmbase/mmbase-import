@@ -326,8 +326,8 @@
   <mm:listnodes type="editwizards" constraints="wizard = '/editors/config/pagina/pagina_iptree'">
 		<mm:setfield name="wizard">config/pagina/pagina_iptree</mm:setfield>
   </mm:listnodes>
-   <% log.info("20. Make the ipmap wizard relative"); %>
-   <mm:listnodes type="editwizards" constraints="wizard = '/editors/config/pagina/pagina_ipmap'">
+  <% log.info("20. Make the ipmap wizard relative"); %>
+  <mm:listnodes type="editwizards" constraints="wizard = '/editors/config/pagina/pagina_ipmap'">
 		<mm:setfield name="wizard">config/pagina/pagina_ipmap</mm:setfield>
 	</mm:listnodes>
    <% log.info("21. Rename menu for evenement_bleuprints"); %>
@@ -356,6 +356,10 @@
       <mm:setfield name="screensize">1</mm:setfield>
     </mm:node>
 	</mm:listnodes>
+  <% log.info("25. Changing the product editwizard"); %>
+  <mm:listnodes type="editwizards" constraints="wizard = 'config/items/items_shop'">
+		<mm:setfield name="fields">titel,id,type,price1,owner,quotetitle</mm:setfield>
+	</mm:listnodes>
 	<% log.info("99. Deleting unused editwizards"); %>
 	<%
 	String [] ewToDelete = {
@@ -368,7 +372,13 @@
 		"config/menu/menu",
 		"/editors/parcleaner/cleanarticles.jsp",
     "config/feedback/wizard",
-    "/editors/items.jsp"
+    "/editors/items.jsp",
+    "/editors/imap_overview.jsp",
+    "config/linklijst/linklijst_knipsels",
+    "config/pagina/pagina_topic",
+    "config/images/images_knipsels",
+    "config/programs/programs",
+    "config/companies/companies"
 		};
 	for(int i=0; i<ewToDelete.length;i++) {
 		%><mm:listnodes type="editwizards" constraints="<%= "wizard = '" + ewToDelete[i]  + "'" %>">
@@ -380,7 +390,9 @@
 		"Home",
 		"Subrubriek editors",
 		"Website beheer",
-    "Interne Webwinkel (redactie)"
+    "Interne Webwinkel (redactie)",
+    "Kiezen en Delen",
+    "Knipsels, bijlagen (niet in gebruik)"
 	};
 	for(int i=0; i<menuToDelete.length;i++) {
 		%><mm:listnodes type="menu" constraints="<%= "naam = '" + menuToDelete[i]  + "'" %>">

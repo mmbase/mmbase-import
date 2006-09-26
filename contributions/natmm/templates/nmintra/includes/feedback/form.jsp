@@ -24,7 +24,7 @@ if(!postingStr.equals("")){
 	hm.put("namesender","Uw naam");
 	hm.put("emailsender","Uw email");
 	hm.put("text","Uw mening over de opleiding");
-   hm.put("score","Een cijfer");
+  hm.put("score","Een cijfer");
 
 	Set set = hm.entrySet(); 
 	Iterator it = set.iterator();
@@ -43,7 +43,7 @@ if(!postingStr.equals("")){
 		String messageBody = "Uw feedback zal binnen een dag worden toegevoegd aan de " + ntypeId;
 		String messageHref = sUrl + "?p=" + paginaID + "&" + paramId + "=" + objectId;
 		String messageLinktext = "terug naar de " + ntypeId;
-		String messageLinkParam = "target=\"_top\"";
+		String messageLinkParam = """;
 		ArrayList al = new ArrayList();
 		al.add("namesender");
 		al.add("emailsender");

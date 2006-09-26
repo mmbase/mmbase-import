@@ -165,7 +165,7 @@ String username =  "";
               <% messageHref  += "?p=" + sPageRefMinOne;
 	         %></mm:node><%
 	       }
-        String messageLinkParam = "target=\"_top\"";
+        String messageLinkParam = "";
 
         %><%@include file="../showmessage.jsp" %><%
     } else { 

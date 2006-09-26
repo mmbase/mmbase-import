@@ -1,10 +1,6 @@
 <%@include file="/taglibs.jsp" %>
 <mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud">
 <%@include file="includes/templateheader.jsp" %>
-<%@include file="includes/cacheparams.jsp" %>
-<% expireTime = newsExpireTime; %>
-<cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
-<%@include file="includes/calendar.jsp" %>
 <%
 
 // this is a special version of the article template which includes news
@@ -13,14 +9,19 @@
 // - the archive page should have an alias with %archief%
 if(!articleId.equals("-1")) { 
  
-    String articleTemplate = "article.jsp" + templateQueryString;
-    articleTemplate += (articleTemplate.indexOf("?")==-1 ? "?" : "&" ) + "showteaser=false";
+   String articleTemplate = "article.jsp" + templateQueryString;
+   articleTemplate += (articleTemplate.indexOf("?")==-1 ? "?" : "&" ) + "showteaser=false";
 	 response.sendRedirect(articleTemplate);
 
 } else {  
 
    String readmoreUrl = "article_info.jsp";
-   %><%@include file="includes/header.jsp" 
+   %>
+   <%@include file="includes/cacheparams.jsp" %>
+   <% expireTime = newsExpireTime; %>
+   <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
+   <%@include file="includes/calendar.jsp" %>
+   <%@include file="includes/header.jsp" 
    %><td><%@include file="includes/pagetitle.jsp" %></td>
      <td><% String rightBarTitle = "Gesignaleerd";
             %><%@include file="includes/rightbartitle.jsp" 
@@ -57,9 +58,10 @@ if(!articleId.equals("-1")) {
    </td></tr>
    </table>
    </div>
-   </td><%
+   </td>
+   <%@include file="includes/footer.jsp" %>
+   </cache:cache>
+   <%
 } 
 %>
-<%@include file="includes/footer.jsp" %>
-</cache:cache>
 </mm:cloud>
