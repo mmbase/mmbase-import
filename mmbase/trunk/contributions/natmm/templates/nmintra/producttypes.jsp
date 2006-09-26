@@ -42,6 +42,9 @@ if(!printPage) {
     
     } else {
         
+        String thisPage = ph.createPaginaUrl(paginaID,request.getContextPath());
+        
+        
         %><%@include file="includes/producttypes/prodlocspecs.jsp" %>
         <mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel"
             orderby="contentrel.pos" directions="UP" fields="artikel.number,artikel.titel"
