@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.169 2006-07-31 12:11:52 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.169.2.1 2006-09-26 13:01:55 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1385,9 +1385,6 @@ public class DatabaseStorageManager implements StorageManager {
                 stream.close();
             } catch (IOException ie) {
                 throw new StorageException(ie);
-            }
-            if (node != null) {
-                node.storeValue(field.getName(), MMObjectNode.VALUE_SHORTED);
             }
         }
     }
