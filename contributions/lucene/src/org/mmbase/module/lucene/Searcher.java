@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * A wrapper around Lucene's {@link org.apache.lucene.search.IndexSearcher}. Every {@link Indexer} has its own Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.28 2006-09-26 09:22:32 michiel Exp $
+ * @version $Id: Searcher.java,v 1.29 2006-09-26 12:06:51 michiel Exp $
  * @todo  Should the StopAnalyzers be replaced by index.analyzer? Something else?
  **/
 public class Searcher {
@@ -74,7 +74,7 @@ public class Searcher {
     public void shutdown() {
         if (searcher != null) {
             try {
-                log.service("Shutting down searcher for " + index):
+                log.service("Shutting down searcher for " + index);
                 searcher.close();
             } catch (IOException ioe) {
                 log.error("Can't close index searcher: " + ioe.getMessage());
@@ -117,7 +117,8 @@ public class Searcher {
     }
 
 
-    public NodeList search(final Cloud cloud, String value, Filter filter, Sort sort, Analyzer analyzer, Query extraQuery, String[] fields, int offset, int max) throws ParseException  {
+    public NodeList search(final Cloud cloud, String value, Filter filter, Sort sort,
+                           Analyzer analyzer, Query extraQuery, String[] fields, final int offset, final int max) throws ParseException  {
         // log the value searched
         if (searchLog.isServiceEnabled()) {
             if (extraQuery != null && ! extraQuery.equals("")) {
@@ -133,7 +134,7 @@ public class Searcher {
         }
         List<Node> list;
         if (value != null && !value.equals("")) {
-            Hits hits;
+            final Hits hits;
             try {
                 hits = getHits(value, filter, sort, analyzer, extraQuery, fields);
             } catch (java.io.IOException ioe) {
@@ -145,48 +146,54 @@ public class Searcher {
             }
 
             /// lazy loading of all that stuff!
-            final HitIterator hi = (HitIterator) hits.iterator();
             list = new AbstractSequentialList<Node>() {
-                List<Node> previous = new ArrayList();
+                private int size = -1;
 
                 public int size() {
-                    return hi.length();
+                    if (size == -1) {
+                        int h = hits.length() - offset;
+                        if (h < 0) h = 0;
+                        size = max < 0 ? h : (max < h ? max : h);
+                    }
+                    return size;
+
                 }
                 public ListIterator<Node> listIterator(final int index) {
                     return new ListIterator<Node>() {
-                        int j = 0;
+                        int j = offset < 0 ? offset : offset;
                         {
-                            while (j < index) { next();}
+                            while (j < index + offset) { j++; }
                         }
                         public Node next() {
                             try {
-                                j++;
-                                if (previous.size() >= j) {
-                                    return previous.get(j - 1);
-                                } else {
-                                    Hit hit = (Hit) hi.next();
-                                    Node node = Searcher.this.index.getNode(cloud, hit.getDocument());
-                                    if (log.isDebugEnabled()) {
-                                        log.debug("Found " + hit);
-                                        log.debug("Found " + hit.getDocument());
-                                        log.debug("Found " + node);
-                                    }
-                                    previous.add(node);
-                                    return node;
+                                Document doc = hits.doc(j++);
+                                Node node = Searcher.this.index.getNode(cloud, doc);
+                                if (log.isDebugEnabled()) {
+                                    log.debug("Found " + doc);
+                                    log.debug("Found " + node);
+                                    log.trace("Because " + Logging.stackTrace(10));
                                 }
+                                return node;
                             } catch (IOException ioe) {
                                 log.error(ioe);
                                 return null;
                             }
                         }
                         public boolean hasNext() {
-                            return hi.hasNext();
+                            return j < hits.length() && j < max;
                         }
                         public Node previous() {
-                            return previous.get(--j);
+                            try {
+                                Document doc = hits.doc(--j);
+                                Node node = Searcher.this.index.getNode(cloud, doc);
+                                return node;
+                            } catch (IOException ioe) {
+                                log.error(ioe);
+                                return null;
+                            }
                         }
                         public boolean hasPrevious() {
-                            return j > 0;
+                            return j > offset;
                         }
                         public void add(Node node) {
                             throw new UnsupportedOperationException();
@@ -198,10 +205,10 @@ public class Searcher {
                             throw new UnsupportedOperationException();
                         }
                         public int nextIndex() {
-                            return j;
+                            return j - offset;
                         }
                         public int previousIndex() {
-                            return j - 1;
+                            return j - 1 - offset;
                         }
                     };
                 }
