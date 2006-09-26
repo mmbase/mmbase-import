@@ -249,7 +249,7 @@ void increment() : {}
    | <PREVIOUS> inc_period()  { cal.add(field, -1 * factor); factor = 1;}
    | next() day_of_week() { beginOfDay(); if (cal.getTime().getTime() < prev) {cal.add(Calendar.DAY_OF_YEAR, 7); } }
    | previous() day_of_week() { beginOfDay(); if (cal.getTime().getTime() > prev) {cal.add(Calendar.DAY_OF_YEAR, -7); } }
-   | <THIS> day_of_week() { beginOfDay(); }
+  | <THIS> day_of_week() { beginOfDay(); }
    | next() month_of_year() { beginOfMonth(); if (cal.getTime().getTime() < prev) {cal.add(Calendar.YEAR, 1); } }
    | previous() month_of_year() { beginOfMonth(); if (cal.getTime().getTime() > prev) {cal.add(Calendar.YEAR, -1); } }
    | <THIS> month_of_year() { beginOfMonth(); }
@@ -287,10 +287,13 @@ void this_period() : {}  {
   | "century_pedantic" { beginOfCentury(true); }
   | "era" { beginOfEra(); }
 }
-void day_of_week() : {}
+void day_of_week() : {
+    // If you don't do this. '2005-01-01 this monday' parses to something odd. Which I don't quite understand.
+    cal.getTime();
+}
 {
   "sunday" { cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY); }
-| "monday" { cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY); }
+  | "monday" { cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY); }
 | "tuesday" { cal.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY); }
 | "wednesday" { cal.set(Calendar.DAY_OF_WEEK, Calendar.WEDNESDAY); }
 | "thursday" { cal.set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY); }
