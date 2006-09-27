@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.193 2006-08-14 07:51:19 pierre Exp $
+ * @version $Id: MMObjectNode.java,v 1.193.2.1 2006-09-27 11:28:00 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -1534,7 +1534,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
                 while(it.hasNext()) {
                     try {
                         String alias = (String) it.next();
-                        parent.createAlias(getNumber(), alias);
+                        parent.createAlias(getNumber(), alias, getStringValue("owner"));
                     } catch (org.mmbase.storage.StorageException se) {
                         log.error(se);
                     }
