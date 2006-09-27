@@ -46,7 +46,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.72 2006-09-26 12:06:51 michiel Exp $
+ * @version $Id: Lucene.java,v 1.73 2006-09-27 15:32:21 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, IdEventListener {
 
@@ -83,10 +83,10 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
     static { INDEX.setDescription("the class of indices to search in (default to all classes)"); }
  
     protected final static Parameter<String> SORTFIELDS = new Parameter("sortfields", String.class);
-    protected final static Parameter<Integer>  OFFSET = new Parameter("offset", Integer.class);
+    protected final static Parameter<Integer>  OFFSET = new Parameter("offset", Integer.class, 0);
     static { OFFSET.setDescription("for creating sublists"); }
 
-    protected final static Parameter<Integer> MAX = new Parameter("max", Integer.class);
+    protected final static Parameter<Integer> MAX = new Parameter("max", Integer.class, Integer.MAX_VALUE);
     static { MAX.setDescription("for creating sublists"); }
 
     protected final static Parameter<String>  EXTRACONSTRAINTS = new Parameter("extraconstraints", String.class);
@@ -132,7 +132,6 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
     private final Map<String, Indexer>  indexerMap    = new ConcurrentHashMap<String, Indexer>();
     private final Map<String, Searcher> searcherMap   = new ConcurrentHashMap<String, Searcher>();
     private boolean readOnly = false;
-
 
     /**
      * Returns whether an element has a certain attribute, either an unqualified attribute or an attribute that fits in the
@@ -250,7 +249,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
         }
     };
     {
-        addFunction(statusDescriptionFunction);
+        addFunction(assignmentFunction);
     }
     protected Function queueFunction = new AbstractFunction("queue") {
         public Collection<Scheduler.Assignment> getFunctionValue(Parameters arguments) {
@@ -309,10 +308,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
                 String index = arguments.getString(INDEX);
                 List sortFieldList = Casting.toList(arguments.getString(SORTFIELDS));
                 // offset
-                int offset = 0;
-                Integer offsetParameter = arguments.get(OFFSET);
-                if (offsetParameter != null) offset = offsetParameter.intValue();
-                if (offset < 0) offset = 0;
+                int offset = arguments.get(OFFSET);
                 // max
                 int max = -1;
                 Integer maxParameter = arguments.get(MAX);
@@ -363,6 +359,8 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
     {
         addFunction(searchSizeFunction);
     }
+
+
     protected Function unAssignFunction = new AbstractFunction("unassign", new Parameter("id", Integer.class, true)) {
             public Integer getFunctionValue(Parameters arguments) {
                 int id = (Integer) arguments.get("id");
@@ -409,6 +407,30 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
     };
     {
         addFunction(lastFullIndexFunction);
+    }
+
+
+    protected Function defaultIndexFunction = new AbstractFunction("default") {
+        public Indexer getFunctionValue(Parameters arguments) {
+            return indexerMap.get(defaultIndex);
+        }
+    };
+    {
+        addFunction(defaultIndexFunction);
+    }
+
+    protected Function  errorsFunction = new AbstractFunction("errors", INDEX, OFFSET, MAX) {
+            public List<String> getFunctionValue(Parameters arguments) {
+                String index = arguments.getString(INDEX);
+                List<String> errors = indexerMap.get(index).getErrors();
+                int offset = arguments.get(OFFSET);
+                int toIndex = offset + arguments.get(MAX);
+                if (toIndex > errors.size()) toIndex = errors.size();
+                return indexerMap.get(index).getErrors().subList(offset, toIndex);
+            }
+        };
+    {
+        addFunction(errorsFunction);
     }
 
     private ContentExtractor factory;
@@ -845,21 +867,22 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
 
         public abstract class Assignment implements Runnable, Delayed {
 
-            private int id = assignmentIds++;
+            private final int id = assignmentIds++;
 
-            private long endTime = System.currentTimeMillis() + waitTime;
+            private final long endTime = System.currentTimeMillis() + Lucene.this.waitTime;
 
             public int getId() {
                 return id;
             }
             public int hashCode() {
-                return toString().hashCode();
+                return idString().hashCode();
             }
+
             public boolean equals(Object o) {
                 if (o == null) return false;
                 if (! o.getClass().equals(getClass())) return false;
                 Assignment a = (Assignment) o;
-                return id == a.getId() || o.toString().equals(toString());
+                return id == a.getId() || idString().equals(a.idString());
             }
             public long  getDelay(TimeUnit unit) {
                 return unit.convert(endTime - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
@@ -867,12 +890,16 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
             public int compareTo(Delayed o) {
                 return (int) (getDelay(TimeUnit.MILLISECONDS) - o.getDelay(TimeUnit.MILLISECONDS));
             }
+            public Date getDate() {
+                return new Date(endTime - Lucene.this.waitTime);
+            }
+            abstract String idString();
         }
-        void assign(Assignment assignment) {
-            if (! indexAssignments.contains(assignment)) {
-                indexAssignments.offer(assignment);
+        void assign(Assignment a) {
+            if (! indexAssignments.contains(a) && ! a.equals(assignment)) {
+                indexAssignments.offer(a);
             } else {
-                log.debug("Canceling " + assignment + ", because already queued");
+                log.debug("Canceling " + a + ", because already queued");
             }
         }
 
@@ -887,6 +914,9 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
                                 log.service(indexer.getName() + ": Updated " + updated + " index entr" + (updated > 1 ? "ies" : "y"));
                             }
                         }
+                    }
+                    public String idString() {
+                        return klass.getName() + number;
                     }
                     public String toString() {
                         return "UPDATE for " + number + " " + klass;
@@ -903,6 +933,9 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
                         for (Indexer indexer : indexerMap.values()) {
                             indexer.deleteIndex(number, klass);
                         }
+                    }
+                    public String idString() {
+                        return klass.getName() + number;
                     }
                     public String toString() {
                         return "DELETE for " + number + " " + klass;
@@ -922,6 +955,9 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
                             indexer.deleteIndex(number, IndexDefinition.class);
                         }
                     }
+                    public String idString() {
+                        return indexName + " " + number;
+                    }
                     public String toString() {
                         return "DELETE for " + number + " " + indexName;
                     }
@@ -929,19 +965,28 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
         }
 
         private final Assignment ALL_FULL_INDEX = new Assignment() {
+                Indexer indexer = null;
                 public void run() {
                     status = BUSY_FULL_INDEX;
                     log.service("start full index");
-                    for (Indexer indexer : indexerMap.values()) {
-                        indexer.fullIndex();
+                    SortedSet<String> keys = new TreeSet<String>(indexerMap.keySet());
+                    for (String i : keys) {
+                        indexer = indexerMap.get(i);
+                        if (indexer != null) {
+                            indexer.fullIndex();
+                        }
                         if (Thread.currentThread().isInterrupted()) {
                             log.info("Interrupted");
                             return;
                         }
                     }
+                    indexer = null;
+                }
+                public String idString() {
+                    return "";
                 }
                 public String toString() {
-                    return "FULLINDEX";
+                    return "FULLINDEX(" + new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm").format(getDate()) + (indexer == null ? "" : (", " + indexer.getName())) + ")";
                 }
                 public long getDelay(TimeUnit unit) {
                     return 0;
@@ -961,8 +1006,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
             if (status != BUSY_FULL_INDEX || ! assignment.equals(ALL_FULL_INDEX)) {
                 if (! indexAssignments.contains(ALL_FULL_INDEX)) {
                     // only schedule a full index if no complete full index ne is currently busy or scheduled already.
-
-                    assign(new Assignment() {
+                    Assignment a = new Assignment() {
                             public void run() {
                                 status = BUSY_FULL_INDEX;
                                 log.service("start full index for index '" + index + "'");
@@ -973,13 +1017,17 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
                                     indexer.fullIndex();
                                 }
                             }
+                            public String idString() {
+                                return index;
+                            }
                             public String toString() {
-                                return "FULLINDEX for " + index;
+                                return "FULLINDEX for " + index + " (" + getDate() + ")";
                             }
                             public long getDelay(TimeUnit unit) {
                                 return 0;
                             }
-                        });
+                        };
+                    assign(a);
                     log.service("Scheduled full index for '" + index + "'");
                 } else {
                     log.service("Scheduled full index for '" + index + "' because full index on every index is scheduled already");
@@ -996,6 +1044,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
      */
     public static void main(String[] args) {
         String configFile = args[0];
+        
     }
 
 
