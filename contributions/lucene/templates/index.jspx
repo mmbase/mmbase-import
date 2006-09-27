@@ -44,7 +44,10 @@
             <td>
               <mm:write />
               <mm:function module="lucene" name="default" write="false">
-                <c:if test="${index eq _.name }">*</c:if>                  
+                <c:if test="${index eq _.name }">
+                  <jsp:text>*</jsp:text>
+                  <mm:write id="default" referid="index" write="false" />
+                </c:if>                  
               </mm:function>
             </td>
             <td>
@@ -137,7 +140,7 @@
             </td>
           </tr>
           <tr>
-            <th>Search on default index</th>
+            <th>Search on default index (${default})</th>
             <td>
               <mm:link page="search.jspx">
                 <mm:param name="index" /><a href="${_}" class="navigate"><img src="${img.next}" alt="next"  /></a>
