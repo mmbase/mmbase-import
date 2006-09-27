@@ -46,7 +46,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.75 2006-09-27 21:03:49 michiel Exp $
+ * @version $Id: Lucene.java,v 1.76 2006-09-27 21:20:25 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, IdEventListener {
 
@@ -132,6 +132,8 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
     private final Map<String, Indexer>  indexerMap    = new ConcurrentHashMap<String, Indexer>();
     private final Map<String, Searcher> searcherMap   = new ConcurrentHashMap<String, Searcher>();
     private boolean readOnly = false;
+
+    private List<String> configErrors = new ArrayList();
 
     /**
      * Returns whether an element has a certain attribute, either an unqualified attribute or an attribute that fits in the
@@ -644,6 +646,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
             }
             return queryDefinition;
         } catch (Exception e) {
+            configErrors.add(e.getMessage());
             log.warn("Invalid query for index " + XMLWriter.write(queryElement, true, true), e);
             return null;
         }
@@ -719,12 +722,17 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
                                         Class clazz = Class.forName(className);
                                         analyzer = (Analyzer) clazz.newInstance();
                                     } catch (Exception e) {
+                                        configErrors.add("Cloud not instantiate analyzer " + className);
                                         log.error("Could not instantiate analyzer " + className + " for index '" + indexName + "', falling back to default. " + e);
                                     }
                                 }
                             }
                         }
                         Indexer indexer = new Indexer(indexPath, indexName, queries, getCloud(), analyzer, readOnly);
+                        for (String s : configErrors) {
+                            indexer.addError(url.toString() + ": " + s);
+                        }
+                        configErrors.clear();
                         indexer.getDescription().fillFromXml("description", indexElement);
                         log.service("Add lucene index with name " + indexName);
                         indexerMap.put(indexName, indexer);
