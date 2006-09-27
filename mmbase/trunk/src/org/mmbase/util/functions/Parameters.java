@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.29 2006-09-25 14:00:01 michiel Exp $
+ * @version $Id: Parameters.java,v 1.30 2006-09-27 20:42:21 michiel Exp $
  * @see Parameter
  * @see #Parameters(Parameter[])
  */
@@ -211,7 +211,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
      * @return the index of the parameter, or -1 if it doesn't exist
      */
 
-    public int indexOfParameter(Parameter parameter) {
+    public int indexOfParameter(Parameter<?> parameter) {
         int index = -1;
         for (int i = fromIndex; i < toIndex; i++) {
             if (definition[i].equals(parameter)) {
@@ -265,7 +265,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
      * @param value the object value to set
      * @throws IllegalArgumentException if either the argument name is unknown to this Parameters, or the value is of the wrong type.
      */
-    public Parameters set(Parameter<?> parameter, Object value) {
+    public <F> Parameters set(Parameter<F> parameter, F value) {
         int index = indexOfParameter(parameter);
         if (index > -1) {
             set(index, value);
@@ -306,7 +306,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
     /**
      * Copies all values of a collection to the corresponding values of this Parameters Object.
      */
-    public Parameters setAll(Collection values) {
+    public Parameters setAll(Collection<?> values) {
         if (values != null) {
             if (log.isDebugEnabled()) {
                 if (values.size() > definition.length) {
@@ -342,7 +342,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
      * @param parameter the parameter to set
      * @param value the object value to set
      */
-    public Parameters setIfDefined(Parameter<?> parameter, Object value) {
+    public <F> Parameters setIfDefined(Parameter<F> parameter, F value) {
         int index = indexOfParameter(parameter);
         if (index > -1) {
             set(index, value);
@@ -389,7 +389,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
      * @return value the parameter value as a <code>STring</code>
      */
 
-    public String getString(Parameter parameter) {
+    public String getString(Parameter<?> parameter) {
         return getString(parameter.getName());
     }
 

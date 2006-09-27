@@ -28,7 +28,7 @@ import org.w3c.dom.*;
  * @author Daniel Ockeloen (MMFunctionParam)
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.34 2006-09-12 18:38:10 michiel Exp $
+ * @version $Id: Parameter.java,v 1.35 2006-09-27 20:42:21 michiel Exp $
  * @see Parameters
  */
 
@@ -52,7 +52,7 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
     /**
      * 'system' parameter set for nodefunctions.
      * @since MMBaes-1.8
-     */    
+     */
     public static final Parameter<org.mmbase.bridge.Node>  NODE     = new Parameter("_node",     org.mmbase.bridge.Node.class);
     public final static Parameter CORENODE = new Parameter("_corenode", Object.class); // object because otherwise problems with RMMCI which doesn't have MMObjectNode.
 

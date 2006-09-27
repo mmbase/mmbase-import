@@ -17,7 +17,7 @@ import org.mmbase.util.logging.Logging;
  * A combined function combines other function object. Depending on the provided filled paramters it calls the right function.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CombinedFunction.java,v 1.4 2006-09-25 14:00:01 michiel Exp $
+ * @version $Id: CombinedFunction.java,v 1.5 2006-09-27 20:42:21 michiel Exp $
  * @since MMBase-1.9
  */
 public class CombinedFunction<R> implements Function<R> {
@@ -27,7 +27,7 @@ public class CombinedFunction<R> implements Function<R> {
     private final List<Function<R>> functions = new ArrayList<Function<R>>();
 
     private Parameter<?>[] parameterDefinition = null;
-    private ReturnType returnType = null;
+    private ReturnType<R> returnType = null;
     private final String name;
     private String description;
 
@@ -138,11 +138,11 @@ public class CombinedFunction<R> implements Function<R> {
         throw new UnsupportedOperationException();
     }
 
-    public ReturnType getReturnType() {
+    public ReturnType<R> getReturnType() {
         return returnType;
     }
 
-    public void setReturnType(ReturnType type) {
+    public void setReturnType(ReturnType<R> type) {
         throw new UnsupportedOperationException();
     }
 
