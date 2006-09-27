@@ -115,6 +115,7 @@
       <relation from="artikel" to="images" type="posrel"/> 
       <relation from="artikel" to="items" type="readmore"/>
       <relation from="artikel" to="paragraaf" type="posrel"/>
+      <relation from="artikel" to="persoon" type="readmore"/>
       <relation from="community" to="pools" type="related"/>
       <relation from="competencies" to="competencetypes" type="posrel"/>
       <relation from="contentblocks" to="attachments" type="readmore"/>
