@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.195 2006-09-12 19:32:49 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.196 2006-09-27 11:27:00 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -1472,7 +1472,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     /**
      * Returns the node's alias.
      * Does not support multiple aliases.
-     * @return the new aliases as a <code>Set</code>
      */
     void useAliases() {
         if (aliases != null) {
@@ -1481,11 +1480,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
                     log.error("Trying to set aliases for uncommited node!!");
                     return;
                 }
-                Iterator it = aliases.iterator();
-                while(it.hasNext()) {
+                for (String alias : aliases) {
                     try {
-                        String alias = (String) it.next();
-                        parent.createAlias(getNumber(), alias);
+                        parent.createAlias(getNumber(), alias, getStringValue("owner"));
                     } catch (org.mmbase.storage.StorageException se) {
                         log.error(se);
                     }
@@ -1510,15 +1507,13 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     }
 
     /**
-     * Makes number -> MMObjectNode of a vector of MMObjectNodes.
+     * Makes number -> MMObjectNode of a list of MMObjectNodes.
      * @since MMBase-1.6.2
      */
-    private Map makeMap(List v) {
-        Map       result = new HashMap();
-        Iterator  i      = v.iterator();
-        while(i.hasNext()) {
-            MMObjectNode node = (MMObjectNode) i.next();
-            result.put(node.getStringValue(MMObjectBuilder.FIELD_NUMBER), node);
+    private Map<Integer, MMObjectNode>  makeMap(List<MMObjectNode> v) {
+        Map<Integer, MMObjectNode>     result = new HashMap();
+        for (MMObjectNode node : v) {
+            result.put(node.getNumber(), node);
         }
         return result;
     }
@@ -1665,28 +1660,24 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @see getRelatedNodes(String type)
      * @since MMBase-1.6.2
      */
-    private List getRealNodes(List virtuals, String type) {
+    private List<MMObjectNode> getRealNodes(List<MMObjectNode> virtuals, String type) {
 
         log.debug("Getting real nodes");
-        List            result  = new ArrayList();
+        List<MMObjectNode> result  = new ArrayList();
 
-        MMObjectNode    node    = null;
-        MMObjectNode    convert = null;
-        Iterator     i       = virtuals.iterator();
-        List            list    = new ArrayList();
-        int             otype   = -1;
+        List<MMObjectNode> list    = new ArrayList();
         int             ootype  = -1;
-
-        List virtualNumbers = new ArrayList();
+        List <Integer> virtualNumbers = new ArrayList();
 
         // fill the list
-        while(i.hasNext()) {
-            node    = (MMObjectNode)i.next();
+        Iterator<MMObjectNode> i = virtuals.iterator();
+        while (i.hasNext()) {
+            MMObjectNode node = i.next();
             Integer number = node.getIntegerValue(type + ".number");
             if (!virtualNumbers.contains(number)) {
                 virtualNumbers.add(number);
 
-                otype   = node.getIntValue(type + ".otype");
+                int otype   = node.getIntValue(type + ".otype");
 
                 // convert the nodes of type ootype to real numbers
                 if(otype != ootype) {
@@ -1705,7 +1696,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
                     otype = parent.mmb.getBuilder(builderName).getObjectType();
                 }
 
-                convert = new MMObjectNode(parent.mmb.getBuilder(builderName), false);
+                MMObjectNode convert = new MMObjectNode(parent.mmb.getBuilder(builderName), false);
                 // parent needs to be set or else mmbase does nag nag nag on a setValue()
                 convert.setValue(MMObjectBuilder.FIELD_NUMBER, node.getValue(type + ".number"));
                 convert.setValue(MMObjectBuilder.FIELD_OBJECT_TYPE, ootype);
@@ -1714,7 +1705,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
             // first and only list or last list, return real values
             if(!i.hasNext()) {
                 // log.debug("subconverting last "+list.size()+" nodes of type("+otype+")");
-                result.addAll(getRealNodesFromBuilder(list, otype));
+                result.addAll(getRealNodesFromBuilder(list, ootype));
             }
         }
 
