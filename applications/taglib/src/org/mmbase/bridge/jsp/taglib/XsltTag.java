@@ -24,7 +24,7 @@ import java.util.Properties;
  * Has to live in a formatter tag, and can provide inline XSLT to it.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XsltTag.java,v 1.22 2006-03-24 18:00:30 michiel Exp $ 
+ * @version $Id: XsltTag.java,v 1.23 2006-09-27 20:48:26 michiel Exp $ 
  */
 
 public class XsltTag extends ContextReferrerTag  {
@@ -49,7 +49,7 @@ public class XsltTag extends ContextReferrerTag  {
 
     public int doStartTag() throws JspTagException{
         // Find the parent formatter.
-        formatter = (FormatterTag) findParentTag(FormatterTag.class, null, false);
+        formatter = findParentTag(FormatterTag.class, null, false);
         if (formatter == null && getId() == null) {
             throw new JspTagException("No parent formatter found");
             // living outside a formatter tag can happen the xslttag has an id.

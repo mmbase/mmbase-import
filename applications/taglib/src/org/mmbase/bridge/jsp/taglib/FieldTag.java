@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * The FieldTag can be used as a child of a 'NodeProvider' tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldTag.java,v 1.67 2006-07-17 15:38:47 johannes Exp $
+ * @version $Id: FieldTag.java,v 1.68 2006-09-27 20:48:26 michiel Exp $
  */
 public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer {
 
@@ -238,7 +238,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
                 }
             } else {        // a field was found!
                 // if direct parent is a Formatter Tag, then communicate
-                FormatterTag f = (FormatterTag) findParentTag(FormatterTag.class, null, false);
+                FormatterTag f = findParentTag(FormatterTag.class, null, false);
                 if (f != null && f.wantXML()) {
                     if (log.isDebugEnabled()) log.debug("field " + field.getName() + " is in a formatter tag, creating objects Element. ");
                     f.getGenerator().add(node, field); // add the field

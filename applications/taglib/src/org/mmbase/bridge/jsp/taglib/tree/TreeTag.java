@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
 </pre>
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: TreeTag.java,v 1.18 2006-08-28 12:30:36 michiel Exp $
+ * @version $Id: TreeTag.java,v 1.19 2006-09-27 20:48:26 michiel Exp $
  */
 public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, QueryContainerReferrer  {
     private static final Logger log = Logging.getLoggerInstance(TreeTag.class);
@@ -183,9 +183,9 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
         collector = new ContextCollector(getContextProvider());
 
         // serve parent timer tag:
-        TagSupport t = findParentTag(TimerTag.class, null, false);
+        TimerTag t = (TimerTag) findParentTag(TimerTag.class, null, false);
         if (t != null) {
-            timerHandle = ((TimerTag)t).startTimer(getId(), getClass().getName());
+            timerHandle = t.startTimer(getId(), getClass().getName());
         }
 
         if (getReferid() != null) {
@@ -318,9 +318,9 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), tree, false); // use false because check was done in doStartTag (and doAfterBody not always called).
         }
-        TagSupport t = findParentTag(TimerTag.class, null, false);
+        TimerTag t = (TimerTag) findParentTag(TimerTag.class, null, false);
         if (t != null) {
-            ((TimerTag)t).haltTimer(timerHandle);
+            t.haltTimer(timerHandle);
         }
         // dereference for gc
         tree = null;

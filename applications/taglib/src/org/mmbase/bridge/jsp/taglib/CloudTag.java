@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.144 2006-08-30 18:03:34 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.145 2006-09-27 20:48:26 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
@@ -525,7 +525,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         // the surround context tag sometimes also want so server information from the cloud context.
         getContextTag().setCloudContext(cloud.getCloudContext());
 
-        ContentTag tag = (ContentTag) findParentTag(ContentTag.class, null, false);
+        ContentTag tag = findParentTag(ContentTag.class, null, false);
         if (tag != null) {
             UserContext user = cloud.getUser();
             if (sessionCloud && ! user.getRank().equals(org.mmbase.security.Rank.ANONYMOUS)) {
