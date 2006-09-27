@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.32 2006-09-26 09:22:32 michiel Exp $
+ * @version $Id: Indexer.java,v 1.33 2006-09-27 15:32:21 michiel Exp $
  **/
 public class Indexer {
 
@@ -81,6 +81,28 @@ public class Indexer {
 
     private Date lastFullIndex = new Date(0);
 
+
+    // of course life would be easier if we could used BoundedFifoBuffer of jakarta or so, but
+    // actually it's ont very hard to simulate it:
+
+    private final int ERRORBUFFER_MAX = 100;
+    private int errorBufferSize = 0;
+    private int errorBufferCursor = -1;
+    private final String[] errors = new String[ERRORBUFFER_MAX];
+    private  List<String> errorBuffer = new AbstractList() {
+            public int size() { return errorBufferSize; }
+            public String get(int index) { return errors[(errorBufferSize + errorBufferCursor - index) % errorBufferSize]; }
+        };
+    private void addError(String string) {
+        errorBufferCursor++;
+        if (errorBufferSize < ERRORBUFFER_MAX) {
+            errorBufferSize++;
+        } else {
+            errorBufferCursor %= ERRORBUFFER_MAX;
+        }
+        errors[errorBufferCursor] = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date()) + " : " + string;
+    }
+
     /**
      * Instantiates an Indexer for a specified collection of queries and options.
      * @param index Name of the index
@@ -109,8 +131,10 @@ public class Indexer {
                     d.mkdirs();
                 }
             } catch (java.io.IOException ioe) {
+                addError(ioe.getMessage());
                 log.warn(ioe.getMessage(), ioe);
             } catch (SecurityException  se) {
+                addError(se.getMessage());
                 log.warn(se.getMessage(), se);
             }
         }
@@ -136,6 +160,9 @@ public class Indexer {
 
     public Analyzer getAnalyzer() {
         return analyzer;
+    }
+    public List<String> getErrors() {
+        return errorBuffer;
     }
 
     public Node getNode(Cloud userCloud, Document doc) {
@@ -181,6 +208,7 @@ public class Indexer {
                         }
                     }
                 } catch (Exception e) {
+                    addError(e.getMessage());
                     log.error(e);
                 } finally {
                     if (reader != null) { try { reader.close(); } catch (IOException ioe) { log.error("Can't close index reader: " + ioe.getMessage()); } }
@@ -212,7 +240,8 @@ public class Indexer {
                 }
                 updated += index(j, writer);
             }
-                } catch (IOException ioe) {
+        } catch (IOException ioe) {
+            addError(ioe.getMessage());
             log.error(ioe);
         } finally {
             if (writer != null) try { writer.close();} catch (IOException ioe) { log.error(ioe); }
@@ -246,6 +275,7 @@ public class Indexer {
                     }
                     docs.close();
                 } catch (IOException ioe) {
+                    addError(ioe.getMessage());
                     log.error(ioe);
                 } finally {
                     if (reader != null) try {reader.close(); } catch (IOException ioe) { log.error(ioe);}
@@ -267,7 +297,7 @@ public class Indexer {
      */
     public void fullIndex() {
         log.service("Doing full index for " + toString());
-        lastFullIndex = new Date();
+        lastFullIndex = new Date(0);
         IndexWriter writer = null;
         try {
             writer = new IndexWriter(path, analyzer, true);
@@ -282,9 +312,10 @@ public class Indexer {
                 }
             }
             writer.optimize();
-
-            log.service("Full index finished. Total nr documents in index: " + writer.docCount());
+            lastFullIndex = new Date();
+            log.service("Full index finished at " + lastFullIndex + ". Total nr documents in index: " + writer.docCount());
         } catch (Exception e) {
+                addError(e.getMessage());
             log.error("Cannot run FullIndex: " + e.getMessage(), e);
         } finally {
             if (writer != null) { try { writer.close(); } catch (IOException ioe) { log.error("Can't close index writer: " + ioe.getMessage()); } }
@@ -359,5 +390,7 @@ public class Indexer {
     public String toString() {
         return getName() + queries;
     }
+
+    
 
 }
