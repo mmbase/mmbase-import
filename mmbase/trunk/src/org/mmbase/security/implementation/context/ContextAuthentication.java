@@ -29,12 +29,12 @@ import org.mmbase.util.logging.Logging;
  * contexts (used for ContextAuthorization).
  *
  * @author Eduard Witteveen
- * @version $Id: ContextAuthentication.java,v 1.22 2006-01-17 21:25:28 michiel Exp $
+ * @version $Id: ContextAuthentication.java,v 1.23 2006-09-27 10:59:21 michiel Exp $
  * @see    ContextAuthorization
  */
 public class ContextAuthentication extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(ContextAuthentication.class);
-    private Map  loginModules = new LinkedHashMap();
+    private Map<String, ContextLoginModule>  loginModules = new LinkedHashMap();
     private Document document;
 
     /** Public ID of the Builder DTD version 1.0 */
@@ -65,15 +65,10 @@ public class ContextAuthentication extends Authentication {
             InputSource in = MMBaseCopConfig.securityLoader.getInputSource(configResource);
             document = org.mmbase.util.XMLBasicReader.getDocumentBuilder(this.getClass()).parse(in);
         } catch(org.xml.sax.SAXException se) {
-            log.error("error parsing file :"+configResource);
             String message = "error loading configfile :'" + configResource + "'("+se + "->"+se.getMessage()+"("+se.getMessage()+"))";
-            log.error(message);
-            log.error(Logging.stackTrace(se));
-            throw new SecurityException(message);
+            throw new SecurityException(message, se);
         } catch(java.io.IOException ioe) {
-            log.error("error parsing file :"+configResource);
-            log.error(Logging.stackTrace(ioe));
-            throw new SecurityException("error loading configfile :'"+configResource+"'("+ioe+")" );
+            throw new SecurityException("error loading configfile :'"+configResource+"'("+ioe+")" , ioe);
         }
         if (log.isDebugEnabled()) {
             log.debug("loaded: '" +  configResource + "' as config file for authentication");
@@ -87,9 +82,7 @@ public class ContextAuthentication extends Authentication {
         try {
             found = XPathAPI.selectNodeIterator(document, xpath);
         } catch(javax.xml.transform.TransformerException te) {
-            log.error("error executing query: '" + xpath + "' ");
-            log.error( Logging.stackTrace(te));
-            throw new SecurityException("error executing query: '"+xpath+"' ");
+            throw new SecurityException("error executing query: '"+xpath+"' ", te);
         }
         // we now have a list of login modules.. process them all, and load them...
         for(Node contains = found.nextNode(); contains != null; contains = found.nextNode()) {
@@ -104,9 +97,7 @@ public class ContextAuthentication extends Authentication {
                 module = (ContextLoginModule) moduleClass.newInstance();
             } catch(Exception e) {
                 String msg = "could not load module with the name: '" + moduleName + "' with class: " + className;
-                log.error(msg);
-                log.error( Logging.stackTrace(e));
-                throw new SecurityException(msg);
+                throw new SecurityException(msg, e);
             }
             module.load(document, getKey(), moduleName, manager);
             log.info("loaded module with the name: '" + moduleName + "' with class: " + className);
@@ -129,7 +120,7 @@ public class ContextAuthentication extends Authentication {
         if(!loginModules.containsKey(moduleName)) {
             throw new UnknownAuthenticationMethodException("could not load module with name: '" +  moduleName + "'");
         }
-        ContextLoginModule module = (ContextLoginModule) loginModules.get(moduleName);
+        ContextLoginModule module = loginModules.get(moduleName);
         // and we do the login...
         UserContext user = module.login(loginInfo, parameters);
         if (log.isServiceEnabled()) {
@@ -149,11 +140,13 @@ public class ContextAuthentication extends Authentication {
      */
     public boolean isValid(UserContext userContext) throws SecurityException {
         if ( getKey() == ((ContextUserContext)userContext).getKey()) return true;
-        log.debug("not valid because " + getKey () + " != " + ((ContextUserContext) userContext).getKey());
+        if (log.isDebugEnabled()) {
+            log.debug("not valid because " + getKey () + " != " + ((ContextUserContext) userContext).getKey());
+        }
         return false;
     }
 
     public String[] getTypes() {
-        return (String[]) loginModules.keySet().toArray(new String[] {});
+        return loginModules.keySet().toArray(new String[] {});
     }
 }
