@@ -50,7 +50,29 @@ public class CronJobs extends MMObjectBuilder implements Runnable {
             CronEntry entry = null;
             try {
                 entry = createCronEntry(node);
-                cronDaemon.add(entry);
+                NodeList servers = node.getRelatedNodes("mmservers");
+                if (servers.size() > 0) {
+                    String machineName = MMBase.getMMBase().getMachineName();
+                    boolean found = false;
+                    for (int i=0; i<servers.size(); i++) {
+                        Node server = servers.getNode(i);
+                        String name = server.getStringValue("name");
+                        if (name != null && name.equalsIgnoreCase(machineName)) {
+                            log.service("Adding cron entry [" + entry + "] for server [" + name + "]");
+                            cronDaemon.add(entry);
+                            found = true;
+                            break;
+                        } else {
+                            log.service("Ignoring related server [" + name + "], does not equal servername [" + machineName + "]");
+                        }
+                    }
+                    if (!found) {
+                        log.service("NOT Adding cron entry [" + entry + "], not related to server [" + machineName + "]");
+                    }
+                } else {
+                    log.service("Adding cron entry [" + entry + "]");
+                    cronDaemon.add(entry);
+                }
             } catch (Exception e) {
                 log.warn("did not add cronjob with id " + node.getNumber() + " because of error " + e.getMessage());
             }
