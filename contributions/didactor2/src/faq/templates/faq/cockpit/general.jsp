@@ -16,6 +16,17 @@
 	  }
 	  //-->
     </script>
+    
+  <mm:node number="$provider" notfound="skipbody">
+    <mm:relatednodescontainer path="settingrel,components">
+      <mm:constraint field="components.name" value="faq"/>
+      <mm:relatednodes>
+        <mm:import id="showfaq" />
+      </mm:relatednodes>
+    </mm:relatednodescontainer>
+  </mm:node>
+    
+  <mm:present referid="showfaq">  
     <mm:listnodes type="faqnodes">
       <mm:remove referid="notgeneral"/>
       <mm:relatednodes type="educations">
@@ -28,6 +39,7 @@
         <a class="menubar" href="javascript:openFaqContent('<mm:field name="number"/>');"><mm:field name="name"/></a>
       </mm:notpresent>
     </mm:listnodes>
+  </mm:present>  
   </div>
 </mm:cloud>
 </mm:content>
