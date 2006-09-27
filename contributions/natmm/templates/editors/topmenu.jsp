@@ -30,29 +30,6 @@ if (iTotalNotUsed>0) {
     <link href="<mm:url page="<%= editwizard_location %>"/>/style/color/wizard.css" type="text/css" rel="stylesheet"/>
     <link href="<mm:url page="<%= editwizard_location %>"/>/style/layout/wizard.css" type="text/css" rel="stylesheet"/>
     <title>Menu beheeromgeving</title>
-    <script>
-	     // *** refresh every X minutes , avoid session timeout ***
-		  function check() {
-			  var request = false;
-			  if ( window.XMLHttpRequest ) {
-			     request = new window.XMLHttpRequest();
-			  } else if ( window.ActiveXObject ) {
-			     request = new window.ActiveXObject( "Microsoft.XMLHTTP" );
-			  } else {
-			     throw "UNSUPPORTED PLATFORM";
-			  }
-		    if (!request) {
-	         throw "ERROR";
-        }
-        request.open( "HEAD", window.location.href, true ); 
-        request.onreadystatechange = function() {
-          if ( request.readyState == 4 && request.status == 200) {
-            window.location.reload();
-          }
-        }
-        request.send( null );
-		  }
-	  </script>
     <style>
         td.fieldname {
             padding-left: 5px;
@@ -61,7 +38,7 @@ if (iTotalNotUsed>0) {
         }
     </style>
 </head>
-<body onload="javascript:setTimeout('check()',10*60000);" style="background-color:#E4F0F7;">
+<body style="background-color:#E4F0F7;">
 <mm:import externid="action"/>
 <!-- We are going to set the referrer explicitely, because we don't wont to depend on the 'Referer' header (which is not mandatory) -->
 <mm:import externid="language">nl</mm:import>
@@ -178,21 +155,25 @@ String sNatuurinNumber = "";
 	} %>
 	</tr>
 </table>
-<div style="position:absolute;right:5px;top:5px;z-index:100"><small>
-<li><a class="menu" target="bottompane" href="../doc/index.jsp" title="klik hier om de gebruikershandleidingen te bekijken of te downloaden">gebruikershandleiding</a><br>
-<% String webmasterMail = ""; %>
-<mm:listnodescontainer type="users"
-         ><mm:constraint field="rank" operator="=" value="administrator" 
-         /><mm:listnodes
-            ><mm:first inverse="true"><% webmasterMail += ";"; %></mm:first
-            ><mm:field name="emailadres" jspvar="dummy" vartype="String" write="false"
-               ><% webmasterMail += dummy; 
-            %></mm:field
-         ></mm:listnodes
-></mm:listnodescontainer>
-<li><a class="menu" href="mailto:<%= webmasterMail %>" title="<%= webmasterMail %>">mail&nbsp;de&nbsp;webmasters</a><br>
-<li><a class="menu" href="usermanagement/changepassword.jsp" target="bottompane" title="wijzig uw wachtwoord"><mm:node number="$thisuser">gebruiker:&nbsp;<mm:field name="voornaam"/>&nbsp;<mm:field name="tussenvoegsel"><mm:isnotempty><mm:write />&nbsp;</mm:isnotempty></mm:field><mm:field name="achternaam"
-   /></mm:node></a></small></div>
+<div style="position:absolute;right:5px;top:5px;z-index:100">
+  <small>
+    <li><a class="menu" target="bottompane" href="../doc/index.jsp" title="klik hier om de gebruikershandleidingen te bekijken of te downloaden">gebruikershandleiding</a><br/>
+    <% String webmasterMail = ""; %>
+    <mm:listnodescontainer type="users"
+       ><mm:constraint field="rank" operator="=" value="administrator" 
+       /><mm:listnodes
+          ><mm:first inverse="true"><% webmasterMail += ";"; %></mm:first
+          ><mm:field name="emailadres" jspvar="dummy" vartype="String" write="false"
+             ><% webmasterMail += dummy; 
+          %></mm:field
+       ></mm:listnodes
+    ></mm:listnodescontainer>
+    <li><a class="menu" href="mailto:<%= webmasterMail %>" title="<%= webmasterMail %>">mail&nbsp;de&nbsp;webmasters</a><br/>
+    <li><a class="menu" href="usermanagement/changepassword.jsp" target="bottompane" title="wijzig uw wachtwoord"><mm:node number="$thisuser">gebruiker:&nbsp;<mm:field name="voornaam"/>&nbsp;<mm:field name="tussenvoegsel"><mm:isnotempty><mm:write />&nbsp;</mm:isnotempty></mm:field><mm:field name="achternaam"
+       /></mm:node></a>
+  </small>
+  <iframe src="refresh.jsp" style="width:7px;height:7px;" frameborder="0" scrolling="no"></iframe>
+</div>
 </body>
 </html>
 </cache:cache>
