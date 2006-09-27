@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * one.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CollectionNodeList.java,v 1.4 2006-09-25 15:00:56 michiel Exp $
+ * @version $Id: CollectionNodeList.java,v 1.5 2006-09-27 12:25:19 michiel Exp $
  * @since MMBase-1.8
  */
 public class CollectionNodeList<E extends Node> extends AbstractBridgeList<E> implements NodeList<E> {
@@ -47,13 +47,23 @@ public class CollectionNodeList<E extends Node> extends AbstractBridgeList<E> im
         this.wrappedCollection = convertedList(c, cloud);
     }
     public CollectionNodeList(Collection c) {
-        this(c, ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null));
+        this(c, (Cloud) null);
+    }
+
+    protected Cloud getCloud() {
+        if (cloud == null) {
+            cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
+        }
+        return cloud;
     }
 
     private static List convertedList(Collection c, Cloud cloud) {
         if (c instanceof List) {
             return (List) c;
         } else {
+            if (cloud == null) {
+                cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
+            }
             NodeList l = cloud.createNodeList();
             l.addAll(c);
             return l;
@@ -74,6 +84,11 @@ public class CollectionNodeList<E extends Node> extends AbstractBridgeList<E> im
         return prev;
     }
 
+    public boolean add(E o) {
+        if (o == null) throw new IllegalArgumentException();
+        return super.add(o);
+    }
+
     /**
      */
     protected Object convert(Object o, int index) {
@@ -82,22 +97,22 @@ public class CollectionNodeList<E extends Node> extends AbstractBridgeList<E> im
         }
         Node node = null;
         if (o instanceof String) { // a string indicates a nodemanager by name
-            node = cloud.getNodeManager((String)o);
+            node = getCloud().getNodeManager((String)o);
         } else if (o instanceof Map) {
             if (nodeManager != null) {
                 node = new MapNode((Map) o, nodeManager);
             } else {
-                node = new MapNode((Map) o, cloud);
+                node = new MapNode((Map) o, getCloud());
             }
         } else {
             if (! (wrappedCollection instanceof NodeList)) {
                 // last desperate try, depend on a nodelist of cloud (that know how to convert core objects..)
-                NodeList nl = cloud.createNodeList(); // hackery
+                NodeList nl = getCloud().createNodeList(); // hackery
                 nl.add(o);
                 node = nl.getNode(0);
             } else {
                 // even more desperate!
-                node = cloud.getNode(Casting.toString(o));
+                node = getCloud().getNode(Casting.toString(o));
             }
         }
         set(index, (E) node);
@@ -108,32 +123,35 @@ public class CollectionNodeList<E extends Node> extends AbstractBridgeList<E> im
      *
      */
     public Node getNode(int index) {
-        return (Node)get(index);
+        return get(index);
     }
 
     /**
      *
      */
-    public NodeList subNodeList(int fromIndex, int toIndex) {
-        return new CollectionNodeList(subList(fromIndex, toIndex), cloud);
+    public NodeList<E> subNodeList(int fromIndex, int toIndex) {
+        return new CollectionNodeList<E>(subList(fromIndex, toIndex), cloud);
     }
 
     /**
      *
      */
-    public NodeIterator nodeIterator() {
+    public NodeIterator<E> nodeIterator() {
         return new BasicNodeIterator();
+    }
+    public Collection getCollection() {
+        return wrappedCollection;
     }
 
 
     protected class BasicNodeIterator extends BasicIterator implements NodeIterator<E> {
 
         public Node nextNode() {
-            return (Node)next();
+            return next();
         }
 
         public Node previousNode() {
-            return (Node)previous();
+            return previous();
         }
     }
 }
