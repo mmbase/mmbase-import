@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.33 2006-09-27 15:32:21 michiel Exp $
+ * @version $Id: Indexer.java,v 1.34 2006-09-27 20:22:46 michiel Exp $
  **/
 public class Indexer {
 
@@ -89,11 +89,11 @@ public class Indexer {
     private int errorBufferSize = 0;
     private int errorBufferCursor = -1;
     private final String[] errors = new String[ERRORBUFFER_MAX];
-    private  List<String> errorBuffer = new AbstractList() {
+    protected  List<String> errorBuffer = new AbstractList() {
             public int size() { return errorBufferSize; }
             public String get(int index) { return errors[(errorBufferSize + errorBufferCursor - index) % errorBufferSize]; }
         };
-    private void addError(String string) {
+    protected void addError(String string) {
         errorBufferCursor++;
         if (errorBufferSize < ERRORBUFFER_MAX) {
             errorBufferSize++;

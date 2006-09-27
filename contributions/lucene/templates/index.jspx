@@ -28,6 +28,7 @@
             <th># of entries in index</th>
             <th>last full index</th>
             <th>recent errors</th>
+            <th>results</th>
             <th>search</th>
             <th>full index</th>
           </tr>
@@ -57,6 +58,9 @@
                   <p><mm:write /></p>
                 </mm:listfunction>
               </mm:functioncontainer>
+            </td>
+            <td>
+              <mm:function module="lucene" referids="index" name="nodes" />
             </td>
             <td>
               <mm:link referids="index" page="search.jspx">
@@ -152,7 +156,7 @@
             <td>
               <mm:link>
                 <mm:param name="reload" />
-                <a href="${_}" class="navigate" onclick="return confirm('Are you sure?'" >
+                <a href="${_}" class="navigate" onclick="return confirm('Are you sure?')" >
                   <img src="${next}" alt="next"  />
                 </a>
               </mm:link>

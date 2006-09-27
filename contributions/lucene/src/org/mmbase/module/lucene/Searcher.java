@@ -31,18 +31,23 @@ import org.mmbase.util.logging.*;
  * A wrapper around Lucene's {@link org.apache.lucene.search.IndexSearcher}. Every {@link Indexer} has its own Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.30 2006-09-27 15:32:22 michiel Exp $
+ * @version $Id: Searcher.java,v 1.31 2006-09-27 20:22:46 michiel Exp $
  * @todo  Should the StopAnalyzers be replaced by index.analyzer? Something else?
  **/
 public class Searcher {
     private static final Logger log = Logging.getLoggerInstance(Searcher.class);
+    
 
     // Search actions are logged on org.mmbase.lucene.SEARCH
     // So by configuring log4j, you can easily track what people are searching for.
     private final Logger searchLog;
     private final Indexer index;
     private final String[] allIndexedFields;
+
+    // for peformance reasons there should only be one searcher opened (see javadoc of IndexSearcher)
     private IndexSearcher searcher;
+
+    private long producedNodes = 0;
 
     /**
      * @param index The index where this Search is for
@@ -146,71 +151,33 @@ public class Searcher {
             }
 
             /// lazy loading of all that stuff!
-            list = new AbstractSequentialList<Node>() {
+            list = new AbstractList<Node>() {
                 private int size = -1;
 
                 public int size() {
                     if (size == -1) {
                         int h = hits.length() - offset;
                         if (h < 0) h = 0;
-                        size = (max < h ? max : h);
+                        size = (max > 0 && max < h ? max : h);
                     }
                     return size;
 
                 }
-                public ListIterator<Node> listIterator(final int index) {
-                    return new ListIterator<Node>() {
-                        int j = offset < 0 ? offset : offset;
-                        {
-                            while (j < index + offset) { j++; }
+                public Node get(int i) {
+                    try {
+                        Document doc = hits.doc(i + offset);
+                        Node node = Searcher.this.index.getNode(cloud, doc);
+                        if (log.isDebugEnabled()) {
+                            log.debug("Found " + doc);
+                            log.debug("Found " + node);
+                            log.trace("Because " + Logging.stackTrace(10));
                         }
-                        public Node next() {
-                            try {
-                                Document doc = hits.doc(j++);
-                                Node node = Searcher.this.index.getNode(cloud, doc);
-                                if (log.isDebugEnabled()) {
-                                    log.debug("Found " + doc);
-                                    log.debug("Found " + node);
-                                    log.trace("Because " + Logging.stackTrace(10));
-                                }
-                                return node;
-                            } catch (IOException ioe) {
-                                log.error(ioe);
-                                return null;
-                            }
-                        }
-                        public boolean hasNext() {
-                            return j < hits.length() && j < max;
-                        }
-                        public Node previous() {
-                            try {
-                                Document doc = hits.doc(--j);
-                                Node node = Searcher.this.index.getNode(cloud, doc);
-                                return node;
-                            } catch (IOException ioe) {
-                                log.error(ioe);
-                                return null;
-                            }
-                        }
-                        public boolean hasPrevious() {
-                            return j > offset;
-                        }
-                        public void add(Node node) {
-                            throw new UnsupportedOperationException();
-                        }
-                        public void set(Node node) {
-                            throw new UnsupportedOperationException();
-                        }
-                        public void remove() {
-                            throw new UnsupportedOperationException();
-                        }
-                        public int nextIndex() {
-                            return j - offset;
-                        }
-                        public int previousIndex() {
-                            return j - 1 - offset;
-                        }
-                    };
+                        Searcher.this.producedNodes++;
+                        return node;
+                    } catch (IOException ioe) {
+                        log.error(ioe);
+                        return null;
+                    }
                 }
             };
         } else {
@@ -346,6 +313,11 @@ public class Searcher {
         }
         return query;
     }
-
+    /**
+     * @since MMBase-1.9
+     */
+    public long getNumberOfProducedNodes() {
+        return producedNodes;
+    }
 
 }
