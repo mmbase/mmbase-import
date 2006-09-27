@@ -63,7 +63,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.4
- * @version $Id: FileWatcher.java,v 1.40 2006-09-08 12:12:26 michiel Exp $
+ * @version $Id: FileWatcher.java,v 1.41 2006-09-27 20:39:59 michiel Exp $
  */
 public abstract class FileWatcher {
     private static Logger log = Logging.getLoggerInstance(FileWatcher.class);
@@ -400,7 +400,7 @@ public abstract class FileWatcher {
                     Thread.sleep(THREAD_DELAY);
                 } catch (InterruptedException e) {
                     Thread ct = Thread.currentThread();
-                    log.debug((ct != null ? ct.getName() : "MMBase")+ " was interrupted.");
+                    log.debug((ct != null ? ct.getName() : "MMBase") + " was interrupted.");
                     break; // likely interrupted due to MMBase going down - break out of loop
                 } catch (Throwable ex) {
                     // unexpected exception?? This run method should never interrupt, so we catch everything.
