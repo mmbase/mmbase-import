@@ -11,10 +11,11 @@ package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.util.Referids;
+import org.mmbase.bridge.jsp.taglib.debug.TimerTag;
 
 import javax.servlet.jsp.*;
 
-import javax.servlet.jsp.tagext.TagSupport;
+import javax.servlet.jsp.tagext.Tag;
 
 import org.w3c.dom.Document;
 
@@ -43,7 +44,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.69 2006-09-18 12:54:39 michiel Exp $
+ * @version $Id: FormatterTag.java,v 1.70 2006-09-27 20:48:26 michiel Exp $
  */
 public class FormatterTag extends CloudReferrerTag implements ParamHandler {
 
@@ -288,9 +289,9 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
         if (log.isDebugEnabled()) log.debug("startag of formatter tag " + counter);
 
         // serve parent timer tag:
-        TagSupport t = findParentTag(org.mmbase.bridge.jsp.taglib.debug.TimerTag.class, null, false);
+        TimerTag t = findParentTag(TimerTag.class, null, false);
         if (t != null) {
-            timerHandle = ((org.mmbase.bridge.jsp.taglib.debug.TimerTag)t).startTimer(getId(), getClass().getName());
+            timerHandle = t.startTimer(getId(), getClass().getName());
         } else {
             timerHandle = -1;
         }
@@ -464,7 +465,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
         }
 
         if (timerHandle != -1) {
-            ((org.mmbase.bridge.jsp.taglib.debug.TimerTag)findParentTag(org.mmbase.bridge.jsp.taglib.debug.TimerTag.class, null, false)).haltTimer(timerHandle);
+            findParentTag(TimerTag.class, null, false).haltTimer(timerHandle);
         }
         helper.doEndTag();
         return super.doEndTag();
@@ -534,7 +535,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
         params.put("formatter_requestcontext",  context);
         //params.put("formatter_imgdb", org.mmbase.module.builders.AbstractImages.getImageServletPath(context));
         // use node function
-        LocaleTag localeTag = (LocaleTag) findParentTag(org.mmbase.bridge.jsp.taglib.LocaleTag.class, null, false);
+        LocaleTag localeTag = findParentTag(LocaleTag.class, null, false);
         Locale locale;
         if (localeTag != null) {
             locale = localeTag.getLocale();
