@@ -35,18 +35,20 @@ public class EventType {
     public static final int UNKNOWN = -1;
 
     public static int getEvent(String eventName) {
-        if ("account_created".equalsIgnoreCase(eventName)) {
-            return ACCOUNT_CREATED;
-        } else if ("login".equalsIgnoreCase(eventName)) {
-            return LOGIN;
-        } else if ("logout".equalsIgnoreCase(eventName)) {
-            return LOGOUT;
-        } else if ("reading_education".equalsIgnoreCase(eventName)) {
-            return READING_EDUCATION;
-        } else if ("visit_page".equalsIgnoreCase(eventName)) {
-            return VISIT_PAGE;
-        } else if ("add_document".equalsIgnoreCase(eventName)) {
-            return ADD_DOCUMENT;
+        if ( eventName != null ) {
+            if ("account_created".equalsIgnoreCase(eventName)) {
+                return ACCOUNT_CREATED;
+            } else if ("login".equalsIgnoreCase(eventName)) {
+                return LOGIN;
+            } else if ("logout".equalsIgnoreCase(eventName)) {
+                return LOGOUT;
+            } else if ("reading_education".equalsIgnoreCase(eventName)) {
+                return READING_EDUCATION;
+            } else if ("visit_page".equalsIgnoreCase(eventName)) {
+                return VISIT_PAGE;
+            } else if ("add_document".equalsIgnoreCase(eventName)) {
+                return ADD_DOCUMENT;
+            }
         }
         return UNKNOWN;
     }
