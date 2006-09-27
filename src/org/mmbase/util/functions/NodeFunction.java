@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * the Parameter array of the constructor.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.27 2006-09-25 14:00:01 michiel Exp $
+ * @version $Id: NodeFunction.java,v 1.28 2006-09-27 20:42:21 michiel Exp $
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
  * @see org.mmbase.util.functions.BeanFunction
@@ -37,10 +37,10 @@ public abstract class NodeFunction<R> extends AbstractFunction<R> {
     /**
      * @return The currently set ReturnType, or <code>null</code> if not set already.
      */
-    public ReturnType getReturnType() {
+    public ReturnType<R> getReturnType() {
         if (returnType == null && autoReturnType) {
             try {
-                returnType = ReturnType.getReturnType(getClass().getDeclaredMethod("getFunctionValue", Node.class, Parameters.class).getReturnType());
+                returnType = (ReturnType<R>) ReturnType.getReturnType(getClass().getDeclaredMethod("getFunctionValue", Node.class, Parameters.class).getReturnType());
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
@@ -56,7 +56,7 @@ public abstract class NodeFunction<R> extends AbstractFunction<R> {
             log.warn("Tried to execute node-function on null!");
             return null;
         }
-        List args = new ArrayList();
+        List<?> args = new ArrayList();
         String functionName = getFunctionNameAndFillArgs(function, args);
         if (log.isDebugEnabled()) {
             log.debug("Executing " + functionName + " " + args + " on " + node.getNumber());
@@ -79,7 +79,7 @@ public abstract class NodeFunction<R> extends AbstractFunction<R> {
         return functionName;
     }
 
-    public NodeFunction(String name, Parameter[] def, ReturnType returnType) {
+    public NodeFunction(String name, Parameter[] def, ReturnType<R> returnType) {
         super(name, getNodeParameterDef(def), returnType);
     }
     /**

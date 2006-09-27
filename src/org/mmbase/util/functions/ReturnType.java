@@ -19,37 +19,37 @@ import java.util.*;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
 
- * @version $Id: ReturnType.java,v 1.17 2006-09-08 19:21:23 michiel Exp $
+ * @version $Id: ReturnType.java,v 1.18 2006-09-27 20:42:21 michiel Exp $
  * @since MMBase-1.7
  */
-public class ReturnType extends Parameter implements java.io.Serializable {
+public class ReturnType<C> extends Parameter<C> implements java.io.Serializable {
 
     /**
      * The return type of a function that does not return a thing.
      */
-    public static final ReturnType VOID = new ReturnType(void.class, "Does not return anything");
+    public static final ReturnType<Void> VOID = new ReturnType(void.class, "Does not return anything");
 
     /**
      * The return type of a function that returns a String.
      */
-    public static final ReturnType STRING = new ReturnType(String.class, "String");
+    public static final ReturnType<String> STRING = new ReturnType(String.class, "String");
 
-    public static final ReturnType CHARSEQUENCE = new ReturnType(CharSequence.class, "CharSequence");
+    public static final ReturnType<CharSequence> CHARSEQUENCE = new ReturnType(CharSequence.class, "CharSequence");
 
     /**
      * The return type of a function that returns a Integer.
      */
-    public static final ReturnType INTEGER = new ReturnType(Integer.class, "Integer");
+    public static final ReturnType<Integer> INTEGER = new ReturnType(Integer.class, "Integer");
 
     /**
      * The return type of a function that returns a Long.
      */
-    public static final ReturnType LONG = new ReturnType(Long.class, "Long");
+    public static final ReturnType<Long> LONG = new ReturnType(Long.class, "Long");
 
     /**
      * The return type of a function that returns a Double.
      */
-    public static final ReturnType DOUBLE = new ReturnType(Double.class, "Double");
+    public static final ReturnType<Double> DOUBLE = new ReturnType(Double.class, "Double");
 
     /**
      * The return type of a function that returns a Boolean.
@@ -105,7 +105,7 @@ public class ReturnType extends Parameter implements java.io.Serializable {
     /**
      * @since MMBase-1.9
      */
-    public static final ReturnType getReturnType(Class type) {
+    public static final ReturnType<?> getReturnType(Class<?> type) {
         if (type.equals(void.class)) {
             return VOID;
         } else if (type.equals(String.class)) {

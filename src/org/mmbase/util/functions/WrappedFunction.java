@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: WrappedFunction.java,v 1.12 2006-09-25 14:00:01 michiel Exp $
+ * @version $Id: WrappedFunction.java,v 1.13 2006-09-27 20:42:21 michiel Exp $
  */
 public abstract class WrappedFunction<R> implements Function<R> {
 
@@ -71,11 +71,11 @@ public abstract class WrappedFunction<R> implements Function<R> {
         wrappedFunction.setParameterDefinition(params);
     }
 
-    public ReturnType getReturnType() {
+    public ReturnType<R> getReturnType() {
         return wrappedFunction.getReturnType();
     }
 
-    public void setReturnType(ReturnType type) {
+    public void setReturnType(ReturnType<R> type) {
         wrappedFunction.setReturnType(type);
     }
 

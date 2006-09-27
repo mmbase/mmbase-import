@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: AbstractFunction.java,v 1.15 2006-09-25 14:00:01 michiel Exp $
+ * @version $Id: AbstractFunction.java,v 1.16 2006-09-27 20:42:21 michiel Exp $
  * @since MMBase-1.8
  * @see Parameter
  * @see Parameters
@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
 abstract public class AbstractFunction<R> implements Function<R>, Comparable<Function>, java.io.Serializable {
     private static final Logger log = Logging.getLoggerInstance(AbstractFunction.class);
     protected String    name;
-    protected ReturnType  returnType;
+    protected ReturnType<R>  returnType;
     protected boolean autoReturnType = false;
 
     private Parameter<?>[] parameterDefinition;
@@ -41,7 +41,7 @@ abstract public class AbstractFunction<R> implements Function<R>, Comparable<Fun
      * @param def  Every function must have a parameter definition. It can be left <code>null</code> and then filled later by {@link #setParameterDefinition}
      * @param returnType Every function must also specify its return type. It can be left <code>null</code> and then filled later by {@link #setReturnType}
      */
-    public AbstractFunction(String name, Parameter<?>[] def, ReturnType returnType) {
+    public AbstractFunction(String name, Parameter<?>[] def, ReturnType<R> returnType) {
         this.name = name;
         if (def != null) {
             this.parameterDefinition = Functions.define(def).toArray((Parameter.EMPTY));
@@ -148,10 +148,10 @@ abstract public class AbstractFunction<R> implements Function<R>, Comparable<Fun
     /**
      * @return The currently set ReturnType, or <code>null</code> if not set already.
      */
-    public ReturnType getReturnType() {
+    public ReturnType<R> getReturnType() {
         if (returnType == null && autoReturnType) {
             try {
-                returnType = ReturnType.getReturnType(getClass().getDeclaredMethod("getFunctionValue", Parameters.class).getReturnType());
+                returnType = (ReturnType<R>) ReturnType.getReturnType(getClass().getDeclaredMethod("getFunctionValue", Parameters.class).getReturnType());
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
@@ -163,7 +163,7 @@ abstract public class AbstractFunction<R> implements Function<R>, Comparable<Fun
      * @param type A ReturnType object. For void functions that could be {@link ReturnType#VOID}.
      * @throws IllegalStateException if there was already set a return type for this function object.
      */
-    public void setReturnType(ReturnType type) {
+    public void setReturnType(ReturnType<R> type) {
         if (returnType != null) {
             throw new IllegalStateException("Returntype is set already");
         }

@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * xml).
  *
  * @author Michiel Meeuwissen
- * @version $Id: PatternNodeFunctionProvider.java,v 1.9 2006-03-29 15:05:51 michiel Exp $
+ * @version $Id: PatternNodeFunctionProvider.java,v 1.10 2006-09-27 20:42:21 michiel Exp $
  * @since MMBase-1.8
  */
 public class PatternNodeFunctionProvider extends FunctionProvider {
@@ -114,7 +114,7 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
                 Matcher request = requestPattern.matcher(sb.toString());
                 if (request.find()) {
                     request.reset();
-                    HttpServletRequest req = (HttpServletRequest) parameters.get(Parameter.REQUEST);
+                    HttpServletRequest req = parameters.get(Parameter.REQUEST);
                     sb = new StringBuffer();
                     while(request.find()) {
                         if(request.group(1).equals("getContextPath")) {
@@ -146,7 +146,7 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
             {
                 Matcher requestParam = requestParamPattern.matcher(sb.toString());
                 if (requestParam.find()) {
-                    HttpServletRequest req = (HttpServletRequest) parameters.get(Parameter.REQUEST);
+                    HttpServletRequest req = parameters.get(Parameter.REQUEST);
                     if (req == null) {
                         log.error("Did't find the request among the parameters");
                     } else {
@@ -165,7 +165,7 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
             {
                 Matcher requestAttribute = requestAttributePattern.matcher(sb.toString());
                 if (requestAttribute.find()) {
-                    HttpServletRequest req = (HttpServletRequest) parameters.get(Parameter.REQUEST);
+                    HttpServletRequest req = parameters.get(Parameter.REQUEST);
                     if (req == null) {
                         log.error("Did't find the request among the parameters");
                     } else {
