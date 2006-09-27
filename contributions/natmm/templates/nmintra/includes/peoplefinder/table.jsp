@@ -55,7 +55,7 @@
                 <td style="padding-bottom:3px;vertical-align:bottom;"><mm:field name="email" jspvar="email" vartype="String" write="false"><%
                     int adPos = email.indexOf("@");
                     if(adPos>-1) { 
-                        %><a href="mailto:<%= email %>"><%= email.substring(0,adPos+1) + " " + email.substring(adPos+1) %></a><%
+                        %><a href="mailto:<%= email %>"><%= email.substring(0,adPos+1) + "&shy;" + email.substring(adPos+1) %></a><%
                     } %></mm:field></td></tr>
         <% if(thisPrograms.equals("")) { 
            %><mm:related path="readmore,afdelingen" 
