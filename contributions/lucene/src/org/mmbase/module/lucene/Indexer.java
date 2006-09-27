@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.34 2006-09-27 20:22:46 michiel Exp $
+ * @version $Id: Indexer.java,v 1.35 2006-09-27 21:03:49 michiel Exp $
  **/
 public class Indexer {
 
@@ -255,8 +255,13 @@ public class Indexer {
      */
     public int updateIndex(final String number, final Class<? extends IndexDefinition> klass) {
         int updated = 0;
+        assert klass != null;
         // process all queries
         for (IndexDefinition indexDefinition :  queries) {
+            if (indexDefinition == null) {
+                log.warn("Found empty index definition in " + this);
+                continue;
+            }
             if (klass.isAssignableFrom(indexDefinition.getClass())) {
                 Set<String> mains = new HashSet<String>();
                 mains.add(number); // at least the object itself must be tried, it may be 
