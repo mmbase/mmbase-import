@@ -81,7 +81,7 @@
                 <mm:link>
                   <mm:param name="fullindex" value="$index" />
                   <a href="${_}" class="navigate" 
-                     onclick="return confirm('Are you sure? This will fully delete the current index ${index}, and may take some time.')"
+                     onclick="return confirm('Are you sure? This will fully delete the index '${index}', and may take some time.')"
                      >
                     <img src="${img.next}" alt="next"  />
                   </a>
@@ -128,7 +128,7 @@
                                vartype="org.mmbase.module.lucene.Lucene.Scheduler.Assignment">
                 <mm:link>
                   <mm:param name="delete" value="${assignment.id}" />
-                  <a onclick="return confirm('Do you want to unschedule  ${assignment}?');" href="${_}">
+                  <a onclick="return confirm('Do you want to unschedule ${assignment}?');" href="${_}">
                     <jsp:text>${assignment}</jsp:text>
                   </a>
                 </mm:link>
@@ -150,7 +150,7 @@
               <mm:booleanfunction name="readOnly" module="lucene" inverse="true">
                 <mm:link>
                   <mm:param name="fullindex" />
-                  <a href="${_}" onclick="return confirm('Are you sure? This will fully delete the current index ${index}, and may take some time.')"
+                  <a href="${_}" onclick="return confirm('Are you sure? This will fully delete the indices ${index}, and may take some time.')"
                      class="navigate">
                     <img src="${img.next}" alt="next"  />
                   </a>
@@ -163,7 +163,7 @@
             <td>
               <mm:link>
                 <mm:param name="reload" />
-                <a href="${_}" class="navigate" onclick="return confirm('Are you sure?')" >
+                <a href="${_}" class="navigate" onclick="return confirm('Are you sure you want to reload the lucene module?')" >
                   <img src="${img.next}" alt="next"  />
                 </a>
               </mm:link>
