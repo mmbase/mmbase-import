@@ -1,6 +1,8 @@
 package nl.didactor.component.reports;
 
 import nl.didactor.component.Component;
+import nl.didactor.component.core.DidactorCore;
+import nl.didactor.component.email.DidactorEmail;
 import nl.didactor.events.*;
 import nl.didactor.reports.util.EventManager;
 
@@ -30,7 +32,8 @@ public class DidactorReports extends Component {
      * This should always contain at least one component: 'DidactorCore'
      */
     public Component[] dependsOn() {
-        Component[] components = new Component[0];
+        Component[] components = new Component[1];
+        components[0] = new DidactorCore();
         return components;
     }
 }

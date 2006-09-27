@@ -31,66 +31,70 @@ import nl.didactor.reports.data.EventLog;
 import nl.didactor.reports.data.EventType;
 
 import nl.didactor.events.*;
+import org.mmbase.util.logging.*;
 
 /**
  * @author p.becic
  */
 public class EventManager implements EventListener {
+    private static Logger log = Logging.getLoggerInstance(nl.didactor.reports.util.EventManager.class);
 
     public void report(Event event, HttpServletRequest request, HttpServletResponse response) {
         
-        if ( event == null )
-            return;
-        
-        String eType = event.getEventType();
-        String eValue = event.getEventValue();
-
-        Long eventvalue = null;
         try {
-            eventvalue = Long.decode(eValue);
-        } 
-        catch (NumberFormatException e) {return;}
-        catch (NullPointerException e1) {return;}
-
-        Integer eventtype = new Integer(EventType.getEvent(eType));
-
-        if (eventtype.intValue() == EventType.LOGIN) {
-            // Create SessionListener class and add ti to the session
-            DidactorSessionListener sessionListener = new DidactorSessionListener(event.getUsername());
-            HttpSession session = request.getSession();
-            session.setAttribute("session_listener", sessionListener);
-            session.setAttribute(event.getUsername() + "-login-time", new Long(System.currentTimeMillis()));
-        }
-
-        if (eventtype.intValue() == EventType.LOGOUT) {
-            HttpSession session = request.getSession();
-            Object loginTimeObj = session.getAttribute(event.getUsername() + "-login-time" );
-            if (loginTimeObj != null) {
-                long loginTime = ((Long)loginTimeObj).longValue();
-                long duration = System.currentTimeMillis() - loginTime;
-                eventvalue = new Long(duration);
-                session.removeAttribute(event.getUsername() + "-login-time");
-                session.removeAttribute("session_listener");
+            String eType = event.getEventType();
+            String eValue = event.getEventValue();
+    
+            Long eventvalue;
+            try {
+                eventvalue = Long.decode(eValue);
+            } catch (Exception e) {
+                eventvalue = new Long(0);
             }
-
-            String educationId = request.getParameter("education") + "-" + event.getUsername() + "-" + session.getId();
-            Object startReadingEducation = session.getAttribute(educationId);
-            if(startReadingEducation != null) {
-                long startReading = ((Long)startReadingEducation).longValue();
-                long duration2 = System.currentTimeMillis() - startReading;
-                String edId = educationId.substring(0, educationId.indexOf("-"));
-                Integer educationIdInt = null;
-                try {
-                    educationIdInt = Integer.decode(edId);
-                } catch (NumberFormatException e) {}
-                Event event2 = new Event(event.getUsername(), event.getSessionId(), event.getProvider(), educationIdInt, event.getClassId(), "reading_education", "" + duration2, "read education");
-                report(event2, request, response);
+    
+            Integer eventtype = new Integer(EventType.getEvent(eType));
+            if (eventtype.intValue() == EventType.LOGIN) {
+                // Create SessionListener class and add ti to the session
+                DidactorSessionListener sessionListener = new DidactorSessionListener(event.getUsername());
+                HttpSession session = request.getSession();
+                session.setAttribute("session_listener", sessionListener);
+                session.setAttribute(event.getUsername() + "-login-time", new Long(System.currentTimeMillis()));
             }
-            session.removeAttribute("educationId");
-            session.removeAttribute(educationId);
+            if (eventtype.intValue() == EventType.LOGOUT) {
+                HttpSession session = request.getSession();
+                Object loginTimeObj = session.getAttribute(event.getUsername() + "-login-time" );
+                if (loginTimeObj != null) {
+                    long loginTime = ((Long)loginTimeObj).longValue();
+                    long duration = System.currentTimeMillis() - loginTime;
+                    eventvalue = new Long(duration);
+                    session.removeAttribute(event.getUsername() + "-login-time");
+                    session.removeAttribute("session_listener");
+                }
+    
+                String educationId = request.getParameter("education") + "-" + event.getUsername() + "-" + session.getId();
+                Object startReadingEducation = session.getAttribute(educationId);
+                if(startReadingEducation != null) {
+                    long startReading = ((Long)startReadingEducation).longValue();
+                    long duration2 = System.currentTimeMillis() - startReading;
+                    String edId = educationId.substring(0, educationId.indexOf("-"));
+                    Integer educationIdInt = null;
+                    try {
+                        educationIdInt = Integer.decode(edId);
+                    } catch (NumberFormatException e) {}
+                    Event event2 = new Event(event.getUsername(), event.getSessionId(), event.getProvider(), educationIdInt, event.getClassId(), "reading_education", "" + duration2, "read education");
+                    report(event2, request, response);
+                }
+                session.removeAttribute("educationId");
+                session.removeAttribute(educationId);
+            }
+    
+            createAndStoreEvent(event.getUsername(), event.getSessionId(), event.getProvider(), event.getEducation(), event.getClassId(), eventtype, eventvalue, event.getNote());
+        } catch (Exception exc) {
+            if ( event != null )
+                log.error("Can not write event "+event.getNote()+". \r\n"+exc.toString());
+            else
+                log.error("Can not write null event.");
         }
-
-        createAndStoreEvent(event.getUsername(), event.getSessionId(), event.getProvider(), event.getEducation(), event.getClassId(), eventtype, eventvalue, event.getNote());
     }
     
     /**
@@ -122,7 +126,6 @@ public class EventManager implements EventListener {
         eventLog.setEventtype(eventtype);
         eventLog.setValue(eventvalue);
         eventLog.setNote(note);
-
         session.save(eventLog);
 
         session.getTransaction().commit();
