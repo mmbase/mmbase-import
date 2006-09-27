@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: IndexFunction.java,v 1.9 2006-08-30 17:48:52 michiel Exp $
+ * @version $Id: IndexFunction.java,v 1.10 2006-09-27 20:42:21 michiel Exp $
  * @since MMBase-1.8
  */
 public class IndexFunction extends FunctionProvider {
@@ -188,11 +188,11 @@ public class IndexFunction extends FunctionProvider {
     }
 
 
-    protected static class Stack extends ArrayList {
-        public void push(Object o) {
+    protected static class Stack<C> extends ArrayList<C> {
+        public void push(C o) {
             add(0, o);
         }
-        public Object pull() {
+        public C pull() {
             return remove(0);
         }
     }
@@ -236,7 +236,7 @@ public class IndexFunction extends FunctionProvider {
                     template.setConstraint(template.createConstraint(sf, root));
                 }
 
-                Stack stack = new Stack();
+                Stack<Node> stack = new Stack<Node>();
                 TreeIterator it = tree.treeIterator();
                 int depth = it.currentDepth();
                 while (it.hasNext()) {
@@ -271,7 +271,7 @@ public class IndexFunction extends FunctionProvider {
                 if (log.isDebugEnabled()) {
                     log.debug("Now constructing index-number with " + stack.size() + " nodes on stack");
                 }
-                Node n = (Node) stack.pull(); // this is root, or at least _its_ index is known
+                Node n = stack.pull(); // this is root, or at least _its_ index is known
                 StringBuffer buf;
                 if (! n.equals(node)) {
                     buf = new StringBuffer(n.getFunctionValue("index", parameters).toString());
@@ -281,7 +281,7 @@ public class IndexFunction extends FunctionProvider {
                 String j = buf.length() == 0 ? "" : join;
                 OUTER:
                 while(! stack.isEmpty()) {
-                    Node search = (Node) stack.pull();
+                    Node search = stack.pull();
                     NodeQuery q = Queries.createRelatedNodesQuery(n, nm, role, "destination");
                     StepField sf = q.addField(role + ".pos");
                     q.addSortOrder(sf, SortOrder.ORDER_ASCENDING);

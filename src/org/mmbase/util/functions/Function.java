@@ -22,7 +22,7 @@ import java.util.*;
  * @author Pierre van Rooden
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Function.java,v 1.9 2006-09-25 14:00:01 michiel Exp $
+ * @version $Id: Function.java,v 1.10 2006-09-27 20:42:21 michiel Exp $
  * @since MMBase-1.7
  * @see Parameter
  * @see Parameters
@@ -88,13 +88,13 @@ public interface Function<R> {
     /**
      * @return The return type of the function's result value, or <code>null</code> if unknown.
      */
-    public ReturnType getReturnType();
+    public ReturnType<R> getReturnType();
 
     /**
      * Sets the return type of the function's result value.
      * @param type A ReturnType object. For void functions that could be {@link ReturnType#VOID}.
      * @throws IllegalStateException if there was already set a return type for this function object.
      */
-    public void setReturnType(ReturnType type);
+    public void setReturnType(ReturnType<R> type);
 
 }
