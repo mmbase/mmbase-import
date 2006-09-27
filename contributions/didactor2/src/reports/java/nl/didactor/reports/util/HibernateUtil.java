@@ -18,12 +18,14 @@ package nl.didactor.reports.util;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.mmbase.util.logging.*;
 
 
 /**
  * @author p.becic
  */
 public class HibernateUtil {
+    private static Logger log = Logging.getLoggerInstance(nl.didactor.reports.util.HibernateUtil.class);
 
     private static final SessionFactory sessionFactory;
 
@@ -35,8 +37,8 @@ public class HibernateUtil {
         }
         catch (Throwable ex) {
             // Make sure you log the exception, as it might be swallowed
-            System.err.println("Initial SessionFactory creation failed." + ex);
-            throw new ExceptionInInitializerError(ex);
+           log.error("Initial SessionFactory creation failed for component 'reports'. \r\n"+ex);
+           throw new ExceptionInInitializerError(ex);
         }
     }
 
