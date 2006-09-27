@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
       xmlns:jsp="http://java.sun.com/JSP/Page" 
       xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:output doctype-root-element="html" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
@@ -25,19 +26,37 @@
             <th>name</th>
             <th>description</th>
             <th># of entries in index</th>
+            <th>last full index</th>
+            <th>recent errors</th>
             <th>search</th>
             <th>full index</th>
           </tr>
           <mm:listfunction id="index" module="lucene" name="list">
             <tr>
             <td>
-              <mm:write writer="index" />
+              <mm:write />
+              <mm:function module="lucene" name="default" write="false">
+                <c:if test="${index eq _.name }">*</c:if>                  
+              </mm:function>
             </td>
             <td>
               <mm:function module="lucene" referids="index" name="description" />
             </td>
             <td>
               <mm:function module="lucene" referids="index" name="searchsize" />
+            </td>
+            <td>
+              <mm:function module="lucene" referids="index" name="last">
+                <mm:time format="yyyy-MM-dd HH:mm" />
+              </mm:function>
+            </td>
+            <td>
+              <mm:functioncontainer>
+                <mm:param name="max" value="5" />
+                <mm:listfunction referids="index" module="lucene" name="errors">
+                  <p><mm:write /></p>
+                </mm:listfunction>
+              </mm:functioncontainer>
             </td>
             <td>
               <mm:link referids="index" page="search.jspx">
@@ -76,6 +95,10 @@
         <mm:present referid="interrupt">
           <mm:function module="lucene" name="interrupt"/>
         </mm:present>
+        <mm:import externid="reload" />
+        <mm:present referid="reload">
+          <mm:function module="lucene" name="reload"/>
+        </mm:present>
         <table summary="Misc. options">
           <tr>
             <th>Status</th>
@@ -90,7 +113,8 @@
           <tr>
             <th>Queue</th>
             <td>
-              <mm:listfunction module="lucene" name="queue" jspvar="assignment" vartype="org.mmbase.module.lucene.Lucene.Scheduler.Assignment">
+              <mm:listfunction module="lucene" name="queue" jspvar="assignment" 
+                               vartype="org.mmbase.module.lucene.Lucene.Scheduler.Assignment">
                 <mm:link>
                   <mm:param name="delete" value="${assignment.id}" />
                   <a onclick="return confirm('Do you want to unschedule  ${assignment}?');" href="${_}">
@@ -103,7 +127,11 @@
           </tr>
           <tr>
             <th>Search on default index</th>
-            <td><mm:link page="search.jspx"><mm:param name="index" /><a href="${_}" class="navigate"><img src="${next}" alt="next"  /></a></mm:link></td>
+            <td>
+              <mm:link page="search.jspx">
+                <mm:param name="index" /><a href="${_}" class="navigate"><img src="${next}" alt="next"  /></a>
+              </mm:link>
+            </td>
           </tr>
           <tr>
             <th>Full index on all indices</th>
@@ -120,7 +148,18 @@
             </td>
           </tr>
           <tr>
-            <th>Reload</th>
+            <th>Reload module</th>
+            <td>
+              <mm:link>
+                <mm:param name="reload" />
+                <a href="${_}" class="navigate" onclick="return confirm('Are you sure?'" >
+                  <img src="${next}" alt="next"  />
+                </a>
+              </mm:link>
+            </td>
+          </tr>
+          <tr>
+            <th>Reload this page</th>
             <td><mm:link><a href="${_}" class="navigate"><img src="${ok}" alt="reload"  /></a></mm:link></td>
           </tr>
         </table>
