@@ -8,6 +8,10 @@
   <mm:content type="text/html" language="en" expires="0">
     <body class="basic">
       <h1>Lucene admin page</h1>
+      <mm:import externid="logout" />
+      <mm:present referid="logout">
+        <mm:cloud method="logout" />
+      </mm:present>
       <mm:cloud rank="administrator">
         <p>
           <em><mm:time format="yyyy-MM-dd HH:mm:ss" time="now" /></em>
@@ -19,8 +23,11 @@
           </p>
         </mm:booleanfunction>
         
-        <mm:url id="next" write="false" page="/mmbase/style/images/next.png" />
-        <mm:url id="ok" write="false" page="/mmbase/style/images/ok.png" />
+        <mm:context id="img">
+          <mm:url id="next" write="false" page="/mmbase/style/images/next.png" />
+          <mm:url id="ok" write="false" page="/mmbase/style/images/ok.png" />
+          <mm:url id="reload" write="false" page="/mmbase/style/images/reload.png" />
+        </mm:context>
         <table summary="Lucene indices">
           <tr>
             <th>name</th>
@@ -65,7 +72,7 @@
             <td>
               <mm:link referids="index" page="search.jspx">
                 <a href="${_}" class="navigate">
-                  <img src="${next}" alt="next"  />
+                  <img src="${img.next}" alt="next"  />
                 </a>
               </mm:link>
             </td>
@@ -76,7 +83,7 @@
                   <a href="${_}" class="navigate" 
                      onclick="return confirm('Are you sure? This will fully delete the current index ${index}, and may take some time.')"
                      >
-                    <img src="${next}" alt="next"  />
+                    <img src="${img.next}" alt="next"  />
                   </a>
                 </mm:link>
               </mm:booleanfunction>
@@ -133,7 +140,7 @@
             <th>Search on default index</th>
             <td>
               <mm:link page="search.jspx">
-                <mm:param name="index" /><a href="${_}" class="navigate"><img src="${next}" alt="next"  /></a>
+                <mm:param name="index" /><a href="${_}" class="navigate"><img src="${img.next}" alt="next"  /></a>
               </mm:link>
             </td>
           </tr>
@@ -145,7 +152,7 @@
                   <mm:param name="fullindex" />
                   <a href="${_}" onclick="return confirm('Are you sure? This will fully delete the current index ${index}, and may take some time.')"
                      class="navigate">
-                    <img src="${next}" alt="next"  />
+                    <img src="${img.next}" alt="next"  />
                   </a>
                 </mm:link>
               </mm:booleanfunction>
@@ -157,14 +164,23 @@
               <mm:link>
                 <mm:param name="reload" />
                 <a href="${_}" class="navigate" onclick="return confirm('Are you sure?')" >
-                  <img src="${next}" alt="next"  />
+                  <img src="${img.next}" alt="next"  />
                 </a>
               </mm:link>
             </td>
           </tr>
           <tr>
             <th>Reload this page</th>
-            <td><mm:link><a href="${_}" class="navigate"><img src="${ok}" alt="reload"  /></a></mm:link></td>
+            <td><mm:link><a href="${_}" class="navigate"><img src="${img.ok}" alt="reload"  /></a></mm:link></td>
+          </tr>
+          <tr>
+            <th>Log out</th>
+            <td>
+              <mm:link>
+                <mm:param name="logout" />
+                <a href="${_}" class="navigate"><img src="${img.reload}" alt="log out"  /></a>
+              </mm:link>
+            </td>
           </tr>
         </table>
       </mm:cloud>

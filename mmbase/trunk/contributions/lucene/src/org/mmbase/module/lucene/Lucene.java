@@ -46,7 +46,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.74 2006-09-27 20:22:46 michiel Exp $
+ * @version $Id: Lucene.java,v 1.75 2006-09-27 21:03:49 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, IdEventListener {
 
@@ -908,6 +908,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
         }
 
         void updateIndex(final String number, final Class klass) {
+            assert klass != null;
             assign(new Assignment() {
                     public void run() {
                         log.service("Update index for " + number);
@@ -930,6 +931,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
         }
 
         void deleteIndex(final String number, final Class klass) {
+            assert klass != null;
             assign(new Assignment() {
                     public void run() {
                         log.debug("delete index for " + number); // already logged in indexer.deleteIndex
