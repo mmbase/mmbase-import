@@ -14,7 +14,7 @@
                         {
                            oldEducationId = oldEduObject.toString();
                         }
-                        if (!educationId.equals(oldEducationId))
+                        if (educationId!=null && !educationId.equals(oldEducationId))
                         {
                            %>
                               <mm:field name="logincount" jspvar="logincount" vartype="Integer" write="false">
@@ -26,10 +26,10 @@
                            if( oldEd != null )
                            {
                              long startReading = ((Long)oldEd).longValue();
-                             long duration = System.currentTimeMillis() - startReading;
+                             Long duration = new Long(System.currentTimeMillis() - startReading);
                              String edId = oldEducationId.substring( 0, oldEducationId.indexOf( "-" ) );
                           %>
-                             <di:event eventtype="reading_education" educationId="<%= edId %>" eventvalue="<%= duration %>" note="read education" />
+                             <di:event eventtype="reading_education" educationId="<%= edId %>" eventvalue="<%= duration.toString() %>" note="read education" />
                           <%
                              session.removeAttribute( oldEducationId );
                            }
