@@ -18,14 +18,61 @@
     <div class="menuItemApplicationMenubar">
       <a title="<di:translate key="core.print" />" href="javascript:printThis();"  class="menubar"><di:translate key="core.print" /></a>
     </div>
-    
-	  <mm:node number="component.cmshelp" notfound="skipbody">
-        <mm:treeinclude page="/cmshelp/cockpit/rolerelated.jsp" objectlist="$includePath" referids="$referids" />
-	  </mm:node> 	    
+
+
+    <!-- region cms help and faq -->
+    <mm:node number="$provider" notfound="skipbody">
+      <mm:relatednodescontainer path="settingrel,components">
+        <mm:constraint field="components.name" value="cmshelp"/>
+        <mm:relatednodes>
+          <mm:import id="showcmshelp" />
+        </mm:relatednodes>
+      </mm:relatednodescontainer>
+      <mm:relatednodescontainer path="settingrel,components">
+        <mm:constraint field="components.name" value="faq"/>
+        <mm:relatednodes>
+          <mm:import id="showfaq" />
+        </mm:relatednodes>
+      </mm:relatednodescontainer>
+    </mm:node>
+
+    <mm:present referid="education">
+      <mm:notpresent referid="showcmshelp">
+        <mm:node number="$education" notfound="skip">
+          <mm:relatednodescontainer path="settingrel,components">
+            <mm:constraint field="components.name" value="cmshelp"/>
+            <mm:relatednodes>
+              <mm:import id="showcmshelp" />
+            </mm:relatednodes>
+          </mm:relatednodescontainer>
+        </mm:node>      
+      </mm:notpresent>
+      <mm:notpresent referid="showfaq">
+        <mm:node number="$education" notfound="skip">
+          <mm:relatednodescontainer path="settingrel,components">
+            <mm:constraint field="components.name" value="faq"/>
+            <mm:relatednodes>
+              <mm:import id="showfaq" />
+            </mm:relatednodes>
+          </mm:relatednodescontainer>
+        </mm:node>      
+      </mm:notpresent>
+    </mm:present>
+     
+    <mm:present referid="showcmshelp" >
+      <mm:node number="component.cmshelp" notfound="skipbody">
+          <mm:treeinclude page="/cmshelp/cockpit/rolerelated.jsp" objectlist="$includePath" referids="$referids" >
+             <mm:param name="scope">education</mm:param>
+          </mm:treeinclude>
+      </mm:node>    
+    </mm:present>
 	  
-	  <mm:node number="component.faq" notfound="skipbody">
-        <mm:treeinclude page="/faq/cockpit/rolerelated.jsp" objectlist="$includePath" referids="$referids" />
-	  </mm:node> 	  
+    <mm:present referid="showfaq" >
+  	  <mm:node number="component.faq" notfound="skipbody">
+          <mm:treeinclude page="/faq/cockpit/rolerelated.jsp" objectlist="$includePath" referids="$referids" />
+  	  </mm:node> 	   
+    </mm:present>
+    <!-- end of region cms help and faq -->
         
  <script language="JavaScript">
 <!--
