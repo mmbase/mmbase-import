@@ -46,7 +46,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.73 2006-09-27 15:32:21 michiel Exp $
+ * @version $Id: Lucene.java,v 1.74 2006-09-27 20:22:46 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, IdEventListener {
 
@@ -304,15 +304,11 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
      */
     protected Function  searchFunction = new AbstractFunction("search", VALUE, INDEX, SORTFIELDS, OFFSET, MAX, EXTRACONSTRAINTS, Parameter.CLOUD) {
             public org.mmbase.bridge.NodeList getFunctionValue(Parameters arguments) {
-                String value = arguments.getString(VALUE);
-                String index = arguments.getString(INDEX);
-                List sortFieldList = Casting.toList(arguments.getString(SORTFIELDS));
-                // offset
-                int offset = arguments.get(OFFSET);
-                // max
-                int max = -1;
-                Integer maxParameter = arguments.get(MAX);
-                if (maxParameter != null) max = maxParameter.intValue();
+                String value       = arguments.getString(VALUE);
+                String index       = arguments.getString(INDEX);
+                List sortFieldList = Casting.toList(arguments.get(SORTFIELDS));
+                int offset         = arguments.get(OFFSET);
+                int max            = arguments.get(MAX);
                 String extraConstraints = arguments.getString(EXTRACONSTRAINTS);
                 /*
                 List moreConstraints = (List) arguments.get(EXTRACONSTRAINTSLIST);
@@ -326,7 +322,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
                     extraConstraints = ec.toString().trim();
                 }
                 */
-                Cloud cloud = arguments.get(Parameter.CLOUD);
+                Cloud cloud         = arguments.get(Parameter.CLOUD);
                 try {
                     return search(cloud, value, index, extraConstraints, sortFieldList, offset, max);
                 } catch (ParseException pe) {
@@ -431,6 +427,14 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
         };
     {
         addFunction(errorsFunction);
+    }
+    {
+        addFunction(new AbstractFunction("nodes", INDEX) {
+            public Long getFunctionValue(Parameters arguments) {
+                String index = arguments.getString(INDEX);
+                return searcherMap.get(index).getNumberOfProducedNodes();
+            }
+            });
     }
 
     private ContentExtractor factory;
