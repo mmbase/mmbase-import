@@ -17,16 +17,16 @@ import org.mmbase.bridge.Field;
 
 /**
  * A fieldreferrer tag is a tag which needs (or can use) a 'field' to
- * operate on. The most evident example is the FieldInfo tag. 
+ * operate on. The most evident example is the FieldInfo tag.
  *
  * Field itself is a FieldReferrer too (it can reuse another one)
  *
  * @author Michiel Meeuwissen
  * @see    FieldInfoTag
- * @version $Id: FieldReferrerTag.java,v 1.9 2005-07-20 14:57:55 michiel Exp $ 
+ * @version $Id: FieldReferrerTag.java,v 1.10 2006-09-27 20:48:26 michiel Exp $
  */
 
-public abstract class FieldReferrerTag extends NodeReferrerTag {	
+public abstract class FieldReferrerTag extends NodeReferrerTag {
 
     private Attribute parentFieldId = Attribute.NULL;
 
@@ -38,9 +38,9 @@ public abstract class FieldReferrerTag extends NodeReferrerTag {
     * This method tries to find an ancestor object of type NodeProvider
     * @return the FieldProvider if found else an exception.
     *
-    */	
-    public FieldProvider findFieldProvider() throws JspTagException {        
-        FieldProvider fp =  (FieldProvider) findParentTag(FieldProvider.class, (String) parentFieldId.getValue(this));
+    */
+    public FieldProvider findFieldProvider() throws JspTagException {
+        FieldProvider fp =  findParentTag(FieldProvider.class, (String) parentFieldId.getValue(this));
         if (fp instanceof Writer) {
             ((Writer) fp).haveBody();
         }
@@ -52,5 +52,5 @@ public abstract class FieldReferrerTag extends NodeReferrerTag {
         return findFieldProvider().getFieldVar();
     }
 
-   
+
 }
