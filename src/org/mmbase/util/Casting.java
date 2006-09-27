@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.90 2006-09-27 12:24:34 michiel Exp $
+ * @version $Id: Casting.java,v 1.91 2006-09-27 20:39:37 michiel Exp $
  */
 
 import java.util.*;
@@ -360,9 +360,6 @@ public class Casting {
         return toList(o, ",");
     }
 
-    public static List<String> toList(String o) {
-        return toList(o, ",");
-    }
 
     /**
      * As {@link #toList(Object)} but with one extra argument.
