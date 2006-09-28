@@ -1,11 +1,13 @@
+<%@page import="com.finalist.tree.*,nl.leocms.util.tools.documents.*" %>
 <%@include file="/taglibs.jsp" %>
 <mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud">
 <%@include file="includes/templateheader.jsp" %>
 <%@include file="includes/cacheparams.jsp" %>
 <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
 <%@include file="includes/calendar.jsp" %>
+<%@include file="includes/check_documents_root.jsp" %>
 <% 
-// if there are no documents related to this page, find the document which filename is equal to the page title (=subtreeDoc)
+// if no documents are related to this page, find the document which filename is equal to the page title (=subtreeDoc)
 // and add all documents under the subtreeDoc to this page
 %><mm:node number="<%= paginaID %>" jspvar="thisPage">
    <mm:related path="posrel,documents" max="1" constraints="documents.type='file'">

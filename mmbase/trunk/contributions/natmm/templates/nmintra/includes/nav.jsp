@@ -1,7 +1,7 @@
 <div class="navlist" id="navlist">
   <table border="0" cellpadding="0" cellspacing="0">
       <tr>
-          <td><img src="media/spacer.gif" width="158" height="25"></td>
+          <td><img src="media/spacer.gif" width="158" height="35"></td>
       </tr>
       <mm:log jspvar="log">
       <%

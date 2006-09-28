@@ -17,8 +17,9 @@ String buttonText = "verstuur je bericht";
         <td><img src="media/spacer.gif" width="10" height="1"></td>
         <td colspan=3>
           <div class="pageheader"><mm:field name="titel" /></div><br/>
-          <mm:field name="titel_fra"/><br>
-          <mm:field name="omschrijving"/><br><br><br>
+          <mm:field name="omschrijving" jspvar="text" vartype="String" write="false">
+            <% if(text!=null&&!HtmlCleaner.cleanText(text,"<",">","").trim().equals("")) { %><mm:write /><br/><br/><% } %>
+          </mm:field>
         </td>
       </tr>
       <% 
