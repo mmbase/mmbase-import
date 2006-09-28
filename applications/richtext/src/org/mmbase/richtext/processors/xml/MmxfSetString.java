@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
  * information see the javadoc of that class.
  * @author Michiel Meeuwissen
- * @version $Id: MmxfSetString.java,v 1.10 2006-09-21 11:17:34 michiel Exp $
+ * @version $Id: MmxfSetString.java,v 1.11 2006-09-28 22:26:09 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -130,7 +130,7 @@ public class MmxfSetString implements  Processor {
     private static Pattern ignore        = Pattern.compile("link|#comment");
     private static Pattern hElement      = Pattern.compile("h([1-9])");
     private static Pattern crossElement  = Pattern.compile("a|img|div");
-
+    private static Pattern divClasses    = Pattern.compile(".*\\bfloat (?:note left|note right|intermezzo|caption left|caption right|quote left|quote right)");
 
     private static Pattern allowedAttributes = Pattern.compile("id|href|src|class|type");
 
@@ -228,7 +228,14 @@ public class MmxfSetString implements  Processor {
                 Element imp = destination.getOwnerDocument().createElement("a");
                 copyAttributes((Element) node, imp);
                 if (name.equals("div")) {
-                    imp.setAttribute("class", getCssClass("div " + imp.getAttribute("class")));
+                    String cssClass = getCssClass("div " + imp.getAttribute("class"));
+                    if (! divClasses.matcher(cssClass).matches()) { 
+                        // this is no div of ours (copy/pasting?), ignore it.
+                        parseKupu((Element) node, destination, links, new ParseState(state.level, MODE_INLINE));
+                        continue;
+                    } else {
+                        imp.setAttribute("class", getCssClass("div " + imp.getAttribute("class")));
+                    }
                 }
                 if (state.mode == MODE_SECTION) {
                     Element p = destination.getOwnerDocument().createElement("p");
