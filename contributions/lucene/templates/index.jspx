@@ -15,13 +15,12 @@
       <mm:cloud rank="administrator">
         <p>
           <em><mm:time format="yyyy-MM-dd HH:mm:ss" time="now" /></em>
+          Configuration was read at <mm:function module="lucene" name="config"><mm:time format="yyyy-MM-dd HH:mm:ss"/></mm:function>.
+          <mm:booleanfunction name="readOnly" module="lucene">
+            The lucene module is configured to be <em>read only</em>.
+          </mm:booleanfunction>
           The following indices are currently defined.
         </p>
-        <mm:booleanfunction name="readOnly" module="lucene">
-          <p>
-            The lucene module is configured to be read only.
-          </p>
-        </mm:booleanfunction>
         
         <mm:context id="img">
           <mm:url id="next" write="false" page="/mmbase/style/images/next.png" />
@@ -29,6 +28,14 @@
           <mm:url id="reload" write="false" page="/mmbase/style/images/reload.png" />
         </mm:context>
         <table summary="Lucene indices">
+          <col />
+          <col />
+          <col class="numeric" />
+          <col />
+          <col class="errors" />
+          <col class="numeric" />
+          <col />
+          <col />
           <tr>
             <th>name</th>
             <th>description</th>
@@ -53,7 +60,7 @@
             <td>
               <mm:function module="lucene" referids="index" name="description" />
             </td>
-            <td>
+            <td class="numeric">
               <mm:function module="lucene" referids="index" name="searchsize" />
             </td>
             <td>
@@ -69,7 +76,7 @@
                 </mm:listfunction>
               </mm:functioncontainer>
             </td>
-            <td>
+            <td class="numeric" >
               <mm:function module="lucene" referids="index" name="nodes" />
             </td>
             <td>
