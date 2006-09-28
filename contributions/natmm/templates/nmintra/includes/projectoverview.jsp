@@ -47,9 +47,9 @@
 						><mm:first inverse="true">, </mm:first
 							><a href="smoelenboek.jsp?p=wieiswie&employee=<mm:field name="medewerkers.number" 
 								/>"><span style="text-decoration:underline;" class="dark">
-									<mm:field name="medewerkers.firstname"/> <mm:field name="medewerkers.lastname"
-							/></span></a><mm:last></td>
-					</tr>
+									<mm:field name="medewerkers.titel"/></span></a>
+             <mm:last></td>
+					   </tr>
 						</mm:last
 					></mm:related>
 					<%-- not used by M. Driessen 24.11.2005

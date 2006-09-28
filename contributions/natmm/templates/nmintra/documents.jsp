@@ -4,16 +4,8 @@
 <%@include file="includes/templateheader.jsp" %>
 <%@include file="includes/cacheparams.jsp" %>
 <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
-<%
-// ** check whether documents root exists
-// ** if there are no documents of type "file" related to this page: add all documents under the documents_root to this page
-%>
-<mm:node number="documents_root" notfound="skipbody">
-   <mm:import id="root_document_exists" />
-</mm:node>
-<mm:notpresent referid="root_document_exists">
-   <% (new DirReader()).run(); %>
-</mm:notpresent>
+<%@include file="includes/check_documents_root.jsp" %>
+<% // ** if no documents of type "file" are related to this page: add all documents under the documents_root to this page %>
 <mm:node number="<%= paginaID %>" jspvar="thisPage">
    <mm:related path="posrel,documents" max="1" constraints="documents.type='file'">
       <mm:import id="page_contains_file" />
