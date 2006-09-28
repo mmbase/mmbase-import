@@ -8,7 +8,6 @@
       <field ftype="data" name="titel"><prompt>titel</prompt></field>
       <field ftype="startwizard" wizardname="config/link/link_ml" />
    </item>
-
    <command name="search" nodepath="link" age="-1" fields="titel,url,alt_tekst,metatags" orderby="url">
       <prompt>zoek link</prompt>
       <search-filter>
@@ -31,10 +30,9 @@
    <command name="startwizard" inline="true" wizardname="config/link/link_ml" objectnumber="new">
       <prompt></prompt>
    </command>
-
    <action type="create">
       <relation destinationtype="link" role="lijstcontentrel">
-         <field name="pos">{sum(//relation[@role='lijstcontentrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+         <field name="pos">{sum(//relation[@role='lijstcontentrel' and @lastitem='true' and object/@type ='link']/field[@name='pos'])+{$pos}}</field>
       </relation>
    </action>
 </list>

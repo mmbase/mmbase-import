@@ -24,7 +24,7 @@
    <action type="create">
       <relation destinationtype="shorty" role="rolerel">
          <field name="rol">2</field>
-         <field name="pos">{sum(//relation[@role='rolerel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+         <field name="pos">{sum(//relation[@role='rolerel' and @lastitem='true' and object/@type ='shorty']/field[@name='pos'])+{$pos}}</field>
       </relation>
    </action>
 </list>

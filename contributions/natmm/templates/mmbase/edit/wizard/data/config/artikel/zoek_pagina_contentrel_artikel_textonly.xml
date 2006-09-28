@@ -23,7 +23,7 @@
    <action type="create">
       <relation role="contentrel">
          <object type="artikel" /> <!-- necessary for command insert -->
-         <field name="pos">{sum(//relation[@role=&apos;posrel&apos; and @lastitem=&apos;true&apos;]/field[@name=&apos;pos&apos;])+{$pos}}</field>
+         <field name="pos">{sum(//relation[@role='contentrel' and @lastitem='true' and object/@type ='artikel']/field[@name='pos'])+{$pos}}</field>
       </relation>
    </action>
 </list>

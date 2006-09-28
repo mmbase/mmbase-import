@@ -6,17 +6,15 @@
       <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>positie</prompt></field>
       <field ftype="startwizard" wizardname="config/media/media" />
    </item>
-
    <command name="search" nodepath="media" age="-1" fields="">
       <prompt>zoek media</prompt>
    </command>
    <command name="startwizard" inline="true" wizardname="config/media/media" objectnumber="new">
        <prompt></prompt>
    </command>
-
    <action type="create">
       <relation destinationtype="media" role="posrel">
-         <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+         <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true' and object/@type ='media']/field[@name='pos'])+{$pos}}</field>
       </relation>
    </action>
 </list>

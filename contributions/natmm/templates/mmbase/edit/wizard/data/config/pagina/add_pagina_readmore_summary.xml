@@ -11,7 +11,7 @@
   <action type="create">
       <relation destinationtype="pagina" role="readmore">
          <object type="pagina" /> <!-- necessary for command insert -->
-         <field name="pos">{sum(//relation[@role=&apos;posrel&apos; and @lastitem=&apos;true&apos;]/field[@name=&apos;pos&apos;])+{$pos}}</field>
+         <field name="pos">{sum(//relation[@role='readmore' and @lastitem='true' and object/@type ='pagina']/field[@name='pos'])+{$pos}}</field>
       </relation>
   </action>
 	<command name="search" nodepath="pagina" fields="titel" orderby="titel" age="-1">
