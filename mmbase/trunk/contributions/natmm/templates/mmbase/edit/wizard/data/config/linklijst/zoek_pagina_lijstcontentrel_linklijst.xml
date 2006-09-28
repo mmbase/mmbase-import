@@ -3,9 +3,9 @@
 <list role="lijstcontentrel" destination="linklijst" minoccurs="0" maxoccurs="*" orderby="field[@name='pos']" ordertype="number">
 	<title>linklijst</title>
 	<item>
-       <field ftype="line" name="naam"><prompt>naam</prompt></field>
-       <list include="config/link/zoek_linklijst_lijstcontentrel_link.xml" />
-   	 <!-- field ftype="startwizard" wizardname="config/linklijst/linklijst" / -->
+    <field ftype="line" name="naam"><prompt>naam</prompt></field>
+    <list include="config/link/zoek_linklijst_lijstcontentrel_link.xml" />
+   	<!-- field ftype="startwizard" wizardname="config/linklijst/linklijst" / -->
 	</item>
 	<command name="search" nodepath="linklijst" age="-1" fields="naam" >
 		<prompt>zoek linklijst</prompt>
@@ -14,15 +14,12 @@
 			<search-fields>[naam]</search-fields>
 		</search-filter>
 	</command>
-
 	<command name="startwizard" inline="true" wizardname="config/linklijst/linklijst" objectnumber="new">
 		<prompt></prompt>
 	</command>
-
 	<action type="create">
 		<relation destinationtype="linklijst" role="lijstcontentrel">
-	      <field name="pos">{sum(//relation[@role='lijstcontentrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
-      </relation>
+	    <field name="pos">{sum(//relation[@role='lijstcontentrel' and @lastitem='true' and object/@type ='linklijst']/field[@name='pos'])+{$pos}}</field>
+    </relation>
 	</action>
 </list>
-

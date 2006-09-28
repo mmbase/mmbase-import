@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<list role="posrel" destination="images"  minoccurs="0" maxoccurs="*" orderby="field[@name='pos']" ordertype="number">
+<list role="posrel" destination="images" minoccurs="0" maxoccurs="*" orderby="field[@name='pos']" ordertype="number">
 	<title>afbeelding</title>	
 	<item displaytype="image">
 		<field name="titel" ftype="data"><prompt>titel</prompt></field>
@@ -36,7 +36,7 @@
 	</command>
 	<action type="create">
 		<relation destinationtype="images" role="posrel">
-	      <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+	      <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true' and object/@type ='images']/field[@name='pos'])+{$pos}}</field>
       </relation>
 	</action>
 </list>

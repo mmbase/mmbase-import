@@ -3,8 +3,8 @@
 <list role="contentrel" destination="vgv" minoccurs="0" maxoccurs="*" orderby="field[@name='pos']" ordertype="number">
 	<title>veelgestelde vragen</title>
 	<item>
-       <field name="titel" ftype="data"><prompt>titel</prompt></field>
-       <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>positie</prompt></field>
+     <field name="titel" ftype="data"><prompt>titel</prompt></field>
+     <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>positie</prompt></field>
    	 <field ftype="startwizard" wizardname="config/vgv/vgv" />
 	</item>
 	<command name="search" nodepath="vgv" age="-1" fields="titel,metatags">
@@ -18,14 +18,12 @@
          <search-fields>[metatags]</search-fields>
       </search-filter>
 	</command>
-
 	<command name="startwizard" inline="true" wizardname="config/vgv/vgv" objectnumber="new">
 		<prompt></prompt>
 	</command>
-
 	<action type="create">
 		<relation destinationtype="vgv" role="contentrel">
-	      <field name="pos">{sum(//relation[@role='contentrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+	      <field name="pos">{sum(//relation[@role='contentrel' and @lastitem='true' and object/@type ='vgv']/field[@name='pos'])+{$pos}}</field>
       </relation>
 	</action>
 </list>

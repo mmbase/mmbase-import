@@ -16,7 +16,7 @@
    </command>
    <action type="create">
       <relation destinationtype="extra_info" role="readmore">
-         <field name="pos">{sum(//relation[@role='readmore' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+         <field name="pos">{sum(//relation[@role='readmore' and @lastitem='true' and object/@type ='extra_info']/field[@name='pos'])+{$pos}}</field>
       </relation>
    </action>
 </list>

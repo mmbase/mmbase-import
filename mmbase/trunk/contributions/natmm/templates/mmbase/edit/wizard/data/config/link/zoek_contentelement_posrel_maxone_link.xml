@@ -8,7 +8,6 @@
       <field ftype="data" name="target"><prompt>target</prompt></field>
 		<field ftype="startwizard" wizardname="config/link/link" />
 	</item>
-
 	<command name="search" nodepath="link" age="-1" fields="titel,url,target,metatags" orderby="url">
 		<prompt>zoek link</prompt>
       <search-filter>
@@ -28,14 +27,12 @@
          <search-fields>[metatags]</search-fields>
       </search-filter>
 	</command>
-
 	<command name="startwizard" inline="true" wizardname="config/link/link" objectnumber="new">
 		<prompt></prompt>
 	</command>
-
 	<action type="create">
 		<relation destinationtype="link" role="posrel">
-	      <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+	      <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true' and object/@type ='link']/field[@name='pos'])+{$pos}}</field>
       </relation>
 	</action>
 </list>

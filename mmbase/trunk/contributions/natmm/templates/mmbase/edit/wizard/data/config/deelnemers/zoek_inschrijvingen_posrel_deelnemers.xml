@@ -1,18 +1,14 @@
 <?xml version="1.0"?>
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-
 <list role="posrel" destination="deelnemers" minoccurs="0" maxoccurs="*" orderby="field[@name='pos']" ordertype="number">
-   <title>
-   deelnemers   </title>
+   <title>deelnemers</title>
    <item>
       <field ftype="data" name="titel"><prompt>titel</prompt></field>
       <field ftype="data" name="firstname" />
       <field ftype="data" name="lastname" />
       <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>positie</prompt></field>
-
       <field ftype="startwizard" wizardname="config/deelnemers/deelnemers" />
    </item>
-
    <command name="search" nodepath="deelnemers" age="-1" fields="titel,firstname,lastname" orderby="lastname">
       <prompt>zoek deelnemer</prompt>
       <search-filter>
@@ -33,7 +29,7 @@
    </command>
    <action type="create">
       <relation destinationtype="deelnemers" role="posrel">
-      <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+      <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true' and object/@type ='deelnemers']/field[@name='pos'])+{$pos}}</field>
       </relation>
    </action>
 </list>

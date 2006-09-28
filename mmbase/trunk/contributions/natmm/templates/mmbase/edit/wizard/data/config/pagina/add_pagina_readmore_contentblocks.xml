@@ -32,7 +32,7 @@
 	<action type="create">
 		<relation role="readmore">
 			<object type="pagina" />
-			 <field name="pos">{sum(//relation[@role=&apos;readmore&apos; and @lastitem=&apos;true&apos;]/field[@name=&apos;pos&apos;])+{$pos}}</field>
+			 <field name="pos">{sum(//relation[@role='readmore' and @lastitem='true' and object/@type ='pagina']/field[@name='pos'])+{$pos}}</field>
 			 <field name="readmore">1</field>
       </relation>
 	</action>
