@@ -102,7 +102,7 @@ if(shop_itemsIterator.size()>0) {
 			%><%@include file="getdiscount.jsp" 
 			%><tr>
 				<td class="cart<%= rowParity %>" style="text-align:left;padding-right:0px;padding-left:5px;">
-					<a href="javascript:changeIt('<mm:url page="<%= ph.createItemUrl(thisShop_item,paginaID,null,request.getContextPath()) %>" 
+					<a href="javascript:changeIt('<mm:url page="<%= ph.createPaginaUrl(paginaID,request.getContextPath()) + "?u=" + thisShop_item %>" 
 						/>');" onclick="needToConfirm = false;"><mm:field name="titel" /></a><br>
 				</td>
 				<td class="cart<%= rowParity %>" style="padding-right:0px;">
@@ -143,7 +143,7 @@ if(shop_itemsIterator.size()>0) {
 						} %></td>
 				<% } %>
 				<td class="cart<%= rowParity %>"><a href="javascript:changeIt('<mm:url
-					page="<%= ph.createItemUrl(thisShop_item,"bestel","t=delete",request.getContextPath()) %>" />');" onclick="needToConfirm = false;"
+					page="<%= ph.createPaginaUrl("bestel",request.getContextPath()) +"?u=" + thisShop_item +"&t=delete" %>" />');" onclick="needToConfirm = false;"
 					><img src="media/delete_<%= rowParity %>.gif" border="0" alt="verwijder dit artikel"></a></td>
 				</tr>
 				<tr><td colspan="6" width="100%" class="titlebar"><img src="media/spacer.gif" width="1" height="1" border="0" alt=""></td></tr>

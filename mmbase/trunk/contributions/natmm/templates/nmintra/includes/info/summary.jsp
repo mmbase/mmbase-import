@@ -7,8 +7,7 @@
 	<mm:related path="contentrel,artikel" orderby="artikel.embargo"
       directions="DOWN" max="<%= "" + numberOfMessages %>" constraints="<%= articleConstraint %>"
 		  ><mm:field name="artikel.number" jspvar="artikel_number" vartype="String" write="false"><%
-        String readmoreUrl = ph.createItemUrl(artikel_number,page_number,null,request.getContextPath());
-        // "?p=" +  page_number  + "&article=" +  artikel_number;
+        String readmoreUrl = ph.createPaginaUrl(page_number,request.getContextPath()) + "?article=" + artikel_number;
 				%><%@include file="summaryrow.jsp" 
 
 			%></mm:field
