@@ -1,6 +1,6 @@
 <%@include file="../whiteline.jsp" %>
 <table cellpadding="0" cellspacing="0"  align="center" border="0">
-   <form method="POST" name="infoform" action="<%= requestURL %><%= path %><%= templateQueryString %>" onSubmit="return postIt();"> 
+   <form method="POST" name="infoform" action="<%= javax.servlet.http.HttpUtils.getRequestURL(request) + templateQueryString %>" onSubmit="return postIt();"> 
    <tr>
       <td class="bold"><span class="light">Zoekterm</span></td>
    </tr>

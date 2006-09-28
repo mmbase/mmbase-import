@@ -1,7 +1,7 @@
 <% 
 // **************** people finder: right bar with the form *****************
 %><%@include file="../whiteline.jsp" %>
-<form method="POST" name="advsearchform" action="<%= requestURL %>search.jsp?p=search" onSubmit="return postIt('submit');">
+<form method="POST" name="advsearchform" action="<%= ph.createPaginaUrl(paginaID,request.getContextPath()) %>" onSubmit="return postIt('submit');">
 <table cellpadding="0" cellspacing="0"  align="center">
   <tr>
      <td class="bold"><span class="light">Zoekterm</span></td>
@@ -143,10 +143,10 @@ if(sPageRefMinOne!=null) {
  function postIt(action) {
     var href = document.advsearchform.action;
     if(action!='clear') {
+    var termsearch = document.advsearchform.elements["search"].value;
+    href += "?search=" + termsearch;
     var pool = document.advsearchform.elements["pool"].value;
     if(pool != '') href += "&pool=" + pool;
-    var termsearch = document.advsearchform.elements["search"].value;
-    if(termsearch != '') href += "&search=" + termsearch;
     var categorie = document.advsearchform.elements["categorie"].value;
     if(categorie != '') href += "&categorie=" + categorie;
     var archive = document.advsearchform.elements["archive"].value;
@@ -166,7 +166,7 @@ if(sPageRefMinOne!=null) {
     if(v != '') { period += v; } else { period += '0000'; }
     if(period != '0000000000000000') href += "&d=" + period;
    }	else {
-    href += "&search=ik%20zoek%20op%20...";
+    href += "?search=ik%20zoek%20op%20...";
    }
    href += "&t=adv_search";
      document.location = href;

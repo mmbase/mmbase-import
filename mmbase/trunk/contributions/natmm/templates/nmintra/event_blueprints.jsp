@@ -27,15 +27,15 @@
       boolean bSearchIsOn = !termSearchId.equals("")||!eTypeId.equals("")||!pCategorieId.equals("")||!pAgeId.equals("")||!nReserveId.equals("")
                            ||!eDistanceId.equals("")||!eDurationId.equals("")||!departmentId.equals("");
 
-      String searchUrl = "event_blueprints.jsp?p=" + paginaID
+      String searchUrl = javax.servlet.http.HttpUtils.getRequestURL(request) + "?p=" + paginaID
 				 + "&termsearch=" + termSearchId
-             + "&evt=" + eTypeId
-             + "&pc=" + pCategorieId
-             + "&pa=" + pAgeId
-             + "&nr=" + nReserveId
-             + "&evl=" +  eDistanceId
-             + "&evd=" + eDurationId
-             + "&department=" + departmentId;
+         + "&evt=" + eTypeId
+         + "&pc=" + pCategorieId
+         + "&pa=" + pAgeId
+         + "&nr=" + nReserveId
+         + "&evl=" +  eDistanceId
+         + "&evd=" + eDurationId
+         + "&department=" + departmentId;
 
       if(bSearchIsOn) {
       

@@ -27,107 +27,106 @@ public String searchResults(TreeSet searchResultList) {
 <td class="transperant">
 <div class="<%= infopageClass %>" id="infopage">
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
-    <tr><td style="padding:10px;padding-top:18px;">
-    <% 
-     
-      postingStr += "|";
-      String action = getResponseVal("action",postingStr);
-
-	   boolean debug = false;
-	  	TreeSet educations = new TreeSet();
-		TreeSet keywords = new TreeSet();
-		TreeSet educationPools = new TreeSet();
-		TreeSet providers = new TreeSet();
-		TreeSet competencies = new TreeSet();
-
-      String sEducations = "";
-      String searchConstraint = "";
-
-      boolean bSearchIsOn = !termSearchId.equals("")||!keywordId.equals("")||!poolId.equals("")||!providerId.equals("")||!competenceId.equals("");
-      String localPath = "";
-      if(request.getRequestURI().indexOf("/editors/")!=-1) {
-         localPath = "/dev/";
-      }
-      
-      if(debug) { 
-         %>
-         Start search with:<br/>
-         termsearch = <%= termSearchId %><br/>
-         pool=<%= poolId %><br/>
-         pr=<%= providerId %><br/>
-         k=<%= keywordId %><br/>
-         c=<%= competenceId %><br/>
-         <%
-      }
-      if(bSearchIsOn) {
-         // ** first determine the educations that fit the search term criteria
-			if (!termSearchId.equals("")){
-				searchConstraint = "(( UPPER(educations.titel) LIKE '%" + termSearchId.toUpperCase() + "%') OR ( UPPER(educations.content) LIKE '%" + termSearchId.toUpperCase() + "%') ";
-			}
-			%>
-			<mm:list path="educations" constraints="<%= searchConstraint %>">
-				<%@include file="includes/education/searcheducations.jsp" %>
-			</mm:list>
-			<%
-			sEducations = searchResults(educations);
-			if(debug) { %> termsearch: <%= sEducations %><br/><% }
-
-			if (!keywordId.equals("")&&!sEducations.equals("")){
-				educations.clear();
-				searchConstraint = "(keywords.number = '" + keywordId + "')"; 	   
-				%>
-				<mm:list nodes="<%= sEducations %>" path="educations,related,keywords" constraints="<%= searchConstraint %>">
-					<%@include file="includes/education/searcheducations.jsp" %>
-				</mm:list>
-				<%
-				sEducations = searchResults(educations);
-				if(debug) { %>keyword: <%= sEducations %><br/><% }
-			}
-
-			if (!poolId.equals("")&&!sEducations.equals("")){
-				educations.clear();
-				searchConstraint = "(pools.number = '" + poolId + "')";
-				%>
-				<mm:list nodes="<%= sEducations %>" path="educations,posrel,pools" constraints="<%= searchConstraint %>">
-					<%@include file="includes/education/searcheducations.jsp" %>
-				</mm:list>
-				<%
-				sEducations = searchResults(educations);
-				if(debug) { %>pool: <%= sEducations %><br/><% }
-			}
-
-			if (!providerId.equals("")&&!sEducations.equals("")){
-				educations.clear();
-				searchConstraint = "(providers.number = '" + providerId + "')";
-				%>
-				<mm:list nodes="<%= sEducations %>" path="educations,related,providers" constraints="<%= searchConstraint %>">
-					<%@include file="includes/education/searcheducations.jsp" %>
-				</mm:list>
-				<%
-				sEducations = searchResults(educations);
-				if(debug) { %>providers: <%= sEducations %><br/><% }
-			}
-
-			if (!competenceId.equals("")&&!sEducations.equals("")){
-				educations.clear();
-				searchConstraint = "(competencies.number = '" + competenceId + "')";
-				%>
-				<mm:list nodes="<%= sEducations %>" path="educations,posrel,competencies" constraints="<%= searchConstraint %>">
-					<%@include file="includes/education/searcheducations.jsp" %>
-				</mm:list>
-				<%
-				sEducations = searchResults(educations);
-				if(debug) { %>competence: <%= sEducations %><br/><% }
-			}
-      }
-      // *** add the objects that are still possible to the TreeSets
-      int iEducations = 1;
-      int cPos = sEducations.indexOf(",");
-      while(cPos>-1) {
-         cPos = sEducations.indexOf(",",cPos+1);
-         iEducations++;
-      }
+  <tr><td style="padding:10px;padding-top:18px;">
+  <% 
+  
+  postingStr += "|";
+  String action = getResponseVal("action",postingStr);
+  
+  boolean debug = false;
+  TreeSet educations = new TreeSet();
+  TreeSet keywords = new TreeSet();
+  TreeSet educationPools = new TreeSet();
+  TreeSet providers = new TreeSet();
+  TreeSet competencies = new TreeSet();
+  
+  String sEducations = "";
+  String searchConstraint = "";
+  
+  String searchUrl = javax.servlet.http.HttpUtils.getRequestURL(request) + "?p=" + paginaID;
+  
+  boolean bSearchIsOn = !termSearchId.equals("")||!keywordId.equals("")||!poolId.equals("")||!providerId.equals("")||!competenceId.equals("");
+  
+  if(debug) { 
+     %>
+     Start search with:<br/>
+     termsearch = <%= termSearchId %><br/>
+     pool=<%= poolId %><br/>
+     pr=<%= providerId %><br/>
+     k=<%= keywordId %><br/>
+     c=<%= competenceId %><br/>
+     <%
+  }
+  if(bSearchIsOn) {
+  
+    // ** first determine the educations that fit the search term criteria
+    if (!termSearchId.equals("")){
+      searchConstraint = "(( UPPER(educations.titel) LIKE '%" + termSearchId.toUpperCase() + "%') OR ( UPPER(educations.content) LIKE '%" + termSearchId.toUpperCase() + "%') ";
+    }
+    %>
+    <mm:list path="educations" constraints="<%= searchConstraint %>">
+      <%@include file="includes/education/searcheducations.jsp" %>
+    </mm:list>
+    <%
+    sEducations = searchResults(educations);
+    if(debug) { %> termsearch: <%= sEducations %><br/><% }
+    
+    if (!keywordId.equals("")&&!sEducations.equals("")){
+      educations.clear();
+      searchConstraint = "(keywords.number = '" + keywordId + "')"; 	   
       %>
+      <mm:list nodes="<%= sEducations %>" path="educations,related,keywords" constraints="<%= searchConstraint %>">
+        <%@include file="includes/education/searcheducations.jsp" %>
+      </mm:list>
+      <%
+      sEducations = searchResults(educations);
+      if(debug) { %>keyword: <%= sEducations %><br/><% }
+    }
+    
+    if (!poolId.equals("")&&!sEducations.equals("")){
+      educations.clear();
+      searchConstraint = "(pools.number = '" + poolId + "')";
+      %>
+      <mm:list nodes="<%= sEducations %>" path="educations,posrel,pools" constraints="<%= searchConstraint %>">
+        <%@include file="includes/education/searcheducations.jsp" %>
+      </mm:list>
+      <%
+      sEducations = searchResults(educations);
+      if(debug) { %>pool: <%= sEducations %><br/><% }
+    }
+    
+    if (!providerId.equals("")&&!sEducations.equals("")){
+      educations.clear();
+      searchConstraint = "(providers.number = '" + providerId + "')";
+      %>
+      <mm:list nodes="<%= sEducations %>" path="educations,related,providers" constraints="<%= searchConstraint %>">
+        <%@include file="includes/education/searcheducations.jsp" %>
+      </mm:list>
+      <%
+      sEducations = searchResults(educations);
+      if(debug) { %>providers: <%= sEducations %><br/><% }
+    }
+    
+    if (!competenceId.equals("")&&!sEducations.equals("")){
+      educations.clear();
+      searchConstraint = "(competencies.number = '" + competenceId + "')";
+      %>
+      <mm:list nodes="<%= sEducations %>" path="educations,posrel,competencies" constraints="<%= searchConstraint %>">
+        <%@include file="includes/education/searcheducations.jsp" %>
+      </mm:list>
+      <%
+      sEducations = searchResults(educations);
+      if(debug) { %>competence: <%= sEducations %><br/><% }
+    }
+  }
+  // *** add the objects that are still possible to the TreeSets
+  int iEducations = 1;
+  int cPos = sEducations.indexOf(",");
+  while(cPos>-1) {
+     cPos = sEducations.indexOf(",",cPos+1);
+     iEducations++;
+  }
+  %>
 		<mm:list nodes="<%= sEducations %>" path="educations,related,keywords">
 			<mm:field name="keywords.number" jspvar="keyword_number" vartype="String" write="false">
 				<% keywords.add(keyword_number); %>
@@ -204,7 +203,7 @@ public String searchResults(TreeSet searchResultList) {
 		}
 		%>
 		<%@include file="includes/back_print.jsp" %>
-      <%
+    <%
 		if (actionId.equals("feedback")){
          %><jsp:include page="includes/feedback/form.jsp">
             <jsp:param name="object" value="<%= educationId %>" />
@@ -213,39 +212,40 @@ public String searchResults(TreeSet searchResultList) {
             <jsp:param name="by" value="de cursusleid(st)er" />
             <jsp:param name="param" value="e" />
          </jsp:include><% 
-      } else {
+    } else {
 
 	   	if(!educationId.equals("")) {
 
 			   %>
 			   <%@include file="includes/education/detail.jsp" %>
-            <%
+         <%
 
-			} else { 
+			} else {
+      
 			   if(bSearchIsOn) {
-               %>
+           %>
 				   <%@include file="includes/education/searchresults.jsp"%>
-               <%
+           <%
 			   } else { 
-		 			String startnodeId = articleId;
-			   	String articlePath = "artikel";
+		 			 String startnodeId = articleId;
+			   	 String articlePath = "artikel";
 				   String articleOrderby = "";
 				   if(articleId.equals("-1")) { 
-				      startnodeId = paginaID;
-				  	   articlePath = "pagina,contentrel,artikel";
-				   	articleOrderby = "contentrel.pos";
-			   	} %>
-					<mm:list nodes="<%= startnodeId %>"  path="<%= articlePath %>" orderby="<%= articleOrderby %>">
-						<%@include file="includes/relatedarticle.jsp"%>
-					</mm:list>
-				   <%@include file="includes/pageowner.jsp"%>
-		         <% 
-            } 
-		   }
-	   }
-	  %>
-    </td>
-</tr>
+                startnodeId = paginaID;
+                 articlePath = "pagina,contentrel,artikel";
+              articleOrderby = "contentrel.pos";
+           } 
+           %>
+           <mm:list nodes="<%= startnodeId %>"  path="<%= articlePath %>" orderby="<%= articleOrderby %>">
+              <%@include file="includes/relatedarticle.jsp"%>
+           </mm:list>
+           <%@include file="includes/pageowner.jsp"%>
+           <% 
+         } 
+      }
+   }
+   %>
+   </td></tr>
 </table>
 </div>
 </td>

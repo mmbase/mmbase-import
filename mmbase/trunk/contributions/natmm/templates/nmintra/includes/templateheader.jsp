@@ -130,9 +130,6 @@ if(!categoryId.equals("")){ templateQueryString += "&category=" + categoryId; }
 if(!projectId.equals("")){ templateQueryString += "&project=" + projectId; }
 if(!educationId.equals("")){ templateQueryString += "&e=" + educationId; }
 
-String requestURL = javax.servlet.http.HttpUtils.getRequestURL(request).toString();
-requestURL = requestURL.substring(0,requestURL.lastIndexOf("/")) + "/";
-
 String imageTemplate = "";
  
 String sPageRef = (String) session.getAttribute("pageref");
