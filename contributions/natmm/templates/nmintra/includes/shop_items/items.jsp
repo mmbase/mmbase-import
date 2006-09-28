@@ -7,15 +7,17 @@
 ></mm:list><%
 
 while(shop_items.size()>0) {
-	String leftShop_itemNumber = (String) shop_items.removeFirst(); 
-	String leftShop_itemHref = ph.createItemUrl(leftShop_itemNumber,paginaID,null,request.getContextPath());
+
+  String paginaUrl =  ph.createPaginaUrl(paginaID,request.getContextPath());
+	String leftShop_itemNumber = (String) shop_items.removeFirst();
+	String leftShop_itemHref =  paginaUrl + "?u=" + leftShop_itemNumber;
 	
 	String rightShop_itemNumber = "";
 	String rightShop_itemHref = "";
 	boolean rightShop_itemExists = false;
 	if(shop_items.size()>0) { 
 		rightShop_itemNumber = (String) shop_items.removeFirst();
-		rightShop_itemHref = ph.createItemUrl(rightShop_itemNumber,paginaID,null,request.getContextPath());
+		rightShop_itemHref = paginaUrl + "?u=" + rightShop_itemNumber;;
 		rightShop_itemExists = true;
 	} 
 	%><table width="100%" cellspacing="0" cellpadding="0">
