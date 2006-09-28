@@ -26,11 +26,9 @@ if(!articleId.equals("-1")) {
       ><%@include file="includes/relatedarticle.jsp" 
    %></mm:list><%
     
-} else {  
-   %><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,teaser" constraints="contentrel.pos='3'"
-    ><p><div class="pageheader"><mm:field name="teaser.titel" /></div>
-    <mm:field name="teaser.omschrijving" /></p>
-   </mm:list><%
+} else {
+
+   %><%@include file="includes/relatedteaser.jsp" %><%
    
    int previousYear = 0;
    int previousMonth = 0;
@@ -66,7 +64,7 @@ if(!articleId.equals("-1")) {
 	// 1 - zowel verschijnings- en sluitingsdatum
 	// 2 - geen verschijningsdatum, wel sluitingsdatum
    if(dateType==null) {  dateType = "0"; }
-   String orderby = "artikel.embargo";
+   String orderby = "artikel.begindatum";
    boolean showTransmissionDate = false;
    boolean showExpireDate = false;
    if(dateType.equals("0")) { showTransmissionDate = true; showExpireDate = false; } 
@@ -81,7 +79,7 @@ if(!articleId.equals("-1")) {
         <mm:list nodes="<%= thisCalendar %>" path="artikel" orderby="<%= orderby %>" directions="UP" 
             ><mm:node element="artikel"
                ><mm:field name="number" jspvar="article_number" vartype="String" write="false"
-               ><mm:field name="embargo" jspvar="events_transmissiondate" vartype="String" write="false"
+               ><mm:field name="begindatum" jspvar="events_transmissiondate" vartype="String" write="false"
                ><mm:field name="verloopdatum" jspvar="events_expiredate" vartype="String" write="false"><%
                
                long tb = Integer.parseInt(events_transmissiondate); tb = 1000 * tb; dd.setTime(tb); cal.setTime(dd);
