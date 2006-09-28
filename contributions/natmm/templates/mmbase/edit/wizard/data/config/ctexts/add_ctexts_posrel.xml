@@ -23,7 +23,7 @@
     <action type="create">
         <relation role="posrel">
             <object type="ctexts" />
-            <field name="pos">{sum(//relation[@role=&apos;posrel&apos; and @lastitem=&apos;true&apos;]/field[@name=&apos;pos&apos;])+{$pos}}</field>
+            <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true' and object/@type ='ctexts']/field[@name='pos'])+{$pos}}</field>
         </relation>
     </action>
 </list>     

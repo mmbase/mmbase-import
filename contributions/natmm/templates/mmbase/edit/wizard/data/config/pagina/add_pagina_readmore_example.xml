@@ -13,7 +13,7 @@
 		<relation role="readmore">
 			<object type="pagina" />
 			 <field name="readmore">Lees verder op pagina</field>
-       <field name="pos">{sum(//relation[@role=&apos;posrel&apos; and @lastitem=&apos;true&apos;]/field[@name=&apos;pos&apos;])+{$pos}}</field>
+       <field name="pos">{sum(//relation[@role='readmore' and @lastitem='true' and object/@type ='pagina']/field[@name='pos'])+{$pos}}</field>
       </relation>
 	</action>
 	<command name="search" nodepath="pagina" fields="titel,metatags" orderby="titel" age="-1">

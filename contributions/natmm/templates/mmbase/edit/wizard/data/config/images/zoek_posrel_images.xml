@@ -36,7 +36,7 @@
 	</command>
 	<action type="create">
 		<relation destinationtype="images" role="posrel">
-	      <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+	      <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true' and object/@type ='images']/field[@name='pos'])+{$pos}}</field>
       </relation>
 	</action>
 </list>

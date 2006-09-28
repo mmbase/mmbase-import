@@ -25,7 +25,7 @@
    <action type="create">
       <relation role="readmore">
          <object type="paragraaf" /> <!-- necessary for command insert -->
-         <field name="pos">{sum(//relation[@role=&apos;readmore&apos; and @lastitem=&apos;true&apos;]/field[@name=&apos;pos&apos;])+{$pos}}</field>
+         <field name="pos">{sum(//relation[@role='readmore' and @lastitem='true' and object/@type ='paragraaf']/field[@name='pos'])+{$pos}}</field>
       </relation>
       <field name="titel_zichtbaar">1</field>
    </action>

@@ -28,7 +28,7 @@
    </command>
    <action type="create">
       <relation destinationtype="pagina" role="rolerel">
-          <field name="pos">{sum(//relation[@role='rolerel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+          <field name="pos">{sum(//relation[@role='rolerel' and @lastitem='true' and object/@type ='pagina']/field[@name='pos'])+{$pos}}</field>
       </relation>
    </action>
 </list>

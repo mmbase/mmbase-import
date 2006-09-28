@@ -22,7 +22,7 @@
    </command>
    <action type="create">
       <relation destinationtype="vacature" role="contentrel">
-         <field name="pos">{sum(//relation[@role=&apos;posrel&apos; and @lastitem=&apos;true&apos;]/field[@name=&apos;pos&apos;])+{$pos}}</field>
+         <field name="pos">{sum(//relation[@role='contentrel' and @lastitem='true' and object/@type ='vacature']/field[@name='pos'])+{$pos}}</field>
       </relation>
    </action>
 </list>
