@@ -2,7 +2,7 @@
 <table cellpadding="0" cellspacing="0" border="0" style="width:190px;" align="center">
 <tr>
 <td>
-   <form method="POST" name="form1" action="<%= requestURL %>educations.jsp<%= templateQueryString %>" onSubmit="return postIt();">
+   <form method="POST" name="form1" action="<%= javax.servlet.http.HttpUtils.getRequestURL(request) + templateQueryString %>" onSubmit="return postIt();">
       <table style="width:190px;margin-bottom:3px;" border="0" cellpadding="0" cellspacing="0">
          <tr>
 	   		<td class="bold"><div align="left" class="light">&nbsp;Zoekterm</div></td>

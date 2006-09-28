@@ -121,7 +121,8 @@ if(employeeFound) {
 // *************************************** right bar with the form *******************************
 %><td valign="top">
     <%@include file="includes/whiteline.jsp" 
-    %><form method="POST" action="<%= requestURL %>thumbs.jsp<%= templateQueryString %>" name="smoelenboek" onSubmit="return postIt(this);">
+    %><form method="POST" action="<%= javax.servlet.http.HttpUtils.getRequestURL(request) + templateQueryString 
+          %>" name="smoelenboek" onSubmit="return postIt(this);">
 <table cellpadding="0" cellspacing="0"  align="center">
     <tr><td><select name="department" style="width:195px;">
         <option value="default" <%  if(departmentId.equals("default")) { %>SELECTED<% } 

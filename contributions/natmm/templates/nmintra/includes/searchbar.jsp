@@ -3,21 +3,19 @@
 function startSearch() {
     var href = document.searchform.action;
     var search = escape(document.searchform.elements["search"].value);
-    if(search != '') {
-        href += "&search=" + search;
-    }
-    var adv = escape(document.searchform.elements["adv"].value);
-	 if(adv != '') {
+    href += "?search=" + search;
+    var adv = document.searchform.elements["adv"].value;
+	  if(adv != '') {
         href += "&t=" + adv;
     }
-	 document.location =  href;
+	  document.location =  href;
     return false; 
 }
 function startPhone() {
     var href = document.phoneform.action;
     var name = escape(document.phoneform.elements["name"].value);
     if(name != '') {
-        href += "&name=" + name;
+        href += "?name=" + name;
     }
     document.location =  href;
     return false; 
@@ -49,7 +47,7 @@ function startPhone() {
    <td style="width:70%;">
    <% // *************************************** zoek box ******************************* %>
    <table border="0" cellspacing="0" cellpadding="0" style="width:100%;">
-   	<form name="searchform" action="<%= requestURL %>search.jsp?p=search" onSubmit="return startSearch();">
+   	<form name="searchform" action="<%= ph.createPaginaUrl("search",request.getContextPath()) %>" onSubmit="return startSearch();">
    	<tr>
    	<td><input type="text" name="search" value="<%= (searchId.equals("")||actionId.equals("adv_search") ? defaultSearchText : searchId )
       %>" onClick="if(this.value=='<%= defaultSearchText %>') { this.value=''; }" style="text-align:left;width:110px;" /></td>
@@ -95,7 +93,7 @@ function startPhone() {
    <td style="padding-right:10px;width:251px;">
    <% // *************************************** phone box ******************************* %>
    <table border=0 cellspacing="0" cellpadding="0" align="right">
-   	  <form name="phoneform" action="<%= requestURL %>smoelenboek.jsp?p=wieiswie" onSubmit="return startPhone();">
+   	  <form name="phoneform" action="<%= ph.createPaginaUrl("wieiswie",request.getContextPath()) %>" onSubmit="return startPhone();">
    	  <tr>
    	  <td><img src="media/telefoon.gif" alt="Zoeken in het smoelenboek" onclick="startPhone();"></td>
    	  <td><input type="text" name="name" value="<% if(nameId.equals("")){ %><%= nameEntry %><% } else { %><%= nameId %><% } 
