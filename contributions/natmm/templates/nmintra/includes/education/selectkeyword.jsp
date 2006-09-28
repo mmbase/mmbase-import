@@ -21,7 +21,7 @@ if (!sKeywords.equals("")) { // set of educations contains one ore more keywords
 		<select name="menu1" style="width:180px;" onChange="MM_jumpMenu('document',this,0)">
 			<option value='educations.jsp?p=<%= paginaID %>&termsearch=<%= termSearchId %>&pool=<%= poolId %>&pr=<%= providerId %>&c=<%= competenceId %>'>Selecteer</option>
 			<mm:list nodes="<%= sKeywords %>" path="keywords" orderby="keywords.word" directions="UP">
-				<option value='<%= localPath %>educations.jsp?p=<%= paginaID %>&termsearch=<%= termSearchId %>&k=<mm:field name="keywords.number" />&pool=<%= poolId %>&pr=<%= providerId %>&c=<%= competenceId %>'><mm:field name="keywords.word" /></option>
+				<option value='<%= searchUrl %>&termsearch=<%= termSearchId %>&k=<mm:field name="keywords.number" />&pool=<%= poolId %>&pr=<%= providerId %>&c=<%= competenceId %>'><mm:field name="keywords.word" /></option>
 			</mm:list>
 		</select>
 		<br>

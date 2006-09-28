@@ -19,7 +19,7 @@ if (!sPools.equals("")) { // set of educations contains one ore more pools
 		<select name="menu1" style="width:180px;" onChange="MM_jumpMenu('document',this,0)">
 		  <option value='educations.jsp?p=<%= paginaID %>&termsearch=<%= termSearchId %>&k=<%= keywordId %>&pr=<%= providerId %>&c=<%= competenceId %>'>Selecteer</option>
 			<mm:list nodes="<%= sPools %>" path="pools" orderby="pools.name" directions="UP">
-				<option value='<%= localPath %>educations.jsp?&p=<%= paginaID %>&termsearch=<%= termSearchId %>&k=<%= keywordId %>&pool=<mm:field name="pools.number" />&pr=<%= providerId %>&c=<%= competenceId %>'><mm:field name="pools.name" /></option>
+				<option value='<%= searchUrl %>&termsearch=<%= termSearchId %>&k=<%= keywordId %>&pool=<mm:field name="pools.number" />&pr=<%= providerId %>&c=<%= competenceId %>'><mm:field name="pools.name" /></option>
 			</mm:list>
 		</select>
 		<br>

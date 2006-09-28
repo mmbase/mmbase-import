@@ -48,7 +48,8 @@ if(listSize>objectPerPage) {
    }
    if (pagesCount > 5) {
       %>
-      <form name="myform" action="<%= requestURL %><%= path %><%=  extTemplateQueryString  %>" method="post" style="padding:0px;margin:0px;">
+      <form name="myform" action="<%= javax.servlet.http.HttpUtils.getRequestURL(request) + extTemplateQueryString  
+        %>" method="post" style="padding:0px;margin:0px;">
         Ga naar pgn: <input name="offset" style="width:23px;height:17px;font-size:12px;">
         <a href="javascript:void(0);" onclick="myform.submit(); return false;" class="hover">Zoek ></a>
       </form>
