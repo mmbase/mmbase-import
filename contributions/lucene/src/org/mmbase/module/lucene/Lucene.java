@@ -46,7 +46,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.76 2006-09-27 21:20:25 michiel Exp $
+ * @version $Id: Lucene.java,v 1.77 2006-09-28 11:01:19 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, IdEventListener {
 
@@ -134,6 +134,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
     private boolean readOnly = false;
 
     private List<String> configErrors = new ArrayList();
+    private Date configReadTime = new Date(0);
 
     /**
      * Returns whether an element has a certain attribute, either an unqualified attribute or an attribute that fits in the
@@ -405,20 +406,15 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
     };
     {
         addFunction(lastFullIndexFunction);
-    }
 
+        addFunction(new AbstractFunction("default") {
+                public Indexer getFunctionValue(Parameters arguments) {
+                    return indexerMap.get(defaultIndex);
+                }
+            });
 
-    protected Function defaultIndexFunction = new AbstractFunction("default") {
-        public Indexer getFunctionValue(Parameters arguments) {
-            return indexerMap.get(defaultIndex);
-        }
-    };
-    {
-        addFunction(defaultIndexFunction);
-    }
-
-    protected Function  errorsFunction = new AbstractFunction("errors", INDEX, OFFSET, MAX) {
-            public List<String> getFunctionValue(Parameters arguments) {
+        addFunction(new AbstractFunction("errors", INDEX, OFFSET, MAX) {
+                public List<String> getFunctionValue(Parameters arguments) {
                 String index = arguments.getString(INDEX);
                 List<String> errors = indexerMap.get(index).getErrors();
                 int offset = arguments.get(OFFSET);
@@ -426,15 +422,16 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
                 if (toIndex > errors.size()) toIndex = errors.size();
                 return indexerMap.get(index).getErrors().subList(offset, toIndex);
             }
-        };
-    {
-        addFunction(errorsFunction);
-    }
-    {
+            });
         addFunction(new AbstractFunction("nodes", INDEX) {
             public Long getFunctionValue(Parameters arguments) {
                 String index = arguments.getString(INDEX);
                 return searcherMap.get(index).getNumberOfProducedNodes();
+            }
+            });
+        addFunction(new AbstractFunction("config") {
+            public Date getFunctionValue(Parameters arguments) {
+                return configReadTime;
             }
             });
     }
@@ -745,6 +742,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
                 log.warn("Can't read Lucene configuration: "+ e.getMessage(), e);
             }
         }
+        configReadTime = new Date();
     }
 
     public Searcher getSearcher(String indexName) {
