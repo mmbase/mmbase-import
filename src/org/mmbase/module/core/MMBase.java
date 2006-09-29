@@ -45,7 +45,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.207 2006-09-25 15:01:47 pierre Exp $
+ * @version $Id: MMBase.java,v 1.208 2006-09-29 11:56:05 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -989,7 +989,7 @@ public class MMBase extends ProcessorModule {
                     } else {
                         newclass = MMObjectBuilder.class;
                     }
-                    log.error(cnfe.toString() + " (for " + parser.getClassName() + ") Falling back to " + newclass.getName());
+                    log.error(cnfe.toString() + " (for '" + parser.getClassName() + "' of builder '" + ipath + builderName + "')  Falling back to " + newclass.getName());
                 }
                 builder = (MMObjectBuilder)newclass.newInstance();
 
