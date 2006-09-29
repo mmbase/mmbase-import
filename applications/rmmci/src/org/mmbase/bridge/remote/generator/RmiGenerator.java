@@ -19,7 +19,7 @@ import java.util.*;
  *
  * @since MMBase-1.9
  * @author Pierre van Rooden
- * @version $Id: RmiGenerator.java,v 1.1 2006-09-29 08:59:07 pierre Exp $
+ * @version $Id: RmiGenerator.java,v 1.2 2006-09-29 15:01:56 pierre Exp $
  */
 public class RmiGenerator extends AbstractClassGenerator {
 
@@ -93,9 +93,9 @@ public class RmiGenerator extends AbstractClassGenerator {
         indent4();
         Type returnType = m.getGenericReturnType();
         if (!returnType.equals(Void.TYPE)) {
-            appendTypeInfo(returnType);
+            appendTypeInfo(returnType,true);
             buffer.append(" retval = (");
-            appendTypeInfo(returnType);
+            appendTypeInfo(returnType,true);
             buffer.append(")");
         }
 
