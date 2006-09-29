@@ -16,10 +16,12 @@ import nl.didactor.component.Component;
 import nl.didactor.component.core.DidactorCore;
 import nl.didactor.component.email.DidactorEmail;
 import nl.didactor.component.proactivemail.cron.ProActiveMailJob;
+import nl.didactor.events.EventDispatcher;
+import nl.didactor.events.EventListener;
 import nl.didactor.mail.ExtendedJMSendMail;
+import nl.didactor.proactivemail.util.EventManager;
 
-import org.mmbase.bridge.*;
-
+import org.mmbase.bridge.Cloud;
 import java.util.List;
 import java.util.Map;
 
@@ -67,7 +69,8 @@ public class DidactorProActiveMail extends Component{
         
         initRelations();
         restartJobs();
-       
+        nl.didactor.events.EventListener reporting = new nl.didactor.proactivemail.util.EventManager();
+        nl.didactor.events.EventDispatcher.register(reporting);
     }
 
     /**

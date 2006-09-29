@@ -1,5 +1,8 @@
 package nl.didactor.builders;
 import nl.didactor.component.Component;
+import nl.didactor.events.Event;
+import nl.didactor.events.EventDispatcher;
+
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.module.core.*;
@@ -11,6 +14,7 @@ import org.mmbase.bridge.*;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
+import nl.didactor.events.*;
 
 /**
  * This class provides extra functionality for the People builder. It
@@ -206,6 +210,9 @@ public class PeopleBuilder extends DidactorBuilder {
             }
         }
         int number = super.insert(owner, node);
+        Event event = new Event((String) node.values.get("username"), null, null, null, null, 
+                "peopleaccountcreated", (new Integer(number)).toString(), "accountcreated");
+        EventDispatcher.report(event, null, null);
         log.info("insert people node");
         return number;
     }

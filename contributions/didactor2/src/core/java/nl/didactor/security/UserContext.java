@@ -79,4 +79,12 @@ public class UserContext extends org.mmbase.security.UserContext {
     public Rank getRank() throws org.mmbase.security.SecurityException {
         return rank;
     }
+    
+    public Integer getUserNumber() {
+        try {
+            if ( wrappedNode != null )
+                return (Integer)wrappedNode.getValue("number");
+        } catch (Exception e) {}
+        return new Integer(0);
+    }
 }
