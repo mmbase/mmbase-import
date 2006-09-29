@@ -82,7 +82,7 @@ public class NatMMConfig {
 
    // Natuurmonumenten
    public static boolean urlConversion = true;
-   public static boolean checkEmailByMailHost = true;
+   public static boolean checkEmailByMailHost = false;
    public static boolean hasClosedUserGroup = false;
    public static boolean useCreationDateInURL = false;
    public static boolean isUISconnected = false;
