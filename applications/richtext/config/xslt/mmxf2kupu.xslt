@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: mmxf2kupu.xslt,v 1.10 2006-09-19 08:46:46 michiel Exp $
+  @version: $Id: mmxf2kupu.xslt,v 1.11 2006-09-29 09:07:15 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -169,6 +169,18 @@
     <xsl:apply-templates select="o:field[@name = 'body']" />
   </xsl:template>
 
+  <xsl:template match="o:object[@type = 'blocks']" mode="class">
+    <xsl:param name="relation" />
+    <xsl:variable name="class"><xsl:value-of select="$relation/o:field[@name='class']" /></xsl:variable>
+    <xsl:choose>
+      <xsl:when test="starts-with($class, 'div ')">
+        <xsl:value-of select="substring-after($class, 'div ')" />
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$class" />
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
 
 
   <!-- don't want clickable images, and hope the id can survive in the title -->
