@@ -42,6 +42,7 @@ public class EventManager implements EventListener {
     public void report(Event event, HttpServletRequest request, HttpServletResponse response) {
         
         try {
+            if ( event == null ) return;
             String eType = event.getEventType();
             String eValue = event.getEventValue();
     

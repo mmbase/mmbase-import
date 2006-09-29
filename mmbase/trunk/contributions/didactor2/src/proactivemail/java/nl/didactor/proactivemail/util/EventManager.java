@@ -48,6 +48,7 @@ public class EventManager implements EventListener {
     public void report(Event event, HttpServletRequest request, HttpServletResponse response) {
         
         try {
+            if ( event == null ) return;
             String eType = event.getEventType();
             String eValue = event.getEventValue();
             if ( eType == null || eType.length() == 0 )
@@ -60,7 +61,7 @@ public class EventManager implements EventListener {
                 if ( eValue != null ) number = Integer.valueOf(eValue);
             } else
                 return;
-            createAndStoreEvent(number, eType, new Long(0));
+            createAndStoreEvent(number, eType, new Long(0), event.getUsername());
         } catch (Exception exc) {
             if ( event != null )
                 log.error("Can not write event "+event.getNote()+". \r\n"+exc.toString());
@@ -69,9 +70,10 @@ public class EventManager implements EventListener {
         }
     }
     
-    public static void createAndStoreEvent(Integer number, String eventtype, Long eventvalue) {
+    public static void createAndStoreEvent(Integer number, String eventtype, Long eventvalue, String username) {
         if ( number == null || eventtype == null || eventtype.length() == 0 )
             return;
+        if ( username == null ) username = "";
         if ( eventvalue == null ) eventvalue = new Long(0);
         MMBase mmb = (MMBase) org.mmbase.module.Module.getModule("mmbaseroot");
         try {
@@ -101,24 +103,25 @@ public class EventManager implements EventListener {
                 if ( list.size() == 0) {
                     // if not exist, create eventdata and than relation 'eventdatarel' between 'people' and 'eventdata'
                     
-                    String username = "system";
+                    String systemname = "system";
                     String admin = "admin";
                     MMObjectBuilder builderdata = mmb.getBuilder("eventdata");
-                    MMObjectNode data = builderdata.getNewNode(username);
+                    MMObjectNode data = builderdata.getNewNode(systemname);
                     data.setValue("timestamp", System.currentTimeMillis()/1000);
                     data.setValue("value", eventvalue.toString());
-                    int dataNumber = builderdata.insert(username, data);
+                    data.setValue("stringvalue", username);
+                    int dataNumber = builderdata.insert(systemname, data);
                     
 
                     RelDef reldef = mmb.getRelDef();
                     int reldefnumber = reldef.getNumberByName("eventdatarel");
-                    MMObjectNode relnode = builder.getNewNode(username);
+                    MMObjectNode relnode = builder.getNewNode(systemname);
                     relnode.setValue("snumber", number);
                     relnode.setValue("dnumber", dataNumber);
                     relnode.setValue("eventid", eventtypeNumber);
                     relnode.setValue("rnumber", reldefnumber);
                     relnode.setValue("dir", 2);
-                    builder.insert(username, relnode);
+                    builder.insert(systemname, relnode);
                 } 
             } 
         } catch (Exception e) {

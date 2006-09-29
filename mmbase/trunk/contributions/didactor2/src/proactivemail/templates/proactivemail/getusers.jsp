@@ -16,16 +16,15 @@
 <mm:import id="subject" jspvar="jsp_subject" vartype="String"/>
 <mm:import id="body" jspvar="jsp_body" vartype="String"/>
 <mm:import id="from" jspvar="jsp_from" vartype="String"/>
-<mm:import id="filteringjspname" jspvar="filteringjspname" >doFiltering.jsp</mm:import>
+<mm:cloud username="$username" password="$password" jspvar="cloud" method="pagelogon">
+<template>            
 <% 
   HashMap emailUsers = new HashMap();
   ArrayList removeUsers = new ArrayList();
   long lastSent = System.currentTimeMillis()/1000;
+  
+  try { 
 %>
-<%
-    try{ 
-%>
-<mm:cloud username="$username" password="$password" jspvar="cloud" method="pagelogon">
   <mm:listnodescontainer type="proactivemailbatches">
     <mm:constraint operator="LIKE" field="name" referid="templatename" />
     <mm:listnodes>
@@ -37,7 +36,6 @@
       </mm:listnodes>
     </mm:listnodescontainer>
     <%@include file="users.jsp" %>
-    <template>            
       <from><%=jsp_from%></from>
       <subject><%=jsp_subject%></subject>
       <body><%=jsp_body%></body>
@@ -75,8 +73,6 @@
             }
           %>
       </users>
-    </template>            
-</mm:cloud> 
 <%
     } catch (Exception ex) {
 %>
@@ -86,5 +82,7 @@
 <%
     }
 %>        
+</template>            
+</mm:cloud> 
 </mm:cloud> 
 </mm:content>
