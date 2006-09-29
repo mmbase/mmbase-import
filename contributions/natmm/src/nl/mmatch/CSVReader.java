@@ -12,7 +12,7 @@ import com.finalist.mmbase.util.CloudFactory;
 import nl.leocms.evenementen.Evenement;
 import nl.leocms.util.ApplicationHelper;
 import nl.leocms.util.ServerUtil;
-import nl.leocms.util.tools.HtmlCleaner;
+import nl.leocms.util.tools.*;
 import nl.leocms.applications.NatMMConfig;
 
 /**
@@ -69,23 +69,6 @@ public class CSVReader implements Runnable {
             log.info("UnZip " + e);
         }
         return dataFiles;
-    }
-    
-    private String superSearchString(String searchText) {
-        for(int charPos = 0; charPos < searchText.length(); charPos++){
-           char c = searchText.charAt(charPos);
-           if  (   !(('a'<=c)&&(c<='z'))
-               &&  !(('A'<=c)&&(c<='Z'))
-               &&  !(('0'<=c)&&(c<='9'))
-               &&  !(c=='-')
-               &&  !(c=='_')
-               &&  !(c=='.')
-               &&  !(c==' ')
-               ) {
-                   searchText = searchText.substring(0,charPos) + "%" + searchText.substring(charPos+1);
-               }
-        }
-        return searchText;
     }
     
     private String getValue(String entry, String startStr, String endStr)
@@ -342,7 +325,7 @@ public class CSVReader implements Runnable {
             // *** find the destination ***
             NodeManager relatedNodeNM = cloud.getNodeManager(relatedNode);
             NodeList constrainedList = relatedNodeNM.getList(relatedNodeKeyField
-                        + " LIKE '" + superSearchString(relatedNodeKeyValue) + "'",null,null);
+                        + " LIKE '" + (new SearchUtil()).superSearchString(relatedNodeKeyValue) + "'",null,null);
             if(constrainedList.size()>0) {
                 destination = constrainedList.getNode(0);
             } else {
@@ -375,16 +358,17 @@ public class CSVReader implements Runnable {
     }
     
     private Node updatePerson(Cloud cloud, TreeMap thisPerson, String thisPersonStr){
-        Node personsNode = getNode(cloud, "medewerkers", "externid='" + superSearchString((String) thisPerson.get("SOFI_NR")) + "'");
+        SearchUtil su = new SearchUtil();
+        Node personsNode = getNode(cloud, "medewerkers", "externid='" + su.superSearchString((String) thisPerson.get("SOFI_NR")) + "'");
         if(personsNode==null) {
             String aliasFB = ((String) thisPerson.get("ALIAS")).toUpperCase();
-            personsNode = getNode(cloud, "medewerkers", "externid='' AND UPPER(account) LIKE '" + superSearchString(aliasFB) + "'");
+            personsNode = getNode(cloud, "medewerkers", "externid='' AND UPPER(account) LIKE '" + su.superSearchString(aliasFB) + "'");
             if(personsNode==null) {
                 // *** aliasses are set by telefoonboek.jsp so maybe the firstname does not match with Beaufort ***
                 int aliasLength = aliasFB.length();
                 if(aliasLength>0) {
                     aliasFB = aliasFB.substring(0,aliasLength-1);
-                    personsNode = getNode(cloud, "medewerkers", "externid='' AND UPPER(account) LIKE '" + superSearchString(aliasFB) + "_'");
+                    personsNode = getNode(cloud, "medewerkers", "externid='' AND UPPER(account) LIKE '" + su.superSearchString(aliasFB) + "_'");
                 }
                 if(personsNode==null) {
                     NodeManager persons = cloud.getNodeManager("medewerkers");

@@ -270,7 +270,7 @@ long toTime = (cal.getTime().getTime()/1000);
   			         Totale opbrengst
   			      <% } %></strong></td>
  			   <td>
-				   <%-- <img src="../../media/bar-orange.gif" alt="" width="<%= maxWidth %>" height="5" border="0"> --%>
+				   <%-- <img src="../img/bar-orange.gif" alt="" width="<%= maxWidth %>" height="5" border="0"> --%>
 				   <% if(statstype.equals("opbrengst")) {
                      %>&euro; <%= (iTotal/100) %><%
                   } else {
@@ -287,7 +287,7 @@ long toTime = (cal.getTime().getTime()/1000);
 		   	      <tr <% if(rowCount%2==0) { %> bgcolor="6B98BD" <% } rowCount++; %>>
 		  		   	   <td colspan="2"><%= (String) me.getKey() %>&nbsp;</td>
 							<td>
-    							<img src="../../media/bar-orange.gif" alt="" width="<%= ( iTotal!=0 ? (maxWidth*iCount)/iTotal : 0 ) %>" height="5" border=0>
+    							<img src="../img/bar-orange.gif" alt="" width="<%= ( iTotal!=0 ? (maxWidth*iCount)/iTotal : 0 ) %>" height="5" border=0>
     							   (<% if(statstype.equals("opbrengst")) {
                                  %>&euro; <%= (iCount/100) %><%
                               } else {

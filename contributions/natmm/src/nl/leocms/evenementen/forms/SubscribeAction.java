@@ -553,19 +553,19 @@ public class SubscribeAction extends Action {
             ||(action.indexOf(subscribeForm.CANCEL_ACTION)>-1)
             ||(action.indexOf(subscribeForm.TO_AGENDA_ACTION)>-1)
             ||(action.indexOf(subscribeForm.OTHER_DATES_ACTION)>-1)
-            ||(action.indexOf(subscribeForm.FIX_DATE_ACTION)>-1)) {                          // **************** GoBack, Cancel ********
+            ||(action.indexOf(subscribeForm.FIX_DATE_ACTION)>-1)) {                          // *** GoBack, Cancel
 
            // removeObsoleteFormBean(mapping, request);
            subscribeForm.resetNumbers();
 
            if(action.indexOf(subscribeForm.OTHER_DATES_ACTION)>-1) {
                subscribeForm.setAction(subscribeForm.SELECT_DATE_ACTION);
-           } else if(!(action.indexOf(subscribeForm.FIX_DATE_ACTION)>-1)) {                  // *** leave fix_date unchanged ***
+           } else if(!(action.indexOf(subscribeForm.FIX_DATE_ACTION)>-1)) {                  // *** leave fix_date unchanged
                subscribeForm.setAction(subscribeForm.CANCELED);
            }
            forwardAction = mapping.findForward("success");
 
-        } else if(subscribeForm.getButtons().getDeleteParticipant().pressed()) {             // ****************** DeleteParticipant *********************
+        } else if(subscribeForm.getButtons().getDeleteParticipant().pressed()) {             // *** DeleteParticipant
 
            if(!subscribeForm.getSelectedParticipant().equals("-1")) {
 
@@ -578,7 +578,7 @@ public class SubscribeAction extends Action {
 
            forwardAction = mapping.findForward("continue");
 
-        } else if(subscribeForm.getButtons().getDeleteSubscription().pressed()) {            // ****************** DeleteSubscription *********************
+        } else if(subscribeForm.getButtons().getDeleteSubscription().pressed()) {            // *** DeleteSubscription
 
            if(!subscribeForm.getSubscriptionNumber().equals("-1")) {
 
@@ -596,12 +596,12 @@ public class SubscribeAction extends Action {
 
            forwardAction = mapping.findForward("continue");
 
-        } else if(action.equals(subscribeForm.NEW_SUBSCRIPTION_ACTION)) {                     // ****************** Nieuwe aanmelding *********************
+        } else if(action.equals(subscribeForm.NEW_SUBSCRIPTION_ACTION)) {                     // *** Nieuwe aanmelding
 
            subscribeForm.resetBean();
            forwardAction = mapping.findForward("continue");
 
-        } else if(subscribeForm.getButtons().getShowPastDates().pressed()) {                  // ****************** ShowPastDates *************
+        } else if(subscribeForm.getButtons().getShowPastDates().pressed()) {                  // *** ShowPastDates
 
            if(subscribeForm.getShowPastDates().equals("true")) {
                subscribeForm.setShowPastDates("false");
@@ -611,7 +611,7 @@ public class SubscribeAction extends Action {
 
            forwardAction = mapping.findForward("continue");
 
-       } else if(action.equals(subscribeForm.ADDRESS_ACTION)) {                                 // ****************** Address *********************
+       } else if(action.equals(subscribeForm.ADDRESS_ACTION)) {                                 // *** Address
 
            if(subscribeForm.getShowAddress().equals("true")) {
                subscribeForm.setShowAddress("false");
@@ -623,8 +623,9 @@ public class SubscribeAction extends Action {
 
         } else if(action.equals(subscribeForm.SUBSCRIBE_ACTION)
                   ||action.equals(subscribeForm.CHANGE_ACTION)
-                  ||subscribeForm.getButtons().getAddParticipant().pressed()) {                 // ****************** Meld aan / Wijzig / AddParticipant *********************
+                  ||subscribeForm.getButtons().getAddParticipant().pressed()) {                 // *** Meld aan / Wijzig / AddParticipant
 
+            log.info(subscribeForm.getTimePassed("start subscription"));
             Node thisEvent = cloud.getNode(subscribeForm.getNode());
 
             Node thisSubscription = null;
@@ -650,7 +651,7 @@ public class SubscribeAction extends Action {
 
             if(action.equals(subscribeForm.SUBSCRIBE_ACTION)) { // *** create inschrijvingen,posrel,evenementen
                thisEvent.createRelation(thisSubscription,cloud.getRelationManager("posrel")).commit();
-                                                // *** create inschrijvingen,schrijver,users
+               // *** create inschrijvingen,schrijver,users
                NodeList userList = cloud.getNodeManager("users").getList("account='"+subscribeForm.getUserId()+"'",null,null);
                if (userList.size()!=0) {
                   userList.getNode(0).createRelation(thisSubscription,cloud.getRelationManager("schrijver")).commit();
@@ -680,10 +681,11 @@ public class SubscribeAction extends Action {
             Node statusNode = cloud.getNode(thisStatus);
             if(statusNode!=null) {
                thisSubscription.createRelation(cloud.getNode(thisStatus),cloud.getRelationManager("related")).commit();
-          } else {
-            log.error("inschrijvings_status with number " + thisStatus + " does not exist.");
-          }
+            } else {
+              log.error("inschrijvings_status with number " + thisStatus + " does not exist.");
+            }
 
+            log.info(subscribeForm.getTimePassed("add participants"));
             // *** add participant to subscription
             if(subscribeForm.getTicketOffice().equals("backoffice")) {
                Node thisParticipant = null;
@@ -723,7 +725,7 @@ public class SubscribeAction extends Action {
 
                subscribeForm.setSelectedParticipant(thisParticipant.getStringValue("number"));
                subscribeForm.setSubscriptionNumber(thisSubscription.getStringValue("number"));
-              subscribeForm.resetNumbers(); // reset validateCounter on each new booking
+               subscribeForm.resetNumbers(); // reset validateCounter on each new booking
                subscribeForm.setAction(null);
 
             } else {
@@ -745,15 +747,18 @@ public class SubscribeAction extends Action {
                sendConfirmEmail(cloud, thisEvent, thisParent, thisSubscription, thisParticipant, confirmUrl);
                subscribeForm.setAction(subscribeForm.PROMPT_FOR_CONFIRMATION);
             }
+            
+            if(UISconfig.isUISconnected()) {
+              log.info(subscribeForm.getTimePassed("posting to UIS"));
+              Sender sender = new Sender(thisSubscription);
+              sender.run();
+            }
+           
+           log.info(subscribeForm.getTimePassed("finished subscription"));
 
-          if(UISconfig.isUISconnected()) {
-            Sender sender = new Sender(thisSubscription);
-            sender.run();
-         }
+           forwardAction = mapping.findForward("continue");
 
-            forwardAction = mapping.findForward("continue");
-
-       } else if(subscribeForm.getButtons().getConfirmSubscription().pressed()) {               // ******************* Confirm *************************
+       } else if(subscribeForm.getButtons().getConfirmSubscription().pressed()) {               // *** Confirm
 
          Node thisEvent = cloud.getNode(subscribeForm.getNode());
          Node thisParent = cloud.getNode(subscribeForm.getParent());
@@ -764,6 +769,7 @@ public class SubscribeAction extends Action {
          forwardAction = mapping.findForward("continue");
 
        }
+       subscribeForm.setInProcess(false);
        return forwardAction;
    }
 

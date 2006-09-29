@@ -28,7 +28,7 @@ import org.mmbase.bridge.Node;
  * DoubleDateNode
  *
  * @author Henk Hangyi
- * @version $Revision: 1.3 $, $Date: 2006-03-14 13:37:15 $
+ * @version $Revision: 1.4 $, $Date: 2006-09-29 16:01:25 $
  *
  */
  
@@ -36,10 +36,15 @@ import org.mmbase.bridge.Node;
 public class DoubleDateNode implements Comparable
 {
   private static final Logger log = Logging.getLoggerInstance(DoubleDateNode.class);
+  public static char MINUTE_SEPERATOR = '.'; // using the Dutch convention for hours e.g. 13.13u
+  public static char HOUR_INDICATOR = 'u';
+  public static String FROM_UNTILL = " t/m ";
+
   private String nodeNumber;
   private Date beginDate;
   private Date endDate;
-                           
+
+
   public DoubleDateNode() {
     this.nodeNumber = "new";
     this.beginDate = new Date();
@@ -131,7 +136,7 @@ public class DoubleDateNode implements Comparable
       String [] days_lcase = { "zo","ma","di","wo","do","vr","za" }; 
       String [] months_lcase = { "januari","februari","maart","april","mei","juni","juli",
 					"augustus","september","oktober","november","december" };
-	   Calendar cal = Calendar.getInstance();
+	    Calendar cal = Calendar.getInstance();
       cal.setTime(beginDate);
       int beginDayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
       int beginDayOfWeek = cal.get(Calendar.DAY_OF_WEEK)-1;
@@ -144,46 +149,56 @@ public class DoubleDateNode implements Comparable
       int endYear = cal.get(Calendar.YEAR);
       boolean singleDay = false;
       
-      String readableValue = "" + beginDayOfMonth;
+      StringBuffer readableValue = new StringBuffer();
+      if(singleDay) { // use seperator
+          readableValue.append(days_lcase[beginDayOfWeek]);
+          readableValue.append(seperator);
+      } else {
+          readableValue.append(days_lcase[beginDayOfWeek]);
+          readableValue.append(' ');
+      }
+      readableValue.append(beginDayOfMonth);
       if(beginYear==endYear) { // *** same year ***
         if(beginMonth==endMonth) { // *** same month ***
             if(beginDayOfMonth!=endDayOfMonth) { // *** different day ***
-               readableValue += 
-                    " t/m " + days_lcase[endDayOfWeek]
-                    + " " + endDayOfMonth;
+               readableValue.append(FROM_UNTILL);
+               readableValue.append(days_lcase[endDayOfWeek]);
+               readableValue.append(' ');
+               readableValue.append(endDayOfMonth);
             } else {
                 singleDay = true;
             }
-            readableValue += 
-                " " + months_lcase[beginMonth];
+            readableValue.append(' ');
+            readableValue.append(months_lcase[beginMonth]);
         } else { // *** different month ***
-            readableValue += 
-                " " + months_lcase[beginMonth ] 
-                + " t/m  " + days_lcase[endDayOfWeek]
-                + " " + endDayOfMonth
-                + " " + months_lcase[endMonth];
+            readableValue.append(' ');
+            readableValue.append(months_lcase[beginMonth]);
+            readableValue.append(FROM_UNTILL);
+            readableValue.append(days_lcase[endDayOfWeek]);
+            readableValue.append(' ');
+            readableValue.append(endDayOfMonth);
+            readableValue.append(' ');
+            readableValue.append(months_lcase[endMonth]);
         }
-        readableValue += 
-            " " + beginYear;
+        readableValue.append(' ');
+        readableValue.append(beginYear);
       } else { // *** different year ***
-        readableValue += 
-            " " + months_lcase[beginMonth] 
-            + " " + beginYear
-            + " t/m  " + days_lcase[endDayOfWeek]
-            + " " + endDayOfMonth
-            + " " + months_lcase[endMonth]
-            + " " + endYear;
+        readableValue.append(' ');
+        readableValue.append(months_lcase[beginMonth]);
+        readableValue.append(' ');
+        readableValue.append(beginYear);
+        readableValue.append(FROM_UNTILL);
+        readableValue.append(days_lcase[endDayOfWeek]);
+        readableValue.append(' ');
+        readableValue.append(endDayOfMonth);
+        readableValue.append(' ');
+        readableValue.append(months_lcase[endMonth]);
+        readableValue.append(endYear);
       }
-      if(singleDay) { // use seperator
-          readableValue = days_lcase[beginDayOfWeek] + seperator + readableValue;
-      } else {
-          readableValue = days_lcase[beginDayOfWeek] + " " + readableValue;
-      }
-      return readableValue;
+      return readableValue.toString();
   } 
     
   public String getReadableTime() {
-      String readableValue = "";
       Calendar cal = Calendar.getInstance();
       cal.setTime(beginDate);
       int beginHour = cal.get(Calendar.HOUR_OF_DAY);
@@ -192,46 +207,50 @@ public class DoubleDateNode implements Comparable
       int endHour = cal.get(Calendar.HOUR_OF_DAY);
       int endMinute = cal.get(Calendar.MINUTE); 
       
-      readableValue += beginHour + ":";
-      if(beginMinute<10) { readableValue += "0"; } 
-      readableValue += beginMinute;
+      StringBuffer readableValue = new StringBuffer();
+      readableValue.append(beginHour);
+      readableValue.append(MINUTE_SEPERATOR);
+      if(beginMinute<10) { readableValue.append('0'); }
+      readableValue.append(beginMinute);
       if(beginHour!=endHour||beginMinute!=endMinute) {  // *** different times ***
-          readableValue += 
-            "-" + endHour
-            + ":";
-          if(endMinute<10) { readableValue += "0"; } 
-          readableValue += endMinute;
+          readableValue.append('-');
+          readableValue.append(endHour);
+          readableValue.append(MINUTE_SEPERATOR);
+          if(endMinute<10) { readableValue.append('0'); }
+          readableValue.append(endMinute);
       }
-      readableValue += "u";
-      return readableValue;
+      readableValue.append(HOUR_INDICATOR);
+      return readableValue.toString();
    } 
       
    public String getReadableStartTime() {
-      String readableValue = "";
       Calendar cal = Calendar.getInstance();
       cal.setTime(beginDate);
       int beginHour = cal.get(Calendar.HOUR_OF_DAY);
       int beginMinute = cal.get(Calendar.MINUTE); 
       
-      readableValue += beginHour + ":";
-      if(beginMinute<10) { readableValue += "0"; } 
-      readableValue += beginMinute;
-      readableValue += "u";
-      return readableValue;
+      StringBuffer readableValue = new StringBuffer();
+      readableValue.append(beginHour);
+      readableValue.append(MINUTE_SEPERATOR);
+      if(beginMinute<10) { readableValue.append('0'); }
+      readableValue.append(beginMinute);
+      readableValue.append(HOUR_INDICATOR);
+      return  readableValue.toString();
   } 
   
   public String getReadableEndTime() {
-      String readableValue = "";
       Calendar cal = Calendar.getInstance();
       cal.setTime(endDate);
-      int beginHour = cal.get(Calendar.HOUR_OF_DAY);
-      int beginMinute = cal.get(Calendar.MINUTE); 
+      int endHour = cal.get(Calendar.HOUR_OF_DAY);
+      int endMinute = cal.get(Calendar.MINUTE); 
       
-      readableValue += beginHour + ":";
-      if(beginMinute<10) { readableValue += "0"; } 
-      readableValue += beginMinute;
-      readableValue += "u";
-      return readableValue;
+      StringBuffer readableValue = new StringBuffer();
+      readableValue.append(endHour);
+      readableValue.append(MINUTE_SEPERATOR);
+      if(endMinute<10) { readableValue.append('0'); }
+      readableValue.append(endMinute);
+      readableValue.append(HOUR_INDICATOR);
+      return  readableValue.toString();
   } 
 
   public String getReadableValue() {

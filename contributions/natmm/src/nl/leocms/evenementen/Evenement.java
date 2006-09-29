@@ -34,7 +34,7 @@ import org.mmbase.bridge.RelationList;
  * Evenement
  *
  * @author Henk Hangyi
- * @version $Revision: 1.8 $, $Date: 2006-08-07 14:44:00 $
+ * @version $Revision: 1.9 $, $Date: 2006-09-29 16:01:25 $
  *
  */
 
@@ -442,10 +442,9 @@ public class Evenement extends DoubleDateNode {
       int endDayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
       int endMonth = cal.get(Calendar.MONTH);
       int endYear = cal.get(Calendar.YEAR);
-      if (beginYear != endYear || beginMonth != endMonth || beginDayOfMonth != endDayOfMonth) {
+      if (!"".equals(parentEvent.getStringValue("dagomschrijving"))) { // for period subscriptions are not necessary
          subscriptionClosed = false;
-      }
-      else { // check on close date
+      } else { // for date check on close date
          int timeBeforeStart = parentEvent.getIntValue("reageer") * 60 * 60;
          long closeDate = (childEvent.getLongValue("begindatum") - timeBeforeStart) * 1000;
          subscriptionClosed = ( (new Date()).getTime() > closeDate);
