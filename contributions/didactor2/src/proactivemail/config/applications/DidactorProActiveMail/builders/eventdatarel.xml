@@ -3,7 +3,7 @@
 <builder name="eventdatarel" maintainer="didactor.nl" version="1" extends="insrel">
   <status>active</status>
 
-  <classfile>org.mmbase.module.builders.Dummy</classfile>
+  <classfile>org.mmbase.module.corebuilders.InsRel</classfile>
   <searchage>1000</searchage>
 
   <names>
