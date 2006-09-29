@@ -17,16 +17,20 @@ import javax.servlet.jsp.JspException;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
 import org.mmbase.bridge.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * Lives under a nodeprovider. Can give information about the node,
  * like what its nodemanager is.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeInfoTag.java,v 1.41 2006-06-23 11:30:19 michiel Exp $
+ * @version $Id: NodeInfoTag.java,v 1.42 2006-09-29 10:06:03 michiel Exp $
  */
 
 public class NodeInfoTag extends NodeReferrerTag implements Writer {
+
+    private static final Logger log = Logging.getLoggerInstance(NodeInfoTag.class);
 
     private static final int TYPE_NODEMANAGER           = 0;
     private static final int TYPE_GUINODEMANAGER        = 1;
@@ -117,15 +121,17 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
             if (nodeManagerAtt == Attribute.NULL) { // living as NodeReferrer
                 helper.useEscaper(false); // gui produces html
                 String sessionName = "";
-                CloudTag ct = (CloudTag) findParentTag(CloudTag.class, null, false);
+                CloudTag ct = findParentTag(CloudTag.class, null, false);
                 if (ct != null) {
                     sessionName = ct.getSessionName();
                 }
                 Node node = getNode();
                 Function guiFunction = node.getFunction("gui");
                 Parameters args = guiFunction.createParameters();
-                args.set(Parameter.FIELD, ""); // lot of function implementations would not stand 'null' as field name value
-                args.set("session",  sessionName);
+                args.set(Parameter.FIELD, ""); // lot of gui implementations would not stand 'null' as field name value
+                if (args.containsParameter("session")) {
+                    args.set("session",  sessionName);
+                }
                 fillStandardParameters(args);
                 show = Casting.toString(guiFunction.getFunctionValue(args));
             } else {

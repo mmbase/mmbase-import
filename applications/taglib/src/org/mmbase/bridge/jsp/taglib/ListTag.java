@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListTag.java,v 1.51 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: ListTag.java,v 1.52 2006-09-29 10:03:43 michiel Exp $
  */
 
 public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider {
@@ -106,7 +106,7 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
     }
 
     protected QueryContainer getListContainer() throws JspTagException {
-        return (QueryContainer) findParentTag(ListContainerTag.class, (String) container.getValue(this), false);
+        return findParentTag(ListContainerTag.class, (String) container.getValue(this), false);
     }
 
     /**
