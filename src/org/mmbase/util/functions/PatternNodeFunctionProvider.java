@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * xml).
  *
  * @author Michiel Meeuwissen
- * @version $Id: PatternNodeFunctionProvider.java,v 1.10 2006-09-27 20:42:21 michiel Exp $
+ * @version $Id: PatternNodeFunctionProvider.java,v 1.11 2006-09-29 09:54:40 michiel Exp $
  * @since MMBase-1.8
  */
 public class PatternNodeFunctionProvider extends FunctionProvider {
@@ -47,7 +47,7 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
         return instance;
     }
 
-    public Function getFunction(String name) {
+    public Function<String> getFunction(String name) {
         Function func = (Function) functions.get(name);
         if (func == null) {
             func = new PatternNodeFunction(name);
@@ -65,7 +65,7 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
 
     private static int counter = 0;
 
-    protected static class PatternNodeFunction extends NodeFunction {
+    protected static class PatternNodeFunction extends NodeFunction<String> {
 
         String template;
         Map   requestMethods = null;
@@ -101,7 +101,7 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
             return (Parameter[]) params.toArray(new Parameter[] {});
         }
 
-        protected Object getFunctionValue(final Node node, final Parameters parameters) {
+        protected String getFunctionValue(final Node node, final Parameters parameters) {
             StringBuffer sb = new StringBuffer();
             {
                 Matcher fields = fieldsPattern.matcher(template);
