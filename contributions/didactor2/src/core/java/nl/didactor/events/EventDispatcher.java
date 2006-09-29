@@ -11,8 +11,9 @@ public class EventDispatcher {
     }
 
     public static void report(Event event, HttpServletRequest request, HttpServletResponse response) {
-        for (int i=0; i<listeners.size(); i++) {
-            ((EventListener)listeners.get(i)).report(event, request, response);
-        }
+        if ( event != null )
+            for (int i=0; i<listeners.size(); i++) {
+                ((EventListener)listeners.get(i)).report(event, request, response);
+            }
     }
 }
