@@ -51,7 +51,7 @@ import org.apache.xpath.XPathAPI;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.16 2005-11-04 13:11:06 nklasens Exp $
+ * @version $Id: NodeFunction.java,v 1.17 2006-09-29 09:56:10 michiel Exp $
  * @since   MMBase-1.6
  */
 
@@ -160,12 +160,11 @@ public  class NodeFunction {
             
             params.setIfDefined(Parameter.CLOUD, cloud);
             if (request instanceof HttpServletRequest) {
-                params.setIfDefined(Parameter.REQUEST, request);
+                params.setIfDefined(Parameter.REQUEST, (HttpServletRequest) request);
             }
             return func.getFunctionValue(params).toString();
         } catch (Throwable e) {
-            log.info("could not execute '" + function + "' on node '" + number + "'");
-            log.info(Logging.stackTrace(e) + Logging.stackTrace());
+            log.info("could not execute '" + function + "' on node '" + number + "'", e);
             return "could not execute " + function + " on node " + number + "(" + e.getClass() + " " + e.getMessage() + ")";
         }
     }
