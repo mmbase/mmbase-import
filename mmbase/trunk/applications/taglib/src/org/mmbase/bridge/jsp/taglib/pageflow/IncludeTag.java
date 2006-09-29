@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.66 2006-03-28 22:35:22 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.67 2006-09-29 10:07:14 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -62,6 +62,7 @@ public class IncludeTag extends UrlTag {
     protected Attribute notFound        = Attribute.NULL;
 
     protected Attribute resource        = Attribute.NULL;
+    //protected Attribute configuration   = Attribute.NULL;
 
 
     /**
@@ -90,6 +91,11 @@ public class IncludeTag extends UrlTag {
     public void setResource(String r) throws JspTagException {
         resource = getAttribute(r);
     }
+    /*
+    public void setConfiguration(String r) throws JspTagException {
+        configuration = getAttribute(r);
+    }
+    */
 
     protected String getPage() throws JspTagException {
         if (resource != Attribute.NULL) return resource.getString(this);
@@ -97,7 +103,9 @@ public class IncludeTag extends UrlTag {
     }
 
     public int doStartTag() throws JspTagException {
-        if (page == Attribute.NULL && resource == Attribute.NULL) { // for include tags, page attribute is obligatory.
+        if (page == Attribute.NULL && resource == Attribute.NULL 
+            //&& configuration == Attribute.NULL
+            ) { // for include tags, page attribute is obligatory.
             throw new JspTagException("No attribute 'page' or 'resource' was specified");
         }
         return super.doStartTag();
@@ -489,7 +497,7 @@ public class IncludeTag extends UrlTag {
         if (debugType == Attribute.NULL) return DEBUG_NONE;
 
         String dtype = debugType.getString(this).toLowerCase();
-        if (dtype.equals("none")) {
+        if (dtype.equals("none") || dtype.equals("")) {
             return  DEBUG_NONE; // also implement the default, then people can use a variable
                                // to select this property in their jsp pages.
         } else if (dtype.equals("html")) {
