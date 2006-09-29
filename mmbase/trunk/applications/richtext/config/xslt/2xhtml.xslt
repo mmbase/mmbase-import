@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.17 2006-09-19 08:46:46 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.18 2006-09-29 09:07:15 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -329,6 +329,11 @@
     <xsl:if test="$position != $last">,</xsl:if>
   </xsl:template>
 
+
+  <xsl:template match="o:object[@type = 'blocks']" mode="class">
+    <xsl:param name="relation" />
+    <xsl:value-of select="$relation/o:field[@name='class']" />
+  </xsl:template>
   <!--
        Produces output for one o:object of type 'blocks'
        params: relation
@@ -341,7 +346,11 @@
           <xsl:with-param name="relation" select="$relation" />
         </xsl:apply-templates>
       </xsl:attribute>
-      <xsl:attribute name="class"><xsl:value-of select="$relation/o:field[@name='class']" /></xsl:attribute>
+      <xsl:attribute name="class">
+        <xsl:apply-templates select="." mode="class">
+          <xsl:with-param name="relation" select="$relation" />
+        </xsl:apply-templates>
+      </xsl:attribute>
       <xsl:choose>
         <xsl:when test="contains($relation/o:field[@name='class'], 'quote')">
           <xsl:apply-templates select="." mode="quote" />
