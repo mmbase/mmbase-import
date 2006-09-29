@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<eventtypes exportsource="mmbase://www.didactor.org/version2.0" timestamp="20060928091735">
+    <node number="20071" owner="system">
+        <name>peopleaccountcreated</name>
+        <description>Account creation time (people, education, etc.)</description>
+    </node>
+    <node number="20072" owner="system">
+        <name>firstuserlogin</name>
+        <description>User first login time</description>
+    </node>
+</eventtypes>
