@@ -25,7 +25,7 @@ import org.mmbase.util.xml.XMLWriter;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.39 2006-02-17 21:16:57 michiel Exp $
+ * @version $Id: Generator.java,v 1.40 2006-09-29 16:05:40 michiel Exp $
  * @since  MMBase-1.6
  */
 public class Generator {
@@ -328,6 +328,17 @@ public class Generator {
 
         setAttribute(object, "id", "" + node.getNumber());
         setAttribute(object, "type", node.getNodeManager().getName());
+        StringBuffer ancestors = new StringBuffer(" "); // having spaces before and after the attribute's value, makes it easy to use xsl's 'contains' function.
+        if (! node.getNodeManager().getName().equals("object")) {
+            NodeManager parent = node.getNodeManager();
+            do {
+                parent = parent.getParent();
+                ancestors.append(parent.getName());
+                ancestors.append(" ");
+            } while(! parent.getName().equals("object"));
+        }
+        setAttribute(object, "ancestors", ancestors.toString());
+
         // and the otype (type as number)
         setAttribute(object, "otype", node.getStringValue("otype"));
 
@@ -335,11 +346,8 @@ public class Generator {
         // While still having 'unfilledField's
         // you know that the node is not yet presented completely.
 
-        FieldIterator i = node.getNodeManager().getFields(NodeManager.ORDER_CREATE).fieldIterator();
-        while (i.hasNext()) {
-            Field fieldDefinition = i.nextField();
+        for (Field fieldDefinition :  node.getNodeManager().getFields(NodeManager.ORDER_CREATE)) {
             Element field = createElement("unfilledField");
-
             // the name
             setAttribute(field, "name", fieldDefinition.getName());
             // add it to the object
