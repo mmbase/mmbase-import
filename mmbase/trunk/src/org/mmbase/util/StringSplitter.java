@@ -9,15 +9,15 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Utility class for splitting delimited values.
  *
  * @author Pierre van Rooden
  * @author Kees Jongenburger
- * @version $Id: StringSplitter.java,v 1.8 2006-09-12 19:33:30 michiel Exp $
+ * @author Michiel Meeuwissen
+ * @version $Id: StringSplitter.java,v 1.9 2006-09-29 10:00:19 michiel Exp $
  */
 public class StringSplitter {
 
@@ -31,9 +31,8 @@ public class StringSplitter {
     static public List<String> split(String string, String delimiter) {
         List<String> result = new ArrayList();
         if (string == null) return result;
-        String[] values = string.split(delimiter);
-        for (int i = 0; i < values.length; i++) {
-            result.add(values[i].trim());
+        for (String v : string.split(delimiter)) {
+            result.add(v.trim());
         }
         return result;
     }
@@ -78,6 +77,19 @@ public class StringSplitter {
         }
         return result;
     }
-    
+    /**
+     * @since MMBase-1.9
+     */
+
+    static public Map<String, String> map(String string) {
+        Map<String, String>map = new HashMap();
+        List<String> keyValues = split(string);
+        for (String kv : keyValues) {
+            if ("".equals(kv)) continue;
+            int is = kv.indexOf('=');
+            map.put(kv.substring(0, is), kv.substring(is + 1));
+        }
+        return map;
+    }
 
 }
