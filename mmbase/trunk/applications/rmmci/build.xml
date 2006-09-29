@@ -77,16 +77,8 @@
     <mkdir dir="build/src/org/mmbase/bridge/remote"/>
 <!-- fork="true" is needed because MMBase uses some xerces classes directly but ant is
        using the sun jaxp implementation. By forking we do not use the ant classloader -->
-    <java classname="org.mmbase.bridge.remote.generator.MMCI" fork="true" classpathref="classpath">
-      <arg value="build/src/MMCI.xml"/>
-      <classpath>
-        <pathelement location="build/classes"/>
-      </classpath>
-    </java>
-<!-- fork="true" is also needed for the RemoteGenerator so we do not use the ant classloader -->
-    <java classname="org.mmbase.bridge.remote.generator.RemoteGenerator" classpathref="classpath" fork="true">
+    <java classname="org.mmbase.bridge.remote.generator.RMMCI" fork="true" classpathref="classpath">
       <arg value="build/src"/>
-      <arg value="build/src/MMCI.xml"/>
       <classpath>
         <pathelement location="build/classes"/>
       </classpath>
@@ -107,12 +99,12 @@
       <include name="org/mmbase/bridge/remote/rmi/*.java"/>
       <include name="org/mmbase/bridge/remote/implementation/*.java"/>
     </javac>
-    <rmic base="build/classes" classpathref="classpath">
+    <!-- rmic base="build/classes" sourcebase="build/classes" classpathref="classpath">
       <include name="org/mmbase/bridge/remote/rmi/*.class"/>
       <classpath>
         <pathelement location="build/classes"/>
       </classpath>
-    </rmic>
+    </rmic -->
     <javac destdir="build/classes"
           classpathref="classpath"
           debug="yes"
@@ -199,7 +191,7 @@ Build-compiler: ${build.compiler}
         <include name="org/mmbase/util/XMLEntityResolver*.class"/>          <!-- -->
         <include name="org/mmbase/util/XMLErrorHandler.class"/>             <!-- -->
         <include name="org/mmbase/util/DynamicDate.class"/>                <!-- used by Casting -->
-        <include name="org/mmbase/util/DateFormats*.class"/>              
+        <include name="org/mmbase/util/DateFormats*.class"/>
         <include name="org/mmbase/util/dateparser/**"/>                    <!-- used by Casting -->
         <include name="org/mmbase/util/HashCodeUtil*"/>                    <!-- used by SortedBundle, but is generic tool-->
         <include name="org/mmbase/util/PublicCloneable*"/>                    <!-- used by SortedBundle, but is generic tool-->
