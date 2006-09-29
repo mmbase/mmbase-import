@@ -19,7 +19,7 @@ import java.util.*;
  *
  * @since MMBase-1.9
  * @author Pierre van Rooden
- * @version $Id: ImplementationGenerator.java,v 1.1 2006-09-29 08:59:07 pierre Exp $
+ * @version $Id: ImplementationGenerator.java,v 1.2 2006-09-29 15:01:56 pierre Exp $
  */
 public class ImplementationGenerator extends AbstractClassGenerator {
 
@@ -106,9 +106,9 @@ public class ImplementationGenerator extends AbstractClassGenerator {
             indent6();
             Type returnType = m.getGenericReturnType();
             if (!returnType.equals(Void.TYPE)) {
-                appendTypeInfo(returnType,false,false);
+                appendTypeInfo(returnType,true,false);
                 buffer.append(" retval = (");
-                appendTypeInfo(returnType,false,false);
+                appendTypeInfo(returnType,true,false);
                 buffer.append(")");
             }
 
