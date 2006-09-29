@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.376 2006-09-14 17:35:43 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.377 2006-09-29 10:01:40 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -175,6 +175,15 @@ version: $Id: mmbase-taglib.xml,v 1.376 2006-09-14 17:35:43 michiel Exp $
     </p>
   </info>
   </type>
+  <type name="html">
+  <description>HTML related tags</description>
+  <info>
+    <p>
+      Small, simple utilities (normally implmented with a tag-file), to help producing (valid) HTML.
+    </p>
+  </info>
+  </type>
+
   <type name="util.context">
   <description>context/variable tags</description>
   <info>
@@ -5622,11 +5631,11 @@ Of course, the default behavior of getSmartPath can still be overridden.
     <see tag="functioncontainer" attribute="referids"/>
     <attribute>
       <name>name</name>
-      <required>true</required>
+      <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
       <info>
-        The name of the parameter.
+        The name of the parameter. If this attribute is missing, the value is interpreted as a , separated list of name=value pairs.
       </info>
     </attribute>
     <attribute>
@@ -7980,8 +7989,12 @@ The 0 is just counter, which starts at 0 on every page.
     <name>option</name>
     <path>/META-INF/tags/mm/u/option.tagx</path>
     <info>
-      Like the HTML option tag, which it produces. It only support also a 'referid' attribute to support added selected="selected" or not.     
+      Like the HTML option tag, which it produces. It only support also a 'compare' attribute to support added selected="selected" or not.     
     </info>
+    <example><pre><![CDATA[
+    <mm:option name="a" value="hoi" compare="${a}" />
+]]></pre>
+    </example>
     <since>MMBase-1.9</since>
   </tag-file>
   <tag-file>
