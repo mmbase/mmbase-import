@@ -19,7 +19,7 @@ import java.util.*;
  *
  * @since MMBase-1.9
  * @author Pierre van Rooden
- * @version $Id: AbstractClassGenerator.java,v 1.1 2006-09-29 08:59:07 pierre Exp $
+ * @version $Id: AbstractClassGenerator.java,v 1.2 2006-09-29 15:01:56 pierre Exp $
  */
 abstract public class AbstractClassGenerator extends AbstractGenerator {
 
@@ -54,7 +54,7 @@ abstract public class AbstractClassGenerator extends AbstractGenerator {
     }
 
     public void appendTypeInfo(Type t, boolean showNameOnly) {
-        appendTypeInfo(t, false, true);
+        appendTypeInfo(t, showNameOnly, true);
     }
 
     public void appendTypeInfo(Type t, boolean showNameOnly, boolean wrapRemoteClasses) {
@@ -209,7 +209,7 @@ abstract public class AbstractClassGenerator extends AbstractGenerator {
             appendTypeParameters(typeParams, wrapRemoteClasses);
             buffer.append(" ");
         }
-        appendTypeInfo(m.getGenericReturnType(), false, wrapRemoteClasses);
+        appendTypeInfo(m.getGenericReturnType(), true, wrapRemoteClasses);
         String name = m.getName();
         if (wrapGenericMethodName && isBasicMethod(m)) {
             name = "wrapped_" + name;
