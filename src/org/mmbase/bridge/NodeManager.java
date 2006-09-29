@@ -25,7 +25,7 @@ import javax.servlet.ServletRequest;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: NodeManager.java,v 1.38 2005-09-19 12:24:21 pierre Exp $
+ * @version $Id: NodeManager.java,v 1.39 2006-09-29 15:14:56 michiel Exp $
  */
 public interface NodeManager extends Node {
 
@@ -162,7 +162,7 @@ public interface NodeManager extends Node {
      *
      * @return a list of all fields defined for this node manager
      */
-    public FieldList getFields();
+    public FieldList<Field> getFields();
 
     /**
      * Retrieve a subset of field types of this NodeManager, depending on a given order. The order
@@ -178,7 +178,7 @@ public interface NodeManager extends Node {
      * @see   #ORDER_LIST
      * @see   #ORDER_SEARCH
      */
-    public FieldList getFields(int order);
+    public FieldList<Field> getFields(int order);
 
     /**
      * Returns the field with the specified name.
