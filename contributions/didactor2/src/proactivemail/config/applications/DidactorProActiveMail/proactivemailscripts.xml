@@ -16,7 +16,15 @@ function f(){
     </node>
     <node number="18102" owner="system" alias="proactivemailscheduler.monthafterregistration">
         <name>monthafterregistrationscript</name>
-        <code> </code>
+        <code>
+f();
+function f(){
+  var users  = Packages.nl.didactor.component.proactivemail.EmailTemplateToUsers('monthafterregistration');
+  var xmldoc = users.getRelatedPeople("/proactivemail/getusersmontgafterreg.jsp"); 
+  users.sendEmailToUsers(xmldoc);
+  return true;
+}         
+        </code>
         <active>1</active>
         <description>Email users one month after registration</description>
     </node>
