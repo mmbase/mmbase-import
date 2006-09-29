@@ -235,7 +235,7 @@
     <javac destdir="${tests.build.dir}/classes"
            debug="true"
            optimize="false"
-           source="1.4"
+           source="1.5"
            classpathref="compile.classpath"
            deprecation="false" >
       <src path="${tests.source.dir}/bridge"/>
