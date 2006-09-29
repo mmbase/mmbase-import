@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * decide not to call the set-function of the attribute (in case of tag-instance-reuse).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Attribute.java,v 1.28 2005-08-25 08:25:40 michiel Exp $
+ * @version $Id: Attribute.java,v 1.29 2006-09-29 10:09:22 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -45,7 +45,7 @@ public class Attribute {
      * This is the function for public use. It takes the string and returns an Attribute, creating
      * a new one if it is not in the Attribute cache.
      */
-    public static final Attribute getAttribute(final Object at) throws JspTagException {
+    public static final Attribute getAttribute(final String at) throws JspTagException {
         if (at == null) return NULL;
         return cache.getAttribute(at);
     }
@@ -69,7 +69,7 @@ public class Attribute {
      * if containsVars is false (then simply 'attribute' can be returned
      * as value).
      */
-    private List    attributeParts;
+    private List<Part> attributeParts;
 
     /**
      * The constructor is protected, construction is done by the cache.
@@ -93,9 +93,8 @@ public class Attribute {
             log.debug("Appending " + attribute);
         }
         if (! containsVars) buffer.append(attribute.toString());
-        Iterator i = attributeParts.iterator();
-        while (i.hasNext()) {
-            Part ap = (Part) i.next();
+
+        for (Part ap : attributeParts) {
             ap.appendValue(tag, buffer);
         }
     }
@@ -141,7 +140,7 @@ public class Attribute {
      *
      */
 
-    public List getList(ContextReferrerTag tag) throws JspTagException {
+    public List<String> getList(ContextReferrerTag tag) throws JspTagException {
         return Arrays.asList( getString(tag).trim().split("\\s*,\\s*") );
     }
 
@@ -375,7 +374,7 @@ public class Attribute {
 
  */
 
-class AttributeCache extends Cache {
+class AttributeCache extends Cache<String, Attribute> {
 
     AttributeCache() {
         super(1000);
@@ -383,8 +382,8 @@ class AttributeCache extends Cache {
 
     public String getName()        { return "TagAttributeCache"; }
     public String getDescription() { return "Cache for parsed Tag Attributes"; }
-    public final Attribute getAttribute(final Object att) throws JspTagException {
-        Attribute res = (Attribute) super.get(att);
+    public final Attribute getAttribute(final String att) throws JspTagException {
+        Attribute res = super.get(att);
         if (res == null) {
             res = new Attribute(att);
             super.put(att, res);
