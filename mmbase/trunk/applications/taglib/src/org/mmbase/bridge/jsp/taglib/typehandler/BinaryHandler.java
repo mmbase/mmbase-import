@@ -24,6 +24,7 @@ import org.mmbase.util.*;
 import org.mmbase.util.transformers.Xml;
 import org.mmbase.datatypes.*;
 import javax.servlet.jsp.PageContext;
+import javax.servlet.http.*;
 import org.apache.commons.fileupload.FileItem;
 
 /**
@@ -32,7 +33,7 @@ import org.apache.commons.fileupload.FileItem;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8 (was named ByteHandler previously)
- * @version $Id: BinaryHandler.java,v 1.4 2006-07-06 15:02:40 michiel Exp $
+ * @version $Id: BinaryHandler.java,v 1.5 2006-09-29 15:11:48 pierre Exp $
  */
 
 public class BinaryHandler extends AbstractTypeHandler {
@@ -57,8 +58,8 @@ public class BinaryHandler extends AbstractTypeHandler {
             args.set(Parameter.LANGUAGE, tag.getLocale().getLanguage());
             args.set("session",  tag.getSessionName());
             PageContext pc = tag.getContextTag().getPageContext();
-            args.set(Parameter.RESPONSE, pc.getResponse());
-            args.set(Parameter.REQUEST,  pc.getRequest());
+            args.set(Parameter.RESPONSE, (HttpServletResponse)pc.getResponse());
+            args.set(Parameter.REQUEST, (HttpServletRequest)pc.getRequest());
             args.set(Parameter.LOCALE, tag.getLocale());
             show.append("" + gui.getFunctionValue(args));
         }
