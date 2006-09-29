@@ -24,7 +24,7 @@ import nl.leocms.util.tools.HtmlCleaner;
  * Utilities functions for the search pages
  *
  * @author H. Hangyi
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class SearchUtil {
 
@@ -160,6 +160,23 @@ public class SearchUtil {
       return startPos;
    }
 
+   public String superSearchString(String searchText) {
+      for(int charPos = 0; charPos < searchText.length(); charPos++){
+         char c = searchText.charAt(charPos);
+         if  (   !(('a'<=c)&&(c<='z'))
+             &&  !(('A'<=c)&&(c<='Z'))
+             &&  !(('0'<=c)&&(c<='9'))
+             &&  !(c=='-')
+             &&  !(c=='_')
+             &&  !(c=='.')
+             &&  !(c==' ')
+             ) {
+                 searchText = searchText.substring(0,charPos) + "%" + searchText.substring(charPos+1);
+             }
+      }
+      return searchText;
+   }
+    
    public String highlightSearchTerms(String textStr, Vector searchTerms, String highlight) {
 
       //  strip textStr from html taggings
@@ -253,15 +270,15 @@ public class SearchUtil {
    public HashSet addPages(
       Cloud cloud,
       SearchConfig cf,
-		String sQuery,
+		  String sQuery,
       int index,
       String path,
       String rootRubriek,
-		String sPoolNumber,
+		  String sPoolNumber,
       long nowSec,
-		long fromTime,
-		long toTime,
-		boolean searchArchive,
+		  long fromTime,
+		  long toTime,
+		  boolean searchArchive,
       HashSet hsetPagesNodes) {
 
       HashSet hsetNodes = new HashSet();

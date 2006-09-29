@@ -125,6 +125,7 @@ public class EventNotifier implements Runnable {
          // list all the subscription:
          // - who booked for an event more than one month ago,
          // - and the event is now less than one week ahead,
+         // - and the event is not canceled
          // - the participants did not receive a reminder email.
          long now = (new Date().getTime())/1000;
          long one_day = 24*60*60;
@@ -133,7 +134,10 @@ public class EventNotifier implements Runnable {
          NodeIterator iNodes= cloud.getList(null
             , "evenement,posrel,inschrijvingen"
             , "inschrijvingen.number"
-            , "inschrijvingen.datum_inschrijving < '" + (now - one_month) + "' AND evenement.begindatum > '" + now + "' AND evenement.begindatum < '" + (now + one_week) + "'"
+            , "inschrijvingen.datum_inschrijving < '" + (now - one_month) + "'"
+              + " AND evenement.begindatum > '" + now + "'"
+              + " AND evenement.begindatum < '" + (now + one_week) + "'"
+              + " AND evenement.iscanceled='false'"
             , null, null, null, false).nodeIterator();
          while(iNodes.hasNext()) {
              Node nextNode = iNodes.nextNode();

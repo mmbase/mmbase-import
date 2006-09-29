@@ -19,23 +19,6 @@ import nl.leocms.util.ApplicationHelper;
  */
 public class NatureReservesReader implements Runnable {
 	
-	private String superSearchString(String searchText) {
-     for(int charPos = 0; charPos < searchText.length(); charPos++){
-        char c = searchText.charAt(charPos);
-        if  (   !(('a'<=c)&&(c<='z'))
-            &&  !(('A'<=c)&&(c<='Z'))
-            &&  !(('0'<=c)&&(c<='9'))
-            &&  !(c=='-')
-            &&  !(c=='_') 
-            &&  !(c=='.')
-            &&  !(c==' ')
-            ) { 
-                searchText = searchText.substring(0,charPos) + "%" + searchText.substring(charPos+1);
-            }
-     }
-     return searchText;
-   }
-
    private String loadNatureReserves(Cloud cloud, String dataFile){
       String logMessage = "";  
       // *** read the input file with nature reserve (Natuurgebieden) ***

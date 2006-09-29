@@ -40,6 +40,7 @@ import org.mmbase.util.logging.*;
 import com.finalist.mmbase.util.CloudFactory;
 import nl.leocms.evenementen.Evenement;
 import nl.leocms.applications.NatMMConfig;
+import nl.leocms.util.tools.SearchUtil;
 import nl.mmatch.CSVReader;
 import com.cfdev.mail.verify.EmailVerifier;
 
@@ -102,6 +103,10 @@ public class SubscribeForm extends ActionForm {
    private String paymentType;
    private String pageNumber;
    private String gender;
+   
+   private boolean inProcess;
+   
+   private Date start;
 
    public void reset(ActionMapping mapping, HttpServletRequest request) { // reset is necessary for checkboxes in session
       buttons = new SubscribeButtons();
@@ -251,11 +256,11 @@ public class SubscribeForm extends ActionForm {
    public String getUserId() { return userId; }
    public void setUserId(String userId ) { this.userId = userId; }
 
-   public String getPageNumber(){ return pageNumber;}
-   public void setPageNumber(String pageNumber) {this.pageNumber = pageNumber;}
+   public String getPageNumber(){ return pageNumber; }
+   public void setPageNumber(String pageNumber) { this.pageNumber = pageNumber; }
 
-   public String getGender() {return gender;}
-   public void setGender(String gender) {this.gender = gender;}
+   public String getGender() { return gender; }
+   public void setGender(String gender) { this.gender = gender; }
 
    public String getPaymentType() { return paymentType; }
    public void setPaymentType(String paymentType) {
@@ -279,6 +284,16 @@ public class SubscribeForm extends ActionForm {
       return paymentType;
    }
 
+   public boolean getInProcess() { return inProcess; }
+   public void setInProcess(boolean inProcess) {
+      log.info(getTimePassed((inProcess ? "in process" : "idle")));
+      this.inProcess = inProcess;
+   }
+   
+   public String getTimePassed(String action) {
+      return action + " after " + ((new Date()).getTime() - start.getTime())/1000 + "s";
+   }
+   
    public void resetBean() {
       // *** called by SubscribeAction.nieuweaanmelding
 
@@ -575,10 +590,12 @@ public class SubscribeForm extends ActionForm {
    }
 
    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
-
+      
       log.info("SubscribeForm.validate(" + this.getAction() + ")");
-      ActionErrors errors = new ActionErrors();
+      start = new Date();
 
+      ActionErrors errors = new ActionErrors();
+      
       if (this.getButtons().getGoBack().pressed()){
          return errors;
       }
@@ -623,6 +640,13 @@ public class SubscribeForm extends ActionForm {
 
       if(this.getAction().equals(SUBSCRIBE_ACTION)||this.getAction().equals(CHANGE_ACTION)) {                       // *** Meld aan / Wijzig ***
 
+         // *** this form is already processing a subscription, signal the user to wait
+         if(this.getInProcess()) {
+           errors.add("warning",new ActionError("evenementen.subscription_in_process"));
+         } else {
+           setInProcess(true);
+         }
+
          if(this.getLastName().equals("")) {
             errors.add("warning",new ActionError("evenementen.required.lastname"));
          }
@@ -631,23 +655,27 @@ public class SubscribeForm extends ActionForm {
             errors.add("warning",new ActionError("evenementen.nodeelnemercategorie.add"));
          }
 
+         // *** check whether member id can be found in application attribute
          String memberIdMessage = getMemberIdMessage(memberId,this.getZipCode());
-         if(!memberIdMessage.equals("")&&!memberIdMessage.equals("evenementen.members.nozipcode")) {                // *** check whether member info can be found in application attribute ***
+         if(!memberIdMessage.equals("")&&!memberIdMessage.equals("evenementen.members.nozipcode")) {
             errors.add("warning",new ActionError(memberIdMessage));
          }
+         // *** check if the zipcode is valid 
          if(this.getSkipValidation().equals("N")) {
             String zipCodeMessage = getZipCodeMessage(this.getZipCode());
-            if(!zipCodeMessage.equals("")&&!memberIdMessage.equals("evenementen.members.nozipcode")) {              // *** check if the zipcode is valid ***
+            if(!zipCodeMessage.equals("")&&!memberIdMessage.equals("evenementen.members.nozipcode")) {
                errors.add("warning",new ActionError(zipCodeMessage));
             }
          }
+         // *** check if the phonenumber is valid
          boolean bPhoneFound = false;
          String phoneMessage = getPhoneMessage(this.getPrivatePhone());
-         if(this.getSkipValidation().equals("N") && !phoneMessage.equals("")) {                                      // *** check if the phonenumber is valid ***
+         if(this.getSkipValidation().equals("N") && !phoneMessage.equals("")) {                                      
             errors.add("warning",new ActionError(phoneMessage));
          } else if(!this.getPrivatePhone().equals(initPhone)){
             bPhoneFound = true;
          }
+         // *** check if the email is valid
          String requiredMessage = "";
          if(this.getEmail().equals("")){
             if(this.getTicketOffice().equals("website")) {
@@ -660,17 +688,31 @@ public class SubscribeForm extends ActionForm {
          if(!emailMessage.equals("")){
             errors.add("warning",new ActionError(emailMessage));
          }
-
+         // *** check if the bankaccount is valid
          if(!this.getBankaccount().equals("")) {
             String bankAccountMessage = getBankAccountMessage(this.getBankaccount());
             if(!bankAccountMessage.equals("")) {
                errors.add("warning",new ActionError(bankAccountMessage));
             }
          }
-
          if(this.getTicketOffice().equals("website")) {
 
-            if(this.getFirstName().equals("")&&this.getInitials().equals("")) {
+           String titel = this.getFirstName();
+           if (this.getSuffix() != null && !"".equals(this.getSuffix().trim())) {
+             titel += " " + this.getSuffix();
+           }
+           titel +=  " " + this.getLastName();
+           String deelnemersConstraint = "deelnemers.titel LIKE '" + (new SearchUtil()).superSearchString(titel) + "'";
+           log.info("looking for deelnemers for event " + node + " with " + deelnemersConstraint);
+           NodeList nl = cloud.getList( node
+                  ,"evenement,posrel,inschrijvingen,posrel,deelnemers"
+                  ,"deelnemers.titel", deelnemersConstraint
+                  ,null,null,null,true);
+           if(nl.size()>0) {
+             errors.add("warning",new ActionError("evenementen.double_booking_on_name"));
+           }
+           
+           if(this.getFirstName().equals("")&&this.getInitials().equals("")) {
                errors.add("warning",new ActionError("evenementen.required.initials_or_firstname"));
             }
 
@@ -728,11 +770,14 @@ public class SubscribeForm extends ActionForm {
                errors.add("warning",new ActionError("evenementen.numberofparticipants.nan"));
             }
          }
+         
+         
          if(errors.size()>0) {
             validateCounter++;
+            setInProcess(false);
          }
       }
-
+      log.info(getTimePassed("finished evaluation"));
       return errors;
    }
 }

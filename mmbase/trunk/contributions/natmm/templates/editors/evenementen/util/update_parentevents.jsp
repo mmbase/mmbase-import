@@ -11,9 +11,28 @@
    </style>
    </head>
    <body style="width:100%;padding:5px;">
-      <mm:listnodes type="evenement" constraints="soort='parent'">
-         Updated: <mm:field name="number" />-<mm:field name="titel" /><br/>
-         <mm:setfield name="embargo">0</mm:setfield>
+      <mm:listnodes type="evenement" constraints="soort='parent' AND number='210048'">
+        <%
+        String embargo = null;
+        String verloopdatum = null;
+        %>
+        <mm:node jspvar="thisEvent">
+          <%
+          embargo = thisEvent.getStringValue("embargo");
+          verloopdatum = thisEvent.getStringValue("verloopdatum");
+          %>
+          <mm:setfield name="embargo">0</mm:setfield>
+        </mm:node>
+        <mm:field name="embargo">
+            <mm:compare value="<%= embargo %>" inverse="true"><%= embargo %> -- <mm:write />
+              embargo for: <mm:field name="number" />-<mm:field name="titel" /> was changed<br/>
+            </mm:compare>
+        </mm:field>
+        <mm:field name="verloopdatum">
+          <mm:compare value="<%= verloopdatum %>" inverse="true">
+            verloopdatum for: <mm:field name="number" />-<mm:field name="titel" /> was changed<br/>
+          </mm:compare>
+        </mm:field>
       </mm:listnodes>
    </body>
 </html>
