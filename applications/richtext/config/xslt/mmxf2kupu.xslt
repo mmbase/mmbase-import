@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: mmxf2kupu.xslt,v 1.11 2006-09-29 09:07:15 michiel Exp $
+  @version: $Id: mmxf2kupu.xslt,v 1.12 2006-09-29 16:08:55 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -184,7 +184,7 @@
 
 
   <!-- don't want clickable images, and hope the id can survive in the title -->
-  <xsl:template match="o:object[@type = 'images']" mode="inline">
+  <xsl:template match="o:object[@type = 'images' or contains(@ancestors, ' images ')]" mode="inline">
     <xsl:param name="relation" />
     <xsl:param name="position" />
     <xsl:variable name="icache" select="node:nodeFunction(., $cloud, string(./@id), 'cachednode', 's(100x100&gt;)')" />
