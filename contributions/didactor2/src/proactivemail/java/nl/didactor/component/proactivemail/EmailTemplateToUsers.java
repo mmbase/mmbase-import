@@ -123,15 +123,18 @@ public class EmailTemplateToUsers {
         this.startTime = System.currentTimeMillis()/1000;
         
         try {
-            Cloud cloud = ContextProvider.getCloudContext("local").getCloud("mmbase");
-            String usernameSystem = "system", admin = "admin";
-            
             Element elRoot = d.getDocumentElement();
             this.emailSubject = this.getTextValue(elRoot, "subject");
             this.emailBody = this.getTextValue(elRoot, "body");
+            if ( this.emailSubject == null || this.emailBody == null ||
+                 this.emailSubject.length() == 0 || this.emailBody.length() == 0
+               )
+                return;
             this.emailFrom = this.getTextValue(elRoot, "from");
             if ( this.emailFrom == null ) this.emailFrom = "";
 
+            Cloud cloud = ContextProvider.getCloudContext("local").getCloud("mmbase");
+            String usernameSystem = "system", admin = "admin";
             NodeList nlUsers = elRoot.getElementsByTagName("users");
             if ( nlUsers.getLength() <= 0 ) return;
             Element elUsers = (Element)nlUsers.item(0);
@@ -150,10 +153,10 @@ public class EmailTemplateToUsers {
                         message.setStringValue("from", this.emailFrom);
                         
                         // send on test account for now
-                        //message.setStringValue("to", email); 
-                        //message.setStringValue("body", emailBody);
-                        message.setStringValue("to", "g.kostadinov@levi9.com");
-                        message.setStringValue("body", "to: "+username+"-"+firstname+" "+lastname+"\r\n\r\n"+emailBody);
+                        message.setStringValue("to", email); 
+                        message.setStringValue("body", emailBody);
+                        //message.setStringValue("to", "g.kostadinov@levi9.com");
+                        //message.setStringValue("body", "to: "+username+"-"+firstname+" "+lastname+"\r\n\r\n"+emailBody);
                         
                         message.setStringValue("subject", emailSubject);
                         message.setIntValue("date", (int) (System.currentTimeMillis() / 1000));
