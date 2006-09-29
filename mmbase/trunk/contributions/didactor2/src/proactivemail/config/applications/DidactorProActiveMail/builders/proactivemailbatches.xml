@@ -53,7 +53,7 @@
         <!-- name of the field in the database -->
         <name>name</name>
         <!-- MMBase datatype and demands on it -->
-        <type state="persistent" size="20" notnull="true" key="false">STRING</type>
+        <type state="persistent" size="50" notnull="true" key="false">STRING</type>
       </db>
     </field>
 
