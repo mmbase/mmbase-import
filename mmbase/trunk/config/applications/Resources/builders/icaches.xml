@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- version $Id: icaches.xml,v 1.15 2006-09-07 12:36:49 michiel Exp $ -->
+<!-- version $Id: icaches.xml,v 1.16 2006-09-29 11:59:03 michiel Exp $ -->
 <builder
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -95,7 +95,7 @@
       </datatype>
     </field>
 
-    <field name="handle" state="system">
+    <field name="handle">
       <descriptions>
         <description xml:lang="en">The cached image</description>
         <description xml:lang="nl">Het gecachte plaatje</description>
@@ -112,7 +112,9 @@
           <list>1</list>
         </positions>
       </editor>
-      <datatype base="binary" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <type state="system" size="16777215" notnull="false" key="false">BINARY</type>
+      </db>
     </field>
 
     <field name="itype">
@@ -198,7 +200,7 @@
 
   <indexlist>
     <index name="main">
-      <indexfield name="key" />
+      <indexfield name="ckey" />
     </index>
   </indexlist>
 
