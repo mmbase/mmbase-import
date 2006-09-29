@@ -51,8 +51,15 @@ public class EventManager implements EventListener {
             } catch (Exception e) {
                 eventvalue = new Long(0);
             }
-    
-            Integer eventtype = new Integer(EventType.getEvent(eType));
+
+            // here we are expected eventtype to be a number
+            Integer eventtype = null;
+            try {
+                eventtype = new Integer(EventType.getEvent(eType));
+            } catch (Exception e1) {
+                return;
+            }
+            
             if (eventtype.intValue() == EventType.LOGIN) {
                 // Create SessionListener class and add ti to the session
                 DidactorSessionListener sessionListener = new DidactorSessionListener(event.getUsername());
