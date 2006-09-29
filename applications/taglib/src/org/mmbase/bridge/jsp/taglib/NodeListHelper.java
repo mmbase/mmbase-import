@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.29 2006-09-05 11:55:01 michiel Exp $
+ * @version $Id: NodeListHelper.java,v 1.30 2006-09-29 10:02:58 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -190,15 +190,31 @@ public class NodeListHelper implements ListProvider {
         return thisTag.getPageContext();
     }
 
-    public int setReturnValues(NodeList nodes, boolean trim) throws JspTagException {
-        Cloud cloud = null;
+    /**
+     * @since MMBase-1.9
+     */
+    protected Cloud getCloud(NodeList nodes, Cloud cloud) throws JspTagException {
+        if (cloud != null) return cloud;
         if (cloud == null) {
             Query q = (Query) nodes.getProperty(NodeList.QUERY_PROPERTY);
             if (q != null) cloud = q.getCloud();
         }
         if (cloud == null && nodes.size() > 0) {
-            cloud = nodes.getNode(0).getCloud();
+            Node n = nodes.getNode(0); 
+            if (n != null) {
+                cloud = n.getCloud();
+            } else {
+                log.warn("Found NULL in " + nodes);
+            }
         }
+        if (cloud == null) {
+            CloudProvider cp = thisTag.findParentTag(CloudProvider.class, null, false);
+            if (cp != null) cloud = cp.getCloudVar();
+        }
+        return cloud;
+    }
+    public int setReturnValues(NodeList nodes, boolean trim) throws JspTagException {
+        Cloud cloud = null;
 
         if (add != Attribute.NULL) {
             Object addObject = thisTag.getObjectConditional(add.getString(thisTag));
@@ -206,6 +222,7 @@ public class NodeListHelper implements ListProvider {
                 if (addObject instanceof Collection) {
                     nodes.addAll((Collection) addObject);
                 } else {
+                    cloud = getCloud(nodes, cloud);
                     nodes.add(Casting.toNode(addObject, cloud));
                 }
             }
@@ -216,6 +233,7 @@ public class NodeListHelper implements ListProvider {
                 if (retainObject instanceof Collection) {
                     nodes.retainAll((Collection) retainObject);
                 } else {
+                    cloud = getCloud(nodes, cloud);
                     nodes.retainAll(Collections.singletonList((Casting.toNode(retainObject, cloud))));
                 }
             }
@@ -226,6 +244,7 @@ public class NodeListHelper implements ListProvider {
                 if (removeObject instanceof Collection) {
                     nodes.removeAll((Collection) removeObject);
                 } else {
+                    cloud = getCloud(nodes, cloud);
                     nodes.remove((Casting.toNode(removeObject, cloud)));
                 }
             }
@@ -256,9 +275,10 @@ public class NodeListHelper implements ListProvider {
         returnList   = nodes;
 
         // returnList is know, now we can serve parent formatter tag
-        FormatterTag f = (FormatterTag) thisTag.findParentTag(FormatterTag.class, null, false);
+        FormatterTag f = thisTag.findParentTag(FormatterTag.class, null, false);
         if (f != null && f.wantXML()) {
             f.getGenerator().add(nodes);
+            cloud = getCloud(nodes, cloud);
             f.setCloud(cloud);
         }
 
@@ -280,9 +300,9 @@ public class NodeListHelper implements ListProvider {
         collector = new ContextCollector(thisTag.getContextProvider());
         varStatusName = (String) varStatus.getValue(thisTag);
         // serve parent timer tag:
-        TagSupport t = thisTag.findParentTag(TimerTag.class, null, false);
+        TimerTag t = thisTag.findParentTag(TimerTag.class, null, false);
         if (t != null) {
-            timerHandle = ((TimerTag)t).startTimer(getId(), getClass().getName());
+            timerHandle = t.startTimer(getId(), getClass().getName());
         }
         /*
         if (thisTag.getReferid() != null) {
@@ -333,9 +353,9 @@ public class NodeListHelper implements ListProvider {
         if (getId() != null) {
             thisTag.getContextProvider().getContextContainer().register(getId(), returnList, false); // use false because check was done in doStartTag (and doAfterBody not always called).
         }
-        TagSupport t = thisTag.findParentTag(TimerTag.class, null, false);
+        TimerTag t = thisTag.findParentTag(TimerTag.class, null, false);
         if (t != null) {
-            ((TimerTag)t).haltTimer(timerHandle);
+            t.haltTimer(timerHandle);
         }
 
         return EVAL_PAGE;
