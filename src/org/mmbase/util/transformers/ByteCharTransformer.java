@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util.transformers;
 
 import java.io.*;
-
+import org.mmbase.util.ReaderInputStream;
 import org.mmbase.util.logging.*;
 
 /**
@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ByteCharTransformer.java,v 1.2 2005-07-09 11:14:38 nklasens Exp $
+ * @version $Id: ByteCharTransformer.java,v 1.3 2006-10-02 14:31:01 michiel Exp $
  */
 
 public class ByteCharTransformer extends ReaderTransformer implements CharTransformer {
@@ -28,7 +28,6 @@ public class ByteCharTransformer extends ReaderTransformer implements CharTransf
 
     private ByteToCharTransformer byteToChars;
     private String encoding = "UTF-8";
-    
     public ByteCharTransformer(ByteToCharTransformer b) {
         byteToChars = b;
     }
@@ -37,25 +36,12 @@ public class ByteCharTransformer extends ReaderTransformer implements CharTransf
         encoding = enc;
     }
 
-
     // javadoc inherited
     public Writer transform(Reader reader, Writer writer) {
-        try {
-            while (true) {
-                int c = reader.read();
-                if (c == -1) break;
-                String s = "" + (char) c;
-                writer.write(byteToChars.transform(s.getBytes(encoding)));
-            }
-        } catch (java.io.IOException e) {
-            log.error(e.toString());
-        }
-        return writer;
+        return byteToChars.transform(new ReaderInputStream(reader, encoding), writer);
     }
 
     public String toString() {
         return "CHAR "  + byteToChars ;
     }
-
-    
 }
