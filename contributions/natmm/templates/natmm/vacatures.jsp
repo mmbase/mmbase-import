@@ -19,24 +19,25 @@
       <jsp:param name="s" value="<%= paginaID %>" />
       <jsp:param name="r" value="<%= rubriekID %>" />
       <jsp:param name="sr" value="0" />
+      <jsp:param name="tl" value="asis" />
    </jsp:include>
 	</td>
 	<% 
    String vacatureConstraint = "(vacature.embargo < '" + nowSec + "') AND (vacature.verloopdatum > '" + nowSec + "' )";
    if(vacatureID.equals("-1")) {
-      %>
+    %>
    	<mm:list nodes="<%= paginaID %>" path="pagina,contentrel,vacature" fields="vacature.number" constraints="<%= vacatureConstraint %>">
 			<mm:first>
 				<mm:size jspvar="vacCount" vartype="integer" write="false">
 					<% 
-               if(vacCount.intValue()==1){ 
-                  %>
-						<mm:field name="vacature.number" jspvar="singleVacatureNumber" vartype="String">
-							<% vacatureID = singleVacatureNumber; %>
-						</mm:field>
-					   <% 
-               } %>
-				</mm:size>
+          if(vacCount.intValue()==1){ 
+            %>
+            <mm:field name="vacature.number" jspvar="singleVacatureNumber" vartype="String">
+            <% vacatureID = singleVacatureNumber; %>
+            </mm:field>
+            <% 
+          } %>
+      </mm:size>
 			</mm:first>
    	</mm:list>
    	<%
@@ -46,40 +47,40 @@
 			<table width="539px;" cellspacing="0" cellpadding="0">
    			<tr>
       			<td style="vertical-align:top;width:364px;padding-right:10px">
-                  <%@include file="includes/page_intro.jsp" %>
-         			<mm:list nodes="<%= paginaID %>" path="pagina,contentrel,vacature" fields="vacature.number,vacature.titel,vacature.embargo,vacature.omschrijving"
+              <%@include file="includes/page_intro.jsp" %>
+              <mm:list nodes="<%= paginaID %>" path="pagina,contentrel,vacature" fields="vacature.number,vacature.titel,vacature.embargo,vacature.omschrijving"
                      orderby="vacature.embargo" directions="down" constraints="<%= vacatureConstraint %>">
-                     <mm:first>
-                        <mm:import id="vacature_online" />
-               			<table cellspacing="0" cellpadding="0">
-                     </mm:first>
-      					<tr>
-      						<td style="vertical-align:top;width:65;">
-      							<mm:field name="vacature.embargo" jspvar="vacature_embargo" vartype="String" write="false">
-      								<mm:time time="<%=vacature_embargo%>" format="dd-MM-yyyy"/>
-      							</mm:field>
-      						</td>
-      						<td style="vertical-align:top;width:3;">&nbsp;&nbsp;|&nbsp;&nbsp;</td>
-      						<td style="vertical-align:top;">
-      							<strong><a href="vacatures.jsp?id=<%= paginaID %>&v=<mm:field name="vacature.number"/>">
-      								<mm:field name="vacature.titel"/></strong>
-      							</a>
-      						</td>
-      					</tr>
-      					<tr>
-      						<td style="vertical-align:top;"></td>
-      						<td style="vertical-align:top;width:3;"></td>
-      						<td style="vertical-align:top;">
-      							<mm:field name="vacature.omschrijving"/>
-      						</td>
-      					</tr>
-                     <mm:last>
-                        </table>
-                     </mm:last>
-         			</mm:list>
-                  <mm:notpresent referid="vacature_online">
+                <mm:first>
+                  <mm:import id="vacature_online" />
+                  <table cellspacing="0" cellpadding="0">
+                </mm:first>
+                <tr>
+                  <td style="vertical-align:top;width:65;">
+                    <mm:field name="vacature.embargo" jspvar="vacature_embargo" vartype="String" write="false">
+                      <mm:time time="<%=vacature_embargo%>" format="dd-MM-yyyy"/>
+                    </mm:field>
+                  </td>
+                  <td style="vertical-align:top;width:3;">&nbsp;&nbsp;|&nbsp;&nbsp;</td>
+                  <td style="vertical-align:top;">
+                    <strong><a href="vacatures.jsp?id=<%= paginaID %>&v=<mm:field name="vacature.number"/>">
+                      <mm:field name="vacature.titel"/></strong>
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="vertical-align:top;"></td>
+                  <td style="vertical-align:top;width:3;"></td>
+                  <td style="vertical-align:top;">
+                    <mm:field name="vacature.omschrijving"/>
+                  </td>
+                </tr>
+                <mm:last>
+                  </table>
+                </mm:last>
+              </mm:list>
+              <mm:notpresent referid="vacature_online">
       					Er zijn op dit moment geen vacatures bij Natuurmonumenten.
-                  </mm:notpresent>
+              </mm:notpresent>
       			</td>
       			<td style="vertical-align:top;padding-left:10px;width:175px;">
                   <jsp:include page="includes/navright.jsp">
@@ -90,7 +91,7 @@
                   <jsp:include page="includes/shorty.jsp">
             	      <jsp:param name="s" value="<%= paginaID %>" />
             	      <jsp:param name="r" value="<%= rubriekID %>" />
-                     <jsp:param name="rs" value="<%= styleSheet %>" />
+                    <jsp:param name="rs" value="<%= styleSheet %>" />
       			      <jsp:param name="sr" value="2" />
       			   </jsp:include>
       		   </td>
@@ -100,18 +101,18 @@
 
 	} else { // *** show the selected vacature
 	    
-      %>
+    %>
 		<td style="width:559px;vertical-align:top;padding:10px;padding-top:0px;<jsp:include page="includes/rightcolumn_bgimage.jsp"><jsp:param name="rnimageid" value="<%= rnImageID %>" /></jsp:include>">
 		   <% 
-         if (request.getParameter("p")!=null) { // link from intranet db
-            String vacatureBronConstraint = "vacature.bron = '" + vacatureID + "'"; %>
-            <mm:listnodes type="vacature" constraints="<%= vacatureBronConstraint %>">
-            	<mm:field name="number" jspvar="bron" vartype="String">
-            		<% vacatureID = bron; %>
-            	</mm:field>
-            </mm:listnodes>
-            <% 
-         } %>
+       if (request.getParameter("p")!=null) { // link from intranet db
+          String vacatureBronConstraint = "vacature.bron = '" + vacatureID + "'"; %>
+          <mm:listnodes type="vacature" constraints="<%= vacatureBronConstraint %>">
+            <mm:field name="number" jspvar="bron" vartype="String">
+              <% vacatureID = bron; %>
+            </mm:field>
+          </mm:listnodes>
+          <% 
+        } %>
 	      <jsp:include page="includes/relatedvacature.jsp">
    	      <jsp:param name="v" value="<%= vacatureID %>" />
 		   </jsp:include>	
