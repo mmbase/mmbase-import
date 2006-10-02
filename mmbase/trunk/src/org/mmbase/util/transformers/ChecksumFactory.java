@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: ChecksumFactory.java,v 1.8 2006-04-18 14:10:38 michiel Exp $
+ * @version $Id: ChecksumFactory.java,v 1.9 2006-10-02 14:31:01 michiel Exp $
  */
 
 public class ChecksumFactory implements ParameterizedTransformerFactory  {
@@ -102,6 +102,14 @@ public class ChecksumFactory implements ParameterizedTransformerFactory  {
             }
         }
 
+    }
+
+    public static void main(String argv[]) throws java.io.UnsupportedEncodingException {
+        ChecksumFactory fact = new ChecksumFactory();
+        Parameters params = fact.createParameters();
+        params.set("implementation", java.util.zip.Adler32.class.getName());
+        CharTransformer transformer = new ByteCharTransformer((ByteToCharTransformer) fact.createTransformer(params));
+        System.out.println("" + transformer.transform("hoi"));
     }
 
 }
