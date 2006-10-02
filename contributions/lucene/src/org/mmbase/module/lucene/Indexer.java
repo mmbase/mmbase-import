@@ -19,6 +19,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.store.*;
 
 import org.mmbase.bridge.*;
+import org.mmbase.util.CloseableIterator;
 import org.mmbase.util.LocalizedString;
 
 import org.mmbase.util.logging.*;
@@ -29,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.35 2006-09-27 21:03:49 michiel Exp $
+ * @version $Id: Indexer.java,v 1.36 2006-10-02 17:26:40 michiel Exp $
  **/
 public class Indexer {
 
@@ -81,10 +82,13 @@ public class Indexer {
 
     private Date lastFullIndex = new Date(0);
 
+    protected boolean needNewSearcher = false;
+
+ 
+
 
     // of course life would be easier if we could used BoundedFifoBuffer of jakarta or so, but
     // actually it's ont very hard to simulate it:
-
     private final int ERRORBUFFER_MAX = 100;
     private int errorBufferSize = 0;
     private int errorBufferCursor = -1;
@@ -234,7 +238,7 @@ public class Indexer {
         try {
             writer = new IndexWriter(path, analyzer, false);
             for (String mainNumber : mains) {
-                Iterator<? extends IndexEntry> j = indexDefinition.getSubCursor(mainNumber);
+                CloseableIterator<? extends IndexEntry> j = indexDefinition.getSubCursor(mainNumber);
                 if (log.isDebugEnabled()) {
                     log.debug(getName() + ": Updating index " + indexDefinition + " for " + mainNumber);
                 }
@@ -246,6 +250,7 @@ public class Indexer {
         } finally {
             if (writer != null) try { writer.close();} catch (IOException ioe) { log.error(ioe); }
         }
+        needNewSearcher = true;
         return updated;
     }
 
@@ -309,8 +314,9 @@ public class Indexer {
             // process all queries
             for (IndexDefinition indexDefinition : queries) {
                 log.debug("full index for " + indexDefinition);
-                Iterator<? extends IndexEntry> j = indexDefinition.getCursor();
+                CloseableIterator<? extends IndexEntry> j = indexDefinition.getCursor();
                 index(j, writer);
+                j.close();
                 if (Thread.currentThread().isInterrupted()) {
                     log.info("Interrupted");
                     return;
@@ -325,12 +331,14 @@ public class Indexer {
         } finally {
             if (writer != null) { try { writer.close(); } catch (IOException ioe) { log.error("Can't close index writer: " + ioe.getMessage()); } }
         }
+        needNewSearcher = true;
+        
     }
 
     /**
      * Runs the queries for the given cursor, and indexes all nodes that are returned.
      */
-    protected int index(Iterator<? extends IndexEntry> i, IndexWriter writer) throws IOException {
+    protected int index(CloseableIterator<? extends IndexEntry> i, IndexWriter writer) throws IOException {
         int indexed = 0;
         Document document = null;
         String   lastIdentifier = null;
@@ -364,6 +372,7 @@ public class Indexer {
             }
             writer.addDocument(document);
         }
+        needNewSearcher = true;
         return indexed;
     }
 
