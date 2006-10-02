@@ -38,7 +38,7 @@ import org.mmbase.module.core.MMObjectNode;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: PostgreSqlSqlHandler.java,v 1.26 2006-10-02 09:42:17 michiel Exp $
+ * @version $Id: PostgreSqlSqlHandler.java,v 1.27 2006-10-02 11:32:25 michiel Exp $
  * @since MMBase-1.7
  */
 public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -124,16 +124,19 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
      * DISTINCT, ORDER BY expressions must appear in select list), may occur.
      */
     protected StringBuffer appendSortOrderField(StringBuffer sb, SortOrder sortOrder, boolean multipleSteps, SearchQuery query) {
-        StepField sf = sortOrder.getField();
         if (localeMakesCaseInsensitive) {
             if (sortOrder.isCaseSensitive()) {
                 log.warn("Don't now how to sort case sensitively if the locale make case insensitive in Postgresql for " + sortOrder + " it will be ignored.");
             }
+            StepField sf = sortOrder.getField();
             appendField(sb, sf.getStep(), sf.getFieldName(), multipleSteps);
             return sb;
         } else {
-            if (sf.getType() == org.mmbase.bridge.Field.TYPE_STRING && query.isDistinct() && ! sortOrder.isCaseSensitive()) {
-                log.warn("With a case sensitive locale, it is impossible to sort a distinct query case insensitively. Will sort it case sensitively in stead: " + sortOrder);
+            if (query.isDistinct() && ! sortOrder.isCaseSensitive()) {
+                StepField sf = sortOrder.getField();
+                if (sf.getType() == org.mmbase.bridge.Field.TYPE_STRING ) {
+                    log.warn("With a case sensitive locale, it is impossible to sort a distinct query case insensitively. Will sort it case sensitively in stead: " + sortOrder);
+                }
                 appendField(sb, sf.getStep(), sf.getFieldName(), multipleSteps);
                 return sb;
             } else {
