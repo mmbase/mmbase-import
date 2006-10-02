@@ -122,6 +122,7 @@ String cardID = "-1";
             		<tr>
             			<td width="300">
                			<a href="javascript:showLayerNumber(2)" class="subnav">Omdraaien</a>
+                    <span class="colortitle">|</span>
                			<a href="ecard.jsp?p=<%=paginaID%>&d=<%=dossierID%>" class="subnav">
                			   <% if(cardID.equals("-1")) { 
                			      %>Terug naar kaartoverzicht<% 
