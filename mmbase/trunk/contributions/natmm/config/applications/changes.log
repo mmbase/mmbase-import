@@ -13,4 +13,5 @@ Date        By        Builders       Change                                     
 2006-08-25  Henk      rubriek        Added issearchable                              issearchable should be added to rubriek in db
 2006-09-04  Henk      persoon        Increased job and department field to 1024      change fields for persoon, deelnemers, medewerkers, etc in existing dbs
 2006-09-19  Henk      linklijst      Added multilanguage for naam and omschrijving   add multilanguage fields to existing dbs
+2006-10-02  Henk      dossier        Added showdate                                  showdate should be added to dossier in db
 
