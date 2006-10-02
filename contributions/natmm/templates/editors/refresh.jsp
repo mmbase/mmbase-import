@@ -26,14 +26,17 @@
   if("showall".equals(action)||"reset".equals(action)) {
     %>
     <body style="overflow:auto;">
+    <table class="formcontent" style="width:auto;" border="1">
+    <tr><th>session</th><th>#minutes logged in</th></tr>
     <%
     for(Iterator it=loggedInTime.keySet().iterator();it.hasNext();) {
       String sessionId = (String) it.next();
       %>
-      <%= loggedInAccount.get(sessionId) %> - <%= loggedInTime.get(sessionId) %><br/>
+      <tr><td><%= loggedInAccount.get(sessionId) %></td><td><%= loggedInTime.get(sessionId) %></td></tr>
       <%
     }
     %>
+    </table>
     </body>
     <%
   } else {
@@ -46,10 +49,10 @@
     
     String accountId = request.getParameter("account");
     if(accountId!=null) {
-      loggedInAccount.put(sessionId,accountId);
+      loggedInAccount.put(sessionId,accountId + " / " + ServerUtil.getDateTimeString());
     }
     %>
-    <body onload="javascript:setTimeout('resubmit()',5*1000);" style="background-color:#00FF00;">
+    <body onload="javascript:setTimeout('resubmit()',60*1000);" style="background-color:#00FF00;">
       <form name="dummy" method="post" target=""></form>
       <!-- number of minutes logged in <%= numberOfMinutes %> -->
     </body>
