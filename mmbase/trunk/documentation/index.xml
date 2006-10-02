@@ -7,7 +7,7 @@
 
     <date>2006-07-07</date>
 
-    <edition>$Id: index.xml,v 1.59 2006-09-18 12:12:05 andre Exp $</edition>
+    <edition>$Id: index.xml,v 1.60 2006-10-02 16:38:24 michiel Exp $</edition>
 
     <authorgroup>
       <author>
@@ -533,34 +533,25 @@
 
     <itemizedlist>
       <listitem>
-        <para><ulink url="javadoc/index.html">MMBase ApiDocs
-        1.8</ulink></para>
-
-        <!-- is this allways correct? -->
+        <para><ulink url="javadoc/index.html">MMBase ApiDocs</ulink></para>
+      </listitem>
+      <listitem>
+        <para><ulink url="http://www.mmbase.org/development/api/1.8/overview-summary.html">MMBase ApiDocs 1.8 </ulink></para>
+      </listitem>
+      <listitem>
+        <para><ulink url="http://www.mmbase.org/development/api/1.7/overview-summary.html">MMBase ApiDocs 1.7</ulink></para>
       </listitem>
 
       <listitem>
-        <para><ulink
-        url="http://www.mmbase.org/development/api/1.7/overview-summary.html">MMBase
-        ApiDocs 1.7</ulink></para>
+        <para><ulink url="http://www.mmbase.org/development/api/1.6/overview-summary.html">MMBase ApiDocs 1.6</ulink></para>
       </listitem>
 
       <listitem>
-        <para><ulink
-        url="http://www.mmbase.org/development/api/1.6/overview-summary.html">MMBase
-        ApiDocs 1.6</ulink></para>
+        <para><ulink url="http://www.mmbase.org/development/api/1.5/overview-summary.html">MMBase ApiDocs 1.5</ulink></para>
       </listitem>
 
       <listitem>
-        <para><ulink
-        url="http://www.mmbase.org/development/api/1.5/overview-summary.html">MMBase
-        ApiDocs 1.5</ulink></para>
-      </listitem>
-
-      <listitem>
-        <para><ulink
-        url="http://www.mmbase.org/development/api/1.4/overview-summary.html">MMBase
-        ApiDocs 1.4</ulink></para>
+        <para><ulink url="http://www.mmbase.org/development/api/1.4/overview-summary.html">MMBase ApiDocs 1.4</ulink></para>
       </listitem>
     </itemizedlist>
   </section>
