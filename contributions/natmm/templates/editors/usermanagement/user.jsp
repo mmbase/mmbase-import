@@ -10,9 +10,9 @@
 <mm:cloud jspvar="cloud" rank='administrator'>
 <script>
     function showTab(tab, hide1, hide2) {
-        document.getElementById(tab).style.display = 'inline';
-        document.getElementById(hide1).style.display = 'none';
-		  document.getElementById(hide2).style.display = 'none';
+      document.getElementById(tab).style.display = 'inline';
+      document.getElementById(hide1).style.display = 'none';
+      document.getElementById(hide2).style.display = 'none';
     }
 </script>
 <style>
@@ -34,8 +34,8 @@
     </logic:equal>
     <logic:notEqual name="UserForm" property="nodeNumber" value="-1">
 		  <html:hidden property="username"/>
-        <bean:define name="UserForm" id="username" property="username" /> 
-        <cache:flush scope="application" key="<%= "pagina_all_" + username %>" />
+        <bean:define name="UserForm" id="username" property="username" />
+        <cache:flush scope="application" group="<%= (String) username %>" />
         <%= username %>
     </logic:notEqual>
     </td></tr>
