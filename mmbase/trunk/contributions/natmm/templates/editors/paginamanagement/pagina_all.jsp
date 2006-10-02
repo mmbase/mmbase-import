@@ -4,7 +4,7 @@
 <%
 String account = cloud.getUser().getIdentifier();
 %>
-<cache:cache groups="pagina_all" key="<%= "pagina_all_" + account %>" time="<%= 3600*24*7 %>" scope="application">
+<cache:cache groups="<%= account %>" key="pagina_all" time="<%= 3600*24*7 %>" scope="application">
 <!-- <%= new java.util.Date() %> -->
 <html>
 <head>
