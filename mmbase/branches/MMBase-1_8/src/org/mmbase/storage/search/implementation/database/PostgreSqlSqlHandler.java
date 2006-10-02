@@ -36,7 +36,7 @@ import org.mmbase.module.core.MMObjectNode;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: PostgreSqlSqlHandler.java,v 1.24 2006-08-02 17:26:55 michiel Exp $
+ * @version $Id: PostgreSqlSqlHandler.java,v 1.24.2.1 2006-10-02 11:33:37 michiel Exp $
  * @since MMBase-1.7
  */
 public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -110,8 +110,10 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
             return sb;
         } else {
             if (query.isDistinct() && ! sortOrder.isCaseSensitive()) {
-                log.warn("With a case sensitive locale, it is impossible to sort a distinct query case insensitively. Will sort it case sensitively in stead: " + sortOrder);
                 StepField sf = sortOrder.getField();
+                if (sf.getType() == org.mmbase.bridge.Field.TYPE_STRING ) {
+                    log.warn("With a case sensitive locale, it is impossible to sort a distinct query case insensitively. Will sort it case sensitively in stead: " + sortOrder);
+                }
                 appendField(sb, sf.getStep(), sf.getFieldName(), multipleSteps);
                 return sb;
             } else {
