@@ -4,7 +4,8 @@
    <title>dossier</title>
    <item>
       <field name="naam" ftype="data"><prompt>naam</prompt></field>
-      <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>positie</prompt></field>
+      <field name="showdate" ftype="data"><prompt>toon datum</prompt></field>
+      <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>positie ___________</prompt></field>
       <field ftype="startwizard" wizardname="config/dossier/posreldossier" />
    </item>
    <command name="search" nodepath="dossier" age="-1" fields="naam" orderby="naam">
