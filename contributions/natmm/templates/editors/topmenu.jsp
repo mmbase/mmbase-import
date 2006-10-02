@@ -172,7 +172,7 @@ String sNatuurinNumber = "";
     <li><a class="menu" href="usermanagement/changepassword.jsp" target="bottompane" title="wijzig uw wachtwoord"><mm:node number="$thisuser">gebruiker:&nbsp;<mm:field name="voornaam"/>&nbsp;<mm:field name="tussenvoegsel"><mm:isnotempty><mm:write />&nbsp;</mm:isnotempty></mm:field><mm:field name="achternaam"
        /></mm:node></a>
   </small>
-  <iframe src="refresh.jsp" style="width:7px;height:7px;" frameborder="0" scrolling="no"></iframe>
+  <iframe src="refresh.jsp?account=<%=account %>" style="width:7px;height:7px;" frameborder="0" scrolling="no"></iframe>
 </div>
 </body>
 </html>
