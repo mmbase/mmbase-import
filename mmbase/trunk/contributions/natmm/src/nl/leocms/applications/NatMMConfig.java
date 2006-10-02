@@ -48,8 +48,8 @@ public class NatMMConfig {
       "object,posrel1,dossier,posrel2,pagina",                       // artikel
       "object,posrel,pagina",                                        // dossier
       "object,posrel1,dossier,posrel2,pagina",                       // images
-      "object,lijstcontentrel1,linklijst,lijstcontentrel2,pagina",   // link
-      "object,lijstcontentrel2,pagina",                              // linklijst
+      "object,lijstcontentrel,linklijst,posrel,pagina",              // link
+      "object,posrel,pagina",                                        // linklijst
       "object,pos4rel,provincies,contentrel,pagina",                 // natuurgebieden
       "object,contentrel,pagina",                                    // persoon
       "object,contentrel,pagina",                                    // provincies
