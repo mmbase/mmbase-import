@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * If for some reason you also need to do Queries next to MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JdbcIndexDefinition.java,v 1.14 2006-09-26 09:22:32 michiel Exp $
+ * @version $Id: JdbcIndexDefinition.java,v 1.15 2006-10-02 17:26:40 michiel Exp $
  **/
 public class JdbcIndexDefinition implements IndexDefinition {
 
@@ -59,6 +59,7 @@ public class JdbcIndexDefinition implements IndexDefinition {
 
     private final Set<String> keyWords    = new HashSet();
     private final Map<String, Indexer.Multiple> nonDefaultMultiples = new HashMap();
+    private final Map<String, Float> boosts = new HashMap();
 
     private final Collection<IndexDefinition> subQueries = new ArrayList();
 
@@ -90,6 +91,10 @@ public class JdbcIndexDefinition implements IndexDefinition {
                     if ("".equals(m)) m = "add";
                     if (! m.equals("add")) {
                         nonDefaultMultiples.put(childElement.getAttribute("name"),  Indexer.Multiple.valueOf(m.toUpperCase()));
+                    }
+                    String b = childElement.getAttribute("boost");
+                    if (! b.equals("")) {
+                        boosts.put(childElement.getAttribute("name"), Float.valueOf(b));
                     }
                 } else if ("related".equals(childElement.getLocalName())) {
                     subQueries.add(new JdbcIndexDefinition(ds, childElement, allIndexedFields, storeText, mergeText, a, true));
@@ -221,8 +226,8 @@ public class JdbcIndexDefinition implements IndexDefinition {
                     statement = connection.createStatement();
                     long start = System.currentTimeMillis();
                     String s = getFindSql(identifier);
-                    if (log.isDebugEnabled()) {
-                        log.debug("About to execute " + s + " because " , new Exception());
+                    if (log.isTraceEnabled()) {
+                        log.trace("About to execute " + s + " because " , new Exception());
                     }
                     results = statement.executeQuery(s);
                     ResultSetMetaData meta = results.getMetaData();
@@ -366,8 +371,17 @@ public class JdbcIndexDefinition implements IndexDefinition {
                     if (keyWords.contains(fieldName)) {
                         Indexer.addField(document, new Field(fieldName,  value,   Field.Store.YES, Field.Index.UN_TOKENIZED), nonDefaultMultiples.get(fieldName)); // keyword
                     } else {
-                        Indexer.addField(document, new Field(fieldName,   value,   Field.Store.YES, Field.Index.TOKENIZED), nonDefaultMultiples.get(fieldName));
-                        document.add(new Field("fulltext",  value,   Field.Store.YES, Field.Index.TOKENIZED));
+                        Field field = new Field(fieldName,   value,   Field.Store.YES, Field.Index.TOKENIZED);
+                        Float boost = boosts.get(fieldName);
+                        if (boost != null) {
+                            field.setBoost(boost);
+                        }
+                        Indexer.addField(document, field, nonDefaultMultiples.get(fieldName));
+                        Field fullText = new Field("fulltext",  value,   Field.Store.YES, Field.Index.TOKENIZED);
+                        if (boost != null) {
+                            fullText.setBoost(boost);
+                        }
+                        document.add(fullText);
                     }
                 }
             } catch (SQLException sqe) {

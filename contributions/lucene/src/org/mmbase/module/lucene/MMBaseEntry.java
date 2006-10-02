@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseEntry.java,v 1.12 2006-09-13 09:51:14 michiel Exp $
+ * @version $Id: MMBaseEntry.java,v 1.13 2006-10-02 17:26:40 michiel Exp $
  **/
 public class MMBaseEntry implements IndexEntry {
     static private final Logger log = Logging.getLoggerInstance(MMBaseEntry.class);
@@ -50,6 +50,8 @@ public class MMBaseEntry implements IndexEntry {
     // set with numbers of nodes indexed so far - used to prevent the indexing
     // of fields already indexed
     private final Set<String> indexed = new HashSet<String>();
+
+    private final float boost = 1.0f;
 
     MMBaseEntry(Node node, Collection<IndexFieldDefinition> fields, boolean multiLevel, NodeManager elementManager, Collection<IndexDefinition> subQueries) {
         this.fields = fields;
@@ -112,12 +114,16 @@ public class MMBaseEntry implements IndexEntry {
                     if (log.isDebugEnabled()) {
                         log.trace("add " + fieldName + " text, store");
                     }
-                    Indexer.addField(document, new Field(fieldName, value, Field.Store.YES, Field.Index.TOKENIZED), fieldDefinition.multiple);
+                    Field field = new Field(fieldName, value, Field.Store.YES, Field.Index.TOKENIZED);
+                    field.setBoost(fieldDefinition.boost);
+                    Indexer.addField(document, field, fieldDefinition.multiple);
                 } else {
                     if (log.isDebugEnabled()) {
                         log.trace("add " + fieldName + " text, no store");
                     }
-                    Indexer.addField(document, new Field(fieldName, value, Field.Store.NO, Field.Index.TOKENIZED), fieldDefinition.multiple);
+                    Field field = new Field(fieldName, value, Field.Store.NO, Field.Index.TOKENIZED);
+                    field.setBoost(fieldDefinition.boost);
+                    Indexer.addField(document, field, fieldDefinition.multiple);
                 }
             }
         }

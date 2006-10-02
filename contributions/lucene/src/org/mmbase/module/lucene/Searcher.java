@@ -31,12 +31,12 @@ import org.mmbase.util.logging.*;
  * A wrapper around Lucene's {@link org.apache.lucene.search.IndexSearcher}. Every {@link Indexer} has its own Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.31 2006-09-27 20:22:46 michiel Exp $
+ * @version $Id: Searcher.java,v 1.32 2006-10-02 17:26:40 michiel Exp $
  * @todo  Should the StopAnalyzers be replaced by index.analyzer? Something else?
  **/
 public class Searcher {
     private static final Logger log = Logging.getLoggerInstance(Searcher.class);
-    
+
 
     // Search actions are logged on org.mmbase.lucene.SEARCH
     // So by configuring log4j, you can easily track what people are searching for.
@@ -48,6 +48,9 @@ public class Searcher {
     private IndexSearcher searcher;
 
     private long producedNodes = 0;
+    private boolean needsNewSearcher = false;
+
+    private final Timer timer = new Timer(true);
 
     /**
      * @param index The index where this Search is for
@@ -64,14 +67,29 @@ public class Searcher {
     }
 
     protected IndexSearcher getSearcher() {
-        if (searcher != null) {
-            return searcher;
-        } else {
+        if (index.needNewSearcher || searcher == null) {
+            // for existing searches, leave existing the searcher open for 10 seconds, then close it (searches still not finished in 10 seconds, get an IO exception)
+            if (searcher != null) {
+                final IndexSearcher s = searcher;
+                timer.schedule(new TimerTask() {
+                        public void run() {
+                            try {
+                                log.debug("Shutting down a searcher for " + index);
+                                s.close();
+                            } catch (IOException ioe) {
+                                log.error("Can't close index searcher: " + ioe.getMessage());
+                            }
+                        }
+                    }, 10000);
+            }
             try {
+                index.needNewSearcher = false;
                 searcher = new IndexSearcher(index.getPath());
             } catch (IOException ioe) {
                 log.error("Can't close index searcher: " + ioe.getMessage());
             }
+            return searcher;
+        } else {
             return searcher;
         }
     }

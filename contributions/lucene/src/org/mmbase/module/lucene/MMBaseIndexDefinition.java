@@ -24,7 +24,7 @@ import org.apache.lucene.analysis.Analyzer;
  * fields can have extra attributes specific to Lucene searching.
  *
  * @author Pierre van Rooden
- * @version $Id: MMBaseIndexDefinition.java,v 1.13 2006-09-26 09:22:32 michiel Exp $
+ * @version $Id: MMBaseIndexDefinition.java,v 1.14 2006-10-02 17:26:40 michiel Exp $
  **/
 class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
     static private final Logger log = Logging.getLoggerInstance(MMBaseIndexDefinition.class);
@@ -42,9 +42,14 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
      * Subqueries for this index. The subqueries are lists whose starting element is the element node from the
      * current index result.
      */
-    protected List<IndexDefinition> subQueries = new ArrayList<IndexDefinition>();
+    protected final List<IndexDefinition> subQueries = new ArrayList<IndexDefinition>();
 
     protected Analyzer analyzer;
+
+    // not configurable for these kind of indices.
+    protected final List<String> identifierFields = Collections.unmodifiableList(new ArrayList<String>(Arrays.asList("number")));
+
+    private final Map<String, Float> boosts = new HashMap();
 
 
     MMBaseIndexDefinition() {
@@ -67,12 +72,15 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
             if (userCloud.mayRead(identifier)) {
                 return userCloud.getNode(identifier);
             } else {
-                return null;
+                return new MapNode(Collections.EMPTY_MAP);
             }
         } else {
-            return null;
+            return new MapNode(Collections.EMPTY_MAP);
         }
 
+    }
+    public List<String> getIdentifierFields() {
+        return identifierFields;
     }
 
     /**
@@ -80,30 +88,30 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
      */
     protected CloseableIterator<MMBaseEntry> getCursor(final NodeIterator nodeIterator, final Collection<? extends FieldDefinition> f) {
         return new CloseableIterator<MMBaseEntry>() {
-                int i = 0;
-                public boolean hasNext() {
-                    return nodeIterator != null && nodeIterator.hasNext();
-                }
-                public void remove() {
-                    nodeIterator.remove();
-                }
-                public MMBaseEntry next() {
-                    Node node = nodeIterator.nextNode();
-                    MMBaseEntry entry = new MMBaseEntry(node, (Collection<IndexFieldDefinition>) f, isMultiLevel, elementManager, subQueries);
-                    i++;
-                    if (log.isServiceEnabled()) {
-                        if (i % 100 == 0) {
-                            log.service("mmbase cursor " + i + " (now at id=" + entry.getIdentifier() + ")");
-                        } else if (log.isDebugEnabled()) {
-                            log.trace("mmbase cursor " + i + " (now at id=" + entry.getIdentifier() + ")");
-                        }
+            int i = 0;
+            public boolean hasNext() {
+                return nodeIterator != null && nodeIterator.hasNext();
+            }
+            public void remove() {
+                nodeIterator.remove();
+            }
+            public MMBaseEntry next() {
+                Node node = nodeIterator.nextNode();
+                MMBaseEntry entry = new MMBaseEntry(node, (Collection<IndexFieldDefinition>) f, isMultiLevel, elementManager, subQueries);
+                i++;
+                if (log.isServiceEnabled()) {
+                    if (i % 100 == 0) {
+                        log.service("mmbase cursor " + i + " (now at id=" + entry.getIdentifier() + ")");
+                    } else if (log.isDebugEnabled()) {
+                        log.trace("mmbase cursor " + i + " (now at id=" + entry.getIdentifier() + ")");
                     }
-                    return entry;
                 }
-                public void close() {
-                    // no need for closing
-                }
-            };
+                return entry;
+            }
+            public void close() {
+                // no need for closing
+            }
+        };
     }
 
     public CloseableIterator<MMBaseEntry> getCursor() {
