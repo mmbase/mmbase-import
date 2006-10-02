@@ -16,7 +16,7 @@ import org.mmbase.util.logging.*;
  * You need only to implement transform(byte[]) you have the simplest
  * kind of transformer (which is not 'streamable'). The name becoming your class name.
  *
- * @author Michiel Meeuwissen 
+ * @author Michiel Meeuwissen
  * @since MMBase-1.7
  */
 
@@ -25,7 +25,7 @@ public abstract class ByteArrayToCharTransformer implements ByteToCharTransforme
 
     // javadoc inherited
     public abstract String transform(byte[] r);
-        
+
     // javadoc inherited
     public final OutputStream transformBack(Reader r) {
         return transformBack(r, new ByteArrayOutputStream());
@@ -42,7 +42,7 @@ public abstract class ByteArrayToCharTransformer implements ByteToCharTransforme
     }
 
     /**
-     * An implemention for tranform(Reader, Writer) based on transform(String).
+     * An implementation for transform(Reader, Writer) based on transform(String).
      * These functions can be used by extensions to implement transform and transformBack
      */
     public Writer transform(InputStream in, Writer w)  {
@@ -50,14 +50,13 @@ public abstract class ByteArrayToCharTransformer implements ByteToCharTransforme
             ByteArrayOutputStream sw = new ByteArrayOutputStream();
             while (true) {
                 int c = in.read();
-                if (c == -1) break;
+                if (c <= -1) break;
                 sw.write(c);
             }
             String result = transform(sw.toByteArray());
             w.write(result);
         } catch (java.io.IOException e) {
-            log.error(e.toString());
-            log.debug(Logging.stackTrace(e));
+            log.error(e.toString(), e);
         }
         return w;
     }
@@ -72,9 +71,8 @@ public abstract class ByteArrayToCharTransformer implements ByteToCharTransforme
             }
             out.write(transformBack(sw.toString()));
         } catch (java.io.IOException e) {
-            log.error(e.toString());
-            log.debug(Logging.stackTrace(e));
+            log.error(e.toString(), e);
         }
         return out;
-    }    
+    }
 }

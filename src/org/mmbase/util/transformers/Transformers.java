@@ -75,6 +75,7 @@ public class Transformers {
         if (t instanceof CharTransformer) {
             ct = (CharTransformer) t;
         } else if (t instanceof ByteToCharTransformer) {
+            log.debug("making a ByteCharTransformer");
             ct = new ByteCharTransformer((ByteToCharTransformer) t);
         } else {
             log.error("The class " + clazz + " specified for "  + errorId + " is not a CharTransformer or a ByteToCharTransformer");
