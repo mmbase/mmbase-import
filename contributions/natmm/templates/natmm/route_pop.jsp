@@ -167,7 +167,9 @@ if(!artikelID.equals("-1")) {
                      <table width="100%" cellspacing="0" cellpadding="0" align="right">
                         <tr>
                            <td width="100%"></td>
-                           <td align="right" class="top_ico"><a href="#top"><img src="media/trans.gif" alt="" width="15" height="15" border="0"></a></td>
+                           <td align="right" class="top_ico">
+                            <a href="route_pop.jsp?<%= request.getQueryString() %>#top"><img src="media/trans.gif" alt="" width="15" height="15" border="0"></a>
+                           </td>
                         </tr>
                      </table>
                      <br />
