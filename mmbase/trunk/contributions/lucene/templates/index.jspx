@@ -91,7 +91,7 @@
                 <mm:link>
                   <mm:param name="fullindex" value="$index" />
                   <a href="${_}" class="navigate" 
-                     onclick="return confirm('Are you sure? This will fully delete the index '${index}', and may take some time.')"
+                     onclick="return confirm('Are you sure? This will fully delete the index \'${index}\', and may take some time.')"
                      >
                     <img src="${img.next}" alt="next"  />
                   </a>
