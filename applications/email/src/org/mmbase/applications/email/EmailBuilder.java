@@ -131,6 +131,31 @@ public class EmailBuilder extends MMObjectBuilder {
         return true;
     }
 
+    /**
+     * Get the display string for a given field of this node.
+     * @param locale de locale voor de gui value
+     * @param field name of the field to describe.
+     * @param node Node containing the field data.
+     * @return A <code>String</code> describing the requested field's content
+     */
+    public String getLocaleGUIIndicator(Locale locale, String field, MMObjectNode node) {
+        if (field.equals("mailstatus")) {
+            String val = node.getStringValue("mailstatus");
+            log.debug("val: " + val); // 0, 1, 2, 3
+            ResourceBundle bundle;
+            bundle = ResourceBundle.getBundle(EMAILTYPE_RESOURCE, locale, getClass().getClassLoader() );
+            try {
+                return bundle.getString(val);
+            } catch (MissingResourceException e) {
+                return val;
+            }
+        } else if (field.equals("mailtype")){	// mailtype
+            String val = node.getStringValue("mailtype");
+            return getMailtypeResource(val,locale);
+        } else {
+            return super.getLocaleGUIIndicator(locale,field,node);
+        }
+    }
 
     /**
      * {@inheritDoc}
@@ -142,7 +167,6 @@ public class EmailBuilder extends MMObjectBuilder {
         if (log.isDebugEnabled()) {
             log.debug("function: " + function);
         }
-
         if (function.equals("info")) {
             List empty = new ArrayList();
             java.util.Map info = (java.util.Map) super.executeFunction(node, function, empty);
@@ -152,96 +176,54 @@ public class EmailBuilder extends MMObjectBuilder {
             } else {
                 return info.get(args.get(0));
             }
+        } else if (function.equals("setType") || function.equals("settype") ) {
+            setType(node, args);
+            return null;
+        } else if (function.equals("mail")) {  // function mail(type) called
+            log.debug("We're in mail - args: " + args);
+            setType(node, args);
 
-        } else if (args != null && args.size() > 0) {
-
-            String field = (String) args.get(0);
-            log.debug("field: '" + field + "'");	// mailtype, mailstatus
-
-            if (function.equals("gui") && field != null) {
-                if (field.equals("mailstatus")) {
-                    String val = node.getStringValue("mailstatus");
-                    log.debug("val: " + val); // 0, 1, 2, 3
-                    ResourceBundle bundle;
-                    Parameters pars = Functions.buildParameters(GUI_PARAMETERS, args);
-                    Locale locale = (Locale) pars.get(Parameter.LOCALE);
-                    if (locale == null) {
-                        String lang = (String) pars.get(Parameter.LANGUAGE);
-                        if (lang != null) {
-                            locale = new Locale(lang, "");
-                        }
-                    }
-                    if (locale == null) {
-                        locale = mmb.getLocale();
-                    }
-                    bundle = ResourceBundle.getBundle(EMAILTYPE_RESOURCE, locale, getClass().getClassLoader() );
-
-                    try {
-                        return bundle.getString(val);
-                    } catch (MissingResourceException e) {
-                        return val;
-                    }
-                } else if (field.equals("mailtype")){	// mailtype
-                    String val = node.getStringValue("mailtype");
-                    return getMailtypeResource(val, args);
-                } else {
-                    return super.executeFunction(node, function, args);
-                }
-            } else if (function.equals("setType") || function.equals("settype") ) {
-                setType(node, args);
-                return null;
-
-            } else if (function.equals("mail")) {  // function mail(type) called
-                log.debug("We're in mail - args: " + args);
-                setType(node, args);
-
-                // get the mailtype so we can call the correct handler/method
-                int mailType = node.getIntValue("mailtype");
-                switch(mailType) {
-                case TYPE_ONESHOT :
-                    // deleting the node happens in EmailExpireHandler
-                case TYPE_ONESHOTKEEP :
-                    EmailHandler.sendMailNode(node);
-                    break;
-                // case TYPE_REPEATMAIL :
-                default:
-                    log.warn("Trying to mail a node with unsupported type " + mailType);
-                }
-
-                String val = node.getStringValue("mailtype");
-                //return getMailtypeResource(val, args);
-                return null;
-
-            } else if (function.equals("startmail")) {         // function startmail(type) called (starts a background thread)
-                log.debug("We are in startmail - args: " + args);
-                // check if we have arguments ifso call setType()
-                setType(node, args);
-
-                // get the mailtype so we can call the correct handler/method
-                int mailType = node.getIntValue("mailtype");
-                log.debug("mailtype: " + mailType);
-                switch(mailType) {
-                case TYPE_ONESHOT :
-                    // deleting the node happens in EmailExpireHandler
-                case TYPE_ONESHOTKEEP :
-                    new EmailBackgroundHandler(node);
-                    break;
-                // case TYPE_REPEATMAIL :
-                default:
-                    log.warn("Trying to start a mail of a node with unsupported type " + mailType);
-                }
-                String val = node.getStringValue("mailtype");
-                // return getMailtypeResource(val, args);
-                return null;
+            // get the mailtype so we can call the correct handler/method
+            int mailType = node.getIntValue("mailtype");
+            switch(mailType) {
+            case TYPE_ONESHOT :
+                // deleting the node happens in EmailExpireHandler
+            case TYPE_ONESHOTKEEP :
+                EmailHandler.sendMailNode(node);
+                break;
+            // case TYPE_REPEATMAIL :
+            default:
+                log.warn("Trying to mail a node with unsupported type " + mailType);
             }
+
+            String val = node.getStringValue("mailtype");
+            return null;
+        } else if (function.equals("startmail")) {         // function startmail(type) called (starts a background thread)
+            log.debug("We are in startmail - args: " + args);
+            // check if we have arguments ifso call setType()
+            setType(node, args);
+
+            // get the mailtype so we can call the correct handler/method
+            int mailType = node.getIntValue("mailtype");
+            log.debug("mailtype: " + mailType);
+            switch(mailType) {
+            case TYPE_ONESHOT :
+                // deleting the node happens in EmailExpireHandler
+            case TYPE_ONESHOTKEEP :
+                new EmailBackgroundHandler(node);
+                break;
+            // case TYPE_REPEATMAIL :
+            default:
+                log.warn("Trying to start a mail of a node with unsupported type " + mailType);
+            }
+            String val = node.getStringValue("mailtype");
+            return null;
         }
         if (log.isDebugEnabled()) {
             log.debug("Function '" + function + "' is not found in email app.");
         }
         return super.executeFunction(node, function, args);
-
     }
-
 
     /**
      * Return the sendmail module
@@ -275,32 +257,16 @@ public class EmailBuilder extends MMObjectBuilder {
      * if possible and available the localized version of it.
      *
      * @param val	The int value that maps to a mailtype (1 = oneshot etc.)
-     * @param args	List with arguments containing the wanted mailtype
+     * @param locale de locale voor de gui value
      * @return A String from the resource file being a mailtype
      */
-    private String getMailtypeResource(String val, List args) {
-        if (args != null && args.size() > 0) {
-            ResourceBundle bundle;
-            Parameters pars = Functions.buildParameters(GUI_PARAMETERS, args);
-            Locale locale = (Locale) pars.get(Parameter.LOCALE);
-            if (locale == null) {
-                String lang = (String) pars.get(Parameter.LANGUAGE);
-                if (lang != null) {
-                    locale = new Locale(lang, "");
-                }
-            }
-            if (locale == null) {
-                locale = mmb.getLocale();
-            }
-            bundle = ResourceBundle.getBundle(EMAILTYPE_RESOURCE, locale, getClass().getClassLoader());
-
-            try {
-                return bundle.getString(val);
-            } catch (MissingResourceException e) {
-                return val;
-            }
+    private String getMailtypeResource(String val, Locale locale) {
+        ResourceBundle bundle = ResourceBundle.getBundle(EMAILTYPE_RESOURCE, locale, getClass().getClassLoader());
+        try {
+            return bundle.getString(val);
+        } catch (MissingResourceException e) {
+            return val;
         }
-        return val;
     }
 
 
