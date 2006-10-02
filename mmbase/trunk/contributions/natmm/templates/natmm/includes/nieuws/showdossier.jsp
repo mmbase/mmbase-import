@@ -8,11 +8,12 @@ TreeMap articles = new TreeMap();
 %>
 <mm:cloud jspvar="cloud">
 <mm:node number="<%=dossierID%>">
-	<table>
+	<table cellpadding="0" cellspacing="0">
 		<tr>
-			<td valign="top"><strong>Dossier <mm:field name="naam" /></strong><br>
-			<mm:field name="omschrijving" /></td>
-			<td></td>
+			<td valign="top">
+        <strong>Dossier <mm:field name="naam" /></strong><br />
+        <mm:field name="omschrijving" />
+      </td>
 			<td>
 			<mm:relatednodes type="images" max="1" role="posrel">
 				<table>
@@ -29,8 +30,13 @@ TreeMap articles = new TreeMap();
 			</td>
 		</tr>
 	</table>
-   <table class="dotline"><tr><td height="3"></td></tr></table>
-   <%@include file="articlessearch.jsp" %>
-   <%@include file="searchresults.jsp" %>
+  <table class="dotline"><tr><td height="3"></td></tr></table>
+  <mm:field name="showdate">
+    <mm:compare value="yes">
+      <mm:import id="showdate" />
+    </mm:compare>
+  </mm:field>
+  <%@include file="articlessearch.jsp" %>
+  <%@include file="searchresults.jsp" %>
 </mm:node>
 </mm:cloud>
