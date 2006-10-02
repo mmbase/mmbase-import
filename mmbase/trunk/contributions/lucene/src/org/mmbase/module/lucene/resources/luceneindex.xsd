@@ -79,6 +79,7 @@
           </xsd:restriction>
         </xsd:simpleType>
       </xsd:attribute>
+      <xsd:attribute name="boost" type="xsd:float" />
     </xsd:complexType>
   </xsd:element>
 

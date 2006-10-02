@@ -29,6 +29,7 @@
           <xsd:attribute name="keyword" type="xsd:string"/>
           <xsd:attribute name="store" type="xsd:string"/>
           <xsd:attribute name="password" type="xsd:string"/>
+          <xsd:attribute name="boost" type="xsd:float"/>
           <xsd:attribute name="multiple" type="type_multiple" default="add">
             <xsd:annotation>
               <xsd:documentation xml:lang="en">
