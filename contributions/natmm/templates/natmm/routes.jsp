@@ -23,7 +23,8 @@
          <jsp:param name="sr" value="0" />
       </jsp:include>
    </td><%
-   if(memberid==null) {
+   // October 2, 2006: routes available for all
+   if(false && memberid==null) {
 
       %><%@include file="includes/checkmembership.jsp" %><%
 

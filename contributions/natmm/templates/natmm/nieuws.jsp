@@ -54,6 +54,10 @@ if(artCnt==1&&artikelID.equals("-1")) { // *** select the unique article related
             <mm:first inverse="true">, </mm:first>
             <a href="nieuws.jsp?id=<mm:field name="dossier.number" />" style="margin-bottom:3px;"><mm:field name="dossier.naam" /></a>
          </mm:list>
+         <% String showdate = "true"; %>
+         <mm:node number="<%= dossierID %>" notfound="skipbody" jspvar="sourceDossier">
+          <% showdate = ("yes".equals(sourceDossier.getStringValue("showdate")) ? "true" : "false"); %>
+         </mm:node>
          <jsp:include page="includes/artikel_12_column.jsp">
             <jsp:param name="r" value="<%= rubriekID %>" />
             <jsp:param name="rs" value="<%= styleSheet %>" />
@@ -61,7 +65,7 @@ if(artCnt==1&&artikelID.equals("-1")) { // *** select the unique article related
             <jsp:param name="rnimageid" value="<%= rnImageID %>" />
             <jsp:param name="p" value="<%= paginaID %>" />
             <jsp:param name="a" value="<%= artikelID %>" />
-            <jsp:param name="showdate" value="true" />
+            <jsp:param name="showdate" value="<%= showdate %>" />
          </jsp:include>
       </td><%
    } else {  // *** show the dossiers if there are dossiers related to this page

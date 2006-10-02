@@ -7,10 +7,12 @@ while(articles.size()>0) {
    %><mm:node number="<%= article_number %>">
    	<mm:field name="begindatum" jspvar="artikel_begindatum" vartype="String" write="false">
 			<tr>
-				<td width="65" valign="top"><mm:time time="<%=artikel_begindatum%>" format="dd-MM-yyyy"/></td>
-				<td width="3" valign="top">&nbsp;&nbsp;|&nbsp;&nbsp;</td>
+        <mm:present referid="showdate">
+          <td width="65" valign="top"><mm:time time="<%=artikel_begindatum%>" format="dd-MM-yyyy"/></td>
+          <td width="3" valign="top">&nbsp;&nbsp;|&nbsp;&nbsp;</td>
+        </mm:present>
 				<td>
-				   <strong><a href="<%= pHelper.createItemUrl(article_number,paginaID,params,request.getContextPath()) %>"><mm:field name="titel" /></a></strong><br>
+				  <strong><a href="<%= pHelper.createItemUrl(article_number,paginaID,params,request.getContextPath()) %>"><mm:field name="titel" /></a></strong><br>
 					<mm:field name="intro" jspvar="intro" vartype="String" write="false">
          			<% if(intro!=null&&!HtmlCleaner.cleanText(intro,"<",">","").trim().equals("")) { %><mm:write /><% } %>
    		      </mm:field>
