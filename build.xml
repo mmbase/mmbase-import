@@ -2,7 +2,7 @@
 
 
 MMBase Build File
-$Id: build.xml,v 1.147 2006-07-17 16:59:27 michiel Exp $
+$Id: build.xml,v 1.147.2.1 2006-10-02 15:45:17 michiel Exp $
 =================
 
 This build file can be used to build the following from CVS or from the source
@@ -770,7 +770,7 @@ Build-compiler: ${build.compiler}
       <link offline="true" packagelistLoc="${download.dir}/jstl" href="${jstl-javadoc.loc}" />
       <link offline="true" packagelistLoc="${expand.dir}/${log4j.fullversion}/docs/api" href="http://logging.apache.org/log4j/docs/api/" />
       <fileset dir="${source.dir}/src" defaultexcludes="yes" />
-      <fileset dir="${source.dir}/build/src" defaultexcludes="yes" />
+      <fileset dir="${generated-source-src.dir}" defaultexcludes="yes" />
       <fileset dir="${contributions.home}/aselect/src" defaultexcludes="yes" />
       <fileset dir="${contributions.home}/mmbob/src" defaultexcludes="yes" />
       <fileset dir="${contributions.home}/thememanager/src" defaultexcludes="yes" />
