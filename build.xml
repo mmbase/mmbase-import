@@ -2,7 +2,7 @@
 
 
 MMBase Build File
-$Id: build.xml,v 1.150 2006-09-15 17:24:40 michiel Exp $
+$Id: build.xml,v 1.151 2006-10-02 16:33:06 michiel Exp $
 =================
 
 This build file can be used to build the following from CVS or from the source
@@ -111,8 +111,8 @@ several MMBase-checkouts.
 
 
   <property name="source-documentation.dir"  location="${source.dir}/documentation" />
-  <property name="source-src.dir"       location="${source.dir}/src"/>
-  <property name="generated-source-src.dir"       location="${build.dir}/src"/>
+  <property name="source-src.dir"           location="${source.dir}/src"/>
+  <property name="generated-source-src.dir" location="${build.dir}/src"/>
   <property name="webapp.dir"           value="${build.dir}/mmbase/mmbase-webapp"/>
   <property name="mmdocs.dir"           value="${webapp.dir}/mmdocs"/>
   <property name="web.dir"              value="${webapp.dir}/WEB-INF"/>
@@ -766,7 +766,7 @@ Build-compiler: ${build.compiler}
       <link offline="true" packagelistLoc="${download.dir}/jstl" href="${jstl-javadoc.loc}" />
       <link offline="true" packagelistLoc="${expand.dir}/${log4j.fullversion}/docs/api" href="http://logging.apache.org/log4j/docs/api/" />
       <fileset dir="${source.dir}/src" defaultexcludes="yes" />
-      <fileset dir="${source.dir}/build/src" defaultexcludes="yes" />
+      <fileset dir="${generated-source-src.dir}" defaultexcludes="yes" />
       <fileset dir="${contributions.home}/aselect/src" defaultexcludes="yes" />
       <fileset dir="${contributions.home}/mmbob/src" defaultexcludes="yes" />
       <fileset dir="${contributions.home}/thememanager/src" defaultexcludes="yes" />
