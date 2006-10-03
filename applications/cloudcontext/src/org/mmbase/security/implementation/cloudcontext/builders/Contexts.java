@@ -35,7 +35,7 @@ import org.mmbase.cache.AggregatedResultCache;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.50 2006-09-11 10:41:40 pierre Exp $
+ * @version $Id: Contexts.java,v 1.51 2006-10-03 13:25:04 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -144,8 +144,7 @@ public class Contexts extends MMObjectBuilder {
         CacheInvalidator.getInstance().addCache(contextCache);
         CacheInvalidator.getInstance().addCache(allowingContextsCache);
         CacheInvalidator.getInstance().addCache(invalidableObjects);
-        addLocalObserver(CacheInvalidator.getInstance());
-        addRemoteObserver(CacheInvalidator.getInstance());
+        addEventListener(CacheInvalidator.getInstance());
 
         return super.init();
     }
