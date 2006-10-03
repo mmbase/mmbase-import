@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * and so on.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Ranks.java,v 1.14 2006-09-11 10:41:40 pierre Exp $
+ * @version $Id: Ranks.java,v 1.15 2006-10-03 13:25:04 michiel Exp $
  * @since MMBase-1.7
  */
 public class Ranks extends MMObjectBuilder {
@@ -45,8 +45,7 @@ public class Ranks extends MMObjectBuilder {
     // javadoc inherited
     public boolean init() {
         boolean res = super.init();
-        addLocalObserver(CacheInvalidator.getInstance());
-        addRemoteObserver(CacheInvalidator.getInstance());
+        addEventListener(CacheInvalidator.getInstance());
         try {
             Iterator i = getNodes(new NodeSearchQuery(this)).iterator();
             while (i.hasNext()) {

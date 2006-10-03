@@ -21,14 +21,13 @@ import org.mmbase.module.corebuilders.InsRel;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: RightsRel.java,v 1.15 2006-09-11 10:41:40 pierre Exp $
+ * @version $Id: RightsRel.java,v 1.16 2006-10-03 13:25:04 michiel Exp $
  */
 public class RightsRel extends InsRel {
 
 
     public boolean init() {
-        addLocalObserver(CacheInvalidator.getInstance());
-        addRemoteObserver(CacheInvalidator.getInstance());
+        addEventListener(CacheInvalidator.getInstance());
         return super.init();
     }
 
