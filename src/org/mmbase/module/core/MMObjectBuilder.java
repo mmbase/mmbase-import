@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.396 2006-09-26 13:10:44 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.397 2006-10-03 18:29:43 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -1114,7 +1114,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     public MMObjectNode getNewTmpNode(String owner,String key) {
         MMObjectNode node = null;
         node = getNewNode(owner);
-        node.setValue(TMP_FIELD_NUMBER, key);
+        node.storeValue(TMP_FIELD_NUMBER, key);
         temporaryNodes.put(key, node);
         return node;
     }
@@ -1125,7 +1125,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @param node The node to store
      */
     public void putTmpNode(String key, MMObjectNode node) {
-        node.setValue(TMP_FIELD_NUMBER, key);
+        node.storeValue(TMP_FIELD_NUMBER, key);
         temporaryNodes.put(key, node);
     }
 
