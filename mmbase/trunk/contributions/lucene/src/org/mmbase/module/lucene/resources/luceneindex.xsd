@@ -44,6 +44,7 @@
         <xsd:element ref="extractor" maxOccurs="unbounded" minOccurs="0" />
         <xsd:element ref="index"     maxOccurs="unbounded" minOccurs="0" />
       </xsd:sequence>
+      <xsd:attribute name="disableIndexes" type="xsd:string" />
     </xsd:complexType>
     <xsd:unique name="indexNames">
       <xsd:selector xpath="./lucene:index"/>

@@ -36,6 +36,7 @@ import org.mmbase.storage.StorageManagerFactory;
 import java.util.concurrent.*;
 
 
+import org.apache.lucene.analysis.StopAnalyzer;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.queryParser.ParseException;
 import org.mmbase.module.lucene.extraction.*;
@@ -46,7 +47,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.77 2006-09-28 11:01:19 michiel Exp $
+ * @version $Id: Lucene.java,v 1.78 2006-10-03 16:55:16 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, IdEventListener {
 
@@ -83,6 +84,8 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
     static { INDEX.setDescription("the class of indices to search in (default to all classes)"); }
  
     protected final static Parameter<String> SORTFIELDS = new Parameter("sortfields", String.class);
+    protected final static Parameter<String> FIELDS     = new Parameter("fields", String.class);
+    protected final static Parameter<String> ANALYZER   = new Parameter("analyzer", String.class);
     protected final static Parameter<Integer>  OFFSET = new Parameter("offset", Integer.class, 0);
     static { OFFSET.setDescription("for creating sublists"); }
 
@@ -129,6 +132,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
     private String indexPath = null;
     private Scheduler scheduler = null;
     private String defaultIndex = null;
+    private final Set<String>           disableIndexes = new HashSet<String>();
     private final Map<String, Indexer>  indexerMap    = new ConcurrentHashMap<String, Indexer>();
     private final Map<String, Searcher> searcherMap   = new ConcurrentHashMap<String, Searcher>();
     private boolean readOnly = false;
@@ -305,14 +309,28 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
      * This function starts a search fro a given string.
      * This function can be called through the function framework.
      */
-    protected Function  searchFunction = new AbstractFunction("search", VALUE, INDEX, SORTFIELDS, OFFSET, MAX, EXTRACONSTRAINTS, Parameter.CLOUD) {
+    protected Function  searchFunction = new AbstractFunction("search", VALUE, INDEX, FIELDS, SORTFIELDS, OFFSET, MAX, EXTRACONSTRAINTS, Parameter.CLOUD, ANALYZER) {
             public org.mmbase.bridge.NodeList getFunctionValue(Parameters arguments) {
                 String value       = arguments.getString(VALUE);
                 String index       = arguments.getString(INDEX);
-                List sortFieldList = Casting.toList(arguments.get(SORTFIELDS));
+                String sortFields  = arguments.get(SORTFIELDS);
+                String[] sortFieldArray = sortFields == null ? null : StringSplitter.split(sortFields).toArray(new String[] {});
+                String fields      = arguments.get(FIELDS);
+                String[] fieldArray = fields == null || "".equals(fields) ? getSearcher(index).allIndexedFields : StringSplitter.split(fields).toArray(new String[] {});
+                Analyzer analyzer = null;
+                String an = arguments.get(ANALYZER);
+                if (an != null && ! "".equals(an)) {
+                    try {
+                        Class clazz = Class.forName(an);
+                        analyzer = (Analyzer) clazz.newInstance();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
                 int offset         = arguments.get(OFFSET);
                 int max            = arguments.get(MAX);
                 String extraConstraints = arguments.getString(EXTRACONSTRAINTS);
+                log.info("using analyzer " + analyzer);
                 /*
                 List moreConstraints = (List) arguments.get(EXTRACONSTRAINTSLIST);
                 if (moreConstraints != null && moreConstraints.size() > 0) {
@@ -327,7 +345,13 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
                 */
                 Cloud cloud         = arguments.get(Parameter.CLOUD);
                 try {
-                    return search(cloud, value, index, extraConstraints, sortFieldList, offset, max);
+                    return getSearcher(index).search(cloud, value, 
+                                                     null /* filter */,
+                                                     Searcher.getSort(sortFieldArray), 
+                                                     analyzer,
+                                                     Searcher.createQuery(extraConstraints), 
+                                                     fieldArray,
+                                                     offset, max);
                 } catch (ParseException pe) {
                     // search function is typically used in a JSP and the 'value' parameter filled by web-site users.
                     // They may not fill the log with errors!
@@ -346,13 +370,25 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
      * This function returns the size of a query on an index.
      */
     protected Function searchSizeFunction = new AbstractFunction("searchsize",
-                                                                 VALUE, INDEX, EXTRACONSTRAINTS, Parameter.CLOUD ) {
+                                                                 VALUE, INDEX, FIELDS,EXTRACONSTRAINTS, Parameter.CLOUD, ANALYZER ) {
         public Integer getFunctionValue(Parameters arguments) {
             String value = arguments.getString(VALUE);
             String index = arguments.getString(INDEX);
             String extraConstraints = arguments.getString(EXTRACONSTRAINTS);
+            String fields      = arguments.get(FIELDS);
+            String[] fieldArray = fields == null || "".equals(fields) ? getSearcher(index).allIndexedFields : StringSplitter.split(fields).toArray(new String[] {});
             Cloud cloud  =  arguments.get(Parameter.CLOUD);
-            return searchSize(cloud, value, index, extraConstraints);
+            Analyzer analyzer = null;
+            String an = arguments.get(ANALYZER);
+            if (an != null && ! "".equals(an)) {
+                try {
+                    Class clazz = Class.forName(an);
+                    analyzer = (Analyzer) clazz.newInstance();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            return getSearcher(index).searchSize(cloud, value, null, null, analyzer, Searcher.createQuery(extraConstraints), fieldArray);
         }
     };
     {
@@ -459,7 +495,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
                         try {
                             DatabaseStorageManagerFactory dsmf = (DatabaseStorageManagerFactory)mmbase.getStorageManagerFactory();
                             indexPath = dsmf.getBinaryFileBasePath();
-                            if(indexPath != null) indexPath =indexPath + dsmf.getDatabaseName() + File.separator + "lucene";
+                            if(indexPath != null) indexPath = indexPath + dsmf.getDatabaseName() + File.separator + "lucene";
                         } catch(Exception e){}
                     }
 
@@ -662,6 +698,8 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
     protected void readConfiguration(String resource) {
         indexerMap.clear();
         searcherMap.clear();
+        disableIndexes.clear();
+        defaultIndex = null;
         List<URL> configList = ResourceLoader.getConfigurationRoot().getResourceList(resource);
         log.service("Reading " + configList);
         for(URL url : configList) {
@@ -670,12 +708,17 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
                 Document config = ResourceLoader.getDocument(url, true, Lucene.class);
                 log.service("Reading lucene search configuration from " + url);
                 Element root = config.getDocumentElement();
+                disableIndexes.addAll(StringSplitter.split(root.getAttribute("disableIndexes")));
                 NodeList indexElements = root.getElementsByTagName("index");
                 for (int i = 0; i < indexElements.getLength(); i++) {
                     Element indexElement = (Element) indexElements.item(i);
                     String indexName = "default";
                     if (Lucene.hasAttribute(indexElement, "name")) {
                         indexName = Lucene.getAttribute(indexElement, "name");
+                    }
+                    if (disableIndexes.contains(indexName)) {
+                        log.service("Index with name '" + indexName + "' was disabled");
+                        continue;
                     }
                     if (indexerMap.containsKey(indexName)) {
                         log.warn("Index with name " + indexName + " already exists");
@@ -754,18 +797,6 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
         return searcher;
     }
 
-    public org.mmbase.bridge.NodeList search(Cloud cloud, String value, String indexName, String extraConstraints, 
-                                             List<String> sortFieldList, int offset, int max) throws ParseException {
-        String[] sortFields = null;
-        if (sortFieldList != null) {
-            sortFields = sortFieldList.toArray(new String[sortFieldList.size()]);
-        }
-        return getSearcher(indexName).search(cloud, value, sortFields, Searcher.createQuery(extraConstraints), offset, max);
-    }
-
-    public int searchSize(Cloud cloud, String value, String indexName, String extraConstraints) {
-        return getSearcher(indexName).searchSize(cloud, value, Searcher.createQuery(extraConstraints));
-    }
 
     public void notify(NodeEvent event) {
         if (log.isDebugEnabled()) {
