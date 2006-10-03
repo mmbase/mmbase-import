@@ -24,7 +24,7 @@ if (iTotalNotUsed>0) {
     + "<img src='img/delete.gif' style='vertical-align:bottom;'>(" + iTotalNotUsed + ")</a><td>";
 }
 %>
-<cache:cache groups="<%= account %>" key="<%= "topmenu_" + iTotalNotUsed %>" time="<%= 3600*24*7 %>" scope="application">
+<cache:cache groups="<%= account %>" key="<%= account + "_topmenu_" + iTotalNotUsed %>" time="<%= 3600*24*7 %>" scope="application">
 <html>
 <head>
     <link href="<mm:url page="<%= editwizard_location %>"/>/style/color/wizard.css" type="text/css" rel="stylesheet"/>
