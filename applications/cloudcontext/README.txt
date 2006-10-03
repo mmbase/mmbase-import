@@ -20,7 +20,7 @@ How to install.
    config/builders/cloudcontext
 
 3) Restart MMBase. This will auto-deploy an application with some basic users (an 'admin' user with
-   password 'admin2'), groups and contexts.
+   password 'admin2k'), groups and contexts.
 
 4) Under 'templates' you find a security administration tool for this implementation. You can put
    it anywhere in your web-app. I suggest under /mmbase/security/.
