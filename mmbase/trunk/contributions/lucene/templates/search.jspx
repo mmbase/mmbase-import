@@ -14,6 +14,7 @@
         <mm:import externid="value" />
         <mm:import externid="fields">fulltext</mm:import>
         <mm:import externid="extraconstraints" />
+        <mm:import externid="filter" />
         <mm:import externid="count" />
         <mm:import externid="index" />
         <mm:import externid="analyzer" />
@@ -21,7 +22,8 @@
 
         <h1>Searching ${index}</h1>
         <p>
-          current time in seconds since 1970: <jsp:expression>System.currentTimeMillis() / 1000</jsp:expression>
+          current time in seconds since 1970: <jsp:expression>System.currentTimeMillis() / 1000</jsp:expression>,
+          current time: <mm:time time="now" format="yyyyMMddHHmmss" />
         </p>
         <p>
           <mm:link page="."><a href="${_}" class="navigate"><img src="${back}" alt="back" /></a></mm:link>
@@ -42,11 +44,17 @@
             <mm:option value="" compare="${analyzer}">No analyzer</mm:option> 
             <mm:option value="org.apache.lucene.analysis.StopAnalyzer" compare="${analyzer}">StopAnalyzer</mm:option> 
             <mm:option value="org.apache.lucene.analysis.SimpleAnalyzer" compare="${analyzer}">SimpleAnalyzer</mm:option> 
+            <mm:option value="org.mmbase.module.lucene.analysis.nl.StandardCleaningAnalyzer" compare="${analyzer}">Standard Cleaning Analyzer (dutch)</mm:option>
+            <mm:option value="org.mmbase.module.lucene.analysis.en.StandardCleaningAnalyzer" compare="${analyzer}">Standard Cleaning Analyzer (english)</mm:option>
           </select>
           <br />
           <mm:write referid="extraconstraints" escape="text/html/attribute">
             <jsp:text>contraints: </jsp:text><input name="extraconstraints" value="${_}" />
           </mm:write>
+          <mm:write referid="filter" escape="text/html/attribute">
+            <jsp:text>filter: </jsp:text><input name="filter" value="${_}" />
+          </mm:write>
+          <br />
           <jsp:text>max: </jsp:text><input name="max" value="${max}" />
           <jsp:text>offset: </jsp:text><input name="offset" value="${offset}" />
           <mm:write referid="sortfields" escape="text/html/attribute">
@@ -64,7 +72,7 @@
         
         <mm:present referid="value" >
           <table>
-            <mm:nodelistfunction module="lucene" name="search" referids="value,index,max,offset,extraconstraints,sortfields,fields,analyzer">
+            <mm:nodelistfunction module="lucene" name="search" referids="value,index,max,offset,extraconstraints,sortfields,fields,analyzer,filter">
               <mm:first>
                 <tr>
                   <th>type</th>
@@ -75,7 +83,7 @@
                     Search on '${value}'<br /> 
                     <mm:size /> hits
                     <mm:compare referid="count" value="on">
-                      of total <mm:function module="lucene" name="searchsize" referids="value,index,extraconstraints,fields,analyzer" />
+                      of total <mm:function module="lucene" name="searchsize" referids="value,index,extraconstraints,fields,analyzer,filter" />
                     </mm:compare>
                   </th>
                 </tr>
