@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * A wrapper around Lucene's {@link org.apache.lucene.search.IndexSearcher}. Every {@link Indexer} has its own Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.34 2006-10-03 16:55:16 michiel Exp $
+ * @version $Id: Searcher.java,v 1.35 2006-10-03 20:52:19 michiel Exp $
  * @todo  Should the StopAnalyzers be replaced by index.analyzer? Something else?
  **/
 public class Searcher implements NewSearcher.Listener {
@@ -135,12 +135,15 @@ public class Searcher implements NewSearcher.Listener {
     public NodeList search(Cloud cloud, String value, Query extraQuery, int offset, int max) throws ParseException {
         return search(cloud, value, null, null, new StopAnalyzer(), extraQuery, allIndexedFields, offset, max);
     }
+    public NodeList search(Cloud cloud, String value, Filter filter, Query extraQuery, int offset, int max) throws ParseException {
+        return search(cloud, value, filter, null, new StopAnalyzer(), extraQuery, allIndexedFields, offset, max);
+    }
 
     public NodeList search(Cloud cloud, String value, String[] sortFields, Query extraQuery, int offset, int max) throws ParseException {
         return search(cloud, value, null, getSort(sortFields), new StopAnalyzer(), extraQuery, allIndexedFields, offset, max);
     }
 
-    public static Sort getSort(String[] sortFields) {
+    public static Sort getSort(String... sortFields) {
         Sort sort = null;
         if (sortFields != null && sortFields.length > 0) {
             if (sortFields.length == 1 && sortFields[0].equals("RELEVANCE")) {
@@ -229,14 +232,14 @@ public class Searcher implements NewSearcher.Listener {
     }
 
     public int searchSize(Cloud cloud, String value) {
-        return searchSize(cloud, value, null, null, new StopAnalyzer(), null, allIndexedFields);
+        return searchSize(cloud, value, null, new StopAnalyzer(), null, allIndexedFields);
     }
 
     public int searchSize(Cloud cloud, String value, Query extraQuery) {
-        return searchSize(cloud, value, null, null, new StopAnalyzer(), extraQuery, allIndexedFields);
+        return searchSize(cloud, value, null, new StopAnalyzer(), extraQuery, allIndexedFields);
     }
 
-    public int searchSize(Cloud cloud, String value, Filter filter, Sort sort, Analyzer analyzer, Query extraQuery, String[] fields) {
+    public int searchSize(Cloud cloud, String value, Filter filter, Analyzer analyzer, Query extraQuery, String[] fields) {
         if (value == null || "".equals(value)) {
             IndexReader reader = null;
             try {
@@ -252,7 +255,7 @@ public class Searcher implements NewSearcher.Listener {
             }
         }
         try {
-            Hits hits = getHits(value, filter, sort, analyzer, extraQuery, fields);
+            Hits hits = getHits(value, filter, null, analyzer, extraQuery, fields);
             return hits.length();
         } catch (ParseException pe) {
             log.error(pe);
@@ -289,6 +292,11 @@ public class Searcher implements NewSearcher.Listener {
         return getSearcher().search(query, filter, sort);
     }
 
+
+    static public Filter createFilter(String constraintsText) {
+        if (constraintsText == null || "".equals(constraintsText)) return null;
+        return new QueryFilter(createQuery(constraintsText));
+    }
     /**
      * Parses a constraint into a query.
      * Constraints are separated by whitespace and of the format:

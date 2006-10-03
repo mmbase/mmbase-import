@@ -47,7 +47,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.78 2006-10-03 16:55:16 michiel Exp $
+ * @version $Id: Lucene.java,v 1.79 2006-10-03 20:52:19 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, IdEventListener {
 
@@ -94,6 +94,8 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
 
     protected final static Parameter<String>  EXTRACONSTRAINTS = new Parameter("extraconstraints", String.class);
     static { EXTRACONSTRAINTS.setDescription("@see org.mmbase.module.lucene.Searcher#createQuery()"); }
+
+    protected final static Parameter<String>  FILTER = new Parameter("filter", String.class);
 
     /*
     protected final static Parameter EXTRACONSTRAINTSLIST = new Parameter("constraints", List.class);
@@ -309,7 +311,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
      * This function starts a search fro a given string.
      * This function can be called through the function framework.
      */
-    protected Function  searchFunction = new AbstractFunction("search", VALUE, INDEX, FIELDS, SORTFIELDS, OFFSET, MAX, EXTRACONSTRAINTS, Parameter.CLOUD, ANALYZER) {
+    protected Function  searchFunction = new AbstractFunction("search", VALUE, INDEX, FIELDS, SORTFIELDS, OFFSET, MAX, EXTRACONSTRAINTS, FILTER, Parameter.CLOUD, ANALYZER) {
             public org.mmbase.bridge.NodeList getFunctionValue(Parameters arguments) {
                 String value       = arguments.getString(VALUE);
                 String index       = arguments.getString(INDEX);
@@ -330,7 +332,8 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
                 int offset         = arguments.get(OFFSET);
                 int max            = arguments.get(MAX);
                 String extraConstraints = arguments.getString(EXTRACONSTRAINTS);
-                log.info("using analyzer " + analyzer);
+                String filter     = arguments.getString(FILTER);
+                log.debug("using analyzer " + analyzer);
                 /*
                 List moreConstraints = (List) arguments.get(EXTRACONSTRAINTSLIST);
                 if (moreConstraints != null && moreConstraints.size() > 0) {
@@ -346,7 +349,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
                 Cloud cloud         = arguments.get(Parameter.CLOUD);
                 try {
                     return getSearcher(index).search(cloud, value, 
-                                                     null /* filter */,
+                                                     Searcher.createFilter(filter),
                                                      Searcher.getSort(sortFieldArray), 
                                                      analyzer,
                                                      Searcher.createQuery(extraConstraints), 
@@ -370,11 +373,12 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
      * This function returns the size of a query on an index.
      */
     protected Function searchSizeFunction = new AbstractFunction("searchsize",
-                                                                 VALUE, INDEX, FIELDS,EXTRACONSTRAINTS, Parameter.CLOUD, ANALYZER ) {
+                                                                 VALUE, INDEX, FIELDS,EXTRACONSTRAINTS, FILTER, Parameter.CLOUD, ANALYZER ) {
         public Integer getFunctionValue(Parameters arguments) {
             String value = arguments.getString(VALUE);
             String index = arguments.getString(INDEX);
             String extraConstraints = arguments.getString(EXTRACONSTRAINTS);
+            String filter = arguments.getString(FILTER);
             String fields      = arguments.get(FIELDS);
             String[] fieldArray = fields == null || "".equals(fields) ? getSearcher(index).allIndexedFields : StringSplitter.split(fields).toArray(new String[] {});
             Cloud cloud  =  arguments.get(Parameter.CLOUD);
@@ -388,7 +392,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
                     throw new RuntimeException(e);
                 }
             }
-            return getSearcher(index).searchSize(cloud, value, null, null, analyzer, Searcher.createQuery(extraConstraints), fieldArray);
+            return getSearcher(index).searchSize(cloud, value,  Searcher.createFilter(filter), analyzer, Searcher.createQuery(extraConstraints), fieldArray);
         }
     };
     {
@@ -669,7 +673,8 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
                 if (childNodes.item(k) instanceof Element) {
                     Element childElement = (Element) childNodes.item(k);
                     if ("related".equals(childElement.getLocalName())) {
-                        queryDefinition.subQueries.add(createIndexDefinition(childElement, allIndexedFieldsSet, storeText, mergeText, elementName, analyzer));
+                        MMBaseIndexDefinition subIndex = createIndexDefinition(childElement, allIndexedFieldsSet, storeText, mergeText, elementName, analyzer);
+                        queryDefinition.subQueries.add(subIndex);
                     }
                 }
             }
@@ -735,10 +740,11 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
                             log.service("Default index: " + defaultIndex);
                         }
                         Set<String> allIndexedFieldsSet = new HashSet<String>();
-                        Collection<IndexDefinition> queries = new ArrayList<IndexDefinition>();
+                        List<IndexDefinition> queries = new ArrayList<IndexDefinition>();
                         // lists
                         NodeList childNodes = indexElement.getChildNodes();
                         Analyzer analyzer = null;
+                        int lists = 0;
                         for (int k = 0; k < childNodes.getLength(); k++) {
                             if (childNodes.item(k) instanceof Element) {
                                 Element childElement = (Element) childNodes.item(k);
@@ -747,12 +753,14 @@ public class Lucene extends ReloadableModule implements NodeEventListener, IdEve
                                     "builder".equals(name) || // backward comp. old finalist lucene
                                     "table".equals(name)) { // comp. finalist lucene
                                     IndexDefinition id = createIndexDefinition(childElement, allIndexedFieldsSet, storeText, mergeText, null, analyzer);
+                                    id.setId(indexName + "_" + (++lists));
                                     queries.add(id);
                                     log.service("Added mmbase index definition " + id);
                                 } else if ("jdbc".equals(name)) {
                                     DataSource ds =  ((DatabaseStorageManagerFactory) mmbase.getStorageManagerFactory()).getDataSource();
                                     IndexDefinition id = new JdbcIndexDefinition(ds, childElement,
                                                                                  allIndexedFieldsSet, storeText, mergeText, analyzer, false);
+                                    id.setId(indexName + "_" + (++lists));
                                     queries.add(id);
                                     EventManager.getInstance().addEventListener(idListener);
                                     log.service("Added mmbase jdbc definition " + id);

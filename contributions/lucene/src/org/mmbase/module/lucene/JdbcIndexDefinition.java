@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * If for some reason you also need to do Queries next to MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JdbcIndexDefinition.java,v 1.15 2006-10-02 17:26:40 michiel Exp $
+ * @version $Id: JdbcIndexDefinition.java,v 1.16 2006-10-03 20:52:19 michiel Exp $
  **/
 public class JdbcIndexDefinition implements IndexDefinition {
 
@@ -65,6 +65,7 @@ public class JdbcIndexDefinition implements IndexDefinition {
 
     private final boolean isSub;
 
+    private String id;
 
     JdbcIndexDefinition(DataSource ds, 
                         Element element,
@@ -106,6 +107,12 @@ public class JdbcIndexDefinition implements IndexDefinition {
         assert ! isSub  || "".equals(findSql);
     }
 
+    public void setId(String i) {
+        id = i;
+    }
+    public String getId() {
+        return id;
+    }
 
     /**
      * Jdbc connection pooling of MMBase would kill the statement if too duratious. This produces a

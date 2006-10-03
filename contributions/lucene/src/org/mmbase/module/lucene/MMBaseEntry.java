@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseEntry.java,v 1.13 2006-10-02 17:26:40 michiel Exp $
+ * @version $Id: MMBaseEntry.java,v 1.14 2006-10-03 20:52:19 michiel Exp $
  **/
 public class MMBaseEntry implements IndexEntry {
     static private final Logger log = Logging.getLoggerInstance(MMBaseEntry.class);
@@ -85,9 +85,11 @@ public class MMBaseEntry implements IndexEntry {
                 if (id.equals(field.getName())) continue; // was added already
                 Node subNode = node.getNodeValue(field.getName());
                 document.add(new Field("number",  "" + subNode.getNumber(), Field.Store.YES, Field.Index.UN_TOKENIZED)); // keyword
+                document.add(new Field("owner",  subNode.getStringValue("owner"), Field.Store.YES, Field.Index.UN_TOKENIZED));
             }
         } else {
             document.add(new Field("builder",  node.getNodeManager().getName(),    Field.Store.YES, Field.Index.UN_TOKENIZED)); // keyword
+            document.add(new Field("owner",  node.getStringValue("owner"), Field.Store.YES, Field.Index.UN_TOKENIZED));
         }
 
     }
