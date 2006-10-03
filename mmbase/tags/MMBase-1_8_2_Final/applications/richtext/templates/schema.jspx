@@ -1,0 +1,18 @@
+<jsp:root
+    version="1.2"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:directive.page import="org.mmbase.util.ResourceLoader,java.io.*" />
+  <mm:content type="application/xml" expires="0">
+    <jsp:scriptlet>
+      Reader r = ResourceLoader.getConfigurationRoot().getReader("xmlns/mmxf.xsd");
+      BufferedReader reader = new BufferedReader(r);
+      while(true) {
+        String line = reader.readLine();
+        if (line == null) break;
+        out.println(line);
+      }
+    </jsp:scriptlet>
+  </mm:content>
+</jsp:root>
+

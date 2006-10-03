@@ -1,0 +1,126 @@
+<jsp:root
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:mm-cal="http://www.mmbase.org/tags/mm/calendar"
+    version="2.0" >
+  <!--
+     This can be useful during development
+     xmlns:mm-cal="urn:jsptagdir:/WEB-INF/tags/mm/calendar"
+  -->
+  <jsp:directive.attribute name="referids"  />
+  <jsp:directive.attribute name="maxMonth"  />
+  <jsp:directive.attribute name="first"  />
+  <jsp:directive.attribute name="dateFormat"  />
+  <jsp:directive.attribute name="timeFormat"  />
+  <jsp:directive.attribute name="stop"  /><!-- hmm -->
+  <jsp:directive.attribute name="mode"  />
+  <jsp:directive.attribute name="buttons"  />
+  <jsp:directive.attribute name="newItemUrl" />
+  <jsp:directive.attribute name="newItem" fragment="true"  />
+  <jsp:directive.attribute name="item"    fragment="true"  />
+  <jsp:directive.attribute name="prev"    fragment="true"  />
+  <jsp:directive.attribute name="next"    fragment="true"  />
+  <jsp:directive.variable  name-given="day" />
+  <jsp:directive.variable  name-given="dayend" />
+  <jsp:directive.variable  name-given="noon" />
+  <mm:import externid="offset">${empty first ? '-1' : first}</mm:import>
+  <table class="mm_calendar monthsOverview">
+    <thead>
+      <tr>
+        <th class="navigate">
+          <c:if test="${offset gt 0}">
+            <mm:link referids="${referids}">
+              <mm:param name="offset" value="-1" />
+              <a href="${_}">
+                <mm-cal:navigation dir="${buttons}" name="pprev.png" alt="&amp;lt;&amp;lt;" />
+              </a>
+            </mm:link>
+          </c:if>
+          <mm:link referids="${referids}">
+            <mm:param name="offset" value="${offset -1 }" />
+            <a href="${_}">
+              <mm-cal:navigation dir="${buttons}" name="prev.png" alt="&amp;lt;" />
+            </a>
+          </mm:link>
+        </th>
+        <c:forEach begin="0" end="${empty maxMonth ? 3 : maxMonth}" var="_">
+          <mm:context>
+            <mm:time time="tomonth ${_ + offset >= 0 ? '+' : ''} ${_ + offset} month"  id="m" vartype="date" write="false" />
+            <mm:locale language="en" country="US">
+              <mm:import id="monthname"><mm:time referid="m" format="MMMM" /></mm:import>
+            </mm:locale>
+            <th class="${monthname}"><mm:time referid="m" format="MMMM yyyy" /></th>
+          </mm:context>
+        </c:forEach>
+        <th class="navigate">
+          <mm:link referids="${referids}">
+            <mm:param name="offset" value="${offset + 1}" />
+            <a href="${_}">
+              <mm-cal:navigation dir="${buttons}" name="next.png" alt="&amp;gt;" />
+            </a>
+          </mm:link>
+          <mm:link referids="${referids}">
+            <mm:param name="offset" value="${offset + 12}" />
+            <a href="${_}">
+              <mm-cal:navigation dir="${buttons}" name="nnext.png" alt="&amp;gt;&amp;gt;" />
+            </a>
+          </mm:link>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <mm:cloud method="asis">
+        <tr>
+          <td />
+          <c:forEach begin="0" end="${empty maxMonth ? 3 : maxMonth}" var="_" >
+            <mm:context>
+              <mm:time time="tomonth ${_ + offset >= 0 ? '+' : ''} ${_ + offset} month" write="false" id="m" vartype="date" />
+              <mm:locale language="en" country="US">
+                <mm:import id="monthname"><mm:time  referid="m" format="MMMM" /></mm:import>
+              </mm:locale>
+              <td class="${monthname}">
+                <mm-cal:month date="${m}" mode="${mode}">
+                  <mm:context>
+                    <div class="day ${loop.index % 2 == 0 ? 'even': 'odd'} ${dayofweek}">
+                      <h1>
+                        <c:choose>
+                          <c:when test="empty newItemUrl">
+                            <mm:time referid="day" format="${empty dateFormat ? ':FULL' : dateFormat}" />
+                          </c:when>
+                          <c:otherwise>
+                            <mm:link page="${newItemUrl}" referids="${referids},noon@day">
+                              <a href="${_}">
+                                <mm:time referid="day" format="${empty dateFormat ? ':FULL' : dateFormat}" />
+                              </a>
+                            </mm:link>
+                          </c:otherwise>
+                        </c:choose>
+                      </h1>
+                      <mm:listnodescontainer type="calendar_items">
+                        <mm:typeconstraint name="calendar_items" descendants="false" />
+                        <mm:sortorder field="start" />
+                        <mm:constraint field="${empty stop ? 'start' : 'stop'}" operator="GREATER" value="${day}" />
+                        <mm:constraint field="start" operator="LESS" value="$dayend" />
+                        <mm:listnodes>
+                          <mm:first>&lt;ul&gt;</mm:first>
+                          <li class="ct${_node.type}">
+                            <jsp:doBody />
+                          </li>
+                          <mm:last>&lt;/ul&gt;</mm:last>
+                        </mm:listnodes>
+                      </mm:listnodescontainer>
+                      <jsp:invoke fragment="newItem" />
+                    </div>
+                  </mm:context>
+                </mm-cal:month>
+              </td>
+            </mm:context>
+          </c:forEach>
+          <td />
+        </tr>
+      </mm:cloud>
+    </tbody>
+  </table>
+
+</jsp:root>

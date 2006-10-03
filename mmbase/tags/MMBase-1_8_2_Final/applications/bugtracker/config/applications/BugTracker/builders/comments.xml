@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<builder version="0" name="comments" maintainer="mmbase.org" extends="object">
+  <searchage>14</searchage>
+  <names>
+    <singular xml:lang="en">Comment</singular>
+    <singular xml:lang="nl">Commentaar</singular>
+    <plural xml:lang="en">Comments</plural>
+    <plural xml:lang="nl">Commenttaren</plural>
+  </names>
+  <fieldlist>
+    <field>
+      <descriptions/>
+      <gui>
+        <guiname xml:lang="nl">Titel</guiname>
+        <guiname xml:lang="fr">Titre</guiname>
+        <guiname xml:lang="en">Title</guiname>
+        <guitype>string</guitype>
+      </gui>
+      <editor>
+        <positions>
+          <list>1</list>
+        </positions>
+      </editor>
+      <db>
+        <name>title</name>
+        <type size="255" key="false" state="persistent" notnull="false">STRING</type>
+      </db>
+    </field>
+    <field>
+      <descriptions/>
+      <gui>
+        <guiname xml:lang="nl">Tekst</guiname>
+        <guiname xml:lang="fr">Texte</guiname>
+        <guiname xml:lang="en">Text</guiname>
+        <guitype>field</guitype>
+      </gui>
+      <db>
+        <name>body</name>
+        <type size="64000" key="false" state="persistent" notnull="false">STRING</type>
+      </db>
+    </field>
+    <field>
+      <descriptions/>
+      <gui>
+        <guiname xml:lang="en">posttime</guiname>
+        <guitype>eventtime</guitype>
+      </gui>
+      <db>
+        <name>posttime</name>
+        <type key="false" state="persistent" notnull="false">LONG</type>
+      </db>
+    </field>
+  </fieldlist>
+</builder>

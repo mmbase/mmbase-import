@@ -1,0 +1,83 @@
+<HTML>
+<HEAD>
+   <TITLE>Cache monitor</TITLE>
+</HEAD>
+<BODY BACKGROUND="../../beeld/back.gif" TEXT="#42BDAD" BGCOLOR="#00425B" LINK="#000000" ALINK="#000000" VLINK="#000000">
+<BR>
+
+<TABLE width=97% cellspacing=1 cellpadding=1 border=0>
+
+<TR>
+	<TD><IMG SRC="../../beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="42BDAD" COLSPAN="5">
+	<FONT COLOR="#000000"><B>MMBase cache monitor - v1.0</B></FONT>
+	</TD>
+</TR>
+<TR>
+	<TD>
+	&nbsp;
+	</TD>
+</TR>
+<TR>
+	<TD><IMG SRC="../../beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="42BDAD" COLSPAN="1">
+	<FONT COLOR="000000">
+	<B>POS</B>
+	</TD>
+	<TD BGCOLOR="42BDAD" COLSPAN="1">
+	<FONT COLOR="000000">
+	<B>GETCOUNT</B>
+	</TD>
+	<TD BGCOLOR="42BDAD" COLSPAN="1">
+	<FONT COLOR="000000">
+	<B>NUMBER</B>
+	</TD>
+	<TD BGCOLOR="42BDAD" COLSPAN="1">
+	<FONT COLOR="000000">
+	<B>OWNER</B>
+	</TD>
+	<TD BGCOLOR="42BDAD" COLSPAN="1">
+	<FONT COLOR="000000">
+	<B>TYPE</B>
+	</TD>
+</TR>
+
+
+<LIST NODECACHEENTRIES PROCESSOR="MMADMIN" ITEMS="4" MAX="1000">
+<TR>
+	<TD><IMG SRC="../../beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="00445B" COLSPAN="1">
+	<FONT COLOR="#FFFFFF">&nbsp;$ITEMP</FONT>
+	</TD>
+	<TD BGCOLOR="00445B" COLSPAN="1">
+	<FONT COLOR="#FFFFFF">&nbsp;$ITEM1</FONT>
+	</TD>
+	<TD BGCOLOR="00445B" COLSPAN="1">
+	<FONT COLOR="#FFFFFF">&nbsp;$ITEM2</FONT>
+	</TD>
+	<TD BGCOLOR="00445B" COLSPAN="1">
+	<FONT COLOR="#FFFFFF">&nbsp;$ITEM3</FONT>
+	</TD>
+	<TD BGCOLOR="00445B" COLSPAN="1">
+	<FONT COLOR="#FFFFFF">&nbsp;$ITEM4</FONT>
+	</TD>
+</TR>
+</LIST>
+
+<TR>
+	<TD>
+	&nbsp;
+	</TD>
+</TR>
+
+<TR>
+	<TD><IMG SRC="../../beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="42BDAD" COLSPAN="5">
+	<A HREF="index.shtml"><IMG SRC="../../beeld/pijl2.gif" BORDER="0"></A><B><FONT COLOR="#000000">back to cache index</FONT></B>
+	</TD>
+</TR>
+
+</TABLE>
+</BODY>
+</HTML>
+

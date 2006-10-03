@@ -1,0 +1,12 @@
+<!ELEMENT database-filters ( filter+ ) >
+<!ATTLIST filter database-config NMTOKEN #REQUIRED >
+<!ELEMENT filter ( driver-class?, driver-name?, driver-version?, driver-major-version?, driver-minor-version?, database-product-name?, database-product-version? )* >
+<!ELEMENT driver-class ( #PCDATA ) >
+<!ELEMENT driver-name ( #PCDATA ) >
+<!ELEMENT driver-version ( #PCDATA ) >
+<!ELEMENT driver-major-version ( #PCDATA ) >
+<!ATTLIST driver-major-version condition (from|equals|until) #REQUIRED >
+<!ELEMENT driver-minor-version ( #PCDATA ) >
+<!ATTLIST driver-minor-version condition (from|equals|until) #REQUIRED >
+<!ELEMENT database-product-name ( #PCDATA ) >
+<!ELEMENT database-product-version ( #PCDATA ) >

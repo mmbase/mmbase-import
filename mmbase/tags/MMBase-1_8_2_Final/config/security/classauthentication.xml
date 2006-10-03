@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE security PUBLIC "-//MMBase//DTD classsecurity config 1.0//EN" "http://www.mmbase.org/dtd/classsecurity_1_0.dtd">
+<security>
+  <!--
+      Some classes need the ability to convert core-nodes to bridge nodes
+      As long as MMObjectNode does not implement Node itself, this works around.
+  -->
+
+  <!-- for node-function that are implemented on Core, and did't have Cloud..-->
+  <authenticate class="org\.mmbase\.util\.functions\.NodeFunction\$NodeInstanceFunction">
+    <property name="rank" value="administrator" />
+  </authenticate>
+
+  <!-- used to check uniqueness -->
+  <authenticate class="org\.mmbase\.datatypes\.BasicDataType">
+    <property name="rank" value="administrator" />
+  </authenticate>
+
+  <!-- Used to make the Resource NodeManager in ResourceLoader -->
+  <authenticate class="org\.mmbase\.module\.builders\.Resources.*">
+    <property name="rank" value="administrator" />
+  </authenticate>
+
+</security>

@@ -1,0 +1,29 @@
+<HTML>
+<HEAD>
+  <TITLE>TCP: OPERATOR page</TITLE>
+</HEAD>
+<BODY BGCOLOR="#00425A" ALINK="#000000" VLINK="#AAAAAA" LINK="#DDDDDD" TEXT="#42BDAD">
+<PROCESSOR MMBASE>
+<transactions exceptionPage="exception.shtml">
+ <create>
+	<createObject id="timestamp" type="mmevents">
+		<setField name="name">exception</setField>
+		<setField name="start">$MOD-INFO-TIME-NUMBER-CURTIME^</setField>
+		<setField  name="stop">$MOD-INFO-TIME-NUMBER-CURTIME^)</setField>
+		<setField name="playtime">$SESSION-LENGTH^</setField>
+	</createObject>
+ </create>
+</transactions>
+
+
+&#36;SESSION-TRANSACTIONOPERATOR = $SESSION-TRANSACTIONOPERATOR <BR>
+&#36;SESSION-TRANSACTIONID = $SESSION-TRANSACTIONID <BR>
+&#36;SESSION-OBJECTOPERATOR = $SESSION-OBJECTOPERATOR <BR>
+&#36;SESSION-OBJECTID = $SESSION-OBJECTID <BR>
+&#36;SESSION-FIELDOPERATOR = $SESSION-FIELDOPERATOR  <BR>
+&#36;SESSION-FIELDNAME = $SESSION-FIELDNAME <BR> <BR>
+
+&#36;SESSION-TRANSACTIONERROR = $SESSION-TRANSACTIONERROR 
+<BR><BR>
+<A HREF="index.html">Goto index page</A>
+

@@ -1,0 +1,9 @@
+<IF $SESSION-SSTATUS^=N>
+	<IF $SESSION-S1^==>
+		<DO SESSION-S1=bugreports.bstatus==$SESSION-SSTATUS^>
+	</IF>
+	<IF $SESSION-S1^=N>
+		<DO SESSION-S1=$SESSION-S1^+bugreports.bstatus==$SESSION-SSTATUS^>
+	</IF>
+</IF>
+<GOTO buildsearch3.shtml>

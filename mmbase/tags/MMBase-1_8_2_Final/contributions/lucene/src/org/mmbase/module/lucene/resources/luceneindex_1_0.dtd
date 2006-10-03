@@ -1,0 +1,12 @@
+<!ELEMENT luceneindex (index*)>
+
+<!ELEMENT index (builder*)>
+<!ATTLIST index name NMTOKEN #IMPLIED>
+<!ATTLIST index optimize NMTOKEN #IMPLIED>
+
+<!ELEMENT builder (field*)>
+<!ATTLIST builder name NMTOKEN #REQUIRED>
+
+<!ELEMENT field (#PCDATA)>
+<!ATTLIST field name NMTOKEN #REQUIRED>
+

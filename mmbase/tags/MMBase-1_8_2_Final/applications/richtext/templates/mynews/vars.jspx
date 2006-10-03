@@ -1,0 +1,20 @@
+<jsp:root
+    version="1.2"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page">
+  <mm:import externid="edit" />
+  <mm:import externid="home" />
+  <mm:import externid="cat" />
+  <mm:import externid="subcat" />
+  <mm:import id="h" externid="home" from="this">my.rich.magazine</mm:import>
+  <mm:cloud>
+    <mm:mayread number="${h}" inverse="true">
+      <mm:log>HHLKJHALKJ</mm:log>
+      <mm:cloud rank="basic user">
+      </mm:cloud>
+    </mm:mayread>
+  </mm:cloud>
+  <mm:import externid="vars">home?,edit?</mm:import>
+  <mm:import externid="catvars">${vars},cat?,subcat?</mm:import>
+  <mm:import externid="language">en</mm:import>
+</jsp:root>

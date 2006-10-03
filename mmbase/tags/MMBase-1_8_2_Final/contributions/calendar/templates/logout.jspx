@@ -1,0 +1,20 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <mm:import externid="language">client</mm:import>
+  <mm:import externid="timezone"></mm:import>
+  <mm:write request="language" referid="language" />
+  <mm:write request="timezone" referid="timezone" />
+  <mm:content type="application/xhtml+xml"
+              language="$language" 
+              timezone="$timezone"
+              postprocessor="none" expires="0">
+    <head>
+       <link href="style.css" rel="stylesheet" title="Normaal" type="text/css" media="screen" />
+    </head>
+    <body>
+      <mm:cloud method="logout" />
+      <mm:redirect page="." referids="language,timezone" />
+    </body>
+  </mm:content>
+</html>
+  

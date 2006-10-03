@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE languageguiset PUBLIC "//MMBase - languageguiset //" "http://www.mmbase.org/dtd/languageguiset_1_0.dtd">
+<languageguiset>
+	<keyword name="maybe">
+		<translation language="nl" value="mischien" />
+		<translation language="df" value="maybe" />
+	</keyword>
+	<keyword name="no">
+		<translation language="nl" value="nee" />
+		<translation language="df" value="no" />
+		<translation language="de" value="nein" />
+	</keyword>
+	<keyword name="yes">
+		<translation language="nl" value="ja" />
+		<translation language="df" value="yes" />
+		<translation language="de" value="jawol" />
+	</keyword>
+</languageguiset>

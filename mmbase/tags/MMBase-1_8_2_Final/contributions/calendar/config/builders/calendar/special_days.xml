@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder xmlns="http://www.mmbase.org/xmlns/builder" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         extends="calendar_items" maintainer="mmbase.org" 
+         name="special_days" version="0" 
+         xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+  <names>
+    <singular xml:lang="en">Special day</singular>
+    <singular xml:lang="nl">Bijzondere dag</singular>
+    <singular xml:lang="eo">Datreveno</singular>
+    <plural xml:lang="en">Special days</plural>
+    <plural xml:lang="nl">Bijzondere dagen</plural>
+    <plural xml:lang="eo">Datrevenoj</plural>
+  </names>
+  <fieldlist>
+    <field name="start">
+      <gui>
+        <guiname xml:lang="en">Date</guiname>
+        <guiname xml:lang="nl">Datum</guiname>
+        <guiname xml:lang="eo">Dato</guiname>
+      </gui>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="birthdate">
+        <pattern value="yyyy-MM-dd HH:mm:ss.SSS" xml:lang="nl" />
+      </datatype>
+    </field>
+    <field name="stop" readonly="true">
+      <editor>
+        <positions>
+          <list>-1</list>
+          <search>-1</search>
+        </positions>
+      </editor>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <commitprocessor>
+          <class name="org.mmbase.datatypes.processors.CopyFieldCommitProcessorFactory">
+            <param name="field">start</param>            
+          </class>
+        </commitprocessor>
+      </datatype>
+    </field>
+    <field name="allday">
+      <editor>
+        <positions>
+          <input>-1</input>
+          <list>-1</list>
+          <search>-1</search>
+        </positions>
+      </editor>
+    </field>
+    <field name="type">
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="string">
+        <default value="birthday" />
+        <enumeration>
+          <entry value="birthday"      display="Verjaardag"           xml:lang="nl" />
+          <entry value="weddingday"    display="Trouwdag"             xml:lang="nl" />
+          <entry value="national_nl"   display="Nationale feestdag"   xml:lang="nl" />
+          <entry value="international" display="Internationale feestdag"   xml:lang="nl" />
+          <entry value="birthday"      display="Birth day"       xml:lang="en" />
+          <entry value="weddingday"    display="Wedding day"    xml:lang="en" />
+          <entry value="national_nl"   display="Dutch holiday"   xml:lang="en" />
+          <entry value="international" display="International holiday" xml:lang="en" />
+          <entry value="birthday"      display="Naskiĝtago"    xml:lang="eo" />
+          <entry value="weddingday"    display="Geedziĝtago"  xml:lang="eo" />
+          <entry value="national_nl"   display="Nederlandan festotago"  xml:lang="eo" />
+          <entry value="international" display="Internacia festotago"  xml:lang="eo" />
+        </enumeration>
+      </datatype>
+    </field>
+  </fieldlist>
+
+</builder>
