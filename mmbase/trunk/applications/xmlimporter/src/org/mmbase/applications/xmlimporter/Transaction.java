@@ -17,7 +17,6 @@ import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.TemporaryNodeManager;
-import org.mmbase.module.core.TemporaryNodeManagerInterface;
 import org.mmbase.module.core.TransactionManager;
 import org.mmbase.module.core.TransactionManagerException;
 import org.mmbase.applications.xmlimporter.SimilarObjectFinder;
@@ -35,18 +34,18 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob van Maris: Finalist IT Group
  * @since MMBase-1.5
- * @version $Id: Transaction.java,v 1.6 2005-10-06 14:14:41 michiel Exp $
+ * @version $Id: Transaction.java,v 1.7 2006-10-03 18:32:04 michiel Exp $
  */
 public class Transaction implements Runnable {
 
     /** Logger instance. */
-    private static Logger log = Logging.getLoggerInstance(Transaction.class.getName());
+    private static Logger log = Logging.getLoggerInstance(Transaction.class);
 
     /** The mmbase module. */
     private static MMBase mmbase;
 
     /** The temporary node manager. */
-    private static TemporaryNodeManagerInterface tmpNodeManager;
+    private static TemporaryNodeManager tmpNodeManager;
 
     /** The transaction manager. */
     private static TransactionManager transactionManager;
