@@ -20,9 +20,9 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.49 2006-07-06 11:24:44 michiel Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.50 2006-10-03 18:29:43 michiel Exp $
  */
-public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
+public class TemporaryNodeManager {
 
     private static final Logger log = Logging.getLoggerInstance(TemporaryNodeManager.class);
 
