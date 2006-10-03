@@ -4,7 +4,7 @@
 <%
 String account = cloud.getUser().getIdentifier();
 %>
-<cache:cache groups="<%= account %>" key="pagina_all" time="<%= 3600*24*7 %>" scope="application">
+<cache:cache groups="<%= account %>" key="<%= account + "_pagina_all" %>" time="<%= 3600*24*7 %>" scope="application">
 <!-- <%= new java.util.Date() %> -->
 <html>
 <head>
@@ -21,7 +21,7 @@ String account = cloud.getUser().getIdentifier();
       	} else {
          	conf = confirm('Weet u zeker dat u de editwizard wilt afsluiten, zonder op te slaan of te annuleren?');
          	if(conf) { deleteCookie('ew'); }
-         }
+        }
       	cancelClick=true;
       	return conf;
       }
@@ -34,18 +34,18 @@ String account = cloud.getUser().getIdentifier();
    </script>
    <style>
       input {
-   	   width:110px;
-   		font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; 
-   		font-size: 11px; font-weight: normal;
-   		text-align: left;
-   		letter-spacing: 0.05em;
-         padding-left:3px;
+   	    width:110px;
+        font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; 
+        font-size: 11px; font-weight: normal;
+        text-align: left;
+        letter-spacing: 0.05em;
+        padding-left:3px;
       }
       h3 {
-         margin-bottom:0px;
+        margin-bottom:0px;
       }
       p {
-         margin:3px;
+        margin:3px;
       }
    </style>
 </head>
@@ -71,26 +71,26 @@ String account = cloud.getUser().getIdentifier();
 	</p>
 	<%
 	String contentModusNodeNumber = (String) session.getAttribute("contentmodus.contentnodenumber");
-   if ((contentModusNodeNumber != null)  && (!contentModusNodeNumber.equals(""))) {
-	%>
-	<div style="position: absolute; right:20px; top:10px; z-index: 100">
-   	<small>
-      	Meervoudige contentmodus: <a href="frames.jsp" target="bottompane">Uitzetten</a>
-	   </small>
-	</div>
-	<%
-   	}
+  if ((contentModusNodeNumber != null)  && (!contentModusNodeNumber.equals(""))) {
+    %>
+    <div style="position: absolute; right:20px; top:10px; z-index: 100">
+      <small>
+          Meervoudige contentmodus: <a href="frames.jsp" target="bottompane">Uitzetten</a>
+       </small>
+    </div>
+    <%
+  }
 	%>
 	<span style="width:600px">
 	<%
-   	PaginaTreeModel model = new PaginaTreeModel(cloud);
-	   HTMLTree t=new HTMLTree(model,"pagina");
-	   AuthorizationHelper helper = new AuthorizationHelper(cloud);
-   	java.util.Map roles=helper.getRolesForUser(helper.getUserNode(account));
-	   t.setCellRenderer(new PaginaAllRenderer( model, roles, account, cloud, "workpane", request.getContextPath()) );
-   	t.setExpandAll(false);
-	   t.setImgBaseUrl("../img/");
-   	t.render( out ); 
+  PaginaTreeModel model = new PaginaTreeModel(cloud);
+	HTMLTree t=new HTMLTree(model,"pagina");
+	AuthorizationHelper helper = new AuthorizationHelper(cloud);
+  java.util.Map roles=helper.getRolesForUser(helper.getUserNode(account));
+	t.setCellRenderer(new PaginaAllRenderer( model, roles, account, cloud, "workpane", request.getContextPath()) );
+  t.setExpandAll(false);
+	t.setImgBaseUrl("../img/");
+  t.render( out ); 
 	%>
 	</span>
 	<script language="Javascript1.2">restoreTree();</script>
