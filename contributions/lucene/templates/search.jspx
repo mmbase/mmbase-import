@@ -6,16 +6,17 @@
   <jsp:directive.include file="head.jspx" />
   <body class="basic">
     <!-- This is a completely generic tool to search in a lucene index -->
-    <mm:content type="text/html">
+    <mm:content type="text/html" expires="0">
       <mm:cloud>
         <mm:import externid="max">100</mm:import>          
         <mm:import externid="offset">0</mm:import>
         <mm:import externid="sortfields" />
         <mm:import externid="value" />
+        <mm:import externid="fields">fulltext</mm:import>
         <mm:import externid="extraconstraints" />
         <mm:import externid="count" />
         <mm:import externid="index" />
-        <mm:import externid="reindex" />
+        <mm:import externid="analyzer" />
         <mm:url id="back" write="false" page="/mmbase/style/images/back.png" />
 
         <h1>Searching ${index}</h1>
@@ -34,6 +35,14 @@
             <input type="hidden" name="index" value="${_}" />
           </mm:write>
           <input type="submit" />
+          <mm:write referid="fields" escape="text/html/attribute">
+            <jsp:text>fields: </jsp:text><input name="fields" value="${_}" />
+          </mm:write>
+          <select name="analyzer">
+            <mm:option value="" compare="${analyzer}">No analyzer</mm:option> 
+            <mm:option value="org.apache.lucene.analysis.StopAnalyzer" compare="${analyzer}">StopAnalyzer</mm:option> 
+            <mm:option value="org.apache.lucene.analysis.SimpleAnalyzer" compare="${analyzer}">SimpleAnalyzer</mm:option> 
+          </select>
           <br />
           <mm:write referid="extraconstraints" escape="text/html/attribute">
             <jsp:text>contraints: </jsp:text><input name="extraconstraints" value="${_}" />
@@ -55,7 +64,7 @@
         
         <mm:present referid="value" >
           <table>
-            <mm:nodelistfunction module="lucene" name="search" referids="value,index,max,offset,extraconstraints,sortfields">
+            <mm:nodelistfunction module="lucene" name="search" referids="value,index,max,offset,extraconstraints,sortfields,fields,analyzer">
               <mm:first>
                 <tr>
                   <th>type</th>
@@ -66,7 +75,7 @@
                     Search on '${value}'<br /> 
                     <mm:size /> hits
                     <mm:compare referid="count" value="on">
-                      of total <mm:function module="lucene" name="searchsize" referids="value,index,extraconstraints" />
+                      of total <mm:function module="lucene" name="searchsize" referids="value,index,extraconstraints,fields,analyzer" />
                     </mm:compare>
                   </th>
                 </tr>

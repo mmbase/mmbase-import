@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.37 2006-10-03 11:50:09 michiel Exp $
+ * @version $Id: Indexer.java,v 1.38 2006-10-03 16:55:16 michiel Exp $
  **/
 public class Indexer {
 
@@ -251,7 +251,7 @@ public class Indexer {
         } finally {
             if (writer != null) try { writer.close();} catch (IOException ioe) { log.error(ioe); }
         }
-        EventManager.getInstance().propagateEvent(new NewSearcher.Event());
+        EventManager.getInstance().propagateEvent(NewSearcher.EVENT);
         return updated;
     }
 
@@ -277,7 +277,7 @@ public class Indexer {
                     Term term = new Term("number", number);
                     TermDocs docs = reader.termDocs(term);
                     if (log.isDebugEnabled()) {
-                        log.debug(getName() + ": Will find " + reader.docFreq(term));
+                        log.debug(getName() + ": Will find " + reader.docFreq(term) + " for number=" + number);
                     }
                     while(docs.next()) {
                         int i = docs.doc();
@@ -332,7 +332,7 @@ public class Indexer {
         } finally {
             if (writer != null) { try { writer.close(); } catch (IOException ioe) { log.error("Can't close index writer: " + ioe.getMessage()); } }
         }
-        EventManager.getInstance().propagateEvent(new NewSearcher.Event());
+        EventManager.getInstance().propagateEvent(NewSearcher.EVENT);
     }
 
     /**
@@ -372,7 +372,7 @@ public class Indexer {
             }
             writer.addDocument(document);
         }
-        EventManager.getInstance().propagateEvent(new NewSearcher.Event());
+        EventManager.getInstance().propagateEvent(NewSearcher.EVENT);
         return indexed;
     }
 

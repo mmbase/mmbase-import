@@ -1,5 +1,9 @@
 <?xml version="1.0"?>
-<luceneindex xmlns="http://www.mmbase.org/xmlns/luceneindex" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mmbase.org/xmlns/luceneindex http://www.mmbase.org/xmlns/luceneindex.xsd">
+<luceneindex xmlns="http://www.mmbase.org/xmlns/luceneindex" 
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+             xsi:schemaLocation="http://www.mmbase.org/xmlns/luceneindex http://www.mmbase.org/xmlns/luceneindex.xsd"
+             disableIndexes="comma separated lists of the names of index definitions that must be ignored"
+             >
   <!-- example extractors
     <extractor class="org.mmbase.module.lucene.extraction.impl.PDFBoxExtractor" />
     <extractor class="org.mmbase.module.lucene.extraction.impl.SwingRTFExtractor" />
