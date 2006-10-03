@@ -54,7 +54,7 @@
                 <c:if test="${index eq _.name }">
                   <jsp:text>*</jsp:text>
                   <mm:write id="default" referid="index" write="false" />
-                </c:if>                  
+                </c:if>
               </mm:function>
             </td>
             <td>

@@ -20,6 +20,7 @@ import org.apache.lucene.search.*;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.queryParser.*;
 
+import org.mmbase.core.event.EventManager;
 import org.mmbase.util.*;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.NodeList;
@@ -31,7 +32,7 @@ import org.mmbase.util.logging.*;
  * A wrapper around Lucene's {@link org.apache.lucene.search.IndexSearcher}. Every {@link Indexer} has its own Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.33 2006-10-03 11:50:09 michiel Exp $
+ * @version $Id: Searcher.java,v 1.34 2006-10-03 16:55:16 michiel Exp $
  * @todo  Should the StopAnalyzers be replaced by index.analyzer? Something else?
  **/
 public class Searcher implements NewSearcher.Listener {
@@ -42,7 +43,7 @@ public class Searcher implements NewSearcher.Listener {
     // So by configuring log4j, you can easily track what people are searching for.
     private final Logger searchLog;
     private final Indexer index;
-    private final String[] allIndexedFields;
+    final String[] allIndexedFields;
 
     // for peformance reasons there should only be one searcher opened (see javadoc of IndexSearcher)
     private IndexSearcher searcher;
@@ -65,7 +66,7 @@ public class Searcher implements NewSearcher.Listener {
         } catch (IOException ioe) {
             log.error("Can't close index searcher: " + ioe.getMessage());
         }
-        org.mmbase.core.event.EventManager.getInstance().addEventListener(this);
+        EventManager.getInstance().addEventListener(this);
     }
 
     public void notify(NewSearcher.Event event) {
@@ -74,7 +75,7 @@ public class Searcher implements NewSearcher.Listener {
 
     protected IndexSearcher getSearcher() {
         if (needsNewSearcher || searcher == null) {
-            // for existing searches, leave existing the searcher open for 10 seconds, then close it (searches still not finished in 10 seconds, get an IO exception)
+            // for existing searches, leave existing searcher open for 10 seconds, then close it (searches still not finished in 10 seconds, get an IO exception)
             if (searcher != null) {
                 closingSearchers++;
                 final IndexSearcher s = searcher;
@@ -104,7 +105,7 @@ public class Searcher implements NewSearcher.Listener {
     }
 
     public void shutdown() {
-        org.mmbase.core.event.EventManager.getInstance().removeEventListener(this);
+        EventManager.getInstance().removeEventListener(this);
         if (searcher != null) {
             try {
                 log.service("Shutting down searcher for " + index);
@@ -136,6 +137,10 @@ public class Searcher implements NewSearcher.Listener {
     }
 
     public NodeList search(Cloud cloud, String value, String[] sortFields, Query extraQuery, int offset, int max) throws ParseException {
+        return search(cloud, value, null, getSort(sortFields), new StopAnalyzer(), extraQuery, allIndexedFields, offset, max);
+    }
+
+    public static Sort getSort(String[] sortFields) {
         Sort sort = null;
         if (sortFields != null && sortFields.length > 0) {
             if (sortFields.length == 1 && sortFields[0].equals("RELEVANCE")) {
@@ -154,7 +159,7 @@ public class Searcher implements NewSearcher.Listener {
                 sort = new Sort(sorts);
             }
         }
-        return search(cloud, value, null, sort, new StopAnalyzer(), extraQuery, allIndexedFields, offset, max);
+        return sort;
     }
 
 
