@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Function;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.59 2006-09-07 12:48:23 pierre Exp $
+ * @version $Id: Cloud.java,v 1.58.2.1 2006-09-07 12:46:22 pierre Exp $
  */
 public interface Cloud {
 

@@ -29,7 +29,7 @@ Contributions build file
     <mkdir dir="${contributions.build.dir}" />
   </target>
 
-  <target name="all.compiling"   depends="init,aselect,thememanager,multilanguagegui,mmbob,mmbar,lucene,principletracker,calendar,poll" />
+  <target name="all.compiling"   depends="init,aselect,thememanager,multilanguagegui,mmbob,mmbar,lucene,principletracker,calendar" />
   <target name="all.not.compiling" depends="" />
   <target name="all"   depends="all.compiling,all.not.compiling" />
 
@@ -114,13 +114,6 @@ Contributions build file
        <property name="download.dir"        value="${download.dir}" />
      </ant>
   </target>
-  <target name="poll" depends="mmbase">
-     <ant dir="poll"   inheritAll="false">
-       <property name="project.zip.dir"      value="${contributions.build.dir}" />
-       <property name="build.dir"            value="${build.dir}" />
-       <property name="download.dir"        value="${download.dir}" />
-     </ant>
-  </target>
 
   <target name="fullinstall">
     <ant dir="aselect"        target="dependent.install" inheritAll="false">
@@ -135,9 +128,6 @@ Contributions build file
     <ant dir="calendar"     target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
-    <ant dir="poll"     target="install" inheritAll="false">
-      <property name="build.dir"        value="${build.dir}" />
-    </ant>
   </target>
 
   <target name="clean">
@@ -149,7 +139,6 @@ Contributions build file
      <ant dir="principletracker" target="clean" inheritAll="false" />
      <ant dir="lucene"           target="clean" inheritAll="false" />
      <ant dir="calendar"         target="clean" inheritAll="false" />
-     <ant dir="poll"             target="clean" inheritAll="false" />
      <delete dir="${contributions.build.dir}" />
   </target>
 

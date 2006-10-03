@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: mmxf2kupu.xslt,v 1.12 2006-09-29 16:08:55 michiel Exp $
+  @version: $Id: mmxf2kupu.xslt,v 1.7 2006-08-25 14:16:52 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -169,22 +169,10 @@
     <xsl:apply-templates select="o:field[@name = 'body']" />
   </xsl:template>
 
-  <xsl:template match="o:object[@type = 'blocks']" mode="class">
-    <xsl:param name="relation" />
-    <xsl:variable name="class"><xsl:value-of select="$relation/o:field[@name='class']" /></xsl:variable>
-    <xsl:choose>
-      <xsl:when test="starts-with($class, 'div ')">
-        <xsl:value-of select="substring-after($class, 'div ')" />
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:value-of select="$class" />
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
 
 
   <!-- don't want clickable images, and hope the id can survive in the title -->
-  <xsl:template match="o:object[@type = 'images' or contains(@ancestors, ' images ')]" mode="inline">
+  <xsl:template match="o:object[@type = 'images']" mode="inline">
     <xsl:param name="relation" />
     <xsl:param name="position" />
     <xsl:variable name="icache" select="node:nodeFunction(., $cloud, string(./@id), 'cachednode', 's(100x100&gt;)')" />
@@ -197,12 +185,10 @@
         <xsl:value-of select="$relation/o:field[@name='id']" />
         <xsl:if test="$position &gt; 1">bla<xsl:value-of select="$position" /></xsl:if>
       </xsl:attribute>
-      <!--
       <xsl:if test="$icache/o:field[@name='width']">
         <xsl:attribute name="height"><xsl:value-of select="$icache/o:field[@name='height']" /></xsl:attribute>
         <xsl:attribute name="width"><xsl:value-of select="$icache/o:field[@name='width']" /></xsl:attribute>
       </xsl:if>
-      -->
     </img>
   </xsl:template>
 
@@ -253,7 +239,7 @@
       <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
       <xsl:attribute name="alt"><xsl:apply-templates select="." mode="title" /></xsl:attribute>
       <xsl:attribute name="title"><xsl:apply-templates select="." mode="title" /></xsl:attribute>
-      <xsl:if test="not($body)">
+      <xsl:if test="$body = ''">
         <xsl:attribute name="class">generated</xsl:attribute>
       </xsl:if>
       <xsl:apply-templates select="$body"  />
@@ -268,13 +254,12 @@
       <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
       <xsl:attribute name="alt">External: <xsl:apply-templates select="." mode="title" /></xsl:attribute>
       <xsl:attribute name="title">External: <xsl:apply-templates select="." mode="title" /></xsl:attribute>
-      <xsl:if test="not($body)">
+      <xsl:if test="$body = ''">
         <xsl:attribute name="class">generated</xsl:attribute>
       </xsl:if>
       <xsl:apply-templates select="$body"  />
     </a>
   </xsl:template>
-
 
   <xsl:template match="o:object[@type = 'blocks']" mode="id">
     <xsl:param name="relation" />

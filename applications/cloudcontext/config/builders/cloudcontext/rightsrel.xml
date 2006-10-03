@@ -20,7 +20,7 @@
   </descriptions>
   <properties/>
   <fieldlist>
-    <field name="operation">
+    <field>
       <gui>
         <guiname xml:lang="fr">Operation</guiname>
         <guiname xml:lang="nl">Operatie</guiname>
@@ -44,6 +44,7 @@
         </enumeration>
       </datatype>
       <db>
+        <name>operation</name>
         <type notnull="true" size="15" state="persistent">STRING</type>
       </db>
     </field>

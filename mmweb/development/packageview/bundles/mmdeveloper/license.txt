@@ -1,2 +1,0 @@
-Type : Other<br />
-Url :<a href="http://mmapps.sourceforge.net/mmdeveloper/license.html"> License <img src="images/arrow-right.gif"></a>

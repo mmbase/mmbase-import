@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<providers exportsource="mmbase://www.didactor.org/version2.0" timestamp="20050624084259">
-	<node number="381" owner="anonymous" alias="defaultProvider">
-		<name>provider</name>
-		<path></path>
-	</node>
-</providers>

@@ -19,9 +19,9 @@ import org.mmbase.security.*;
 /**
  * @javadoc
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.35 2006-10-03 18:29:43 michiel Exp $
+ * @version $Id: TransactionManager.java,v 1.34 2006-07-06 11:24:44 michiel Exp $
  */
-public class TransactionManager {
+public class TransactionManager implements TransactionManagerInterface {
 
     private static final Logger log = Logging.getLoggerInstance(TransactionManager.class);
 
@@ -32,12 +32,12 @@ public class TransactionManager {
     public static final String EXISTS_NOLONGER = "nolonger";
     public static final int I_EXISTS_NOLONGER = 2;
 
-    private TemporaryNodeManager tmpNodeManager;
+    private TemporaryNodeManagerInterface tmpNodeManager;
     private MMBase mmbase;
-    protected Map<String, Collection<MMObjectNode>> transactions = new HashMap(); 
+    protected Map transactions = new HashMap(); /* String -> Collection */
     protected TransactionResolver transactionResolver;
 
-    public TransactionManager(MMBase mmbase, TemporaryNodeManager tmpn) {
+    public TransactionManager(MMBase mmbase, TemporaryNodeManagerInterface tmpn) {
         this.mmbase = mmbase;
         this.tmpNodeManager = tmpn;
         transactionResolver = new TransactionResolver(mmbase);
@@ -49,8 +49,8 @@ public class TransactionManager {
      * @exception TransactionManagerExcpeption if the transaction with given name does not exist
      * @return Collection containing the nodes in this transaction (as {@link org.mmbase.module.core.MMObjectNode}s).
      */
-    synchronized public  Collection<MMObjectNode> getTransaction(String transactionName) throws TransactionManagerException {
-        Collection<MMObjectNode> transaction = transactions.get(transactionName);
+    synchronized public  Collection getTransaction(String transactionName) throws TransactionManagerException {
+        Collection transaction = (Collection) transactions.get(transactionName);
         if (transaction == null) {
             throw new TransactionManagerException("Transaction " + transactionName + " does not exist (existing are " + transactions.keySet() + ")");
         } else {
@@ -64,9 +64,9 @@ public class TransactionManager {
      * @exception TransactionManagerExcpeption if the transaction with given name existed already
      * @return Collection containing the nodes in this transaction (so, this is an empty collection)
      */
-    synchronized public Collection<MMObjectNode> createTransaction(String transactionName) throws TransactionManagerException {
+    synchronized public Collection createTransaction(String transactionName) throws TransactionManagerException {
         if (!transactions.containsKey(transactionName)) {
-            List<MMObjectNode> transactionNodes = new ArrayList();
+            Vector transactionNodes = new Vector();
             transactions.put(transactionName, transactionNodes);
             return transactionNodes;
         } else {
@@ -78,8 +78,19 @@ public class TransactionManager {
      * Removes the transaction with given name
      * @return the collection with nodes from the removed transaction or <code>null</code> if no transaction with this name existed
      */
-    synchronized protected Collection<MMObjectNode> deleteTransaction(String transactionName) {
-        return transactions.remove(transactionName);
+    synchronized protected Collection deleteTransaction(String transactionName) {
+        return (Collection) transactions.remove(transactionName);
+    }
+
+    /**
+     * @deprecated use {@link #getTransaction}
+     */
+    public Vector getNodes(Object user, String transactionName) {
+        try {
+            return (Vector)getTransaction(transactionName);
+        } catch (TransactionManagerException tme) {
+            return null;
+        }
     }
 
     /**
@@ -109,8 +120,9 @@ public class TransactionManager {
         return getTransaction(transactionName);
     }
 
-    public String addNode(String transactionName, String owner, String tmpnumber) throws TransactionManagerException {
-        Collection<MMObjectNode> transaction = getTransaction(transactionName);
+    public String addNode(String transactionName, String owner, String tmpnumber)
+        throws TransactionManagerException {
+        Collection transaction = getTransaction(transactionName);
         MMObjectNode node = tmpNodeManager.getNode(owner, tmpnumber);
         if (node != null) {
             if (!transaction.contains(node)) {
@@ -125,8 +137,9 @@ public class TransactionManager {
         return tmpnumber;
     }
 
-    public String removeNode(String transactionName, String owner, String tmpnumber) throws TransactionManagerException {
-        Collection<MMObjectNode> transaction = getTransaction(transactionName);
+    public String removeNode(String transactionName, String owner, String tmpnumber)
+        throws TransactionManagerException {
+        Collection transaction = getTransaction(transactionName);
         MMObjectNode node = tmpNodeManager.getNode(owner, tmpnumber);
         if (node!=null) {
             if (transaction.contains(node)) {
@@ -140,13 +153,14 @@ public class TransactionManager {
         return tmpnumber;
     }
 
-    public String deleteObject(String transactionName, String owner, String tmpnumber) throws TransactionManagerException    {
-        Collection<MMObjectNode> transaction = getTransaction(transactionName);
+    public String deleteObject(String transactionName, String owner, String tmpnumber)
+        throws TransactionManagerException    {
+        Collection transaction = getTransaction(transactionName);
         MMObjectNode node = tmpNodeManager.getNode(owner, tmpnumber);
         if (node!=null) {
             if (transaction.contains(node)) {
                 // Mark it as deleted
-                node.storeValue(MMObjectBuilder.TMP_FIELD_EXISTS, EXISTS_NOLONGER);
+                node.setValue("_exists",EXISTS_NOLONGER);
              } else {
                 throw new TransactionManagerException("Node " + tmpnumber + " is not in transaction " + transactionName);
             }
@@ -157,10 +171,11 @@ public class TransactionManager {
     }
 
     public String cancel(Object user, String transactionName) throws TransactionManagerException {
-        Collection<MMObjectNode> transaction = getTransaction(transactionName);
+        Collection transaction = getTransaction(transactionName);
         // remove nodes from the temporary node cache
         MMObjectBuilder builder = mmbase.getTypeDef();
-        for (MMObjectNode node : transaction) {
+        for (Iterator i = transaction.iterator(); i.hasNext(); ) {
+            MMObjectNode node=(MMObjectNode)i.next();
             builder.removeTmpNode(node.getStringValue(MMObjectBuilder.TMP_FIELD_NUMBER));
         }
         deleteTransaction(transactionName);
@@ -171,7 +186,7 @@ public class TransactionManager {
     }
 
     public String commit(Object user, String transactionName) throws TransactionManagerException {
-        Collection<MMObjectNode> transaction = getTransaction(transactionName);
+        Collection transaction = getTransaction(transactionName);
         try {
             boolean resolved = transactionResolver.resolve(transaction);
             if (!resolved) {
@@ -189,7 +204,8 @@ public class TransactionManager {
         } finally {
             // remove nodes from the temporary node cache
             MMObjectBuilder builder = mmbase.getTypeDef();
-            for (MMObjectNode node : transaction) {
+            for (Iterator i = transaction.iterator(); i.hasNext(); ) {
+                MMObjectNode node=(MMObjectNode)i.next();
                 builder.removeTmpNode(node.getStringValue(MMObjectBuilder.TMP_FIELD_NUMBER));
             }
             deleteTransaction(transactionName);
@@ -206,7 +222,7 @@ public class TransactionManager {
     private final static int NODE = 3;
     private final static int RELATION = 4;
 
-    boolean performCommits(Object user, Collection<MMObjectNode> nodes) {
+    boolean performCommits(Object user, Collection nodes) {
         if (nodes == null || nodes.size() == 0) {
             log.warn("Empty list of nodes");
             return true;
@@ -214,25 +230,24 @@ public class TransactionManager {
 
         int[] nodestate = new int[nodes.size()];
         int[] nodeexist = new int[nodes.size()];
-        String username = findUserName(user);
+        String username = findUserName(user),exists;
 
         log.debug("Checking types and existance");
 
-        int i = -1;
-        for (MMObjectNode node : nodes) {
-            i++;
-            if (! node.isChanged()) continue;
+        int i = 0;
+        for (Iterator nodeIterator = nodes.iterator(); nodeIterator.hasNext(); i++) {
+            MMObjectNode node = (MMObjectNode)nodeIterator.next();
             // Nodes are uncommited by default
             nodestate[i] = UNCOMMITED;
-            String exists = node.getStringValue(MMObjectBuilder.TMP_FIELD_EXISTS);
+            exists = node.getStringValue("_exists");
             if (exists == null) {
                 throw new IllegalStateException("The _exists field does not exist on node "+node);
             } else if (exists.equals(EXISTS_NO)) {
-                nodeexist[i] = I_EXISTS_NO;
+                nodeexist[i]=I_EXISTS_NO;
             } else if (exists.equals(EXISTS_YES)) {
-                nodeexist[i] = I_EXISTS_YES;
+                nodeexist[i]=I_EXISTS_YES;
             } else if (exists.equals(EXISTS_NOLONGER)) {
-                nodeexist[i] = I_EXISTS_NOLONGER;
+                nodeexist[i]=I_EXISTS_NOLONGER;
             } else {
                 throw new IllegalStateException("Invalid value for _exists on node "+node);
             }
@@ -240,11 +255,10 @@ public class TransactionManager {
 
         log.debug("Commiting nodes");
 
-        i = -1;
         // First commit all the NODES
-        for (MMObjectNode node : nodes) {
-            i++;
-            if (! node.isChanged()) continue;
+        i = 0;
+        for (Iterator nodeIterator = nodes.iterator(); nodeIterator.hasNext(); i++) {
+            MMObjectNode node = (MMObjectNode)nodeIterator.next();
             if (!(node.getBuilder() instanceof InsRel)) {
                 if (nodeexist[i] == I_EXISTS_YES ) {
                     // use safe commit, which locks the node cache
@@ -281,10 +295,9 @@ public class TransactionManager {
         log.debug("Commiting relations");
 
         // Then commit all the RELATIONS
-        i = -1;
-        for (MMObjectNode node : nodes) {
-            i++;
-            if (! node.isChanged()) continue;
+        i = 0;
+        for (Iterator nodeIterator = nodes.iterator(); nodeIterator.hasNext(); i++) {
+            MMObjectNode node = (MMObjectNode)nodeIterator.next();
             if (node.getBuilder() instanceof InsRel) {
                 // excactly the same code as 10 lines ago. Should be dispatched to some method..
                 if (nodeexist[i] == I_EXISTS_YES ) {
@@ -320,9 +333,9 @@ public class TransactionManager {
         log.debug("Deleting relations");
 
         // Then commit all the RELATIONS that must be deleted
-        i = -1;
-        for (MMObjectNode node : nodes) {
-            i++;
+        i = 0;
+        for (Iterator nodeIterator = nodes.iterator(); nodeIterator.hasNext(); i++) {
+            MMObjectNode node = (MMObjectNode)nodeIterator.next();
             if (node.getBuilder() instanceof InsRel && nodeexist[i] == I_EXISTS_NOLONGER) {
                 // no return information
                 if (user instanceof UserContext) {
@@ -336,9 +349,9 @@ public class TransactionManager {
 
         log.debug("Deleting nodes");
         // Then commit all the NODES that must be deleted
-        i = -1;
-        for (MMObjectNode node : nodes) {
-            i++;
+        i = 0;
+        for (Iterator nodeIterator = nodes.iterator(); nodeIterator.hasNext(); i++) {
+            MMObjectNode node = (MMObjectNode)nodeIterator.next();
             if (!(node.getBuilder() instanceof InsRel) && (nodeexist[i] == I_EXISTS_NOLONGER)) {
                 // no return information
                 if (user instanceof UserContext) {
@@ -346,17 +359,17 @@ public class TransactionManager {
                 } else {
                     node.parent.removeNode(node);
                 }
-                nodestate[i] = COMMITED;
+                nodestate[i]=COMMITED;
             }
         }
 
         // check for failures
         boolean okay=true;
-        i = -1;
-        for (MMObjectNode node : nodes) {
-            i++;
+        i = 0;
+        for (Iterator nodeIterator = nodes.iterator(); nodeIterator.hasNext(); i++) {
+            MMObjectNode node = (MMObjectNode)nodeIterator.next();
             if (nodestate[i] == FAILED) {
-                okay = false;
+                okay=false;
                 log.error("Failed node "+node.toString());
             }
         }

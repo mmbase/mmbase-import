@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.77 2006-09-15 17:04:48 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.74 2006-08-30 17:49:19 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -356,8 +356,8 @@ public class BuilderReader extends DocumentReader {
      * @param builder the MMObjectBuilder to which the fields will be added
      * @return a List of all Indices
      */
-    public List<Index> getIndices(MMObjectBuilder builder) {
-        List<Index> results = new ArrayList();
+    public List getIndices(MMObjectBuilder builder) {
+        List results = new ArrayList();
         Index mainIndex = null;
         if (parentBuilder != null) {
             // create the
@@ -366,14 +366,14 @@ public class BuilderReader extends DocumentReader {
                 mainIndex = new Index(builder, Index.MAIN);
                 mainIndex.setUnique(true);
                 for (Iterator i = parentIndex.iterator(); i.hasNext(); ) {
-                    Field field = (Field) i.next();
+                    Field field = (Field)i.next();
                     mainIndex.add(builder.getField(field.getName()));
                 }
             }
         }
 
-        for (Iterator<Element> fields = getChildElements("builder.fieldlist","field"); fields.hasNext(); ) {
-            Element field = fields.next();
+        for (Iterator fields = getChildElements("builder.fieldlist","field"); fields.hasNext(); ) {
+            Element field = (Element)fields.next();
             Element dbtype = getElementByPath(field,"field.db.type");
             if (dbtype != null) {
                 String key = getElementAttributeValue(dbtype,"key");
@@ -419,8 +419,8 @@ public class BuilderReader extends DocumentReader {
     /**
      * @since MMBase-1.8
      */
-    public Set<Function> getFunctions(MMObjectBuilder builder) {
-        Map<String, Function> results = new HashMap<String, Function>();
+    public Set getFunctions() {
+        Set results = new HashSet();
         for(Iterator ns = getChildElements("builder.functionlist","function"); ns.hasNext(); ) {
             try {
                 Element functionElement   = (Element)ns.next();
@@ -450,16 +450,7 @@ public class BuilderReader extends DocumentReader {
                         log.error("Speficied class " + claz + " in " + getSystemId() + "/functionslist/function is not a Function or FunctionProvider and can not be wrapped in a BeanFunction, because neither key nor name attribute were specified.");
                         continue;
                     }
-                    java.lang.reflect.Method method = MethodFunction.getMethod(claz, providerKey);
-                    if (method.getParameterTypes().length == 0) {
-                        function = BeanFunction.getFunction(claz, providerKey);
-                    } else {
-                        if (method.getClass().isInstance(builder)) {
-                            function = MethodFunction.getFunction(method, providerKey, builder);
-                        } else {
-                            function = MethodFunction.getFunction(method, providerKey);
-                        }
-                    }
+                    function = BeanFunction.getFunction(claz, providerKey);
                 }
                 if (! functionName.equals("") && ! function.getName().equals(functionName)) {
                     log.service("Wrapping " + function.getName() + " to " + functionName);
@@ -468,19 +459,6 @@ public class BuilderReader extends DocumentReader {
                                 return functionName;
                             }
                         };
-                }
-                Function existing = results.get(functionName);
-                if (existing != null) {
-                    log.info("Function " + functionName + " already defined, will combine it");
-                    CombinedFunction cf;
-                    if (existing instanceof CombinedFunction) {
-                        cf = (CombinedFunction) existing;
-                    } else {
-                        cf = new CombinedFunction(functionName);
-                        cf.addFunction(existing);
-                    }
-                    cf.addFunction(function);
-                    function = cf;
                 }
                 if (! (function instanceof NodeFunction)) {
                     // if it contains a 'node' parameter, it can be wrapped into a node-function,
@@ -501,19 +479,15 @@ public class BuilderReader extends DocumentReader {
                     }
                 }
 
-                results.put(functionName, function);
-                log.debug("functions are now: " + results);
+                results.add(function);
             } catch (Throwable e) {
                 log.error(e.getMessage(), e);
             }
 
         }
-        Set<Function> r = new HashSet<Function>();
-        for(Function fun : results.values()) {
-            r.add(fun);
-        }
-        log.debug("Found functions " + r);
-        return r;
+
+
+        return results;
 
     }
 

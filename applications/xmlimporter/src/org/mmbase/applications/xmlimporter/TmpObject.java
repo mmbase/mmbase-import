@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob van Maris: Finalist IT Group
  * @since MMBase-1.5
- * @version $Id: TmpObject.java,v 1.9 2006-10-03 18:32:04 michiel Exp $
+ * @version $Id: TmpObject.java,v 1.8 2005-10-06 14:14:41 michiel Exp $
  */
 public class TmpObject {
 
@@ -36,13 +36,14 @@ public class TmpObject {
     final static String _DNUMBER  = "_dnumber";
 
     /** Logger instance. */
-    private static Logger log = Logging.getLoggerInstance(TmpObject.class);
+    private static Logger log
+        = Logging.getLoggerInstance(TmpObject.class.getName());
 
     /** The mmbase module. */
     private static MMBase mmbase;
 
     /** The temporary node manager. */
-    private static TemporaryNodeManager tmpNodeManager;
+    private static TemporaryNodeManagerInterface tmpNodeManager;
 
     /** All user-related data. */
     private UserTransactionInfo uti;
@@ -75,7 +76,7 @@ public class TmpObject {
      * Gets reference to TemporaryNodeManager module.
      * @return the TemporaryNodeManager module.
      */
-    private static synchronized TemporaryNodeManager getTmpNodeManager() {
+    private static synchronized TemporaryNodeManagerInterface getTmpNodeManager() {
         if (tmpNodeManager == null) {
             tmpNodeManager = new TemporaryNodeManager(getMMBase());
         }

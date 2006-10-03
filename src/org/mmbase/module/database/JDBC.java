@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @deprecation-used drop reference to {@link JDBCInterface}
  * @author vpro
- * @version $Id: JDBC.java,v 1.48 2006-10-02 11:16:12 michiel Exp $
+ * @version $Id: JDBC.java,v 1.47 2006-06-20 20:50:47 michiel Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -108,9 +108,9 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
             // marmaa@vpro.nl:
             // This is how McKoi's JDBC drivers wants itself
             // to be registered; should have no effect on other drivers
-            Driver driver = (java.sql.Driver) Class.forName(jdbcDriver).newInstance();
+            Class.forName(jdbcDriver).newInstance();
 
-            log.service("Loaded JDBC driver: " + jdbcDriver + " " + driver.getMajorVersion() + "." + driver.getMinorVersion());
+            log.service("Loaded JDBC driver: " + jdbcDriver);
 
         } catch (Exception e) {
             log.fatal("JDBC driver not found: " + jdbcDriver , e);

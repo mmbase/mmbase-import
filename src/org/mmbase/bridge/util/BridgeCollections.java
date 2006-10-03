@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.util;
 
-import java.io.Serializable;
 import java.util.*;
 import org.mmbase.bridge.*;
 
@@ -19,7 +18,7 @@ import org.mmbase.bridge.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: BridgeCollections.java,v 1.5 2006-09-06 13:50:40 michiel Exp $
+ * @version $Id: BridgeCollections.java,v 1.4 2006-01-19 17:00:14 pierre Exp $
  * @since   MMBase-1.8
  */
 
@@ -287,7 +286,7 @@ public abstract class BridgeCollections {
     /* --------------------------------------------------------------------------------
      * Empty (and unmodifiable) Lists.
      */
-    static class EmptyBridgeList extends UnmodifiableBridgeList implements Serializable  {
+    static class EmptyBridgeList extends UnmodifiableBridgeList {
         EmptyBridgeList() { }
 
         private static final Object[] EMPTY = new Object[] {};
@@ -305,8 +304,6 @@ public abstract class BridgeCollections {
         public int indexOf(Object o) { return -1; }
         public boolean equals(Object o) { return Collections.EMPTY_LIST.equals(o); }
         public int hashCode() { return Collections.EMPTY_LIST.hashCode(); }
-        // Preserves singleton property
-        protected Object readResolve() { return EMPTY_BRIDGELIST; }
     }
 
     static class EmptyNodeList extends EmptyBridgeList implements NodeList {
@@ -330,8 +327,6 @@ public abstract class BridgeCollections {
             if (fromIndex == 0 && toIndex == 0) return this;
             throw new IndexOutOfBoundsException();
         }
-        // Preserves singleton property
-        protected Object readResolve() { return EMPTY_NODELIST; }
     }
 
     static class EmptyRelationList extends EmptyNodeList implements RelationList {
@@ -357,7 +352,6 @@ public abstract class BridgeCollections {
             if (fromIndex == 0 && toIndex == 0) return this;
             throw new IndexOutOfBoundsException();
         }
-        protected Object readResolve() { return EMPTY_RELATIONLIST; }
     }
 
     static class EmptyNodeManagerList extends EmptyNodeList implements NodeManagerList {
@@ -378,7 +372,6 @@ public abstract class BridgeCollections {
                 public Object previous() { throw new NoSuchElementException(); }
             };
         }
-        protected Object readResolve() { return EMPTY_NODEMANAGERLIST; }
     }
 
     static class EmptyRelationManagerList extends EmptyNodeManagerList implements RelationManagerList {
@@ -401,7 +394,6 @@ public abstract class BridgeCollections {
                 public Object previous() { throw new NoSuchElementException(); }
             };
         }
-        protected Object readResolve() { return EMPTY_RELATIONMANAGERLIST; }
     }
 
     static class EmptyStringList extends EmptyBridgeList implements StringList {
@@ -417,7 +409,6 @@ public abstract class BridgeCollections {
                 public String previousString() { throw new NoSuchElementException(); }
             };
         }
-        protected Object readResolve() { return EMPTY_STRINGLIST; }
     }
 
 }

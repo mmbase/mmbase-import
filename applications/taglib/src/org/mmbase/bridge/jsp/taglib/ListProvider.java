@@ -17,7 +17,7 @@ import org.mmbase.util.logging.*;
  * For example the several NodeListTag's  provide a List.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ListProvider.java,v 1.14 2006-09-05 11:55:01 michiel Exp $
+ * @version $Id: ListProvider.java,v 1.13 2005-12-15 21:47:27 michiel Exp $
  */
 public interface ListProvider extends ContextProvider, LoopTag {
     /**
@@ -59,7 +59,6 @@ public interface ListProvider extends ContextProvider, LoopTag {
     public void remove();
 
 
-
     /**
      * @since MMBase-1.8
      */
@@ -74,26 +73,27 @@ public interface ListProvider extends ContextProvider, LoopTag {
             return prov.getCurrent();
         }
         public int getIndex() {
-            return prov.getIndex() +  prov.getIndexOffset();
+            return prov.getIndex();// - prov.getIndexOffset();
         }
 
         public int getCount() {
             return prov.size();
         }
+
         public boolean isFirst() {
-            return prov.getIndex() == 0;
+            return getIndex() == 0;
         }
         public boolean isLast() {
-            return getCount() == prov.getIndex() + 1;
+            return getCount() == getIndex() + 1;
         }
         public Integer getBegin() {
-            return prov.getIndexOffset();
+            return null;
         }
         public Integer getEnd() {
-            return prov.size() + prov.getIndexOffset() - 1;
+            return null;
         }
         public Integer getStep() {
-            return 1;
+            return null;
         }
     }
 

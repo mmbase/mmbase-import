@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.56 2006-09-25 14:00:28 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.55 2006-06-28 11:05:25 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -92,7 +92,7 @@ public class ImageCaches extends AbstractImages {
 
     protected String getGUIIndicatorWithAlt(MMObjectNode node, String alt, Parameters a) {
         StringBuffer servlet = new StringBuffer();
-        HttpServletRequest req = a.get(Parameter.REQUEST);
+        HttpServletRequest req = (HttpServletRequest) a.get(Parameter.REQUEST);
         if (req != null) {
             servlet.append(getServletPath(UriParser.makeRelative(new java.io.File(req.getServletPath()).getParent(), "/")));
         } else {
@@ -102,7 +102,7 @@ public class ImageCaches extends AbstractImages {
         servlet.append(usesBridgeServlet && ses != null ? "session=" + ses + "+" : "");
         MMObjectNode origNode = originalImage(node);
         String imageThumb;
-        HttpServletResponse res = a.get(Parameter.RESPONSE);
+        HttpServletResponse res = (HttpServletResponse) a.get(Parameter.RESPONSE);
         String heightAndWidth = "";
         if (origNode != null) {
 
@@ -110,13 +110,9 @@ public class ImageCaches extends AbstractImages {
             MMObjectNode thumb = (MMObjectNode) origNode.getFunctionValue("cachednode", cacheArgs);
             //heightAndWidth = "height=\"" + getHeight(thumb) + "\" with=\"" + getWidth(thumb) + "\" ";
             heightAndWidth = ""; // getHeight and getWidth not yet present in AbstractImages
-            if (thumb != null) {
-                imageThumb = servlet.toString() + thumb.getNumber();
-                if (res != null) {
-                    imageThumb = res.encodeURL(imageThumb);
-                }
-            } else {
-                imageThumb = servlet.toString();
+            imageThumb = servlet.toString() + thumb.getNumber();
+            if (res != null) {
+                imageThumb = res.encodeURL(imageThumb);
             }
         } else {
             imageThumb = "";

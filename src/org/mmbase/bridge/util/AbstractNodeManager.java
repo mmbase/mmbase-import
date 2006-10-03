@@ -24,7 +24,7 @@ import org.mmbase.util.*;
  * org.mmbase.bridge.implementation.VirtualNodeManager}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNodeManager.java,v 1.4 2006-09-13 17:48:14 michiel Exp $
+ * @version $Id: AbstractNodeManager.java,v 1.2 2006-02-14 22:31:46 michiel Exp $
  * @see org.mmbase.bridge.NodeManager
  * @since MMBase-1.8
  */
@@ -102,10 +102,10 @@ public abstract class AbstractNodeManager extends AbstractNode implements NodeMa
     public String getInfo(String command, ServletRequest req,  ServletResponse resp){ throw new UnsupportedOperationException();}
 
 
-    protected abstract Map<String, Field> getFieldTypes();
+    protected abstract Map getFieldTypes();
 
 
-    public boolean hasField(String fieldName) {
+    public final boolean hasField(String fieldName) {
         Map fieldTypes = getFieldTypes();
         return fieldTypes.isEmpty() || fieldTypes.containsKey(fieldName);
     }
@@ -118,7 +118,7 @@ public abstract class AbstractNodeManager extends AbstractNode implements NodeMa
         return new BasicFieldList(getFieldTypes().values(), this);
     }
 
-    public Field getField(String fieldName) throws NotFoundException {
+    public final Field getField(String fieldName) throws NotFoundException {
         Field f = (Field) getFieldTypes().get(fieldName);
         if (f == null) throw new NotFoundException("Field '" + fieldName + "' does not exist in NodeManager '" + getName() + "'.(" + getFieldTypes() + ")");
         return f;

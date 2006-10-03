@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: GenericDataSource.java,v 1.13 2006-09-13 15:26:49 michiel Exp $
+ * @version $Id: GenericDataSource.java,v 1.12 2006-07-15 14:35:06 michiel Exp $
  */
 public final class GenericDataSource implements DataSource {
     private static final Logger log = Logging.getLoggerInstance(GenericDataSource.class);
@@ -53,18 +53,17 @@ public final class GenericDataSource implements DataSource {
      * @throws StorageInaccessibleException if the JDBC module used in creating the datasource is inaccessible
      */
     GenericDataSource(MMBase mmbase, String dataDir) throws StorageInaccessibleException {
-        jdbc = Module.getModule(JDBC.class);
+        jdbc = (JDBC) Module.getModule("JDBC", true);
         if (jdbc == null) {
             throw new StorageInaccessibleException("Cannot load Datasource or JDBC Module");
         }
-        jdbc.startModule();
         this.dataDir = dataDir == null ? "" : dataDir;
         meta = false;
     }
     /**
      */
     GenericDataSource(MMBase mmbase) throws StorageInaccessibleException {
-        jdbc = Module.getModule(JDBC.class);
+        jdbc = (JDBC) Module.getModule("JDBC", false);
         if (jdbc == null) {
             throw new StorageInaccessibleException("Cannot load Datasource or JDBC Module");
         }

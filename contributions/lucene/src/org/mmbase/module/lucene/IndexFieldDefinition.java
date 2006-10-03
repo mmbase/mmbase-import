@@ -20,7 +20,7 @@ import org.mmbase.storage.search.*;
  * Defines options for a field to index.
  *
  * @author Pierre van Rooden
- * @version $Id: IndexFieldDefinition.java,v 1.9 2006-10-02 17:26:40 michiel Exp $
+ * @version $Id: IndexFieldDefinition.java,v 1.5 2006-06-22 17:04:16 michiel Exp $
  **/
 public class IndexFieldDefinition extends FieldDefinition {
 
@@ -47,22 +47,19 @@ public class IndexFieldDefinition extends FieldDefinition {
     public String decryptionPassword = "";
 
     // default for storing text
-    private final boolean storeTextDefault;
+    private boolean storeTextDefault = false;
 
     //d efault for merging text
-    private final boolean mergeTextDefault;
+    private boolean mergeTextDefault = false;
 
-    private final Set<String> allIndexedFieldsSet;
+    private Set allIndexedFieldsSet = null;
 
-    public Indexer.Multiple multiple = Indexer.Multiple.ADD;
-
-    public float boost = 1.0f;
-
-    IndexFieldDefinition(boolean storeTextDefault, boolean mergeTextDefault, Set<String> allIndexedFieldsSet) {
+    public IndexFieldDefinition(boolean storeTextDefault, boolean mergeTextDefault, Set allIndexedFieldsSet) {
         super();
         this.storeTextDefault = storeTextDefault;
         this.mergeTextDefault = mergeTextDefault;
         this.allIndexedFieldsSet = allIndexedFieldsSet;
+        
     }
 
     public void configure(Element fieldElement) {
@@ -88,12 +85,6 @@ public class IndexFieldDefinition extends FieldDefinition {
         }
         if (QueryReader.hasAttribute(fieldElement,"password")) {
             decryptionPassword = QueryReader.getAttribute(fieldElement, "password");
-        }
-        if (QueryReader.hasAttribute(fieldElement,"multiple")) {
-            multiple = Indexer.Multiple.valueOf(QueryReader.getAttribute(fieldElement, "multiple").toUpperCase());
-        }
-        if (QueryReader.hasAttribute(fieldElement,"boost")) {
-            boost = Float.valueOf(QueryReader.getAttribute(fieldElement, "boost"));
         }
         if (!keyWord) {
             if (alias != null) {

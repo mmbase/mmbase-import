@@ -27,7 +27,6 @@ import org.mmbase.util.ResourceLoader;
 
 import org.mmbase.cache.xslt.*;
 import org.mmbase.util.xml.URIResolver;
-import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.XMLErrorHandler;
 import org.mmbase.util.XMLEntityResolver;
 
@@ -41,7 +40,7 @@ import org.mmbase.util.XMLEntityResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.42 2006-09-29 15:47:39 pierre Exp $
+ * @version $Id: Utils.java,v 1.41 2005-08-24 12:42:42 michiel Exp $
  */
 
 public class Utils {
@@ -53,7 +52,7 @@ public class Utils {
      * @return     a DocumentBuilder.
      */
     public static DocumentBuilder getDocumentBuilder(boolean validate) {
-        return org.mmbase.util.xml.DocumentReader.getDocumentBuilder(validate,
+        return org.mmbase.util.XMLBasicReader.getDocumentBuilder(validate,
             new XMLErrorHandler(validate, XMLErrorHandler.ERROR),
             new XMLEntityResolver(validate, Utils.class));
     }

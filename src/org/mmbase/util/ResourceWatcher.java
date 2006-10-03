@@ -26,7 +26,7 @@ import org.mmbase.bridge.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceWatcher.java,v 1.14 2006-09-08 12:13:24 michiel Exp $
+ * @version $Id: ResourceWatcher.java,v 1.13 2006-04-18 13:07:55 michiel Exp $
  * @see    org.mmbase.util.FileWatcher
  * @see    org.mmbase.util.ResourceLoader
  */
@@ -38,18 +38,22 @@ public abstract class ResourceWatcher implements NodeEventListener  {
      * is set to null, and not used any more (also used in ResourceLoader).
      *
      */
-    static  Set<ResourceWatcher> resourceWatchers = new HashSet();
+    static  Set resourceWatchers = new HashSet();
 
     /**
      * Considers all resource-watchers. Perhaps onChange must be called, because there is a node for this resource available now.
      */
     static void setResourceBuilder() {
         synchronized(resourceWatchers) {
-            for (ResourceWatcher rw : resourceWatchers) {
+            Iterator i = resourceWatchers.iterator();
+            while (i.hasNext()) {
+                ResourceWatcher rw = (ResourceWatcher) i.next();
                 if (rw.running) {
                     EventManager.getInstance().addEventListener(rw);
                 }
-                for (String resource : rw.resources) {
+                Iterator j = rw.resources.iterator();
+                while (j.hasNext()) {
+                    String resource = (String) j.next();
                     if (rw.mapNodeNumber(resource)) {
                         log.service("ResourceBuilder is available now. Resource " + resource + " must be reloaded.");
                         rw.onChange(resource);
@@ -69,14 +73,14 @@ public abstract class ResourceWatcher implements NodeEventListener  {
     /**
      * All resources watched by this ResourceWatcher. A Set of Strings. Often, a ResourceWatcher would watch only one resource.
      */
-    protected SortedSet<String> resources = new TreeSet();
+    protected SortedSet resources = new TreeSet();
 
     /**
      * When a resource is loaded from a Node, we must know which Nodes correspond to which
      * resource. You could ask the node itself, but if the node happens to be deleted, then you
      * can't know that any more. Used in {@link #notify(NodeEvent)}
      */
-    protected Map<Integer, String> nodeNumberToResourceName = new HashMap();
+    protected Map       nodeNumberToResourceName = new HashMap();
 
     /**
      * Whether this ResourceWatcher has been started (see {@link #start})
@@ -86,7 +90,7 @@ public abstract class ResourceWatcher implements NodeEventListener  {
     /**
      * Wrapped FileWatcher for watching the file-resources. ResourceName -> FileWatcher.
      */
-    protected Map<String, FileWatcher> fileWatchers = new HashMap();
+    protected Map fileWatchers = new HashMap();
 
     /**
      * The resource-loader associated with this ResourceWatcher.
@@ -181,7 +185,7 @@ public abstract class ResourceWatcher implements NodeEventListener  {
     protected synchronized boolean mapNodeNumber(String resource) {
         Node node = resourceLoader.getResourceNode(resource);
         if (node != null) {
-            nodeNumberToResourceName.put(node.getNumber(), resource);
+            nodeNumberToResourceName.put("" + node.getNumber(), resource);
             return true;
         } else {
             return false;
@@ -198,11 +202,11 @@ public abstract class ResourceWatcher implements NodeEventListener  {
      */
     public void notify(NodeEvent event) {
         if (event.getBuilderName().equals("resources")) {
-            int number = event.getNodeNumber();
+            String number = "" + event.getNodeNumber();
             switch(event.getType()) {
             case NodeEvent.TYPE_DELETE: {
                 // hard..
-                String name = nodeNumberToResourceName.get(number);
+                String name = (String) nodeNumberToResourceName.get(number);
                 if (name != null && resources.contains(name)) {
                     nodeNumberToResourceName.remove(number);
                     log.service("Resource " + name + " changed (node removed)");
@@ -261,7 +265,9 @@ public abstract class ResourceWatcher implements NodeEventListener  {
      */
     public synchronized void setDelay(long delay) {
         this.delay = delay;
-        for (FileWatcher fw : fileWatchers.values()) {
+        Iterator i = fileWatchers.values().iterator();
+        while (i.hasNext()) {
+            FileWatcher fw = (FileWatcher) i.next();
             fw.setDelay(delay);
         }
     }
@@ -297,9 +303,9 @@ public abstract class ResourceWatcher implements NodeEventListener  {
      * Stops watching. Stops all filewatchers, removes observers.
      */
     public synchronized void exit() {
-        Iterator<FileWatcher> i = fileWatchers.values().iterator();
+        Iterator i = fileWatchers.values().iterator();
         while (i.hasNext()) {
-            FileWatcher fw = i.next();
+            FileWatcher fw = (FileWatcher) i.next();
             fw.exit();
             i.remove();
         }

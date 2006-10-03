@@ -20,24 +20,24 @@ import java.util.*;
  * @move consider moving to org.mmbase.cache
  * @author  Rico Jansen
  * @author  Michiel Meeuwissen
- * @version $Id: LRUHashtable.java,v 1.26 2006-09-11 11:09:27 michiel Exp $
+ * @version $Id: LRUHashtable.java,v 1.24 2006-02-23 17:37:23 michiel Exp $
  * @see    org.mmbase.cache.Cache
  */
-public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterface<K, V>, SizeMeasurable {
+public class LRUHashtable extends Hashtable implements Cloneable, CacheImplementationInterface, SizeMeasurable {
 
-    private final Hashtable<K, LRUEntry> backing; 
-
+    private static final String ROOT     = "root";
+    private static final String DANGLING = "dangling";
     /**
      * First (virtual) element of the table.
      * The element that follows root is the oldest element in the table
      * (and thus first to be removed if size maxes out).
      */
-    private final LRUEntry root     = new LRUEntry();
+    private final LRUEntry root     = new LRUEntry(ROOT, ROOT);
     /**
      * Last (virtual) element of the table.
      * The element that precedes dangling is the latest element in the table
      */
-    private final LRUEntry dangling = new LRUEntry();
+    private final LRUEntry dangling = new LRUEntry(DANGLING, DANGLING);
 
     /**
      * Maximum size (capacity) of the table
@@ -55,7 +55,7 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
      * @param lf the amount with which current capacity frows
      */
     public LRUHashtable(int size, int cap, float lf) {
-        backing = new Hashtable<K, LRUEntry>(cap, lf);
+        super(cap, lf);
         root.next = dangling;
         dangling.prev = root;
         this.size = size;
@@ -93,9 +93,9 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
      * @param value the value of the element
      * @return the original value of the element if it existed, <code>null</code> if it could not be found
      */
-    public synchronized V put(K key, V value) {
-        LRUEntry work = backing.get(key);
-        V rtn;
+    public synchronized Object put(Object key, Object value) {
+        LRUEntry work = (LRUEntry) super.get(key);
+        Object rtn;
         if (work != null) {
             rtn = work.value;
             work.value = value;
@@ -104,7 +104,7 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
         } else {
             rtn = null;
             work = new LRUEntry(key, value);
-            backing.put(key, work);
+            super.put(key, work);
             appendEntry(work);
             currentSize++;
             if (currentSize > size) {
@@ -114,27 +114,13 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
         return rtn;
     }
 
-    public void putAll(Map<? extends K, ? extends V> t) {
-        for (Map.Entry<? extends K, ? extends V> e : t.entrySet()) {
-            put(e.getKey(), e.getValue());
-        }
-    }
-    public boolean containsValue(Object o) {
-        return values().contains(o);
-    }
-    public boolean containsKey(Object o) {
-        return backing.containsKey(o);
-    }
-    public boolean isEmpty() {
-        return backing.isEmpty();
-    }
     /**
      * Retrieves the count of the object with a certain key.
      * @param key the key of the element
      * @return the times the key has been requested
      */
     public int getCount(Object key) {
-        LRUEntry work = backing.get(key);
+        LRUEntry work = (LRUEntry) super.get(key);
         if (work != null) {
             return work.requestCount;
         } else {
@@ -147,11 +133,11 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
      * @param key the key of the element
      * @return the value of the element, or <code>null</code> if it could not be found
      */
-    public synchronized V get(Object key) {
-        LRUEntry work =  backing.get(key);
+    public synchronized Object get(Object key) {
+        LRUEntry work = (LRUEntry) super.get(key);
         if (work != null) {
             work.requestCount++;
-            V rtn = work.value;
+            Object rtn = work.value;
             removeEntry(work);
             appendEntry(work);
             return rtn;
@@ -165,10 +151,10 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
      * @param key the key of the element
      * @return the original value of the element if it existed, <code>null</code> if it could not be found
      */
-    public synchronized V remove(Object key) {
-        LRUEntry work = backing.remove(key);
+    public synchronized Object remove(Object key) {
+        LRUEntry work = (LRUEntry) super.remove(key);
         if (work != null) {
-            V rtn = work.value;
+            Object rtn = work.value;
             removeEntry(work);
             currentSize--;
             return rtn;
@@ -176,7 +162,7 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
             return null;
         }
     }
-    
+
 
     /**
      * You should only remove entries from LRUHashtable using the 'remove' function, or using the
@@ -184,8 +170,8 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
      * therefore returns an unmodifiable set.
      * @since MMBase-1.6.3
      */
-    public Set<K> keySet() {
-        return Collections.unmodifiableSet(backing.keySet());
+    public Set keySet() {
+        return Collections.unmodifiableSet(super.keySet());
     }
 
     /**
@@ -193,8 +179,7 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
      *
      * @since MMBase-1.6.3
      */
-    public Set<Map.Entry<K, V>> entrySet() {
-        //throw new UnsupportedOperationException();
+    public Set entrySet() {
         return new LRUEntrySet();
     }
 
@@ -202,8 +187,8 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
      * @see   #keySet
      * @since MMBase-1.6.3
      */
-    public Collection<V> values() {
-        return new LRUValues();
+    public Collection values() {
+        return Collections.unmodifiableCollection(super.values());
     }
 
     /**
@@ -287,7 +272,7 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
      */
     public synchronized void clear() {
         while (root.next != dangling) removeEntry(root.next);
-        backing.clear();
+        super.clear();
         currentSize = 0;
     }
 
@@ -342,7 +327,7 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
      * @since MMBase-1.6
      */
 
-    public List<? extends Map.Entry<K, V>> getOrderedEntries() {
+    public List getOrderedEntries() {
         return getOrderedEntries(-1);
     }
 
@@ -353,8 +338,8 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
      * @since MMBase-1.6
      */
 
-    public List<? extends Map.Entry<K, V>> getOrderedEntries(int maxNumber) {
-        List<Map.Entry<K,V>> results = new ArrayList<Map.Entry<K,V>>();
+    public List getOrderedEntries(int maxNumber) {
+        List results = new ArrayList();
         LRUEntry current = root.next;
         int i = 0;
         while (current != null && current != dangling && (maxNumber < 0 || i < maxNumber)) {
@@ -408,11 +393,11 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
     /**
      * Element used to store information from the LRUHashtable.
      */
-    public class LRUEntry implements Map.Entry<K, V>, SizeMeasurable {
+    public class LRUEntry implements Map.Entry, SizeMeasurable {
         /**
          * The element value
          */
-        protected V value;
+        protected Object value;
         /**
          * The next, newer, element
          */
@@ -424,36 +409,33 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
         /**
          * The element key
          */
-        protected K key;
+        protected Object key;
         /**
          * the number of times this
          * entry has been requested
          */
         protected int requestCount = 0;
 
-        LRUEntry() {
-            this(null, null);
-        }
-        LRUEntry(K key, V val) {
+        LRUEntry(Object key, Object val) {
             this(key, val, null, null);
         }
 
-        LRUEntry(K key, V value, LRUEntry prev, LRUEntry next) {
+        LRUEntry(Object key, Object value, LRUEntry prev, LRUEntry next) {
             this.value = value;
             this.next  = next;
             this.prev  = prev;
             this.key   = key;
         }
 
-        public K getKey() {
+        public Object getKey() {
             return key;
         }
 
-        public V getValue() {
+        public Object getValue() {
             return value;
         }
 
-        public V setValue(V o) {
+        public Object setValue(Object o) {
             throw new UnsupportedOperationException("Cannot change values in LRU Hashtable");
         }
 
@@ -473,15 +455,15 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
      * Used by 'entrySet' implementation, to make the Map modifiable.
      * @since MMBase-1.7.2
      */
-    protected class LRUEntrySet extends AbstractSet<Map.Entry<K, V>> {
-        Set<Map.Entry<K, LRUEntry>> set;
+    protected class LRUEntrySet extends AbstractSet {
+        Set set;
         LRUEntrySet() {
-            set = LRUHashtable.this.backing.entrySet();
+            set = LRUHashtable.super.entrySet();
         }
         public int size() {
             return set.size();
         }
-        public Iterator<Map.Entry<K, V>> iterator() {
+        public Iterator iterator() {
             return new LRUEntrySetIterator(set.iterator());
         }
     }
@@ -490,18 +472,18 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
      * Used by 'entrySet' implementation, to make the Map modifiable.
      * @since MMBase-1.7.2
      */
-    protected class LRUEntrySetIterator implements Iterator<Map.Entry<K, V>> {
-        final Iterator<Map.Entry<K, LRUEntry>> it;
+    protected class LRUEntrySetIterator implements Iterator {
+        Iterator it;
         LRUEntry work;
-        LRUEntrySetIterator(Iterator<Map.Entry<K, LRUEntry>> i ) {
+        LRUEntrySetIterator(Iterator i ) {
             it = i;
         }
         public boolean 	hasNext() {
             return it.hasNext();
         }
-        public Map.Entry<K, V> next() {
-            Map.Entry<K, LRUEntry> entry =  it.next();
-            work = entry.getValue();
+        public Object next() {
+            Map.Entry entry = (Map.Entry) it.next();
+            work = (LRUEntry) entry.getValue();
             return work;
         }
         public void remove() {
@@ -512,39 +494,6 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
             }
         }
     }
-    /**
-     * @since MMBase-1.9
-     */
-    protected class LRUValues extends AbstractCollection<V> {
-        final Collection<LRUEntry> col;
-        LRUValues() {
-            col = LRUHashtable.this.backing.values();
-        }
-        public int size() {
-            return col.size();
-        }
-        public Iterator<V> iterator() {
-            final Iterator<LRUEntry> i = col.iterator();
-            return new Iterator<V>() {
-                LRUEntry work;
-                public boolean hasNext() {
-                    return i.hasNext();
-                }
-                public V next() {
-                    work = i.next();
-                    return work.getValue();
-                }
-                public void remove() {
-                    i.remove();
-                    if (work != null) {
-                        LRUHashtable.this.removeEntry(work);
-                        LRUHashtable.this.currentSize--;
-                    }
-                }
-            };
-        }
-    }
-
 
     public static void main(String argv[]) {
         int treesiz = 1024;

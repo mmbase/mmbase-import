@@ -38,10 +38,10 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.123 2006-09-25 10:17:36 pierre Exp $
+ * @version $Id: BasicNodeManager.java,v 1.121.2.1 2006-09-20 18:14:37 michiel Exp $
 
  */
-public class BasicNodeManager extends BasicNode implements NodeManager {
+public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
     private static final  Logger log = Logging.getLoggerInstance(BasicNodeManager.class);
 
     /**
@@ -53,7 +53,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
     protected MMObjectBuilder builder;
 
     // field types
-    protected Map<String, Field> fieldTypes = new HashMap();
+    protected Map fieldTypes = new HashMap();
 
     /**
      * Instantiates a new NodeManager (for insert) based on a newly created node which either represents or references a builder.
@@ -167,11 +167,12 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
     /**
      * @since MMBase-1.8
      */
-    protected static void sync(MMObjectBuilder builder, Map<String, Field> fieldTypes, NodeManager nodeManager) {
-        Collection<CoreField> fields = builder.getFields();
+    protected static void sync(MMObjectBuilder builder, Map fieldTypes, NodeManager nodeManager) {
+        Collection fields = builder.getFields();
         if (fields != null) { // when is it null?
             fieldTypes.clear();
-            for (CoreField f : fields) {
+            for(Iterator i = fields.iterator(); i.hasNext();){
+                CoreField f = (CoreField) i.next();
                 Field ft = new BasicField(f, nodeManager);
                 if (f.getStoragePosition() > 0) {
                     fieldTypes.put(ft.getName().toLowerCase(), ft);
@@ -198,7 +199,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
      * Returns the fieldlist of this nodemanager after making sure the manager is synced with the builder.
      * @since MMBase-1.8
      */
-    protected Map<String, Field> getFieldTypes() {
+    protected Map getFieldTypes() {
         sync();
         return fieldTypes;
     }
@@ -293,7 +294,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
 
     public Map getProperties() {
         if (builder != null) {
-            return Collections.unmodifiableMap(builder.getInitParameters());
+            return new HashMap(builder.getInitParameters());
         } else {
             return Collections.EMPTY_MAP;
         }
@@ -346,7 +347,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
     }
 
     public Field getField(String fieldName) throws NotFoundException {
-        Field f =  getFieldTypes().get(fieldName.toLowerCase());
+        Field f = (Field) getFieldTypes().get(fieldName.toLowerCase());
         if (f == null) throw new NotFoundException("Field '" + fieldName + "' does not exist in NodeManager '" + getName() + "'.(" + getFieldTypes() + ")");
         return f;
     }

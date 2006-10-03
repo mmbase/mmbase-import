@@ -23,8 +23,8 @@ import org.mmbase.util.logging.Logger;
  * @javadoc
  * @move org.mmbase.cache.implementation
  * @rename Cache
- * @author  $Author: michiel $
- * @version $Id: cache.java,v 1.14 2006-09-08 14:57:39 michiel Exp $
+ * @author  $Author: nklasens $
+ * @version $Id: cache.java,v 1.13 2005-09-20 19:28:29 nklasens Exp $
  */
 public class cache extends Module implements cacheInterface {
 
@@ -162,7 +162,7 @@ public class cache extends Module implements cacheInterface {
     /**
      * @javadoc
      */
-    public Map<String, String> state() {
+    public Hashtable state() {
         state.put("Hits",""+hits);
         state.put("Misses",""+miss);
         if (hits!=0 && miss!=0) {

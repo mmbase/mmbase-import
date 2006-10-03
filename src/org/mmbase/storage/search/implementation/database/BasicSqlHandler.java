@@ -22,7 +22,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.63 2006-09-08 18:42:59 michiel Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.62 2006-08-02 17:26:55 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -171,7 +171,8 @@ public class BasicSqlHandler implements SqlHandler {
     // javadoc is inherited
     // XXX what exception to throw when an unsupported feature is
     // encountered (currently throws UnsupportedOperationException)?
-    public String toSql(SearchQuery query, SqlHandler firstInChain) throws SearchQueryException {
+    public String toSql(SearchQuery query, SqlHandler firstInChain)
+    throws SearchQueryException {
         // XXX should table and field aliases be tested for uniqueness?
 
         // Test for at least 1 step and 1 field.
@@ -306,7 +307,8 @@ public class BasicSqlHandler implements SqlHandler {
             throw new UnsupportedOperationException("Directionality 'EITHER' is not (yet) supported");
 
         default: // Invalid directionality value.
-            throw new IllegalStateException("Invalid directionality value: " + relationStep.getDirectionality());
+            throw new IllegalStateException(
+                                            "Invalid directionality value: " + relationStep.getDirectionality());
         }
         if (relationStep.getRole() != null) {
             sbRelations.append(" AND ");
@@ -334,12 +336,14 @@ public class BasicSqlHandler implements SqlHandler {
         boolean multipleSteps = query.getSteps().size() > 1;
 
         // Fields expression
-        List<StepField> lFields = query.getFields();
+        List lFields = query.getFields();
 
 
         boolean storesAsFile = MMBase.getMMBase().getStorageManagerFactory().hasOption(org.mmbase.storage.implementation.database.Attributes.STORES_BINARY_AS_FILE);
+        Iterator iFields = lFields.iterator();
         boolean appended = false;
-        for (StepField field : lFields) {
+        while (iFields.hasNext()) {
+            StepField field = (StepField) iFields.next();
             if (field.getType() == Field.TYPE_BINARY) continue;
             if (appended) {
                 sb.append(',');
@@ -608,12 +612,12 @@ public class BasicSqlHandler implements SqlHandler {
      */
     protected StringBuffer appendSortOrders(StringBuffer sb, SearchQuery query) {
         boolean multipleSteps = query.getSteps().size() > 1;
-        List<SortOrder> sortOrders = query.getSortOrders();
+        List sortOrders = query.getSortOrders();
         if (sortOrders.size() > 0) {
             sb.append(" ORDER BY ");
-            Iterator<SortOrder> iSortOrders = sortOrders.iterator();
+            Iterator iSortOrders = sortOrders.iterator();
             while (iSortOrders.hasNext()) {
-                SortOrder sortOrder = iSortOrders.next();
+                SortOrder sortOrder = (SortOrder) iSortOrders.next();
                 appendSortOrderField(sb, sortOrder, multipleSteps, query);
                 appendSortOrderDirection(sb, sortOrder);
                 if (iSortOrders.hasNext()) {
@@ -948,9 +952,10 @@ public class BasicSqlHandler implements SqlHandler {
      *        to be called on this handler, to generate the constraints in
      *        the composite.
      */
-    protected void appendCompositeConstraintToSql(StringBuffer sb, CompositeConstraint compositeConstraint, SearchQuery query,
-                                                  boolean inverse, boolean inComposite, SqlHandler firstInChain)
-        throws SearchQueryException {
+    protected void appendCompositeConstraintToSql(
+    StringBuffer sb, CompositeConstraint compositeConstraint, SearchQuery query,
+    boolean inverse, boolean inComposite, SqlHandler firstInChain)
+    throws SearchQueryException {
 
         // Net effect of inverse setting with constraint inverse property.
         boolean overallInverse = inverse ^ compositeConstraint.isInverse();
@@ -976,11 +981,12 @@ public class BasicSqlHandler implements SqlHandler {
             + ", must be either "
             + CompositeConstraint.LOGICAL_AND + " or " + CompositeConstraint.LOGICAL_OR);
         }
-        List<Constraint> childs = compositeConstraint.getChilds();
+        List childs = compositeConstraint.getChilds();
 
         // Test for at least 1 child.
         if (childs.isEmpty()) {
-            throw new IllegalStateException("Composite constraint has no child (at least 1 child is required).");
+            throw new IllegalStateException(
+            "Composite constraint has no child (at least 1 child is required).");
         }
 
         boolean hasMultipleChilds = childs.size() > 1;
@@ -992,16 +998,18 @@ public class BasicSqlHandler implements SqlHandler {
         }
 
         // Recursively append all childs.
-        Iterator<Constraint> iChilds = childs.iterator();
+        Iterator iChilds = childs.iterator();
         while (iChilds.hasNext()) {
-            Constraint child = iChilds.next();
+            Constraint child = (Constraint) iChilds.next();
             if (child instanceof CompositeConstraint) {
                 // Child is composite constraint.
-                appendCompositeConstraintToSql(sb, (CompositeConstraint) child, query,
-                                               overallInverse, hasMultipleChilds, firstInChain);
+                appendCompositeConstraintToSql(
+                    sb, (CompositeConstraint) child, query,
+                    overallInverse, hasMultipleChilds, firstInChain);
             } else {
                 // Child is non-composite constraint.
-                firstInChain.appendConstraintToSql(sb, child, query, overallInverse, hasMultipleChilds);
+                firstInChain.appendConstraintToSql(
+                    sb, child, query, overallInverse, hasMultipleChilds);
             }
             if (iChilds.hasNext()) {
                 sb.append(strOperator);

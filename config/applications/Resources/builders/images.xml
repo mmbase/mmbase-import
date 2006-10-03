@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
                         http://www.mmbase.org/xmlns/builder.xsd"                        
-    name="images" maintainer="mmbase.org" version="1" extends="object">
+    name="images" maintainer="mmbase.org" version="0" extends="object">
 
   <class>org.mmbase.module.builders.Images</class>
 
@@ -48,25 +48,6 @@
     -->
     <property name="ImageConvert.ConverterRoot"></property>
 
-    <!-- 
-         The convert 'Method' is relevant for the ImageMagickImageConverter class.  It can be
-         'launcher' or 'connector'. If launcher (default), then the convert binary will be started
-         in the current JVM (which may give issues with memory). If 'connector' then it will connect
-         to the 'command server' which will do the launching. This is ussually a small JVM on the
-         same machine which is listening to a certain TCP port. 
-         See also ImageConvert.Host and ImageConvert.Port.
-
-    -->
-    <property name="ImageConvert.Method">launcher</property>
-    <!--
-        If ImageConvert.Method is connector, then the following two properties specify where to
-        connect to. Default is localhost:1679.
-    -->
-    <!--
-    <property name="ImageConvert.Host">localhost</property>
-    <property name="ImageConvert.Port">1679</property>
-    -->
-
     <property name="ImageConvert.DefaultImageFormat">asis</property> <!-- The default format of icache-objects. Defaults to jpeg if this option is missing here. 'asis' means, same format as the images object -->
 
     <!-- convert using ImageMagick example for windows -->
@@ -102,7 +83,7 @@
 
   <fieldlist>
 
-    <field name="title">
+    <field>
       <descriptions>
 
         <description xml:lang="en">Title of the image</description>
@@ -120,12 +101,14 @@
           <list>1</list>
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <maxLength value="255" enforce="never"/>
-      </datatype>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>title</name>
+        <type state="persistent" size="255" notnull="true" key="false">STRING</type>
+      </db>
     </field>
 
-    <field name="description">
+    <field>
       <descriptions>
         <description xml:lang="en">Description of the image</description>
         <description xml:lang="nl">Omschrijving van de afbeelding</description>
@@ -142,12 +125,13 @@
           <list>3</list>
         </positions>
       </editor>
-      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <maxLength value="1024" enforce="never"/>
-      </datatype>
+      <db>
+        <name>description</name>
+        <type state="persistent" size="1024" notnull="false" key="false">STRING</type>
+      </db>
     </field>
 
-    <field name="handle">
+    <field>
       <descriptions>
         <description xml:lang="en">The image itself (binary data)</description>
         <description xml:lang="nl">De afbeelding zelf (binaire data)</description>
@@ -164,13 +148,16 @@
           <list>2</list>
         </positions>
       </editor>
-      <datatype base="binary" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <maxLength value="16777215" enforce="never"/>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
         <pattern value="image/.*" />
       </datatype>
+      <db>
+        <name>handle</name>
+        <type state="persistent" size="16777215" notnull="true" key="false">BINARY</type>
+      </db>
     </field>
 
-    <field name="itype" state="system">
+    <field>
       <descriptions>
         <description xml:lang="en">Mimetype of the image</description>
         <description xml:lang="nl">Mimetype van de afbeelding</description>
@@ -182,12 +169,14 @@
         <guiname xml:lang="eo">Bildotipo</guiname>
         <guiname xml:lang="it">ImmagineTipo</guiname>
       </gui>
-      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <maxLength value="32" enforce="never"/>
-      </datatype>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>itype</name>
+        <type state="system" size="32" notnull="true" key="false">STRING</type>
+      </db>
     </field>
 
-    <field name="filesize" state="system">
+    <field>
       <descriptions>
         <description xml:lang="en">Filesize of the image</description>
         <description xml:lang="nl">Filegrootte van het plaatje</description>
@@ -205,8 +194,12 @@
           </positions>
         </editor>
         <datatype base="filesize" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+        <db>
+          <name>filesize</name>
+          <type state="system" notnull="false">INTEGER</type>
+        </db>
      </field>
-    <field name="width" state="system">
+    <field>
       <descriptions>
         <description xml:lang="en">Width of the image in pixels</description>
         <description xml:lang="nl">Breedte van het plaatje in pixels</description>
@@ -216,9 +209,12 @@
         <guiname xml:lang="nl">Breedte</guiname>
         <guiname xml:lang="eo">Larĝo</guiname>
       </gui>
-      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>width</name>
+        <type state="system" notnull="false">INTEGER</type>
+      </db>
     </field>
-    <field name="height" state="system">
+    <field>
       <descriptions>
         <description xml:lang="en">Height of the image in pixels</description>
         <description xml:lang="nl">Hoogte van het plaatje in pixels</description>
@@ -228,9 +224,12 @@
         <guiname xml:lang="nl">Hoogte</guiname>
         <guiname xml:lang="eo">Alto</guiname>
       </gui>
-      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>height</name>
+        <type state="system" notnull="false">INTEGER</type>
+      </db>
     </field>
-    <field name="filename">
+    <field>
       <descriptions>
         <description xml:lang="en">Original filename of attachment if it was an uploaded file</description>
         <description xml:lang="nl">Oorspronkelijke bestandsnaam als de bijlage een ge-upload bestand betreft</description>
@@ -240,9 +239,11 @@
         <guiname xml:lang="nl">Bestandsnaam</guiname>
         <guiname xml:lang="eo">Dosiernomo</guiname>
       </gui>
-      <datatype base="filename" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <maxLength value="255" enforce="never"/>
-      </datatype>
+      <datatype base="filename" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>filename</name>
+        <type state="persistent" size="255" notnull="true" key="false">STRING</type>
+      </db>
     </field>
 
     <!--

@@ -1,9 +1,0 @@
-<!--
-    themes.dtd
--->
-
-<!ELEMENT themes (theme*)>
-
-<!ELEMENT theme (#PCDATA)>
-<!ATTLIST theme id CDATA #IMPLIED>
-<!ATTLIST theme file CDATA #IMPLIED>

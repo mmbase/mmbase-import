@@ -23,12 +23,12 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.30 2006-09-27 20:42:21 michiel Exp $
+ * @version $Id: Parameters.java,v 1.23 2006-03-23 19:55:06 michiel Exp $
  * @see Parameter
  * @see #Parameters(Parameter[])
  */
 
-public class Parameters extends AbstractList<Object> implements java.io.Serializable {
+public class Parameters extends AbstractList implements java.io.Serializable {
     private static final Logger log = Logging.getLoggerInstance(Parameters.class);
 
     private static final int serialVersionUID = 1;
@@ -42,13 +42,13 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
     /**
      * The contents of this List are stored in this HashMap.
      */
-    protected Map<String, Object> backing;
+    protected Map backing; /* String -> Value */
 
     /**
      * This array maps integers (position in array) to map keys, making it possible to implement
      * List.
      */
-    protected Parameter<Object>[] definition = null;
+    protected Parameter[] definition = null;
 
     /**
      * If <code>true</code>, values are automatically cast to the right type (if possible) when set.
@@ -76,13 +76,13 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
      *   </code>
      * </pre>
      */
-    public Parameters(Parameter<?>... def) {
-        definition = Functions.define(def, new ArrayList<Parameter>()).toArray(Parameter.EMPTY);
+    public Parameters(Parameter[] def) {
+        definition = (Parameter[]) Functions.define(def, new ArrayList()).toArray(Parameter.EMPTY);
         toIndex = definition.length;
         if (log.isDebugEnabled()) {
             log.debug("Found definition " + Arrays.asList(definition));
         }
-        backing = new HashMap<String, Object>();
+        backing = new HashMap();
         // fill with default values, and check for non-unique keys.
         for (int i = fromIndex; i < toIndex; i++) {
             if (backing.put(definition[i].getName(), definition[i].getDefaultValue()) != null) {
@@ -100,14 +100,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
      * @throws NullPointerException if definition is null
      * @see #Parameters(Parameter[])
      */
-    public Parameters(Parameter<?>[] def, Collection values) {
-        this(def);
-        setAll(values);
-    }
-    /**
-     * @since MMBase-1.9
-     */
-    public Parameters(Parameter<?>[] def, Object... values) {
+    public Parameters(Parameter[] def, Collection values) {
         this(def);
         setAll(values);
     }
@@ -115,7 +108,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
     /**
      * Used for nicer implemenation  of subList (which we want to also be instanceof Parameters).
      */
-    protected Parameters(Parameters  params, int from, int to) {
+    protected Parameters(Parameters params, int from, int to) {
         backing = params.backing;
         definition = params.definition;
         fromIndex = from + params.fromIndex;
@@ -185,7 +178,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
     // implementation of (modifiable) List
     // @throws NullPointerException if definition not set
     public Object set(int i, Object value) {
-        Parameter<?> a = definition[i + fromIndex];
+        Parameter a = definition[i + fromIndex];
         if (autoCasting) value = a.autoCast(value);
         a.checkType(value);
         return backing.put(a.getName(), value);
@@ -211,7 +204,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
      * @return the index of the parameter, or -1 if it doesn't exist
      */
 
-    public int indexOfParameter(Parameter<?> parameter) {
+    public int indexOfParameter(Parameter parameter) {
         int index = -1;
         for (int i = fromIndex; i < toIndex; i++) {
             if (definition[i].equals(parameter)) {
@@ -246,7 +239,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
      * @param parameter the parameter
      * @return <code>true</code> if a parameter exists.
      */
-    public boolean containsParameter(Parameter<?> parameter) {
+    public boolean containsParameter(Parameter parameter) {
         return indexOfParameter(parameter) != -1;
     }
 
@@ -265,7 +258,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
      * @param value the object value to set
      * @throws IllegalArgumentException if either the argument name is unknown to this Parameters, or the value is of the wrong type.
      */
-    public <F> Parameters set(Parameter<F> parameter, F value) {
+    public Parameters set(Parameter parameter, Object value) {
         int index = indexOfParameter(parameter);
         if (index > -1) {
             set(index, value);
@@ -294,10 +287,12 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
     /**
      * Copies all values of a map to the corresponding values of this Parameters Object.
      */
-    public Parameters  setAll(Map<String, ?> map) {
+    public Parameters setAll(Map map) {
         if (map != null) {
-            for (Map.Entry<String, ?> entry : map.entrySet()) {
-                set(entry.getKey(), entry.getValue());
+            Iterator i = map.entrySet().iterator();
+            while (i.hasNext()) {
+                Map.Entry entry = (Map.Entry) i.next();
+                set((String) entry.getKey(), entry.getValue());
             }
         }
         return this;
@@ -306,14 +301,14 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
     /**
      * Copies all values of a collection to the corresponding values of this Parameters Object.
      */
-    public Parameters setAll(Collection<?> values) {
+    public Parameters setAll(Collection values) {
         if (values != null) {
             if (log.isDebugEnabled()) {
                 if (values.size() > definition.length) {
                     log.debug("Given too many values. " + values + " does not match " + Arrays.asList(definition));
                 }
             }
-            Iterator<?> valueIterator = values.iterator();
+            Iterator valueIterator = values.iterator();
             int i = 0;
             while (valueIterator.hasNext()) {
                 set(i++, valueIterator.next());
@@ -321,18 +316,8 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
         }
         return this;
     }
-    /**
-     * @since MMBase-1.9
-     */
-    public Parameters setAll(Object... values) {
-        int i = 0;
-        for(Object value : values) {
-            set(i++, value);
-        }
-        return this;
-    }
 
-    public Parameters subList(int fromIndex, int toIndex) {
+    public List subList(int fromIndex, int toIndex) {
         return new Parameters(this, fromIndex, toIndex);
     }
 
@@ -342,7 +327,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
      * @param parameter the parameter to set
      * @param value the object value to set
      */
-    public <F> Parameters setIfDefined(Parameter<F> parameter, F value) {
+    public Parameters setIfDefined(Parameter parameter, Object value) {
         int index = indexOfParameter(parameter);
         if (index > -1) {
             set(index, value);
@@ -369,9 +354,10 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
      * @param parameter the parameter to get
      * @return value the parameter value
      */
-    public <F> F get(Parameter<F> parameter) {
-        return (F) get(parameter.getName());
+    public Object get(Parameter parameter) {
+        return get(parameter.getName());
     }
+
 
     /**
      * Gets the value of a parameter.
@@ -389,7 +375,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
      * @return value the parameter value as a <code>STring</code>
      */
 
-    public String getString(Parameter<?> parameter) {
+    public String getString(Parameter parameter) {
         return getString(parameter.getName());
     }
 
@@ -406,7 +392,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
     /**
      * Gives the arguments back as a (unmodifiable) map.
      */
-    public Map<String, ?> toMap() {
+    public Map toMap() {
         return Collections.unmodifiableMap(backing);
     }
 

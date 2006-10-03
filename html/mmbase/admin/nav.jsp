@@ -123,24 +123,6 @@
     <span class="<%=("clustering".equals(subcategory)) ? "current" : ""%>menuitem">CLUSTERING</span>
       </a>
     </mm:haspage>
-    <mm:haspage page="/mmbase/events/index.jspx">
-      &nbsp;&nbsp;
-      <a href="<mm:url page="default.jsp?category=tools&url=/mmbase/events/" />" target="_top" >
-    <span class="<%=("events".equals(subcategory)) ? "current" : ""%>menuitem">EVENTS</span>
-      </a>
-    </mm:haspage>
-    <mm:haspage page="/mmbase/functions/index.jspx">
-      &nbsp;&nbsp;
-      <a href="<mm:url page="default.jsp?category=tools&url=/mmbase/functions/" />" target="_top" >
-    <span class="<%=("events".equals(subcategory)) ? "current" : ""%>menuitem">FUNCTIONS</span>
-      </a>
-    </mm:haspage>
-    <mm:haspage page="/mmbase/lucene/index.jspx">
-      &nbsp;&nbsp;
-      <a href="<mm:url page="default.jsp?category=tools&url=/mmbase/lucene/" />" target="_top" >
-    <span class="<%=("events".equals(subcategory)) ? "current" : ""%>menuitem">LUCENE</span>
-      </a>
-    </mm:haspage>
         <% } %>
 </td>
 </tr>

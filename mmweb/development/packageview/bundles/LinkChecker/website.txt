@@ -1,4 +1,0 @@
-<tr>
-	<th>Website</th>
-	<td><a href="http://mmapps.sourceforge.net/linkchecker/intro.html"><img src="images/arrow-right.gif"></a></td>
-</tr>

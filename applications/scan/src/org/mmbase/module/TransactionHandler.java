@@ -46,9 +46,9 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
     // Cashes all transactions belonging to a user.
     private static Hashtable transactionsOfUser = new Hashtable();
     // Reference to the transactionManager.
-    private static TransactionManager transactionManager;
+    private static TransactionManagerInterface transactionManager;
     // Reference to the temporaryNodeManager
-    private static TemporaryNodeManager tmpObjectManager;
+    private static TemporaryNodeManagerInterface tmpObjectManager;
 
     public TransactionHandler() {}
 

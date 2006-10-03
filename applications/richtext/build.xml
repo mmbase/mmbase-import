@@ -7,7 +7,7 @@
   <property name="svnclient"      location="svnClientAdapter.jar" />
   <property name="javasvn"      location="javasvn.jar" />
 
-  <target name="package" depends="kupu,buildbase.package">
+  <target name="dependent.package" depends="kupu,package">
   </target>
 
   <target name="svn-task">

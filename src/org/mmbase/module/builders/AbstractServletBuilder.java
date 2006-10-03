@@ -30,7 +30,7 @@ import org.mmbase.security.Rank;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.44 2006-09-25 14:00:28 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.42 2006-08-10 09:39:29 nklasens Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -305,7 +305,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         return super.getGUIIndicator(field, node);
     }
 
-    final public  String getGUIIndicator(MMObjectNode node, Parameters pars) {
+    final protected String getGUIIndicator(MMObjectNode node, Parameters pars) {
         String field = (String) pars.get("field");
         if (field == null || "".equals(field) || FIELD_HANDLE.equals(field)) {
             return getSGUIIndicator(node, pars);
@@ -394,9 +394,9 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      * @since MMBase-1.8.1
      */
     protected String getSession(Parameters a, int nodeNumber) {
-        String session = a.getString("session");
+        String session = (String) a.get("session");
         if (session == null) {
-            Cloud cloud = a.get(Parameter.CLOUD);
+            Cloud cloud = (Cloud) a.get(Parameter.CLOUD);
             log.debug("No session given for " + cloud);
             if(cloud != null && ! cloud.getUser().getRank().equals(Rank.ANONYMOUS)) {
                 log.debug("not anonymous");

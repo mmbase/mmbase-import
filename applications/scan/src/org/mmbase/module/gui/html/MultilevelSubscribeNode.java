@@ -11,8 +11,6 @@ package org.mmbase.module.gui.html;
 
 import java.util.*;
 import org.mmbase.module.core.*;
-import org.mmbase.util.*;
-import org.mmbase.util.logging.*;
 
 /**
  * This object subscribes itself to builder changes
@@ -23,22 +21,15 @@ import org.mmbase.util.logging.*;
  */
 public class MultilevelSubscribeNode implements MMBaseObserver {
 
-    private static Logger log = Logging.getLoggerInstance(MultilevelSubscribeNode.class);
-    
     private MMBase mmb;
     String type;
-    Vector queue = new Vector(50);
+    Vector queue=new Vector(50);
 
     public MultilevelSubscribeNode(MMBase mmb,String type) {
-        this.mmb = mmb;
-        this.type = type;
-        MMObjectBuilder builder = mmb.getBuilder(type);
-        if (builder != null) {
-            builder.addLocalObserver(this);
-            builder.addRemoteObserver(this);
-        } else {
-            log.error("ERROR: Can't find builder : " + type);
-        }
+        this.mmb=mmb;
+        this.type=type;
+        mmb.addLocalObserver(type,this);
+        mmb.addRemoteObserver(type,this);
     }
 
     public boolean nodeChanged(String machine,String number,String builder,String ctype) {

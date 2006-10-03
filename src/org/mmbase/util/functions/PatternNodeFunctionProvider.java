@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * xml).
  *
  * @author Michiel Meeuwissen
- * @version $Id: PatternNodeFunctionProvider.java,v 1.11 2006-09-29 09:54:40 michiel Exp $
+ * @version $Id: PatternNodeFunctionProvider.java,v 1.9 2006-03-29 15:05:51 michiel Exp $
  * @since MMBase-1.8
  */
 public class PatternNodeFunctionProvider extends FunctionProvider {
@@ -47,7 +47,7 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
         return instance;
     }
 
-    public Function<String> getFunction(String name) {
+    public Function getFunction(String name) {
         Function func = (Function) functions.get(name);
         if (func == null) {
             func = new PatternNodeFunction(name);
@@ -65,7 +65,7 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
 
     private static int counter = 0;
 
-    protected static class PatternNodeFunction extends NodeFunction<String> {
+    protected static class PatternNodeFunction extends NodeFunction {
 
         String template;
         Map   requestMethods = null;
@@ -101,7 +101,7 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
             return (Parameter[]) params.toArray(new Parameter[] {});
         }
 
-        protected String getFunctionValue(final Node node, final Parameters parameters) {
+        protected Object getFunctionValue(final Node node, final Parameters parameters) {
             StringBuffer sb = new StringBuffer();
             {
                 Matcher fields = fieldsPattern.matcher(template);
@@ -114,7 +114,7 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
                 Matcher request = requestPattern.matcher(sb.toString());
                 if (request.find()) {
                     request.reset();
-                    HttpServletRequest req = parameters.get(Parameter.REQUEST);
+                    HttpServletRequest req = (HttpServletRequest) parameters.get(Parameter.REQUEST);
                     sb = new StringBuffer();
                     while(request.find()) {
                         if(request.group(1).equals("getContextPath")) {
@@ -146,7 +146,7 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
             {
                 Matcher requestParam = requestParamPattern.matcher(sb.toString());
                 if (requestParam.find()) {
-                    HttpServletRequest req = parameters.get(Parameter.REQUEST);
+                    HttpServletRequest req = (HttpServletRequest) parameters.get(Parameter.REQUEST);
                     if (req == null) {
                         log.error("Did't find the request among the parameters");
                     } else {
@@ -165,7 +165,7 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
             {
                 Matcher requestAttribute = requestAttributePattern.matcher(sb.toString());
                 if (requestAttribute.find()) {
-                    HttpServletRequest req = parameters.get(Parameter.REQUEST);
+                    HttpServletRequest req = (HttpServletRequest) parameters.get(Parameter.REQUEST);
                     if (req == null) {
                         log.error("Did't find the request among the parameters");
                     } else {

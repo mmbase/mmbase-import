@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.196 2006-09-27 11:27:00 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.193.2.1 2006-09-27 11:28:00 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -92,7 +92,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * it can be used to optimise cacheing
      * @since MMBase-1.8
      */
-    private Map<String, Object> oldValues = new HashMap();
+    private Map oldValues = new HashMap();
 
 
     /**
@@ -103,8 +103,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * It should then be made private, and methods that change the map (storeValue) be made synchronized.
      * Note: To avoid synchronisation conflicts, we can't really change the type until the property is made private.
      */
-    protected Map<String, Object> values = Collections.synchronizedMap(new HashMap<String, Object>());
-    private Map<String, Long> sizes = Collections.synchronizedMap(new HashMap<String, Long>());
+    protected Map values = Collections.synchronizedMap(new HashMap());
+    private Map sizes = Collections.synchronizedMap(new HashMap());
 
     /**
      * Determines whether the node is being initialized (typically when it is loaded from the database).
@@ -124,7 +124,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * Set which stores the keys of the fields that were changed
      * since the last commit.
      */
-    private Set<String> changed = Collections.synchronizedSet(new HashSet<String>());
+    private Set changed = Collections.synchronizedSet(new HashSet());
 
     /**
      * Pointer to the parent builder that is responsible for this node.
@@ -147,8 +147,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
 
     /**
      * New aliases of the node
+     * @scope private
      */
-    private Set<String> aliases = null;
+    private Set aliases = null;
 
     // object to sync access to properties
     private final Object properties_sync = new Object();
@@ -611,10 +612,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
 
         // put the key/value in the value hashtable
         storeValue(fieldName, fieldValue);
-        if (fieldValue instanceof byte[]) {
-            setSize(fieldName, ((byte[]) fieldValue).length);
-            log.info("Setting length to " + ((byte[]) fieldValue).length);
-        }
 
         // process the changed value (?)
         if (parent != null) {
@@ -636,7 +633,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @since MMBase-1.8
      */
     public void setSize(String fieldName, long size) {
-        sizes.put(fieldName, size);
+        sizes.put(fieldName, new Long(size));
     }
     /**
      * Returns the size (in byte) of the given field. This is mainly targeted at fields of the type
@@ -646,7 +643,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @since MMBase-1.8
      */
     public long getSize(String fieldName) {
-        Long l = sizes.get(fieldName);
+        Long l = (Long) sizes.get(fieldName);
         if (l != null)  return l.intValue();
         Object value = values.get(fieldName);
         // Value is null so it does not occupy any space.
@@ -654,6 +651,58 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         // Value is not yet loaded from the database?
         if (VALUE_SHORTED.equals(value)) return -1;
         return SizeOf.getByteSize(value);
+    }
+
+    /**
+     * Sets a key/value pair in the main values of this node. The value to set is of type <code>boolean</code>.
+     * Note that if this node is a node in cache, the changes are immediately visible to
+     * everyone, even if the changes are not committed.
+     * The fieldName is added to the (public) 'changed' vector to track changes.
+     * @param fieldName the name of the field to change
+     * @param fieldValue the value to assign
+     * @return always <code>true</code>
+     */
+    public boolean setValue(String fieldName, boolean fieldValue) {
+        return setValue(fieldName, Boolean.valueOf(fieldValue));
+    }
+
+    /**
+     *  Sets a key/value pair in the main values of this node. The value to set is of type <code>int</code>.
+     *  Note that if this node is a node in cache, the changes are immediately visible to
+     *  everyone, even if the changes are not committed.
+     *  The fieldName is added to the (public) 'changed' vector to track changes.
+     *  @param fieldName the name of the field to change
+     *  @param fieldValue the value to assign
+     *  @return always <code>true</code>
+     */
+    public boolean setValue(String fieldName, int fieldValue) {
+        return setValue(fieldName, new Integer(fieldValue));
+    }
+
+    /**
+     *  Sets a key/value pair in the main values of this node. The value to set is of type <code>int</code>.
+     *  Note that if this node is a node in cache, the changes are immediately visible to
+     *  everyone, even if the changes are not committed.
+     *  The fieldName is added to the (public) 'changed' vector to track changes.
+     *  @param fieldName the name of the field to change
+     *  @param fieldValue the value to assign
+     *  @return always <code>true</code>
+     */
+    public boolean setValue(String fieldName, long fieldValue) {
+        return setValue(fieldName, new Long(fieldValue));
+    }
+
+    /**
+     *  Sets a key/value pair in the main values of this node. The value to set is of type <code>double</code>.
+     *  Note that if this node is a node in cache, the changes are immediately visible to
+     *  everyone, even if the changes are not committed.
+     *  The fieldName is added to the (public) 'changed' vector to track changes.
+     *  @param fieldName the name of the field to change
+     *  @param fieldValue the value to assign
+     *  @return always <code>true</code>
+     */
+    public boolean setValue(String fieldName, double fieldValue) {
+        return setValue(fieldName, new Double(fieldValue));
     }
 
 
@@ -1033,7 +1082,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      */
     public Integer getIntegerValue(String fieldName) {
         Object value = getValue(fieldName);
-        if (value instanceof MMObjectNode) return ((MMObjectNode)value).getNumber();
+        if (value instanceof MMObjectNode) return new Integer(((MMObjectNode)value).getNumber());
         return Casting.toInteger(value);
     }
 
@@ -1274,7 +1323,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * This means it will be reloaded from the database/storage on next use.
      */
     public void delRelationsCache() {
-        relationsCache.remove(getNumber());
+        relationsCache.remove(new Integer(getNumber()));
     }
 
     /**
@@ -1325,7 +1374,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @scope public?
      */
     protected List getRelationNodes() {
-        Integer number = Integer.valueOf(getNumber());
+        Integer number = new Integer(getNumber());
         List relations;
         if (! relationsCache.contains(number)) {
             relations = parent.getRelations_main(getNumber());
@@ -1463,7 +1512,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * No need to use this. Use {@link MMObjectBuilder#createAlias}.
      */
     public void setAlias(String alias) {
-        if (aliases == null) aliases = new HashSet<String>();
+        if (aliases == null) aliases = new HashSet();
         synchronized(aliases) {
             aliases.add(alias);
         }
@@ -1472,6 +1521,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     /**
      * Returns the node's alias.
      * Does not support multiple aliases.
+     * @return the new aliases as a <code>Set</code>
      */
     void useAliases() {
         if (aliases != null) {
@@ -1480,8 +1530,10 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
                     log.error("Trying to set aliases for uncommited node!!");
                     return;
                 }
-                for (String alias : aliases) {
+                Iterator it = aliases.iterator();
+                while(it.hasNext()) {
                     try {
+                        String alias = (String) it.next();
                         parent.createAlias(getNumber(), alias, getStringValue("owner"));
                     } catch (org.mmbase.storage.StorageException se) {
                         log.error(se);
@@ -1507,13 +1559,15 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     }
 
     /**
-     * Makes number -> MMObjectNode of a list of MMObjectNodes.
+     * Makes number -> MMObjectNode of a vector of MMObjectNodes.
      * @since MMBase-1.6.2
      */
-    private Map<Integer, MMObjectNode>  makeMap(List<MMObjectNode> v) {
-        Map<Integer, MMObjectNode>     result = new HashMap();
-        for (MMObjectNode node : v) {
-            result.put(node.getNumber(), node);
+    private Map makeMap(List v) {
+        Map       result = new HashMap();
+        Iterator  i      = v.iterator();
+        while(i.hasNext()) {
+            MMObjectNode node = (MMObjectNode) i.next();
+            result.put(node.getStringValue(MMObjectBuilder.FIELD_NUMBER), node);
         }
         return result;
     }
@@ -1660,24 +1714,28 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @see getRelatedNodes(String type)
      * @since MMBase-1.6.2
      */
-    private List<MMObjectNode> getRealNodes(List<MMObjectNode> virtuals, String type) {
+    private List getRealNodes(List virtuals, String type) {
 
         log.debug("Getting real nodes");
-        List<MMObjectNode> result  = new ArrayList();
+        List            result  = new ArrayList();
 
-        List<MMObjectNode> list    = new ArrayList();
+        MMObjectNode    node    = null;
+        MMObjectNode    convert = null;
+        Iterator     i       = virtuals.iterator();
+        List            list    = new ArrayList();
+        int             otype   = -1;
         int             ootype  = -1;
-        List <Integer> virtualNumbers = new ArrayList();
+
+        List virtualNumbers = new ArrayList();
 
         // fill the list
-        Iterator<MMObjectNode> i = virtuals.iterator();
-        while (i.hasNext()) {
-            MMObjectNode node = i.next();
+        while(i.hasNext()) {
+            node    = (MMObjectNode)i.next();
             Integer number = node.getIntegerValue(type + ".number");
             if (!virtualNumbers.contains(number)) {
                 virtualNumbers.add(number);
 
-                int otype   = node.getIntValue(type + ".otype");
+                otype   = node.getIntValue(type + ".otype");
 
                 // convert the nodes of type ootype to real numbers
                 if(otype != ootype) {
@@ -1696,7 +1754,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
                     otype = parent.mmb.getBuilder(builderName).getObjectType();
                 }
 
-                MMObjectNode convert = new MMObjectNode(parent.mmb.getBuilder(builderName), false);
+                convert = new MMObjectNode(parent.mmb.getBuilder(builderName), false);
                 // parent needs to be set or else mmbase does nag nag nag on a setValue()
                 convert.setValue(MMObjectBuilder.FIELD_NUMBER, node.getValue(type + ".number"));
                 convert.setValue(MMObjectBuilder.FIELD_OBJECT_TYPE, ootype);
@@ -1705,7 +1763,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
             // first and only list or last list, return real values
             if(!i.hasNext()) {
                 // log.debug("subconverting last "+list.size()+" nodes of type("+otype+")");
-                result.addAll(getRealNodesFromBuilder(list, ootype));
+                result.addAll(getRealNodesFromBuilder(list, otype));
             }
         }
 
@@ -1847,7 +1905,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         sizes = (Map)in.readObject();
         initializing = in.readBoolean();
         properties = (Hashtable)in.readObject();
-        changed = (Set<String>)in.readObject();
+        changed = (Set)in.readObject();
 
         // Retrieve parent and builder by name, not by object
         String parentName = (String)in.readObject();
@@ -1859,7 +1917,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
             builder = MMBase.getMMBase().getBuilder(builderName);
         }
         isNew = in.readBoolean();
-        aliases = (Set<String>)in.readObject();
+        aliases = (Set)in.readObject();
         newContext = (String)in.readObject();
     }
 }

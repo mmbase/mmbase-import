@@ -28,7 +28,7 @@ import org.xml.sax.InputSource;
  * @move org.mmbase.util.xml
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: XMLNodeReader.java,v 1.42 2006-09-08 18:40:51 nklasens Exp $
+ * @version $Id: XMLNodeReader.java,v 1.41.2.1 2006-09-08 18:40:43 nklasens Exp $
  */
 public class XMLNodeReader extends DocumentReader {
     private static final Logger log = Logging.getLoggerInstance(XMLNodeReader.class);

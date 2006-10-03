@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: InsRel.java,v 1.50 2006-09-18 09:17:45 michiel Exp $
+ * @version $Id: InsRel.java,v 1.49.2.1 2006-09-18 09:18:42 michiel Exp $
  */
 public class InsRel extends MMObjectBuilder {
 

@@ -16,17 +16,17 @@ import java.util.List;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: WrappedFunction.java,v 1.13 2006-09-27 20:42:21 michiel Exp $
+ * @version $Id: WrappedFunction.java,v 1.9 2005-10-18 21:51:30 michiel Exp $
  */
-public abstract class WrappedFunction<R> implements Function<R> {
+public abstract class WrappedFunction implements Function {
 
-    protected Function<R> wrappedFunction;
+    protected Function wrappedFunction;
 
     /**
      * Constructor for Basic Function
      * @param function The function to wrap
      */
-    public WrappedFunction(Function<R> function) {
+    public WrappedFunction(Function function) {
          wrappedFunction = function;
     }
 
@@ -34,21 +34,17 @@ public abstract class WrappedFunction<R> implements Function<R> {
         return wrappedFunction.createParameters();
     }
 
-    public R getFunctionValue(Parameters parameters) {
+    public Object getFunctionValue(Parameters parameters) {
          return wrappedFunction.getFunctionValue(parameters);
     }
 
-    public R getFunctionValueWithList(List<?> parameters) {
+    public Object getFunctionValueWithList(List parameters) {
          if (parameters instanceof Parameters) {
              return getFunctionValue((Parameters)parameters);
          } else {
              Parameters params = wrappedFunction.createParameters().setAll(parameters);
              return getFunctionValue(params);
          }
-    }
-    public R getFunctionValue(Object... parameters) {
-        Parameters params = wrappedFunction.createParameters().setAll(parameters);
-        return getFunctionValue(params);
     }
 
     public void setDescription(String description) {
@@ -63,19 +59,19 @@ public abstract class WrappedFunction<R> implements Function<R> {
         return wrappedFunction.getName();
     }
 
-    public Parameter<?>[] getParameterDefinition() {
+    public Parameter[] getParameterDefinition() {
         return wrappedFunction.getParameterDefinition();
     }
 
-    public void setParameterDefinition(Parameter<?>[] params) {
+    public void setParameterDefinition(Parameter[] params) {
         wrappedFunction.setParameterDefinition(params);
     }
 
-    public ReturnType<R> getReturnType() {
+    public ReturnType getReturnType() {
         return wrappedFunction.getReturnType();
     }
 
-    public void setReturnType(ReturnType<R> type) {
+    public void setReturnType(ReturnType type) {
         wrappedFunction.setReturnType(type);
     }
 

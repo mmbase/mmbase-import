@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.91 2006-09-27 20:39:37 michiel Exp $
+ * @version $Id: Casting.java,v 1.89 2006-07-26 09:08:01 michiel Exp $
  */
 
 import java.util.*;
@@ -305,8 +305,6 @@ public class Casting {
         } else if (o instanceof org.w3c.dom.Node) {
             // don't know how to wrap
             return escape(escaper, XMLWriter.write((org.w3c.dom.Node) o, false, true));
-        } else if (o instanceof org.mmbase.bridge.NodeList) {
-            return new NodeListWrapper((org.mmbase.bridge.NodeList) o, escaper);
         } else if (o instanceof List) {
             return new ListWrapper((List) o, escaper);
         } else if (o instanceof byte[]) {
@@ -336,8 +334,6 @@ public class Casting {
     public static Object unWrap(final Object o) {
         if (o instanceof NodeWrapper) {
             return ((NodeWrapper)o).getNode();
-        } else if (o instanceof NodeListWrapper) {
-            return ((NodeListWrapper)o).getCollection();
         } else if (o instanceof ListWrapper) {
             return ((ListWrapper)o).getList();
         } else if (o instanceof StringWrapper) {
@@ -359,7 +355,6 @@ public class Casting {
     public static List toList(Object o) {
         return toList(o, ",");
     }
-
 
     /**
      * As {@link #toList(Object)} but with one extra argument.
@@ -483,22 +478,6 @@ public class Casting {
             return (byte[])obj;
         } else if (obj instanceof org.apache.commons.fileupload.FileItem) {
             return ((org.apache.commons.fileupload.FileItem) obj).get();
-        } else if (obj instanceof InputStream) {
-            InputStream in = (InputStream) obj;
-            ByteArrayOutputStream out = new ByteArrayOutputStream(1024);
-            byte[] buf = new byte[1024];
-            try {
-                int tot;
-                do {
-                    tot = in.read(buf, 0, 1024);
-                    out.write(buf, 0, tot);
-                } while (tot > 0);
-            } catch (IOException ioe) {
-                log.error(ioe);
-            } finally {
-                try { in.close(); } catch (IOException ioe) {}
-            }
-            return out.toByteArray();
         } else {
             return toString(obj).getBytes();
         }
@@ -981,32 +960,6 @@ public class Casting {
         public List getList() {
             return list;
         }
-    }
-
-    /**
-     * @since MMBase-1.9
-     */
-    public static class NodeListWrapper extends org.mmbase.bridge.util.CollectionNodeList {
-        private final CharTransformer escaper;
-        NodeListWrapper(org.mmbase.bridge.NodeList list, CharTransformer e) {
-            super(list);
-            escaper = e;
-        }
-        public Node get(int index) { return (Node) Casting.wrap(super.get(index), escaper); }
-        public String toString() {
-            StringBuffer buf = new StringBuffer();
-            Iterator<Node> i = iterator();
-            boolean hasNext = i.hasNext();
-            while (hasNext) {
-                Casting.toStringBuffer(buf, i.next());
-                hasNext = i.hasNext();
-                if (hasNext) {
-                    buf.append(',');
-                }
-            }
-            return buf.toString();
-        }
-
     }
 
     /**

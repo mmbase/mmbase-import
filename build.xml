@@ -2,7 +2,7 @@
 
 
 MMBase Build File
-$Id: build.xml,v 1.152 2006-10-03 21:12:25 michiel Exp $
+$Id: build.xml,v 1.147.2.2 2006-10-03 21:11:43 michiel Exp $
 =================
 
 This build file can be used to build the following from CVS or from the source
@@ -111,8 +111,8 @@ several MMBase-checkouts.
 
 
   <property name="source-documentation.dir"  location="${source.dir}/documentation" />
-  <property name="source-src.dir"           location="${source.dir}/src"/>
-  <property name="generated-source-src.dir" location="${build.dir}/src"/>
+  <property name="source-src.dir"       location="${source.dir}/src"/>
+  <property name="generated-source-src.dir"       location="${build.dir}/src"/>
   <property name="webapp.dir"           value="${build.dir}/mmbase/mmbase-webapp"/>
   <property name="mmdocs.dir"           value="${webapp.dir}/mmdocs"/>
   <property name="web.dir"              value="${webapp.dir}/WEB-INF"/>
@@ -324,6 +324,8 @@ builddate=${builddate}
 
     <copy file="${mmbase.jar}"         todir="${release.lib.dir}" />
 
+    <copy file="${backport-util-concurrent.jar}"  todir="${release.lib.dir}" />
+
     <copy file="${source-documentation.dir}/releases/XERCES.README.txt" todir="${release.lib.dir}" />
 
     <!-- copy licenses for included jars -->
@@ -353,6 +355,7 @@ builddate=${builddate}
     <copy file="${log4j.jar}"     tofile="${compile.lib.dir}/log4j.jar" />
     <copy file="${javamail.jar}"  todir="${compile.lib.dir}" />
     <copy file="${javaactivation.jar}"  todir="${compile.lib.dir}" />
+    <copy file="${backport-util-concurrent.jar}"  todir="${compile.lib.dir}" />
   </target>
 
   <target name="lib.compile.zip" depends="lib.compile" description="Packages the download dir." >
@@ -525,7 +528,7 @@ mmadmin.xml
            classpathref="compile.classpath"
            debug="${debug}"
            optimize="${optimize}"
-           source="1.5"
+           source="1.4"
            nowarn="${nowarn}"
            deprecation="${deprecation}"
            includeAntRuntime="false"
@@ -686,6 +689,7 @@ Build-compiler: ${build.compiler}
           <or>
             <filename name="mmbase.jar" />
             <filename name="mmbase-taglib-2.jar" />
+            <filename name="backport-util*.jar" />
             <filename name="hsqldb*.jar" />
             <filename name="jstl*.jar" />
             <filename name="standard*.jar" />
@@ -733,10 +737,10 @@ Build-compiler: ${build.compiler}
           depends="init,init.get,lib.compile,javacc"
           unless="did.javadocs"
     >
-    <mkdir dir="${download.dir}/j2se5"/>
+    <mkdir dir="${download.dir}/j2se"/>
     <antcall target="download">
       <param name="sourcefile" value="${j2se-javadoc.loc}/package-list" />
-      <param name="destfile"   value="${download.dir}/j2se5/package-list" />
+      <param name="destfile"   value="${download.dir}/j2se/package-list" />
     </antcall>
     <mkdir dir="${download.dir}/j2ee"/>
     <antcall target="download">
@@ -761,9 +765,9 @@ Build-compiler: ${build.compiler}
              windowtitle="MMBase API"
              doctitle="MMBase"
              maxmemory="500M"
-             source="1.5"
+             source="1.4"
              bottom="MMBase build ${distro.version}.${builddate}">
-      <link offline="true" packagelistLoc="${download.dir}/j2se5" href="${j2se-javadoc.loc}" />
+      <link offline="true" packagelistLoc="${download.dir}/j2se" href="${j2se-javadoc.loc}" />
       <link offline="true" packagelistLoc="${download.dir}/j2ee" href="${j2ee-javadoc.loc}" />
       <link offline="true" packagelistLoc="${download.dir}/jstl" href="${jstl-javadoc.loc}" />
       <link offline="true" packagelistLoc="${expand.dir}/${log4j.fullversion}/docs/api" href="http://logging.apache.org/log4j/docs/api/" />
@@ -857,7 +861,7 @@ Build-compiler: ${build.compiler}
              noindex="true"
              windowtitle="MMBase MMCI API"
              doctitle="MMBase"
-             source="1.5"
+             source="1.4"
              maxmemory="100M"
              bottom="MMBase build ${distro.version}.${builddate}">
       <classpath>
@@ -1072,6 +1076,13 @@ Build-compiler: ${build.compiler}
       <param name="expandedfile" value="${taglibs-standard-standard.jar}"/>
     </antcall>
 
+    <echo message="backport util/concurrent" />
+    <antcall target="downloadgz">
+      <param name="sourcefile"   value="${backport-util-concurrent.loc}" />
+      <param name="destfile"     value="${backport-util-concurrent.dest}" />
+      <param name="expandedfile" value="${backport-util-concurrent.jar}"/>
+    </antcall>
+
     <!--
     <echo message="commons collections" />
     <antcall target="downloadgz">
@@ -1157,7 +1168,7 @@ Build-compiler: ${build.compiler}
            debug="${debug}"
            optimize="${optimize}"
            nowarn="${nowarn}"
-           source="1.5"
+           source="1.4"
            deprecation="${deprecation}"
            includeAntRuntime="false"
            >
@@ -1244,7 +1255,7 @@ Build-compiler: ${build.compiler}
            debug="${debug}"
            optimize="${optimize}"
            nowarn="${nowarn}"
-           source="1.5"
+           source="1.4"
            deprecation="${deprecation}">
            <include name="org/mmbase/util/BuilderList.java" />
     </javac>

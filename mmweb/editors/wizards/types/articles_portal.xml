@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE optionlist PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<optionlist name="articles_portal">
-	<option id="1">description</option>
-	<option id="2">keywords</option>
-</optionlist>

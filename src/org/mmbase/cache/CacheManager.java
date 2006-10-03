@@ -17,14 +17,15 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.util.xml.DocumentReader;
 import org.w3c.dom.Element;
 
-import java.util.concurrent.ConcurrentHashMap;
+import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
+
 
 
 /**
  * Cache manager manages the static methods of {@link Cache}. If you prefer you can call them on this in stead.
  *
  * @since MMBase-1.8
- * @version $Id: CacheManager.java,v 1.8 2006-09-04 12:53:51 michiel Exp $
+ * @version $Id: CacheManager.java,v 1.6.2.1 2006-09-04 10:48:30 michiel Exp $
  */
 public class CacheManager {
 
@@ -33,7 +34,7 @@ public class CacheManager {
     /**
      * All registered caches
      */
-    private static final Map<String, Cache> caches = new ConcurrentHashMap<String, Cache>();
+    private static final Map caches = new ConcurrentHashMap();
 
     /**
      * Returns the Cache with a certain name. To be used in combination with getCaches(). If you
@@ -43,7 +44,7 @@ public class CacheManager {
      * @see #getCaches
      */
     public static Cache getCache(String name) {
-        return caches.get(name);
+        return (Cache) caches.get(name);
     }
 
     /**
@@ -51,7 +52,7 @@ public class CacheManager {
      *
      * @return A Set containing the names of all caches.
      */
-    public static Set<String> getCaches() {
+    public static Set getCaches() {
         return Collections.unmodifiableSet(caches.keySet());
     }
 
@@ -64,7 +65,7 @@ public class CacheManager {
      * @return The previous cache of the same type (stored under the same name)
      */
     protected static Cache putCache(Cache cache) {
-        Cache old = caches.put(cache.getName(), cache);
+        Cache old = (Cache) caches.put(cache.getName(), cache);
         configure(configReader, cache.getName());
         return old;
     }
@@ -177,18 +178,19 @@ public class CacheManager {
      * @return List of ReleaseStrategy instances
      * @since 1.8
      */
-    private static List<ReleaseStrategy> findReleaseStrategies(DocumentReader reader, Element parentElement) {
-        List<ReleaseStrategy> result = new ArrayList();
-        Iterator<Element> strategyParentIterator = reader.getChildElements(parentElement, "releaseStrategies");
+    private static List findReleaseStrategies(DocumentReader reader, Element parentElement) {
+        List result = new ArrayList();
+        Iterator strategyParentIterator = reader.getChildElements(parentElement, "releaseStrategies");
         if(!strategyParentIterator.hasNext()){
             return null;
-        } else{
-            parentElement = strategyParentIterator.next();
+        }else{
+            parentElement = (Element) strategyParentIterator.next();
 
             //now find the strategies
-            Iterator<Element> strategyIterator = reader.getChildElements(parentElement, "strategy");
+            Iterator strategyIterator = reader.getChildElements(parentElement, "strategy");
             while(strategyIterator.hasNext()){
-                String strategyClassName = reader.getElementValue(strategyIterator.next());
+                String strategyClassName =
+                    reader.getElementValue((Element)strategyIterator.next());
                 log.debug("found strategy in configuration: "+ strategyClassName);
                 try {
                     ReleaseStrategy releaseStrategy = getStrategyInstance(strategyClassName);
@@ -196,9 +198,10 @@ public class CacheManager {
 
                     //check if we got something
                     if(releaseStrategy != null){
+
                         result.add(releaseStrategy);
                         log.debug("Successfully created and added "+releaseStrategy.getName() + " instance");
-                    } else {
+                    }else{
                         log.error("release strategy instance is null.");
                     }
 
@@ -275,9 +278,11 @@ public class CacheManager {
 
 
     public static int getTotalByteSize() {
+        Iterator i = caches.entrySet().iterator();
         int len = 0;
         SizeOf sizeof = new SizeOf();
-        for (Map.Entry entry : caches.entrySet()) {
+        while (i.hasNext()) {
+            Map.Entry entry = (Map.Entry) i.next();
             len += sizeof.sizeof(entry.getKey()) + sizeof.sizeof(entry.getValue());
         }
         return len;
@@ -289,10 +294,12 @@ public class CacheManager {
      */
     public static void shutdown() {
         log.info("Clearing all caches");
-        for(Cache cache : caches.values()) {
+        Iterator  i =  caches.values().iterator();
+        while (i.hasNext()) {
+            Cache cache = (Cache) i.next();
             cache.clear();
+            i.remove();
         }
-        caches.clear();
     }
 
 }

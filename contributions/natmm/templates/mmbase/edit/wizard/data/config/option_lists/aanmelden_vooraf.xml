@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE optionlist PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<optionlist name="aanmelden_vooraf">
-   <option id="1">ja, telefonisch en via internet</option>
-   <option id="3">ja, alleen telefonisch</option>
-   <option id="2">ja, alleen door derde partij (info beschrijven in intro)</option>
-   <option id="4">sponsoractiviteit, aanmelden bij het desbetreffende bezoekerscentra</option>
-   <option id="0">nee, is niet nodig</option>
-</optionlist>
