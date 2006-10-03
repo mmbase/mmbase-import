@@ -31,10 +31,10 @@ import org.mmbase.util.logging.*;
  * A wrapper around Lucene's {@link org.apache.lucene.search.IndexSearcher}. Every {@link Indexer} has its own Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.32 2006-10-02 17:26:40 michiel Exp $
+ * @version $Id: Searcher.java,v 1.33 2006-10-03 11:50:09 michiel Exp $
  * @todo  Should the StopAnalyzers be replaced by index.analyzer? Something else?
  **/
-public class Searcher {
+public class Searcher implements NewSearcher.Listener {
     private static final Logger log = Logging.getLoggerInstance(Searcher.class);
 
 
@@ -50,7 +50,8 @@ public class Searcher {
     private long producedNodes = 0;
     private boolean needsNewSearcher = false;
 
-    private final Timer timer = new Timer(true);
+    private final Timer timer = new Timer();
+    private int closingSearchers = 0;
 
     /**
      * @param index The index where this Search is for
@@ -64,12 +65,18 @@ public class Searcher {
         } catch (IOException ioe) {
             log.error("Can't close index searcher: " + ioe.getMessage());
         }
+        org.mmbase.core.event.EventManager.getInstance().addEventListener(this);
+    }
+
+    public void notify(NewSearcher.Event event) {
+        needsNewSearcher = true;
     }
 
     protected IndexSearcher getSearcher() {
-        if (index.needNewSearcher || searcher == null) {
+        if (needsNewSearcher || searcher == null) {
             // for existing searches, leave existing the searcher open for 10 seconds, then close it (searches still not finished in 10 seconds, get an IO exception)
             if (searcher != null) {
+                closingSearchers++;
                 final IndexSearcher s = searcher;
                 timer.schedule(new TimerTask() {
                         public void run() {
@@ -78,12 +85,14 @@ public class Searcher {
                                 s.close();
                             } catch (IOException ioe) {
                                 log.error("Can't close index searcher: " + ioe.getMessage());
+                            } finally {
+                                closingSearchers--;
                             }
                         }
                     }, 10000);
             }
             try {
-                index.needNewSearcher = false;
+                needsNewSearcher = false;
                 searcher = new IndexSearcher(index.getPath());
             } catch (IOException ioe) {
                 log.error("Can't close index searcher: " + ioe.getMessage());
@@ -95,6 +104,7 @@ public class Searcher {
     }
 
     public void shutdown() {
+        org.mmbase.core.event.EventManager.getInstance().removeEventListener(this);
         if (searcher != null) {
             try {
                 log.service("Shutting down searcher for " + index);
@@ -103,6 +113,14 @@ public class Searcher {
                 log.error("Can't close index searcher: " + ioe.getMessage());
             }
         }
+        while (closingSearchers > 0) {
+            try {
+                Thread.currentThread().sleep(100);
+            } catch (InterruptedException ie) {
+                break;
+            }
+        }
+        timer.cancel();
     }
 
     public NodeList search(Cloud cloud, String value) throws ParseException {
@@ -281,21 +299,30 @@ public class Searcher {
         while (constraints.hasMoreTokens()) {
             String constraint = constraints.nextToken();
             StringTokenizer tokens = new StringTokenizer(constraint, ":", true);
+            if (! tokens.hasMoreTokens()) throw new IllegalArgumentException("The constraint '" + constraint + "' is not of the form &lt;field&gt;:[ | EQ | GT | GTE | LT | LTE | NE | IN | INC]:&lt;value&gt;[:&lt;value&gt;]");
+
             String field = tokens.nextToken();
+            if (! tokens.hasMoreTokens()) throw new IllegalArgumentException("The constraint '" + constraint + "' is not of the form &lt;field&gt;:[ | EQ | GT | GTE | LT | LTE | NE | IN | INC]:&lt;value&gt;[:&lt;value&gt;]");
             tokens.nextToken(); // colon
+            if (! tokens.hasMoreTokens()) throw new IllegalArgumentException("The constraint '" + constraint + "' is not of the form &lt;field&gt;:[ | EQ | GT | GTE | LT | LTE | NE | IN | INC]:&lt;value&gt;[:&lt;value&gt;]");
             String type = tokens.nextToken().toUpperCase();
             if (type.equals(":")) {
                 type = "EQ";
             } else {
+                if (! tokens.hasMoreTokens()) throw new IllegalArgumentException("The constraint '" + constraint + "' is not of the form &lt;field&gt;:[ | EQ | GT | GTE | LT | LTE | NE | IN | INC]:&lt;value&gt;[:&lt;value&gt;]");
                 tokens.nextToken(); // colon
             }
-            String value = "";
+            String value = ""; // should use stringbuffer?
             String value2 = "";
             if (type.equals("IN") || type.equals("INC")) {
+                if (! tokens.hasMoreTokens()) throw new IllegalArgumentException("For IN and INC operators you need more values. In constraint '"  + constraint + "'");
                 value += tokens.nextToken();
+                if (! tokens.hasMoreTokens()) throw new IllegalArgumentException("Missing colon in '" + constraint + "'");
                 tokens.nextToken(); // colon
+                if (! tokens.hasMoreTokens()) throw new IllegalArgumentException("For IN and INC operators you need more values. In constraint '" + constraint + "'");
                 value2 += tokens.nextToken();
             } else {
+                // eh, should there no be appended comma's or spaces or so?
                 while (tokens.hasMoreTokens()) value += tokens.nextToken();
             }
             Query subQuery = null;
@@ -311,12 +338,12 @@ public class Searcher {
             } else if (type.equals("IN") || type.equals("INC")) {
                 subQuery = new RangeQuery(new Term(field, value), new Term(field, value2), type.equals("INC"));
             } else {
-                throw new RuntimeException("Unknown operator '" + type + "'");
+                throw new IllegalArgumentException("Unknown operator '" + type + "'");
             }
             if (subQuery !=null) {
                 if (query == null) {
                     if (type.equals("NE")) {
-                        throw new RuntimeException("The operator NE cannot be used first");
+                        throw new IllegalArgumentException("The operator NE cannot be used first");
                     }
                     query = subQuery;
                 } else {

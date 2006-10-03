@@ -18,6 +18,8 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.store.*;
 
+import org.mmbase.core.event.EventManager;
+
 import org.mmbase.bridge.*;
 import org.mmbase.util.CloseableIterator;
 import org.mmbase.util.LocalizedString;
@@ -30,7 +32,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.36 2006-10-02 17:26:40 michiel Exp $
+ * @version $Id: Indexer.java,v 1.37 2006-10-03 11:50:09 michiel Exp $
  **/
 public class Indexer {
 
@@ -82,9 +84,7 @@ public class Indexer {
 
     private Date lastFullIndex = new Date(0);
 
-    protected boolean needNewSearcher = false;
 
- 
 
 
     // of course life would be easier if we could used BoundedFifoBuffer of jakarta or so, but
@@ -243,6 +243,7 @@ public class Indexer {
                     log.debug(getName() + ": Updating index " + indexDefinition + " for " + mainNumber);
                 }
                 updated += index(j, writer);
+                j.close();
             }
         } catch (IOException ioe) {
             addError(ioe.getMessage());
@@ -250,7 +251,7 @@ public class Indexer {
         } finally {
             if (writer != null) try { writer.close();} catch (IOException ioe) { log.error(ioe); }
         }
-        needNewSearcher = true;
+        EventManager.getInstance().propagateEvent(new NewSearcher.Event());
         return updated;
     }
 
@@ -331,8 +332,7 @@ public class Indexer {
         } finally {
             if (writer != null) { try { writer.close(); } catch (IOException ioe) { log.error("Can't close index writer: " + ioe.getMessage()); } }
         }
-        needNewSearcher = true;
-        
+        EventManager.getInstance().propagateEvent(new NewSearcher.Event());
     }
 
     /**
@@ -343,7 +343,7 @@ public class Indexer {
         Document document = null;
         String   lastIdentifier = null;
         if (! i.hasNext()) {
-            log.debug("Empty iterator given to update " + writer);
+            log.debug("Empty iterator given to update " + writer + " in " + this);
         } else {
             log.debug("Update " + writer);
         }
@@ -372,7 +372,7 @@ public class Indexer {
             }
             writer.addDocument(document);
         }
-        needNewSearcher = true;
+        EventManager.getInstance().propagateEvent(new NewSearcher.Event());
         return indexed;
     }
 
