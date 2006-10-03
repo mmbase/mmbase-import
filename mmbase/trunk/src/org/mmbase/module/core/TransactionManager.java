@@ -19,9 +19,9 @@ import org.mmbase.security.*;
 /**
  * @javadoc
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.34 2006-07-06 11:24:44 michiel Exp $
+ * @version $Id: TransactionManager.java,v 1.35 2006-10-03 18:29:43 michiel Exp $
  */
-public class TransactionManager implements TransactionManagerInterface {
+public class TransactionManager {
 
     private static final Logger log = Logging.getLoggerInstance(TransactionManager.class);
 
@@ -32,12 +32,12 @@ public class TransactionManager implements TransactionManagerInterface {
     public static final String EXISTS_NOLONGER = "nolonger";
     public static final int I_EXISTS_NOLONGER = 2;
 
-    private TemporaryNodeManagerInterface tmpNodeManager;
+    private TemporaryNodeManager tmpNodeManager;
     private MMBase mmbase;
-    protected Map transactions = new HashMap(); /* String -> Collection */
+    protected Map<String, Collection<MMObjectNode>> transactions = new HashMap(); 
     protected TransactionResolver transactionResolver;
 
-    public TransactionManager(MMBase mmbase, TemporaryNodeManagerInterface tmpn) {
+    public TransactionManager(MMBase mmbase, TemporaryNodeManager tmpn) {
         this.mmbase = mmbase;
         this.tmpNodeManager = tmpn;
         transactionResolver = new TransactionResolver(mmbase);
@@ -49,8 +49,8 @@ public class TransactionManager implements TransactionManagerInterface {
      * @exception TransactionManagerExcpeption if the transaction with given name does not exist
      * @return Collection containing the nodes in this transaction (as {@link org.mmbase.module.core.MMObjectNode}s).
      */
-    synchronized public  Collection getTransaction(String transactionName) throws TransactionManagerException {
-        Collection transaction = (Collection) transactions.get(transactionName);
+    synchronized public  Collection<MMObjectNode> getTransaction(String transactionName) throws TransactionManagerException {
+        Collection<MMObjectNode> transaction = transactions.get(transactionName);
         if (transaction == null) {
             throw new TransactionManagerException("Transaction " + transactionName + " does not exist (existing are " + transactions.keySet() + ")");
         } else {
@@ -64,9 +64,9 @@ public class TransactionManager implements TransactionManagerInterface {
      * @exception TransactionManagerExcpeption if the transaction with given name existed already
      * @return Collection containing the nodes in this transaction (so, this is an empty collection)
      */
-    synchronized public Collection createTransaction(String transactionName) throws TransactionManagerException {
+    synchronized public Collection<MMObjectNode> createTransaction(String transactionName) throws TransactionManagerException {
         if (!transactions.containsKey(transactionName)) {
-            Vector transactionNodes = new Vector();
+            List<MMObjectNode> transactionNodes = new ArrayList();
             transactions.put(transactionName, transactionNodes);
             return transactionNodes;
         } else {
@@ -78,19 +78,8 @@ public class TransactionManager implements TransactionManagerInterface {
      * Removes the transaction with given name
      * @return the collection with nodes from the removed transaction or <code>null</code> if no transaction with this name existed
      */
-    synchronized protected Collection deleteTransaction(String transactionName) {
-        return (Collection) transactions.remove(transactionName);
-    }
-
-    /**
-     * @deprecated use {@link #getTransaction}
-     */
-    public Vector getNodes(Object user, String transactionName) {
-        try {
-            return (Vector)getTransaction(transactionName);
-        } catch (TransactionManagerException tme) {
-            return null;
-        }
+    synchronized protected Collection<MMObjectNode> deleteTransaction(String transactionName) {
+        return transactions.remove(transactionName);
     }
 
     /**
@@ -120,9 +109,8 @@ public class TransactionManager implements TransactionManagerInterface {
         return getTransaction(transactionName);
     }
 
-    public String addNode(String transactionName, String owner, String tmpnumber)
-        throws TransactionManagerException {
-        Collection transaction = getTransaction(transactionName);
+    public String addNode(String transactionName, String owner, String tmpnumber) throws TransactionManagerException {
+        Collection<MMObjectNode> transaction = getTransaction(transactionName);
         MMObjectNode node = tmpNodeManager.getNode(owner, tmpnumber);
         if (node != null) {
             if (!transaction.contains(node)) {
@@ -137,9 +125,8 @@ public class TransactionManager implements TransactionManagerInterface {
         return tmpnumber;
     }
 
-    public String removeNode(String transactionName, String owner, String tmpnumber)
-        throws TransactionManagerException {
-        Collection transaction = getTransaction(transactionName);
+    public String removeNode(String transactionName, String owner, String tmpnumber) throws TransactionManagerException {
+        Collection<MMObjectNode> transaction = getTransaction(transactionName);
         MMObjectNode node = tmpNodeManager.getNode(owner, tmpnumber);
         if (node!=null) {
             if (transaction.contains(node)) {
@@ -153,14 +140,13 @@ public class TransactionManager implements TransactionManagerInterface {
         return tmpnumber;
     }
 
-    public String deleteObject(String transactionName, String owner, String tmpnumber)
-        throws TransactionManagerException    {
-        Collection transaction = getTransaction(transactionName);
+    public String deleteObject(String transactionName, String owner, String tmpnumber) throws TransactionManagerException    {
+        Collection<MMObjectNode> transaction = getTransaction(transactionName);
         MMObjectNode node = tmpNodeManager.getNode(owner, tmpnumber);
         if (node!=null) {
             if (transaction.contains(node)) {
                 // Mark it as deleted
-                node.setValue("_exists",EXISTS_NOLONGER);
+                node.storeValue(MMObjectBuilder.TMP_FIELD_EXISTS, EXISTS_NOLONGER);
              } else {
                 throw new TransactionManagerException("Node " + tmpnumber + " is not in transaction " + transactionName);
             }
@@ -171,11 +157,10 @@ public class TransactionManager implements TransactionManagerInterface {
     }
 
     public String cancel(Object user, String transactionName) throws TransactionManagerException {
-        Collection transaction = getTransaction(transactionName);
+        Collection<MMObjectNode> transaction = getTransaction(transactionName);
         // remove nodes from the temporary node cache
         MMObjectBuilder builder = mmbase.getTypeDef();
-        for (Iterator i = transaction.iterator(); i.hasNext(); ) {
-            MMObjectNode node=(MMObjectNode)i.next();
+        for (MMObjectNode node : transaction) {
             builder.removeTmpNode(node.getStringValue(MMObjectBuilder.TMP_FIELD_NUMBER));
         }
         deleteTransaction(transactionName);
@@ -186,7 +171,7 @@ public class TransactionManager implements TransactionManagerInterface {
     }
 
     public String commit(Object user, String transactionName) throws TransactionManagerException {
-        Collection transaction = getTransaction(transactionName);
+        Collection<MMObjectNode> transaction = getTransaction(transactionName);
         try {
             boolean resolved = transactionResolver.resolve(transaction);
             if (!resolved) {
@@ -204,8 +189,7 @@ public class TransactionManager implements TransactionManagerInterface {
         } finally {
             // remove nodes from the temporary node cache
             MMObjectBuilder builder = mmbase.getTypeDef();
-            for (Iterator i = transaction.iterator(); i.hasNext(); ) {
-                MMObjectNode node=(MMObjectNode)i.next();
+            for (MMObjectNode node : transaction) {
                 builder.removeTmpNode(node.getStringValue(MMObjectBuilder.TMP_FIELD_NUMBER));
             }
             deleteTransaction(transactionName);
@@ -222,7 +206,7 @@ public class TransactionManager implements TransactionManagerInterface {
     private final static int NODE = 3;
     private final static int RELATION = 4;
 
-    boolean performCommits(Object user, Collection nodes) {
+    boolean performCommits(Object user, Collection<MMObjectNode> nodes) {
         if (nodes == null || nodes.size() == 0) {
             log.warn("Empty list of nodes");
             return true;
@@ -230,24 +214,25 @@ public class TransactionManager implements TransactionManagerInterface {
 
         int[] nodestate = new int[nodes.size()];
         int[] nodeexist = new int[nodes.size()];
-        String username = findUserName(user),exists;
+        String username = findUserName(user);
 
         log.debug("Checking types and existance");
 
-        int i = 0;
-        for (Iterator nodeIterator = nodes.iterator(); nodeIterator.hasNext(); i++) {
-            MMObjectNode node = (MMObjectNode)nodeIterator.next();
+        int i = -1;
+        for (MMObjectNode node : nodes) {
+            i++;
+            if (! node.isChanged()) continue;
             // Nodes are uncommited by default
             nodestate[i] = UNCOMMITED;
-            exists = node.getStringValue("_exists");
+            String exists = node.getStringValue(MMObjectBuilder.TMP_FIELD_EXISTS);
             if (exists == null) {
                 throw new IllegalStateException("The _exists field does not exist on node "+node);
             } else if (exists.equals(EXISTS_NO)) {
-                nodeexist[i]=I_EXISTS_NO;
+                nodeexist[i] = I_EXISTS_NO;
             } else if (exists.equals(EXISTS_YES)) {
-                nodeexist[i]=I_EXISTS_YES;
+                nodeexist[i] = I_EXISTS_YES;
             } else if (exists.equals(EXISTS_NOLONGER)) {
-                nodeexist[i]=I_EXISTS_NOLONGER;
+                nodeexist[i] = I_EXISTS_NOLONGER;
             } else {
                 throw new IllegalStateException("Invalid value for _exists on node "+node);
             }
@@ -255,10 +240,11 @@ public class TransactionManager implements TransactionManagerInterface {
 
         log.debug("Commiting nodes");
 
+        i = -1;
         // First commit all the NODES
-        i = 0;
-        for (Iterator nodeIterator = nodes.iterator(); nodeIterator.hasNext(); i++) {
-            MMObjectNode node = (MMObjectNode)nodeIterator.next();
+        for (MMObjectNode node : nodes) {
+            i++;
+            if (! node.isChanged()) continue;
             if (!(node.getBuilder() instanceof InsRel)) {
                 if (nodeexist[i] == I_EXISTS_YES ) {
                     // use safe commit, which locks the node cache
@@ -295,9 +281,10 @@ public class TransactionManager implements TransactionManagerInterface {
         log.debug("Commiting relations");
 
         // Then commit all the RELATIONS
-        i = 0;
-        for (Iterator nodeIterator = nodes.iterator(); nodeIterator.hasNext(); i++) {
-            MMObjectNode node = (MMObjectNode)nodeIterator.next();
+        i = -1;
+        for (MMObjectNode node : nodes) {
+            i++;
+            if (! node.isChanged()) continue;
             if (node.getBuilder() instanceof InsRel) {
                 // excactly the same code as 10 lines ago. Should be dispatched to some method..
                 if (nodeexist[i] == I_EXISTS_YES ) {
@@ -333,9 +320,9 @@ public class TransactionManager implements TransactionManagerInterface {
         log.debug("Deleting relations");
 
         // Then commit all the RELATIONS that must be deleted
-        i = 0;
-        for (Iterator nodeIterator = nodes.iterator(); nodeIterator.hasNext(); i++) {
-            MMObjectNode node = (MMObjectNode)nodeIterator.next();
+        i = -1;
+        for (MMObjectNode node : nodes) {
+            i++;
             if (node.getBuilder() instanceof InsRel && nodeexist[i] == I_EXISTS_NOLONGER) {
                 // no return information
                 if (user instanceof UserContext) {
@@ -349,9 +336,9 @@ public class TransactionManager implements TransactionManagerInterface {
 
         log.debug("Deleting nodes");
         // Then commit all the NODES that must be deleted
-        i = 0;
-        for (Iterator nodeIterator = nodes.iterator(); nodeIterator.hasNext(); i++) {
-            MMObjectNode node = (MMObjectNode)nodeIterator.next();
+        i = -1;
+        for (MMObjectNode node : nodes) {
+            i++;
             if (!(node.getBuilder() instanceof InsRel) && (nodeexist[i] == I_EXISTS_NOLONGER)) {
                 // no return information
                 if (user instanceof UserContext) {
@@ -359,17 +346,17 @@ public class TransactionManager implements TransactionManagerInterface {
                 } else {
                     node.parent.removeNode(node);
                 }
-                nodestate[i]=COMMITED;
+                nodestate[i] = COMMITED;
             }
         }
 
         // check for failures
         boolean okay=true;
-        i = 0;
-        for (Iterator nodeIterator = nodes.iterator(); nodeIterator.hasNext(); i++) {
-            MMObjectNode node = (MMObjectNode)nodeIterator.next();
+        i = -1;
+        for (MMObjectNode node : nodes) {
+            i++;
             if (nodestate[i] == FAILED) {
-                okay=false;
+                okay = false;
                 log.error("Failed node "+node.toString());
             }
         }
