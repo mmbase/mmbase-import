@@ -17,7 +17,7 @@ import java.io.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Version.java,v 1.39.2.1 2006-10-03 21:17:30 michiel Exp $
+ * @version $Id: Version.java,v 1.39.2.2 2006-10-03 21:19:40 michiel Exp $
  */
 public class Version {
 
@@ -53,7 +53,7 @@ public class Version {
      * @since MMBase-1.6
      */
     public static int getPatchLevel() {
-        return 2;
+        return 3;
     }
 
     /**
@@ -94,7 +94,7 @@ public class Version {
      * @since MMBase-1.6
      */
     public static boolean isRelease() {
-        return true;
+        return false;
     };
 
     /**
@@ -103,7 +103,7 @@ public class Version {
      * @since MMBase-1.7
      */
     public static String getReleaseStatus() {
-        return "final";
+        return "";
     };
 
     /**
