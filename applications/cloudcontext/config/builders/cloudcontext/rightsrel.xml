@@ -33,7 +33,7 @@
         </positions>
       </editor>
       <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <defualt value="read" />
+        <default value="read" />
         <enumeration>
           <entry value="read" />
           <entry value="write" />
