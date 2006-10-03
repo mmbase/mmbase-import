@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.38 2006-10-03 16:55:16 michiel Exp $
+ * @version $Id: Indexer.java,v 1.39 2006-10-03 20:52:19 michiel Exp $
  **/
 public class Indexer {
 
@@ -80,7 +80,7 @@ public class Indexer {
     private final LocalizedString description;
 
     // Collection with queries to run
-    private final Collection<IndexDefinition> queries;
+    private final List<IndexDefinition> queries;
 
     private Date lastFullIndex = new Date(0);
 
@@ -113,7 +113,7 @@ public class Indexer {
      * @param queries a collection of IndexDefinition objects that select the nodes to index, and contain options on the fields to index.
      * @param cloud The Cloud to use for querying
      */
-    Indexer(String path, String index, Collection<IndexDefinition> queries, Cloud cloud, Analyzer analyzer, boolean readOnly) {
+    Indexer(String path, String index, List<IndexDefinition> queries, Cloud cloud, Analyzer analyzer, boolean readOnly) {
         this.index = index;
         this.path =  path + java.io.File.separator + index;
         if (! readOnly) {
@@ -242,7 +242,7 @@ public class Indexer {
                 if (log.isDebugEnabled()) {
                     log.debug(getName() + ": Updating index " + indexDefinition + " for " + mainNumber);
                 }
-                updated += index(j, writer);
+                updated += index(j, writer, indexDefinition.getId());
                 j.close();
             }
         } catch (IOException ioe) {
@@ -281,8 +281,14 @@ public class Indexer {
                     }
                     while(docs.next()) {
                         int i = docs.doc();
-                        mains.add(reader.document(i).get("number"));
-                        reader.deleteDocument(i);
+                        Document doc = reader.document(i);
+                        String main = doc.get("number");
+                        String indexId = doc.get("indexId");
+                        log.debug("Found main number " + main + " for subindex " + indexId + " in " + doc);
+                        if (indexId != null && indexId.equals(indexDefinition.getId())) {
+                            mains.add(main);
+                            reader.deleteDocument(i);
+                        }
                     }
                     docs.close();
                 } catch (IOException ioe) {
@@ -291,6 +297,7 @@ public class Indexer {
                 } finally {
                     if (reader != null) try {reader.close(); } catch (IOException ioe) { log.error(ioe);}
                 }
+                log.debug("Found lucene documents " + mains + " for node " + number + " which must be updated now");
                 updated += update(indexDefinition, mains);
             }
         }
@@ -313,10 +320,12 @@ public class Indexer {
         try {
             writer = new IndexWriter(path, analyzer, true);
             // process all queries
+            int subIndexNumber = 0;
             for (IndexDefinition indexDefinition : queries) {
+                subIndexNumber++;
                 log.debug("full index for " + indexDefinition);
                 CloseableIterator<? extends IndexEntry> j = indexDefinition.getCursor();
-                index(j, writer);
+                index(j, writer, indexDefinition.getId());
                 j.close();
                 if (Thread.currentThread().isInterrupted()) {
                     log.info("Interrupted");
@@ -338,14 +347,14 @@ public class Indexer {
     /**
      * Runs the queries for the given cursor, and indexes all nodes that are returned.
      */
-    protected int index(CloseableIterator<? extends IndexEntry> i, IndexWriter writer) throws IOException {
+    protected int index(CloseableIterator<? extends IndexEntry> i, IndexWriter writer, String indexId) throws IOException {
         int indexed = 0;
         Document document = null;
         String   lastIdentifier = null;
         if (! i.hasNext()) {
             log.debug("Empty iterator given to update " + writer + " in " + this);
         } else {
-            log.debug("Update " + writer);
+            log.debug("Update " + writer + " in " + this);
         }
         while(i.hasNext()) {
             IndexEntry entry = i.next();
@@ -357,6 +366,7 @@ public class Indexer {
                     writer.addDocument(document);
                 }
                 document = new Document();
+                document.add(new Field("indexId", indexId,  Field.Store.YES, Field.Index.UN_TOKENIZED)); 
                 indexed++;
             }
             index(entry, document);
