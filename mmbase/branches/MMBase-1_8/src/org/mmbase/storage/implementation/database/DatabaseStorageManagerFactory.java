@@ -39,7 +39,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.40 2006-08-01 22:26:30 michiel Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.40.2.1 2006-10-03 14:40:40 michiel Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
@@ -115,7 +115,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
     private static final java.util.regex.Pattern JDBC_URL_DB = java.util.regex.Pattern.compile("(?i)jdbc:.*;.*DatabaseName=([^;]+?)");
 
     // this too
-    private static final java.util.regex.Pattern JDBC_URL    = java.util.regex.Pattern.compile("(?i)jdbc:.*:(?:.*[/@])?(.*?)(?:;.*)?");
+    private static final java.util.regex.Pattern JDBC_URL    = java.util.regex.Pattern.compile("(?i)jdbc:.*:(?:.*[/@])?(.*?)(?:[;\\?].*)?");
 
     private static String getDatabaseName(String url) {
         if (url == null) return null;
