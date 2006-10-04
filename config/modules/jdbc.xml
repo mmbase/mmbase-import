@@ -193,8 +193,15 @@
     sometime connections take a long time, every now and then the
     database connection pooling has to check/kill queries that take to long
     probetime is the time in seconds between the checks. Connections that are
-    running for more than 120 seconds will be killed
+    running for more than <maxlifetime> (defaults to 120) seconds will be killed
     -->
     <property name="probetime">30</property>
+
+
+    <!-- max life time of a query (in s) 
+         If a query runs langer than this, MMBase will attempt to 'kill' it.
+    -->
+    <property name="maxlifetime">120</property>
+
   </properties>
 </module>
