@@ -13,7 +13,7 @@
     <body class="basic">
       <mm:import id="format">yyyy-MM-dd HH:mm:ss</mm:import>
       <mm:url id="ok" write="false" page="/mmbase/style/images/ok.gif" />
-      <h1>Clustering admin page</h1>
+      <h1>Clustering admin page for <jsp:expression>org.mmbase.module.core.MMBase.getMMBase().getMachineName()</jsp:expression></h1>
         <p>
           <em><mm:time format="$format" time="now" /></em>
         </p>

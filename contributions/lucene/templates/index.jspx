@@ -7,7 +7,7 @@
   <jsp:directive.include file="head.jspx" />
   <mm:content type="text/html" language="en" expires="0">
     <body class="basic">
-      <h1>Lucene admin page</h1>
+      <h1>Lucene admin page for <jsp:expression>org.mmbase.module.core.MMBase.getMMBase().getMachineName()</jsp:expression></h1>
       <mm:import externid="logout" />
       <mm:present referid="logout">
         <mm:cloud method="logout" />
