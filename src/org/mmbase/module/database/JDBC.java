@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @deprecation-used drop reference to {@link JDBCInterface}
  * @author vpro
- * @version $Id: JDBC.java,v 1.48 2006-10-02 11:16:12 michiel Exp $
+ * @version $Id: JDBC.java,v 1.49 2006-10-04 15:33:33 michiel Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -59,6 +59,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         getDriver();
         loadSupport();
         poolHandler = new MultiPoolHandler(databaseSupport, maxConnections, maxQueries);
+        poolHandler.setMaxLifeTime(maxLifeTime);
     }
 
     /*
@@ -176,7 +177,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         tmp = getInitParameter("maxlifetime");
         if (tmp != null) {
             try {
-                maxLifeTime = (new Float(tmp)).longValue() * 1000;
+                maxLifeTime = (long) (Float.parseFloat(tmp) * 1000f);
                 log.service("Set jdbc max life time to " + maxLifeTime + " ms");
             } catch (NumberFormatException e) {
                 log.warn("Specified max life time is not a invalid float :" + e + "(using default " + (maxLifeTime / 1000) + " s)");
