@@ -29,6 +29,7 @@ public class MultiPoolHandler {
     private Map pools = new ConcurrentHashMap();
 
     private DatabaseSupport databaseSupport;
+    private long maxLifeTime = 120000;
 
     public MultiPoolHandler(DatabaseSupport databaseSupport, int maxConnections) {
         this(databaseSupport, maxConnections, 500);
@@ -40,6 +41,13 @@ public class MultiPoolHandler {
 	this.databaseSupport= databaseSupport;
     }
 
+    /**
+     * @since MMBase-1.8.3
+     */
+    void setMaxLifeTime(long l) {
+        maxLifeTime = l;
+    }
+
     public MultiConnection getConnection(String url, String name, String password) throws SQLException {
 	MultiPool pool = (MultiPool) pools.get(url + "," + name + "," + password);
 	if (pool != null) {
@@ -47,6 +55,7 @@ public class MultiPoolHandler {
 	} else {
             log.service("No multipool present, creating one now");
             pool = new MultiPool(databaseSupport, url, name, password, maxConnections, maxQueries);
+            pool.setMaxLifeTime(maxLifeTime);
             if (pools.put(url + "," + name + "," + password, pool) != null) {
                 log.error("Replaced an old MultiPool!? " + Logging.stackTrace());
             }

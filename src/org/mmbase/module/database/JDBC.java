@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @deprecation-used drop reference to {@link JDBCInterface}
  * @author vpro
- * @version $Id: JDBC.java,v 1.47 2006-06-20 20:50:47 michiel Exp $
+ * @version $Id: JDBC.java,v 1.47.2.1 2006-10-04 13:56:52 michiel Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -59,6 +59,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         getDriver();
         loadSupport();
         poolHandler = new MultiPoolHandler(databaseSupport, maxConnections, maxQueries);
+        poolHandler.setMaxLifeTime(maxLifeTime);
     }
 
     /*
