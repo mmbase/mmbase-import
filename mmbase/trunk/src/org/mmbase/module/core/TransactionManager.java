@@ -19,7 +19,7 @@ import org.mmbase.security.*;
 /**
  * @javadoc
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.35 2006-10-03 18:29:43 michiel Exp $
+ * @version $Id: TransactionManager.java,v 1.36 2006-10-04 09:27:56 michiel Exp $
  */
 public class TransactionManager {
 
@@ -221,7 +221,6 @@ public class TransactionManager {
         int i = -1;
         for (MMObjectNode node : nodes) {
             i++;
-            if (! node.isChanged()) continue;
             // Nodes are uncommited by default
             nodestate[i] = UNCOMMITED;
             String exists = node.getStringValue(MMObjectBuilder.TMP_FIELD_EXISTS);
@@ -244,9 +243,9 @@ public class TransactionManager {
         // First commit all the NODES
         for (MMObjectNode node : nodes) {
             i++;
-            if (! node.isChanged()) continue;
             if (!(node.getBuilder() instanceof InsRel)) {
                 if (nodeexist[i] == I_EXISTS_YES ) {
+                    if (! node.isChanged()) continue;
                     // use safe commit, which locks the node cache
                     boolean commitOK;
                     if (user instanceof UserContext) {
@@ -284,10 +283,10 @@ public class TransactionManager {
         i = -1;
         for (MMObjectNode node : nodes) {
             i++;
-            if (! node.isChanged()) continue;
             if (node.getBuilder() instanceof InsRel) {
                 // excactly the same code as 10 lines ago. Should be dispatched to some method..
                 if (nodeexist[i] == I_EXISTS_YES ) {
+                    if (! node.isChanged()) continue;
                     boolean commitOK;
                     if (user instanceof UserContext) {
                         commitOK = node.commit((UserContext)user);
@@ -330,7 +329,7 @@ public class TransactionManager {
                 } else {
                     node.parent.removeNode(node);
                 }
-                nodestate[i]=COMMITED;
+                nodestate[i] = COMMITED;
             }
         }
 
