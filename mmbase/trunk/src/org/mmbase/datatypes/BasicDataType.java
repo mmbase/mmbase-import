@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.62 2006-09-06 18:23:02 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.63 2006-10-04 17:34:06 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -293,7 +293,7 @@ s     */
         try {
             return cast(value, cloud, node, field);
         } catch (CastException ce) {
-            log.error(ce.getMessage());
+            log.error(ce);
             return Casting.toType(classType, cloud, preCast(value, cloud, node, field));
         }
     }
@@ -459,6 +459,7 @@ s     */
             castValue = castToValidate(value, node, field);
             errors = typeRestriction.validate(errors, castValue, node, field);
         } catch (CastException ce) {
+            log.debug(ce);
             errors = typeRestriction.addError(errors, value, node, field);
             castValue = value;
         }
@@ -1086,6 +1087,7 @@ s     */
                 BasicDataType.this.cast(v, node, field);
                 return true;
             } catch (Throwable e) {
+                log.error(e);
                 return false;
             }
         }
@@ -1152,6 +1154,7 @@ s     */
             try {
                 candidate = BasicDataType.this.cast(v, cloud, node, field);
             } catch (CastException ce) {
+                log.info(ce);
                 return false;
             }
             Iterator i = validValues.iterator();

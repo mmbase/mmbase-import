@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * A DataType representing some kind of numeric value, like a floating point number or an integer number.
  *
  * @author Pierre van Rooden
- * @version $Id: NumberDataType.java,v 1.18 2006-04-29 19:41:09 michiel Exp $
+ * @version $Id: NumberDataType.java,v 1.19 2006-10-04 17:34:06 michiel Exp $
  * @since MMBase-1.8
  */
 abstract public class NumberDataType extends ComparableDataType {
@@ -35,14 +35,24 @@ abstract public class NumberDataType extends ComparableDataType {
     }
 
 
-    protected Object castToValidate(Object value, Node node, Field field) throws CastException {
-        if (value == null) return null;
-        Object preCast = preCast(value, node, field); // resolves enumerations
+
+    /**
+     * @since MMBase-1.9
+     */
+    protected Number castString(Object preCast) throws CastException {
         if (preCast instanceof String) {
             if (! StringDataType.DOUBLE_PATTERN.matcher((String) preCast).matches()) {
                 throw new CastException("Not a number: " + preCast);
             }
         } 
         return new Double(Casting.toDouble(preCast)); // this makes it e.g. possible to report that 1e20 is too big for an integer.
+    }
+
+
+    protected Object castToValidate(Object value, Node node, Field field) throws CastException {
+        if (value == null) return null;
+        Object preCast = preCast(value, node, field); // resolves enumerations
+        return castString(preCast);
+
     }
 }
