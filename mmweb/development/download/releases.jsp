@@ -33,7 +33,7 @@
 			<mm:field name="intro"><mm:isnotempty><p class="intro"><mm:write/></p></mm:isnotempty></mm:field>
 			<mm:field name="body" escape="p"><mm:isnotempty><p><mm:write/></p></mm:isnotempty></mm:field>
 			<ul>
-			<mm:related path="posrel,urls" orderby="posrel.pos,urls.description" directions="DOWN">
+			<mm:related path="posrel,urls" orderby="posrel.pos,urls.description" directions="UP">
 				<mm:node element="urls">
 					<li><a href="<mm:field name="url" />"><mm:field name="description"/></a></li>
 				</mm:node>
