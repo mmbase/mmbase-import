@@ -34,7 +34,7 @@
 	<p><strong><mm:field name="name" /> <mm:field name="version" /></strong><br />
 	<mm:locale language="en"><mm:time time="$releasedate" format="MMMM dd, yyyy"/></mm:locale>
 	<mm:field name="intro"><mm:isnotempty><mm:write/><br /></mm:isnotempty></mm:field>
-	<mm:related path="posrel,urls" orderby="posrel.pos,urls.description" directions="DOWN">
+	<mm:related path="posrel,urls" orderby="posrel.pos,urls.description" directions="UP">
 	  <mm:first>Download:<ul></mm:first>
 	  <mm:node element="urls">
 	    <li><mm:field name="url"><a href="<mm:url page="$_"/>"><mm:field name="description"/></a></mm:field></li>
