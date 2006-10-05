@@ -30,10 +30,10 @@ import org.mmbase.util.Encode;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.63 2006-08-14 08:05:04 pierre Exp $
+ * @version $Id: Config.java,v 1.63.2.1 2006-10-05 14:06:11 pierre Exp $
  */
 
-public class Config implements java.io.Serializable {
+public class Config {
 
     private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
 
