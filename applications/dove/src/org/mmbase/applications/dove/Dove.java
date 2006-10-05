@@ -54,7 +54,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.78 2006-07-18 15:36:28 nklasens Exp $
+ * @version $Id: Dove.java,v 1.79 2006-10-05 15:08:00 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -157,7 +157,7 @@ public class Dove extends AbstractDove {
                     DataType dataType = f.getDataType();
                     if (dataType instanceof BinaryDataType) {
                         fel = addContentElement(FIELD, "", out);
-                        
+
                         int byteLength = 0;
                         if (nm.hasField(AbstractImages.FIELD_FILESIZE)) {
                             byteLength = node.getIntValue(AbstractImages.FIELD_FILESIZE);
@@ -642,6 +642,12 @@ public class Dove extends AbstractDove {
                         DataType dataType = fielddef.getDataType();
                         String baseType = dataType.getBaseTypeIdentifier();
                         String specialization = dataType.getName();
+                        if ("".equals(specialization)) {
+                            DataType origin = dataType.getOrigin();
+                            if (origin != null) {
+                                specialization = origin.getName();
+                            }
+                        }
                         // exceptions, for backward comp. with old guitypes
                         if (specialization.equals("field")) {
                             specialization = "text";
@@ -669,6 +675,7 @@ public class Dove extends AbstractDove {
                             }
                         }
                         String guiType = baseType + "/" + specialization;
+
                         addContentElement(GUITYPE, guiType, field);
                         int maxLength = fielddef.getMaxLength();
                         if (maxLength>0) {
