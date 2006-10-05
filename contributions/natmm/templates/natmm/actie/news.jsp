@@ -18,7 +18,7 @@ cal.setTime(now);
 cal.set(cal.get(Calendar.YEAR),cal.get(Calendar.MONTH),cal.get(Calendar.DATE),0,0);
 long nowDay = cal.getTime().getTime()/1000; // the begin of today
 long oneDay = 24*60*60;
-String articleConstraint = "(artikel.embargo < '" + (nowSec+quarterOfAnHour) + "') AND (artikel.use_verloopdatum='0' OR artikel.verloopdatum > '" + nowSec + "' )";
+String articleConstraint = (new SearchUtil()).articleConstraint(nowSec, quarterOfAnHour);
 %>
 <mm:node number="<%= paginaID %>">
   <%@include file="includes/navsettings.jsp" %>
@@ -47,7 +47,6 @@ String articleConstraint = "(artikel.embargo < '" + (nowSec+quarterOfAnHour) + "
 		<td style="padding-right:0px;padding-left:10px;padding-bottom:10px;vertical-align:top;padding-top:10px">
 			<% String sNodes = paginaID;
             String sPath = "pagina,contentrel,artikel";
-            String sConstraints = "(artikel.embargo < '" + (nowSec+quarterOfAnHour) + "') AND (artikel.use_verloopdatum='0' OR artikel.verloopdatum > '" + nowSec + "' )";
             objectPerPage = 12;
             int thisOffset = 1;
             try{
@@ -73,7 +72,7 @@ String articleConstraint = "(artikel.embargo < '" + (nowSec+quarterOfAnHour) + "
 					%>
 					<div class="colortitle" style="font:bold 110%;"><mm:field name="titel"/></div>
 					<div style="padding-bottom:5px;"><b><mm:field name="kortetitel"/></b></div>
-					<mm:list nodes="<%= sNodes %>" path="<%= sPath %>" constraints="<%= sConstraints %>"
+					<mm:list nodes="<%= sNodes %>" path="<%= sPath %>" constraints="<%= articleConstraint %>"
 						offset="<%= "" + (thisOffset-1)*objectPerPage %>" max="<%= "" +  objectPerPage %>" 
 						orderby="artikel.begindatum" directions="DOWN">
 						<mm:first><table cellspacing="0" cellpadding="0" style="vertical-align:top;width:350px"></mm:first>
@@ -108,7 +107,7 @@ String articleConstraint = "(artikel.embargo < '" + (nowSec+quarterOfAnHour) + "
             <jsp:param name="object_type" value="artikel" />
             <jsp:param name="object_intro" value="titel" />
             <jsp:param name="object_date" value="begindatum" />
-            <jsp:param name="extra_constraint" value="<%= sConstraints %>" />
+            <jsp:param name="extra_constraint" value="<%= articleConstraint %>" />
             <jsp:param name="show_links" value="false" />
 				<jsp:param name="object_per_page" value="<%= "" + objectPerPage %>" />
          </jsp:include>

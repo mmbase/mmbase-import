@@ -1,6 +1,6 @@
 <% // *** support both pagina,contentrel,artikel and dossier,posrel,artikel 
 articles = new TreeMap();
-String articleConstraint = "(artikel.embargo < '" + (nowSec+quarterOfAnHour) + "') AND (artikel.use_verloopdatum='0' OR artikel.verloopdatum > '" + nowSec + "' )";
+String articleConstraint = (new SearchUtil()).articleConstraint(nowSec, quarterOfAnHour);
 String articlePath = "contentrel,artikel";
 %>
 <mm:nodeinfo type="type">
