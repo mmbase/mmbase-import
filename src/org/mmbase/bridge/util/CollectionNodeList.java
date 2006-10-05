@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * one.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CollectionNodeList.java,v 1.5 2006-09-27 12:25:19 michiel Exp $
+ * @version $Id: CollectionNodeList.java,v 1.6 2006-10-05 10:58:34 michiel Exp $
  * @since MMBase-1.8
  */
 public class CollectionNodeList<E extends Node> extends AbstractBridgeList<E> implements NodeList<E> {
@@ -115,7 +115,7 @@ public class CollectionNodeList<E extends Node> extends AbstractBridgeList<E> im
                 node = getCloud().getNode(Casting.toString(o));
             }
         }
-        set(index, (E) node);
+        wrappedCollection.set(index, (E) node);
         return node;
     }
 
