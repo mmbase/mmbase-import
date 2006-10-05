@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * delegates to a static method in this class).
  *
  * @author Michiel Meeuwissen
- * @version $Id: BeanFunction.java,v 1.10 2006-10-05 10:46:43 michiel Exp $
+ * @version $Id: BeanFunction.java,v 1.11 2006-10-05 10:50:56 michiel Exp $
  * @see org.mmbase.util.functions.MethodFunction
  * @see org.mmbase.util.functions.FunctionFactory
  * @since MMBase-1.8
@@ -154,7 +154,7 @@ public class BeanFunction extends AbstractFunction {
                 } else {
                     parameters.add(new Parameter(parameterName, parameterTypes[0], defaultValue));
                 }
-                setMethods.add(method);
+                setMethods.add(m);
             }
         }
         setParameterDefinition(parameters.toArray(Parameter.EMPTY));
