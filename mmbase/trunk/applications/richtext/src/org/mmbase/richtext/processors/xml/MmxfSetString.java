@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
  * information see the javadoc of that class.
  * @author Michiel Meeuwissen
- * @version $Id: MmxfSetString.java,v 1.11 2006-09-28 22:26:09 michiel Exp $
+ * @version $Id: MmxfSetString.java,v 1.12 2006-10-05 14:11:15 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -687,13 +687,13 @@ public class MmxfSetString implements  Processor {
         a.removeAttribute("alt");
         return true;
     }
-    private boolean handleBlock(String href, Element a, NodeList relatedBlocks, Node editedNode) {
+    private boolean handleBlock(String href, Element a, NodeList usedBlocks, NodeList relatedBlocks, Node editedNode) {
         if (! href.startsWith("BLOCK/")) return false;
 
         String nodeNumber = href.substring(6);
         Cloud cloud = editedNode.getCloud();
         NodeManager blocks = cloud.getNodeManager("blocks");
-        Node block;
+        final Node block;
         if (nodeNumber.equals("createddiv")) {
             block = blocks.createNode();
             block.setStringValue("title", "Block created for node " + editedNode.getNumber());
@@ -701,7 +701,7 @@ public class MmxfSetString implements  Processor {
         } else {
             block = cloud.getNode(nodeNumber);
         }
-
+        usedBlocks.add(block);
         DocumentBuilder documentBuilder = org.mmbase.util.xml.DocumentReader.getDocumentBuilder();
         DOMImplementation impl = documentBuilder.getDOMImplementation();
         Document blockDocument = impl.createDocument("http://www.w3.org/1999/xhtml", "body", null);
@@ -797,6 +797,7 @@ public class MmxfSetString implements  Processor {
             NodeList usedAttachments      = cloud.createNodeList();
 
             NodeList relatedBlocks        = getRelatedNodes(editedNode, blocks);
+            NodeList usedBlocks           = cloud.createNodeList();
 
             NodeList relatedUrls          = getRelatedNodes(editedNode, urls);
             NodeList usedUrls             = cloud.createNodeList();
@@ -834,7 +835,7 @@ public class MmxfSetString implements  Processor {
                         continue;
                     } else if (handleText(mmbaseMatcher, a, usedTexts, relatedTexts, editedNode)) {
                         continue;
-                    } else if (handleBlock(href, a, relatedBlocks, editedNode)) {
+                    } else if (handleBlock(href, a, usedBlocks, relatedBlocks, editedNode)) {
                         continue;
                     } else { // must have been really an URL
                         String klass = a.getAttribute("class");
@@ -892,6 +893,7 @@ public class MmxfSetString implements  Processor {
             cleanDanglingIdRels(relatedUrls,     usedUrls,     "urls");
             cleanDanglingIdRels(relatedAttachments, usedAttachments, "attachments");
             cleanDanglingIdRels(relatedTexts, usedTexts, texts.getName());
+            cleanDanglingIdRels(relatedBlocks, usedBlocks, "blocks");
         }
 
 
