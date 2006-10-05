@@ -90,7 +90,7 @@
          if(!searchConVar.equals("")) {
             searchConVar += " AND ";
          }
-         searchConVar += " (artikel.embargo < '" + nowSec + "') AND (artikel.use_verloopdatum='0' OR artikel.verloopdatum > '" + nowSec + "' )";
+         searchConVar += (new SearchUtil()).articleConstraint(nowSec, quarterOfAnHour);
          %>
          <table width="100%">
             <mm:list nodes="<%= provID %>" 
