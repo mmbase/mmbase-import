@@ -19,8 +19,9 @@
 
 <mm:import externid="search" />
 <mm:import id="current">groups</mm:import>
-<%@include file="navigate.div.jsp" %>
 <%@include file="you.div.jsp" %>
+<%@include file="navigate.div.jsp" %>
+
 
 <p class="action">
   <mm:maycreate type="mmbasegroups">
