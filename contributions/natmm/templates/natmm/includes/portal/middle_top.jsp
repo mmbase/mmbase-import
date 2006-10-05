@@ -8,9 +8,7 @@
    String paginaID = request.getParameter("s");
    PaginaHelper ph = new PaginaHelper(cloud);
 
-   String articleConstraint = "(artikel.embargo < '" + (nowSec+quarterOfAnHour) + "') AND "
-                              + "(artikel.use_verloopdatum='0' OR artikel.verloopdatum > '" + nowSec + "' )";
-                              
+   String articleConstraint = (new SearchUtil()).articleConstraint(nowSec, quarterOfAnHour);
    String sImageTemplate = "s(195)+part(0,0,195,140)";
 %>
 <script language="JavaScript">
