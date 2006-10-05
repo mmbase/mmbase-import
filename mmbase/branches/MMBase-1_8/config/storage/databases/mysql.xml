@@ -64,6 +64,7 @@
     <disallowed-field name="day" replacement="m_day"/> <!-- standard SQL keyword -->
     <disallowed-field name="delayed" replacement="m_delayed"/>
     <disallowed-field name="fields" replacement="m_fields"/>
+    <disallowed-field name="float" replacement="m_float"/>
     <disallowed-field name="from" replacement="m_from"/> <!-- standard SQL keyword -->
     <disallowed-field name="global" replacement="m_global"/> <!-- standard SQL keyword -->
     <disallowed-field name="group" replacement="m_group"/> <!-- standard SQL keyword -->
