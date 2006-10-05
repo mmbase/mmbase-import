@@ -62,7 +62,7 @@
         <mm:related>
           <mm:last>
             <mm:field name="eventdata.stringvalue" jspvar="jsp_username">
-              <% if (jsp_username != null && "admin".compareTo(jsp_username.compareTo) == 0 ) { %>
+              <% if (jsp_username != null && "admin".compareTo(jsp_username) == 0 ) { %>
                 <mm:import id="adminfound"/>
               <% } %>
             </mm:field>
