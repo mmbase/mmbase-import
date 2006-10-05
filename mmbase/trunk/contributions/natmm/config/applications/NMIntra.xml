@@ -37,6 +37,7 @@
       <builder version="0" maintainer="mmbase.org">groups</builder>
       <builder version="0" maintainer="mmbase.org">icaches</builder>
       <builder version="0" maintainer="mmbase.org">images</builder>
+      <builder version="0" maintainer="mmbase.org">keywords</builder>
       <builder version="0" maintainer="mmbase.org">link</builder>
       <builder version="0" maintainer="mmbase.org">linklijst</builder>
       <builder version="0" maintainer="mmbase.org">locations</builder>
@@ -71,7 +72,6 @@
       <builder version="0" maintainer="mmbase.org">feedback</builder>
       <builder version="0" maintainer="mmbase.org">items</builder>
       <builder version="0" maintainer="mmbase.org">item_pools</builder>  <!-- should be removed after migration -->
-      <builder version="0" maintainer="mmbase.org">keywords</builder>
       <builder version="0" maintainer="mmbase.org">medewerkers_update</builder>
       <builder version="0" maintainer="mmbase.org">mmevents</builder>
       <builder version="0" maintainer="mmbase.org">natuurgebieden_type</builder>
@@ -123,6 +123,7 @@
       <relation from="contentblocks" to="pagina" type="posrel"/>
       <relation from="contentblocks" to="pagina" type="readmore"/>
       <relation from="contentblocks" to="projects" type="posrel"/>
+      <relation from="contentelement" to="keywords" type="related"/>
       <relation from="contentelement" to="pools" type="posrel"/>
       <relation from="divisions" to="afdelingen" type="posrel"/>
       <relation from="divisions" to="locations" type="posrel"/>
@@ -131,7 +132,6 @@
       <relation from="educations" to="attachments" type="posrel"/>
       <relation from="educations" to="competencies" type="posrel"/>
       <relation from="educations" to="feedback" type="related"/>
-      <relation from="educations" to="keywords" type="related"/>
       <relation from="educations" to="medewerkers" type="rolerel"/>
       <relation from="educations" to="providers" type="related"/>
       <relation from="evenement_blueprint" to="afdelingen" type="readmore"/>
@@ -247,6 +247,7 @@
       <datasource builder="formulierveld" path="NMIntra/formulierveld.xml"/>
       <datasource builder="formulierveldantwoord" path="NMIntra/formulierveldantwoord.xml"/>
       <datasource builder="images" path="NMIntra/images.xml"/>
+      <datasource builder="keywords" path="NMIntra/keywords.xml"/>
       <datasource builder="link" path="NMIntra/link.xml"/>
       <datasource builder="linklijst" path="NMIntra/linklijst.xml"/>
       <datasource builder="locations" path="NMIntra/locations.xml"/>
@@ -283,7 +284,6 @@
       <datasource builder="groups" path="NMIntra/groups.xml"/>
       <datasource builder="items" path="NMIntra/items.xml"/>
       <datasource builder="item_pools" path="NMIntra/item_pools.xml"/>  <!-- should be removed after migration -->
-      <datasource builder="keywords" path="NMIntra/keywords.xml"/>
       <datasource builder="medewerkers_update" path="NMIntra/medewerkers_update.xml"/>
       <datasource builder="mmevents" path="NMIntra/mmevents.xml"/>
       <datasource builder="natuurgebieden_type" path="NMIntra/natuurgebieden_type.xml"/>

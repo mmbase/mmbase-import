@@ -66,6 +66,7 @@
         <builder version="0" maintainer="mmbase.org">inschrijvings_categorie</builder>
         <builder version="0" maintainer="mmbase.org">inschrijvings_status</builder>
         <builder version="0" maintainer="mmbase.org">jumpers</builder>
+        <builder version="0" maintainer="mmbase.org">keywords</builder>
         <builder version="0" maintainer="mmbase.org">leden</builder>
         <builder version="0" maintainer="mmbase.org">locations</builder>
         <builder version="0" maintainer="mmbase.org">medewerkers</builder>
@@ -119,6 +120,7 @@
         <relation from="artikel" to="vacature" type="related" />
         <relation from="contentelement" to="attachments" type="related" />
         <relation from="contentelement" to="images" type="posrel" />
+        <relation from="contentelement" to="keywords" type="related"/>
         <relation from="contentelement" to="link" type="posrel" />
         <relation from="contentelement" to="persoon" type="related" />
         <relation from="contentelement" to="pools" type="posrel"/>
@@ -272,6 +274,7 @@
         <datasource builder="inschrijvings_categorie" path="NatMM/inschrijvings_categorie.xml" />
         <datasource builder="inschrijvings_status" path="NatMM/inschrijvings_status.xml" />
         <datasource builder="jumpers" path="NatMM/jumpers.xml" />
+        <datasource builder="keywords" path="NatMM/keywords.xml"/>
         <datasource builder="leden" path="NatMM/leden.xml" />
         <datasource builder="locations" path="NatMM/locations.xml" />
         <datasource builder="medewerkers" path="NatMM/medewerkers.xml" />
