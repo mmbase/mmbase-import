@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.145 2006-09-27 20:48:26 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.146 2006-10-06 12:28:33 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
@@ -189,7 +189,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             return true;
         }
         String rankString = rank.getString(this);
-        return rankString.equals("") || rankString.equals(Rank.ANONYMOUS);
+        return rankString.equals("") || rankString.equals(Rank.ANONYMOUS.toString());
     }
 
     public void setJspvar(String jv) {
