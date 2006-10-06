@@ -255,7 +255,6 @@ public class EventNotifier implements Runnable {
       TreeSet emailAccounts = new TreeSet();
       emailAccounts.add(NatMMConfig.fromEmailAddress);
       emailAccounts.add(NatMMConfig.fromCADAddress);
-      emailAccounts.add(NatMMConfig.infoEmailAddress);
       emailAccounts.add(NatMMConfig.toSubscribeAddress);
       NodeList nlFormulieren = cloud.getNodeManager("formulier").getList("emailadressen != ''",null,null);
       for(int n=0; n<nlFormulieren.size(); n++) {
@@ -373,10 +372,10 @@ public class EventNotifier implements Runnable {
    public void run () {
       Thread kicker = getKicker();
       log.info("run(): " + kicker);
-		Cloud	cloud = CloudFactory.getCloud();
-		ApplicationHelper ap = new ApplicationHelper(cloud);
-		if(ap.isInstalled("NatMM")) {
-			updateEventDB(cloud);
-		}
+		  Cloud	cloud = CloudFactory.getCloud();
+      ApplicationHelper ap = new ApplicationHelper(cloud);
+      if(ap.isInstalled("NatMM")) {
+        updateEventDB(cloud);
+      }
    }
 }

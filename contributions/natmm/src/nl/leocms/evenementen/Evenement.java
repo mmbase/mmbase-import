@@ -34,7 +34,7 @@ import org.mmbase.bridge.RelationList;
  * Evenement
  *
  * @author Henk Hangyi
- * @version $Revision: 1.9 $, $Date: 2006-09-29 16:01:25 $
+ * @version $Revision: 1.10 $, $Date: 2006-10-06 10:07:17 $
  *
  */
 
@@ -573,6 +573,8 @@ public class Evenement extends DoubleDateNode {
 
       return !memberOnly || (memberOnly && isMember);
    }
+   
+   public static boolean isAgenda(Cloud cloud, String pageID) {
+     return pageID.equals(cloud.getNodeByAlias("agenda").getStringValue("number"));
+   }
 }
-
-
