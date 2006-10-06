@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.196 2006-09-27 11:27:00 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.197 2006-10-06 12:39:48 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -613,7 +613,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         storeValue(fieldName, fieldValue);
         if (fieldValue instanceof byte[]) {
             setSize(fieldName, ((byte[]) fieldValue).length);
-            log.info("Setting length to " + ((byte[]) fieldValue).length);
+            log.debug("Setting length to " + ((byte[]) fieldValue).length);
         }
 
         // process the changed value (?)
