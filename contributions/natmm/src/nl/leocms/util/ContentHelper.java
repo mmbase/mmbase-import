@@ -264,11 +264,12 @@ public class ContentHelper {
          log.debug("page " + sPaginaNumber + " has breadcrumbs " + breadcrumbs);
       }
       
-      if (breadcrumbs != null && breadcrumbs.size()>2) {
+      if (breadcrumbs != null && breadcrumbs.size()>1) {
         
-         // breadcrumbs should have at least size 3: [creatierubriek,...,subsite,root]
+         // breadcrumbs should have at least size 2: [creatierubriek,...,subsite,root]
          createRelation(objectNumber,"creatierubriek",(String) breadcrumbs.get(0));
-         createRelation(objectNumber,"hoofdrubriek",(String) breadcrumbs.get(breadcrumbs.size()-3));
+         int hoofdRubriekLevel = (breadcrumbs.size()==2 ?  2 : 3);
+         createRelation(objectNumber,"hoofdrubriek",(String) breadcrumbs.get(breadcrumbs.size()-hoofdRubriekLevel));
          createRelation(objectNumber,"subsite",(String) breadcrumbs.get(breadcrumbs.size()-2));
          hasDefaultRelations = true;
          

@@ -120,6 +120,7 @@ public class MMBaseHelper {
       }
 
       public void addDefaultRelations() {
+          log.info("addDefaultRelations()");
           ContentHelper ch = new ContentHelper(cloud);
           ApplicationHelper ap = new ApplicationHelper(cloud);
           
@@ -130,6 +131,9 @@ public class MMBaseHelper {
             null,"contentelement.number","up",null,true);
           int nlSize = nl.size();
           for (int i = 0; i < nlSize; i++) {
+             if(i%(nlSize/100)==0) {
+                log.info("checked " + i + " of " + nlSize + " contentelements (= " + i/(nlSize/100) + "%)");
+             }
              String sContentElement = nl.getNode(i).getStringValue("contentelement.number");
              ch.addDefaultRelations(sContentElement, pathsFromPageToElements, containerTypes);
              ch.addSchrijver(sContentElement);

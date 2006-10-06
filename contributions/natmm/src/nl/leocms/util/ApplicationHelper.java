@@ -146,10 +146,12 @@ public class ApplicationHelper {
       }
       if (isInstalledNMIntra) {
          if (thisType.equals("medewerkers")
+            && thisNode!=null
             && cloud.getList(thisNode,"medewerkers","medewerkers.number",SearchUtil.sEmployeeConstraint,null,null,null,false).size()==1 ) {
             sPaginaNumber = cloud.getNodeByAlias("wieiswie").getStringValue("number");
          }
-         if (thisType.equals("afdelingen") 
+         if (thisType.equals("afdelingen")
+            && thisNode!=null
             && cloud.getList(thisNode,"afdelingen","afdelingen.number",SearchUtil.sAfdelingenConstraints,null,null,null,false).size()==1 ) {
             sPaginaNumber = cloud.getNodeByAlias("wieiswie").getStringValue("number");
          }
@@ -165,17 +167,14 @@ public class ApplicationHelper {
       }
       return sPaginaNumber;
    }
-   
-   public String getIncomingDir() {
+
+   public String getRootDir() {
       if (isInstalledNatMM) {
-         return NatMMConfig.incomingDir;
+         return NatMMConfig.rootDir;
       }
-      if (isInstalledNMIntra) {
-         return NMIntraConfig.incomingDir;
-      } 
       return null;
    }
-   
+
    public String getTempDir() {
       if (isInstalledNatMM) {
          return NatMMConfig.tempDir;
@@ -186,6 +185,16 @@ public class ApplicationHelper {
       return null;
    }
 
+   public String getIncomingDir() {
+      if (isInstalledNatMM) {
+         return NatMMConfig.incomingDir;
+      }
+      if (isInstalledNMIntra) {
+         return NMIntraConfig.incomingDir;
+      } 
+      return null;
+   }
+   
    public String getToEmailAddress() {
       if (isInstalledNatMM) {
          return NatMMConfig.toEmailAddress;
@@ -206,6 +215,17 @@ public class ApplicationHelper {
       return null;
    }
 
+   public String getSiteUrl() {
+     String siteUrl = null;
+      if (isInstalledNatMM) {
+         siteUrl = NatMMConfig.liveUrl[0];
+      }
+      if(siteUrl!=null) {
+         siteUrl = siteUrl.substring(0,siteUrl.length()-1);
+      }
+      return siteUrl;
+   }
+   
    /**
     * Returns an comma separated list for all content types names
     * @return
