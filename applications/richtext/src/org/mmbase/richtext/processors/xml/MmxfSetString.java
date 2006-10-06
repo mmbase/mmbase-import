@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
  * information see the javadoc of that class.
  * @author Michiel Meeuwissen
- * @version $Id: MmxfSetString.java,v 1.12 2006-10-05 14:11:15 michiel Exp $
+ * @version $Id: MmxfSetString.java,v 1.13 2006-10-06 14:25:11 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -564,7 +564,8 @@ public class MmxfSetString implements  Processor {
     }
 
 
-    private boolean handleImage(String href, Element a, NodeList usedImages, NodeList relatedImages, Node editedNode) {
+    private boolean handleImage(String href, Element a, List<Map.Entry<String, Node>> usedImages, 
+                                NodeList relatedImages, Node editedNode) {
         Cloud cloud = editedNode.getCloud();
         NodeManager images = cloud.getNodeManager("images");
         String  imageServlet      = images.getFunctionValue("servletpath", null).toString();
@@ -583,9 +584,9 @@ public class MmxfSetString implements  Processor {
             image = image.getNodeValue("id");
             log.debug("This is an icache for " + image.getNumber());
         }
-        usedImages.add(image);
         String klass = a.getAttribute("class");
         String id = a.getAttribute("id");
+        usedImages.add(new Entry(id, image));
         NodeList linkedImage = get(cloud, relatedImages, "idrel.id", a.getAttribute("id"));
         if (! linkedImage.isEmpty()) {
             // ok, already related!
@@ -612,7 +613,7 @@ public class MmxfSetString implements  Processor {
         return true;
     }
 
-    private boolean handleAttachment(Matcher matcher, Element a, NodeList usedAttachments, NodeList relatedAttachments, Node editedNode) {
+    private boolean handleAttachment(Matcher matcher, Element a, List<Map.Entry<String, Node>>  usedAttachments, NodeList relatedAttachments, Node editedNode) {
         if (! matcher.matches()) return false;
         if (! matcher.group(1).equals("attachments")) return false;
         String nodeNumber = matcher.group(2);
@@ -623,9 +624,9 @@ public class MmxfSetString implements  Processor {
         }
         NodeManager attachments = cloud.getNodeManager("attachments");
         Node attachment = cloud.getNode(nodeNumber);
-        usedAttachments.add(attachment);
         String klass = a.getAttribute("class");
         String id = a.getAttribute("id");
+        usedAttachments.add(new Entry(id, attachment));
         NodeList linkedAttachment = get(cloud, relatedAttachments, "idrel.id", id);
         if (! linkedAttachment.isEmpty()) {
             // ok, already related!
@@ -652,7 +653,7 @@ public class MmxfSetString implements  Processor {
     }
 
 
-    private boolean handleText(Matcher matcher, Element a, NodeList usedTexts, NodeList relatedTexts, Node editedNode) {
+    private boolean handleText(Matcher matcher, Element a, List<Map.Entry<String, Node>> usedTexts, NodeList relatedTexts, Node editedNode) {
         if (! matcher.matches()) return false;
         String nodeNumber = matcher.group(2);
         Cloud cloud = editedNode.getCloud();
@@ -661,9 +662,9 @@ public class MmxfSetString implements  Processor {
             return false;
         }
         Node text = cloud.getNode(nodeNumber);
-        usedTexts.add(text);
         String klass = a.getAttribute("class");
         String id = a.getAttribute("id");
+        usedTexts.add(new Entry(id, text));
         NodeList linkedText = get(cloud, relatedTexts, "idrel.id", id);
         if (! linkedText.isEmpty()) {
             // ok, already related!
@@ -687,7 +688,7 @@ public class MmxfSetString implements  Processor {
         a.removeAttribute("alt");
         return true;
     }
-    private boolean handleBlock(String href, Element a, NodeList usedBlocks, NodeList relatedBlocks, Node editedNode) {
+    private boolean handleBlock(String href, Element a, List<Map.Entry<String, Node>> usedBlocks, NodeList relatedBlocks, Node editedNode) {
         if (! href.startsWith("BLOCK/")) return false;
 
         String nodeNumber = href.substring(6);
@@ -701,7 +702,6 @@ public class MmxfSetString implements  Processor {
         } else {
             block = cloud.getNode(nodeNumber);
         }
-        usedBlocks.add(block);
         DocumentBuilder documentBuilder = org.mmbase.util.xml.DocumentReader.getDocumentBuilder();
         DOMImplementation impl = documentBuilder.getDOMImplementation();
         Document blockDocument = impl.createDocument("http://www.w3.org/1999/xhtml", "body", null);
@@ -723,6 +723,7 @@ public class MmxfSetString implements  Processor {
         block.commit();
         String klass = a.getAttribute("class");
         String id = a.getAttribute("id");
+        usedBlocks.add(new Entry(id, block));
         NodeList linkedBlock = get(cloud, relatedBlocks, "idrel.id", id);
         if (! linkedBlock.isEmpty()) {
             // ok, already related!
@@ -791,27 +792,27 @@ public class MmxfSetString implements  Processor {
 
 
             NodeList relatedImages        = getRelatedNodes(editedNode, images);
-            NodeList usedImages           = cloud.createNodeList();
+            List<Map.Entry<String, Node>> usedImages = new ArrayList();
 
             NodeList relatedAttachments   = getRelatedNodes(editedNode, attachments);
-            NodeList usedAttachments      = cloud.createNodeList();
+            List<Map.Entry<String, Node>> usedAttachments = new ArrayList();
 
             NodeList relatedBlocks        = getRelatedNodes(editedNode, blocks);
-            NodeList usedBlocks           = cloud.createNodeList();
+            List<Map.Entry<String, Node>> usedBlocks = new ArrayList();
 
             NodeList relatedUrls          = getRelatedNodes(editedNode, urls);
-            NodeList usedUrls             = cloud.createNodeList();
+            List<Map.Entry<String, Node>> usedUrls = new ArrayList();
 
             NodeList relatedTexts;
-            NodeList usedTexts;
+            List<Map.Entry<String, Node>> usedTexts;
             {
                 NodeQuery q = Queries.createRelatedNodesQuery(editedNode, texts, "idrel", "destination");
                 StepField stepField = q.createStepField(q.getNodeStep(), "otype");
-                SortedSet nonTexts = new TreeSet();
-                nonTexts.add(new Integer(images.getNumber()));
-                nonTexts.add(new Integer(attachments.getNumber()));
-                nonTexts.add(new Integer(blocks.getNumber()));
-                nonTexts.add(new Integer(urls.getNumber()));
+                SortedSet<Integer> nonTexts = new TreeSet();
+                nonTexts.add(images.getNumber());
+                nonTexts.add(attachments.getNumber());
+                nonTexts.add(blocks.getNumber());
+                nonTexts.add(urls.getNumber());
                 FieldValueInConstraint newConstraint = q.createConstraint(stepField, nonTexts);
                 q.setInverse(newConstraint, true);
                 Queries.addConstraint(q, newConstraint);
@@ -820,7 +821,7 @@ public class MmxfSetString implements  Processor {
                 if (log.isDebugEnabled()) {
                     log.debug("Found related texts " + relatedTexts);
                 }
-                usedTexts = cloud.createNodeList();
+                usedTexts = new ArrayList();
             }
 
 
@@ -848,7 +849,7 @@ public class MmxfSetString implements  Processor {
                             Node idrel = idLinkedUrls.getNode(0).getNodeValue("idrel");
                             if (url.getStringValue("url").equals(href)) {
                                 log.service("" + url + " url already correctly related, nothing needs to be done");
-                                usedUrls.add(url);
+                                usedUrls.add(new Entry(id, url));
                                 if (!idrel.getStringValue("class").equals(klass)) {
                                     idrel.setStringValue("class", klass);
                                     idrel.commit();
@@ -868,7 +869,7 @@ public class MmxfSetString implements  Processor {
                         } else {
                             url = nodeLinkedUrls.getNode(0).getNodeValue("urls");
                         }
-                        usedUrls.add(url);
+                        usedUrls.add(new Entry(id, url));
                         RelationManager rm = cloud.getRelationManager(editedNode.getNodeManager(), url.getNodeManager(), "idrel");
                         Relation newIdRel = rm.createRelation(editedNode, url);
                         newIdRel.setStringValue("id", id);
@@ -903,13 +904,14 @@ public class MmxfSetString implements  Processor {
     /**
      * At the end of stage 2 of parseKupu all relations are removed which are not used any more, using this function.
      */
-    protected void cleanDanglingIdRels(NodeList clusterNodes, NodeList usedNodes, String type) {
+    protected void cleanDanglingIdRels(NodeList clusterNodes, List<Map.Entry<String, Node>> usedNodes, String type) {
        NodeIterator i = clusterNodes.nodeIterator();
        while(i.hasNext()) {
            Node clusterNode = i.nextNode();
            Node node = clusterNode.getNodeValue(type);
-           if (! usedNodes.contains(node)) {
-               Node idrel = clusterNode.getNodeValue("idrel");
+           Node idrel = clusterNode.getNodeValue("idrel");
+           String id = idrel.getStringValue("id");
+           if (! usedNodes.contains(new Entry(idrel.getStringValue("id"), node))) {
                if (log.isDebugEnabled()) {
                    log.debug(" " + node + " was not used! id:" + idrel.getStringValue("id"));
                }
@@ -917,8 +919,10 @@ public class MmxfSetString implements  Processor {
                    log.debug("Idrel returned null from " + clusterNode + " propbably deleted already in previous cleandDanglingIdRels");
                } else {
                    if (idrel.mayDelete()) {
-                       log.service("Removing unused idrel " + idrel);
+                       log.service("Removing unused idrel " + id + "-> " + type + " " + node.getNumber());
                        idrel.delete(true);
+                   } else {
+                       log.service("Could not remove unused idrel " + id + "-> " + type + " " + node.getNumber());;
                    }
                }
            }
