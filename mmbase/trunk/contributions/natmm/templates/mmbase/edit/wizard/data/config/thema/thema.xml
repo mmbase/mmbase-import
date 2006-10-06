@@ -1,21 +1,15 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="thema">
-
-   <title>categorie (vergeet niet de wijzigingen te exporteren)</title>
-
+   <title>thema</title>
    <description>
       <![CDATA[
-         Categorie&euml;n worden gebruikt voor het categoriseren van afbeeldingen.
-         Nadat categorie&euml;n zijn aangemaakt, gewijzigd of verwijderd, moet de 
-         link "exporteer categorie&euml;n" worden uitgevoerd.
+      Dit contenttype is niet in gebruik.
       ]]>
    </description>
-
    <action include="config/thema/create_thema.xml"/>
    <action include="config/thema/delete_thema.xml"/>
    <action include="config/thema/load_thema.xml"/>
-
    <steps>
       <step form-schema="edit_thema"/>
    </steps>
