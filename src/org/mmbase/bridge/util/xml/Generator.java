@@ -25,7 +25,7 @@ import org.mmbase.util.xml.XMLWriter;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.40 2006-09-29 16:05:40 michiel Exp $
+ * @version $Id: Generator.java,v 1.41 2006-10-06 14:19:35 michiel Exp $
  * @since  MMBase-1.6
  */
 public class Generator {
@@ -42,6 +42,9 @@ public class Generator {
 
     private boolean namespaceAware = false;
 
+    private long buildCost = 0; // ns
+    private int  size      = 0;
+
     /**
      * To create documents representing structures from the cloud, it
      * needs a documentBuilder, to contruct the DOM Document, and the
@@ -52,7 +55,7 @@ public class Generator {
      * @see   org.mmbase.util.xml.DocumentReader#getDocumentBuilder()
      */
     public Generator(DocumentBuilder documentBuilder, Cloud cloud) {
-        this.documentBuilder = documentBuilder;        
+        this.documentBuilder = documentBuilder;
         this.cloud = cloud;
 
     }
@@ -67,19 +70,38 @@ public class Generator {
     }
 
     /**
+     * Returns an estimation on how long it took to construct the document. 
+     * @returns a duration in nanoseconds.
+     * @since MMBase-1.9
+     */
+    public long getCost() {
+        return buildCost;
+    }
+    /**
+
+     * The number of presented MMBase nodes in the document.
+     * @since MMBase-1.9
+     */
+    public int getSize() {
+        return size;
+    }
+
+    /**
      * Returns the working DOM document.
      * @return The document, build with the operations done on the generator class
      */
     public  Document getDocument() {
         if (document == null) {
+            long start = System.nanoTime();
             DOMImplementation impl = documentBuilder.getDOMImplementation();
-            document = impl.createDocument(namespaceAware ? NAMESPACE : null, 
-                                           "objects", 
+            document = impl.createDocument(namespaceAware ? NAMESPACE : null,
+                                           "objects",
                                            impl.createDocumentType("objects", DOCUMENTTYPE_PUBLIC, DOCUMENTTYPE_SYSTEM)
                                            );
             if (cloud != null) {
                 addCloud();
             }
+            buildCost += System.nanoTime() - start;
         }
         return document;
     }
@@ -111,7 +133,7 @@ public class Generator {
         } else {
             return document.createElement(name);
         }
-                
+
     }
     protected final void setAttribute(Element element, String name, String value) {
         // attributes normally have no namespace. You can assign one, but then they will always have
@@ -126,7 +148,7 @@ public class Generator {
         */
         element.setAttribute(name, value);
     }
-    
+
     protected final String getAttribute(Element element, String name) {
         // see setAttribute
         /*
@@ -167,6 +189,7 @@ public class Generator {
      * @param fieldDefinition An MMBase bridge Field.
      */
     public Element add(org.mmbase.bridge.Node node, Field fieldDefinition) {
+        long start = System.nanoTime();
         getDocument();
         if (cloud == null) {
             cloud = node.getCloud();
@@ -177,6 +200,7 @@ public class Generator {
 
         if (! (object.getFirstChild() instanceof Element)) {
             log.warn("Cannot find first field of " + XMLWriter.write(object, false));
+            buildCost += System.nanoTime() - start;
             return object;
         }
         // get the field...
@@ -188,6 +212,7 @@ public class Generator {
         if(field == null) throw new BridgeException("field with name: " + fieldDefinition.getName() + " of node " + node.getNumber() + " with  nodetype: " + fieldDefinition.getNodeManager().getName() + " not found, while it should be in the node skeleton.. xml:\n" + toString(true));
         // when it is filled (allready), we can return
         if (field.getTagName().equals("field")) {
+            buildCost += System.nanoTime() - start;
             return field;
         }
 
@@ -222,7 +247,9 @@ public class Generator {
         default :
             field.appendChild(document.createTextNode(node.getStringValue(fieldDefinition.getName())));
         }
+
         // or do we need more?
+        buildCost += System.nanoTime() - start;
         return field;
     }
 
@@ -292,7 +319,7 @@ public class Generator {
             if (subs != null) return subs;
         }
         return null;
-        
+
     }
     /**
      * Creates an Element which represents a bridge.Node with all fields unfilled.
@@ -325,6 +352,7 @@ public class Generator {
 
         // node didnt exist, so we need to create it...
         object = createElement("object");
+        size++;
 
         setAttribute(object, "id", "" + node.getNumber());
         setAttribute(object, "type", node.getNodeManager().getName());
