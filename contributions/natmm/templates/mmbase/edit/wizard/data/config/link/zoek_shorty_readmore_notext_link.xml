@@ -33,7 +33,6 @@
    </command>
    <action type="create">
       <relation destinationtype="link" role="readmore">
-         <field name="readmore">Lees meer ></field>
          <field name="pos">{sum(//relation[@role='readmore' and @lastitem='true' and object/@type ='link']/field[@name='pos'])+{$pos}}</field>
       </relation>
    </action>

@@ -3,7 +3,8 @@
 <form-schema id="edit">
    <title></title>
    <field name="titel" dtrequired="true"><prompt>titel</prompt></field>
-   <field name="metatags" ftype="enum" dtrequired="true"><prompt>categorie</prompt><optionlist select="images_metatags"/></field>
+   <field name="metatags" ftype="line"><prompt>redactionele aantekening</prompt></field>
+   <list include="config/keywords/add_related.xml" />
    <field name="filename" ftype="data"><prompt>filenaam</prompt></field>
    <field name="omschrijving"><prompt>omschrijving</prompt></field>
    <field name="alt_tekst"><prompt>alt tekst</prompt></field>

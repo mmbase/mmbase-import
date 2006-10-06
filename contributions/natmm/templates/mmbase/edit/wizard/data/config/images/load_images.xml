@@ -21,4 +21,5 @@
    <field name="alt_tekst_fra"/>
    <field name="alt_tekst_eng"/>
    <field name="alt_tekst_de"/>
+   <relation destination="keywords" role="related" />
 </action>
