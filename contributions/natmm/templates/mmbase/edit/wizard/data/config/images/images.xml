@@ -18,7 +18,6 @@
    <action include="config/images/delete_images.xml"/>
    <action include="config/images/load_images.xml"/>
 	<lists>
-		<optionlist include="config/option_lists/images_metatags.xml" /> 
 		<optionlist include="config/option_lists/screensizes.xml" /> 
 		<optionlist include="config/option_lists/ja_nee.xml" /> 
    </lists>
