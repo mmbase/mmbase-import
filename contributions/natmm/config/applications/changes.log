@@ -14,4 +14,7 @@ Date        By        Builders       Change                                     
 2006-09-04  Henk      persoon        Increased job and department field to 1024      change fields for persoon, deelnemers, medewerkers, etc in existing dbs
 2006-09-19  Henk      linklijst      Added multilanguage for naam and omschrijving   add multilanguage fields to existing dbs
 2006-10-02  Henk      dossier        Added showdate                                  showdate should be added to dossier in db
+2006-10-06  Henk      afdelingen     Added descendants                               descendants should be added to afdelingen in db
+
+
 
