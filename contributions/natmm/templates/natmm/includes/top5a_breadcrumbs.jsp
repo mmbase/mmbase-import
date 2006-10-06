@@ -12,7 +12,7 @@ if(iRubriekLayout==NatMMConfig.DEFAULT_LAYOUT) {
 		<tr>
 			<td style="width:523;height:68;vertical-align:bottom;padding-bottom:2px;">
 			<% if(breadcrumbs.size()==2){ %>
-				<div style="font-size:19px;color:#FFFFFF;margin:0px 0px 5px 0px;">Kijk eens om je heen</div>
+				<div style="font-size:19px;color:#FFFFFF;margin:0px 0px 5px 0px;">Als je van Nederland houdt.</div>
 			<% } else { %>
 				   <% for(int r=breadcrumbs.size()-2; r>=0; r--) { %>
 					   <mm:list nodes="<%= (String) breadcrumbs.get(r) %>" path="rubriek,posrel,pagina,gebruikt,paginatemplate" 
