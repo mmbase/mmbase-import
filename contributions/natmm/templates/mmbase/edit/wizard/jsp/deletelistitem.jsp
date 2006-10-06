@@ -11,7 +11,7 @@
      * deletelistitem.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: deletelistitem.jsp,v 1.3 2006-09-20 09:46:54 henk Exp $
+     * @version  $Id: deletelistitem.jsp,v 1.4 2006-10-06 09:04:51 henk Exp $
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
      */
@@ -30,7 +30,7 @@
         String objectnumber = request.getParameter("objectnumber");
         // check whether the relation should be deleted instead of the node, in case of newfromlist
         if(attributes!=null && attributes.containsKey("startnodes") && attributes.containsKey("nodepath")) {
-          boolean isNewFromList = !"".equals(newFromListPath(cloud, (String) attributes.get("startnodes"), (String) attributes.get("nodepath")));
+          boolean isNewFromList = newFromListPath(cloud, (String) attributes.get("startnodes"), (String) attributes.get("nodepath"))!=null;
           if(isNewFromList) {
               String nodePath = (String) attributes.get("nodepath");
               String splitNodepath[] = nodePath.split(",",0);
