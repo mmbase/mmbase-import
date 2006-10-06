@@ -82,6 +82,7 @@ if(artCnt==1&&artikelID.equals("-1")) { // *** select the unique article related
          } else if(artCnt > 1){  // *** if no dossier is selected and there are more than one articles related to the page, show the list of articles
          
             %><mm:node number="<%=paginaID%>">
+               <mm:import id="showdate" />
                <%@include file="includes/nieuws/searchresults.jsp" %>
             </mm:node><%
             
