@@ -19,7 +19,7 @@ import java.util.*;
  *
  * @since MMBase-1.9
  * @author Pierre van Rooden
- * @version $Id: RmiGenerator.java,v 1.2 2006-09-29 15:01:56 pierre Exp $
+ * @version $Id: RmiGenerator.java,v 1.3 2006-10-06 08:21:57 pierre Exp $
  */
 public class RmiGenerator extends AbstractClassGenerator {
 
@@ -63,6 +63,7 @@ public class RmiGenerator extends AbstractClassGenerator {
         for (Type t:m.getGenericParameterTypes()) {
             //
             Type ct = getComponentType(t);
+            // TODO: should also wrap if the result is an typevariable array?
             if (needsRemote(ct)) {
                 if (((Class)ct).isArray()) { // not remote!
                     indent4();
@@ -112,7 +113,9 @@ public class RmiGenerator extends AbstractClassGenerator {
             Type componentType = getComponentType(t);
             if (needsRemote(componentType)) {
                 buffer.append("localArg" + paramCounter);
-            } else if (isBasicType(componentType) && !((Class)componentType).isArray()) {
+            } else if (isBasicTypeVariable(componentType) && !(t instanceof GenericArrayType)) {
+                buffer.append("(" + ((TypeVariable)componentType).getName() + ")ObjectWrapper.rmiObjectToLocal(arg" + paramCounter + ")");
+            } else if (isBasicClass(componentType) && !((Class)componentType).isArray()) {
                 buffer.append("(" + ((Class)componentType).getName() + ")ObjectWrapper.rmiObjectToLocal(arg" + paramCounter + ")");
             } else {
                 buffer.append("arg" + paramCounter);
@@ -122,6 +125,8 @@ public class RmiGenerator extends AbstractClassGenerator {
                 buffer.append(", ");
             }
         }
+        // TODO: should also wrap if the result is an array?
+
         if (needToWrap) {
             buffer.append(")");
         }

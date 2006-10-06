@@ -19,7 +19,7 @@ import java.util.*;
  *
  * @since MMBase-1.9
  * @author Pierre van Rooden
- * @version $Id: AbstractClassGenerator.java,v 1.2 2006-09-29 15:01:56 pierre Exp $
+ * @version $Id: AbstractClassGenerator.java,v 1.3 2006-10-06 08:21:57 pierre Exp $
  */
 abstract public class AbstractClassGenerator extends AbstractGenerator {
 
@@ -188,13 +188,22 @@ abstract public class AbstractClassGenerator extends AbstractGenerator {
         }
     }
 
-    boolean isBasicType(Type t) {
+    boolean isBasicTypeVariable(Type t) {
+        if (t instanceof TypeVariable) {
+            Type[] bounds = ((TypeVariable)t).getBounds();
+            return bounds.length == 1 && bounds[0].equals(Object.class);
+        } else {
+            return false;
+        }
+    }
+
+    boolean isBasicClass(Type t) {
         return t.equals(java.lang.Object.class) || t.equals(java.util.List.class) || t.equals(java.util.SortedSet.class);
     }
 
     boolean needtoWrap(Type t) {
         Type ct = getComponentType(t);
-        return needsRemote(ct) || isBasicType(ct);
+        return needsRemote(ct) || isBasicTypeVariable(ct)|| isBasicClass(ct);
     }
 
     protected boolean isBasicMethod(Method m) {
