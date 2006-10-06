@@ -19,7 +19,7 @@ import java.util.*;
  *
  * @since MMBase-1.9
  * @author Pierre van Rooden
- * @version $Id: ImplementationGenerator.java,v 1.2 2006-09-29 15:01:56 pierre Exp $
+ * @version $Id: ImplementationGenerator.java,v 1.3 2006-10-06 08:21:57 pierre Exp $
  */
 public class ImplementationGenerator extends AbstractClassGenerator {
 
@@ -75,6 +75,7 @@ public class ImplementationGenerator extends AbstractClassGenerator {
                         buffer.append("/* " + ct + ((TypeVariable)ct).getBounds()[0] + " */ ");
                     }
                 }
+                // TODO: should also wrap if the result is an typevariable array?
                 if (needsRemote(ct)) {
                     if (((Class)ct).isArray()) { // not remote!
                         indent6();
@@ -125,7 +126,9 @@ public class ImplementationGenerator extends AbstractClassGenerator {
                 Type componentType = getComponentType(t);
                 if (needsRemote(componentType)) {
                     buffer.append("remoteArg" + paramCounter);
-                } else if (isBasicType(componentType) && !((Class)componentType).isArray()) {
+                } else if (isBasicTypeVariable(componentType) && !(t instanceof GenericArrayType)) {
+                    buffer.append("(" + ((TypeVariable)componentType).getName() + ")ObjectWrapper.remoteImplementationToRMIObject(arg" + paramCounter + ")");
+                } else if (isBasicClass(componentType) && !((Class)componentType).isArray()) {
                     buffer.append("(" + ((Class)componentType).getName() + ")ObjectWrapper.remoteImplementationToRMIObject(arg" + paramCounter + ")");
                 } else {
                     buffer.append("arg" + paramCounter);
@@ -139,6 +142,8 @@ public class ImplementationGenerator extends AbstractClassGenerator {
                 buffer.append(")");
             }
             buffer.append(");\n");
+
+            // TODO: should also wrap if the result is an array?
 
             if (!returnType.equals(Void.TYPE)) {
                 indent6();
