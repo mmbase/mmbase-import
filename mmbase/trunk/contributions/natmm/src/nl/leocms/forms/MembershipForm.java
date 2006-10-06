@@ -714,11 +714,11 @@ public class MembershipForm extends ActionForm {
               " eenmaal per jaar worden ge&iuml;ncasseerd." + newline + newline;
         }
      }
-     message += "Heeft u vragen, mail dan ";
+     message += "Heeft u vragen, mail ons dan via het vragen formulier op onze website: ";
      if(type.equals("html")) {
-         message += "<a href='mailto:" + NatMMConfig.infoEmailAddress + "'>" + NatMMConfig.infoEmailAddress + "</a>";
+         message += "<a href='" + NatMMConfig.infoUrl + "'>" + NatMMConfig.infoUrl + "</a>";
      } else {
-         message +=  NatMMConfig.infoEmailAddress;
+         message +=  NatMMConfig.infoUrl;
      }
      message += " of bel 035-6559911. " + newline + newline;
      message +=
@@ -731,7 +731,10 @@ public class MembershipForm extends ActionForm {
      } else {
          message += NatMMConfig.toSubscribeAddress;
      }
-     message += ". Wij maken uw aanmelding dan ongedaan.";
+     message += ". Wij maken uw aanmelding dan ongedaan. Deze email moet de volgende regels bevatten:" + newline + newline;
+     message += "naam: " + thisMember.getStringValue("lastname") + newline;
+     message += "email: " + thisMember.getStringValue("email") + newline;
+     message += "geboortedatum: " + (new OptionedStats()).dateString(thisMember.getLongValue("dayofbirth")) + newline;
      return message;
   }
 

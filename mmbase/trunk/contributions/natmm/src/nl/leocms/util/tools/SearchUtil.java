@@ -24,7 +24,7 @@ import nl.leocms.util.tools.HtmlCleaner;
  * Utilities functions for the search pages
  *
  * @author H. Hangyi
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class SearchUtil {
 
@@ -36,11 +36,24 @@ public class SearchUtil {
 
    public final static String sEmployeeConstraint = "( medewerkers.importstatus != 'inactive' ) OR ( medewerkers.externid LIKE 'extern' )";
    public final static String sAfdelingenConstraints = "( afdelingen.importstatus != 'inactive' ) OR ( afdelingen.externid LIKE 'extern' )";
-   
+   public final static String sNatuurgebiedenConstraint = "natuurgebieden.bron!=''";
    public String articleConstraint(long nowSec, int quarterOfAnHour) {
-      return "(artikel.embargo < '" + (nowSec+quarterOfAnHour) + "')";
+      return "(artikel.embargo < '" + (nowSec+quarterOfAnHour) + "') AND (artikel.use_verloopdatum='0' OR artikel.verloopdatum > '" + nowSec + "' )";
    }
 
+   public String getConstraint(String objecttype, long nowSec, int quarterOfAnHour) {
+     // *** the assumption is that some contenttypes have their particular constraint
+      if("artikel".equals(objecttype)) {
+        return articleConstraint(nowSec, quarterOfAnHour); 
+     } else if("natuurgebieden".equals(objecttype)) {
+        return sNatuurgebiedenConstraint;
+     } else if("medewerkers".equals(objecttype)) {
+        return sEmployeeConstraint;
+     } else if("afdelingen".equals(objecttype)) {
+        return sAfdelingenConstraints;
+     }
+     return "";
+   }
 
    public String searchResults(TreeSet searchResultList) {
       String searchResults = searchResultList.toString();
