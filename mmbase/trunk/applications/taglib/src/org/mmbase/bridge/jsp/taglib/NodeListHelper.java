@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.30 2006-09-29 10:02:58 michiel Exp $
+ * @version $Id: NodeListHelper.java,v 1.31 2006-10-06 12:57:37 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -302,7 +302,7 @@ public class NodeListHelper implements ListProvider {
         // serve parent timer tag:
         TimerTag t = thisTag.findParentTag(TimerTag.class, null, false);
         if (t != null) {
-            timerHandle = t.startTimer(getId(), getClass().getName());
+            timerHandle = t.startTimer(getId(), thisTag.getClass().getName());
         }
         /*
         if (thisTag.getReferid() != null) {
