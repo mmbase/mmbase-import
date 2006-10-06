@@ -25,7 +25,7 @@ import org.mmbase.util.xml.XMLWriter;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.41 2006-10-06 14:19:35 michiel Exp $
+ * @version $Id: Generator.java,v 1.42 2006-10-06 17:08:27 michiel Exp $
  * @since  MMBase-1.6
  */
 public class Generator {
@@ -148,6 +148,7 @@ public class Generator {
         */
         element.setAttribute(name, value);
     }
+
 
     protected final String getAttribute(Element element, String name) {
         // see setAttribute
@@ -302,25 +303,7 @@ public class Generator {
         }
     }
 
-    protected Element getElementById(Node n, String id) {
 
-        NodeList list = n.getChildNodes();
-        for (int i = 0 ; i < list.getLength(); i++) {
-            Node node = list.item(i);
-            if (node instanceof Element) {
-                if (getAttribute((Element) node, "id").equals(id)) {
-                    return (Element) node;
-                }
-            }
-        }
-        for (int i = 0 ; i < list.getLength(); i++) {
-            Node node = list.item(i);
-            Element subs = getElementById(node, id);
-            if (subs != null) return subs;
-        }
-        return null;
-
-    }
     /**
      * Creates an Element which represents a bridge.Node with all fields unfilled.
      * @param node MMbase node
@@ -330,14 +313,8 @@ public class Generator {
 
         // if we are a relation,.. behave like one!
         // why do we find it out now, and not before?
-        boolean getElementByIdWorks = false;
-        Element object = null;
-        if (getElementByIdWorks) {
-            // Michiel: I tried it by specifieing id as ID in dtd, but that also doesn't make it work.
-            object = getDocument().getElementById("" + node.getNumber());
-        } else {
-            object = getElementById(getDocument(), "" + node.getNumber());
-        }
+        Element object = getDocument().getElementById("" + node.getNumber());
+
 
         if (object != null)
             return object;
@@ -355,6 +332,7 @@ public class Generator {
         size++;
 
         setAttribute(object, "id", "" + node.getNumber());
+        object.setIdAttribute("id", true);
         setAttribute(object, "type", node.getNodeManager().getName());
         StringBuffer ancestors = new StringBuffer(" "); // having spaces before and after the attribute's value, makes it easy to use xsl's 'contains' function.
         if (! node.getNodeManager().getName().equals("object")) {
