@@ -39,7 +39,7 @@ String[] META_TAGS = {"dit", "is", "een", "test"};
    HashSet hsetArticlesNodes = new HashSet();
    HashSet hsetArtDossierNodes = new HashSet();
    HashSet hsetNatuurgebiedenRouteNodes = new HashSet();
-	HashSet hsetNatuurgebiedenNatuurgebiedenNodes = new HashSet();
+	 HashSet hsetNatuurgebiedenNatuurgebiedenNodes = new HashSet();
    HashSet hsetFormulierNodes = new HashSet();
    HashSet hsetEvenementNodes = new HashSet();
 
@@ -133,20 +133,22 @@ String[] META_TAGS = {"dit", "is", "een", "test"};
    <%
    // *** Show rubrieken
    if (hsetCategories.size() > 0) { 
-	String sNatuurgebiedenRubriekNumber = "";
-	String sNatuurinRubriekNumber = ""; %>
-	<mm:node number="natuurgebieden_rubriek" notfound="skipbody">
-		<mm:field name="number" jspvar="dummy" vartype="String" write="false">
-			<% sNatuurgebiedenRubriekNumber = dummy; %>
-		</mm:field>	
-	</mm:node>
-	<mm:node number="natuurin_rubriek" notfound="skipbody">
-		<mm:field name="number" jspvar="dummy" vartype="String" write="false">
-			<% sNatuurinRubriekNumber = dummy; %>
-		</mm:field>	
-	</mm:node>
-	
-<%    for (Iterator it = hsetCategories.iterator(); it.hasNext(); ) {
+    String sNatuurgebiedenRubriekNumber = "";
+    String sNatuurinRubriekNumber = "";
+    %>
+    <mm:node number="natuurgebieden_rubriek" notfound="skipbody">
+      <mm:field name="number" jspvar="dummy" vartype="String" write="false">
+        <% sNatuurgebiedenRubriekNumber = dummy; %>
+      </mm:field>	
+    </mm:node>
+    <mm:node number="natuurin_rubriek" notfound="skipbody">
+      <mm:field name="number" jspvar="dummy" vartype="String" write="false">
+        <% sNatuurinRubriekNumber = dummy; %>
+      </mm:field>
+    </mm:node>
+    <% 
+    PaginaHelper ph = new PaginaHelper(cloud);
+    for (Iterator it = hsetCategories.iterator(); it.hasNext(); ) {
          String sRubriek = (String) it.next();
 
          HashSet hsetPagesForThisCategory = new HashSet(); %>
@@ -168,56 +170,56 @@ String[] META_TAGS = {"dit", "is", "een", "test"};
                   continue;
                }
 
-               String templateUrl = "index.jsp";
+               String templateUrl = ph.createPaginaUrl(sPageID,request.getContextPath());
+               templateUrl = templateUrl + (templateUrl.indexOf("?") ==-1 ? "?" : "&");
 
                %><mm:node number="<%=sPageID%>"><%
                   if (!bFirst) { %><br/><% } %>
                   <b><mm:field name="titel"/></b>
                   <ul style="margin:0px;margin-left:16px;">
-                  <mm:related path="gebruikt,template">
-                     <mm:field name="template.url" jspvar="dummy" vartype="String" write="false">
-                        <% templateUrl = dummy; %>
-                     </mm:field>
-                  </mm:related>
                   <mm:related path="contentrel,artikel" fields="artikel.number">
                      <mm:field name="artikel.number" jspvar="sID" vartype="String" write="false"><%
                      if(hsetArticlesNodes.contains(sID)){
-                        %><li><a href="<%= templateUrl %>?id=<mm:field name="artikel.number"/>"><mm:field name="artikel.titel"/></a></li><%
+                        %><li><a href="<%= templateUrl %>id=<mm:field name="artikel.number"/>"><mm:field name="artikel.titel"/></a></li><%
                      }
                      %></mm:field>
                   </mm:related>
                   <mm:related path="posrel,dossier,posrel,artikel" fields="dossier.number,artikel.number">
                      <mm:field name="artikel.number" jspvar="sID" vartype="String" write="false"><%
                      if(hsetArtDossierNodes.contains(sID)){
-                        %><li><a href="<%= templateUrl %>?d=<mm:field name="dossier.number"/>&id=<mm:field name="artikel.number"/>"><mm:field name="artikel.titel"/></a></li><%
+                        %><li><a href="<%= templateUrl %>d=<mm:field name="dossier.number"/>&id=<mm:field name="artikel.number"/>"><mm:field name="artikel.titel"/></a></li><%
                      }
                      %></mm:field>
                   </mm:related>
-					<% if (sRubriek.equals(sNatuurinRubriekNumber)) {%>
-	                  <mm:related path="contentrel,provincies,pos4rel,natuurgebieden">
-  		                  <mm:field name="natuurgebieden.number" jspvar="sID" vartype="String" write="false">
-									<mm:list nodes="<%= sID %>" path="natuurgebieden,rolerel,artikel" max="1">
-									<% if(hsetNatuurgebiedenRouteNodes.contains(sID)){
-     					               %><li><a href="<%= templateUrl %>?n=<mm:field name="natuurgebieden.number"/>"><mm:field name="natuurgebieden.naam"/></a></li><%
-        		      			   }
-              		      %></mm:list>
-								</mm:field>
-                 		</mm:related>
-					<% } 
-						if (sRubriek.equals(sNatuurgebiedenRubriekNumber)) {%>	
+                  <% 
+                  if (sRubriek.equals(sNatuurinRubriekNumber)) {%>
+                    <mm:related path="contentrel,provincies,pos4rel,natuurgebieden">
+                        <mm:field name="natuurgebieden.number" jspvar="sID" vartype="String" write="false">
+                          <mm:list nodes="<%= sID %>" path="natuurgebieden,rolerel,artikel" max="1">
+                          <% 
+                          if(hsetNatuurgebiedenRouteNodes.contains(sID)){
+                             %><li><a href="<%= templateUrl %>n=<mm:field name="natuurgebieden.number"/>"><mm:field name="natuurgebieden.naam"/></a></li><%
+                           }
+                        %></mm:list>
+                      </mm:field>
+                    </mm:related>
+                    <% 
+                  } 
+                  if (sRubriek.equals(sNatuurgebiedenRubriekNumber)) {
+                    %>	
 	                  <mm:related path="contentrel,provincies,pos4rel,natuurgebieden,posrel,artikel" fields="natuurgebieden.number">
-  		                  <mm:field name="natuurgebieden.number" jspvar="sID" vartype="String" write="false"><%
+  		                <mm:field name="natuurgebieden.number" jspvar="sID" vartype="String" write="false"><%
      		               if(hsetNatuurgebiedenNatuurgebiedenNodes.contains(sID)){
-        		               %><li><a href="<%= templateUrl %>?n=<mm:field name="natuurgebieden.number"/>"><mm:field name="natuurgebieden.naam"/></a></li><%
+        		               %><li><a href="<%= templateUrl %>n=<mm:field name="natuurgebieden.number"/>"><mm:field name="natuurgebieden.naam"/></a></li><%
            		         }
-              		      %></mm:field>
+              		     %></mm:field>
                  		</mm:related><% 
-						}	
-                  if(templateUrl.equals("events.jsp")) {
+                  }	
+                  if(Evenement.isAgenda(cloud,sPageID)) {
                      for(Iterator ite = hsetEvenementNodes.iterator(); ite.hasNext(); ) {
                         String thisEvent = (String) ite.next();
                         %><mm:node number="<%= thisEvent %>">
-                           <li><a href="events.jsp?p=agenda&id=<%= Evenement.getNextOccurence(thisEvent) %>"><mm:field name="titel" /></a>
+                           <li><a href="<%= templateUrl %>e=<%= Evenement.getNextOccurence(thisEvent) %>"><mm:field name="titel" /></a>
                          </mm:node><%
                      }
                   } %>
