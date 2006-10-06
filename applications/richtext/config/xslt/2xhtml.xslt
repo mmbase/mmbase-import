@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.21 2006-10-06 17:09:27 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.22 2006-10-06 17:16:28 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -445,15 +445,16 @@
        to determine the relations and calls jumps to with_relations mode, where the 'relations'
        parameter becomes available (all relations pointing to this element).
   -->
+  
   <xsl:template match="mmxf:section[@id != '']|mmxf:p[@id != '']|mmxf:a" >
     <xsl:param name="in_a" />
     <!-- store all 'relation' nodes of this node for convenience in $rels:-->
     <xsl:variable name="rels"   select="ancestor::o:object/o:relation[@role='idrel']" />
 
     <!-- also for conveniences: all related nodes to this node-->
-    <xsl:variable name="related_to_node"   select="//o:objects/o:object[@id=$rels/@related]" />
+    <xsl:variable name="related_to_node"   select="id($rels/@related)" />
 
-    <xsl:variable name="relations" select="//o:objects/o:object[@id=$rels/@object and o:field[@name='id'] = current()/@id]" />
+    <xsl:variable name="relations" select="id($rels/@object)[o:field[@name='id'] = current()/@id]" />
 
     <xsl:apply-templates select="." mode="with_relations">
       <xsl:with-param name="relations" select="$relations" />
