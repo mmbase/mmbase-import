@@ -28,7 +28,7 @@ import org.mmbase.util.functions.*;
  * images), which you have to create yourself before calling this servlet. The cache() function of
  * Images can be used for this. An URL can be gotten with cachepath().
  *
- * @version $Id: ImageServlet.java,v 1.28 2006-01-27 20:20:43 michiel Exp $
+ * @version $Id: ImageServlet.java,v 1.29 2006-10-07 15:48:56 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see    org.mmbase.module.builders.AbstractImages
@@ -63,11 +63,11 @@ public class ImageServlet extends HandleServlet {
         return "Serves (cached) MMBase images";
     }
 
-    protected Map getAssociations() {
-        Map a = super.getAssociations();
-        a.put("images",      new Integer(50));  // Is good in images (knows icaches)
-        a.put("attachments", new Integer(5));   // Can do attachments a little
-        a.put("downloads",   new Integer(-10)); // Can do downloads even worse.
+    protected Map<String, Integer> getAssociations() {
+        Map<String, Integer> a = super.getAssociations();
+        a.put("images",      50);  // Is good in images (knows icaches)
+        a.put("attachments", 5);   // Can do attachments a little
+        a.put("downloads",   -10); // Can do downloads even worse.
         return a;
     }
 
@@ -126,7 +126,12 @@ public class ImageServlet extends HandleServlet {
                 return null;
             } else {
                 n = getNode(query);
-                n.getFunctionValue("wait", null);
+                if (n.getFunctionValue("wait", null).toBoolean()) {
+                    // node may be changed, and crrent instante may not be valid any more because disappeared from cache
+                    query.setNode(null);
+                    n = getNode(query);
+                }
+
             }
         } else {
             // This _is_ an original node.
