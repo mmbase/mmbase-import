@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.56 2006-09-25 14:00:28 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.57 2006-10-07 15:46:39 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -155,14 +155,14 @@ public class ImageCaches extends AbstractImages {
      * method will block until the field is filled.
      * @param node A icache node.
      */
-    public void waitForConversion(MMObjectNode node) {
+    public boolean waitForConversion(MMObjectNode node) {
         log.debug("Wating for conversion?");
         if (node.isNull(Imaging.FIELD_HANDLE)) {
             log.service("Waiting for conversion");
             // handle field not yet filled, but this is not a new node
             String ckey     = node.getStringValue(Imaging.FIELD_CKEY);
             String template = Imaging.parseCKey(ckey).template;
-            List params     = Imaging.parseTemplate(template);
+            List<String> params     = Imaging.parseTemplate(template);
             MMObjectNode image = originalImage(node);
             // make sure the bytes don't come from the cache (e.g. multi-cast change!, new conversion could be triggered, but image-node not yet invalidated!)
             image.getBuilder().clearBlobCache(image.getNumber());
@@ -171,9 +171,10 @@ public class ImageCaches extends AbstractImages {
             // This triggers conversion, or waits for it to be ready.
             ImageConversionRequest req = Factory.getImageConversionRequest(params, bytes, format, node);
             req.waitForConversion();
-
+            return true;
         } else {
             log.debug("no");
+            return false;
         }
     }
 
@@ -395,8 +396,7 @@ public class ImageCaches extends AbstractImages {
 
     protected Object executeFunction(MMObjectNode node, String function, List args) {
         if (function.equals("wait")) {
-            waitForConversion(node);
-            return node;
+            return waitForConversion(node);
         } else {
             return super.executeFunction(node, function, args);
         }
