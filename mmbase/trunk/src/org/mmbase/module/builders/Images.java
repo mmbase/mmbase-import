@@ -33,7 +33,7 @@ import javax.servlet.ServletContext;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.117 2006-08-15 09:55:54 nklasens Exp $
+ * @version $Id: Images.java,v 1.118 2006-10-07 15:45:21 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -88,7 +88,7 @@ public class Images extends AbstractImages {
             defaultImageType = tmp;
         }
 
-        ImageCaches imageCaches = (ImageCaches) mmb.getMMObject("icaches");
+        ImageCaches imageCaches = (ImageCaches) mmb.getBuilder("icaches");
         if(imageCaches == null) {
             log.warn("Builder with name 'icaches' wasn't loaded. Cannot do image-conversions.");
         }
