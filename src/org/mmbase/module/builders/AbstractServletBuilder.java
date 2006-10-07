@@ -30,7 +30,7 @@ import org.mmbase.security.Rank;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.44 2006-09-25 14:00:28 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.45 2006-10-07 15:45:02 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -493,7 +493,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
 
                     log.debug("Using session " + session);
 
-                    if (usesBridgeServlet &&  session != null) {
+                    if (usesBridgeServlet &&  session != null && ! "".equals(session)) {
                         servlet.append("session=" + session + "+");
                     }
 
