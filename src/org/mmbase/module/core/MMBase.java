@@ -45,7 +45,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.208 2006-09-29 11:56:05 michiel Exp $
+ * @version $Id: MMBase.java,v 1.209 2006-10-08 07:03:15 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -573,8 +573,9 @@ public class MMBase extends ProcessorModule {
                 mmbaseroot = getModule(MMBase.class);
                 if (mmbaseroot == null) {
                     log.fatal("The mmbaseroot module could not be found. Perhaps 'mmbaseroot.xml' is missing?");
+                } else {
+                    mmbaseroot.startModule();
                 }
-                mmbaseroot.startModule();
             }
         }
         return mmbaseroot;
