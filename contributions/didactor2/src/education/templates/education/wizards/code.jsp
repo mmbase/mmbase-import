@@ -540,14 +540,23 @@
 
 
             session.setAttribute("content_metadata_names", arrstrContentMetadataConfig);
-
-            for (int f = 0; f < arrstrContentMetadataConfig.length; f++)
+          
+            int levelVisible = 0;
+            %>
+            <di:hasrole role="teacher">
+              <% levelVisible = 1; %>
+            </di:hasrole>
+            <di:hasrole role="systemadministrator">
+              <% levelVisible = 4; %>
+            </di:hasrole>
+            <%
+            for (int f = 0; f < levelVisible; f++)
             {
                %>
                <table border="0" cellpadding="0" cellspacing="0">
                   <tr>
                      <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
-                     <% if ( f == arrstrContentMetadataConfig.length-1 ) { %>
+                     <% if ( f == levelVisible-1 ) { %>
                        <td><img src="gfx/tree_leaflast.gif" border="0" align="middle"/></td>
                      <%} else { %>
                        <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
