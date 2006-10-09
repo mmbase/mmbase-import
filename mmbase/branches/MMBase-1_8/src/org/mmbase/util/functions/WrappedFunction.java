@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: WrappedFunction.java,v 1.9 2005-10-18 21:51:30 michiel Exp $
+ * @version $Id: WrappedFunction.java,v 1.9.2.1 2006-10-09 14:44:50 pierre Exp $
  */
 public abstract class WrappedFunction implements Function {
 
@@ -42,7 +42,9 @@ public abstract class WrappedFunction implements Function {
          if (parameters instanceof Parameters) {
              return getFunctionValue((Parameters)parameters);
          } else {
-             Parameters params = wrappedFunction.createParameters().setAll(parameters);
+             Parameters params = wrappedFunction.createParameters();
+             params.setAutoCasting(true);
+             params.setAll(parameters);
              return getFunctionValue(params);
          }
     }
