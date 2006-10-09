@@ -17,7 +17,7 @@
 
          TODO: Some way to edit relations? NODE-field editor?
 
-         $Id: change.jspx,v 1.19 2006-10-09 08:43:32 michiel Exp $
+         $Id: change.jspx,v 1.20 2006-10-09 08:52:49 michiel Exp $
     -->
     <mm:import externid="ok">init</mm:import>
     <mm:import externid="submitted"><mm:write referid="ok" /></mm:import>
@@ -81,7 +81,32 @@
             </mm:compare>
           </mm:node>
         </mm:form>
-      </body>
+        <div class="relations">
+          <mm:node referid="node">
+            <mm:listrelationscontainer>
+              <h2>Relations: <mm:size /></h2>
+              <table>
+                <mm:listrelations>
+                  <tr>
+                    <td>
+                      <mm:link referids="_node@node">
+                        <a href="${_}"><mm:nodeinfo type="gui" /></a>
+                      </mm:link>
+                    </td>
+                    <td>
+                      <mm:relatednode>
+                        <mm:link referids="_node@node">
+                          <a href="${_}"><mm:nodeinfo type="gui" /></a>
+                        </mm:link>
+                      </mm:relatednode>
+                    </td>
+                  </tr>
+                </mm:listrelations>          
+              </table>
+            </mm:listrelationscontainer>
+          </mm:node>     
+        </div>
+      </body>      
     </mm:cloud>
   </html>
 </mm:content>
