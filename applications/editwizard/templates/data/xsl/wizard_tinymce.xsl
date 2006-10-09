@@ -13,7 +13,7 @@
     If you have the source, you can use the editwizard build script to download and extract tinymce ('ant tinymce').
 
     @author Pierre van Rooden
-    @version $Id: wizard_tinymce.xsl,v 1.3 2006-08-14 07:54:35 pierre Exp $
+    @version $Id: wizard_tinymce.xsl,v 1.4 2006-10-09 12:19:58 pierre Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -26,7 +26,7 @@
     The following things can be overriden to customize the appearance of wizard
     ================================================================================ -->
 
-  <xsl:variable name="BodyOnLoad">doOnLoad_ew(); start_validator(); initPopCalendar();</xsl:variable>
+  <xsl:variable name="BodyOnLoad">doOnLoad_ew(); start_validator();</xsl:variable>
 
   <xsl:template name="javascript-html">
     <script type="text/javascript" src="../tinymce/jscripts/tiny_mce/tiny_mce.js">
@@ -35,22 +35,38 @@
     <script type="text/javascript">
           <xsl:text disable-output-escaping="yes">
             <![CDATA[
+function mmbaseOnChangeHandler(inst) {
+    // preferably you would use:
+    //    inst.triggerSave();
+    //  but unfortunately that resets the cursor position in the editor too
+    if (inst.formElement)
+      inst.formElement.value = inst.getBody().innerHTML;
+    validator.validate(inst.formElement);
+}
+
 tinyMCE.init({
     mode: "textareas",
     editor_selector : "htmlarea",
     theme : "advanced",
+    plugins : "table",
     theme_advanced_toolbar_align : "left",
     theme_advanced_path_location : "bottom",
     theme_advanced_toolbar_location : "top",
-    theme_advanced_buttons1 : "bold,italic,underline,strikethrough,separator,sub,sup,separator,bullist,numlist,separator,cut,copy,paste,undo,redo,separator,link,unlink,charmap,separator,code,cleanup,removeformat",
+    theme_advanced_buttons1 : "bold,italic,underline,strikethrough,separator,sub,sup,separator,bullist,numlist,separator,link,unlink,charmap,separator,code,separator,tablecontrols",
     theme_advanced_buttons2 : "",
-    theme_advanced_buttons3 : ""
+    theme_advanced_buttons3 : "",
+    onchange_callback : "mmbaseOnChangeHandler"
+
 });
           ]]></xsl:text>
     </script>
   </xsl:template>
 
   <xsl:template name="stylehtml">
+  </xsl:template>
+
+  <!-- turn off datepicker (doesn't work properly) -->
+  <xsl:template name="date-picker">
   </xsl:template>
 
 </xsl:stylesheet>
