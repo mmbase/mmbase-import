@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: WrappedFunction.java,v 1.13 2006-09-27 20:42:21 michiel Exp $
+ * @version $Id: WrappedFunction.java,v 1.14 2006-10-09 14:45:10 pierre Exp $
  */
 public abstract class WrappedFunction<R> implements Function<R> {
 
@@ -42,12 +42,16 @@ public abstract class WrappedFunction<R> implements Function<R> {
          if (parameters instanceof Parameters) {
              return getFunctionValue((Parameters)parameters);
          } else {
-             Parameters params = wrappedFunction.createParameters().setAll(parameters);
-             return getFunctionValue(params);
+             Parameters params = wrappedFunction.createParameters();
+             params.setAutoCasting(true);
+             params.setAll(parameters);
+	     return getFunctionValue(params);
          }
     }
     public R getFunctionValue(Object... parameters) {
-        Parameters params = wrappedFunction.createParameters().setAll(parameters);
+        Parameters params = wrappedFunction.createParameters();
+        params.setAutoCasting(true);
+        params.setAll(parameters);
         return getFunctionValue(params);
     }
 
