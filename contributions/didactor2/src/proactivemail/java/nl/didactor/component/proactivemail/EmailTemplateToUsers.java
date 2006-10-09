@@ -162,7 +162,7 @@ public class EmailTemplateToUsers {
                          sendbody == null    || sendbody.length() == 0 || 
                          email.length() == 0
                           ) {
-                           log.warn("Proactivemailtemplate '" + this.templateName + "' - wrong values, emailSubject: '"+this.emailSubject+"', emailBody: '"+this.emailBody+"'");
+                           log.warn("Proactivemailtemplate '" + this.templateName + "' - wrong values, emailSubject: '"+sendsubject+"', emailBody: '"+sendbody+"'");
                            continue;
                        }
                     org.mmbase.bridge.Node message = cloud.getNodeManager("emails").createNode();
