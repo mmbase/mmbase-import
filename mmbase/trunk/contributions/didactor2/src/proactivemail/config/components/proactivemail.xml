@@ -1,4 +1,4 @@
-<component name="proactivemail" templatepath="proactivemail">
+<component name="proactivemail" templatepath="proactivemail"  templatebar="education">
 
   <scope name="component" referid="component"/>
 
