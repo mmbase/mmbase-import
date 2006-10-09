@@ -96,6 +96,7 @@ public class EmailTemplateToUsers {
           result = db.parse(URL);
         } catch (Exception e) {
           log.error("Can't get proactivemail users for template '"+this.templateName+"'.\r\n    "+e.toString());
+          return null;
         }
         return result;
     }
@@ -112,13 +113,21 @@ public class EmailTemplateToUsers {
      *          <lastname></lastname>
      *          <username></username>
      *          <email></email>
+     *          [ OPTIONAL
+     *            <subject></subject>
+     *            <body></body>
+     *            <from></from>
+     *          ]
      *      </user>
      *      ...
      *  </users>
      * </template> 
      */
-    public void sendEmailToUsers(org.w3c.dom.Document d) {
-        if ( d == null ) return;
+    public boolean sendEmailToUsers(org.w3c.dom.Document d) {
+        if ( d == null ) { 
+            log.error("Error: proactivemailtemplate '" + this.templateName + "' - document is null");
+            return false;
+        }
 
         this.startTime = System.currentTimeMillis()/1000;
         
@@ -126,39 +135,42 @@ public class EmailTemplateToUsers {
             Element elRoot = d.getDocumentElement();
             this.emailSubject = this.getTextValue(elRoot, "subject");
             this.emailBody = this.getTextValue(elRoot, "body");
-            if ( this.emailSubject == null || this.emailBody == null ||
-                 this.emailSubject.length() == 0 || this.emailBody.length() == 0
-               )
-                return;
             this.emailFrom = this.getTextValue(elRoot, "from");
-            if ( this.emailFrom == null ) this.emailFrom = "";
-
             Cloud cloud = ContextProvider.getCloudContext("local").getCloud("mmbase");
             String usernameSystem = "system", admin = "admin";
             NodeList nlUsers = elRoot.getElementsByTagName("users");
-            if ( nlUsers.getLength() <= 0 ) return;
-            Element elUsers = (Element)nlUsers.item(0);
-            NodeList nlUser = elUsers.getElementsByTagName("user");
-            for ( int n = 0; n < nlUser.getLength(); n++ ) {
-                // get 'users' node
-                Element elUser = (Element)nlUser.item(n);
-                String firstname = this.getTextValue(elUser, "firstname");
-                String lastname = this.getTextValue(elUser, "lastname");
-                String username = this.getTextValue(elUser, "username");
-                String email = this.getTextValue(elUser, "email");
+            if ( nlUsers.getLength() > 0 ) { 
+                Element elUsers = (Element)nlUsers.item(0);
+                NodeList nlUser = elUsers.getElementsByTagName("user");
+                for ( int n = 0; n < nlUser.getLength(); n++ ) {
+                    // get 'users' node
+                    Element elUser = (Element)nlUser.item(n);
+                    String firstname = this.getTextValue(elUser, "firstname");
+                    String lastname = this.getTextValue(elUser, "lastname");
+                    String username = this.getTextValue(elUser, "username");
+                    String email = this.getTextValue(elUser, "email");
+                    String specialfrom = this.getTextValue(elUser, "from", true);
+                    String specialsubject = this.getTextValue(elUser, "subject", true);
+                    String specialbody = this.getTextValue(elUser, "body");
 
-                if (  email.length() > 0 && emailSubject.length() > 0 && emailBody.length() > 0) {
+                    String sendsubject = null, sendbody = null, sendfrom = null;
+                    sendsubject = ( specialsubject != null ) ? specialsubject : this.emailSubject;
+                    sendbody = ( specialbody != null ) ? specialbody : this.emailBody;
+                    sendfrom = ( specialfrom != null ) ? specialfrom : this.emailFrom;
+                    
+                    if ( sendsubject == null || sendsubject.length() == 0 ||
+                         sendbody == null    || sendbody.length() == 0 || 
+                         email.length() == 0
+                          ) {
+                           log.warn("Error: proactivemailtemplate '" + this.templateName + "' - wrong values, emailSubject: '"+this.emailSubject+"', emailBody: '"+this.emailBody+"'");
+                           continue;
+                       }
                     org.mmbase.bridge.Node message = cloud.getNodeManager("emails").createNode();
                     if ( message != null ) {
-                        message.setStringValue("from", this.emailFrom);
-                        
-                        // send on test account for now
-                        message.setStringValue("to", email); 
-                        message.setStringValue("body", emailBody);
-                        //message.setStringValue("to", "g.kostadinov@levi9.com");
-                        //message.setStringValue("body", "to: "+username+"-"+firstname+" "+lastname+"\r\n\r\n"+emailBody);
-                        
-                        message.setStringValue("subject", emailSubject);
+                        message.setStringValue("from", sendfrom);
+                        message.setStringValue("to", email);
+                        message.setStringValue("body", sendbody);
+                        message.setStringValue("subject", sendsubject);
                         message.setIntValue("date", (int) (System.currentTimeMillis() / 1000));
                         message.commit();
                         message.setIntValue("type", 1);
@@ -169,11 +181,13 @@ public class EmailTemplateToUsers {
             }
         } catch (Exception e) {
             log.error("Error parsing XML for template '"+this.templateName+"'.\r\n    "+e.toString());
+            return false;
         } finally {
             this.endTime = System.currentTimeMillis()/1000;
             if ( this.messageCount > 0 )
                 this.setBatches();
         }
+        return true;
     }
 
     private String getTextValue(Element ele, String tagName) {
