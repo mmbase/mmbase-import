@@ -78,6 +78,7 @@
     <disallowed-field name="hour" replacement="m_hour"/> <!-- standard SQL keyword -->
     <disallowed-field name="int" replacement="m_int"/> <!-- standard SQL keyword -->
     <disallowed-field name="integer" replacement="m_integer"/>
+    <disallowed-field name="interval" replacement="m_interval"/>
     <disallowed-field name="key" replacement="m_key"/> <!-- standard SQL keyword -->
     <disallowed-field name="keys" replacement="m_keys"/>
     <disallowed-field name="left" replacement="m_left"/>
