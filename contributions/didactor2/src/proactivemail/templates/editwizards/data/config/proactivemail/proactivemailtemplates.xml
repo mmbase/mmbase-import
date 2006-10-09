@@ -97,6 +97,10 @@
                   </search-filter>
               </command>									
           </list> 
+          <field name="date" >
+              <prompt xml:lang="en">Datum</prompt>
+              <prompt xml:lang="nl">Date</prompt>
+          </field>
           <list role="related" destination="providers" minoccurs="0" maxoccurs="*">
               <title xml:lang="en">Providers</title>
               <title xml:lang="nl">Providers</title>

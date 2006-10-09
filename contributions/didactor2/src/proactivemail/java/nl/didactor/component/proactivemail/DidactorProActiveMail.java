@@ -172,12 +172,16 @@ public class DidactorProActiveMail extends Component{
                 if ( cronActive.intValue() > 0 && cronName != null && 
                      cronName.length() > 0 && cronPattern.length() > 0 ) {
                     log.info("Initialize active scheduler '"+cronName+"'.");
-                    JobDetail jobDetail = new JobDetail(cronNumber.toString()+"_"+cronName,
-                            groupName,
-                            nl.didactor.component.proactivemail.cron.ProActiveMailJob.class);
-
-                    CronTrigger trigger = new CronTrigger(cronName, null, cronPattern);
-                    scheduler.scheduleJob(jobDetail, trigger);
+                    try {
+                        JobDetail jobDetail = new JobDetail(cronNumber.toString()+"_"+cronName,
+                                groupName,
+                                nl.didactor.component.proactivemail.cron.ProActiveMailJob.class);
+                        
+                        CronTrigger trigger = new CronTrigger(cronName, null, cronPattern);
+                        scheduler.scheduleJob(jobDetail, trigger);
+                    } catch (Exception ex1) {
+                        log.error("Can't initialize proactivemailscheduler cron named '"+cronName+"'.\r\n     "+ex1.toString());
+                    }
                 }
             }
         } catch (Exception ex) {

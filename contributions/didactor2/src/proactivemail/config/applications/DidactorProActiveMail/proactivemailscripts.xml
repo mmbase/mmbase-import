@@ -6,9 +6,10 @@
 f();
 function f(){
   var users  = Packages.nl.didactor.component.proactivemail.EmailTemplateToUsers('twomonthsnologin');
-  var xmldoc = users.getRelatedPeople("/proactivemail/getusers.jsp"); 
-  users.sendEmailToUsers(xmldoc);
-  return true;
+  var xmldoc = users.getRelatedPeople("/proactivemail/getusers.jsp");
+  if ( xmldoc != null ) 
+      return users.sendEmailToUsers(xmldoc);
+  return false;
 }            
         </code>
         <active>1</active>
@@ -21,8 +22,9 @@ f();
 function f(){
   var users  = Packages.nl.didactor.component.proactivemail.EmailTemplateToUsers('monthafterregistration');
   var xmldoc = users.getRelatedPeople("/proactivemail/getusersmontgafterreg.jsp"); 
-  users.sendEmailToUsers(xmldoc);
-  return true;
+  if ( xmldoc != null ) 
+    return users.sendEmailToUsers(xmldoc);
+  return false;
 }         
         </code>
         <active>1</active>
