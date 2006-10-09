@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.77 2006-09-15 17:04:48 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.78 2006-10-09 12:22:04 pierre Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -73,7 +73,6 @@ public class BuilderReader extends DocumentReader {
     public static void registerSystemIDs() {
         XMLEntityResolver.registerSystemID(NAMESPACE_BUILDER_2_0 + ".xsd", XSD_BUILDER_2_0, BuilderReader.class);
     }
-
 
     /**
      * Register the Public Ids for DTDs used by BuilderReader
@@ -633,6 +632,7 @@ public class BuilderReader extends DocumentReader {
                     // (if not, what else?)
                     dataType = (BasicDataType) baseDataType.clone();
                     dataType.getEnumerationFactory().addBundle(guiType, getClass().getClassLoader(), null, dataType.getTypeAsClass(), null);
+                    dataType.getEnumerationRestriction().setEnforceStrength(DataType.ENFORCE_NEVER);
                 } else {
                     // check for builder names when the type is NODE
                     MMObjectBuilder enumerationBuilder = null;
@@ -676,6 +676,7 @@ public class BuilderReader extends DocumentReader {
                         dataType = (BasicDataType) baseDataType.clone();
                         Document queryDocument = DocumentReader.toDocument(queryElement);
                         dataType.getEnumerationFactory().addQuery(LocalizedString.getLocale(queryElement), queryDocument);
+                        dataType.getEnumerationRestriction().setEnforceStrength(DataType.ENFORCE_NEVER);
                     } else {
                         dataType = collector.getDataTypeInstance(guiType, baseDataType);
                         if (dataType == null) {

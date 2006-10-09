@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.74 2006-08-30 17:49:19 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.74.2.1 2006-10-09 12:21:56 pierre Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -607,6 +607,7 @@ public class BuilderReader extends DocumentReader {
                     // (if not, what else?)
                     dataType = (BasicDataType) baseDataType.clone();
                     dataType.getEnumerationFactory().addBundle(guiType, getClass().getClassLoader(), null, dataType.getTypeAsClass(), null);
+                    dataType.getEnumerationRestriction().setEnforceStrength(DataType.ENFORCE_NEVER);
                 } else {
                     // check for builder names when the type is NODE
                     MMObjectBuilder enumerationBuilder = null;
@@ -650,6 +651,7 @@ public class BuilderReader extends DocumentReader {
                         dataType = (BasicDataType) baseDataType.clone();
                         Document queryDocument = DocumentReader.toDocument(queryElement);
                         dataType.getEnumerationFactory().addQuery(LocalizedString.getLocale(queryElement), queryDocument);
+                        dataType.getEnumerationRestriction().setEnforceStrength(DataType.ENFORCE_NEVER);
                     } else {
                         dataType = collector.getDataTypeInstance(guiType, baseDataType);
                         if (dataType == null) {
