@@ -14,6 +14,7 @@
 		<a href="kicker.jsp?a=csvreader">CSVReader</a><br/>
 		<a href="kicker.jsp?a=eventnotifier">EventNotifier</a><br/>
 		<a href="kicker.jsp?a=google">SiteMapGenerator</a><br/>
+		<a href="kicker.jsp?a=dirreader">dirReader</a><br/>
 		<a href="kicker.jsp?a=defaultrel">addDefaultRelations</a><br/>
 	</mm:compare>
 	<mm:compare referid="a" value="unuseditems">
@@ -27,6 +28,9 @@
 	</mm:compare>
 	<mm:compare referid="a" value="google">
 		<% (new nl.leocms.connectors.Google.output.sitemap.SiteMapGenerator()).run(); %>
+	</mm:compare>
+	<mm:compare referid="a" value="dirreader">
+		<% (new nl.leocms.util.tools.documents.DirReader()).run(); %>
 	</mm:compare>
 	<mm:compare referid="a" value="defaultrel">
 		<% (new nl.leocms.util.MMBaseHelper(cloud)).addDefaultRelations(); %>
