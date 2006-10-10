@@ -9,17 +9,13 @@
 ></mm:list>
 <map name="imagemap"><%
 	String targetObject = "artikel";
-	String readmoreUrl = sUrl + "?p" + paginaID + "&article=";
 	%><%@include file="relatedareas.jsp" %><%
-	readmoreUrl = sUrl + "?p=";
 	targetObject = "pagina2";
 	%><%@include file="relatedareas.jsp" 
 %></map><%
 if(isPreview) {
 	targetObject = "artikel";
-	readmoreUrl = "../ " + sUrl + "?p=" + paginaID + "&article=";
 	%><%@include file="relatedcoordinates.jsp" %><%
 	targetObject = "pagina2";
-	readmoreUrl = "../" + sUrl + "?p=";
 	%><%@include file="relatedcoordinates.jsp" %><%
 } %>
