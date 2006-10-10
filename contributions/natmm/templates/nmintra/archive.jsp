@@ -145,8 +145,10 @@ if(!projectId.equals("")) {
                  readmoreUrl += "?p=" + paginaID + "&project=";
                  %><mm:field name="number" jspvar="project_number" vartype="String" write="false"><%
                      readmoreUrl += project_number; 
-                 %></mm:field
-                 ><a href="<%= readmoreUrl %>"><div style="text-decoration:underline;" class="dark"><mm:field name="titel"/></div>
+                 %></mm:field>
+                 <a href="<%= readmoreUrl %>">
+                    <div style="text-decoration:underline;" class="dark"><mm:field name="titel"/></div>
+                    <span class="normal" style="text-decoration:none;">
                       <%@include file="includes/dateperiod.jsp" %><br/>
                       <% String summary = ""; 
                         %><mm:field name="goal" jspvar="projects_goal" vartype="String" write="false"
@@ -160,12 +162,14 @@ if(!projectId.equals("")) {
                             %></mm:isnotempty
                         ></mm:field><%
                         summary = HtmlCleaner.cleanText(summary,"<",">");
-                                int spacePos = summary.indexOf(" ",70); 
-                                if(spacePos>-1) { 
-                                    summary =summary.substring(0,spacePos);
-                                }
+                        int spacePos = summary.indexOf(" ",70); 
+                        if(spacePos>-1) { 
+                           summary =summary.substring(0,spacePos);
+                        }
                         %>
-                        <span class="normal"><%= summary %>... >></span></a><br><br>
+                        <%= summary %>... >>
+                     </span>
+                  </a><br/><br/>
                   </mm:node
                ></mm:list><%
         } else {
