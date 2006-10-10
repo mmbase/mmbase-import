@@ -351,13 +351,13 @@
        </mm:createrelation>
 	</mm:listnodes>
 	<% log.info("24. Resize image of project phases"); %>
-  <mm:listnodes type="images" constraints="titel = 'Fasen'">
+   <mm:listnodes type="images" constraints="titel = 'Fasen'">
 	  <mm:node>
       <mm:setfield name="screensize">1</mm:setfield>
     </mm:node>
 	</mm:listnodes>
-  <% log.info("25. Changing the product editwizard"); %>
-  <mm:listnodes type="editwizards" constraints="wizard = 'config/items/items_shop'">
+   <% log.info("25. Changing the product editwizard"); %>
+   <mm:listnodes type="editwizards" constraints="wizard = 'config/items/items_shop'">
 		<mm:setfield name="fields">titel,id,type,price1,owner,quotetitle</mm:setfield>
 	</mm:listnodes>
 	<% log.info("99. Deleting unused editwizards"); %>
@@ -371,14 +371,14 @@
 		"config/pagina/pagina",
 		"config/menu/menu",
 		"/editors/parcleaner/cleanarticles.jsp",
-    "config/feedback/wizard",
-    "/editors/items.jsp",
-    "/editors/imap_overview.jsp",
-    "config/linklijst/linklijst_knipsels",
-    "config/pagina/pagina_topic",
-    "config/images/images_knipsels",
-    "config/programs/programs",
-    "config/companies/companies"
+      "config/feedback/wizard",
+      "/editors/items.jsp",
+      "/editors/imap_overview.jsp",
+      "config/linklijst/linklijst_knipsels",
+      "config/pagina/pagina_topic",
+      "config/images/images_knipsels",
+      "config/programs/programs",
+      "config/companies/companies"
 		};
 	for(int i=0; i<ewToDelete.length;i++) {
 		%><mm:listnodes type="editwizards" constraints="<%= "wizard = '" + ewToDelete[i]  + "'" %>">
@@ -390,9 +390,9 @@
 		"Home",
 		"Subrubriek editors",
 		"Website beheer",
-    "Interne Webwinkel (redactie)",
-    "Kiezen en Delen",
-    "Knipsels, bijlagen (niet in gebruik)"
+      "Interne Webwinkel (redactie)",
+      "Kiezen en Delen",
+      "Knipsels, bijlagen (niet in gebruik)"
 	};
 	for(int i=0; i<menuToDelete.length;i++) {
 		%><mm:listnodes type="menu" constraints="<%= "naam = '" + menuToDelete[i]  + "'" %>">
@@ -401,13 +401,15 @@
 	}
 	String [] ewToRename = {
 		"/editors/cache/flush.jsp?command=all",
-    "config/pagina/pagina_form",
-    "/editors/stats/shopstats.jsp"
+      "config/pagina/pagina_form",
+      "/editors/stats/shopstats.jsp",
+      "config/artikel/artikel"
 		};
 	String [] ewNewName = {
 		"/editors/util/flushcache.jsp",
-    "config/pagina/pagina_formulier",
-    "/editors/simplestats/shopstats.jsp"
+      "config/pagina/pagina_formulier",
+      "/editors/simplestats/shopstats.jsp",
+      "config/artikel/artikel_nieuws_nmintra"
 		};
 	for(int i=0; i<ewToRename.length;i++) {
 		%><mm:listnodes type="editwizards" constraints="<%= "wizard = '" + ewToRename[i]  + "'" %>">
@@ -455,7 +457,7 @@
   	<mm:createrelation source="jo" destination="ev_feedback" role="posrel">
        <mm:setfield name="pos">80</mm:setfield>
     </mm:createrelation>
-	</mm:listnodes>  
+	</mm:listnodes>
 	Done.<br/>
 </mm:log>
 </mm:cloud>
