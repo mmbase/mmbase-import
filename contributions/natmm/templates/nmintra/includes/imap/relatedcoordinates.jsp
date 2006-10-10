@@ -8,7 +8,7 @@
 				%>px;text-align:center;font-size:11px;border:dashed thin #FF0000;color:#FF0000;">
 		<a href="<mm:field name="<%= targetObject + ".number" %>" jspvar="number" vartype="String" write="false"><%
 			 if(targetObject.equals("pagina2")) { // *** jump to another page ***
-				%><mm:url page="<%= readmoreUrl + number %>" /><%
+				%><mm:url page="<%=  ph.createPaginaUrl(number,request.getContextPath()) %>" /><%
 			} else{ // *** jump to the same page ***
 				%><mm:url page="<%= readmoreUrl + number %>" /><%
 			}
