@@ -7,6 +7,7 @@
 package org.mmbase.cache;
 
 import java.util.*;
+import java.util.concurrent.*;
 
 import org.mmbase.core.event.Event;
 import org.mmbase.core.event.NodeEvent;
@@ -33,7 +34,7 @@ import org.mmbase.bridge.implementation.BasicQuery;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Bunst Eunders
- * @version $Id: QueryResultCache.java,v 1.37 2006-09-11 12:03:57 michiel Exp $
+ * @version $Id: QueryResultCache.java,v 1.38 2006-10-11 19:06:34 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -80,11 +81,12 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
     /**
      * @param strategies
      */
-    public void addReleaseStrategies(List strategies) {
+    public void addReleaseStrategies(List<ReleaseStrategy> strategies) {
         if (strategies != null) {
-            for (Iterator iter = strategies.iterator(); iter.hasNext();) {
-                ReleaseStrategy element = (ReleaseStrategy) iter.next();
-                log.debug(("adding strategy " + element.getName() + " to cache " + getName()));
+            for (ReleaseStrategy element : strategies) {
+                if (log.isDebugEnabled()) {
+                    log.debug(("adding strategy " + element.getName() + " to cache " + getName()));
+                }
                 addReleaseStrategy(element);
             }
         }
@@ -158,10 +160,7 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
      */
     private void addObservers(SearchQuery query) {
         MMBase.getMMBase();
-
-        Iterator i = query.getSteps().iterator();
-        while (i.hasNext()) {
-            Step step = (Step) i.next();
+        for (Step step : query.getSteps()) {
             //if we want to test constraints on relaion steps we have to have observers for them
 //            if (step instanceof RelationStep) {
 //                continue;
@@ -193,7 +192,7 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
          * This set contains the types (as a string) which are to be
          * invalidated.
          */
-        private Set<SearchQuery> cacheKeys = new HashSet<SearchQuery>(); // using java default for
+        private Map<SearchQuery, String> cacheKeys = new ConcurrentHashMap<SearchQuery, String>(); // using java default for
                                                 // initial size. Someone tried 50.
 
         private String type;
@@ -227,14 +226,14 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
          */
         protected synchronized boolean observe(SearchQuery key) {
             // assert(MultilevelCache.this.containsKey(key));
-            return cacheKeys.add(key);
+            return cacheKeys.put(key, "") != null;
         }
 
         /**
          * Stop observing this key of multilevelcache
          */
         protected synchronized boolean stopObserving(Object key) {
-            return cacheKeys.remove(key);
+            return cacheKeys.remove(key) != null;
         }
 
         /*
@@ -260,48 +259,42 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
                 log.debug("Considering " + event);
             }
             int evaluatedResults = cacheKeys.size();
-            Set removeKeys = new HashSet();
             long startTime = System.currentTimeMillis();
-            synchronized (QueryResultCache.this) {
-                Iterator<SearchQuery> i = cacheKeys.iterator();
-                if (log.isDebugEnabled()) {
-                    log.debug("Considering " + cacheKeys.size() + " objects in " + QueryResultCache.this.getName() + " for flush because of " + event);
-                }
-                while(i.hasNext()) {
-                    SearchQuery key = i.next();
-
-                    boolean shouldRelease;
-                    if(releaseStrategy.isEnabled()){
-                        if(event instanceof NodeEvent){
-                            shouldRelease = releaseStrategy.evaluate((NodeEvent)event, key, (List) get(key)).shouldRelease();
-                        } else if (event instanceof RelationEvent){
-                            shouldRelease = releaseStrategy.evaluate((RelationEvent)event, key, (List) get(key)).shouldRelease();
-                        } else {
-                            log.error("event " + event.getClass() + " " + event + " is of unsupported type");
-                            shouldRelease = false;
-                        }
-                    } else {
-                        shouldRelease = true;
-                    }
-
-                    if (shouldRelease) {
-                        removeKeys.add(key);
-                        i.remove();
-                    }
-
-                }
-
-                // ernst: why is this in a separate loop?
-                // why not chuck em out in the first one?
-                i = removeKeys.iterator();
-                while(i.hasNext()) {
-                    QueryResultCache.this.remove(i.next());
-                }
-            }
+            Iterator<SearchQuery> i = cacheKeys.keySet().iterator();
             if (log.isDebugEnabled()) {
-                log.debug(QueryResultCache.this.getName() + ": event analyzed in " + (System.currentTimeMillis() - startTime)  + " milisecs. evaluating " + evaluatedResults + ". Flushed " + removeKeys.size());
+                log.debug("Considering " + cacheKeys.size() + " objects in " + QueryResultCache.this.getName() + " for flush because of " + event);
             }
-            return removeKeys.size();
+            int removeKeys = 0;
+            while(i.hasNext()) {
+                SearchQuery key = i.next();
+                boolean shouldRelease;
+                if(releaseStrategy.isEnabled()){
+                    if(event instanceof NodeEvent){
+                        shouldRelease = releaseStrategy.evaluate((NodeEvent)event, key,
+                                                                 QueryResultCache.this.get(key)).shouldRelease();
+                    } else if (event instanceof RelationEvent){
+                        shouldRelease = releaseStrategy.evaluate((RelationEvent)event, key,
+                                                                 QueryResultCache.this.get(key)).shouldRelease();
+                    } else {
+                        log.error("event " + event.getClass() + " " + event + " is of unsupported type");
+                        shouldRelease = false;
+                    }
+                } else {
+                    shouldRelease = true;
+                }
+
+                if (shouldRelease) {
+                    QueryResultCache.this.remove(key);
+                    i.remove();
+                    removeKeys++;
+                }
+
+            }
+
+            if (log.isDebugEnabled()) {
+                log.debug(QueryResultCache.this.getName() + ": event analyzed in " + (System.currentTimeMillis() - startTime)  + " milisecs. evaluating " + evaluatedResults + ". Flushed " + removeKeys);
+            }
+            return removeKeys;
         }
 
         public String toString() {
@@ -316,10 +309,9 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
     public void clear(){
         super.clear();
         releaseStrategy.clear();
-        Iterator<Observer> i = observers.values().iterator();
-        while (i.hasNext()) {
-            Observer o = i.next();
+        for (Observer o : observers.values()) {
             o.clear();
         }
+
     }
 }
