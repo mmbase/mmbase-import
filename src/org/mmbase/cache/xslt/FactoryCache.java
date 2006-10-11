@@ -23,7 +23,7 @@ import java.net.URL;
  * org.mmbase.util.xml.URIResolver.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FactoryCache.java,v 1.8 2006-09-04 12:53:51 michiel Exp $
+ * @version $Id: FactoryCache.java,v 1.9 2006-10-11 18:45:57 michiel Exp $
  */
 public class FactoryCache extends Cache<URIResolver, TransformerFactory> {
 
@@ -69,6 +69,11 @@ public class FactoryCache extends Cache<URIResolver, TransformerFactory> {
         TransformerFactory tf =  get(uri);
         if (tf == null) {
             tf = TransformerFactory.newInstance();
+            try {
+                tf.setAttribute("http://saxon.sf.net/feature/version-warning", false);
+            } catch (IllegalArgumentException iae) {
+                // never mind
+            }
             tf.setURIResolver(uri);
             // you must set the URIResolver in the tfactory, because it will not be called everytime, when you use Templates-caching.
             put(uri, tf);
