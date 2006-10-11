@@ -34,7 +34,7 @@ import org.w3c.dom.Element;
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.25 2006-07-15 10:52:05 michiel Exp $
+ * @version $Id: UtilReader.java,v 1.26 2006-10-11 18:05:49 michiel Exp $
  */
 public class UtilReader {
 
@@ -60,7 +60,7 @@ public class UtilReader {
         XMLEntityResolver.registerPublicID(PUBLIC_ID_UTIL_1_0, DTD_UTIL_1_0, UtilReader.class);
     }
 
-    private static final Map utilReaders = new HashMap();     // file-name -> utilreader
+    private static final Map<String, UtilReader> utilReaders = new HashMap();     // file-name -> utilreader
 
     /**
      * Returns a UtilReader for the given fileName. When you use this, the UtilReader instance will be cached.
@@ -69,7 +69,7 @@ public class UtilReader {
      */
 
     public static UtilReader get(String fileName) {
-        UtilReader utilReader = (UtilReader) utilReaders.get(fileName);
+        UtilReader utilReader = utilReaders.get(fileName);
         if (utilReader == null) {
             synchronized(utilReaders) {
                 utilReader = new UtilReader(fileName);
@@ -177,12 +177,10 @@ public class UtilReader {
 
     protected void readProperties(String s) {
         properties.clear();
-
+        
         ResourceLoader configLoader = ResourceLoader.getConfigurationRoot();
-        List configList = configLoader.getResourceList(s);
-        Iterator configs = configList.iterator();
-        while (configs.hasNext()) {
-            URL url = (URL) configs.next();
+        List<URL> configList = configLoader.getResourceList(s);
+        for (URL url : configList) {
             org.xml.sax.InputSource is;
             try {
                 is = ResourceLoader.getInputSource(url);
@@ -201,7 +199,7 @@ public class UtilReader {
                         String name = reader.getElementAttributeValue(p, "name");
                         String type = reader.getElementAttributeValue(p, "type");
                         if (type.equals("map")) {
-                            Collection entryList = new ArrayList();
+                            Collection<Map.Entry<String, Object>> entryList = new ArrayList();
 
                             for (Iterator entriesIter = reader.getChildElements(p, "entry"); entriesIter.hasNext();) {
                                 Element entry = (Element) entriesIter.next();
@@ -217,7 +215,7 @@ public class UtilReader {
                                     }
                                 }
                                 if (key != null && value != null) {
-                                    entryList.add(new Entry(key, value));
+                                    entryList.add(new Entry<String, Object>(key, value));
                                 }
                             }
                             if (properties.containsKey(name)) {
@@ -253,9 +251,9 @@ public class UtilReader {
      * @since MMBase-1.8
      */
 
-    public static class PropertiesMap extends AbstractMap {
+    public static class PropertiesMap extends AbstractMap<String, Object> {
 
-        private final Map wrappedMap;
+        private final Map<String, Object> wrappedMap;
 
         /**
          * Creates an empty Map (not very useful since this Map is unmodifiable).
@@ -267,7 +265,7 @@ public class UtilReader {
         /**
          * Wrapping the given map.
          */
-        public PropertiesMap(Map map) {
+        public PropertiesMap(Map<String, Object> map) {
             wrappedMap = map;
         }
         /**
@@ -281,29 +279,29 @@ public class UtilReader {
         /**
          * Returns the object mapped with 'key', or defaultValue if there is none.
          */
-        public Object getProperty(Object key, Object defaultValue) {
+        public Object getProperty(String key, Object defaultValue) {
             Object result = get(key);
             return result == null ? defaultValue : result;
         }
 
-        private class  EntrySet extends AbstractSet {
+        private class  EntrySet extends AbstractSet<Map.Entry<String, Object>> {
             EntrySet() {}
             public int size() {
                 return PropertiesMap.this.wrappedMap.size();
             }
-            public Iterator iterator() {
+            public Iterator<Map.Entry<String, Object>> iterator() {
                 return new EntrySetIterator();
             }
         }
-        private class EntrySetIterator implements Iterator {
-            private Iterator i;
+        private class EntrySetIterator implements Iterator<Map.Entry<String, Object>> {
+            private Iterator<Map.Entry<String, Object>> i;
             EntrySetIterator() {
                 i = PropertiesMap.this.wrappedMap.entrySet().iterator();
             }
             public boolean hasNext() {
                 return i.hasNext();
             }
-            public Object next() {
+            public Map.Entry<String, Object> next() {
                 return i.next();
             }
             public void remove() {
