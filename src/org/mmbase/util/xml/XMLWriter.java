@@ -41,6 +41,7 @@ public class XMLWriter {
      **/
     public static void write(Node node, Writer writer, boolean indent, boolean omitxml) throws TransformerConfigurationException, TransformerException {
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        transformerFactory.setAttribute("VERSION_WARNING", false);
         Transformer transformer = transformerFactory.newTransformer();
         transformer.setOutputProperty(OutputKeys.INDENT, indent ? "yes" : "no");
         transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, omitxml ? "yes" : "no");
