@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @move org.mmbase.util.xml
  * @author Case Roole, cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: XSLTransformer.java,v 1.33 2006-10-11 18:28:51 michiel Exp $
+ * @version $Id: XSLTransformer.java,v 1.34 2006-10-11 18:45:57 michiel Exp $
  */
 public class XSLTransformer {
     private static final Logger log = Logging.getLoggerInstance(XSLTransformer.class);
@@ -162,11 +162,6 @@ public class XSLTransformer {
         }
         if (cachedXslt == null) {
             TransformerFactory tf = FactoryCache.getCache().getFactory(uri);
-            try {
-                tf.setAttribute("http://saxon.sf.net/feature/version-warning", false);
-            } catch (IllegalArgumentException iae) {
-                // never mind
-            }
             cachedXslt = tf.newTemplates(xsl);
             cache.put(xsl, cachedXslt, uri);
         } else {
