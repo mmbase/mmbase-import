@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.78 2006-10-09 12:22:04 pierre Exp $
+ * @version $Id: BuilderReader.java,v 1.79 2006-10-11 18:06:39 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -450,13 +450,18 @@ public class BuilderReader extends DocumentReader {
                         continue;
                     }
                     java.lang.reflect.Method method = MethodFunction.getMethod(claz, providerKey);
-                    if (method.getParameterTypes().length == 0) {
-                        function = BeanFunction.getFunction(claz, providerKey);
+                    if (method == null) {
+                        log.error("Could not find  method '" + providerKey + "' in " + claz);
+                        continue;
                     } else {
-                        if (method.getClass().isInstance(builder)) {
-                            function = MethodFunction.getFunction(method, providerKey, builder);
+                        if (method.getParameterTypes().length == 0) {
+                            function = BeanFunction.getFunction(claz, providerKey);
                         } else {
-                            function = MethodFunction.getFunction(method, providerKey);
+                            if (method.getClass().isInstance(builder)) {
+                                function = MethodFunction.getFunction(method, providerKey, builder);
+                            } else {
+                                function = MethodFunction.getFunction(method, providerKey);
+                            }
                         }
                     }
                 }
