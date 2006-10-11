@@ -40,7 +40,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.29 2006-06-19 05:53:58 michiel Exp $
+ * @version $Id: DocumentReader.java,v 1.30 2006-10-11 18:06:10 michiel Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
@@ -520,7 +520,7 @@ public class DocumentReader  {
      * @param path Path to the element
      * @return Iterator of child elements
      */
-    public Iterator getChildElements(String path) {
+    public Iterator<Element> getChildElements(String path) {
         return getChildElements(getElementByPath(path));
     }
 
@@ -528,7 +528,7 @@ public class DocumentReader  {
      * @param e Element
      * @return Iterator of child elements
      */
-    public Iterator getChildElements(Element e) {
+    public Iterator<Element> getChildElements(Element e) {
         return getChildElements(e,"*");
     }
 
@@ -537,7 +537,7 @@ public class DocumentReader  {
      * @param tag tag to match ("*" means all tags")
      * @return Iterator of child elements with the given tag
      */
-    public Iterator getChildElements(String path,String tag) {
+    public Iterator<Element> getChildElements(String path,String tag) {
         return getChildElements(getElementByPath(path),tag);
     }
 
@@ -547,8 +547,8 @@ public class DocumentReader  {
      * @return Iterator of child elements with the given tag
      * @todo XXXX MM: Since we have changed the return type from 1.7 to 1.8 anyway, why don't we return a List then?
      */
-    public Iterator getChildElements(Element e,String tag) {
-        List v = new ArrayList();
+    public Iterator<Element> getChildElements(Element e, String tag) {
+        List<Element> v = new ArrayList();
         boolean ignoretag = tag.equals("*");
         if (e!=null) {
             NodeList nl = e.getChildNodes();
@@ -557,7 +557,7 @@ public class DocumentReader  {
                 if (n.getNodeType() == Node.ELEMENT_NODE &&
                     (ignoretag ||
                      ((Element)n).getLocalName().equalsIgnoreCase(tag))) {
-                    v.add(n);
+                    v.add((Element) n);
                 }
             }
         }
