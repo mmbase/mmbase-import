@@ -41,7 +41,11 @@ public class XMLWriter {
      **/
     public static void write(Node node, Writer writer, boolean indent, boolean omitxml) throws TransformerConfigurationException, TransformerException {
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        transformerFactory.setAttribute("VERSION_WARNING", false);
+        try {
+            transformerFactory.setAttribute("http://saxon.sf.net/feature/version-warning", false);
+        } catch (IllegalArgumentException iae) {
+            // never mind
+        }
         Transformer transformer = transformerFactory.newTransformer();
         transformer.setOutputProperty(OutputKeys.INDENT, indent ? "yes" : "no");
         transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, omitxml ? "yes" : "no");
