@@ -6,13 +6,19 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.65 2006-09-06 08:23:24 nklasens Exp $
+ * @version  $Id: editwizard.jsp,v 1.66 2006-10-11 09:24:54 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
  */
 
 var form = null;
+
+function saveOnPart() {
+    /* ask the user if (s)he wants to save the document before leaving */
+    // TODO
+};
+
 
 function doOnLoad_ew() {
     //signal the form hasn't been submitted yet
@@ -364,10 +370,6 @@ function resizeEditTable() {
     var docWidth = getDimensions().windowWidth;
     document.getElementById("editform").style.width = docWidth
        
-    var textareas = document.getElementsByTagName("textarea");
-    for (var i = 0 ; i < textareas.length ; i++) {
-        textareas[i].style.width = docWidth -100;
-    }
 }
 
 function setParam(name, value) {
