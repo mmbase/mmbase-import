@@ -6,19 +6,13 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.66 2006-10-11 09:24:54 michiel Exp $
+ * @version  $Id: editwizard.jsp,v 1.67 2006-10-11 09:55:47 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
  */
 
 var form = null;
-
-function saveOnPart() {
-    /* ask the user if (s)he wants to save the document before leaving */
-    // TODO
-};
-
 
 function doOnLoad_ew() {
     //signal the form hasn't been submitted yet
@@ -91,6 +85,9 @@ function doOnUnLoad_ew() {
 // onunload handler with one of his own. It is hard to override that one,
 // because a timer is used to wait a while before attaching it.
 // In short, DON'T USE OR OVERRIDE THIS FUNCTION.
+ 
+// MM: I think it is very necessary though, to attach an unload event, because
+// the current hackery with history.go(1) in list.js is not acceptable. See bug #6810.
 }
 
 //********************************
