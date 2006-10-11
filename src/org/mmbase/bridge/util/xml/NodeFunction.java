@@ -51,7 +51,7 @@ import org.apache.xpath.XPathAPI;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.17 2006-09-29 09:56:10 michiel Exp $
+ * @version $Id: NodeFunction.java,v 1.18 2006-10-11 14:39:11 michiel Exp $
  * @since   MMBase-1.6
  */
 
@@ -75,6 +75,8 @@ public  class NodeFunction {
     }
 
     /**
+     * Note: Saxon cannnot distinguish this function from {@link #function(Cloud, String, String)},
+     * consider using {@link saxonFunction(Object, String, String)} in stead.
      * @param  cloudName The name of the Cloud.
      * @param  number  The number (or alias) of the Node
      * @param  function The function (with arguments).
@@ -90,7 +92,26 @@ public  class NodeFunction {
         }
     }
 
-    
+    /**
+     * Note: Saxon cannnot distinguish this function from {@link #function(String, String, String)},
+     * consider using {@link saxonFunction(Object, String, String)} in stead.
+     */
+    public static String function(Cloud cloud, String number, String function) {
+        return function(cloud, number, function, "");
+    }
+
+    /**
+     * Saxon cannot distinguish the above two functions ({@link $function(String, String, String)}, {@link #function(Cloud, String, String)}). So, you can help it and use this one in stead.
+     * @since MMBase-1.9
+     */
+    public static String saxonFunction(Object cloud, String number, String function) {
+        if (cloud instanceof Cloud) {
+            return function((Cloud) cloud, number, function);
+        } else {
+            return function((String) cloud, number, function);
+        }
+    }
+
     /**
      * @since MMBase-1.8
      */
@@ -128,10 +149,6 @@ public  class NodeFunction {
         log.debug("calling with dom node");
         String number = XPathAPI.eval(node, "./field[@name='number']").toString();
         return function(number, function);
-    }
-
-    public static String function(Cloud cloud, String number, String function) {
-        return function(cloud, number, function, "");
     }
 
     /**
