@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
  * information see the javadoc of that class.
  * @author Michiel Meeuwissen
- * @version $Id: MmxfSetString.java,v 1.14 2006-10-11 17:37:43 michiel Exp $
+ * @version $Id: MmxfSetString.java,v 1.15 2006-10-11 17:45:32 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -177,7 +177,7 @@ public class MmxfSetString implements  Processor {
      * @since MMBase-1.9
      */
     protected String normalizeWhiteSpace(String s) {
-        return WHITESPACE.matcher(s).replaceAll(" ").trim();
+        return WHITESPACE.matcher(s).replaceAll(" ");
     }
 
     /**
