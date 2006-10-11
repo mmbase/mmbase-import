@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
  * information see the javadoc of that class.
  * @author Michiel Meeuwissen
- * @version $Id: MmxfSetString.java,v 1.13 2006-10-06 14:25:11 michiel Exp $
+ * @version $Id: MmxfSetString.java,v 1.14 2006-10-11 17:37:43 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -172,6 +172,14 @@ public class MmxfSetString implements  Processor {
         return c.toString();
     }
 
+    private final Pattern WHITESPACE = Pattern.compile("\\s");
+    /**
+     * @since MMBase-1.9
+     */
+    protected String normalizeWhiteSpace(String s) {
+        return WHITESPACE.matcher(s).replaceAll(" ").trim();
+    }
+
     /**
      * First stage of parsing kupu-output. Does nothing with relations, only cleans up to 'mmxf' XML.
      *
@@ -197,13 +205,13 @@ public class MmxfSetString implements  Processor {
             if (name.equals("#text")) {
                 if (node.getNodeValue() != null && ! "".equals(node.getNodeValue().trim())) {
                     if (state.mode == MODE_SECTION) {
-                        Element imp = destination.getOwnerDocument().createElement("p");
+                        Element imp = destination.getOwnerDocument().createElementNS(Mmxf.NAMESPACE, "p");
                         log.debug("Appending to " + destination.getNodeName());
                         destination.appendChild(imp);
-                        Text text = destination.getOwnerDocument().createTextNode(node.getNodeValue());
+                        Text text = destination.getOwnerDocument().createTextNode(normalizeWhiteSpace(node.getNodeValue()));
                         imp.appendChild(text);
                     } else {
-                        Text text = destination.getOwnerDocument().createTextNode(node.getNodeValue());
+                        Text text = destination.getOwnerDocument().createTextNode(normalizeWhiteSpace(node.getNodeValue()));
                         destination.appendChild(text);
                     }
                 } else {
@@ -225,7 +233,7 @@ public class MmxfSetString implements  Processor {
 
             matcher = crossElement.matcher(name);
             if (matcher.matches()) {
-                Element imp = destination.getOwnerDocument().createElement("a");
+                Element imp = destination.getOwnerDocument().createElementNS(Mmxf.NAMESPACE, "a");
                 copyAttributes((Element) node, imp);
                 if (name.equals("div")) {
                     String cssClass = getCssClass("div " + imp.getAttribute("class"));
@@ -238,7 +246,7 @@ public class MmxfSetString implements  Processor {
                     }
                 }
                 if (state.mode == MODE_SECTION) {
-                    Element p = destination.getOwnerDocument().createElement("p");
+                    Element p = destination.getOwnerDocument().createElementNS(Mmxf.NAMESPACE, "p");
                     log.debug("Appending to " + destination.getNodeName());
                     destination.appendChild(p);
                     p.appendChild(imp);
@@ -265,7 +273,7 @@ public class MmxfSetString implements  Processor {
             }
             if (name.equals("i")) { // produced by FF
                 if (node.getFirstChild() != null) { // ignore if empty
-                    Element imp = destination.getOwnerDocument().createElement("em");
+                    Element imp = destination.getOwnerDocument().createElementNS(Mmxf.NAMESPACE, "em");
                     destination.appendChild(imp);
                     parseKupu((Element) node, imp, links, new ParseState(state.level, MODE_INLINE));
                 }
@@ -273,23 +281,28 @@ public class MmxfSetString implements  Processor {
             }
             if (name.equals("b")) { // produced by FF
                 if (node.getFirstChild() != null) { // ignore if empty
-                    Element imp = destination.getOwnerDocument().createElement("strong");
+                    Element imp = destination.getOwnerDocument().createElementNS(Mmxf.NAMESPACE, "strong");
                     destination.appendChild(imp);
                     parseKupu((Element) node, imp, links, new ParseState(state.level, MODE_INLINE));
                 }
                 continue;
             }
-            if (name.equals("br")  && state.mode == MODE_INLINE) { // sigh
-                Element imp = destination.getOwnerDocument().createElement("br");
-                destination.appendChild(imp);
-                continue;
+            if (name.equals("br")) { // sigh. Of course br is sillyness, but people want it.
+                if (state.mode == MODE_INLINE) { 
+                    Element imp = destination.getOwnerDocument().createElementNS(Mmxf.NAMESPACE, "br");
+                    destination.appendChild(imp);
+                    continue;
+                } else {
+                    log.warn("Found a br-tag, but not in INLINE mode, ignoring");
+                    continue;
+                }
             }
 
             matcher = copyElement.matcher(name);
             if (matcher.matches()) {
                 org.w3c.dom.Node firstChild = node.getFirstChild();
                 if (firstChild != null && !(firstChild.getNodeType() == org.w3c.dom.Node.TEXT_NODE && firstChild.getNodeValue().equals(""))) { // ignore if empty
-                    Element imp = destination.getOwnerDocument().createElement(matcher.group(0));
+                    Element imp = destination.getOwnerDocument().createElementNS(Mmxf.NAMESPACE, matcher.group(0));
                     destination.appendChild(imp);
                     copyAttributes((Element) node, imp);
                     parseKupu((Element) node, imp, links, new ParseState(state.level, MODE_INLINE));
@@ -301,7 +314,7 @@ public class MmxfSetString implements  Processor {
                 if (state.mode != MODE_SECTION) {
                     log.warn("Found a section where it cannot be! (h-tags need to be on root level");
                     // treat as paragraph
-                    Element imp = destination.getOwnerDocument().createElement("p");
+                    Element imp = destination.getOwnerDocument().createElementNS(Mmxf.NAMESPACE, "p");
                     destination.appendChild(imp);
                     copyAttributes((Element) node, imp);
                     parseKupu((Element) node, imp, links,  new ParseState(state.level, MODE_INLINE));
@@ -313,8 +326,8 @@ public class MmxfSetString implements  Processor {
                 log.debug(state.level() + " Found section " + foundLevel + " on " + state.level);
                 if (foundLevel > state.level) {
                     // need to create a new state.
-                    Element section = destination.getOwnerDocument().createElement("section");
-                    Element h       = destination.getOwnerDocument().createElement("h");
+                    Element section = destination.getOwnerDocument().createElementNS(Mmxf.NAMESPACE, "section");
+                    Element h       = destination.getOwnerDocument().createElementNS(Mmxf.NAMESPACE, "h");
                     section.appendChild(h);
                     if (foundLevel == state.level + 1) {
                         parseKupu((Element) node, h, links,  new ParseState(state.level, MODE_INLINE));
