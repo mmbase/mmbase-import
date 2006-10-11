@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.22 2006-10-06 17:16:28 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.23 2006-10-11 14:39:37 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -111,7 +111,7 @@
   </xsl:template>
 
   <xsl:template match="o:object[@type = 'images']|o:object[@type ='attachments']|o:object[@type='icaches']" mode="url">   
-    <xsl:value-of select="node:function($cloud, string(@id), 'servletpath')" />
+    <xsl:value-of select="node:saxonFunction($cloud, string(@id), 'servletpath')" />
   </xsl:template>
 
 
@@ -192,7 +192,7 @@
       </xsl:choose>
     </xsl:variable>
     <xsl:variable name="icache" select="node:nodeFunction(., $cloud, string(./@id), 'cachednode', $thumb)" />
-    <img src="{node:function($cloud, string($icache/@id ), 'servletpath')}" >
+    <img src="{node:saxonFunction($cloud, string($icache/@id ), 'servletpath')}" >
       <xsl:attribute name="alt"><xsl:apply-templates select="." mode="title" /></xsl:attribute>
       <xsl:attribute name="class"><xsl:value-of select="$relation/o:field[@name='class']"  /></xsl:attribute>
       <xsl:if test="$icache/o:field[@name='width']">
@@ -204,7 +204,7 @@
 
   <!-- 
        Produces the presentation for an object which is related somewhere already inside an a
-       tag. This means that it has to be careful to produces more a-tags.
+       tag. This means that it has to be careful to produce more a-tags.
   -->
   <xsl:template match="o:object" mode="in_a">
     <xsl:param name="relation" />    
@@ -231,7 +231,7 @@
   <xsl:template match="o:object" mode="icon">
     <img width="16" height="16" class="icon">
       <xsl:attribute name="alt"><xsl:apply-templates select="." mode="title" /></xsl:attribute>
-      <xsl:attribute name="src"><xsl:value-of select="node:function($cloud, string(@id), 'iconurl')" /></xsl:attribute>
+      <xsl:attribute name="src"><xsl:value-of select="node:saxonFunction($cloud, string(@id), 'iconurl')" /></xsl:attribute>
     </img>
   </xsl:template>
 
@@ -266,8 +266,8 @@
           </xsl:when>
           <xsl:when test="$popupwidth = ''">
             <!-- original image -->
-            <xsl:variable name="width"><xsl:value-of select="node:function($cloud, string(@id ), 'width')" /></xsl:variable>
-            <xsl:variable name="height"><xsl:value-of select="node:function($cloud, string(@id ), 'height')" /></xsl:variable>
+            <xsl:variable name="width"><xsl:value-of select="node:saxonFunction($cloud, string(@id ), 'width')" /></xsl:variable>
+            <xsl:variable name="height"><xsl:value-of select="node:saxonFunction($cloud, string(@id ), 'height')" /></xsl:variable>
             <a onclick="window.open(this.href, '{taglib:escape('identifier',./o:field[@name = 'title'])}', 'width={$width + 20},height={$height + 20}'); return false;">
               <xsl:attribute name="id">
                 <xsl:value-of select="$relation/o:field[@name = 'id']" />
@@ -282,9 +282,9 @@
           </xsl:when>
           <xsl:otherwise>
             <xsl:variable name="icache" select="node:nodeFunction(., $cloud, string(./@id), 'cachednode', $popupsize)" />
-            <xsl:variable name="href"><xsl:value-of select="node:function($cloud, string($icache/@id ), 'servletpath')" /></xsl:variable>
-            <xsl:variable name="width"><xsl:value-of select="node:function($cloud, string($icache/@id ), 'width')" /></xsl:variable>
-            <xsl:variable name="height"><xsl:value-of select="node:function($cloud, string($icache/@id ), 'height')" /></xsl:variable>
+            <xsl:variable name="href"><xsl:value-of select="node:saxonFunction($cloud, string($icache/@id ), 'servletpath')" /></xsl:variable>
+            <xsl:variable name="width"><xsl:value-of select="node:saxonFunction($cloud, string($icache/@id ), 'width')" /></xsl:variable>
+            <xsl:variable name="height"><xsl:value-of select="node:saxonFunction($cloud, string($icache/@id ), 'height')" /></xsl:variable>
             <a href="{$href}"
                onclick="window.open(this.href, '{taglib:escape('identifier',./o:field[@name = 'title'])}', 'width={$width + 20},height={$height + 20}'); return false;">
 
@@ -422,7 +422,7 @@
   </xsl:template>
 
   <xsl:template match="o:object[@type = 'segments']" mode="title">
-    <xsl:variable name="index" select="node:function($cloud, string(@id), 'index')" />
+    <xsl:variable name="index" select="node:saxonFunction($cloud, string(@id), 'index')" />
     <xsl:choose>
       <xsl:when test="$index = ''">
         <xsl:value-of select="./o:field[@name='title']" />
