@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.167 2006-10-12 11:17:47 pierre Exp $
+    @version $Id: wizard.xsl,v 1.168 2006-10-12 12:06:02 pierre Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -492,6 +492,7 @@
       <xsl:call-template name="prompt"/>
     </td>
     <td class="field">
+      <xsl:call-template name="fieldintro"/>
       <xsl:for-each select="field">
         <xsl:call-template name="fieldintern"/>
         <xsl:text disable-output-escaping="yes"> </xsl:text>
@@ -505,6 +506,7 @@
       <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
     </td>
     <td class="field">
+      <xsl:call-template name="fieldintro"/>
       <xsl:call-template name="fieldintern"/>
       <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
     </td>
@@ -542,6 +544,12 @@
         <xsl:with-param name="nodes" select="prompt"/>
       </xsl:call-template>
     </span>
+  </xsl:template>
+
+  <!--
+    fieldintro can be used to add a leading description to a field or fieldset
+  -->
+  <xsl:template name="fieldintro">
   </xsl:template>
 
   <!--
