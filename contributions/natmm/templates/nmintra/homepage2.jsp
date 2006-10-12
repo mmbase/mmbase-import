@@ -5,7 +5,8 @@
 <%@include file="includes/cacheparams.jsp" %>
 <% expireTime = newsExpireTime; %>
 <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
-<% String rightBarTitle = "Smoelenboek"; %>
+<mm:import id="ishome" />
+<% String rightBarTitle = ""; %>
 <%@include file="includes/header.jsp" %>
   <td><%@include file="includes/pagetitle.jsp" %></td>
   <td><%@include file="includes/rightbartitle.jsp"%></td>

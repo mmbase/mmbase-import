@@ -43,4 +43,5 @@
    <list include="config/afdelingen/zoek_medewerkers_readmore_afdelingen.xml" />
    <!--   <list include="config/evenement/zoek_medewerkers_readmore_evenement.xml" /> -->
    <list include="config/locations/zoek_medewerkers_readmore_locations.xml" />
+   <list include="config/keywords/add_related.xml" />
 </form-schema>

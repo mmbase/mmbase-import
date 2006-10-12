@@ -109,6 +109,7 @@ boolean showProgramSelect = thisPrograms.indexOf(",")>-1 || (showAllSelect && !"
           <jsp:param name="ps" value="<%= programId %>" />
           <jsp:param name="f" value="<%= firstnameId %>" />
           <jsp:param name="l" value="<%= lastnameId %>" />
+          <jsp:param name="rl" value="<%= iRubriekLayout %>" />
         </jsp:include>
         <%
       }
