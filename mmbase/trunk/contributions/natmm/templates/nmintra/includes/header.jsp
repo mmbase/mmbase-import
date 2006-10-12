@@ -16,7 +16,7 @@
       function resizeBlocks() {	
       var MZ=(document.getElementById?true:false); 
       var IE=(document.all?true:false);
-      var windowHeight = 0;
+      var wHeight = 0;
       var infoPageDiff = 87;
       var navListDiff = 62;
       var smoelenBoekDiff = 378;
@@ -24,22 +24,32 @@
       var rightColumnDiff = 109;
       var minHeight = 300;
       if(IE){ 
-        windowHeight = document.body.clientHeight;
-        if(windowHeight>minHeight) {
-          if(document.all['infopage']!=null) { document.all['infopage'].style.height = windowHeight - infoPageDiff; }
-          if(document.all['navlist']!=null) { document.all['navlist'].style.height = windowHeight - navListDiff; }
-          if(document.all['smoelenboeklist']!=null) { document.all['smoelenboeklist'].style.height = windowHeight - smoelenBoekDiff; }
-          if(document.all['rightcolumn']!=null) { document.all['rightcolumn'].style.height = windowHeight - rightColumnDiff; }
-          if(document.all['linklist']!=null) { document.all['linklist'].style.height = windowHeight - linkListDiff; }
+        wHeight = document.body.clientHeight;
+        if(wHeight>minHeight) {
+          if(document.all['infopage']!=null) { 
+            document.all['infopage'].style.height = (wHeight>infoPageDiff ? wHeight - infoPageDiff : 0); }
+          if(document.all['navlist']!=null) { 
+            document.all['navlist'].style.height = (wHeight>navListDiff ? wHeight - navListDiff : 0); }
+          if(document.all['smoelenboeklist']!=null) {
+            document.all['smoelenboeklist'].style.height = (wHeight>smoelenBoekDiff ? wHeight - smoelenBoekDiff : 0); }
+          if(document.all['rightcolumn']!=null) {
+            document.all['rightcolumn'].style.height = (wHeight>rightColumnDiff ? wHeight - rightColumnDiff : 0); }
+          if(document.all['linklist']!=null) {
+            document.all['linklist'].style.height = (wHeight>linkListDiff ? wHeight - linkListDiff : 0); }
         }
       } else if(MZ){
-        windowHeight = window.innerHeight;
-        if(windowHeight>minHeight) {
-          if(document.getElementById('infopage')!=null) { document.getElementById('infopage').style.height= windowHeight - infoPageDiff; }
-          if(document.getElementById('navlist')!=null) { document.getElementById('navlist').style.height= windowHeight - navListDiff; } 
-          if(document.getElementById('smoelenboeklist')!=null) { document.getElementById('smoelenboeklist').style.height= windowHeight - smoelenBoekDiff; } 
-          if(document.getElementById('rightcolumn')!=null) { document.getElementById('rightcolumn').style.height= windowHeight - rightColumnDiff; } 
-          if(document.getElementById('linklist')!=null) { document.getElementById('linklist').style.height= windowHeight - linkListDiff; } 
+        wHeight = window.innerHeight;
+        if(wHeight>minHeight) {
+          if(document.getElementById('infopage')!=null) {
+            document.getElementById('infopage').style.height= (wHeight>infoPageDiff ? wHeight - infoPageDiff : 0); }
+          if(document.getElementById('navlist')!=null) {
+            document.getElementById('navlist').style.height= (wHeight>navListDiff ? wHeight - navListDiff : 0); } 
+          if(document.getElementById('smoelenboeklist')!=null) {
+            document.getElementById('smoelenboeklist').style.height= (wHeight>smoelenBoekDiff ? wHeight - smoelenBoekDiff : 0); } 
+          if(document.getElementById('rightcolumn')!=null) {
+            document.getElementById('rightcolumn').style.height= (wHeight>rightColumnDiff ? wHeight - rightColumnDiff : 0); } 
+          if(document.getElementById('linklist')!=null) {
+            document.getElementById('linklist').style.height= (wHeight>linkListDiff ? wHeight - linkListDiff : 0); } 
         }
       }
       return false;
@@ -57,7 +67,12 @@
          <%
       } %>
   </head>
-  <body <% if(!printPage) { %>onLoad="javascript:resizeBlocks();" onResize="javascript:resizeBlocks();"<% } %> <%-- onUnLoad="javascript:setScreenSize()" --%>>
+  <body <% 
+        if(!printPage) { 
+          %>onLoad="javascript:resizeBlocks();<mm:present referid="extraload"><mm:write referid="extraload" /></mm:present
+          >" onResize="javascript:resizeBlocks();"<%
+        } 
+        %> <%-- onUnLoad="javascript:setScreenSize()" --%>>
   	<%@include file="/editors/paginamanagement/flushlink.jsp" %>
 	<table background="media/styles/<%= NMIntraConfig.style1[iRubriekStyle] %>.jpg" cellspacing="0" cellpadding="0" border="0">
 	<% 

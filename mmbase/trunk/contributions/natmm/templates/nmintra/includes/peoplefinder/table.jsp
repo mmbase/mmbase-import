@@ -70,7 +70,7 @@
                    <tr><td style="padding-bottom:3px;">Functie (visitekaartje):&nbsp;</td><td style="padding-bottom:3px;vertical-align:bottom;"><mm:write /></td></tr>
                </mm:isnotempty
            ></mm:field
-           ><mm:related path="readmore,locations">
+           ><mm:related path="readmore,locations" fields="locations.naam" distinct="true">
                <tr><td style="padding-bottom:3px;">Lokatie:&nbsp;</td><td style="padding-bottom:3px;vertical-align:bottom;"><mm:field name="locations.naam" /></td></tr>
            </mm:related
            >
