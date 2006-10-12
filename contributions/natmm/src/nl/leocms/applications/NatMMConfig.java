@@ -82,7 +82,7 @@ public class NatMMConfig {
 
    // Natuurmonumenten
    public static boolean urlConversion = true;
-   public static boolean checkEmailByMailHost = false;
+   public static boolean checkEmailByMailHost = false; // checking email by host can gives unacceptable long delays in booking on events 
    public static boolean hasClosedUserGroup = false;
    public static boolean useCreationDateInURL = false;
    public static boolean isUISconnected = false;
@@ -90,7 +90,7 @@ public class NatMMConfig {
    public static String companyName = "Natuurmonumenten";
    public static String fromEmailAddress = "website@natuurmonumenten.nl";
    public static String fromCADAddress = "denatuurin@natuurmonumenten.nl";
-   public static String infoEmailAddress = "info@ledenservice.nl";
+   public static String infoUrl = "http://www.natuurmonumenten.nl/vragen";
 
    public static String toEmailAddress = "hangyi@xs4all.nl";
    public static String [] liveUrl = { "http://www.natuurmonumenten.nl/", "http://www.prod.natuurmm.asp4all.nl/" };
@@ -100,7 +100,7 @@ public class NatMMConfig {
    public static String rootDir = "/export/www/natuurmm/jakarta-tomcat/webapps/ROOT/";
    public static String tempDir = "/export/www/natuurmm/jakarta-tomcat/temp/";
    public static String incomingDir = "/home/import/incoming/";
-
+   
    // Life Line demo site
    /*
    public static boolean urlConversion = true;
@@ -112,13 +112,37 @@ public class NatMMConfig {
    public static String companyName = "Life Line";
    public static String fromEmailAddress = "demo@mediacompetence.com";
    public static String fromCADAddress = "demo@mediacompetence.com";
-   public static String infoEmailAddress = "info@mediacompetence.com";
+   public static String infoUrl = "http://demo.mediacompetence.com/";
+   
    public static String toEmailAddress = "hangyi@xs4all.nl";
    public static String [] liveUrl = { "http://demo.mediacompetence.com/" };
    public static String tmpMemberId = "9002162";
 
    public static String toSubscribeAddress = "AanmeldingLidmaatschap@mediacompetence.com";
    public static String rootDir = "C:/Apache/Tomcat/webapps/ROOT";
+   public static String tempDir = "C:/temp/";
+   public static String incomingDir = "C:/data/natmm/incoming/";
+   */
+
+   // Development
+   /*
+   public static boolean urlConversion = true;
+   public static boolean checkEmailByMailHost = false;
+   public static boolean hasClosedUserGroup = false;
+   public static boolean useCreationDateInURL = false;
+   public static boolean isUISconnected = false;
+
+   public static String companyName = "Natuurmonumenten";
+   public static String fromEmailAddress = "website@natuurmonumenten.nl";
+   public static String fromCADAddress = "denatuurin@natuurmonumenten.nl";
+   public static String infoUrl = "http://www.natuurmonumenten.nl/vragen";
+
+   public static String toEmailAddress = "hangyi@xs4all.nl";
+   public static String [] liveUrl = { "http://localhost:8001/", "http://www.prod.natuurmm.asp4all.nl/" };
+   public static String tmpMemberId = "9002162";
+
+   public static String toSubscribeAddress = "AanmeldingLidmaatschap@Natuurmonumenten.nl";
+   public static String rootDir = "c:/data/natmm/webapps/ROOT";
    public static String tempDir = "C:/temp/";
    public static String incomingDir = "C:/data/natmm/incoming/";
    */
