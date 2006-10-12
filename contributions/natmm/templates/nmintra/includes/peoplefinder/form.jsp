@@ -18,7 +18,7 @@ if(!action.equals("print")) {
           <td class="bold">&nbsp;<span class="light">Achternaam:</span>&nbsp;</td>
           <td class="bold"><input type="text" style="width:103px;" name="lastname" value="<%= lastnameId %>">
              <%  
-             if(showAllSelect || showProgramSelect) {
+             if(showAllSelect || showProgramSelect || iRubriekLayout==NMIntraConfig.SUBSITE1_LAYOUT) {
                 %>&nbsp;<br><div align="right"><span class="light">en</span></div><%          
              }
              %>
@@ -67,7 +67,7 @@ if(!action.equals("print")) {
                 ></mm:list
               ></select>
               <%  
-              if(showProgramSelect) {
+              if(showProgramSelect || iRubriekLayout==NMIntraConfig.SUBSITE1_LAYOUT) {
                 %>&nbsp;<br><div align="right"><span class="light">en</span></div><%
               } %>
             </td>
@@ -93,11 +93,30 @@ if(!action.equals("print")) {
                     </mm:field
                 ></mm:list
               ></select>
+              <%  
+              if(iRubriekLayout==NMIntraConfig.SUBSITE1_LAYOUT) {
+                %>&nbsp;<br><div align="right"><span class="light">en</span></div><%
+              } %>
             </td>
           </tr>
           <%          
         }
-        %>
+        if(iRubriekLayout==NMIntraConfig.SUBSITE1_LAYOUT) { %>
+          <tr>
+            <td colspan="2">
+            <select name="k" style="width:195px;">
+              <option value="" <%  if(keywordId.equals("")) { %>SELECTED<% } %>>alle termen
+              <mm:listnodes type="keywords" orderby="word" directions="UP">
+                  <mm:field name="number" jspvar="keywords_number" vartype="String" write="false">
+                  <option value="<%= keywords_number %>" <%  if(keywords_number.equals(keywordId))  { %>SELECTED<% } 
+                          %>><mm:field name="word" />
+                  </mm:field>
+              </mm:listnodes>
+            </select>
+            </td>
+          </tr>
+          <%
+        } %>
         <tr><td colspan="2"><img src="media/spacer.gif" width="1" height="20"></td></tr>
         <tr>
           <td>

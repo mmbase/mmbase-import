@@ -158,7 +158,7 @@ if(isPosting) {
 											 /><mm:time format="d MMM yyyy" referid="edate" 
 											 /><mm:remove referid="edate"
 										/></nobr></div></td></tr>
-							 <tr><td colspan="2"><p><mm:field name="ads.text" /></td></tr>
+							 <tr><td colspan="2"><span class="black"><mm:field name="ads.text" /></span></td></tr>
 							 <tr><td colspan="2" style="width:100%;"><img src="media/spacer.gif" width="1" height="10"></td></tr>
 							 <tr><td colspan="2"><a href='mailto:<mm:field name="ads.email" />'><mm:field name="ads.email" /></a></td></tr>
 							 <tr><td colspan="2" style="width:100%;"><img src="media/spacer.gif" width="1" height="5"></td></tr>

@@ -1,3 +1,27 @@
+<% if(iRubriekLayout==NMIntraConfig.SUBSITE1_LAYOUT) { %>
+<style>
+a.menuitem:hover {
+    text-decoration: none;
+    color: #40FF40
+}
+a.menuitemactive:link {
+    text-decoration: none;
+    color: #40FF40
+}
+a.menuitemactive:visited {
+    text-decoration: none;
+    color: #40FF40
+}
+a.menuitemactive:active {
+    text-decoration: none;
+    color: #40FF40
+}
+a.menuitemactive:hover {
+    text-decoration: none;
+    color: #40FF40
+}
+</style>
+<% } %>
 <div class="navlist" id="navlist">
   <table border="0" cellpadding="0" cellspacing="0">
       <tr>

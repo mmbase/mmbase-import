@@ -9,6 +9,7 @@
 <mm:import externid="pr" jspvar="programId"/>
 <mm:import externid="f" jspvar="firstnameId"/>
 <mm:import externid="l" jspvar="lastnameId"/>
+<mm:import externid="rl" jspvar="sRubriekLayout"/>
 <mm:cloud>
 <% boolean fullDescription = true; %>
 <table border="0" cellpadding="0" cellspacing="0"> 
@@ -58,7 +59,8 @@
                     if(adPos>-1) { 
                         %><a href="mailto:<%= email %>"><%= email.substring(0,adPos+1) + "&shy;" + email.substring(adPos+1) %></a><%
                     } %></mm:field></td></tr>
-        <% if(fullDescription) { 
+        <%
+        if(fullDescription) { 
            %><mm:related path="readmore,afdelingen" 
                    fields="afdelingen.naam,readmore.readmore">
                <tr><td style="padding-bottom:3px;">Regio, eenheid of afdeling:&nbsp;</td>
@@ -75,11 +77,18 @@
                <tr><td style="padding-bottom:3px;">Lokatie:&nbsp;</td><td style="padding-bottom:3px;vertical-align:bottom;"><mm:field name="locations.naam" /></td></tr>
            </mm:related
            >
-       <%--            <tr><td style="padding-bottom:3px;">Verjaardag:&nbsp;</td><td style="padding-bottom:3px;vertical-align:bottom;"><mm:field name="birthday" id="birthday" write="false"/><mm:time format="d MMM" referid="birthday" /></td></tr>
-               <tr><td style="padding-bottom:3px;">In dienst per:&nbsp;</td><td style="padding-bottom:3px;vertical-align:bottom;"><mm:field name="enrolldate" id="enroll" write="false"/><mm:time format="dd MMM yyyy" referid="enroll" /></td></tr>
-       --%>   <tr><td style="padding-bottom:3px;">Vrije dag:&nbsp;</td><td style="padding-bottom:3px;vertical-align:bottom;"><mm:field name="omschrijving_fra" /></td></tr>
+           <%-- 
+           <tr><td style="padding-bottom:3px;">Verjaardag:&nbsp;</td><td style="padding-bottom:3px;vertical-align:bottom;"><mm:field name="birthday" id="birthday" write="false"/><mm:time format="d MMM" referid="birthday" /></td></tr>
+           <tr><td style="padding-bottom:3px;">In dienst per:&nbsp;</td><td style="padding-bottom:3px;vertical-align:bottom;"><mm:field name="enrolldate" id="enroll" write="false"/><mm:time format="dd MMM yyyy" referid="enroll" /></td></tr>
+           --%>
+           <tr><td style="padding-bottom:3px;">Vrije dag:&nbsp;</td><td style="padding-bottom:3px;vertical-align:bottom;"><mm:field name="omschrijving_fra" /></td></tr>
+           <%
+           if(sRubriekLayout.equals("" + NMIntraConfig.SUBSITE1_LAYOUT)) { 
+              %>
               <tr><td style="padding-bottom:3px;">En verder:&nbsp;</td><td style="padding-bottom:3px;vertical-align:bottom;"><mm:field name="omschrijving" /></td></tr>
-        <% } %>
+              <%
+            }
+         } %>
         </table>
     </mm:node>
     </td>

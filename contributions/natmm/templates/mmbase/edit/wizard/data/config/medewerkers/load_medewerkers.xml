@@ -40,4 +40,5 @@
    <!-- relation destination="evenement" role="readmore"/ -->
    <relation destination="locations" role="readmore"/>
    <relation destination="images" role="posrel"/>
+   <relation destination="keywords" role="related"/>
 </action>

@@ -15,7 +15,32 @@
     <tr><td>Functie (visitekaartje):&nbsp;</td>     <td><input type="text" name="job" value="<mm:field name="job" />" style="width:300px;"></td></tr>
     <tr><td>Lokatie:&nbsp;</td>                     <td><input type="text" name="omschrijving_de" value="<%= omschrijving_deId %>" style="width:300px;"></td></tr>
     <tr><td>Vaste vrije dag(en):&nbsp;</td>         <td><textarea name="omschrijving_fra" style="width:300px;height:50px;"><mm:field name="omschrijving_fra" /></textarea></td></tr>
-    <tr><td>En verder:&nbsp;</td>                   <td><textarea name="omschrijving" style="width:300px;height:50px;"><mm:field name="omschrijving" /></textarea></td></tr>
+    <% if(iRubriekLayout!=NMIntraConfig.SUBSITE1_LAYOUT) { 
+      %>
+      <tr><td>En verder:&nbsp;</td>                   <td><textarea name="omschrijving" style="width:300px;height:50px;"><mm:field name="omschrijving" /></textarea></td></tr>
+      <%
+    } else {
+      %>
+      <input type="hidden" name="omschrijving" value="" /> 
+      <%
+      HashSet myKeywords = new HashSet();
+      %>
+      <mm:related path="related,keywords">
+          <mm:field name="keywords.number" jspvar="keywords_number" vartype="String" write="false">
+            <% myKeywords.add(keywords_number); %>
+          </mm:field>
+      </mm:related>
+      <mm:listnodes type="keywords" orderby="word" directions="UP">
+        <tr><td colspan="2">
+          <mm:field name="number" jspvar="keywords_number" vartype="String" write="false">
+            <input type="checkbox" name="keyword<%= keywords_number %>" value="<%= keywords_number %>" style="background-color:#FFFFFF;" 
+              <%= (myKeywords.contains(keywords_number)? "CHECKED" : "")  %>>
+          </mm:field>
+          <mm:field name="word" />
+        </td></tr>
+      </mm:listnodes>
+      <%
+    } %>
     <tr><td colspan="2"><div align="right"><input type="submit" name="Submit" value="Verstuur wijzigingen"  style="text-align:center;font-weight:bold;">&nbsp;</div></td></tr>
     <tr><td colspan="2">
      <i>(*) een nieuwe foto kunt u versturen naar <a href="mailto:<%= ap.getFromEmailAddress() %>"><%= ap.getFromEmailAddress() %><a></i><br>
@@ -43,7 +68,19 @@ function updateIt(el) {
     href += "&employee=<%= employeeId %>&firstname=" + firstname + "&initials=" + initials + "&suffix=" + suffix  + "&lastname=" + lastname 
          + "&companyphone=" + companyphone + "&cellularphone=" + cellularphone + "&fax=" + fax + "&email=" + email
          + "&job=" + job + "&omschrijving_eng=" + omschrijving_eng + "&omschrijving_de=" + omschrijving_de + "&omschrijving_fra=" + omschrijving_fra
-         + "&omschrijving=" + omschrijving + "&pst=|action=commit"; 
+         + "&omschrijving=" + omschrijving;
+     <% 
+    if(iRubriekLayout==NMIntraConfig.SUBSITE1_LAYOUT) {
+      %><mm:listnodes type="keywords" orderby="word" directions="UP"
+         ><mm:field name="number" jspvar="keywords_number" vartype="String" write="false">
+            var answer = document.whoiswhoupdate.keyword<%= keywords_number %>;
+            if(answer.checked) {
+              href += "&keyword<%= keywords_number %>=checked";
+            }
+         </mm:field
+      ></mm:listnodes><%
+    } %>
+    href += "&pst=|action=commit";
     document.location = href; 
     return false; 
 }

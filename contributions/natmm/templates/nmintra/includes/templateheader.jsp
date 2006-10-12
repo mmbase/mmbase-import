@@ -39,12 +39,18 @@ Vector breadcrumbs = ph.getBreadCrumbs(cloud, paginaID);
 String subsiteID = (String) breadcrumbs.get(breadcrumbs.size()-2);
 
 int iRubriekStyle = NMIntraConfig.PARENT_STYLE;
+int iRubriekLayout = NMIntraConfig.PARENT_LAYOUT;
+
 String styleSheet = "hoofdsite/themas/default.css"; 
 
 // *** determine the rubriek specific setting: style
 for(int r=0; r<breadcrumbs.size(); r++) {
 	%><mm:node number="<%= (String) breadcrumbs.get(r) %>" jspvar="thisRubriek"><%
 
+    if(iRubriekLayout==NMIntraConfig.PARENT_LAYOUT) {
+       try { iRubriekLayout = thisRubriek.getIntValue("naam_fra"); } catch (Exception e) {}
+    }
+    
 		if(iRubriekStyle==NMIntraConfig.PARENT_STYLE){
 			styleSheet = thisRubriek.getStringValue("style");
 			for(int s = 0; s< NMIntraConfig.style1.length; s++) {
@@ -54,6 +60,8 @@ for(int r=0; r<breadcrumbs.size(); r++) {
 	%></mm:node><%
 }
 
+if(iRubriekLayout==NMIntraConfig.PARENT_LAYOUT) { iRubriekLayout = NMIntraConfig.DEFAULT_LAYOUT; }
+if(iRubriekStyle==NMIntraConfig.PARENT_STYLE) { iRubriekStyle = NMIntraConfig.DEFAULT_STYLE; }
 
 // smoelenboek (and searchbar)
 String nameEntry = "voor- en/of achternaam";

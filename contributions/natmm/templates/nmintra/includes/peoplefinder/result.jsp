@@ -2,7 +2,7 @@
 if(!action.equals("print")) { 
   
   if(!(nameId.equals("")&&firstnameId.equals("")&&lastnameId.equals("")&&descriptionId.equals("")
-                &&departmentId.equals("default")&&locationId.equals("default")&&programId.equals("default"))){
+                &&departmentId.equals("default")&&locationId.equals("default")&&programId.equals("default")&&keywordId.equals(""))){
         
         boolean debug = false;
         
@@ -84,6 +84,17 @@ if(!action.equals("print")) {
             ></mm:list><%
             searchResults = su.searchResults(searchResultSet);
             if(debug) { log.info("programs " + thisPrograms + " : " + searchResults); }
+        }
+        
+        if(!keywordId.equals("")) { // ****** add the keyword to the search ****** 
+            searchResultSet.clear();
+            %><mm:list nodes="<%= searchResults %>" path="medewerkers,related,keywords" constraints="<%= "keywords.number='" + keywordId + "'" %>"
+                ><mm:field name="medewerkers.number" jspvar="employees_number" vartype="String" write="false"><%
+                    searchResultSet.add(employees_number);
+                %></mm:field
+            ></mm:list><%
+            searchResults = su.searchResults(searchResultSet);
+            if(debug) { log.info("keywords " + keywordId + " : " + searchResults); }
         }
         
         if(!searchResults.equals("")) { 
