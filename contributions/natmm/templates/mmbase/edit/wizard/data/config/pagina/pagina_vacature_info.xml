@@ -49,7 +49,7 @@
       <field name="creatiedatum" ftype="data"><prompt>creatiedatum</prompt></field>
       <field name="datumlaatstewijziging" ftype="data"><prompt>datumlaatstewijziging</prompt></field>
       <field name="titel_fra" ftype="enum"><prompt>data bij nieuwsartikelen zichtbaar? ______________________</prompt><optionlist select="ja_nee"/></field>
-		<list include="config/vacature/zoek_pagina_contentrel_vacature_nmintra.xml" />
-      <list include="config/artikel/zoek_pagina_readmore_artikel_no_embargo.xml" />
+		  <list include="config/vacature/zoek_pagina_contentrel_vacature_nmintra.xml" />
+      <list include="config/artikel/zoek_pagina_readmore_artikel.xml" />
    </form-schema> 
 </wizard-schema>
