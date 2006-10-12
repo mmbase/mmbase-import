@@ -3,15 +3,13 @@ package nl.mmatch;
 import java.util.*;
 import java.io.*;
 import java.text.*;
-import java.util.zip.*;
 import javax.servlet.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 import com.finalist.mmbase.util.CloudFactory;
 import nl.leocms.evenementen.Evenement;
-import nl.leocms.util.ApplicationHelper;
-import nl.leocms.util.ServerUtil;
+import nl.leocms.util.*;
 import nl.leocms.util.tools.*;
 import nl.leocms.applications.NatMMConfig;
 
@@ -34,41 +32,6 @@ public class CSVReader implements Runnable {
       FileInputStream fin = new FileInputStream(sFileName);
       InputStreamReader isr = new InputStreamReader(fin,"ISO-8859-1");
       return new BufferedReader(isr);
-    }
-    
-    private Vector unZip(String zipFileName, String zipDestination) {
-        int BUFFER = 2048;
-        Vector dataFiles = new Vector();
-        try {
-            ZipFile zFile = new ZipFile(zipFileName);
-            Enumeration entries = zFile.entries();
-            while(entries.hasMoreElements()) { // *** write the files to disk ***
-                try {
-                    int count;
-                    byte data[] = new byte[BUFFER];
-
-                    ZipEntry entry = (ZipEntry) entries.nextElement();
-                    InputStream zis = zFile.getInputStream(entry);
-
-                    String dataFile = entry.getName();
-                    if(dataFile.indexOf("/")>-1) dataFile = dataFile.substring(dataFile.lastIndexOf("/")+1);
-                    dataFile = HtmlCleaner.stripText(dataFile);
-                    dataFiles.add(dataFile);
-
-                    BufferedOutputStream dest = new BufferedOutputStream(new FileOutputStream(zipDestination + dataFile), BUFFER);
-                    while ((count = zis.read(data)) > 0) {
-                        dest.write(data, 0, count);
-                    }
-                    dest.flush();
-                    dest.close();
-                    zis.close();
-                } catch (Exception e) { log.info("UnZip " + e); }
-            }
-            zFile.close();
-        } catch(Exception e) {
-            log.info("UnZip " + e);
-        }
-        return dataFiles;
     }
     
     private String getValue(String entry, String startStr, String endStr)
@@ -153,11 +116,11 @@ public class CSVReader implements Runnable {
     }
     
     private String createAlias(TreeMap thisPerson, String lastname, String firstname) {
-        // *** create field alias, take care of ' which would ruin the search ***
+        // create field alias, take care of ' which would ruin the search
         String alias = (String) thisPerson.get(lastname);
         alias = alias.replace('\'',' ').replace('\\',' ').trim();
         int sPos = alias.indexOf(" ");
-        if(sPos>-1) { // *** people with double family names ***
+        if(sPos>-1) { // people with double family names
             alias = alias.substring(0,sPos);
         }
         String firstName = (String) thisPerson.get(firstname);
@@ -176,7 +139,7 @@ public class CSVReader implements Runnable {
     }
     
     private int markNodesAndRelations(Cloud cloud, String thisType, String [] thisRelations, String [] thisFields) {
-        // *** mark all relations for employees and departments ***
+        // mark all relations for employees and departments
         log.info("markNodesAndRelations " + thisType);
         NodeManager relatedNodeNM = cloud.getNodeManager(thisType);
         NodeList thisnodesList = relatedNodeNM.getList(null,null,null);
@@ -208,7 +171,7 @@ public class CSVReader implements Runnable {
     }
     
     private int deleteNodesAndRelations(Cloud cloud, String thisType, String [] thisRelations, String [] thisFields) {
-        // *** deletes all nodes relations for employees and departments, which are inactive ***
+        // deletes all nodes relations for employees and departments, which are inactive
         log.info("deleteNodesAndRelations " + thisType);
         NodeManager relatedNodeNM = cloud.getNodeManager(thisType);
         NodeList thisnodesList = relatedNodeNM.getList(null,null,null);
@@ -238,7 +201,7 @@ public class CSVReader implements Runnable {
     }
     
     private int updateDepartments(Cloud cloud) {
-        // *** for the search we need a list with descendants for all deparments ***
+        // for the search we need a list with descendants for all deparments
         log.info("updateDepartments");
         int numberOfEmptyDept = 0;
         TreeMap departments = new TreeMap();
@@ -258,14 +221,14 @@ public class CSVReader implements Runnable {
                     Node relatedNode = relatedDeptList.getNode(r);
                     String departments2_number = "" + relatedNode.getNumber();
                     if(!descendants.contains(departments2_number)) {
-                         lastDept = departments2_number;
-                         descendants.add(lastDept);
-                     }
+                       lastDept = departments2_number;
+                       descendants.add(lastDept);
+                    }
                 }
             }
             departments.put(departments_number,descendants);
         }
-        // *** traverse the tree bottom-up to findout which department contains employees ***
+        // traverse the tree bottom-up to findout which department contains employees
         Vector deptWithEmployees = new Vector();
         for(int d=0; d<departmentList.size(); d++) {
             Node departmentNode = departmentList.getNode(d);
@@ -290,15 +253,15 @@ public class CSVReader implements Runnable {
                 }
             }
         }
-        // *** write the results in the importstatus field of the departments ***
         for(int d=0; d<departmentList.size(); d++) {
             Node departmentNode = departmentList.getNode(d);
-            String departments_number = "" + departmentNode.getNumber();
-            if(deptWithEmployees.contains(departments_number)) {
-                String descendants = departments.get(departments_number).toString();
-                departmentNode.setValue("importstatus",descendants.substring(1,descendants.length()-1));
-            } else {
-                departmentNode.setValue("importstatus","-1");
+            String departments_number = departmentNode.getStringValue("number");
+            // update the descendants field
+            String descendants = departments.get(departments_number).toString();
+            departmentNode.setValue("descendants",descendants.substring(1,descendants.length()-1));
+            // update the importstatus field
+            if(!deptWithEmployees.contains(departments_number)) {
+                departmentNode.setValue("importstatus","inactive");
                 numberOfEmptyDept++;
             }
             departmentNode.commit();
@@ -308,21 +271,22 @@ public class CSVReader implements Runnable {
     
     private Node relatedNodes(
         Cloud cloud,
-        TreeMap thisPerson,
+        TreeMap tmThisNode,
         Node sourceNode,
         String relatedNode,
         String relatedNodeKeyField,
         String relatedRole,
         String relatedRoleField,
-        String relatedRoleValue) {
+        String relatedRoleValue,
+        boolean logPerson) {
 
-        // *** items are merged on the value of relatedNode.relatedNodeKeyField (use unique keys if you do not want a merge) ***
-        // *** use superSearchString to replace characters which will ruin the search by wildcards ***
+        // items are merged on the value of relatedNode.relatedNodeKeyField (use unique keys if you do not want a merge)
+        // use superSearchString to replace characters which will ruin the search by wildcards
 
         Node destination = null;
-        String relatedNodeKeyValue = (String) thisPerson.get(relatedNode);
+        String relatedNodeKeyValue = (String) tmThisNode.get(relatedNode);
         if(!relatedNodeKeyValue.equals("")) {
-            // *** find the destination ***
+            // find the destination
             NodeManager relatedNodeNM = cloud.getNodeManager(relatedNode);
             NodeList constrainedList = relatedNodeNM.getList(relatedNodeKeyField
                         + " LIKE '" + (new SearchUtil()).superSearchString(relatedNodeKeyValue) + "'",null,null);
@@ -333,23 +297,33 @@ public class CSVReader implements Runnable {
                 destination.setValue(relatedNodeKeyField,relatedNodeKeyValue);
                 destination.commit();
             }
-            // *** find the relation ***
+            // find the relation
             RelationList relations = sourceNode.getRelations(relatedRole,relatedNode);
             Relation thisRelation = null;
-            for(int r=0; r<relations.size(); r++) {
-                if(thisRelation==null) {
-                    Relation relation = relations.getRelation(r);
-                    if(relation.getSource().getNumber()==destination.getNumber()
-                            ||relation.getDestination().getNumber()==destination.getNumber()) {
-                        thisRelation = relation;
-                    }
+            for(int r=0; r<relations.size() && thisRelation==null; r++) {
+                Relation relation = relations.getRelation(r);
+                if( ( relation.getSource().getNumber()==destination.getNumber()
+                      || relation.getDestination().getNumber()==destination.getNumber() )
+                    && ( relatedRoleField.equals("")
+                      || relation.getStringValue(relatedRoleField).equals(tmThisNode.get(relatedRoleValue)) )
+                   ) {
+                    thisRelation = relation;
                 }
             }
-            if(thisRelation==null){ // *** create the relation ***
+            if(thisRelation==null){ // create the relation
                 thisRelation = sourceNode.createRelation(destination,cloud.getRelationManager(relatedRole));
+                if(logPerson) {
+                   log.info("added " + relatedRole + " relation to " + destination.getStringValue("titel")
+                    + "for " + sourceNode.getStringValue("titel"));
+                }
+            } else {
+                if(logPerson) {
+                   log.info("found relation " + thisRelation.getNumber() + " to "
+                    + destination.getStringValue("titel") + "for person " + sourceNode.getStringValue("titel"));
+                }
             }
             if(!relatedRoleField.equals("")) {
-                thisRelation.setValue(relatedRoleField, thisPerson.get(relatedRoleValue));
+                thisRelation.setValue(relatedRoleField, tmThisNode.get(relatedRoleValue));
             }
             thisRelation.setValue("readmore2", "active");
             thisRelation.commit();
@@ -357,14 +331,13 @@ public class CSVReader implements Runnable {
         return destination;
     }
     
-    private Node updatePerson(Cloud cloud, TreeMap thisPerson, String thisPersonStr){
+    private Node updatePerson(Cloud cloud, TreeMap thisPerson, String thisPersonStr, boolean logPerson) {
         SearchUtil su = new SearchUtil();
         Node personsNode = getNode(cloud, "medewerkers", "externid='" + su.superSearchString((String) thisPerson.get("SOFI_NR")) + "'");
         if(personsNode==null) {
             String aliasFB = ((String) thisPerson.get("ALIAS")).toUpperCase();
             personsNode = getNode(cloud, "medewerkers", "externid='' AND UPPER(account) LIKE '" + su.superSearchString(aliasFB) + "'");
             if(personsNode==null) {
-                // *** aliasses are set by telefoonboek.jsp so maybe the firstname does not match with Beaufort ***
                 int aliasLength = aliasFB.length();
                 if(aliasLength>0) {
                     aliasFB = aliasFB.substring(0,aliasLength-1);
@@ -373,12 +346,16 @@ public class CSVReader implements Runnable {
                 if(personsNode==null) {
                     NodeManager persons = cloud.getNodeManager("medewerkers");
                     personsNode = persons.createNode();
+                    if(logPerson) { log.info("create new medewerker for " + thisPerson.get("SOFI_NR")); }
+                } else {
+                    if(logPerson) { log.info("found medewerker node " + personsNode.getNumber() + " for " + thisPerson.get("SOFI_NR")); }
                 }
+
             }
         }
         personsNode.setValue("externid", thisPerson.get("SOFI_NR"));
         String alias = (String) personsNode.getValue("account");
-        if(alias==null||alias.equals("")) { // *** no alias found, use the created one
+        if(alias==null||alias.equals("")) { // no alias found, use the created one
             personsNode.setValue("account", thisPerson.get("ALIAS"));
         }
         personsNode.setValue("prefix", thisPerson.get("E_TITUL"));
@@ -397,12 +374,12 @@ public class CSVReader implements Runnable {
         return personsNode;
     }
 
-    private String updateOrg(Cloud cloud, String orgFile){
+    private String updateOrg(Cloud cloud, String orgFile) {
         log.info("updateOrg " + orgFile);
         String logMessage = "";
         TreeMap thisTree = new TreeMap();
         try {
-            // *** read the organogram input file ***
+            // read the organogram input file
             BufferedReader dataFileReader = getBufferedReader(orgFile);
             String nextLine = dataFileReader.readLine();
             if(nextLine.indexOf("DPIB015_SL")==-1) log.info("expecting DPIB015_SL ... on first line of " + orgFile);
@@ -431,17 +408,18 @@ public class CSVReader implements Runnable {
                     thisTree.put(labels[v],value);
                     v++;
                 }
-                // *** update this node ***
+                // update this node
                 thisNode = getNode(cloud, thisType, "externid='" + thisTree.get("DPIB015_SL") + "'");
                 if(thisNode==null) {
                     thisNode = cloud.getNodeManager(thisType).createNode();
                     thisNode.setValue("externid",thisTree.get("DPIB015_SL"));
                 }
-                thisNode.setValue("importstatus","active");
+                // only departments with employees or descendants with employees are active
+                // the field importstatus is set in updateDepartments()
                 thisNode.setValue("naam",thisTree.get("OE_VOL_NM"));
                 thisNode.commit();
                 thisTree.put(thisType,thisTree.get("OE_HOGER_N"));
-                Node destination = relatedNodes(cloud, thisTree, thisNode, thisType, "externid", "readmore", "", "");
+                Node destination = relatedNodes(cloud, thisTree, thisNode, thisType, "externid", "readmore", "", "",false);
                 nextLine = dataFileReader.readLine();
             }
             dataFileReader.close();
@@ -455,40 +433,43 @@ public class CSVReader implements Runnable {
     }
 
     private TreeMap getEmails(String emailFile){
-     log.info("getEmails " + emailFile);
-     TreeMap emails = new TreeMap();
-     try {
-      BufferedReader dataFileReader = getBufferedReader(emailFile);
-      String nextLine = dataFileReader.readLine();
+      log.info("getEmails " + emailFile);
+      TreeMap emails = new TreeMap();
+      String [] emailEndTag = { "%X400:", "%CCMAIL:", "\"" };
+      try {
+        BufferedReader dataFileReader = getBufferedReader(emailFile);
+        String nextLine = dataFileReader.readLine();
 
-      while(nextLine!=null) {
+        while(nextLine!=null) {
+          nextLine += "\"";
           String alias = getValue(nextLine,"Mailbox,",",");
-          String email = getValue(nextLine,",SMTP:","%X400:");
-          if(email.equals("")) {
-              nextLine += "\"";
-              email = getValue(nextLine,"%SMTP:","\"");
+          String email = "";
+          for(int i=0; i<emailEndTag.length && email.equals(""); i++) {
+            email = getValue(nextLine,"SMTP:",emailEndTag[i]);
           }
-          if(!alias.equals("")&&!email.equals("")) { // *** use uppercase on alias for searching ***
-				 if(email.length()>255) {
-					 log.warn("email address " + email + " for alias " + alias + " is longer than 255 characters, therefore it will be truncated.");
-					 email = email.substring(0,255);
-				 }
-             emails.put(alias.toUpperCase(),email);
+          if(!alias.equals("")&&!email.equals("")) { // use uppercase on alias for searching
+            if(email.length()>64) {
+              log.warn("email address " + email + " for alias " + alias + " is longer than 255 characters, therefore it will be truncated.");
+              email = email.substring(0,64);
+            }
+            emails.put(alias.toUpperCase(),email);
           }
           nextLine = dataFileReader.readLine();
+        }
+        dataFileReader.close();
+      } catch(Exception e) {
+        log.info(e);
       }
-      dataFileReader.close();
-    } catch(Exception e) {
-      log.info(e);
-    }
-    return emails;
+      return emails;
    }
 
    private String updatePersons(Cloud cloud, TreeMap emails, String dataFile) {
     log.info("updatePersons " + dataFile);
     String logMessage = "";
+    String logId = ""; // can be used to log update info on one person
     try {
-      // *** read the person input file ***
+      
+      // read the person input file
       BufferedReader dataFileReader = getBufferedReader(dataFile);
       String nextLine = dataFileReader.readLine();
       if(nextLine.indexOf("PERS_NR")==-1) log.info("expecting PERS_NR ... on first line of " + dataFile);
@@ -498,7 +479,7 @@ public class CSVReader implements Runnable {
       TreeMap thisPerson = new TreeMap();
       Node personsNode = null;
       String lastId = "";
-      // *** GENDER has label G in the datafile, duplicate label G ***
+      // GENDER has label G in the datafile, duplicate label G
       String [] labels = {
           "PERS_NR", "OBJECT_ID", "SOFI_NR", "E_NAAM", "E_VRVG", "P_NAAM", "P_VRVG", "G", "GBRK_OMS",
           "GBRK_EXT", "GENDER", "E_TITUL", "E_VRLT", "E_ROEPNAAM", "OE_HIER_SL", "PRIMFUNC_K", "FUNC_OMS",
@@ -524,11 +505,13 @@ public class CSVReader implements Runnable {
               v++;
           }
 
-          // *** if SOFI_NR is empty use PERS_NR ***
+          // if SOFI_NR is empty use PERS_NR
           if(thisPerson.get("SOFI_NR").equals("")) {
                thisPerson.put("SOFI_NR",thisPerson.get("PERS_NR"));
           }
-
+          
+          boolean logPerson = logId.equals(thisPerson.get("SOFI_NR"));
+          
           thisPerson.put("ALIAS",createAlias(thisPerson,"E_NAAM","E_ROEPNAAM"));
 
           String thisPersonStr = (String) thisPerson.get("E_ROEPNAAM");
@@ -537,17 +520,17 @@ public class CSVReader implements Runnable {
           }
           thisPersonStr += " " + thisPerson.get("E_NAAM") + " (" + thisPerson.get("SOFI_NR") + ")";
 
-          // *** unique key for departments is naam ***
-          // *** so we have to do some mapping here, to prevent duplicates because of variations in name ***
+          // unique key for departments is naam
+          // so we have to do some mapping here, to prevent duplicates because of variations in name
           String departmentStr = (String) thisPerson.get("K_OF_S_OMSCHRIJVING");
           departmentStr = departmentStr.replaceAll("BC ","Bezoekerscentrum ");
           thisPerson.put("K_OF_S_OMSCHRIJVING",departmentStr);
 
-          // *** use the info to update the next person ***
+          // use the info to update the next person
           if(!lastId.equals(thisPerson.get("SOFI_NR"))) {
-              personsNode = updatePerson(cloud,thisPerson,thisPersonStr);
+              personsNode = updatePerson(cloud,thisPerson,thisPersonStr,logPerson);
 
-              // *** update email address (if allowed)
+              // update email address (if allowed)
               String updateInfo = (String) personsNode.getValue("updateinfo");
               if(updateInfo==null) updateInfo = "1";
               if(!updateInfo.equals("0")) {
@@ -558,7 +541,7 @@ public class CSVReader implements Runnable {
                       personsNode.setValue("email", email);
                       personsNode.commit();
                       emailFound = true;
-                  } else if(thisPerson.get("GBRK_OMS").equals("Partnernaam-geboortenaam")) { // *** try alternative alias ***
+                  } else if(thisPerson.get("GBRK_OMS").equals("Partnernaam-geboortenaam")) { // try alternative alias
                       alias =  createAlias(thisPerson,"P_NAAM","E_ROEPNAAM");
                       email = (String) emails.get(alias.toUpperCase());
                       if(email!=null) {
@@ -578,15 +561,15 @@ public class CSVReader implements Runnable {
               persons++;
           }
 
-          if(thisPerson.get("KOSTEN").equals("E00302")) { // *** afdeling ***
+          if(thisPerson.get("KOSTEN").equals("E00302")) { // afdeling
               thisPerson.put("afdelingen", thisPerson.get("K_OF_S_OMSCHRIJVING"));
-              Node destination = relatedNodes(cloud, thisPerson, personsNode, "afdelingen", "naam", "readmore", "readmore", "FUNC_OMS");
-              // *** this department is in use, so set to active ***
+              Node destination = relatedNodes(cloud, thisPerson, personsNode, "afdelingen", "naam", "readmore", "readmore", "FUNC_OMS", logPerson);
+              // this department is in use, so set to active
               destination.setValue("importstatus", "active");
               destination.commit();
-          } else { // *** locatie ***
+          } else { // locatie, column KOSTEN equals E00375
               thisPerson.put("locations",thisPerson.get("K_S_WAARDE"));
-              Node destination = relatedNodes(cloud, thisPerson, personsNode, "locations", "externid",  "readmore", "readmore", "FUNC_OMS");
+              Node destination = relatedNodes(cloud, thisPerson, personsNode, "locations", "externid", "readmore", "readmore", "FUNC_OMS", logPerson);
               if(destination.getValue("name")==null||!destination.getValue("name").equals(thisPerson.get("K_OF_S_OMSCHRIJVING"))) {
                   destination.setValue("naam", thisPerson.get("K_OF_S_OMSCHRIJVING"));
                   destination.commit();
@@ -611,7 +594,8 @@ public class CSVReader implements Runnable {
    private String updateNMV(Cloud cloud, String dataFile) {
     log.info("updateNMV " + dataFile);
     String logMessage = "";
-    // *** read the person input file ***
+    String logId = ""; // can be used to log update info on one person
+    // read the person input file
     try {
       BufferedReader dataFileReader = getBufferedReader(dataFile);
       String nextLine = dataFileReader.readLine();
@@ -621,7 +605,7 @@ public class CSVReader implements Runnable {
       TreeMap thisPerson = new TreeMap();
       Node personsNode = null;
       String lastId = "";
-      // *** GENDER has label G in the datafile, duplicate label G ***
+      // GENDER has label G in the datafile, duplicate label G
 
       // nmvFile:
       //   "Voornaam", "Voorletters", "Voorvoegsel", "Achternaam", "Geslacht",
@@ -662,8 +646,9 @@ public class CSVReader implements Runnable {
               v++;
           }
           thisPerson.put("ALIAS",createAlias(thisPerson,"E_NAAM","E_ROEPNAAM"));
-          // *** can we use something different, people get duplicated if there name changes ? ***
+          // can we use something different, people get duplicated if there name changes ?
           thisPerson.put("SOFI_NR","NMV_" + thisPerson.get("ALIAS"));
+          boolean logPerson = logId.equals(thisPerson.get("SOFI_NR"));
 
           String thisPersonStr = (String) thisPerson.get("E_ROEPNAAM");
           if(!thisPerson.get("E_VRVG").equals("")) {
@@ -671,12 +656,12 @@ public class CSVReader implements Runnable {
           }
           thisPersonStr += " " + thisPerson.get("E_NAAM") + " (" + thisPerson.get("SOFI_NR") + ")";
 
-          // *** use the info to update the next person ***
+          // use the info to update the next person
           if(!lastId.equals(thisPerson.get("SOFI_NR"))) {
 
-              personsNode = updatePerson(cloud,thisPerson,thisPersonStr);
+              personsNode = updatePerson(cloud,thisPerson,thisPersonStr,logPerson);
 
-              // *** update email address (if allowed)
+              // update email address (if allowed)
               String updateInfo = (String) personsNode.getValue("updateinfo");
               if(updateInfo==null) updateInfo = "1";
               if(!updateInfo.equals("0")) {
@@ -686,14 +671,14 @@ public class CSVReader implements Runnable {
               }
               personsNode.setValue("companyphone", thisPerson.get("Telefoon") );
               personsNode.setValue("cellularphone", thisPerson.get("TelefoonMobiel") );
-              // *** not used in CAD: personsNode.setValue("dayofbirth", thisPerson.get("Geboortedatum") );
+              // not used in CAD: personsNode.setValue("dayofbirth", thisPerson.get("Geboortedatum") );
               personsNode.commit();
               persons++;
           }
 
           if(!thisPerson.get("K_S_WAARDE").equals("")) {
              thisPerson.put("locations",thisPerson.get("K_S_WAARDE"));
-             Node destination = relatedNodes(cloud, thisPerson, personsNode, "locations", "externid",  "readmore", "readmore", "FUNC_OMS");
+             Node destination = relatedNodes(cloud, thisPerson, personsNode, "locations", "externid",  "readmore", "readmore", "FUNC_OMS",logPerson);
              if(destination.getValue("naam")==null||destination.getValue("naam").equals("")) {
                  destination.setValue("naam", thisPerson.get("K_OF_S_OMSCHRIJVING"));
                  destination.commit();
@@ -757,11 +742,11 @@ public class CSVReader implements Runnable {
    }
 
    public String loadZipCodes(ServletContext application, String zipFile, String temp) {
-      // *** the zipcode table should be loaded in such a way that ***
-      // *** based on zipcode and housenumber the related streetname and city can be found ***
+      // the zipcode table should be loaded in such a way that
+      // based on zipcode and housenumber the related streetname and city can be found
       log.info("loadZipCodes " + zipFile);
 
-      TreeMap zipCodeMap = new TreeMap();      // ** mapping of zipcodes to vector of streetname;housenumber_low;house_number_high;code;city
+      TreeMap zipCodeMap = new TreeMap();      // mapping of zipcodes to vector of streetname;housenumber_low;house_number_high;code;city
 
       String nextLine = "";
       String sZipCode = "";
@@ -775,8 +760,8 @@ public class CSVReader implements Runnable {
       
       try {
 
-        Vector files = new Vector();
-        files = unZip(zipFile,temp);
+        ZipUtil zu = new ZipUtil();
+        Vector files = zu.unZip(zipFile,temp);
 
         if(files.size()>0) {
 
@@ -841,16 +826,16 @@ public class CSVReader implements Runnable {
    }
 
    public String loadNMMembers(ServletContext application, String zipFile, String temp){
-      // *** the NM Members table should be loaded in such a way that ***
-      // *** based on a memberid the related zipcode can be found and compared with the zipcode entered by the user ***
+      // the NM Members table should be loaded in such a way that
+      // based on a memberid the related zipcode can be found and compared with the zipcode entered by the user
       log.info("loadNMMembers " + zipFile);
 
-      TreeMap zipCodeTable = new TreeMap();      // ** mapping of memberids to zipcodes
-      TreeMap invZipCodeTable = new TreeMap();   // ** mapping from zipcode to vector of memberids
-      TreeMap houseNumberTable = new TreeMap();  // ** mapping of memberids to housenumbers
-      TreeMap houseExtTable = new TreeMap();     // ** mapping of memberids to houseext
-      TreeMap lastNameTable = new TreeMap();     // ** mapping of memberids to lastname
-      TreeMap invLastNameTable = new TreeMap();  // ** mapping from lastname to vector of memberids
+      TreeMap zipCodeTable = new TreeMap();      // mapping of memberids to zipcodes
+      TreeMap invZipCodeTable = new TreeMap();   // mapping from zipcode to vector of memberids
+      TreeMap houseNumberTable = new TreeMap();  // mapping of memberids to housenumbers
+      TreeMap houseExtTable = new TreeMap();     // mapping of memberids to houseext
+      TreeMap lastNameTable = new TreeMap();     // mapping of memberids to lastname
+      TreeMap invLastNameTable = new TreeMap();  // mapping from lastname to vector of memberids
 
       String nextLine = "";
       String sMemberId = "";
@@ -863,8 +848,8 @@ public class CSVReader implements Runnable {
       
       try {
 
-        Vector files = new Vector();
-        files = unZip(zipFile,temp);
+        ZipUtil zu = new ZipUtil();
+        Vector files = zu.unZip(zipFile,temp);
 
         if(files.size()>0) {
           
@@ -899,7 +884,7 @@ public class CSVReader implements Runnable {
                 logMessage += "\n<br>" + nextLine;
               }
               if(!sMemberId.equals("")){
-                 zipCodeTable.put(sMemberId,sZipCode); // ** there has to be an entry for members without zipcode (= foreign members)
+                 zipCodeTable.put(sMemberId,sZipCode); // there has to be an entry for members without zipcode (= foreign members)
                  if(!sZipCode.equals("")) {
                      Vector memberIdVector = null;
                      if(invZipCodeTable.containsKey(sZipCode)) {
@@ -945,6 +930,22 @@ public class CSVReader implements Runnable {
       }
       return logMessage;
    }
+   
+   /**
+   * logs the fields of all objects belonging to nodeManager
+   */
+   public void logList(Cloud cloud, String nodeManager, String [] fields) {
+   
+      NodeList nl = cloud.getNodeManager(nodeManager).getList(null,fields[0],"UP");
+      for(int i=0;i<nl.size();i++) {
+        Node n = nl.getNode(i);
+        String logLine = "";
+        for(int j=0; j< fields.length; j++) {
+          logLine += n.getStringValue(fields[j]) + "  ";
+        }
+        log.info(logLine);
+      }
+   }
 
    public void readCSV(Cloud cloud, int importType) {
 
@@ -985,7 +986,8 @@ public class CSVReader implements Runnable {
         }
 
         try {
-
+              ZipUtil zu = new ZipUtil();
+              
               log.info("Started import of: " + fileList);
               
               int nodesMarked = 0;
@@ -997,28 +999,29 @@ public class CSVReader implements Runnable {
               
               Vector files = new Vector();
               logMessage += "\nUnzipping " + beauZip + " (lm=" + lastModifiedDate(beauZip) + ")";
-              files.addAll(unZip(beauZip,temp));
+              files.addAll(zu.unZip(beauZip,temp));
               if(files.size()!=0) {
                
                 // start with marking all relations as inactive
                 String [] employeeRelations = {"readmore","afdelingen","readmore","locations"};
                 String [] employeeFields = {"importstatus","inactive"};
                 String [] departmentRelations = {"posrel","afdelingen"};
-                // the importstatus field of afdelingen can be 'inactive' or comma seperated list of descendants
+                // the importstatus field of afdelingen can be 'inactive', 'active' or a comma seperated list of descendants
                 String [] departmentFields = {"importstatus","inactive"};
                 nodesMarked = markNodesAndRelations(cloud,"medewerkers",employeeRelations,employeeFields);
                 nodesMarked += markNodesAndRelations(cloud,"afdelingen",departmentRelations,departmentFields);
-                                
+                
                 TreeMap emails = getEmails(emailFile);
                 logMessage += "\n<br>" + su.getDateTimeString() + su.jvmSize() + " - Emails are imported from: " + emailFile;
                 logMessage += updateOrg(cloud,orgFile);
                 logMessage += updatePersons(cloud, emails, dataFile);
-                                
-                // finish with deleting all inactive relations; employees and departments are never deleted because then can be created manually
+               
+                // finish with deleting all inactive relations; employees and departments are never deleted because they could be created manually
                 employeeFields[1] = "-1"; // prevent employees from being deleted
                 departmentFields[1] = "-1";  // prevent departments from being deleted
                 nodesDeleted = deleteNodesAndRelations(cloud,"medewerkers",employeeRelations,employeeFields);
                 nodesDeleted += deleteNodesAndRelations(cloud,"afdelingen",departmentRelations,departmentFields);
+              
                 numberOfEmptyDept = updateDepartments(cloud);
                 logMessage +=  "\n<br>" + su.getDateTimeString() + su.jvmSize()
                    + " - Number of nodes and relations marked as inactive before update: " + nodesMarked
@@ -1028,7 +1031,7 @@ public class CSVReader implements Runnable {
 
               if(ap.isInstalled("NatMM")) {
                  logMessage += "\nUnzipping " + nmvZip + " (lm=" + lastModifiedDate(nmvZip) + ")";
-                 files.addAll(unZip(nmvZip,temp));
+                 files.addAll(zu.unZip(nmvZip,temp));
                  logMessage += updateNMV(cloud, nmvFile);
               }
             }
@@ -1070,7 +1073,7 @@ public class CSVReader implements Runnable {
        Thread  kicker = Thread.currentThread();
        if(kicker.getName().indexOf("CSVReaderThread")==-1) {
             kicker.setName("CSVReaderThread / " + su.getDateTimeString());
-            kicker.setPriority(Thread.MIN_PRIORITY+1); // *** does this help ?? ***
+            kicker.setPriority(Thread.MIN_PRIORITY+1); // does this help ??
        }
        return kicker;
     }
