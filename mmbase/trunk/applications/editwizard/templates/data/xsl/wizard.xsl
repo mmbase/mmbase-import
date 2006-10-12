@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.166 2006-10-11 14:46:53 michiel Exp $
+    @version $Id: wizard.xsl,v 1.167 2006-10-12 11:17:47 pierre Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -758,7 +758,7 @@
       <xsl:when test="@maywrite!=&apos;false&apos;">
         <div>
           <input type="hidden" name="{@fieldname}" value="{@ftype}" id="{@fieldname}">
-            <xsl:attribute name="new"><xsl:value-of select="value = ''"/></xsl:attribute>
+            <xsl:attribute name="new"><xsl:value-of select="value = '' or value = '-1'"/></xsl:attribute>
             <xsl:apply-templates select="@*"/>
           </input>
 
