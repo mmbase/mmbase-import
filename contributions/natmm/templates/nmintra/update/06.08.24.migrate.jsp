@@ -127,12 +127,6 @@
        </mm:related>
        <mm:deletenode deleterelations="true" />
      </mm:listnodes>
-     <% 
-     // reassign the alias which was pointing to the just deleted page 
-     %>
-     <mm:node>
-     		<mm:createalias>competenties</mm:createalias>
-     </mm:node>
    </mm:listnodes>
    <mm:listnodes type="pagina" constraints="titel = 'Wie-is-wie?'">
      <mm:setfield name="bron">1</mm:setfield>
