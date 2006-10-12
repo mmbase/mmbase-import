@@ -164,8 +164,9 @@
       </xsd:complexContent>
     </xsd:complexType>
 
-    <xsd:element name="distinct" type="xsd:string"/>
-    <xsd:element name="sortorder" type="xsd:string"/>
+    <xsd:element name="distinct" type="Distinct"/>
+    <xsd:element name="sortorder" type="SortOrder"/>
+
     <xsd:complexType name="Distinct">
       <xsd:attribute name="value" type="xsd:boolean" default="true"/>
     </xsd:complexType>
