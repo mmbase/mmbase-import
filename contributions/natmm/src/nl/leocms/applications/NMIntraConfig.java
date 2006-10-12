@@ -78,6 +78,13 @@ public class NMIntraConfig {
       "object,contentrel,pagina"                                      // vacature, lucene index 10
    };
 
+   
+   public static int PARENT_LAYOUT = -1;
+   public static int DEFAULT_LAYOUT = 0;
+   public static int SUBSITE1_LAYOUT = 1;
+
+   public static String [] layout = {"Natuurmonumenten", "Landschap Noord-Holland" };
+
    public static int PARENT_STYLE = -1;
 	 public static int DEFAULT_STYLE = 4;
    
@@ -106,7 +113,6 @@ public class NMIntraConfig {
    public static String cssPath = "css/";
 
    // Natuurmonumenten
-   /*
    public static boolean showFirstSubpage = false;
 
    public static String fromEmailAddress = "intranet@natuurmonumenten.nl";
@@ -123,7 +129,7 @@ public class NMIntraConfig {
    // public static String sCorporateEditors = "http://www.natuurmonumenten.nl/editors/";
    public static String sCorporateWebsite = "http://www.acc.natuurmm.asp4all.nl/";
    public static String sCorporateEditors = "http://www.acc.natuurmm.asp4all.nl/editors/";
-   */
+
    // Landschap Noord-Holland
    /*
    public static boolean showFirstSubpage = true;
@@ -134,8 +140,8 @@ public class NMIntraConfig {
    public static String toEmailAddress   = "beheerder@landschapnoordholland.nl";
    public static String newsEmailAddress = "intranieuws@landschapnoordholland.nl";
 
-   public static String sDocumentsUrl = "/documents/PenO";
-   public static String sDocumentsRoot = "D:/apps/Tomcat_Intranet/webapps/documents/PenO";
+   public static String sDocumentsUrl = "/documents/Intranet";
+   public static String sDocumentsRoot = "D:/apps/Tomcat_Intranet/webapps/documents/Intranet";
    public static String incomingDir = "E:/Intranet_Input/";
    public static String tempDir = "E:/Intranet_Temp/";
    public static String sCorporateWebsite = "http://www.landschapnoordholland.nl/";
@@ -143,8 +149,8 @@ public class NMIntraConfig {
    */
    
    // Development
-   
-   public static boolean showFirstSubpage = true;
+   /*
+   public static boolean showFirstSubpage = false;
 
    public static String fromEmailAddress = "intranet@natuurmonumenten.nl";
    public static String defaultPZAddress = "hangyi@xs4all.nl";
@@ -158,7 +164,7 @@ public class NMIntraConfig {
    public static String tempDir = "C:/temp/";
    public static String sCorporateWebsite = "http://www.acc.natuurmm.asp4all.nl/";
    public static String sCorporateEditors = "http://www.acc.natuurmm.asp4all.nl/editors/";
-   
+   */
 
    public NMIntraConfig() {
 
