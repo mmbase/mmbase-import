@@ -68,7 +68,7 @@ String employees_number = "";
 if(number_of_birthdays>0) {
   int selectedEmployee = (int) Math.floor(number_of_birthdays*Math.random());
   employees_number = employees[selectedEmployee];
-} else {
+} else if(iRubriekLayout!=NMIntraConfig.SUBSITE1_LAYOUT) {
   // no birthday today
   if(next_shown.equals("")||next_shown.equals("-1")) {
     if(!first_shown.equals("")) {

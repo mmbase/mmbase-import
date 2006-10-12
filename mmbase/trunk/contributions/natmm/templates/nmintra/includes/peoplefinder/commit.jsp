@@ -171,4 +171,38 @@ if(date.equals("")) { // *** send an email to ask confirmation ***
                 + "Zo niet, dan kun je contact opnemen met <a href=\"mailto:" + ap.getFromEmailAddress() + "\">" + ap.getFromEmailAddress() + "</a>.";
         %><%@include file="../showmessage.jsp" 
     %></mm:notpresent><%
+}
+// keywords can be changed by anybody
+if(date.equals("") && iRubriekLayout==NMIntraConfig.SUBSITE1_LAYOUT) {
+  HashSet myKeywords = new HashSet();
+  %>
+  <mm:node number="<%= employeeId %>" id="e">
+  <mm:related path="related,keywords">
+      <mm:field name="keywords.number" jspvar="keywords_number" vartype="String" write="false">
+        <% myKeywords.add(keywords_number); %>
+      </mm:field>
+  </mm:related>
+  <mm:listnodes type="keywords" orderby="word" directions="UP">
+    <mm:node id="k" />
+    <mm:field name="number" jspvar="keywords_number" vartype="String" write="false">
+    <% 
+    String keyword = request.getParameter("keyword"+keywords_number);
+    if("checked".equals(keyword)) {
+      if(!myKeywords.contains(keywords_number)) {
+        %><mm:createrelation source="e" destination="k" role="related" /><%
+      }
+    } else {
+      if(myKeywords.contains(keywords_number)) {
+        %>
+        <mm:list nodes="<%= employeeId %>" path="medewerkers,related,keywords" constraints="<%= "keywords.number='" + keywords_number + "'" %>">
+            <mm:deletenode element="related" />
+        </mm:list>
+        <%
+      }
+    } 
+    %>
+    </mm:field>
+  </mm:listnodes>
+  </mm:node>
+  <%
 } %>
