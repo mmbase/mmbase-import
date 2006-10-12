@@ -169,6 +169,7 @@
       <relation from="pagina" to="ads" type="contentrel"/>
       <relation from="pagina" to="artikel" type="readmore"/>
       <relation from="pagina" to="attachments" type="posrel"/> 
+      <relation from="pagina" to="competencetypes" type="posrel"/> 
       <relation from="pagina" to="contentblocks" type="readmore"/> 
       <relation from="pagina" to="contentelement" type="contentrel"/>  <!-- artikel, medewerkers, vacature -->
       <relation from="pagina" to="discounts" type="posrel"/>
@@ -188,7 +189,7 @@
       <relation from="pagina" to="programs" type="posrel"/>
       <relation from="pagina" to="shorty" type="rolerel"/>
       <relation from="pagina" to="teaser" type="rolerel"/>
-		  <relation from="pagina" to="terms" type="contentrel"/>
+		<relation from="pagina" to="terms" type="contentrel"/>
       <relation from="pagina" to="users" type="rolerel"/>
       <relation from="paginatemplate" to="editwizards" type="related"/> 
       <relation from="paragraaf" to="attachments" type="posrel"/> 
