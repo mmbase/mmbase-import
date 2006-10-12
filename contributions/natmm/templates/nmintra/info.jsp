@@ -20,6 +20,9 @@ if(!articleId.equals("-1")) {
     <% expireTime = newsExpireTime; %>
     <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
     <%
+    
+      if(termSearchId.equals(defaultSearchText)) { termSearchId = ""; }
+
       int objectPerPage = 10;
       int thisOffset = 1;
       try{
@@ -46,9 +49,15 @@ if(!articleId.equals("-1")) {
       boolean checkOnPeriod = (fromTime<toTime);
       
       String rightBarTitle = "";
-      %><mm:node number="<%= paginaID %>" jspvar="thisPage"><%
-         rightBarTitle = "Zoek in " + thisPage.getStringValue("titel");
-      %></mm:node
+      %><mm:node number="<%= paginaID %>" jspvar="thisPage">
+          <mm:field name="bron">
+              <mm:compare value="0" inverse="true">
+              <%
+              rightBarTitle = "Zoek in " + thisPage.getStringValue("titel");
+              %>
+              </mm:compare>
+         </mm:field>
+      </mm:node
       ><%@include file="includes/info/movetoarchive.jsp" 
       %><%@include file="includes/header.jsp" 
       %><td><%@include file="includes/pagetitle.jsp" %></td>
@@ -122,7 +131,13 @@ if(!articleId.equals("-1")) {
       // *************************************** right bar *******************************
       %>
       <td>
-         <%@include file="includes/info/relatedpools.jsp" %>
+         <mm:node number="<%= paginaID %>">
+            <mm:field name="bron">
+              <mm:compare value="0" inverse="true">
+              <%@include file="includes/info/relatedpools.jsp" %>
+              </mm:compare>
+            </mm:field>
+         </mm:node>
          <br/>
          <%@include file="includes/tickertape.jsp" %>
          <%@include file="includes/itemurls.jsp" %>

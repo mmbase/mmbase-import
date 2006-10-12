@@ -2,10 +2,8 @@
 <table cellpadding="0" cellspacing="0"  align="center" border="0">
    <form method="POST" name="infoform" action="<%= javax.servlet.http.HttpUtils.getRequestURL(request) + templateQueryString %>" onSubmit="return postIt();"> 
    <tr>
-      <td class="bold"><span class="light">Zoekterm</span></td>
-   </tr>
-   <tr>
-      <td class="bold"><input type="text" name="termsearch" value="<%= termSearchId %>" style="width:170px;" /></td>
+      <td class="bold"><input type="text" name="termsearch" value="<%= (termSearchId.equals("") ? defaultSearchText : termSearchId )
+                %>" onClick="if(this.value=='<%= defaultSearchText %>') { this.value=''; }" style="width:170px;" /></td>
    </tr>
    <%
    String lastpool=""; 

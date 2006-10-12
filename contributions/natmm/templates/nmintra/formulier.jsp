@@ -29,31 +29,13 @@ if(!postingStr.equals("|")) { expireTime = 0; }
         // <option id="4">radio buttons</option>
         // <option id="5">check boxes</option>
         
-        // ** hack: add sDefaultValues on page "Wat vind je ervan?"
-        String sDefaultName = "";
-        String sDefaultEmail = "";
-        String sDefaultText = "";
+        // ** hack: special functionality on page "Wat vind je ervan?"
         String sWvjePageId = ""; %>
         <mm:list path="rubriek,posrel,pagina" constraints="rubriek.naam = 'Wat vind je ervan?' AND pagina.titel = 'Wat vind je ervan?'">
           <mm:field name="pagina.number" jspvar="number" vartype="String" write="false">
             <% sWvjePageId = number; %>
           </mm:field>
         </mm:list>
-        <% 
-        if(sPageRefMinOne!=null && paginaID.equals(sWvjePageId)) {
-            sDefaultText = "Het volgende wil ik melden over de rubriek ";
-            %>
-            <mm:node number="<%= sPageRefMinOne %>" jspvar="lastPage" notfound="skipbody">
-               <mm:related path="posrel,rubriek" constraints="posrel.pos!=0">
-                  <mm:node element="rubriek" jspvar="lastRubriek">
-                     <% sDefaultText += lastRubriek.getStringValue("naam") + " - "; %>
-                  </mm:node>
-               </mm:related>
-               <%  sDefaultText += lastPage.getStringValue("titel") + ": "; %>
-            </mm:node>
-            <%
-        } 
-        %>
         <%@include file="includes/form/script.jsp" %>
         <%
         if(!postingStr.equals("")){
