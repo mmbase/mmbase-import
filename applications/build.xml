@@ -200,10 +200,12 @@ Applications build file
      </ant>
   </target>
 
-  <target name="install">
+  <target name="minimalistic.install">
     <ant dir="taglib"        target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
+  </target>
+  <target name="install" depends="minimalistic.install">
     <ant dir="editwizard"    target="dependent.install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>

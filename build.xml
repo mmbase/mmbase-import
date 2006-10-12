@@ -2,7 +2,7 @@
 
 
 MMBase Build File
-$Id: build.xml,v 1.152 2006-10-03 21:12:25 michiel Exp $
+$Id: build.xml,v 1.153 2006-10-12 08:38:20 michiel Exp $
 =================
 
 This build file can be used to build the following from CVS or from the source
@@ -678,7 +678,7 @@ Build-compiler: ${build.compiler}
     </war>
   </target>
 
-  <target name="minimalistic.war" description="Create a minimalistic MMBase war-file" depends="lib.release,web,jar,applications">
+  <target name="minimalistic.war" description="Create a minimalistic MMBase war-file" depends="lib.release,web,jar,minimalistic.applications">
 
     <war warfile="${build.dir}/minimalistic-mmbase.war" webxml="${web.xml.path}" duplicate="preserve">
       <lib dir="${release.lib.dir}">
@@ -710,15 +710,14 @@ Build-compiler: ${build.compiler}
               <filename name="WEB-INF/config/modules/jdbc.xml" />
               <filename name="WEB-INF/config/security/security.xml" />
               <filename name="WEB-INF/config/security/context/**" />
-              <filename name="mmbase/edit/basic/**" />
-              <filename name="mmbase/edit/index.*" />
-              <filename name="mmbase/admin/**" />
-              <filename name="mmbase/style/**" />
-              <filename name="mmbase/errorpages/**" />
+              <filename name="mmbase/**" />
               <filename name="mmbase/index.jsp" />
               <filename name="mmbase/mpl-1.0.jsp" />
               <filename name="index.jsp" />
             </or>
+            <not>
+              <filename name="mmbase/edit/wizard/**" />
+            </not>
           </and>
         </selector>
       </fileset>
@@ -1177,6 +1176,10 @@ Build-compiler: ${build.compiler}
 
   <target name="applications">
     <ant dir="${applications.home}" target="install">
+    </ant>
+  </target>
+  <target name="minimalistic.applications">
+    <ant dir="${applications.home}" target="minimalistic.install">
     </ant>
   </target>
   <target name="clean.applications">
