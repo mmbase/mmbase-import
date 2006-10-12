@@ -138,4 +138,4 @@ if(sPageRef!=null&&!sPageRef.equals(paginaID)) { // set pagerefminone to sPagRef
 }
 session.setAttribute("pageref",paginaID);
 
-%>
+%><%@include file="screensize.jsp" %>

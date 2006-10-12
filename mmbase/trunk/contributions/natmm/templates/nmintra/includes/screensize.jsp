@@ -1,4 +1,4 @@
-<%@page import="java.util.*" %><%
+<%
 int [] thisScreen = {0, 0};
 Cookie[] cookies = request.getCookies(); 
 if(cookies!=null){
@@ -22,8 +22,7 @@ if(thisScreen[0]>0&&thisScreen[1]>0) {
         screenSizes = new TreeMap();
         application.setAttribute("visitorscreens",screenSizes);
     }
-    screenSizes.put(username,"<td>" + thisScreen[0] 
-			+ "</td><td>" + thisScreen [1] 
-			+ "</td><td>" + request.getRemoteAddr() + "</td>"); 
+    screenSizes.put(request.getRemoteAddr(),"<td>" + thisScreen[0] 
+			+ "</td><td>" + thisScreen [1] + "</td>"); 
 }
 %>
