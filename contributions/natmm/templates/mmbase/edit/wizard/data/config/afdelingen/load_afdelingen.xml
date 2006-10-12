@@ -27,6 +27,7 @@
    <field name="externid"/>
    <field name="importstatus"/>
    <!-- relation destination="evenement" role="readmore"/ -->
+   <relation destination="afdelingen" role="readmore"/>
    <relation destination="medewerkers" role="readmore"/>
    <relation destination="users" role="rolerel"/>
    <relation destination="natuurgebieden" role="posrel"/>
