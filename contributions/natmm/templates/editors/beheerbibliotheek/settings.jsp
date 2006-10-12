@@ -76,28 +76,27 @@
    for (int c = 0; c < cookies.length; c++) {
       String thisName = cookies[c].getName();
       String thisValue = cookies[c].getValue();
-	   if (thisName!=null&&thisValue!=null) {
-	      if(thisName.equals("modus")) {  modus = thisValue; }
-         if(thisName.equals("searchIsOn")) { searchIsOn = thisValue.equals("true"); }
-	      if(thisName.equals("allTypesSelected")) {  allTypesSelected = thisValue.equals("true"); }
-	      if(thisName.equals("selectedTypes")) { selectedTypes = thisValue; }
-	      if(thisName.equals("rubriek")) { rubriek = thisValue; }
-	      if(thisName.equals("age")) { age = Integer.parseInt(thisValue); }
-	      if(thisName.equals("changeAge")) { changeAge = Integer.parseInt(thisValue); }
-	      if(thisName.equals("auteur")) { auteur = thisValue; }
-	      if(thisName.equals("metatag")) { metatag = thisValue; }
-	      if(thisName.equals("titel")) { titel = thisValue; }
-	      if(thisName.equals("paginanaam")) { paginanaam = thisValue; }
-	      if(thisName.equals("orderColumn")) { orderColumn = thisValue; }
-	      if(thisName.equals("pageno")) { pageNo = Integer.parseInt(thisValue); }
-	      if(thisName.equals("curPage")) { curPage = Integer.parseInt(thisValue); }
+      if (thisName!=null&&thisValue!=null) {
+      if(thisName.equals("modus")) {  modus = thisValue; }
+      if(thisName.equals("searchIsOn")) { searchIsOn = thisValue.equals("true"); }
+      if(thisName.equals("selectedTypes")) { selectedTypes = thisValue; }
+      if(thisName.equals("rubriek")) { rubriek = thisValue; }
+      if(thisName.equals("age")) { age = Integer.parseInt(thisValue); }
+      if(thisName.equals("changeAge")) { changeAge = Integer.parseInt(thisValue); }
+      if(thisName.equals("auteur")) { auteur = thisValue; }
+      if(thisName.equals("metatag")) { metatag = thisValue; }
+      if(thisName.equals("titel")) { titel = thisValue; }
+      if(thisName.equals("paginanaam")) { paginanaam = thisValue; }
+      if(thisName.equals("orderColumn")) { orderColumn = thisValue; }
+      if(thisName.equals("pageno")) { pageNo = Integer.parseInt(thisValue); }
+      if(thisName.equals("curPage")) { curPage = Integer.parseInt(thisValue); }
    	}
    }
 
    // ** If available replace defaults / cookie setting by request paramaters
+   allTypesSelected = "all".equals(request.getParameter("allTypesSelected"));
    if (request.getParameter("modus") != null) { modus = request.getParameter("modus"); }
    if (request.getParameter("searchIsOn") != null) { searchIsOn = request.getParameter("searchIsOn").equals("true"); }
-   if (request.getParameter("allTypesSelected") != null) { allTypesSelected = request.getParameter("allTypesSelected").equals("true"); }
    if (request.getParameter("selectedTypes") != null) {  selectedTypes = request.getParameter("selectedTypes"); }
    if (request.getParameter("rubriek") != null) { rubriek = request.getParameter("rubriek"); }
    if (request.getParameter("age") != null) { age = Integer.parseInt(request.getParameter("age")); }
@@ -115,7 +114,6 @@
    Cookie thisCookie = null;
    thisCookie = new Cookie("modus", modus); thisCookie.setMaxAge(maxAge); response.addCookie(thisCookie); 
    thisCookie = new Cookie("searchIsOn", "" + searchIsOn); thisCookie.setMaxAge(60); response.addCookie(thisCookie); 
-   thisCookie = new Cookie("allTypesSelected", "" + allTypesSelected); thisCookie.setMaxAge(maxAge); response.addCookie(thisCookie); 
    thisCookie = new Cookie("selectedTypes", selectedTypes); thisCookie.setMaxAge(maxAge); response.addCookie(thisCookie); 
    thisCookie = new Cookie("rubriek", rubriek); thisCookie.setMaxAge(maxAge); response.addCookie(thisCookie); 
    thisCookie = new Cookie("age", "" + age); thisCookie.setMaxAge(maxAge); response.addCookie(thisCookie); 

@@ -70,9 +70,9 @@ if (searchIsOn) {
 		String unused_items = (String) application.getAttribute("unused_items");
 		contentElementConstraint = " contentelement.number IN (0, " + unused_items + ") ";
 	}
-	
+  
    String objects = "";
-   if((contentElementConstraint!=null && !"".equals(contentElementConstraint))||show_unused) {
+   if(!"".equals(contentElementConstraint)||allTypesSelected||show_unused) {
      	queryLog += ", using cc=" +  (contentElementConstraint.length()>100 ? contentElementConstraint.substring(0,100) + "..." : contentElementConstraint); 
       NodeList nlObjects = cloud.getList("",
                                  "contentelement",
