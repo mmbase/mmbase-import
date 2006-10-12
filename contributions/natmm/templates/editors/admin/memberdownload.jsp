@@ -1,4 +1,3 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@page import="java.util.Enumeration,nl.leocms.applications.NatMMConfig"%>
 <%@include file="/taglibs.jsp" %>
 <mm:cloud method="http" rank="basic user" jspvar="cloud">
