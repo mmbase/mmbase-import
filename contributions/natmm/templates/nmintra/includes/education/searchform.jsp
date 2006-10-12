@@ -40,7 +40,7 @@
       </table>
 	</form>	
    <br/>
-   <a href="educations.jsp?p=competenties" style="color:#FFFFFF;">Wat zijn competenties?</a>
+   <a href="<%= ph.createPaginaUrl("competenties",request.getContextPath()) %>" style="color:#FFFFFF;">Wat zijn competenties?</a>
 </td>
 </tr>
 </table>
