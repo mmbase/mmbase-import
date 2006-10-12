@@ -106,7 +106,7 @@ public class NMIntraConfig {
    public static String cssPath = "css/";
 
    // Natuurmonumenten
-
+   /*
    public static boolean showFirstSubpage = false;
 
    public static String fromEmailAddress = "intranet@natuurmonumenten.nl";
@@ -123,7 +123,7 @@ public class NMIntraConfig {
    // public static String sCorporateEditors = "http://www.natuurmonumenten.nl/editors/";
    public static String sCorporateWebsite = "http://www.acc.natuurmm.asp4all.nl/";
    public static String sCorporateEditors = "http://www.acc.natuurmm.asp4all.nl/editors/";
-   
+   */
    // Landschap Noord-Holland
    /*
    public static boolean showFirstSubpage = true;
@@ -143,8 +143,8 @@ public class NMIntraConfig {
    */
    
    // Development
-   /*
-   public static boolean showFirstSubpage = false;
+   
+   public static boolean showFirstSubpage = true;
 
    public static String fromEmailAddress = "intranet@natuurmonumenten.nl";
    public static String defaultPZAddress = "hangyi@xs4all.nl";
@@ -158,7 +158,7 @@ public class NMIntraConfig {
    public static String tempDir = "C:/temp/";
    public static String sCorporateWebsite = "http://www.acc.natuurmm.asp4all.nl/";
    public static String sCorporateEditors = "http://www.acc.natuurmm.asp4all.nl/editors/";
-   */
+   
 
    public NMIntraConfig() {
 
