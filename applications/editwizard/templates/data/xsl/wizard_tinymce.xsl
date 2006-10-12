@@ -13,7 +13,7 @@
     If you have the source, you can use the editwizard build script to download and extract tinymce ('ant tinymce').
 
     @author Pierre van Rooden
-    @version $Id: wizard_tinymce.xsl,v 1.4 2006-10-09 12:19:58 pierre Exp $
+    @version $Id: wizard_tinymce.xsl,v 1.5 2006-10-12 11:18:39 pierre Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -38,7 +38,7 @@
 function mmbaseOnChangeHandler(inst) {
     // preferably you would use:
     //    inst.triggerSave();
-    //  but unfortunately that resets the cursor position in the editor too
+    //  but unfortunately that rests the cursor position in the editor too
     if (inst.formElement)
       inst.formElement.value = inst.getBody().innerHTML;
     validator.validate(inst.formElement);
