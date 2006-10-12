@@ -27,7 +27,7 @@
       </mm:createrelation>
       <mm:createrelation source="internal" destination="template" role="gebruikt" />
       <mm:createnode type="pagina" id="external">
-         <mm:setfield name="titel">Externe vacatures</mm:setfield>
+         <mm:setfield name="titel">Vacatures bij anderen</mm:setfield>
          <mm:setfield name="verwijderbaar">1</mm:setfield>
       </mm:createnode>
       <mm:createrelation source="vacatures" destination="external" role="posrel">
@@ -125,6 +125,12 @@
        </mm:related>
        <mm:deletenode deleterelations="true" />
      </mm:listnodes>
+     <% 
+     // reassign the alias which was pointing to the just deleted page 
+     %>
+     <mm:node>
+     		<mm:createalias>competenties</mm:createalias>
+     </mm:node>
    </mm:listnodes>
    <mm:listnodes type="pagina" constraints="titel = 'Wie-is-wie?'">
      <mm:setfield name="bron">1</mm:setfield>
@@ -136,8 +142,7 @@
     "Arbeidsvoorwaarden en Beleid",
     "Studiekosten-regeling",
     "Subsidieregeling",
-    "Intervisie en coaching",
-    "Zoek opleiding"
+    "Intervisie en coaching"
 		};
 	String [] pageNewName = {
 		"Nieuws",
@@ -145,8 +150,7 @@
     "Arbeidsvoorwaarden",
     "Studiekosten",
     "Subsidies",
-    "Coaching",
-    "Zoek opleiding"
+    "Coaching"
 		};
 	for(int i=0; i<pageToRename.length;i++) {
 		%><mm:listnodes type="pagina" constraints="<%= "titel = '" + pageToRename[i]  + "'" %>">

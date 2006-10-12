@@ -106,7 +106,8 @@ if(!articleId.equals("-1")) {
       </mm:node><%
   
   } else {
-      
+     
+     String newsConstraint = (new SearchUtil()).articleConstraint(nowSec,quarterOfAnHour);
      String readmoreUrl = "vacature_info.jsp";
      %><td><%@include file="includes/pagetitle.jsp" %></td>
        <td>
@@ -156,8 +157,7 @@ if(!articleId.equals("-1")) {
         <mm:import id="hrefclass"></mm:import>
         <%@include file="includes/info/movetoarchive.jsp" 
         %><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel"  searchdir="destination" 
-           orderby="artikel.embargo" directions="DOWN"
-           constraints="<%= (new SearchUtil()).articleConstraint(nowSec,quarterOfAnHour) %>"
+           orderby="artikel.embargo" directions="DOWN" constraints="<%= newsConstraint %>"
            ><mm:remove referid="this_article"
            /><mm:node element="artikel" id="this_article"
            /><%@include file="includes/relatedsummaries.jsp" 
@@ -173,7 +173,7 @@ if(!articleId.equals("-1")) {
      %><td>
         <mm:import id="nodates" />
         <mm:import id="hrefclass" reset="true">menuitem</mm:import>
-        <mm:list nodes="<%= paginaID %>" path="pagina,readmore,artikel" orderby="readmore.pos">
+        <mm:list nodes="<%= paginaID %>" path="pagina,readmore,artikel" orderby="readmore.pos" constraints="<%= newsConstraint %>">
            <mm:first>
               <%@include file="includes/whiteline.jsp" %>
               <div class="rightcolumn" id="rightcolumn" style="padding-left:20px;padding-right:10px;">
