@@ -157,7 +157,9 @@ String sNatuurinNumber = "";
 </table>
 <div style="position:absolute;right:5px;top:5px;z-index:100">
   <small>
-    <li><a class="menu" target="bottompane" href="../doc/index.jsp" title="klik hier om de gebruikershandleidingen te bekijken of te downloaden">gebruikershandleiding</a><br/>
+    <li><a class="menu" target="bottompane" href="<mm:list nodes="root" path="rubriek1,parent,rubriek2" orderby="parent.pos" directions="UP" max="1"
+      ><mm:field name="rubriek2.url_live"><mm:isnotempty>/<mm:write/></mm:isnotempty></mm:field></mm:list
+      >/doc/index.jsp" title="klik hier om de gebruikershandleidingen te bekijken of te downloaden">gebruikershandleiding</a><br/>
     <% String webmasterMail = ""; %>
     <mm:listnodescontainer type="users"
        ><mm:constraint field="rank" operator="=" value="administrator" 
