@@ -356,9 +356,28 @@
       <mm:setfield name="screensize">1</mm:setfield>
     </mm:node>
 	</mm:listnodes>
-   <% log.info("25. Changing the product editwizard"); %>
-   <mm:listnodes type="editwizards" constraints="wizard = 'config/items/items_shop'">
+  <% log.info("25. Changing the product editwizard"); %>
+  <mm:listnodes type="editwizards" constraints="wizard = 'config/items/items_shop'">
 		<mm:setfield name="fields">titel,id,type,price1,owner,quotetitle</mm:setfield>
+	</mm:listnodes>
+  <% log.info("26. Adding editwizard for forum template"); %>
+  <mm:createnode type="editwizards" id="forum_wizard">
+		<mm:setfield name="name">forum pagina</mm:setfield>
+		<mm:setfield name="description">Voeg een forum toe aan deze pagina</mm:setfield>
+		<mm:setfield name="type">wizard</mm:setfield>
+		<mm:setfield name="wizard">config/pagina/pagina_forum</mm:setfield>
+		<mm:setfield name="nodepath">pagina</mm:setfield>
+		<mm:setfield name="fields">titel</mm:setfield>
+		<mm:setfield name="orderby">titel</mm:setfield>
+		<mm:setfield name="directions">up</mm:setfield>
+		<mm:setfield name="pagelength">50</mm:setfield>
+		<mm:setfield name="maxpagecount">100</mm:setfield>
+		<mm:setfield name="searchfields">titel</mm:setfield>
+		<mm:setfield name="search">yes</mm:setfield>
+	</mm:createnode>
+	<mm:listnodes type="paginatemplate" constraints="url = 'forum.jsp'">
+		<mm:node id="forum_template" />
+		<mm:createrelation source="forum_template" destination="forum_wizard" role="related" />
 	</mm:listnodes>
 	<% log.info("99. Deleting unused editwizards"); %>
 	<%
@@ -371,15 +390,15 @@
 		"config/pagina/pagina",
 		"config/menu/menu",
 		"/editors/parcleaner/cleanarticles.jsp",
-      "config/feedback/wizard",
-      "/editors/items.jsp",
-      "/editors/imap_overview.jsp",
-      "config/linklijst/linklijst_knipsels",
-      "config/pagina/pagina_topic",
-      "config/images/images_knipsels",
-      "config/programs/programs",
-      "config/companies/companies"
-		};
+    "config/feedback/wizard",
+    "/editors/items.jsp",
+    "/editors/imap_overview.jsp",
+    "config/linklijst/linklijst_knipsels",
+    "config/pagina/pagina_topic",
+    "config/images/images_knipsels",
+    "config/programs/programs",
+    "config/companies/companies"
+	};
 	for(int i=0; i<ewToDelete.length;i++) {
 		%><mm:listnodes type="editwizards" constraints="<%= "wizard = '" + ewToDelete[i]  + "'" %>">
 			<mm:deletenode deleterelations="true" />
@@ -390,9 +409,9 @@
 		"Home",
 		"Subrubriek editors",
 		"Website beheer",
-      "Interne Webwinkel (redactie)",
-      "Kiezen en Delen",
-      "Knipsels, bijlagen (niet in gebruik)"
+    "Interne Webwinkel (redactie)",
+    "Kiezen en Delen",
+    "Knipsels, bijlagen (niet in gebruik)"
 	};
 	for(int i=0; i<menuToDelete.length;i++) {
 		%><mm:listnodes type="menu" constraints="<%= "naam = '" + menuToDelete[i]  + "'" %>">
@@ -401,16 +420,16 @@
 	}
 	String [] ewToRename = {
 		"/editors/cache/flush.jsp?command=all",
-      "config/pagina/pagina_form",
-      "/editors/stats/shopstats.jsp",
-      "config/artikel/artikel"
-		};
+    "config/pagina/pagina_form",
+    "/editors/stats/shopstats.jsp",
+    "config/artikel/artikel"
+	};
 	String [] ewNewName = {
 		"/editors/util/flushcache.jsp",
-      "config/pagina/pagina_formulier",
-      "/editors/simplestats/shopstats.jsp",
-      "config/artikel/artikel_nieuws_nmintra"
-		};
+    "config/pagina/pagina_formulier",
+    "/editors/simplestats/shopstats.jsp",
+    "config/artikel/artikel_nieuws_nmintra"
+	};
 	for(int i=0; i<ewToRename.length;i++) {
 		%><mm:listnodes type="editwizards" constraints="<%= "wizard = '" + ewToRename[i]  + "'" %>">
 			<mm:setfield name="wizard"><%= ewNewName[i] %></mm:setfield>

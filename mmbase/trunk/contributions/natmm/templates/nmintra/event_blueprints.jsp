@@ -23,7 +23,9 @@
       ListUtil lu = new ListUtil(cloud);
 
       if(departmentId.equals("default")) {   departmentId = ""; }
-      String sEvents = "";      
+      String sEvents = "";
+
+      if(termSearchId.equals(defaultSearchText)) { termSearchId = ""; }
       boolean bSearchIsOn = !termSearchId.equals("")||!eTypeId.equals("")||!pCategorieId.equals("")||!pAgeId.equals("")||!nReserveId.equals("")
                            ||!eDistanceId.equals("")||!eDurationId.equals("")||!departmentId.equals("");
 
