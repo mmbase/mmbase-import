@@ -4,9 +4,6 @@
 <form method="POST" name="advsearchform" action="<%= ph.createPaginaUrl(paginaID,request.getContextPath()) %>" onSubmit="return postIt('submit');">
 <table cellpadding="0" cellspacing="0"  align="center">
   <tr>
-     <td class="bold"><span class="light">Zoekterm</span></td>
-  </tr>
-  <tr>
      <td class="bold"><input type="text" name="search" value="<%= (searchIsOn ? defaultSearchText : searchId )
        %>" style="width:170px;" onClick="if(this.value=='<%= defaultSearchText %>') { this.value=''; }" /></td>
   </tr>

@@ -77,9 +77,11 @@
    <% log.info("Add an extra question to the 'Wat vind je ervan?' form"); %>
    <mm:listnodes type="formulier" constraints="titel = 'Wat vind je ervan?'">
       <mm:node id="form" />
+      <mm:setfield name="titel">Contact</mm:setfield>
+      <mm:setfield name="omschrijving">Heb je nieuwsbericht, een opmerking of vraag? Dan kan je die hier kwijt!</mm:setfield>
       <mm:setfield name="titel_fra">Bedankt voor uw nieuwsbericht of commentaar.</mm:setfield>
       <mm:createnode type="formulierveld" id="field">
-          <mm:setfield name="label">Ik heb een</mm:setfield>
+          <mm:setfield name="label">Ik heb</mm:setfield>
           <mm:setfield name="type">4</mm:setfield>
           <mm:setfield name="verplicht">1</mm:setfield>
        </mm:createnode>
@@ -87,13 +89,13 @@
           <mm:setfield name="pos">3</mm:setfield>
        </mm:createrelation>
        <mm:createnode type="formulierveldantwoord" id="a1">
-          <mm:setfield name="waarde">nieuws voor op de homepage</mm:setfield>
+          <mm:setfield name="waarde">een nieuwsbericht voor intranieuws@natuurmonumenten.nl </mm:setfield>
        </mm:createnode>
        <mm:createrelation source="field" destination="a1" role="posrel">
           <mm:setfield name="pos">1</mm:setfield>
        </mm:createrelation>
        <mm:createnode type="formulierveldantwoord" id="a2">
-          <mm:setfield name="waarde">vraag of opmerking</mm:setfield>
+          <mm:setfield name="waarde">een opmerking of vraag aan de beheerder(s)</mm:setfield>
        </mm:createnode>
        <mm:createrelation source="field" destination="a2" role="posrel">
           <mm:setfield name="pos">2</mm:setfield>

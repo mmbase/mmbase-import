@@ -48,14 +48,10 @@ public String getSelect(Cloud cloud, Logger log, String title, int iRubriekStyle
 <tr>
 <td>
    <form method="POST" name="form1" action="<%= javax.servlet.http.HttpUtils.getRequestURL(request) + templateQueryString %>" onSubmit="return postIt();">
-		<table style="width:190px;margin-bottom:3px;" border="0" cellpadding="0" cellspacing="0">
-         <tr>
-	   		<td class="bold"><div align="left" class="light">&nbsp;Zoekterm</div></td>
-		   </tr>
-		</table>
 		<table width="190" height="18" border="0" cellpadding="0" cellspacing="0">
    	   <tr>
-      		<td  class="light"><input type="text" name="termsearch" value="<%= termSearchId %>" style="width:180px;" /></td>
+      		<td  class="light"><input type="text" name="termsearch" value="<%= (termSearchId.equals("") ? defaultSearchText : termSearchId )
+                %>" onClick="if(this.value=='<%= defaultSearchText %>') { this.value=''; }" style="width:180px;" /></td>
 	   	</tr>
 	   </table>
       <%= getSelect(cloud,log,"Type activiteit",iRubriekStyle,eTypeId,eventTypes,"evenement_type","naam",searchUrl,"evt") %>

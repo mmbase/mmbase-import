@@ -142,6 +142,10 @@
 						><li><a target="_blank" href="<mm:field name="link.url" />" title="<mm:field name="link.alt_tekst"/>">
 						<mm:field name="link.titel" /></a><br>
 					</mm:related>
+          <mm:related  path="posrel,artikel" orderby="posrel.pos">
+            <br/><br/>
+            <%@include file="../relatedarticle.jsp"%>
+          </mm:related>
 				</td>
 			</tr><%
 		// ************************************* Related products (from dienstenpakketten) ************

@@ -128,10 +128,9 @@ String buttonText = "verstuur je bericht";
               <td><img src="media/spacer.gif" width="10" height="1"></td>
               <td colspan="3">
                 <% if(questions_type.equals("1")) { %>
-                  <textarea rows="3" cols="52" name="q<%= questions_number %>" wrap="physical"><%= sDefaultText %></textarea>
+                  <textarea rows="3" cols="52" name="q<%= questions_number %>" wrap="physical"></textarea>
                 <% } else { %>
-                  <input type="text" name="q<%= questions_number %>" size="50" 
-                     value="<mm:first><%= sDefaultName %></mm:first><mm:first inverse="true"><%= sDefaultEmail %></mm:first>">
+                  <input type="text" name="q<%= questions_number %>" size="50" value="">
                 <% } %>
               </td>
             </tr>

@@ -10,6 +10,7 @@
 <mm:import externid="f" jspvar="firstnameId"/>
 <mm:import externid="l" jspvar="lastnameId"/>
 <mm:cloud>
+<% boolean fullDescription = true; %>
 <table border="0" cellpadding="0" cellspacing="0"> 
 <tr>
     <td><img src="media/spacer.gif" width="114" height="2"></td>
@@ -31,7 +32,7 @@
                 <mm:field name="suffix"><mm:isnotempty><mm:write /></mm:isnotempty></mm:field>
                 <mm:field name="lastname" />
             </td></tr>
-            <% if(!thisPrograms.equals("")) { 
+            <% if(fullDescription) { 
                %><mm:related path="readmore,programs"
                ><mm:field name="readmore.readmore"
                    ><mm:isnotempty>
@@ -57,7 +58,7 @@
                     if(adPos>-1) { 
                         %><a href="mailto:<%= email %>"><%= email.substring(0,adPos+1) + "&shy;" + email.substring(adPos+1) %></a><%
                     } %></mm:field></td></tr>
-        <% if(thisPrograms.equals("")) { 
+        <% if(fullDescription) { 
            %><mm:related path="readmore,afdelingen" 
                    fields="afdelingen.naam,readmore.readmore">
                <tr><td style="padding-bottom:3px;">Regio, eenheid of afdeling:&nbsp;</td>

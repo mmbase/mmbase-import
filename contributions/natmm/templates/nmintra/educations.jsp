@@ -45,6 +45,7 @@ public String searchResults(TreeSet searchResultList) {
   
   String searchUrl = javax.servlet.http.HttpUtils.getRequestURL(request) + "?p=" + paginaID;
   
+  if(termSearchId.equals(defaultSearchText)) { termSearchId = ""; }
   boolean bSearchIsOn = !termSearchId.equals("")||!keywordId.equals("")||!poolId.equals("")||!providerId.equals("")||!competenceId.equals("");
   
   if(debug) { 
