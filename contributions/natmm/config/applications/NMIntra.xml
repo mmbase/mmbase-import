@@ -173,6 +173,7 @@
       <relation from="pagina" to="contentelement" type="contentrel"/>  <!-- artikel, medewerkers, vacature -->
       <relation from="pagina" to="discounts" type="posrel"/>
       <relation from="pagina" to="documents" type="posrel"/>
+      <relation from="pagina" to="forums" type="posrel"/> 
       <relation from="pagina" to="formulier" type="posrel"/>
       <relation from="pagina" to="images" type="posrel"/>
       <relation from="pagina" to="items" type="posrel"/>
