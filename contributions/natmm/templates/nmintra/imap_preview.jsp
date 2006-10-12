@@ -7,7 +7,7 @@
    <meta http-equiv="imagetoolbar" content="no">
 </head>
 <body style="margin-top: 0px; margin-left: 0px;">
-   <% String sUrl = "imap_preview.jsp"; %>
+   <% String readmoreUrl = "ipoverview.jsp?p=" + paginaID + "&article="; %>
    <%@include file="includes/imap/relatedimap.jsp" %>
 </body>
 </html>		       
