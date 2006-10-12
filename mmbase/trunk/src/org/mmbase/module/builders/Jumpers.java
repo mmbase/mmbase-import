@@ -44,7 +44,7 @@ import org.mmbase.util.functions.*;
  * @application Tools, Jumpers
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Jumpers.java,v 1.37 2006-09-11 09:53:24 michiel Exp $
+ * @version $Id: Jumpers.java,v 1.38 2006-10-12 16:35:26 michiel Exp $
  */
 public class Jumpers extends MMObjectBuilder {
 
@@ -102,7 +102,7 @@ public class Jumpers extends MMObjectBuilder {
                 String context = req == null ? MMBaseContext.getHtmlRootUrlPath() : req.getContextPath();
                 String u = context + "/" + url;
                 link = res == null ? u : res.encodeURL(u);
-            } else {
+            } else { 
                 String context = req == null ? MMBaseContext.getHtmlRootUrlPath() : req.getContextPath();
                 // request relative to host's root
                 if (url.startsWith(context + "/")) { // in this context!
@@ -112,6 +112,8 @@ public class Jumpers extends MMObjectBuilder {
                     link = url;
                 }
             }
+            link = org.mmbase.util.transformers.Xml.XMLEscape(link);
+            url = org.mmbase.util.transformers.Xml.XMLEscape(url);
             return "<a href=\"" + link + "\" target=\"extern\">" + url + "</a>";
         } else {
             if (field == null || field.equals("")) {
