@@ -16,7 +16,7 @@ import org.mmbase.util.LocalizedString;
  * components, and may be requested several views.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Component.java,v 1.3 2006-09-12 19:25:59 michiel Exp $
+ * @version $Id: Component.java,v 1.4 2006-10-13 12:20:50 johannes Exp $
  * @since MMBase-1.9
  */
 public interface Component {
@@ -27,7 +27,7 @@ public interface Component {
 
     void configure(org.w3c.dom.Element doc);
 
-    Map<String, View> getViews();
+    Map<String, Block> getBlocks();
 
 
     // something like this?

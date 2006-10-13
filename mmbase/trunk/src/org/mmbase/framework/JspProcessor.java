@@ -17,27 +17,28 @@ import org.mmbase.util.functions.*;
 import org.mmbase.util.GenericResponseWrapper;
 
 /**
- * A View implmentation based on a jsp.
+ * A Processor implmentation based on a jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JspView.java,v 1.3 2006-09-25 14:00:16 michiel Exp $
+ * @version $Id: JspProcessor.java,v 1.1 2006-10-13 12:20:50 johannes Exp $
  * @since MMBase-1.9
  */
-public class JspView extends AbstractView {
+public class JspProcessor extends AbstractProcessor {
 
     public static Parameter ESSENTIAL = new Parameter.Wrapper(Parameter.RESPONSE, Parameter.REQUEST);
 
     protected final String path;
 
-    public JspView(String t, String p) {
-        super(t);
+    public JspProcessor(String p) {
+        super();
         path = p;
     }
 
     public Parameters createParameters() {
         return new Parameters(ESSENTIAL, getSpecificParameters()); 
     }
-    public void render(Parameters parameters, Writer w) throws IOException {
+
+    public void process(Parameters parameters) throws IOException {
         try {
             HttpServletResponse response = parameters.get(Parameter.RESPONSE);
             GenericResponseWrapper respw = new GenericResponseWrapper(response);
@@ -47,13 +48,10 @@ public class JspView extends AbstractView {
             }
             RequestDispatcher requestDispatcher = request.getRequestDispatcher(path);
             requestDispatcher.include(request, respw);
-            w.write(respw.toString());
         } catch (ServletException se) {
             IOException e =  new IOException(se.getMessage());
             e.initCause(se);
             throw e;
         }
     }
-
-
 }
