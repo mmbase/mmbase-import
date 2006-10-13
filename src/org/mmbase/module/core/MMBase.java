@@ -15,6 +15,7 @@ import java.text.DateFormat;
 
 import org.mmbase.core.event.*;
 import org.mmbase.datatypes.DataTypes;
+import org.mmbase.framework.Framework;
 import org.mmbase.module.ProcessorModule;
 import org.mmbase.module.SendMailInterface;
 import org.mmbase.module.builders.DayMarkers;
@@ -45,7 +46,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.209 2006-10-08 07:03:15 michiel Exp $
+ * @version $Id: MMBase.java,v 1.210 2006-10-13 21:59:52 johannes Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -140,6 +141,12 @@ public class MMBase extends ProcessorModule {
     private Map<String, MMObjectBuilder> mmobjs = new ConcurrentHashMap();
 
     private CloudModel cloudModel;
+
+    /**
+     * Reference to the Framework singleton.
+     * @since MMBase-1.9
+     */
+    private Framework framework = null;
 
     /**
      * Determines whether MMBase is in development mode.
@@ -308,6 +315,16 @@ public class MMBase extends ProcessorModule {
             host = tmp;
         } else {
             host = localHost;
+        }
+
+        tmp = getInitParameter("FRAMEWORK");
+        if (tmp != null && !tmp.equals("")) {
+            try {
+                log.info("Initializing framework class: [" + tmp + "]");
+                framework = (Framework)Class.forName(tmp).newInstance();
+            } catch (Exception e) {
+                log.error(e);
+            }
         }
 
         String machineNameParam = getInitParameter("MACHINENAME");
@@ -579,6 +596,15 @@ public class MMBase extends ProcessorModule {
             }
         }
         return mmbaseroot;
+    }
+
+    /**
+     * Return the framework, or null if there is no framework defined in mmbaseroot.xml
+     * @return the framework
+     * @since MMBase-1.9
+     */
+    public Framework getFramework() {
+        return framework;
     }
 
     /**
