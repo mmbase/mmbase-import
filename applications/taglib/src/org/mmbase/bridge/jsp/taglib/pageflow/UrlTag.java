@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.80 2006-10-13 22:03:33 johannes Exp $
+ * @version $Id: UrlTag.java,v 1.81 2006-10-13 22:12:28 johannes Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
@@ -112,7 +112,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
                 cloud = getCloudVar();
             } catch (Exception e) {
             }
-            return newPage = framework.getUrl(origPage, component.getString(this), cloud, getPageContext(), extraParameters);
+            return framework.getUrl(origPage, component.getString(this), cloud, getPageContext(), extraParameters);
         } else {
             if (component != Attribute.NULL) {
                 return component.getString(this) + "/" + origPage;
