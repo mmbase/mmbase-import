@@ -200,6 +200,46 @@ Applications build file
      </ant>
   </target>
 
+  <target name="cloudsecurity">
+     <ant dir="cloudsecurity"  target="package" inheritAll="false">
+       <property name="project.zip.dir"        value="${applications.build.dir}" />
+       <property name="build.dir"        value="${build.dir}" />
+       <property name="download.dir"        value="${download.dir}" />
+     </ant>
+  </target>
+
+  <target name="codings">
+     <ant dir="codings"  target="package" inheritAll="false">
+       <property name="project.zip.dir"        value="${applications.build.dir}" />
+       <property name="build.dir"        value="${build.dir}" />
+       <property name="download.dir"        value="${download.dir}" />
+     </ant>
+  </target>
+
+  <target name="mycompany">
+     <ant dir="mycompany"  target="package" inheritAll="false">
+       <property name="project.zip.dir"        value="${applications.build.dir}" />
+       <property name="build.dir"        value="${build.dir}" />
+       <property name="download.dir"        value="${download.dir}" />
+     </ant>
+  </target>
+
+  <target name="mynews">
+     <ant dir="mynews"  target="package" inheritAll="false">
+       <property name="project.zip.dir"        value="${applications.build.dir}" />
+       <property name="build.dir"        value="${build.dir}" />
+       <property name="download.dir"        value="${download.dir}" />
+     </ant>
+  </target>
+
+  <target name="myyahoo">
+     <ant dir="myyahoo"  target="package" inheritAll="false">
+       <property name="project.zip.dir"        value="${applications.build.dir}" />
+       <property name="build.dir"        value="${build.dir}" />
+       <property name="download.dir"        value="${download.dir}" />
+     </ant>
+  </target>
+	
   <target name="minimalistic.install">
     <ant dir="taglib"        target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
@@ -216,6 +256,22 @@ Applications build file
       <property name="build.dir"        value="${build.dir}" />
     </ant>
     <ant dir="oscache-cache"      target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+
+    <ant dir="cloudsecurity"      target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+    <ant dir="codings"      target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+    <ant dir="mycompany"      target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+    <ant dir="mynews"      target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+    <ant dir="myyahoo"      target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
   </target>
@@ -257,6 +313,23 @@ Applications build file
     <ant dir="richtext"      target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
+
+    <ant dir="cloudsecurity"      target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+    <ant dir="codings"      target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+    <ant dir="mycompany"      target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+    <ant dir="mynews"      target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+    <ant dir="myyahoo"      target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+
   </target>
 
   <target name="clean">
@@ -279,6 +352,12 @@ Applications build file
      <ant dir="oscache-cache"      target="clean" inheritAll="false" />
      <ant dir="commandserver"      target="clean" inheritAll="false" />
 
+     <ant dir="cloudsecurity"      target="clean" inheritAll="false" />
+     <ant dir="codings"      target="clean" inheritAll="false" />
+     <ant dir="mycompany"      target="clean" inheritAll="false" />
+     <ant dir="mynews"      target="clean" inheritAll="false" />
+     <ant dir="myyahoo"      target="clean" inheritAll="false" />
+  	
      <delete dir="${applications.build.dir}" />
   </target>
 
