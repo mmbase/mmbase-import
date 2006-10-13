@@ -19,8 +19,9 @@
   <xsd:element name="component">
     <xsd:complexType>
       <xsd:sequence>
-        <xsd:element name="class" minOccurs="1" maxOccurs="1" />
+        <xsd:element name="class" minOccurs="0" maxOccurs="1" />
         <xsd:element ref="description" minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element ref="block" minOccurs="0" maxOccurs="unbounded" />
       </xsd:sequence>
       <xsd:attribute name="name" />     
     </xsd:complexType>
@@ -36,6 +37,20 @@
     </xsd:complexType>
   </xsd:element>
 
+  <xsd:element name="block">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="head" type="ViewType" minOccurs="1" maxOccurs="1" />
+        <xsd:element name="body" type="ViewType" minOccurs="1" maxOccurs="1" />
+        <xsd:element name="process" type="ViewType" minOccurs="1" maxOccurs="1" />
+      </xsd:sequence>
+      <xsd:attribute name="name" />     
+      <xsd:attribute name="mimetype" />     
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:complexType name="ViewType">
+    <xsd:attribute name="class" />     
+    <xsd:attribute name="jsp" />     
+  </xsd:complexType>
 </xsd:schema>
-
-
