@@ -9,24 +9,22 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.framework;
 import javax.servlet.jsp.PageContext;
-import org.mmbase.bridge.Cloud;
 import java.util.*;
+import org.mmbase.bridge.Cloud;
 import org.mmbase.util.Entry;
+import org.mmbase.util.functions.Parameters;
 
 /**
  * A Framework is the place where components are displayed in. 
  *
  * @author Johannes Verelst
- * @version $Id: Framework.java,v 1.1 2006-10-13 21:54:21 johannes Exp $
+ * @version $Id: Framework.java,v 1.2 2006-10-13 23:00:03 johannes Exp $
  * @since MMBase-1.9
  */
 public interface Framework {
 
     /** Return the name of the framework */
     public String getName();
-
-    /** Return the final url for a block in a component. */
-    public String getComponentUrl(Component component, String block, String type);
 
     /** 
      * Return a modified URL for a given page. This method is called from within the mm:url
@@ -37,7 +35,13 @@ public interface Framework {
      * @param pageContext The current page context, can be used to get the request, response, etc.
      * @param params The content of the mm:param tags that were passed. Note that the implementing class may add entries to this list
      */
-    public String getUrl(String page, String component, Cloud cloud, PageContext pageContext, List<Entry> params) throws javax.servlet.jsp.JspTagException;
+    public String getUrl(String page, Component component, Parameters parameters);
+
+    //Cloud cloud, PageContext pageContext, List<Entry> params) throws javax.servlet.jsp.JspTagException;
+
+
+    public Parameters createUrlParameters(); 
+
 
     /** 
      * Return whether or not the 'getUrl' method will return a relative URL (relative to the

@@ -13,6 +13,7 @@ import java.util.*;
 import javax.servlet.http.*;
 import javax.servlet.*;
 import java.io.*;
+import org.mmbase.module.core.MMBase;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.GenericResponseWrapper;
 
@@ -20,7 +21,7 @@ import org.mmbase.util.GenericResponseWrapper;
  * A Renderer implmentation based on a jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JspRenderer.java,v 1.1 2006-10-13 12:20:50 johannes Exp $
+ * @version $Id: JspRenderer.java,v 1.2 2006-10-13 23:00:03 johannes Exp $
  * @since MMBase-1.9
  */
 public class JspRenderer extends AbstractRenderer {
@@ -28,17 +29,23 @@ public class JspRenderer extends AbstractRenderer {
     public static Parameter ESSENTIAL = new Parameter.Wrapper(Parameter.RESPONSE, Parameter.REQUEST);
 
     protected final String path;
+    private final Block parent;
 
-    public JspRenderer(String t, String p) {
+    public JspRenderer(String t, String p, Block parent) {
         super(t);
         path = p;
+        this.parent = parent;
+    }
+
+    public Block getBlock() {
+        return parent;
     }
 
     public Parameters createParameters() {
         return new Parameters(ESSENTIAL, getSpecificParameters()); 
     }
 
-    public void render(Parameters parameters, Writer w) throws IOException {
+    public void render(Parameters parameters, Parameters urlparameters, Writer w) throws IOException {
         try {
             HttpServletResponse response = parameters.get(Parameter.RESPONSE);
             GenericResponseWrapper respw = new GenericResponseWrapper(response);
@@ -46,7 +53,11 @@ public class JspRenderer extends AbstractRenderer {
             for (Map.Entry<String, ?> entry : parameters.toMap().entrySet()) {
                 request.setAttribute(entry.getKey(), entry.getValue());
             }
-            RequestDispatcher requestDispatcher = request.getRequestDispatcher(path);
+
+            Framework framework = MMBase.getMMBase().getFramework();
+            String url = framework.getUrl(path, parent.getComponent(), urlparameters);
+
+            RequestDispatcher requestDispatcher = request.getRequestDispatcher(url);
             requestDispatcher.include(request, respw);
             w.write(respw.toString());
         } catch (ServletException se) {
