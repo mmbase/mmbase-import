@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * components, and may be requested several blocks.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicComponent.java,v 1.4 2006-10-13 13:36:54 johannes Exp $
+ * @version $Id: BasicComponent.java,v 1.5 2006-10-13 14:40:00 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicComponent implements Component {
@@ -44,21 +44,22 @@ public class BasicComponent implements Component {
     }
 
     public void configure(Element el) {
-        log.warn("Start configure()");
+        log.service("Start configure()");
         description.fillFromXml("description", el);
         NodeList blocks = el.getElementsByTagName("block");
-        log.warn("Found description: " + description);
-        log.warn("Found number of blocks: " + blocks);
+        if (log.isDebugEnabled()) {
+            log.debug("Found description: " + description);
+            log.debug("Found number of blocks: " + blocks);
+        }
         for (int i = 0 ; i < blocks.getLength(); i++) {
-            Element block = (Element) blocks.item(i);
-            String name = block.getAttribute("name");
-            String mimetype = block.getAttribute("mimetype");
+            Element element = (Element) blocks.item(i);
+            String name = element.getAttribute("name");
+            String mimetype = element.getAttribute("mimetype");
             Block b = new Block(name, mimetype);
-            log.warn("Found block: " + name);
-
-            b.head = getRenderer("head", block);
-            b.body = getRenderer("body", block);
-            b.processor = getProcessor("process", block);
+            log.trace("Found block: " + name);
+            b.getRenderers().put(Renderer.Type.HEAD, getRenderer("head", element));
+            b.getRenderers().put(Renderer.Type.BODY, getRenderer("body", element));
+            b.processor = getProcessor("process", element);
 
             this.blocks.put(name, b);
         }
@@ -66,12 +67,12 @@ public class BasicComponent implements Component {
 
     private Renderer getRenderer(String name, Element block) {
         NodeList heads = block.getElementsByTagName(name);
-        log.warn("Number of [" + name + "] elements: " + heads.getLength());
+        log.debug("Number of [" + name + "] elements: " + heads.getLength());
         if (heads.getLength() == 1) {
             Element head = (Element) heads.item(0);
             String jsp = head.getAttribute("jsp");
             String cls = head.getAttribute("class");
-            log.warn("jsp: [" + jsp + "], class: [" + cls + "]");
+            log.trace("jsp: [" + jsp + "], class: [" + cls + "]");
             if (jsp != null && !"".equals(jsp)) {
                 return new JspRenderer(name.toUpperCase(), jsp);
             } else if (cls != null && !"".equals(cls)) {
@@ -84,7 +85,7 @@ public class BasicComponent implements Component {
                 log.error("JSP and CLASS are null!");
             }
         } else {
-            log.warn("No [" + name + "] element found");
+            log.trace("No [" + name + "] element found");
         }
         return null;
     }
