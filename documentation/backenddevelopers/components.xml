@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd">
+<article class="specification">
+  <articleinfo>
+    <title>Components Framework</title>
+
+    <date>2006-10-13</date>
+
+    <edition>$Id: components.xml,v 1.0 2006/10/03 08:17:09 henk Exp
+    $</edition>
+
+    <authorgroup>
+      <author>
+        <firstname>Nico</firstname>
+
+        <surname>Klasens</surname>
+      </author>
+
+      <author>
+        <firstname>Henk Hangyi</firstname>
+
+        <surname></surname>
+      </author>
+    </authorgroup>
+
+    <revhistory>
+      <revision>
+        <revnumber>[0.1]</revnumber>
+
+        <date>[2005-10-13 ]</date>
+
+        <authorinitials>[HH]</authorinitials>
+
+        <revremark>[Created]</revremark>
+      </revision>
+    </revhistory>
+
+    <abstract>
+      <para>This document describes the MMBase component framework.</para>
+    </abstract>
+
+    <legalnotice>
+      <para>This software is OSI Certified Open Source Software. OSI Certified
+      is a certification mark of the Open Source Initiative.</para>
+
+      <para>The license (Mozilla version 1.0) can be read at the MMBase site.
+      See <ulink
+      url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
+    </legalnotice>
+
+    <productnumber>Components Framework from MMBase 1.9.</productnumber>
+  </articleinfo>
+
+  <section id="introduction">
+    <title>Introduction</title>
+
+    <para>The components framework offers component based developing in
+    MMBase. Components can be used in combination with portlets. The portlet
+    engine and portal service then take care of analyzing the client request,
+    make the selected portlets execute and render their content and return the
+    resulting page to the client. However it is also possible to use the
+    functionality that a component offers directly from your JSP pages. MMBase
+    offers tags to put the compenents into action and render their content
+    into your page.</para>
+  </section>
+
+  <section id="architecture">
+    <title>Action flow within the portlet engine / portal service</title>
+
+    <para>To get an idea of how a portlet enginge / portal service works this
+    sections gives an overview of the flow of actions that take place when a
+    client calls an url:</para>
+
+    <orderedlist>
+      <listitem>
+        <para>Client calls url</para>
+      </listitem>
+
+      <listitem>
+        <para>Tomcat (or other application server) routes url to web
+        application of the portal</para>
+      </listitem>
+
+      <listitem>
+        <para>A servlet inside the portal web application receives the
+        url</para>
+      </listitem>
+
+      <listitem>
+        <para>Portal servlet will analyze the request</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>global navigation path to a page</para>
+          </listitem>
+
+          <listitem>
+            <para>local navigation for the portlet (indicates which portlet is
+            active in this call)</para>
+          </listitem>
+
+          <listitem>
+            <para>window state for each portlet</para>
+          </listitem>
+
+          <listitem>
+            <para>portlet mode for each portlet</para>
+          </listitem>
+
+          <listitem>
+            <para>render parameters for each portlet</para>
+          </listitem>
+
+          <listitem>
+            <para>action parameters from query string</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+
+      <listitem>
+        <para>Start of action phase</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Portal servlet resolves portlet instance which user wants to
+            interact with</para>
+          </listitem>
+
+          <listitem>
+            <para>Portal servlet creates ActionRequest and ActionResponse
+            objects</para>
+          </listitem>
+
+          <listitem>
+            <para>Portal servlet dispatches ActionRequest to the servlet which
+            hosts the portlet instance for the action phase and sends the
+            action parameters</para>
+          </listitem>
+
+          <listitem>
+            <para>Portlet instance processes the action parameters maybe with
+            the help of its own presentation framework (struts, jsf, jsp,
+            tapestry, wicket, whatever)</para>
+          </listitem>
+
+          <listitem>
+            <para>Portlet instance can change things in the request, session,
+            preferences, external system, database, etc.</para>
+          </listitem>
+
+          <listitem>
+            <para>Portlet instance modifies ActionResponse to tell the Portal
+            servlet what should happen next. Redirect to client or render
+            phase.</para>
+          </listitem>
+
+          <listitem>
+            <para>Portal Servlet receives ActionResponse and acts on it</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+
+      <listitem>
+        <para>Start of render phase</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Portal servlet resolves page object from global
+            navigation.</para>
+          </listitem>
+
+          <listitem>
+            <para>Portal servlet retrieves all portlet instances on the page.
+            For each portlet (in MMBase ComponentPortlet which contains a
+            Component) instance</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>Portal servlet creates RenderRequest and RenderResponse
+                objects</para>
+              </listitem>
+
+              <listitem>
+                <para>Portal servlet dispatches RenderRequest to the servlet
+                which hosts the portlet instance.</para>
+              </listitem>
+
+              <listitem>
+                <para>Portlet instances reads portlet mode and window state.
+                (in MMBase Block; a Block can have multiple Views)</para>
+              </listitem>
+
+              <listitem>
+                <para>Portlet instances calls his own presentation framework
+                (struts, jsf, jsp, tapestry, wicket, whatever).</para>
+              </listitem>
+
+              <listitem>
+                <para>Portlet instances writes markup fragment to
+                RenderResponse.</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+
+          <listitem>
+            <para>Portal servlet retrieves page template</para>
+          </listitem>
+
+          <listitem>
+            <para>Portal servlet decorates portlet RenderResponse outputs with
+            window and portlet mode buttons and inserts it in the page
+            template.</para>
+          </listitem>
+
+          <listitem>
+            <para>Final result is written to client response</para>
+          </listitem>
+
+          <listitem>
+            <para>Portal servlet returns response to the client.</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+    </orderedlist>
+
+    <para>In the above flow no separation is made between portal service and
+    the portlet engine (eg pluto). The portlet engine provides the runtime
+    environment for the portlet instances. The portal service does all page
+    related stuff.</para>
+  </section>
+
+  <section id="basicconcepts">
+    <title>Configuration of a component</title>
+
+    <para>The core of a component is the component.xml. It specifies the
+    blocks in the component and the views each block contains. The following
+    example provides the ecards.xml for an ecard component.</para>
+
+    <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;component
+    xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component.xsd"
+    name="ecards"&gt;
+  &lt;description&gt;Ecards component&lt;/description&gt;
+  &lt;block name="home" mimetype="text/html"&gt;
+    &lt;head jsp="ecards_head.jsp" /&gt;
+    &lt;body jsp="ecars.jsp" /&gt;
+    &lt;process jsp="ecards_process.jsp" /&gt;
+  &lt;/block&gt;
+  &lt;block name="select" mimetype="text/html"&gt;
+    &lt;head jsp="ecards_head.jsp" /&gt;
+    &lt;body jsp="ecards_selectecard.jsp" /&gt;
+    &lt;process jsp="ecards_process.jsp" /&gt;
+  &lt;/block&gt;
+  &lt;block name="done" mimetype="text/html"&gt;
+    &lt;head jsp="ecards_head.jsp" /&gt;
+    &lt;body jsp="ecards_done.jsp" /&gt;
+    &lt;process jsp="ecards_process.jsp" /&gt;
+  &lt;/block&gt;
+&lt;/component&gt;</programlisting>
+  </section>
+
+  <section id="pages">
+    <section>
+      <para />
+    </section>
+  </section>
+
+  <section id="references">
+    <title>References</title>
+
+    <para>The following documents can be used for further reading.</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Presentation on JSR168 by Nico Klasens <ulink
+        url="???">http://www.mmbase.org/mmbase/attachments/50434/JSR168.zip</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para>An MMBase Component Framework by Johannes Verelst<ulink
+        url="???">http://www.mmbase.org/mmbase/attachments/50347/MMBase_framework_-_tech.doc</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para>What Is a Portlet <ulink
+        url="???">http://www.onjava.com/lpt/a/6208</ulink></para>
+      </listitem>
+    </itemizedlist>
+  </section>
+</article>
