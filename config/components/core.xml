@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component
+    name="core"
+    xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component
+                        http://www.mmbase.org/xmlns/component.xsd">
+  <!--
+  <class name="org.mmbase.framework.BasicComponent" />
+  -->
+  <description xml:lang="en">MMBase core components</description>
+
+  <block name="components" mimetype="text/html">
+    <body jsp="/mmbase/admin/components.jspx" />
+  </block>
+
+</component>
