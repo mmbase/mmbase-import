@@ -20,11 +20,11 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: SetFunction.java,v 1.13 2006-05-21 11:38:45 daniel Exp $
+ * @version $Id: SetFunction.java,v 1.14 2006-10-13 14:22:26 nklasens Exp $
  * @since MMBase-1.8
  * @see   FunctionSets
  */
-class SetFunction extends AbstractFunction {
+class SetFunction extends AbstractFunction<Object> {
     private static final Logger log = Logging.getLoggerInstance(SetFunction.class);
 
     /**

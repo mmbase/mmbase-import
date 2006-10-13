@@ -19,13 +19,13 @@ import java.lang.annotation.*;
  * method-function can come in handy on JSP's.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MethodFunction.java,v 1.8 2006-09-18 17:48:05 michiel Exp $
+ * @version $Id: MethodFunction.java,v 1.9 2006-10-13 14:22:26 nklasens Exp $
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
  * @see org.mmbase.util.functions.BeanFunction
  * @since MMBase-1.7
  */
-public class MethodFunction extends AbstractFunction {
+public class MethodFunction extends AbstractFunction<Object> {
 
 
     public static Function getFunction(Method method, String name) {
@@ -122,7 +122,7 @@ public class MethodFunction extends AbstractFunction {
             }
             if (paramName == null) paramName = "parameter" + (i + 1);
 
-            def[i] = new Parameter(paramName, parameters[i]); // no way to find the name of the parameter
+            def[i] = new Parameter<String>(paramName, parameters[i]); // no way to find the name of the parameter
         }
 
         setParameterDefinition(def);

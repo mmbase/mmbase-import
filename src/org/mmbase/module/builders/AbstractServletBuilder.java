@@ -30,7 +30,7 @@ import org.mmbase.security.Rank;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.45 2006-10-07 15:45:02 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.46 2006-10-13 14:22:26 nklasens Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -433,12 +433,12 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
 
     {
         // you can of course even implement it anonymously.
-        addFunction(new NodeFunction("servletpath",
+        addFunction(new NodeFunction<String>("servletpath",
                                          new Parameter[] {
-                                             new Parameter("session",  String.class), // For read-protection
-                                             new Parameter("field",    String.class), // The field to use as argument, defaults to number unless 'argument' is specified.
-                                             new Parameter("context",  String.class), // Path to the context root, defaults to "/" (but can specify something relative).
-                                             new Parameter("argument", String.class), // Parameter to use for the argument, overrides 'field'
+                                             new Parameter<String>("session",  String.class), // For read-protection
+                                             new Parameter<String>("field",    String.class), // The field to use as argument, defaults to number unless 'argument' is specified.
+                                             new Parameter<String>("context",  String.class), // Path to the context root, defaults to "/" (but can specify something relative).
+                                             new Parameter<String>("argument", String.class), // Parameter to use for the argument, overrides 'field'
                                              Parameter.REQUEST,
                                              Parameter.CLOUD
                                          },
@@ -468,7 +468,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                     return servlet;
                 }
 
-                public Object getFunctionValue(Node node, Parameters a) {
+                public String getFunctionValue(Node node, Parameters a) {
                     StringBuffer servlet = getServletPath(a);
 
                     String session = getSession(a, node.getNumber());
@@ -506,7 +506,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                     }
                 }
 
-                public Object getFunctionValue(Parameters a) {
+                public String getFunctionValue(Parameters a) {
                     return getServletPath(a).toString();
                 }
             });
@@ -519,17 +519,17 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         /**
          * @since MMBase-1.8
          */
-        addFunction(new NodeFunction("iconurl",
+        addFunction(new NodeFunction<String>("iconurl",
                                      new Parameter[] {
                                          Parameter.REQUEST,
-                                         new Parameter("iconroot", String.class, "/mmbase/style/icons/"),
-                                         new Parameter("absolute", String.class, "false")
+                                         new Parameter<String>("iconroot", String.class, "/mmbase/style/icons/"),
+                                         new Parameter<String>("absolute", String.class, "false")
                                      },
                                      ReturnType.STRING) {
                 {
                     setDescription("Returns an URL for an icon for this blob");
                 }
-                public Object getFunctionValue(Node n, Parameters parameters) {
+                public String getFunctionValue(Node n, Parameters parameters) {
                     String mimeType = AbstractServletBuilder.this.getMimeType(getCoreNode(AbstractServletBuilder.this, n));
                     ResourceLoader webRoot = ResourceLoader.getWebRoot();
                     HttpServletRequest request = (HttpServletRequest) parameters.get(Parameter.REQUEST);

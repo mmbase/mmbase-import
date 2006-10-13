@@ -13,6 +13,8 @@ import java.util.*;
 import javax.servlet.http.*;
 import org.mmbase.module.core.*;
 import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.util.CollectionNodeList;
 import org.mmbase.util.*;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
@@ -71,23 +73,23 @@ public class ProcessorModule extends Module implements ProcessorInterface {
      * Function implementation around {@link #getNodeList(Object, String, Map)}. See in MMAdmin for an example on how to use.
      * @since MMBase-1.8
      */
-    protected class GetNodeListFunction extends AbstractFunction {
+    protected class GetNodeListFunction extends AbstractFunction<org.mmbase.bridge.NodeList> {
         public GetNodeListFunction(String name, Parameter[] params) {
             super(name, params, ReturnType.NODELIST);
         }
-        public Object getFunctionValue(Parameters arguments) {
-            return getNodeList(getPageInfo(arguments), getCommand(getName(), arguments), arguments.toMap());
+        public org.mmbase.bridge.NodeList getFunctionValue(Parameters arguments) {
+            return new CollectionNodeList<Node>(getNodeList(getPageInfo(arguments), getCommand(getName(), arguments), arguments.toMap()));
         }
     }
     /**
      * Function implementation around {@link #replace(PageInfo, String)}. See in MMAdmin for an example on how to use.
      * @since MMBase-1.8
      */
-    protected class ReplaceFunction extends AbstractFunction {
+    protected class ReplaceFunction extends AbstractFunction<String> {
         public ReplaceFunction(String name, Parameter[] params) {
             super(name, params, ReturnType.STRING);
         }
-        public Object getFunctionValue(Parameters arguments) {
+        public String getFunctionValue(Parameters arguments) {
             return replace(getPageInfo(arguments), getCommand(getName(), arguments));
         }
     }
@@ -99,12 +101,12 @@ public class ProcessorModule extends Module implements ProcessorInterface {
      * parameter ('vars'), and this is also returned (because sometimes also results are put in it).
      * @since MMBase-1.8
      */
-    protected class ProcessFunction extends AbstractFunction {
+    protected class ProcessFunction extends AbstractFunction<Map> {
         public ProcessFunction(String name, Parameter[] params) {
             super(name, params, ReturnType.MAP);
         }
 
-        public Object getFunctionValue(Parameters arguments) {
+        public Map getFunctionValue(Parameters arguments) {
             Hashtable cmds = new Hashtable();
             Hashtable vars = new Hashtable();
             Parameter[] def = arguments.getDefinition();
@@ -128,7 +130,7 @@ public class ProcessorModule extends Module implements ProcessorInterface {
      * @param command The command to execute
      * @param params  Parameters, they will be added to the StringTagger.
      **/
-    public Vector getNodeList(Object context, String command, Map params) {
+    public Vector<VirtualNode> getNodeList(Object context, String command, Map params) {
         StringTagger tagger=null;
         if (params instanceof StringTagger) {
             tagger = (StringTagger)params;
@@ -155,7 +157,7 @@ public class ProcessorModule extends Module implements ProcessorInterface {
         int items = 1;
         try { items = Integer.parseInt(tagger.Value("ITEMS")); } catch (NumberFormatException e) {}
         Vector fieldlist = tagger.Values("FIELDS");
-        Vector res = new Vector(v.size() / items);
+        Vector<VirtualNode> res = new Vector<VirtualNode>(v.size() / items);
         MMObjectBuilder bul = getListBuilder(command, params);
         for(int i= 0; i < v.size(); i+=items) {
             VirtualNode node = new VirtualNode(bul);
