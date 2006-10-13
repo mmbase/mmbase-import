@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- version $Id: jumpers.xml,v 1.9 2006-09-04 08:41:30 pierre Exp $ -->
+<!-- version $Id: jumpers.xml,v 1.1 2006-10-13 17:11:11 nklasens Exp $ -->
 <builder
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
