@@ -16,7 +16,7 @@ import org.mmbase.util.functions.Parameters;
  * a 'head', 'body' and 'process' view. 
  *
  * @author Johannes Verelst
- * @version $Id: Block.java,v 1.1 2006-10-13 12:20:50 johannes Exp $
+ * @version $Id: Block.java,v 1.2 2006-10-13 13:18:51 michiel Exp $
  * @since MMBase-1.9
  */
 public class Block {
@@ -31,4 +31,16 @@ public class Block {
         this.name = name;
         this.mimetype = mimetype;
     }
+
+    Renderer getHead() {
+        return head;
+    }
+
+    Renderer getBody() {
+        return head;
+    }
+    Processor getProcessor() {
+        return processor;
+    }
+
 }
