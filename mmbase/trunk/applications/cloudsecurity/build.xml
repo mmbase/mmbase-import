@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!DOCTYPE project 
+ [ <!ENTITY base     SYSTEM "../buildbase.xml" > ]
+>
+
+<project name="MMBase CloudSecurity project" default="package" basedir=".">
+  <property name="project.name"     value="CloudSecurity" />
+  <property name="project.target.templates.dir"   value="../mmexamples" />
+  &base;
+</project>
+
+
+
+
