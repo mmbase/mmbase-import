@@ -16,7 +16,7 @@ import java.util.*;
  * a 'head', 'body' and 'process' view. 
  *
  * @author Johannes Verelst
- * @version $Id: Block.java,v 1.3 2006-10-13 13:26:09 michiel Exp $
+ * @version $Id: Block.java,v 1.4 2006-10-13 14:40:00 michiel Exp $
  * @since MMBase-1.9
  */
 public class Block {
@@ -30,7 +30,7 @@ public class Block {
         this.name = name;
         this.mimetype = mimetype;
     }
-    Map<Renderer.Type, Renderer> getRenders() {
+    Map<Renderer.Type, Renderer> getRenderers() {
         return renderers;
     }
     public Renderer getRenderer(Renderer.Type type) {
