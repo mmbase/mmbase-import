@@ -12,6 +12,9 @@ package org.mmbase.bridge.jsp.taglib.pageflow;
 import java.util.*;
 import java.io.*;
 import java.net.*;
+import org.mmbase.framework.Framework;
+import org.mmbase.module.core.MMBase;
+import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.util.Referids;
@@ -34,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.79 2006-06-23 15:29:06 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.80 2006-10-13 22:03:33 johannes Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
@@ -43,13 +46,14 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
 
     private static final CharTransformer paramEscaper = new Url(Url.ESCAPE);
 
-    private static  Boolean makeRelative      = null;
+    private static Boolean makeRelative      = null;
     private   Attribute  referids             = Attribute.NULL;
     protected final List extraParameters      = new ArrayList();
     protected Attribute  page                 = Attribute.NULL;
-    protected   Attribute  escapeAmps           = Attribute.NULL;
+    protected Attribute  component            = Attribute.NULL;
+    protected Attribute  escapeAmps           = Attribute.NULL;
     private   Attribute  absolute             = Attribute.NULL;
-    protected Attribute encode                = Attribute.NULL;
+    protected Attribute  encode                = Attribute.NULL;
 
     public void setReferids(String r) throws JspTagException {
         referids = getAttribute(r);
@@ -57,6 +61,10 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
 
     public void setPage(String p) throws JspTagException {
         page = getAttribute(p);
+    }
+
+    public void setComponent(String p) throws JspTagException {
+        component = getAttribute(p);
     }
 
     public void setEscapeamps(String e) throws JspTagException {
@@ -91,9 +99,27 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
         return EVAL_BODY_BUFFERED;
     }
 
-
+    /**
+     * Return the page. This is delegated to the underlying framework if it is available. 
+     * Otherwise, if the component is set, the return value is 'component/page'.
+     */
     protected String getPage() throws JspTagException {
-        return page.getString(this);
+        String origPage = page.getString(this);
+        Framework framework = MMBase.getMMBase().getFramework();
+        if (framework != null) {
+            Cloud cloud = null;
+            try {
+                cloud = getCloudVar();
+            } catch (Exception e) {
+            }
+            return newPage = framework.getUrl(origPage, component.getString(this), cloud, getPageContext(), extraParameters);
+        } else {
+            if (component != Attribute.NULL) {
+                return component.getString(this) + "/" + origPage;
+            } else {
+                return origPage;
+            }
+        }
     }
 
     /**
@@ -131,11 +157,16 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
      * @since MMBase-1.7
      */
     protected boolean doMakeRelative() {
-        if (makeRelative == null) {
-            String setting = pageContext.getServletContext().getInitParameter("mmbase.taglib.url.makerelative");
-            makeRelative = "true".equals(setting) ? Boolean.TRUE : Boolean.FALSE;
+        Framework framework = MMBase.getMMBase().getFramework();
+        if (framework == null) {
+            if (makeRelative == null) {
+                String setting = pageContext.getServletContext().getInitParameter("mmbase.taglib.url.makerelative");
+                makeRelative = "true".equals(setting) ? Boolean.TRUE : Boolean.FALSE;
+            }
+            return makeRelative.booleanValue();
+        } else {
+            return framework.makeRelativeUrl();
         }
-        return makeRelative.booleanValue();
     }
 
     protected boolean addContext() {
@@ -240,6 +271,9 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
                 connector = amp;
             }
         }
+
+        // TODO: mm:param tags that override referids
+
         Iterator i = extraParameters.iterator();
         while (i.hasNext()) {
             Entry param  = (Entry) i.next();

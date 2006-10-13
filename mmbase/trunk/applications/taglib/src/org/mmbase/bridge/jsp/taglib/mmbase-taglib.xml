@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.378 2006-10-13 15:27:45 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.379 2006-10-13 22:03:33 johannes Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4166,6 +4166,15 @@ like the parameter list or the session (where ever it is available) --&gt;
       <info>
         The url to refer to. If not specified, then it becomes the
         result of getRequestURI.
+      </info>
+    </attribute>
+    <attribute>
+      <name>component</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+        The component for which the url must be generated.
       </info>
     </attribute>
     <attribute>
