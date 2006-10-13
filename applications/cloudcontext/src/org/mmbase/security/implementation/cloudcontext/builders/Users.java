@@ -31,7 +31,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.49 2006-10-13 14:22:26 nklasens Exp $
+ * @version $Id: Users.java,v 1.50 2006-10-13 15:56:24 nklasens Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -133,9 +133,10 @@ public class Users extends MMObjectBuilder {
 
 
     public Rank getRank(MMObjectNode userNode) {
+        Integer userNumber = new Integer(userNode.getNumber());
         Rank rank;
         if (userNode != null) {
-            rank = (Rank) rankCache.get(userNode);
+            rank = (Rank) rankCache.get(userNumber);
         } else {
             log.warn("No node given, returning Anonymous.");
             return Rank.ANONYMOUS;
@@ -161,7 +162,7 @@ public class Users extends MMObjectBuilder {
                     }
                 }
             }
-            rankCache.put(userNode, rank);
+            rankCache.put(userNumber, rank);
         }
         return rank;
     }
@@ -527,15 +528,9 @@ public class Users extends MMObjectBuilder {
 
 
     protected void invalidateCaches(int nodeNumber) {
-        Iterator i = rankCache.entrySet().iterator();
-        while (i.hasNext()) {
-            Map.Entry entry = (Map.Entry) i.next();
-            MMObjectNode node = (MMObjectNode) entry.getKey();
-            if (node.getNumber() == nodeNumber) {
-                i.remove();
-            }
-        }
-        i = userCache.entrySet().iterator();
+        rankCache.remove(new Integer(nodeNumber));
+
+        Iterator i =  userCache.entrySet().iterator();
         while (i.hasNext()) {
             Map.Entry entry = (Map.Entry) i.next();
             Object value = entry.getValue();
@@ -556,48 +551,28 @@ public class Users extends MMObjectBuilder {
             int nodeNumber = Integer.parseInt(number);
             invalidateCaches(nodeNumber);
         } else if (ctype.equals("r")) {
-            int nodeNumber = Integer.parseInt(number);
-            Map ranks = new HashMap();
-            Iterator i = rankCache.entrySet().iterator();
-            while (i.hasNext()) {
-                Map.Entry entry = (Map.Entry) i.next();
-                MMObjectNode cacheNode = (MMObjectNode) entry.getKey();
-                if (cacheNode.getNumber() == nodeNumber) {
-                    i.remove();
-                }
-            }
+            //FIXME we are always clearing the cache even when it is not the relation to ranks
+            rankCache.remove(Integer.valueOf(number));
         } else if (ctype.equals("c")) {
+            rankCache.remove(Integer.valueOf(number));
+
             MMObjectNode node = getNode(number);
-            Map ranks = new HashMap();
-            Iterator i = rankCache.entrySet().iterator();
+            Map users = new HashMap();
+            Iterator i = userCache.entrySet().iterator();
             while (i.hasNext()) {
                 Map.Entry entry = (Map.Entry) i.next();
-                MMObjectNode cacheNode = (MMObjectNode) entry.getKey();
-                if (cacheNode.getNumber() == node.getNumber()) {
-                    ranks.put(node, entry.getValue());
+                Object value = entry.getValue();
+                if (value == null) {
                     i.remove();
-                }
-            }
-
-            if (ctype.equals("c")) {
-                rankCache.putAll(ranks);
-                Map users = new HashMap();
-                i = userCache.entrySet().iterator();
-                while (i.hasNext()) {
-                    Map.Entry entry = (Map.Entry) i.next();
-                    Object value = entry.getValue();
-                    if (value == null) {
+                } else {
+                    MMObjectNode cacheNode = (MMObjectNode) value;
+                    if (cacheNode.getNumber() == node.getNumber()) {
+                        users.put(entry.getKey(), node);
                         i.remove();
-                    } else {
-                        MMObjectNode cacheNode = (MMObjectNode) value;
-                        if (cacheNode.getNumber() == node.getNumber()) {
-                            users.put(entry.getKey(), node);
-                            i.remove();
-                        }
                     }
                 }
-                userCache.putAll(users);
             }
+            userCache.putAll(users);
         }
         return true;
 
