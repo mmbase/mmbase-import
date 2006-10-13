@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: ReloadableModule.java,v 1.11 2006-09-12 16:57:07 michiel Exp $
+ * @version $Id: ReloadableModule.java,v 1.12 2006-10-13 14:22:26 nklasens Exp $
  */
 public abstract class ReloadableModule extends Module {
 
@@ -71,7 +71,7 @@ public abstract class ReloadableModule extends Module {
     public abstract void reload();
 
     {
-        addFunction(new AbstractFunction("reload") {
+        addFunction(new AbstractFunction<Void>("reload") {
                 public Void getFunctionValue(Parameters arguments) {
                     ReloadableModule.this.reload();
                     return null;

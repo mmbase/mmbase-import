@@ -27,12 +27,12 @@ import org.mmbase.util.logging.*;
  * delegates to a static method in this class).
  *
  * @author Michiel Meeuwissen
- * @version $Id: BeanFunction.java,v 1.11 2006-10-05 10:50:56 michiel Exp $
+ * @version $Id: BeanFunction.java,v 1.12 2006-10-13 14:22:26 nklasens Exp $
  * @see org.mmbase.util.functions.MethodFunction
  * @see org.mmbase.util.functions.FunctionFactory
  * @since MMBase-1.8
  */
-public class BeanFunction extends AbstractFunction {
+public class BeanFunction extends AbstractFunction<Object> {
     private static final Logger log = Logging.getLoggerInstance(BeanFunction.class);
     /**
      * Utility function, searches an inner class of a given class. This inner class can perhaps be used as a
@@ -55,7 +55,7 @@ public class BeanFunction extends AbstractFunction {
     /**
      * A cache for bean classes. Used to avoid some reflection.
      */
-    private static Cache<String, BeanFunction> beanFunctionCache = new Cache(50) {
+    private static Cache<String, BeanFunction> beanFunctionCache = new Cache<String, BeanFunction>(50) {
         public String getName() {
             return "BeanFunctionCache";
         }
@@ -96,7 +96,7 @@ public class BeanFunction extends AbstractFunction {
     /**
      * A list of all found setter methods. This list 1-1 corresponds with getParameterDefinition. Every Parameter belongs to a setter method.
      */
-    private List<Method> setMethods = new ArrayList();
+    private List<Method> setMethods = new ArrayList<Method>();
 
 
 
@@ -126,7 +126,7 @@ public class BeanFunction extends AbstractFunction {
         // need a sample instance to get the default values from.
         Object sampleInstance = claz.newInstance();
 
-        List<Parameter> parameters = new ArrayList();
+        List<Parameter> parameters = new ArrayList<Parameter>();
         for (Method m : claz.getMethods()) {
             String methodName = m.getName();
             Class[] parameterTypes = m.getParameterTypes();

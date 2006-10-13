@@ -19,7 +19,7 @@ import java.util.*;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
 
- * @version $Id: ReturnType.java,v 1.18 2006-09-27 20:42:21 michiel Exp $
+ * @version $Id: ReturnType.java,v 1.19 2006-10-13 14:22:26 nklasens Exp $
  * @since MMBase-1.7
  */
 public class ReturnType<C> extends Parameter<C> implements java.io.Serializable {
@@ -54,7 +54,7 @@ public class ReturnType<C> extends Parameter<C> implements java.io.Serializable 
     /**
      * The return type of a function that returns a Boolean.
      */
-    public static final ReturnType BOOLEAN = new ReturnType(Boolean.class, "Boolean");
+    public static final ReturnType<Boolean> BOOLEAN = new ReturnType(Boolean.class, "Boolean");
 
     /**
      * The return type of a function that returns a List.
@@ -65,12 +65,12 @@ public class ReturnType<C> extends Parameter<C> implements java.io.Serializable 
     /**
      * The return type of a function that returns a NodeList.
      */
-    public static final ReturnType NODELIST = new ReturnType(org.mmbase.bridge.NodeList.class, "NodeList");
+    public static final ReturnType<org.mmbase.bridge.NodeList> NODELIST = new ReturnType<org.mmbase.bridge.NodeList>(org.mmbase.bridge.NodeList.class, "NodeList");
 
     /**
      * The return type of a function that returns a Node.
      */
-    public static final ReturnType NODE = new ReturnType(org.mmbase.bridge.Node.class, "Node");
+    public static final ReturnType<org.mmbase.bridge.Node> NODE = new ReturnType<org.mmbase.bridge.Node>(org.mmbase.bridge.Node.class, "Node");
 
     /**
      * The return type of a function that returns a Set.

@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.82 2006-09-13 15:21:26 michiel Exp $
+ * @version $Id: Module.java,v 1.83 2006-10-13 14:22:26 nklasens Exp $
  */
 public abstract class Module extends FunctionProvider {
 
@@ -50,7 +50,7 @@ public abstract class Module extends FunctionProvider {
      * This function can be called through the function framework.
      * @since MMBase-1.8
      */
-    protected Function getVersionFunction = new AbstractFunction("getVersion") {
+    protected Function<Integer> getVersionFunction = new AbstractFunction<Integer>("getVersion") {
         public Integer getFunctionValue(Parameters arguments) {
             return getVersion();
         }
@@ -62,7 +62,7 @@ public abstract class Module extends FunctionProvider {
      * This function can be called through the function framework.
      * @since MMBase-1.8
      */
-    protected Function getMaintainerFunction = new AbstractFunction("getMaintainer") {
+    protected Function<String> getMaintainerFunction = new AbstractFunction<String>("getMaintainer") {
         public String getFunctionValue(Parameters arguments) {
             return getMaintainer();
         }
@@ -447,7 +447,7 @@ public abstract class Module extends FunctionProvider {
      * @return A HashTable with <module-name> --> Module-instance
      */
     private static synchronized Map<String, Module>  loadModulesFromDisk() {
-        Map<String, Module> results = new HashMap();
+        Map<String, Module> results = new HashMap<String, Module>();
         ResourceLoader moduleLoader = getModuleLoader();
         Collection<String> modules = moduleLoader.getResourcePaths(ResourceLoader.XML_PATTERN, false/* non-recursive*/);
         log.info("In " + moduleLoader + " the following module XML's were found " + modules);

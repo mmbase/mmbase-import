@@ -19,20 +19,20 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: FunctionProvider.java,v 1.14 2006-09-15 17:03:30 michiel Exp $
+ * @version $Id: FunctionProvider.java,v 1.15 2006-10-13 14:22:26 nklasens Exp $
  */
 public abstract class FunctionProvider {
     private static final Logger log = Logging.getLoggerInstance(FunctionProvider.class);
 
-    protected Map<String, Function> functions = Collections.synchronizedMap(new HashMap<String, Function>());
+    protected Map<String, Function<?>> functions = Collections.synchronizedMap(new HashMap<String, Function<?>>());
     /**
      * Every Function Provider provides least the 'getFunctions' function, which returns a Set of all functions which it provides.
      */
-    protected Function getFunctions = new AbstractFunction("getFunctions") {
+    protected Function<Collection<Function<?>>> getFunctions = new AbstractFunction<Collection<Function<?>>>("getFunctions") {
             {
                 setDescription("The 'getFunctions' returns the collections of al Function object which are available on this FunctionProvider");
             }
-            public Collection<Function> getFunctionValue(Parameters arguments) {
+            public Collection<Function<?>> getFunctionValue(Parameters arguments) {
                 return getFunctions();
             }
         };
@@ -112,7 +112,7 @@ public abstract class FunctionProvider {
     /**
      * Returns a Collection of all functions currently provided by the FunctionProvider.
      */
-    public Collection<Function> getFunctions() {
+    public Collection<Function<?>> getFunctions() {
         return Collections.unmodifiableCollection(functions.values());
     }
 
