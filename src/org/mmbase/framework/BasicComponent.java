@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * components, and may be requested several blocks.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicComponent.java,v 1.5 2006-10-13 14:40:00 michiel Exp $
+ * @version $Id: BasicComponent.java,v 1.6 2006-10-13 17:22:15 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicComponent implements Component {
@@ -29,6 +29,7 @@ public class BasicComponent implements Component {
     private final String name;
     private final LocalizedString description;
     private final Map<String, Block> blocks = new HashMap();
+    private Block defaultBlock = null;
 
     public BasicComponent(String name) {
         this.name = name;
@@ -46,13 +47,13 @@ public class BasicComponent implements Component {
     public void configure(Element el) {
         log.service("Start configure()");
         description.fillFromXml("description", el);
-        NodeList blocks = el.getElementsByTagName("block");
+        NodeList blockElements = el.getElementsByTagName("block");
         if (log.isDebugEnabled()) {
             log.debug("Found description: " + description);
             log.debug("Found number of blocks: " + blocks);
         }
-        for (int i = 0 ; i < blocks.getLength(); i++) {
-            Element element = (Element) blocks.item(i);
+        for (int i = 0 ; i < blockElements.getLength(); i++) {
+            Element element = (Element) blockElements.item(i);
             String name = element.getAttribute("name");
             String mimetype = element.getAttribute("mimetype");
             Block b = new Block(name, mimetype);
@@ -60,9 +61,19 @@ public class BasicComponent implements Component {
             b.getRenderers().put(Renderer.Type.HEAD, getRenderer("head", element));
             b.getRenderers().put(Renderer.Type.BODY, getRenderer("body", element));
             b.processor = getProcessor("process", element);
-
-            this.blocks.put(name, b);
+            if (defaultBlock == null) defaultBlock = b;
+            blocks.put(name, b);
         }
+        String defaultBlockName = el.getAttribute("defaultblock");
+        if (defaultBlockName != null && ! defaultBlockName.equals("")) {
+            Block b = blocks.get(defaultBlockName);
+            if (b == null) {
+                log.error("There is not block '" + defaultBlockName + "' so, cannot take it as default. Taking " + defaultBlock + " in stead");
+            } else {
+                defaultBlock = b;
+            }
+        }
+        log.service("Default block: " + defaultBlock);
     }
 
     private Renderer getRenderer(String name, Element block) {
@@ -115,8 +126,15 @@ public class BasicComponent implements Component {
         return getName();
     }
 
-    public Map<String, Block> getBlocks() {
-        return Collections.unmodifiableMap(blocks);
+    public Collection<Block> getBlocks() {
+        return Collections.unmodifiableCollection(blocks.values());
+    }
+    public Block getBlock(String name) {
+        if (name == null) return getDefaultBlock();
+        return blocks.get(name);
+    }
+    public Block getDefaultBlock() {
+        return defaultBlock;
     }
 
 }

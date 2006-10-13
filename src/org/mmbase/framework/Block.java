@@ -16,15 +16,15 @@ import java.util.*;
  * a 'head', 'body' and 'process' view. 
  *
  * @author Johannes Verelst
- * @version $Id: Block.java,v 1.4 2006-10-13 14:40:00 michiel Exp $
+ * @version $Id: Block.java,v 1.5 2006-10-13 17:22:15 michiel Exp $
  * @since MMBase-1.9
  */
 public class Block {
     private final Map<Renderer.Type, Renderer> renderers = new HashMap();
     Processor processor;
 
-    String name;
-    String mimetype;
+    final String name;
+    final String mimetype;
 
     public Block(String name, String mimetype) {
         this.name = name;
@@ -33,8 +33,10 @@ public class Block {
     Map<Renderer.Type, Renderer> getRenderers() {
         return renderers;
     }
+
     public Renderer getRenderer(Renderer.Type type) {
-        return renderers.get(type);
+        Renderer rend = renderers.get(type);
+        return rend == null ? type.getEmpty() : rend;
     }
 
     public Processor getProcessor() {

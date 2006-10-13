@@ -16,7 +16,7 @@ import org.mmbase.util.LocalizedString;
  * components, and may be requested several views.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Component.java,v 1.4 2006-10-13 12:20:50 johannes Exp $
+ * @version $Id: Component.java,v 1.5 2006-10-13 17:22:15 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Component {
@@ -27,12 +27,10 @@ public interface Component {
 
     void configure(org.w3c.dom.Element doc);
 
-    Map<String, Block> getBlocks();
+    Collection<Block> getBlocks();
 
+    Block getBlock(String name);
 
-    // something like this?
+    Block getDefaultBlock();
 
-    // View getAdminView(Parameters);
-    // View getView();
-    // Collection<Component> getDependencies();
 }
