@@ -8,20 +8,19 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.framework;
-import java.io.*;
-import org.mmbase.util.functions.Parameters;
+import java.util.*;
+
 
 /**
  * A Block is a representation of a page within a component. It consists of 3 views, 
  * a 'head', 'body' and 'process' view. 
  *
  * @author Johannes Verelst
- * @version $Id: Block.java,v 1.2 2006-10-13 13:18:51 michiel Exp $
+ * @version $Id: Block.java,v 1.3 2006-10-13 13:26:09 michiel Exp $
  * @since MMBase-1.9
  */
 public class Block {
-    Renderer head;
-    Renderer body;
+    private final Map<Renderer.Type, Renderer> renderers = new HashMap();
     Processor processor;
 
     String name;
@@ -31,15 +30,14 @@ public class Block {
         this.name = name;
         this.mimetype = mimetype;
     }
-
-    Renderer getHead() {
-        return head;
+    Map<Renderer.Type, Renderer> getRenders() {
+        return renderers;
+    }
+    public Renderer getRenderer(Renderer.Type type) {
+        return renderers.get(type);
     }
 
-    Renderer getBody() {
-        return head;
-    }
-    Processor getProcessor() {
+    public Processor getProcessor() {
         return processor;
     }
 
