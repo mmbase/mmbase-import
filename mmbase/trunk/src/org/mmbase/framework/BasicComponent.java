@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * components, and may be requested several blocks.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicComponent.java,v 1.6 2006-10-13 17:22:15 michiel Exp $
+ * @version $Id: BasicComponent.java,v 1.7 2006-10-13 23:00:03 johannes Exp $
  * @since MMBase-1.9
  */
 public class BasicComponent implements Component {
@@ -56,10 +56,10 @@ public class BasicComponent implements Component {
             Element element = (Element) blockElements.item(i);
             String name = element.getAttribute("name");
             String mimetype = element.getAttribute("mimetype");
-            Block b = new Block(name, mimetype);
+            Block b = new Block(name, mimetype, this);
             log.trace("Found block: " + name);
-            b.getRenderers().put(Renderer.Type.HEAD, getRenderer("head", element));
-            b.getRenderers().put(Renderer.Type.BODY, getRenderer("body", element));
+            b.getRenderers().put(Renderer.Type.HEAD, getRenderer("head", element, b));
+            b.getRenderers().put(Renderer.Type.BODY, getRenderer("body", element, b));
             b.processor = getProcessor("process", element);
             if (defaultBlock == null) defaultBlock = b;
             blocks.put(name, b);
@@ -76,7 +76,7 @@ public class BasicComponent implements Component {
         log.service("Default block: " + defaultBlock);
     }
 
-    private Renderer getRenderer(String name, Element block) {
+    private Renderer getRenderer(String name, Element block, Block b) {
         NodeList heads = block.getElementsByTagName(name);
         log.debug("Number of [" + name + "] elements: " + heads.getLength());
         if (heads.getLength() == 1) {
@@ -85,7 +85,7 @@ public class BasicComponent implements Component {
             String cls = head.getAttribute("class");
             log.trace("jsp: [" + jsp + "], class: [" + cls + "]");
             if (jsp != null && !"".equals(jsp)) {
-                return new JspRenderer(name.toUpperCase(), jsp);
+                return new JspRenderer(name.toUpperCase(), jsp, b);
             } else if (cls != null && !"".equals(cls)) {
                 try {
                     return (Renderer)Class.forName(cls).newInstance();

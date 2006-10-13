@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * The class maintains all compoments which are registered in the current MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentRepository.java,v 1.4 2006-10-13 13:36:40 johannes Exp $
+ * @version $Id: ComponentRepository.java,v 1.5 2006-10-13 23:00:03 johannes Exp $
  * @since MMBase-1.9
  */
 public class ComponentRepository {
@@ -35,7 +35,8 @@ public class ComponentRepository {
 
     private static final Logger log = Logging.getLoggerInstance(ComponentRepository.class);
 
-    private  static final ComponentRepository repository = new ComponentRepository();
+    private static final ComponentRepository repository = new ComponentRepository();
+
     public static ComponentRepository getInstance() {
         return repository;
     }
