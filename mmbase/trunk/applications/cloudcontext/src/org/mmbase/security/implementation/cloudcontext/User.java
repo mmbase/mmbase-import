@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: User.java,v 1.22 2006-08-30 18:04:56 michiel Exp $
+ * @version $Id: User.java,v 1.23 2006-10-13 15:55:50 nklasens Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Users
  */
 public class User extends BasicUser implements MMBaseObserver {
@@ -40,7 +40,7 @@ public class User extends BasicUser implements MMBaseObserver {
     /**
      * @javadoc
      */
-    protected User(MMObjectNode n, long l, String app) {
+    public User(MMObjectNode n, long l, String app) {
         super(app);
         if (n == null) throw new IllegalArgumentException();
         node = n;
