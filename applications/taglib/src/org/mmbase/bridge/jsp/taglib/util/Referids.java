@@ -21,18 +21,16 @@ import org.mmbase.util.logging.*;
  * A helper class to implement referids attribute.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Referids.java,v 1.5 2006-01-25 19:38:44 michiel Exp $
+ * @version $Id: Referids.java,v 1.6 2006-10-13 23:25:46 michiel Exp $
  * @since MMBase-1.7
  */
 public abstract class  Referids  {
     private static final Logger log = Logging.getLoggerInstance(Referids.class);
 
-    public static Map getReferids(Attribute referids, ContextReferrerTag tag) throws JspTagException {
-        Map result = new LinkedHashMap(); // using a 'linked' hash map ensures that the key/value pairs are added in the same order as there are in the referids attribute
+    public static Map<String, ?> getReferids(Attribute referids, ContextReferrerTag tag) throws JspTagException {
+        Map<String, Object> result = new LinkedHashMap<String, Object>(); // using a 'linked' hash map ensures that the key/value pairs are added in the same order as there are in the referids attribute
         // log.info("" + referids + " : " + referids.getList(this));
-        Iterator i = referids.getList(tag).iterator();
-        while (i.hasNext()) {
-            String key = (String) i.next();
+        for (String key : referids.getList(tag)) {
             if (key.equals("")) continue;
             int at = key.indexOf('@');
             String urlKey;
