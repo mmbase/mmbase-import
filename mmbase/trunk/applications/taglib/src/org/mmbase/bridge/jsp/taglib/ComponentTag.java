@@ -10,7 +10,9 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 import org.mmbase.bridge.jsp.taglib.util.*;
 import javax.servlet.jsp.*;
-
+import java.util.*;
+import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 import org.mmbase.util.functions.*;
 import org.mmbase.framework.*;
 
@@ -18,14 +20,17 @@ import org.mmbase.framework.*;
  * Renders a certain block of an mmbase component
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentTag.java,v 1.1 2006-10-13 15:27:45 michiel Exp $
+ * @version $Id: ComponentTag.java,v 1.2 2006-10-13 22:15:50 michiel Exp $
  * @since MMBase-1.9
  */
-public class ComponentTag extends ContextReferrerTag {
-
+public class ComponentTag extends ContextReferrerTag implements ParamHandler {
+    private static final Logger log = Logging.getLoggerInstance(ComponentTag.class);
     private Attribute name   = Attribute.NULL;
-    private Attribute type   = Attribute.NULL;
+    private Attribute render   = Attribute.NULL;
     private Attribute blockName  = Attribute.NULL;
+    private Attribute referids  = Attribute.NULL;
+
+    protected final List<Map.Entry<String, ?>> extraParameters = new ArrayList<Map.Entry<String, ?>>();
 
     /**
      */
@@ -33,12 +38,20 @@ public class ComponentTag extends ContextReferrerTag {
         name = getAttribute(c);
     }
 
-    public void setType(String t) throws JspTagException {
-        type = getAttribute(t);
+    public void setRender(String r) throws JspTagException {
+        render = getAttribute(r);
     }
     public void setBlock(String b) throws JspTagException {
         blockName = getAttribute(b);
     }
+
+    public void addParameter(String key, Object value) throws JspTagException {
+        if (log.isDebugEnabled()) {
+            log.debug("adding parameter " + key + "/" + value);
+        }
+        extraParameters.add(new Entry<String, Object>(key, value));
+    }
+
 
 
     public int doStartTag() throws JspTagException{
@@ -48,13 +61,17 @@ public class ComponentTag extends ContextReferrerTag {
             if (component == null) {
                 throw new TaglibException("There is no component " + name.getString(this) + ". Known components are " + rep.getComponents());
             }
-            Block block = component.getBlocks().get(blockName.getString(this));
+            String bn = blockName.getString(this);
+            Block block = bn.equals("") ? component.getDefaultBlock() : component.getBlock(bn);
             if (block == null) {
                 throw new TaglibException("There is no block " + blockName.getString(this) + " in component " + component + ". Known blocks are " + component.getBlocks());
             }
-            Renderer renderer = block.getRenderer(Renderer.Type.valueOf(type.getString(this).toUpperCase()));
+            String rt = render.getString(this);
+            Renderer.Type type = rt == null || "".equals(rt) ? Renderer.Type.BODY : Renderer.Type.valueOf(rt);
+            Renderer renderer = block.getRenderer(type);
             Parameters params = renderer.createParameters();
             fillStandardParameters(params);
+            params.setAll(Referids.getReferids(referids, this));
             renderer.render(params, pageContext.getOut());
         } catch (java.io.IOException ioe) {
             throw new TaglibException(ioe);
