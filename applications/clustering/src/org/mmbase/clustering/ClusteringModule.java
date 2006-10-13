@@ -20,7 +20,7 @@ import org.mmbase.util.functions.*;
  * This module bootstraps and configures MMBase clustering.
  *
  * @since MMBase-1.8
- * @version $Id: ClusteringModule.java,v 1.10 2006-07-06 11:28:08 michiel Exp $
+ * @version $Id: ClusteringModule.java,v 1.11 2006-10-13 14:22:27 nklasens Exp $
  */
 public class ClusteringModule extends WatchedReloadableModule {
 
@@ -97,8 +97,8 @@ public class ClusteringModule extends WatchedReloadableModule {
      * @since MMBase-1.8.1
      */
     {
-        addFunction(new AbstractFunction("send", Parameter.EMPTY, new ReturnType(Statistics.class, "Stat-structure")) {
-                public Object getFunctionValue(Parameters arguments) {
+        addFunction(new AbstractFunction<Statistics>("send", Parameter.EMPTY, new ReturnType<Statistics>(Statistics.class, "Stat-structure")) {
+                public Statistics getFunctionValue(Parameters arguments) {
                     return clusterManager == null ? new Statistics() : clusterManager.send;
                 }
             });
@@ -107,8 +107,8 @@ public class ClusteringModule extends WatchedReloadableModule {
      * @since MMBase-1.8.1
      */
     {
-        addFunction(new AbstractFunction("receive", Parameter.EMPTY, new ReturnType(Statistics.class, "Stat-structure")) {
-                public Object getFunctionValue(Parameters arguments) {
+        addFunction(new AbstractFunction<Statistics>("receive", Parameter.EMPTY, new ReturnType<Statistics>(Statistics.class, "Stat-structure")) {
+                public Statistics getFunctionValue(Parameters arguments) {
                     return clusterManager == null ? new Statistics() : clusterManager.receive;
                 }
             });
@@ -118,8 +118,8 @@ public class ClusteringModule extends WatchedReloadableModule {
      * @since MMBase-1.8.1
      */
     {
-        addFunction(new AbstractFunction("numbertosend", Parameter.EMPTY, ReturnType.INTEGER) {
-                public Object getFunctionValue(Parameters arguments) {
+        addFunction(new AbstractFunction<Integer>("numbertosend", Parameter.EMPTY, ReturnType.INTEGER) {
+                public Integer getFunctionValue(Parameters arguments) {
                     return new Integer(clusterManager == null ? -1 : clusterManager.nodesToSend.count());
                 }
             });
@@ -128,8 +128,8 @@ public class ClusteringModule extends WatchedReloadableModule {
      * @since MMBase-1.8.1
      */
     {
-        addFunction(new AbstractFunction("numbertoreceive", Parameter.EMPTY, ReturnType.INTEGER) {
-                public Object getFunctionValue(Parameters arguments) {
+        addFunction(new AbstractFunction<Integer>("numbertoreceive", Parameter.EMPTY, ReturnType.INTEGER) {
+                public Integer getFunctionValue(Parameters arguments) {
                     return new Integer(clusterManager == null ? -1 : clusterManager.nodesToSpawn.count());
                 }
             });
@@ -139,10 +139,10 @@ public class ClusteringModule extends WatchedReloadableModule {
      * @since MMBase-1.8.1
      */
     {
-        addFunction(new AbstractFunction("shutdown", Parameter.EMPTY, ReturnType.VOID) {
-                public Object getFunctionValue(Parameters arguments) {
+        addFunction(new AbstractFunction<Void>("shutdown", Parameter.EMPTY, ReturnType.VOID) {
+                public Void getFunctionValue(Parameters arguments) {
                     shutdown();
-                    return "";
+                    return null;
                 }
             });
     }
@@ -150,10 +150,10 @@ public class ClusteringModule extends WatchedReloadableModule {
      * @since MMBase-1.8.1
      */
     {
-        addFunction(new AbstractFunction("start", Parameter.EMPTY, ReturnType.VOID) {
-                public Object getFunctionValue(Parameters arguments) {
+        addFunction(new AbstractFunction<Void>("start", Parameter.EMPTY, ReturnType.VOID) {
+                public Void getFunctionValue(Parameters arguments) {
                     init();
-                    return "";
+                    return null;
                 }
             });
     }
@@ -161,15 +161,15 @@ public class ClusteringModule extends WatchedReloadableModule {
      * @since MMBase-1.8.1
      */
     {
-        addFunction(new AbstractFunction("active", Parameter.EMPTY, ReturnType.BOOLEAN) {
-                public Object getFunctionValue(Parameters arguments) {
+        addFunction(new AbstractFunction<Boolean>("active", Parameter.EMPTY, ReturnType.BOOLEAN) {
+                public Boolean getFunctionValue(Parameters arguments) {
                     return Boolean.valueOf(clusterManager != null && clusterManager.kicker != null);
                 }
             });
     }
     {
-        addFunction(new AbstractFunction("clusterManager", Parameter.EMPTY, new ReturnType(ClusterManager.class, "cluster manager")) {
-                public Object getFunctionValue(Parameters arguments) {
+        addFunction(new AbstractFunction<ClusterManager>("clusterManager", Parameter.EMPTY, new ReturnType<ClusterManager>(ClusterManager.class, "cluster manager")) {
+                public ClusterManager getFunctionValue(Parameters arguments) {
                     return clusterManager;
                 }
             });

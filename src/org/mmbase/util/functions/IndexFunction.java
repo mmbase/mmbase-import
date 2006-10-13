@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: IndexFunction.java,v 1.10 2006-09-27 20:42:21 michiel Exp $
+ * @version $Id: IndexFunction.java,v 1.11 2006-10-13 14:22:26 nklasens Exp $
  * @since MMBase-1.8
  */
 public class IndexFunction extends FunctionProvider {
@@ -162,17 +162,17 @@ public class IndexFunction extends FunctionProvider {
 
     private static Parameter[] INDEX_ARGS = new Parameter[] {
         Parameter.CLOUD,
-        new Parameter("root", Node.class, false),
-        new Parameter("separator", String.class, "\\."),
-        new Parameter("joiner", String.class, "."),
-        new Parameter("roman", Boolean.class, Boolean.TRUE),
-        new Parameter("role", String.class, "index")
+        new Parameter<Node>("root", Node.class, false),
+        new Parameter<String>("separator", String.class, "\\."),
+        new Parameter<String>("joiner", String.class, "."),
+        new Parameter<Boolean>("roman", Boolean.class, Boolean.TRUE),
+        new Parameter<String>("role", String.class, "index")
     };
 
     private static Parameter[] MOVE_ARGS = new Parameter[] {
         Parameter.CLOUD,
-        new Parameter("root",    Node.class, false),
-        new Parameter("newroot", Node.class, false)
+        new Parameter<Node>("root",    Node.class, false),
+        new Parameter<Node>("newroot", Node.class, false)
     };
 
     /**
@@ -197,7 +197,7 @@ public class IndexFunction extends FunctionProvider {
         }
     }
 
-    protected static NodeFunction index = new NodeFunction("index", INDEX_ARGS, ReturnType.STRING) {
+    protected static NodeFunction<String> index = new NodeFunction<String>("index", INDEX_ARGS, ReturnType.STRING) {
             {
                 setDescription("Calculates the index of a node, using the surrounding 'indexrels'");
             }
@@ -205,7 +205,7 @@ public class IndexFunction extends FunctionProvider {
             /**
              * complete bridge version of {@link #getFunctionValue}
              */
-            public Object getFunctionValue(final Node node, final Parameters parameters) {
+            public String getFunctionValue(final Node node, final Parameters parameters) {
                 Node root     = (Node)   parameters.get("root");
                 final String role   = (String) parameters.get("role");
                 final String join   = (String) parameters.get("joiner");

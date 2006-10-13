@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: AbstractFunction.java,v 1.16 2006-09-27 20:42:21 michiel Exp $
+ * @version $Id: AbstractFunction.java,v 1.17 2006-10-13 14:22:26 nklasens Exp $
  * @since MMBase-1.8
  * @see Parameter
  * @see Parameters
@@ -128,7 +128,7 @@ abstract public class AbstractFunction<R> implements Function<R>, Comparable<Fun
     /**
      * @return The currently set Parameter definition array, or <code>null</code> if not set already.
      */
-    public Parameter[] getParameterDefinition() {
+    public Parameter<?>[] getParameterDefinition() {
         return parameterDefinition;
     }
 
@@ -148,16 +148,18 @@ abstract public class AbstractFunction<R> implements Function<R>, Comparable<Fun
     /**
      * @return The currently set ReturnType, or <code>null</code> if not set already.
      */
+    @SuppressWarnings("unchecked")
     public ReturnType<R> getReturnType() {
         if (returnType == null && autoReturnType) {
             try {
-                returnType = (ReturnType<R>) ReturnType.getReturnType(getClass().getDeclaredMethod("getFunctionValue", Parameters.class).getReturnType());
+                returnType =  (ReturnType<R>) ReturnType.getReturnType(getClass().getDeclaredMethod("getFunctionValue", Parameters.class).getReturnType());
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
         }
         return returnType;
     }
+    
     /**
      * Sets the ReturnType for this function if not set already.
      * @param type A ReturnType object. For void functions that could be {@link ReturnType#VOID}.

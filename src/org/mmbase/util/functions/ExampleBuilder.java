@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * This is done in the MyNews examples (on the news builder), and example JSP's can be found on /mmexamples/taglib/functions.jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ExampleBuilder.java,v 1.15 2006-09-25 14:00:01 michiel Exp $
+ * @version $Id: ExampleBuilder.java,v 1.16 2006-10-13 14:22:26 nklasens Exp $
  * @see   ExampleBean For examples on hot to add functions to a builder without extending it.
  * @since MMBase-1.7
  */
@@ -55,7 +55,7 @@ public final class ExampleBuilder extends MMObjectBuilder { // final to avoid th
     /**
      * Implementation of 'builder function', which can be compared with a static method in java.
      */
-    protected final Function listLatestFunction = new AbstractFunction("latest", LISTLATEST_PARAMETERS) {
+    protected final Function<NodeList> listLatestFunction = new AbstractFunction<NodeList>("latest", LISTLATEST_PARAMETERS) {
             {
                 setDescription("This (rather silly) function returns the latest instances of this builder.");
             }
@@ -77,7 +77,7 @@ public final class ExampleBuilder extends MMObjectBuilder { // final to avoid th
     /**
      * Implementation of 'node function', which can be compared with a instance method in java.
      */
-    protected final Function sumFieldsFunction = new NodeFunction("sumfields", SUMFIELDS_PARAMETERS) {
+    protected final Function<Integer> sumFieldsFunction = new NodeFunction<Integer>("sumfields", SUMFIELDS_PARAMETERS) {
             {
                 setDescription("This (rather silly) function returns the sum of the given fields of a certain node");
             }
@@ -100,17 +100,17 @@ public final class ExampleBuilder extends MMObjectBuilder { // final to avoid th
     {
 
         // you can of course even implement it anonymously.
-        addFunction(new AbstractFunction("showparameter",
-                                         new Parameter("collectionparam", Collection.class),
-                                         new Parameter("mapparam", Map.class),
-                                         new Parameter("integerparam", Integer.class),
-                                         new Parameter("numberparam", Number.class)
+        addFunction(new AbstractFunction<List<String>>("showparameter",
+                                         new Parameter<Collection>("collectionparam", Collection.class),
+                                         new Parameter<Map>("mapparam", Map.class),
+                                         new Parameter<Integer>("integerparam", Integer.class),
+                                         new Parameter<Number>("numberparam", Number.class)
                                          ) {
                 {
                     setDescription("With this function one can demonstrate how to create parameters of several types, and in what excactly that results");
                 }
                 public List<String> getFunctionValue(Parameters parameters) {
-                    List<String>  result = new ArrayList();
+                    List<String>  result = new ArrayList<String>();
                     Parameter[] def = parameters.getDefinition();
                     for (int i = 0 ; i < def.length; i++) {
                         Object value = parameters.get(i);

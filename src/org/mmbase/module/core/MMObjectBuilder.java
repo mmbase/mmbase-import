@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.397 2006-10-03 18:29:43 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.398 2006-10-13 14:22:27 nklasens Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -252,11 +252,11 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * This function can be called through the function framework.
      * @since MMBase-1.8
      */
-    protected Function wrapFunction = new NodeFunction("wrap", WRAP_PARAMETERS, ReturnType.STRING) {
+    protected Function<String> wrapFunction = new NodeFunction<String>("wrap", WRAP_PARAMETERS, ReturnType.STRING) {
             {
                 setDescription("This function wraps a field, word-by-word. You can use this, e.g. in <pre>-tags. This functionality should be available as an 'escaper', and this version should now be considered an example.");
             }
-            public Object getFunctionValue(Node node, Parameters parameters) {
+            public String getFunctionValue(Node node, Parameters parameters) {
                 String val = node.getStringValue(parameters.getString(Parameter.FIELD));
                 Number wrappos = (Number) parameters.get("length");
                 return wrap(val, wrappos.intValue());
@@ -271,14 +271,14 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * This is overridden from FunctionProvider, because this one needs to be (also) a NodeFunction
      * @since MMBase-1.8
      */
-    protected Function getFunctions = new NodeFunction("getFunctions", Parameter.EMPTY, ReturnType.SET) {
+    protected Function<Collection<? extends Function>> getFunctions = new NodeFunction<Collection<? extends Function>>("getFunctions", Parameter.EMPTY, ReturnType.COLLECTION) {
             {
                 setDescription("The 'getFunctions' returns a Map of al Function object which are available on this FunctionProvider");
             }
-            public Object getFunctionValue(Node node, Parameters parameters) {
+            public Collection<? extends Function> getFunctionValue(Node node, Parameters parameters) {
                 return MMObjectBuilder.this.getFunctions(getCoreNode(MMObjectBuilder.this, node));
             }
-            public Object getFunctionValue(Parameters parameters) {
+            public Collection<? extends Function> getFunctionValue(Parameters parameters) {
                 Node node = parameters.get(Parameter.NODE);
                 if (node == null) {
                     return MMObjectBuilder.this.getFunctions();
@@ -295,11 +295,11 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * The info-function is a node-function and a builder-function. Therefore it is defined as a node-function, but also overidesd getFunctionValue(Parameters).
      * @since MMBase-1.8
      */
-    protected Function infoFunction = new NodeFunction("info", new Parameter[] { new Parameter("function", String.class) }, ReturnType.UNKNOWN) {
+    protected Function<Object> infoFunction = new NodeFunction<Object>("info", new Parameter[] { new Parameter("function", String.class) }, ReturnType.UNKNOWN) {
             {
                 setDescription("Returns information about available functions");
             }
-            protected Object getFunctionValue(Collection<Function> functions, Parameters parameters) {
+            protected Object getFunctionValue(Collection<Function<?>> functions, Parameters parameters) {
                 String function = (String) parameters.get("function");
                 if (function == null || function.equals("")) {
                     Map<String, String> info = new HashMap();
@@ -1753,7 +1753,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * Returns all Functions which are available (or at least known to be available) on a Node.
      * @since MMBase-1.8
      */
-    protected Collection getFunctions(MMObjectNode node) {
+    protected Collection<Function<?>> getFunctions(MMObjectNode node) {
         Collection builderFunctions = getFunctions();
         Collection nodeFunctions = new HashSet();
         for (Iterator i = builderFunctions.iterator(); i.hasNext();) {
@@ -1770,8 +1770,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @inheritDoc
      * @since MMBase-1.8
      */
-    protected Function newFunctionInstance(String name, Parameter[] parameters, ReturnType returnType) {
-        return new NodeFunction(name, parameters, returnType) {
+    protected Function<Object> newFunctionInstance(String name, Parameter[] parameters, ReturnType returnType) {
+        return new NodeFunction<Object>(name, parameters, returnType) {
                 public Object getFunctionValue(Node node, Parameters parameters) {
                     return MMObjectBuilder.this.executeFunction(getCoreNode(MMObjectBuilder.this, node),
                                                                 name,

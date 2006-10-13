@@ -20,7 +20,7 @@ import org.mmbase.bridge.Cacheable;
  * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.41 2006-10-11 19:08:12 michiel Exp $
+ * @version $Id: Cache.java,v 1.42 2006-10-13 14:22:27 nklasens Exp $
  */
 abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
 
@@ -58,7 +58,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
         try {
             Class clas = Class.forName(clazz);
             if (implementation == null || (! clas.equals(implementation.getClass()))) {
-                implementation = (CacheImplementationInterface) clas.newInstance();
+                implementation = (CacheImplementationInterface<K,V>) clas.newInstance();
                 implementation.config(configValues);
             }
         } catch (ClassNotFoundException cnfe) {
@@ -110,7 +110,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
     }
 
     public Set<Map.Entry<K,V>> entrySet() {
-        if (! active) return new HashSet();
+        if (! active) return new HashSet<Map.Entry<K,V>>();
         return implementation.entrySet();
     }
 
@@ -350,7 +350,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
     /**
      * @see java.util.Map#keySet()
      */
-    public Set keySet() {
+    public Set<K> keySet() {
         return implementation.keySet();
     }
 
@@ -358,7 +358,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
     /**
      * @see java.util.Map#putAll(java.util.Map)
      */
-    public void putAll(Map t) {
+    public void putAll(Map<? extends K,? extends V> t) {
         implementation.putAll(t);
     }
 
