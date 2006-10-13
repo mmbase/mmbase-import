@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * components, and may be requested several blocks.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicComponent.java,v 1.3 2006-10-13 12:20:50 johannes Exp $
+ * @version $Id: BasicComponent.java,v 1.4 2006-10-13 13:36:54 johannes Exp $
  * @since MMBase-1.9
  */
 public class BasicComponent implements Component {
@@ -34,44 +34,57 @@ public class BasicComponent implements Component {
         this.name = name;
         this.description = new LocalizedString(name);
     }
+
     public String getName() {
         return name;
     }
+
     public LocalizedString getDescription() {
         return description;
     }
 
     public void configure(Element el) {
+        log.warn("Start configure()");
         description.fillFromXml("description", el);
         NodeList blocks = el.getElementsByTagName("block");
+        log.warn("Found description: " + description);
+        log.warn("Found number of blocks: " + blocks);
         for (int i = 0 ; i < blocks.getLength(); i++) {
             Element block = (Element) blocks.item(i);
             String name = block.getAttribute("name");
             String mimetype = block.getAttribute("mimetype");
             Block b = new Block(name, mimetype);
+            log.warn("Found block: " + name);
 
             b.head = getRenderer("head", block);
             b.body = getRenderer("body", block);
             b.processor = getProcessor("process", block);
+
+            this.blocks.put(name, b);
         }
     }
 
     private Renderer getRenderer(String name, Element block) {
         NodeList heads = block.getElementsByTagName(name);
+        log.warn("Number of [" + name + "] elements: " + heads.getLength());
         if (heads.getLength() == 1) {
             Element head = (Element) heads.item(0);
             String jsp = head.getAttribute("jsp");
             String cls = head.getAttribute("class");
-            if (jsp == null && cls != null) {
+            log.warn("jsp: [" + jsp + "], class: [" + cls + "]");
+            if (jsp != null && !"".equals(jsp)) {
+                return new JspRenderer(name.toUpperCase(), jsp);
+            } else if (cls != null && !"".equals(cls)) {
                 try {
                     return (Renderer)Class.forName(cls).newInstance();
                 } catch (Exception e) {
                     log.error(e);
                 }
-            } else if (jsp != null && cls == null) {
-                return new JspRenderer(name.toUpperCase(), jsp);
             } else {
+                log.error("JSP and CLASS are null!");
             }
+        } else {
+            log.warn("No [" + name + "] element found");
         }
         return null;
     }
@@ -82,15 +95,16 @@ public class BasicComponent implements Component {
             Element head = (Element) heads.item(0);
             String jsp = head.getAttribute("jsp");
             String cls = head.getAttribute("class");
-            if (jsp == null && cls != null) {
+            if (jsp != null && !"".equals(jsp)) {
+                return new JspProcessor(jsp);
+            } else if (cls != null && !"".equals(cls)) {
                 try {
                     return (Processor)Class.forName(cls).newInstance();
                 } catch (Exception e) {
                     log.error(e);
                 }
-            } else if (jsp != null && cls == null) {
-                return new JspProcessor(jsp);
             } else {
+                log.error("JSP and CLASS are null!");
             }
         }
         return null;
