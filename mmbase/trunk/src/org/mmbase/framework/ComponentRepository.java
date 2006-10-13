@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * The class maintains all compoments which are registered in the current MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentRepository.java,v 1.3 2006-09-12 19:25:59 michiel Exp $
+ * @version $Id: ComponentRepository.java,v 1.4 2006-10-13 13:36:40 johannes Exp $
  * @since MMBase-1.9
  */
 public class ComponentRepository {
@@ -101,7 +101,12 @@ public class ComponentRepository {
 
     protected Component getComponent(String name, Document doc) throws org.xml.sax.SAXException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException {
         Element classElement = (Element) doc.getDocumentElement().getElementsByTagName("class").item(0);
-        Component component = (Component) getInstance(classElement, name);
+        Component component;
+        if (classElement == null) {
+            component = new BasicComponent(name);
+        } else {
+            component = (Component) getInstance(classElement, name);
+        }
         component.configure(doc.getDocumentElement()); 
         return component;
     }
