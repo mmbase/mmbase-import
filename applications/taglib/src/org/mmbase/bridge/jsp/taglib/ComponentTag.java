@@ -21,7 +21,7 @@ import org.mmbase.module.core.MMBase;
  * Renders a certain block of an mmbase component
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentTag.java,v 1.6 2006-10-14 10:03:21 johannes Exp $
+ * @version $Id: ComponentTag.java,v 1.7 2006-10-14 14:44:35 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentTag extends CloudReferrerTag implements ParamHandler {
@@ -55,7 +55,7 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler {
 
 
 
-    public int doStartTag() throws JspTagException{
+    public int doEndTag() throws JspTagException{
         try {
             ComponentRepository rep = ComponentRepository.getInstance();
             Component component = rep.getComponent(name.getString(this));
@@ -78,7 +78,6 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler {
             for (Map.Entry<String, Object> entry : extraParameters) {
                 params.set(entry.getKey(), entry.getValue());
             }
-
             Parameters frameworkParams = MMBase.getMMBase().getFramework().createFrameworkParameters();
             fillStandardParameters(frameworkParams);
             frameworkParams.setAutoCasting(true);
