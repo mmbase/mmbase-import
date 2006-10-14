@@ -16,6 +16,7 @@ import java.text.DateFormat;
 import org.mmbase.core.event.*;
 import org.mmbase.datatypes.DataTypes;
 import org.mmbase.framework.Framework;
+import org.mmbase.framework.BasicFramework;
 import org.mmbase.module.ProcessorModule;
 import org.mmbase.module.SendMailInterface;
 import org.mmbase.module.builders.DayMarkers;
@@ -46,7 +47,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.210 2006-10-13 21:59:52 johannes Exp $
+ * @version $Id: MMBase.java,v 1.211 2006-10-14 13:43:28 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -326,6 +327,7 @@ public class MMBase extends ProcessorModule {
                 log.error(e);
             }
         }
+        if (framework == null) framework = new BasicFramework();
 
         String machineNameParam = getInitParameter("MACHINENAME");
         if (machineNameParam != null) {
