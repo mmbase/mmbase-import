@@ -7,7 +7,6 @@
  */
 package org.mmbase.core.event;
 
-import java.util.Properties;
 import org.mmbase.module.core.*;
 import org.mmbase.util.HashCodeUtil;
 import org.mmbase.storage.search.RelationStep;

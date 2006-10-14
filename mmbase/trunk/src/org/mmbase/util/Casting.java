@@ -16,14 +16,13 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.91 2006-09-27 20:39:37 michiel Exp $
+ * @version $Id: Casting.java,v 1.92 2006-10-14 14:35:39 nklasens Exp $
  */
 
 import java.util.*;
 import java.text.*;
 import java.io.*;
 import javax.xml.parsers.*;
-import javax.xml.transform.*;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.ContextProvider;

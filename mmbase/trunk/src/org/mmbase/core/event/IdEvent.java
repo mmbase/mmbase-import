@@ -7,13 +7,6 @@
  */
 package org.mmbase.core.event;
 
-import java.io.*;
-import java.util.*;
-
-import org.mmbase.util.HashCodeUtil;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
 
 /**
  * Very generic event type, which only adds an 'id' property. This can be used for events on all
@@ -22,20 +15,16 @@ import org.mmbase.util.logging.Logging;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.8
- * @version $Id: IdEvent.java,v 1.2 2006-09-11 12:17:22 michiel Exp $
+ * @version $Id: IdEvent.java,v 1.3 2006-10-14 14:35:38 nklasens Exp $
  */
 public class IdEvent extends Event  {
 
 
     private static final long serialVersionUID = 1L;
 
-    private static final Logger log = Logging.getLoggerInstance(IdEvent.class);
-
     private String id;
 
 
-    /**
-    **/
     public IdEvent(String machineName, int type, String id) {
         super(machineName, type);
         this.id = id;

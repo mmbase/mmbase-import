@@ -15,7 +15,6 @@ import org.mmbase.core.event.*;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.storage.search.*;
-import org.mmbase.storage.search.implementation.BasicCompositeConstraint;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -29,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: ReleaseStrategy.java,v 1.20 2006-10-11 19:07:36 michiel Exp $
+ * @version $Id: ReleaseStrategy.java,v 1.21 2006-10-14 14:35:38 nklasens Exp $
  */
 
 public abstract class ReleaseStrategy {
@@ -187,7 +186,7 @@ public abstract class ReleaseStrategy {
     protected static List<Constraint> getConstraintsForField(String  fieldName, final MMObjectBuilder builder, Constraint constraint, final SearchQuery query){
         if(constraint == null) constraint = query.getConstraint();
         if(constraint == null) return Collections.EMPTY_LIST;
-        List<Constraint> result = new ArrayList();
+        List<Constraint> result = new ArrayList<Constraint>();
 
         if(constraint instanceof CompositeConstraint) {
             log.debug("constraint is composite.");
@@ -231,7 +230,7 @@ public abstract class ReleaseStrategy {
     protected static List<SortOrder> getSortordersForField(final String fieldName, final MMObjectBuilder builder, List<SortOrder> sortOrders, final SearchQuery query) {
         if(sortOrders == null) sortOrders = query.getSortOrders();
         if(sortOrders == null) return Collections.EMPTY_LIST;
-        List<SortOrder> result = new ArrayList();
+        List<SortOrder> result = new ArrayList<SortOrder>();
         for (SortOrder order : sortOrders) {
             StepField sf = order.getField();
             String stepName = sf.getStep().getTableName();

@@ -10,22 +10,17 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.implementation;
 
-import java.io.InputStream;
 import java.util.*;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.*;
-import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.VirtualBuilder;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.core.MMBase;
-import org.mmbase.core.util.Fields;
-import org.mmbase.core.CoreField;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * Implementation of Node. Simply wraps virtual node of core into an bridge Node. This class can be
@@ -33,7 +28,7 @@ import org.w3c.dom.Element;
  * {@link #VirtualNode(org.mmbase.module.core.VirtualNode, Cloud)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: VirtualNode.java,v 1.20 2006-09-06 16:47:49 michiel Exp $
+ * @version $Id: VirtualNode.java,v 1.21 2006-10-14 14:35:38 nklasens Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.VirtualNode
  * @since MMBase-1.8
@@ -199,7 +194,6 @@ public class VirtualNode extends AbstractNode implements Node {
         Node result = null;
         MMObjectNode mmobjectNode = getNode().getNodeValue(fieldName);
         if (mmobjectNode != null) {
-            MMObjectBuilder builder = mmobjectNode.getBuilder();
             try {
                 result = cloud.getNode(mmobjectNode.getNumber());
             } catch (NotFoundException nfe) {

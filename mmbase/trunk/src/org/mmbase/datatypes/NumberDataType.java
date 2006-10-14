@@ -9,22 +9,17 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.datatypes;
 
-import java.util.*;
-
 import org.mmbase.bridge.*;
 import org.mmbase.util.Casting;
-import org.mmbase.util.logging.*;
 
 /**
  * A DataType representing some kind of numeric value, like a floating point number or an integer number.
  *
  * @author Pierre van Rooden
- * @version $Id: NumberDataType.java,v 1.19 2006-10-04 17:34:06 michiel Exp $
+ * @version $Id: NumberDataType.java,v 1.20 2006-10-14 14:35:39 nklasens Exp $
  * @since MMBase-1.8
  */
 abstract public class NumberDataType extends ComparableDataType {
-
-    private static final Logger log = Logging.getLoggerInstance(NumberDataType.class);
 
     private static final long serialVersionUID = 1L; 
     /**

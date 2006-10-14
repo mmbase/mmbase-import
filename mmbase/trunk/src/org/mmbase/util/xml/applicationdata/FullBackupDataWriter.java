@@ -13,7 +13,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-import org.mmbase.bridge.util.HugeNodeListIterator;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.module.core.*;
@@ -26,7 +25,7 @@ import org.mmbase.util.xml.ApplicationReader;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: FullBackupDataWriter.java,v 1.3 2005-10-07 18:42:49 michiel Exp $
+ * @version $Id: FullBackupDataWriter.java,v 1.4 2006-10-14 14:35:39 nklasens Exp $
  */
 public class FullBackupDataWriter {
 

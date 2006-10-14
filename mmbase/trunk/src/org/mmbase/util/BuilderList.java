@@ -12,8 +12,6 @@ package org.mmbase.util;
 import java.io.*;
 import java.util.*;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
@@ -30,7 +28,7 @@ import org.w3c.dom.Document;
  * @since mmbase 1.6
  * @author Gerard van Enk
  * @author Pierre van Rooden
- * @version $Id: BuilderList.java,v 1.8 2006-07-18 12:25:42 michiel Exp $
+ * @version $Id: BuilderList.java,v 1.9 2006-10-14 14:35:39 nklasens Exp $
  */
 public class BuilderList {
     // logger not used at the moment

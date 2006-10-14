@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.transformers;
 
-import java.util.*;
 import java.io.*;
 import org.mmbase.util.functions.*;
 
@@ -27,7 +26,7 @@ public class WordWrapperFactory implements ParameterizedTransformerFactory {
     private static final Logger log = Logging.getLoggerInstance(WordWrapperFactory.class);
 
     protected static final Parameter[] PARAMS = new Parameter[] {
-        new Parameter("length", Integer.class, new Integer(80))
+        new Parameter<Integer>("length", Integer.class, new Integer(80))
     };
 
     public Parameters createParameters() {

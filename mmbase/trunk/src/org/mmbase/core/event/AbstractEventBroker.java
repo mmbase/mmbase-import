@@ -6,16 +6,13 @@
  */
 package org.mmbase.core.event;
 
-import java.util.*;
-
-import javax.swing.border.TitledBorder;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.mmbase.util.HashCodeUtil;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-
-import sun.rmi.runtime.GetThreadPoolAction;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * This is the base class for all event brokers in mmbase. the function of an
@@ -41,7 +38,7 @@ public abstract class AbstractEventBroker {
 
     private static final Logger log = Logging.getLoggerInstance(AbstractEventBroker.class);
 
-    protected Set listeners = new CopyOnWriteArraySet();
+    protected Set<EventListener> listeners = new CopyOnWriteArraySet<EventListener>();
 
     /**
      * this method should return true if this broker can accept and propagate

@@ -12,7 +12,6 @@ package org.mmbase.util.transformers;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
-import org.mmbase.util.transformers.*;
 import org.mmbase.util.functions.Parameter;
 import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.logging.Logger;
@@ -30,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Andr&eacute; van Toly
  * @since MMBase 1.8.0
- * @version $Id: CodeSampleFactory.java,v 1.2 2006-04-14 11:25:29 andre Exp $
+ * @version $Id: CodeSampleFactory.java,v 1.3 2006-10-14 14:35:38 nklasens Exp $
  */
 
 public class CodeSampleFactory implements ParameterizedTransformerFactory {
@@ -169,7 +168,6 @@ public class CodeSampleFactory implements ParameterizedTransformerFactory {
             } else if (escaper.equals("text/html") || escaper.equals("text/xml")) {
                 str = Xml.XMLEscape(str);
             } else {    // at least return something
-                 str = str;
                 //throw new UnsupportedOperationException("Cannot transform");
             }
             if (log.isDebugEnabled()) log.debug("Returning: " + str);

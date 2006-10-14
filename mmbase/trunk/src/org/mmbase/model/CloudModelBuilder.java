@@ -11,14 +11,12 @@ See http://www.MMBase.org/license
 package org.mmbase.model;
 
 import org.mmbase.util.logging.*;
-import org.mmbase.core.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 import org.mmbase.util.xml.*;
 
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
-import javax.xml.parsers.*;
 
 import java.util.*;
 import java.io.*;
@@ -250,7 +248,7 @@ public class CloudModelBuilder {
 
     private void mergePart(Element fe,String newpart) {
             try {
-                Element nf = (reader.getDocumentBuilder(false,null,null).parse(new InputSource(new StringReader(newpart)))).getDocumentElement();
+                Element nf = (DocumentReader.getDocumentBuilder(false,null,null).parse(new InputSource(new StringReader(newpart)))).getDocumentElement();
                 fe.appendChild(document.importNode(nf,true));
             } catch(Exception e) {
                 log.error("Can't merge new xml code");

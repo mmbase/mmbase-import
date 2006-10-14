@@ -15,13 +15,7 @@ import java.io.Serializable;
 
 import org.mmbase.bridge.*;
 import org.mmbase.datatypes.processors.*;
-import org.mmbase.bridge.util.Queries;
-import org.mmbase.storage.search.*;
-import org.mmbase.core.util.Fields;
-import org.mmbase.core.AbstractDescriptor;
-import org.mmbase.datatypes.DataTypes;
 import org.mmbase.util.*;
-import org.mmbase.util.logging.*;
 
 /**
  * A value in MMBase (such as the value of a field, or function parameter) is associated with a
@@ -38,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.56 2006-09-11 09:54:15 michiel Exp $
+ * @version $Id: DataType.java,v 1.57 2006-10-14 14:35:39 nklasens Exp $
  */
 
 public interface DataType<C> extends Descriptor, Cloneable, Comparable, Serializable {

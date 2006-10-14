@@ -12,7 +12,6 @@ package org.mmbase.framework;
 import java.util.*;
 import org.w3c.dom.*;
 import org.mmbase.util.LocalizedString;
-import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -20,7 +19,7 @@ import org.mmbase.util.logging.*;
  * components, and may be requested several blocks.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicComponent.java,v 1.8 2006-10-14 09:46:48 michiel Exp $
+ * @version $Id: BasicComponent.java,v 1.9 2006-10-14 14:35:38 nklasens Exp $
  * @since MMBase-1.9
  */
 public class BasicComponent implements Component {

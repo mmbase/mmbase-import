@@ -9,14 +9,13 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge.util;
-import javax.servlet.*;
 import java.util.*;
-import java.io.*;
+
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.implementation.BasicFieldList;
-import org.mmbase.util.logging.*;
-import org.mmbase.util.*;
 
 /**
  * Abstract implementation of NodeManager, to minimalize the implementation of a virtual one. Must
@@ -24,15 +23,13 @@ import org.mmbase.util.*;
  * org.mmbase.bridge.implementation.VirtualNodeManager}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNodeManager.java,v 1.4 2006-09-13 17:48:14 michiel Exp $
+ * @version $Id: AbstractNodeManager.java,v 1.5 2006-10-14 14:35:38 nklasens Exp $
  * @see org.mmbase.bridge.NodeManager
  * @since MMBase-1.8
  */
 public abstract class AbstractNodeManager extends AbstractNode implements NodeManager {
-    private static final Logger log = Logging.getLoggerInstance(AbstractNodeManager.class);
 
-
-    protected Map values = new HashMap();
+    protected Map<String, Object> values = new HashMap<String, Object>();
     protected final Cloud cloud;
     protected AbstractNodeManager(Cloud c) {
         cloud = c;
@@ -119,7 +116,7 @@ public abstract class AbstractNodeManager extends AbstractNode implements NodeMa
     }
 
     public Field getField(String fieldName) throws NotFoundException {
-        Field f = (Field) getFieldTypes().get(fieldName);
+        Field f = getFieldTypes().get(fieldName);
         if (f == null) throw new NotFoundException("Field '" + fieldName + "' does not exist in NodeManager '" + getName() + "'.(" + getFieldTypes() + ")");
         return f;
     }

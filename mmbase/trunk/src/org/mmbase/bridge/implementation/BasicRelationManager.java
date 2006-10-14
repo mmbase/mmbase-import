@@ -11,11 +11,9 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.implementation;
 
 import java.util.List;
-import java.util.ArrayList;
 
 import org.mmbase.bridge.*;
 import org.mmbase.security.*;
-import org.mmbase.storage.search.SearchQueryException;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.logging.*;
@@ -25,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelationManager.java,v 1.34 2005-12-27 22:14:14 michiel Exp $
+ * @version $Id: BasicRelationManager.java,v 1.35 2006-10-14 14:35:38 nklasens Exp $
  */
 public class BasicRelationManager extends BasicNodeManager implements RelationManager {
     private static final Logger log = Logging.getLoggerInstance(BasicRelationManager.class);

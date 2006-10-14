@@ -10,14 +10,9 @@ See http://www.MMBase.org/license
 package org.mmbase.cache;
 
 import java.util.*;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 import org.mmbase.core.event.*;
 import org.mmbase.storage.search.SearchQuery;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -27,16 +22,15 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *
  * @since MMBase-1.8
  * @author Ernst Bunders
- * @version $Id: ChainedReleaseStrategy.java,v 1.19 2006-08-30 20:57:55 michiel Exp $
+ * @version $Id: ChainedReleaseStrategy.java,v 1.20 2006-10-14 14:35:38 nklasens Exp $
  */
 public class ChainedReleaseStrategy extends ReleaseStrategy {
-    private static final Logger log = Logging.getLoggerInstance(ChainedReleaseStrategy.class);
 
-    private final List releaseStrategies = new CopyOnWriteArrayList();
+    private final List<ReleaseStrategy> releaseStrategies = new CopyOnWriteArrayList<ReleaseStrategy>();
 
     //this map is used to store the 'enabled' status of wrapped strategies when this one is being disabled
     //so the old settings can be returned when it is enabled again
-    private final Map childStrategyMemory = new HashMap();
+    private final Map<String, Boolean> childStrategyMemory = new HashMap<String, Boolean>();
 
     public ChainedReleaseStrategy() {
     }
@@ -62,7 +56,7 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
 
                 //if it must be switched on, we must use the memeory if present
                 if(newStatus == true){
-                    Boolean memory = (Boolean) childStrategyMemory.get(strategy.getName());
+                    Boolean memory = childStrategyMemory.get(strategy.getName());
                     strategy.setEnabled( memory == null ? true :  memory.booleanValue());
                 } else {
                     //if it must switch of, we must record the status
