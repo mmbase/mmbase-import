@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.84 2006-10-14 10:03:21 johannes Exp $
+ * @version $Id: UrlTag.java,v 1.85 2006-10-14 11:51:08 johannes Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
@@ -106,33 +106,30 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
      */
     protected String getPage() throws JspTagException {
         String origPage = page.getString(this);
-        Framework framework = MMBase.getMMBase().getFramework();
-        if (framework != null) {
-            Cloud cloud = null;
-            try {
-                cloud = getCloudVar();
-            } catch (Exception e) {
-            }
-            ComponentRepository rep = ComponentRepository.getInstance();
-            Component comp = rep.getComponent(component.getString(this));
-
-            Parameters frameworkParams = framework.createFrameworkParameters();
-            fillStandardParameters(frameworkParams);
-
-            Parameters params = new Parameters();
-            params.setAll(Referids.getReferids(referids, this));
-            for (Map.Entry<String, ?> entry : extraParameters) {
-                params.set(entry.getKey(), entry.getValue());
-            }
-
-            return framework.getUrl(origPage, comp, params, frameworkParams);
+        if (component != Attribute.NULL) {
+            return component.getString(this) + "/" + origPage;
         } else {
-            if (component != Attribute.NULL) {
-                return component.getString(this) + "/" + origPage;
-            } else {
-                return origPage;
-            }
+            return origPage;
         }
+    }
+
+    protected String getFrameworkUrl() throws JspTagException {
+        Framework framework = MMBase.getMMBase().getFramework();
+        String origPage = page.getString(this);
+
+        ComponentRepository rep = ComponentRepository.getInstance();
+        Component comp = rep.getComponent(component.getString(this));
+
+        Parameters frameworkParams = framework.createFrameworkParameters();
+        fillStandardParameters(frameworkParams);
+
+        Parameters params = new Parameters();
+        params.setAll(Referids.getReferids(referids, this));
+        for (Map.Entry<String, ?> entry : extraParameters) {
+            params.set(entry.getKey(), entry.getValue());
+        }
+
+        return framework.getUrl(origPage, comp, params, frameworkParams);
     }
 
     /**
@@ -170,16 +167,11 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
      * @since MMBase-1.7
      */
     protected boolean doMakeRelative() {
-        Framework framework = MMBase.getMMBase().getFramework();
-        if (framework == null) {
-            if (makeRelative == null) {
-                String setting = pageContext.getServletContext().getInitParameter("mmbase.taglib.url.makerelative");
-                makeRelative = "true".equals(setting) ? Boolean.TRUE : Boolean.FALSE;
-            }
-            return makeRelative.booleanValue();
-        } else {
-            return framework.makeRelativeUrl();
+        if (makeRelative == null) {
+            String setting = pageContext.getServletContext().getInitParameter("mmbase.taglib.url.makerelative");
+            makeRelative = "true".equals(setting) ? Boolean.TRUE : Boolean.FALSE;
         }
+        return makeRelative.booleanValue();
     }
 
     protected boolean addContext() {
@@ -228,6 +220,11 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
      * Returns url with the extra parameters (of referids and sub-param-tags).
      */
     protected String getUrl(boolean writeamp, boolean encodeUrl) throws JspTagException {
+        Framework framework = MMBase.getMMBase().getFramework();
+        if (framework != null) {
+            return getFrameworkUrl();
+        }
+
         StringWriter w = new StringWriter();
         StringBuffer show = w.getBuffer();
 
@@ -265,9 +262,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
                 }
                 show.append(page);
             }
-
         }
-
 
         // url is now complete up to query string, which we are to construct now
 
