@@ -21,7 +21,7 @@ import org.mmbase.module.core.MMBase;
  * Renders a certain block of an mmbase component
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentTag.java,v 1.3 2006-10-14 09:21:55 johannes Exp $
+ * @version $Id: ComponentTag.java,v 1.4 2006-10-14 09:46:16 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentTag extends CloudReferrerTag implements ParamHandler {
@@ -72,13 +72,14 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler {
             Renderer renderer = block.getRenderer(type);
             Parameters params = renderer.createParameters();
             fillStandardParameters(params);
+            params.setAutoCasting(true);
             params.setAll(Referids.getReferids(referids, this));
 
-            Parameters params2 = MMBase.getMMBase().getFramework().createUrlParameters();
-            fillStandardParameters(params2);
-            params2.set("params", extraParameters);
+            Parameters frameworkParams = MMBase.getMMBase().getFramework().createFrameworkParameters();
+            fillStandardParameters(frameworkParams);
+            frameworkParams.setAutoCasting(true);
 
-            renderer.render(params, params2, pageContext.getOut());
+            renderer.render(params, frameworkParams, pageContext.getOut());
         } catch (java.io.IOException ioe) {
             throw new TaglibException(ioe);
         }
