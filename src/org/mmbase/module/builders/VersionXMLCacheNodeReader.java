@@ -16,8 +16,8 @@ import java.util.*;
 import javax.xml.parsers.DocumentBuilder;
 
 import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.util.XMLBasicReader;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.xml.DocumentReader;
 
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
@@ -26,7 +26,7 @@ import org.xml.sax.SAXException;
  * @javadoc
  * @deprecated is this (cacheversionfile) used? seems obsolete now
  * @author Daniel Ockeloen
- * @version $Id: VersionXMLCacheNodeReader.java,v 1.6 2005-11-23 15:45:13 pierre Exp $
+ * @version $Id: VersionXMLCacheNodeReader.java,v 1.7 2006-10-14 09:16:50 nklasens Exp $
  */
 public class VersionXMLCacheNodeReader {
 
@@ -36,7 +36,7 @@ public class VersionXMLCacheNodeReader {
 
     public VersionXMLCacheNodeReader(String filename) {
         try {
-            DocumentBuilder db = XMLBasicReader.getDocumentBuilder(false);
+            DocumentBuilder db = DocumentReader.getDocumentBuilder(false);
             File file = new File(filename);
             if (!file.exists()) {
                 log.error("no cache version " + filename + " found)");
