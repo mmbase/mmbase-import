@@ -40,14 +40,14 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.30 2006-10-11 18:06:10 michiel Exp $
+ * @version $Id: DocumentReader.java,v 1.31 2006-10-14 09:16:21 nklasens Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
     private static Logger log = Logging.getLoggerInstance(DocumentReader.class);
 
     /** for the document builder of javax.xml. */
-    private static Map documentBuilders = Collections.synchronizedMap(new HashMap());
+    private static Map<String, DocumentBuilder> documentBuilders = Collections.synchronizedMap(new HashMap<String, DocumentBuilder>());
 
     protected static final String FILENOTFOUND = "FILENOTFOUND://";
 
@@ -248,7 +248,7 @@ public class DocumentReader  {
         validating = validate(validating);
         if (handler == null && resolver == null) {
             String key = "" + validating + xsd;
-            DocumentBuilder db = (DocumentBuilder) documentBuilders.get(key);
+            DocumentBuilder db = documentBuilders.get(key);
             if (db == null) {
                 db = createDocumentBuilder(validating, xsd, null, null);
                 documentBuilders.put(key, db);
@@ -548,7 +548,7 @@ public class DocumentReader  {
      * @todo XXXX MM: Since we have changed the return type from 1.7 to 1.8 anyway, why don't we return a List then?
      */
     public Iterator<Element> getChildElements(Element e, String tag) {
-        List<Element> v = new ArrayList();
+        List<Element> v = new ArrayList<Element>();
         boolean ignoretag = tag.equals("*");
         if (e!=null) {
             NodeList nl = e.getChildNodes();
@@ -562,21 +562,6 @@ public class DocumentReader  {
             }
         }
         return v.iterator();
-    }
-
-    public static void main(String[] argv) throws Exception {
-        if (argv.length == 0) {
-            System.out.println("Usage: java -Dmmbase.config=<config dir> org.mmbase.util.xml.DocumentReader <path to xml>");
-            System.out.println(" The mmbase config dir is used to resolve XSD's (in config/xmlns) and DTD's (in config/dtd).");
-            System.out.println(" Errors will be reported if the XML is invalid");
-
-            return;
-        }
-        Document d = org.mmbase.util.ResourceLoader.getDocument(new java.io.File(argv[0]).toURL(), true, null);
-        /*
-        DocumentReader doc =  new DocumentReader(d);
-        System.out.println(XMLWriter.write(toDocument(doc.getRootElement()), true, false));
-        */
     }
 
 }
