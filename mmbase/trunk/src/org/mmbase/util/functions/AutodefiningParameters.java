@@ -16,7 +16,7 @@ package org.mmbase.util.functions;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: AutodefiningParameters.java,v 1.9 2005-10-18 21:51:30 michiel Exp $
+ * @version $Id: AutodefiningParameters.java,v 1.10 2006-10-14 13:27:02 michiel Exp $
  * @see Parameter
  */
 
@@ -27,23 +27,60 @@ public class AutodefiningParameters extends Parameters {
     public AutodefiningParameters() {
         super(new Parameter[0]);
     }
-    /**
-     * Sets the value of an argument, and grows the definition array.
-     */
-    public Parameters set(String arg, Object value) {
+
+    public boolean containsParameter(Parameter param) {
+        return true;
+    }
+
+    protected int define(Parameter<?> param) {
         Parameter[] newDef = new Parameter[definition.length + 1];
         for (int i = 0; i < definition.length; i++) {
             newDef[i] = definition[i];
         }
-        newDef[newDef.length - 1] = new Parameter(arg, value == null ? Object.class : value.getClass());
-
+        newDef[newDef.length - 1] = param;
         definition = newDef;
-        backing.put(arg, value);
-        return this;
+        toIndex++;
+        return definition.length - 1;
+    }
+    protected int define(String param) {
+        return define(new Parameter(param, Object.class));
+    }
+    public int indexOfParameter(Parameter<?> parameter) {
+        int index = super.indexOfParameter(parameter);
+        if (index == -1) {
+            return define(parameter);
+        } else {
+            return index;
+        }
     }
 
-    public boolean containsParameter(Parameter param) {
-        return true;
+    public int indexOfParameter(String parameterName) {
+        int index = super.indexOfParameter(parameterName);
+        if (index == -1) {
+            return define(parameterName);
+        } else {
+            return index;
+        }
+    }
+
+    public static void main(String[] args) {
+        AutodefiningParameters pars = new AutodefiningParameters();
+        for (String arg : args) {
+            pars.setIfDefined(arg, "");
+        }
+        
+        System.out.println("" + pars);
+        for (String arg : args) {
+            System.out.println(" " + arg + ": " + pars.indexOfParameter(arg));
+        }
+        for (String arg : args) {
+            pars.set(arg, "X");
+        }
+
+        for (String arg : args) {
+            System.out.println(" " + arg + ": " + pars.indexOfParameter(arg));
+        }
+        
     }
 
 }

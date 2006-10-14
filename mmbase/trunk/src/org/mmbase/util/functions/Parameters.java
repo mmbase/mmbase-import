@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.30 2006-09-27 20:42:21 michiel Exp $
+ * @version $Id: Parameters.java,v 1.31 2006-10-14 13:27:02 michiel Exp $
  * @see Parameter
  * @see #Parameters(Parameter[])
  */
@@ -56,7 +56,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
     protected boolean autoCasting = false;
 
     private int fromIndex = 0;
-    private int toIndex;
+    protected int toIndex;
 
     /**
      * Constructor, taking an Parameter[] array argument.
@@ -100,7 +100,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
      * @throws NullPointerException if definition is null
      * @see #Parameters(Parameter[])
      */
-    public Parameters(Parameter<?>[] def, Collection values) {
+    public Parameters(Parameter<?>[] def, Collection<?> values) {
         this(def);
         setAll(values);
     }
@@ -406,7 +406,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
     /**
      * Gives the arguments back as a (unmodifiable) map.
      */
-    public Map<String, ?> toMap() {
+    public Map<String, ? extends Object> toMap() {
         return Collections.unmodifiableMap(backing);
     }
 
