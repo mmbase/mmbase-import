@@ -12,12 +12,13 @@ package org.mmbase.bridge.jsp.taglib.pageflow;
 import java.util.*;
 import java.io.*;
 import java.net.*;
-import org.mmbase.framework.Framework;
+import org.mmbase.framework.*;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.util.Referids;
+import org.mmbase.util.functions.*;
 
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
@@ -37,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.82 2006-10-13 23:25:46 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.83 2006-10-14 09:21:55 johannes Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
@@ -112,7 +113,12 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
                 cloud = getCloudVar();
             } catch (Exception e) {
             }
-            return framework.getUrl(origPage, component.getString(this), cloud, getPageContext(), extraParameters);
+            ComponentRepository rep = ComponentRepository.getInstance();
+            Component comp = rep.getComponent(component.getString(this));
+
+            Parameters params = framework.createUrlParameters();
+            fillStandardParameters(params);
+            return framework.getUrl(origPage, comp, params);
         } else {
             if (component != Attribute.NULL) {
                 return component.getString(this) + "/" + origPage;
