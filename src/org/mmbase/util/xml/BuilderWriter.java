@@ -16,8 +16,6 @@ import org.mmbase.core.CoreField;
 import org.mmbase.core.util.Fields;
 import org.mmbase.datatypes.DataType;
 import org.mmbase.util.XMLEntityResolver;
-import org.mmbase.util.DynamicDate;
-import org.mmbase.util.logging.*;
 
 import org.w3c.dom.*;
 
@@ -33,11 +31,9 @@ import org.w3c.dom.*;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: BuilderWriter.java,v 1.23 2006-04-10 15:29:43 michiel Exp $
+ * @version $Id: BuilderWriter.java,v 1.24 2006-10-14 14:35:40 nklasens Exp $
  */
 public class BuilderWriter extends DocumentWriter  {
-
-    private static final Logger log = Logging.getLoggerInstance(BuilderWriter.class);
 
     /**
      * If true, the builder will expand when writing.

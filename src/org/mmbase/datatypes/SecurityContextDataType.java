@@ -12,13 +12,12 @@ package org.mmbase.datatypes;
 import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.util.*;
-import org.mmbase.util.logging.*;
 
 /**
  * A StringDataType with all security contexts strings as possible value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: SecurityContextDataType.java,v 1.5 2006-09-07 12:48:23 pierre Exp $
+ * @version $Id: SecurityContextDataType.java,v 1.6 2006-10-14 14:35:39 nklasens Exp $
  * @since MMBase-1.8
  */
 public class SecurityContextDataType extends StringDataType {

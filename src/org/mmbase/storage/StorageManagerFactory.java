@@ -17,7 +17,6 @@ import org.mmbase.storage.util.*;
 
 import org.mmbase.module.core.*;
 import org.mmbase.clustering.ChangeManager;
-import org.mmbase.clustering.MMBaseChangeInterface;
 import org.mmbase.core.CoreField;
 
 import org.mmbase.util.ResourceLoader;
@@ -35,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.28 2006-09-25 14:08:45 michiel Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.29 2006-10-14 14:35:39 nklasens Exp $
  */
 public abstract class StorageManagerFactory<SM extends StorageManager> {
 
@@ -540,7 +539,7 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
                 key = key.toLowerCase();
             }
             if (disallowedFields.containsKey(key)) {
-                String newid = (String)disallowedFields.get(key);
+                String newid = disallowedFields.get(key);
                 if (newid == null) {
                     if (hasOption(Attributes.ENFORCE_DISALLOWED_FIELDS)) {
                         throw new StorageException("The name of the field '"+((CoreField)mmobject).getName()+"' is disallowed, and no alternate value is available.");

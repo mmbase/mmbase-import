@@ -17,7 +17,6 @@ import org.mmbase.util.*;
 import org.mmbase.util.images.*;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
-import org.mmbase.util.xml.UtilReader;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -33,7 +32,7 @@ import javax.servlet.ServletContext;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.118 2006-10-07 15:45:21 michiel Exp $
+ * @version $Id: Images.java,v 1.119 2006-10-14 14:35:39 nklasens Exp $
  */
 public class Images extends AbstractImages {
 
@@ -229,7 +228,7 @@ public class Images extends AbstractImages {
 
         String ses = getSession(args, num);
         StringBuffer servlet = new StringBuffer();
-        HttpServletRequest req = (HttpServletRequest) args.get(Parameter.REQUEST);
+        HttpServletRequest req = args.get(Parameter.REQUEST);
         if (req != null) {
             ServletContext sx = MMBaseContext.getServletContext();
             if (sx != null && "true".equals(sx.getInitParameter("mmbase.taglib.url.makerelative"))) {
@@ -251,7 +250,7 @@ public class Images extends AbstractImages {
 
         servlet.append(node.getNumber());
         String image;
-        HttpServletResponse res = (HttpServletResponse) args.get(Parameter.RESPONSE);
+        HttpServletResponse res = args.get(Parameter.RESPONSE);
         if (res != null) {
             imageThumb = res.encodeURL(imageThumb);
             image      = res.encodeURL(servlet.toString());

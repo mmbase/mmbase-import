@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.functions;
 
-import java.util.*;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logger;
@@ -19,7 +18,7 @@ import org.mmbase.util.logging.Logging;
  * The gui function of MMObjectBuilder
  *
  * @author Michiel Meeuwissen
- * @version $Id: GuiFunction.java,v 1.3 2006-09-25 14:00:01 michiel Exp $
+ * @version $Id: GuiFunction.java,v 1.4 2006-10-14 14:35:39 nklasens Exp $
  * @since MMBase-1.9
  */
 public class GuiFunction extends NodeFunction<String> {
@@ -28,11 +27,11 @@ public class GuiFunction extends NodeFunction<String> {
     public static final Parameter[] PARAMETERS = {
         Parameter.FIELD,
         Parameter.LANGUAGE,
-        new Parameter("session", String.class),
+        new Parameter<String>("session", String.class),
         Parameter.RESPONSE,
         Parameter.REQUEST,
         Parameter.LOCALE,
-        new Parameter("stringvalue", String.class)
+        new Parameter<String>("stringvalue", String.class)
         //new Parameter("length", Integer.class),
         //       field, language, session, response, request) Returns a (XHTML) gui representation of the node (if field is '') or of a certain field. It can take into consideration a http session variable name with loging information and a language");
 
@@ -46,7 +45,7 @@ public class GuiFunction extends NodeFunction<String> {
         if (log.isDebugEnabled()) {
             log.debug("GUI of builder with " + parameters);
         }
-        String fieldName = (String) parameters.get(Parameter.FIELD);
+        String fieldName = parameters.get(Parameter.FIELD);
         if (fieldName != null && (! fieldName.equals("")) && parameters.get("stringvalue") == null) {
             if (node.getSize(fieldName) < 2000) {
                 parameters.set("stringvalue", node.getStringValue(fieldName));

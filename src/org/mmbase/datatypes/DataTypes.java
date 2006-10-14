@@ -16,7 +16,6 @@ import javax.xml.parsers.DocumentBuilder;
 import org.xml.sax.InputSource;
 import org.w3c.dom.*;
 
-import org.mmbase.bridge.Node;
 import org.mmbase.bridge.Field;
 import org.mmbase.core.util.Fields;
 import org.mmbase.datatypes.util.xml.*;
@@ -40,7 +39,7 @@ import org.mmbase.util.logging.*;
  *</p>
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.21 2006-05-16 21:11:05 michiel Exp $
+ * @version $Id: DataTypes.java,v 1.22 2006-10-14 14:35:39 nklasens Exp $
  */
 
 public class DataTypes {

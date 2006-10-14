@@ -13,7 +13,6 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.*;
-import org.mmbase.module.core.*;
 
 import java.io.*;
 import java.util.*;
@@ -37,7 +36,7 @@ import java.net.*;
  * @author Dani&euml;l Ockeloen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: FunctionSets.java,v 1.23 2006-09-12 18:38:10 michiel Exp $
+ * @version $Id: FunctionSets.java,v 1.24 2006-10-14 14:35:39 nklasens Exp $
  */
 public class FunctionSets {
 
@@ -49,7 +48,7 @@ public class FunctionSets {
 
     private static final Logger log = Logging.getLoggerInstance(FunctionSets.class);
 
-    private static final Map<String, FunctionSet> functionSets = new HashMap();
+    private static final Map<String, FunctionSet> functionSets = new HashMap<String, FunctionSet>();
 
     static {
         XMLEntityResolver.registerPublicID(PUBLIC_ID_FUNCTIONSET_1_0,  DTD_FUNCTIONSET_1_0,  FunctionSets.class);

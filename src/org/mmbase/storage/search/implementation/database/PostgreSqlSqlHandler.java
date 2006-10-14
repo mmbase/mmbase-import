@@ -12,8 +12,6 @@ package org.mmbase.storage.search.implementation.database;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
 import java.util.*;
-import javax.sql.DataSource;
-import java.sql.*;
 import org.mmbase.module.corebuilders.RelDef;
 import org.mmbase.module.core.MMObjectNode;
 
@@ -38,7 +36,7 @@ import org.mmbase.module.core.MMObjectNode;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: PostgreSqlSqlHandler.java,v 1.27 2006-10-02 11:32:25 michiel Exp $
+ * @version $Id: PostgreSqlSqlHandler.java,v 1.28 2006-10-14 14:35:39 nklasens Exp $
  * @since MMBase-1.7
  */
 public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -265,7 +263,7 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
                 int destinationBuilder = mmbase.getBuilder(rs.getNext().getTableName()).getObjectType();
                 int directionality = rs.getDirectionality();
                 RelDef reldef = mmbase.getRelDef();
-                Set tables = new HashSet();
+                Set<String> tables = new HashSet<String>();
                 Iterator allowed = mmbase.getTypeRel().getAllowedRelations(sourceBuilder, destinationBuilder, 0, directionality).iterator();
                 while(allowed.hasNext()) {
                     MMObjectNode typeRel = (MMObjectNode) allowed.next();
@@ -279,7 +277,7 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
                     sb.append(" ONLY ").
                         append(mmbase.getBaseName()).
                         append('_').
-                        append((String) tables.iterator().next());
+                        append( tables.iterator().next());
                     appendTableAlias(sb, step);
                     return;
                 } else {

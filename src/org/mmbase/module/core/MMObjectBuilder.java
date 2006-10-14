@@ -31,7 +31,6 @@ import org.mmbase.core.util.StorageConnector;
 import org.mmbase.datatypes.DataType;
 
 import org.mmbase.storage.StorageException;
-import org.mmbase.storage.StorageNotFoundException;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 
@@ -62,7 +61,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.398 2006-10-13 14:22:27 nklasens Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.399 2006-10-14 14:35:38 nklasens Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -1333,8 +1332,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @since MMBase-1.8
      */
     public String getGUIIndicator(MMObjectNode node, Parameters pars) {
-        Locale locale = (Locale) pars.get(Parameter.LOCALE);
-        String language = (String) pars.get(Parameter.LANGUAGE);
+        Locale locale = pars.get(Parameter.LOCALE);
+        String language = pars.get(Parameter.LANGUAGE);
         if (locale == null) {
             if (language != null) {
                 locale = new Locale(language, "");
@@ -1383,7 +1382,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                 if (dataType instanceof org.mmbase.datatypes.BinaryDataType) {
                     returnValue = node.isNull(field) ? "" : "" + node.getSize(field) + " byte";
                 } else {
-                    returnValue = dataType.getEnumerationValue(locale, (Cloud) pars.get(Parameter.CLOUD), (Node) pars.get(Parameter.NODE), fdef, node.getStringValue(field));
+                    returnValue = dataType.getEnumerationValue(locale, pars.get(Parameter.CLOUD), pars.get(Parameter.NODE), fdef, node.getStringValue(field));
                 }
             } else {
                 returnValue = null;

@@ -10,12 +10,9 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.implementation;
 import org.mmbase.bridge.*;
-import org.mmbase.util.Casting;
 import org.mmbase.bridge.util.MapNode;
 import org.mmbase.module.core.VirtualNode;
 import org.mmbase.module.core.MMObjectNode;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import java.util.*;
 
 /**
@@ -23,7 +20,7 @@ import java.util.*;
  * represents the result of a `function' on a node and it (therefore) is a unmodifiable.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: BasicFunctionValue.java,v 1.19 2005-12-29 22:03:13 michiel Exp $
+ * @version $Id: BasicFunctionValue.java,v 1.20 2006-10-14 14:35:38 nklasens Exp $
  * @since   MMBase-1.6
  */
 public class BasicFunctionValue extends org.mmbase.bridge.util.AbstractFieldValue {

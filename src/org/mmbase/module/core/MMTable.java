@@ -11,9 +11,7 @@ package org.mmbase.module.core;
 
 import java.util.*;
 
-import org.mmbase.core.*;
 import org.mmbase.core.util.StorageConnector;
-import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
@@ -30,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadoc)
- * @version $Id: MMTable.java,v 1.24 2006-09-11 11:08:00 michiel Exp $
+ * @version $Id: MMTable.java,v 1.25 2006-10-14 14:35:38 nklasens Exp $
  */
 public abstract class MMTable extends FunctionProvider {
 
@@ -50,9 +48,6 @@ public abstract class MMTable extends FunctionProvider {
      * Maximum number of nodes to return on a query (-1 means no limit, and is also the default)
      */
     protected int maxNodesFromQuery = -1;
-
-    // indices for the storage layer
-    private Map indices = new HashMap();
 
     // link to the storage layer
     protected StorageConnector storageConnector;
@@ -217,13 +212,13 @@ public abstract class MMTable extends FunctionProvider {
      * @return List containing real nodes, directly from this Builders
      * @since MMBase-1.6.2
      */
-    protected List<MMObjectNode> getNodes(Collection virtuals)  {
+    protected List<MMObjectNode> getNodes(Collection<MMObjectNode> virtuals)  {
         List<MMObjectNode> result;
         try {
             result = storageConnector.getNodes(virtuals);
         } catch (SearchQueryException sqe) {
             log.error(sqe.getMessage() + Logging.stackTrace(sqe));
-            result = new ArrayList();
+            result = new ArrayList<MMObjectNode>();
         }
         return result;
     }

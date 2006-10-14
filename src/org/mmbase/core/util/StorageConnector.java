@@ -15,7 +15,6 @@ import org.mmbase.bridge.Field;
 import org.mmbase.bridge.NodeQuery;
 import org.mmbase.cache.*;
 import org.mmbase.core.CoreField;
-import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.core.*;
 import org.mmbase.storage.*;
 import org.mmbase.storage.util.Index;
@@ -32,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: StorageConnector.java,v 1.15 2006-09-25 17:15:45 michiel Exp $
+ * @version $Id: StorageConnector.java,v 1.16 2006-10-14 14:35:39 nklasens Exp $
  */
 public class StorageConnector {
 
@@ -378,7 +377,7 @@ public class StorageConnector {
 
         // Wrap in modifiable query, replace fields by one count field.
         ModifiableQuery modifiedQuery = new ModifiableQuery(query);
-        Step step = (Step) query.getSteps().get(0);
+        Step step = query.getSteps().get(0);
         CoreField numberField = builder.getField(MMObjectBuilder.FIELD_NUMBER);
         AggregatedField field = new BasicAggregatedField(step, numberField, AggregatedField.AGGREGATION_TYPE_COUNT);
         List<StepField> newFields = new ArrayList(1);
@@ -656,14 +655,14 @@ public class StorageConnector {
 
             // insert all the corrected nodes that were found into the list..
             for(int i = 0; i < results.size(); i++) {
-                MMObjectNode current = (MMObjectNode) results.get(i);
+                MMObjectNode current = results.get(i);
                 Integer number = Integer.valueOf(current.getNumber());
                 if(convertedNodes.containsKey(number)) {
                     // converting the node...
                     results.set(i, convertedNodes.get(number));
                     convertedCount ++;
                 }
-                current = (MMObjectNode) results.get(i);
+                current = results.get(i);
                 if(current.getNumber() < 0) {
                     // never happened to me, and never should!
                     throw new RuntimeException("invalid node found, node number was invalid:" + current.getNumber());

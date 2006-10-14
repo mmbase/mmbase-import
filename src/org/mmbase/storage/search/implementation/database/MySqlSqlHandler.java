@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search.implementation.database;
 
-import java.util.*;
 import org.mmbase.bridge.Field;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
@@ -35,7 +34,7 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: MySqlSqlHandler.java,v 1.15 2005-12-28 16:07:49 michiel Exp $
+ * @version $Id: MySqlSqlHandler.java,v 1.16 2006-10-14 14:35:39 nklasens Exp $
  * @since MMBase-1.7
  */
 public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
