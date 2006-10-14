@@ -18,7 +18,7 @@ import org.mmbase.util.functions.Parameters;
  * A Framework is the place where components are displayed in. 
  *
  * @author Johannes Verelst
- * @version $Id: Framework.java,v 1.6 2006-10-14 13:43:01 michiel Exp $
+ * @version $Id: Framework.java,v 1.7 2006-10-14 15:44:01 johannes Exp $
  * @since MMBase-1.9
  */
 public interface Framework {
@@ -36,8 +36,19 @@ public interface Framework {
      * @param blockParameters The parameters that were set on the block using referids and sub-&lt;mm:param&gt; tags
      * @param frameworkParameters The parameters that are required by the framework, for instance containing the 'request' and 'cloud'.
      */
-
     public String getUrl(String page, Component component, Parameters blockParameters, Parameters frameworkParameters, boolean escapeAmps, boolean encodeURL);
+
+    /** 
+     * Return a modified URL for a given page. This method is called from within the mm:url
+     * tag.
+     * @param page The page to create an URL for
+     * @param component The component to use to search the file for
+     * @param cloud The cloud to use to find objects if required
+     * @param pageContext The current page context, can be used to get the request, response, etc.
+     * @param blockParameters The parameters that were set on the block using referids and sub-&lt;mm:param&gt; tags
+     * @param frameworkParameters The parameters that are required by the framework, for instance containing the 'request' and 'cloud'.
+     */
+    public String getUrl(String page, Renderer renderer, Component component, Parameters blockParameters, Parameters frameworkParameters, boolean escapeAmps, boolean encodeURL);
 
     /**
      * Return a Parameters object that needs to be passed on to the getUrl() call. The following parameters will be auto-filled
