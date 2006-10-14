@@ -18,7 +18,7 @@ import org.mmbase.util.functions.Parameters;
  * A Framework is the place where components are displayed in. 
  *
  * @author Johannes Verelst
- * @version $Id: Framework.java,v 1.2 2006-10-13 23:00:03 johannes Exp $
+ * @version $Id: Framework.java,v 1.3 2006-10-14 09:43:59 johannes Exp $
  * @since MMBase-1.9
  */
 public interface Framework {
@@ -33,15 +33,21 @@ public interface Framework {
      * @param component The component to use to search the file for
      * @param cloud The cloud to use to find objects if required
      * @param pageContext The current page context, can be used to get the request, response, etc.
-     * @param params The content of the mm:param tags that were passed. Note that the implementing class may add entries to this list
+     * @param blockParameters The parameters that were set on the block using referids and sub-&lt;mm:param&gt; tags
+     * @param frameworkParameters The parameters that are required by the framework, for instance containing the 'request' and 'cloud'.
      */
-    public String getUrl(String page, Component component, Parameters parameters);
+    public String getUrl(String page, Component component, Parameters blockParameters, Parameters frameworkParameters);
 
-    //Cloud cloud, PageContext pageContext, List<Entry> params) throws javax.servlet.jsp.JspTagException;
-
-
-    public Parameters createUrlParameters(); 
-
+    /**
+     * Return a Parameters object that needs to be passed on to the getUrl() call. The following parameters will be auto-filled
+     * if they are returned here:
+     * <ul>
+     *  <li>Parameter.CLOUD</li>
+     *  <li>Parameter.REQUEST</li>
+     *  <li>Parameter.RESPONSE</li>
+     * </ul>
+     */
+    public Parameters createFrameworkParameters(); 
 
     /** 
      * Return whether or not the 'getUrl' method will return a relative URL (relative to the

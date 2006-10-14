@@ -21,7 +21,7 @@ import org.mmbase.util.GenericResponseWrapper;
  * A Renderer implmentation based on a jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JspRenderer.java,v 1.2 2006-10-13 23:00:03 johannes Exp $
+ * @version $Id: JspRenderer.java,v 1.3 2006-10-14 09:43:59 johannes Exp $
  * @since MMBase-1.9
  */
 public class JspRenderer extends AbstractRenderer {
@@ -45,17 +45,17 @@ public class JspRenderer extends AbstractRenderer {
         return new Parameters(ESSENTIAL, getSpecificParameters()); 
     }
 
-    public void render(Parameters parameters, Parameters urlparameters, Writer w) throws IOException {
+    public void render(Parameters blockParameters, Parameters frameworkParameters, Writer w) throws IOException {
         try {
-            HttpServletResponse response = parameters.get(Parameter.RESPONSE);
+            HttpServletResponse response = blockParameters.get(Parameter.RESPONSE);
             GenericResponseWrapper respw = new GenericResponseWrapper(response);
-            HttpServletRequest request = parameters.get(Parameter.REQUEST);
-            for (Map.Entry<String, ?> entry : parameters.toMap().entrySet()) {
+            HttpServletRequest request = blockParameters.get(Parameter.REQUEST);
+            for (Map.Entry<String, ?> entry : blockParameters.toMap().entrySet()) {
                 request.setAttribute(entry.getKey(), entry.getValue());
             }
 
             Framework framework = MMBase.getMMBase().getFramework();
-            String url = framework.getUrl(path, parent.getComponent(), urlparameters);
+            String url = framework.getUrl(path, parent.getComponent(), blockParameters, frameworkParameters);
 
             RequestDispatcher requestDispatcher = request.getRequestDispatcher(url);
             requestDispatcher.include(request, respw);

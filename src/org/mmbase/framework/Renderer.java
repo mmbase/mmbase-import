@@ -15,7 +15,7 @@ import org.mmbase.util.functions.Parameters;
  * A View is a thing that can actually be rendered, and can be returned by a {@link Component}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Renderer.java,v 1.4 2006-10-14 09:03:52 johannes Exp $
+ * @version $Id: Renderer.java,v 1.5 2006-10-14 09:43:59 johannes Exp $
  * @since MMBase-1.9
  */
 public interface Renderer {
@@ -46,5 +46,5 @@ public interface Renderer {
      * Renders to a writer. In case of e.g. a JSPView, the parameters must also contain
      * the Http Servlet response and request, besided specific parameters for this component.
      */
-    void render(Parameters parameters, Parameters urlparameters, Writer w) throws IOException;
+    void render(Parameters blockParameters, Parameters frameworkParameters, Writer w) throws IOException;
 }
