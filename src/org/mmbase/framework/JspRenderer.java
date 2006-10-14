@@ -21,12 +21,10 @@ import org.mmbase.util.GenericResponseWrapper;
  * A Renderer implmentation based on a jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JspRenderer.java,v 1.3 2006-10-14 09:43:59 johannes Exp $
+ * @version $Id: JspRenderer.java,v 1.4 2006-10-14 09:46:48 michiel Exp $
  * @since MMBase-1.9
  */
 public class JspRenderer extends AbstractRenderer {
-
-    public static Parameter ESSENTIAL = new Parameter.Wrapper(Parameter.RESPONSE, Parameter.REQUEST);
 
     protected final String path;
     private final Block parent;
@@ -40,9 +38,8 @@ public class JspRenderer extends AbstractRenderer {
     public Block getBlock() {
         return parent;
     }
-
-    public Parameters createParameters() {
-        return new Parameters(ESSENTIAL, getSpecificParameters()); 
+    protected Parameter[] getEssentialParameters() {
+        return new Parameter[] {Parameter.RESPONSE, Parameter.REQUEST};
     }
 
     public void render(Parameters blockParameters, Parameters frameworkParameters, Writer w) throws IOException {

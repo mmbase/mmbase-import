@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * components, and may be requested several blocks.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicComponent.java,v 1.7 2006-10-13 23:00:03 johannes Exp $
+ * @version $Id: BasicComponent.java,v 1.8 2006-10-14 09:46:48 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicComponent implements Component {
@@ -77,36 +77,36 @@ public class BasicComponent implements Component {
     }
 
     private Renderer getRenderer(String name, Element block, Block b) {
-        NodeList heads = block.getElementsByTagName(name);
-        log.debug("Number of [" + name + "] elements: " + heads.getLength());
-        if (heads.getLength() == 1) {
-            Element head = (Element) heads.item(0);
-            String jsp = head.getAttribute("jsp");
-            String cls = head.getAttribute("class");
-            log.trace("jsp: [" + jsp + "], class: [" + cls + "]");
-            if (jsp != null && !"".equals(jsp)) {
-                return new JspRenderer(name.toUpperCase(), jsp, b);
-            } else if (cls != null && !"".equals(cls)) {
-                try {
-                    return (Renderer)Class.forName(cls).newInstance();
-                } catch (Exception e) {
-                    log.error(e);
-                }
-            } else {
-                log.error("JSP and CLASS are null!");
+        NodeList renderElements = block.getElementsByTagName(name);
+        log.debug("Number of [" + name + "] elements: " + renderElements.getLength());
+        if (renderElements.getLength() < 1) return null;
+        Element renderElement = (Element) renderElements.item(0);
+        String jsp = renderElement.getAttribute("jsp");
+        String cls = renderElement.getAttribute("class");
+        log.trace("jsp: [" + jsp + "], class: [" + cls + "]");
+        Renderer renderer;
+        if (jsp != null && !"".equals(jsp)) {
+            renderer = new JspRenderer(name.toUpperCase(), jsp, b);
+        } else if (cls != null && !"".equals(cls)) {
+            try {
+                renderer = (Renderer)Class.forName(cls).newInstance();
+            } catch (Exception e) {
+                log.error(e);
+                return null;
             }
         } else {
-            log.trace("No [" + name + "] element found");
+            log.error("JSP and CLASS are null!");
+            return null;
         }
-        return null;
+        return renderer;
     }
 
     private Processor getProcessor(String name, Element block) {
-        NodeList heads = block.getElementsByTagName(name);
-        if (heads.getLength() == 1) {
-            Element head = (Element) heads.item(0);
-            String jsp = head.getAttribute("jsp");
-            String cls = head.getAttribute("class");
+        NodeList processorElements = block.getElementsByTagName(name);
+        if (processorElements.getLength() == 1) {
+            Element processorElement = (Element) processorElements.item(0);
+            String jsp = processorElement.getAttribute("jsp");
+            String cls = processorElement.getAttribute("class");
             if (jsp != null && !"".equals(jsp)) {
                 return new JspProcessor(jsp);
             } else if (cls != null && !"".equals(cls)) {

@@ -13,16 +13,17 @@ import java.util.*;
 import org.mmbase.util.functions.*;
 
 /**
- * Abstract view implementation which implements getType and the specific parameters.
+ * Abstract view implementation which implements getType and creates the 'essential' parameters
+ * request and response.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractRenderer.java,v 1.1 2006-10-13 12:20:50 johannes Exp $
+ * @version $Id: AbstractRenderer.java,v 1.2 2006-10-14 09:46:48 michiel Exp $
  * @since MMBase-1.9
  */
 abstract public class AbstractRenderer implements Renderer {
 
     protected final Type type;
-    protected final List<Parameter> specific = new ArrayList<Parameter>();
+    protected Parameter.Wrapper specific;
 
     public AbstractRenderer(String t) {
         type = Type.valueOf(t);
@@ -32,14 +33,43 @@ abstract public class AbstractRenderer implements Renderer {
         return type;
     }
 
-    public void addParameters(Parameter... params) {
+    void addParameters(Parameter<?>... params) {
+        List<Parameter> help = new ArrayList<Parameter>();
+        if (specific != null) {
+            help.addAll(Arrays.asList(specific.getArguments()));
+        }
         for (Parameter p : params) {
-            specific.add(p);
+            help.add(p);
+        }
+        specific = new Parameter.Wrapper(help.toArray(Parameter.EMPTY));
+    }
+
+
+    public Parameters createParameters() {
+        if (specific == null) {
+            return new AutodefiningParameters();
+        } else {
+            return new Parameters(specific, new Parameter.Wrapper(getEssentialParameters()));
         }
     }
 
+    protected Parameter[] getEssentialParameters() {
+        return Parameter.EMPTY;
+    }
+
+    /**
+     *<p>
+     * Returns a Parameter.Wrapper with 'specific' parameters. This can be <code>null</code> which
+     * means 'undefined', and no parameter checking will be done, and every parameter will be
+     * acceptable.
+     * </p>
+     * <p>
+     * An actual implementation of Renderer
+     *
+     */
+
     protected Parameter.Wrapper getSpecificParameters() {
-        return new Parameter.Wrapper(specific.toArray(Parameter.EMPTY)); 
+        return null;
     }
 
 
