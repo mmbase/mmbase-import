@@ -20,7 +20,7 @@ import org.mmbase.util.transformers.CharTransformer;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.2 2006-10-14 16:08:06 johannes Exp $
+ * @version $Id: BasicFramework.java,v 1.3 2006-10-14 16:51:03 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -30,12 +30,11 @@ public class BasicFramework implements Framework {
         return "BASIC";
     }
 
-
-    public String getUrl(String page, Component component, Parameters blockParameters, Parameters frameworkParameters, boolean writeamp, boolean encodeUrl) {
-        return getUrl(page, null, component, blockParameters, frameworkParameters, writeamp, encodeUrl);
+    public StringBuffer getUrl(String page, Component component, Parameters blockParameters, Parameters frameworkParameters, boolean writeamp) {
+        return getUrl(page, null, component, blockParameters, frameworkParameters, writeamp);
     }
 
-    public String getUrl(String page, Renderer renderer, Component component, Parameters blockParameters, Parameters frameworkParameters, boolean writeamp, boolean encodeUrl) {
+    public StringBuffer getUrl(String page, Renderer renderer, Component component, Parameters blockParameters, Parameters frameworkParameters, boolean writeamp) {
         StringBuffer show = new StringBuffer();
         Writer w = new StringBufferWriter(show);
         if (writeamp) {
@@ -61,13 +60,13 @@ public class BasicFramework implements Framework {
             paramEscaper.transform(new StringReader(Casting.toString(entry.getValue())), w);
             connector = amp;
         }
-        if (encodeUrl) {
-            javax.servlet.http.HttpServletResponse response = frameworkParameters.get(Parameter.RESPONSE);
-            return response.encodeURL(show.toString());
-        } else {
-            return show.toString();
-        }
+        return show;
     }
+
+    public Block getBlock(Component component, String blockName) {
+        return component.getBlock(blockName);
+    }
+
     public Parameters createFrameworkParameters() {
         return new Parameters(Parameter.RESPONSE, Parameter.REQUEST);
     }
