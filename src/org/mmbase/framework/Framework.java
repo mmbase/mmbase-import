@@ -18,7 +18,7 @@ import org.mmbase.util.functions.Parameters;
  * A Framework is the place where components are displayed in. 
  *
  * @author Johannes Verelst
- * @version $Id: Framework.java,v 1.4 2006-10-14 09:46:48 michiel Exp $
+ * @version $Id: Framework.java,v 1.5 2006-10-14 11:50:02 johannes Exp $
  * @since MMBase-1.9
  */
 public interface Framework {
@@ -49,12 +49,4 @@ public interface Framework {
      * </ul>
      */
     public Parameters createFrameworkParameters(); 
-
-    /** 
-     * Return whether or not the 'getUrl' method will return a relative URL (relative to the
-     * current request) or not. The default behavior of mm:url is to return a 'true' here,
-     * but if you want to implement behavior like the mm:leaffile/mm:treefile tags, you have
-     * to return false here.
-     */
-    public boolean makeRelativeUrl();
 }
