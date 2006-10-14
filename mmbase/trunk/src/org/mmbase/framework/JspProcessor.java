@@ -20,7 +20,7 @@ import org.mmbase.util.GenericResponseWrapper;
  * A Processor implmentation based on a jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JspProcessor.java,v 1.1 2006-10-13 12:20:50 johannes Exp $
+ * @version $Id: JspProcessor.java,v 1.2 2006-10-14 16:08:22 johannes Exp $
  * @since MMBase-1.9
  */
 public class JspProcessor extends AbstractProcessor {
@@ -33,6 +33,11 @@ public class JspProcessor extends AbstractProcessor {
         super();
         path = p;
     }
+
+    public String getPath() {
+        return path;
+    }
+
 
     public Parameters createParameters() {
         return new Parameters(ESSENTIAL, getSpecificParameters()); 
