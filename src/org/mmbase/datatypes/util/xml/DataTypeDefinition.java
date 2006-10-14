@@ -16,15 +16,11 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.mmbase.bridge.Field;
 import org.mmbase.datatypes.processors.*;
-import org.mmbase.bridge.util.Queries;
 import org.mmbase.datatypes.*;
 import org.mmbase.core.util.Fields;
 import org.mmbase.util.*;
-import org.mmbase.util.functions.Parameters;
-import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.xml.XMLWriter;
 import org.mmbase.util.logging.*;
-import org.mmbase.util.transformers.*;
 
 /**
  * This utility class contains methods to instantiate the right DataType instance. It is used by DataTypeReader.
@@ -34,7 +30,7 @@ import org.mmbase.util.transformers.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.55 2006-04-10 15:15:01 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.56 2006-10-14 14:35:39 nklasens Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -95,7 +91,7 @@ public class DataTypeDefinition {
                             dt = (BasicDataType) constructor.newInstance(new Object[] { id });
                             if (baseDataType != null) {
                                 // should check class here, perhaps
-                                dt.inherit((BasicDataType) baseDataType);
+                                dt.inherit(baseDataType);
                             }
                         } catch (Exception e) {
                             log.error(e);

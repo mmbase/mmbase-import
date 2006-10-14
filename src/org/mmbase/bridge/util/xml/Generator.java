@@ -11,8 +11,6 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.util.xml;
 
 import org.w3c.dom.*;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import org.mmbase.bridge.*;
 
@@ -25,7 +23,7 @@ import org.mmbase.util.xml.XMLWriter;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.42 2006-10-06 17:08:27 michiel Exp $
+ * @version $Id: Generator.java,v 1.43 2006-10-14 14:35:39 nklasens Exp $
  * @since  MMBase-1.6
  */
 public class Generator {

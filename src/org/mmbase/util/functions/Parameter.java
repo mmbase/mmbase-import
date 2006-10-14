@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util.functions;
 
-import org.mmbase.bridge.*;
 import org.mmbase.core.AbstractDescriptor;
 import org.mmbase.datatypes.*;
 import org.mmbase.util.*;
@@ -28,7 +27,7 @@ import org.w3c.dom.*;
  * @author Daniel Ockeloen (MMFunctionParam)
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.36 2006-10-14 09:47:23 michiel Exp $
+ * @version $Id: Parameter.java,v 1.37 2006-10-14 14:35:39 nklasens Exp $
  * @see Parameters
  */
 
@@ -58,7 +57,7 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
 
 
 
-    public static final Parameter<String> FIELD    = new Parameter("field",    String.class);
+    public static final Parameter<String> FIELD    = new Parameter<String>("field",    String.class);
 
     /**
      * An empty Parameter array.
@@ -165,7 +164,7 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
     public Parameter(String name, DataType<C> dataType, boolean copy) {
         super(name);
         if (copy) {
-            this.dataType = (DataType)dataType.clone(name);
+            this.dataType = dataType.clone(name);
         } else {
             this.dataType = dataType;
         }

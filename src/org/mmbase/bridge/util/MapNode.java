@@ -11,27 +11,20 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.util;
 
 import java.util.*;
-import java.io.InputStream;
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.implementation.BasicField;
 import org.mmbase.util.*;
-import org.mmbase.util.logging.*;
 import org.mmbase.util.functions.*;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * A bridge Node based on a Map. It can come in handy sometimes to be able to present any Map as an
  * MMBase Node. E.g. because then it can be accessed in MMBase taglib using mm:field tags.
 
  * @author  Michiel Meeuwissen
- * @version $Id: MapNode.java,v 1.8 2006-09-13 17:47:49 michiel Exp $
+ * @version $Id: MapNode.java,v 1.9 2006-10-14 14:35:38 nklasens Exp $
  * @since   MMBase-1.8
  */
 
 public class MapNode extends AbstractNode implements Node {
-
-    private static final Logger log = Logging.getLoggerInstance(MapNode.class);
 
     /**
      * This is normally, but not always, a VirtualBuilder. It is not for some builders which have
@@ -39,16 +32,16 @@ public class MapNode extends AbstractNode implements Node {
      */
     final protected NodeManager nodeManager;
     final protected Map values;
-    final protected Map<String, Long> sizes = new HashMap();
+    final protected Map<String, Long> sizes = new HashMap<String, Long>();
     final protected Map<String, Object> wrapper;
-    final protected Map<String, Object> originals = new HashMap();
+    final protected Map<String, Object> originals = new HashMap<String, Object>();
 
     /**
      * This constructor explicitely specifies the node manager of the Node. This is used for {#getNodeManager} and {#getCloud}.
      */
     public MapNode(Map<String, ?> v, NodeManager nm) {
         values = v;
-        wrapper = new LinkMap(values, originals, LinkMap.Changes.CONSERVE);
+        wrapper = new LinkMap<String, Object>(values, originals, LinkMap.Changes.CONSERVE);
         nodeManager = nm;
     }
     /**

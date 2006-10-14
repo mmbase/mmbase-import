@@ -9,16 +9,13 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.functions;
 
-import org.mmbase.cache.Cache;
-
 import java.lang.reflect.*;
-import java.util.*;
 import org.mmbase.util.logging.*;
 
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: BeanFunctionProvider.java,v 1.1 2006-09-12 18:38:51 michiel Exp $
+ * @version $Id: BeanFunctionProvider.java,v 1.2 2006-10-14 14:35:39 nklasens Exp $
  * @see org.mmbase.util.functions.BeanFunction
  * @since MMBase-1.9
  */

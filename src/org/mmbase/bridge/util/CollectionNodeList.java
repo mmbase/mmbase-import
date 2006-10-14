@@ -11,7 +11,6 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.util;
 
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.implementation.BasicList;
 import java.util.*;
 import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
@@ -22,7 +21,7 @@ import org.mmbase.util.logging.*;
  * one.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CollectionNodeList.java,v 1.6 2006-10-05 10:58:34 michiel Exp $
+ * @version $Id: CollectionNodeList.java,v 1.7 2006-10-14 14:35:38 nklasens Exp $
  * @since MMBase-1.8
  */
 public class CollectionNodeList<E extends Node> extends AbstractBridgeList<E> implements NodeList<E> {

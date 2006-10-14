@@ -9,20 +9,16 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search.implementation.database;
 
-import java.util.*;
 import org.mmbase.bridge.Field;
 import org.mmbase.storage.search.*;
-import org.mmbase.util.logging.*;
 
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: MSSqlSqlHandler.java,v 1.1 2005-12-28 16:09:05 michiel Exp $
+ * @version $Id: MSSqlSqlHandler.java,v 1.2 2006-10-14 14:35:39 nklasens Exp $
  * @since MMBase-1.8
  */
 public class MSSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
-
-    private static final Logger log = Logging.getLoggerInstance(MSSqlSqlHandler.class);
 
     /**
      * Don't add UPPER'ed field also unuppered, because MSSql seems to choke in that.

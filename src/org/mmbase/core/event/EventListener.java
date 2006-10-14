@@ -7,8 +7,6 @@
  */
 package org.mmbase.core.event;
 
-import java.util.Properties;
-
 /**
  * This interface is the common type for custom EventListener interfaces. to
  * create such a interface extend this one and add a method that will receive an

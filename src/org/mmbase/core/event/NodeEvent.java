@@ -7,11 +7,9 @@
  */
 package org.mmbase.core.event;
 
-import java.io.*;
 import java.util.*;
 
 import org.mmbase.util.HashCodeUtil;
-import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -23,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: NodeEvent.java,v 1.28 2006-09-11 12:17:22 michiel Exp $
+ * @version $Id: NodeEvent.java,v 1.29 2006-10-14 14:35:38 nklasens Exp $
  */
 public class NodeEvent extends Event {
 

@@ -14,7 +14,6 @@ import java.util.*;
 import org.mmbase.datatypes.DataType;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.datatypes.DataTypes;
-import org.mmbase.core.CoreField;
 import org.mmbase.core.util.Fields;
 import org.mmbase.storage.util.Index;
 
@@ -25,7 +24,7 @@ import org.mmbase.storage.util.Index;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: FieldDefs.java,v 1.56 2005-12-10 13:10:08 michiel Exp $
+ * @version $Id: FieldDefs.java,v 1.57 2006-10-14 14:35:39 nklasens Exp $
  * @see    org.mmbase.bridge.Field
  * @deprecated use {@link CoreField}
  */
@@ -72,7 +71,7 @@ public class FieldDefs extends org.mmbase.core.CoreField {
      * @param state the state of the field (persistent, virtual, etc.)
      */
     public FieldDefs(String guiName, String guiType, int searchPos, int listPos, String name, int type, int guiPos, int state) {
-        super(name, type, TYPE_UNKNOWN, state, (DataType)DataTypes.getDataTypeInstance(guiType,type));
+        super(name, type, TYPE_UNKNOWN, state, DataTypes.getDataTypeInstance(guiType,type));
         setGUIName(guiName);
         setSearchPosition(searchPos);
         setEditPosition(guiPos);

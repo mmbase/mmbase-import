@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security.classsecurity;
 
-import java.io.*;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.net.URL;
@@ -30,7 +29,7 @@ import org.xml.sax.InputSource;
  * its configuration file, contains this configuration.
  *
  * @author   Michiel Meeuwissen
- * @version  $Id: ClassAuthentication.java,v 1.13 2006-07-14 08:16:49 michiel Exp $
+ * @version  $Id: ClassAuthentication.java,v 1.14 2006-10-14 14:35:39 nklasens Exp $
  * @see      ClassAuthenticationWrapper
  * @since    MMBase-1.8
  */

@@ -12,7 +12,6 @@ package org.mmbase.datatypes;
 import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.datatypes.processors.Processor;
-import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -20,7 +19,7 @@ import org.mmbase.util.logging.*;
  * only sense as a field of a node).
  *
  * @author Michiel Meeuwissen
- * @version $Id: ConfirmPasswordDataType.java,v 1.10 2006-07-17 07:32:29 pierre Exp $
+ * @version $Id: ConfirmPasswordDataType.java,v 1.11 2006-10-14 14:35:39 nklasens Exp $
  * @since MMBase-1.8
  */
 public class ConfirmPasswordDataType extends StringDataType {
