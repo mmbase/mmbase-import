@@ -15,15 +15,16 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.functions.*;
 import org.mmbase.framework.*;
+import org.mmbase.module.core.MMBase;
 
 /**
  * Renders a certain block of an mmbase component
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentTag.java,v 1.2 2006-10-13 22:15:50 michiel Exp $
+ * @version $Id: ComponentTag.java,v 1.3 2006-10-14 09:21:55 johannes Exp $
  * @since MMBase-1.9
  */
-public class ComponentTag extends ContextReferrerTag implements ParamHandler {
+public class ComponentTag extends CloudReferrerTag implements ParamHandler {
     private static final Logger log = Logging.getLoggerInstance(ComponentTag.class);
     private Attribute name   = Attribute.NULL;
     private Attribute render   = Attribute.NULL;
@@ -72,7 +73,12 @@ public class ComponentTag extends ContextReferrerTag implements ParamHandler {
             Parameters params = renderer.createParameters();
             fillStandardParameters(params);
             params.setAll(Referids.getReferids(referids, this));
-            renderer.render(params, pageContext.getOut());
+
+            Parameters params2 = MMBase.getMMBase().getFramework().createUrlParameters();
+            fillStandardParameters(params2);
+            params2.set("params", extraParameters);
+
+            renderer.render(params, params2, pageContext.getOut());
         } catch (java.io.IOException ioe) {
             throw new TaglibException(ioe);
         }
