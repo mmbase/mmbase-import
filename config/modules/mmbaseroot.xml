@@ -191,11 +191,11 @@
 
 
   <!--
-      MMBase in 'development mode' is more strict. Most noticably this has an influence on 
-      whether you can request the value of non-existing fields without an exception.
+  MMBase in 'development mode' is more strict. Most noticably this has an influence on 
+  whether you can request the value of non-existing fields without an exception.
 
-      Wikll fall back to 'false' if the property is missing altogether. The behaviour is more like
-      in MMBase < 1.8 then.
+  Will fall back to 'false' if the property is missing altogether. The behaviour is more like
+  in MMBase < 1.8 then.
   -->
   <property name="development">true</property>
 
@@ -206,6 +206,21 @@
 
   -->
   <!-- property name="xmlbuilderwriterdir">/home/guest/schooltv/tmpbul/</property -->
+
+  <!--
+  name="framework"
+  
+  An MMBase framework provides the context in which components are rendered.
+  
+  A framework is an implementation of org.mmbase.framework.FrameWork.
+  By implementing the method FrameWork.getUrl() the behaviour of <mm:url />
+  and <mm:include /> can be changed. This can be used to make changes to the layout and 
+  the includes used in the page, based on the parameters passed to a page.
+  
+  See the documentation on Component Framework (in the backend developers section)
+  for more information on this topic.
+  -->
+  <property name="framework">org.mmbase.framework.BasicFrameWork</property>
 
 
   </properties>
