@@ -51,7 +51,16 @@
   </xsd:element>
 
   <xsd:complexType name="ViewType">
-    <xsd:attribute name="class" />
-    <xsd:attribute name="jsp" />
+    <xsd:sequence>
+      <xsd:element name="param" minOccurs="0" maxOccurs="unbounded">
+        <xsd:complexType>
+          <xsd:attribute name="name" />
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+    <xsd:choice>
+      <xsd:attribute name="class" />
+      <xsd:attribute name="jsp" />
+    </xsd:choice>
   </xsd:complexType>
 </xsd:schema>
