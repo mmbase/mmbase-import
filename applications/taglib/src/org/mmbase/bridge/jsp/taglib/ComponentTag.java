@@ -21,7 +21,7 @@ import org.mmbase.module.core.MMBase;
  * Renders a certain block of an mmbase component
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentTag.java,v 1.5 2006-10-14 10:00:06 michiel Exp $
+ * @version $Id: ComponentTag.java,v 1.6 2006-10-14 10:03:21 johannes Exp $
  * @since MMBase-1.9
  */
 public class ComponentTag extends CloudReferrerTag implements ParamHandler {
@@ -68,25 +68,24 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler {
                 throw new TaglibException("There is no block " + blockName.getString(this) + " in component " + component + ". Known blocks are " + component.getBlocks());
             }
             String rt = render.getString(this);
-            Renderer.Type type = rt == null || "".equals(rt) ? Renderer.Type.BODY : Renderer.Type.valueOf(rt);
+            Renderer.Type type = rt == null || "".equals(rt) ? Renderer.Type.BODY : Renderer.Type.valueOf(rt.toUpperCase());
             Renderer renderer = block.getRenderer(type);
+
             Parameters params = renderer.createParameters();
             fillStandardParameters(params);
             params.setAutoCasting(true);
             params.setAll(Referids.getReferids(referids, this));
             for (Map.Entry<String, Object> entry : extraParameters) {
-                params.setAll(entry.getKey(), entry.getValue());
+                params.set(entry.getKey(), entry.getValue());
             }
 
             Parameters frameworkParams = MMBase.getMMBase().getFramework().createFrameworkParameters();
             fillStandardParameters(frameworkParams);
             frameworkParams.setAutoCasting(true);
-
             renderer.render(params, frameworkParams, pageContext.getOut());
         } catch (java.io.IOException ioe) {
             throw new TaglibException(ioe);
         }
         return SKIP_BODY;
     }
-
 }
