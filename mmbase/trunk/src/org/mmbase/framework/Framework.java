@@ -18,7 +18,7 @@ import org.mmbase.util.functions.Parameters;
  * A Framework is the place where components are displayed in. 
  *
  * @author Johannes Verelst
- * @version $Id: Framework.java,v 1.5 2006-10-14 11:50:02 johannes Exp $
+ * @version $Id: Framework.java,v 1.6 2006-10-14 13:43:01 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Framework {
@@ -37,7 +37,7 @@ public interface Framework {
      * @param frameworkParameters The parameters that are required by the framework, for instance containing the 'request' and 'cloud'.
      */
 
-    public String getUrl(String page, Component component, Parameters blockParameters, Parameters frameworkParameters);
+    public String getUrl(String page, Component component, Parameters blockParameters, Parameters frameworkParameters, boolean escapeAmps, boolean encodeURL);
 
     /**
      * Return a Parameters object that needs to be passed on to the getUrl() call. The following parameters will be auto-filled
