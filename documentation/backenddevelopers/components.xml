@@ -53,14 +53,14 @@
   <section id="introduction">
     <title>Introduction</title>
 
-    <para>The component framework offers component based developing within
-    MMBase. Components can be used accessed from jsp-pages directly or be used
-    in a portlet engine / portal service. For use in jsp-pages MMBase offers
-    tags in the MMBase taglig which put the compenents into action and render
-    their content into your page. When using a portlet engine and portal
-    service, like the CMSContainer, this engin takes care of analyzing the
-    client request, make the selected portlets execute and render their
-    content and return the resulting page to the client.</para>
+    <para>The component framework adds component based developing to MMBase.
+    Components can be accessed from jsp-pages directly or be used in a portlet
+    engine / portal service. For use in jsp-pages MMBase offers tags in the
+    MMBase taglig which put the components into action and render their
+    content into your page. When using a portlet engine and portal service,
+    like the CMSContainer, this engine takes care of analyzing the client
+    request, make the selected portlets execute and render their content and
+    return the resulting page to the client.</para>
   </section>
 
   <section id="hello_world">
@@ -68,13 +68,13 @@
 
     <para>Lets start with a simple example. The following configuration file
     for component "core" defines one block "components". This block has one
-    view that renders the body.</para>
+    renderer that can be used in the html <body /> tag.</para>
 
     <note>
       <para>The configuration files for the mmbase core are stored in the
       \mmbase\config\ directory. This file can therefore be found in
-      \mmbase\config\components\core.xml. TODO: the files for the MMBase core
-      should be moved to \mmbase\core\</para>
+      /mmbase/config/components/core.xml. TODO: the files for the MMBase core
+      should be moved to /mmbase/core/</para>
     </note>
 
     <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
@@ -115,8 +115,8 @@
     <title>Configuration of a component</title>
 
     <para>The core of a component is the component.xml. It specifies the
-    blocks in the component and the views rendered within each block. The
-    following example provides the ecards.xml for an ecard component.</para>
+    blocks in the component and the renderes within each block. The following
+    example provides the ecards.xml for an ecard component.</para>
 
     <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;component
@@ -128,63 +128,80 @@
                         http://www.mmbase.org/xmlns/component.xsd"&gt;
   &lt;description&gt;Ecards component&lt;/description&gt;
   &lt;block name="home" mimetype="text/html"&gt;
+    &lt;process jsp="ecards_init.jsp" /&gt;
     &lt;head jsp="ecards_head.jsp" /&gt;
     &lt;body jsp="ecards.jsp" /&gt;
-    &lt;process class="org.mmbase.ecards.Process" /&gt;
   &lt;/block&gt;
   &lt;block name="select" mimetype="text/html"&gt;
     &lt;head jsp="ecards_head.jsp" /&gt;
     &lt;body jsp="ecards_selectecard.jsp" /&gt;
-    &lt;process class="org.mmbase.ecards.Process" /&gt;
   &lt;/block&gt;
   &lt;block name="done" mimetype="text/html"&gt;
+    &lt;process class="org.mmbase.ecards.Send" /&gt;
     &lt;head jsp="ecards_head.jsp" /&gt;
     &lt;body jsp="ecards_done.jsp" /&gt;
-    &lt;process class="org.mmbase.ecards.Process" /&gt;
   &lt;/block&gt;
 &lt;/component&gt;</programlisting>
 
-    <para>In the above example some views are rendered by jsp-includes, other
-    views are rendered by java classes. The information available to the jsp
-    files are the request parameters and session attributes. For the java
-    classes the information is available from HttpServletRequest request and
-    HttpServletResponse response. Btw. by using request.getSession() the
-    session in which the view is rendered can be accessed.</para>
+    <para>In the above example some renderes are jsp-includes, other are java
+    classes. The information available to the jsp files are the request
+    parameters, session attributes and the tags in which the &lt;mm:content
+    /&gt; tag is contained. For the java classes the information is available
+    from HttpServletRequest request and HttpServletResponse response. Btw. by
+    using request.getSession() the session in which the block is rendered can
+    be accessed.</para>
   </section>
 
   <section>
     <title>The &lt;mm:component /&gt; tag</title>
 
-    <para>In the "Hello World" example the following tag was used:</para>
-
-    <para>&lt;mm:component name="core" block="components" render="body"
-    /&gt;</para>
+    <para>This section provides an overview over the parameters and
+    functionality of the &lt;mm:content /&gt; tag.</para>
 
     <section>
       <title>defaults</title>
 
+      <para>In the "Hello World" example the following tag was used:</para>
+
+      <para>&lt;mm:component name="core" block="components" render="body"
+      /&gt;</para>
+
       <para>The default block can be specified by using the defaultblock
       attribute of the &lt;component /&gt; tag. In the "Hello World" example
       it is defaultblock="components". If no defaultblock is specified the
-      first block is considered to be the default block. The default view that
-      is rendered is body. By using the defaults the tag could be rewritten
-      to:</para>
+      first block is considered to be the default block. The default renderer
+      is body. By using the defaults the tag could be rewritten to:</para>
 
       <para>&lt;mm:component name="core" /&gt;</para>
 
-      <para>When a view for a block is not specified, rendering it will result
-      in nothing.</para>
+      <para>When renderer for a block is not specified, rendering the block
+      will return nothing.</para>
+    </section>
+
+    <section>
+      <title>render</title>
+
+      <para>The renderes that are supported in the present implementation are:
+      head, body, and process.</para>
+
+      <para>The process renderer of block is called implicitly, if the head or
+      the body of that block is called. The process renderer of block will (1)
+      only be executed once per calling page and (2) only be executed after
+      the first changes to this block.</para>
+
+      <para>The renderer for body with mimetype="text/html" should render a
+      div with class="TODO look at portlet css specification".</para>
     </section>
 
     <section>
       <title>mimetype</title>
 
-      <para>The mimetype can be used to indicate that the portlet is rendering
-      special file types like images, attachments, etc. In the example above
-      the we could have used mimetype="application/xhtml+xml". Where Firefox
-      interpretes this filetype correctly and will check the validity of the
-      page, the present versions of Internet Explorer will prompt the user to
-      download this page. Because of this IE bug it is better to use
+      <para>The mimetype can be used to indicate that the component is
+      rendering special file types like images, attachments, etc. In the
+      example above we could have used mimetype="application/xhtml+xml". Where
+      Firefox interpretes this filetype correctly and will check the validity
+      of the page, the present versions of Internet Explorer will prompt the
+      user to download this page. Because of this IE bug it is better to use
       "text/html".</para>
     </section>
 
@@ -193,7 +210,7 @@
 
       <para>Here the jsp include "/mmbase/admin/components.jspx" is positioned
       absolute to the root of the webapplication. By setting the request
-      parameter doMakeRelative to true, the jsp include is can be positioned
+      parameter doMakeRelative to true, the jsp include can be positioned
       relative to the jsp page that contains the &lt;mm:component /&gt;
       tag.</para>
     </section>
@@ -205,20 +222,133 @@
       all the information from the containing tag is accessable to the
       &lt;mm:component /&gt; tag. For instance in the situation &lt;mm:cloud
       jspvar="cloud"&gt;&lt;mm:component name="core" /&gt;&lt;/mm:cloud&gt;
-      the components.jspx could contain &lt;%= cloud.getUser.getIdentifier()
+      the components.jspx could contain &lt;%= cloud.getUser().getIdentifier()
       %&gt;.</para>
 
       <para>When it is necessary to include extra parameters this can be done
-      by using the &lt;mm:param /&gt; tag. E.g. &lt;mm:component
-      name="my_game"&gt;&lt;mm:param name="level" value="novice"
-      /&gt;&lt;/mm:component&gt;</para>
+      by using the &lt;mm:param /&gt; tag.</para>
+
+      <para>Some examples:</para>
+
+      <programlisting>&lt;mm:component name="my_game"&gt;&lt;mm:param name="level" value="novice" /&gt;&lt;/mm:component&gt;</programlisting>
+
+      <programlisting>&lt;!-- this piece uses the poll component to show two polls --&gt;
+&lt;mm:node number="first_poll"&gt;&lt;mm:component name="poll"&gt;&lt;mm:node&gt;
+&lt;mm:node number="second_poll"&gt;&lt;mm:component name="poll"&gt;&lt;mm:node&gt;</programlisting>
     </section>
   </section>
 
   <section>
-    <title>Framework</title>
+    <title>Framework and changing the behavior of the &lt;mm:url /&gt; and
+    &lt;mm:include /&gt; tags</title>
 
-    <para>TODO</para>
+    <para>An MMBase framework provides the context in which components are
+    rendered. The present functionality of the framework is that it changes
+    the behavior of the &lt;mm:url /&gt; and the &lt;mm:include /&gt; tag. The
+    next section shows how frameworks are implemented. The "Hello Again!"
+    example gives an example of using a framework.</para>
+
+    <section>
+      <title>Framework</title>
+
+      <para>A framework is an implementation of
+      org.mmbase.framework.Framework. By implementing the method
+      Framework.getUrl() the behaviour of &lt;mm:url /&gt; and &lt;mm:include
+      /&gt; can be changed. This can be used to change the layout and the
+      includes used in the page, based on the parameters passed to that
+      page.</para>
+
+      <para>The framework that will be used for rendering the components an
+      MMBase instance is specified in mmbaseroot.xml, by using the
+      parameter</para>
+
+      <programlisting>&lt;property name="framework"&gt; ... &lt;/property&gt;</programlisting>
+
+      <para> If no framework is specified in mmbaseroot.xml the
+      org.mmbase.framework.BasicFramework will be used.</para>
+    </section>
+
+    <section>
+      <title>Hello again! and goodbye to &lt;mm:treeinclude /&gt; and
+      &lt;mm:treefile /&gt;</title>
+
+      <para>The use of the Framework functionality is shown by the following
+      "Hello again!" example.</para>
+
+      <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;component
+    xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd"
+    name="helloworld"&gt;
+  &lt;description&gt;Hello Again&lt;/description&gt;
+  &lt;block name="home" mimetype="text/html"&gt;
+    &lt;head jsp="hello_head.jsp" /&gt;
+  &lt;/block&gt;
+&lt;/component&gt;</programlisting>
+
+      <para>The jsp-include hello_head looks like:</para>
+
+      <programlisting>&lt;%@page language="java" contentType="text/html;charset=utf-8" session="false"%&gt;
+&lt;%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%&gt;
+&lt;mm:content type="text/html" language="en"&gt;
+&lt;mm:cloud&gt;
+   &lt;title&gt;Hello world&lt;/title&gt;
+   &lt;link rel="stylesheet" type="text/css" href="&lt;mm:url page="css/hello.css" component="hello" /&gt;" /&gt;
+&lt;/mm:cloud&gt;
+&lt;/mm:content&gt;</programlisting>
+
+      <para>The jsp-page that uses this component looks like:</para>
+
+      <programlisting>&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd"&gt;
+&lt;%@page import="org.mmbase.framework.*"%&gt;
+&lt;%@page import="org.mmbase.util.functions.*"%&gt;
+&lt;%@page language="java" contentType="text/html;charset=utf-8" session="false"%&gt;
+&lt;%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%&gt;
+&lt;mm:content type="text/html" language="en"&gt;
+&lt;mm:cloud&gt;
+&lt;mm:import externid="component" /&gt;
+&lt;head&gt;
+   &lt;mm:component name="hello" block="home" render="head" /&gt; ? parameters are case-insensitive ?
+&lt;/head&gt;
+&lt;body&gt;
+   &lt;h1&gt;Hello again!&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/mm:cloud&gt;
+&lt;/mm:content&gt;</programlisting>
+
+      <para>The call to &lt;mm:url page="css/hello.css" component="hello"
+      /&gt; is picked up by the getUrl() method of the framework which is
+      specified for this MMBase instance.</para>
+
+      <para>This method</para>
+
+      <programlisting>getUrl(String page, String component, Cloud cloud, PageContext pageContext, List params)</programlisting>
+
+      <para>could for instance call</para>
+
+      <programlisting>UrlResolver.findUrl(component + "/" + page, cloud, pageContext, params)</programlisting>
+
+      <para>In the findUrl() method the params can be used to select different
+      css-es for different portals. The code which is used for this looks
+      something like:</para>
+
+      <programlisting>Node portalNode = cloud.getNode((String)params.get("portal"));
+String finalpage = findUrl(page, portalNode, mapNode);
+if (finalpage != null) {
+   return File.separator + finalpage;
+}</programlisting>
+
+      <para>The example framework presented here thus provides the
+      functionality to use one set of templates, but have subsites with
+      different layouts and subsite-specific includes.</para>
+
+      <note>
+        <para>If you are familiar with &lt;mm:treeinclude /&gt; and
+        &lt;mm:treefile /&gt; you will probably already have recognized that
+        this framework replaces the functionality of both these tags.</para>
+      </note>
+    </section>
   </section>
 
   <section id="action_flow">
@@ -328,8 +458,7 @@
 
           <listitem>
             <para>Portal servlet retrieves all portlet instances on the page.
-            For each portlet (in MMBase ComponentPortlet which contains a
-            Component) instance</para>
+            For each portlet instance</para>
 
             <itemizedlist>
               <listitem>
@@ -343,8 +472,8 @@
               </listitem>
 
               <listitem>
-                <para>Portlet instances reads portlet mode and window state.
-                (in MMBase block; a block can render multiple views)</para>
+                <para>Portlet instances reads portlet mode and window
+                state.</para>
               </listitem>
 
               <listitem>
@@ -401,18 +530,21 @@
       it possible to use any MMBase component in the CMSContainer. This means
       that for the components the CMSContainer will use the components.xml
       from the component instead of the project.xml that is used for the
-      portlets in the CMSContainer</para>
+      portlets in the CMSContainer.</para>
     </section>
 
     <section>
       <title>Using portlets as components</title>
 
-      <para>The other way around the situation is more difficult. When
-      portlets depend on the objectmodel of the CMSContainer it is not
-      possible to rewrite them to MMBase components that can be reused outside
-      the CMSContainer. Only for portlets that do not depend explicitly on the
-      objectmodel of the CMSContainer it will be possible to rewrite them into
-      components.</para>
+      <para>The other way around the situation is more difficult. When a
+      portlet depends on the objectmodel of the CMSContainer it is not
+      possible to rewrite it to an MMBase component, that can be reused
+      outside the CMSContainer. Only portlets that do not depend explicitly on
+      the objectmodel of the CMSContainer can be rewriten into components. The
+      present version of the CMSContainer in the MMBase CVS does not contain
+      examples of such portlets. But don't get worried: portlets like
+      calender, playlist, etc. which are now being developed will be added as
+      components later.</para>
     </section>
   </section>
 
@@ -528,7 +660,7 @@
 
       <para>The CMSContainer contains several portlets, which all can be
       viewed as seperate applications. These portlets can be found in
-      \contributions\CMSContainer\cmsc. For the CMSC the Maven preferred way
+      /contributions/CMSContainer/cmsc. For the CMSC the Maven preferred way
       of storing files is used. The files of these portlets are stored in the
       following directories:</para>
 
@@ -635,7 +767,7 @@
       <title>Component Framework (MMBase 1.9)</title>
 
       <para>For the file structure of components the following principle will
-      be used. </para>
+      be used.</para>
 
       <itemizedlist>
         <listitem>
