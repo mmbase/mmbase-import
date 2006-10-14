@@ -28,7 +28,7 @@ import org.w3c.dom.*;
  * @author Daniel Ockeloen (MMFunctionParam)
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.35 2006-09-27 20:42:21 michiel Exp $
+ * @version $Id: Parameter.java,v 1.36 2006-10-14 09:47:23 michiel Exp $
  * @see Parameters
  */
 
@@ -177,7 +177,7 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
      * @param name the name of the parameter
      * @param type the class of the parameter's possible value
      */
-    public Parameter(String name, Class<C> type) {
+    public Parameter(String name, Class<? extends C> type) {
         super(name);
         dataType = DataTypes.createDataType(name, type);
     }
@@ -319,6 +319,13 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
         public Wrapper(Parameter... arg) {
             super("[ARRAYWRAPPER]", Parameter[].class);
             arguments = arg;
+        }
+
+        /**
+         * @since MMBase-1.9
+         */
+        public Parameter[] getArguments() {
+            return arguments;
         }
 
         // this toString makes the wrapping invisible in the toString of a wrapping Parameter[]
