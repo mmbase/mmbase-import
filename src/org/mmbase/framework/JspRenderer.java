@@ -16,15 +16,18 @@ import java.io.*;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.GenericResponseWrapper;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * A Renderer implmentation based on a jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JspRenderer.java,v 1.4 2006-10-14 09:46:48 michiel Exp $
+ * @version $Id: JspRenderer.java,v 1.5 2006-10-14 13:02:20 johannes Exp $
  * @since MMBase-1.9
  */
 public class JspRenderer extends AbstractRenderer {
+    private static final Logger log = Logging.getLoggerInstance(JspRenderer.class);
 
     protected final String path;
     private final Block parent;
@@ -38,6 +41,7 @@ public class JspRenderer extends AbstractRenderer {
     public Block getBlock() {
         return parent;
     }
+
     protected Parameter[] getEssentialParameters() {
         return new Parameter[] {Parameter.RESPONSE, Parameter.REQUEST};
     }
@@ -53,6 +57,11 @@ public class JspRenderer extends AbstractRenderer {
 
             Framework framework = MMBase.getMMBase().getFramework();
             String url = framework.getUrl(path, parent.getComponent(), blockParameters, frameworkParameters);
+            if (log.isDebugEnabled()) {
+                log.debug("Block parameters      : [" + blockParameters + "]");
+                log.debug("Framework parameters  : [" + blockParameters + "]");
+                log.debug("Framework returned url: [" + url + "]");
+            }
 
             RequestDispatcher requestDispatcher = request.getRequestDispatcher(url);
             requestDispatcher.include(request, respw);
