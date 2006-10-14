@@ -19,8 +19,6 @@
 
       <author>
         <firstname>Henk Hangyi</firstname>
-
-        <surname></surname>
       </author>
     </authorgroup>
 
@@ -55,20 +53,178 @@
   <section id="introduction">
     <title>Introduction</title>
 
-    <para>The component framework offers component based developing in MMBase.
-    Components can be used in combination with portlets. The portlet engine
-    and portal service then take care of analyzing the client request, make
-    the selected portlets execute and render their content and return the
-    resulting page to the client. However it is also possible to use the
-    functionality that a component offers directly from your JSP pages. MMBase
-    offers tags to put the compenents into action and render their content
-    into your page.</para>
+    <para>The component framework offers component based developing within
+    MMBase. Components can be used accessed from jsp-pages directly or be used
+    in a portlet engine / portal service. For use in jsp-pages MMBase offers
+    tags in the MMBase taglig which put the compenents into action and render
+    their content into your page. When using a portlet engine and portal
+    service, like the CMSContainer, this engin takes care of analyzing the
+    client request, make the selected portlets execute and render their
+    content and return the resulting page to the client.</para>
   </section>
 
-  <section id="architecture">
+  <section id="hello_world">
+    <title>Hello World!</title>
+
+    <para>Lets start with a simple example. The following configuration file
+    for component "core" defines one block "components". This block has one
+    view that renders the body.</para>
+
+    <note>
+      <para>The configuration files for the mmbase core are stored in the
+      \mmbase\config\ directory. This file can therefore be found in
+      \mmbase\config\components\core.xml. TODO: the files for the MMBase core
+      should be moved to \mmbase\core\</para>
+    </note>
+
+    <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;component
+    name="core"
+    defaultblock="components"
+    xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component
+                        http://www.mmbase.org/xmlns/component.xsd"&gt;
+  &lt;description xml:lang="en"&gt;MMBase core components&lt;/description&gt;
+  &lt;block name="components" mimetype="text/html"&gt;
+    &lt;body jsp="/mmbase/admin/components.jspx" /&gt;
+  &lt;/block&gt;
+&lt;/component&gt;</programlisting>
+
+    <para>The jsp-include "/mmbase/admin/components.jspx" could look
+    like:</para>
+
+    <programlisting>&lt;?xml version="1.0"?&gt;
+&lt;div xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:jsp="http://java.sun.com/JSP/Page" 
+      xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"&gt;
+  &lt;jsp:output doctype-root-element="html" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/&gt;
+  &lt;mm:content type="text/html" language="en" expires="0"&gt;
+    &lt;h1&gt;Components admin page&lt;/h1&gt;
+    Hello World!
+  &lt;/mm:content&gt;
+&lt;/div&gt;</programlisting>
+
+    <para>To render this, a jsp-page has to contain the following tag:</para>
+
+    <para>&lt;mm:component name="core" block="components" render="body"
+    /&gt;</para>
+  </section>
+
+  <section id="configuration">
+    <title>Configuration of a component</title>
+
+    <para>The core of a component is the component.xml. It specifies the
+    blocks in the component and the views rendered within each block. The
+    following example provides the ecards.xml for an ecard component.</para>
+
+    <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;component
+    name="ecards"
+    defaultblock="home"
+    xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component
+                        http://www.mmbase.org/xmlns/component.xsd"&gt;
+  &lt;description&gt;Ecards component&lt;/description&gt;
+  &lt;block name="home" mimetype="text/html"&gt;
+    &lt;head jsp="ecards_head.jsp" /&gt;
+    &lt;body jsp="ecards.jsp" /&gt;
+    &lt;process class="org.mmbase.ecards.Process" /&gt;
+  &lt;/block&gt;
+  &lt;block name="select" mimetype="text/html"&gt;
+    &lt;head jsp="ecards_head.jsp" /&gt;
+    &lt;body jsp="ecards_selectecard.jsp" /&gt;
+    &lt;process class="org.mmbase.ecards.Process" /&gt;
+  &lt;/block&gt;
+  &lt;block name="done" mimetype="text/html"&gt;
+    &lt;head jsp="ecards_head.jsp" /&gt;
+    &lt;body jsp="ecards_done.jsp" /&gt;
+    &lt;process class="org.mmbase.ecards.Process" /&gt;
+  &lt;/block&gt;
+&lt;/component&gt;</programlisting>
+
+    <para>In the above example some views are rendered by jsp-includes, other
+    views are rendered by java classes. The information available to the jsp
+    files are the request parameters and session attributes. For the java
+    classes the information is available from HttpServletRequest request and
+    HttpServletResponse response. Btw. by using request.getSession() the
+    session in which the view is rendered can be accessed.</para>
+  </section>
+
+  <section>
+    <title>The &lt;mm:component /&gt; tag</title>
+
+    <para>In the "Hello World" example the following tag was used:</para>
+
+    <para>&lt;mm:component name="core" block="components" render="body"
+    /&gt;</para>
+
+    <section>
+      <title>defaults</title>
+
+      <para>The default block can be specified by using the defaultblock
+      attribute of the &lt;component /&gt; tag. In the "Hello World" example
+      it is defaultblock="components". If no defaultblock is specified the
+      first block is considered to be the default block. The default view that
+      is rendered is body. By using the defaults the tag could be rewritten
+      to:</para>
+
+      <para>&lt;mm:component name="core" /&gt;</para>
+
+      <para>When a view for a block is not specified, rendering it will result
+      in nothing.</para>
+    </section>
+
+    <section>
+      <title>mimetype</title>
+
+      <para>The mimetype can be used to indicate that the portlet is rendering
+      special file types like images, attachments, etc. In the example above
+      the we could have used mimetype="application/xhtml+xml". Where Firefox
+      interpretes this filetype correctly and will check the validity of the
+      page, the present versions of Internet Explorer will prompt the user to
+      download this page. Because of this IE bug it is better to use
+      "text/html".</para>
+    </section>
+
+    <section>
+      <title>position of includes</title>
+
+      <para>Here the jsp include "/mmbase/admin/components.jspx" is positioned
+      absolute to the root of the webapplication. By setting the request
+      parameter doMakeRelative to true, the jsp include is can be positioned
+      relative to the jsp page that contains the &lt;mm:component /&gt;
+      tag.</para>
+    </section>
+
+    <section>
+      <title>parameters</title>
+
+      <para>When the &lt;mm:component /&gt; tag is contained in another tag
+      all the information from the containing tag is accessable to the
+      &lt;mm:component /&gt; tag. For instance in the situation &lt;mm:cloud
+      jspvar="cloud"&gt;&lt;mm:component name="core" /&gt;&lt;/mm:cloud&gt;
+      the components.jspx could contain &lt;%= cloud.getUser.getIdentifier()
+      %&gt;.</para>
+
+      <para>When it is necessary to include extra parameters this can be done
+      by using the &lt;mm:param /&gt; tag. E.g. &lt;mm:component
+      name="my_game"&gt;&lt;mm:param name="level" value="novice"
+      /&gt;&lt;/mm:component&gt;</para>
+    </section>
+  </section>
+
+  <section>
+    <title>Framework</title>
+
+    <para>TODO</para>
+  </section>
+
+  <section id="action_flow">
     <title>Action flow within the portlet engine / portal service</title>
 
-    <para>To get an idea of how a portlet enginge / portal service works this
+    <para>To give an idea of how a portlet engine / portal service works this
     sections gives an overview of the flow of actions that take place when a
     client calls an url:</para>
 
@@ -230,198 +386,148 @@
     related stuff.</para>
   </section>
 
-  <section>
-    <title>Hello World!</title>
+  <section id="cmsc">
+    <title>The CMSContainer: portlets and components</title>
 
-    <para>Lets start with a simple example. The following configuration file
-    for component "core" defines one block "components". This block has one
-    view that renders the body. </para>
+    <para>The CMSContainer is one of the MMBase contributions. For
+    documentation of the CMSContainer see the reference list at the end of
+    this document. This section addresses the relation between portlets and
+    components.</para>
 
-    <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;component
-    name="core"
-    defaultblock="components"
-    xmlns="http://www.mmbase.org/xmlns/component"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/component
-                        http://www.mmbase.org/xmlns/component.xsd"&gt;
-  &lt;description xml:lang="en"&gt;MMBase core components&lt;/description&gt;
-  &lt;block name="components" mimetype="text/html"&gt;
-    &lt;body jsp="/mmbase/admin/components.jspx" /&gt;
-  &lt;/block&gt;
-&lt;/component&gt;</programlisting>
+    <section>
+      <title>Using components as portlets</title>
 
-    <para>The jsp-include "/mmbase/admin/components.jspx" could look
-    like:</para>
+      <para>A wrapper class will be developed in the CMSContainer, which makes
+      it possible to use any MMBase component in the CMSContainer. This means
+      that for the components the CMSContainer will use the components.xml
+      from the component instead of the project.xml that is used for the
+      portlets in the CMSContainer</para>
+    </section>
 
-    <programlisting>&lt;?xml version="1.0"?&gt;
-&lt;div xmlns="http://www.w3.org/1999/xhtml" 
-      xmlns:jsp="http://java.sun.com/JSP/Page" 
-      xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"&gt;
-  &lt;jsp:output doctype-root-element="html" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/&gt;
-  &lt;mm:content type="text/html" language="en" expires="0"&gt;
-    &lt;h1&gt;Components admin page&lt;/h1&gt;
-    &lt;mm:cloud rank="administrator"&gt;
-       Hello World!
-    &lt;/mm:cloud&gt;
-  &lt;/mm:content&gt;
-&lt;/div&gt;</programlisting>
+    <section>
+      <title>Using portlets as components</title>
 
-    <para>To render this, a jsp-page has to contain the following tag:</para>
-
-    <para>&lt;mm:component name="core" block="components" render="body"
-    /&gt;</para>
-
-    <para>The default block can be specified by using the defaultblock
-    attribute of the &lt;component /&gt; tag. Here it is
-    defaultblock="components". If no defaultblock is specified the first block
-    is considered to be the default block. The default view that is rendered
-    is body. By using the defaults the tag could be rewritten to:</para>
-
-    <para>&lt;mm:component name="core" /&gt;</para>
-
-    <para>When a view for a block is not specified, rendering it will result
-    in nothing.</para>
-
-    <para>The mimetype can be used to indicate that the portlet is rendering
-    special file types like images, attachments, etc. In the example above the
-    we could have used mimetype="application/xhtml+xml". Where Firefox
-    interpretes this filetype correctly and will check the validity of the
-    page, the present versions of Internet Explorer will prompt the user to
-    download this page. Because of this IE bug it is better to use
-    "text/html".</para>
-
-    <para>Here the jsp include "/mmbase/admin/components.jspx" is positioned
-    absolute to the root of the webapplication. By setting the request
-    parameter doMakeRelative to true, the jsp include is can be positioned
-    relative to the jsp page that contains the &lt;mm:component /&gt;
-    tag.</para>
+      <para>The other way around the situation is more difficult. When
+      portlets depend on the objectmodel of the CMSContainer it is not
+      possible to rewrite them to MMBase components that can be reused outside
+      the CMSContainer. Only for portlets that do not depend explicitly on the
+      objectmodel of the CMSContainer it will be possible to rewrite them into
+      components.</para>
+    </section>
   </section>
 
-  <section id="basicconcepts">
-    <title>Configuration of a component</title>
+  <section id="location_of_files">
+    <title>Some notes on the location of files</title>
 
-    <para>The core of a component is the component.xml. It specifies the
-    blocks in the component and the views rendered within each block. The
-    following example provides the ecards.xml for an ecard component.</para>
+    <para>It is handy to use the same structure to store the files of a
+    component within an application or contribution. When it comes to
+    building, the exact location is of minor importance because the build
+    process can reshuffle directories to get them into the right location in
+    the build. Below follows an overview of how files are structured at the
+    moment.</para>
 
-    <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;component
-    name="ecards"
-    defaultblock="home"
-    xmlns="http://www.mmbase.org/xmlns/component"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/component
-                        http://www.mmbase.org/xmlns/component.xsd"&gt;
-  &lt;description&gt;Ecards component&lt;/description&gt;
-  &lt;block name="home" mimetype="text/html"&gt;
-    &lt;head jsp="ecards_head.jsp" /&gt;
-    &lt;body jsp="ecards.jsp" /&gt;
-    &lt;process class="org.mmbase.ecards.Process" /&gt;
-  &lt;/block&gt;
-  &lt;block name="select" mimetype="text/html"&gt;
-    &lt;head jsp="ecards_head.jsp" /&gt;
-    &lt;body jsp="ecards_selectecard.jsp" /&gt;
-    &lt;process class="org.mmbase.ecards.Process" /&gt;
-  &lt;/block&gt;
-  &lt;block name="done" mimetype="text/html"&gt;
-    &lt;head jsp="ecards_head.jsp" /&gt;
-    &lt;body jsp="ecards_done.jsp" /&gt;
-    &lt;process class="org.mmbase.ecards.Process" /&gt;
-  &lt;/block&gt;
-&lt;/component&gt;</programlisting>
+    <section>
+      <title>Applications and contributions</title>
 
-    <para>In the above example some views are rendered by jsp-includes, other
-    views are rendered by java classes. The information available to the jsp
-    files are the request parameters and session attributes. For the java
-    classes the information is available from HttpServletRequest request and
-    HttpServletResponse response. Btw. by using request.getSession() the
-    session in which the view is rendered can be accessed.</para>
-  </section>
+      <para>In the 1.8 MMBase applications and contributions files are stored
+      in the following directories:</para>
 
-  <section>
-    <title>Location of files in a component</title>
+      <itemizedlist>
+        <listitem>
+          <para>MyApplication</para>
 
-    <para>In the 1.8 MMBase applications and contributions files are stored in
-    the following directories:</para>
+          <itemizedlist>
+            <listitem>
+              <para>config</para>
 
-    <itemizedlist>
-      <listitem>
-        <para>config</para>
+              <itemizedlist>
+                <listitem>
+                  <para>applications</para>
 
-        <itemizedlist>
-          <listitem>
-            <para>applications</para>
+                  <itemizedlist>
+                    <listitem>
+                      <para>MyApplication.xml</para>
+                    </listitem>
 
-            <itemizedlist>
-              <listitem>
-                <para>App1</para>
-              </listitem>
+                    <listitem>
+                      <para>MyApplication</para>
 
-              <listitem>
-                <para>App2</para>
-              </listitem>
+                      <itemizedlist>
+                        <listitem>
+                          <para>builders</para>
+                        </listitem>
+                      </itemizedlist>
+                    </listitem>
+                  </itemizedlist>
+                </listitem>
 
-              <listitem>
-                <para>App3</para>
-              </listitem>
-            </itemizedlist>
-          </listitem>
+                <listitem>
+                  <para>builders</para>
+                </listitem>
 
-          <listitem>
-            <para>builders</para>
-          </listitem>
+                <listitem>
+                  <para>functions</para>
+                </listitem>
 
-          <listitem>
-            <para>functions</para>
-          </listitem>
+                <listitem>
+                  <para>log</para>
+                </listitem>
 
-          <listitem>
-            <para>modules</para>
-          </listitem>
+                <listitem>
+                  <para>modules</para>
+                </listitem>
 
-          <listitem>
-            <para>thememanager</para>
-          </listitem>
-        </itemizedlist>
-      </listitem>
+                <listitem>
+                  <para>security</para>
+                </listitem>
 
-      <listitem>
-        <para>documentation</para>
-      </listitem>
+                <listitem>
+                  <para>thememanager</para>
+                </listitem>
+              </itemizedlist>
+            </listitem>
 
-      <listitem>
-        <para>packaging: what to do this?</para>
-      </listitem>
+            <listitem>
+              <para>documentation</para>
+            </listitem>
 
-      <listitem>
-        <para>templates</para>
-      </listitem>
+            <listitem>
+              <para>packaging: what to do this?</para>
+            </listitem>
 
-      <listitem>
-        <para>src</para>
-      </listitem>
+            <listitem>
+              <para>templates</para>
+            </listitem>
 
-      <listitem>
-        <para>META-INF</para>
-      </listitem>
+            <listitem>
+              <para>src</para>
+            </listitem>
 
-      <listitem>
-        <para>WEB-INF</para>
-      </listitem>
+            <listitem>
+              <para>META-INF</para>
+            </listitem>
 
-      <listitem>
-        <para>readme.txt</para>
-      </listitem>
+            <listitem>
+              <para>WEB-INF</para>
+            </listitem>
 
-      <listitem>
-        <para>build.xml</para>
-      </listitem>
-    </itemizedlist>
+            <listitem>
+              <para>readme.txt</para>
+            </listitem>
 
-    <note>
+            <listitem>
+              <para>build.xml</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>The CMSContainer</title>
+
       <para>The CMSContainer contains several portlets, which all can be
-      viewed as seperate application. These portlets can be found in
+      viewed as seperate applications. These portlets can be found in
       \contributions\CMSContainer\cmsc. For the CMSC the Maven preferred way
       of storing files is used. The files of these portlets are stored in the
       following directories:</para>
@@ -432,7 +538,7 @@
         </listitem>
 
         <listitem>
-          <para>resources</para>
+          <para>resources: resource bundles and property files</para>
         </listitem>
 
         <listitem>
@@ -457,70 +563,213 @@
           <para>project.xml</para>
         </listitem>
       </itemizedlist>
-    </note>
+    </section>
 
-    <para>For components the following setup of the config file will be used.
-    The location of the files is the same as in the present
-    applications/contributions. </para>
+    <section>
+      <title>Didactor</title>
 
-    <itemizedlist>
-      <listitem>
-        <para>config</para>
+      <para>In Didactor the components are structured as follows</para>
 
-        <itemizedlist>
-          <listitem>
-            <para>App1</para>
+      <itemizedlist>
+        <listitem>
+          <para>mycomponent</para>
 
-            <itemizedlist>
-              <listitem>
-                <para>model</para>
-              </listitem>
+          <itemizedlist>
+            <listitem>
+              <para>config</para>
 
-              <listitem>
-                <para>builders</para>
-              </listitem>
+              <itemizedlist>
+                <listitem>
+                  <para>applications</para>
 
-              <listitem>
-                <para>modules</para>
-              </listitem>
+                  <itemizedlist>
+                    <listitem>
+                      <para>MyComponent</para>
 
-              <listitem>
-                <para>data</para>
-              </listitem>
-            </itemizedlist>
-          </listitem>
+                      <itemizedlist>
+                        <listitem>
+                          <para>MyComponent.xml</para>
+                        </listitem>
+                      </itemizedlist>
+                    </listitem>
+                  </itemizedlist>
+                </listitem>
 
-          <listitem>
-            <para>App2</para>
+                <listitem>
+                  <para>components</para>
 
-            <itemizedlist>
-              <listitem>
-                <para>model</para>
-              </listitem>
+                  <itemizedlist>
+                    <listitem>
+                      <para>mycomponent.xml</para>
+                    </listitem>
+                  </itemizedlist>
+                </listitem>
 
-              <listitem>
-                <para>builders</para>
-              </listitem>
+                <listitem>
+                  <para>translations</para>
+                </listitem>
+              </itemizedlist>
+            </listitem>
 
-              <listitem>
-                <para>modules</para>
-              </listitem>
+            <listitem>
+              <para>java</para>
+            </listitem>
 
-              <listitem>
-                <para>data</para>
-              </listitem>
-            </itemizedlist>
-          </listitem>
-        </itemizedlist>
-      </listitem>
-    </itemizedlist>
-  </section>
+            <listitem>
+              <para>lib</para>
+            </listitem>
 
-  <section>
-    <title>The CMSContainer as an MMBase portlet engine / portal
-    service</title>
+            <listitem>
+              <para>templates</para>
+            </listitem>
 
-    <para>TODO</para>
+            <listitem>
+              <para>webinf</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>Component Framework (MMBase 1.9)</title>
+
+      <para>For the file structure of components the following principle will
+      be used. </para>
+
+      <itemizedlist>
+        <listitem>
+          <para>MyContribution</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>components</para>
+
+              <itemizedlist>
+                <listitem>
+                  <para>mycomponent1</para>
+
+                  <itemizedlist>
+                    <listitem>
+                      <para>config</para>
+
+                      <itemizedlist>
+                        <listitem>
+                          <para>mycomponent.xml</para>
+                        </listitem>
+
+                        <listitem>
+                          <para>model.xml</para>
+                        </listitem>
+
+                        <listitem>
+                          <para>builders</para>
+                        </listitem>
+
+                        <listitem>
+                          <para>data</para>
+                        </listitem>
+
+                        <listitem>
+                          <para>functions</para>
+                        </listitem>
+
+                        <listitem>
+                          <para>log</para>
+                        </listitem>
+
+                        <listitem>
+                          <para>modules</para>
+                        </listitem>
+
+                        <listitem>
+                          <para>security</para>
+                        </listitem>
+                      </itemizedlist>
+                    </listitem>
+
+                    <listitem>
+                      <para>documentation</para>
+                    </listitem>
+
+                    <listitem>
+                      <para>editwizards</para>
+                    </listitem>
+
+                    <listitem>
+                      <para>templates</para>
+                    </listitem>
+
+                    <listitem>
+                      <para>src</para>
+                    </listitem>
+
+                    <listitem>
+                      <para>resources</para>
+                    </listitem>
+
+                    <listitem>
+                      <para>tld / META-INF</para>
+                    </listitem>
+
+                    <listitem>
+                      <para>WEB-INF</para>
+                    </listitem>
+
+                    <listitem>
+                      <para>project.xml</para>
+                    </listitem>
+
+                    <listitem>
+                      <para>readme.txt</para>
+                    </listitem>
+                  </itemizedlist>
+                </listitem>
+
+                <listitem>
+                  <para>mycomponent2</para>
+                </listitem>
+
+                <listitem>
+                  <para>mycomponent3</para>
+                </listitem>
+              </itemizedlist>
+            </listitem>
+
+            <listitem>
+              <para>documentation</para>
+            </listitem>
+
+            <listitem>
+              <para>build.xml</para>
+            </listitem>
+
+            <listitem>
+              <para>readme.txt</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </itemizedlist>
+
+      <note>
+        <para>In the new structure the applications directory is replaced by
+        the model.xml file in the config directory of the component and a data
+        directory containing the default data for the component, the "apps1"
+        xml dump.</para>
+      </note>
+
+      <note>
+        <para>The editwizards are stored in a seperate directory. In this way
+        the build process itself can move the editwizards to the directory
+        where the target application expects them.</para>
+      </note>
+
+      <note>
+        <para>The lib directory is not necessary because the needed jar files
+        are specified in the project.xml and will be downloaded during the
+        build.</para>
+      </note>
+    </section>
   </section>
 
   <section id="references">
@@ -538,6 +787,13 @@
         <para>An MMBase Component Framework by Johannes Verelst<ulink
         url="???">
         http://www.mmbase.org/mmbase/attachments/50347/MMBase_framework_-_tech.doc</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para>Design CMS Container by Nico Klasens <ulink
+        url="???">http://cmsc.finalist.com/Design CMSC.pdf</ulink> or <ulink
+        url="???">http://cvs.mmbase.org/viewcvs/*checkout*/speeltuin/applications/cmsc/Design
+        CMSC.pdf</ulink></para>
       </listitem>
 
       <listitem>
