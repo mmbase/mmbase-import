@@ -15,10 +15,12 @@ import org.mmbase.util.functions.Parameters;
  * A View is a thing that can actually be rendered, and can be returned by a {@link Component}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Renderer.java,v 1.5 2006-10-14 09:43:59 johannes Exp $
+ * @version $Id: Renderer.java,v 1.6 2006-10-14 16:51:03 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Renderer {
+
+    public final static String KEY = "org.mmbase.framework.renderer";
 
     enum Type {
         HEAD, BODY;
