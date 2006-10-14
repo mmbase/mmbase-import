@@ -16,7 +16,7 @@ import java.util.*;
  * a 'head', 'body' and 'process' view. 
  *
  * @author Johannes Verelst
- * @version $Id: Block.java,v 1.6 2006-10-13 23:00:03 johannes Exp $
+ * @version $Id: Block.java,v 1.7 2006-10-14 09:03:52 johannes Exp $
  * @since MMBase-1.9
  */
 public class Block {
@@ -39,7 +39,7 @@ public class Block {
 
     public Renderer getRenderer(Renderer.Type type) {
         Renderer rend = renderers.get(type);
-        return rend == null ? type.getEmpty() : rend;
+        return rend == null ? type.getEmpty(this) : rend;
     }
 
     public Processor getProcessor() {
