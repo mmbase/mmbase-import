@@ -16,11 +16,11 @@ import java.util.*;
  * a 'head', 'body' and 'process' view. 
  *
  * @author Johannes Verelst
- * @version $Id: Block.java,v 1.8 2006-10-14 15:44:17 johannes Exp $
+ * @version $Id: Block.java,v 1.9 2006-10-15 07:19:29 michiel Exp $
  * @since MMBase-1.9
  */
 public class Block {
-    private final Map<Renderer.Type, Renderer> renderers = new HashMap();
+    private final Map<Renderer.Type, Renderer> renderers = new EnumMap<Renderer.Type, Renderer>(Renderer.Type.class);
     Processor processor;
 
     private final String name;
