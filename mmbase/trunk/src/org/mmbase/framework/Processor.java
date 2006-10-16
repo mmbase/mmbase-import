@@ -15,14 +15,14 @@ import org.mmbase.util.functions.Parameters;
  * A View is a thing that can actually be rendered, and can be returned by a {@link Component}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Processor.java,v 1.2 2006-10-13 17:22:15 michiel Exp $
+ * @version $Id: Processor.java,v 1.3 2006-10-16 09:04:26 johannes Exp $
  * @since MMBase-1.9
  */
 public interface Processor {
 
     public static final Processor EMPTY = new Processor() {
             public Parameters createParameters() { return Parameters.VOID; }
-            public void process(Parameters parameters) { }
+            public void process(Parameters blockParameters, Parameters frameworkParameters) { }
         };
     /**
      * Before rendering, it may have to be fed with certain parameters. Obtain a parameters
@@ -34,5 +34,5 @@ public interface Processor {
      * Process. In case of e.g. a JSPProcessor, the parameters must also contain
      * the Http Servlet response and request, besided specific parameters for this component.
      */
-    void process(Parameters parameters) throws IOException;
+    void process(Parameters blockParameters, Parameters frameworkParameters) throws IOException;
 }

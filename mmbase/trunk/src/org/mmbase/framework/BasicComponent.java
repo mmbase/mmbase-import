@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * components, and may be requested several blocks.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicComponent.java,v 1.9 2006-10-14 14:35:38 nklasens Exp $
+ * @version $Id: BasicComponent.java,v 1.10 2006-10-16 09:04:26 johannes Exp $
  * @since MMBase-1.9
  */
 public class BasicComponent implements Component {
@@ -59,7 +59,7 @@ public class BasicComponent implements Component {
             log.trace("Found block: " + name);
             b.getRenderers().put(Renderer.Type.HEAD, getRenderer("head", element, b));
             b.getRenderers().put(Renderer.Type.BODY, getRenderer("body", element, b));
-            b.processor = getProcessor("process", element);
+            b.processor = getProcessor("process", element, b);
             if (defaultBlock == null) defaultBlock = b;
             blocks.put(name, b);
         }
@@ -100,14 +100,14 @@ public class BasicComponent implements Component {
         return renderer;
     }
 
-    private Processor getProcessor(String name, Element block) {
+    private Processor getProcessor(String name, Element block, Block b) {
         NodeList processorElements = block.getElementsByTagName(name);
         if (processorElements.getLength() == 1) {
             Element processorElement = (Element) processorElements.item(0);
             String jsp = processorElement.getAttribute("jsp");
             String cls = processorElement.getAttribute("class");
             if (jsp != null && !"".equals(jsp)) {
-                return new JspProcessor(jsp);
+                return new JspProcessor(jsp, b);
             } else if (cls != null && !"".equals(cls)) {
                 try {
                     return (Processor)Class.forName(cls).newInstance();
