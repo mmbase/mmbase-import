@@ -5,16 +5,16 @@
    thisPerson += " (Sofinummer: " + e.getStringValue("externid") + ")";
    
    // *** PZ ***
-   if(!firstnameId.equals(e.getStringValue(""))) {
+   if(!firstnameId.equals(e.getStringValue("firstname"))) {
       pzText += "<br><br>Voornaam '" + e.getStringValue("firstname") + "' moet worden gewijzigd in: " + firstnameId;
    }
-   if(!initialsId.equals(e.getStringValue(""))) {
+   if(!initialsId.equals(e.getStringValue("initials"))) {
       pzText += "<br><br>Initialen '" + e.getStringValue("initials") + "' moet worden gewijzigd in: " + initialsId;
    } 
-   if(!suffixId.equals(e.getStringValue(""))) {
+   if(!suffixId.equals(e.getStringValue("suffix"))) {
       pzText += "<br><br>Tussenvoegsel '" + e.getStringValue("suffix") + "' moet worden gewijzigd in: " + suffixId;
    }
-   if(!lastnameId.equals(e.getStringValue(""))) {
+   if(!lastnameId.equals(e.getStringValue("lastname"))) {
       pzText += "<br><br>Achternaam '" + e.getStringValue("lastname") + "' moet worden gewijzigd in: " + lastnameId;
    }
    if(!omschrijving_engId.equals(e.getStringValue("omschrijving_eng"))) {
