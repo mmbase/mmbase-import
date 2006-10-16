@@ -90,17 +90,17 @@
   <section id="taglib">
     <title>Some simple examples with the MMBase taglib</title>
 
-    <para>Allmost everybody who is bit familiar with the MMBase taglib knows
-    that you can get the gui value of a node with a few simple lines of
-    code.</para>
+    <para>Allmost everybody who is bit familiar with the taglib knows that you
+    can get the gui value of a node in MMBase 1.7 and former versions with a
+    few simple lines of code.</para>
 
     <programlisting>&lt;mm:node number="default.mags"&gt;
   &lt;mm:field name="gui()" /&gt;
 &lt;/mm:node&gt;</programlisting>
 
     <para>This functionality is deprecated. The equivalent method of getting
-    the gui value of a node is the following and as such is method defined in
-    MMObjectbuilder.</para>
+    the gui value of a node in MMBase 1.8 is the following and as such is a
+    method defined in MMObjectbuilder.</para>
 
     <!--is that true?-->
 
@@ -111,7 +111,7 @@
     <para>Another simple example of a function is made available by the class
     org.mmbase.util.functions.ExampleBean and could look like this. It
     accesses the method stringFunction which uses no arguments and returns an
-    arbitrary String.</para>
+    arbitrary String. </para>
 
     <programlisting>&lt;mm:function classname="org.mmbase.util.functions.ExampleBean" name="stringFunction" /&gt;</programlisting>
 
@@ -176,7 +176,7 @@
   &lt;/mm:functioncontainer&gt;  </programlisting></para>
 
     <para>Each of the defined parameters will be added to every function
-    within the functioncontainer. </para>
+    within the functioncontainer.</para>
 
     <para>It is also possible to add parameters using MMBase referids, this
     can come in handy when a variable is already present in your page and you
