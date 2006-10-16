@@ -1,7 +1,6 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@include file="/taglibs.jsp" %>
 <mm:cloud name="mmbase" method="http" rank="administrator" jspvar="cloud">
 <mm:import externid="a">none</mm:import>
-
 <html>
 <head>
 <title>MMBase kicker</title>
@@ -31,6 +30,7 @@
 	</mm:compare>
 	<mm:compare referid="a" value="dirreader">
 		<% (new nl.leocms.util.tools.documents.DirReader()).run(); %>
+    De documenten zijn ingelezen van <%= NMIntraConfig.sDocumentsRoot %><br/>
 	</mm:compare>
 	<mm:compare referid="a" value="defaultrel">
 		<% (new nl.leocms.util.MMBaseHelper(cloud)).addDefaultRelations(); %>
