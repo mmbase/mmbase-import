@@ -329,37 +329,6 @@ Build-compiler: ${build.compiler}
     </java>
   </target>
 
-  <target name="run.bridge.util" depends="init" description="Bridge utility tests">
-    <!--
-    <antcall target="clean.database" />
-    -->
-    <java
-        classname="${ui.class}"
-        fork="true"
-        classpathref="run.classpath"
-        >
-      <arg value="org.mmbase.bridge.util.AllTests" />
-      <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
-      <jvmarg value="-Duser.dir=${tests.work.dir}" />
-      <assertions><enable /></assertions>
-    </java>
-  </target>
-  
-  <target name="run.simon" depends="mmbase,jar,init">
-    <antcall target="clean.database" />
-    <java
-        classname="${ui.class}"
-        fork="true"
-        classpathref="run.classpath"
-        >
-      <arg value="org.mmbase.bridge.SimonsTests" />
-      <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
-      <jvmarg value="-Duser.dir=${tests.work.dir}" />
-      <assertions><enable /></assertions>
-    </java>
-  </target>
-
-
   <target name="run.bridge.rmmci" depends="mmbase,jar,init" description="Bridge tests (through RMMCI)">
     <antcall target="clean.database" />
     <parallel>
@@ -494,8 +463,6 @@ Build-compiler: ${build.compiler}
     </java>
   </target>
 
-
-
   <!-- =================================================================== -->
   <!-- Run the tests -->
   <!-- =================================================================== -->
@@ -520,6 +487,9 @@ Build-compiler: ${build.compiler}
     <sleep seconds="10" />
     <echo message="========================================RELEASESTRATEGY========================================" />
     <antcall target="run.releasestrategy" />
+    <sleep seconds="10" />
+    <echo message="========================================CONVERTIMAGE========================================" />
+    <antcall target="run.convertimage" />
   </target>
 
   <target name="run.test">
