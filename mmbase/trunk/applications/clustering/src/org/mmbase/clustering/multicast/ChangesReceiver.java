@@ -10,12 +10,11 @@ See http://www.MMBase.org/license
 package org.mmbase.clustering.multicast;
 
 import java.net.*;
+import java.util.concurrent.BlockingQueue;
 
-import org.mmbase.util.Queue;
 import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-
 
 /**
  * ChangesReceiver is a thread object that builds a MultiCast Thread
@@ -24,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: ChangesReceiver.java,v 1.13 2006-07-06 11:27:27 michiel Exp $
+ * @version $Id: ChangesReceiver.java,v 1.14 2006-10-16 14:48:45 pierre Exp $
  */
 public class ChangesReceiver implements Runnable {
 
@@ -34,7 +33,7 @@ public class ChangesReceiver implements Runnable {
     private Thread kicker = null;
 
     /** Queue with messages received from other MMBase instances */
-    private final Queue nodesToSpawn;
+    private final BlockingQueue nodesToSpawn;
 
     /** address to send the messages to */
     private final InetAddress ia;
@@ -55,13 +54,14 @@ public class ChangesReceiver implements Runnable {
      * @param dpsize datapacket receive size
      * @param nodesToSpawn Queue of received messages
      */
-    ChangesReceiver(String multicastHost, int mport, int dpsize, Queue nodesToSpawn)  throws UnknownHostException {
+    ChangesReceiver(String multicastHost, int mport, int dpsize, BlockingQueue nodesToSpawn)  throws UnknownHostException {
         this.mport = mport;
         this.dpsize = dpsize;
         this.nodesToSpawn = nodesToSpawn;
         this.ia = InetAddress.getByName(multicastHost);
         this.start();
     }
+
     private  void start() {
         if (kicker == null && ia != null) {
             try {
@@ -95,7 +95,6 @@ public class ChangesReceiver implements Runnable {
         }
     }
 
-
     public void run() {
         // create a datapackage to receive all messages
         byte[] buffer = new byte[dpsize];
@@ -114,7 +113,7 @@ public class ChangesReceiver implements Runnable {
                 if (log.isDebugEnabled()) {
                     log.debug("RECEIVED=> " + dp.getLength() + " bytes from " + dp.getAddress());
                 }
-                nodesToSpawn.append(message);
+                nodesToSpawn.offer(message);
             } catch (java.net.SocketException se) {
                 // generally happens on shutdown (ms==null)
                 // if not log it as an error

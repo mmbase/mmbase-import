@@ -9,14 +9,14 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.clustering;
 
-
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.mmbase.core.event.*;
 import org.mmbase.core.util.DaemonThread;
 import org.mmbase.module.core.*;
-import org.mmbase.util.Queue;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -29,21 +29,19 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: ClusterManager.java,v 1.32 2006-08-09 11:52:33 pierre Exp $
+ * @version $Id: ClusterManager.java,v 1.33 2006-10-16 14:48:45 pierre Exp $
  */
 public abstract class ClusterManager implements AllEventListener, Runnable {
 
     private static final Logger log = Logging.getLoggerInstance(ClusterManager.class);
 
-
     protected final Statistics receive = new Statistics();
     protected final Statistics send    = new Statistics();
 
-
     /** Queue with messages to send to other MMBase instances */
-    protected Queue nodesToSend = new Queue(64);
+    protected BlockingQueue nodesToSend = new LinkedBlockingQueue(64);
     /** Queue with received messages from other MMBase instances */
-    protected Queue nodesToSpawn = new Queue(64);
+    protected BlockingQueue nodesToSpawn = new LinkedBlockingQueue(64);
 
     /** Thread which processes the messages */
     protected Thread kicker = null;
@@ -51,7 +49,6 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
     protected boolean spawnThreads = true;
 
     protected boolean compatible17 = false;
-
 
     public final void shutdown(){
         log.info("Shutting down clustering");
@@ -82,7 +79,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
         if(event.getMachine().equals(MMBase.getMMBase().getMachineName())){
             byte[] message = createMessage(event);
             log.debug("Sending an event to the cluster");
-            nodesToSend.append(message);
+            nodesToSend.offer(message);
         } else {
             log.trace("Ignoring remote event from " + event.getMachine() + " it will not be propagated");
         }
@@ -126,13 +123,13 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
                         b1.write(rel1, 0, rel1.length);
                         b1.write(',');
                         b1.write(0);
-                        nodesToSend.append(b1.toByteArray());
+                        nodesToSend.offer(b1.toByteArray());
                         ByteArrayOutputStream b2 = new ByteArrayOutputStream();
                         byte[] rel2 = createMessage(re.getMachine(), re.getRelationDestinationNumber(), re.getRelationDestinationType(), "r").getBytes();
                         b2.write(rel2, 0, rel2.length);
                         b2.write(',');
                         b2.write(0);
-                        nodesToSend.append(b2.toByteArray());
+                        nodesToSend.offer(b2.toByteArray());
                     } else {
                         ne = (NodeEvent) event;
                     }
@@ -259,7 +256,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
     public void run() {
         while(kicker != null) {
             try {
-                byte[] message = (byte[]) nodesToSpawn.get();
+                byte[] message = (byte[]) nodesToSpawn.take();
                 if (message == null) continue;
                 long startTime = System.currentTimeMillis();
                 if (log.isDebugEnabled()) {
@@ -282,11 +279,10 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
                 log.error(t.getMessage(), t);
             }
         }
-
     }
 
     /**
-
+     * @javadoc
      * @param event
      */
     protected void handleEvent(final Event event) {
@@ -305,6 +301,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
             }
             return;
         }
+
         if (event instanceof NodeEvent) {
             MMObjectBuilder builder = mmbase.getBuilder(((NodeEvent) event).getBuilderName());
             if (builder != null && (! builder.broadcastChanges())) {
