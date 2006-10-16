@@ -28,13 +28,13 @@ import org.mmbase.util.logging.Logging;
 /**
  * @javadoc
  *
- * @version $Id: ViewDatabaseStorageManager.java,v 1.7 2005-12-09 14:25:32 nklasens Exp $
+ * @version $Id: ViewDatabaseStorageManager.java,v 1.8 2006-10-16 12:56:57 pierre Exp $
  * @since MMBase-1.8
  */
 public class ViewDatabaseStorageManager extends DatabaseStorageManager {
 
     private static final Logger log = Logging.getLoggerInstance(ViewDatabaseStorageManager.class);
-    
+
     /**
      * Determine if the basic storage elements exist
      * Basic storage elements include the 'object' storage (where all objects and their types are registered).
@@ -44,7 +44,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
     public boolean exists() throws StorageException {
         return viewExists(factory.getMMBase().getRootBuilder());
     }
-    
+
     /**
      * Determine if a storage element exists for storing the given builder's objects
      * @param builder the builder to check
@@ -61,7 +61,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
      */
     public void create() throws StorageException {
         if(!viewExists(factory.getMMBase().getRootBuilder())) {
-            viewCreate(factory.getMMBase().getRootBuilder());   
+            viewCreate(factory.getMMBase().getRootBuilder());
             createSequence();
         }
     }
@@ -76,7 +76,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
              viewCreate(builder);
         }
     }
-  
+
     public void create(final MMObjectNode node, final MMObjectBuilder builder) throws StorageException {
         boolean localTransaction = !inTransaction;
         if (localTransaction) {
@@ -103,7 +103,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
             throw se;
         }
     }
-    
+
     /**
      * This method inserts a new object in a specific builder, and registers the change.
      * This method makes it easier to implement relational databases, where you may need to update the node
@@ -134,7 +134,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
      */
     public void change(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
         boolean localTransaction = !inTransaction;
-        if (localTransaction) {       
+        if (localTransaction) {
             beginTransaction();
         }
         try {
@@ -180,7 +180,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
         if (localTransaction) {
             beginTransaction();
         }
-        
+
         try {
             if (factory.hasOption("database-supports-delete-triggers")) {
                 super.delete(node, builder);
@@ -198,7 +198,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
             throw se;
         }
     }
-    
+
     private void deleteObject(MMObjectNode node, MMObjectBuilder builder) {
         List blobFileField = new ArrayList();
         List builderFields = builder.getFields(NodeManager.ORDER_CREATE);
@@ -216,8 +216,8 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
 
     public String getFieldName(CoreField field) {
         return (String)factory.getStorageIdentifier(field);
-    }            
-  
+    }
+
     public boolean isInheritedField(CoreField field) {
         MMObjectBuilder inheritedBuilder = field.getParent().getParentBuilder();
         if(inheritedBuilder == null) {
@@ -226,9 +226,9 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
         }
         return (inheritedBuilder.getField(field.getName()) != null);
     }
-    
+
     public CoreField getNumberField() {
-        return factory.getMMBase().getRootBuilder().getField("number");    
+        return factory.getMMBase().getRootBuilder().getField("number");
     }
 
     public String getTableName(MMObjectBuilder builder) {
@@ -269,22 +269,22 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
                 return;
             }
         }
-        
+
         super.createIndex(index, getTableName(index.getParent()));
     }
 
     protected boolean exists(Index index) throws StorageException {
         return super.exists(index, getTableName(index.getParent()));
     }
-    
-    public boolean viewExists(MMObjectBuilder builder) {     
+
+    public boolean viewExists(MMObjectBuilder builder) {
         return exists(getViewName(builder));
     }
-    
+
     public boolean viewCreate(MMObjectBuilder builder) {
         MMObjectBuilder inheritedBuilder = builder.getParentBuilder();
         // create the inherited builder first
-        if(inheritedBuilder != null) {         
+        if(inheritedBuilder != null) {
             if(!viewExists(inheritedBuilder)) {
                 // create the builder we inherit from
                 if(!viewCreate(inheritedBuilder)) {
@@ -300,14 +300,14 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
             List tableFields = new ArrayList();
             for (Iterator f = fields.iterator(); f.hasNext();) {
                 CoreField field = (CoreField)f.next();
-                // is it a database field, and not of the parent(except the number field)?          
+                // is it a database field, and not of the parent(except the number field)?
                 if (isPartOfBuilderDefinition(field) || field.getName().equals(getNumberField().getName())) {
                     tableFields.add(field);
                 }
             }
             // Create the table
             createTable(builder, tableFields, tablename);
-            
+
             //TODO rewrite verify check with views
             //verify(builder);
         }
@@ -344,8 +344,8 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
         }
 
         String viewname = getViewName(builder);
-        
-        StringBuffer createViewFields = new StringBuffer();
+
+        StringBuilder createViewFields = new StringBuilder();
         for (Iterator f = fields.iterator(); f.hasNext();) {
             CoreField field = (CoreField)f.next();
             if (field.inStorage() && (field.getType() != Field.TYPE_BINARY || !factory.hasOption(Attributes.STORES_BINARY_AS_FILE))) {
@@ -355,20 +355,20 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
                 createViewFields.append(getFieldName(field));
             }
         }
-   
-        StringBuffer createTableFields = new StringBuffer();
+
+        StringBuilder createTableFields = new StringBuilder();
         Vector myFieldNames = new Vector();
         Vector parentFieldNames = new Vector();
 
         for (Iterator f = fields.iterator(); f.hasNext();) {
             CoreField field = (CoreField)f.next();
             if (field.inStorage() && (field.getType() != Field.TYPE_BINARY || !factory.hasOption(Attributes.STORES_BINARY_AS_FILE))) {
-   
+
                 if (createTableFields.length() > 0) {
                     createTableFields.append(", ");
                 }
                 if(isInheritedField(field)) {
-                    if(inheritedBuilder == null) 
+                    if(inheritedBuilder == null)
                         throw new StorageError("Cannot have a inherited field while we dont extend inherit from a builder!");
                     createTableFields.append(getViewName(inheritedBuilder) + "." + getFieldName(field));
                     parentFieldNames.add(getFieldName(field));
@@ -382,7 +382,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
                 }
             }
         }
-        
+
         String query = "";
         try {
             getActiveConnection();
@@ -393,7 +393,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
             if (factory.hasOption(Attributes.REMOVE_EMPTY_DEFINITIONS)) {
                 query = query.replaceAll("\\(\\s*\\)", "");
             }
-   
+
             Statement s = activeConnection.createStatement();
             long startTime = getLogStartTime();
             s.executeUpdate(query);
@@ -403,10 +403,10 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
             if (createInsertTriggerScheme != null) {
                 //insert into mm_typedef_t (m_number, otype, owner) values (:NEW.m_number, :NEW.otype, :NEW.owner);
                 //insert into mm_object (m_number, name, description) values (:NEW.m_number, :NEW.name, :NEW.description);
-                StringBuffer myFields = new StringBuffer();
-                StringBuffer myValues = new StringBuffer();
-                StringBuffer parentFields = new StringBuffer();
-                StringBuffer parentValues = new StringBuffer();
+                StringBuilder myFields = new StringBuilder();
+                StringBuilder myValues = new StringBuilder();
+                StringBuilder parentFields = new StringBuilder();
+                StringBuilder parentValues = new StringBuilder();
                 for (int i=0; i<myFieldNames.size(); i++) {
                     if (i > 0) {
                         myFields.append(", ");
@@ -429,7 +429,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
                 if (factory.hasOption(Attributes.REMOVE_EMPTY_DEFINITIONS)) {
                     query = query.replaceAll("\\(\\s*\\)", "");
                 }
-   
+
                 s = activeConnection.createStatement();
                 long startTime2 = getLogStartTime();
                 s.executeUpdate(query);
@@ -443,7 +443,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
                 if (factory.hasOption(Attributes.REMOVE_EMPTY_DEFINITIONS)) {
                     query = query.replaceAll("\\(\\s*\\)", "");
                 }
-   
+
                 s = activeConnection.createStatement();
                 long startTime2 = getLogStartTime();
                 s.executeUpdate(query);
@@ -452,8 +452,8 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
             }
 
             if (createUpdateTriggerScheme != null) {
-                StringBuffer myAssignments = new StringBuffer();
-                StringBuffer parentAssignments = new StringBuffer();
+                StringBuilder myAssignments = new StringBuilder();
+                StringBuilder parentAssignments = new StringBuilder();
                 for (int i=0; i<myFieldNames.size(); i++) {
                     if (i > 0) {
                         myAssignments.append(", ");
@@ -476,14 +476,14 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
                 if (factory.hasOption(Attributes.REMOVE_EMPTY_DEFINITIONS)) {
                     query = query.replaceAll("\\(\\s*\\)", "");
                 }
-   
+
                 s = activeConnection.createStatement();
                 long startTime2 = getLogStartTime();
                 s.executeUpdate(query);
                 s.close();
                 logQuery(query, startTime2);
             }
-   
+
             tableNameCache.add(viewname.toUpperCase());
         } catch (SQLException se) {
             throw new StorageException(se.getMessage() + " in query:" + query, se);

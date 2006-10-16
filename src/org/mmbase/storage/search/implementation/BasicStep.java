@@ -18,7 +18,7 @@ import org.mmbase.storage.search.*;
  * The step alias is not set on default.
  *
  * @author Rob van Maris
- * @version $Id: BasicStep.java,v 1.9 2006-09-08 14:34:08 michiel Exp $
+ * @version $Id: BasicStep.java,v 1.10 2006-10-16 12:56:57 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicStep implements Step {
@@ -124,8 +124,7 @@ public class BasicStep implements Step {
 
     // javadoc is inherited
     public String toString() {
-        StringBuffer sb = new StringBuffer("Step(tablename:").
-        append(getTableName()).
+        StringBuilder sb = new StringBuilder("Step(tablename:").append(getTableName()).
         append(", alias:").append(alias).
         append(", nodes:").append(nodes).
         append(")");

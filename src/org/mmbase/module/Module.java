@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.83 2006-10-13 14:22:26 nklasens Exp $
+ * @version $Id: Module.java,v 1.84 2006-10-16 12:56:57 pierre Exp $
  */
 public abstract class Module extends FunctionProvider {
 
@@ -245,7 +245,7 @@ public abstract class Module extends FunctionProvider {
         }
     }
 
-    
+
     /**
      * Returns an iterator of all the modules that are currently active.
      * This function <code>null</code> if no attempt has the modules have (not) yet been to loaded.
@@ -280,7 +280,6 @@ public abstract class Module extends FunctionProvider {
      */
     public void maintainance() {
     }
-
 
     /**
      * Calls shutdown of all registered modules.

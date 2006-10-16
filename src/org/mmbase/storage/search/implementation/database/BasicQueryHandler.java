@@ -33,7 +33,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.54 2006-09-08 18:42:59 michiel Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.55 2006-10-16 12:56:57 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -90,7 +90,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
             sqlString = createSqlString(query, mustSkipResults, sqlHandlerSupportsMaxNumber);
 
             log.debug("sql: " + sqlString);
-            
+
             // Execute the SQL... ARGH !!! Has to move!
             // get connection...
             DataSource dataSource = ((DatabaseStorageManagerFactory) mmbase.getStorageManagerFactory()).getDataSource();
@@ -312,13 +312,13 @@ public class BasicQueryHandler implements SearchQueryHandler {
         }
 
         // Test if ALL fields are queried
-        StringBuffer missingFields = null;
+        StringBuilder missingFields = null;
         for (CoreField field : builder.getFields(NodeManager.ORDER_CREATE)) {
             if (field.inStorage()) {
                 if (field.getType() == CoreField.TYPE_BINARY) continue;
                 if (fieldIndices.get(field) == null) {
                     if (missingFields == null) {
-                        missingFields = new StringBuffer(field.getName());
+                        missingFields = new StringBuilder(field.getName());
                     } else {
                         missingFields.append(", ").append(field.getName());
                     }
@@ -342,12 +342,12 @@ public class BasicQueryHandler implements SearchQueryHandler {
                 try {
                     /*
                      * This while statement does not deal with mmbase inheritance
-                     * It creates nodes based on the builder passed in. Nodes with 
+                     * It creates nodes based on the builder passed in. Nodes with
                      * subtypes of this builder are only filled with the field values
                      * of this builder. Builders of a subtype are not stored in the nodeCache
-                     * to limit the time scope of these nodes, because they are not complete. 
+                     * to limit the time scope of these nodes, because they are not complete.
                      */
-                    
+
                     MMObjectNode node;
                     if (!isVirtual) {
                         node = new MMObjectNode(builder, false);

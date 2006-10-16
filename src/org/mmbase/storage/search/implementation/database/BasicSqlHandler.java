@@ -22,7 +22,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.63 2006-09-08 18:42:59 michiel Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.64 2006-10-16 12:56:57 pierre Exp $
  * @since MMBase-1.7
  */
 
@@ -54,7 +54,7 @@ public class BasicSqlHandler implements SqlHandler {
             int offset = str.indexOf('\'');
             if (offset != -1) {
                 // At least one single quote found.
-                StringBuffer sb = new StringBuffer(str.length() + 4);
+                StringBuilder sb = new StringBuilder(str.length() + 4);
                 int start = 0;
                 do {
                     sb.append(str.substring(start, offset)).append("''");
@@ -98,7 +98,7 @@ public class BasicSqlHandler implements SqlHandler {
         int timeZoneOffset = MMBase.getMMBase().getStorageManagerFactory().getTimeZoneOffset(value.getTime());
         Date date = new Date(value.getTime() - timeZoneOffset);
         //Date date = new Date(value.getTime());
-        //log.debug("Using offset " + timeZoneOffset + " " + value + " -> " + date); 
+        //log.debug("Using offset " + timeZoneOffset + " " + value + " -> " + date);
         dateFormat.format(date, sb, dontcareFieldPosition);
     }
 
@@ -635,14 +635,6 @@ public class BasicSqlHandler implements SqlHandler {
         return sb;
     }
 
-
-    /*
-    protected StringBuffer appendRegularExpressionOperator(StringBuffer sb, boolean caseSensitive) {
-        sb.append(" ~ ");
-        return sb;
-    }
-    */
-
     /**
      * @javadoc
      */
@@ -1028,8 +1020,7 @@ public class BasicSqlHandler implements SqlHandler {
      *        <code>false</code> otherwise.
      */
     // TODO RvM: add to interface, add javadoc
-    protected void appendField(StringBuffer sb, Step step,
-            String fieldName, boolean includeTablePrefix) {
+    protected void appendField(StringBuffer sb, Step step, String fieldName, boolean includeTablePrefix) {
 
         String tableAlias = step.getAlias();
         if (includeTablePrefix) {

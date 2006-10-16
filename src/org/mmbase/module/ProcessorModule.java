@@ -19,7 +19,6 @@ import org.mmbase.util.*;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 
-
 /**
  * The Processor Module extends the basic module to the Processor
  * interface so it can perform for servscan (pagelets).
@@ -28,17 +27,18 @@ import org.mmbase.util.logging.*;
  * @todo   Should be abstract, deprecated?
  */
 public class ProcessorModule extends Module implements ProcessorInterface {
+
+    protected static final Parameter[] PARAMS_PAGEINFO = new Parameter[] {Parameter.REQUEST, Parameter.RESPONSE, Parameter.CLOUD};
+    protected static final Parameter.Wrapper PARAM_PAGEINFO = new Parameter.Wrapper(PARAMS_PAGEINFO);
+
     private static final Logger log = Logging.getLoggerInstance(ProcessorModule.class);
+
     /**
      * {@inheritDoc}
      **/
     public MMObjectBuilder getListBuilder(String command, Map params) {
         return new VirtualBuilder(null);
     }
-
-    protected static final Parameter[] PARAMS_PAGEINFO = new Parameter[] {Parameter.REQUEST, Parameter.RESPONSE, Parameter.CLOUD};
-    protected static final Parameter.Wrapper PARAM_PAGEINFO = new Parameter.Wrapper(PARAMS_PAGEINFO);
-
 
     /**
      * Used by function wrappers.
@@ -54,12 +54,13 @@ public class ProcessorModule extends Module implements ProcessorInterface {
         }
         return pageInfo;
     }
+
     /**
      * Used by function wrappers.
      * @since MMBase-1.8
      */
     private static String getCommand(String functionName, Parameters arguments) {
-        StringBuffer buf = new StringBuffer(functionName);
+        StringBuilder buf = new StringBuilder(functionName);
         Iterator i = arguments.iterator();
         while (i.hasNext()) {
             Object argument = i.next();
@@ -69,6 +70,7 @@ public class ProcessorModule extends Module implements ProcessorInterface {
         }
         return buf.toString();
     }
+
     /**
      * Function implementation around {@link #getNodeList(Object, String, Map)}. See in MMAdmin for an example on how to use.
      * @since MMBase-1.8
@@ -81,6 +83,7 @@ public class ProcessorModule extends Module implements ProcessorInterface {
             return new CollectionNodeList<Node>(getNodeList(getPageInfo(arguments), getCommand(getName(), arguments), arguments.toMap()));
         }
     }
+
     /**
      * Function implementation around {@link #replace(PageInfo, String)}. See in MMAdmin for an example on how to use.
      * @since MMBase-1.8
@@ -93,6 +96,7 @@ public class ProcessorModule extends Module implements ProcessorInterface {
             return replace(getPageInfo(arguments), getCommand(getName(), arguments));
         }
     }
+
     /**
      * Function implementation around {@link #process(PageInfo, Hashtable, Hashtable)}. See in
      * MMAdmin for an example on how to use.  It does not support multipible commands, so the first
@@ -209,16 +213,14 @@ public class ProcessorModule extends Module implements ProcessorInterface {
         return false;
     }
 
-
     /**
      * What should this do, when is this called?
      * @deprecated called by nothing
      * @javadoc
      */
 
-     public void reload() {
-     }
-
+    public void reload() {
+    }
 
     /**
      * What should this do, when is this called?
@@ -241,6 +243,5 @@ public class ProcessorModule extends Module implements ProcessorInterface {
      */
     public void onload() {
     }
-
 
 }
