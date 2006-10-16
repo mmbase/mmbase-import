@@ -36,6 +36,7 @@
 	
 	  DEFAULT_STYLE = NMIntraConfig.DEFAULT_STYLE;
 	  style1 = NMIntraConfig.style1;
+    layout = NMIntraConfig.layout;
 		cssPath = NMIntraConfig.cssPath;
    }
 	
