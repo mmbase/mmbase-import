@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="pagina">
-   <title>pagina (artikel)</title>
+   <title>pagina (bijlagen)</title>
    <description>
       <![CDATA[
 	   <h1>Artikel pagina</h1>
