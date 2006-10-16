@@ -68,7 +68,7 @@
 
     <para>Lets start with a simple example. The following configuration file
     for component "core" defines one block "components". This block has one
-    renderer that can be used in the html <body /> tag.</para>
+    renderer that can be used in the html &lt;body&gt; tag.</para>
 
     <note>
       <para>The configuration files for the mmbase core are stored in the
@@ -264,7 +264,7 @@
 
       <programlisting>&lt;property name="framework"&gt; ... &lt;/property&gt;</programlisting>
 
-      <para> If no framework is specified in mmbaseroot.xml the
+      <para>If no framework is specified in mmbaseroot.xml the
       org.mmbase.framework.BasicFramework will be used.</para>
     </section>
 
@@ -911,26 +911,33 @@ if (finalpage != null) {
 
     <itemizedlist>
       <listitem>
-        <para>Presentation on JSR168 by Nico Klasens <ulink
-        url="???">http://www.mmbase.org/mmbase/attachments/50434/JSR168.zip</ulink></para>
+        <para>MMBase Component Framework projectpage <ulink
+        url="http://www.mmbase.org/mmcf">
+        http://www.mmbase.org/mmcf</ulink></para>
       </listitem>
 
       <listitem>
-        <para>An MMBase Component Framework by Johannes Verelst<ulink
-        url="???">
+        <para>Presentation on JSR168 by Nico Klasens <ulink
+        url="http://www.mmbase.org/mmbase/attachments/50434/JSR168.zip">http://www.mmbase.org/mmbase/attachments/50434/JSR168.zip</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para>An MMBase Component Framework by Johannes Verelst <ulink
+        url="http://www.mmbase.org/mmbase/attachments/50347/MMBase_framework_-_tech.doc">
         http://www.mmbase.org/mmbase/attachments/50347/MMBase_framework_-_tech.doc</ulink></para>
       </listitem>
 
       <listitem>
         <para>Design CMS Container by Nico Klasens <ulink
-        url="???">http://cmsc.finalist.com/Design CMSC.pdf</ulink> or <ulink
-        url="???">http://cvs.mmbase.org/viewcvs/*checkout*/speeltuin/applications/cmsc/Design
+        url="http://cmsc.finalist.com/Design%20CMSC.pdf">http://cmsc.finalist.com/Design
+        CMSC.pdf</ulink> or <ulink
+        url="http://cvs.mmbase.org/viewcvs/*checkout*/speeltuin/applications/cmsc/Design%20CMSC.pdf">http://cvs.mmbase.org/viewcvs/*checkout*/speeltuin/applications/cmsc/Design
         CMSC.pdf</ulink></para>
       </listitem>
 
       <listitem>
         <para>What Is a Portlet <ulink
-        url="???">http://www.onjava.com/lpt/a/6208</ulink></para>
+        url="http://www.onjava.com/lpt/a/6208">http://www.onjava.com/lpt/a/6208</ulink></para>
       </listitem>
     </itemizedlist>
   </section>
