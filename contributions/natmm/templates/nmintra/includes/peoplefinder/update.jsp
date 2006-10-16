@@ -43,8 +43,9 @@
     } %>
     <tr><td colspan="2"><div align="right"><input type="submit" name="Submit" value="Verstuur wijzigingen"  style="text-align:center;font-weight:bold;">&nbsp;</div></td></tr>
     <tr><td colspan="2">
-     <i>(*) een nieuwe foto kunt u versturen naar <a href="mailto:<%= ap.getFromEmailAddress() %>"><%= ap.getFromEmailAddress() %><a></i><br>
-     <i>(**) alleen een intern "...@natuurmonumenten.nl" emailadres is toegestaan.</i></td></tr>
+     <% String emailAddress = ap.getFromEmailAddress(); %>
+     <i>(*) een nieuwe foto kunt u versturen naar <a href="mailto:<%= emailAddress %>"><%= emailAddress %><a></i><br>
+     <i>(**) alleen een intern "...<%= emailAddress.substring(emailAddress.indexOf("@")) %>" emailadres is toegestaan.</i></td></tr>
     </table>
 </mm:node>
 </form>
