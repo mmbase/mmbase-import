@@ -16,13 +16,16 @@ package org.mmbase.util.functions;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: AutodefiningParameters.java,v 1.10 2006-10-14 13:27:02 michiel Exp $
+ * @version $Id: AutodefiningParameters.java,v 1.11 2006-10-16 14:42:36 johannes Exp $
  * @see Parameter
  */
 
 public class AutodefiningParameters extends Parameters {
     //private static Logger log = Logging.getLoggerInstance(Parameters.class);
 
+    public AutodefiningParameters(Parameter[] base) {
+        super(base);
+    }
 
     public AutodefiningParameters() {
         super(new Parameter[0]);
@@ -42,9 +45,11 @@ public class AutodefiningParameters extends Parameters {
         toIndex++;
         return definition.length - 1;
     }
+
     protected int define(String param) {
         return define(new Parameter(param, Object.class));
     }
+
     public int indexOfParameter(Parameter<?> parameter) {
         int index = super.indexOfParameter(parameter);
         if (index == -1) {
