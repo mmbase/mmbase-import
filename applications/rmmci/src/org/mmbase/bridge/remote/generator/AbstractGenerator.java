@@ -19,12 +19,12 @@ import java.util.*;
  *
  * @since MMBase-1.9
  * @author Pierre van Rooden
- * @version $Id: AbstractGenerator.java,v 1.1 2006-09-29 08:59:07 pierre Exp $
+ * @version $Id: AbstractGenerator.java,v 1.2 2006-10-16 15:04:23 pierre Exp $
  */
 abstract public class AbstractGenerator {
 
     protected Class currentClass = null;
-    protected StringBuffer buffer = new StringBuffer();
+    protected StringBuilder buffer = new StringBuilder();
 
     public AbstractGenerator() {
     }
