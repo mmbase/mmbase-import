@@ -12,20 +12,20 @@ package org.mmbase.util.images;
 import java.util.Map;
 import java.util.List;
 
-import org.mmbase.module.core.*;
+import java.util.concurrent.BlockingQueue;
 
-import org.mmbase.util.Queue;
+import org.mmbase.module.core.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
  * An ImageConversionRequest Processor is a daemon Thread which can handle image transformations. Normally a few of these are started.
- * Each one contains a Queue of Image request jobs it has to do, which is constantly watched for new jobs.
+ * Each one contains a BlockingQueue of Image request jobs it has to do, which is constantly watched for new jobs.
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: ImageConversionRequestProcessor.java,v 1.5 2005-11-30 15:58:04 pierre Exp $
+ * @version $Id: ImageConversionRequestProcessor.java,v 1.6 2006-10-16 12:56:10 pierre Exp $
  * @see    ImageConversionRequest
  */
 public class ImageConversionRequestProcessor implements Runnable {
@@ -37,13 +37,13 @@ public class ImageConversionRequestProcessor implements Runnable {
     private MMObjectBuilder icaches;
     private ImageConverter convert;
     private ImageInformer  informer;
-    private Queue queue;
+    private BlockingQueue queue;
     private Map table;
 
     /**
      * @javadoc
      */
-    public ImageConversionRequestProcessor(MMObjectBuilder icaches, ImageConverter convert, ImageInformer informer, Queue queue, Map table) {
+    public ImageConversionRequestProcessor(MMObjectBuilder icaches, ImageConverter convert, ImageInformer informer, BlockingQueue queue, Map table) {
         this.icaches = icaches;
         this.convert = convert;
         this.queue = queue;
@@ -60,14 +60,13 @@ public class ImageConversionRequestProcessor implements Runnable {
         MMBaseContext.startThread(this, "ImageConvert[" + processorId +"]");
     }
 
-
     // javadoc inherited (from Runnable)
     public void run() {
         MMBase mmbase = icaches.getMMBase();
         while (!mmbase.isShutdown()) {
             try {
                 log.debug("Waiting for request");
-                ImageConversionRequest req = (ImageConversionRequest) queue.get();
+                ImageConversionRequest req = (ImageConversionRequest) queue.take();
                 log.debug("Starting request");
                 processRequest(req);
                 log.debug("Done with request");
