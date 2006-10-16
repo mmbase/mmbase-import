@@ -10,10 +10,8 @@ See http://www.MMBase.org/license
 package org.mmbase.clustering.jgroups;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.Vector;
+import java.util.*;
+import java.util.concurrent.BlockingQueue;
 
 import org.jgroups.ChannelClosedException;
 import org.jgroups.ChannelNotConnectedException;
@@ -24,7 +22,6 @@ import org.jgroups.SuspectEvent;
 import org.jgroups.TimeoutException;
 import org.jgroups.View;
 import org.mmbase.core.util.DaemonThread;
-import org.mmbase.util.Queue;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -42,7 +39,7 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Costyn van Dongen
  * @author Ronald Wildenberg
- * @version $Id: ChangesReceiver.java,v 1.6 2006-08-09 11:52:33 pierre Exp $
+ * @version $Id: ChangesReceiver.java,v 1.7 2006-10-16 14:48:45 pierre Exp $
  */
 public class ChangesReceiver implements Runnable {
 
@@ -52,7 +49,7 @@ public class ChangesReceiver implements Runnable {
     private Thread kicker = null;
 
     /** Queue with messages received from other MMBase instances */
-    private final Queue nodesToSpawn;
+    private final BlockingQueue nodesToSpawn;
 
     /** JChannel: the multicast communication channel */
     private final JChannel channel;
@@ -62,7 +59,7 @@ public class ChangesReceiver implements Runnable {
      * @param channel channel on which to listen for and recieve messages.
      * @param nodesToSpawn Queue of received messages
      */
-    ChangesReceiver(JChannel channel, Queue nodesToSpawn) {
+    ChangesReceiver(JChannel channel, BlockingQueue nodesToSpawn) {
         this.channel = channel;
         this.nodesToSpawn = nodesToSpawn;
         this.start();
@@ -131,7 +128,7 @@ public class ChangesReceiver implements Runnable {
                          }
                      }
                      try {
-                         nodesToSpawn.append(message.getBuffer());
+                         nodesToSpawn.offer(message.getBuffer());
                      } catch (Exception ex) {
                          log.error(ex);
                      }
