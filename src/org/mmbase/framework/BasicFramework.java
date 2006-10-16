@@ -20,7 +20,7 @@ import org.mmbase.util.transformers.CharTransformer;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.4 2006-10-14 21:57:55 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.5 2006-10-16 09:04:26 johannes Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -30,11 +30,15 @@ public class BasicFramework implements Framework {
         return "BASIC";
     }
 
-    public StringBuilder getUrl(String page, Component component, Parameters blockParameters, Parameters frameworkParameters, boolean writeamp) {
-        return getUrl(page, null, component, blockParameters, frameworkParameters, writeamp);
+    public StringBuilder getUrl(String page, Renderer renderer, Component component, Parameters blockParameters, Parameters frameworkParameters, boolean writeamp) {
+        return getUrl(page, component, blockParameters, frameworkParameters, writeamp);
     }
 
-    public StringBuilder getUrl(String page, Renderer renderer, Component component, Parameters blockParameters, Parameters frameworkParameters, boolean writeamp) {
+    public StringBuilder getUrl(String page, Processor processor, Component component, Parameters blockParameters, Parameters frameworkParameters, boolean writeamp) {
+        return getUrl(page, component, blockParameters, frameworkParameters, writeamp);
+    }
+
+    public StringBuilder getUrl(String page, Component component, Parameters blockParameters, Parameters frameworkParameters, boolean writeamp) {
         StringBuilder show = new StringBuilder();
         Writer w = new StringBuilderWriter(show);
         if (writeamp) {
