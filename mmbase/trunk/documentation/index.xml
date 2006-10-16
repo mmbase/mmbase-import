@@ -7,7 +7,7 @@
 
     <date>2006-07-07</date>
 
-    <edition>$Id: index.xml,v 1.60 2006-10-02 16:38:24 michiel Exp $</edition>
+    <edition>$Id: index.xml,v 1.61 2006-10-16 09:09:46 andre Exp $</edition>
 
     <authorgroup>
       <author>
@@ -254,6 +254,11 @@
         Function sets</ulink></para>
       </listitem>
 
+      <listitem>
+        <para><ulink url="backenddevelopers/components.html">Component Framework</ulink>
+        document describing the MMBase component framework</para>
+      </listitem>
+      
       <listitem>
         <para><ulink url="backenddevelopers/dbsq.html">SearchQuery
         introduction</ulink></para>
