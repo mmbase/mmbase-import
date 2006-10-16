@@ -260,6 +260,11 @@
       </listitem>
 
       <listitem>
+        <para><ulink url="backenddevelopers/components.pdf">Component Framework</ulink>
+        document describing the MMBase component framework</para>
+      </listitem>
+
+      <listitem>
         <para><ulink url="backenddevelopers/dbsq.pdf">SearchQuery
         introduction</ulink></para>
       </listitem>
