@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.87 2006-10-16 09:25:45 pierre Exp $
+ * @version $Id: UrlTag.java,v 1.88 2006-10-16 14:46:33 johannes Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
@@ -113,7 +113,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
         }
     }
 
-    protected String getFrameworkUrl() throws JspTagException {
+    protected String getFrameworkUrl(boolean writeAmp) throws JspTagException {
         Framework framework = MMBase.getMMBase().getFramework();
         String origPage = page.getString(this);
 
@@ -123,13 +123,13 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
         Parameters frameworkParams = framework.createFrameworkParameters();
         fillStandardParameters(frameworkParams);
 
-        Parameters params = new Parameters();
+        Parameters params = new AutodefiningParameters();
         params.setAll(Referids.getReferids(referids, this));
         for (Map.Entry<String, ?> entry : extraParameters) {
             params.set(entry.getKey(), entry.getValue());
         }
 
-	StringBuilder url = framework.getUrl(origPage, comp, params, frameworkParams, false); /* TODO */
+	StringBuilder url = framework.getUrl(origPage, comp, params, frameworkParams, writeAmp); 
 	return url == null ? null : url.toString();
     }
 
@@ -223,12 +223,15 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
     protected String getUrl(boolean writeamp, boolean encodeUrl) throws JspTagException {
         Framework framework = MMBase.getMMBase().getFramework();
         if (framework != null) {
-            return getFrameworkUrl();
+            return getFrameworkUrl(writeamp);
+        } else {
+            return getLegacyUrl(writeamp, encodeUrl);
         }
+    }
 
+    protected String getLegacyUrl(boolean writeamp, boolean encodeUrl) throws JspTagException {
         StringWriter w = new StringWriter();
         StringBuffer show = w.getBuffer();
-
 
         if (referid != Attribute.NULL) {
             if (page != Attribute.NULL) throw new TaglibException("Cannot specify both 'referid' and 'page' attributes");
