@@ -19,7 +19,7 @@ import java.util.*;
  * access, such as obtaining relations or determining age of a node.
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualNode.java,v 1.12 2005-12-10 14:23:07 michiel Exp $
+ * @version $Id: VirtualNode.java,v 1.13 2006-10-16 12:56:57 pierre Exp $
  */
 public class VirtualNode extends MMObjectNode {
 
@@ -30,7 +30,6 @@ public class VirtualNode extends MMObjectNode {
     public VirtualNode(MMObjectBuilder parent) {
         super(parent, false);
     }
-
 
     public boolean isVirtual() {
         return true;

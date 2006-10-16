@@ -18,7 +18,7 @@ import org.mmbase.storage.search.StringSearchConstraint;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicStringSearchConstraint.java,v 1.8 2005-07-08 12:23:45 pierre Exp $
+ * @version $Id: BasicStringSearchConstraint.java,v 1.9 2006-10-16 12:56:57 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicStringSearchConstraint extends BasicFieldConstraint implements StringSearchConstraint {
@@ -323,8 +323,7 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
 
     // javadoc is inherited
     public String toString() {
-        StringBuffer sb = new StringBuffer("StringSearchConstraint(inverse:").
-        append(isInverse()).
+        StringBuilder sb = new StringBuilder("StringSearchConstraint(inverse:").append(isInverse()).
         append("field:").append(getFieldName()).
         append(", casesensitive:").append(isCaseSensitive()).
         append(", searchtype:").append(getSearchTypeDescription()).

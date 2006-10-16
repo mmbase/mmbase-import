@@ -18,7 +18,7 @@ import org.mmbase.storage.search.*;
  * The field alias is not set on default.
  *
  * @author Rob van Maris
- * @version $Id: BasicStepField.java,v 1.25 2006-09-25 14:08:45 michiel Exp $
+ * @version $Id: BasicStepField.java,v 1.26 2006-10-16 12:56:57 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicStepField implements StepField {
@@ -51,10 +51,10 @@ public class BasicStepField implements StepField {
         // Test for compatible type.
         boolean ok;
         switch (type) {
-        case Field.TYPE_BINARY: 
+        case Field.TYPE_BINARY:
             ok = value instanceof byte[];
             break;
-            // Numerical types.            
+            // Numerical types.
         case Field.TYPE_INTEGER:
         case Field.TYPE_FLOAT:
         case Field.TYPE_DOUBLE:
@@ -65,7 +65,7 @@ public class BasicStepField implements StepField {
 
             // String types.
         case Field.TYPE_XML:
-            
+
         case Field.TYPE_STRING:
             ok = value instanceof String;
             break;
@@ -134,7 +134,7 @@ public class BasicStepField implements StepField {
         }
         // Check field belongs to step
         if (!step.getTableName().equals(field.getParent().getTableName())) {
-            throw new IllegalArgumentException("Invalid field value, belongs to step " + field.getParent().getTableName() 
+            throw new IllegalArgumentException("Invalid field value, belongs to step " + field.getParent().getTableName()
                                                + " instead of step " +  step.getTableName() + ": "
                                                + field);
         }
@@ -260,7 +260,7 @@ public class BasicStepField implements StepField {
 
     // javadoc is inherited
     public String toString() {
-        StringBuffer sb = new StringBuffer("");
+        StringBuilder sb = new StringBuilder();
         Step step = getStep();
         if (step == null) {
             sb.append("null");

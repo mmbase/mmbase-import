@@ -29,7 +29,7 @@ import org.mmbase.storage.search.*;
  * Avoiding such inconsistencies is the responsibility of the user.
  *
  * @author  Rob van Maris
- * @version $Id: ModifiableQuery.java,v 1.6 2006-09-08 14:46:55 michiel Exp $
+ * @version $Id: ModifiableQuery.java,v 1.7 2006-10-16 12:56:57 pierre Exp $
  * @since MMBase-1.7
  */
 public class ModifiableQuery implements SearchQuery {
@@ -299,13 +299,15 @@ public class ModifiableQuery implements SearchQuery {
 
     // javadoc is inherited
     public String toString() {
-        return "ModifiableSearchQuery(distinct:" + isDistinct()
-        + ", steps:" + getSteps()
-        + ", fields:" + getFields()
-        + ", constraint:" + getConstraint()
-        + ", sortorders:" + getSortOrders()
-        + ", max:" + getMaxNumber()
-        + ", offset:" + getOffset() + ")";
+        StringBuilder sb = new StringBuilder("ModifiableSearchQuery(distinct:").append(isDistinct()).
+        append(", steps:").append(getSteps()).
+        append(", fields:").append(getFields()).
+        append(", constraint:").append(getConstraint()).
+        append(", sortorders:").append(getSortOrders()).
+        append(", max:").append(getMaxNumber()).
+        append(", offset:").append(getOffset()).
+        append(")");
+        return sb.toString();
     }
 
 
