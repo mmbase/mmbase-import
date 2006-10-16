@@ -10,7 +10,8 @@ See http://www.MMBase.org/license
 package org.mmbase.util.images;
 
 import java.util.*;
-import org.mmbase.util.Queue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.mmbase.module.core.MMObjectNode;
 
@@ -24,11 +25,8 @@ import org.mmbase.util.logging.Logger;
  * @since MMBase-1.8
  */
 
-
 public class Factory {
     private static final Logger log = Logging.getLoggerInstance(Factory.class);
-
-
 
     private static ImageInformer imageInformer;
     protected static Map params = new HashMap();
@@ -37,21 +35,19 @@ public class Factory {
      * The ImageConvertInterface implementation to be used (defaults to ConvertImageMagic)
      */
     protected static final Class DEFAULT_IMAGECONVERTER = ImageMagickImageConverter.class;
-    protected static final Class DEFAULT_IMAGEINFORMER  = DummyImageInformer.class;
+    protected static final Class DEFAULT_IMAGEINFORMER = DummyImageInformer.class;
 
     protected static int maxConcurrentRequests = 2;
 
-
     protected static final int maxRequests = 32;
-    protected static Queue imageRequestQueue     = new Queue(maxRequests);
-    protected static Map imageRequestTable       = new Hashtable(maxRequests);
+    protected static BlockingQueue imageRequestQueue = new LinkedBlockingQueue(maxRequests);
+    protected static Map imageRequestTable = new HashMap(maxRequests);
     protected static ImageConversionRequestProcessor ireqprocessors[];
 
     /**
      * The default image format.
      */
     protected static String defaultImageFormat = "jpeg";
-
 
     public static void init(Map properties, org.mmbase.module.core.MMObjectBuilder imageCaches) {
         params.putAll(properties);
@@ -70,14 +66,12 @@ public class Factory {
             defaultImageFormat = tmp;
         }
 
-
         ImageConverter imageConverter = loadImageConverter();
         imageInformer = loadImageInformer();
         log.info("Got " + imageInformer);
 
         imageConverter.init(params);
         imageInformer.init(params);
-
 
         // Startup parrallel converters
         ireqprocessors = new ImageConversionRequestProcessor[maxConcurrentRequests];
@@ -87,18 +81,15 @@ public class Factory {
         }
     }
 
-
     public static String getDefaultImageFormat() {
         return defaultImageFormat;
     }
-
 
     private static ImageConverter loadImageConverter() {
 
         String className  = DEFAULT_IMAGECONVERTER.getName();
         String tmp = (String) params.get("ImageConvertClass");
         if (tmp != null) className = tmp;
-
 
         // backwards compatibility
         if (className.equals("org.mmbase.module.builders.ConvertImageMagick")) {
@@ -164,7 +155,6 @@ public class Factory {
         return imageInformer;
     }
 
-
     /**
      * Triggers a image-conversion.
      */
@@ -179,7 +169,7 @@ public class Factory {
             } else {
                 req = new ImageConversionRequest(pars, in, format, icacheNode);
                 imageRequestTable.put(ckey, req);
-                imageRequestQueue.append(req);
+                imageRequestQueue.offer(req);
             }
         }
         return req;
