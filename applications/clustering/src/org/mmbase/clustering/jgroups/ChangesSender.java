@@ -9,13 +9,14 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.clustering.jgroups;
 
-import org.mmbase.clustering.Statistics;
+import java.util.concurrent.BlockingQueue;
 
 import org.jgroups.ChannelException;
 import org.jgroups.JChannel;
 import org.jgroups.Message;
+
+import org.mmbase.clustering.Statistics;
 import org.mmbase.core.util.DaemonThread;
-import org.mmbase.util.Queue;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -32,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rico Jansen
  * @author Nico Klasens
  * @author Costyn van Dongen
- * @version $Id: ChangesSender.java,v 1.7 2006-08-09 11:52:33 pierre Exp $
+ * @version $Id: ChangesSender.java,v 1.8 2006-10-16 14:48:45 pierre Exp $
  */
 public class ChangesSender implements Runnable {
 
@@ -42,7 +43,7 @@ public class ChangesSender implements Runnable {
     private Thread kicker = null;
 
     /** Queue with messages to send to other MMBase instances */
-    private final Queue nodesToSend;
+    private final BlockingQueue nodesToSend;
 
     /** Channel to send messages on */
     private final JChannel channel;
@@ -53,7 +54,7 @@ public class ChangesSender implements Runnable {
      * @param channel Channel on which to send messages
      * @param nodesToSend Queue of messages to send
      */
-    ChangesSender(JChannel channel, Queue nodesToSend, Statistics send) {
+    ChangesSender(JChannel channel, BlockingQueue nodesToSend, Statistics send) {
         this.send = send;
         this.channel = channel;
         this.nodesToSend = nodesToSend;
@@ -78,7 +79,6 @@ public class ChangesSender implements Runnable {
         }
     }
 
-
     /**
      * Take messages fromt the queeu nodesToSend and send them
      * on the JChannel. send() will throw an exception in the
@@ -98,7 +98,7 @@ public class ChangesSender implements Runnable {
                     continue;
                 }
 
-                byte[] message = (byte[]) nodesToSend.get();
+                byte[] message = (byte[]) nodesToSend.take();
                 long startTime = System.currentTimeMillis();
                 Message msg = new Message(null, null, message);
                 try {
