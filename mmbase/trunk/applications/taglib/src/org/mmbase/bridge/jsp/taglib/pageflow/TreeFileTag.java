@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * A full description of this command can be found in the mmbase-taglib.xml file.
  *
  * @author Johannes Verelst
- * @version $Id: TreeFileTag.java,v 1.18 2006-07-17 15:38:47 johannes Exp $
+ * @version $Id: TreeFileTag.java,v 1.19 2006-10-16 14:46:33 johannes Exp $
  */
 
 public class TreeFileTag extends UrlTag {
@@ -46,6 +46,10 @@ public class TreeFileTag extends UrlTag {
             throw new JspTagException("Attribute 'objectlist' was not specified");
         }
         return super.doStartTag();
+    }
+
+    protected String getFrameworkUrl() throws JspTagException {
+        return getPage();
     }
 
     protected String getPage() throws JspTagException {
@@ -91,7 +95,7 @@ public class TreeFileTag extends UrlTag {
     protected String getUrl(boolean writeamp, boolean encode) throws JspTagException {
         String url = "";
         try {
-            url = super.getUrl(writeamp, encode);
+            url = super.getLegacyUrl(writeamp, encode);
         } catch (JspTagException e) {
             if (!notFound.getString(this).equals("skip")) {
                 throw(e);
