@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.18 2006-08-03 08:57:10 johannes Exp $
+ * @version $Id: SendMail.java,v 1.19 2006-10-16 15:51:23 michiel Exp $
  */
 public class SendMail extends AbstractSendMail implements SendMailInterface {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -67,7 +67,7 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
     }
 
 
-    private Session session;
+    protected Session session;
 
     /**
      */
