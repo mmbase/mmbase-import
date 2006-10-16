@@ -47,7 +47,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.211 2006-10-14 13:43:28 michiel Exp $
+ * @version $Id: MMBase.java,v 1.212 2006-10-16 12:56:57 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -87,7 +87,6 @@ public class MMBase extends ProcessorModule {
 
     // logging
     private static final Logger log = Logging.getLoggerInstance(MMBase.class);
-
 
     /**
      * Reference to the MMBase singleton. Used for quick reference by getMMBase();
@@ -361,7 +360,6 @@ public class MMBase extends ProcessorModule {
 
         mmbaseState = STATE_LOAD;
 
-
         log.debug("Loading builders:");
 
         cloudModel = ModelsManager.addModel("default","default.xml");
@@ -374,7 +372,6 @@ public class MMBase extends ProcessorModule {
         }
 
         mmbaseState = STATE_INITIALIZE;
-
 
         log.debug("Checking MMBase");
         if (!checkMMBase()) {
@@ -770,7 +767,6 @@ public class MMBase extends ProcessorModule {
         }
     }
 
-
     /**
      *@since MMBase-1.7
      */
@@ -786,14 +782,12 @@ public class MMBase extends ProcessorModule {
         insRel  = (InsRel)  loadCoreBuilder("insrel");
         typeRel = (TypeRel) loadCoreBuilder("typerel");
 
-
         try {
             oAlias = (OAlias)loadBuilder("oalias");
         } catch (BuilderConfigurationException e) {
             // OALias  builder was not defined -
             // builder is optional, so this is not an error
         }
-
 
         Set<String> builders = getBuilderLoader().getResourcePaths(ResourceLoader.XML_PATTERN, true/* recursive*/);
 
@@ -886,7 +880,6 @@ public class MMBase extends ProcessorModule {
         }
     }
 
-
     /**
      * @since MMBase-1.8
      */
@@ -952,8 +945,6 @@ public class MMBase extends ProcessorModule {
         }
         return null;
     }
-
-
 
     /**
      * Locate one specific builder within a given path, relative to the main builder config path, including sub-paths.

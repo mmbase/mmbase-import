@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.197 2006-10-06 12:39:48 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.198 2006-10-16 12:56:57 pierre Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -75,7 +75,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      */
     protected static final RelatedNodesCache relatedCache = RelatedNodesCache.getCache();
 
-
     /**
      * objectNumber -> List of all relation nodes
      * @since MMBase-1.7
@@ -84,8 +83,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     // < MMBase-1.7, every mmobjectnode instance had a cache for relation nodes
     // private Vector relations=null; // possibly filled with insRels
 
-
-
     /**
      * Map which stores the current database value for fields when
      * then change in the node.
@@ -93,7 +90,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @since MMBase-1.8
      */
     private Map<String, Object> oldValues = new HashMap();
-
 
     /**
      * Holds the name - value pairs of this node (the node's fields).
@@ -277,7 +273,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         return success;
     }
 
-
     /**
      * Undo changes made to the node.
      *
@@ -434,7 +429,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @since MMBase-1.6.2
      */
     String defaultToString() {
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         try {
             Set entrySet = values.entrySet();
             synchronized(values) {
@@ -444,21 +439,19 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
                     String key = (String) entry.getKey();
                     int dbtype = getDBType(key);
                     String value = "" + entry.getValue();  // XXX:should be retrieveValue ?
-                    if ("".equals(result.toString())) {
-                        result = new StringBuffer(key+"='"+value+"'"); // can this occur?
+                    if (result.length() == 0) {
+                        result.append(key).append("='").append(value).append("'");
                     } else {
-                        result.append(","+key+"='");
-                        Casting.toStringBuffer(result, value).append("'");
+                        result.append(",").append(key).append("='").append(value).append("'");
                     }
                 }
             }
         } catch(Throwable e) {
-            result.append("" + values); // simpler version...
+            result.append(values); // simpler version...
         }
         result.append(super.toString());
         return result.toString();
     }
-
 
     /**
      * @return <code>true</code> if field exists and may be used.
@@ -518,7 +511,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         }
     }
 
-
     /**
      * Retrieves a value from the values hashtable.
      * This is a low-level method that circumvents typechecking and the triggers of extended classes.
@@ -538,7 +530,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     public boolean isVirtual() {
         return false;
     }
-
 
     /**
      * If a node is still 'new' you must persistify it with {@link #insert}, and otherwise with {@link #commit}.
@@ -608,7 +599,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         //store the old value
         storeOldValue(fieldName, originalValue);
 
-
         // put the key/value in the value hashtable
         storeValue(fieldName, fieldValue);
         if (fieldValue instanceof byte[]) {
@@ -656,7 +646,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         return SizeOf.getByteSize(value);
     }
 
-
     // Add the field to update to the changed Vector
     //
     private void setUpdate(String fieldName) {
@@ -689,7 +678,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     public int getOType() {
         return Casting.toInt(values.get(MMObjectBuilder.FIELD_OBJECT_TYPE));
     }
-
 
     /**
      * @since MMBase-1.8
@@ -778,7 +766,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         return value;
     }
 
-
     /**
      * Get a value of a certain field.  The value is returned as a
      * String. Non-string values are automatically converted to
@@ -845,7 +832,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         return o;
     }
 
-
     /**
      * If the values map contains an InputStream, care must be taken because often an InputStream can be used only once.
      * @since MMBase-1.8
@@ -904,7 +890,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         }
     }
 
-
     public InputStream getInputStreamValue(String fieldName) {
         Object value = values.get(fieldName);
         if (value == null) {
@@ -949,7 +934,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
             }
         }
     }
-
 
     /**
      * Get a value of a certain field.
@@ -1050,7 +1034,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         return Casting.toLong(value);
     }
 
-
     /**
      * Get a value of a certain field.
      * The value is returned as a float value. Values of non-float, numeric fields are converted if possible.
@@ -1065,7 +1048,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         if (value instanceof MMObjectNode) return (float) ((MMObjectNode)value).getNumber();
         return Casting.toFloat(value);
     }
-
 
     /**
      * Get a value of a certain field.
@@ -1166,7 +1148,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         return true;
     }
 
-
     /**
      * Deletes the propertie cache for this node.
      * Forces a reload of the properties on next use.
@@ -1186,8 +1167,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     public Map getOldValues() {
         return Collections.unmodifiableMap(oldValues);
     }
-
-
 
     /**
      * Return a the properties for this node.
@@ -1209,7 +1188,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         return properties;
     }
 
-
     /**
      * Returns a specified property of this node.
      * @param key the name of the property to retrieve
@@ -1229,7 +1207,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
             return null;
         }
     }
-
 
     /**
      * Sets a specified property for this node.
@@ -1357,7 +1334,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         }
     }
 
-
     /**
      * Return the relations of this node, filtered on a specified type.
      * Note that this returns the nodes describing the relation - not the nodes 'related to'.
@@ -1436,7 +1412,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         return count;
     }
 
-
     /**
      * Return the age of the node, determined using the daymarks builder.
      * @return the age in days, or 0 if unknown (daymarks builder not present)
@@ -1492,7 +1467,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         }
     }
 
-
     /**
      * Get all related nodes. The returned nodes are not the
      * nodes directly attached to this node (the relation nodes) but the nodes
@@ -1517,7 +1491,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         }
         return result;
     }
-
 
     /**
      * Get the related nodes of a certain type. The returned nodes are not the
@@ -1591,12 +1564,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         //   (this will return virtual audio- and/or videoparts ordered on their *real* parent)
         // - construct a list of nodes for each parentbuilder seperately
         // - ask the parentbuilder for each list of virtual nodes to get a list of the real nodes
-
-
         if( builder != null ) {
 
             ClusterBuilder clusterBuilder = parent.mmb.getClusterBuilder();
-
 
             // multilevel from table this.parent.name -> type
             List tables = new ArrayList();
@@ -1748,21 +1718,18 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         return result;
     }
 
-
     public int getByteSize() {
         return getByteSize(new SizeOf());
     }
 
     public int getByteSize(SizeOf sizeof) {
-        return
-            sizeof.sizeof(values) +
+        return sizeof.sizeof(values) +
             sizeof.sizeof(oldValues) +
             sizeof.sizeof(sizes) +
             sizeof.sizeof(properties) +
             sizeof.sizeof(changed) +
             12 * SizeOf.SZ_REF;
     }
-
 
     /**
      * @since MMBase-1.6.2

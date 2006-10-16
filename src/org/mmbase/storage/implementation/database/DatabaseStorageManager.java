@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.172 2006-09-26 13:04:14 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.173 2006-10-16 12:56:57 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -666,7 +666,7 @@ public class DatabaseStorageManager implements StorageManager {
      */
     protected File getBinaryFile(MMObjectNode node, String fieldName) {
         String basePath = factory.getBinaryFileBasePath();
-        StringBuffer pathBuffer = new StringBuffer();
+        StringBuilder pathBuffer = new StringBuilder();
         int number = node.getNumber() / 1000;
         while (number > 0) {
             int num = number % 100;
@@ -877,8 +877,8 @@ public class DatabaseStorageManager implements StorageManager {
 
     protected void create(MMObjectNode node, List<CoreField> createFields, String tablename) {
         // Create a String that represents the fields and values to be used in the insert.
-        StringBuffer fieldNames = null;
-        StringBuffer fieldValues = null;
+        StringBuilder fieldNames = null;
+        StringBuilder fieldValues = null;
 
         List<CoreField> fields = new ArrayList();
         for (CoreField field : createFields) {
@@ -891,8 +891,8 @@ public class DatabaseStorageManager implements StorageManager {
                 fields.add(field);
                 String fieldName = (String)factory.getStorageIdentifier(field);
                 if (fieldNames == null) {
-                    fieldNames = new StringBuffer(fieldName);
-                    fieldValues = new StringBuffer("?");
+                    fieldNames = new StringBuilder(fieldName);
+                    fieldValues = new StringBuilder("?");
                 } else {
                     fieldNames.append(',').append(fieldName);
                     fieldValues.append(",?");
@@ -1050,7 +1050,7 @@ public class DatabaseStorageManager implements StorageManager {
 
     protected void change(MMObjectNode node, MMObjectBuilder builder, String tableName, Collection<CoreField> changeFields) {
         // Create a String that represents the fields to be used in the commit
-        StringBuffer setFields = null;
+        StringBuilder setFields = null;
         List<CoreField> fields = new ArrayList();
         for (CoreField field : changeFields) {
             // changing number is not allowed
@@ -1066,7 +1066,7 @@ public class DatabaseStorageManager implements StorageManager {
                 // store the fieldname and the value parameter
                 String fieldName = (String)factory.getStorageIdentifier(field);
                 if (setFields == null) {
-                    setFields = new StringBuffer(fieldName + "=?");
+                    setFields = new StringBuilder(fieldName + "=?");
                 } else {
                     setFields.append(',').append(fieldName).append("=?");
                 }
@@ -1562,7 +1562,7 @@ public class DatabaseStorageManager implements StorageManager {
             getActiveConnection();
             // get a builders fields
             List<CoreField> builderFields = builder.getFields(NodeManager.ORDER_CREATE);
-            StringBuffer fieldNames = null;
+            StringBuilder fieldNames = null;
             for (CoreField field : builderFields) {
                 if (field.inStorage()) {
                     if (factory.hasOption(Attributes.STORES_BINARY_AS_FILE) && (field.getType() == Field.TYPE_BINARY)) {
@@ -1574,7 +1574,7 @@ public class DatabaseStorageManager implements StorageManager {
                     // store the fieldname and the value parameter
                     String fieldName = (String)factory.getStorageIdentifier(field);
                     if (fieldNames == null) {
-                        fieldNames = new StringBuffer(fieldName);
+                        fieldNames = new StringBuilder(fieldName);
                     } else {
                         fieldNames.append(',').append(fieldName);
                     }
@@ -1612,7 +1612,7 @@ public class DatabaseStorageManager implements StorageManager {
             MMObjectBuilder builder = node.getBuilder();
             // get a builders fields
             List<CoreField> builderFields = builder.getFields(NodeManager.ORDER_CREATE);
-            StringBuffer fieldNames = null;
+            StringBuilder fieldNames = null;
             for (CoreField field : builderFields) {
                 if (field.inStorage()) {
                     if (factory.hasOption(Attributes.STORES_BINARY_AS_FILE) && (field.getType() == Field.TYPE_BINARY)) {
@@ -1621,7 +1621,7 @@ public class DatabaseStorageManager implements StorageManager {
                     // store the fieldname and the value parameter
                     String fieldName = (String)factory.getStorageIdentifier(field);
                     if (fieldNames == null) {
-                        fieldNames = new StringBuffer(fieldName);
+                        fieldNames = new StringBuilder(fieldName);
                     } else {
                         fieldNames.append(',').append(fieldName);
                     }
@@ -1828,7 +1828,7 @@ public class DatabaseStorageManager implements StorageManager {
         }
 
         List<CoreField> tableFields = new ArrayList();
-        for (CoreField field : fields) { 
+        for (CoreField field : fields) {
             if (isPartOfBuilderDefinition(field)) {
                 tableFields.add(field);
             }
@@ -1841,10 +1841,10 @@ public class DatabaseStorageManager implements StorageManager {
     }
 
     protected void createTable(MMObjectBuilder builder, List<CoreField> tableFields, String tableName) {
-        StringBuffer createFields = new StringBuffer();
-        StringBuffer createIndices = new StringBuffer();
-        StringBuffer createFieldsAndIndices = new StringBuffer();
-        StringBuffer createConstraints = new StringBuffer();
+        StringBuilder createFields = new StringBuilder();
+        StringBuilder createIndices = new StringBuilder();
+        StringBuilder createFieldsAndIndices = new StringBuilder();
+        StringBuilder createConstraints = new StringBuilder();
         // obtain the parentBuilder
         MMObjectBuilder parentBuilder = builder.getParentBuilder();
         Scheme rowtypeScheme;
@@ -2526,7 +2526,7 @@ public class DatabaseStorageManager implements StorageManager {
     protected String getFieldList(Index index) {
         String result = null;
         if (index.size() == 1 || factory.hasOption(Attributes.SUPPORTS_COMPOSITE_INDEX)) {
-            StringBuffer indexFields = new StringBuffer();
+            StringBuilder indexFields = new StringBuilder();
             for (Iterator f = index.iterator(); f.hasNext();) {
                 CoreField field = (CoreField)f.next();
                 if (indexFields.length() > 0) {

@@ -17,7 +17,7 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicCompositeConstraint.java,v 1.8 2006-09-08 18:42:59 michiel Exp $
+ * @version $Id: BasicCompositeConstraint.java,v 1.9 2006-10-16 12:56:57 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicCompositeConstraint extends BasicConstraint implements CompositeConstraint {
@@ -142,8 +142,7 @@ public class BasicCompositeConstraint extends BasicConstraint implements Composi
 
     // javadoc is inherited
     public String toString() {
-        StringBuffer sb = new StringBuffer("CompositeConstraint(inverse:").
-        append(isInverse()).
+        StringBuilder sb = new StringBuilder("CompositeConstraint(inverse:").append(isInverse()).
         append(", operator:").append(getLogicalOperatorDescription()).
         append(", childs:").append(getChilds()).
         append(")");

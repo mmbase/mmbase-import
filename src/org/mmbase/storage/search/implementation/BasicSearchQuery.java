@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.35 2006-09-25 14:08:45 michiel Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.36 2006-10-16 12:56:57 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
@@ -51,7 +51,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
     /** Two variables to speed up hashCode() by caching the result */
     private boolean hasChangedHashcode = true;
     private int savedHashcode = -1;
-    
+
     /**
      * Constructor.
      *
@@ -131,7 +131,6 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
             throw new InternalError(e.toString());
         }
     }
-
 
     protected void copySteps(SearchQuery q) {
         MMBase mmb = MMBase.getMMBase();
@@ -579,13 +578,15 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
 
     // javadoc is inherited
     public String toString() {
-        return "SearchQuery(distinct:" + isDistinct()
-        + ", steps:" + getSteps()
-        + ", fields:" + getFields()
-        + ", constraint:" + getConstraint()
-        + ", sortorders:" + getSortOrders()
-        + ", max:" + getMaxNumber()
-        + ", offset:" + getOffset() + ")";
+        StringBuilder sb = new StringBuilder("SearchQuery(distinct:").append(isDistinct()).
+        append(", steps:" + getSteps()).
+        append(", fields:").append(getFields()).
+        append(", constraint:").append(getConstraint()).
+        append(", sortorders:").append(getSortOrders()).
+        append(", max:").append(getMaxNumber()).
+        append(", offset:").append(getOffset()).
+        append(")");
+        return sb.toString();
     }
 
 }

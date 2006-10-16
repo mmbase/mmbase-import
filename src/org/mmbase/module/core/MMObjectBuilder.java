@@ -61,7 +61,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.399 2006-10-14 14:35:38 nklasens Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.400 2006-10-16 12:56:57 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -486,7 +486,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         //this is only for backwards compatibility, to notify the MMBaseObserver's
         MMBase.getMMBase().addNodeRelatedEventsListener(getTableName(), this);
 
-
         return true;
     }
 
@@ -703,7 +702,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         }
         return result;
     }
-
 
     /**
      * Sets the builder that this builder extends, and registers it in the storage layer.
@@ -1195,7 +1193,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         return Collections.unmodifiableCollection(fields.values());
     }
 
-
     /**
      * Return a list of field names of this table.
      * @return a unmodifiable <code>Set</code> with the tables field names
@@ -1214,7 +1211,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     public FieldDefs getField(String fieldName) {
         return (FieldDefs) fields.get(fieldName.toLowerCase());
     }
-
 
     /**
      * @since MMBase-1.8
@@ -1244,7 +1240,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         updateFields();
     }
 
-
     /**
      * Remove a field from this builder.
      * This does not affect the builder config file, nor the table used.
@@ -1262,7 +1257,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         }
         updateFields();
     }
-
 
     /**
      * Return a field's storage type. The returned value is one of the following values
@@ -1495,7 +1489,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         }
     }
 
-
     /**
      * The GUIIndicator can depend on the locale. Override this function
      * @since MMBase-1.6
@@ -1512,7 +1505,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     protected String getLocaleGUIIndicator(Locale locale, MMObjectNode node) {
         return getGUIIndicator(node);
     }
-
 
     /**
      * Gets the field definitions for the editor, sorted according
@@ -1930,7 +1922,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
              NumberFormat nf = NumberFormat.getNumberInstance (Locale.GERMANY);
              return  "" + nf.format(val);
         } else {
-            StringBuffer arg = new StringBuffer(field);
+            StringBuilder arg = new StringBuilder(field);
              if (arguments != null) {
                  for (int i = 1; i < arguments.size(); i++) {
                      if (arg.length() > 0) arg.append(',');
@@ -2155,7 +2147,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         throw new UnsupportedOperationException(getClass().getName() +" should override the getList method (you've probably made a typo)");
     }
 
-
     /**
      * Obtains a string value by performing the provided command.
      * The command can be called:
@@ -2359,7 +2350,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         return true;
     }
     */
-
 
     /**
      * Sets a list of singular names (language - value pairs)
@@ -2660,7 +2650,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         return properties;
     }
 
-
     /**
      * Get all builder properties and override properties through application context
      * @param contextPath path in application context where properties are located
@@ -2768,33 +2757,29 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @param width the maximum width to wrap at
      * @return the wrapped tekst
      */
-    public String wrap(String text,int width) {
-        StringTokenizer tok;
-        String word;
-        StringBuffer dst=new StringBuffer();
-        int pos;
-
-        tok=new StringTokenizer(text," \n\r",true);
-        pos=0;
+    public String wrap(String text, int width) {
+        StringBuilder dst = new StringBuilder();
+        StringTokenizer tok = new StringTokenizer(text," \n\r",true);
+        int pos = 0;
         while(tok.hasMoreTokens()) {
-            word=tok.nextToken();
+            String word = tok.nextToken();
             if (word.equals("\n")) {
-                pos=0;
+                pos = 0;
             } else if (word.equals(" ")) {
-                if (pos==0) {
-                    word="";
+                if (pos == 0) {
+                    word = "";
                 } else {
                     pos++;
-                    if (pos>=width) {
-                        word="\n";
-                        pos=0;
+                    if (pos >= width) {
+                        word = "\n";
+                        pos = 0;
                     }
                 }
             } else {
-                pos+=word.length();
-                if (pos>=width) {
+                pos += word.length();
+                if (pos >= width) {
                     dst.append("\n");
-                    pos=word.length();
+                    pos = word.length();
                 }
             }
             dst.append(word);
@@ -2924,9 +2909,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         }
         int type = event.getType();
         eventBackwardsCompatible(event.getMachine(), event.getNodeNumber(), type);
-
     }
-
 
     /**
      * @since MMBase-1.8
