@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.92 2006-10-14 14:35:39 nklasens Exp $
+ * @version $Id: Casting.java,v 1.93 2006-10-17 12:06:16 michiel Exp $
  */
 
 import java.util.*;
@@ -243,6 +243,23 @@ public class Casting {
         }
         try {
             toWriter(new StringBufferWriter(buffer), o);
+        } catch (java.io.IOException e) {}
+        return buffer;
+    }
+
+    /**
+     * Convert an object to a string, using a StringBuilder
+     * @param buffer The StringBuilder with which to create the string
+     * @param o the object to convert
+     * @return the StringBuilder used for conversion (same as the buffer parameter)
+     * @since MMBase-1.9
+     */
+    public static StringBuilder toStringBuilder(StringBuilder buffer, Object o) {
+        if (o == null) {
+            return buffer;
+        }
+        try {
+            toWriter(new StringBuilderWriter(buffer), o);
         } catch (java.io.IOException e) {}
         return buffer;
     }
