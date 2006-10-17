@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.72 2006-06-09 12:20:34 pierre Exp $
+ * @version $Id: TypeRel.java,v 1.72.2.1 2006-10-17 12:07:56 nklasens Exp $
  * @see RelDef
  * @see InsRel
  * @see org.mmbase.module.core.MMBase
@@ -696,7 +696,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
 
                     i1 = n1.getIntValue("rnumber");
                     i2 = n2.getIntValue("rnumber");
-                    if (i1 != -1 && i2 != -1 && i1 != i2) return i1 - i2;
+                    if (i1 > 0 && i2 > 0 && i1 != i2) return i1 - i2;
 
                     return 0;
                 }
@@ -734,11 +734,14 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
 
             // determine maximum value
             int roleMax = role <= 0  ? 0 : role + 1; // i.e. source, destination, role
-            int destinationMax = role <= 0 ? destination + 1 : destination; // i.e. source, destination, 0
+            int destinationMax = destination <= 0 ? destination + 1 : destination; // i.e. source, destination, 0
             int sourceMax = (destination <= 0 && role <= 0) ? (source <= 0  ? 0 : source + 1) : source; // i.e. source, 0, 0
 
-            return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(sourceMin, destinationMin, roleMin),
-                                                            new VirtualTypeRelNode(sourceMax, destinationMax, roleMax)));
+            VirtualTypeRelNode fromTypeRelNode = new VirtualTypeRelNode(sourceMin, destinationMin, roleMin);
+            VirtualTypeRelNode toTypeRelNode = new VirtualTypeRelNode(sourceMax, destinationMax, roleMax);
+
+            SortedSet allowed = subSet(fromTypeRelNode, toTypeRelNode);
+            return Collections.unmodifiableSortedSet(allowed);
         }
 
     }
