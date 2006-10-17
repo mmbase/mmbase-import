@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * decide not to call the set-function of the attribute (in case of tag-instance-reuse).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Attribute.java,v 1.29 2006-09-29 10:09:22 michiel Exp $
+ * @version $Id: Attribute.java,v 1.30 2006-10-17 12:08:54 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -82,13 +82,13 @@ public class Attribute {
     protected Attribute() {}
 
     /**
-     * Appends the evaluated Attribute to StringBuffer
+     * Appends the evaluated Attribute to StringBuilder
      *
      * @param tag The tag relative to which the variable evalutations must be done
      *            (normally 'this' in a Tag implementation)
      */
 
-    public void appendValue(ContextReferrerTag tag, StringBuffer buffer) throws JspTagException {
+    public void appendValue(ContextReferrerTag tag, StringBuilder buffer) throws JspTagException {
         if (log.isDebugEnabled()) {
             log.debug("Appending " + attribute);
         }
@@ -105,11 +105,11 @@ public class Attribute {
     public Object getValue(ContextReferrerTag tag) throws JspTagException {
         if (! containsVars) return attribute;
 
-        if (attributeParts.size() == 1) { // avoid construction of StringBuffer for this simple case
+        if (attributeParts.size() == 1) { // avoid construction of StringBuilder for this simple case
             Part ap = (Part) attributeParts.get(0);
             return ap.getValue(tag);
         }
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         appendValue(tag, result);
         return result.toString();
     }
@@ -236,7 +236,7 @@ public class Attribute {
                     attributeParts.add(new StringPart("$"));
                     pos++;
                 } else {        // search until non-identifier
-                    StringBuffer varName = new StringBuffer();
+                    StringBuilder varName = new StringBuilder();
                     while (ContextContainer.isContextIdentifierChar(c)) {
                         varName.append(c);
                         pos++;
@@ -280,8 +280,8 @@ public class Attribute {
 
         abstract Object getValue(ContextReferrerTag tag) throws JspTagException;
 
-        final void  appendValue(ContextReferrerTag tag, StringBuffer buffer) throws JspTagException {
-            Casting.toStringBuffer(buffer, getValue(tag));
+        final void  appendValue(ContextReferrerTag tag, StringBuilder buffer) throws JspTagException {
+            Casting.toStringBuilder(buffer, getValue(tag));
         }
     }
 
@@ -408,6 +408,6 @@ final class NullAttribute extends Attribute {
     NullAttribute() { }
     public final Object getValue(ContextReferrerTag tag)  throws JspTagException { return null; }
     public final String getString(ContextReferrerTag tag) throws JspTagException { return ""; }
-    public final void   appendValue(ContextReferrerTag tag, StringBuffer buffer) throws JspTagException { return; }
+    public final void   appendValue(ContextReferrerTag tag, StringBuilder buffer) throws JspTagException { return; }
     public final String toString() { return "NULLATTRIBUTE"; }
 }
