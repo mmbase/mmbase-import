@@ -27,7 +27,7 @@
     <field>
       <descriptions>
         <description xml:lang="en">Title of the news item</description>
-        <description xml:lang="nl">Titel (hoofd kop) van het nieuwsitem</description>
+        <description xml:lang="nl">Titel (hoofdkop) van het nieuwsitem</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Title</guiname>
@@ -49,7 +49,7 @@
     <field>
       <descriptions>
         <description xml:lang="en">Subtitle of the news item</description>
-        <description xml:lang="nl">Sub hoofd van het nieuwsitem</description>
+        <description xml:lang="nl">Subkop van het nieuwsitem</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">SubTitle</guiname>
@@ -137,7 +137,9 @@
           <search>5</search>
         </positions>
       </editor>
-      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="now" />
+      </datatype>
       <db>
         <name>date</name>
         <type state="persistent" notnull="false" key="false">DATETIME</type>
