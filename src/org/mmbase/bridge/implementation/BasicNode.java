@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.211 2006-09-25 10:17:36 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.212 2006-10-17 12:07:49 nklasens Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -646,10 +646,11 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         RelationList r1 = BridgeCollections.EMPTY_RELATIONLIST;
         RelationList r2 = BridgeCollections.EMPTY_RELATIONLIST;
         if (role == null) {
-            if (!typeRel.getAllowedRelations(nodeManager.getNumber(), otherManager.getNumber(), 0,
+            int allowedOtherNumber = "object".equals(otherManager.getName()) ? 0 : otherManager.getNumber();
+            if (!typeRel.getAllowedRelations(nodeManager.getNumber(), allowedOtherNumber, 0,
                     RelationStep.DIRECTIONS_DESTINATION).isEmpty())
                 r1 = getRelations(role, otherManager, "destination");
-            if (!typeRel.getAllowedRelations(nodeManager.getNumber(), otherManager.getNumber(), 0,
+            if (!typeRel.getAllowedRelations(nodeManager.getNumber(), allowedOtherNumber, 0,
                     RelationStep.DIRECTIONS_SOURCE).isEmpty())
                 r2 = getRelations(role, otherManager, "source");
         }
