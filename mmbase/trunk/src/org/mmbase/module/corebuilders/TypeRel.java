@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.72 2006-06-09 12:20:34 pierre Exp $
+ * @version $Id: TypeRel.java,v 1.73 2006-10-17 12:07:49 nklasens Exp $
  * @see RelDef
  * @see InsRel
  * @see org.mmbase.module.core.MMBase
@@ -678,14 +678,11 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      *
      * @since MMBase-1.6.2
      */
-    protected class TypeRelSet extends TreeSet {
+    protected class TypeRelSet extends TreeSet<MMObjectNode> {
         protected TypeRelSet() {
-            super(new Comparator() {
+            super(new Comparator<MMObjectNode>() {
                 // sorted by source, destination, role
-                public int compare(Object o1, Object o2) {
-                    MMObjectNode n1 = (MMObjectNode) o1;
-                    MMObjectNode n2 = (MMObjectNode) o2;
-
+                public int compare(MMObjectNode n1, MMObjectNode n2) {
                     int i1 = n1.getIntValue("snumber");
                     int i2 = n2.getIntValue("snumber");
                     if (i1 != i2) return i1 - i2;
@@ -696,7 +693,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
 
                     i1 = n1.getIntValue("rnumber");
                     i2 = n2.getIntValue("rnumber");
-                    if (i1 != -1 && i2 != -1 && i1 != i2) return i1 - i2;
+                    if (i1 > 0 && i2 > 0 && i1 != i2) return i1 - i2;
 
                     return 0;
                 }
@@ -704,8 +701,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         }
 
         // make sure only MMObjectNode's are added
-        public boolean add(Object object) {
-            MMObjectNode node = (MMObjectNode) object;
+        public boolean add(MMObjectNode node) {
             return super.add(node);
         }
 
@@ -734,11 +730,14 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
 
             // determine maximum value
             int roleMax = role <= 0  ? 0 : role + 1; // i.e. source, destination, role
-            int destinationMax = role <= 0 ? destination + 1 : destination; // i.e. source, destination, 0
+            int destinationMax = destination <= 0 ? destination + 1 : destination; // i.e. source, destination, 0
             int sourceMax = (destination <= 0 && role <= 0) ? (source <= 0  ? 0 : source + 1) : source; // i.e. source, 0, 0
 
-            return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(sourceMin, destinationMin, roleMin),
-                                                            new VirtualTypeRelNode(sourceMax, destinationMax, roleMax)));
+            VirtualTypeRelNode fromTypeRelNode = new VirtualTypeRelNode(sourceMin, destinationMin, roleMin);
+            VirtualTypeRelNode toTypeRelNode = new VirtualTypeRelNode(sourceMax, destinationMax, roleMax);
+
+            SortedSet allowed = subSet(fromTypeRelNode, toTypeRelNode);
+            return Collections.unmodifiableSortedSet(allowed);
         }
 
     }
