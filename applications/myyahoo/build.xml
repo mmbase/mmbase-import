@@ -1,12 +1,8 @@
 <?xml version="1.0"?>
-<!DOCTYPE project 
- [ <!ENTITY base     SYSTEM "../buildbase.xml" > ]
->
-
 <project name="MMBase MyYahoo project" default="package" basedir=".">
-  <property name="project.name"     value="MyYahoo" />
+  <property name="project.name"     value="myyahoo" />
   <property name="project.target.templates.dir"   value="../mmexamples" />
-  &base;
+  <import file="../buildbase-include.xml" />
 </project>
 
 
