@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.193.2.1 2006-09-27 11:28:00 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.193.2.2 2006-10-17 12:08:47 nklasens Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -1323,7 +1323,16 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * This means it will be reloaded from the database/storage on next use.
      */
     public void delRelationsCache() {
-        relationsCache.remove(new Integer(getNumber()));
+        delRelationsCache(new Integer(getNumber()));
+    }
+
+    /**
+     * Delete the relation cache for this node.
+     * This means it will be reloaded from the database/storage on next use.
+     * @param number nodenumber
+     */
+    public static void delRelationsCache(Integer number) {
+        relationsCache.remove(number);
     }
 
     /**

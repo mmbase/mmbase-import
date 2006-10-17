@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.391.2.1 2006-09-20 17:44:07 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.391.2.2 2006-10-17 12:08:47 nklasens Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -3022,6 +3022,10 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
          if (event.getRelationDestinationType().equals(getTableName())) {
              eventBackwardsCompatible(event.getMachine(), event.getRelationDestinationNumber(), NodeEvent.TYPE_RELATION_CHANGE);
          }
+         
+         //update the cache
+         Integer changedNode = new Integer((event.getRelationDestinationType().equals(getTableName()) ? event.getRelationSourceNumber() : event.getRelationDestinationNumber()));
+         MMObjectNode.delRelationsCache(changedNode);
      }
 
     /**
