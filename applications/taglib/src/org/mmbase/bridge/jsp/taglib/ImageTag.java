@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.74 2006-10-13 15:56:53 nklasens Exp $
+ * @version $Id: ImageTag.java,v 1.75 2006-10-17 12:09:13 michiel Exp $
  */
 
 public class ImageTag extends FieldTag {
@@ -338,7 +338,7 @@ public class ImageTag extends FieldTag {
     }
 
     protected String getOtherAttributes() throws JspTagException {
-        StringBuffer attributes = new StringBuffer();
+        StringBuilder attributes = new StringBuilder();
         attributes.append((styleClass != Attribute.NULL) ? (" class=\"" + styleClass.getString(this) + "\"") : "");
         attributes.append((style != Attribute.NULL) ? (" style=\"" + style.getString(this) + "\"") : "");
         attributes.append((align != Attribute.NULL) ? (" align=\"" + align.getString(this) + "\"") : "");
@@ -399,7 +399,7 @@ public class ImageTag extends FieldTag {
         int newHeight = height > 0 ? height : imageHeight;
 
         // define orientation of images
-        StringBuffer template = new StringBuffer();
+        StringBuilder template = new StringBuilder();
         float horizontalMultiplier = (float) newWidth / (float) imageWidth;
         float verticalMultiplier = (float) newHeight / (float) imageHeight;
         int tempWidth = (int) (imageWidth * verticalMultiplier);
@@ -462,7 +462,7 @@ public class ImageTag extends FieldTag {
         int newHeight = height > 0 ? height : imageHeight;
 
         // define orientation of images
-        StringBuffer template = new StringBuffer();
+        StringBuilder template = new StringBuilder();
         float horizontalMultiplier = (float) newWidth / (float) imageWidth;
         float verticalMultiplier = (float) newHeight / (float) imageHeight;
 
@@ -475,7 +475,9 @@ public class ImageTag extends FieldTag {
             template.append("+s(x").append(newHeight).append(")");
         }
 
-        log.debug(template.toString());
+        if (log.isDebugEnabled()) {
+            log.debug(template.toString());
+        }
         return template.toString();
     }
 
