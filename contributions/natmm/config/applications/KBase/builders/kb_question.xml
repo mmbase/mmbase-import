@@ -19,7 +19,7 @@
   </properties>
   <fieldlist>
     
-        <field>
+    <field>
       <gui>
         <guiname xml:lang="en">question</guiname>
         <guiname xml:lang="nl">vraag</guiname>
@@ -56,6 +56,26 @@
         <type key="false" notnull="false" size="3000" state="persistent">STRING</type>
       </db>
     </field>
+    
+    <field>
+      <gui>
+        <guiname xml:lang="en">position</guiname>
+        <guiname xml:lang="nl">positie</guiname>
+        <guitype>integer</guitype>
+      </gui>
+      <editor>
+        <positions>
+          <input>9</input>
+          <list>9</list>
+          <search>9</search>
+        </positions>
+      </editor>
+      <db>
+        <name xml:lang="en">pos</name>
+        <type state="persistent" notnull="false" key="false">INTEGER</type>
+      </db>
+    </field>
+
   </fieldlist>
 
   </builder>
