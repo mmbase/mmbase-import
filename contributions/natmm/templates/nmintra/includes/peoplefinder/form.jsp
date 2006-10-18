@@ -120,7 +120,7 @@ if(!action.equals("print")) {
         <tr><td colspan="2"><img src="media/spacer.gif" width="1" height="20"></td></tr>
         <tr>
           <td>
-            <input type="reset" name="clear" value="Wis" style="text-align:center;font-weight:bold;width:42px;">
+            <input type="submit" name="submit" value="Wis" style="text-align:center;font-weight:bold;width:42px;">
           </td>
           <td>
             <div align="right"><input type="submit" name="submit" value="Zoek" style="text-align:center;font-weight:bold;width:42px;">&nbsp;</div>
