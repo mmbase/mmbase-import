@@ -1,3 +1,11 @@
+<mm:import id="subject" jspvar="jsp_subject" vartype="String" reset="true"/>
+<mm:import id="body" jspvar="jsp_body" vartype="String" reset="true"/>
+<mm:import id="from" jspvar="jsp_from" vartype="String" reset="true"/>
+<mm:import id="datetime" jspvar="jsp_datetime" vartype="String" reset="true"/>
+<%
+  HashMap emailUsers = new HashMap();
+%>
+
 <mm:listnodescontainer type="proactivemailtemplates">
   <mm:constraint operator="LIKE" field="name" referid="templatename" />
   <mm:constraint operator="EQUAL" field="active" value="0" inverse="true"/>
@@ -97,6 +105,9 @@
     </mm:field>
     <mm:field name="subject" jspvar="tmp_subject" vartype="String">
       <%jsp_subject = tmp_subject;%>
+    </mm:field>
+    <mm:field name="date" jspvar="tmp_date" vartype="String">
+      <%jsp_datetime = tmp_date;%>
     </mm:field>
   </mm:listnodes>
 </mm:listnodescontainer>

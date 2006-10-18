@@ -13,13 +13,9 @@
 <mm:import externid="username" required="true" jspvar="username"/>
 <mm:import externid="password" required="true" jspvar="password"/>
 <mm:import externid="templatename" required="true" jspvar="templatename"/>
-<mm:import id="subject" jspvar="jsp_subject" vartype="String"/>
-<mm:import id="body" jspvar="jsp_body" vartype="String"/>
-<mm:import id="from" jspvar="jsp_from" vartype="String"/>
 <mm:cloud username="$username" password="$password" jspvar="cloud" method="pagelogon">
 <template>            
 <% 
-  HashMap emailUsers = new HashMap();
   ArrayList removeUsers = new ArrayList();
   long lastSent = System.currentTimeMillis()/1000;
   
