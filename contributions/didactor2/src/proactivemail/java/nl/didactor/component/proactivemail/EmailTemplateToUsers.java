@@ -151,7 +151,7 @@ public class EmailTemplateToUsers {
                     String email = this.getTextValue(elUser, "email");
                     String specialfrom = this.getTextValue(elUser, "from", true);
                     String specialsubject = this.getTextValue(elUser, "subject", true);
-                    String specialbody = this.getTextValue(elUser, "body");
+                    String specialbody = this.getTextValue(elUser, "body", true);
 
                     String sendsubject = null, sendbody = null, sendfrom = null;
                     sendsubject = ( specialsubject != null ) ? specialsubject : this.emailSubject;
