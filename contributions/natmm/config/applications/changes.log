@@ -15,6 +15,7 @@ Date        By        Builders       Change                                     
 2006-09-19  Henk      linklijst      Added multilanguage for naam and omschrijving   add multilanguage fields to existing dbs
 2006-10-02  Henk      dossier        Added showdate                                  showdate should be added to dossier in db
 2006-10-06  Henk      afdelingen     Added descendants                               descendants should be added to afdelingen in db
+2006-10-16  Henk      kb_question    Added pos                                       pos should be added to kb_question in db
 
 
 
