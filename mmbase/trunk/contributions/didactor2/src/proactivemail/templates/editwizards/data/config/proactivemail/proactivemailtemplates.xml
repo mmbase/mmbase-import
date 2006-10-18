@@ -56,6 +56,10 @@
               <prompt xml:lang="en">Body</prompt>
               <prompt xml:lang="nl">Lichaam</prompt>
           </field>    
+          <field name="frompart">
+              <prompt xml:lang="en">From</prompt>
+              <prompt xml:lang="nl">Van</prompt>
+          </field>    
           <field name="active" ftype="enum" >
               <prompt xml:lang="en">Active</prompt>
               <prompt xml:lang="nl">Actief</prompt>
