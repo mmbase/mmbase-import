@@ -27,6 +27,17 @@ String omschrijving_fraId= request.getParameter("omschrijving_fra"); if(omschrij
 postingStr += "|";
 String action = getResponseVal("action",postingStr);
 
+String submitId = request.getParameter("submit"); if(submitId==null) { submitId=""; }
+if("Wis".equals(submitId)) {
+  nameId = "";
+  firstnameId = "";
+  lastnameId = "";
+  descriptionId = "";
+  departmentId= "default";
+  programId= "default";
+  locationId= "default";
+}
+
 // *** determine which select boxes should be shown in the form
 // always show program select if there is more than one program related to the page
 // also show the program select in case of showAllSelect and their is at least one program related to the page

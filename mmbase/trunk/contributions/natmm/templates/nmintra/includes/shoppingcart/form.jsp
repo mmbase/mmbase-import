@@ -57,8 +57,8 @@ if(bShowPrices) {
            ></mm:field><%
            // *** for all shop items, that use this pool ***
            if(shop_items.size()>1) { 
-               %><mm:list nodes="<%= allShop_items %>" path="items,posrel,formulieren" orderby="items.titel" directions="UP" 
-         	   	fields="items.number" distinct="true" constraints="<%= "formulieren.number = '"  + thisForm + "'" %>"
+               %><mm:list nodes="<%= allShop_items %>" path="items,posrel,formulier" orderby="items.titel" directions="UP" 
+         	   	fields="items.number" distinct="true" constraints="<%= "formulier.number = '"  + thisForm + "'" %>"
          		   ><mm:first>Antwoorden zijn nodig voor:</mm:first
          		   ><mm:node element="items"
          		      ><li><mm:field name="titel" />
