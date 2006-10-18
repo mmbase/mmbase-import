@@ -16,34 +16,57 @@ package org.mmbase.util.functions;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: AutodefiningParameters.java,v 1.9 2005-10-18 21:51:30 michiel Exp $
+ * @version $Id: AutodefiningParameters.java,v 1.9.2.1 2006-10-18 10:01:03 michiel Exp $
  * @see Parameter
  */
 
 public class AutodefiningParameters extends Parameters {
     //private static Logger log = Logging.getLoggerInstance(Parameters.class);
 
+    public AutodefiningParameters(Parameter[] base) {
+        super(base);
+    }
 
     public AutodefiningParameters() {
         super(new Parameter[0]);
-    }
-    /**
-     * Sets the value of an argument, and grows the definition array.
-     */
-    public Parameters set(String arg, Object value) {
-        Parameter[] newDef = new Parameter[definition.length + 1];
-        for (int i = 0; i < definition.length; i++) {
-            newDef[i] = definition[i];
-        }
-        newDef[newDef.length - 1] = new Parameter(arg, value == null ? Object.class : value.getClass());
-
-        definition = newDef;
-        backing.put(arg, value);
-        return this;
     }
 
     public boolean containsParameter(Parameter param) {
         return true;
     }
+
+    protected int define(Parameter param) {
+        Parameter[] newDef = new Parameter[definition.length + 1];
+        for (int i = 0; i < definition.length; i++) {
+            newDef[i] = definition[i];
+        }
+        newDef[newDef.length - 1] = param;
+        definition = newDef;
+        toIndex++;
+        return definition.length - 1;
+    }
+
+    protected int define(String param) {
+        return define(new Parameter(param, Object.class));
+    }
+
+    public int indexOfParameter(Parameter parameter) {
+        int index = super.indexOfParameter(parameter);
+        if (index == -1) {
+            return define(parameter);
+        } else {
+            return index;
+        }
+    }
+
+    public int indexOfParameter(String parameterName) {
+        int index = super.indexOfParameter(parameterName);
+        if (index == -1) {
+            return define(parameterName);
+        } else {
+            return index;
+        }
+    }
+
 
 }

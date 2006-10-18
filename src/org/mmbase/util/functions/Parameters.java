@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.23 2006-03-23 19:55:06 michiel Exp $
+ * @version $Id: Parameters.java,v 1.23.2.1 2006-10-18 10:01:03 michiel Exp $
  * @see Parameter
  * @see #Parameters(Parameter[])
  */
@@ -56,7 +56,7 @@ public class Parameters extends AbstractList implements java.io.Serializable {
     protected boolean autoCasting = false;
 
     private int fromIndex = 0;
-    private int toIndex;
+    protected int toIndex;
 
     /**
      * Constructor, taking an Parameter[] array argument.
