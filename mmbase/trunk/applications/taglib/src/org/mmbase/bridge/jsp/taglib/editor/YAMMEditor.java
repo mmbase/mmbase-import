@@ -28,7 +28,7 @@ import javax.servlet.jsp.PageContext;
  * yammeditor.jsp?nrs=76&fields=76_number;76_title;76_subtitle;76_intro;80_gui();
  *
  * @author Andr&eacute; van Toly
- * @version $Id: YAMMEditor.java,v 1.10 2006-07-06 11:36:12 michiel Exp $
+ * @version $Id: YAMMEditor.java,v 1.11 2006-10-19 11:24:19 michiel Exp $
  * @see EditTag
  * @see BasicEditor
  * @since MMBase-1.8
@@ -228,7 +228,7 @@ public class YAMMEditor extends Editor {
     *           meaning: startnode(s)_path
     */
     protected String getPathFromQuery(Query query) {
-        StringBuffer path = new StringBuffer();
+        StringBuilder path = new StringBuilder();
 
         java.util.List steps = query.getSteps();
         log.debug("Nr of steps : " + steps.size());
@@ -271,7 +271,7 @@ public class YAMMEditor extends Editor {
     *
     */
     protected String makeList4Url(List al) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         if (al.size() > 0) {
             Iterator e = al.iterator();
             while(e.hasNext()) {
@@ -294,7 +294,7 @@ public class YAMMEditor extends Editor {
     *
     */
     public String makeHTML(String url, String icon) {
-        StringBuffer html = new StringBuffer();
+        StringBuilder html = new StringBuilder();
 
         html.append("<div class=\"et\"><a title=\"click to edit\" href=\"");
         html.append(url);
@@ -324,7 +324,7 @@ public class YAMMEditor extends Editor {
      *
      */
     protected String makeRelative(String url, PageContext pageContext) {
-        StringBuffer show = new StringBuffer(url);
+        StringBuilder show = new StringBuilder(url);
         javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
         if (show.charAt(0) == '/') { // absolute on servletcontex
             if (show.length() > 1 && show.charAt(1) == '/') {
