@@ -81,6 +81,7 @@
 <!ATTLIST command nodepath CDATA #IMPLIED >
 <!ATTLIST command objectnumber CDATA #IMPLIED >
 <!ATTLIST command wizardname CDATA #IMPLIED >
+<!ATTLIST command wizardjsp  CDATA #IMPLIED >
 <!ATTLIST command orderby CDATA #IMPLIED >
 <!ATTLIST command directions CDATA #IMPLIED >
 <!ATTLIST command command NMTOKEN #IMPLIED >
