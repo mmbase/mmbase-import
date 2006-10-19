@@ -10,7 +10,6 @@
   -->      
   <mm:import externid="language">client</mm:import>
   <mm:import externid="timezone"></mm:import>
-  <mm:import externid="mode">weektable</mm:import>
   <mm:write request="language" referid="language" />
   <mm:write request="timezone" referid="timezone" />
   <mm:content type="application/xhtml+xml"
@@ -34,6 +33,7 @@
             <mm:time referid="day" format=":FULL" />
           </mm-cal:month>
         </table>        
+
         <table>
           <thead>
             <tr><th colspan="6"><mm:time referid="date" format="MMMM yyyy" /></th></tr>

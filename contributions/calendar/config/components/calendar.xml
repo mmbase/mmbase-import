@@ -11,11 +11,12 @@
   <description xml:lang="en">Tools for a calendar</description>
   <!--
       No dependencies.
-      Views by taglib.
   -->
-  <view name="frontend">
-    <class name="org.mmbase.framework.JspComponent">
-    </class>
-    <param name="path">/calendar/index.jspx</param>
-  </view>
+
+
+  <block name="months" mimetype="text/html">
+    <head jsp="/calendar/head.jspx" />
+    <body jsp="/calendar/index.jspx" />
+  </block>
+
 </component>
