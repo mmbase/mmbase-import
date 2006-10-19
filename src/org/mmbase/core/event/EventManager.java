@@ -29,7 +29,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * manager is instantiated, event brokers are added for Event, NodeEvent and RelationEvent
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: EventManager.java,v 1.14 2006-09-11 12:17:22 michiel Exp $
+ * @version $Id: EventManager.java,v 1.15 2006-10-19 11:25:03 michiel Exp $
  */
 public class EventManager {
 
@@ -69,13 +69,13 @@ public class EventManager {
             Class aClass = Class.forName(className);
             return (AbstractEventBroker)  aClass.newInstance();
         } catch (ClassNotFoundException e) {
-            log.error("could not find class with name " + className, e);
+            log.error("could not find class with name '" + className + "'", e);
         } catch (InstantiationException e) {
-            log.error("could not instantiate class with name" + className, e);
+            log.error("could not instantiate class with name '" + className + "'", e);
         } catch (IllegalAccessException e) {
-            log.error("the constructor of " + className + " is not accessible", e);
+            log.error("the constructor of '" + className + "' is not accessible", e);
         } catch (ClassCastException e) {
-            log.error("" + className + " is not a AbstratEventBroker");
+            log.error("'" + className + "' is not a AbstractEventBroker", e);
         }
         return null;
     }
