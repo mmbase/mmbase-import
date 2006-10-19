@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * of the very first field the edittag encounters, with an icon to click on.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: BasicEditor.java,v 1.10 2006-09-29 10:04:51 michiel Exp $
+ * @version $Id: BasicEditor.java,v 1.11 2006-10-19 11:24:19 michiel Exp $
  * @see EditTag
  * @see YAMMEditor
  * @since MMBase-1.8
@@ -135,7 +135,7 @@ public class BasicEditor extends Editor {
      *
      */
     protected String makeRelative(String url, PageContext pageContext) {
-        StringBuffer show = new StringBuffer(url);
+        StringBuilder show = new StringBuilder(url);
         HttpServletRequest req = (HttpServletRequest)pageContext.getRequest();
         if (show.charAt(0) == '/') { // absolute on servletcontex
             if (show.length() > 1 && show.charAt(1) == '/') {
