@@ -30,7 +30,7 @@ import org.mmbase.util.Encode;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.63 2006-08-14 08:05:04 pierre Exp $
+ * @version $Id: Config.java,v 1.64 2006-10-19 14:30:24 michiel Exp $
  */
 
 public class Config implements java.io.Serializable {
@@ -740,6 +740,8 @@ public class Config implements java.io.Serializable {
                 }
 
                 extraDirs.add("ew:", basedir);
+                URL rootDir = new URL(getResource(request.getServletPath()), "/"); // the directory of this jsp (list, wizard)
+                extraDirs.add("root:" , rootDir);
                 config.uriResolver = new URIResolver(jspFileDir, extraDirs);
                 config.maxupload = getParam("maxsize", config.maxupload);
             }
