@@ -9,17 +9,17 @@
   <names>
     <!-- singles per language as defined by ISO 639 -->
     <singular xml:lang="en">Template</singular>
-    <singular xml:lang="nl">Malplaatje</singular>
+    <singular xml:lang="nl">Sjabloon</singular>
   
     <!-- multiple per language as defined by ISO 639 -->
     <plural xml:lang="en">Templates</plural>
-    <plural xml:lang="nl">Malplaatjes</plural>
+    <plural xml:lang="nl">Sjabloons</plural>
   </names>
 
   <descriptions>
     <!-- descriptions per language as defined by ISO 639  -->
     <description xml:lang="en">ProActiveMail Template</description>
-    <description xml:lang="nl">ProActiefMail Malplaatjes</description>
+    <description xml:lang="nl">ProActiefMail Sjabloon</description>
   </descriptions>
 
   <fieldlist>
