@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.framework;
 import java.util.*;
+import org.mmbase.util.LocalizedString;
 
 
 /**
@@ -16,7 +17,7 @@ import java.util.*;
  * a 'head', 'body' and 'process' view. 
  *
  * @author Johannes Verelst
- * @version $Id: Block.java,v 1.10 2006-10-19 13:19:45 michiel Exp $
+ * @version $Id: Block.java,v 1.11 2006-10-19 16:41:18 michiel Exp $
  * @since MMBase-1.9
  */
 public class Block {
@@ -26,11 +27,13 @@ public class Block {
     private final String name;
     private final String mimetype;
     private final Component parent;
+    private final LocalizedString description;
 
     public Block(String name, String mimetype, Component parent) {
         this.name = name;
         this.mimetype = mimetype;
         this.parent = parent;
+        this.description = new LocalizedString(name);
     }
 
     public String getName() {
@@ -52,6 +55,10 @@ public class Block {
 
     public Component getComponent() {
         return parent;
+    }
+
+    public LocalizedString getDescription() {
+        return description;
     }
 
     public String toString() {
