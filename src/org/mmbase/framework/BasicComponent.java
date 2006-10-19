@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * components, and may be requested several blocks.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicComponent.java,v 1.10 2006-10-16 09:04:26 johannes Exp $
+ * @version $Id: BasicComponent.java,v 1.11 2006-10-19 13:20:29 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicComponent implements Component {
@@ -44,7 +44,7 @@ public class BasicComponent implements Component {
     }
 
     public void configure(Element el) {
-        log.service("Start configure()");
+        log.debug("Configuring " + this);
         description.fillFromXml("description", el);
         NodeList blockElements = el.getElementsByTagName("block");
         if (log.isDebugEnabled()) {
@@ -72,7 +72,11 @@ public class BasicComponent implements Component {
                 defaultBlock = b;
             }
         }
-        log.service("Default block: " + defaultBlock);
+        if (defaultBlock == null) {
+            log.warn("No blocks found.");
+        } else {
+            log.service("Default block: " + defaultBlock);
+        }
     }
 
     private Renderer getRenderer(String name, Element block, Block b) {
@@ -88,7 +92,7 @@ public class BasicComponent implements Component {
             renderer = new JspRenderer(name.toUpperCase(), jsp, b);
         } else if (cls != null && !"".equals(cls)) {
             try {
-                renderer = (Renderer)Class.forName(cls).newInstance();
+                renderer = (Renderer) ComponentRepository.getInstance(renderElement, name.toUpperCase(), b);
             } catch (Exception e) {
                 log.error(e);
                 return null;
@@ -121,10 +125,6 @@ public class BasicComponent implements Component {
         return null;
     }
 
-    public String toString() {
-        return getName();
-    }
-
     public Collection<Block> getBlocks() {
         return Collections.unmodifiableCollection(blocks.values());
     }
@@ -134,6 +134,10 @@ public class BasicComponent implements Component {
     }
     public Block getDefaultBlock() {
         return defaultBlock;
+    }
+
+    public String toString() {
+        return getName();
     }
 
 }
