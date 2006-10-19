@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * A Renderer implmentation based on a jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: EditwizardRenderer.java,v 1.2 2006-10-19 13:37:09 michiel Exp $
+ * @version $Id: EditwizardRenderer.java,v 1.3 2006-10-19 15:03:40 michiel Exp $
  * @since MMBase-1.9
  */
 public class EditwizardRenderer extends AbstractRenderer {
@@ -43,7 +43,14 @@ public class EditwizardRenderer extends AbstractRenderer {
         path = p;
     }
 
+    protected Parameter[] getEssentialParameters() {
+        return new Parameter[] {Parameter.RESPONSE, Parameter.REQUEST, Parameter.LOCALE};
+    }
+
     public void render(Parameters blockParameters, Parameters frameworkParameters, Writer w) throws IOException {
-        w.write("/mmbase/edit/wizard/jsp/list.jsp?wizard=" + list + "&nodepath=" + path);
+        HttpServletRequest request   = blockParameters.get(Parameter.REQUEST);
+        HttpServletResponse response = blockParameters.get(Parameter.RESPONSE);
+        Locale  locale = blockParameters.get(Parameter.LOCALE);
+        w.write(response.encodeUrl(request.getContextPath() + "/mmbase/edit/wizard/jsp/list.jsp?wizard=" + list + "&amp;nodepath=" + path) + "&amp;language=" + locale.getLanguage());
     }
 }
