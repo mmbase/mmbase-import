@@ -58,7 +58,7 @@
         </enumeration>
       </datatype>
     </field>
-    <field name="date">
+    <field name="date" state="system">
       <gui>
         <guiname xml:lang="en">Date</guiname>
         <guiname xml:lang="nl">Datum</guiname>
