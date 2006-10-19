@@ -20,7 +20,7 @@
 
   <block name="edit">
     <body class="org.mmbase.framework.EditwizardRenderer">
-      <param name="list">poll/tasks/poll</param>
+      <param name="list">/poll/tasks/poll</param>
       <param name="nodepath">poll</param>
     </body>
   </block>
