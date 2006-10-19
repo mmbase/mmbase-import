@@ -58,9 +58,7 @@
         </xsd:complexType>
       </xsd:element>
     </xsd:sequence>
-    <xsd:choice>
-      <xsd:attribute name="class" />
-      <xsd:attribute name="jsp" />
-    </xsd:choice>
+    <xsd:attribute name="class" />
+    <xsd:attribute name="jsp" />
   </xsd:complexType>
 </xsd:schema>
