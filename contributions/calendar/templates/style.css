@@ -43,17 +43,16 @@ table.mm_calendar  {
 .mm_calendar col.weeknr.year {
   width: 2em;
 }
-.mm_calendar col.monthname { 
-  width: 0px;
-}
+
 .mm_calendar th.weeknr {
   background-color: #000;
   color: white;
   text-align: center;
 }
+.mm_calendar col.monthname,
 .mm_calendar col.weeknr.month {
-  width: 0px;
-  visibility: collapse;
+  width: 3em;
+
 }
 .mm_calendar thead  {
   background-color: #222;

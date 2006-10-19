@@ -7,7 +7,6 @@
       This can be useful during development
       xmlns:mm-cal="urn:jsptagdir:/WEB-INF/tags/mm/calendar"     
 
-
   -->      
   <jsp:directive.page buffer="100kb" import="com.ibm.icu.text.*,java.util.*" />
   <mm:import externid="language">client</mm:import>
