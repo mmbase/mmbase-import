@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * The class maintains all compoments which are registered in the current MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentRepository.java,v 1.6 2006-10-19 12:05:27 michiel Exp $
+ * @version $Id: ComponentRepository.java,v 1.7 2006-10-19 13:20:29 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentRepository {
@@ -65,7 +65,7 @@ public class ComponentRepository {
         log.info("In " + loader + " the following components XML's were found " + components);
         for (String file : components) {
             try {
-                Document doc = loader.getDocument(file);
+                Document doc = loader.getDocument(file, true, getClass());
                 String name = doc.getDocumentElement().getAttribute("name");
                 String fileName = ResourceLoader.getName(file);
                 if (! fileName.equals(name)) {
@@ -75,7 +75,7 @@ public class ComponentRepository {
                 }
                 rep.put(name, getComponent(name, doc));
             } catch (Exception e) {
-                log.error("For " + file + ": " + e.getMessage(), e);
+                log.error("For " + loader.getResource(file) + ": " + e.getMessage(), e);
             }
         }
         log.info("Found the following components " + getComponents());
@@ -88,7 +88,9 @@ public class ComponentRepository {
      */
     public static Object getInstance(Element classElement, Object... args) 
         throws org.xml.sax.SAXException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException {
-        Class claz = Class.forName(classElement.getAttribute("name"));
+        String className = classElement.getAttribute("class");
+        if ("".equals(className)) className = classElement.getAttribute("name"); // probably the element itself is 'class'.
+        Class claz = Class.forName(className);
         List<Class> argTypes = new ArrayList<Class>(args.length);
         for (Object arg : args) {
             argTypes.add(arg.getClass());
