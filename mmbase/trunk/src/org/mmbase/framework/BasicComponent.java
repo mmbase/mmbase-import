@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * components, and may be requested several blocks.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicComponent.java,v 1.12 2006-10-19 16:41:18 michiel Exp $
+ * @version $Id: BasicComponent.java,v 1.13 2006-10-19 17:31:48 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicComponent implements Component {
@@ -68,7 +68,7 @@ public class BasicComponent implements Component {
         if (defaultBlockName != null && ! defaultBlockName.equals("")) {
             Block b = blocks.get(defaultBlockName);
             if (b == null) {
-                log.error("There is not block '" + defaultBlockName + "' so, cannot take it as default. Taking " + defaultBlock + " in stead");
+                log.error("There is no block '" + defaultBlockName + "' so, cannot take it as default. Taking " + defaultBlock + " in stead");
             } else {
                 defaultBlock = b;
             }
@@ -86,44 +86,42 @@ public class BasicComponent implements Component {
         if (renderElements.getLength() < 1) return null;
         Element renderElement = (Element) renderElements.item(0);
         String jsp = renderElement.getAttribute("jsp");
-        String cls = renderElement.getAttribute("class");
-        log.trace("jsp: [" + jsp + "], class: [" + cls + "]");
         Renderer renderer;
         if (jsp != null && !"".equals(jsp)) {
             renderer = new JspRenderer(name.toUpperCase(), jsp, b);
-        } else if (cls != null && !"".equals(cls)) {
+        } else {
             try {
-                renderer = (Renderer) ComponentRepository.getInstance(renderElement, name.toUpperCase(), b);
+                Element classElement = (Element) renderElement.getElementsByTagName("class").item(0);
+                renderer = (Renderer) ComponentRepository.getInstance(classElement, name.toUpperCase(), b);
             } catch (Exception e) {
                 log.error(e);
                 return null;
             }
-        } else {
-            log.error("JSP and CLASS are null!");
-            return null;
         }
+        // TODO code to read sub-param tags follows here
         return renderer;
     }
 
     private Processor getProcessor(String name, Element block, Block b) {
         NodeList processorElements = block.getElementsByTagName(name);
-        if (processorElements.getLength() == 1) {
-            Element processorElement = (Element) processorElements.item(0);
-            String jsp = processorElement.getAttribute("jsp");
-            String cls = processorElement.getAttribute("class");
-            if (jsp != null && !"".equals(jsp)) {
-                return new JspProcessor(jsp, b);
-            } else if (cls != null && !"".equals(cls)) {
-                try {
-                    return (Processor)Class.forName(cls).newInstance();
-                } catch (Exception e) {
-                    log.error(e);
-                }
-            } else {
-                log.error("JSP and CLASS are null!");
+        if (processorElements.getLength() < 1) return null;
+        Element processorElement = (Element) processorElements.item(0);
+        String jsp = processorElement.getAttribute("jsp");
+        Processor processor;
+        if (jsp != null && !"".equals(jsp)) {
+            processor = new JspProcessor(jsp, b);
+        } else {
+            try {
+                Element classElement = (Element) processorElement.getElementsByTagName("class").item(0);
+                processor = (Processor) ComponentRepository.getInstance(classElement, name.toUpperCase(), b);
+            } catch (Exception e) {
+                log.error(e);
+                return null;
             }
         }
-        return null;
+        // TODO code to read sub-param tags follows here
+        return processor;
+
     }
 
     public Collection<Block> getBlocks() {
