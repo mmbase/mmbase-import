@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * The class maintains all compoments which are registered in the current MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentRepository.java,v 1.5 2006-10-13 23:00:03 johannes Exp $
+ * @version $Id: ComponentRepository.java,v 1.6 2006-10-19 12:05:27 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentRepository {
@@ -70,23 +70,32 @@ public class ComponentRepository {
                 String fileName = ResourceLoader.getName(file);
                 if (! fileName.equals(name)) {
                     log.warn("Component " + name + " is defined in resource with name " + file);
+                } else {
+                    log.service("Instantatiating component '" + name + "'");
                 }
                 rep.put(name, getComponent(name, doc));
             } catch (Exception e) {
-                log.error(e.getMessage(), e);
+                log.error("For " + file + ": " + e.getMessage(), e);
             }
         }
         log.info("Found the following components " + getComponents());
 
     }
 
-    public static Object getInstance(Element classElement, Object... args) throws org.xml.sax.SAXException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException {
+    /**
+     * Instantaties any object using an Dom Element and constructor arguments. Sub-param tags are
+     * used on set-methods on the newly created object.
+     */
+    public static Object getInstance(Element classElement, Object... args) 
+        throws org.xml.sax.SAXException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException {
         Class claz = Class.forName(classElement.getAttribute("name"));
         List<Class> argTypes = new ArrayList<Class>(args.length);
-        for (Object arg : argTypes) {
+        for (Object arg : args) {
             argTypes.add(arg.getClass());
         }
-        Object o = claz.getConstructor(argTypes.toArray(new Class[] {})).newInstance(args);
+        Class[] argTypesArray = argTypes.toArray(new Class[] {});
+        Constructor constructor = claz.getConstructor(argTypesArray);
+        Object o = constructor.newInstance(args);
 
         NodeList params = classElement.getElementsByTagName("param");
         for (int i = 0 ; i < params.getLength(); i++) {
