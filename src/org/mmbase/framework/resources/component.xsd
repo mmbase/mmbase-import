@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-
+  @version $Id : $
 -->
 <xsd:schema
     xmlns="http://www.mmbase.org/xmlns/component"
@@ -58,7 +58,10 @@
         </xsd:complexType>
       </xsd:element>
     </xsd:sequence>
+
     <xsd:attribute name="class" />
     <xsd:attribute name="jsp" />
+    <!-- it is actually either class or jsp, but this cannot be indicated in XSD -->
+
   </xsd:complexType>
 </xsd:schema>
