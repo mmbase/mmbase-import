@@ -19,12 +19,12 @@
   <xsd:element name="component">
     <xsd:complexType>
       <xsd:sequence>
-        <xsd:element name="class" minOccurs="0" maxOccurs="1" />
+        <xsd:element ref="class" minOccurs="0" maxOccurs="1" />
         <xsd:element ref="description" minOccurs="0" maxOccurs="unbounded" />
         <xsd:element ref="block" minOccurs="0" maxOccurs="unbounded" />
       </xsd:sequence>
-      <xsd:attribute name="name" />
-      <xsd:attribute name="defaultblock" />
+      <xsd:attribute name="name" type="xsd:Name" />
+      <xsd:attribute name="defaultblock" type="xsd:IDREF" />
     </xsd:complexType>
   </xsd:element>
 
@@ -38,31 +38,46 @@
     </xsd:complexType>
   </xsd:element>
 
+  <xsd:element name="class">
+    <xsd:complexType>
+      <xsd:sequence>        
+        <xsd:element name="param" minOccurs="0" maxOccurs="unbounded">
+          <xsd:complexType>
+            <xsd:simpleContent>
+              <xsd:extension base="xsd:string">
+                <xsd:attribute name="name" type="xsd:Name" use="required"/>
+              </xsd:extension>
+            </xsd:simpleContent>
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:sequence>
+      <xsd:attribute name="name" use="required" />
+    </xsd:complexType>
+  </xsd:element>
+
   <xsd:element name="block">
     <xsd:complexType>
       <xsd:sequence>
         <xsd:element ref="description" minOccurs="0" maxOccurs="unbounded" />
-        <xsd:element name="head" type="ViewType" minOccurs="0" maxOccurs="1" />
-        <xsd:element name="body" type="ViewType" minOccurs="0" maxOccurs="1" />
-        <xsd:element name="process" type="ViewType" minOccurs="0" maxOccurs="1" />
+        <xsd:element name="head"    type="ViewType"  minOccurs="0" maxOccurs="1" />
+        <xsd:element name="body"    type="ViewType"  minOccurs="0" maxOccurs="1" />
+        <xsd:element name="process" type="ViewType"  minOccurs="0" maxOccurs="1" />
       </xsd:sequence>
-      <xsd:attribute name="name" />
-      <xsd:attribute name="mimetype" />
+      <xsd:attribute name="name" type="xsd:ID" />
+      <xsd:attribute name="mimetype" type="xsd:token" />
     </xsd:complexType>
   </xsd:element>
 
   <xsd:complexType name="ViewType">
     <xsd:sequence>
+      <xsd:element ref="class" minOccurs="0" maxOccurs="1" />
       <xsd:element name="param" minOccurs="0" maxOccurs="unbounded">
         <xsd:complexType>
-          <xsd:attribute name="name" />
+          <xsd:attribute name="name" type="xsd:Name" use="required" />
         </xsd:complexType>
       </xsd:element>
     </xsd:sequence>
-
-    <xsd:attribute name="class" />
-    <xsd:attribute name="jsp" />
-    <!-- it is actually either class or jsp, but this cannot be indicated in XSD -->
-
+    <xsd:attribute name="jsp" type="xsd:token" />
   </xsd:complexType>
+
 </xsd:schema>

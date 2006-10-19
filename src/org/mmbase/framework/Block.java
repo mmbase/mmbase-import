@@ -17,7 +17,7 @@ import org.mmbase.util.LocalizedString;
  * a 'head', 'body' and 'process' view. 
  *
  * @author Johannes Verelst
- * @version $Id: Block.java,v 1.11 2006-10-19 16:41:18 michiel Exp $
+ * @version $Id: Block.java,v 1.12 2006-10-19 17:31:48 michiel Exp $
  * @since MMBase-1.9
  */
 public class Block {
@@ -30,35 +30,56 @@ public class Block {
     private final LocalizedString description;
 
     public Block(String name, String mimetype, Component parent) {
+        if (name == null) throw new IllegalArgumentException();
         this.name = name;
         this.mimetype = mimetype;
         this.parent = parent;
         this.description = new LocalizedString(name);
     }
 
+    /**
+     * Name for this block. Never <code>null</code>
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Description for this block. Never <code>null</code>
+     */
+    public LocalizedString getDescription() {
+        return description;
+    }
+
+    /**
+     * All renderers assiociated with this Block. This is not a public method (it is used to create
+     * the block). Use {@link #getRenderer(Renderer.Type}).
+     */
     Map<Renderer.Type, Renderer> getRenderers() {
         return renderers;
     }
 
+    /**
+     * @return A renderer for the given Render type. Never <code>null</code>
+     */
     public Renderer getRenderer(Renderer.Type type) {
         Renderer rend = renderers.get(type);
         return rend == null ? type.getEmpty(this) : rend;
     }
 
+    /**
+     * @return The processor associated with this block. Never <code>null</code>
+     */
     public Processor getProcessor() {
-        return processor;
+        return processor == null ? Processor.EMPTY : processor;
     }
 
+
+    /**
+     * @return the Component from which this block is a part.
+     */
     public Component getComponent() {
         return parent;
-    }
-
-    public LocalizedString getDescription() {
-        return description;
     }
 
     public String toString() {
