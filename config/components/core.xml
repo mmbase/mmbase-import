@@ -5,12 +5,12 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/component
                         http://www.mmbase.org/xmlns/component.xsd">
-  <!--
   <class name="org.mmbase.framework.BasicComponent" />
-  -->
+
   <description xml:lang="en">MMBase core components</description>
 
   <block name="components" mimetype="text/html">
+    <description xml:lang="en">Shows an overview of all available components in the current MMBase</description>
     <body jsp="/mmbase/admin/components.jspx" />
   </block>
 
