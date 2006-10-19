@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.212 2006-10-17 12:07:49 nklasens Exp $
+ * @version $Id: BasicNode.java,v 1.213 2006-10-19 09:33:02 nklasens Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -778,10 +778,11 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
 
         TypeRel typeRel = BasicCloudContext.mmb.getTypeRel();
         if (role == null) {
-            if (!typeRel.getAllowedRelations(nodeManager.getNumber(), otherManager.getNumber(), 0,
+            int allowedOtherNumber = otherManager == null || "object".equals(otherManager.getName()) ? 0 : otherManager.getNumber();
+            if (!typeRel.getAllowedRelations(nodeManager.getNumber(), allowedOtherNumber, 0,
                     RelationStep.DIRECTIONS_DESTINATION).isEmpty())
                 l1 = getRelatedNodes(otherManager, role, "destination");
-            if (!typeRel.getAllowedRelations(nodeManager.getNumber(), otherManager.getNumber(), 0,
+            if (!typeRel.getAllowedRelations(nodeManager.getNumber(), allowedOtherNumber, 0,
                     RelationStep.DIRECTIONS_SOURCE).isEmpty())
                 l2 = getRelatedNodes(otherManager, role, "source");
         }

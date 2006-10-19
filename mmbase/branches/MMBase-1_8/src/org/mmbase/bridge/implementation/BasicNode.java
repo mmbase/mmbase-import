@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.210.2.1 2006-10-17 12:07:55 nklasens Exp $
+ * @version $Id: BasicNode.java,v 1.210.2.2 2006-10-19 09:33:08 nklasens Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -775,7 +775,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
 
         NodeList l1 = BridgeCollections.EMPTY_NODELIST;
         NodeList l2 = BridgeCollections.EMPTY_NODELIST;
-        
+       
         TypeRel typeRel = BasicCloudContext.mmb.getTypeRel();
         if (role == null) {
             if (!typeRel.getAllowedRelations(nodeManager.getNumber(), otherManager.getNumber(), 0,
