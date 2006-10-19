@@ -16,7 +16,7 @@ import java.util.*;
  * a 'head', 'body' and 'process' view. 
  *
  * @author Johannes Verelst
- * @version $Id: Block.java,v 1.9 2006-10-15 07:19:29 michiel Exp $
+ * @version $Id: Block.java,v 1.10 2006-10-19 13:19:45 michiel Exp $
  * @since MMBase-1.9
  */
 public class Block {
@@ -52,5 +52,9 @@ public class Block {
 
     public Component getComponent() {
         return parent;
+    }
+
+    public String toString() {
+        return getName();
     }
 }
