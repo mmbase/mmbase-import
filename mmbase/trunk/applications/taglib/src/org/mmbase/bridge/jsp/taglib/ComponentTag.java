@@ -11,6 +11,7 @@ package org.mmbase.bridge.jsp.taglib;
 import org.mmbase.bridge.jsp.taglib.util.*;
 import javax.servlet.jsp.*;
 import java.util.*;
+import java.io.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.functions.*;
@@ -21,10 +22,10 @@ import org.mmbase.module.core.MMBase;
  * Renders a certain block of an mmbase component
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentTag.java,v 1.7 2006-10-14 14:44:35 michiel Exp $
+ * @version $Id: ComponentTag.java,v 1.8 2006-10-19 14:11:38 michiel Exp $
  * @since MMBase-1.9
  */
-public class ComponentTag extends CloudReferrerTag implements ParamHandler {
+public class ComponentTag extends CloudReferrerTag implements ParamHandler, Writer {
     private static final Logger log = Logging.getLoggerInstance(ComponentTag.class);
     private Attribute name   = Attribute.NULL;
     private Attribute render   = Attribute.NULL;
@@ -53,9 +54,8 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler {
         extraParameters.add(new Entry<String, Object>(key, value));
     }
 
-
-
-    public int doEndTag() throws JspTagException{
+    private boolean used = false;
+    protected void getContent(java.io.Writer w) throws JspTagException {
         try {
             ComponentRepository rep = ComponentRepository.getInstance();
             Component component = rep.getComponent(name.getString(this));
@@ -70,7 +70,7 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler {
             String rt = render.getString(this);
             Renderer.Type type = rt == null || "".equals(rt) ? Renderer.Type.BODY : Renderer.Type.valueOf(rt.toUpperCase());
             Renderer renderer = block.getRenderer(type);
-
+            
             Parameters params = renderer.createParameters();
             fillStandardParameters(params);
             params.setAutoCasting(true);
@@ -81,10 +81,57 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler {
             Parameters frameworkParams = MMBase.getMMBase().getFramework().createFrameworkParameters();
             fillStandardParameters(frameworkParams);
             frameworkParams.setAutoCasting(true);
-            renderer.render(params, frameworkParams, pageContext.getOut());
-        } catch (java.io.IOException ioe) {
+            renderer.render(params, frameworkParams, w);
+            used = true;
+        } catch (IOException ioe) {
             throw new TaglibException(ioe);
         }
+    }
+
+
+    public int doStartTag() throws JspException{
+        super.doStartTag();
+        used = false;
+        helper.setValue(new Object() {
+                final ComponentTag t = ComponentTag.this;
+                public String toString() {
+                    try {
+                        StringWriter w = new StringWriter();
+                        t.getContent(w);
+                        return w.toString();
+                    } catch (JspException je) {
+                        return je.getMessage();
+                    }
+                }
+            });
+        return EVAL_BODY; // lets try _not_ buffering the body.
+    }
+
+
+    // if EVAL_BODY == EVAL_BODY_BUFFERED
+    public int doAfterBody() throws JspTagException {
+
+        if (EVAL_BODY == EVAL_BODY_BUFFERED) {
+            try {
+                if (bodyContent != null) {
+                    bodyContent.writeOut(bodyContent.getEnclosingWriter());
+                }
+            } catch (IOException ioe) {
+                throw new TaglibException(ioe);
+            }
+        }
         return SKIP_BODY;
+    }
+    protected void initDoEndTag() throws JspTagException {
+
+    }
+
+
+    public int doEndTag() throws JspTagException {
+        int s = super.doEndTag();
+        if (! used) { // should consider also write-attribute here
+            getContent(pageContext.getOut());
+        }
+        return s;
     }
 }
