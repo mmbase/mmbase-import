@@ -33,4 +33,8 @@
     <name>css</name>
     <path>/META-INF/tags/mm/calendar/css.tagx</path>
   </tag-file>
+  <tag-file>
+    <name>periods</name>
+    <path>/META-INF/tags/mm/calendar/periods.tagx</path>
+  </tag-file>
 </taglib> 
