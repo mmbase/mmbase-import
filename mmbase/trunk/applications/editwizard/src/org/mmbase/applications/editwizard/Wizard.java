@@ -43,7 +43,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.149 2006-08-14 07:54:35 pierre Exp $
+ * @version $Id: Wizard.java,v 1.150 2006-10-19 14:16:31 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -60,7 +60,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
 
     // File -> Document (resolved includes/shortcuts)
     private static WizardSchemaCache wizardSchemaCache;
-    private static NodeCache nodeCache;
+    private static NodeCache nodeCache; // it's absurd to name this NodeCache
 
     static {
         wizardSchemaCache = new WizardSchemaCache();
@@ -292,18 +292,18 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * Returns true if the specified operation is valid for the node with the specified objectnumber.
      * The  operation is valid if the node has the given property set to true.
      * To maintain backwards compatible, if the property is not given, the default value is true.
-     * @param objectNumber teh number of teh ndoe to check
+     * @param objectNumber the number of the node to check
      * @param operation a valid operation, i.e. maywrite or maydelete
      * @throws WizardException if the object cannot be retrieved
      */
     protected boolean checkNode(String objectNumber, String operation) throws WizardException {
-        Object nodeObj = nodeCache.get(objectNumber);
+        Node node = nodeCache.get(objectNumber);
 
-        if (nodeObj == null) {
+        if (node == null) {
             NodeList nodes = Utils.selectNodeList(data, ".//*[@number='" + objectNumber + "']");
 
             if ((nodes != null) && (nodes.getLength() > 0)) {
-                nodeObj = nodes.item(0);
+                node = nodes.item(0);
             } else {
                 if (objectNumber == null || objectNumber.equals("")) {
                     log.warn("Checking security for objectNumber '" + objectNumber + "'  "); // + Logging.stackTrace(5));
@@ -313,16 +313,14 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                 }
                 // node is from outside the datacloud...
                 // get it through dove... should we add it, and if so where?
-                nodeObj = databaseConnector.getDataNode(null, objectNumber, null);
+                node = databaseConnector.getDataNode(null, objectNumber, null);
             }
 
-            nodeCache.put(objectNumber, nodeObj);
-            log.debug("Node loaded: " + nodeObj);
+            nodeCache.put(objectNumber, node);
+            log.debug("Node loaded: " + node);
         } else {
-            log.debug("Node found in cache: " + nodeObj);
+            log.debug("Node found in cache: " + node);
         }
-
-        Node node = (Node) nodeObj;
 
         return (node != null) &&
             Utils.getAttribute(node, operation, "true").equals("true");
@@ -1089,7 +1087,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         if (schema == null) {
             schema = Utils.loadXMLFile(wizardSchemaFile);
 
-            List dependencies = resolveIncludes(schema.getDocumentElement());
+            List<URL> dependencies = resolveIncludes(schema.getDocumentElement());
             resolveShortcuts(schema.getDocumentElement(), true);
 
             wizardSchemaCache.put(wizardSchemaFile, schema, dependencies);
@@ -1117,8 +1115,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * @returns    A list of included files.
      *
      */
-    private List resolveIncludes(Node node) throws WizardException {
-        List result = new ArrayList();
+    private List<URL> resolveIncludes(Node node) throws WizardException {
+        List<URL> result = new ArrayList<URL>();
 
         // Resolve references to elements in other wizards. This can be by inclusion
         // or extension.
@@ -2832,13 +2830,13 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * Caches objectNumber to Node.
      * @since MMBase-1.6.4
      */
-    static class NodeCache extends Cache {
+    static class NodeCache extends Cache<String, Node> {
         NodeCache() {
             super(100);
         }
 
         public String getName() {
-            return "nodes";
+            return "nodes"; // this is rather absurd, because we also have 'Nodes', which is something entirely different.
         }
 
         public String getDescription() {
@@ -2850,7 +2848,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * Caches File to  Editwizard schema Document.
      * @since MMBase-1.6.4
      */
-    private static class WizardSchemaCache extends Cache {
+    private static class WizardSchemaCache extends Cache<URL, Wizard.WizardSchemaCache.Entry> {
         WizardSchemaCache() {
             super(100);
         }
@@ -2863,8 +2861,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             return "File -> Editwizard schema Document (resolved includes/shortcuts)";
         }
 
-        synchronized public Object put(URL f, Document doc, List dependencies) {
-            Object retval = super.get(f);
+        synchronized public Entry put(URL f, Document doc, List<URL> dependencies) {
+            Entry retval = super.get(f);
 
             if (retval != null) {
                 return retval;
@@ -2873,9 +2871,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             return super.put(f, new Entry(f, doc, dependencies));
         }
 
-        synchronized public Object remove(Object key) {
-            URL file = (URL) key;
-            Entry entry = (Entry) get(file);
+        synchronized public Entry remove(URL file) {
+            Entry entry = get(file);
 
             if ((entry != null) && (entry.fileWatcher != null)) {
                 entry.fileWatcher.exit();
@@ -2883,11 +2880,11 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                 log.warn("entry: " + entry);
             }
 
-            return super.remove(key);
+            return super.remove(file);
         }
 
         synchronized public Document getDocument(URL key) {
-            Entry entry = (Entry) super.get(key);
+            Entry entry = super.get(key);
 
             if (entry == null) {
                 return null;
@@ -2911,15 +2908,16 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                     }
                 };
 
-            Entry(URL f, Document doc, List dependencies) {
+            Entry(URL f, Document doc, List<URL> dependencies) {
                 this.file = f;
                 this.doc = doc;
-                fileWatcher.add(f);
+                try {
+                    fileWatcher.add(f);
+                } catch (UnsupportedOperationException uoe) {
+                    // never mind
+                }
 
-                Iterator i = dependencies.iterator();
-
-                while (i.hasNext()) {
-                    URL ff = (URL) i.next();
+                for (URL ff : dependencies) {
                     fileWatcher.add(ff);
                 }
 
