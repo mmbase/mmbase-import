@@ -17,21 +17,29 @@ import org.mmbase.util.functions.*;
  * request and response.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractRenderer.java,v 1.2 2006-10-14 09:46:48 michiel Exp $
+ * @version $Id: AbstractRenderer.java,v 1.3 2006-10-19 13:20:29 michiel Exp $
  * @since MMBase-1.9
  */
 abstract public class AbstractRenderer implements Renderer {
 
     protected final Type type;
+    private final Block parent;
+
     protected Parameter.Wrapper specific;
 
-    public AbstractRenderer(String t) {
+    public AbstractRenderer(String t, Block p) {
         type = Type.valueOf(t);
+        parent = p;
     }
 
     public Type getType() {
         return type;
     }
+
+    public Block getBlock() {
+        return parent;
+    }
+
 
     void addParameters(Parameter<?>... params) {
         List<Parameter> help = new ArrayList<Parameter>();

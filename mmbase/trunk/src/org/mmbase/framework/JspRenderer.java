@@ -23,23 +23,17 @@ import org.mmbase.util.logging.Logging;
  * A Renderer implmentation based on a jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JspRenderer.java,v 1.9 2006-10-16 14:43:17 johannes Exp $
+ * @version $Id: JspRenderer.java,v 1.10 2006-10-19 13:20:29 michiel Exp $
  * @since MMBase-1.9
  */
 public class JspRenderer extends AbstractRenderer {
     private static final Logger log = Logging.getLoggerInstance(JspRenderer.class);
 
     protected final String path;
-    private final Block parent;
 
     public JspRenderer(String t, String p, Block parent) {
-        super(t);
+        super(t, parent);
         path = p;
-        this.parent = parent;
-    }
-
-    public Block getBlock() {
-        return parent;
     }
 
     public String getPath() {
