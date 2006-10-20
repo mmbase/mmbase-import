@@ -2,21 +2,29 @@
 articles = new TreeMap();
 String articleConstraint = (new SearchUtil()).articleConstraint(nowSec, quarterOfAnHour);
 String articlePath = "contentrel,artikel";
+String orderby = "artikel.begindatum";
+int directions = 1; // down
 %>
 <mm:nodeinfo type="type">
    <mm:compare value="dossier">
       <% articlePath = "posrel,artikel"; %>
+      <mm:notpresent referid="showdate">
+        <%
+        orderby = "posrel.pos";
+        directions = -1; // up
+        %>
+      </mm:notpresent>
    </mm:compare>
 </mm:nodeinfo>
-<mm:related path="<%= articlePath %>" fields="artikel.number" max="30" orderby="artikel.begindatum" directions="down"
-   constraints="<%= articleConstraint %>">
+<mm:related path="<%= articlePath %>" fields="artikel.number" max="30" constraints="<%= articleConstraint %>">
    <mm:field name="artikel.number" jspvar="article_number" vartype="String" write="false">
-   <mm:field name="artikel.begindatum" jspvar="article_begindatum" vartype="Long" write="false">
+   <mm:field name="<%= orderby %>" jspvar="key" vartype="Long" write="false">
       <%
-         while(articles.containsKey(article_begindatum)) {
-            article_begindatum = new Long(article_begindatum.longValue() + 1);
-         }
-         articles.put(article_begindatum,article_number); 
+       key = new Long(directions * key.longValue());
+       while(articles.containsKey(key)) {
+          key = new Long(key.longValue() + 1);
+       }
+       articles.put(key,article_number); 
       %>
    </mm:field>
    </mm:field>
