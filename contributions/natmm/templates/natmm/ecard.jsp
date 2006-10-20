@@ -1,5 +1,5 @@
 <%@include file="includes/top0.jsp" %>
-<mm:cloud jspvar="cloud">
+<mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud">
 <%@include file="includes/top1_params.jsp" %>
 <mm:import jspvar="card" externid="card" id="card"></mm:import>
 <mm:import jspvar="actie" externid="actie" id="actie"></mm:import>
@@ -26,10 +26,12 @@ String cardID = "-1";
             toname = thisEcard.getStringValue("toname"); 
             fromemail = thisEcard.getStringValue("fromemail"); 
             fromname = thisEcard.getStringValue("fromname"); 
-            body = thisEcard.getStringValue("body"); 
-            %>
+            body = thisEcard.getStringValue("body");
+            viewCard = true;
+            int viewstat = thisEcard.getIntValue("viewstat");
+         %>
+         <mm:setfield name="viewstat"><%= (viewstat + 1) %></mm:setfield>
          </mm:node>
-			<% viewCard = true; %>
 		   </mm:list>
 		</mm:listcontainer>
 	</mm:present>
