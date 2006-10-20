@@ -52,8 +52,6 @@ public class RemoteGenerator {
         while (i.hasNext()) {
 
             XMLClass xmlClass = (XMLClass) i.next();
-            String name = xmlClass.getName();
-
             if (needsRemote(xmlClass)) {
                 generateInterface(xmlClass);
                 generateRmi(xmlClass);
@@ -71,9 +69,9 @@ public class RemoteGenerator {
     /**
      * This method generates an (RMI)remote interface based on
      * an XMLClass
+     * @param xmlClass Class defined in the MMCI.xml
      */
     public void generateInterface(XMLClass xmlClass) {
-        String shortName = xmlClass.getShortName();
         String className = "Remote" + xmlClass.getClassName();
         StringBuffer sb = new StringBuffer();
 
@@ -192,6 +190,7 @@ public class RemoteGenerator {
     /**
      * This method generates an (RMI)remote implementation based on
      * an XMLClass
+     * @param xmlClass Class defined in the MMCI.xml
      */
     public void generateRmi(XMLClass xmlClass) {
         String shortName = xmlClass.getShortName();
@@ -242,12 +241,14 @@ public class RemoteGenerator {
         sb.append("   " + shortName + " originalObject;\n\n");
         sb.append("   //mapper code\n");
         sb.append("   String mapperCode = null;\n\n");
+        sb.append("   int port = 1100;\n\n");
 
         sb.append("   private static Logger log = Logging.getLoggerInstance(" + className + ".class);\n");
 
         //constructor
-        sb.append("   public " + className + "(" + shortName + " originalObject) throws RemoteException{\n");
-        sb.append("      super();\n");
+        sb.append("   public " + className + "(" + shortName + " originalObject, int port) throws RemoteException{\n");
+        sb.append("      super(port);\n");
+        sb.append("      this.port = port;\n");
         sb.append("      log.debug(\"new " + className + "\");\n");
         sb.append("      this.originalObject = originalObject;\n");
         sb.append("      mapperCode = StubToLocalMapper.add(this.originalObject);\n");
@@ -358,9 +359,10 @@ public class RemoteGenerator {
                 if (paramIter.hasNext()) {
                     sb.append(" ,");
                 }
+                
             }
             if (needsRemote(xmlMethod.getReturnType()) || typeName.equals("java.lang.Object") || typeName.equals("java.util.List") || typeName.equals("java.util.SortedSet")) {
-                sb.append(")");
+                sb.append("), this.port");
             }
             if (!xmlMethod.getReturnType().getOriginalName().equals(xmlMethod.getReturnType().getName())) {
                 sb.append(")");
@@ -399,6 +401,7 @@ public class RemoteGenerator {
 
     /**
      * This method generates an (Remote)bridge implementation
+     * @param xmlClass Class defined in the MMCI.xml
      */
     public void generateImplementation(XMLClass xmlClass) {
         String shortName = xmlClass.getShortName();
@@ -628,7 +631,7 @@ public class RemoteGenerator {
         //System.out.println("Result " + v);
         Iterator i = w.iterator();
 
-        sb.append("public static Object localToRMIObject(Object o) throws RemoteException {\n");
+        sb.append("public static Object localToRMIObject(Object o, int port) throws RemoteException {\n");
         sb.append("		Object retval = null;\n");
         sb2.append("public static Object rmiObjectToRemoteImplementation(Object o) throws RemoteException {\n");
         sb2.append("		Object retval = null;\n");
@@ -637,7 +640,6 @@ public class RemoteGenerator {
         while (i.hasNext()) {
 
             XMLClass xmlClass = (XMLClass) i.next ();
-            String name = xmlClass.getName();
             String shortName = xmlClass.getShortName();
             String className = "Remote" + xmlClass.getClassName();
 
@@ -647,7 +649,7 @@ public class RemoteGenerator {
                     sb2.append("} else");
                 }
                 sb.append(" if (o instanceof " + shortName + ") {\n");
-                sb.append("retval = new " + className + "_Rmi((" + shortName + ")o);\n");
+                sb.append("retval = new " + className + "_Rmi((" + shortName + ")o, port);\n");
 
                 sb2.append(" if (o instanceof " + className + ") {\n");
                 sb2.append("retval = new " + className + "_Impl((" + className + ")o);\n");

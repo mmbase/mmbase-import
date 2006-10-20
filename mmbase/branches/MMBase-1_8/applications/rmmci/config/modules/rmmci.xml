@@ -10,6 +10,12 @@
 		<!--        
 			<property name="port">1111</property>
 		-->
+		<!-- 
+			port number is default 1111.
+		-->
+		<!--        
+			<property name="stubport">1112</property>
+		-->
 		<!-- RMI name to be used to bind to the registry. DEFLAUT = remotecontext -->
 		<property name="bindname">remotecontext</property>
 

@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * options. Note that in the configuration of mmbaseroot.xml the host should be a valid
  * host address if the RMIRegistryServer in rmmci.xml is no set.
  * @author Kees Jongenburger <keesj@dds.nl>
- * @version $Id: RemoteMMCI.java,v 1.15.2.1 2006-09-10 17:04:35 nklasens Exp $
+ * @version $Id: RemoteMMCI.java,v 1.15.2.2 2006-10-20 07:53:12 nklasens Exp $
  * @since MMBase-1.5
  */
 public class RemoteMMCI extends ProcessorModule {
@@ -36,7 +36,7 @@ public class RemoteMMCI extends ProcessorModule {
     private Registry registry;
 
     //get an instance and initialize the logger
-    private static final Logger log = Logging.getLoggerInstance(RemoteMMCI.class);
+    static final Logger log = Logging.getLoggerInstance(RemoteMMCI.class);
 
     /**
      * DEFAULT_RMIREGISTRY_PORT = 1111
@@ -58,13 +58,14 @@ public class RemoteMMCI extends ProcessorModule {
         log.debug("Module RemoteMMCI starting");
 
         int registryPort = getPort();
+        int stubPort = getStubPort(registryPort);
         String host = getHost();
         String bindName = getBindName();
-        createRemoteMMCI(host, registryPort, bindName);
-        log.info("RemoteMMCI module listening on rmi://" + host + ":" + registryPort + "/" + bindName);
+        createRemoteMMCI(host, registryPort, bindName, stubPort);
+        log.info("RemoteMMCI registry listening on rmi://" + host + ":" + registryPort + "/" + bindName);
+        log.info("RemoteMMCI stubs listening on rmi://" + host + ":" + stubPort);
         startChecker(this);
     }
-
 
     public String getBindName() {
         String bindName = DEFAULT_BIND_NAME;
@@ -121,17 +122,39 @@ public class RemoteMMCI extends ProcessorModule {
         return registryPort;
     }
 
+
+    public int getStubPort(int registryPort) {
+        int stubPort = -1;
+
+        //read the server port from the configuration
+        String portString = getInitParameter("stubport");
+        if (portString != null) {
+            try {
+                stubPort = Integer.parseInt(portString);
+            } catch (NumberFormatException nfe) {
+                log.warn("stubport parameter '" + portString + "' of rmmci.xml is not of type int.");
+            };
+        } else {
+            if (stubPort == -1) {
+                stubPort = registryPort + 1;
+            }
+            log.service("Missing port init param, using default " + stubPort);
+        }
+        return stubPort;
+    }
+
+    
     /**
      * This method creates or locates the RMI registry at a specific port and host and binds a new RemoteContext
      * @param registryPort the registry port to start the RMI registry
      * @param bindName the name of the object (aka remotecontext)
      */
-    private void createRemoteMMCI(String host, int registryPort, String bindName) {
+    private void createRemoteMMCI(String host, int registryPort, String bindName, int stubPort) {
         //System.setSecurityManager (new RMISecurityManager ());
         try {
             Registry reg = getRegistry(host, registryPort);
             if (reg != null) {
-                register(reg, bindName);
+                register(reg, bindName, stubPort);
                 log.debug("Module RemoteMMCI Running on (tcp port,name)=(" + registryPort + "," + bindName + ")");
             }
             else {
@@ -192,10 +215,10 @@ public class RemoteMMCI extends ProcessorModule {
     }
 
 
-    public void register(Registry reg, String bindName) throws RemoteException, AccessException {
+    public void register(Registry reg, String bindName, int stubPort) throws RemoteException, AccessException {
         // Create the Database object
         // interface RemoteCloudContext ... implemented by RemoteCloudContext_Rmi .. using LocalContext
-        RemoteCloudContext remoteCloudContext = new RemoteCloudContext_Rmi(LocalContext.getCloudContext());
+        RemoteCloudContext remoteCloudContext = new RemoteCloudContext_Rmi(LocalContext.getCloudContext(), stubPort);
 
         log.debug("bind RemoteCloudContext in the registry using name=" + bindName);
 
@@ -292,7 +315,7 @@ public class RemoteMMCI extends ProcessorModule {
         return true;
      }
 
-    public void resetBind(String host, int registryPort, String bindName) throws RemoteException, AccessException {
+    public void resetBind(String host, int registryPort, String bindName, int stubPort) throws RemoteException, AccessException {
         Registry reg = getRegistry(host, registryPort);
         try {
            reg.unbind(bindName);
@@ -303,7 +326,7 @@ public class RemoteMMCI extends ProcessorModule {
         } catch (NotBoundException e) {
            log.info("Unbind failed for " + bindName + " in RMIregistry " + host + ":" + registryPort);
         }
-        register(reg, bindName);
+        register(reg, bindName, stubPort);
      }
 
      private void startChecker(RemoteMMCI remoteMMCI) {
@@ -335,6 +358,7 @@ public class RemoteMMCI extends ProcessorModule {
                     Thread.sleep(interval);
                 }
                 catch (InterruptedException e) {
+                    //ignore
                 }
                 testRMI();
             }
@@ -345,8 +369,9 @@ public class RemoteMMCI extends ProcessorModule {
                 String bindName = remoteMMCI.getBindName();
                 int port = remoteMMCI.getPort();
                 String host = remoteMMCI.getHost();
+                int stubPort = remoteMMCI.getStubPort(port);
                 if (!remoteMMCI.test(host, port, bindName)) {
-                    remoteMMCI.resetBind(host, port, bindName);
+                    remoteMMCI.resetBind(host, port, bindName, stubPort);
                 }
             } catch (RemoteException e) {
                 log.warn(e.getClass().getName() + ": " + e.getMessage(), e);

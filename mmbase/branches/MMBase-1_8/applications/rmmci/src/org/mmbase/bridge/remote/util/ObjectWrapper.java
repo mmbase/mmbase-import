@@ -17,7 +17,7 @@ public abstract class ObjectWrapper {
     /*
      * Called to create a RMI object based on a "local" object.
      */
-    public static Object localToRMIObject(Object o) throws RemoteException {
+    public static Object localToRMIObject(Object o, int port) throws RemoteException {
         //if the object is null -> return null
         if (o == null) {
             return null;
@@ -29,7 +29,7 @@ public abstract class ObjectWrapper {
             SortedSet set = new TreeSet();
             Iterator i = in.iterator();
             while(i.hasNext()){
-                set.add(localToRMIObject(i.next()));
+                set.add(localToRMIObject(i.next(), port));
             }
             log.debug("convert treeset to "+ set);
             return set;
@@ -39,7 +39,7 @@ public abstract class ObjectWrapper {
             List source = (List)o;
             List list = new Vector();
             for (int x = 0; x < source.size(); x++) {
-                list.add(localToRMIObject(source.get(x)));
+                list.add(localToRMIObject(source.get(x), port));
             }
             return list;
         }
@@ -52,7 +52,7 @@ public abstract class ObjectWrapper {
         }
 
         //it's an mmbase object
-        Object retval = ObjectWrapperHelper.localToRMIObject(o);
+        Object retval = ObjectWrapperHelper.localToRMIObject(o, port);
 
         if (retval == null) {
             log.warn("please add a wrapper for objects of type " + className);

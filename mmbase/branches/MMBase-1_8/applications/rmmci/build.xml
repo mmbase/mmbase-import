@@ -113,7 +113,7 @@
         <pathelement location="build/classes"/>
       </classpath>
     </rmic>
-    <javac destdir="build/classes"
+  	<javac destdir="build/classes"
           classpathref="classpath"
           debug="yes"
           source="1.4"
@@ -122,6 +122,7 @@
       <src path="src"/>
       <include name="org/mmbase/bridge/ContextProvider.java"/>
       <include name="org/mmbase/module/RemoteMMCI.java"/>
+      <include name="org/mmbase/bridge/remote/util/StubToLocalMapper.java"/>
     </javac>
   </target>
 <!-- =================================================================== -->
