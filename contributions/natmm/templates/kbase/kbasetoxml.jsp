@@ -88,7 +88,7 @@
   }
   
   void showQuestions(Cloud wolk, JspWriter out, Node category,int indent, boolean editor) throws java.io.IOException{
-    NodeIterator questions=wolk.getList(category.getStringValue("number"),"kb_category,kb_question","kb_question.number,kb_question.name", null,"kb_question.question","up",null,false).nodeIterator();
+    NodeIterator questions=wolk.getList(category.getStringValue("number"),"kb_category,kb_question","kb_question.number,kb_question.name", null,"kb_question.pos,kb_question.question","up,up",null,false).nodeIterator();
     Node question;
     boolean visible;
     String thisImgPrefix;

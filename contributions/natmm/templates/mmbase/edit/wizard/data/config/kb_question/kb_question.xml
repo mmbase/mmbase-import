@@ -15,6 +15,7 @@
 	<form-schema id="edit_kb_question">
 	  <!-- <field name="name" ftype="line" /> -->
 		<field name="question" ftype="line" />
+		<field name="pos" ftype="line"><prompt>positie</prompt></field>
 		<field name="date" />
 		<field name="comment" ftype="html" rows="12" />
 		<field name="description" ftype="html" rows="12" />
