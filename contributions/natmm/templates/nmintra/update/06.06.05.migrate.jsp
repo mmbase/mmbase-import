@@ -428,7 +428,7 @@
 		"/editors/util/flushcache.jsp",
     "config/pagina/pagina_formulier",
     "/editors/simplestats/shopstats.jsp",
-    "config/artikel/artikel_nieuws_nmintra"
+    "config/artikel/artikel_nieuws_nmintra_noorigin"
 	};
 	for(int i=0; i<ewToRename.length;i++) {
 		%><mm:listnodes type="editwizards" constraints="<%= "wizard = '" + ewToRename[i]  + "'" %>">
