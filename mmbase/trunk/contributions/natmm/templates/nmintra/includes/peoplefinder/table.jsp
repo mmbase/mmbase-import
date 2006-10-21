@@ -22,11 +22,14 @@
             <tr><td colspan="2" style="padding-bottom:3px;"><mm:field name="gender"><mm:compare value="0">mw. </mm:compare></mm:field
                 ><mm:field name="firstname" jspvar="firstname" vartype="String" write="true">
                     <mm:field name="initials" jspvar="initials" vartype="String" write="false">
-                        <mm:isnotempty><% 
-                            if(firstname.substring(0,1).equals(initials.substring(0,1))){
-                                initials = initials.substring(initials.indexOf(".")+1);
-                            }
-                            %><%= initials 
+                       <mm:isnotempty>
+                       <% 
+                       if(firstname!=null && firstname.length()>1
+                          && initials!=null && initials.length()>1 
+                          && firstname.substring(0,1).equals(initials.substring(0,1))){
+                           initials = initials.substring(initials.indexOf(".")+1);
+                       }
+                       %><%= initials 
                        %></mm:isnotempty>
                     </mm:field>
                 </mm:field>

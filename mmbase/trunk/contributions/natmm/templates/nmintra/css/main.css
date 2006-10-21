@@ -133,10 +133,10 @@ a.underlined:hover {
     text-decoration: underline
 }
 a:link {
-    font-weight: bold; color: #000000; text-decoration: underline
+    font-weight: bold; color: #000000; text-decoration: none
 }
 a:visited {
-    font-weight: bold; color: #000000; text-decoration: underline
+    font-weight: bold; color: #000000; text-decoration: none
 }
 a:active {
     font-weight: bold; color: #000000; text-decoration: underline

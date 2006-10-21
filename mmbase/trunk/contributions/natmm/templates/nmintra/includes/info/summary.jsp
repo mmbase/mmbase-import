@@ -1,7 +1,7 @@
 <mm:node element="pagina">
   <mm:field name="number" jspvar="page_number" vartype="String" write="false">
   <mm:field name="titel_fra" jspvar="showDate" vartype="String" write="false">
-  <a href="<%= ph.createPaginaUrl(page_number,request.getContextPath()) %>" class="pageheader" style=" text-decoration:none;" title="<mm:field name="titel" />">
+  <a href="<%= ph.createPaginaUrl(page_number,request.getContextPath()) %>" class="pageheader" title="<mm:field name="titel" />">
     <span class="dark"><mm:field name="titel" /></span>
   </a><br/>
 	<mm:related path="contentrel,artikel" orderby="artikel.embargo"

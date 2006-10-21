@@ -7,6 +7,8 @@
 <%@include file="includes/calendar.jsp" %>
 <%@include file="includes/header.jsp" %>
 <%
+// this template shows the available projects
+
 if(!projectId.equals("")) {
    %><%@include file="includes/projectoverview.jsp" %><%
 } else {
@@ -19,7 +21,7 @@ if(!projectId.equals("")) {
        }
    } catch(Exception e) {} 
    
-   boolean debug = true;
+   boolean debug = false;
    
    String extTemplateQueryString = templateQueryString; 
    String allConstraint = "";
@@ -77,7 +79,7 @@ if(!projectId.equals("")) {
    listSize = searchResultSet.size();
    searchResults = su.searchResults(searchResultSet);
    searchResultSet = new TreeSet();
-   if(debug) { log.info(allConstraint + " : " + searchResultSet); }
+   if(debug) { log.info("allConstraint " + allConstraint + " : " + searchResults); }
    
    if (!typeConstraint.equals("")) {
       %><mm:list nodes="<%= searchResults %>" path="projects,posrel,projecttypes"
@@ -89,9 +91,9 @@ if(!projectId.equals("")) {
       listSize = searchResultSet.size();
       searchResults = su.searchResults(searchResultSet); 
       searchResultSet = new TreeSet();
-      if(debug) { log.info(typeConstraint + " : " + searchResultSet); }
+      if(debug) { log.info("typeConstraint " + typeConstraint + " : " + searchResults); }
    }
-   if(!employeeId.equals("")) {
+   if(!employeeId.equals("-1")) {
       %><mm:list nodes="<%= searchResults %>" path="projects,readmore,medewerkers"
          constraints="<%= employeeConstraint %>"
          ><mm:field name="projects.number" jspvar="projects_number" vartype="String" write="false"><%
@@ -101,7 +103,7 @@ if(!projectId.equals("")) {
       listSize = searchResultSet.size();
       searchResults = su.searchResults(searchResultSet);
       searchResultSet = new TreeSet();
-      if(debug) { log.info(employeeConstraint + " : " + searchResultSet); }
+      if(debug) { log.info("employeeConstraint " + employeeConstraint + " : " + searchResults); }
    }
    if (!groupConstraint.equals("")) { 
       %><mm:list nodes="<%= searchResults %>" path="projects,phaserel,phases"
@@ -118,7 +120,7 @@ if(!projectId.equals("")) {
       listSize = searchResultSet.size();
       searchResults = su.searchResults(searchResultSet);
       searchResultSet = new TreeSet();
-      if(debug) { log.info(groupConstraint + " : " + searchResultSet); }
+      if(debug) { log.info("groupConstraint " + groupConstraint + " : " + searchResults); }
    }
    %>
       <td><%@include file="includes/pagetitle.jsp" %></td>

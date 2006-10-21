@@ -1,7 +1,7 @@
 <mm:node number="<%= eventId %>">
    <div class="pageheader"><mm:field name="titel" /></div>
    <mm:related path="posrel,images" orderby="images.title"
-         ><div align="center" style="margin-top:8px;"><img src="<mm:node element="images"><mm:image template="+s(400)" /></mm:node
+         ><div align="center" style="margin-top:8px;margin-bottom:15px;"><img src="<mm:node element="images"><mm:image template="+s(400)" /></mm:node
          >" alt="<mm:field name="images.title" />" border="0"></div>
    </mm:related>
 	 <mm:field name="tekst" jspvar="sText" vartype="String" write="false">
@@ -57,7 +57,7 @@
    <%
 
    String [] text_fields = { "omschrijving", "omschrijving_eng", "omschrijving_de", "omschrijving_fra"};
-   String [] text_titles = { "bijzondere aandachtspunten", "hulpmiddelen", "inzet van de beheereenheid", "eisen die de activiteit aan het terrein stelt"};
+   String [] text_titles = { "Bijzondere aandachtspunten", "Hulpmiddelen", "Inzet van de beheereenheid", "Eisen die de activiteit aan het terrein stelt"};
    for(int i=0; i<text_fields.length; i++) {
       %>
       <mm:field name="<%= text_fields[i] %>" jspvar="sText" vartype="String" write="false">
@@ -89,8 +89,8 @@
 	      <ul>
       </mm:first>
 		<li><mm:field name="namesender"/>&nbsp;/&nbsp;
-			<mm:field name="begindate" jspvar="begibdate" vartype="String" write="false">
-				<% long td = Integer.parseInt(begibdate); td = 1000 * td; Date dd = new Date(td); cal.setTime(dd); %>
+			<mm:field name="begindate" jspvar="begindate" vartype="String" write="false">
+				<% long td = Integer.parseInt(begindate); td = 1000 * td; Date dd = new Date(td); cal.setTime(dd); %>
             <%= cal.get(Calendar.DAY_OF_MONTH)+ " " + months_lcase[(cal.get(Calendar.MONTH))] + " " + cal.get(Calendar.YEAR) %>
 			</mm:field>
 			<br/>

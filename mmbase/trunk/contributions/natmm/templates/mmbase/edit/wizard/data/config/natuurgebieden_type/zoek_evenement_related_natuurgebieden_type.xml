@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <list role="related" destination="natuurgebieden_type" minoccurs="0" maxoccurs="*" >
-   <title>type terrein</title>
+   <title>type terrein (alleen nieuw als het type terrein nog niet bestaat)</title>
    <item>
       <field ftype="data" name="name"><prompt>naam</prompt></field>
       <!-- field ftype="startwizard" wizardname="config/natuurgebieden_type/natuurgebieden_type" / -->
@@ -13,11 +13,9 @@
          <search-fields>[name]</search-fields>
       </search-filter>
    </command>
-   <!--
-   <command name="insert" inline="true" wizardname="config/natuurgebieden_type/natuurgebieden_type" objectnumber="new">
+   <command name="startwizard" inline="true" wizardname="config/natuurgebieden_type/natuurgebieden_type" objectnumber="new">
        <prompt></prompt>
    </command>
-   -->
    <action type="create">
       <relation destinationtype="natuurgebieden_type" role="related">
       </relation>
