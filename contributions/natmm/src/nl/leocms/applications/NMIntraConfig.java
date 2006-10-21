@@ -78,7 +78,6 @@ public class NMIntraConfig {
       "object,contentrel,pagina"                                      // vacature, lucene index 10
    };
 
-   
    public static int PARENT_LAYOUT = -1;
    public static int DEFAULT_LAYOUT = 0;
    public static int SUBSITE1_LAYOUT = 1;
@@ -125,11 +124,9 @@ public class NMIntraConfig {
    public static String sDocumentsRoot = "D:/apps/Tomcat_Intranet/webapps/documents/PenO";
    public static String incomingDir = "E:/Intranet_Input/";
    public static String tempDir = "E:/Intranet_Temp/";
-   // public static String sCorporateWebsite = "http://www.natuurmonumenten.nl/";
-   // public static String sCorporateEditors = "http://www.natuurmonumenten.nl/editors/";
-   public static String sCorporateWebsite = "http://www.acc.natuurmm.asp4all.nl/";
-   public static String sCorporateEditors = "http://www.acc.natuurmm.asp4all.nl/editors/";
-
+   public static String sCorporateWebsite = "http://www.natuurmonumenten.nl/";
+   public static String sCorporateEditors = "http://www.natuurmonumenten.nl/editors/";
+   
    // Landschap Noord-Holland
    /*
    public static boolean showFirstSubpage = true;
@@ -150,22 +147,21 @@ public class NMIntraConfig {
    
    // Development
    /*
-   public static boolean showFirstSubpage = false;
+   public static boolean showFirstSubpage = true;
 
-   public static String fromEmailAddress = "intranet@natuurmonumenten.nl";
+   public static String fromEmailAddress = "intranet@landschapnoordholland.nl";
    public static String defaultPZAddress = "hangyi@xs4all.nl";
    public static String defaultFZAddress = "hangyi@xs4all.nl";
    public static String toEmailAddress   = "hangyi@xs4all.nl";
    public static String newsEmailAddress = "hangyi@xs4all.nl";
 
-   public static String sDocumentsUrl = "/documents/PenO";
-   public static String sDocumentsRoot = "C:/data/nmintra/webapps/documents/PenO";
-   public static String incomingDir =  "C:/data/nmintra/incoming/";
+   public static String sDocumentsUrl = "/documents/Intranet";
+   public static String sDocumentsRoot = "C:/data/natmm/webapps/documents/Intranet";
+   public static String incomingDir =  "C:/data/natmm/incoming/";
    public static String tempDir = "C:/temp/";
    public static String sCorporateWebsite = "http://www.acc.natuurmm.asp4all.nl/";
    public static String sCorporateEditors = "http://www.acc.natuurmm.asp4all.nl/editors/";
    */
-
    public NMIntraConfig() {
 
    }
