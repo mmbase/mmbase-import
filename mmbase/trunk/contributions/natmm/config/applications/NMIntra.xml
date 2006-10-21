@@ -301,7 +301,7 @@
       <datasource builder="projecttypes" path="NMIntra/projecttypes.xml"/>
       <datasource builder="providers" path="NMIntra/providers.xml"/>
       <datasource builder="responses" path="NMIntra/responses.xml"/>
-      <datasource builder="style" path="NMIntra/style.xml"/>
+      <datasource builder="style" path="NMIntra/style.xml"/>  <!-- should be removed after migration -->
       <datasource builder="terms" path="NMIntra/terms.xml"/>
       <datasource builder="topics" path="NMIntra/topics.xml"/>
       <datasource builder="users" path="NMIntra/users.xml"/>
