@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * xml).
  *
  * @author Michiel Meeuwissen
- * @version $Id: PatternNodeFunctionProvider.java,v 1.11 2006-09-29 09:54:40 michiel Exp $
+ * @version $Id: PatternNodeFunctionProvider.java,v 1.12 2006-10-23 16:23:26 michiel Exp $
  * @since MMBase-1.8
  */
 public class PatternNodeFunctionProvider extends FunctionProvider {
@@ -115,7 +115,7 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
                 if (request.find()) {
                     request.reset();
                     HttpServletRequest req = parameters.get(Parameter.REQUEST);
-                    sb = new StringBuffer();
+                    sb.setLength(0);
                     while(request.find()) {
                         if(request.group(1).equals("getContextPath")) {
                             String r = req == null ? org.mmbase.module.core.MMBaseContext.getHtmlRootUrlPath() : req.getContextPath() + '/';
@@ -151,7 +151,7 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
                         log.error("Did't find the request among the parameters");
                     } else {
                         requestParam.reset();
-                        sb = new StringBuffer();
+                        sb.setLength(0);
                         while(requestParam.find()) {
                             String paramName = requestParam.group(1);
                             String value = req.getParameter(paramName);
@@ -170,7 +170,7 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
                         log.error("Did't find the request among the parameters");
                     } else {
                         requestAttribute.reset();
-                        sb = new StringBuffer();
+                        sb.setLength(0);
                         while(requestAttribute.find()) {
                             String paramName = requestAttribute.group(1);
                             String value = Casting.toString(req.getAttribute(paramName));
@@ -184,7 +184,7 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
                 Matcher params = paramPattern.matcher(sb.toString());
                 if (params.find()) {
                     params.reset();
-                    sb = new StringBuffer();
+                    sb.setLength(0);
                     while(params.find()) {
                         params.appendReplacement(sb, (String) parameters.get(params.group(1)));
                     }
@@ -196,7 +196,7 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
                 Matcher initParams = initParamPattern.matcher(sb.toString());
                 if (initParams.find()) {
                     initParams.reset();
-                    sb = new StringBuffer();
+                    sb.setLength(0);
                     while(initParams.find()) {
                         String s = org.mmbase.module.core.MMBaseContext.getServletContext().getInitParameter(initParams.group(1));
                         if (s == null) s = "";
