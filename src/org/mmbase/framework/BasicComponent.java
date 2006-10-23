@@ -12,6 +12,7 @@ package org.mmbase.framework;
 import java.util.*;
 import org.w3c.dom.*;
 import org.mmbase.util.LocalizedString;
+import org.mmbase.util.functions.Parameter;
 import org.mmbase.util.logging.*;
 
 /**
@@ -19,7 +20,7 @@ import org.mmbase.util.logging.*;
  * components, and may be requested several blocks.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicComponent.java,v 1.13 2006-10-19 17:31:48 michiel Exp $
+ * @version $Id: BasicComponent.java,v 1.14 2006-10-23 17:17:20 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicComponent implements Component {
@@ -27,7 +28,7 @@ public class BasicComponent implements Component {
 
     private final String name;
     private final LocalizedString description;
-    private final Map<String, Block> blocks = new HashMap();
+    private final Map<String, Block> blocks = new HashMap<String, Block>();
     private Block defaultBlock = null;
 
     public BasicComponent(String name) {
@@ -98,7 +99,14 @@ public class BasicComponent implements Component {
                 return null;
             }
         }
-        // TODO code to read sub-param tags follows here
+        Parameter[] params = Parameter.readArrayFromXml(renderElement);
+        if (params.length > 0) { // a bit to simple, how can you explicitely make a renderer parameter-less now?
+            if (renderer instanceof AbstractRenderer) {
+                ((AbstractRenderer) renderer).addParameters(params);
+            } else {
+                log.warn("Don't know how to add parameters to " + renderer);
+            }
+        }
         return renderer;
     }
 
@@ -119,7 +127,14 @@ public class BasicComponent implements Component {
                 return null;
             }
         }
-        // TODO code to read sub-param tags follows here
+        Parameter[] params = Parameter.readArrayFromXml(processorElement);
+        if (params.length > 0) { // a bit to simple, how can you explicitely make a processor parameter-less now?
+            if (processor instanceof AbstractProcessor) {
+                ((AbstractProcessor) processor).addParameters(params);
+            } else {
+                log.warn("Don't know how to add parameters to " + processor);
+            }
+        }
         return processor;
 
     }
