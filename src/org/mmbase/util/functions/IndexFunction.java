@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: IndexFunction.java,v 1.11 2006-10-13 14:22:26 nklasens Exp $
+ * @version $Id: IndexFunction.java,v 1.12 2006-10-23 16:23:26 michiel Exp $
  * @since MMBase-1.8
  */
 public class IndexFunction extends FunctionProvider {
@@ -86,7 +86,7 @@ public class IndexFunction extends FunctionProvider {
      * Returns the 'successor' or a string. Which means that e.g. after 'zzz' follows 'aaaa'.
      */
     public static String successor(String index) {
-        StringBuffer buf = new StringBuffer(index);
+        StringBuilder buf = new StringBuilder(index);
         boolean lowercase = true;
         for (int i = index.length() - 1 ; i >= 0; i--) {
             char c = buf.charAt(i);
@@ -151,7 +151,7 @@ public class IndexFunction extends FunctionProvider {
                 postfix = romanSuccessor(postfix);
             }
         }
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         for (int i = 0; i < split.length - 1; i++) {
             buf.append(split[i]);
             buf.append(joiner);
@@ -272,11 +272,11 @@ public class IndexFunction extends FunctionProvider {
                     log.debug("Now constructing index-number with " + stack.size() + " nodes on stack");
                 }
                 Node n = stack.pull(); // this is root, or at least _its_ index is known
-                StringBuffer buf;
+                StringBuilder buf;
                 if (! n.equals(node)) {
-                    buf = new StringBuffer(n.getFunctionValue("index", parameters).toString());
+                    buf = new StringBuilder(n.getFunctionValue("index", parameters).toString());
                 } else {
-                    buf = new StringBuffer();
+                    buf = new StringBuilder();
                 }
                 String j = buf.length() == 0 ? "" : join;
                 OUTER:
@@ -301,7 +301,7 @@ public class IndexFunction extends FunctionProvider {
                         log.debug("Found index " + i);
                         Matcher matcher = indexPattern.matcher(i);
                         if (matcher.matches()) {
-                            buf = new StringBuffer(matcher.group(1));
+                            buf = new StringBuilder(matcher.group(1));
                             i = matcher.group(2);
                             log.debug("matched " + indexPattern + " --> " + i);
                         }
