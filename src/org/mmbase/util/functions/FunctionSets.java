@@ -36,7 +36,7 @@ import java.net.*;
  * @author Dani&euml;l Ockeloen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: FunctionSets.java,v 1.24 2006-10-14 14:35:39 nklasens Exp $
+ * @version $Id: FunctionSets.java,v 1.25 2006-10-23 16:22:43 michiel Exp $
  */
 public class FunctionSets {
 
@@ -124,13 +124,13 @@ public class FunctionSets {
 
     private static void readSets(ResourceWatcher watcher) {
 
-        List resources = watcher.getResourceLoader().getResourceList("functionsets.xml");
+        List<URL> resources = watcher.getResourceLoader().getResourceList("functionsets.xml");
         log.service("Using " + resources);
-        ListIterator i = resources.listIterator();
+        ListIterator<URL> i = resources.listIterator();
         while (i.hasNext()) i.next();
         while (i.hasPrevious()) {
             try {
-                URL u = (URL) i.previous();
+                URL u = i.previous();
                 log.service("Reading " + u);
                 URLConnection con = u.openConnection();
                 if (con.getDoInput()) {
@@ -172,7 +172,7 @@ public class FunctionSets {
 
         for (Iterator functionElements = reader.getChildElements("functionset", "function"); functionElements.hasNext();) {
             Element element = (Element)functionElements.next();
-            String functionName = reader.getElementAttributeValue(element,"name");
+            String functionName = reader.getElementAttributeValue(element, "name");
             if (functionName != null) {
 
                 Element a = reader.getElementByPath(element, "function.type");
@@ -227,9 +227,7 @@ public class FunctionSets {
                     fun.setDescription(description);
                     functionSet.addFunction(fun);
                 } catch (Exception e) {
-                    log.error(e);
-                    log.error(Logging.stackTrace(e));
-                    log.error(Logging.stackTrace(e.getCause()));
+                    log.error(e.getMessage(), e);
                 }
             }
         }
