@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.31 2006-10-14 13:27:02 michiel Exp $
+ * @version $Id: Parameters.java,v 1.32 2006-10-23 16:23:26 michiel Exp $
  * @see Parameter
  * @see #Parameters(Parameter[])
  */
@@ -127,7 +127,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
     }
 
     public String toString() {
-        StringBuffer buf = new StringBuffer("[");
+        StringBuilder buf = new StringBuilder("[");
         for (int i = fromIndex; i < toIndex; i++) {
             if (i > fromIndex) buf.append(", ");
             buf.append(definition[i]).append('=').append(get(i));

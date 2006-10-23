@@ -27,7 +27,7 @@ import org.w3c.dom.*;
  * @author Daniel Ockeloen (MMFunctionParam)
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.37 2006-10-14 14:35:39 nklasens Exp $
+ * @version $Id: Parameter.java,v 1.38 2006-10-23 16:23:26 michiel Exp $
  * @see Parameters
  */
 
@@ -329,7 +329,7 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
 
         // this toString makes the wrapping invisible in the toString of a wrapping Parameter[]
         public String toString() {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             for (int i = 0 ; i < arguments.length; i++) {
                 if (i > 0) buf.append(", ");
                 buf.append(arguments[i].toString());
