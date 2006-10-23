@@ -27,7 +27,7 @@ import org.w3c.dom.*;
  * @author Daniel Ockeloen (MMFunctionParam)
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.38 2006-10-23 16:23:26 michiel Exp $
+ * @version $Id: Parameter.java,v 1.39 2006-10-23 17:29:04 michiel Exp $
  * @see Parameters
  */
 
@@ -83,8 +83,11 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
     public static Parameter readFromXml(Element element) {
         String name = element.getAttribute("name");
         String type = element.getAttribute("type");
-        String description   = element.getAttribute("description");
+        String description   = element.getAttribute("description"); // actually description as attribute is not very sane
         Parameter parameter = new Parameter(name, getClassForName(type));
+        if (! "".equals(description)) {
+            parameter.getLocalizedDescription().set(description, null); // just set it for the default locale...
+        }
 
         // check for a default value
         if (element.getFirstChild() != null) {
