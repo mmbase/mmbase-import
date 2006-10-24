@@ -1,7 +1,11 @@
 <mm:log jspvar="log">
-<% 
+<%
+
 net.sf.mmapps.modules.lucenesearch.LuceneManager lm  = mod.getLuceneManager();
 net.sf.mmapps.modules.lucenesearch.SearchConfig cf = lm.getConfig();
+if(cf==null) {
+   log.error("Cound not read the lucenedatadefinition.xml, is it present in WEB-INF\\config ?");
+}
 
 // *** all pages that belong to the selected rubriek: hsetAllowedNodes ***
 if((sCategory != null) && (!sCategory.equals(""))) {
@@ -21,8 +25,7 @@ while(qStr.indexOf(DOUBLESPACE)>-1) {
 }
 qStr = qStr.trim().replaceAll(SINGLESPACE,"* AND ") + "*";
 
-
-log.info("******* Starting search on '" +  qStr + "' *******");
+log.info("User searched on '" +  qStr + "'");
 boolean searchArchive = sArchive.equals("ja");
 
 // see also PATHS_FROM_PAGE_TO_OBJECTS in nl.leocms.applications.NMIntraConfig.java

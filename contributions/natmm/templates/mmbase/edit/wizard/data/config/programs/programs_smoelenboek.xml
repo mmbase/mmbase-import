@@ -4,7 +4,10 @@
     <title>team</title>
     <task-description></task-description>
     <action include="config/programs/create_programs.xml" />
-    <action include="config/programs/delete_programs.xml" />
+    <action type="delete">
+      	<prompt>Weet u zeker dat u dit team wilt verwijderen ?</prompt>
+      	<description>Klik hier om dit team te verwijderen.</description>
+    </action>
     <action include="config/programs/load_programs.xml" />
     <lists>
         <optionlist include="config/option_lists/team_types.xml" />
