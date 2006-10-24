@@ -17,19 +17,19 @@ import org.mmbase.bridge.*;
  * Wraps another Node, and adds 'isChangedByThis'.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeChanger.java,v 1.1 2006-02-10 18:01:44 michiel Exp $
+ * @version $Id: NodeChanger.java,v 1.2 2006-10-24 10:55:08 michiel Exp $
  * @since   MMBase-1.8
  */
 
 public class NodeChanger extends NodeWrapper {
-    protected Map originalValues = null;
+    protected Map<String, Object> originalValues = null;
 
     public NodeChanger(Node node) {
         super(node);
     }
 
     protected void change(String fieldName) {
-        if (originalValues == null) originalValues = new HashMap();
+        if (originalValues == null) originalValues = new HashMap<String, Object>();
         if (! originalValues.containsKey(fieldName)) {
             originalValues.put(fieldName, node.getValueWithoutProcess(fieldName));
         }
@@ -61,12 +61,10 @@ public class NodeChanger extends NodeWrapper {
 
     public void cancelThis() {
         if (originalValues != null) {
-            Iterator i = originalValues.entrySet().iterator();
-            while (i.hasNext()) {
-                Map.Entry entry = (Map.Entry) i.next();                
-                getNode().setValueWithoutProcess((String ) entry.getKey(), entry.getValue());
+            for (Map.Entry<String, Object> entry : originalValues.entrySet()) {
+                getNode().setValueWithoutProcess(entry.getKey(), entry.getValue());
             }
-                
+
         }
     }
 
