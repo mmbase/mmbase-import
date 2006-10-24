@@ -36,7 +36,7 @@ import java.net.*;
  * @author Dani&euml;l Ockeloen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: FunctionSets.java,v 1.25 2006-10-23 16:22:43 michiel Exp $
+ * @version $Id: FunctionSets.java,v 1.26 2006-10-24 09:39:18 michiel Exp $
  */
 public class FunctionSets {
 
@@ -222,8 +222,7 @@ public class FunctionSets {
                 Parameter[] parameters = Parameter.readArrayFromXml(element);
 
                 try {
-                    SetFunction fun = new SetFunction(functionName, parameters, returnType, className, methodName);
-                    fun.setType(type);
+                    SetFunction fun = new SetFunction(functionName, parameters, returnType, className, methodName, SetFunction.Type.valueOf(type.toUpperCase()));
                     fun.setDescription(description);
                     functionSet.addFunction(fun);
                 } catch (Exception e) {
