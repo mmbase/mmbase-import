@@ -71,17 +71,28 @@ if(!articleId.equals("-1")) {
         <tr><td><img src="media/spacer.gif" width="10" height="1"></td>
             <td><%@include file="includes/relatedteaser.jsp" %><%
              
-                String articleConstraint = su.articleConstraint(nowSec,quarterOfAnHour); 
+                String articleConstraint = "";
+                boolean isFirst = true;
+                if(!isArchive) {
+                  isFirst = false;
+                  articleConstraint = su.articleConstraint(nowSec,quarterOfAnHour);
+                }
                 String articlePath = "pagina,contentrel,artikel";
                 if(!thisPool.equals("-1")) {
-                    articleConstraint += " AND ( pools.number = '" + thisPool + "' )";
+                    if(!isFirst ) { articleConstraint += " AND "; }
+                    isFirst = false;
+                    articleConstraint += "( pools.number = '" + thisPool + "' )";
                     articlePath += ",posrel,pools";
                 }
                 if(checkOnPeriod) {
-                  articleConstraint += " AND (( artikel.begindatum > '" + fromTime + "') AND (artikel.begindatum < '" + toTime + "'))";
+                  if(!isFirst) { articleConstraint += " AND "; }
+                  isFirst = false;
+                  articleConstraint += "(( artikel.begindatum > '" + fromTime + "') AND (artikel.begindatum < '" + toTime + "'))";
                 }
                 if(!termSearchId.equals("")) {
-                  articleConstraint += " AND (( UPPER(artikel.titel) LIKE '%" + termSearchId.toUpperCase() + "%') OR ( UPPER(artikel.intro) LIKE '%" + termSearchId.toUpperCase() + "%') ";
+                  if(!isFirst ) { articleConstraint += " AND "; }
+                  isFirst = false;
+                  articleConstraint += "(( UPPER(artikel.titel) LIKE '%" + termSearchId.toUpperCase() + "%') OR ( UPPER(artikel.intro) LIKE '%" + termSearchId.toUpperCase() + "%') ";
                   if(!thisPool.equals("-1")) {
                      articleConstraint += " OR ( UPPER(pools.name) LIKE '%" + termSearchId.toUpperCase() + "%' )";
                   }

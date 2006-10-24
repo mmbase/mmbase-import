@@ -28,7 +28,7 @@
   String sAdv = request.getParameter("adv");
   if (sAdv==null) { sAdv = ""; }
 	
-	RubriekHelper rh = new RubriekHelper(cloud);
+  RubriekHelper rh = new RubriekHelper(cloud);
   SearchUtil su = new SearchUtil();
   
   long [] period = su.getPeriod(periodId);
@@ -70,8 +70,7 @@
   if(mod!= null) {
     %><%@include file="includes/search/hashsets.jsp" %><%
   }
-  %>
-    <%@include file="includes/header.jsp" %>
+  %><%@include file="includes/header.jsp" %>
     <td><%@include file="includes/pagetitle.jsp" %></td>
     <td><% 
        String rightBarTitle = "Uitgebreid Zoeken";
@@ -94,16 +93,16 @@
           Vul een zoekterm in bij '<%= defaultSearchText %>' en klik op de 'Zoek'-knop om in het Intranet te zoeken."						
           <% 
         } else {
-						if(hsetRubrieken.size()==0) {
-				        %>Er zijn geen zoekresultaten gevonden, die voldoen aan uw zoekopdracht.<%
-					  } else { 
-					     %>De volgende zoekresultaten zijn gevonden in:<br/><% 
-					  }
+            if(hsetRubrieken.size()==0) {
+              %>Er zijn geen zoekresultaten gevonden, die voldoen aan uw zoekopdracht.<%
+            } else { 
+              %>De volgende zoekresultaten zijn gevonden in:<br/><% 
+            }
             NodeList rubriekenList = (NodeList) rh.getTreeNodes(subsiteID);
-
-					  // *** show anchors to rubrieken
-					  boolean bFirst = true;
-					  for (Iterator it = rubriekenList.iterator(); it.hasNext();) {
+            
+            // *** show anchors to rubrieken
+            boolean bFirst = true;
+            for (Iterator it = rubriekenList.iterator(); it.hasNext();) {
               String sRubriek = ((Node) it.next()).getStringValue("rubriek.number");
               if(hsetRubrieken.contains(sRubriek)) {
                 if(!bFirst) { %> | <% }
@@ -115,10 +114,10 @@
                 </mm:node><%
                 bFirst = false;
               }
-					  }
-
-					  // *** show rubrieken
-				   	if (hsetRubrieken.size() > 0) { 
+			   }
+              
+			   // *** show rubrieken
+		      if (hsetRubrieken.size() > 0) { 
               Vector defaultSearchTerms = new Vector(); 
               defaultSearchTerms = su.createSearchTerms(searchId);
               %>
@@ -128,9 +127,7 @@
               for (Iterator it = rubriekenList.iterator(); it.hasNext(); ) {
                 String sRubriek = ((Node) it.next()).getStringValue("rubriek.number");
                 if(hsetRubrieken.contains(sRubriek)) {
-                  log.info(sRubriek);
-                  HashSet hsetPagesForThisRubriek = rh.getAllPages(sRubriek); 
-                  log.info(" -> " + hsetPagesForThisRubriek);
+                  HashSet hsetPagesForThisRubriek = rh.getAllPages(sRubriek);
                   %>
                   <mm:node number="<%= sRubriek %>">
                     <a name="<mm:field name="number" />" />
@@ -144,7 +141,6 @@
                     bFirst = true;
                     for (Iterator itp = hsetPagesNodes.iterator(); itp.hasNext(); ) {
                       String sPageID = (String) itp.next();
-                    
                       %><%@include file="includes/search/page.jsp" %><%
                       bFirst = false;
                     }
@@ -159,9 +155,9 @@
               }
             }
           }
-					%><br/>
-				  </td>
-	        <td><img src="media/spacer.gif" width="10" height="1"></td>
+			%><br/>
+			</td>
+	      <td><img src="media/spacer.gif" width="10" height="1"></td>
    	   </tr>
       </table>
 </div>

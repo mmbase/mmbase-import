@@ -27,7 +27,7 @@
 </tr>
 <tr>
 <td class="transperant">
-<div class="<%= infopageClass %>" style="padding-right:10px;padding-left:10px;padding-top:20px;">
+<div class="<%= infopageClass %>" id="infopage" style="padding-right:10px;padding-left:10px;padding-top:20px;">
 <%@include file="includes/relatedteaser.jsp" %>
 <% DocumentsTreeModel model = new DocumentsTreeModel(cloud);
    DocumentsHTMLTree t = new DocumentsHTMLTree(model,"documents");
