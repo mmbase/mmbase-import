@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloudContext.java,v 1.51 2006-05-22 14:25:22 michiel Exp $
+ * @version $Id: BasicCloudContext.java,v 1.52 2006-10-24 13:00:30 michiel Exp $
  */
 public class BasicCloudContext implements CloudContext {
     private static final Logger log = Logging.getLoggerInstance(BasicCloudContext.class);
@@ -41,10 +41,10 @@ public class BasicCloudContext implements CloudContext {
     static TransactionManager transactionManager = null;
 
     // map of clouds by name
-    private static Set localClouds = new HashSet();
+    private static Set<String> localClouds = new HashSet<String>();
 
     // map of modules by name
-    private static Map localModules = new HashMap();
+    private static Map<String, Module> localModules = new HashMap<String, Module>();
 
     /**
      *  constructor to call from the MMBase class
@@ -59,7 +59,7 @@ public class BasicCloudContext implements CloudContext {
      */
     protected boolean check() {
         if(mmb == null) {
-            Iterator i = org.mmbase.module.Module.getModules();
+            Iterator<org.mmbase.module.Module> i = org.mmbase.module.Module.getModules();
             // check if MMBase is already running
             if (i == null) {
                 // build the error message, since it has very litle overhead (only entered once incase of startup)
@@ -94,8 +94,8 @@ public class BasicCloudContext implements CloudContext {
             transactionManager = new TransactionManager(mmb, tmpObjectManager);
             // create module list
             while(i.hasNext()) {
-                Module mod = ModuleHandler.getModule((org.mmbase.module.Module)i.next(),this);
-                localModules.put(mod.getName(),mod);
+                Module mod = ModuleHandler.getModule(i.next(), this);
+                localModules.put(mod.getName(), mod);
             }
             // set all the names of all accessable clouds..
             localClouds.add("mmbase");
@@ -111,7 +111,7 @@ public class BasicCloudContext implements CloudContext {
 
     public Module getModule(String moduleName) throws NotFoundException {
         if (!check()) throw new BridgeException("MMBase has not been started, and cannot be started by this Class. (" + getClass().getName() + ")");
-        Module mod = (Module)localModules.get(moduleName);
+        Module mod = localModules.get(moduleName);
         if (mod == null) {
             throw new NotFoundException("Module '" + moduleName + "' does not exist.");
         }
@@ -227,6 +227,11 @@ public class BasicCloudContext implements CloudContext {
                 // I hate java.
             }
         }
+    }
+
+    public org.mmbase.framework.Framework getFramework() {
+        if (!check()) throw new BridgeException("MMBase has not been started, and cannot be started by this Class. (" + getClass().getName() + ")");
+        return mmb.getFramework();
     }
 
 }
