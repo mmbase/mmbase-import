@@ -43,5 +43,13 @@
   "Insert a new column before the current one": "Voeg een nieuwe kolom in voor de huidige",
   "Insert a new column after the current one": "Voeg een nieuwe kolom in na de huidige",
   "Delete the current column": "Verwijder de huidige kolom",
-  "Create a link": "Maak een hyperlink"
+  "Create a link": "Maak een hyperlink",
+  "Insert Cell After": "Cel invoegen na",
+  "Insert Cell Before": "Cel invoegen voor",
+  "Delete Cell": "Cel verwijderen",  
+  "Merge Cells": "Cellen samenvoegen",
+  "Insert a paragraph before the current node": "Voeg een nieuwe paragraaf in voor de huidige",
+  "Insert paragraph before": "Paragraaf invoegen voor",
+  "Insert a paragraph after the current node": "Voeg een nieuwe paragraaf in na de huidige",
+  "Insert paragraph after": "Paragraaf invoegen na"
 };
