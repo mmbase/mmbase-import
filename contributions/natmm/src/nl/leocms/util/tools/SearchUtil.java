@@ -24,7 +24,7 @@ import nl.leocms.util.tools.HtmlCleaner;
  * Utilities functions for the search pages
  *
  * @author H. Hangyi
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class SearchUtil {
 
@@ -283,17 +283,16 @@ public class SearchUtil {
    public HashSet addPages(
       Cloud cloud,
       SearchConfig cf,
-		  String sQuery,
+		String sQuery,
       int index,
       String path,
       String rootRubriek,
-		  String sPoolNumber,
+		String sPoolNumber,
       long nowSec,
-		  long fromTime,
-		  long toTime,
-		  boolean searchArchive,
+		long fromTime,
+		long toTime,
+		boolean searchArchive,
       HashSet hsetPagesNodes) {
-
       HashSet hsetNodes = new HashSet();
       try {
          SearchIndex si = cf.getIndex(index);
@@ -329,7 +328,7 @@ public class SearchUtil {
             if (searcher != null) { searcher.close(); }
             if (ir != null) { ir.close(); }
          }
-         log.info("Searching for " + sQuery + " on " + path + " results in nodes " + hsetNodes + " and pages " + hsetPagesNodes);
+         log.debug("Searching for " + sQuery + " on " + path + " results in nodes " + hsetNodes + " and pages " + hsetPagesNodes);
       } catch (Exception e) {
          log.error("Lucene index " + index + " on query " + sQuery + " throws error " + e);
       }
@@ -390,7 +389,7 @@ public class SearchUtil {
             sConstraints += "( " + sBuiderName + ".embargo > '" + fromTime +
                "') AND (" + sBuiderName + ".embargo < '" + toTime + "')";
          }
-         log.info("embargo and verloopdatum constraint " + sConstraints);
+         log.debug("embargo and verloopdatum constraint " + sConstraints);
       }
       NodeList list = cloud.getList(docNumber, path, "pagina.number," +
                                     sBuiderName + ".number",
@@ -402,11 +401,11 @@ public class SearchUtil {
          }
          if (rootRubriek.equals("") ||
              PaginaHelper.getSubsiteRubriek(cloud, paginaNumber).equals(rootRubriek)) {
-            log.info("pagina " + paginaNumber + " belongs to subsite " + rootRubriek);
+            log.debug("pagina " + paginaNumber + " belongs to subsite " + rootRubriek);
             NodeList nlPools = PoolUtil.getPool(cloud, docNumber);
             if (sPoolNumber.equals("") ||
                 nlPools.contains(cloud.getNode(sPoolNumber))) {
-               log.info("node " + docNumber + " belongs to pool " + sPoolNumber);
+               log.debug("node " + docNumber + " belongs to pool " + sPoolNumber);
                hsetPagesNodes.add(paginaNumber);
                hsetNodes.add(docNumber);
             }

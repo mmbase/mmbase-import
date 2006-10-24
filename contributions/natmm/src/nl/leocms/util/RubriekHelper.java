@@ -319,7 +319,7 @@ public class RubriekHelper {
    }
    
    /**
-    * Returns a sorted list of all nodes from the (sub)tree of rubriekNode
+    * Returns a sorted list of all visible rubrieken from the (sub)tree of rubriekNode
     * 
     * @param rubriekNodeNumber
     * @return NodeList nodeList
@@ -327,15 +327,28 @@ public class RubriekHelper {
    public NodeList getTreeNodes(String rubriekNodeNumber) {
       NodeList nodeList = cloud.getList(rubriekNodeNumber, 
           "rubriek1,parent,rubriek", "rubriek.number,rubriek.isvisible",null,"parent.pos","UP","DESTINATION",true);
-      for (int i = 0; i < nodeList.size(); i++) {
+      // determine the sublists
+      NodeList [] subList = new NodeList[nodeList.size()];
+      int i =0;
+      int size = nodeList.size();
+      while(i < size) {
           Node node = nodeList.getNode(i);
-          boolean bIsVisible = node.getStringValue("rubriek.isvisible").equals("0");
+          boolean bIsVisible = !node.getStringValue("rubriek.isvisible").equals("0");
           if(bIsVisible) {
-            nodeList.addAll(i+1,getTreeNodes(node.getStringValue("rubriek.number")));
-         }
+            subList[i] = getTreeNodes(node.getStringValue("rubriek.number"));
+          }
+          i++;
       }
-      // add the rubriekNode itself as a NodeList of one element
-      nodeList.add(0,cloud.getList(rubriekNodeNumber,"rubriek", "rubriek.number,rubriek.isvisible",null,null,null,null,true).getNode(0));
+      // merge the sublists in the nodelist
+      i=0; int j=0;
+      while(i < size) {
+         if(subList[i]!=null) {
+            nodeList.addAll(j+1,subList[i]);
+            j=j+subList[i].size();
+         }
+         i++;       
+         j++;
+      }
       return nodeList;
    }
    
