@@ -48,6 +48,22 @@
                     %><%=problemWeights[rating]%><%
                   }
                 %>
+                <mm:list nodes="<%= problemId %>" path="problems,related,madetests,related,tests">
+                  <mm:remove referid="madetest_number" />
+                  <mm:remove referid="test_number" />
+                  <mm:field name="madetests.number" id="madetest_number" write="false" />
+                  <mm:node element="tests">
+                    <mm:field name="number" id="test_number" write="false" />
+                    <mm:relatednodes type="questions" path="posrel,questions" orderby="posrel.pos">
+                        <mm:import id="page" reset="true">/education/<mm:nodeinfo type="type"/>/index.jsp</mm:import>
+                        <mm:treeinclude page="$page" objectlist="$includePath" referids="$referids">
+                          <mm:param name="question"><mm:field name="number"/></mm:param>
+                          <mm:param name="testnumber"><mm:write referid="test_number"/></mm:param>
+                          <mm:param name="madetest"><mm:write referid="madetest_number" /></mm:param>
+                        </mm:treeinclude>
+                    </mm:relatednodes>
+                  </mm:node>
+                </mm:list>
               </div>
             </mm:field>
           </mm:related>
