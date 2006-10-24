@@ -38,10 +38,7 @@ if(departmentId.equals("default")&&programId.equals("default")) { // *** select 
     int selectedDepartment = (int) Math.floor(departments.size()*Math.random());
     if(selectedDepartment>departments.size()-1) { selectedDepartment = departments.size()-1; }
     departmentId = (String) departments.get(selectedDepartment);
-
-}  
-
-
+}
 
 // *************  listing of employees  ********************
 SearchUtil su = new SearchUtil();
@@ -63,7 +60,7 @@ if(!programId.equals("default")) {
     employeePath += ",readmore,locations";
 }
 String defaultThumb = "";
-%><%= departmentNodes %><mm:list nodes="<%= paginaID %>" path="pagina,posrel,images" constraints="posrel.pos='2'" max="1"
+%><mm:list nodes="<%= paginaID %>" path="pagina,posrel,images" constraints="posrel.pos='2'" max="1"
 ><mm:field name="images.number" jspvar="images_number" vartype="String" write="false"
     ><% defaultThumb = images_number; 
 %></mm:field
