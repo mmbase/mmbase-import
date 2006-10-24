@@ -18,7 +18,8 @@
     <mm:node number="$user">
       <mm:import id="fullname"><mm:field name="firstname"/> <mm:field name="suffix"><mm:isnotempty><mm:write/></mm:isnotempty></mm:field> <mm:field name="lastname"/></mm:import>
       <mm:import id="from"><mm:field name="email"/></mm:import>
-      <mm:import id="subject"><di:translate key="assessment.give_feedback_subj" /> <mm:write referid="fullname" /> / <%= currentLesson %></mm:import>
+      <mm:import id="subject"><di:translate key="assessment.give_feedback_subj" /> <mm:write referid="fullname" 
+          /> / <di:translate key="assessment.period" /> <%= iLesson+1 %></mm:import>
     </mm:node>
     <mm:import id="body">
       <di:translate key="assessment.give_feedback_body" /> 
