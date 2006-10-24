@@ -28,10 +28,8 @@ public class SimpleStats
    }
 
    public void saveLast(ServletContext application) {
-      Hashtable pageCounter = (Hashtable) application.getAttribute(
-         "pageCounter");
-      Integer visitorsCounter = (Integer) application.getAttribute(
-         "visitorsCounter");
+      Hashtable pageCounter = (Hashtable) application.getAttribute("pageCounter");
+      Integer visitorsCounter = (Integer) application.getAttribute("visitorsCounter");
       if (pageCounter != null && visitorsCounter != null) {
          Transaction transaction = CloudFactory.getCloud().createTransaction();
          Node this_event = transaction.getNodeManager("mmevents").createNode();
@@ -42,11 +40,14 @@ public class SimpleStats
             String thisPage = (String) pages.nextElement();
             int thisPageCount = ( (Integer) pageCounter.get(thisPage)).intValue();
             Node this_page = transaction.getNode(thisPage);
-            RelationManager posrel = transaction.getRelationManager("posrel");
-            Relation PosrelRelation = posrel.createRelation(this_event,
-               this_page);
-            PosrelRelation.setIntValue("pos", thisPageCount);
-            PosrelRelation.commit();
+            if(this_page!=null) {
+               RelationManager posrel = transaction.getRelationManager("posrel");
+               Relation posrelRelation = posrel.createRelation(this_event, this_page);
+               posrelRelation.setIntValue("pos", thisPageCount);
+               posrelRelation.commit();
+            } else {
+               log.info("page " + this_page + " does not exist, probably it was deleted today");
+            }
          }
          transaction.commit();
       }
@@ -54,14 +55,10 @@ public class SimpleStats
 
    public void pageCounter(Cloud cloud, ServletContext application,
                            String paginaID, HttpServletRequest request) {
-      Hashtable pageCounter = (Hashtable) application.getAttribute(
-         "pageCounter");
-
-      HashSet visitorsSessions = (HashSet) application.getAttribute(
-         "visitorsSessions");
-
-      Integer visitorsCounter = (Integer) application.getAttribute(
-         "visitorsCounter");
+                              
+      Hashtable pageCounter = (Hashtable) application.getAttribute("pageCounter");
+      HashSet visitorsSessions = (HashSet) application.getAttribute("visitorsSessions");
+      Integer visitorsCounter = (Integer) application.getAttribute("visitorsCounter");
 
       if (pageCounter == null || visitorsCounter == null || visitorsSessions == null) {
          pageCounter = new Hashtable();
@@ -110,8 +107,7 @@ public class SimpleStats
       /* the following count does not take care of double and not attached pages,
              this will lead to minor deviations when using the selection */
 
-      NodeList nlPages = cloud.getNodeManager("pagina").getList(null,
-         "number", "DOWN");
+      NodeList nlPages = cloud.getNodeManager("pagina").getList(null, "number", "DOWN");
       for (int i = 0; i < nlPages.size(); i++) {
          int pageCount = 0;
          String page_number = nlPages.getNode(i).getStringValue("number");
