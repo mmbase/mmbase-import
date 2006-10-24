@@ -1,19 +1,25 @@
 <%  // *************  peoplefinder: listing of employees  ********************
 if(!action.equals("print")) { 
   
-  if(!(nameId.equals("")&&firstnameId.equals("")&&lastnameId.equals("")&&descriptionId.equals("")
-                &&departmentId.equals("default")&&locationId.equals("default")&&programId.equals("default")&&keywordId.equals(""))){
+  if(!(nameId.equals("")
+      &&firstnameId.equals("")
+      &&lastnameId.equals("")
+      &&descriptionId.equals("")
+      &&departmentId.equals("default")
+      &&locationId.equals("default")
+      &&(programId.equals("default") && !onlyProgramSelect)
+      &&keywordId.equals(""))){
         
         boolean debug = false;
         
         String employeeConstraint = "";
-        if(showAllSelect) {
-          // *** in the general who-is-who only people which are active or have special externid 'extern' ***
+        if(!onlyProgramSelect) {
+          // in the general who-is-who only people which are active or have special externid 'extern'
           SearchUtil su = new SearchUtil();
           employeeConstraint = su.sEmployeeConstraint;
         } else { 
-            // *** dummy constraint to create valid query, note: <>'0' omits all updated employees ***
-            employeeConstraint = "( medewerkers.importstatus != '1')";
+          // if onlyProgramSelect all employees are selected, use a dummy clause to create a correct SQL statement
+          employeeConstraint = "( medewerkers.importstatus != '1')";
         }
         if(!firstnameId.equals("")) {
             employeeConstraint += " AND ";
@@ -69,7 +75,11 @@ if(!action.equals("print")) {
             if(debug) { log.info(locationConstraint + " : " + searchResults); }
         }
         
-        if(!programId.equals("default")&&!searchResults.equals("")) { // ****** add the program to the search ****** 
+        if(onlyProgramSelect && "".equals(thisPrograms) ) {
+          searchResults = "";
+        }
+        
+        if((!programId.equals("default") || onlyProgramSelect ) &&!searchResults.equals("")) { // ****** add the program to the search ****** 
             if(!programId.equals("default")) { thisPrograms = programId; }
             thisPrograms = "," + thisPrograms + ",";
             searchResultSet.clear();

@@ -46,13 +46,15 @@ if(departmentId.equals("default")&&programId.equals("default")) { // *** select 
 // *************  listing of employees  ********************
 SearchUtil su = new SearchUtil();
 String employeeConstraint = su.sEmployeeConstraint;
-String departmentNodes = ""; 
+String departmentNodes = departmentId; 
 String employeePath = "medewerkers";
 if(!departmentId.equals("default")) {
     %><mm:node number="<%= departmentId %>"
-        ><mm:field name="omschrijving" jspvar="dummy" vartype="String" write="false"><%
+        ><mm:field name="descendants" jspvar="dummy" vartype="String" write="false"
+          ><mm:isnotempty><%
             departmentNodes = dummy;
-        %></mm:field
+          %></mm:isnotempty
+        ></mm:field
     ></mm:node><% 
     employeePath = "afdelingen,readmore," + employeePath;
 }
@@ -61,7 +63,7 @@ if(!programId.equals("default")) {
     employeePath += ",readmore,locations";
 }
 String defaultThumb = "";
-%><mm:list nodes="<%= paginaID %>" path="pagina,posrel,images" constraints="posrel.pos='2'" max="1"
+%><%= departmentNodes %><mm:list nodes="<%= paginaID %>" path="pagina,posrel,images" constraints="posrel.pos='2'" max="1"
 ><mm:field name="images.number" jspvar="images_number" vartype="String" write="false"
     ><% defaultThumb = images_number; 
 %></mm:field
