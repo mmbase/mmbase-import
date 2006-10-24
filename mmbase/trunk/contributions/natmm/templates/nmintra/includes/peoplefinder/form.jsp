@@ -18,14 +18,14 @@ if(!action.equals("print")) {
           <td class="bold">&nbsp;<span class="light">Achternaam:</span>&nbsp;</td>
           <td class="bold"><input type="text" style="width:103px;" name="lastname" value="<%= lastnameId %>">
              <%  
-             if(showAllSelect || showProgramSelect || iRubriekLayout==NMIntraConfig.SUBSITE1_LAYOUT) {
+             if(!onlyProgramSelect || showProgramSelect || iRubriekLayout==NMIntraConfig.SUBSITE1_LAYOUT) {
                 %>&nbsp;<br><div align="right"><span class="light">en</span></div><%          
              }
              %>
           </td>
         </tr>
         <%
-        if(showAllSelect) { 
+        if(!onlyProgramSelect) { 
           %>
           <tr>
             <td class="bold">&nbsp;<span class="light">En verder:</span>&nbsp;</td>
@@ -81,7 +81,8 @@ if(!action.equals("print")) {
             <td colspan="2">
               <select name="program" style="width:195px;">
                 <option value="default" <%  if(programId.equals("default")) { %>SELECTED<% } 
-                    %>><%= (showAllSelect ? "alle overige groepen" : "alle teams") %>
+                    %>><%= (!onlyProgramSelect ? "alle overige groepen" : "alle teams") %>
+                <% if(!"".equals(thisPrograms)) { %>
                 <mm:list nodes="<%= thisPrograms %>" path="programs" orderby="programs.title" directions="UP"
                     ><mm:field name="programs.number" jspvar="programs_number" vartype="String" write="false"
                     ><mm:field name="programs.title" jspvar="programs_title" vartype="String" write="false"
@@ -91,8 +92,9 @@ if(!action.equals("print")) {
                         %></mm:list
                     ></mm:field>
                     </mm:field
-                ></mm:list
-              ></select>
+                ></mm:list>
+                <% } %>
+              </select>
               <%  
               if(iRubriekLayout==NMIntraConfig.SUBSITE1_LAYOUT) {
                 %>&nbsp;<br><div align="right"><span class="light">en</span></div><%
