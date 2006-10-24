@@ -17,7 +17,7 @@ import java.util.regex.*;
  *
  * @author Michiel Meeuwissen 
  * @since MMBase-1.8
- * @version $Id: RomanTransformer.java,v 1.4 2005-11-01 23:36:02 michiel Exp $
+ * @version $Id: RomanTransformer.java,v 1.5 2006-10-24 12:32:45 michiel Exp $
  */
 
 public class RomanTransformer extends StringTransformer {
@@ -153,6 +153,13 @@ public class RomanTransformer extends StringTransformer {
                 System.out.println(decimalToRoman(Integer.parseInt(argv[0])));
             } else {
                 System.out.println(romanToDecimal(argv[0]));
+            }
+        }
+        if (argv.length == 2) {
+            int start = NUMERIC.matcher(argv[0]).matches() ? Integer.parseInt(argv[0]) : romanToDecimal(argv[0]);
+            int end   = NUMERIC.matcher(argv[1]).matches() ? Integer.parseInt(argv[1]) : romanToDecimal(argv[1]);
+            for (int i = start; i <= end; i++) {
+                System.out.println(decimalToRoman(i));
             }
         }
     }
