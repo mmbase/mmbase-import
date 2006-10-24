@@ -11,9 +11,9 @@
 <mm:node number="$feedback_n" notfound="skip">
   <mm:field name="status" write="false">
     <mm:compare value="-1">
-      <mm:import id="page"><mm:treefile page="/assessment/showfeedback.jsp" objectlist="$includePath" referids="$referids">
-                             <mm:param name="coachmode?,feedback_n"><mm:write referid="feedback_n"/></mm:param>
-                           </mm:treefile></mm:import>
+      <mm:import id="page"><mm:url page="showfeedback.jsp" referids="$referids" escapeamps="false">
+                             <mm:param name="feedback_n"><mm:write referid="feedback_n"/></mm:param>
+                           </mm:url></mm:import>
       <mm:redirect page="$page"/>
     </mm:compare>
   </mm:field>

@@ -192,7 +192,7 @@ currentLesson <%= currentLesson %><br/>
       </tr>
       <% // first lesson does not have a form 
       %>
-      <mm:compare referid="i_lesson" value="0" inverse="true">
+      <mm:isgreaterthan referid="i_lesson" value="0">
         <mm:node number="<%= currentLesson %>" notfound="skip">
           <tr>
             <td style="padding-top:30px;" colspan="2">
@@ -226,7 +226,7 @@ currentLesson <%= currentLesson %><br/>
             </td>
           </tr>
         </mm:node>
-      </mm:compare>
+      </mm:isgreaterthan>
     </table>
     <input type="submit" class="formbutton" value="<di:translate key="assessment.save" />">
     <input type="submit" class="formbutton" value="<di:translate key="assessment.cancel" />" onClick="questionform.step.value='cancel'">
