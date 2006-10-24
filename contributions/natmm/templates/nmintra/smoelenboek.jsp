@@ -38,13 +38,13 @@ if("Wis".equals(submitId)) {
   locationId= "default";
 }
 
-// *** determine which select boxes should be shown in the form
+// Determine which select boxes should be shown in the form
 // always show program select if there is more than one program related to the page
-// also show the program select in case of showAllSelect and their is at least one program related to the page
+// show the program select as the only select in case pagina.bron='0'
 String thisPrograms = "";
-boolean showAllSelect = false;
+boolean onlyProgramSelect = true;
 %><mm:node number="<%= paginaID %>" jspvar="thisPage"><%
-  showAllSelect = "1".equals(thisPage.getStringValue("bron")); 
+  onlyProgramSelect = "0".equals(thisPage.getStringValue("bron"));
   %><mm:related path="posrel,programs"
     ><mm:field name="programs.number" jspvar="programs_number" vartype="String" write="false"><%
       thisPrograms += "," + programs_number;
@@ -52,13 +52,9 @@ boolean showAllSelect = false;
   ></mm:related
 ></mm:node><%
 if(!thisPrograms.equals("")) {
-    thisPrograms = thisPrograms.substring(1);
-    if(programId.equals("default")&&thisPrograms.indexOf(",")==-1) {
-      // there is only one program related to the page and the programId is empty
-      programId = thisPrograms;
-    }
+  thisPrograms = thisPrograms.substring(1);
 }
-boolean showProgramSelect = thisPrograms.indexOf(",")>-1 || (showAllSelect && !"".equals(thisPrograms));
+boolean showProgramSelect = onlyProgramSelect || !"".equals(thisPrograms);
 
 %><%@include file="includes/header.jsp" 
 %><td><%@include file="includes/pagetitle.jsp" %></td>
