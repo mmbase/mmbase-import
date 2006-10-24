@@ -7,6 +7,6 @@
 	<field name="name" dtrequired="false"><prompt>naam</prompt></field>
 	<field name="email"><prompt>email</prompt></field>
 	<field name="postdate"><prompt>plaatsingsdatum</prompt></field>
-	<field name="expiredate"><prompt>bevestigingsdatum</prompt></field>
+	<field name="expiredate"><prompt>verloopdatum</prompt></field>
 </form-schema>
 
