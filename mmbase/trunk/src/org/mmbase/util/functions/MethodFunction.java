@@ -16,10 +16,11 @@ import java.lang.annotation.*;
 /**
  * A function based on an abritrary method. Since the name of the parameters cannot be found by
  * reflection, this is only of limited use. Normally you would probably better use BeanFunction. A
- * method-function can come in handy on JSP's.
+ * method-function can come in handy on JSP's. With the advent of java 1.5 we can use annotations to
+ * annotate acutal parameter names.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MethodFunction.java,v 1.9 2006-10-13 14:22:26 nklasens Exp $
+ * @version $Id: MethodFunction.java,v 1.10 2006-10-24 09:39:36 michiel Exp $
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
  * @see org.mmbase.util.functions.BeanFunction
@@ -58,7 +59,7 @@ public class MethodFunction extends AbstractFunction<Object> {
             if (methodName.equals(name)) {
                 Annotation[][] annots = m.getParameterAnnotations();
                 int found = 0; 
-                int total = 1; // avoids NPE and ensures that methods with more parameters are better.
+                int total = 1; // avoids division by zero and ensures that methods with more parameters are better.
                 for (Annotation[] anot : annots) {
                     for (Annotation a : anot) {
                         if (a.annotationType().equals(Name.class)) {
