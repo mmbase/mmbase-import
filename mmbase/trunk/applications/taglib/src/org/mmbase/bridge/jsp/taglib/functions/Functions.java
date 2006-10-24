@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
 </mm:cloud>
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.8
- * @version $Id: Functions.java,v 1.15 2006-08-30 18:02:35 michiel Exp $
+ * @version $Id: Functions.java,v 1.16 2006-10-24 12:17:05 michiel Exp $
  * @todo    EXPERIMENTAL
  */
 public class Functions {
@@ -106,7 +106,7 @@ public class Functions {
      */
     public static String url(String page, javax.servlet.jsp.PageContext pageContext) {
         javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest) pageContext.getRequest();
-        StringBuffer show = new StringBuffer();
+        StringBuilder show = new StringBuilder();
         if (page.equals("")) { // means _this_ page
             String requestURI = req.getRequestURI();
             if (requestURI.endsWith("/")) {
