@@ -44,7 +44,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.70 2006-09-27 20:48:26 michiel Exp $
+ * @version $Id: FormatterTag.java,v 1.71 2006-10-24 12:15:51 michiel Exp $
  */
 public class FormatterTag extends CloudReferrerTag implements ParamHandler {
 
@@ -339,6 +339,12 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
                     throw new JspTagException ("It is not possible to have tags which produce DOM-XML and  text in the body. Perhaps you want to use the attribute wants='string'?");
                 } else {
                     doc = xmlGenerator.getDocument();
+                    long cost = xmlGenerator.getCost() / 1000000;
+                    if (cost > 50) {
+                        log.service("Cost : " + cost + " ms for " + xmlGenerator.getSize() + " nodes");
+                    } else {
+                        log.debug("Cost : " + cost + " ms for " + xmlGenerator.getSize() + " nodes");
+                    }
                 }
             } else {
                 if (body == null || body.equals("")) body = "<mmxf />"; // something random that will at least parse.
