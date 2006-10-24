@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * A Renderer implmentation based on a jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JspRenderer.java,v 1.10 2006-10-19 13:20:29 michiel Exp $
+ * @version $Id: JspRenderer.java,v 1.11 2006-10-24 16:39:17 michiel Exp $
  * @since MMBase-1.9
  */
 public class JspRenderer extends AbstractRenderer {
@@ -45,10 +45,12 @@ public class JspRenderer extends AbstractRenderer {
     }
 
     public void render(Parameters blockParameters, Parameters frameworkParameters, Writer w) throws IOException {
+        HttpServletRequest request = blockParameters.get(Parameter.REQUEST);
+        Object previousRenderer = request.getAttribute(Renderer.KEY);
         try {
             HttpServletResponse response = blockParameters.get(Parameter.RESPONSE);
             GenericResponseWrapper respw = new GenericResponseWrapper(response);
-            HttpServletRequest request = blockParameters.get(Parameter.REQUEST);
+
             for (Map.Entry<String, ?> entry : blockParameters.toMap().entrySet()) {
                 request.setAttribute(entry.getKey(), entry.getValue());
             }
@@ -69,6 +71,8 @@ public class JspRenderer extends AbstractRenderer {
             IOException e =  new IOException(se.getMessage());
             e.initCause(se);
             throw e;
+        } finally {
+            request.setAttribute(Renderer.KEY, previousRenderer);
         }
     }
 }
