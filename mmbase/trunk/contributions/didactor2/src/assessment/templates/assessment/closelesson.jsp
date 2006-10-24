@@ -14,12 +14,14 @@
       </mm:createnode>
       <mm:createrelation role="related" source="this_classrel" destination="this_feedback"/>
     </mm:maycreate>
-
+    
     <mm:node number="$user">
+      <mm:import id="fullname"><mm:field name="firstname"/> <mm:field name="suffix"><mm:isnotempty><mm:write/></mm:isnotempty></mm:field> <mm:field name="lastname"/></mm:import>
       <mm:import id="from"><mm:field name="email"/></mm:import>
+      <mm:import id="subject"><di:translate key="assessment.give_feedback_subj" /> <mm:write referid="fullname" /> / <%= currentLesson %></mm:import>
     </mm:node>
-    <mm:import id="subject"><di:translate key="assessment.give_feedback_subj" /></mm:import>
-    <mm:import id="body"><di:translate key="assessment.give_feedback_body" /> 
+    <mm:import id="body">
+      <di:translate key="assessment.give_feedback_body" /> 
       <%= request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() %>/assessment/givefeedback.jsp?feedback_n=<mm:write referid="this_feedback"/>
     </mm:import>
     <mm:node number="$assessment_education" notfound="skip">
