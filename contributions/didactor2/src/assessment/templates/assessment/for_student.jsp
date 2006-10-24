@@ -69,7 +69,6 @@
           alt="<di:translate key="assessment.add_problem" />" /></a><br/><br/>
 <% 
 int lessonsNum = 0;
-int iLesson = 0;
 ArrayList styles = new ArrayList();
 boolean wasCurrent = false;
 int count = 0;
@@ -85,7 +84,6 @@ int count = 0;
            }
            if (this_lb.equals(currentLesson)) {
              wasCurrent = true;
-             iLesson = count;
            }
         %>
       </mm:field>

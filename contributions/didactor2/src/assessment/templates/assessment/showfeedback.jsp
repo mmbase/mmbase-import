@@ -75,7 +75,7 @@
           <table width="600px" style="font-size : 1.3em">
             <tr>
               <td><b>
-                <mm:node number="<%= lessonId %>"><mm:field name="name"/></mm:node> by 
+                <mm:node number="<%= lessonId %>"><mm:field name="name"/></mm:node> <di:translate key="assessment.by" />
                 <mm:node number="<%= ownerId %>"><mm:field name="firstname"/> <mm:field name="lastname"/></mm:node>
               </b></td>
               <td style="text-align:right">
