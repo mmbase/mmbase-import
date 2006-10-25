@@ -6,7 +6,15 @@
 
   <property name="source-taglib.xml"    value="org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml" />
 
+  <property name="project.jars.includes" value="resources/build/mmbase-resources.jar" />
+
   <import file="../buildbase-include.xml" />
+
+
+  <target name="resources">
+    <echo message="${applications.dir}/resources" />
+    <ant dir="${applications.dir}/resources" inheritAll="false" />
+  </target>
 
   <property name="taglib2.jar"       value="${project.jar.dir}/mmbase-taglib-2.jar" />
 
@@ -24,7 +32,7 @@
 
 
   <target name="jar1" description="Create mmbase-taglib.jar"
-          depends="copy.metainf.dir,taglib.tld,jar.check,project.manifest,jar.config"
+          depends="copy.metainf.dir,taglib.tld,jar.check,project.manifest,jar.config,resources"
           >
 
     <antcall target="compile" />
@@ -59,7 +67,7 @@
   </target>
 
   <target name="jar2" description="Create mmbase-taglib-2.jar"
-          depends="copy.metainf.dir,taglib.tld,jar.check,project.manifest,jar.config"
+          depends="copy.metainf.dir,taglib.tld,jar.check,project.manifest,jar.config,resources"
           >
 
     <antcall target="compile" />
