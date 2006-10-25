@@ -170,7 +170,7 @@ Applications build file
   </target>
 
   <target name="clustering" depends="mmbase">
-     <ant dir="clustering"  target="dependent.package" inheritAll="false">
+     <ant dir="clustering"  target="package" inheritAll="false">
        <property name="project.zip.dir"        value="${applications.build.dir}" />
        <property name="build.dir"        value="${build.dir}" />
        <property name="download.dir"        value="${download.dir}" />
@@ -318,7 +318,7 @@ Applications build file
     <ant dir="xmlimporter"    target="dependent.install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
-    <ant dir="clustering"      target="dependent.install" inheritAll="false">
+    <ant dir="clustering"      target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
     <ant dir="richtext"      target="install" inheritAll="false">
