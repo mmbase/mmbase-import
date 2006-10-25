@@ -20,10 +20,7 @@
  */
 package com.finalist.mmbase.util;
 
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.CloudContext;
-import org.mmbase.bridge.ContextProvider;
-import org.mmbase.bridge.Node;
+import org.mmbase.bridge.*;
 import org.apache.log4j.Category;
 
 import java.util.Map;
@@ -35,7 +32,7 @@ import java.util.HashMap;
  * Date: Mar 27, 2003
  * Time: 6:40:16 PM
  * @author vincent (Finalist IT Group)
- * @version $Id: CloudFactory.java,v 1.1 2006-03-05 21:43:58 henk Exp $
+ * @version $Id: CloudFactory.java,v 1.2 2006-10-25 16:28:01 henk Exp $
  */
 public class CloudFactory {
 	private static final Category log = Category.getInstance(CloudFactory.class);
@@ -72,6 +69,29 @@ public class CloudFactory {
       Node node = cloud.getNode("users.admin");
       String username = node.getStringValue("account");
       String password = node.getStringValue("password");
+      Map result = new HashMap(3, 0.7f);
+      result.put("username", username);
+      result.put("password", password);
+      return result;
+   }
+   
+   public static Map getUserCredentials(String username) {
+      // Retrieve username/password using username
+      Cloud cloud = getCloud();
+      Node user = null;
+      NodeManager nm = cloud.getNodeManager("users");
+      NodeList nl = nm.getList("users.account = '" + username + "'",null,null);
+      if(nl.size()==0) {
+        // better create one, since it probably is needed somewhere
+        user = nm.createNode();
+        user.setStringValue("account",username);
+        user.setStringValue("password","p" + Math.random());
+        user.setStringValue("rank","basic user");
+        user.commit();
+      } else {
+        user = nl.getNode(0);
+      }
+      String password = user.getStringValue("password");
       Map result = new HashMap(3, 0.7f);
       result.put("username", username);
       result.put("password", password);
