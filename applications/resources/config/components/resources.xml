@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component
+    name="resources"
+    xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
+
+  <class name="org.mmbase.framework.BasicComponent" />
+
+  <description xml:lang="nl">Resources</description>
+  <description xml:lang="en">Resources</description>
+  <!--
+      No dependencies.
+      Views by taglib.
+  -->
+
+  <block name="recent" mimetype="text/html">
+    <description xml:lang="en">Displays recent resources</description>
+    <body jsp="/resources/index.jspx">
+      <param name="nodetypes" />
+    </body>
+  </block>
+
+  <block name="imageupload">
+    <description xml:lang="en">An image upload tool</description>
+    <body jsp="/resources/upload.jspx" />
+  </block>
+
+</component>
