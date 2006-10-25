@@ -33,7 +33,7 @@ Applications build file
 
   <target name="all16" depends="init,media,bugtracker,email" />
   <target name="all17" depends="init,all16,taglib,cloudcontext,editwizard,dove,xmlimporter,community,rmmci" />
-  <target name="all18" depends="init,all17,crontab,vwms,scan,packaging,clustering,richtext,oscache-cache,commandserver" />
+  <target name="all18" depends="init,all17,crontab,vwms,scan,packaging,clustering,richtext,oscache-cache,commandserver,resources,mynews,myyahoo,mycompany,resources" />
   <target name="all19" depends="init,all18" />
 
   <target name="all"   depends="init,all19" />
@@ -239,7 +239,15 @@ Applications build file
        <property name="download.dir"        value="${download.dir}" />
      </ant>
   </target>
-	
+
+  <target name="resources">
+     <ant dir="resources"  target="package" inheritAll="false">
+       <property name="project.zip.dir"        value="${applications.build.dir}" />
+       <property name="build.dir"        value="${build.dir}" />
+       <property name="download.dir"        value="${download.dir}" />
+     </ant>
+  </target>
+
   <target name="minimalistic.install">
     <ant dir="taglib"        target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
@@ -272,6 +280,9 @@ Applications build file
       <property name="build.dir"        value="${build.dir}" />
     </ant>
     <ant dir="myyahoo"      target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+    <ant dir="resources"      target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
   </target>
@@ -330,6 +341,10 @@ Applications build file
       <property name="build.dir"        value="${build.dir}" />
     </ant>
 
+    <ant dir="resources"      target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+
   </target>
 
   <target name="clean">
@@ -357,7 +372,8 @@ Applications build file
      <ant dir="mycompany"      target="clean" inheritAll="false" />
      <ant dir="mynews"      target="clean" inheritAll="false" />
      <ant dir="myyahoo"      target="clean" inheritAll="false" />
-  	
+     <ant dir="resources"      target="clean" inheritAll="false" />
+
      <delete dir="${applications.build.dir}" />
   </target>
 
