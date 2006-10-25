@@ -12,7 +12,7 @@
 #
 # for possible mirrors.
 #
-# $Id: build.properties.default,v 1.28 2006-09-15 17:24:40 michiel Exp $
+# $Id: build.properties.default,v 1.29 2006-10-25 14:44:16 michiel Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -57,19 +57,6 @@ hsqldb.loc=${sourceforge.loc}/hsqldb/${hsqldb.file}
 hsqldb.dir=${expand.dir}/${hsqldb.version}
 hsqldb.jar=${hsqldb.dir}/hsqldb/lib/hsqldb.jar
 
-# ---- Jai, version 1.0.2 ----
-# It's a very old version, but the only one that can be download
-# without expiring urls.
-
-jai-old.version=jai1_0_2-beta
-jai.file=${jai-old.version}-lib-linux-i386.tar.bz2
-jai.dest=${download.dir}/${jai.file}
-jai.dir=${expand.dir}/${jai-old.version}
-
-jai.loc=ftp://ftp.nluug.nl/pub/languages/java/jdk/JAI/1.0.2/i386/${jai.file}
-jai_codec.jar=${jai.dir}/jre/lib/ext/jai_codec.jar
-jai_core.jar=${jai.dir}/jre/lib/ext/jai_core.jar
-mlibwrapper_jai.jar=${jai.dir}/jre/lib/ext/mlibwrapper_jai.jar
 
 # ----- javamail ----
 javamail.version=javamail-1.3
