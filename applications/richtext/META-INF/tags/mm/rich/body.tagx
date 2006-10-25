@@ -1,0 +1,38 @@
+<jsp:root
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:os="http://www.opensymphony.com/oscache"
+    version="2.0">
+  <jsp:directive.attribute name="field" />
+  <jsp:directive.attribute name="popupwith" />
+  <!--                                                                                                                                                                                                         
+       MMBase rich-text evaluation. Using XSLT.                                                                                                                                                                   
+       $Id: body.tagx,v 1.1 2006-10-25 22:06:17 michiel Exp $                                                                                                                                                    
+  -->
+  <mm:node>
+    <os:cache 
+        cron="0 4 * * * "
+        key="richtext_${_node.number}"
+        groups="all,richtext"
+        refresh="${param.refresh}" >
+      <!-- alternative to 'cron': time="3600"  -->
+      <jsp:text>&lt;!--</jsp:text><mm:time time="now" format=":FULL.FULL" /><jsp:text>--&gt;</jsp:text>
+      <mm:formatter xslt="xslt/2xhtml.xslt" escape="links">
+        <mm:param name="popupwidth" value="${empty popupwidth ? -1 : popupwidth}" /><!-- default is 'no popups' -->
+        <mm:listrelationscontainer  role="idrel" searchdir="destination">
+          <mm:listrelations>
+            <mm:relatednode>
+              <mm:listrelations role="idrel" searchdir="destination">
+                <mm:relatednode />
+              </mm:listrelations>
+            </mm:relatednode>
+          </mm:listrelations>
+        </mm:listrelationscontainer>
+        <mm:field name="${empty field ? 'body' : field}" />
+      </mm:formatter>
+    </os:cache>
+  </mm:node>
+</jsp:root>
+
+
