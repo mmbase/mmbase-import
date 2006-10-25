@@ -27,7 +27,7 @@ import org.w3c.dom.*;
  * @author Daniel Ockeloen (MMFunctionParam)
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.39 2006-10-23 17:29:04 michiel Exp $
+ * @version $Id: Parameter.java,v 1.40 2006-10-25 20:29:25 michiel Exp $
  * @see Parameters
  */
 
@@ -117,7 +117,7 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
                 clazz = Class.forName(type);
             }
         } catch (ClassNotFoundException cne) {
-            log.warn("Cannot determine parameter type : '" + type + ", using Object as type instead.");
+            log.warn("Cannot determine parameter type : '" + type + "', using Object as type instead.");
             clazz = Object.class;
         }
         return clazz;
@@ -209,6 +209,17 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
     public Parameter(String name, C defaultValue) {
         this(name, (Class<C>) defaultValue.getClass());
         dataType.setDefaultValue(defaultValue);
+    }
+
+    protected static Class getClass(Object v) {
+        return v == null ? Object.class : v.getClass();
+    }
+    /**
+     * Create Parameter definition by example value
+     * @since MMBase-1.9
+     */
+    public Parameter(Map.Entry<String, C> entry) {
+        this(entry.getKey(), getClass(entry.getValue()));
     }
 
     /**
