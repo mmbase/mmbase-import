@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component
+    name="cloudcontext"
+    xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
+
+  <class name="org.mmbase.framework.BasicComponent" />
+
+  <description xml:lang="nl">Security implementatie middels MMBase objecten</description>
+  <description xml:lang="en">Security implementation based on MMBase objects</description>
+  <!--
+      No dependencies.
+      Views by taglib.
+  -->
+
+  <block name="edit_users" mimetype="text/html">
+    <description xml:lang="en">Generic security editor</description>
+    <body jsp="/mmbase/security/index_users.jsp">
+    </body>
+
+    <head>
+      <class name="org.mmbase.framework.StringRenderer">
+        <param name="string">
+          &lt;link href="{REQUEST.getContextPath}/mmbase/security/style/style.css" rel="stylesheet" title="Cloud Context Security" type="text/css" media="screen" /&gt;
+        </param>
+      </class>
+    </head>
+  </block>
+
+  <block name="edit_groups" mimetype="text/html">
+    <description xml:lang="en">Generic security editor</description>
+    <body jsp="/mmbase/security/index_groups.jsp">
+    </body>
+  </block>
+
+</component>
