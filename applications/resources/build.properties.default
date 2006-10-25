@@ -1,0 +1,13 @@
+# ---- Jai, version 1.0.2 ----
+# It's a very old version, but the only one that can be download
+# without expiring urls.
+
+jai-old.version=jai1_0_2-beta
+jai.file=${jai-old.version}-lib-linux-i386.tar.bz2
+jai.dest=${download.dir}/${jai.file}
+jai.dir=${expand.dir}/${jai-old.version}
+
+jai.loc=ftp://ftp.nluug.nl/pub/languages/java/jdk/JAI/1.0.2/i386/${jai.file}
+jai_codec.jar=${jai.dir}/jre/lib/ext/jai_codec.jar
+jai_core.jar=${jai.dir}/jre/lib/ext/jai_core.jar
+mlibwrapper_jai.jar=${jai.dir}/jre/lib/ext/mlibwrapper_jai.jar
