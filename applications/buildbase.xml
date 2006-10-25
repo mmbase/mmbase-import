@@ -531,6 +531,13 @@ web-app/*                All kind of templates. They problably can (need?) to be
     <untar src="${download.dir}/file.tar" dest="${expand.dir}"/>
     <delete file="${download.dir}/file.tar"/>
   </target>
+  <target name="downloadbz2" unless="expanded" depends="download,testexpanded">
+    <!-- Extract the package -->
+    <mkdir dir="${destdir}" />
+    <bunzip2 src="${destfile}" dest="${download.dir}/file.tar"/>
+    <untar src="${download.dir}/file.tar" dest="${destdir}"/>
+    <delete file="${download.dir}/file.tar"/>
+  </target>
 
   <target name="download" unless="exist" depends="testexist">
     <!-- Download the package -->
