@@ -2,25 +2,36 @@ NatMM - install.txt
 Version: 06.05.18
 Author: H. Hangyi
 
-To install NatMM:
-1. download and install MMBase 1.7.4 (see server.xml for example configuration of Tomcat)
+A. TO INSTALL NatMM:
+1. download and install MMBase 1.7.5 (see server.xml for example configuration of Tomcat). 
+Note: the present implementation will only run correctly when installed as the ROOT webapp.
+
 2. clean the WEB-INF/config/applications folder
-3. create a NatMM build
-4. copy the files of NatMM build over the MMBase 1.7.4 webapp
+3. create a NatMM build. You could do this e.g. by using the work.bat in the /natmm directory
+4. copy the files of NatMM build over the MMBase 1.7.5 webapp
 4.a. change settings in WEB-INF/config/modules/jdbc.xml
 4.b. change settings in WEB-INF/config/log/log4j.xml
 4.c. copy the builders from WEB-INF/config/applications/LeoCMS/builders/ to  WEB-INF/config/builders/
-4.d. change settings in WEB-INF/config/builders/images.xml (and style.xml, when using nmintra)
-4.e. make sure to load the LeoCMS. You can do this by change the setting for auto-deploy in the
+4.d. copy also all builders you need for the applications you want to use:
+     E.g. if you want to use the templates in nmintra: 
+     copy the builders from WEB-INF/config/applications/NMIntra/builders/ to  WEB-INF/config/builders/
+4.e. change settings in WEB-INF/config/builders/images.xml
+4.f. check if the mysql-connector-java-3.0.6-stable-bin.jar, that is in the WEB-INF/lib directory, corresponds
+     to your version of mysql. If not replace it by the correct version.
+
+B. IN CASE YOU USE AN ALREADY EXISTING DATABASE that comes from another NatMM installation
+5.a. You are ready. Just start Tomcat and look at the mmbase.log to see if it is clean of error messages.
+Note: the subsite rubrieken in NatMM contain a field that points to the directory with the templates used for
+that subsite. You can use the Pagina-editor (see below) to correct these settings if necessary.
+
+C. IN CASE YOU START FROM SCRATCH (with a empty database):
+5.a. make sure to load the LeoCMS. You can do this by change the setting for auto-deploy in the
      application file to true or by using the admin console (/mmbase/admin) to load the application. 
      The auto-deploy of LeoCMS is set to false to make sure that the demo-data from the LeoCMS application
      is not loaded into already existing databases containing the LeoCMS object model.
-4.d. install one of the applications on top of LeoCMS. For this copy all builders you need for
-     installing this application to WEB-INF/config/builders/
-     E.g. if you want to use the templates in nmintra: 
-     copy the builders from WEB-INF/config/applications/NMIntra/builders/ to  WEB-INF/config/builders/
+5.b. install one of the applications on top of LeoCMS. Most of the applications contain demo-data
 
-IMPORTANT NOTE: The NatMM depends on 
+Important note: The NatMM depends on 
 a. an admin user with the alias users.admin and
 b. a rubriek node with alias root, this rubriek is the root of your tree of websites.
 
@@ -31,9 +42,9 @@ do not use these demo data files, you can create the admin user manually after i
 3. add the alias users.admin to the admin user
 4. changing the setting for "security active" from false to true
 
-After installation the editors of LeoCMS can be found at:
+D. AFTER INSTALLATION the editors of LeoCMS can be found at:
 
-http://localhost:8080/<your_webapp>/editors
+http://localhost:<your_port>/<your_webapp>/editors
 
 When clicking "Pagina-editor" you will get the website tree, which is the main entrance for editors to edit the content.
 Have a look at the user-manual /templates/doc/GebruikershandleidingEditors.doc (in Dutch unfortunately) to get an idea on how to work with the editors.
