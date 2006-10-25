@@ -16,7 +16,7 @@
 
   <block name="recent" mimetype="text/html">
     <description xml:lang="en">Displays recent resources</description>
-    <body jsp="/resources/index.jspx">
+    <body jsp="/resources/recent.jspx">
       <param name="nodetypes" />
     </body>
   </block>
