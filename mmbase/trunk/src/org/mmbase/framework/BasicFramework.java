@@ -11,6 +11,7 @@ package org.mmbase.framework;
 import java.util.*;
 import org.mmbase.util.*;
 import java.io.*;
+import javax.servlet.http.HttpServletRequest;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.transformers.Url;
 import org.mmbase.util.transformers.CharTransformer;
@@ -20,7 +21,7 @@ import org.mmbase.util.transformers.CharTransformer;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.5 2006-10-16 09:04:26 johannes Exp $
+ * @version $Id: BasicFramework.java,v 1.6 2006-10-25 20:28:23 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -30,21 +31,14 @@ public class BasicFramework implements Framework {
         return "BASIC";
     }
 
-    public StringBuilder getUrl(String page, Renderer renderer, Component component, Parameters blockParameters, Parameters frameworkParameters, boolean writeamp) {
-        return getUrl(page, component, blockParameters, frameworkParameters, writeamp);
-    }
-
-    public StringBuilder getUrl(String page, Processor processor, Component component, Parameters blockParameters, Parameters frameworkParameters, boolean writeamp) {
-        return getUrl(page, component, blockParameters, frameworkParameters, writeamp);
-    }
-
-    public StringBuilder getUrl(String page, Component component, Parameters blockParameters, Parameters frameworkParameters, boolean writeamp) {
+    /**
+     * General utility function to create an Url
+     */
+    public static StringBuilder getUrl(String page, Map<String, ? extends Object> params, HttpServletRequest req, boolean writeamp) {
         StringBuilder show = new StringBuilder();
-        Writer w = new StringBuilderWriter(show);
         if (writeamp) {
             page = page.replaceAll("&", "&amp;");
         }
-        javax.servlet.http.HttpServletRequest req = frameworkParameters.get(Parameter.REQUEST);
         if (page.equals("")) { // means _this_ page
             String requestURI = req.getRequestURI();
             if (requestURI.endsWith("/")) {
@@ -55,16 +49,34 @@ public class BasicFramework implements Framework {
         }
         show.append(page);
 
-        // url is now complete up to query string, which we are to construct now
-        String amp = (writeamp ? "&amp;" : "&");
-        String connector = (show.toString().indexOf('?') == -1 ? "?" : amp);
+        if (params != null && ! params.isEmpty()) {
+            // url is now complete up to query string, which we are to construct now
+            String amp = (writeamp ? "&amp;" : "&");
+            String connector = (show.indexOf("?") == -1 ? "?" : amp);
 
-        for (Map.Entry<String, ? extends Object> entry : blockParameters.toMap().entrySet()) {
-            show.append(connector).append(entry.getKey()).append("=");
-            paramEscaper.transform(new StringReader(Casting.toString(entry.getValue())), w);
-            connector = amp;
+            Writer w = new StringBuilderWriter(show);
+            for (Map.Entry<String, ? extends Object> entry : params.entrySet()) {
+                show.append(connector).append(entry.getKey()).append("=");
+                paramEscaper.transform(new StringReader(Casting.toString(entry.getValue())), w);
+                connector = amp;
+            }
         }
         return show;
+    }
+
+    public StringBuilder getUrl(String page, Renderer renderer, Component component, Parameters blockParameters, Parameters frameworkParameters) {
+        return getUrl(page, component, blockParameters, frameworkParameters, false);
+    }
+
+    public StringBuilder getUrl(String page, Processor processor, Component component, Parameters blockParameters, Parameters frameworkParameters) {
+        return getUrl(page, component, blockParameters, frameworkParameters, false);
+    }
+
+
+    public StringBuilder getUrl(String page, Component component, Parameters blockParameters, Parameters frameworkParameters, boolean writeamp) {
+        HttpServletRequest req = frameworkParameters.get(Parameter.REQUEST);
+        StringBuilder sb = getUrl(page, blockParameters.toMap(), req, writeamp);
+        return sb;
     }
 
     public Block getBlock(Component component, String blockName) {
@@ -72,7 +84,7 @@ public class BasicFramework implements Framework {
     }
 
     public Parameters createFrameworkParameters() {
-        return new Parameters(Parameter.RESPONSE, Parameter.REQUEST);
+        return new Parameters(Parameter.REQUEST);
     }
 
     public boolean makeRelativeUrl() {

@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * A Renderer implmentation based on a jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JspRenderer.java,v 1.11 2006-10-24 16:39:17 michiel Exp $
+ * @version $Id: JspRenderer.java,v 1.12 2006-10-25 20:28:23 michiel Exp $
  * @since MMBase-1.9
  */
 public class JspRenderer extends AbstractRenderer {
@@ -57,7 +57,7 @@ public class JspRenderer extends AbstractRenderer {
             request.setAttribute(Renderer.KEY, this);
 
             Framework framework = MMBase.getMMBase().getFramework();
-            String url = framework.getUrl(path, this, getBlock().getComponent(), blockParameters, frameworkParameters, false).toString();
+            String url = framework.getUrl(path, this, getBlock().getComponent(), blockParameters, frameworkParameters).toString();
 
             if (log.isDebugEnabled()) {
                 log.debug("Block parameters      : [" + blockParameters + "]");

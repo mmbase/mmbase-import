@@ -18,7 +18,7 @@ import org.mmbase.util.functions.Parameters;
  * A Framework is the place where components are displayed in. 
  *
  * @author Johannes Verelst
- * @version $Id: Framework.java,v 1.10 2006-10-16 09:04:26 johannes Exp $
+ * @version $Id: Framework.java,v 1.11 2006-10-25 20:28:23 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Framework {
@@ -28,7 +28,8 @@ public interface Framework {
 
     /** 
      * Return a modified URL for a given page. This method is called from within the mm:url
-     * tag.
+     * tag, and can perhaps be exposed to the outside world. 
+     *
      * @param page The page to create an URL for
      * @param component The component to use to search the file for
      * @param cloud The cloud to use to find objects if required
@@ -38,19 +39,15 @@ public interface Framework {
      */
     public StringBuilder getUrl(String page, Component component, Parameters blockParameters, Parameters frameworkParameters, boolean escapeAmps);
 
-    /** 
-     * Return a modified URL for a given page. This method is called from within the mm:url
-     * tag.
-     * @param page The page to create an URL for
-     * @param component The component to use to search the file for
-     * @param cloud The cloud to use to find objects if required
-     * @param pageContext The current page context, can be used to get the request, response, etc.
-     * @param blockParameters The parameters that were set on the block using referids and sub-&lt;mm:param&gt; tags
-     * @param frameworkParameters The parameters that are required by the framework, for instance containing the 'request' and 'cloud'.
+    /**
+     * URL generating needed for rendering, so for internal use.
      */
-    public StringBuilder getUrl(String page, Renderer renderer, Component component, Parameters blockParameters, Parameters frameworkParameters, boolean escapeAmps);
+    public StringBuilder getUrl(String page, Renderer renderer, Component component, Parameters blockParameters, Parameters frameworkParameters);
 
-    public StringBuilder getUrl(String page, Processor processor, Component component, Parameters blockParameters, Parameters frameworkParameters, boolean escapeAmps);
+    /**
+     * URL generating needed for rendering, so for internal use.
+     */
+    public StringBuilder getUrl(String page, Processor processor, Component component, Parameters blockParameters, Parameters frameworkParameters);
 
     /**
      * Return a Parameters object that needs to be passed on to the getUrl() call. The following parameters will be auto-filled
@@ -60,6 +57,8 @@ public interface Framework {
      *  <li>Parameter.REQUEST</li>
      *  <li>Parameter.RESPONSE</li>
      * </ul>
+     * TODO this list is not complete. Perhaps it's better not to documentate it explicitely,
+     * because it is taglib dependent.
      */
     public Parameters createFrameworkParameters(); 
 }
