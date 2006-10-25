@@ -18,15 +18,11 @@
          <object type="pools" />
       </relation>
    </action>
-   <command name="search" nodepath="topics,posrel,pools" fields="pools.name,topics.title" orderby="pools.name" age="-1">
+   <command name="search" nodepath="pools" fields="name" orderby="name" age="-1">
       <prompt>zoek categorie</prompt>
       <search-filter>
          <name>naam bevat</name>
-         <search-fields>pools.name</search-fields>
-      </search-filter>
-      <search-filter>
-         <name>onderwerp bevat</name>
-         <search-fields>topics.title</search-fields>
+         <search-fields>name</search-fields>
       </search-filter>
    </command>
 </list>

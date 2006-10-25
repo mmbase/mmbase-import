@@ -1,11 +1,12 @@
 <%@include file="/taglibs.jsp" %>
-<mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud">
+<mm:cloud logon="website_user" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getUserCredentials("website_user").get("password") %>" jspvar="cloud">
 <%@include file="includes/templateheader.jsp" %>
 <%@include file="includes/calendar.jsp" %>
 <%@include file="includes/cacheparams.jsp" %>
-<% expireTime = newsExpireTime; %>
+<% expireTime = 5; // this page is also editted by website visitors %>
 <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
 <mm:import id="ishome" />
+<mm:import id="jsps"><%= editwizard_location %>/jsp/</mm:import>
 <% String rightBarTitle = ""; %>
 <%@include file="includes/header.jsp" %>
   <td><%@include file="includes/pagetitle.jsp" %></td>
@@ -32,6 +33,11 @@
             <tr>
               <td>
                 <%@include file="includes/info/summary.jsp" %>
+                <mm:first>
+                  <div style="text-align:right"><a href="<%= editwizard_location 
+                         %>/jsp/wizard.jsp?language=nl&wizard=config/artikel/artikel_nieuws_nmintra_simple&objectnumber=new&origin=<mm:field name="pagina.number" />&referrer=<%= request.getServletPath().replaceAll("//","/")+"?p=" + paginaID
+                         %>">voeg een nieuwsbericht toe</a></div>
+                </mm:first>
               </td>
             </tr>
           </mm:list>

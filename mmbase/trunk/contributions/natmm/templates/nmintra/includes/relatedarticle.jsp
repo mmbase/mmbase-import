@@ -51,6 +51,9 @@
             <a href="<mm:write referid="employee_detail" />">
               <span style="text-decoration:underline;" class="dark"><mm:field name="medewerkers.titel"/></span>
             </a>
+            <mm:field name="readmore.pos" jspvar="ispresent" vartype="String" write="false">
+                  &nbsp;|&nbsp;<%= ("1".equals("ispresent") ? "aanwezig" : "afwezig") %>
+            </mm:field>
           </td>
         </tr>
       <mm:last>

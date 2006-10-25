@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="artikel">
-   <title>activiteit</title>
+   <title>nieuws</title>
    <description>
      <![CDATA[
       <h1>Artikel</h1>
@@ -24,75 +24,37 @@
    </description>
    <action type="create">
       <object type="artikel">
-         <field name="type">0</field>
-         <field name="titel_zichtbaar">1</field>
-         <field name="use_verloopdatum">1</field>
-         <relation destination="$origin" role="contentrel"/>
+           <field name="type">0</field>
+           <field name="titel_zichtbaar">1</field>
+           <field name="use_verloopdatum">1</field>
+           <relation destination="$origin" role="contentrel"/>
       </object>
    </action>
    <action include="config/artikel/delete_artikel.xml"/>
-       <action type="load">
-       <field name="titel"/>
-       <field name="titel_zichtbaar"/>
-       <field name="omschrijving"/>
-       <field name="bron"/>
-       <field name="metatags"/>
-       <field name="titel_fra"/>
-       <field name="creatiedatum"/>
-       <field name="datumlaatstewijziging"/>
-       <field name="embargo"/>
-       <field name="verloopdatum"/>
-       <field name="use_verloopdatum"/>
-       <field name="archive"/>
-       <field name="reageer"/>
-       <field name="status"/>
-       <field name="ondertitel"/>
-       <field name="begindatum"/>
-       <field name="einddatum"/>
-       <field name="type"/>
-       <field name="intro"/>
-       <field name="tekst"/>
-       <relation destination="pools" role="posrel"/>
-       <relation destination="artikel" role="related"/>
-       <relation destination="persoon" role="readmore"/>
-       <relation destination="images" role="posrel"/>
-       <relation destination="attachments" role="related"/>
-       <relation destination="paragraaf" role="posrel">
-          <object>
-              <relation destination="images" role="posrel">
-                 <object />
-              </relation>
-              <relation destination="link" role="posrel">
-                 <object />
-              </relation>
-              <relation destination="attachments" role="posrel">
-                 <object />
-              </relation>
-              <relation destination="pagina" role="readmore">
-                 <object />
-              </relation>
-          </object>
-       </relation>
-   </action>
+   <action include="config/artikel/load_artikel.xml"/>
    <lists>
+      <optionlist include="config/option_lists/archive.xml" />
       <optionlist include="config/option_lists/ja_nee.xml" />
       <optionlist include="config/option_lists/images_position_nmintra.xml" />
+      <optionlist include="config/option_lists/shorty_role.xml" />
    </lists>
    <steps>
       <step form-schema="edit_artikel"/>
    </steps>
 	<form-schema id="edit_artikel">
 		<field name="titel" ftype="line"><prompt>titel</prompt></field>
-		<!-- <field name="titel_zichtbaar" ftype="enum"><prompt>titel zichtbaar</prompt><optionlist select="ja_nee"/></field> -->
+		<field name="titel_zichtbaar" ftype="enum"><prompt>titel zichtbaar</prompt><optionlist select="ja_nee"/></field>
 		<field name="metatags" ftype="line"><prompt>redactionele aantekening</prompt></field>
 		<field name="creatiedatum" ftype="data"><prompt>creatiedatum</prompt></field>
 		<field name="datumlaatstewijziging" ftype="data"><prompt>datumlaatstewijziging</prompt></field>
-		<field name="begindatum"><prompt>aanvangsdatum</prompt></field>
-		<field name="verloopdatum"><prompt>einddatum</prompt></field>
+		<field name="begindatum"><prompt>datum die op website te zien is</prompt></field>
+		<field name="embargo"><prompt>verschijnt op website vanaf</prompt></field>
+		<field name="verloopdatum"><prompt>verwijderd van website op</prompt></field>
+		<field name="use_verloopdatum" ftype="enum"><prompt>verwijderdatum gebruiken</prompt><optionlist select="ja_nee"/></field>
+		<field name="archive" ftype="enum"><prompt>naar archief</prompt><optionlist select="archive"/></field>
 		<list include="config/pools/add_pools_posrel_minone_nonew.xml" />
 		<field name="intro" ftype="html" rows="14"><prompt>tekst</prompt></field>
 		<list include="config/images/zoek_contentelement_posrel_images.xml" />
-		<list include="config/medewerkers/zoek_artikel_readmore_medewerkers.xml" />
 		<list include="config/paragraaf/zoek_artikel_posrel_paragraaf.xml" />
 	</form-schema>
 </wizard-schema>
