@@ -13,15 +13,21 @@ import org.mmbase.util.LocalizedString;
 
 
 /**
- * A Block is a representation of a page within a component. It consists of 3 views, 
- * a 'head', 'body' and 'process' view. 
+ * A Block is a representation of a page within a component. It consists of 3 views,
+ * a 'head', 'body' and 'process' view.
  *
  * @author Johannes Verelst
- * @version $Id: Block.java,v 1.12 2006-10-19 17:31:48 michiel Exp $
+ * @version $Id: Block.java,v 1.13 2006-10-25 20:28:23 michiel Exp $
  * @since MMBase-1.9
  */
 public class Block {
+
+    public enum Type {
+        ADMIN, FRONTEND
+    }
+
     private final Map<Renderer.Type, Renderer> renderers = new EnumMap<Renderer.Type, Renderer>(Renderer.Type.class);
+
     Processor processor;
 
     private final String name;
