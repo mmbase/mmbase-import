@@ -9,7 +9,7 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.3 2006-09-06 09:37:08 henk Exp $
+  @version $Id: prompts.xsl,v 1.4 2006-10-25 14:58:55 henk Exp $
   -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -129,7 +129,7 @@
 <xsl:variable name="message_max" >Waarde moet kleiner of gelijk zijn aan {0}</xsl:variable>
 <xsl:variable name="message_mindate" >Datum moet groter of gelijk zijn aan{0}</xsl:variable>
 <xsl:variable name="message_maxdate" >Datum moet kleiner of gelijk zijn aan {0}</xsl:variable>
-<xsl:variable name="message_required" >Waarde is verplicht; kies een warade</xsl:variable>
+<xsl:variable name="message_required" >Waarde is verplicht; Vul een waarde in</xsl:variable>
 <xsl:variable name="message_dateformat" >Datum of tijd heeft fout formaat</xsl:variable>
 <xsl:variable name="message_thisnotvalid" >Dit veld is incorrect</xsl:variable>
 <xsl:variable name="message_notvalid" >{0} is incorrect</xsl:variable>
