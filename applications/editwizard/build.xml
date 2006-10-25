@@ -1,27 +1,19 @@
 <?xml version="1.0"?>
-<!DOCTYPE project
- [ <!ENTITY base     SYSTEM "../buildbase.xml" > ]
->
-
-<project name="MMBase editwizard project" default="dependent.jar" basedir=".">
+<project name="MMBase editwizard project" default="jar" basedir=".">
   <property name="project.name"     value="editwizard" />
   <property name="project.package"   value="org/mmbase/applications/editwizard" />
   <property name="project.target.templates.dir"   value="edit/wizard" />
 
   <property name="project.jars.includes" value="dove/build/mmbase-dove.jar" />
 
-  &base;
+  <import file="../buildbase-include.xml" />
 
   <target name="dove">
     <echo message="${applications.dir}/dove" />
     <ant dir="${applications.dir}/dove" inheritAll="false" />
   </target>
 
-  <target name="dependent.jar" depends="dove,jar" />
-
-  <target name="dependent.package" depends="dependent.jar,package" />
-
-  <target name="dependent.install" depends="dependent.jar,install" />
+  <target name="jar" depends="dove,buildbase.jar" />
 
   <!-- installs tinymce in the templates directory -->
   <target name="tinymce">
