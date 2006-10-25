@@ -1,7 +1,8 @@
 <%@include file="/taglibs.jsp" %>
-<mm:cloud jspvar="cloud">
+<mm:cloud logon="website_user" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getUserCredentials("website_user").get("password") %>" jspvar="cloud">
 <%@include file="includes/templateheader.jsp" %>
 <%@include file="includes/cacheparams.jsp" %>
+<% expireTime = 5; // this page is also editted by website visitors %>
 <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
 <%@include file="includes/calendar.jsp" %>
 <%@include file="includes/header.jsp" %>
@@ -21,14 +22,23 @@ if(!categoryId.equals("")){ templateQueryString += "&category=" + categoryId; }
    
 if(!articleId.equals("-1")) { 
    
-   %>     
+   %>
+   <a href="<%= editwizard_location 
+       %>/jsp/wizard.jsp?language=nl&wizard=config/artikel/artikel_calendar&objectnumber=<%= articleId 
+       %>&referrer=<%= request.getServletPath().replaceAll("//","/")+"?p=" + paginaID
+       %>">bewerk activiteit!</a><br/><br/>
    <mm:list nodes="<%= articleId %>" path="artikel"
       ><%@include file="includes/relatedarticle.jsp" 
    %></mm:list><%
     
 } else {
 
-   %><%@include file="includes/relatedteaser.jsp" %><%
+   %><%@include file="includes/relatedteaser.jsp" %>
+   <a href="<%= editwizard_location 
+       %>/jsp/wizard.jsp?language=nl&wizard=config/artikel/artikel_calendar&objectnumber=new&origin=<%= paginaID
+       %>&referrer=<%= request.getServletPath().replaceAll("//","/")+"?p=" + paginaID
+       %>">voeg nieuwe activiteit toe</a>
+   <%
    
    int previousYear = 0;
    int previousMonth = 0;
