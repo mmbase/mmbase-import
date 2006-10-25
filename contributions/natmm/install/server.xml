@@ -26,6 +26,7 @@
           timestamp="false"
         />
         <Context path="" docBase="ROOT" debug="0">
+           <!-- resource specification as it was before Tomcat 5.5
            <Resource name="mail/Session" auth="Container" type="javax.mail.Session"/>
            <ResourceParams name="mail/Session">
              <parameter>
@@ -33,9 +34,15 @@
                <value>smtp.xs4all.nl</value>
              </parameter>
            </ResourceParams>
+           -->
+           <!-- resource specification as it is now -->
+           <Resource name="mail/Session"
+                     auth="Container"
+                     type="javax.mail.Session"
+                     mail.smtp.host="smtp.xs4all.nl"/>
            <ResourceLink name="linkToGlobalResource"  global="simpleValue"  type="java.lang.Integer"/>
         </Context>
-      </Host>      
+      </Host> 
     </Engine>
   </Service>
 </Server>
