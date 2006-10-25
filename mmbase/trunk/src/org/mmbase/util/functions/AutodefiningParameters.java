@@ -16,12 +16,12 @@ package org.mmbase.util.functions;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: AutodefiningParameters.java,v 1.11 2006-10-16 14:42:36 johannes Exp $
+ * @version $Id: AutodefiningParameters.java,v 1.12 2006-10-25 20:29:25 michiel Exp $
  * @see Parameter
  */
 
 public class AutodefiningParameters extends Parameters {
-    //private static Logger log = Logging.getLoggerInstance(Parameters.class);
+    //private static Logger log = Logging.getLoggerInstance(AutodefiningParameters.class);
 
     public AutodefiningParameters(Parameter[] base) {
         super(base);
@@ -73,7 +73,7 @@ public class AutodefiningParameters extends Parameters {
         for (String arg : args) {
             pars.setIfDefined(arg, "");
         }
-        
+
         System.out.println("" + pars);
         for (String arg : args) {
             System.out.println(" " + arg + ": " + pars.indexOfParameter(arg));
@@ -85,7 +85,7 @@ public class AutodefiningParameters extends Parameters {
         for (String arg : args) {
             System.out.println(" " + arg + ": " + pars.indexOfParameter(arg));
         }
-        
+
     }
 
 }
