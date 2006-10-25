@@ -2,7 +2,7 @@
 
 
 MMBase Build File
-$Id: build.xml,v 1.154 2006-10-13 15:35:47 michiel Exp $
+$Id: build.xml,v 1.155 2006-10-25 14:44:16 michiel Exp $
 =================
 
 This build file can be used to build the following from CVS or from the source
@@ -311,11 +311,6 @@ builddate=${builddate}
     <copy file="${fileupload.jar}"     tofile="${release.lib.dir}/commons-fileupload.jar" />
     <copy file="${hsqldb.jar}"         todir="${release.lib.dir}" />
     <!--
-    <copy file="${jai_codec.jar}"      todir="${release.lib.dir}" />
-    <copy file="${jai_core.jar}"       todir="${release.lib.dir}" />
-    <copy file="${javamail.jar}"       todir="${release.lib.dir}" />
-    -->
-    <!--
     <copy file="${javaactivation.jar}"  todir="${release.lib.dir}" />
     -->
 
@@ -334,7 +329,7 @@ builddate=${builddate}
 
   <target name="lib.compile" description="Create the lib directory, containing the libraries necessary for compilation"
           depends="init,init.get">
-          <!--depends="init,expand.servlet,expand.xalan,expand.jai,expand.log4j,expand.javamail,expand.javaactivation,get.jdbc">-->
+          <!--depends="init,expand.servlet,expand.xalan,expand.log4j,expand.javamail,expand.javaactivation,get.jdbc">-->
 
     <mkdir dir="${compile.lib.dir}"/>
 
@@ -348,8 +343,6 @@ builddate=${builddate}
 
     <copy file="${servlet.jar}"   todir="${compile.lib.dir}" />
     <copy file="${fileupload.jar}" tofile="${compile.lib.dir}/commons-fileupload.jar" />
-    <copy file="${jai_codec.jar}" todir="${compile.lib.dir}" />
-    <copy file="${jai_core.jar}"  todir="${compile.lib.dir}" />
     <copy file="${log4j.jar}"     tofile="${compile.lib.dir}/log4j.jar" />
     <copy file="${javamail.jar}"  todir="${compile.lib.dir}" />
     <copy file="${javaactivation.jar}"  todir="${compile.lib.dir}" />
@@ -482,8 +475,6 @@ builddate=${builddate}
         <include name="eventmanager.xml"/>
         <include name="datatypes.xml"/>
         <include name="applications/Basics.xml"/>
-        <include name="applications/Resources.xml"/>
-        <include name="applications/Resources/**"/>
         <include name="builders/core/*.xml"/>
         <include name="builders/INDEX" />
         <include name="components/**" />
@@ -508,7 +499,6 @@ modules/
     </echo>
     <echo file="${build.dir}/classes/org/mmbase/config/applications/INDEX">
 Basics.xml
-Resources.xml
     </echo>
     <echo file="${build.dir}/classes/org/mmbase/config/modules/INDEX">
 mmbaseroot.xml
@@ -536,20 +526,6 @@ mmadmin.xml
     </javac>
     <tstamp/>
     <echo file="${build.dir}/classes/org/mmbase/builddate.properties">${builddate}</echo>
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- Check the optional packages                                         -->
-  <!-- =================================================================== -->
-
-  <target name="check.optional.jai" unless="jai.in.classpath">
-    <echo message=""/>
-    <echo message="Warning: Missing optional package javax.jai."/>
-    <echo message="You can't use the java based Image-Converter without this package,"/>
-    <echo message="you've got to use ImageMagick."/>
-    <echo message="JAI can be downloaded from http://www.javasoft.com/products/java-media/jai/"/>
-    <echo message="MMBase will compile and run without this package."/>
-    <echo message=""/>
   </target>
 
   <target name="check.optional.log4j" unless="log4j.in.classpath">
@@ -1005,13 +981,6 @@ Build-compiler: ${build.compiler}
       <param name="expandedfile" value="${hsqldb.jar}"/>
     </antcall>
 
-    <echo message="jai" />
-    <antcall target="downloadbz2">
-      <param name="sourcefile" value="${jai.loc}"/>
-      <param name="destfile" value="${jai.dest}"/>
-      <param name="destdir" value="${jai.dir}"/>
-      <param name="expandedfile" value="${jai_core.jar}"/>
-    </antcall>
 
     <echo message="javamail" />
     <antcall target="downloadzip">
