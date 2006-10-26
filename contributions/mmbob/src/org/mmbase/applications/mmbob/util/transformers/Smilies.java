@@ -23,7 +23,7 @@ import org.mmbase.applications.thememanager.*;
  * It uses the thememanager for defining the smilies.
  *
  * @author Gerard van Enk 
- * @version $Id: Smilies.java,v 1.5 2006-10-26 13:25:34 michiel Exp $
+ * @version $Id: Smilies.java,v 1.6 2006-10-26 14:15:45 michiel Exp $
  * @since MMBob-1.0
  */
 public class Smilies extends StringTransformer implements CharTransformer {
@@ -54,10 +54,9 @@ public class Smilies extends StringTransformer implements CharTransformer {
         Theme theme = ThemeManager.getTheme(themeID);
         if (theme != null) {
             ImageSet is = theme.getImageSet(smileySetID);
-            smileySets.put(smileyKey,is);
+            smileySets.put(smileyKey, is);
         } else {
-            log.error("could not find smileyset (theme: " + themeID 
-                + "smileySetID: " + smileySetID + "smileyKey: " + smileyKey+")");
+            log.error("could not find smileyset (theme: " + themeID + "smileySetID: " + smileySetID + "smileyKey: " + smileyKey+")");
         }
     }
 
@@ -69,16 +68,15 @@ public class Smilies extends StringTransformer implements CharTransformer {
      * @param smileyKey the id of the smiley (this is the text version of the smiley)
      */
     protected void initPatterns(String themeID, String smileySetID, String smileyKey) {
-        Pattern[] patterns;
-        ImageSet smileySet;
         if (!smileySets.containsKey(smileyKey)) {
             //init the smileyset if it hasn't been initialized already
             initSmileySets(themeID, smileySetID, smileyKey);
         }
         //get the smileyset
-        smileySet = (ImageSet)smileySets.get(smileyKey);
+        ImageSet smileySet = (ImageSet)smileySets.get(smileyKey);
+        if (smileySet == null) return;
         //get number of smileys in this set
-        patterns = new Pattern[smileySet.getCount()];
+        Pattern[] patterns = new Pattern[smileySet.getCount()];
         if (log.isDebugEnabled()) {
             log.debug("There are " + smileySet.getCount() + " smilies in this set (theme: " + themeID 
                     + "smileySetID: " + smileySetID + "smileyKey: " + smileyKey+")");
@@ -105,6 +103,10 @@ public class Smilies extends StringTransformer implements CharTransformer {
             initPatterns(themeID, smileySetID, smileyKey);
         }
         Pattern[] patterns = (Pattern[])smileyPatterns.get(smileyKey);
+        if (patterns == null) {
+            log.warn("There is not smiley key '" + smileyKey + "' in smileySet '" + smileySetID + "' of theme '" + themeID + "'");
+            return;
+        }
         //get the matchers
         Matcher[] matchers = new Matcher[patterns.length];
         for (int i = 0; i < patterns.length; i++) {
@@ -144,6 +146,10 @@ public class Smilies extends StringTransformer implements CharTransformer {
 
         if (theme != null) {
             Map imageSets = theme.getImageSets("smilies");
+            if (imageSets == null) {
+                log.warn("Theme '" + theme + "' has no smilies. Now not escaping smilies.");
+                return originalString;
+            }
             Iterator i = imageSets.entrySet().iterator();
             while(i.hasNext()) {
                 ImageSet is = (ImageSet)imageSets.get(((Map.Entry)i.next()).getKey());
@@ -163,6 +169,10 @@ public class Smilies extends StringTransformer implements CharTransformer {
         }
         ImageSet smileySet = (ImageSet)smileySets.get(smileyKey);
         Matcher[] matchers = (Matcher[])smileyMatchers.get(smileyKey);
+        if (matchers == null) {
+            log.warn("No smiley matchers for key '" + smileyKey + "' found. Returing unmodified string.");
+            return originalString;
+        }
         //loop through all smileys and check if they are found in the original text
         for (int i = 0; i < matchers.length; i++) {
             resultBuffer = new StringBuffer();
