@@ -654,7 +654,7 @@
     <param name="forumid" type="String" description="MMBase node number of the forum" />
     <param name="name" type="String" description="Name of the new post area" />
     <param name="description" type="String" description="Description of the new post area" />
-    <param name="activeid" type="int" description="current userid" />
+    <param name="activeid" type="int" description="current userid" required="true" />
     <return type="java.util.HashMap"> 
       <field name="newpostareaid" type="int" description="MMBase node number of the new postarea" />
     </return> 
