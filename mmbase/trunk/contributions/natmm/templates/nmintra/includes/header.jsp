@@ -71,7 +71,9 @@
         if(!printPage) { 
           %>onLoad="javascript:resizeBlocks();<mm:present referid="extraload"><mm:write referid="extraload" /></mm:present
           >" onResize="javascript:resizeBlocks();" onUnLoad="javascript:setScreenSize()"<%
-        } 
+        } else {
+          %>onLoad="self.print();"<% 
+        }
         %>>
   	<%@include file="/editors/paginamanagement/flushlink.jsp" %>
 	<table background="media/styles/<%= NMIntraConfig.style1[iRubriekStyle] %>.jpg" cellspacing="0" cellpadding="0" border="0">
