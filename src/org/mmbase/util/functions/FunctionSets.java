@@ -37,7 +37,7 @@ import java.net.*;
  * @author Dani&euml;l Ockeloen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: FunctionSets.java,v 1.22.2.1 2006-10-26 09:01:46 michiel Exp $
+ * @version $Id: FunctionSets.java,v 1.22.2.2 2006-10-26 11:41:56 michiel Exp $
  */
 public class FunctionSets {
 
@@ -219,13 +219,16 @@ public class FunctionSets {
                     Element parameterElement = (Element)parameterElements.next();
                     String parameterName = reader.getElementAttributeValue(parameterElement, "name");
                     String parameterType = reader.getElementAttributeValue(parameterElement, "type");
+                    String required = reader.getElementAttributeValue(parameterElement, "required");
                     description = reader.getElementAttributeValue(parameterElement, "description");
 
                     Parameter parameter = null;
 
                     Class parameterClass = getClassFromName(parameterType);
                     parameter = new Parameter(parameterName, parameterClass);
-                    if (parameterClass.isPrimitive() && parameter.getDefaultValue() == null) {
+                    parameter.dataType.setRequired("true".equals(required));
+
+                    if (parameterClass.isPrimitive() && parameter.getDefaultValue() == null && ! parameter.isRequired()) {
                         // that would give enigmatic IllegalArgumentExceptions, so fix that.
                         parameter.setDefaultValue(Casting.toType(parameterClass, new Integer(-1)));
                         log.info("Primitive parameter '" + parameterName + "' had default value null, which is impossible for primitive types. Setting to " + parameter.getDefaultValue());
