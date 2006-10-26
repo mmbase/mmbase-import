@@ -2095,17 +2095,17 @@ public class Controller {
 
         Forum f = ForumManager.getForum(forumid);
         if (f != null ) {
-        	Poster ap = f.getPoster(activeid);
-	    	if (f.isAdministrator(ap.getNick())) {
-	   		 if (!name.equals("")) {
-            			int postareaid = f.newPostArea(name, description);
-            			map.put("postareaid", new Integer(postareaid));
-            		} else {
-				map.put("feedback","feedback_emptyname");
-	    		}
-		} else {
-				map.put("feedback","feedback_usernotallowed");
-		}
+            Poster ap = f.getPoster(activeid);
+            if (ap != null && f.isAdministrator(ap.getNick())) {
+                if (!name.equals("")) {
+                    int postareaid = f.newPostArea(name, description);
+                    map.put("postareaid", new Integer(postareaid));
+                } else {
+                    map.put("feedback","feedback_emptyname");
+                }
+            } else {
+                map.put("feedback","feedback_usernotallowed");
+            }
         }
         return map;
     }
@@ -2145,15 +2145,15 @@ public class Controller {
     public boolean changeForum(String forumid, String name, String language, String description,int activeid) {
        	Forum f = ForumManager.getForum(forumid);
         if (f != null) {
-        	Poster ap = f.getPoster(activeid);
-	    	if (f.isAdministrator(ap.getNick())) {
-	        	f.setName(name);
-       	     		f.setLanguage(language);
-                	f.setDescription(description);
-                	f.saveDirect();
-	   	} else {
-			return false;
-	    	}
+            Poster ap = f.getPoster(activeid);
+            if (ap != null && f.isAdministrator(ap.getNick())) {
+                f.setName(name);
+                f.setLanguage(language);
+                f.setDescription(description);
+                f.saveDirect();
+            } else {
+                return false;
+            }
         }
         return true;
     }
