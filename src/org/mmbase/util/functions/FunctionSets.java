@@ -36,7 +36,7 @@ import java.net.*;
  * @author Dani&euml;l Ockeloen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: FunctionSets.java,v 1.26 2006-10-24 09:39:18 michiel Exp $
+ * @version $Id: FunctionSets.java,v 1.27 2006-10-26 09:27:11 michiel Exp $
  */
 public class FunctionSets {
 
@@ -220,6 +220,13 @@ public class FunctionSets {
                 // read the parameters
 
                 Parameter[] parameters = Parameter.readArrayFromXml(element);
+                for (Parameter param : parameters) {
+                    if (param.getClass().isPrimitive() && param.getDefaultValue() == null) {
+                        // that would give enigmatic IllegalArgumentExceptions, so fix that.
+                        param.setDefaultValue(Casting.toType(param.getClass(), -1));
+                        log.info("Primitive parameter '" + param + "' had default value null, which is impossible for primitive types. Setting to " + param.getDefaultValue());
+                    }
+                }
 
                 try {
                     SetFunction fun = new SetFunction(functionName, parameters, returnType, className, methodName, SetFunction.Type.valueOf(type.toUpperCase()));
