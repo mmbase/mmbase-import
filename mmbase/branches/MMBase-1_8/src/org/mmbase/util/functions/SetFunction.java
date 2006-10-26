@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: SetFunction.java,v 1.13 2006-05-21 11:38:45 daniel Exp $
+ * @version $Id: SetFunction.java,v 1.13.2.1 2006-10-26 11:41:56 michiel Exp $
  * @since MMBase-1.8
  * @see   FunctionSets
  */
@@ -53,6 +53,7 @@ class SetFunction extends AbstractFunction {
     /**
      */
     public Object getFunctionValue(Parameters parameters) {
+        parameters.checkRequiredParameters();
         try {
             return functionMethod.invoke(getInstance(), parameters.toArray());
         } catch (IllegalAccessException iae) {
@@ -66,6 +67,12 @@ class SetFunction extends AbstractFunction {
             } else {
                 throw new RuntimeException(te); // throw the actual exception that occurred
             }
+        } catch (IllegalArgumentException iae) {
+            String mes = 
+                "Function call failed (method not available) : " + name +", method: " + functionMethod +
+                ", instance: " + getInstance() +", parameters: " + parameters;
+            throw new RuntimeException(mes, iae); 
+
         }
     }
 
