@@ -700,7 +700,7 @@
          </editor>
          <db>
             <name xml:lang="nl">job</name>
-            <type key="false" notnull="false" size="40" state="persistent">STRING</type>
+            <type key="false" notnull="false" size="1024" state="persistent">STRING</type>
          </db>
       </field>
       <field>
@@ -722,7 +722,7 @@
          </editor>
          <db>
             <name xml:lang="nl">department</name>
-            <type key="false" notnull="false" size="40" state="persistent">STRING</type>
+            <type key="false" notnull="false" size="1024" state="persistent">STRING</type>
          </db>
       </field>
 		<field>
