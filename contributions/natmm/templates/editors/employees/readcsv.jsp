@@ -27,7 +27,7 @@
 	return cal.getTime();
 } %>
 <%
-String [] fields = { "externid", "lastname", "suffix", "initials", "gender", "firstname", "dayofbirth", "privatephone", "companyphone", "cellularphone", "job" };
+String [] fields = { "externid", "lastname", "suffix", "initials", "gender", "firstname", "dayofbirth", "privatephone", "companyphone", "cellularphone", "email", "job" };
 String [] values = new String[fields.length];
 
 String dataFile = NMIntraConfig.incomingDir + "medewerkers.csv";
@@ -67,6 +67,7 @@ while(!"null;".equals(nextLine.trim())) {
       <%
     } 
     %>
+    <mm:setfield name="status">active</mm:setfield>
   </mm:createnode>
   <%
   nextLine = dataFileReader.readLine() + ";";
