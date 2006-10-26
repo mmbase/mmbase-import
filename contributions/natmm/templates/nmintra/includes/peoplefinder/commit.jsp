@@ -51,7 +51,7 @@ if(date.equals("")) { // *** send an email to ask confirmation ***
     } else {
         if(!pzText.equals("")) messageBody += "<br><br><br><li>Wijzigingen die na bevestiging worden verstuurd aan de afdeling Personeelszaken:<br>" + pzText;
         if(!fzText.equals("")) messageBody += "<br><br><br><li>Wijzigingen die na bevestiging worden verstuurd aan de afdeling Facilitaire Zaken:<br>" + fzText;
-        if(!dcText.equals("")) messageBody += "<br><br><br><li>Wijzigingen die na bevestiging direct worden verwerkt in \"Vaste vrije dagen\" en/of \"En verder\":<br>" + dcText;
+        if(!dcText.equals("")) messageBody += "<br><br><br><li>Wijzigingen die na bevestiging direct worden verwerkt in \"" + specialDays + "\" en/of \"En verder\":<br>" + dcText;
         String commitLink = HttpUtils.getRequestURL(request) + templateQueryString + "&pst=|action=commit|date=" + addTime;
         %><mm:createnode type="email" id="thismail"
             ><mm:setfield name="subject">Bevestigen wijziging gegevens op de Wie-is-wie.</mm:setfield
@@ -100,7 +100,7 @@ if(date.equals("")) { // *** send an email to ask confirmation ***
             jobId = e.getStringValue("job");
             omschrijving_engId = e.getStringValue("omschrijving_eng"); // regio/afdeling en functie
             omschrijving_deId = e.getStringValue("omschrijving_de");   // lokatie
-            omschrijving_fraId = e.getStringValue("omschrijving_fra"); // vaste vrije dag(en)
+            omschrijving_fraId = e.getStringValue("omschrijving_fra"); // vaste vrije/werk dag(en)
             omschrijvingId = e.getStringValue("omschrijving");         // en verder
             %><mm:deletenode 
         /></mm:node
@@ -157,7 +157,7 @@ if(date.equals("")) { // *** send an email to ask confirmation ***
             messageBody = "Bedankt voor het doorgeven van je wijzigingen:<br><br><br>Je wijzigingen zijn:";
             if(!pzText.equals("")) messageBody += "<br><li>verstuurd aan de afdeling Personeelszaken (" + NMIntraConfig.defaultPZAddress + ")";
             if(!fzText.equals("")) messageBody += "<br><li>verstuurd aan de afdeling Facilitaire Zaken (" + NMIntraConfig.defaultFZAddress + ")";
-            if(!dcText.equals("")) messageBody += "<br><li>verwerkt in \"Vaste vrije dagen\" en/of \"En verder\"";
+            if(!dcText.equals("")) messageBody += "<br><li>verwerkt in \"" + specialDays + "\" en/of \"En verder\"";
             if(!pzText.equals("")||!fzText.equals("")) {
                     messageBody += "<br><br><br>Afhankelijk van de bezetting en hoeveelheid werk op deze afdelingen zullen je wijzigingen "
                     + "binnen <b>&eacute;&eacute;n tot vijf werkdagen</b> op het Intranet zichtbaar zijn."; 

@@ -24,6 +24,12 @@ String jobId = request.getParameter("job"); if(jobId==null) { jobId=""; }
 String omschrijvingId = request.getParameter("omschrijving"); if(omschrijvingId==null) { omschrijvingId=""; }
 String omschrijving_fraId= request.getParameter("omschrijving_fra"); if(omschrijving_fraId==null) { omschrijving_fraId=""; }
 
+String specialDays = "Vaste vrije dag(en)";
+if(iRubriekLayout==NMIntraConfig.SUBSITE1_LAYOUT) {
+  // for organisations with a lot of partimers
+  specialDays = "Vaste werk dag(en)";
+}
+
 postingStr += "|";
 String action = getResponseVal("action",postingStr);
 
@@ -117,6 +123,7 @@ boolean showProgramSelect = onlyProgramSelect || !"".equals(thisPrograms);
           <jsp:param name="f" value="<%= firstnameId %>" />
           <jsp:param name="l" value="<%= lastnameId %>" />
           <jsp:param name="rl" value="<%= iRubriekLayout %>" />
+          <jsp:param name="sd" value="<%= specialDays %>" />
         </jsp:include>
         <%
       }

@@ -40,7 +40,7 @@
    
    // *** fields that can be changed by employees themselves ***
    if(!omschrijving_fraId.equals(e.getStringValue("omschrijving_fra"))) {
-     dcText += "<br><br>Vaste vrije dag(en): " + omschrijving_fraId;
+     dcText += "<br><br>" + specialDays + ": " + omschrijving_fraId;
    }
    if(!omschrijvingId.equals(e.getStringValue("omschrijving"))) {
      dcText += "<br><br>En verder moet worden gewijzigd in: " + omschrijvingId;
