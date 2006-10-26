@@ -10,6 +10,7 @@
 <mm:import externid="f" jspvar="firstnameId"/>
 <mm:import externid="l" jspvar="lastnameId"/>
 <mm:import externid="rl" jspvar="sRubriekLayout"/>
+<mm:import externid="sd" jspvar="specialDays"/>
 <mm:cloud>
 <% boolean fullDescription = true; %>
 <table border="0" cellpadding="0" cellspacing="0"> 
@@ -84,7 +85,9 @@
            <tr><td style="padding-bottom:3px;">Verjaardag:&nbsp;</td><td style="padding-bottom:3px;vertical-align:bottom;"><mm:field name="birthday" id="birthday" write="false"/><mm:time format="d MMM" referid="birthday" /></td></tr>
            <tr><td style="padding-bottom:3px;">In dienst per:&nbsp;</td><td style="padding-bottom:3px;vertical-align:bottom;"><mm:field name="enrolldate" id="enroll" write="false"/><mm:time format="dd MMM yyyy" referid="enroll" /></td></tr>
            --%>
-           <tr><td style="padding-bottom:3px;">Vrije dag:&nbsp;</td><td style="padding-bottom:3px;vertical-align:bottom;"><mm:field name="omschrijving_fra" /></td></tr>
+           <tr><td style="padding-bottom:3px;"><%= specialDays %>:&nbsp;</td>
+              <td style="padding-bottom:3px;vertical-align:bottom;"><mm:field name="omschrijving_fra" /></td>
+           </tr>
            <%
            if(sRubriekLayout.equals("" + NMIntraConfig.SUBSITE1_LAYOUT)) { 
               %>
