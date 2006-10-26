@@ -28,7 +28,7 @@ if(cookies!=null){
 %>
 <mm:list nodes="<%= paginaID %>" path="pagina,posrel,link" max="1"
   ><mm:import id="extraload">javascript:launchCenter('<mm:field name="link.url"
-    />', 'popup', <%= screenHeight %>,  <%= screenWidth %>, ',left=0,top=0,scrollbars,resizable=yes<mm:present referid="newwin">,toolbar=yes,menubar=yes</mm:present>');setTimeout('newwin.focus();',250);</mm:import>
+    />', 'popup<%= paginaID %>', <%= screenHeight %>,  <%= screenWidth %>, ',left=0,top=0,scrollbars,resizable=yes<mm:present referid="newwin">,toolbar=yes,menubar=yes</mm:present>');setTimeout('newwin.focus();',250);</mm:import>
 </mm:list>
 <%@include file="includes/header.jsp" 
 %><td><%@include file="includes/pagetitle.jsp" %></td>

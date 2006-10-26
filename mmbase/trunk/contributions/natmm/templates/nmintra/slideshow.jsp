@@ -31,8 +31,8 @@ int thisImageNumber = 1;
 	<img style="float:right;margin-top:2px;margin-right:5px;" src="media/styles/oranje_helmgras_logo.gif" border="0">
 	<table cellspacing="0" cellpadding="0">
 		<tr>
-			<td class="titlebar" width="0%" style="padding-left:1px;padding-top:2px;" ><a  href="javascript:void(0);" onClick="window.close()"><img src="media/kruis_wit_op_oranje.gif" border="0" alt=""></a></td>
-			<td class="titlebar" style="padding-left:8px;padding-top:2px;"><a href="javascript:void(0);" onClick="window.close()" class="white">Sluit dit venster</a></td>
+			<td class="titlebar" width="0%" style="padding-left:1px;padding-top:2px;"><a href="#" onClick="window.close()"><img src="media/kruis_wit_op_oranje.gif" border="0" alt=""></a></td>
+			<td class="titlebar" style="padding-left:8px;padding-top:2px;"><a href="#" onClick="window.close()" class="white">Sluit dit venster</a></td>
 		</tr>
 		<tr>
 			<td><img src="media/spacer.gif" width="1" height="57" border="0" alt=""></td>
@@ -63,7 +63,7 @@ int thisImageNumber = 1;
 			%></td>
 			<mm:listnodes type="images" constraints="<%= "number='" + thisImage + "'" %>"
 				><td style="text-align:center;vertical-align:middle;width:100%;">
-					<a href="javascript:void(0);" onClick="window.close()" title="Klik op de foto om het venster te sluiten">
+					<a href="#" onClick="window.close()" title="Klik op de foto om het venster te sluiten">
 					<img src="<mm:image template="s(400x423)" />" border="0"></a>
 				</td>
 			</mm:listnodes
