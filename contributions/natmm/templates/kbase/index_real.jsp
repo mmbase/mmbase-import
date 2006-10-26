@@ -98,83 +98,84 @@
 <%--  ############## begin toolbar ############# --%>
 <mm:maycreate type="kb_question">
 <mm:notpresent referid="action"> <%--only if you are not doing some action--%> 
-<script language="javascript">
-
-//some general stuff
-var possibleQnode="<mm:present referid="qnode">&qnode=<mm:write referid="qnode"/></mm:present>";
-
-
-  // edit: add an new folder
-  function goNewFolder(){
-    var path =realpath+"/index.jsp?action=add&type=category<%=(!extraParamsUrl.equals("")?"&":"")%><%=extraParamsUrl%>&node="+currentFolder.getAttribute('node')+"&expanded="+getExpandedFolders()+possibleQnode;
-    goThere(path);
-  }
+  <script language="javascript">
   
-
-  // edit: edit the current folder
-  function goEditFolder(){
-    //als de huidige folder de root is, mag er niet geeidt worden
-    if (currentFolder.getAttribute("node")==<mm:node number="kbase.root"><mm:field name="number"/></mm:node>){
-      alert("<mm:write referid="rooteditwarning" />");
-    }else{
-      var path=realpath+"/index.jsp?action=edit<%=(!extraParamsUrl.equals("")?"&":"")%><%=extraParamsUrl%>&type=category&node="+currentFolder.getAttribute('node')+"&expanded="+getExpandedFolders()+possibleQnode;
+  //some general stuff
+  var possibleQnode="<mm:present referid="qnode">&qnode=<mm:write referid="qnode"/></mm:present>";
+  
+  
+    // edit: add an new folder
+    function goNewFolder(){
+      var path =realpath+"/index.jsp?action=add&type=category<%=(!extraParamsUrl.equals("")?"&":"")%><%=extraParamsUrl%>&node="+currentFolder.getAttribute('node')+"&expanded="+getExpandedFolders()+possibleQnode;
       goThere(path);
     }
-  }  
-
-
-  // edit: add aquestion to the current foldder
-  function goAddQuestion(){
-    var path=realpath+"/index.jsp?action=add&type=question<%=(!extraParamsUrl.equals("")?"&":"")%><%=extraParamsUrl%>&node="+currentFolder.getAttribute('node')+"&expanded="+getExpandedFolders();
+    
+  
+    // edit: edit the current folder
+    function goEditFolder(){
+      //als de huidige folder de root is, mag er niet geeidt worden
+      if (currentFolder.getAttribute("node")==<mm:node number="kbase.root"><mm:field name="number"/></mm:node>){
+        alert("<mm:write referid="rooteditwarning" />");
+      }else{
+        var path=realpath+"/index.jsp?action=edit<%=(!extraParamsUrl.equals("")?"&":"")%><%=extraParamsUrl%>&type=category&node="+currentFolder.getAttribute('node')+"&expanded="+getExpandedFolders()+possibleQnode;
+        goThere(path);
+      }
+    }  
+  
+  
+    // edit: add aquestion to the current foldder
+    function goAddQuestion(){
+      var path=realpath+"/index.jsp?action=add&type=question<%=(!extraParamsUrl.equals("")?"&":"")%><%=extraParamsUrl%>&node="+currentFolder.getAttribute('node')+"&expanded="+getExpandedFolders();
+        goThere(path);
+    }  
+    
+    //delete: delete the currently selected question
+    function goDeleteQuestion(){
+      var path=realpath+"/index.jsp?action=delete&type=question<%=(!extraParamsUrl.equals("")?"&":"")%><%=extraParamsUrl%>&node="+currentFolder.getAttribute('node')+"&expanded="+getExpandedFolders()+possibleQnode;
       goThere(path);
-  }  
+    }  
+    
+    //edit: edit the currently selected question
+    function goEditQuestion(){
+      var path=realpath+"/index.jsp?action=edit&type=question<%=(!extraParamsUrl.equals("")?"&":"")%><%=extraParamsUrl%>&node="+currentFolder.getAttribute('node')+"&expanded="+getExpandedFolders()+possibleQnode;
+      goThere(path);
+    }  
+    
+    // navigate: logout
+    function goLogout(){
+      var path=realpath+"/parts/logout.jsp?node="+currentFolder.getAttribute('node')+"<%=(!extraParamsUrl.equals("")?"&":"")%><%=extraParamsUrl%>&expanded="+getExpandedFolders();
+      goThere(path);
+    }    
+  </script>
   
-  //delete: delete the currently selected question
-  function goDeleteQuestion(){
-    var path=realpath+"/index.jsp?action=delete&type=question<%=(!extraParamsUrl.equals("")?"&":"")%><%=extraParamsUrl%>&node="+currentFolder.getAttribute('node')+"&expanded="+getExpandedFolders()+possibleQnode;
-    goThere(path);
-  }  
+  <div class="toolbar" id="toolbar" style="display:none">
   
-  //edit: edit the currently selected question
-  function goEditQuestion(){
-    var path=realpath+"/index.jsp?action=edit&type=question<%=(!extraParamsUrl.equals("")?"&":"")%><%=extraParamsUrl%>&node="+currentFolder.getAttribute('node')+"&expanded="+getExpandedFolders()+possibleQnode;
-    goThere(path);
-  }  
+  <% 
+  if(paginaID!=null) {
+    %>
+    <%@include file="/nmintra/includes/exteditcheck.jsp" %>
+    <%
+  } %>
+  <mm:present referid="isowner">
+     <mm:import id="isowner" reset="true">true</mm:import>
+  <%-- als er een vraag is geopend kun je die editen --%>
+      <mm:present referid="qnode">
+          <a href="javascript:goEditQuestion()"><img src="<mm:write referid="realpath" />/img/editquestion.gif" border="0" alt="<mm:write referid="editcurrentquestion" />"/></a>
+          <a href="javascript:goDeleteQuestion()" onClick="return doDelete('Weet u zeker dat u deze vraag wilt verwijderen?');"><img src="<mm:write referid="realpath" />/img/remove.gif" alt="<mm:write referid="removeaquestion" />" border="0"/></a>      
+      </mm:present>
+  <%-- als er een huidige categorie is, kun je die editen--%>
+      <a href="javascript:goAddQuestion()"><img src="<mm:write referid="realpath" />/img/createquestion.gif" alt="<mm:write referid="addaquestion" />" border="0"/></a>      
+      <a href="javascript:goEditFolder()"><img src="<mm:write referid="realpath" />/img/editfolder.gif" alt="<mm:write referid="editcurrentfolder" />" border="0"/></a>
+      <a href="javascript:goNewFolder()"><img src="<mm:write referid="realpath" />/img/createfolder.gif" alt="<mm:write referid="createnewfolderincurrentone" />" border="0"/></a>
+  </mm:present>
   
-  // navigate: logout
-  function goLogout(){
-    var path=realpath+"/parts/logout.jsp?node="+currentFolder.getAttribute('node')+"<%=(!extraParamsUrl.equals("")?"&":"")%><%=extraParamsUrl%>&expanded="+getExpandedFolders();
-    goThere(path);
-  }    
-</script>
+  </div>
+</mm:notpresent>
+</mm:maycreate>
 
-<div class="toolbar" id="toolbar" style="display:none">
-
-<% 
-if(paginaID!=null) {
-  %>
-  <%@include file="/nmintra/includes/exteditcheck.jsp" %>
-  <%
-} %>
-<mm:present referid="isowner">
-   <mm:import id="isowner" reset="true">true</mm:import>
-<%-- als er een vraag is geopend kun je die editen --%>
-    <mm:present referid="qnode">
-        <a href="javascript:goEditQuestion()"><img src="<mm:write referid="realpath" />/img/editquestion.gif" border="0" alt="<mm:write referid="editcurrentquestion" />"/></a>
-        <a href="javascript:goDeleteQuestion()" onClick="return doDelete('Weet u zeker dat u deze vraag wilt verwijderen?');"><img src="<mm:write referid="realpath" />/img/remove.gif" alt="<mm:write referid="removeaquestion" />" border="0"/></a>      
-    </mm:present>
-<%-- als er een huidige categorie is, kun je die editen--%>
-    <a href="javascript:goAddQuestion()"><img src="<mm:write referid="realpath" />/img/createquestion.gif" alt="<mm:write referid="addaquestion" />" border="0"/></a>      
-    <a href="javascript:goEditFolder()"><img src="<mm:write referid="realpath" />/img/editfolder.gif" alt="<mm:write referid="editcurrentfolder" />" border="0"/></a>
-    <a href="javascript:goNewFolder()"><img src="<mm:write referid="realpath" />/img/createfolder.gif" alt="<mm:write referid="createnewfolderincurrentone" />" border="0"/></a>
-</mm:present>
 <mm:notpresent referid="isowner">
    <mm:import id="isowner" reset="true">false</mm:import>
 </mm:notpresent>   
-
-</div>
-</mm:notpresent>
-</mm:maycreate>
 
 <mm:maycreate type="kb_question" inverse="true">
   <script language="javascript">
