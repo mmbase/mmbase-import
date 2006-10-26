@@ -54,7 +54,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.79 2006-10-05 15:08:00 pierre Exp $
+ * @version $Id: Dove.java,v 1.80 2006-10-26 08:36:37 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -159,10 +159,9 @@ public class Dove extends AbstractDove {
                         fel = addContentElement(FIELD, "", out);
 
                         int byteLength = 0;
-                        if (nm.hasField(AbstractImages.FIELD_FILESIZE)) {
-                            byteLength = node.getIntValue(AbstractImages.FIELD_FILESIZE);
-                        }
-                        else {
+                        if (nm.hasField("filesize")) {
+                            byteLength = node.getIntValue("filesize");
+                        } else {
                             if (nm.hasField(Attachments.FIELD_SIZE)) {
                                 byteLength = node.getIntValue(Attachments.FIELD_SIZE);
                             }
