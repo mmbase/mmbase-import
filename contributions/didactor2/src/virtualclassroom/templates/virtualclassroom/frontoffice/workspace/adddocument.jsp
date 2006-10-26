@@ -141,7 +141,7 @@
       <mm:setfield name="date"><%=currentDate%></mm:setfield>
     </mm:createnode>
     
-    <mm:import id="docId" jspvar="docId"><mm:write referid="currentitem" /></mm:import>    
+    <mm:import id="docId" jspvar="docId"><mm:write referid="myattachements" /></mm:import>    
     <di:event eventtype="add_document" eventvalue="<%= docId %>" note="add document" />
 
     <%-- related uploaded attachment to the current folder --%>
