@@ -174,8 +174,8 @@ public String searchResults(TreeSet searchResultList) {
 		}
 		if(poolId.equals("")&&educationPools.size()==1) { 
 			%>
-			<mm:list nodes="<%= sEducations %>" path="educations,posrel,education_pools"
-				constraints="<%= "education_pools.number='" + (String) educationPools.first() + "'" %>">
+			<mm:list nodes="<%= sEducations %>" path="educations,posrel,pools"
+				constraints="<%= "pools.number='" + (String) educationPools.first() + "'" %>">
 				<mm:size jspvar="iPools" vartype="Integer" write="false">
 					<% if(iEducations==iPools.intValue()) { poolId = (String) educationPools.first(); } %>
 				</mm:size>
