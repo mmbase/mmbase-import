@@ -67,7 +67,7 @@ while(!"null;".equals(nextLine.trim())) {
       <%
     } 
     %>
-    <mm:setfield name="status">active</mm:setfield>
+    <mm:setfield name="importstatus">active</mm:setfield>
   </mm:createnode>
   <%
   nextLine = dataFileReader.readLine() + ";";
