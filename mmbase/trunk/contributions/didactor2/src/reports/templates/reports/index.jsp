@@ -22,6 +22,7 @@
 	String months[] = {"Januari","Februari","Maart","April","Mei","Juni","Juli","Augustus","September","October","November","December"};
 	
 	java.util.TreeMap pdfDocumentElements = new java.util.TreeMap();
+
 	session.setAttribute( "pdf_document", pdfDocumentElements );
 	
   Font font_title = FontFactory.getFont(FontFactory.HELVETICA,(float)12.0, Font.BOLD, new java.awt.Color( 0xED, 0x6F, 0x2C ));
@@ -72,6 +73,14 @@
   <mm:param name="extraheader"><title><di:translate key="reports.reports" /></title></mm:param>
 </mm:treeinclude>
 
+<mm:import id="imageurl" jspvar="imageurl" vartype="String"><mm:treefile page="/pdf/headerimage.png" objectlist="$includePath" referids="$referids"/></mm:import>
+<%
+    String imgurl = request.getRequestURL().substring(0, request.getRequestURL().indexOf("//")+2 )+ request.getServerName() +":" + request.getServerPort()+imageurl;
+    try {
+      pdfDocumentElements.put( "element0", Image.getInstance(new java.net.URL( imgurl )) );
+    } catch (Exception excImg) {}
+  %> 
+
 <mm:import externid="columnsNumber" jspvar="columnsNumber" vartype="Integer"/>
 <mm:notpresent referid="columnsNumber">
   <mm:import externid="columnsNumber" jspvar="columnsNumber" reset="true" vartype="Integer">4</mm:import>
@@ -113,9 +122,31 @@
       		<option value="<%= cn %>" <%= classnumber.equals(cn)?"selected":"" %>><mm:field name="name" /></option>
       	</mm:listnodes>
       </select>    
-    </form>
+    </form><!--
     
-    </div>
+    
+XX    
+<mm:createnode type="pdf" id="pdfnode" jspvar="jsp_pdfnode">
+  <mm:setfield name="name">NAME</mm:setfield>
+  <mm:setfield name="showtitle">TITLE</mm:setfield>
+  <mm:setfield name="text">TEXT</mm:setfield>
+  <mm:setfield name="layout">4</mm:setfield>
+</mm:createnode> 
+
+<mm:createnode type="paragraphs" id="paragraphsnode" jspvar="jsp_paragraphsnode">
+  <mm:setfield name="showtitle">1</mm:setfield>
+  <mm:setfield name="title">PARAGRAPHS TITLE</mm:setfield>
+  <mm:setfield name="body"><tabel border><tr><td>Goran Kostadinov</td></tr></table></mm:setfield>
+</mm:createnode> 
+
+<mm:createrelation source="pdfnode" destination="paragraphsnode" role="posrel" />
+
+
+<mm:treeinclude page="/pdf/pdfhtml.jsp" objectlist="$includePath" referids="$referids">
+    <mm:param name="number" value="$pdfnode"></mm:param>
+</mm:treeinclude>
+XX    
+    --></div>
     <div class="folderBody">
     
 			<a href="<mm:url page="/reports/reports.html"><mm:param name="page" value="<%= nl.didactor.reports.util.ReportsPages.LOGIN_REPORTS %>" /><mm:param name="class" value="$classnumber"/></mm:url>">
@@ -184,6 +215,7 @@
   			<!-- 
   				LOGIN REPORTS
   			 -->
+         
   			<mm:compare referid="reports_page" value="<%= nl.didactor.reports.util.ReportsPages.LOGIN_REPORTS %>">
   
   				<h1><di:translate key="reports.login" /></h1>
@@ -193,7 +225,10 @@
   	        </a><br/><br/>
   	      </div>
   				<mm:import id="logintitle" jspvar="logintitle"><di:translate key="reports.login" /></mm:import>
-  				<% pdfDocumentElements.put( "element1", new Paragraph( logintitle, font_title ) ); %> 
+          
+  				<%
+            pdfDocumentElements.put( "element1", new Paragraph( logintitle, font_title ) ); 
+          %> 
   
   				<%
   					Table table1 = new Table( 2 );
