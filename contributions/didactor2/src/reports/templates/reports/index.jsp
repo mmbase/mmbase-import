@@ -106,8 +106,8 @@
     
     <form name="selectclassform" action="index.jsp">
 			<input type="hidden" name="classnumber" value="0">
-    	&nbsp;&nbsp;<b><di:translate key="reports.class" /></b>
-			<select onChange="javascript:changeURL( this )">
+    	&nbsp;&nbsp;<b><di:translate key="reports.class" /></b><br/>
+			<select onChange="javascript:changeURL( this )" style="margin-left:5px;margin-top:5px; width:19%">
 				<mm:listnodes path="classes">
 					<mm:import id="cn" jspvar="cn"><mm:field name="number"/></mm:import>
       		<option value="<%= cn %>" <%= classnumber.equals(cn)?"selected":"" %>><mm:field name="name" /></option>
@@ -186,13 +186,13 @@
   			 -->
   			<mm:compare referid="reports_page" value="<%= nl.didactor.reports.util.ReportsPages.LOGIN_REPORTS %>">
   
-  				<h1><di:translate key="reports.logintitle" /></h1>
+  				<h1><di:translate key="reports.login" /></h1>
   				<div align="right">
   	        <a href="<mm:url page="/reports/pdf_reports.html"></mm:url>" target="_new">
   	         <di:translate key="reports.pdf" />
   	        </a><br/><br/>
   	      </div>
-  				<mm:import id="logintitle" jspvar="logintitle"><di:translate key="reports.logintitle" /></mm:import>
+  				<mm:import id="logintitle" jspvar="logintitle"><di:translate key="reports.login" /></mm:import>
   				<% pdfDocumentElements.put( "element1", new Paragraph( logintitle, font_title ) ); %> 
   
   				<%
@@ -285,35 +285,33 @@
   						%>
   					</tr>
   
-  					<mm:list path="people">
-  						<mm:node element="people">
+            <mm:listnodes path="people,classes" constraints="classes.number=$classnumber">
   						<mm:import id="person"><mm:field name="number" /></mm:import>
-  							<di:hasrole referid="person" role="systemadministrator" inverse="true">
-  								<di:hasrole referid="person" role="student">
-  									<mm:import id="user_name" jspvar="user_name"><mm:field name="username" write="true" /></mm:import>
-  									<tr>
-  										<td class="listItem">
-  											<mm:import id="student_name" jspvar="student_name"><mm:field name="firstname" /> <mm:field name="lastname" /></mm:import>
-  											<mm:field name="firstname" write="true" /> <mm:field name="lastname" write="true" />
-  											<% table2.addCell( new Phrase( student_name, font ) ); %>
-  										</td>
-  										
-  										<td class="listItem" align="center">
-  											<% 
-  												String value = ( map.get( user_name ) != null ) ? nl.didactor.reports.util.TimeUtil.milisecondsToHHMMSS ( Long.decode( (map.get( user_name )).toString() ).longValue()) : "0";
-  											%>
-  											<%= value %>
-  											<% 
-  												Cell cell = new Cell( new Phrase( value, font ) );
-  					 					    cell.setHorizontalAlignment( Element.ALIGN_CENTER );
-  												table2.addCell( cell ); 
-  											%>
-  										</td>
-  									</tr>
-  								</di:hasrole>
-  							</di:hasrole>
-  						</mm:node>
-  					</mm:list>
+							<di:hasrole referid="person" role="systemadministrator" inverse="true">
+								<di:hasrole referid="person" role="student">
+									<mm:import id="user_name" jspvar="user_name"><mm:field name="username" write="true" /></mm:import>
+									<tr>
+										<td class="listItem">
+											<mm:import id="student_name" jspvar="student_name"><mm:field name="firstname" /> <mm:field name="lastname" /></mm:import>
+											<mm:field name="firstname" write="true" /> <mm:field name="lastname" write="true" />
+											<% table2.addCell( new Phrase( student_name, font ) ); %>
+										</td>
+										
+										<td class="listItem" align="center">
+											<% 
+												String value = ( map.get( user_name ) != null ) ? nl.didactor.reports.util.TimeUtil.milisecondsToHHMMSS ( Long.decode( (map.get( user_name )).toString() ).longValue()) : "0";
+											%>
+											<%= value %>
+											<% 
+												Cell cell = new Cell( new Phrase( value, font ) );
+					 					    cell.setHorizontalAlignment( Element.ALIGN_CENTER );
+												table2.addCell( cell ); 
+											%>
+										</td>
+									</tr>
+								</di:hasrole>
+							</di:hasrole>
+  					</mm:listnodes>
   				</table>
   				<% pdfDocumentElements.put( "element3", table2 ); %> 
   								
@@ -324,7 +322,7 @@
   			 -->
   			<mm:compare referid="reports_page" value="<%= nl.didactor.reports.util.ReportsPages.EDUCATION_REPORTS %>">
   			
-  				<h1><di:translate key="reports.educationtitle" /></h1>
+  				<h1><di:translate key="reports.education" /></h1>
   				<div align="right">
   	        <a href="<mm:url page="/reports/pdf_reports.html"></mm:url>" target="_new">
   	         <di:translate key="reports.pdf" />
@@ -409,7 +407,7 @@
   			 -->
   			<mm:compare referid="reports_page" value="<%= nl.didactor.reports.util.ReportsPages.LEARNOBJECT_REPORTS %>">
   
-  				<h1><di:translate key="reports.pagetitle" /></h1>
+  				<h1><di:translate key="reports.page" /></h1>
   				<div align="right">
   	        <a href="<mm:url page="/reports/pdf_reports.html"></mm:url>" target="_new">
   	         <di:translate key="reports.pdf" />
@@ -549,7 +547,7 @@
   			 -->
   			<mm:compare referid="reports_page" value="<%= nl.didactor.reports.util.ReportsPages.TEST_REPORTS %>">
   
-  				<h1><di:translate key="reports.testtitle" /></h1>
+  				<h1><di:translate key="reports.test" /></h1>
   				<div align="right">
   	        <a href="<mm:url page="/reports/pdf_reports.html"></mm:url>" target="_new">
   	         <di:translate key="reports.pdf" />
@@ -774,7 +772,7 @@
   			<mm:compare referid="reports_page" value="<%= nl.didactor.reports.util.ReportsPages.DOCUMENT_REPORTS %>">
   				<% if( request.getParameter( "startdate" ) == null ) {%>
   				  <form action="" id="dateform" name="dateform">
-  					<h1><di:translate key="reports.selectperiod" /></h1>
+  					<h1><di:translate key="reports.document" /> - <di:translate key="reports.selectperiod" /></h1>
   					  <input type="hidden" name="start_date" value="" >
   					  <input type="hidden" name="end_date" value="" >
   		
@@ -870,7 +868,7 @@
   						long endTime = Long.decode( request.getParameter( "enddate" ) ).longValue();
   					%>
   
-  						<h1><di:translate key="reports.statisticforperiod" />&nbsp;&nbsp;&nbsp;<%= new java.util.Date( startTime ) %>&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;<%= new java.util.Date( endTime ) %></h1>
+  						<h1><di:translate key="reports.document" /> - <di:translate key="reports.statisticforperiod" />&nbsp;&nbsp;&nbsp;<%= new java.util.Date( startTime ) %>&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;<%= new java.util.Date( endTime ) %></h1>
   						<div align="right">
   			        <a href="<mm:url page="/reports/pdf_reports.html"></mm:url>" target="_new">
   			         <di:translate key="reports.pdf" />
@@ -918,8 +916,7 @@
   								%>
   								
   							</tr>
-  							<mm:list path="people">
-  								<mm:node element="people">
+		            <mm:listnodes path="people,classes" constraints="classes.number=$classnumber">
   								<mm:import id="person"><mm:field name="number" /></mm:import>
   									<di:hasrole referid="person" role="systemadministrator" inverse="true">
   										<di:hasrole referid="person" role="student">
@@ -996,8 +993,7 @@
   											</tr>
   										</di:hasrole>
   									</di:hasrole>
-  								</mm:node>
-  							</mm:list>
+	  							</mm:listnodes>
   						</table>								
   					<% pdfDocumentElements.put( "element4", table ); %> 
   					<%}%>
@@ -1011,3 +1007,4 @@
 	    
 </mm:cloud>
 </mm:content>
+
