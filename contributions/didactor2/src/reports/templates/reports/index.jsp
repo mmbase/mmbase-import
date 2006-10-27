@@ -122,31 +122,8 @@
       		<option value="<%= cn %>" <%= classnumber.equals(cn)?"selected":"" %>><mm:field name="name" /></option>
       	</mm:listnodes>
       </select>    
-    </form><!--
-    
-    
-XX    
-<mm:createnode type="pdf" id="pdfnode" jspvar="jsp_pdfnode">
-  <mm:setfield name="name">NAME</mm:setfield>
-  <mm:setfield name="showtitle">TITLE</mm:setfield>
-  <mm:setfield name="text">TEXT</mm:setfield>
-  <mm:setfield name="layout">4</mm:setfield>
-</mm:createnode> 
-
-<mm:createnode type="paragraphs" id="paragraphsnode" jspvar="jsp_paragraphsnode">
-  <mm:setfield name="showtitle">1</mm:setfield>
-  <mm:setfield name="title">PARAGRAPHS TITLE</mm:setfield>
-  <mm:setfield name="body"><tabel border><tr><td>Goran Kostadinov</td></tr></table></mm:setfield>
-</mm:createnode> 
-
-<mm:createrelation source="pdfnode" destination="paragraphsnode" role="posrel" />
-
-
-<mm:treeinclude page="/pdf/pdfhtml.jsp" objectlist="$includePath" referids="$referids">
-    <mm:param name="number" value="$pdfnode"></mm:param>
-</mm:treeinclude>
-XX    
-    --></div>
+    </form>
+    </div>
     <div class="folderBody">
     
 			<a href="<mm:url page="/reports/reports.html"><mm:param name="page" value="<%= nl.didactor.reports.util.ReportsPages.LOGIN_REPORTS %>" /><mm:param name="class" value="$classnumber"/></mm:url>">
@@ -363,7 +340,7 @@ XX
   	         <di:translate key="reports.pdf" />
   	        </a><br/><br/>
   	      </div>
-  				<mm:import id="educationtitle" jspvar="educationtitle"><di:translate key="reports.educationtitle" /></mm:import>
+  				<mm:import id="educationtitle" jspvar="educationtitle"><di:translate key="reports.education" /></mm:import>
   				<% pdfDocumentElements.put( "element1", new Paragraph( educationtitle, font_title ) ); %> 
   				<mm:import id="size" jspvar="size" vartype="Integer">0</mm:import>
   				<mm:listnodes path="educations,classes" constraints="classes.number=$classnumber">
@@ -448,7 +425,7 @@ XX
   	         <di:translate key="reports.pdf" />
   	        </a><br/><br/>
   	      </div>
-  				<mm:import id="pagetitle" jspvar="pagetitle"><di:translate key="reports.pagetitle" /></mm:import>
+  				<mm:import id="pagetitle" jspvar="pagetitle"><di:translate key="reports.page" /></mm:import>
   				<% pdfDocumentElements.put( "element1", new Paragraph( pagetitle, font_title ) ); %> 
   
           <% 
@@ -588,7 +565,7 @@ XX
   	         <di:translate key="reports.pdf" />
   	        </a><br/><br/>
   				</div>
-  				<mm:import id="testtitle" jspvar="testtitle"><di:translate key="reports.testtitle" /></mm:import>
+  				<mm:import id="testtitle" jspvar="testtitle"><di:translate key="reports.test" /></mm:import>
   				<% pdfDocumentElements.put( "element1", new Paragraph( testtitle, font_title ) ); %> 
   
           <% 
@@ -909,7 +886,7 @@ XX
   			         <di:translate key="reports.pdf" />
   			        </a><br/><br/>
   						</div>
-  						<mm:import id="statisticforperiod" jspvar="statisticforperiod"><di:translate key="reports.statisticforperiod" /></mm:import>
+  						<mm:import id="statisticforperiod" jspvar="statisticforperiod"><di:translate key="reports.document" /></mm:import>
   					<% 
   						pdfDocumentElements.put( "element1", new Phrase( statisticforperiod, font_title ) ); 
   						pdfDocumentElements.put( "element2", new Phrase( "   " + new java.util.Date( startTime ) + "   -   ", font_title ) ); 
