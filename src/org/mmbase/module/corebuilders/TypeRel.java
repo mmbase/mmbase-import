@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.73 2006-10-17 12:07:49 nklasens Exp $
+ * @version $Id: TypeRel.java,v 1.74 2006-10-27 08:04:31 nklasens Exp $
  * @see RelDef
  * @see InsRel
  * @see org.mmbase.module.core.MMBase
@@ -730,7 +730,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
 
             // determine maximum value
             int roleMax = role <= 0  ? 0 : role + 1; // i.e. source, destination, role
-            int destinationMax = destination <= 0 ? destination + 1 : destination; // i.e. source, destination, 0
+            int destinationMax = role <= 0 ? destination + 1 : destination; // i.e. source, destination, 0
             int sourceMax = (destination <= 0 && role <= 0) ? (source <= 0  ? 0 : source + 1) : source; // i.e. source, 0, 0
 
             VirtualTypeRelNode fromTypeRelNode = new VirtualTypeRelNode(sourceMin, destinationMin, roleMin);
