@@ -64,7 +64,7 @@ Applications build file
   </target>
 
   <target name="scan" depends="mmbase">
-     <ant dir="scan"      target="dependent.package" inheritAll="false">
+     <ant dir="scan"      target="package" inheritAll="false">
        <property name="project.zip.dir"        value="${applications.build.dir}" />
        <property name="build.dir"        value="${build.dir}" />
        <property name="download.dir"        value="${download.dir}" />
@@ -312,7 +312,7 @@ Applications build file
     <ant dir="vwms"        target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
-    <ant dir="scan"        target="dependent.install" inheritAll="false">
+    <ant dir="scan"        target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
     <ant dir="xmlimporter"    target="dependent.install" inheritAll="false">
