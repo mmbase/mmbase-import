@@ -7,7 +7,7 @@ build.dir = ${basedir}/build
 # If you choose not to use all components, you MUST use both 'core' and
 # 'education'.
 providers=
-components=core,versioning,utils,portalpages,education,address,agenda,chat,cms,cmshelp,competence,drm,email,faq,isbo,metadata,mmbob,news,pdf,pop,portfolio,progress,projectgroup,redspider,register,report,rmmci,scorm,search,sources,workspace
+components = core,versioning,education,utils,aselect,portalpages,cmshelp,faq,news,projectgroup,search,address,competence,pdf,redspider,sources,agenda,isbo,pop,register,drm,metadata,report,chat,mmbob,portfolio,rmmci,workspace,virtualclassroom,cms,email,progress,scorm,reports,assessment,proactivemail
 
 # Some defaults
 war.name=didactor
