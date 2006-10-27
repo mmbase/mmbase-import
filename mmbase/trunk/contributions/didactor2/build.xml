@@ -1,4 +1,4 @@
-<project name="didactor2" default="build" basedir=".">
+<project name="didactor2" default="war" basedir=".">
   <!-- We need the 'foreach' and 'if' tasks, therefore we use ant-contrib -->
   <taskdef resource="net/sf/antcontrib/antcontrib.properties">
     <classpath>
@@ -387,11 +387,47 @@
 
     <property name="tomcat5-antlet.deploy.archive" value= "${build.dir}/didactor.war"/>
    -->
-   <target name="war" depends="webapp">
+   <target name="war" depends="info,webapp">
      <tstamp />
      <jar destfile="${build.dir}/${war.name}${DSTAMP}_${TSTAMP}.war"
           basedir="${build.dir}/webapp"
      />
+   </target>
+
+   <target name="info" if="build.nobuild">
+     <echo>
+============================ WARNING ============================
+
+The build process for Didactor is a rather strange one, not
+similar to others. This build process will not only compile
+the code, but it will also create a completely preconfigured
+.war file that you must deploy in Tomcat.
+
+In order to be able to create this .war file, the configuration
+settings are copied from the 'configure.properties' file into
+several different configuration files that live inside the
+WEB-INF directory. You MUST review this configuration.properties
+file before building Didactor, otherwise the application will
+not run.
+
+At the bottom of configure.properties there is a line:
+   # REMOVE THIS LINE TO BE ABLE TO BUILD!
+   build.nobuild=true
+
+Remove (or comment) this when you have reviewed the entire
+file and are satisfied with the configuration settings.
+
+The default Didactor distribution runs on HSQLDB, an in-memory
+database. This allows you to review the software without setting
+up a real database. However, if you plan to use Didactor in a
+more real situation, use MySQL! MySQL is currently the only 
+supported database for Didactor.
+
+Good luck,
+  The Didactor Developers
+============================ WARNING ============================
+     </echo>
+     <fail message="Remove the 'build.nobuild=true' line from your 'configure.properties' file"/>
    </target>
 
    <!--
