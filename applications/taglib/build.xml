@@ -32,7 +32,7 @@
 
 
   <target name="jar1" description="Create mmbase-taglib.jar"
-          depends="copy.metainf.dir,taglib.tld,jar.check,project.manifest,jar.config,resources"
+          depends="resources,copy.metainf.dir,taglib.tld,jar.check,project.manifest,jar.config"
           >
 
     <antcall target="compile" />
@@ -67,7 +67,7 @@
   </target>
 
   <target name="jar2" description="Create mmbase-taglib-2.jar"
-          depends="copy.metainf.dir,taglib.tld,jar.check,project.manifest,jar.config,resources"
+          depends="resources,copy.metainf.dir,taglib.tld,jar.check,project.manifest,jar.config"
           >
 
     <antcall target="compile" />
