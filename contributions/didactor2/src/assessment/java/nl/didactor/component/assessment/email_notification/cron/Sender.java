@@ -22,7 +22,7 @@ public class Sender extends Thread{
    }
 
    public void run() {
-      log.info("Assessment Email Notifications Sender has been started.");
+      log.debug("Assessment Email Notifications Sender has been started.");
 
       NodeList nlAdmin = cloud.getList("",
                                        "people",
@@ -53,7 +53,7 @@ public class Sender extends Thread{
          "email_notifications.trigger_type >= '0'",
          null, null, null, false);
 
-      log.info("We have got " + nlEmailNotifications.size() + " active email notifications");
+      log.debug("We have got " + nlEmailNotifications.size() + " active email notifications");
 
 
       //The whole list of emails
@@ -69,7 +69,7 @@ public class Sender extends Thread{
 
          switch(nodeEmailNotification.getIntValue("trigger_type")){
             case 0:{
-               log.info("\"Send On Date\" mode ");
+               log.debug("\"Send On Date\" mode ");
                if((new Date()).getTime() > nodeEmailNotification.getLongValue("senddate") * 1000){
                   //It's time we sent the notifications
                   nodeEmailNotification.setStringValue("trigger_type", "-1");
@@ -82,7 +82,7 @@ public class Sender extends Thread{
                break;
             }
             case 1:{
-               log.info("\"Send On not finished lesson\" mode ");
+               log.debug("\"Send On not finished lesson\" mode ");
 
                //Send immediatly
                hsetUsers = collectUsers(nodeEmailNotification);
