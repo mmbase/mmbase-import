@@ -23,6 +23,19 @@
             <jsp:directive.include  file="codesamples/urls.jsp" />
           </td>
         </tr>
+        <tr>
+          <th colspan="2">
+            You can also use mm:link, which is basicly the same. But is is meant to be used with the _-variable (in JSPx)
+          </th>
+        </tr>
+        <tr>
+          <td width="50%">
+            <pre><mm:include cite="true" page="codesamples/links.jspx" escape="text/xml" /></pre>
+          </td>
+          <td width="50%">
+            <mm:include  page="codesamples/links.jspx" />
+          </td>
+        </tr>
       </table>
     </mm:cloud>
     <%--
