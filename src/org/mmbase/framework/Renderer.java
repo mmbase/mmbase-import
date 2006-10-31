@@ -9,13 +9,13 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.framework;
 import java.io.*;
-import org.mmbase.util.functions.Parameters;
+import org.mmbase.util.functions.*;
 
 /**
  * A View is a thing that can actually be rendered, and can be returned by a {@link Component}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Renderer.java,v 1.6 2006-10-14 16:51:03 michiel Exp $
+ * @version $Id: Renderer.java,v 1.7 2006-10-31 22:21:45 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Renderer {
@@ -27,22 +27,19 @@ public interface Renderer {
         Renderer getEmpty(final Block block) {
             return new Renderer() {
                 public Type getType() { return Type.this; }
-                public Parameters createParameters() { return Parameters.VOID; };
                 public void render(Parameters parameters, Parameters urlparameters, Writer w) { };
+                public Parameter[] getParameters() { return Parameter.EMPTY; };
                 public Block getBlock() { return block ; };
             };
         }
     }
 
-    public Type getType();
+    Type getType();
 
-    public Block getBlock();
+    Block getBlock();
 
-    /**
-     * Before rendering, it may have to be fed with certain parameters. Obtain a parameters
-     * object which this method, fill it, and feed it back into {@link #render}.
-     */
-    Parameters createParameters();
+
+    Parameter[] getParameters();
 
     /**
      * Renders to a writer. In case of e.g. a JSPView, the parameters must also contain

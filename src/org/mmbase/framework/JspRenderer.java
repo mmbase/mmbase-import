@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * A Renderer implmentation based on a jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JspRenderer.java,v 1.12 2006-10-25 20:28:23 michiel Exp $
+ * @version $Id: JspRenderer.java,v 1.13 2006-10-31 22:21:45 michiel Exp $
  * @since MMBase-1.9
  */
 public class JspRenderer extends AbstractRenderer {
@@ -40,7 +40,7 @@ public class JspRenderer extends AbstractRenderer {
         return path;
     }
 
-    protected Parameter[] getEssentialParameters() {
+    public  Parameter[] getParameters() {
         return new Parameter[] {Parameter.RESPONSE, Parameter.REQUEST};
     }
 
@@ -74,5 +74,9 @@ public class JspRenderer extends AbstractRenderer {
         } finally {
             request.setAttribute(Renderer.KEY, previousRenderer);
         }
+    }
+
+    public String toString() {
+        return getPath() + "?" + Arrays.asList(getParameters());
     }
 }

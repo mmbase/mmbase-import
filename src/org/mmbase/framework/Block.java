@@ -9,18 +9,23 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.framework;
 import java.util.*;
+import org.mmbase.util.functions.*;
 import org.mmbase.util.LocalizedString;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * A Block is a representation of a page within a component. It consists of 3 views,
  * a 'head', 'body' and 'process' view.
  *
  * @author Johannes Verelst
- * @version $Id: Block.java,v 1.13 2006-10-25 20:28:23 michiel Exp $
+ * @version $Id: Block.java,v 1.14 2006-10-31 22:21:45 michiel Exp $
  * @since MMBase-1.9
  */
 public class Block {
+
+    private static final Logger log = Logging.getLoggerInstance(Block.class);
 
     public enum Type {
         ADMIN, FRONTEND
@@ -29,6 +34,8 @@ public class Block {
     private final Map<Renderer.Type, Renderer> renderers = new EnumMap<Renderer.Type, Renderer>(Renderer.Type.class);
 
     Processor processor;
+    protected Parameter.Wrapper specific;
+
 
     private final String name;
     private final String mimetype;
@@ -80,6 +87,33 @@ public class Block {
         return processor == null ? Processor.EMPTY : processor;
     }
 
+
+    void addParameters(Parameter<?>... params) {
+        List<Parameter> help = new ArrayList<Parameter>();
+        if (specific != null) {
+            help.addAll(Arrays.asList(specific.getArguments()));
+        }
+        for (Parameter p : params) {
+            help.add(p);
+        }
+        specific = new Parameter.Wrapper(help.toArray(Parameter.EMPTY));
+        log.debug("Set parameters of " + this + " to " + help);
+    }
+
+
+    /**
+     * Before rendering, it may have to be fed with certain parameters. Obtain a parameters
+     * object which this method, fill it, and feed it back into {@link Renderer#render}.
+     */
+    public Parameters createParameters() {
+        if (specific == null) {
+            return new AutodefiningParameters();
+        } else {
+            return new Parameters(specific, 
+                                  new Parameter.Wrapper(getRenderer(Renderer.Type.HEAD).getParameters()),
+                                  new Parameter.Wrapper(getRenderer(Renderer.Type.BODY).getParameters()));
+        }
+    }
 
     /**
      * @return the Component from which this block is a part.
