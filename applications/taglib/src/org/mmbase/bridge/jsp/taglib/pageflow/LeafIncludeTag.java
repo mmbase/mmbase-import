@@ -1,14 +1,15 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
  */
 package org.mmbase.bridge.jsp.taglib.pageflow;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.jsp.taglib.util.Notfound;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.util.logging.Logger;
@@ -22,27 +23,24 @@ import org.mmbase.util.logging.Logging;
  * A full description of this command can be found in the mmbase-taglib.xml file.
  *
  * @author Johannes Verelst
- * @version $Id: LeafIncludeTag.java,v 1.16 2006-10-16 14:46:33 johannes Exp $
+ * @version $Id: LeafIncludeTag.java,v 1.17 2006-10-31 15:32:56 michiel Exp $
  */
 
 public class LeafIncludeTag extends IncludeTag {
-    
-    private static final Logger log = Logging.getLoggerInstance(LeafIncludeTag.class.getName());
+
+    private static final Logger log = Logging.getLoggerInstance(LeafIncludeTag.class);
     protected Attribute objectList = Attribute.NULL;
     private TreeHelper th = new TreeHelper();
 
-    public int doStartTag() throws JspTagException {        
+    public int doStartTag() throws JspTagException {
         if (objectList == Attribute.NULL) {
             throw new JspTagException("Attribute 'objectlist' was not specified");
         }
         return super.doStartTag();
     }
 
-    protected String getFrameworkUrl() throws JspTagException {
-        return getPage();
-    }
 
-    protected String getPage() throws JspTagException {        
+    protected String getPage() throws JspTagException {
         String orgPage = super.getPage();
         String leafPage = th.findLeafFile(orgPage, objectList.getString(this), pageContext.getSession());
         if (log.isDebugEnabled()) {
@@ -55,7 +53,7 @@ public class LeafIncludeTag extends IncludeTag {
 
         return leafPage;
     }
-    
+
     public void doAfterBodySetValue() throws JspTagException {
         th.setCloud(getCloudVar());
         // Let IncludeTag do the rest of the work
@@ -67,7 +65,7 @@ public class LeafIncludeTag extends IncludeTag {
         super.doFinally();
     }
 
-    
+
     public void setObjectlist(String p) throws JspTagException {
         objectList = getAttribute(p);
     }
@@ -77,14 +75,15 @@ public class LeafIncludeTag extends IncludeTag {
         try {
             url = super.getLegacyUrl(writeamp, encode);
         } catch (JspTagException e) {
-            if (!notFound.getString(this).equals("skip")) {
-                throw(e);
+            // I think this does not happen
+            if (Notfound.get(notFound, this) == Notfound.SKIP) {
+                throw e;
             }
         }
         return url;
     }
 
-    // override to cancel 
+    // override to cancel
     protected boolean doMakeRelative() {
     	log.debug("doMakeRelative() overridden!");
         return false;
