@@ -217,6 +217,7 @@
         <relation from="users" to="events_attachments" type="gebruikt" />
         <relation from="users" to="editwizards" type="gebruikt" />
         <relation from="users" to="menu" type="gebruikt" />
+        <relation from="vacature" to="attachments" type="posrel"/>
         <relation from="vacature" to="formulier" type="posrel" />
         <relation from="vacature" to="organisatie" type="related" />
         <relation from="vertrekpunten" to="natuurgebieden" type="posrel" />
