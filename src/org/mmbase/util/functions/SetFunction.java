@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: SetFunction.java,v 1.16 2006-10-26 11:42:19 michiel Exp $
+ * @version $Id: SetFunction.java,v 1.17 2006-10-31 21:16:33 michiel Exp $
  * @since MMBase-1.8
  * @see   FunctionSets
  */
@@ -33,9 +33,13 @@ class SetFunction extends AbstractFunction {
          */
         CLASS,
         /**
-         * If type is 'class' the method must not be static, and on every call to getFunctionValue, a new object is instantiated.
+         * If type is 'instance' the method must not be static, and on every call to getFunctionValue, a new object is instantiated.
          */
-        INSTANCE;
+        INSTANCE,
+        /**
+         * If type is 'singleton', then the static method 'getInstance' will be called to get the one instance, unless the method is static.
+         */
+        SINGLETON
     }
 
     private final Method functionMethod;
@@ -60,17 +64,35 @@ class SetFunction extends AbstractFunction {
         if (Modifier.isStatic(functionMethod.getModifiers())) {
             functionInstance = null;
         } else {
-            if (type != Type.INSTANCE) {
+            switch (type) {
+            case CLASS:
                 try {
                     functionInstance = functionMethod.getDeclaringClass().newInstance();
                 } catch(Exception e) {
                      throw new RuntimeException("Can't create an function instance : " + functionMethod.getDeclaringClass().getName(), e);
                 }
-            } else {
+                break;
+            case SINGLETON:
+                try {
+                    Method singleton = functionClass.getMethod("getInstance");
+                    functionInstance = singleton.invoke(null);
+                } catch(Exception e) {
+                    throw new RuntimeException("Can't create an function instance : " + functionMethod.getDeclaringClass().getName(), e);
+                }
+                break;
+            case INSTANCE:
+                functionInstance = null; 
+                // one will be made on every calle
+                break; 
+            default:
                 functionInstance = null;
             }
+
         }
-        if (returnType == null) setReturnType(new ReturnType(functionMethod.getReturnType(), functionMethod.getReturnType().getClass().getName()));
+        if (returnType == null) {
+            setReturnType(new ReturnType(functionMethod.getReturnType(), functionMethod.getReturnType().getClass().getName()));
+            returnType = getReturnType();
+        }
 
 	String methodReturnType = functionMethod.getReturnType().getName();
 	String xmlReturnType    = returnType.getDataType().getTypeAsClass().getName();
