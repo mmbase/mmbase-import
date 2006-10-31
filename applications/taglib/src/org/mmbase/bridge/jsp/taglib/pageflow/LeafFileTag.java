@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * Note that the interesting functionality is implemented in the 'TreeHelper' class.
  * @author Johannes Verelst
- * @version $Id: LeafFileTag.java,v 1.18 2006-10-31 16:05:34 michiel Exp $
+ * @version $Id: LeafFileTag.java,v 1.19 2006-10-31 20:10:27 michiel Exp $
  */
 
 public class LeafFileTag extends UrlTag {
@@ -51,16 +51,7 @@ public class LeafFileTag extends UrlTag {
         if (leafPage == null || "".equals(leafPage)) {
             throw new JspTagException("Could not find page " + orgPage);
         }
-        StringBuilder show = new StringBuilder();
-        if (! useAbsoluteAttribute(show, leafPage)) {
-            if (leafPage.charAt(0) == '/') {
-                HttpServletRequest req =  (HttpServletRequest) getPageContext().getRequest();
-                show.insert(0, req.getContextPath());
-            }
-            show.append(leafPage);
-        }
-
-        return show.toString();
+        return leafPage;
 
     }
 
