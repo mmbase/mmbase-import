@@ -21,7 +21,7 @@ import org.mmbase.util.transformers.CharTransformer;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.6 2006-10-25 20:28:23 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.7 2006-10-31 22:21:45 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -74,6 +74,7 @@ public class BasicFramework implements Framework {
 
 
     public StringBuilder getUrl(String page, Component component, Parameters blockParameters, Parameters frameworkParameters, boolean writeamp) {
+        // just generate the URL
         HttpServletRequest req = frameworkParameters.get(Parameter.REQUEST);
         StringBuilder sb = getUrl(page, blockParameters.toMap(), req, writeamp);
         return sb;
