@@ -10,7 +10,9 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.jsp.taglib.util.Notfound;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.http.HttpServletRequest;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -23,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * A full description of this command can be found in the mmbase-taglib.xml file.
  *
  * @author Johannes Verelst
- * @version $Id: TreeFileTag.java,v 1.19 2006-10-16 14:46:33 johannes Exp $
+ * @version $Id: TreeFileTag.java,v 1.20 2006-10-31 15:32:56 michiel Exp $
  */
 
 public class TreeFileTag extends UrlTag {
@@ -48,10 +50,6 @@ public class TreeFileTag extends UrlTag {
         return super.doStartTag();
     }
 
-    protected String getFrameworkUrl() throws JspTagException {
-        return getPage();
-    }
-
     protected String getPage() throws JspTagException {
         String orgPage = super.getPage();
         String treePage = th.findTreeFile(orgPage, objectList.getString(this), pageContext.getSession());
@@ -62,8 +60,16 @@ public class TreeFileTag extends UrlTag {
         if (treePage == null || "".equals(treePage)) {
             throw new JspTagException("Could not find page " + orgPage);
         }
+        StringBuilder show = new StringBuilder();
+        if (! useAbsoluteAttribute(show, treePage)) {
+            if (treePage.charAt(0) == '/') {
+                HttpServletRequest req =  (HttpServletRequest) getPageContext().getRequest();
+                show.insert(0, req.getContextPath());
+            }
+            show.append(treePage);
+        }
 
-        return treePage;
+        return show.toString();
     }
 
     public int doEndTag() throws JspTagException {
@@ -97,8 +103,9 @@ public class TreeFileTag extends UrlTag {
         try {
             url = super.getLegacyUrl(writeamp, encode);
         } catch (JspTagException e) {
-            if (!notFound.getString(this).equals("skip")) {
-                throw(e);
+            // TODO Test this.
+            if (Notfound.get(notFound, this) == Notfound.SKIP) {
+                throw e;
             }
         }
         return url;

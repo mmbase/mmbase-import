@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.90 2006-10-31 15:10:04 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.91 2006-10-31 15:32:56 michiel Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
@@ -110,7 +110,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
     protected String getPage() throws JspTagException {
         String origPage = page.getString(this);
         if (component != Attribute.NULL) {
-            return component.getString(this) + "/" + origPage;
+            return "/" + component.getString(this) + "/" + origPage;
         } else {
             return origPage;
         }
@@ -269,10 +269,12 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
             return show.toString();
         }
     }
+    /**
+     * Url-generation without use of the framework
+     */
     protected String getLegacyUrl(boolean writeamp, boolean encodeUrl) throws JspTagException {
-        Url url = new Url(this, page.getString(this), null, getParameters());
-        StringBuilder show = new StringBuilder();
-        show.append(url.get(writeamp));
+        Parameters p = new Parameters(getParameters());
+        StringBuilder show = BasicFramework.getUrl(getPage(), p.toMap(), (HttpServletRequest) pageContext.getRequest(), writeamp);
         if (encodeUrl) {
             HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
             return response.encodeURL(show.toString());
