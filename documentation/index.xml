@@ -5,9 +5,9 @@
   <articleinfo>
     <title>MMBase Documentation Overview</title>
 
-    <date>2006-07-07</date>
+    <date>2006-10-31</date>
 
-    <edition>$Id: index.xml,v 1.61 2006-10-16 09:09:46 andre Exp $</edition>
+    <edition>$Id: index.xml,v 1.62 2006-10-31 21:51:19 andre Exp $</edition>
 
     <authorgroup>
       <author>
@@ -251,14 +251,16 @@
 
       <listitem>
         <para><ulink url="backenddevelopers/functionsets.html">The MMBase
-        Function sets</ulink></para>
+        Function sets</ulink>, examples like &lt;mm:function set="utils"
+        name="generatePassword" /&gt; to generate a password.</para>
       </listitem>
 
       <listitem>
-        <para><ulink url="backenddevelopers/components.html">Component Framework</ulink>
-        document describing the MMBase component framework</para>
+        <para><ulink url="backenddevelopers/components.html">Component
+        Framework</ulink> document describing the MMBase component
+        framework</para>
       </listitem>
-      
+
       <listitem>
         <para><ulink url="backenddevelopers/dbsq.html">SearchQuery
         introduction</ulink></para>
@@ -540,23 +542,35 @@
       <listitem>
         <para><ulink url="javadoc/index.html">MMBase ApiDocs</ulink></para>
       </listitem>
+
       <listitem>
-        <para><ulink url="http://www.mmbase.org/development/api/1.8/overview-summary.html">MMBase ApiDocs 1.8 </ulink></para>
-      </listitem>
-      <listitem>
-        <para><ulink url="http://www.mmbase.org/development/api/1.7/overview-summary.html">MMBase ApiDocs 1.7</ulink></para>
+        <para><ulink
+        url="http://www.mmbase.org/development/api/1.8/overview-summary.html">MMBase
+        ApiDocs 1.8 </ulink></para>
       </listitem>
 
       <listitem>
-        <para><ulink url="http://www.mmbase.org/development/api/1.6/overview-summary.html">MMBase ApiDocs 1.6</ulink></para>
+        <para><ulink
+        url="http://www.mmbase.org/development/api/1.7/overview-summary.html">MMBase
+        ApiDocs 1.7</ulink></para>
       </listitem>
 
       <listitem>
-        <para><ulink url="http://www.mmbase.org/development/api/1.5/overview-summary.html">MMBase ApiDocs 1.5</ulink></para>
+        <para><ulink
+        url="http://www.mmbase.org/development/api/1.6/overview-summary.html">MMBase
+        ApiDocs 1.6</ulink></para>
       </listitem>
 
       <listitem>
-        <para><ulink url="http://www.mmbase.org/development/api/1.4/overview-summary.html">MMBase ApiDocs 1.4</ulink></para>
+        <para><ulink
+        url="http://www.mmbase.org/development/api/1.5/overview-summary.html">MMBase
+        ApiDocs 1.5</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para><ulink
+        url="http://www.mmbase.org/development/api/1.4/overview-summary.html">MMBase
+        ApiDocs 1.4</ulink></para>
       </listitem>
     </itemizedlist>
   </section>
