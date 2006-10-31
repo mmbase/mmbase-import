@@ -16,7 +16,8 @@
    </descriptions>
    <properties>
       <property name="max-nodes-from-query">250</property>
-      <property name="htmlFields">functienaam functienaam_fra functienaam_eng functienaam_de
+      <property name="htmlFields">omschrijving omschrijving_fra omschrijving_eng omschrijving_de
+         functienaam functienaam_fra functienaam_eng functienaam_de
          functieomvang functieomvang_fra functieomvang_eng functieomvang_de
          afdeling afdeling_fra afdeling_eng afdeling_de
          functieinhoud functieinhoud_fra functieinhoud_eng functieinhoud_de
