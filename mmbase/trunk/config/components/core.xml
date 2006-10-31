@@ -11,7 +11,9 @@
 
   <block name="components" mimetype="text/html">
     <description xml:lang="en">Shows an overview of all available components in the current MMBase</description>
-    <body jsp="/mmbase/admin/components.jspx" />
+    <body jsp="/mmbase/admin/components.jspx">
+      <param name="component" type="string" />
+    </body>
   </block>
 
 </component>
