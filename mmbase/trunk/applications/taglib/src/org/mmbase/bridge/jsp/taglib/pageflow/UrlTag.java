@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.91 2006-10-31 15:32:56 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.92 2006-10-31 16:06:47 michiel Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
@@ -55,6 +55,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
     protected Attribute  escapeAmps           = Attribute.NULL;
     private   Attribute  absolute             = Attribute.NULL;
     protected Attribute  encode               = Attribute.NULL;
+    protected Url        url;
 
     public void setReferids(String r) throws JspTagException {
         referids = getAttribute(r);
@@ -100,6 +101,18 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
         extraParameters.clear();
         parameters.wrapped = null;
         helper.useEscaper(false);
+        if (referid != Attribute.NULL) {
+            if (page != Attribute.NULL || component != Attribute.NULL) throw new TaglibException("Cannot specify both 'referid' and 'page' attributes");
+
+            // TODO anticipate also String here, for backwards compatibility.
+            url = (Url) getObject(getReferid());
+        } else {
+            url = new Url(this, page.getString(this), getComponent(), getParameters());
+        }
+        if (getId() != null) {
+            getContextProvider().getContextContainer().register(getId(), url); 
+        }
+
         return EVAL_BODY_BUFFERED;
     }
 
@@ -241,25 +254,13 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
     protected String getUrl(boolean writeamp, boolean encodeUrl) throws JspTagException {
 
         StringBuilder show = new StringBuilder();
-        if (referid != Attribute.NULL) {
-            if (page != Attribute.NULL || component != Attribute.NULL) throw new TaglibException("Cannot specify both 'referid' and 'page' attributes");
-
-            // TODO anticipate also String here, for backwards compatibility.
-            Url url = (Url) getObject(getReferid());
-            String u = url.get(writeamp);
-            if (! useAbsoluteAttribute(show, u)) {
-                show.append(u);
+        String u = url.get(writeamp);
+        if (! useAbsoluteAttribute(show, u)) {
+            if (u.charAt(0) == '/') {
+                HttpServletRequest req =  (HttpServletRequest) getPageContext().getRequest();
+                show.insert(0, req.getContextPath());
             }
-        } else {
-            Url url = new Url(this, page.getString(this), getComponent(), getParameters());
-            String u = url.get(writeamp);
-            if (! useAbsoluteAttribute(show, u)) {
-                if (u.charAt(0) == '/') {
-                    HttpServletRequest req =  (HttpServletRequest) getPageContext().getRequest();
-                    show.insert(0, req.getContextPath());
-                }
-                show.append(u);
-            }
+            show.append(u);
         }
 
         if (encodeUrl) {
@@ -311,9 +312,6 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
 
     }
     public int doEndTag() throws JspTagException {
-        if (getId() != null) {
-            getContextProvider().getContextContainer().register(getId(), getUrl(false, false));  // write it as cleanly as possible.
-        }
         initDoEndTag();
         doAfterBodySetValue();
         helper.doEndTag();
