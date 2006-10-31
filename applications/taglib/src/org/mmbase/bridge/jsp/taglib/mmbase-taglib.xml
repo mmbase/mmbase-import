@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.381 2006-10-31 15:38:58 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.382 2006-10-31 16:18:38 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4550,6 +4550,7 @@ like the parameter list or the session (where ever it is available) --&gt;
   </tag>
   <tag>
     <name>include</name>
+    <extends>writer</extends>
     <type>util</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.IncludeTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlTEI</teiclass>
