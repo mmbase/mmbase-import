@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * The overly simple renderer which is simply based on a String present in the configuration file
  *
  * @author Michiel Meeuwissen
- * @version $Id: StringRenderer.java,v 1.1 2006-10-25 16:42:58 michiel Exp $
+ * @version $Id: StringRenderer.java,v 1.2 2006-10-31 22:21:45 michiel Exp $
  * @since MMBase-1.9
  */
 public class StringRenderer extends AbstractRenderer {
@@ -40,7 +40,7 @@ public class StringRenderer extends AbstractRenderer {
         requestMethods = PatternNodeFunctionProvider.getRequestMethods(string); 
     }
 
-    protected Parameter[] getEssentialParameters() {
+    public  Parameter[] getParameters() {
         return new Parameter[] {Parameter.REQUEST};
     }
 
@@ -51,5 +51,9 @@ public class StringRenderer extends AbstractRenderer {
         PatternNodeFunctionProvider.handleRequest(sb, blockParameters, requestMethods);
         w.write(sb.toString());
         request.setAttribute(Renderer.KEY, previousRenderer);
+    }
+
+    public String toString() {
+        return string;
     }
 }

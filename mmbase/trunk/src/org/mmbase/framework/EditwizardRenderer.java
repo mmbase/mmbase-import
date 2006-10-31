@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * A Renderer implmentation based on a jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: EditwizardRenderer.java,v 1.4 2006-10-19 15:50:42 michiel Exp $
+ * @version $Id: EditwizardRenderer.java,v 1.5 2006-10-31 22:21:45 michiel Exp $
  * @since MMBase-1.9
  */
 public class EditwizardRenderer extends AbstractRenderer {
@@ -43,7 +43,7 @@ public class EditwizardRenderer extends AbstractRenderer {
         path = p;
     }
 
-    protected Parameter[] getEssentialParameters() {
+    public Parameter[] getParameters() {
         return new Parameter[] {Parameter.RESPONSE, Parameter.REQUEST, Parameter.LOCALE};
     }
 

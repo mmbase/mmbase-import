@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * components, and may be requested several blocks.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicComponent.java,v 1.15 2006-10-25 20:33:13 michiel Exp $
+ * @version $Id: BasicComponent.java,v 1.16 2006-10-31 22:21:45 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicComponent implements Component {
@@ -101,11 +101,7 @@ public class BasicComponent implements Component {
         }
         Parameter[] params = Parameter.readArrayFromXml(renderElement);
         if (params.length > 0) { // a bit to simple, how can you explicitely make a renderer parameter-less now?
-            if (renderer instanceof AbstractRenderer) {
-                ((AbstractRenderer) renderer).addParameters(params);
-            } else {
-                log.warn("Don't know how to add parameters to " + renderer);
-            }
+            b.addParameters(params);
         }
         return renderer;
     }
