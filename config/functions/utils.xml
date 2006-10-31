@@ -25,5 +25,14 @@
     <method>value_and_stir</method>
   </function>
 
+  <function name="filename">
+    <description>
+      Makes filename of commons file upload's FileItem.getName.
+    </description>
+    <type>class</type>
+    <class>org.mmbase.util.functions.Utils</class>
+    <method>getFileItemName</method>
+    <param name="filename" type="String" />
+  </function>
 
 </functionset>
