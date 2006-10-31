@@ -28,7 +28,7 @@ import org.mmbase.framework.*;
  * <p>
  * The creation of the URL is delegated to the MMBase framework.
  * </p>
- * @version $Id: Url.java,v 1.2 2006-10-31 15:10:04 michiel Exp $;
+ * @version $Id: Url.java,v 1.3 2006-10-31 15:32:56 michiel Exp $;
  * @since MMBase-1.9
  */
 public class Url implements Comparable {
@@ -56,7 +56,7 @@ public class Url implements Comparable {
         //Framework is of course always only relevant for local cloud context.
         //Framework framework = LocalContext.getCloudContext().getFramework();
 
-
+        
         Parameters frameworkParams = framework.createFrameworkParameters();
         tag.fillStandardParameters(frameworkParams);
         Parameters blockParams;
