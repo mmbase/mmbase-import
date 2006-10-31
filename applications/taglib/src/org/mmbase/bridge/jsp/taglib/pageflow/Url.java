@@ -28,7 +28,7 @@ import org.mmbase.framework.*;
  * <p>
  * The creation of the URL is delegated to the MMBase framework.
  * </p>
- * @version $Id: Url.java,v 1.1 2006-10-25 20:31:28 michiel Exp $;
+ * @version $Id: Url.java,v 1.2 2006-10-31 15:10:04 michiel Exp $;
  * @since MMBase-1.9
  */
 public class Url implements Comparable {
@@ -75,10 +75,12 @@ public class Url implements Comparable {
             blockParams = new Parameters(params); // sad that this will make it needed to copy the  entire list again.
         }
         StringBuilder show = framework.getUrl(page, component, blockParams, frameworkParams, writeamp);
+        /*
         if (show.charAt(0) == '/') {
             HttpServletRequest req =  (HttpServletRequest) tag.getPageContext().getRequest();
             show.insert(0, req.getContextPath());
         }
+        */
 
         return show.toString();
     }
