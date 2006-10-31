@@ -26,6 +26,8 @@
   |
   <a href="<mm:url page="include.jsp" />" >including</a>
   |
+  <a href="<mm:url page="urls.jsp" />" >urls</a>
+  |
   <a href="<mm:url page="time.jsp" />" >time</a>
   |
   <a href="<mm:url page="listdelete.jsp" />" >list &amp; delete</a>
