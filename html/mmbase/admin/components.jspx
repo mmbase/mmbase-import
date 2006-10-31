@@ -3,10 +3,21 @@
       xmlns:jsp="http://java.sun.com/JSP/Page" 
       xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:output doctype-root-element="html" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
+  <jsp:directive.page import="org.mmbase.framework.*,java.util.*" />
   <mm:content type="text/html" language="en" expires="0">
     <h1>Components admin page</h1>
     <mm:cloud rank="administrator">
-
+      <p>
+        <jsp:expression>((Renderer) request.getAttribute(Renderer.KEY)).getBlock().getDescription().get(Locale.US)</jsp:expression>
+      </p>
+      <p>
+        Available components:
+      </p>
+      <ul>
+        <mm:listfunction set="components" name="list" >
+          <li>${_.name}</li>
+        </mm:listfunction>
+      </ul>
     </mm:cloud>
   </mm:content>
 </div>
