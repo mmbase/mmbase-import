@@ -5,7 +5,7 @@
   <articleinfo>
     <title>The MMBase Function Framework</title>
 
-    <date>2006-07-07</date>
+    <date>2006-10-31</date>
 
     <edition>$Id: functionsets.xml,v 1.7 2006/06/24 08:38:04 michiel Exp
     $</edition>
@@ -49,8 +49,12 @@
 
     <para>The MMBase 'Function Framework' allows you to add functions or
     methods to different layers of MMBase. You can access them using the
-    taglib function tags or the bridge. Functions can be added to nodes,
-    builders and clouds and can be defined in three locations:</para>
+    taglib function tags or the bridge. This tag &lt;mm:function set="utils"
+    name="generatePassword" /&gt; returns a random password like 'zyrentu'.
+    </para>
+
+    <para>Functions can be added to nodes, builders and clouds and can be
+    defined in three locations:</para>
 
     <itemizedlist>
       <listitem>
@@ -111,20 +115,20 @@
     <para>Another simple example of a function is made available by the class
     org.mmbase.util.functions.ExampleBean and could look like this. It
     accesses the method stringFunction which uses no arguments and returns an
-    arbitrary String. </para>
+    arbitrary String.</para>
 
     <programlisting>&lt;mm:function classname="org.mmbase.util.functions.ExampleBean" name="stringFunction" /&gt;</programlisting>
 
     <para>ExampleBean contains multiple methods that can be accessed using
-    functions, but when you would strip down ExampleBean to the bare minimum
-    that is needed to execute the above example you will be left with the
-    following lines of code.</para>
+    functions. ExampleBean.java contains a lot more lines of code of but when
+    you strip it down to the bare minimum that is needed to execute the above
+    example, the following lines of code remain.</para>
 
     <programlisting>package org.mmbase.util.functions;
 
     public final class ExampleBean {
     private String parameter1;
-    private String parameter3 = "default";
+    private String parameter3 = "Default value";
 
     public void setParameter1(String hoi) {
         parameter1 = hoi;
@@ -138,12 +142,13 @@
         return "[[" + parameter1 + "/" + parameter3 + "]]";
     }
 
-}
-</programlisting>
+}</programlisting>
 
-    <para>As you would expect the combined examples return '[[null/default]]'.
-    A more exiting example would use the the set-methods defined in this bean
-    by using parameter tags which should be grouped using the
+    <para>As you would expect this example function returns '[[null/Default
+    value]]'. </para>
+
+    <para>A more exiting example would use the the set-methods defined in this
+    bean by using parameter tags. These parameters need to be grouped with the
     functioncontainer tag.</para>
 
     <programlisting>  &lt;mm:functioncontainer&gt;
@@ -172,7 +177,7 @@
     to group functions and parameters. It also provides you with a way to
     group several functions together. <programlisting>  &lt;mm:functioncontainer&gt;
     &lt;mm:param name="template"&gt;AASSHHM&lt;/mm:param&gt;
-    your random new password might be : &lt;mm:function set="util" name="generatePassword" /&gt;
+    your random new password might be : &lt;mm:function set="utils" name="generatePassword" /&gt;
   &lt;/mm:functioncontainer&gt;  </programlisting></para>
 
     <para>Each of the defined parameters will be added to every function
