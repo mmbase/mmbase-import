@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.67 2006-09-29 10:07:14 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.68 2006-10-31 16:06:47 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -102,14 +102,6 @@ public class IncludeTag extends UrlTag {
         return super.getPage();
     }
 
-    public int doStartTag() throws JspTagException {
-        if (page == Attribute.NULL && resource == Attribute.NULL 
-            //&& configuration == Attribute.NULL
-            ) { // for include tags, page attribute is obligatory.
-            throw new JspTagException("No attribute 'page' or 'resource' was specified");
-        }
-        return super.doStartTag();
-    }
 
     protected void doAfterBodySetValue() throws JspTagException {
         includePage();
