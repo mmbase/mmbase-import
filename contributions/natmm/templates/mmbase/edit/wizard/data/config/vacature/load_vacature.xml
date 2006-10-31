@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!DOCTYPE action PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <action type="load">
-  	<field name="titel" />
-	<field name="embargo" />
-	<field name="verloopdatum" />  
+   <field name="titel" />
+	 <field name="embargo" />
+	 <field name="verloopdatum" />  
    <field name="functienaam" />
    <field name="bron" />
    <field name="titel_zichtbaar" />
@@ -23,5 +23,5 @@
    <field name="competenties" />  
    <field name="salarisschaal" />
    <field name="metatags" />
-   <relation destination="attachments" role="related" />
+   <relation destination="attachments" role="posrel" />
 </action>
