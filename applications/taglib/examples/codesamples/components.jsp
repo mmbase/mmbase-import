@@ -1,0 +1,1 @@
+<mm:component name="core" />

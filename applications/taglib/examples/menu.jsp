@@ -28,6 +28,8 @@
   |
   <a href="<mm:url page="urls.jsp" />" >urls</a>
   |
+  <a href="<mm:url page="components.jsp" />" >components</a>
+  |
   <a href="<mm:url page="time.jsp" />" >time</a>
   |
   <a href="<mm:url page="listdelete.jsp" />" >list &amp; delete</a>
