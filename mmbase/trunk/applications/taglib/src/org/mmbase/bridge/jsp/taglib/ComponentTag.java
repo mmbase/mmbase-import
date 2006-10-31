@@ -22,7 +22,7 @@ import org.mmbase.module.core.MMBase;
  * Renders a certain block of an mmbase component
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentTag.java,v 1.8 2006-10-19 14:11:38 michiel Exp $
+ * @version $Id: ComponentTag.java,v 1.9 2006-10-31 22:23:35 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentTag extends CloudReferrerTag implements ParamHandler, Writer {
@@ -70,8 +70,7 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler, Writ
             String rt = render.getString(this);
             Renderer.Type type = rt == null || "".equals(rt) ? Renderer.Type.BODY : Renderer.Type.valueOf(rt.toUpperCase());
             Renderer renderer = block.getRenderer(type);
-            
-            Parameters params = renderer.createParameters();
+            Parameters params = block.createParameters();
             fillStandardParameters(params);
             params.setAutoCasting(true);
             params.setAll(Referids.getReferids(referids, this));
