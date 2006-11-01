@@ -10,6 +10,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import nl.eo.calendar.*;
 import org.mmbase.bridge.*;
+import org.mmbase.security.UserContext;
 import org.mmbase.bridge.jsp.taglib.*;
 
 /**
@@ -26,7 +27,7 @@ public class UserCalendarWriterTag extends CloudReferrerTag {
         if (cloud == null) {
             throw new JspTagException("No parent <mm:cloud> tag found");
         }
-        User user = cloud.getUser();
+        UserContext user = cloud.getUser();
         if (user == null) {
             throw new JspTagException("Cloud has no user linked to it!");
         }
