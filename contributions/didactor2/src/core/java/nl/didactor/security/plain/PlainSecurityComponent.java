@@ -14,19 +14,23 @@ import nl.didactor.security.AuthenticationComponent;
 
 import nl.didactor.security.UserContext;
 
+/**
+ * Default AuthenticationComponent for Didactor.
+ * @javadoc
+ * @version $Id: PlainSecurityComponent.java,v 1.5 2006-11-01 10:02:51 mmeeuwissen Exp $
+ */
+
 public class PlainSecurityComponent implements AuthenticationComponent {
-    private static Logger log = Logging.getLoggerInstance(PlainSecurityComponent.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(PlainSecurityComponent.class);
 
     private PeopleBuilder users;
 
     private void checkBuilder() throws org.mmbase.security.SecurityException {
         if (users == null) {
-            org.mmbase.module.core.MMBase mmb = (org.mmbase.module.core.MMBase) org.mmbase.module.Module.getModule("mmbaseroot");
-            users = (PeopleBuilder) mmb.getMMObject("people");
+            org.mmbase.module.core.MMBase mmb = org.mmbase.module.core.MMBase.getMMBase();
+            users = (PeopleBuilder) mmb.getBuilder("people");
             if (users == null) {
-                String msg = "builder people not found";
-                log.error(msg);
-                throw new org.mmbase.security.SecurityException(msg);
+                throw new org.mmbase.security.SecurityException("builder people not found");
             }
         }
     }

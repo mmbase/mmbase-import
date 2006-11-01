@@ -12,6 +12,9 @@ import org.mmbase.security.Rank;
 import org.mmbase.security.SecurityException;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.util.functions.*;
+
+import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArrayList;
 
 import nl.didactor.events.*;
 import nl.didactor.builders.*;
@@ -24,9 +27,9 @@ import nl.didactor.security.UserContext;
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  */
 public class Authentication extends org.mmbase.security.Authentication {
-    private static Logger log = Logging.getLoggerInstance(Authentication.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(Authentication.class);
 
-    Vector securityComponents = new Vector();
+    final List securityComponents = new CopyOnWriteArrayList();
 
     private static final String KEY_REQUEST = "request";
 
@@ -52,9 +55,10 @@ public class Authentication extends org.mmbase.security.Authentication {
             }
         }
     }
-
+    static final UserContext ANONYMOUS;
     static {
         Rank.createRank(0, "didactor-anonymous");
+        ANONYMOUS  = new UserContext("anonymous", "anonymous", Rank.getRank("didactor-anonymous"));
         Rank.createRank(200, "people");
     }
 
@@ -62,12 +66,10 @@ public class Authentication extends org.mmbase.security.Authentication {
 
     private void checkBuilder() throws org.mmbase.security.SecurityException {
         if (users == null) {
-            org.mmbase.module.core.MMBase mmb = (org.mmbase.module.core.MMBase) org.mmbase.module.Module.getModule("mmbaseroot");
-            users = (PeopleBuilder) mmb.getMMObject("people");
+            org.mmbase.module.core.MMBase mmb = org.mmbase.module.core.MMBase.getMMBase();
+            users = (PeopleBuilder) mmb.getBuilder("people");
             if (users == null) {
-                String msg = "builder people not found";
-                log.error(msg);
-                throw new org.mmbase.security.SecurityException(msg);
+                throw new org.mmbase.security.SecurityException("builder people not found");
             }
         }
     }
@@ -85,27 +87,31 @@ public class Authentication extends org.mmbase.security.Authentication {
      *            A list of optional parameters
      */
     public org.mmbase.security.UserContext login(String application, Map loginInfo, Object[] parameters) throws org.mmbase.security.SecurityException {
+
+        // Always allow anonymous access instantly
+        if ("anonymous".equals(application)) {
+            log.debug("Anonymous application: returning anonymous cloud");
+            return ANONYMOUS;
+        }
+
         if (log.isDebugEnabled()) {
             log.debug("login(" + application + ","+ loginInfo + "," + parameters + ")");
         }
         HttpServletRequest request = null;
         HttpServletResponse response = null;
-
-        if ((loginInfo != null) && (loginInfo.get(KEY_REQUEST) != null) && (loginInfo.get(KEY_RESPONSE) != null)) {
+        Rank desiredRank = null;
+        if (loginInfo != null) {
             request = (HttpServletRequest) loginInfo.get(KEY_REQUEST);
             response = (HttpServletResponse) loginInfo.get(KEY_RESPONSE);
-        }
-
-        // Always allow anonymous access instantly
-        if ("anonymous".equals(application)) {
-            log.debug("Anonymous application: returning anonymous cloud");
-            return new UserContext("anonymous", "anonymous", Rank.getRank("didactor-anonymous"));
+            desiredRank = (Rank) loginInfo.get("rank");
         }
 
         // Always allow system access instantly
         if ((request == null) || (response == null)) {
+            // so if you do _not_ provide any credentials you get admin!?
+
             log.debug("No request/response; returning system login");
-            return this.doSystemLogin();
+            return new UserContext(this.doSystemLogin(), application);
         }
 
         // If the action is logging-out, try to find the component on which the
@@ -133,28 +139,36 @@ public class Authentication extends org.mmbase.security.Authentication {
                     }
                 }
             } else {
-                log.warn("Cannot logout a user who's session is null");
+                log.warn("Cannot logout a user whos session is null");
             }
 
             return null;
         }
 
         // First see if we can determine if the user is already logged in previously
-        for (int i=0; i<securityComponents.size(); i++) {
+        for (int i = 0; i < securityComponents.size(); i++) {
             AuthenticationComponent ac = (AuthenticationComponent)securityComponents.get(i);
             UserContext uc = ac.isLoggedIn(request, response);
-            log.debug("" + ac + ".isLoggedIn() -> " + uc);
+            if (log.isDebugEnabled()) {
+                log.debug("" + ac + ".isLoggedIn() -> " + uc);
+            }
             if (uc != null) {
-                return uc;
+                if (! uc.getAuthenticationType().equals(application)) {
+                    return new UserContext(uc, application);
+                } else {
+                    return uc;
+                }
             }
         }
 
         // Apparently not, so we ask the components if they can process the login,
         // maybe there was a post to the current page?
-        for (int i=0; i<securityComponents.size(); i++) {
+        for (int i = 0; i < securityComponents.size(); i++) {
             AuthenticationComponent ac = (AuthenticationComponent)securityComponents.get(i);
             UserContext uc = ac.processLogin(request, response, application);
-            log.debug("" + ac + ".processLogin() -> " + uc);
+            if (log.isDebugEnabled()) {
+                log.debug("" + ac + ".processLogin() -> " + uc);
+            }
             if (uc != null) {
                 request.getSession(true).setAttribute("didactor-logincomponent", ac.getName());
                 Integer usernumber = uc.getUserNumber();
@@ -162,16 +176,21 @@ public class Authentication extends org.mmbase.security.Authentication {
                         "LOGIN", usernumber != null ? usernumber.toString() : null, 
                         "login");
                 EventDispatcher.report(event, request, response);
-                return uc;
+                if (! uc.getAuthenticationType().equals(application)) {
+                    return new UserContext(uc, application);
+                } else {
+                    return uc;
+                }
             }
         }
 
         // "Asis" means that we want a cloud as previously authenticated, or a new anonymous
         // one if there is no authenticated cloud. If we were authenticated we would not
         // have reached this point, so return an anonymous cloud here.
-        if ("asis".equals(application)) {
+        if ("asis".equals(application)  && (desiredRank == null || desiredRank.getInt() == Rank.ANONYMOUS.getInt())) {
             log.debug("Asis application and not logged in: returning anonymous cloud");
-            return new UserContext("anonymous", "anonymous", Rank.getRank("didactor-anonymous"));
+            // wrapping in new user context because application should be correct.
+            return new UserContext(new UserContext("anonymous", "anonymous", Rank.getRank("didactor-anonymous")), "asis");
         }
 
         // Still nothing, that means that we have to redirect to the loginpage
@@ -180,19 +199,22 @@ public class Authentication extends org.mmbase.security.Authentication {
         // TODO: maybe this should be configurable, so that you can specify which
         // security component should be used first by default. It will now automatically
         // go to the first one (aselect if that one is compiled in)
-        for (int i=0; i<securityComponents.size(); i++) {
+        for (int i = 0; i < securityComponents.size(); i++) {
             AuthenticationComponent ac = (AuthenticationComponent)securityComponents.get(i);
             String loginPage = ac.getLoginPage(request, response);
-            log.debug("" + ac + ".getLoginPage() -> " + loginPage);
+            if (log.isDebugEnabled()) {
+                log.debug("" + ac + ".getLoginPage() -> " + loginPage);
+            }
             if (loginPage != null) {
                 try {
                     String referUrl = loginPage;
                     if (referUrl.indexOf("?") > -1) {
-                        referUrl += "&";
+                        referUrl += "&"; // should this not be &amp; ?
                     } else {
                         referUrl += "?";
                     }
-                    referUrl += "referrer=" + request.getRequestURI();
+                    referUrl += "referrer=" + request.getRequestURI(); 
+                    // how about the paramters alreayd present. This seems to be too simple. Escaping?
                     String sRedirect = request.getContextPath() + response.encodeRedirectURL(referUrl);
                     response.sendRedirect(sRedirect);
                 } catch (Exception e) {
@@ -211,18 +233,19 @@ public class Authentication extends org.mmbase.security.Authentication {
     }
 
     /**
-     * Admin's backdoor for Cron & etc Doesn't require password for login
+     * Admin's backdoor for Cron &amp; etc Doesn't require password for login
      *
+     * @todo this problable can be dropped in favour of a 'class security' implementation.
      * @return UserContext
      */
-    private org.mmbase.security.UserContext doSystemLogin() {
+    private UserContext doSystemLogin() {
         checkBuilder();
         MMObjectNode user = users.getUser("admin");
         if (user == null) {
             return null;
         }
 
-        return (org.mmbase.security.UserContext) (new UserContext(user));
+        return new UserContext(user);
     }
 
     public static Node getCurrentUserNode(Cloud cloud){
@@ -242,4 +265,35 @@ public class Authentication extends org.mmbase.security.Authentication {
        }
        return null;
     }
+
+    public Parameters createParameters(String application) {
+        // TODO think more deeply about this, and return an actual Parametrs object!
+        return new AutodefiningParameters();
+    }
+
+    /**
+     * @since MMBase-1.8
+     */
+    public int getMethod(String m) {
+        return super.getMethod(m);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @since MMBase-1.8
+     */
+    public int getDefaultMethod(String protocol) {
+        return METHOD_DELEGATE;
+    }
+
+    public String[] getTypes(int method) {
+        if (method == METHOD_ASIS) {
+            return new String[] {"asis", "anonymous", "login", "class", "didactor-logout"};
+        } else if (method == METHOD_DELEGATE) {
+            return new String[] {"login", "asis", "class", "didactor-logout"};
+        } else {
+            return new String[] {"asis", "login", "class", "didactor-logout"};
+        }
+    }
+
 }
