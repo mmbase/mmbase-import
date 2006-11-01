@@ -7,10 +7,8 @@ import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import java.util.SortedSet;
-import java.util.Iterator;
-import java.util.TreeSet;
-import java.util.Vector;
+import java.util.*;
+
 
 /**
  * This class provides a default framework for Didactor builders, where components
@@ -81,11 +79,12 @@ public class DidactorBuilder extends MMObjectBuilder {
         }
         int res = super.insert(owner, node);
 
-        Vector fields = getFields();
-        for (int j=0; j<fields.size(); j++) {
-            FieldDefs fd = (FieldDefs)fields.get(j);
+        Collection fields = getFields();
+        Iterator it = fields.iterator();
+        while (it.hasNext()) {
+            FieldDefs fd = (FieldDefs) it.next();
             if (fd.getDBState() == FieldDefs.DBSTATE_VIRTUAL && fd.getDBPos() == 300) {
-                log.debug("Have to process set on field [" + fd.getDBName() + "] with value [" + node.values.get(fd.getDBName()) + "]");
+                log.debug("Have to process set on field [" + fd.getDBName() + "] with value [" + node.getValues().get(fd.getDBName()) + "]");
                 setFieldValue(owner, node, fd.getDBName());
             }
         }
@@ -130,11 +129,12 @@ public class DidactorBuilder extends MMObjectBuilder {
     public boolean commit(MMObjectNode node) {
         boolean bSuperCommit = super.commit(node);
 
-        Vector fields = getFields();
-        for (int j=0; j<fields.size(); j++) {
-            FieldDefs fd = (FieldDefs)fields.get(j);
+        Collection fields = getFields();
+        Iterator it = fields.iterator();
+        while (it.hasNext()) {
+            FieldDefs fd = (FieldDefs)it.next();
             if (fd.getDBState() == FieldDefs.DBSTATE_VIRTUAL && fd.getDBPos() == 300) {
-                log.debug("Have to process set on field [" + fd.getDBName() + "] with value [" + node.values.get(fd.getDBName()) + "]");
+                log.debug("Have to process set on field [" + fd.getDBName() + "] with value [" + node.getValues().get(fd.getDBName()) + "]");
                 setFieldValue(node.getStringValue("owner"), node, fd.getDBName());
             }
         }
@@ -199,7 +199,7 @@ public class DidactorBuilder extends MMObjectBuilder {
         for (int i=0; i<fieldNodes.size(); i++) {
             MMObjectNode fieldNode = (MMObjectNode)fieldNodes.get(i);
             if (field.equals(fieldNode.getStringValue("name"))) {
-                fieldNode.setValue("value", node.values.get(field));
+                fieldNode.setValue("value", node.getValues().get(field));
                 fieldNode.commit();
                 return;
             }
@@ -210,7 +210,7 @@ public class DidactorBuilder extends MMObjectBuilder {
         MMObjectNode fieldNode = fieldBuilder.getNewNode(owner);
 
         fieldNode.setValue("name", field);
-        fieldNode.setValue("value", node.values.get(field));
+        fieldNode.setValue("value", node.getValues().get(field));
         int fieldId = fieldBuilder.insert(owner, fieldNode);
 
         int authrel = MMBase.getMMBase().getRelDef().getNumberByName("authrel");
