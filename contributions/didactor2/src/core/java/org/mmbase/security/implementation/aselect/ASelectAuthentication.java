@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Arnout Hannink     (Alfa & Ariss)
  * @author Michiel Meeuwissen (Publieke Omroep Internet Services)
  *
- * @version $Id: ASelectAuthentication.java,v 1.1 2006-01-31 19:53:06 azemskov Exp $
+ * @version $Id: ASelectAuthentication.java,v 1.2 2006-11-01 10:03:45 mmeeuwissen Exp $
  * @since  MMBase-1.7
  */
 public class ASelectAuthentication extends Authentication
@@ -151,7 +151,7 @@ public class ASelectAuthentication extends Authentication
         }
 
         if (loginInfo == null) {
-            return new ASelectUser("anonymous", Rank.ANONYMOUS);
+            return new ASelectUser("anonymous", Rank.ANONYMOUS, getKey(), "anonymous");
         }
 
         HttpServletRequest request;
@@ -216,7 +216,7 @@ public class ASelectAuthentication extends Authentication
                 if (log.isDebugEnabled()) {
                     log.debug("Logging in user '" + userName + "' (rank: '" + rankString + "' -> " + rank + ")");
                 }
-                newUser = new ASelectUser(userName, rank);
+                newUser = new ASelectUser(userName, rank, getKey(), application);
             } else {
                 log.debug("User needs authentication and has been redirected to A-Select");
                 return null;
