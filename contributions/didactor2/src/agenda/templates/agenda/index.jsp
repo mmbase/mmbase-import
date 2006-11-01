@@ -46,7 +46,8 @@
         <mm:param name="day"><mm:write referid="day"/></mm:param>
       </mm:treeinclude>
       <p/>
-      <mm:list nodes="$user" path="people1,invitationrel1,items,invitationrel2,people2" constraints="people1.number != people2.number AND invitationrel1.m_status <= 0" max="1">
+      <mm:list nodes="$user" path="people1,invitationrel1,items,invitationrel2,people2" 
+               constraints="[people1.number] != [people2.number] AND [invitationrel1.status] <= 0" max="1">
         <a href="<mm:treefile page="/agenda/appointments.jsp" objectlist="$includePath" referids="$referids"/>"><di:translate key="agenda.newappointments" /></a>
       </mm:list>
     </div>
