@@ -1,23 +1,23 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.1"  prefix="mm"
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
 %><mm:content type="text/css">
 
 <mm:import id="myeditors">../../my_editors/img</mm:import>
 @import url(base.css);
 
-span.select:before   { content: url(<mm:url page="$myeditors/mmbase-right.gif" />);  }
-span.create:before   { content: url(<mm:url page="$myeditors/mmbase-new.gif" />);    }
-span.change:before   { content: url(<mm:url page="$myeditors/mmbase-edit.gif" />);   }
-span.delete:before   { content: url(<mm:url page="$myeditors/mmbase-delete.gif" />); }
-span.previous:before { content: url(<mm:url page="$myeditors/mmbase-left.gif" />);   }
-span.next:before     { content: url(<mm:url page="$myeditors/mmbase-right.gif" />);  }
-span.search:before   { content: url(<mm:url page="$myeditors/mmbase-search.gif" />);  }
-span.tree:before   { content: url(<mm:url page="$myeditors/mmbase-search.gif" />);  }
+span.select:before   { content: url(<mm:url page="$myeditors/mmbase-right.png" />);  }
+span.create:before   { content: url(<mm:url page="$myeditors/mmbase-new.png" />);    }
+span.change:before   { content: url(<mm:url page="$myeditors/mmbase-edit.png" />);   }
+span.delete:before   { content: url(<mm:url page="$myeditors/mmbase-delete.png" />); }
+span.previous:before { content: url(<mm:url page="$myeditors/mmbase-left.png" />);   }
+span.next:before     { content: url(<mm:url page="$myeditors/mmbase-right.png" />);  }
+span.search:before   { content: url(<mm:url page="$myeditors/mmbase-search.png" />);  }
+span.tree:before   { content: url(<mm:url page="$myeditors/mmbase-search.png" />);  }
 
 
 body.basic { 
 	margin: 0px;
 	font-family: "Lucida Grande", Helvetica, sans-serif;
-	font-size: 12;
+	font-size: 12pt;
   background-color: #EFEFEF;
 }
 
@@ -34,7 +34,7 @@ body.navigationbar {
   background-color: #00425A;  
 }
 
-input.search:after  { content: url(<mm:url page="$myeditors/mmbase-search.gif" />);  }
+input.search:after  { content: url(<mm:url page="$myeditors/mmbase-search.png" />);  }
 
 a:link
 {
@@ -51,7 +51,7 @@ a:hover
 }
 
 span {
-  align: right;
+  text-align: right;
 }
 
 span.alt {
@@ -62,15 +62,12 @@ span.alt {
 table   { 
     background-color: #fff;
 		width : 100%; 
-    float: center;
 }
 
 
 td {
     color: black;
-    vertical-align : top;
-    horizontal-align : left;	
-    border-width: 1;		
+    border-width: 1px;		
 }	
 
 table.list td {

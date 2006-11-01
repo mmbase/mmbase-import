@@ -1,11 +1,7 @@
-<%@ include file="page_base.jsp" %>
-<% 
-  urlStack.clear();
-  push(urlStack, "home", request);
-%>
-<mm:import externid="userlogon" from="parameters" />
-<mm:content language="$config.lang" type="text/html" expires="0">
-<mm:cloud method="delegate" jspvar="cloud" rank="administrator">
+<%@ include file="page_base.jsp"
+%><mm:import externid="userlogon" from="parameters" />
+<mm:content language="$config.lang" country="$config.country" type="text/html" expires="0">
+<mm:cloud  loginpage="login.jsp" logon="$userlogon" sessionname="$config.session" rank="$rank" jspvar="cloud">
 <mm:write referid="style" escape="none" />
 <!-- mm:timer name="search_node"-->
 <title><%=m.getString("search_node.search")%></title>
@@ -15,6 +11,22 @@
 <mm:import externid="node_type"  jspvar="node_type" from="parameters"/>
 
 <body class="basic" <mm:present referid="node_type">onLoad="document.search.elements[0].focus();"</mm:present>>
+
+<% urlStack.clear(); %>
+<mm:import externid="search" />
+<mm:import externid="page" />
+
+<mm:url referids="node_type?,search?,page?" id="thisurl" write="false">
+  <mm:present referid="search">
+    <mm:fieldlist id="search_form" nodetype="$node_type" type="search">
+      <mm:fieldinfo type="reusesearchinput" />
+    </mm:fieldlist>
+  </mm:present>
+</mm:url>
+
+<mm:write referid="thisurl" vartype="string" jspvar="url"><%-- in context it is not url-encoded --%>
+ <%  push(urlStack, "home", url);  %>
+</mm:write>
 
 <table summary="node editors" width="100%" class="super">
   <tr align="left">
@@ -38,7 +50,7 @@
       (<mm:nodeinfo nodetype="$node_type" type="type" />)      
       <mm:maycreate type="$node_type">
         <a href="<mm:url referids="node_type" page="create_node.jsp" />" >
-          <span class="create"></span><span class="alt">[create]</span>
+          <span class="create"><!-- needed for IE --></span><span class="alt">[create]</span>
         </a>
     </mm:maycreate>
     </th>
@@ -68,18 +80,18 @@
                         if ( (nt.mayCreateNode() && !nt.hasField("dnumber")) || !"short".equals(liststyle)) {
                 %>
       	    	    <tr valign="top">
-      	    	    	<td class="data" width="100%" colspan="2"><%=nt.getGUIName()%> </td>
+      	    	    	<td title="<%=nt.getName()%>" class="data" width="100%" colspan="2"><%=nt.getGUIName()%> </td>
       	    	    	<td class="navigate">
                         <% if (nt.mayCreateNode()) { %>
 			    <a href="<mm:url page="create_node.jsp"><mm:param name="node_type"><%=nt.getName()%></mm:param></mm:url>" >
-                  <span class="create"></span><span class="alt">[create]</span>
+                  <span class="create"><!-- needed for IE --></span><span class="alt">[create]</span>
              	  </a>
                        <% } else { %>&nbsp;<% } %>
       	    	    	</td>												
       	    	    	<td class="navigate">
 			    <% if (! nt.getName().equals(node_type)) { %>
             	 <a href="<mm:url><mm:param name="node_type"><%=nt.getName()%></mm:param></mm:url>">
-                  <span class="select"></span><span class="alt">[list]</span>
+                  <span class="select"><!-- needed for IE --></span><span class="alt">[list]</span>
                </a>
 			    <% } else { %>
 			    &nbsp;
@@ -106,10 +118,11 @@
           </mm:present>
           <mm:notpresent referid="node_type">
             <form name="search" method="post" action="<mm:url page="change_node.jsp"/>">
-            <table class="search" align="center" width="100%" border="0" cellspacing="1">
-              <tr><td width="20%"><%=m.getString("aliasornumber")%></td><td width="80%"><input class="small" type="text" size="5" name="node_number" /></td></tr>
-              <tr><td colspan="2"><input class="search" type="submit" name="search" value="<%=m.getString("search")%>" /></td></tr>
-            </table>
+              <table class="search" align="center" width="100%" border="0" cellspacing="1">
+                <tr><td width="20%"><%=m.getString("aliasornumber")%></td><td width="80%"><input class="small" type="text" size="5" name="node_number" /></td></tr>
+                <tr><td colspan="2"><input class="search" type="submit" name="search" value="<%=m.getString("search")%>" /></td></tr>
+              </table>
+            </form>
           </mm:notpresent>
 	    </td>
     	</tr>

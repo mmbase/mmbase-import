@@ -1,7 +1,7 @@
-<%@ include file="page_base.jsp" %>
-<mm:import externid="userlogon" from="parameters" />
-<mm:content language="$config.lang" type="text/html" expires="0">
-<mm:cloud method="delegate" jspvar="cloud" rank="administrator">
+<%@ include file="page_base.jsp"
+%><mm:import externid="userlogon" from="parameters" />
+<mm:content language="$config.lang" country="$config.country" type="text/html" expires="0">
+<mm:cloud loginpage="login.jsp" logon="$userlogon" sessionname="$config.session" jspvar="cloud" rank="$rank">
 <mm:write referid="style" escape="none" />
 <!-- mm:timer name="search_node"-->
 <title><%=m.getString("search_node.search")%></title>
@@ -18,7 +18,7 @@
   <%=m.getString("Node")%> <mm:field name="number" /> <%=m.getString("oftype")%> <mm:nodeinfo type="guinodemanager"  />
   ( <mm:nodeinfo type="nodemanager" /> )
     <a href="<mm:url page="change_node.jsp" referids="node_number" />">
-      <span class="change"></span><span class="alt">[change]</span>
+      <span class="change"><!-- needed for IE --></span><span class="alt">[change]</span>
      </a>
   </th></tr>
     <tr><th width="50%">Destination</th><th width="50%">Source</th></tr>
