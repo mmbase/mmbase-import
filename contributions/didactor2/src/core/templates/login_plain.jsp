@@ -1,30 +1,32 @@
 <%@page session="true" language="java" contentType="text/html; charset=UTF-8" %>
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 
 <mm:content postprocessor="reducespace">
-<mm:cloud jspvar="cloud">
-  <%@include file="/shared/setImports.jsp" %>
+<mm:cloud>
+  <jsp:directive.include file="/shared/setImports.jsp" />
   <mm:import externid="extraheader" />
   <mm:import externid="extrabody" />
-  <mm:node number="$provider" notfound="skipbody">
-    <mm:field name="name">
-      <mm:compare value="telecoach">
-        <mm:redirect page="/telecoach/portal/"/>
-      </mm:compare>
-    </mm:field>
-  </mm:node>
+  <mm:present referid="provider">
+    <mm:node referid="provider" notfound="skipbody">
+      <mm:field name="name">
+        <mm:compare value="telecoach">
+          <mm:redirect page="/telecoach/portal/"/>
+        </mm:compare>
+      </mm:field>
+    </mm:node>
+  </mm:present>
   <mm:import externid="newusername"/>
   <mm:import externid="newpassword"/>
 
   <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
   <html>
     <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-    <meta http-equiv="Content-Style-Type" content="text/css" />
-    <meta http-equiv="Content-Language" content="nl" />
-    <meta name="description" content="Didactor is een open source E-learning omgeving, ontwikkeld door The Mediator Group. Deze elektronische leeromgeving is 100% webbased en gebaseerd op didactische principes. Didactor is ontwikkeld mbv MMbase, Java en XML en maakt blended learning mogelijk" />
-    <meta name="keywords" content="didactor, mediator, didactiek, didactisch, webbased, platformonafhankelijk, group, elo, lms, lcms, leeromgeving, on-line, java, sun, mmbase, opleidingen, opleiding, events, e-learning, blended, learning, educatie, training, brakel, becking, hof, puntedu, leren, kennisoverdracht, open, source, standaarden, scorm, eml, cursus, bedrijfsopleiding, universiteit, digitaal, digitale, onderwijs, overheid, zorg, school, congres, bijeenkomst, event, kennis, congres, leeromgeving, didactiek, IEEE-lom, EML, scorm, vraaggestuurd, leerobjecten, netg" />
+      <meta http-equiv="Content-Style-Type" content="text/css" />
+      <!-- why is this in dutch -->
+      <meta http-equiv="Content-Language" content="nl" />
+      <meta name="description" content="Didactor is een open source E-learning omgeving, ontwikkeld door The Mediator Group. Deze elektronische leeromgeving is 100% webbased en gebaseerd op didactische principes. Didactor is ontwikkeld mbv MMbase, Java en XML en maakt blended learning mogelijk" />
+      <meta name="keywords" content="didactor, mediator, didactiek, didactisch, webbased, platformonafhankelijk, group, elo, lms, lcms, leeromgeving, on-line, java, sun, mmbase, opleidingen, opleiding, events, e-learning, blended, learning, educatie, training, brakel, becking, hof, puntedu, leren, kennisoverdracht, open, source, standaarden, scorm, eml, cursus, bedrijfsopleiding, universiteit, digitaal, digitale, onderwijs, overheid, zorg, school, congres, bijeenkomst, event, kennis, congres, leeromgeving, didactiek, IEEE-lom, EML, scorm, vraaggestuurd, leerobjecten, netg" />
     <meta name="copyright" content="" />
     <meta name="author" content="The Mediator Group" />
     <meta name="rating" content="General" />
@@ -93,9 +95,8 @@
          <iframe width="100%" height="100%" src="<mm:treefile page="/firstcontent.jsp" objectlist="$includePath" referids="$referids" escapeamps="false"/>" name="content" frameborder="0">
          </iframe>
        </div>
-       <mm:treeinclude page="/rightcolumn.jsp" objectlist="$includePath" referids="$referids" >
-        <mm:param name="hasPortalPages" value="$hasPortalPages" />
-       </mm:treeinclude>
+       <mm:treeinclude page="/rightcolumn.jsp" objectlist="$includePath"
+                       referids="$referids,hasPortalPages?"  />
       </div>
     </div>
   </body>
