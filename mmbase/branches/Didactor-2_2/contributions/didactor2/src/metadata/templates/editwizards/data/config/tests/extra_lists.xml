@@ -1,0 +1,34 @@
+        <!-- we need a new list to make an extra search command -->
+        <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']" role="posrel" destination="questions">
+            <title xml:lang="nl">Zoeken op metadata</title>
+            <title xml:lang="en">Search on metadata</title>
+            <item displaytype="none"></item>
+
+            <action type="create">
+                <relation role="posrel" destinationtype="questions">
+                  <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+                </relation>
+            </action>
+
+
+             <command name="search" nodepath="metadata,questions" fields="questions.title,questions.text,metadata.value" age="-1" orderby="questions.number" directions="down" >
+                <prompt xml:lang="nl">Zoeken naar vragen op metadata</prompt>
+                <prompt xml:lang="en">Search on questions by metadata</prompt>
+                <search-filter>          
+                    <name xml:lang="nl">Metadata titel</name>
+                    <name xml:lang="en">Metadata contains</name>
+                    <search-fields>metadata.value</search-fields>
+                </search-filter>
+                <search-filter>
+                    <name xml:lang="nl">Metadata type</name>
+                    <name xml:lang="en">Metadata type</name>
+                    <search-fields>questions.title</search-fields>
+                </search-filter> 
+                <search-filter>
+                    <name xml:lang="nl">Metadata omschrijving</name>
+                    <name xml:lang="en">Metadata description</name>
+                    <search-fields>questions.text</search-fields>
+                </search-filter>              
+           </command>
+
+        </list>

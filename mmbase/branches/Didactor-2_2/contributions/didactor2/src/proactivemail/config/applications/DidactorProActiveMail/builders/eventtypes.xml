@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<builder name="eventtypes" maintainer="didactor.nl" version="1" extends="object">
+  <status>active</status>
+
+  <classfile>org.mmbase.module.builders.Dummy</classfile>
+  <searchage>1000</searchage>
+
+  <names>
+    <!-- singles per language as defined by ISO 639 -->
+    <singular xml:lang="en">Event Type</singular>
+    <singular xml:lang="nl">Gebeurtenis Type</singular>
+    
+    <!-- multiple per language as defined by ISO 639 -->
+    <plural xml:lang="en">Event Types</plural>
+    <plural xml:lang="nl">Gebeurtenis Types</plural>
+  </names>
+
+  <descriptions>
+    <!-- descriptions per language as defined by ISO 639  -->
+    <description xml:lang="en">Event Types</description>
+    <description xml:lang="nl">Gebeurtenis Types</description>
+  </descriptions>
+
+  <fieldlist>
+    
+    <!-- POS 3 : <field> 'name'  -->
+    <field>
+      <descriptions>
+        <!-- descriptions per language as defined by ISO 639  -->
+        <description xml:lang="en">Name</description>
+        <description xml:lang="nl">Naam</description>
+      </descriptions>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="en">Name</guiname>
+        <guiname xml:lang="nl">Naam</guiname>
+        <guitype>string</guitype>
+      </gui>
+      <!-- editor related  -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>3</input>
+          <!-- position in list area of the editor -->
+          <list>3</list>
+          <!-- position in search area of the editor -->
+          <search>3</search>
+        </positions>
+      </editor>
+      <!-- database related  -->
+      <db>
+        <!-- name of the field in the database -->
+        <name>name</name>
+        <!-- MMBase datatype and demands on it -->
+        <type state="persistent" size="50" notnull="true" key="false">STRING</type>
+      </db>
+    </field>
+
+    <!-- POS 4 : <field> 'description'  -->
+    <field>
+      <descriptions>
+        <!-- descriptions per language as defined by ISO 639  -->
+        <description xml:lang="en">Description</description>
+        <description xml:lang="nl">Beschrijving</description>
+      </descriptions>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="en">Description</guiname>
+        <guiname xml:lang="nl">Beschrijving</guiname>  
+        <guitype>field</guitype>
+      </gui>
+      <!-- editor related  -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>4</input>
+          <!-- position in list area of the editor -->
+          <list>4</list>
+          <!-- position in search area of the editor -->
+          <search>4</search>
+        </positions>
+      </editor>
+      <!-- database related  -->
+      <db>
+        <!-- name of the field in the database -->
+        <name>description</name>
+        <!-- MMBase datatype and demands on it -->
+        <type state="persistent" size="100" notnull="false" key="false">STRING</type>
+      </db>
+    </field>
+        
+ </fieldlist>
+</builder>

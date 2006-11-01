@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<builder name="newsnodes" maintainer="didactor.nl" version="3" extends="navigationnodes">
+  <status>active</status>
+
+  <classfile>org.mmbase.module.builders.Dummy</classfile>
+  <searchage>1000</searchage>
+
+  <names>
+    <!-- singles per language as defined by ISO 639 -->
+    <singular xml:lang="en">Newsnode</singular>
+    <singular xml:lang="nl">Newsnode</singular>
+  
+    <!-- multiple per language as defined by ISO 639 -->
+    <plural xml:lang="en">Newsnodes</plural>
+    <plural xml:lang="nl">Newsnodes</plural>
+  </names>
+
+  <descriptions>
+    <!-- descriptions per language as defined by ISO 639  -->
+    <description xml:lang="en">News Node</description>
+    <description xml:lang="nl">News Node</description>
+  </descriptions>
+</builder>

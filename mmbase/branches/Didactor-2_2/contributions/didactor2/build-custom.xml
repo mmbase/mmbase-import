@@ -1,0 +1,74 @@
+<!--
+  And build script for builds which are based on a Didactor source distribution.
+  To use this file, create the following directory structure:
+  
+  /                  your base dir
+  /build.xml         this file
+  /src/              base directory for components
+  /providers/        base directory for provider templates
+  /build.properties  File containing both build properties as 
+                     configuration properties
+
+  This build script will unzip the Didactor source distribution, copy your
+  components and templates to the didactor source directory. Then the Didactor
+  build process will be initiated to create the final war file.
+-->
+<project name="Didactor custom build" basedir="." default="war">
+  <target name="init">
+    <property name="build.compiler" value="classic"/>
+    <property name="debug"          value="on"/>
+    <property name="optimize"       value="on"/>
+    <property name="deprecation"    value="off"/>
+
+    <property name="build.dir"      value="./build"/>
+    <property name="build.dest"     value="${build.dir}"/>
+    <property name="download.dir"   value="${build.dir}/download" />
+    <property name="expand.dir"     value="${build.dir}/expanded" />
+    <property name="didactor2.dir"  value="${build.dir}/didactor2" />
+  </target>
+
+  <target name="prepare" depends="init">
+    <property name="didactor2.zip.url"
+              value="file:///Users/jverelst/cvs/didactor2/build/didactor-src.zip"/>
+    <!--
+      <property name="didactor2.zip.url"
+              value="http://www.didactor.nl/download/didactor-2.0-src.zip"/>
+     -->
+    <available property="didactor2.zip.present" file="${download.dir}/didactor2.zip"/>
+  </target>
+
+  <target name="make.dirs" depends="prepare">
+    <mkdir dir="${build.dir}"/>
+    <mkdir dir="${download.dir}"/>
+    <mkdir dir="${expand.dir}"/>
+    <mkdir dir="${didactor2.dir}"/>
+  </target>
+
+  <target name="get.didactor2" depends="make.dirs" unless="didactor2.zip.present">
+    <get src="${didactor2.zip.url}" dest="${download.dir}/didactor2.zip" verbose="off"/>
+  </target>
+
+  <target name="expand.didactor2" depends="get.didactor2">
+    <mkdir dir="${expand.dir}/webapp"/>
+    <unzip src="${download.dir}/didactor2.zip" dest="${didactor2.dir}"/>
+  </target>
+
+  <target name="copycustom" depends="expand.didactor2">
+    <copy todir="${didactor2.dir}/src">
+      <fileset dir="src/" />
+    </copy>
+    <copy todir="${didactor2.dir}/providers">
+      <fileset dir="providers/" />
+    </copy>
+  </target>
+
+  <target name="war" depends="init,copycustom"> 
+    <ant antfile="build.xml" target="war" dir="${didactor2.dir}">
+      <property file="build.properties" />
+    </ant>
+  </target>
+
+  <target name="clean" depends="prepare">
+    <delete dir="${build.dir}" />
+  </target>
+</project>

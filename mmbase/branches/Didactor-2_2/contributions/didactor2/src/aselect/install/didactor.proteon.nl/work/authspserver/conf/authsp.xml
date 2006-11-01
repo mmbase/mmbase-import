@@ -1,0 +1,41 @@
+<xml>
+   <authspserver>
+      <keystore_password>jelAfeHa</keystore_password>
+      <organization_friendly_name>A-Select 1.4.2 AuthSP Server</organization_friendly_name>
+      <shared_secret>aselect_fan</shared_secret>
+      <crypto>
+      	<signature_algorithm provider="Cryptix" algorithm="SHA1withRSA"/>
+      	<providers>
+      		<provider id="Cryptix" class="cryptix.jce.provider.CryptixCrypto"/>        
+      	</providers>
+      </crypto>
+      <logging id="system" target='file'>
+      	<level>FINEST</level>
+      	<target id='file'>
+      		<max_file_size>524288</max_file_size>
+      		<nr_of_files>4</nr_of_files>
+      		<directory>/opt/tomcat/users/didactor/A-Select/1.4.2/log/authspserver/</directory>
+      	</target>
+      </logging>
+      <logging id="authentication" target="file">			
+      	<target id='file'>
+      		<max_file_size>524288</max_file_size>
+      		<nr_of_files>4</nr_of_files>				
+      		<directory>/opt/tomcat/users/didactor/A-Select/1.4.2/log/authspserver/</directory>
+      	</target>
+      </logging>
+   </authspserver>
+   <authsp id="Ldap">
+      <failure_handling>aselect</failure_handling>
+      <allowed_retries>3</allowed_retries>
+      <back-end_server realm="@edu.roczeeland.nl">
+         <url>ldap://80.127.88.230:389</url>
+         <method>simple</method>
+         <driver>com.sun.jndi.ldap.LdapCtxFactory</driver>
+         <base_dn>o=rocz</base_dn>
+         <user_dn>cn</user_dn>
+      </back-end_server>
+      <simple_protocolhandler>org.aselect.authspserver.authsp.ldap.LDAPSimpleProtocolHandler</simple_protocolhandler>
+      <ssl_protocolhandler>org.aselect.authspserver.authsp.ldap.LDAPSSLProtocolHandler</ssl_protocolhandler>
+  </authsp>
+</xml>
