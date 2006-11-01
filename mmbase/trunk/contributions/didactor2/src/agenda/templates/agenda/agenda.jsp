@@ -35,14 +35,14 @@
 <%-- Get the personal agendas --%>
 <% typeof = "1"; %>
 <mm:node number="$user">
-  <mm:relatednodes type="agendas" id="agenda">
+  <mm:relatednodes type="agendas">
    <%@include file="getselecteditems.jsp"%>
   </mm:relatednodes>
 
 <%-- Get the workgroups agendas of the user--%>
 <% typeof = "3"; %>
   <mm:relatednodes type="workgroups">
-    <mm:relatednodes type="agendas" id="agenda">
+    <mm:relatednodes type="agendas">
      <%@include file="getselecteditems.jsp"%>
     </mm:relatednodes>
   </mm:relatednodes>
@@ -50,7 +50,7 @@
 <%-- Get the classes agendas of the user--%>
 <% typeof = "2"; %>
   <mm:relatednodes type="classes">
-    <mm:relatednodes type="agendas" id="agenda">
+    <mm:relatednodes type="agendas">
      <%@include file="getselecteditems.jsp"%>
     </mm:relatednodes>
   </mm:relatednodes>
