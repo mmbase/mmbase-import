@@ -6,6 +6,7 @@
 <mm:import externid="forumid" />
 <mm:import externid="folderaction" />
 
+<mm:log>action ${action}</mm:log>
 <!-- login part -->
 <%@ include file="getposterid.jsp" %>
 <!-- end login part -->
@@ -28,10 +29,10 @@
 	<mm:booleanfunction set="mmbob" name="postReply" referids="forumid,postareaid,postthreadid,poster,subject,body">
 	</mm:booleanfunction>
 
-        <mm:list nodes="$postthreadid" path="postthreads,postings" orderby="postings.number" directions="DOWN" max="1">
-           <mm:import id="postingid"><mm:field name="postings.number"/></mm:import>
-        </mm:list>
-        <%@ include file="addfile.jsp" %>
+  <mm:list nodes="$postthreadid" path="postthreads,postings" orderby="postings.number" directions="DOWN" max="1">
+    <mm:import id="postingid"><mm:field name="postings.number"/></mm:import>
+  </mm:list>
+  <%@ include file="addfile.jsp" %>
 </mm:compare>
 
 <mm:compare value="newpost" referid="action">
@@ -110,10 +111,12 @@
 
 
 <mm:compare value="true" referid="adminmode">
+
 <mm:compare value="newpostarea" referid="action">
 	<mm:import externid="name" />
-	<mm:import externid="description" />
-	<mm:nodefunction set="mmbob" name="newPostArea" referids="forumid,name,description">
+  <mm:import externid="description" />
+	<mm:nodefunction set="mmbob" name="newPostArea" referids="forumid,name,description,posterid@activeid">
+    <mm:log><mm:field name="feedback" />. Created <mm:field name="newpostareadid" /> </mm:log>
 	</mm:nodefunction>
 </mm:compare>
 
@@ -127,9 +130,9 @@
 
 <mm:compare value="changeforum" referid="action">
 	<mm:import externid="name" />
-	<mm:import externid="language" />
+	<mm:import externid="language" reset="true" />
 	<mm:import externid="description" />
-	<mm:booleanfunction set="mmbob" name="changeForum" referids="forumid,name,language,description" >
+	<mm:booleanfunction set="mmbob" name="changeForum" referids="forumid,name,language@newlang,description,posterid@activeid" >
 	</mm:booleanfunction>
 </mm:compare>
 

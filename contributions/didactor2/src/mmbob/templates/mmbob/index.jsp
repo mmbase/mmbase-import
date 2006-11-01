@@ -28,7 +28,9 @@
 
     <%@ include file="getposterid.jsp" %>
     <mm:import id="dummy" reset="true"><mm:write referid="posterid"/></mm:import>
-    <mm:import id="posterid" reset="true"><mm:write referid="adminposter"/></mm:import>
+    <mm:present referid="adminposter">
+      <mm:import id="posterid" reset="true"><mm:write referid="adminposter"/></mm:import>
+    </mm:present>
     <mm:import id="newadministrator" reset="true"><mm:write referid="dummy"/></mm:import>
     <mm:booleanfunction set="mmbob" name="newAdministrator" referids="forumid,posterid,newadministrator"/>
     <mm:import id="posterid" reset="true"><mm:write referid="dummy"/></mm:import>
