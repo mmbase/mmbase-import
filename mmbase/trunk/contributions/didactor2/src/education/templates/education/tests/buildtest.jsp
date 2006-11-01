@@ -1,4 +1,4 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm"%>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"%>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 
 <mm:content postprocessor="reducespace" expires="0">
@@ -216,15 +216,15 @@
    }
 
 %>
-   <mm:list nodes="$learnobject" path="tests,questions,givenanswers,madetests" fields="questions.number,madetests.number" 
-          distinct="true" constraints="madetests.number = '$madetest'">
-      <mm:size>
-         <mm:compare referid2="questionamount">
-            <mm:remove referid="testdone"/>
-            <mm:import id="testdone">true</mm:import>
-         </mm:compare>
-     </mm:size>
-  </mm:list>
+  <mm:listcontainer nodes="$learnobject" path="tests,questions,givenanswers,madetests" >
+    <mm:constraint field="madetests.number" value="${madetest}" />
+    <mm:size>
+      <mm:compare referid2="questionamount">
+        <mm:remove referid="testdone"/>
+        <mm:import id="testdone">true</mm:import>
+      </mm:compare>
+    </mm:size>
+  </mm:listcontainer>
    <br/>
    <br/>
 

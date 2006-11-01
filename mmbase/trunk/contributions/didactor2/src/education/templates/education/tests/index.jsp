@@ -1,4 +1,4 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm"%>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"%>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@ page import="java.text.*,java.util.*" %>
 
@@ -183,7 +183,8 @@
   </mm:present>
 </mm:notpresent>
 
-<mm:node number="$learnobject" jspvar="nodeLearnObject">
+
+<mm:node number="$testNo">
    <%@include file="../includes/component_link.jsp"%>
 </mm:node>
 
