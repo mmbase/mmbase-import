@@ -1,10 +1,10 @@
 /*
 
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
+  This software is OSI Certified Open Source Software.
+  OSI Certified is a certification mark of the Open Source Initiative.
 
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
+  The license (Mozilla version 1.0) can be read at the MMBase site.
+  See http://www.MMBase.org/license
 
 */
 
@@ -66,26 +66,26 @@ public class Posting {
         if (prefixwanted) prefix = "postings.";
 
         id = node.getIntValue(prefix+"number");
-	c_body = node.getStringValue(prefix+"c_body");
-	if (c_body.equals("")) {
-		body = node.getStringValue(prefix+"body");
-	} else {
-		body = "";
-	}
-	c_poster = node.getStringValue(prefix+"c_poster");
-	subject = node.getStringValue(prefix+"subject");
-	createtime = node.getIntValue(prefix+"createtime");
-	edittime = node.getIntValue(prefix+"edittime");
+        c_body = node.getStringValue(prefix+"c_body");
+        if (c_body.equals("")) {
+            body = node.getStringValue(prefix+"body");
+        } else {
+            body = "";
+        }
+        c_poster = node.getStringValue(prefix+"c_poster");
+        subject = node.getStringValue(prefix+"subject");
+        createtime = node.getIntValue(prefix+"createtime");
+        edittime = node.getIntValue(prefix+"edittime");
         this.parent = parent;
     }
 
     public int getMemorySize() {
-	int size = c_body.length();
-	size +=body.length();
-	size +=c_poster.length();
-	size +=subject.length();
-	size += 16; // int values
-	return size;
+        int size = c_body.length();
+        size +=body.length();
+        size +=c_poster.length();
+        size +=subject.length();
+        size += 16; // int values
+        return size;
     }
 
     /**
@@ -107,7 +107,7 @@ public class Posting {
      * @param subject
      */
     public void setSubject(String subject) {
-	this.subject = subject;
+        this.subject = subject;
     }
 
     /**
@@ -117,16 +117,16 @@ public class Posting {
      * @param imagecontext The context where to find the images (eg smilies)
      */
     public void setBody(String body,String imagecontext,boolean parsed) {
-	Node node = ForumManager.getCloud().getNode(id);
-	if (parsed) {
-        	node.setStringValue("body", body);
-	} else {
-        	node.setStringValue("body", "<posting>" + postingBody.transform(body) + "</posting>");
-	}
+        Node node = ForumManager.getCloud().getNode(id);
+        if (parsed) {
+            node.setStringValue("body", body);
+        } else {
+            node.setStringValue("body", "<posting>" + postingBody.transform(body) + "</posting>");
+        }
         c_body = translateBody(node.getStringValue("body"),imagecontext);
-	body="";
-	node.setValue("c_body",c_body);
-	node.commit();
+        body="";
+        node.setValue("c_body",c_body);
+        node.commit();
     }
 
     /**
@@ -135,7 +135,7 @@ public class Posting {
      * @param time Date/time (Epoch)
      */
     public void setEditTime(int time) {
-	edittime =  time;
+        edittime =  time;
     }
 
 
@@ -145,7 +145,7 @@ public class Posting {
      * @param time Date/time (Epoch)
      */
     public void setPostTime(int time) {
-	createtime =  time;
+        createtime =  time;
     }
 
     /**
@@ -154,7 +154,7 @@ public class Posting {
      * @return Date/time (Epoch)
      */
     public int getEditTime() {
-	return edittime;
+        return edittime;
     }
 
     /**
@@ -184,13 +184,13 @@ public class Posting {
      * @return subject of this posting
      */
     public String getSubject() {
-	return subject;
+        return subject;
     }
 
     public String getDirectBody() {
         // do i really need to get the body again ?
-	Node node = ForumManager.getCloud().getNode(id);
-	return node.getStringValue("body");
+        Node node = ForumManager.getCloud().getNode(id);
+        return node.getStringValue("body");
     }
 
     /**
@@ -200,17 +200,17 @@ public class Posting {
      * @return body of this posting
      */
     public String getBody(String imagecontext) {
-	if (c_body.equals("")) {
-	        long start = System.currentTimeMillis();
-        	Node node = ForumManager.getCloud().getNode(id);
-		c_body = translateBody(body,imagecontext);
-		body="";
-		node.setValue("c_body",c_body);
-		node.commit();
-	        long end = System.currentTimeMillis();
-		return c_body;
-	}
-	return c_body;
+        if (c_body.equals("")) {
+            long start = System.currentTimeMillis();
+            Node node = ForumManager.getCloud().getNode(id);
+            c_body = translateBody(body,imagecontext);
+            body="";
+            node.setValue("c_body",c_body);
+            node.commit();
+            long end = System.currentTimeMillis();
+            return c_body;
+        }
+        return c_body;
     }
 
     /**
@@ -225,24 +225,24 @@ public class Posting {
      * @return body of this posting
      */
     public String getBodyHtml(String imagecontext) {
-	String body = getBody(imagecontext);
-	body = BBCode.decode(body);
-	return body;
+        String body = getBody(imagecontext);
+        body = BBCode.decode(body);
+        return body;
     }
 
     public boolean inBody(String searchkey) {
-	if (c_body.equals("")) {
-		if (body.toLowerCase().indexOf(searchkey)!=-1) return true;
-	} else {
-		if (c_body.toLowerCase().indexOf(searchkey)!=-1) return true;
-	}
-	return false;
+        if (c_body.equals("")) {
+            if (body.toLowerCase().indexOf(searchkey)!=-1) return true;
+        } else {
+            if (c_body.toLowerCase().indexOf(searchkey)!=-1) return true;
+        }
+        return false;
     }
 
 
     public boolean inSubject(String searchkey) {
-	if (subject.toLowerCase().indexOf(searchkey)!=-1) return true;
-	return false;
+        if (subject.toLowerCase().indexOf(searchkey)!=-1) return true;
+        return false;
     }
 
     /**
@@ -251,7 +251,7 @@ public class Posting {
      * @return accountname/nick of the poster
      */
     public String getPoster() {
-	return c_poster;
+        return c_poster;
     }
 
     /**
@@ -260,7 +260,7 @@ public class Posting {
      * @return date/time (epoch)
      */
     public int getPostTime() {
-	return createtime;
+        return createtime;
     }
 
     /**
@@ -301,33 +301,33 @@ public class Posting {
      */
     public boolean save() {
         Node node = ForumManager.getCloud().getNode(id);
-	node.setStringValue("c_body",c_body);
-	node.setStringValue("c_poster",c_poster);
-	node.setStringValue("subject",subject);
-	node.setIntValue("createtime",createtime);
-	node.setIntValue("edittime",edittime);
+        node.setStringValue("c_body",c_body);
+        node.setStringValue("c_poster",c_poster);
+        node.setStringValue("subject",subject);
+        node.setIntValue("createtime",createtime);
+        node.setIntValue("edittime",edittime);
         node.commit();
         return true;
     }
 
     private String translateBody(String body, String imagecontext) {
         log.debug("going to translate the BODY");
-	String xsl = "mmbob/";
-	if (threadpos%2 == 0) {
-		xsl += parent.getParent().getParent().getXSLTPostingsEven();
-	} else {
-		xsl += parent.getParent().getParent().getXSLTPostingsOdd();
-	}
- 	try {
-		Reader rd = ResourceLoader.getConfigurationRoot().getReader(xsl);
-    		TransformerFactory tFactory = TransformerFactory.newInstance();
-    		Transformer transformer = tFactory.newTransformer(new javax.xml.transform.stream.StreamSource(rd));
-		StringWriter result = new StringWriter();
-    		transformer.transform(new javax.xml.transform.stream.StreamSource(new StringReader(body)),new javax.xml.transform.stream.StreamResult(result));
-		body = result.toString();
-    	} catch (Exception e) { 
-		e.printStackTrace( );
-    	}
+        String xsl = "mmbob/";
+        if (threadpos%2 == 0) {
+            xsl += parent.getParent().getParent().getXSLTPostingsEven();
+        } else {
+            xsl += parent.getParent().getParent().getXSLTPostingsOdd();
+        }
+        try {
+            Reader rd = ResourceLoader.getConfigurationRoot().getReader(xsl);
+            TransformerFactory tFactory = TransformerFactory.newInstance();
+            Transformer transformer = tFactory.newTransformer(new javax.xml.transform.stream.StreamSource(rd));
+            StringWriter result = new StringWriter();
+            transformer.transform(new javax.xml.transform.stream.StreamSource(new StringReader(body)),new javax.xml.transform.stream.StreamResult(result));
+            body = result.toString();
+        } catch (Exception e) { 
+            e.printStackTrace( );
+        }
 
         int forumid = parent.getParent().getParent().getId();
         String themeid = ThemeManager.getAssign("MMBob."+forumid);
@@ -336,14 +336,14 @@ public class Posting {
             themeid = ThemeManager.getAssign("MMBob");
         } 
 
-	//String imagecontext = "/mmbase/thememanager/images";
-	if (parent.getParent().getParent().getSmileysEnabled().equals("true")) {
-        	body = smilies.transform(body, themeid, imagecontext);
-	}
-	return body;
+        //String imagecontext = "/mmbase/thememanager/images";
+        if (parent.getParent().getParent().getSmileysEnabled().equals("true")) {
+            body = smilies.transform(body, themeid, imagecontext);
+        }
+        return body;
     }
 
     public PostThread getParent() {
-	return parent;
+        return parent;
     }
 }
