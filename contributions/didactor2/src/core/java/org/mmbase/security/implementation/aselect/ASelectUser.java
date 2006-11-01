@@ -22,8 +22,10 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Arnout Hannink     (Alfa & Ariss) 
  * @author Michiel Meeuwissen (Publieke Omroep)
+
+ * @TODO  What is different with the version in mmbase-aselect.jar?
  *
- * @version $Id: ASelectUser.java,v 1.2 2006-11-01 10:03:45 mmeeuwissen Exp $
+ * @version $Id: ASelectUser.java,v 1.3 2006-11-01 13:01:08 mmeeuwissen Exp $
  * @since  MMBase-1.7
  * @see ASelectAuthentication
  */
@@ -39,7 +41,7 @@ public class ASelectUser extends BasicUser {
 
 
     // constructor, perhaps needs more argumetns
-    protected ASelectUser(String name, Rank r, long uniqueNumber, String app) {
+    public ASelectUser(String name, Rank r, long uniqueNumber, String app) {
         super(app);
         if (log.isDebugEnabled()) {
             log.debug("Instantiating " + name);
@@ -48,6 +50,8 @@ public class ASelectUser extends BasicUser {
         rank       = r;
         key = uniqueNumber;
     }
+
+    
 
 
     // javadoc inherited
