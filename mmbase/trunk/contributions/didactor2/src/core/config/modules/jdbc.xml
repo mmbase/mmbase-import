@@ -1,23 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE module PUBLIC "-//MMBase/ DTD module config 1.0//EN" "http://www.mmbase.org/dtd/module_1_0.dtd">
+<!DOCTYPE module PUBLIC "-//MMBase//DTD module config 1.0//EN" "http://www.mmbase.org/dtd/module_1_0.dtd">
 <module maintainer="mmbase.org" version="0">
-	<status>active</status>
-	<class>org.mmbase.module.database.JDBC</class>
-
-	<!-- <properties>
-	Be sure to fill in the right password for your database!
-	-->
-	<properties>
-		<property name="password">${jdbc.password}</property>
-		<property name="port">${jdbc.port}</property>
-		<property name="supportclass">${jdbc.supportclass}</property>
-		<property name="database">${jdbc.database}</property>
-		<property name="user">${jdbc.user}</property>
-		<property name="connections">${jdbc.connections}</property>
-		<property name="driver">${jdbc.driver}</property>
-		<property name="host">${jdbc.host}</property>
-		<property name="url">${jdbc.url}</property>
-		<property name="queries">${jdbc.querys}</property>
+  <class>org.mmbase.module.database.JDBC</class>
+  <properties>
+    <property name="password">${jdbc.password}</property>
+    <property name="port">${jdbc.port}</property>
+    <property name="supportclass">${jdbc.supportclass}</property>
+    <property name="database">${jdbc.database}</property>
+    <property name="user">${jdbc.user}</property>
+    <property name="connections">${jdbc.connections}</property>
+    <property name="driver">${jdbc.driver}</property>
+    <property name="host">${jdbc.host}</property>
+    <property name="url">${jdbc.url}</property>
+    <property name="queries">${jdbc.querys}</property>
     <property name="probetime">${jdbc.probetime}</property>
-	</properties>
+  </properties>
 </module>
