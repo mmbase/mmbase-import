@@ -1,4 +1,4 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm"%>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"%>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 
 <%@ page import = "java.io.*" %>
@@ -47,6 +47,7 @@
    <%//checking the type of the learnblock %>
    <%//Does it belong to Scorm package%>
 
+   <mm:log>UU ${learnobject}</mm:log>
    <mm:remove referid="it_is_a_package"/>
    <%
       ArrayList arliPath = new ArrayList();
@@ -84,7 +85,7 @@
    %>
 
    <mm:import id="path" reset="true"><mm:field name="path"/></mm:import>
-   <mm:compare referid="path" value="" inverse="true">
+   <mm:compare referid="path" regexp="|-1" inverse="true">
       <mm:import id="it_is_a_package" reset="true">true</mm:import>
    </mm:compare>
 
@@ -158,15 +159,18 @@
                   Class classMenuCreater = null;
                   nl.didactor.component.scorm.player.InterfaceMenuCreator menuCreator = null;
 
+                  File file = new File(sScormDir + File.separator + sPackageNode + "_" + File.separator + "imsmanifest.xml");
+                  String protocol = "http://";
+                  String url =       sUserSettings_BaseURL + "/scorm/" + sPackageNode + "_" + "/";
                   try
                   {
                      classMenuCreater = Class.forName("nl.didactor.component.scorm.player.MenuCreator");
-                     menuCreator = (nl.didactor.component.scorm.player.InterfaceMenuCreator) classMenuCreater.getConstructors()[0].newInstance(new Object[]{new File(sScormDir + File.separator + sPackageNode + "_" + File.separator + "imsmanifest.xml"), "http://", sUserSettings_BaseURL + "/scorm/" + sPackageNode + "_" + "/"});
+                     menuCreator = (nl.didactor.component.scorm.player.InterfaceMenuCreator) classMenuCreater.getConstructors()[0].newInstance(new Object[]{file, protocol, url});
 
                   }
                   catch (Exception e)
                   {
-                     throw new ServletException ("Can't load SCORM player class! Nested exception is:" + e.toString());
+                     throw new ServletException ("Can't load SCORM player class! For " + file + " " + url + ". Nested exception is:" + e.toString(), e);
                   }
 
                   String[] arrstrJSMenu = menuCreator.parse(true, "" + sPackageNode, sPath);
@@ -220,7 +224,7 @@
 
 </div>
 
-
+<mm:log>a</mm:log>
 <mm:node number="$learnobject" jspvar="nodeLearnObject">
    <%@include file="../includes/component_link.jsp"%>
 </mm:node>
