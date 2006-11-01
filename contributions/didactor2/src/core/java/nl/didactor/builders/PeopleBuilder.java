@@ -68,7 +68,7 @@ public class PeopleBuilder extends DidactorBuilder {
         }
     }
  
-    public MMObjectNode getUser(String username) {
+    public MMObjectNode getUser(final String username) {
         try {
             NodeSearchQuery query = new NodeSearchQuery(this);
             StepField usernameField = query.getField(getField("username"));
@@ -88,7 +88,7 @@ public class PeopleBuilder extends DidactorBuilder {
                log.error("Too many users with username '" + username + "': " + nodelist.size());
                return null;
             } else {
-                log.service("1 user found with username '" + username + "'");
+                log.debug("1 user found with username '" + username + "'");
                 MMObjectNode node = (MMObjectNode)nodelist.get(0);
                 return node;
             }
@@ -117,11 +117,11 @@ public class PeopleBuilder extends DidactorBuilder {
      */
     public boolean setValue(MMObjectNode node, String fieldname, Object originalValue) {
         if (fieldname.equals("username")) {
-            Object newValue = node.values.get(fieldname);
+            Object newValue = node.getValues().get(fieldname);
 
             /* forbid changing a username after it's been set
             if (originalValue != null && ! originalValue.equals("") && !originalValue.equals(newValue)) {
-                node.values.put(fieldname, originalValue);
+                node.storeValue(fieldname, originalValue);
                 return false;
             }*/
 
@@ -129,17 +129,17 @@ public class PeopleBuilder extends DidactorBuilder {
             if (originalValue != null && originalValue.equals("") && !newValue.equals("")) {
                 if (countUsernamesInCloud((String) newValue) != 0) {
                     log.warn("setValues() cleared username "+((String) newValue)+" because it already exists");
-                    node.values.put("username", "");
+                    node.storeValue("username", "");
                     return false;
                 }
             }
         }
         if (fieldname.equals("password")) {
-            Object newValue = node.values.get(fieldname);
+            Object newValue = node.getValues().get(fieldname);
             if (((String)newValue).startsWith("{md5}")) {
-                node.values.put(fieldname, (String)newValue);
+                node.storeValue(fieldname, (String)newValue);
             } else if (originalValue != null && !originalValue.equals(newValue)) {
-                node.values.put(fieldname, "{md5}" + encoder.encode((String)newValue));
+                node.storeValue(fieldname, "{md5}" + encoder.encode((String)newValue));
             }
         }
         
@@ -201,16 +201,16 @@ public class PeopleBuilder extends DidactorBuilder {
     public int insert(String owner, MMObjectNode node) {
         // forbid setting a username to an existing one
 
-        String newValue = (String) node.values.get("username");
+        String newValue = (String) node.getValues().get("username");
         if (newValue != null && !newValue.equals("")) {
             if (countUsernamesInCloud(newValue) != 0) {
                 log.info("insert() cleared username "+newValue+" because it already exists");
-                node.values.put("username", "");
-                node.values.put("password","");
+                node.storeValue("username", "");
+                node.storeValue("password","");
             }
         }
         int number = super.insert(owner, node);
-        Event event = new Event((String) node.values.get("username"), null, null, null, null, 
+        Event event = new Event((String) node.getValues().get("username"), null, null, null, null, 
                 "peopleaccountcreated", (new Integer(number)).toString(), "accountcreated");
         EventDispatcher.report(event, null, null);
         log.info("insert people node");
