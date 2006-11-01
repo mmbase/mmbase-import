@@ -3,7 +3,7 @@
 This page allows a teacher or administrator to create a new thread.
 Calls itself to create the forum and foward to the forum in which the new thread has been created.
 --%>
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
 <%@taglib uri="oscache" prefix="os" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <mm:cloud jspvar="cloud" name="mmbase" loginpage="/login.jsp">

@@ -1,4 +1,4 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
 <%@page import="nl.didactor.tree.*,nl.didactor.metadata.tree.*" %>
 <mm:cloud method="delegate" jspvar="cloud">
    <%@include file="/shared/setImports.jsp"%>

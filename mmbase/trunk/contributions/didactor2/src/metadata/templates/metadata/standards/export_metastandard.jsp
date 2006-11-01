@@ -1,11 +1,11 @@
 <!-- this piece of code exports the metastandards which are present in the cloud to an executable piece of jsp -->
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud method="delegate" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
 
-&lt;%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %&gt;<br/>
+&lt;%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %&gt;<br/>
 &lt;%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %&gt;<br/>
 &lt;mm:content postprocessor="reducespace" expires="0"&gt;<br/>
 &lt;mm:cloud method="delegate" jspvar="cloud"&gt;<br/>
