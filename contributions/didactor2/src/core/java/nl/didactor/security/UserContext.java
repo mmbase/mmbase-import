@@ -18,27 +18,46 @@ import java.util.HashSet;
  * the roles based on a given context.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  */
-public class UserContext extends org.mmbase.security.UserContext {
-    private static Logger log = Logging.getLoggerInstance(UserContext.class.getName());
-    private MMObjectNode wrappedNode;
-    private String identifier = "";
-    private String owner = "";
-    private Rank rank;
+public class UserContext extends org.mmbase.security.BasicUser {
+    private static final Logger log = Logging.getLoggerInstance(UserContext.class);
+
+    private final MMObjectNode wrappedNode;
+    private final String identifier ;
+    private final String owner;
+    private final Rank rank;
+
+    /**
+     * Copy constructor which only resets the application. This is needed because 'asis' is
+     * considered an application here.
+     */
+    public UserContext(UserContext uc, String application) {
+        super(application);
+        wrappedNode = uc.wrappedNode;
+        identifier = uc.identifier;
+        owner = uc.owner;
+        rank = uc.rank;
+    }
 
     /**
      * From the org.mmbase.security.UserContext interface
      */
     public UserContext() {
-        super();
+        super("name/password");
+        identifier = "";
+        owner = "";
+        rank = null;
+        wrappedNode = null;
     }
 
     /**
      * From the org.mmbase.security.UserContext interface
      */
     public UserContext(String identifier, String owner, Rank rank) {
+        super("name/password");
         this.identifier = identifier;
         this.owner = owner;
         this.rank = rank;
+        wrappedNode = null;
     }
 
     /**
@@ -46,6 +65,7 @@ public class UserContext extends org.mmbase.security.UserContext {
      * the rank of the user by looking at the node type
      */
     public UserContext(MMObjectNode node) {
+        super("name/password");
         //wrappedNode = node.getCloud().getNode(node.getNumber());
         owner = node.getStringValue("username");
         identifier = owner;
