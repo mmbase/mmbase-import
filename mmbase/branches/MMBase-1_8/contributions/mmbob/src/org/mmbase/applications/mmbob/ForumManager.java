@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
  */
 
 package org.mmbase.applications.mmbob;
@@ -36,9 +36,9 @@ import org.mmbase.util.FileWatcher;
  */
 public class ForumManager {
     private static Logger log = Logging.getLoggerInstance(ForumManager.class);
-  
-    private static Hashtable forums=new Hashtable();
-    private static Hashtable forumnamecache=new Hashtable();
+
+    private static Hashtable forums = new Hashtable(); // ConcurrentHashMap?
+    private static Hashtable forumnamecache = new Hashtable(); // ConcurrentHashMap
     private static ForumMMBaseSyncer syncfast,syncslow;
     private static ForumSwapManager swapmanager;
     private static ExternalProfilesManager externalprofilesmanager;
@@ -76,25 +76,25 @@ public class ForumManager {
      */
     public static synchronized void init() {
 	if (!running) {
-        readConfig();
-        cloud = getCloud();
-        if (!running) {
-            forumnodemanager = cloud.getNodeManager("forums");
-            if (forumnodemanager == null) {
-                log.error("Can't load forums nodemanager from mmbase");
-            }
+            readConfig();
+            cloud = getCloud();
+            if (!running) {
+                forumnodemanager = cloud.getNodeManager("forums");
+                if (forumnodemanager == null) {
+                    log.error("Can't load forums nodemanager from mmbase");
+                }
 
-	    externalprofilesmanager =  new ExternalProfilesManager(1 * 60 * 1000);
+                externalprofilesmanager =  new ExternalProfilesManager(1 * 60 * 1000);
 
-            readForums();
+                readForums();
 
-            // start the mmbase syncer
-            //was 10 * 1000
-            syncfast = new ForumMMBaseSyncer(10 * 1000, 50, 500);
-            syncslow = new ForumMMBaseSyncer(5 * 60 * 1000, 50, 2000);
-            swapmanager = new ForumSwapManager(1 * 60 * 1000);
-            ForumEmailSender emailsender = new ForumEmailSender();
-            running = true;
+                // start the mmbase syncer
+                //was 10 * 1000
+                syncfast = new ForumMMBaseSyncer(10 * 1000, 50, 500);
+                syncslow = new ForumMMBaseSyncer(5 * 60 * 1000, 50, 2000);
+                swapmanager = new ForumSwapManager(1 * 60 * 1000);
+                ForumEmailSender emailsender = new ForumEmailSender();
+                running = true;
         }
 	}
     }
@@ -250,12 +250,12 @@ public class ForumManager {
         forums.put(new Integer(f.getId()), f);
 
         Poster p = f.createPoster(account, password);
-	
+
 	p.setEmail(email);
 	p.savePoster();
 
 
-	
+
 	// check if we have a clone master
 	Forum cf = getForumCloneMaster();
 	if (cf!=null) {
@@ -279,7 +279,7 @@ public class ForumManager {
                 if (i!=null) {
                 	while (i.hasNext()) {
                            ProfileEntryDef pd = (ProfileEntryDef) i.next();
-			   f.addProfileDef(pd); 
+			   f.addProfileDef(pd);
 			   if (pd.getName().equals("nick")) {
 				// kinda trick, we need a way to make forums.jsp optional for this *sigh*
         			if (nick!=null && !nick.equals("")) p.setProfileValue("nick",nick);
@@ -287,7 +287,7 @@ public class ForumManager {
 			}
 		}
 		f.saveConfig();
-	}	
+	}
         f.addAdministrator(p);
         return node.getNumber();
     }
@@ -355,30 +355,32 @@ public class ForumManager {
      */
     public static void readConfig() {
 	try {
-		InputSource is = ResourceLoader.getConfigurationRoot().getInputSource("mmbob/mmbob.xml");
-            	DocumentReader reader = new DocumentReader(is, ForumManager.class);
-            	if (reader != null) {
-// decode forums
-                for (Iterator ns = reader.getChildElements("mmbobconfig", "forums"); ns.hasNext();) {
-                    Element n = (Element) ns.next();
-		    if (n != null) {
-			config =  new ForumsConfig(reader,n);
-		    }
+            InputSource is = ResourceLoader.getConfigurationRoot().getInputSource("mmbob/mmbob.xml");
+            DocumentReader reader = new DocumentReader(is, ForumManager.class);
+            // decode forums
+            for (Iterator ns = reader.getChildElements("mmbobconfig", "forums"); ns.hasNext();) {
+                Element n = (Element) ns.next();
+                if (n != null) {
+                    config =  new ForumsConfig(reader,n);
                 }
             }
 	} catch (Exception e) {
-		e.printStackTrace();
+            log.error(e.getMessage(), e);
 	}
+        if (config == null) {
+            log.error("No correct mmbob.xml configuration found");
+            config = new ForumsConfig();
+        }
     }
 
 
     public static void saveConfig() {
 	log.info("SAVE CONFIG !");
  	if (config != null) {
-		config.save();
+            config.save();
 	} else {
-		log.info("missing config file, can't save");
-	}	 
+            log.info("missing config file, can't save");
+	}
     }
 
     /**
@@ -603,7 +605,7 @@ public class ForumManager {
 
 
    public static String longWordWrap(String body) {
-	StringTokenizer tok = new StringTokenizer(body," \n\r\t",true);	
+	StringTokenizer tok = new StringTokenizer(body," \n\r\t",true);
 	String newbody = "";
 	while (tok.hasMoreTokens()) {
 		String tmp = tok.nextToken();
@@ -621,7 +623,7 @@ public class ForumManager {
 				tmp = tmp.substring(45);
 				log.info("tmp="+tmp);
 				len=tmp.length();
-			}	
+			}
 			newbody = newbody + "- "+tmp;
 		} else {
 			newbody = newbody+tmp;

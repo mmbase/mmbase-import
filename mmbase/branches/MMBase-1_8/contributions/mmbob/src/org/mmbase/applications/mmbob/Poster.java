@@ -314,7 +314,7 @@ public class Poster {
     }
 
     public String getLevelGui() {
- 	String result=MultiLanguageGui.getConversion("mmbob."+getLevel(),parent.getLanguage());
+ 	String result = MultiLanguageGui.getConversion("mmbob." + getLevel(), parent.getLanguage());
 	return result;
     }
 
