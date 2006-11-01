@@ -1,7 +1,7 @@
 <%--
   This template shows the personal workspace (in dutch: persoonlijke werkruimte).
 --%>
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%-- expires is set so renaming a folder does not show the old name --%>
 <mm:content postprocessor="reducespace" expires="0">
@@ -23,7 +23,7 @@
 <mm:compare referid="typeof" value="-1" inverse="true">
   <mm:compare referid="currentfolder" value="-1">
     <mm:node referid="myuser" >
-      <mm:relatednodes type="portfolios" constraints="m_type=${typeof}">
+      <mm:relatednodes type="portfolios" constraints="[type]=${typeof}">
         <mm:relatednodes type="folders" role="posrel" orderby="posrel.pos">
           <mm:first>
             <mm:remove referid="currentfolder"/>
