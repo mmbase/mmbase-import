@@ -1,13 +1,14 @@
+<%@ page import = "nl.didactor.component.education.utils.EducationPeopleConnector,java.util.*" %>
       <mm:import id="tmpreferids" reset="true">provider?</mm:import>
       <%
          SortedMap sortmapEducations = new TreeMap();
          ArrayList arliEducations = new ArrayList();
          String sUserID = null;
       %>
-      <mm:node number="$user" jspvar="nodeUser">
+      <mm:node number="$user" jspvar="nodeUser" notfound="skip">
          <%
             sUserID = "" + nodeUser.getNumber();
-
+            EducationPeopleConnector educationPeopleConnector = new EducationPeopleConnector(nodeUser.getCloud());
             for(Iterator it = educationPeopleConnector.relatedEducations("" + nodeUser.getNumber()).iterator(); it.hasNext(); )
             {
                String sEducationID = (String) it.next();
