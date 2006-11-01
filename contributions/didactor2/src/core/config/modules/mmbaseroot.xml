@@ -1,36 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE module PUBLIC "-//MMBase/ DTD module config 1.0//EN" "http://www.mmbase.org/dtd/module_1_0.dtd">
-<!--
-    The MMBaseRoot module is used to configure the basic properties of mmbase.
--->
 <module maintainer="mmbase.org" version="0">
-
-  <!-- <status>
-  What is the status of this module options : active or inactive
-
-  This module is always active.
-  MMBase will not run without it.
-  -->
-  <status>active</status>
-
-  <!-- <classfile>
-  Classfile used for initalization of this module
-  -->
-  <classfile>org.mmbase.module.core.MMBase</classfile>
-
-  <!-- <properties>
-  You can define properties to be used by the classfile.
-  The properties described here are mandatory.
-  -->
+  <class>org.mmbase.module.core.MMBase</class>
   <properties>
-
     <!--
     name="machinename" defines the name that is used in the mmbase cluster,
     it is used for the mmservers objects. Make sure that this is different
     for each node in your cluster. This is not the machines dns name
     (as defined by host as name or ip number).
     -->
+    <!-- autodetermining works well
     <property name="machinename">${mmbaseroot.machinename}</property>
+    -->
+
+    <!--
+        name="host" the host or ip number of the machine this mmbase node is
+        running on. Its important that this name is set correctly because its
+        used for communication between mmbase nodes and external devices
+        (xml or jini based).
+
+        Default it is : java.net.InetAddress.getLocalHost().getHostName(), which may very well be correct.
+    -->
+    <!--
+        <property name="host">${mmbaseroot.host}</property>
+    -->
+
 
     <!--
     name="database" defines which database we are using as defined in your config
@@ -40,14 +34,13 @@
     server and how to connect to it.
 
     sql92 for default SQL92 database (normally not used)
-    mysql for MySQL (www.mysql.com) 
+    mysql for MySQL (www.mysql.com)
     informix for Informix Universal Server (www.informix.com)
 
             MySQL:          mysql
             PostgreSQL:     postgresql71
             HyperSonic:     hypersonic
             HsqlDB:         hsqldb
-          
 
     This property can also be omitted all together. Then the
     'lookup.xml' in config/databases will be used to determin the
@@ -57,65 +50,9 @@
     <!--
     <property name="database">${mmbaseroot.database}</property>
     -->
+
     <property name="storagemanagerfactory">org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory</property>
     <!-- leave to lookup.xml on default -->
-
-    <!--
-    name="multicasthost" mmbase nodes in a cluster use multicast to talk to
-    eachother this defines what 'channel' we are talking to its now set
-    to the default local network so unless you know what you are doing
-    leave it to ALL-SYSTEMS.MCAST.NET.
-
-        When you want to disable the communication between different MMBase-instances,
-        (log message builder xxx not found, can be annoying), leave the value empty:
-    else use a multicat IP address like this
-    <property name="multicasthost">224.0.0.1</property>
-    -->
-    <property name="multicasthost">${mmbaseroot.multicasthost}</property><!-- ALL-SYSTEMS.MCAST.NET -->
-
-    <!--
-    name="multicastport" on what port does this multicast talking between nodes
-    take place, This can be set to any port but check if something else on
-    your network is allready using multicast when you have problems.
-    -->
-    <property name="multicastport">${mmbaseroot.multicastport}</property>
-
-    <!--
-    name="host" the host or ip number of the machine this mmbase node is
-    running on. Its important that this name is set correctly because its
-    used for communication between mmbase nodes and external devices
-    (xml or jini based).
-    -->
-    <property name="host">${mmbaseroot.host}</property>
-
-    <!--
-    name="authtype" defines what authorisation type is used, This is a plugin
-    system at the moment we only support 2 types :
-
-    none (only perform name/password checks based on accounts.properties)
-
-    basic (use the default authorisation system, based on groups and
-    relations see the install/example docs how to enable this DON'T
-    set it before creating the needed tables/objects as defined in
-    these docs).
-
-    This property is deprecated and only used for SCAN. For jsp/bridge
-    use config/security/security.xml.
-    -->
-    <property name="authtype">basic</property>
-
-    <!--
-    name="dtdbase" defines the homebase for the DTD's used by the objects
-    (urls, cdtracks, images etc etc). Normally this is set to
-    www.mmbase.org but you can aim it to your own system if you defined
-    extra objects yourself. Its not used at the moment for anything
-    vital.
-
-    It is best to leave this unchanged.
-
-    Only used for exports (in toXML of MMObjectBuilder)
-    -->
-    <property name="dtdbase">http://www.mmbase.org/dtd/</property>
 
     <!--
     name="basename" You can have multiple mmbase systems inside your database
@@ -147,6 +84,35 @@
     -->
     <!-- since, when not mentioned it will be ISO-8859-1, all new systems will get utf-8 -->
     <property name="encoding">UTF-8</property>
+
+
+    <!--
+        name="timezone"
+
+        The TimeZone in which this MMBase works. This has influence on what front end users see as the
+        'current time'. It is also the working time zone for many other mmbase code. For example also date
+        parsing is done relative to this time zone (so 'noon' is 12:00h for this time zone).
+
+        This serves as a default timezone if one needs to override the one from the JVM.  Defaults (if
+        empty) to the default JVM's time zone (which is default the Server's time zone).
+
+        E.g.: Europe/Amsterdam, America/New_York, Asia/Chongqing.
+        See: http://java.sun.com/j2se/1.4.2/docs/api/java/util/TimeZone.html#getAvailableIDs()
+
+        Will fall back to GMT if not understood (will _not_ fall back to server default)
+    -->
+    <property name="timezone"></property>
+
+
+    <!--
+        MMBase in 'development mode' is more strict. Most noticably this has an influence on
+        whether you can request the value of non-existing fields without an exception.
+
+        Will fall back to 'false' if the property is missing altogether. The behaviour is more like
+        in MMBase < 1.8 then.
+    -->
+    <property name="development">true</property>
+
 
   </properties>
 </module>
