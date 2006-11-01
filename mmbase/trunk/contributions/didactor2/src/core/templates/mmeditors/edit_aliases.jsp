@@ -1,6 +1,6 @@
-<%@ include file="page_base.jsp" %>
-<mm:content type="text/html" language="$config.lang" expires="0">
-<mm:cloud method="delegate" jspvar="cloud" rank="administrator">
+<%@ include file="page_base.jsp"
+%><mm:content type="text/html" language="$config.lang" country="$config.country" expires="0">
+<mm:cloud loginpage="login.jsp" sessionname="$config.session" rank="$rank">
 <mm:write referid="style" escape="none" />
 <title>Edit aliases</title>
 </head>
@@ -22,14 +22,14 @@
 
 <form name="add_alias" enctype="multipart/form-data" method="post" action='<mm:url referids="node_number" />'>
 <table class="edit" summary="alias editor" width="93%"  cellspacing="1" cellpadding="3" border="0">
-<tr><th>Aliases of node <mm:field name="gui()" /></th></tr>
+<tr><th>Aliases of node <mm:nodeinfo type="gui" /></th></tr>
 <tr><td>
 <table width="100%">
 <mm:aliaslist id="alias"> 
     <tr><td><mm:write /></td><td><a href="<mm:url referids="node_number">
          <mm:param name="delete_alias"><mm:write referid="alias" /></mm:param>
 	 </mm:url>">
- <span class="delete"></span><span class="alt">[delete]</span></a>
+ <span class="delete"><!-- needed for IE --></span><span class="alt">[delete]</span></a>
 </mm:aliaslist>
 </table>
 </td></tr>

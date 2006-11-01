@@ -1,8 +1,8 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.1"  prefix="mm" %>
-<%@ include file="page_base_functionality.jsp" %>
-<mm:import externid="userlogon" from="parameters" />
-<mm:content language="$config.lang" type="text/html" expires="0">
-<mm:cloud method="delegate" jspvar="cloud" rank="administrator">
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
+%><%@ include file="page_base_functionality.jsp"
+%><mm:import externid="userlogon" from="parameters" />
+<mm:content language="$config.lang" country="$config.country" type="text/html" expires="0">
+<mm:cloud  loginpage="login.jsp" logon="$userlogon" sessionname="$config.session" rank="$rank">
 <mm:context id="context_search">
 <%-- for selecting next page with listings --%>
 <mm:import externid="page" vartype="integer" from="parameters"><mm:write referid="config.indexoffset" /></mm:import>
@@ -30,6 +30,7 @@
 
 <mm:write session="_search_form_minage_$node_type" referid="_search_form_minage_$node_type" />
 <mm:write session="_search_form_maxage_$node_type" referid="_search_form_maxage_$node_type" />
+
 
 <%-- you can configure 'hide_search' to hide the search functionality --%>
 <%-- mm:compare referid="config.hide_search" value="false" --%>
@@ -69,14 +70,14 @@
 </mm:present>
 
 <%-- apply age-constraint always --%>
-<mm:ageconstraint minage="${_search_form_minage_$node_type}" maxage="${_search_form_maxage_$node_type}" />
+<mm:ageconstraint minage="$[_search_form_minage_$node_type]" maxage="$[_search_form_maxage_$node_type]" />
 
 
 <% boolean mayLink = false; %><mm:present referid="maylink"><% mayLink = true; %></mm:present>
 
  <mm:size id="totalsize" write="false" />
 
- <mm:write id="offset" value="${+($page - $config.indexoffset)*$config.page_size}" write="false" />
+ <mm:write id="offset" value="$[+($page - $config.indexoffset)*$config.page_size]" write="false" />
  <mm:offset    value="$offset"  />
  <mm:maxnumber value="$config.page_size" />  
  
@@ -89,27 +90,28 @@
 
  <mm:url id="purl" referid="baseurl" referids="orderby?,directions?" write="false" />
 
+ <mm:url id="deleteurl" referids="node_type,orderby?,directions?,search?,page" page="commit_node.jsp" write="false">
+   <mm:param name="delete" value="true" />
+ </mm:url>
+
+
 
 <mm:import id="pager">
 <table><!-- pager -->
   <tr>
   <mm:context>
-    <td class="navigate" colspan="1" style="text-align: left;">
-
+    <td class="navigate" colspan="1" style="text-align: left; white-space: nowrap;">
       <mm:isgreaterthan referid="page" value="$config.indexoffset">
-        <nobr>
         <a href='<mm:url referid="purl" referids="config.indexoffset@page" />'>
            <span class="previous"></span><span class="alt">[&lt;&lt;-first ]</span>
          </a>
         </a>
-        <a href='<mm:url referid="purl"><mm:param name="page" vartype="integer" value="${+ $page - 1}" /></mm:url>'>
+        <a href='<mm:url referid="purl"><mm:param name="page" vartype="integer" value="$[+ $page - 1]" /></mm:url>'>
           <span class="previous"></span><span class="alt">[&lt;-previous page]</span>
         </a>
-        </nobr>
       </mm:isgreaterthan>
     </td>
-    <td class="navigate" colspan="1">
-    <nobr style="width:100%;">
+    <td class="navigate" colspan="1" style="white-space: nowrap; width:100%;">
     <mm:previousbatches maxtotal="$config.batches" indexoffset="$config.indexoffset">
       <mm:first>
         <mm:index>
@@ -128,7 +130,7 @@
      <span class="currentpage" style="font-size: 120%; font-weight: bold;">
        <mm:write value="$page" />
      </span>
-     <mm:write write="false" id="maxpagenumber" vartype="integer" value="${+ ($totalsize - 1) / $config.page_size + $config.indexoffset}" />
+     <mm:write write="false" id="maxpagenumber" vartype="integer" value="$[+ ($totalsize - 1) / $config.page_size + $config.indexoffset]" />
    </mm:isgreaterthan>   
    <mm:context>
       <mm:nextbatches maxtotal="$config.batches" indexoffset="$config.indexoffset">
@@ -143,12 +145,10 @@
          </mm:index>
        </mm:last>
     </mm:nextbatches>
-      </nobr>
       </td>
-      <td class="navigate" colspan="1" style="text-align: right;">
+      <td class="navigate" colspan="1" style="text-align: right; white-space: nowrap;">
         <mm:present referid="needsnext">
-          <nobr>
-          <a href='<mm:url referid="purl"><mm:param name="page" vartype="integer" value="${+ $page + 1}" /></mm:url>'>
+          <a href='<mm:url referid="purl"><mm:param name="page" vartype="integer" value="$[+ $page + 1]" /></mm:url>'>
           <span class="next"></span><span class="alt">[next page -&gt;]</span>
         </a>
         <a href='<mm:url referid="purl">
@@ -156,7 +156,6 @@
            </mm:url>'>
            <span class="next"></span><span class="alt">[last -&gt;&gt;]</span>
          </a>
-         </nobr>
         </mm:present>
       </td>
     </mm:context>
@@ -191,33 +190,36 @@
     </mm:fieldlist>
     </mm:context>
     <mm:size id="size" write="false" />
-    <th colspan="2"><nobr><mm:write referid="totalsize"><mm:compare value="0"><%=m.getString("search.noresults")%></mm:compare><mm:isgreaterthan value="0"><mm:write vartype="integer" value="${+$offset + 1}" />-<mm:write vartype="integer" value="${+$offset + $size}" />/<mm:write  /></mm:isgreaterthan></mm:write></nobr></th><!-- X and -> collum -->
+    <th colspan="2" style="white-space: nowrap;"><mm:write referid="totalsize"><mm:compare value="0"><%=m.getString("search.noresults")%></mm:compare><mm:isgreaterthan value="0"><mm:write vartype="integer" value="$[+$offset + 1]" />-<mm:write vartype="integer" value="$[+$offset + $size]" />/<mm:write  /></mm:isgreaterthan></mm:write></th><!-- X and -> collum -->
   </tr>
 
 <mm:listnodes id="node_number" directions="$directions"  orderby="$orderby" jspvar="sn">
   <tr>
-    <td class="listdata"><mm:nodeinfo type="gui" />&nbsp;<%-- (<mm:function name="age" />)--%></td>
+    <td <%@include file="node_title.jsp" %> class="listdata"><mm:nodeinfo type="gui" />&nbsp;<%-- (<mm:function name="age" />)--%></td>
    <mm:fieldlist nodetype="$node_type" type="list">
-        <td class="listdata"><mm:fieldinfo type="guivalue" /> &nbsp;</td>
+     <td class="listdata"><mm:fieldinfo type="guivalue" /> &nbsp;</td>
    </mm:fieldlist>
     <td class="navigate">
         <mm:maydelete>
           <mm:hasrelations inverse="true">
-            <a href="<mm:url referids="node_type,node_number,page" page="commit_node.jsp" ><mm:param name="delete">true</mm:param></mm:url>">
-              <span class="delete"></span><span class="alt">[delete]</span>
+            <a href="<mm:url referid="deleteurl" referids="node_number"  />">
+              <span class="delete"><!-- needed for IE --></span><span class="alt">[delete]</span>
             </a>
           </mm:hasrelations>
           <mm:hasrelations>
             <mm:countrelations />
           </mm:hasrelations>
         </mm:maydelete>
+        <mm:maydelete inverse="true">
+          <mm:countrelations />
+        </mm:maydelete>
         &nbsp;
      </td>    
-     <td class="navigate">  
-    <% if(sn.mayWrite() || sn.mayDelete() || sn.mayChangeContext() || (mayLink)) { %>
-            <a href="<mm:url page="$to_page" referids="node_number,node_number@push,nopush?" />">
-                  <span class="change"></span><span class="alt">[change]</span>
-            </a>
+     <td class="navigate">
+    <% if(sn.mayWrite() || sn.mayDelete() || sn.mayChangeContext() || mayLink) { %>
+       <a href="<mm:url page="$to_page" referids="node_number,node_number@push,nopush?" />">
+         <span class="change"><!-- needed for IE --></span><span class="alt">[change]</span>
+       </a>
      <% } else { %>&nbsp;<% } %>
      </td>
  </tr>  
@@ -234,7 +236,7 @@
       <td class="data"><%= m.getString("search_node.create")%> <mm:nodeinfo nodetype="$node_type" type="guitype" /> (<mm:write referid="node_type" />) </td>
       <td class="navigate">
         <a href="<mm:url referids="node_type,node?,role_name?,direction?"  page="create_node.jsp" />" >
-        <span class="create"></span><span class="alt">[create]</span>
+        <span class="create"><!-- needed for IE --></span><span class="alt">[create]</span>
       </a>
     </td>
   </tr>

@@ -1,5 +1,5 @@
 <%-- uncomment this, if your JSP-engine is JSP2.0 (see release-notes) --%><%--@page isELIgnored="true"  
---%><%@page session="true" language="java" contentType="text/html; charset=utf-8"  import="java.util.Stack,org.mmbase.bridge.*"
+--%><%@page session="true" language="java" contentType="text/html; charset=utf-8"  import="java.util.Stack,org.mmbase.bridge.*,org.mmbase.util.xml.UtilReader"
 %><%!
 
 // stack stuff (for the bread-crumb). Might appear a tag for this sometime.
@@ -9,7 +9,7 @@ void push(Stack stack, String id,  String url) {
 }
 void push(Stack stack, String id, HttpServletRequest request) {
    String qs = request.getQueryString();
-   push(stack, id, request.getServletPath() + (qs != null ? ("?" + qs) : ""));
+   push(stack, id, request.getServletPath() + (qs != null ? ("?" + org.mmbase.util.transformers.Xml.XMLAttributeEscape(qs)) : ""));
 }
 String peek(Stack stack) {
     if (stack.size() > 0) {
@@ -40,7 +40,7 @@ if (urlStack == null) {
 }
 
 
-%>
+%><mm:content postprocessor="swallow">
 <mm:import externid="pop" />
 <mm:import externid="push" />
 <mm:import externid="nopush" />
@@ -71,18 +71,19 @@ if (urlStack == null) {
   <mm:import id="liststyle"   externid="mmjspeditors_liststyle" from="parameters,cookie,this">short</mm:import>  
   <mm:write cookie="mmjspeditors_liststyle" referid="liststyle"   />
   <mm:import id="lang"        externid="mmjspeditors_language"  from="parameters,cookie,this" ><%=LocalContext.getCloudContext().getDefaultLocale().getLanguage()%></mm:import>
-  <mm:import id="method" reset="true">delegate</mm:import>
+  <mm:import id="country"     externid="mmjspeditors_country"   from="parameters,cookie,this" />
   <mm:import id="session"     externid="mmjspeditors_session"   from="parameters,cookie,this">mmbase_editors_cloud</mm:import>
+  <mm:import id="xmlmode"     externid="mmjspeditors_xmlmode"   from="parameters,cookie,this">flat</mm:import>
+
   <mm:import externid="batches" from="parameters,this" >30</mm:import>
 </mm:context>
 
-<mm:write referid="config" session="mmeditors_config" />
+<mm:import id="rank"><%= UtilReader.get("editors.xml").getProperties().getProperty("rank", "basic user")%></mm:import>
 
-<% java.util.ResourceBundle m = null; // short var-name because we'll need it all over the place
-   java.util.Locale locale = null; %>
-<mm:write referid="config.lang" jspvar="lang" vartype="string">
-<%
-  locale  =  new java.util.Locale(lang, "");
+
+<mm:write referid="config" session="mmeditors_config" />
+</mm:content><% 
+java.util.ResourceBundle m = null; // short var-name because we'll need it all over the place
+%><mm:locale language="$config.lang" country="$config.country" jspvar="locale"><%
   m = java.util.ResourceBundle.getBundle("org.mmbase.jspeditors.editors", locale);
-%>
-</mm:write>
+%></mm:locale>

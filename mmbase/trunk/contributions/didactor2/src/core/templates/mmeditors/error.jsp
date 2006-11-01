@@ -1,5 +1,5 @@
 <%@page isErrorPage="true" 
-%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1"  prefix="mm"
+%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
 %>
 <mm:content type="text/html"  expires="0">
 <html>
