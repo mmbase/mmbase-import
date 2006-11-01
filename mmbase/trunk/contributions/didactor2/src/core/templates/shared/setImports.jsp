@@ -14,8 +14,8 @@
   - template include path (into variable $includePath)
 --%>
 
-<%-- get the $username --%>
-<mm:import id="username" jspvar="username"><%=cloud.getUser().getIdentifier()%></mm:import>
+<mm:cloudinfo type="user" id="username" write="false" />
+
 <%-- get the $user --%>
 <mm:listnodescontainer type="people">
   <mm:constraint operator="equal" field="username" referid="username" />
@@ -48,11 +48,7 @@
     <mm:size id="provider_size" write="false" />
     <mm:compare referid="provider_size" value="1">
       <mm:listnodes>
-        <mm:first>
-          <mm:node>
-            <mm:field id="provider" name="number" write="false" />
-          </mm:node>
-        </mm:first>
+        <mm:node id="provider" />
       </mm:listnodes>
     </mm:compare>
 
@@ -71,7 +67,7 @@
     <mm:remove referid="provider_size" />
   </mm:listnodescontainer>
 </mm:notpresent>
-  
+
 
 <mm:import externid="education" />
 <mm:isempty referid="education">
@@ -103,6 +99,7 @@
 --%>
 <mm:notpresent referid="education">
   <%-- if there is only 1 education for this provider, then we can figure it out --%>  
+  <mm:present referid="provider">
   <mm:node number="$provider" notfound="skipbody">
     <mm:relatednodescontainer type="educations">
       <mm:size id="educations_size" write="false" />
@@ -114,6 +111,7 @@
       <mm:remove referid="educations_size" />
     </mm:relatednodescontainer>
   </mm:node>
+  </mm:present>
 </mm:notpresent>
 
 <%--
