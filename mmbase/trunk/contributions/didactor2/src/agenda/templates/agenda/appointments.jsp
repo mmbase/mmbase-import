@@ -83,7 +83,7 @@
               </mm:fieldlist>
             </mm:node>
        
-            <mm:list nodes="$itemnumber" path="items,invitationrel,people" constraints="$user != people.number" fields="invitationrel.status">
+            <mm:list nodes="$itemnumber" path="items,invitationrel,people" constraints="$user != [people.number]" fields="invitationrel.status">
               <mm:import id="hisstatus" reset="true"><mm:field name="invitationrel.status"/></mm:import>
               <tr>
                 <td class="listItem">
