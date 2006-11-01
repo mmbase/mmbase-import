@@ -6,7 +6,8 @@
 
 <mm:import externid="showcode">false</mm:import>
 <mm:import id="wizardjsp"><mm:treefile write="true" page="/editwizards/jsp/wizard.jsp" objectlist="$includePath" />?referrer=/education/wizards/ok.jsp&amp;language=<mm:write referid="wizardlang" /></mm:import>
-<mm:import id="listjsp"><mm:treefile write="true" page="/editwizards/jsp/list.jsp" objectlist="$includePath" />?language=<mm:write referid="wizardlang" /></mm:import>
+<mm:treefile id="listjsp" page="/editwizards/jsp/list.jsp" objectlist="$includePath"
+             referids="wizardlang@language" write="false" />
 <mm:node number="component.pdf" notfound="skip">
   <mm:relatednodes type="providers" constraints="providers.number=$provider">
     <mm:log>Provider ${provider}</mm:log>
