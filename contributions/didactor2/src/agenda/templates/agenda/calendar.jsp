@@ -5,7 +5,7 @@ this stylesheet can be overridden in the same manner as other parts of the site.
 --%>
 <%@ page import="java.util.Calendar,
                  java.text.SimpleDateFormat"%>
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
 <%@taglib uri="http://www.eo.nl/calendar/1.3" prefix="cal" %>
 <%@taglib uri="http://www.dynasol.com/simpletags/1.1.3" prefix="st" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>

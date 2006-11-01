@@ -4,7 +4,7 @@ This page allows a teacher or administrator to create a new forum.
 Calls itself to create the forum and foward to the newly created forum.
 --%>
 
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@taglib uri="oscache" prefix="os" %>
 <mm:cloud jspvar="cloud" name="mmbase" loginpage="/login.jsp" >
