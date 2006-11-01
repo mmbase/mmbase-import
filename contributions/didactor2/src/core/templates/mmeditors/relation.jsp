@@ -23,7 +23,7 @@
 
 <mm:import id="page" externid="$externpageid">0</mm:import>
 
-<mm:write id="offset" value="${+ $page * $config.page_size}" write="false" vartype="integer" />
+<mm:write id="offset" value="$[+ $page * $config.page_size]" write="false" vartype="integer" />
 <mm:maxnumber value="$config.page_size" />
 <mm:offset    value="$offset" />
 
@@ -42,7 +42,7 @@
             <mm:param name="role_name"><%= role %></mm:param>
             <mm:param name="direction"><%= searchDir.equals("destination") ? "create_child" : "create_parent" %></mm:param>
             </mm:url>'>
-           <span class="create"></span><span class="alt">+</span>
+           <span class="create"><!-- needed for IE --></span><span class="alt">+</span>
        </a>
       <mm:previousbatches max="1">
         <a href='<mm:url referid="purl">
@@ -53,7 +53,7 @@
       </mm:previousbatches>
       <mm:size id="size">
         <mm:isgreaterthan value="0">
-           <mm:write vartype="integer" value="${+$offset + 1}" />-<mm:write vartype="integer" value="${+$offset+$size}" />/<mm:write referid="totalsize"  />
+           <mm:write vartype="integer" value="$[+$offset + 1]" />-<mm:write vartype="integer" value="$[+$offset+$size]" />/<mm:write referid="totalsize"  />
         </mm:isgreaterthan>
       </mm:size>
       <mm:nextbatches max="1">
@@ -75,7 +75,9 @@
   <td class="data">
     #<mm:field id="node_number"  name="number" />
   </td>
-  <td class="data">
+  <td
+     <%@include file="node_title.jsp" %>
+     class="data">
     <mm:nodeinfo type="gui" />  (<mm:field name="owner" />)
   </td>
   <td class="navigate">
@@ -86,13 +88,13 @@
         <mm:param name="node_type"><mm:nodeinfo type="nodemanager" /></mm:param>
         <mm:param name="delete">true</mm:param>
         </mm:url>' >
-        <span class="delete"></span><span class="alt">x</span>
+        <span class="delete"><!-- needed for IE --></span><span class="alt">x</span>
       </a>
     </mm:maydelete>
     <mm:maywrite>
       <%-- edit the relation --%>
       <a href="<mm:url referids="node_number,node_number@push" page="change_node.jsp" />" >
-        <span class="select"></span><span class="alt">-&gt;</span>
+        <span class="select"><!-- needed for IE --></span><span class="alt">-&gt;</span>
       </a>
     </mm:maywrite>
   </td>
@@ -100,13 +102,15 @@
     <td class="data">
       #<mm:field id="relatednumber" name="number" />
     </td>
-    <td class="data" colspan="2">
+    <td 
+     <%@include file="node_title.jsp" %>
+     class="data" colspan="2">
       <mm:nodeinfo type="gui" /> (<mm:field name="owner" />)
     </td>
     <td class="navigate" colspan="1">
        <%-- edit the related node --%>
       <a href="<mm:url referids="relatednumber@node_number,relatednumber@push" page="change_node.jsp" />">
-      <span class="select"></span><span class="alt">-&gt;</span>
+      <span class="select"><!-- needed for IE --></span><span class="alt">-&gt;</span>
     </a>
   </td>
 </mm:relatednode>
