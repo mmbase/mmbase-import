@@ -1,38 +1,22 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
+<mm:content postprocessor="reducespace"
+            expires="0" type="text/html"
+            escaper="entities">
+  <mm:cloud authenticate="login" rank="basic user">
+  <jsp:directive.include file="/shared/setImports.jsp" />
 
-<%@ page import = "java.util.ArrayList" %>
-<%@ page import = "java.util.Iterator" %>
-<%@ page import = "java.util.HashMap" %>
-<%@ page import = "java.util.HashSet" %>
-<%@ page import = "java.util.SortedMap" %>
-<%@ page import = "java.util.TreeMap" %>
-
-<%@ page import = "nl.didactor.component.education.utils.EducationPeopleConnector" %>
-
-<mm:content postprocessor="reducespace" expires="0" type="text/html" encoding="UTF-8" escaper="entities">
-<mm:cloud method="delegate" jspvar="cloud">
-
-<% //education-people connector
-   EducationPeopleConnector educationPeopleConnector = new EducationPeopleConnector(cloud);
-%>
-
-
-<%@include file="/shared/setImports.jsp" %>
-<mm:treeinclude page="/cockpit/cockpit_intro_header.jsp" objectlist="$includePath" referids="$referids">
-  <mm:param name="extraheader">
-   <meta name="description" content="Didactor is een open source E-learning omgeving, ontwikkeld door The Mediator Group. Deze elektronische leeromgeving is 100% webbased en gebaseerd op didactische principes. Didactor is ontwikkeld mbv MMbase, Java en XML en maakt blended learning mogelijk" />
-   <meta name="keywords" content="didactor, mediator, didactiek, didactisch, webbased, platformonafhankelijk, group, elo, lms, lcms, leeromgeving, on-line, java, sun, mmbase, opleidingen, opleiding, events, e-learning, blended, learning, educatie, training, brakel, becking, hof, puntedu, leren, kennisoverdracht, open, source, standaarden, scorm, eml, cursus, bedrijfsopleiding, universiteit, digitaal, digitale, onderwijs, overheid, zorg, school, congres, bijeenkomst, event, kennis, congres, leeromgeving, didactiek, IEEE-lom, EML, scorm, vraaggestuurd, leerobjecten, netg" />
-   <meta name="copyright" content="" />
-   <meta name="author" content="The Mediator Group" />
-   <meta name="rating" content="General" />
-   <meta name="robots" content="all" />
-    <title>Didactor</title>
-  </mm:param>
-</mm:treeinclude>
-
-
-
+  <mm:treeinclude page="/cockpit/cockpit_intro_header.jsp" objectlist="$includePath" referids="$referids">
+    <mm:param name="extraheader">
+      <meta name="description" content="Didactor is een open source E-learning omgeving, ontwikkeld door The Mediator Group. Deze elektronische leeromgeving is 100% webbased en gebaseerd op didactische principes. Didactor is ontwikkeld mbv MMbase, Java en XML en maakt blended learning mogelijk" />
+      <meta name="keywords" content="didactor, mediator, didactiek, didactisch, webbased, platformonafhankelijk, group, elo, lms, lcms, leeromgeving, on-line, java, sun, mmbase, opleidingen, opleiding, events, e-learning, blended, learning, educatie, training, brakel, becking, hof, puntedu, leren, kennisoverdracht, open, source, standaarden, scorm, eml, cursus, bedrijfsopleiding, universiteit, digitaal, digitale, onderwijs, overheid, zorg, school, congres, bijeenkomst, event, kennis, congres, leeromgeving, didactiek, IEEE-lom, EML, scorm, vraaggestuurd, leerobjecten, netg" />
+      <meta name="copyright" content="" />
+      <meta name="author" content="The Mediator Group" />
+      <meta name="rating" content="General" />
+      <meta name="robots" content="all" />
+      <title>Didactor</title>
+    </mm:param>
+  </mm:treeinclude>
 <%
    String sUserSettings_PathBaseDirectory = getServletContext().getInitParameter("filemanagementBaseDirectory");
    String sUserSettings_BaseURL = getServletContext().getInitParameter("filemanagementBaseUrl");
@@ -51,6 +35,7 @@
     <img src="<mm:treefile write="true" page="/gfx/logo_didactor.gif" objectlist="$includePath" />" width="100%" height="106" border="0" title="Didactor logo" alt="Didactor logo" />
 
     <div class="titlefield">
+
       <di:hasrole role="teacher">
         <di:translate key="core.giveneducation" />
       </di:hasrole>
@@ -60,7 +45,7 @@
     </div>
 
     <div class="ListLeft">
-       <%@include file="listleft.jsp"%>
+      <jsp:directive.include file="listleft.jsp" />
     </div>
   </div>
 
