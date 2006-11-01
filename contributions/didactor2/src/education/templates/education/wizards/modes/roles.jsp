@@ -18,13 +18,12 @@
   </mm:islessthan>
    <mm:islessthan inverse="true"
                   referid="rights" referid2="RIGHTS_RW">
-      <a href='javascript:clickNode("persons_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle'  id='img_persons_0' /></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/><nobr>&nbsp;<a href='javascript:clickNode("persons_0")'><di:translate key="education.personstab" /></nobr></a>
+     <a href='javascript:clickNode("persons_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle'  id='img_persons_0' /></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/><nobr>&nbsp;<a href='javascript:clickNode("persons_0")'><di:translate key="education.personstab" /></nobr></a>
       <br>
       <div id='persons_0' style='display: none'>
          <%// edit people,rolerel, education %>
          <%-- doesn't work properly, so commented it out for the moment
-         <mm:log>KOMTIEHIER TOEVALLIG</mm:log>
-            rolestree.addItem("<di:translate key="education.editpeoplerolereleducation" />",
+         rolestree.addItem("<di:translate key="education.editpeoplerolereleducation" />",
                               "<mm:treefile write="true" page="/education/wizards/roles.jsp" objectlist="$includePath" />",
                               null,
                               "<di:translate key="education.editpeoplerolereleducationdescription" />",
@@ -36,11 +35,50 @@
             <tr>
                <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
                <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
-
                <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-               <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>&wizard=config/people/people&nodepath=people&fields=firstname,suffix,lastname,username,externid&orderby=lastname&searchfields=firstname,suffix,lastname,username,externid&orderby=lastname&search=yes<mm:write referid="forbidtemplate" escape="text/plain" />' title='<di:translate key="education.persons" />' target="text"><di:translate key="education.persons" /></a></nobr></td>
-            </tr>
-         </table>
+               <td>
+                 <nobr>
+                   &nbsp;
+                   <mm:link referid="listjsp">
+                     <mm:param name="wizard">config/people/people</mm:param>
+                     <mm:param name="nodepath">people</mm:param>
+                     <mm:param name="fields">firstname,suffix,lastname,username,externid</mm:param>
+                     <mm:param name="orderby">lastname</mm:param>
+                     <mm:param name="searchfields">firstname,suffix,lastname,username,externid</mm:param>
+                     <mm:param name="search">yes</mm:param>
+                     <a href="${_}${forbidtemplate}"
+                        title='<di:translate key="education.persons" />' target="text">
+                        <di:translate key="education.persons" />
+                      </a>
+                    </mm:link>
+                  </nobr>
+                </td>
+              </tr>
+              <mm:listnodes type="roles">
+                <tr>
+                  <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
+                  <td><img src="gfx/tree_vertline.gif" border="0" align="middle"/></td>
+                  <td />
+                  <td>
+                    <nobr>
+                      &nbsp;
+                      <mm:link referid="listjsp" referids="_node@startnodes">
+                        <mm:param name="wizard">config/people/people</mm:param>
+                        <mm:param name="nodepath">roles,people</mm:param>
+                        <mm:param name="fields">people.firstname,people.suffix,people.lastname,people.username,people.externid</mm:param>
+                        <mm:param name="orderby">people.lastname</mm:param>
+                        <mm:param name="searchfields">people.firstname,people.suffix,people.lastname,people.username,people.externid</mm:param>
+                        <mm:param name="search">yes</mm:param>
+                        <a href="${_}${forbidtemplate}"
+                           title='<di:translate key="education.persons" />' target="text">
+                        <mm:field name="name" />
+                      </a>
+                    </mm:link>
+                  </nobr>
+                  </td>
+                </tr>
+              </mm:listnodes>
+            </table>
          <table border="0" cellpadding="0" cellspacing="0">
             <tr>
                <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
