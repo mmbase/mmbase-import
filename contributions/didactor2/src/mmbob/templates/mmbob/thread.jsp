@@ -106,7 +106,7 @@
             --%>
             <mm:list nodes="$postingid" path="postings,attachments">
                <mm:node element="attachments">
-                  <a href="<mm:attachment/>"><img src="<mm:treefile write="true" page="/mmbob/images/download.gif" objectlist="$includePath" />" title="<mm:field name="title"/>" alt="<mm:field name="title"/>" border="0"/></a> 
+                  <a href="<mm:attachment/>"><img src="<mm:treefile write="true" page="/mmbob/images/download.gif" objectlist="$includePath" />" title="<mm:field name="title"/>" alt="<mm:field name="title"/>" border="0"/></a>
                </mm:node>
             </mm:list>
             <mm:field name="ismoderator">
@@ -182,13 +182,10 @@
       <mm:field name="edittime"><mm:compare value="-1" inverse="true"><di:translate key="mmbob.lasttimemodify" /> : <mm:field name="edittime"><mm:time format="<%= timeFormat %>" /></mm:field></mm:compare><p /></mm:field>
 
       <mm:node referid="postingid">
-
-      <mm:formatter xslt="xslt/posting2xhtml.xslt">
-
-      <mm:function referids="imagecontext,themeid" name="escapesmilies">
-      <mm:write/>
-      </mm:function>
-      </mm:formatter>
+        <mm:formatter xslt="xslt/posting2xhtml.xslt" escape="smilies">
+          <mm:param name="wrote">Wrote:</mm:param>
+          <mm:field name="body" />
+        </mm:formatter>
       </mm:node>
 
       <br /><br /><br /><br /><br />
@@ -240,7 +237,7 @@
                     <td width="80" style="border-width:0px"><mm:fieldinfo type="guiname"/></td>
                     <td style="border-width:0px"><mm:fieldinfo type="input"/></td>
                  </tr>
-              </mm:fieldlist> 
+              </mm:fieldlist>
            </table>
         </td>
     </tr>
