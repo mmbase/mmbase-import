@@ -1,10 +1,10 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@page import="nl.didactor.component.Component,java.util.*" %>
 <mm:content postprocessor="reducespace" expires="0">
-<mm:cloud method="delegate" jspvar="cloud">
+<mm:cloud rank="basic user" >
 <mm:import externid="component" />
-<%@include file="/shared/setImports.jsp" %>
+<jsp:directive.include file="/shared/setImports.jsp" />
 <html>
   <head>
     <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/base.css" objectlist="$includePath" referids="$referids" />" />
@@ -24,8 +24,9 @@
           <%
             Component comp = Component.getComponent(cname);
             if (comp != null) {
-              Vector scopes = comp.getScopes();
+              List scopes = comp.getScopes();
             %>
+            <%=scopes%>
             <% if (comp.getTemplateBar() == null || "".equals(comp.getTemplateBar())) { %>
               This component is not shown in the navigation bars.
             <% } else { %>

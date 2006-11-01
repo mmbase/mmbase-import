@@ -1,4 +1,4 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
 <mm:cloud jspvar="cloud" method="http">
 <mm:import id="orderby" externid="orderby">lastname</mm:import>
 <mm:import id="directions" externid="directions">up</mm:import>
