@@ -20,21 +20,24 @@ import org.w3c.dom.*;
 import java.io.*;
 import java.util.*;
 
+/**
+ * @javadoc
+ */
 public abstract class Component {
-    private static Logger log = Logging.getLoggerInstance(Component.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(Component.class);
+ 
+    private static Hashtable components = new Hashtable(); // why is this synchronized
 
-    private static Hashtable components = new Hashtable();
-
-    private Vector interestedComponents = new Vector();
+    private Vector interestedComponents = new Vector();    // why is this synchronized
     private MMObjectNode node;
 
     /** Save the settings for this component */
-    private HashMap settings = new HashMap();
+    private HashMap settings = new HashMap();              // why is this synchronized
 
     /** A list of all possible setting scopes */
-    private Vector scopes = new Vector();
+    private Vector scopes = new Vector();                  // why is this synchronized
 
-    private HashMap scopesReferid = new HashMap();
+    private HashMap scopesReferid = new HashMap();        
 
     /** The string indicating the path for templates of this component */
     private String templatepath = null;
@@ -281,10 +284,10 @@ public abstract class Component {
         if (setting == null) {
             throw new RuntimeException("Setting '" + settingName + "' is not defined for component '" + getName() + "'");
         }
-        Vector scope = setting.getScope();
+        List scope = setting.getScope();
         Object retval = null;
 
-        for (int i=0; i<scope.size(); i++) {
+        for (int i=0; i<scope.size(); i++) { // 
             String scopeName = (String)scope.get(i);
             String scopeReferId = (String)scopesReferid.get(scopeName);
             log.debug("Trying on scope '" + scopeName + "' (" + scopeReferId + ")");
@@ -514,6 +517,7 @@ public abstract class Component {
 
     /**
      * Return a list of settings that are settable on a given scope
+     * @todo should return List
      */
     public Vector getSettings(String scope) {
         Vector result = new Vector();
@@ -527,6 +531,9 @@ public abstract class Component {
         return result;
     }
 
+    /**
+     * @todo should return List
+     */
     public Vector getScopes() {
         return scopes;
     }
