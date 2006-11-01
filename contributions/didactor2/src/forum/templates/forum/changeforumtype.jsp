@@ -4,7 +4,7 @@ This jsp is used for changing the type of the forum.
 (open for students, or closed for students)
 After changes, forwards back to the forum.
 --%>
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <mm:cloud jspvar="cloud" name="mmbase" loginpage="/login.jsp">
   <%@ include file="/shared/setImports.jsp"%>

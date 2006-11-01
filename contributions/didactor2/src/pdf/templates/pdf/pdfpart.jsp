@@ -1,5 +1,5 @@
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm"%>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"%>
 
 <%@page import="java.io.UnsupportedEncodingException" %>
 <%@page import="java.io.StringBufferInputStream" %>
