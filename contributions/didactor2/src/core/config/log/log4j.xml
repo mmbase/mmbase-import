@@ -42,7 +42,7 @@
     <level class="&mmlevel;" value ="fatal" />
   </logger>
 
-  <logger name="mmbase.applications.editwizard.Utils" >
+  <logger name="org.mmbase.applications.editwizard.Utils" >
     <level class="&mmlevel;" value ="error" />
   </logger>
 
@@ -56,11 +56,7 @@
   <logger name="STDERR">
     <level class="&mmlevel;" value ="warn" />   
   </logger>
-    
-  <logger name="STDOUT">
-    <level class="&mmlevel;" value ="warn" />   
-  </logger>
-    
+
   <root>
     <level class="&mmlevel;" value ="info" />
     <appender-ref ref="logfile" />
