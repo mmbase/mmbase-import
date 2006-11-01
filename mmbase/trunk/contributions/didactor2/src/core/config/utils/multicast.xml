@@ -25,13 +25,13 @@
 	leave it to ALL-SYSTEMS.MCAST.NET else use a multicat IP address like this
 	<property name="multicasthost">224.0.0.1</property>
 	-->
-	<property name="multicasthost"></property><!-- ALL-SYSTEMS.MCAST.NET -->
+  <property name="multicasthost">${mmbaseroot.multicasthost}</property><!-- ALL-SYSTEMS.MCAST.NET -->
 	<!--
 	name="multicastport" on what port does this multicast talking between servers
 	take place, This can be set to any port but check if something else on
 	your network is allready using multicast when you have problems.
 	-->
-	<property name="multicastport">16080</property>
+  <property name="multicastport">${mmbaseroot.multicastport}</property>
 	<!--
 	name="multicastTTL" The Multicast TTL determines how ``far'' your ICP queries will go.
 	In the Mbone, there is a certain TTL threshold defined for each network interface or tunnel.
