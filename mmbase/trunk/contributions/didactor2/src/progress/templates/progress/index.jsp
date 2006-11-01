@@ -1,10 +1,10 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 
 <%@page import="java.util.*" %>
 <%@ page import = "nl.didactor.component.education.utils.EducationPeopleConnector" %>
-
 <mm:content postprocessor="reducespace" expires="0">
+
 <mm:cloud method="delegate" jspvar="cloud">
 
 <%@include file="/shared/setImports.jsp" %>
@@ -41,7 +41,7 @@
         <%--    Some buttons working on this folder--%>
       </div>
 
-      <div class="contentBodywit">
+      <div class="contentBodywit"><%-- wit is neither english, nor symbolical. It means 'white', which it probably isn't. --%>
         <mm:node number="$education">
           <b><mm:field name="name" write="true"/></b>
           <table class="font" border="1" cellspacing="0" style="border-color:#000000; border-bottom:0px; border-top:0px; border-right:0px">
@@ -125,7 +125,8 @@
 
 
             <% //If the man is connected directly to education this man is a mega techer for this education %>
-              <mm:compare referid="class" value="null">
+
+              <mm:compare referid="class" valueset=",null"> <%-- This regexp trick is  a bit silly, but I don't know where the 'null' comes from --%>
                 <mm:node referid="education" jspvar="nodeEducation">
                   <% //We have to count number of tests for colspan in rows
                     int iNumberOfColumns = 4;
@@ -181,7 +182,7 @@
              If the user has role 'teacher' he may see all students in the current class. 
            --%>
               <di:hasrole role="teacher">
-                <mm:compare referid="class" value="null" inverse="true">
+                <mm:compare referid="class" regexp="|null" inverse="true">
                   <mm:node referid="class">
                     <mm:relatednodes type="people">
                       <mm:import id="studentnumber" reset="true"><mm:field name="number"/></mm:import>
@@ -200,7 +201,7 @@
              If the user has role 'coach' he may see all students in his workgroup.
            --%>
               <di:hasrole role="coach">
-                <mm:compare referid="class" value="null" inverse="true">
+                <mm:compare referid="class" valueset=",null" inverse="true">
                   <mm:node referid="class">
                     <mm:related path="workgroups,people" constraints="people.number='$user'">
                       <mm:node element="workgroups">
@@ -221,6 +222,7 @@
             </tr>
           </table>
 
+          <mm:log>doei</mm:log>
           <% if (showNextLink) { %>
             <span style="float: right">
               <a href="<mm:treefile  page="/progress/index.jsp" objectlist="$includePath" referids="$referids"><mm:param name="startAt"><%= startAt + 15 %></mm:param></mm:treefile>">
