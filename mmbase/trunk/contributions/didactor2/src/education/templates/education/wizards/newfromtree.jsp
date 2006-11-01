@@ -1,5 +1,5 @@
 <%@ page import = "java.util.HashSet" %>
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
 <mm:import id="lastIt" jspvar="lastIt" reset="true"><mm:field name="name"/></mm:import>
 <%
 String lastItem = "";
