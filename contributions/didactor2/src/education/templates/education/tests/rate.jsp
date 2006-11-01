@@ -1,4 +1,4 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm"%>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"%>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 
 <%@page import="java.util.Iterator"%>
@@ -65,7 +65,9 @@
     </mm:compare>
 
     <mm:relatednodescontainer path="madetests,copybooks" element="madetests">
-      <mm:constraint field="copybooks.number" referid="copybookID"/>
+      <mm:present referid="copybookID">
+        <mm:constraint field="copybooks.number" referid="copybookID"/>
+      </mm:present>
       <mm:relatednodes>
         <mm:relatednodescontainer type="givenanswers">
           <%--Remove Made test with  <mm:size/> answers<br/> --%>

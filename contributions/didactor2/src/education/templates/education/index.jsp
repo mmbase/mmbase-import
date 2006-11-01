@@ -1,4 +1,4 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm"%>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"%>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@page import="java.util.*"%>
 
@@ -368,7 +368,7 @@ catch(err){};
                   <%
                      if((hsetThePath == null) || (hsetThePath.contains(sCurrentTreeLeafID))){
                         %>
-                           <mm:import id="nodetype"><mm:nodeinfo type="type" /></mm:import>
+                           <mm:nodeinfo type="type" id="nodetype" write="false" />
                            <mm:depth id="currentdepth" write="false" />
 
                            <mm:import id="block_this_first_htmlpage" reset="true">false</mm:import>
@@ -420,7 +420,7 @@ catch(err){};
 
                               <mm:compare referid="showsubtree" value="true">
 
-                                 <%// have to skip the first entrace in scorm tree %>
+                                 <%// have to skip the first entrance in scorm tree %>
                                  <mm:compare referid="block_this_first_htmlpage" value="false">
 
                                     <mm:compare referid="nodetype" valueset="educations,learnblocks,tests,pages,flashpages,preassessments,postassessments,htmlpages">
@@ -459,9 +459,6 @@ catch(err){};
                                                 }
                                              %>
                                           </mm:notpresent>
-
-
-
 
                                           <mm:node number="component.pop" notfound="skip">
                                              <mm:relatednodes type="providers" constraints="providers.number=$provider">
