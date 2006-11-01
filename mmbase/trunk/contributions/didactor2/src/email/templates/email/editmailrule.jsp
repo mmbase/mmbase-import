@@ -8,7 +8,7 @@
 
 	<mm:compare referid="mailbox" value="-1">
 	  <mm:node number="$user">
-	    <mm:relatednodes id="inbox" type="mailboxes" max="1" constraints="mailboxes.m_type=0">
+	    <mm:relatednodes id="inbox" type="mailboxes" max="1" constraints="[mailboxes.type]=0">
 	      <mm:remove referid="mailbox"/>
 	      <mm:field name="number" id="mailbox" write="false"/>
   	    </mm:relatednodes>
