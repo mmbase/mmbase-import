@@ -159,8 +159,11 @@
 </mm:present>
 <br clear="all">
 <mm:listnodes referid="myuser" >
-   <!-- listing workspaces for '<mm:field name="name"/>' -->
-    <b><mm:field name="name"/><mm:field name="firstname"/> <mm:field name="lastname"/></b><br>
+   <!-- listing workspaces for '<mm:field name="lastname"/>' -->
+    <b>
+      <mm:hasfield name="name"><mm:field name="name"/></mm:hasfield><%-- does this occur --%>
+    <mm:field name="firstname"/> <mm:field name="lastname"/>
+    </b><br/>
 
 
   <mm:relatednodes type="workspaces" id="workspace">
