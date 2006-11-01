@@ -1,4 +1,4 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm"%>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"%>
 <mm:cloud method="delegate" jspvar="cloud">
 <%--
   This page originally was the 'mtmcode.js' of www.treemenu.com.
