@@ -18,8 +18,10 @@ import javax.servlet.http.HttpUtils;
 
 import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.core.MMBase;
 import org.mmbase.security.Rank;
 import org.mmbase.security.SecurityException;
+import org.mmbase.security.Authentication;
 
 import org.mmbase.security.implementation.aselect.ASelectErrors;
 import org.mmbase.security.implementation.aselect.ASelectException;
@@ -33,13 +35,16 @@ import nl.didactor.component.Component;
 import nl.didactor.security.AuthenticationComponent;
 import nl.didactor.security.UserContext;
 
-
+/**
+ * What is this?
+ * @javadoc
+ */
 
 public class ASelectSecurityComponent extends Component implements AuthenticationComponent {
-    private static Logger log = Logging.getLoggerInstance(ASelectSecurityComponent.class.getName());
-  
+    private static final Logger log = Logging.getLoggerInstance(ASelectSecurityComponent.class);
+
     private FileWatcher fileWatcher = null;
-    
+
     private PeopleBuilder users;
 
     /**
@@ -48,7 +53,7 @@ public class ASelectSecurityComponent extends Component implements Authenticatio
      * all possible login methods
      */
     private String sLoginPage = "/login_aselect.jsp";
-    
+
     /**
      * the address of the A-Select Agent
      */
@@ -68,7 +73,7 @@ public class ASelectSecurityComponent extends Component implements Authenticatio
      * A-Select Application
      */
     private String sASelectApplication = "mmbase";
-    
+
     public String getName() {
         return "aselect";
     }
@@ -80,7 +85,7 @@ public class ASelectSecurityComponent extends Component implements Authenticatio
     public Component[] dependsOn() {
         return new Component[0];
     }
-    
+
     public ASelectSecurityComponent() {
         load();
     }
@@ -96,38 +101,38 @@ public class ASelectSecurityComponent extends Component implements Authenticatio
             }
         }
     }
-    
+
     public String getLoginPage(HttpServletRequest request, HttpServletResponse response) {
         return sLoginPage;
     }
-    
+
     public UserContext isLoggedIn(HttpServletRequest request, HttpServletResponse response) {
         // Check the users session for a valid login component. If there's no component found
     	// the user has been authenticated by A-Select, but the session has not been fully
     	// initialised.
     	HttpSession session = request.getSession(false);
-    	
+
     	if (session != null) {
 	    String loginComponent = (String)session.getAttribute("didactor-logincomponent");
-    		
+
 	    if (loginComponent != null) {
 	        // the session seems to be initialised correctly, verify the ticket with A-Select
 		try {
 		    if (verify_ticket(request, response, "a-select")) {
 			String userName = getASelectUserId(request);
 			MMObjectNode user = users.getUser(userName);
-    	            
+
 			if (user == null) {
 			    try {
 				response.getWriter().println("<b>A-Select error:</b><br/>");
 				response.getWriter().println("The authorization passed, but user with id=<b>" +
-				    userName + "</b> is NOT present in Didactor's database<br/>");
+                                                             userName + "</b> is NOT present in Didactor's database<br/>");
 				response.getWriter().println("Can't create security context for him.");
 			    } catch (Exception ex) {
 				throw new SecurityException("no user (id = " + userName + ") in db", null);
 			    }
 			}
- 
+
 			return new UserContext(user);
 		    }
 		} catch (Exception ex) {
@@ -135,14 +140,18 @@ public class ASelectSecurityComponent extends Component implements Authenticatio
 		}
 	    }
     	}
-    	
+
         return null;
     }
-  
+
+    /**
+     * Here something else then a authentication implemtation produces User objects any way.
+     * @javadoc
+     */
     public UserContext processLogin(HttpServletRequest request, HttpServletResponse response, String application) {
         if ("a-select".equals(application)) {
             checkBuilder();
-                        
+
             ASelectUser newUser;
             // make connection to A-Select agent, and create an ASelectUser
             // object
@@ -153,8 +162,11 @@ public class ASelectSecurityComponent extends Component implements Authenticatio
 
                     if (log.isDebugEnabled()) {
                         log.debug("Logging in user: " + userName);
+
                     }
-                    newUser = new ASelectUser(userName, rank);
+                    // wtf
+                    Authentication a  = MMBase.getMMBase().getMMBaseCop().getAuthentication();
+                    newUser = new ASelectUser(userName, rank, a.getKey(), "a-select");
 
                 } else {
                     log.debug("User needs authentication and has been redirected to A-Select");
@@ -184,8 +196,8 @@ public class ASelectSecurityComponent extends Component implements Authenticatio
         }
         return null;
     }
-    
-    
+
+
     protected void configure() {
         // get some parameters
 
@@ -197,10 +209,10 @@ public class ASelectSecurityComponent extends Component implements Authenticatio
 
         try {
             log.service("Reading file: " + sASelectConfig);
-           
+
             config.load(new FileInputStream(sASelectConfig));
             agentPort = new Integer(config.getProperty("serviceport")).intValue();
-            
+
             String firstServer = config.getProperty("aselect.server.1");
             aselectServer = config.getProperty("aselect.server." + firstServer);
             sASelectApplication = config.getProperty("application");
@@ -216,10 +228,10 @@ public class ASelectSecurityComponent extends Component implements Authenticatio
         }
 
     }
-    
+
     /**
      * Called once my MMBase core during security starting
-     * 
+     *
      */
     protected void load() {
         if (fileWatcher == null) {
@@ -232,10 +244,10 @@ public class ASelectSecurityComponent extends Component implements Authenticatio
         configure();
     }
 
-    
+
     /**
      * Processes the logout of a user.
-     * 
+     *
      * @param request
      *            the current HTTP request
      * @param response
@@ -266,11 +278,11 @@ public class ASelectSecurityComponent extends Component implements Authenticatio
         request.getSession().removeAttribute("aselect_credentials");
         request.getSession().removeAttribute("aselectorgurlparams");
         request.getSession().removeAttribute("aselectorganization");
-    } 
-    
+    }
+
     /**
      * This function will transfer the request to the A-Select Agent.
-     * 
+     *
      * @param request
      *            the request which has to be sent to the A-Select Agent.
      * @returns Hashtable This hashtable contains the response from the Agent.
@@ -295,7 +307,7 @@ public class ASelectSecurityComponent extends Component implements Authenticatio
 
     /**
      * This function will get the cookie form the (servlet)request
-     * 
+     *
      * @param request
      *            the servlet request
      * @param xCookieName
@@ -312,10 +324,10 @@ public class ASelectSecurityComponent extends Component implements Authenticatio
 
     /**
      * This function will perform the verify ticket function.
-     * 
+     *
      * @return 'true' if the user has a valid A-Select ticket (at the A-Select
      *         Agent!)
-     * 
+     *
      * @param request
      *            the current HTTP request
      * @param response
@@ -358,11 +370,11 @@ public class ASelectSecurityComponent extends Component implements Authenticatio
 
         xResultCode = (String) xAgentResponse.get("result_code");
         log.debug("Agent response: " + xResultCode);
-        
+
         if (xResultCode == null || !xResultCode.equals(ASelectErrors.ASELECT_NO_ERROR)) {
             return false;
         }
-        
+
         return true;
     } // end of function : verify_ticket
 
@@ -370,7 +382,7 @@ public class ASelectSecurityComponent extends Component implements Authenticatio
      * This function will perform the verify credentials function. This function
      * will return 'true' if the credentials provided in the parametrs are
      * correct. The credentials are being set by the A-Select server
-     * 
+     *
      * @param request
      *            the current HTTP request
      * @param response
@@ -394,13 +406,13 @@ public class ASelectSecurityComponent extends Component implements Authenticatio
             log.debug("No 'rid' parameter specified");
             return false;
         }
-         
+
         xCredentials = request.getParameter("aselect_credentials");
         if (xCredentials == null) {
             log.debug("No 'aselect_credentials' parameter specified");
             return false;
         }
-            
+
         try {
             xAgentResponse = transferRequest("request=verify_credentials&rid=" + xRID + "&aselect_credentials=" + xCredentials);
             log.debug("Agent response " + xAgentResponse);
@@ -412,23 +424,23 @@ public class ASelectSecurityComponent extends Component implements Authenticatio
         if (xResultCode == null || !xResultCode.equals(ASelectErrors.ASELECT_NO_ERROR)) {
             throw new Exception(xMethod + "The A-Select Agent did return a malformed response.<br>Response from A-Select Agent : " + xAgentResponse + "<br>");
         }
-        
+
         // get the parameters to set as cookie
         xUid = (String) xAgentResponse.get("uid");
         if (xUid == null) {
             throw new Exception(xMethod + "The A-Select Agent did return a mallformed response :<br>missinge param 'uid'.<br>");
         }
-        
+
         xOrganization = (String) xAgentResponse.get("organization");
         if (xOrganization == null) {
             throw new Exception(xMethod + "The A-Select Agent did return a mallformed response :<br>missinge param 'organization'.<br>");
         }
-        
+
         xTicket = (String) xAgentResponse.get("ticket");
         if (xTicket == null) {
             throw new Exception(xMethod + "The A-Select Agent did return a mallformed response :<br>missinge param 'ticket'.<br>");
         }
-        
+
         xUid = doCGIEncode(xUid);
 
         /*
@@ -438,7 +450,7 @@ public class ASelectSecurityComponent extends Component implements Authenticatio
          * xUidCookie.setPath(request.getContextPath()); Cookie xOrgCookie = new
          * Cookie("aselectorganization", xOrganization);
          * xOrgCookie.setPath(request.getContextPath());
-         * 
+         *
          * response.addCookie(xTicketCookie); response.addCookie(xUidCookie);
          * response.addCookie(xOrgCookie);
          */
@@ -461,7 +473,7 @@ public class ASelectSecurityComponent extends Component implements Authenticatio
     /**
      * This function will perform the authenticate function. This function will
      * call the agent and the redirect the user to the A-Select server.
-     * 
+     *
      * @param request
      *            the current HTTP request
      * @param response
@@ -493,7 +505,7 @@ public class ASelectSecurityComponent extends Component implements Authenticatio
 
         xResultCode = (String) xAgentResponse.get("result_code");
         log.debug("Result code: " + xResultCode);
-        
+
         if (xResultCode == null) {
             throw new Exception(xMethod + "The A-Select Agent did return a malformed response.<br>Response from A-Select Agent : " + xAgentResponse + "<br>");
         } else if (!xResultCode.equals(ASelectErrors.ASELECT_NO_ERROR)) {
@@ -542,10 +554,10 @@ public class ASelectSecurityComponent extends Component implements Authenticatio
             configure();
         }
     }
-   
+
     /**
      * Performs the work of authentication and session management.
-     * 
+     *
      * This function should be called for each request to the Servlet.<br>
      * If the user has a valid session, true will be returned and de Servlet can
      * process the request.<br>
@@ -554,7 +566,7 @@ public class ASelectSecurityComponent extends Component implements Authenticatio
      * Servlet wil get severel requests with authentication parameters. That's
      * why this function should be called before processing the request by the
      * servlet.
-     * 
+     *
      * @param request
      *            the current HTTP request. Used to obtain the parameters for
      *            authentication.
@@ -585,14 +597,14 @@ public class ASelectSecurityComponent extends Component implements Authenticatio
         }
     } // end of function : authentication
 
-        
+
 
     /**
      * This method will convert a string of <code>key=value&key=value</code>
      * etc. tuples (aka a CGI request string) into a hashtable for much easier
      * processing.<br />
      * <b>Note:</b> The key names are all converted to lowercase.
-     * 
+     *
      * @todo can we not simply use request.getParameter?
      */
     public static Hashtable convertCGIMessage(String xMessage) {
@@ -626,11 +638,11 @@ public class ASelectSecurityComponent extends Component implements Authenticatio
         }
         return response;
     }
-    
+
     /**
      * This function will do a little CGI encoding For now it is not complete
      * implemented
-     * 
+     *
      * @param xValue
      *            The value to encode
      * @return the encoded value
@@ -643,12 +655,12 @@ public class ASelectSecurityComponent extends Component implements Authenticatio
         }
 
         return xEncoded;
-    } 
+    }
 
     /**
      * This function will do a little CGI decoding For now it is not complete
      * implemented
-     * 
+     *
      * @param xValue
      *            The value to decode
      * @return the decoded value hmm
@@ -667,10 +679,10 @@ public class ASelectSecurityComponent extends Component implements Authenticatio
         }
         return xDecoded;
     }
-    
+
     /**
      * Retrieves the A-Select User Id from the cookies.
-     * 
+     *
      * @param request
      *            the current HTTP request. Used to obtain the cookie(s)
      * @return The A-Select user id or null if not set
@@ -678,11 +690,11 @@ public class ASelectSecurityComponent extends Component implements Authenticatio
     protected String getASelectUserId(HttpServletRequest request) {
         String xUserId = getCookie(request, "aselectuid");
         return decodeCGI(xUserId);
-    } 
+    }
 
     /**
      * Retrieves the A-Select Organization Id from the cookies.
-     * 
+     *
      * @param request
      *            the current HTTP request. Used to obtain the cookie(s)
      * @return The A-Select organization id or null if not set
@@ -690,11 +702,11 @@ public class ASelectSecurityComponent extends Component implements Authenticatio
     protected String getASelectOrganization(HttpServletRequest request) {
         String xOrganization = getCookie(request, "aselectorganization");
         return decodeCGI(xOrganization);
-    } 
-    
+    }
+
     /**
      * Retrieves the A-Select Session Id from the cookies.
-     * 
+     *
      * @param request
      *            the current HTTP request. Used to obtain the cookie(s)
      * @return The A-Select session id or null if not set
@@ -702,5 +714,5 @@ public class ASelectSecurityComponent extends Component implements Authenticatio
     protected String getASelectSessionId(HttpServletRequest request) {
         String xSessionId = getCookie(request, "aselectticket");
         return xSessionId;
-    } 
+    }
 }
