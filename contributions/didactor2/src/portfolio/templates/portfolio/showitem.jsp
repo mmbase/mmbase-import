@@ -1,5 +1,5 @@
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
 <%-- expires is set so renaming a folder does not show the old name --%>
 <mm:content postprocessor="none" expires="0">
 <mm:cloud jspvar="cloud" method="delegate" authenticate="asis">
@@ -94,7 +94,7 @@
       </di:hasrole>
 
       <%-- user may edit if he's the owner and this is not the assessment portfolio --%>
-      <mm:list nodes="$user" path="people,portfolios,folders" constraints="folders.number=$currentfolder and portfolios.m_type != 1" max="1">
+      <mm:list nodes="$user" path="people,portfolios,folders" constraints="folders.number=$currentfolder and [portfolios.type] != 1" max="1">
         <mm:import id="mayeditthis" reset="true">true</mm:import>
       </mm:list>
 
