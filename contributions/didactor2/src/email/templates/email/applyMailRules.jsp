@@ -4,7 +4,7 @@
 <%@include file="/shared/setImports.jsp"%>
 
 <mm:node number="$user">
-  <mm:relatednodes type="mailboxes" constraints="[mailboxes.type=0]" max="1">
+  <mm:relatednodes type="mailboxes" constraints="[mailboxes.type] = 0" max="1">
     <mm:field write="false" id="inbox" name="number"/>
     
     <mm:list nodes="$inbox" path="mailboxes1,subjectmailrule,mailboxes2" constraints="[mailboxes1.type]=0 AND [mailboxes2.type] != 0">
