@@ -8,7 +8,7 @@ import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.mmbase.module.JMSendMail;
+import org.mmbase.applications.email.SendMail;
 import org.mmbase.module.smtp.SMTPModule;
 import org.mmbase.module.Module;
 import org.mmbase.module.core.MMBase;
@@ -23,8 +23,8 @@ import org.mmbase.module.core.MMBase;
  * @since  MMBase-1.6
  */
 
-public class ExtendedJMSendMail extends JMSendMail {
-    private static Logger log=Logging.getLoggerInstance(ExtendedJMSendMail.class.getName());
+public class ExtendedJMSendMail extends SendMail {
+    private static final Logger log = Logging.getLoggerInstance(ExtendedJMSendMail.class);
 
     /**
      * Send mail with headers AND attachments
