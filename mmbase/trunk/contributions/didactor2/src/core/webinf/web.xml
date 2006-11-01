@@ -1,266 +1,198 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE web-app
-		PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
-		"http://java.sun.com/dtd/web-app_2_3.dtd">
-<web-app>
-	<context-param>
-		<param-name>filemanagementBaseUrl</param-name>
-		<param-value>${filemanagement.data.url}</param-value>
-	</context-param>
-	<context-param>
-		<param-name>filemanagementBaseDirectory</param-name>
-		<param-value>${filemanagement.data.directory}</param-value>
-	</context-param>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+         version="2.4">
+  <description>
+    Didactor is an open-source education environment based on MMBase.
+  </description>
 
-	<!-- Filter for jumpers -->
-	<filter>
-		<filter-name>Jumpers Filter</filter-name>
-		<display-name>Jumpers Filter</display-name>
-		<description>Filter used for jumpers</description>
-		<filter-class>org.mmbase.servlet.JumpersFilter</filter-class>
-	</filter>
+  <display-name>Didactor</display-name>
 
-	<filter-mapping>
-		<filter-name>Jumpers Filter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-
-	<!-- A servlet for testing purposes -->
-	<servlet>
-		<servlet-name>performance</servlet-name>
-		<display-name>Performance Servlet</display-name>
-		<description>Servlet used for testing purposes</description>
-		<servlet-class>org.mmbase.servlet.performance</servlet-class>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-
-	<!-- servdb, needed for some binary-stuff, like images -->
-	<servlet>
-		<servlet-name>servdb</servlet-name>
-		<display-name>Serdb Servlet</display-name>
-		<description>needed for some binary-stuff, like images</description>
-		<servlet-class>org.mmbase.servlet.servdb</servlet-class>
-		<load-on-startup>3</load-on-startup>
-	</servlet>
-
-	<!-- servjumpers -->
-	<servlet>
-		<servlet-name>servjumpers</servlet-name>
-		<servlet-class>org.mmbase.servlet.servjumpers</servlet-class>
-		<load-on-startup>4</load-on-startup>
-	</servlet>
-
-	<!-- dove, servlet for Dove protocol, which is used for communication with,
-			 and passing commands to, the MMBase system using an xml format -->
-	<servlet>
-		<servlet-name>dove</servlet-name>
-		<display-name>Dove</display-name>
-		<description>
-			 adds the Dove protocol, which is used for communication with,
-			 and passing commands to, the MMBase system using an xml format
-		</description>
-		<servlet-class>org.mmbase.applications.dove.servlet.DoveServlet</servlet-class>
-		<load-on-startup>5</load-on-startup>
-	</servlet>
-
-	<!-- EXTRASERVLETS -->
-
-	<!-- mapping for testing purposes -->
-	<servlet-mapping>
-		<servlet-name>performance</servlet-name>
-		<url-pattern>/performance.html</url-pattern>
-	</servlet-mapping>
+  <context-param>
+    <param-name>filemanagementBaseUrl</param-name>
+    <param-value>${filemanagement.data.url}</param-value>
+  </context-param>
+  <context-param>
+    <param-name>filemanagementBaseDirectory</param-name>
+    <param-value>${filemanagement.data.directory}</param-value>
+  </context-param>
+  <context-param>
+    <param-name>mmbase.taglib.eval_body_include</param-name>
+    <param-value>true</param-value>
+  </context-param>
 
 
-	<!-- mapping for image-requests -->
-	<servlet-mapping>
-		<servlet-name>servdb</servlet-name>
-		<url-pattern>/img.db</url-pattern>
-	</servlet-mapping>
+  <!-- Filter for jumpers -->
+  <filter>
+    <filter-name>Jumpers Filter</filter-name>
+    <display-name>Jumpers Filter</display-name>
+    <description>Filter used for jumpers</description>
+    <filter-class>org.mmbase.servlet.JumpersFilter</filter-class>
+  </filter>
 
-	<!-- mapping for attachment requests -->
-	<servlet-mapping>
-		<servlet-name>servdb</servlet-name>
-		<url-pattern>/attachment.db/*</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>servdb</servlet-name>
-		<url-pattern>/rastream.db</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>servdb</servlet-name>
-		<url-pattern>/rmstream.db</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>servdb</servlet-name>
-		<url-pattern>/xml.db</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>servdb</servlet-name>
-		<url-pattern>/dtd.db</url-pattern>
-	</servlet-mapping>
-
-	<!-- mapping for dove-requests -->
-	<servlet-mapping>
-		<servlet-name>dove</servlet-name>
-		<url-pattern>/xml/dove.xml</url-pattern>
-	</servlet-mapping>
-
-	<!-- Mime mappings for Apache Axis -->
-	<mime-mapping>
-		<extension>wsdl</extension>
-		 <mime-type>text/xml</mime-type>
-	</mime-mapping>
+  <filter-mapping>
+    <filter-name>Jumpers Filter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
 
 
-	<mime-mapping>
-		<extension>xsd</extension>
-		<mime-type>text/xml</mime-type>
-	</mime-mapping>
+  <!-- The MMBase image serving servlet. -->
+  <servlet>
+    <servlet-name>images</servlet-name>
+    <servlet-class>org.mmbase.servlet.ImageServlet</servlet-class>
+    <init-param>
+      <!-- Expire time of original images. Cached images never expire. -->
+      <param-name>expire</param-name>
+      <!-- 10 minutes (default is one hour)-->
+      <param-value>600</param-value>
+    </init-param>
+    <init-param>
+      <!-- Whether to accepts image conversion on the URL -->
+      <param-name>convert</param-name>
+      <param-value>false</param-value>
+    </init-param>
+    <init-param>
+      <!-- Field of image node to use for 'last modified' -->
+      <param-name>lastmodifiedfield</param-name>
+      <param-value></param-value>
+    </init-param>
+    <load-on-startup>2</load-on-startup>
+  </servlet>
 
-	<!-- Axis end -->
-	<mime-mapping>
-			<extension>
-					ram
-			</extension>
-			<mime-type>
-					audio/x-pn-realaudio
-			</mime-type>
-	</mime-mapping>
+  <!-- The MMBase attachment serving servlet. -->
+  <servlet>
+    <servlet-name>attachments</servlet-name>
+    <servlet-class>org.mmbase.servlet.AttachmentServlet</servlet-class>
+    <init-param>
+      <!-- Expire time of original images. Cached images never expire. -->
+      <param-name>expire</param-name>
+      <!-- 10 minutes (default is one hour)-->
+      <param-value>600</param-value>
+    </init-param>
+    <init-param>
+      <!-- Field of attachment node to use for 'last modified' -->
+      <param-name>lastmodifiedfield</param-name>
+      <param-value></param-value>
+    </init-param>
+    <load-on-startup>3</load-on-startup>
+  </servlet>
 
-	<mime-mapping>
-			<extension>
-					rm
-			</extension>
-			<mime-type>
-					audio/x-pn-realaudio
-			</mime-type>
-	</mime-mapping>
+  <!-- EXTRASERVLETS -->
 
-	<mime-mapping>
-			<extension>
-					rpm
-			</extension>
-			<mime-type>
-					audio/x-pn-realaudio-plugin
-			</mime-type>
-	</mime-mapping>
+  <!-- mapping for image-requests -->
+  <servlet-mapping>
+    <servlet-name>images</servlet-name>
+    <url-pattern>/img.db</url-pattern>
+  </servlet-mapping>
 
-	<mime-mapping>
-			<extension>
-					ra
-			</extension>
-			<mime-type>
-					audio/x-realaudio
-			</mime-type>
-	</mime-mapping>
+  <!-- mapping for attachment requests -->
+  <servlet-mapping>
+    <servlet-name>attachments</servlet-name>
+    <url-pattern>/attachment.db/*</url-pattern>
+  </servlet-mapping>
 
-	<mime-mapping>
-			<extension>
-					sram
-			</extension>
-			<mime-type>
-					audio/x-pn-realaudio
-			</mime-type>
-	</mime-mapping>
-
-	<mime-mapping>
-			<extension>
-					smil
-			</extension>
-			<mime-type>
-					application/smil
-			</mime-type>
-	</mime-mapping>
-
-	<mime-mapping>
-			<extension>
-					smi
-			</extension>
-			<mime-type>
-					application/smil
-			</mime-type>
-	</mime-mapping>
-
-	<mime-mapping>
-			<extension>
-					ssmil
-			</extension>
-			<mime-type>
-					application/smil
-			</mime-type>
-	</mime-mapping>
-
-	<mime-mapping>
-			<extension>
-					ssmil
-			 </extension>
-			 <mime-type>
-					application/smil
-			 </mime-type>
-	</mime-mapping>
-
-	<mime-mapping>
-			 <extension>
-					 rt
-			 </extension>
-			 <mime-type>
-					 application/x-pn-realmedia
-			 </mime-type>
-	</mime-mapping>
-
-	<mime-mapping>
-			 <extension>
-					srt
-			 </extension>
-			 <mime-type>
-					application/x-pn-realmedia
-			 </mime-type>
-	</mime-mapping>
-
-	<welcome-file-list>
-		<welcome-file>index.jsp</welcome-file>
-		<welcome-file>default.jsp</welcome-file>
-		<welcome-file>index.html</welcome-file>
-		<welcome-file>welcome.html</welcome-file>
-	</welcome-file-list>
-
-	<!-- Base taglibs for JSTL fmt -->
-	<taglib>
-		<taglib-uri>http://java.sun.com/jsp/jstl/fmt</taglib-uri>
-		<taglib-location>/WEB-INF/fmt.tld</taglib-location>
-	</taglib>
-
-	<!-- Base taglibs for MMBase and Didactor -->
-	<taglib>
-		<taglib-uri>http://www.mmbase.org/mmbase-taglib-1.0</taglib-uri>
-		<taglib-location>/WEB-INF/mmbase-taglib.tld</taglib-location>
-	</taglib>
-
-	<!-- Base taglibs for MMBase and Didactor -->
-	<taglib>
-		<taglib-uri>http://www.mmbase.org/mmbase-taglib-1.1</taglib-uri>
-		<taglib-location>/WEB-INF/mmbase-taglib-1.1.tld</taglib-location>
-	</taglib>
+  <!-- Mime mappings for Apache Axis -->
+  <mime-mapping>
+    <extension>wsdl</extension>
+    <mime-type>text/xml</mime-type>
+  </mime-mapping>
 
 
-	<taglib>
-		<taglib-uri>http://www.didactor.nl/ditaglib_1.0</taglib-uri>
-		<taglib-location>/WEB-INF/taglib.tld</taglib-location>
-	</taglib>
+  <mime-mapping>
+    <extension>xsd</extension>
+    <mime-type>text/xml</mime-type>
+  </mime-mapping>
 
-	<!-- Os-cache -->
-	<taglib>
-		<taglib-uri>oscache</taglib-uri>
-		<taglib-location>/WEB-INF/oscache.tld</taglib-location>
-	</taglib>
+  <!-- Axis end -->
+  <mime-mapping>
+    <extension>ram</extension>
+    <mime-type>audio/x-pn-realaudio</mime-type>
+  </mime-mapping>
 
-	<!-- 
-	EXTRATAGLIB
-	-->
-		
+  <mime-mapping>
+    <extension>rm</extension>
+    <mime-type>audio/x-pn-realaudio</mime-type>
+  </mime-mapping>
+
+  <mime-mapping>
+    <extension>rpm</extension>
+    <mime-type>audio/x-pn-realaudio-plugin</mime-type>
+  </mime-mapping>
+
+  <mime-mapping>
+    <extension>ra</extension>
+    <mime-type>audio/x-realaudio</mime-type>
+  </mime-mapping>
+
+  <mime-mapping>
+    <extension>sram</extension>
+    <mime-type>audio/x-pn-realaudio</mime-type>
+  </mime-mapping>
+
+  <mime-mapping>
+    <extension>smil</extension>
+    <mime-type>application/smil</mime-type>
+  </mime-mapping>
+
+  <mime-mapping>
+    <extension>smi</extension>
+    <mime-type>application/smil</mime-type>
+  </mime-mapping>
+
+  <mime-mapping>
+    <extension>ssmil</extension>
+    <mime-type>application/smil</mime-type>
+  </mime-mapping>
+
+  <mime-mapping>
+    <extension>ssmil</extension>
+    <mime-type>application/smil</mime-type>
+  </mime-mapping>
+
+  <mime-mapping>
+    <extension>rt</extension>
+    <mime-type>application/x-pn-realmedia</mime-type>
+  </mime-mapping>
+
+  <mime-mapping>
+    <extension>srt</extension>
+    <mime-type>application/x-pn-realmedia</mime-type>
+  </mime-mapping>
+
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>welcome.html</welcome-file>
+  </welcome-file-list>
+
+  <taglib>
+    <taglib-uri>http://www.didactor.nl/ditaglib_1.0</taglib-uri>
+    <taglib-location>/WEB-INF/taglib.tld</taglib-location>
+  </taglib>
+
+  <!--
+       EXTRATAGLIB
+  -->
+  <error-page>
+    <error-code>400</error-code>
+    <location>/mmbase/errorpages/400.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>403</error-code>
+    <location>/mmbase/errorpages/403.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>404</error-code>
+    <location>/mmbase/errorpages/404.jsp</location>
+  </error-page>
+  <error-page>
+    <exception-type>java.lang.Exception</exception-type>
+    <location>/mmbase/errorpages/500.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>503</error-code>
+    <location>/mmbase/errorpages/503.jsp</location>
+  </error-page>
 </web-app>
