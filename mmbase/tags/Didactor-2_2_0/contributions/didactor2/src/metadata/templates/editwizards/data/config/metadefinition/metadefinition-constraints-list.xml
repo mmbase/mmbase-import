@@ -1,0 +1,48 @@
+<list destination="metadefinition" role="constraints" minoccurs="0" maxoccurs="*">
+      <title xml:lang="nl">Beperking voor metadefinitie</title>
+      <title xml:lang="en">Restrictions for metadefinitie</title>
+      <item>
+        <field name="name" ftype="data" dtminlength="1" >
+          <prompt xml:lang="nl">Metadefinitie waarde</prompt>
+          <prompt xml:lang="en">Metadefinition value</prompt>
+        </field>
+
+        <field fdatapath="field[@name='type']" ftype="enum" >
+            <prompt xml:lang="nl">Constraint type</prompt>
+            <prompt xml:lang="en">Constraint type</prompt>
+            <optionlist select="constraint_type" />
+        </field>
+
+
+        <field fdatapath="field[@name='minvalues']" ftype="line" dttype="int" dtmin="1" dtmaxlength="4" dtminlength="1" />
+        <field fdatapath="field[@name='maxvalues']" ftype="line" dttype="int" dtmin="1" dtmaxlength="4" dtminlength="1" />
+
+        <field ftype="startwizard" wizardname="config/metadefinition/metadefinition" />
+
+      </item>
+
+     <action type="create">
+       <relation destinationtype="metadefinition" role="constraints" />
+     </action>
+
+    <command name="search" nodepath="metadefinition" fields="name,type,handler" age="-1" orderby="number" directions="down" >
+      <prompt xml:lang="nl">Zoeken naar metadata definities</prompt>
+      <prompt xml:lang="en">Search for metadata definitions</prompt>
+      <search-filter>
+        <name xml:lang="nl">Naam bevat</name>
+        <name xml:lang="en">Name contains</name>
+        <search-fields>name</search-fields>
+      </search-filter>
+      <search-filter>
+        <name xml:lang="nl">Type bevat</name>
+        <name xml:lang="en">Type contains</name>
+        <search-fields>type</search-fields>
+      </search-filter>
+      <search-filter>
+        <name xml:lang="nl">Handler</name>
+        <name xml:lang="en">Handler</name>
+        <search-fields>handler</search-fields>
+      </search-filter>
+    </command>
+
+</list>

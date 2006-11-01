@@ -1,0 +1,6 @@
+<component name="cms" templatepath="cms" templatebar="provider" barposition="80">
+  <scope name="component" referid="component">
+  </scope>
+  <scope name="providers" referid="provider">
+  </scope>
+</component>
