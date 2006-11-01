@@ -1,11 +1,10 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"%>
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%>
 <mm:content postprocessor="reducespace">
-<mm:cloud method="delegate" jspvar="cloud">
-
-<%@include file="/shared/setImports.jsp" %>
-<%@include file="/education/wizards/roles_defs.jsp" %>
+<mm:cloud method="delegate">
+<jsp:directive.include file="/shared/setImports.jsp" />
+<jsp:directive.include file="roles_defs.jsp" />
 
 <mm:import id="wizardlang">en</mm:import>
 <mm:compare referid="language" value="nl">
@@ -41,7 +40,7 @@
     <script type="text/javascript" src="<mm:treefile page="/editwizards/javascript/list.js" objectlist="$includePath" referids="$referids"/>"></script>
     <body>
       <mm:import id="editcontextname" reset="true">rollen</mm:import>
-      <%@include file="/education/wizards/roles_chk.jsp" %>
+      <jsp:directive.include file="roles_chk.jsp" />
       <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
         <form name="roleform" action="<mm:treefile page="/education/wizards/roles_cmd.jsp" objectlist="$includePath" referids="$referids"/>" method="post">
           <input type="hidden" name="command" value="-1">
@@ -96,7 +95,7 @@
                   <mm:field name="number" jspvar="dummy" vartype="String">
                     <% sSelectFullName = sSelectName + dummy; %>
                   </mm:field>
-                  <mm:import id="rights">0</mm:import>
+                  <mm:import id="rights" reset="true">0</mm:import>
                   <mm:related path="posrel,editcontexts" constraints="editcontexts.number='$this_editcontext'">
                     <mm:import id="rights" reset="true"><mm:field name="posrel.pos"/></mm:import>
                   </mm:related>
