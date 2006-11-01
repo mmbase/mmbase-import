@@ -1,38 +1,33 @@
 package nl.didactor.builders;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.util.ResourceLoader;
+import org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.database.MultiConnection;
 import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
-import org.mmbase.util.XMLApplicationReader;
+import org.mmbase.util.xml.ApplicationReader;
 import org.mmbase.util.xml.BuilderReader;
 
-import java.util.Hashtable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Iterator;
-import java.util.Vector;
+import java.util.*;
 import java.io.File;
 
-import java.sql.Statement;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 import nl.didactor.component.Component;
 import nl.didactor.component.BasicComponent;
+
 /**
- * This class provides extra functionality for the People builder. It
- * can encrypt the password of a user, and return a bridge.Node for
- * a given username/password combination
+ *
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
+ * @version $Id: ComponentBuilder.java,v 1.9 2006-11-01 10:05:05 mmeeuwissen Exp $
  */
 public class ComponentBuilder extends AbstractSmartpathBuilder {
-    private org.mmbase.util.Encode encoder = null;
-    private static Logger log = Logging.getLoggerInstance(ComponentBuilder.class.getName());
+
+    private static final Logger log = Logging.getLoggerInstance(ComponentBuilder.class);
 
     /**
      * Initialize this builder
@@ -40,7 +35,7 @@ public class ComponentBuilder extends AbstractSmartpathBuilder {
     public boolean init() {
         super.init();
         NodeSearchQuery query = new NodeSearchQuery(this);
-        Vector v = new Vector();
+        List v = new ArrayList();
 
         //register all components
         try {
@@ -121,26 +116,15 @@ public class ComponentBuilder extends AbstractSmartpathBuilder {
      * Note: inheritance will make this a little hard!.
      */
     private void initBuilders() {
-        initBuilders(MMBaseContext.getConfigPath() + File.separator + "builders" + File.separator);    
-    }
-
-    private void initBuilders(String path) {
-        File bdir = new File(path);
-        if (bdir.isDirectory() && bdir.canRead()) {
-            log.service("Reading all builders of directory " + bdir);
-            String files[] = bdir.list();
-            if (files != null) {
-                for (int i = 0; i < files.length; i++) {
-                    String bname = files[i];
-                    if (bname.endsWith(".xml")) {
-                        bname = bname.substring(0, bname.length() - 4);
-                        initBuilder(path, bname);
-                    } else if (bdir.isDirectory()) {
-                        initBuilders(path + bname + File.separator);
-                    }
-                }
-            } else {
-                log.error("Cannot find builders in " + path);
+        Iterator i = MMBase.getMMBase().getBuilderLoader().getResourcePaths(ResourceLoader.XML_PATTERN, true).iterator();
+        while (i.hasNext()) {
+            try {
+                String builder = (String) i.next();
+                String path = ResourceLoader.getDirectory(builder);
+                String bname = ResourceLoader.getName(builder);
+                initBuilder(path, bname);
+            } catch (Exception e) {
+                log.error(e);
             }
         }
     }
@@ -149,28 +133,27 @@ public class ComponentBuilder extends AbstractSmartpathBuilder {
      * This method will verify that all the fields specified in the builder XML
      * are also in the database. If not, the field will be created in the database.
      */
-    private void initBuilder(String path, String builderName) {
+    private void initBuilder(String path, String builderName) throws java.io.IOException {
         if (!getMMBase().getBuilder(builderName).created()) {
             // Builder is not yet created in database, so there is no work for us
             return;
-        }
-
-        BuilderReader parser = new BuilderReader(path + builderName + ".xml", getMMBase());
+        }        
+        BuilderReader parser = new BuilderReader(getMMBase().getBuilderLoader().getInputSource(path + "/" + builderName + ".xml"), getMMBase());
         String status = parser.getStatus();
         if (status.equals("active")) {
             HashMap columns = new HashMap();
-            MultiConnection con = null;
+            Connection con = null;
             Statement stmt = null;
             MMObjectBuilder builder = getMMBase().getBuilder(builderName);
             try {
-                con = getMMBase().getConnection();
+                con = ((DatabaseStorageManagerFactory) getMMBase().getStorageManagerFactory()).getDataSource().getConnection();
                 DatabaseMetaData meta = con.getMetaData();
 
                 String tableName = getMMBase().getBaseName() + "_" + builder.getTableName();
 
                 // If we use the new storage, we do it the 'cleaner' way
                 if (getMMBase().getStorageManagerFactory() != null) {
-                    tableName = (String)getMMBase().getStorageManagerFactory().getStorageIdentifier(builder);
+                    tableName = (String) getMMBase().getStorageManagerFactory().getStorageIdentifier(builder);
                 }
 
                 tableName = tableName.toUpperCase();
@@ -193,12 +176,14 @@ public class ComponentBuilder extends AbstractSmartpathBuilder {
             } catch (SQLException e) {
                 log.error(e);
             } finally {
-                getMMBase().closeConnection(con, stmt);
+                try {if (con != null) con.close(); } catch (Exception e) {}
+                try {if (stmt != null) stmt.close();} catch (Exception e) {}
             }
 
-            Vector fields = parser.getFieldDefs();
-            for (int i=0; i<fields.size(); i++) {
-                FieldDefs fdef = (FieldDefs)fields.get(i);
+            Collection fields = parser.getFields();
+            Iterator it = fields.iterator();
+            while (it.hasNext()) {
+                FieldDefs fdef = (FieldDefs) it.next();
                 if (fdef.getDBState() == FieldDefs.DBSTATE_VIRTUAL) {
                     continue;
                 }
@@ -211,23 +196,29 @@ public class ComponentBuilder extends AbstractSmartpathBuilder {
                     }
                     id = ((String)fdef.getStorageIdentifier()).toUpperCase();
                 } else {
-                    id = mmb.getDatabase().getAllowedField(id).toUpperCase();
+                    id = ("" + mmb.getStorageManagerFactory().getStorageIdentifier(id)).toUpperCase();
                 }
 
-                if (!columns.containsKey(id)) {
-                    log.error("Builder '" + builderName + "' does not have field '" + id + "' in the database, creating it");
+                if (false && !columns.containsKey(id)) { // switched off, because it doesn't work well
+                    log.info("Builder '" + builderName + "' does not have field '" + id + "' in the database, creating it");
                     try {
                         if (getMMBase().getStorageManagerFactory() != null) {
                             getMMBase().getStorageManagerFactory().getStorageManager().create(fdef);
                             // The verify() method of the database storage manager just made this field nonpersistent,
                             // we undo that damage here.
-                            builder.getField(fdef.getDBName()).setDBState(FieldDefs.DBSTATE_PERSISTENT);
+                            FieldDefs cf = builder.getField(fdef.getName());
+                            if (cf != null) {
+                                cf.setDBState(FieldDefs.DBSTATE_PERSISTENT);
+                            } else {
+                                log.error("No such field " + fdef.getName());
+                            }
                         } else {
                             // Old storage ... call is not implemented unfortunately
-                            getMMBase().getDatabase().addField(builder, fdef.getDBName());
+                            builder.addField(fdef);
+                            //getMMBase().getDatabase().addField(builder, fdef.getDBName());
                         }
                     } catch (Exception e) {
-                        log.error(e);
+                        log.error(e.getMessage(), e);
                     }
                 }
             }
@@ -258,12 +249,12 @@ public class ComponentBuilder extends AbstractSmartpathBuilder {
             while (it.hasNext()) {
                 MMObjectNode appNode = (MMObjectNode)it.next();
                 String appname = appNode.getStringValue("name");
-                String path = MMBaseContext.getConfigPath() + File.separator + "applications" + File.separator;
-                if (!new File(path + appname + ".xml").exists()) {
+                String path = "applications/";
+                if (! ResourceLoader.getConfigurationRoot().getResource(path + appname + ".xml").openConnection().getDoInput()) {
                     log.warn("Application '" + appname + "' is in the Versions table, but application XML file cannot be loaded.");
                     continue;
                 }
-                XMLApplicationReader app = new XMLApplicationReader(path + appname + ".xml");
+                ApplicationReader app = new ApplicationReader(ResourceLoader.getConfigurationRoot().getInputSource(path + appname + ".xml"));
 
                 Vector neededRelDefs = app.getNeededRelDefs();
                 for (int i=0; i<neededRelDefs.size(); i++) {
@@ -279,7 +270,7 @@ public class ComponentBuilder extends AbstractSmartpathBuilder {
                         builder = getMMBase().getTypeDef().getIntValue(buildername);
                     }
                     if (builder <= 0) {
-                        builder = getMMBase().getInsRel().oType;
+                        builder = getMMBase().getInsRel().getObjectType();
                     }
 
                     int dir = 0;
