@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * a 'head', 'body' and 'process' view.
  *
  * @author Johannes Verelst
- * @version $Id: Block.java,v 1.14 2006-10-31 22:21:45 michiel Exp $
+ * @version $Id: Block.java,v 1.15 2006-11-02 09:13:16 johannes Exp $
  * @since MMBase-1.9
  */
 public class Block {
@@ -55,6 +55,13 @@ public class Block {
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * Mimetype for this block.
+     */
+    public String getMimeType() {
+        return mimetype;
     }
 
     /**
