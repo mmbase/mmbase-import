@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.31 2006-10-06 12:57:37 michiel Exp $
+ * @version $Id: NodeListHelper.java,v 1.32 2006-11-02 19:21:31 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -357,7 +357,8 @@ public class NodeListHelper implements ListProvider {
         if (t != null) {
             t.haltTimer(timerHandle);
         }
-
+        doFinally();
+        previousValue = null;
         return EVAL_PAGE;
     }
 
