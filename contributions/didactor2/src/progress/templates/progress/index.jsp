@@ -222,7 +222,6 @@
             </tr>
           </table>
 
-          <mm:log>doei</mm:log>
           <% if (showNextLink) { %>
             <span style="float: right">
               <a href="<mm:treefile  page="/progress/index.jsp" objectlist="$includePath" referids="$referids"><mm:param name="startAt"><%= startAt + 15 %></mm:param></mm:treefile>">
