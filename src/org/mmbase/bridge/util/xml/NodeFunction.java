@@ -51,7 +51,7 @@ import org.apache.xpath.XPathAPI;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.18 2006-10-11 14:39:11 michiel Exp $
+ * @version $Id: NodeFunction.java,v 1.19 2006-11-02 10:24:41 michiel Exp $
  * @since   MMBase-1.6
  */
 
@@ -76,7 +76,7 @@ public  class NodeFunction {
 
     /**
      * Note: Saxon cannnot distinguish this function from {@link #function(Cloud, String, String)},
-     * consider using {@link saxonFunction(Object, String, String)} in stead.
+     * consider using {@link #saxonFunction(Object, String, String)} in stead.
      * @param  cloudName The name of the Cloud.
      * @param  number  The number (or alias) of the Node
      * @param  function The function (with arguments).
@@ -94,14 +94,15 @@ public  class NodeFunction {
 
     /**
      * Note: Saxon cannnot distinguish this function from {@link #function(String, String, String)},
-     * consider using {@link saxonFunction(Object, String, String)} in stead.
+     * consider using {@link #saxonFunction(Object, String, String)} in stead.
      */
     public static String function(Cloud cloud, String number, String function) {
         return function(cloud, number, function, "");
     }
 
     /**
-     * Saxon cannot distinguish the above two functions ({@link $function(String, String, String)}, {@link #function(Cloud, String, String)}). So, you can help it and use this one in stead.
+     * Saxon cannot distinguish the above two functions ({@link #function(String, String, String)},
+     * {@link #function(Cloud, String, String)}). So, you can help it and use this one in stead.
      * @since MMBase-1.9
      */
     public static String saxonFunction(Object cloud, String number, String function) {
