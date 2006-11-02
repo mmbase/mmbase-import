@@ -12,9 +12,12 @@ import java.io.*;
 import org.mmbase.util.functions.*;
 
 /**
- * A Renderer renders a certain aspect of a {@link Block}. Currently every block has two renderers, which are identified by the renderer 'type' (see {@link #getType }).
+ * A Renderer renders a certain aspect of a {@link Block}. Currently every block has two renderers,
+ * which are identified by the renderer 'type' (see {@link #getType }). Every block also has a
+ * {@link Processor}, which is similar to a Renderer, but a processor never generates contents, only
+ * handles interaction.
  * @author Michiel Meeuwissen
- * @version $Id: Renderer.java,v 1.8 2006-11-02 10:21:44 michiel Exp $
+ * @version $Id: Renderer.java,v 1.9 2006-11-02 10:49:56 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Renderer {
@@ -24,8 +27,7 @@ public interface Renderer {
     enum Type {
         /**
          * Rendering for 'HEAD' typically happens in the &lt;head&gt; block of HTML, and can
-         * e.g. produces links to javascript. Also it could handle form-posts, and decide that
-         * further rendering is impossible (access denied or so.
+         * e.g. produces links to javascript.
          */
         HEAD,
        /**
@@ -56,7 +58,10 @@ public interface Renderer {
      */
     Block getBlock();
 
-
+    /**
+     * A renderer may need certain parameters. These are added to the block-parameters. This method
+     * is called on instantation of the renderer.
+     */
     Parameter[] getParameters();
 
     /**

@@ -21,34 +21,30 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
- * A Processor implmentation based on a jsp.
+ * A Processor implementation based on a jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JspProcessor.java,v 1.4 2006-10-25 20:28:23 michiel Exp $
+ * @version $Id: JspProcessor.java,v 1.5 2006-11-02 10:49:56 michiel Exp $
  * @since MMBase-1.9
  */
 public class JspProcessor extends AbstractProcessor {
     private static final Logger log = Logging.getLoggerInstance(JspProcessor.class);
 
-    public static Parameter ESSENTIAL = new Parameter.Wrapper(Parameter.RESPONSE, Parameter.REQUEST);
-
     protected final String path;
-    private final Block parent;
 
     public JspProcessor(String p, Block parent) {
-        super();
+        super(parent);
         path = p;
-        this.parent = parent;
     }
 
     public String getPath() {
         return path;
     }
 
-
-    public Parameters createParameters() {
-        return new Parameters(ESSENTIAL, getSpecificParameters()); 
+    public Parameter[] getParameters() {
+        return new Parameter[] {Parameter.RESPONSE, Parameter.REQUEST};
     }
+
 
 
     public void process(Parameters blockParameters, Parameters frameworkParameters) throws IOException {
