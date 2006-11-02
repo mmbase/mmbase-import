@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * components, and may be requested several blocks.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicComponent.java,v 1.16 2006-10-31 22:21:45 michiel Exp $
+ * @version $Id: BasicComponent.java,v 1.17 2006-11-02 10:49:56 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicComponent implements Component {
@@ -125,11 +125,7 @@ public class BasicComponent implements Component {
         }
         Parameter[] params = Parameter.readArrayFromXml(processorElement);
         if (params.length > 0) { // a bit to simple, how can you explicitely make a processor parameter-less now?
-            if (processor instanceof AbstractProcessor) {
-                ((AbstractProcessor) processor).addParameters(params);
-            } else {
-                log.warn("Don't know how to add parameters to " + processor);
-            }
+            b.addParameters(params);
         }
         return processor;
 

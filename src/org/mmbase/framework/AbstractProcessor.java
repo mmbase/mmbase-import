@@ -16,23 +16,26 @@ import org.mmbase.util.functions.*;
  * Abstract view implementation which implements getType and the specific parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractProcessor.java,v 1.1 2006-10-13 12:20:50 johannes Exp $
+ * @version $Id: AbstractProcessor.java,v 1.2 2006-11-02 10:49:56 michiel Exp $
  * @since MMBase-1.9
  */
 abstract public class AbstractProcessor implements Processor {
 
-    protected final List<Parameter> specific = new ArrayList<Parameter>();
+    public static Processor getEmpty(final Block b)  {
+        return new Processor() {
+            public Block getBlock() { return b; }
+            public Parameter[] getParameters() { return Parameter.EMPTY; }
+            public void process(Parameters blockParameters, Parameters frameworkParameters) { }
+        };
+    }
+    protected final Block parent;
 
-    public AbstractProcessor() {
+    public AbstractProcessor(Block p) {
+        parent = p;
     }
 
-    public void addParameters(Parameter... params) {
-        for (Parameter p : params) {
-            specific.add(p);
-        }
+    public Block getBlock() {
+        return parent;
     }
 
-    protected Parameter.Wrapper getSpecificParameters() {
-        return new Parameter.Wrapper(specific.toArray(Parameter.EMPTY)); 
-    }
 }

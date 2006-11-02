@@ -9,26 +9,31 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.framework;
 import java.io.*;
+import org.mmbase.util.functions.Parameter;
 import org.mmbase.util.functions.Parameters;
 
 /**
- * A View is a thing that can actually be rendered, and can be returned by a {@link Component}.
+ * A Processor handles interaction of a {@link Block}. It is like a {@link Renderer}, but it renders
+ * nothing, it only can change the state of the block, and hence influence the renderers.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Processor.java,v 1.3 2006-10-16 09:04:26 johannes Exp $
+ * @version $Id: Processor.java,v 1.4 2006-11-02 10:49:56 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Processor {
 
-    public static final Processor EMPTY = new Processor() {
-            public Parameters createParameters() { return Parameters.VOID; }
-            public void process(Parameters blockParameters, Parameters frameworkParameters) { }
-        };
+
     /**
-     * Before rendering, it may have to be fed with certain parameters. Obtain a parameters
-     * object which this method, fill it, and feed it back into {@link #render}.
+     * Every processor processes for a certain block.
      */
-    Parameters createParameters();
+    Block getBlock();
+
+
+    /**
+     * A processor may need certain parameters. These are added to the block-parameters. This method
+     * is called on instantation of the processor.
+     */
+    Parameter[] getParameters();
 
     /**
      * Process. In case of e.g. a JSPProcessor, the parameters must also contain
