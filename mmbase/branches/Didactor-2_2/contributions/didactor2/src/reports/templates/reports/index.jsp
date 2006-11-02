@@ -77,7 +77,9 @@
 <%
     String imgurl = request.getRequestURL().substring(0, request.getRequestURL().indexOf("//")+2 )+ request.getServerName() +":" + request.getServerPort()+imageurl;
     try {
-      pdfDocumentElements.put( "element0", Image.getInstance(new java.net.URL( imgurl )) );
+      Image imgLogo = Image.getInstance(new java.net.URL( imgurl ));
+      imgLogo.setAlignment(Image.ALIGN_RIGHT);
+      pdfDocumentElements.put( "element0", imgLogo );
     } catch (Exception excImg) {}
   %> 
 
@@ -204,11 +206,14 @@
   				<mm:import id="logintitle" jspvar="logintitle"><di:translate key="reports.login" /></mm:import>
           
   				<%
-            pdfDocumentElements.put( "element1", new Paragraph( logintitle, font_title ) ); 
+  				  Paragraph p1 = new Paragraph( logintitle, font_title );
+				  p1.setAlignment(Image.ALIGN_LEFT);
+            	  pdfDocumentElements.put( "element1", p1 ); 
           %> 
   
   				<%
   					Table table1 = new Table( 2 );
+            		table1.setAlignment(Table.ALIGN_LEFT);
   					table1.setPadding(2);
   					table1.setAlignment( Element.ALIGN_LEFT );
   					table1.setWidth( 60 );
@@ -273,6 +278,7 @@
   				
   				<%
   					 Table table2 = new Table( 2 );
+             		 table2.setAlignment(Table.ALIGN_LEFT);
   					 table2.setPadding(3);
   				%>
   				
@@ -341,7 +347,10 @@
   	        </a><br/><br/>
   	      </div>
   				<mm:import id="educationtitle" jspvar="educationtitle"><di:translate key="reports.education" /></mm:import>
-  				<% pdfDocumentElements.put( "element1", new Paragraph( educationtitle, font_title ) ); %> 
+  				<% 
+  				Paragraph p3 = new Paragraph( educationtitle, font_title );
+  	      		p3.setAlignment(Paragraph.ALIGN_LEFT);
+  				pdfDocumentElements.put( "element1", p3 ); %> 
   				<mm:import id="size" jspvar="size" vartype="Integer">0</mm:import>
   				<mm:listnodes path="educations,classes" constraints="classes.number=$classnumber">
   					<mm:import id="size" jspvar="size" reset="true" vartype="Integer"><mm:size /></mm:import>
@@ -349,6 +358,7 @@
   
   				<%
   					 Table table = new Table( size.intValue() + 1 );
+             		 table.setAlignment(Table.ALIGN_LEFT);
   				 	 table.setWidth( 100 );
   					 table.setPadding( 3 );
   				 	 Cell cell1= new Cell( new Phrase( student, font_table_header ) );
@@ -426,7 +436,10 @@
   	        </a><br/><br/>
   	      </div>
   				<mm:import id="pagetitle" jspvar="pagetitle"><di:translate key="reports.page" /></mm:import>
-  				<% pdfDocumentElements.put( "element1", new Paragraph( pagetitle, font_title ) ); %> 
+  				<% 
+        		Paragraph p4 = new Paragraph( pagetitle, font_title );
+          		p4.setAlignment(Paragraph.ALIGN_LEFT);
+          		pdfDocumentElements.put( "element1", p4); %> 
   
           <% 
             java.util.ArrayList pages = new java.util.ArrayList(); // list with titles of all pages
@@ -458,7 +471,8 @@
                  columnNum = size.intValue() - (offset.intValue() - 1)*COLUMNS_PER_PAGE;
              
   					 Table table = new Table( columnNum + 1 );
-  					 table.setWidth( 100 );
+             		 table.setAlignment(Table.ALIGN_LEFT);
+             		 table.setWidth( 100 );
   					 table.setPadding(3);
   				 	 Cell cell1= new Cell( new Phrase( student, font_table_header ) );
   				   cell1.setHorizontalAlignment( Element.ALIGN_CENTER );
@@ -566,7 +580,10 @@
   	        </a><br/><br/>
   				</div>
   				<mm:import id="testtitle" jspvar="testtitle"><di:translate key="reports.test" /></mm:import>
-  				<% pdfDocumentElements.put( "element1", new Paragraph( testtitle, font_title ) ); %> 
+  				<% 
+          		Paragraph p5 = new Paragraph( testtitle, font_title );
+          		p5.setAlignment(Paragraph.ALIGN_LEFT);
+  				pdfDocumentElements.put( "element1", p5 ); %> 
   
           <% 
             java.util.ArrayList tests = new java.util.ArrayList(); // list with titles of all tests
@@ -601,7 +618,8 @@
              int extraColumns = 2;
   					 if( pageNumber > 1 )
   						 extraColumns++;
-             Table table = new Table( columnNum + extraColumns );
+             		 Table table = new Table( columnNum + extraColumns );
+             		 table.setAlignment(Table.ALIGN_LEFT);
   					 table.setWidth(100);
   					 table.setPadding(3);
   				 	 Cell cell1= new Cell(new Phrase( student, font_table_header ) );
@@ -887,15 +905,19 @@
   			        </a><br/><br/>
   						</div>
   						<mm:import id="statisticforperiod" jspvar="statisticforperiod"><di:translate key="reports.document" /></mm:import>
-  					<% 
+  					<%
   						pdfDocumentElements.put( "element1", new Phrase( statisticforperiod, font_title ) ); 
-  						pdfDocumentElements.put( "element2", new Phrase( "   " + new java.util.Date( startTime ) + "   -   ", font_title ) ); 
+ 		          		Paragraph p6 = new Paragraph( "\r\n", font_title );
+ 		          		p6.setAlignment(Paragraph.ALIGN_LEFT);
+              			pdfDocumentElements.put( "element11", new Phrase( "\r\n\r\n", font_title ) ); 
+  						pdfDocumentElements.put( "element2", new Phrase( new java.util.Date( startTime ) + "   -   ", font_title ) ); 
   						pdfDocumentElements.put( "element3", new Phrase( new java.util.Date( endTime ) + "", font_title ) ); 
   					%> 
   
   
   					<%
   						 Table table = new Table( 3 );
+               			 table.setAlignment(Table.ALIGN_LEFT);
   						 table.setPadding(3);
   					%>
   					
