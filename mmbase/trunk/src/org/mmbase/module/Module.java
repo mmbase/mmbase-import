@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.84 2006-10-16 12:56:57 pierre Exp $
+ * @version $Id: Module.java,v 1.85 2006-11-02 13:50:27 michiel Exp $
  */
 public abstract class Module extends FunctionProvider {
 
@@ -336,6 +336,9 @@ public abstract class Module extends FunctionProvider {
         }
     }
 
+    /**
+     * @since MMBase-1.8.3
+     */
     public static boolean hasModule(String name) {
         boolean check = modules.containsKey(name.toLowerCase());
         if (!check) {
