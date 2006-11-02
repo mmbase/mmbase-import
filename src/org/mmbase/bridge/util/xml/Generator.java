@@ -23,7 +23,7 @@ import org.mmbase.util.xml.XMLWriter;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.43 2006-10-14 14:35:39 nklasens Exp $
+ * @version $Id: Generator.java,v 1.44 2006-11-02 10:24:41 michiel Exp $
  * @since  MMBase-1.6
  */
 public class Generator {
@@ -69,7 +69,7 @@ public class Generator {
 
     /**
      * Returns an estimation on how long it took to construct the document. 
-     * @returns a duration in nanoseconds.
+     * @return a duration in nanoseconds.
      * @since MMBase-1.9
      */
     public long getCost() {
