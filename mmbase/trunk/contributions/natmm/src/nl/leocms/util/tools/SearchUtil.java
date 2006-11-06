@@ -24,7 +24,7 @@ import nl.leocms.util.tools.HtmlCleaner;
  * Utilities functions for the search pages
  *
  * @author H. Hangyi
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class SearchUtil {
 
@@ -286,7 +286,7 @@ public class SearchUtil {
 		String sQuery,
       int index,
       String path,
-      String rootRubriek,
+      String sRubriekNumber,
 		String sPoolNumber,
       long nowSec,
 		long fromTime,
@@ -320,7 +320,7 @@ public class SearchUtil {
                Document doc = hits.doc(i);
                String docNumber = doc.get("node");
                if (path != null) {
-                  hsetNodes.addAll(calculate(cloud, path, rootRubriek, sPoolNumber,
+                  hsetNodes.addAll(calculate(cloud, path, sRubriekNumber, sPoolNumber,
                                docNumber, nowSec, fromTime, toTime,
                                searchArchive, hsetPagesNodes)) ;
                }
@@ -338,7 +338,7 @@ public class SearchUtil {
    public HashSet addPages(
       Cloud cloud,
       String path,
-      String rootRubriek,
+      String sRubriekNumber,
       String sPoolNumber,
       long nowSec,
       long fromTime,
@@ -350,9 +350,8 @@ public class SearchUtil {
       String sBuiderName = getBuilderName(path);
       NodeList nl = cloud.getList(null, path, sBuiderName + ".number", null, null, null, null, true);
       for (int i = 0; i < nl.size(); i++) {
-         String docNumber = nl.getNode(i).getStringValue(sBuiderName +
-            ".number");
-         hsetNodes.addAll(calculate(cloud, path, rootRubriek, sPoolNumber,
+         String docNumber = nl.getNode(i).getStringValue(sBuiderName + ".number");
+         hsetNodes.addAll(calculate(cloud, path, sRubriekNumber, sPoolNumber,
                                docNumber, nowSec, fromTime, toTime,
                                searchArchive, hsetPagesNodes)) ;
       }
@@ -364,7 +363,7 @@ public class SearchUtil {
    public static HashSet calculate(
       Cloud cloud,
       String path,
-      String rootRubriek,
+      String sRubriekNumber,
       String sPoolNumber,
       String docNumber,
       long nowSec,
@@ -376,20 +375,12 @@ public class SearchUtil {
       HashSet hsetNodes = new HashSet();
       String sBuiderName = getBuilderName(path);
       String sConstraints = "";
-      if (!sBuiderName.equals("producttypes")
-          && !sBuiderName.equals("documents")) { // exclude builders that do not have embargo and verloopdatum
-         if (!searchArchive) {
-            sConstraints = "(" + sBuiderName + ".use_verloopdatum='0') OR ( " +
-               sBuiderName + ".verloopdatum > '" + nowSec + "')";
-         }
-         if (fromTime < toTime) {
-            if (!sConstraints.equals("")) {
-               sConstraints += " AND ";
-            }
+      if(fromTime < toTime) {
+         // exclude builders that do not have embargo and verloopdatum
+         if(!sBuiderName.equals("producttypes") && !sBuiderName.equals("documents")) {
             sConstraints += "( " + sBuiderName + ".embargo > '" + fromTime +
                "') AND (" + sBuiderName + ".embargo < '" + toTime + "')";
          }
-         log.debug("embargo and verloopdatum constraint " + sConstraints);
       }
       NodeList list = cloud.getList(docNumber, path, "pagina.number," +
                                     sBuiderName + ".number",
@@ -399,16 +390,18 @@ public class SearchUtil {
          if (docNumber.equals("")){
             docNumber = list.getNode(j).getStringValue(sBuiderName + ".number");
          }
-         if (rootRubriek.equals("") ||
-             PaginaHelper.getSubsiteRubriek(cloud, paginaNumber).equals(rootRubriek)) {
-            log.debug("pagina " + paginaNumber + " belongs to subsite " + rootRubriek);
-            NodeList nlPools = PoolUtil.getPool(cloud, docNumber);
-            if (sPoolNumber.equals("") ||
-                nlPools.contains(cloud.getNode(sPoolNumber))) {
-               log.debug("node " + docNumber + " belongs to pool " + sPoolNumber);
-               hsetPagesNodes.add(paginaNumber);
-               hsetNodes.add(docNumber);
-            }
+         Vector breadcrumbs = PaginaHelper.getBreadCrumbs(cloud, paginaNumber);
+         boolean inRubriek = sRubriekNumber.equals("") || breadcrumbs.contains(sRubriekNumber);
+         // exclude builders that do not have a relation to pools
+         boolean inPool = sPoolNumber.equals("")
+                  || ( !sBuiderName.equals("producttypes") 
+                        && !sBuiderName.equals("documents")
+                        && PoolUtil.getPool(cloud, docNumber).contains(cloud.getNode(sPoolNumber)));
+         boolean inArchive = breadcrumbs.contains(cloud.getNode("archive").getStringValue("number"));
+         // when not searching the archive, exclude contentelements that are in the archive
+         if(inRubriek && inPool && !(!searchArchive && inArchive) ) {
+            hsetPagesNodes.add(paginaNumber);
+            hsetNodes.add(docNumber);
          }
       }
       return hsetNodes;
