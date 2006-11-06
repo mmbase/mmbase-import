@@ -1,21 +1,19 @@
-<%@ page import="java.util.Calendar, java.util.Enumeration"%>
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<mm:content postprocessor="none"><%-- no reducespace: it messes with the textarea --%>
-<mm:cloud method="delegate" jspvar="cloud">
-
-
-<%@include file="/shared/setImports.jsp"%>
-
-<mm:import externid="back"/>
-<mm:present referid="back">
-  <mm:redirect page="/email/index.jsp"/>
-</mm:present>
-
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%><mm:content postprocessor="none"><%-- no reducespace: it messes with the textarea --%>
+<mm:cloud rank="basic user">
+  <jsp:directive.include file="/shared/setImports.jsp" />
+  
+  <mm:import externid="back"/>
+  <mm:present referid="back">
+    <mm:redirect page="/email/index.jsp"/>
+  </mm:present>
+  
 <mm:import externid="mailbox"/>
 <mm:import id="emaildomain" escape="trimmer"><mm:treeinclude write="true" page="/email/init/emaildomain.jsp" objectlist="$includePath" referids="$referids" /></mm:import>
 <mm:import id="to"></mm:import>
 <mm:import id="cc"></mm:import>
+<mm:import id="bcc"></mm:import>
 <mm:import id="subject"></mm:import> 
 <mm:import id="body"></mm:import>
 <mm:import id="emailok">0</mm:import>
@@ -45,6 +43,7 @@
     <mm:present referid="replyAll">
       <mm:import id="to" reset="true"><mm:field name="from" escape="none"/></mm:import>
       <mm:import id="cc" reset="true"><mm:field name="cc" escape="none"/></mm:import>
+      <mm:import id="bcc" reset="true"><mm:field name="bcc" escape="none"/></mm:import>
       <mm:import id="subject" reset="true">Re:<mm:field name="subject" escape="none"/></mm:import>
     </mm:present>
     <mm:present referid="forward">
@@ -63,12 +62,12 @@
   </mm:node>
 </mm:present>
 
-<mm:list nodes="$user" path="people,mailboxes" fields="mailboxes.number" constraints="mailboxes.type=1">
+<mm:list nodes="$user" path="people,mailboxes" fields="mailboxes.number" constraints="[mailboxes.type]=1">
   <mm:field name="mailboxes.number" id="mailboxNumber" write="false"/>
   <mm:node referid="mailboxNumber" id="mailboxNode"/>
 </mm:list>
 
-<mm:list nodes="$user" path="people,mailboxes" fields="mailboxes.number" constraints="mailboxes.type=11">
+<mm:list nodes="$user" path="people,mailboxes" fields="mailboxes.number" constraints="[mailboxes.type]=11">
   <mm:field name="mailboxes.number" id="draftMailboxNumber" write="false"/>
   <mm:node referid="draftMailboxNumber" id="draftMailboxNode"/>
 </mm:list>
@@ -83,6 +82,7 @@
   <mm:node number="$id" id="emailNode">
     <mm:import id="to" reset="true"><mm:field name="to" escape="none"/></mm:import>
     <mm:import id="cc" reset="true"><mm:field name="cc" escape="none"/></mm:import>
+    <mm:import id="bcc" reset="true"><mm:field name="bcc" escape="none"/></mm:import>
     <mm:import id="subject" reset="true"><mm:field name="subject" escape="none"/></mm:import>
     <mm:import id="body" reset="true"><mm:field name="body" escape="none"/></mm:import>
   </mm:node>
@@ -91,6 +91,7 @@
 <%-- default: read data from request --%>
 <mm:import id="inputto" externid="to" reset="true"/>
 <mm:import id="inputcc" externid="cc" reset="true"/>
+<mm:import id="inputbcc" externid="bcc" reset="true"/>
 <mm:import id="inputsubject" externid="subject" reset="true"/>
 <mm:import id="inputbody" externid="body" reset="true"/>
 <mm:present referid="inputto">
@@ -98,6 +99,9 @@
 </mm:present>
 <mm:present referid="inputcc">
   <mm:import id="cc" reset="true"><mm:write referid="inputcc" escape="none"/></mm:import>
+</mm:present>
+<mm:present referid="inputbcc">
+  <mm:import id="bcc" reset="true"><mm:write referid="inputbcc" escape="none"/></mm:import>
 </mm:present>
 <mm:present referid="inputsubject">
   <mm:import id="subject" reset="true"><mm:write referid="inputsubject" escape="none"/></mm:import>
@@ -153,31 +157,31 @@
 
 <mm:present referid="emailNode">
   <mm:node referid="emailNode">
-  <mm:setfield name="from"><mm:write referid="from" escape="none"/></mm:setfield>
-  <mm:setfield name="to"><mm:write referid="to" escape="none"/></mm:setfield>
-  <mm:setfield name="cc"><mm:write referid="cc" escape="none"/></mm:setfield>
-  <mm:setfield name="subject"><mm:write referid="subject" escape="none"/></mm:setfield>
-  <mm:setfield name="body"><mm:write referid="body" escape="none"/></mm:setfield>
-  <mm:setfield name="type">0</mm:setfield>
-  <mm:setfield name="date"><%=System.currentTimeMillis()/1000%></mm:setfield>
-</mm:node>
+    <mm:setfield name="from"><mm:write referid="from" escape="none"/></mm:setfield>
+    <mm:setfield name="to"><mm:write referid="to" escape="none"/></mm:setfield>
+    <mm:setfield name="cc"><mm:write referid="cc" escape="none"/></mm:setfield>
+    <mm:setfield name="bcc"><mm:write referid="bcc" escape="none"/></mm:setfield>
+    <mm:setfield name="subject"><mm:write referid="subject" escape="none"/></mm:setfield>
+    <mm:setfield name="body"><mm:write referid="body" escape="none"/></mm:setfield>
+    <mm:setfield name="type">0</mm:setfield>
+  </mm:node>
 
-<mm:import id="testattachment" externid="att_handle"/>
-<mm:compare referid="testattachment" value="" inverse="true">
-  <mm:import id="attachmentName" externid="att_handle_name" from="multipart"/>
-  <mm:compare referid="attachmentName" value="" inverse="true">
-    <mm:createnode type="attachments" id="newFile" jspvar="newFile">
-      <mm:setfield name="title"><mm:write referid="attachmentName"/></mm:setfield>
-      <mm:setfield name="filename"><mm:write referid="attachmentName"/></mm:setfield>
-      <mm:fieldlist id="att" nodetype="attachments" fields="handle">
-        <mm:fieldinfo type="useinput" />
-      </mm:fieldlist>
-    </mm:createnode>
-    <mm:createrelation role="related" source="emailNode" destination="newFile"/>
-    <mm:remove referid="newFile"/>
+  <mm:import id="testattachment" externid="att_handle"/>
+  <mm:compare referid="testattachment" value="" inverse="true">
+    <mm:import id="attachmentName" externid="att_handle_name" from="multipart"/>
+    <mm:compare referid="attachmentName" value="" inverse="true">
+      <mm:createnode type="attachments" id="newFile" jspvar="newFile">
+        <mm:setfield name="title"><mm:write referid="attachmentName"/></mm:setfield>
+        <mm:setfield name="filename"><mm:write referid="attachmentName"/></mm:setfield>
+        <mm:fieldlist id="att" nodetype="attachments" fields="handle">
+          <mm:fieldinfo type="useinput" />
+        </mm:fieldlist>
+      </mm:createnode>
+      <mm:createrelation role="related" source="emailNode" destination="newFile"/>
+      <mm:remove referid="newFile"/>
+    </mm:compare>
   </mm:compare>
-</mm:compare>
-<mm:remove referid="attachmentName"/>
+  <mm:remove referid="attachmentName"/>
     
 
 <mm:present referid="emailNode">
@@ -326,7 +330,7 @@
                       <mm:notpresent referid="course"><mm:param name="provider" value="$provider"/></mm:notpresent>
                     </mm:treefile>" method="post" enctype="multipart/form-data" name="webmailForm">
         <mm:present referid="id">
-          <input type="hidden" name="id" value="<mm:write referid="id"/>">
+          <input type="hidden" name="id" value="${id}">
         </mm:present>
         <table class="font">
           <tr>
@@ -343,6 +347,17 @@
               <input type="submit" name="lookup_cc_action" value="<di:translate key="email.lookup_cc" />" class="formbutton">
             </td>
           </tr>
+          <di:getsetting component="email" setting="showbcc">
+            <mm:compare value="true">
+              <tr>
+                <td><di:translate key="email.bcc" /> :&nbsp;</td>
+                <td>
+                  <input type="text" class="formInput" name="bcc" value="<mm:write referid="bcc"/>">
+                  <input type="submit" name="lookup_bcc_action" value="<di:translate key="email.lookup_bcc" />" class="formbutton">
+                </td>
+              </tr>
+            </mm:compare>
+          </di:getsetting>
           <tr>
             <td><di:translate key="email.subject" /> :&nbsp;</td>
             <td><input type="text" class="formInput" name="subject" value="<mm:write referid="subject"/>"></td>
