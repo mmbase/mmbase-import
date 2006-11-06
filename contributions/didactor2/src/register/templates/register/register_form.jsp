@@ -12,6 +12,7 @@
   <mm:import externid="city" />
   <mm:import externid="email" jspvar="email"/>
   <mm:import externid="country" />
+  <mm:import externid="remarks" />
   <mm:import externid="formsubmit">false</mm:import>
 
   <mm:import externid="error" />
@@ -94,7 +95,10 @@
               </mm:notpresent>
             </td>
           </tr>
-
+          <tr>
+            <td><di:translate key="register.remarks" />:</td>
+            <td><textarea name="remarks">${remarks}</textarea></td>
+          </tr>
           <tr>
             <td colspan="2">
               <input type="hidden" name="formsubmit" value="true" />

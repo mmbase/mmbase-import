@@ -18,6 +18,7 @@
   <mm:import externid="city" />
   <mm:import externid="email" jspvar="email"/>
   <mm:import externid="country" />
+  <mm:import externid="remarks" />
   <mm:import externid="formsubmit">false</mm:import>
 
   <mm:import id="error" />
@@ -111,6 +112,7 @@
          <mm:setfield name="city"><mm:write referid="city" /></mm:setfield>
          <mm:setfield name="country"><mm:write referid="country" /></mm:setfield>
          <mm:setfield name="email"><mm:write referid="email" /></mm:setfield>
+         <mm:setfield name="remarks"><mm:write referid="remarks" /></mm:setfield>
       </mm:createnode>
 
 
