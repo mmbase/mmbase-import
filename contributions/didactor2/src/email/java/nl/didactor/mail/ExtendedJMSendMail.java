@@ -269,7 +269,7 @@ public class ExtendedJMSendMail extends SendMail {
             }
 
             msg.setSubject(subject, "UTF-8");
-\
+
             /* add attachments here */
             NodeList attachments = n.getRelatedNodes("attachments");
             if (attachments.size() != 0) {
