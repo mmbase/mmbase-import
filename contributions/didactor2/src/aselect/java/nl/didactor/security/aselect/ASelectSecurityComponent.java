@@ -1,15 +1,10 @@
 package nl.didactor.security.aselect;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
+import java.io.*;
 import java.net.Socket;
 import java.net.URLDecoder;
-import java.util.Hashtable;
-import java.util.Properties;
-import java.util.StringTokenizer;
+import java.util.*;
+
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,7 +21,7 @@ import org.mmbase.security.Authentication;
 import org.mmbase.security.implementation.aselect.ASelectErrors;
 import org.mmbase.security.implementation.aselect.ASelectException;
 import org.mmbase.security.implementation.aselect.ASelectUser;
-import org.mmbase.util.FileWatcher;
+import org.mmbase.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -43,16 +38,12 @@ import nl.didactor.security.UserContext;
 public class ASelectSecurityComponent extends Component implements AuthenticationComponent {
     private static final Logger log = Logging.getLoggerInstance(ASelectSecurityComponent.class);
 
-    private FileWatcher fileWatcher = null;
+    private ResourceWatcher fileWatcher = null;
 
     private PeopleBuilder users;
 
-    /**
-     * This is a global login page There is a manager inside the .jsp that
-     * serves defaul login method if there is any By default users see menu with
-     * all possible login methods
-     */
-    private String sLoginPage = "/login_aselect.jsp";
+
+    private final Map properties = new HashMap();
 
     /**
      * the address of the A-Select Agent
@@ -102,8 +93,17 @@ public class ASelectSecurityComponent extends Component implements Authenticatio
         }
     }
 
+
+    protected String getLoginPage(HttpServletRequest request) {
+        String page = (String) properties.get(request.getServerName() + ".aselect.login_page");
+        if (page == null) {
+            page = (String) properties.get("aselect.login_page");
+        }
+        return page == null ? "/login_aselect.jsp" : page;
+    }
+
     public String getLoginPage(HttpServletRequest request, HttpServletResponse response) {
-        return sLoginPage;
+        return getLoginPage(request);
     }
 
     public UserContext isLoggedIn(HttpServletRequest request, HttpServletResponse response) {
@@ -201,33 +201,35 @@ public class ASelectSecurityComponent extends Component implements Authenticatio
     protected void configure() {
         // get some parameters
 
-        Properties config = new Properties();
-        //Properties propGlobalLogin = new Properties();
-
-        String sASelectConfig = MMBaseContext.getConfigPath() + File.separator + "security" + File.separator + "agent.conf";
-        //String sGlobalConfig = MMBaseContext.getConfigPath() + File.separator + "security" + File.separator + "login.properties";
+        String aSelectConfig = "security/agent.conf";
+        String globalConfig = "security/login.properties";
 
         try {
-            log.service("Reading file: " + sASelectConfig);
+            Properties config = new Properties();
+            log.service("Reading file: " + aSelectConfig);
 
-            config.load(new FileInputStream(sASelectConfig));
+            config.load(ResourceLoader.getConfigurationRoot().getResource(aSelectConfig).openStream());
             agentPort = new Integer(config.getProperty("serviceport")).intValue();
 
             String firstServer = config.getProperty("aselect.server.1");
             aselectServer = config.getProperty("aselect.server." + firstServer);
             sASelectApplication = config.getProperty("application");
-            /*
-            log.service("Reading file: " + sGlobalConfig);
-            propGlobalLogin.load(new FileInputStream(sGlobalConfig));
-            if (propGlobalLogin.containsKey("login_page")) {
-                this.sLoginPage = propGlobalLogin.getProperty("login_page");
-            }
-           */
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error(e);
+        }
+        try {
+
+            Properties props = new Properties();
+            log.service("Reading file: " + globalConfig);
+            props.load(ResourceLoader.getConfigurationRoot().getResource(globalConfig).openStream());
+            properties.putAll(props);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
         }
 
     }
+
+
 
     /**
      * Called once my MMBase core during security starting
@@ -235,9 +237,13 @@ public class ASelectSecurityComponent extends Component implements Authenticatio
      */
     protected void load() {
         if (fileWatcher == null) {
-            fileWatcher = new ConfigurationWatcher();
-            fileWatcher.add(new File(MMBaseContext.getConfigPath() + File.separator + "security" + File.separator + "agent.conf"));
-            fileWatcher.add(new File(MMBaseContext.getConfigPath() + File.separator + "security" + File.separator + "login.properties"));
+            fileWatcher = new ResourceWatcher() {
+                    public void onChange(String file) {
+                        configure();
+                    }
+                };
+            fileWatcher.add("security/agent.conf");
+            fileWatcher.add("security/login.properties");
             fileWatcher.setDelay(10 * 1000);
             fileWatcher.start();
         }
@@ -544,16 +550,6 @@ public class ASelectSecurityComponent extends Component implements Authenticatio
         }
         return true;
     } // end of function : authenticate_user
-
-    private class ConfigurationWatcher extends FileWatcher {
-        ConfigurationWatcher() {
-            super();
-        }
-
-        public void onChange(File file) {
-            configure();
-        }
-    }
 
     /**
      * Performs the work of authentication and session management.
