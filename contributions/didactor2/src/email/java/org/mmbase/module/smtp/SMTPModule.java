@@ -11,7 +11,7 @@ import java.util.Enumeration;
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  */
 public class SMTPModule extends org.mmbase.module.Module {
-    private Logger log = Logging.getLoggerInstance(SMTPModule.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(SMTPModule.class);
     SMTPListener listener;
     Hashtable properties;
 
