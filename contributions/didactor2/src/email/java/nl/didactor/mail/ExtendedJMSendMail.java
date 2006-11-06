@@ -17,6 +17,8 @@ import org.mmbase.module.core.MMBase;
  * Module providing mail functionality based on JavaMail, mail-resources.
  * Extended by Johannes Verelst to allow attachments to be sent.
  *
+ * @todo Merge this code to org.mmbase.applications.email.SendMail.
+ *
  * @author Case Roole
  * @author Michiel Meeuwissen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
@@ -36,14 +38,17 @@ public class ExtendedJMSendMail extends SendMail {
 
     /**
      * Send mail with headers AND attachments to the emailaddresses
-     * specified in the 'to' and 'cc' fields. If these are null, 
+     * specified in the 'to' and 'cc' fields. If these are null,
      * the values from the 'to' and 'cc' fields from the node
      * are used.
      */
     public boolean sendMail(String onlyto, Node n) {
-        log.debug("Start sendmail: " + onlyto + ", " + n);
+        if (log.isDebugEnabled()) {
+            log.debug("Start sendmail: " + onlyto + ", " + n);
+        }
+
         SMTPModule smtpModule = (SMTPModule)Module.getModule("smtpmodule");
-        HashMap domains = new HashMap();
+        Map domains = new HashMap();
 
         if (smtpModule != null) {
             String sdomains = smtpModule.getLocalEmailDomains();
@@ -52,10 +57,12 @@ public class ExtendedJMSendMail extends SendMail {
                 domains.put(st.nextToken().toLowerCase(), "1");
             }
         }
-        log.debug("Have domains: " + domains);
+        if (log.isDebugEnabled()) {
+            log.debug("Have domains: " + domains);
+        }
 
-        Vector remoteRecipients = new Vector();
-        Vector localRecipients = new Vector();
+        List remoteRecipients = new ArrayList();
+        List localRecipients = new ArrayList();
         if (onlyto != null) {
             try {
                 InternetAddress[] recipients = InternetAddress.parse(onlyto);
@@ -95,7 +102,24 @@ public class ExtendedJMSendMail extends SendMail {
             String cc = n.getStringValue("cc");
             try {
                 InternetAddress[] recipients = InternetAddress.parse(cc);
-                for (int i=0; i<recipients.length; i++) {
+                for (int i = 0; i < recipients.length; i++) {
+                    String domain = recipients[i].getAddress();
+                    domain = domain.substring(domain.indexOf("@") + 1, domain.length());
+                    if (domains.containsKey(domain.toLowerCase())) {
+                        log.debug("Known domain [" + domain + "], processing internally");
+                        localRecipients.add(recipients[i]);
+                    } else {
+                        log.debug("Unknown domain [" + domain + "], processing externally");
+                        remoteRecipients.add(recipients[i]);
+                    }
+                }
+            } catch (Exception e) {
+                log.error(e);
+            }
+            String bcc = n.getStringValue("bcc");
+            try {
+                InternetAddress[] recipients = InternetAddress.parse(bcc);
+                for (int i = 0; i < recipients.length; i++) {
                     String domain = recipients[i].getAddress();
                     domain = domain.substring(domain.indexOf("@") + 1, domain.length());
                     if (domains.containsKey(domain.toLowerCase())) {
@@ -110,7 +134,9 @@ public class ExtendedJMSendMail extends SendMail {
                 log.error(e);
             }
         }
-        log.debug("Locals: " + localRecipients + ", remotes: " + remoteRecipients);
+        if (log.isDebugEnabled()) {
+            log.debug("Locals: " + localRecipients + ", remotes: " + remoteRecipients);
+        }
 
         if (localRecipients.size() > 0) {
             InternetAddress[] ia = new InternetAddress[localRecipients.size()];
@@ -132,7 +158,9 @@ public class ExtendedJMSendMail extends SendMail {
     }
 
     public void sendLocalMail(InternetAddress[] to, Node n) {
-        log.debug("sendLocalMail: Sending node {" + n + "} to addresses {" + to + "}");
+        if (log.isDebugEnabled()) {
+            log.debug("sendLocalMail: Sending node {" + n + "} to addresses {" + to + "}");
+        }
         Cloud cloud = n.getCloud();
         NodeManager peopleManager = cloud.getNodeManager("people");
         NodeManager emailManager = cloud.getNodeManager("emails");
@@ -162,6 +190,7 @@ public class ExtendedJMSendMail extends SendMail {
                     emailNode.setValue("to", n.getValue("to"));
                     emailNode.setValue("from", n.getValue("from"));
                     emailNode.setValue("cc", n.getValue("cc"));
+                    emailNode.setValue("bcc", n.getValue("bcc"));
                     emailNode.setValue("subject", n.getValue("subject"));
                     emailNode.setValue("date", n.getValue("date"));
                     emailNode.setValue("body", n.getValue("body"));
@@ -170,7 +199,7 @@ public class ExtendedJMSendMail extends SendMail {
                     mailbox.createRelation(emailNode, relatedManager).commit();
 
                     NodeList attachments = n.getRelatedNodes("attachments");
-                    for (int k=0; k<attachments.size(); k++) {
+                    for (int k = 0; k < attachments.size(); k++) {
                         log.debug("Adding attachment(" + k + ")");
                         Node oldAttachment = attachments.getNode(k);
                         Node newAttachment = attachmentManager.createNode();
@@ -191,7 +220,9 @@ public class ExtendedJMSendMail extends SendMail {
             // If this person has mail forwarding enabled, we have to forward it to his local email address
             if (person.getBooleanValue("email-mayforward")) {
                 String mailadres = person.getStringValue("email");
-                log.debug("This user has email forwarding enabled .. forwarding email to [" + mailadres + "]");
+                if (log.isDebugEnabled()) {
+                    log.debug("This user has email forwarding enabled .. forwarding email to [" + mailadres + "]");
+                }
                 try {
                     sendRemoteMail(InternetAddress.parse(mailadres), n);
                 } catch (Exception e) {
@@ -203,33 +234,42 @@ public class ExtendedJMSendMail extends SendMail {
     }
 
     public void sendRemoteMail(InternetAddress[] onlyto, Node n) {
-        log.debug("Sending node {" + n + "} to addresses {" + onlyto + "}");
+        if (log.isDebugEnabled()) {
+            log.debug("Sending node {" + n + "} to addresses {" + onlyto + "}");
+        }
         try {
-            String from = n.getStringValue("from");
-            String to = n.getStringValue("to");
-            String cc = n.getStringValue("cc");
-            String body = n.getStringValue("body");
+            String from    = n.getStringValue("from");
+            String to      = n.getStringValue("to");
+            String cc      = n.getStringValue("cc");
+            String bcc     = n.getStringValue("bcc");
+            String body    = n.getStringValue("body");
             String subject = n.getStringValue("subject");
 
-            if (log.isServiceEnabled()) log.service("JMSendMail sending mail to " + to);
+            if (log.isServiceEnabled()) {
+                log.service("JMSendMail sending mail to " + to + " cc:" + cc + " bcc:" + bcc);
+            }
             // construct a message
             MimeMessage msg = new MimeMessage(session);
+            // msg = super.constructMessage()....
             if (from != null && ! from.equals("")) {
                 msg.setFrom(new InternetAddress(from));
             }
 
             InternetAddress[] toRecipients = InternetAddress.parse(to);
-            for (int i=0; i<toRecipients.length; i++) {
-                msg.addRecipient(Message.RecipientType.TO, toRecipients[i]);
+            msg.addRecipients(Message.RecipientType.TO, toRecipients);
+
+            if (cc != null) {
+                InternetAddress[] ccRecipients = InternetAddress.parse(cc);
+                msg.addRecipients(Message.RecipientType.CC, ccRecipients);
             }
 
-            InternetAddress[] ccRecipients = InternetAddress.parse(cc);
-            for (int i=0; i<ccRecipients.length; i++) {
-                msg.addRecipient(Message.RecipientType.CC, ccRecipients[i]);
+            if (bcc != null) {
+                InternetAddress[] bccRecipients = InternetAddress.parse(bcc);
+                msg.addRecipients(Message.RecipientType.BCC, bccRecipients);
             }
 
             msg.setSubject(subject, "UTF-8");
-
+\
             /* add attachments here */
             NodeList attachments = n.getRelatedNodes("attachments");
             if (attachments.size() != 0) {
@@ -239,7 +279,7 @@ public class ExtendedJMSendMail extends SendMail {
                 bodypart.setContent(body, "text/html; charset=UTF-8");
                 mmp.addBodyPart(bodypart);
 
-                for (int i=0; i<attachments.size(); i++) {
+                for (int i = 0; i < attachments.size(); i++) {
                     String filename = attachments.getNode(i).getStringValue("filename");
                     if (filename == null || filename.equals(""))
                         filename = "attached file";
@@ -251,7 +291,7 @@ public class ExtendedJMSendMail extends SendMail {
                     byte[] handle = attachments.getNode(i).getByteValue("handle");
                     MimeBodyPart mbp = new MimeBodyPart();
 
-                    mbp.setDataHandler(new DataHandler(new ByteArrayDataSource(handle))); 
+                    mbp.setDataHandler(new DataHandler(new ByteArrayDataSource(handle)));
                     mbp.setHeader("Content-Type", mimetype);
 
                     // If our attached file is text/html, we will create a new 'normal'
@@ -263,30 +303,28 @@ public class ExtendedJMSendMail extends SendMail {
                             mbp.setFileName(filename);
                         }
                     } else {
-                        mbp.setFileName(filename); 
+                        mbp.setFileName(filename);
                         mbp.setDisposition(Part.ATTACHMENT);
                     }
-                    
-                    mmp.addBodyPart(mbp); 
+
+                    mmp.addBodyPart(mbp);
                 }
                 msg.setContent(mmp);
             } else {
-              msg.setContent(body, "text/html; charset=UTF-8");
+                msg.setContent(body, "text/html; charset=UTF-8");
             }
-            
+
             try {
                 java.io.ByteArrayOutputStream bos = new java.io.ByteArrayOutputStream();
-
                 msg.writeTo(bos);
             } catch (java.io.IOException e) {
-                log.error("Exception: " + e);
+                log.error("Exception: " + e.getMessage(), e);
             }
 
             Transport.send(msg, onlyto);
             log.debug("JMSendMail done.");
         } catch (javax.mail.MessagingException e) {
-            log.error("JMSendMail failure: " + e.getMessage());
-            log.error(Logging.stackTrace(e));
+            log.error("JMSendMail failure: " + e.getMessage(), e);
         }
     }
 
@@ -298,14 +336,14 @@ public class ExtendedJMSendMail extends SendMail {
         init();
     }
 
-    public void init() {                     
+    public void init() {
         try {
             String smtphost   = getInitParameter("mailhost");
             String context    = getInitParameter("context");
             String datasource = getInitParameter("datasource");
-            session = null;           
+            session = null;
             if (smtphost == null) {
-                if (context == null) {                    
+                if (context == null) {
                     context = "java:comp/env";
                     log.warn("The property 'context' is missing, taking default " + context);
                 }
@@ -313,10 +351,10 @@ public class ExtendedJMSendMail extends SendMail {
                     datasource = "mail/Session";
                     log.warn("The property 'datasource' is missing, taking default " + datasource);
                 }
-                
+
                 Context initCtx = new InitialContext();
                 Context envCtx = (Context) initCtx.lookup(context);
-                session = (Session) envCtx.lookup(datasource);       
+                session = (Session) envCtx.lookup(datasource);
                 log.info("Module JMSendMail started (datasource = " + datasource +  ")");
             } else {
                 if (context != null) {
@@ -325,14 +363,14 @@ public class ExtendedJMSendMail extends SendMail {
                 if (datasource != null) {
                     log.error("It does not make sense to have both properties 'datasource' and 'mailhost' in email module");
                 }
-                log.info("EMail module is configured using 'mailhost' proprerty.\n" + 
+                log.info("EMail module is configured using 'mailhost' proprerty.\n" +
                          "Consider using J2EE compliant 'context' and 'datasource'\n" +
-                         "Which means to put something like this in your web.xml:\n" + 
+                         "Which means to put something like this in your web.xml:\n" +
                          "  <resource-ref>\n" +
-                         "     <description>Email module mail resource</description>\n" + 
-                         "     <res-ref-name>mail/MMBase</res-ref-name>\n" + 
-                         "     <res-type>javax.mail.Session</res-type>\n" + 
-                         "     <res-auth>Container</res-auth>\n" + 
+                         "     <description>Email module mail resource</description>\n" +
+                         "     <res-ref-name>mail/MMBase</res-ref-name>\n" +
+                         "     <res-type>javax.mail.Session</res-type>\n" +
+                         "     <res-auth>Container</res-auth>\n" +
                          "  </resource-ref>\n" +
                          " + some app-server specific configuration (e.g. in orion the 'mail-session' entry in the application XML)"
                          );
@@ -341,7 +379,7 @@ public class ExtendedJMSendMail extends SendMail {
                 prop.put("mail.smtp.host", smtphost);
                 session = Session.getInstance(prop, null);
                 log.info("Module JMSendMail started (smtphost = " + smtphost +  ")");
-            }                
+            }
 
         } catch (javax.naming.NamingException e) {
             log.fatal("JMSendMail failure: " + e.getMessage());
@@ -364,11 +402,11 @@ public class ExtendedJMSendMail extends SendMail {
         public java.io.InputStream getInputStream() {
             return new java.io.ByteArrayInputStream(buffer);
         }
-    
+
         public java.lang.String getName() {
             return "Bytearray datasource";
         }
-    
+
         public java.io.OutputStream getOutputStream()  {
             return null;
         }
