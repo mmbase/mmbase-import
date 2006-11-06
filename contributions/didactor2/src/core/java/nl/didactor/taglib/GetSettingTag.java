@@ -55,7 +55,7 @@ public class GetSettingTag extends CloudReferrerTag implements Writer {
         try {
             value = comp.getSetting(setting, getCloudVar(), getContextProvider().getContextContainer());
         } catch (IllegalArgumentException e) {
-            throw new JspTagException(e.getMessage(), e);
+            throw new TaglibException(e.getMessage(), e);
         }
 
         helper.setValue(value);
