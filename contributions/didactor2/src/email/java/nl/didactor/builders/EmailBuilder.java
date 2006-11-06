@@ -10,12 +10,13 @@ import java.util.Date;
 /**
  * This class handles objects of type 'emails'. When new emails are created,
  * it checks whether this email should be sent using the 'sendmail' module.
+ *
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  */
 public class EmailBuilder extends MMObjectBuilder {
     private static Logger log=Logging.getLoggerInstance(EmailBuilder.class.getName());
     private ExtendedJMSendMail sendmail;
-    
+
     /**
      * Initialize the builder
      */
@@ -36,11 +37,15 @@ public class EmailBuilder extends MMObjectBuilder {
     public MMObjectNode preCommit(MMObjectNode node) {
         if (log.isDebugEnabled())
             log.debug("preCommit(" + node + ")");
-        
+
         if (node.getNumber() == -1)
             return node;
 
         if (node.getIntValue("type") == 1) {
+
+            // This goes wrong if the node is new, because that it cannot be gotten with
+            // cloud.getNode yet....
+
             log.debug("Trying to send mail ...");
             org.mmbase.bridge.Cloud cloud = org.mmbase.bridge.LocalContext.getCloudContext().getCloud("mmbase");
             org.mmbase.bridge.Node n = cloud.getNode(node.getNumber());
