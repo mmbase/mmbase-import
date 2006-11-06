@@ -4,6 +4,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import java.util.*;
+import org.mmbase.util.*;
+import java.io.InputStream;
+
 import org.mmbase.module.core.MMObjectNode;
 
 import org.mmbase.util.logging.Logger;
@@ -17,13 +21,14 @@ import nl.didactor.security.UserContext;
 /**
  * Default AuthenticationComponent for Didactor.
  * @javadoc
- * @version $Id: PlainSecurityComponent.java,v 1.5 2006-11-01 10:02:51 mmeeuwissen Exp $
+ * @version $Id: PlainSecurityComponent.java,v 1.6 2006-11-06 16:20:03 mmeeuwissen Exp $
  */
 
 public class PlainSecurityComponent implements AuthenticationComponent {
     private static final Logger log = Logging.getLoggerInstance(PlainSecurityComponent.class);
 
     private PeopleBuilder users;
+    private final Map properties = new HashMap();
 
     private void checkBuilder() throws org.mmbase.security.SecurityException {
         if (users == null) {
@@ -36,6 +41,27 @@ public class PlainSecurityComponent implements AuthenticationComponent {
     }
 
     public PlainSecurityComponent() {
+        ResourceWatcher fileWatcher = new ResourceWatcher() {
+                public void onChange(String file) {
+                    configure(file);
+                }
+            };
+        fileWatcher.add("security/login.properties");
+        fileWatcher.setDelay(10 * 1000);
+        fileWatcher.start();
+        fileWatcher.onChange();
+    }
+
+    protected void configure(String file) {
+        properties.clear();
+        Properties props = new Properties();
+        try {
+            InputStream is = ResourceLoader.getConfigurationRoot().getResource(file).openStream();
+            props.load(is);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        properties.putAll(props);
 
     }
 
@@ -79,14 +105,22 @@ public class PlainSecurityComponent implements AuthenticationComponent {
         }
         return null;
     }
-    
+
+    protected String getLoginPage(HttpServletRequest request) {
+        String page = (String) properties.get(request.getServerName() + ".plain.login_page");
+        if (page == null) {
+            page = (String) properties.get("plain.login_page");
+        }
+        return page == null ? "/login_plain.jsp" : page;
+    }
+
     public String getLoginPage(HttpServletRequest request, HttpServletResponse response) {
-        String sLogin = request.getParameter("username");
+        String sLogin    = request.getParameter("username");
         String sPassword = request.getParameter("password");
         if (sLogin != null && sPassword != null) {
-            return "/login_plain.jsp?reason=failed";
+            return getLoginPage(request) + "?reason=failed";
         } else {
-            return "/login_plain.jsp";
+            return getLoginPage(request);
         }
     }
     
