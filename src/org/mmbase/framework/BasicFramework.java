@@ -15,16 +15,20 @@ import javax.servlet.http.HttpServletRequest;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.transformers.Url;
 import org.mmbase.util.transformers.CharTransformer;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * The framework that does nothing, besides adding the block-parameters to the URL. No support for
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.9 2006-11-07 20:23:19 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.10 2006-11-07 20:39:52 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
+    private static final Logger log = Logging.getLoggerInstance(BasicFramework.class);
+
     private static final CharTransformer paramEscaper = new Url(Url.ESCAPE);
 
     public final static String KEY = "org.mmbase.framework.state";
@@ -86,7 +90,13 @@ public class BasicFramework implements Framework {
             return sb;
         } else {
             State state = getState(req);
-            StringBuilder sb = getUrl(page, state.getMap(blockParameters.toMap()), req, writeamp);
+            Map<String, Object> map = new HashMap<String, Object>();
+            for (Object e : req.getParameterMap().entrySet()) {
+                Map.Entry<String, String[]> entry = (Map.Entry<String, String[]>) e;
+                map.put(entry.getKey(), entry.getValue()[0]);
+            }
+            map.putAll(state.getMap(blockParameters.toMap()));
+            StringBuilder sb = getUrl(page, map, req, writeamp);
             return sb;
         }
     }
