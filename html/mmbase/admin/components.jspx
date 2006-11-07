@@ -20,7 +20,7 @@
             <li>
               <mm:link>
                 <mm:param name="component">${comp.name}</mm:param>
-              <a href="${_}">${comp.name}</a>
+                <a href="${_}">${comp.name}</a>
               </mm:link>
             </li>
           </mm:listfunction>
@@ -29,8 +29,11 @@
       <mm:present referid="component">
         <h1>'${component}'</h1>
         <mm:function set="components" name="get" referids="component@name" jspvar="v">
-
+          <p><jsp:expression>v.getClass()</jsp:expression></p>
         </mm:function>
+        <mm:link>
+          <a href="${_}">back</a>
+        </mm:link>
       </mm:present>
     </mm:cloud>
   </mm:content>
