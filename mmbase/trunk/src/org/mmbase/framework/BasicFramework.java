@@ -21,11 +21,13 @@ import org.mmbase.util.transformers.CharTransformer;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.8 2006-11-07 18:55:03 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.9 2006-11-07 20:23:19 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
     private static final CharTransformer paramEscaper = new Url(Url.ESCAPE);
+
+    public final static String KEY = "org.mmbase.framework.state";
 
     public String getName() {
         return "BASIC";
@@ -77,12 +79,15 @@ public class BasicFramework implements Framework {
 
 
     public StringBuilder getUrl(String page, Component component, Parameters blockParameters, Parameters frameworkParameters, boolean writeamp) {
+        // just generate the URL
+        HttpServletRequest req = frameworkParameters.get(Parameter.REQUEST);
         if (component == null) {
-            // just generate the URL
-            HttpServletRequest req = frameworkParameters.get(Parameter.REQUEST);
             StringBuilder sb = getUrl(page, blockParameters.toMap(), req, writeamp);
             return sb;
         } else {
+            State state = getState(req);
+            StringBuilder sb = getUrl(page, state.getMap(blockParameters.toMap()), req, writeamp);
+            return sb;
         }
     }
 
@@ -97,4 +102,89 @@ public class BasicFramework implements Framework {
     public boolean makeRelativeUrl() {
         return false;
     }
+
+    protected State getState(HttpServletRequest request) {
+        State state = (State) request.getAttribute(KEY);
+        if (state == null) {
+            state = new State(request);
+            request.setAttribute(KEY, state);
+        }
+        return state;
+    }
+
+    protected void setBlockParameters(State state, Parameters blockParameters) {
+        for (Map.Entry<String, ?> entry : blockParameters.toMap().entrySet()) {
+            if (entry.getValue() == null) {
+                blockParameters.set(entry.getKey(), state.getRequest().getParameter(state.getPrefix() + entry.getKey()));
+            }
+        }
+    }
+
+    public void render(Renderer renderer, Parameters blockParameters, Parameters frameworkParameters, Writer w) throws IOException {
+        HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
+        Object previousRenderer = request.getAttribute(Renderer.KEY);
+        request.setAttribute(Renderer.KEY, renderer);
+        State state = getState(request);
+        state.render(renderer);
+        setBlockParameters(state, blockParameters);
+        try{
+            renderer.render(blockParameters, frameworkParameters, w);
+        } finally {
+            request.setAttribute(Renderer.KEY, previousRenderer);
+        }
+    }
+
+    public void process(Processor processor, Parameters blockParameters, Parameters frameworkParameters) throws IOException {
+        HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
+        for (Map.Entry<String, ?> entry : blockParameters.toMap().entrySet()) {
+            request.setAttribute(entry.getKey(), entry.getValue());
+        }
+        processor.process(blockParameters, frameworkParameters);
+    }
+
+    protected static class  State {
+        private Map<Renderer, Integer> renderers = new HashMap<Renderer, Integer>();
+        private int count;
+        private Renderer renderer;
+        private final HttpServletRequest request;
+
+        State(HttpServletRequest r) {
+            request = r;
+        }
+
+        public HttpServletRequest getRequest() {
+            return request;
+        }
+
+        public void render(Renderer rend) {
+            renderer = rend;
+            count = renderers.containsKey(rend) ? renderers.get(rend) : 0;
+            renderers.put(rend, ++count);
+        }
+        public String getPrefix() {
+            return "_" + renderer.getBlock().getComponent().getName() + "_" + renderer.getBlock().getName() + "_" + count + "_";
+        }
+        public Map<String, Object> getMap(final Map<String, Object> params) {
+            return new AbstractMap() {
+                public Set<Map.Entry<String, Object>> entrySet() {
+                    return new AbstractSet() {
+                        public int size() { return params.size(); }
+                        public Iterator<Map.Entry<String, Object>> iterator() {
+                            return new Iterator() {
+                                private Iterator<Map.Entry<String, Object>> i = params.entrySet().iterator();
+                                public boolean hasNext() { return i.hasNext(); };
+                                public Map.Entry<String, Object> next() {
+                                    Map.Entry<String, Object> e = i.next();
+                                    return new org.mmbase.util.Entry<String, Object>(State.this.getPrefix() + e.getKey(), e.getValue());
+                                }
+                                public void remove() { throw new UnsupportedOperationException(); }
+
+                            };
+                        }
+                    };
+                }
+            };
+        }
+    }
+
 }
