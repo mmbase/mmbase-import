@@ -30,14 +30,21 @@
         <h1>'${component}'</h1>
         <mm:function set="components" name="get" referids="component@name" id="c">
           <p>${c.class}</p>
+          <p>Blocks in this component</p>
           <ul>
             <mm:stringlist referid="c.blocks" id="b" jspvar="b" vartype="org.mmbase.framework.Block">
               <li>
-                ${b.class} : ${b.name} 
-                <p><jsp:expression>b.getDescription().get(Locale.US)</jsp:expression></p>
+                <p>
+                  <em>${b.name}. </em>
+                  <jsp:expression>b.getDescription().get(Locale.US)</jsp:expression>
+                </p>
+                <p>HEAD: <jsp:expression>b.getRenderer(Renderer.Type.HEAD)</jsp:expression></p>
+                <p>BODY: <jsp:expression>b.getRenderer(Renderer.Type.BODY)</jsp:expression></p>
+                <p>Processor: <jsp:expression>b.getProcessor()</jsp:expression></p>
               </li>
             </mm:stringlist>
           </ul>
+          <p>Default block: ${c.defaultBlock.name}</p>
         </mm:function>
         <mm:link>
           <a href="${_}">back</a>
