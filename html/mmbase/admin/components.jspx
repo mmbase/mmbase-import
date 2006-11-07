@@ -1,7 +1,10 @@
 <?xml version="1.0"?>
-<div xmlns="http://www.w3.org/1999/xhtml" 
-      xmlns:jsp="http://java.sun.com/JSP/Page" 
-      xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+<div
+    class="component mm_c_core mm_c_b_components ${requestScope.className}"
+    id="${requestScope.componentId}"
+    xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:jsp="http://java.sun.com/JSP/Page" 
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:output doctype-root-element="html" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
   <jsp:directive.page import="org.mmbase.framework.*,java.util.*" />
   <mm:content type="text/html" language="en_US" expires="0" postprocessor="none">
