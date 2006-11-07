@@ -116,7 +116,7 @@ public class NMIntraConfig {
 
    public static String fromEmailAddress = "intranet@natuurmonumenten.nl";
    public static String defaultPZAddress = "A.deBeer@natuurmonumenten.nl";
-   public static String defaultFZAddress = "C.Koumans@natuurmonumenten.nl";
+   public static String defaultFZAddress = "receptie@natuurmonumenten.nl";
    public static String toEmailAddress   = "beheerder@natuurmonumenten.nl";
    public static String newsEmailAddress = "intranieuws@natuurmonumenten.nl";
 
