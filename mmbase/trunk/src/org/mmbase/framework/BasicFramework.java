@@ -21,7 +21,7 @@ import org.mmbase.util.transformers.CharTransformer;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.7 2006-10-31 22:21:45 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.8 2006-11-07 18:55:03 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -56,9 +56,12 @@ public class BasicFramework implements Framework {
 
             Writer w = new StringBuilderWriter(show);
             for (Map.Entry<String, ? extends Object> entry : params.entrySet()) {
-                show.append(connector).append(entry.getKey()).append("=");
-                paramEscaper.transform(new StringReader(Casting.toString(entry.getValue())), w);
-                connector = amp;
+                Object value = entry.getValue();
+                if (value != null && Casting.isStringRepresentable(value.getClass())) { // if not string representable, that suppose it was an 'automatic' parameter which does need presenting on url
+                    show.append(connector).append(entry.getKey()).append("=");
+                    paramEscaper.transform(new StringReader(Casting.toString(value)), w);
+                    connector = amp;
+                }
             }
         }
         return show;
@@ -74,10 +77,13 @@ public class BasicFramework implements Framework {
 
 
     public StringBuilder getUrl(String page, Component component, Parameters blockParameters, Parameters frameworkParameters, boolean writeamp) {
-        // just generate the URL
-        HttpServletRequest req = frameworkParameters.get(Parameter.REQUEST);
-        StringBuilder sb = getUrl(page, blockParameters.toMap(), req, writeamp);
-        return sb;
+        if (component == null) {
+            // just generate the URL
+            HttpServletRequest req = frameworkParameters.get(Parameter.REQUEST);
+            StringBuilder sb = getUrl(page, blockParameters.toMap(), req, writeamp);
+            return sb;
+        } else {
+        }
     }
 
     public Block getBlock(Component component, String blockName) {

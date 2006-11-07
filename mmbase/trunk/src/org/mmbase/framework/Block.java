@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * a 'head', 'body' and 'process' view.
  *
  * @author Johannes Verelst
- * @version $Id: Block.java,v 1.16 2006-11-02 10:49:56 michiel Exp $
+ * @version $Id: Block.java,v 1.17 2006-11-07 18:55:03 michiel Exp $
  * @since MMBase-1.9
  */
 public class Block {
@@ -116,7 +116,10 @@ public class Block {
         if (specific == null) {
             return new AutodefiningParameters();
         } else {
-            return new Parameters(specific);
+            return new Parameters(specific,
+                                  new Parameter.Wrapper(getRenderer(Renderer.Type.HEAD).getParameters()),
+                                  new Parameter.Wrapper(getRenderer(Renderer.Type.BODY).getParameters()),
+                                  new Parameter.Wrapper(getProcessor().getParameters()));
         }
     }
 
