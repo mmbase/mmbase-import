@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.146 2006-10-06 12:28:33 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.147 2006-11-07 22:44:32 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
@@ -315,7 +315,11 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
                 try {
                     String url = response.encodeRedirectURL(thisPage);
                     log.debug("Redirecting to " + url);
-                    response.sendRedirect(url);
+                    if (! response.isCommitted()) {
+                        response.sendRedirect(url);
+                    } else {
+                        return false;
+                    }
                 } catch (IOException e) {
                     throw new TaglibException(e);
                 }
