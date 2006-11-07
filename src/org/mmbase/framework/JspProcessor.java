@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * A Processor implementation based on a jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JspProcessor.java,v 1.5 2006-11-02 10:49:56 michiel Exp $
+ * @version $Id: JspProcessor.java,v 1.6 2006-11-07 20:23:19 michiel Exp $
  * @since MMBase-1.9
  */
 public class JspProcessor extends AbstractProcessor {
@@ -52,19 +52,13 @@ public class JspProcessor extends AbstractProcessor {
             HttpServletResponse response = blockParameters.get(Parameter.RESPONSE);
             GenericResponseWrapper respw = new GenericResponseWrapper(response);
             HttpServletRequest request = blockParameters.get(Parameter.REQUEST);
-            for (Map.Entry<String, ?> entry : blockParameters.toMap().entrySet()) {
-                request.setAttribute(entry.getKey(), entry.getValue());
-            }
-
             Framework framework = MMBase.getMMBase().getFramework();
             String url = framework.getUrl(path, this, parent.getComponent(), blockParameters, frameworkParameters).toString();
-
             if (log.isDebugEnabled()) {
                 log.debug("Block parameters      : [" + blockParameters + "]");
                 log.debug("Framework parameters  : [" + frameworkParameters + "]");
                 log.debug("Framework returned url: [" + url + "]");
             }
-
             RequestDispatcher requestDispatcher = request.getRequestDispatcher(url);
             requestDispatcher.include(request, respw);
         } catch (ServletException se) {

@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.framework;
 
 import java.util.*;
+import org.mmbase.module.core.MMBase;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -19,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * request and response.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractRenderer.java,v 1.4 2006-10-31 22:21:45 michiel Exp $
+ * @version $Id: AbstractRenderer.java,v 1.5 2006-11-07 20:23:19 michiel Exp $
  * @since MMBase-1.9
  */
 abstract public class AbstractRenderer implements Renderer {
@@ -42,5 +43,7 @@ abstract public class AbstractRenderer implements Renderer {
         return parent;
     }
 
-
+    protected Framework getFramework() {
+        return MMBase.getMMBase().getFramework();
+    }
 }
