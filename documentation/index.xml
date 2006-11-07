@@ -5,9 +5,9 @@
   <articleinfo>
     <title>MMBase Documentation Overview</title>
 
-    <date>2006-07-07</date>
+    <date>2006-11-07</date>
 
-    <edition>$Id: index.xml,v 1.58 2006-07-07 09:24:09 andre Exp $</edition>
+    <edition>$Id: index.xml,v 1.58.2.1 2006-11-07 10:07:56 andre Exp $</edition>
 
     <authorgroup>
       <author>
@@ -571,32 +571,32 @@
       </listitem>
 
       <listitem>
-        <para>MMBase 1.8.0 - Building (<ulink
+        <para>MMBase 1.8.x - Building (<ulink
         url="releases/building.txt">Text</ulink>)</para>
       </listitem>
 
       <listitem>
-        <para>MMBase 1.8.0 - Installation (<ulink
+        <para>MMBase 1.8.x - Installation (<ulink
         url="releases/installation.txt">Text</ulink>)</para>
       </listitem>
 
       <listitem>
-        <para>MMBase 1.8.0 - Readme (<ulink
+        <para>MMBase 1.8.x - Readme (<ulink
         url="releases/readme.txt">Text</ulink>)</para>
       </listitem>
 
       <listitem>
-        <para>MMBase 1.8.0 - Release Notes (<ulink
+        <para>MMBase 1.8.x - Release Notes (<ulink
         url="releases/release-notes.txt">Text</ulink>)</para>
       </listitem>
 
       <listitem>
-        <para>MMBase 1.8.0 - Release Plan (<ulink
+        <para>MMBase 1.8.x - Release Plan (<ulink
         url="releases/release-plan.txt">Text</ulink>)</para>
       </listitem>
 
       <listitem>
-        <para>MMBase 1.8.0 - Upgrade Notes (<ulink
+        <para>MMBase 1.8.x - Upgrade Notes (<ulink
         url="releases/upgrade.txt">Text</ulink>)</para>
       </listitem>
     </itemizedlist>
