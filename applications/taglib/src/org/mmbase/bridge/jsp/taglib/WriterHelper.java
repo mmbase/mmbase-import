@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.89 2006-09-07 13:55:41 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.90 2006-11-07 10:09:19 michiel Exp $
  */
 
 public class WriterHelper {
@@ -572,6 +572,7 @@ public class WriterHelper {
         }
         pop_Stack();
         _Stack = null;
+        pushed = false;
         bodyContent = null;
         value = null;
         log.debug("End of doEndTag");
