@@ -4,7 +4,7 @@
 >
 
 <project name="MMBase MyCompany project" default="package" basedir=".">
-  <property name="project.name"     value="MyCompany" />
+  <property name="project.name"     value="mycompany" />
   <property name="project.target.templates.dir"   value="../mmexamples" />
   &base;
 </project>
