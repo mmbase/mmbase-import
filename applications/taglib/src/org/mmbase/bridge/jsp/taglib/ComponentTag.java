@@ -22,7 +22,7 @@ import org.mmbase.module.core.MMBase;
  * Renders a certain block of an mmbase component
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentTag.java,v 1.9 2006-10-31 22:23:35 michiel Exp $
+ * @version $Id: ComponentTag.java,v 1.10 2006-11-07 20:24:11 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentTag extends CloudReferrerTag implements ParamHandler, Writer {
@@ -77,10 +77,11 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler, Writ
             for (Map.Entry<String, Object> entry : extraParameters) {
                 params.set(entry.getKey(), entry.getValue());
             }
-            Parameters frameworkParams = MMBase.getMMBase().getFramework().createFrameworkParameters();
+            Framework fw = MMBase.getMMBase().getFramework();
+            Parameters frameworkParams = fw.createFrameworkParameters();
             fillStandardParameters(frameworkParams);
             frameworkParams.setAutoCasting(true);
-            renderer.render(params, frameworkParams, w);
+            fw.render(renderer, params, frameworkParams, w);
             used = true;
         } catch (IOException ioe) {
             throw new TaglibException(ioe);
