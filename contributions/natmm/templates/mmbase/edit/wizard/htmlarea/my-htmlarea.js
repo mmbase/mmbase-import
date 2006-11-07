@@ -45,7 +45,7 @@ myCreateLinkAction = function(editor) {
     description = selection;
   }
   var descriptionEditable = true;
-  var target = "current";
+  var target = "_new";
   /* hh: changed from == into: description != "" */
   if (description != "") {
     var firstParent = true;
