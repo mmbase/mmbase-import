@@ -19,10 +19,13 @@ import org.mmbase.util.functions.Parameters;
  * A Framework is the place where components are displayed in. 
  *
  * @author Johannes Verelst
- * @version $Id: Framework.java,v 1.12 2006-11-07 20:23:19 michiel Exp $
+ * @version $Id: Framework.java,v 1.13 2006-11-07 22:57:36 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Framework {
+
+    public final static String COMPONENT_ID_KEY    = "componentId";
+    public final static String COMPONENT_CLASS_KEY = "componentClassName";
 
     /** Return the name of the framework */
     public String getName();
