@@ -5,9 +5,9 @@
   <articleinfo>
     <title>MMBase Documentation Overview</title>
 
-    <date>2006-10-31</date>
+    <date>2006-11-07</date>
 
-    <edition>$Id: index.xml,v 1.62 2006-10-31 21:51:19 andre Exp $</edition>
+    <edition>$Id: index.xml,v 1.63 2006-11-07 10:13:48 andre Exp $</edition>
 
     <authorgroup>
       <author>
@@ -378,7 +378,8 @@
       <listitem>
         <para><ulink
         url="applications/taglib/frontenddevelopers/taglib/taglib-tutorial.html">Taglib
-        Tutorial</ulink></para>
+        Tutorial</ulink> - a tutorial for page designers and JSP developers to build web 
+        pages using the MMBase Tag Library</para>
       </listitem>
 
       <listitem>
@@ -390,7 +391,7 @@
       <listitem>
         <para><ulink
         url="applications/taglib/build/frontenddevelopers/taglib/reference.html">MMBase
-        taglib reference</ulink></para>
+        taglib reference</ulink> - documentation about all the MMBase tags</para>
       </listitem>
     </itemizedlist>
 
@@ -587,32 +588,32 @@
       </listitem>
 
       <listitem>
-        <para>MMBase 1.8.0 - Building (<ulink
+        <para>MMBase 1.9.x - Building (<ulink
         url="releases/building.txt">Text</ulink>)</para>
       </listitem>
 
       <listitem>
-        <para>MMBase 1.8.0 - Installation (<ulink
+        <para>MMBase 1.9.x - Installation (<ulink
         url="releases/installation.txt">Text</ulink>)</para>
       </listitem>
 
       <listitem>
-        <para>MMBase 1.8.0 - Readme (<ulink
+        <para>MMBase 1.9.x - Readme (<ulink
         url="releases/readme.txt">Text</ulink>)</para>
       </listitem>
 
       <listitem>
-        <para>MMBase 1.8.0 - Release Notes (<ulink
+        <para>MMBase 1.9.x - Release Notes (<ulink
         url="releases/release-notes.txt">Text</ulink>)</para>
       </listitem>
 
       <listitem>
-        <para>MMBase 1.8.0 - Release Plan (<ulink
+        <para>MMBase 1.9.x - Release Plan (<ulink
         url="releases/release-plan.txt">Text</ulink>)</para>
       </listitem>
 
       <listitem>
-        <para>MMBase 1.8.0 - Upgrade Notes (<ulink
+        <para>MMBase 1.9.x - Upgrade Notes (<ulink
         url="releases/upgrade.txt">Text</ulink>)</para>
       </listitem>
     </itemizedlist>
