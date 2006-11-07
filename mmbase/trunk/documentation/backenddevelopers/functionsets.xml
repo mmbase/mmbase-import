@@ -5,7 +5,7 @@
   <articleinfo>
     <title>The MMBase Function Framework</title>
 
-    <date>2006-10-31</date>
+    <date>2006-11-07</date>
 
     <edition>$Id: functionsets.xml,v 1.7 2006/06/24 08:38:04 michiel Exp
     $</edition>
@@ -50,8 +50,8 @@
     <para>The MMBase 'Function Framework' allows you to add functions or
     methods to different layers of MMBase. You can access them using the
     taglib function tags or the bridge. This tag &lt;mm:function set="utils"
-    name="generatePassword" /&gt; returns a random password like 'zyrentu'.
-    </para>
+    name="generatePassword" /&gt; returns a random password like
+    'zyrentu'.</para>
 
     <para>Functions can be added to nodes, builders and clouds and can be
     defined in three locations:</para>
@@ -145,7 +145,7 @@
 }</programlisting>
 
     <para>As you would expect this example function returns '[[null/Default
-    value]]'. </para>
+    value]]'.</para>
 
     <para>A more exiting example would use the the set-methods defined in this
     bean by using parameter tags. These parameters need to be grouped with the
@@ -188,6 +188,140 @@
     want to access it. <programlisting>  &lt;mm:import externid="template"&gt;AASSHHM&lt;/mm:param&gt;
   Your random new password might be:  
   &lt;mm:function name="getPassword" referid="template" /&gt;         </programlisting></para>
+  </section>
+
+  <section id="builders">
+    <title>Defining functions in builders</title>
+
+    <para>Functions can be added to the builder configuration. This is
+    especially usefull for methods related to a certain nodetype, allthough
+    the following example is generic and can be added to every builder and
+    thus every type of node.</para>
+
+    <para>To specify a function in a builder you should include a functionlist
+    element defining a function with its 'name', a 'key' the method and a
+    'class' being the class of the method. The functionlist should be at the
+    end of the builder configuration, after the fieldlist. The list can
+    include of course multiple functions.</para>
+
+    <para>When you would include the following at the end of the buider
+    'mags.xml' in the MyNews example:</para>
+
+    <programlisting>  &lt;functionlist&gt;
+    &lt;function key="stringFunction" name="bbb"&gt;
+      &lt;class&gt;org.mmbase.util.functions.ExampleBean&lt;/class&gt;
+    &lt;/function&gt;
+  &lt;/functionlist&gt;</programlisting>
+
+    <para>You can use the following in a jsp:</para>
+
+    <programlisting>  &lt;mm:node number="default.mags"&gt;&lt;mm:function name="bbb" /&gt;&lt;/mm:node&gt;</programlisting>
+
+    <para>This example uses the method stringFunction from ExampleBean (see
+    above). It returns '[[null/default]]'.</para>
+
+    <para>Another example uses the class ExampleBuilder while including its
+    class in the class element of the builder 'news'.</para>
+
+    <para><programlisting>  &lt;class&gt;org.mmbase.util.functions.ExampleBuilder&lt;/class&gt;</programlisting>When
+    you want to execute the method you could do in a jsp:</para>
+
+    <programlisting>  &lt;ol&gt;
+  &lt;mm:listnodes type="news"&gt;
+    &lt;li&gt;
+      number: &lt;mm:field name="number" /&gt;
+      title: &lt;mm:field name="title" /&gt;
+      predecessor: &lt;mm:function name="predecessor" /&gt;
+    &lt;/li&gt;
+  &lt;/mm:listnodes&gt;
+  &lt;/ol&gt; </programlisting>
+
+    <para>It returns the nodenumbers preceding the current one. The complete
+    code of this example method can be found in
+    org.mmbase.util.functions.ExampleBuilder.</para>
+
+    <para>As should be clear from the above examples it is not especially
+    necessary to define a function in a special builder class. Allthough
+    because the function is only defined in the builder of the nodetype
+    'magazines', it only works on nodes of type 'magazines'. When you want
+    your functions to be used by every type of node you better define a
+    functionset.</para>
+  </section>
+
+  <section id="sets">
+    <title>Defining functions in sets</title>
+
+    <para>Unlike Module or NodeManagers related functions the set functions
+    are aimed for a global use.</para>
+
+    <para>You can for example define a set 'utils' or 'statistics' or even map
+    to external application 'lucene'. The set 'utils' is already definied in
+    MMBase. Defining sets is done in a two xml files. The first in
+    'config/functions/functionsets.xml' defines what sets there are:
+    <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE functionsets 
+  PUBLIC "-//MMBase//DTD functionsets config 1.0//EN" 
+  "http://www.mmbase.org/dtd/functionsets_1_0.dtd"&gt;
+&lt;functionsets&gt;
+  &lt;functionset name="utils"      resource="utils.xml" /&gt;
+&lt;/functionsets&gt; </programlisting> The set itself (in this case
+    'config/functions/utils.xml') defines the mapping, names, classes and
+    methods to be called: <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE functionset PUBLIC 
+  "//MMBase - functionset //" "http://www.mmbase.org/dtd/functionset_1_0.dtd"&gt;
+&lt;functionset&gt;
+
+  &lt;description&gt;
+   Some util functions from org.mmbase.util, made accessible through 
+   the function-framework.
+  &lt;/description&gt;
+
+  &lt;function name="generatePassword"&gt;
+    &lt;description&gt;
+      Generates a password. Using a template (chain of characters A (random letter) C (random
+      alphanumeric) H (random hex) S (random syllable) 6 (random dice) 9 (random digit)). Default
+      template: SSSSSS.
+    &lt;/description&gt;
+    &lt;type&gt;class&lt;/type&gt;
+    &lt;class&gt;org.mmbase.util.PasswordGenerator&lt;/class&gt;
+    &lt;method&gt;getPassword&lt;/method&gt;
+    &lt;param name="template" type="String"&gt;SSSSSS&lt;/param&gt;
+  &lt;/function&gt;
+
+  &lt;function name="randomLong"&gt;
+    &lt;description&gt;
+      Generates a random long integer.
+    &lt;/description&gt;
+    &lt;type&gt;class&lt;/type&gt;
+    &lt;class&gt;org.mmbase.util.RandomPool&lt;/class&gt;
+    &lt;method&gt;value_and_stir&lt;/method&gt;
+  &lt;/function&gt;
+
+  &lt;function name="filename"&gt;
+    &lt;description&gt;
+      Makes filename of commons file upload's FileItem.getName.
+    &lt;/description&gt;
+    &lt;type&gt;class&lt;/type&gt;
+    &lt;class&gt;org.mmbase.util.functions.Utils&lt;/class&gt;
+    &lt;method&gt;getFileItemName&lt;/method&gt;
+    &lt;param name="filename" type="String" /&gt;
+  &lt;/function&gt;
+
+&lt;/functionset&gt;     </programlisting></para>
+
+    <para>As you can see the 'utils' functionset defines three functions that
+    can be accessed using functiontags. For example like &lt;mm:function
+    set="utils" name="generatePassword" /&gt;.</para>
+  </section>
+
+  <section id="modules">
+    <title>Defining functions in modules</title>
+
+    <para>Its also possible to define functions in MMBase Modules see e.g. the
+    MMAdmin module and its jsp pages in mmbase/mmadmin/. Also e.g. the crontab
+    and clustering applications ship with modules (CrontabModule,
+    ClusteringModule), which define 'functions' which are used in admin
+    pages.</para>
   </section>
 
   <section id="bridge">
@@ -258,81 +392,6 @@
       <para>This is e.g. used by MMBase taglib to automaticly set some
       parameters (like cloud, request, node etc).</para>
     </section>
-  </section>
-
-  <section id="defining">
-    <title>Defining functions in Builders for functions on builders and
-    nodes</title>
-
-    <para>For functions related to one type of nodes you can add functions its
-    builder, they can be executed on either one node of on the builder itself.
-    You can define them in 2 ways. One if in the builder.xml and the other is
-    in the java file of the builder itself. From the example in
-    tests/config/builders/tests/datatypes.xml <programlisting>
-        &lt;functionlist&gt;
-         &lt;function key="integerFunction" name="aaa"&gt;
-            &lt;class&gt;org.mmbase.util.functions.ExampleBean&lt;/class&gt;
-         &lt;/function&gt;
-        &lt;/functionlist&gt;
-     </programlisting></para>
-
-    <para>Here we defined a function on the datatypes builder with the name
-    'aaa', When this is called from either the bridge of tags it calls the
-    integerFunction in the org.mmbase.util.functions.ExampleBean.
-    <programlisting>
-        public Integer integerFunction() {
-                return new Integer(parameter2.intValue() * 3);
-        }
-    </programlisting></para>
-  </section>
-
-  <section id="modules">
-    <title>Defining functions in Modules</title>
-
-    <para>Its also possible to define functions in MMBase Modules see e.g. the
-    MMAdmin module and its jsp pages in mmbase/mmadmin/. Also e.g. the crontab
-    and clustering applications ship with modules (CrontabModule,
-    ClusteringModule), which define 'functions' which are used in admin
-    pages.</para>
-  </section>
-
-  <section id="sets">
-    <title>Defining functions in Sets</title>
-
-    <para>Unlike Module or NodeManagers related functions the set functions
-    are aimed for a global use and can be implemented in any java class or .
-    You can for example define a set 'util' or 'statistics' or even map to
-    external application 'lucene'. Defining sets is done in a 2 xml files. The
-    first defines what sets you have : <programlisting>
-     mmbase config xml : config/functions/functionsets.xml
-
-        &lt;functionsets&gt;
-          &lt;functionset name="util" file="utils.xml" /&gt;
-         &lt;/functionsets&gt;
-     </programlisting> The set itself (in this case utils.xml) defines the
-    mapping, names, classes and methods to be called <programlisting>
-                &lt;functionset&gt;
-                &lt;description&gt;Some util functions from org.mmbase.util, made accessible through the function-framework&lt;/description&gt;
-                 &lt;function name="generatePassword"&gt;
-                  &lt;description&gt;Generates a password. Using a template&lt;/description&gt;
-                  &lt;type&gt;class&lt;/type&gt;
-                  &lt;class&gt;org.mmbase.util.PasswordGenerator&lt;/class&gt;
-                  &lt;method&gt;getPassword&lt;/method&gt;
-                  &lt;param name="template" type="String"&gt;SSSSSS&lt;/param&gt;
-                  &lt;return type="String" /&gt;
-                 &lt;/function&gt;
-                &lt;/functionset&gt;
-     </programlisting></para>
-
-    <para>In this example we only defined one function called
-    generatePassword, its implemented as a class (type) the class file is
-    (org.mmbase.util.PasswordGenerator) and the method that will be called
-    inside that class is getPassword. Next we can define one or more
-    parameters in this case one so the end result will be of this function
-    configuration will be that &lt;mm:function set="util" name="getPassword"
-    referid="template" /&gt; will be mapped to the method String
-    getPassword(String template) inside the class
-    org.mmbase.util.PasswordGenerator.</para>
   </section>
 
   <section id="lists">
