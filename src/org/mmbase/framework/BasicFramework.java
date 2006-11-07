@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.10 2006-11-07 20:39:52 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.11 2006-11-07 22:57:36 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -32,6 +32,7 @@ public class BasicFramework implements Framework {
     private static final CharTransformer paramEscaper = new Url(Url.ESCAPE);
 
     public final static String KEY = "org.mmbase.framework.state";
+
 
     public String getName() {
         return "BASIC";
@@ -135,7 +136,9 @@ public class BasicFramework implements Framework {
         Object previousRenderer = request.getAttribute(Renderer.KEY);
         request.setAttribute(Renderer.KEY, renderer);
         State state = getState(request);
+        request.setAttribute(COMPONENT_CLASS_KEY, "mm_fw_basic");
         state.render(renderer);
+        request.setAttribute(COMPONENT_ID_KEY, state.getPrefix());
         setBlockParameters(state, blockParameters);
         try{
             renderer.render(blockParameters, frameworkParameters, w);
