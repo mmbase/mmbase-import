@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * A Renderer implmentation based on a jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JspRenderer.java,v 1.13 2006-10-31 22:21:45 michiel Exp $
+ * @version $Id: JspRenderer.java,v 1.14 2006-11-07 20:23:19 michiel Exp $
  * @since MMBase-1.9
  */
 public class JspRenderer extends AbstractRenderer {
@@ -45,34 +45,21 @@ public class JspRenderer extends AbstractRenderer {
     }
 
     public void render(Parameters blockParameters, Parameters frameworkParameters, Writer w) throws IOException {
-        HttpServletRequest request = blockParameters.get(Parameter.REQUEST);
-        Object previousRenderer = request.getAttribute(Renderer.KEY);
         try {
             HttpServletResponse response = blockParameters.get(Parameter.RESPONSE);
+            HttpServletRequest request  = blockParameters.get(Parameter.REQUEST);
             GenericResponseWrapper respw = new GenericResponseWrapper(response);
-
+            String url = getFramework().getUrl(path, this, getBlock().getComponent(), blockParameters, frameworkParameters).toString();
+            RequestDispatcher requestDispatcher = request.getRequestDispatcher(url);
             for (Map.Entry<String, ?> entry : blockParameters.toMap().entrySet()) {
                 request.setAttribute(entry.getKey(), entry.getValue());
             }
-            request.setAttribute(Renderer.KEY, this);
-
-            Framework framework = MMBase.getMMBase().getFramework();
-            String url = framework.getUrl(path, this, getBlock().getComponent(), blockParameters, frameworkParameters).toString();
-
-            if (log.isDebugEnabled()) {
-                log.debug("Block parameters      : [" + blockParameters + "]");
-                log.debug("Framework parameters  : [" + frameworkParameters + "]");
-                log.debug("Framework returned url: [" + url + "]");
-            }
-            RequestDispatcher requestDispatcher = request.getRequestDispatcher(url);
             requestDispatcher.include(request, respw);
             w.write(respw.toString());
         } catch (ServletException se) {
             IOException e =  new IOException(se.getMessage());
             e.initCause(se);
             throw e;
-        } finally {
-            request.setAttribute(Renderer.KEY, previousRenderer);
         }
     }
 

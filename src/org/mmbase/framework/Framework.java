@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.framework;
 import javax.servlet.jsp.PageContext;
 import java.util.*;
+import java.io.*;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.util.Entry;
 import org.mmbase.util.functions.Parameters;
@@ -18,7 +19,7 @@ import org.mmbase.util.functions.Parameters;
  * A Framework is the place where components are displayed in. 
  *
  * @author Johannes Verelst
- * @version $Id: Framework.java,v 1.11 2006-10-25 20:28:23 michiel Exp $
+ * @version $Id: Framework.java,v 1.12 2006-11-07 20:23:19 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Framework {
@@ -61,4 +62,9 @@ public interface Framework {
      * because it is taglib dependent.
      */
     public Parameters createFrameworkParameters(); 
+
+
+
+    public void render(Renderer renderer, Parameters blockParameters, Parameters frameworkParameters, Writer w) throws IOException;
+    public void process(Processor renderer, Parameters blockParameters, Parameters frameworkParameters) throws IOException;
 }
