@@ -7,8 +7,8 @@ String thisPerson = "";
 
 String messageTitle = "";
 String messageBody = "";
-String messageHref = "index.jsp";
-String messageLinktext = "naar de homepage";
+String messageHref =  ph.createPaginaUrl(paginaID,request.getContextPath());
+String messageLinktext = "terug naar het smoelenboek";
 String messageLinkParam = "";
 
 String emailHelpText = 
