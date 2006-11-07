@@ -28,8 +28,16 @@
       </mm:notpresent>
       <mm:present referid="component">
         <h1>'${component}'</h1>
-        <mm:function set="components" name="get" referids="component@name" jspvar="v">
-          <p><jsp:expression>v.getClass()</jsp:expression></p>
+        <mm:function set="components" name="get" referids="component@name" id="c">
+          <p>${c.class}</p>
+          <ul>
+            <mm:stringlist referid="c.blocks" id="b" jspvar="b" vartype="org.mmbase.framework.Block">
+              <li>
+                ${b.class} : ${b.name} 
+                <p><jsp:expression>b.getDescription().get(Locale.US)</jsp:expression></p>
+              </li>
+            </mm:stringlist>
+          </ul>
         </mm:function>
         <mm:link>
           <a href="${_}">back</a>
