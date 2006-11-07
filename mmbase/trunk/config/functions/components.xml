@@ -9,4 +9,10 @@
     <class>org.mmbase.framework.ComponentRepository</class>
     <method>getComponents</method>
   </function>
+  <function name="get">
+    <type>singleton</type>
+    <class>org.mmbase.framework.ComponentRepository</class>
+    <method>getComponent</method>
+    <param name="name" type="java.lang.String" />
+  </function>
 </functionset>
