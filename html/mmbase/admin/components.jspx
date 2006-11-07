@@ -10,7 +10,7 @@
       <p>
         <jsp:expression>((Renderer) request.getAttribute(Renderer.KEY)).getBlock().getDescription().get(Locale.US)</jsp:expression>
       </p>
-      <mm:import externid="component" from="request,parameters" />
+      <mm:import externid="component" from="request" />
       <mm:notpresent referid="component">
         <p>
           Available components:
