@@ -1,7 +1,7 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
 %><html>
 <head>
-  <title>MMBase taglib and URLS</title>
+  <title>MMBase taglib and MMBase components</title>
   <link href="style.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
