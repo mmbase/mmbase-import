@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * A Renderer implmentation based on a jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: EditwizardRenderer.java,v 1.5 2006-10-31 22:21:45 michiel Exp $
+ * @version $Id: EditwizardRenderer.java,v 1.6 2006-11-07 22:03:25 michiel Exp $
  * @since MMBase-1.9
  */
 public class EditwizardRenderer extends AbstractRenderer {
@@ -56,4 +56,8 @@ public class EditwizardRenderer extends AbstractRenderer {
                                    "&amp;nodepath=" + path +
                                    "&amp;language=" + locale.getLanguage()));
     }
+    public String toString() {
+        return "EW " + list + " &nodepath= " + path;
+    }
+
 }
