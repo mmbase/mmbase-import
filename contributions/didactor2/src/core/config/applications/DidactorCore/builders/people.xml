@@ -227,10 +227,7 @@
         <guiname xml:lang="en">Date of birth</guiname>
         <guiname xml:lang="nl">Geboortedatum</guiname>
       </gui>
-      <datatype base="living-birthdate" xmlns="http://www.mmbase.org/xmlns/datatypes" /> 
-      <db>
-        <type state="persistent"  notnull="false" key="false">DATETIME</type>
-      </db>
+      <datatype base="living-birthdate" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
     <field name="username">
@@ -260,6 +257,7 @@
         <guiname xml:lang="en">Password</guiname>
       </gui>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="" />
         <password value="true" />
       </datatype>
       <db>
