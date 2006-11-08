@@ -10,13 +10,13 @@ if(!action.equals("print")) {
       <table cellpadding="0" cellspacing="0"  align="center">
         <tr>
           <td class="bold">&nbsp;<span class="light">Voornaam:</span></td>
-          <td class="bold"><input type="text" style="width:103px;" name="firstname" value="<%= firstnameId %>">
+          <td class="bold"><input type="text" tabindex="1" style="width:103px;" name="firstname" value="<%= firstnameId %>">
             &nbsp;<br><div align="right"><span class="light"><% if(nameId.equals("")){ %>en<% } else { %>of<% } %></span></div>
           </td>
         </tr>
         <tr>
           <td class="bold">&nbsp;<span class="light">Achternaam:</span>&nbsp;</td>
-          <td class="bold"><input type="text" style="width:103px;" name="lastname" value="<%= lastnameId %>">
+          <td class="bold"><input type="text" tabindex="2" style="width:103px;" name="lastname" value="<%= lastnameId %>">
              <%  
              if(!onlyProgramSelect || showProgramSelect || iRubriekLayout==NMIntraConfig.SUBSITE1_LAYOUT) {
                 %>&nbsp;<br><div align="right"><span class="light">en</span></div><%          
@@ -29,13 +29,13 @@ if(!action.equals("print")) {
           %>
           <tr>
             <td class="bold">&nbsp;<span class="light">En verder:</span>&nbsp;</td>
-            <td class="bold"><input type="text" style="width:103px;" name="description" size="13" value="<%= descriptionId %>">
+            <td class="bold"><input type="text" tabindex="3" style="width:103px;" name="description" size="13" value="<%= descriptionId %>">
               &nbsp;<br><div align="right"><span class="light">en</span></div>
             </td>
           </tr>
           <tr>
             <td colspan="2" class="bold">
-              <select name="department" style="width:195px;">
+              <select tabindex="4" name="department" style="width:195px;">
                 <option value="default" <%  if(departmentId.equals("default")) { %>SELECTED<% } 
                     %>>alle afdelingen en regio's
                 <mm:list path="afdelingen" orderby="afdelingen.naam" directions="UP"
@@ -52,7 +52,7 @@ if(!action.equals("print")) {
           </tr>
           <tr>
             <td colspan="2" class="bold">
-              <select name="location" style="width:195px;">
+              <select tabindex="5" name="location" style="width:195px;">
                 <option value="default" <%  if(programId.equals("default")) { %>SELECTED<% } 
                     %>>alle lokaties
                 <mm:list path="locations" orderby="locations.naam" directions="UP"
@@ -79,7 +79,7 @@ if(!action.equals("print")) {
           %>
           <tr>
             <td colspan="2">
-              <select name="program" style="width:195px;">
+              <select tabindex="7" name="program" style="width:195px;">
                 <option value="default" <%  if(programId.equals("default")) { %>SELECTED<% } 
                     %>><%= (!onlyProgramSelect ? "alle overige groepen" : "alle teams") %>
                 <% if(!"".equals(thisPrograms)) { %>
@@ -106,7 +106,7 @@ if(!action.equals("print")) {
         if(iRubriekLayout==NMIntraConfig.SUBSITE1_LAYOUT) { %>
           <tr>
             <td colspan="2">
-            <select name="k" style="width:195px;">
+            <select tabindex="8" name="k" style="width:195px;">
               <option value="" <%  if(keywordId.equals("")) { %>SELECTED<% } %>>alle termen
               <mm:listnodes type="keywords" orderby="word" directions="UP">
                   <mm:field name="number" jspvar="keywords_number" vartype="String" write="false">
@@ -122,13 +122,21 @@ if(!action.equals("print")) {
         <tr><td colspan="2"><img src="media/spacer.gif" width="1" height="20"></td></tr>
         <tr>
           <td>
-            <input type="submit" name="submit" value="Wis" style="text-align:center;font-weight:bold;width:42px;">
+            <input type="button" name="submit" tabindex="10" value="Wis" style="text-align:center;font-weight:bold;width:42px;"  onClick="javascript:clearForm();">
           </td>
           <td>
-            <div align="right"><input type="submit" name="submit" value="Zoek" style="text-align:center;font-weight:bold;width:42px;">&nbsp;</div>
+            <div align="right"><input type="submit" tabindex="9" name="submit" value="Zoek" style="text-align:center;font-weight:bold;width:42px;">&nbsp;</div>
           </td>
         </tr>
       </table>
     </form>
+    <script language="JavaScript" type="text/javascript">
+    <%= "<!--" %>
+      function clearForm() {
+         document.location = "<%= thisPage %>"; 
+         return false; 
+      }
+    <%= "//-->" %>
+    </script>
    <% 
 } %>
