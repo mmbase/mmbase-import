@@ -1,5 +1,6 @@
 <%@include file="/taglibs.jsp" %>
-<mm:cloud logon="website_user" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getUserCredentials("website_user").get("password") %>" jspvar="cloud">
+<%@include file="includes/getactiveaccount.jsp" %>
+<mm:cloud logon="<%= account %>" pwd="<%= password %>" jspvar="cloud">
 <%@include file="includes/templateheader.jsp" %>
 <%@include file="includes/calendar.jsp" %>
 <%@include file="includes/cacheparams.jsp" %>
