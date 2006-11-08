@@ -231,7 +231,7 @@
 				<table cellspacing="0" cellpadding="0" class="thumbnail">
 					<tr><td class="thumbnail">
 						<%@include file="../splitimagelist.jsp" 
-						%><a href="#" onClick="javascript:launchCenter('<%= "/" + ph.getSubDir(cloud,paginaID) + slideshowUrl + "&i=" + imageId %>', 'center', 550, 740);setTimeout('newwin.focus();',250);">
+						%><a href="<%= pageUrl %>" onClick="javascript:launchCenter('<%= "/" + ph.getSubDir(cloud,paginaID) + slideshowUrl + "&i=" + imageId %>', 'center', 550, 740);setTimeout('newwin.focus();',250);">
 						<mm:listnodes type="images" constraints="<%= "number='" + thisImage + "'" %>">
 							<img src="<mm:image template="s(32x54)" />" border="0" alt="">
 						</mm:listnodes
@@ -259,8 +259,8 @@
 						></a>
 					</td></tr>
 				</table>
-			<a href="#" onClick="javascript:launchCenter('<%=  "/" + ph.getSubDir(cloud,paginaID) + slideshowUrl + "&i=" + imageId 
-				%>', 'center', 550, 740)"><mm:node number="<%= thisImage %>"><mm:field name="title" /></mm:node></a>
+			<a href="<%= pageUrl %>" onClick="javascript:launchCenter('<%=  "/" + ph.getSubDir(cloud,paginaID) + slideshowUrl + "&i=" + imageId 
+				%>', 'center', 550, 740);setTimeout('newwin.focus();',250);"><mm:node number="<%= thisImage %>"><mm:field name="title" /></mm:node></a>
 		</td><%
 		imageId = nextImage; 
 		thisThumbNailNumber++;
