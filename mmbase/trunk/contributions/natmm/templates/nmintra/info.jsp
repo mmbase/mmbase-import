@@ -23,7 +23,7 @@ if(!articleId.equals("-1")) {
     
       if(termSearchId.equals(defaultSearchText)) { termSearchId = ""; }
 
-      int objectPerPage = 10;
+      int objectPerPage = 9;
       int thisOffset = 1;
       try{
           if(!offsetId.equals("")){
@@ -113,7 +113,7 @@ if(!articleId.equals("-1")) {
 					 <%@include file="includes/info/offsetlinks.jsp" %><%
                 if(listSize>0) {
                    %><mm:list nodes="<%= paginaID %>" path="<%= articlePath %>" orderby="artikel.embargo" searchdir="destination" directions="DOWN" 
-                       offset="<%= "" + (thisOffset-1)*10 %>" max="<%= "" + objectPerPage %>" constraints="<%= articleConstraint %>"><%
+                       offset="<%= "" + (thisOffset-1)*objectPerPage %>" max="<%= "" + objectPerPage %>" constraints="<%= articleConstraint %>"><%
                        String titleClass = "pageheader"; 
                        String readmoreUrl = "info.jsp";
                        %><mm:field name="artikel.number" jspvar="article_number" vartype="String" write="false"><%
