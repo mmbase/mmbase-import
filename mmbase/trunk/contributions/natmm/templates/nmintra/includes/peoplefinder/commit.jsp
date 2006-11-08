@@ -91,8 +91,8 @@ if(date.equals("")) { // *** send an email to ask confirmation ***
             employeeId = e.getStringValue("externid");
             firstnameId = e.getStringValue("firstname");
             initialsId = e.getStringValue("initials");
-            suffixId = e.getStringValue("externid");
-            lastnameId = e.getStringValue("suffix");
+            suffixId = e.getStringValue("suffix");
+            lastnameId = e.getStringValue("lastname");
             companyphoneId = e.getStringValue("companyphone");
             cellularphoneId = e.getStringValue("cellularphone");
             faxId = e.getStringValue("fax");
