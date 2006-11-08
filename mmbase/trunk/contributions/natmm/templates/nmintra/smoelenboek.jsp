@@ -76,6 +76,8 @@ boolean showProgramSelect = onlyProgramSelect || !"".equals(thisPrograms);
     } %>
 <table border="0" cellpadding="0" cellspacing="0">
     <tr><td style="padding:10px;padding-top:18px;"><% 
+
+    String thisPage = ph.createPaginaUrl(paginaID,request.getContextPath());
     
     if(nameId.equals(nameEntry)) nameId = "";
     if(!nameId.equals("")) {

@@ -7,7 +7,7 @@ String thisPerson = "";
 
 String messageTitle = "";
 String messageBody = "";
-String messageHref =  ph.createPaginaUrl(paginaID,request.getContextPath());
+String messageHref =  thisPage;
 String messageLinktext = "terug naar het smoelenboek";
 String messageLinkParam = "";
 

@@ -61,38 +61,42 @@ if(!programId.equals("default")) {
 }
 String defaultThumb = "";
 %><mm:list nodes="<%= paginaID %>" path="pagina,posrel,images" constraints="posrel.pos='2'" max="1"
-><mm:field name="images.number" jspvar="images_number" vartype="String" write="false"
-    ><% defaultThumb = images_number; 
+><mm:field name="images.number" jspvar="images_number" vartype="String" write="false"><%
+   defaultThumb = images_number; 
 %></mm:field
 ></mm:list><%
 // = employeeConstraint 
-%><% boolean employeeFound = false;
-    int numberInRow = 0;
-    int maxInRow = 3; 
-%><mm:list nodes="<%= departmentNodes %>" path="<%= employeePath %>"
-    orderby="medewerkers.firstname,medewerkers.lastname" directions="UP,UP" constraints="<%= employeeConstraint %>"
-    ><mm:field name="medewerkers.number" jspvar="employees_number" vartype="String" write="false"><%
-    if(!employeeFound) { 
-        employeeFound = true;
-        %><table cellpadding="0" cellspacing="0" align="center"><tr><%
-    } 
-    %><td>
-    <a href="smoelenboek.jsp?p=wieiswie&employee=<%= employees_number %>&department=<%= departmentId %>&program=<%= programId
-        %>&pst=|action=back"><img width="80px" height="108px" src="<mm:remove referid="imagefound" 
-            /><mm:list nodes="<%= employees_number %>" path="medewerkers,posrel,images" max="1"
-                ><mm:node element="images"><mm:image template="s(80x108)" /></mm:node
-                ><mm:import id="imagefound" 
-            /></mm:list
-            ><mm:notpresent referid="imagefound"
-                ><mm:node number="<%= defaultThumb %>" notfound="skipbody"><mm:image template="s(80x108)" /></mm:node
-            ></mm:notpresent>" alt="<mm:field name="medewerkers.firstname" /> <mm:field name="medewerkers.suffix" /> <mm:field name="medewerkers.lastname" />" border="0" /></a></td><%
-    numberInRow ++; 
-    if(numberInRow>maxInRow) { 
-        %></tr><tr><%
-        numberInRow=0;
-    } 
-    %></mm:field
-></mm:list><%
+%><%
+boolean employeeFound = false;
+int numberInRow = 0;
+int maxInRow = 3; 
+if(!departmentNodes.equals("default")) {
+   %><mm:list nodes="<%= departmentNodes %>" path="<%= employeePath %>"
+       orderby="medewerkers.firstname,medewerkers.lastname" directions="UP,UP" constraints="<%= employeeConstraint %>"
+       fields="medewerkers.number" distinct="true"
+       ><mm:field name="medewerkers.number" jspvar="employees_number" vartype="String" write="false"><%
+       if(!employeeFound) { 
+           employeeFound = true;
+           %><table cellpadding="0" cellspacing="0" align="center"><tr><%
+       } 
+       %><td>
+       <a href="smoelenboek.jsp?p=wieiswie&employee=<%= employees_number %>&department=<%= departmentId %>&program=<%= programId
+           %>&pst=|action=back"><img width="80px" height="108px" src="<mm:remove referid="imagefound" 
+               /><mm:list nodes="<%= employees_number %>" path="medewerkers,posrel,images" max="1"
+                   ><mm:node element="images"><mm:image template="s(80x108)" /></mm:node
+                   ><mm:import id="imagefound" 
+               /></mm:list
+               ><mm:notpresent referid="imagefound"
+                   ><mm:node number="<%= defaultThumb %>" notfound="skipbody"><mm:image template="s(80x108)" /></mm:node
+               ></mm:notpresent>" alt="<mm:field name="medewerkers.firstname" /> <mm:field name="medewerkers.suffix" /> <mm:field name="medewerkers.lastname" />" border="0" /></a></td><%
+       numberInRow ++; 
+       if(numberInRow>maxInRow) { 
+           %></tr><tr><%
+           numberInRow=0;
+       } 
+       %></mm:field
+   ></mm:list><%
+}
 
 if(employeeFound) { 
     while(numberInRow<maxInRow) {
@@ -108,9 +112,10 @@ if(employeeFound) {
             isFirst = false;
         }
         if(!programId.equals("default")) {
-        %><mm:node number="<%= programId %>"><li><%if(!isFirst) { %> en<% }%> de redactie <mm:field name="title" /></li></mm:node><% 
-    } %>.</ul></span>
-    <p>Er zijn geen medewerkers gevonden die voldoen aan je selectie.</p></div><%
+           %><mm:node number="<%= programId %>"><li><%if(!isFirst) { %> en<% }%> de lokatie <mm:field name="naam" /></li></mm:node><% 
+        } %>.</ul></span>
+      <p>Er zijn geen medewerkers gevonden die voldoen aan je selectie.</p>
+    </div><%
 }
 %></td></tr>
 </table>
