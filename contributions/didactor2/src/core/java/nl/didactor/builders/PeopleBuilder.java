@@ -142,17 +142,7 @@ public class PeopleBuilder extends DidactorBuilder {
                 node.storeValue(fieldname, "{md5}" + encoder.encode((String)newValue));
             }
         }
-        
         return true;
-    }
-
-    /**
-     * Set default values for a node
-     * @param node The node
-     */ 
-    public void setDefaults(MMObjectNode node) {
-        super.setDefaults(node);
-        node.setValue("password", "");
     }
 
     /**
