@@ -32,7 +32,7 @@ import java.util.HashMap;
  * Date: Mar 27, 2003
  * Time: 6:40:16 PM
  * @author vincent (Finalist IT Group)
- * @version $Id: CloudFactory.java,v 1.2 2006-10-25 16:28:01 henk Exp $
+ * @version $Id: CloudFactory.java,v 1.3 2006-11-08 14:14:52 henk Exp $
  */
 public class CloudFactory {
 	private static final Category log = Category.getInstance(CloudFactory.class);
@@ -87,6 +87,9 @@ public class CloudFactory {
         user.setStringValue("account",username);
         user.setStringValue("password","p" + Math.random());
         user.setStringValue("rank","basic user");
+        user.setStringValue("expiredate","2145881590");
+        user.setStringValue("voornaam","Website");
+        user.setStringValue("achternaam","User");
         user.commit();
       } else {
         user = nl.getNode(0);
