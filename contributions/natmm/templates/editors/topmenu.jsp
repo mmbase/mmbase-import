@@ -1,9 +1,20 @@
 <%@include file="/taglibs.jsp" %>
 <%@page import="nl.leocms.util.PropertiesUtil,nl.leocms.util.ApplicationHelper,org.mmbase.bridge.*,java.net.*" %>
+<% 
+// make sure website_user is not used as editor account
+String account = null; 
+%>
+<mm:cloud method="http" rank="anonymous" jspvar="cloud">
+  <% account = cloud.getUser().getIdentifier(); %>
+</mm:cloud>
+<% 
+if("website_user".equals(account)) {
+  request.getSession().invalidate(); 
+  %><mm:redirect page="/editors/topmenu.jsp" /><%
+} %>
 <mm:cloud jspvar="cloud" rank="basic user">
 <%
-String account = cloud.getUser().getIdentifier();
-
+account = cloud.getUser().getIdentifier();
 String unused_items = cloud.getNodeManager("users").getList("users.account = '" + account + "'",null,null).getNode(0).getStringValue("unused_items");
 
 int iTotalNotUsed = 0;
@@ -150,7 +161,10 @@ String sNatuurinNumber = "";
 	<%	
 	if (tsRubrieks.isEmpty()&&!isEventUser) { 
 		%>
-   	<td class="menu" style="color:red;">Er is geen rubriek voor u geselecteerd. Neem contact op met de webmasters om u een rol op een van de rubrieken te geven.</td>
+   	<td class="menu" style="color:red;">
+      Er is geen rubriek voor u geselecteerd.
+      Neem contact op met de webmasters om u een rol op een van de rubrieken te geven.
+      Of log in met een andere gebruikersnaam en password.</td>
 		<% 
 	} %>
 	</tr>

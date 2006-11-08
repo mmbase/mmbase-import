@@ -1,6 +1,7 @@
 <%@page import="nl.leocms.util.tools.SearchUtil" %>
 <%@include file="/taglibs.jsp" %>
-<mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud">
+<%@include file="includes/getactiveaccount.jsp" %>
+<mm:cloud logon="<%= account %>" pwd="<%= password %>" jspvar="cloud">
 <%@include file="includes/templateheader.jsp" %>
 <%@include file="includes/calendar.jsp" %>
 <%@include file="includes/cacheparams.jsp" %>
@@ -110,7 +111,12 @@ if(!articleId.equals("-1")) {
 				         orderby="artikel.embargo" searchdir="destination"
                   ><mm:first><mm:size jspvar="dummy" vartype="Integer" write="false"><% listSize = dummy.intValue();  %></mm:size></mm:first
                 ></mm:list>
-					 <%@include file="includes/info/offsetlinks.jsp" %><%
+					 <%@include file="includes/info/offsetlinks.jsp" %>
+           <div style="text-align:right"><a href="<%= editwizard_location 
+                   %>/jsp/wizard.jsp?language=nl&wizard=config/artikel/artikel_nieuws_nmintra_simple&objectnumber=new&origin=<%= paginaID 
+                   %>&referrer=<%= request.getServletPath().replaceAll("//","/")+"?p=" + paginaID
+                   %>">voeg een nieuwsbericht toe</a></div>
+           <%
                 if(listSize>0) {
                    %><mm:list nodes="<%= paginaID %>" path="<%= articlePath %>" orderby="artikel.embargo" searchdir="destination" directions="DOWN" 
                        offset="<%= "" + (thisOffset-1)*objectPerPage %>" max="<%= "" + objectPerPage %>" constraints="<%= articleConstraint %>"><%
@@ -150,6 +156,10 @@ if(!articleId.equals("-1")) {
             </mm:field>
          </mm:node>
          <br/>
+         <% 
+         if(iRubriekLayout==NMIntraConfig.SUBSITE1_LAYOUT) { 
+          %><%@include file="includes/birthday.jsp" %><%
+         } %>
          <%@include file="includes/tickertape.jsp" %>
          <%@include file="includes/itemurls.jsp" %>
       </td>
