@@ -5,6 +5,7 @@
 <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
 <%@include file="includes/calendar.jsp" %>
 <%@include file="includes/header.jsp" %>
+<% String pageUrl =  ph.createPaginaUrl(paginaID,request.getContextPath()) + "?u=" + shop_itemId; %>
 <td colspan="2"><%@include file="includes/pagetitle.jsp" %></td>
 </tr>
 <tr>
