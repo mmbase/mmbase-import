@@ -3,7 +3,11 @@
 <wizard-schema id="pools">
 	<title>categorieen</title>
 	<task-description>Use this wizard to edit a pool.</task-description>
-	<action include="config/pools/create_pools.xml" />
+	<action type="create">
+	   <object type="pools">
+	      <relation destination="education" role="posrel"/>
+	   </object>
+   </action>
    <action include="config/pools/delete_pools.xml" />
 	<action include="config/pools/load_pools.xml" />
 	<steps>
