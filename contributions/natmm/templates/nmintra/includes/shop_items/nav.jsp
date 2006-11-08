@@ -1,7 +1,6 @@
 <table cellspacing="0" cellpadding="0" width="100%">
 <tr><td class="internalnav">OVERZICHT VAN DIT PRODUCT</td></tr>
 <tr><td style="padding:4px;padding-bottom:14px;">
-<% String pageUrl =  ph.createPaginaUrl(paginaID,request.getContextPath()) + "?u=" + shop_itemId; %>
 <mm:present referid="body"><a href="<%= pageUrl %>#body" class="subtitle"><mm:write referid="body" /></a><br></mm:present>
 <mm:present referid="product"><a href="<%= pageUrl %>#product" class="subtitle"><mm:write referid="product" /></a><br></mm:present>
 <mm:present referid="thumbs"><a href="<%= pageUrl %>#thumbs" class="subtitle"><mm:write referid="thumbs" /></a><br></mm:present>

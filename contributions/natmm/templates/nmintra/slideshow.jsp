@@ -4,7 +4,7 @@
 <%@include file="includes/cacheparams.jsp" %>
 <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
 <% 
-String pageUrl = "slideshow.jsp?p=" + paginaID + "&u=" + shop_itemId + "&o=" + offsetId + "&i="; 
+String pageUrl = "slideshow.jsp?p=" + paginaID + "&u=" + shop_itemId + "&offset=" + offsetId + "&i="; 
 
 String previousImage = "-1";
 String nextImage = "-1";
