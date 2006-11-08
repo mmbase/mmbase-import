@@ -47,7 +47,7 @@
    <form-schema id="add_related">
       <title>indeling</title>
       <list include="config/keywords/add_related.xml" />
-      <list include="config/pools/add_pools_posrel.xml" />
+      <list include="config/pools/add_education_pools_posrel.xml" />
       <list include="config/competencies/add_posrel.xml" />
    </form-schema>
 
