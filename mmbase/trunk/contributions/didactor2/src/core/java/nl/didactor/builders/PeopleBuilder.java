@@ -151,6 +151,7 @@ public class PeopleBuilder extends DidactorBuilder {
      * @param node The node
      */ 
     public void setDefaults(MMObjectNode node) {
+        super.setDefaults(node);
         node.setValue("password", "");
     }
 
