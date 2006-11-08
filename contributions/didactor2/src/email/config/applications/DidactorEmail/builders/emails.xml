@@ -20,6 +20,11 @@
     <description xml:lang="en">Email object</description>
   </descriptions>
 
+  <datatypes xmlns="http://www.mmbase.org/xmlns/datatypes">
+    <datatype id="email" base="line">
+      <!-- should be a nice, working definition (and ported to mmbase itself then...) -->
+    </datatype>
+  </datatypes>
   <fieldlist>
     <field name="from">
       <descriptions>
@@ -35,7 +40,7 @@
           <list>1</list>
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="email" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <type state="persistent" size="255" notnull="true" key="false">STRING</type>
       </db>
@@ -47,14 +52,14 @@
       </descriptions>
       <gui>
         <guiname xml:lang="nl">Naar</guiname>
-\        <guiname xml:lang="en">To</guiname>
+        <guiname xml:lang="en">To</guiname>
       </gui>
       <editor>
         <positions>
           <list>2</list>
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="email" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <type state="persistent" size="255" notnull="true" key="false">STRING</type>
       </db>
@@ -68,7 +73,7 @@
         <guiname xml:lang="nl">CC</guiname>
         <guiname xml:lang="en">CC</guiname>
       </gui>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="email" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <type state="persistent" size="255" notnull="true" key="false">STRING</type>
       </db>
@@ -82,7 +87,7 @@
         <guiname xml:lang="nl">BCC</guiname>
         <guiname xml:lang="en">BCC</guiname>
       </gui>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="email" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <type state="persistent" size="255" notnull="true" key="false">STRING</type>
       </db>
