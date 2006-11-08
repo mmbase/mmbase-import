@@ -27,6 +27,7 @@
            <field name="type">0</field>
            <field name="titel_zichtbaar">1</field>
            <field name="use_verloopdatum">1</field>
+           <field name="archive">unlimited</field>
            <relation destination="$origin" role="contentrel"/>
       </object>
    </action>
