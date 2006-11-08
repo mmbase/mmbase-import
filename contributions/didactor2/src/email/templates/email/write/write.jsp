@@ -300,6 +300,8 @@
   </div>
   
   <script>
+    var email = new RegExp("\b.+@.+\b","i");
+
     function checkFields(frm) {
       if(frm.elements['to'].value.length == 0) {
         alert('<di:translate key="email.toempty" />');
@@ -309,6 +311,18 @@
       if(frm.elements['subject'].value.length == 0) {
         alert('<di:translate key="email.subjectempty" />');
         return false;
+      }
+      if (frm.elements['cc'].value.length > 0) {
+        if (! email.test(frm.elements['cc'].value)) {
+           alert(frm.elements['cc'].value + ': <di:translate key="email.suspiciousaddress" />');
+           return false;
+        }
+      }
+      if (frm.elements['bcc'].value.length > 0) {
+        if (! email.test(frm.elements['bcc'].value)) {
+           alert(frm.elements['bcc'].value + ': <di:translate key="email.suspiciousaddress" />');
+           return false;
+        }
       }
 
       return true;
