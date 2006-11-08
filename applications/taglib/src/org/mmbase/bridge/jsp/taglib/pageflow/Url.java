@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The creation of the URL is delegated to the MMBase framework.
  * </p>
- * @version $Id: Url.java,v 1.5 2006-10-31 22:23:35 michiel Exp $;
+ * @version $Id: Url.java,v 1.6 2006-11-08 08:17:55 michiel Exp $;
  * @since MMBase-1.9
  */
 public class Url implements Comparable {
@@ -119,7 +119,9 @@ public class Url implements Comparable {
             show.append(req.getScheme()).append("://");
             show.append(req.getServerName());
             int port = req.getServerPort();
-            show.append(port == 80 ? "" : ":" + port);
+            show.append((port == 80 && "http".equals(scheme)) ||
+                        (port == 443 && "https".equals(scheme)) 
+                        ? "" : ":" + port);
         } else if (abs.equals("server")) {
             //show.append("/");
         } else if (abs.equals("context")) {
