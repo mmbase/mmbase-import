@@ -154,7 +154,7 @@ if(isPosting) {
 							 ><tr><td colspan="2" class="black" style="width:100%;"><img src="media/spacer.gif" width="1" height="1"></td></tr>
 							 <tr><td colspan="2" style="width:100%;"><img src="media/spacer.gif" width="1" height="5"></td></tr>
 							 <tr><td><div class="pageheader"><mm:field name="ads.title" /></div></td>
-								  <td><div align="right"><nobr><mm:field name="ads.expiredate" id="edate" write="false" 
+								  <td><div align="right"><nobr><mm:field name="ads.postdate" id="edate" write="false" 
 											 /><mm:time format="d MMM yyyy" referid="edate" 
 											 /><mm:remove referid="edate"
 										/></nobr></div></td></tr>
