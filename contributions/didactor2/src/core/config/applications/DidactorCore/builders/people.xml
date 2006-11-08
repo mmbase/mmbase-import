@@ -54,7 +54,6 @@
         <guiname xml:lang="en">Initials</guiname>
         <guiname xml:lang="nl">Initialen</guiname>
         <guiname xml:lang="fr">Initials</guiname>
-        <guitype>string</guitype>
       </gui>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
@@ -77,7 +76,7 @@
       </db>
     </field>
 
-    <field field="lastname">
+    <field name="lastname">
       <descriptions>
         <description xml:lang="en">Person's last name</description>
         <description xml:lang="nl">De achternaam van het persoon</description>
@@ -86,7 +85,6 @@
         <guiname xml:lang="en">Last Name</guiname>
         <guiname xml:lang="fr">Nom De Famille</guiname>
         <guiname xml:lang="nl">Achternaam</guiname>
-        <guitype>string</guitype>
       </gui>
       <editor>
         <positions>
@@ -142,7 +140,6 @@
       </gui>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
-        <name>city</name>
         <type state="persistent" size="255" notnull="false" key="false">STRING</type>
       </db>
     </field>
