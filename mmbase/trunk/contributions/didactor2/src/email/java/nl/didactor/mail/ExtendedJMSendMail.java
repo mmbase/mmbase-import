@@ -237,6 +237,7 @@ public class ExtendedJMSendMail extends SendMail {
         if (log.isDebugEnabled()) {
             log.debug("Sending node {" + n + "} to addresses {" + onlyto + "}");
         }
+        StringBuffer errors = new StringBuffer();
         try {
             String from    = n.getStringValue("from");
             String to      = n.getStringValue("to");
@@ -254,18 +255,29 @@ public class ExtendedJMSendMail extends SendMail {
             if (from != null && ! from.equals("")) {
                 msg.setFrom(new InternetAddress(from));
             }
-
-            InternetAddress[] toRecipients = InternetAddress.parse(to);
-            msg.addRecipients(Message.RecipientType.TO, toRecipients);
+            try {
+                InternetAddress[] toRecipients = InternetAddress.parse(to);
+                msg.addRecipients(Message.RecipientType.TO, toRecipients);
+            } catch (javax.mail.internet.AddressException ae) {
+                errors.append("\nTo: " + to + ": " + ae.getMessage());
+            }
 
             if (cc != null) {
-                InternetAddress[] ccRecipients = InternetAddress.parse(cc);
-                msg.addRecipients(Message.RecipientType.CC, ccRecipients);
+                try {
+                    InternetAddress[] ccRecipients = InternetAddress.parse(cc);
+                    msg.addRecipients(Message.RecipientType.CC, ccRecipients);
+                } catch (javax.mail.internet.AddressException ae) {
+                    errors.append("\nCc: " + cc  + " " + ae.getMessage());
+                }
             }
 
             if (bcc != null) {
-                InternetAddress[] bccRecipients = InternetAddress.parse(bcc);
-                msg.addRecipients(Message.RecipientType.BCC, bccRecipients);
+                try {
+                    InternetAddress[] bccRecipients = InternetAddress.parse(bcc);
+                    msg.addRecipients(Message.RecipientType.BCC, bccRecipients);
+                } catch (javax.mail.internet.AddressException ae) {
+                    errors.append("\nBcc: " + bcc + " " + ae.getMessage());
+                }
             }
 
             msg.setSubject(subject, "UTF-8");
@@ -319,17 +331,29 @@ public class ExtendedJMSendMail extends SendMail {
                 msg.writeTo(bos);
             } catch (java.io.IOException e) {
                 log.error("Exception: " + e.getMessage(), e);
+                errors.append("\nIO: " + e.getMessage());
             }
 
             Transport.send(msg, onlyto);
             log.debug("JMSendMail done.");
         } catch (javax.mail.MessagingException e) {
             log.error("JMSendMail failure: " + e.getMessage(), e);
+            errors.append("\nMessaging: " + e.getMessage());
+        }
+        if (errors.length() > 0 && ! n.getStringValue("to").equals(n.getStringValue("from"))) {
+            log.service("Sending error mail to " + n.getStringValue("from"));
+            // if errors, and this is certainly not an error mail itself....
+            Node errorNode = n.getNodeManager().createNode();
+            errorNode.setStringValue("to", n.getStringValue("from"));
+            errorNode.setStringValue("from", n.getStringValue("from"));
+            errorNode.setStringValue("subject", "****");
+            errorNode.setStringValue("body", errors.toString());
+            errorNode.commit();
         }
     }
 
     public String getModuleInfo() {
-        return("Sends mail through J2EE/JavaMail");
+        return "Sends mail through J2EE/JavaMail";
     }
 
     public void reload() {
