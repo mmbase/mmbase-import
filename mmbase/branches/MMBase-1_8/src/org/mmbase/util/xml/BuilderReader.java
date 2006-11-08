@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.74.2.1 2006-10-09 12:21:56 pierre Exp $
+ * @version $Id: BuilderReader.java,v 1.74.2.2 2006-11-08 13:14:44 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -655,7 +655,7 @@ public class BuilderReader extends DocumentReader {
                     } else {
                         dataType = collector.getDataTypeInstance(guiType, baseDataType);
                         if (dataType == null) {
-                            log.warn("Could not find data type for " + baseDataType + " / " + guiType + " for builder: '" + builder.getTableName() + "'");
+                            log.warn("Could not find data type for " + baseDataType + " / " + guiType + " for builder: '" + (builder == null ? "NULL" : builder.getTableName()) + "'");
                         }
                     }
                 }
@@ -681,7 +681,7 @@ public class BuilderReader extends DocumentReader {
             } else {
                 requestedBaseDataType = collector == null ? null : collector.getDataType(base, true);
                 if (requestedBaseDataType == null) {
-                    log.error("Could not find base datatype for '" + base + "' falling back to " + baseDataType + " in builder '" + builder.getTableName() + "'");
+                    log.error("Could not find base datatype for '" + base + "' falling back to " + baseDataType + " in builder '" + (builder == null ?  "NULL" : builder.getTableName()) + "'");
                     requestedBaseDataType = baseDataType;
                 }
             }
