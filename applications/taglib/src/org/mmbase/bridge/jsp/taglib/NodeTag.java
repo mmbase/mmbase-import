@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: NodeTag.java,v 1.64 2006-07-17 15:38:47 johannes Exp $
+ * @version $Id: NodeTag.java,v 1.65 2006-11-09 10:24:42 michiel Exp $
  */
 
 public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
@@ -214,7 +214,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
 
         fillVars();
         //log.debug("found node " + node.getValue("gui()"));
-        return EVAL_BODY_BUFFERED;
+        return EVAL_BODY;
     }
 
 
@@ -222,11 +222,13 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
      * this method writes the content of the body back to the jsp page
      **/
     public int doAfterBody() throws JspTagException { // write the body if there was one
-        if (bodyContent != null) {
-            try {
-                bodyContent.writeOut(bodyContent.getEnclosingWriter());
-            } catch (IOException ioe){
-                throw new TaglibException(ioe);
+        if (EVAL_BODY == EVAL_BODY_BUFFERED) {
+            if (bodyContent != null) {
+                try {
+                    bodyContent.writeOut(bodyContent.getEnclosingWriter());
+                } catch (IOException ioe){
+                    throw new TaglibException(ioe);
+                }
             }
         }
         return SKIP_BODY;
