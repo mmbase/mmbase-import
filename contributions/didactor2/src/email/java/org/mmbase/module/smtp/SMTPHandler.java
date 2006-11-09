@@ -14,14 +14,14 @@ import nl.didactor.mail.*;
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  */
 public class SMTPHandler extends Thread {
-    private Logger log = Logging.getLoggerInstance(SMTPHandler.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(SMTPHandler.class);
     private boolean running = true;
-    private java.net.Socket socket;
+    private final java.net.Socket socket;
     private BufferedReader reader = null;
     private BufferedWriter writer = null;
 
-    private Cloud cloud;
-    private Hashtable properties;
+    private final Cloud cloud;
+    private final Map properties;
 
     /** State indicating we sent our '220' initial session instantiation message, and are now waiting for a HELO */
     private final int STATE_HELO = 1;
@@ -42,16 +42,16 @@ public class SMTPHandler extends Thread {
     private int state = 0;
 
     /** Vector containing Node objects for all mailboxes of the receipients */
-    private Vector mailboxes = new Vector();
+    private final List mailboxes = new Vector(); // why is this synchronized
 
     /** Vector containing Node objects for all receipients (in some configurations this
      *  can equal the 'mailboxes' vector */
-    private Vector users = new Vector();
+    private final List users = new Vector(); // why is this synchornized?
 
     /**
      * Public constructor. Set all data that is needed for this thread to run.
      */
-    public SMTPHandler(java.net.Socket socket, Hashtable properties, Cloud cloud) {
+    public SMTPHandler(java.net.Socket socket, Map properties, Cloud cloud) {
         this.socket = socket;
         this.properties = properties;
         this.cloud = cloud;
@@ -112,8 +112,8 @@ public class SMTPHandler extends Thread {
 
         if (line.toUpperCase().startsWith("RSET")) {
             state = STATE_MAILFROM;
-            mailboxes = new Vector();
-            users = new Vector();
+            mailboxes.clear();
+            users.clear();
             writer.write("250 Spontanious amnesia has struck me, I forgot everything!\r\n");
             writer.flush();
             return;
@@ -276,16 +276,19 @@ public class SMTPHandler extends Thread {
         int colon = address.indexOf(":");
 
         // If we have source routing, we must ignore everything before the colon
-        if (colon > 0)
+        if (colon > 0) {
             leftbracket = colon;
+        }
 
         // if the left or right brackets are not supplied, we MAY bounce the message. We
         // however try to parse the address still
 
-        if (leftbracket < 0)
+        if (leftbracket < 0) {
             leftbracket = 0;
-        if (rightbracket < 0)
+        }
+        if (rightbracket < 0) {
             rightbracket = address.length();
+        }
 
         // Trim off any whitespace that may be left
         String finaladdress = address.substring(leftbracket + 1, rightbracket).trim();
@@ -372,17 +375,18 @@ public class SMTPHandler extends Thread {
             }
             try {
                 if (message.isMimeType("text/plain") || message.isMimeType("text/html")) {
-                    if (message.getContent() != null)
+                    if (message.getContent() != null) {
                         email.setStringValue((String)properties.get("emailbuilder.bodyfield"), "" + message.getContent());
+                    }
                     email.commit();
                 } else {
                     // now parse the attachments
                     try {
-                        Vector attachmentsVector = extractPart(message, new Vector(), email);
+                        List attachmentsVector = extractPart(message, new ArrayList(), email);
                         email.commit();
 
-                        for (Enumeration enumEnum = attachmentsVector.elements(); enumEnum.hasMoreElements();) {
-                            Node attachment = (Node)enumEnum.nextElement();
+                        for (Iterator it = attachmentsVector.iterator(); it.hasNext();) {
+                            Node attachment = (Node) it.next();
                             Relation rel = email.createRelation(attachment, cloud.getRelationManager("related"));
                             rel.commit();
                         }
@@ -417,18 +421,17 @@ public class SMTPHandler extends Thread {
      * @param mail Mail Node that describes the mail that is being dissected
      * @return Vector of attachments that includes the currently extracted ones
      **/
-    private Vector extractPart(Part p, Vector attach, Node mail) throws Exception {
-        Vector attachments = attach;
+    private List extractPart(final Part p, final List attachments, final Node mail) throws Exception {
         if (p.isMimeType("multipart/*")) {
             log.debug("Found attachments with type: multipart/*");
             Multipart mp = (Multipart)p.getContent();
             int count = mp.getCount();
             for (int i = 0; i < count; i++) {
-                attachments = extractPart(mp.getBodyPart(i), attachments, mail);
+                extractPart(mp.getBodyPart(i), attachments, mail);
             }
         } else if (p.isMimeType("message/rfc822")) {
             log.debug("Found attachments with type: message/rfc822");
-            attachments = extractPart((Part)p.getContent(), attachments, mail);
+            extractPart((Part)p.getContent(), attachments, mail);
         } else if (p.isMimeType("text/plain")) {
             // only adding text/plain - text/html will be stored as attachment!
             log.debug("Found attachments with type: some text/plain tomething");
@@ -473,12 +476,10 @@ public class SMTPHandler extends Thread {
      * @return Node in the MMBase object cloud
      */
     private Node storeAttachment(Part p) throws javax.mail.MessagingException {
-        String filename = p.getFileName();
-        if (filename == null)
-            return null;
-
-        if (filename.equals(""))
-            filename="unknown";
+        String fileName = p.getFileName();
+        if (fileName == null || fileName.equals("")) {
+            fileName="unknown";
+        }
 
         NodeManager attachmentManager = cloud.getNodeManager("attachments");
 
@@ -491,15 +492,11 @@ public class SMTPHandler extends Thread {
 
         attachmentNode.setStringValue("title", "privatemail Attachment");
         attachmentNode.setStringValue("mimetype",p.getContentType());
-        attachmentNode.setStringValue("filename", filename);
+        attachmentNode.setStringValue("filename", fileName);
         attachmentNode.setIntValue("size", p.getSize());
 
         try {
-            byte[] ba = new byte[(int)p.getSize()];
-            InputStream is = p.getInputStream();
-            is.read(ba);
-            is.close();
-            if (ba != null) attachmentNode.setValue("handle", ba);
+            attachmentNode.setInputStreamValue("handle", p.getInputStream(), p.getSize());
         } catch (Exception ex) {
             log.error("Caught exception while trying to read attachment data: " + ex);
         }
