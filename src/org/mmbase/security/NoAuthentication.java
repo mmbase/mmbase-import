@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security;
 
+import org.mmbase.util.functions.*;
 import java.util.Map;
 
 /**
@@ -16,12 +17,13 @@ import java.util.Map;
  * UserContext object. So every attempt to log in will succeed.
  *
  * @author Eduard Witteveen
- * @version $Id: NoAuthentication.java,v 1.9 2005-03-01 14:07:47 michiel Exp $
+ * @version $Id: NoAuthentication.java,v 1.10 2006-11-09 14:19:37 michiel Exp $
  * @see UserContext
  */
 final public class NoAuthentication extends Authentication {
 
-    static final UserContext userContext = new BasicUser("no authentication"); 
+    static final String TYPE = "no authentication";
+    static final UserContext userContext = new BasicUser(TYPE); 
     // package because NoAuthorization uses it to get the one 'possible context' (which is of course the 'getOwnerField' of the only possible user)
     // (this is assuming that NoAuthentication is used too, but if not so, that does not matter)
 
@@ -30,7 +32,6 @@ final public class NoAuthentication extends Authentication {
      */
     protected void load() {
     }
-
 
     /**
      * Returns always the same object (an user 'anonymous'with rank 'administrator'')
@@ -47,4 +48,20 @@ final public class NoAuthentication extends Authentication {
     public boolean isValid(UserContext usercontext) throws SecurityException {
         return true;
     }
+
+    /**
+     * {@inheritDoc}
+     * @since MMBase-1.8
+     */
+    public int getDefaultMethod(String protocol) {
+        return METHOD_DELEGATE; 
+    }
+    public String[] getTypes(int method) {
+        return new String[] {TYPE};
+    }
+
+    public Parameters createParameters(String application) {
+        return Parameters.VOID;
+    }
+
 }
