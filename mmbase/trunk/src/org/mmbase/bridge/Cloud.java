@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Function;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.59 2006-09-07 12:48:23 pierre Exp $
+ * @version $Id: Cloud.java,v 1.60 2006-11-10 14:20:10 michiel Exp $
  */
 public interface Cloud {
 
@@ -601,7 +601,7 @@ public interface Cloud {
      * @return a Set of {@link org.mmbase.util.functions.Function} objects.
      * @throws NotFoundException if the function set does not exist
      */
-    public Collection getFunctions(String setName);
+    public Collection<Function<?>> getFunctions(String setName);
 
     /**
      * Returns a Function object from a function set.

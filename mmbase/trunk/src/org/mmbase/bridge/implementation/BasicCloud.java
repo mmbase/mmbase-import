@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.162 2006-09-07 12:48:23 pierre Exp $
+ * @version $Id: BasicCloud.java,v 1.163 2006-11-10 14:19:59 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable, Serializable {
 
@@ -60,10 +60,10 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
     protected String description = null;
 
     // all transactions started by this cloud object (with createTransaction)
-    protected Map transactions = new HashMap();
+    protected Map<String, Transaction> transactions = new HashMap<String, Transaction>();
 
     // node managers cache
-    protected Map nodeManagerCache = new HashMap();
+    protected Map<String, BasicNodeManager> nodeManagerCache = new HashMap();
 
     MMBaseCop mmbaseCop = null;
 
@@ -289,7 +289,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
     BasicNodeManager getBasicNodeManager(MMObjectBuilder bul) throws NotFoundException {
         String nodeManagerName = bul.getTableName();
         // cache quicker, and you don't get 2000 nodetypes when you do a search....
-        BasicNodeManager nodeManager = (BasicNodeManager)nodeManagerCache.get(nodeManagerName);
+        BasicNodeManager nodeManager = nodeManagerCache.get(nodeManagerName);
         if (nodeManager == null) {
             // not found in cache
             nodeManager = new BasicNodeManager(bul, this);
@@ -528,7 +528,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
         if (name == null) {
             name = "Tran" + uniqueId();
         } else {
-            Transaction oldtransaction = (Transaction)transactions.get(name);
+            Transaction oldtransaction = transactions.get(name);
             if (oldtransaction != null) {
                 if (overwrite) {
                     oldtransaction.cancel();
@@ -985,7 +985,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
         return Collections.unmodifiableMap(properties);
     }
 
-    public Collection getFunctions(String setName) {
+    public Collection<Function<?>> getFunctions(String setName) {
         FunctionSet set = FunctionSets.getFunctionSet(setName);
         if (set == null) {
             throw new NotFoundException("Functionset with name " + setName + "does not exist.");
@@ -1049,8 +1049,8 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
         properties = (HashMap) in.readObject();
         locale     = (Locale) in.readObject();
         org.mmbase.util.ThreadPools.jobsExecutor.execute(new BasicCloudStarter());
-        transactions = new HashMap();
-        nodeManagerCache = new HashMap();
+        transactions = new HashMap<String, Transaction>();
+        nodeManagerCache = new HashMap<String, BasicNodeManager>();
     }
 
 
