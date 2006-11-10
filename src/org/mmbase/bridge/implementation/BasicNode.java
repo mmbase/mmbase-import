@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.213 2006-10-19 09:33:02 nklasens Exp $
+ * @version $Id: BasicNode.java,v 1.214 2006-11-10 14:19:59 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -481,7 +481,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         }
         edit(ACTION_COMMIT);
 
-        Collection errors = validate();
+        Collection<String> errors = validate();
         if (errors.size() > 0) {
             String mes = "node " + getNumber() + noderef.getChanged() + ", builder '" + nodeManager.getName() + "' " + errors.toString();
             noderef.cancel();
