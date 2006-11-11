@@ -48,7 +48,6 @@
       </editor>
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
-        <name>name</name>
         <type key="true" notnull="true" size="32" state="persistent">STRING</type>
       </db>
     </field>
