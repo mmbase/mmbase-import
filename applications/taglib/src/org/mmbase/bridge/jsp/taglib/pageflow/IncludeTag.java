@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.69 2006-10-31 20:10:27 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.70 2006-11-11 21:55:56 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -371,7 +371,10 @@ public class IncludeTag extends UrlTag {
      */
     protected void includePage() throws JspTagException {
         try {
-            String gotUrl = url.get(false).toString();
+            String gotUrl = url == null ? null : url.get(false);
+            if (gotUrl == null) {
+                gotUrl = page.getString(this);
+            }
 
             if (gotUrl == null || "".equals(gotUrl)) {
                 return; //if there is no url, we cannot include
