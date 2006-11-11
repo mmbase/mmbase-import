@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.165 2006-11-11 19:27:33 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.166 2006-11-11 20:07:01 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable, Serializable {
 
@@ -749,17 +749,17 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
         Authorization auth = cloudContext.mmb.getMMBaseCop().getAuthorization();
         resultNodeList.autoConvert = false; // make sure no conversion to Node happen, until we are ready.
 
-        if (log.isDebugEnabled()) {
+        if (log.isTraceEnabled()) {
             log.trace(resultNodeList);
         }
 
         log.debug("Starting read-check");
         // resultNodeList is now a BasicNodeList; read restriction should only be applied now
-        // assumed it though, that it contain _only_ MMObjectNodes..
+        // assumed is though, that it contain _only_ MMObjectNodes..
 
         // get authorization for this call only
 
-        List steps = query.getSteps();
+        List<Step> steps = query.getSteps();
         Step nodeStep = null;
         if (query instanceof NodeQuery) {
             nodeStep = ((NodeQuery) query).getNodeStep();
@@ -775,7 +775,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
             MMObjectNode node = (MMObjectNode)o;
             boolean mayRead = true;
             for (int j = 0; mayRead && (j < steps.size()); ++j) {
-                Step step = (Step) steps.get(j);
+                Step step = steps.get(j);
                 int nodenr;
                 if (step.equals(nodeStep)) {
                     nodenr = node.getIntValue("number");
@@ -784,7 +784,13 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
                     if (pref == null) {
                         pref = step.getTableName();
                     }
-                    nodenr = node.getIntValue(pref + ".number");
+                    String fn = pref + ".number";
+                    if (node.getBuilder().hasField(fn)) {
+                        nodenr = node.getIntValue(pref + ".number");
+                    } else {
+                        log.warn("Could not check step " + step + ". Because, the field '" + fn + "' is not found in the node " + node + " which is in the result of " + query.toSql());
+                        nodenr = -1;
+                    }
                 }
                 if (nodenr != -1) {
                     mayRead = auth.check(userContext, nodenr, Operation.READ);
