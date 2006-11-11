@@ -22,7 +22,7 @@
     </description>
   </descriptions>
   <fieldlist>
-    <field>
+    <field name="rank">
       <gui>
         <guiname xml:lang="nl">Rang</guiname>
         <guiname xml:lang="eo">Rango</guiname>
@@ -33,12 +33,9 @@
           <list>2</list>
         </positions>
       </editor>
-      <db>
-        <name>rank</name>
-        <type key="true" notnull="true" state="persistent">INTEGER</type>
-      </db>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
-    <field>
+    <field name="name">
       <gui>
         <guiname xml:lang="nl">Naam</guiname>
         <guiname xml:lang="eo">Nomo</guiname>
@@ -55,7 +52,7 @@
         <type key="true" notnull="true" size="32" state="persistent">STRING</type>
       </db>
     </field>
-    <field>
+    <field name="description">
       <gui>
         <guiname xml:lang="en">Description</guiname>
         <guiname xml:lang="nl">Omschrijving</guiname>
@@ -63,9 +60,12 @@
       </gui>
       <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
-        <name>description</name>
         <type notnull="false" size="1024" state="persistent">STRING</type>
       </db>
     </field>
   </fieldlist>
+  <indexlist>
+    <index name="rank"><indexfield name="rank" /></index>
+    <index name="name"><indexfield name="name" /></index>
+  </indexlist>
 </builder>
