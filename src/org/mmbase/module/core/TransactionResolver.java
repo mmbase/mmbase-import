@@ -18,13 +18,13 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TransactionResolver.java,v 1.27 2006-10-03 18:29:43 michiel Exp $
+ * @version $Id: TransactionResolver.java,v 1.28 2006-11-11 13:56:32 michiel Exp $
  */
-public class TransactionResolver {
+class TransactionResolver {
     private static final Logger log = Logging.getLoggerInstance(TransactionResolver.class);
     private final MMBase mmbase;
 
-    public TransactionResolver(MMBase mmbase) {
+    TransactionResolver(MMBase mmbase) {
         this.mmbase = mmbase;
     }
 

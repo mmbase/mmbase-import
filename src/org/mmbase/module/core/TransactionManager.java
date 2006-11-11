@@ -17,9 +17,11 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.security.*;
 
 /**
+ * The MMBase transaction manager manages a group of changes.
  * @javadoc
+ *
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.36 2006-10-04 09:27:56 michiel Exp $
+ * @version $Id: TransactionManager.java,v 1.37 2006-11-11 13:56:32 michiel Exp $
  */
 public class TransactionManager {
 
@@ -33,16 +35,40 @@ public class TransactionManager {
     public static final int I_EXISTS_NOLONGER = 2;
 
     private TemporaryNodeManager tmpNodeManager;
-    private MMBase mmbase;
-    protected Map<String, Collection<MMObjectNode>> transactions = new HashMap(); 
-    protected TransactionResolver transactionResolver;
+    private TransactionResolver transactionResolver;
 
-    public TransactionManager(MMBase mmbase, TemporaryNodeManager tmpn) {
-        this.mmbase = mmbase;
-        this.tmpNodeManager = tmpn;
-        transactionResolver = new TransactionResolver(mmbase);
-        mmbase.getMMBaseCop();
+    protected Map<String, Collection<MMObjectNode>> transactions = new HashMap<String, Collection<MMObjectNode>>(); 
+
+    public static TransactionManager instance;
+
+    /**
+     * @since MMBase-1.9
+     */
+    public static TransactionManager getInstance() {
+        if (instance == null) {
+            instance = new TransactionManager();
+        }
+        return instance;
     }
+
+
+    private TransactionManager() {
+    }
+
+    public TemporaryNodeManager getTemporaryNodeManager() {
+        if (tmpNodeManager == null) {
+            tmpNodeManager = new TemporaryNodeManager(MMBase.getMMBase());
+        }
+        return tmpNodeManager;
+
+    }
+    private TransactionResolver getTransactionResolver() {
+        if (transactionResolver == null) {
+            transactionResolver = new TransactionResolver(MMBase.getMMBase());
+        }
+        return transactionResolver;
+    }
+
     /**
      * Returns transaction with given name.
      * @param transactionName The name of the transaction to return
@@ -82,36 +108,10 @@ public class TransactionManager {
         return transactions.remove(transactionName);
     }
 
-    /**
-     * Creates a new transaction with given name
-     * @param user This parameter is ignored (WTF!)
-     * @param transactionName The name of the transaction to create
-     * @exception TransactionManagerExcpeption if the transaction with given name already existed
-     * @return transactionName
-     * @deprecated Use {@link #createTransaction}
-     */
-    public String create(Object user, String transactionName) throws TransactionManagerException {
-        createTransaction(transactionName);
-        if (log.isDebugEnabled()) {
-            log.debug("Create transaction for " + transactionName);
-        }
-        return transactionName;
-    }
-
-    /**
-     * Returns the (existing) transaction with given name.
-     * @param user This parameter is ignored (WTF!)
-     * @param transactionName The name of the transaction to return
-     * @exception TransactionManagerExcpeption if the transaction with given name does not exist
-     * @deprecated use {@link #getTransaction}
-     */
-    public Collection get(Object user, String transactionName) throws TransactionManagerException {
-        return getTransaction(transactionName);
-    }
 
     public String addNode(String transactionName, String owner, String tmpnumber) throws TransactionManagerException {
         Collection<MMObjectNode> transaction = getTransaction(transactionName);
-        MMObjectNode node = tmpNodeManager.getNode(owner, tmpnumber);
+        MMObjectNode node = getTemporaryNodeManager().getNode(owner, tmpnumber);
         if (node != null) {
             if (!transaction.contains(node)) {
                 transaction.add(node);
@@ -127,7 +127,7 @@ public class TransactionManager {
 
     public String removeNode(String transactionName, String owner, String tmpnumber) throws TransactionManagerException {
         Collection<MMObjectNode> transaction = getTransaction(transactionName);
-        MMObjectNode node = tmpNodeManager.getNode(owner, tmpnumber);
+        MMObjectNode node = getTemporaryNodeManager().getNode(owner, tmpnumber);
         if (node!=null) {
             if (transaction.contains(node)) {
                 transaction.remove(node);
@@ -142,8 +142,8 @@ public class TransactionManager {
 
     public String deleteObject(String transactionName, String owner, String tmpnumber) throws TransactionManagerException    {
         Collection<MMObjectNode> transaction = getTransaction(transactionName);
-        MMObjectNode node = tmpNodeManager.getNode(owner, tmpnumber);
-        if (node!=null) {
+        MMObjectNode node = getTemporaryNodeManager().getNode(owner, tmpnumber);
+        if (node != null) {
             if (transaction.contains(node)) {
                 // Mark it as deleted
                 node.storeValue(MMObjectBuilder.TMP_FIELD_EXISTS, EXISTS_NOLONGER);
@@ -159,7 +159,7 @@ public class TransactionManager {
     public String cancel(Object user, String transactionName) throws TransactionManagerException {
         Collection<MMObjectNode> transaction = getTransaction(transactionName);
         // remove nodes from the temporary node cache
-        MMObjectBuilder builder = mmbase.getTypeDef();
+        MMObjectBuilder builder = MMBase.getMMBase().getTypeDef();
         for (MMObjectNode node : transaction) {
             builder.removeTmpNode(node.getStringValue(MMObjectBuilder.TMP_FIELD_NUMBER));
         }
@@ -173,7 +173,7 @@ public class TransactionManager {
     public String commit(Object user, String transactionName) throws TransactionManagerException {
         Collection<MMObjectNode> transaction = getTransaction(transactionName);
         try {
-            boolean resolved = transactionResolver.resolve(transaction);
+            boolean resolved = getTransactionResolver().resolve(transaction);
             if (!resolved) {
                 log.error("Can't resolve transaction " + transactionName);
                 log.error("Nodes \n" + transaction);
@@ -188,7 +188,7 @@ public class TransactionManager {
             }
         } finally {
             // remove nodes from the temporary node cache
-            MMObjectBuilder builder = mmbase.getTypeDef();
+            MMObjectBuilder builder = MMBase.getMMBase().getTypeDef();
             for (MMObjectNode node : transaction) {
                 builder.removeTmpNode(node.getStringValue(MMObjectBuilder.TMP_FIELD_NUMBER));
             }
@@ -270,7 +270,6 @@ public class TransactionManager {
                     } else {
                         nodestate[i] = FAILED;
                         String message = "When this failed, it is possible that the creation of an insrel went right, which leads to a database inconsistency..  stop now.. (transaction 2.0: [rollback?])";
-                        log.error(message);
                         throw new RuntimeException(message);
                     }
                 }
