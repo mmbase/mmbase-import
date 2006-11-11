@@ -65,6 +65,7 @@
       </xsd:sequence>
       <xsd:attribute name="name" type="xsd:ID" />
       <xsd:attribute name="mimetype" type="xsd:token" />
+      <xsd:attribute name="classification" type="xsd:token" />
     </xsd:complexType>
   </xsd:element>
 

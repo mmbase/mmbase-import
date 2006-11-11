@@ -20,16 +20,13 @@ import org.mmbase.util.logging.Logging;
  * a 'head', 'body' and 'process' view.
  *
  * @author Johannes Verelst
- * @version $Id: Block.java,v 1.17 2006-11-07 18:55:03 michiel Exp $
+ * @version $Id: Block.java,v 1.18 2006-11-11 16:30:46 michiel Exp $
  * @since MMBase-1.9
  */
 public class Block {
 
     private static final Logger log = Logging.getLoggerInstance(Block.class);
 
-    public enum Type {
-        ADMIN, FRONTEND
-    }
 
     private final Map<Renderer.Type, Renderer> renderers = new EnumMap<Renderer.Type, Renderer>(Renderer.Type.class);
 
@@ -41,13 +38,18 @@ public class Block {
     private final String mimetype;
     private final Component parent;
     private final LocalizedString description;
+    private final Type[] classification;
 
-    public Block(String name, String mimetype, Component parent) {
+    public Block(String name, String mimetype, Component parent, Type[] cla) {
         if (name == null) throw new IllegalArgumentException();
         this.name = name;
         this.mimetype = mimetype;
         this.parent = parent;
         this.description = new LocalizedString(name);
+        this.classification = cla;
+        for (Type t : classification) {
+            t.blocks.add(this);
+        }
     }
 
     /**
@@ -62,6 +64,14 @@ public class Block {
      */
     public String getMimeType() {
         return mimetype;
+    }
+
+    /**
+     * Returns the 'classification' of this block. For example the blocks
+     * classified as 'mmbase.admin' are presented in the mmbase admin-pages.
+     */
+    public Type[] getClassification() {
+        return classification;
     }
 
     /**
@@ -133,4 +143,86 @@ public class Block {
     public String toString() {
         return getName();
     }
+
+    /**
+     * Every block can be assigned a hierarchal 'Type', which can classify it.
+     */
+    public static class Type {
+        public static final Type ROOT = new Type("ROOT");
+        /**
+         * All unclassified blocks are of this type
+         */
+        public static final Type NO   = new Type("");
+
+        public static Type[] getClassification(String p, boolean create) {
+            if (p == null || "".equals(p)) return new Type[] {NO};
+            List<Type> r = new ArrayList<Type>();
+            for (String part : p.split(",")) {
+                Type t = ROOT;
+                for (String e : p.split("\\.")) {
+                    Type proposal = new Type(e, t);
+                    int i = t.subs.indexOf(proposal);
+                    if (i == -1) {
+                        if (create) {
+                            t.subs.add(proposal);
+                        } else {
+                            t = null;
+                            break;
+                        }
+                    } else {
+                        proposal = t.subs.get(i);
+                    }
+                    t = proposal;
+                }
+                if (t != null) {
+                    r.add(t);
+                }
+            }
+            return r.toArray(new Type[] {});
+        }
+
+        private final String name;
+        private final Type parent;
+        final List<Type> subs = new ArrayList<Type>();
+        final List<Block> blocks = new ArrayList<Block>();
+        private Type(String n) {
+            name = n;
+            parent = null;
+        }
+        protected Type(String n, Type p) {
+            if (n == null) throw new IllegalArgumentException();
+            if (p == null) throw new IllegalArgumentException();
+            name = n;
+            parent = p;
+        }
+        public List<Type> getSubTypes() {
+            return Collections.unmodifiableList(subs);
+        }
+
+        public List<Block> getBlocks() {
+            return Collections.unmodifiableList(blocks);
+        }
+        public String getName() {
+            return name;
+        }
+
+        Type getParent() {
+            return parent;
+        }
+        public boolean equals(Object o) {
+            if (o instanceof Type) {
+                Type t = (Type) o;
+                return name.equals(t.name) && parent == t.parent;
+            } else {
+                return false;
+            }
+        }
+        public int hashCode() {
+            return name.hashCode();
+        }
+        public String toString() {
+            return name + subs.toString();
+        }
+    }
+
 }
