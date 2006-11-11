@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob van Maris: Finalist IT Group
  * @since MMBase-1.5
- * @version $Id: Transaction.java,v 1.7 2006-10-03 18:32:04 michiel Exp $
+ * @version $Id: Transaction.java,v 1.8 2006-11-11 13:57:53 michiel Exp $
  */
 public class Transaction implements Runnable {
 
@@ -160,9 +160,10 @@ public class Transaction implements Runnable {
      */
     private static synchronized TransactionManager getTransactionManager() {
         if (transactionManager == null) {
-            mmbase=(MMBase) Module.getModule("MMBASEROOT");
-            tmpNodeManager = new TemporaryNodeManager(mmbase);
-            transactionManager = new TransactionManager(mmbase,tmpNodeManager);
+            mmbase = MMBase.getMMBase();
+            transactionManager = TransactionManager.getInstance();
+            tmpNodeManager = transactionManager.getTemporaryNodeManager();
+
         }
         return transactionManager;
     }
@@ -198,7 +199,8 @@ public class Transaction implements Runnable {
         // Create new transaction.
         String key = null;
         try {
-            key = getTransactionManager().create(uti.user, id);
+            key = id; 
+            getTransactionManager().createTransaction(id);
         } catch (TransactionManagerException e) {
             throw new TransactionHandlerException(e.getMessage());
         }
@@ -253,7 +255,8 @@ public class Transaction implements Runnable {
         // Create new transaction.
         String key = null;
         try {
-            key = getTransactionManager().create(uti.user, id);
+            getTransactionManager().createTransaction(id);
+            key = id;
         } catch (TransactionManagerException e) {
             throw new TransactionHandlerException(e.getMessage());
         }

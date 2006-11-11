@@ -60,8 +60,8 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
         mmbase = (MMBase)getModule("MMBASEROOT");
         upload = (Upload)getModule("upload");
         sessions = (sessionsInterface)getModule("SESSION");
-        tmpObjectManager = new TemporaryNodeManager(mmbase);
-        transactionManager = new TransactionManager(mmbase, tmpObjectManager);
+        transactionManager = TransactionManager.getInstance();
+        tmpObjectManager = transactionManager.getTemporaryNodeManager();
         //JB key test initializatioon
         needs_key = (getInitParameter("keycode") != null);
         securityMode = getInitParameter("security");
@@ -282,7 +282,8 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
                         throw new TransactionHandlerException(tName + " transaction already exists id = " + id);
                     }
                     // actually create transaction
-                    currentTransactionContext = transactionManager.create(userTransactionInfo.user, id);
+                    transactionManager.createTransaction(id);
+                    currentTransactionContext = id;
                     transactionInfo = new TransactionInfo(currentTransactionContext, time, id, userTransactionInfo);
                     // If not anonymous transaction register it in the list of all transaction of the user
                     if (!anonymousTransaction) {
