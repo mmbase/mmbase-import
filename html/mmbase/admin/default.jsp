@@ -10,19 +10,21 @@
   </head>
   <mm:import externid="category" />
   <mm:import externid="subcategory" />
+  <mm:import externid="block" />
+  <mm:import externid="component" />
   <mm:notpresent referid="category">
     <frameset rows="70,*" border="0" frameborder="0" framespacing="0">
-      <frame src="<mm:url page="nav.jsp?category=about&subcategory=about" />" name="navigatie" scrolling="no" marginwidth="1" marginheight="0" />
+      <frame src="<mm:url referids="block?,component?" page="nav.jsp?category=about&subcategory=about" />" name="navigatie" scrolling="no" marginwidth="1" marginheight="0" />
       <frame src="<mm:url page="about/about.jsp"/>" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
     </frameset>
   </mm:notpresent>
   <mm:present referid="category">
     <frameset rows="70,*" border="0" frameborder="0" framespacing="0">
       <mm:notpresent referid="subcategory">
-        <frame src="<mm:url referids="category,subcategory" page="nav.jsp" />" name="navigatie" scrolling="no" marginwidth="1" marginheight="0" />
+        <frame src="<mm:url referids="category,subcategory,block?,component?" page="nav.jsp" />" name="navigatie" scrolling="no" marginwidth="1" marginheight="0" />
       </mm:notpresent>
       <mm:present referid="subcategory">
-        <frame src="<mm:url referids="category,subcategory" page="nav.jsp" />" name="navigatie" scrolling="no" marginwidth="1" marginheight="0" />
+        <frame src="<mm:url referids="category,subcategory,block?,component?" page="nav.jsp" />" name="navigatie" scrolling="no" marginwidth="1" marginheight="0" />
       </mm:present>
       <mm:compare referid="category" value="examples">
         <mm:import id="url">/mmexamples/</mm:import>
@@ -36,13 +38,19 @@
       <mm:notpresent referid="url">
         <mm:remove referid="url" />
         <mm:notpresent referid="subcategory">
-          <mm:import id="url"><mm:write referid="category" />/main.jsp</mm:import>
+          <mm:compare referid="category" value="components">
+            <mm:url referids="component?,block?" id="url" page="components/index.jspx" write="false" />
+          </mm:compare>
+          <mm:compare referid="category" value="components" inverse="true">
+            <!-- legacy ! -->
+            <mm:import id="url"><mm:write referid="category" />/main.jsp</mm:import>
+          </mm:compare>
         </mm:notpresent>
         <mm:present referid="subcategory">
           <mm:import id="url"><mm:write referid="category" />/<mm:write referid="subcategory" />.jsp</mm:import>
         </mm:present>
       </mm:notpresent>
-      <frame src="<mm:url page="$url" />" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
+      <frame src="<mm:url referid="url" />" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
       </frameset>
   </mm:present>
 
