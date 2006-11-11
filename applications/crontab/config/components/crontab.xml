@@ -11,7 +11,7 @@
   <description xml:lang="en">MMBase crontab</description>
 
   <block 
-      type="mmbase.admin"
+      classification="mmbase.admin"
       name="admin"
       mimetype="text/html" >
     <description xml:lang="en">Administrates the mmbase crontab</description>      
