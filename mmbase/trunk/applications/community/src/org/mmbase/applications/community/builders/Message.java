@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Message.java,v 1.33 2006-08-30 18:05:17 michiel Exp $
+ * @version $Id: Message.java,v 1.34 2006-11-11 16:58:20 michiel Exp $
  */
 
 public class Message extends MMObjectBuilder {
@@ -122,7 +122,7 @@ public class Message extends MMObjectBuilder {
         if ((messageUser == null) || (messageUser.length() == 0)) {
             messageUser = "system";
         }
-        tmpNodeManager = new TemporaryNodeManager(mmb);
+        tmpNodeManager = TransactionManager.getInstance().getTemporaryNodeManager();
         // create relation breaker for maintaining temporary relations
         chatboxMessages = new NodeBreaker(2 * expireTime, tmpNodeManager);
 

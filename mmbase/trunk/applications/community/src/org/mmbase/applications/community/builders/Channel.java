@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Channel.java,v 1.29 2005-11-23 15:45:13 pierre Exp $
+ * @version $Id: Channel.java,v 1.30 2006-11-11 16:58:20 michiel Exp $
  */
 
 public class Channel extends MMObjectBuilder {
@@ -170,7 +170,7 @@ public class Channel extends MMObjectBuilder {
             communityBuilder = (Community) mmb.getMMObject("community");
             if (messageBuilder != null && communityBuilder != null) {
                 // obtain temporary node manager
-                tmpNodeManager = new TemporaryNodeManager(mmb);
+                tmpNodeManager = TransactionManager.getInstance().getTemporaryNodeManager();
                 // create relation breaker for maintaining temporary relations
                 chatboxConnections = new NodeBreaker(2 * expireTime, tmpNodeManager);
                 active = true;
