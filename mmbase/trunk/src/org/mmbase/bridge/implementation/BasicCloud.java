@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.163 2006-11-10 14:19:59 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.164 2006-11-11 13:58:30 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable, Serializable {
 
@@ -63,13 +63,13 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
     protected Map<String, Transaction> transactions = new HashMap<String, Transaction>();
 
     // node managers cache
-    protected Map<String, BasicNodeManager> nodeManagerCache = new HashMap();
+    protected Map<String, BasicNodeManager> nodeManagerCache = new HashMap<String, BasicNodeManager>();
 
     MMBaseCop mmbaseCop = null;
 
     protected UserContext userContext = null;
 
-    private HashMap properties = new HashMap();
+    private HashMap<Object, Object> properties = new HashMap<Object, Object>();
 
     private Locale locale;
 
@@ -1058,9 +1058,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
         out.writeUTF(name);
         out.writeObject(userContext);
         HashMap props = new HashMap();
-        Iterator i = properties.entrySet().iterator();
-        while(i.hasNext()) {
-            Map.Entry entry = (Map.Entry) i.next();
+        for (Map.Entry<Object, Object> entry : properties.entrySet()) {
             Object key = entry.getKey();
             Object value = entry.getValue();
             if ((key instanceof Serializable) && (value instanceof Serializable)) {
