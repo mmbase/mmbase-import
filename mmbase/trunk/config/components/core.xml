@@ -26,4 +26,18 @@
     </body>
   </block>
 
+  <block name="license" 
+         classification="mmbase.about"
+         mimetype="text/html">
+    <description xml:lang="en">Shows the mmbase licence</description>
+    <body jsp="/mmbase/mpl-1.0.div.jsp" />
+  </block>
+
+  <block name="welcome" 
+         classification="mmbase.about"
+         mimetype="text/html">
+    <description xml:lang="en">Shows welcome page for mmbase admin pages</description>
+    <body jsp="/mmbase/admin/about/about.div.jsp" />
+  </block>
+
 </component>
