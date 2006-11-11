@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.93 2006-10-17 12:06:16 michiel Exp $
+ * @version $Id: Casting.java,v 1.94 2006-11-11 17:18:09 michiel Exp $
  */
 
 import java.util.*;
@@ -447,6 +447,8 @@ public class Casting {
             return ((Map)o).entrySet();
         } else if (o instanceof String) {
             return StringSplitter.split((String)o);
+        } else if (o instanceof Object[]) {
+            return Arrays.asList((Object[]) o);
         } else {
             List l = new ArrayList();
             if (o != null) {
@@ -524,7 +526,8 @@ public class Casting {
         if (obj instanceof InputStream) {
             return (InputStream) obj;
         } else {
-            return new ByteArrayInputStream(toByte(obj));
+            byte[] bytes = toByte(obj);
+            return new ByteArrayInputStream(bytes, 0, bytes.length);
         }
     }
 
