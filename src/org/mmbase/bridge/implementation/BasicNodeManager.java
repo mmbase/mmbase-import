@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.124 2006-11-11 18:51:21 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.125 2006-11-11 19:25:27 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager {
@@ -365,7 +365,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
     public NodeList getList(NodeQuery query) {
         try {
             boolean checked = cloud.setSecurityConstraint(query);
-            List resultList = builder.getStorageConnector().getNodes(query);
+            List<MMObjectNode> resultList = builder.getStorageConnector().getNodes(query);
             BasicNodeList resultNodeList;
             NodeManager nm = query.getNodeManager();
             if (nm instanceof RelationManager || (nm == this && builder instanceof InsRel)) {
