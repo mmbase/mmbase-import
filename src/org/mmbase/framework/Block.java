@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * a 'head', 'body' and 'process' view.
  *
  * @author Johannes Verelst
- * @version $Id: Block.java,v 1.18 2006-11-11 16:30:46 michiel Exp $
+ * @version $Id: Block.java,v 1.19 2006-11-11 18:23:04 michiel Exp $
  * @since MMBase-1.9
  */
 public class Block {
@@ -159,7 +159,7 @@ public class Block {
             List<Type> r = new ArrayList<Type>();
             for (String part : p.split(",")) {
                 Type t = ROOT;
-                for (String e : p.split("\\.")) {
+                for (String e : part.split("\\.")) {
                     Type proposal = new Type(e, t);
                     int i = t.subs.indexOf(proposal);
                     if (i == -1) {
