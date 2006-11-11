@@ -20,7 +20,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.50 2006-10-03 18:29:43 michiel Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.51 2006-11-11 13:56:32 michiel Exp $
  */
 public class TemporaryNodeManager {
 
@@ -40,7 +40,7 @@ public class TemporaryNodeManager {
     /**
      * @javadoc
      */
-    public TemporaryNodeManager(MMBase mmbase) {
+    TemporaryNodeManager(MMBase mmbase) {
         this.mmbase = mmbase;
     }
 
@@ -69,7 +69,7 @@ public class TemporaryNodeManager {
     /**
      * @javadoc
      */
-    public String createTmpRelationNode(String role,String owner,String key, String source,String destination) throws Exception {
+    public String createTmpRelationNode(String role, String owner, String key, String source, String destination) throws Exception {
         // decode type to a builder using reldef
         RelDef reldef = mmbase.getRelDef();
         int rnumber = reldef.getNumberByName(role, true);
@@ -90,7 +90,7 @@ public class TemporaryNodeManager {
     /**
      * @javadoc
      */
-    public String createTmpAlias(String name,String owner,String key, String destination) {
+    public String createTmpAlias(String name, String owner, String key, String destination) {
         MMObjectBuilder builder = mmbase.getOAlias();
         String bulname = builder.getTableName();
 
@@ -104,7 +104,7 @@ public class TemporaryNodeManager {
     /**
      * @javadoc
      */
-    public String deleteTmpNode(String owner,String key) {
+    public String deleteTmpNode(String owner, String key) {
         MMObjectBuilder b = mmbase.getBuilder("object");
         b.removeTmpNode(getTmpKey(owner, key));
         if (log.isDebugEnabled()) {
@@ -243,15 +243,15 @@ public class TemporaryNodeManager {
         return "";
     }
 
+
     /**
      * @javadoc
-     * @deprecated use {@link #getObjectField}
      */
-    public String getObjectFieldAsString(String owner,String key,String field) {
+    public String getObjectField(String owner, String key, String field) {
         String rtn;
-        MMObjectNode node = getNode(owner,key);
+        MMObjectNode node = getNode(owner, key);
         if (node == null) {
-            log.error("getObjectFieldAsString(): node " + key + " not found!");
+            log.error("Node " + key + " not found!");
             rtn = "";
         } else {
             rtn = node.getStringValue(field);
@@ -262,22 +262,7 @@ public class TemporaryNodeManager {
     /**
      * @javadoc
      */
-    public Object getObjectField(String owner,String key,String field) {
-        Object rtn;
-        MMObjectNode node = getNode(owner,key);
-        if (node == null) {
-            log.error("getObjectFieldAsString(): node " + key + " not found!");
-            rtn = "";
-        } else {
-            rtn = node.getStringValue(field);
-        }
-        return rtn;
-    }
-
-    /**
-     * @javadoc
-     */
-    private String getTmpKey(String owner,String key) {
+    private String getTmpKey(String owner, String key) {
         return owner + "_" + key;
     }
 }
