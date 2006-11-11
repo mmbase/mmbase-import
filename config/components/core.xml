@@ -9,11 +9,20 @@
   <description xml:lang="en">MMBase core components</description>
 
   <block name="components" 
-         classification="mmbase.admin"
+         classification="mmbase.admin,mmbase.components"
          mimetype="text/html">
     <description xml:lang="en">Shows an overview of all available components in the current MMBase</description>
     <body jsp="/mmbase/admin/components.jspx">
       <param name="component" type="string" />
+      <param name="view" type="string" /> <!-- hmm, should not be done like this -->
+    </body>
+  </block>
+
+  <block name="component-block-tree" 
+         classification="mmbase.components"
+         mimetype="text/html">
+    <description xml:lang="en">Shows an overview of all available components in the current MMBase</description>
+    <body jsp="/mmbase/admin/components/tree.jspx">
     </body>
   </block>
 
@@ -27,7 +36,7 @@
   </block>
 
   <block name="license" 
-         classification="mmbase.about"
+         classification="mmbase.about,mmbase"
          mimetype="text/html">
     <description xml:lang="en">Shows the mmbase licence</description>
     <body jsp="/mmbase/mpl-1.0.div.jsp" />
