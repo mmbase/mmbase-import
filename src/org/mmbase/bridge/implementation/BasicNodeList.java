@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.47 2006-07-09 14:14:39 michiel Exp $
+ * @version $Id: BasicNodeList.java,v 1.48 2006-11-11 18:57:33 michiel Exp $
  */
 public class BasicNodeList extends BasicList implements NodeList {
 
@@ -95,10 +95,10 @@ public class BasicNodeList extends BasicList implements NodeList {
                     try {
                         node = cloud.getNodeManager(builderName);
                     } catch (Throwable t) {
-                        node = cloud.getNode(coreNode.getNumber());
+                        node = getNode(cloud, coreNode);
                     }
                 } else {
-                    node = cloud.getNode(coreNode.getNumber());
+                    node = getNode(cloud, coreNode);
                 }
             } else if (coreBuilder instanceof RelDef) {
                 node = cloud.getRelationManager(coreNode.getStringValue("sname"));
@@ -129,7 +129,7 @@ public class BasicNodeList extends BasicList implements NodeList {
                 }
                 node = cloud.getRelationManager(nm1.getName(), nm2.getName(), role.getStringValue("sname"));
             } else if(coreBuilder instanceof InsRel) {
-                node = cloud.getNode(coreNode.getNumber());
+                node = getNode(cloud, coreNode);
             } else if (coreNode instanceof org.mmbase.module.core.VirtualNode) {
                 MMObjectBuilder builder = coreNode.getBuilder();
                 if (builder instanceof VirtualBuilder) {
@@ -142,16 +142,33 @@ public class BasicNodeList extends BasicList implements NodeList {
                     node = new VirtualNode(cloud, (org.mmbase.module.core.VirtualNode) coreNode, cloud.getNodeManager(builder.getObjectType()));
                 }
             } else {
-                int n = coreNode.getNumber();
-                if (cloud.hasNode(n)) {
-                    node = cloud.getNode(n);
-                } else {
-                    log.warn("No node with number " + n + " converting to null");
-                    node = null;
-                }
+                return getNode(cloud, coreNode);
             }
         }
         set(index, node);
+        return node;
+    }
+
+    protected Node getNode(Cloud c, MMObjectNode coreNode) {
+        Node node;
+        int n = coreNode.getNumber();
+        try {
+            if (n == -1) {
+                String[] na  = coreNode.getStringValue("_number").split("_");
+                if (na.length == 2) {
+                    node = cloud.getNode(na[1]);
+                } else {
+                    log.error("Could not make a Node of " + coreNode);
+                    node = null;
+                }
+            } else {
+                node = cloud.getNode(n);
+            }
+        } catch (Exception e) {
+            log.error(e);
+            log.error(coreNode.getClass() + "" + coreNode.getValues());
+            node = null;
+        }
         return node;
     }
 
