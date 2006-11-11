@@ -115,12 +115,6 @@
     <span class="<%=("packagebuilder".equals(subcategory)) ? "current" : ""%>menuitem">PACKAGEBUILDER</span>
       </a>
     </mm:haspage>
-    <mm:haspage page="/mmbase/crontab/index.jspx">
-      &nbsp;&nbsp;
-      <a href="<mm:url page="default.jsp?category=tools&url=/mmbase/crontab/" />" target="_top" >
-    <span class="<%=("crontab".equals(subcategory)) ? "current" : ""%>menuitem">CRONTAB</span>
-      </a>
-    </mm:haspage>
     <mm:haspage page="/mmbase/clustering/index.jspx">
       &nbsp;&nbsp;
       <a href="<mm:url page="default.jsp?category=tools&url=/mmbase/clustering/" />" target="_top" >
