@@ -26,7 +26,7 @@ import org.mmbase.bridge.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceWatcher.java,v 1.14 2006-09-08 12:13:24 michiel Exp $
+ * @version $Id: ResourceWatcher.java,v 1.15 2006-11-11 21:18:42 michiel Exp $
  * @see    org.mmbase.util.FileWatcher
  * @see    org.mmbase.util.ResourceLoader
  */
@@ -38,7 +38,7 @@ public abstract class ResourceWatcher implements NodeEventListener  {
      * is set to null, and not used any more (also used in ResourceLoader).
      *
      */
-    static  Set<ResourceWatcher> resourceWatchers = new HashSet();
+    static  Set<ResourceWatcher> resourceWatchers = new HashSet<ResourceWatcher>();
 
     /**
      * Considers all resource-watchers. Perhaps onChange must be called, because there is a node for this resource available now.
@@ -69,14 +69,14 @@ public abstract class ResourceWatcher implements NodeEventListener  {
     /**
      * All resources watched by this ResourceWatcher. A Set of Strings. Often, a ResourceWatcher would watch only one resource.
      */
-    protected SortedSet<String> resources = new TreeSet();
+    protected SortedSet<String> resources = new TreeSet<String>();
 
     /**
      * When a resource is loaded from a Node, we must know which Nodes correspond to which
      * resource. You could ask the node itself, but if the node happens to be deleted, then you
      * can't know that any more. Used in {@link #notify(NodeEvent)}
      */
-    protected Map<Integer, String> nodeNumberToResourceName = new HashMap();
+    protected Map<Integer, String> nodeNumberToResourceName = new HashMap<Integer, String>();
 
     /**
      * Whether this ResourceWatcher has been started (see {@link #start})
@@ -86,7 +86,7 @@ public abstract class ResourceWatcher implements NodeEventListener  {
     /**
      * Wrapped FileWatcher for watching the file-resources. ResourceName -> FileWatcher.
      */
-    protected Map<String, FileWatcher> fileWatchers = new HashMap();
+    protected Map<String, FileWatcher> fileWatchers = new HashMap<String, FileWatcher>();
 
     /**
      * The resource-loader associated with this ResourceWatcher.
@@ -117,7 +117,7 @@ public abstract class ResourceWatcher implements NodeEventListener  {
     /**
      * @return Unmodifiable set of String of watched resources
      */
-    public Set getResources() {
+    public Set<String> getResources() {
         return Collections.unmodifiableSortedSet(resources);
     }
 
@@ -189,9 +189,6 @@ public abstract class ResourceWatcher implements NodeEventListener  {
 
     }
 
-
-
-
     /**
      * If a node (of the type 'resourceBuilder') changes, checks if it is a node belonging to one of the resource of this resource-watcher.
      * If so, {@link #onChange} is called.
@@ -226,9 +223,7 @@ public abstract class ResourceWatcher implements NodeEventListener  {
 
     public synchronized void start() {
         // create and start all filewatchers.
-        Iterator i = resources.iterator();
-        while (i.hasNext()) {
-            String resource = (String) i.next();
+        for (String resource : resources) {
             //resourceLoader.checkShadowedNewerResources(resource);
             mapNodeNumber(resource);
             createFileWatcher(resource);
@@ -249,12 +244,10 @@ public abstract class ResourceWatcher implements NodeEventListener  {
      * Calls {@link #onChange(String)} for every added resource.
      */
     public final void onChange() {
-        Iterator i = resources.iterator();
-        while (i.hasNext()) {
-            onChange((String) i.next());
+        for (String resource : resources) {
+            onChange(resource);
         }
     }
-
 
     /**
      * Set the delay to observe between each check of the file changes.
@@ -265,7 +258,6 @@ public abstract class ResourceWatcher implements NodeEventListener  {
             fw.setDelay(delay);
         }
     }
-
 
     /**
      */
@@ -309,14 +301,12 @@ public abstract class ResourceWatcher implements NodeEventListener  {
         running = false;
     }
 
-
     /**
      * Shows the 'contents' of the filewatcher. It shows a list of files/last modified timestamps.
      */
     public String toString() {
         return "" + resources + " " + fileWatchers;
     }
-
 
     /**
      * A FileWatcher associated with a certain resource of this ResourceWatcher.
@@ -336,6 +326,5 @@ public abstract class ResourceWatcher implements NodeEventListener  {
             }
         }
     }
-
 
 }
