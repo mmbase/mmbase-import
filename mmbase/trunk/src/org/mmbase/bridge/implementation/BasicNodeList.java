@@ -22,9 +22,9 @@ import org.mmbase.util.logging.*;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.48 2006-11-11 18:57:33 michiel Exp $
+ * @version $Id: BasicNodeList.java,v 1.49 2006-11-11 20:54:04 michiel Exp $
  */
-public class BasicNodeList extends BasicList implements NodeList {
+public class BasicNodeList extends BasicList implements NodeList  {
 
     private static final Logger log = Logging.getLoggerInstance(BasicNodeList.class);
     protected Cloud cloud;
@@ -60,9 +60,11 @@ public class BasicNodeList extends BasicList implements NodeList {
 
     /**
      */
-    protected Object convert(Object o, int index) {
+    protected Node convert(Object o, int index) {
+        o = super.convert(o, index); 
+
         if (o instanceof Node || o == null) {
-            return o;
+            return (Node) o;
         }
         Node node = null;
         if (o instanceof String) { // a string indicates a nodemanager by name, or, if numeric, a node number..
@@ -142,7 +144,7 @@ public class BasicNodeList extends BasicList implements NodeList {
                     node = new VirtualNode(cloud, (org.mmbase.module.core.VirtualNode) coreNode, cloud.getNodeManager(builder.getObjectType()));
                 }
             } else {
-                return getNode(cloud, coreNode);
+                node =  getNode(cloud, coreNode);
             }
         }
         set(index, node);
