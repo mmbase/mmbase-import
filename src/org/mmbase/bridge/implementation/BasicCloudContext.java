@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloudContext.java,v 1.52 2006-10-24 13:00:30 michiel Exp $
+ * @version $Id: BasicCloudContext.java,v 1.53 2006-11-11 14:01:16 michiel Exp $
  */
 public class BasicCloudContext implements CloudContext {
     private static final Logger log = Logging.getLoggerInstance(BasicCloudContext.class);
@@ -31,14 +31,15 @@ public class BasicCloudContext implements CloudContext {
     static MMBase mmb = null;
 
     /**
-    * Temporary Node Manager for storing node during edits
-    */
-    static TemporaryNodeManager tmpObjectManager = null;
-
-    /**
     * Transaction Manager to keep track of transactions
     */
     static TransactionManager transactionManager = null;
+
+    /**
+     * @javadoc
+     * Temporary Node Manager for storing node during edits
+     */
+    static TemporaryNodeManager tmpObjectManager = null;
 
     // map of clouds by name
     private static Set<String> localClouds = new HashSet<String>();
@@ -78,9 +79,8 @@ public class BasicCloudContext implements CloudContext {
                     org.mmbase.module.core.MMBase.getMMBase();
                     // now re-assign the values agina
                     i = org.mmbase.module.Module.getModules();
-                }
-                catch(java.lang.Exception ex) {
-                    log.error("Error while trying to start MMBase from the bridge:" + Logging.stackTrace(ex));
+                } catch(java.lang.Exception ex) {
+                    log.error("Error while trying to start MMBase from the bridge: " + ex.getMessage(), ex);
                 }
                 // if still null,.. give error!
                 if(i == null) {
@@ -89,14 +89,15 @@ public class BasicCloudContext implements CloudContext {
             }
             // get the core module!
             mmb = org.mmbase.module.core.MMBase.getMMBase();
-            // create transaction manager and temporary node manager
-            tmpObjectManager = new TemporaryNodeManager(mmb);
-            transactionManager = new TransactionManager(mmb, tmpObjectManager);
             // create module list
             while(i.hasNext()) {
                 Module mod = ModuleHandler.getModule(i.next(), this);
                 localModules.put(mod.getName(), mod);
             }
+
+            transactionManager = TransactionManager.getInstance();
+            tmpObjectManager = transactionManager.getTemporaryNodeManager();
+
             // set all the names of all accessable clouds..
             localClouds.add("mmbase");
         }
@@ -233,5 +234,7 @@ public class BasicCloudContext implements CloudContext {
         if (!check()) throw new BridgeException("MMBase has not been started, and cannot be started by this Class. (" + getClass().getName() + ")");
         return mmb.getFramework();
     }
+
+
 
 }
