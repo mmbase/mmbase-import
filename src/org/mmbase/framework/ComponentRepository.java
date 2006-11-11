@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * The class maintains all compoments which are registered in the current MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentRepository.java,v 1.10 2006-11-11 21:24:37 michiel Exp $
+ * @version $Id: ComponentRepository.java,v 1.11 2006-11-11 21:32:10 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentRepository {
@@ -51,6 +51,7 @@ public class ComponentRepository {
             };
         rw.add("components");
         rw.onChange();
+        rw.setDelay(2 * 1000); // 2 s
         rw.start();
 
     }
@@ -72,14 +73,21 @@ public class ComponentRepository {
     }
 
     public void shutdown() {
+        clear();
+    }
+    protected void clear() {
+        Block.Type.ROOT.subs.clear();
+        Block.Type.ROOT.blocks.clear();
+        Block.Type.NO.subs.clear();
+        Block.Type.NO.blocks.clear();
         rep.clear();
     }
 
     protected void readConfiguration(String child) {
+        clear();
         ResourceLoader loader =  ResourceLoader.getConfigurationRoot().getChildResourceLoader(child);
         Collection<String> components = loader.getResourcePaths(ResourceLoader.XML_PATTERN, true /* recursive*/);
         log.info("In " + loader + " the following components XML's were found " + components);
-        rep.clear();
         for (String file : components) {
             try {
                 Document doc = loader.getDocument(file, true, getClass());
