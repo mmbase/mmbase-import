@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <div
-    class="component mm_c_core mm_c_b_components ${requestScope.className}"
+    class="component mm_c_core mm_c_b_transactions ${requestScope.className}"
     id="${requestScope.componentId}"
     xmlns="http://www.w3.org/1999/xhtml" 
     xmlns:jsp="http://java.sun.com/JSP/Page" 
@@ -8,47 +8,29 @@
   <jsp:output omit-xml-declaration="true" />
   <jsp:directive.page import="org.mmbase.framework.*,java.util.*" />
   <mm:content type="text/html" language="en_US" expires="0" postprocessor="none">
-    <h1>Components admin page</h1>
+    <h1>Transactions admin page</h1>
     <mm:cloud rank="administrator">
-      <p>
-        <jsp:expression>((Renderer) request.getAttribute(Renderer.KEY)).getBlock().getDescription().get(Locale.US)</jsp:expression>
-      </p>
-      <mm:import externid="component" from="request" />
-      <mm:notpresent referid="component">
-        <p>
-          Available components:
-        </p>
+      <p>${mm:string(requestScope["org.mmbase.framework.renderer"].block.description, pageContext)}</p>
+      <mm:import externid="transaction" from="request" />
+      <mm:notpresent referid="transaction">
+        <p>Current transactions</p>
         <ul>
-          <mm:listfunction id="comp" set="components" name="list" >
+          <mm:listfunction id="trans" set="transactions" name="list" >
             <li>
-              <mm:link>
-                <mm:param name="component">${comp.name}</mm:param>
-                <a href="${_}">${comp.name}</a>
+              <mm:link referids="trans@name">
+                <a href="${_}">${trans}</a>
               </mm:link>
             </li>
           </mm:listfunction>
         </ul>
       </mm:notpresent>
-      <mm:present referid="component">
-        <h1>'${component}'</h1>
-        <mm:function set="components" name="get" referids="component@name" id="c">
-          <p>${c.class}</p>
-          <p>Blocks in this component</p>
-          <ul>
-            <mm:stringlist referid="c.blocks" id="b" jspvar="b" vartype="org.mmbase.framework.Block">
-              <li>
-                <p>
-                  <em>${b.name}. </em>
-                  <jsp:expression>b.getDescription().get(Locale.US)</jsp:expression>
-                </p>
-                <p>HEAD: <jsp:expression>b.getRenderer(Renderer.Type.HEAD)</jsp:expression></p>
-                <p>BODY: <jsp:expression>b.getRenderer(Renderer.Type.BODY)</jsp:expression></p>
-                <p>Processor: <jsp:expression>b.getProcessor()</jsp:expression></p>
-              </li>
-            </mm:stringlist>
-          </ul>
-          <p>Default block: ${c.defaultBlock.name}</p>
-        </mm:function>
+      <mm:present referid="transaction">
+        <h1>'${transaction}'</h1>
+        <ul>
+          <mm:nodelistfunction set="transactions" name="get" referids="transaction@name">
+            <li>${_node} <mm:nodeinfo type="gui" /></li>
+          </mm:nodelistfunction>
+        </ul>
         <mm:link>
           <a href="${_}">back</a>
         </mm:link>
