@@ -19,10 +19,10 @@ import java.net.MalformedURLException;
 /**
  * @javadoc
  * @author Kees Jongenburger <keesj@framfab.nl>
- * @version $Id: RemoteContext.java,v 1.7 2005-06-07 12:02:37 michiel Exp $
+ * @version $Id: RemoteContext.java,v 1.8 2006-11-11 19:26:33 michiel Exp $
  * @since MMBase-1.5
  */
-public class RemoteContext {
+public abstract class RemoteContext {
 
     /**
      * Connect to a remote cloudcontext. The name of the context
