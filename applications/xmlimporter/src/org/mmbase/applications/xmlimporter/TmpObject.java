@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob van Maris: Finalist IT Group
  * @since MMBase-1.5
- * @version $Id: TmpObject.java,v 1.9 2006-10-03 18:32:04 michiel Exp $
+ * @version $Id: TmpObject.java,v 1.10 2006-11-11 13:57:53 michiel Exp $
  */
 public class TmpObject {
 
@@ -35,14 +35,8 @@ public class TmpObject {
     final static String _SNUMBER  = "_snumber";
     final static String _DNUMBER  = "_dnumber";
 
-    /** Logger instance. */
     private static Logger log = Logging.getLoggerInstance(TmpObject.class);
 
-    /** The mmbase module. */
-    private static MMBase mmbase;
-
-    /** The temporary node manager. */
-    private static TemporaryNodeManager tmpNodeManager;
 
     /** All user-related data. */
     private UserTransactionInfo uti;
@@ -60,26 +54,13 @@ public class TmpObject {
      * no relations on commit, false otherwise. */
     private boolean disposeWhenNotReferenced = false;
 
-    /**
-     * Gets reference to the MMBase module.
-     * @return The MMBase module.
-     */
-    private static MMBase getMMBase() {
-        if (mmbase == null) {
-            mmbase=(MMBase) Module.getModule("MMBASEROOT");
-        }
-        return mmbase;
-    }
 
     /**
      * Gets reference to TemporaryNodeManager module.
      * @return the TemporaryNodeManager module.
      */
     private static synchronized TemporaryNodeManager getTmpNodeManager() {
-        if (tmpNodeManager == null) {
-            tmpNodeManager = new TemporaryNodeManager(getMMBase());
-        }
-        return tmpNodeManager;
+        return TransactionManager.getInstance().getTemporaryNodeManager();
     }
 
     /**
@@ -157,7 +138,7 @@ public class TmpObject {
         int mmbaseId = getMMBaseId();
         if (mmbaseId != -1) {
             // Access object.
-            relations = getMMBase().getInsRel().getRelations_main(mmbaseId);
+            relations = MMBase.getMMBase().getInsRel().getRelations_main(mmbaseId);
             if (log.isDebugEnabled()) {
                 log.debug("Relations in persistent cloud of " + this
                 + ": " + relations);
