@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  *</p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedString.java,v 1.26 2006-08-30 20:37:33 michiel Exp $
+ * @version $Id: LocalizedString.java,v 1.27 2006-11-11 12:55:45 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedString implements java.io.Serializable, Cloneable {
@@ -203,7 +203,7 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
      * Returns a Map representation of the localisation setting represented by this
      * LocalizedString. It is an unmodifiable mapping: Locale -> localized value.
      */
-    public Map asMap() {
+    public Map<Locale, String> asMap() {
         if (values == null) return Collections.EMPTY_MAP;
         return Collections.unmodifiableMap(values);
     }
@@ -224,7 +224,7 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
      * For LocalizedString this returns the String for the default Locale (see {@link #getDefault}).
      */
     public String toString() {
-        return get(null);
+        return get((Locale) null);
     }
 
 
@@ -246,7 +246,7 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
         Locale loc = null;
         if (xmlLang != null && (! xmlLang.equals(""))) {
 
-            String[] split = xmlLang.split("-");
+            String[] split = xmlLang.split("[-_]");
             if (split.length == 1) {
                 loc = new Locale(split[0]);
             } else if (split.length == 2) {
@@ -257,6 +257,7 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
         }
         return loc;
     }
+
 
     /**
      * This utility determines the value of an xml:lang attribute. So, given a {@link java.util.Locale}
