@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.382 2006-10-31 16:18:38 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.383 2006-11-11 12:57:54 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -127,6 +127,15 @@ version: $Id: mmbase-taglib.xml,v 1.382 2006-10-31 16:18:38 michiel Exp $
     <since>MMBase-1.8.2</since>
     <see tag="url" />
     <see tag="link" />
+  </function>
+  <function>
+    <description>
+      Evaluates an MMBase LocalizedString object using the current locale.
+    </description>
+    <name>string</name>
+    <function-class>org.mmbase.bridge.jsp.taglib.functions.Functions</function-class>
+    <function-signature>org.mmbase.util.LocalizedString string(org.mmbase.util.LocalizedString, javax.servlet.jsp.PageContext)</function-signature>
+    <since>MMBase-1.9</since>
   </function>
 
 <tagtypes>
