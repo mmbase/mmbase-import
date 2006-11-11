@@ -63,7 +63,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.4
- * @version $Id: FileWatcher.java,v 1.41 2006-09-27 20:39:59 michiel Exp $
+ * @version $Id: FileWatcher.java,v 1.42 2006-11-11 21:31:43 michiel Exp $
  */
 public abstract class FileWatcher {
     private static Logger log = Logging.getLoggerInstance(FileWatcher.class);
@@ -153,7 +153,8 @@ public abstract class FileWatcher {
     abstract public void onChange(File file);
 
     /**
-     * Set the delay to observe between each check of the file changes.
+     * Set the delay to observe between each check of the file changes. 
+     * @delay The delay in milliseconds
      */
     public void setDelay(long delay) {
         this.delay = delay;
@@ -371,13 +372,13 @@ public abstract class FileWatcher {
          */
         public void run() {
             // todo: how to stop this thread except through interrupting it?
-            List removed = new ArrayList();
+            List<FileWatcher> removed = new ArrayList<FileWatcher>();
             while (run) {
                 try {
                     long now = System.currentTimeMillis();
                     for (FileWatcher f : watchers) {
                         if (now - f.lastCheck > f.delay) {
-                            if (log.isDebugEnabled()) {
+                            if (log.isTraceEnabled()) {
                                 log.trace("Filewatcher will sleep for : " + f.delay / 1000 + " s. " + "Currently watching: " + f.getClass().getName() + " " + f.toString());
                             }
                             // System.out.print(".");
