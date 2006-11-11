@@ -7,7 +7,7 @@
   <mm:import externid="component">core</mm:import>
   <mm:import externid="block">components</mm:import>
   <head>
-    <title>Componeent</title>
+    <title>Component ${component} - ${block}</title>
     <mm:link page="/mmbase/style/css/mmbase.css">
       <link rel="stylesheet" href="${_}" type="text/css" />
     </mm:link>
