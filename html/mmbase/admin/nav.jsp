@@ -45,7 +45,7 @@
     <span class="<%=("tools".equals(category)) ? "current" : ""%>menuitem">TOOLS</span></a>
     &nbsp;&nbsp;
     <a href="<mm:url page="default.jsp?category=components" />" target="_top">
-    <span class="<%=("tools".equals(category)) ? "current" : ""%>menuitem">COMPONENTS</span></a>
+    <span class="<%=("components".equals(category)) ? "current" : ""%>menuitem">COMPONENTS</span></a>
         <hr />
     <% if("about".equals(category)) { %>
     &nbsp;&nbsp;
