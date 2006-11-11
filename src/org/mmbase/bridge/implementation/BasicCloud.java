@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.164 2006-11-11 13:58:30 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.165 2006-11-11 19:27:33 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable, Serializable {
 
@@ -44,7 +44,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
     private static int lastRequestId = Integer.MIN_VALUE;
 
     // link to cloud context
-    private CloudContext cloudContext = null;
+    private BasicCloudContext cloudContext = null;
 
     // name of the cloud
     protected String name = null;
@@ -65,7 +65,6 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
     // node managers cache
     protected Map<String, BasicNodeManager> nodeManagerCache = new HashMap<String, BasicNodeManager>();
 
-    MMBaseCop mmbaseCop = null;
 
     protected UserContext userContext = null;
 
@@ -91,8 +90,6 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
         locale = cloud.locale;
         name = cloudName;
         description = cloud.description;
-        mmbaseCop = cloud.mmbaseCop;
-
         userContext = cloud.userContext;
         account = cloud.account;
     }
@@ -110,7 +107,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
         // get the cloudcontext and mmbase root...
         this.cloudContext = (BasicCloudContext) cloudContext;
         init();
-        userContext = mmbaseCop.getAuthentication().login(authenticationType, loginInfo, null);
+        userContext = this.cloudContext.mmb.getMMBaseCop().getAuthentication().login(authenticationType, loginInfo, null);
         if (userContext == null) {
             log.debug("Login failed");
             throw new java.lang.SecurityException("Login invalid (login-module: " + authenticationType + ")");
@@ -137,7 +134,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
      * @throws BridgeException   No security could be obtained.
      * @throws SecurityException  Could not perform login
      */
-    BasicCloud(String name, UserContext user, CloudContext cloudContext) {
+    BasicCloud(String name, UserContext user, BasicCloudContext cloudContext) {
         // get the cloudcontext and mmbase root...
         this.cloudContext = cloudContext;
         init();
@@ -166,9 +163,8 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
         }
 
         log.debug("Doing authentication");
-        mmbaseCop = mmb.getMMBaseCop();
 
-        if (mmbaseCop == null) {
+        if (mmb.getMMBaseCop() == null) {
             throw new BridgeException("Couldn't find the MMBaseCop. Perhaps your MMBase did not start up correctly; check application server and mmbase logs ");
         }
         log.debug("Setting up cloud object");
@@ -582,7 +578,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
     * @return <code>true</code> if access is granted, <code>false</code> otherwise
     */
     boolean check(Operation operation, int nodeID) {
-        return mmbaseCop != null && mmbaseCop.getAuthorization().check(userContext, nodeID, operation);
+        return cloudContext.mmb.getMMBaseCop().getAuthorization().check(userContext, nodeID, operation);
     }
 
     /**
@@ -591,14 +587,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
     * @param nodeID the node on which to check the operation
     */
     void verify(Operation operation, int nodeID) {
-        while (mmbaseCop == null) {
-            synchronized(this) {
-                if (mmbaseCop == null) {
-                    throw new org.mmbase.security.SecurityException("No MMBaseCop"); // mmbase cop can be null if deserialization not yet ready.
-                }
-            }
-        }
-        mmbaseCop.getAuthorization().verify(userContext, nodeID, operation);
+        cloudContext.mmb.getMMBaseCop().getAuthorization().verify(userContext, nodeID, operation);
     }
 
     /**
@@ -610,7 +599,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
     * @return <code>true</code> if access is granted, <code>false</code> otherwise
     */
     boolean check(Operation operation, int nodeID, int srcNodeID, int dstNodeID) {
-        return mmbaseCop != null && mmbaseCop.getAuthorization().check(userContext, nodeID, srcNodeID, dstNodeID, operation);
+        return cloudContext.mmb.getMMBaseCop().getAuthorization().check(userContext, nodeID, srcNodeID, dstNodeID, operation);
     }
 
     /**
@@ -621,7 +610,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
     * @param dstNodeID the destination node for this relation
     */
     void verify(Operation operation, int nodeID, int srcNodeID, int dstNodeID) {
-        mmbaseCop.getAuthorization().verify(userContext, nodeID, srcNodeID, dstNodeID, operation);
+        cloudContext.mmb.getMMBaseCop().getAuthorization().verify(userContext, nodeID, srcNodeID, dstNodeID, operation);
     }
 
     // javadoc inherited
@@ -726,8 +715,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
      * @since MMBase-1.7
      */
     boolean setSecurityConstraint(Query query) {
-        if (mmbaseCop == null) return false;
-        Authorization auth = mmbaseCop.getAuthorization();
+        Authorization auth = cloudContext.mmb.getMMBaseCop().getAuthorization();
         if (query instanceof BasicQuery) {  // query should alway be 'BasicQuery' but if not, for some on-fore-seen reason..
             BasicQuery bquery = (BasicQuery) query;
             if (bquery.isSecure()) { // already set, and secure
@@ -754,11 +742,11 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
     }
 
     public StringList getPossibleContexts() {
-        return new BasicStringList(mmbaseCop.getAuthorization().getPossibleContexts(getUser()));
+        return new BasicStringList(cloudContext.mmb.getMMBaseCop().getAuthorization().getPossibleContexts(getUser()));
     }
 
     void   checkNodes(BasicNodeList resultNodeList, Query query) {
-        Authorization auth = mmbaseCop.getAuthorization();
+        Authorization auth = cloudContext.mmb.getMMBaseCop().getAuthorization();
         resultNodeList.autoConvert = false; // make sure no conversion to Node happen, until we are ready.
 
         if (log.isDebugEnabled()) {
