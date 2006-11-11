@@ -57,7 +57,9 @@
           <list>1</list>
         </positions>
       </editor>
-      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <unique value="true" />
+      </datatype>
       <db>
         <type notnull="true" size="32" state="persistent">STRING</type>
       </db>
