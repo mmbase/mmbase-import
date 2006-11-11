@@ -10,9 +10,7 @@
   <mm:content type="text/html" language="en_US" expires="0" postprocessor="none">
     <h1>Components admin page</h1>
     <mm:cloud rank="administrator">
-      <p>
-        <jsp:expression>((Renderer) request.getAttribute(Renderer.KEY)).getBlock().getDescription().get(Locale.US)</jsp:expression>
-      </p>
+      <p>description: ${mm:string(requestScope["org.mmbase.framework.renderer"].block.description, pageContext)}</p>
       <mm:import externid="component" from="request" />
       <mm:notpresent referid="component">
         <p>
@@ -37,10 +35,7 @@
           <ul>
             <mm:stringlist referid="c.blocks" id="b" jspvar="b" vartype="org.mmbase.framework.Block">
               <li>
-                <p>
-                  <em>${b.name}. </em>
-                  <jsp:expression>b.getDescription().get(Locale.US)</jsp:expression>
-                </p>
+                <p><em>${b.name}. </em> ${mm:string(b.description, pageContext)}</p>
                 <p>HEAD: <jsp:expression>b.getRenderer(Renderer.Type.HEAD)</jsp:expression></p>
                 <p>BODY: <jsp:expression>b.getRenderer(Renderer.Type.BODY)</jsp:expression></p>
                 <p>Processor: <jsp:expression>b.getProcessor()</jsp:expression></p>
