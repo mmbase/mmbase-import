@@ -28,7 +28,7 @@
       <mm:present referid="component">
         <h1>'${component}'</h1>
         <mm:function set="components" name="get" referids="component@name" id="c">
-          <p>${c.class}</p>
+          <p>Defined in ${c.uri}</p>
           <p>Blocks in this component</p>
           <ul>
             <mm:stringlist referid="c.blocks" id="b" jspvar="b" vartype="org.mmbase.framework.Block">
