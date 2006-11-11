@@ -17,6 +17,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
+ * @version $Id: CronDaemon.java,v 1.13 2006-11-11 16:03:21 michiel Exp $
  */
 public class CronDaemon  {
 
