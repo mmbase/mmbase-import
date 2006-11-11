@@ -10,12 +10,10 @@
   <mm:content type="text/html" language="en_US" expires="0" postprocessor="none">
     <h1>Components admin page</h1>
     <mm:cloud rank="administrator">
-      <p>description: ${mm:string(requestScope["org.mmbase.framework.renderer"].block.description, pageContext)}</p>
+      <p>${mm:string(requestScope["org.mmbase.framework.renderer"].block.description, pageContext)}</p>
       <mm:import externid="component" from="request" />
       <mm:notpresent referid="component">
-        <p>
-          Available components:
-        </p>
+        <p>Available components:</p>
         <ul>
           <mm:listfunction id="comp" set="components" name="list" >
             <li>
