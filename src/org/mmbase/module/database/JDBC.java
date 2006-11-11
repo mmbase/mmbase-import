@@ -1,3 +1,4 @@
+
 /*
 
 This software is OSI Certified Open Source Software.
@@ -25,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @deprecation-used drop reference to {@link JDBCInterface}
  * @author vpro
- * @version $Id: JDBC.java,v 1.49 2006-10-04 15:33:33 michiel Exp $
+ * @version $Id: JDBC.java,v 1.50 2006-11-11 09:56:12 michiel Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -44,8 +45,8 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
     private DatabaseSupport databaseSupport;
     private MultiPoolHandler poolHandler;
     private JDBCProbe probe = null;
-    private String defaultName;
-    private String defaultPassword;
+    private String jdbcName;
+    private String jdbcPassword;
     private long probeTime;
     private long maxLifeTime = 120000;
 
@@ -159,8 +160,14 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         jdbcDriver = getInitParameter("driver");
         jdbcURL    = getInitParameter("url");
         jdbcHost   = getInitParameter("host");
-        defaultName = getInitParameter("user");
-        defaultPassword = getInitParameter("password");
+        jdbcName = getInitParameter("user");
+        if (jdbcName == null) {
+            jdbcName = "wwwtech";
+            log.warn("Name was not set, using default: '" + jdbcName +"'");
+        }
+
+        jdbcPassword = getInitParameter("password");
+
         databaseSupportClass = getInitParameter("supportclass");
         probeTime = 30000;
         String tmp = getInitParameter("probetime");
@@ -184,23 +191,6 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
             }
         }
 
-        /*
-        log.trace("jdbcDriver="+jdbcDriver +
-                  "\njdbcURL="+jdbcURL +
-                  "\njdbcHost="+jdbcHost +
-                  "\ndefaultName="+defaultName +
-                  "\ndefaultPassword="+defaultPassword +
-                  "\ndatabaseSupportClass="+databaseSupportClass);
-        */
-
-        if (defaultName == null) {
-            defaultName = "wwwtech";
-            log.warn("name was not set, using default: '" + defaultName +"'");
-        }
-        if (defaultPassword == null) {
-            defaultPassword="xxxxxx";
-            log.warn("name was not set, using default: '" + defaultPassword +"'");
-        }
         tmp = getInitParameter("port");
         if (tmp != null) {
             try {
@@ -291,7 +281,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      * @javadoc
      */
     public MultiConnection getConnection(String url) throws SQLException {
-        return poolHandler.getConnection(url, defaultName, defaultPassword);
+        return poolHandler.getConnection(url, jdbcName, jdbcPassword);
     }
 
     /**
@@ -305,7 +295,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      * @javadoc
      */
     public Connection getDirectConnection(String url) throws SQLException {
-        return DriverManager.getConnection(url, defaultName, defaultPassword);
+        return DriverManager.getConnection(url, jdbcName, jdbcPassword);
     }
 
     /**
@@ -398,14 +388,14 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      * @javadoc
      */
     public String getUser() {
-        return defaultName;
+        return jdbcName;
     }
 
     /**
      * @javadoc
      */
     public String getPassword() {
-        return defaultPassword;
+        return jdbcPassword;
     }
 
     /**
@@ -420,6 +410,6 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      * @return a <code>String</code> whith some information about the connection
      */
     public String toString() {
-        return "host: '" + jdbcHost + "' port: '"  + jdbcPort + "' database: '" + jdbcDatabase + "' user: '" + defaultName + "'" + (driver != null ? " driver: " + driver.getClass().getName() + "'" : "") + " max life time: " + maxLifeTime + " ms  probe time: " + probeTime + " ms";
+        return "host: '" + jdbcHost + "' port: '"  + jdbcPort + "' database: '" + jdbcDatabase + "' user: '" + jdbcName + "'" + (driver != null ? " driver: " + driver.getClass().getName() + "'" : "") + " max life time: " + maxLifeTime + " ms  probe time: " + probeTime + " ms";
      }
 }
