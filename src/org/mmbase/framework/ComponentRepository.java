@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * The class maintains all compoments which are registered in the current MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentRepository.java,v 1.9 2006-11-11 16:30:46 michiel Exp $
+ * @version $Id: ComponentRepository.java,v 1.10 2006-11-11 21:24:37 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentRepository {
@@ -44,7 +44,15 @@ public class ComponentRepository {
     private Map<String, Component> rep = new HashMap<String, Component>();
 
     private ComponentRepository() {
-        readConfiguration();
+        ResourceWatcher rw = new ResourceWatcher() {
+                public void onChange(String r) {
+                    readConfiguration(r);
+                }
+            };
+        rw.add("components");
+        rw.onChange();
+        rw.start();
+
     }
 
     public Block.Type[] getBlockClassification(String id) {
@@ -67,10 +75,11 @@ public class ComponentRepository {
         rep.clear();
     }
 
-    protected void readConfiguration() {
-        ResourceLoader loader =  ResourceLoader.getConfigurationRoot().getChildResourceLoader("components");
+    protected void readConfiguration(String child) {
+        ResourceLoader loader =  ResourceLoader.getConfigurationRoot().getChildResourceLoader(child);
         Collection<String> components = loader.getResourcePaths(ResourceLoader.XML_PATTERN, true /* recursive*/);
         log.info("In " + loader + " the following components XML's were found " + components);
+        rep.clear();
         for (String file : components) {
             try {
                 Document doc = loader.getDocument(file, true, getClass());
