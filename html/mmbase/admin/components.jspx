@@ -12,6 +12,7 @@
     <mm:cloud rank="administrator">
       <p>${mm:string(requestScope["org.mmbase.framework.renderer"].block.description, pageContext)}</p>
       <mm:import externid="component" from="request" />
+      <mm:import externid="view"      from="request" />
       <mm:notpresent referid="component">
         <p>Available components:</p>
         <ul>
@@ -24,6 +25,9 @@
             </li>
           </mm:listfunction>
         </ul>
+        <mm:link page="component-block-tree">
+          <a href="${_}">Tree view</a>
+        </mm:link>
       </mm:notpresent>
       <mm:present referid="component">
         <h1>'${component}'</h1>

@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<div
+    class="component mm_c_core mm_c_b_component-block-tree ${requestScope.className}"
+    id="${requestScope.componentId}"
+    xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:jsp="http://java.sun.com/JSP/Page" 
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:output omit-xml-declaration="true" />
+  <h1>Classified blocks</h1>
+  <mm:functioncontainer>
+    <mm:listfunction set="components" name="blockClassification">
+      <mm:write request="blockType" />
+      <mm:include page="blockType.jspx" />
+    </mm:listfunction>
+  </mm:functioncontainer>
+  <h1>Unclassified blocks</h1>
+  <mm:functioncontainer>
+    <mm:param name="id"></mm:param>
+    <mm:listfunction set="components" name="blockClassification">
+      <mm:write request="blockType" />
+      <mm:include page="blockType.jspx" />
+    </mm:listfunction>
+  </mm:functioncontainer>
+</div>
