@@ -1,8 +1,9 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
 %><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
-<mm:content type="text/html">
+<mm:content type="text/html" expires="0">
 <html>
 <head>
+  <mm:import externid="category" />
 <%
     String category=request.getParameter("category");
     String subcategory=request.getParameter("subcategory");
@@ -42,6 +43,9 @@
     &nbsp;&nbsp;
     <a href="<mm:url page="default.jsp?category=tools&subcategory=cache" />" target="_top">
     <span class="<%=("tools".equals(category)) ? "current" : ""%>menuitem">TOOLS</span></a>
+    &nbsp;&nbsp;
+    <a href="<mm:url page="default.jsp?category=components" />" target="_top">
+    <span class="<%=("tools".equals(category)) ? "current" : ""%>menuitem">COMPONENTS</span></a>
         <hr />
     <% if("about".equals(category)) { %>
     &nbsp;&nbsp;
@@ -141,7 +145,29 @@
     <span class="<%=("events".equals(subcategory)) ? "current" : ""%>menuitem">LUCENE</span>
       </a>
     </mm:haspage>
+        <% } else if("components".equals(category)) { 
+        %>
+        <mm:import id="currentblock" externid="block">components</mm:import>
+        <mm:import externid="component">core</mm:import>
+        <mm:functioncontainer>
+          <mm:param name="id">mmbase.admin</mm:param>
+          <mm:listfunction set="components" name="blockClassification">
+            <mm:stringlist id="block" referid="_.blocks">
+              &nbsp;&nbsp;
+              <mm:link page="default.jsp" referids="category">
+                <mm:param name="block">${block.name}</mm:param>
+                <mm:param name="component">${block.component}</mm:param>
+                <a href="${_}"  target="_top">
+                  <span class="${currentblock eq block.name and block.component.name eq component ? 'current' : ''}menuitem">
+                    ${block.component.name eq 'core' ? '' : mm:escape('uppercase', block.component.name)} ${mm:escape('uppercase', block.name)}
+                  </span>
+                </a>
+              </mm:link>
+            </mm:stringlist>
+          </mm:listfunction>
+        </mm:functioncontainer>
         <% } %>
+
 </td>
 </tr>
 </table>
