@@ -7,6 +7,7 @@
   <jsp:directive.attribute name="length"   type="java.lang.Integer" />
   <jsp:directive.attribute name="template" type="java.lang.String" />
   <jsp:directive.attribute name="fill"     type="java.lang.String" />
+  <jsp:directive.attribute name="key"      type="java.lang.String" />
   <jsp:declaration>
     static final byte[] gifBytes = new byte[]{
              0x47, 0x49, 0x46, 0x38, 0x39, 0x61, 0x01, 0x00, 0x01, 0x00,
@@ -22,6 +23,8 @@
   </jsp:declaration>
   <jsp:scriptlet>
     InputStream input = null;
+    StringBuilder sb = new StringBuilder();
+    int length = 5;
   </jsp:scriptlet>
   <c:if test="${! empty template}">
     <mm:node>
@@ -30,16 +33,25 @@
       </mm:nodefunction>
     </mm:node>
   </c:if>
+  <c:if test="${! empty length}">
+    <mm:write referid="length" jspvar="l" vartype="integer" write="false">
+      <jsp:scriptlet>length = l;</jsp:scriptlet>
+    </mm:write>
+  </c:if>
+  <c:if test="${! empty key}">
+    <mm:write referid="key" jspvar="k" vartype="string" write="false">
+      <jsp:scriptlet>sb.append(k);</jsp:scriptlet>
+    </mm:write>
+  </c:if>
   <mm:import jspvar="fillColor" from="this" externid="fill">000000</mm:import>
   <jsp:scriptlet>
     if (input == null) {
        input = new ByteArrayInputStream(gifBytes);
     }
-
-
-    StringBuilder sb = new StringBuilder();
-    for(int n = 0; n &lt; 5; n++) {
-       sb = sb.append(charset[rand.nextInt(28)]);
+    if (sb.length() == 0) {
+      for(int n = 0; n &lt; length; n++) {
+        sb = sb.append(charset[rand.nextInt(28)]);
+      }
     }
 
     final File file = File.createTempFile("captcha", ".png", new File(application.getRealPath("temporary_images")));
