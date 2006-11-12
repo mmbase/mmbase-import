@@ -21,7 +21,7 @@ import org.mmbase.security.*;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.37 2006-11-11 13:56:32 michiel Exp $
+ * @version $Id: TransactionManager.java,v 1.38 2006-11-12 09:31:46 michiel Exp $
  */
 public class TransactionManager {
 
@@ -82,6 +82,15 @@ public class TransactionManager {
         } else {
             return transaction;
         }
+    }
+
+    /**
+     * Return a Set of the names of all created transactions.
+     *
+     * @since MMBase-1.9
+     */
+    public Set<String> getTransactions() {
+        return Collections.unmodifiableSet(transactions.keySet());
     }
 
     /**
