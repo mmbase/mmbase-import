@@ -9,10 +9,6 @@
 
   <description xml:lang="nl">Resources</description>
   <description xml:lang="en">Resources</description>
-  <!--
-      No dependencies.
-      Views by taglib.
-  -->
 
   <block name="recent" mimetype="text/html">
     <description xml:lang="en">Displays recent resources</description>
@@ -24,6 +20,27 @@
   <block name="imageupload">
     <description xml:lang="en">An image upload tool</description>
     <body jsp="/resources/upload.jspx" />
+  </block>
+
+
+  <block name="captchamail">
+    <description xml:lang="en">
+      Mail form, with captcha Turing test. The email builder must be
+      installed for this to work.
+    </description>
+    <body jsp="/resources/mail.jspx">
+      <param name="to" type="string" />
+      <param name="title" type="string" />
+    </body>
+  </block>
+
+
+  <block
+      name="demo"
+      classification="examples"
+      >
+    <description xml:lang="en">Examples of how to use images an so on</description>
+    <body jsp="/resources/test.jspx" />
   </block>
 
 </component>
