@@ -63,7 +63,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.4
- * @version $Id: FileWatcher.java,v 1.42 2006-11-11 21:31:43 michiel Exp $
+ * @version $Id: FileWatcher.java,v 1.43 2006-11-12 09:15:10 michiel Exp $
  */
 public abstract class FileWatcher {
     private static Logger log = Logging.getLoggerInstance(FileWatcher.class);
@@ -115,7 +115,7 @@ public abstract class FileWatcher {
     /**
      * @since MMBase-1.8
      */
-    public static void shutdown() {        
+    public static void shutdown() {
         fileWatchers.run = false;
         fileWatchers.interrupt();
         log.service("Shut down file watcher thread");
@@ -153,7 +153,7 @@ public abstract class FileWatcher {
     abstract public void onChange(File file);
 
     /**
-     * Set the delay to observe between each check of the file changes. 
+     * Set the delay to observe between each check of the file changes.
      * @delay The delay in milliseconds
      */
     public void setDelay(long delay) {
@@ -434,29 +434,52 @@ public abstract class FileWatcher {
         // static final Logger log = Logging.getLoggerInstance(FileWatcher.class.getName());
         private long lastModified = -1;
         private boolean exists = false;
-        private File file;
+        private final File file;
 
         public FileEntry(File file) {
             if (file == null) {
-                String msg = "file was null";
-                // log.error(msg);
-                throw new RuntimeException(msg);
+                throw new IllegalArgumentException();
             }
             exists = file.exists();
-            if (!exists) {
-                // file does not exist. A change will be triggered
-                // once the file comes into existence
-                log.debug("file :" + file.getAbsolutePath() + " did not exist (yet)");
-                lastModified = -1;
-            } else {
-                lastModified = file.lastModified();
-            }
+            lastModified = getLastModified(file);
             this.file = file;
         }
 
         /**
-         * Signal a change.
-         * Returns true if the file was modified, added, or removed.
+         * Returns the last modification time of a file, or -1 if the file does not exists, or the
+         * last modification time of the last modified file in it, if it is a directory.
+         * @since MMBase-1.9
+         */
+        protected long getLastModified(File f) {
+            long lm;
+            if (! f.exists()) {
+                // file does not exist. A change will be triggered
+                // once the file comes into existence
+                log.debug("file :" + f.getAbsolutePath() + " did not exist (yet)");
+                lm = -1;
+            } else {
+                lm = f.lastModified();
+                if (f.isDirectory()) {
+                    // in that case, we take the last modified file in it, and return that.
+                    // TODO, we may need a flag to also enable _not_ doing this, or at least not recursively
+                    for (File child : f.listFiles()) {
+                        try {
+                            long childLastModifiede = getLastModified(child);
+                            if (childLastModified > lm) {
+                                lm = childLastModified;
+                            }
+                        } catch (SecurityException se) {
+                            // never mind
+                        }
+                    }
+                }
+            }
+            return lm;
+        }
+
+        /**
+         * Returns true if the file was modified, added, or removed. If the change is handled, then
+         * call {@link #updated}.
          * @return <code>true</code> if the file was changed
          */
         public boolean changed() {
@@ -465,7 +488,7 @@ public abstract class FileWatcher {
                     log.info("File " + file.getAbsolutePath() + " added");
                     return true;
                 } else {
-                    boolean result = lastModified < file.lastModified();
+                    boolean result = lastModified < getLastModified(file);
                     if (result) {
                         log.info("File " + file.getAbsolutePath() + " changed");
                     }
@@ -480,12 +503,13 @@ public abstract class FileWatcher {
         }
 
         /**
-         * Call if changes were treated.
+         * Call this if changes were treated. It resets the state, and after that {@link #changed}
+         * will return <code>false</code> again.
          */
         public void updated() {
             exists = file.exists();
             if (exists) {
-                lastModified = file.lastModified();
+                lastModified = getLastModified(file);
             } else {
                 lastModified = -1;
             }
