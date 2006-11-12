@@ -1,0 +1,66 @@
+<mm:cloud
+    rank="basic user"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm-im="urn:jsptagdir:/WEB-INF/tags/mm/resources"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:output omit-xml-declaration="true" />
+  <mm:import externid="to">webmaster@localhost</mm:import>
+  <mm:import externid="title">Mail to ${to}</mm:import>
+  <div xmlns="http://www.w3.org/1999/xhtml">
+    <c:if test="${! empty title}"><h1>${title}</h1></c:if>
+    <mm:form>
+      <c:choose>
+        <c:when test="${param.captcha ne sessionScope.captchakey and empty sessionScope.captchavalidated}">
+          <p>
+            <mm:listnodes type="images" max="1">
+              <mm-im:captcha template="s(100)" fill="white" key="${sessionScope.captchakey}" />
+            </mm:listnodes>
+            <input name="captcha" value="${param.captcha}" />
+          </p>
+        </c:when>
+        <c:otherwise>
+          <c:if test="${! empty param.captcha}">
+            <mm:write session="captchavalidated" value="${param.captcha}" />
+          </c:if>
+          <input type="hidden" name="captcha" value="${sessionScope.captchavalidated}" />
+        </c:otherwise>
+      </c:choose>
+      creating node
+      <mm:createnode type="email" id="email" commitonclose="false">
+        <mm:setfield name="to">${to}</mm:setfield>
+        <mm:fieldlist fields="from,subject,body">
+          <p>
+            <mm:fieldinfo type="guiname" />
+            <mm:fieldinfo type="input" />
+            <mm:fieldinfo type="errors" />
+          </p>
+        </mm:fieldlist>
+      </mm:createnode>
+      <input type="submit" name="send" value="Send mail" />
+
+      <!-- here we handle the mail. Should perhaps move to the 'head' renderer? -->
+      <mm:import externid="send" />
+      <mm:present referid="send">
+        <c:choose>
+          <c:when test="${! empty sessionScope.captchavalidated}">
+            <mm:valid>
+              <mm:commit />
+              <mm:node referid="email">
+                <mm:functioncontainer>
+                  <mm:param name="type" value="oneshot" />
+                  <mm:function name="startmail" />
+                </mm:functioncontainer>
+              </mm:node>
+              <p>Thanks for mailing this!</p>
+            </mm:valid>
+          </c:when>
+          <c:otherwise>
+            <mm:cancel />
+          </c:otherwise>
+        </c:choose>
+      </mm:present>
+    </mm:form>
+  </div>
+</mm:cloud>
