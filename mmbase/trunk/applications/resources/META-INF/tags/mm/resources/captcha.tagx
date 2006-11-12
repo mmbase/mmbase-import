@@ -4,24 +4,42 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     version="2.0">
   <jsp:directive.tag import="java.io.*,java.util.*,org.mmbase.util.images.*" />
-  <jsp:directive.attribute name="length" type="java.lang.Integer" />
+  <jsp:directive.attribute name="length"   type="java.lang.Integer" />
   <jsp:directive.attribute name="template" type="java.lang.String" />
+  <jsp:directive.attribute name="fill"     type="java.lang.String" />
   <jsp:declaration>
     static final byte[] gifBytes = new byte[]{
-             0x47, 0x49, 0x46, 0x38, 0x39, 0x61, 0x01, 0x00, 0x01, 0x00, 
+             0x47, 0x49, 0x46, 0x38, 0x39, 0x61, 0x01, 0x00, 0x01, 0x00,
              (byte)0x80, 0x00, 0x00, (byte)0xff, (byte)0xff, (byte)0xff,
-             0x00, 0x00, 0x00, 0x21, (byte)0xf9, 0x04, 0x00, 0x00, 0x00, 
+             0x00, 0x00, 0x00, 0x21, (byte)0xf9, 0x04, 0x00, 0x00, 0x00,
              0x00, 0x00, 0x2c, 0x00, 0x00, 0x00, 0x00,
-             0x01, 0x00, 0x01, 0x00, 0x40, 0x02, 0x02, 0x44, 0x01, 0x00, 
+             0x01, 0x00, 0x01, 0x00, 0x40, 0x02, 0x02, 0x44, 0x01, 0x00,
              0x3b, 0x0a};
     static final String[] charset = {"3","4","5","6","7","8", "a","b","c","d","e","f","h","i","j","k","m","n","p","q","r","s","t","u","v","w","x","y"};    // 29 elements
     static final Random rand = new Random();
     static Timer deleter = new Timer(true);
+
   </jsp:declaration>
-  <jsp:scriptlet>    
-    StringBuffer sb = new StringBuffer();
-    for(int n=0; n &lt; 5; n++) {
-    sb = sb.append(charset[rand.nextInt(28)]);
+  <jsp:scriptlet>
+    InputStream input = null;
+  </jsp:scriptlet>
+  <c:if test="${! empty template}">
+    <mm:node>
+      <mm:nodefunction name="cachednode" referids="template" jspvar="icache">
+        <jsp:scriptlet>input = icache.getInputStreamValue("handle");</jsp:scriptlet>
+      </mm:nodefunction>
+    </mm:node>
+  </c:if>
+  <mm:import jspvar="fillColor" from="this" externid="fill">000000</mm:import>
+  <jsp:scriptlet>
+    if (input == null) {
+       input = new ByteArrayInputStream(gifBytes);
+    }
+
+
+    StringBuilder sb = new StringBuilder();
+    for(int n = 0; n &lt; 5; n++) {
+       sb = sb.append(charset[rand.nextInt(28)]);
     }
 
     final File file = File.createTempFile("captcha", ".png", new File(application.getRealPath("temporary_images")));
@@ -29,11 +47,12 @@
     String captchaKey = sb.toString();
    // captchaKey = " ";
    session.setAttribute("captchakey", captchaKey);
+   session.setAttribute("captchafilename", "/temporary_images/" + file.getName());
    FileReceiver receiver = new FileReceiver(file);
    //white pixel
-   ImageConversionRequest req = 
-   Factory.getImageConversionRequest(new ByteArrayInputStream(gifBytes), "gif", receiver,
-   "gravity(west)", "s(80x22!)", "fill(000000)", "pointsize(20)", "draw(text 10x10 \'" + captchaKey + "')", "f(png)", "swirl(10)");
+   ImageConversionRequest req =
+   Factory.getImageConversionRequest(input, "gif", receiver,
+   "gravity(west)", "s(80x22!)", "fill(" + fillColor + ")", "pointsize(20)", "draw(text 10x10 \'" + captchaKey + "')", "f(png)", "swirl(10)");
    // should also be possible to use 'text', but that is broken with newer image-magicks.
 
    req.waitForConversion();
