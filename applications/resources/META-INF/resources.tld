@@ -11,4 +11,14 @@
     <path>/META-INF/tags/mm/resources/captcha.tagx</path>
   </tag-file>
 
+  <tag-file>
+    <name>directory</name>
+    <path>/META-INF/tags/mm/resources/directory.tagx</path>
+  </tag-file>
+
+  <tag-file>
+    <name>thumb</name>
+    <path>/META-INF/tags/mm/resources/thumb.tagx</path>
+  </tag-file>
+
 </taglib> 
