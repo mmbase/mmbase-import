@@ -63,7 +63,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.4
- * @version $Id: FileWatcher.java,v 1.43 2006-11-12 09:15:10 michiel Exp $
+ * @version $Id: FileWatcher.java,v 1.44 2006-11-12 09:32:29 michiel Exp $
  */
 public abstract class FileWatcher {
     private static Logger log = Logging.getLoggerInstance(FileWatcher.class);
@@ -459,12 +459,12 @@ public abstract class FileWatcher {
                 lm = -1;
             } else {
                 lm = f.lastModified();
-                if (f.isDirectory()) {
+                if (f.isDirectory() && f.canRead()) {
                     // in that case, we take the last modified file in it, and return that.
                     // TODO, we may need a flag to also enable _not_ doing this, or at least not recursively
                     for (File child : f.listFiles()) {
                         try {
-                            long childLastModifiede = getLastModified(child);
+                            long childLastModified = getLastModified(child);
                             if (childLastModified > lm) {
                                 lm = childLastModified;
                             }
