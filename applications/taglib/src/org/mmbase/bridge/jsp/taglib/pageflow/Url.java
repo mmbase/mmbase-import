@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The creation of the URL is delegated to the MMBase framework.
  * </p>
- * @version $Id: Url.java,v 1.8 2006-11-11 21:50:27 michiel Exp $;
+ * @version $Id: Url.java,v 1.9 2006-11-12 14:39:30 michiel Exp $;
  * @since MMBase-1.9
  */
 public class Url implements Comparable {
@@ -84,12 +84,17 @@ public class Url implements Comparable {
         Parameters frameworkParams = framework.createFrameworkParameters();
         tag.fillStandardParameters(frameworkParams);
         Parameters blockParams;
+        Block block;
         if (component != null) {
-            Block block = "".equals(page) ? component.getDefaultBlock() : component.getBlock(page);
+            block = "".equals(page) ? component.getDefaultBlock() : component.getBlock(page);
             if (block == null) {
                 log.debug("There is no block " + page + " in component " + component);
-                return null;
+                // could give error here if component was explicit?
             }
+        } else {
+            block = null;
+        }
+        if (block != null) {
             blockParams = block.createParameters(); 
             tag.fillStandardParameters(blockParams);
             blockParams.setAutoCasting(true);
