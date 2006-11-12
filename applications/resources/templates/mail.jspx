@@ -1,28 +1,37 @@
 <mm:cloud
-    rank="basic user"
+    method="delegate" authenticate="class"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
-    xmlns:mm-im="urn:jsptagdir:/WEB-INF/tags/mm/resources"
-    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:mm-res="http://www.mmbase.org/tags/mm/resources"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:output omit-xml-declaration="true" />
-  <mm:import externid="to">webmaster@localhost</mm:import>
-  <mm:import externid="title">Mail to ${to}</mm:import>
+  <mm:import externid="to"    from="request" >webmaster@localhost</mm:import>
+  <mm:import externid="title" from="request">Mail to ${to}</mm:import>
+  <mm:import externid="image" from="request" />
   <div xmlns="http://www.w3.org/1999/xhtml">
     <c:if test="${! empty title}"><h1>${title}</h1></c:if>
     <mm:form>
+      <mm:import externid="captcha" from="multipart" />
       <c:choose>
-        <c:when test="${param.captcha ne sessionScope.captchakey and empty sessionScope.captchavalidated}">
+        <c:when test="${captcha ne sessionScope.captchakey and empty sessionScope.captchavalidated}">
           <p>
-            <mm:listnodes type="images" max="1">
-              <mm-im:captcha template="s(100)" fill="white" key="${sessionScope.captchakey}" />
-            </mm:listnodes>
-            <input name="captcha" value="${param.captcha}" />
+            <c:choose>
+              <c:when test="${empty image}">
+                <mm-res:captcha key="${sessionScope.captchakey}" />
+              </c:when>
+              <c:otherwise>
+                <mm:node referid="image">
+                  <mm-res:captcha template="s(100)" fill="white" key="${sessionScope.captchakey}" />
+                </mm:node>
+              </c:otherwise>
+            </c:choose>
+            <span>What does this say?</span>
+            <input name="captcha" value="${captcha}" />
           </p>
         </c:when>
         <c:otherwise>
-          <c:if test="${! empty param.captcha}">
-            <mm:write session="captchavalidated" value="${param.captcha}" />
+          <c:if test="${! empty captcha}">
+            <mm:write session="captchavalidated" value="${captcha}" />
           </c:if>
           <input type="hidden" name="captcha" value="${sessionScope.captchavalidated}" />
         </c:otherwise>
@@ -49,14 +58,16 @@
               <mm:node referid="email">
                 <mm:functioncontainer>
                   <mm:param name="type" value="oneshot" />
-                  <mm:function name="startmail" />
+                  <mm:function name="startmail">
+                    <p>Thanks for mailing this! ${email}: ${_} </p>
+                  </mm:function>
                 </mm:functioncontainer>
               </mm:node>
-              <p>Thanks for mailing this!</p>
             </mm:valid>
           </c:when>
           <c:otherwise>
             <mm:cancel />
+            <p>Not Valid (captcha)</p>
           </c:otherwise>
         </c:choose>
       </mm:present>
