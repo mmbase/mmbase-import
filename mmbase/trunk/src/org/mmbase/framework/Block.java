@@ -20,7 +20,8 @@ import org.mmbase.util.logging.Logging;
  * a 'head', 'body' and 'process' view.
  *
  * @author Johannes Verelst
- * @version $Id: Block.java,v 1.19 2006-11-11 18:23:04 michiel Exp $
+ * @author Michiel Meeuwissen
+ * @version $Id: Block.java,v 1.20 2006-11-12 09:33:23 michiel Exp $
  * @since MMBase-1.9
  */
 public class Block {
@@ -157,7 +158,8 @@ public class Block {
         public static Type[] getClassification(String p, boolean create) {
             if (p == null || "".equals(p)) return new Type[] {NO};
             List<Type> r = new ArrayList<Type>();
-            for (String part : p.split(",")) {
+            PARTS:
+            for (String part : p.split("\\s*?[,\\s]\\s*")) {
                 Type t = ROOT;
                 for (String e : part.split("\\.")) {
                     Type proposal = new Type(e, t);
@@ -166,17 +168,14 @@ public class Block {
                         if (create) {
                             t.subs.add(proposal);
                         } else {
-                            t = null;
-                            break;
+                            continue PARTS;
                         }
                     } else {
                         proposal = t.subs.get(i);
                     }
                     t = proposal;
                 }
-                if (t != null) {
-                    r.add(t);
-                }
+                r.add(t);
             }
             return r.toArray(new Type[] {});
         }
