@@ -27,7 +27,6 @@
           <input type="hidden" name="captcha" value="${sessionScope.captchavalidated}" />
         </c:otherwise>
       </c:choose>
-      creating node
       <mm:createnode type="email" id="email" commitonclose="false">
         <mm:setfield name="to">${to}</mm:setfield>
         <mm:fieldlist fields="from,subject,body">
