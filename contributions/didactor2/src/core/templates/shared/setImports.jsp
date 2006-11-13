@@ -133,6 +133,10 @@
   </mm:notpresent>
 </mm:present>
 
+<mm:notpresent referid="provider">
+  <mm:log jspvar="log"><jsp:scriptlet>log.error("No provider found, perhaps no url ${servername} was linked?");</jsp:scriptlet></mm:log>
+</mm:notpresent>
+
 <%--
   Step 6: Based on the student and the education, try to find the class.
 --%>
@@ -161,7 +165,7 @@
   <mm:import id="includePath"><mm:write referid="provider" /></mm:import>
 </mm:notpresent>
 <mm:import id="referids">provider?,education?,class?,workgroup?</mm:import>
-<%@ include file="globalLang.jsp" %>
+<jsp:directive.include file="globalLang.jsp" />
 
 <%--
   Step 7: call the 'validateUser' (which can be overwritten for a specific implementation)
