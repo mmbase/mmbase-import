@@ -1,22 +1,22 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<mm:content postprocessor="reducespace"
-            expires="0" type="text/html"
-            escaper="entities">
-  <mm:cloud authenticate="login" rank="basic user">
-  <jsp:directive.include file="/shared/setImports.jsp" />
-
-  <mm:treeinclude page="/cockpit/cockpit_intro_header.jsp" objectlist="$includePath" referids="$referids">
-    <mm:param name="extraheader">
-      <meta name="description" content="Didactor is een open source E-learning omgeving, ontwikkeld door The Mediator Group. Deze elektronische leeromgeving is 100% webbased en gebaseerd op didactische principes. Didactor is ontwikkeld mbv MMbase, Java en XML en maakt blended learning mogelijk" />
-      <meta name="keywords" content="didactor, mediator, didactiek, didactisch, webbased, platformonafhankelijk, group, elo, lms, lcms, leeromgeving, on-line, java, sun, mmbase, opleidingen, opleiding, events, e-learning, blended, learning, educatie, training, brakel, becking, hof, puntedu, leren, kennisoverdracht, open, source, standaarden, scorm, eml, cursus, bedrijfsopleiding, universiteit, digitaal, digitale, onderwijs, overheid, zorg, school, congres, bijeenkomst, event, kennis, congres, leeromgeving, didactiek, IEEE-lom, EML, scorm, vraaggestuurd, leerobjecten, netg" />
-      <meta name="copyright" content="" />
-      <meta name="author" content="The Mediator Group" />
-      <meta name="rating" content="General" />
-      <meta name="robots" content="all" />
-      <title>Didactor</title>
-    </mm:param>
-  </mm:treeinclude>
+<%@page buffer="9000kb"
+%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%><mm:content postprocessor="none"
+              expires="0" type="text/html"
+              escaper="entities">
+  <mm:cloud authenticate="name/password">
+    <jsp:directive.include file="/shared/setImports.jsp" />
+    <mm:treeinclude page="/cockpit/cockpit_intro_header.jsp" objectlist="$includePath" referids="$referids">
+      <mm:param name="extraheader">
+        <meta name="description" content="Didactor is een open source E-learning omgeving, ontwikkeld door The Mediator Group. Deze elektronische leeromgeving is 100% webbased en gebaseerd op didactische principes. Didactor is ontwikkeld mbv MMbase, Java en XML en maakt blended learning mogelijk" />
+        <meta name="keywords" content="didactor, mediator, didactiek, didactisch, webbased, platformonafhankelijk, group, elo, lms, lcms, leeromgeving, on-line, java, sun, mmbase, opleidingen, opleiding, events, e-learning, blended, learning, educatie, training, brakel, becking, hof, puntedu, leren, kennisoverdracht, open, source, standaarden, scorm, eml, cursus, bedrijfsopleiding, universiteit, digitaal, digitale, onderwijs, overheid, zorg, school, congres, bijeenkomst, event, kennis, congres, leeromgeving, didactiek, IEEE-lom, EML, scorm, vraaggestuurd, leerobjecten, netg" />
+        <meta name="copyright" content="" />
+        <meta name="author" content="The Mediator Group" />
+        <meta name="rating" content="General" />
+        <meta name="robots" content="all" />
+        <title>Didactor</title>
+      </mm:param>
+    </mm:treeinclude>
 <%
    String sUserSettings_PathBaseDirectory = getServletContext().getInitParameter("filemanagementBaseDirectory");
    String sUserSettings_BaseURL = getServletContext().getInitParameter("filemanagementBaseUrl");
@@ -53,7 +53,6 @@
      <mm:node number="$provider" notfound="skipbody">
         <mm:treeinclude page="/welcome.jsp" objectlist="$includePath" />
      </mm:node>
-
      <%-- only show link to public portfolios for guests --%>
      <mm:node number="component.portfolio" notfound="skipbody">
        <mm:compare referid="user" value="0">
@@ -76,7 +75,7 @@
       <mm:treeinclude write="true" page="/users/users.jsp" objectlist="$includePath" referids="$referids">
          <mm:param name="mode">coaches</mm:param>
       </mm:treeinclude>
-<%--
+      <%--
        <img src="<mm:treefile write="true" page="/gfx/icon_offline.gif" objectlist="$includePath" />" width="6" height="12" title="offline" alt="offline" />
       <a href="" class="users">Beheerder (test)</a><br />
 --%>
