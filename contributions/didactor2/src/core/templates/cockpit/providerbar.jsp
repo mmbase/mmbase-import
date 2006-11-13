@@ -6,12 +6,12 @@
   be placed in a dropdown box.
 
 --%>
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@page import="nl.didactor.component.Component, java.util.TreeMap, java.util.Iterator"%>
 
-<mm:cloud jspvar="cloud" method="delegate" authenticate="asis">
-<%@include file="/shared/setImports.jsp" %>
+<mm:cloud rank="basic user" >
+  <jsp:directive.include file="/shared/setImports.jsp" />
 <script language="JavaScript1.1" type="text/javascript">
 
 function getUrl(url){
@@ -35,24 +35,21 @@ keepalive();
 <div class="providerMenubar" style="white-space: nowrap">
 <mm:isgreaterthan referid="user" value="0">
   <mm:node number="$provider">
-    <mm:relatedcontainer path="settingrel,components">
-      <mm:related>
-        <mm:node element="components">
-          <mm:field name="name" jspvar="cname" write="false" vartype="String">
-            <% 
-              Component c = Component.getComponent(cname);
-              if ("provider".equals(c.getTemplateBar())) {
-                  int a = c.getBarPosition() * 100;
-                  while (tm.containsKey(new Integer(a))) {
-                      a++; // make sure we have unique positions
-                  }
-                  tm.put(new Integer(a), c);
-              }
-            %>
-          </mm:field>
-        </mm:node>
-      </mm:related>
-    </mm:relatedcontainer>
+    <mm:relatednodes role="settingrel" type="components">
+      <mm:field name="name" jspvar="cname" write="false" vartype="String">
+        <% 
+        Component c = Component.getComponent(cname);
+        if (c == null) System.err.println("No component '" + cname + "'");
+        if (c != null && "provider".equals(c.getTemplateBar())) {
+           int a = c.getBarPosition() * 100;
+           while (tm.containsKey(new Integer(a))) {
+              a++; // make sure we have unique positions
+           }
+           tm.put(new Integer(a), c);
+        } 
+        %>
+      </mm:field>
+    </mm:relatednodes>
   </mm:node>
 
   <%
