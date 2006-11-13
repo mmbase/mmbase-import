@@ -10,6 +10,8 @@
   <property file="build.properties"/>
   <property file="configure.properties"/>
 
+  <property name="defaultexcludes" value="yes" />
+
   <target name="create.dirs">
     <mkdir dir="${build.dir}" />
     <mkdir dir="${build.dir}/classes" />
@@ -63,7 +65,7 @@
     <delete dir="${build.dir}" />
   </target>
 
-  <target name="webapp" depends="clean,create.dirs,build,config">
+  <target name="webapp" depends="create.dirs,build,config">
 
   </target>
 
@@ -80,10 +82,12 @@
       <then>
         <echo message="Copying templates from src/core/templates/${provider}" />
         <echo message="Warning: putting provider templates in /src/core/templates is deprecated, consider using /providers/${provider}/templates instead"/>
-        <copy todir="${build.dir}/webapp/${provider}" overwrite="true">
-          <fileset dir="src/core/templates/${provider}">
+        <copy todir="${build.dir}/webapp/${provider}" 
+              overwrite="true" preservelastmodified="true">
+          <fileset 
+              defaultexcludes="${defaultexcludes}"
+              dir="src/core/templates/${provider}">
             <include name="**"/>
-            <exclude name="**/CVS"/>
             <exclude name="templates/**"/>
           </fileset>
         </copy>
@@ -94,9 +98,10 @@
           <then>
             <echo message="Copying templates from providers/${provider}/templates" />
             <copy todir="${build.dir}/webapp/${provider}" overwrite="true">
-              <fileset dir="providers/${provider}/templates">
+              <fileset
+                  defaultexcludes="${defaultexcludes}"
+                  dir="providers/${provider}/templates">
                 <include name="**"/>
-                <exclude name="**/CVS"/>
               </fileset>
             </copy>
           </then>
@@ -113,9 +118,10 @@
      <then>
       <echo message="Copying WEB-INF files from providers/${provider}/webinf" />
         <copy todir="${build.dir}/webapp/WEB-INF" overwrite="true">
-          <fileset dir="providers/${provider}/webinf">
+          <fileset
+              defaultexcludes="${defaultexcludes}"
+              dir="providers/${provider}/webinf">
             <include name="**"/>
-            <exclude name="**/CVS"/>
           </fileset>
         </copy>
       </then>
@@ -129,9 +135,10 @@
       <available file="src/${component}/lib" type="dir" />
       <then>
         <copy todir="${build.dir}/webapp/WEB-INF/lib">
-          <fileset dir="src/${component}/lib">
+          <fileset
+              defaultexcludes="${defaultexcludes}"
+              dir="src/${component}/lib">
             <include name="**"/>
-            <exclude name="**/CVS"/>
           </fileset>
         </copy>
       </then>
@@ -155,19 +162,20 @@
         <mkdir dir="${build.dir}/classes/${component}" />
 
         <copy todir="${build.dir}/classes/${component}">
-          <fileset dir="src/${component}/java">
+          <fileset 
+              defaultexcludes="${defaultexcludes}"
+              dir="src/${component}/java">
             <include name="**/*.properties" />
             <include name="**/*.xml" />
             <exclude name="**/*.java"/>
           </fileset>
         </copy>
-
         <javac srcdir="src/${component}/java"
                destdir="${build.dir}/classes/${component}"
-               deprecation="on"
+               deprecation="off"
                debug="yes"
                classpathref="classpath" />
-      	
+
         <if>
           <available file="src/${component}/java/hibernate.cfg.xml" type="file"/>
           <then>
@@ -192,7 +200,7 @@
                      value="${jdbc.password}"/>
           </then>
         </if>
-      	
+
         <jar jarfile="${build.dir}/webapp/WEB-INF/lib//didactor-${component}.jar"
              includes="**"
              basedir="${build.dir}/classes/${component}" />
@@ -217,8 +225,10 @@
         <if>
          <equals arg1="${component}" arg2="core"/>
          <then>
-           <copy todir="${build.dir}/webapp">
-            <fileset dir="src/${component}/templates">
+           <copy todir="${build.dir}/webapp" preservelastmodified="true">
+            <fileset 
+                defaultexcludes="${defaultexcludes}"
+                dir="src/${component}/templates">
              <include name="*.jsp"/>
              <include name="admin/**"/>
              <include name="cockpit/**"/>
@@ -236,16 +246,16 @@
              <include name="translation/**"/>
              <include name="${component}/**"/>
              <include name="classes/**"/>
-             <exclude name="**/CVS"/>
              <exclude name="templates/**"/>
             </fileset>
            </copy>
         </then>
          <else>
-            <copy todir="${build.dir}/webapp" overwrite="true">
-            <fileset dir="src/${component}/templates">
+            <copy todir="${build.dir}/webapp" overwrite="true" preservelastmodified="true">
+            <fileset 
+                defaultexcludes="${defaultexcludes}"
+                dir="src/${component}/templates">
              <include name="**"/>
-             <exclude name="**/CVS"/>
              <exclude name="templates/**"/>
              <exclude name="editwizards/**/extra_*.xml"/>
             </fileset>
@@ -259,10 +269,9 @@
     <if>
       <available file="src/${component}/webinf" type="dir" />
       <then>
-        <copy todir="${build.dir}/webapp/WEB-INF">
+        <copy todir="${build.dir}/webapp/WEB-INF" preservelastmodified="true">
           <fileset dir="src/${component}/webinf">
             <include name="**"/>
-            <exclude name="**/CVS"/>
             <exclude name="**/taglib-extra.tld" />
           </fileset>
         </copy>
@@ -300,10 +309,9 @@
     <if>
       <available file="src/${component}/config" type="dir" />
       <then>
-        <copy todir="${build.dir}/webapp/WEB-INF/config">
+        <copy todir="${build.dir}/webapp/WEB-INF/config" preservelastmodified="true">
           <fileset dir="src/${component}/config">
             <include name="**"/>
-            <exclude name="**/CVS"/>
           </fileset>
         </copy>
       </then>
@@ -347,7 +355,7 @@
       </then>
       <else>
         <echo>Copying extra wizards defs for ${component}: ${cleaned_filename}</echo>
-        <copy file="${file}" tofile="${destfile}" />
+        <copy file="${file}" tofile="${destfile}" preservelastmodified="true" />
       </else>
     </if>
   </target>
@@ -464,6 +472,7 @@ Good luck,
      <javac destdir="${build.dir}/jspclasses"
            optimize="off"
            debug="on" failonerror="false"
+           deprecation="off"
            srcdir="${build.dir}/jspjava"
            fork="true" memoryMaximumSize="512M">
       <classpath>
@@ -490,15 +499,16 @@ Good luck,
   <target name="srcdist">
     <mkdir dir="${build.dir}" />
     <delete file="${build.dir}/didactor-src.zip" quiet="true"/>
-    <zip destfile="${build.dir}/didactor-src.zip"
-         basedir=".">
+    <zip 
+        defaultexcludes="${defaultexcludes}"
+        destfile="${build.dir}/didactor-src.zip"
+        basedir=".">
       <includesfile name="sourcedistfiles.properties" />
       <include name="lib/**"/>
       <include name="*.xml" />
       <include name="README.txt" />
       <zipfileset dir="." includes="configure.properties.srcdist" fullpath="configure.properties" />
       <zipfileset dir="." includes="build.properties.srcdist" fullpath="build.properties" />
-      <exclude name="**/CVS"/>
     </zip>
   </target>
 
