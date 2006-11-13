@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.81 2006-11-08 13:17:56 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.82 2006-11-13 10:28:45 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -663,13 +663,14 @@ public class BuilderReader extends DocumentReader {
                         if (log.isDebugEnabled()) {
                             log.debug("Converted deprecated guitype 'relativetime' for field " + (builder != null ? builder.getTableName() + "."  : "") + fieldName + " with datatype 'duration'.");
                         }
-                    } else
-                    // check for nodetypes
-                    if (type == Field.TYPE_NODE) {
-                        try {
+                    } else if (type == Field.TYPE_NODE) {  
+                        if (guiType == null) {
+                            if (log.isDebugEnabled()) log.debug("Gui type of NODE field '" + fieldName + "' is null");
+                        } else {
                             enumerationBuilder = mmbase.getBuilder(guiType);
-                        } catch (RuntimeException re) {
-                            if (log.isDebugEnabled()) log.debug("Gui type of NODE field is not a builder: " + guiType);
+                            if (enumerationBuilder == null) {
+                                if (log.isDebugEnabled()) log.debug("Gui type of NODE field is '" + fieldName + "'not a known builder");
+                            }
                         }
                     }
                     if (enumerationBuilder != null) {
