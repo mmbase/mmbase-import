@@ -31,8 +31,9 @@ Applications build file
     <mkdir dir="${applications.build.dir}" />
   </target>
 
+  <target name="all.not.compiling" depends="rmmci" />
   <target name="all16" depends="init,media,bugtracker,email" />
-  <target name="all17" depends="init,all16,taglib,cloudcontext,editwizard,dove,xmlimporter,community,rmmci" />
+  <target name="all17" depends="init,all16,taglib,cloudcontext,editwizard,dove,xmlimporter,community" />
   <target name="all18" depends="init,all17,crontab,vwms,scan,packaging,clustering,richtext,oscache-cache,commandserver,resources,mynews,myyahoo,mycompany,resources" />
   <target name="all19" depends="init,all18" />
 
