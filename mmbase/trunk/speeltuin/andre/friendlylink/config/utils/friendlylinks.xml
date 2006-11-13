@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+<friendlylinks
+    xmlns="http://www.mmbase.org/xmlns/friendlylinks"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/friendlylinks friendlylinks.xsd">
+
+  <!--
+      version: $Id: friendlylinks.xml,v 1.1 2006-11-13 22:16:06 andre Exp $
+  -->
+  <!-- 
+      In this file the names and classnames of the utility classes of the 
+			FriendlyLink filter need to be listed.
+  -->
+  <friendlylink name="pages">
+    <class>org.mmbase.applications.friendlylink.Pages</class>
+    <description>
+      Simple example for use with the nodetype 'pages'.
+    </description>
+		<parameter name="template">index.jsp</parameter>
+		<parameter name="parameter">nr</parameter>
+		<parameter name="separator">/</parameter>
+  </friendlylink>
+<!--  
+  <friendlylink name="articles">
+    <class>org.mmbase.applications.friendlylink.PagesUtil</class>
+    <description>
+      Simple example for use with the nodetype 'articles'.
+    </description>
+		<parameter name="template">article.jsp</parameter>
+		<parameter name="parameter">art</parameter>
+		<parameter name="separator">/</parameter>
+  </friendlylink>
+-->
+</friendlylinks>
