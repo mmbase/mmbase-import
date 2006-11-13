@@ -1,0 +1,7 @@
+<form-schema id="step_links">
+  <title xml:lang="nl">Links</title>
+  <title xml:lang="en">Link</title>
+  <field name="name" ftype="data"/>
+
+  
+</form-schema>
