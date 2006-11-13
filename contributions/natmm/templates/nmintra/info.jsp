@@ -17,8 +17,11 @@ if(!articleId.equals("-1")) {
    response.sendRedirect(articleTemplate);
 
 } else {
+    expireTime = newsExpireTime;
+    if(iRubriekLayout==NMIntraConfig.SUBSITE1_LAYOUT) { 
+      expireTime = 5; // this page is also editted by website visitors
+    }
     %>
-    <% expireTime = newsExpireTime; %>
     <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
     <%
     
