@@ -3,34 +3,34 @@
   A link is created for every email to the 'email.jsp' page, where the user
   can view the email and do other actions.
 --%>
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
+%>
 <mm:content postprocessor="reducespace" expires="0">
-<mm:cloud method="delegate" jspvar="cloud">
+  <mm:cloud method="delegate" >
+    <jsp:directive.include file="/shared/setImports.jsp" />
+    <mm:import externid="mailbox">-1</mm:import>
 
-<%@include file="/shared/setImports.jsp"%>
-<mm:import externid="mailbox">-1</mm:import>
+    <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
+      <mm:param name="extraheader">
+        <title><di:translate key="email.email" /></title>
+      </mm:param>
+    </mm:treeinclude>
 
-<mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
-  <mm:param name="extraheader">
-    <title><di:translate key="email.email" /></title>
-  </mm:param>
-</mm:treeinclude>
-
-<mm:node number="$user">
-  <mm:relatednodes type="mailboxes" orderby="type" directions="up" id="mymailboxes">
-	<mm:field id="mbox" name="number" write="false" />
-	<mm:compare referid="mailbox" value="-1">
-	  <mm:first>
-		<mm:remove referid="mailbox"/>
-		<mm:import id="mailbox"><mm:field name="number"/></mm:import>
-	  </mm:first>
-	</mm:compare>
-	<mm:compare referid="mbox" referid2="mailbox">
-	  <mm:import id="mailboxname"><mm:field name="name"/></mm:import>
-	</mm:compare>
-  </mm:relatednodes>
-</mm:node>
+    <mm:node number="$user">
+      <mm:relatednodes type="mailboxes" orderby="type" directions="up" id="mymailboxes">
+        <mm:field id="mbox" name="number" write="false" />
+        <mm:compare referid="mailbox" value="-1">
+          <mm:first>
+            <mm:remove referid="mailbox"/>
+            <mm:import id="mailbox"><mm:field name="number"/></mm:import>
+          </mm:first>
+        </mm:compare>
+        <mm:compare referid="mbox" referid2="mailbox">
+          <mm:import id="mailboxname"><mm:field name="name"/></mm:import>
+        </mm:compare>
+      </mm:relatednodes>
+    </mm:node>
 
 <mm:import externid="ids" vartype="List"/>
 <mm:present referid="ids">
@@ -97,13 +97,16 @@
 
 <div class="mainContent">
   <div class="contentHeader">
-    <mm:write referid="mailboxname"/>
+    <mm:present referid="mailboxname">
+      <mm:write referid="mailboxname"/>
+    </mm:present>
+    <mm:notpresent referid="mailboxname">
+      User ${user} has no mailbox.
+    </mm:notpresent>
   </div>
-  <div class="contentSubHeader">
-      <a href="<mm:treefile page="/email/write/write.jsp" objectlist="$includePath" referids="$referids">
-                 <mm:param name="mailboxname"><mm:write referid="mailboxname"/></mm:param>
-                 <mm:param name="mailbox"><mm:write referid="mailbox"/></mm:param>
-               </mm:treefile>">
+  <mm:present referid="mailboxname">
+    <div class="contentSubHeader">
+      <a href="<mm:treefile page="/email/write/write.jsp" objectlist="$includePath" referids="$referids,mailboxname,mailbox" />">
       <img src="<mm:treefile write="true"  page="/gfx/icon_emailschrijven.gif" objectlist="$includePath" referids="$referids"/> "width="50" height="28" border="0" title="<di:translate key="email.writenewemail" />" alt="<di:translate key="email.writenewemail" />"/></a>
 
 
@@ -117,6 +120,7 @@
   <div class="contentBody">
     <mm:treeinclude page="/email/mailbox/mailbox.jsp" objectlist="$includePath" referids="$referids" />
   </div>
+  </mm:present>
 </div>
 </div>
 </form>
