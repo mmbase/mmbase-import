@@ -22,7 +22,9 @@
 <mm:node number="$testNo">
   <mm:relatednodescontainer path="madetests,copybooks" element="madetests">
     <mm:constraint field="madetests.score" referid="TESTSCORE_INCOMPLETE" inverse="true"/>
-    <mm:constraint field="copybooks.number" referid="copybookNo"/>
+    <mm:isnotempty referid="copybookNo">
+      <mm:constraint field="copybooks.number" referid="copybookNo"/>
+    </mm:isnotempty>
     <mm:relatednodes>
       <mm:field id="madetestNo" name="number" write="false"/>
       <mm:field id="madetestscore" name="score" write="false"/>
