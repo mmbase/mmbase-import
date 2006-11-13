@@ -17,8 +17,8 @@ import nl.didactor.util.ClassRoom;
  * HasroleTag: retrieve a setting for a component
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  */
-public class HasroleTag extends CloudReferrerTag { 
-    private static Logger log = Logging.getLoggerInstance(HasroleTag.class.getName());
+public class HasroleTag extends CloudReferrerTag {
+    private final static Logger log = Logging.getLoggerInstance(HasroleTag.class);
 
     private String role;
     private String inverse;
@@ -63,16 +63,25 @@ public class HasroleTag extends CloudReferrerTag {
      * Execute the body of the tag if the current user has the given role.
      */
     public int doStartTag() throws JspTagException {
-        //Get User        
-        // default: logged in user 
+        //Get User
+        // default: logged in user
         String userid= referid;
         if (userid == null) {
             userid= "user";
         }
-        Object user = getContextProvider().getContextContainer().get( userid);
+        Object user = getContextProvider().getContextContainer().get(userid);
         if (user == null) {
             throw new JspTagException("Context variable with id '" + userid + "' not found");
         }
+
+
+        boolean inv = false;
+        if (inverse != null && !"".equals(inverse)) {
+            inv = "true".equalsIgnoreCase(inverse);
+        }
+        String number = "" + user;
+        if ("0".equals(number)) return inv ? EVAL_BODY : SKIP_BODY;
+
         MMObjectNode usernode = MMBase.getMMBase().getBuilder("people").getNode("" + user);
         if (usernode == null) {
             throw new JspTagException("User with number '" + user + "' not found");
@@ -88,24 +97,20 @@ public class HasroleTag extends CloudReferrerTag {
        Object in_education= getContextProvider().getContextContainer().get( educationStr);
        if (in_education != null) {
            if (in_education instanceof Integer) {
-               educationno= ((Integer) in_education).intValue();    
+               educationno= ((Integer) in_education).intValue();
            } else if (in_education instanceof String) {
                educationno= Integer.parseInt( (String) in_education);
            } else {
                throw new JspTagException( "Education of unknown type");
-           }   
-        } 
-        if (role == null) {
-            throw new JspTagException( "No role defined");            
+           }
         }
-        
-        boolean inv = false;
-        if (inverse != null && !"".equals(inverse)) {
-            inv = "true".equalsIgnoreCase(inverse);
+        if (role == null) {
+            throw new JspTagException( "No role defined");
         }
 
+
         try {
-                 
+
             if (ClassRoom.hasRole( usernode, role, educationno, getCloudVar())) {
                 return inv?SKIP_BODY:EVAL_BODY;
             } else {
