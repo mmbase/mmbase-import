@@ -22,7 +22,7 @@
                         <%
                            Node nodeParent = nodeObject;
                            while(true){
-                              if("learnblocks".equals(cloud.getNode(nodeParent.getNumber()).getNodeManager().getName())){
+                              if("learnblocks".equals(nodeObject.getCloud().getNode(nodeParent.getNumber()).getNodeManager().getName())){
                                  break;
                               }
                               else{
