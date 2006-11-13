@@ -1,5 +1,5 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"%>
-<mm:cloud jspvar="cloud">
+<mm:cloud>
 <mm:import externid="node_id"/>
 <mm:import externid="path_segment"/>
 <mm:node referid="node_id">
@@ -30,7 +30,7 @@
                   <table border="0" cellpadding="0" cellspacing="0">
                      <tr>
                         <td>
-                           <mm:field name="body"><mm:isnotempty><mm:write /></mm:isnotempty></mm:field>
+                           <mm:field name="body"><mm:isnotempty><mm:write escape="none" /></mm:isnotempty></mm:field>
                         </td>
                      </tr>
                   </table>
