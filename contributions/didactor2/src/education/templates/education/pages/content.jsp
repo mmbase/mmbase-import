@@ -66,13 +66,8 @@
 
 </mm:notpresent>
 
+<mm:import jspvar="text" reset="true"><mm:hasfield name="text"><mm:field name="text" escape="none"/></mm:hasfield><mm:field name="intro" escape="none"/></mm:import>
 
-
-
-
-    <mm:import jspvar="text" reset="true"><mm:field name="text" escape="none"/><mm:field name="intro" escape="none"/></mm:import>
-
-  
 
 
 
