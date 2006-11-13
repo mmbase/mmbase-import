@@ -18,10 +18,11 @@ public class NMIntraToNatMMigrator {
 
   private static final Logger log = Logging.getLoggerInstance(NMIntraToNatMMigrator.class);
 
-  public static String sFolder = NMIntraConfig.incomingDir + "NMIntraXML/";
-  // public static String sFolder = "E:/nmm/tmp/";
-
   public static void run() throws Exception{
+
+      String sFolder = NMIntraConfig.incomingDir + "NMIntraXML/";
+
+      MigrateUtil mu = new MigrateUtil();
 
       log.info("NMIntraToNatMMigrator.run()");
       log.info("Importing files from " + sFolder);
@@ -52,7 +53,7 @@ public class NMIntraToNatMMigrator {
       }
 
       log.info("find articles that should become formulier");
-      String sContent = readingFile(sFolder + "templates.xml");
+      String sContent = mu.readingFile(sFolder + "templates.xml");
       int index = sContent.indexOf("<linktext>formulier</linktext>");
       int iBegNodeIndex = sContent.indexOf("<node number=\"",index - 150);
       int iBegNodeNumberIndex = iBegNodeIndex + 14;
@@ -60,10 +61,10 @@ public class NMIntraToNatMMigrator {
       String sTemplateNumber = sContent.substring(iBegNodeNumberIndex,iEndNodeNumberIndex);
       log.info("number of formulier template is " + sTemplateNumber);
 
-      sContent = readingFile(sFolder + "page.xml");
-      ArrayList alPages = getNodes(sContent);
+      sContent = mu.readingFile(sFolder + "page.xml");
+      ArrayList alPages = mu.getNodes(sContent);
       ArrayList alPageRelatedTemplate = new ArrayList();
-      String sInsrelContent = readingFile(sFolder + "insrel.xml");
+      String sInsrelContent = mu.readingFile(sFolder + "insrel.xml");
       int iDNIndex = sInsrelContent.indexOf("dnumber=\"" + sTemplateNumber + "\"");
       while (iDNIndex>-1){
         iBegNodeNumberIndex = sInsrelContent.indexOf("snumber=\"",iDNIndex - 25) + 9;
@@ -76,9 +77,9 @@ public class NMIntraToNatMMigrator {
         iDNIndex = sInsrelContent.indexOf("dnumber=\"" + sTemplateNumber + "\"",iDNIndex + 1);
       }
 
-      String sArticleContent = readingFile(sFolder + "article.xml");
-      ArrayList alArticle = getNodes(sArticleContent);
-      String sPosrelContent = readingFile(sFolder + "posrel.xml");
+      String sArticleContent = mu.readingFile(sFolder + "article.xml");
+      ArrayList alArticle = mu.getNodes(sArticleContent);
+      String sPosrelContent = mu.readingFile(sFolder + "posrel.xml");
       ArrayList alFormulier = new ArrayList();
       Iterator it = alPageRelatedTemplate.iterator();
       while (it.hasNext()){
@@ -107,7 +108,7 @@ public class NMIntraToNatMMigrator {
         sArticleContent = sArticleContent.substring(0,iBegNodeIndex) + sArticleContent.substring(iEndNodeIndex);
       }
 
-      writingFile(sFolder + "article.xml",sArticleContent);
+      mu.writingFile(sFolder + "article.xml",sArticleContent);
 
       log.info("deleting not necessary fields in files");
       TreeMap tmDeletingFields = new TreeMap();
@@ -139,20 +140,10 @@ public class NMIntraToNatMMigrator {
         if (sBuilderName.equals("formulier")){
            sContent = sFormulierContent;
         } else {
-           sContent = readingFile(sFolder + sBuilderName + ".xml");
+           sContent = mu.readingFile(sFolder + sBuilderName + ".xml");
         }
 
-        Iterator it1 = alThisDeletedFields.iterator();
-        while (it1.hasNext()){
-          String sField = (String)it1.next();
-          int iBegIndex = sContent.indexOf("<" + sField + ">");
-          while (iBegIndex>-1){
-            int iEndEndex = sContent.indexOf("</" + sField + ">",iBegIndex);
-            iEndEndex = sContent.indexOf("<",iEndEndex + sField.length() + 3);
-            sContent = sContent.substring(0,iBegIndex) + sContent.substring(iEndEndex);
-            iBegIndex = sContent.indexOf("<" + sField + ">");
-          }
-        }
+        sContent = mu.deleteFields(sContent, alThisDeletedFields);
 
         if (sBuilderName.equals("readmore")){
            log.info("in readmore.xml replacing & to &amp;");
@@ -164,20 +155,20 @@ public class NMIntraToNatMMigrator {
         if (sBuilderName.equals("formulier")){
            sFormulierContent = sContent ;
         } else {
-           writingFile(sFolder + sBuilderName + ".xml", sContent);
+           mu.writingFile(sFolder + sBuilderName + ".xml", sContent);
         }
       }
-      String sParagraphContent = readingFile(sFolder + "paragraph.xml");
-      ArrayList alParagraphs = getNodes(sParagraphContent);
-      sPosrelContent = deletingRelation(alFormulier,alParagraphs,sPosrelContent);
+      String sParagraphContent = mu.readingFile(sFolder + "paragraph.xml");
+      ArrayList alParagraphs = mu.getNodes(sParagraphContent);
+      sPosrelContent = mu.deletingRelation(alFormulier,alParagraphs,sPosrelContent);
 
       log.info("finding page nodes that should become rubriek nodes and creating new rubrieks with such names");
       TreeMap tmPaginaToRubriek = new TreeMap();
       ArrayList alPaginaToRubriek = new ArrayList();
       int iNewNumber = 1000000;
       String sPosrelAdd = "";
-      String sPijlerContent = readingFile(sFolder + "pijler.xml");
-      ArrayList alPijler = getNodes(sPijlerContent);
+      String sPijlerContent = mu.readingFile(sFolder + "pijler.xml");
+      ArrayList alPijler = mu.getNodes(sPijlerContent);
       int iDelRelIndex = sPosrelContent.indexOf("dposrel");
       while (iDelRelIndex>-1){
         int iBegPageIndex = sPosrelContent.indexOf("snumber=\"",iDelRelIndex - 75) + 9;
@@ -200,12 +191,12 @@ public class NMIntraToNatMMigrator {
       }
 
       log.info("changing relation pijler-posrel-page to rubriek-parent-page");
-      String [] sResultParRel = movingRelations(alPijler, alPaginaToRubriek, sPosrelContent,
+      String [] sResultParRel = mu.movingRelations(alPijler, alPaginaToRubriek, sPosrelContent,
                          "posrel", "parent");
       sPosrelContent = sResultParRel[0];
       String sParentContent = sResultParRel[1];
 
-      String sPageContent = readingFile(sFolder + "page.xml");
+      String sPageContent = mu.readingFile(sFolder + "page.xml");
       String sRubriekContent = "";
       set = tmPaginaToRubriek.entrySet();
       it = set.iterator();
@@ -236,11 +227,11 @@ public class NMIntraToNatMMigrator {
 
       sPosrelContent = sPosrelContent.replaceAll("dposrel","posrel");
       sPosrelContent = sPosrelContent.replaceAll("unidirectional","bidirectional");
-      sPosrelContent = addingContent(sPosrelContent,"posrel",sPosrelAdd);
+      sPosrelContent = mu.addingContent(sPosrelContent,"posrel",sPosrelAdd);
 
-      writingFile(sFolder + "posrel.xml",sPosrelContent);
-      creatingNewXML("childrel",sParentContent);
-      writingFile(sFolder + "page.xml",sPageContent);
+      mu.writingFile(sFolder + "posrel.xml",sPosrelContent);
+      mu.creatingNewXML(sFolder, "childrel","intranet",sParentContent);
+      mu.writingFile(sFolder + "page.xml",sPageContent);
       
       log.info("renaming fields");
       TreeMap tmRenamingFields = new TreeMap();
@@ -278,7 +269,7 @@ public class NMIntraToNatMMigrator {
       tmRenamingFields.put("templates","linktext:naam;description:omschrijving");
       tmRenamingFields.put("users","firstname:voornaam;lastname:achternaam;email:emailadres");
 
-      String sEditwizardsContent = readingFile(sFolder + "editwizards.xml");
+      String sEditwizardsContent = mu.readingFile(sFolder + "editwizards.xml");
 
       log.info("treating formulier editwizard");
 
@@ -332,7 +323,7 @@ public class NMIntraToNatMMigrator {
              sContent = sPijlerContent;
           }
           else {
-            sContent = readingFile(sFolder + sBuilderName + ".xml");
+            sContent = mu.readingFile(sFolder + sBuilderName + ".xml");
           }
         }
         String fields = (String)me.getValue();
@@ -351,7 +342,7 @@ public class NMIntraToNatMMigrator {
         if (iColonIndex>-1){
           tmThisRenamingFields.put(fields.substring(0,iColonIndex),fields.substring(iColonIndex+1));
         }
-        sContent = renamingFields(sContent, tmThisRenamingFields);
+        sContent = mu.renamingFields(sContent, tmThisRenamingFields);
         if (sBuilderName.equals("editwizards")){
            sEditwizardsContent = sContent;
         } else if (sBuilderName.equals("pijler")){
@@ -384,7 +375,7 @@ public class NMIntraToNatMMigrator {
              sRubriekContent = sContent;
           }
           else {
-             writingFile(sFolder + sBuilderName + ".xml",sContent);
+             mu.writingFile(sFolder + sBuilderName + ".xml",sContent);
           }
         }
       }
@@ -490,16 +481,16 @@ public class NMIntraToNatMMigrator {
 
       sEditwizardsContent = sEditwizardsContent.replaceAll("wizards/","config/");
 
-      writingFile(sFolder + "editwizards.xml",sEditwizardsContent);
+      mu.writingFile(sFolder + "editwizards.xml",sEditwizardsContent);
 
       log.info("treating educations.xml");
-      sContent = readingFile(sFolder + "educations.xml");
-      sContent = buildingUrlsTitels(sContent);
-      writingFile(sFolder + "educations.xml",sContent);
+      sContent = mu.readingFile(sFolder + "educations.xml");
+      sContent = mu.buildingUrlsTitels(sContent);
+      mu.writingFile(sFolder + "educations.xml",sContent);
 
       log.info("treating exturls.xml");
-      sContent = readingFile(sFolder + "exturls.xml");
-      sContent = buildingUrlsTitels(sContent);
+      sContent = mu.readingFile(sFolder + "exturls.xml");
+      sContent = mu.buildingUrlsTitels(sContent);
 
       int iBegPosttextIndex = sContent.indexOf("<posttext>");
       while (iBegPosttextIndex>-1){
@@ -526,11 +517,11 @@ public class NMIntraToNatMMigrator {
          iBegPosttextIndex = sContent.indexOf("<posttext>");
       }
 
-      writingFile(sFolder + "exturls.xml",sContent);
+      mu.writingFile(sFolder + "exturls.xml",sContent);
 
       log.info("analyzing enrolldate");
 
-      sContent = readingFile(sFolder + "employees.xml");
+      sContent = mu.readingFile(sFolder + "employees.xml");
       int iBegEnrolldateIndex = sContent.indexOf("<enrolldate>");
       int iEndEnrolldateIndex = sContent.indexOf("</enrolldate>");
       while ((iBegEnrolldateIndex>-1)&&(iEndEnrolldateIndex>-1)){
@@ -549,7 +540,7 @@ public class NMIntraToNatMMigrator {
         iEndEnrolldateIndex = sContent.indexOf("</enrolldate>");
       }
 
-      writingFile(sFolder + "employees.xml",sContent);
+      mu.writingFile(sFolder + "employees.xml",sContent);
 
       log.info("joining rubriek, pijler and site into rubriek");
 
@@ -557,14 +548,14 @@ public class NMIntraToNatMMigrator {
       int iEndInfoIndex = sPijlerContent.indexOf("</pijler>");
       sPijlerContent = sPijlerContent.substring(iBegInfoIndex,iEndInfoIndex);
 
-      String sSiteContent = readingFile(sFolder + "site.xml");
+      String sSiteContent = mu.readingFile(sFolder + "site.xml");
       iBegInfoIndex = sSiteContent.indexOf("<node number");
       iEndInfoIndex = sSiteContent.indexOf("</site>");
       sSiteContent = sSiteContent.substring(iBegInfoIndex,iEndInfoIndex);
 
       sRubriekContent += sPijlerContent + sSiteContent;
 
-      creatingNewXML("rubriek",sRubriekContent);
+      mu.creatingNewXML(sFolder, "rubriek","intranet",sRubriekContent);
       File file = new File(sFolder + "pijler.xml");
       file.delete();
 
@@ -572,16 +563,16 @@ public class NMIntraToNatMMigrator {
       file.delete();
 
       log.info("joining mmbaseusers and users into users");
-      String sUsersContent = readingFile(sFolder + "users.xml");
-      String sMMBaseUsersContent = readingFile(sFolder + "mmbaseusers.xml");
+      String sUsersContent = mu.readingFile(sFolder + "users.xml");
+      String sMMBaseUsersContent = mu.readingFile(sFolder + "mmbaseusers.xml");
 
       iBegInfoIndex = sMMBaseUsersContent.indexOf("<node number");
       iEndInfoIndex = sMMBaseUsersContent.indexOf("</mmbaseusers>");
       sMMBaseUsersContent = sMMBaseUsersContent.substring(iBegInfoIndex,iEndInfoIndex);
 
-      sUsersContent = addingContent(sUsersContent,"users",sMMBaseUsersContent);
+      sUsersContent = mu.addingContent(sUsersContent,"users",sMMBaseUsersContent);
 
-      writingFile(sFolder + "users.xml",sUsersContent);
+      mu.writingFile(sFolder + "users.xml",sUsersContent);
       file = new File(sFolder + "mmbaseusers.xml");
       file.delete();
 
@@ -593,7 +584,7 @@ public class NMIntraToNatMMigrator {
         Map.Entry me = (Map.Entry)it.next();
         String sOldBuilderName = (String)me.getKey();
         String sNewBuilderName = (String)me.getValue();
-        sContent = readingFile(sFolder + sOldBuilderName + ".xml");
+        sContent = mu.readingFile(sFolder + sOldBuilderName + ".xml");
         if (sOldBuilderName.equals("answer")){
           index = sContent.lastIndexOf("</waarde>");
           sContent = sContent.substring(0,index) + "</answer>";
@@ -601,246 +592,11 @@ public class NMIntraToNatMMigrator {
         sContent = sContent.replaceAll("<" + sOldBuilderName,"<" + sNewBuilderName);
         sContent = sContent.replaceAll("</" + sOldBuilderName,"</" + sNewBuilderName);
         file = new File(sFolder + sOldBuilderName + ".xml");
-        writingFile(file,sFolder + sNewBuilderName + ".xml",sContent);
+        mu.writingFile(file,sFolder + sNewBuilderName + ".xml",sContent);
       }
 
-      creatingNewXML("formulier", sFormulierContent);
+      mu.creatingNewXML(sFolder, "formulier","intranet", sFormulierContent);
 
   }
-
-  public static ArrayList getNodes (String sContent) throws Exception{
-
-      ArrayList al = new ArrayList();
-      int iBegNodeIndex = sContent.indexOf("<node number=\"");
-      while (iBegNodeIndex>-1){
-        int iBegNodeNumberIndex = iBegNodeIndex + 14;
-        int iEndNodeNumberIndex = sContent.indexOf("\"",iBegNodeNumberIndex);
-        String sNodeNumber = sContent.substring(iBegNodeNumberIndex,iEndNodeNumberIndex);
-        al.add(sNodeNumber);
-        iBegNodeIndex = sContent.indexOf("<node number=\"",iEndNodeNumberIndex);
-      }
-
-      return al;
-   }
-
-   public static String readingFile(String sFileName) throws Exception{
-
-      FileInputStream file = new FileInputStream (sFileName);
-      DataInputStream in = new DataInputStream (file);
-      byte[] b = new byte[in.available ()];
-      in.readFully (b);
-      in.close ();
-      String sResult = new String (b, 0, b.length, "UTF-8");
-
-      return sResult;
-   }
-
-   public static String deletingRelation(String sContent, String sDelRel){
-
-     int iDelRelIndex = sContent.indexOf(sDelRel);
-     while (iDelRelIndex>-1){
-       int iBegNodeIndex = sContent.indexOf("<node number=",iDelRelIndex-75) - 1;
-       int iEndNodeIndex = sContent.indexOf("</node>",iDelRelIndex) + 9;
-       sContent = sContent.substring(0,iBegNodeIndex) + sContent.substring(iEndNodeIndex);
-       iDelRelIndex = sContent.indexOf(sDelRel);
-     }
-     return sContent;
-   }
-
-   public static void writingFile(File file, String sNewFile, String sAllContent) throws Exception{
-
-   file.delete();
-   file = new File(sNewFile);
-   file.createNewFile();
-   FileOutputStream fos = new FileOutputStream(sNewFile);
-   OutputStreamWriter osw = new OutputStreamWriter(fos,"UTF-8");
-   BufferedWriter bw = new BufferedWriter(osw);
-   bw.write(sAllContent);
-   bw.close();
-
-   }
-	
-   public static void writingFile(String sNewFile, String sAllContent) throws Exception{
-
-   File file = new File(sNewFile);
-   file.delete();
-   file.createNewFile();
-   FileOutputStream fos = new FileOutputStream(sNewFile);
-   OutputStreamWriter osw = new OutputStreamWriter(fos,"UTF-8");
-   BufferedWriter bw = new BufferedWriter(osw);
-   bw.write(sAllContent);
-   bw.close();
-
-   }
-
-   public static String renamingFields(String sContent,TreeMap tmRenamingFields){
-
-      Set set = tmRenamingFields.entrySet();
-      Iterator it = set.iterator();
-
-      while (it.hasNext()){
-         Map.Entry me = (Map.Entry)it.next();
-         if (sContent.indexOf("<" + me.getKey() + ">")>-1){
-            sContent = sContent.replaceAll("<" + me.getKey() + ">","<" + me.getValue() + ">");
-            sContent = sContent.replaceAll("</" + me.getKey() + ">","</" + me.getValue() + ">");
-         }
-      }
-
-      return sContent;
-   }
-
-   public static String buildingUrlsTitels(String sContent){
-
-     int iBegNameIndex = sContent.indexOf("<name>") ;
-     int iEndNameIndex = sContent.indexOf("</name>");
-     while ((iBegNameIndex>-1)&&(iEndNameIndex>-1)){
-       String sNameValue = sContent.substring(iBegNameIndex + 6,iEndNameIndex);
-       if (!sNameValue.equals("")){
-         sContent = sContent.substring(0,iBegNameIndex) + "<titel>" + sNameValue +
-             "</titel>" + sContent.substring(iEndNameIndex + 7);
-       } else {
-         sContent = sContent.substring(0,iBegNameIndex) + sContent.substring(iEndNameIndex + 7);
-         int iBegDescrIndex = sContent.indexOf("<description>",iEndNameIndex);
-         int iEndDescrIndex = sContent.indexOf("</description>",iBegDescrIndex);
-         if ((iBegDescrIndex>-1)&&(iEndDescrIndex>-1)){
-           String sDecrValue = sContent.substring(iBegDescrIndex + 13,iEndDescrIndex);
-           sContent = sContent.substring(0,iBegDescrIndex) + "<titel>" + sDecrValue +
-             "</titel>" + sContent.substring(iEndDescrIndex + 14);
-         }
-       }
-       iBegNameIndex = sContent.indexOf("<name>") ;
-       iEndNameIndex = sContent.indexOf("</name>");
-     }
-     sContent = sContent.replaceAll("<description></description>","");
-     sContent = sContent.replaceAll("\n\t\t\n\t\t","\n\t\t");
-
-     return sContent;
-   }
-
-   public static String deletingRelation(ArrayList alFrom, ArrayList alTo, String sContent) {
-
-     Iterator it = alFrom.iterator();
-     while (it.hasNext()){
-       String sNextNode = (String)it.next();
-       int iSNumberIndex = sContent.indexOf("snumber=\"" + sNextNode + "\"");
-       while (iSNumberIndex != -1) {
-         int iDNIndex = sContent.indexOf("dnumber", iSNumberIndex);
-         int iQuotIndex = sContent.indexOf("\"", iDNIndex + 9);
-         String sRelNode = sContent.substring(iDNIndex + 9, iQuotIndex);
-         if (alTo.contains(sRelNode)){
-           int iBegNodeIndex = sContent.indexOf("<node number=",iSNumberIndex - 60) - 1;
-           int iEndNodeIndex = sContent.indexOf("</node>",iSNumberIndex) + 9;
-           sContent = sContent.substring(0,iBegNodeIndex) + sContent.substring(iEndNodeIndex);
-           iSNumberIndex = sContent.indexOf("snumber=\"" + sNextNode + "\"", iBegNodeIndex);
-         } else {
-            iSNumberIndex = sContent.indexOf("snumber=\"" + sNextNode + "\"",
-                                             iSNumberIndex + 1);
-         }
-       }
-     }
-
-     return sContent;
-   }
-
-   public static void creatingNewXML(String sBuilderName,String sContent) throws Exception{
-      Calendar cal = Calendar.getInstance();
-      String sToday = "" + cal.get(Calendar.YEAR);
-      if ((cal.get(Calendar.MONTH) + 1)<10){
-         sToday += "0";
-      }
-      sToday += (cal.get(Calendar.MONTH) + 1);
-      if (cal.get(Calendar.DAY_OF_MONTH)<10){
-         sToday += "0";
-      }
-      sToday += cal.get(Calendar.DAY_OF_MONTH);
-      if (cal.get(Calendar.HOUR_OF_DAY)<10){
-          sToday += "0";
-      }
-      sToday += cal.get(Calendar.HOUR_OF_DAY);
-      if (cal.get(Calendar.MINUTE)<10){
-          sToday += "0";
-      }
-      sToday += cal.get(Calendar.MINUTE);
-      if (cal.get(Calendar.SECOND)<10){
-          sToday += "0";
-      }
-      sToday += cal.get(Calendar.SECOND);
-      String sRealContent = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
-         "\n" + "<" + sBuilderName + " exportsource=\"mmbase://127.0.0.1/intranet/install\"" +
-         " timestamp=\"" + sToday + "\"" + ">" + "\n";
-      sRealContent += sContent + "</" + sBuilderName + ">";
-
-      String sFileName = sFolder + sBuilderName + ".xml";
-      File file = new File(sFileName);
-
-      writingFile(file,sFileName,sRealContent);
-
-   }
-
-   public static String[] movingRelations(ArrayList alFrom, ArrayList alTo,
-     String sOldBuilderContent, String sOldBuilderName, String sNewBuilderName){
-
-     String sNewContent = "";
-     Iterator it = alFrom.iterator();
-     while (it.hasNext()){
-       String sFromNode = (String)it.next();
-       int iSNIndex = sOldBuilderContent.indexOf("snumber=\"" + sFromNode + "\"");
-       while (iSNIndex>-1){
-         int iDNBegIndex = sOldBuilderContent.indexOf("dnumber=\"", iSNIndex) + 9;
-         int iSNEndIndex = sOldBuilderContent.indexOf("\"", iDNBegIndex + 1);
-         String sDNNodeNumber = sOldBuilderContent.substring(iDNBegIndex, iSNEndIndex);
-         if (alTo.contains(sDNNodeNumber)) {
-           int iBegNodeIndex = sOldBuilderContent.indexOf("<node number",iSNIndex - 60) - 1;
-           int iEndNodeIndex = sOldBuilderContent.indexOf("</node>",iBegNodeIndex) + 9;
-           sNewContent += sOldBuilderContent.substring(iBegNodeIndex, iEndNodeIndex);
-           sOldBuilderContent = sOldBuilderContent.substring(0, iBegNodeIndex) +
-               sOldBuilderContent.substring(iEndNodeIndex);
-           iSNIndex = sOldBuilderContent.indexOf("snumber=\"" + sFromNode + "\"", iBegNodeIndex);
-         } else {
-            iSNIndex = sOldBuilderContent.indexOf("snumber=\"" + sFromNode +
-               "\"", iSNIndex + 1);
-         }
-       }
-      }
-      sNewContent = sNewContent.replaceAll(sOldBuilderName,sNewBuilderName);
-      String [] sRel = new String[2];
-      sRel[0] = sOldBuilderContent;
-      sRel[1] = sNewContent;
-     return sRel;
-   }
-
-
-   public static String movingRelations(ArrayList alFrom, ArrayList alTo,
-     String sContent, String sNewBuilderName){
-
-     Iterator it = alFrom.iterator();
-     while (it.hasNext()){
-       String sFromNode = (String)it.next();
-       int iSNIndex = sContent.indexOf("snumber=\"" + sFromNode + "\"");
-       while (iSNIndex>-1){
-         int iDNBegIndex = sContent.indexOf("dnumber=\"", iSNIndex) + 9;
-         int iSNEndIndex = sContent.indexOf("\"", iDNBegIndex + 1);
-         String sDNNodeNumber = sContent.substring(iDNBegIndex, iSNEndIndex);
-         if (alTo.contains(sDNNodeNumber)) {
-           int iRTypeBegIndex = sContent.indexOf("rtype=\"", iSNEndIndex) + 7;
-           int iRTypeEndIndex = sContent.indexOf("\"", iRTypeBegIndex + 1);
-           sContent = sContent.substring(0, iRTypeBegIndex) + sNewBuilderName +
-               sContent.substring(iRTypeEndIndex);
-
-         }
-         iSNIndex = sContent.indexOf("snumber=\"" + sFromNode + "\"",iSNIndex + 1);
-       }
-      }
-     return sContent;
-   }
-
-   public static String addingContent (String sContent, String sBuilderName, String sAdd){
-     int iEntryPointIndex = sContent.lastIndexOf("</" + sBuilderName + ">");
-     sContent = sContent.substring(0,iEntryPointIndex) + sAdd +
-     sContent.substring(iEntryPointIndex);
-
-     return sContent;
-   }
-
 
 }
