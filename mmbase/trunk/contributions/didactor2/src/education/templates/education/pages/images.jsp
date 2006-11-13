@@ -10,15 +10,15 @@
    
       <td>
         <mm:field name="showtitle">
-        <mm:compare value="1">
-          <h3> <mm:field name="title"/></h3>
-        </mm:compare>
+          <mm:compare value="1">
+            <h3> <mm:field name="title"/></h3>
+          </mm:compare>
         </mm:field>
     
        <mm:isgreaterthan referid="imwidth" value="0">
        <mm:isgreaterthan referid="imheight" value="0">
        <mm:import id="template" reset="true">s(<mm:write referid="imwidth"/>x<mm:write referid="imheight"/>)</mm:import>
-        <img src="<mm:image template="$template"/>" border="0"/>
+       <mm:image mode="img" border="0" template="$template" />
       </mm:isgreaterthan>
       </mm:isgreaterthan>
       <mm:islessthan referid="imwidth" value="1">
