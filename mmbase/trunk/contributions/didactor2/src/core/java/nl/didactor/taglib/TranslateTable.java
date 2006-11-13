@@ -114,7 +114,7 @@ public class TranslateTable {
         }
 
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(file));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
             String line;
             while ((line = reader.readLine()) != null) {
                 if (line.startsWith("#")) {
@@ -192,12 +192,12 @@ public class TranslateTable {
 
                         // If we have written to this file before, we must append to it!
                         if (seenFiles.contains(fname)) {
-                            out = new PrintWriter(new BufferedWriter(new FileWriter(fname, true)));
+                            out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fname, true), "UTF-8")));
                         } else {
                             // New file, remove it from the filewatcher (so we are sure that there is nobody
                             // reading the file when we are writing it.
                             watcher.remove(new File(fname));
-                            out = new PrintWriter(new BufferedWriter(new FileWriter(fname, false)));
+                            out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fname, false), "UTF-8")));
                             seenFiles.add(fname);
                         }
                     } catch (IOException e) {
