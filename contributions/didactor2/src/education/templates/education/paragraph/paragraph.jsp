@@ -30,7 +30,7 @@
                   <table border="0" cellpadding="0" cellspacing="0">
                      <tr>
                         <td>
-                           <mm:field name="body"><mm:isnotempty><mm:write /></mm:isnotempty></mm:field>
+                           <mm:field name="body"><mm:isnotempty><mm:write escape="none" /></mm:isnotempty></mm:field>
                         </td>
                      </tr>
                   </table>
