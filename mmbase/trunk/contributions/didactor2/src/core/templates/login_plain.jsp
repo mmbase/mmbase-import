@@ -1,8 +1,7 @@
-<%@page session="true" language="java" contentType="text/html; charset=UTF-8" %>
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-
-<mm:content postprocessor="reducespace">
+<%@page session="true" language="java" contentType="text/html; charset=UTF-8" 
+%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di"
+%><mm:content postprocessor="reducespace">
 <mm:cloud>
   <jsp:directive.include file="/shared/setImports.jsp" />
   <mm:import externid="extraheader" />
@@ -16,9 +15,8 @@
       </mm:field>
     </mm:node>
   </mm:present>
-  <mm:import externid="newusername"/>
-  <mm:import externid="newpassword"/>
-
+  <mm:import externid="newusername" />
+  <mm:import externid="newpassword" />
   <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
   <html>
     <head>
@@ -103,6 +101,6 @@
 </html>
 </mm:cloud>
 
-<mm:cloud method="delegate" jspvar="cloud" authenticate="didactor-logout"/>
+<mm:cloud method="delegate" authenticate="didactor-logout"/>
 
 </mm:content>
