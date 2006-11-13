@@ -1,20 +1,12 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"%>
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%><%@ page import = "java.io.*,java.util.*" 
+%><mm:content postprocessor="reducespace">
+<mm:cloud method="delegate">
+  <mm:import externid="learnobject" required="true"/>
+  <!-- TODO Need this page? -->
 
-<%@ page import = "java.io.*" %>
-<%@ page import = "java.util.ArrayList" %>
-<%@ page import = "java.util.Date" %>
-<%@ page import = "java.util.ListIterator" %>
-
-<mm:content postprocessor="reducespace">
-<mm:cloud method="delegate" jspvar="cloud">
-
-<mm:import externid="learnobject" required="true"/>
-
-<!-- TODO Need this page? -->
-
-<%@include file="/shared/setImports.jsp" %>
-
+  <jsp:directive.include file="/shared/setImports.jsp" />
 <%
    String sUserSettings_PathBaseDirectory = getServletContext().getInitParameter("filemanagementBaseDirectory");
    String sUserSettings_BaseURL = getServletContext().getInitParameter("filemanagementBaseUrl");
@@ -27,27 +19,21 @@
 
 
 <%-- remember this page --%>
-<mm:treeinclude page="/education/storebookmarks.jsp" objectlist="$includePath" referids="$referids">
-    <mm:param name="learnobject"><mm:write referid="learnobject"/></mm:param>
-    <mm:param name="learnobjecttype">learnblocks</mm:param>
+<mm:treeinclude page="/education/storebookmarks.jsp" objectlist="$includePath" referids="$referids,learnobject">
+  <mm:param name="learnobjecttype">learnblocks</mm:param>
 </mm:treeinclude>
 
-
-
 <html>
-<head>
-   <title>Learnblock content</title>
-   <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/base.css" objectlist="$includePath" />" />
-</head>
-<body>
-
-<div class="learnenvironment">
-
-<mm:node number="$learnobject" jspvar="nodeLearnObject">
+  <head>
+    <title>Learnblock content</title>
+    <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/base.css" objectlist="$includePath" />" />
+  </head>
+  <body>
+    <div class="learnenvironment">
+      <mm:node number="$learnobject" jspvar="nodeLearnObject">
    <%//checking the type of the learnblock %>
    <%//Does it belong to Scorm package%>
 
-   <mm:log>UU ${learnobject}</mm:log>
    <mm:remove referid="it_is_a_package"/>
    <%
       ArrayList arliPath = new ArrayList();
@@ -220,11 +206,9 @@
 </mm:node>
 
 
-<%@include file="../includes/descriptionrel_link.jsp"%>
+<jsp:directive.include file="../includes/descriptionrel_link.jsp" />
 
 </div>
-
-<mm:log>a</mm:log>
 <mm:node number="$learnobject" jspvar="nodeLearnObject">
    <%@include file="../includes/component_link.jsp"%>
 </mm:node>
