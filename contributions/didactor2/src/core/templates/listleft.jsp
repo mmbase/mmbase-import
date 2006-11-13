@@ -1,4 +1,5 @@
-<%@ page import = "nl.didactor.component.education.utils.EducationPeopleConnector,java.util.*" %>
+<%@ page import="nl.didactor.component.education.utils.EducationPeopleConnector" 
+%>
       <mm:import id="tmpreferids" reset="true">provider?</mm:import>
       <%
          SortedMap sortmapEducations = new TreeMap();
