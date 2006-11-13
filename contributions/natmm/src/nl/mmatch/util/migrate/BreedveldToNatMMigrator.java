@@ -17,11 +17,12 @@ public class BreedveldToNatMMigrator {
 
   private static final Logger log = Logging.getLoggerInstance(BreedveldToNatMMigrator.class);
 
-  public static String sFolder = BreedveldConfig.rootDir + "BreedveldXML/";
-  // public static String sFolder = "E:/nmm/tmp/";
 
   public static void run() throws Exception{
 
+     String sFolder = BreedveldConfig.rootDir + "BreedveldXML/";
+     MigrateUtil mu = new MigrateUtil();
+     
      log.info("BreedveldToNatMMigrator.run()");
      log.info("Importing files from " + sFolder);
 
@@ -40,24 +41,24 @@ public class BreedveldToNatMMigrator {
      alDeletingFiles.add("style.xml");
      alDeletingFiles.add("typedef.xml"); //is system data
 
-     String sDPosrelContent = readingFile(sFolder + "dposrel.xml");
+     String sDPosrelContent = mu.readingFile(sFolder + "dposrel.xml");
 
      ArrayList alList = getNodesF(sFolder + "list.xml");
 
      ArrayList alPictures = getNodesF(sFolder + "pictures.xml");
-     String sPijlerPageContent = readingFile(sFolder + "pijlerpage.xml");
+     String sPijlerPageContent = mu.readingFile(sFolder + "pijlerpage.xml");
 
      log.info("deleting pictures relation from posrel");
-     String sPosrelContent = readingFile(sFolder + "posrel.xml");
+     String sPosrelContent = mu.readingFile(sFolder + "posrel.xml");
      sPosrelContent = deletingRelation(alList,alPictures,sPosrelContent);
-     String sPoslangContent = readingFile(sFolder + "poslang.xml");
+     String sPoslangContent = mu.readingFile(sFolder + "poslang.xml");
 
-     String sProjecttranslationContent = readingFile(sFolder + "projecttranslation.xml");
+     String sProjecttranslationContent = mu.readingFile(sFolder + "projecttranslation.xml");
 
      log.info("deleting relation site,related,style");
      ArrayList alStyle = getNodesF(sFolder + "style.xml");
      ArrayList alSite = getNodesF(sFolder + "site.xml");
-     String sInsrelContent = readingFile(sFolder + "insrel.xml");
+     String sInsrelContent = mu.readingFile(sFolder + "insrel.xml");
      sInsrelContent = deletingRelation(alSite,alStyle,sInsrelContent);
 
      Iterator itDeletingFiles = alDeletingFiles.iterator();
@@ -94,7 +95,7 @@ public class BreedveldToNatMMigrator {
         }
         alThisDeletedFields.add(fields);
 
-        sContent = readingFile(sFolder + sBuilderName + ".xml");
+        sContent = mu.readingFile(sFolder + sBuilderName + ".xml");
 
         Iterator it1 = alThisDeletedFields.iterator();
         while (it1.hasNext()){
@@ -108,14 +109,14 @@ public class BreedveldToNatMMigrator {
           }
         }
 
-        writingFile(sFolder + sBuilderName + ".xml", sContent);
+       mu.writingFile(sFolder + sBuilderName + ".xml", sContent);
 
       }
 
       //building article-paragraf corresponding;
-      String sArticleContent = readingFile(sFolder + "article.xml");
+      String sArticleContent = mu.readingFile(sFolder + "article.xml");
       ArrayList alArticle = getNodesS(sArticleContent);
-      String sParagrafContent = readingFile(sFolder + "paragraph.xml");
+      String sParagrafContent = mu.readingFile(sFolder + "paragraph.xml");
       ArrayList alParagraf = getNodesS(sParagrafContent);
 
       TreeMap tmArticleParagraf = new TreeMap();
@@ -141,7 +142,7 @@ public class BreedveldToNatMMigrator {
       }
 
       log.info("joining several different language articles into one multilanguage");
-      String sProjectContent = readingFile(sFolder + "project.xml");
+      String sProjectContent = mu.readingFile(sFolder + "project.xml");
       ArrayList alProject = getNodesS(sProjectContent);
 
       TreeMap tmLangs = new TreeMap();
@@ -246,7 +247,7 @@ public class BreedveldToNatMMigrator {
 
       File file = new File(sFolder + "article.xml");
       file.delete();
-      creatingNewXML("article",sArticleAdd);
+      mu.creatingNewXML(sFolder,"article","breedveld",sArticleAdd);
 
       set = tmProjectArticle.entrySet();
       it = set.iterator();
@@ -338,7 +339,7 @@ public class BreedveldToNatMMigrator {
 
       file = new File(sFolder + "paragraph.xml");
       file.delete();
-      creatingNewXML("paragraph",sParagrafAdd);
+      mu.creatingNewXML(sFolder,"paragraph","breedveld",sParagrafAdd);
 
       set = tmNewArtPars.entrySet();
       it = set.iterator();
@@ -371,7 +372,7 @@ public class BreedveldToNatMMigrator {
 
       it = alZichbarContaingBuilders.iterator();
       while(it.hasNext()){
-         treatingZichtbar(sFolder + it.next() + ".xml");
+         treatingZichtbaar(sFolder + it.next() + ".xml",mu);
       }
 
       log.info("renaming fields");
@@ -399,7 +400,7 @@ public class BreedveldToNatMMigrator {
       tmRenamingFields.put("template","title:naam;description:omschrijving");
       tmRenamingFields.put("urls","description:omschrijving;linktext:alt_tekst");
 
-      String sEditwizardsContent = readingFile(sFolder + "editwizards.xml");
+      String sEditwizardsContent = mu.readingFile(sFolder + "editwizards.xml");
 
       log.info("deleting editwizards of deleted objects");
       ArrayList alDelEd = new ArrayList();
@@ -454,7 +455,7 @@ public class BreedveldToNatMMigrator {
         if (sBuilderName.equals("editwizards")){
           sContent = sEditwizardsContent;
         } else {
-            sContent = readingFile(sFolder + sBuilderName + ".xml");
+            sContent = mu.readingFile(sFolder + sBuilderName + ".xml");
         }
         String fields = (String)me.getValue();
         TreeMap tmThisRenamingFields = new TreeMap();
@@ -472,7 +473,7 @@ public class BreedveldToNatMMigrator {
         if (iColonIndex>-1){
           tmThisRenamingFields.put(fields.substring(0,iColonIndex),fields.substring(iColonIndex+1));
         }
-        sContent = renamingFields(sContent, tmThisRenamingFields);
+        sContent = mu.renamingFields(sContent, tmThisRenamingFields);
         if (sBuilderName.equals("editwizards")){
            sEditwizardsContent = sContent;
         }
@@ -497,7 +498,7 @@ public class BreedveldToNatMMigrator {
             iBegIndex = sEditwizardsContent.indexOf("nodepath=" + sBuilderName + "&amp;",iEndIndex);
           }
 
-          writingFile(sFolder + sBuilderName + ".xml",sContent);
+         mu.writingFile(sFolder + sBuilderName + ".xml",sContent);
         }
       }
 
@@ -564,7 +565,7 @@ public class BreedveldToNatMMigrator {
 
       log.info("treating contact.xml to join fields: " +
                "business_phone, mobile and private_phone into telefoonnummer");
-      sContent = readingFile(sFolder + "contact.xml");
+      sContent = mu.readingFile(sFolder + "contact.xml");
       ArrayList alContact = getNodesS(sContent);
       LinkedList llJoiningFields = new LinkedList();
       llJoiningFields.add("business_phone");
@@ -631,24 +632,24 @@ public class BreedveldToNatMMigrator {
       }
 
       sContent = sContent.replace('\u001A','e'); //deleting special symbol
-      writingFile(sFolder + "contact.xml",sContent);
+     mu.writingFile(sFolder + "contact.xml",sContent);
 
       log.info("joining pijler and site into rubriek");
 
-      String sPijlerContent = readingFile(sFolder + "pijler.xml");
+      String sPijlerContent = mu.readingFile(sFolder + "pijler.xml");
       int iBegInfoIndex = sPijlerContent.indexOf("<node number");
       int iEndInfoIndex = sPijlerContent.indexOf("</pijler>");
       sPijlerContent = sPijlerContent.substring(iBegInfoIndex-1,iEndInfoIndex);
       ArrayList alPijler = getNodesS(sPijlerContent);
 
-      String sSiteContent = readingFile(sFolder + "site.xml");
+      String sSiteContent = mu.readingFile(sFolder + "site.xml");
       iBegInfoIndex = sSiteContent.indexOf("<node number");
       iEndInfoIndex = sSiteContent.indexOf("</site>");
       sSiteContent = sSiteContent.substring(iBegInfoIndex-1,iEndInfoIndex);
 
       String sRubriekContent = sPijlerContent + sSiteContent;
 
-      creatingNewXML("rubriek",sRubriekContent);
+      mu.creatingNewXML(sFolder,"rubriek","breedveld",sRubriekContent);
       file = new File(sFolder + "pijler.xml");
       file.delete();
 
@@ -664,7 +665,7 @@ public class BreedveldToNatMMigrator {
 
       log.info("analyzing projecttranslation.xml and adding data into projects.xml");
       TreeMap tmProjectProjecttranlation = new TreeMap();
-      sProjectContent = readingFile(sFolder + "project.xml");
+      sProjectContent = mu.readingFile(sFolder + "project.xml");
       alProject = getNodesS(sProjectContent);
       it = alProject.iterator();
       while (it.hasNext()){
@@ -700,7 +701,7 @@ public class BreedveldToNatMMigrator {
         sProjectContent = addingProject(sProjecttranslationContent,sNodes,sProjectContent,sProjectNumber);
       }
 
-      writingFile(sFolder + "project.xml",sProjectContent);
+     mu.writingFile(sFolder + "project.xml",sProjectContent);
 
       log.info("making changes in renaming files and writing them");
 
@@ -725,11 +726,11 @@ public class BreedveldToNatMMigrator {
         String sOldBuilderName = (String)me.getKey();
         String sNewBuilderName = (String)me.getValue();
         sEditwizardsContent = sEditwizardsContent.replaceAll(sOldBuilderName,sNewBuilderName);
-        sContent = readingFile(sFolder + sOldBuilderName + ".xml");
+        sContent = mu.readingFile(sFolder + sOldBuilderName + ".xml");
         sContent = sContent.replaceAll("<" + sOldBuilderName + " ","<" + sNewBuilderName + " ");
         sContent = sContent.replaceAll("</" + sOldBuilderName + ">","</" + sNewBuilderName + ">");
         file = new File(sFolder + sOldBuilderName + ".xml");
-        writingFile(file,sFolder + sNewBuilderName + ".xml",sContent);
+       mu.writingFile(file,sFolder + sNewBuilderName + ".xml",sContent);
       }
 
       TreeMap tmEditwizardsReplacings = new TreeMap();
@@ -763,13 +764,13 @@ public class BreedveldToNatMMigrator {
          iBegIndex = sEditwizardsContent.indexOf("config/",iEndIndex);
       }
 
-      writingFile(sFolder + "editwizards.xml",sEditwizardsContent);
+     mu.writingFile(sFolder + "editwizards.xml",sEditwizardsContent);
 
       log.info("changing relation page,poslang,list,posrel,images to pagina,posrel,images " +
        "and page,poslang,list,posrel,projectcategory to pagina,posrel,projectcategory" + 
        "and page,poslang,list,readmore,page to pagina1,readmore,pagina2");
       ArrayList alPages = getNodesF(sFolder + "pagina.xml");
-      String sReadmoreContent = readingFile(sFolder + "readmore.xml");
+      String sReadmoreContent = mu.readingFile(sFolder + "readmore.xml");
 
       String sReadmoreAdd = "";
       it = alList.iterator();
@@ -816,7 +817,7 @@ public class BreedveldToNatMMigrator {
                                    "posrel", "parent");
       sPosrelContent = sResultRels[0];
       String sParentContent = sResultRels[1];
-      creatingNewXML("childrel",sParentContent);
+      mu.creatingNewXML(sFolder,"childrel","breedveld",sParentContent);
 
       log.info("changing relation project,posrel,contact to projects,readmore,organisatie");
       sResultRels = movingRelations(alProject, alContact, sPosrelContent,
@@ -833,7 +834,7 @@ public class BreedveldToNatMMigrator {
       alReadmoreTo.add("193");
       sReadmoreContent = deletingRelation(alReadmoreFrom,alReadmoreTo,sReadmoreContent);
 
-      writingFile(sFolder + "readmore.xml",sReadmoreContent);
+     mu.writingFile(sFolder + "readmore.xml",sReadmoreContent);
 
       log.info("changing relation page,related,template to pagina,gebruikt,paginatemplate");
       ArrayList alPaginaTemplate = getNodesF(sFolder + "paginatemplate.xml");
@@ -853,7 +854,7 @@ public class BreedveldToNatMMigrator {
 
       log.info("removing language tag from sContentrelContent");
       sContentrelContent = removingLanguageTag(sContentrelContent);
-      creatingNewXML("contentrel",sContentrelContent);
+      mu.creatingNewXML(sFolder,"contentrel","breedveld",sContentrelContent);
 
       sPosrelAdd += sResultRels[1];
 
@@ -862,7 +863,7 @@ public class BreedveldToNatMMigrator {
       sResultRels = movingRelations(alMenu, alEditwizards, sInsrelContent,
                                    "related", "posrel");
       sInsrelContent = sResultRels[0];
-      writingFile(sFolder + "insrel.xml",sInsrelContent);
+     mu.writingFile(sFolder + "insrel.xml",sInsrelContent);
       sPosrelAdd += sResultRels[1];
 
       log.info("changing relation project,dposrel,project to projects,posrel,projects");
@@ -911,10 +912,10 @@ public class BreedveldToNatMMigrator {
 
 
       sPosrelContent = addingContent(sPosrelContent,"posrel",sPosrelAdd);
-      writingFile(sFolder + "posrel.xml",sPosrelContent);
+     mu.writingFile(sFolder + "posrel.xml",sPosrelContent);
 
       log.info("deleting relations of not exists objetcs from stock.xml");
-      sContent = readingFile(sFolder + "stock.xml");
+      sContent = mu.readingFile(sFolder + "stock.xml");
       ArrayList alStockFrom = new ArrayList(1);
       alStockFrom.add("395");
 
@@ -923,7 +924,7 @@ public class BreedveldToNatMMigrator {
 
       sContent = deletingRelation(alStockFrom,alStockTo,sContent);
 
-      writingFile(sFolder + "stock.xml",sContent);
+     mu.writingFile(sFolder + "stock.xml",sContent);
 
    }
    public static void main(String args[]) throws Exception{
@@ -964,18 +965,6 @@ public class BreedveldToNatMMigrator {
       return al;
    }
 
-   public static String readingFile(String sFileName) throws Exception{
-
-      FileInputStream file = new FileInputStream (sFileName);
-      DataInputStream in = new DataInputStream (file);
-      byte[] b = new byte[in.available ()];
-      in.readFully (b);
-      in.close ();
-      String sResult = new String (b, 0, b.length, "UTF-8");
-
-      return sResult;
-   }
-
    public static String deletingRelation(ArrayList alFrom, ArrayList alTo, String sContent) {
 
      Iterator it = alFrom.iterator();
@@ -999,81 +988,6 @@ public class BreedveldToNatMMigrator {
      }
 
      return sContent;
-   }
-
-   public static void writingFile(String sNewFile, String sAllContent) throws Exception{
-
-   File file = new File(sNewFile);
-   file.delete();
-   file.createNewFile();
-   FileOutputStream fos = new FileOutputStream(sNewFile);
-   OutputStreamWriter osw = new OutputStreamWriter(fos,"UTF-8");
-   BufferedWriter bw = new BufferedWriter(osw);
-   bw.write(sAllContent);
-   bw.close();
-
-   }
-
-   public static String renamingFields(String sContent,TreeMap tmRenamingFields){
-
-      Set set = tmRenamingFields.entrySet();
-      Iterator it = set.iterator();
-
-      while (it.hasNext()){
-         Map.Entry me = (Map.Entry)it.next();
-         if (sContent.indexOf("<" + me.getKey() + ">")>-1){
-            sContent = sContent.replaceAll("<" + me.getKey() + ">","<" + me.getValue() + ">");
-            sContent = sContent.replaceAll("</" + me.getKey() + ">","</" + me.getValue() + ">");
-         }
-      }
-
-      return sContent;
-   }
-
-   public static void writingFile(File file, String sNewFile, String sAllContent) throws Exception{
-
-   file.delete();
-   file = new File(sNewFile);
-   file.createNewFile();
-   FileOutputStream fos = new FileOutputStream(sNewFile);
-   OutputStreamWriter osw = new OutputStreamWriter(fos,"UTF-8");
-   BufferedWriter bw = new BufferedWriter(osw);
-   bw.write(sAllContent);
-   bw.close();
-
-   }
-
-   public static void creatingNewXML(String sBuilderName,String sContent) throws Exception{
-      Calendar cal = Calendar.getInstance();
-      String sToday = "" + cal.get(Calendar.YEAR);
-      if ((cal.get(Calendar.MONTH) + 1)<10){
-         sToday += "0";
-      }
-      sToday += (cal.get(Calendar.MONTH) + 1);
-      if (cal.get(Calendar.DAY_OF_MONTH)<10){
-         sToday += "0";
-      }
-      sToday += cal.get(Calendar.DAY_OF_MONTH);
-      if (cal.get(Calendar.HOUR_OF_DAY)<10){
-          sToday += "0";
-      }
-      sToday += cal.get(Calendar.HOUR_OF_DAY);
-      if (cal.get(Calendar.MINUTE)<10){
-          sToday += "0";
-      }
-      sToday += cal.get(Calendar.MINUTE);
-      if (cal.get(Calendar.SECOND)<10){
-          sToday += "0";
-      }
-      sToday += cal.get(Calendar.SECOND);
-      String sRealContent = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
-         "\n" + "<" + sBuilderName + " exportsource=\"mmbase://127.0.0.1/marian_breedveld/install\"" +
-         " timestamp=\"" + sToday + "\"" + ">" + "\n";
-      sRealContent += sContent + "</" + sBuilderName + ">";
-
-      String sFileName = sFolder + sBuilderName + ".xml";
-      writingFile(sFileName,sRealContent);
-
    }
 
    public static String addingContent (String sContent, String sBuilderName, String sAdd){
@@ -1196,16 +1110,12 @@ public class BreedveldToNatMMigrator {
       return sContent;
    }
 
-   public static void treatingZichtbar(String sFileName) throws Exception{
-      String sContent = readingFile(sFileName);
-      sContent = sContent.replaceAll("<status>Zichtbaar</status>",
-      "<titel_zichtbaar>1</titel_zichtbaar>");
-      sContent = sContent.replaceAll("<status>Verborgen</status>",
-      "<titel_zichtbaar>0</titel_zichtbaar>");
-      sContent = sContent.replaceAll("<status></status>\n\t\t",
-      "");
-      sContent = sContent.replaceAll("<status>-</status>\n\t\t",
-      "");
-      writingFile(sFileName,sContent);
+   public static void treatingZichtbaar(String sFileName, MigrateUtil mu) throws Exception{
+      String sContent = mu.readingFile(sFileName);
+      sContent = sContent.replaceAll("<status>Zichtbaar</status>","<titel_zichtbaar>1</titel_zichtbaar>");
+      sContent = sContent.replaceAll("<status>Verborgen</status>","<titel_zichtbaar>0</titel_zichtbaar>");
+      sContent = sContent.replaceAll("<status></status>\n\t\t","");
+      sContent = sContent.replaceAll("<status>-</status>\n\t\t","");
+      mu.writingFile(sFileName,sContent);
    }
 }

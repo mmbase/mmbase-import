@@ -10,13 +10,16 @@ import nl.leocms.applications.NatNHConfig;
 
 public class NatNHToNatMMigrator {
 
-   private static final Logger log = Logging.getLoggerInstance(NatNHToNatMMigrator.class);
-   public static TreeMap tmRenamingFields = new TreeMap();
-   public static ArrayList alDeletingFields = new ArrayList();
-   public static String sFolder = NatNHConfig.rootDir + "MicroSites/";
+  private static final Logger log = Logging.getLoggerInstance(NatNHToNatMMigrator.class);
 
 	public static void run() throws Exception {
-		try{
+	
+    TreeMap tmRenamingFields = new TreeMap();
+    ArrayList alDeletingFields = new ArrayList();
+    String sFolder = NatNHConfig.rootDir + "MicroSites/";
+    MigrateUtil mu = new MigrateUtil();
+      
+    try{
 	
 			tmRenamingFields.put("title", "titel");
 			tmRenamingFields.put("body", "omschrijving");
@@ -41,7 +44,7 @@ public class NatNHToNatMMigrator {
 			//adding portal node into websites (then it will be rubriek)
 			String sFileName = sFolder + "portals.xml";
 			File file = new File(sFileName);
-			String sAllContent = readingFile(sFileName);
+			String sAllContent = mu.readingFileRemoveFields(sFileName,alDeletingFields);
 			int iIndBegin = sAllContent.indexOf("<node number");
 			int iIndEnd = sAllContent.indexOf("</node>") + 7;
 			if (iIndBegin > -1) {
@@ -51,12 +54,11 @@ public class NatNHToNatMMigrator {
 			if (iIndexBegAlias > -1) {
 				int iIndexEndAlias = sAllContent.indexOf(">", iIndexBegAlias);
 				sAllContent = sAllContent.substring(0, iIndexBegAlias - 1) +
-					sAllContent.substring(iIndexEndAlias);
+				sAllContent.substring(iIndexEndAlias);
 			}
 	
 			//getting portal number
-			String sPortalNumber = (String) getNodes(sFolder + "portals.xml").
-				toArray()[0];
+			String sPortalNumber = (String)  mu.getNodesFromFile(sFolder + "portals.xml").toArray()[0];
 	
 			file.delete(); //deleting portal.xml
 	
@@ -66,16 +68,16 @@ public class NatNHToNatMMigrator {
 	
 			ArrayList alWebsites = new ArrayList();
 			if (file.exists()) {
-				alWebsites = getNodes(sFileName);
+				alWebsites =  mu.getNodesFromFile(sFileName);
 			}
 	
-			String sAllWebsitesContent = readingFile(sFileName);
+			String sAllWebsitesContent = mu.readingFileRemoveFields(sFileName,alDeletingFields);
 			sAllWebsitesContent = sAllWebsitesContent.substring(0,
 			sAllWebsitesContent.indexOf("</websites>") - 1);
 			sAllWebsitesContent += sAllContent + "</websites>";
 			sAllWebsitesContent = sAllWebsitesContent.replaceAll("menuname","naam_eng");
 	
-			writingFile(file, sFileName, sAllWebsitesContent);
+			mu.writingFile(file, sFileName, sAllWebsitesContent);
 	
 			//treating files which we want to rename and change fields
 			TreeMap tmRenamingFiles = new TreeMap();
@@ -95,7 +97,7 @@ public class NatNHToNatMMigrator {
 				sFileName = sFolder + me.getKey() + ".xml";
 				file = new File(sFileName);
 				if (file.exists()) {
-					sAllContent = readingFile(sFileName);
+					sAllContent = mu.readingFileRemoveFields(sFileName,alDeletingFields);
 					if (!me.getKey().equals("jumpers")){
 						sAllContent = sAllContent.replaceAll("<" + me.getKey(),
 							"<" + me.getValue());
@@ -128,17 +130,17 @@ public class NatNHToNatMMigrator {
 						sAllContent = sAllContent.replaceAll("</node>",
 							"\t<sitestatname>natuurherstel</sitestatname>\n\t</node>");
 					}
-					sAllContent = changingFieldsNames(sAllContent);
-					writingFile(file, sFolder + me.getValue() + ".xml", sAllContent);
+					sAllContent = mu.renamingFields(sAllContent,tmRenamingFields);
+					mu.writingFile(file, sFolder + me.getValue() + ".xml", sAllContent);
 				}
 			}
 	
 			//renaming fields in images.xml
 			sFileName = sFolder + "images.xml";
 			file = new File(sFileName);
-			sAllContent = readingFile(sFileName);
-			sAllContent = changingFieldsNames(sAllContent);
-			writingFile(file, sFileName, sAllContent);
+			sAllContent = mu.readingFileRemoveFields(sFileName,alDeletingFields);
+			sAllContent = mu.renamingFields(sAllContent,tmRenamingFields);
+			mu.writingFile(file, sFileName, sAllContent);
 	
 	
 			//deleting data that we do not want to migrate
@@ -158,7 +160,7 @@ public class NatNHToNatMMigrator {
 				file = new File(sFileName);
 				// building list of nodes to be deleted
 				if (file.exists()) {
-					alDeletedNodes.addAll(getNodes(sFileName));
+					alDeletedNodes.addAll(mu.getNodesFromFile(sFileName));
 				}
 				file.delete();
 			}
@@ -168,12 +170,12 @@ public class NatNHToNatMMigrator {
 			file = new File(sFileName);
 			ArrayList alPaginas = new ArrayList();
 			if (file.exists()) {
-				alPaginas = getNodes(sFileName);
+				alPaginas =  mu.getNodesFromFile(sFileName);
 			}
 	
 			sFileName = sFolder + "posrel.xml";
 			file = new File(sFileName);
-			sAllContent = readWholeFile(sFileName,alDeletedNodes);
+			sAllContent = mu.readWholeFile(sFileName,alDeletedNodes);
 			String sContentAllPosrel = sAllContent;
 	
 			Iterator itWebsites = alWebsites.iterator();
@@ -207,8 +209,8 @@ public class NatNHToNatMMigrator {
 			// and artikel.intro field of the article related to rubriek as value
 	
 			TreeMap tmPaginaArticle = new TreeMap();
-			ArrayList alArticles = getNodes(sFolder + "artikel.xml");
-			String sArtikelContent = readingFile(sFolder + "artikel.xml");
+			ArrayList alArticles =  mu.getNodesFromFile(sFolder + "artikel.xml");
+			String sArtikelContent = mu.readingFileRemoveFields(sFolder + "artikel.xml",alDeletingFields);
 	
 			itWebsites = alWebsites.iterator();
 	
@@ -238,7 +240,7 @@ public class NatNHToNatMMigrator {
 	
 			sFileName = sFolder + "pagina.xml";
 			file = new File(sFileName);
-			String sPaginaContent = readingFile(sFileName);
+			String sPaginaContent = mu.readingFileRemoveFields(sFileName,alDeletingFields);
 	
 			set = tmPaginaArticle.entrySet();
 			Iterator it = set.iterator();
@@ -254,7 +256,7 @@ public class NatNHToNatMMigrator {
 					 sPaginaContent.substring(iEndNodeIndex);
 			}
 	
-			writingFile(file, sFileName, sPaginaContent);
+			mu.writingFile(file, sFileName, sPaginaContent);
 	
 			//replacing relations page->page to rubriek->page
 			set = tmPaginaRubriek.entrySet();
@@ -304,8 +306,8 @@ public class NatNHToNatMMigrator {
 				relations between pages and articles*/
 	
 			String sContentrelContent = "";
-			ArrayList alPages = getNodes(sFolder + "pagina.xml");
-			//ArrayList alArticles = getNodes(sFolder + "artikel.xml");
+			ArrayList alPages =  mu.getNodesFromFile(sFolder + "pagina.xml");
+			//ArrayList alArticles =  mu.getNodesFromFile(sFolder + "artikel.xml");
 			TreeMap tmDeletedNodesFromPosrelXMLPositions = new TreeMap();
 	
 			String sPosrelContent = sContentAllPosrel;
@@ -346,15 +348,13 @@ public class NatNHToNatMMigrator {
 					else {
 						sPosrelContent = "";
 					}
-					iPNPos = sPosrelContent.indexOf("snumber=\"" + sPageNumber +
-															  "\"");
+					iPNPos = sPosrelContent.indexOf("snumber=\"" + sPageNumber + "\"");
 				}
 				sPosrelContent = sContentAllPosrel;
 			}
 	
-			sContentrelContent = sContentrelContent.replaceAll("posrel",
-				"contentrel");
-			createNewXML("contentrel", sContentrelContent);
+			sContentrelContent = sContentrelContent.replaceAll("posrel","contentrel");
+			mu.creatingNewXML(sFolder,"contentrel","natmmnh", sContentrelContent);
 	
 			/* We need to create childrel.xml file and add there information about
 				relations between rubrieks */
@@ -365,8 +365,7 @@ public class NatNHToNatMMigrator {
 			itWebsites = alWebsites.iterator();
 			while (itWebsites.hasNext()) {
 				String sWebsiteNumber = (String) itWebsites.next();
-				int iPNPos = sPosrelContent.indexOf("dnumber=\"" + sWebsiteNumber +
-																"\"");
+				int iPNPos = sPosrelContent.indexOf("dnumber=\"" + sWebsiteNumber +	"\"");
 				while (iPNPos != -1) {
 					int iRelatedNodeBegIndex = sPosrelContent.indexOf("snumber=\"",
 						iPNPos - 20) + 9;
@@ -399,7 +398,7 @@ public class NatNHToNatMMigrator {
 				sPosrelContent = sContentAllPosrel;
 				sChildrelContent = sChildrelContent.replaceAll("posrel", "parent");
 			}
-			createNewXML("childrel", sChildrelContent);
+			mu.creatingNewXML(sFolder,"childrel","natmmnh",sChildrelContent);
 	
 			//we need to delete from posrel.xml records migrated to contentrel.xml and childrel.xml
 	
@@ -420,10 +419,10 @@ public class NatNHToNatMMigrator {
 			}
 	
 			//renaming relation between paginas and paginatemplates from related to gebruikt
-			ArrayList alTemplates = getNodes(sFolder + "paginatemplate.xml");
+			ArrayList alTemplates =  mu.getNodesFromFile(sFolder + "paginatemplate.xml");
 			sFileName = sFolder + "insrel.xml";
 			file = new File(sFileName);
-			sAllContent = readingFile(sFileName, alDeletedNodes);
+			sAllContent = mu.readingFile(sFileName, alDeletedNodes);
 			Iterator itTemplates = alTemplates.iterator();
 			while (itTemplates.hasNext()){
 				String sNode = (String)itTemplates.next();
@@ -433,12 +432,12 @@ public class NatNHToNatMMigrator {
 				}
 			}
 			//writing changed insrel.xml
-			writingFile(file, sFileName, sAllContent);
+			mu.writingFile(file, sFileName, sAllContent);
 	
 			//writing changed posrel.xml
 			sFileName = sFolder + "posrel.xml";
 			file = new File(sFileName);
-			writingFile(file, sFileName, sContentAllPosrel);
+			mu.writingFile(file, sFileName, sContentAllPosrel);
 	
 		} catch (Exception e){
 			log.info("Changing xml files was already done");
@@ -446,173 +445,4 @@ public class NatNHToNatMMigrator {
 
    }
 
-   public static String changingFieldsNames(String sContent){
-
-      Set set = tmRenamingFields.entrySet();
-      Iterator it = set.iterator();
-
-      while (it.hasNext()){
-         Map.Entry me = (Map.Entry)it.next();
-         if (sContent.indexOf("<" + me.getKey() + ">")>-1){
-            sContent = sContent.replaceAll("<" + me.getKey() + ">","<" + me.getValue() + ">");
-            sContent = sContent.replaceAll("</" + me.getKey() + ">","</" + me.getValue() + ">");
-         }
-      }
-
-      return sContent;
-   }
-
-   public static String readWholeFile(String sFileName,ArrayList alRemovingNodes) throws Exception{
-
-      FileInputStream file = new FileInputStream (sFileName);
-      DataInputStream in = new DataInputStream (file);
-      byte[] b = new byte[in.available ()];
-      in.readFully (b);
-      in.close ();
-      String sResult = new String (b, 0, b.length, "Cp850");
-      Iterator itRemovingNodes = alRemovingNodes.iterator();
-      while (itRemovingNodes.hasNext()) {
-         String sNextNode = (String) itRemovingNodes.next();
-         int iNIndex = sResult.indexOf("number=\"" + sNextNode + "\"");
-         while (iNIndex>-1){
-            while (sResult.substring(iNIndex-1,iNIndex-1).equals(" ")){
-               iNIndex = sResult.indexOf("number=\"" + sNextNode + "\"");
-            }
-            int iNodeBegIndex = sResult.indexOf("<node",iNIndex-65);
-            int iNodeEndIndex = sResult.indexOf("</node>",iNIndex)+7;
-
-            sResult = sResult.substring(0,iNodeBegIndex-1) + sResult.substring(iNodeEndIndex+1);
-            iNIndex = sResult.indexOf("number=\"" + sNextNode + "\"");
-         }
-      }
-      while (sResult.indexOf("\n\n\n")>-1){
-         sResult = sResult.replaceAll("\n\n\n","\n\n");
-      }
-      return sResult;
-   }
-
-   public static String readingFile(String sFileName) throws Exception{
-
-      FileInputStream fin = new FileInputStream(sFileName);
-      InputStreamReader isr = new InputStreamReader(fin,"UTF-8");
-      BufferedReader br = new BufferedReader(isr);
-      String sAllContent = "";
-      String sOneString;
-      while ( (sOneString = br.readLine()) != null) {
-         Iterator itDeletingFields = alDeletingFields.iterator();
-         boolean bIsRemovingString = false;
-         while (itDeletingFields.hasNext()) {
-            if (sOneString.indexOf("<" + (String) itDeletingFields.next() + ">") > -1) {
-               bIsRemovingString = true;
-            }
-         }
-         if ((sFileName.indexOf("websites.xml")>-1)&&(sOneString.indexOf("<expiredate>") > -1)){
-            bIsRemovingString = true;
-         }
-         if (!bIsRemovingString) {
-            sAllContent += sOneString + "\n";
-         }
-      }
-      br.close();
-      return sAllContent;
-
-   }
-
-   public static String readingFile(String sFileName, ArrayList alRemovingNodes) throws Exception{
-
-      FileInputStream fin = new FileInputStream(sFileName);
-      InputStreamReader isr = new InputStreamReader(fin,"UTF-8");
-      BufferedReader br = new BufferedReader(isr);
-
-      String sAllContent = "";
-      String sOneString;
-      while ( (sOneString = br.readLine()) != null) {
-            Iterator itRemovingNodes = alRemovingNodes.iterator();
-            boolean bIsRemovingString = false;
-            while (itRemovingNodes.hasNext()) {
-               String sNextNode = (String) itRemovingNodes.next();
-               if ( (sOneString.indexOf("snumber=\"" + sNextNode + "\"") > -1) ||
-                    (sOneString.indexOf("dnumber=\"" + sNextNode + "\"") > -1) ){
-                        sOneString = br.readLine();
-                        sOneString = br.readLine();
-                        bIsRemovingString = true;
-               }
-            }
-            if (!bIsRemovingString) {
-               sAllContent += sOneString + "\n";
-            }
-         }
-
-      br.close();
-
-      return sAllContent;
-
-   }
-
-
-   public static ArrayList getNodes (String sFileName) throws Exception{
-
-      ArrayList al = new ArrayList();
-
-      FileReader fr = new FileReader(sFileName);
-      BufferedReader br = new BufferedReader(fr);
-      String sOneString;
-      while ( (sOneString = br.readLine()) != null) {
-         if (sOneString.indexOf("<node number=")>-1) {
-            al.add(sOneString.substring(sOneString.indexOf("<node number=\"") + 14,
-                   sOneString.indexOf("\" ")));
-            }
-         }
-      fr.close();
-
-      return al;
-   }
-
-   public static void writingFile(File file, String sNewFile, String sAllContent) throws Exception{
-
-      file.delete();
-      file = new File(sNewFile);
-      file.createNewFile();
-      FileOutputStream fos = new FileOutputStream(sNewFile);
-      OutputStreamWriter osw = new OutputStreamWriter(fos,"UTF-8");
-      BufferedWriter bw = new BufferedWriter(osw);
-      bw.write(sAllContent);
-      bw.close();
-
-   }
-
-   public static void createNewXML(String sFileName,String sContent) throws Exception{
-      Calendar cal = Calendar.getInstance();
-      String sToday = "" + cal.get(Calendar.YEAR);
-      if ((cal.get(Calendar.MONTH) + 1)<10){
-         sToday += "0";
-      }
-      sToday += (cal.get(Calendar.MONTH) + 1);
-      if (cal.get(Calendar.DAY_OF_MONTH)<10){
-         sToday += "0";
-      }
-      sToday += cal.get(Calendar.DAY_OF_MONTH);
-      if (cal.get(Calendar.HOUR_OF_DAY)<10){
-          sToday += "0";
-      }
-      sToday += cal.get(Calendar.HOUR_OF_DAY);
-      if (cal.get(Calendar.MINUTE)<10){
-          sToday += "0";
-      }
-      sToday += cal.get(Calendar.MINUTE);
-      if (cal.get(Calendar.SECOND)<10){
-          sToday += "0";
-      }
-      sToday += cal.get(Calendar.SECOND);
-      String sRealContent = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
-         "\n" + "<" + sFileName + " exportsource=\"mmbase://127.0.0.1/natmmnh/install\"" +
-         " timestamp=\"" + sToday + "\"" + ">" + "\n";
-      sRealContent += sContent + "</" + sFileName + ">";
-
-      sFileName = sFolder + sFileName + ".xml";
-      File file = new File(sFileName);
-
-      writingFile(file,sFileName,sRealContent);
-
-   }
 }
