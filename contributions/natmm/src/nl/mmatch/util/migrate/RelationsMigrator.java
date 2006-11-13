@@ -19,25 +19,23 @@ public class RelationsMigrator {
 
    private static final Logger log = Logging.getLoggerInstance(RelationsMigrator.class);
 
-   public static String sFolder = NMIntraConfig.incomingDir + "NMIntraXML/";
-   // public static String sFolder = "E:/nmm/tmp/";
-
    public static void run() throws Exception{
 
+      String sFolder = NMIntraConfig.incomingDir + "NMIntraXML/";
+     
       log.info("RelationsMigrator.run()");
       log.info("Importing files from " + sFolder);
 
-      NMIntraToNatMMigrator mmm = new NMIntraToNatMMigrator();
-      mmm.run();
-
+      MigrateUtil mu = new MigrateUtil();
+      
       TreeMap tmAllRelations = new TreeMap();
 
       log.info("treating phaserel.xml");
-      String sPhaserelContent = mmm.readingFile(sFolder + "phaserel.xml");
+      String sPhaserelContent = mu.readingFile(sFolder + "phaserel.xml");
       sPhaserelContent = sPhaserelContent.replaceAll("&","&amp;");
 
       log.info("Changing relation page-discountrel-article to pagina-rolerel-artikel");
-      String sDiscountrelContent = mmm.readingFile(sFolder + "discountrel.xml");
+      String sDiscountrelContent = mu.readingFile(sFolder + "discountrel.xml");
       int iBegNodeIndex = sDiscountrelContent.indexOf("<node");
       int iInterimIndex = sDiscountrelContent.indexOf("owner=\"admin\"") + 13;
       int iSNBegIndex = sDiscountrelContent.indexOf("snumber>");
@@ -55,20 +53,20 @@ public class RelationsMigrator {
 
 
       log.info("deleting authrel relation");
-      String sInsrelContent = mmm.readingFile(sFolder + "insrel.xml");
-      sInsrelContent = mmm.deletingRelation(sInsrelContent, "authrel");
+      String sInsrelContent = mu.readingFile(sFolder + "insrel.xml");
+      sInsrelContent = mu.deletingRelation(sInsrelContent, "authrel");
 
       log.info("Changing relation page-dreadmore-article to pagina-readmore-artikel");
       log.info("Changing relation page-dreadmore-page to pagina-readmore-pagina");
-      String sReadmoreContent = mmm.readingFile(sFolder + "readmore.xml");
+      String sReadmoreContent = mu.readingFile(sFolder + "readmore.xml");
       sReadmoreContent = sReadmoreContent.replaceAll("dreadmore", "readmore");
       sReadmoreContent = sReadmoreContent.replaceAll("unidirectional",
          "bidirectional");
 
       log.info("changing relation page-related-template to pagina-gebruikt-paginatemplate");
-      ArrayList alPagina = getNodes(sFolder + "pagina.xml");
-      ArrayList alPaginaTemplate = getNodes(sFolder + "paginatemplate.xml");
-      sInsrelContent = mmm.movingRelations(alPagina, alPaginaTemplate, sInsrelContent,
+      ArrayList alPagina =  mu.getNodesFromFile(sFolder + "pagina.xml");
+      ArrayList alPaginaTemplate =  mu.getNodesFromFile(sFolder + "paginatemplate.xml");
+      sInsrelContent = mu.movingRelations(alPagina, alPaginaTemplate, sInsrelContent,
                                        "gebruikt");
 
       log.info("deleting editwizards of deleted objects");
@@ -81,7 +79,7 @@ public class RelationsMigrator {
 
       ArrayList alDelRel = new ArrayList();
 
-      String sEditwizardsContent = mmm.readingFile(sFolder + "editwizards.xml");
+      String sEditwizardsContent = mu.readingFile(sFolder + "editwizards.xml");
       Iterator it = alDelEd.iterator();
       while (it.hasNext()){
          String sBuilderName = (String)it.next();
@@ -97,14 +95,14 @@ public class RelationsMigrator {
       }
 
       file = new File (sFolder + "editwizards.xml");
-      mmm.writingFile(file,sFolder + "editwizards.xml",sEditwizardsContent);
+      mu.writingFile(file,sFolder + "editwizards.xml",sEditwizardsContent);
 
 
 
       log.info("deleting relation of deleted editwizards from posrel.xml");
 
       it = alDelRel.iterator();
-      String sPosrelContent = mmm.readingFile(sFolder + "posrel.xml");
+      String sPosrelContent = mu.readingFile(sFolder + "posrel.xml");
       while (it.hasNext()) {
          String sNodeNumber = (String) it.next();
          int iDNIndex = sPosrelContent.indexOf("dnumber=\"" + sNodeNumber + "\"");
@@ -117,9 +115,9 @@ public class RelationsMigrator {
 
       log.info("changing relation users-posrel-menu to users-gebruikt-menu");
 
-      ArrayList alUsers = getNodes(sFolder + "users.xml");
-      ArrayList alMenu = getNodes(sFolder + "menu.xml");
-      String [] sResultRel = mmm.movingRelations(alUsers, alMenu, sPosrelContent,
+      ArrayList alUsers =  mu.getNodesFromFile(sFolder + "users.xml");
+      ArrayList alMenu =  mu.getNodesFromFile(sFolder + "menu.xml");
+      String [] sResultRel = mu.movingRelations(alUsers, alMenu, sPosrelContent,
                                    "posrel", "gebruikt");
       sPosrelContent = sResultRel[0];
       String sRelatedAdd = sResultRel[1];
@@ -131,83 +129,83 @@ public class RelationsMigrator {
             sRelatedAdd.substring(iEndPosIndex);
          iBegPosIndex = sRelatedAdd.indexOf("<pos>");
       }
-      sInsrelContent = mmm.addingContent(sInsrelContent, "insrel", sRelatedAdd);
+      sInsrelContent = mu.addingContent(sInsrelContent, "insrel", sRelatedAdd);
 
       log.info("changing relation page-posrel-article to pagina-contentrel-artikel");
-      ArrayList alArtikel = getNodes(sFolder + "artikel.xml");
-      sResultRel = mmm.movingRelations(alPagina, alArtikel, sPosrelContent,
+      ArrayList alArtikel =  mu.getNodesFromFile(sFolder + "artikel.xml");
+      sResultRel = mu.movingRelations(alPagina, alArtikel, sPosrelContent,
                                    "posrel", "contentrel");
       sPosrelContent = sResultRel[0];
       String sContentrelContent = sResultRel[1];
 
       log.info("changing relation rubriek-posrel-images to rubriek-contentrel-images");
-      ArrayList alRubriek = getNodes(sFolder + "rubriek.xml");
-      ArrayList alImages = getNodes(sFolder + "images.xml");
-      sResultRel = mmm.movingRelations(alRubriek, alImages, sPosrelContent,
+      ArrayList alRubriek =  mu.getNodesFromFile(sFolder + "rubriek.xml");
+      ArrayList alImages =  mu.getNodesFromFile(sFolder + "images.xml");
+      sResultRel = mu.movingRelations(alRubriek, alImages, sPosrelContent,
                                    "posrel", "contentrel");
       sPosrelContent = sResultRel[0];
       sContentrelContent += sResultRel[1];
 
       log.info("changing relation employees-posrel-page to medewerekers-contentrel-pagina");
-      ArrayList alMedewerkers = getNodes(sFolder + "medewerkers.xml");
-      sResultRel = mmm.movingRelations(alMedewerkers, alPagina, sPosrelContent,
+      ArrayList alMedewerkers =  mu.getNodesFromFile(sFolder + "medewerkers.xml");
+      sResultRel = mu.movingRelations(alMedewerkers, alPagina, sPosrelContent,
                                    "posrel", "contentrel");
       sPosrelContent = sResultRel[0];
       sContentrelContent += sResultRel[1];
 
       log.info("changing relation page-posrel-items to pagina-lijstcontentrel-linklijst");
-      ArrayList alLinklijst = getNodes(sFolder + "linklijst.xml");
-      sResultRel = mmm.movingRelations(alPagina, alLinklijst, sPosrelContent,
+      ArrayList alLinklijst =  mu.getNodesFromFile(sFolder + "linklijst.xml");
+      sResultRel = mu.movingRelations(alPagina, alLinklijst, sPosrelContent,
                                    "posrel", "lijstcontentrel");
       sPosrelContent = sResultRel[0];
       String sLijstcontentrelContent = sResultRel[1];
 
       log.info("changing relation items-posrel-exturls to linklijst-posrel-link");
-      ArrayList alLink = getNodes(sFolder + "link.xml");
-      sResultRel = mmm.movingRelations(alLinklijst, alLink, sPosrelContent,
+      ArrayList alLink =  mu.getNodesFromFile(sFolder + "link.xml");
+      sResultRel = mu.movingRelations(alLinklijst, alLink, sPosrelContent,
                                    "posrel", "lijstcontentrel");
       sPosrelContent = sResultRel[0];
       sLijstcontentrelContent += sResultRel[1];
 
       log.info("deleting relation items-related-style");
-      ArrayList alStyle = getNodes(sFolder + "style.xml");
-      sInsrelContent = mmm.deletingRelation(alLinklijst, alStyle, sInsrelContent);
+      ArrayList alStyle =  mu.getNodesFromFile(sFolder + "style.xml");
+      sInsrelContent = mu.deletingRelation(alLinklijst, alStyle, sInsrelContent);
 
       log.info("changing relation page-posrel-teasers to pagina-rolerel-teaser");
-      ArrayList alTeaser = getNodes(sFolder + "teaser.xml");
-      sResultRel = mmm.movingRelations(alPagina, alTeaser, sPosrelContent,
+      ArrayList alTeaser =  mu.getNodesFromFile(sFolder + "teaser.xml");
+      sResultRel = mu.movingRelations(alPagina, alTeaser, sPosrelContent,
                                    "posrel", "rolerel");
       sPosrelContent = sResultRel[0];
       sRolerelAdd += sResultRel[1];
 
       log.info("changing relation teaser-posrel-link to teaser-readmore-link");
-      sResultRel = mmm.movingRelations(alTeaser, alLink, sPosrelContent,
+      sResultRel = mu.movingRelations(alTeaser, alLink, sPosrelContent,
                              "posrel", "readmore");
       sPosrelContent = sResultRel[0];
       String sReadmoreAdd = sResultRel[1];
 
       log.info("changing relation page-posrel-vacature to pagina-contentrel-vacature");
-      ArrayList alVacature = getNodes(sFolder + "vacature.xml");
-      sResultRel = mmm.movingRelations(alPagina, alVacature, sPosrelContent,
+      ArrayList alVacature =  mu.getNodesFromFile(sFolder + "vacature.xml");
+      sResultRel = mu.movingRelations(alPagina, alVacature, sPosrelContent,
                                    "posrel", "contentrel");
       sPosrelContent = sResultRel[0];
       sContentrelContent += sResultRel[1];
 
       log.info("changing relation rubriek-posrel-rubriek to rubriek-parent-rubriek");
-      String [] sResultParRel = mmm.movingRelations(alRubriek, alRubriek, sPosrelContent,
+      String [] sResultParRel = mu.movingRelations(alRubriek, alRubriek, sPosrelContent,
                                    "posrel", "parent");
       sPosrelContent = sResultParRel[0];
       String sParentAdd = sResultParRel[1];
 
       log.info("changing relation pagina-posrel-ads to pagina-contentrel-ads");
-      ArrayList alAds = getNodes(sFolder + "ads.xml");
-      String [] sResultPosRel = mmm.movingRelations(alPagina, alAds, sPosrelContent,
+      ArrayList alAds =  mu.getNodesFromFile(sFolder + "ads.xml");
+      String [] sResultPosRel = mu.movingRelations(alPagina, alAds, sPosrelContent,
                                    "posrel", "contentrel");
       sPosrelContent = sResultPosRel[0];
       sContentrelContent += sResultPosRel[1];
 
       log.info("changing relation page-posrel-employees-related-mmbaseuser to pagina-rolerel-user");
-      sResultRel = mmm.movingRelations(alPagina, alMedewerkers, sPosrelContent,
+      sResultRel = mu.movingRelations(alPagina, alMedewerkers, sPosrelContent,
                                    "posrel", "rolerel");
       sPosrelContent = sResultRel[0];
       sRolerelAdd += sResultRel[1];
@@ -249,7 +247,7 @@ public class RelationsMigrator {
       }
 
       log.info("changing relation pijler(site)-posrel-employees-related-mmbaseuser to rubriek-rolerel-user");
-      sResultRel = mmm.movingRelations(alRubriek, alMedewerkers, sPosrelContent,
+      sResultRel = mu.movingRelations(alRubriek, alMedewerkers, sPosrelContent,
                                    "posrel", "rolerel");
       sPosrelContent = sResultRel[0];
       sRolerelAdd += sResultRel[1];
@@ -264,12 +262,12 @@ public class RelationsMigrator {
             "dnumber=\"" + sNewNode + "\"");
       }
 
-      String sRolerelContent = mmm.readingFile(sFolder + "rolerel.xml");
+      String sRolerelContent = mu.readingFile(sFolder + "rolerel.xml");
 
-      sRolerelContent = mmm.addingContent(sRolerelContent, "rolerel", sRolerelAdd);
-      sReadmoreContent = mmm.addingContent(sReadmoreContent, "readmore", sReadmoreAdd);
-      String sParentContent = mmm.readingFile(sFolder + "childrel.xml");
-      sParentContent = mmm.addingContent(sParentContent,"childrel",sParentAdd);
+      sRolerelContent = mu.addingContent(sRolerelContent, "rolerel", sRolerelAdd);
+      sReadmoreContent = mu.addingContent(sReadmoreContent, "readmore", sReadmoreAdd);
+      String sParentContent = mu.readingFile(sFolder + "childrel.xml");
+      sParentContent = mu.addingContent(sParentContent,"childrel",sParentAdd);
 
       tmAllRelations.put("childrel", sParentContent);
       tmAllRelations.put("contentrel", sContentrelContent);
@@ -289,11 +287,11 @@ public class RelationsMigrator {
          String sBuilderName = (String) me.getKey();
          if ( (sBuilderName.equals("contentrel")) ||
              (sBuilderName.equals("lijstcontentrel")) ) {
-            mmm.creatingNewXML(sBuilderName, sContent);
+            mu.creatingNewXML(sFolder, sBuilderName,"intranet", sContent);
          }
          else {
             file = new File(sFolder + sBuilderName + ".xml");
-            mmm.writingFile(file, sFolder + sBuilderName + ".xml", sContent);
+            mu.writingFile(file, sFolder + sBuilderName + ".xml", sContent);
          }
 
       }
