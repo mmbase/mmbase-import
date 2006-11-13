@@ -1,8 +1,11 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<mm:content postprocessor="reducespace" expires="0">
-<mm:cloud method="delegate" jspvar="cloud">
-<%@include file="/shared/setImports.jsp" %>
+<%@page buffer="300kb"
+%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di"
+%><mm:content postprocessor="none" expires="0">
+<mm:log>0</mm:log>
+<mm:cloud method="asis">
+  <jsp:directive.include file="/shared/setImports.jsp" />
+<mm:log>1</mm:log>
   <mm:node referid="provider">
     <mm:countrelations type="flashpages" write="false">
         <mm:islessthan value="1">
@@ -66,115 +69,67 @@
         %>
 	<mm:relatednodes type="attachments" role="related">
 		<h3><mm:field name="title"/></h3>
-
      	<p>
-
       	<i><mm:field name="description" escape="inline"/></i><br>
-
       	<a href="<mm:attachment/>"><img src="<mm:treefile page="/education/gfx/attachment.gif" objectlist="$includePath" />" border="0" title="Download <mm:field name="title"/>" alt="Download <mm:field name="title"/>"></a>
-
     	</p>
     </mm:relatednodes>
   	<div class="audiotapes">
-
     <mm:relatednodes type="audiotapes" role="posrel" orderby="posrel.pos">
-
         <h3><mm:field name="title"/></h3>
-
       	<p>
-
-        <i><mm:field name="subtitle"/></i>
-
+          <i><mm:field name="subtitle"/></i>
       	</p>
-
-   		<i><mm:field name="intro" escape="p"/></i>
-
-      	<p>
-
-      	<mm:field name="body" escape="inline"/><br>
-
-      	<a href="<mm:field name="url" />"><img src="<mm:treefile page="/education/gfx/audio.gif" objectlist="$includePath" />" border="0" title="Beluister <mm:field name="title" />" alt="Beluister <mm:field name="title" />"></a></b>
-
+        <i><mm:field name="intro" escape="p"/></i>
+        <p>
+          <mm:field name="body" escape="inline"/><br>
+          <a href="<mm:field name="url" />"><img src="<mm:treefile page="/education/gfx/audio.gif" objectlist="$includePath" />" border="0" title="Beluister <mm:field name="title" />" alt="Beluister <mm:field name="title" />"></a></b>
       	</p>
-
- 	</mm:relatednodes>
-
+      </mm:relatednodes>
   	</div>
-  
-  
+
    <div class="videotapes">
-
     <mm:relatednodes type="videotapes" role="posrel" orderby="posrel.pos">
-
       <p>
-
         <h3><mm:field name="title"/></h3>
-
         <i><mm:field name="subtitle"/></i>
-
       </p>
-
       <i><mm:field name="intro" escape="p"/></i>
-
       <p>
-
-      <mm:field name="body" escape="inline"/><br>
-
-     <a href="<mm:field name="url" />"><img src="<mm:treefile page="/education/gfx/video.gif" objectlist="$includePath" />" border="0" title="Bekijk <mm:field name="title" />" alt="Bekijk <mm:field name="title" />"></a>
-
+        <mm:field name="body" escape="inline"/><br>
+        <a href="<mm:field name="url" />"><img src="<mm:treefile page="/education/gfx/video.gif" objectlist="$includePath" />" border="0" title="Bekijk <mm:field name="title" />" alt="Bekijk <mm:field name="title" />"></a>
       </p>
-
     </mm:relatednodes>
-   
    </div>
-   
-   
-   
+
     <div class="urls">
-    
-    <mm:relatednodes type="urls" role="posrel" orderby="posrel.pos">
+      <mm:relatednodes type="urls" role="posrel" orderby="posrel.pos">
+        <mm:field name="showtitle">
+          <mm:compare value="1">
+            <h3><mm:field name="name"/></h3>
+          </mm:compare>
+        </mm:field>
+        <p>
+          <i><mm:field name="description" escape="inline"/></i><br/>
+          <a href="<mm:field name="url"/>" target="_blank"><mm:field name="url"/></a>
+        </p>
+      </mm:relatednodes>
+    </div>
 
-      <mm:field name="showtitle">
-        <mm:compare value="1">
-          <h3><mm:field name="name"/></h3>
-        </mm:compare>
-      </mm:field>
+    <div class="images">
+      <mm:relatednodes type="images">
+        <mm:field name="showtitle">
+          <mm:compare value="1">
+            <h3><mm:field name="title"/></h3>
+          </mm:compare>
+        </mm:field>
+        <img src="<mm:image />" width="200" border="0" /><br/> 
+        <!-- showing the original image. Is that really ok? -->
+        <mm:field name="description" escape="none"/>
+      </mm:relatednodes>
+    </div>
+  </mm:relatednodes>
 
-      <p>
-
-      <i><mm:field name="description" escape="inline"/></i><br/>
-
-      <a href="<mm:field name="url"/>" target="_blank"><mm:field name="url"/></a>
-
-      </p>
-
-    </mm:relatednodes>
-
-  </div>
-  
-  
-  <div class="images">
-
-            <mm:relatednodes type="images">
-              <mm:field name="showtitle">
-                <mm:compare value="1">
-                  <h3><mm:field name="title"/></h3>
-                </mm:compare>
-              </mm:field>
-
-              <img src="<mm:image />" width="200" border="0" /><br/>
-
-              <mm:field name="description" escape="none"/> 
-            </mm:relatednodes>
-
-  </div>
-  
-    
-        
-        
-    </mm:relatednodes>
-  
-  
   </mm:node>
 </mm:cloud>
 </mm:content>
