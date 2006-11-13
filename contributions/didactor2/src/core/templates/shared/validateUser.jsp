@@ -1,3 +1,6 @@
+
+
+
 <%--
   This is an example validation implementation, that will check the following:
 
@@ -12,12 +15,11 @@
   If you want to use this implementation, you can place a copy of this code
   in your customization directory, and uncomment it
 --%>
-
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<mm:content postprocessor="reducespace" type="text/html" 
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
+<mm:content postprocessor="none" type="text/html" 
             escaper="entities">
-<mm:cloud>
+<mm:cloud method="asis">
   <mm:import externid="provider" />
   <mm:import externid="education" />
   <mm:import externid="class" />
@@ -67,7 +69,6 @@
 
                 <mm:compare referid="all_ok" value="true">
                   <mm:import id="all_ok" reset="true">false</mm:import>
-                  <!-- why did we bother at all to determin all_ok ? -->
                   <mm:node number="$user">
                     <mm:relatednodes type="classes" role="classrel">
                       <mm:relatednodescontainer type="mmevents">
@@ -78,6 +79,9 @@
                           <mm:isgreaterthan value="0">
                             <mm:import id="all_ok" reset="true">true</mm:import>
                           </mm:isgreaterthan>
+                          <mm:compare value="0">
+                            No current classes
+                          </mm:compare>
                         </mm:size>
                       </mm:relatednodescontainer>
                     </mm:relatednodes>
@@ -102,11 +106,9 @@
           </mm:size>
         </mm:relatednodescontainer>
       </mm:node>
-
-
-
     </mm:notpresent>
     <mm:remove referid="userdisabled"/>
   </mm:isgreaterthan>
+
 </mm:cloud>
 </mm:content>
