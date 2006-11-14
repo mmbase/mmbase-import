@@ -47,7 +47,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.80 2006-11-14 14:40:27 michiel Exp $
+ * @version $Id: Lucene.java,v 1.81 2006-11-14 14:41:30 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener {
 
@@ -1089,35 +1089,33 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
         }
         synchronized void fullIndex(final String index) {
             if (status != BUSY_FULL_INDEX || ! assignment.equals(ALL_FULL_INDEX)) {
-                synchronized(indexAssignments) {
-                    if (! assigned(ALL_FULL_INDEX)) {
-                        // only schedule a full index if no complete full index ne is currently busy or scheduled already.
-                        Assignment a = new Assignment() {
-                                public void run() {
-                                    status = BUSY_FULL_INDEX;
-                                    log.service("start full index for index '" + index + "'");
-                                    Indexer indexer = indexerMap.get(index);
-                                    if (indexer == null) {
-                                        log.error("No such index '" + index + "'");
-                                    } else {
-                                        indexer.fullIndex();
+                if (! assigned(ALL_FULL_INDEX)) {
+                    // only schedule a full index if no complete full index ne is currently busy or scheduled already.
+                    Assignment a = new Assignment() {
+                            public void run() {
+                                status = BUSY_FULL_INDEX;
+                                log.service("start full index for index '" + index + "'");
+                                Indexer indexer = indexerMap.get(index);
+                                if (indexer == null) {
+                                    log.error("No such index '" + index + "'");
+                                } else {
+                                    indexer.fullIndex();
                                     }
-                                }
-                                public String idString() {
-                                    return index;
-                                }
-                                public String toString() {
-                                    return "FULLINDEX for " + index + " (" + getDate() + ")";
-                                }
-                                public long getDelay(TimeUnit unit) {
-                                    return 0;
-                                }
-                            };
-                        assign(a);
-                        log.service("Scheduled full index for '" + index + "'");
+                            }
+                            public String idString() {
+                                return index;
+                            }
+                            public String toString() {
+                                return "FULLINDEX for " + index + " (" + getDate() + ")";
+                            }
+                            public long getDelay(TimeUnit unit) {
+                                return 0;
+                            }
+                        };
+                    assign(a);
+                    log.service("Scheduled full index for '" + index + "'");
                     } else {
-                        log.service("Scheduled full index for '" + index + "' because full index on every index is scheduled already");
-                    }
+                    log.service("Scheduled full index for '" + index + "' because full index on every index is scheduled already");
                 }
             } else {
                 log.service("Cannot schedule full index for '" + index + "' because it is busy with " + getAssignment());
