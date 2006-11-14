@@ -12,7 +12,7 @@
   <function name="get">
     <type>class</type>
     <class>org.mmbase.cache.CacheManager</class>
-    <method>getCache</method>
+    <method>getBean</method>
     <param name="name" type="java.lang.String" />
   </function>
 </functionset>

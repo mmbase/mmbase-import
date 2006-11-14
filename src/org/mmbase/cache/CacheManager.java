@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Cache manager manages the static methods of {@link Cache}. If you prefer you can call them on this in stead.
  *
  * @since MMBase-1.8
- * @version $Id: CacheManager.java,v 1.8 2006-09-04 12:53:51 michiel Exp $
+ * @version $Id: CacheManager.java,v 1.9 2006-11-14 23:17:56 michiel Exp $
  */
 public class CacheManager {
 
@@ -44,6 +44,15 @@ public class CacheManager {
      */
     public static Cache getCache(String name) {
         return caches.get(name);
+    }
+
+    /**
+     * Returns a cache wrapped in a 'Bean', so it is not a Map any more. This makes it easier
+     * accesible by tools which want that (like EL).
+     * @since MMBase-1.9
+     */
+    public static Bean getBean(String name) {
+        return new Bean(getCache(name));
     }
 
     /**
@@ -295,4 +304,27 @@ public class CacheManager {
         caches.clear();
     }
 
+    public static class Bean<K, V> {
+        private final Cache<K, V> cache;
+        public Bean(Cache<K, V> c) {
+            cache = c;
+        }
+        public String getName() { return cache.getName(); }
+        public String getDescription() { return cache.getDescription(); }
+        public int getMaxEntrySize() { return cache.getMaxEntrySize(); }
+        public Set<Map.Entry<K,V>> entrySet() { return cache.entrySet(); }
+        public int getHits() { return cache.getHits(); }
+        public int getMisses() { return cache.getMisses(); }
+        public int getPuts() { return cache.getPuts(); }
+        public  int getMaxSize() { return cache.maxSize(); }
+        public  int getSize() { return cache.size(); }
+        public double getRatio() { return cache.getRatio(); }
+        public String getStats() { return cache.getStats(); }
+        public String toString() { return cache.toString(); }
+        public boolean isActive() { return cache.isActive(); }
+        public int getByteSize() { return cache.getByteSize(); }
+        public int getCheapByteSize() { return cache.getCheapByteSize(); }
+        public boolean isEmpty() { return cache.isEmpty(); }
+        public Map<K, V> getMap() {  return cache; }
+    }
 }
