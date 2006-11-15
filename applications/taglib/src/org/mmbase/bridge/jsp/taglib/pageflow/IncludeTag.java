@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.66 2006-03-28 22:35:22 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.66.2.1 2006-11-15 19:49:59 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -374,8 +374,9 @@ public class IncludeTag extends UrlTag {
      * Includes another page in the current page.
      */
     protected void includePage() throws JspTagException {
+        String gotUrl = null;
         try {
-            String gotUrl = getUrl(false, false); // false, false: don't write &amp; tags but real & and don't urlEncode
+            gotUrl = getUrl(false, false); // false, false: don't write &amp; tags but real & and don't urlEncode
 
             if (gotUrl == null || "".equals(gotUrl)) {
                 return; //if there is no url, we cannot include
@@ -472,7 +473,7 @@ public class IncludeTag extends UrlTag {
             throw new TaglibException (e);
         }
         if (pageLog.isDebugEnabled()) {
-            pageLog.debug("END Parsing mm:include JSP page");
+            pageLog.debug("END Parsing mm:include JSP page " + gotUrl);
         }
     }
 
