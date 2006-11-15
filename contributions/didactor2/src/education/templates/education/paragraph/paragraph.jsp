@@ -1,6 +1,6 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"%>
-<mm:cloud method="delegate" jspvar="cloud">
-<mm:import externid="node_id"/>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
+%><mm:cloud method="delegate">
+<mm:import externid="node_id" required="true"/>
 <mm:import externid="path_segment"/>
 <mm:node referid="node_id">
 
