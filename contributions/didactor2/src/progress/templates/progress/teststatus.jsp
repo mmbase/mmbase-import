@@ -42,7 +42,9 @@
 	<mm:import id="save_madetestscore" reset="true"></mm:import>
         <mm:relatednodescontainer path="madetests,copybooks" element="madetests">
           <mm:constraint field="madetests.score" referid="TESTSCORE_INCOMPLETE" inverse="true"/>
-          <mm:constraint field="copybooks.number" referid="copybookNo"/>
+          <mm:isnotempty referid="copybookNo">
+            <mm:constraint field="copybooks.number" referid="copybookNo"/>
+          </mm:isnotempty>
           <mm:relatednodes>
             <mm:remove referid="done"/>
             <mm:import id="done">true</mm:import>
