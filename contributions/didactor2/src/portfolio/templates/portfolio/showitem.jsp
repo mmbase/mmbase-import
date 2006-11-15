@@ -129,7 +129,7 @@
       <mm:import externid="title" reset="true"/>
       <mm:import externid="body" reset="true"/>
       <mm:isnotempty referid="title"><mm:isnotempty referid="body">
-        <mm:createnode type="forummessages" id="newmessage">
+        <mm:createnode type="postings" id="newmessage">
           <mm:setfield name="title"><mm:write referid="title"/></mm:setfield>
           <mm:setfield name="body"><mm:write referid="body"/></mm:setfield>
           <mm:setfield name="date"><%= System.currentTimeMillis()/1000 %></mm:setfield>
@@ -302,7 +302,7 @@
                 <tr>
                   <td></td>
                   <td>
-                    <mm:relatednodes type="forummessages" orderby="number" directions="UP">
+                    <mm:relatednodes type="postings" orderby="number" directions="UP">
                       <div style="border: solid black 1px; width: 500px; margin-bottom: 0.5em; padding: 0.25em 0.5em 0.25em 0.5em">
                         <b><mm:field name="title"/> (<mm:field name="date"><mm:time format="d/M/yyyy"/></mm:field>)</b>
                         <br />

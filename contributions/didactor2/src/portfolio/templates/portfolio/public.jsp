@@ -277,7 +277,7 @@
               <mm:compare referid="objecttype" value="attachments">
                 <di:cell><img src="<mm:write referid="gfx_attachment"/>" title="<di:translate key="portfolio.folderitemtypedocument" />" alt="<di:translate key="portfolio.folderitemtypedocument" />" /></di:cell>
                 <di:cell><mm:write referid="link" escape="none"/><mm:field name="title" /></a></di:cell>
-                <di:cell><mm:countrelations type="forummessages"/></di:cell>
+                <di:cell><mm:countrelations type="postings"/></di:cell>
                 <di:cell><mm:write referid="itemdate"><mm:time format="d/M/yyyy"/></mm:write></di:cell>
                 <di:cell><mm:field name="description" /></di:cell>
               </mm:compare>
@@ -293,21 +293,21 @@
 			  	%>
                 <di:cell><img src="<mm:write referid="gfx_url"/>" title="<di:translate key="portfolio.folderitemtypeurl" />" alt="<di:translate key="portfolio.folderitemtypeurl" />" /></di:cell>
                 <di:cell><mm:write referid="link" escape="none"/><mm:field name="name" /></a></di:cell>
-                 <di:cell><mm:countrelations type="forummessages"/></di:cell>
+                 <di:cell><mm:countrelations type="postings"/></di:cell>
                  <di:cell><mm:write referid="itemdate"><mm:time format="d/M/yyyy"/></mm:write></di:cell>
                 <di:cell><mm:field name="description" /></di:cell>
               </mm:compare>
               <mm:compare referid="objecttype" value="pages">
                 <di:cell><img src="<mm:write referid="gfx_page"/>" title="<di:translate key="portfolio.folderitemtypepage" />" alt="<di:translate key="portfolio.folderitemtypepage" />" /></di:cell>
                 <di:cell><mm:write referid="link" escape="none"/><mm:field name="name" /></a></di:cell>
-                 <di:cell><mm:countrelations type="forummessages"/></di:cell>
+                 <di:cell><mm:countrelations type="postings"/></di:cell>
                  <di:cell><mm:write referid="itemdate"><mm:time format="d/M/yyyy"/></mm:write></di:cell>
                 <di:cell><mm:field name="text" /></di:cell>
               </mm:compare>
               <mm:compare referid="objecttype" value="chatlogs">
                 <di:cell><img src="<mm:write referid="gfx_chatlog"/>" title="<di:translate key="portfolio.folderitemtypechatlog" />" alt="<di:translate key="portfolio.folderitemtypechatlog" />" /></di:cell>
                 <di:cell><mm:write referid="link" escape="none"/><di:translate key="portfolio.folderitemtypechatlog" /><mm:field name="number"/></a></di:cell>
-                  <di:cell><mm:countrelations type="forummessages"/></di:cell>
+                  <di:cell><mm:countrelations type="postings"/></di:cell>
                 <di:cell><mm:field name="date"></mm:field></di:cell> <!-- TODO show correct date -->
                 <di:cell>&nbsp;</di:cell> <!-- TODO still empty -->
               </mm:compare>
