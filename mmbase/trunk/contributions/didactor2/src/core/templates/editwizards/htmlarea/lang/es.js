@@ -7,30 +7,45 @@ HTMLArea.I18N = {
 	lang: "es",
 
 	tooltips: {
-		bold:           "Negritas",
+		bold:           "Negrita",
 		italic:         "Cursiva",
 		underline:      "Subrayado",
-		strikethrough:  "Texto Cruzado",
-		subscript:      "Subscript",
-		superscript:    "Superscript",
+		strikethrough:  "Tachado",
+		subscript:      "Subíndice",
+		superscript:    "Superíndice",
 		justifyleft:    "Alinear a la Izquierda",
 		justifycenter:  "Centrar",
 		justifyright:   "Alinear a la Derecha",
 		justifyfull:    "Justificar",
-		orderedlist:    "Lista Ordenada",
-		unorderedlist:  "Lista No Ordenada",
-		outdent:        "Aumentar Sangr�a",
-		indent:         "Disminuir Sangr�a",
+		insertorderedlist:    "Lista Ordenada",
+		insertunorderedlist:  "Lista No Ordenada",
+		outdent:        "Aumentar Sangría",
+		indent:         "Disminuir Sangría",
 		forecolor:      "Color del Texto",
-		backcolor:      "Color del Fondo",
-		horizontalrule: "L�nea Horizontal",
+		hilitecolor:    "Color del Fondo",
+		inserthorizontalrule: "Línea Horizontal",
 		createlink:     "Insertar Enlace",
 		insertimage:    "Insertar Imagen",
 		inserttable:    "Insertar Tabla",
 		htmlmode:       "Ver Documento en HTML",
 		popupeditor:    "Ampliar Editor",
 		about:          "Acerca del Editor",
-		help:           "Ayuda",
-		textindicator:  "Estilo Actual"
+		showhelp:       "Ayuda",
+		textindicator:  "Estilo Actual",
+		undo:           "Deshacer",
+		redo:           "Rehacer",
+		cut:            "Cortar selección",
+		copy:           "Copiar selección",
+		paste:          "Pegar desde el portapapeles"
+	},
+
+	buttons: {
+		"ok":           "Aceptar",
+		"cancel":       "Cancelar"
+	},
+
+	msg: {
+		"Path":         "Ruta",
+		"TEXT_MODE":    "Esta en modo TEXTO. Use el boton [<>] para cambiar a WYSIWIG",
 	}
 };
