@@ -12,6 +12,7 @@
 
   <property name="defaultexcludes" value="yes" />
 
+
   <target name="create.dirs">
     <mkdir dir="${build.dir}" />
     <mkdir dir="${build.dir}/classes" />
@@ -64,9 +65,25 @@
   <target name="clean">
     <delete dir="${build.dir}" />
   </target>
+  <target name="mmbase.distro.exists">
+    <available file="mmbase.zip" property="mmbase.distro.exists"/>
+  </target>
+  <target name="mmbase.distro.download" depends="mmbase.distro.exists" unless="mmbase.distro.exists">
+    <get src="http://www.mmbase.org/development/download/stable/MMBase-1_8_2/mmbase-1.8.2.20061003.zip"
+         dest="mmbase.zip" verbose="on" />
+  </target>
 
-  <target name="webapp" depends="create.dirs,build,config">
+  <target name="mmbase.distro" depends="mmbase.distro.download">
+    <unzip src="mmbase.zip" dest="${build.dir}/" />
+    <move file="${build.dir}/mmbase-1.8.2.20061003" tofile="${build.dir}/mmbase" />
+  </target>
 
+  <target name="webapp" depends="create.dirs,build,mmbase.distro">
+    <copy todir="${build.dir}/webapp/mmbase" preservelastmodified="true">
+      <fileset dir="${build.dir}/mmbase/mmbase-webapp/mmbase">
+        <include name="**"/>
+      </fileset>
+    </copy>
   </target>
 
   <target name="config">
@@ -81,7 +98,8 @@
       <available file="src/core/templates/${provider}" type="dir" />
       <then>
         <echo message="Copying templates from src/core/templates/${provider}" />
-        <echo message="Warning: putting provider templates in /src/core/templates is deprecated, consider using /providers/${provider}/templates instead"/>
+        <echo message="Warning: putting provider templates in /src/core/templates is deprecated,
+                       consider using /providers/${provider}/templates instead ${defaultexclude} "/>
         <copy todir="${build.dir}/webapp/${provider}" 
               overwrite="true" preservelastmodified="true">
           <fileset 
@@ -223,46 +241,52 @@
      <available file="src/${component}/templates" type="dir" />
      <then>
         <if>
-         <equals arg1="${component}" arg2="core"/>
-         <then>
-           <copy todir="${build.dir}/webapp" preservelastmodified="true">
-            <fileset 
-                defaultexcludes="${defaultexcludes}"
-                dir="src/${component}/templates">
-             <include name="*.jsp"/>
-             <include name="admin/**"/>
-             <include name="cockpit/**"/>
-             <include name="components/**"/>
-             <include name="css/**"/>
-             <include name="editwizards/**"/>
-             <include name="gfx/**"/>
-             <include name="help/**"/>
-             <include name="mmbase/**"/>
-             <include name="mmeditors/**"/>
-             <include name="shared/**"/>
-             <include name="users/**"/>
-             <include name="metadata/**"/>
-             <include name="migrate/**"/>
-             <include name="translation/**"/>
-             <include name="${component}/**"/>
-             <include name="classes/**"/>
-             <exclude name="templates/**"/>
-            </fileset>
-           </copy>
-        </then>
-         <else>
+          <equals arg1="${component}" arg2="core"/>
+          <then>
+            <copy todir="${build.dir}/webapp" preservelastmodified="true">
+              <fileset 
+                  defaultexcludes="${defaultexcludes}"
+                  dir="src/${component}/templates">
+                <include name="**"/>
+                <!--
+                <include name="admin/**"/>
+                <include name="cockpit/**"/>
+                <include name="components/**"/>
+                <include name="css/**"/>
+                <include name="editwizards/**"/>
+                <include name="gfx/**"/>
+                <include name="help/**"/>
+                <include name="mmbase/**"/>
+                <include name="mmeditors/**"/>
+                <include name="shared/**"/>
+                <include name="users/**"/>
+                <include name="metadata/**"/>
+                <include name="migrate/**"/>
+                <include name="translation/**"/>
+                <include name="${component}/**"/>
+                <include name="classes/**"/>
+                <exclude name="templates/**"/>
+                -->
+              </fileset>
+            </copy>
+          </then>
+          <else>
             <copy todir="${build.dir}/webapp" overwrite="true" preservelastmodified="true">
-            <fileset 
-                defaultexcludes="${defaultexcludes}"
-                dir="src/${component}/templates">
-             <include name="**"/>
-             <exclude name="templates/**"/>
-             <exclude name="editwizards/**/extra_*.xml"/>
-            </fileset>
-           </copy>
-         </else>
+              <fileset 
+                  defaultexcludes="${defaultexcludes}"
+                  dir="src/${component}/templates">
+                <include name="**"/>
+                <exclude name="CVS/**"/>
+                <exclude name="templates/**"/>
+                <exclude name="editwizards/**/extra_*.xml"/>
+              </fileset>
+            </copy>
+          </else>
         </if>
        </then>
+       <else>
+         <echo message="no templates dir in ${component}" />
+       </else>
     </if>
 
     <!-- copy webinf -->
@@ -322,6 +346,7 @@
     <if>
       <available file="src/${component}/templates/editwizards/data/config/" />
       <then>
+        <echo message="Merging wizards of '${component}" />
         <foreach target="mergewizards" param="file">
           <path>
             <fileset dir="src/${component}/templates/editwizards/data/config/">
