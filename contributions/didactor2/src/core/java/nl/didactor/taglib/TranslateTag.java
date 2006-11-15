@@ -15,7 +15,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  */
 public class TranslateTag extends BodyTagSupport {
-    private static Logger log = Logging.getLoggerInstance(TranslateTag.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(TranslateTag.class);
 
     // These parameters are set with the different setXyz() methods
     // they may not be manipulated by this class, because that will
