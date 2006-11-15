@@ -6,7 +6,7 @@
     @since  MMBase-1.6
     @author Pierre van Rooden
     @author Nico Klasens
-    @version $Id: prompts.xsl,v 1.31 2006-06-27 12:57:31 nklasens Exp $
+    @version $Id: prompts.xsl,v 1.31.2.1 2006-11-15 17:32:13 michiel Exp $
 
     prompts used in this editwizard.
     Override these prompts to change the view in your own versions.
@@ -197,7 +197,7 @@
     </img>
   </xsl:template>
   <xsl:variable name="tooltip_search">Search and add an item</xsl:variable>
-  <xsl:template name="prompt_search_title">Title contains</xsl:template>
+  <xsl:template name="prompt_search_title">Contains</xsl:template>
   <xsl:template name="prompt_search_number">Number is</xsl:template>
   <xsl:template name="prompt_search_owner">Owner is</xsl:template>
   <xsl:variable name="filter_required">Entering a searchterm is required.</xsl:variable>
