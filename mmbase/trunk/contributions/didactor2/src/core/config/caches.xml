@@ -7,7 +7,7 @@
   the changes are persistent then)
 
   @since   MMBase-1.6
-  @version $Id: caches.xml,v 1.2 2006-11-01 20:04:58 mmeeuwissen Exp $
+  @version $Id: caches.xml,v 1.3 2006-11-15 15:34:05 mmeeuwissen Exp $
   @author  Michiel Meeuwissen
   @author  Ernst Bunders
 
@@ -162,4 +162,19 @@
     <size>1000</size>
   </cache>
   -->
+  <--
+  ================================================================================
+  Editwizards
+  -->
+  <!-- Caches DOM (_not_ MMBase) Nodes -->
+  <cache name="nodes"> <!-- _not_ the same as Nodes in the original caches.xml, which _does_ contain MMBase nodes-->
+    <status>active</status>
+    <size>100</size>
+  </cache>
+
+  <cache name="Editwizard schemas">
+    <status>active</status>
+    <size>100</size>
+  </cache>
+
 </caches>
