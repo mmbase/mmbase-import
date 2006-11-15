@@ -19,7 +19,7 @@
         <mm:treeinclude page="/education/pages/content.jsp" objectlist="$includePath"
                         referids="$referids,learnobject" />
         <mm:node number="$learnobject">
-          <mm:treeinclude page="/education/paragraph/paragraph.jsp" objectlist="$includePath" referids="$referids,learnobject@node_it">
+          <mm:treeinclude page="/education/paragraph/paragraph.jsp" objectlist="$includePath" referids="$referids,learnobject@node_id">
             <mm:param name="path_segment">../</mm:param>
           </mm:treeinclude>
         </mm:node>
