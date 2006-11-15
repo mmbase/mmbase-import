@@ -13,7 +13,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.bridge.jsp.taglib.util.ContextContainer;
 
-import org.apache.xpath.XPathAPI; //slow but usefull
+import org.apache.xpath.XPathAPI; //slow but useful
 import javax.xml.parsers.*;
 import org.w3c.dom.*;
 
@@ -354,7 +354,7 @@ public abstract class Component {
             return defaultValue;
         }
 
-        for (int i=0; i<settingNodes.size(); i++) {
+        for (int i = 0; i < settingNodes.size(); i++) {
             if (settingNodes.getNode(i).getStringValue("name").equals(settingName)) {
                 return setting.cast(settingNodes.getNode(i).getStringValue("value"));
             }
