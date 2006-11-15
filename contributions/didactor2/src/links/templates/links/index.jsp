@@ -12,11 +12,23 @@
     </div>
     <div class="contentBody">
       <mm:node referid="education">
-        Education <mm:field name="name" />
-        <mm:relatednodes type="urls">
-          <p>
-            <a href="${_node.url}"><mm:field name="name" /></a>
-          </p>
+        <h1><mm:field name="name" /> - <di:translate key="links.title" /></h1>
+        <mm:relatednodes type="pools" orderby="posrel.pos" role="posrel">
+          <h2><mm:field name="name" /></h2>
+          <mm:field name="description" escape="p" />
+          <ul>
+            <mm:relatednodes type="urls" role="posrel" orderby="posrel.pos">
+              <li>
+                <a href="${_node.url}">
+                  <mm:field name="name" write="true">
+                    <mm:isempty>
+                      <mm:field name="url" />
+                    </mm:isempty>
+                  </mm:field>.
+                </a>
+              </li>
+            </mm:relatednodes>
+          </ul>
         </mm:relatednodes>
       </mm:node>
     </div>
