@@ -16,6 +16,7 @@ ids.put("natuurgebieden", natuurgebiedID);
 ids.put("persoon", personID);
 ids.put("provincies", provID);
 ids.put("vacature", vacatureID);
+ids.put("items", shop_itemId);
 
 ids = ph.findIDs(ids, path, "nm_pagina");
 
@@ -32,6 +33,7 @@ natuurgebiedID = (String) ids.get("natuurgebieden");
 personID = (String) ids.get("persoon");
 provID = (String) ids.get("provincies");
 vacatureID = (String) ids.get("vacature");
+shop_itemId = (String) ids.get("items");
 
 Vector breadcrumbs = new Vector();
 String lnRubriekID = "";

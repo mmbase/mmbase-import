@@ -15,7 +15,7 @@ public void run() throws Exception{
         
       TreeMap tmRenamingFields = new TreeMap();
       ArrayList alDeletingFields = new ArrayList();
-      String sFolder =  NatMMConfig.incomingDir + "WEB-INF/config/applications/Shop/";
+      String sFolder =  NatMMConfig.incomingDir + "Shop/";
   
       tmRenamingFields.put("title","titel");
       tmRenamingFields.put("body","omschrijving");
@@ -57,7 +57,8 @@ public void run() throws Exception{
       log.info("treating files which we want to rename and change fields");
       TreeMap tmRenamingFiles = new TreeMap();
       tmRenamingFiles.put("articles","artikel");
-      tmRenamingFiles.put("products","shop_items");
+      tmRenamingFiles.put("products","items");
+      tmRenamingFiles.put("keys","keywords");
       tmRenamingFiles.put("pages","pagina");
       tmRenamingFiles.put("paragraphs","paragraaf");
       tmRenamingFiles.put("templates","paginatemplate");

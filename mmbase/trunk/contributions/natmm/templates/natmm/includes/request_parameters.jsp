@@ -14,6 +14,7 @@
 <mm:import jspvar="personID" externid="pers">-1</mm:import>
 <mm:import jspvar="provID" externid="prov" id="prov">-1</mm:import>
 <mm:import jspvar="vacatureID" externid="v">-1</mm:import>
+<mm:import jspvar="shop_itemId" externid="u">-1</mm:import>
 <mm:import jspvar="evenementID" externid="e">-1</mm:import>
 <mm:import jspvar="offsetID" externid="offset" id="offset">0</mm:import>
 <mm:import jspvar="ID" externid="id">-1</mm:import>

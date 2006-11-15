@@ -11,51 +11,62 @@ if(iRubriekLayout==NatMMConfig.DEFAULT_LAYOUT) {
 	<table width="744" border="0" cellspacing="0" cellpadding="0" background="media/bgtab_ho.gif">
 		<tr>
 			<td style="width:523;height:68;vertical-align:bottom;padding-bottom:2px;">
-			<% if(breadcrumbs.size()==2){ %>
+			<% 
+      if(breadcrumbs.size()==2){
+        %>
 				<div style="font-size:19px;color:#FFFFFF;margin:0px 0px 5px 0px;">Als je van Nederland houdt.</div>
-			<% } else { %>
-				   <% for(int r=breadcrumbs.size()-2; r>=0; r--) { %>
-					   <mm:list nodes="<%= (String) breadcrumbs.get(r) %>" path="rubriek,posrel,pagina,gebruikt,paginatemplate" 
-	 					   fields="rubriek.naam,pagina.number,paginatemplate.url" orderby="posrel.pos" max="1" directions="UP">
-							<mm:field name="paginatemplate.url" write="false" jspvar="template_url" vartype="String">
-							<mm:field name="pagina.number" write="false" jspvar="pagina_number" vartype="String">
-							<mm:field name="rubriek.naam" write="false" jspvar="rubriek_naam" vartype="String">
-						      <% if(r!=breadcrumbs.size()-2) { %><a class="klikpad">&gt;</a><% } 
-						      %> <a href="<%=template_url +"?id="+pagina_number %>" class="klikpad"><% 
-						         if(r==breadcrumbs.size()-2) { 
-						            %>Home<% 
-						         } else {
-                              %><%=  rubriek_naam.substring(0,1).toUpperCase() + rubriek_naam.substring(1).toLowerCase() %><%
-						         } %></a>
-							</mm:field>
-							</mm:field>
-							</mm:field>
-						</mm:list>
-				   <% } 
-               String pageUrl = "";
-               %><mm:node number="<%=paginaID%>">
-					   <% if(!natuurgebiedID.equals("-1")){ %>
-                     <mm:relatednodes type="paginatemplate" max="1">
-								<mm:field name="url" write="false" jspvar="template_url" vartype="String">
-                           <% pageUrl = template_url +"?id="+paginaID; %>
-								</mm:field>
-							</mm:relatednodes>
-                  <% } %>
-						<mm:field name="titel" write="false" jspvar="titel" vartype="String">
-						   <% if(!pageUrl.equals("")) { %>
-							   <a href="<%= pageUrl %>" class="klikpad"> &gt; </a>
-                        <a href="<%= pageUrl %>" class="klikpad"><%= titel %></a>
-                     <% }  else { %>
-                        <span style="color:#FFFFFF;"> &gt; <%= titel %></span>
-                     <% } %>
-						</mm:field>
-					</mm:node>
-					<% if(!natuurgebiedID.equals("-1")){%>
-					   <mm:node number="<%=natuurgebiedID%>">
+        <% 
+      } else { 
+        for(int r=breadcrumbs.size()-2; r>=0; r--) {
+           %>
+           <mm:list nodes="<%= (String) breadcrumbs.get(r) %>" path="rubriek,posrel,pagina,gebruikt,paginatemplate" 
+             fields="rubriek.naam,pagina.number,paginatemplate.url" orderby="posrel.pos" max="1" directions="UP">
+            <mm:field name="paginatemplate.url" write="false" jspvar="template_url" vartype="String">
+            <mm:field name="pagina.number" write="false" jspvar="pagina_number" vartype="String">
+            <mm:field name="rubriek.naam" write="false" jspvar="rubriek_naam" vartype="String">
+                <% if(r!=breadcrumbs.size()-2) { %><a class="klikpad">&gt;</a><% } 
+                %> <a href="<%=template_url +"?id="+pagina_number %>" class="klikpad"><% 
+                   if(r==breadcrumbs.size()-2) { 
+                      %>Home<% 
+                   } else {
+                            %><%=  rubriek_naam.substring(0,1).toUpperCase() + rubriek_naam.substring(1).toLowerCase() %><%
+                   } %></a>
+            </mm:field>
+            </mm:field>
+            </mm:field>
+          </mm:list>
+          <%
+        } 
+        String pUrl = "";
+        %>
+        <mm:node number="<%=paginaID%>">
+          <% 
+          if(!natuurgebiedID.equals("-1")){
+              %>
+              <mm:relatednodes type="paginatemplate" max="1">
+                <mm:field name="url" write="false" jspvar="template_url" vartype="String">
+                   <% pUrl = template_url +"?id="+paginaID; %>
+                </mm:field>
+              </mm:relatednodes>
+              <% 
+          } %>
+          <mm:field name="titel" write="false" jspvar="titel" vartype="String">
+             <% if(!pUrl.equals("")) { %>
+               <a href="<%= pUrl %>" class="klikpad"> &gt; </a>
+               <a href="<%= pUrl %>" class="klikpad"><%= titel %></a>
+             <% }  else { %>
+               <span style="color:#FFFFFF;"> &gt; <%= titel %></span>
+             <% } %>
+          </mm:field>
+        </mm:node>
+        <% 
+        if(!natuurgebiedID.equals("-1")){%>
+				   <mm:node number="<%=natuurgebiedID%>">
 							<span style="color:#FFFFFF;">&gt; <mm:field name="naam" /></span>
-					   </mm:node>
-					<% } %>
-				<% } %>			
+				   </mm:node>
+					<%
+         }
+      } %>
 			</td>
 			<td width="220" align="right" valign="top"><img src="media/logos/nmlogo.gif" alt="Vereniging Natuurmonumenten" width="209" height="68" hspace="2" vspace="2" border="0">
 		</td></tr></table></div>
