@@ -2,6 +2,6 @@
 <components exportsource="mmbase://www.didactor.org/version2.0" timestamp="20061114000000">
   <node number="8000" owner="system" alias="component.links">
     <name>links</name>
-    <classname>nl.didactor.component.email.DidactorLinks</classname>
+    <classname>nl.didactor.component.links.DidactorLinks</classname>
   </node>
 </components>
