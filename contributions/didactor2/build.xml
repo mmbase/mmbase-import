@@ -67,13 +67,14 @@
   </target>
   <target name="mmbase.distro.exists">
     <available file="mmbase.zip" property="mmbase.distro.exists"/>
+    <available file="${build.dir}/mmbase" property="mmbase.distro.expanded.exists"/>
   </target>
   <target name="mmbase.distro.download" depends="mmbase.distro.exists" unless="mmbase.distro.exists">
     <get src="http://www.mmbase.org/development/download/stable/MMBase-1_8_2/mmbase-1.8.2.20061003.zip"
          dest="mmbase.zip" verbose="on" />
   </target>
 
-  <target name="mmbase.distro" depends="mmbase.distro.download">
+  <target name="mmbase.distro" depends="mmbase.distro.exists,mmbase.distro.download" unless="mmbase.distro.expanded.exists" >
     <unzip src="mmbase.zip" dest="${build.dir}/" />
     <move file="${build.dir}/mmbase-1.8.2.20061003" tofile="${build.dir}/mmbase" />
   </target>
