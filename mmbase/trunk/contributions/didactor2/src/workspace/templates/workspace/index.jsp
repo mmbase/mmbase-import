@@ -1,12 +1,12 @@
 <%--
   This template shows the personal workspace (in dutch: persoonlijke werkruimte).
 --%>
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
+%>
 <%-- expires is set so renaming a folder does not show the old name --%>
 <mm:content postprocessor="reducespace" expires="0">
-<mm:cloud method="delegate" jspvar="cloud">
+<mm:cloud rank="basic user">
 <%@include file="/shared/setImports.jsp" %>
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
