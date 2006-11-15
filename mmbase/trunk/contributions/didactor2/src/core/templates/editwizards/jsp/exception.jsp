@@ -1,4 +1,4 @@
-<%@ page isErrorPage="true" %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm"
+<%@ page isErrorPage="true" %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
 %><%@ page import="org.mmbase.applications.editwizard.*"
 %><%@ page import="org.mmbase.applications.editwizard.Config"
 %><%@ page import="org.w3c.dom.Document"
@@ -24,7 +24,7 @@
         params.put("sessionid",  request.getSession().getId());
         params.put("sessionkey", sessionKey);
         
-        java.io.File template = ewConfig.uriResolver.resolveToFile("xsl/exception.xsl");
+        java.net.URL template = ewConfig.uriResolver.resolveToURL("xsl/exception.xsl", null);
     
         String message = exception.getMessage();
         if (message == null) {
@@ -43,12 +43,13 @@
         docel.appendChild(excnode);
     
         org.w3c.dom.Node sttnode = docel.getOwnerDocument().createElement("stacktrace");
-        Utils.storeText(sttnode,org.mmbase.util.logging.Logging.stackTrace(exception));
+        
+        Utils.storeText(sttnode, org.mmbase.util.logging.Logging.stackTrace(exception));
         docel.appendChild(sttnode);
     
         Utils.transformNode(doc, template, ewConfig.uriResolver, out, params);
    } catch (Exception e) {
-        out.println("The following error occurred: "+exception);  
+        out.println("<pre>The following error occurred: " + exception + org.mmbase.util.logging.Logging.stackTrace(exception) + "</pre>");  
    }
 %>
 
