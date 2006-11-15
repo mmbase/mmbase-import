@@ -134,9 +134,10 @@
 </mm:present>
 
 <mm:notpresent referid="provider">
-  <mm:log jspvar="log"><jsp:scriptlet>log.error("No provider found, perhaps no url ${servername} was linked?");</jsp:scriptlet></mm:log>
+  <mm:write referid="servername" jspvar="sn">
+    <mm:log jspvar="log"><jsp:scriptlet>log.error("No provider found, perhaps no url " + sn + " was linked?");</jsp:scriptlet></mm:log>
+  </mm:write>
 </mm:notpresent>
-
 <%--
   Step 6: Based on the student and the education, try to find the class.
 --%>
@@ -184,3 +185,4 @@
     <mm:param name="message"><mm:write referid="validatemessage" /></mm:param>
   </mm:redirect>
 </mm:isnotempty>
+
