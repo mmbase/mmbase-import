@@ -1,9 +1,9 @@
 /**
 
   Editwizard cascading style sheet.
-  
+
   @author Nico Klasens
-  @version  $Id: list.css,v 1.1 2004-11-01 12:52:43 jdiepenmaat Exp $
+  @version  $Id: list.css,v 1.2 2006-11-15 17:08:30 mmeeuwissen Exp $
 */
 
 @import url("base.css");
@@ -15,40 +15,35 @@ tr.listcanvas,
 tr.pagescanvas,
 tr.buttoncanvas,
 tr.linkcanvas {
-   border-color: #ccc;
-   background-color: #fff  ;
+   border-color: silver;
+   background-color: white;
 }
 
 table.searchcontent,
 table.listcontent {
-/*	border-color: #000000; */ 
   color: black;
 }
 
 tr.listheader {
-  color: #CCC;
-  /*
-  background-color: #CCC;
-  color: #000;*/
+  color: silver;
 }
 
-tr.itemrow, 
-tr.itemrow-hover, 
-tr.itemrow td, 
-tr.itemrow-hover td { 
-   color:#18248C; 
+tr.itemrow,
+tr.itemrow-hover,
+tr.itemrow td,
+tr.itemrow-hover td {
+   color:#18248C;
 }
 
-		
+
 .itemrow-hover {
-/*	background-color: #CCC; */
 }
 
 /* if permission to edit is lacking, the row is 'disabled' */
 .itemrow-disabled {
-  color: #CCCCCC; 
+  color: silver;
 }
 
-.itemrow field { 
+.itemrow field {
 }
 

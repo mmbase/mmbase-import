@@ -3,7 +3,7 @@
   Editwizard cascading style sheet.
   
   @author Nico Klasens
-  @version  $Id: list.css,v 1.1 2004-11-01 12:52:43 jdiepenmaat Exp $
+  @version  $Id: list.css,v 1.2 2006-11-15 17:16:58 mmeeuwissen Exp $
 */
 
 @import url("base.css");
@@ -23,7 +23,7 @@ tr.listcanvas,
 tr.pagescanvas,
 tr.buttoncanvas,
 tr.linkcanvas {
-   border-width: 0px
+   border-width: 0px;
    border-style: solid;
    padding: 5px;
    width: 100%;
@@ -52,12 +52,10 @@ td.deletebutton {
 
 .itemrow {
   cursor: pointer;
-  cursor: hand;
 }
 
 .itemrow-hover {
   cursor: pointer;
-  cursor: hand;
   text-decoration: underline; 
 }
 
