@@ -2,5 +2,7 @@
   <scope name="component" referid="component">
   </scope>
   <scope name="providers" referid="provider">
+    <!-- some addresses always appearing in the address-book -->
+    <setting name="addresses" type="string"  default="did@meeuw.org" />
   </scope>
 </component>
