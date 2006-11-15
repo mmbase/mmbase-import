@@ -37,6 +37,10 @@
   </filter-mapping>
 
 
+  <servlet>
+    <servlet-name>version</servlet-name>
+    <servlet-class>org.mmbase.servlet.MMBaseServlet</servlet-class>
+  </servlet>
   <!-- The MMBase image serving servlet. -->
   <servlet>
     <servlet-name>images</servlet-name>
@@ -79,6 +83,11 @@
   </servlet>
 
   <!-- EXTRASERVLETS -->
+
+  <servlet-mapping>
+    <servlet-name>version</servlet-name>
+    <url-pattern>/version</url-pattern>
+  </servlet-mapping>
 
   <!-- mapping for image-requests -->
   <servlet-mapping>
