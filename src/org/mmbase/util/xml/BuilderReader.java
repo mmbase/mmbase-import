@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.74.2.2 2006-11-08 13:14:44 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.74.2.3 2006-11-15 12:24:48 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -639,7 +639,7 @@ public class BuilderReader extends DocumentReader {
                         try {
                             enumerationBuilder = mmbase.getBuilder(guiType);
                         } catch (RuntimeException re) {
-                            if (log.isDebugEnabled()) log.debug("Gui type of NODE field is not a builder: " + guiType);
+                            log.warn("Exception during parsing of field '" + fieldName + "' of " + (builder != null ? builder.getTableName() : "NULL")  + ":  " + re.getMessage());
                         }
                     }
                     if (enumerationBuilder != null) {
