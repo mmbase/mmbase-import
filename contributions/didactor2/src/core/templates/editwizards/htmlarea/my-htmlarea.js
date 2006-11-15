@@ -1,21 +1,32 @@
 // Code to customize the htmlarea toolbar for the editwizards (less buttons,
 // a createlink with a target dropdown and a validate button).
 // Author: Jaco de Groot.
+// Version : $Id: my-htmlarea.js,v 1.2 2006-11-15 17:01:55 mmeeuwissen Exp $;
+
+
+function getToolTip(id, defaultValue) {
+   if (typeof MyHTMLArea_I18N != "undefined") {
+     return MyHTMLArea_I18N.tooltips[id];
+   } else {
+     return defaultValue;
+   }
+}
 
 function customize(editor, editorURL) {
   var config = editor.config;
   config.editorURL = editorURL;
+  _editor_url = editorURL;
   config.registerButton({
     id        : "my-createlink",
-    tooltip   : "Insert Web Link",
-    image     : "images/ed_link.gif",
+    tooltip   : getToolTip("insertweblink","Insert Web Link"),
+    image     : editorURL + config.imgURL +  "ed_link.gif",
     textMode  : false,
     action    : myCreateLinkAction
   });
   config.registerButton({
     id        : "my-validatesave",
-    tooltip   : "Validate The Form",
-    image     : "images/ed_validate_save.gif",
+    tooltip   : getToolTip("validatesave", "Validate The Form"),
+    image     : editorURL + config.imgURL +  "ed_validate_save.gif",
     textMode  : true,
     action    : myValidateSaveAction
   });
@@ -49,7 +60,7 @@ myCreateLinkAction = function(editor) {
   if (description == "") {
     var firstParent = true;
     parentElement = editor.getParentElement();
-    while (parentElement.nodeName.toLowerCase() != "a" && parentElement.nodeName.toLowerCase() != "body") {
+    while (parentElement && parentElement.nodeName.toLowerCase() != "a" && parentElement.nodeName.toLowerCase() != "body") {
       parentElement = parentElement.parentNode;
       firstParent = false;
     }
@@ -82,7 +93,7 @@ myCreateLinkAction = function(editor) {
   param["descriptionEditable"] = descriptionEditable;
   param["target"] = target;
   param["editExisting"] = editExisting;
-  editor._popupDialog("insert_link.html", popupDialogAction, param);
+  editor._popupDialog("insert_link.html", popupDialogAction, param, "width=398,height=220");
 }
 
 popupDialogAction = function(param) {
@@ -157,7 +168,7 @@ function updateValue(editor) {
   value = editor.getHTML()
   // These two lines could cause editors to complain about responsetime
   // when they leave a form with many large htmlarea fields.
-  // this is the case when doCheckHtml() is called by the editwizard.jsp with 
+  // this is the case when doCheckHtml() is called by the editwizard.jsp with
   // doSave, doSaveOnly, gotoForm and doStartWizard
   value = wizardClean(value);
   value = clean(value);
@@ -165,24 +176,24 @@ function updateValue(editor) {
   editor._textArea.value = value;
 
   if (editor._editMode == "wysiwyg") {
-	if (HTMLArea.is_gecko) {
+        if (HTMLArea.is_gecko) {
       // disable design mode before changing innerHTML
       try {
         editor._doc.designMode = "off";
       } catch(e) {}
-	}
-	editor._doc.body.innerHTML = value;
-	if (HTMLArea.is_gecko) {
+        }
+        editor._doc.body.innerHTML = value;
+        if (HTMLArea.is_gecko) {
       // we need to refresh that info for Moz-1.3a
       try {
         editor._doc.designMode = "on";
       } catch(e) {}
-	}
+        }
   }
 }
 
 function wizardClean(value) {
-// editors in IE will maybe complain that it is very messy with 
+// editors in IE will maybe complain that it is very messy with
 // <strong> and <b> tags mixed when they edit, but without this function
 // they would also do when others would use Gecko browsers.
 // Now we are backwards compatible with the old editwizard wysiwyg and the
@@ -197,7 +208,7 @@ function wizardClean(value) {
   //replace <BR> by <BR/>
   value = value.replace(/<BR>/gi, "<br/>");
   value = value.replace(/<br>/gi, "<br/>");
-  
+
   return value;
 }
 
@@ -217,7 +228,7 @@ function clean(value) {
   value = value.replace(/<\/?\w+:[^>]*>/gi, "");
   // Replace the &nbsp;
   value = value.replace(/&nbsp;/, " " );
-  
+
   return value;
 }
 
