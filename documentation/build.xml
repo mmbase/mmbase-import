@@ -1,5 +1,5 @@
 <!--
-  $Id: build.xml,v 1.31 2006-11-16 10:26:46 michiel Exp $
+  $Id: build.xml,v 1.32 2006-11-16 11:03:04 michiel Exp $
 -->
 <project name="MMBase-Documentation" default="documentation" basedir=".">
 
@@ -65,11 +65,7 @@
     <mkdir dir="${documentation.dest.dir}" />
     <echo message="docbook" />
 
-    <antcall target="downloadgz">
-      <param name="sourcefile" value="${docbook-xsl.loc}"/>
-      <param name="destfile" value="${docbook-xsl.dest}"/>
-      <param name="expandedfile" value="${docbook-xsl.exp}"/>
-    </antcall>
+
   </target>
 
   <!-- =================================================================== -->
@@ -181,7 +177,7 @@
   <!-- Perform docbook2html conversion                                                  -->
   <!-- ================================================================================ -->
   <target name="documentation.html"
-          depends="documentation.resources,applications.documentation.copy,xsltransformer,download"
+          depends="documentation.resources,applications.documentation.copy,xsltransformer,download.deps"
           description="Create HTML documentation from the DocBook sources">
 
     <echo message="${documentation.dest.dir}" />
@@ -214,7 +210,7 @@
   <!-- ================================================================================ -->
   <!-- Perform docbook2pdf conversion                                                   -->
   <!-- ================================================================================ -->
-  <target name="documentation.pdf"  depends="xsltransformer,download"
+  <target name="documentation.pdf"  depends="xsltransformer,download.deps"
           description="Create PDF documentation from the DocBook sources">
 
     <mkdir dir="${documentation.temp.dir}" />
@@ -323,51 +319,34 @@
   <!-- ================================================================================ -->
   <!-- Download or build the required binary packages                                   -->
   <!-- ================================================================================ -->
-  <target name="download" depends="proxyflags"
+  <target name="download.deps" depends="proxyflags"
           description="Download binary packages" >
     <mkdir dir="${download.dir}" />
 
     <echo message="docbook" />
     <!-- Download any sub package or tools needed. -->
     <antcall target="downloadgz">
-      <param name="sourcefile" value="${docbook-xsl.loc}"/>
-      <param name="destfile" value="${docbook-xsl.home}"/>
+      <param name="sourcefile"   value="${docbook-xsl.loc}"/>
+      <param name="destfile"     value="${docbook-xsl.dest}"/>
+      <param name="expandedfile" value="${docbook-xsl.exp}"/>
     </antcall>
 
     <echo message="fop" />
     <antcall target="downloadgz">
-      <param name="sourcefile" value="${fop.loc}"/>
-      <param name="destfile" value="${fop.home}"/>
+      <param name="sourcefile"   value="${fop.loc}"/>
+      <param name="destfile"     value="${fop.home}"/>
+      <param name="expandedfile" value="${docbook-xsl.exp}"/>
     </antcall>
 
+    <!--
     <echo message="jai" />
     <antcall target="downloadbz2">
       <param name="sourcefile" value="${jai.loc}"/>
       <param name="destfile" value="${jai.home}"/>
       <param name="destdir" value="${jai.home}"/>
     </antcall>
-
+    -->
   </target>
-
-  <target name="proxyflags" depends="init">
-    <!-- check proxy parameters. -->
-    <condition property="useproxy">
-      <equals arg1="${proxy.use}" arg2="on" />
-    </condition>
-  </target>
-
-  <target name="setproxy"  if="useproxy">
-    <taskdef name="setproxy"
-      classname="org.apache.tools.ant.taskdefs.optional.net.SetProxy" />
-    <setproxy proxyhost="${proxy.host}" proxyport="${proxy.port}"/>
-    <echo message="Using ${proxy.host}:${proxy.port} to download ${sourcefile}"/>
-  </target>
-
-  <target name="testexist">
-    <echo message="Testing  for ${destfile}"/>
-    <available file="${destfile}" property="exist"/>
-  </target>
-
   <!--
   <target name="testsrc">
     <echo message="Testing  for ${destfile} versus ${cvs.base}/${location}/src"/>
@@ -377,33 +356,6 @@
     </uptodate>
   </target>
   -->
-
-  <target name="downloadgz" unless="exist" depends="setproxy,testexist">
-    <!-- Download and extract the package -->
-    <get src="${sourcefile}" dest="${download.dir}/file.tar.gz" />
-    <gunzip src="${download.dir}/file.tar.gz" dest="${download.dir}/file.tar"/>
-    <untar src="${download.dir}/file.tar" dest="${download.dir}"/>
-    <delete file="${download.dir}/file.tar"/>
-    <delete file="${download.dir}/file.tar.gz"/>
-  </target>
-
-  <target name="downloadbz2" unless="exist" depends="setproxy,testexist">
-    <!-- Download and extract the package -->
-    <get src="${sourcefile}" dest="${download.dir}/file.tar.bz2" />
-    <mkdir dir="${destdir}" />
-    <bunzip2 src="${download.dir}/file.tar.bz2" dest="${download.dir}/file.tar"/>
-    <untar src="${download.dir}/file.tar" dest="${destdir}"/>
-    <delete file="${download.dir}/file.tar"/>
-    <delete file="${download.dir}/file.tar.bz2"/>
-  </target>
-
-  <target name="downloadzip" unless="exist" depends="setproxy,testexist">
-    <!-- Download and extract the package -->
-    <get src="${sourcefile}" dest="${download.dir}/file.zip" />
-    <mkdir dir="${destdir}" />
-    <unzip src="${download.dir}/file.zip" dest="${destdir}"/>
-    <delete file="${download.dir}/file.zip"/>
-  </target>
 
   <!-- for some reason the documentation depends on the mmbase.jar, at least
   	the target xsltransformer i believe -->

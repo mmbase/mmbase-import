@@ -6,7 +6,7 @@
 # If you'd like to customize some of the settings, create a build.properties in
 # the root of this directory.
 #
-# $Id: build.properties.default,v 1.9 2006-11-16 10:26:46 michiel Exp $
+# $Id: build.properties.default,v 1.10 2006-11-16 11:03:04 michiel Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -46,9 +46,11 @@ fop.version=fop-0.20.5
 fop.file=${fop.version}-bin.tar.gz
 fop.home=${download.dir}/${fop.version}
 fop.loc=http://www.apache.org/dist/xml/fop/${fop.file}
-fop.jar=${download.dir}/${fop.version}/build/fop.jar
-fop.batik.jar=${download.dir}/${fop.version}/lib/batik.jar
-fop.avalon.jar=${download.dir}/${fop.version}/lib/avalon-framework-cvs-20020806.jar
+fop.exp=${expand.dir}/${fop.version}
+fop.jar=${fop.exp}/build/fop.jar
+fop.batik.jar=${fop.exp}/lib/batik.jar
+fop.avalon.jar=${fop.exp}/lib/avalon-framework-cvs-20020806.jar
+
 
 
 # ---- Jai, version 1.0.2 ----
