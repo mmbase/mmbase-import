@@ -1,4 +1,24 @@
-<project>
+<project name="download">
+  <!-- =================================================================== -->
+  <!-- Various targets for automated downloads                             -->
+  <!-- =================================================================== -->
+  <target name="unzipdownloadzip" if="download.zip.present"
+          unless="download.dir.present">
+    <unzip src="${download.zip}" dest="${download.dir}" overwrite="false" />
+  </target>
+
+  <target name="init.get" depends="proxyflags">
+
+    <available property="download.zip.present" file="${download.zip}" />
+    <available property="download.dir.present" file="${download.dir}" />
+
+    <antcall target="unzipdownloadzip" />
+
+    <!-- Init actions -->
+    <mkdir dir="${download.dir}"/>
+    <mkdir dir="${expand.dir}"/>
+  </target>
+
   <target name="proxyflags" depends="init">
     <!-- check proxy parameters. -->
     <condition property="useproxy">
