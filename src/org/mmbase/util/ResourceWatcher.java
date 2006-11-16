@@ -26,7 +26,7 @@ import org.mmbase.bridge.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceWatcher.java,v 1.16 2006-11-11 21:31:43 michiel Exp $
+ * @version $Id: ResourceWatcher.java,v 1.17 2006-11-16 08:56:47 michiel Exp $
  * @see    org.mmbase.util.FileWatcher
  * @see    org.mmbase.util.ResourceLoader
  */
@@ -251,7 +251,7 @@ public abstract class ResourceWatcher implements NodeEventListener  {
 
     /**
      * Set the delay to observe between each check of the file changes.
-     * @delay The delay in milliseconds
+     * @param delay The delay in milliseconds
      */
     public synchronized void setDelay(long delay) {
         this.delay = delay;
