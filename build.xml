@@ -2,7 +2,7 @@
 
 
 MMBase Build File
-$Id: build.xml,v 1.157 2006-11-16 10:08:46 michiel Exp $
+$Id: build.xml,v 1.158 2006-11-16 11:29:25 michiel Exp $
 =================
 
 This build file can be used to build the following from CVS or from the source
@@ -952,25 +952,7 @@ Build-compiler: ${build.compiler}
     <antcall target="javadocs" />
   </target>
 
-  <!-- =================================================================== -->
-  <!-- Various targets for automated downloads                             -->
-  <!-- =================================================================== -->
-  <target name="unzipdownloadzip" if="download.zip.present"
-          unless="download.dir.present">
-    <unzip src="${download.zip}" dest="${download.dir}" overwrite="false" />
-  </target>
-
-  <target name="init.get" depends="proxyflags">
-
-    <available property="download.zip.present" file="${download.zip}" />
-    <available property="download.dir.present" file="${download.dir}" />
-
-    <antcall target="unzipdownloadzip" />
-
-    <!-- Init actions -->
-    <mkdir dir="${download.dir}"/>
-    <mkdir dir="${expand.dir}"/>
-
+  <target name="init.get" depends="download.init.get">
     <echo message="servlet" />
     <antcall target="downloadgz">
       <param name="sourcefile" value="${servlet.loc}"/>
@@ -1051,28 +1033,6 @@ Build-compiler: ${build.compiler}
 
   </target>
 
-  <target name="xsltransformer" depends="init.compile">
-    <javac srcdir="${source-src.dir}"
-           destdir="${build.dir}/classes"
-           classpathref="compile.classpath"
-           depend="true"
-           debug="${debug}"
-           optimize="${optimize}"
-           nowarn="${nowarn}"
-           source="1.5"
-           deprecation="${deprecation}"
-           includeAntRuntime="false"
-           >
-           <include name="org/mmbase/util/XSLTransformer.java" />
-    </javac>
-
-    <copy todir="${build.dir}/classes">
-      <fileset dir="${source-src.dir}">
-        <include name="**/caches*.dtd"/>
-      </fileset>
-    </copy>
-  </target>
-
   <!-- ================================================================================ -->
   <!-- applications -->
   <!-- ================================================================================ -->
@@ -1091,19 +1051,8 @@ Build-compiler: ${build.compiler}
   </target>
 
 
-  <!-- only needed for builder.docs -->
-  <target name="doc.resources" depends="init.get">
-    <delete file="${build.dir}/docbook2xhtml.xslt" />
-    <copy todir="${build.dir}" file="${source-documentation.dir}/style/docbook2xhtml.xslt" />
-    <replace  file="${build.dir}/docbook2xhtml.xslt"
-              token="[BASESTYLESHEET]"
-              value="${expand.dir}/${docbook-xsl.version}/${docbook.stylesheet}" />
-
-  </target>
-
-
   <target name="documentation"
-          depends="jar,documentation.builders,mmcidocs" if="build.documentation">
+          depends="jar,mmcidocs" if="build.documentation">
 
 
     <ant dir="${applications.home}" target="install">
@@ -1117,116 +1066,6 @@ Build-compiler: ${build.compiler}
 
     <!-- ant target="documentation.index" / -->
 
-  </target>
-
-  <!-- =================================================================== -->
-  <!--  Create the Builder documentation                                   -->
-  <!-- TODO, should be moved to documentation module                      -->
-  <!-- =================================================================== -->
-  <target name="documentation.builders"
-          depends="doc.resources,xsltransformer"
-          description="Generate builder-documentation from the builder config files">
-
-    <mkdir dir="${mmdocs.dir}/frontenddevelopers/builders"/>
-
-    <copy todir="${mmdocs.dir}/frontenddevelopers/builders"
-          file="${source-documentation.dir}/style/docbook2xhtml.xslt"
-          />
-
-    <!-- not used at the moment
-    <replace file="${mmdocs.dir}/frontenddevelopers/builders/docbook2xhtml.xslt"
-             token="[BASESTYLESHEET]"
-             value="${expand.dir}/${docbook-xsl.version}/xhtml/chunk.xsl" />
-    -->
-    <replace file="${mmdocs.dir}/frontenddevelopers/builders/docbook2xhtml.xslt"
-             token="[BASESTYLESHEET]"
-             value="${expand.dir}/${docbook-xsl.version}/xhtml/docbook.xsl" />
-
-
-    <!-- compile class for listing of builders -->
-    <javac srcdir="${source-src.dir}"
-           destdir="${build.dir}/classes"
-           classpathref="compile.classpath"
-           debug="${debug}"
-           optimize="${optimize}"
-           nowarn="${nowarn}"
-           source="1.5"
-           deprecation="${deprecation}">
-           <include name="org/mmbase/util/BuilderList.java" />
-    </javac>
-
-
-    <!-- call class, this will give an xml file with a listing of all the builders -->
-    <java classname="org.mmbase.util.BuilderList"
-          classpathref="compile.classpath"
-          fork="yes"
-          failonerror="no"
-          output="${mmdocs.dir}/frontenddevelopers/builders/allbuilders-total.xml">
-      <jvmarg value="-Dmmbase.config=${source.dir}/config" />
-      <jvmarg value="-mx100m" />
-      <classpath>
-        <pathelement location="${build.dir}/classes" />
-      </classpath>
-      <arg value="${source-config-builders.dir}" />
-    </java>
-
-    <!-- convert this file into docbook -->
-    <!-- <style
-      style="${source-config.dir}/xslt/builder2docbook.xsl"
-      extension=".xml"
-      in="${mmdocs.dir}/frontenddevelopers/builders/allbuilders-total.xml"
-      out="${mmdocs.dir}/frontenddevelopers/builders/allbuilders-docbook.xml"
-      >
-        <param name="language" expression="${documentation.builders.language}"/>
-    </style> -->
-
-
-    <!-- generate xhtml -->
-    <!-- <style
-      style="${mmdocs.dir}/frontenddevelopers/builders/docbook2xhtml.xslt"
-      extension=".html"
-      in="${mmdocs.dir}/frontenddevelopers/builders/allbuilders-docbook.xml"
-      out="${mmdocs.dir}/frontenddevelopers/builders/index.html"
-      >
-        <param name="root" expression="../../"/>
-    </style> -->
-
-    <java classname="org.mmbase.util.XSLTransformer"
-          classpathref="compile.classpath"
-          fork="yes"
-          failonerror="no">
-      <jvmarg value="-Djava.endorsed.dirs=${build.dir}/lib" />
-      <jvmarg value="-Dmmbase.config=${source.dir}/config" />
-      <jvmarg value="-mx100m" />
-      <classpath>
-        <pathelement location="${build.dir}/classes" />
-      </classpath>
-      <arg value="${source-config.dir}/xslt/builder2docbook.xsl" />
-      <arg value="${mmdocs.dir}/frontenddevelopers/builders/allbuilders-total.xml" />
-      <arg value="${mmdocs.dir}/frontenddevelopers/builders/allbuilders-docbook.xml" />
-      <arg value="language=${documentation.builders.language}" />
-    </java>
-
-    <java classname="org.mmbase.util.XSLTransformer"
-          classpathref="compile.classpath"
-          fork="yes"
-          failonerror="no">
-      <jvmarg value="-Djava.endorsed.dirs=${build.dir}/lib" />
-      <jvmarg value="-Dmmbase.config=${source.dir}/config" />
-      <jvmarg value="-mx100m" />
-      <classpath>
-        <pathelement location="${build.dir}/classes" />
-      </classpath>
-      <arg value="${mmdocs.dir}/frontenddevelopers/builders/docbook2xhtml.xslt" />
-      <arg value="${mmdocs.dir}/frontenddevelopers/builders/allbuilders-docbook.xml" />
-      <arg value="${mmdocs.dir}/frontenddevelopers/builders/index.html" />
-      <arg value="root=../../" />
-    </java>
-
-    <!-- remove temp files -->
-    <!-- delete file="${mmdocs.dir}/frontenddevelopers/builders/allbuilders-total.xml"/>
-    <delete file="${mmdocs.dir}/frontenddevelopers/builders/allbuilders-docbook.xml"/>
-    <delete file="${mmdocs.dir}/frontenddevelopers/builders/docbook2xhtml.xslt"/ -->
   </target>
 
   <target name="javacc.install">
