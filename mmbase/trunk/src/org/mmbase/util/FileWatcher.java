@@ -63,7 +63,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.4
- * @version $Id: FileWatcher.java,v 1.44 2006-11-12 09:32:29 michiel Exp $
+ * @version $Id: FileWatcher.java,v 1.45 2006-11-16 08:56:47 michiel Exp $
  */
 public abstract class FileWatcher {
     private static Logger log = Logging.getLoggerInstance(FileWatcher.class);
@@ -154,7 +154,7 @@ public abstract class FileWatcher {
 
     /**
      * Set the delay to observe between each check of the file changes.
-     * @delay The delay in milliseconds
+     * @param delay The delay in milliseconds
      */
     public void setDelay(long delay) {
         this.delay = delay;
