@@ -1,5 +1,5 @@
 <!--
-  $Id: build.xml,v 1.30 2006-11-16 10:10:32 michiel Exp $
+  $Id: build.xml,v 1.31 2006-11-16 10:26:46 michiel Exp $
 -->
 <project name="MMBase-Documentation" default="documentation" basedir=".">
 
@@ -65,11 +65,11 @@
     <mkdir dir="${documentation.dest.dir}" />
     <echo message="docbook" />
 
-    <antCall target="downloadgz">
+    <antcall target="downloadgz">
       <param name="sourcefile" value="${docbook-xsl.loc}"/>
       <param name="destfile" value="${docbook-xsl.dest}"/>
       <param name="expandedfile" value="${docbook-xsl.exp}"/>
-    </antCall>
+    </antcall>
   </target>
 
   <!-- =================================================================== -->
