@@ -2,7 +2,7 @@
 
 
 MMBase Build File
-$Id: build.xml,v 1.156 2006-11-16 09:18:51 michiel Exp $
+$Id: build.xml,v 1.157 2006-11-16 10:08:46 michiel Exp $
 =================
 
 This build file can be used to build the following from CVS or from the source
@@ -121,6 +121,8 @@ several MMBase-checkouts.
   <property name="optional.lib.dir"     value="${source.dir}" /> <!-- just a dir that does not contain libs..-->
   <property name="mmbase.jar"           value="${build.dir}/mmbase.jar"/>
   <property name="jar.download"           value="http://www.mmbase.org/download/jars"/>
+
+  <import file="download.xml" />
 
   <target name="init" depends="check.dir.all">
     <condition property="do.documentation">
@@ -1001,12 +1003,6 @@ Build-compiler: ${build.compiler}
       <param name="expandedfile" value="${javaactivation.jar}"/>
     </antcall>
 
-    <echo message="docbook" />
-    <antcall target="downloadgz">
-      <param name="sourcefile" value="${docbook-xsl.loc}"/>
-      <param name="destfile" value="${docbook-xsl.dest}"/>
-      <param name="expandedfile" value="${docbook-xsl.exp}"/>
-    </antcall>
 
     <echo message="log4j" />
     <antcall target="downloadgz">
@@ -1053,72 +1049,6 @@ Build-compiler: ${build.compiler}
     </antcall>
     -->
 
-  </target>
-
-  <target name="proxyflags" depends="init">
-    <!-- check proxy parameters. -->
-    <condition property="useproxy">
-      <equals arg1="${proxy.use}" arg2="on" />
-    </condition>
-  </target>
-
-  <target name="setproxy"  if="useproxy">
-    <taskdef name="setproxy"
-      classname="org.apache.tools.ant.taskdefs.optional.net.SetProxy" />
-    <setproxy proxyhost="${proxy.host}" proxyport="${proxy.port}"/>
-    <echo message="Using ${proxy.host}:${proxy.port} to download ${sourcefile}"/>
-  </target>
-
-  <target name="testexist">
-    <echo message="Testing  for ${destfile}"/>
-    <available file="${destfile}" property="exist"/>
-  </target>
-
-  <target name="testexpanded">
-    <echo message="Testing for ${expandedfile}"/>
-    <available file="${expandedfile}" property="expanded"/>
-  </target>
-
-  <target name="download" unless="exist" depends="setproxy,testexist">
-    <!-- Download the package -->
-    <get src="${sourcefile}" dest="${destfile}" verbose="on" />
-  </target>
-
-  <target name="downloadgz" unless="expanded" depends="download,testexpanded">
-    <!-- Extract the package -->
-    <gunzip src="${destfile}" dest="${download.dir}/file.tar"/>
-    <untar src="${download.dir}/file.tar" dest="${expand.dir}"/>
-    <delete file="${download.dir}/file.tar"/>
-  </target>
-
-  <target name="downloadbz2" unless="expanded" depends="download,testexpanded">
-    <!-- Extract the package -->
-    <mkdir dir="${destdir}" />
-    <bunzip2 src="${destfile}" dest="${download.dir}/file.tar"/>
-    <untar src="${download.dir}/file.tar" dest="${destdir}"/>
-    <delete file="${download.dir}/file.tar"/>
-  </target>
-
-  <target name="downloadzip" unless="expanded" depends="download,testexpanded">
-    <!-- Extract the package -->
-    <mkdir dir="${destdir}" />
-    <unzip src="${destfile}" dest="${destdir}"/>
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- Clean the download directory                                        -->
-  <!-- =================================================================== -->
-  <target name="clean.download" description="Clean the download directory">
-    <delete dir="${download.dir}"/>
-  </target>
-
-
-  <!-- =================================================================== -->
-  <!-- Clean the expand directory                                          -->
-  <!-- =================================================================== -->
-  <target name="clean.expand" description="Clean the expand directory">
-    <delete dir="${expand.dir}"/>
-    <delete file="${download.dir}/file.tar" />
   </target>
 
   <target name="xsltransformer" depends="init.compile">
