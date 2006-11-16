@@ -1,9 +1,9 @@
 <?xml version="1.0" ?>
-<builder 
+<builder
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
-                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
     name="blockrel" maintainer="mmbase.org" version="0" extends="posrel">
   <names>
     <singular xml:lang="en">Block Relation</singular>
@@ -12,25 +12,24 @@
     <plural xml:lang="nl">Blokrelaties</plural>
   </names>
   <fieldlist>
-    <field>
+    <field name="class">
       <gui>
         <guiname xml:lang="en">CSS Class</guiname>
         <guiname xml:lang="nl">CSS Class</guiname>
       </gui>
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
-        <name>class</name>
         <type state="persistent" size="255" notnull="false" key="false">STRING</type>
       </db>
     </field>
-    <field>
+
+    <field name="id">
       <gui>
         <guiname xml:lang="en">CSS ID</guiname>
         <guiname xml:lang="nl">CSS ID</guiname>
       </gui>
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
-        <name>id</name>
         <type state="persistent" size="255" notnull="false" key="false">STRING</type>
       </db>
     </field>
