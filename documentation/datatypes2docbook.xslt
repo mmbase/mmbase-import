@@ -30,10 +30,57 @@
 
   <xsl:template match="dt:class">
     <para>
-      Class: <ulink url="http://www.mmbase.org/api/{translate(@name, '.', '/')}.html">
+      Class:
+      <xsl:apply-templates select="." mode="ulink" />
+    </para>
+  </xsl:template>
+
+  <xsl:template match="dt:class" mode="ulink">
+    <ulink url="http://www.mmbase.org/api/{translate(@name, '.', '/')}.html">
       <xsl:value-of select="@name" />
     </ulink>
+  </xsl:template>
+
+
+  <xsl:template match="dt:setprocessor">
+    <para>
+      A set-processor is defined  <xsl:apply-templates select="." mode="type" />
+      <xsl:for-each select="dt:class">
+        <xsl:apply-templates select="." mode="ulink" />
+        <xsl:if test="position() != last()">, </xsl:if>
+      </xsl:for-each>
     </para>
+  </xsl:template>
+
+  <xsl:template match="dt:getprocessor">
+    <para>
+      A get-processor is defined <xsl:apply-templates select="." mode="type" />
+      <xsl:for-each select="dt:class">
+        <xsl:apply-templates select="." mode="ulink" />
+        <xsl:if test="position() != last()">, </xsl:if>
+      </xsl:for-each>
+    </para>
+  </xsl:template>
+
+  <xsl:template match="dt:commitprocessor">
+    <para>
+      A commit-processor is defined  <xsl:apply-templates select="." mode="type" />
+      <xsl:for-each select="dt:class">
+        <xsl:apply-templates select="." mode="ulink" />
+        <xsl:if test="position() != last()">, </xsl:if>
+      </xsl:for-each>
+    </para>
+  </xsl:template>
+
+  <xsl:template match="dt:*" mode="type">
+    <xsl:choose>
+      <xsl:when test="not(@type) or @type = '' or @type = '*'">
+        for all types
+      </xsl:when>
+      <xsl:otherwise>
+        for type <xsl:value-of select="@type" />:
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <xsl:template match="dt:datatype|dt:specialization" mode="sub">
@@ -82,6 +129,7 @@
               This is an enumeration.
             </para>
           </xsl:if>
+          <xsl:apply-templates select="dt:setprocessor|dt:getprocessor|dt:commitprocessor" />
         </listitem>
       </varlistentry>
       <xsl:apply-templates select="dt:datatype|dt:specialization" mode="sub" />
