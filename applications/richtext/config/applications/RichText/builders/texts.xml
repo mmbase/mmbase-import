@@ -14,7 +14,7 @@
     <plural xml:lang="eo">Tekstaĵoj</plural>
   </names>
   <fieldlist>
-    <field>
+    <field name="title">
       <descriptions>
         <description xml:lang="en">Title of this object</description>
         <description xml:lang="nl">Titel van dit object</description>
@@ -35,12 +35,11 @@
         <minLength value="2" />
       </datatype>
       <db>
-        <name>title</name>
         <type key="false" notnull="true" size="255" state="persistent">STRING</type>
       </db>
     </field>
 
-    <field>
+    <field name="subtitle">
       <descriptions>
         <description xml:lang="en">Subtitle of the object</description>
         <description xml:lang="nl">Sub hoofd van het object</description>
@@ -53,12 +52,11 @@
         </gui>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
-        <name>subtitle</name>
         <type key="false" notnull="false" size="255" state="persistent">STRING</type>
       </db>
     </field>
 
-    <field>
+    <field name="intro">
       <descriptions>
         <description xml:lang="en">Introduction text or teaser</description>
         <description xml:lang="nl">Introductietekst of teaser</description>
@@ -71,12 +69,11 @@
       </gui>
       <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
-        <name>intro</name>
         <type key="false" notnull="false" size="2048" state="persistent">STRING</type>
       </db>
     </field>
 
-    <field>
+    <field name="body">
       <descriptions>
         <description xml:lang="en">Main text of the object</description>
         <description xml:lang="nl">Hoofdtekst van het object</description>
@@ -89,7 +86,6 @@
       </gui>
       <datatype base="mmxfunp" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
-        <name>body</name>
         <type key="false" notnull="false" size="64000" state="persistent">XML</type>
       </db>
     </field>

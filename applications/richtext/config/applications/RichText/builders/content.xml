@@ -19,7 +19,7 @@
     <description xml:lang="eo">Enhavaĵoj</description>
   </descriptions>
   <fieldlist>
-    <field>
+    <field name="title">
       <descriptions>
         <description xml:lang="en">Title of this object</description>
         <description xml:lang="nl">Titel van dit object</description>
@@ -40,12 +40,11 @@
         <minLength value="2" />
       </datatype>
       <db>
-        <name>title</name>
         <type key="false" notnull="true" size="255" state="persistent">STRING</type>
       </db>
     </field>
 
-    <field>
+    <field name="subtitle">
       <descriptions>
         <description xml:lang="en">Subtitle of the object</description>
         <description xml:lang="nl">Sub hoofd van het object</description>
@@ -58,12 +57,11 @@
       </gui>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
-        <name>subtitle</name>
         <type key="false" notnull="false" size="255" state="persistent">STRING</type>
       </db>
     </field>
 
-    <field>
+    <field name="intro">
       <descriptions>
         <description xml:lang="en">Introduction text or teaser</description>
         <description xml:lang="nl">Introductietekst of teaser</description>
@@ -76,12 +74,11 @@
       </gui>
       <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
-        <name xml:lang="en">intro</name>
         <type key="false" notnull="false" size="2048" state="persistent">STRING</type>
       </db>
     </field>
 
-    <field>
+    <field name="body">
       <descriptions>
         <description xml:lang="en">Main text of the object</description>
         <description xml:lang="nl">Hoofdtekst van het object</description>
@@ -94,11 +91,10 @@
       </gui>
       <datatype base="mmxfunp" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
-        <name>body</name>
         <type key="false" notnull="false" size="64000" state="persistent">XML</type>
       </db>
     </field>
-    <field>
+    <field name="begin">
       <gui>
         <guiname xml:lang="nl">Online op</guiname>
         <guiname xml:lang="en">Online on</guiname>
@@ -113,12 +109,8 @@
         <minInclusive value="yesterday"  enforce="oncreate" />
         <maxInclusive value="today + 150 year" enforce="never" />
       </datatype>
-      <db>
-        <name>begin</name>
-        <type key="false" notnull="false" state="persistent">DATETIME</type>
-      </db>
     </field>
-    <field>
+    <field name="end">
       <gui>
         <guiname xml:lang="nl">Offline op</guiname>
         <guiname xml:lang="en">Offline on</guiname>
@@ -133,12 +125,8 @@
         <minInclusive value="yesterday"        enforce="oncreate" />
         <maxInclusive value="today + 150 year" enforce="never" />
       </datatype>
-      <db>
-        <name>end</name>
-        <type key="false" notnull="false" state="persistent">DATETIME</type>
-      </db>
     </field>
-    <field>
+    <field name="lastmodifiedby">
       <descriptions>
         <description xml:lang="en">Last modified by</description>
         <description xml:lang="nl">Laatst veranderd door</description>
@@ -150,11 +138,11 @@
       </gui>
       <datatype base="lastmodifier" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
-        <name>lastmodifiedby</name>
         <type key="false" notnull="false" size="255" state="system">STRING</type>
       </db>
     </field>
-    <field>
+
+    <field name="lastmodified">
       <descriptions>
         <description xml:lang="en">Last modified on</description>
         <description xml:lang="nl">Laatst veranderd op</description>
@@ -165,12 +153,9 @@
         <guiname xml:lang="eo">Lasta ŝanĝo</guiname>
       </gui>
       <datatype base="lastmodified" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>lastmodified</name>
-        <type state="system" notnull="false" key="false">DATETIME</type>
-      </db>
     </field>
-    <field>
+
+    <field name="creator">
       <descriptions>
         <description xml:lang="en">Created by</description>
         <description xml:lang="nl">Gecreëerd door</description>
@@ -183,11 +168,11 @@
       </gui>
       <datatype base="creator" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
-        <name>creator</name>
         <type key="false" notnull="false" size="255" state="system">STRING</type>
       </db>
     </field>
-    <field>
+
+    <field name="created">
       <descriptions>
         <description xml:lang="en">Created on</description>
         <description xml:lang="nl">Gecreëeerd op</description>
@@ -199,10 +184,7 @@
         <guiname xml:lang="eo">Kretempo</guiname>
       </gui>
       <datatype base="created" xmlns="http://www.mmbase.org/xmlns/datatypes"  />
-      <db>
-        <name>created</name>
-        <type state="system" notnull="false" key="false">DATETIME</type>
-      </db>
     </field>
+
   </fieldlist>
 </builder>

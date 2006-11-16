@@ -13,6 +13,7 @@ import org.mmbase.datatypes.processors.Processor;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.*;
 import org.mmbase.module.core.*;
+import org.mmbase.core.event.*;
 import org.mmbase.util.logging.*;
 import java.util.*;
 
@@ -20,7 +21,7 @@ import java.util.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: GetIndex.java,v 1.4 2005-10-25 22:29:17 michiel Exp $
+ * @version $Id: GetIndex.java,v 1.5 2006-11-16 18:08:45 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -28,34 +29,25 @@ public class GetIndex implements  Processor {
     private static final Logger log = Logging.getLoggerInstance(GetIndex.class);
 
     public static final String CLOUDPROP_INDEXROOT = "org.mmbase.index-root";
- 
-    private static final int serialVersionUID = 1;
 
-    private Map cache = Collections.synchronizedMap(new HashMap());
+    private static final long serialVersionUID = 1L;
+
+    private Map<String, String> cache = Collections.synchronizedMap(new HashMap<String, String>());
     private boolean cacheValid = true;
 
     private String indexField = "index";
     private String role       = "index";
     private int depth = 5;
 
-    private MMBaseObserver observer = new MMBaseObserver() {
-
-            public boolean nodeRemoteChanged(String machine, String number, String builder, String ctype) {
-                return nodeChanged(number, builder, ctype);
-            }
-            
-            public boolean nodeLocalChanged(String machine, String number, String builder, String ctype) {
-                return nodeChanged(number, builder, ctype);
-            }
-            
-            protected boolean nodeChanged(String number, String builder, String ctype) {
+    private NodeEventListener observer = new NodeEventListener() {
+            public void notify(NodeEvent ne) {
                 cacheValid = false;
                 GetIndex.this.cache.clear();
-                return true;
             }
         };
-    
-    private Object getKey(final Node root, final Node node, final Field field) {
+
+
+    private String getKey(final Node root, final Node node, final Field field) {
         return "" + root.getNumber() + "/" + node.getNumber() + "/" + field.getName();
     }
 
@@ -81,14 +73,13 @@ public class GetIndex implements  Processor {
                 l = n.getRelatedNodes("object", role, "source");
             }
             return n;
-        }        
+        }
     }
 
     private  void fillCache(final Node root, final Node node, final Field field) {
         // make sure the cache is watched.
-        MMBase mmb = MMBase.getMMBase();        
-        mmb.getBuilder(node.getNodeManager().getName()).addRemoteObserver(observer);
-        mmb.getBuilder(node.getNodeManager().getName()).addLocalObserver(observer);
+        MMBase mmb = MMBase.getMMBase();
+        mmb.getBuilder(node.getNodeManager().getName()).addEventListener(observer);
 
         log.info("Filling cache, initiated by node " + node.getNumber());
         Node n = root;
@@ -96,7 +87,7 @@ public class GetIndex implements  Processor {
         synchronized(cache) {
             // 'n' now contains the 'topmost' object.
             // now iterate down again, while determining all indices.
-            String[] index = new String[depth * 2 + 1];                    
+            String[] index = new String[depth * 2 + 1];
             GrowingTreeList tree = new GrowingTreeList(Queries.createNodeQuery(n), depth, null, role, "destination");
             TreeIterator iterator = tree.treeIterator();
             while (iterator.hasNext()) {
@@ -114,8 +105,8 @@ public class GetIndex implements  Processor {
     public Object process(Node node, Field field, Object value) {
         Node root = findRoot(node);
         log.info("Found root-node " + root.getNumber());
-        Object key = getKey(root, node, field);
-        Object result = cache.get(key);
+        String key = getKey(root, node, field);
+        String result = cache.get(key);
         if (result == null) {
             fillCache(root, node, field);
             result = cache.get(key);
@@ -124,5 +115,5 @@ public class GetIndex implements  Processor {
         if (result == null) return "";
         return result;
     }
-  
+
 }
