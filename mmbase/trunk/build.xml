@@ -2,7 +2,7 @@
 
 
 MMBase Build File
-$Id: build.xml,v 1.155 2006-10-25 14:44:16 michiel Exp $
+$Id: build.xml,v 1.156 2006-11-16 09:18:51 michiel Exp $
 =================
 
 This build file can be used to build the following from CVS or from the source
@@ -300,8 +300,7 @@ builddate=${builddate}
   <target
     name="lib.release"
     description="Create the lib directory"
-    depends="init,init.get,jar">
-    <!--depends="init,expand.xalan,expand.log4j,expand.hsqldb,expand.jai,jar"-->
+    depends="init,init.get,jar,applications">
 
     <mkdir dir="${release.lib.dir}" />
     <copy file="${xalan.jar}"          todir="${release.lib.dir}" />
@@ -706,7 +705,7 @@ Build-compiler: ${build.compiler}
   <!-- =================================================================== -->
   <target name="javadocs"
           description="Create the API documentation"
-          depends="init,init.get,lib.compile,javacc"
+          depends="init,init.get,lib.compile,lib.release,javacc"
           unless="did.javadocs"
     >
     <mkdir dir="${download.dir}/j2se5"/>
@@ -775,6 +774,10 @@ Build-compiler: ${build.compiler}
           <include name="**/*.zip"/>
         </fileset>
         <fileset dir="${applications.home}/oscache-cache/">
+          <include name="**/*.jar"/>
+          <include name="**/*.zip"/>
+        </fileset>
+        <fileset dir="${applications.home}/resources/">
           <include name="**/*.jar"/>
           <include name="**/*.zip"/>
         </fileset>
