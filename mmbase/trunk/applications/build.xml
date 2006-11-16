@@ -261,14 +261,12 @@ Applications build file
     <ant dir="dove"          target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
+    <!--
     <ant dir="rmmci"         target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
+    -->
     <ant dir="oscache-cache"      target="install" inheritAll="false">
-      <property name="build.dir"        value="${build.dir}" />
-    </ant>
-
-    <ant dir="cloudsecurity"      target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
     <ant dir="codings"      target="install" inheritAll="false">
@@ -323,26 +321,6 @@ Applications build file
       <property name="build.dir"        value="${build.dir}" />
     </ant>
     <ant dir="richtext"      target="install" inheritAll="false">
-      <property name="build.dir"        value="${build.dir}" />
-    </ant>
-
-    <ant dir="cloudsecurity"      target="install" inheritAll="false">
-      <property name="build.dir"        value="${build.dir}" />
-    </ant>
-    <ant dir="codings"      target="install" inheritAll="false">
-      <property name="build.dir"        value="${build.dir}" />
-    </ant>
-    <ant dir="mycompany"      target="install" inheritAll="false">
-      <property name="build.dir"        value="${build.dir}" />
-    </ant>
-    <ant dir="mynews"      target="install" inheritAll="false">
-      <property name="build.dir"        value="${build.dir}" />
-    </ant>
-    <ant dir="myyahoo"      target="install" inheritAll="false">
-      <property name="build.dir"        value="${build.dir}" />
-    </ant>
-
-    <ant dir="resources"      target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
 
