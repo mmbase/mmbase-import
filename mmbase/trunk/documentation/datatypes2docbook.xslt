@@ -3,9 +3,7 @@
   version="1.0"
   xmlns:dt="http://www.mmbase.org/xmlns/datatypes"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-  xmlns:xalan="org.apache.xalan.xslt.extensions.Redirect"
-  xmlns:xi="http://www.w3.org/2001/XInclude"
-  extension-element-prefixes="xalan"
+  exclude-result-prefixes="dt"
   >
 
   <xsl:output method="xml"
