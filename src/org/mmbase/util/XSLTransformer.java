@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @move org.mmbase.util.xml
  * @author Case Roole, cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: XSLTransformer.java,v 1.35 2006-11-16 11:57:32 michiel Exp $
+ * @version $Id: XSLTransformer.java,v 1.36 2006-11-16 12:16:44 michiel Exp $
  */
 public class XSLTransformer {
     private static final Logger log = Logging.getLoggerInstance(XSLTransformer.class);
@@ -197,7 +197,7 @@ public class XSLTransformer {
         // turn validating on
         XMLEntityResolver resolver = new XMLEntityResolver(true);
         dfactory.setNamespaceAware(true);
-        if (params != null && params.get(NS_AWARE).equals(Boolean.FALSE)) {
+        if (params != null && Boolean.FALSE.equals(params.get(NS_AWARE))) {
             dfactory.setNamespaceAware(false);
         }
         DocumentBuilder db = dfactory.newDocumentBuilder();
