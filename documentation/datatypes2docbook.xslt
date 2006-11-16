@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <xsl:stylesheet id="xml2html"
   version="1.0"
+  xmlns="http://docbook.org/ns/docbook"
   xmlns:dt="http://www.mmbase.org/xmlns/datatypes"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   exclude-result-prefixes="dt"
@@ -13,20 +14,26 @@
     />
 
   <xsl:template match="/dt:datatypes">
-    <section id="datatypes">
-      <title>MMBase default datatypes</title>
-      <xsl:apply-templates select="dt:datatype" />
-    </section>
+    <xsl:apply-templates select="dt:datatype" />
   </xsl:template>
 
   <xsl:template match="dt:datatype">
-    <section id="{@id}">
-      <title><xsl:value-of select="dt:description[@xml:lang = 'en']" /></title>
-      <para>Class: <xsl:value-of select="dt:class" /></para>
+    <section id="section_{@id}">
+      <title><xsl:value-of select="@id" /></title>
+      <para><xsl:value-of select="dt:description[@xml:lang = 'en']" /></para>
+      <xsl:apply-templates select="dt:class" />
       <variablelist>
         <xsl:apply-templates select="dt:datatype|dt:specialization" mode="sub" />
       </variablelist>
     </section>
+  </xsl:template>
+
+  <xsl:template match="dt:class">
+    <para>
+      Class: <ulink url="http://www.mmbase.org/api/{translate(@name, '.', '/')}.html">
+      <xsl:value-of select="@name" />
+    </ulink>
+    </para>
   </xsl:template>
 
   <xsl:template match="dt:datatype|dt:specialization" mode="sub">
@@ -34,9 +41,7 @@
         <term><xsl:value-of select="@id" /></term>
         <listitem>
           <para><xsl:value-of select="dt:description[@xml:lang = 'en']" /></para>
-          <xsl:if test="dt:class">
-            <para>Class: <xsl:value-of select="dt:class" /></para>
-          </xsl:if>
+          <xsl:apply-templates select="dt:class" />
           <xsl:if test="dt:default">
             <para>Default: <xsl:value-of select="dt:default/@value" /></para>
           </xsl:if>
@@ -59,7 +64,17 @@
             <para>
               Patterns are assigned. 
               Example pattern (for english): 
-              <xsl:value-of select="dt:pattern[@xml:lang = 'en']" />
+              <xsl:choose>
+                <xsl:when test="dt:pattern[@xml:lang = 'en-US']">
+                  <xsl:value-of select="dt:pattern[@xml:lang = 'en-US']/@value" />
+                </xsl:when>
+                <xsl:when test="dt:pattern[@xml:lang = 'en']">
+                  <xsl:value-of select="dt:pattern[@xml:lang = 'en']/@value" />
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="dt:pattern/@value" />
+                </xsl:otherwise>
+              </xsl:choose>
             </para>
           </xsl:if>
           <xsl:if test="dt:enumeration">
