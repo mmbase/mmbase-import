@@ -1,5 +1,5 @@
 <!--
-  $Id: build.xml,v 1.29 2006-06-24 08:37:06 michiel Exp $
+  $Id: build.xml,v 1.30 2006-11-16 10:10:32 michiel Exp $
 -->
 <project name="MMBase-Documentation" default="documentation" basedir=".">
 
@@ -57,11 +57,19 @@
   <property name="documentation.docbook.fo.stylesheet"
             value="${download.dir}/${docbook-xsl.version}/fo/docbook.xsl" />
 
+  <import file="${source.dir}/download.xml" />
 
   <!-- =============== Init  ============================================= -->
   <target name="init">
     <mkdir dir="${documentation.build.dir}" />
     <mkdir dir="${documentation.dest.dir}" />
+    <echo message="docbook" />
+
+    <antCall target="downloadgz">
+      <param name="sourcefile" value="${docbook-xsl.loc}"/>
+      <param name="destfile" value="${docbook-xsl.dest}"/>
+      <param name="expandedfile" value="${docbook-xsl.exp}"/>
+    </antCall>
   </target>
 
   <!-- =================================================================== -->
