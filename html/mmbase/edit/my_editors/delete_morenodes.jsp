@@ -33,68 +33,87 @@ function toggle(targetId){
 </script>
 </head>
 <body>
-<div id="top">[<a href="<mm:url page="index.jsp" referids="ntype" />">back to my_editors</a>]</div>
-<mm:present referid="ntype">
-
-<mm:present referid="action">
-<ol class="message">
-<% 
-String[] nodeIDs = request.getParameterValues("IDs");
-if (nodeIDs != null && nodeIDs.length != 0) {
-	for (int i = 0; i < nodeIDs.length; i++) {
-%>
-  <mm:compare referid="action" value="Delete selected">
-	<mm:node number="<%= nodeIDs[i] %>" notfound="skipbody">
-	  <li>[<%= nodeIDs[i] %>] <mm:function name="gui" /> is deleted.</li>
-	  <mm:deletenode deleterelations="true" />
-	</mm:node>
-  </mm:compare>
-<%
-	}
-}
-%>
-</ol>
-</mm:present><%-- /action --%>
-
-
-<form action="<mm:url referids="ntype" />" method="post" name="theform" id="theform">
-<mm:fieldlist type="list" nodetype="$ntype"><mm:import id="span" reset="true"><mm:size /></mm:import></mm:fieldlist>
-<mm:listnodescontainer type="$ntype" id="node">
-<mm:import id="totalsize"><mm:size /></mm:import>
-<mm:maxnumber value="100" />
-
-<mm:listnodes>
-  <mm:first>
-  <table><tr>
-	<td>&nbsp;</td>
-	<mm:fieldlist type="list" nodetype="$ntype">
-	  <td><mm:fieldinfo type="guiname" /></td>
-	</mm:fieldlist>
-  </tr>
-  </mm:first>
-  <tr>
-    <td><input name="IDs" type="checkbox" value="<mm:field name="number" />" /></td>
-	<mm:fieldlist type="list" nodetype="$ntype">
-	  <td><mm:fieldinfo type="guivalue" /></td>
-	</mm:fieldlist>
-  </tr>
-  <mm:last></table></mm:last>
-</mm:listnodes>
-
-</mm:listnodescontainer>
-
-<mm:compare referid="totalsize" value="0"><p>No nodes found or left</p></mm:compare>
-
-<input name="action" id="action" type="submit" value="Delete selected" />
-<input name="check" id="check" type="button" value="Check all" onclick="markAll();" />
-</form>
-</mm:present><%-- /ntype --%>
-
+<div id="top">
+  [<a href="index.jsp">back to my_editors</a>] 
+  [<a href="<mm:url />">start again</a>] 
+  [<a href="<mm:url referids="ntype?" />">reload</a>] 
+</div>
 
 <mm:notpresent referid="ntype">
-<h2>No node type</h2>
-<p>You need to provide a nodetype with the parameter 'ntype'.</p>
+  <h2>Please choose a node type</h2>
+  <form action="<mm:url />" method="post">
+  <fieldset>
+  <select id="ntype" name="ntype">
+  <mm:listnodescontainer type="typedef">
+	<mm:sortorder field="name" direction="UP" />
+	<mm:listnodes>
+	  <mm:import id="nmname" reset="true"><mm:field name="name" /></mm:import>
+	  <option label="<mm:field name="name" />" value="<mm:field name="name" />"
+		<mm:compare referid="ntype" value="$nmname">selected="selected"</mm:compare>
+	  ><mm:field name="name" /></option>
+	</mm:listnodes>
+  </mm:listnodescontainer>
+  </select>
+  <input name="action" id="action" type="submit" value="OK" />
+  </fieldset>
+  </form>
 </mm:notpresent>
+
+<mm:present referid="ntype">
+  <h2><mm:write referid="ntype" /></h2>
+  <mm:present referid="action">
+  <ol class="message">
+  <% 
+  String[] nodeIDs = request.getParameterValues("IDs");
+  if (nodeIDs != null && nodeIDs.length != 0) {
+	  for (int i = 0; i < nodeIDs.length; i++) {
+  %>
+	<mm:compare referid="action" value="Delete selected">
+	  <mm:node number="<%= nodeIDs[i] %>" notfound="skipbody">
+		<li>[<%= nodeIDs[i] %>] <mm:function name="gui" /> is deleted.</li>
+		<mm:deletenode deleterelations="true" />
+	  </mm:node>
+	</mm:compare>
+  <%
+	  }
+  }
+  %>
+  </ol>
+  </mm:present><%-- /action --%>
+
+  <form action="<mm:url referids="ntype" />" method="post" name="theform" id="theform">
+	<mm:fieldlist type="list" nodetype="$ntype"><mm:import id="span" reset="true"><mm:size /></mm:import></mm:fieldlist>
+	<mm:listnodescontainer type="$ntype" id="node">
+	<mm:import id="totalsize"><mm:size /></mm:import>
+	<mm:maxnumber value="100" />
+	
+	<mm:listnodes>
+	  <mm:first>
+	  <table><tr>
+		<td>&nbsp;</td>
+		<mm:fieldlist type="list" nodetype="$ntype">
+		  <td><mm:fieldinfo type="guiname" /></td>
+		</mm:fieldlist>
+	  </tr>
+	  </mm:first>
+	  <tr>
+		<td><input name="IDs" type="checkbox" value="<mm:field name="number" />" /></td>
+		<mm:fieldlist type="list" nodetype="$ntype">
+		  <td><mm:fieldinfo type="guivalue" /></td>
+		</mm:fieldlist>
+	  </tr>
+	  <mm:last></table></mm:last>
+	</mm:listnodes>
+	
+	</mm:listnodescontainer>
+	
+	<mm:compare referid="totalsize" value="0"><p>No nodes found or left</p></mm:compare>
+	
+	<input name="action" id="action" type="submit" value="Delete selected" />
+	<input name="check" id="check" type="button" value="Check all" onclick="markAll();" />
+  </form>
+</mm:present><%-- /ntype --%>
+
 </body>
 </html>
 </mm:cloud>
