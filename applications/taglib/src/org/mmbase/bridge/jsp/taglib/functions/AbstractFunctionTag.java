@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: AbstractFunctionTag.java,v 1.27.2.1 2006-11-15 19:50:25 michiel Exp $
+ * @version $Id: AbstractFunctionTag.java,v 1.27.2.2 2006-11-17 13:08:10 nklasens Exp $
  */
 abstract public class AbstractFunctionTag extends NodeReferrerTag {
 
@@ -265,7 +265,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
 
                 params.checkRequiredParameters();
             } catch (Throwable e) {
-                throw new IllegalArgumentException("function " + functionName + " " + e.getMessage(), e);
+                throw new IllegalArgumentException("function " + functionName + " " + e.getMessage());
             }
 
             value =  function.getFunctionValue(params);
