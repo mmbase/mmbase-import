@@ -84,11 +84,13 @@ public class CronJobs extends MMObjectBuilder implements Runnable {
      */
     public int insert(String owner, MMObjectNode objectNodenode) {
         int number = super.insert(owner, objectNodenode);
-        Node node = getCloud().getNode(number);
         try {
+            if (cronDaemon != null) {
+		        Node node = getCloud().getNode(number);
             cronDaemon.add(createCronEntry(node));
+            }
         } catch (Exception e) {
-            throw new RuntimeException("error while creating cron entry with id " + node.getNumber() + " error " + e.getMessage(), e);
+            throw new RuntimeException("error while creating cron entry with id " + number + " error " + e.getMessage(), e);
         }
         return number;
     }
