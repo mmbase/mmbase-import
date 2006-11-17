@@ -9,7 +9,7 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.20 2006-06-27 12:57:31 nklasens Exp $
+  @version $Id: prompts.xsl,v 1.20.2.1 2006-11-17 13:09:20 nklasens Exp $
   -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -58,10 +58,10 @@
 <xsl:template name="prompt_select">selecteer...</xsl:template>
 <!-- up/down button prompts and tooltips -->
 
-<xsl:variable name="tooltip_up">Verplaats dit item hoger in the lijst</xsl:variable>
+<xsl:variable name="tooltip_up">Verplaats dit item hoger in de lijst</xsl:variable>
 <xsl:template name="prompt_up"><img src="{$mediadir}up.gif" border="0" alt="Omhoog" title="{$tooltip_up}" /></xsl:template>
 
-<xsl:variable name="tooltip_down">Verplaats dit item lager in the lijst</xsl:variable>
+<xsl:variable name="tooltip_down">Verplaats dit item lager in de lijst</xsl:variable>
 <xsl:template name="prompt_down"><img src="{$mediadir}down.gif" border="0" alt="Omlaag" title="{$tooltip_down}" /></xsl:template>
 
 <!-- new button prompts and tooltips -->

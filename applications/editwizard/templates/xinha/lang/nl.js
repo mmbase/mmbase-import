@@ -1,4 +1,4 @@
-// I18N constants
+﻿// I18N constants
 
 // LANG: "nl", ENCODING: UTF-8
 // Author: Michel Weegeerink (info@mmc-shop.nl), http://mmc-shop.nl
@@ -40,7 +40,7 @@
   "Undoes your last action": "Ongedaan maken",
   "Redoes your last action": "Herhalen",
   "Cut selection": "Knippen",
-  "Copy selection": "Kopi?ren",
+  "Copy selection": "Kopiëren",
   "Paste from clipboard": "Plakken",
   "Direction left to right": "Tekstrichting links naar rechts",
   "Direction right to left": "Tekstrichting rechts naar links",
