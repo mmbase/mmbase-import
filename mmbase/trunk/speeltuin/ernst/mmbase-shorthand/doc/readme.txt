@@ -137,7 +137,10 @@ relation (child of builder)
 
 using the build
 
-the only thing you have to specify is the input file. It is easiest to create a build.properties file and set the 'inputfile' property to your file, or when you call the ant script from an other ant script just include it as an property element.
+There are twoo properties you have to define:
+-application: which contains the name of the mmbase application matching with the applicaton > name attribute.
+-inputfile: pointing to the xml file.
+It is easiest to create a build.properties file and set these properties there, or when you call the ant script from an other ant script just include them as an property elements.
 The first time xalan is being downloaded so that should take a while.
 
 The default ant task will perform the downloaded, compilation and transformation

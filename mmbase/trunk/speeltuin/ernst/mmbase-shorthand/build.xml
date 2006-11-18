@@ -3,12 +3,14 @@
 
 	<property file="build.properties" />
 	<property name="xalan.file" value="xalan-j_2_7_0-bin-2jars" />
-	<property name="download.dir" location="download" />
+	<property name="download.dir" location="${basedir}/download" />
 	<property name="xalan.expand.dir" location="${download.dir}/xalan-j_2_7_0" />
-	<property name="src.dir" location="src" />
-	<property name="bin.dir" location="bin" />
+	<property name="src.dir" location="${basedir}/src" />
+	<property name="bin.dir" location="${basedir}/bin" />
+	<property name="generated.dir" location="${basedir}/generated" />
 
-	<property name="inputfile" value="example.xml" />
+	<!-- these values serve the demo -->
+	<property name="inputfile" value="${basedir}/example.xml" />
 	<property name="application" value="wck" />
 
 	<path id="cp">
@@ -23,12 +25,12 @@
 		transform tasks
 	-->
 	<target name="transform" depends="compile" description="create an mmbase apps1 from an mmbase-shortand xml file">
-		<delete dir="generated" />
-		<mkdir dir="generated" />
-		<mkdir dir="generated/${application}/builders" />
+		<delete dir="${generated.dir}" />
+		<mkdir dir="${generated.dir}" />
+		<mkdir dir="${generated.dir}/${application}/builders" />
 
 		<java classname="ebunders.mmbase.shorthand.Transform" classpathref="cp">
-			<arg value="mmbase-shorthand.xsl" />
+			<arg value="${basedir}/mmbase-shorthand.xsl" />
 			<arg value="${inputfile}" />
 			<arg value="${basedir}/result.xml" />
 			<arg value="false" />
@@ -37,11 +39,11 @@
 		<delete file="${basedir}/result.xml" />
 
 		<java classname="ebunders.mmbase.shorthand.Indenter" classpathref="cp">
-			<arg value="${basedir}/generated" />
+			<arg value="${generated.dir}" />
 		</java>
 
 		<java classname="ebunders.mmbase.shorthand.Indenter" classpathref="cp">
-			<arg value="${basedir}/generated/${application}/builders" />
+			<arg value="${generated.dir}/${application}/builders" />
 			<classpath refid="cp" />
 		</java>
 	</target>
@@ -59,7 +61,7 @@
 		cleaning tasks
 	-->
 	<target name="clean">
-		<delete dir="generated" />
+		<delete dir="${generated.dir}" />
 		<delete dir="${bin.dir}" />
 	</target>
 
