@@ -1,6 +1,6 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"%>
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%>
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud method="delegate" jspvar="cloud">
 
@@ -104,7 +104,9 @@
 <%-- find workgroup --%>
 <mm:node number="$user">
   <mm:relatedcontainer path="workgroups,classes" fields="workgroups.number,classes.number">
-    <mm:constraint field="classes.number" value="$class"/>
+    <mm:isnotempty referid="class">
+      <mm:constraint field="classes.number" value="$class"/>
+    </mm:isnotempty>
     <mm:related>
       <mm:remove referid="workgroup"/>
       <mm:import id="workgroup"><mm:field name="workgroups.number"/></mm:import>
