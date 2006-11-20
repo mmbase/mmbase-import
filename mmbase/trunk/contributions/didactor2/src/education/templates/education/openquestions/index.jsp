@@ -1,25 +1,27 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"%>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <mm:content>
-<mm:cloud method="delegate" jspvar="cloud">
-<mm:import externid="question" required="true"/>
-<mm:import externid="madetest">-1</mm:import>
-<%@include file="/shared/setImports.jsp" %>
-<mm:node number="$question">
-   <mm:relatedcontainer path="givenanswers,madetests">
-      <mm:constraint field="madetests.number" value="$madetest"/>
+<mm:cloud method="delegate">
+  <mm:import externid="question" required="true"/>
+  <mm:import externid="madetest">-1</mm:import>
+  <jsp:directive.include file="/shared/setImports.jsp" />
+  <mm:node number="$question">
+    <mm:relatedcontainer path="givenanswers,madetests">
+      <mm:isnotempty referid="madetest">
+        <mm:constraint field="madetests.number" value="$madetest"/>
+      </mm:isnotempty>
       <mm:related>
-         <mm:node element="givenanswers">
-            <mm:field name="text" id="answer" write="false"/>
-         </mm:node>
+        <mm:node element="givenanswers">
+          <mm:field name="text" id="answer" write="false"/>
+        </mm:node>
       </mm:related>
-   </mm:relatedcontainer>
+    </mm:relatedcontainer>
 
-  <mm:field name="showtitle">
-    <mm:compare value="1">
-      <h2><mm:field name="title"/></h2>
-    </mm:compare>
-  </mm:field>
+    <mm:field name="showtitle">
+      <mm:compare value="1">
+        <h2><mm:field name="title"/></h2>
+      </mm:compare>
+    </mm:field>
 
   <p/>
   <mm:field name="text" escape="none"/>
