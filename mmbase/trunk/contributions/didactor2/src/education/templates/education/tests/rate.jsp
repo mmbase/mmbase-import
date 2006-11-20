@@ -1,24 +1,23 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"%>
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-
-<%@page import="java.util.Iterator"%>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%><%@page import="java.util.Iterator"%>
 
 <mm:content postprocessor="reducespace" expires="0">
-<mm:cloud method="delegate" jspvar="cloud">
+  <mm:cloud method="delegate">
 
-<mm:import externid="tests" required="true"/>
-<mm:import externid="learnobject" required="true"/>
-<mm:import externid="thismadetest" required="true"/>
-<mm:import externid="questionsshowed" jspvar="questionsShowed" required="true"/>
-<mm:import externid="testpath" jspvar="testPath" required="true"/>
-<mm:import externid="questionamount" jspvar="questionAmount" vartype="Integer"/>
-<mm:import externid="questionperpageamount"/>
-<mm:import externid="command" jspvar="sCommand" vartype="String">next</mm:import>
+    <mm:import externid="tests" required="true"/>
+    <mm:import externid="learnobject" required="true"/>
+    <mm:import externid="thismadetest" required="true"/>
+    <mm:import externid="questionsshowed" jspvar="questionsShowed" required="true"/>
+    <mm:import externid="testpath" jspvar="testPath" required="true"/>
+    <mm:import externid="questionamount" jspvar="questionAmount" vartype="Integer"/>
+    <mm:import externid="questionperpageamount"/>
+    <mm:import externid="command" jspvar="sCommand" vartype="String">next</mm:import>
 
-<%@include file="/shared/setImports.jsp" %>
-<%@include file="/education/tests/definitions.jsp" %>
+    <jsp:directive.include file="/shared/setImports.jsp" />
+    <jsp:directive.include file="/education/tests/definitions.jsp" />
 
-<mm:node number="$tests" id="my_tests">
+    <mm:node number="$tests" id="my_tests">
 
   <%-- Only the first time a madetests object is created --%>
   <mm:compare referid="thismadetest" value="">
@@ -35,13 +34,14 @@
 
     <%// Make relation between copybooks instance and the madetest %>
     <%// Direct relation people->classrel->education %>
-    <mm:compare referid="class" value="null">
+    <mm:compare referid="class" valueset=",null">
       <mm:node number="$user">
         <mm:relatedcontainer path="classrel,educations">
           <mm:constraint field="educations.number" value="$education"/>
           <mm:related>
             <mm:node element="classrel">
-              <mm:relatednodes type="copybooks" id="copybookID">
+              <mm:relatednodes type="copybooks" max="1">
+                <mm:node id="copybookID" />
               </mm:relatednodes>
             </mm:node>
           </mm:related>
@@ -50,13 +50,14 @@
     </mm:compare>
 
     <%// people->classrel->class->related->education %>
-    <mm:compare referid="class" value="null" inverse="true">
+    <mm:compare referid="class" valueset=",null" inverse="true">
       <mm:node number="$user">
         <mm:relatedcontainer path="classrel,classes">
           <mm:constraint field="classes.number" value="$class"/>
           <mm:related>
             <mm:node element="classrel">
-              <mm:relatednodes type="copybooks" id="copybookID">
+              <mm:relatednodes type="copybooks" max="1">
+                <mm:node id="copybookID" />
               </mm:relatednodes>
             </mm:node>
           </mm:related>
@@ -65,9 +66,9 @@
     </mm:compare>
 
     <mm:relatednodescontainer path="madetests,copybooks" element="madetests">
-      <mm:present referid="copybookID">
+      <mm:isnotempty referid="copybookID">
         <mm:constraint field="copybooks.number" referid="copybookID"/>
-      </mm:present>
+      </mm:isnotempty>
       <mm:relatednodes>
         <mm:relatednodescontainer type="givenanswers">
           <%--Remove Made test with  <mm:size/> answers<br/> --%>
@@ -86,7 +87,7 @@
 
     <%-- Make relation between copybooks instance and the madetest --%>
     <mm:node number="$user">
-      <mm:compare referid="class" value="null">
+      <mm:compare referid="class" valueset=",null">
         <mm:relatedcontainer path="classrel,educations">
           <mm:constraint field="educations.number" value="$education"/>
           <mm:related>
@@ -98,7 +99,7 @@
           </mm:related>
         </mm:relatedcontainer>
       </mm:compare>
-      <mm:compare referid="class" value="null" inverse="true">
+      <mm:compare referid="class" valueset=",null" inverse="true">
         <mm:relatedcontainer path="classrel,classes">
           <mm:constraint field="classes.number" value="$class"/>
           <mm:related>
