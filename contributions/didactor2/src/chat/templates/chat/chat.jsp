@@ -50,7 +50,7 @@
                 ID="chat_eo" WIDTH="730" HEIGHT="480" ALIGN="">
 
 <PARAM NAME="movie" VALUE="<mm:write referid="chaturl"/>">
-<PARAM "NAME"=quality VALUE="high"> <PARAM NAME="bgcolor" VALUE="#FFFFFF">
+<PARAM NAME="quality" VALUE="high"> <PARAM NAME="bgcolor" VALUE="#FFFFFF">
 <EMBED src="<mm:write referid="chaturl"/>" quality="high" bgcolor="#FFFFFF"
 swLiveConnect="FALSE" WIDTH="730" HEIGHT="480" NAME="chat_eo" ALIGN=""
 TYPE="application/x-shockwave-flash" PLUGINSPAGE="http://www.macromedia.com/go/getflashplayer">
