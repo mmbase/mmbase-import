@@ -1,13 +1,13 @@
 <%--
   This template shows the chat
 --%>
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%>
 <mm:content postprocessor="reducespace">
-<mm:cloud method="delegate" jspvar="cloud">
+<mm:cloud method="delegate">
 
-<%@include file="/shared/setImports.jsp" %>
+<jsp:directive.include file="/shared/setImports.jsp" />
 
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
@@ -45,17 +45,18 @@
       <map name="chat">
       </map>
 
-<OBJECT classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
+<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
                 codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,47,0"
-                ID="chat_eo" WIDTH="730" HEIGHT="480" ALIGN="">
+                id="chat_eo" width="730" height="480" align="">
 
-<PARAM NAME="movie" VALUE="<mm:write referid="chaturl"/>">
-<PARAM NAME="quality" VALUE="high"> <PARAM NAME="bgcolor" VALUE="#FFFFFF">
-<EMBED src="<mm:write referid="chaturl"/>" quality="high" bgcolor="#FFFFFF"
+<param name="movie" value="<mm:write referid="chaturl"/>">
+<param name="quality" value="high"> 
+<param name="bgcolor" value="#FFFFFF">
+<embed src="<mm:write referid="chaturl"/>" quality="high" bgcolor="#FFFFFF"
 swLiveConnect="FALSE" WIDTH="730" HEIGHT="480" NAME="chat_eo" ALIGN=""
 TYPE="application/x-shockwave-flash" PLUGINSPAGE="http://www.macromedia.com/go/getflashplayer">
-</EMBED>
-</OBJECT>
+</embed>
+</object>
       <p/>
       &nbsp;&nbsp;Om gebruik te kunnen maken van de chat, heb je de <a href="http://www.macromedia.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash&P5_Language=Dutch&Lang=Dutch" target="_blank">nieuwste Flash Player</a> nodig, minimaal versie 6.
 
