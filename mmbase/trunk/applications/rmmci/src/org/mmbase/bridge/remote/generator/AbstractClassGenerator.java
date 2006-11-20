@@ -19,7 +19,7 @@ import java.util.*;
  *
  * @since MMBase-1.9
  * @author Pierre van Rooden
- * @version $Id: AbstractClassGenerator.java,v 1.3 2006-10-06 08:21:57 pierre Exp $
+ * @version $Id: AbstractClassGenerator.java,v 1.4 2006-11-20 17:59:44 pierre Exp $
  */
 abstract public class AbstractClassGenerator extends AbstractGenerator {
 
@@ -198,7 +198,10 @@ abstract public class AbstractClassGenerator extends AbstractGenerator {
     }
 
     boolean isBasicClass(Type t) {
-        return t.equals(java.lang.Object.class) || t.equals(java.util.List.class) || t.equals(java.util.SortedSet.class);
+        return t.equals(java.lang.Object.class) ||
+            t.equals(java.util.Collection.class) ||
+            t.equals(java.util.List.class) ||
+            t.equals(java.util.SortedSet.class);
     }
 
     boolean needtoWrap(Type t) {
