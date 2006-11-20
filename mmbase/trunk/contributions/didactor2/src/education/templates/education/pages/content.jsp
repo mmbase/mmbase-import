@@ -28,9 +28,18 @@
    </mm:present>
 
    <mm:node number="$learnobject">
-
-     <mm:field id="layout" name="layout" write="false" />
-     <mm:field id="imagelayout" name="imagelayout" write="false" />
+     <mm:hasfield name="layout">
+       <mm:field id="layout" name="layout" write="false" />
+     </mm:hasfield>
+     <mm:hasfield name="layout" inverse="true">
+       <mm:import id="layout">0</mm:import>
+     </mm:hasfield>
+     <mm:hasfield name="imagelayout">
+       <mm:field id="imagelayout" name="imagelayout" write="false" />
+     </mm:hasfield>
+     <mm:hasfield name="imagelayout" inverse="true">
+       <mm:import id="imagelayout"></mm:import>
+     </mm:hasfield>
 
      <mm:import externid="suppresstitle"/>
 
