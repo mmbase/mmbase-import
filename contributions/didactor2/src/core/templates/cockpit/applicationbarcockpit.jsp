@@ -1,6 +1,7 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<mm:cloud method="delegate" jspvar="cloud" authenticate="asis">
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di"
+ %>
+<mm:cloud method="delegate" authenticate="asis">
 <%@include file="/shared/setImports.jsp" %>
 <div class="applicationMenubarCockpit" style="white-space: nowrap">
   <mm:node number="$user" notfound="skipbody">
