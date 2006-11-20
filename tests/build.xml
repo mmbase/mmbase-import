@@ -70,6 +70,7 @@
     </copy>
     <copy file="${junit.jar}" todir="${tests.lib}"  preservelastmodified="true" />
     <copy file="${build.dir}/mmbase.jar" todir="${tests.lib}" preservelastmodified="true" overwrite="true" />
+    <copy file="${source.dir}/applications/resources/build/mmbase-resources.jar" todir="${tests.lib}"  preservelastmodified="true" />
     <copy file="${source.dir}/applications/rmmci/build/mmbase-rmmci-server.jar" todir="${tests.lib}"  preservelastmodified="true" />
     <copy file="${source.dir}/applications/rmmci/build/mmbase-rmmci.jar" todir="${tests.lib}"  preservelastmodified="true" />
     <copy file="${source.dir}/applications/clustering/build/mmbase-clustering.jar" todir="${tests.lib}"  preservelastmodified="true" />
@@ -96,6 +97,7 @@
           <include name="xalan.jar" />
           <include name="servlet.jar" />
           <include name="mmbase-test.jar" />
+          <include name="mmbase-resources.jar" />
           <include name="mmbase.jar" />
         </fileset>
       </classpath>
