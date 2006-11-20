@@ -33,7 +33,7 @@ dt
 {
     margin-left: 20px;
     font-weight: bold;
-    color: #66666;
+    color: #666666;
     font-size: 14px;
     text-decoration: underline;
 }
@@ -70,7 +70,7 @@ h1
     font-weight: bold;
     color: #003333;
     text-align: left;
-    padding-botom: 5px;
+    padding-bottom: 5px;
 }
 
 h2
@@ -377,7 +377,7 @@ body #profileb {
 div.row {
   clear: both;
   padding-top: 5px;
-  paddin-bottom: 5px;
+  padding-bottom: 5px;
 }
 
 div.row span.label {
