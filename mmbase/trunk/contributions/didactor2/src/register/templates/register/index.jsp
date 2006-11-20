@@ -1,13 +1,13 @@
-<%@page session="true" language="java" contentType="text/html; charset=UTF-8" %>
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
-<mm:content postprocessor="reducespace">
-<mm:cloud jspvar="cloud" method="delegate" authenticate="asis">
-  <%@include file="/shared/setImports.jsp" %>
+<%@page session="true" language="java" contentType="text/html; charset=UTF-8"
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
+%><mm:content postprocessor="reducespace">
+<mm:cloud  authenticate="asis">
+  <jsp:directive.include file="/shared/setImports.jsp" />
   <mm:treeinclude page="/cockpit/cockpit_intro_header.jsp" objectlist="$includePath" referids="$referids">
    <mm:param name="extraheader">
      <style>.columns {height: 100%;}</style>
-     <link rel="stylesheet" type="text/css" href='<mm:treefile page="/register/css/register.css" objectlist="$includePath" referids="$referids" />' />
+     <link rel="stylesheet" type="text/css" href='<mm:treefile page="/register/css/register.css" objectlist="$includePath"  />' />
    </mm:param>
   </mm:treeinclude>
 
