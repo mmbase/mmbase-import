@@ -1,50 +1,50 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"%>
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<mm:content postprocessor="reducespace" expires="0">
-<mm:cloud method="delegate" jspvar="cloud">
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%><mm:content postprocessor="reducespace" expires="0">
+<mm:cloud method="delegate">
 
-<mm:import externid="testNo" required="true"/>
-<mm:import externid="madetestNo" required="true"/>
-<mm:import externid="userNo" required="true"/>
-<mm:import externid="feedback" required="false"/>
+  <mm:import externid="testNo"     required="true"  />
+  <mm:import externid="madetestNo" required="true"  />
+  <mm:import externid="userNo"     required="true"  />
+  <mm:import externid="feedback"   required="false" />
+  
+  <jsp:directive.include file="/shared/setImports.jsp" />
+  <jsp:directive.include file="/education/tests/definitions.jsp" />
 
-<%@include file="/shared/setImports.jsp" %>
-<%@include file="/education/tests/definitions.jsp" %>
+  <di:may component="education" action="isSelfOrTeacherOf" arguments="userNo">
+    <mm:node referid="madetestNo">
+      <mm:relatednodes role="related" orderby="related.number" type="givenanswers" directions="up">
+        <p>
+          <mm:relatednodes type="questions">
+            <mm:import id="questiontype"><mm:nodeinfo type="type"/></mm:import>
+            <mm:field id="questiontext" name="text" write="false"/>
+            <b><di:translate key="education.question" />:</b> <mm:write referid="questiontext" escape="none"/>
+            <br/>
+            <mm:remove referid="questiontext"/>
+            <mm:field id="questionNo" name="number" write="false"/>
+          </mm:relatednodes>
+          <mm:notpresent referid="questiontype">
+            <b>questiontype not found </b>
+            <br/>
+            <mm:import id="questiontype">none</mm:import>
+          </mm:notpresent>
 
-<di:may component="education" action="isSelfOrTeacherOf" arguments="userNo">
-  <mm:list nodes="$madetestNo" path="madetests,related,givenanswers" orderby="related.number" directions="UP">
-    <mm:import id="givenanswersNo" reset="true"><mm:field name="givenanswers.number"/></mm:import>
-    <mm:node referid="givenanswersNo">
-    <p>
-      <mm:relatednodes type="questions">
-        <mm:import id="questiontype"><mm:nodeinfo type="type"/></mm:import>
-        <mm:field id="questiontext" name="text" write="false"/>
-        <b><di:translate key="education.question" />:</b> <mm:write referid="questiontext" escape="none"/>
-        <br/>
-        <mm:remove referid="questiontext"/>
-        <mm:field id="questionNo" name="number" write="false"/>
-      </mm:relatednodes>
-      <mm:notpresent referid="questiontype">
-        <b>questiontype not found </b>
-        <br/>
-        <mm:import id="questiontype">none</mm:import>
-      </mm:notpresent>
-
-      <mm:compare referid="questiontype" value="hotspotquestions">
-        <mm:node referid="questionNo">
-      	  <div style="position: relative">
-            <mm:relatednodes type="images" max="1">
-              <img src="<mm:image />" border="0" /><br/>
-            </mm:relatednodes>
-            <% int i = 1; %>
-            <mm:relatednodes type="hotspotanswers" orderby="x1,y1">
-              <a href="#" class="hotspot" style="position: absolute; left: <mm:field name="x1" />px; top: <mm:field name="y1" />px; width:<mm:field name="x2" />px; height: <mm:field name="y2" />px;"><%= i++ %></a>
-            </mm:relatednodes>
-          </div>
-        </mm:node>
-        <b><di:translate key="education.givenanswer" />:</b> <mm:field name="text" escape="none"/>
-        <br/>
-      </mm:compare>
+          <mm:compare referid="questiontype" value="hotspotquestions">
+            <mm:node referid="questionNo">
+              <div style="position: relative">
+                <mm:relatednodes type="images" max="1">
+                  <mm:image mode="src" border="0" />
+                  <br/>
+                </mm:relatednodes>
+                <% int i = 1; %>
+                <mm:relatednodes type="hotspotanswers" orderby="x1,y1">
+                  <a href="#" class="hotspot" style="position: absolute; left: <mm:field name="x1" />px; top: <mm:field name="y1" />px; width:<mm:field name="x2" />px; height: <mm:field name="y2" />px;"><%= i++ %></a>
+                </mm:relatednodes>
+              </div>
+            </mm:node>
+            <b><di:translate key="education.givenanswer" />:</b> <mm:field name="text" escape="none"/>
+            <br/>
+          </mm:compare>
 
       <mm:compare referid="questiontype" value="dropquestions">
         <b><di:translate key="education.givenanswer" />:</b> <mm:field name="text" escape="none"/>
@@ -146,7 +146,8 @@
                   <mm:field name="title"/><br/>
                 </mm:compare>
               </mm:field>
-              <img src="<mm:image />" width="200" border="0" /><br/>
+              <mm:image template="s(200)" border="0" mode="img" />
+              <br/>
               <mm:field name="description" escape="none"/> 
               <mm:remove referid="hasimage"/>
               <mm:import id="hasimage"/>
@@ -187,15 +188,15 @@
 
       <br/>
       <%-- Feedback (from the question) --%>
-      <mm:node number="$questionNo">
+      <mm:node referid="questionNo">
         <mm:relatednodescontainer type="feedback">
           <mm:constraint field="maximalscore" referid="questionscore" operator=">="/>
           <mm:constraint field="minimalscore" referid="questionscore" operator="<="/>
           <mm:relatednodes>
       	    <b><di:translate key="education.feedback" />: <mm:field name="name"/></b><br/>
             <mm:relatednodes type="images">
-    	        <img src="<mm:image template="s(150x150)"/>" title="<mm:field name="title"/>" alt="<mm:field name="title"/>">
-                <mm:last><br/></mm:last>
+              <mm:image mode="img" template="s(150x150)"  />
+              <mm:last><br/></mm:last>
   	        </mm:relatednodes>
          
             <mm:field name="text" escape="none"/>
@@ -218,11 +219,8 @@
         </mm:relatednodescontainer>
         </p>
       </mm:node>
-      <mm:remove referid="questionscore"/>
-      <mm:remove referid="questiontype"/>
-      <mm:remove referid="questionNo"/>
-    </mm:node>
-  </mm:list>
+    </mm:relatednodes>
+  </mm:node>
 </di:may>
 </mm:cloud>
 </mm:content>
