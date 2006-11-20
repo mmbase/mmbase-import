@@ -1,12 +1,12 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"%>
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<%@ page import="java.text.*,java.util.*" %>
-
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%><%@ page import="java.text.*,java.util.*" 
+%>
 <mm:content postprocessor="reducespace" expires="0">
-<mm:cloud method="delegate" jspvar="cloud">
+<mm:cloud method="delegate">
 <mm:import id="testNo" externid="learnobject" required="true"/>
-<%@include file="/shared/setImports.jsp" %>
-<%@include file="/education/tests/definitions.jsp" %>
+<jsp:directive.include file="/shared/setImports.jsp" />
+<jsp:directive.include file="/education/tests/definitions.jsp"  />
 
 <%-- remember this page --%>
 <mm:treeinclude page="/education/storebookmarks.jsp" objectlist="$includePath" referids="$referids">
@@ -16,7 +16,7 @@
 
 <%-- find users copybook --%>
 <mm:node number="$user">
-  <%@include file="find_copybook.jsp"%>
+  <jsp:directive.include file="find_copybook.jsp" />
 </mm:node>
 
 <mm:node number="$testNo">
