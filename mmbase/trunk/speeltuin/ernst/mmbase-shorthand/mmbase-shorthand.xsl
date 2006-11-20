@@ -404,8 +404,8 @@
                         <xsl:if test="@datatype='long' or @datatype='duration'">LONG</xsl:if>
                         <xsl:if test="@datatype='boolean' or @datatype='yesno' or @datatype='onoff'">BOOLEAN</xsl:if>
                         <xsl:if test="@datatype='integer' or @datatype='filesize' or @datatype='weekday' or @datatype='byte' or @datatype='hour_of_day' or @datatype='minute_of_hour'">INTEGER</xsl:if>
-                        <xsl:if test="@datatype='binary'">BYNARY</xsl:if>
-                        <xsl:if test="@datatype='node' or @datatype='nodenumber'">BYNARY</xsl:if>
+                        <xsl:if test="@datatype='binary'">BINARY</xsl:if>
+                        <xsl:if test="@datatype='node' or @datatype='nodenumber'">BINARY</xsl:if>
                         <xsl:if test="@datatype='xml' or @datatype='html' or @datatype='xmlfield'">XML</xsl:if>
                     </xsl:otherwise>
                 </xsl:choose>
@@ -417,7 +417,7 @@
                     <xsl:when test="@datatype='string' or @datatype='field' or @datatype='html' or @datatype='xml' or @datatype='xmlfield'">3000</xsl:when>
                     <xsl:when test="@datatype='line' or @datatype='eline' or @datatype='trimmedline'">300</xsl:when>
                     <xsl:when test="@datatype='boolean' or @datatype='yesno' or @datatype='onoff'">1</xsl:when>
-                    <xsl:when test="$type='BINAY'">16777215</xsl:when>
+                    <xsl:when test="$type='BINARY'">16777215</xsl:when>
                     <xsl:otherwise>50</xsl:otherwise>
                 </xsl:choose>
             </xsl:variable>
