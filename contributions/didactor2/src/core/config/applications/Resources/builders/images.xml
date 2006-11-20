@@ -63,7 +63,7 @@
 
   <fieldlist>
 
-    <field>
+    <field name="title">
       <descriptions>
 
         <description xml:lang="en">Title of the image</description>
@@ -83,12 +83,11 @@
       </editor>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
-        <name>title</name>
         <type state="persistent" size="255" notnull="true" key="false">STRING</type>
       </db>
     </field>
 
-    <field>
+    <field name="description">
       <descriptions>
         <description xml:lang="en">Description of the image</description>
         <description xml:lang="nl">Omschrijving van de afbeelding</description>
@@ -105,13 +104,13 @@
           <list>3</list>
         </positions>
       </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
-        <name>description</name>
         <type state="persistent" size="1024" notnull="false" key="false">STRING</type>
       </db>
     </field>
 
-    <field>
+    <field name="handle">
       <descriptions>
         <description xml:lang="en">The image itself (binary data)</description>
         <description xml:lang="nl">De afbeelding zelf (binaire data)</description>
@@ -132,12 +131,11 @@
         <pattern value="image/.*" />
       </datatype>
       <db>
-        <name>handle</name>
         <type state="persistent" size="16777215" notnull="true" key="false">BINARY</type>
       </db>
     </field>
 
-    <field>
+    <field name="itype">
       <descriptions>
         <description xml:lang="en">Mimetype of the image</description>
         <description xml:lang="nl">Mimetype van de afbeelding</description>
@@ -151,12 +149,11 @@
       </gui>
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
-        <name>itype</name>
         <type state="system" size="32" notnull="true" key="false">STRING</type>
       </db>
     </field>
 
-    <field>
+    <field name="filesize" state="system">
       <descriptions>
         <description xml:lang="en">Filesize of the image</description>
         <description xml:lang="nl">Filegrootte van het plaatje</description>
@@ -174,12 +171,8 @@
           </positions>
         </editor>
         <datatype base="filesize" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-        <db>
-          <name>filesize</name>
-          <type state="system" notnull="false">INTEGER</type>
-        </db>
      </field>
-    <field>
+    <field name="width" state="system">
       <descriptions>
         <description xml:lang="en">Width of the image in pixels</description>
         <description xml:lang="nl">Breedte van het plaatje in pixels</description>
@@ -189,12 +182,10 @@
         <guiname xml:lang="nl">Breedte</guiname>
         <guiname xml:lang="eo">Larĝo</guiname>
       </gui>
-      <db>
-        <name>width</name>
-        <type state="system" notnull="false">INTEGER</type>
-      </db>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
-    <field>
+
+    <field name="height" state="system">
       <descriptions>
         <description xml:lang="en">Height of the image in pixels</description>
         <description xml:lang="nl">Hoogte van het plaatje in pixels</description>
@@ -204,12 +195,10 @@
         <guiname xml:lang="nl">Hoogte</guiname>
         <guiname xml:lang="eo">Alto</guiname>
       </gui>
-      <db>
-        <name>height</name>
-        <type state="system" notnull="false">INTEGER</type>
-      </db>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
-    <field>
+
+    <field name="filename">
       <descriptions>
         <description xml:lang="en">Original filename of attachment if it was an uploaded file</description>
         <description xml:lang="nl">Oorspronkelijke bestandsnaam als de bijlage een ge-upload bestand betreft</description>
@@ -221,7 +210,6 @@
       </gui>
       <datatype base="filename" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
-        <name>filename</name>
         <type state="persistent" size="255" notnull="true" key="false">STRING</type>
       </db>
     </field>
