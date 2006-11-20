@@ -1,57 +1,42 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di"
+ %>
 <mm:content postprocessor="reducespace" expires="0">
-<mm:cloud method="delegate" jspvar="cloud">
+  <mm:cloud method="delegate">
+    
+    <jsp:directive.include file="/shared/setImports.jsp" />
+    <jsp:directive.nclude file="/education/tests/definitions.jsp" />
+    <jsp:directive.include file="/education/wizards/roles_defs.jsp" />
+    <mm:import id="editcontextname" reset="true">docent schermen</mm:import>
+    <jsp:directive.include file="/education/wizards/roles_chk.jsp" />
 
-<%@include file="/shared/setImports.jsp" %>
-<%@include file="/education/tests/definitions.jsp" %>
-<%@include file="/education/wizards/roles_defs.jsp" %>
-<mm:import id="editcontextname" reset="true">docent schermen</mm:import>
-<%@include file="/education/wizards/roles_chk.jsp" %>
+    <mm:import externid="student"           required="true"/>
+    <mm:import externid="startAt"           jspvar="startAt" vartype="Integer" required="true"/>
+    <mm:import externid="direct_connection" required="true"/>
+    <mm:import externid="class"             required="true" />
 
-<mm:import externid="student"           required="true"/>
-<mm:import externid="startAt"           jspvar="startAt" vartype="Integer" required="true"/>
-<mm:import externid="direct_connection" required="true"/>
-
-<%
-/*
-   NOTE:
-   temp_class is used to avoid a bug with a double calling
-   I mean the parent page is called as index.jsp?class=null
-   And in all internal calls "class" will be "null" insted of proper value
-*/
-%>
-<mm:import externid="temp_class"  />
-<mm:compare referid="class" value="null">
-   <mm:compare referid="direct_connection" value="true" inverse="true">
-      <mm:import id="class" reset="true"><mm:write referid="temp_class"/></mm:import>
-   </mm:compare>
-</mm:compare>
-
-<mm:node number="$student">
-  <tr>
-    <td style="border-color:#000000; border-top:0px; border-left:0px">
-      <a href="<mm:treefile page="/progress/student.jsp" objectlist="$includePath" referids="provider,education,student"><mm:param name="class"><mm:write referid="class"/></mm:param></mm:treefile>">
-        <mm:field name="firstname"/> <mm:field name="lastname"/>
-      </a>
-    </td>
-    <td style="border-color:#000000; border-top:0px; border-left:0px">
-      <mm:import jspvar="progress" id="progress" vartype="Double"><mm:treeinclude page="/progress/getprogress.jsp" objectlist="$includePath" referids="$referids"><mm:param name="student"><mm:write referid="student"/></mm:param></mm:treeinclude></mm:import>
-      <%= (int)(progress.doubleValue()*100.0)%>%
-    </td>
-
-
-    <% //direct relation people-classrel-educations %>
-    <mm:compare referid="direct_connection" value="true">
-      <mm:list fields="classrel.number" path="people,classrel,educations" constraints="people.number=$student and educations.number=$education">
-         <mm:field name="classrel.number" id="classrel" write="false"/>
+    <mm:node number="$student">
+      <tr>
+        <td style="border-color:#000000; border-top:0px; border-left:0px">
+          <a href="<mm:treefile page="/progress/student.jsp" objectlist="$includePath" referids="provider,education,student,class"></mm:treefile>">
+          <mm:field name="firstname"/> <mm:field name="lastname"/>
+        </a>
+      </td>
+      <td style="border-color:#000000; border-top:0px; border-left:0px">
+        <mm:import jspvar="progress" id="progress" vartype="Double"><mm:treeinclude page="/progress/getprogress.jsp" objectlist="$includePath" referids="$referids"><mm:param name="student"><mm:write referid="student"/></mm:param></mm:treeinclude></mm:import>
+        <%= (int)(progress.doubleValue()*100.0)%>%
+      </td>
+      
+      <% //direct relation people-classrel-educations %>
+      <mm:compare referid="direct_connection" value="true">
+        <mm:list fields="classrel.number" path="people,classrel,educations" constraints="people.number=$student and educations.number=$education">
+          <mm:field name="classrel.number" id="classrel" write="false"/>
       </mm:list>
     </mm:compare>
     <% //people-classrel-class-related-educations %>
     <mm:compare referid="direct_connection" value="true" inverse="true">
       <mm:list fields="classrel.number" path="people,classrel,classes" constraints="people.number=$student and classes.number=$class">
-         <mm:field name="classrel.number" id="classrel" write="false"/>
+        <mm:field name="classrel.number" id="classrel" write="false"/>
       </mm:list>
     </mm:compare>
 
