@@ -1,23 +1,23 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-
-<%@page import="java.util.*" %>
-<%@ page import = "nl.didactor.component.education.utils.EducationPeopleConnector" %>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%><%@page import="java.util.*" 
+%>
 <mm:content postprocessor="reducespace" expires="0">
 
-<mm:cloud method="delegate" jspvar="cloud">
+<mm:cloud method="delegate">
 
-<%@include file="/shared/setImports.jsp" %>
-<%@include file="/education/tests/definitions.jsp" %>
-<%@include file="/education/wizards/roles_defs.jsp" %>
-<mm:import id="editcontextname" reset="true">docent schermen</mm:import>
-<%@include file="/education/wizards/roles_chk.jsp" %>
+  <jsp:directive.include file="/shared/setImports.jsp" />
+  <jsp:directive.include file="/education/tests/definitions.jsp" />
+  <jsp:directive.include file="/education/wizards/roles_defs.jsp" />
+  <mm:import id="editcontextname" reset="true">docent schermen</mm:import>
+  <jsp:directive.include file="/education/wizards/roles_chk.jsp" />
 
-<mm:islessthan referid="rights" referid2="RIGHTS_RW">
-  <di:hasrole role="student">
-    <jsp:forward page="student.jsp"/>
-  </di:hasrole>
-</mm:islessthan>
+  <mm:log>HOOOOOO</mm:log>
+  <mm:islessthan referid="rights" referid2="RIGHTS_RW">
+    <di:hasrole role="student">
+      <jsp:forward page="student.jsp"/>
+    </di:hasrole>
+  </mm:islessthan>
 
 <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
   <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
@@ -154,27 +154,19 @@
                       </di:hasrole>
                     </mm:node>
                   </mm:related>
-                  <mm:related path="classrel,classes" orderby="classes.name">
-                    <mm:node element="classes">
-                      <tr>
-                        <td style="border-color:#000000; border-top:0px; border-left:0px" colspan="<%= iNumberOfColumns %>"><b><di:translate key="progress.class" />: <mm:field name="name"/></b></td>
-                      </tr>
-                      <mm:import id="temp_class" reset="true"><mm:field name="number"/></mm:import>
-                      <mm:related path="classrel,people">
-                        <mm:node element="people">
-                          <mm:import id="list_student_number" reset="true"><mm:field name="number"/></mm:import>
-                          <di:hasrole role="student" referid="list_student_number">
-                            <mm:treeinclude page="/progress/progress_row.jsp" objectlist="$includePath" referids="$referids,startAt,class">
-                              <mm:param name="student"><mm:field name="number"/></mm:param>
-                              <mm:param name="direct_connection">false</mm:param>
-                              <mm:param name="class"><mm:write referid="temp_class"/></mm:param>
-                              <mm:param name="temp_class"><mm:write referid="temp_class"/></mm:param>
-                            </mm:treeinclude>
-                          </di:hasrole>
-                        </mm:node>
-                      </mm:related>
-                    </mm:node>
-                  </mm:related>
+                  <mm:relatednodes role="classrel" type="classes" orderby="name" id="classNode">
+                    <tr>
+                      <td style="border-color:#000000; border-top:0px; border-left:0px" colspan="<%= iNumberOfColumns %>"><b><di:translate key="progress.class" />: <mm:field name="name"/></b></td>
+                    </tr>
+                    <mm:log>class = ${classNode}</mm:log>
+                    <mm:relatednodes role="classrel" type="people" id="student">
+                      <di:hasrole role="student" referid="student">
+                        <mm:treeinclude page="/progress/progress_row.jsp" objectlist="$includePath" referids="$referids,startAt,student,classNode@class">
+                          <mm:param name="direct_connection">false</mm:param>
+                        </mm:treeinclude>
+                      </di:hasrole>
+                    </mm:relatednodes>
+                  </mm:relatednodes>
                 </mm:node>
               </mm:compare>
 

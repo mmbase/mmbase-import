@@ -1,27 +1,27 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"%>
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di"%>
-
-<%@page import="java.util.*"%>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di"
+%><%@page import="java.util.*"
+%>
 
 <mm:content postprocessor="reducespace" expires="0">
-<mm:cloud method="delegate" jspvar="cloud">
+  <mm:cloud method="delegate">
 
-<%@include file="/shared/setImports.jsp"%>
-<%@include file="/education/tests/definitions.jsp"%>
-<%@include file="/education/wizards/roles_defs.jsp"%>
-<mm:import id="editcontextname" reset="true">docent schermen</mm:import>
-<%@include file="/education/wizards/roles_chk.jsp"%>
+    <jsp:directive.include file="/shared/setImports.jsp"/>
+    <jsp:directive.include file="/education/tests/definitions.jsp" />
+    <jsp:directive.include file="/education/wizards/roles_defs.jsp" />
+    <mm:import id="editcontextname" reset="true">docent schermen</mm:import>
+    <jsp:directive.include file="/education/wizards/roles_chk.jsp" />
 
-<mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
-  <mm:param name="extraheader"><title><di:translate key="progress.progresstitle" /></title></mm:param>
-</mm:treeinclude>
+    <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
+      <mm:param name="extraheader"><title><di:translate key="progress.progresstitle" /></title></mm:param>
+    </mm:treeinclude>
 
 
-<div class="rows">
-  <div class="navigationbar">
-    <div class="titlebar"><di:translate key="progress.progresstitle" /></div>
-  </div>
-
+    <div class="rows">
+      <div class="navigationbar">
+        <div class="titlebar"><di:translate key="progress.progresstitle" /></div>
+      </div>
+      
   <div class="folders">
     <div class="folderHeader">&nbsp;</div>
     <div class="folderBody">&nbsp;</div>
@@ -101,14 +101,14 @@
           </tr>
   
           <%//direct relation people-classrel-educations %>
-          <mm:compare referid="class" value="null">
+          <mm:compare referid="class" valueset=",null">
             <mm:list fields="classrel.number" path="people,classrel,educations"
               constraints="people.number=$student and educations.number=$education">
               <mm:field name="classrel.number" id="classrel" write="false" />
             </mm:list>
           </mm:compare>
           <%//people-classrel-class-related-educations %>
-          <mm:compare referid="class" value="null" inverse="true">
+          <mm:compare referid="class" valueset=",null" inverse="true">
             <mm:list fields="classrel.number" path="people,classrel,classes"
               constraints="people.number=$student and classes.number=$class">
               <mm:field name="classrel.number" id="classrel" write="false" />
