@@ -1,51 +1,45 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"%>
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<%@page import="java.util.*"%>
-
-
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%><%@page import="java.util.*"
+%>
 <script src="js/browser_version.js"></script>
 
 <mm:content postprocessor="reducespace" expires="0">
-<mm:cloud method="delegate" jspvar="cloud">
-<%@include file="/shared/setImports.jsp" %>
+<mm:cloud method="delegate">
+  <jsp:directive.include file="/shared/setImports.jsp" />
 
-<mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
-  <mm:param name="extraheader">
-    <title><di:translate key="education.learnenvironmenttitle" /></title>
-  </mm:param>
-</mm:treeinclude>
+  <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
+    <mm:param name="extraheader">
+      <title><di:translate key="education.learnenvironmenttitle" /></title>
+    </mm:param>
+  </mm:treeinclude>
 
-<mm:node number="component.drm" notfound="skip">
+  <mm:node number="component.drm" notfound="skip">
     <mm:treeinclude page="/drm/testlicense.jsp" objectlist="$includePath" referids="$referids "/>
-</mm:node>
+  </mm:node>
+  
+  <mm:import externid="learnobject" jspvar="learnObject"/>
+  <mm:import externid="learnobjecttype" jspvar="learnObjectType"/>
+  <mm:import jspvar="educationNumber"><mm:write referid="education"/></mm:import>
+  <mm:import externid="fb_madetest"/>
+  
+  <%
+  // We are using it to show only one node in the tree
+  // For cross-education references  
+  %>
 
-<mm:import externid="learnobject" jspvar="learnObject"/>
-<mm:import externid="learnobjecttype" jspvar="learnObjectType"/>
-<mm:import jspvar="educationNumber"><mm:write referid="education"/></mm:import>
-<mm:import externid="fb_madetest"/>
-
-<%
-   // We are using it to show only one node in the tree
-   // For cross-education references
-
-%>
-
-<mm:import externid="the_only_node_to_show"/>
-<mm:import externid="return_to"/>
-<mm:import externid="return_to_type"/>
-<%
-   HashSet hsetThePath = null;
-%>
-
-
-<%
+  <mm:import externid="the_only_node_to_show"/>
+  <mm:import externid="return_to"/>
+  <mm:import externid="return_to_type"/>
+  <%
+  HashSet hsetThePath = null;
+  %>
+  <%
    //Tracing the route
-%>
-<mm:present referid="the_only_node_to_show">
-   <mm:node number="$the_only_node_to_show" notfound="skip">
-      <%
-         hsetThePath = new HashSet();
-      %>
+   %>
+   <mm:present referid="the_only_node_to_show">
+     <mm:node number="$the_only_node_to_show" notfound="skip">
+       <% hsetThePath = new HashSet(); %>
       <mm:tree type="learnobjects" role="posrel" searchdir="source" orderby="posrel.pos" directions="up" maxdepth="15">
          <mm:field name="number" jspvar="sLevelNumber" vartype="String">
             <%
@@ -53,41 +47,33 @@
             %>
          </mm:field>
       </mm:tree>
-   </mm:node>
-
-</mm:present>
-
+     </mm:node>
+   </mm:present>
 
 
-
-<%
+   <%
    // It is a sad thing, but the left education menu can't be used as an include right now.
    // So if we want to use it we have to send here an exteranl URL as a parameter.
    // Probably the menu engine should be changed so that it become more readable and reusable.
-%>
-<mm:import externid="frame"/>
+   %>
+   <mm:import externid="frame"/>
 
-
-
-
-<%
-   HashSet hsetBlockedLessions = null;
-%>
-<mm:node number="component.assessment" notfound="skip">
-   <mm:related path="settingrel,educations" constraints="educations.number=$education">
-      <mm:node element="educations" jspvar="nodeEducation">
+   <% HashSet hsetBlockedLessions = null; %>
+   <mm:node number="component.assessment" notfound="skip">
+     <mm:related path="settingrel,educations" constraints="educations.number=$education">
+       <mm:node element="educations" jspvar="nodeEducation">
          <mm:node number="$user" jspvar="nodeUser">
-            <%
-               // A user can have access to only "opened" top learnblocks (lession)
-               Class classLessionChecker = Class.forName("nl.didactor.component.assessment.education_menu.utils.LessionChecker");
-               Object[] arrObjects = {nodeEducation, nodeUser};
-               hsetBlockedLessions = (HashSet) classLessionChecker.getMethods()[0].invoke(this, arrObjects);
-            %>
+           <%
+           // A user can have access to only "opened" top learnblocks (lession)
+           Class classLessionChecker = Class.forName("nl.didactor.component.assessment.education_menu.utils.LessionChecker");
+           Object[] arrObjects = {nodeEducation, nodeUser};
+           hsetBlockedLessions = (HashSet) classLessionChecker.getMethods()[0].invoke(this, arrObjects);
+           %>
          </mm:node>
-      </mm:node>
-   </mm:related>
-</mm:node>
-
+       </mm:node>
+     </mm:related>
+   </mm:node>
+   
 
 
 <%
