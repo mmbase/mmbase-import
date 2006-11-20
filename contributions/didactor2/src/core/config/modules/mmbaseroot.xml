@@ -47,8 +47,9 @@
     database driver, based on the jdbc connection.
 
     -->
-    <!--
+
     <property name="database">${mmbaseroot.database}</property>
+    <!--
     -->
 
     <property name="storagemanagerfactory">org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory</property>
@@ -68,7 +69,7 @@
     editors can be found in /config/modules/mmlanguage.xml. The gui information of a builder
     is provided by the builder itself (e.g. /config/builders/urls.xml).
     -->
-    <property name="language">nl</property>
+    <property name="language">${mmbaseroot.language}</property>
 
     <!--
     name="encoding"
