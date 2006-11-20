@@ -88,7 +88,12 @@
                   </mm:node>
 
                   <mm:compare referid="all_ok" value="false">
-                    <di:translate key="core.validatelogin_invalid" />
+                    <mm:node number="$user">
+                      <mm:relatednodes type="classes" role="classrel">
+                        <mm:field name="number" />
+                        <mm:last inverse="true">, </mm:last>
+                      </mm:relatednodes>
+                    </mm:node>: <di:translate key="core.validatelogin_invalid" />
                   </mm:compare>
                 </mm:compare>
               </mm:isnotempty>

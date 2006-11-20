@@ -146,7 +146,7 @@
   <mm:isgreaterthan referid="user" value="0">
     <mm:present referid="education">
       <mm:listcontainer path="people,classes,educations" fields="people.number,educations.number,classes.number">
-        <mm:constraint field="people.number" operator="EQUAL" referid="user" />
+        <mm:constraint field="people.number"     operator="EQUAL" referid="user" />
         <mm:constraint field="educations.number" operator="EQUAL" referid="education" />
           <mm:list>
             <mm:remove referid="class"/>
@@ -185,4 +185,3 @@
     <mm:param name="message"><mm:write referid="validatemessage" /></mm:param>
   </mm:redirect>
 </mm:isnotempty>
-
