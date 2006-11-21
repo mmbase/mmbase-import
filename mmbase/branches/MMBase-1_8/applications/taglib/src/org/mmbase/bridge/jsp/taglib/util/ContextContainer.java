@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.53.2.1 2006-09-18 12:05:43 johannes Exp $
+ * @version $Id: ContextContainer.java,v 1.53.2.2 2006-11-21 20:39:56 michiel Exp $
  **/
 
 public abstract class ContextContainer extends AbstractMap implements Map {
@@ -160,6 +160,14 @@ public abstract class ContextContainer extends AbstractMap implements Map {
     public ContextContainer getParent() {
         return parent;
     }
+
+    /**
+     * @since MMBase-1.8.3
+     */
+    public PageContext getPageContext() {
+        return getBacking().getPageContext();
+    }
+
 
     /**
      * Keys must be Strings, so put(Object, ..) is forbidden in this HashMap!

@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: PageContextBacking.java,v 1.11 2006-07-08 13:03:12 michiel Exp $
+ * @version $Id: PageContextBacking.java,v 1.11.2.1 2006-11-21 20:39:56 michiel Exp $
  */
 
 public  class PageContextBacking extends AbstractMap implements Backing {
@@ -55,6 +55,10 @@ public  class PageContextBacking extends AbstractMap implements Backing {
     public void pullPageContext(PageContext pc) {
 
     }
+    public PageContext getPageContext() {
+        return pageContext;
+    }
+
 
     public void setJspVar(PageContext pc, String jspvar, int vartype, Object value) {
         if (jspvar == null) return;
