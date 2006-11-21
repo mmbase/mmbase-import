@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextTag.java,v 1.87 2006-07-17 15:38:47 johannes Exp $
+ * @version $Id: ContextTag.java,v 1.88 2006-11-21 13:54:56 michiel Exp $
  * @see ImportTag
  * @see WriteTag
  */
@@ -114,9 +114,15 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
      * @param c Parent context-container, if <code>null</code> then a container writing to page context will be instantiated.
      */
     ContextContainer createContainer(ContextContainer c) { //throws JspTagException {
+        if (log.isDebugEnabled()) {
+            log.debug("Creating context container for " + this + " " + pageContext) ;
+        }
         number = latestNumber++;
-        ContextContainer container = null;
+        ContextContainer container;
         if (c == null && (!"true".equals(pageContext.getServletContext().getInitParameter(ISELIGNORED_PARAM)))) {
+            if (log.isDebugEnabled()) {
+                log.debug("page context for " + pageContext);
+            }
             container = new PageContextContainer(pageContext);
         } else {
             container = new StandaloneContextContainer(pageContext, getId(), c);
@@ -345,7 +351,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
     }
 
     public String toString() {
-        return getClass().getName() + " with id " + getId();
+        return getClass().getName() + " with id " + getId() + " with container " + getContextContainer();
     }
 }
 
