@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: PageContextBacking.java,v 1.12 2006-11-21 14:01:15 michiel Exp $
+ * @version $Id: PageContextBacking.java,v 1.13 2006-11-21 18:36:59 michiel Exp $
  */
 
 public  class PageContextBacking extends AbstractMap<String, Object> implements Backing {
@@ -139,16 +139,24 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
         }
         return unwrapped.put(key, value);
     }
-    public Object get(String key) {
-        return pageContext.findAttribute((String) key);
+    public Object get(Object key) {
+        if (key instanceof String) {
+            return pageContext.findAttribute((String) key);
+        } else {
+            return false;
+        }
     }
     public Object getOriginal(String key) {
         Object value = unwrapped.get(key);
         if (value != null) return value;
-        return pageContext.findAttribute((String) key);
+        return pageContext.findAttribute(key);
     }
-    public boolean containsKey(String key) {
-        return pageContext.findAttribute((String) key) != null ||  nulls.contains(key);
+    public boolean containsKey(Object key) {
+        if (key instanceof String) {
+            return pageContext.findAttribute((String) key) != null ||  nulls.contains((String) key);
+        } else {
+            return false;
+        }
     }
 
     public boolean containsOwnKey(String key) {
