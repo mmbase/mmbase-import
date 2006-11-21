@@ -37,7 +37,7 @@ import org.mmbase.util.xml.DocumentReader;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.54 2006-10-07 15:47:55 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.55 2006-11-21 15:16:33 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -166,6 +166,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
 
         mmbase = mmb;
         mmbaseInited = true;
+        initThread = null;
     }
 
 
@@ -190,7 +191,9 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
      */
     public void init() throws ServletException {
 
-        String retryAfterParameter = getInitParameter("retry-after");
+        ServletContext servletContext = getServletConfig().getServletContext();
+
+        String retryAfterParameter = servletContext.getInitParameter("retry-after");
         if (retryAfterParameter == null) {
             // default: one minute
             retryAfter = 60;
@@ -199,7 +202,6 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
         }
 
         if (! MMBaseContext.isInitialized()) {
-            ServletContext servletContext = getServletConfig().getServletContext();
             MMBaseContext.init(servletContext);
             MMBaseContext.initHtmlRoot();
         }
@@ -264,10 +266,19 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
             mapToServlet.put(mapping, this);
         }
 
-        if (initialize) {
-            // stuff that can take indefinite amount of time (database down and so on) is done in separate thread
-            initThread = new MMBaseStartThread(this);
-            initThread.start();
+        String hold = servletContext.getInitParameter("stall-server");
+        log.info("stall-server: '" + hold + "'");
+        if ("yes".equals(hold) || "true".equals(hold)) {
+            log.info("Waiting until MMBase is started");
+            Runnable starter = new MMBaseStartThread.Job(this);
+            starter.run();
+            log.info("Ready");
+        } else {
+            if (initialize) {
+                // stuff that can take indefinite amount of time (database down and so on) is done in separate thread
+                initThread = new MMBaseStartThread(this);
+                initThread.start();
+            }
         }
     }
 
