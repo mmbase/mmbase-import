@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: BasicBacking.java,v 1.7 2006-07-08 16:43:35 michiel Exp $
+ * @version $Id: BasicBacking.java,v 1.7.2.1 2006-11-21 20:39:56 michiel Exp $
  */
 
 public  class BasicBacking extends AbstractMap  implements Backing {
@@ -87,7 +87,10 @@ public  class BasicBacking extends AbstractMap  implements Backing {
             log.warn("OIE " + Logging.stackTrace(10));
         }
     }
-    
+    public PageContext getPageContext() {
+        return pageContext;
+    }
+
     public void setJspVar(PageContext pc, String jspvar, int vartype, Object value) {
         if (jspvar == null) return;
         if (value == null) return;

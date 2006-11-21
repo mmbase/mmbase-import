@@ -32,7 +32,7 @@ import java.util.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.90 2006-08-30 18:01:30 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.90.2.1 2006-11-21 20:39:56 michiel Exp $
  * @see ContextTag
  */
 
@@ -465,7 +465,12 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
             log.debug("Searching context " + contextid);
         }
         ContextProvider contextTag = (ContextProvider) findParentTag(cl, contextid, false);
-        if (contextTag == null) {
+        if (contextTag == null ||
+            // doesn't count becase it is on a different page, (this tag e.g. is in a tag-file)
+            // necessary in tomcat > 5.5.20 only. 
+            // See http://issues.apache.org/bugzilla/show_bug.cgi?id=31804
+            contextTag.getContextContainer().getPageContext() != pageContext) {
+
             log.debug("Didn't find one, take the pageContextTag");
             contextTag = getPageContextTag();
             if (contextTag == null) {
