@@ -8,12 +8,8 @@
 
   <class name="org.mmbase.framework.BasicComponent" />
 
-  <description xml:lang="nl">Enquetes</description>
+  <description xml:lang="nl">Enquètes</description>
   <description xml:lang="en">Polls</description>
-  <!--
-      No dependencies.
-      Views by taglib.
-  -->
 
   <block name="frontend" mimetype="text/html">
     <description xml:lang="en">Shows a list all (online) polls</description>
