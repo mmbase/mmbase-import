@@ -17,7 +17,10 @@
 
   <block name="frontend" mimetype="text/html">
     <description xml:lang="en">Shows a list all (online) polls</description>
-    <body jsp="/poll/index.jspx" />
+    <body jsp="/poll/index.jspx">
+      <param name="poll" />
+      <param name="answer" />
+    </body>
   </block>
 
   <block name="edit">
