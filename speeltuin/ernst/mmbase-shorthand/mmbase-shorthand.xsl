@@ -469,22 +469,10 @@
 						<xsl:value-of select="@type" />
 					</xsl:when>
 					<xsl:otherwise>
-						<xsl:if
-							test="@datatype='text' or @datatype='line' or @datatype='string' or @datatype='eline' or @datatype='field' or @datatype='md5password' or @datatype='confirmpassword' or @datatype='dutch-zipcode' or @datatype='emailaddress'">
-							STRING
-						</xsl:if>
-						<xsl:if
-							test="@datatype='datetime' or @datatype='created' or @datatype='lastmodified' or @datatype='time' or @datatype='date' or @datatype='20th-century' or @datatype='20th-century-pedantic' or @datatype='birthdate' or @datatype='living-birthdate' or @datatype='historical' or @datatype='weeknumbers' or @datatype='eventtime'">
-							DATETIME
-						</xsl:if>
-						<xsl:if test="@datatype='long' or @datatype='duration'">LONG</xsl:if>
-						<xsl:if test="@datatype='boolean' or @datatype='yesno' or @datatype='onoff'">BOOLEAN</xsl:if>
-						<xsl:if
-							test="@datatype='integer' or @datatype='filesize' or @datatype='weekday' or @datatype='byte' or @datatype='hour_of_day' or @datatype='minute_of_hour'">
-							INTEGER
-						</xsl:if>
-						<xsl:if test="@datatype='binary'">BINARY</xsl:if>
-						<xsl:if test="@datatype='node' or @datatype='nodenumber'">BINARY</xsl:if>
+						<xsl:if test="@datatype='text' or @datatype='line' or @datatype='string' or @datatype='eline' or @datatype='field' or @datatype='md5password' or @datatype='confirmpassword' or @datatype='dutch-zipcode' or @datatype='emailaddress'">STRING</xsl:if>
+						<xsl:if test="@datatype='datetime' or @datatype='created' or @datatype='lastmodified' or @datatype='time' or @datatype='date' or @datatype='20th-century' or @datatype='20th-century-pedantic' or @datatype='birthdate' or @datatype='living-birthdate' or @datatype='historical' or @datatype='weeknumbers' or @datatype='eventtime'"> DATETIME </xsl:if> <xsl:if test="@datatype='long' or @datatype='duration'">LONG</xsl:if> <xsl:if test="@datatype='boolean' or @datatype='yesno' or @datatype='onoff'">BOOLEAN</xsl:if>
+                         <xsl:if test="@datatype='integer' or @datatype='filesize' or @datatype='weekday' or @datatype='byte' or @datatype='hour_of_day' or @datatype='minute_of_hour'">INTEGER</xsl:if>
+                         <xsl:if test="@datatype='binary'">BINARY</xsl:if> <xsl:if test="@datatype='node' or @datatype='nodenumber'">BINARY</xsl:if>
 						<xsl:if test="@datatype='xml' or @datatype='html' or @datatype='xmlfield'">XML</xsl:if>
 					</xsl:otherwise>
 				</xsl:choose>
@@ -496,9 +484,7 @@
 						<xsl:value-of select="@size" />
 					</xsl:when>
 					<xsl:when
-						test="@datatype='string' or @datatype='field' or @datatype='html' or @datatype='xml' or @datatype='xmlfield'">
-						3000
-					</xsl:when>
+						test="@datatype='string' or @datatype='field' or @datatype='html' or @datatype='xml' or @datatype='xmlfield'">3000</xsl:when>
 					<xsl:when test="@datatype='line' or @datatype='eline' or @datatype='trimmedline'">300</xsl:when>
 					<xsl:when test="@datatype='boolean' or @datatype='yesno' or @datatype='onoff'">1</xsl:when>
 					<xsl:when test="$type='BINARY'">16777215</xsl:when>
