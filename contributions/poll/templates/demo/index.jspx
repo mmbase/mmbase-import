@@ -13,14 +13,19 @@
                 doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>  
     <head>
       <title>Poll demo</title>
+      <mm:component name="poll" render="head" />
     </head>
     <body>
 
-      <mm:component name="poll" />
+
+      <h1>Poll demo</h1>
 
       <mm:component name="poll" block="edit">
         <a href="${_}">edit</a>
       </mm:component>
+
+      <mm:component name="poll" />
+
     </body>
   </mm:content>
 </html>
