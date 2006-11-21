@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.56 2006-11-21 14:01:15 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.57 2006-11-21 20:32:40 michiel Exp $
  **/
 
 public abstract class ContextContainer extends AbstractMap<String, Object> implements Map<String, Object> {
@@ -164,6 +164,12 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
         return parent;
     }
 
+    /**
+     * @since MMBase-1.8.3
+     */
+    public PageContext getPageContext() {
+        return getBacking().getPageContext();
+    }
 
     /**
      * Not all Strings can be allowed as keys. Keys are like variable names.
