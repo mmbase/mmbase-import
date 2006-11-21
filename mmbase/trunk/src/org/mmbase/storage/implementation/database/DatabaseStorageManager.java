@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.173 2006-10-16 12:56:57 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.174 2006-11-21 19:31:56 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1592,7 +1592,7 @@ public class DatabaseStorageManager implements StorageManager {
             }
             return node;
         } catch (SQLException se) {
-            throw new StorageException(se);
+            throw new StorageException(se.getClass().getName() + ": " + se.getMessage(),  se);
         } finally {
             releaseActiveConnection();
         }
@@ -2333,15 +2333,15 @@ public class DatabaseStorageManager implements StorageManager {
                     log.debug("VERIFY: determining super tables failed, skipping inheritance consistency tests for " + tableName);
                 }
             }
-            Map<String, Map<String, Object>> columns = new HashMap();
+            Map<String, Map<String, Object>> columns = new HashMap<String, Map<String, Object>>();
             ResultSet columnsSet = metaData.getColumns(null, null, tableName, null);
             try {
                 // get column information
                 while (columnsSet.next()) {
-                    Map<String, Object> colInfo = new HashMap();
-                    colInfo.put("DATA_TYPE", new Integer(columnsSet.getInt("DATA_TYPE")));
+                    Map<String, Object> colInfo = new HashMap<String, Object>();
+                    colInfo.put("DATA_TYPE", columnsSet.getInt("DATA_TYPE"));
                     colInfo.put("TYPE_NAME", columnsSet.getString("TYPE_NAME"));
-                    colInfo.put("COLUMN_SIZE", new Integer(columnsSet.getInt("COLUMN_SIZE")));
+                    colInfo.put("COLUMN_SIZE", columnsSet.getInt("COLUMN_SIZE"));
                     colInfo.put("NULLABLE", Boolean.valueOf(columnsSet.getInt("NULLABLE") != DatabaseMetaData.columnNoNulls));
                     columns.put(columnsSet.getString("COLUMN_NAME"), colInfo);
                 }
@@ -2355,9 +2355,12 @@ public class DatabaseStorageManager implements StorageManager {
                 if (field.inStorage() && (field.getType() != Field.TYPE_BINARY || !factory.hasOption(Attributes.STORES_BINARY_AS_FILE))) {
                     field.rewrite();
                     pos++;
-                    Object id = field.getStorageIdentifier();
+                    Object id = field.getStorageIdentifier(); // why the fuck is this an Object and not a String
                     Map<String, Object> colInfo = columns.get(id);
-                    if ((colInfo == null)) {
+                    if (colInfo == null) {
+                        colInfo = columns.get(("" + id).toLowerCase());
+                    }
+                    if (colInfo == null) {
 
                         log.error("VERIFY: Field '" + field.getName() + "' " +
                                   (id.equals(field.getName()) ? "" : "(mapped to field '" + id + "') ") +
