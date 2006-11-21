@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: BasicBacking.java,v 1.8 2006-11-21 14:01:15 michiel Exp $
+ * @version $Id: BasicBacking.java,v 1.9 2006-11-21 18:37:23 michiel Exp $
  */
 
 public  class BasicBacking extends AbstractMap<String, Object>  implements Backing {
@@ -39,12 +39,12 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
     private static int uniqueNumbers = 0;
     private static final int SCOPE = PageContext.PAGE_SCOPE;
 
-    private int uniqueNumber = ++uniqueNumbers;
+    private final int uniqueNumber = ++uniqueNumbers;
 
     protected Map<String, Object> originalPageContextValues;
     private final Map<String, Object> b = new HashMap<String, Object>(); // the actual backing.
 
-    private boolean isELIgnored;
+    private final boolean isELIgnored;
     private  PageContext pageContext;
 
     /**
@@ -52,10 +52,10 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
      */
     public BasicBacking(PageContext pc) {
         pageContext = pc;
+        isELIgnored = pc == null || "true".equals(pc.getServletContext().getInitParameter(ContextTag.ISELIGNORED_PARAM));
         if (log.isDebugEnabled()) {
-            log.debug("Instantiating " + uniqueNumber + "  with pc " + pc + "  "  + Logging.stackTrace(12));
+            log.debug("Pushing page Context " + pc + " --> " + isELIgnored);
         }
-        isELIgnored = pc == null || "true".equals(pageContext.getServletContext().getInitParameter(ContextTag.ISELIGNORED_PARAM));
         if (! isELIgnored) {
             originalPageContextValues = new HashMap<String, Object>();
             pageContext.setAttribute(PAGECONTEXT_KEY + uniqueNumber, originalPageContextValues);
@@ -73,10 +73,7 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
     }
 
     public void pushPageContext(PageContext pc) {
-        isELIgnored = pc == null || "true".equals(pc.getServletContext().getInitParameter(ContextTag.ISELIGNORED_PARAM));
-        if (log.isDebugEnabled()) {
-            log.debug("Pushing page Context " + pc + " --> " + isELIgnored);
-        }
+
         if (isELIgnored) return; // never mind
 
         PageContext origPageContext = pageContext;
