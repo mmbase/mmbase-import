@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.57 2006-08-30 18:01:50 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.58 2006-11-21 13:51:57 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -529,8 +529,9 @@ public class ContentTag extends LocaleTag  {
                 addNoCacheHeaders(request, response, exp);
             }
         }
-        if (getPostProcessor() == null) {
-            log.debug("no postprocessor");
+        CharTransformer post = getPostProcessor();
+        if (post == null || post.equals(COPY)) {
+            log.debug("no postprocessor " + (EVAL_BODY == EVAL_BODY_INCLUDE));
             return EVAL_BODY;
         } else {
             return EVAL_BODY_BUFFERED;
