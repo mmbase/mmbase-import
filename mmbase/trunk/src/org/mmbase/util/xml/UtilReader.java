@@ -34,7 +34,7 @@ import org.w3c.dom.Element;
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.26 2006-10-11 18:05:49 michiel Exp $
+ * @version $Id: UtilReader.java,v 1.27 2006-11-21 18:22:01 michiel Exp $
  */
 public class UtilReader {
 
@@ -60,7 +60,7 @@ public class UtilReader {
         XMLEntityResolver.registerPublicID(PUBLIC_ID_UTIL_1_0, DTD_UTIL_1_0, UtilReader.class);
     }
 
-    private static final Map<String, UtilReader> utilReaders = new HashMap();     // file-name -> utilreader
+    private static final Map<String, UtilReader> utilReaders = new HashMap<String, UtilReader>();     // file-name -> utilreader
 
     /**
      * Returns a UtilReader for the given fileName. When you use this, the UtilReader instance will be cached.
@@ -100,7 +100,7 @@ public class UtilReader {
         }
     }
 
-    private final Map properties = new HashMap();
+    private final Map<String, Object> properties = new HashMap<String, Object>();
     private final ResourceWatcher watcher;
     private final String file;
 
@@ -158,8 +158,8 @@ public class UtilReader {
     /**
      * Get the properties of this utility.
      */
-    public PropertiesMap getProperties() {
-        return new PropertiesMap(properties);
+    public PropertiesMap<Object> getProperties() {
+        return new PropertiesMap<Object>(properties);
     }
 
     /**
@@ -177,7 +177,7 @@ public class UtilReader {
 
     protected void readProperties(String s) {
         properties.clear();
-        
+
         ResourceLoader configLoader = ResourceLoader.getConfigurationRoot();
         List<URL> configList = configLoader.getResourceList(s);
         for (URL url : configList) {
@@ -251,27 +251,27 @@ public class UtilReader {
      * @since MMBase-1.8
      */
 
-    public static class PropertiesMap extends AbstractMap<String, Object> {
+    public static class PropertiesMap<E> extends AbstractMap<String, E> {
 
-        private final Map<String, Object> wrappedMap;
+        private final Map<String, E> wrappedMap;
 
         /**
          * Creates an empty Map (not very useful since this Map is unmodifiable).
          */
         public PropertiesMap() {
-            wrappedMap = new HashMap();
+            wrappedMap = new HashMap<String, E>();
         }
 
         /**
          * Wrapping the given map.
          */
-        public PropertiesMap(Map<String, Object> map) {
+        public PropertiesMap(Map<String, E> map) {
             wrappedMap = map;
         }
         /**
          * {@inheritDoc}
          */
-        public Set entrySet() {
+        public Set<Map.Entry<String, E>> entrySet() {
             return new EntrySet();
 
         }
@@ -279,29 +279,29 @@ public class UtilReader {
         /**
          * Returns the object mapped with 'key', or defaultValue if there is none.
          */
-        public Object getProperty(String key, Object defaultValue) {
-            Object result = get(key);
+        public E getProperty(String key, E defaultValue) {
+            E result = get(key);
             return result == null ? defaultValue : result;
         }
 
-        private class  EntrySet extends AbstractSet<Map.Entry<String, Object>> {
+        private class  EntrySet extends AbstractSet<Map.Entry<String, E>> {
             EntrySet() {}
             public int size() {
                 return PropertiesMap.this.wrappedMap.size();
             }
-            public Iterator<Map.Entry<String, Object>> iterator() {
+            public Iterator<Map.Entry<String, E>> iterator() {
                 return new EntrySetIterator();
             }
         }
-        private class EntrySetIterator implements Iterator<Map.Entry<String, Object>> {
-            private Iterator<Map.Entry<String, Object>> i;
+        private class EntrySetIterator implements Iterator<Map.Entry<String, E>> {
+            private Iterator<Map.Entry<String, E>> i;
             EntrySetIterator() {
                 i = PropertiesMap.this.wrappedMap.entrySet().iterator();
             }
             public boolean hasNext() {
                 return i.hasNext();
             }
-            public Map.Entry<String, Object> next() {
+            public Map.Entry<String, E> next() {
                 return i.next();
             }
             public void remove() {
