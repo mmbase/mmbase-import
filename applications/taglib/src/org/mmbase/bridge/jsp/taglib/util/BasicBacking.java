@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: BasicBacking.java,v 1.9 2006-11-21 18:37:23 michiel Exp $
+ * @version $Id: BasicBacking.java,v 1.10 2006-11-21 20:32:40 michiel Exp $
  */
 
 public  class BasicBacking extends AbstractMap<String, Object>  implements Backing {
@@ -93,6 +93,10 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
         if (isELIgnored || pc == null) return;
         pageContext = pc;
         originalPageContextValues = (Map<String, Object>) pageContext.getAttribute(PAGECONTEXT_KEY + uniqueNumber);
+    }
+
+    public PageContext getPageContext() {
+        return pageContext;
     }
 
     public void setJspVar(PageContext pc, String jspvar, int vartype, Object value) {
