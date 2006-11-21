@@ -32,7 +32,7 @@ import java.util.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.91 2006-09-29 09:59:36 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.92 2006-11-21 13:54:02 michiel Exp $
  * @see ContextTag
  */
 
@@ -88,7 +88,10 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
         // the 'page' Context
     }
 
-
+    /**
+     * Just exposes the (otherwise protected) pageContext member. Needed by some helper classes in
+     * the neighbourhood. Lacking concept of friends.
+     */
     public PageContext getPageContext() {
         return pageContext;
     }
@@ -98,20 +101,29 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
      */
     protected ContextTag getPageContextTag() {
         if (pageContextTag == null) {
-
             pageContextTag = (ContextTag) pageContext.getAttribute(ContextTag.CONTEXTTAG_KEY);
 
-
+            if (log.isDebugEnabled()) {
+                log.debug("Found " + pageContextTag);
+            }
             if (pageContextTag == null) { // not yet put
-                log.debug("No pageContextTag found in pagecontext, creating..");
+                if (log.isDebugEnabled()) {
+                    log.debug("No pageContextTag found in pagecontext, creating.. for "+ pageContext);
+                }
                 if (pageLog.isServiceEnabled()) {
-                    HttpServletRequest request = ((HttpServletRequest)pageContext.getRequest());
+                    HttpServletRequest request = ((HttpServletRequest) pageContext.getRequest());
                     //thisPage = request.getRequestURI();
-                    String queryString = ((HttpServletRequest)pageContext.getRequest()).getQueryString();
+                    String queryString = ((HttpServletRequest) pageContext.getRequest()).getQueryString();
                     String includedPage = (String) request.getAttribute("javax.servlet.include.servlet_path");
                     thisPage = (includedPage == null ? "" : includedPage + " for ") + request.getRequestURI();
                     pageLog.service("Parsing JSP page: " + thisPage +
-                                    (queryString != null ? "?" + queryString : ""));
+                                    (queryString != null ? "?" + queryString : "") + " for " + pageContext.getPage());
+                    if (pageLog.isTraceEnabled()) {
+                        pageLog.trace("req " + Collections.list(request.getAttributeNames()));
+                        pageLog.trace("page " + Collections.list(pageContext.getAttributeNamesInScope(PageContext.PAGE_SCOPE)));
+                        pageLog.trace("app " + Collections.list(pageContext.getAttributeNamesInScope(PageContext.APPLICATION_SCOPE)));
+                        pageLog.trace("req " + Collections.list(pageContext.getAttributeNamesInScope(PageContext.REQUEST_SCOPE)));
+                    }
                 }
                 pageContextTag = new ContextTag();
                 pageContextTag.setId(null);
@@ -125,8 +137,13 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
                 // set the pageContextTag, before fillVars otherwise the page is not set in the fillVars
                 // register also the tag itself under __context.
                 // _must_ set __context before calling setPageContext otherwise in infinite loop.
+                if (log.isDebugEnabled()) {
+                    log.debug("Creating page context container for " + pageContext);
+                }
                 pageContextTag.createContainer(null);
+
                 pageContextTag.pageContextTag = pageContextTag; // the 'parent' of pageContextTag is itself..
+
                 pageContext.setAttribute(ContextTag.CONTEXTTAG_KEY, pageContextTag);
 
                 // there is one implicit ContextTag in every page.
@@ -449,7 +466,6 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
         }
         E contextTag =  findParentTag(cl, contextid, false);
         if (contextTag == null) {
-            log.debug("Didn't find one, take the pageContextTag");
             contextTag = (E) getPageContextTag();
             if (contextTag == null) {
                 throw new RuntimeException("Did not find pageContextTag!");
@@ -459,10 +475,13 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
                     throw new JspTagException("Could not find context tag with id " + contextid + " (page context has id " + contextTag.getId() + ")");
                 }
             }
+            log.debug("Didn't find real context tag, taking the 'pageContextTag'");
+        } else {
+            if (log.isDebugEnabled()) {
+                log.debug("found a context " + contextTag + " " + contextTag.getContextContainer());
+            }
         }
-        if (log.isDebugEnabled()) {
-            log.debug("found a context with ID= " + contextTag.getId());
-        }
+
         return contextTag;
     }
 
@@ -536,7 +555,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
     public Locale getLocale() throws JspTagException {
         Locale locale = getLocaleFromContext();
         if (locale == null) {
-            locale = getDefaultLocale(); 
+            locale = getDefaultLocale();
         }
         return locale;
     }
@@ -545,7 +564,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
      * Get the locale which is defined by surrounding tags or the cloud
      * @return a locale when defined or otherwise <code>null</code>
      * @throws JspTagException
-     * 
+     *
      * @since  MMBase-1.8.1
      */
     public Locale getLocaleFromContext() throws JspTagException {
@@ -572,10 +591,10 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
         }
         return null;
     }
-    
+
     /**
      * Get the default locale which is set in mmbase.
-     * 
+     *
      * @since  MMBase-1.8.1
      */
     public Locale getDefaultLocale() {
