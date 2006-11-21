@@ -53,6 +53,8 @@ Create a build.xml with a DOCTYPE like this:
   <property name="project.documentation.dir" value="${project.source.dir}/documentation" />
   <property name="project.javadoc.dir" value="${project.build.dir}/documentation/javadoc/${project.name}" />
 
+  <property name="project.external.lib.dir" value="${project.source.dir}/external.libs" />
+
   <property name="project.extra.path"  value="" />  <!-- deprecated ! -->
   <property name="project.extra.path2" value="" /><!-- deprecated ! -->
 
@@ -254,6 +256,7 @@ Create a build.xml with a DOCTYPE like this:
         <exclude name="*.xml" />
         <exclude name="config/**" />
         <exclude name="documentation/**" />
+        <exclude name="external.libs/**" />
         <exclude name="src/**" />
         <exclude name="build*/**" />
         <exclude name="META-INF/**" />
@@ -313,7 +316,46 @@ web-app/*                All kind of templates. They problably can (need?) to be
   </target>
 
 
-  <target name="compile" description="Compile the source directory" depends="init" if="src.available">
+  <target name="test.explicit.dependency.dir">
+    <available file="${project.external.lib.dir}" property="external.libs.exist"/>
+    <echo message="hoi  ${external.libs.exist}" />
+  </target>
+  
+  <target name="explicit.dependency.dir" depends="test.explicit.dependency.dir" if="external.libs.exist">
+    <echo message="Using ${project.external.lib.dir}" />
+
+    <available property="dummy" classname="dummy">
+      <classpath id="compile.classpath">
+        <fileset     dir="${project.jars.dir}" includes="${project.jars.includes}" />
+        <fileset     dir="${project.external.lib.dir}" includes="**" />
+      </classpath>
+    </available>
+
+  </target>
+
+  <target name="init.compile" depends="explicit.dependency.dir" unless="external.libs.exist" description="Sets up the classpath for compiling this">
+    <echo message="hoi" />
+    <available property="dummy" classname="dumamy">
+      <classpath id="compile.classpath">
+        <fileset     dir="${project.jars.dir}" includes="${project.jars.includes}" />
+        <pathelement path="${mmbase.jar}" />
+        <pathelement path="${servlet.jar}" />
+        <pathelement path="${xalan.jar}" />
+        <pathelement path="${fileupload.jar}" />
+        <pathelement path="${concurrent.jar}" />
+        <pathelement path="${mail.jar}" />
+        <pathelement path="${activation.jar}" />
+        <pathelement path="${taglibs-standard-jstl.jar}" />
+        <pathelement path="${project.build.dir}/classes" />
+        <pathelement path="${project.extra.path}" />
+        <pathelement path="${project.extra.path2}" />
+      </classpath>
+    </available>
+  </target>
+
+
+  <target name="compile" description="Compile the source directory" depends="init,init.compile" if="src.available">
+
 
     <mkdir dir="${project.build.dir}/classes"/>
     <echo message="java version: ${ant.java.version}" />
@@ -336,25 +378,12 @@ web-app/*                All kind of templates. They problably can (need?) to be
            debug="${debug}"
            optimize="${optimize}"
            deprecation="${deprecation}"
+           classpathref="compile.classpath"
            nowarn="${nowarn}"
            excludes="${compile.excludes}"
            source="1.5"
            includeAntRuntime="false"
-      >
-      <classpath id="compile.classpath">
-        <fileset     dir="${project.jars.dir}" includes="${project.jars.includes}" />
-        <pathelement path="${mmbase.jar}" />
-        <pathelement path="${servlet.jar}" />
-        <pathelement path="${xalan.jar}" />
-        <pathelement path="${fileupload.jar}" />
-        <pathelement path="${concurrent.jar}" />
-        <pathelement path="${mail.jar}" />
-        <pathelement path="${activation.jar}" />
-        <pathelement path="${taglibs-standard-jstl.jar}" />
-        <pathelement path="${project.build.dir}/classes" />
-        <pathelement path="${project.extra.path}" />
-        <pathelement path="${project.extra.path2}" />
-      </classpath>
+           >
       <include name="**/*.java"/>
     </javac>
   </target>
