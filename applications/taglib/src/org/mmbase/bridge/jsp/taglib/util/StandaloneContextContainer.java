@@ -16,7 +16,7 @@ import java.util.Map;
  * This ContextContainer provides its own 'backing', it is used as 'subcontext' in other contextes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: StandaloneContextContainer.java,v 1.12 2006-11-21 14:01:15 michiel Exp $
+ * @version $Id: StandaloneContextContainer.java,v 1.13 2006-11-22 14:47:38 michiel Exp $
  * @since MMBase-1.8
  **/
 
@@ -39,7 +39,7 @@ public class StandaloneContextContainer extends ContextContainer {
         // values must fall through to PageContext, otherwise you always must prefix by context, even in it.
     }
     protected BasicBacking createBacking(PageContext pc) {
-        return new BasicBacking(pc);
+        return new BasicBacking(pc, false);
     }
 
 
