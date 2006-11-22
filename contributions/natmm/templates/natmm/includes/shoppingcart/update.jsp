@@ -6,7 +6,7 @@ String actionId = request.getParameter("t"); if (actionId==null) {actionId=""; }
 String totalitemsId = (String) session.getAttribute("totalitems");
 if(totalitemsId==null) totalitemsId = "0";
 String shop_itemHref = "";
-// String extendedHref = "";
+String extendedHref = "";
 String postingStr = request.getParameter("pst"); if(postingStr==null) { postingStr=""; }
 String pageUrl =  ph.createPaginaUrl(paginaID,request.getContextPath()) + "?u=" + shop_itemId;
 

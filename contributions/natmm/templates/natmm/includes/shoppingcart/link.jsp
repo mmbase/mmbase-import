@@ -13,20 +13,15 @@ extendedHref = pageUrl + "&p=bestel&t=view";
 					<td class="titlebar" width="0%"><img src="media/spacer.gif" width="3" height="1" border="0" alt=""><a href="<%@include file="../includes/extendedhref.jsp" 
 						%>"><img src="media/w_wagentje.gif" border="0" alt=""></a></td>
 					<td class="titlebar" width="100%" style="vertical-align:middle;padding-right:2px;padding-left:2px;"><nowrap><a href="<%@include
-              file="../includes/extendedhref.jsp"	%>" class="white"><%= totalitemsId %> 
-							  <% 
-                ResourceBundle bd = ResourceBundle.getBundle("ApplicationResources"); 
-                String sParagraafOmschrijving = bd.getString("shoppingcartlink.paragraaf.omschrijving");
-                sParagraafOmschrijving = cleanText(sParagraafOmschrijving,"<",">");
-								int slashpos = sParagraafOmschrijving.indexOf("/");
-								if(slashpos>-1) {
-									if(totalitemsId.equals("1")) {
-										sParagraafOmschrijving = sParagraafOmschrijving.substring(0,slashpos);
-									} else {
-										sParagraafOmschrijving = sParagraafOmschrijving.substring(slashpos+1);
-									}
-								}
-							%><%= sParagraafOmschrijving %></a></nowrap></td>
+                 file="../includes/extendedhref.jsp"	%>" class="white">
+                  <%= totalitemsId %>
+                  <% 
+                  if(totalitemsId.equals("1")) {
+							%><bean:message bundle="LEOCMS" key="shoppingcartlink.item" /><%
+						} else {
+							%><bean:message bundle="LEOCMS" key="shoppingcartlink.items" /><%
+						}
+						%></a></nowrap></td>
 					<td class="titlebar" style="padding:2px;" width="0%"><a href="<%@include file="../includes/extendedhref.jsp" 
 						%>"><img src="media/pijl_wit_op_oranje.gif" border="0" alt=""></a></td>
 					</tr>

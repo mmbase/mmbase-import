@@ -18,11 +18,11 @@ if(imageId.indexOf(",")>-1) {
 			nextImage = otherImages + "," + thisImage;
 			previousImage = nextImage;
 		}
-		// count (1) number of images between offsetId and thisImage and (2) the total number of images
+		// count (1) number of images between offsetIDand thisImage and (2) the total number of images
 		int comma_pos = imageId.indexOf(",",0);
 		while(comma_pos>-1) {
 			totalNumberOfImages++;
-			if(imageId.indexOf(offsetId,comma_pos+1)==-1) {
+			if(imageId.indexOf(offsetID,comma_pos+1)==-1) {
 				thisImageNumber++;
 			}
 			comma_pos = imageId.indexOf(",",comma_pos+1);

@@ -5,7 +5,7 @@
 <%
    String objectID = request.getParameter("o");
    PaginaHelper ph = new PaginaHelper(cloud);
-   String rootID = ph.getSubsiteRubriek(cloud,objectID);
+   String subsiteID = ph.getSubsiteRubriek(cloud,objectID);
    int count = 0;
 %>   
 <%@include file="/editors/mailer/util/memberid_get.jsp" %>

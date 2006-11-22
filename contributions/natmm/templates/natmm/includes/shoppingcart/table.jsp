@@ -179,17 +179,12 @@ if(generaldiscount>0) {
 <tr>
 	<td><img src="media/spacer.gif" width="1" height="1" border="0" alt=""></td>
 	<td colspan="3" class="carteven"  style="text-align:left;padding-top:0px;">
-		<mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel"
-			constraints="contentrel.pos=12" fields="artikel.titel,artikel.intro"
-			><span class="subtitle" style="font-size:12px;font-weight:bold;"><mm:field name="artikel.titel" /></span><br>
-			<mm:field name="artikel.intro" jspvar="text" vartype="String" write="false"><% 
-				text = HtmlCleaner.replace(text,"<p>","");
-				text = HtmlCleaner.replace(text,"<P>","");
-				text = HtmlCleaner.replace(text,"</p>","");
-				text = HtmlCleaner.replace(text,"</P>","");
-				%><%= text 
-			%></mm:field
-		></mm:list>
+		<mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel" constraints="contentrel.pos=12"
+			><mm:node element="artikel">
+			   <span class="subtitle" style="font-size:12px;font-weight:bold;"><mm:field name="titel" /></span><br>
+			   <%@include file="../shop/cleanarticleintro.jsp" %>
+			</mm:node>
+	   </mm:list>
 	</td>
 	<td class="carteven" style="padding:0px;">
 		<table cellspacing="0" cellpadding="0" width="100%">

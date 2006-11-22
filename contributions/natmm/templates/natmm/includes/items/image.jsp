@@ -11,7 +11,7 @@
 					><mm:isnotempty
 						><mm:compare value="standaard" inverse="true"
 						><mm:compare value="niet_te_koop" inverse="true"
-						><img style="float:right;" src="media/<mm:write />.gif"></mm:compare
+						><img style="float:right;" src="media/shop/<mm:write />.gif"></mm:compare
 					   ></mm:compare
 					></mm:isnotempty
 				></mm:field
@@ -21,7 +21,7 @@
 				<span class="subtitle">Meer</span>&nbsp;<a href="<mm:url page="<%= shop_itemHref %>" />" class="subtitle"><span style="font-weight:normal;">informatie</span></a>
 			</td>
 			<td class="bottom" style="padding-bottom:10px;padding-right:2px;">
-				<a href="<mm:url page="<%= shop_itemHref %>" />"><img src="media/pijl_oranje_op_wit.gif" border="0" alt=""></a><br>
+				<a href="<mm:url page="<%= shop_itemHref %>" />"><img src="media/shop/pijl_oranje_op_wit.gif" border="0" alt=""></a><br>
 			</td>
 		</tr>
 	</table>
@@ -37,7 +37,7 @@
 		><mm:isnotempty
 			><mm:compare value="standaard" inverse="true"
 			><mm:compare value="niet_te_koop" inverse="true"
-		      ><img style="float:right;margin-right:30px;margin-top:5px;" src="media/<mm:write />.gif"></mm:compare
+		      ><img style="float:right;margin-right:30px;margin-top:5px;" src="media/shop/<mm:write />.gif"></mm:compare
 		   ></mm:compare
 		></mm:isnotempty
 	></mm:field

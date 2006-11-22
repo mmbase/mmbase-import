@@ -14,11 +14,11 @@
    int totalNumberOfImages = 1;
    int thisImageNumber = 1;
    String imageId = request.getParameter("i");
-   String offsetId = request.getParameter("o");
+   String offsetID= request.getParameter("o");
    String pageTitle = " " + NatMMConfig.companyName + ": ";
    String pageText = "<table cellspacing=\"0\" cellpadding=\"0\"><tr><td width=\"430\">"; %>
 <%@include file="../includes/splitimagelist.jsp"%>
-<% String pageUrl = "slideshow.jsp?o=" + offsetId + "&r=" + rubriekID; %>
+<% String pageUrl = "slideshow.jsp?o=" + offsetID+ "&r=" + rubriekID; %>
 <mm:node number="<%= rubriekID %>" notfound="skipbody">
    <mm:field name="naam" jspvar="rubriek_name" vartype="String" write="false">
       <% if(!rubriek_name.equals("")){ pageTitle += rubriek_name; } %>

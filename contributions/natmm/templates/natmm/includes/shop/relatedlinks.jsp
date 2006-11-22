@@ -6,8 +6,8 @@
 					><table width="100%" cellspacing="0" cellpadding="0">
 					<tr><td style="padding:4px;padding-top:14px;"><mm:import id="isfirst"
 				/></mm:notpresent
-				><% productHref = pageUrl + "&p=" + pagina_number; 
-				%><a href="<mm:url page="<%= productHref %>" />"  class="subtitle"><mm:field name="readmore.readmore" /></a><br>
+				><% shop_itemHref = pageUrl + "&p=" + pagina_number; 
+				%><a href="<mm:url page="<%= shop_itemHref %>" />"  class="subtitle"><mm:field name="readmore.readmore" /></a><br>
 			</mm:field
 		></mm:related
 		><mm:related path="readmore,products,posrel,pagina" fields="products.number,pagina.number"
@@ -17,8 +17,8 @@
 					><table width="100%" cellspacing="0" cellpadding="0">
 					<tr><td style="padding:4px;padding-top:14px;"><mm:import id="isfirst"
 				/></mm:notpresent
-				><% productHref = pageUrl + "&p=" + pagina_number + "&u=" + products_number; 
-				%><a href="<mm:url page="<%= productHref %>" />"  class="subtitle"><mm:field name="readmore.readmore" /></a><br>
+				><% shop_itemHref = pageUrl + "&p=" + pagina_number + "&u=" + products_number; 
+				%><a href="<mm:url page="<%= shop_itemHref %>" />"  class="subtitle"><mm:field name="readmore.readmore" /></a><br>
 			</mm:field
 			></mm:field
 		></mm:related><% 

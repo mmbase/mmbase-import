@@ -37,7 +37,7 @@ shop_itemId = (String) ids.get("items");
 
 Vector breadcrumbs = new Vector();
 String lnRubriekID = "";
-String rootID = "";
+String subsiteID = "";
 
 int iRubriekStyle = NatMMConfig.PARENT_STYLE;
 String styleSheet = "hoofdsite/themas/default.css"; 
@@ -53,7 +53,7 @@ if(!ph.isOfType(rubriekID,"rubriek")||!ph.isOfType(paginaID, "pagina")) {
 
    // *** find the root rubriek the present page is related to
    breadcrumbs = ph.getBreadCrumbs(cloud, paginaID);
-   rootID = (String) breadcrumbs.get(breadcrumbs.size()-2);
+   subsiteID = (String) breadcrumbs.get(breadcrumbs.size()-2);
    
    // for rubrieken of level 3, go one level back for left navigation
    lnRubriekID = rubriekID;

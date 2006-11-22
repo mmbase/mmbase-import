@@ -47,7 +47,7 @@
             antw = document.poll<%= poll_number %>.antwoord[i].value;
           }
         }
-        javascript:launchCenter("<%= requestURL + "/" + (isSubDir? "../" : "" ) %>includes/portal/poll_result.jsp?r=<%= rootID %>&rs=<%= styleSheet %>&poll=<%= poll_number %>&antw="+antw,'poll<%= poll_number %>',<%= 171 + (total_answers*46) %>,338,'location=no,directories=no,status=no,toolbars=no,scrollbars=no,resizable=yes');
+        javascript:launchCenter("<%= requestURL + "/" + (isSubDir? "../" : "" ) %>includes/portal/poll_result.jsp?r=<%= subsiteID %>&rs=<%= styleSheet %>&poll=<%= poll_number %>&antw="+antw,'poll<%= poll_number %>',<%= 171 + (total_answers*46) %>,338,'location=no,directories=no,status=no,toolbars=no,scrollbars=no,resizable=yes');
       }
     </script>
     </mm:field>
