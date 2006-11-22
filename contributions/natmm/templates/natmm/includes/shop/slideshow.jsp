@@ -10,7 +10,7 @@
    int totalNumberOfImages = 1;
    int thisImageNumber = 1;
 %><%@include file="includes/splitimagelist.jsp" 
-%><% pageUrl = "slideshow.jsp?w=" + subsiteID + "&p=" + pageId + "&u=" + shop_itemId + "&o=" + offsetId + "&i="; 
+%><% pageUrl = "slideshow.jsp?w=" + subsiteID + "&p=" + pageId + "&u=" + shop_itemId + "&o=" + offsetID+ "&i="; 
 %><html>
 <head>
 <title><mm:node number="<%= subsiteID %>"><mm:field name="name" /></mm:node
@@ -59,7 +59,7 @@
 			<td style="padding-top:150px;padding-left:25px;padding-right:5px;"><% 
 				if(!previousImage.equals("-1")&&!nextImage.equals("-1")) { 
 					%><table cellspacing="0" cellpadding="0">
-						<tr><td style="text-align:center;"><a href="<%= pageUrl %><%= previousImage %>"><img src="../media/pijl_oranje_op_wit_terug.gif" border="0" alt=""><a></td></tr>
+						<tr><td style="text-align:center;"><a href="<%= pageUrl %><%= previousImage %>"><img src="../media/shop/pijl_oranje_op_wit_terug.gif" border="0" alt=""><a></td></tr>
 						<tr><td style="padding-top:5px;"><a class="nav" href="<%= pageUrl %><%= previousImage %>">vorige<a></td></tr>
 					</table><% 
 				} 
@@ -116,7 +116,7 @@
 			<td style="text-align:right;padding-top:150px;padding-right:25px;padding-left:5px;"><% 
 				if(!previousImage.equals("-1")&&!nextImage.equals("-1")) { 
 					%><table cellspacing="0" cellpadding="0">
-						<tr><td style="text-align:center;"><a href="<%= pageUrl %><%= nextImage %>"><img src="../media/pijl_oranje_op_wit.gif" border="0" alt=""><a></td></tr>
+						<tr><td style="text-align:center;"><a href="<%= pageUrl %><%= nextImage %>"><img src="../media/shop/pijl_oranje_op_wit.gif" border="0" alt=""><a></td></tr>
 						<tr><td style="padding-top:5px;"><a class="nav" href="<%= pageUrl %><%= nextImage %>">volgende<a></td></tr>
 					</table><% 
 				} 

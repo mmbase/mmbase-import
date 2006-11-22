@@ -86,7 +86,7 @@ int p_number = 1;
 	<table width="100%" cellspacing="0" cellpadding="0">
 	<tr><td style="padding:4px;padding-top:14px;">
 		<mm:import id="isfirst"
-		/><bean:message bundle="LEOCMS" key="shoppingcartform" 
+		/><bean:message bundle="LEOCMS" key="shoppingcartform.back_to_form" 
 			/><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel"
 			constraints="contentrel.pos=4"
 				><mm:node element="artikel"

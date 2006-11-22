@@ -19,7 +19,7 @@ String[] META_TAGS = {"dit", "is", "een", "test"};
 <mm:cloud jspvar="cloud">
    <mm:import jspvar="paginaID" externid="p">-1</mm:import>
    <%
-   String rootID = request.getParameter("root");
+   String subsiteID = request.getParameter("root");
    String sQuery = request.getParameter("query");
    String sMeta = request.getParameter("trefwoord");
    String sCategory = request.getParameter("categorie");

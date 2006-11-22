@@ -27,7 +27,7 @@
   	      <mm:node element="dossier">
 		   <% 
 		   String imageId = "";
-		   String offsetId = "";
+		   String offsetID= "";
 		   int totalNumberOfThumbs = 0;
 		   int totalNumberOfImages = 0;
          boolean thisIsNotFirst = false; %>
@@ -37,7 +37,7 @@
             if(thisIsNotFirst) { 
                 imageId += ","; 
         	   } else { 
-               offsetId = images_number; 
+               offsetID= images_number; 
         	   } 
         	   thisIsNotFirst = true; 
             imageId += images_number; 

@@ -1,6 +1,6 @@
 <mm:node number="search_template" notfound="skipbody">
    <mm:related path="gebruikt,pagina,posrel,rubriek1,parent,rubriek2"
-      constraints="<%= "rubriek2.number = '" + rootID + "'" %>" fields="pagina.number,rubriek1.number">
+      constraints="<%= "rubriek2.number = '" + subsiteID + "'" %>" fields="pagina.number,rubriek1.number">
      <mm:import id="search_page" jspvar="search_page"><mm:field name="pagina.number" /></mm:import>
      <mm:import id="search_rubriek" jspvar="search_rubriek"><mm:field name="rubriek1.number" /></mm:import>
      <form action="<%= ph.createPaginaUrl(search_page,request.getContextPath()) %>" style="margin:0px 0px 0px 0px">
@@ -40,11 +40,11 @@ if(iRubriekLayout==NatMMConfig.DEFAULT_LAYOUT || iRubriekLayout==NatMMConfig.DEM
    %><table style="line-height:90%;width:744;" border="0" cellspacing="0" cellpadding="0" align="center" valign="top">
       <tr>
          <td style="background-color:#<%= NatMMConfig.color2[iRubriekStyle] %>;width:173px;padding-left:5px;font-size:70%;text-align:center;">
-            <mm:node number="<%= rootID %>"><mm:field name="naam_eng" /></mm:node>
+            <mm:node number="<%= subsiteID %>"><mm:field name="naam_eng" /></mm:node>
          </td>
          <td style="width:1px;"></td>
          <td class="maincolor" style="width:369px;padding-left:7px;font-size:70%;">
-            <mm:node number="<%= rootID %>"><mm:field name="naam_de" /></mm:node>
+            <mm:node number="<%= subsiteID %>"><mm:field name="naam_de" /></mm:node>
          </td>
          <mm:present referid="search_page">
             <input type="hidden" name="p" value="<mm:write referid="search_page" />">

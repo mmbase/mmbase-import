@@ -227,7 +227,7 @@ if(adID.equals("-1")) {
                      <br/><br/>
                      <table border="0" cellpadding="0" cellspacing="0" class="maincolor" style="width:177px;">
                        <tr>
-                          <td class="submitbutton" >&nbsp;<a href="/<mm:node number="<%= rootID %>"><mm:field name="naam" /></mm:node>" class="submitbutton">Naar de homepage</a>&nbsp;</td>
+                          <td class="submitbutton" >&nbsp;<a href="/<mm:node number="<%= subsiteID %>"><mm:field name="naam" /></mm:node>" class="submitbutton">Naar de homepage</a>&nbsp;</td>
                           <td class="submit_image"></td>
                        </tr>
                      </table>

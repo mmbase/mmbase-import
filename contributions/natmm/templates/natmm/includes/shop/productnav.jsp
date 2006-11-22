@@ -2,7 +2,7 @@
 <%@include file="../../request_parameters.jsp" %>
 <mm:cloud jspvar="cloud">
   <table cellspacing="0" cellpadding="0" width="100%">
-    <tr><td class="internalnav"><bean:message bundle="LEOCMS" key="productnav.paragraaf.titel" /></td></tr>
+    <tr><td class="internalnav"><bean:message bundle="LEOCMS" key="productnav.item_overview" /></td></tr>
     <tr><td style="padding:4px;padding-bottom:14px;">
       <mm:present referid="body"><a href="#body" class="subtitle"><mm:write referid="body" /></a><br></mm:present>
       <mm:present referid="thumbs"><a href="#thumbs" class="subtitle"><mm:write referid="thumbs" /></a><br></mm:present>
