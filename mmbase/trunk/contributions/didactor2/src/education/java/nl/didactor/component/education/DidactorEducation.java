@@ -161,7 +161,7 @@ public class DidactorEducation extends Component {
      * </ul>
      */
     private int showLo(Cloud cloud, Map context, String lo) {
-        String classno = (String)context.get("class");
+        String classno = org.mmbase.util.Casting.toString(context.get("class"));
         if (classno == null || "".equals(classno) || "null".equals(classno)) {
             // no class, so it must be an administrator, who may always view everything
             return 2;
