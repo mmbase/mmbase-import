@@ -70,21 +70,20 @@
                 <mm:compare referid="all_ok" value="true">
                   <mm:import id="all_ok" reset="true">false</mm:import>
                   <mm:node number="$user">
-                    <mm:relatednodes type="classes" role="classrel">
-                      <mm:relatednodescontainer type="mmevents">
-                        <mm:time id="now" time="now" write="false" />
-                        <mm:constraint field="start" operator="LESS" value="$now" />
-                        <mm:constraint field="stop" operator="GREATER" value="$now" />
-                        <mm:size>
-                          <mm:isgreaterthan value="0">
-                            <mm:import id="all_ok" reset="true">true</mm:import>
-                          </mm:isgreaterthan>
-                          <mm:compare value="0">
-                            No current classes
-                          </mm:compare>
-                        </mm:size>
-                      </mm:relatednodescontainer>
-                    </mm:relatednodes>
+                    <mm:relatednodes type="classes" role="classrel" id="classes" />
+                    <mm:relatednodescontainer path="classes,mmevents" element="mmevents">
+                      <mm:time id="now" time="now" write="false" />
+                      <mm:constraint field="start" operator="LESS" value="$now" />
+                      <mm:constraint field="stop" operator="GREATER" value="$now" />
+                      <mm:size>
+                        <mm:isgreaterthan value="0">
+                          <mm:import id="all_ok" reset="true">true</mm:import>
+                        </mm:isgreaterthan>
+                        <mm:compare value="0">
+                          No current classes. Classes are ${classes}
+                        </mm:compare>
+                      </mm:size>
+                    </mm:relatednodescontainer>
                   </mm:node>
 
                   <mm:compare referid="all_ok" value="false">
