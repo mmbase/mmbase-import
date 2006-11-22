@@ -129,7 +129,7 @@
       </datatype>
     </field>
 
-    <field name="feebackpage">
+    <field name="feedbackpage">
       <descriptions>
         <description xml:lang="nl">De pagina die getoond moet worden
           als een student klaar is met het maken van een toets. 
