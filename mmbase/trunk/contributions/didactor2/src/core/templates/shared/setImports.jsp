@@ -32,7 +32,8 @@
 </mm:listnodescontainer>
 
 <%-- get the $servername --%>
-<mm:import id="servername"><%=pageContext.getRequest().getServerName() %></mm:import>
+<mm:import id="servername"><%=request.getServerName() %></mm:import>
+<mm:import id="contextpath"><%=request.getContextPath() %></mm:import>
 
 <mm:import externid="provider" />
 <mm:isempty referid="provider">
@@ -58,7 +59,11 @@
     --%>
     <mm:compare referid="provider_size" value="1" inverse="true">
       <mm:listcontainer path="providers,urls" fields="urls.url,providers.number">
-        <mm:constraint operator="equal" field="urls.url" referid="servername" />
+        <mm:composite operator="or">
+          <mm:constraint operator="equal" field="urls.url" referid="servername" />       <!-- sounds like a string url, but well -->
+          <mm:constraint operator="equal" field="urls.url" value="http://$servername" /> <!-- an actual correct url ! -->
+          <mm:constraint operator="equal" field="urls.url" value="http://${servername}${contextpath}" /> <!-- more specific  -->
+        </mm:composite>
         <mm:list>
           <mm:field id="provider" name="providers.number" write="false" />
         </mm:list>
@@ -81,7 +86,11 @@
 <mm:notpresent referid="provider">
   <mm:notpresent referid="education">
     <mm:listcontainer path="providers,educations,related,urls" fields="urls.url,providers.number,educations.number">
-      <mm:constraint operator="equal" field="urls.url" referid="servername" />
+      <mm:composite operator="or">
+        <mm:constraint operator="equal" field="urls.url" referid="servername" />       <!-- sounds like a string url, but well -->
+        <mm:constraint operator="equal" field="urls.url" value="http://$servername" /> <!-- an actual correct url ! -->
+        <mm:constraint operator="equal" field="urls.url" value="http://${servername}${contextpath}" /> <!-- more specific  -->
+      </mm:composite>
       <mm:size id="nr_educations" write="false" />
       <mm:compare referid="nr_educations" value="1">
         <mm:list>
@@ -120,7 +129,11 @@
 <mm:present referid="provider">
   <mm:notpresent referid="education">
     <mm:listcontainer path="providers,educations,urls" fields="urls.url,providers.number,educations.number">
-      <mm:constraint operator="equal" field="urls.url" referid="servername" />
+      <mm:composite operator="or">
+        <mm:constraint operator="equal" field="urls.url" referid="servername" />       <!-- sounds like a string url, but well -->
+        <mm:constraint operator="equal" field="urls.url" value="http://$servername" /> <!-- an actual correct url ! -->
+        <mm:constraint operator="equal" field="urls.url" value="http://${servername}${contextpath}" /> <!-- more specific  -->
+      </mm:composite>
       <mm:constraint operator="equal" field="providers.number" referid="provider" />
       <mm:size id="nr_educations" write="false" />
       <mm:compare referid="nr_educations" value="1">
