@@ -152,9 +152,8 @@
         </mm:relatednodescontainer>
 
         <mm:import id="page" reset="true">/education/<mm:nodeinfo type="type"/>/rate<mm:nodeinfo type="type"/>.jsp</mm:import>
-        <mm:treeinclude page="$page" objectlist="$includePath" referids="$referids">
+        <mm:treeinclude page="$page" objectlist="$includePath" referids="$referids,madetest">
           <mm:param name="question"><mm:field name="number"/></mm:param>
-          <mm:param name="madetest"><mm:write referid="madetest"/></mm:param>
         </mm:treeinclude>
       </mm:compare>
 
@@ -167,29 +166,22 @@
   <% if ( sCommand.equals("done") ) { %>
       <script language="javascript">
         // reload the page, this makes the progressbar be recalculated
-         window.parent.location.href = '<mm:url escapeamps="false" referids="education,provider?" page="/education/index.jsp"><mm:param name="justposted">yes</mm:param></mm:url>';
+         window.parent.location.href = '<mm:url escapeamps="false" referids="education,provider?" page="/education/index.jsp"><mm:param name="justposted"><mm:field name="number" /></mm:param></mm:url>';
       </script>
       <mm:field name="feedbackpage">
       <mm:compare value="0">
-        <mm:treeinclude page="/education/tests/totalscore.jsp"  objectlist="$includePath" referids="$referids">
-          <mm:param name="madetest"><mm:write referid="madetest"/></mm:param>
-          <mm:param name="tests"><mm:write referid="tests"/></mm:param>
-        </mm:treeinclude>
-        
-        <mm:import id="page">/education/tests/feedback.jsp</mm:import>
-        <mm:treeinclude page="$page" objectlist="$includePath" referids="$referids">
+        <mm:treeinclude page="/education/tests/totalscore.jsp"  objectlist="$includePath" referids="$referids,madetest,tests" />
+
+        <mm:treeinclude page="/education/tests/feedback.jsp" objectlist="$includePath" referids="$referids,madetest">
           <mm:param name="tests"><mm:field name="number"/></mm:param>
-          <mm:param name="madetest"><mm:write referid="madetest"/></mm:param>
         </mm:treeinclude>
+
       </mm:compare>
-      
+
       <mm:compare value="0" inverse="true">
-        <mm:treeinclude page="/education/tests/viewanswersframe.jsp" objectlist="$includePath" referids="$referids">
-          <mm:param name="testNo"><mm:write referid="tests"/></mm:param>
-          <mm:param name="madetestNo"><mm:write referid="madetest"/></mm:param>
-          <mm:param name="userNo"><mm:write referid="user"/></mm:param>
-        </mm:treeinclude>
+        <mm:treeinclude page="/education/tests/viewanswersframe.jsp" objectlist="$includePath" referids="$referids,tests@testNo,madetestNo@madetest,user@userNo" />
       </mm:compare>
+
       </mm:field>
   <% } else { %>
      <mm:treeinclude page="/education/tests/buildtest.jsp"  objectlist="$includePath" referids="$referids">
