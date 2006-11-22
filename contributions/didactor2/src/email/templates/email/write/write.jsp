@@ -75,7 +75,7 @@
   </mm:list>
   
   <mm:notpresent referid="draftMailboxNode">
-    <mm:import id="draftMailboxNode"><mm:write referid="mailboxNode"/></mm:import>
+    <mm:write id="draftMailboxNode" referid="mailboxNode"/>
   </mm:notpresent>
   
   <%-- edit existing email (not yet sent) --%>
@@ -241,7 +241,7 @@
           var editor = null;
           function initEditor() {
           var config = new HTMLArea.Config();
-          config.editorURL = "/email/write/htmlarea/";
+          config.editorURL = "<mm:url page="/email/write/htmlarea/" />";
           config.toolbar = [['forecolor', 'bold', 'italic', 'underline' ] ];
           HTMLArea.replace('body', config);
           //HTMLArea.replaceAll();
