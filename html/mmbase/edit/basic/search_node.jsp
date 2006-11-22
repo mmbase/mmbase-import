@@ -24,8 +24,8 @@
   </mm:present>
 </mm:url>
 
-<mm:write referid="thisurl" vartype="string" jspvar="url"><%-- in context it is not url-encoded --%>
- <%  push(urlStack, "home", url);  %>
+<mm:write referid="thisurl" vartype="org.mmbase.bridge.jsp.taglib.pageflow.Url" jspvar="url">
+ <%  push(urlStack, "home", url.get(false));  %>
 </mm:write>
 
 <table summary="node editors" width="100%" class="super">
