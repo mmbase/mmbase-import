@@ -116,8 +116,8 @@
             <mm:field id="mayview"   name="mayview"      write="false"/>
             <mm:field id="feedback"  name="feedbackpage" write="false"/>
             <mm:import externid="justposted" />
-
-            <mm:notpresent referid="justposted">
+            <mm:field name="number">
+            <mm:compare referid2="justposted" inverse="true">
               <mm:compare referid="madetestscore" referid2="TESTSCORE_TBS">
                 <di:translate key="education.alreadymade_tobescored" /><p/><%-- empty paragraphs, come on, that is stupid! --%>
               </mm:compare>
@@ -173,7 +173,8 @@
                 </tr>
               </table>
             </mm:compare>
-            </mm:notpresent>
+            </mm:compare>
+            </mm:field>
           </div>
         </body>
       </html>
