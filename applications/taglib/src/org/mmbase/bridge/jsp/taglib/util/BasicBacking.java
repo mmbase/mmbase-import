@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: BasicBacking.java,v 1.7.2.1 2006-11-21 20:39:56 michiel Exp $
+ * @version $Id: BasicBacking.java,v 1.7.2.2 2006-11-22 14:52:10 michiel Exp $
  */
 
 public  class BasicBacking extends AbstractMap  implements Backing {
@@ -50,9 +50,9 @@ public  class BasicBacking extends AbstractMap  implements Backing {
     /**
      * @param pc The page-context to which variables must be reflected or <code>null</code> if this must not happen.
      */
-    public BasicBacking(PageContext pc) {
+    public BasicBacking(PageContext pc, boolean ignoreEL) {
         pageContext = pc;
-        isELIgnored = pc == null || "true".equals(pageContext.getServletContext().getInitParameter(ContextTag.ISELIGNORED_PARAM));
+        isELIgnored = ignoreEL || "true".equals(pageContext.getServletContext().getInitParameter(ContextTag.ISELIGNORED_PARAM));
         if (! isELIgnored) {
             originalPageContextValues = new HashMap();
             pageContext.setAttribute(PAGECONTEXT_KEY + uniqueNumber, originalPageContextValues);
@@ -62,10 +62,10 @@ public  class BasicBacking extends AbstractMap  implements Backing {
     }
 
     public void pushPageContext(PageContext pc) {
-        if (isELIgnored) return; // never mind
-        log.debug("Pushing page-context for backing " + uniqueNumber + " for " + pc);
         PageContext origPageContext = pageContext;
         pageContext = pc;
+        if (isELIgnored) return; // never mind
+        log.debug("Pushing page-context for backing " + uniqueNumber + " for " + pc);
         originalPageContextValues = (Map) pageContext.getAttribute(PAGECONTEXT_KEY + uniqueNumber);
         if (originalPageContextValues == null) {
             originalPageContextValues = new HashMap();
@@ -80,8 +80,8 @@ public  class BasicBacking extends AbstractMap  implements Backing {
         }
     }
     public void pullPageContext(PageContext pc) {
-        if (isELIgnored || pc == null) return;
         pageContext = pc;
+        if (isELIgnored) return;
         originalPageContextValues = (Map) pageContext.getAttribute(PAGECONTEXT_KEY + uniqueNumber);
         if (originalPageContextValues == null) {
             log.warn("OIE " + Logging.stackTrace(10));
