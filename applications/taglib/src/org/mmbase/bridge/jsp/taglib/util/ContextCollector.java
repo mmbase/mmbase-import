@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * it's parent too, so it is 'transparent'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextCollector.java,v 1.19 2006-11-21 19:39:14 michiel Exp $
+ * @version $Id: ContextCollector.java,v 1.20 2006-11-22 14:47:38 michiel Exp $
  * @since MMBase-1.7
  */
 public class  ContextCollector extends StandaloneContextContainer {
@@ -35,14 +35,14 @@ public class  ContextCollector extends StandaloneContextContainer {
     private final Set<String> parentCheckedKeys = new HashSet<String>();
 
     public ContextCollector(ContextProvider p) throws JspTagException {
-        super(p.getPageContext(), "CONTEXT-COLLECTOR" + (p.getId() == null ? "" : "-" + p.getId()), p.getContextContainer());
+        super(p.getPageContext(), "CONTEXT-COLLECTOR " + (p.getId() == null ? "" : "-" + p.getId()), p.getContextContainer());
         if (log.isDebugEnabled()) {
             log.debug("Using collector with pagecontext " + p.getPageContext());
         }
     }
 
     protected BasicBacking createBacking(PageContext pc) {
-        return new BasicBacking(parent instanceof PageContextContainer ? null : pc) {
+        return new BasicBacking(pc, parent instanceof PageContextContainer) {
                 public Object put(String key, Object value) {
                     if (log.isDebugEnabled()) {
                         log.debug("Putting in collector " + key + "=" + value + " " + parent);

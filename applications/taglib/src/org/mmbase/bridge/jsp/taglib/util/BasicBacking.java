@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: BasicBacking.java,v 1.10 2006-11-21 20:32:40 michiel Exp $
+ * @version $Id: BasicBacking.java,v 1.11 2006-11-22 14:47:38 michiel Exp $
  */
 
 public  class BasicBacking extends AbstractMap<String, Object>  implements Backing {
@@ -50,9 +50,10 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
     /**
      * @param pc The page-context to which variables must be reflected or <code>null</code> if this must not happen.
      */
-    public BasicBacking(PageContext pc) {
+    public BasicBacking(PageContext pc, boolean ignoreEL) {
         pageContext = pc;
-        isELIgnored = pc == null || "true".equals(pc.getServletContext().getInitParameter(ContextTag.ISELIGNORED_PARAM));
+        assert pc != null;
+        isELIgnored = ignoreEL || "true".equals(pc.getServletContext().getInitParameter(ContextTag.ISELIGNORED_PARAM));
         if (log.isDebugEnabled()) {
             log.debug("Pushing page Context " + pc + " --> " + isELIgnored);
         }
@@ -62,10 +63,10 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
         } else {
             originalPageContextValues = null;
             if (log.isDebugEnabled()) {
-                if (pc == null) {
-                    log.debug("ISELIGNORED because pc == null");
+                if (ignoreEL) {
+                    log.debug("ISELIGNORED because specified");
                 } else {
-                    log.debug("ISELIGNORED because setting");
+                    log.debug("ISELIGNORED because static setting");
                 }
             }
         }
@@ -74,10 +75,10 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
 
     public void pushPageContext(PageContext pc) {
 
-        if (isELIgnored) return; // never mind
-
         PageContext origPageContext = pageContext;
         pageContext = pc;
+        if (isELIgnored) return; // never mind
+
         originalPageContextValues = (Map<String, Object>) pageContext.getAttribute(PAGECONTEXT_KEY + uniqueNumber);
         if (originalPageContextValues == null) {
             originalPageContextValues = new HashMap<String, Object>();
@@ -90,8 +91,8 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
         }
     }
     public void pullPageContext(PageContext pc) {
-        if (isELIgnored || pc == null) return;
         pageContext = pc;
+        if (isELIgnored) return;
         originalPageContextValues = (Map<String, Object>) pageContext.getAttribute(PAGECONTEXT_KEY + uniqueNumber);
     }
 
