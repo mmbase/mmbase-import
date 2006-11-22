@@ -120,6 +120,7 @@
 <mm:import id="gfx_item_opened"><mm:treefile page="/gfx/icon_arrow_tab_open.gif" objectlist="$includePath" referids="$referids" /></mm:import>
 <mm:import id="gfx_item_closed"><mm:treefile page="/gfx/icon_arrow_tab_closed.gif" objectlist="$includePath" referids="$referids" /></mm:import>
 
+<mm:import externid="justposted" />
 
 <script type="text/javascript">
 <!--
@@ -196,7 +197,7 @@
         frames['content'].location.href='<mm:treefile page="/education/learnblocks/index.jsp" objectlist="$includePath" referids="$referids,fb_madetest?" escapeamps="false"/>'+'&learnobject='+number;
         break;
       case "tests":
-        frames['content'].location.href='<mm:treefile page="/education/tests/index.jsp" objectlist="$includePath" referids="$referids,fb_madetest?" escapeamps="false"/>'+'&learnobject='+number;
+        frames['content'].location.href='<mm:treefile page="/education/tests/index.jsp" objectlist="$includePath" referids="$referids,fb_madetest?,justposted?" escapeamps="false"/>'+'&learnobject='+number;
         break;
       case "pages":
         frames['content'].location.href='<mm:treefile page="/education/pages/index.jsp" objectlist="$includePath" referids="$referids,fb_madetest?" escapeamps="false"/>'+'&learnobject='+number;
@@ -344,7 +345,7 @@ catch(err){};
             <img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="number"/>" onclick="openClose('div<mm:field name="number"/>','img<mm:field name="number"/>')" title="" alt="" />
             <a href="javascript:openContent( '<mm:nodeinfo type="type"/>','<mm:field name="number"/>' ); openOnly('div<mm:field name="number"/>','img<mm:field name="number"/>');"><mm:field name="name"/></a>
 
-            <mm:import id="previousnumber"><mm:field name="number"/></mm:import>
+            <mm:field id="previousnumber" name="number" write="false"/>
             <mm:relatednodescontainer type="learnobjects" role="posrel">
                <mm:sortorder field="posrel.pos" direction="up"/>
                <mm:import id="showsubtree" reset="true">true</mm:import>
