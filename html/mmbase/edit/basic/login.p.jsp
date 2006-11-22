@@ -67,9 +67,9 @@
           <% for (int i = 0 ; i < authenticationTypes.length; i++) { %>
           <option value="<%=authenticationTypes[i]%>" <%= currentType.equals(authenticationTypes[i])? " selected='selected'" : ""%>><%=authenticationTypes[i]%></option>
           <% } %>
-          <input type="hidden" name="referrer" value="<mm:write referid="referrer" />" />
-          <input type="hidden" name="usernames" values="<mm:write referid="usernames" />" />
-         </select>
+        </select>
+        <input type="hidden" name="referrer" value="<mm:write referid="referrer" />" />
+        <input type="hidden" name="usernames" values="<mm:write referid="usernames" />" />
        </form>
     </tr>
 </table>
