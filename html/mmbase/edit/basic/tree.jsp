@@ -1,5 +1,6 @@
 <mm:relatednodescontainer type="object" searchdirs="$searchdir">
-  <mm:tree type="object" searchdir="$searchdir" maxdepth="8">
+  <mm:maxnumber value="100" />
+  <mm:tree type="object" searchdir="$searchdir" maxdepth="4" max="10">
     <mm:grow>
       <ul><mm:onshrink></ul></mm:onshrink>
     </mm:grow>
