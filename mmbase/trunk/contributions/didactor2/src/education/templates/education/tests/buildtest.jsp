@@ -62,7 +62,6 @@
 </head>
 <body>
 <div class="learnenvironment">
-
 <mm:node number="$copybookNo" notfound="skip">
 
 <%-- Take care: form name is used in JavaScript of the specific question jsp pages! --%>
