@@ -30,9 +30,8 @@
          <mm:sortorder field="posrel.pos" direction="up"/>
 
          <mm:tree type="learnobjects" role="posrel" searchdir="destination" orderby="posrel.pos" directions="up">
-            <mm:import id="nodetype"><mm:nodeinfo type="type" /></mm:import>
-
-            <mm:compare referid="nodetype" value="tests">
+           <mm:nodeinfo type="type">
+             <mm:compare value="tests">
                <%
                   nof_tests++;
                %>
@@ -52,6 +51,7 @@
                   <% nof_tests_passed++; %>
                </mm:compare>
             </mm:compare>
+           </mm:nodeinfo>
          </mm:tree>
       </mm:relatednodescontainer>
 
