@@ -6,7 +6,7 @@
 			<td class="titlebar" style="vertical-align:middle;background-color:#5D5D5D;"><img src="media/spacer.gif" width="1" height="1" border="0" alt=""><input type="text" name="memberid" style="width:88px;height:15px;" value="<%= memberId %>"></td>
 			<td class="titlebar" width="100%" style="vertical-align:middle;text-align:center;background-color:#5D5D5D;">
 				<a href="javascript:changeIt('<mm:url page="<%= pageUrl + "&p=bestel&t=change" %>" />');document.shoppingcart.target='';document.shoppingcart.submit();"
-				class="white"><bean:message bundle="LEOCMS" key="membershipsform.paragraaf.titel" /></a></td>
+				class="white"><bean:message bundle="LEOCMS" key="membershipsform.i_am_member" /></a></td>
 			<td class="titlebar" width="0%" style="padding-right:2px;padding-top:2px;padding-bottom:2px;background-color:#5D5D5D;">
 				<a href=""javascript:changeIt('<mm:url page="<%= pageUrl + "&p=bestel&t=change" %>" />');document.shoppingcart.target='';document.shoppingcart.submit();">
 				<img src="media/pijl_wit_op_grijs.gif" border="0" alt=""></a></td>
@@ -19,9 +19,7 @@
 	<tr>
 	<tr>
 		<td class="subtitlebar" width="180" colspan="2"><div align="right">
-		<% ResourceBundle bd = ResourceBundle.getBundle("ApplicationResources"); 
-			String sParagraafOmschrijving = bd.getString("membershipsform.paragraaf.omschrijving");%>
-		<%= cleanText(sParagraafOmschrijving,"<",">") %>
+		<bean:message bundle="LEOCMS" key="membershipsform.enter_memberid" />
 		<img src="media/spacer.gif" width="3" height="1" border="0" alt=""></div></td>
 	<tr>
 </table>

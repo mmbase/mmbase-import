@@ -2,7 +2,7 @@
 <tr><td style="padding:4px;padding-top:14px;">
 	<a href="javascript:history.go(-1);" class="subtitle">Terug</a>
   <%--
-  &nbsp;<a href="javascript:history.go(-1);"><img src="media/back.gif" border="0" alt=""></a><br>
+  &nbsp;<a href="javascript:history.go(-1);"><img src="media/shop/back.gif" border="0" alt=""></a><br>
   <%
   if(!shop_itemId.equals("-1")) {
 		// *********** to shop_items page and mail a friend *******************
@@ -16,7 +16,7 @@
 				><% shop_itemHref = "mailto:?subject=" + shop_item_title + "&body=Kijk op " + url + "index.jsp?u=" + shop_itemId;
 			%></mm:field
 		></mm:node
-		><a href="<mm:url page="<%= shop_itemHref %>" />" class="subtitle">Mail een collega </a>&nbsp;<a href="<mm:url page="<%= shop_itemHref %>" />"><img src="media/mail.gif" border="0" alt=""></a><br><%
+		><a href="<mm:url page="<%= shop_itemHref %>" />" class="subtitle">Mail een collega </a>&nbsp;<a href="<mm:url page="<%= shop_itemHref %>" />"><img src="media/shop/mail.gif" border="0" alt=""></a><br><%
 	}
 	--%>
 	<mm:present referid="isfirst"

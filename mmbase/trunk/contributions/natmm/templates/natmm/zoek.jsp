@@ -36,7 +36,7 @@ if(!sQueryForm.equals("")&&!sQueryForm.equals(sQuery)) {
       <%@include file="includes/page_intro.jsp" %>
       <jsp:include page="includes/zoek/resultaten.jsp" flush="true">
          <jsp:param name="query" value="<%= sQuery %>"/>
-         <jsp:param name="root" value="<%= rootID %>"/>
+         <jsp:param name="root" value="<%= subsiteID %>"/>
          <jsp:param name="maxresults" value="100"/>
          <jsp:param name="paginaID" value="<%= paginaID %>"/>
       </jsp:include>

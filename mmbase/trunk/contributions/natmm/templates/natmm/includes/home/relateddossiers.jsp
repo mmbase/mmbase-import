@@ -5,7 +5,7 @@
 <%
 String objectID = request.getParameter("o");
 PaginaHelper ph = new PaginaHelper(cloud);
-String rootID = ph.getSubsiteRubriek(cloud,objectID);
+String subsiteID = ph.getSubsiteRubriek(cloud,objectID);
 %>
 <mm:node number="<%=objectID%>">
 <mm:related path="posrel,dossier" fields="dossier.number,dossier.naam" orderby="posrel.pos">
@@ -40,7 +40,7 @@ String rootID = ph.getSubsiteRubriek(cloud,objectID);
 			<% String relatedPage = null; %>
 			<mm:list nodes="<%= artikel_number %>" path="artikel,contentrel,pagina" fields="pagina.number">
 				<mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false">
-					<% if(rootID.equals(ph.getSubsiteRubriek(cloud,pagina_number))) { relatedPage = pagina_number; } %>
+					<% if(subsiteID.equals(ph.getSubsiteRubriek(cloud,pagina_number))) { relatedPage = pagina_number; } %>
 				</mm:field>
 			</mm:list>
       <% 
@@ -48,7 +48,7 @@ String rootID = ph.getSubsiteRubriek(cloud,objectID);
         %>
         <mm:list nodes="<%= artikel_number %>" path="artikel,posrel,dossier,posrel,pagina" fields="pagina.number">
 				  <mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false">
-					  <% if(rootID.equals(ph.getSubsiteRubriek(cloud,pagina_number))) { relatedPage = pagina_number; } %>
+					  <% if(subsiteID.equals(ph.getSubsiteRubriek(cloud,pagina_number))) { relatedPage = pagina_number; } %>
           </mm:field>
         </mm:list>
         <%

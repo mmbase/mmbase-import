@@ -1,14 +1,18 @@
-<% LinkedList shop_items = new LinkedList();
+<%@include file="/taglibs.jsp" %>
+<%@include file="../request_parameters.jsp" %>
+<mm:cloud jspvar="cloud">
+<%
+LinkedList shop_items = new LinkedList();
 %><mm:list nodes="<%= paginaID %>" path="pagina,posrel,items" fields="items.number,items.titel"
 	orderby="posrel.pos,items.titel" directions="UP,UP"
-><mm:field name="items.number" jspvar="shop_items_number" vartype="String" write="false"
-	><% shop_items.add(shop_items_number);
-%></mm:field
+   ><mm:field name="items.number" jspvar="shop_items_number" vartype="String" write="false"
+   	><% shop_items.add(shop_items_number);
+   %></mm:field
 ></mm:list><%
 
 while(shop_items.size()>0) {
 
-  String paginaUrl =  ph.createPaginaUrl(paginaID,request.getContextPath());
+   String paginaUrl =  ph.createPaginaUrl(paginaID,request.getContextPath());
 	String leftShop_itemNumber = (String) shop_items.removeFirst();
 	String leftShop_itemHref =  paginaUrl + "?u=" + leftShop_itemNumber;
 	
@@ -52,3 +56,4 @@ while(shop_items.size()>0) {
    <img src="media/spacer.gif" width="1" height="16" border="0" alt=""><br>
    <% 
 } %>
+</mm:cloud>

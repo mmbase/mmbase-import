@@ -59,7 +59,7 @@ RubriekHelper rubriekHelper = new RubriekHelper(cloud);
 
 TreeMap [] nodesAtLevel = new TreeMap[10];
 nodesAtLevel[0] = new TreeMap();
-nodesAtLevel[0].put(new Integer(0),rootID);
+nodesAtLevel[0].put(new Integer(0),subsiteID);
 
 int depth = 0;
 int top = 0;

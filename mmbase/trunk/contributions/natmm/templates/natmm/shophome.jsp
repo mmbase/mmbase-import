@@ -8,6 +8,7 @@
 <%@include file="includes/top3_nav.jsp" %>
 <%@include file="includes/top4_head.jsp" %>
 <%@include file="includes/top5_breadcrumbs_and_pano.jsp" %>
+   <%@include file="includes/shop/header.jsp" %>
 	<td colspan="3" width="70%">
 		<jsp:include page="includes/shop/discount.jsp">
 			<jsp:param name="p" value="<%= paginaID %>" />
@@ -21,7 +22,7 @@
 			<jsp:param name="p" value="<%= paginaID %>" />
 		</jsp:include>
 	</td>
-<%@include file="includes/shop/footer.jsp" %>
+   <%@include file="includes/shop/footer.jsp" %>
 <%@include file="includes/footer.jsp" %>
 </mm:locale>
 </cache:cache>
