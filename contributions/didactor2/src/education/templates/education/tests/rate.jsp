@@ -1,8 +1,7 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
-%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
-%><%@page import="java.util.Iterator"%>
-
-<mm:content postprocessor="reducespace" expires="0">
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di"
+%><%@page import="java.util.Iterator"
+%><mm:content postprocessor="reducespace" expires="0">
   <mm:cloud method="delegate">
 
     <mm:import externid="tests" required="true"/>
@@ -166,8 +165,12 @@
 
   <%-- If "done" pressed then show the feedback else show next question set --%>
   <% if ( sCommand.equals("done") ) { %>
-      <mm:import id="feedbackpage"><mm:field name="feedbackpage"/></mm:import>
-      <mm:compare referid="feedbackpage" value="0">
+      <script language="javascript">
+        // reload the page, this makes the progressbar be recalculated
+         window.parent.location.href = '<mm:url escapeamps="false" referids="education,provider?" page="/education/index.jsp"><mm:param name="justposted">yes</mm:param></mm:url>';
+      </script>
+      <mm:field name="feedbackpage">
+      <mm:compare value="0">
         <mm:treeinclude page="/education/tests/totalscore.jsp"  objectlist="$includePath" referids="$referids">
           <mm:param name="madetest"><mm:write referid="madetest"/></mm:param>
           <mm:param name="tests"><mm:write referid="tests"/></mm:param>
@@ -180,13 +183,14 @@
         </mm:treeinclude>
       </mm:compare>
       
-      <mm:compare referid="feedbackpage" value="0" inverse="true">
+      <mm:compare value="0" inverse="true">
         <mm:treeinclude page="/education/tests/viewanswersframe.jsp" objectlist="$includePath" referids="$referids">
           <mm:param name="testNo"><mm:write referid="tests"/></mm:param>
           <mm:param name="madetestNo"><mm:write referid="madetest"/></mm:param>
           <mm:param name="userNo"><mm:write referid="user"/></mm:param>
         </mm:treeinclude>
       </mm:compare>
+      </mm:field>
   <% } else { %>
      <mm:treeinclude page="/education/tests/buildtest.jsp"  objectlist="$includePath" referids="$referids">
        <mm:param name="learnobject"><mm:write referid="learnobject"/></mm:param>

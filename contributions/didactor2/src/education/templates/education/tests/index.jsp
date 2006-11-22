@@ -112,29 +112,32 @@
                 <h1><mm:field name="name"/></h1>
               </mm:compare>
             </mm:field>
-            <mm:field id="maychange" name="maychange" write="false"/>
-            <mm:field id="mayview" name="mayview" write="false"/>
-            <mm:field id="feedback" name="feedbackpage" write="false"/>
-            <mm:compare referid="madetestscore" referid2="TESTSCORE_TBS">
-              <di:translate key="education.alreadymade_tobescored" /><p/>
-            </mm:compare>
+            <mm:field id="maychange" name="maychange"    write="false"/>
+            <mm:field id="mayview"   name="mayview"      write="false"/>
+            <mm:field id="feedback"  name="feedbackpage" write="false"/>
+            <mm:import externid="justposted" />
 
-            <mm:compare referid="madetestscore" referid2="TESTSCORE_TBS" inverse="true">
-              <%-- if madestestscore larger or equal than requiredscore --%>
-              <mm:field id="requiredscore" name="requiredscore" write="false"/>
-
-              <mm:islessthan referid="feedback" value="1">
-                <mm:islessthan referid="madetestscore" referid2="requiredscore" inverse="true">
-                  <di:translate key="education.alreadymade_success" /><p/>
-                </mm:islessthan>
-                <mm:islessthan referid="madetestscore" referid2="requiredscore">
-                  <di:translate key="education.alreadymade_fail" /><p/>
-                </mm:islessthan>
-              </mm:islessthan>
-
-              <mm:compare referid="feedback" value="1">
-                <di:translate key="education.alreadymade" /> <p/>
+            <mm:notpresent referid="justposted">
+              <mm:compare referid="madetestscore" referid2="TESTSCORE_TBS">
+                <di:translate key="education.alreadymade_tobescored" /><p/><%-- empty paragraphs, come on, that is stupid! --%>
               </mm:compare>
+              
+              <mm:compare referid="madetestscore" referid2="TESTSCORE_TBS" inverse="true">
+                <%-- if madestestscore larger or equal than requiredscore --%>
+                <mm:field id="requiredscore" name="requiredscore" write="false"/>
+                
+                <mm:islessthan referid="feedback" value="1">
+                  <mm:islessthan referid="madetestscore" referid2="requiredscore" inverse="true">
+                    <di:translate key="education.alreadymade_success" /><p/>
+                  </mm:islessthan>
+                  <mm:islessthan referid="madetestscore" referid2="requiredscore">
+                    <di:translate key="education.alreadymade_fail" /><p/>
+                  </mm:islessthan>
+                </mm:islessthan>
+                
+                <mm:compare referid="feedback" value="1">
+                  <di:translate key="education.alreadymade" /> <p/>
+                </mm:compare>
 
               <table>
                 <tr>
@@ -170,6 +173,7 @@
                 </tr>
               </table>
             </mm:compare>
+            </mm:notpresent>
           </div>
         </body>
       </html>
