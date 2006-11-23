@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.78 2006-09-13 09:45:30 michiel Exp $
+ * @version $Id: Queries.java,v 1.79 2006-11-23 15:00:51 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -285,6 +285,7 @@ abstract public class Queries {
      * @throws BridgeException when failed to convert the string
      */
     protected static Number getNumberValue(String stringValue) throws BridgeException {
+        if (stringValue == null) return null;
         try {
             return new Integer(stringValue);
         } catch (NumberFormatException e) {
@@ -354,7 +355,7 @@ abstract public class Queries {
             if (value  instanceof Number) {
                 return value;
             } else {
-                return getNumberValue(Casting.toString(value));
+                return getNumberValue(value == null ? null : Casting.toString(value));
             }
         case Field.TYPE_DATETIME:
             //TimeZone     tz = cloud == null ? null : (TimeZone) cloud.getProperty("org.mmbase.timezone");
@@ -478,7 +479,11 @@ abstract public class Queries {
                 if (fieldType == Field.TYPE_DATETIME && datePart> -1) {
                     newConstraint = query.createConstraint(stepField, operator, compareValue, datePart);
                 } else {
-                    newConstraint = query.createConstraint(stepField, operator, compareValue);
+                    if (operator == FieldCompareConstraint.EQUAL  && compareValue == null) {
+                        newConstraint = query.createConstraint(stepField);
+                    } else {
+                        newConstraint = query.createConstraint(stepField, operator, compareValue);
+                    }
                 }
             } else {
                 if (fieldType == Field.TYPE_DATETIME && datePart> -1) {
