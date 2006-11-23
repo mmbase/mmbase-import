@@ -5,8 +5,8 @@
 <mm:cloud method="delegate">
   <mm:import externid="learnobject" required="true"/>
   <!-- TODO Need this page? -->
-
   <jsp:directive.include file="/shared/setImports.jsp" />
+
 <%
    String sUserSettings_PathBaseDirectory = getServletContext().getInitParameter("filemanagementBaseDirectory");
    String sUserSettings_BaseURL = getServletContext().getInitParameter("filemanagementBaseUrl");

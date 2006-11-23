@@ -19,17 +19,17 @@
   <jsp:directive.include file="find_copybook.jsp" />
 </mm:node>
 
+
 <mm:node number="$testNo">
   <mm:relatednodescontainer path="madetests,copybooks" element="madetests">
-    <mm:constraint field="madetests.score" referid="TESTSCORE_INCOMPLETE" inverse="true"/>
-    <mm:isnotempty referid="copybookNo">
-      <mm:constraint field="copybooks.number" referid="copybookNo"/>
-    </mm:isnotempty>
+    <mm:constraint field="score"  referid="TESTSCORE_INCOMPLETE" inverse="true"/>
+    <mm:constraint field="copybooks.number"  value="$copybookNo" />
     <mm:relatednodes>
       <mm:field id="madetestNo" name="number" write="false"/>
       <mm:field id="madetestscore" name="score" write="false"/>
     </mm:relatednodes>
   </mm:relatednodescontainer>
+  <!-- alternative implementation of mm:node ? -->
   <mm:listnodescontainer type="tests">
     <mm:constraint operator="equal" field="number" referid="testNo" />
     <mm:listnodes>

@@ -30,7 +30,6 @@
    <mm:node referid="learnobject">
       <mm:relatednodescontainer path="madetests,copybooks" element="madetests">
          <mm:constraint field="copybooks.number" referid="copybookNo"/>
-
          <mm:relatednodes>
             <mm:compare referid="clearmadetest" value="false">
                <mm:import id="madetest" reset="true"><mm:field name="number"/></mm:import>

@@ -5,17 +5,18 @@
   <mm:import externid="question" required="true"/>
   <mm:import externid="madetest">-1</mm:import>
   <jsp:directive.include file="/shared/setImports.jsp" />
+
   <mm:node number="$question">
-    <mm:relatedcontainer path="givenanswers,madetests">
-      <mm:isnotempty referid="madetest">
+    <mm:isnotempty referid="madetest">
+      <mm:relatedcontainer path="givenanswers,madetests">
         <mm:constraint field="madetests.number" value="$madetest"/>
-      </mm:isnotempty>
-      <mm:related>
-        <mm:node element="givenanswers">
-          <mm:field name="text" id="answer" write="false"/>
-        </mm:node>
-      </mm:related>
-    </mm:relatedcontainer>
+        <mm:related>
+          <mm:node element="givenanswers">
+            <mm:field name="text" id="answer" write="false"/>
+          </mm:node>
+        </mm:related>
+      </mm:relatedcontainer>
+    </mm:isnotempty>
 
     <mm:field name="showtitle">
       <mm:compare value="1">
