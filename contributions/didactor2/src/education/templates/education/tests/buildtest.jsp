@@ -20,7 +20,7 @@
 
 <%-- find user's copybook --%>
 <mm:node number="$user">
-   <%@include file="find_copybook.jsp"%>
+   <jsp:directive.include file="find_copybook.jsp" />
 </mm:node>
 
 <%-- remove old results (or use it) --%>
@@ -61,8 +61,6 @@
 </head>
 <body>
 <div class="learnenvironment">
-<mm:node number="$copybookNo" notfound="skip">
-
 <%-- Take care: form name is used in JavaScript of the specific question jsp pages! --%>
 <form name="questionform" action="<mm:treefile page="/education/tests/rate.jsp" objectlist="$includePath" referids="$referids">
                                      <mm:param name="thismadetest"><mm:write referid="madetest"/></mm:param>
@@ -179,13 +177,19 @@
       String questionNo = (String) listTestPath.get(i);
 %>
       <mm:node number="<%= questionNo %>" notfound="skip">
-         <mm:import id="page" reset="true">/education/<mm:nodeinfo type="type"/>/index.jsp</mm:import>
-         <mm:treeinclude page="$page" objectlist="$includePath" referids="$referids">
-            <mm:param name="question"><mm:field name="number"/></mm:param>
-            <mm:param name="testnumber"><mm:write referid="learnobject"/></mm:param>
-            <mm:param name="madetest"><mm:write referid="madetest"/></mm:param>
-         </mm:treeinclude>
-
+      <mm:hasnode number="${copybookNo}">
+        <mm:nodeinfo type="type">
+          <mm:treeinclude page="/education/${_}/index.jsp" objectlist="$includePath" referids="$referids,_node@question,learnobject@testnumber,madetest" />
+        </mm:nodeinfo>
+      </mm:hasnode>
+      <mm:hasnode number="${copybookNo}" inverse="true">
+        <mm:nodeinfo type="type">
+          <div class="${_}">
+            <h1 ><mm:field name="title" /></h1>
+            <mm:field name="text" escape="none"/>
+          </div>
+        </mm:nodeinfo>
+      </mm:hasnode>
          <%-- Make field for rating this question --%>
          <input type="hidden" name="shown<mm:field name="number"/>" value="<mm:field name="number"/>"/>
 <%
@@ -244,6 +248,7 @@
          <p/>
    <% } %>
 
+   <mm:hasnode number="$copybookNo">
    <%-- Determine if all questions are showed --%>
    <mm:isgreaterthan referid="questionamount" referid2="questionperpageamount" inverse="true">
       <input type="submit" value="<di:translate key="education.buttontextdone" />" class="formbutton" onClick="questionform.command.value='done';questionform.submit()"/>
@@ -261,13 +266,13 @@
          <input type="submit" value="<di:translate key="education.buttontextdone" />" class="formbutton" onClick="questionform.command.value='done';questionform.submit()"/>
       </mm:present>
    </mm:isgreaterthan>
+   </mm:hasnode>
 </mm:node>
 </form>
-<mm:import id="copybook_used" />
-</mm:node>
-<mm:notpresent referid="copybook_used">
-   <di:translate key="education.nocopybookfound" />
-</mm:notpresent>
+
+<mm:hasnode number="$copybookNo" inverse="true">
+  <di:translate key="education.nocopybookfound" />
+</mm:hasnode>
 </div>
 </body>
 </html>

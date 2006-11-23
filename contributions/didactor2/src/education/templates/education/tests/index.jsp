@@ -43,6 +43,7 @@
     </mm:listnodes>
   </mm:listnodescontainer>
 
+
   <mm:present referid="testStartDate">
     <mm:import jspvar="testIsAlwaysOnline"><mm:write referid="testIsAlwaysOnline" /></mm:import>
     <mm:import jspvar="testStartDate"><mm:write referid="testStartDate" /></mm:import>
@@ -192,7 +193,7 @@
 
 
 <mm:node number="$testNo">
-   <%@include file="../includes/component_link.jsp"%>
+  <jsp:directive.include file="../includes/component_link.jsp" />
 </mm:node>
 
 
