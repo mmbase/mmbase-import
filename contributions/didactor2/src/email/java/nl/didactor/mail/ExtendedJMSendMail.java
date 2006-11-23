@@ -23,6 +23,7 @@ import org.mmbase.module.core.MMBase;
  * @author Michiel Meeuwissen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
+ * @version $Id: ExtendedJMSendMail.java,v 1.10 2006-11-23 15:48:18 mmeeuwissen Exp $
  */
 
 public class ExtendedJMSendMail extends SendMail {
