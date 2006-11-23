@@ -9,9 +9,10 @@ import java.util.Hashtable;
  * Listener thread, that accepts connection on port 25 (default) and 
  * delegates all work to its worker threads.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
+ * @version $Id: SMTPListener.java,v 1.5 2006-11-23 15:48:18 mmeeuwissen Exp $
  */
 public class SMTPListener extends Thread {
-    private Logger log = Logging.getLoggerInstance(SMTPListener.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(SMTPListener.class);
     private boolean running = true;
     private java.net.ServerSocket ssocket;
     private Hashtable properties;

@@ -12,6 +12,7 @@ import nl.didactor.mail.*;
  * delegates all work to its worker threads. It is a minimum implementation,
  * it only implements commands listed in section 4.5.1 of RFC 2821.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
+ * @version $Id: SMTPHandler.java,v 1.10 2006-11-23 15:48:18 mmeeuwissen Exp $
  */
 public class SMTPHandler extends Thread {
     private static final Logger log = Logging.getLoggerInstance(SMTPHandler.class);
@@ -311,7 +312,7 @@ public class SMTPHandler extends Thread {
         NodeManager emailbuilder = cloud.getNodeManager((String)properties.get("emailbuilder"));
         javax.mail.internet.MimeMessage message = null;
         try {
-            message = new javax.mail.internet.MimeMessage(null, new ByteArrayInputStream(data.getBytes()));
+            message = new javax.mail.internet.MimeMessage(null, new ByteArrayInputStream(data.getBytes())); /// which encoding?!
         } catch (javax.mail.MessagingException e) {
             log.error("Cannot parse message data: [" + data + "]");
             return false;
@@ -326,7 +327,7 @@ public class SMTPHandler extends Thread {
             body = data;
         }
 
-        for (int i=0; i<mailboxes.size(); i++) {
+        for (int i = 0; i < mailboxes.size(); i++) {
 
             Node mailbox = (Node)mailboxes.get(i);
             Node email = emailbuilder.createNode();
