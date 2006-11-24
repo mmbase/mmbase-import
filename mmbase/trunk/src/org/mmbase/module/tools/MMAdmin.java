@@ -40,7 +40,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.147 2006-09-25 14:06:19 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.148 2006-11-24 14:28:54 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -596,8 +596,8 @@ public class MMAdmin extends ProcessorModule {
         String description = "";
         BuilderReader bul = mmb.getBuilderReader(getXMLPath(builderName) + builderName);
         if (bul != null) {
-            Hashtable desc = bul.getDescriptions();
-            String english = (String)desc.get("en");
+            Map<String,String> desc = bul.getDescriptions();
+            String english = desc.get("en");
             if (english != null) {
                 description = english;
             }

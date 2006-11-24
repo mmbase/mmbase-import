@@ -144,8 +144,7 @@ public class URLComposerFactory  {
                 log.error(e.toString());
             }
 
-            for(Iterator e = reader.getChildElements(MAIN_TAG, COMPOSER_TAG); e.hasNext();) {
-                Element element = (Element)e.next();
+            for(Element element:reader.getChildElements(MAIN_TAG, COMPOSER_TAG)) {
                 String  clazz   =  reader.getElementValue(element);
                 String  f = element.getAttribute(FORMAT_ATT);
                 List formats;

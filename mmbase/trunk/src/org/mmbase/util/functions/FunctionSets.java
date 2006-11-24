@@ -36,7 +36,7 @@ import java.net.*;
  * @author Dani&euml;l Ockeloen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: FunctionSets.java,v 1.27 2006-10-26 09:27:11 michiel Exp $
+ * @version $Id: FunctionSets.java,v 1.28 2006-11-24 14:28:55 pierre Exp $
  */
 public class FunctionSets {
 
@@ -137,9 +137,7 @@ public class FunctionSets {
                     InputSource source = new InputSource(con.getInputStream());
                     DocumentReader reader = new DocumentReader(source, FunctionSets.class);
 
-                    for(Iterator ns = reader.getChildElements("functionsets", "functionset"); ns.hasNext(); ) {
-                        Element n = (Element)ns.next();
-
+                    for (Element n: reader.getChildElements("functionsets", "functionset")) {
                         String setName     = n.getAttribute("name");
                         if (functionSets.containsKey(setName)) {
                             log.warn("The function-set '" + setName + "' did exist already");
@@ -170,8 +168,7 @@ public class FunctionSets {
         FunctionSet functionSet = new FunctionSet(setName, setDescription);
         functionSets.put(setName, functionSet);
 
-        for (Iterator functionElements = reader.getChildElements("functionset", "function"); functionElements.hasNext();) {
-            Element element = (Element)functionElements.next();
+        for (Element element: reader.getChildElements("functionset", "function")) {
             String functionName = reader.getElementAttributeValue(element, "name");
             if (functionName != null) {
 
@@ -190,8 +187,8 @@ public class FunctionSets {
 
                 // read the return types and values
                 a = reader.getElementByPath(element, "function.return");
-               	ReturnType returnType = null;
-		if (a != null) {
+                ReturnType returnType = null;
+        if (a != null) {
                     String returnTypeClassName = reader.getElementAttributeValue(a, "type");
                     if (returnTypeClassName != null) {
                         try {
@@ -205,8 +202,7 @@ public class FunctionSets {
 
                 /* obtaining field definitions for a result Node... useful ??
 
-                for (Enumeration n2 = reader.getChildElements(a, "field"); n2.hasMoreElements();) {
-                    Element return_element = (Element)n2.nextElement();
+                for (Element return_element: reader.getChildElements(a, "field")) {
                     String returnFieldName = reader.getElementAttributeValue(return_element, "name");
                     String returnFieldValueType = reader.getElementAttributeValue(return_element, "type");
                     String returnFieldDescription = reader.getElementAttributeValue(return_element, "description");

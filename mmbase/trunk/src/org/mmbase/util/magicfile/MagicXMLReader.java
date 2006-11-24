@@ -89,8 +89,7 @@ public class MagicXMLReader extends DocumentReader implements DetectorProvider {
                 // aargh!
                 return detectors;
             }
-            for (Iterator iter = getChildElements(e); iter.hasNext();) {
-                Element element = (Element) iter.next();
+            for (Element element : getChildElements(e)) {
                 Detector d = getOneDetector(element);
                 detectors.add(d);
             }
@@ -140,7 +139,7 @@ public class MagicXMLReader extends DocumentReader implements DetectorProvider {
             buf.write(bytes, 0, bytes.length);
             return buf.toString("US-ASCII");
         } catch (java.io.UnsupportedEncodingException use) { // could not happen US-ASCII is supported
-            return ""; 
+            return "";
         }
     }
 
@@ -178,8 +177,7 @@ public class MagicXMLReader extends DocumentReader implements DetectorProvider {
 
         e1 = getElementByPath(e, "detector.childlist");
         if (e1 != null) {
-            for (Iterator iter = getChildElements(e1); iter.hasNext();) {
-                Element element = (Element) iter.next();
+            for (Element element: getChildElements(e1)) {
                 Detector child = getOneDetector(element);
                 d.addChild(child, 1); // Not sure if this is the right thing
             }

@@ -565,8 +565,7 @@ public class BasicPackage implements PackageInterface {
             if (je != null) {
                 InputStream input = jf.getInputStream(je);
                 ExtendedDocumentReader reader = new ExtendedDocumentReader(new InputSource(input), BasicPackage.class);
-                for (Iterator ns = reader.getChildElements("packagedepends", "package"); ns.hasNext(); ) {
-                    Element n = (Element) ns.next();
+                for (Element n: reader.getChildElements("packagedepends", "package")) {
                     String name = n.getAttribute("name");
                     String type = n.getAttribute("type");
                     String version = n.getAttribute("version");
@@ -819,7 +818,7 @@ public class BasicPackage implements PackageInterface {
     }
 
     public installStep getBundleStep() {
-	return bundlestep;
+    return bundlestep;
     }
 
 }
