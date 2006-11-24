@@ -40,7 +40,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.31 2006-10-14 09:16:21 nklasens Exp $
+ * @version $Id: DocumentReader.java,v 1.32 2006-11-24 14:27:55 pierre Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
@@ -518,36 +518,35 @@ public class DocumentReader  {
 
     /**
      * @param path Path to the element
-     * @return Iterator of child elements
+     * @return a <code>List</code> of child elements
      */
-    public Iterator<Element> getChildElements(String path) {
+    public List<Element> getChildElements(String path) {
         return getChildElements(getElementByPath(path));
     }
 
     /**
      * @param e Element
-     * @return Iterator of child elements
+     * @return a <code>List</code> of child elements
      */
-    public Iterator<Element> getChildElements(Element e) {
+    public List<Element> getChildElements(Element e) {
         return getChildElements(e,"*");
     }
 
     /**
      * @param path Path to the element
      * @param tag tag to match ("*" means all tags")
-     * @return Iterator of child elements with the given tag
+     * @return a <code>List</code> of child elements with the given tag
      */
-    public Iterator<Element> getChildElements(String path,String tag) {
+    public List<Element> getChildElements(String path,String tag) {
         return getChildElements(getElementByPath(path),tag);
     }
 
     /**
      * @param e Element
      * @param tag tag to match ("*" means all tags")
-     * @return Iterator of child elements with the given tag
-     * @todo XXXX MM: Since we have changed the return type from 1.7 to 1.8 anyway, why don't we return a List then?
+     * @return a <code>List</code> of child elements with the given tag
      */
-    public Iterator<Element> getChildElements(Element e, String tag) {
+    public List<Element> getChildElements(Element e, String tag) {
         List<Element> v = new ArrayList<Element>();
         boolean ignoretag = tag.equals("*");
         if (e!=null) {
@@ -561,7 +560,7 @@ public class DocumentReader  {
                 }
             }
         }
-        return v.iterator();
+        return v;
     }
 
 }
