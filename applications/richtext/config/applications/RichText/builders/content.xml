@@ -141,8 +141,7 @@
         <type key="false" notnull="false" size="255" state="system">STRING</type>
       </db>
     </field>
-
-    <field name="lastmodified">
+    <field name="lastmodified" state="system">
       <descriptions>
         <description xml:lang="en">Last modified on</description>
         <description xml:lang="nl">Laatst veranderd op</description>
@@ -154,8 +153,7 @@
       </gui>
       <datatype base="lastmodified" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
-
-    <field name="creator">
+    <field name="creator" state="system">
       <descriptions>
         <description xml:lang="en">Created by</description>
         <description xml:lang="nl">Gecreëerd door</description>
@@ -171,8 +169,7 @@
         <type key="false" notnull="false" size="255" state="system">STRING</type>
       </db>
     </field>
-
-    <field name="created">
+    <field name="created" state="system">
       <descriptions>
         <description xml:lang="en">Created on</description>
         <description xml:lang="nl">Gecreëeerd op</description>
