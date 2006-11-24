@@ -8,6 +8,8 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.security;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * A UserContext object is the result of an authentication, on which authorization can be
@@ -21,9 +23,10 @@ package org.mmbase.security;
  * although this is possible.
  *
  * @author Eduard Witteveen
- * @version $Id: BasicUser.java,v 1.2 2006-02-13 18:17:16 michiel Exp $
+ * @version $Id: BasicUser.java,v 1.3 2006-11-24 15:16:55 michiel Exp $
  */
 public class BasicUser implements UserContext {
+    private static final Logger log = Logging.getLoggerInstance(BasicUser.class);
 
     protected String authenticationType;
 
@@ -70,7 +73,12 @@ public class BasicUser implements UserContext {
     }
 
     public boolean isValid() {
-        return org.mmbase.module.core.MMBase.getMMBase().getMMBaseCop().getAuthentication().isValid(this);
+        try {
+            return org.mmbase.module.core.MMBase.getMMBase().getMMBaseCop().getAuthentication().isValid(this);
+        } catch (Exception e) {
+            log.warn(e);
+            return false;
+        }
     }
 
     public String getAuthenticationType() {
