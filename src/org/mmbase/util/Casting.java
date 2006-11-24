@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.94 2006-11-11 17:18:09 michiel Exp $
+ * @version $Id: Casting.java,v 1.95 2006-11-24 12:23:25 michiel Exp $
  */
 
 import java.util.*;
@@ -210,6 +210,7 @@ public class Casting {
             Node.class.isAssignableFrom(type) ||
             Document.class.isAssignableFrom(type) ||
             Collection.class.isAssignableFrom(type) ||
+            Date.class.isAssignableFrom(type) ||
             Map.class.isAssignableFrom(type);
     }
 
