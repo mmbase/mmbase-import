@@ -534,7 +534,6 @@ public class PostArea {
             query.addField(step2.getNext(), postthreadsmanager.getField("postcount"));
             query.addField(step2.getNext(), postthreadsmanager.getField("c_lastpostsubject"));
             query.addField(step2.getNext(), postthreadsmanager.getField("c_lastposter"));
-            query.addField(step2.getNext(), postthreadsmanager.getField("c_lastposttime"));
             query.addField(step2.getNext(), postthreadsmanager.getField("lastposternumber"));
             query.addField(step2.getNext(), postthreadsmanager.getField("lastpostnumber"));
             query.addField(step2.getNext(), postthreadsmanager.getField("mood"));

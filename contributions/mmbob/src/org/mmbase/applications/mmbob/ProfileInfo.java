@@ -107,7 +107,7 @@ public class ProfileInfo {
 	 try {
          DocumentReader reader = new DocumentReader(new InputSource(new StringReader(xml)),ProfileInfo.class);
          if(reader != null) {
-                for(Iterator ns = reader.getChildElements("profileinfo","entry");ns.hasNext(); ) {
+             for(Iterator ns = reader.getChildElements("profileinfo","entry").iterator();ns.hasNext(); ) {
                     Element n = (Element)ns.next();
                     NamedNodeMap nm = n.getAttributes();
                     if (nm != null) {
