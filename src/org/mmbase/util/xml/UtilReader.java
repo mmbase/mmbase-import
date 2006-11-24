@@ -34,7 +34,7 @@ import org.w3c.dom.Element;
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.27 2006-11-21 18:22:01 michiel Exp $
+ * @version $Id: UtilReader.java,v 1.28 2006-11-24 14:28:55 pierre Exp $
  */
 public class UtilReader {
 
@@ -194,20 +194,17 @@ public class UtilReader {
                 DocumentReader reader = new DocumentReader(is, UtilReader.class);
                 Element e = reader.getElementByPath("util.properties");
                 if (e != null) {
-                    for (Iterator iter = reader.getChildElements(e, "property"); iter.hasNext();) {
-                        Element p = (Element) iter.next();
+                    for (Element p : reader.getChildElements(e,"property")) {
                         String name = reader.getElementAttributeValue(p, "name");
                         String type = reader.getElementAttributeValue(p, "type");
                         if (type.equals("map")) {
                             Collection<Map.Entry<String, Object>> entryList = new ArrayList();
 
-                            for (Iterator entriesIter = reader.getChildElements(p, "entry"); entriesIter.hasNext();) {
-                                Element entry = (Element) entriesIter.next();
+                            for (Element entry : reader.getChildElements(p,"entry")) {
                                 String key = null;
                                 String value = null;
 
-                                for (Iterator en = reader.getChildElements(entry, "*"); en.hasNext();) {
-                                    Element keyorvalue = (Element) en.next();
+                                for (Element keyorvalue : reader.getChildElements(entry, "*")) {
                                     if (keyorvalue.getTagName().equals("key")) {
                                         key = reader.getElementValue(keyorvalue);
                                     } else {

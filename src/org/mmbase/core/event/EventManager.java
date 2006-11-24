@@ -29,7 +29,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * manager is instantiated, event brokers are added for Event, NodeEvent and RelationEvent
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: EventManager.java,v 1.15 2006-10-19 11:25:03 michiel Exp $
+ * @version $Id: EventManager.java,v 1.16 2006-11-24 14:28:54 pierre Exp $
  */
 public class EventManager {
 
@@ -106,9 +106,7 @@ public class EventManager {
                     DocumentReader configReader = new DocumentReader(config);
 
                     // find the event brokers
-                    Iterator e = configReader.getChildElements("eventmanager.brokers", "broker");
-                    while (e.hasNext()) {
-                        Element element = (Element) e.next();
+                    for (Element element: configReader.getChildElements("eventmanager.brokers", "broker")) {
                         String className = element.getAttribute("class");
                         AbstractEventBroker broker = (AbstractEventBroker) findInstance(className);
                         if (broker != null) {

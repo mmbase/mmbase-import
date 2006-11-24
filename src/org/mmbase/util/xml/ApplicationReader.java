@@ -18,7 +18,7 @@ import org.mmbase.util.XMLEntityResolver;
  * @author Case Roole
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ApplicationReader.java,v 1.2 2005-10-07 18:42:49 michiel Exp $
+ * @version $Id: ApplicationReader.java,v 1.3 2006-11-24 14:28:55 pierre Exp $
  */
 public class ApplicationReader extends DocumentReader {
 
@@ -107,10 +107,8 @@ public class ApplicationReader extends DocumentReader {
      * @since MMBase-1.7
      */
     public List getRequirements() {
-        List results=new Vector();
-        for(Iterator ns=getChildElements("application.requirements","requires");
-            ns.hasNext(); ) {
-            Element n3=(Element)ns.next();
+        List results = new Vector();
+        for (Element n3: getChildElements("application.requirements","requires")) {
             Map bset=new HashMap();
             bset.put("name",getElementAttributeValue(n3,"name"));
             addAttribute(bset,n3,"maintainer");
@@ -122,7 +120,7 @@ public class ApplicationReader extends DocumentReader {
     }
 
     private void addAttribute(Map bset, Element n, String attribute) {
-        String val=n.getAttribute(attribute);
+        String val = n.getAttribute(attribute);
         if (!val.equals("")) {
             bset.put(attribute,val);
         }
@@ -132,11 +130,9 @@ public class ApplicationReader extends DocumentReader {
      * Get the Builders needed for this application
      */
     public Vector getNeededBuilders() {
-        Vector results=new Vector();
-        for(Iterator ns=getChildElements("application.neededbuilderlist","builder");
-            ns.hasNext(); ) {
-            Element n3=(Element)ns.next();
-            Hashtable bset=new Hashtable();
+        Vector results = new Vector();
+        for (Element n3: getChildElements("application.neededbuilderlist","builder")) {
+            Hashtable bset = new Hashtable();
             bset.put("name",getElementValue(n3));
             addAttribute(bset,n3,"maintainer");
             addAttribute(bset,n3,"version");
@@ -145,16 +141,13 @@ public class ApplicationReader extends DocumentReader {
         return results;
     }
 
-
     /**
      * Get the RelDefs needed for this application
      */
     public Vector getNeededRelDefs() {
-        Vector results=new Vector();
-        for(Iterator ns=getChildElements("application.neededreldeflist","reldef");
-            ns.hasNext(); ) {
-            Element n3=(Element)ns.next();
-            Hashtable bset=new Hashtable();
+        Vector results = new Vector();
+        for (Element n3: getChildElements("application.neededreldeflist","reldef")) {
+            Hashtable bset = new Hashtable();
             addAttribute(bset,n3,"source");
             addAttribute(bset,n3,"target");
             addAttribute(bset,n3,"direction");
@@ -166,15 +159,12 @@ public class ApplicationReader extends DocumentReader {
         return results;
     }
 
-
     /**
      * Get allowed relations for this application
      */
     public Vector getAllowedRelations() {
         Vector results=new Vector();
-        for(Iterator ns=getChildElements("application.allowedrelationlist","relation");
-            ns.hasNext(); ) {
-            Element n3=(Element)ns.next();
+        for (Element n3: getChildElements("application.allowedrelationlist","relation")) {
             Hashtable bset=new Hashtable();
             addAttribute(bset,n3,"from");
             addAttribute(bset,n3,"to");
@@ -189,9 +179,7 @@ public class ApplicationReader extends DocumentReader {
      */
     public List getDataSources() {
         Vector results = new Vector();
-        for(Iterator ns=getChildElements("application.datasourcelist","datasource");
-            ns.hasNext(); ) {
-            Element n3=(Element)ns.next();
+        for (Element n3: getChildElements("application.datasourcelist","datasource")) {
             Hashtable bset=new Hashtable();
             addAttribute(bset,n3,"path");
             addAttribute(bset,n3,"builder");
@@ -206,9 +194,7 @@ public class ApplicationReader extends DocumentReader {
      */
     public Vector getRelationSources() {
         Vector results=new Vector();
-        for(Iterator ns=getChildElements("application.relationsourcelist","relationsource");
-            ns.hasNext(); ) {
-            Element n3=(Element)ns.next();
+        for (Element n3: getChildElements("application.relationsourcelist","relationsource")) {
             Hashtable bset=new Hashtable();
             addAttribute(bset,n3,"path");
             addAttribute(bset,n3,"builder");
@@ -222,8 +208,7 @@ public class ApplicationReader extends DocumentReader {
      */
     public Vector getContextSources() {
         Vector results=new Vector();
-        for(Iterator ns=getChildElements("application.contextsourcelist","contextsource"); ns.hasNext(); ) {
-            Element n3=(Element)ns.next();
+        for (Element n3: getChildElements("application.contextsourcelist","contextsource")) {
             Hashtable bset=new Hashtable();
             addAttribute(bset,n3,"path");
             addAttribute(bset,n3,"type");

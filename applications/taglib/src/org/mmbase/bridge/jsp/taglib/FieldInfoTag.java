@@ -42,7 +42,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.97 2006-07-05 10:00:09 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.98 2006-11-24 14:28:54 pierre Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -217,8 +217,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         DocumentReader reader  = new DocumentReader(fieldtypes, thisClass);
         Element fieldtypesElement = reader.getElementByPath("fieldtypes");
 
-        for (Iterator iter = reader.getChildElements(fieldtypesElement, "fieldtype"); iter.hasNext();) {
-            Element element = (Element) iter.next();
+        for (Element element: reader.getChildElements(fieldtypesElement, "fieldtype")) {
             String type = element.getAttribute("id");
             DataType dataType = DataTypes.getDataType(type);
             Class dataTypeClass = dataType.getClass();

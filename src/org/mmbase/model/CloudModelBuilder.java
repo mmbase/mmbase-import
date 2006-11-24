@@ -23,7 +23,7 @@ import java.io.*;
 
 public class CloudModelBuilder {
 
-    private static Logger log = Logging.getLoggerInstance(CloudModelBuilder.class); 
+    private static Logger log = Logging.getLoggerInstance(CloudModelBuilder.class);
     private String name;
     private String path;
     private Document document;
@@ -40,7 +40,7 @@ public class CloudModelBuilder {
     public boolean writeToFile(String filepath) {
         InputStream in = ResourceLoader.getConfigurationRoot().getResourceAsStream(path);
         if (in!=null) {
-           try {                
+           try {
                 FileOutputStream out = new FileOutputStream(filepath);
                 byte[] buf = new byte[1024];
                 int len;
@@ -61,12 +61,10 @@ public class CloudModelBuilder {
     }
 
     public boolean removeField(String name) {
-	if (document == null) openDocument();
+    if (document == null) openDocument();
         Element fe = reader.getElementByPath(document.getDocumentElement(),"builder.fieldlist");
         if (fe != null) {
-            Iterator fields = reader.getChildElements(fe,"field");
-            while (fields.hasNext()) {
-                Element field = (Element)fields.next();
+            for (Element field: reader.getChildElements(fe,"field")) {
                 Element namenode = reader.getElementByPath(field,"field.db.name");
                 if (namenode!=null && namenode.getFirstChild().getNodeValue().equals(name)) {
                     fe.removeChild(field);
@@ -79,41 +77,37 @@ public class CloudModelBuilder {
 
 
     public boolean setGuiName(String fieldname,String country,String value) {
-	if (document == null) openDocument();
+    if (document == null) openDocument();
         Element fe = reader.getElementByPath(document.getDocumentElement(),"builder.fieldlist");
         if (fe != null) {
-            Iterator fields = reader.getChildElements(fe,"field");
-            while (fields.hasNext()) {
-                Element field = (Element)fields.next();
+            for (Element field: reader.getChildElements(fe,"field")) {
                 Element namenode = reader.getElementByPath(field,"field.db.name");
                 if (namenode!=null && namenode.getFirstChild().getNodeValue().equals(fieldname)) {
-                       // that we have found the correct field find
-                       // find the gui names
-                       Element guinode = reader.getElementByPath(field,"field.gui");
-                       if (guinode != null) {
-            	       Iterator  guinames= reader.getChildElements(guinode,"guiname");
-                       boolean found =  false;
-                       while (guinames.hasNext()) {
-                           Element guiname = (Element)guinames.next();
-			   String oldcountry = guiname.getAttribute("xml:lang");
-			   if (oldcountry!=null && oldcountry.equals(country)) {
-				guiname.getFirstChild().setNodeValue(value);
-                           	save();
-				found =  true;
-			   }
+                    // that we have found the correct field find
+                    // find the gui names
+                    Element guinode = reader.getElementByPath(field,"field.gui");
+                    if (guinode != null) {
+                        boolean found =  false;
+                        for (Element guiname: reader.getChildElements(guinode,"guiname")) {
+                            String oldcountry = guiname.getAttribute("xml:lang");
+                            if (oldcountry != null && oldcountry.equals(country)) {
+                                guiname.getFirstChild().setNodeValue(value);
+                                save();
+                                found = true;
+                            }
                        }
                        if (!found) {
-			   String newpart ="      <guiname xml:lang=\""+country+"\">"+value+"</guiname>\r";
-	                   mergePart(guinode,newpart);
+                           String newpart ="      <guiname xml:lang=\""+country+"\">"+value+"</guiname>\r";
+                           mergePart(guinode,newpart);
                            save();
                        }
-                       } else {
-                           String newpart ="    <gui>\r";
-			   newpart +="      <guiname xml:lang=\""+country+"\">"+value+"</guiname>\r";
-                           newpart +="    </gui>\r";
-	                   mergePart(field,newpart);
-                           save();
-		       }        
+                   } else {
+                       String newpart ="    <gui>\r";
+                       newpart +="      <guiname xml:lang=\""+country+"\">"+value+"</guiname>\r";
+                       newpart +="    </gui>\r";
+                       mergePart(field,newpart);
+                       save();
+                   }
                 }
             }
         }
@@ -122,73 +116,65 @@ public class CloudModelBuilder {
 
 
     public boolean setBuilderDBState(String fieldname,String value) {
-	if (document == null) openDocument();
+    if (document == null) openDocument();
         Element fe = reader.getElementByPath(document.getDocumentElement(),"builder.fieldlist");
         if (fe != null) {
-            Iterator fields = reader.getChildElements(fe,"field");
-            while (fields.hasNext()) {
-                Element field = (Element)fields.next();
+            for (Element field: reader.getChildElements(fe,"field")) {
                 Element namenode = reader.getElementByPath(field,"field.db.name");
                 if (namenode!=null && namenode.getFirstChild().getNodeValue().equals(fieldname)) {
-                       // that we have found the correct field find
-                       // find the type node
-                       Element typenode = reader.getElementByPath(field,"field.db.type");
-		       NamedNodeMap nnm = typenode.getAttributes();
-		       if (nnm != null) {
-				Node dbstate = nnm.getNamedItem("state");
-				dbstate.getFirstChild().setNodeValue(value);
-                           	save();
-		       }
+                    // that we have found the correct field find
+                    // find the type node
+                    Element typenode = reader.getElementByPath(field,"field.db.type");
+                    NamedNodeMap nnm = typenode.getAttributes();
+                    if (nnm != null) {
+                        Node dbstate = nnm.getNamedItem("state");
+                        dbstate.getFirstChild().setNodeValue(value);
+                        save();
+                    }
                 }
             }
         }
         return true;
     }
-
 
     public boolean setBuilderDBKey(String fieldname,String value) {
-	if (document == null) openDocument();
+        if (document == null) openDocument();
         Element fe = reader.getElementByPath(document.getDocumentElement(),"builder.fieldlist");
         if (fe != null) {
-            Iterator fields = reader.getChildElements(fe,"field");
-            while (fields.hasNext()) {
-                Element field = (Element)fields.next();
+            for (Element field: reader.getChildElements(fe,"field")) {
                 Element namenode = reader.getElementByPath(field,"field.db.name");
-                if (namenode!=null && namenode.getFirstChild().getNodeValue().equals(fieldname)) {
-                       // that we have found the correct field find
-                       // find the type node
-                       Element typenode = reader.getElementByPath(field,"field.db.type");
-		       NamedNodeMap nnm = typenode.getAttributes();
-		       if (nnm != null) {
-				Node key = nnm.getNamedItem("key");
-				key.getFirstChild().setNodeValue(value);
-                           	save();
-		       }
+                if (namenode != null && namenode.getFirstChild().getNodeValue().equals(fieldname)) {
+                    // that we have found the correct field find
+                    // find the type node
+                    Element typenode = reader.getElementByPath(field,"field.db.type");
+                    NamedNodeMap nnm = typenode.getAttributes();
+                    if (nnm != null) {
+                        Node key = nnm.getNamedItem("key");
+                        key.getFirstChild().setNodeValue(value);
+                        save();
+                    }
                 }
             }
         }
         return true;
     }
 
-
     public boolean setBuilderDBNotNull(String fieldname,String value) {
-	if (document == null) openDocument();
+        if (document == null) openDocument();
         Element fe = reader.getElementByPath(document.getDocumentElement(),"builder.fieldlist");
         if (fe != null) {
-            Iterator fields = reader.getChildElements(fe,"field");
-            while (fields.hasNext()) {
-                Element field = (Element)fields.next();
+            for (Element field: reader.getChildElements(fe,"field")) {
                 Element namenode = reader.getElementByPath(field,"field.db.name");
                 if (namenode!=null && namenode.getFirstChild().getNodeValue().equals(fieldname)) {
-                       // that we have found the correct field find
-                       // find the type node
-                       Element typenode = reader.getElementByPath(field,"field.db.type");
-		       NamedNodeMap nnm = typenode.getAttributes();
-		       if (nnm != null) {
-				Node notnull = nnm.getNamedItem("notnull");
-				notnull.getFirstChild().setNodeValue(value);
-                           	save();
-		       }
+                    // that we have found the correct field find
+                    // find the type node
+                    Element typenode = reader.getElementByPath(field,"field.db.type");
+                    NamedNodeMap nnm = typenode.getAttributes();
+                    if (nnm != null) {
+                        Node notnull = nnm.getNamedItem("notnull");
+                        notnull.getFirstChild().setNodeValue(value);
+                        save();
+                    }
                 }
             }
         }
@@ -197,33 +183,30 @@ public class CloudModelBuilder {
 
 
     public boolean setBuilderDBSize(String fieldname,String value) {
-	if (document == null) openDocument();
+    if (document == null) openDocument();
         Element fe = reader.getElementByPath(document.getDocumentElement(),"builder.fieldlist");
         if (fe != null) {
-            Iterator fields = reader.getChildElements(fe,"field");
-            while (fields.hasNext()) {
-                Element field = (Element)fields.next();
+            for (Element field: reader.getChildElements(fe,"field")) {
                 Element namenode = reader.getElementByPath(field,"field.db.name");
                 if (namenode!=null && namenode.getFirstChild().getNodeValue().equals(fieldname)) {
-                       // that we have found the correct field find
-                       // find the type node
-                       Element typenode = reader.getElementByPath(field,"field.db.type");
-		       NamedNodeMap nnm = typenode.getAttributes();
-		       if (nnm != null) {
-				Node dbsize = nnm.getNamedItem("size");
-				dbsize.getFirstChild().setNodeValue(value);
-                           	save();
-		       }
+                    // that we have found the correct field find
+                    // find the type node
+                    Element typenode = reader.getElementByPath(field,"field.db.type");
+                    NamedNodeMap nnm = typenode.getAttributes();
+                    if (nnm != null) {
+                        Node dbsize = nnm.getNamedItem("size");
+                        dbsize.getFirstChild().setNodeValue(value);
+                        save();
+                    }
                 }
             }
         }
         return true;
     }
 
-
     public boolean addField(int pos,String name,String type,String guitype,String state,String required,String unique,String size) {
-	if (document == null) openDocument();
-         Element fe = reader.getElementByPath(document.getDocumentElement(),"builder.fieldlist");
+        if (document == null) openDocument();
+        Element fe = reader.getElementByPath(document.getDocumentElement(),"builder.fieldlist");
         if (fe!=null) {
             String newpart ="    <field>\r";
             newpart +="      <editor>\r";
@@ -240,24 +223,24 @@ public class CloudModelBuilder {
             newpart +="        <type key=\""+unique+"\" notnull=\""+required+"\" size=\""+size+"\" state=\""+state+"\">"+type+"</type>\r";
             newpart +="      </db>\r";
             newpart +="    </field>\r";
-	    mergePart(fe,newpart);
+            mergePart(fe,newpart);
         }
         save();
         return true;
     }
 
     private void mergePart(Element fe,String newpart) {
-            try {
-                Element nf = (DocumentReader.getDocumentBuilder(false,null,null).parse(new InputSource(new StringReader(newpart)))).getDocumentElement();
-                fe.appendChild(document.importNode(nf,true));
-            } catch(Exception e) {
-                log.error("Can't merge new xml code");
-            }
+        try {
+            Element nf = (DocumentReader.getDocumentBuilder(false,null,null).parse(new InputSource(new StringReader(newpart)))).getDocumentElement();
+            fe.appendChild(document.importNode(nf,true));
+        } catch(Exception e) {
+            log.error("Can't merge new xml code");
+        }
     }
 
     public boolean save() {
         // save the file back using the ResourceLoader
-        try {                
+        try {
             ResourceLoader.getConfigurationRoot().storeDocument(path,document);
         } catch(Exception e) {
             e.printStackTrace();
@@ -271,7 +254,7 @@ public class CloudModelBuilder {
            document = ResourceLoader.getConfigurationRoot().getDocument(path);
            reader = new BuilderReader(document,MMBase.getMMBase());
        } catch (Exception e) {
-          log.error("missing builderfile file : "+path);
+          log.error("missing builderfile file : " + path);
           e.printStackTrace();
        }
    }
