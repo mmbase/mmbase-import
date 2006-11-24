@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.11 2006-11-07 22:57:36 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.12 2006-11-24 15:03:38 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -65,9 +65,17 @@ public class BasicFramework implements Framework {
             for (Map.Entry<String, ? extends Object> entry : params.entrySet()) {
                 Object value = entry.getValue();
                 if (value != null && Casting.isStringRepresentable(value.getClass())) { // if not string representable, that suppose it was an 'automatic' parameter which does need presenting on url
-                    show.append(connector).append(entry.getKey()).append("=");
-                    paramEscaper.transform(new StringReader(Casting.toString(value)), w);
-                    connector = amp;
+                    if (value instanceof Iterable) {
+                        for (Object v : (Iterable) value) {
+                            show.append(connector).append(entry.getKey()).append("=");
+                            paramEscaper.transform(new StringReader(Casting.toString(v)), w);
+                            connector = amp;
+                        }
+                    } else {
+                        show.append(connector).append(entry.getKey()).append("=");
+                        paramEscaper.transform(new StringReader(Casting.toString(value)), w);
+                        connector = amp;
+                    }
                 }
             }
         }
@@ -107,7 +115,7 @@ public class BasicFramework implements Framework {
     }
 
     public Parameters createFrameworkParameters() {
-        return new Parameters(Parameter.REQUEST);
+        return new Parameters(Parameter.REQUEST, new Parameter("component", String.class), new Parameter("block", String.class));
     }
 
     public boolean makeRelativeUrl() {
