@@ -1,12 +1,12 @@
 /*
  
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
+  This software is OSI Certified Open Source Software.
+  OSI Certified is a certification mark of the Open Source Initiative.
  
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
+  The license (Mozilla version 1.0) can be read at the MMBase site.
+  See http://www.MMBase.org/license
  
- */
+*/
 
 package org.mmbase.applications.mmbob;
 
@@ -31,11 +31,11 @@ import org.mmbase.storage.search.*;
  * @author Daniel Ockeloen (MMBased)
  */
 public class PostAreaConfig {
-   private static Logger log = Logging.getLoggerInstance(PostAreaConfig.class);
-   private String defaultaccount, defaultpassword;
-   private String id="unkown";
-   private int pos = 0;
-   private String guestreadmodetype,guestwritemodetype,threadstartlevel;
+    private static Logger log = Logging.getLoggerInstance(PostAreaConfig.class);
+    private String defaultaccount, defaultpassword;
+    private String id="unkown";
+    private int pos = 0;
+    private String guestreadmodetype,guestwritemodetype,threadstartlevel;
 
     public PostAreaConfig(DocumentReader reader,Element n) {
 	decodeConfig(reader,n);
@@ -48,120 +48,120 @@ public class PostAreaConfig {
     }
 
     private boolean decodeConfig(DocumentReader reader,Element n) {
-                    NamedNodeMap nm = n.getAttributes();
-                    if (nm != null) {
-                        String account = "admin";
-                        String password = "admin2k";
-// decode name
-                        org.w3c.dom.Node n3 = nm.getNamedItem("id");
-                        if (n3 != null) {
-                            id = n3.getNodeValue();
-                        }
-// decode pos
-                        n3 = nm.getNamedItem("pos");
-                        if (n3 != null) {
-			    try {
-                            	pos = Integer.parseInt(n3.getNodeValue());
-			    } catch (Exception e) {
-			    }
-                        }
-// decode account
-                        n3 = nm.getNamedItem("account");
-                        if (n3 != null) {
-                            account = n3.getNodeValue();
-                        }
-// decode password
-                        n3 = nm.getNamedItem("password");
-                        if (n3 != null) {
-                            password = n3.getNodeValue();
-                        }
-                        //log.info("ID="+id+" account="+account+" password="+password);
-                        if (id.equals("default")) {
-                            defaultaccount = account;
-                            defaultpassword = password;
-                        }
+        NamedNodeMap nm = n.getAttributes();
+        if (nm != null) {
+            String account = "admin";
+            String password = "admin2k";
+            // decode name
+            org.w3c.dom.Node n3 = nm.getNamedItem("id");
+            if (n3 != null) {
+                id = n3.getNodeValue();
+            }
+            // decode pos
+            n3 = nm.getNamedItem("pos");
+            if (n3 != null) {
+                try {
+                    pos = Integer.parseInt(n3.getNodeValue());
+                } catch (Exception e) {
+                }
+            }
+            // decode account
+            n3 = nm.getNamedItem("account");
+            if (n3 != null) {
+                account = n3.getNodeValue();
+            }
+            // decode password
+            n3 = nm.getNamedItem("password");
+            if (n3 != null) {
+                password = n3.getNodeValue();
+            }
+            //log.info("ID="+id+" account="+account+" password="+password);
+            if (id.equals("default")) {
+                defaultaccount = account;
+                defaultpassword = password;
+            }
 
-                        for (Iterator ns2 = reader.getChildElements(n, "generatedata"); ns2.hasNext();) {
-                            Element n2 = (Element) ns2.next();
-                            nm = n2.getAttributes();
-                            if (nm != null) {
-                                String role = null;
-                                String dfile = null;
-                                String tokenizer = null;
-                                n3 = nm.getNamedItem("role");
-                                if (n3 != null) {
-                                    role = n3.getNodeValue();
-                                }
-                                n3 = nm.getNamedItem("file");
-                                if (n3 != null) {
-                                    dfile = n3.getNodeValue();
-                                }
-                                n3 = nm.getNamedItem("tokenizer");
-                                if (n3 != null) {
-                                    tokenizer = n3.getNodeValue();
-                                }
-                                org.mmbase.applications.mmbob.generate.Handler.setGenerateFile(role, dfile, tokenizer);
-                            }
-                        }
-
-
-                        guestreadmodetype = getAttributeValue(reader,n,"guestreadmode","type");
-                        guestwritemodetype = getAttributeValue(reader,n,"guestwritemode","type");
-                        threadstartlevel = getAttributeValue(reader,n,"threadstart","level");
+            for (Iterator ns2 = reader.getChildElements(n, "generatedata").iterator(); ns2.hasNext();) {
+                Element n2 = (Element) ns2.next();
+                nm = n2.getAttributes();
+                if (nm != null) {
+                    String role = null;
+                    String dfile = null;
+                    String tokenizer = null;
+                    n3 = nm.getNamedItem("role");
+                    if (n3 != null) {
+                        role = n3.getNodeValue();
                     }
-		return true;
-   }
+                    n3 = nm.getNamedItem("file");
+                    if (n3 != null) {
+                        dfile = n3.getNodeValue();
+                    }
+                    n3 = nm.getNamedItem("tokenizer");
+                    if (n3 != null) {
+                        tokenizer = n3.getNodeValue();
+                    }
+                    org.mmbase.applications.mmbob.generate.Handler.setGenerateFile(role, dfile, tokenizer);
+                }
+            }
+
+
+            guestreadmodetype = getAttributeValue(reader,n,"guestreadmode","type");
+            guestwritemodetype = getAttributeValue(reader,n,"guestwritemode","type");
+            threadstartlevel = getAttributeValue(reader,n,"threadstart","level");
+        }
+        return true;
+    }
   
-   public String getId() {
+    public String getId() {
 	return id;
-   }
+    }
 
 
-   private String getAttributeValue(DocumentReader reader,Element n,String itemname,String attribute) {
-       for (Iterator ns2 = reader.getChildElements(n, itemname); ns2.hasNext();) {
-           Element n2 = (Element) ns2.next();
-           NamedNodeMap nm = n2.getAttributes();
-           if (nm != null) {
-                  org.w3c.dom.Node n3 = nm.getNamedItem(attribute);
-                  if (n3 != null) {
-                          return n3.getNodeValue();
-                  }
-          }
-      }	
-      return null;
-   }
+    private String getAttributeValue(DocumentReader reader,Element n,String itemname,String attribute) {
+        for (Iterator ns2 = reader.getChildElements(n, itemname).iterator(); ns2.hasNext();) {
+            Element n2 = (Element) ns2.next();
+            NamedNodeMap nm = n2.getAttributes();
+            if (nm != null) {
+                org.w3c.dom.Node n3 = nm.getNamedItem(attribute);
+                if (n3 != null) {
+                    return n3.getNodeValue();
+                }
+            }
+        }	
+        return null;
+    }
 
-   public String getGuestReadModeType() {
+    public String getGuestReadModeType() {
         return guestreadmodetype;
-   }
+    }
 
-   public String getGuestWriteModeType() {
+    public String getGuestWriteModeType() {
         return guestwritemodetype;
-   }
+    }
 
-   public String getThreadStartLevel() {
+    public String getThreadStartLevel() {
 	// this should be fixed by asking the parent
 	if (threadstartlevel==null || threadstartlevel.equals("default")) return "";
         return threadstartlevel;
-   }
+    }
 
-   public void setGuestReadModeType(String guestreadmodetype) {
-       this.guestreadmodetype = guestreadmodetype;
-   }
+    public void setGuestReadModeType(String guestreadmodetype) {
+        this.guestreadmodetype = guestreadmodetype;
+    }
 
-   public void setGuestWriteModeType(String guestwritemodetype) {
-       this.guestwritemodetype = guestwritemodetype;
-   }
+    public void setGuestWriteModeType(String guestwritemodetype) {
+        this.guestwritemodetype = guestwritemodetype;
+    }
 
-   public void setThreadStartLevel(String threadstartlevel) {
-       this.threadstartlevel = threadstartlevel;
-   }
+    public void setThreadStartLevel(String threadstartlevel) {
+        this.threadstartlevel = threadstartlevel;
+    }
 
-   public int getPos() {
+    public int getPos() {
 	return pos;
-   }
+    }
 
-   public void setPos(int pos) {
+    public void setPos(int pos) {
 	this.pos = pos;	
    }
 
