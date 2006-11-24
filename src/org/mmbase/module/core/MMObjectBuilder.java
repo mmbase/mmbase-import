@@ -61,7 +61,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.401 2006-10-17 12:08:39 nklasens Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.402 2006-11-24 14:21:36 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -205,20 +205,24 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     /**
      *  Maintainer information for builder registration
      *  Set with &lt;builder maintainer="mmbase.org" version="0"&gt; in the xml builder file
+     * @scope protected
      */
     String maintainer = "mmbase.org";
 
     /** Collections of (GUI) names (singular) for the builder's objects, divided by language
+     * @scope protected
      */
     Hashtable singularNames;
 
     /** Collections of (GUI) names (plural) for the builder's objects, divided by language
+     * @scope protected
      */
     Hashtable pluralNames;
 
     /**
      * Full filename (path + buildername + ".xml") where we loaded the builder from
      * It is relative from the '/builders/' subdir
+     * @scope protected
      */
     String xmlPath = "";
 
@@ -2184,7 +2188,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @param e the description text
      */
     public void setDescription(String e) {
-        this.description=e;
+        this.description = e;
         update();
     }
 
@@ -2193,7 +2197,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @param e a <code>Hashtable</code> containing the descriptions
      */
     public void setDescriptions(Hashtable e) {
-        this.descriptions=e;
+        this.descriptions = e;
         update();
     }
 
@@ -2925,7 +2929,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
          if (event.getRelationDestinationType().equals(getTableName())) {
              eventBackwardsCompatible(event.getMachine(), event.getRelationDestinationNumber(), NodeEvent.TYPE_RELATION_CHANGE);
          }
-         
+
          //update the cache
          Integer changedNode = new Integer((event.getRelationDestinationType().equals(getTableName()) ? event.getRelationSourceNumber() : event.getRelationDestinationNumber()));
          MMObjectNode.delRelationsCache(changedNode);
