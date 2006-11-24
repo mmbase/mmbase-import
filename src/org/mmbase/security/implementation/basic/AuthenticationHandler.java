@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * @todo MM: I think it should be possible for admin to login with name/password to, how else could
  * you use HTTP authentication (e.g. admin pages).
  * @author Eduard Witteveen
- * @version $Id: AuthenticationHandler.java,v 1.11 2006-11-24 14:28:55 pierre Exp $
+ * @version $Id: AuthenticationHandler.java,v 1.12 2006-11-24 15:15:47 michiel Exp $
  */
 public class AuthenticationHandler extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(AuthenticationHandler.class);
@@ -46,10 +46,8 @@ public class AuthenticationHandler extends Authentication {
         XMLEntityResolver.registerPublicID(PUBLIC_ID_BASICSECURITY_1_0, DTD_BASICSECURITY_1_0, AuthenticationHandler.class);
     }
 
-    // hashmap of the modules..
-    private Map modules = new HashMap();
-    // hashmap of the ranks of the modules..
-    private Map moduleRanks = new HashMap();
+    private Map<String, LoginModule> modules = new HashMap<String, LoginModule>();
+    private Map<String, Rank> moduleRanks    = new HashMap<String, Rank>();
 
     protected void load() {
         log.debug("using: '" + configFile + "' as config file for authentication");
@@ -88,7 +86,7 @@ public class AuthenticationHandler extends Authentication {
             }
 
             // retrieve the properties...
-            HashMap properties = new HashMap();
+            Map<String, Object> properties = new HashMap<String, Object>();
             for (Element propTag: reader.getChildElements(modTag, "property")) {
                 String propName = reader.getElementAttributeValue(propTag, "name");
                 String propValue = reader.getElementValue(propTag).trim();
@@ -106,12 +104,12 @@ public class AuthenticationHandler extends Authentication {
     }
 
     public UserContext login(String moduleName, Map loginInfo, Object[] parameters) throws org.mmbase.security.SecurityException {
-        LoginModule module = (LoginModule)modules.get(moduleName);
+        LoginModule module = modules.get(moduleName);
         if (module == null) {
             log.error("Login Module with name '" + moduleName + "' not found ! (available:" + listModules() + ")");
             throw new UnknownAuthenticationMethodException("Login Module with name '" + moduleName + "' not found ! (available:" + listModules() + ")");
         }
-        NameContext newUser = new NameContext((Rank)moduleRanks.get(moduleName), moduleName);
+        NameContext newUser = new NameContext(moduleRanks.get(moduleName), moduleName);
         if (module.login(newUser, loginInfo, parameters)) {
             // our login succeeded..
             // check if the identifier was set by the loginModule, when invalid will trow exception..
@@ -122,12 +120,11 @@ public class AuthenticationHandler extends Authentication {
     }
 
     private String listModules() {
-        Iterator i = modules.keySet().iterator();
-        String loginModulesAvailable = "";
-        while (i.hasNext()) {
-            loginModulesAvailable += "\"" + (String)i.next() + "\" ";
+        StringBuffer loginModulesAvailable = new StringBuffer();
+        for (String mod : modules.keySet()) {
+            loginModulesAvailable.append("\"").append(mod).append("\" ");
         }
-        return loginModulesAvailable;
+        return loginModulesAvailable.toString();
     }
 
     /**
