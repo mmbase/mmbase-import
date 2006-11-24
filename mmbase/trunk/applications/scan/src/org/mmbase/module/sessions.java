@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * @application SCAN
  * @rename Sessions
  * @author Daniel Ockeloen
- * @version $Id: sessions.java,v 1.29 2006-09-08 14:57:39 michiel Exp $
+ * @version $Id: sessions.java,v 1.30 2006-11-24 14:22:40 pierre Exp $
  */
 public class sessions extends ProcessorModule implements sessionsInterface {
 
@@ -661,10 +661,14 @@ public class sessions extends ProcessorModule implements sessionsInterface {
         return sessions.size();
     }
 
+    public Map<String, String> getStates() {
+        setState("Sessions", "" + getSize());
+        return super.getStates();
+    }
+
     public Map<String, String> state() {
-        state.put("Sessions", "" + getSize());
-        return state;
-     }
+        return getStates();
+    }
 
     /**
      * Stores visiting info (counters) in a session
