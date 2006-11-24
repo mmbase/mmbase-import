@@ -47,7 +47,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.212 2006-10-16 12:56:57 pierre Exp $
+ * @version $Id: MMBase.java,v 1.213 2006-11-24 14:19:12 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -256,7 +256,7 @@ public class MMBase extends ProcessorModule {
         // this method is run
         mmbaseroot = this;
 
-        loadInitParameters("mmbase/mmbaseroot");
+        super.init();
 
         // is there a basename defined in MMBASE.properties ?
         String tmp = getInitParameter("BASENAME");
