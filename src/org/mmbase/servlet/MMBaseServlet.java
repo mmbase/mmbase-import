@@ -37,7 +37,7 @@ import org.mmbase.util.xml.DocumentReader;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.55 2006-11-21 15:16:33 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.56 2006-11-24 14:28:55 pierre Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -234,8 +234,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
                     log.service("Reading servlet mappings from " + url);
                     DocumentReader webDotXml = new DocumentReader(path, false);
 
-                    for (Iterator mappingsIter = webDotXml.getChildElements("web-app", "servlet-mapping"); mappingsIter.hasNext();) {
-                        Element mapping = (Element) mappingsIter.next();
+                    for (Element mapping: webDotXml.getChildElements("web-app", "servlet-mapping")) {
                         Element servName = webDotXml.getElementByPath(mapping, "servlet-mapping.servlet-name");
                         String name = webDotXml.getElementValue(servName);
                         if (!(name.equals(""))) {

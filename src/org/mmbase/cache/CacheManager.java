@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Cache manager manages the static methods of {@link Cache}. If you prefer you can call them on this in stead.
  *
  * @since MMBase-1.8
- * @version $Id: CacheManager.java,v 1.9 2006-11-14 23:17:56 michiel Exp $
+ * @version $Id: CacheManager.java,v 1.10 2006-11-24 14:28:54 pierre Exp $
  */
 public class CacheManager {
 
@@ -105,9 +105,7 @@ public class CacheManager {
             if (log.isDebugEnabled()) log.debug("Configuring cache " + only + " with file " + xmlReader.getSystemId());
         }
 
-        Iterator e =  xmlReader.getChildElements("caches", "cache");
-        while (e.hasNext()) {
-            Element cacheElement = (Element) e.next();
+        for (Element cacheElement: xmlReader.getChildElements("caches", "cache")) {
             String cacheName =  cacheElement.getAttribute("name");
             if (only != null && ! only.equals(cacheName)) {
                 continue;
@@ -119,10 +117,8 @@ public class CacheManager {
                 String clazz = xmlReader.getElementValue(xmlReader.getElementByPath(cacheElement, "cache.implementation.class"));
                 if(!"".equals(clazz)) {
                     Element cacheImpl = xmlReader.getElementByPath(cacheElement, "cache.implementation");
-                    Iterator it = xmlReader.getChildElements(cacheImpl, "param");
                     Map configValues = new HashMap();
-                    while (it.hasNext()) {
-                        Element attrNode = (Element)it.next();
+                    for (Element attrNode: xmlReader.getChildElements(cacheImpl, "param")) {
                         String paramName = xmlReader.getElementAttributeValue(attrNode, "name");
                         String paramValue = xmlReader.getElementValue(attrNode);
                         configValues.put(paramName, paramValue);
@@ -188,16 +184,16 @@ public class CacheManager {
      */
     private static List<ReleaseStrategy> findReleaseStrategies(DocumentReader reader, Element parentElement) {
         List<ReleaseStrategy> result = new ArrayList();
-        Iterator<Element> strategyParentIterator = reader.getChildElements(parentElement, "releaseStrategies");
-        if(!strategyParentIterator.hasNext()){
+
+        List<Element> strategyParentIterator = reader.getChildElements(parentElement, "releaseStrategies");
+        if(strategyParentIterator.size() == 0){
             return null;
         } else{
-            parentElement = strategyParentIterator.next();
+            parentElement = strategyParentIterator.get(0);
 
             //now find the strategies
-            Iterator<Element> strategyIterator = reader.getChildElements(parentElement, "strategy");
-            while(strategyIterator.hasNext()){
-                String strategyClassName = reader.getElementValue(strategyIterator.next());
+            for (Element strategy: reader.getChildElements(parentElement, "strategy")) {
+                String strategyClassName = reader.getElementValue(strategy);
                 log.debug("found strategy in configuration: "+ strategyClassName);
                 try {
                     ReleaseStrategy releaseStrategy = getStrategyInstance(strategyClassName);

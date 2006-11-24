@@ -33,15 +33,15 @@ import org.mmbase.util.logging.Logging;
  * @todo MM: I think it should be possible for admin to login with name/password to, how else could
  * you use HTTP authentication (e.g. admin pages).
  * @author Eduard Witteveen
- * @version $Id: AuthenticationHandler.java,v 1.10 2005-07-09 15:29:12 nklasens Exp $
+ * @version $Id: AuthenticationHandler.java,v 1.11 2006-11-24 14:28:55 pierre Exp $
  */
 public class AuthenticationHandler extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(AuthenticationHandler.class);
 
     public static final String PUBLIC_ID_BASICSECURITY_1_0 = "-//MMBase//DTD securitybasicauth config 1.0//EN";
     public static final String DTD_BASICSECURITY_1_0       = " securitybasicauth_1_0.dtd";
-    
-    
+
+
     static {
         XMLEntityResolver.registerPublicID(PUBLIC_ID_BASICSECURITY_1_0, DTD_BASICSECURITY_1_0, AuthenticationHandler.class);
     }
@@ -56,8 +56,7 @@ public class AuthenticationHandler extends Authentication {
         XMLBasicReader reader = new XMLBasicReader(configFile.getAbsolutePath(), getClass());
 
         log.debug("Trying to load all loginmodules:");
-        for (Iterator modIter = reader.getChildElements(reader.getElementByPath("authentication"), "loginmodule"); modIter.hasNext();) {
-            Element modTag = (Element) modIter.next();
+        for (Element modTag: reader.getChildElements(reader.getElementByPath("authentication"), "loginmodule")) {
             String modName = reader.getElementAttributeValue(modTag, "name");
             if (modName.equals("")) {
                 log.error("module attribute name was not defined in :" + configFile);
@@ -90,8 +89,7 @@ public class AuthenticationHandler extends Authentication {
 
             // retrieve the properties...
             HashMap properties = new HashMap();
-            for (Iterator propIter = reader.getChildElements(modTag, "property"); propIter.hasNext();) {
-                Element propTag = (Element) propIter.next();
+            for (Element propTag: reader.getChildElements(modTag, "property")) {
                 String propName = reader.getElementAttributeValue(propTag, "name");
                 String propValue = reader.getElementValue(propTag).trim();
                 properties.put(propName, propValue);

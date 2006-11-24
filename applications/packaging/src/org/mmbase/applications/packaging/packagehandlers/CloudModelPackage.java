@@ -215,9 +215,7 @@ public class CloudModelPackage extends BasicPackage implements PackageInterface 
      */
     private boolean installNeededRelDefs(JarFile jf, ExtendedDocumentReader reader, installStep step) {
         MMBase mmb = MMBase.getMMBase();
-        for (Iterator ns = reader.getChildElements("cloudmodel.neededreldeflist", "reldef");
-                ns.hasNext(); ) {
-            Element n = (Element) ns.next();
+        for (Element n: reader.getChildElements("cloudmodel.neededreldeflist", "reldef")) {
             String buildername = n.getAttribute("builder");
             String source = n.getAttribute("source");
             String target = n.getAttribute("target");
@@ -260,9 +258,7 @@ public class CloudModelPackage extends BasicPackage implements PackageInterface 
      * @return         Description of the Return Value
      */
     private boolean installAllowedRelations(JarFile jf, ExtendedDocumentReader reader, installStep step) {
-        for (Iterator ns = reader.getChildElements("cloudmodel.allowedrelationlist", "relation");
-                ns.hasNext(); ) {
-            Element n = (Element) ns.next();
+        for (Element n: reader.getChildElements("cloudmodel.allowedrelationlist", "relation")) {
             String from = n.getAttribute("from");
             String to = n.getAttribute("to");
             String type = n.getAttribute("type");
@@ -290,12 +286,8 @@ public class CloudModelPackage extends BasicPackage implements PackageInterface 
      * @return         Description of the Return Value
      */
     private boolean installNeededBuilders(JarFile jf, ExtendedDocumentReader reader, installStep step) {
-        for (Iterator ns = reader.getChildElements("cloudmodel.neededbuilderlist", "builder");
-                ns.hasNext(); ) {
-            Element n3 = (Element) ns.next();
-
+        for (Element n3: reader.getChildElements("cloudmodel.neededbuilderlist", "builder")) {
             String name = reader.getElementValue(n3);
-
             installStep substep = step.getNextInstallStep();
             substep.setUserFeedBack("checking builder " + name + " ..");
             if (getBundleStep()!=null) getBundleStep().setUserFeedBack("calling package installer "+getName()+"..checking builder "+ name);

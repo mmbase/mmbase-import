@@ -1,8 +1,8 @@
  /*
-  
+
  This software is OSI Certified Open Source Software.
  OSI Certified is a certification mark of the Open Source Initiative.
- 
+
  The license (Mozilla version 1.0) can be read at the MMBase site.
  See http://www.MMBase.org/license
  */
@@ -24,7 +24,7 @@ import org.w3c.dom.Element;
  * Makes the 'Format' constants available.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Format.java,v 1.19 2006-01-13 12:36:23 johannes Exp $
+ * @version $Id: Format.java,v 1.20 2006-11-24 14:28:54 pierre Exp $
  * @since MMBase-1.7
  */
 // See http://www.javaworld.com/javaworld/jw-07-1997/jw-07-enumerated.html
@@ -34,13 +34,13 @@ public final class Format {   // final class!!
     public final static String RESOURCE = "org.mmbase.applications.media.resources.formats";
     public static final String PUBLIC_ID_MIMEMAPPING_1_0 = "-//MMBase//DTD mimemapping config 1.0//EN";
     public static final String DTD_MIMEMAPPING_1_0       = "mimemapping_1_0.dtd";
-    
+
 
     // in case you want i18ed format strings.
 
     private static Map mimeMapping = null;
     static {
-    
+
         XMLEntityResolver.registerPublicID(PUBLIC_ID_MIMEMAPPING_1_0, DTD_MIMEMAPPING_1_0, Format.class);
 
         File mimeMappingFile = new File(MMBaseContext.getConfigPath() + File.separator + "media" + File.separator + "mimemapping.xml");
@@ -52,23 +52,22 @@ public final class Format {   // final class!!
             };
         watcher.add(mimeMappingFile);
         watcher.start();
-     
+
     }
-    
+
     static void readMimeMapping(File mimeMappingFile) {
         mimeMapping = new HashMap();
-        
+
 
         if (mimeMappingFile.canRead()) {
             log.service("Reading " + mimeMappingFile);
             XMLBasicReader reader = new XMLBasicReader(mimeMappingFile.toString(), Format.class);
-            
-            for(Iterator e = reader.getChildElements("mimemapping", "map"); e.hasNext();) {
-                Element map = (Element)e.next();
+
+            for(Element map:reader.getChildElements("mimemapping", "map")) {
                 String format = reader.getElementAttributeValue(map, "format");
                 String codec = reader.getElementAttributeValue(map, "codec");
                 String mime = reader.getElementValue(map);
-                
+
                 mimeMapping.put(format + "/" + codec,mime);
                 log.debug("Adding mime mapping " + format + "/" + codec + " -> " + mime);
             }
@@ -78,23 +77,23 @@ public final class Format {   // final class!!
     }
 
     private static List formats = new ArrayList(); // to make possible to get the Format object by int.
-    private int    number; // for storage     
+    private int    number; // for storage
     private String id;     // for toString(), and as identifier in config file etc.
                            // Also sync with common extension?
                            // perhaps this could as well be used for storage
-    
-    
+
+
     private Format(int n, String i) { // private constructor!!
-        number = n; id = i; 
+        number = n; id = i;
         while (formats.size() <= number) formats.add(UNKNOWN);
         formats.set(number, this);
-    }         
-    
+    }
+
     // in contradiction to the example of the cited URL I prefer
     // to state the number explicitely, because those numbers will
     // appear in the database, so never may change (so don't
     // determin the number automaticly
-    
+
     public static final Format UNKNOWN = new Format(0, "unknown");
     public static final Format MP3  = new Format(1, "mp3");
     public static final Format RA   = new Format(2, "ra");
@@ -166,7 +165,7 @@ public final class Format {   // final class!!
         log.warn("Unknown media format '" + id + "'. Returning " + UNKNOWN);
         return UNKNOWN;
     }
-    
+
     public String getGUIIndicator(Locale locale) {
         try {
             ResourceBundle m = ResourceBundle.getBundle(RESOURCE, locale);
@@ -178,7 +177,7 @@ public final class Format {   // final class!!
     }
 
 
-    protected static final List windowsMedia = Arrays.asList(new Format[] {ASF, WMP, WMA, ASX,  WAX, WMV, WVX, WM, WMX, WMZ, WMD});    
+    protected static final List windowsMedia = Arrays.asList(new Format[] {ASF, WMP, WMA, ASX,  WAX, WMV, WVX, WM, WMX, WMZ, WMD});
     protected static final List real         = Arrays.asList(new Format[] {RA, RM, RAM});
 
     public boolean isReal() {
@@ -208,7 +207,7 @@ public final class Format {   // final class!!
         if(codec == null || codec.equals("")) {
             codec = "*";
         }
-        
+
         String mimeType = (String) mimeMapping.get(format + "/" + codec);
         while (mimeType == null) {
             if (! codec.equals("*")) {
@@ -238,8 +237,8 @@ public final class Format {   // final class!!
         }
         return false;
     }
-    
-    
+
+
     /**
      * @see java.lang.Object#hashCode()
      */
@@ -247,4 +246,4 @@ public final class Format {   // final class!!
         return number;
     }
 }
-    
+

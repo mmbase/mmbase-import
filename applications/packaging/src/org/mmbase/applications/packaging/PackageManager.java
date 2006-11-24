@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
  */
 
 package org.mmbase.applications.packaging;
@@ -47,7 +47,7 @@ public class PackageManager {
     private static HashMap packagehandlers;
 
     public static final String DTD_PACKAGEHANDLERS_1_0 = "packagehandlers_1_0.dtd";
-    public static final String PUBLIC_ID_PACKAGEHANDLERS_1_0 = "-//MMBase//DTD packagehandlers config 1.0//EN"; 
+    public static final String PUBLIC_ID_PACKAGEHANDLERS_1_0 = "-//MMBase//DTD packagehandlers config 1.0//EN";
 
     /**
      * Register the Public Ids for DTDs used by XMLBasicReader
@@ -76,9 +76,9 @@ public class PackageManager {
     public static Iterator getPackages() {
         return packages.values().iterator();
     }
-    
+
     /**
-     * return all packages based 
+     * return all packages based
      * @return all packages
      */
     public static Iterator getPackageVersions(String id) {
@@ -163,7 +163,7 @@ public class PackageManager {
         String id = name+"@"+maintainer+"_"+type;
         id = id.replace(' ','_');
         id = id.replace('/','_');
-    
+
         // check if we allready have a package container for this
         PackageContainer pc = (PackageContainer)packages.get(id);
 
@@ -174,7 +174,7 @@ public class PackageManager {
             found = pc.contains(version,provider);
         }
 
-        if (!found) {    
+        if (!found) {
             // so we don't have this package refernce yet, then
             // create and store it
 
@@ -216,7 +216,7 @@ public class PackageManager {
             log.error("Versions builder not installed.");
             return -1;
         } else {
-            return versions.getInstalledVersion(id,"package");    
+            return versions.getInstalledVersion(id,"package");
         }
     }
 
@@ -225,9 +225,9 @@ public class PackageManager {
             int newversion = Integer.parseInt(p.getVersion());
             if (getInstalledVersion(p.getId()) == newversion) {
                 return true;
-            } 
+            }
         } catch(Exception e) {
-        	log.debug("error while checking if a version"+ ((p != null)?p.getVersion():"(p == null")+" of the package "+ p +" is installed:" + e.getMessage() , e);
+            log.debug("error while checking if a version"+ ((p != null)?p.getVersion():"(p == null")+" of the package "+ p +" is installed:" + e.getMessage() , e);
             return false;
         }
         return false;
@@ -238,11 +238,11 @@ public class PackageManager {
         try {
             int newversion = Integer.parseInt(p.getVersion());
             int oldversion = getInstalledVersion(p.getId());
-	    if (oldversion!=-1 && newversion > oldversion) {
-		return true;
-	    }
+        if (oldversion!=-1 && newversion > oldversion) {
+        return true;
+        }
         } catch(Exception e) {
-        	log.debug("error while checking if a version"+ ((p != null)?p.getVersion():"(p == null")+" of the package "+ p +" is installed:" + e.getMessage() , e);
+            log.debug("error while checking if a version"+ ((p != null)?p.getVersion():"(p == null")+" of the package "+ p +" is installed:" + e.getMessage() , e);
             return false;
         }
         return false;
@@ -250,13 +250,13 @@ public class PackageManager {
 
 
 
-    public static boolean updateRegistryInstalled(PackageInterface p) { 
+    public static boolean updateRegistryInstalled(PackageInterface p) {
         try {
             Versions versions = (Versions) MMBase.getMMBase().getMMObject("versions");
             if (versions == null) {
                 log.error("Versions builder not installed.");
                 return false;
-            } 
+            }
             int newversion = Integer.parseInt(p.getVersion());
             int oldversion = getInstalledVersion(p.getId());
             if (oldversion == -1) {
@@ -266,27 +266,27 @@ public class PackageManager {
             }
             return true;
         } catch(Exception e) {
-			log.debug("error while updating versions for version "+ ((p != null)?p.getVersion():"(p == null")+" of the package "+ p + ":" + e.getMessage() , e);
+            log.debug("error while updating versions for version "+ ((p != null)?p.getVersion():"(p == null")+" of the package "+ p + ":" + e.getMessage() , e);
             return false;
         }
     }
 
 
-    public static boolean updateRegistryUninstalled(PackageInterface p) { 
+    public static boolean updateRegistryUninstalled(PackageInterface p) {
         try {
             Versions versions = (Versions) MMBase.getMMBase().getMMObject("versions");
             if(versions == null) {
                 log.error("Versions builder not installed.");
                 return false;
-            } 
+            }
             versions.updateInstalledVersion(p.getId(),"package",p.getMaintainer(),0);
             return true;
         } catch(Exception e) {
-			log.debug("error while updating the installed status to 0 of the package "+ p + ":" + e.getMessage() , e);
+            log.debug("error while updating the installed status to 0 of the package "+ p + ":" + e.getMessage() , e);
             return false;
         }
     }
-   
+
     public static boolean removeOfflinePackages(ProviderInterface wantedprov) {
         // this checks all the packages if they are still found at their
         // providers, this is done by checking the last provider update
@@ -329,8 +329,7 @@ public class PackageManager {
 
             ExtendedDocumentReader reader = new ExtendedDocumentReader(filename,PackageManager.class);
             if(reader != null) {
-                for(Iterator ns = reader.getChildElements("packagehandlers","packagehandler");ns.hasNext(); ) {
-                    Element n = (Element)ns.next();
+                for (Element n: reader.getChildElements("packagehandlers", "packagehandler")) {
                     NamedNodeMap nm = n.getAttributes();
                     if (nm != null) {
                         String type = null;
@@ -356,7 +355,7 @@ public class PackageManager {
         }
     }
 
-    public static HashMap getPackageHandlers() { 
+    public static HashMap getPackageHandlers() {
         return packagehandlers;
     }
 

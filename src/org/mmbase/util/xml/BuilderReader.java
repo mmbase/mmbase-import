@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.82 2006-11-13 10:28:45 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.83 2006-11-24 14:28:55 pierre Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -317,8 +317,7 @@ public class BuilderReader extends DocumentReader {
             }
         }
 
-        for(Iterator ns = getChildElements("builder.fieldlist", "field"); ns.hasNext(); ) {
-            Element field = (Element) ns.next();
+        for (Element field : getChildElements("builder.fieldlist","field")) {
             String fieldName = getElementAttributeValue(field, "name");
             if ("".equals(fieldName)) {
                 fieldName = getElementValue(getElementByPath(field,"field.db.name"));
@@ -371,8 +370,7 @@ public class BuilderReader extends DocumentReader {
             }
         }
 
-        for (Iterator<Element> fields = getChildElements("builder.fieldlist","field"); fields.hasNext(); ) {
-            Element field = fields.next();
+        for (Element field : getChildElements("builder.fieldlist","field")) {
             Element dbtype = getElementByPath(field,"field.db.type");
             if (dbtype != null) {
                 String key = getElementAttributeValue(dbtype,"key");
@@ -390,15 +388,13 @@ public class BuilderReader extends DocumentReader {
            results.add(mainIndex);
         }
 
-        for(Iterator indices = getChildElements("builder.indexlist","index"); indices.hasNext(); ) {
-            Element indexElement   = (Element)indices.next();
+        for (Element indexElement : getChildElements("builder.indexlist","index")) {
             String indexName = indexElement.getAttribute("name");
             if (indexName != null && !indexName.equals("")) {
                 String unique = indexElement.getAttribute("unique");
                 Index index = new Index(builder, indexName);
                 index.setUnique(unique != null && unique.equals("true"));
-                for(Iterator fields = getChildElements(indexElement,"indexfield"); fields.hasNext(); ) {
-                    Element fieldElement   = (Element)fields.next();
+                for (Element fieldElement : getChildElements(indexElement,"indexfield")) {
                     String fieldName = fieldElement.getAttribute("name");
                     Field field = builder.getField(fieldName);
                     if (field == null) {
@@ -420,9 +416,8 @@ public class BuilderReader extends DocumentReader {
      */
     public Set<Function> getFunctions(MMObjectBuilder builder) {
         Map<String, Function> results = new HashMap<String, Function>();
-        for(Iterator ns = getChildElements("builder.functionlist","function"); ns.hasNext(); ) {
+        for (Element functionElement : getChildElements("builder.functionlist","function")) {
             try {
-                Element functionElement   = (Element)ns.next();
                 final String functionName = functionElement.getAttribute("name");
                 String providerKey        = functionElement.getAttribute("key");
                 String functionClass      = getNodeTextValue(getElementByPath(functionElement, "function.class"));
@@ -663,7 +658,7 @@ public class BuilderReader extends DocumentReader {
                         if (log.isDebugEnabled()) {
                             log.debug("Converted deprecated guitype 'relativetime' for field " + (builder != null ? builder.getTableName() + "."  : "") + fieldName + " with datatype 'duration'.");
                         }
-                    } else if (type == Field.TYPE_NODE) {  
+                    } else if (type == Field.TYPE_NODE) {
                         if (guiType == null) {
                             if (log.isDebugEnabled()) log.debug("Gui type of NODE field '" + fieldName + "' is null");
                         } else {
@@ -868,19 +863,17 @@ public class BuilderReader extends DocumentReader {
     /**
      * Get the properties of this builder
      * @code-conventions return type should be Map
-     * @return the properties in a Hashtable (as name-value pairs)
+     * @return the properties in a Map (as name-value pairs)
      */
-    public Hashtable getProperties() {
-        Hashtable results=new Hashtable();
+    public Hashtable<String,String> getProperties() {
+        Hashtable<String,String> results = new Hashtable<String,String>();
         if (parentBuilder != null) {
             Map parentparams = parentBuilder.getInitParameters();
             if (parentparams != null) {
                 results.putAll(parentparams);
             }
         }
-        for(Iterator iter = getChildElements("builder.properties","property");
-                        iter.hasNext(); ) {
-            Element p = (Element)iter.next();
+        for (Element p : getChildElements("builder.properties","property")) {
             String name = getElementAttributeValue(p,"name");
             String value = getElementValue(p);
             results.put(name,value);
@@ -890,53 +883,73 @@ public class BuilderReader extends DocumentReader {
 
 
     /**
-     * Get the descriptions of this builder
-     * @code-conventions return type should be Map
-     * @return the descriptions in a Hashtable, accessible by language
+     * Get the descriptions of this module.
+     * @return the descriptions as a LocalizedString
      */
-    public Hashtable getDescriptions() {
-        Hashtable results=new Hashtable();
-        Element tmp;
-        String lang;
-        for (Iterator iter = getChildElements("builder.descriptions","description");
-             iter.hasNext(); ) {
-            tmp = (Element)iter.next();
-            lang = getElementAttributeValue(tmp,"xml:lang");
-            results.put(lang,getElementValue(tmp));
+    public LocalizedString getLocalizedDescription(LocalizedString description) {
+        description.fillFromXml("description", getElementByPath("builder.descriptions"));
+        return description;
+    }
+
+    /**
+     * Get the (gui) names of this module.
+     * @return the names as a LocalizedString
+     */
+    public LocalizedString getLocalizedSingularName(LocalizedString guiName) {
+        guiName.fillFromXml("singular", getElementByPath("builder.names"));
+        return guiName;
+    }
+
+    /**
+     * Get the (gui) names of this module.
+     * @return the names as a LocalizedString
+     */
+    public LocalizedString getLocalizedPluralName(LocalizedString guiName) {
+        guiName.fillFromXml("plural", getElementByPath("builder.names"));
+        return guiName;
+    }
+
+    /**
+     * Get the descriptions of this builder
+     * @deprecated use getLocalizedDescription()
+     * @return the descriptions in a Map, accessible by language
+     */
+    public Hashtable<String,String> getDescriptions() {
+        Hashtable<String,String> results = new Hashtable<String,String>();
+        for (Element desc : getChildElements("builder.descriptions","description")) {
+            String lang = getElementAttributeValue(desc,"xml:lang");
+            results.put(lang,getElementValue(desc));
         }
         return results;
     }
 
     /**
      * Get the plural names of this builder
-     * @code-conventions return type should be Map
-     * @return the plural names in a Hashtable, accessible by language
+     * @deprecated use getLocalizedPluralName()
+     * @return the plural names in a Map, accessible by language
      */
-    public Hashtable getPluralNames() {
-        Hashtable results=new Hashtable();
-        for (Iterator iter = getChildElements("builder.names","plural"); iter.hasNext(); ) {
-            Element tmp = (Element)iter.next();
-            String lang = getElementAttributeValue(tmp,"xml:lang");
-            results.put(lang,getElementValue(tmp));
+    public Hashtable<String,String> getPluralNames() {
+        Hashtable<String,String> results = new Hashtable<String,String>();
+        for (Element name : getChildElements("builder.names","plural")) {
+            String lang = getElementAttributeValue(name,"xml:lang");
+            results.put(lang,getElementValue(name));
         }
         return results;
     }
 
     /**
      * Get the singular (GUI) names of this builder
-     * @code-conventions return type should be Map
-     * @return the singular names in a Hashtable, accessible by language
+     * @deprecated use getLocalizedSingularName()
+     * @return the singular names in a Map, accessible by language
      */
-    public Hashtable getSingularNames() {
-        Hashtable results=new Hashtable();
-        for (Iterator iter = getChildElements("builder.names","singular"); iter.hasNext(); ) {
-            Element tmp = (Element)iter.next();
-            String lang = getElementAttributeValue(tmp,"xml:lang");
-            results.put(lang,getElementValue(tmp));
+    public Hashtable<String,String> getSingularNames() {
+        Hashtable<String,String> results = new Hashtable<String,String>();
+        for (Element name : getChildElements("builder.names","singular")) {
+            String lang = getElementAttributeValue(name,"xml:lang");
+            results.put(lang,getElementValue(name));
         }
         return results;
     }
-
 
     /**
      * Get the builder that this builder extends

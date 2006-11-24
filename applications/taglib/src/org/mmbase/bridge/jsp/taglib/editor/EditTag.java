@@ -47,7 +47,7 @@ import org.xml.sax.InputSource;
  *
  * @author Andr&eacute; van Toly
  * @author Michiel Meeuwissen
- * @version $Id: EditTag.java,v 1.17 2006-07-15 11:50:47 michiel Exp $
+ * @version $Id: EditTag.java,v 1.18 2006-11-24 14:28:54 pierre Exp $
  * @see Editor
  * @see BasicEditor
  * @see YAMMEditor
@@ -114,11 +114,8 @@ public class EditTag extends CloudReferrerTag implements ParamHandler {
         DocumentReader reader  = new DocumentReader(edittagSource, EditTag.class);
         Element root = reader.getElementByPath("edittagtypes");
 
-        Iterator i = reader.getChildElements(root, "editor");
-        while (i.hasNext()) {
-            Element element = (Element) i.next();
+        for (Element element: reader.getChildElements(root, "editor")) {
             String type = element.getAttribute("type");
-
             try {
                 EditorDefinition newDef = new EditorDefinition(element);
                 Object original = edittagTypes.put(type, newDef);
