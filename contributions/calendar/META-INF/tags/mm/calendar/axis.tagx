@@ -6,7 +6,7 @@
     >
   <!--
       Iterators an 'axis' of a month.
-      That is either all days of certain  week the month, or all certain days of the month.
+      That is either all days of certain week of the month, or all certain weekdays of the month.
 
   -->
   <jsp:directive.tag import="java.util.*" />
