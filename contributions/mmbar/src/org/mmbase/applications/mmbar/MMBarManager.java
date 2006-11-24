@@ -423,7 +423,7 @@ public class MMBarManager {
 		}
 
 
-                Iterator e = reader.getChildElements("mmbarconfig", "writetests");
+                Iterator e = reader.getChildElements("mmbarconfig", "writetests").iterator();
                 while (e.hasNext()) {
                     WriteTest wt = null;
                     org.w3c.dom.Element n2 = (org.w3c.dom.Element) e.next();
@@ -523,7 +523,7 @@ public class MMBarManager {
                     }
                 }
 
-                e = reader.getChildElements("mmbarconfig", "readtests");
+                e = reader.getChildElements("mmbarconfig", "readtests").iterator();
                 while (e.hasNext()) {
                     ReadTest rt = null;
                     org.w3c.dom.Element n2 = (org.w3c.dom.Element) e.next();
@@ -632,7 +632,7 @@ public class MMBarManager {
                     }
                 }
 
-                e = reader.getChildElements("mmbarconfig", "mixedtests");
+                e = reader.getChildElements("mmbarconfig", "mixedtests").iterator();
                 while (e.hasNext()) {
                     MixedTest mt = null;
                     org.w3c.dom.Element n2 = (org.w3c.dom.Element) e.next();
@@ -729,7 +729,7 @@ public class MMBarManager {
                     }
                 }
 
-                e = reader.getChildElements("mmbarconfig", "endurancetests");
+                e = reader.getChildElements("mmbarconfig", "endurancetests").iterator();
                 while (e.hasNext()) {
                     EnduranceTest et = null;
                     org.w3c.dom.Element n2 = (org.w3c.dom.Element) e.next();
