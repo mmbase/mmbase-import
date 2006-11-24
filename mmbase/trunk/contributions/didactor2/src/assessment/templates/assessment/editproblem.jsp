@@ -161,6 +161,7 @@ currentLesson <%= currentLesson %><br/>
           referids="$referids"/>" method="post">
     <input type="hidden" name="step" value="save">
     <input type="hidden" name="problem_n" value="<mm:write referid="problem_n"/>">
+    <input type="hidden" name="i_lesson" value="<mm:write referid="i_lesson"/>">
     <table class="font" width="70%">
       <tr>
         <td width="80" style="vertical-align:top"><di:translate key="assessment.problem" />:</td>
