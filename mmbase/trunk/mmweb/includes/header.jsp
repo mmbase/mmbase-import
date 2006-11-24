@@ -54,6 +54,12 @@
 		 <meta http-equiv="imagetoolbar" content="no" />
     <%-- assuming this page is only included from index.jsp, and this site only deployed on www.mmbase.org --%>
      <%-- base href="http://www.mmbase.org/index.jsp" --%>
+     <script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+     </script>
+     <script type="text/javascript">
+     	_uacct = "UA-495341-4";
+	urchinTracker();
+     </script>
    </head>
 <%
 	 String onLoadEvents="";
