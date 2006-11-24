@@ -168,6 +168,7 @@
 		  </mm:url>">Agenda &raquo;&raquo;</a></p>
 		</mm:last></mm:context>
 	</mm:list>
+	<%--
 	<h4>Bugs this week</h4>
 	<mm:time time="today" id="lastweek" offset="-604800" write="false" />
 	<p><mm:listnodescontainer type="bugreports">
@@ -182,6 +183,8 @@
 			<mm:constraint field="bstatus" operator="<" value="2" />
 		<a href="<mm:url page="/?portal=199&amp;page=546&amp;sstatus=1" />">New : <mm:size /></a>
 	</mm:listnodescontainer></p>
+	--%>
+	<h4>Bugtracker</h4>
 	<p><a href="/bug">Bugtracker &raquo;&raquo;</a></p>
 <%-- ### /search, agenda, dev mail ? ### --%>
 </td>
