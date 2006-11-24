@@ -25,12 +25,12 @@ import org.mmbase.util.logging.Logger;
 
 /**
  * @author Daniel Ockeloen
- * 
+ *
  */
 public class Theme {
- 
+
     // logger
-    static private Logger log = Logging.getLoggerInstance(Theme.class); 
+    static private final Logger log = Logging.getLoggerInstance(Theme.class);
     private HashMap stylesheets;
     private HashMap stylesheetmanagers = new HashMap();
     private HashMap imagesets;
@@ -56,7 +56,7 @@ public class Theme {
 	this.mainid=mainid;
 	this.themefilename = themefilename;
 	if (!create) {
-		readTheme(themefilename);	
+		readTheme(themefilename);
 	}
    }
 
@@ -80,46 +80,46 @@ public class Theme {
         while (i.hasNext()) {
             log.debug("apparently there is an imageset");
 
-             ImageSet is=(ImageSet)imagesets.get(((Map.Entry)i.next()).getKey());
-             if (is.isRole(role)) {
+            ImageSet is=(ImageSet)imagesets.get(((Map.Entry)i.next()).getKey());
+            if (is.isRole(role)) {
 	     	subset.put(is.getId(),is);
-	     }
+            }
 	}
 	return subset;
    }
 
-   public ImageSet getImageSet(String id) {
+    public ImageSet getImageSet(String id) {
 	return (ImageSet)imagesets.get(id);
-   }
+    }
 
-   public String getStyleSheet(String id) {
+    public String getStyleSheet(String id) {
 	return (String)stylesheets.get(id);
-   }
+    }
 
-   public void addStyleSheet(String id,String value) {
+    public void addStyleSheet(String id,String value) {
 	if (stylesheets==null) stylesheets=new HashMap();
 	stylesheets.put(id,value);
-   }
+    }
 
-   public void addImageSet(String id,ImageSet im) {
+    public void addImageSet(String id,ImageSet im) {
 	if (imagesets==null) imagesets=new HashMap();
 	imagesets.put(id,im);
-   }
+    }
 
-   public int getStyleSheetsCount() {
+    public int getStyleSheetsCount() {
 	if (stylesheets!=null) {
-		return stylesheets.size();
+            return stylesheets.size();
 	}
 	return 0;
-   }
+    }
 
 
-   public int getImageSetsCount() {
+    public int getImageSetsCount() {
 	if (imagesets!=null) {
-		return imagesets.size();
+            return imagesets.size();
 	}
 	return 0;
-   }
+    }
 
     public void save() {
 	String body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
@@ -132,9 +132,9 @@ public class Theme {
                 String k=(String)keys.next();
                 String v=(String)m.get(k);
 		if (v.equals("default")) {
-			body += "\t<stylesheet file=\""+v+"\" />\n";
+                    body += "\t<stylesheet file=\""+v+"\" />\n";
 		} else {
-			body += "\t<stylesheet id=\""+k+"\" file=\""+v+"\" />\n";
+                    body += "\t<stylesheet id=\""+k+"\" file=\""+v+"\" />\n";
 		}
 	    }
 	}
@@ -145,9 +145,9 @@ public class Theme {
                 String k=(String)keys.next();
                 ImageSet im=(ImageSet)m.get(k);
 		if (k.equals("default")) {
-			body += "\t<imageset role=\""+im.getRole()+"\">\n";
+                    body += "\t<imageset role=\""+im.getRole()+"\">\n";
 		} else {
-			body += "\t<imageset id=\""+k+"\" role=\""+im.getRole()+"\">\n";
+                    body += "\t<imageset id=\""+k+"\" role=\""+im.getRole()+"\">\n";
 		}
                 Iterator i3=im.getImageIds();
                 while (i3.hasNext()) {
@@ -159,13 +159,13 @@ public class Theme {
 	    }
         }
 	body += "</theme>\n";
-        try {                
-                Writer wr = ResourceLoader.getConfigurationRoot().getWriter(themefilename);
-                wr.write(body);
-                wr.flush();
-                wr.close();
+        try {
+            Writer wr = ResourceLoader.getConfigurationRoot().getWriter(themefilename);
+            wr.write(body);
+            wr.flush();
+            wr.close();
         } catch(Exception e) {
-                e.printStackTrace();
+            e.printStackTrace();
         }
     }
 
@@ -175,83 +175,83 @@ public class Theme {
     }
 
     public void readTheme(String themefilename) {
-       stylesheets=new HashMap();
-       imagesets=new HashMap();
+        stylesheets=new HashMap();
+        imagesets=new HashMap();
 
         try {
-                InputSource ris = ResourceLoader.getConfigurationRoot().getInputSource("thememanager/"+themefilename);
-                DocumentReader reader = new DocumentReader(ris,Theme.class);
-            	if(reader!=null) {
-			// decode stylesheets
-            		for(Iterator ns=reader.getChildElements("theme","stylesheet");ns.hasNext(); ) {
-                		Element n=(Element)ns.next();
-   		               	NamedNodeMap nm=n.getAttributes();
-                    		if (nm!=null) {
-					String id="default";
-					String stylefilename=null;
-				
-					// decode name
-                        		org.w3c.dom.Node n3=nm.getNamedItem("id");
-                        		if (n3!=null) {
-						id=n3.getNodeValue();
-					}
-					// decode filename
-                        		n3=nm.getNamedItem("file");
-                        		if (n3!=null) {
-						stylefilename=n3.getNodeValue();
-					}
-					stylesheets.put(id,mainid+File.separator+stylefilename);	
-			    	}
-			}
+            InputSource ris = ResourceLoader.getConfigurationRoot().getInputSource("thememanager/"+themefilename);
+            DocumentReader reader = new DocumentReader(ris,Theme.class);
+            if(reader!=null) {
+                // decode stylesheets
+                for(Iterator ns=reader.getChildElements("theme","stylesheet").iterator();ns.hasNext(); ) {
+                    Element n=(Element)ns.next();
+                    NamedNodeMap nm=n.getAttributes();
+                    if (nm!=null) {
+                        String id="default";
+                        String stylefilename=null;
 
-            		for(Iterator ns=reader.getChildElements("theme","imageset");ns.hasNext(); ) {
-                		Element n=(Element)ns.next();
-   		               	NamedNodeMap nm=n.getAttributes();
-                    		if (nm!=null) {
-					String id="default";
-					String stylefilename=null;
-                    String role = "";				
-					// decode name
-                        		org.w3c.dom.Node n3=nm.getNamedItem("id");
-                    if (n3!=null) {
-					    id=n3.getNodeValue();
-					}
-                    org.w3c.dom.Node n4 = nm.getNamedItem("role");
-                    if (n4 != null) {
-                        role = n4.getNodeValue();
+                        // decode name
+                        org.w3c.dom.Node n3=nm.getNamedItem("id");
+                        if (n3!=null) {
+                            id=n3.getNodeValue();
+                        }
+                        // decode filename
+                        n3=nm.getNamedItem("file");
+                        if (n3!=null) {
+                            stylefilename=n3.getNodeValue();
+                        }
+                        stylesheets.put(id,mainid+File.separator+stylefilename);
                     }
-                    ImageSet is;
-                    if (role.equals(""))
- {
-                        is=new ImageSet(id);
-                    } else {
-                        is = new ImageSet(id,role);
-                    } 
-            				for(Iterator ns2=reader.getChildElements(n,"image");ns2.hasNext(); ) {
-					
-                			Element n2=(Element)ns2.next();
-   		                	NamedNodeMap nm2=n2.getAttributes();
-                    			if (nm2!=null) {
-						String imageid=null;
-						String imagefile=null;
-                        			n3=nm2.getNamedItem("id");
-                        			if (n3!=null) {
-							imageid=n3.getNodeValue();
-						}
-                        			n3=nm2.getNamedItem("file");
-                        			if (n3!=null) {
-							imagefile=n3.getNodeValue();
-							is.setImage(imageid,imagefile);
-						}
-						
-					}
-					}
-					imagesets.put(id,is);	
+                }
 
-			    	}
-			}
+                for(Iterator ns=reader.getChildElements("theme","imageset").iterator();ns.hasNext(); ) {
+                    Element n=(Element)ns.next();
+                    NamedNodeMap nm=n.getAttributes();
+                    if (nm!=null) {
+                        String id="default";
+                        String stylefilename=null;
+                        String role = "";
+                        // decode name
+                        org.w3c.dom.Node n3=nm.getNamedItem("id");
+                        if (n3!=null) {
+                            id=n3.getNodeValue();
+                        }
+                        org.w3c.dom.Node n4 = nm.getNamedItem("role");
+                        if (n4 != null) {
+                            role = n4.getNodeValue();
+                        }
+                        ImageSet is;
+                        if (role.equals(""))
+                            {
+                                is=new ImageSet(id);
+                            } else {
+                            is = new ImageSet(id,role);
+                        }
+                        for(Iterator ns2=reader.getChildElements(n,"image").iterator();ns2.hasNext(); ) {
 
-		}
+                            Element n2=(Element)ns2.next();
+                            NamedNodeMap nm2=n2.getAttributes();
+                            if (nm2!=null) {
+                                String imageid=null;
+                                String imagefile=null;
+                                n3=nm2.getNamedItem("id");
+                                if (n3!=null) {
+                                    imageid=n3.getNodeValue();
+                                }
+                                n3=nm2.getNamedItem("file");
+                                if (n3!=null) {
+                                    imagefile=n3.getNodeValue();
+                                    is.setImage(imageid,imagefile);
+                                }
+
+                            }
+                        }
+                        imagesets.put(id,is);
+
+                    }
+                }
+
+            }
 
 	} catch(Exception e) {
             log.error("missing style file : "+themefilename);
@@ -261,14 +261,14 @@ public class Theme {
     public StyleSheetManager getStyleSheetManager(String stylesheet)  {
 	Object o = stylesheetmanagers.get(stylesheet);
 	if (o!=null) {
-		return (StyleSheetManager)o;
+            return (StyleSheetManager)o;
 	} else {
-		String filename=getStyleSheet(stylesheet);
-		if (filename!=null) {
-			StyleSheetManager nm =  new StyleSheetManager(filename);
-			stylesheetmanagers.put(stylesheet,nm);
-			return nm;
-		}
+            String filename=getStyleSheet(stylesheet);
+            if (filename!=null) {
+                StyleSheetManager nm =  new StyleSheetManager(filename);
+                stylesheetmanagers.put(stylesheet,nm);
+                return nm;
+            }
 	}
 	return null;
     }
