@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  *</p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedString.java,v 1.27 2006-11-11 12:55:45 michiel Exp $
+ * @version $Id: LocalizedString.java,v 1.28 2006-11-24 15:31:48 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedString implements java.io.Serializable, Cloneable {
@@ -299,6 +299,7 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
      */
 
     public void fillFromXml(final String tagName, final Element element) {
+        if (element == null) return;
         NodeList childNodes = element.getChildNodes();
         for (int k = 0; k < childNodes.getLength(); k++) {
             if (childNodes.item(k) instanceof Element) {
