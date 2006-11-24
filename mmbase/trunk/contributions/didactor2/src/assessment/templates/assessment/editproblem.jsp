@@ -3,6 +3,7 @@
 <%@page import="org.mmbase.bridge.*" %>
 
 <mm:cloud method="delegate" jspvar="cloud">
+<mm:content postprocessor="reducespace">
 <%@include file="/shared/setImports.jsp" %>
 
 <%@include file="includes/geteducation.jsp" %>
@@ -238,4 +239,5 @@ currentLesson <%= currentLesson %><br/>
     </div>
   </div>
   <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
+</mm:content>
 </mm:cloud>

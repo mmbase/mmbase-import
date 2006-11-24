@@ -3,6 +3,7 @@
 <%@page import="org.mmbase.bridge.*" %>
 
 <mm:cloud method="delegate" jspvar="cloud">
+<mm:content postprocessor="reducespace">
 <%@include file="/shared/setImports.jsp" %>
 
 <%@include file="includes/geteducation.jsp" %>
@@ -160,6 +161,7 @@ currentLesson <%= currentLesson %><br/>
           referids="$referids"/>" method="post">
     <input type="hidden" name="step" value="save">
     <input type="hidden" name="problem_n" value="<mm:write referid="problem_n"/>">
+    <input type="hidden" name="i_lesson" value="<mm:write referid="i_lesson"/>">
     <table class="font" width="70%">
       <tr>
         <td width="80" style="vertical-align:top"><di:translate key="assessment.problem" />:</td>
@@ -238,4 +240,5 @@ currentLesson <%= currentLesson %><br/>
     </div>
   </div>
   <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
+</mm:content>
 </mm:cloud>
