@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @deprecation-used drop reference to {@link JDBCInterface}
  * @author vpro
- * @version $Id: JDBC.java,v 1.50 2006-11-11 09:56:12 michiel Exp $
+ * @version $Id: JDBC.java,v 1.51 2006-11-24 15:33:02 michiel Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -110,9 +110,8 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
             // marmaa@vpro.nl:
             // This is how McKoi's JDBC drivers wants itself
             // to be registered; should have no effect on other drivers
-            Driver driver = (java.sql.Driver) Class.forName(jdbcDriver).newInstance();
-
-            log.service("Loaded JDBC driver: " + jdbcDriver + " " + driver.getMajorVersion() + "." + driver.getMinorVersion());
+            Driver d = (Driver) Class.forName(jdbcDriver).newInstance();
+            log.service("Loaded JDBC driver: " + jdbcDriver + " " + d.getMajorVersion() + "." + d.getMinorVersion());
 
         } catch (Exception e) {
             log.fatal("JDBC driver not found: " + jdbcDriver , e);
@@ -134,7 +133,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
             }
         }
         if (driver == null) {
-            log.warn("getDriver(): the jdbc driver specified in jdbc.xml does not match the actual loaded driver ");
+            log.warn("getDriver(): the jdbc driver specified in jdbc.xml '" + jdbcDriver + "' does not match any actually loaded drivers " + Collections.list(DriverManager.getDrivers()));
         }
     }
 
@@ -262,8 +261,9 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
     public String makeUrl(String host, int port, String dbm) {
         String url = jdbcURL;
         // $HOST $DBM $PORT
-
+        if (dbm == null) dbm = "mmbase";
         url = url.replaceAll("\\$DBM", dbm);
+        if (host == null) host = "localhost";
         url = url.replaceAll("\\$HOST", host);
         url = url.replaceAll("\\$PORT", "" + port);
 
