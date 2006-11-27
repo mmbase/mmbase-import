@@ -4,10 +4,11 @@ you need to create one or more classes that extend
 org.mmbase.applications.friendlylink.FriendlyLink representing the nodetypes that 
 form your sitemap or sitestructure. Look at the source of Pages for an example.
 
-Move the friendlylink directory in mmbase/applications directory to build using ant. Or
-change the paths in 'build.xml' accordingly.
+Move the friendlylink directory in mmbase/applications directory to build this 
+application using ant. Or change the paths in 'build.xml' accordingly.
 
-Put the following piece of xml to activate into your web.xml. With a lot of thanks to Nico.
+Put the following piece of xml to activate the filter into your web.xml. 
+With a lot of thanks to Nico.
 
 ---André
 
