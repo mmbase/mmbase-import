@@ -12,7 +12,6 @@
   <mm:import id="editcontextname" reset="true">docent schermen</mm:import>
   <jsp:directive.include file="/education/wizards/roles_chk.jsp" />
 
-  <mm:log>HOOOOOO</mm:log>
   <mm:islessthan referid="rights" referid2="RIGHTS_RW">
     <di:hasrole role="student">
       <jsp:forward page="student.jsp"/>
