@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util.xml;
 
 import java.util.*;
+
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 import org.mmbase.bridge.Field;
@@ -36,7 +37,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.83 2006-11-24 14:28:55 pierre Exp $
+ * @version $Id: BuilderReader.java,v 1.84 2006-11-27 20:47:56 nklasens Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -297,11 +298,11 @@ public class BuilderReader extends DocumentReader {
      * @since MMBase-1.8
      */
     public List getFields(MMObjectBuilder builder, DataTypeCollector collector) {
-        List results = new ArrayList();
-        Map oldset = new HashMap();
+        List<CoreField> results = new ArrayList<CoreField>();
+        Map<String, CoreField> oldset = new HashMap<String, CoreField>();
         int pos = 1;
         if (parentBuilder != null) {
-            List parentfields = parentBuilder.getFields(NodeManager.ORDER_CREATE);
+            List<CoreField> parentfields = parentBuilder.getFields(NodeManager.ORDER_CREATE);
             if (parentfields != null) {
                 // have to clone the parent fields
                 // need clone()!
@@ -322,7 +323,7 @@ public class BuilderReader extends DocumentReader {
             if ("".equals(fieldName)) {
                 fieldName = getElementValue(getElementByPath(field,"field.db.name"));
             }
-            CoreField def = (CoreField) oldset.get(fieldName);
+            CoreField def = oldset.get(fieldName);
             try {
                 if (def != null) {
                     def.rewrite();
@@ -355,7 +356,7 @@ public class BuilderReader extends DocumentReader {
      * @return a List of all Indices
      */
     public List<Index> getIndices(MMObjectBuilder builder) {
-        List<Index> results = new ArrayList();
+        List<Index> results = new ArrayList<Index>();
         Index mainIndex = null;
         if (parentBuilder != null) {
             // create the
@@ -388,6 +389,22 @@ public class BuilderReader extends DocumentReader {
            results.add(mainIndex);
         }
 
+        if (parentBuilder != null) {
+            Collection<Index> parentIndices = parentBuilder.getStorageConnector().getIndices().values();
+            if (parentIndices != null) {
+                for (Index parentIndex : parentIndices) {
+                    Index newIndex = new Index(builder, parentIndex.getName());;
+                    newIndex.setUnique(parentIndex.isUnique());
+                    for (Iterator parentIndexIter = parentIndex.iterator(); parentIndexIter.hasNext(); ) {
+                        Field field = (Field) parentIndexIter.next();
+                        newIndex.add(builder.getField(field.getName()));
+                    }
+                    results.add(newIndex);
+                }
+            }
+        }
+
+        
         for (Element indexElement : getChildElements("builder.indexlist","index")) {
             String indexName = indexElement.getAttribute("name");
             if (indexName != null && !indexName.equals("")) {
@@ -712,7 +729,7 @@ public class BuilderReader extends DocumentReader {
                     requestedBaseDataType = baseDataType;
                 }
             }
-            dataType = (BasicDataType) DataTypeReader.readDataType(dataTypeElement, requestedBaseDataType, collector).dataType;
+            dataType = DataTypeReader.readDataType(dataTypeElement, requestedBaseDataType, collector).dataType;
             if (log.isDebugEnabled()) log.debug("Found datatype " + dataType + " for field " + fieldName);
         }
 

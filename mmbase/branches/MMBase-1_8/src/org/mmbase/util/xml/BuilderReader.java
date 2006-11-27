@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.74.2.3 2006-11-15 12:24:48 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.74.2.4 2006-11-27 20:48:03 nklasens Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -391,6 +391,23 @@ public class BuilderReader extends DocumentReader {
            results.add(mainIndex);
         }
 
+        if (parentBuilder != null) {
+            Collection parentIndices = parentBuilder.getStorageConnector().getIndices().values();
+            if (parentIndices != null) {
+                for (Iterator i = parentIndices.iterator();i.hasNext();) {
+                    Index parentIndex = (Index)i.next();
+                    Index newIndex = new Index(builder, parentIndex.getName());;
+                    newIndex.setUnique(parentIndex.isUnique());
+                    for (Iterator parentIndexIter = parentIndex.iterator(); parentIndexIter.hasNext(); ) {
+                        Field field = (Field) parentIndexIter.next();
+                        newIndex.add(builder.getField(field.getName()));
+                    }
+                    results.add(newIndex);
+                }
+            }
+        }
+
+        
         for(Iterator indices = getChildElements("builder.indexlist","index"); indices.hasNext(); ) {
             Element indexElement   = (Element)indices.next();
             String indexName = indexElement.getAttribute("name");
