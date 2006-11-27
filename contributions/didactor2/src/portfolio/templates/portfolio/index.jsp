@@ -353,13 +353,15 @@
           linkedlist.add( objectnumber );
         %>
       </mm:relatednodes>
-      <mm:relatednodes type="chatlogs" id="mychatlogs">
-        <mm:remove referid="objectnumber"/>
-	    <mm:import id="objectnumber" jspvar="objectnumber"><mm:field name="number"/></mm:import>
-	    <%
-	      linkedlist.add( objectnumber );
-	    %>
-      </mm:relatednodes>
+      <mm:hasnodemanager name="chatlogs">
+        <mm:relatednodes type="chatlogs" id="mychatlogs">
+          <mm:remove referid="objectnumber"/>
+          <mm:import id="objectnumber" jspvar="objectnumber"><mm:field name="number"/></mm:import>
+          <%
+          linkedlist.add( objectnumber );
+          %>
+        </mm:relatednodes>
+      </mm:hasnodemanager>
 
 
       <mm:listnodescontainer type="object">
