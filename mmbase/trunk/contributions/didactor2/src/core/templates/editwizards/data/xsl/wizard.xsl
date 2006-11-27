@@ -2,11 +2,19 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:node="org.mmbase.bridge.util.xml.NodeFunction" xmlns:date="org.mmbase.bridge.util.xml.DateFormat" extension-element-prefixes="node date">
   <!--
       Some Didactor-specific overrides
-    @version $Id: wizard.xsl,v 1.6 2006-11-27 10:55:15 mmeeuwissen Exp $
+    @version $Id: wizard.xsl,v 1.7 2006-11-27 12:15:48 mmeeuwissen Exp $
 
   -->
   <xsl:import href="ew:xsl/wizard.xsl"/>
 
+
+  
+  <xsl:template name="extrajavascript">
+    <!-- 
+         is the used directory ok? When it this used?
+    -->
+    <script type="text/javascript" src="../../education/wizards/mtmtrack.js"></script>
+  </xsl:template>
 
   <!--
     fieldintern is called to draw the values
