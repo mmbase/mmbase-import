@@ -6,9 +6,10 @@
 
     <action type="create">
         <object type="mmevents">
+          <field name="playtime">0</field><!-- I hate dove, it does not understand null -->
         </object>
     </action>
-    
+
     <action type="load">
     </action>
 
@@ -18,21 +19,17 @@
       <description xml:lang="nl">Klik hier om deze tijd te verwijderen</description>
       <description xml:lang="en">Click here to remove this runtime</description>
     </action>
-    
-    <steps>
-        <step form-schema="step1" />
-    </steps>
 
     <form-schema id="step1">
-        <title xml:lang="nl">Looptijd invoeren</title>
-        <title xml:lang="en">Enter runtime</title>
-        <field name="start" ftype="datetime">
-            <prompt xml:lang="nl">Start van de klas</prompt>
-            <prompt xml:lang="en">Start of the class</prompt>
-        </field>
-        <field name="stop" ftype="datetime">
-            <prompt xml:lang="nl">Eind van de klas</prompt>
-            <prompt xml:lang="en">End of the class</prompt>
-        </field>
+      <title xml:lang="nl">Looptijd invoeren</title>
+      <title xml:lang="en">Enter runtime</title>
+      <field name="start" ftype="datetime">
+        <prompt xml:lang="nl">Start van de klas</prompt>
+        <prompt xml:lang="en">Start of the class</prompt>
+      </field>
+      <field name="stop" ftype="datetime">
+        <prompt xml:lang="nl">Eind van de klas</prompt>
+        <prompt xml:lang="en">End of the class</prompt>
+      </field>
     </form-schema>
 </wizard-schema>
