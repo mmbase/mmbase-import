@@ -6,7 +6,7 @@
 <%-- expires is set so renaming a folder does not show the old name --%>
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud method="delegate" jspvar="cloud">
-<%@include file="/shared/setImports.jsp" %>
+<jsp:directive.include file="/shared/setImports.jsp" />
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
     <title><di:translate key="portfolio.renamefolder" /></title>
