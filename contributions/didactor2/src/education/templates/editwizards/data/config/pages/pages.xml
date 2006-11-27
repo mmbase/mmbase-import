@@ -104,7 +104,7 @@
     <title xml:lang="en">Descriptionrel</title>
     <title xml:lang="nl">Descriptionrel</title>
     <title xml:lang="fr">Descriptionrel</title>
-    <list extends="config/pages/pages-list-descriptionrel.xml"/>
+    <list extends="config/pages/pages-described.xml"/>
   </form-schema>
 
   &extra_schemas;
