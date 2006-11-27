@@ -5,7 +5,7 @@
   <mm:cloud method="delegate">
     
     <jsp:directive.include file="/shared/setImports.jsp" />
-    <jsp:directive.nclude file="/education/tests/definitions.jsp" />
+    <jsp:directive.include file="/education/tests/definitions.jsp" />
     <jsp:directive.include file="/education/wizards/roles_defs.jsp" />
     <mm:import id="editcontextname" reset="true">docent schermen</mm:import>
     <jsp:directive.include file="/education/wizards/roles_chk.jsp" />
@@ -13,7 +13,7 @@
     <mm:import externid="student"           required="true"/>
     <mm:import externid="startAt"           jspvar="startAt" vartype="Integer" required="true"/>
     <mm:import externid="direct_connection" required="true"/>
-    <mm:import externid="class"             required="true" />
+
 
     <mm:node number="$student">
       <tr>
