@@ -157,10 +157,6 @@
       <mm:fieldlist fields="handle">
         <mm:fieldinfo type="useinput" />
       </mm:fieldlist>
-
-      <%-- set upload time --%>
-      <% long currentDate = System.currentTimeMillis() / 1000; %>
-      <mm:setfield name="date"><%=currentDate%></mm:setfield>
     </mm:createnode>
     
     <mm:import id="docId" jspvar="docId"><mm:write referid="currentitem" /></mm:import>    
