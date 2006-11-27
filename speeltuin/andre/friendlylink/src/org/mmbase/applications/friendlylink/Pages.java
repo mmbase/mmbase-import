@@ -13,8 +13,6 @@ import org.mmbase.util.logging.Logging;
 /**
  * Converts ugly links
  *
- * TODO: append / to jsp link!!! (is now done in UrlFilter)
- *
  * @author Andr\U00e9 vanToly &lt;andre@toly.nl&gt;
  * @version $Rev$
  */
@@ -29,10 +27,11 @@ public class Pages extends FriendlyLink {
 	public static String PAGE_PARAM = "nr";
     
     /**
-     * Configure method
+     * Configure method parses a DOM element passed by UrlFilter with the configuration
+     * that is specific for this type of friendlylink
      *
-     * @param  
-     * @return 
+     * @param  element	A DOM element from 'friendlylinks.xml' 
+     *
      */
     protected void configure(Element element) {
         log.service("Configuring " + this);
@@ -119,16 +118,15 @@ public class Pages extends FriendlyLink {
     }
     
     /**
-     * returns the template, in this case the field 'template' of the page node or
-     * a related node of type 'template' in which it looks for the 'url' field
+     * Returns the template, in this case the field 'template' of the page node or
+     * a related node of type 'templates' in which it looks for the 'url' field. 
+     * Visitors get send back to the homepage if no template is found.
      *
      * @param   cloud   MMBase cloud
      * @param   pagenr  nodenumber
      * @return  template url
      */
     public String getPageTemplate(Cloud cloud, String pagenr) {
-        return "index.jsp";
-        /*
         if (pagenr != null && !pagenr.equals("") && !pagenr.equals("-1")) {
         	
         	NodeManager pnm = cloud.getNodeManager("pages");
@@ -150,8 +148,6 @@ public class Pages extends FriendlyLink {
       	} else {
       	    return "index.jsp";
       	}
-      	*/
-        
     }
 
     /**
@@ -236,8 +232,6 @@ public class Pages extends FriendlyLink {
             jspurl.append(getPageTemplate(cloud, number));
             jspurl.append("?").append(PAGE_PARAM).append("=").append(number);
             
-            // cache.putURLEntry(jspUrl, url.toString());
-            // cache.putJSPEntry(url.toString(), jspUrl);
             cache.putURLEntry(jspurl.toString(), flink);
             cache.putJSPEntry(flink, jspurl.toString());
             
