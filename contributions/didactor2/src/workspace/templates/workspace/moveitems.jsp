@@ -219,7 +219,7 @@
           </mm:node>
         </mm:present>
           <mm:node number="$user">
-            <mm:relatednodes type="portfolios" constraints="m_type = 0">
+            <mm:relatednodes type="portfolios" constraints="[type] = 0">
               <mm:relatednodescontainer type="folders">
                 <mm:relatednodes>
                   <mm:import id="foldernumber" reset="true"><mm:field name="number"/></mm:import>
@@ -227,7 +227,7 @@
                 </mm:relatednodes>
               </mm:relatednodescontainer>
             </mm:relatednodes>
-            <mm:relatednodes type="portfolios" constraints="m_type = 1">
+            <mm:relatednodes type="portfolios" constraints="[type] = 1">
               <mm:relatednodescontainer type="folders">
                 <mm:relatednodes>
                   <mm:import id="foldernumber" reset="true"><mm:field name="number"/></mm:import>
@@ -235,7 +235,7 @@
                 </mm:relatednodes>
               </mm:relatednodescontainer>
             </mm:relatednodes>
-            <mm:relatednodes type="portfolios" constraints="m_type = 2">
+            <mm:relatednodes type="portfolios" constraints="[type] = 2">
               <mm:relatednodescontainer type="folders">
                 <mm:relatednodes>
                   <mm:import id="foldernumber" reset="true"><mm:field name="number"/></mm:import>
