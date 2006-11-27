@@ -11,6 +11,10 @@
   <property file="configure.properties"/>
 
   <property name="defaultexcludes" value="yes" />
+  <property name="mmbase.version" value="mmbase-1.8.2.20061003" />
+  <property name="mmbase.distro.location" value="http://www.mmbase.org/development/download/stable/MMBase-1_8_2/" />
+  <property name="mmbase.distro" value="${mmbase.distro.location}/${mmbase.version}.zip" />
+
 
 
   <target name="create.dirs">
@@ -70,13 +74,12 @@
     <available file="${build.dir}/mmbase" property="mmbase.distro.expanded.exists"/>
   </target>
   <target name="mmbase.distro.download" depends="mmbase.distro.exists" unless="mmbase.distro.exists">
-    <get src="http://www.mmbase.org/development/download/stable/MMBase-1_8_2/mmbase-1.8.2.20061003.zip"
-         dest="mmbase.zip" verbose="on" />
+    <get src="${mmbase.distro}" dest="mmbase.zip" verbose="on" />
   </target>
 
   <target name="mmbase.distro" depends="mmbase.distro.exists,mmbase.distro.download" unless="mmbase.distro.expanded.exists" >
     <unzip src="mmbase.zip" dest="${build.dir}/" />
-    <move file="${build.dir}/mmbase-1.8.2.20061003" tofile="${build.dir}/mmbase" />
+    <move file="${build.dir}/${mmbase.version}" tofile="${build.dir}/mmbase" />
   </target>
 
   <target name="webapp" depends="create.dirs,build,mmbase.distro">
