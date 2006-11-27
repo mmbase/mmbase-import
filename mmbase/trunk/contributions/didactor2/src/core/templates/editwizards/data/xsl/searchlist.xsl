@@ -5,18 +5,16 @@
   xmlns:node="org.mmbase.bridge.util.xml.NodeFunction"
   xmlns:util="nl.didactor.xsl.Utilities"
   >
-  
   <!--
     searchlist.xls
-    
-    @since  MMBase-1.6
-    @author Kars Veling
-    @author Michiel Meeuwissen
-    @author Nico Klasens
-    @version $Id: searchlist.xsl,v 1.6 2006-05-09 15:37:05 igeorgijev Exp $
+    @version $Id: searchlist.xsl,v 1.7 2006-11-27 12:26:04 mmeeuwissen Exp $
   -->
 
-  <xsl:import href="xsl/baselist.xsl" />
+
+  <!--
+      TODO: Explore what the actual differences are with ew:xsl/searchlist and override only _those_ templates.
+  -->
+  <xsl:import href="ew:xsl/searchlist.xsl" />
 
   <xsl:variable name="listimagesize">+s(100x60)</xsl:variable>
 
