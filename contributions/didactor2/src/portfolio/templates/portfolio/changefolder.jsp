@@ -69,9 +69,9 @@
 <div class="folders">
 
 <div class="folderHeader">
-<di:translate key="portfolio.portfolio" />
+  <di:translate key="portfolio.portfolio" />
 </div>
-<div class="folderBody"></div>
+<div class="folderBody">
 </div>
 
 </div>
