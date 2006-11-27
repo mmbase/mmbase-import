@@ -22,15 +22,15 @@ public class Pages extends FriendlyLink {
     
     private final LocalizedString description = null;
 
-	public static String SEPARATOR = "/";
-	public final static String PAGE_EXTENSION = ".html";	// page ext that should be appended
-	public static String PAGE_PARAM = "nr";
+    public static String SEPARATOR = "/";
+    public final static String PAGE_EXTENSION = ".html";    // page ext that should be appended
+    public static String PAGE_PARAM = "nr";
     
     /**
      * Configure method parses a DOM element passed by UrlFilter with the configuration
      * that is specific for this type of friendlylink
      *
-     * @param  element	A DOM element from 'friendlylinks.xml' 
+     * @param  element  A DOM element from 'friendlylinks.xml' 
      *
      */
     protected void configure(Element element) {
@@ -56,17 +56,11 @@ public class Pages extends FriendlyLink {
         url.append(SEPARATOR);
         url.append(getPageTemplate(cloud, pagenr)).append("?").append(PAGE_PARAM).append("=").append(pagenr);
         
-        if (convert) {	// boolean to check if we really want to convert urls
+        if (convert) {  // boolean to check if we really want to convert urls
             url = new StringBuffer();   // overwrite
             url.append( makeFriendlyLink(cloud, request, pagenr) );
         }
         
-        // TODO: check if this friendlylink already exists in cache and change the it?
-/*        UrlCache cache = UrlConverter.getCache();
-        if (cache.hasURLEntry(url.toString())) {
-            log.debug("flink found in cache, should we append something? random? nodenumber?");
-        }
-*/        
         if (log.isDebugEnabled()) log.debug("returning link: " + url.toString());
         return url.toString();
     }
@@ -108,8 +102,19 @@ public class Pages extends FriendlyLink {
             // flink.append(contextpath).append(SEPARATOR).append(friendlyUrl);
             flink.append(SEPARATOR).append(friendlyUrl);                        // NO CONTEXT !!
             flink.append(PAGE_EXTENSION);       // appending .html at the end
+            
+            // TODO: check if this friendlylink already exists in cache and change it?
+            if (cache.hasURLEntry(flink.toString())) {
+                log.warn("flink '" + flink.toString() + "' already in cache, appending nodenr '_" + pagenr + "'");
+                
+                flink = new StringBuffer();			// overwrite again
+            	flink.append(SEPARATOR).append(friendlyUrl).append("_").append(pagenr);
+            	flink.append(PAGE_EXTENSION);       // appending .html at the end
+            }
+            
             cache.putURLEntry(jspUrl, flink.toString());
             cache.putJSPEntry(flink.toString(), jspUrl);
+            
             if (log.isDebugEnabled()) log.debug("Created 'userfriendly' link: " + flink.toString());
         }
         
@@ -118,9 +123,9 @@ public class Pages extends FriendlyLink {
     }
     
     /**
-     * Returns the template, in this case the field 'template' of the page node or
+     * Returns the (jsp) template, in this case the field 'template' of the page node or
      * a related node of type 'templates' in which it looks for the 'url' field. 
-     * Visitors get send back to the homepage if no template is found.
+     * Visitors get send back to the homepage (index.jsp) if no template is found.
      *
      * @param   cloud   MMBase cloud
      * @param   pagenr  nodenumber
@@ -128,26 +133,28 @@ public class Pages extends FriendlyLink {
      */
     public String getPageTemplate(Cloud cloud, String pagenr) {
         if (pagenr != null && !pagenr.equals("") && !pagenr.equals("-1")) {
-        	
-        	NodeManager pnm = cloud.getNodeManager("pages");
-        	org.mmbase.bridge.Node pageNode = cloud.getNode(pagenr);
-        	if (pnm.hasField("template")) {
-        		if (pageNode.getStringValue("template") != null 
-        		  && !pageNode.getStringValue("template").equals("")) {
-        			return pageNode.getStringValue("template");
-        		} else {
-        			log.error("Field 'template' is empty");
-        			return("/");	// send to homepage
-        		}
-        	} else {
-	        	org.mmbase.bridge.NodeList templateList = pageNode.getRelatedNodes("templates", "related", "DESTINATION");
-    	     	if (templateList.size() == 1) {
-        	    	return templateList.getNode(0).getStringValue("url");
-         		}
-         	}
-      	} else {
-      	    return "index.jsp";
-      	}
+            
+            NodeManager pnm = cloud.getNodeManager("pages");
+            org.mmbase.bridge.Node pageNode = cloud.getNode(pagenr);
+            if (pnm.hasField("template")) {
+                if (pageNode.getStringValue("template") != null 
+                  && !pageNode.getStringValue("template").equals("")) {
+                    return pageNode.getStringValue("template");
+                } else {
+                    log.error("Field 'template' is empty");
+                    return("index.jsp");    // send to homepage
+                }
+            } else {
+                org.mmbase.bridge.NodeList templateList = pageNode.getRelatedNodes("templates", "related", "DESTINATION");
+                if (templateList.size() == 1) {
+                    return templateList.getNode(0).getStringValue("url");
+                } else {
+            		return "index.jsp";
+                }
+            }
+        } else {
+            return "index.jsp";
+        }
     }
 
     /**
