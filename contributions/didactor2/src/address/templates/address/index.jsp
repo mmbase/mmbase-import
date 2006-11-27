@@ -86,6 +86,12 @@
         <br/>
       </mm:relatednodes>
 
+      <%-- show provider addressbook --%>
+      <mm:write request="linkedlist" referid="linkedlist" />
+      <mm:node referid="provider">
+        <mm:treeinclude page="/address/related.addresses.jsp" objectlist="$includePath" />
+      </mm:node>
+
       <form action="<mm:treefile page="/address/index.jsp" objectlist="$includePath" referids="$referids"/>" method="GET">
         <mm:present referid="field">
           <input type="hidden" name="field" value="<mm:write referid="field"/>"/>
@@ -369,7 +375,7 @@
             <di:cell><mm:write escape="none" referid="link"/><mm:field name="lastname" /></a></di:cell>
             <di:cell>
               <mm:remove referid="emailaddress"/>
-    	      <mm:write escape="none" referid="link"/>
+              <mm:write escape="none" referid="link"/>
               <mm:field name="email"/></a>
             </di:cell>
           </di:row>
