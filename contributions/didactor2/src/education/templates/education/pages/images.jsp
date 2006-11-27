@@ -24,9 +24,7 @@
       <mm:islessthan referid="imwidth" value="1">
           <img src="<mm:image/>" border="0"/>
       </mm:islessthan>
-       
-        <br clear="all"/>
-        
+      <br clear="all"/>
       <mm:field name="description"/>
      </td>
      </mm:node>
