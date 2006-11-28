@@ -23,6 +23,8 @@ import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.URIResolver;
 import org.mmbase.util.XMLEntityResolver;
 
+import java.util.regex.*;
+
 import org.w3c.dom.*;
 
 import java.net.URL;
@@ -43,7 +45,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.150 2006-10-19 14:16:31 michiel Exp $
+ * @version $Id: Wizard.java,v 1.151 2006-11-28 12:38:42 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -1416,6 +1418,9 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         }
     }
 
+    private final Pattern NUMBER_ORDERTYPE = Pattern.compile("(?i).*\\bnumber\\b.*");
+    private final Pattern INVERSE_ORDERTYPE = Pattern.compile("(?i).*\\binverse\\b.*");
+
     /**
      *       Creates a form item (each of which may consist of several single form fields)
      *  for each given datanode.
@@ -1498,7 +1503,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             orderby = "object/field[@name='" + orderby + "']";
         }
 
-        String ordertype = Utils.getAttribute(fieldlist, "ordertype", "string");
+        final String ordertype = Utils.getAttribute(fieldlist, "ordertype", "string");
 
         // set the orderby attribute for all the nodes
         List tempstorage = new ArrayList(datalist.getLength());
@@ -1511,7 +1516,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                                                                  orderby, "");
 
                 // make sure of type
-                if (ordertype.equals("number")) {
+                if (NUMBER_ORDERTYPE.matcher(ordertype).matches()) {
                     double orderDbl;
 
                     try {
@@ -1538,7 +1543,10 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
 
         // sort list
         if (orderby != null) {
-            Collections.sort(tempstorage, new OrderByComparator(ordertype));
+            Comparator comp =  new OrderByComparator(NUMBER_ORDERTYPE.matcher(ordertype).matches(),
+                                                     INVERSE_ORDERTYPE.matcher(ordertype).matches());
+            Collections.sort(tempstorage, comp);
+            log.info("ordered with '" + ordertype + "' " + comp + " " + tempstorage);
         }
 
         // and make form
@@ -2796,10 +2804,16 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
     }
 
     class OrderByComparator implements Comparator {
-        boolean compareByNumber = false;
+        final boolean compareByNumber;
+        final int inverse;
 
-        OrderByComparator(String ordertype) {
-            compareByNumber = ordertype.equals("number");
+        OrderByComparator(boolean numeric, boolean i) {
+            compareByNumber = numeric;
+            inverse = i ? -1 : 1;
+        }
+
+        public String toString() {
+            return (inverse == -1 ? "inverse " : "") + (compareByNumber ? "number" : "string");
         }
 
         public int compare(Object o1, Object o2) {
@@ -2814,14 +2828,14 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             //this means it we want evaludate the value as a number
             if (compareByNumber) {
                 try {
-                    return Double.valueOf(order1).compareTo(Double.valueOf(order2));
+                    return inverse * Double.valueOf(order1).compareTo(Double.valueOf(order2));
                 } catch (Exception e) {
                     log.error("Invalid field values (" + order1 + "/" + order2 + "):" + e);
 
                     return 0;
                 }
             } else {
-                return order1.compareToIgnoreCase(order2);
+                return inverse * order1.compareToIgnoreCase(order2);
             }
         }
     }
