@@ -87,7 +87,7 @@
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>mimetype</name>
-        <type state="persistent" size="32" notnull="true" key="false">STRING</type>
+        <type state="persistent" size="128" notnull="true" key="false">STRING</type>
       </db>
     </field>
 
