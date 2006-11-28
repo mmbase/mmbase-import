@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: StorageConnector.java,v 1.16 2006-10-14 14:35:39 nklasens Exp $
+ * @version $Id: StorageConnector.java,v 1.17 2006-11-28 16:31:46 michiel Exp $
  */
 public class StorageConnector {
 
@@ -217,6 +217,13 @@ public class StorageConnector {
         // use storage factory if present
         log.debug("Getting node from storage");
         node = mmb.getStorageManager().getNode(nodeBuilder, number);
+        if (nodeBuilder == mmb.getInsRel() && node.getOType() != nodeBuilder.getObjectType()) {
+            // the builder was unknown en we falled back to insrel. 
+            // Perhaps it would have been better to fall back to object?
+            if (node.getNumber() <= 0) {
+                node = mmb.getStorageManager().getNode(mmb.getRootBuilder(), number);
+            }
+        }
         // store in cache if indicated to do so
         if (useCache) {
             if (log.isDebugEnabled()) {
@@ -254,8 +261,13 @@ public class StorageConnector {
             }
             nodeBuilder = mmb.getBuilder(builderName);
             if (nodeBuilder == null) {
-                log.warn("Node #" + number + "'s builder " + builderName + "(" + nodeType + ") is not loaded, taking 'object'.");
-                nodeBuilder = mmb.getBuilder("object");
+                if (builderName.endsWith("rel")) {
+                    nodeBuilder = mmb.getInsRel();
+                } else {
+                    nodeBuilder = mmb.getRootBuilder();
+                }
+                log.warn("Node #" + number + "'s builder " + builderName + "(" + nodeType + ") is not loaded. Taking " + nodeBuilder.getTableName());
+
             }
         }
         return nodeBuilder;
@@ -625,12 +637,15 @@ public class StorageConnector {
                     continue;
                 }
                 if(typedefNode == null) {
-                    // builder not known in typedef?
-                    // skip this builder and process to next one..
-                    // TODO: research: add incorrect node to node's cache?
-                    log.error("Could not find typedef node #" + nodeType);
-                    continue;
+                    typedefNode = getNode(MMBase.getMMBase().getBuilder("object").getNumber(), true);
+                    log.error("Could not find typedef node #" + nodeType + " taking " + typedefNode + " in stead");
                 }
+                String tableName = typedefNode.getBuilder().getTableName();
+                if (! tableName.equals("typedef")) {
+                    typedefNode = getNode(MMBase.getMMBase().getBuilder("object").getNumber(), true);
+                    log.error("The type of node '" + nodeType + "' is not typedef (but '" + tableName + "'). This is an error. Taking '" + typedefNode + "' in stead.");
+                }
+
                 MMObjectBuilder conversionBuilder = builder.getMMBase().getBuilder(typedefNode.getStringValue("name"));
                 if(conversionBuilder == null) {
                     // could not find the builder that was in typedef..
