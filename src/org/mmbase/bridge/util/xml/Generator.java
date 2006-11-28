@@ -13,6 +13,7 @@ package org.mmbase.bridge.util.xml;
 import org.w3c.dom.*;
 import javax.xml.parsers.DocumentBuilder;
 import org.mmbase.bridge.*;
+import java.util.*;
 
 import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.XMLWriter;
@@ -23,7 +24,7 @@ import org.mmbase.util.xml.XMLWriter;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.44 2006-11-02 10:24:41 michiel Exp $
+ * @version $Id: Generator.java,v 1.45 2006-11-28 20:12:49 michiel Exp $
  * @since  MMBase-1.6
  */
 public class Generator {
@@ -282,10 +283,9 @@ public class Generator {
      * Adds a whole MMBase bridge NodeList to the DOM Document.
      * @param nodes An MMBase bridge NodeList.
      */
-    public void add(org.mmbase.bridge.NodeList nodes) {
-        NodeIterator i = nodes.nodeIterator();
-        while (i.hasNext()) {
-            add(i.nextNode());
+    public void add(List<org.mmbase.bridge.Node> nodes) {
+        for (org.mmbase.bridge.Node n : nodes) {
+            add(n);
         }
     }
 
@@ -293,11 +293,9 @@ public class Generator {
      * Adds a list of  Relation to the DOM Document.
      * @param relations An MMBase bridge RelationList
      */
-    public void add(RelationList relations) {
-        RelationIterator i = relations.relationIterator();
-        while (i.hasNext()) {
-            add(i.nextRelation());
-
+    public void add(RelationList<Relation> relations) {
+        for (org.mmbase.bridge.Relation r : relations) {
+            add(r);
         }
     }
 
