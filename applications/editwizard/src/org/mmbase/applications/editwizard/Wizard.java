@@ -45,7 +45,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.151 2006-11-28 12:38:42 michiel Exp $
+ * @version $Id: Wizard.java,v 1.152 2006-11-28 12:39:26 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -1546,7 +1546,9 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             Comparator comp =  new OrderByComparator(NUMBER_ORDERTYPE.matcher(ordertype).matches(),
                                                      INVERSE_ORDERTYPE.matcher(ordertype).matches());
             Collections.sort(tempstorage, comp);
-            log.info("ordered with '" + ordertype + "' " + comp + " " + tempstorage);
+            if (log.isDebugEnabled()) {
+                log.debug("ordered with '" + ordertype + "' " + comp + " " + tempstorage);
+            }
         }
 
         // and make form
