@@ -97,7 +97,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.41 2006-09-13 09:47:36 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.42 2006-11-28 19:28:35 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -207,9 +207,6 @@ public class ResourceLoader extends ClassLoader {
     }
 
 
-    private List<PathURLStreamHandler> roots;
-
-
     static {
         // make sure it works a bit before servlet-startup.
         init(null);
@@ -252,7 +249,7 @@ public class ResourceLoader extends ClassLoader {
      */
     public static String getName(String path) {
         //avoid NullPointerException in util method
-        if (path == null){
+        if (path == null) {
             return null;
         }
         int i = path.lastIndexOf('/');
@@ -429,13 +426,17 @@ public class ResourceLoader extends ClassLoader {
     /**
      * The URL relative to which this class-loader resolves. Cannot be <code>null</code>.
      */
-    private URL context;
+    private final URL context;
 
 
     /**
      * Child resourceloaders have a parent.
      */
-    private ResourceLoader parent = null;
+    private final ResourceLoader parent;
+
+
+    private final List<PathURLStreamHandler> roots;
+
 
     /**
      * This constructor instantiates a new root resource-loader. This constructor is protected (so you may use it in an extension), but normally use:
@@ -444,6 +445,7 @@ public class ResourceLoader extends ClassLoader {
     protected ResourceLoader() {
         super();
         roots        = new ArrayList<PathURLStreamHandler>();
+        parent       = null;
         try {
             context = newURL(PROTOCOL + ":/");
         } catch (MalformedURLException mue) {
@@ -460,10 +462,10 @@ public class ResourceLoader extends ClassLoader {
         super(ResourceLoader.class.getClassLoader());
         this.context = cl.findResource(context + "/");
         roots   = new ArrayList<PathURLStreamHandler>();
-        Iterator i = cl.roots.iterator();
+        Iterator<PathURLStreamHandler> i = cl.roots.iterator();
         // hmm, don't like this code, but don't know how else to copy the inner object.
         while (i.hasNext()) {
-            Object o = i.next();
+            PathURLStreamHandler o = i.next();
             if (o instanceof FileURLStreamHandler) {
                 roots.add(new FileURLStreamHandler((FileURLStreamHandler) o));
             } else if (o instanceof NodeURLStreamHandler) {
@@ -632,13 +634,11 @@ public class ResourceLoader extends ClassLoader {
      * Used by {@link #getResourcePaths(Pattern, boolean)} and {@link #getChildContexts(Pattern, boolean)}
      * @param pattern   A Regular expression pattern to which  the file-name must match, or <code>null</code> if no restrictions apply
      * @param recursive If true, then also subdirectories are searched.
-     * @param directories getResourceContext supplies <code>true</code> getResourcePaths supplies <code>false</code>
+     * @param directories {@link #getChildContexts(Pattern, boolean)} supplies <code>true</code> {@link #getResourcePaths(Pattern, boolean)} supplies <code>false</code>
      */
     protected Set<String> getResourcePaths(final Pattern pattern, final boolean recursive, final boolean directories) {
         Set<String> results = new TreeSet<String>(); // a set with fixed iteration order
-        Iterator i = roots.iterator();
-        while (i.hasNext()) {
-            PathURLStreamHandler cf = (PathURLStreamHandler) i.next();
+        for (PathURLStreamHandler cf : roots) {
             cf.getPaths(results, pattern, recursive, directories);
         }
         return results;
@@ -696,7 +696,7 @@ public class ResourceLoader extends ClassLoader {
 
     /**
      * Returns the givens resource as a Document (parsed XML). This can come in handly, because most
-     * configuration in in XML.
+     * configuration is in XML.
      *
      * @param name The name of the resource to be loaded
      * @return The Document if succesful, <code>null</code> if there is no such resource.
@@ -709,11 +709,11 @@ public class ResourceLoader extends ClassLoader {
 
     /**
      * Returns the givens resource as a Document (parsed XML). This can come in handly, because most
-     * configuration in in XML.
+     * configuration is in XML.
      *
      * @param name The name of the resource to be loaded
      * @param validation If <code>true</code>, validate the xml. By dtd if one of the first lines starts with &lt;!DOCTYPE, by XSD otherwise
-     * @param baseClass If validation is <code>true</code>, the base class to serach for the validating xsd or dtd
+     * @param baseClass If validation is <code>true</code>, the base class to search for the validating xsd or dtd
      * @return The Document if succesful, <code>null</code> if there is no such resource.
      * @throws SAXException If the resource does not present parseable XML.
      * @throws IOException
@@ -765,7 +765,7 @@ public class ResourceLoader extends ClassLoader {
                 throw ioe;
             }
         }
-        
+
     }
 
     /**
@@ -890,9 +890,7 @@ public class ResourceLoader extends ClassLoader {
      * @return A List of all files associated with the resource.
      */
     public List<File> getFiles(String name) {
-
-
-        List<File> result = new ArrayList();
+        List<File> result = new ArrayList<File>();
         for (PathURLStreamHandler o : roots) {
             if (o instanceof FileURLStreamHandler) {
                 result.add(((FileURLStreamHandler) o).getFile(name));
@@ -908,11 +906,9 @@ public class ResourceLoader extends ClassLoader {
      *         Used by {@link ResourceWatcher}.
      */
     Node getResourceNode(String name) {
-        Iterator i = roots.iterator();
-        while (i.hasNext()) {
-            Object o = i.next();
+        for (PathURLStreamHandler o : roots) {
             if (o instanceof NodeURLStreamHandler) {
-                return ((NodeConnection) (((PathURLStreamHandler) o).openConnection(name))).getResourceNode();
+                return ((NodeConnection) o.openConnection(name)).getResourceNode();
             }
         }
         return null;
@@ -925,9 +921,7 @@ public class ResourceLoader extends ClassLoader {
         long lastModified = -1;
         URL  usedUrl = null;
 
-        Iterator i = roots.iterator();
-        while (i.hasNext()) {
-            PathURLStreamHandler cf = (PathURLStreamHandler) i.next();
+        for (PathURLStreamHandler cf : roots) {
             URLConnection con = cf.openConnection(name);
             if (con.getDoInput()) {
                 long lm = con.getLastModified();
@@ -951,9 +945,7 @@ public class ResourceLoader extends ClassLoader {
      * @throws IllegalArgumentException if <code>file</code> is not a file associated with the resource with given name.
      */
     URL shadowed(File f, String name) {
-        Iterator i = roots.iterator();
-        while (i.hasNext()) {
-            PathURLStreamHandler cf = (PathURLStreamHandler) i.next();
+        for (PathURLStreamHandler cf : roots) {
             if (cf instanceof NodeURLStreamHandler) {
                 URLConnection con = cf.openConnection(name);
                 if (con.getDoInput()) {
@@ -1058,8 +1050,8 @@ public class ResourceLoader extends ClassLoader {
 
 
     protected  class FileURLStreamHandler extends PathURLStreamHandler {
-        private File fileRoot;
-        private boolean writeable;
+        private final File fileRoot;
+        private final boolean writeable;
         FileURLStreamHandler(File root, boolean w) {
             fileRoot = root;
             writeable = w;
@@ -1147,8 +1139,8 @@ public class ResourceLoader extends ClassLoader {
      * rights) and deleting by <code>getOutputStream().write(null)</code>
      */
     private class FileConnection extends URLConnection {
-        private File file;
-        private boolean writeable;
+        private final File file;
+        private final boolean writeable;
         FileConnection(URL u, File f, boolean w) {
             super(u);
             this.file = f;
@@ -1242,7 +1234,7 @@ public class ResourceLoader extends ClassLoader {
      * URLStreamHandler for NodeConnections.
      */
     protected class NodeURLStreamHandler extends PathURLStreamHandler {
-        private int type;
+        private final int type;
         NodeURLStreamHandler(int type) {
             this.type    = type;
         }
@@ -1275,9 +1267,7 @@ public class ResourceLoader extends ClassLoader {
 
 
                     query.setConstraint(constraint);
-                    Iterator i = resourceBuilder.getList(query).iterator();
-                    while (i.hasNext()) {
-                        Node node = (Node) i.next();
+                    for (Node node :  resourceBuilder.getList(query)) {
                         String url = node.getStringValue(RESOURCENAME_FIELD);
                         String subUrl = url.substring(ResourceLoader.this.context.getPath().length() - 1);
                         int pos = subUrl.indexOf('/');
@@ -1319,8 +1309,8 @@ public class ResourceLoader extends ClassLoader {
      */
     private class NodeConnection extends URLConnection {
         Node node;
-        String name;
-        int type;
+        final String name;
+        final int type;
         NodeConnection(URL url, String name, int t) {
             super(url);
             this.name = name;
@@ -1351,9 +1341,9 @@ public class ResourceLoader extends ClassLoader {
                     constraint.addChild(constraint2);
 
                     query.setConstraint(constraint);
-                    Iterator i = resourceBuilder.getList(query).iterator();
+                    Iterator<Node> i = resourceBuilder.getList(query).iterator();
                     if (i.hasNext()) {
-                        node = (Node) i.next();
+                        node = i.next();
                         return node;
                     }
                 } catch (BridgeException sqe) {
@@ -1370,7 +1360,7 @@ public class ResourceLoader extends ClassLoader {
         public boolean getDoOutput() {
             getResourceNode();
             return
-                (node != null && node.mayWrite()) || 
+                (node != null && node.mayWrite()) ||
                 (ResourceLoader.resourceBuilder != null && ResourceLoader.resourceBuilder.mayCreateNode());
         }
 
@@ -1467,14 +1457,14 @@ public class ResourceLoader extends ClassLoader {
                 return NOT_AVAILABLE_URLSTREAM_HANDLER.openConnection(name);
             }
         }
-        public Set getPaths(final Set<String> results, final Pattern pattern,  final boolean recursive, final boolean directories) {
+        public Set<String> getPaths(final Set<String> results, final Pattern pattern,  final boolean recursive, final boolean directories) {
             if (log.isDebugEnabled()) {
                 log.debug("Getting " + (directories ? "directories" : "files") + " matching '" + pattern + "' in '" + root + "'");
             }
             return getPaths(results, pattern, recursive ? "" : null, directories);
         }
 
-        private  Set getPaths(final Set<String> results, final Pattern pattern,  final String recursive, final boolean directories) {
+        private  Set<String> getPaths(final Set<String> results, final Pattern pattern,  final String recursive, final boolean directories) {
             if (servletContext != null) {
                 try {
                     String currentRoot  = root + ResourceLoader.this.context.getPath();
@@ -1591,9 +1581,9 @@ public class ResourceLoader extends ClassLoader {
             return getPaths(results, pattern, recursive, directories, "", null);
         }
 
-        private Set<String> getPaths(final Set results, final Pattern pattern, final boolean recursive, final boolean directories, String resourceDir, String searchUp) {
+        private Set<String> getPaths(final Set<String> results, final Pattern pattern, final boolean recursive, final boolean directories, String resourceDir, String searchUp) {
             try {
-                List subDirs = new ArrayList();
+                List<String> subDirs = new ArrayList<String>();
                 Enumeration<URL> e = getResources("".equals(resourceDir) ? INDEX : resourceDir + INDEX);
                 if (searchUp != null && resourceDir.startsWith("..")) resourceDir = "";
                 while (e.hasMoreElements()) {
@@ -1640,8 +1630,7 @@ public class ResourceLoader extends ClassLoader {
                     }
                 }
                 if (recursive) {
-                    for (Iterator iter = subDirs.iterator(); iter.hasNext();) {
-                        String dir = (String) iter.next();
+                    for (String dir: subDirs) {
                         String newDir = "".equals(resourceDir) ? dir : resourceDir + dir;
                         getPaths(results, pattern, recursive, directories, newDir, null);
                     }
@@ -1719,7 +1708,7 @@ public class ResourceLoader extends ClassLoader {
      */
     private class NotAvailableConnection extends URLConnection {
 
-        private String name;
+        private final String name;
 
         private NotAvailableConnection(URL u, String n) {
             super(u);
@@ -1766,7 +1755,7 @@ public class ResourceLoader extends ClassLoader {
 
         URLConnection inputConnection  = null;
         URLConnection outputConnection = null;
-        String name;
+        final String name;
 
 
         MMURLConnection(URL u) {
@@ -1792,9 +1781,7 @@ public class ResourceLoader extends ClassLoader {
             if (inputConnection != null) {
                 return inputConnection;
             }
-            Iterator i = ResourceLoader.this.roots.iterator();
-            while(i.hasNext()) {
-                PathURLStreamHandler cf = (PathURLStreamHandler) i.next();
+            for(PathURLStreamHandler cf : ResourceLoader.this.roots) {
                 URLConnection c = cf.openConnection(name);
                 if (c.getDoInput()) {
                     inputConnection = c;
@@ -1838,9 +1825,9 @@ public class ResourceLoader extends ClassLoader {
             }
 
             // search connection which will be used for reading, and check if it can be used for writing
-            ListIterator i = ResourceLoader.this.roots.listIterator();
+            ListIterator<PathURLStreamHandler> i = ResourceLoader.this.roots.listIterator();
             while (i.hasNext()) {
-                PathURLStreamHandler cf = (PathURLStreamHandler) i.next();
+                PathURLStreamHandler cf = i.next();
                 URLConnection c = cf.openConnection(name);
                 if (c.getDoInput()) {
                     if(c.getDoOutput()) { // prefer the currently read one.
@@ -1853,7 +1840,7 @@ public class ResourceLoader extends ClassLoader {
                 // the URL used for reading, could not be written.
                 // Now iterate backwards, and search one which can be.
                 while (i.hasPrevious()) {
-                    PathURLStreamHandler cf = (PathURLStreamHandler) i.previous();
+                    PathURLStreamHandler cf = i.previous();
                     URLConnection c = cf.openConnection(name);
                     if (c.getDoOutput()) {
                         outputConnection = c;
