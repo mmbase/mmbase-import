@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.210.2.3 2006-10-20 07:51:53 nklasens Exp $
+ * @version $Id: BasicNode.java,v 1.210.2.4 2006-11-28 13:48:45 johannes Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -386,6 +386,8 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
                 result =  new BasicRelationManager(mmobjectNode, cloud);
             } else if (builder instanceof InsRel) {
                 result =  new BasicRelation(mmobjectNode, cloud); //.getNodeManager(noderes.getBuilder().getTableName()));
+            } else if (builder instanceof VirtualBuilder) {
+                result = new VirtualNode((org.mmbase.module.core.VirtualNode)mmobjectNode, cloud);
             } else {
                 result = new BasicNode(mmobjectNode, cloud); //.getNodeManager(noderes.getBuilder().getTableName()));
             }
