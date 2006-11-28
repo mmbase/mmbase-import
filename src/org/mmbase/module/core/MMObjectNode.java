@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.193.2.2 2006-10-17 12:08:47 nklasens Exp $
+ * @version $Id: MMObjectNode.java,v 1.193.2.3 2006-11-28 13:48:45 johannes Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -1022,8 +1022,11 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
              Node node = (Node) value;
              if (node.isNew()) {
                  throw new UnsupportedOperationException("dropped tmpnodemanager...");
-             }
-             res = parent.getNode(node.getNumber());
+             } else if (value instanceof org.mmbase.bridge.implementation.VirtualNode) { 
+                 res = new VirtualNode(new org.mmbase.bridge.util.NodeMap(node));
+             } else {
+                 res = parent.getNode(node.getNumber());
+              }
          } else if (value instanceof Number) {
              int nodenumber = ((Number)value).intValue();
              if (nodenumber != -1) {

@@ -33,7 +33,7 @@ import org.w3c.dom.Element;
  * {@link #VirtualNode(org.mmbase.module.core.VirtualNode, Cloud)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: VirtualNode.java,v 1.19 2006-02-15 12:57:46 michiel Exp $
+ * @version $Id: VirtualNode.java,v 1.19.2.1 2006-11-28 13:48:45 johannes Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.VirtualNode
  * @since MMBase-1.8
@@ -199,6 +199,10 @@ public class VirtualNode extends AbstractNode implements Node {
         MMObjectNode mmobjectNode = getNode().getNodeValue(fieldName);
         if (mmobjectNode != null) {
             MMObjectBuilder builder = mmobjectNode.getBuilder();
+            if (builder instanceof VirtualBuilder) {
+                return new VirtualNode((org.mmbase.module.core.VirtualNode)mmobjectNode, cloud);
+            }
+                
             try {
                 result = cloud.getNode(mmobjectNode.getNumber());
             } catch (NotFoundException nfe) {
