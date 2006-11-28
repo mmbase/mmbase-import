@@ -30,7 +30,7 @@ import org.mmbase.util.Encode;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.64 2006-10-19 14:30:24 michiel Exp $
+ * @version $Id: Config.java,v 1.65 2006-11-28 12:36:39 michiel Exp $
  */
 
 public class Config implements java.io.Serializable {
@@ -98,7 +98,7 @@ public class Config implements java.io.Serializable {
     public String sessionKey = null;
     public URIResolver uriResolver = null;
     public int maxupload = Config.maxUploadSize;
-    public Stack subObjects = new Stack(); // stores the Lists and Wizards.
+    public Stack<SubConfig> subObjects = new Stack<SubConfig>(); // stores the Lists and Wizards.
     public String sessionId;   // necessary if client doesn't accept cookies to store sessionid (this is appended to urls)
     public String backPage;
     public String templates;
@@ -111,7 +111,7 @@ public class Config implements java.io.Serializable {
      *
      * @since MMBase-1.7
      */
-    protected Map attributes;
+    protected Map<String, String> attributes;
 
 
     //   public String context; (contained in attributes now)
@@ -120,9 +120,9 @@ public class Config implements java.io.Serializable {
         public boolean debug = false;
         public String wizard;
         public String page;
-        public HashMap popups = new HashMap(); // all popups now in use below this (key -> Config)
+        public HashMap<String, Stack<SubConfig>> popups = new HashMap<String, Stack<SubConfig>>(); // all popups now in use below this (key -> Config)
 
-        public HashMap attributes = new HashMap();
+        public HashMap<String, String> attributes = new HashMap<String, String>();
 
         /**
          * Basic configuration. The configuration object passed is updated with information retrieved
@@ -168,8 +168,8 @@ public class Config implements java.io.Serializable {
         /**
          * Returns available attributes in a map, so they can be passed to the list stylesheet
          */
-        public Map getAttributes() {
-            Map attributeMap = new HashMap(attributes);
+        public Map<String, String> getAttributes() {
+            Map<String, String> attributeMap = new HashMap<String, String>(attributes);
             return attributeMap;
         }
 
@@ -386,7 +386,7 @@ public class Config implements java.io.Serializable {
                 } else if (sFields.equals("number") || sFields.endsWith(".number")) {
                     sType = "equals";
                 }
-                String where = Encode.encode("ESCAPE_SINGLE_QUOTE",searchValue);
+                String where = Encode.encode("ESCAPE_SINGLE_QUOTE", searchValue);
                 constraintsBuffer = null;
                 if (sType.equals("like")) {
                     if (! "".equals(where)) {
@@ -574,26 +574,26 @@ public class Config implements java.io.Serializable {
         /**
          * Returns available attributes in a map, so they can be passed to the list stylesheet
          */
-        public Map getAttributes() {
-            Map attributeMap = super.getAttributes();
+        public Map<String, String> getAttributes() {
+            Map<String, String> attributeMap = super.getAttributes();
             // mandatory attributes
             attributeMap.put("nodepath", nodePath);
-            attributeMap.put("fields", fields);
+            attributeMap.put("fields",   fields);
             // optional attributes
-            if (title != null) attributeMap.put("title", title);
-            attributeMap.put("age", age+"");
-            if (multilevel) attributeMap.put("objecttype",mainObjectName);
-            if (startNodes!=null) attributeMap.put("startnodes", startNodes);
-            if (orderBy!=null) attributeMap.put("orderby", orderBy);
-            if (directions!=null) attributeMap.put("directions", directions);
-            attributeMap.put("distinct", distinct+"");
-            if (searchDir!=null) attributeMap.put("searchdir", searchDir);
-            if (baseConstraints!=null) attributeMap.put("constraints", baseConstraints);
+            if (title           != null) attributeMap.put("title",       title);
+            attributeMap.put("age", age + "");
+            if (multilevel             ) attributeMap.put("objecttype",  mainObjectName);
+            if (startNodes      != null) attributeMap.put("startnodes",  startNodes);
+            if (orderBy         != null) attributeMap.put("orderby",     orderBy);
+            if (directions      != null) attributeMap.put("directions",  directions);
+            attributeMap.put("distinct", distinct + "");
+            if (searchDir       != null) attributeMap.put("searchdir",   searchDir);
+            if (baseConstraints != null) attributeMap.put("constraints", baseConstraints);
             // search attributes
-            if (searchType!=null) attributeMap.put("searchtype", searchType);
-            if (searchFields!=null) attributeMap.put("searchfields", searchFields);
-            if (realSearchField!=null) attributeMap.put("realsearchfield", realSearchField);
-            if (searchValue!=null) attributeMap.put("searchvalue", searchValue);
+            if (searchType      != null) attributeMap.put("searchtype",  searchType);
+            if (searchFields    != null) attributeMap.put("searchfields",    searchFields);
+            if (realSearchField != null) attributeMap.put("realsearchfield", realSearchField);
+            if (searchValue     != null) attributeMap.put("searchvalue",     searchValue);
 
             return attributeMap;
         }
@@ -676,7 +676,7 @@ public class Config implements java.io.Serializable {
 
 
 
-                if (protocolPos >=0 ) { // given absolutely
+                if (protocolPos >= 0 ) { // given absolutely
                     String path = new URL(config.backPage).getPath();
                     ref = new URL(getResource(path.substring(request.getContextPath().length())), ".");
                     // TODO: What if it happened to be not from the same server?
