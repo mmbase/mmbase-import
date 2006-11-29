@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.199 2006-10-17 12:08:40 nklasens Exp $
+ * @version $Id: MMObjectNode.java,v 1.200 2006-11-29 09:51:36 johannes Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -951,23 +951,26 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         if (fieldName == null || fieldName.equals(MMObjectBuilder.FIELD_NUMBER)) return this;
         Object value = getValue(fieldName);
         MMObjectNode res = null;
-         if (value instanceof MMObjectNode) {
-             res = (MMObjectNode) value;
-         } else if (value instanceof Node) {
-             Node node = (Node) value;
-             if (node.isNew()) {
-                 throw new UnsupportedOperationException("dropped tmpnodemanager...");
-             }
-             res = parent.getNode(node.getNumber());
-         } else if (value instanceof Number) {
-             int nodenumber = ((Number)value).intValue();
-             if (nodenumber != -1) {
-                 res = parent.getNode(nodenumber);
-             }
-         } else if (value != null && !value.equals("")) {
-             res = parent.getNode(value.toString());
-         }
-         return res;
+        if (value instanceof MMObjectNode) {
+            res = (MMObjectNode) value;
+        } else if (value instanceof Node) {
+            Node node = (Node) value;
+            if (node.isNew()) {
+                throw new UnsupportedOperationException("dropped tmpnodemanager...");
+            } else if (value instanceof org.mmbase.bridge.implementation.VirtualNode) {
+                res = new VirtualNode(new org.mmbase.bridge.util.NodeMap(node));
+            } else {
+                res = parent.getNode(node.getNumber());
+            }
+        } else if (value instanceof Number) {
+            int nodenumber = ((Number)value).intValue();
+            if (nodenumber != -1) {
+                res = parent.getNode(nodenumber);
+            }
+        } else if (value != null && !value.equals("")) {
+            res = parent.getNode(value.toString());
+        }
+        return res;
     }
 
     /**
