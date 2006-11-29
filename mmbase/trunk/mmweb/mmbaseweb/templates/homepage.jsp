@@ -185,7 +185,7 @@
 	</mm:listnodescontainer></p>
 	--%>
 	<h4>Bugtracker</h4>
-	<p><a href="/bug">Bugtracker &raquo;&raquo;</a></p>
+	<p><a href="/browseproject">Bugtracker &raquo;&raquo;</a></p>
 <%-- ### /search, agenda, dev mail ? ### --%>
 </td>
 </tr>
