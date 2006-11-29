@@ -48,12 +48,21 @@
                     %><%=problemWeights[rating]%><%
                   }
                 %>
-                <mm:list nodes="<%= problemId %>" path="problems,related,madetests,related,tests">
+                <mm:list nodes="<%= problemId %>" path="problems,related,madetests,related,tests" orderby="madetests.number" directions="down" max="1">
+                  <!--
+                  TODO It should only be possible to have one madetest per problem,test combination. However some users have multiple madetests
+                  for this combination. Still have to find out how this is possible.
+                  -->
                   <mm:remove referid="madetest_number" />
                   <mm:remove referid="test_number" />
                   <mm:field name="madetests.number" id="madetest_number" write="false" />
                   <mm:node element="tests">
                     <mm:field name="number" id="test_number" write="false" />
+                    <!--
+                    problem = <%= problemId %><br/>
+                    madetest = <mm:write referid="madetest_number" /><br/>
+                    test = <mm:write referid="test_number" /><br/>
+                    -->
                     <mm:relatednodes type="questions" path="posrel,questions" orderby="posrel.pos">
                         <mm:import id="page" reset="true">/education/<mm:nodeinfo type="type"/>/index.jsp</mm:import>
                         <mm:treeinclude page="$page" objectlist="$includePath" referids="$referids">
