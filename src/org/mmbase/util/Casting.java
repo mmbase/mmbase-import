@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.95 2006-11-24 12:23:25 michiel Exp $
+ * @version $Id: Casting.java,v 1.96 2006-11-29 08:07:20 michiel Exp $
  */
 
 import java.util.*;
@@ -48,7 +48,12 @@ public class Casting {
      * XXX: According to http://en.wikipedia.org/wiki/ISO_8601, the standard allows ' ' in stead of
      * 'T' if no misunderstanding arises, which is the case here. So I don't think this is 'loose'.
      */
-    public final static DateFormat ISO_8601_LOOSE = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+    public final static ThreadLocal<DateFormat> ISO_8601_LOOSE =
+        new ThreadLocal<DateFormat>() {
+            protected synchronized DateFormat initialValue() {
+                    return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+            }
+        };
 
     /**
      * A Date formatter that creates a ISO 8601 datetime according to UTC/GMT.
@@ -58,13 +63,28 @@ public class Casting {
      *
      * XXX: Hmm, we parse with UTC now, while we don't store them as such.
      */
-    public final static DateFormat ISO_8601_UTC = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
-    static {
-        ISO_8601_UTC.setTimeZone(TimeZone.getTimeZone("UTC"));
-    }
+    public final static ThreadLocal<DateFormat> ISO_8601_UTC =
+        new ThreadLocal<DateFormat>() {
+            protected synchronized DateFormat initialValue() {
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
+                df.setTimeZone(TimeZone.getTimeZone("UTC"));
+                return df;
+            }
+    };
 
-    public final static DateFormat ISO_8601_DATE = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-    public final static DateFormat ISO_8601_TIME = new SimpleDateFormat("HH:mm:ss", Locale.US);
+    public final static ThreadLocal<DateFormat> ISO_8601_DATE =
+        new ThreadLocal<DateFormat>() {
+            protected synchronized DateFormat initialValue() {
+                    return new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                }
+    };
+    public final static ThreadLocal<DateFormat> ISO_8601_TIME = 
+        new ThreadLocal<DateFormat>() {
+        protected synchronized DateFormat initialValue() {
+                return new SimpleDateFormat("HH:mm:ss", Locale.US);
+            }
+    };
+
 
 
 
@@ -438,7 +458,7 @@ public class Casting {
      * Transforms an object to a collection. If the object is a collection already, then nothing
      * happens. If it is a Map, then the 'entry set' is returned. A string is interpreted as a
      * comma-separated list of strings. Other objects are wrapped in an ArrayList with one element.
-     * 
+     *
      * @since MMBase-1.8
      */
     public static Collection toCollection(Object o) {
