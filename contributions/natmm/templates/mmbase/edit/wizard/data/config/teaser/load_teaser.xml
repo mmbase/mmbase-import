@@ -4,6 +4,7 @@
    <field name="titel"/>
    <field name="titel_zichtbaar"/>
    <field name="omschrijving"/>
+   <field name="omschrijving_eng"/>
    <field name="bron"/>
    <field name="metatags"/>
    <field name="creatiedatum"/>

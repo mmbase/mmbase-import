@@ -6,6 +6,7 @@
    <field name="size" ftype="enum"><prompt>breedte</prompt><optionlist select="teaser_size"/></field>
    <field name="metatags" ftype="line"><prompt>redactionele aantekening</prompt></field>
    <field name="omschrijving" ftype="html" rows="20"><prompt>omschrijving</prompt></field>
+   <field name="omschrijving_eng" ftype="text" rows="10"><prompt>javacript</prompt></field>
    <!-- field name="bron" ftype="line" ><prompt>bron</prompt></field -->
    <field name="reageer" ftype="enum"><prompt>lijn onder teaser</prompt><optionlist select="ja_nee"/></field>
    <field name="creatiedatum" ftype="data"><prompt>creatiedatum</prompt></field>
