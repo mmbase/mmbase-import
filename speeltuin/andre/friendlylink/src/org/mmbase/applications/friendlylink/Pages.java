@@ -84,7 +84,7 @@ public class Pages extends FriendlyLink {
         
         String jspUrl = flink.toString();
         String friendlyUrl = "";
-        if (cache.hasURLEntry(jspUrl)) {
+        if (cache.hasJSPEntry(jspUrl)) {
             friendlyUrl = cache.getURLEntry(jspUrl);    // Get from cache
             if (log.isDebugEnabled()) log.debug("Processed from url cache: " + friendlyUrl);
             
@@ -95,7 +95,7 @@ public class Pages extends FriendlyLink {
             // remove homepage (= ROOT) from url
             if (friendlyUrl.indexOf(SEPARATOR) > 0) {
                 friendlyUrl = friendlyUrl.substring(friendlyUrl.indexOf(SEPARATOR) + 1, friendlyUrl.length());
-                if (log.isDebugEnabled()) log.debug("Removed '/home' (rootpage) from: " + friendlyUrl);
+                if (log.isDebugEnabled()) log.debug("Removed the homepage (rootpage) from: " + friendlyUrl);
             }
             
             flink = new StringBuffer();         // overwrite
