@@ -34,6 +34,7 @@ for (int i =0; i<shortyCnt;i++){
 		<mm:field name="titel" write="false" jspvar="teaser_titel" vartype="String">
 		<mm:field name="titel_zichtbaar" write="false" jspvar="teaser_tz" vartype="String">
 		<mm:field name="omschrijving" write="false" jspvar="teaser_omschrijving" vartype="String">
+		<mm:field name="omschrijving_eng" write="false" jspvar="teaser_javascript" vartype="String">
 		<mm:field name="reageer" write="false" jspvar="showline" vartype="String">
 		<% 
    	if(teaser_size==null) teaser_size = "1";
@@ -86,10 +87,9 @@ for (int i =0; i<shortyCnt;i++){
             %><mm:import id="hrefclass">teaser</mm:import><%
             linkTXT = readmoreTXT; 
             %><%@include file="../includes/validlink.jsp" 
-            %><mm:remove referid="hrefclass" /><%
-            if(showline.equals("1")) { 
-               %><div class="rule" style="margin-top:6px;margin-bottom:3px;"></div><% 
-            }
+            %><mm:remove referid="hrefclass" 
+            /><%= (teaser_javascript!=null && !teaser_javascript.trim().equals("") ? teaser_javascript : "" )
+            %><%= (showline.equals("1") ? "<div class='rule' style='margin-top:6px;margin-bottom:3px;'></div>" : "" ) %><%
          } else {
             int iImageWidth = 354;
             if(teaser_size.equals("0")||teaser_size.equals("2")){
@@ -148,7 +148,8 @@ for (int i =0; i<shortyCnt;i++){
          } %>
 			</td>
 		</mm:field>
-      </mm:field>
+    </mm:field>
+		</mm:field>
 		</mm:field>
 		</mm:field>
 		</mm:field>
