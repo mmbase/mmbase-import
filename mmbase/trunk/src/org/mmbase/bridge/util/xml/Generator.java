@@ -24,7 +24,7 @@ import org.mmbase.util.xml.XMLWriter;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.45 2006-11-28 20:12:49 michiel Exp $
+ * @version $Id: Generator.java,v 1.46 2006-11-29 08:07:20 michiel Exp $
  * @since  MMBase-1.6
  */
 public class Generator {
@@ -242,7 +242,7 @@ public class Generator {
             break;
         case Field.TYPE_DATETIME :
             // shoudlw e use ISO_8601_LOOSE here or ISO_8601_UTC?
-            field.appendChild(document.createTextNode(org.mmbase.util.Casting.ISO_8601_LOOSE.format(node.getDateValue(fieldDefinition.getName()))));
+            field.appendChild(document.createTextNode(org.mmbase.util.Casting.ISO_8601_LOOSE.get().format(node.getDateValue(fieldDefinition.getName()))));
             break;
         default :
             field.appendChild(document.createTextNode(node.getStringValue(fieldDefinition.getName())));
@@ -285,17 +285,11 @@ public class Generator {
      */
     public void add(List<org.mmbase.bridge.Node> nodes) {
         for (org.mmbase.bridge.Node n : nodes) {
-            add(n);
-        }
-    }
-
-    /**
-     * Adds a list of  Relation to the DOM Document.
-     * @param relations An MMBase bridge RelationList
-     */
-    public void add(RelationList<Relation> relations) {
-        for (org.mmbase.bridge.Relation r : relations) {
-            add(r);
+            if (n instanceof Relation) {
+                add((Relation) n);
+            } else {
+                add(n);
+            }
         }
     }
 
