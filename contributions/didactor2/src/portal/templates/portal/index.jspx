@@ -14,24 +14,26 @@
         <mm:treefile page="/css/base.css"  objectlist="$includePath">
           <link rel="stylesheet" type="text/css" href="${_}" />
         </mm:treefile>
+        <mm:treefile page="/portal/style/base.css"  objectlist="$includePath">
+          <link rel="stylesheet" type="text/css" href="${_}" />
+        </mm:treefile>s
+
       </head>
-      <body class="componentbody">
-        <div>
-          <mm:treeinclude page="/cockpit/applicationbar.jsp" objectlist="$includePath" referids="$referids"/>
+      <body class="portal">
+        <mm:treeinclude page="/cockpit/applicationbar.jsp" objectlist="$includePath" referids="$referids"/>
 
-          <c:forEach begin="1" end="3" var="col">
-            <div class="x${col}">
+        <c:forEach items="1,3,2" var="col">
+          <div class="column x${col}">
 
-              <mm:compare referid="col" value="1">
-                <mm:treeinclude page="/portal/menu.div.jspx" objectlist="$includePath" referids="$referids" />
-              </mm:compare>
+            <mm:compare referid="col" value="1">
+              <mm:treeinclude page="/portal/menu.div.jspx" objectlist="$includePath" referids="$referids" />
+            </mm:compare>
+            <h1>Column ${col}</h1>
 
-              <mm:treeinclude page="/portal/column.div.jspx" objectlist="$includePath" referids="$referids,col,referids,includePath" />
+            <mm:treeinclude page="/portal/column.div.jspx" objectlist="$includePath" referids="$referids,col,referids,includePath" />
 
-            </div>
-          </c:forEach>
-
-        </div>
+          </div>
+        </c:forEach>
       </body>
     </html>
   </mm:content>

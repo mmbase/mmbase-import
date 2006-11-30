@@ -1,0 +1,37 @@
+
+html, body.portal {
+    background-color: #2e72f8;
+    background-image: url("bg_body.gif");
+}
+
+div.x1 {
+    float: left;
+    width: 200px;
+    background-color: #2e72f8;
+}
+
+div.x1 div.menu {
+    background-color: #e2641b;
+}
+
+div.x2 {
+    padding-left: 220px;
+    padding-right: 240px;
+}
+
+div.x3 {
+    float: right;
+    width: 220px;
+    background-color: #2e72f8;
+    
+}
+
+div.column h1 {
+    padding-left: 1ex;
+    padding-right: 1ex;
+    color: white;
+    background-image: url("bg_title.jpg");
+    background-repeat: no-repeat;
+    background-color: #dc6f8c;
+
+}
