@@ -4,13 +4,13 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     >
   <jsp:output omit-xml-declaration="yes" />
-  <mm:import externid="provider" required="true" />
-  <mm:import externid="col" required="true" />
-  <mm:import externid="includePath" required="true" />
-  <mm:import externid="referids" required="true" />
-  <jsp:directive.include file="/shared/globalLang.jsp" />
 
-  <mm:content type="application/xhtml+xml" language="${language}">
+  <mm:import externid="provider"    required="true" />
+  <mm:import externid="col"         required="true" />
+  <mm:import externid="includePath" required="true" />
+  <mm:import externid="referids"    required="true" />
+
+  <mm:content type="application/xhtml+xml">
 
     <mm:node referid="provider">
       <mm:relatednodescontainer type="webblocks" role="blockposrel">
@@ -25,5 +25,6 @@
         </mm:relatednodes>
       </mm:relatednodescontainer>
     </mm:node>
+
   </mm:content>
 </mm:cloud>
