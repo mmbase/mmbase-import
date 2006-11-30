@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application name="DidactorPortal" maintainer="didactor.nl" version="1" auto-deploy="true">
+  <requirements>
+    <requires name="DidactorCore"      maintainer="didactor.nl" version="8" />
+    <requires name="DidactorComponent" maintainer="didactor.nl" version="2" />
+    <requires name="Resources"         maintainer="didactor.nl" version="2" />
+  </requirements>
+
+  <neededbuilderlist>
+    <builder maintainer="didactor.nl" version="1">webblocks</builder>
+    <builder maintainer="didactor.nl" version="1">articles</builder>
+    <builder maintainer="didactor.nl" version="1">blockposrel</builder>
+    <builder maintainer="didactor.nl" version="1">xyrel</builder>
+  </neededbuilderlist>
+
+  <neededreldeflist>
+    <reldef source="blockposrel" target="blockposrel" direction="bidirectional"
+            guisourcename="BlockPositionRelation" guitargetname="blockposrel"
+            builder="blockposrel"/>
+
+  </neededreldeflist>
+
+  <allowedrelationlist>
+    <relation from="providers" to="webblocks" type="blockposrel" />
+    <relation from="webblocks" to="articles"  type="posrel" />
+  </allowedrelationlist>
+  <datasourcelist>
+
+  </datasourcelist>
+
+  <relationsourcelist />
+
+  <contextsourcelist />
+
+  <description></description>
+
+  <install-notice></install-notice>
+</application>
