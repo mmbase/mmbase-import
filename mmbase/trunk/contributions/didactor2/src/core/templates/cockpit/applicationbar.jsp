@@ -1,7 +1,7 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<mm:cloud method="delegate" jspvar="cloud" >
-<%@include file="/shared/setImports.jsp" %>
+<mm:cloud method="delegate" authenticate="asis">
+<jsp:directive.include file="/shared/setImports.jsp" />
 <div class="applicationMenubar" style="white-space: nowrap">
   <div class="menuItemApplicationMenubar">
     <a title="<di:translate key="core.home" />" href="<mm:treefile page="/index.jsp" objectlist="$includePath" referids="provider?"/>" class="menubar"><di:translate key="core.home" /></a>
