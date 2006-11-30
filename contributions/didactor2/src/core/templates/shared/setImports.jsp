@@ -31,126 +31,9 @@
   </mm:notpresent>
 </mm:listnodescontainer>
 
-<%-- get the $servername --%>
-<mm:import id="servername"><%=request.getServerName() %></mm:import>
-<mm:import id="contextpath"><%=request.getContextPath() %></mm:import>
 
-<mm:import externid="provider" />
-<mm:isempty referid="provider">
-  <mm:remove referid="provider"/>
-</mm:isempty>
+<jsp:directive.include file="findProvider.jspx" />
 
-<%-- 
-  Step 1. If there is only one provider, it is easy to figure it out and set it
---%>
-<mm:notpresent referid="provider">
-  <%-- calculate the provider --%>
-  <mm:listnodescontainer type="providers">
-    <mm:size id="provider_size" write="false" />
-    <mm:compare referid="provider_size" value="1">
-      <mm:listnodes>
-        <mm:node id="provider" />
-      </mm:listnodes>
-    </mm:compare>
-
-    <%-- 
-      Step 2. More than 1 provider, but only 1 that has a related 'url' object
-      for the current servername
-    --%>
-    <mm:compare referid="provider_size" value="1" inverse="true">
-      <mm:listcontainer path="providers,urls" fields="urls.url,providers.number">
-        <mm:composite operator="or">
-          <mm:constraint operator="equal" field="urls.url" referid="servername" />       <!-- sounds like a string url, but well -->
-          <mm:constraint operator="equal" field="urls.url" value="http://$servername" /> <!-- an actual correct url ! -->
-          <mm:constraint operator="equal" field="urls.url" value="http://${servername}${contextpath}" /> <!-- more specific  -->
-        </mm:composite>
-        <mm:list>
-          <mm:field id="provider" name="providers.number" write="false" />
-        </mm:list>
-      </mm:listcontainer>
-    </mm:compare>
-    <mm:remove referid="provider_size" />
-  </mm:listnodescontainer>
-</mm:notpresent>
-
-
-<mm:import externid="education" />
-<mm:isempty referid="education">
-  <mm:remove referid="education" />
-</mm:isempty>
-
-<%-- 
-  Step 3: Multiple providers, so also multiple educations. Maybe we can find both by 
-  finding an URL that is related to an education which has the current hostname.
---%>
-<mm:notpresent referid="provider">
-  <mm:notpresent referid="education">
-    <mm:listcontainer path="providers,educations,related,urls" fields="urls.url,providers.number,educations.number">
-      <mm:composite operator="or">
-        <mm:constraint operator="equal" field="urls.url" referid="servername" />       <!-- sounds like a string url, but well -->
-        <mm:constraint operator="equal" field="urls.url" value="http://$servername" /> <!-- an actual correct url ! -->
-        <mm:constraint operator="equal" field="urls.url" value="http://${servername}${contextpath}" /> <!-- more specific  -->
-      </mm:composite>
-      <mm:size id="nr_educations" write="false" />
-      <mm:compare referid="nr_educations" value="1">
-        <mm:list>
-          <mm:field id="provider" name="providers.number" write="false" />
-          <mm:field id="education" name="educations.number" write="false" />
-        </mm:list>
-      </mm:compare>
-      <mm:remove referid="nr_educations" />
-    </mm:listcontainer>
-  </mm:notpresent>
-</mm:notpresent>
-
-<%--
-  Step 4: found a provider, if there is only one education then we can find it
---%>
-<mm:notpresent referid="education">
-  <%-- if there is only 1 education for this provider, then we can figure it out --%>  
-  <mm:present referid="provider">
-  <mm:node number="$provider" notfound="skipbody">
-    <mm:relatednodescontainer type="educations">
-      <mm:size id="educations_size" write="false" />
-      <mm:compare referid="educations_size" value="1">
-        <mm:relatednodes>
-          <mm:field id="education" write="false" name="number" />
-        </mm:relatednodes>
-      </mm:compare>
-      <mm:remove referid="educations_size" />
-    </mm:relatednodescontainer>
-  </mm:node>
-  </mm:present>
-</mm:notpresent>
-
-<%--
-  Step 5: found a provider, if there is only one education with a matching URL then we can find it
---%>
-<mm:present referid="provider">
-  <mm:notpresent referid="education">
-    <mm:listcontainer path="providers,educations,urls" fields="urls.url,providers.number,educations.number">
-      <mm:composite operator="or">
-        <mm:constraint operator="equal" field="urls.url" referid="servername" />       <!-- sounds like a string url, but well -->
-        <mm:constraint operator="equal" field="urls.url" value="http://$servername" /> <!-- an actual correct url ! -->
-        <mm:constraint operator="equal" field="urls.url" value="http://${servername}${contextpath}" /> <!-- more specific  -->
-      </mm:composite>
-      <mm:constraint operator="equal" field="providers.number" referid="provider" />
-      <mm:size id="nr_educations" write="false" />
-      <mm:compare referid="nr_educations" value="1">
-        <mm:list>
-          <mm:field id="education" name="educations.number" write="false" />
-        </mm:list>
-      </mm:compare>
-      <mm:remove referid="nr_educations" />
-    </mm:listcontainer>
-  </mm:notpresent>
-</mm:present>
-
-<mm:notpresent referid="provider">
-  <mm:write referid="servername" jspvar="sn">
-    <mm:log jspvar="log"><jsp:scriptlet>log.error("No provider found, perhaps no url " + sn + " was linked?");</jsp:scriptlet></mm:log>
-  </mm:write>
-</mm:notpresent>
 <%--
   Step 6: Based on the student and the education, try to find the class.
 --%>
@@ -172,14 +55,6 @@
 
 <mm:import externid="workgroup" />
 
-<mm:present referid="education">
-  <mm:import id="includePath"><mm:write referid="provider" />,<mm:write referid="education" /></mm:import>
-</mm:present>
-<mm:notpresent referid="education">
-  <mm:import id="includePath"><mm:write referid="provider" /></mm:import>
-</mm:notpresent>
-<mm:import id="referids">provider?,education?,class?,workgroup?</mm:import>
-<jsp:directive.include file="globalLang.jsp" />
 
 <%--
   Step 7: call the 'validateUser' (which can be overwritten for a specific implementation)
@@ -192,7 +67,7 @@
 </mm:import>
 
 <mm:isnotempty referid="validatemessage">
-  <mm:cloud method="delegate" jspvar="cloud" authenticate="didactor-logout"/>
+  <mm:cloud method="delegate"  authenticate="didactor-logout"/>
   <mm:redirect page="/declined.jsp">
     <mm:param name="referrer"><mm:treefile page="/index.jsp" objectlist="$includePath" referids="$referids" /></mm:param>
     <mm:param name="message"><mm:write referid="validatemessage" /></mm:param>
