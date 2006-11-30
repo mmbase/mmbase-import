@@ -29,7 +29,7 @@
           <jsp:directive.include file="../includes/component_link.jsp" />
         </mm:node>
 
-        <mm:treeinclude page="/education/prev_next.jsp" referids="includePath" objectlist="$includePath" />
+        <mm:treeinclude page="/education/prev_next.jsp" referids="includePath,provider" objectlist="$includePath" />
 
       </div>
     </body>
