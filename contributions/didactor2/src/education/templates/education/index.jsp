@@ -207,6 +207,8 @@
         frames['content'].location.href='<mm:treefile page="/education/flashpages/index.jsp" objectlist="$includePath" referids="$referids,fb_madetest?" escapeamps="false"/>'+'&learnobject='+number;
         break;
     }
+    frames['content'].scrollTop = '0px';
+    document.body.scrollTop = '0px';
     if (document.getElementById('content-'+currentnumber)) {
       document.getElementById('content-'+currentnumber).className = "selectedContent";
     }
