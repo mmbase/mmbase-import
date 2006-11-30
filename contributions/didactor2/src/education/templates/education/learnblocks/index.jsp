@@ -208,6 +208,9 @@
 
 <jsp:directive.include file="../includes/descriptionrel_link.jsp" />
 
+<mm:treeinclude page="/education/prev_next.jsp" referids="includePath" objectlist="$includePath" />
+
+
 </div>
 <mm:node number="$learnobject" jspvar="nodeLearnObject">
    <%@include file="../includes/component_link.jsp"%>

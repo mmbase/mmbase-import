@@ -28,14 +28,9 @@
         <mm:node number="$learnobject" jspvar="nodeLearnObject">
           <jsp:directive.include file="../includes/component_link.jsp" />
         </mm:node>
-        <p>
 
-          <a href="javascript:parent.previousContent();"><img src="<mm:treefile write="true" page="/gfx/icon_arrow_last.gif" objectlist="$includePath" />" width="14" height="14" border="0" title="<di:translate key="education.previous" />" alt="<di:translate key="education.previous" />" /></a>
-          <a href="javascript:parent.previousContent();" class="path"><di:translate key="education.previous" /></a>
+        <mm:treeinclude page="/education/prev_next.jsp" referids="includePath" objectlist="$includePath" />
 
-          <img src="gfx/spacer.gif" width="15" height="1" title="" alt="" /><a href="javascript:parent.nextContent();" class="path"><di:translate key="education.next" /></a>
-          <a href="javascript:parent.nextContent();"><img src="<mm:treefile write="true" page="/gfx/icon_arrow_next.gif" objectlist="$includePath" />" width="14" height="14" border="0" title="<di:translate key="education.next" />" alt="<di:translate key="education.next" />" /></a>
-        </p>
       </div>
     </body>
   </html>
