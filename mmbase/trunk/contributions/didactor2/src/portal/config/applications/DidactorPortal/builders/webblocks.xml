@@ -22,6 +22,7 @@
   </properties>
 
   <fieldlist>
+
     <field name="name">
       <descriptions>
         <description xml:lang="en">Name of the webblock</description>
@@ -52,7 +53,7 @@
         <guiname xml:lang="en">Description</guiname>
       </gui>
       <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <required value="true" />
+        <required value="false" />
         <maxLength value="2048" enforce="never"/>
       </datatype>
     </field>
@@ -73,13 +74,16 @@
         <guiname xml:lang="en">Type</guiname>
       </gui>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <!-- probably an enumeration -->
+        <entry value="0" display="Homepage" xml:lang="en" />
+        <entry value="1" display="Portallinks" xml:lang="en"/>
+        <entry value="6" display="News" xml:lang="en" />
+        <!-- 0-58 reserved, (EO Patmos framework) -->
+        <entry value="60" display="MMBase component" /><!-- MMBase 1.9 -->
       </datatype>
     </field>
 
     <field name="display">
       <descriptions>
-        <!-- descriptions per language as defined by ISO 639  -->
         <description xml:lang="en">
           Display-type of the webblock, is used to define the way this webblock 
           will be displayed on the website (eg. Low-Profile/High-Profile)
@@ -94,7 +98,10 @@
         <guiname xml:lang="en">Display Type</guiname>
       </gui>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <!-- probably an enumeration -->
+        <enumeration>
+          <entry value="0" display="low profile" />
+          <entry value="1" display="high profile" />
+        </enumeration>
       </datatype>
     </field>
 
