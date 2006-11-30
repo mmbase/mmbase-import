@@ -11,6 +11,9 @@ package org.mmbase.bridge.jsp.taglib.pageflow;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.JspException;
+
+import org.mmbase.util.Casting;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -23,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * A full description of this command can be found in the mmbase-taglib.xml file.
  *
  * @author Johannes Verelst
- * @version $Id: TreeFileTag.java,v 1.18 2006-07-17 15:38:47 johannes Exp $
+ * @version $Id: TreeFileTag.java,v 1.18.2.1 2006-11-30 11:22:09 michiel Exp $
  */
 
 public class TreeFileTag extends UrlTag {
@@ -38,6 +41,7 @@ public class TreeFileTag extends UrlTag {
         notFound = getAttribute(n);
     }
 
+
     public int doStartTag() throws JspTagException {
         if (page == Attribute.NULL) {
             throw new JspTagException("Attribute 'page' was not specified");
@@ -45,7 +49,27 @@ public class TreeFileTag extends UrlTag {
         if (objectList == Attribute.NULL) {
             throw new JspTagException("Attribute 'objectlist' was not specified");
         }
-        return super.doStartTag();
+        th.setCloud(getCloudVar());
+        super.doStartTag();
+        helper.setValue(new Comparable() {
+                            final TreeFileTag t = TreeFileTag.this;
+                            public String toString() {
+                                try {
+                                    String string = t.getUrl();
+                                    // this means that it is written to page by ${_} and that consequently there _must_ be a body.
+                                    // this is needed when body is not buffered.
+                                    haveBody();
+                                    return string;
+                                } catch (Throwable e){
+                                    return e.toString();
+                                }
+                            }
+                            public int compareTo(Object o) {
+                                return toString().compareTo(Casting.toString(o));
+                            }
+                        });
+        return EVAL_BODY; // lets try _not_ buffering the body.
+        // this may give unexpected results if ${_} is not used (or another tag calling 'haveBody')
     }
 
     protected String getPage() throws JspTagException {
@@ -62,8 +86,12 @@ public class TreeFileTag extends UrlTag {
         return treePage;
     }
 
+
+    public int doAfterBody() throws JspException {
+        return helper.doAfterBody();
+    }
+
     public int doEndTag() throws JspTagException {
-        th.setCloud(getCloudVar());
         // Let UrlTag do the rest
         int retval = super.doEndTag();
         return retval;
