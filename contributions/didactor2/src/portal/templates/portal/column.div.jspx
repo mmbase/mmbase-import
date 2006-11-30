@@ -1,0 +1,29 @@
+<mm:cloud
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    >
+  <jsp:output omit-xml-declaration="yes" />
+  <mm:import externid="provider" required="true" />
+  <mm:import externid="col" required="true" />
+  <mm:import externid="includePath" required="true" />
+  <mm:import externid="referids" required="true" />
+  <jsp:directive.include file="/shared/globalLang.jsp" />
+
+  <mm:content type="application/xhtml+xml" language="${language}">
+
+    <mm:node referid="provider">
+      <mm:relatednodescontainer type="webblocks" role="blockposrel">
+        <mm:constraint field="blockposrel.x" value="${col}" />
+        <mm:sortorder field="blockposrel.y" />
+        <mm:relatednodes>
+          <div class="${_node.name}">
+            <h1><mm:field name="description" /></h1>
+            <mm:relatednodes type="articles">
+            </mm:relatednodes>
+          </div>
+        </mm:relatednodes>
+      </mm:relatednodescontainer>
+    </mm:node>
+  </mm:content>
+</mm:cloud>
