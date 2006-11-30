@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<!DOCTYPE lists PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<lists>
+  <optionlist name="webblocktypes">
+    <option id="0">0. Homepage</option>
+    <option id="1">1. Navigatie</option>
+    <option id="2">2. Portallinks</option>
+    <option id="3">3. Identity</option>
+    <option id="4">4. Items</option>
+<!--<option id="5">5. Afleveringen</option>-->
+    <option id="6">6. Nieuws</option>
+    <option id="7">7. Archief</option>
+    <option id="8">8. Discussie</option>
+    <option id="9">9. Poll</option>
+    <option id="10">10. Top nieuws</option>
+    <option id="11">11. Banner</option>
+<!--<option id="12">12. Chat</option>-->
+<!--<option id="13">13. Live Stream</option>-->
+    <option id="14">14. Uitzendtijd Info</option>
+    <option id="15">15. Presentator</option>
+<!--<option id="16">16. Shop</option>-->
+    <option id="17">17. Algemene Programma Informatie</option>
+    <option id="18">18. Programma's</option>
+    <option id="19">19. Afleveringen/items</option>
+    <option id="20">20. ServiceTekst</option>
+<!-- <option id="21">21. TOPN</option> -->
+    <option id="22">22. Organisatie/adressen</option>
+    <option id="23">23. Service links</option>
+    <option id="24">24. Artikelbanner </option>
+    <option id="25">25. TijdschriftArtikel </option>
+    <option id="26">26. Vacatures </option>
+    <option id="27">27. FAQ</option>
+    <option id="28">28. Thema's</option>
+    <option id="29">29. Hoofdteaser </option>
+    <option id="30">30. AV-Teaser</option>
+    <option id="31">31. Testimonial</option>
+    <option id="33">33. Teaser </option>
+    <option id="34">34. Ronduit nieuws</option>
+    <option id="35">35. Nazorg</option>
+    <option id="36">36. Cursus</option>
+    <option id="37">37. Maps</option>
+    <option id="38">38. Weblog</option>
+    <option id="39">39. E-Card verzamelingen</option>
+    <option id="40">40. Reacties</option>
+    <option id="41">41. Weekthema</option>
+    <option id="42">42. Episode/item teaser</option>
+    <option id="43">43. Teaser naar URL (voor chat)</option>
+    <option id="44">44. Episode/item voor activiteiten</option>
+    <option id="45">45. Custom webblock</option>
+    <option id="51">51. Shop-in-shop</option>
+    <option id="52">52. shopTeaser</option>
+    <option id="53">53. shopProductGroup</option>
+    <option id="54">54. shopTop</option>
+    <option id="55">55. shopTicker</option>
+    <option id="56">56. shopSearchResults???</option>
+    <option id="58">58. digi-episodes </option>
+    <option id="59">59. embedded media </option>
+    <option id="70">70. topBar</option>
+  </optionlist>
+  <optionlist name="displaytypes">
+    <option id="0">0. Niet van toepassing</option>
+    <option id="1">1. TV High Profile</option>
+    <option id="2">2. TV Low Profile</option>
+    <option id="3">3. Radio High Profile</option>
+    <option id="4">4. Radio Low Profile</option>
+  </optionlist>
+  <optionlist name="showreruns">
+    <option id="0">0. Nee</option>
+    <option id="1">1. Ja</option>
+  </optionlist>
+</lists>
