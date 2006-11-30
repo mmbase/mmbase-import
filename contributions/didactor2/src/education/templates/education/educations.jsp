@@ -39,6 +39,8 @@
       <mm:param name="path_segment"></mm:param>
    </mm:treeinclude>
 </mm:node>
+
+        <mm:treeinclude page="/education/prev_next.jsp" referids="includePath,provider" objectlist="$includePath" />
 </div>
 </body>
 
