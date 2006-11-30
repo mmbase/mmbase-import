@@ -16,7 +16,7 @@ import nl.didactor.component.Component;
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  */
 public class GetValueTag extends CloudReferrerTag { 
-    private static Logger log = Logging.getLoggerInstance(GetValueTag.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(GetValueTag.class);
     private String component;
     private String name;
     private String[] arguments = new String[0];
@@ -67,7 +67,6 @@ public class GetValueTag extends CloudReferrerTag {
         }
 
         String value = null;
-        
         try {
             value = comp.getValue(name, getCloudVar(), getContextProvider().getContextContainer(), arguments);
         } catch (IllegalArgumentException e) {
