@@ -78,11 +78,21 @@ public class TranslateTag extends BodyTagSupport {
             // If no locale is given in the tag, then we look it up in the page context
             translateLocale = (String)pageContext.getAttribute("t_locale");
             if (translateLocale == null) {
+                // compatibility with other tags, like mm: and fmt:
+                Locale loc = (Locale) pageContext.getAttribute("javax.servlet.jsp.jstl.fmt.locale.request", PageContext.REQUEST_SCOPE);
+                if (loc != null) {
+                    translateLocale = loc.toString();
+                }
+            }
+            if (translateLocale == null) {
                 translateLocale = "";
             }
         } else {
             // If a locale is given in the tag, then we put it in the page context
             pageContext.setAttribute("t_locale", locale);
+            // compatibility with other tags, like mm: and fmt:
+            Locale loc = new Locale(locale);
+            pageContext.setAttribute("javax.servlet.jsp.jstl.fmt.locale.request", loc, PageContext.REQUEST_SCOPE);
             translateLocale = locale;
         }
         if (debug == null) {
