@@ -21,7 +21,6 @@
       </descriptions>
       <gui>
         <guiname xml:lang="nl">Voornaam</guiname>
-        <guiname xml:lang="us">FirstName</guiname>
         <guiname xml:lang="en">FirstName</guiname>
         <guiname xml:lang="fr">firstname</guiname>
       </gui>
@@ -44,7 +43,6 @@
       </descriptions>
       <gui>
         <guiname xml:lang="nl">Achternaam</guiname>
-        <guiname xml:lang="us">LastName</guiname>
         <guiname xml:lang="en">LastName</guiname>
         <guiname xml:lang="fr">nomDeFamille</guiname>
       </gui>
@@ -67,7 +65,6 @@
       </descriptions>
       <gui>
         <guiname xml:lang="nl">Email</guiname>
-        <guiname xml:lang="us">Email</guiname>
         <guiname xml:lang="en">Email</guiname>
         <guiname xml:lang="fr">Email</guiname>
       </gui>
@@ -90,7 +87,6 @@
       </descriptions>
       <gui>
         <guiname xml:lang="nl">Account</guiname>
-        <guiname xml:lang="us">Account</guiname>
         <guiname xml:lang="en">Account</guiname>
         <guiname xml:lang="fr">Compte</guiname>
       </gui>
@@ -113,7 +109,6 @@
       </descriptions>
       <gui>
         <guiname xml:lang="nl">Wachtwoord</guiname>
-        <guiname xml:lang="us">Password</guiname>
         <guiname xml:lang="en">Password</guiname>
       </gui>
       <editor>
@@ -134,7 +129,7 @@
       <descriptions>
       </descriptions>
       <gui>
-        <guiname>Opmerkingen</guiname>
+        <guiname xml:lang="nl">Opmerkingen</guiname>
         <guiname xml:lang="en">Remarks</guiname>
       </gui>
       <editor>
@@ -286,7 +281,7 @@
       </editor>
       <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
-        <name xml:lang="en">lastseen</name>
+        <name>lastseen</name>
         <type key="false" notnull="false" state="persistent">INTEGER</type>
       </db>
     </field>
@@ -325,7 +320,7 @@
       </editor>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
-        <name xml:lang="en">state</name>
+        <name>state</name>
         <type key="false" notnull="false" state="persistent">INTEGER</type>
       </db>
     </field>
