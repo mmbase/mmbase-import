@@ -1,0 +1,38 @@
+<mm:cloud
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    >
+
+  <jsp:directive.include file="/shared/findProvider.jspx" />
+
+  <mm:content type="application/xhtml+xml">
+    <html  xmlns="http://www.w3.org/1999/xhtml">
+      <head>
+        <title><di:translate key="education.learnenvironmenttitle" /></title>
+        <mm:treefile page="/css/base.css"  objectlist="$includePath">
+          <link rel="stylesheet" type="text/css" href="${_}" />
+        </mm:treefile>
+      </head>
+      <body class="componentbody">
+        <div>
+          <mm:treeinclude page="/cockpit/applicationbar.jsp" objectlist="$includePath" referids="$referids"/>
+
+          <c:forEach begin="1" end="3" var="col">
+            <div class="x${col}">
+
+              <mm:compare referid="col" value="1">
+                <mm:treeinclude page="/portal/menu.div.jspx" objectlist="$includePath" referids="$referids" />
+              </mm:compare>
+
+              <mm:treeinclude page="/portal/column.div.jspx" objectlist="$includePath" referids="$referids,col,referids,includePath" />
+
+            </div>
+          </c:forEach>
+
+        </div>
+      </body>
+    </html>
+  </mm:content>
+</mm:cloud>
