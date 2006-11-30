@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.96 2006-11-29 08:07:20 michiel Exp $
+ * @version $Id: Casting.java,v 1.97 2006-11-30 22:00:05 michiel Exp $
  */
 
 import java.util.*;
@@ -148,24 +148,24 @@ public class Casting {
             if (type.equals(Boolean.TYPE) || type.equals(Boolean.class)) {
                 return Boolean.valueOf(toBoolean(value));
             } else if (type.equals(Byte.TYPE) || type.equals(Byte.class)) {
-                return new Byte(toInteger(value).byteValue());
+                return Byte.valueOf(toInteger(value).byteValue());
             } else if (type.equals(Character.TYPE) || type.equals(Character.class)) {
                 String chars = toString(value);
                 if (chars.length() > 0) {
-                    return new Character(chars.charAt(0));
+                    return Character.valueOf(chars.charAt(0));
                 } else {
-                    return new Character(Character.MIN_VALUE);
+                    return Character.valueOf(Character.MIN_VALUE);
                 }
             } else if (type.equals(Short.TYPE) || type.equals(Short.class)) {
-                return new Short(toInteger(value).shortValue());
+                return Short.valueOf(toInteger(value).shortValue());
             } else if (type.equals(Integer.TYPE) || type.equals(Integer.class)) {
                 return toInteger(value);
             } else if (type.equals(Long.TYPE) || type.equals(Long.class)) {
-                return new Long(toLong(value));
+                return Long.valueOf(toLong(value));
             } else if (type.equals(Float.TYPE) || type.equals(Float.class)) {
-                return new Float(toFloat(value));
+                return Float.valueOf(toFloat(value));
             } else if (type.equals(Double.TYPE) || type.equals(Double.class)) {
-                return new Double(toDouble(value));
+                return Double.valueOf(toDouble(value));
             } else if (type.equals(Number.class)) {
                 Number res;
                 try {
@@ -174,7 +174,7 @@ public class Casting {
                     try {
                         res = new Double("" + value);
                     } catch (NumberFormatException nfe1) {
-                        res = new Integer(-1);
+                        res = Integer.valueOf(-1);
                     }
                 }
                 return res;
@@ -236,7 +236,7 @@ public class Casting {
 
     /**
      * Convert an object to a String.
-     * 'null' is converted to an empty string.
+     * <code>null</code> is converted to an empty string.
      * @param o the object to convert
      * @return the converted value as a <code>String</code>
      */
@@ -302,11 +302,11 @@ public class Casting {
     }
 
     /**
-     * Wraps it in an object with a toString as we desire. Casting can now be done with
+     * Wraps an object in another object with a toString as we desire. Casting can now be done with
      * toString() on the resulting object.
      *
      * This is used to make JSTL en EL behave similarly as mmbase taglib when writing objects to the
-     * page (taglib calls Casting, but they of course don't).
+     * page (taglib calls Casting, but JSTL of course doesn't).
      *
      * @todo  Not everything is wrapped (and can be unwrapped) already.
      * @param o        The object to be wrapped
@@ -336,7 +336,7 @@ public class Casting {
                     private static final long serialVersionUID = 1L; // increase this if object chages.
                     public String toString() {
                         long time = getTime();
-                        return time == -1 ? ("" + time) : ("" + time / 1000);
+                        return time == -1 ? "-1" : ("" + time / 1000);
                     }
                 };
         } else if (o instanceof org.w3c.dom.Node) {
@@ -415,11 +415,7 @@ public class Casting {
         } else if (o instanceof Map) {
             return new ArrayList(((Map)o).entrySet());
         } else {
-            List l = new ArrayList();
-            if (o != null) {
-                l.add(o);
-            }
-            return l;
+            return Collections.singletonList(o);
         }
     }
 
@@ -448,9 +444,7 @@ public class Casting {
         } else if (o instanceof Node) {
             return new NodeMap((Node)o);
         } else {
-            Map m = new HashMap();
-            m.put(o, o);
-            return m;
+            return Collections.singletonMap(o, o);
         }
     }
 
@@ -471,11 +465,7 @@ public class Casting {
         } else if (o instanceof Object[]) {
             return Arrays.asList((Object[]) o);
         } else {
-            List l = new ArrayList();
-            if (o != null) {
-                l.add(o);
-            }
-            return l;
+            return Collections.singletonList(o);
         }
     }
 
@@ -556,10 +546,11 @@ public class Casting {
     /**
      * Convert an object to an Node.
      * If the value is Numeric, the method
-     * tries to obtrain the object with that number.
-     * If it is a String, the method tries to obtain the object with
-     * that alias.
-     * All remaining situations return <code>null</code>.
+     * tries to obtain the mmbase object with that number.
+     * A <code>Map</code> returns a virtual <code>Node</code> representing the map, (a
+     * {@link MapNode}).
+     * All remaining situations return the node with the alias <code>i.toString()</code>, which can
+     * be <code>null</code> if no node which such an alias.
      * @param i the object to convert
      * @param cloud the Cloud to use for loading a node
      * @return the value as a <code>Node</code>
@@ -703,7 +694,7 @@ public class Casting {
         if (i instanceof Integer) {
             return (Integer)i;
         } else {
-            return new Integer(toInt(i));
+            return Integer.valueOf(toInt(i));
         }
     }
 
@@ -977,7 +968,6 @@ public class Casting {
             return convertStringToXML("<p>" + Encode.encode("ESCAPE_XML", value) + "</p>"); // Should _always_ be sax-compliant.
         } catch (java.io.IOException ioe) {
             String msg = "[io] not well formed xml: " + ioe.toString() + "\n" + Logging.stackTrace(ioe);
-            log.error(msg);
             throw new IllegalArgumentException(msg);
         }
     }
