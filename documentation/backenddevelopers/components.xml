@@ -72,7 +72,7 @@
 
     <note>
       <para>The configuration files for the mmbase core are stored in the
-      \mmbase\config\ directory. This file can therefore be found in
+      /mmbase/config/ directory. This file can therefore be found in
       /mmbase/config/components/core.xml. TODO: the files for the MMBase core
       should be moved to /mmbase/core/</para>
     </note>
@@ -184,10 +184,10 @@
       <para>The renderes that are supported in the present implementation are:
       head, body, and process.</para>
 
-      <para>The process renderer of block is called implicitly, if the head or
-      the body of that block is called. The process renderer of block will (1)
-      only be executed once per calling page and (2) only be executed after
-      the first changes to this block.</para>
+      <para>The process renderer of block is called implicitly, if the head or the body of that
+      block is called. The process renderer of block will (1) only be executed once per calling page
+      and (2) only be executed after the first changes to this block. The process render does not
+      produce any output.</para>
 
       <para>The renderer for body with mimetype="text/html" should render a
       div with class="TODO look at portlet css specification".</para>
@@ -203,6 +203,14 @@
       of the page, the present versions of Internet Explorer will prompt the
       user to download this page. Because of this IE bug it is better to use
       "text/html".</para>
+      <para>
+        TODO: of course the mime-type of a _component_ does not matter for the browser. Because you
+        will hardly have send the block unwrapped to a client.
+        So, the mimetype of block only servers as an indication of the type of content it produces.
+        application/xhtml+xml could indicate that besides HTML it is also valid _XML_, and is
+        therefore fit to be used in a page wich is application/xhtml+xml itself (but probably can be
+        used just as well in a text/html rendering page).
+      </para>
     </section>
 
     <section>
@@ -400,6 +408,7 @@ if (finalpage != null) {
 
           <listitem>
             <para>action parameters from query string</para>
+            <para>Action parameters correspond to our "processor" of a block</para>
           </listitem>
         </itemizedlist>
       </listitem>
