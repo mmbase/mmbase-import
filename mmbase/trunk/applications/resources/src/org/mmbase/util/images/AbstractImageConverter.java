@@ -13,7 +13,7 @@ import java.util.*;
 import java.io.*;
 
 /**
- * Abstract implemntatinof a Image
+ * Abstract implementation of a ImageConverter
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.9
