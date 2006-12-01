@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Nico Klasens
  * @author Jaco de Groot
- * @version $Id: ImageMagickImageConverter.java,v 1.3 2006-12-01 14:55:58 michiel Exp $
+ * @version $Id: ImageMagickImageConverter.java,v 1.4 2006-12-01 15:56:55 michiel Exp $
  */
 public class ImageMagickImageConverter extends AbstractImageConverter implements ImageConverter {
     private static final Logger log = Logging.getLoggerInstance(ImageMagickImageConverter.class);
@@ -143,7 +143,9 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
 
                 CommandLauncher launcher = new CommandLauncher("ConvertImage");
                 log.debug("Starting convert");
-                launcher.execute(converterPath, "-version");
+                List<String> cmd = new ArrayList<String>();
+                cmd.add("-version");
+                launcher.execute(converterPath, (String[]) cmd.toArray(EMPTY));
                 launcher.waitAndRead(outputStream, errorStream);
             } catch (ProcessException e) {
                 log.error("Convert test failed. " + converterPath + " (" + e.toString() + ") conv.root='" + converterRoot
