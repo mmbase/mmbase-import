@@ -4,9 +4,22 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     version="2.0">
   <jsp:directive.tag import="java.io.*,java.util.*,org.mmbase.util.images.*" />
+
+  <!-- Length of key to  produce. The generated key will be stored in the session attribute
+       'captchakey'
+       The location of the generated image is in 'captchafilename'.
+  -->
   <jsp:directive.attribute name="length"   type="java.lang.Integer" />
+
+  <!-- If template attribute is used, current node is an image, and temlate is used to generate the
+       background of the captcha image. Defaults to a white back-ground. -->
   <jsp:directive.attribute name="template" type="java.lang.String" />
+
+  <!-- When using template attribute, you may want to specifiy the fill color to. Defaults to black -->
   <jsp:directive.attribute name="fill"     type="java.lang.String" />
+
+  <!-- If the key is stated explicitely, no new key is generated, but this given one is shown. -->
+  
   <jsp:directive.attribute name="key"      type="java.lang.String" />
   <jsp:declaration>
     static final byte[] gifBytes = new byte[]{
