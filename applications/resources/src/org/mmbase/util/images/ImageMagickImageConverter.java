@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Nico Klasens
  * @author Jaco de Groot
- * @version $Id: ImageMagickImageConverter.java,v 1.2 2006-12-01 14:14:01 michiel Exp $
+ * @version $Id: ImageMagickImageConverter.java,v 1.3 2006-12-01 14:55:58 michiel Exp $
  */
 public class ImageMagickImageConverter extends AbstractImageConverter implements ImageConverter {
     private static final Logger log = Logging.getLoggerInstance(ImageMagickImageConverter.class);
@@ -254,7 +254,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
                 parsedCommands.format = sourceFormat;
             }
             if (log.isDebugEnabled()) {
-                log.debug("Converting image (" + pict.length + " bytes)  to '" + parsedCommands.format + "' ('" + parsedCommands.args + "') with cwd = " + parsedCommands.cwd);
+                log.debug("Converting image (" + input.length + " bytes)  to '" + parsedCommands.format + "' ('" + parsedCommands.args + "') with cwd = " + parsedCommands.cwd);
             }
             ByteArrayInputStream in = new ByteArrayInputStream(input);
             ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -375,13 +375,16 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
                             cmd = "text " + cmd.substring(0, secondcomma) + " 'Could not create temporary file for text.'";
                         }
                     } else {
+                        cmds.add("-encoding");
+                        cmds.add("unicode");
                         cmds.add("-annotate");
                         try {
                             File tempFile = File.createTempFile("mmbase_image_text_", null);
                             tempFile.deleteOnExit();
-                            Encode encoder = new Encode("ESCAPE_SINGLE_QUOTE");
-                            String text = cmd.substring(secondcomma + 1);
                             FileOutputStream tempFileOutputStream = new FileOutputStream(tempFile);
+                            Encode encoder = new Encode("ESCAPE_SINGLE_QUOTE");
+                            String text =  cmd.substring(secondcomma + 1);
+                            log.debug("Using '" + text + "'");
                             tempFileOutputStream.write(encoder.decode(text.substring(1, text.length() - 1)).getBytes("UTF-8"));
                             tempFileOutputStream.close();
                             cmds.add("+" + cmd.substring(0, firstcomma) + "+" + cmd.substring(firstcomma + 1, secondcomma));
@@ -666,10 +669,10 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
             org.mmbase.util.ThreadPools.jobsExecutor.execute(copier2);
 
             copier.waitFor();
-            log.info("Ready copying stuff to socket");
+            log.debug("Ready copying stuff to socket");
             originalStream.close();
             socket.shutdownOutput();
-            log.info("Waiting for response");
+            log.debug("Waiting for response");
             copier2.waitFor();
             socket.close();
         } catch (IOException ioe) {
