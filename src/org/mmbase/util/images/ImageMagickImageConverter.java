@@ -11,6 +11,7 @@ package org.mmbase.util.images;
 
 import java.util.*;
 import java.io.*;
+import java.util.regex.*;
 
 import org.mmbase.util.externalprocess.CommandLauncher;
 import org.mmbase.util.externalprocess.ProcessException;
@@ -26,10 +27,16 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Nico Klasens
  * @author Jaco de Groot
- * @version $Id: ImageMagickImageConverter.java,v 1.4 2006-06-19 14:15:13 nklasens Exp $
+ * @version $Id: ImageMagickImageConverter.java,v 1.4.2.1 2006-12-01 15:23:42 michiel Exp $
  */
 public class ImageMagickImageConverter implements ImageConverter {
     private static final Logger log = Logging.getLoggerInstance(ImageMagickImageConverter.class);
+
+    private static final Pattern IM_VERSION_PATTERN = Pattern.compile("(?is).*?\\s(\\d+)\\.(\\d+)\\.(\\d+)\\s.*");
+
+    private int imVersionMajor = 6;
+    private int imVersionMinor = 2;
+    private int imVersionPatch = 4;
 
     // Currently only ImageMagick works, this are the default value's
     private static String converterPath = "convert"; // in the path.
@@ -101,48 +108,32 @@ public class ImageMagickImageConverter implements ImageConverter {
         // TODO: research how we tell convert, that is should use the System.getProperty(); with respective the value's 'java.io.tmpdir', 'user.dir'
         //       this, since convert writes at this moment inside the 'user.dir'(working dir), which isnt writeable all the time.
 
-        CommandLauncher launcher = new CommandLauncher("ConvertImage");
         ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
+            CommandLauncher launcher = new CommandLauncher("ConvertImage");
             log.debug("Starting convert");
-            launcher.execute(converterPath);
-
+            List cmd = new ArrayList();
+            cmd.add("-version");
+            launcher.execute(converterPath, (String[]) cmd.toArray(new String[] {}));
             launcher.waitAndRead(outputStream, errorStream);
-
-            // make stringtokenizer, with nextline as new token..
-            StringTokenizer tokenizer =
-                new StringTokenizer(outputStream.toString(), "\n\r");
-            if (tokenizer.hasMoreTokens()) {
-                log.service("Will use: " + converterPath + ", " + tokenizer.nextToken());
-            } else {
-                String result = outputStream.toString();
-                if (result == null || "".equals(result)) {
-                    result = errorStream.toString();
-                }
-                
-                log.error( "converter from location " + converterPath + ", gave strange result: " + result 
-                           + "conv.root='" + converterRoot + "' conv.command='" + converterCommand + "'");
-            }
         } catch (ProcessException e) {
             log.error("Convert test failed. " + converterPath + " (" + e.toString() + ") conv.root='" + converterRoot
-                      + "' conv.command='" + converterCommand + "'");
-            log.error(Logging.stackTrace(e));
+                      + "' conv.command='" + converterCommand + "'", e);
         }
-        finally {
-            try {
-                if (outputStream != null) {
-                    outputStream.close();
-                }
-            } catch (IOException ioe) {
-            }
-            try {
-                if (errorStream != null) {
-                    errorStream.close();
-                }
-            }
-            catch (IOException ioe) {
-            }
+
+        String imOutput = outputStream.toString();
+        Matcher m = IM_VERSION_PATTERN.matcher(imOutput);
+        if (m.matches()) {
+            imVersionMajor = Integer.parseInt(m.group(1));
+            imVersionMinor = Integer.parseInt(m.group(2));
+            imVersionPatch = Integer.parseInt(m.group(3));
+            log.info("Found ImageMagick version " + imVersionMajor + "." + imVersionMinor + "." + imVersionPatch);
+        } else {
+            log.error( "converter from location " + converterPath + ", gave strange result: " + imOutput
+                       + "conv.root='" + converterRoot + "' conv.command='" + converterCommand + "'");
+            log.info("Supposing ImageMagick version " + imVersionMajor + "." + imVersionMinor + "." + imVersionPatch);
+
         }
 
         // Cant do more checking then this, i think....
@@ -289,19 +280,41 @@ public class ImageMagickImageConverter implements ImageConverter {
                 } else if (type.equals("text")) {
                     int firstcomma = cmd.indexOf(',');
                     int secondcomma = cmd.indexOf(',', firstcomma + 1);
-                    type = "draw";
-                    try {
-                        File tempFile = File.createTempFile("mmbase_image_text_", null);
-                        tempFile.deleteOnExit();
-                        Encode encoder = new Encode("ESCAPE_SINGLE_QUOTE");
-                        String text = cmd.substring(secondcomma + 1);
-                        FileOutputStream tempFileOutputStream = new FileOutputStream(tempFile);
-                        tempFileOutputStream.write(encoder.decode(text.substring(1, text.length() - 1)).getBytes("UTF-8"));
-                        tempFileOutputStream.close();
-                        cmd = "text " + cmd.substring(0, secondcomma) + " '@" + tempFile.getPath() + "'";
-                    } catch (IOException e) {
-                        log.error("Could not create temporary file for text: " + e.toString());
-                        cmd = "text " + cmd.substring(0, secondcomma) + " 'Could not create temporary file for text.'";
+                    if (imVersionMajor < 6) {
+                        type = "draw";
+                        try {
+                            File tempFile = File.createTempFile("mmbase_image_text_", null);
+                            tempFile.deleteOnExit();
+                            Encode encoder = new Encode("ESCAPE_SINGLE_QUOTE");
+                            String text = cmd.substring(secondcomma + 1);
+                            FileOutputStream tempFileOutputStream = new FileOutputStream(tempFile);
+                            tempFileOutputStream.write(encoder.decode(text.substring(1, text.length() - 1)).getBytes("UTF-8"));
+                            tempFileOutputStream.close();
+                            cmd = "text " + cmd.substring(0, secondcomma) + " '@" + tempFile.getPath() + "'";
+                        } catch (IOException e) {
+                            log.error("Could not create temporary file for text: " + e.toString());
+                            cmd = "text " + cmd.substring(0, secondcomma) + " 'Could not create temporary file for text.'";
+                        }
+                    } else {
+                        cmds.add("-encoding");
+                        cmds.add("unicode");
+                        cmds.add("-annotate");
+                        try {
+                            File tempFile = File.createTempFile("mmbase_image_text_", null);
+                            tempFile.deleteOnExit();
+                            FileOutputStream tempFileOutputStream = new FileOutputStream(tempFile);
+                            Encode encoder = new Encode("ESCAPE_SINGLE_QUOTE");
+                            String text =  cmd.substring(secondcomma + 1);
+                            log.debug("Using '" + text + "'");
+                            tempFileOutputStream.write(encoder.decode(text.substring(1, text.length() - 1)).getBytes("UTF-8"));
+                            tempFileOutputStream.close();
+                            cmds.add("+" + cmd.substring(0, firstcomma) + "+" + cmd.substring(firstcomma + 1, secondcomma));
+                            cmds.add("@" + tempFile.getPath());
+                        } catch (IOException e) {
+                            log.error("Could not create temporary file for text: " + e.toString());
+                            cmd =  cmd.substring(0, secondcomma) + " 'Could not create temporary file for text.'";
+                        }
+                        continue;
                     }
                 } else if (type.equals("draw")) {
                     //try {
