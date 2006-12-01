@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util.images;
 
 import java.util.*;
+import java.util.regex.*;
 import java.io.*;
 
 import org.mmbase.util.externalprocess.CommandLauncher;
@@ -26,10 +27,16 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Nico Klasens
  * @author Jaco de Groot
- * @version $Id: ImageMagickImageConverter.java,v 1.1 2006-10-25 14:10:55 michiel Exp $
+ * @version $Id: ImageMagickImageConverter.java,v 1.2 2006-12-01 14:14:01 michiel Exp $
  */
 public class ImageMagickImageConverter extends AbstractImageConverter implements ImageConverter {
     private static final Logger log = Logging.getLoggerInstance(ImageMagickImageConverter.class);
+
+    private static final Pattern IM_VERSION_PATTERN = Pattern.compile("(?is).*?\\s(\\d+)\\.(\\d+)\\.(\\d+)\\s.*");
+
+    private int imVersionMajor = 6;
+    private int imVersionMinor = 2;
+    private int imVersionPatch = 4;
 
     // Currently only ImageMagick works, this are the default value's
     private String converterPath = "convert"; // in the path.
@@ -128,48 +135,69 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
         // TODO: research how we tell convert, that is should use the System.getProperty(); with respective the value's 'java.io.tmpdir', 'user.dir'
         //       this, since convert writes at this moment inside the 'user.dir'(working dir), which isnt writeable all the time.
 
-        CommandLauncher launcher = new CommandLauncher("ConvertImage");
         ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        try {
-            log.debug("Starting convert");
-            launcher.execute(converterPath);
+        switch (method) {
+        case METHOD_LAUNCHER: {
+            try {
 
-            launcher.waitAndRead(outputStream, errorStream);
-
-            // make stringtokenizer, with nextline as new token..
-            StringTokenizer tokenizer =
-                new StringTokenizer(outputStream.toString(), "\n\r");
-            if (tokenizer.hasMoreTokens()) {
-                log.service("Will use: " + converterPath + ", " + tokenizer.nextToken());
-            } else {
-                String result = outputStream.toString();
-                if (result == null || "".equals(result)) {
-                    result = errorStream.toString();
-                }
-
-                log.error( "converter from location " + converterPath + ", gave strange result: " + result
-                           + "conv.root='" + converterRoot + "' conv.command='" + converterCommand + "'");
+                CommandLauncher launcher = new CommandLauncher("ConvertImage");
+                log.debug("Starting convert");
+                launcher.execute(converterPath, "-version");
+                launcher.waitAndRead(outputStream, errorStream);
+            } catch (ProcessException e) {
+                log.error("Convert test failed. " + converterPath + " (" + e.toString() + ") conv.root='" + converterRoot
+                          + "' conv.command='" + converterCommand + "'", e);
             }
-        } catch (ProcessException e) {
-            log.error("Convert test failed. " + converterPath + " (" + e.toString() + ") conv.root='" + converterRoot
-                      + "' conv.command='" + converterCommand + "'");
-            log.error(Logging.stackTrace(e));
+            break;
         }
-        finally {
+        case METHOD_CONNECTOR: {
             try {
-                if (outputStream != null) {
-                    outputStream.close();
+                java.net.Socket socket = new java.net.Socket(host, port);
+                final OutputStream os = socket.getOutputStream();
+                os.write(0); // version
+                final ObjectOutputStream stream = new ObjectOutputStream(os);
+                List<String> cmd = new ArrayList<String>();
+                cmd.add(converterPath);
+                cmd.add("-version");
+                stream.writeObject(((String[]) cmd.toArray(EMPTY)));
+                stream.writeObject(EMPTY);
+                Copier copier = new Copier(new ByteArrayInputStream(new byte[0]), os, ".file -> socket");
+                org.mmbase.util.ThreadPools.jobsExecutor.execute(copier);
+
+                Copier copier2 = new Copier(socket.getInputStream(), outputStream, ";socket -> cout");
+                org.mmbase.util.ThreadPools.jobsExecutor.execute(copier2);
+
+                copier.waitFor();
+                socket.shutdownOutput();
+                copier2.waitFor();
+                socket.close();
+            } catch (Exception ioe) {
+                log.error("" + host + ":" + port);
+                try {
+                    errorStream.write(("" + host + ":" + port).getBytes());
+                    errorStream.flush();
+                } catch (Exception e) {
+                    log.error(e);
                 }
-            } catch (IOException ioe) {
             }
-            try {
-                if (errorStream != null) {
-                    errorStream.close();
-                }
-            }
-            catch (IOException ioe) {
-            }
+            break;
+        }
+        default: log.error("unknown method " + method);
+        }
+
+        String imOutput = outputStream.toString();
+        Matcher m = IM_VERSION_PATTERN.matcher(imOutput);
+        if (m.matches()) {
+            imVersionMajor = Integer.parseInt(m.group(1));
+            imVersionMinor = Integer.parseInt(m.group(2));
+            imVersionPatch = Integer.parseInt(m.group(3));
+            log.info("Found ImageMagick version " + imVersionMajor + "." + imVersionMinor + "." + imVersionPatch);
+        } else {
+            log.error( "converter from location " + converterPath + ", gave strange result: " + imOutput
+                       + "conv.root='" + converterRoot + "' conv.command='" + converterCommand + "'");
+            log.info("Supposing ImageMagick version " + imVersionMajor + "." + imVersionMinor + "." + imVersionPatch);
+
         }
 
         // Cant do more checking then this, i think....
@@ -330,20 +358,40 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
                 } else if (type.equals("text")) {
                     int firstcomma = cmd.indexOf(',');
                     int secondcomma = cmd.indexOf(',', firstcomma + 1);
-                    type = "draw";
-                    try {
-                        File tempFile = File.createTempFile("mmbase_image_text_", null);
-                        tempFile.deleteOnExit();
-                        Encode encoder = new Encode("ESCAPE_SINGLE_QUOTE");
-                        String text = cmd.substring(secondcomma + 1);
-                        FileOutputStream tempFileOutputStream = new FileOutputStream(tempFile);
-                        tempFileOutputStream.write(encoder.decode(text.substring(1, text.length() - 1)).getBytes("UTF-8"));
-                        tempFileOutputStream.close();
-                        cmd = "text " + cmd.substring(0, secondcomma) + " '@" + tempFile.getPath() + "'";
-                        result.temporaryFiles.add(tempFile);
-                    } catch (IOException e) {
-                        log.error("Could not create temporary file for text: " + e.toString());
-                        cmd = "text " + cmd.substring(0, secondcomma) + " 'Could not create temporary file for text.'";
+                    if (imVersionMajor < 6) {
+                        type = "draw";
+                        try {
+                            File tempFile = File.createTempFile("mmbase_image_text_", null);
+                            tempFile.deleteOnExit();
+                            Encode encoder = new Encode("ESCAPE_SINGLE_QUOTE");
+                            String text = cmd.substring(secondcomma + 1);
+                            FileOutputStream tempFileOutputStream = new FileOutputStream(tempFile);
+                            tempFileOutputStream.write(encoder.decode(text.substring(1, text.length() - 1)).getBytes("UTF-8"));
+                            tempFileOutputStream.close();
+                            cmd = "text " + cmd.substring(0, secondcomma) + " '@" + tempFile.getPath() + "'";
+                            result.temporaryFiles.add(tempFile);
+                        } catch (IOException e) {
+                            log.error("Could not create temporary file for text: " + e.toString());
+                            cmd = "text " + cmd.substring(0, secondcomma) + " 'Could not create temporary file for text.'";
+                        }
+                    } else {
+                        cmds.add("-annotate");
+                        try {
+                            File tempFile = File.createTempFile("mmbase_image_text_", null);
+                            tempFile.deleteOnExit();
+                            Encode encoder = new Encode("ESCAPE_SINGLE_QUOTE");
+                            String text = cmd.substring(secondcomma + 1);
+                            FileOutputStream tempFileOutputStream = new FileOutputStream(tempFile);
+                            tempFileOutputStream.write(encoder.decode(text.substring(1, text.length() - 1)).getBytes("UTF-8"));
+                            tempFileOutputStream.close();
+                            cmds.add("+" + cmd.substring(0, firstcomma) + "+" + cmd.substring(firstcomma + 1, secondcomma));
+                            cmds.add("@" + tempFile.getPath());
+                            result.temporaryFiles.add(tempFile);
+                        } catch (IOException e) {
+                            log.error("Could not create temporary file for text: " + e.toString());
+                            cmd =  cmd.substring(0, secondcomma) + " 'Could not create temporary file for text.'";
+                        }
+                        continue;
                     }
                 } else if (type.equals("draw")) {
                     //try {
@@ -512,10 +560,10 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
             case METHOD_CONNECTOR: connectorConvertImage(cmd, env, originalStream, imageStream, errorStream); break;
             default: log.error("unknown method " + method);
             }
-            
+
             log.debug("retrieved all information");
             byte[] error = errorStream.toByteArray();
-            
+
             if (error.length >  0) {
                 log.error("Imagemagick conversion did not succeed. Returning null.");
                 String errorMessage = errorStream.toString();
@@ -631,6 +679,16 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
             throw ioe;
         }
 
+    }
+
+    public static void main(String[] args) throws Exception {
+        String s = new BufferedReader(new InputStreamReader((System.in))).readLine();
+        Matcher m = IM_VERSION_PATTERN.matcher(s);
+        if (m.matches()) {
+            System.out.println("Imagemagick version " + m.group(1) + " " + m.group(2) + " " + m.group(3));
+        } else {
+            System.out.println("Could not find");
+        }
     }
 
 }
