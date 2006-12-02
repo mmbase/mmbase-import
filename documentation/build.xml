@@ -1,5 +1,5 @@
 <!--
-  $Id: build.xml,v 1.38 2006-12-02 09:20:45 michiel Exp $
+  $Id: build.xml,v 1.39 2006-12-02 09:37:25 michiel Exp $
 -->
 <project name="MMBase-Documentation" default="documentation" basedir=".">
 
@@ -244,8 +244,9 @@
 
     <!-- needed jars for fop-task         -->
     <path id="fop.classpath">
-      <pathelement location="${fop.avalon.jar}"/>
-      <pathelement location="${fop.batik.jar}"/>
+      <fileset dir="${fop.exp}/lib">
+        <include name="*.jar"/>
+      </fileset>
       <pathelement location="${fop.jar}"/>
       <pathelement location="${jai.codec.jar}"/>
       <pathelement location="${jai.core.jar}"/>
