@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.161.2.1 2006-09-07 12:46:22 pierre Exp $
+ * @version $Id: BasicCloud.java,v 1.161.2.2 2006-12-02 17:44:32 nklasens Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable, Serializable {
 
@@ -172,7 +172,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
             throw new BridgeException("Couldn't find the MMBaseCop. Perhaps your MMBase did not start up correctly; check application server and mmbase logs ");
         }
         log.debug("Setting up cloud object");
-        locale = new Locale(mmb.getLanguage(), "");
+        locale = mmb.getLocale();
 
         // generate an unique id for this instance...
         account = "U" + uniqueId();
