@@ -52,11 +52,11 @@ public class SearchUtil {
         return findNodeList(cloud, managerName, null, null, null, null);
     }
     
-    public static NodeList findNodeList(Cloud cloud, String managerName, String fieldname, String value) {
+    public static NodeList findNodeList(Cloud cloud, String managerName, String fieldname, Object value) {
         return findNodeList(cloud, managerName, fieldname, value, null, null);
     }
 
-    public static NodeList findNodeList(Cloud cloud, String managerName, String fieldname, String value, String sortName) {
+    public static NodeList findNodeList(Cloud cloud, String managerName, String fieldname, Object value, String sortName) {
         return findNodeList(cloud, managerName, fieldname, value, sortName, null); 
     }
 
@@ -66,10 +66,6 @@ public class SearchUtil {
 
     public static NodeList findOrderedNodeList(Cloud cloud, String managerName, String sortName, String sortDirection) {
         return findNodeList(cloud, managerName, null, null, sortName, sortDirection);
-    }
-
-    public static NodeList findNodeList(Cloud cloud, String managerName, String fieldname, String value, String sortName, String sortDirection) {
-        return findNodeList(cloud, managerName, fieldname, value, sortName, sortDirection);
     }
     
     public static NodeList findNodeList(Cloud cloud, String managerName, String fieldname, Object value, String sortName, String sortDirection) {
@@ -99,11 +95,11 @@ public class SearchUtil {
         return findRelatedNode(parent, managerName, role, null, null, null, null); 
     }
     
-    public static Node findRelatedNode(Node parent, String managerName, String role, String fieldname, String value) {
+    public static Node findRelatedNode(Node parent, String managerName, String role, String fieldname, Object value) {
         return findRelatedNode(parent, managerName, role, fieldname, value, null, null); 
     }
 
-    public static Node findRelatedNode(Node parent, String managerName, String role, String fieldname, String value, String sortName) {
+    public static Node findRelatedNode(Node parent, String managerName, String role, String fieldname, Object value, String sortName) {
         return findRelatedNode(parent, managerName, role, fieldname, value, sortName, null); 
     }
 
@@ -115,7 +111,7 @@ public class SearchUtil {
         return findRelatedNode(parent, managerName, role, null, null, sortName, sortDirection); 
     }
     
-    public static Node findRelatedNode(Node parent, String managerName, String role, String fieldname, String value, String sortName, String sortDirection) {
+    public static Node findRelatedNode(Node parent, String managerName, String role, String fieldname, Object value, String sortName, String sortDirection) {
         NodeList list = findRelatedNodeList(parent, managerName, role, fieldname, value, sortName, sortDirection); 
         if (list.size() > 0) {
             return list.getNode(0); 
@@ -127,11 +123,11 @@ public class SearchUtil {
         return findRelatedNodeList(parent, managerName, role, null, null, null, null); 
     }
     
-    public static NodeList findRelatedNodeList(Node parent, String managerName, String role, String fieldname, String value) {
+    public static NodeList findRelatedNodeList(Node parent, String managerName, String role, String fieldname, Object value) {
         return findRelatedNodeList(parent, managerName, role, fieldname, value, null, null); 
     }
 
-    public static NodeList findRelatedNodeList(Node parent, String managerName, String role, String fieldname, String value, String sortName) {
+    public static NodeList findRelatedNodeList(Node parent, String managerName, String role, String fieldname, Object value, String sortName) {
         return findRelatedNodeList(parent, managerName, role, fieldname, value, sortName, null); 
     }
 
@@ -143,24 +139,20 @@ public class SearchUtil {
         return findRelatedNodeList(parent, managerName, role, null, null, sortName, sortDirection); 
     }
     
-    public static NodeList findRelatedNodeList(Node parent, String managerName, String role, String fieldname, String value, String sortName, String sortDirection) {
+    public static NodeList findRelatedNodeList(Node parent, String managerName, String role, String fieldname, Object value, String sortName, String sortDirection) {
         NodeQuery query = createRelatedNodeListQuery(parent, managerName, role, fieldname, value, sortName, sortDirection);
         return query.getNodeManager().getList(query);
     }
 
-    public static NodeList findRelatedNodeList(Node parent, String managerName, String role, String fieldname, String value, String sortName, String sortDirection, String searchdir) {
+    public static NodeList findRelatedNodeList(Node parent, String managerName, String role, String fieldname, Object value, String sortName, String sortDirection, String searchdir) {
         NodeQuery query = createRelatedNodeListQuery(parent, managerName, role, fieldname, value, sortName, sortDirection, searchdir);
         return query.getNodeManager().getList(query);
     }
     
-    public static NodeQuery createRelatedNodeListQuery(Node parent, String managerName, String role, String fieldname, String value, String sortName, String sortDirection) {
+    public static NodeQuery createRelatedNodeListQuery(Node parent, String managerName, String role, String fieldname, Object value, String sortName, String sortDirection) {
         return createRelatedNodeListQuery(parent, managerName, role, fieldname, value, sortName, sortDirection, DESTINATION);
     }
 
-    public static NodeQuery createRelatedNodeListQuery(Node parent, String managerName, String role, String fieldname, String value, String sortName, String sortDirection, String searchdir) {
-        return createRelatedNodeListQuery(parent, managerName, role, fieldname, value, sortName, sortDirection, searchdir);
-    }
-    
     public static NodeQuery createRelatedNodeListQuery(Node parent, String managerName, String role, String fieldname, Object value, String sortName, String sortDirection, String searchdir) {
         NodeQuery query = createRelatedNodeListQuery(parent, managerName, role, searchdir);
 
