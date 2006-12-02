@@ -186,6 +186,34 @@
 	--%>
 	<h4>Bugtracker</h4>
 	<p><a href="/browseproject">Bugtracker &raquo;&raquo;</a></p>
+	<p>Recently solved:</p>
+	<mm:formatter escape="none">
+	  <mm:include cite="true" page="http://www.mmbase.org/jira/secure/IssueNavigator.jspa">
+	    <mm:param name="view">rss</mm:param>
+	    <mm:param name="pid">10000</mm:param>
+	    <mm:param name="update:after"><mm:time time="now - 1 week" format="d/MM/yy" /></mm:param>
+	    <mm:param name="status">5</mm:param>
+	    <mm:param name="status">6</mm:param>
+	    <mm:param name="sorter/field">updated</mm:param>
+	    <mm:param name="sorter/order">DESC</mm:param>
+	    <mm:param name="tempMap">5</mm:param>
+	    <mm:param name="decorator">none</mm:param>
+	    <mm:param name="reset">true</mm:param>
+	  </mm:include>
+	  <mm:xslt>
+	    <xsl:template match="channel">
+	      <ul>
+		<xsl:for-each select="item">
+		  <xsl:if test="position() &lt; 6">
+		    <li>
+		      <a href="{link}"><xsl:value-of select="title" /></a>
+		    </li>
+		  </xsl:if>
+		</xsl:for-each>
+	      </ul>
+	    </xsl:template>
+	  </mm:xslt>
+	</mm:formatter>
 <%-- ### /search, agenda, dev mail ? ### --%>
 </td>
 </tr>
