@@ -6,7 +6,7 @@
 # If you'd like to customize some of the settings, create a build.properties in
 # the root of this directory.
 #
-# $Id: build.properties.default,v 1.10 2006-11-16 11:03:04 michiel Exp $
+# $Id: build.properties.default,v 1.11 2006-12-02 09:20:45 michiel Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -44,8 +44,8 @@ docbook-xsl.exp=${expand.dir}/${docbook-xsl.version}
 # ---- Fop, version 0.20.5 ---- 
 fop.version=fop-0.20.5
 fop.file=${fop.version}-bin.tar.gz
-fop.home=${download.dir}/${fop.version}
 fop.loc=http://www.apache.org/dist/xml/fop/${fop.file}
+fop.dest=${download.dir}/${fop.file}
 fop.exp=${expand.dir}/${fop.version}
 fop.jar=${fop.exp}/build/fop.jar
 fop.batik.jar=${fop.exp}/lib/batik.jar
