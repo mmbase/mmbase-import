@@ -6,7 +6,7 @@
 # If you'd like to customize some of the settings, create a build.properties in
 # the root of this directory.
 #
-# $Id: build.properties.default,v 1.12 2006-12-02 09:37:25 michiel Exp $
+# $Id: build.properties.default,v 1.13 2006-12-02 10:00:46 michiel Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -42,18 +42,14 @@ docbook-xsl.loc=${sourceforge.loc}/docbook/${docbook-xsl.file}
 docbook-xsl.exp=${expand.dir}/${docbook-xsl.version}
 
 # ---- Fop is a terrible system to produces PDFs ----
-#fop.version=fop-0.20.5
-fop.version=fop-0.92beta
-#fop.file=${fop.version}-bin.tar.gz
-fop.file=${fop.version}-bin-jdk1.4.tar.gz
-#fop.loc=http://www.apache.org/dist/xml/fop/${fop.file}
-fop.loc=http://dist.apache.easynet.nl/xmlgraphics/fop/${fop.file}
+fop.version=fop-0.20.5
+#fop.version=fop-0.92beta
+fop.file=${fop.version}-bin.tar.gz
+#fop.file=${fop.version}-bin-jdk1.4.tar.gz
+fop.loc=http://www.apache.org/dist/xml/fop/${fop.file}
+#fop.loc=http://dist.apache.easynet.nl/xmlgraphics/fop/${fop.file}
 fop.dest=${download.dir}/${fop.file}
 fop.exp=${expand.dir}/${fop.version}
-fop.jar=${fop.exp}/build/fop.jar
-fop.batik.jar=${fop.exp}/lib/batik.jar
-fop.avalon.jar=${fop.exp}/lib/avalon-framework-cvs-20020806.jar
-
 
 
 # ---- Jai, version 1.0.2 ----
