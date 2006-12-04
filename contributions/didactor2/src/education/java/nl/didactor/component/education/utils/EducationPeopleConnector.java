@@ -12,7 +12,7 @@ import org.mmbase.module.core.*;
  * somethings wrong here, and making things less clear in JSP's? (because you need to guess what
  * happens in this class, which btw also lacks javadoc).
  *
- * @version $Id: EducationPeopleConnector.java,v 1.4 2006-12-04 16:04:01 mmeeuwissen Exp $
+ * @version $Id: EducationPeopleConnector.java,v 1.5 2006-12-04 19:03:35 mmeeuwissen Exp $
  */
 public class EducationPeopleConnector {
     final Cloud cloud;
@@ -56,7 +56,7 @@ public class EducationPeopleConnector {
         for(NodeIterator it = nodelistClasses.nodeIterator(); it.hasNext(); ) {
             Node nodeClass = it.nextNode();
             NodeList nodelistPeople = nodeClass.getRelatedNodes("educations", "classrel", "source");
-            for(NodeIterator it2 = nodelistPeople.iterator(); it2.hasNext();) {
+            for(NodeIterator it2 = nodelistPeople.nodeIterator(); it2.hasNext();) {
                 hsetResult.add("" + it2.nextNode().getNumber());
             }
         }
