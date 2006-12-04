@@ -22,14 +22,13 @@
 
    <mm:import externid="mode">components</mm:import>
    <%
-      HashSet hsetEducations = null;
+      Set hsetEducations = null;
    %>
    <mm:node number="$user" jspvar="node">
       <%
          hsetEducations = educationPeopleConnector.relatedEducations("" + node.getNumber());
       %>
    </mm:node>
-
 
    <mm:import id="editcontextname" reset="true">componenten</mm:import>
    <jsp:directive.include file="roles_chk.jsp" />
