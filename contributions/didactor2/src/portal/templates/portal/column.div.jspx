@@ -5,14 +5,14 @@
     >
   <jsp:output omit-xml-declaration="yes" />
 
-  <mm:import externid="provider"    required="true" />
+  <mm:import externid="education"   required="true" />
   <mm:import externid="col"         required="true" />
   <mm:import externid="includePath" required="true" />
   <mm:import externid="referids"    required="true" />
 
   <mm:content type="application/xhtml+xml">
 
-    <mm:node referid="provider">
+    <mm:node referid="education">
       <mm:relatednodescontainer type="webblocks" role="blockposrel">
         <mm:constraint field="blockposrel.x" value="${col}" />
         <mm:sortorder field="blockposrel.y" />

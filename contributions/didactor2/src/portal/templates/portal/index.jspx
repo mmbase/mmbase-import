@@ -10,7 +10,9 @@
   <mm:content type="application/xhtml+xml">
     <html  xmlns="http://www.w3.org/1999/xhtml">
       <head>
+
         <title><di:translate key="education.learnenvironmenttitle" /></title>
+
         <mm:treefile page="/css/base.css"  objectlist="$includePath">
           <link rel="stylesheet" type="text/css" href="${_}" />
         </mm:treefile>
@@ -20,8 +22,10 @@
 
       </head>
       <body class="portal">
+
         <mm:treeinclude page="/cockpit/applicationbar.jsp" objectlist="$includePath" referids="$referids"/>
 
+        <!-- 1 and 3 are floats, so must be outputted first -->
         <c:forEach items="1,3,2" var="col">
           <div class="column x${col}">
 
