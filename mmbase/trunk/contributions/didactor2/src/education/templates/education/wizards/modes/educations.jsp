@@ -118,7 +118,7 @@
 
 
                <div id="education_0" style='display: none'>
-                  <% // Registration %>
+                  <%-- Registration --%>
                   <mm:node number="component.register" notfound="skipbody">
                   <table border="0" cellpadding="0" cellspacing="0">
                      <tr>
@@ -126,6 +126,18 @@
                         <td><img src='gfx/tree_vertline-leaf.gif' border='0' align='center' valign='middle' id='img_node_0_1_2'/></td>
                         <td><img src='gfx/new_education.gif' width="16" border='0' align='middle' /></td>
                         <td>&nbsp;<nobr><a href="<mm:treefile write="true" page="/register/wizards/register.jsp" referids="$referids" objectlist="$includePath"><mm:param name="educationid"><%=sEducationID%></mm:param></mm:treefile>" title="<di:translate key="register.registrations" />" target="text"><di:translate key="register.registrations" /></a></nobr></td>
+                     </tr>
+                  </table>
+                  </mm:node>
+
+                  <%-- I think it is hackery --%>
+                  <mm:node number="component.portal" notfound="skipbody">
+                  <table border="0" cellpadding="0" cellspacing="0">
+                     <tr>
+                        <td><img src="gfx/tree_spacer.gif" width="32px" height="16px" border="0" align="center" valign="middle"/></td>
+                        <td><img src='gfx/tree_vertline-leaf.gif' border='0' align='center' valign='middle' id='img_node_0_1_2'/></td>
+                        <td><img src='gfx/new_education.gif' width="16" border='0' align='middle' /></td>
+                        <td>&nbsp;<nobr><a href="<mm:treefile write="true" page="/portal/wizards/" referids="$referids" objectlist="$includePath"><mm:param name="educationid"><%=sEducationID%></mm:param></mm:treefile>" title="<di:translate key="register.registrations" />" target="text"><di:translate key="register.registrations" /></a></nobr></td>
                      </tr>
                   </table>
                   </mm:node>
