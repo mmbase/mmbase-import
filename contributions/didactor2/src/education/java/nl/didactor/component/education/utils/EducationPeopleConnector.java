@@ -1,70 +1,66 @@
 package nl.didactor.component.education.utils;
 
 import java.util.HashSet;
-import java.util.Iterator;
+import java.util.Set;
 
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 
-public class EducationPeopleConnector
-{
-   Cloud cloud;
 
-   public EducationPeopleConnector(Cloud cloud)
-   {
-      this.cloud = cloud;
-   }
+/**
+ * @todo what it the point of this class, besides making sure that you need to restart the server if
+ * somethings wrong here, and making things less clear in JSP's? (because you need to guess what
+ * happens in this class, which btw also lacks javadoc).
+ *
+ * @version $Id: EducationPeopleConnector.java,v 1.4 2006-12-04 16:04:01 mmeeuwissen Exp $
+ */
+public class EducationPeopleConnector {
+    final Cloud cloud;
 
-   public HashSet relatedPersons(String educationNumber)
-   {
-      HashSet hsetResult = new HashSet();
+    public EducationPeopleConnector(Cloud cloud) {
+        this.cloud = cloud;
+    }
 
-      Node nodeEducation = cloud.getNode((new Integer(educationNumber)).intValue());
+    public Set relatedPersons(String educationNumber) {
+        Set hsetResult = new HashSet();
 
-      NodeList nodelistPeople = nodeEducation.getRelatedNodes("people", "classrel", "destination");
-      for(Iterator it = nodelistPeople.iterator(); it.hasNext(); )
-      {
-         hsetResult.add("" + ((Node) it.next()).getNumber());
-      }
+        Node nodeEducation = cloud.getNode((new Integer(educationNumber)).intValue());
 
-      NodeList nodelistClasses = nodeEducation.getRelatedNodes("classes", "classrel", "destination");
-      for(Iterator it = nodelistClasses.iterator(); it.hasNext();)
-      {
-         Node nodeClass = (Node) it.next();
-         nodelistPeople = nodeClass.getRelatedNodes("people", "classrel", "source");
-         for(Iterator it2 = nodelistPeople.iterator(); it2.hasNext();)
-         {
-            hsetResult.add("" + ((Node) it2.next()).getNumber());
-         }
-      }
+        NodeList nodelistPeople = nodeEducation.getRelatedNodes("people", "classrel", "destination");
+        for(NodeIterator it = nodelistPeople.nodeIterator(); it.hasNext(); ) {
+            hsetResult.add("" + it.nextNode().getNumber());
+        }
 
-      return hsetResult;
-   }
+        NodeList nodelistClasses = nodeEducation.getRelatedNodes("classes", "classrel", "destination");
+        for(NodeIterator it = nodelistClasses.nodeIterator(); it.hasNext();) {
+            Node nodeClass = it.nextNode();
+            nodelistPeople = nodeClass.getRelatedNodes("people", "classrel", "source");
+            for(NodeIterator it2 = nodelistPeople.nodeIterator(); it2.hasNext();) {
+                hsetResult.add("" + it2.nextNode().getNumber());
+            }
+        }
+        return hsetResult;
+    }
 
-   public HashSet relatedEducations(String personNumber)
-   {
-      HashSet hsetResult = new HashSet();
+    public Set relatedEducations(String personNumber) {
 
-      Node nodePerson = cloud.getNode((new Integer(personNumber)).intValue());
+        Set hsetResult = new HashSet();
+        Node nodePerson = cloud.getNode((new Integer(personNumber)).intValue());
 
-      NodeList nodelistEducations = nodePerson.getRelatedNodes("educations", "classrel", "source");
-      for(Iterator it = nodelistEducations.iterator(); it.hasNext(); )
-      {
-         hsetResult.add("" + ((Node) it.next()).getNumber());
-      }
+        NodeList nodelistEducations = nodePerson.getRelatedNodes("educations", "classrel", "source");
+        for(NodeIterator it = nodelistEducations.nodeIterator(); it.hasNext(); ) {
+            hsetResult.add("" + it.nextNode().getNumber());
+        }
 
-      NodeList nodelistClasses = nodePerson.getRelatedNodes("classes", "classrel", "destination");
-      for(Iterator it = nodelistClasses.iterator(); it.hasNext(); )
-      {
-         Node nodeClass = (Node) it.next();
-         NodeList nodelistPeople = nodeClass.getRelatedNodes("educations", "classrel", "source");
-         for(Iterator it2 = nodelistPeople.iterator(); it2.hasNext();)
-         {
-            hsetResult.add("" + ((Node) it2.next()).getNumber());
-         }
-      }
-
-      return hsetResult;
-   }
+        NodeList nodelistClasses = nodePerson.getRelatedNodes("classes", "classrel", "destination");
+        for(NodeIterator it = nodelistClasses.nodeIterator(); it.hasNext(); ) {
+            Node nodeClass = it.nextNode();
+            NodeList nodelistPeople = nodeClass.getRelatedNodes("educations", "classrel", "source");
+            for(NodeIterator it2 = nodelistPeople.iterator(); it2.hasNext();) {
+                hsetResult.add("" + it2.nextNode().getNumber());
+            }
+        }
+        return hsetResult;
+    }
 
 }
