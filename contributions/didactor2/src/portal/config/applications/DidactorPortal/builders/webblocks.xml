@@ -74,11 +74,15 @@
         <guiname xml:lang="en">Type</guiname>
       </gui>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <entry value="0" display="Homepage" xml:lang="en" />
-        <entry value="1" display="Portallinks" xml:lang="en"/>
-        <entry value="6" display="News" xml:lang="en" />
-        <!-- 0-80 reserved, (EO Patmos framework) -->
-        <entry value="100" display="MMBase component" /><!-- MMBase 1.9 -->
+        <enumeration>
+          <!--
+          <entry value="0" display="Homepage" xml:lang="en" />
+          -->
+          <entry value="1" display="Portallinks" xml:lang="en"/>
+          <entry value="6" display="News" xml:lang="en" />
+          <!-- 0-80 reserved, (EO Patmos framework) -->
+          <entry value="100" display="MMBase component" /><!-- MMBase 1.9 -->
+        </enumeration>
       </datatype>
     </field>
 
