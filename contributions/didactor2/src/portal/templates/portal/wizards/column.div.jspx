@@ -1,0 +1,32 @@
+<mm:cloud
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    >
+  <jsp:output omit-xml-declaration="yes" />
+
+  <mm:import externid="education"   required="true" />
+  <mm:import externid="col"         required="true" />
+
+  <mm:content type="application/xhtml+xml">
+
+    <mm:node referid="education">
+      <mm:relatednodescontainer type="webblocks" role="blockposrel">
+        <mm:constraint field="blockposrel.x" value="${col}" />
+        <mm:sortorder field="blockposrel.y" />
+        <mm:link page="/mmbase/edit/wizard/jsp/list.jsp">
+          <mm:param name="wizard" />
+        </mm:link>
+        <mm:relatednodes>
+          <mm:haspage page="webblock-edit-${_node.type}.jspx">
+            <mm:include page="webblock-edit-${_node.type}.jspx" referids="_node@webblock" />
+          </mm:haspage>
+          <mm:haspage page="webblock-edit-${_node.type}.jspx" inverse="true">
+            <p>No editor found for type ${_node.type}</p>
+          </mm:haspage>
+        </mm:relatednodes>
+      </mm:relatednodescontainer>
+    </mm:node>
+
+  </mm:content>
+</mm:cloud>
