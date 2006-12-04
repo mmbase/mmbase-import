@@ -1,4 +1,4 @@
-<%@ page import="nl.didactor.component.education.utils.EducationPeopleConnector" 
+<%@ page import="nl.didactor.component.education.utils.EducationPeopleConnector,java.util.*" 
 %>
       <mm:import id="tmpreferids" reset="true">provider?</mm:import>
       <%
@@ -78,7 +78,9 @@
                   <img src="<mm:treefile write="true" page="/gfx/icon_course_notdone.gif" objectlist="$includePath" />" width="13" height="11" border="0" title="" alt="" />
                   <a href="<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$tmpreferids">
                               <mm:param name="education"><%= arrstrEducation[0] %></mm:param>
+                              <% if (arrstrEducation[2] != null) {%>
                               <mm:param name="class"><%= arrstrEducation[2] %></mm:param>
+                              <% } %>
                            </mm:treefile>" class="users">
                      <%@include file="show_education_name.jsp"%>
                   </a>
