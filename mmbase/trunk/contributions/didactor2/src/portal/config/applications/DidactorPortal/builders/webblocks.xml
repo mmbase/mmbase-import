@@ -77,8 +77,8 @@
         <entry value="0" display="Homepage" xml:lang="en" />
         <entry value="1" display="Portallinks" xml:lang="en"/>
         <entry value="6" display="News" xml:lang="en" />
-        <!-- 0-58 reserved, (EO Patmos framework) -->
-        <entry value="60" display="MMBase component" /><!-- MMBase 1.9 -->
+        <!-- 0-80 reserved, (EO Patmos framework) -->
+        <entry value="100" display="MMBase component" /><!-- MMBase 1.9 -->
       </datatype>
     </field>
 
@@ -99,8 +99,12 @@
       </gui>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" >
         <enumeration>
-          <entry value="0" display="low profile" />
-          <entry value="1" display="high profile" />
+          <entry value="0" display="not relevant"         xml:lang="en" />
+          <entry value="0" display="niet van toepassing"  xml:lang="nl" />
+          <entry value="1" display="tv high profile" />
+          <entry value="2" display="tv low profile" />
+          <entry value="3" display="radio high profile" />
+          <entry value="4" display="radio low profile" />
         </enumeration>
       </datatype>
     </field>
