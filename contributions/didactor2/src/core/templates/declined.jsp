@@ -9,11 +9,9 @@
   </head>
   <body>
     <di:translate key="core.validatelogin_any_error_header" />
-    <br/>
-    <br/>
+    <br/><br/>
     <b><mm:write referid="message"/></b>
-    <br/>
-    <br/>
+    <br/><br/>
     <a href="login.jsp"><di:translate key="core.login"/></a>
   </body>
 </html>
