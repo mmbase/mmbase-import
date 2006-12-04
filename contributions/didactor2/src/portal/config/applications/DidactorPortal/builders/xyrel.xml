@@ -35,7 +35,17 @@
           <list>4</list>
         </positions>
       </editor>
-      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes"  />
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="2" />
+        <enumeration>
+          <entry value="1" display="left"    xml:lang="en" />
+          <entry value="2" display="middle"  xml:lang="en" />
+          <entry value="3" display="right"   xml:lang="en" />
+          <entry value="1" display="links"   xml:lang="nl" />
+          <entry value="2" display="midden"  xml:lang="nl" />
+          <entry value="3" display="rechts"  xml:lang="nl" />
+        </enumeration>
+      </datatype>
     </field>
 
     <field name="y">
