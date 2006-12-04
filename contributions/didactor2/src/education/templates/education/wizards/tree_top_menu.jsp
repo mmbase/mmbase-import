@@ -122,7 +122,7 @@
          }
        </style>
        <select name="course" id="course"
-               onchange="chooseEducation(document.getElementById('course').value);">
+               onchange="chooseEducation(this.value);">
          <option value="0">--------</option>
          <%
          for(Iterator it = hsetEducations.iterator(); it.hasNext();) {
