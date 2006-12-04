@@ -1,6 +1,6 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"%>  
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<jsp:directive.page import="java.util.*,nl.didactor.component.education.utils.*" />
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%><jsp:directive.page import="java.util.*,nl.didactor.component.education.utils.*" />
 <jsp:scriptlet>
   String imageName = "";
   String sAltText = "";
@@ -35,7 +35,7 @@
       <div id='node_0' style='display: none'>
 
          <% //We go throw all educations for CURRENT USER
-            HashSet hsetEducationsForUser = null;
+            Set hsetEducationsForUser = null;
          %>
          <mm:node number="$user" jspvar="node">
            <jsp:scriptlet>
