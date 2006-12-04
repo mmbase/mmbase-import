@@ -4,7 +4,7 @@
    <!ENTITY extra_loads   SYSTEM "extra_loads.xml">
    <!ENTITY extra_schemas SYSTEM "extra_schemas.xml">
    <!ENTITY extra_lists   SYSTEM "extra_lists.xml">
-   <!ENTITY extra_optionlists   SYSTEM "extra_optinlists.xml">
+   <!ENTITY extra_optionlists   SYSTEM "extra_optionlists.xml">
 ]>
 <wizard-schema id="empty">
   <title xml:lang="nl">Opleiding Editor</title>
