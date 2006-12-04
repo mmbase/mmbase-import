@@ -121,7 +121,8 @@
            top: 30px;
          }
        </style>
-       <select name="course" id="course">
+       <select name="course" id="course"
+               onchange="chooseEducation(document.getElementById('course').value);">
          <option value="0">--------</option>
          <%
          for(Iterator it = hsetEducations.iterator(); it.hasNext();) {
@@ -136,7 +137,10 @@
          }
        %>
        </select>
-       <img src="gfx/ga.gif" title="Ga" alt="Ga" onclick="chooseEducation(document.getElementById('course').value)" />
+       <!--
+       <img src="gfx/ga.gif" title="Ga" alt="Ga"
+            onclick="chooseEducation(document.getElementById('course').value)" />
+       -->
      <% } %>
      </span>
   </mm:islessthan>
