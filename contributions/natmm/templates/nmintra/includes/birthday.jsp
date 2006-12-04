@@ -52,12 +52,13 @@ if("".equals(oalias_number)) {
     ></mm:field
  ></mm:node
 ></mm:list>
-<%--
+<!--
 oalias_number <%= oalias_number %><br/>
 first_shown <%= first_shown %><br/>
 next_shown <%= next_shown %><br/>
 last_shown <%= last_shown %><br/>
---%>
+number_of_birthdays <%= number_of_birthdays %><br/>
+-->
 <%
 
 String employees_number = "";
@@ -85,7 +86,7 @@ if(number_of_birthdays>0) {
       <td>
         <a href="<%= ph.createPaginaUrl("wieiswie",request.getContextPath()) + "?employee=" +  employees_number %>">
           <img src="<mm:relatednodes type="images"><mm:image template="<%= "s(" + smoelWidth + ")+sharpen(5)" 
-                        %>"/></mm:relatednodes> alt="<mm:field name="titel" />" border="0" ></a></td>
+                        %>"/></mm:relatednodes>" alt="<mm:field name="titel" />" border="0" ></a></td>
     </tr>
     <tr>
       <td class="white" style="text-align:center;">
