@@ -24,7 +24,9 @@
     <mm:import id="posterid"><mm:field name="posters.number"/></mm:import>
   </mm:list>
   <mm:notpresent referid="haveposter">
-    <mm:createrelation role="related" source="user" destination="posterid" />
+    <mm:compare referid="posterid" value="-1" inverse="true">
+      <mm:createrelation role="related" source="user" destination="posterid" />
+    </mm:compare>
   </mm:notpresent>
   
 </mm:node>
