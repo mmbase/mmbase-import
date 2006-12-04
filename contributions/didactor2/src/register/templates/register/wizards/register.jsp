@@ -1,19 +1,19 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"%>
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%><%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" 
+%>
 <mm:content postprocessor="reducespace">
-<mm:cloud method="delegate" jspvar="cloud">
+<mm:cloud method="delegate">
 
-<%@include file="/shared/setImports.jsp" %>
-<%@include file="/education/wizards/roles_defs.jsp" %>
+<jsp:directive.include file="/shared/setImports.jsp" />
+<jsp:directive.include file="/education/wizards/roles_defs.jsp" />
 
 <mm:import externid="educationid" />
 <mm:import externid="person" />
 <mm:import externid="chosenclass" />
 <mm:import externid="chosenworkgroup" />
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
   <head>
     <title></title>
@@ -29,7 +29,7 @@
   <body>
     <div class="content">
       <mm:import id="editcontextname" reset="true">opleidingen</mm:import>
-      <%@include file="/education/wizards/roles_chk.jsp" %>
+      <jsp:directive.include file="/education/wizards/roles_chk.jsp" />
       <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
         <mm:isnotempty referid="chosenclass">
           <mm:compare referid="chosenworkgroup" value="-">
@@ -129,6 +129,7 @@
           </mm:isnotempty>
         </mm:isnotempty>
         <mm:isempty referid="person">
+          <mm:remove referid="person" />
           <mm:node number="$educationid">
             <di:translate key="register.chooseregistration" /><br />
             <hr />
@@ -158,7 +159,6 @@
                   <a href="<mm:url referid="url"><mm:param name="delete">true</mm:param></mm:url>"><di:translate key="register.delete" /></a>
                 </td>
               </tr>
-              <mm:remove referid="person" />
             </mm:relatednodes>
           </mm:node>
         </mm:isempty>  
