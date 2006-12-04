@@ -7,78 +7,78 @@
 <%@include file="/shared/setImports.jsp" %>
 <%@ include file="thememanager/loadvars.jsp" %>
 <%@ include file="settings.jsp" %>
-<HTML>
-<HEAD>
-   <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
-   <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/base.css" objectlist="$includePath" referids="$referids" />" />
-   <title><di:translate key="mmbob.mmbaseforums" /></title>
-</head>
-<mm:import externid="forumid" jspvar="forumid">unknown</mm:import>
-<mm:compare referid="forumid" value="unknown">
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
+    <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/base.css" objectlist="$includePath" referids="$referids" />" />
+    <title><di:translate key="mmbob.mmbaseforums" /></title>
+  </head>
+  <mm:import externid="forumid" jspvar="forumid">unknown</mm:import>
+  <mm:compare referid="forumid" value="unknown">
     <table align="center" cellpadding="0" cellspacing="0" class="list" style="margin-top : 40px;" width="75%">
-        <tr><th><di:translate key="mmbob.systemerror" /></th></tr>
-        <tr><td height="40"><b><di:translate key="mmbob.error" /> : </b> <di:translate key="mmbob.noforums1" /> <a href="forums.jsp">forums.jsp</a> <di:translate key="mmbob.noforums2" />.</td></tr>
+      <tr><th><di:translate key="mmbob.systemerror" /></th></tr>
+      <tr><td height="40"><b><di:translate key="mmbob.error" /> : </b> <di:translate key="mmbob.noforums1" /> <a href="forums.jsp">forums.jsp</a> <di:translate key="mmbob.noforums2" />.</td></tr>
     </table>
-</mm:compare>
+  </mm:compare>
+  
+  <mm:compare referid="forumid" value="unknown" inverse="true">
+    <jsp:directive.include file="getposterid.jsp" />
 
-<mm:compare referid="forumid" value="unknown" inverse="true">
-<%@ include file="getposterid.jsp" %>
+    <mm:locale language="$lang"> 
 
-<mm:locale language="$lang"> 
+      <!-- action check -->
+      <mm:import externid="action" />
+      <mm:present referid="action">
+        <mm:include page="actions.jsp" />
+      </mm:present>
+      <!-- end action check -->
 
-<!-- action check -->
-<mm:import externid="action" />
-<mm:present referid="action">
- <mm:include page="actions.jsp" />
-</mm:present>
-<!-- end action check -->
-
-<center>
-<mm:include page="path.jsp?type=index" />
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
+      <center>
+        <mm:include page="path.jsp?type=index" />
+        <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
           <mm:nodefunction set="mmbob" name="getForumInfo" referids="forumid,posterid">
           <mm:import id="adminmode"><mm:field name="isadministrator" /></mm:import>
            <tr>
-                <mm:compare referid="posterid" value="-1">
-                <th width="100"><a href="newposter.jsp?forumid=<mm:write referid="forumid" />"><img src="images/guest.gif" border="0"></a></th>
-                <td align="left">
-                <form action="login.jsp?forumid=<mm:write referid="forumid" />" method="post">
-                <mm:present referid="loginfailed">
-                    <br />
-                    <center><h4><di:translate key="mmbob.wronglogin" /></h4></center>
-                    <center> <a href="<mm:url page="remail.jsp" referids="forumid" />"><di:translate key="mmbob.forgotpasswordlink" /></a></center>
-
-                    <p />
-                </mm:present>
-                <mm:notpresent referid="loginfailed">
-                    <mm:field name="description" />
-                    <p />
-                    <b><di:translate key="mmbob.login" /></b><p />
-                </mm:notpresent>
-                <di:translate key="mmbob.account" /> : <input size="12" name="account">
-                <di:translate key="mmbob.password" /> : <input size="12" type="password" name="password">
-                <input type="submit" value="<di:translate key="mmbob.login" />" />
-                </form><p />
-                </mm:compare>
+             <mm:compare referid="posterid" value="-1">
+               <th width="100"><a href="newposter.jsp?forumid=<mm:write referid="forumid" />"><img src="images/guest.gif" border="0"></a></th>
+               <td align="left">
+                 <form action="login.jsp?forumid=<mm:write referid="forumid" />" method="post">
+                 <mm:present referid="loginfailed">
+                   <br />
+                   <center><h4><di:translate key="mmbob.wronglogin" /></h4></center>
+                   <center> <a href="<mm:url page="remail.jsp" referids="forumid" />"><di:translate key="mmbob.forgotpasswordlink" /></a></center>
+                   <p />
+                 </mm:present>
+                 <mm:notpresent referid="loginfailed">
+                   <mm:field name="description" />
+                   <p />
+                   <b><di:translate key="mmbob.login" /></b><p />
+                 </mm:notpresent>
+                 <di:translate key="mmbob.account" /> : <input size="12" name="account">
+                 <di:translate key="mmbob.password" /> : <input size="12" type="password" name="password">
+                 <input type="submit" value="<di:translate key="mmbob.login" />" />
+                 </form><p />
+               </mm:compare>
                <mm:compare referid="posterid" value="-1" inverse="true">
-                <th width="100">
-                <a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids"></mm:treefile>" target=_top>
-                <%--hh <mm:field name="active_account" />--%><di:translate key="mmbob.clickforprofile" /><br />
-                <mm:field name="active_avatar"><mm:compare value="-1" inverse="true">
-                        <mm:node number="$_" notfound="skip">
-                         <img src="<mm:image template="s(80x80)" />" width="80" border="0">
-                        </mm:node>
-                </mm:compare></mm:field></a>
-                <%-- hh a href="logout.jsp?forumid=<mm:write referid="forumid" />">Logout</a> --%>
-                </th>
-                <td align="left" valign="top">
-                    <mm:compare referid="image_logo" value="" inverse="true">
+                 <th width="100">
+                   <a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids"></mm:treefile>" target=_top>
+                   <%--hh <mm:field name="active_account" />--%><di:translate key="mmbob.clickforprofile" /><br />
+                   <mm:field name="active_avatar"><mm:compare value="-1" inverse="true">
+                     <mm:node number="$_" notfound="skip">
+                       <img src="<mm:image template="s(80x80)" />" width="80" border="0">
+                     </mm:node>
+                   </mm:compare></mm:field></a>
+                   <%-- hh a href="logout.jsp?forumid=<mm:write referid="forumid" />">Logout</a> --%>
+                 </th>
+                 <td align="left" valign="top">
+                   <mm:compare referid="image_logo" value="" inverse="true">
                     <br />
                     <center><img src="<mm:write referid="image_logo" />" width="98%"></center>
                     <br />
                     </mm:compare>
                     <mm:compare referid="image_logo" value="">
-                    <h4><di:translate key="mmbob.welcometoforum1" /> <mm:field name="active_firstname" /> <mm:field name="active_lastname" /> <%-- hh (<mm:field name="active_account" />) --%> <br /> <di:translate key="mmbob.welcometoforum2" /> <mm:field name="name" /> <di:translate key="mmbob.welcometoforum3" />.</h4><p />
+                    <h4><di:translate key="mmbob.welcometoforum1" /> <mm:field
+                    name="active_firstname" /> <mm:field name="active_lastname" /> <%-- hh (<mm:field name="active_account" />) --%> <br /> <di:translate key="mmbob.welcometoforum2" />  <mm:field name="name" />  <di:translate key="mmbob.welcometoforum3" />.</h4><p />
 
                     </mm:compare>
                     <di:translate key="mmbob.lasttimelogin" /> : <mm:field name="active_lastseen"><mm:compare value="" inverse="true"><mm:field name="active_lastseen"><mm:time format="<%= timeFormat %>" /></mm:field></mm:compare></mm:field><br />
