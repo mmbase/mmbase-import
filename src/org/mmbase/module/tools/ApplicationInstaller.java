@@ -30,7 +30,7 @@ import org.xml.sax.InputSource;
  *
  * @author Nico Klasens
  * @since MMBase-1.8
- * @version $Id: ApplicationInstaller.java,v 1.8 2006-07-15 16:02:21 michiel Exp $
+ * @version $Id: ApplicationInstaller.java,v 1.8.2.1 2006-12-05 21:07:35 michiel Exp $
  */
 public class ApplicationInstaller {
 
@@ -52,7 +52,7 @@ public class ApplicationInstaller {
             String appResource = (String) i.next();
             ApplicationResult result = new ApplicationResult();
             if (!installApplication(appResource.substring(0, appResource.length() - 4), -1, null, result, new HashSet(), true)) {
-                log.error("Problem installing application : " + appResource + ", cause: "+result.getMessage());
+                log.error("Problem installing application : " + appResource + ", cause: \n" + result.getMessage());
             }
         }
     }
@@ -734,14 +734,18 @@ public class ApplicationInstaller {
                 if (typeDef == null) {
                     return result.error("Could not find the typedef builder.");
                 }
-                // try to add a node to typedef, same as adding a builder...
-                MMObjectNode typeNode = typeDef.getNewNode("system");
-                // fill the name....
-                typeNode.setValue("name", name);
-
-                typeNode.setValue("config", config);
-                // insert into mmbase
-                typeNode.insert("system");
+                try {
+                    // try to add a node to typedef, same as adding a builder...
+                    MMObjectNode typeNode = typeDef.getNewNode("system");
+                    // fill the name....
+                    typeNode.setValue("name", name);
+                    typeNode.setValue("config", config);
+                    // insert into mmbase
+                    typeNode.insert("system");
+                } catch (Exception e) {
+                    result.error(e.getMessage());
+                    continue;
+                }
                 // we now made the builder active.. look for other builders...
             }
         }
