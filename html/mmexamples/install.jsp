@@ -27,6 +27,11 @@
         These are explained as you install them. You are advised to follow the notes.
         You can return to this installation script any time.
       </p>
+      <p>
+        Please not that most applications below are going to install builder XML's in the
+        builder/applications directory of your config. This won't work if your app-server can or may
+        not write those resources. 
+      </p>
     </td>
   </tr>
   <tr>
