@@ -1,5 +1,5 @@
 ===================================================================
-                     MMBase 1.8.2 - Release Notes
+                     MMBase 1.8.3 - Release Notes
 ===================================================================
 
 ============
@@ -7,21 +7,25 @@ INTRODUCTION:
 ============
 
 This document describes the changes that have been made in the final
-release of MMBase 1.8.2, relative to the previous release of MMBase (1.7.x).
+release of MMBase 1.8.3, relative to the previous release of MMBase (1.7.x).
 
 Bug reports should be entered at the bug reporting system for MMBase
 at:
 
-<http://www.mmbase.org/bug>
+<http://www.mmbase.org/jira>
 
 
 ============
 NEW FEATURES:
 ============
 
+Since MMBase 1.8.3 we use JIRA as our bug-tracking system.
+
 --------------------
 General New Features:
 --------------------
+[1.8.3]
+
 [1.8.2]
 [1.8.1]
 - postgresql with views
@@ -200,6 +204,26 @@ Obsolete Features:
 ------------------
 Bug Fixes:
 ------------------
+[1.8.3]
+MMB-1331  	 mm:treefile cannot be used as a writer.
+MMB-1345 	MMServers only considers 'machinename', not host, if host overriden with -Dmmbaseroot.host, that has no effect on the default machinename
+MMB-1346 	BasicCloudContext.getCloud can report that cloud 'mmbase' does not exist.
+MMB-1344 	ImageMagick and text, it is broken again. Now because it produces @<temporary file that was used>
+
+MMB-943 	It is suspected that some tag instances holds a bit more references than needed.
+MMB-1338 	tomcat 5.5.20, and tagfiles. If tag used in mmbase list tag, in the tag mmbase variables are not compatible with EL any more.
+MMB-1333 	'NoAuthentication' not working properly.
+MMB-1332 	<datatypes entry in builder xml gives NPE
+MMB-1328 	<mm:time time="now" may give an error if getId of time-zone is e.g. GMT+1
+MMB-1327 	Insrel dir field not backward compatible (needs to be system)
+MMB-1326 	Default description of a field is fieldname
+MMB-1325 	Datetime not properly initialized by editwizards
+MMB-1324 	Node functions do not autocast parameters
+MMB-1322 	<mm:cloud rank="anonymous", still need to logon.
+MMB-1321 	Serilization of Config prevents init of static code
+MMB-1320 	Legacy enumerations are automatically required
+MMB-1318 	datatype 'field' not recognized in wizards
+MMB-1308 	Searchlist relation rights checks did not work with inheritance
 [1.8.2]
 
 -- More memory-conversation in taglib, memory could remain in cached tag if exception occured.
@@ -424,7 +448,7 @@ Application servers
 
 These are the applications servers on which MMBase was tested.
 
-- Tomcat 5.5.9, 5.5.16 
+- Tomcat 5.5.9, 5.5.16, 6.0.2
 - Orion 2.0.3 (?)
 - ..
 
