@@ -32,10 +32,10 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The creation of the URL is delegated to the MMBase framework.
  * </p>
- * @version $Id: Url.java,v 1.10 2006-12-05 22:48:04 michiel Exp $;
+ * @version $Id: Url.java,v 1.11 2006-12-05 23:21:31 michiel Exp $;
  * @since MMBase-1.9
  */
-public class Url implements Comparable {
+public class Url implements Comparable, CharSequence, Casting.Unwrappable {
     private static final Logger log = Logging.getLoggerInstance(Url.class);
     private final UrlTag tag;
     private final String page;
@@ -187,6 +187,16 @@ public class Url implements Comparable {
 
     protected void invalidate() {
         string = cacheAmp = cacheNoAmp = null;
+    }
+
+    public char charAt(int index) {
+        return get().charAt(index);
+    }
+    public int length() {
+        return get().length();
+    }
+    public CharSequence subSequence(int start, int end) {
+        return get().subSequence(start, end);
     }
 
     public String toString() {
