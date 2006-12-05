@@ -40,7 +40,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.148 2006-11-24 14:28:54 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.149 2006-12-05 21:06:50 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -691,6 +691,11 @@ public class MMAdmin extends ProcessorModule {
      * @javadoc
      */
     Vector getApplicationsList() throws SearchQueryException {
+        Vector results = new Vector(); //sigh, synchronized, for what?
+        if (mmb == null) {
+            log.warn("MMBase not yet initialized, Can't get to apps");
+            return results;
+        }
         Versions ver = (Versions) mmb.getBuilder("versions");
         if (ver == null) {
             log.warn("Versions builder not installed, Can't get to apps");
