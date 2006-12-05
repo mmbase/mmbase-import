@@ -40,7 +40,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.149 2006-12-05 21:06:50 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.150 2006-12-05 21:14:24 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -699,9 +699,8 @@ public class MMAdmin extends ProcessorModule {
         Versions ver = (Versions) mmb.getBuilder("versions");
         if (ver == null) {
             log.warn("Versions builder not installed, Can't get to apps");
-            return null;
+            return results;
         }
-        Vector results = new Vector();
 
         ResourceLoader applicationLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("applications");
         Iterator i = applicationLoader.getResourcePaths(ResourceLoader.XML_PATTERN, false).iterator();
