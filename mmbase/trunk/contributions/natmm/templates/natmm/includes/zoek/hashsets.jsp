@@ -1,89 +1,4 @@
-<%! public HashSet addPages(
-      Cloud cloud,
-      org.mmbase.util.logging.Logger log,
-      net.sf.mmapps.modules.lucenesearch.SearchConfig cf,
-      String sQuery,
-      int index,
-      String path,
-      String rootRubriek,
-      long nowSec,
-      HashSet hsetPagesNodes) {
-
-   HashSet hsetNodes = new HashSet();
-   try { 
-      net.sf.mmapps.modules.lucenesearch.SearchIndex si = cf.getIndex(index);
-      Analyzer analyzer = si.getAnalyzer();
-      IndexReader ir = IndexReader.open(si.getIndex());
-      QueryParser qp = new QueryParser("indexed.text", analyzer);
-      qp.setDefaultOperator(QueryParser.AND_OPERATOR);
-      org.apache.lucene.search.Query result = null;
-      SearchValidator sv = new SearchValidator();
-      String value = sv.validate(sQuery);
-      try {
-        result = qp.parse(value);
-      } catch (Exception e) {
-        log.error("Error parsing field 'indexed.text' with value '" + value + "'");
-      }
-      if (result != null) {
-			int quarterOfAnHour = 60*15;
-			BooleanQuery constructedQuery = new BooleanQuery();
-			constructedQuery.add(result, BooleanClause.Occur.MUST);
-
-	      IndexSearcher searcher = new IndexSearcher(ir); 
-       	Hits hits = searcher.search(constructedQuery);
-      	TreeSet includedEvents = new TreeSet();
-
-        for (int i = 0; i < hits.length(); i++) {
-           Document doc = hits.doc(i);
-      	   String docNumber = doc.get("node");
-         	if(path!=null) {
-            	NodeList list = cloud.getList(docNumber,path,"pagina.number",null,null,null,"SOURCE",true);
-	            for(int j=0; j<list.size(); j++) {
-   	            String paginaNumber = list.getNode(j).getStringValue("pagina.number");
-      	         if(PaginaHelper.getSubsiteRubriek(cloud,paginaNumber).equals(rootRubriek)) {
-							if (index==1) {
-								PaginaHelper ph = new PaginaHelper(cloud);
-								String sConstraints = (new nl.leocms.util.tools.SearchUtil()).articleConstraint(nowSec, quarterOfAnHour);
-								NodeList nl = cloud.getList(docNumber,"natuurgebieden,rolerel,artikel","artikel.number",sConstraints,null,null,null,true);
-								if (ph.getPaginaTemplate(paginaNumber).getStringValue("url").equals("routes.jsp")
-									&&(nl.size()>0)){
-									hsetPagesNodes.add(paginaNumber);
-	   	         	      hsetNodes.add(docNumber);
-								}
-							} else if (index==2) {
-								PaginaHelper ph = new PaginaHelper(cloud);
-								if (ph.getPaginaTemplate(paginaNumber).getStringValue("url").equals("natuurgebieden.jsp")){
-									hsetPagesNodes.add(paginaNumber);
-	   	         	      hsetNodes.add(docNumber);
-								}
-							} else {
-	         	         hsetPagesNodes.add(paginaNumber);
-   	         	      hsetNodes.add(docNumber);
-							}
-               	}
-	            }
-   	      } else { // *** no path implies an Evenement ***
-      	      Node e = cloud.getNode(docNumber);
-         	   String sParent =  Evenement.findParentNumber(docNumber);
-            	if(!includedEvents.contains(sParent) && Evenement.isOnInternet(e,nowSec)) {
-               	String paginaNumber = cloud.getNode("agenda").getStringValue("number");
-	               if(PaginaHelper.getSubsiteRubriek(cloud,paginaNumber).equals(rootRubriek)) {
-   	               hsetNodes.add(docNumber);
-  	   	            includedEvents.add(sParent);
-         	      }
-            	}
-	         }
-   	   }
-
-      	if(searcher!=null) { searcher.close(); }
-	      if(ir!=null) { ir.close(); }
-		}
-   } catch (Exception e) { 
-      log.error("lucene index " + index + " throws error on query " + sQuery); 
-   } 
-   return hsetNodes;
-}
-
+<%@page import="nl.leocms.util.tools.SearchUtil" 
 %><%@include file="../../includes/time.jsp" %><%
 
 boolean debug = false;
@@ -102,33 +17,26 @@ if((sCategory != null) && (!sCategory.equals(""))) {
       %></mm:field>
    </mm:list><%
 }
+SearchUtil su = new SearchUtil();
 
-%><mm:log jspvar="log"><% 
+String qStr = su.queryString(sQuery);
 
-String DOUBLESPACE = "  ";
-String SINGLESPACE = " ";
-String qStr = sQuery;
-while(qStr.indexOf(DOUBLESPACE)>-1) {
-   qStr = qStr.replaceAll(DOUBLESPACE,SINGLESPACE);
-}
-qStr = qStr.trim().replaceAll(SINGLESPACE,"* AND ") + "*";
-
-hsetNatuurgebiedenRouteNodes = addPages(cloud, log, cf, qStr, 1, "natuurgebieden,pos4rel,provincies,contentrel,pagina", subsiteID, nowSec, hsetPagesNodes);
+hsetNatuurgebiedenRouteNodes = su.addPages(cloud,cf,qStr,1,"natuurgebieden,pos4rel,provincies,contentrel,pagina",subsiteID,nowSec,hsetPagesNodes);
 if(debug) { %><br/>natuurgebiedenRoutesHits:<br/><%= hsetNatuurgebiedenRouteNodes %><br/><%= hsetPagesNodes %><% } 
 
-hsetNatuurgebiedenNatuurgebiedenNodes = addPages(cloud, log, cf, qStr, 2, "natuurgebieden,pos4rel,provincies,contentrel,pagina", subsiteID, nowSec, hsetPagesNodes);
+hsetNatuurgebiedenNatuurgebiedenNodes = su.addPages(cloud,cf,qStr,2,"natuurgebieden,pos4rel,provincies,contentrel,pagina",subsiteID,nowSec,hsetPagesNodes);
 if(debug) { %><br/>natuurgebiedenNatuurgebiedenHits:<br/><%= hsetNatuurgebiedenNatuurgebiedenNodes %><br/><%= hsetPagesNodes %><% } 
 
-hsetArticlesNodes = addPages(cloud, log, cf, qStr, 0, "artikel,contentrel,pagina", subsiteID, nowSec, hsetPagesNodes);
+hsetArticlesNodes = su.addPages(cloud,cf,qStr,0,"artikel,contentrel,pagina",subsiteID,nowSec,hsetPagesNodes);
 if(debug) { %><br/>articleHits:<br/><%= hsetArticlesNodes %><br/><%= hsetPagesNodes %><% } 
 
-hsetArtDossierNodes = addPages(cloud, log, cf, qStr, 0, "artikel,posrel,dossier,posrel,pagina", subsiteID, nowSec, hsetPagesNodes);
+hsetArtDossierNodes = su.addPages(cloud,cf,qStr,0,"artikel,posrel,dossier,posrel,pagina",subsiteID,nowSec,hsetPagesNodes);
 if(debug) { %><br/>artByDossierHits:<br/><%= hsetArtDossierNodes %><br/><%= hsetPagesNodes %><% } 
 
-hsetFormulierNodes = addPages(cloud, log, cf, qStr, 3, "formulier,posrel,pagina", subsiteID, nowSec, hsetPagesNodes);
+hsetFormulierNodes = su.addPages(cloud,cf,qStr,3,"formulier,posrel,pagina",subsiteID,nowSec,hsetPagesNodes);
 if(debug) { %><br/>formulierHits:<br/><%= hsetFormulierNodes %><br/><%= hsetPagesNodes %><% } 
 
-hsetEvenementNodes = addPages(cloud, log, cf, qStr, 4, null, subsiteID, nowSec, hsetPagesNodes);
+hsetEvenementNodes = su.addPages(cloud,cf,qStr,4,null,subsiteID,nowSec,hsetPagesNodes);
 if(hsetEvenementNodes.size()>0) { 
    %><mm:node number="agenda">
       <mm:field name="number" jspvar="agenda_number" vartype="String" write="false"><%
@@ -138,8 +46,7 @@ if(hsetEvenementNodes.size()>0) {
 }
 if(debug) { %><br/>evenementHits:<br/><%= hsetEvenementNodes %><br/><%= hsetPagesNodes %><% } 
 
-%></mm:log
-><%--
+%><%--
 // *** list of pages that contain metatags: hsetMetaNodes ***
 if(debug) { %><br/>substracting for metatags:<br/><%}
 SearchIndex metaSearchindex = cf.getIndex(4);
