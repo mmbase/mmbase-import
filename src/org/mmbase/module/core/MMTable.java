@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadoc)
- * @version $Id: MMTable.java,v 1.25 2006-10-14 14:35:38 nklasens Exp $
+ * @version $Id: MMTable.java,v 1.26 2006-12-05 19:37:18 michiel Exp $
  */
 public abstract class MMTable extends FunctionProvider {
 
@@ -374,16 +374,16 @@ public abstract class MMTable extends FunctionProvider {
      * Returns all the nodes from the builder.
      * @return The nodes.
      */
-    public List getNodes() {
+    public List<MMObjectNode> getNodes() {
         try {
-            List nodes = storageConnector.getNodes();
+            List<MMObjectNode> nodes = storageConnector.getNodes();
             if (nodes != null) {
                 return nodes;
             }
         } catch (SearchQueryException e) {
             log.error(e);
         }
-        return new ArrayList();
+        return new ArrayList<MMObjectNode>();
     }
 
     /**
