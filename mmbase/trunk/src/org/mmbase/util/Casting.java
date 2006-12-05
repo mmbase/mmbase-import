@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.97 2006-11-30 22:00:05 michiel Exp $
+ * @version $Id: Casting.java,v 1.98 2006-12-05 23:21:31 michiel Exp $
  */
 
 import java.util.*;
@@ -50,10 +50,10 @@ public class Casting {
      */
     public final static ThreadLocal<DateFormat> ISO_8601_LOOSE =
         new ThreadLocal<DateFormat>() {
-            protected synchronized DateFormat initialValue() {
-                    return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+        protected synchronized DateFormat initialValue() {
+                return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
             }
-        };
+    };
 
     /**
      * A Date formatter that creates a ISO 8601 datetime according to UTC/GMT.
@@ -65,7 +65,7 @@ public class Casting {
      */
     public final static ThreadLocal<DateFormat> ISO_8601_UTC =
         new ThreadLocal<DateFormat>() {
-            protected synchronized DateFormat initialValue() {
+        protected synchronized DateFormat initialValue() {
                 DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
                 df.setTimeZone(TimeZone.getTimeZone("UTC"));
                 return df;
@@ -74,11 +74,11 @@ public class Casting {
 
     public final static ThreadLocal<DateFormat> ISO_8601_DATE =
         new ThreadLocal<DateFormat>() {
-            protected synchronized DateFormat initialValue() {
-                    return new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-                }
+        protected synchronized DateFormat initialValue() {
+                return new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+            }
     };
-    public final static ThreadLocal<DateFormat> ISO_8601_TIME = 
+    public final static ThreadLocal<DateFormat> ISO_8601_TIME =
         new ThreadLocal<DateFormat>() {
         protected synchronized DateFormat initialValue() {
                 return new SimpleDateFormat("HH:mm:ss", Locale.US);
@@ -317,6 +317,8 @@ public class Casting {
     public static Object wrap(final Object o, final CharTransformer escaper) {
         if (o == null) {
             return escape(escaper, "");
+        } else if (o instanceof Unwrappable) {
+            return o;
         } else if (o instanceof Node) {
             return new NodeMap((Node)o) {
                     public Object getValue(String fieldName) {
@@ -592,14 +594,16 @@ public class Casting {
             res = ((Boolean)i).booleanValue() ? 1 : 0;
         } else if (i instanceof Date) {
             long timeValue = ((Date)i).getTime();
-            if (timeValue !=-1) timeValue = timeValue / 1000;
+
+            if (timeValue != -1) timeValue /= 1000;
+
             if (timeValue > Integer.MAX_VALUE) {
-                timeValue = Integer.MAX_VALUE;
+                res = Integer.MAX_VALUE;
+            } else if (timeValue < Integer.MIN_VALUE) {
+                res = Integer.MIN_VALUE;
+            } else {
+                res = (int) timeValue;
             }
-            if (timeValue < Integer.MIN_VALUE) {
-                timeValue = Integer.MIN_VALUE;
-            }
-            res = (int) timeValue;
         } else if (i instanceof Number) {
             long l = ((Number)i).longValue();
             if (l > Integer.MAX_VALUE) {
@@ -613,16 +617,16 @@ public class Casting {
             try {
                 res = Integer.parseInt("" + i);
             } catch (NumberFormatException e) {
-                // not an integer? perhaps it is a fload or double represented as String.
+                // not an integer? perhaps it is a float or double represented as String.
                 try {
-                    res = Double.valueOf("" + i).intValue();
+                    res = toInt(Double.valueOf("" + i), def); // recursive to hit the check on MAX_VALUE/MIN_VALUE also here.
                 } catch (NumberFormatException ex) {
-
                     // try if the value is a string representing a boolean.
                     if(i instanceof String){
-                        if(((String)i).toLowerCase().equals(("true"))){
+                        String s = ((String)i).toLowerCase();
+                        if (s.equals("true") || s.equals("yes")) {
                             res = 1;
-                        }else if(((String)i).toLowerCase().equals(("false"))){
+                        } else if(s.equals("false") || s.equals("no")) {
                             res = 0;
                         }
                     }
@@ -721,8 +725,12 @@ public class Casting {
             res = ((Node)i).getNumber();
         } else if (i != null) {
             if(i instanceof String){
-                if(((String)i).toLowerCase().equals("true")) return 1;
-                if(((String)i).toLowerCase().equals("false")) return 0;
+                String s = ((String)i).toLowerCase();
+                if (s.equals("true") || s.equals("yes")) {
+                    return 1;
+                } else if(s.equals("false") || s.equals("no")) {
+                    return 0;
+                }
             }
             try {
                 res = Long.parseLong("" + i);
@@ -773,23 +781,17 @@ public class Casting {
             res = ((Node)i).getNumber();
         } else if (i != null) {
             if(i instanceof String){
-                if(((String)i).toLowerCase().equals("true")) {
+                String s = ((String)i).toLowerCase();
+                if (s.equals("true") || s.equals("yes")) {
                     res = 1;
-                } else if(((String)i).toLowerCase().equals("false")) {
+                } else if(s.equals("false") || s.equals("no")) {
                     res = 0;
                 }
             }
             try {
                 res = Float.parseFloat("" + i);
             } catch (NumberFormatException e) {
-//              try if the value is a string representing a boolean.
-                if(i instanceof String){
-                    if(((String)i).toLowerCase().equals(("true"))){
-                        res = 1;
-                    } else if(((String)i).toLowerCase().equals(("false"))){
-                        res = 0;
-                    }
-                }
+                // use default
             }
         }
         return res;
@@ -833,9 +835,10 @@ public class Casting {
             } catch (NumberFormatException e) {
 //              try if the value is a string representing a boolean.
                 if(i instanceof String){
-                    if(((String)i).toLowerCase().equals(("true"))){
+                    String s = ((String)i).toLowerCase();
+                    if (s.equals("true") || s.equals("yes")) {
                         res = 1;
-                    }else if(((String)i).toLowerCase().equals(("false"))){
+                    } else if(s.equals("false") || s.equals("no")) {
                         res = 0;
                     }
                 }
@@ -943,7 +946,7 @@ public class Casting {
         if (value == null) {
             return null;
         }
-        if (log.isDebugEnabled()) {
+        if (log.isTraceEnabled()) {
             log.trace("using xml string:\n" + value);
         }
         try {
@@ -956,7 +959,7 @@ public class Casting {
                 // Yes, in contradiction to what one would think, XML are bytes, rather then characters.
                 doc = DOCUMENTBUILDER.parse(new java.io.ByteArrayInputStream(value.getBytes("UTF-8")));
             }
-            if (log.isDebugEnabled()) {
+            if (log.isTraceEnabled()) {
                 log.trace("parsed: " + XMLWriter.write(doc, false, true));
             }
             if (!errorHandler.foundNothing()) {
@@ -964,7 +967,9 @@ public class Casting {
             }
             return doc;
         } catch (org.xml.sax.SAXException se) {
-            log.debug("[sax] not well formed xml: " + se.toString() + "(" + se.getMessage() + ")\n" + Logging.stackTrace(se));
+            if (log.isDebugEnabled()) {
+                log.debug("[sax] not well formed xml: " + se.toString() + "(" + se.getMessage() + ")\n" + Logging.stackTrace(se));
+            }
             return convertStringToXML("<p>" + Encode.encode("ESCAPE_XML", value) + "</p>"); // Should _always_ be sax-compliant.
         } catch (java.io.IOException ioe) {
             String msg = "[io] not well formed xml: " + ioe.toString() + "\n" + Logging.stackTrace(ioe);
@@ -1074,6 +1079,13 @@ public class Casting {
         public CharSequence getString() {
             return string;
         }
+    }
+
+    /**
+     * Clases implementint this will not be wrapped by {@link #wrap}, even if the e.g. are CharSequence.
+     * @since MMBase-1.9
+     */
+    public static interface Unwrappable {
     }
 
 }
