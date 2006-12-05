@@ -32,7 +32,7 @@ import java.util.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.93 2006-11-21 20:32:40 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.94 2006-12-05 21:43:32 michiel Exp $
  * @see ContextTag
  */
 
@@ -159,8 +159,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
         if (EVAL_BODY == -1) { // as yet unset
             EVAL_BODY =  "true".equals(pc.getServletContext().getInitParameter("mmbase.taglib.eval_body_include")) ?
                 EVAL_BODY_INCLUDE : EVAL_BODY_BUFFERED;
-
-            log.info("Using " + (EVAL_BODY == EVAL_BODY_BUFFERED ? " EVAL_BODY_BUFFERED " :  "EVAL_BODY_INCLUDE"));
+            log.info("Using " + (EVAL_BODY == EVAL_BODY_BUFFERED ? " EVAL_BODY_BUFFERED (If you use a modern app-server, which supports it, you prefer EVAL_BODY_INCLUDE. See web.xml)" :  "EVAL_BODY_INCLUDE"));
         }
 
         if (log.isDebugEnabled()) {
