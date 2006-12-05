@@ -53,7 +53,11 @@ public class Pages extends FriendlyLink {
      */
     public String convertToFriendlyLink(Cloud cloud, HttpServletRequest request, String pagenr, Boolean convert) {
         StringBuffer url = new StringBuffer();
-        url.append(SEPARATOR);
+        // get real nodenr for alias
+        org.mmbase.bridge.Node pageNode = cloud.getNode(pagenr);
+        pagenr = pageNode.getStringValue("number");
+        
+        //url.append(SEPARATOR);
         url.append(getPageTemplate(cloud, pagenr)).append("?").append(PAGE_PARAM).append("=").append(pagenr);
         
         if (convert) {  // boolean to check if we really want to convert urls
@@ -100,7 +104,7 @@ public class Pages extends FriendlyLink {
             
             flink = new StringBuffer();         // overwrite
             // flink.append(contextpath).append(SEPARATOR).append(friendlyUrl);
-            flink.append(SEPARATOR).append(friendlyUrl);                        // NO CONTEXT !!
+            flink.append(friendlyUrl);                        // NO CONTEXT !!
             flink.append(PAGE_EXTENSION);       // appending .html at the end
             
             // TODO: check if this friendlylink already exists in cache and change it?
@@ -108,7 +112,7 @@ public class Pages extends FriendlyLink {
                 log.warn("flink '" + flink.toString() + "' already in cache, appending nodenr '_" + pagenr + "'");
                 
                 flink = new StringBuffer();			// overwrite again
-            	flink.append(SEPARATOR).append(friendlyUrl).append("_").append(pagenr);
+            	flink.append(friendlyUrl).append("_").append(pagenr);
             	flink.append(PAGE_EXTENSION);       // appending .html at the end
             }
             
@@ -209,14 +213,18 @@ public class Pages extends FriendlyLink {
     
     /**
      * Creates the url to a JSP page (or any other technical url) from a friendlylink.
-     * This one presumes the path consists of pagetitles
+     * This one presumes the path consists of pagetitles.
+     * Returns the original input when no match was found.
      *
      * @param   flink   the friendlylink to convert
      * @param   params  parameters in request
      * @return  technical link
      */
     public String convertToJsp(String flink, String params) {
+        if (log.isDebugEnabled()) log.debug("Trying to find '" + flink + "'");
+        
         StringBuffer jspurl = new StringBuffer();
+        jspurl.append(flink);
         Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
         UrlCache cache = UrlConverter.getCache();
         
@@ -230,8 +238,17 @@ public class Pages extends FriendlyLink {
         if (nl.size() > 0) {
             org.mmbase.bridge.Node n = nl.getNode(0);
             String number = n.getStringValue("number");
+            
             if (log.isDebugEnabled()) {
                 log.debug("Found a node with number '" + number + "' having this friendlylink as a 'title'." );
+            }
+            
+            // TODO: checken met getRootPath(cloud, pagenr)
+            String rootpath = getRootPath(cloud, number);
+            log.debug("rootpath '" + rootpath + "'");
+            if (rootpath.indexOf(title) > -1) {
+                log.warn("!! rootpath '" + rootpath + "'");
+                
             }
             jspurl = new StringBuffer();
             
@@ -253,7 +270,7 @@ public class Pages extends FriendlyLink {
     
     /**
      * Lists all cache entries, not just the cache entries of this nodetype
-     * but all entries in UrlCache, by calling the UrlCache#toString().
+     * but all entries in UrlCache, by calling UrlCache#toString().
      *
      * @return  all cache entries
      */
