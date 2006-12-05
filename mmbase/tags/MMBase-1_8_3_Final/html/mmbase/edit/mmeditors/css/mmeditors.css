@@ -1,0 +1,181 @@
+body,
+p,
+div,
+td { background-color : #fff;
+     font-family : arial,helvetica;
+     font-size: 13px;
+     color: #000;
+}
+
+a { color : #f00; }
+
+img { border: none;
+}
+
+.button { border: solid black 1px;
+	  height: 12px;
+	  width: 12px;
+}
+
+body.header { background-color : #000;
+     color: #fff;
+}
+
+.header a { color : #fff; }
+
+.header td { 
+      background-color : #000;
+      color: #fff;}
+
+table { 
+	width: 100%;
+	border : none;
+	padding : 0px;
+}
+
+table.editlist { 
+	width: 200px;
+	
+}
+
+table.objectlist { 
+	border: solid #000 2px;
+	border-collapse: collapse;
+	padding:0px;
+}
+
+table.fieldeditor { 
+	border: solid #000 1px;
+	border-collapse: collapse;
+	width: 352px;
+	text-align: center;
+	margin-top: 20px;
+	margin-right: auto;
+	margin-left: auto;
+}
+
+.objectlist tr { 
+	border: solid #000 1px;
+	padding:0px;
+}
+
+.objectlist td { 
+	border: solid #000 1px;
+	padding:2px;
+}
+
+.editprompt {
+	background-color : #c0c0c0;
+	color: #000;
+	text-align : right;
+	width: 190px;
+	font-weight: bold;
+}
+
+.editprecol {
+	background-color : #c0c0c0;
+	color: #c0c0c0;
+	width: 10px;
+}
+
+.editcol {
+	background-color : #c0c0c0;
+	color: #000;
+	width: 170px;
+}
+
+.fieldprompt {
+	background-color : #000;
+	color: #fff;
+	width: 90px;
+	text-align : left;
+}
+
+.fieldsearchprompt {
+	background-color : #000;
+	color: #fff;
+	text-align : center;
+}
+
+.fieldcaption {
+	background-color : #000;
+	color: #fff;
+	text-align : left;
+	font-weight: bold;
+	font-size: 18px;
+}
+
+.editfield {
+	background-color : #c0c0c0;
+	color: #000;
+	text-align : center;
+}
+
+.disabledprompt {
+	background-color : #e0e0e0;
+	color: #c0c0c0;
+}
+
+.disabledtext {
+	color : #e0e0e0;
+}
+
+.fieldsearch {
+	background-color : #fff;
+	color: #000;
+	width: 100px;
+}
+
+.navlink {
+	border: solid black 1px;
+	background-color : #63CE31;
+	color : #63CE31;
+	width : 10px;
+}
+
+.navlink td {
+	border: none;
+}
+
+.editlink {
+	border: solid black 1px;
+	background-color : #f00;
+	color : #f00;
+	width : 10px;
+}
+
+.editlink td {
+	border: none;
+}
+
+.relationlink {
+	border: solid black 1px;
+	background-color : #00f;
+	color : #00f;
+	width : 10px;
+}
+
+.relationlink td {
+	border: none;
+}
+
+.nolink {
+	background-color : #c0c0c0;
+	color : #c0c0c0;
+	width : 10px;
+}
+
+.disabledlink {
+	background-color : #e0e0e0;
+	color : #e0e0e0;
+	width : 10px;
+}
+
+.navlink a { color : #63CE31; }
+.editlink a { color : #f00; }
+.relationlink a { color : #00f; }
+
+.status { color : #00000C;
+          text-align: right;
+}
+

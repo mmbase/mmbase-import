@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<article>
+  <articleinfo>
+    <title>MMBase Architectural Overview</title>
+
+    <date>2003-03-20</date>
+
+    <edition>$Id: architecture.xml,v 1.6 2003-08-20 20:19:38 henk Exp $</edition>
+
+    <authorgroup>
+      <author>
+        <firstname>Henk</firstname>
+
+        <surname>Hangyi</surname>
+      </author>
+    </authorgroup>
+
+    <legalnotice>
+      <para>This software is OSI Certified Open Source Software. OSI Certified
+      is a certification mark of the Open Source Initiative.</para>
+
+      <para>The license (Mozilla version 1.0) can be read at the MMBase site.
+      See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
+    </legalnotice>
+
+    <revhistory>
+      <revision>
+        <revnumber>0.1</revnumber>
+
+        <date>2003-03-20</date>
+
+        <authorinitials>HH</authorinitials>
+      </revision>
+
+      <revision>
+        <revnumber>0.2</revnumber>
+
+        <date>2003-08-20</date>
+
+        <authorinitials>HH</authorinitials>
+      </revision>
+    </revhistory>
+  </articleinfo>
+
+  <section>
+    <title>Introduction</title>
+
+    <para>MMBase is a general purpose object oriented content management
+    system, which is implemented in Java. MMBase operates as a web-application
+    which can be plugged-in at an application server like Tomcat, Orion,
+    Resin, WebSphere, Jetty or IIS.</para>
+
+    <note>
+      <para>The main difference between a webserver like Apache and an
+      application server is that an application server is capable of executing
+      server-side functionality like programs written in Java. The application
+      servers on which MMBase can be plugged in have to support Java and Java
+      Server Pages.</para>
+    </note>
+
+    <graphic fileref="media/architecture.png" />
+
+    <para>This document provides an overview of the MMBase architecture. Each
+    component in the architecture is described. Suggestions for further
+    reading are given. The MMBase architecture can be subdivided into the
+    following layers.</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Database Access</para>
+      </listitem>
+
+      <listitem>
+        <para>MMBase Core</para>
+      </listitem>
+
+      <listitem>
+        <para>Security</para>
+      </listitem>
+
+      <listitem>
+        <para>Bridge</para>
+      </listitem>
+
+      <listitem>
+        <para>Plugins</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section>
+    <title>Database Access</title>
+
+    <para>MMBase is connected to a database via the JDBC interface. MMBase 1.6
+    supports the following relational databases.</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Informix</para>
+      </listitem>
+
+      <listitem>
+        <para>PostgreSQL</para>
+      </listitem>
+
+      <listitem>
+        <para>MySQL</para>
+      </listitem>
+
+      <listitem>
+        <para>HSQL</para>
+      </listitem>
+
+      <listitem>
+        <para>Oracle</para>
+      </listitem>
+
+      <listitem>
+        <para>DB2</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>A number of features of the MMBase Database layer are:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Database transparency</para>
+
+        <para>Ones you&#39;ve created a database and connected it to MMBase,
+        MMBase will do the rest for you. It will take care of the creation of
+        tables and will generate and take care of link tables. So the only SQL
+        statements which you have to learn to being able to work with MMBase
+        are: creating a database, making a backup of a database, restoring a
+        database and dropping a database.</para>
+      </listitem>
+
+      <listitem>
+        <para>Automatic index generation</para>
+
+        <para>When MMBase fills your database with tables it automatically
+        creates indices for columns, which are known to be frequently used in
+        database queries. This will guarantee that the database layer operates
+        in an efficient way right from the start.i</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>[TO DO: what do we have to say about Query and Storage? ]</para>
+  </section>
+
+  <section>
+    <title>MMBase Core</title>
+
+    <para>MMBase is an object oriented content management system. Content is
+    stored in objects. Objects can be connected to other objects by relations.
+    These relations are also objects, which can also contain content. Next to
+    containing content, objects can also have functionality. E.g. the image
+    object has the functionality to convert and scale images. The MMBase Core
+    provides the mapping from the relational database layer to the object
+    oriented layer. It is capable of:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>configuring objects and relations.</para>
+
+        <para>MMBase objects are configured by XML-configuration files called
+        builders. These builders describe the fields an object has and its
+        functionality. The field names for use in the Graphical User
+        Interfaces can be stored in multiple languages to make your MMBase
+        implementation ready for use in different languages. After a builder
+        is placed in the MMBase installation, the corresponding table in the
+        database is automatically created. To learn more about using builders
+        check out the Administrators/MMBase Builder Configuration
+        documentation . In the MMBase standard builders document under the
+        Templaters and Designers section you can find info on the builders
+        shipped with the MMBase release.</para>
+
+        <para>[TO DO: should both builder docs not be in the same section ? ]</para>
+      </listitem>
+
+      <listitem>
+        <para>creating objects and relations.</para>
+
+        <para>When an object, or node, is created the functionality added to
+        the object can dictate that some action has to be taken. E.g. an email
+        which is stored in MMBase is posted.</para>
+
+        <para>The creations of relations is a four-step procedure:</para>
+
+        <orderedlist>
+          <listitem>
+            <para>Create a builder with the fields that are necessary in the
+            relation.</para>
+          </listitem>
+
+          <listitem>
+            <para>Add the relation to the list of relation definitions
+            (RelDef)</para>
+          </listitem>
+
+          <listitem>
+            <para>Enter the source-relation-destination information into the
+            list of relations types (TypeRel)</para>
+          </listitem>
+
+          <listitem>
+            <para>Create relations.</para>
+          </listitem>
+        </orderedlist>
+
+        <para>See the document on relations in the Information Analysts
+        section for more information on this topic.</para>
+      </listitem>
+
+      <listitem>
+        <para>updating objects and relations.</para>
+
+        <para>MMBase contains observers that listen to changes in objects and
+        relations. When a change occurs, an observer can carry out some
+        appropriate actions. Most observers are used to keep the MMBase caches
+        up to date. Examples of such MMBase caches are the cache with
+        converted images and the query cache.</para>
+      </listitem>
+
+      <listitem>
+        <para>retrieving objects and relations.</para>
+
+        <para>When retrieving information from the database, MMBase will store
+        the results of the database queries for future use. This cache
+        functionality helps to speed up performance. Next to caches for
+        database queries, MMBase also contains a cache for storing converted
+        images for future use. These caches are totally transparent.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>[TO DO: write document on Transactions and Multicast.]</para>
+  </section>
+
+  <section>
+    <title>Security</title>
+
+    <para>MMBase offers an elaborated security layer for authorization and
+    authentication. Authorization tells what a user is allowed to do.
+    Authentication tells how a user can log on to an MMBase website. The
+    security models available in MMBase 1.6 are:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Cloud Security</para>
+
+        <para>MMBaseusers are administrated in the MMBase object cloud. This
+        security model offers a basic ranking system in Anonymous, Users and
+        Admin.</para>
+
+        <para>An advantage of the Cloud Security are that you can do your user
+        administration via the webinterface and that you are able to integrate
+        the MMBase users into your object model.</para>
+      </listitem>
+
+      <listitem>
+        <para>Context Security</para>
+
+        <para>MMBase users are administrated in XML-configuration files on the
+        file system. Users are part of Groups and Ranks. Each object in MMBase
+        belongs to a context. The Context Security model offers an
+        fine-grained mechanisms to specify rights of users and groups in
+        different contexts. The model provides the possibility to define basic
+        workflow schemes.</para>
+
+        <para>The Context Security is especially fit if the rights of users
+        has to be specified on object level or if you need basic workflow
+        functionality. A drawback of the context security model is that the
+        user administration can not be carried out via the web interface, but
+        one has to use the XML-configuration files.</para>
+      </listitem>
+
+      <listitem>
+        <para>Context Cloud Security</para>
+
+        <para>The Context Cloud Security provides the same functionality as
+        the Context Security. In contrast to the Context Security, the Context
+        Cloud security stores the authentication and authorization information
+        in the object cloud.</para>
+
+        <para>The Context Security is especially fit if the rights of users
+        has to be specified on object level or if you need basic workflow
+        functionality. A drawback of the context security model is that the
+        user administration can not be carried out via the web interface, but
+        one has to use the XML-configuration files.</para>
+      </listitem>
+
+      <listitem>
+        <para>Basic Security</para>
+
+        <para>Provides the basic login functionality, where users are
+        administrated in an file on the file system.</para>
+
+        <para>This security model should only be used in combination with
+        MMBase releases before version 1.5, that operate on basis of SHTML.</para>
+      </listitem>
+
+      <listitem>
+        <para>No security</para>
+
+        <para>Although trivial, it is sometimes handy to have an MMBase
+        installation with no authentication, no authorization or no security
+        at all. It won&#39;t come as a surprise that MMBase supports this
+        functionality.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>To learn more about security see the The MMBase Security Framework,
+    Installing and using Context Security, Installing and using Cloud Security
+    in the Administrator section.</para>
+  </section>
+
+  <section>
+    <title>Bridge (or the MMBase Connection Interface)</title>
+
+    <para>The MMBase Connection Interface handles the requests from the MMBase
+    Plugins and passes them to the Security layer. See the Bridge (MMCI) API
+    documentation under Templaters and Designers for more information on this
+    topic.</para>
+  </section>
+
+  <section>
+    <title>Plugins</title>
+
+    <para>There exist a growing list of plugins which add functionality to the
+    MMBase Core. The most important plugins are listed below.</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Taglib</para>
+
+        <para>The taglib provides a set of tags which facilitate communication
+        between MMBase and JSP-templates. See the MMBase taglib reference and
+        the Creating webpages with the MMBase Tag Library in the Templaters
+        and Designers section.</para>
+
+        <para>One widely used tool build with the taglib are the JSP-editors
+        for MMBase. With MMBase 1.6 to versions of the JSP-editors are
+        included \mmeditors\jsp and \mmexamples\jsp\my_editors .</para>
+      </listitem>
+
+      <listitem>
+        <para>Dove</para>
+
+        <para>Dove facilitates communication between MMBase and XML-files. You
+        can use Dove to build dynamic MMBase websites based on XML and XSLT.
+        See the Dove XML API under the section developers to learn more about
+        this topic.</para>
+
+        <para>An important application that uses Dove are the MMBase
+        editwizards. The editwizards let you create task-oriented
+        user-friendly forms, which can be a big help for editors in working
+        with MMBase. See the Editwizards documentation under the Templaters
+        and Designers section for more information on creating and using
+        editwizard forms.</para>
+      </listitem>
+
+      <listitem>
+        <para>R-MMCI</para>
+
+        <para>The Remote MMBase Cloud Interface makes it possible to
+        communicate with different MMBase installation at the same time. This
+        powerful plugin makes it possible to share and exchange data between
+        MMBase installations irrespective of their location. See the Remote
+        MMBase Cloud Interface under the section Developers to find out more.</para>
+      </listitem>
+
+      <listitem>
+        <para>XML-importer</para>
+
+        <para>The XML-importer can be used to import data from XML-files into
+        MMBase. The XML-importer provides intelligent Find and Merge
+        scenario&#39;s. More information can be found in the XML Importer (TCP
+        2.0) documentation in the Developers section.</para>
+      </listitem>
+
+      <listitem>
+        <para>Applications</para>
+
+        <para>The Applications plugin provide the functionality to package
+        MMBase websites. See the MMBase Applications documentation under the
+        Administrator section for more information on this item.</para>
+      </listitem>
+
+      <listitem>
+        <para>Editwizards</para>
+
+        <para>The editwizards provide the functionality to define forms to
+        edit the MMBase object cloud. Editors who do not frequently use MMBase
+        might get lost in their MMBase object cloud, when using the default
+        JSP editors to enter or change content, With the editwizards it is
+        possible to build task oriented forms, which guide editors through
+        their work. See the editwizard userguide and reference manual in the
+        templaters section for more information on the editwizards.</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+</article>

@@ -1,0 +1,49 @@
+body {
+	color: #000000;
+	background-color: #8C0000;
+}
+
+input,
+textarea,
+select {
+	color: black;
+}
+
+a:link    { color: #000; }
+a:visited { color: #000; }
+a:hover   { color: #000; }
+a:active  { color: red; }
+
+.tooltip {
+	background-color: #FFFF88;
+	border-color: #000000;
+}
+
+table.head {
+/*	background-color: #CCC; */
+	background-color: #000000;
+	color: #FFFFFF;
+}
+
+tr.headsubtitle  {         
+/*	background-color: #CCC; */
+	background-color: #000000;
+	color: #FFFFFF;
+} 
+
+table.body {
+	color: #000000;
+	background-color: #000000;
+}
+
+.pagenav,
+.pagenav-disabled,
+.pagenav-current {
+	color: #000000;
+}
+
+
+a.tools:link {  color:#FFF; }
+a.tools:visited {  color:#FFF; }
+a.tools:hover {  color: red; text-decoration:none;}
+a.tools:active {  color:#FFF; text-decoration:none; }

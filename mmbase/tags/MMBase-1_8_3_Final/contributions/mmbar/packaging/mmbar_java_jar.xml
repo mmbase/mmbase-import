@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE packaging_java_jar PUBLIC "-//MMBase/DTD packaging_java_jar config 1.0//EN" "http://www.mmbase.org/dtd/packaging_java_jar_1_0.dtd">
+<packaging_java_jar>
+	<lastversion>10</lastversion>
+	<lastdate>Fri Jun 03 12:53:14 CEST 2005</lastdate>
+	<name>mmbar jars</name>
+	<maintainer>Kennisnet</maintainer>
+	<description>A MMBase buildin set of tests to check performance of MMBase core</description>
+	<license type="MPL" version="" name="Mozzila Public License" />
+	<releasenotes></releasenotes>
+	<installationnotes></installationnotes>
+	<installreset>false</installreset>
+	<basedir>build/</basedir>
+	<include>jar</include>
+	<exclude>/CVS/</exclude>
+	<packagedepends>
+	</packagedepends>
+	<initiators>
+		<initiator name="Daniel Ockeloen" company="Kennisnet" />
+	</initiators>
+	<supporters>
+	</supporters>
+	<developers>
+		<developer name="Daniel Ockeloen" company="Kennisnet" />
+	</developers>
+	<contacts>
+		<contact name="Daniel Ockeloen" reason="Bugs Reports" mailto="daniel@xs4all.nl" />
+	</contacts>
+	<publishprovider name="" state="inactive" sharepassword="" />
+</packaging_java_jar>

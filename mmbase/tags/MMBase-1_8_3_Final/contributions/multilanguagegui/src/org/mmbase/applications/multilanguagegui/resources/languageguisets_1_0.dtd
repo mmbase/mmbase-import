@@ -1,0 +1,9 @@
+<!--
+    languageguisets_1_0.dtd
+-->
+
+<!ELEMENT languageguisets (languageguiset*)>
+
+<!ELEMENT languageguiset (#PCDATA)>
+<!ATTLIST languageguiset name CDATA #IMPLIED>
+<!ATTLIST languageguiset file CDATA #IMPLIED>

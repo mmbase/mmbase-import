@@ -1,0 +1,8 @@
+<people exportsource="mmbase://wizard.xs4all.nl:8242/xsbase/xsa" timestamp="20000602143030">
+	<node number="500" owner="system">
+		<firstname>admin</firstname>
+		<lastname>admin</lastname>
+		<email>root@localhost</email>
+		<account>admin</account>
+	</node>
+</people>

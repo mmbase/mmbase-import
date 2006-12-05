@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE storage PUBLIC "-//MMBase//DTD storage config 1.0//EN" "http://www.mmbase.org/dtd/storage_1_0.dtd" >
+<storage>
+	<!-- Hypersonic configuration resource.
+			 Note: a number of options used here may be incompatible with older configurations, especially
+			 Specifically, this configuration will replace all SQL reserved words (for fieldnames).
+			 If you use Hypersonic as a production database, and you encounter problems when accessing fields,
+			 you migth be using 'reserved' words that were not captured in odler versions.
+			 In that case, you migth want to supply your own resource.
+	-->
+	<storagemanagerfactory classname="org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory" version="0.1" />
+
+	<!-- use the manager for relational databases -->
+	<storagemanager classname="org.mmbase.storage.implementation.database.RelationalDatabaseStorageManager" version="0.1" />
+
+	<searchqueryhandler classname="org.mmbase.storage.search.implementation.database.BasicSqlHandler" />
+
+	<attributes>
+		<!-- Automatically prefix reserved words with "m_" -->
+		<attribute name="default-storage-identifier-prefix">m</attribute>
+
+		<!-- Not sure about this option, so turned it off -->
+		<option name="database-supports-blob" value="false" />
+
+		<!-- Does not support composite (unique) indexes -->
+		<option name="database-supports-composite-index" value="false" />
+
+		<!-- Do not support data definition -->
+		<option name="database-supports-data-definition" value="false" />
+
+		<!-- Hypersonic wants to have index declarations at the end of a CREATE TABLE statement  -->
+		<scheme name="create-table-scheme">CREATE TABLE {1} ({2} {3} {5})</scheme>
+		<scheme name="create-object-table-scheme">CREATE TABLE {1} ({2} {3} {5})</scheme>
+
+	</attributes>
+
+	<!-- Hypersonic type mappings -->
+	<type-mappings>
+		<type-mapping name="DOUBLE" type="DOUBLE" />
+		<type-mapping name="LONG" type="BIGINT" />
+		<type-mapping name="FLOAT" type="FLOAT" />
+		<type-mapping name="INTEGER" type="INTEGER" />
+		<type-mapping name="NODE" type="INTEGER" />
+		<type-mapping name="STRING" min-size="1" max-size="16777216" type="VARCHAR({0,number,########})" />
+		<type-mapping name="XML" min-size="1" max-size="16777216" type="VARCHAR({0,number,########})" />
+		<type-mapping name="BYTE" min-size="1" max-size="16777216" type="BINARY" />
+	</type-mappings>
+
+	<!-- Hypersonic disallowed fields are retrieved from the database -->
+	<disallowed-fields />
+
+</storage>

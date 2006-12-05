@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<builder name="mmevents" maintainer="mmbase.org" version="0" extends="object" >
+
+  <status>active</status>
+
+  <classfile>MMEvents</classfile>
+
+  <searchage>14</searchage>
+  <names>
+    <singular xml:lang="en">Time</singular>
+    <singular xml:lang="nl">Tijd</singular>
+    <singular xml:lang="eo">Tempo</singular>
+    <plural xml:lang="en">Times</plural>
+    <plural xml:lang="nl">Tijden</plural>
+    <plural xml:lang="eo">Tempoj</plural>
+  </names>
+
+  <descriptions>
+    <description xml:lang="en">Times used to place objects on a fixed time bar (epoch)</description>
+    <description xml:lang="nl">Tijden voor het plaatsen van object op een tijdas</description>
+  </descriptions>
+  
+  <properties>
+    <!-- Enable the automatic notification of when mmevents start or stop -->
+    <!-- you can listen to these notifications with the nodeChanged method -->
+    <property name="EnableNotify">true</property>
+    <!-- Size of the window to look for mmevents that start/stop in seconds -->
+    <property name="NotifyWindow">3600</property>
+  </properties>
+
+  <fieldlist>
+    <field>
+      <descriptions>
+        <description xml:lang="en">Identifying name for this event (for easy search)</description>
+        <description xml:lang="nl">Naam voor dit tijdsbestek (tbv zoeken)</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Name</guiname>
+        <guiname xml:lang="nl">Naam</guiname>
+        <guiname xml:lang="eo">Nomo</guiname>
+        <guitype>string</guitype>
+      </gui>
+      <editor>
+        <positions>
+          <input>1</input>          
+          <list>1</list>
+          <search>1</search>
+        </positions>
+      </editor>
+      <db>
+        <name>name</name>
+        <type state="persistent" size="64" notnull="false" key="false">STRING</type>
+      </db>
+    </field>
+    <field>
+      <descriptions>
+        <description xml:lang="en">Start time of the vent</description>
+        <description xml:lang="nl">Starttijd</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Start</guiname>
+        <guiname xml:lang="nl">Begin</guiname>
+        <guiname xml:lang="eo">Starto</guiname>
+        <guitype>eventtime</guitype>
+      </gui>
+      <editor>
+        <positions>
+          <input>2</input>
+          <list>2</list>
+          <search>2</search>
+        </positions>
+      </editor>
+      <db>
+        <name>start</name>
+        <type state="persistent" notnull="false" key="false">INTEGER</type>
+      </db>
+    </field>
+
+    <field>
+      <descriptions>
+        <description xml:lang="en">End time of the event</description>
+        <description xml:lang="nl">Einddtijd</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">End</guiname>
+        <guiname xml:lang="nl">Einde</guiname>
+        <guiname xml:lang="eo">Fino</guiname>
+        <guitype>eventtime</guitype>
+      </gui>
+      <editor>
+        <positions>
+          <input>3</input>
+          <list>3</list>
+          <search>3</search>
+        </positions>
+      </editor>
+      <db>
+        <name>stop</name>
+        <type state="persistent" notnull="false" key="false">INTEGER</type>
+      </db>
+    </field>
+
+    <field>
+      <descriptions>
+        <description xml:lang="en">Duration of the event</description>
+        <description xml:lang="nl">Duur van het tijdsbestek</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Length</guiname>
+        <guiname xml:lang="nl">Lengte</guiname>
+        <guiname xml:lang="eo">Longo</guiname>
+        <guitype>integer</guitype>
+      </gui>
+      <editor>
+        <positions>
+          <input>4</input>
+          <list>4</list>
+          <search>4</search>
+        </positions>
+      </editor>
+      <db>
+        <name>playtime</name>
+        <type state="persistent" notnull="false" key="false">INTEGER</type>
+      </db>
+    </field>
+    
+  </fieldlist>
+
+</builder>

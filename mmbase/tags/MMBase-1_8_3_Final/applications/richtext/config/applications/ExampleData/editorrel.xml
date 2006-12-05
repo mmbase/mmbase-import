@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<editorrel exportsource="mmbase://www.mmbase.org/richtext" timestamp="20050921221010">
+  <node number="11000" owner="admin" snumber="2001" dnumber="2" rtype="editor" dir="bidirectional">
+    <pos>1</pos>
+    <wizardjsp>/mmbase/kupu/mmbase/?tools=related&amp;link_nodetypes=images,urls,attachments,xmlnews</wizardjsp>
+    <size>-1</size>
+    <name>News</name>
+  </node>
+
+  <node number="11001" owner="admin" snumber="2002" dnumber="4" rtype="editor" dir="bidirectional">
+    <pos>2</pos>
+    <wizardjsp>/mmbase/kupu/mmbase/?tools=tree&amp;link_nodetypes=images,urls,attachments,xmlnews</wizardjsp>
+    <size>1</size>
+    <name>Chapters</name>
+  </node>
+
+</editorrel>

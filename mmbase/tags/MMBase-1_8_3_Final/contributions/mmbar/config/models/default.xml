@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE cloudmodel PUBLIC "-//MMBase/DTD cloudmodel config 1.0//EN" "http://www.mmbase.org/dtd/cloudmodel_1_0.dtd">
+<cloudmodel>
+  <neededbuilderlist>
+      <builder maintainer="kennisnet.nl" version="1">mmpo_basicobject</builder>
+  </neededbuilderlist>
+
+  <neededreldeflist>
+     <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel" />
+  </neededreldeflist>
+
+  <allowedrelationlist>
+  </allowedrelationlist>
+</cloudmodel>

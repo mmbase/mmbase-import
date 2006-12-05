@@ -1,0 +1,70 @@
+<!-- DTD for transactions processed by XML importer -->
+
+<!ELEMENT transactions (create | open | commit | delete)* >
+<!ATTLIST transactions exceptionPage CDATA #IMPLIED>
+<!ATTLIST transactions reportFile CDATA #IMPLIED> <!-- TCP2.0 -->
+<!ATTLIST transactions key CDATA #IMPLIED>
+
+<!ELEMENT create ((createObject | createRelation | openObject | accessObject | deleteObject | markObjectDelete)*, mergeObject*, mergeObjects*) > <!-- TCP2.0 added mergeObjects* -->
+<!ATTLIST create id CDATA #IMPLIED>
+<!ATTLIST create commit (true | false) "true">
+<!ATTLIST create timeOut CDATA "60">
+
+<!ELEMENT open ((createObject | createRelation | openObject | accessObject | deleteObject | markObjectDelete)*, mergeObject*, mergeObjects*) > <!-- TCP2.0 added mergeObjects* -->
+<!ATTLIST open id CDATA #REQUIRED>
+<!ATTLIST open commit (true | false) "true">
+
+<!ELEMENT commit EMPTY >
+<!ATTLIST commit id CDATA #REQUIRED>
+
+<!ELEMENT delete EMPTY >
+<!ATTLIST delete id CDATA #REQUIRED>
+
+<!-- OBJECTS -->
+<!ELEMENT createObject (setField*)>
+<!ATTLIST createObject id CDATA #IMPLIED>
+<!ATTLIST createObject type CDATA #REQUIRED>
+<!ATTLIST createObject disposeWhenNotReferenced (true | false) "false"> <!-- TCP2.0 -->
+
+<!ELEMENT createRelation (setField*)>
+<!ATTLIST createRelation id CDATA #IMPLIED>
+<!ATTLIST createRelation type CDATA #REQUIRED>
+<!ATTLIST createRelation source CDATA #REQUIRED>
+<!ATTLIST createRelation destination CDATA #REQUIRED>
+
+<!ELEMENT openObject (setField*)>
+<!ATTLIST openObject id CDATA #REQUIRED>
+
+<!ELEMENT deleteObject EMPTY >
+<!ATTLIST deleteObject id CDATA #REQUIRED>
+
+<!ELEMENT accessObject (setField*)>
+<!ATTLIST accessObject mmbaseId CDATA #REQUIRED>
+<!ATTLIST accessObject id CDATA  #IMPLIED>
+
+<!ELEMENT markObjectDelete EMPTY >
+<!ATTLIST markObjectDelete mmbaseId CDATA #REQUIRED>
+<!ATTLIST markObjectDelete deleteRelations (true | false) "false">
+
+<!ELEMENT mergeObject (objectMerger) > <!-- TCP2.0 -->
+<!ATTLIST mergeObject from CDATA #REQUIRED>
+<!ATTLIST mergeObject to CDATA #REQUIRED>
+
+<!ELEMENT mergeObjects (objectMatcher, objectMerger) > <!-- TCP2.0 -->
+<!ATTLIST mergeObjects type CDATA #REQUIRED > <!-- TCP2.0 -->
+
+<!ELEMENT objectMatcher (param*) > <!-- TCP2.0 -->
+<!ATTLIST objectMatcher class CDATA "org.mmbase.module.tcp.match.NodeMatcher" > <!-- TCP2.0 -->
+
+<!ELEMENT objectMerger (param*) > <!-- TCP2.0 -->
+<!ATTLIST objectMerger class CDATA "org.mmbase.module.tcp" > <!-- TCP2.0 -->
+
+<!-- FIELDS -->
+<!ELEMENT setField (#PCDATA) >
+<!ATTLIST setField name CDATA #REQUIRED>
+<!ATTLIST setField url CDATA #IMPLIED>
+
+<!-- PARAMETERS --> <!-- TCP2.0 -->
+<!ELEMENT param EMPTY> <!-- TCP2.0 -->
+<!ATTLIST param name CDATA #REQUIRED> <!-- TCP2.0 -->
+<!ATTLIST param value CDATA #REQUIRED> <!-- TCP2.0 -->

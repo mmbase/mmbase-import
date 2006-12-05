@@ -1,0 +1,94 @@
+<?xml version="1.0" ?>
+<mm:content type="text/html"
+            expires="0"
+            xmlns:jsp="http://java.sun.com/JSP/Page"
+            xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+            language="nl">
+  <jsp:directive.page import="org.mmbase.util.*,org.mmbase.richtext.Mmxf,java.util.*,org.w3c.dom.Document,org.mmbase.bridge.*,java.io.*,org.mmbase.util.transformers.*" />
+  <mm:cloud rank="basic user" jspvar="cloud">
+    <mm:param name="org.mmbase.xml-mode" value="docbook" />
+  <html>
+    <head>
+      <title>MMBase documentation import</title>
+      <mm:link page="/mmbase/style/css/mmbase.css">
+        <link rel="stylesheet"    href="${_}"     type="text/css" />
+      </mm:link>
+      <mm:link page="/mmbase/style/images/favicon.ico">
+        <link rel="icon"          href="${_}" type="image/x-icon" />
+        <link rel="shortcut icon" href="${_}" type="image/x-icon" />
+      </mm:link>
+    </head>
+    <body>
+      <mm:url id="back" write="false" page="/mmbase/style/images/back.png" />
+      <jsp:scriptlet>        
+        ResourceLoader dir = (ResourceLoader) session.getAttribute("current.dir");
+        if (dir == null) dir = ResourceLoader.getSystemRoot();
+        String subDir = request.getParameter("dir");
+        if (subDir != null) {
+          dir = dir.getChildResourceLoader(subDir);
+        } 
+        session.setAttribute("current.dir", dir);
+      </jsp:scriptlet>      
+      <h1>Documentation Import <jsp:expression>dir</jsp:expression></h1>
+        <mm:import externid="import"  jspvar="imp" vartype="string" />
+        <mm:notpresent referid="import">
+          <p>
+            Please select the directory containing the MMBase documentation XML's
+          </p>
+          <table>
+            <tr>
+              <td>
+                <mm:link page=".">
+                  <mm:param name="dir">..</mm:param>
+                  <a href="${_}">..</a>
+                </mm:link>
+              </td>
+            </tr>
+            <jsp:scriptlet>
+            Iterator i = dir.getChildContexts(null, false).iterator();
+            while (i.hasNext()) {
+            String resource = (String) i.next();
+          </jsp:scriptlet>
+          <mm:context>
+          <tr>
+            <td>
+              <mm:link page=".">
+                <mm:param name="dir"><jsp:expression>resource</jsp:expression></mm:param>
+                <a href="${_}"><jsp:expression>resource</jsp:expression></a>
+              </mm:link>
+            </td>
+          </tr>
+          </mm:context>
+          <jsp:scriptlet>
+            }
+          </jsp:scriptlet>
+          </table>
+          <mm:link page=".">
+            <mm:param name="import">.*\.xml</mm:param>
+            <a href="${_}">importing .*\.xml</a>
+          </mm:link>
+        </mm:notpresent>
+        <mm:present referid="import">
+          <h1>Importing <mm:write referid="import" /></h1>
+          <pre>
+            <jsp:scriptlet>
+              Iterator j = dir.getResourcePaths(java.util.regex.Pattern.compile(imp), true).iterator();
+              while (j.hasNext()) {              
+              try {
+                 out.println(j.next());
+                 Document doc = dir.getDocument((String) j.next());
+                 Node node = cloud.getNodeManager("segments").createNode();
+                 node.setXMLValue("body", doc);
+              } catch (Exception e) {
+                 out.println("XXX " + e.getMessage());
+              }
+              }
+            </jsp:scriptlet>
+          </pre>
+        </mm:present>
+        <hr />
+        <a class="navigate" href=".."><img src="${back}" alt="back" /></a>
+    </body>    
+  </html>
+  </mm:cloud>
+</mm:content>

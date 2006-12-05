@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE project 
+ [ <!ENTITY base     SYSTEM "../buildbase.xml" > ]
+>
+
+<project name="MMBase SCAN legacy stuff" default="dependent.package" basedir=".">
+  <property name="project.name"   value="scan" />
+  <property name="project.package"   value="org/mmbase/applications/scan" />
+  <property name="project.target.templates.dir" value="../" /><!-- scan stuff _must_ be in root -->
+  <property name="project.templates.dir" value="${project.source.dir}" />
+  <property name="project.templates.include" value="mmeditors/**/*" />
+  <property name="project.jars.includes" value="vwms/build/mmbase-vwms.jar" />
+  &base;
+
+  <target name="vwms">
+    <echo message="${applications.dir}/vwms" />
+    <ant dir="${applications.dir}/vwms" inheritAll="false" />
+  </target>
+
+  <target name="dependent.jar" depends="vwms,jar" />
+
+  <target name="dependent.package" depends="dependent.jar,package" />
+
+  <target name="dependent.install" depends="dependent.jar,install" />
+
+</project>
