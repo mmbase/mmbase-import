@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.95 2006-11-11 15:46:47 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.96 2006-12-05 22:48:04 michiel Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
@@ -84,16 +84,17 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
 
 
     public void addParameter(String key, Object value) throws JspTagException {
-        if (log.isDebugEnabled()) {
-            log.debug("adding parameter " + key + "/" + value);
-        }
         extraParameters.add(new Entry<String, Object>(key, value));
+        url.invalidate();
+        if (log.isDebugEnabled()) {
+            log.debug("adding parameter " + key + "/" + value + "--> "  + parameters);
+        }
     }
 
 
 
     public int doStartTag() throws JspTagException {
-        log.debug("starttag");
+        log.debug("starttag " + getId());
         extraParameters = new ArrayList<Map.Entry<String, Object>>();
         parameters = new UrlParameters(this);
         helper.useEscaper(false);
@@ -217,7 +218,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
     }
 
     protected void doAfterBodySetValue() throws JspTagException {
-        helper.setValue(url.get());
+        helper.setValue(url);
     }
 
     public int doAfterBody() throws JspException {
@@ -227,7 +228,6 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
 
 
     protected void initDoEndTag() throws JspTagException {
-        log.debug("endtag of url tag");
         if (helper.getJspvar() == null) {
             helper.overrideWrite(true);
             // because Url tag can have subtags (param), default writing even with body seems sensible
@@ -236,6 +236,9 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
 
     }
     public int doEndTag() throws JspTagException {
+        if (log.isDebugEnabled()) {
+            log.debug("endtag of url tag " + parameters + " -> " + url);
+        }
         initDoEndTag();
         doAfterBodySetValue();
         helper.doEndTag();
@@ -264,10 +267,15 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
                     List<Map.Entry<String, Object>> refs = Referids.getList(tag.referids, tag);
                     wrapped = tag.extraParameters == null ? refs : 
                         new ChainedList<Map.Entry<String, Object>>(refs, tag.extraParameters);
+                    if (log.isDebugEnabled()) {
+                        log.debug("url parameters " + wrapped + " " + refs + "/" + tag.extraParameters);
+                    }
                     tag = null; // no need any more. dereference.
                 } catch (JspTagException je) {
                     throw new RuntimeException(je);
                 }
+            } else {
+                log.debug("url parameters. " + wrapped);
             }
         }
         public int size() {
