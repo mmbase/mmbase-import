@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
  * information see the javadoc of that class.
  * @author Michiel Meeuwissen
- * @version $Id: MmxfSetString.java,v 1.15 2006-10-11 17:45:32 michiel Exp $
+ * @version $Id: MmxfSetString.java,v 1.9 2006-08-24 16:15:33 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -101,7 +101,8 @@ public class MmxfSetString implements  Processor {
         int level = 0;
         int offset = 0;
         int mode;
-        List<Element> subSections;
+        List subSections;
+        List sparedTags;
         ParseState(int sl, int m) {
             this(sl, m, 0);
         }
@@ -109,7 +110,7 @@ public class MmxfSetString implements  Processor {
             level = sl;
             mode = m;
             offset = of;
-            if (m == MODE_SECTION)  subSections = new ArrayList<Element>();
+            if (m == MODE_SECTION)  subSections = new ArrayList();
         }
 
         public String level() {
@@ -130,7 +131,7 @@ public class MmxfSetString implements  Processor {
     private static Pattern ignore        = Pattern.compile("link|#comment");
     private static Pattern hElement      = Pattern.compile("h([1-9])");
     private static Pattern crossElement  = Pattern.compile("a|img|div");
-    private static Pattern divClasses    = Pattern.compile(".*\\bfloat (?:note left|note right|intermezzo|caption left|caption right|quote left|quote right)");
+
 
     private static Pattern allowedAttributes = Pattern.compile("id|href|src|class|type");
 
@@ -154,33 +155,6 @@ public class MmxfSetString implements  Processor {
     }
 
     /**
-     * @since MMBase-1.9
-     */
-    protected String getCssClass(String cl) {
-        List<String> classes = new ArrayList();
-        for (String c : cl.split("\\s+")) {
-            if (! classes.contains(c)) classes.add(c);
-        }
-        StringBuffer c = new StringBuffer();
-        Iterator<String> i = classes.iterator();
-        while (i.hasNext()) {
-            c.append(i.next());
-            if (i.hasNext()) {
-                c.append(" ");
-            }
-        }
-        return c.toString();
-    }
-
-    private final Pattern WHITESPACE = Pattern.compile("\\s");
-    /**
-     * @since MMBase-1.9
-     */
-    protected String normalizeWhiteSpace(String s) {
-        return WHITESPACE.matcher(s).replaceAll(" ");
-    }
-
-    /**
      * First stage of parsing kupu-output. Does nothing with relations, only cleans up to 'mmxf' XML.
      *
      * @param source       XML as received from kupu
@@ -189,7 +163,7 @@ public class MmxfSetString implements  Processor {
      * @param state        The function is called recursively, and this object remembers the state then (where it was while parsing e.g.).
      */
 
-    private void parseKupu(Element source, Element destination, List<Element> links, ParseState state) {
+    private void parseKupu(Element source, Element destination, List links, ParseState state) {
         org.w3c.dom.NodeList nl = source.getChildNodes();
         if (log.isDebugEnabled()) {
             log.trace(state.level() + state.level + " Appending to " + destination.getNodeName() + " at " + state.offset + " of " + nl.getLength());
@@ -205,13 +179,13 @@ public class MmxfSetString implements  Processor {
             if (name.equals("#text")) {
                 if (node.getNodeValue() != null && ! "".equals(node.getNodeValue().trim())) {
                     if (state.mode == MODE_SECTION) {
-                        Element imp = destination.getOwnerDocument().createElementNS(Mmxf.NAMESPACE, "p");
+                        Element imp = destination.getOwnerDocument().createElement("p");
                         log.debug("Appending to " + destination.getNodeName());
                         destination.appendChild(imp);
-                        Text text = destination.getOwnerDocument().createTextNode(normalizeWhiteSpace(node.getNodeValue()));
+                        Text text = destination.getOwnerDocument().createTextNode(node.getNodeValue());
                         imp.appendChild(text);
                     } else {
-                        Text text = destination.getOwnerDocument().createTextNode(normalizeWhiteSpace(node.getNodeValue()));
+                        Text text = destination.getOwnerDocument().createTextNode(node.getNodeValue());
                         destination.appendChild(text);
                     }
                 } else {
@@ -233,20 +207,13 @@ public class MmxfSetString implements  Processor {
 
             matcher = crossElement.matcher(name);
             if (matcher.matches()) {
-                Element imp = destination.getOwnerDocument().createElementNS(Mmxf.NAMESPACE, "a");
+                Element imp = destination.getOwnerDocument().createElement("a");
                 copyAttributes((Element) node, imp);
                 if (name.equals("div")) {
-                    String cssClass = getCssClass("div " + imp.getAttribute("class"));
-                    if (! divClasses.matcher(cssClass).matches()) { 
-                        // this is no div of ours (copy/pasting?), ignore it.
-                        parseKupu((Element) node, destination, links, new ParseState(state.level, MODE_INLINE));
-                        continue;
-                    } else {
-                        imp.setAttribute("class", getCssClass("div " + imp.getAttribute("class")));
-                    }
+                    imp.setAttribute("class", "div " + imp.getAttribute("class"));
                 }
                 if (state.mode == MODE_SECTION) {
-                    Element p = destination.getOwnerDocument().createElementNS(Mmxf.NAMESPACE, "p");
+                    Element p = destination.getOwnerDocument().createElement("p");
                     log.debug("Appending to " + destination.getNodeName());
                     destination.appendChild(p);
                     p.appendChild(imp);
@@ -273,7 +240,7 @@ public class MmxfSetString implements  Processor {
             }
             if (name.equals("i")) { // produced by FF
                 if (node.getFirstChild() != null) { // ignore if empty
-                    Element imp = destination.getOwnerDocument().createElementNS(Mmxf.NAMESPACE, "em");
+                    Element imp = destination.getOwnerDocument().createElement("em");
                     destination.appendChild(imp);
                     parseKupu((Element) node, imp, links, new ParseState(state.level, MODE_INLINE));
                 }
@@ -281,28 +248,23 @@ public class MmxfSetString implements  Processor {
             }
             if (name.equals("b")) { // produced by FF
                 if (node.getFirstChild() != null) { // ignore if empty
-                    Element imp = destination.getOwnerDocument().createElementNS(Mmxf.NAMESPACE, "strong");
+                    Element imp = destination.getOwnerDocument().createElement("strong");
                     destination.appendChild(imp);
                     parseKupu((Element) node, imp, links, new ParseState(state.level, MODE_INLINE));
                 }
                 continue;
             }
-            if (name.equals("br")) { // sigh. Of course br is sillyness, but people want it.
-                if (state.mode == MODE_INLINE) { 
-                    Element imp = destination.getOwnerDocument().createElementNS(Mmxf.NAMESPACE, "br");
-                    destination.appendChild(imp);
-                    continue;
-                } else {
-                    log.warn("Found a br-tag, but not in INLINE mode, ignoring");
-                    continue;
-                }
+            if (name.equals("br")  && state.mode == MODE_INLINE) { // sigh
+                Element imp = destination.getOwnerDocument().createElement("br");
+                destination.appendChild(imp);
+                continue;
             }
 
             matcher = copyElement.matcher(name);
             if (matcher.matches()) {
                 org.w3c.dom.Node firstChild = node.getFirstChild();
                 if (firstChild != null && !(firstChild.getNodeType() == org.w3c.dom.Node.TEXT_NODE && firstChild.getNodeValue().equals(""))) { // ignore if empty
-                    Element imp = destination.getOwnerDocument().createElementNS(Mmxf.NAMESPACE, matcher.group(0));
+                    Element imp = destination.getOwnerDocument().createElement(matcher.group(0));
                     destination.appendChild(imp);
                     copyAttributes((Element) node, imp);
                     parseKupu((Element) node, imp, links, new ParseState(state.level, MODE_INLINE));
@@ -314,7 +276,7 @@ public class MmxfSetString implements  Processor {
                 if (state.mode != MODE_SECTION) {
                     log.warn("Found a section where it cannot be! (h-tags need to be on root level");
                     // treat as paragraph
-                    Element imp = destination.getOwnerDocument().createElementNS(Mmxf.NAMESPACE, "p");
+                    Element imp = destination.getOwnerDocument().createElement("p");
                     destination.appendChild(imp);
                     copyAttributes((Element) node, imp);
                     parseKupu((Element) node, imp, links,  new ParseState(state.level, MODE_INLINE));
@@ -326,8 +288,8 @@ public class MmxfSetString implements  Processor {
                 log.debug(state.level() + " Found section " + foundLevel + " on " + state.level);
                 if (foundLevel > state.level) {
                     // need to create a new state.
-                    Element section = destination.getOwnerDocument().createElementNS(Mmxf.NAMESPACE, "section");
-                    Element h       = destination.getOwnerDocument().createElementNS(Mmxf.NAMESPACE, "h");
+                    Element section = destination.getOwnerDocument().createElement("section");
+                    Element h       = destination.getOwnerDocument().createElement("h");
                     section.appendChild(h);
                     if (foundLevel == state.level + 1) {
                         parseKupu((Element) node, h, links,  new ParseState(state.level, MODE_INLINE));
@@ -577,8 +539,7 @@ public class MmxfSetString implements  Processor {
     }
 
 
-    private boolean handleImage(String href, Element a, List<Map.Entry<String, Node>> usedImages, 
-                                NodeList relatedImages, Node editedNode) {
+    private boolean handleImage(String href, Element a, NodeList usedImages, NodeList relatedImages, Node editedNode) {
         Cloud cloud = editedNode.getCloud();
         NodeManager images = cloud.getNodeManager("images");
         String  imageServlet      = images.getFunctionValue("servletpath", null).toString();
@@ -597,9 +558,9 @@ public class MmxfSetString implements  Processor {
             image = image.getNodeValue("id");
             log.debug("This is an icache for " + image.getNumber());
         }
+        usedImages.add(image);
         String klass = a.getAttribute("class");
         String id = a.getAttribute("id");
-        usedImages.add(new Entry(id, image));
         NodeList linkedImage = get(cloud, relatedImages, "idrel.id", a.getAttribute("id"));
         if (! linkedImage.isEmpty()) {
             // ok, already related!
@@ -626,7 +587,7 @@ public class MmxfSetString implements  Processor {
         return true;
     }
 
-    private boolean handleAttachment(Matcher matcher, Element a, List<Map.Entry<String, Node>>  usedAttachments, NodeList relatedAttachments, Node editedNode) {
+    private boolean handleAttachment(Matcher matcher, Element a, NodeList usedAttachments, NodeList relatedAttachments, Node editedNode) {
         if (! matcher.matches()) return false;
         if (! matcher.group(1).equals("attachments")) return false;
         String nodeNumber = matcher.group(2);
@@ -637,9 +598,9 @@ public class MmxfSetString implements  Processor {
         }
         NodeManager attachments = cloud.getNodeManager("attachments");
         Node attachment = cloud.getNode(nodeNumber);
+        usedAttachments.add(attachment);
         String klass = a.getAttribute("class");
         String id = a.getAttribute("id");
-        usedAttachments.add(new Entry(id, attachment));
         NodeList linkedAttachment = get(cloud, relatedAttachments, "idrel.id", id);
         if (! linkedAttachment.isEmpty()) {
             // ok, already related!
@@ -666,7 +627,7 @@ public class MmxfSetString implements  Processor {
     }
 
 
-    private boolean handleText(Matcher matcher, Element a, List<Map.Entry<String, Node>> usedTexts, NodeList relatedTexts, Node editedNode) {
+    private boolean handleText(Matcher matcher, Element a, NodeList usedTexts, NodeList relatedTexts, Node editedNode) {
         if (! matcher.matches()) return false;
         String nodeNumber = matcher.group(2);
         Cloud cloud = editedNode.getCloud();
@@ -675,9 +636,9 @@ public class MmxfSetString implements  Processor {
             return false;
         }
         Node text = cloud.getNode(nodeNumber);
+        usedTexts.add(text);
         String klass = a.getAttribute("class");
         String id = a.getAttribute("id");
-        usedTexts.add(new Entry(id, text));
         NodeList linkedText = get(cloud, relatedTexts, "idrel.id", id);
         if (! linkedText.isEmpty()) {
             // ok, already related!
@@ -701,13 +662,13 @@ public class MmxfSetString implements  Processor {
         a.removeAttribute("alt");
         return true;
     }
-    private boolean handleBlock(String href, Element a, List<Map.Entry<String, Node>> usedBlocks, NodeList relatedBlocks, Node editedNode) {
+    private boolean handleBlock(String href, Element a, NodeList relatedBlocks, Node editedNode) {
         if (! href.startsWith("BLOCK/")) return false;
 
         String nodeNumber = href.substring(6);
         Cloud cloud = editedNode.getCloud();
         NodeManager blocks = cloud.getNodeManager("blocks");
-        final Node block;
+        Node block;
         if (nodeNumber.equals("createddiv")) {
             block = blocks.createNode();
             block.setStringValue("title", "Block created for node " + editedNode.getNumber());
@@ -715,6 +676,7 @@ public class MmxfSetString implements  Processor {
         } else {
             block = cloud.getNode(nodeNumber);
         }
+
         DocumentBuilder documentBuilder = org.mmbase.util.xml.DocumentReader.getDocumentBuilder();
         DOMImplementation impl = documentBuilder.getDOMImplementation();
         Document blockDocument = impl.createDocument("http://www.w3.org/1999/xhtml", "body", null);
@@ -736,7 +698,6 @@ public class MmxfSetString implements  Processor {
         block.commit();
         String klass = a.getAttribute("class");
         String id = a.getAttribute("id");
-        usedBlocks.add(new Entry(id, block));
         NodeList linkedBlock = get(cloud, relatedBlocks, "idrel.id", id);
         if (! linkedBlock.isEmpty()) {
             // ok, already related!
@@ -784,7 +745,7 @@ public class MmxfSetString implements  Processor {
         Element body = (Element) bodies.item(0);
         body.normalize();
         Element mmxf = xml.getDocumentElement();
-        List<Element> links = new ArrayList();
+        List links = new ArrayList();
 
         // first stage.
         parseKupu(body, mmxf, links, new ParseState(0, MODE_SECTION));
@@ -805,27 +766,26 @@ public class MmxfSetString implements  Processor {
 
 
             NodeList relatedImages        = getRelatedNodes(editedNode, images);
-            List<Map.Entry<String, Node>> usedImages = new ArrayList();
+            NodeList usedImages           = cloud.createNodeList();
 
             NodeList relatedAttachments   = getRelatedNodes(editedNode, attachments);
-            List<Map.Entry<String, Node>> usedAttachments = new ArrayList();
+            NodeList usedAttachments      = cloud.createNodeList();
 
             NodeList relatedBlocks        = getRelatedNodes(editedNode, blocks);
-            List<Map.Entry<String, Node>> usedBlocks = new ArrayList();
 
             NodeList relatedUrls          = getRelatedNodes(editedNode, urls);
-            List<Map.Entry<String, Node>> usedUrls = new ArrayList();
+            NodeList usedUrls             = cloud.createNodeList();
 
             NodeList relatedTexts;
-            List<Map.Entry<String, Node>> usedTexts;
+            NodeList usedTexts;
             {
                 NodeQuery q = Queries.createRelatedNodesQuery(editedNode, texts, "idrel", "destination");
                 StepField stepField = q.createStepField(q.getNodeStep(), "otype");
-                SortedSet<Integer> nonTexts = new TreeSet();
-                nonTexts.add(images.getNumber());
-                nonTexts.add(attachments.getNumber());
-                nonTexts.add(blocks.getNumber());
-                nonTexts.add(urls.getNumber());
+                SortedSet nonTexts = new TreeSet();
+                nonTexts.add(new Integer(images.getNumber()));
+                nonTexts.add(new Integer(attachments.getNumber()));
+                nonTexts.add(new Integer(blocks.getNumber()));
+                nonTexts.add(new Integer(urls.getNumber()));
                 FieldValueInConstraint newConstraint = q.createConstraint(stepField, nonTexts);
                 q.setInverse(newConstraint, true);
                 Queries.addConstraint(q, newConstraint);
@@ -834,12 +794,14 @@ public class MmxfSetString implements  Processor {
                 if (log.isDebugEnabled()) {
                     log.debug("Found related texts " + relatedTexts);
                 }
-                usedTexts = new ArrayList();
+                usedTexts = cloud.createNodeList();
             }
 
 
-            for (Element a : links) {
+            Iterator linkIterator = links.iterator();
             //String imageServletPath = images.getFunctionValue("servletpath", null).toString();
+            while (linkIterator.hasNext()) {
+                Element a = (Element) linkIterator.next();
                 try {
                     String href = getHref(a, cloud);
                     Matcher mmbaseMatcher =  mmbaseUrl.matcher(href);
@@ -849,7 +811,7 @@ public class MmxfSetString implements  Processor {
                         continue;
                     } else if (handleText(mmbaseMatcher, a, usedTexts, relatedTexts, editedNode)) {
                         continue;
-                    } else if (handleBlock(href, a, usedBlocks, relatedBlocks, editedNode)) {
+                    } else if (handleBlock(href, a, relatedBlocks, editedNode)) {
                         continue;
                     } else { // must have been really an URL
                         String klass = a.getAttribute("class");
@@ -862,7 +824,7 @@ public class MmxfSetString implements  Processor {
                             Node idrel = idLinkedUrls.getNode(0).getNodeValue("idrel");
                             if (url.getStringValue("url").equals(href)) {
                                 log.service("" + url + " url already correctly related, nothing needs to be done");
-                                usedUrls.add(new Entry(id, url));
+                                usedUrls.add(url);
                                 if (!idrel.getStringValue("class").equals(klass)) {
                                     idrel.setStringValue("class", klass);
                                     idrel.commit();
@@ -882,7 +844,7 @@ public class MmxfSetString implements  Processor {
                         } else {
                             url = nodeLinkedUrls.getNode(0).getNodeValue("urls");
                         }
-                        usedUrls.add(new Entry(id, url));
+                        usedUrls.add(url);
                         RelationManager rm = cloud.getRelationManager(editedNode.getNodeManager(), url.getNodeManager(), "idrel");
                         Relation newIdRel = rm.createRelation(editedNode, url);
                         newIdRel.setStringValue("id", id);
@@ -907,7 +869,6 @@ public class MmxfSetString implements  Processor {
             cleanDanglingIdRels(relatedUrls,     usedUrls,     "urls");
             cleanDanglingIdRels(relatedAttachments, usedAttachments, "attachments");
             cleanDanglingIdRels(relatedTexts, usedTexts, texts.getName());
-            cleanDanglingIdRels(relatedBlocks, usedBlocks, "blocks");
         }
 
 
@@ -917,14 +878,13 @@ public class MmxfSetString implements  Processor {
     /**
      * At the end of stage 2 of parseKupu all relations are removed which are not used any more, using this function.
      */
-    protected void cleanDanglingIdRels(NodeList clusterNodes, List<Map.Entry<String, Node>> usedNodes, String type) {
+    protected void cleanDanglingIdRels(NodeList clusterNodes, NodeList usedNodes, String type) {
        NodeIterator i = clusterNodes.nodeIterator();
        while(i.hasNext()) {
            Node clusterNode = i.nextNode();
            Node node = clusterNode.getNodeValue(type);
-           Node idrel = clusterNode.getNodeValue("idrel");
-           String id = idrel.getStringValue("id");
-           if (! usedNodes.contains(new Entry(idrel.getStringValue("id"), node))) {
+           if (! usedNodes.contains(node)) {
+               Node idrel = clusterNode.getNodeValue("idrel");
                if (log.isDebugEnabled()) {
                    log.debug(" " + node + " was not used! id:" + idrel.getStringValue("id"));
                }
@@ -932,10 +892,8 @@ public class MmxfSetString implements  Processor {
                    log.debug("Idrel returned null from " + clusterNode + " propbably deleted already in previous cleandDanglingIdRels");
                } else {
                    if (idrel.mayDelete()) {
-                       log.service("Removing unused idrel " + id + "-> " + type + " " + node.getNumber());
+                       log.service("Removing unused idrel " + idrel);
                        idrel.delete(true);
-                   } else {
-                       log.service("Could not remove unused idrel " + id + "-> " + type + " " + node.getNumber());;
                    }
                }
            }

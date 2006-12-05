@@ -17,52 +17,52 @@ import java.io.*;
 
 public class CloudModel {
 
-    private static Logger log = Logging.getLoggerInstance(CloudModel.class);
+    private static Logger log = Logging.getLoggerInstance(CloudModel.class); 
     private String name;
     private String path;
     private HashMap builders = new HashMap();
 
     public CloudModel(String name) {
-        this.name =  name;
+	this.name =  name;
     }
-
+  
     public CloudModelBuilder addBuilder(String buildername,String path) {
-        CloudModelBuilder cmb =  new CloudModelBuilder(buildername);
-        cmb.setPath(path);
-        builders.put(buildername,cmb);
-        return cmb;
-    }
+	CloudModelBuilder cmb =  new CloudModelBuilder(buildername);
+	cmb.setPath(path);
+	builders.put(buildername,cmb);
+	return cmb;
+    } 
 
     public void setPath(String path) {
-        this.path = path;
+	this.path = path;
     }
 
     public CloudModelBuilder getModelBuilder(String name) {
-        return (CloudModelBuilder)builders.get(name);
+	return (CloudModelBuilder)builders.get(name);
     }
 
 
     public boolean writeToFile(String filepath) {
-        InputStream in = ResourceLoader.getConfigurationRoot().getResourceAsStream(path);
-        if (in!=null) {
-            try {
-                FileOutputStream out = new FileOutputStream(filepath);
-                byte[] buf = new byte[1024];
-                int len;
-                while ((len = in.read(buf)) > 0) {
-                    out.write(buf, 0, len);
-                }
-                in.close();
-                out.flush();
-                out.close();
-            } catch(Exception e) {
-               e.printStackTrace();
-               return false;
-            }
-        } else {
-            log.info("Resource not found : "+path);
-        }
-        return true;
+       	    InputStream in = ResourceLoader.getConfigurationRoot().getResourceAsStream(path);
+	    if (in!=null) {
+       	    	try {                
+			FileOutputStream out = new FileOutputStream(filepath);
+        		byte[] buf = new byte[1024];
+        		int len;
+        		while ((len = in.read(buf)) > 0) {
+            			out.write(buf, 0, len);
+        		}
+        		in.close();
+                        out.flush();
+        		out.close();
+                    } catch(Exception e) {
+                       e.printStackTrace();
+		       return false;
+                    }
+		} else {
+			log.info("Resource not found : "+path);
+		}
+	return true;
     }
 
 }

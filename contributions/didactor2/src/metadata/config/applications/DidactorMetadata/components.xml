@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<components exportsource="mmbase://www.didactor.org/version2.0" timestamp="20020516170724">
-    <node number="9000" owner="system" alias="component.metadata">
-        <name>metadata</name>
-        <classname>nl.didactor.component.metadata.DidactorMetadata</classname>
-    </node>
-</components>

@@ -23,20 +23,20 @@ import org.mmbase.bridge.jsp.taglib.ContentTag;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: Backing.java,v 1.7 2006-11-21 20:32:40 michiel Exp $
+ * @version $Id: Backing.java,v 1.5.2.1 2006-11-21 20:39:56 michiel Exp $
  */
 
-public interface Backing extends Map<String, Object> {
+public interface Backing extends Map {
     /**
      * Get the original value as stored in this Map, so without every wrapping which may have been
      * done.
      */
-    public Object getOriginal(String key);
+    public Object getOriginal(Object key);
     /**
      * Whether this map contains the given key, but by its own, so not because of possible
      * reflection of another structure (like the page context).
      */
-    public boolean containsOwnKey(String key);
+    public boolean containsOwnKey(Object key);
 
     /**
      * 
@@ -53,7 +53,6 @@ public interface Backing extends Map<String, Object> {
      * @see #pushPageContext(PageContext)
      */
     public void pullPageContext(PageContext pc);
-
 
     /**
      * @since MMBase-1.8.3

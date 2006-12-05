@@ -2,7 +2,7 @@
 
 
 MMBase Build File
-$Id: build.xml,v 1.158 2006-11-16 11:29:25 michiel Exp $
+$Id: build.xml,v 1.147.2.3 2006-11-27 17:40:03 michiel Exp $
 =================
 
 This build file can be used to build the following from CVS or from the source
@@ -111,8 +111,8 @@ several MMBase-checkouts.
 
 
   <property name="source-documentation.dir"  location="${source.dir}/documentation" />
-  <property name="source-src.dir"           location="${source.dir}/src"/>
-  <property name="generated-source-src.dir" location="${build.dir}/src"/>
+  <property name="source-src.dir"       location="${source.dir}/src"/>
+  <property name="generated-source-src.dir"       location="${build.dir}/src"/>
   <property name="webapp.dir"           value="${build.dir}/mmbase/mmbase-webapp"/>
   <property name="mmdocs.dir"           value="${webapp.dir}/mmdocs"/>
   <property name="web.dir"              value="${webapp.dir}/WEB-INF"/>
@@ -121,8 +121,6 @@ several MMBase-checkouts.
   <property name="optional.lib.dir"     value="${source.dir}" /> <!-- just a dir that does not contain libs..-->
   <property name="mmbase.jar"           value="${build.dir}/mmbase.jar"/>
   <property name="jar.download"           value="http://www.mmbase.org/download/jars"/>
-
-  <import file="download.xml" />
 
   <target name="init" depends="check.dir.all">
     <condition property="do.documentation">
@@ -216,6 +214,7 @@ builddate=${builddate}
       </fileset>
     </copy>
 
+    <mkdir dir="${mmdocs.dir}"/> <!-- don't fail the build if documentation as not build -->
     <!-- copy the documentation -->
     <mkdir dir="${build.dir}/mmbase-src/mmdocs"/>
     <copy todir="${build.dir}/mmbase-src/mmdocs/">
@@ -302,7 +301,8 @@ builddate=${builddate}
   <target
     name="lib.release"
     description="Create the lib directory"
-    depends="init,init.get,jar,applications">
+    depends="init,init.get,jar">
+    <!--depends="init,expand.xalan,expand.log4j,expand.hsqldb,expand.jai,jar"-->
 
     <mkdir dir="${release.lib.dir}" />
     <copy file="${xalan.jar}"          todir="${release.lib.dir}" />
@@ -312,6 +312,11 @@ builddate=${builddate}
     <copy file="${fileupload.jar}"     tofile="${release.lib.dir}/commons-fileupload.jar" />
     <copy file="${hsqldb.jar}"         todir="${release.lib.dir}" />
     <!--
+    <copy file="${jai_codec.jar}"      todir="${release.lib.dir}" />
+    <copy file="${jai_core.jar}"       todir="${release.lib.dir}" />
+    <copy file="${javamail.jar}"       todir="${release.lib.dir}" />
+    -->
+    <!--
     <copy file="${javaactivation.jar}"  todir="${release.lib.dir}" />
     -->
 
@@ -319,6 +324,8 @@ builddate=${builddate}
     <copy file="${taglibs-standard-standard.jar}" todir="${release.lib.dir}" />
 
     <copy file="${mmbase.jar}"         todir="${release.lib.dir}" />
+
+    <copy file="${backport-util-concurrent.jar}"  todir="${release.lib.dir}" />
 
     <copy file="${source-documentation.dir}/releases/XERCES.README.txt" todir="${release.lib.dir}" />
 
@@ -330,7 +337,7 @@ builddate=${builddate}
 
   <target name="lib.compile" description="Create the lib directory, containing the libraries necessary for compilation"
           depends="init,init.get">
-          <!--depends="init,expand.servlet,expand.xalan,expand.log4j,expand.javamail,expand.javaactivation,get.jdbc">-->
+          <!--depends="init,expand.servlet,expand.xalan,expand.jai,expand.log4j,expand.javamail,expand.javaactivation,get.jdbc">-->
 
     <mkdir dir="${compile.lib.dir}"/>
 
@@ -344,9 +351,12 @@ builddate=${builddate}
 
     <copy file="${servlet.jar}"   todir="${compile.lib.dir}" />
     <copy file="${fileupload.jar}" tofile="${compile.lib.dir}/commons-fileupload.jar" />
+    <copy file="${jai_codec.jar}" todir="${compile.lib.dir}" />
+    <copy file="${jai_core.jar}"  todir="${compile.lib.dir}" />
     <copy file="${log4j.jar}"     tofile="${compile.lib.dir}/log4j.jar" />
     <copy file="${javamail.jar}"  todir="${compile.lib.dir}" />
     <copy file="${javaactivation.jar}"  todir="${compile.lib.dir}" />
+    <copy file="${backport-util-concurrent.jar}"  todir="${compile.lib.dir}" />
   </target>
 
   <target name="lib.compile.zip" depends="lib.compile" description="Packages the download dir." >
@@ -476,9 +486,10 @@ builddate=${builddate}
         <include name="eventmanager.xml"/>
         <include name="datatypes.xml"/>
         <include name="applications/Basics.xml"/>
+        <include name="applications/Resources.xml"/>
+        <include name="applications/Resources/**"/>
         <include name="builders/core/*.xml"/>
         <include name="builders/INDEX" />
-        <include name="components/**" />
         <include name="functions/**/*.xml"/>
         <include name="storage/**/*.xml"/>
         <include name="modules/mmbaseroot.xml"/>
@@ -500,6 +511,7 @@ modules/
     </echo>
     <echo file="${build.dir}/classes/org/mmbase/config/applications/INDEX">
 Basics.xml
+Resources.xml
     </echo>
     <echo file="${build.dir}/classes/org/mmbase/config/modules/INDEX">
 mmbaseroot.xml
@@ -517,7 +529,7 @@ mmadmin.xml
            classpathref="compile.classpath"
            debug="${debug}"
            optimize="${optimize}"
-           source="1.5"
+           source="1.4"
            nowarn="${nowarn}"
            deprecation="${deprecation}"
            includeAntRuntime="false"
@@ -527,6 +539,20 @@ mmadmin.xml
     </javac>
     <tstamp/>
     <echo file="${build.dir}/classes/org/mmbase/builddate.properties">${builddate}</echo>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Check the optional packages                                         -->
+  <!-- =================================================================== -->
+
+  <target name="check.optional.jai" unless="jai.in.classpath">
+    <echo message=""/>
+    <echo message="Warning: Missing optional package javax.jai."/>
+    <echo message="You can't use the java based Image-Converter without this package,"/>
+    <echo message="you've got to use ImageMagick."/>
+    <echo message="JAI can be downloaded from http://www.javasoft.com/products/java-media/jai/"/>
+    <echo message="MMBase will compile and run without this package."/>
+    <echo message=""/>
   </target>
 
   <target name="check.optional.log4j" unless="log4j.in.classpath">
@@ -656,7 +682,7 @@ Build-compiler: ${build.compiler}
     </war>
   </target>
 
-  <target name="minimalistic.war" description="Create a minimalistic MMBase war-file" depends="lib.release,web,jar,minimalistic.applications">
+  <target name="minimalistic.war" description="Create a minimalistic MMBase war-file" depends="lib.release,web,jar,applications">
 
     <war warfile="${build.dir}/minimalistic-mmbase.war" webxml="${web.xml.path}" duplicate="preserve">
       <lib dir="${release.lib.dir}">
@@ -664,6 +690,7 @@ Build-compiler: ${build.compiler}
           <or>
             <filename name="mmbase.jar" />
             <filename name="mmbase-taglib-2.jar" />
+            <filename name="backport-util*.jar" />
             <filename name="hsqldb*.jar" />
             <filename name="jstl*.jar" />
             <filename name="standard*.jar" />
@@ -688,14 +715,15 @@ Build-compiler: ${build.compiler}
               <filename name="WEB-INF/config/modules/jdbc.xml" />
               <filename name="WEB-INF/config/security/security.xml" />
               <filename name="WEB-INF/config/security/context/**" />
-              <filename name="mmbase/**" />
+              <filename name="mmbase/edit/basic/**" />
+              <filename name="mmbase/edit/index.*" />
+              <filename name="mmbase/admin/**" />
+              <filename name="mmbase/style/**" />
+              <filename name="mmbase/errorpages/**" />
               <filename name="mmbase/index.jsp" />
               <filename name="mmbase/mpl-1.0.jsp" />
               <filename name="index.jsp" />
             </or>
-            <not>
-              <filename name="mmbase/edit/wizard/**" />
-            </not>
           </and>
         </selector>
       </fileset>
@@ -707,13 +735,13 @@ Build-compiler: ${build.compiler}
   <!-- =================================================================== -->
   <target name="javadocs"
           description="Create the API documentation"
-          depends="init,init.get,lib.compile,lib.release,javacc"
+          depends="init,init.get,lib.compile,javacc"
           unless="did.javadocs"
     >
-    <mkdir dir="${download.dir}/j2se5"/>
+    <mkdir dir="${download.dir}/j2se"/>
     <antcall target="download">
       <param name="sourcefile" value="${j2se-javadoc.loc}/package-list" />
-      <param name="destfile"   value="${download.dir}/j2se5/package-list" />
+      <param name="destfile"   value="${download.dir}/j2se/package-list" />
     </antcall>
     <mkdir dir="${download.dir}/j2ee"/>
     <antcall target="download">
@@ -738,9 +766,9 @@ Build-compiler: ${build.compiler}
              windowtitle="MMBase API"
              doctitle="MMBase"
              maxmemory="500M"
-             source="1.5"
+             source="1.4"
              bottom="MMBase build ${distro.version}.${builddate}">
-      <link offline="true" packagelistLoc="${download.dir}/j2se5" href="${j2se-javadoc.loc}" />
+      <link offline="true" packagelistLoc="${download.dir}/j2se" href="${j2se-javadoc.loc}" />
       <link offline="true" packagelistLoc="${download.dir}/j2ee" href="${j2ee-javadoc.loc}" />
       <link offline="true" packagelistLoc="${download.dir}/jstl" href="${jstl-javadoc.loc}" />
       <link offline="true" packagelistLoc="${expand.dir}/${log4j.fullversion}/docs/api" href="http://logging.apache.org/log4j/docs/api/" />
@@ -776,10 +804,6 @@ Build-compiler: ${build.compiler}
           <include name="**/*.zip"/>
         </fileset>
         <fileset dir="${applications.home}/oscache-cache/">
-          <include name="**/*.jar"/>
-          <include name="**/*.zip"/>
-        </fileset>
-        <fileset dir="${applications.home}/resources/">
           <include name="**/*.jar"/>
           <include name="**/*.zip"/>
         </fileset>
@@ -838,7 +862,7 @@ Build-compiler: ${build.compiler}
              noindex="true"
              windowtitle="MMBase MMCI API"
              doctitle="MMBase"
-             source="1.5"
+             source="1.4"
              maxmemory="100M"
              bottom="MMBase build ${distro.version}.${builddate}">
       <classpath>
@@ -952,7 +976,25 @@ Build-compiler: ${build.compiler}
     <antcall target="javadocs" />
   </target>
 
-  <target name="init.get" depends="download.init.get">
+  <!-- =================================================================== -->
+  <!-- Various targets for automated downloads                             -->
+  <!-- =================================================================== -->
+  <target name="unzipdownloadzip" if="download.zip.present"
+          unless="download.dir.present">
+    <unzip src="${download.zip}" dest="${download.dir}" overwrite="false" />
+  </target>
+
+  <target name="init.get" depends="proxyflags">
+
+    <available property="download.zip.present" file="${download.zip}" />
+    <available property="download.dir.present" file="${download.dir}" />
+
+    <antcall target="unzipdownloadzip" />
+
+    <!-- Init actions -->
+    <mkdir dir="${download.dir}"/>
+    <mkdir dir="${expand.dir}"/>
+
     <echo message="servlet" />
     <antcall target="downloadgz">
       <param name="sourcefile" value="${servlet.loc}"/>
@@ -968,6 +1010,13 @@ Build-compiler: ${build.compiler}
       <param name="expandedfile" value="${hsqldb.jar}"/>
     </antcall>
 
+    <echo message="jai" />
+    <antcall target="downloadbz2">
+      <param name="sourcefile" value="${jai.loc}"/>
+      <param name="destfile" value="${jai.dest}"/>
+      <param name="destdir" value="${jai.dir}"/>
+      <param name="expandedfile" value="${jai_core.jar}"/>
+    </antcall>
 
     <echo message="javamail" />
     <antcall target="downloadzip">
@@ -985,6 +1034,12 @@ Build-compiler: ${build.compiler}
       <param name="expandedfile" value="${javaactivation.jar}"/>
     </antcall>
 
+    <echo message="docbook" />
+    <antcall target="downloadgz">
+      <param name="sourcefile" value="${docbook-xsl.loc}"/>
+      <param name="destfile" value="${docbook-xsl.dest}"/>
+      <param name="expandedfile" value="${docbook-xsl.exp}"/>
+    </antcall>
 
     <echo message="log4j" />
     <antcall target="downloadgz">
@@ -1022,6 +1077,13 @@ Build-compiler: ${build.compiler}
       <param name="expandedfile" value="${taglibs-standard-standard.jar}"/>
     </antcall>
 
+    <echo message="backport util/concurrent" />
+    <antcall target="downloadgz">
+      <param name="sourcefile"   value="${backport-util-concurrent.loc}" />
+      <param name="destfile"     value="${backport-util-concurrent.dest}" />
+      <param name="expandedfile" value="${backport-util-concurrent.jar}"/>
+    </antcall>
+
     <!--
     <echo message="commons collections" />
     <antcall target="downloadgz">
@@ -1033,6 +1095,94 @@ Build-compiler: ${build.compiler}
 
   </target>
 
+  <target name="proxyflags" depends="init">
+    <!-- check proxy parameters. -->
+    <condition property="useproxy">
+      <equals arg1="${proxy.use}" arg2="on" />
+    </condition>
+  </target>
+
+  <target name="setproxy"  if="useproxy">
+    <taskdef name="setproxy"
+      classname="org.apache.tools.ant.taskdefs.optional.net.SetProxy" />
+    <setproxy proxyhost="${proxy.host}" proxyport="${proxy.port}"/>
+    <echo message="Using ${proxy.host}:${proxy.port} to download ${sourcefile}"/>
+  </target>
+
+  <target name="testexist">
+    <echo message="Testing  for ${destfile}"/>
+    <available file="${destfile}" property="exist"/>
+  </target>
+
+  <target name="testexpanded">
+    <echo message="Testing for ${expandedfile}"/>
+    <available file="${expandedfile}" property="expanded"/>
+  </target>
+
+  <target name="download" unless="exist" depends="setproxy,testexist">
+    <!-- Download the package -->
+    <get src="${sourcefile}" dest="${destfile}" verbose="on" />
+  </target>
+
+  <target name="downloadgz" unless="expanded" depends="download,testexpanded">
+    <!-- Extract the package -->
+    <gunzip src="${destfile}" dest="${download.dir}/file.tar"/>
+    <untar src="${download.dir}/file.tar" dest="${expand.dir}"/>
+    <delete file="${download.dir}/file.tar"/>
+  </target>
+
+  <target name="downloadbz2" unless="expanded" depends="download,testexpanded">
+    <!-- Extract the package -->
+    <mkdir dir="${destdir}" />
+    <bunzip2 src="${destfile}" dest="${download.dir}/file.tar"/>
+    <untar src="${download.dir}/file.tar" dest="${destdir}"/>
+    <delete file="${download.dir}/file.tar"/>
+  </target>
+
+  <target name="downloadzip" unless="expanded" depends="download,testexpanded">
+    <!-- Extract the package -->
+    <mkdir dir="${destdir}" />
+    <unzip src="${destfile}" dest="${destdir}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Clean the download directory                                        -->
+  <!-- =================================================================== -->
+  <target name="clean.download" description="Clean the download directory">
+    <delete dir="${download.dir}"/>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Clean the expand directory                                          -->
+  <!-- =================================================================== -->
+  <target name="clean.expand" description="Clean the expand directory">
+    <delete dir="${expand.dir}"/>
+    <delete file="${download.dir}/file.tar" />
+  </target>
+
+  <target name="xsltransformer" depends="init.compile">
+    <javac srcdir="${source-src.dir}"
+           destdir="${build.dir}/classes"
+           classpathref="compile.classpath"
+           depend="true"
+           debug="${debug}"
+           optimize="${optimize}"
+           nowarn="${nowarn}"
+           source="1.4"
+           deprecation="${deprecation}"
+           includeAntRuntime="false"
+           >
+           <include name="org/mmbase/util/XSLTransformer.java" />
+    </javac>
+
+    <copy todir="${build.dir}/classes">
+      <fileset dir="${source-src.dir}">
+        <include name="**/caches*.dtd"/>
+      </fileset>
+    </copy>
+  </target>
+
   <!-- ================================================================================ -->
   <!-- applications -->
   <!-- ================================================================================ -->
@@ -1041,18 +1191,25 @@ Build-compiler: ${build.compiler}
     <ant dir="${applications.home}" target="install">
     </ant>
   </target>
-  <target name="minimalistic.applications">
-    <ant dir="${applications.home}" target="minimalistic.install">
-    </ant>
-  </target>
   <target name="clean.applications">
     <ant dir="${applications.home}" target="clean">
     </ant>
   </target>
 
 
+  <!-- only needed for builder.docs -->
+  <target name="doc.resources" depends="init.get">
+    <delete file="${build.dir}/docbook2xhtml.xslt" />
+    <copy todir="${build.dir}" file="${source-documentation.dir}/style/docbook2xhtml.xslt" />
+    <replace  file="${build.dir}/docbook2xhtml.xslt"
+              token="[BASESTYLESHEET]"
+              value="${expand.dir}/${docbook-xsl.version}/${docbook.stylesheet}" />
+
+  </target>
+
+
   <target name="documentation"
-          depends="jar,mmcidocs" if="build.documentation">
+          depends="jar,documentation.builders,mmcidocs" if="build.documentation">
 
 
     <ant dir="${applications.home}" target="install">
@@ -1066,6 +1223,116 @@ Build-compiler: ${build.compiler}
 
     <!-- ant target="documentation.index" / -->
 
+  </target>
+
+  <!-- =================================================================== -->
+  <!--  Create the Builder documentation                                   -->
+  <!-- TODO, should be moved to documentation module                      -->
+  <!-- =================================================================== -->
+  <target name="documentation.builders"
+          depends="doc.resources,xsltransformer"
+          description="Generate builder-documentation from the builder config files">
+
+    <mkdir dir="${mmdocs.dir}/frontenddevelopers/builders"/>
+
+    <copy todir="${mmdocs.dir}/frontenddevelopers/builders"
+          file="${source-documentation.dir}/style/docbook2xhtml.xslt"
+          />
+
+    <!-- not used at the moment
+    <replace file="${mmdocs.dir}/frontenddevelopers/builders/docbook2xhtml.xslt"
+             token="[BASESTYLESHEET]"
+             value="${expand.dir}/${docbook-xsl.version}/xhtml/chunk.xsl" />
+    -->
+    <replace file="${mmdocs.dir}/frontenddevelopers/builders/docbook2xhtml.xslt"
+             token="[BASESTYLESHEET]"
+             value="${expand.dir}/${docbook-xsl.version}/xhtml/docbook.xsl" />
+
+
+    <!-- compile class for listing of builders -->
+    <javac srcdir="${source-src.dir}"
+           destdir="${build.dir}/classes"
+           classpathref="compile.classpath"
+           debug="${debug}"
+           optimize="${optimize}"
+           nowarn="${nowarn}"
+           source="1.4"
+           deprecation="${deprecation}">
+           <include name="org/mmbase/util/BuilderList.java" />
+    </javac>
+
+
+    <!-- call class, this will give an xml file with a listing of all the builders -->
+    <java classname="org.mmbase.util.BuilderList"
+          classpathref="compile.classpath"
+          fork="yes"
+          failonerror="no"
+          output="${mmdocs.dir}/frontenddevelopers/builders/allbuilders-total.xml">
+      <jvmarg value="-Dmmbase.config=${source.dir}/config" />
+      <jvmarg value="-mx100m" />
+      <classpath>
+        <pathelement location="${build.dir}/classes" />
+      </classpath>
+      <arg value="${source-config-builders.dir}" />
+    </java>
+
+    <!-- convert this file into docbook -->
+    <!-- <style
+      style="${source-config.dir}/xslt/builder2docbook.xsl"
+      extension=".xml"
+      in="${mmdocs.dir}/frontenddevelopers/builders/allbuilders-total.xml"
+      out="${mmdocs.dir}/frontenddevelopers/builders/allbuilders-docbook.xml"
+      >
+        <param name="language" expression="${documentation.builders.language}"/>
+    </style> -->
+
+
+    <!-- generate xhtml -->
+    <!-- <style
+      style="${mmdocs.dir}/frontenddevelopers/builders/docbook2xhtml.xslt"
+      extension=".html"
+      in="${mmdocs.dir}/frontenddevelopers/builders/allbuilders-docbook.xml"
+      out="${mmdocs.dir}/frontenddevelopers/builders/index.html"
+      >
+        <param name="root" expression="../../"/>
+    </style> -->
+
+    <java classname="org.mmbase.util.XSLTransformer"
+          classpathref="compile.classpath"
+          fork="yes"
+          failonerror="no">
+      <jvmarg value="-Djava.endorsed.dirs=${build.dir}/lib" />
+      <jvmarg value="-Dmmbase.config=${source.dir}/config" />
+      <jvmarg value="-mx100m" />
+      <classpath>
+        <pathelement location="${build.dir}/classes" />
+      </classpath>
+      <arg value="${source-config.dir}/xslt/builder2docbook.xsl" />
+      <arg value="${mmdocs.dir}/frontenddevelopers/builders/allbuilders-total.xml" />
+      <arg value="${mmdocs.dir}/frontenddevelopers/builders/allbuilders-docbook.xml" />
+      <arg value="language=${documentation.builders.language}" />
+    </java>
+
+    <java classname="org.mmbase.util.XSLTransformer"
+          classpathref="compile.classpath"
+          fork="yes"
+          failonerror="no">
+      <jvmarg value="-Djava.endorsed.dirs=${build.dir}/lib" />
+      <jvmarg value="-Dmmbase.config=${source.dir}/config" />
+      <jvmarg value="-mx100m" />
+      <classpath>
+        <pathelement location="${build.dir}/classes" />
+      </classpath>
+      <arg value="${mmdocs.dir}/frontenddevelopers/builders/docbook2xhtml.xslt" />
+      <arg value="${mmdocs.dir}/frontenddevelopers/builders/allbuilders-docbook.xml" />
+      <arg value="${mmdocs.dir}/frontenddevelopers/builders/index.html" />
+      <arg value="root=../../" />
+    </java>
+
+    <!-- remove temp files -->
+    <!-- delete file="${mmdocs.dir}/frontenddevelopers/builders/allbuilders-total.xml"/>
+    <delete file="${mmdocs.dir}/frontenddevelopers/builders/allbuilders-docbook.xml"/>
+    <delete file="${mmdocs.dir}/frontenddevelopers/builders/docbook2xhtml.xslt"/ -->
   </target>
 
   <target name="javacc.install">

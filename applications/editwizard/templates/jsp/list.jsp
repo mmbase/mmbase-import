@@ -5,7 +5,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.66 2006-09-14 13:00:52 pierre Exp $
+     * @version  $Id: list.jsp,v 1.64.2.2 2006-09-14 13:02:13 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden

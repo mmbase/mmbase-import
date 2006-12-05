@@ -20,9 +20,9 @@ import org.mmbase.bridge.Cacheable;
  * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.42 2006-10-13 14:22:27 nklasens Exp $
+ * @version $Id: Cache.java,v 1.36 2006-07-31 13:33:05 michiel Exp $
  */
-abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
+abstract public class Cache implements SizeMeasurable, Map {
 
     private static final Logger log = Logging.getLoggerInstance(Cache.class);
 
@@ -32,7 +32,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
     /**
      * @since MMBase-1.8
      */
-    private CacheImplementationInterface<K, V> implementation;
+    private CacheImplementationInterface implementation;
 
     /**
      * The number of times an element was succesfully retrieved from this cache.
@@ -50,7 +50,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
     private int puts = 0;
 
     public Cache(int size) {
-        implementation = new LRUHashtable<K, V>(size);
+        implementation = new LRUHashtable(size);
         log.service("Creating cache " + getName() + ": " + getDescription());
     }
 
@@ -58,7 +58,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
         try {
             Class clas = Class.forName(clazz);
             if (implementation == null || (! clas.equals(implementation.getClass()))) {
-                implementation = (CacheImplementationInterface<K,V>) clas.newInstance();
+                implementation = (CacheImplementationInterface) clas.newInstance();
                 implementation.config(configValues);
             }
         } catch (ClassNotFoundException cnfe) {
@@ -109,8 +109,8 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
         return -1;
     }
 
-    public Set<Map.Entry<K,V>> entrySet() {
-        if (! active) return new HashSet<Map.Entry<K,V>>();
+    public Set entrySet() {
+        if (! active) return new HashSet();
         return implementation.entrySet();
     }
 
@@ -139,11 +139,11 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
     /**
      * Like 'get' of Maps but considers if the cache is active or not,  and the cache policy of the key.
      */
-    public  V get(Object key) {
+    public  Object get(Object key) {
         if (!checkCachePolicy(key)) {
             return null;
         }
-        V res = implementation.get(key);
+        Object res = implementation.get(key);
         if (res != null) {
             hits++;
         } else {
@@ -156,7 +156,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
      * Like 'put' of LRUHashtable but considers if the cache is active or not.
      *
      */
-    public V put(K key, V value) {
+    public Object put(Object key, Object value) {
         if (!checkCachePolicy(key)) {
             return null;
         }
@@ -204,7 +204,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
         return implementation.containsKey(key);
     }
 
-    public int getCount(K key) {
+    public int getCount(Object key) {
         return implementation.getCount(key);
     }
 
@@ -350,7 +350,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
     /**
      * @see java.util.Map#keySet()
      */
-    public Set<K> keySet() {
+    public Set keySet() {
         return implementation.keySet();
     }
 
@@ -358,7 +358,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
     /**
      * @see java.util.Map#putAll(java.util.Map)
      */
-    public void putAll(Map<? extends K,? extends V> t) {
+    public void putAll(Map t) {
         implementation.putAll(t);
     }
 
@@ -366,7 +366,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
     /**
      * @see java.util.Map#remove(java.lang.Object)
      */
-    public V remove(Object key) {
+    public Object remove(Object key) {
         return implementation.remove(key);
     }
 
@@ -416,14 +416,6 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
         return CacheManager.getTotalByteSize();
     }
 
-    /*
-    public void notify(CacheMessage message) {
-        switch(message.getType()) {
-        case CacheMessage.TYPE_CLEAR:  clear(); break;
-        case CacheMessage.TYPE_DELETE: remove(message.getKey()); break;
-        }
-    }
-    */
 
     public static void main(String args[]) {
         Cache mycache = new Cache(20000000) {

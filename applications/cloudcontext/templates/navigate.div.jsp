@@ -9,7 +9,7 @@
    <p <mm:compare value="contexts">class="current"</mm:compare>>
      <a href="<mm:url referids="parameters,$parameters"><mm:param name="url">index_contexts.jsp</mm:param></mm:url>"><%=getPrompt(m,"contexts")%></a></p>
     <mm:write referid="language" vartype="string" jspvar="language">
-     <p <mm:compare referid="current" value="help">class="current"</mm:compare>>
+     <p <mm:compare value="help">class="current"</mm:compare>>
        <a href="<mm:url referids="parameters,$parameters"><mm:param name="url">help_<mm:write referid="language" />.jsp</mm:param></mm:url>"><%=getPrompt(m,"help")%></a></p>
     </mm:write>
   </mm:write>

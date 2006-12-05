@@ -12,6 +12,10 @@ import org.mmbase.datatypes.processors.*;
 import java.util.*;
 import org.w3c.dom.*;
 
+import org.mmbase.bridge.Field;
+import org.mmbase.bridge.util.Queries;
+import org.mmbase.datatypes.*;
+import org.mmbase.core.util.Fields;
 import org.mmbase.util.*;
 import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.xml.DocumentReader;
@@ -22,7 +26,7 @@ import org.mmbase.util.transformers.*;
  * Static methods used for parsing of datatypes.xml
  *
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeXml.java,v 1.6 2006-10-14 14:35:39 nklasens Exp $
+ * @version $Id: DataTypeXml.java,v 1.5 2005-12-29 23:02:22 michiel Exp $
  * @since MMBase-1.8
  **/
 public abstract class DataTypeXml {

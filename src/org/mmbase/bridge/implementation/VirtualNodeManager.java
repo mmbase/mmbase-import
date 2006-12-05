@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.implementation;
 
+import javax.servlet.*;
 import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.*;
@@ -19,6 +20,7 @@ import org.mmbase.core.util.Fields;
 import org.mmbase.module.core.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.LocalizedString;
 
 /**
  * This class represents a virtual node type information object.
@@ -28,7 +30,7 @@ import org.mmbase.util.logging.*;
  * It's sole function is to provide a type definition for the results of a search.
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: VirtualNodeManager.java,v 1.46 2006-10-14 14:35:38 nklasens Exp $
+ * @version $Id: VirtualNodeManager.java,v 1.45 2006-07-18 13:50:51 michiel Exp $
  */
 public class VirtualNodeManager extends AbstractNodeManager implements NodeManager {
     private static final  Logger log = Logging.getLoggerInstance(VirtualNodeManager.class);

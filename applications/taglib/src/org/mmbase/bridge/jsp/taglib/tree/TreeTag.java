@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
 </pre>
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: TreeTag.java,v 1.20 2006-11-14 22:53:49 michiel Exp $
+ * @version $Id: TreeTag.java,v 1.18 2006-08-28 12:30:36 michiel Exp $
  */
 public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, QueryContainerReferrer  {
     private static final Logger log = Logging.getLoggerInstance(TreeTag.class);
@@ -55,7 +55,7 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
     private TreeList     tree;
     private TreeIterator iterator;
 
-    private Stack<ShrinkTag.Entry> shrinkStack;
+    private Stack        shrinkStack;
 
     private int previousDepth = -1;
     private int depth = 0;
@@ -113,7 +113,7 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
     }
 
 
-    public Stack<ShrinkTag.Entry> getShrinkStack() {
+    public Stack getShrinkStack() {
         return shrinkStack;
     }
 
@@ -183,9 +183,9 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
         collector = new ContextCollector(getContextProvider());
 
         // serve parent timer tag:
-        TimerTag t = (TimerTag) findParentTag(TimerTag.class, null, false);
+        TagSupport t = findParentTag(TimerTag.class, null, false);
         if (t != null) {
-            timerHandle = t.startTimer(getId(), getClass().getName());
+            timerHandle = ((TimerTag)t).startTimer(getId(), getClass().getName());
         }
 
         if (getReferid() != null) {
@@ -202,7 +202,7 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
         } else {
             tree = null;
             if (parentNodeId == Attribute.NULL) {
-                TreeContainerTag c = findParentTag(TreeContainerTag.class, (String) container.getValue(this), false);
+                TreeContainerTag c = (TreeContainerTag) findParentTag(TreeContainerTag.class, (String) container.getValue(this), false);
                 if (c != null) {
                     GrowingTreeList growingTree = c.getTree();
                     if (! "".equals(maxDepth.getString(this))) {
@@ -232,7 +232,7 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
         iterator = tree.treeIterator();
 
         // returnList is known, now we can serve parent formatter tag
-        FormatterTag f = findParentTag(FormatterTag.class, null, false);
+        FormatterTag f = (FormatterTag) findParentTag(FormatterTag.class, null, false);
         if (f != null && f.wantXML()) {
             f.getGenerator().add(tree);
             f.setCloud(tree.getCloud());
@@ -318,9 +318,9 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), tree, false); // use false because check was done in doStartTag (and doAfterBody not always called).
         }
-        TimerTag t = findParentTag(TimerTag.class, null, false);
+        TagSupport t = findParentTag(TimerTag.class, null, false);
         if (t != null) {
-            t.haltTimer(timerHandle);
+            ((TimerTag)t).haltTimer(timerHandle);
         }
         // dereference for gc
         tree = null;

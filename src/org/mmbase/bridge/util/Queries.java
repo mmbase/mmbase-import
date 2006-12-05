@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.79 2006-11-23 15:00:51 michiel Exp $
+ * @version $Id: Queries.java,v 1.77.2.2 2006-11-23 14:58:18 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -42,7 +42,7 @@ abstract public class Queries {
      * Translates a string to a search direction constant. If the string is <code>null</code> then
      * 'BOTH' is returned.
      * @param search string representation of the searchdir constant
-     * @return Searchdir constant as in {@link RelationStep}
+     * @return Searchdir constant (@link RelationStep)
      * @see ClusterBuilder#getSearchDir The same function, only with another return value if String is <code>null</code>
      */
     public static int getRelationStepDirection(String search) {
@@ -472,7 +472,6 @@ abstract public class Queries {
 
                 }
             }
-
             Object compareValue = getCompareValue(fieldType, operator, value, datePart, cloud);
 
             if (operator > 0 && operator < OPERATOR_IN) {
@@ -581,11 +580,11 @@ abstract public class Queries {
                 case Field.TYPE_INTEGER:
                 case Field.TYPE_LONG:
                 case Field.TYPE_NODE:
-                    value = Long.valueOf(Casting.toLong(value));
+                    value = new Long(Casting.toLong(value));
                     break;
                 case Field.TYPE_FLOAT:
                 case Field.TYPE_DOUBLE:
-                    value = Double.valueOf(Casting.toDouble(value));
+                    value = new Double(Casting.toDouble(value));
                     break;
                 case Field.TYPE_DATETIME:
                     value = new Date((long) 1000 * Integer.parseInt("" + value));

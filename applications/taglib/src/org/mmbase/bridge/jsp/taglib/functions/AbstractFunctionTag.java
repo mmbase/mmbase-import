@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: AbstractFunctionTag.java,v 1.27 2006-05-17 13:26:07 michiel Exp $
+ * @version $Id: AbstractFunctionTag.java,v 1.27.2.2 2006-11-17 13:08:10 nklasens Exp $
  */
 abstract public class AbstractFunctionTag extends NodeReferrerTag {
 
@@ -99,7 +99,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             if (module != Attribute.NULL || functionSet != Attribute.NULL || functionClass != Attribute.NULL || parentNodeId != Attribute.NULL) {
                 throw new TaglibException("You can only use one of 'nodemanager', 'module', 'set', 'class' or 'node' on a function tag");
             }
-            return  getCloudVar().getNodeManager(nodeManager.getString(this)).getFunction(functionName); 
+            return  getCloudVar().getNodeManager(nodeManager.getString(this)).getFunction(functionName);
         } else if (module != Attribute.NULL) {
             if (nodeManager != Attribute.NULL || functionSet != Attribute.NULL || functionClass != Attribute.NULL || parentNodeId != Attribute.NULL) {
                 throw new TaglibException("You can only use one of 'nodemanager', 'module', 'set', 'class' or 'node' on a function tag");
@@ -117,9 +117,9 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             } else {
                 CloudProvider cp = findCloudProvider(false);
                 if (cp != null) {
-                    return FunctionFactory.getFunction(cp.getCloudVar(), set, functionName); 
+                    return FunctionFactory.getFunction(cp.getCloudVar(), set, functionName);
                 } else {
-                    return FunctionFactory.getFunction(set, functionName); 
+                    return FunctionFactory.getFunction(set, functionName);
                 }
             }
         } else if (functionClass != Attribute.NULL) {
@@ -143,7 +143,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             }
 
         } else { // working as Node-referrer unless explicitely specified that it should not (a container must be present!)
-            
+
             log.debug("Node-referrer?");
             if (container != Attribute.NULL || "".equals(parentNodeId.getValue(this)) || functionName == null) { // explicitit container
                 log.debug("explicitely not");
@@ -168,7 +168,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
                 log.debug("Found functionOrNode " + functionOrNode);
             }
             if (functionOrNode != null) {
-                if (functionOrNode instanceof NodeProvider) { // wow, indeed, that we are going to use                    
+                if (functionOrNode instanceof NodeProvider) { // wow, indeed, that we are going to use
                     log.debug("using node-function!");
                     return ((NodeProvider) functionOrNode).getNodeVar().getFunction(functionName);
                 } else { // just use the functioncontainer
@@ -187,7 +187,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
         if(log.isDebugEnabled()) {
             log.debug("Getting function value. Container " + functionContainer);
         }
-        
+
         Function function;
         if ("".equals(functionName)) {  // no name given, certainly must use container.
             if (functionContainer == null) throw new JspTagException("No function name given, and no function container tag found either");
@@ -245,25 +245,29 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             params.setAutoCasting(true);
 
             FunctionContainerTag functionContainer = (FunctionContainerTag) findParentTag(FunctionContainer.class, (String) container.getValue(this), false);
-            if (functionContainer != null) {
-                Iterator i = functionContainer.getParameters().iterator();
-                while (i.hasNext()) {
-                    Map.Entry entry = (Map.Entry) i.next();
-                    params.set((String) entry.getKey(), entry.getValue());
+            try {
+                if (functionContainer != null) {
+                    Iterator i = functionContainer.getParameters().iterator();
+                    while (i.hasNext()) {
+                        Map.Entry entry = (Map.Entry) i.next();
+                        params.set((String) entry.getKey(), entry.getValue());
+                    }
                 }
-            }
-            if (referids != Attribute.NULL) {
-                params.setAll(Referids.getReferids(referids, this));
+                if (referids != Attribute.NULL) {
+                    params.setAll(Referids.getReferids(referids, this));
+                }
+
+                fillStandardParameters(params);
+
+                if (log.isDebugEnabled()) {
+                    log.debug("using parameters " + params + " on " + function.getClass() + " " + function);
+                }
+
+                params.checkRequiredParameters();
+            } catch (Throwable e) {
+                throw new IllegalArgumentException("function " + functionName + " " + e.getMessage());
             }
 
-            fillStandardParameters(params);
-
-            if (log.isDebugEnabled()) {
-                log.debug("using parameters " + params + " on " + function.getClass() + " " + function);
-            }
-
-            params.checkRequiredParameters();
-            
             value =  function.getFunctionValue(params);
 
         }

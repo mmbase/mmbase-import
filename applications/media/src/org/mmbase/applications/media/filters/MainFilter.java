@@ -1,11 +1,11 @@
 /*
-
+ 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
-
+ 
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
-
+ 
  */
 
 package org.mmbase.applications.media.filters;
@@ -47,13 +47,13 @@ public class MainFilter {
     public static final String FILTER_ATT        = "filter";
     public static final String ID_ATT            = "id";
     public static final String CONFIG_FILE       = "media" + File.separator + "filters.xml";
-
+        
     private FileWatcher configWatcher = new FileWatcher(true) {
         public void onChange(File file) {
             readConfiguration(file);
         }
     };
-
+    
     private List filters = new ArrayList();
 
     /**
@@ -71,7 +71,7 @@ public class MainFilter {
         configWatcher.start();
     }
 
-
+    
     private static MainFilter filter = null;
 
     public static MainFilter getInstance() {
@@ -79,7 +79,7 @@ public class MainFilter {
         return filter;
     }
 
-
+    
     /**
      * read the MainFilter configuration
      */
@@ -96,7 +96,8 @@ public class MainFilter {
         // When chaining 'comparators' then they are combined to one comparator
         // Then only one 'sort' has to be done, which is more efficient.
 
-        for(Element chainElement:reader.getChildElements(MAIN_TAG + "." + CHAIN_TAG, FILTER_TAG)) {
+        for(Iterator e = reader.getChildElements(MAIN_TAG + "." + CHAIN_TAG, FILTER_TAG); e.hasNext();) {
+            Element chainElement =(Element)e.next();
             String  clazz        = reader.getElementValue(chainElement);
             String  elementId    = chainElement.getAttribute(ID_ATT);
             try {
@@ -105,19 +106,20 @@ public class MainFilter {
                 if (filter instanceof Sorter) {
                     chainComp.add((Sorter) filter);
                 } else {
-                    if (chainComp.size() > 0) {
+                    if (chainComp.size() > 0) { 
                         filters.add(chainComp);
-                        chainComp = new ChainSorter();
+                        chainComp = new ChainSorter();                        
                     }
                     filters.add(filter);
                 }
                 log.service("Added filter " + clazz + "(id=" + elementId + ")");
-                if (elementId != null && ! "".equals(elementId)) {
+                if (elementId != null && ! "".equals(elementId)) {                    
                     // find right configuration
                     // not all filters necessarily have there own configuration
                     boolean found = false;
-
-                    for(Element config:reader.getChildElements(filterConfigs, FILTERCONFIG_TAG)) {
+                    
+                    for (Iterator configIter = reader.getChildElements(filterConfigs, FILTERCONFIG_TAG); configIter.hasNext();) {
+                        Element config = (Element) configIter.next();
                         String filterAtt = reader.getElementAttributeValue(config, FILTER_ATT);
                         if (filterAtt.equals(elementId)) {
                             log.service("Configuring " + elementId);
@@ -134,7 +136,7 @@ public class MainFilter {
                 log.error("Cannot load filter " + clazz + "\n" + ex1);
             } catch (IllegalAccessException ex2) {
                 log.error("Cannot load filter " + clazz + "\n" + ex2);
-            }
+            }                   
         }
         if (chainComp.size() > 0) filters.add(chainComp); // make sure it is at least empty
     }
@@ -151,11 +153,11 @@ public class MainFilter {
                 log.debug("Using filter " + filter);
                 log.debug("before: " + urls);
             }
-
-            try {
+  
+            try {         
                 urls = filter.filter(urls);
             } catch (Exception filterException) {
-        log.error("Check filter "+filter+" "+filterException);
+		log.error("Check filter "+filter+" "+filterException);
             }
             if (log.isDebugEnabled()) {
                 log.debug("after: " + urls);
@@ -191,7 +193,7 @@ public class MainFilter {
         public int compare(Object o1, Object o2) {
             return o1.hashCode() - o2.hashCode();
         }
-
+        
     }
 
     public static void main(String[] args) {
@@ -219,5 +221,5 @@ public class MainFilter {
         log.debug(sortedSet);
     }
 
-
+    
 }

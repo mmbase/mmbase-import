@@ -18,13 +18,12 @@ import org.apache.lucene.document.Document;
  * implementations of this interface define how index entries are added to a Lucene document.
  *
  * @author Michiel Meeuwissen.
- * @version $Id: IndexEntry.java,v 1.6 2006-09-13 09:51:14 michiel Exp $
+ * @version $Id: IndexEntry.java,v 1.4 2006-04-10 10:49:47 michiel Exp $
  **/
 public interface IndexEntry {
 
     /**
      * Writes this index entry to a lucene {@link org.apache.lucene.document.Document}.
-     * This does not consider sub-definitions. This is done by Indexer using {@link #getSubDefinitions}
      */
     void index(Document document);
 
@@ -32,19 +31,13 @@ public interface IndexEntry {
      * Returns a Collection of 'sub definition', probably copied from the IndexDefinition which produces this entry.
      *
      */
-    Collection<IndexDefinition> getSubDefinitions();
+    Collection getSubDefinitions();
 
 
     /**
-     * The identifier which can be used to retrieve this IndexEntry, and which should uniquely identify it.
+     * The identifier which can be used to retrieve this IndexEntry.
      */
     String  getIdentifier();
-
-    /**
-     * Key to be used for 'sub-queries', this can be the same as {@link #getIdentifier}, but this is not necessary.
-     */
-    String getKey();
-
 
 }
 

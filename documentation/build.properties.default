@@ -6,7 +6,7 @@
 # If you'd like to customize some of the settings, create a build.properties in
 # the root of this directory.
 #
-# $Id: build.properties.default,v 1.13 2006-12-02 10:00:46 michiel Exp $
+# $Id: build.properties.default,v 1.8 2006-06-21 04:55:50 michiel Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -33,23 +33,19 @@ sundownload.loc=http://java.sun.com/Download5?protocol=HTTP%20download&amp;platf
 
 
 # ----- Docbook stylesheets ----------
-
-# ----- Docbook stylesheets ----------
-docbook-xsl.version=docbook-xsl-1.71.1
+docbook-xsl.version=docbook-xsl-1.70.1
 docbook-xsl.file=${docbook-xsl.version}.tar.gz
-docbook-xsl.dest=${download.dir}/${docbook-xsl.file}
+docbook-xsl.home=${download.dir}/${docbook-xsl.version}
 docbook-xsl.loc=${sourceforge.loc}/docbook/${docbook-xsl.file}
-docbook-xsl.exp=${expand.dir}/${docbook-xsl.version}
 
-# ---- Fop is a terrible system to produces PDFs ----
+# ---- Fop, version 0.20.5 ---- 
 fop.version=fop-0.20.5
-#fop.version=fop-0.92beta
 fop.file=${fop.version}-bin.tar.gz
-#fop.file=${fop.version}-bin-jdk1.4.tar.gz
+fop.home=${download.dir}/${fop.version}
 fop.loc=http://www.apache.org/dist/xml/fop/${fop.file}
-#fop.loc=http://dist.apache.easynet.nl/xmlgraphics/fop/${fop.file}
-fop.dest=${download.dir}/${fop.file}
-fop.exp=${expand.dir}/${fop.version}
+fop.jar=${download.dir}/${fop.version}/build/fop.jar
+fop.batik.jar=${download.dir}/${fop.version}/lib/batik.jar
+fop.avalon.jar=${download.dir}/${fop.version}/lib/avalon-framework-cvs-20020806.jar
 
 
 # ---- Jai, version 1.0.2 ----

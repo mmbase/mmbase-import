@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: ListFunctionTag.java,v 1.13 2006-09-05 11:55:02 michiel Exp $
+ * @version $Id: ListFunctionTag.java,v 1.12 2006-07-26 09:07:50 michiel Exp $
  */
 public class ListFunctionTag extends AbstractFunctionTag implements ListProvider, FunctionContainerReferrer, Writer {
 
@@ -39,16 +39,7 @@ public class ListFunctionTag extends AbstractFunctionTag implements ListProvider
     protected int      currentItemIndex= -1;
 
     private   ContextCollector collector;
-    private Attribute  comparator = Attribute.NULL;
-    protected Attribute  varStatus = Attribute.NULL;
-
-    public void setComparator(String c) throws JspTagException {
-        comparator = getAttribute(c);
-    }
-    public void setVarStatus(String s) throws JspTagException {
-        varStatus = getAttribute(s);
-    }
-
+    protected Attribute  comparator = Attribute.NULL;
 
     public int size(){
         return returnCollection.size();

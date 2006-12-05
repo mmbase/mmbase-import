@@ -32,7 +32,7 @@ import org.mmbase.util.xml.BuilderReader;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.69 2006-12-05 21:04:13 michiel Exp $
+ * @version $Id: TypeDef.java,v 1.68.2.1 2006-12-05 20:59:30 michiel Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
@@ -49,18 +49,20 @@ public class TypeDef extends MMObjectBuilder {
 
     /**
      * Number-to-name cache.
+     * @duplicate should be moved to org.mmbase.cache
      */
-    private Map<Integer, String> numberToNameCache = null; // object number -> typedef name
+    private Map numberToNameCache = null; // object number -> typedef name
 
     /**
      * Name-to-number cache.
+     * @duplicate should be moved to org.mmbase.cache
      */
-    private Map<String, Integer> nameToNumberCache = null; // typedef name -> object number
+    private Map nameToNumberCache = null; // typedef name -> object number
 
     /**
      * List of known builders.
      */
-    private final Vector<String> typedefsLoaded = new Vector<String>();     // Contains the names of all active builders
+    private Vector typedefsLoaded = new Vector();     // Contains the names of all active builders
 
     /**
      * Sets the default deploy directory for the builders.
@@ -84,12 +86,12 @@ public class TypeDef extends MMObjectBuilder {
         return result;
     }
 
-    protected Map<Integer, String> getNumberToNameCache() {
+    protected Map getNumberToNameCache() {
         if (numberToNameCache == null) readCache();
         return numberToNameCache;
     }
 
-    protected Map<String, Integer> getNameToNumberCache() {
+    protected Map getNameToNumberCache() {
         if (nameToNumberCache == null) readCache();
         return nameToNumberCache;
     }
@@ -241,16 +243,18 @@ public class TypeDef extends MMObjectBuilder {
     private boolean readCache() {
         // at least fill in typedef
         log.service("Reading typedef caches");
-        numberToNameCache = Collections.synchronizedMap(new HashMap<Integer, String>());
-        nameToNumberCache = Collections.synchronizedMap(new HashMap<String, Integer>());
+        numberToNameCache = Collections.synchronizedMap(new HashMap());
+        nameToNumberCache = Collections.synchronizedMap(new HashMap());
         NodeSearchQuery query = new NodeSearchQuery(this);
         try {
-            for (MMObjectNode n : getNodes(query)) {
+            Iterator typedefs = getNodes(query).iterator();
+            while (typedefs.hasNext()) {
+                MMObjectNode n = (MMObjectNode) typedefs.next();
                 Integer number = n.getIntegerValue("number");
                 String name    = n.getStringValue("name");
                 if (number != null && name != null) {
-                    nameToNumberCache.put(name, number);
-                    numberToNameCache.put(number, name);
+                    nameToNumberCache.put(name,number);
+                    numberToNameCache.put(number,name);
                 } else {
                     log.error("Could not add typedef cache-entry number/name= " + number + "/" + name);
                 }
@@ -567,7 +571,7 @@ public class TypeDef extends MMObjectBuilder {
      */
     public Vector getList(PageInfo sp,StringTagger tagger, StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
-            String cmd = tok.nextToken();
+            String cmd=tok.nextToken();
             if (cmd.equals("builders")) {
                 return typedefsLoaded;
             }

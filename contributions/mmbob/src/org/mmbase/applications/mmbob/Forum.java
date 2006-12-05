@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logger;
 public class Forum {
 
     // logger
-    static private Logger log = Logging.getLoggerInstance(Forum.class);
+    static private final Logger log = Logging.getLoggerInstance(Forum.class);
 
     private String name;
     private String description;

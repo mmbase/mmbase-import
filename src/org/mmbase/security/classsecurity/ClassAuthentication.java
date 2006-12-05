@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security.classsecurity;
 
+import java.io.*;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.net.URL;
@@ -29,7 +30,7 @@ import org.xml.sax.InputSource;
  * its configuration file, contains this configuration.
  *
  * @author   Michiel Meeuwissen
- * @version  $Id: ClassAuthentication.java,v 1.15 2006-11-24 15:17:28 michiel Exp $
+ * @version  $Id: ClassAuthentication.java,v 1.13 2006-07-14 08:16:49 michiel Exp $
  * @see      ClassAuthenticationWrapper
  * @since    MMBase-1.8
  */
@@ -41,7 +42,7 @@ public class ClassAuthentication {
     static {
         XMLEntityResolver.registerPublicID(PUBLIC_ID_CLASSSECURITY_1_0, DTD_CLASSSECURITY_1_0, ClassAuthentication.class);
     }
-    private static List<Login> authenticatedClasses = null;
+    private static List authenticatedClasses = null;
 
 
     static ResourceWatcher watcher = null;
@@ -65,13 +66,13 @@ public class ClassAuthentication {
      * Reads the configuration file and instantiates and loads the wrapped Authentication.
      */
     protected static synchronized void load(String configFile) throws SecurityException {
-        List<URL> resourceList = MMBaseCopConfig.securityLoader.getResourceList(configFile);
+        List resourceList = MMBaseCopConfig.securityLoader.getResourceList(configFile);
         log.info("Loading " + configFile + "( " + resourceList + ")");
         authenticatedClasses = new ArrayList();
-        ListIterator<URL> it = resourceList.listIterator();
+        ListIterator it = resourceList.listIterator();
         while (it.hasNext()) it.next();
         while (it.hasPrevious()) {
-            URL u = it.previous();
+            URL u = (URL) it.previous();
             try {
                 URLConnection con = u.openConnection();
                 if (! con.getDoInput()) continue;
@@ -88,7 +89,7 @@ public class ClassAuthentication {
                     String clazz    = node.getAttributes().getNamedItem("class").getNodeValue();
                     String method   = node.getAttributes().getNamedItem("method").getNodeValue();
                     Node property   = node.getFirstChild();
-                    Map<String, String> map = new HashMap();
+                    Map map = new HashMap();
                     while (property != null) {
                         if (property instanceof Element && property.getNodeName().equals("property")) {
                             String name     = property.getAttributes().getNamedItem("name").getNodeValue();
@@ -105,7 +106,7 @@ public class ClassAuthentication {
         }
 
         { // last fall back, everybody may get the 'anonymous' cloud.
-            Map<String, String> map = new HashMap();
+            Map map = new HashMap();
             map.put("rank", "anonymous");
             authenticatedClasses.add(new Login(Pattern.compile(".*"), "class", Collections.unmodifiableMap(map)));
         }
@@ -148,7 +149,10 @@ public class ClassAuthentication {
         Throwable t = new Throwable();
         StackTraceElement[] stack = t.getStackTrace();
 
-        for (Login n : authenticatedClasses) {
+        Iterator i = authenticatedClasses.iterator();
+
+        while(i.hasNext()) {
+            Login n = (Login) i.next();
             if (application == null || application.equals(n.application)) {
                 Pattern p = n.classPattern;
                 for (int j = 0; j < stack.length; j++) {
@@ -177,14 +181,14 @@ public class ClassAuthentication {
     public static class  Login {
         Pattern classPattern;
         String application;
-        Map<String, String>    map;
-        Login(Pattern p , String a, Map<String, String> m) {
+        Map    map;
+        Login(Pattern p , String a, Map m) {
             classPattern = p;
             application = a;
             map = m;
         }
 
-        public Map<String, String> getMap() {
+        public Map getMap() {
             return map;
         }
         public String toString() {

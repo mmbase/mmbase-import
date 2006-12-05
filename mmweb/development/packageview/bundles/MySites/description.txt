@@ -1,2 +1,0 @@
-MySites is a package that shows how to create a website with a dynamic navigation structure and templating. The template included in the MySites package is a general purpose text template, by which you can create pages which show articles. An article consists of a couple of paragraphs, links, pages, attachments and images. The user can manage the structure of the website and the template used for each page.
-

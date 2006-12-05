@@ -1,1 +1,0 @@
-Email applications, allows you to mail one of multiple people in groups. Examples of plain mail, html mail and combincations.

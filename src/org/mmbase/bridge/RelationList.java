@@ -14,9 +14,9 @@ package org.mmbase.bridge;
  * A list of Relations
  *
  * @author Pierre van Rooden
- * @version $Id: RelationList.java,v 1.6 2006-09-25 10:17:36 pierre Exp $
+ * @version $Id: RelationList.java,v 1.5 2004-10-09 09:39:31 nico Exp $
  */
-public interface RelationList<E extends Relation> extends NodeList<E> {
+public interface RelationList extends NodeList {
 
     /**
      * Returns the Relation at the indicated postion in the list

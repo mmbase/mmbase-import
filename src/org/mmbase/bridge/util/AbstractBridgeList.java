@@ -18,11 +18,11 @@ import java.util.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: AbstractBridgeList.java,v 1.2 2006-09-13 09:46:00 michiel Exp $
+ * @version $Id: AbstractBridgeList.java,v 1.1 2005-12-29 22:08:25 michiel Exp $
  * @since   MMBase-1.8
  */
 
-abstract public class AbstractBridgeList<E> extends AbstractList<E> implements BridgeList<E> {
+abstract public class AbstractBridgeList extends AbstractList implements BridgeList {
 
     private Map properties = new HashMap();
 
@@ -38,7 +38,7 @@ abstract public class AbstractBridgeList<E> extends AbstractList<E> implements B
 
     // javadoc inherited
     public void sort() {
-        Collections.sort((List) this);
+        Collections.sort(this);
     }
 
     // javadoc inherited
@@ -46,8 +46,8 @@ abstract public class AbstractBridgeList<E> extends AbstractList<E> implements B
         Collections.sort(this, comparator);
     }
 
-    protected class BasicIterator implements ListIterator<E> {
-        protected ListIterator<E> iterator;
+    protected class BasicIterator implements ListIterator {
+        protected ListIterator iterator;
 
         protected BasicIterator() {
             this.iterator = AbstractBridgeList.this.listIterator();
@@ -74,18 +74,18 @@ abstract public class AbstractBridgeList<E> extends AbstractList<E> implements B
         }
 
         // These have to be implemented with a check if o is of the right type.
-        public void set(E o) {
+        public void set(Object o) {
             iterator.set(o);
         }
 
-        public void add(E o) {
+        public void add(Object o) {
             iterator.add(o);
         }
 
-        public E next() {
+        public Object next() {
             return iterator.next();
         }
-        public E previous() {
+        public Object previous() {
             return iterator.previous();
         }
 

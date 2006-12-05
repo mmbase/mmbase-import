@@ -10,17 +10,22 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.implementation;
 
+import java.io.InputStream;
 import java.util.*;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.*;
+import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.VirtualBuilder;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.core.MMBase;
+import org.mmbase.core.util.Fields;
+import org.mmbase.core.CoreField;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Implementation of Node. Simply wraps virtual node of core into an bridge Node. This class can be
@@ -28,7 +33,7 @@ import org.w3c.dom.Document;
  * {@link #VirtualNode(org.mmbase.module.core.VirtualNode, Cloud)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: VirtualNode.java,v 1.21 2006-10-14 14:35:38 nklasens Exp $
+ * @version $Id: VirtualNode.java,v 1.19.2.1 2006-11-28 13:48:45 johannes Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.VirtualNode
  * @since MMBase-1.8
@@ -61,7 +66,6 @@ public class VirtualNode extends AbstractNode implements Node {
     /**
      * Makes a Node from a map of values. Sadly, this uses a local MMBase, so you can't use this with
      * e.g. RMMCI, but I didn't feel like reimplementating Node completely..
-     * See {@link org.mmbase.bridge.util.MapNode}, which <em>is</em> a complete reimplementation (with no core dependencies).
      */
     public VirtualNode(Map values, Cloud cloud) {
         this(getVirtualNode(values), cloud);
@@ -194,6 +198,11 @@ public class VirtualNode extends AbstractNode implements Node {
         Node result = null;
         MMObjectNode mmobjectNode = getNode().getNodeValue(fieldName);
         if (mmobjectNode != null) {
+            MMObjectBuilder builder = mmobjectNode.getBuilder();
+            if (builder instanceof VirtualBuilder) {
+                return new VirtualNode((org.mmbase.module.core.VirtualNode)mmobjectNode, cloud);
+            }
+                
             try {
                 result = cloud.getNode(mmobjectNode.getNumber());
             } catch (NotFoundException nfe) {

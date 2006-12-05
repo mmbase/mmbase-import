@@ -14,25 +14,27 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.*;
 import java.util.*;
-import java.util.concurrent.BlockingQueue;
 
 import org.mmbase.core.util.DaemonThread;
 import org.mmbase.module.builders.MMServers;
 import org.mmbase.module.core.*;
 
+import org.mmbase.util.Queue;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
 
 /**
  * ChangesSender is a thread object sending the nodes found in the
  * sending queue over unicast connections
  *
  * @author Nico Klasens
- * @version $Id: ChangesSender.java,v 1.14 2006-10-16 14:48:45 pierre Exp $
+ * @version $Id: ChangesSender.java,v 1.13 2006-08-09 11:14:49 pierre Exp $
  */
 public class ChangesSender implements Runnable {
 
     private static final Logger log = Logging.getLoggerInstance(ChangesSender.class);
+
 
     private final Statistics send;
 
@@ -40,7 +42,7 @@ public class ChangesSender implements Runnable {
     private Thread kicker = null;
 
     /** Queue with messages to send to other MMBase instances */
-    private final BlockingQueue nodesToSend;
+    private final Queue nodesToSend;
 
     /** For the port on which the talking between nodes take place.*/
     private final Map configuration;
@@ -63,7 +65,7 @@ public class ChangesSender implements Runnable {
      * @param nodesToSend Queue of messages to send
      * @param mmbase MMBase instance
      */
-    ChangesSender(Map configuration, int unicastPort, int unicastTimeout, BlockingQueue nodesToSend, Statistics send) {
+    ChangesSender(Map configuration, int unicastPort, int unicastTimeout, Queue nodesToSend, Statistics send) {
         this.nodesToSend = nodesToSend;
         this.configuration = configuration;
         this.defaultUnicastPort = unicastPort;
@@ -79,7 +81,6 @@ public class ChangesSender implements Runnable {
             log.debug("UnicastSender started");
         }
     }
-
     void stop() {
         if (kicker != null) {
             kicker.interrupt();
@@ -90,11 +91,12 @@ public class ChangesSender implements Runnable {
         }
     }
 
+
     // javadoc inherited
     public void run() {
         while(kicker != null) {
             try {
-                byte[] data = (byte[]) nodesToSend.take();
+                byte[] data = (byte[]) nodesToSend.get();
                 long startTime = System.currentTimeMillis();
                 List servers = getActiveServers();
                 for (int i = 0; i < servers.size(); i++) {
@@ -183,5 +185,6 @@ public class ChangesSender implements Runnable {
         }
         return activeServers;
     }
+
 
 }

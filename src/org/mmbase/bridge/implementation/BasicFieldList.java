@@ -12,16 +12,17 @@ package org.mmbase.bridge.implementation;
 
 import java.util.Collection;
 import org.mmbase.bridge.*;
+import org.mmbase.core.CoreField;
 
 /**
  * A list of fields
  *
  * @author Pierre van Rooden
- * @version $Id: BasicFieldList.java,v 1.21 2006-10-14 14:35:38 nklasens Exp $
+ * @version $Id: BasicFieldList.java,v 1.18 2006-07-11 09:30:26 michiel Exp $
  */
-public class BasicFieldList extends BasicList<Field> implements FieldList<Field> {
+public class BasicFieldList extends BasicList implements FieldList {
 
-    NodeManager nodemanager = null;
+    NodeManager nodemanager=null;
 
     BasicFieldList() {
         super();
@@ -32,9 +33,9 @@ public class BasicFieldList extends BasicList<Field> implements FieldList<Field>
         this.nodemanager = nodemanager;
     }
 
-    public Field convert(Object o, int index) {
+    public Object convert(Object o, int index) {
         if (o instanceof BasicField) {
-            return (Field) o;
+            return o;
         } else if (o instanceof Field) {
             // core-field does not have a node-manager, fix that.
             Field f = new BasicField((Field)o, nodemanager);
@@ -43,31 +44,34 @@ public class BasicFieldList extends BasicList<Field> implements FieldList<Field>
         } else { // give it up
             // perhaps we could anticipated DataType, String those kind of things too.
             // but this is not used at the moment anyway.
-            // shoudl not happen!
-            return (Field) o;
+            return o;
         }
     }
 
-    protected Field validate(Object o) throws ClassCastException {
-        return (Field)o;
+    protected Object validate(Object o) throws ClassCastException {
+        if (o instanceof CoreField) {
+            return o;
+        } else {
+            return (Field)o;
+        }
     }
 
     public Field getField(int index) {
-        return get(index);
+        return (Field)get(index);
     }
 
     public FieldIterator fieldIterator() {
         return new BasicFieldIterator();
     }
 
-    protected class BasicFieldIterator extends BasicIterator implements FieldIterator<Field> {
+    protected class BasicFieldIterator extends BasicIterator implements FieldIterator {
 
         public Field nextField() {
-            return next();
+            return (Field) next();
         }
 
         public Field previousField() {
-            return previous();
+            return (Field) previous();
         }
 
     }

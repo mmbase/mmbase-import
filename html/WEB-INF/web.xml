@@ -5,7 +5,7 @@
 
   Web-app 2.4 gives the possibility to  of use EL (Expression Language)
 
-  $Id: web.xml,v 1.32 2006-11-21 16:10:52 michiel Exp $
+  $Id: web.xml,v 1.31 2006-03-28 19:27:38 michiel Exp $
 -->
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -86,27 +86,11 @@
     <param-name>mmbase.taglib.field.nonExistance</param-name>
     <param-value>exception</param-value>
   </context-param>
-
   <context-param>
     <param-name>mmbase.taglib.function.nonExistance</param-name>
     <param-value>exception</param-value>
   </context-param>
 
-  <!--
-      Whether the server must be 'stalled' until this web-app is completely running.  Recognized by
-      MMBase.  If your web-app is in an application server with other application, it is good that
-      the initialization of mmbase does not stall the initialization of the complete application
-      server. Faster applications can already start serving content, without having to wait for the rest.
-      
-      If however your application is 'alone' in the application server and is even load-balanced
-      over several servers, then you do want that the application stalls the server, so that the
-      load-balancer (with AJP) can see that this one is not actually running (the 503 status code
-      does not seem to suffice).
-  -->
-  <context-param>
-    <param-name>stall-server</param-name>
-    <param-value>false</param-value>
-  </context-param>
 
 
   <!--

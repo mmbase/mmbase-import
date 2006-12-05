@@ -1,3 +1,0 @@
-<LIST RELATIONS TYPE="people" NODE="$PARAM1" FIELDS="firstname,lastname,email">
-<B>Posted by : $ITEM1 $ITEM2 ($ITEM3) </B><BR><BR>
-</LIST>

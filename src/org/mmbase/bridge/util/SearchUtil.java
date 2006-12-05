@@ -67,7 +67,7 @@ public class SearchUtil {
     public static NodeList findOrderedNodeList(Cloud cloud, String managerName, String sortName, String sortDirection) {
         return findNodeList(cloud, managerName, null, null, sortName, sortDirection);
     }
-
+    
     public static NodeList findNodeList(Cloud cloud, String managerName, String fieldname, Object value, String sortName, String sortDirection) {
         NodeManager manager = cloud.getNodeManager(managerName);
         NodeQuery query = manager.createQuery();

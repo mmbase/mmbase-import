@@ -205,7 +205,8 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
                 substep.setUserFeedBack("Opening data.xml ... done");
                 increaseProgressBar(100);
                 // 40%
-                for (Element n: reader.getChildElements("dataset.objectsets", "objectset")) {
+                for (Iterator ns = reader.getChildElements("dataset.objectsets", "objectset"); ns.hasNext(); ) {
+                    Element n = (Element) ns.next();
                     String path = n.getAttribute("path");
                     substep = step.getNextInstallStep();
                     substep.setUserFeedBack("loading objects " + path + "..");
@@ -220,7 +221,8 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
                 }
                 increaseProgressBar(100);
                 // 50%
-                for (Element n: reader.getChildElements("dataset.relationsets", "relationset")) {
+                for (Iterator ns = reader.getChildElements("dataset.relationsets", "relationset"); ns.hasNext(); ) {
+                    Element n = (Element) ns.next();
                     String name = n.getAttribute("name");
                     String path = n.getAttribute("path");
                     installRelationSet(jf, path);
@@ -250,15 +252,15 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
         MMObjectBuilder syncbul = mmb.getMMObject("syncnodes");
         if (syncbul != null) {
             JarEntry je = jf.getJarEntry(path);
-        if (je == null) {
-        if (path.indexOf('/') != -1 ) {
-            path.replace('/','\\');
-        }
-        if (path.indexOf('\\') != -1 ) {
-            path.replace('\\','/');
-        }
+	    if (je == null) {
+		if (path.indexOf('/') != -1 ) {
+			path.replace('/','\\');
+		}
+		if (path.indexOf('\\') != -1 ) {
+			path.replace('\\','/');
+		}
                 je = jf.getJarEntry(path);
-        }
+	    }
             if (je != null) {
                 try {
                     InputStream input = jf.getInputStream(je);
@@ -272,7 +274,9 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
                     try {
                         timestamp = Integer.parseInt(nr.getAttribute("timestamp"));
                     } catch (Exception e) {}
-                    for (Element n: nodereader.getChildElements("objectset", "object")) {
+                    for (Iterator ns = nodereader.getChildElements("objectset", "object");
+                            ns.hasNext(); ) {
+                        Element n = (Element) ns.next();
                         String exportnumber = n.getAttribute("number");
                         MMObjectBuilder bul = mmb.getMMObject(type);
                         String query = "exportnumber==" + exportnumber + "+exportsource=='" + exportsource + "'";
@@ -337,7 +341,9 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
             newnode.setAlias(alias);
         }
 
-        for (Element n2: nodereader.getChildElements(n, "field")) {
+        for (Iterator ns2 = nodereader.getChildElements(n, "field");
+                ns2.hasNext(); ) {
+            Element n2 = (Element) ns2.next();
             String field = n2.getAttribute("name");
             org.w3c.dom.Node n3 = n2.getFirstChild();
             String value = null;
@@ -470,9 +476,10 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
                     int timestamp = -1;
                     try {
                         timestamp = Integer.parseInt(nr.getAttribute("timestamp"));
-                    } catch (Exception e) {
-                    }
-                    for (Element n: nodereader.getChildElements("relationset", "relation")) {
+                    } catch (Exception e) {}
+                    for (Iterator ns = nodereader.getChildElements("relationset", "relation");
+                            ns.hasNext(); ) {
+                        Element n = (Element) ns.next();
                         String exportnumber = n.getAttribute("number");
                         String snumber = n.getAttribute("snumber");
                         String dnumber = n.getAttribute("dnumber");

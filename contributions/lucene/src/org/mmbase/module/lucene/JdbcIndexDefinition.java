@@ -16,7 +16,6 @@ import java.sql.*;
 import org.w3c.dom.*;
 import org.mmbase.util.*;
 import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.util.*;
 import org.mmbase.storage.implementation.database.GenericDataSource;
 import org.mmbase.cache.Cache;
 import org.apache.lucene.document.Document;
@@ -30,14 +29,14 @@ import org.mmbase.util.logging.*;
  * If for some reason you also need to do Queries next to MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JdbcIndexDefinition.java,v 1.16 2006-10-03 20:52:19 michiel Exp $
+ * @version $Id: JdbcIndexDefinition.java,v 1.9 2006-08-01 18:06:31 michiel Exp $
  **/
 public class JdbcIndexDefinition implements IndexDefinition {
 
     static private final Logger log = Logging.getLoggerInstance(JdbcIndexDefinition.class);
 
     private static final int CACHE_SIZE = 10 * 1024;
-    protected static Cache<String, LazyMap> nodeCache = new Cache(CACHE_SIZE) {
+    protected static Cache nodeCache = new Cache(CACHE_SIZE) {
             {
                 putCache();
             }
@@ -51,35 +50,23 @@ public class JdbcIndexDefinition implements IndexDefinition {
         };
 
     private final DataSource dataSource;
+    private final String sql;
     private final String key;
-    private final String identifier;
-    private final String indexSql;
-    private final String findSql;
+    private final String find;
     private final Analyzer analyzer;
 
-    private final Set<String> keyWords    = new HashSet();
-    private final Map<String, Indexer.Multiple> nonDefaultMultiples = new HashMap();
-    private final Map<String, Float> boosts = new HashMap();
+    private final Set keyWords = new HashSet();
 
-    private final Collection<IndexDefinition> subQueries = new ArrayList();
+    private final Collection subQueries = new ArrayList();
 
-    private final boolean isSub;
-
-    private String id;
-
-    JdbcIndexDefinition(DataSource ds, 
-                        Element element,
+    JdbcIndexDefinition(DataSource ds, Element element,
                         Set allIndexedFields,
                         boolean storeText,
-                        boolean mergeText, 
-                        Analyzer a,
-                        boolean isSub) {
+                        boolean mergeText, Analyzer a) {
         this.dataSource = ds;
-        indexSql = element.getAttribute("sql");
+        sql = element.getAttribute("sql");
         key = element.getAttribute("key");
-        String id = element.getAttribute("identifier");
-        identifier = "".equals(id) ? key : id;
-        findSql = element.getAttribute("find");
+        find = element.getAttribute("find");
         NodeList childNodes = element.getChildNodes();
         for (int k = 0; k < childNodes.getLength(); k++) {
             if (childNodes.item(k) instanceof Element) {
@@ -88,31 +75,14 @@ public class JdbcIndexDefinition implements IndexDefinition {
                     if (childElement.getAttribute("keyword").equals("true")) {
                         keyWords.add(childElement.getAttribute("name"));
                     }
-                    String m = childElement.getAttribute("multiple");
-                    if ("".equals(m)) m = "add";
-                    if (! m.equals("add")) {
-                        nonDefaultMultiples.put(childElement.getAttribute("name"),  Indexer.Multiple.valueOf(m.toUpperCase()));
-                    }
-                    String b = childElement.getAttribute("boost");
-                    if (! b.equals("")) {
-                        boosts.put(childElement.getAttribute("name"), Float.valueOf(b));
-                    }
                 } else if ("related".equals(childElement.getLocalName())) {
-                    subQueries.add(new JdbcIndexDefinition(ds, childElement, allIndexedFields, storeText, mergeText, a, true));
+                    subQueries.add(new JdbcIndexDefinition(ds, childElement, allIndexedFields, storeText, mergeText, a));
                 }
             }
         }
         this.analyzer = a;
-        this.isSub = isSub;
-        assert ! isSub  || "".equals(findSql);
     }
 
-    public void setId(String i) {
-        id = i;
-    }
-    public String getId() {
-        return id;
-    }
 
     /**
      * Jdbc connection pooling of MMBase would kill the statement if too duratious. This produces a
@@ -131,35 +101,32 @@ public class JdbcIndexDefinition implements IndexDefinition {
     }
 
     protected String getFindSql(String identifier) {
-        assert ! isSub;
-        if (findSql== null || "".equals(findSql)) throw new RuntimeException("No find query defined");
+        if (find == null || "".equals(find)) throw new RuntimeException("No find query defined");
         if (identifier == null) throw new RuntimeException("No find query defined");
-        String s = findSql.replaceAll("\\[IDENTIFIER\\]", identifier);
-        s = s.replaceAll("\\[KEY\\]", identifier); // deprecated
+        String s = find.replaceAll("\\[KEY\\]", identifier);
         return s;
     }
 
-    protected String getSql(String identifier) {
-        if (indexSql == null || "".equals(indexSql)) throw new RuntimeException("No sql defined");
+    protected String getSubSql(String identifier) {
+        if (sql == null || "".equals(sql)) throw new RuntimeException("No sql defined");
         if (identifier == null) throw new RuntimeException("No query defined");
-        String s = indexSql.replaceAll("\\[PARENTKEY\\]", identifier);
-        s = s.replaceAll("\\[KEY\\]", identifier); // deprecated
+        String s = sql.replaceAll("\\[KEY\\]", identifier);
         return s;
     }
 
-    protected CloseableIterator<JdbcEntry> getSqlCursor(final String sql) {
+    protected CloseableIterator getCursor(String s) {
         try {
             long start = System.currentTimeMillis();
-            log.debug("About to execute " + sql);
+            log.debug("About to execute " + s);
             final Connection con = getDirectConnection();
             final Statement statement = con.createStatement();
-            final ResultSet results = statement.executeQuery(sql);
+            final ResultSet results = statement.executeQuery(s);
             if (log.isDebugEnabled()) {
-                log.debug("Executed " + sql + " in " + (System.currentTimeMillis() - start) + " ms");
+                log.debug("Executed " + s + " in " + (System.currentTimeMillis() - start) + " ms");
             }
             final ResultSetMetaData meta = results.getMetaData();
 
-            return new CloseableIterator<JdbcEntry>() {
+            return new CloseableIterator() {
                 boolean hasNext = results.isBeforeFirst();
                 int i = 0;
 
@@ -167,7 +134,7 @@ public class JdbcIndexDefinition implements IndexDefinition {
                     return hasNext;
                 }
 
-                public JdbcEntry next() {
+                public Object next() {
                     if (! hasNext) {
                         throw new NoSuchElementException();
                     }
@@ -178,7 +145,7 @@ public class JdbcIndexDefinition implements IndexDefinition {
                         log.error(sqe);
                         hasNext = false;
                     }
-                    JdbcEntry entry = new JdbcEntry(meta, results, sql);
+                    JdbcEntry entry = new JdbcEntry(meta, results);
                     i++;
                     if (log.isServiceEnabled()) {
                         if (i % 100 == 0) {
@@ -209,165 +176,84 @@ public class JdbcIndexDefinition implements IndexDefinition {
         }
     }
 
-
-    /**
-     * A map representing a row in a database. But only filled when actually used. So, only on first
-     * use, a query is done. And not before that.
-     * @since MMBase-1.9
-     */
-    protected class LazyMap extends AbstractMap<String, String> {
-        private  Map<String, String> map = null;
-        private final Map<String, String> keys ;
-        private final String identifier;
-        LazyMap(String identifier, Map<String, String> keys) {
-            this.identifier = identifier;
-            this.keys = keys;
-        }
-        protected void check() {
-            if (map == null) {
-                Connection connection = null;
-                Statement statement = null;
-                ResultSet results = null;
-                try {
-                    connection = dataSource.getConnection();
-                    statement = connection.createStatement();
-                    long start = System.currentTimeMillis();
-                    String s = getFindSql(identifier);
-                    if (log.isTraceEnabled()) {
-                        log.trace("About to execute " + s + " because " , new Exception());
+    public org.mmbase.bridge.Node getNode(Cloud userCloud, String identifier) {
+        Map map = (Map) nodeCache.get(identifier);
+        if (map == null) {
+            try {
+                final Connection connection = dataSource.getConnection();
+                final Statement statement = connection.createStatement();
+                long start = System.currentTimeMillis();
+                String s = getFindSql(identifier);
+                log.debug("About to execute " + s);
+                ResultSet results = statement.executeQuery(s);
+                ResultSetMetaData meta = results.getMetaData();
+                if (results.next()) {
+                    map = new HashMap();
+                    for (int i = 1; i <= meta.getColumnCount(); i++) {
+                        String value = org.mmbase.util.Casting.toString(results.getString(i));
+                        map.put(meta.getColumnName(i).toLowerCase(), value);
                     }
-                    results = statement.executeQuery(s);
-                    ResultSetMetaData meta = results.getMetaData();
-                    map = new HashMap<String, String>();
-                    if (results.next()) {
-                        for (int i = 1; i <= meta.getColumnCount(); i++) {
-                            String value = org.mmbase.util.Casting.toString(results.getString(i));
-                            map.put(meta.getColumnName(i).toLowerCase(), value);
-                        }
-                    }
-                    long duration = (System.currentTimeMillis() - start);
-                    if (duration > 500) {
-                        log.warn("Executed " + s + " in " + duration + " ms");
-                    } else if (duration > 100) {
-                        log.debug("Executed " + s + " in " + duration + " ms");
-                    } else {
-                        log.trace("Executed " + s + " in " + duration + " ms");
-                    }
-                } catch (Exception e) {
-                    throw new RuntimeException(e.getMessage(), e);
-                } finally {
-                    if (results != null)    try { results.close();   } catch (Exception e) {}
-                    if (statement != null)  try { statement.close(); } catch (Exception e) {}
-                    if (connection != null) try { connection.close();} catch (Exception e) {}
+                } else {
+                    map = null;
                 }
-            }
-        }
-        public Set<Map.Entry<String, String>> entrySet() {
-            check();
-            return map.entrySet();
-        }
-        public int size() {
-            check();
-            return map.size();
-        }
-        public String get(Object key) {
-            if(JdbcIndexDefinition.this.identifier.equals(key)) return identifier;
-            if(keys.containsKey(key)) return keys.get(key);
-            check();
-            return map.get(key);
-        }
-        public boolean containsKey(Object key) {
-            if(JdbcIndexDefinition.this.identifier.equals(key)) return true;
-            if(keys.containsKey(key)) return true;
-            check();
-            return map.containsKey(key);
-        }
-        public String toString() {
-            if (map != null) {
-                return map.toString();
-            } else {
-                return "[LAZY node " + identifier + "]";
-            }
-        }
-    }
-
-    public org.mmbase.bridge.Node getNode(final Cloud userCloud, final Document doc) {
-        String id = doc.get("number");
-        if (id == null) {
-            throw new IllegalArgumentException("No number found in " + doc);
-        }
-        LazyMap m =  nodeCache.get(id);
-        if (m == null) {
-            Map<String, String> keys = new HashMap();
-            for (String keyWord : keyWords) {
-                keys.put(keyWord, doc.get(keyWord));
-            }
-            m = new LazyMap(id, keys);
-            nodeCache.put(id, m);
-        }
-        org.mmbase.bridge.Node node = new MapNode(m, new MapNodeManager(userCloud, m) {
-                public boolean hasField(String name) {
-                    if (JdbcIndexDefinition.this.key.equals(name)) return true;
-                    return super.hasField(name);
+                long duration = (System.currentTimeMillis() - start);
+                if (duration > 500) {
+                    log.warn("Executed " + s + " in " + duration + " ms");
+                } else if (duration > 100) {
+                    log.debug("Executed " + s + " in " + duration + " ms");
+                } else {
+                    log.trace("Executed " + s + " in " + duration + " ms");
                 }
-                public org.mmbase.bridge.Field getField(String name) {
-                    if (map == null && JdbcIndexDefinition.this.key.equals(name)) {
-                        org.mmbase.core.CoreField fd = org.mmbase.core.util.Fields.createField(name, org.mmbase.core.util.Fields.classToType(Object.class),
-                                                                                               org.mmbase.bridge.Field.TYPE_UNKNOWN,
-                                                                                               org.mmbase.bridge.Field.STATE_VIRTUAL, null);
-                        return new org.mmbase.bridge.implementation.BasicField(fd, this);
-                    } else {
-                        return super.getField(name);
-                    }
-                }
-            });
+                if (results != null) results.close();
+                if (statement != null) statement.close();
+                if (connection != null) connection.close();
+                if(map == null)return null;
+            } catch (Exception e) {
+                throw new RuntimeException(e.getMessage(), e);
+            }
+            nodeCache.put(identifier, map);
+        }
         if (log.isDebugEnabled()) {
-            log.debug("Returning node for "+ node);
+            log.debug("Returning node for "+ map);
         }
-        return node;
+        return new org.mmbase.bridge.implementation.VirtualNode(map, userCloud);
 
     }
 
 
-    public CloseableIterator<JdbcEntry> getCursor() {
-        assert ! isSub;
-        return getSqlCursor(indexSql);
+    public CloseableIterator getCursor() {
+        return getCursor(sql);
     }
 
-    public CloseableIterator<JdbcEntry> getSubCursor(String identifier) {
-        if (isSub) {
-            log.debug("Using getSubCursor for " + identifier);
-            return getSqlCursor(getSql(identifier));
-        } else {
-            return  getSqlCursor(getFindSql(identifier));
-        }
+    public CloseableIterator getSubCursor(String identifier) {
+        log.debug("Using getSubCursor for " + identifier);
+        return getCursor(getSubSql(identifier));
+    }
+
+    public IndexEntry getParent() {
+        return null;
     }
 
     public String toString() {
-        return indexSql;
+        return sql;
     }
 
     class JdbcEntry implements IndexEntry {
         final ResultSetMetaData meta;
         final ResultSet results;
-        final String sql;
 
-        JdbcEntry(ResultSetMetaData m, ResultSet r, String s) {
+        JdbcEntry(ResultSetMetaData m, ResultSet r) {
             log.trace("new JDBC Entry");
             meta = m;
             results = r;
-            sql = s;
         }
 
         public void index(Document document) {
-            if (log.isTraceEnabled()) {
-                log.trace("Indexing " + sql + " id=" + JdbcIndexDefinition.this.identifier + ", key = " + JdbcIndexDefinition.this.key);
+            if (log.isDebugEnabled()) {
+                log.trace("Indexing "+ results + " with " + keyWords);
             }
-            String id  = getIdentifier();
-            if (id != null) {
-                document.add(new Field("builder", "VIRTUAL BUILDER", Field.Store.YES, Field.Index.UN_TOKENIZED)); // keyword
-                document.add(new Field("number",  getIdentifier(),   Field.Store.YES, Field.Index.UN_TOKENIZED)); // keyword
-            }
+            document.add(new Field("builder", "VIRTUAL BUILDER", Field.Store.YES, Field.Index.UN_TOKENIZED)); // keyword
+            document.add(new Field("number",  getIdentifier(),   Field.Store.YES, Field.Index.UN_TOKENIZED)); // keyword
             try {
                 for (int i = 1; i <= meta.getColumnCount(); i++) {
                     String value = org.mmbase.util.Casting.toString(results.getString(i));
@@ -376,19 +262,10 @@ public class JdbcIndexDefinition implements IndexDefinition {
                     }
                     String fieldName = meta.getColumnName(i);
                     if (keyWords.contains(fieldName)) {
-                        Indexer.addField(document, new Field(fieldName,  value,   Field.Store.YES, Field.Index.UN_TOKENIZED), nonDefaultMultiples.get(fieldName)); // keyword
+                        document.add(new Field(fieldName,  value,   Field.Store.YES, Field.Index.UN_TOKENIZED)); // keyword
                     } else {
-                        Field field = new Field(fieldName,   value,   Field.Store.YES, Field.Index.TOKENIZED);
-                        Float boost = boosts.get(fieldName);
-                        if (boost != null) {
-                            field.setBoost(boost);
-                        }
-                        Indexer.addField(document, field, nonDefaultMultiples.get(fieldName));
-                        Field fullText = new Field("fulltext",  value,   Field.Store.YES, Field.Index.TOKENIZED);
-                        if (boost != null) {
-                            fullText.setBoost(boost);
-                        }
-                        document.add(fullText);
+                        document.add(new Field(fieldName,   value,   Field.Store.YES, Field.Index.TOKENIZED));
+                        document.add(new Field("fulltext",  value,   Field.Store.YES, Field.Index.TOKENIZED));
                     }
                 }
             } catch (SQLException sqe) {
@@ -396,36 +273,20 @@ public class JdbcIndexDefinition implements IndexDefinition {
             }
         }
 
-        public Collection<IndexDefinition> getSubDefinitions() {
+        public Collection getSubDefinitions() {
             return JdbcIndexDefinition.this.subQueries;
         }
 
         public String getIdentifier() {
-            if (JdbcIndexDefinition.this.identifier != null && ! JdbcIndexDefinition.this.identifier.equals("")) {
-                try {
-                    return results.getString(JdbcIndexDefinition.this.identifier);
-                } catch (SQLException sqe) {
-                    log.error(meta + " " + sqe.getMessage(), sqe);
-                    return "";
-                }
-            } else {
-                return null;
+            try {
+                return results.getString(JdbcIndexDefinition.this.key);
+            } catch (SQLException sqe) {
+                log.error(sqe);
+                return "";
             }
         }
-        public String getKey() {
-            if (JdbcIndexDefinition.this.key != null && ! JdbcIndexDefinition.this.key.equals("")) {
-                try {
-                    return results.getString(JdbcIndexDefinition.this.key);
-                } catch (SQLException sqe) {
-                    log.error(sqe.getMessage(), sqe);
-                    return "";
-                }
-            } else {
-                return null;
-            }
-        }
-        public Set<String> getIdentifiers() {
-            Set<String> ids = new HashSet();
+        public Set getIdentifiers() {
+            Set ids = new HashSet();
             ids.add(getIdentifier());
             return ids;
         }

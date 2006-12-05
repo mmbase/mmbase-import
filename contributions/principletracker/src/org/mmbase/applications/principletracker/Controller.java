@@ -237,7 +237,7 @@ public class Controller {
 	    body += "  <articleinfo>\n";
 	    body += "    <title>MMBase princinples (demo version)</title>\n";
 	    body += "    <date>"+(new Date()).toString()+"</date>\n";
-	    body += "    <edition>$Id: Controller.java,v 1.7 2006-11-24 15:54:08 michiel Exp $</edition>\n";
+	    body += "    <edition>$Id: Controller.java,v 1.6 2006-05-30 21:08:11 daniel Exp $</edition>\n";
 	    body += "    <authorgroup>\n";
 	    body += "      <author>\n";
 	    body += "        <firstname>MMBase</firstname><surname>Community</surname>\n";
@@ -363,7 +363,7 @@ public class Controller {
         	psn.setStringValue("description", description);
 		psn.commit();
 
-            	for(Iterator ns=reader.getChildElements("principleset","principle").iterator();ns.hasNext(); ) {
+            	for(Iterator ns=reader.getChildElements("principleset","principle");ns.hasNext(); ) {
                		Element n=(Element)ns.next();
   	               	nm=n.getAttributes();
                  	if (nm!=null) {

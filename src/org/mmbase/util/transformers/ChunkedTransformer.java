@@ -11,6 +11,10 @@ package org.mmbase.util.transformers;
 
 import java.util.*;
 import java.io.*;
+import java.util.regex.*;
+import org.mmbase.util.ResourceWatcher;
+import org.mmbase.util.xml.UtilReader;
+import org.mmbase.util.Entry;
 
 import org.mmbase.util.logging.*;
 

@@ -18,7 +18,6 @@ import javax.servlet.http.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.ProcessorInterface;
-import org.mmbase.util.LocalizedString;
 import org.mmbase.util.PageInfo;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
@@ -30,10 +29,11 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Rob Vermeulen
- * @version $Id: ModuleHandler.java,v 1.32 2006-11-24 14:24:28 pierre Exp $
+ * @version $Id: ModuleHandler.java,v 1.31 2006-01-02 19:17:47 michiel Exp $
  */
 public class ModuleHandler implements Module, Comparable, InvocationHandler {
     private static final Logger log = Logging.getLoggerInstance(ModuleHandler.class);
+
 
     // link to cloud context
     private CloudContext cloudContext = null;
@@ -46,7 +46,7 @@ public class ModuleHandler implements Module, Comparable, InvocationHandler {
 
     public synchronized static Module getModule(org.mmbase.module.Module mod, CloudContext cloudcontext) {
         // turned off because it causes errors on compiling with JDK1.2
-
+        
         Class[] objClasses = mod.getClass().getInterfaces();
         // check for allowable interface class
         // Package bridge = Package.getPackage("org.mmbase.bridge");
@@ -107,51 +107,7 @@ public class ModuleHandler implements Module, Comparable, InvocationHandler {
     }
 
     public String getDescription() {
-        return mmbaseModule.getDescription();
-    }
-
-    public String getDescription(Locale locale) {
-        return mmbaseModule.getDescription(locale);
-    }
-
-    public LocalizedString getLocalizedDescription() {
-        return mmbaseModule.getLocalizedDescription();
-    }
-
-    protected void setLocalizedDescription(LocalizedString description) {
-        throw new SecurityException("Operation not allowed");
-    }
-
-    public void setDescription(String desc, Locale locale) {
-        throw new SecurityException("Operation not allowed");
-    }
-
-    public void setDescription(String desc) {
-        throw new SecurityException("Operation not allowed");
-    }
-
-    public String getGUIName(Locale locale) {
-        return mmbaseModule.getGUIName(locale);
-    }
-
-    public String getGUIName() {
-        return mmbaseModule.getGUIName();
-    }
-
-    public void setGUIName(String g, Locale locale) {
-        throw new SecurityException("Operation not allowed");
-    }
-
-    public void setGUIName(String g) {
-        throw new SecurityException("Operation not allowed");
-    }
-
-    public LocalizedString getLocalizedGUIName() {
-        return mmbaseModule.getLocalizedGUIName();
-    }
-
-    protected void setLocalizedGUIName(LocalizedString value) {
-        throw new SecurityException("Operation not allowed");
+        return mmbaseModule.getModuleInfo();
     }
 
     public String getInfo(String command) {

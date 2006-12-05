@@ -21,9 +21,9 @@ import javax.servlet.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Module.java,v 1.17 2006-11-24 14:24:28 pierre Exp $
+ * @version $Id: Module.java,v 1.16 2005-07-28 16:53:45 michiel Exp $
  */
-public interface Module extends Descriptor {
+public interface Module {
 
     /**
      * Retrieves the CloudContext to which this module belongs
@@ -36,6 +36,12 @@ public interface Module extends Descriptor {
      * @return name of the module
      */
     public String getName();
+
+    /**
+     * Retrieve the description of the module.
+     * @return description of the module
+     */
+    public String getDescription();
 
     /**
      * Retrieve a property of the module.

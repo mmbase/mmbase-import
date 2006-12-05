@@ -14,9 +14,9 @@ package org.mmbase.bridge;
  * A list of field types
  *
  * @author Pierre van Rooden
- * @version $Id: FieldList.java,v 1.9 2006-09-25 13:58:29 michiel Exp $
+ * @version $Id: FieldList.java,v 1.6 2004-10-09 09:40:10 nico Exp $
  */
-public interface FieldList<E extends Field> extends BridgeList<E> {
+public interface FieldList extends BridgeList {
 
     /**
      * Returns the Field at the indicated postion in the list
@@ -29,7 +29,6 @@ public interface FieldList<E extends Field> extends BridgeList<E> {
      * Returns an type-specific iterator for this list.
      * @return Field iterator
      */
-    public FieldIterator<E> fieldIterator();
-
+    public FieldIterator fieldIterator();
 
 }

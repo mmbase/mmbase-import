@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * decide not to call the set-function of the attribute (in case of tag-instance-reuse).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Attribute.java,v 1.30 2006-10-17 12:08:54 michiel Exp $
+ * @version $Id: Attribute.java,v 1.28 2005-08-25 08:25:40 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -45,7 +45,7 @@ public class Attribute {
      * This is the function for public use. It takes the string and returns an Attribute, creating
      * a new one if it is not in the Attribute cache.
      */
-    public static final Attribute getAttribute(final String at) throws JspTagException {
+    public static final Attribute getAttribute(final Object at) throws JspTagException {
         if (at == null) return NULL;
         return cache.getAttribute(at);
     }
@@ -69,7 +69,7 @@ public class Attribute {
      * if containsVars is false (then simply 'attribute' can be returned
      * as value).
      */
-    private List<Part> attributeParts;
+    private List    attributeParts;
 
     /**
      * The constructor is protected, construction is done by the cache.
@@ -82,19 +82,20 @@ public class Attribute {
     protected Attribute() {}
 
     /**
-     * Appends the evaluated Attribute to StringBuilder
+     * Appends the evaluated Attribute to StringBuffer
      *
      * @param tag The tag relative to which the variable evalutations must be done
      *            (normally 'this' in a Tag implementation)
      */
 
-    public void appendValue(ContextReferrerTag tag, StringBuilder buffer) throws JspTagException {
+    public void appendValue(ContextReferrerTag tag, StringBuffer buffer) throws JspTagException {
         if (log.isDebugEnabled()) {
             log.debug("Appending " + attribute);
         }
         if (! containsVars) buffer.append(attribute.toString());
-
-        for (Part ap : attributeParts) {
+        Iterator i = attributeParts.iterator();
+        while (i.hasNext()) {
+            Part ap = (Part) i.next();
             ap.appendValue(tag, buffer);
         }
     }
@@ -105,11 +106,11 @@ public class Attribute {
     public Object getValue(ContextReferrerTag tag) throws JspTagException {
         if (! containsVars) return attribute;
 
-        if (attributeParts.size() == 1) { // avoid construction of StringBuilder for this simple case
+        if (attributeParts.size() == 1) { // avoid construction of StringBuffer for this simple case
             Part ap = (Part) attributeParts.get(0);
             return ap.getValue(tag);
         }
-        StringBuilder result = new StringBuilder();
+        StringBuffer result = new StringBuffer();
         appendValue(tag, result);
         return result.toString();
     }
@@ -140,7 +141,7 @@ public class Attribute {
      *
      */
 
-    public List<String> getList(ContextReferrerTag tag) throws JspTagException {
+    public List getList(ContextReferrerTag tag) throws JspTagException {
         return Arrays.asList( getString(tag).trim().split("\\s*,\\s*") );
     }
 
@@ -236,7 +237,7 @@ public class Attribute {
                     attributeParts.add(new StringPart("$"));
                     pos++;
                 } else {        // search until non-identifier
-                    StringBuilder varName = new StringBuilder();
+                    StringBuffer varName = new StringBuffer();
                     while (ContextContainer.isContextIdentifierChar(c)) {
                         varName.append(c);
                         pos++;
@@ -280,8 +281,8 @@ public class Attribute {
 
         abstract Object getValue(ContextReferrerTag tag) throws JspTagException;
 
-        final void  appendValue(ContextReferrerTag tag, StringBuilder buffer) throws JspTagException {
-            Casting.toStringBuilder(buffer, getValue(tag));
+        final void  appendValue(ContextReferrerTag tag, StringBuffer buffer) throws JspTagException {
+            Casting.toStringBuffer(buffer, getValue(tag));
         }
     }
 
@@ -374,7 +375,7 @@ public class Attribute {
 
  */
 
-class AttributeCache extends Cache<String, Attribute> {
+class AttributeCache extends Cache {
 
     AttributeCache() {
         super(1000);
@@ -382,8 +383,8 @@ class AttributeCache extends Cache<String, Attribute> {
 
     public String getName()        { return "TagAttributeCache"; }
     public String getDescription() { return "Cache for parsed Tag Attributes"; }
-    public final Attribute getAttribute(final String att) throws JspTagException {
-        Attribute res = super.get(att);
+    public final Attribute getAttribute(final Object att) throws JspTagException {
+        Attribute res = (Attribute) super.get(att);
         if (res == null) {
             res = new Attribute(att);
             super.put(att, res);
@@ -408,6 +409,6 @@ final class NullAttribute extends Attribute {
     NullAttribute() { }
     public final Object getValue(ContextReferrerTag tag)  throws JspTagException { return null; }
     public final String getString(ContextReferrerTag tag) throws JspTagException { return ""; }
-    public final void   appendValue(ContextReferrerTag tag, StringBuilder buffer) throws JspTagException { return; }
+    public final void   appendValue(ContextReferrerTag tag, StringBuffer buffer) throws JspTagException { return; }
     public final String toString() { return "NULLATTRIBUTE"; }
 }

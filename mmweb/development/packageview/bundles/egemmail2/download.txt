@@ -1,4 +1,0 @@
-<tr>
-	<th>Download</th>
-        <td><a href="http://development.mmbase.org/development/download/releases/egemmail-1.0.1.zip"><img src="images/arrow-right.gif"></a></td>
-</tr>

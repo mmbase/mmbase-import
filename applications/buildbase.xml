@@ -53,8 +53,6 @@ Create a build.xml with a DOCTYPE like this:
   <property name="project.documentation.dir" value="${project.source.dir}/documentation" />
   <property name="project.javadoc.dir" value="${project.build.dir}/documentation/javadoc/${project.name}" />
 
-  <property name="project.external.lib.dir" value="${project.source.dir}/external.libs" />
-
   <property name="project.extra.path"  value="" />  <!-- deprecated ! -->
   <property name="project.extra.path2" value="" /><!-- deprecated ! -->
 
@@ -256,7 +254,6 @@ Create a build.xml with a DOCTYPE like this:
         <exclude name="*.xml" />
         <exclude name="config/**" />
         <exclude name="documentation/**" />
-        <exclude name="external.libs/**" />
         <exclude name="src/**" />
         <exclude name="build*/**" />
         <exclude name="META-INF/**" />
@@ -316,47 +313,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
   </target>
 
 
-  <target name="test.explicit.dependency.dir">
-    <echo message="Testing for ${project.external.lib.dir} as an alternative classpath for compilation" />
-    <available file="${project.external.lib.dir}" property="external.libs.exist"/>
-
-  </target>
-  
-  <target name="explicit.dependency.dir" depends="test.explicit.dependency.dir" if="external.libs.exist">
-    <echo message="Using ${project.external.lib.dir} and ${project.jars.dir}" />
-
-    <available property="dummy" classname="dummy">
-      <classpath id="compile.classpath">
-        <fileset     dir="${project.jars.dir}" includes="${project.jars.includes}" />
-        <fileset     dir="${project.external.lib.dir}" includes="**" />
-      </classpath>
-    </available>
-
-  </target>
-
-  <target name="init.compile" depends="explicit.dependency.dir" unless="external.libs.exist" description="Sets up the classpath for compiling this">
-    <echo message="Using default classpath based on on ${project.jars.dir} and ${build.dir}/lib" />
-    <available property="dummy" classname="dummy">
-      <classpath id="compile.classpath">
-        <fileset     dir="${project.jars.dir}" includes="${project.jars.includes}" />
-        <pathelement path="${mmbase.jar}" />
-        <pathelement path="${servlet.jar}" />
-        <pathelement path="${xalan.jar}" />
-        <pathelement path="${fileupload.jar}" />
-        <pathelement path="${concurrent.jar}" />
-        <pathelement path="${mail.jar}" />
-        <pathelement path="${activation.jar}" />
-        <pathelement path="${taglibs-standard-jstl.jar}" />
-        <pathelement path="${project.build.dir}/classes" />
-        <pathelement path="${project.extra.path}" />
-        <pathelement path="${project.extra.path2}" />
-      </classpath>
-    </available>
-  </target>
-
-
-  <target name="compile" description="Compile the source directory" depends="init,init.compile" if="src.available">
-
+  <target name="compile" description="Compile the source directory" depends="init" if="src.available">
 
     <mkdir dir="${project.build.dir}/classes"/>
     <echo message="java version: ${ant.java.version}" />
@@ -379,12 +336,25 @@ web-app/*                All kind of templates. They problably can (need?) to be
            debug="${debug}"
            optimize="${optimize}"
            deprecation="${deprecation}"
-           classpathref="compile.classpath"
            nowarn="${nowarn}"
            excludes="${compile.excludes}"
-           source="1.5"
+           source="1.4"
            includeAntRuntime="false"
-           >
+      >
+      <classpath id="compile.classpath">
+        <fileset     dir="${project.jars.dir}" includes="${project.jars.includes}" />
+        <pathelement path="${mmbase.jar}" />
+        <pathelement path="${servlet.jar}" />
+        <pathelement path="${xalan.jar}" />
+        <pathelement path="${fileupload.jar}" />
+        <pathelement path="${concurrent.jar}" />
+        <pathelement path="${mail.jar}" />
+        <pathelement path="${activation.jar}" />
+        <pathelement path="${taglibs-standard-jstl.jar}" />
+        <pathelement path="${project.build.dir}/classes" />
+        <pathelement path="${project.extra.path}" />
+        <pathelement path="${project.extra.path2}" />
+      </classpath>
       <include name="**/*.java"/>
     </javac>
   </target>
@@ -435,7 +405,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
              windowtitle="${project.name} API"
              doctitle="${project.name}"
              maxmemory="100M"
-             source="1.5"
+             source="1.4"
              failonerror="false"
              bottom="${project.name} build ${version}">
       <classpath>
@@ -545,5 +515,36 @@ web-app/*                All kind of templates. They problably can (need?) to be
   </target>
 
   <!--
+      Well it is not very complicated, this download stuff,
+      but should we reuse the code of the main build.xml rather then copying it?
   -->
-  <import file="${source.dir}/download.xml" />
+  
+
+  <target name="downloadzip" unless="expanded" depends="download,testexpanded">
+    <!-- Extract the package -->
+    <mkdir dir="${destdir}" />
+    <unzip src="${destfile}" dest="${destdir}"/>
+  </target>
+  <target name="downloadgz" unless="expanded" depends="download,testexpanded">
+    <!-- Extract the package -->
+    <gunzip src="${destfile}" dest="${download.dir}/file.tar"/>
+    <untar src="${download.dir}/file.tar" dest="${expand.dir}"/>
+    <delete file="${download.dir}/file.tar"/>
+  </target>
+
+  <target name="download" unless="exist" depends="testexist">
+    <!-- Download the package -->
+    <mkdir dir="${download.dir}" />
+    <get src="${sourcefile}" dest="${destfile}" verbose="on" />
+  </target>
+
+  <target name="testexist">
+    <echo message="Testing  for ${destfile}"/>
+    <available file="${destfile}" property="exist"/>
+  </target>
+
+  <target name="testexpanded">
+    <echo message="Testing for ${expandedfile}"/>
+    <available file="${expandedfile}" property="expanded"/>
+  </target>
+

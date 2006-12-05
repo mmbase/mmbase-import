@@ -17,10 +17,10 @@ import java.util.*;
  * An implementation of this interface has to be thread-safe to guarantee correctness.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CacheImplementationInterface.java,v 1.7 2006-10-11 19:08:12 michiel Exp $
+ * @version $Id: CacheImplementationInterface.java,v 1.5 2006-02-23 17:36:55 michiel Exp $
  * @since MMBase-1.8
  */
-public interface CacheImplementationInterface<K, V> extends Map<K, V> {
+public interface CacheImplementationInterface extends Map {
 
     /**
      * Sets the (maximal)  size  of the cache (if implementable).
@@ -35,7 +35,7 @@ public interface CacheImplementationInterface<K, V> extends Map<K, V> {
     /**
      * Returns the hit-count on a certain key (if implementable).
      */
-    int getCount(K key);
+    int getCount(Object key);
 
     /**
      * Configure the implementation with the given configuration values

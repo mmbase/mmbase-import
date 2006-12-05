@@ -25,7 +25,7 @@ import javax.servlet.ServletRequest;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: NodeManager.java,v 1.40 2006-11-28 19:10:51 michiel Exp $
+ * @version $Id: NodeManager.java,v 1.38 2005-09-19 12:24:21 pierre Exp $
  */
 public interface NodeManager extends Node {
 
@@ -162,7 +162,7 @@ public interface NodeManager extends Node {
      *
      * @return a list of all fields defined for this node manager
      */
-    public FieldList<Field> getFields();
+    public FieldList getFields();
 
     /**
      * Retrieve a subset of field types of this NodeManager, depending on a given order. The order
@@ -178,7 +178,7 @@ public interface NodeManager extends Node {
      * @see   #ORDER_LIST
      * @see   #ORDER_SEARCH
      */
-    public FieldList<Field> getFields(int order);
+    public FieldList getFields(int order);
 
     /**
      * Returns the field with the specified name.
@@ -275,7 +275,7 @@ public interface NodeManager extends Node {
      *                      value.
      * @return              a list of nodes belonging to this node manager
      */
-    public NodeList<Node> getList(String constraints, String orderby, String directions);
+    public NodeList getList(String constraints, String orderby, String directions);
 
 
 
@@ -299,7 +299,7 @@ public interface NodeManager extends Node {
      *
      * @since MMBase-1.7
      */
-    public NodeList<Node> getList(NodeQuery query);
+    public NodeList getList(NodeQuery query);
 
 
     /**
@@ -325,7 +325,7 @@ public interface NodeManager extends Node {
      * @return the relation manager list
      * @since MMBase-1.6
      */
-    public RelationManagerList<RelationManager> getAllowedRelations();
+    public RelationManagerList getAllowedRelations();
 
     /**
      * Retrieve all relation managers that can be used to create relations for objects from this nodemanager,
@@ -336,7 +336,7 @@ public interface NodeManager extends Node {
      * @return the relation manager list
      * @since MMBase-1.6
      */
-    public RelationManagerList<RelationManager> getAllowedRelations(String nodeManager, String role, String direction);
+    public RelationManagerList getAllowedRelations(String nodeManager, String role, String direction);
 
     /**
      * Retrieve all relation managers that can be used to create relations for objects from this nodemanager,
@@ -347,7 +347,7 @@ public interface NodeManager extends Node {
      * @return the relation manager list
      * @since MMBase-1.6
      */
-    public RelationManagerList<RelationManager> getAllowedRelations(NodeManager nodeManager, String role, String direction);
+    public RelationManagerList getAllowedRelations(NodeManager nodeManager, String role, String direction);
 
     /**
      * Retrieve info (as a list of virtual nodes) from a node manager based on a command string.
@@ -357,7 +357,7 @@ public interface NodeManager extends Node {
      * @param parameters a hashtable containing the named parameters of the list.
      * @return info from a node manager (as a list of virtual nodes)
      */
-    public NodeList<Node> getList(String command, Map parameters);
+    public NodeList getList(String command, Map parameters);
 
     /**
      * Retrieve info from a node manager based on a command string
@@ -369,7 +369,7 @@ public interface NodeManager extends Node {
      * @param resp the Response item to use for redirecting users. For backward compatibility.
      * @return info from a node manager (as a list of virtual nodes)
      */
-    public NodeList<Node> getList(String command, Map parameters, ServletRequest req, ServletResponse resp);
+    public NodeList getList(String command, Map parameters, ServletRequest req, ServletResponse resp);
 
     /**
      * Check if the current user may create a new node of this type.
@@ -384,7 +384,7 @@ public interface NodeManager extends Node {
      * @return  The empty list
      * @since   MMBase-1.8
      */
-    public FieldList<Field> createFieldList();
+    public FieldList createFieldList();
 
     /**
      * Returns a new, empty node list for this nodemanager
@@ -392,7 +392,7 @@ public interface NodeManager extends Node {
      * @return  The empty list
      * @since   MMBase-1.8
      */
-    public NodeList<Node> createNodeList();
+    public NodeList createNodeList();
 
     /**
      * Returns a new, empty relation list for this nodemanager
@@ -400,6 +400,6 @@ public interface NodeManager extends Node {
      * @return  The empty list
      * @since   MMBase-1.8
      */
-    public RelationList<Relation> createRelationList();
+    public RelationList createRelationList();
 
 }

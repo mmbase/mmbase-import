@@ -11,9 +11,11 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.implementation;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import org.mmbase.bridge.*;
 import org.mmbase.security.*;
+import org.mmbase.storage.search.SearchQueryException;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.logging.*;
@@ -23,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelationManager.java,v 1.36 2006-11-11 18:51:43 michiel Exp $
+ * @version $Id: BasicRelationManager.java,v 1.34 2005-12-27 22:14:14 michiel Exp $
  */
 public class BasicRelationManager extends BasicNodeManager implements RelationManager {
     private static final Logger log = Logging.getLoggerInstance(BasicRelationManager.class);
@@ -68,7 +70,7 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
      * passed node (reldef or typerel), and fills temporary variables to maintain status.
      */
     protected void initManager() {
-        MMObjectBuilder bul = noderef.getBuilder();
+        MMObjectBuilder bul = noderef.getBuilder();        
         if (bul instanceof RelDef) {
             relDefNode = noderef;
         } else if (bul instanceof TypeRel) {
@@ -80,7 +82,7 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
         } else {
             throw new RuntimeException("The builder of node " + noderef.getNumber() + " is not reldef or typerel, but " + bul.getTableName() + " cannot instantiate a relation manager with this");
         }
-
+        
         RelDef relDef = (RelDef) relDefNode.getBuilder();
         if (relDef != null) {
             builder = relDef.getBuilder(relDefNode.getNumber());

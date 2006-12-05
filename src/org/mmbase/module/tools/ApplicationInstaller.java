@@ -30,7 +30,7 @@ import org.xml.sax.InputSource;
  *
  * @author Nico Klasens
  * @since MMBase-1.8
- * @version $Id: ApplicationInstaller.java,v 1.9 2006-12-05 21:09:43 michiel Exp $
+ * @version $Id: ApplicationInstaller.java,v 1.8.2.1 2006-12-05 21:07:35 michiel Exp $
  */
 public class ApplicationInstaller {
 
@@ -47,10 +47,12 @@ public class ApplicationInstaller {
 
     public void installApplications() throws SearchQueryException {
         ResourceLoader applicationLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("applications");
-        for (String appResource :  applicationLoader.getResourcePaths(ResourceLoader.XML_PATTERN, false)) {
+        Iterator i = applicationLoader.getResourcePaths(ResourceLoader.XML_PATTERN, false).iterator();
+        while (i.hasNext()) {
+            String appResource = (String) i.next();
             ApplicationResult result = new ApplicationResult();
             if (!installApplication(appResource.substring(0, appResource.length() - 4), -1, null, result, new HashSet(), true)) {
-                log.error("Problem installing application : " + appResource + ", cause: "+result.getMessage());
+                log.error("Problem installing application : " + appResource + ", cause: \n" + result.getMessage());
             }
         }
     }
@@ -744,7 +746,7 @@ public class ApplicationInstaller {
                     result.error(e.getMessage());
                     continue;
                 }
-                    // we now made the builder active.. look for other builders...
+                // we now made the builder active.. look for other builders...
             }
         }
         return result.isSuccess();

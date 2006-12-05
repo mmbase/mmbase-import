@@ -7,7 +7,6 @@
 package org.mmbase.cache;
 
 import java.util.*;
-import java.util.concurrent.*;
 
 import org.mmbase.core.event.Event;
 import org.mmbase.core.event.NodeEvent;
@@ -34,14 +33,20 @@ import org.mmbase.bridge.implementation.BasicQuery;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Bunst Eunders
- * @version $Id: QueryResultCache.java,v 1.38 2006-10-11 19:06:34 michiel Exp $
+ * @version $Id: QueryResultCache.java,v 1.34 2006-06-27 07:31:46 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
 
-abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectNode>> {
+abstract public class QueryResultCache extends Cache {
 
     private static final Logger log = Logging.getLoggerInstance(QueryResultCache.class);
+
+    /**
+     * Need reference to all existing these caches, to be able to invalidate
+     * them.
+     */
+    private static final Map queryCaches = new HashMap();
 
     /**
      * This is the default release strategy. Actually it is a container for any
@@ -70,23 +75,25 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
     // @todo I think it can be done with one Observer instance too, (in which
     // case we can as well
     // let QueryResultCache implement MMBaseObserver itself)
-    private final Map<String, Observer> observers = new HashMap();
+    private final Map observers = new HashMap();
 
     QueryResultCache(int size) {
         super(size);
         releaseStrategy = new ChainedReleaseStrategy();
         log.debug("Instantiated a " + this.getClass().getName() + " (" + releaseStrategy + ")"); // should happen limited number of times
+        if (queryCaches.put(this.getName(), this) != null) {
+            log.error("" + queryCaches + "already containing " + this + "!!");
+        }
     }
 
     /**
      * @param strategies
      */
-    public void addReleaseStrategies(List<ReleaseStrategy> strategies) {
+    public void addReleaseStrategies(List strategies) {
         if (strategies != null) {
-            for (ReleaseStrategy element : strategies) {
-                if (log.isDebugEnabled()) {
-                    log.debug(("adding strategy " + element.getName() + " to cache " + getName()));
-                }
+            for (Iterator iter = strategies.iterator(); iter.hasNext();) {
+                ReleaseStrategy element = (ReleaseStrategy) iter.next();
+                log.debug(("adding strategy " + element.getName() + " to cache " + getName()));
                 addReleaseStrategy(element);
             }
         }
@@ -112,24 +119,32 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
     /**
      * @return an iterator of all observer instances
      */
-    public Iterator<Observer> observerIterator(){
-        List<Observer> observerList = new ArrayList<Observer>();
+    public Iterator observerIterator(){
+        List observerList = new ArrayList();
         synchronized(this){
             observerList.addAll(observers.values());
         }
         return observerList.iterator();
     }
 
+    /**
+     * @throws ClassCastException if key not a SearchQuery or value not a List.
+     */
+    public synchronized Object put(Object key, Object value) {
+        if (key instanceof BasicQuery) {
+            return put(((BasicQuery) key).getQuery(), (List) value);
+        }
+
+        return put((SearchQuery) key, (List) value);
+    }
 
     /**
      * Puts a search result in this cache.
      */
-    public synchronized List<MMObjectNode> put(SearchQuery query, List<MMObjectNode> queryResult) {
+    public synchronized Object put(SearchQuery query, List queryResult) {
         if (!checkCachePolicy(query)) return null;
-        if (query instanceof BasicQuery) {
-            query = ((BasicQuery) query).getQuery();
-        }
-        List n =  super.get(query);
+
+        List n = (List) super.get(query);
         if (n == null) {
             addObservers(query);
         }
@@ -142,13 +157,13 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
      *
      * @param key A SearchQuery object.
      */
-    public synchronized List<MMObjectNode> remove(Object key) {
-        List result = super.remove(key);
+    public synchronized Object remove(Object key) {
+        Object result = super.remove(key);
 
         if (result != null) { // remove the key also from the observers.
-            Iterator<Observer> i = observers.values().iterator();
+            Iterator i = observers.values().iterator();
             while (i.hasNext()) {
-                Observer o =  i.next();
+                Observer o = (Observer) i.next();
                 o.stopObserving(key);
             }
         }
@@ -160,14 +175,17 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
      */
     private void addObservers(SearchQuery query) {
         MMBase.getMMBase();
-        for (Step step : query.getSteps()) {
+
+        Iterator i = query.getSteps().iterator();
+        while (i.hasNext()) {
+            Step step = (Step) i.next();
             //if we want to test constraints on relaion steps we have to have observers for them
 //            if (step instanceof RelationStep) {
 //                continue;
 //            }
             String type = step.getTableName();
 
-            Observer o = observers.get(type);
+            Observer o = (Observer) observers.get(type);
             if (o == null) {
                 o = new Observer(type);
                 synchronized(this){
@@ -192,7 +210,7 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
          * This set contains the types (as a string) which are to be
          * invalidated.
          */
-        private Map<SearchQuery, String> cacheKeys = new ConcurrentHashMap<SearchQuery, String>(); // using java default for
+        private Set cacheKeys = new HashSet(); // using java default for
                                                 // initial size. Someone tried 50.
 
         private String type;
@@ -224,16 +242,16 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
          *
          * @return true if it already was observing this entry.
          */
-        protected synchronized boolean observe(SearchQuery key) {
+        protected synchronized boolean observe(Object key) {
             // assert(MultilevelCache.this.containsKey(key));
-            return cacheKeys.put(key, "") != null;
+            return cacheKeys.add(key);
         }
 
         /**
          * Stop observing this key of multilevelcache
          */
         protected synchronized boolean stopObserving(Object key) {
-            return cacheKeys.remove(key) != null;
+            return cacheKeys.remove(key);
         }
 
         /*
@@ -259,42 +277,48 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
                 log.debug("Considering " + event);
             }
             int evaluatedResults = cacheKeys.size();
+            Set removeKeys = new HashSet();
             long startTime = System.currentTimeMillis();
-            Iterator<SearchQuery> i = cacheKeys.keySet().iterator();
-            if (log.isDebugEnabled()) {
-                log.debug("Considering " + cacheKeys.size() + " objects in " + QueryResultCache.this.getName() + " for flush because of " + event);
-            }
-            int removeKeys = 0;
-            while(i.hasNext()) {
-                SearchQuery key = i.next();
-                boolean shouldRelease;
-                if(releaseStrategy.isEnabled()){
-                    if(event instanceof NodeEvent){
-                        shouldRelease = releaseStrategy.evaluate((NodeEvent)event, key,
-                                                                 QueryResultCache.this.get(key)).shouldRelease();
-                    } else if (event instanceof RelationEvent){
-                        shouldRelease = releaseStrategy.evaluate((RelationEvent)event, key,
-                                                                 QueryResultCache.this.get(key)).shouldRelease();
+            synchronized (QueryResultCache.this) {
+                Iterator i = cacheKeys.iterator();
+                if (log.isDebugEnabled()) {
+                    log.debug("Considering " + cacheKeys.size() + " objects in " + QueryResultCache.this.getName() + " for flush because of " + event);
+                }
+                while(i.hasNext()) {
+                    SearchQuery key = (SearchQuery) i.next();
+
+                    boolean shouldRelease;
+                    if(releaseStrategy.isEnabled()){
+                        if(event instanceof NodeEvent){
+                            shouldRelease = releaseStrategy.evaluate((NodeEvent)event, key, (List) get(key)).shouldRelease();
+                        } else if (event instanceof RelationEvent){
+                            shouldRelease = releaseStrategy.evaluate((RelationEvent)event, key, (List) get(key)).shouldRelease();
+                        } else {
+                            log.error("event " + event.getClass() + " " + event + " is of unsupported type");
+                            shouldRelease = false;
+                        }
                     } else {
-                        log.error("event " + event.getClass() + " " + event + " is of unsupported type");
-                        shouldRelease = false;
+                        shouldRelease = true;
                     }
-                } else {
-                    shouldRelease = true;
+
+                    if (shouldRelease) {
+                        removeKeys.add(key);
+                        i.remove();
+                    }
+
                 }
 
-                if (shouldRelease) {
-                    QueryResultCache.this.remove(key);
-                    i.remove();
-                    removeKeys++;
+                // ernst: why is this in a separate loop?
+                // why not chuck em out in the first one?
+                i = removeKeys.iterator();
+                while(i.hasNext()) {
+                    QueryResultCache.this.remove(i.next());
                 }
-
             }
-
             if (log.isDebugEnabled()) {
-                log.debug(QueryResultCache.this.getName() + ": event analyzed in " + (System.currentTimeMillis() - startTime)  + " milisecs. evaluating " + evaluatedResults + ". Flushed " + removeKeys);
+                log.debug(QueryResultCache.this.getName() + ": event analyzed in " + (System.currentTimeMillis() - startTime)  + " milisecs. evaluating " + evaluatedResults + ". Flushed " + removeKeys.size());
             }
-            return removeKeys;
+            return removeKeys.size();
         }
 
         public String toString() {
@@ -309,9 +333,10 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
     public void clear(){
         super.clear();
         releaseStrategy.clear();
-        for (Observer o : observers.values()) {
+        Iterator i = observers.values().iterator();
+        while (i.hasNext()) {
+            Observer o = (Observer) i.next();
             o.clear();
         }
-
     }
 }

@@ -54,7 +54,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.81 2006-11-24 09:33:14 pierre Exp $
+ * @version $Id: Dove.java,v 1.78.2.1 2006-10-05 15:06:39 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -159,13 +159,17 @@ public class Dove extends AbstractDove {
                         fel = addContentElement(FIELD, "", out);
 
                         int byteLength = 0;
-                        if (nm.hasField("filesize")) {
-                            byteLength = node.getIntValue("filesize");
-                        } else if (nm.hasField("size")) {
-                            byteLength = node.getIntValue("size");
-                        } else {
-                            byte[] bytes = node.getByteValue(fname);
-                            byteLength = bytes != null ? bytes.length : 0;
+                        if (nm.hasField(AbstractImages.FIELD_FILESIZE)) {
+                            byteLength = node.getIntValue(AbstractImages.FIELD_FILESIZE);
+                        }
+                        else {
+                            if (nm.hasField(Attachments.FIELD_SIZE)) {
+                                byteLength = node.getIntValue(Attachments.FIELD_SIZE);
+                            }
+                            else {
+                                byte[] bytes = node.getByteValue(fname);
+                                byteLength = bytes != null ? bytes.length : 0;
+                            }
                         }
                         fel.setAttribute(ELM_SIZE, "" + byteLength);
                     } else if (dataType instanceof DateTimeDataType ||

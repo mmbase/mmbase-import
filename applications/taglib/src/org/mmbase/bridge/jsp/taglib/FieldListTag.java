@@ -23,7 +23,7 @@ import org.mmbase.bridge.*;
  * This class makes a tag which can list the fields of a NodeManager.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldListTag.java,v 1.57 2006-09-27 20:48:26 michiel Exp $
+ * @version $Id: FieldListTag.java,v 1.54 2006-07-17 15:38:47 johannes Exp $
  */
 public class FieldListTag extends FieldReferrerTag implements ListProvider, FieldProvider, QueryContainerReferrer {
 
@@ -42,7 +42,6 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     protected Attribute  retain = Attribute.NULL;
     protected Attribute  remove = Attribute.NULL;
     private  Attribute comparator = Attribute.NULL;
-    private  Attribute varStatus = Attribute.NULL;
 
     public int size(){
         return returnList.size();
@@ -149,9 +148,6 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     public void setComparator(String c) throws JspTagException {
         comparator = getAttribute(c);
     }
-    public void setVarStatus(String s) throws JspTagException {
-        varStatus = getAttribute(s);
-    }
 
 
     /**
@@ -171,7 +167,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
      * @since MMBase-1.8.1
      */
     protected NodeManager getNodeManagerFromQuery(String id, boolean exception) throws JspTagException {
-        NodeQueryContainer qc = findParentTag(NodeQueryContainer.class, container.getString(this), exception);
+        NodeQueryContainer qc = (NodeQueryContainer) findParentTag(NodeQueryContainer.class, container.getString(this), exception);
         NodeQuery query = qc.getNodeQuery();
         return query.getNodeManager();
     }
@@ -245,7 +241,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
             if (addObject instanceof Collection) {
                 returnList.addAll((Collection) addObject);
             } else {
-                returnList.add((Field) addObject);
+                returnList.add(addObject);
             }
         }
         if (retain != Attribute.NULL) {

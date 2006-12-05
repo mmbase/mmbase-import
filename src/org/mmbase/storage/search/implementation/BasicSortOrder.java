@@ -15,7 +15,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSortOrder.java,v 1.9 2006-10-16 12:56:57 pierre Exp $
+ * @version $Id: BasicSortOrder.java,v 1.8 2005-05-26 07:51:48 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicSortOrder implements SortOrder {
@@ -95,7 +95,7 @@ public class BasicSortOrder implements SortOrder {
     public boolean equals(Object obj) {
         if (obj instanceof SortOrder) {
             SortOrder order = (SortOrder) obj;
-            return
+            return 
                 field.getFieldName().equals(order.getField().getFieldName())
                 && BasicStepField.compareSteps(field.getStep(), order.getField().getStep())
                 && direction == order.getDirection()
@@ -116,10 +116,7 @@ public class BasicSortOrder implements SortOrder {
 
     // javadoc is inherited
     public String toString() {
-        StringBuilder sb = new StringBuilder("SortOrder(field:").append(BasicStepField.getFieldName(getField())).
-        append(", dir:").append(getDirectionDescription()).
-        append(")");
-        return sb.toString();
+        return "SortOrder(field:" + BasicStepField.getFieldName(getField()) + ", dir:" + getDirectionDescription() + ")";
     }
 
 }

@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.67 2006-10-11 09:55:47 michiel Exp $
+ * @version  $Id: editwizard.jsp,v 1.62.2.3 2006-09-06 08:23:18 nklasens Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
@@ -85,9 +85,6 @@ function doOnUnLoad_ew() {
 // onunload handler with one of his own. It is hard to override that one,
 // because a timer is used to wait a while before attaching it.
 // In short, DON'T USE OR OVERRIDE THIS FUNCTION.
- 
-// MM: I think it is very necessary though, to attach an unload event, because
-// the current hackery with history.go(1) in list.js is not acceptable. See bug #6810.
 }
 
 //********************************
@@ -367,6 +364,10 @@ function resizeEditTable() {
     var docWidth = getDimensions().windowWidth;
     document.getElementById("editform").style.width = docWidth
        
+    var textareas = document.getElementsByTagName("textarea");
+    for (var i = 0 ; i < textareas.length ; i++) {
+        textareas[i].style.width = docWidth -100;
+    }
 }
 
 function setParam(name, value) {

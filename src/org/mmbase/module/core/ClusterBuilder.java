@@ -22,6 +22,7 @@ import org.mmbase.storage.search.legacy.ConstraintParser;
 import org.mmbase.util.QueryConvertor;
 import org.mmbase.util.logging.*;
 
+
 /**
  * The builder for {@link ClusterNode clusternodes}.
  * <p>
@@ -48,7 +49,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.87 2006-10-16 12:56:57 pierre Exp $
+ * @version $Id: ClusterBuilder.java,v 1.85 2006-01-06 16:34:16 michiel Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -167,7 +168,7 @@ public class ClusterBuilder extends VirtualBuilder {
         }
 
         // Else "name"-fields of contained nodes.
-        StringBuilder sb = new StringBuilder();
+        StringBuffer sb = new StringBuffer();
         for (Iterator i= node.getValues().entrySet().iterator(); i.hasNext();) {
             Map.Entry entry = (Map.Entry)i.next();
             String key = (String) entry.getKey();
@@ -195,10 +196,10 @@ public class ClusterBuilder extends VirtualBuilder {
      * @param pars Parameters, see {@link MMObjectBuilder#GUI_PARAMETERS}
      * @return the display of the node's field as a <code>String</code>, null if not specified
      */
-    public String getGUIIndicator(MMObjectNode node, Parameters pars) {
+    protected String getGUIIndicator(MMObjectNode node, Parameters pars) {
 
         if (node == null) throw new RuntimeException("Tried to get GUIIndicator for  " + pars + " with NULL node");
-
+            
         ClusterNode clusterNode = (ClusterNode) node;
 
         String field = pars.getString(Parameter.FIELD);
@@ -271,7 +272,7 @@ public class ClusterBuilder extends VirtualBuilder {
             }
             return bul.getField(getFieldNameFromField(fieldName));
         } else {
-            //
+            // 
             MMObjectBuilder bul = mmb.getBuilder(getTrueTableName(fieldName));
             if (bul != null) {
                 return new FieldDefs(fieldName, FieldDefs.TYPE_NODE, -1, FieldDefs.STATE_VIRTUAL, org.mmbase.datatypes.DataTypes.getDataType("node"));
@@ -279,14 +280,14 @@ public class ClusterBuilder extends VirtualBuilder {
         }
         return null;
     }
-
-    public List getFields(int order) {
+                          
+    public List getFields(int order) {        
         throw new UnsupportedOperationException("Cluster-nodes can have any field.");
     }
-    public Collection getFields() {
+    public Collection getFields() {        
         throw new UnsupportedOperationException("Cluster-nodes can have any field.");
     }
-
+                   
     /**
      * @since MMBase-1.8
      */
@@ -725,7 +726,7 @@ public class ClusterBuilder extends VirtualBuilder {
                 relation = query.addRelationStep(bul, bul2);
                 step2 = (BasicStep)relation.getNext();
 
-                // MM: setting aliases used to be _inside_ the includeAllReference-if.
+                // MM: setting aliases used to be _inside_ the includeAllReference-if. 
                 // but I don't see how that would make sense. Trying a while like this.
                 relation.setAlias(tableName);
                 step2.setAlias(tableName2);
@@ -1031,8 +1032,15 @@ public class ClusterBuilder extends VirtualBuilder {
             builder = builder.getParentBuilder();
         } while (builder != null && result == null);
 
+        /*
+          if (result == null) {
+          throw new RuntimeException("Node '" + nodeNumber + "' not of one of the types " + steps);
+          }
+        */
+
         return result;
     }
+
 
     /**
      * Adds relation directions.

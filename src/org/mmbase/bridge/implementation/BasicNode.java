@@ -32,11 +32,11 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.214 2006-11-10 14:19:59 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.210.2.4 2006-11-28 13:48:45 johannes Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
-public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements Node, SizeMeasurable {
+public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements Node, Comparable, SizeMeasurable {
 
 
     private static final Logger log = Logging.getLoggerInstance(BasicNode.class);
@@ -386,6 +386,8 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
                 result =  new BasicRelationManager(mmobjectNode, cloud);
             } else if (builder instanceof InsRel) {
                 result =  new BasicRelation(mmobjectNode, cloud); //.getNodeManager(noderes.getBuilder().getTableName()));
+            } else if (builder instanceof VirtualBuilder) {
+                result = new VirtualNode((org.mmbase.module.core.VirtualNode)mmobjectNode, cloud);
             } else {
                 result = new BasicNode(mmobjectNode, cloud); //.getNodeManager(noderes.getBuilder().getTableName()));
             }
@@ -481,7 +483,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         }
         edit(ACTION_COMMIT);
 
-        Collection<String> errors = validate();
+        Collection errors = validate();
         if (errors.size() > 0) {
             String mes = "node " + getNumber() + noderef.getChanged() + ", builder '" + nodeManager.getName() + "' " + errors.toString();
             noderef.cancel();
@@ -638,7 +640,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             // new nodes have no relations
             return BridgeCollections.EMPTY_RELATIONLIST;
         }
-
+        
         if ("".equals(otherNodeManager)) otherNodeManager = null;
         NodeManager otherManager = otherNodeManager == null ? cloud.getNodeManager("object") : cloud.getNodeManager(otherNodeManager);
 
@@ -775,7 +777,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
 
         NodeList l1 = BridgeCollections.EMPTY_NODELIST;
         NodeList l2 = BridgeCollections.EMPTY_NODELIST;
-
+       
         TypeRel typeRel = BasicCloudContext.mmb.getTypeRel();
         if (role == null) {
             int allowedOtherNumber = otherManager == null || "object".equals(otherManager.getName()) ? 0 : otherManager.getNumber();

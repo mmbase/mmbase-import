@@ -40,14 +40,14 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.32 2006-11-24 14:27:55 pierre Exp $
+ * @version $Id: DocumentReader.java,v 1.29 2006-06-19 05:53:58 michiel Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
     private static Logger log = Logging.getLoggerInstance(DocumentReader.class);
 
     /** for the document builder of javax.xml. */
-    private static Map<String, DocumentBuilder> documentBuilders = Collections.synchronizedMap(new HashMap<String, DocumentBuilder>());
+    private static Map documentBuilders = Collections.synchronizedMap(new HashMap());
 
     protected static final String FILENOTFOUND = "FILENOTFOUND://";
 
@@ -248,7 +248,7 @@ public class DocumentReader  {
         validating = validate(validating);
         if (handler == null && resolver == null) {
             String key = "" + validating + xsd;
-            DocumentBuilder db = documentBuilders.get(key);
+            DocumentBuilder db = (DocumentBuilder) documentBuilders.get(key);
             if (db == null) {
                 db = createDocumentBuilder(validating, xsd, null, null);
                 documentBuilders.put(key, db);
@@ -518,36 +518,37 @@ public class DocumentReader  {
 
     /**
      * @param path Path to the element
-     * @return a <code>List</code> of child elements
+     * @return Iterator of child elements
      */
-    public List<Element> getChildElements(String path) {
+    public Iterator getChildElements(String path) {
         return getChildElements(getElementByPath(path));
     }
 
     /**
      * @param e Element
-     * @return a <code>List</code> of child elements
+     * @return Iterator of child elements
      */
-    public List<Element> getChildElements(Element e) {
+    public Iterator getChildElements(Element e) {
         return getChildElements(e,"*");
     }
 
     /**
      * @param path Path to the element
      * @param tag tag to match ("*" means all tags")
-     * @return a <code>List</code> of child elements with the given tag
+     * @return Iterator of child elements with the given tag
      */
-    public List<Element> getChildElements(String path,String tag) {
+    public Iterator getChildElements(String path,String tag) {
         return getChildElements(getElementByPath(path),tag);
     }
 
     /**
      * @param e Element
      * @param tag tag to match ("*" means all tags")
-     * @return a <code>List</code> of child elements with the given tag
+     * @return Iterator of child elements with the given tag
+     * @todo XXXX MM: Since we have changed the return type from 1.7 to 1.8 anyway, why don't we return a List then?
      */
-    public List<Element> getChildElements(Element e, String tag) {
-        List<Element> v = new ArrayList<Element>();
+    public Iterator getChildElements(Element e,String tag) {
+        List v = new ArrayList();
         boolean ignoretag = tag.equals("*");
         if (e!=null) {
             NodeList nl = e.getChildNodes();
@@ -556,11 +557,26 @@ public class DocumentReader  {
                 if (n.getNodeType() == Node.ELEMENT_NODE &&
                     (ignoretag ||
                      ((Element)n).getLocalName().equalsIgnoreCase(tag))) {
-                    v.add((Element) n);
+                    v.add(n);
                 }
             }
         }
-        return v;
+        return v.iterator();
+    }
+
+    public static void main(String[] argv) throws Exception {
+        if (argv.length == 0) {
+            System.out.println("Usage: java -Dmmbase.config=<config dir> org.mmbase.util.xml.DocumentReader <path to xml>");
+            System.out.println(" The mmbase config dir is used to resolve XSD's (in config/xmlns) and DTD's (in config/dtd).");
+            System.out.println(" Errors will be reported if the XML is invalid");
+
+            return;
+        }
+        Document d = org.mmbase.util.ResourceLoader.getDocument(new java.io.File(argv[0]).toURL(), true, null);
+        /*
+        DocumentReader doc =  new DocumentReader(d);
+        System.out.println(XMLWriter.write(toDocument(doc.getRootElement()), true, false));
+        */
     }
 
 }

@@ -26,10 +26,10 @@ import org.mmbase.util.logging.Logging;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: PageContextBacking.java,v 1.14 2006-11-21 20:32:40 michiel Exp $
+ * @version $Id: PageContextBacking.java,v 1.11.2.1 2006-11-21 20:39:56 michiel Exp $
  */
 
-public  class PageContextBacking extends AbstractMap<String, Object> implements Backing {
+public  class PageContextBacking extends AbstractMap implements Backing {
 
     private static final Logger log = Logging.getLoggerInstance(PageContextBacking.class);
 
@@ -38,28 +38,27 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
     private final PageContext pageContext;
 
     // We also want to store null, pageContext cannot contain those.
-    private final Set<String> nulls = new HashSet<String>();
+    private final Set nulls = new HashSet();
 
-    private final Set<String> jspvars = new HashSet<String>();
+    private final Set jspvars = new HashSet();
 
-    private final Map<String, Object> unwrapped = new HashMap<String, Object>();
+    private final Map unwrapped = new HashMap();
 
     public PageContextBacking(PageContext pc) {
         pageContext = pc;
     }
 
     public void pushPageContext(PageContext pc) {
-        assert pageContext == pc;
-        log.debug("Pushing " + pageContext + " --> " + pc);
+
     }
 
     public void pullPageContext(PageContext pc) {
 
     }
-
     public PageContext getPageContext() {
         return pageContext;
     }
+
 
     public void setJspVar(PageContext pc, String jspvar, int vartype, Object value) {
         if (jspvar == null) return;
@@ -77,22 +76,22 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
 
     }
 
-    public Set<Map.Entry<String, Object>> entrySet() {
-        return new AbstractSet<Map.Entry<String, Object>>() {
-                Collection<String> names = unwrapped.keySet();
-                public Iterator<Map.Entry<String, Object>> iterator() {
-                    return new Iterator<Map.Entry<String, Object>>() {
-                            Iterator<String> back = names.iterator();
-                            Iterator<String> nul  = null;
+    public Set entrySet() {
+        return new AbstractSet() {
+                Collection names = unwrapped.keySet();
+                public Iterator iterator() {
+                    return new Iterator() {
+                            Iterator back = names.iterator();
+                            Iterator nul  = null;
                             String name;
-                            public Map.Entry<String, Object> next() {
+                            public Object next() {
                                 if (nul == null) {
-                                    name = back.next();
+                                    name = (String) back.next();
                                 } else {
-                                    name = nul.next();
+                                    name = (String) nul.next();
                                 }
-                                return new Map.Entry<String, Object>() {
-                                        public String  getKey() {
+                                return new Map.Entry() {
+                                        public Object getKey() {
                                             return name;
                                         }
                                         public Object getValue() {
@@ -133,37 +132,29 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
     }
 
 
-    public Object put(String key, Object value) {
+    public Object put(Object key, Object value) {
         if (value == null) {
             nulls.add(key);
         } else {
-            String k = key;
+            String k = (String) key;
             Object v = jspvars.contains(key) ? value : Casting.wrap(value, (CharTransformer) pageContext.findAttribute(ContentTag.ESCAPER_KEY));
             pageContext.setAttribute(k, v, SCOPE);
         }
         return unwrapped.put(key, value);
     }
     public Object get(Object key) {
-        if (key instanceof String) {
-            return pageContext.findAttribute((String) key);
-        } else {
-            return false;
-        }
+        return pageContext.findAttribute((String) key);
     }
-    public Object getOriginal(String key) {
+    public Object getOriginal(Object key) {
         Object value = unwrapped.get(key);
         if (value != null) return value;
-        return pageContext.findAttribute(key);
+        return pageContext.findAttribute((String) key);
     }
     public boolean containsKey(Object key) {
-        if (key instanceof String) {
-            return pageContext.findAttribute((String) key) != null ||  nulls.contains((String) key);
-        } else {
-            return false;
-        }
+        return pageContext.findAttribute((String) key) != null ||  nulls.contains(key);
     }
 
-    public boolean containsOwnKey(String key) {
+    public boolean containsOwnKey(Object key) {
         return unwrapped.containsKey(key);
     }
 
@@ -174,7 +165,7 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
     }
 
     public String toString() {
-        return "PAGECONTEXT BACKING " + super.toString() + " backed by " + pageContext;
+        return "PAGECONTEXT BACKING " + super.toString();
     }
 
 }

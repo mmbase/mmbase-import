@@ -4,7 +4,8 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
     name="object" maintainer="mmbase.org" version="0">
-  <class>org.mmbase.module.core.MMObjectBuilder</class>
+  <status>active</status>
+  <class>Dummy</class>
   <searchage>1000</searchage>
   <names>
     <singular xml:lang="en">Object</singular>
@@ -15,7 +16,6 @@
     <singular xml:lang="fy">Objekt</singular>
     <singular xml:lang="it">Oggetto</singular>
     <singular xml:lang="ja">舞台</singular><!-- 'buttai' or? 部隊 -->
-    <singular xml:lang="x-tokipona">ijo</singular>
     <plural xml:lang="en">Objects</plural>
     <plural xml:lang="nl">Objecten</plural>
     <plural xml:lang="es">Objetos</plural>
@@ -24,7 +24,6 @@
     <plural xml:lang="fy">Objekts</plural>
     <plural xml:lang="it">Oggetti</plural>
     <plural xml:lang="ja">舞台</plural>
-    <plural xml:lang="x-tokipona">ijo mute</plural>
   </names>
 
   <descriptions>
@@ -35,7 +34,6 @@
     <description xml:lang="fr">Objets</description>
     <description xml:lang="fy">Objekten</description>
     <description xml:lang="it">Oggetti</description>
-    <description xml:lang="x-tokipona">ijo mute</description>
   </descriptions>
 
   <properties>
@@ -62,7 +60,6 @@
         <guiname xml:lang="it">Oggetto</guiname>
         <guiname xml:lang="zh">号</guiname>
         <guiname xml:lang="ja">数</guiname><!-- 'kazu', I found 6 other possibilities ... , suuzi, suu-->
-        <guiname xml:lang="x-tokipona">nanpa ijo</guiname>
       </gui>
       <editor>
         <positions>
@@ -83,13 +80,11 @@
         <description xml:lang="en">Object's type</description>
         <description xml:lang="nl">Objecttype</description>
         <description xml:lang="eo">Tipo de tiu ĉi objekto</description>
-        <description xml:lang="x-tokipona">kulupu mama pi ijo ni</description>
       </descriptions>
 
       <gui>
         <guiname xml:lang="en">Type</guiname>
         <guiname xml:lang="nl">Type</guiname>
-        <guiname xml:lang="x-tokipona">kulupu mama</guiname>
       </gui>
       <editor>
         <positions>
@@ -137,7 +132,6 @@
         <guiname xml:lang="it">Proprietario</guiname>
         <guiname xml:lang="zh">闆</guiname>
         <guiname xml:lang="ja">主勇者</guiname><!-- 'shoyuusha' -->
-        <guiname xml:lang="x-tokipona">jan jo</guiname>
       </gui>
       <editor>
         <positions>
@@ -148,7 +142,7 @@
       </editor>
       <datatype base="owner" xmlns="http://www.mmbase.org/xmlns/datatypes" >
         <required value="true" />
-        <maxLength value="64" enforce="never"/>
+        <maxLength value="12" enforce="never"/>
       </datatype>
     </field>
 

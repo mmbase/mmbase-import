@@ -1,12 +1,12 @@
 /*
-
-  This software is OSI Certified Open Source Software.
-  OSI Certified is a certification mark of the Open Source Initiative.
-
-  The license (Mozilla version 1.0) can be read at the MMBase site.
-  See http://www.MMBase.org/license
-
-*/
+ 
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+ 
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+ 
+ */
 
 package org.mmbase.applications.mmbob;
 
@@ -31,8 +31,8 @@ import org.mmbase.util.logging.*;
  */
 public class ForumsConfig {
     private static Logger log = Logging.getLoggerInstance(ForumsConfig.class);
-    private HashMap fieldaliases=new HashMap();
-    private HashMap subs ;//=new HashMap();
+    private final Map fieldaliases = new HashMap();
+    private final Map subs = new HashMap();
     private String defaultaccount, defaultpassword;
     private String accountcreationtype="open";
     private String accountremovaltype="open";
@@ -74,12 +74,12 @@ public class ForumsConfig {
     private boolean firstrun = true;
 
     public ForumsConfig (DocumentReader reader,Element n) {
-        subs = null;
-        subs = new HashMap();
         log.debug("subhasmap cleared");
 	if (firstrun) checkCloudModel();
 	firstrun = false;
 	decodeConfig(reader,n);
+    }
+    public ForumsConfig() {
     }
 
     private boolean decodeConfig(DocumentReader reader,Element n) {
@@ -108,21 +108,21 @@ public class ForumsConfig {
                 defaultpassword = password;
             }
 
-            //get xslt configuration
+            //get xslt configuration 
             Element xsltElement = reader.getElementByPath("mmbobconfig.forums.xslts.postings");
             if (xsltElement!=null) {
                 xsltpostingsodd = xsltElement.getAttribute("odd");
                 xsltpostingseven = xsltElement.getAttribute("even");
             }
 
-            //get avatar configuration
+            //get avatar configuration 
             Element avatarsElement = reader.getElementByPath("mmbobconfig.forums.avatars");
             Element avatarsUploadElement = reader.getElementByPath(avatarsElement,"avatars.upload");
             avatarsUploadEnabled = avatarsUploadElement.getAttribute("enable");
             Element avatarsGalleryElement = reader.getElementByPath(avatarsElement,"avatars.gallery");
             avatarsGalleryEnabled = avatarsGalleryElement.getAttribute("enable");
 
-            for (Iterator ns2 = reader.getChildElements(n, "generatedata").iterator(); ns2.hasNext();) {
+            for (Iterator ns2 = reader.getChildElements(n, "generatedata"); ns2.hasNext();) {
                 Element n2 = (Element) ns2.next();
                 nm = n2.getAttributes();
                 if (nm != null) {
@@ -145,7 +145,7 @@ public class ForumsConfig {
                 }
             }
 
-            for (Iterator ns2 = reader.getChildElements(n, "quota").iterator(); ns2.hasNext();) {
+            for (Iterator ns2 = reader.getChildElements(n, "quota"); ns2.hasNext();) {
                 Element n2 = (Element) ns2.next();
                 nm = n2.getAttributes();
                 if (nm != null) {
@@ -169,15 +169,15 @@ public class ForumsConfig {
             String tmp = getAttributeValue(reader,n,"preloadchangedthreads","minutes");
             try {
                 if (tmp!=null) preloadchangedthreadstime+=Integer.parseInt(tmp)*60;
-            } catch (Exception e) {}
+            } catch (Exception e) {} 
             tmp = getAttributeValue(reader,n,"preloadchangedthreads","hours");
             try {
                 if (tmp!=null) preloadchangedthreadstime+=Integer.parseInt(tmp)*3600;
-            } catch (Exception e) {}
+            } catch (Exception e) {} 
             tmp = getAttributeValue(reader,n,"preloadchangedthreads","days");
             try {
                 if (tmp!=null) preloadchangedthreadstime+=Integer.parseInt(tmp)*(3600*24);
-            } catch (Exception e) {}
+            } catch (Exception e) {} 
 
 
             // get time
@@ -185,16 +185,16 @@ public class ForumsConfig {
             tmp = getAttributeValue(reader,n,"swapoutunusedthreads","minutes");
             try {
                 if (tmp!=null) swapoutunusedthreadstime+=Integer.parseInt(tmp)*60;
-            } catch (Exception e) {}
+            } catch (Exception e) {} 
             tmp = getAttributeValue(reader,n,"swapoutunusedthreads","hours");
             try {
                 if (tmp!=null) swapoutunusedthreadstime+=Integer.parseInt(tmp)*3600;
-            } catch (Exception e) {}
+            } catch (Exception e) {} 
             tmp = getAttributeValue(reader,n,"swapoutunusedthreads","days");
             try {
                 if (tmp!=null) swapoutunusedthreadstime+=Integer.parseInt(tmp)*(3600*24);
-            } catch (Exception e) {}
-
+            } catch (Exception e) {} 
+			
             accountcreationtype = getAttributeValue(reader,n,"accountcreation","type");
             accountremovaltype = getAttributeValue(reader,n,"accountremoval","type");
             loginsystemtype = getAttributeValue(reader,n,"loginsystem","type");
@@ -235,7 +235,7 @@ public class ForumsConfig {
                 replyoneachpage = true;
             }
 
-            for(Iterator ns2=reader.getChildElements(n,"layout").iterator();ns2.hasNext(); ) {
+            for(Iterator ns2=reader.getChildElements(n,"layout");ns2.hasNext(); ) {
                 Element n2=(Element)ns2.next();
                 org.w3c.dom.NodeList layoutList = n2.getElementsByTagName("footer");
                 if (layoutList.getLength() > 0) {
@@ -248,7 +248,7 @@ public class ForumsConfig {
                     htmlHeaderPath = headerNode.getAttribute("path");
                 }
             }
-            for (Iterator ns2=reader.getChildElements(n,"filters").iterator();ns2.hasNext(); ) {
+            for (Iterator ns2=reader.getChildElements(n,"filters");ns2.hasNext(); ) {
                 Element n2=(Element)ns2.next();
                 org.w3c.dom.Node n4 = n2.getFirstChild();
                 while (n4!=null) {
@@ -271,13 +271,13 @@ public class ForumsConfig {
                         }
                         if (type.equals("content")) {
                             if (filterwords==null) filterwords = new HashMap();
-                            filterwords.put(replace,with);
-                        }
+                            filterwords.put(replace,with);	
+                        }			
                     }
-                    n4=n4.getNextSibling();
+                    n4=n4.getNextSibling();				
                 }
             }
-            for (Iterator ns2=reader.getChildElements(n,"emailtexts").iterator();ns2.hasNext(); ) {
+            for (Iterator ns2=reader.getChildElements(n,"emailtexts");ns2.hasNext(); ) {
                 Element n2=(Element)ns2.next();
                 org.w3c.dom.Node n4 = n2.getFirstChild();
                 while (n4!=null) {
@@ -292,10 +292,10 @@ public class ForumsConfig {
                         text=n4.getFirstChild().getNodeValue();
                         if (role!=null && text!=null) emailtexts.put(role,text);
                     }
-                    n4=n4.getNextSibling();
+                    n4=n4.getNextSibling();				
                 }
             }
-            for(Iterator ns2=reader.getChildElements(n,"alias").iterator();ns2.hasNext(); ) {
+            for(Iterator ns2=reader.getChildElements(n,"alias");ns2.hasNext(); ) {
                 Element n2=(Element)ns2.next();
                 nm=n2.getAttributes();
                 if (nm!=null) {
@@ -340,7 +340,7 @@ public class ForumsConfig {
                 }
             }
 
-            for(Iterator ns2=reader.getChildElements(n,"forum").iterator();ns2.hasNext(); ) {
+            for(Iterator ns2=reader.getChildElements(n,"forum");ns2.hasNext(); ) {
                 Element n2=(Element)ns2.next();
                 ForumConfig config = new ForumConfig(reader,n2);
                 subs.put(config.getId(),config);
@@ -350,11 +350,11 @@ public class ForumsConfig {
         return true;
     }
 
-    public HashMap getFieldaliases() {
+    public Map getFieldaliases() {
         return fieldaliases;
     }
 
-
+  
     public String getDefaultPassword() {
         return defaultpassword;
     }
@@ -422,13 +422,13 @@ public class ForumsConfig {
     public ForumConfig getForumConfig(String id) {
 	Object o = subs.get(id);
 	if (o != null) {
-            return (ForumConfig)o;
+            return (ForumConfig)o;	
 	}
 	return null;
     }
 
     private String getAttributeValue(DocumentReader reader,Element n,String itemname,String attribute) {
-        for (Iterator ns2 = reader.getChildElements(n, itemname).iterator(); ns2.hasNext();) {
+        for (Iterator ns2 = reader.getChildElements(n, itemname); ns2.hasNext();) {
             Element n2 = (Element) ns2.next();
             NamedNodeMap nm = n2.getAttributes();
             if (nm != null) {
@@ -437,7 +437,7 @@ public class ForumsConfig {
                     return n3.getNodeValue();
                 }
             }
-        }
+        }	
         return null;
     }
 
@@ -578,6 +578,8 @@ public class ForumsConfig {
     }
 
     public void save() {
+
+        /// OOOH NOOOO!
 	String body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 	body += "<!DOCTYPE mmbobconfig PUBLIC \"-//MMBase/DTD mmbob config 1.0//EN\" \"http://www.mmbase.org/dtd/mmbobconfig_1_0.dtd\">\n";
 	body += "<mmbobconfig>\n";
@@ -658,7 +660,7 @@ public class ForumsConfig {
             } else {
 	     	body += "\t\t\t<loginmode type=\""+forum.getLoginModeType()+"\" guiedit=\""+forum.getGuiEdit("loginmode")+"\" />\n";
             }
-
+	
             if (forum.getGuiEdit("logoutmode")==null || forum.getGuiEdit("logoutmode").equals("true")) {
 	     	body += "\t\t\t<logoutmode type=\""+forum.getLogoutModeType()+"\" />\n";
             } else {
@@ -674,9 +676,9 @@ public class ForumsConfig {
             if (forum.getGuiEdit("guestwritemode")==null || forum.getGuiEdit("guestwritemode").equals("true")) {
 	     	body += "\t\t\t<guestwritemode type=\""+forum.getGuestWriteModeType()+"\" />\n\n";
             } else {
-	     	body += "\t\t\t<guestwritemode type=\""+forum.getGuestWriteModeType()+"\" guiedit=\""+forum.getGuiEdit("guestwritemode")+"\" />\n";
+	     	body += "\t\t\t<guestwritemode type=\""+forum.getGuestWriteModeType()+"\" guiedit=\""+forum.getGuiEdit("guestwritemode")+"\" />\n"; 
             }
-
+	
             Iterator pi=forum.getProfileDefs();
             if (pi!=null) {
                 while (pi.hasNext()) {
@@ -704,7 +706,7 @@ public class ForumsConfig {
             if (forum.getGuiEdit("navigationmethod")==null || forum.getGuiEdit("navigationmethod").equals("true")) {
 	     	body += "\t\t\t <navigation method=\""+forum.getNavigationMethod()+"\"/>\n\n";
             } else {
-	     	body += "\t\t\t <navigation method=\""+forum.getNavigationMethod()+"\" guiedit=\""+forum.getGuiEdit("navigationmethod")+"\" />\n\n";
+	     	body += "\t\t\t <navigation method=\""+forum.getNavigationMethod()+"\" guiedit=\""+forum.getGuiEdit("navigationmethod")+"\" />\n\n"; 
             }
             for (Enumeration postareas = forum.getPostAreas(); postareas.hasMoreElements();) {
              	PostArea postarea = (PostArea) postareas.nextElement();
@@ -887,7 +889,7 @@ public class ForumsConfig {
     public void removeWordFilter(String name) {
 	filterwords.remove(name);
     }
-
+ 
     public int getSpeedPostTime() {
 	return speedposttime;
     }

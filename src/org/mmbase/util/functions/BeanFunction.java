@@ -27,12 +27,12 @@ import org.mmbase.util.logging.*;
  * delegates to a static method in this class).
  *
  * @author Michiel Meeuwissen
- * @version $Id: BeanFunction.java,v 1.12 2006-10-13 14:22:26 nklasens Exp $
+ * @version $Id: BeanFunction.java,v 1.8 2005-12-08 16:18:21 michiel Exp $
  * @see org.mmbase.util.functions.MethodFunction
  * @see org.mmbase.util.functions.FunctionFactory
  * @since MMBase-1.8
  */
-public class BeanFunction extends AbstractFunction<Object> {
+public class BeanFunction extends AbstractFunction {
     private static final Logger log = Logging.getLoggerInstance(BeanFunction.class);
     /**
      * Utility function, searches an inner class of a given class. This inner class can perhaps be used as a
@@ -55,7 +55,7 @@ public class BeanFunction extends AbstractFunction<Object> {
     /**
      * A cache for bean classes. Used to avoid some reflection.
      */
-    private static Cache<String, BeanFunction> beanFunctionCache = new Cache<String, BeanFunction>(50) {
+    private static Cache beanFunctionCache = new Cache(50) {
         public String getName() {
             return "BeanFunctionCache";
         }
@@ -70,7 +70,7 @@ public class BeanFunction extends AbstractFunction<Object> {
      */
     public static Function getFunction(Class claz, String name) throws IllegalAccessException, InstantiationException, InvocationTargetException {
         String key = claz.getName() + '.' + name;
-        BeanFunction result = beanFunctionCache.get(key);
+        BeanFunction result = (BeanFunction) beanFunctionCache.get(key);
         if (result == null) {
             result = new BeanFunction(claz, name);
             beanFunctionCache.put(key, result);
@@ -96,7 +96,7 @@ public class BeanFunction extends AbstractFunction<Object> {
     /**
      * A list of all found setter methods. This list 1-1 corresponds with getParameterDefinition. Every Parameter belongs to a setter method.
      */
-    private List<Method> setMethods = new ArrayList<Method>();
+    private List   setMethods = new ArrayList();
 
 
 
@@ -108,7 +108,9 @@ public class BeanFunction extends AbstractFunction<Object> {
         this.claz = claz;
 
         // Finding the  methods to be used.
-        for (Method m : claz.getMethods()) {
+        Method[] methods = claz.getMethods();
+        for (int i = 0 ; i < methods.length; i++) {
+            Method m = methods[i];
             String methodName = m.getName();
             if (methodName.equals(name) && m.getParameterTypes().length == 0) {
                 method = m;
@@ -126,17 +128,18 @@ public class BeanFunction extends AbstractFunction<Object> {
         // need a sample instance to get the default values from.
         Object sampleInstance = claz.newInstance();
 
-        List<Parameter> parameters = new ArrayList<Parameter>();
-        for (Method m : claz.getMethods()) {
-            String methodName = m.getName();
-            Class[] parameterTypes = m.getParameterTypes();
+        List parameters = new ArrayList();
+        for (int i = 0 ; i < methods.length; i++) {
+            Method method = methods[i];
+            String methodName = method.getName();
+            Class[] parameterTypes = method.getParameterTypes();
             if (parameterTypes.length == 1 && methodName.startsWith("set")) {
                 String parameterName = methodName.substring(3);
                 // find a corresponding getter method, which can be used for a default value;
                 Object defaultValue;
                 try {
-                    Method getter = claz.getMethod("get" + parameterName);
-                    defaultValue = getter.invoke(sampleInstance);
+                    Method getter = claz.getMethod("get" + parameterName, new Class[] {});
+                    defaultValue = getter.invoke(sampleInstance, new Object[] {});
                 } catch (NoSuchMethodException nsme) {
                     defaultValue = null;
                 }
@@ -154,10 +157,10 @@ public class BeanFunction extends AbstractFunction<Object> {
                 } else {
                     parameters.add(new Parameter(parameterName, parameterTypes[0], defaultValue));
                 }
-                setMethods.add(m);
+                setMethods.add(method);
             }
         }
-        setParameterDefinition(parameters.toArray(Parameter.EMPTY));
+        setParameterDefinition((Parameter[]) parameters.toArray(new Parameter[0]));
         ReturnType returnType = new ReturnType(method.getReturnType(), "");
         setReturnType(returnType);
 
@@ -171,24 +174,18 @@ public class BeanFunction extends AbstractFunction<Object> {
     public Object getFunctionValue(Parameters parameters) {
         try {
             Object bean = claz.newInstance();
-            Iterator<?> i = parameters.iterator();
-            Iterator<Method> j = setMethods.iterator();
+            Iterator i = parameters.iterator();
+            Iterator j = setMethods.iterator();
             while(i.hasNext() && j.hasNext()) {
-                Object value  = i.next();
-                Method setter = j.next();
-                setter.invoke(bean, value);
+                Object value = i.next();
+                Method method = (Method) j.next();
+                method.invoke(bean, new Object[] {value});
             }
-            Object ret =  method.invoke(bean);
+            Object ret =  method.invoke(bean, new Object[] {});
             return ret;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-
-    public static void main(String[] argv) throws Exception {
-        Function fun = getFunction(Class.forName(argv[0]), argv[1]);
-        System.out.println("" + fun);
-        System.out.println("" + fun.createParameters());
-    }
 }

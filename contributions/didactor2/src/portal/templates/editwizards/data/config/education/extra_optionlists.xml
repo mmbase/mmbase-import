@@ -1,5 +1,0 @@
-<!-- I hate editwizards, because they don't this automaticly: -->
-<optionlist include="webblocks/webblocktypes.xml" />
-<optionlist include="webblocks/displaytypes.xml" />
-<optionlist include="webblocks/showreruns.xml" />
-<optionlist include="webblocks/xvalues.xml" />

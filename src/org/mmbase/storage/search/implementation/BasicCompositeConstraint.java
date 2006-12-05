@@ -17,14 +17,14 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicCompositeConstraint.java,v 1.9 2006-10-16 12:56:57 pierre Exp $
+ * @version $Id: BasicCompositeConstraint.java,v 1.7 2005-05-02 13:02:09 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicCompositeConstraint extends BasicConstraint implements CompositeConstraint {
     private static final Logger log = Logging.getLoggerInstance(BasicCompositeConstraint.class);
 
     /** The child constraints. */
-    private List<Constraint> childs = new ArrayList<Constraint>();
+    private List childs = new ArrayList();
 
     /** The logical operator. */
     private int logicalOperator = 0;
@@ -77,7 +77,7 @@ public class BasicCompositeConstraint extends BasicConstraint implements Composi
 
 
     // javadoc is inherited
-    public List<Constraint> getChilds() {
+    public List getChilds() {
         // return a unmodifiable list
         return Collections.unmodifiableList(childs);
     }
@@ -142,7 +142,8 @@ public class BasicCompositeConstraint extends BasicConstraint implements Composi
 
     // javadoc is inherited
     public String toString() {
-        StringBuilder sb = new StringBuilder("CompositeConstraint(inverse:").append(isInverse()).
+        StringBuffer sb = new StringBuffer("CompositeConstraint(inverse:").
+        append(isInverse()).
         append(", operator:").append(getLogicalOperatorDescription()).
         append(", childs:").append(getChilds()).
         append(")");

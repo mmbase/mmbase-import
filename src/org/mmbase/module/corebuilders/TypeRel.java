@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.74 2006-10-27 08:04:31 nklasens Exp $
+ * @version $Id: TypeRel.java,v 1.72.2.2 2006-10-20 07:51:53 nklasens Exp $
  * @see RelDef
  * @see InsRel
  * @see org.mmbase.module.core.MMBase
@@ -678,11 +678,14 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      *
      * @since MMBase-1.6.2
      */
-    protected class TypeRelSet extends TreeSet<MMObjectNode> {
+    protected class TypeRelSet extends TreeSet {
         protected TypeRelSet() {
-            super(new Comparator<MMObjectNode>() {
+            super(new Comparator() {
                 // sorted by source, destination, role
-                public int compare(MMObjectNode n1, MMObjectNode n2) {
+                public int compare(Object o1, Object o2) {
+                    MMObjectNode n1 = (MMObjectNode) o1;
+                    MMObjectNode n2 = (MMObjectNode) o2;
+
                     int i1 = n1.getIntValue("snumber");
                     int i2 = n2.getIntValue("snumber");
                     if (i1 != i2) return i1 - i2;
@@ -701,7 +704,8 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         }
 
         // make sure only MMObjectNode's are added
-        public boolean add(MMObjectNode node) {
+        public boolean add(Object object) {
+            MMObjectNode node = (MMObjectNode) object;
             return super.add(node);
         }
 

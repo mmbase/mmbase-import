@@ -1,12 +1,12 @@
 /*
 
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
+  This software is OSI Certified Open Source Software.
+  OSI Certified is a certification mark of the Open Source Initiative.
 
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
+  The license (Mozilla version 1.0) can be read at the MMBase site.
+  See http://www.MMBase.org/license
 
- */
+*/
 
 package org.mmbase.applications.thememanager;
 import org.w3c.dom.*;
@@ -18,9 +18,13 @@ import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.*;
 import org.mmbase.module.core.*;
 
+/**
+ * @javadoc
+ */
+
 public class ThemeManager {
 
-    private static Logger log = Logging.getLoggerInstance(ThemeManager.class);
+    private static final Logger log = Logging.getLoggerInstance(ThemeManager.class);
 
 
     /** DTD resource filename of the themes DTD version 1.0 */
@@ -48,8 +52,8 @@ public class ThemeManager {
     public static boolean haschanged=false;
 
     private static void init() {
-	readThemes();
-	readAssigned();
+        readThemes();
+        readAssigned();
     }
 
 
@@ -80,7 +84,7 @@ public class ThemeManager {
             DocumentReader reader = new DocumentReader(is,ThemeManager.class);
             if(reader!=null) {
                 // decode themes
-                for(Iterator ns=reader.getChildElements("themes","theme").iterator();ns.hasNext(); ) {
+                for(Iterator ns=reader.getChildElements("themes","theme");ns.hasNext(); ) {
                     Element n=(Element)ns.next();
                     NamedNodeMap nm=n.getAttributes();
                     if (nm!=null) {
@@ -103,31 +107,31 @@ public class ThemeManager {
                 }
             }
 
-	} catch (Exception e) {
+        } catch (Exception e) {
             log.error("missing themes file ");
-	}
+        }
     }
 
     public static boolean copyTheme(Theme th,String newname) {
-	String filename = "thememanager/themes/"+newname+"/theme.xml";
-	Theme nt=new Theme(newname,filename,true);
+        String filename = "thememanager/themes/"+newname+"/theme.xml";
+        Theme nt=new Theme(newname,filename,true);
         themes.put(newname,nt);
 
-	// now copy the content
+        // now copy the content
         HashMap m=th.getStyleSheets();
         if (m!=null) {
             Iterator keys=m.keySet().iterator();
             while (keys.hasNext()) {
                 String k=(String)keys.next();
                 String v=(String)m.get(k);
-		// kind of a weird way. needs a rethink
-		nt.addStyleSheet(k,newname+"/"+k+".css");
-		// get the stylesheet manager to copy the content
-		StyleSheetManager sts=th.getStyleSheetManager(k);
-		StyleSheetManager nsts=nt.getStyleSheetManager(k);
+                // kind of a weird way. needs a rethink
+                nt.addStyleSheet(k,newname+"/"+k+".css");
+                // get the stylesheet manager to copy the content
+                StyleSheetManager sts=th.getStyleSheetManager(k);
+                StyleSheetManager nsts=nt.getStyleSheetManager(k);
 
-		// copy the styleheets
-		if (sts!=null && nsts!=null) {
+                // copy the styleheets
+                if (sts!=null && nsts!=null) {
                     Iterator i=sts.getStyleSheetClasses();
                     while (i.hasNext()) {
                         StyleSheetClass stc=(StyleSheetClass)i.next();
@@ -139,11 +143,11 @@ public class ThemeManager {
                         }
                     }
                     nsts.save();
-		}
-	    }
+                }
+            }
         }
 
-	// now copy the image sets
+        // now copy the image sets
         m=th.getImageSets();
         if (m!=null) {
             Iterator keys=m.keySet().iterator();
@@ -154,18 +158,18 @@ public class ThemeManager {
                 Iterator i3=im.getImageIds();
                 while (i3.hasNext()) {
                     String id=(String)i3.next();
-		    String idf=im.getImage(id);
-		    nim.setImage(id,idf);
-		    String fname = "mmbase/thememanager/images/"+th.getId()+"/"+k+"/"+idf;
-        	    InputStream in = ResourceLoader.getWebRoot().getResourceAsStream(fname);
-		    if (in!=null) {
+                    String idf=im.getImage(id);
+                    nim.setImage(id,idf);
+                    String fname = "mmbase/thememanager/images/"+th.getId()+"/"+k+"/"+idf;
+                    InputStream in = ResourceLoader.getWebRoot().getResourceAsStream(fname);
+                    if (in!=null) {
                         try {
                             fname = "mmbase/thememanager/images/"+newname+"/"+k+"/"+idf;
                             OutputStream out = ResourceLoader.getWebRoot().createResourceAsStream(fname);
                             byte[] buf = new byte[1024];
                             int len;
                             while ((len = in.read(buf)) > 0) {
-            			out.write(buf, 0, len);
+                                out.write(buf, 0, len);
                             }
                             in.close();
                             out.flush();
@@ -173,15 +177,15 @@ public class ThemeManager {
                         } catch(Exception e) {
                             e.printStackTrace();
                         }
-		    }
-		}
-		nt.addImageSet(k,nim);
-	    }
-	}
+                    }
+                }
+                nt.addImageSet(k,nim);
+            }
+        }
 
-	nt.save();
-	save();
-	return true;
+        nt.save();
+        save();
+        return true;
     }
 
 
@@ -192,7 +196,7 @@ public class ThemeManager {
             DocumentReader reader = new DocumentReader(is,ThemeManager.class);
             if(reader!=null) {
                 // decode assigned
-                for (Iterator ns=reader.getChildElements("assigned","assign").iterator();ns.hasNext(); ) {
+                for (Iterator ns=reader.getChildElements("assigned","assign");ns.hasNext(); ) {
                     Element n=(Element)ns.next();
                     NamedNodeMap nm=n.getAttributes();
                     if (nm!=null) {
@@ -214,48 +218,48 @@ public class ThemeManager {
                 }
             }
 
-	} catch (Exception e) {
+        } catch (Exception e) {
             log.error("missing assigned file");
-	}
+        }
     }
 
     public static HashMap getAssigned() {
-	return assigned;
+        return assigned;
     }
 
     public static HashMap getThemes() {
-	return themes;
+        return themes;
     }
 
     public static String getAssign(String id) {
-	return (String)assigned.get(id);
+        return (String)assigned.get(id);
     }
 
     public static Theme getTheme(String id) {
-	return (Theme)themes.get(id);
+        return (Theme)themes.get(id);
     }
 
     public static String getThemeImage(String context, String themeid,String imageid) {
-	return getThemeImage(context,themeid,"default",imageid);
+        return getThemeImage(context,themeid,"default",imageid);
     }
 
 
     public static String getThemeImage(String context, String id,String imagesetid,String imageid) {
-       	log.info(" getthemeimage =" + imageid);
-	String themeid=(String)assigned.get(id);
-	if (themeid!=null) {
+        log.debug(" getthemeimage =" + imageid);
+        String themeid=(String)assigned.get(id);
+        if (themeid!=null) {
             Theme th=(Theme)themes.get(themeid);
             if (th!=null) {
-		ImageSet im=th.getImageSet(imagesetid);
-		if (im!=null) {
+                ImageSet im=th.getImageSet(imagesetid);
+                if (im!=null) {
                     String result=im.getImage(imageid);
                     if (result!=null) {
                         return context + "/"+themeid+"/"+imagesetid+"/"+result;
                     }
-		}
+                }
             }
-	}
-	return "";
+        }
+        return "";
     }
 
     public static List getThemeImages(String context, String themeID) {
@@ -291,7 +295,7 @@ public class ThemeManager {
     }
 
     public static boolean changeAssign(String id,String newtheme) {
-        assigned.put(id,newtheme);
+        assigned.put(id, newtheme);
         AssignedFileWriter.write();
         haschanged = true;
         return true;
@@ -299,7 +303,7 @@ public class ThemeManager {
 
 
     public static boolean addAssign(String newid,String newtheme) {
-        assigned.put(newid,newtheme);
+        assigned.put(newid, newtheme);
         AssignedFileWriter.write();
         haschanged = true;
         return true;
@@ -314,27 +318,28 @@ public class ThemeManager {
     }
 
 
+    // how not to produce XML:
     public static void save() {
-	String body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-	body += "<!DOCTYPE themes PUBLIC \"//MMBase - theme//\" \"http://www.mmbase.org/dtd/themes_1_0.dtd\">\n";
-	body += "<themes>\n";
+        String body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+        body += "<!DOCTYPE themes PUBLIC \"//MMBase - theme//\" \"http://www.mmbase.org/dtd/themes_1_0.dtd\">\n";
+        body += "<themes>\n";
         HashMap m=getThemes();
         if (m!=null) {
             Iterator keys=m.keySet().iterator();
             while (keys.hasNext()) {
                 String k=(String)keys.next();
                 Theme th=(Theme)m.get(k);
-		body += "\t<theme id=\""+k+"\" file=\""+th.getFileName()+"\" />\n";
-	    }
-	}
-	body += "</themes>\n";
+                body += "\t<theme id=\""+k+"\" file=\""+th.getFileName()+"\" />\n";
+            }
+        }
+        body += "</themes>\n";
         try {
             Writer wr = ResourceLoader.getConfigurationRoot().getWriter("thememanager/themes.xml");
             wr.write(body);
             wr.flush();
             wr.close();
         } catch(Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
     }
 

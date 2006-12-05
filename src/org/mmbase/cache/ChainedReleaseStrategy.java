@@ -10,11 +10,16 @@ See http://www.MMBase.org/license
 package org.mmbase.cache;
 
 import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.mmbase.core.event.*;
 import org.mmbase.storage.search.SearchQuery;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
-import java.util.concurrent.CopyOnWriteArrayList;
+import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * This class will manage a collection of <code>ReleaseStrategy</code>
@@ -22,15 +27,16 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *
  * @since MMBase-1.8
  * @author Ernst Bunders
- * @version $Id: ChainedReleaseStrategy.java,v 1.20 2006-10-14 14:35:38 nklasens Exp $
+ * @version $Id: ChainedReleaseStrategy.java,v 1.18 2006-06-27 07:31:46 michiel Exp $
  */
 public class ChainedReleaseStrategy extends ReleaseStrategy {
+    private static final Logger log = Logging.getLoggerInstance(ChainedReleaseStrategy.class);
 
-    private final List<ReleaseStrategy> releaseStrategies = new CopyOnWriteArrayList<ReleaseStrategy>();
+    private final List releaseStrategies = new CopyOnWriteArrayList();
 
     //this map is used to store the 'enabled' status of wrapped strategies when this one is being disabled
     //so the old settings can be returned when it is enabled again
-    private final Map<String, Boolean> childStrategyMemory = new HashMap<String, Boolean>();
+    private final Map childStrategyMemory = new HashMap();
 
     public ChainedReleaseStrategy() {
     }
@@ -56,7 +62,7 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
 
                 //if it must be switched on, we must use the memeory if present
                 if(newStatus == true){
-                    Boolean memory = childStrategyMemory.get(strategy.getName());
+                    Boolean memory = (Boolean) childStrategyMemory.get(strategy.getName());
                     strategy.setEnabled( memory == null ? true :  memory.booleanValue());
                 } else {
                     //if it must switch of, we must record the status

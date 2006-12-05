@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.59 2006-11-24 14:28:54 pierre Exp $
+ * @version $Id: ContentTag.java,v 1.57 2006-08-30 18:01:50 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -92,7 +92,9 @@ public class ContentTag extends LocaleTag  {
 
     private static CharTransformer readCharTransformer(DocumentReader reader, Element parentElement, String id) {
         List result = new ArrayList();
-        for (Element element: reader.getChildElements(parentElement, "class")) {
+        Iterator e = reader.getChildElements(parentElement, "class");
+        while (e.hasNext()) {
+            Element element = (Element) e.next();
             String claz = reader.getElementValue(element);
 
             String config = element.getAttribute("config");
@@ -114,32 +116,38 @@ public class ContentTag extends LocaleTag  {
     }
 
     private static ParameterizedTransformerFactory readTransformerFactory(final DocumentReader reader, final Element parentElement, final String id) {
-        final String claz = reader.getElementValue(reader.getChildElements(parentElement, "class").get(0));
+        Iterator e = reader.getChildElements(parentElement, "class");
+        Element element = (Element) e.next();
+        final String claz = reader.getElementValue(element);
+
+        e = reader.getChildElements(parentElement, "param");
         final Map configuredParams = new HashMap();
-        for (Element param: reader.getChildElements(parentElement, "param")) {
+        while (e.hasNext()) {
+            Element param = (Element) e.next();
             String name = param.getAttribute("name");
             String value = param.getAttribute("value");
             if (! value.equals("")) {
-                 configuredParams.put(name, value);
+                configuredParams.put(name, value);
             }
         }
         if (configuredParams.size() == 0) {
             return Transformers.getTransformerFactory(claz, " parameterizedescaper " + id);
         } else {
             return new ParameterizedTransformerFactory() {
-                ParameterizedTransformerFactory wrapped = Transformers.getTransformerFactory(claz, " parameterizedescaper " + id);
-                public Transformer createTransformer(Parameters parameters) {
-                    return wrapped.createTransformer(parameters);
-                }
-                public Parameters createParameters() {
-                    Parameters params = wrapped.createParameters();
-                    params.setAll(configuredParams);
-                    return params;
-                }
-            };
+                    ParameterizedTransformerFactory wrapped = Transformers.getTransformerFactory(claz, " parameterizedescaper " + id);
+
+                    public Transformer createTransformer(Parameters parameters) {
+                        return wrapped.createTransformer(parameters);
+                    }
+                    public Parameters createParameters() {
+                        Parameters params = wrapped.createParameters();
+                        params.setAll(configuredParams);
+                        return params;
+                    }
+
+                };
         }
     }
-
     /**
      * Initialize the write-escapers for MMBase taglib.
      */
@@ -187,7 +195,8 @@ public class ContentTag extends LocaleTag  {
         DocumentReader reader  = new DocumentReader(escapersSource, ContentTag.class);
         Element root = reader.getElementByPath("taglibcontent");
 
-        for (Element element: reader.getChildElements(root, "escaper")) {
+        for (Iterator iter = reader.getChildElements(root, "escaper"); iter.hasNext();) {
+            Element element = (Element) iter.next();
             String id   = element.getAttribute("id");
             CharTransformer ct = readCharTransformer(reader, element, id);
             CharTransformer prev = (CharTransformer) charTransformers.put(id, ct);
@@ -200,7 +209,8 @@ public class ContentTag extends LocaleTag  {
         }
 
         log.debug("Reading content tag parameterizedescaperss");
-        for (Element element: reader.getChildElements(root, "parameterizedescaper")) {
+        for (Iterator iter = reader.getChildElements(root, "parameterizedescaper"); iter.hasNext();) {
+            Element element = (Element) iter.next();
             String id   = element.getAttribute("id");
             ParameterizedTransformerFactory fact = readTransformerFactory(reader, element, id);
             ParameterizedTransformerFactory prev = (ParameterizedTransformerFactory) parameterizedCharTransformerFactories.put(id, fact);
@@ -227,7 +237,8 @@ public class ContentTag extends LocaleTag  {
 
         Set postProcessors = new HashSet();
         log.debug("Reading content tag post-processors");
-        for (Element element: reader.getChildElements(root, "postprocessor")) {
+        for (Iterator iter = reader.getChildElements(root, "postprocessor"); iter.hasNext();) {
+            Element element = (Element) iter.next();
             String id   = element.getAttribute("id");
             CharTransformer ct = readCharTransformer(reader, element, id);
             CharTransformer prev = (CharTransformer) charTransformers.put(id, ct);
@@ -242,7 +253,8 @@ public class ContentTag extends LocaleTag  {
             log.service("Found post-processors: " + postProcessors);
         }
 
-        for (Element element: reader.getChildElements(root, "content")) {
+        for (Iterator iter = reader.getChildElements(root, "content"); iter.hasNext();) {
+            Element element = (Element) iter.next();
             String type           = element.getAttribute("type");
             String id             = element.getAttribute("id");
             if (id.equals("")) {
@@ -517,9 +529,8 @@ public class ContentTag extends LocaleTag  {
                 addNoCacheHeaders(request, response, exp);
             }
         }
-        CharTransformer post = getPostProcessor();
-        if (post == null || post.equals(COPY)) {
-            log.debug("no postprocessor " + (EVAL_BODY == EVAL_BODY_INCLUDE));
+        if (getPostProcessor() == null) {
+            log.debug("no postprocessor");
             return EVAL_BODY;
         } else {
             return EVAL_BODY_BUFFERED;

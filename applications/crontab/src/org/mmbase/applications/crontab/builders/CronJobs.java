@@ -42,8 +42,8 @@ public class CronJobs extends MMObjectBuilder implements Runnable {
                 return;
             }
         }
-
         cronDaemon = CronDaemon.getInstance();
+
         NodeIterator nodeIterator = getCloud().getNodeManager(getTableName()).getList(null, null, null).nodeIterator();
         while (nodeIterator.hasNext()) {
             Node node = nodeIterator.nextNode();
@@ -87,7 +87,7 @@ public class CronJobs extends MMObjectBuilder implements Runnable {
         try {
             if (cronDaemon != null) {
 		        Node node = getCloud().getNode(number);
-            cronDaemon.add(createCronEntry(node));
+                cronDaemon.add(createCronEntry(node));
             }
         } catch (Exception e) {
             throw new RuntimeException("error while creating cron entry with id " + number + " error " + e.getMessage(), e);

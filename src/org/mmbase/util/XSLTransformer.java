@@ -37,12 +37,10 @@ import org.mmbase.util.logging.Logging;
  * @move org.mmbase.util.xml
  * @author Case Roole, cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: XSLTransformer.java,v 1.36 2006-11-16 12:16:44 michiel Exp $
+ * @version $Id: XSLTransformer.java,v 1.31 2005-08-16 15:22:08 michiel Exp $
  */
 public class XSLTransformer {
     private static final Logger log = Logging.getLoggerInstance(XSLTransformer.class);
-
-    public static final String NS_AWARE = "org.mmbase.util.XSLTransformer.namespaceAware";
     /**
      * Empty constructor
      * @deprecated All methods are static.
@@ -99,7 +97,7 @@ public class XSLTransformer {
      *
      * @since MMBase-1.6
      */
-    public static void transform(Source xml, File xslFile, Result result, Map<String, Object> params) throws TransformerException {
+    public static void transform(Source xml, File xslFile, Result result, Map params) throws TransformerException {
         transform(xml, xslFile, result, params, true);
     }
 
@@ -115,7 +113,7 @@ public class XSLTransformer {
      *
      * @since MMBase-1.6
      */
-    public static void transform(Source xml, File xslFile, Result result, Map<String, Object> params, boolean considerDir) throws TransformerException {
+    public static void transform(Source xml, File xslFile, Result result, Map params, boolean considerDir) throws TransformerException {
         try {
             transform(xml, xslFile.toURL(), result, params, considerDir);
         } catch (java.net.MalformedURLException mfe) {
@@ -126,14 +124,14 @@ public class XSLTransformer {
     /**
      * @since MMBase-1.8
      */
-    public static void transform(Source xml, URL xslFile, Result result, Map<String, Object> params) throws TransformerException {
+    public static void transform(Source xml, URL xslFile, Result result, Map params) throws TransformerException {
         transform(xml, xslFile, result, params, true);
     }
 
     /**
      * @since MMBase-1.8
      */
-    public static void transform(Source xml, URL xslFile, Result result, Map<String, Object> params, boolean considerDir) throws TransformerException {
+    public static void transform(Source xml, URL xslFile, Result result, Map params, boolean considerDir) throws TransformerException {
         TemplateCache cache= TemplateCache.getCache();
         Source xsl;
         try {
@@ -175,9 +173,11 @@ public class XSLTransformer {
             log.debug("Size of transformer " + SizeOf.getByteSize(transformer) + " bytes");
         }
         if (params != null) {
-            for (Map.Entry<String, Object> entry : params.entrySet()) {
+            Iterator i = params.entrySet().iterator();
+            while (i.hasNext()){
+                Map.Entry entry = (Map.Entry) i.next();
                 if (log.isDebugEnabled()) log.debug("setting param " + entry.getKey() + " to " + entry.getValue());
-                transformer.setParameter(entry.getKey(), entry.getValue());
+                transformer.setParameter((String) entry.getKey(), entry.getValue());
             }
         }
         transformer.transform(xml, result);
@@ -197,9 +197,6 @@ public class XSLTransformer {
         // turn validating on
         XMLEntityResolver resolver = new XMLEntityResolver(true);
         dfactory.setNamespaceAware(true);
-        if (params != null && Boolean.FALSE.equals(params.get(NS_AWARE))) {
-            dfactory.setNamespaceAware(false);
-        }
         DocumentBuilder db = dfactory.newDocumentBuilder();
 
         XMLErrorHandler handler = new XMLErrorHandler();
@@ -314,15 +311,13 @@ public class XSLTransformer {
             log.info("Use with tree arguments: xslt-file xml-inputdir xml-outputdir [key=value options]");
             log.info("special options can be:");
             log.info("   usecache=true:     Use the Template cache or not (to speed up)");
-            log.info("   namespaceaware=true:   ");
             log.info("   exclude=<filename>:  File/directory name to exclude (can be used multiple times");
             log.info("   extension=<file extensions>:  File extensions to use in transformation results (defaults to html)");
 
             log.info("Other options are passed to XSL-stylesheet as parameters.");
 
         } else {
-            boolean namespaceaware = true;
-            Map<String, Object> params = new HashMap<String, Object>();
+            Map params = new HashMap();
             if (argv.length > 3) {
                 for (int i = 3; i<argv.length; i++) {
                     String key = argv[i];
@@ -332,10 +327,7 @@ public class XSLTransformer {
                         if (p<key.length()-1) value = key.substring(p+1);
                         key = key.substring(0, p);
                     }
-                    if (key.equals("namespaceaware")) {
-                        namespaceaware = value.equals("true");
-                        params.put(NS_AWARE, namespaceaware);
-                    } else if (key.equals("usecache")) {
+                    if (key.equals("usecache")) {
                         TemplateCache.getCache().setActive(value.equals("true"));
                     } else if (key.equals("exclude")) {
                         if (params.get("exclude") == null) {
@@ -374,7 +366,7 @@ public class XSLTransformer {
                     Node node = cloud.getNode(nodeNumber);
                     DocumentBuilder documentBuilder = org.mmbase.util.xml.DocumentReader.getDocumentBuilder();
                     Generator generator = new Generator(documentBuilder, cloud);
-                    generator.setNamespaceAware(namespaceaware);
+                    generator.setNamespaceAware(true);
                     generator.add(node, node.getNodeManager().getField("body"));
                     //generator.add(node);
                     //log.info("" + node.getXMLValue("body").getDocumentElement().getNamespaceURI());

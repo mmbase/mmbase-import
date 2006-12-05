@@ -170,7 +170,8 @@ public class FunctionSetPackage extends BasicPackage implements PackageInterface
             try {
                 InputStream input = jf.getInputStream(je);
                 ExtendedDocumentReader reader = new ExtendedDocumentReader(new InputSource(input), FunctionSetPackage.class);
-                for (Element n: reader.getChildElements("functionsets", "functionset")) {
+                for (Iterator ns = reader.getChildElements("functionsets", "functionset"); ns.hasNext(); ) {
+                    Element n = (Element) ns.next();
                     String name = n.getAttribute("name");
                     String file = n.getAttribute("file");
                     if (file != null) {
@@ -230,7 +231,8 @@ public class FunctionSetPackage extends BasicPackage implements PackageInterface
         body += "<!DOCTYPE functionsets PUBLIC \"//MMBase - functionsets//\" \"http://www.mmbase.org/dtd/functionsets_1_0.dtd\">\n";
         body += "<functionsets>\n";
         boolean found = false;
-        for (Element n: reader.getChildElements("functionsets", "functionset")) {
+        for (Iterator ns = reader.getChildElements("functionsets", "functionset"); ns.hasNext(); ) {
+            Element n = (Element) ns.next();
             String oldname = n.getAttribute("name");
             String oldfile = n.getAttribute("file");
             body += "\t<functionset name=\"" + oldname + "\" file=\"" + oldfile + "\" />\n";

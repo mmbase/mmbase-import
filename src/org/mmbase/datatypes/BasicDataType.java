@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.63 2006-10-04 17:34:06 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.61 2006-07-18 12:58:40 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -293,7 +293,7 @@ s     */
         try {
             return cast(value, cloud, node, field);
         } catch (CastException ce) {
-            log.error(ce);
+            log.error(ce.getMessage());
             return Casting.toType(classType, cloud, preCast(value, cloud, node, field));
         }
     }
@@ -459,7 +459,6 @@ s     */
             castValue = castToValidate(value, node, field);
             errors = typeRestriction.validate(errors, castValue, node, field);
         } catch (CastException ce) {
-            log.debug(ce);
             errors = typeRestriction.addError(errors, value, node, field);
             castValue = value;
         }
@@ -536,7 +535,7 @@ s     */
      * Besides super.clone, it calls {@link #inheritProperties(BasicDataType)} and {@link
      * #cloneRestrictions(BasicDataType)}. A clone is not finished. See {@link #isFinished()}.
      */
-    public DataType clone(String name) {
+    public Object clone(String name) {
         try {
             BasicDataType clone = (BasicDataType) super.clone(name);
             // reset owner if it was set, so this datatype can be changed
@@ -1087,7 +1086,6 @@ s     */
                 BasicDataType.this.cast(v, node, field);
                 return true;
             } catch (Throwable e) {
-                log.error(e);
                 return false;
             }
         }
@@ -1154,7 +1152,6 @@ s     */
             try {
                 candidate = BasicDataType.this.cast(v, cloud, node, field);
             } catch (CastException ce) {
-                log.info(ce);
                 return false;
             }
             Iterator i = validValues.iterator();

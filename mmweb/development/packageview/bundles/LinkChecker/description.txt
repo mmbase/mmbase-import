@@ -1,1 +1,0 @@
-Linkchecker is a link checker designed run in as batched process (from crontab). It aquires a list of url+meta-data from a url. It than processes the list to check the links for validity, generates and xml report,transforms the xml report via a xsl, and mails the result to a predefined email address.

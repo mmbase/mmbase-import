@@ -51,7 +51,7 @@ import org.apache.xpath.XPathAPI;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.19 2006-11-02 10:24:41 michiel Exp $
+ * @version $Id: NodeFunction.java,v 1.16 2005-11-04 13:11:06 nklasens Exp $
  * @since   MMBase-1.6
  */
 
@@ -75,8 +75,6 @@ public  class NodeFunction {
     }
 
     /**
-     * Note: Saxon cannnot distinguish this function from {@link #function(Cloud, String, String)},
-     * consider using {@link #saxonFunction(Object, String, String)} in stead.
      * @param  cloudName The name of the Cloud.
      * @param  number  The number (or alias) of the Node
      * @param  function The function (with arguments).
@@ -92,27 +90,7 @@ public  class NodeFunction {
         }
     }
 
-    /**
-     * Note: Saxon cannnot distinguish this function from {@link #function(String, String, String)},
-     * consider using {@link #saxonFunction(Object, String, String)} in stead.
-     */
-    public static String function(Cloud cloud, String number, String function) {
-        return function(cloud, number, function, "");
-    }
-
-    /**
-     * Saxon cannot distinguish the above two functions ({@link #function(String, String, String)},
-     * {@link #function(Cloud, String, String)}). So, you can help it and use this one in stead.
-     * @since MMBase-1.9
-     */
-    public static String saxonFunction(Object cloud, String number, String function) {
-        if (cloud instanceof Cloud) {
-            return function((Cloud) cloud, number, function);
-        } else {
-            return function((String) cloud, number, function);
-        }
-    }
-
+    
     /**
      * @since MMBase-1.8
      */
@@ -152,6 +130,10 @@ public  class NodeFunction {
         return function(number, function);
     }
 
+    public static String function(Cloud cloud, String number, String function) {
+        return function(cloud, number, function, "");
+    }
+
     /**
      * @param request Meant to be an HttpServletRequest. If not, will be ignored (empty string e.g.).
      * @since MMBase-1.8
@@ -178,11 +160,12 @@ public  class NodeFunction {
             
             params.setIfDefined(Parameter.CLOUD, cloud);
             if (request instanceof HttpServletRequest) {
-                params.setIfDefined(Parameter.REQUEST, (HttpServletRequest) request);
+                params.setIfDefined(Parameter.REQUEST, request);
             }
             return func.getFunctionValue(params).toString();
         } catch (Throwable e) {
-            log.info("could not execute '" + function + "' on node '" + number + "'", e);
+            log.info("could not execute '" + function + "' on node '" + number + "'");
+            log.info(Logging.stackTrace(e) + Logging.stackTrace());
             return "could not execute " + function + " on node " + number + "(" + e.getClass() + " " + e.getMessage() + ")";
         }
     }

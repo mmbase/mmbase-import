@@ -18,10 +18,10 @@ import org.mmbase.util.logging.*;
  * A list of nodes, based on a Collection of Nodes
  *
  * @author Michiel Meeuwissen
- * @version $Id: CollectionRelationList.java,v 1.2 2006-09-25 15:00:56 michiel Exp $
+ * @version $Id: CollectionRelationList.java,v 1.1 2005-12-29 19:08:01 michiel Exp $
  * @since MMBase-1.8
  */
-public class CollectionRelationList<E extends Relation>  extends CollectionNodeList<E> implements RelationList<E> {
+public class CollectionRelationList extends CollectionNodeList implements RelationList {
 
     private static final Logger log = Logging.getLoggerInstance(CollectionRelationList.class);
 
@@ -63,7 +63,7 @@ public class CollectionRelationList<E extends Relation>  extends CollectionNodeL
         return new BasicRelationIterator();
     }
 
-    protected class BasicRelationIterator extends BasicNodeIterator implements RelationIterator<E> {
+    protected class BasicRelationIterator extends BasicNodeIterator implements RelationIterator {
 
         public Relation nextRelation() {
             return (Relation)next();

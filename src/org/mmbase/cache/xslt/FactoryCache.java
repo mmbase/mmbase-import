@@ -23,9 +23,9 @@ import java.net.URL;
  * org.mmbase.util.xml.URIResolver.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FactoryCache.java,v 1.9 2006-10-11 18:45:57 michiel Exp $
+ * @version $Id: FactoryCache.java,v 1.7 2005-01-30 16:46:38 nico Exp $
  */
-public class FactoryCache extends Cache<URIResolver, TransformerFactory> {
+public class FactoryCache extends Cache {
 
     private static int cacheSize = 50;
     private static FactoryCache cache;
@@ -66,19 +66,14 @@ public class FactoryCache extends Cache<URIResolver, TransformerFactory> {
      * Make a factory for a certain URIResolver.
      */
     public TransformerFactory getFactory(URIResolver uri) {
-        TransformerFactory tf =  get(uri);
+        TransformerFactory tf =  (TransformerFactory) get(uri);
         if (tf == null) {
             tf = TransformerFactory.newInstance();
-            try {
-                tf.setAttribute("http://saxon.sf.net/feature/version-warning", false);
-            } catch (IllegalArgumentException iae) {
-                // never mind
-            }
             tf.setURIResolver(uri);
             // you must set the URIResolver in the tfactory, because it will not be called everytime, when you use Templates-caching.
             put(uri, tf);
         }
-        return tf;
+        return tf;        
     }
     /**
      * Gets a Factory from the cache. This cache is 'intelligent', you
@@ -86,10 +81,10 @@ public class FactoryCache extends Cache<URIResolver, TransformerFactory> {
      * a new Factory will be created (and put in the cache).
      * @deprecated
      */
-
+    
     public TransformerFactory getFactory(File cwd) {
         try {
-            TransformerFactory tf = get(new URIResolver(new URL("file://" + cwd), true)); // quick access (true means: don't actually create an URIResolver)
+            TransformerFactory tf =  (TransformerFactory) get(new URIResolver(new URL("file://" + cwd), true)); // quick access (true means: don't actually create an URIResolver)
             if (tf == null) {
                 // try again, but now construct URIResolver first.
                 return getFactory(new URIResolver(new URL("file://" + cwd)));
@@ -102,7 +97,7 @@ public class FactoryCache extends Cache<URIResolver, TransformerFactory> {
     }
 
     public TransformerFactory getFactory(URL cwd) {
-        TransformerFactory tf =  get(new URIResolver(cwd, true)); // quick access (true means: don't actually create an URIResolver)
+        TransformerFactory tf =  (TransformerFactory) get(new URIResolver(cwd, true)); // quick access (true means: don't actually create an URIResolver)
         if (tf == null) {
             // try again, but now construct URIResolver first.
             return getFactory(new URIResolver(cwd));

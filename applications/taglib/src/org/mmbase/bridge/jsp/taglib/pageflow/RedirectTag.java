@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * Does a redirect, using the features of UrlTag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: RedirectTag.java,v 1.6 2006-10-31 20:10:27 michiel Exp $
+ * @version $Id: RedirectTag.java,v 1.5 2005-01-30 16:46:38 nico Exp $
  * @since MMBase-1.7
  */
 
@@ -44,10 +44,10 @@ public class RedirectTag extends UrlTag  {
         try {
             // dont set value, but redirect.
             HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
-            String u = url.get(false).toString();
-            String encodedUrl = response.encodeRedirectURL(u);
+            String url = getUrl(false, false);
+            String encodedUrl = response.encodeRedirectURL(url);
             if (log.isDebugEnabled()) {
-                log.debug("Redirecting to " + u + " / " + encodedUrl);
+                log.debug("Redirecting to " + url + " / " + encodedUrl);
             }
             response.sendRedirect(encodedUrl);
         } catch (java.io.IOException io) {

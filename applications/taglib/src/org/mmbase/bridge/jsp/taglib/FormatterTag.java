@@ -11,11 +11,10 @@ package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.util.Referids;
-import org.mmbase.bridge.jsp.taglib.debug.TimerTag;
 
 import javax.servlet.jsp.*;
 
-import javax.servlet.jsp.tagext.Tag;
+import javax.servlet.jsp.tagext.TagSupport;
 
 import org.w3c.dom.Document;
 
@@ -44,7 +43,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.71 2006-10-24 12:15:51 michiel Exp $
+ * @version $Id: FormatterTag.java,v 1.68.2.1 2006-09-18 12:54:53 michiel Exp $
  */
 public class FormatterTag extends CloudReferrerTag implements ParamHandler {
 
@@ -289,9 +288,9 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
         if (log.isDebugEnabled()) log.debug("startag of formatter tag " + counter);
 
         // serve parent timer tag:
-        TimerTag t = findParentTag(TimerTag.class, null, false);
+        TagSupport t = findParentTag(org.mmbase.bridge.jsp.taglib.debug.TimerTag.class, null, false);
         if (t != null) {
-            timerHandle = t.startTimer(getId(), getClass().getName());
+            timerHandle = ((org.mmbase.bridge.jsp.taglib.debug.TimerTag)t).startTimer(getId(), getClass().getName());
         } else {
             timerHandle = -1;
         }
@@ -339,12 +338,6 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
                     throw new JspTagException ("It is not possible to have tags which produce DOM-XML and  text in the body. Perhaps you want to use the attribute wants='string'?");
                 } else {
                     doc = xmlGenerator.getDocument();
-                    long cost = xmlGenerator.getCost() / 1000000;
-                    if (cost > 50) {
-                        log.service("Cost : " + cost + " ms for " + xmlGenerator.getSize() + " nodes");
-                    } else {
-                        log.debug("Cost : " + cost + " ms for " + xmlGenerator.getSize() + " nodes");
-                    }
                 }
             } else {
                 if (body == null || body.equals("")) body = "<mmxf />"; // something random that will at least parse.
@@ -471,7 +464,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
         }
 
         if (timerHandle != -1) {
-            findParentTag(TimerTag.class, null, false).haltTimer(timerHandle);
+            ((org.mmbase.bridge.jsp.taglib.debug.TimerTag)findParentTag(org.mmbase.bridge.jsp.taglib.debug.TimerTag.class, null, false)).haltTimer(timerHandle);
         }
         helper.doEndTag();
         return super.doEndTag();
@@ -541,7 +534,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
         params.put("formatter_requestcontext",  context);
         //params.put("formatter_imgdb", org.mmbase.module.builders.AbstractImages.getImageServletPath(context));
         // use node function
-        LocaleTag localeTag = findParentTag(LocaleTag.class, null, false);
+        LocaleTag localeTag = (LocaleTag) findParentTag(org.mmbase.bridge.jsp.taglib.LocaleTag.class, null, false);
         Locale locale;
         if (localeTag != null) {
             locale = localeTag.getLocale();

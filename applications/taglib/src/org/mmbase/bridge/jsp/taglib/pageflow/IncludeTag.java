@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.70 2006-11-11 21:55:56 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.66.2.1 2006-11-15 19:49:59 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -62,7 +62,6 @@ public class IncludeTag extends UrlTag {
     protected Attribute notFound        = Attribute.NULL;
 
     protected Attribute resource        = Attribute.NULL;
-    //protected Attribute configuration   = Attribute.NULL;
 
 
     /**
@@ -91,17 +90,18 @@ public class IncludeTag extends UrlTag {
     public void setResource(String r) throws JspTagException {
         resource = getAttribute(r);
     }
-    /*
-    public void setConfiguration(String r) throws JspTagException {
-        configuration = getAttribute(r);
-    }
-    */
 
     protected String getPage() throws JspTagException {
         if (resource != Attribute.NULL) return resource.getString(this);
         return super.getPage();
     }
 
+    public int doStartTag() throws JspTagException {
+        if (page == Attribute.NULL && resource == Attribute.NULL) { // for include tags, page attribute is obligatory.
+            throw new JspTagException("No attribute 'page' or 'resource' was specified");
+        }
+        return super.doStartTag();
+    }
 
     protected void doAfterBodySetValue() throws JspTagException {
         includePage();
@@ -207,6 +207,10 @@ public class IncludeTag extends UrlTag {
                  request, response);
     }
 
+
+    protected boolean addContext() {
+        return false;
+    }
 
     /**
      * @since MMBase-1.8
@@ -370,11 +374,9 @@ public class IncludeTag extends UrlTag {
      * Includes another page in the current page.
      */
     protected void includePage() throws JspTagException {
+        String gotUrl = null;
         try {
-            String gotUrl = url == null ? null : url.get(false);
-            if (gotUrl == null) {
-                gotUrl = page.getString(this);
-            }
+            gotUrl = getUrl(false, false); // false, false: don't write &amp; tags but real & and don't urlEncode
 
             if (gotUrl == null || "".equals(gotUrl)) {
                 return; //if there is no url, we cannot include
@@ -471,7 +473,7 @@ public class IncludeTag extends UrlTag {
             throw new TaglibException (e);
         }
         if (pageLog.isDebugEnabled()) {
-            pageLog.debug("END Parsing mm:include JSP page");
+            pageLog.debug("END Parsing mm:include JSP page " + gotUrl);
         }
     }
 
@@ -488,7 +490,7 @@ public class IncludeTag extends UrlTag {
         if (debugType == Attribute.NULL) return DEBUG_NONE;
 
         String dtype = debugType.getString(this).toLowerCase();
-        if (dtype.equals("none") || dtype.equals("")) {
+        if (dtype.equals("none")) {
             return  DEBUG_NONE; // also implement the default, then people can use a variable
                                // to select this property in their jsp pages.
         } else if (dtype.equals("html")) {

@@ -18,15 +18,15 @@ import org.mmbase.util.logging.*;
  * This is the base class for all basic implementations of the bridge lists.
  *
  * @author Pierre van Rooden
- * @version $Id: BasicList.java,v 1.22 2006-11-11 20:16:26 michiel Exp $
+ * @version $Id: BasicList.java,v 1.18 2005-12-29 19:23:54 michiel Exp $
  */
-public class BasicList<E> extends ArrayList<E> implements BridgeList<E>  {
+public class BasicList extends ArrayList implements BridgeList  {
 
     private static final Logger log = Logging.getLoggerInstance(BasicList.class);
 
     private Map properties = new HashMap();
 
-    // during inititializion of the list, you sometimes want to switch off
+    // during inititializion of the list, you sometimes want to switch off 
     // also when everything is certainly converted
     boolean autoConvert = true;
 
@@ -47,10 +47,10 @@ public class BasicList<E> extends ArrayList<E> implements BridgeList<E>  {
     }
 
     /*
-     * converts the object in the list to the excpected format
+     * converts the object in teh list to the excpected format
      */
-    protected E convert(Object o, int index) {
-        return (E) o;
+    protected Object convert(Object o, int index) {
+        return o;
     }
 
     public boolean contains(Object o ) {
@@ -73,11 +73,11 @@ public class BasicList<E> extends ArrayList<E> implements BridgeList<E>  {
     /*
      * validates that an object can be converted to the excpected format
      */
-    protected E validate(Object o) throws ClassCastException {
-        return (E) o;
+    protected Object validate(Object o) throws ClassCastException {
+        return o;
     }
 
-    public E get(int index) {
+    public Object get(int index) {
         if (autoConvert) {
             return convert(super.get(index), index);
         } else {
@@ -86,23 +86,23 @@ public class BasicList<E> extends ArrayList<E> implements BridgeList<E>  {
     }
 
     public void sort() {
-        Collections.sort((List) this); // casting, why?
+        Collections.sort(this);
     }
 
-    public void sort(Comparator<? super E> comparator) {
-        Collections.sort(this, comparator);
+    public void sort(Comparator comparator) {
+        Collections.sort(this,comparator);
     }
 
-    public E set(int index, E o) {
+    public Object set(int index, Object o) {
         return super.set(index,validate(o));
     }
 
-    public void add(int index, E o) {
+    public void add(int index, Object o) {
         autoConvert = true;
         super.add(index,validate(o));
     }
 
-    public boolean add(E o) {
+    public boolean add(Object o) {
         autoConvert = true;
         return super.add(validate(o));
     }
@@ -125,11 +125,11 @@ public class BasicList<E> extends ArrayList<E> implements BridgeList<E>  {
         return super.toArray();
     }
 
-    protected class BasicIterator implements ListIterator<E> {
-        protected ListIterator<E> iterator;
+    protected class BasicIterator implements ListIterator {
+        protected ListIterator iterator;
 
         protected BasicIterator() {
-            this.iterator = BasicList.this.listIterator();
+            this.iterator = listIterator();
         }
 
         public boolean hasNext() {
@@ -153,25 +153,24 @@ public class BasicList<E> extends ArrayList<E> implements BridgeList<E>  {
         }
 
         // These have to be implemented with a check if o is of the right type.
-        public void set(E o) {
+        public void set(Object o) {
             iterator.set(o);
         }
 
-        public void add(E o) {
+        public void add(Object o) {
             BasicList.this.autoConvert = true;
             iterator.add(o);
         }
 
-        public E next() {
-            E next = iterator.next();
-            int i = nextIndex();
-            return BasicList.this.convert(next, i);
+        // normally also e.g. set(Node n); and add(Node n) will be created in
+        // descendant class, because that is better for performance.
+
+        public Object next() {
+            return iterator.next();
         }
 
-        public E previous() {
-            E previous = iterator.previous();
-            int i = previousIndex();
-            return BasicList.this.convert(previous, i);
+        public Object previous() {
+            return iterator.previous();
         }
 
     }

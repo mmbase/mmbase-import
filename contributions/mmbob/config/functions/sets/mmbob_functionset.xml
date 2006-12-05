@@ -406,7 +406,7 @@
     <param name="name" type="String" description="New name for this forum" />
     <param name="newlang" type="String" description="New language of this forum" />
     <param name="description" type="String" description="New description of this forum" />
-    <param name="activeid" type="int" description="current userid" />
+    <param name="activeid" type="int" description="current userid"  required="true" />
     <return type="Boolean"> 
     </return> 
   </function>
@@ -654,7 +654,7 @@
     <param name="forumid" type="String" description="MMBase node number of the forum" />
     <param name="name" type="String" description="Name of the new post area" />
     <param name="description" type="String" description="Description of the new post area" />
-    <param name="activeid" type="int" description="current userid" />
+    <param name="activeid" type="int" description="current userid" required="true" />
     <return type="java.util.HashMap"> 
       <field name="newpostareaid" type="int" description="MMBase node number of the new postarea" />
     </return> 
@@ -1138,7 +1138,7 @@
     <type>class</type>
     <class>org.mmbase.applications.mmbob.gui.Controller</class>
     <method>postReply</method>
-    <param name="forumid" type="String" description="MMBase node number of the forum" />
+    <param name="forumid"    type="String" description="MMBase node number of the forum" />
     <param name="postareaid" type="String" description="MMBase node number of the postarea" />
     <param name="postthreadid" type="String" description="MMBase node number of the postthread" />
     <param name="subject" type="String" description="Subject of the reply (normally same as the postthread sibject)" />

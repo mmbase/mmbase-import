@@ -1,18 +1,16 @@
 /*
-
+ 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
-
+ 
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
-
+ 
  */
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.bridge.jsp.taglib.util.Notfound;
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.http.HttpServletRequest;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -26,11 +24,11 @@ import org.mmbase.util.logging.Logging;
  *
  * Note that the interesting functionality is implemented in the 'TreeHelper' class.
  * @author Johannes Verelst
- * @version $Id: LeafFileTag.java,v 1.19 2006-10-31 20:10:27 michiel Exp $
+ * @version $Id: LeafFileTag.java,v 1.15 2006-07-17 15:38:47 johannes Exp $
  */
 
 public class LeafFileTag extends UrlTag {
-
+    
     private static final Logger log = Logging.getLoggerInstance(LeafFileTag.class);
     protected Attribute  objectList = Attribute.NULL;
     protected TreeHelper th = new TreeHelper();
@@ -41,6 +39,15 @@ public class LeafFileTag extends UrlTag {
         notFound = getAttribute(n);
     }
 
+    public int doStartTag() throws JspTagException {
+        if (page == Attribute.NULL) {
+            throw new JspTagException("Attribute 'page' was not specified");
+        }
+        if (objectList == Attribute.NULL) {
+            throw new JspTagException("Attribute 'objectlist' was not specified");
+        }        
+        return super.doStartTag();
+    }    
     protected String getPage() throws JspTagException {
         String orgPage  = super.getPage();
         String leafPage = th.findLeafFile(orgPage, objectList.getString(this), pageContext.getSession());
@@ -51,12 +58,12 @@ public class LeafFileTag extends UrlTag {
         if (leafPage == null || "".equals(leafPage)) {
             throw new JspTagException("Could not find page " + orgPage);
         }
-        return leafPage;
 
+        return leafPage;
     }
 
     public int doEndTag() throws JspTagException {
-        th.setCloud(getCloudVar());
+        th.setCloud(getCloudVar());        
         int retval = super.doEndTag();
         return retval;
     }
@@ -65,7 +72,7 @@ public class LeafFileTag extends UrlTag {
         th.doFinally();
         super.doFinally();
     }
-
+    
     public void setObjectlist(String p) throws JspTagException {
         objectList = getAttribute(p);
     }
@@ -73,17 +80,16 @@ public class LeafFileTag extends UrlTag {
     protected String getUrl(boolean writeamp, boolean encode) throws JspTagException {
         String url = "";
         try {
-            url = super.getLegacyUrl(writeamp, encode);
+            url = super.getUrl(writeamp, encode);
         } catch (JspTagException e) {
-            // I think this does not happen
-            if (Notfound.get(notFound, this) == Notfound.SKIP) {
-                throw e;
+            if (!notFound.getString(this).equals("skip")) {
+                throw(e);
             }
         }
         return url;
     }
-
-    // override to cancel
+    
+    // override to cancel 
     protected boolean doMakeRelative() {
     	log.debug("doMakeRelative() overridden!");
         return false;

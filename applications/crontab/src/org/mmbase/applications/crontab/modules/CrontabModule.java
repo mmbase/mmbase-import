@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * Starts a crontab for MMBase as a Module.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CrontabModule.java,v 1.9 2006-10-13 14:22:26 nklasens Exp $
+ * @version $Id: CrontabModule.java,v 1.6 2006-01-20 08:19:10 michiel Exp $
  */
 public class CrontabModule extends WatchedReloadableModule {
 
@@ -29,7 +29,7 @@ public class CrontabModule extends WatchedReloadableModule {
      * Need to remember which crontab entries where 'mine', to known which must be removed if
      * configuration changes.
      */
-    private Set<CronEntry> myEntries = new LinkedHashSet<CronEntry>();
+    private Set myEntries = new LinkedHashSet();
 
     public CrontabModule() {
         cronDaemon = CronDaemon.getInstance();
@@ -47,7 +47,9 @@ public class CrontabModule extends WatchedReloadableModule {
       </pre>
      */
     public void init() {
-        for (Map.Entry entry : getInitParameters().entrySet()) {
+        Iterator i = getInitParameters().entrySet().iterator();
+        while (i.hasNext()) {
+            Map.Entry entry = (Map.Entry)i.next();
             addJob(entry);
         }
         readMoreJobs();
@@ -133,8 +135,8 @@ public class CrontabModule extends WatchedReloadableModule {
     /**
      * @since MMBase-1.8
      */
-    protected Function<Set<CronEntry>> listFunction = new AbstractFunction<Set<CronEntry>>("list") {
-            public Set<CronEntry> getFunctionValue(Parameters arguments) {
+    protected Function listFunction = new AbstractFunction("list", Parameter.EMPTY, ReturnType.SET) {
+            public Object getFunctionValue(Parameters arguments) {
                 return cronDaemon.getEntries();
             }
 
@@ -143,15 +145,15 @@ public class CrontabModule extends WatchedReloadableModule {
         addFunction(listFunction);
     }
 
-    protected final static Parameter<String> ENTRY = new Parameter<String>("entry", String.class, true);
-    protected final static Parameter<Integer> THREAD = new Parameter<Integer>("thread", Integer.class, new Integer(0));
+    protected final static Parameter ENTRY = new Parameter("entry", String.class, true);
+    protected final static Parameter THREAD = new Parameter("thread", Integer.class, new Integer(0));
     /**
      * @since MMBase-1.8
      */
-    protected Function<Boolean> kickFunction = new AbstractFunction<Boolean>("kick", ENTRY) {
-            public Boolean getFunctionValue(Parameters arguments) {
-                String id = arguments.get(ENTRY);
-                return cronDaemon.getCronEntry(id).kick();
+    protected Function kickFunction = new AbstractFunction("kick", new Parameter[] {ENTRY}, ReturnType.BOOLEAN) {
+            public Object getFunctionValue(Parameters arguments) {
+                String id = (String) arguments.get(ENTRY);
+                return Boolean.valueOf(cronDaemon.getCronEntry(id).kick());
             }
 
         };
@@ -162,12 +164,12 @@ public class CrontabModule extends WatchedReloadableModule {
     /**
      * @since MMBase-1.8
      */
-    protected Function<Boolean> interruptFunction = new AbstractFunction<Boolean>("interrupt", ENTRY, THREAD) {
-            public Boolean getFunctionValue(Parameters arguments) {
-                String id = arguments.get(ENTRY);
-                Integer thread = arguments.get(THREAD);
+    protected Function interruptFunction = new AbstractFunction("interrupt", new Parameter[] {ENTRY, THREAD}, ReturnType.BOOLEAN) {
+            public Object getFunctionValue(Parameters arguments) {
+                String id = (String) arguments.get(ENTRY);
+                Integer thread = (Integer) arguments.get(THREAD);
                 Interruptable t = cronDaemon.getCronEntry(id).getThread(thread.intValue());
-                return t != null && t.interrupt();
+                return Boolean.valueOf(t != null && t.interrupt());
             }
 
         };
@@ -179,9 +181,9 @@ public class CrontabModule extends WatchedReloadableModule {
     /**
      * @since MMBase-1.8
      */
-    protected Function<Boolean> aliveFunction = new AbstractFunction<Boolean>("alive") {
-            public Boolean getFunctionValue(Parameters arguments) {
-                return cronDaemon.isAlive();
+    protected Function aliveFunction = new AbstractFunction("alive", Parameter.EMPTY, ReturnType.BOOLEAN) {
+            public Object getFunctionValue(Parameters arguments) {
+                return Boolean.valueOf(cronDaemon.isAlive());
             }
 
         };
@@ -192,10 +194,10 @@ public class CrontabModule extends WatchedReloadableModule {
     /**
      * @since MMBase-1.8
      */
-    protected Function<Boolean> stopFunction = new AbstractFunction<Boolean>("stop") {
-            public Boolean getFunctionValue(Parameters arguments) {
+    protected Function stopFunction = new AbstractFunction("stop", Parameter.EMPTY, ReturnType.BOOLEAN) {
+            public Object getFunctionValue(Parameters arguments) {
                 cronDaemon.stop();
-                return cronDaemon.isAlive();
+                return Boolean.valueOf(cronDaemon.isAlive());
             }
 
         };
@@ -206,10 +208,10 @@ public class CrontabModule extends WatchedReloadableModule {
     /**
      * @since MMBase-1.8
      */
-    protected Function<Boolean> startFunction = new AbstractFunction<Boolean>("start") {
-            public Boolean getFunctionValue(Parameters arguments) {
+    protected Function startFunction = new AbstractFunction("start", Parameter.EMPTY, ReturnType.BOOLEAN) {
+            public Object getFunctionValue(Parameters arguments) {
                 cronDaemon.start();
-                return cronDaemon.isAlive();
+                return Boolean.valueOf(cronDaemon.isAlive());
             }
 
         };
@@ -220,10 +222,10 @@ public class CrontabModule extends WatchedReloadableModule {
     /**
      * @since MMBase-1.8
      */
-    protected Function<Boolean> reloadFunction = new AbstractFunction<Boolean>("reload") {
-            public Boolean getFunctionValue(Parameters arguments) {
+    protected Function reloadFunction = new AbstractFunction("reload", Parameter.EMPTY, ReturnType.BOOLEAN) {
+            public Object getFunctionValue(Parameters arguments) {
                 reload();
-                return cronDaemon.isAlive();
+                return Boolean.valueOf(cronDaemon.isAlive());
             }
 
         };

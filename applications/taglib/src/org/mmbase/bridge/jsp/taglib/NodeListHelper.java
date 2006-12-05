@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.32 2006-11-02 19:21:31 michiel Exp $
+ * @version $Id: NodeListHelper.java,v 1.28 2006-08-03 17:14:59 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -69,8 +69,6 @@ public class NodeListHelper implements ListProvider {
     protected Attribute add = Attribute.NULL;
     protected Attribute retain = Attribute.NULL;
     protected Attribute remove= Attribute.NULL;
-    protected Attribute varStatus = Attribute.NULL;
-    protected String varStatusName = null;
 
 
     /**
@@ -166,12 +164,7 @@ public class NodeListHelper implements ListProvider {
     public void setRemove(String a) throws JspTagException {
         remove = thisTag.getAttribute(a);
     }
-    /**
-     * @since MMBase-1.9
-     */
-    public void setVarStatus(String s) throws JspTagException {
-        varStatus = thisTag.getAttribute(s);
-    }
+
 
 
     public String getComparator() throws JspTagException {
@@ -190,31 +183,15 @@ public class NodeListHelper implements ListProvider {
         return thisTag.getPageContext();
     }
 
-    /**
-     * @since MMBase-1.9
-     */
-    protected Cloud getCloud(NodeList nodes, Cloud cloud) throws JspTagException {
-        if (cloud != null) return cloud;
+    public int setReturnValues(NodeList nodes, boolean trim) throws JspTagException {
+        Cloud cloud = null;
         if (cloud == null) {
             Query q = (Query) nodes.getProperty(NodeList.QUERY_PROPERTY);
             if (q != null) cloud = q.getCloud();
         }
         if (cloud == null && nodes.size() > 0) {
-            Node n = nodes.getNode(0); 
-            if (n != null) {
-                cloud = n.getCloud();
-            } else {
-                log.warn("Found NULL in " + nodes);
-            }
+            cloud = nodes.getNode(0).getCloud();
         }
-        if (cloud == null) {
-            CloudProvider cp = thisTag.findParentTag(CloudProvider.class, null, false);
-            if (cp != null) cloud = cp.getCloudVar();
-        }
-        return cloud;
-    }
-    public int setReturnValues(NodeList nodes, boolean trim) throws JspTagException {
-        Cloud cloud = null;
 
         if (add != Attribute.NULL) {
             Object addObject = thisTag.getObjectConditional(add.getString(thisTag));
@@ -222,7 +199,6 @@ public class NodeListHelper implements ListProvider {
                 if (addObject instanceof Collection) {
                     nodes.addAll((Collection) addObject);
                 } else {
-                    cloud = getCloud(nodes, cloud);
                     nodes.add(Casting.toNode(addObject, cloud));
                 }
             }
@@ -233,7 +209,6 @@ public class NodeListHelper implements ListProvider {
                 if (retainObject instanceof Collection) {
                     nodes.retainAll((Collection) retainObject);
                 } else {
-                    cloud = getCloud(nodes, cloud);
                     nodes.retainAll(Collections.singletonList((Casting.toNode(retainObject, cloud))));
                 }
             }
@@ -244,7 +219,6 @@ public class NodeListHelper implements ListProvider {
                 if (removeObject instanceof Collection) {
                     nodes.removeAll((Collection) removeObject);
                 } else {
-                    cloud = getCloud(nodes, cloud);
                     nodes.remove((Casting.toNode(removeObject, cloud)));
                 }
             }
@@ -275,10 +249,9 @@ public class NodeListHelper implements ListProvider {
         returnList   = nodes;
 
         // returnList is know, now we can serve parent formatter tag
-        FormatterTag f = thisTag.findParentTag(FormatterTag.class, null, false);
+        FormatterTag f = (FormatterTag) thisTag.findParentTag(FormatterTag.class, null, false);
         if (f != null && f.wantXML()) {
             f.getGenerator().add(nodes);
-            cloud = getCloud(nodes, cloud);
             f.setCloud(cloud);
         }
 
@@ -298,11 +271,11 @@ public class NodeListHelper implements ListProvider {
     public void doStartTagHelper() throws JspTagException {
         // make a (temporary) container
         collector = new ContextCollector(thisTag.getContextProvider());
-        varStatusName = (String) varStatus.getValue(thisTag);
+
         // serve parent timer tag:
-        TimerTag t = thisTag.findParentTag(TimerTag.class, null, false);
+        TagSupport t = thisTag.findParentTag(TimerTag.class, null, false);
         if (t != null) {
-            timerHandle = t.startTimer(getId(), thisTag.getClass().getName());
+            timerHandle = ((TimerTag)t).startTimer(getId(), getClass().getName());
         }
         /*
         if (thisTag.getReferid() != null) {
@@ -321,9 +294,6 @@ public class NodeListHelper implements ListProvider {
         log.debug("doafterbody");
         if (getId() != null) {
             thisTag.getContextProvider().getContextContainer().unRegister(getId());
-        }
-        if (varStatusName != null) {
-            thisTag.getContextProvider().getContextContainer().unRegister(varStatusName);
         }
 
         if (collector != null) { // might occur for some legacy extensions
@@ -353,12 +323,11 @@ public class NodeListHelper implements ListProvider {
         if (getId() != null) {
             thisTag.getContextProvider().getContextContainer().register(getId(), returnList, false); // use false because check was done in doStartTag (and doAfterBody not always called).
         }
-        TimerTag t = thisTag.findParentTag(TimerTag.class, null, false);
+        TagSupport t = thisTag.findParentTag(TimerTag.class, null, false);
         if (t != null) {
-            t.haltTimer(timerHandle);
+            ((TimerTag)t).haltTimer(timerHandle);
         }
-        doFinally();
-        previousValue = null;
+
         return EVAL_PAGE;
     }
 
@@ -439,10 +408,6 @@ public class NodeListHelper implements ListProvider {
             }
             nodeHelper.setNodeVar(next);
             nodeHelper.fillVars();
-            if (varStatusName != null) {
-                org.mmbase.bridge.jsp.taglib.util.ContextContainer cc = thisTag.getContextProvider().getContextContainer();
-                cc.register(varStatusName, getLoopStatus());
-            }
         } catch (BridgeException be) { // e.g. NodeManager does not exist
             log.warn(be.getMessage(), be);
         }

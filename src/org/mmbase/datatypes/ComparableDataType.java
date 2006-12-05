@@ -12,7 +12,9 @@ package org.mmbase.datatypes;
 import java.util.*;
 
 import org.mmbase.bridge.*;
+import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.DynamicDate;
 import org.w3c.dom.Element;
 
 /**
@@ -20,7 +22,7 @@ import org.w3c.dom.Element;
  * therefore can have a minimum and a maximum value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComparableDataType.java,v 1.23 2006-10-14 14:35:39 nklasens Exp $
+ * @version $Id: ComparableDataType.java,v 1.21 2006-07-18 12:58:40 michiel Exp $
  * @since MMBase-1.8
  */
 public abstract class ComparableDataType extends BasicDataType {
@@ -169,7 +171,7 @@ public abstract class ComparableDataType extends BasicDataType {
         return errors;
     }
 
-    public DataType clone(String name) {
+    public Object clone(String name) {
         ComparableDataType clone = (ComparableDataType) super.clone(name);
         return clone;
     }

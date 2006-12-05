@@ -15,7 +15,13 @@ import java.io.Serializable;
 
 import org.mmbase.bridge.*;
 import org.mmbase.datatypes.processors.*;
+import org.mmbase.bridge.util.Queries;
+import org.mmbase.storage.search.*;
+import org.mmbase.core.util.Fields;
+import org.mmbase.core.AbstractDescriptor;
+import org.mmbase.datatypes.DataTypes;
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * A value in MMBase (such as the value of a field, or function parameter) is associated with a
@@ -32,10 +38,10 @@ import org.mmbase.util.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.57 2006-10-14 14:35:39 nklasens Exp $
+ * @version $Id: DataType.java,v 1.54 2006-07-18 12:56:55 michiel Exp $
  */
 
-public interface DataType<C> extends Descriptor, Cloneable, Comparable, Serializable {
+public interface DataType extends Descriptor, Cloneable, Comparable, Serializable {
 
     /**
      * The XML Namespace to be used for creating datatype XML
@@ -78,7 +84,7 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable, Serializ
     /**
      * Returned by {@link #validate} if no errors: an empty (nonmodifiable) Collection.
      */
-    public static final Collection<LocalizedString> VALID = Collections.EMPTY_LIST;
+    public static final Collection VALID = Collections.EMPTY_LIST;
 
     /**
      * Inherit properties and processors from the passed datatype.
@@ -107,7 +113,7 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable, Serializ
      * Returns the type of values that this data type accepts.
      * @return the type as a Class
      */
-    public Class<C> getTypeAsClass();
+    public Class getTypeAsClass();
 
     /**
      * Checks if the passed object is of the correct class (compatible with the type of this data type),
@@ -126,7 +132,7 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable, Serializ
      * @param node  Sometimes a node might be needed.
      * @param field Sometimes a (or 'the') field might be needed.
      */
-    public C cast(Object value, Node node, Field field);
+    public Object cast(Object value, Node node, Field field);
 
     /**
      * Before actually 'cast' an object to the right type, it may undergo some conversion by the
@@ -145,12 +151,12 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable, Serializ
      * Returns the default value of this data type.
      * @return the default value
      */
-    public C getDefaultValue();
+    public Object getDefaultValue();
 
     /**
      * @javadoc
      */
-    public void setDefaultValue(C def);
+    public void setDefaultValue(Object def);
 
     /**
      * @javadoc
@@ -173,7 +179,7 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable, Serializ
      * @return The error message(s) if the value is not compatible. An empty collection if valid.
      * @param value the value to be validated
      */
-    public Collection<LocalizedString> validate(C value);
+    public Collection /*<LocalizedString>*/ validate(Object value);
 
     /**
      * Checks if the passed object obeys the restrictions defined for this type.
@@ -184,7 +190,7 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable, Serializ
      *
      * @return The error message(s) if the value is not compatible. An empty collection if the value is valid.
      */
-    public Collection<LocalizedString> validate(C value, Node node, Field field);
+    public Collection /*<LocalizedString> */ validate(Object value, Node node, Field field);
 
     /**
      * Returns whether this field is required (should have content).
@@ -259,7 +265,7 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable, Serializ
      * @param field  Possibly the possible values depend on an actual field (this may be, and in the default implementation is, ignored)
      * @param key    the key for which to look up the (gui) value
      */
-    public C getEnumerationValue(Locale locale, Cloud cloud, Node node, Field field, Object key);
+    public Object getEnumerationValue(Locale locale, Cloud cloud, Node node, Field field, Object key);
 
     /**
      * @return the LocalizedEntryListFactory which will be used to produce the result of {@link
@@ -321,7 +327,7 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable, Serializ
      * Similar to calling clone(), but changes the data type name if one is provided.
      * @param name the new name of the copied datatype (can be <code>null</code>, in which case the name is not changed).
      */
-    public DataType<C> clone(String name);
+    public Object clone(String name);
 
 
     /**

@@ -1,16 +1,15 @@
 /*
-
+ 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
-
+ 
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
-
+ 
  */
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.bridge.jsp.taglib.util.Notfound;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.util.logging.Logger;
@@ -25,17 +24,23 @@ import org.mmbase.util.logging.Logging;
  * A full description of this command can be found in the mmbase-taglib.xml file.
  *
  * @author Johannes Verelst
- * @version $Id: TreeIncludeTag.java,v 1.18 2006-10-31 16:05:34 michiel Exp $
+ * @version $Id: TreeIncludeTag.java,v 1.15 2006-07-17 15:38:47 johannes Exp $
  */
 
 public class TreeIncludeTag extends IncludeTag {
-
-    private static final Logger log = Logging.getLoggerInstance(TreeIncludeTag.class);
+    
+    private static final Logger log = Logging.getLoggerInstance(TreeIncludeTag.class.getName());
     protected Attribute objectList = Attribute.NULL;
     private TreeHelper th = new TreeHelper();
+    
+    public int doStartTag() throws JspTagException {        
+        if (objectList == Attribute.NULL) {
+            throw new JspTagException("Attribute 'objectlist' was not specified");
+        }
+        return super.doStartTag();
+    }
 
-
-    protected String getPage() throws JspTagException {
+    protected String getPage() throws JspTagException {        
         String orgPage = super.getPage();
         String treePage = th.findTreeFile(orgPage, objectList.getString(this), pageContext.getSession());
         if (log.isDebugEnabled()) {
@@ -52,7 +57,7 @@ public class TreeIncludeTag extends IncludeTag {
     public void doAfterBodySetValue() throws JspTagException {
         // sigh, we would of course prefer to extend, but no multiple inheritance possible in Java..
         th.setCloud(getCloudVar());
-
+    
         // Let IncludeTag do the rest of the work
         includePage();
     }
@@ -61,7 +66,7 @@ public class TreeIncludeTag extends IncludeTag {
         th.doFinally();
         super.doFinally();
     }
-
+    
     public void setObjectlist(String p) throws JspTagException {
         objectList = getAttribute(p);
     }
@@ -69,17 +74,16 @@ public class TreeIncludeTag extends IncludeTag {
     protected String getUrl(boolean writeamp, boolean encode) throws JspTagException {
         String url = "";
         try {
-            url = super.getLegacyUrl(writeamp, encode);
+            url = super.getUrl(writeamp, encode);
         } catch (JspTagException e) {
-            // TODO test this.
-            if (Notfound.get(notFound, this) == Notfound.SKIP) {
-                throw e;
+            if (!notFound.getString(this).equals("skip")) {
+                throw(e);
             }
         }
         return url;
     }
 
-    // override to cancel
+    // override to cancel 
     protected boolean doMakeRelative() {
     	log.debug("doMakeRelative() overridden!");
         return false;

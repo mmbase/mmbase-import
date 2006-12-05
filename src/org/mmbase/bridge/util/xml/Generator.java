@@ -11,9 +11,10 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.util.xml;
 
 import org.w3c.dom.*;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import org.mmbase.bridge.*;
-import java.util.*;
 
 import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.XMLWriter;
@@ -24,7 +25,7 @@ import org.mmbase.util.xml.XMLWriter;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.46 2006-11-29 08:07:20 michiel Exp $
+ * @version $Id: Generator.java,v 1.39 2006-02-17 21:16:57 michiel Exp $
  * @since  MMBase-1.6
  */
 public class Generator {
@@ -41,9 +42,6 @@ public class Generator {
 
     private boolean namespaceAware = false;
 
-    private long buildCost = 0; // ns
-    private int  size      = 0;
-
     /**
      * To create documents representing structures from the cloud, it
      * needs a documentBuilder, to contruct the DOM Document, and the
@@ -54,7 +52,7 @@ public class Generator {
      * @see   org.mmbase.util.xml.DocumentReader#getDocumentBuilder()
      */
     public Generator(DocumentBuilder documentBuilder, Cloud cloud) {
-        this.documentBuilder = documentBuilder;
+        this.documentBuilder = documentBuilder;        
         this.cloud = cloud;
 
     }
@@ -69,38 +67,19 @@ public class Generator {
     }
 
     /**
-     * Returns an estimation on how long it took to construct the document. 
-     * @return a duration in nanoseconds.
-     * @since MMBase-1.9
-     */
-    public long getCost() {
-        return buildCost;
-    }
-    /**
-
-     * The number of presented MMBase nodes in the document.
-     * @since MMBase-1.9
-     */
-    public int getSize() {
-        return size;
-    }
-
-    /**
      * Returns the working DOM document.
      * @return The document, build with the operations done on the generator class
      */
     public  Document getDocument() {
         if (document == null) {
-            long start = System.nanoTime();
             DOMImplementation impl = documentBuilder.getDOMImplementation();
-            document = impl.createDocument(namespaceAware ? NAMESPACE : null,
-                                           "objects",
+            document = impl.createDocument(namespaceAware ? NAMESPACE : null, 
+                                           "objects", 
                                            impl.createDocumentType("objects", DOCUMENTTYPE_PUBLIC, DOCUMENTTYPE_SYSTEM)
                                            );
             if (cloud != null) {
                 addCloud();
             }
-            buildCost += System.nanoTime() - start;
         }
         return document;
     }
@@ -132,7 +111,7 @@ public class Generator {
         } else {
             return document.createElement(name);
         }
-
+                
     }
     protected final void setAttribute(Element element, String name, String value) {
         // attributes normally have no namespace. You can assign one, but then they will always have
@@ -147,8 +126,7 @@ public class Generator {
         */
         element.setAttribute(name, value);
     }
-
-
+    
     protected final String getAttribute(Element element, String name) {
         // see setAttribute
         /*
@@ -189,7 +167,6 @@ public class Generator {
      * @param fieldDefinition An MMBase bridge Field.
      */
     public Element add(org.mmbase.bridge.Node node, Field fieldDefinition) {
-        long start = System.nanoTime();
         getDocument();
         if (cloud == null) {
             cloud = node.getCloud();
@@ -200,7 +177,6 @@ public class Generator {
 
         if (! (object.getFirstChild() instanceof Element)) {
             log.warn("Cannot find first field of " + XMLWriter.write(object, false));
-            buildCost += System.nanoTime() - start;
             return object;
         }
         // get the field...
@@ -212,7 +188,6 @@ public class Generator {
         if(field == null) throw new BridgeException("field with name: " + fieldDefinition.getName() + " of node " + node.getNumber() + " with  nodetype: " + fieldDefinition.getNodeManager().getName() + " not found, while it should be in the node skeleton.. xml:\n" + toString(true));
         // when it is filled (allready), we can return
         if (field.getTagName().equals("field")) {
-            buildCost += System.nanoTime() - start;
             return field;
         }
 
@@ -242,14 +217,12 @@ public class Generator {
             break;
         case Field.TYPE_DATETIME :
             // shoudlw e use ISO_8601_LOOSE here or ISO_8601_UTC?
-            field.appendChild(document.createTextNode(org.mmbase.util.Casting.ISO_8601_LOOSE.get().format(node.getDateValue(fieldDefinition.getName()))));
+            field.appendChild(document.createTextNode(org.mmbase.util.Casting.ISO_8601_LOOSE.format(node.getDateValue(fieldDefinition.getName()))));
             break;
         default :
             field.appendChild(document.createTextNode(node.getStringValue(fieldDefinition.getName())));
         }
-
         // or do we need more?
-        buildCost += System.nanoTime() - start;
         return field;
     }
 
@@ -283,17 +256,44 @@ public class Generator {
      * Adds a whole MMBase bridge NodeList to the DOM Document.
      * @param nodes An MMBase bridge NodeList.
      */
-    public void add(List<org.mmbase.bridge.Node> nodes) {
-        for (org.mmbase.bridge.Node n : nodes) {
-            if (n instanceof Relation) {
-                add((Relation) n);
-            } else {
-                add(n);
-            }
+    public void add(org.mmbase.bridge.NodeList nodes) {
+        NodeIterator i = nodes.nodeIterator();
+        while (i.hasNext()) {
+            add(i.nextNode());
         }
     }
 
+    /**
+     * Adds a list of  Relation to the DOM Document.
+     * @param relations An MMBase bridge RelationList
+     */
+    public void add(RelationList relations) {
+        RelationIterator i = relations.relationIterator();
+        while (i.hasNext()) {
+            add(i.nextRelation());
 
+        }
+    }
+
+    protected Element getElementById(Node n, String id) {
+
+        NodeList list = n.getChildNodes();
+        for (int i = 0 ; i < list.getLength(); i++) {
+            Node node = list.item(i);
+            if (node instanceof Element) {
+                if (getAttribute((Element) node, "id").equals(id)) {
+                    return (Element) node;
+                }
+            }
+        }
+        for (int i = 0 ; i < list.getLength(); i++) {
+            Node node = list.item(i);
+            Element subs = getElementById(node, id);
+            if (subs != null) return subs;
+        }
+        return null;
+        
+    }
     /**
      * Creates an Element which represents a bridge.Node with all fields unfilled.
      * @param node MMbase node
@@ -303,8 +303,14 @@ public class Generator {
 
         // if we are a relation,.. behave like one!
         // why do we find it out now, and not before?
-        Element object = getDocument().getElementById("" + node.getNumber());
-
+        boolean getElementByIdWorks = false;
+        Element object = null;
+        if (getElementByIdWorks) {
+            // Michiel: I tried it by specifieing id as ID in dtd, but that also doesn't make it work.
+            object = getDocument().getElementById("" + node.getNumber());
+        } else {
+            object = getElementById(getDocument(), "" + node.getNumber());
+        }
 
         if (object != null)
             return object;
@@ -319,22 +325,9 @@ public class Generator {
 
         // node didnt exist, so we need to create it...
         object = createElement("object");
-        size++;
 
         setAttribute(object, "id", "" + node.getNumber());
-        object.setIdAttribute("id", true);
         setAttribute(object, "type", node.getNodeManager().getName());
-        StringBuffer ancestors = new StringBuffer(" "); // having spaces before and after the attribute's value, makes it easy to use xsl's 'contains' function.
-        if (! node.getNodeManager().getName().equals("object")) {
-            NodeManager parent = node.getNodeManager();
-            do {
-                parent = parent.getParent();
-                ancestors.append(parent.getName());
-                ancestors.append(" ");
-            } while(! parent.getName().equals("object"));
-        }
-        setAttribute(object, "ancestors", ancestors.toString());
-
         // and the otype (type as number)
         setAttribute(object, "otype", node.getStringValue("otype"));
 
@@ -342,8 +335,11 @@ public class Generator {
         // While still having 'unfilledField's
         // you know that the node is not yet presented completely.
 
-        for (Field fieldDefinition :  node.getNodeManager().getFields(NodeManager.ORDER_CREATE)) {
+        FieldIterator i = node.getNodeManager().getFields(NodeManager.ORDER_CREATE).fieldIterator();
+        while (i.hasNext()) {
+            Field fieldDefinition = i.nextField();
             Element field = createElement("unfilledField");
+
             // the name
             setAttribute(field, "name", fieldDefinition.getName());
             // add it to the object

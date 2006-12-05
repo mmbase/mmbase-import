@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListRelationsContainerTag.java,v 1.16 2006-10-25 22:04:52 michiel Exp $
+ * @version $Id: ListRelationsContainerTag.java,v 1.14 2006-06-22 13:17:46 johannes Exp $
  */
 public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQueryContainer {
 
@@ -90,12 +90,12 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQu
 
 
     public int doStartTag() throws JspTagException {
-        Node relatedFromNode = getNode();
-        Cloud cloud = relatedFromNode.getCloud();
+        Cloud cloud = getCloudVar();
         NodeManager nm = null;
         if (type != Attribute.NULL) {
-            nm = cloud.getNodeManager(type.getString(this));
+            nm = getCloudVar().getNodeManager(type.getString(this));
         }
+        Node relatedFromNode = getNode();
         query        = Queries.createRelationNodesQuery(relatedFromNode, nm, (String) role.getValue(this), (String) searchDir.getValue(this));
         relatedQuery = Queries.createRelatedNodesQuery(relatedFromNode, nm, (String) role.getValue(this), (String) searchDir.getValue(this));
 

@@ -31,7 +31,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.50 2006-10-13 15:56:24 nklasens Exp $
+ * @version $Id: Users.java,v 1.48.2.1 2006-10-13 15:56:18 nklasens Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -64,20 +64,20 @@ public class Users extends MMObjectBuilder {
         };
 
 
-    protected Function<String> encodeFunction = new AbstractFunction<String>("encode", new Parameter[] {new Parameter<String>("password", String.class, true) }, ReturnType.STRING) {
+    protected Function encodeFunction = new AbstractFunction("encode", new Parameter[] {new Parameter("password", String.class, true) }, ReturnType.STRING) {
             {
                 setDescription("Encodes a string like it would happen with a password, when it's stored in the database.");
             }
-            public String getFunctionValue(Parameters parameters) {
+            public Object getFunctionValue(Parameters parameters) {
                 return encode((String)parameters.get(0));
             }
     };
 
-    protected Function<Rank> rankFunction = new NodeFunction<Rank>("rank", Parameter.EMPTY, new ReturnType<Rank>(Rank.class, "Rank")) {
+    protected Function rankFunction = new NodeFunction("rank", Parameter.EMPTY, new ReturnType(Rank.class, "Rank")) {
             {
                 setDescription("Returns the rank of an mmbaseusers node");
             }
-            public Rank getFunctionValue(org.mmbase.bridge.Node node, Parameters parameters) {
+            public Object getFunctionValue(org.mmbase.bridge.Node node, Parameters parameters) {
                 return Users.this.getRank(getCoreNode(Users.this, node));
             }
     };

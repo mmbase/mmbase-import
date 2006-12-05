@@ -21,7 +21,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-import java.util.concurrent.CopyOnWriteArraySet;
+import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * This class manages all event related stuff. it is the place to register event brokers, and it
@@ -29,7 +29,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * manager is instantiated, event brokers are added for Event, NodeEvent and RelationEvent
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: EventManager.java,v 1.16 2006-11-24 14:28:54 pierre Exp $
+ * @version $Id: EventManager.java,v 1.12 2006-06-20 21:23:15 michiel Exp $
  */
 public class EventManager {
 
@@ -51,7 +51,7 @@ public class EventManager {
     /**
      * The collection of event brokers. There is one for every event type that can be sent/received
      */
-    private final Set<AbstractEventBroker> eventBrokers = new CopyOnWriteArraySet();
+    private final Set eventBrokers = new CopyOnWriteArraySet();
 
     private long numberOfPropagatedEvents = 0;
     private long duration = 0;
@@ -69,13 +69,13 @@ public class EventManager {
             Class aClass = Class.forName(className);
             return (AbstractEventBroker)  aClass.newInstance();
         } catch (ClassNotFoundException e) {
-            log.error("could not find class with name '" + className + "'", e);
+            log.error("could not find class with name " + className, e);
         } catch (InstantiationException e) {
-            log.error("could not instantiate class with name '" + className + "'", e);
+            log.error("could not instantiate class with name" + className, e);
         } catch (IllegalAccessException e) {
-            log.error("the constructor of '" + className + "' is not accessible", e);
+            log.error("the constructor of " + className + " is not accessible", e);
         } catch (ClassCastException e) {
-            log.error("'" + className + "' is not a AbstractEventBroker", e);
+            log.error("" + className + " is not a AbstratEventBroker");
         }
         return null;
     }
@@ -106,7 +106,9 @@ public class EventManager {
                     DocumentReader configReader = new DocumentReader(config);
 
                     // find the event brokers
-                    for (Element element: configReader.getChildElements("eventmanager.brokers", "broker")) {
+                    Iterator e = configReader.getChildElements("eventmanager.brokers", "broker");
+                    while (e.hasNext()) {
+                        Element element = (Element) e.next();
                         String className = element.getAttribute("class");
                         AbstractEventBroker broker = (AbstractEventBroker) findInstance(className);
                         if (broker != null) {
@@ -161,7 +163,7 @@ public class EventManager {
     public void addEventListener(EventListener listener) {
         BrokerIterator i =  findBrokers(listener);
         while (i.hasNext()) {
-            AbstractEventBroker broker = i.next();
+            AbstractEventBroker broker = i.nextBroker();
             if (broker.addListener(listener)) {
                 if (log.isDebugEnabled()) {
                     log.debug("listener " + listener + " added to broker " + broker );
@@ -180,7 +182,7 @@ public class EventManager {
         }
         BrokerIterator i = findBrokers(listener);
         while (i.hasNext()) {
-            i.next().removeListener(listener);
+            i.nextBroker().removeListener(listener);
         }
     }
 
@@ -196,7 +198,8 @@ public class EventManager {
             log.trace("Propagating events to " + eventBrokers);
         }
         long startTime = System.currentTimeMillis();
-        for (AbstractEventBroker broker :  eventBrokers) {
+        for (Iterator i = eventBrokers.iterator(); i.hasNext();) {
+            AbstractEventBroker broker = (AbstractEventBroker) i.next();
             if (broker.canBrokerForEvent(event)) {
                 broker.notifyForEvent(event);
                 if (log.isDebugEnabled()) {
@@ -244,12 +247,12 @@ public class EventManager {
         return new BrokerIterator(eventBrokers.iterator(), listener);
     }
 
-    private static class BrokerIterator implements Iterator<AbstractEventBroker> {
+    private static class BrokerIterator implements Iterator {
         AbstractEventBroker next;
-        final Iterator<AbstractEventBroker> i;
+        final Iterator i;
         final EventListener listener;
 
-        BrokerIterator(final Iterator<AbstractEventBroker> i, final EventListener listener) {
+        BrokerIterator(final Iterator i, final EventListener listener) {
             this.i = i;
             this.listener = listener;
             findNext();
@@ -257,19 +260,21 @@ public class EventManager {
         public void remove() {
             throw new UnsupportedOperationException();
         }
-        public AbstractEventBroker next() {
+        public Object next() {
+            return nextBroker();
+        }
+        public boolean hasNext() {
+            return next != null;
+        }
+        public AbstractEventBroker nextBroker() {
             if (next == null) throw new NoSuchElementException();
             AbstractEventBroker n = next;
             findNext();
             return n;
         }
-        public boolean hasNext() {
-            return next != null;
-        }
-
         protected void findNext() {
             while(i.hasNext()) {
-                AbstractEventBroker broker = i.next();
+                AbstractEventBroker broker = (AbstractEventBroker) i.next();
                 if (broker.canBrokerForListener(listener)) {
                     if (log.isDebugEnabled()) {
                         log.debug("broker " + broker + " can broker for eventlistener " + listener.getClass().getName());

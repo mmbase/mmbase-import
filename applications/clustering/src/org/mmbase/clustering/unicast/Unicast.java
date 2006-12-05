@@ -22,7 +22,7 @@ import org.mmbase.util.xml.UtilReader;
  * @javadoc
  *
  * @author Nico Klasens
- * @version $Id: Unicast.java,v 1.10 2006-10-16 14:48:45 pierre Exp $
+ * @version $Id: Unicast.java,v 1.9 2006-06-21 05:46:20 michiel Exp $
  */
 public class Unicast extends ClusterManager {
 
@@ -112,7 +112,7 @@ public class Unicast extends ClusterManager {
             log.service("Stopped communication sender " + ucs);
             ucs = null;
         }
-        if (ucr != null) {
+        if (ucr != null) { 
             ucr.stop();
             log.service("Stopped communication receiver " + ucr);
             ucr = null;
@@ -122,9 +122,9 @@ public class Unicast extends ClusterManager {
     // javadoc inherited
     public void changedNode(NodeEvent event) {
         byte[] message = createMessage(event);
-        nodesToSend.offer(message);
+        nodesToSend.append(message);
         //Multicast receives his own message. Unicast now too.
-        nodesToSpawn.offer(message);
+        nodesToSpawn.append(message);
         if (log.isDebugEnabled()) {
             log.debug("message: " + event);
         }

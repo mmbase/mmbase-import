@@ -1,11 +1,11 @@
  /*
-
+  
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
-
+  
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
-
+  
   */
 
 package org.mmbase.applications.media.filters;
@@ -15,6 +15,7 @@ import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.DocumentReader;
 import org.w3c.dom.Element;
 import java.util.*;
+
 
 /**
  * Filters media sources according to a specified bitrate.
@@ -27,10 +28,11 @@ public class ClientBitrateFilter implements Filter {
     private static Logger log = Logging.getLoggerInstance(ClientBitrateFilter.class);
     private static final String CONFIG_TAG = MainFilter.FILTERCONFIG_TAG + ".bitrates";
     private static Map bitrateFilters = new HashMap();
-
+    
     public void configure(DocumentReader reader, Element element) {
         try {
-            for(Element bitrate:reader.getChildElements(reader.getElementByPath(element, CONFIG_TAG))) {
+            for(Iterator bitrates = reader.getChildElements(reader.getElementByPath(element, CONFIG_TAG));bitrates.hasNext();) {
+                Element bitrate=(Element)bitrates.next();
                 String name = reader.getElementAttributeValue(bitrate, "name");
                 int min = Integer.parseInt(reader.getElementAttributeValue(bitrate, "min"));
                 int max = Integer.parseInt(reader.getElementAttributeValue(bitrate, "max"));
@@ -43,26 +45,26 @@ public class ClientBitrateFilter implements Filter {
             log.error(Logging.stackTrace(ex));
         }
     }
-
+    
     public List filter(List urlcomposers) {
         List filteredUrlcomposers = new ArrayList();
-
+        
         for (Iterator urlcomposerlist = urlcomposers.iterator();urlcomposerlist.hasNext();) {
             URLComposer urlcomposer = (URLComposer)urlcomposerlist.next();
-
+            
             Object bitrate = urlcomposer.getInfo().get("bitrate");
             log.debug("Client specified bitrate = " + bitrate);
-
+            
             if(bitrate==null) {
                 log.debug("Client did not specify bitrate.");
                 return urlcomposers;
             }
-
+            
             if(bitrate instanceof List) {
                 log.error("lits is not supported.");
-
+                
             }
-
+            
             if (bitrate instanceof String) {
                 if(!bitrateFilters.containsKey(bitrate)) {
                     log.error("Specified bitrate keyword is invaled. biterate="+bitrate);
@@ -75,11 +77,11 @@ public class ClientBitrateFilter implements Filter {
                 }
             }
         }
-
+        
         log.debug("filteredUrlcomposers = "+filteredUrlcomposers);
         return filteredUrlcomposers;
     }
-
+    
     /**
      * container for information beloning to a bitrate filter keyword.
      * In filter.xml the line <bitrate name="smallband" min="0" max="150000" />
@@ -88,17 +90,17 @@ public class ClientBitrateFilter implements Filter {
     private class BitrateFilterInfo {
         private String name;
         private int min, max;
-
+        
         private BitrateFilterInfo(String name, int min, int max) {
             this.name = name;
             this.min = min;
             this.max = max;
         }
-
+       
         private boolean validate(int bitrateMedia) {
             return min<bitrateMedia && max>bitrateMedia;
         }
-
+        
         public String toString() {
             return "BitrateFilterInfo name="+name+" max="+max+" min="+min;
         }

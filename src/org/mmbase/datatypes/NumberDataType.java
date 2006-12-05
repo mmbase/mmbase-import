@@ -9,17 +9,22 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.datatypes;
 
+import java.util.*;
+
 import org.mmbase.bridge.*;
 import org.mmbase.util.Casting;
+import org.mmbase.util.logging.*;
 
 /**
  * A DataType representing some kind of numeric value, like a floating point number or an integer number.
  *
  * @author Pierre van Rooden
- * @version $Id: NumberDataType.java,v 1.20 2006-10-14 14:35:39 nklasens Exp $
+ * @version $Id: NumberDataType.java,v 1.18 2006-04-29 19:41:09 michiel Exp $
  * @since MMBase-1.8
  */
 abstract public class NumberDataType extends ComparableDataType {
+
+    private static final Logger log = Logging.getLoggerInstance(NumberDataType.class);
 
     private static final long serialVersionUID = 1L; 
     /**
@@ -30,24 +35,14 @@ abstract public class NumberDataType extends ComparableDataType {
     }
 
 
-
-    /**
-     * @since MMBase-1.9
-     */
-    protected Number castString(Object preCast) throws CastException {
+    protected Object castToValidate(Object value, Node node, Field field) throws CastException {
+        if (value == null) return null;
+        Object preCast = preCast(value, node, field); // resolves enumerations
         if (preCast instanceof String) {
             if (! StringDataType.DOUBLE_PATTERN.matcher((String) preCast).matches()) {
                 throw new CastException("Not a number: " + preCast);
             }
         } 
         return new Double(Casting.toDouble(preCast)); // this makes it e.g. possible to report that 1e20 is too big for an integer.
-    }
-
-
-    protected Object castToValidate(Object value, Node node, Field field) throws CastException {
-        if (value == null) return null;
-        Object preCast = preCast(value, node, field); // resolves enumerations
-        return castString(preCast);
-
     }
 }

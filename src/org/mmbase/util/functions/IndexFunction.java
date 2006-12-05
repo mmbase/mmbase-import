@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: IndexFunction.java,v 1.12 2006-10-23 16:23:26 michiel Exp $
+ * @version $Id: IndexFunction.java,v 1.9 2006-08-30 17:48:52 michiel Exp $
  * @since MMBase-1.8
  */
 public class IndexFunction extends FunctionProvider {
@@ -86,7 +86,7 @@ public class IndexFunction extends FunctionProvider {
      * Returns the 'successor' or a string. Which means that e.g. after 'zzz' follows 'aaaa'.
      */
     public static String successor(String index) {
-        StringBuilder buf = new StringBuilder(index);
+        StringBuffer buf = new StringBuffer(index);
         boolean lowercase = true;
         for (int i = index.length() - 1 ; i >= 0; i--) {
             char c = buf.charAt(i);
@@ -151,7 +151,7 @@ public class IndexFunction extends FunctionProvider {
                 postfix = romanSuccessor(postfix);
             }
         }
-        StringBuilder buf = new StringBuilder();
+        StringBuffer buf = new StringBuffer();
         for (int i = 0; i < split.length - 1; i++) {
             buf.append(split[i]);
             buf.append(joiner);
@@ -162,17 +162,17 @@ public class IndexFunction extends FunctionProvider {
 
     private static Parameter[] INDEX_ARGS = new Parameter[] {
         Parameter.CLOUD,
-        new Parameter<Node>("root", Node.class, false),
-        new Parameter<String>("separator", String.class, "\\."),
-        new Parameter<String>("joiner", String.class, "."),
-        new Parameter<Boolean>("roman", Boolean.class, Boolean.TRUE),
-        new Parameter<String>("role", String.class, "index")
+        new Parameter("root", Node.class, false),
+        new Parameter("separator", String.class, "\\."),
+        new Parameter("joiner", String.class, "."),
+        new Parameter("roman", Boolean.class, Boolean.TRUE),
+        new Parameter("role", String.class, "index")
     };
 
     private static Parameter[] MOVE_ARGS = new Parameter[] {
         Parameter.CLOUD,
-        new Parameter<Node>("root",    Node.class, false),
-        new Parameter<Node>("newroot", Node.class, false)
+        new Parameter("root",    Node.class, false),
+        new Parameter("newroot", Node.class, false)
     };
 
     /**
@@ -188,16 +188,16 @@ public class IndexFunction extends FunctionProvider {
     }
 
 
-    protected static class Stack<C> extends ArrayList<C> {
-        public void push(C o) {
+    protected static class Stack extends ArrayList {
+        public void push(Object o) {
             add(0, o);
         }
-        public C pull() {
+        public Object pull() {
             return remove(0);
         }
     }
 
-    protected static NodeFunction<String> index = new NodeFunction<String>("index", INDEX_ARGS, ReturnType.STRING) {
+    protected static NodeFunction index = new NodeFunction("index", INDEX_ARGS, ReturnType.STRING) {
             {
                 setDescription("Calculates the index of a node, using the surrounding 'indexrels'");
             }
@@ -205,7 +205,7 @@ public class IndexFunction extends FunctionProvider {
             /**
              * complete bridge version of {@link #getFunctionValue}
              */
-            public String getFunctionValue(final Node node, final Parameters parameters) {
+            public Object getFunctionValue(final Node node, final Parameters parameters) {
                 Node root     = (Node)   parameters.get("root");
                 final String role   = (String) parameters.get("role");
                 final String join   = (String) parameters.get("joiner");
@@ -236,7 +236,7 @@ public class IndexFunction extends FunctionProvider {
                     template.setConstraint(template.createConstraint(sf, root));
                 }
 
-                Stack<Node> stack = new Stack<Node>();
+                Stack stack = new Stack();
                 TreeIterator it = tree.treeIterator();
                 int depth = it.currentDepth();
                 while (it.hasNext()) {
@@ -271,17 +271,17 @@ public class IndexFunction extends FunctionProvider {
                 if (log.isDebugEnabled()) {
                     log.debug("Now constructing index-number with " + stack.size() + " nodes on stack");
                 }
-                Node n = stack.pull(); // this is root, or at least _its_ index is known
-                StringBuilder buf;
+                Node n = (Node) stack.pull(); // this is root, or at least _its_ index is known
+                StringBuffer buf;
                 if (! n.equals(node)) {
-                    buf = new StringBuilder(n.getFunctionValue("index", parameters).toString());
+                    buf = new StringBuffer(n.getFunctionValue("index", parameters).toString());
                 } else {
-                    buf = new StringBuilder();
+                    buf = new StringBuffer();
                 }
                 String j = buf.length() == 0 ? "" : join;
                 OUTER:
                 while(! stack.isEmpty()) {
-                    Node search = stack.pull();
+                    Node search = (Node) stack.pull();
                     NodeQuery q = Queries.createRelatedNodesQuery(n, nm, role, "destination");
                     StepField sf = q.addField(role + ".pos");
                     q.addSortOrder(sf, SortOrder.ORDER_ASCENDING);
@@ -301,7 +301,7 @@ public class IndexFunction extends FunctionProvider {
                         log.debug("Found index " + i);
                         Matcher matcher = indexPattern.matcher(i);
                         if (matcher.matches()) {
-                            buf = new StringBuilder(matcher.group(1));
+                            buf = new StringBuffer(matcher.group(1));
                             i = matcher.group(2);
                             log.debug("matched " + indexPattern + " --> " + i);
                         }

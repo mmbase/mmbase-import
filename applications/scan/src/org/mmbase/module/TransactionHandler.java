@@ -46,9 +46,9 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
     // Cashes all transactions belonging to a user.
     private static Hashtable transactionsOfUser = new Hashtable();
     // Reference to the transactionManager.
-    private static TransactionManager transactionManager;
+    private static TransactionManagerInterface transactionManager;
     // Reference to the temporaryNodeManager
-    private static TemporaryNodeManager tmpObjectManager;
+    private static TemporaryNodeManagerInterface tmpObjectManager;
 
     public TransactionHandler() {}
 
@@ -60,8 +60,8 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
         mmbase = (MMBase)getModule("MMBASEROOT");
         upload = (Upload)getModule("upload");
         sessions = (sessionsInterface)getModule("SESSION");
-        transactionManager = TransactionManager.getInstance();
-        tmpObjectManager = transactionManager.getTemporaryNodeManager();
+        tmpObjectManager = new TemporaryNodeManager(mmbase);
+        transactionManager = new TransactionManager(mmbase, tmpObjectManager);
         //JB key test initializatioon
         needs_key = (getInitParameter("keycode") != null);
         securityMode = getInitParameter("security");
@@ -282,8 +282,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
                         throw new TransactionHandlerException(tName + " transaction already exists id = " + id);
                     }
                     // actually create transaction
-                    transactionManager.createTransaction(id);
-                    currentTransactionContext = id;
+                    currentTransactionContext = transactionManager.create(userTransactionInfo.user, id);
                     transactionInfo = new TransactionInfo(currentTransactionContext, time, id, userTransactionInfo);
                     // If not anonymous transaction register it in the list of all transaction of the user
                     if (!anonymousTransaction) {

@@ -22,9 +22,9 @@ import org.mmbase.util.logging.*;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.49 2006-11-11 20:54:04 michiel Exp $
+ * @version $Id: BasicNodeList.java,v 1.47 2006-07-09 14:14:39 michiel Exp $
  */
-public class BasicNodeList extends BasicList implements NodeList  {
+public class BasicNodeList extends BasicList implements NodeList {
 
     private static final Logger log = Logging.getLoggerInstance(BasicNodeList.class);
     protected Cloud cloud;
@@ -60,11 +60,9 @@ public class BasicNodeList extends BasicList implements NodeList  {
 
     /**
      */
-    protected Node convert(Object o, int index) {
-        o = super.convert(o, index); 
-
+    protected Object convert(Object o, int index) {
         if (o instanceof Node || o == null) {
-            return (Node) o;
+            return o;
         }
         Node node = null;
         if (o instanceof String) { // a string indicates a nodemanager by name, or, if numeric, a node number..
@@ -97,10 +95,10 @@ public class BasicNodeList extends BasicList implements NodeList  {
                     try {
                         node = cloud.getNodeManager(builderName);
                     } catch (Throwable t) {
-                        node = getNode(cloud, coreNode);
+                        node = cloud.getNode(coreNode.getNumber());
                     }
                 } else {
-                    node = getNode(cloud, coreNode);
+                    node = cloud.getNode(coreNode.getNumber());
                 }
             } else if (coreBuilder instanceof RelDef) {
                 node = cloud.getRelationManager(coreNode.getStringValue("sname"));
@@ -131,7 +129,7 @@ public class BasicNodeList extends BasicList implements NodeList  {
                 }
                 node = cloud.getRelationManager(nm1.getName(), nm2.getName(), role.getStringValue("sname"));
             } else if(coreBuilder instanceof InsRel) {
-                node = getNode(cloud, coreNode);
+                node = cloud.getNode(coreNode.getNumber());
             } else if (coreNode instanceof org.mmbase.module.core.VirtualNode) {
                 MMObjectBuilder builder = coreNode.getBuilder();
                 if (builder instanceof VirtualBuilder) {
@@ -144,33 +142,16 @@ public class BasicNodeList extends BasicList implements NodeList  {
                     node = new VirtualNode(cloud, (org.mmbase.module.core.VirtualNode) coreNode, cloud.getNodeManager(builder.getObjectType()));
                 }
             } else {
-                node =  getNode(cloud, coreNode);
+                int n = coreNode.getNumber();
+                if (cloud.hasNode(n)) {
+                    node = cloud.getNode(n);
+                } else {
+                    log.warn("No node with number " + n + " converting to null");
+                    node = null;
+                }
             }
         }
         set(index, node);
-        return node;
-    }
-
-    protected Node getNode(Cloud c, MMObjectNode coreNode) {
-        Node node;
-        int n = coreNode.getNumber();
-        try {
-            if (n == -1) {
-                String[] na  = coreNode.getStringValue("_number").split("_");
-                if (na.length == 2) {
-                    node = cloud.getNode(na[1]);
-                } else {
-                    log.error("Could not make a Node of " + coreNode);
-                    node = null;
-                }
-            } else {
-                node = cloud.getNode(n);
-            }
-        } catch (Exception e) {
-            log.error(e);
-            log.error(coreNode.getClass() + "" + coreNode.getValues());
-            node = null;
-        }
         return node;
     }
 

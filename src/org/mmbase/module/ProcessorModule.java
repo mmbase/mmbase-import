@@ -13,11 +13,10 @@ import java.util.*;
 import javax.servlet.http.*;
 import org.mmbase.module.core.*;
 import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.util.CollectionNodeList;
 import org.mmbase.util.*;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
+
 
 /**
  * The Processor Module extends the basic module to the Processor
@@ -27,18 +26,17 @@ import org.mmbase.util.logging.*;
  * @todo   Should be abstract, deprecated?
  */
 public class ProcessorModule extends Module implements ProcessorInterface {
-
-    protected static final Parameter[] PARAMS_PAGEINFO = new Parameter[] {Parameter.REQUEST, Parameter.RESPONSE, Parameter.CLOUD};
-    protected static final Parameter.Wrapper PARAM_PAGEINFO = new Parameter.Wrapper(PARAMS_PAGEINFO);
-
     private static final Logger log = Logging.getLoggerInstance(ProcessorModule.class);
-
     /**
      * {@inheritDoc}
      **/
     public MMObjectBuilder getListBuilder(String command, Map params) {
         return new VirtualBuilder(null);
     }
+
+    protected static final Parameter[] PARAMS_PAGEINFO = new Parameter[] {Parameter.REQUEST, Parameter.RESPONSE, Parameter.CLOUD};
+    protected static final Parameter.Wrapper PARAM_PAGEINFO = new Parameter.Wrapper(PARAMS_PAGEINFO);
+
 
     /**
      * Used by function wrappers.
@@ -47,20 +45,19 @@ public class ProcessorModule extends Module implements ProcessorInterface {
     private static PageInfo getPageInfo(Parameters arguments) {
         PageInfo pageInfo = null;
         if (arguments.indexOfParameter(Parameter.REQUEST)> -1) {
-            HttpServletRequest req  = arguments.get(Parameter.REQUEST);
-            HttpServletResponse res = arguments.get(Parameter.RESPONSE);
-            Cloud cloud = arguments.get(Parameter.CLOUD);
+            HttpServletRequest req  = (HttpServletRequest) arguments.get(Parameter.REQUEST);
+            HttpServletResponse res = (HttpServletResponse) arguments.get(Parameter.RESPONSE);
+            Cloud cloud = (Cloud) arguments.get(Parameter.CLOUD);
             pageInfo = new PageInfo(req, res, cloud);
         }
         return pageInfo;
     }
-
     /**
      * Used by function wrappers.
      * @since MMBase-1.8
      */
     private static String getCommand(String functionName, Parameters arguments) {
-        StringBuilder buf = new StringBuilder(functionName);
+        StringBuffer buf = new StringBuffer(functionName);
         Iterator i = arguments.iterator();
         while (i.hasNext()) {
             Object argument = i.next();
@@ -70,33 +67,30 @@ public class ProcessorModule extends Module implements ProcessorInterface {
         }
         return buf.toString();
     }
-
     /**
      * Function implementation around {@link #getNodeList(Object, String, Map)}. See in MMAdmin for an example on how to use.
      * @since MMBase-1.8
      */
-    protected class GetNodeListFunction extends AbstractFunction<org.mmbase.bridge.NodeList> {
+    protected class GetNodeListFunction extends AbstractFunction {
         public GetNodeListFunction(String name, Parameter[] params) {
             super(name, params, ReturnType.NODELIST);
         }
-        public org.mmbase.bridge.NodeList getFunctionValue(Parameters arguments) {
-            return new CollectionNodeList<Node>(getNodeList(getPageInfo(arguments), getCommand(getName(), arguments), arguments.toMap()));
+        public Object getFunctionValue(Parameters arguments) {
+            return getNodeList(getPageInfo(arguments), getCommand(getName(), arguments), arguments.toMap());
         }
     }
-
     /**
      * Function implementation around {@link #replace(PageInfo, String)}. See in MMAdmin for an example on how to use.
      * @since MMBase-1.8
      */
-    protected class ReplaceFunction extends AbstractFunction<String> {
+    protected class ReplaceFunction extends AbstractFunction {
         public ReplaceFunction(String name, Parameter[] params) {
             super(name, params, ReturnType.STRING);
         }
-        public String getFunctionValue(Parameters arguments) {
+        public Object getFunctionValue(Parameters arguments) {
             return replace(getPageInfo(arguments), getCommand(getName(), arguments));
         }
     }
-
     /**
      * Function implementation around {@link #process(PageInfo, Hashtable, Hashtable)}. See in
      * MMAdmin for an example on how to use.  It does not support multipible commands, so the first
@@ -105,12 +99,12 @@ public class ProcessorModule extends Module implements ProcessorInterface {
      * parameter ('vars'), and this is also returned (because sometimes also results are put in it).
      * @since MMBase-1.8
      */
-    protected class ProcessFunction extends AbstractFunction<Map> {
+    protected class ProcessFunction extends AbstractFunction {
         public ProcessFunction(String name, Parameter[] params) {
             super(name, params, ReturnType.MAP);
         }
 
-        public Map getFunctionValue(Parameters arguments) {
+        public Object getFunctionValue(Parameters arguments) {
             Hashtable cmds = new Hashtable();
             Hashtable vars = new Hashtable();
             Parameter[] def = arguments.getDefinition();
@@ -134,7 +128,7 @@ public class ProcessorModule extends Module implements ProcessorInterface {
      * @param command The command to execute
      * @param params  Parameters, they will be added to the StringTagger.
      **/
-    public Vector<VirtualNode> getNodeList(Object context, String command, Map params) {
+    public Vector getNodeList(Object context, String command, Map params) {
         StringTagger tagger=null;
         if (params instanceof StringTagger) {
             tagger = (StringTagger)params;
@@ -161,7 +155,7 @@ public class ProcessorModule extends Module implements ProcessorInterface {
         int items = 1;
         try { items = Integer.parseInt(tagger.Value("ITEMS")); } catch (NumberFormatException e) {}
         Vector fieldlist = tagger.Values("FIELDS");
-        Vector<VirtualNode> res = new Vector<VirtualNode>(v.size() / items);
+        Vector res = new Vector(v.size() / items);
         MMObjectBuilder bul = getListBuilder(command, params);
         for(int i= 0; i < v.size(); i+=items) {
             VirtualNode node = new VirtualNode(bul);
@@ -213,14 +207,16 @@ public class ProcessorModule extends Module implements ProcessorInterface {
         return false;
     }
 
+
     /**
      * What should this do, when is this called?
      * @deprecated called by nothing
      * @javadoc
      */
 
-    public void reload() {
-    }
+     public void reload() {
+     }
+
 
     /**
      * What should this do, when is this called?
@@ -243,5 +239,6 @@ public class ProcessorModule extends Module implements ProcessorInterface {
      */
     public void onload() {
     }
+
 
 }

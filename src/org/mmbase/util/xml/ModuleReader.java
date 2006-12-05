@@ -14,7 +14,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
-import org.mmbase.util.LocalizedString;
 import org.mmbase.util.XMLEntityResolver;
 
 /**
@@ -22,7 +21,7 @@ import org.mmbase.util.XMLEntityResolver;
  * @since MMBase-1.8
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: ModuleReader.java,v 1.6 2006-11-24 14:28:55 pierre Exp $
+ * @version $Id: ModuleReader.java,v 1.3 2005-10-13 12:06:58 michiel Exp $
  */
 public class ModuleReader extends DocumentReader {
 
@@ -37,18 +36,6 @@ public class ModuleReader extends DocumentReader {
     public static final String DTD_MODULE_1_0 = "module_1_0.dtd";
     /** DTD resource filename of the most recent Module DTD */
     public static final String DTD_MODULE = DTD_MODULE_1_0;
-
-    public static final String XSD_MODULE_2_0 = "module.xsd";
-    public static final String NAMESPACE_MODULE_2_0 = "http://www.mmbase.org/xmlns/module";
-    public static final String NAMESPACE_MODULE = NAMESPACE_MODULE_2_0;
-
-    /**
-     * Register the namespace and XSD used by DataTypeConfigurer
-     * This method is called by XMLEntityResolver.
-     */
-    public static void registerSystemIDs() {
-        XMLEntityResolver.registerSystemID(NAMESPACE_MODULE_2_0 + ".xsd", XSD_MODULE_2_0, ModuleReader.class);
-    }
 
     /**
      * Register the Public Ids for DTDs used by ModuleReader
@@ -77,7 +64,7 @@ public class ModuleReader extends DocumentReader {
      * Get the status of this module
      */
     public String getStatus() {
-        Element e = getElementByPath("module.status");
+        Element e = getElementByPath("module.status");        
         String s =  getElementValue(e);
         return s.equals("") ? "active" : s;
     }
@@ -98,36 +85,6 @@ public class ModuleReader extends DocumentReader {
                 n = 0;
             }
             return n;
-        }
-    }
-
-    /**
-     * Get the name of this module.
-     * Returns <code>null</code> if no name is found.
-     * @since MMBase-1.9
-     */
-    public String getName() {
-        Element e = getElementByPath("module");
-        String tmp = getElementAttributeValue(e, "name");
-        if (tmp != null && !tmp.equals("")) {
-            return tmp;
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Get the (alternate) application context of this module.
-     * Returns <code>null</code> if no context is found.
-     * @since MMBase-1.9
-     */
-    public String getContext() {
-        Element e = getElementByPath("module");
-        String tmp = getElementAttributeValue(e, "context");
-        if (tmp != null && !tmp.equals("")) {
-            return tmp;
-        } else {
-            return null;
         }
     }
 
@@ -169,33 +126,20 @@ public class ModuleReader extends DocumentReader {
     }
 
     /**
-     * Get the descriptions of this module.
-     * @return the descriptions as a LocalizedString
-     */
-    public LocalizedString getLocalizedDescription(LocalizedString description) {
-        description.fillFromXml("description", getElementByPath("module.descriptions"));
-        return description;
-    }
-
-    /**
-     * Get the (gui) names of this module.
-     * @return the names as a LocalizedString
-     */
-    public LocalizedString getLocalizedGUIName(LocalizedString guiName) {
-        guiName.fillFromXml("name", getElementByPath("module.names"));
-        return guiName;
-    }
-
-    /**
      * Get the properties of this builder
      */
-    public Map<String, String> getProperties() {
-        Map<String, String> results = new LinkedHashMap();
-        for (Element el : getChildElements("module.properties","property")) {
-            String name = getElementAttributeValue(el, "name");
-            results.put(name, getElementValue(el));
+    public Map getProperties() {
+        Map map = new LinkedHashMap();
+        Element e = getElementByPath("module.properties");
+        if (e != null) {
+            for (Iterator iter = getChildElements(e, "property"); iter.hasNext();) {
+                Element p = (Element) iter.next();
+                String name = getElementAttributeValue(p, "name");
+                String value = getElementValue(p);
+                map.put(name, value);
+            }
         }
-        return results;
+        return map;
     }
 
 }

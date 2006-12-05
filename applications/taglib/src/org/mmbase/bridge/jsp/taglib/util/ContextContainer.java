@@ -25,10 +25,10 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.57 2006-11-21 20:32:40 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.53.2.2 2006-11-21 20:39:56 michiel Exp $
  **/
 
-public abstract class ContextContainer extends AbstractMap<String, Object> implements Map<String, Object> {
+public abstract class ContextContainer extends AbstractMap implements Map {
     private static final Logger log = Logging.getLoggerInstance(ContextContainer.class);
 
     public static final int LOCATION_NOTSET         = -10;
@@ -150,9 +150,6 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
      * @since MMBase-1.8
      */
     public void setParent(PageContext pc, ContextContainer p) {
-        if (log.isDebugEnabled()) {
-            log.debug("Setting parent of " + getClass() + " "  + this + " to " + pc);
-        }
         getBacking().pushPageContext(pc);
         parent = p;
     }
@@ -171,15 +168,35 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
         return getBacking().getPageContext();
     }
 
+
+    /**
+     * Keys must be Strings, so put(Object, ..) is forbidden in this HashMap!
+     */
+
+    public Object put(Object key, Object value) {
+        if (key instanceof String) {
+            try {
+                return put((String) key, value);
+            } catch (JspTagException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            throw new RuntimeException("Error, key should be string in ContextContainers! (Tried " + key.getClass().getName() + ")");
+        }
+    }
+
     /**
      * Not all Strings can be allowed as keys. Keys are like variable names.
      */
 
-    public Object put(String key, Object value) {
+    public Object put(String key, Object value) throws JspTagException {
         if (key.indexOf('.') != -1) {
-            throw new RuntimeException("Key may not contain dots (" + key + ")");
+            throw new JspTagException("Key may not contain dots (" + key + ")");
         }
         return getBacking().put(key, value);
+    }
+    public boolean containsKey(Object key) {
+        throw new RuntimeException("Error, key should be string in ContextContainers!");
     }
 
     /**
@@ -289,8 +306,18 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
         }
     }
 
+    /**
+     *
+     */
 
-    public Object get(String key) {
+    public Object get(String key) throws JspTagException {
+        return get(key, true);
+    }
+
+    public Object get(Object key) {
+        if (!(key instanceof String)) {
+            return null;
+        }
         try {
             return get((String)key, true);
         } catch (JspTagException e) {
@@ -299,8 +326,8 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
         return null;
     }
 
-    public Set<String> keySet() {
-        HashSet<String> result = new HashSet<String>(getBacking().keySet());
+    public Set keySet() {
+        HashSet result = new HashSet(getBacking().keySet());
         if (parent != null) {
             result.addAll(parent.keySet());
         }
@@ -386,6 +413,7 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
             }
             if (! valid) {
                 JspTagException exception = new TaglibException ("'" + newId + "' is not a valid Context identifier", new Throwable());
+                log.info(Logging.stackTrace(exception));
                 throw exception;
             }
 
@@ -415,10 +443,13 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
     /**
      * @since MMBase-1.7
      */
-    void registerAll(Map<String, Object> map) throws JspTagException {
+    void registerAll(Map map) throws JspTagException {
         if (map == null) return;
-        for (Map.Entry<String, Object> entry : map.entrySet()) {
-            register(entry.getKey(), entry.getValue());
+        Iterator i = map.entrySet().iterator();
+        while (i.hasNext()) {
+            Map.Entry entry = (Map.Entry) i.next();
+            String key = (String) entry.getKey();
+            register(key, entry.getValue());
         }
 
     }
@@ -832,10 +863,10 @@ class BeanPair extends Pair {
         String methodKey =  Character.toUpperCase(key.charAt(0)) + key.substring(1);
         Method method;
         try {
-            method = clazz.getMethod("get" + methodKey);
+            method = clazz.getMethod("get" + methodKey, null);
         } catch (Exception e) {
             try {
-                method = clazz.getMethod("is" + methodKey);
+                method = clazz.getMethod("is" + methodKey, null);
             } catch (Exception f) {
                 return null;
             }
@@ -851,7 +882,7 @@ class BeanPair extends Pair {
         try {
             Method method = getMethod(key);
             if (method == null) return null;
-            return method.invoke(bean);
+            return method.invoke(bean, null);
         } catch (Exception iae) {
             throw new TaglibException(iae.getMessage(), iae);
         }

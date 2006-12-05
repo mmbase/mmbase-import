@@ -9,6 +9,12 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.datatypes;
 
+import java.util.*;
+
+import org.mmbase.bridge.*;
+import org.mmbase.util.Casting;
+import org.mmbase.util.logging.*;
+
 /**
  * A LengthDataType is a datatype that defines a length for its values ({@link #getLength(Object)}) ,
  * and restrictions on that (minimal an maximal length). Sometimes you may think 'size' in stead of
@@ -16,7 +22,7 @@ package org.mmbase.datatypes;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: LengthDataType.java,v 1.5 2006-10-14 14:35:39 nklasens Exp $
+ * @version $Id: LengthDataType.java,v 1.4 2005-11-23 12:11:25 michiel Exp $
  * @since MMBase-1.8
  */
 public interface LengthDataType extends DataType {

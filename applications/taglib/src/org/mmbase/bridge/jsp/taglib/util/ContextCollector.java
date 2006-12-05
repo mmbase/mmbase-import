@@ -26,33 +26,24 @@ import org.mmbase.util.logging.Logging;
  * it's parent too, so it is 'transparent'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextCollector.java,v 1.20 2006-11-22 14:47:38 michiel Exp $
+ * @version $Id: ContextCollector.java,v 1.17.2.1 2006-11-22 14:52:10 michiel Exp $
  * @since MMBase-1.7
  */
 public class  ContextCollector extends StandaloneContextContainer {
     private static final Logger log = Logging.getLoggerInstance(ContextCollector.class);
 
-    private final Set<String> parentCheckedKeys = new HashSet<String>();
+    private Set parentCheckedKeys = new HashSet();
 
     public ContextCollector(ContextProvider p) throws JspTagException {
         super(p.getPageContext(), "CONTEXT-COLLECTOR " + (p.getId() == null ? "" : "-" + p.getId()), p.getContextContainer());
-        if (log.isDebugEnabled()) {
-            log.debug("Using collector with pagecontext " + p.getPageContext());
-        }
-    }
-
-    protected BasicBacking createBacking(PageContext pc) {
-        return new BasicBacking(pc, parent instanceof PageContextContainer) {
-                public Object put(String key, Object value) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("Putting in collector " + key + "=" + value + " " + parent);
-                    }
+        backing = new BasicBacking(p.getPageContext(), parent instanceof PageContextContainer) {
+                public Object put(Object key, Object value) {
                     if (parentCheckedKeys.contains(key)) {
                         parent.put(key, value);
                     } else {
                         parentCheckedKeys.add(key);
                         try {
-                            parent.register(key, value);
+                            parent.register((String) key, value);
                         } catch (JspTagException jte) {
                             throw new RuntimeException(jte);
                         }

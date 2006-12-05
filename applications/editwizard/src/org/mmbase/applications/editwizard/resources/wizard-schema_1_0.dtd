@@ -53,8 +53,6 @@
 <!ATTLIST relation searchdir (source | destination | both | all | either) #IMPLIED >
 <!ATTLIST relation createdir (source | destination | either) #IMPLIED >
 
-
-
 <!ELEMENT list ( title | description | action | command | item )* >
 <!ATTLIST list maxoccurs CDATA #IMPLIED >
 <!ATTLIST list minoccurs NMTOKEN #IMPLIED >
@@ -65,7 +63,7 @@
 <!ATTLIST list destinationtype NMTOKEN #IMPLIED >
 <!ATTLIST list hidecommand CDATA #IMPLIED >
 <!ATTLIST list orderby CDATA #IMPLIED >
-<!ATTLIST list ordertype NMTOKENS #IMPLIED > <!-- inverse? string|number?, no idea how to indicate that in dtd -->
+<!ATTLIST list ordertype (number | string) #IMPLIED >
 <!ATTLIST list role NMTOKEN #IMPLIED >
 <!ATTLIST list include CDATA #IMPLIED >
 <!ATTLIST list searchdir (source | destination | both | all | either) #IMPLIED >
@@ -83,7 +81,6 @@
 <!ATTLIST command nodepath CDATA #IMPLIED >
 <!ATTLIST command objectnumber CDATA #IMPLIED >
 <!ATTLIST command wizardname CDATA #IMPLIED >
-<!ATTLIST command wizardjsp  CDATA #IMPLIED >
 <!ATTLIST command orderby CDATA #IMPLIED >
 <!ATTLIST command directions CDATA #IMPLIED >
 <!ATTLIST command command NMTOKEN #IMPLIED >

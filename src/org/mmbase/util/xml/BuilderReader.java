@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.util.xml;
 
 import java.util.*;
-
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 import org.mmbase.bridge.Field;
@@ -37,7 +36,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.84 2006-11-27 20:47:56 nklasens Exp $
+ * @version $Id: BuilderReader.java,v 1.74.2.4 2006-11-27 20:48:03 nklasens Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -74,6 +73,7 @@ public class BuilderReader extends DocumentReader {
     public static void registerSystemIDs() {
         XMLEntityResolver.registerSystemID(NAMESPACE_BUILDER_2_0 + ".xsd", XSD_BUILDER_2_0, BuilderReader.class);
     }
+
 
     /**
      * Register the Public Ids for DTDs used by BuilderReader
@@ -298,11 +298,11 @@ public class BuilderReader extends DocumentReader {
      * @since MMBase-1.8
      */
     public List getFields(MMObjectBuilder builder, DataTypeCollector collector) {
-        List<CoreField> results = new ArrayList<CoreField>();
-        Map<String, CoreField> oldset = new HashMap<String, CoreField>();
+        List results = new ArrayList();
+        Map oldset = new HashMap();
         int pos = 1;
         if (parentBuilder != null) {
-            List<CoreField> parentfields = parentBuilder.getFields(NodeManager.ORDER_CREATE);
+            List parentfields = parentBuilder.getFields(NodeManager.ORDER_CREATE);
             if (parentfields != null) {
                 // have to clone the parent fields
                 // need clone()!
@@ -318,12 +318,13 @@ public class BuilderReader extends DocumentReader {
             }
         }
 
-        for (Element field : getChildElements("builder.fieldlist","field")) {
+        for(Iterator ns = getChildElements("builder.fieldlist", "field"); ns.hasNext(); ) {
+            Element field = (Element) ns.next();
             String fieldName = getElementAttributeValue(field, "name");
             if ("".equals(fieldName)) {
                 fieldName = getElementValue(getElementByPath(field,"field.db.name"));
             }
-            CoreField def = oldset.get(fieldName);
+            CoreField def = (CoreField) oldset.get(fieldName);
             try {
                 if (def != null) {
                     def.rewrite();
@@ -355,8 +356,8 @@ public class BuilderReader extends DocumentReader {
      * @param builder the MMObjectBuilder to which the fields will be added
      * @return a List of all Indices
      */
-    public List<Index> getIndices(MMObjectBuilder builder) {
-        List<Index> results = new ArrayList<Index>();
+    public List getIndices(MMObjectBuilder builder) {
+        List results = new ArrayList();
         Index mainIndex = null;
         if (parentBuilder != null) {
             // create the
@@ -365,13 +366,14 @@ public class BuilderReader extends DocumentReader {
                 mainIndex = new Index(builder, Index.MAIN);
                 mainIndex.setUnique(true);
                 for (Iterator i = parentIndex.iterator(); i.hasNext(); ) {
-                    Field field = (Field) i.next();
+                    Field field = (Field)i.next();
                     mainIndex.add(builder.getField(field.getName()));
                 }
             }
         }
 
-        for (Element field : getChildElements("builder.fieldlist","field")) {
+        for (Iterator fields = getChildElements("builder.fieldlist","field"); fields.hasNext(); ) {
+            Element field = (Element)fields.next();
             Element dbtype = getElementByPath(field,"field.db.type");
             if (dbtype != null) {
                 String key = getElementAttributeValue(dbtype,"key");
@@ -390,9 +392,10 @@ public class BuilderReader extends DocumentReader {
         }
 
         if (parentBuilder != null) {
-            Collection<Index> parentIndices = parentBuilder.getStorageConnector().getIndices().values();
+            Collection parentIndices = parentBuilder.getStorageConnector().getIndices().values();
             if (parentIndices != null) {
-                for (Index parentIndex : parentIndices) {
+                for (Iterator i = parentIndices.iterator();i.hasNext();) {
+                    Index parentIndex = (Index)i.next();
                     Index newIndex = new Index(builder, parentIndex.getName());;
                     newIndex.setUnique(parentIndex.isUnique());
                     for (Iterator parentIndexIter = parentIndex.iterator(); parentIndexIter.hasNext(); ) {
@@ -405,13 +408,15 @@ public class BuilderReader extends DocumentReader {
         }
 
         
-        for (Element indexElement : getChildElements("builder.indexlist","index")) {
+        for(Iterator indices = getChildElements("builder.indexlist","index"); indices.hasNext(); ) {
+            Element indexElement   = (Element)indices.next();
             String indexName = indexElement.getAttribute("name");
             if (indexName != null && !indexName.equals("")) {
                 String unique = indexElement.getAttribute("unique");
                 Index index = new Index(builder, indexName);
                 index.setUnique(unique != null && unique.equals("true"));
-                for (Element fieldElement : getChildElements(indexElement,"indexfield")) {
+                for(Iterator fields = getChildElements(indexElement,"indexfield"); fields.hasNext(); ) {
+                    Element fieldElement   = (Element)fields.next();
                     String fieldName = fieldElement.getAttribute("name");
                     Field field = builder.getField(fieldName);
                     if (field == null) {
@@ -431,10 +436,11 @@ public class BuilderReader extends DocumentReader {
     /**
      * @since MMBase-1.8
      */
-    public Set<Function> getFunctions(MMObjectBuilder builder) {
-        Map<String, Function> results = new HashMap<String, Function>();
-        for (Element functionElement : getChildElements("builder.functionlist","function")) {
+    public Set getFunctions() {
+        Set results = new HashSet();
+        for(Iterator ns = getChildElements("builder.functionlist","function"); ns.hasNext(); ) {
             try {
+                Element functionElement   = (Element)ns.next();
                 final String functionName = functionElement.getAttribute("name");
                 String providerKey        = functionElement.getAttribute("key");
                 String functionClass      = getNodeTextValue(getElementByPath(functionElement, "function.class"));
@@ -461,21 +467,7 @@ public class BuilderReader extends DocumentReader {
                         log.error("Speficied class " + claz + " in " + getSystemId() + "/functionslist/function is not a Function or FunctionProvider and can not be wrapped in a BeanFunction, because neither key nor name attribute were specified.");
                         continue;
                     }
-                    java.lang.reflect.Method method = MethodFunction.getMethod(claz, providerKey);
-                    if (method == null) {
-                        log.error("Could not find  method '" + providerKey + "' in " + claz);
-                        continue;
-                    } else {
-                        if (method.getParameterTypes().length == 0) {
-                            function = BeanFunction.getFunction(claz, providerKey);
-                        } else {
-                            if (method.getClass().isInstance(builder)) {
-                                function = MethodFunction.getFunction(method, providerKey, builder);
-                            } else {
-                                function = MethodFunction.getFunction(method, providerKey);
-                            }
-                        }
-                    }
+                    function = BeanFunction.getFunction(claz, providerKey);
                 }
                 if (! functionName.equals("") && ! function.getName().equals(functionName)) {
                     log.service("Wrapping " + function.getName() + " to " + functionName);
@@ -485,26 +477,13 @@ public class BuilderReader extends DocumentReader {
                             }
                         };
                 }
-                Function existing = results.get(functionName);
-                if (existing != null) {
-                    log.info("Function " + functionName + " already defined, will combine it");
-                    CombinedFunction cf;
-                    if (existing instanceof CombinedFunction) {
-                        cf = (CombinedFunction) existing;
-                    } else {
-                        cf = new CombinedFunction(functionName);
-                        cf.addFunction(existing);
-                    }
-                    cf.addFunction(function);
-                    function = cf;
-                }
                 if (! (function instanceof NodeFunction)) {
                     // if it contains a 'node' parameter, it can be wrapped into a node-function,
                     // and be available on nodes of this builder.
                     Parameters test = function.createParameters();
                     if (test.containsParameter(Parameter.NODE)) {
                         final Function f = function;
-                        function = new NodeFunction<Object>(function.getName(), function.getParameterDefinition(), function.getReturnType()) {
+                        function = new NodeFunction(function.getName(), function.getParameterDefinition(), function.getReturnType()) {
                                 protected Object getFunctionValue(org.mmbase.bridge.Node node, Parameters parameters) {
                                     if (parameters == null) parameters = createParameters();
                                     parameters.set(Parameter.NODE, node);
@@ -517,19 +496,15 @@ public class BuilderReader extends DocumentReader {
                     }
                 }
 
-                results.put(functionName, function);
-                log.debug("functions are now: " + results);
+                results.add(function);
             } catch (Throwable e) {
                 log.error(e.getMessage(), e);
             }
 
         }
-        Set<Function> r = new HashSet<Function>();
-        for(Function fun : results.values()) {
-            r.add(fun);
-        }
-        log.debug("Found functions " + r);
-        return r;
+
+
+        return results;
 
     }
 
@@ -675,14 +650,13 @@ public class BuilderReader extends DocumentReader {
                         if (log.isDebugEnabled()) {
                             log.debug("Converted deprecated guitype 'relativetime' for field " + (builder != null ? builder.getTableName() + "."  : "") + fieldName + " with datatype 'duration'.");
                         }
-                    } else if (type == Field.TYPE_NODE) {
-                        if (guiType == null) {
-                            if (log.isDebugEnabled()) log.debug("Gui type of NODE field '" + fieldName + "' is null");
-                        } else {
+                    } else
+                    // check for nodetypes
+                    if (type == Field.TYPE_NODE) {
+                        try {
                             enumerationBuilder = mmbase.getBuilder(guiType);
-                            if (enumerationBuilder == null) {
-                                if (log.isDebugEnabled()) log.debug("Gui type of NODE field is '" + fieldName + "'not a known builder");
-                            }
+                        } catch (RuntimeException re) {
+                            log.warn("Exception during parsing of field '" + fieldName + "' of " + (builder != null ? builder.getTableName() : "NULL")  + ":  " + re.getMessage());
                         }
                     }
                     if (enumerationBuilder != null) {
@@ -699,7 +673,6 @@ public class BuilderReader extends DocumentReader {
                         dataType = collector.getDataTypeInstance(guiType, baseDataType);
                         if (dataType == null) {
                             log.warn("Could not find data type for " + baseDataType + " / " + guiType + " for builder: '" + (builder == null ? "NULL" : builder.getTableName()) + "'");
-
                         }
                     }
                 }
@@ -729,7 +702,7 @@ public class BuilderReader extends DocumentReader {
                     requestedBaseDataType = baseDataType;
                 }
             }
-            dataType = DataTypeReader.readDataType(dataTypeElement, requestedBaseDataType, collector).dataType;
+            dataType = (BasicDataType) DataTypeReader.readDataType(dataTypeElement, requestedBaseDataType, collector).dataType;
             if (log.isDebugEnabled()) log.debug("Found datatype " + dataType + " for field " + fieldName);
         }
 
@@ -880,17 +853,19 @@ public class BuilderReader extends DocumentReader {
     /**
      * Get the properties of this builder
      * @code-conventions return type should be Map
-     * @return the properties in a Map (as name-value pairs)
+     * @return the properties in a Hashtable (as name-value pairs)
      */
-    public Hashtable<String,String> getProperties() {
-        Hashtable<String,String> results = new Hashtable<String,String>();
+    public Hashtable getProperties() {
+        Hashtable results=new Hashtable();
         if (parentBuilder != null) {
             Map parentparams = parentBuilder.getInitParameters();
             if (parentparams != null) {
                 results.putAll(parentparams);
             }
         }
-        for (Element p : getChildElements("builder.properties","property")) {
+        for(Iterator iter = getChildElements("builder.properties","property");
+                        iter.hasNext(); ) {
+            Element p = (Element)iter.next();
             String name = getElementAttributeValue(p,"name");
             String value = getElementValue(p);
             results.put(name,value);
@@ -900,73 +875,53 @@ public class BuilderReader extends DocumentReader {
 
 
     /**
-     * Get the descriptions of this module.
-     * @return the descriptions as a LocalizedString
-     */
-    public LocalizedString getLocalizedDescription(LocalizedString description) {
-        description.fillFromXml("description", getElementByPath("builder.descriptions"));
-        return description;
-    }
-
-    /**
-     * Get the (gui) names of this module.
-     * @return the names as a LocalizedString
-     */
-    public LocalizedString getLocalizedSingularName(LocalizedString guiName) {
-        guiName.fillFromXml("singular", getElementByPath("builder.names"));
-        return guiName;
-    }
-
-    /**
-     * Get the (gui) names of this module.
-     * @return the names as a LocalizedString
-     */
-    public LocalizedString getLocalizedPluralName(LocalizedString guiName) {
-        guiName.fillFromXml("plural", getElementByPath("builder.names"));
-        return guiName;
-    }
-
-    /**
      * Get the descriptions of this builder
-     * @deprecated use getLocalizedDescription()
-     * @return the descriptions in a Map, accessible by language
+     * @code-conventions return type should be Map
+     * @return the descriptions in a Hashtable, accessible by language
      */
-    public Hashtable<String,String> getDescriptions() {
-        Hashtable<String,String> results = new Hashtable<String,String>();
-        for (Element desc : getChildElements("builder.descriptions","description")) {
-            String lang = getElementAttributeValue(desc,"xml:lang");
-            results.put(lang,getElementValue(desc));
+    public Hashtable getDescriptions() {
+        Hashtable results=new Hashtable();
+        Element tmp;
+        String lang;
+        for (Iterator iter = getChildElements("builder.descriptions","description");
+             iter.hasNext(); ) {
+            tmp = (Element)iter.next();
+            lang = getElementAttributeValue(tmp,"xml:lang");
+            results.put(lang,getElementValue(tmp));
         }
         return results;
     }
 
     /**
      * Get the plural names of this builder
-     * @deprecated use getLocalizedPluralName()
-     * @return the plural names in a Map, accessible by language
+     * @code-conventions return type should be Map
+     * @return the plural names in a Hashtable, accessible by language
      */
-    public Hashtable<String,String> getPluralNames() {
-        Hashtable<String,String> results = new Hashtable<String,String>();
-        for (Element name : getChildElements("builder.names","plural")) {
-            String lang = getElementAttributeValue(name,"xml:lang");
-            results.put(lang,getElementValue(name));
+    public Hashtable getPluralNames() {
+        Hashtable results=new Hashtable();
+        for (Iterator iter = getChildElements("builder.names","plural"); iter.hasNext(); ) {
+            Element tmp = (Element)iter.next();
+            String lang = getElementAttributeValue(tmp,"xml:lang");
+            results.put(lang,getElementValue(tmp));
         }
         return results;
     }
 
     /**
      * Get the singular (GUI) names of this builder
-     * @deprecated use getLocalizedSingularName()
-     * @return the singular names in a Map, accessible by language
+     * @code-conventions return type should be Map
+     * @return the singular names in a Hashtable, accessible by language
      */
-    public Hashtable<String,String> getSingularNames() {
-        Hashtable<String,String> results = new Hashtable<String,String>();
-        for (Element name : getChildElements("builder.names","singular")) {
-            String lang = getElementAttributeValue(name,"xml:lang");
-            results.put(lang,getElementValue(name));
+    public Hashtable getSingularNames() {
+        Hashtable results=new Hashtable();
+        for (Iterator iter = getChildElements("builder.names","singular"); iter.hasNext(); ) {
+            Element tmp = (Element)iter.next();
+            String lang = getElementAttributeValue(tmp,"xml:lang");
+            results.put(lang,getElementValue(tmp));
         }
         return results;
     }
+
 
     /**
      * Get the builder that this builder extends

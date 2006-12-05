@@ -1,5 +1,5 @@
 <!--
-  $Id: build.xml,v 1.40 2006-12-02 10:00:46 michiel Exp $
+  $Id: build.xml,v 1.29 2006-06-24 08:37:06 michiel Exp $
 -->
 <project name="MMBase-Documentation" default="documentation" basedir=".">
 
@@ -53,20 +53,15 @@
   <!-- property name="docbook.stylesheet" value="xhtml/chunk.xsl" /-->
   <property name="docbook.stylesheet" value="xhtml/docbook.xsl" />
   <property name="documentation.docbook.html.stylesheet"
-            value="${expand.dir}/${docbook-xsl.version}/${docbook.stylesheet}" />
+            value="${download.dir}/${docbook-xsl.version}/${docbook.stylesheet}" />
   <property name="documentation.docbook.fo.stylesheet"
-            value="${expand.dir}/${docbook-xsl.version}/fo/docbook.xsl" />
+            value="${download.dir}/${docbook-xsl.version}/fo/docbook.xsl" />
 
-  <import file="${source.dir}/download.xml" />
-  <import file="xslt.xml" />
 
   <!-- =============== Init  ============================================= -->
   <target name="init">
     <mkdir dir="${documentation.build.dir}" />
     <mkdir dir="${documentation.dest.dir}" />
-    <echo message="docbook" />
-
-
   </target>
 
   <!-- =================================================================== -->
@@ -129,7 +124,7 @@
 
   <target name="applications.documentation.copy"
     description="Copies documentation from applications to documentation directory">
-    <copy todir="${documentation.src.dir}/applications" preservelastmodified="true">
+    <copy todir="${documentation.src.dir}/applications">
       <mapper type="regexp" from="(.*)/documentation(.*)" to="\1\2" />
       <fileset dir="${applications.dir}/">
         <include name="**"/>
@@ -144,20 +139,41 @@
     </ant>
   </target>
 
+  <!-- compile the XSLTransformer -->
 
-  <target name="datatypes.docbook" depends="xsltransformer">
-    <antcall target="xsl">
-      <param name="xsl"   location="datatypes2docbook.xslt" />
-      <param name="xml"   value="${source.dir}/config/datatypes.xml" />
-      <param name="output"   value="${documentation.build.dir}/datatypes.docbook.xml" />
-    </antcall>
+  <target name="xsltransformer" depends="jar,lib.compile">
+    <mkdir dir="${build.dir}/classes" />
+    <javac srcdir="${source-src.dir}"
+           destdir="${build.dir}/classes"
+           depend="true"
+           debug="${debug}"
+           source="1.4"
+           optimize="${optimize}"
+           deprecation="${deprecation}">
+      <include name="org/mmbase/util/XSLTransformer.java" />
+      <classpath>
+        <fileset dir="${compile.lib.dir}">
+          <include name="*.jar"/>
+          <include name="*.zip"/>
+          <exclude name="mmbase.jar"/>
+        </fileset>
+      </classpath>
+    </javac>
+
+    <copy todir="${build.dir}/classes">
+      <fileset dir="${source-src.dir}">
+        <include name="**/caches*.dtd"/>
+      </fileset>
+    </copy>
   </target>
+
+
 
   <!-- ================================================================================ -->
   <!-- Perform docbook2html conversion                                                  -->
   <!-- ================================================================================ -->
   <target name="documentation.html"
-          depends="documentation.resources,applications.documentation.copy,xsltransformer,download.deps,datatypes.docbook"
+          depends="documentation.resources,applications.documentation.copy,xsltransformer,download"
           description="Create HTML documentation from the DocBook sources">
 
     <echo message="${documentation.dest.dir}" />
@@ -179,9 +195,7 @@
       <arg value="${documentation.build.dir}/docbook2xhtml.xslt" />
       <arg value="${documentation.xml-source.dir}" />
       <arg value="${documentation.dest.dir}" />
-      <arg value="namespaceaware=false" />
       <arg value="exclude=build.xml" />
-      <arg value="exclude=xslt.xml" />
       <arg value="exclude=build" />
       <arg value="exclude=templates" />
     </java>
@@ -192,7 +206,7 @@
   <!-- ================================================================================ -->
   <!-- Perform docbook2pdf conversion                                                   -->
   <!-- ================================================================================ -->
-  <target name="documentation.pdf"  depends="xsltransformer,download.deps,datatypes.docbook"
+  <target name="documentation.pdf"  depends="xsltransformer,download"
           description="Create PDF documentation from the DocBook sources">
 
     <mkdir dir="${documentation.temp.dir}" />
@@ -233,24 +247,22 @@
       <arg value="extension=fo" />
       <arg value="exclude=build" />
       <arg value="exclude=build.xml" />
-      <arg value="exclude=xslt.xml" />
       <arg value="exclude=templates" />
       <arg value="paper.type=A4" />
     </java>
 
 
     <!-- test if jai-jars inside fop-dir are working -->
-    <copy file="${jai.codec.jar}" todir="${fop.exp}/lib"/>
-    <copy file="${jai.core.jar}"  todir="${fop.exp}/lib"/>
+    <copy file="${jai.codec.jar}" todir="${fop.home}/lib"/>
+    <copy file="${jai.core.jar}" todir="${fop.home}/lib"/>
 
     <!-- needed jars for fop-task         -->
     <path id="fop.classpath">
-      <fileset dir="${fop.exp}/lib">
-        <include name="*.jar"/>
-      </fileset>
-      <fileset dir="${fop.exp}/build">
-        <include name="*.jar"/>
-      </fileset>
+      <pathelement location="${fop.avalon.jar}"/>
+      <pathelement location="${fop.batik.jar}"/>
+      <pathelement location="${fop.jar}"/>
+      <pathelement location="${jai.codec.jar}"/>
+      <pathelement location="${jai.core.jar}"/>
     </path>
 
     <!-- define fop-task before it can be used -->
@@ -289,7 +301,6 @@
     <delete dir="${documentation.temp.dir}"/>
     <delete file="${documentation.build.dir}/docbook2xhtml.xslt"/>
     <delete file="${documentation.build.dir}/newstyle.xslt"/>
-    <delete file="${documentation.build.dir}/datatypes.docbook.xml"/>
   </target>
 
   <!-- ================================================================================ -->
@@ -304,34 +315,51 @@
   <!-- ================================================================================ -->
   <!-- Download or build the required binary packages                                   -->
   <!-- ================================================================================ -->
-  <target name="download.deps" depends="proxyflags"
+  <target name="download" depends="proxyflags"
           description="Download binary packages" >
     <mkdir dir="${download.dir}" />
 
     <echo message="docbook" />
     <!-- Download any sub package or tools needed. -->
     <antcall target="downloadgz">
-      <param name="sourcefile"   value="${docbook-xsl.loc}"/>
-      <param name="destfile"     value="${docbook-xsl.dest}"/>
-      <param name="expandedfile" value="${docbook-xsl.exp}"/>
+      <param name="sourcefile" value="${docbook-xsl.loc}"/>
+      <param name="destfile" value="${docbook-xsl.home}"/>
     </antcall>
 
     <echo message="fop" />
     <antcall target="downloadgz">
-      <param name="sourcefile"   value="${fop.loc}"/>
-      <param name="destfile"     value="${fop.dest}"/>
-      <param name="expandedfile" value="${fop.exp}"/>
+      <param name="sourcefile" value="${fop.loc}"/>
+      <param name="destfile" value="${fop.home}"/>
     </antcall>
 
-    <!--
     <echo message="jai" />
     <antcall target="downloadbz2">
       <param name="sourcefile" value="${jai.loc}"/>
       <param name="destfile" value="${jai.home}"/>
       <param name="destdir" value="${jai.home}"/>
     </antcall>
-    -->
+
   </target>
+
+  <target name="proxyflags" depends="init">
+    <!-- check proxy parameters. -->
+    <condition property="useproxy">
+      <equals arg1="${proxy.use}" arg2="on" />
+    </condition>
+  </target>
+
+  <target name="setproxy"  if="useproxy">
+    <taskdef name="setproxy"
+      classname="org.apache.tools.ant.taskdefs.optional.net.SetProxy" />
+    <setproxy proxyhost="${proxy.host}" proxyport="${proxy.port}"/>
+    <echo message="Using ${proxy.host}:${proxy.port} to download ${sourcefile}"/>
+  </target>
+
+  <target name="testexist">
+    <echo message="Testing  for ${destfile}"/>
+    <available file="${destfile}" property="exist"/>
+  </target>
+
   <!--
   <target name="testsrc">
     <echo message="Testing  for ${destfile} versus ${cvs.base}/${location}/src"/>
@@ -342,135 +370,38 @@
   </target>
   -->
 
+  <target name="downloadgz" unless="exist" depends="setproxy,testexist">
+    <!-- Download and extract the package -->
+    <get src="${sourcefile}" dest="${download.dir}/file.tar.gz" />
+    <gunzip src="${download.dir}/file.tar.gz" dest="${download.dir}/file.tar"/>
+    <untar src="${download.dir}/file.tar" dest="${download.dir}"/>
+    <delete file="${download.dir}/file.tar"/>
+    <delete file="${download.dir}/file.tar.gz"/>
+  </target>
+
+  <target name="downloadbz2" unless="exist" depends="setproxy,testexist">
+    <!-- Download and extract the package -->
+    <get src="${sourcefile}" dest="${download.dir}/file.tar.bz2" />
+    <mkdir dir="${destdir}" />
+    <bunzip2 src="${download.dir}/file.tar.bz2" dest="${download.dir}/file.tar"/>
+    <untar src="${download.dir}/file.tar" dest="${destdir}"/>
+    <delete file="${download.dir}/file.tar"/>
+    <delete file="${download.dir}/file.tar.bz2"/>
+  </target>
+
+  <target name="downloadzip" unless="exist" depends="setproxy,testexist">
+    <!-- Download and extract the package -->
+    <get src="${sourcefile}" dest="${download.dir}/file.zip" />
+    <mkdir dir="${destdir}" />
+    <unzip src="${download.dir}/file.zip" dest="${destdir}"/>
+    <delete file="${download.dir}/file.zip"/>
+  </target>
+
   <!-- for some reason the documentation depends on the mmbase.jar, at least
   	the target xsltransformer i believe -->
   <target name="jar">
     <ant dir="${source.dir}" target="jar">
     </ant>
-  </target>
-
-
-
-  <!-- =================================================================== -->
-  <!--  Create the Builder documentation                                   -->
-
-  <!-- =================================================================== -->
-
-  <!-- only needed for builder.docs -->
-  <target name="doc.resources" depends="init.get">
-    <delete file="${build.dir}/docbook2xhtml.xslt" />
-    <copy todir="${build.dir}" file="${source-documentation.dir}/style/docbook2xhtml.xslt" />
-    <replace  file="${build.dir}/docbook2xhtml.xslt"
-              token="[BASESTYLESHEET]"
-              value="${expand.dir}/${docbook-xsl.version}/${docbook.stylesheet}" />
-
-  </target>
-
-
-  <target name="documentation.builders"
-          depends="doc.resources,xsltransformer"
-          description="Generate builder-documentation from the builder config files">
-
-    <mkdir dir="${mmdocs.dir}/frontenddevelopers/builders"/>
-
-    <copy todir="${mmdocs.dir}/frontenddevelopers/builders"
-          file="${source-documentation.dir}/style/docbook2xhtml.xslt"
-          />
-
-    <!-- not used at the moment
-    <replace file="${mmdocs.dir}/frontenddevelopers/builders/docbook2xhtml.xslt"
-             token="[BASESTYLESHEET]"
-             value="${expand.dir}/${docbook-xsl.version}/xhtml/chunk.xsl" />
-    -->
-    <replace file="${mmdocs.dir}/frontenddevelopers/builders/docbook2xhtml.xslt"
-             token="[BASESTYLESHEET]"
-             value="${expand.dir}/${docbook-xsl.version}/xhtml/docbook.xsl" />
-
-
-    <!-- compile class for listing of builders -->
-    <javac srcdir="${source-src.dir}"
-           destdir="${build.dir}/classes"
-           classpathref="compile.classpath"
-           debug="${debug}"
-           optimize="${optimize}"
-           nowarn="${nowarn}"
-           source="1.5"
-           deprecation="${deprecation}">
-           <include name="org/mmbase/util/BuilderList.java" />
-    </javac>
-
-
-    <!-- call class, this will give an xml file with a listing of all the builders -->
-    <java classname="org.mmbase.util.BuilderList"
-          classpathref="compile.classpath"
-          fork="yes"
-          failonerror="no"
-          output="${mmdocs.dir}/frontenddevelopers/builders/allbuilders-total.xml">
-      <jvmarg value="-Dmmbase.config=${source.dir}/config" />
-      <jvmarg value="-mx100m" />
-      <classpath>
-        <pathelement location="${build.dir}/classes" />
-      </classpath>
-      <arg value="${source-config-builders.dir}" />
-    </java>
-
-    <!-- convert this file into docbook -->
-    <!-- <style
-      style="${source-config.dir}/xslt/builder2docbook.xsl"
-      extension=".xml"
-      in="${mmdocs.dir}/frontenddevelopers/builders/allbuilders-total.xml"
-      out="${mmdocs.dir}/frontenddevelopers/builders/allbuilders-docbook.xml"
-      >
-        <param name="language" expression="${documentation.builders.language}"/>
-    </style> -->
-
-
-    <!-- generate xhtml -->
-    <!-- <style
-      style="${mmdocs.dir}/frontenddevelopers/builders/docbook2xhtml.xslt"
-      extension=".html"
-      in="${mmdocs.dir}/frontenddevelopers/builders/allbuilders-docbook.xml"
-      out="${mmdocs.dir}/frontenddevelopers/builders/index.html"
-      >
-        <param name="root" expression="../../"/>
-    </style> -->
-
-    <java classname="org.mmbase.util.XSLTransformer"
-          classpathref="compile.classpath"
-          fork="yes"
-          failonerror="no">
-      <jvmarg value="-Djava.endorsed.dirs=${build.dir}/lib" />
-      <jvmarg value="-Dmmbase.config=${source.dir}/config" />
-      <jvmarg value="-mx100m" />
-      <classpath>
-        <pathelement location="${build.dir}/classes" />
-      </classpath>
-      <arg value="${source-config.dir}/xslt/builder2docbook.xsl" />
-      <arg value="${mmdocs.dir}/frontenddevelopers/builders/allbuilders-total.xml" />
-      <arg value="${mmdocs.dir}/frontenddevelopers/builders/allbuilders-docbook.xml" />
-      <arg value="language=${documentation.builders.language}" />
-    </java>
-
-    <java classname="org.mmbase.util.XSLTransformer"
-          classpathref="compile.classpath"
-          fork="yes"
-          failonerror="no">
-      <jvmarg value="-Djava.endorsed.dirs=${build.dir}/lib" />
-      <jvmarg value="-Dmmbase.config=${source.dir}/config" />
-      <jvmarg value="-mx100m" />
-      <classpath>
-        <pathelement location="${build.dir}/classes" />
-      </classpath>
-      <arg value="${mmdocs.dir}/frontenddevelopers/builders/docbook2xhtml.xslt" />
-      <arg value="${mmdocs.dir}/frontenddevelopers/builders/allbuilders-docbook.xml" />
-      <arg value="${mmdocs.dir}/frontenddevelopers/builders/index.html" />
-      <arg value="root=../../" />
-    </java>
-
-    <!-- remove temp files -->
-    <!-- delete file="${mmdocs.dir}/frontenddevelopers/builders/allbuilders-total.xml"/>
-    <delete file="${mmdocs.dir}/frontenddevelopers/builders/allbuilders-docbook.xml"/>
-    <delete file="${mmdocs.dir}/frontenddevelopers/builders/docbook2xhtml.xslt"/ -->
   </target>
 
 </project>

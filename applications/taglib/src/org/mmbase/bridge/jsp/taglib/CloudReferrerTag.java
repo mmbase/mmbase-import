@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * class.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CloudReferrerTag.java,v 1.31 2006-09-27 20:48:26 michiel Exp $
+ * @version $Id: CloudReferrerTag.java,v 1.29 2006-03-09 13:24:31 nklasens Exp $
  */
 
 public abstract class CloudReferrerTag extends ContextReferrerTag {
@@ -65,7 +65,7 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
     */
 
     protected CloudProvider findCloudProvider() throws JspTagException {
-        return findParentTag(CloudProvider.class, (String) cloudId.getValue(this));
+        return (CloudProvider) findParentTag(CloudProvider.class, (String) cloudId.getValue(this));
     }
 
     /**
@@ -75,7 +75,7 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
      *
     */
     public CloudProvider findCloudProvider(boolean throwexception) throws JspTagException {
-        return findParentTag(CloudProvider.class, (String) cloudId.getValue(this), throwexception);
+        return (CloudProvider) findParentTag(CloudProvider.class, (String) cloudId.getValue(this), throwexception);
     }
 
 
@@ -143,15 +143,14 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
      * @since MMBase-1.8
      */
     public Locale getLocale() throws JspTagException {
-        LocaleTag localeTag = findParentTag(LocaleTag.class, null, false);
+        LocaleTag localeTag = (LocaleTag)findParentTag(LocaleTag.class, null, false);
         if (localeTag != null) {
             Locale locale = localeTag.getLocale();
             if (locale != null) {
                 return locale;
             }
         }
-        CloudProvider cloudProvider = findCloudProvider(false);
-        return cloudProvider == null ? null : cloudProvider.getCloudVar().getLocale();
+        return  getCloudVar().getLocale();
     }
 
 }

@@ -10,6 +10,8 @@ See http://www.MMBase.org/license
 package org.mmbase.module.database;
 
 import java.sql.*;
+import java.util.Map;
+import java.lang.reflect.Method;
 
 import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.Logger;
@@ -29,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *      This also goes for freeing the connection once it is 'closed'.
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiConnection.java,v 1.45 2006-10-14 14:35:39 nklasens Exp $
+ * @version $Id: MultiConnection.java,v 1.44 2006-07-03 11:59:16 johannes Exp $
  */
 public class MultiConnection extends ConnectionWrapper {
     // states

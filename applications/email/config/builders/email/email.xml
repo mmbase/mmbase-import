@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
     name="email" maintainer="mmbase.org" version="0" extends="object">
-  <!-- @version $Id: email.xml,v 1.8 2006-11-12 14:09:41 michiel Exp $ -->
+  <!-- @version $Id: email.xml,v 1.5 2006-03-23 16:12:54 daniel Exp $ -->
 
   <class>org.mmbase.applications.email.EmailBuilder</class>
   <searchage>14</searchage>
@@ -34,7 +34,7 @@
   </properties>
 
   <fieldlist>
-    <field name="subject">
+    <field>
       <descriptions>
         <description xml:lang="en">Subject of the message</description>
         <description xml:lang="nl">Onderwerp van het bericht</description>
@@ -49,14 +49,13 @@
           <list>1</list>
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <minLength value="1" enforce="never" />
-      </datatype>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
+        <name>subject</name>
         <type state="persistent" size="255" notnull="true" key="false">STRING</type>
       </db>
     </field>
-    <field name="from">
+    <field>
       <descriptions>
         <description xml:lang="en">Sender email address</description>
         <description xml:lang="nl">Email adres van de verzender</description>
@@ -73,10 +72,11 @@
       </editor>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
+        <name>from</name>
         <type state="persistent" size="255" notnull="false" key="false">STRING</type>
       </db>
     </field>
-    <field name="to">
+    <field>
       <descriptions>
         <description xml:lang="en">Recipient email adress(es)</description>
         <description xml:lang="nl">Email adres(sen) van de ontvanger(s)</description>
@@ -93,13 +93,14 @@
       </editor>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
+        <name>to</name>
         <type state="persistent" size="255" notnull="false" key="false">STRING</type>
       </db>
     </field>
-    <field name="cc">
+    <field>
       <descriptions>
-        <description xml:lang="en">Carbon copy email adress(es)</description>
-        <description xml:lang="nl">Doorslag email adres(sen)</description>
+        <description xml:lang="en">Recipient email adress(es)</description>
+        <description xml:lang="nl">Email adres(sen) van de ontvanger(s)</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Cc</guiname>
@@ -108,13 +109,14 @@
       </gui>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
+        <name>cc</name>
         <type state="persistent" size="255" notnull="false" key="false">STRING</type>
       </db>
     </field>
-    <field name="bcc">
+    <field>
       <descriptions>
-        <description xml:lang="en">Blind carbon copy email adress(es)</description>
-        <description xml:lang="nl">Geheime doorslag email adres(sen)</description>
+        <description xml:lang="en">Recipient email adress(es)</description>
+        <description xml:lang="nl">Email adres(sen) van de ontvanger(s)</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Bcc</guiname>
@@ -123,10 +125,11 @@
       </gui>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
+        <name>bcc</name>
         <type state="persistent" size="255" notnull="false" key="false">STRING</type>
       </db>
     </field>
-    <field name="replyto">
+    <field>
       <descriptions>
         <description xml:lang="en">Email address to which replies on this message are to be sent</description>
         <description xml:lang="nl">Email adres waar een antwoord naartoe moet worden verstuurd</description>
@@ -138,10 +141,11 @@
       </gui>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
+        <name>replyto</name>
         <type state="persistent" size="255" notnull="false" key="false">STRING</type>
       </db>
     </field>
-    <field name="bodyurl">
+    <field>
       <descriptions>
         <description xml:lang="en">URL to a script that generates the message to send</description>
         <description xml:lang="nl">URL naar een script dat het te verzenden bericht samenstelt</description>
@@ -153,10 +157,11 @@
       </gui>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
+        <name>bodyurl</name>
         <type state="persistent" size="255" notnull="false" key="false">STRING</type>
       </db>
     </field>
-    <field name="body">
+    <field>
       <descriptions>
         <description xml:lang="en">Main message text</description>
         <description xml:lang="nl">Hoofdtext van het bericht</description>
@@ -168,10 +173,11 @@
       </gui>
       <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
+        <name>body</name>
         <type state="persistent" size="32000" notnull="false" key="false">STRING</type>
       </db>
     </field>
-    <field name="mailtype">
+    <field>
       <descriptions>
         <description xml:lang="en">Type of the email: 1:one shot email, 2: repeat email, 3: oneshot email, but keep result</description>
         <description xml:lang="nl">Berichttype: 1: eenmalig bericht, 2: herhaald bericht, 3: eenmalig bericht, bewaar resultaat</description>
@@ -186,13 +192,17 @@
           <list>4</list>
         </positions>
       </editor>
-      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
         <enumeration>
           <entry basename="org.mmbase.applications.email.resources.mailtype" />
         </enumeration>
       </datatype>
+      <db>
+        <name>mailtype</name>
+        <type state="persistent" notnull="false" key="false">INTEGER</type>
+      </db>
     </field>
-    <field name="mailstatus">
+    <field>
       <descriptions>
         <description xml:lang="en">State of the message: 0:waiting to be scheduled, 1:delivered, 2:delivery failed, 3:marked as SPAM, 4:scheduled, wating to bedelivered</description>
         <description xml:lang="nl">Status van het bericht: 0:wacht op verwerking, 1:afgeleverd, 2: aflevering faalde, 3:gemarkeerd als SPAM, 4:wordt verwerkt, wacht op verzending</description>
@@ -207,13 +217,17 @@
           <list>5</list>
         </positions>
       </editor>
-      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
         <enumeration>
           <entry basename="org.mmbase.applications.email.resources.mailstatus" />
         </enumeration>
       </datatype>
+      <db>
+        <name>mailstatus</name>
+        <type state="persistent" notnull="false" key="false">INTEGER</type>
+      </db>
     </field>
-    <field name="mailtime" state="system" readonly="true">
+    <field>
       <descriptions>
         <description xml:lang="en">Time to send this mail</description>
         <description xml:lang="nl">Tijd waarop het bericht moet worden verzonden</description>
@@ -223,11 +237,13 @@
         <guiname xml:lang="nl">Verzendtijd</guiname>
         <guiname xml:lang="eo">Sendtempo</guiname>
       </gui>
-      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <default value="now + 5 minute" />
-      </datatype>
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>mailtime</name>
+        <type state="persistent" notnull="false" key="false">INTEGER</type>
+      </db>
     </field>
-    <field name="buildtime" state="system" readonly="true">
+    <field>
       <descriptions>
         <description xml:lang="en">Time on which the email was created</description>
         <description xml:lang="nl">Tijd waarop het bericht was aangemaakt</description>
@@ -237,11 +253,13 @@
         <guiname xml:lang="nl">Bouwtijd</guiname>
         <guiname xml:lang="eo">Konstrutempo</guiname>
       </gui>
-      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <default value="now" />
-      </datatype>
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>buildtime</name>
+        <type state="persistent" notnull="false" key="false">INTEGER</type>
+      </db>
     </field>
-    <field name="repeattime">
+    <field>
       <descriptions>
         <description xml:lang="en">Time period over which the sending of the email is repeated</description>
         <description xml:lang="nl">Periode waarover het bericht wordt herhaald</description>
@@ -252,9 +270,12 @@
         <guiname xml:lang="eo">Ripettempo</guiname>
       </gui>
       <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <!-- should this not be a period, how can it be a time ? -->
+      <db>
+        <name xml:lang="en">repeattime</name>
+        <type state="persistent" notnull="false" key="false">INTEGER</type>
+      </db>
     </field>
-    <field name="mailedtime" readonly="true">
+    <field>
       <descriptions>
         <description xml:lang="en">Last time on which the email was send</description>
         <description xml:lang="nl">Laatste tijdstip waarop het bericht was verzonden</description>
@@ -264,8 +285,16 @@
         <guiname xml:lang="nl">Laatst Verstuurd</guiname>
         <guiname xml:lang="eo">Lasta sendo</guiname>
       </gui>
-      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
-      </datatype>
+      <editor>
+        <positions>
+          <search>-1</search>
+        </positions>
+      </editor>
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>mailedtime</name>
+        <type state="persistent" notnull="false" key="false">INTEGER</type>
+      </db>
     </field>
   </fieldlist>
 </builder>

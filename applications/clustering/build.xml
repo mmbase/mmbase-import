@@ -1,5 +1,9 @@
 <?xml version="1.0"?>
-<project name="clustering" default="jar" basedir=".">
+<!DOCTYPE project 
+ [ <!ENTITY base     SYSTEM "../buildbase.xml" > ]
+>
+
+<project name="clustering" default="dependent.jar" basedir=".">
   
   <property name="project.name"      value="clustering" />
   <property name="project.package"   value="org/mmbase/clustering" />
@@ -10,13 +14,16 @@
 
   <property name="project.jars.dir"        location="build" />
   <property name="project.jars.includes"   value="jgroups-all.jar" />
-
-  <import file="../buildbase-include.xml" />
-
+  &base;
   <property file="build.properties.default" />
   
-  <target name="jar" description="Create mmbase-clustering.jar" depends="jgroups.jar,project.manifest,buildbase.jar">
+  <target name="dependent.package"       depends="dependent.jar,package" />
+
+  <target name="dependent.jar" description="Create mmbase-clustering.jar" depends="jgroups.jar,project.manifest,jar">
   </target>
+
+  <target name="dependent.install" description="Install clustering" 
+	  depends="dependent.jar,install" />
 
   <target name="jgroups.jar" description="Get JGroups jar">
     

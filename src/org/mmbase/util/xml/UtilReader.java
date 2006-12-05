@@ -34,7 +34,7 @@ import org.w3c.dom.Element;
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.28 2006-11-24 14:28:55 pierre Exp $
+ * @version $Id: UtilReader.java,v 1.25 2006-07-15 10:52:05 michiel Exp $
  */
 public class UtilReader {
 
@@ -60,7 +60,7 @@ public class UtilReader {
         XMLEntityResolver.registerPublicID(PUBLIC_ID_UTIL_1_0, DTD_UTIL_1_0, UtilReader.class);
     }
 
-    private static final Map<String, UtilReader> utilReaders = new HashMap<String, UtilReader>();     // file-name -> utilreader
+    private static final Map utilReaders = new HashMap();     // file-name -> utilreader
 
     /**
      * Returns a UtilReader for the given fileName. When you use this, the UtilReader instance will be cached.
@@ -69,7 +69,7 @@ public class UtilReader {
      */
 
     public static UtilReader get(String fileName) {
-        UtilReader utilReader = utilReaders.get(fileName);
+        UtilReader utilReader = (UtilReader) utilReaders.get(fileName);
         if (utilReader == null) {
             synchronized(utilReaders) {
                 utilReader = new UtilReader(fileName);
@@ -100,7 +100,7 @@ public class UtilReader {
         }
     }
 
-    private final Map<String, Object> properties = new HashMap<String, Object>();
+    private final Map properties = new HashMap();
     private final ResourceWatcher watcher;
     private final String file;
 
@@ -158,8 +158,8 @@ public class UtilReader {
     /**
      * Get the properties of this utility.
      */
-    public PropertiesMap<Object> getProperties() {
-        return new PropertiesMap<Object>(properties);
+    public PropertiesMap getProperties() {
+        return new PropertiesMap(properties);
     }
 
     /**
@@ -179,8 +179,10 @@ public class UtilReader {
         properties.clear();
 
         ResourceLoader configLoader = ResourceLoader.getConfigurationRoot();
-        List<URL> configList = configLoader.getResourceList(s);
-        for (URL url : configList) {
+        List configList = configLoader.getResourceList(s);
+        Iterator configs = configList.iterator();
+        while (configs.hasNext()) {
+            URL url = (URL) configs.next();
             org.xml.sax.InputSource is;
             try {
                 is = ResourceLoader.getInputSource(url);
@@ -194,17 +196,20 @@ public class UtilReader {
                 DocumentReader reader = new DocumentReader(is, UtilReader.class);
                 Element e = reader.getElementByPath("util.properties");
                 if (e != null) {
-                    for (Element p : reader.getChildElements(e,"property")) {
+                    for (Iterator iter = reader.getChildElements(e, "property"); iter.hasNext();) {
+                        Element p = (Element) iter.next();
                         String name = reader.getElementAttributeValue(p, "name");
                         String type = reader.getElementAttributeValue(p, "type");
                         if (type.equals("map")) {
-                            Collection<Map.Entry<String, Object>> entryList = new ArrayList();
+                            Collection entryList = new ArrayList();
 
-                            for (Element entry : reader.getChildElements(p,"entry")) {
+                            for (Iterator entriesIter = reader.getChildElements(p, "entry"); entriesIter.hasNext();) {
+                                Element entry = (Element) entriesIter.next();
                                 String key = null;
                                 String value = null;
 
-                                for (Element keyorvalue : reader.getChildElements(entry, "*")) {
+                                for (Iterator en = reader.getChildElements(entry, "*"); en.hasNext();) {
+                                    Element keyorvalue = (Element) en.next();
                                     if (keyorvalue.getTagName().equals("key")) {
                                         key = reader.getElementValue(keyorvalue);
                                     } else {
@@ -212,7 +217,7 @@ public class UtilReader {
                                     }
                                 }
                                 if (key != null && value != null) {
-                                    entryList.add(new Entry<String, Object>(key, value));
+                                    entryList.add(new Entry(key, value));
                                 }
                             }
                             if (properties.containsKey(name)) {
@@ -248,27 +253,27 @@ public class UtilReader {
      * @since MMBase-1.8
      */
 
-    public static class PropertiesMap<E> extends AbstractMap<String, E> {
+    public static class PropertiesMap extends AbstractMap {
 
-        private final Map<String, E> wrappedMap;
+        private final Map wrappedMap;
 
         /**
          * Creates an empty Map (not very useful since this Map is unmodifiable).
          */
         public PropertiesMap() {
-            wrappedMap = new HashMap<String, E>();
+            wrappedMap = new HashMap();
         }
 
         /**
          * Wrapping the given map.
          */
-        public PropertiesMap(Map<String, E> map) {
+        public PropertiesMap(Map map) {
             wrappedMap = map;
         }
         /**
          * {@inheritDoc}
          */
-        public Set<Map.Entry<String, E>> entrySet() {
+        public Set entrySet() {
             return new EntrySet();
 
         }
@@ -276,29 +281,29 @@ public class UtilReader {
         /**
          * Returns the object mapped with 'key', or defaultValue if there is none.
          */
-        public E getProperty(String key, E defaultValue) {
-            E result = get(key);
+        public Object getProperty(Object key, Object defaultValue) {
+            Object result = get(key);
             return result == null ? defaultValue : result;
         }
 
-        private class  EntrySet extends AbstractSet<Map.Entry<String, E>> {
+        private class  EntrySet extends AbstractSet {
             EntrySet() {}
             public int size() {
                 return PropertiesMap.this.wrappedMap.size();
             }
-            public Iterator<Map.Entry<String, E>> iterator() {
+            public Iterator iterator() {
                 return new EntrySetIterator();
             }
         }
-        private class EntrySetIterator implements Iterator<Map.Entry<String, E>> {
-            private Iterator<Map.Entry<String, E>> i;
+        private class EntrySetIterator implements Iterator {
+            private Iterator i;
             EntrySetIterator() {
                 i = PropertiesMap.this.wrappedMap.entrySet().iterator();
             }
             public boolean hasNext() {
                 return i.hasNext();
             }
-            public Map.Entry<String, E> next() {
+            public Object next() {
                 return i.next();
             }
             public void remove() {

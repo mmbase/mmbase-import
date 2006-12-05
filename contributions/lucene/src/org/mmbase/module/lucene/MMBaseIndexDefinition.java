@@ -16,7 +16,7 @@ import org.mmbase.bridge.util.*;
 import org.mmbase.bridge.util.xml.query.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
-import org.apache.lucene.document.Document;
+
 import org.apache.lucene.analysis.Analyzer;
 
 /**
@@ -24,7 +24,7 @@ import org.apache.lucene.analysis.Analyzer;
  * fields can have extra attributes specific to Lucene searching.
  *
  * @author Pierre van Rooden
- * @version $Id: MMBaseIndexDefinition.java,v 1.15 2006-10-03 20:52:19 michiel Exp $
+ * @version $Id: MMBaseIndexDefinition.java,v 1.10 2006-04-18 13:25:40 michiel Exp $
  **/
 class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
     static private final Logger log = Logging.getLoggerInstance(MMBaseIndexDefinition.class);
@@ -36,32 +36,20 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
     /**
      * The maximum number of nodes that are returned by a call to the searchqueryhandler.
      */
-    protected int maxNodesInQuery = MAX_NODES_IN_QUERY;
+    int maxNodesInQuery = MAX_NODES_IN_QUERY;
 
     /**
      * Subqueries for this index. The subqueries are lists whose starting element is the element node from the
      * current index result.
      */
-    protected final List<IndexDefinition> subQueries = new ArrayList<IndexDefinition>();
+    List subQueries = new ArrayList();
 
     protected Analyzer analyzer;
 
-    protected String id;
+    IndexEntry parent;
 
-    // not configurable for these kind of indices.
-    protected final List<String> identifierFields = Collections.unmodifiableList(new ArrayList<String>(Arrays.asList("number")));
-
-    private final Map<String, Float> boosts = new HashMap();
-
-
-    MMBaseIndexDefinition() {
-    }
-
-    public void setId(String i) {
-        id = i;
-    }
-    public String getId() {
-        return id;
+    MMBaseIndexDefinition(IndexEntry parent) {
+        this.parent = parent;
     }
 
     public void setAnalyzer(Analyzer a) {
@@ -72,8 +60,7 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
         return analyzer;
     }
 
-    public Node getNode(Cloud userCloud, Document doc) {
-        String identifier = doc.get("number");
+    public Node getNode(Cloud userCloud, String identifier) {
         if (userCloud.hasNode(identifier)) {
             if (log.isTraceEnabled()) {
                 log.trace("a node (" + identifier + ")");
@@ -81,53 +68,55 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
             if (userCloud.mayRead(identifier)) {
                 return userCloud.getNode(identifier);
             } else {
-                return new MapNode(Collections.EMPTY_MAP);
+                return null;
             }
         } else {
-            return new MapNode(Collections.EMPTY_MAP);
+            return null;
         }
 
     }
-    public List<String> getIdentifierFields() {
-        return identifierFields;
+
+    public IndexEntry getParent() {
+        return parent;
     }
 
     /**
      * Converts an MMBase Node Iterator to an Iterator of IndexEntry-s.
      */
-    protected CloseableIterator<MMBaseEntry> getCursor(final NodeIterator nodeIterator, final Collection<? extends FieldDefinition> f) {
-        return new CloseableIterator<MMBaseEntry>() {
-            int i = 0;
-            public boolean hasNext() {
-                return nodeIterator != null && nodeIterator.hasNext();
-            }
-            public void remove() {
-                nodeIterator.remove();
-            }
-            public MMBaseEntry next() {
-                Node node = nodeIterator.nextNode();
-                MMBaseEntry entry = new MMBaseEntry(node, (Collection<IndexFieldDefinition>) f, isMultiLevel, elementManager, subQueries);
-                i++;
-                if (log.isServiceEnabled()) {
-                    if (i % 100 == 0) {
-                        log.service("mmbase cursor " + i + " (now at id=" + entry.getIdentifier() + ")");
-                    } else if (log.isDebugEnabled()) {
-                        log.trace("mmbase cursor " + i + " (now at id=" + entry.getIdentifier() + ")");
-                    }
+    protected CloseableIterator getCursor(final NodeIterator nodeIterator, final Collection f) {
+        return new CloseableIterator() {
+                int i = 0;
+                public boolean hasNext() {
+                    return nodeIterator != null && nodeIterator.hasNext();
                 }
-                return entry;
-            }
-            public void close() {
-                // no need for closing
-            }
-        };
+                public void remove() {
+                    nodeIterator.remove();
+                }
+                public Object next() {
+                    Node node = nodeIterator.nextNode();
+                    MMBaseEntry entry = new MMBaseEntry(node, f, isMultiLevel, elementManager, subQueries);
+                    i++;
+                    if (log.isServiceEnabled()) {
+                        if (i % 100 == 0) {
+                            log.service("mmbase cursor " + i + " (now at id=" + entry.getIdentifier() + ")");
+                        } else if (log.isDebugEnabled()) {
+                            log.trace("mmbase cursor " + i + " (now at id=" + entry.getIdentifier() + ")");
+                        }
+                    }
+                    return entry;
+                }
+                public void close() {
+                    // no need for closing
+                }
+            };
     }
 
-    public CloseableIterator<MMBaseEntry> getCursor() {
-        return getCursor(getNodeIterator((String) null), fields);
+    public CloseableIterator getCursor() {
+        String id = parent != null ? parent.getIdentifier() : null;
+        return getCursor(getNodeIterator(id), fields);
     }
 
-    public CloseableIterator<MMBaseEntry> getSubCursor(String identifier) {
+    public CloseableIterator getSubCursor(String identifier) {
         return getCursor(getNodeIterator(identifier), fields);
     }
 
@@ -144,12 +133,14 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
                 elementNumberFieldName = elementManager.getName() + ".number";
             }
             if (id != null) {
-                Integer number = Integer.valueOf(id);
+                Integer number = new Integer(id);
                 Constraint comp = null;
                 if (query.getCloud().hasNode(number.intValue())) {
                     Node node = query.getCloud().getNode(number.intValue());
                     NodeManager nm = node.getNodeManager();
-                    for (Step step : q.getSteps()) {
+                    Iterator i = q.getSteps().iterator();
+                    while(i.hasNext()) {
+                        Step step = (Step) i.next();
                         NodeManager stepManager = query.getCloud().getNodeManager(step.getTableName());
                         if (stepManager.equals(nm) || stepManager.getDescendants().contains(nm)) {
                             StepField numberField = q.createStepField(step, "number");

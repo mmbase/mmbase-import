@@ -11,10 +11,10 @@ package org.mmbase.clustering.unicast;
 
 import java.io.*;
 import java.net.*;
-import java.util.concurrent.BlockingQueue;
 
 import org.mmbase.core.util.DaemonThread;
 import org.mmbase.module.core.MMBase;
+import org.mmbase.util.Queue;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -24,17 +24,19 @@ import org.mmbase.util.logging.Logging;
  * to receive changes from other MMBase Servers.
  *
  * @author Nico Klasens
- * @version $Id: ChangesReceiver.java,v 1.8 2006-10-16 14:48:45 pierre Exp $
+ * @version $Id: ChangesReceiver.java,v 1.7 2006-08-09 11:14:49 pierre Exp $
  */
 public class ChangesReceiver implements Runnable {
 
     private static final Logger log = Logging.getLoggerInstance(ChangesReceiver.class);
 
+
     /** Thread which sends the messages */
     private Thread kicker = null;
 
     /** Queue with messages received from other MMBase instances */
-    private final BlockingQueue nodesToSpawn;
+    private final Queue nodesToSpawn;
+
 
     private final ServerSocket serverSocket;
 
@@ -43,7 +45,7 @@ public class ChangesReceiver implements Runnable {
      * @param unicastPort port of the unicast connections
      * @param nodesToSpawn Queue of received messages
      */
-    ChangesReceiver(int unicastPort, BlockingQueue nodesToSpawn) throws IOException {
+    ChangesReceiver(int unicastPort, Queue nodesToSpawn) throws IOException {
         this.nodesToSpawn = nodesToSpawn;
         this.serverSocket = new ServerSocket();
         SocketAddress address = new InetSocketAddress(MMBase.getMMBase().getHost(), unicastPort);
@@ -102,7 +104,7 @@ public class ChangesReceiver implements Runnable {
                     if (log.isDebugEnabled()) {
                         log.debug("RECEIVED=>" + message);
                     }
-                    nodesToSpawn.offer(message);
+                    nodesToSpawn.append(message);
                 } catch (SocketException e) {
                     log.warn(e);
                     continue;

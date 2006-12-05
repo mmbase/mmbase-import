@@ -3,8 +3,7 @@
 <application name="RichTextBasics" maintainer="mmbase.org" version="1" auto-deploy="true">
 
   <requirements>
-    <requires name="RichText" maintainer="mmbase.org" version="1" />
-    <requires name="Resources" maintainer="mmbase.org" version="1" />
+
   </requirements>
 
   <neededbuilderlist>

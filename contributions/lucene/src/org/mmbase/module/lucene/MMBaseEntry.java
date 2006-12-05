@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseEntry.java,v 1.14 2006-10-03 20:52:19 michiel Exp $
+ * @version $Id: MMBaseEntry.java,v 1.9 2006-07-18 06:30:51 michiel Exp $
  **/
 public class MMBaseEntry implements IndexEntry {
     static private final Logger log = Logging.getLoggerInstance(MMBaseEntry.class);
@@ -40,20 +40,18 @@ public class MMBaseEntry implements IndexEntry {
     // format for dates to index
     public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMddHHmmss");
 
-    private final Collection<IndexFieldDefinition> fields;
+    private final Collection fields;
     private final Node node;
     private final boolean multiLevel; // it this not the same as node instanceof VirtualNode?
     private final NodeManager elementManager;
 
-    private final Collection<IndexDefinition> subQueries;
+    private final Collection subQueries;
 
     // set with numbers of nodes indexed so far - used to prevent the indexing
     // of fields already indexed
-    private final Set<String> indexed = new HashSet<String>();
+    private final Set indexed = new HashSet();
 
-    private final float boost = 1.0f;
-
-    MMBaseEntry(Node node, Collection<IndexFieldDefinition> fields, boolean multiLevel, NodeManager elementManager, Collection<IndexDefinition> subQueries) {
+    MMBaseEntry(Node node, Collection fields, boolean multiLevel, NodeManager elementManager, Collection subQueries) {
         this.fields = fields;
         this.multiLevel = multiLevel;
         this.elementManager = elementManager;
@@ -69,40 +67,36 @@ public class MMBaseEntry implements IndexEntry {
         }
     }
 
-    // For MMBase indexing the 'key' for sub-queries is always equal to the identifier of the current node ('related nodes')
-    public String getKey() {
-        return getIdentifier();
-    }
-
     protected void addStandardKeys(Document document) {
         // always add the 'element' number first, because that ensures that document.get("number") returns 'the' node
         String id = getIdentifier();
         document.add(new Field("number",   id,  Field.Store.YES, Field.Index.UN_TOKENIZED)); 
         if (multiLevel) {
             document.add(new Field("builder", elementManager.getName(),    Field.Store.YES, Field.Index.UN_TOKENIZED)); // keyword
-            for (org.mmbase.bridge.Field field : node.getNodeManager().getFields()) {
+            Iterator fields = node.getNodeManager().getFields().iterator();
+            while (fields.hasNext()) {
+                org.mmbase.bridge.Field field = (org.mmbase.bridge.Field) fields.next();
                 if (field.getName().indexOf(".") >=0 ) continue;
                 if (id.equals(field.getName())) continue; // was added already
                 Node subNode = node.getNodeValue(field.getName());
                 document.add(new Field("number",  "" + subNode.getNumber(), Field.Store.YES, Field.Index.UN_TOKENIZED)); // keyword
-                document.add(new Field("owner",  subNode.getStringValue("owner"), Field.Store.YES, Field.Index.UN_TOKENIZED));
             }
         } else {
             document.add(new Field("builder",  node.getNodeManager().getName(),    Field.Store.YES, Field.Index.UN_TOKENIZED)); // keyword
-            document.add(new Field("owner",  node.getStringValue("owner"), Field.Store.YES, Field.Index.UN_TOKENIZED));
         }
 
     }
 
 
     public void index(Document document) {
-        Map<String, Object> data = new HashMap<String, Object>();
+        Map data = new HashMap();
         if (log.isTraceEnabled()) {
             log.trace("Indexing " + getIdentifier() + "(" + node.getNodeManager().getName() + ")");
         }
         storeData(data);
         addStandardKeys(document);
-        for (IndexFieldDefinition fieldDefinition : fields) {
+        for (Iterator i = fields.iterator(); i.hasNext(); ) {
+            IndexFieldDefinition fieldDefinition = (IndexFieldDefinition)i.next();
             String fieldName = fieldDefinition.alias;
             if (fieldName == null)  fieldName = fieldDefinition.fieldName;
             if (document.getField(fieldName) == null || !fieldDefinition.keyWord) {
@@ -111,21 +105,17 @@ public class MMBaseEntry implements IndexEntry {
                     if (log.isDebugEnabled()) {
                         log.debug("add " + fieldName + " text, keyword" + value);
                     }
-                    Indexer.addField(document, new Field(fieldName, value, Field.Store.YES, Field.Index.UN_TOKENIZED), fieldDefinition.multiple);
+                    document.add(new Field(fieldName, value, Field.Store.YES, Field.Index.UN_TOKENIZED));
                 } else if (fieldDefinition.storeText) {
                     if (log.isDebugEnabled()) {
                         log.trace("add " + fieldName + " text, store");
                     }
-                    Field field = new Field(fieldName, value, Field.Store.YES, Field.Index.TOKENIZED);
-                    field.setBoost(fieldDefinition.boost);
-                    Indexer.addField(document, field, fieldDefinition.multiple);
+                    document.add(new Field(fieldName, value, Field.Store.YES, Field.Index.TOKENIZED));
                 } else {
                     if (log.isDebugEnabled()) {
                         log.trace("add " + fieldName + " text, no store");
                     }
-                    Field field = new Field(fieldName, value, Field.Store.NO, Field.Index.TOKENIZED);
-                    field.setBoost(fieldDefinition.boost);
-                    Indexer.addField(document, field, fieldDefinition.multiple);
+                    document.add(new Field(fieldName, value, Field.Store.NO, Field.Index.TOKENIZED));
                 }
             }
         }
@@ -134,7 +124,7 @@ public class MMBaseEntry implements IndexEntry {
         }
     }
 
-    public Collection<IndexDefinition> getSubDefinitions() {
+    public Collection getSubDefinitions() {
         return subQueries != null ? subQueries : Collections.EMPTY_LIST;
     }
 
@@ -158,9 +148,10 @@ public class MMBaseEntry implements IndexEntry {
      * Store data from field in a node into the cursor
      * @param map The map of fieldName/value mappings
      */
-    protected void storeData(Map<String, Object> map) {
+    protected void storeData(Map map) {
         Cloud cloud = elementManager.getCloud();
-        for (IndexFieldDefinition fieldDefinition : fields) {
+        for (Iterator i = fields.iterator(); i.hasNext(); ) {
+            IndexFieldDefinition fieldDefinition = (IndexFieldDefinition)i.next();
             String fieldName = fieldDefinition.fieldName;
             String alias = fieldDefinition.alias;
             if (alias == null)  alias = fieldDefinition.fieldName;
@@ -254,10 +245,10 @@ public class MMBaseEntry implements IndexEntry {
      * @param value the textual value to index
      * @param data The map of fieldName/value mappings
      */
-    void storeFieldTextData(Map<String, Object> data, String fieldName, String value) {
+    void storeFieldTextData(Map data, String fieldName, String value) {
         StringBuffer sb = null;
         try {
-            sb = (StringBuffer) data.get(fieldName);
+            sb = (StringBuffer)data.get(fieldName);
         } catch (ClassCastException cce) {
             log.warn("Tried to store data of '" + fieldName + "' as a standard index, but data was already stored as a special index");
         }
@@ -276,7 +267,7 @@ public class MMBaseEntry implements IndexEntry {
      * @param fieldname the name of the field used for indexing (the 'as' name of a field where appropriate)
      * @param value the value to index
      */
-    void storeFieldData(Map<String, Object> data, String fieldName, Object value) {
+    void storeFieldData(Map data, String fieldName, Object value) {
         Object o = data.get(fieldName);
         if (o == null)  {
             data.put(fieldName, value);
@@ -289,7 +280,7 @@ public class MMBaseEntry implements IndexEntry {
      * Return the data of a field as a string.
      * @param fieldname the name of the field used for indexing (the 'as' name of a field where appropriate)
      */
-    String getFieldDataAsString(Map<String, ?> data, String fieldName) {
+    String getFieldDataAsString(Map data, String fieldName) {
         Object o = data.get(fieldName);
         if (o != null)  {
             return o.toString();
@@ -316,10 +307,6 @@ public class MMBaseEntry implements IndexEntry {
      */
     boolean isIndexed(int number, String fieldName, String alias) {
         return indexed.contains(number + "_" + fieldName + "_" + alias);
-    }
-
-    public String toString() {
-        return node.getNumber() + " " + subQueries;
     }
 
 }

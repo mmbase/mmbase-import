@@ -36,42 +36,18 @@ import org.mmbase.module.core.MMObjectNode;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: PostgreSqlSqlHandler.java,v 1.28 2006-10-14 14:35:39 nklasens Exp $
+ * @version $Id: PostgreSqlSqlHandler.java,v 1.24.2.1 2006-10-02 11:33:37 michiel Exp $
  * @since MMBase-1.7
  */
 public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
 
     private static final Logger log = Logging.getLoggerInstance(PostgreSqlSqlHandler.class);
 
-
-    private boolean localeMakesCaseInsensitive = false;
-
     /**
      * Constructor.
      */
     public PostgreSqlSqlHandler() {
         super();
-        /* TODO: make this work..
-        DataSource ds =  ((org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory) org.mmbase.module.core.MMBase.getMMBase().getStorageManagerFactory()).getDataSource();
-        Connection con = null;
-        Statement statement = null;
-        ResultSet results = null;
-        try {
-            con = ds.getConnection();
-            statement = con.createStatement();
-            results = statement.executeQuery("select 'ab' > 'Ac'");
-            results.next();
-            localeMakesCaseInsensitive = results.getBoolean(0);
-        } catch (Exception e) {
-            log.error(e);
-        } finally {
-            if (results != null) try { results.close(); } catch (Exception e) {};
-            if (statement != null) try { statement.close(); } catch (Exception e) {};
-            if (con != null) try { con.close(); } catch (Exception e) {};
-        }
-        log.info("Postgresql database instance is case " + (localeMakesCaseInsensitive ? "INSENSITIVE" : "SENSITIVE") + " (because of Locale settings)");
-        */
-
     }
 
     // javadoc is inherited
@@ -115,6 +91,9 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
         return sb;
     }
 
+
+    /// TODO: Needs to determine the value of this (select 'a' > 'A' or so?)
+    private final boolean localeMakesCaseInsensitive = false;
 
     /**
      * Normally, Postgresql does not sort case senstively, so we should not sort on
@@ -263,7 +242,7 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
                 int destinationBuilder = mmbase.getBuilder(rs.getNext().getTableName()).getObjectType();
                 int directionality = rs.getDirectionality();
                 RelDef reldef = mmbase.getRelDef();
-                Set<String> tables = new HashSet<String>();
+                Set tables = new HashSet();
                 Iterator allowed = mmbase.getTypeRel().getAllowedRelations(sourceBuilder, destinationBuilder, 0, directionality).iterator();
                 while(allowed.hasNext()) {
                     MMObjectNode typeRel = (MMObjectNode) allowed.next();
@@ -277,7 +256,7 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
                     sb.append(" ONLY ").
                         append(mmbase.getBaseName()).
                         append('_').
-                        append( tables.iterator().next());
+                        append((String) tables.iterator().next());
                     appendTableAlias(sb, step);
                     return;
                 } else {
