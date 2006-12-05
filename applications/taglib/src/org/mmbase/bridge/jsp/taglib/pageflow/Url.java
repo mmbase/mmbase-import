@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The creation of the URL is delegated to the MMBase framework.
  * </p>
- * @version $Id: Url.java,v 1.9 2006-11-12 14:39:30 michiel Exp $;
+ * @version $Id: Url.java,v 1.10 2006-12-05 22:48:04 michiel Exp $;
  * @since MMBase-1.9
  */
 public class Url implements Comparable {
@@ -103,8 +103,12 @@ public class Url implements Comparable {
             }
 
         } else {
+            log.debug("not a block");
             // no component, this is a normal 'link'. no compoments, so no block can be guessed.
             blockParams = new Parameters(params); // sad that this will make it needed to copy the  entire list again.
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("using " + blockParams);
         }
         result = framework.getUrl(page, component, blockParams, frameworkParams, writeamp).toString();
         if (writeamp) {
@@ -159,7 +163,7 @@ public class Url implements Comparable {
 
     public String get() {
         if (string != null) return string;
-        try { 
+        try {
             String u = get(escapeAmps);
             StringBuilder show = new StringBuilder();
             if (! useAbsoluteAttribute(show, u)) {
@@ -179,6 +183,10 @@ public class Url implements Comparable {
             string =  e.toString();
         }
         return string;
+    }
+
+    protected void invalidate() {
+        string = cacheAmp = cacheNoAmp = null;
     }
 
     public String toString() {
