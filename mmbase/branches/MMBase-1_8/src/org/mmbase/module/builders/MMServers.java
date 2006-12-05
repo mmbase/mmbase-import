@@ -29,7 +29,7 @@ import org.mmbase.storage.search.*;
  * nodes caches in sync but also makes it possible to split tasks between machines. You could for example have a server that encodes video.
  *  when a change to a certain node is made one of the servers (if wel configured) can start encoding the videos.
  * @author  vpro
- * @version $Id: MMServers.java,v 1.44 2006-07-03 14:22:42 michiel Exp $
+ * @version $Id: MMServers.java,v 1.44.2.1 2006-12-05 19:40:04 michiel Exp $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnable, org.mmbase.datatypes.resources.StateConstants {
 
@@ -40,7 +40,6 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
     private boolean checkedSystem = false;
     private String javastr;
     private String osstr;
-    private String host;
     private Vector possibleServices = new Vector();
 
     /**
@@ -172,13 +171,14 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
         try {
             boolean imoke = false;
             String machineName = mmb.getMachineName();
-            host = mmb.getHost();
+            String host = mmb.getHost();
             log.debug("doCheckUp(): machine=" + machineName);
             for (Iterator iter = getNodes().iterator(); iter.hasNext();) {
                 MMObjectNode node = (MMObjectNode) iter.next();
-                String tmpname = node.getStringValue("name");
-                log.debug("Checking " + tmpname);
-                if (tmpname.equals(machineName)) {
+                String name = node.getStringValue("name");
+                String h    = node.getStringValue("host");
+                log.debug("Checking " + name + "@" + h);
+                if (name.equals(machineName) && h.equals(host)) {
                     imoke = checkMySelf(node);
                 } else {
                     checkOther(node);
@@ -202,7 +202,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
         node.setValue("atime", (int) (System.currentTimeMillis() / 1000));
         if (!checkedSystem) {
             node.setValue("os", osstr);
-            node.setValue("host", host);
+            node.setValue("host", mmb.getHost());
             node.setValue("jdk", javastr);
             checkedSystem = true;
         }
@@ -241,7 +241,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
         node.setValue("state", ACTIVE);
         node.setValue("atime", (int) (System.currentTimeMillis() / 1000));
         node.setValue("os", osstr);
-        node.setValue("host", host);
+        node.setValue("host", mmb.getHost());
         node.setValue("jdk", javastr);
         insert("system", node);
     }
@@ -292,8 +292,22 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
      * @javadoc
      */
     public MMObjectNode getMMServerNode(String name) {
+        return getMMServerNode(name, null);
+    }
+
+    /**
+     * @since MMBase-1.8.3
+     */
+    public MMObjectNode getMMServerNode(String name, String host) {
         NodeSearchQuery query = new NodeSearchQuery(this);
-        BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(getField("name")), name);
+        Constraint constraint = new BasicFieldValueConstraint(query.getField(getField("name")), name);
+        if (host != null) {
+            BasicCompositeConstraint comp = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
+            comp.addChild(constraint);
+            BasicFieldValueConstraint constraint2 = new BasicFieldValueConstraint(query.getField(getField("host")), host);
+            comp.addChild(constraint2);
+            constraint = comp;
+        }
         query.setConstraint(constraint);
         try {
             List nodeList = getNodes(query);
@@ -336,12 +350,17 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
      */
     public List getActiveServers() {
         String machineName = mmb.getMachineName();
+        String host        = mmb.getHost();
         if (log.isDebugEnabled()) {
-            log.debug("machine=" + machineName);
+            log.debug("machine=" + machineName + " host=" + host);
         }
         if (query == null) {
             query = new NodeSearchQuery(this);
-            BasicFieldValueConstraint constraint1 = new BasicFieldValueConstraint(query.getField(getField("name")), machineName);
+            BasicFieldValueConstraint constraint1a = new BasicFieldValueConstraint(query.getField(getField("name")), machineName);
+            BasicFieldValueConstraint constraint1b = new BasicFieldValueConstraint(query.getField(getField("host")), host);
+            BasicCompositeConstraint constraint1 = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
+            constraint1.addChild(constraint1a);
+            constraint1.addChild(constraint1b);
             constraint1.setInverse(true);
             BasicFieldValueConstraint constraint2 = new BasicFieldValueConstraint(query.getField(getField("state")), new Integer(ACTIVE));
             BasicCompositeConstraint constraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
