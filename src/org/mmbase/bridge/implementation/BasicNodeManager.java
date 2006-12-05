@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.121.2.1 2006-09-20 18:14:37 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.121.2.2 2006-12-05 19:35:47 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -353,7 +353,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     }
 
     public boolean hasField(String fieldName) {
-        return getFieldTypes().containsKey(fieldName.toLowerCase());
+        return fieldName != null && getFieldTypes().containsKey(fieldName.toLowerCase());
     }
 
 
