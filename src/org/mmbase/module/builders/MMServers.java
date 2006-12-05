@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 import java.util.*;
+import java.util.concurrent.*;
 
 import org.mmbase.module.core.*;
 import org.mmbase.util.functions.*;
@@ -29,7 +30,7 @@ import org.mmbase.storage.search.*;
  * nodes caches in sync but also makes it possible to split tasks between machines. You could for example have a server that encodes video.
  *  when a change to a certain node is made one of the servers (if wel configured) can start encoding the videos.
  * @author  vpro
- * @version $Id: MMServers.java,v 1.45 2006-10-13 14:22:26 nklasens Exp $
+ * @version $Id: MMServers.java,v 1.46 2006-12-05 19:38:41 michiel Exp $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnable, org.mmbase.datatypes.resources.StateConstants {
 
@@ -38,10 +39,9 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
     private long intervalTime = 60 * 1000; // 1 minute
 
     private boolean checkedSystem = false;
-    private String javastr;
-    private String osstr;
-    private String host;
-    private Vector possibleServices = new Vector();
+    private final String javastr;
+    private final String osstr;
+    private final List<String> possibleServices = new CopyOnWriteArrayList<String>();
 
     /**
      * Function uptime
@@ -53,7 +53,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
             }
             public Long getFunctionValue(Parameters parameters) {
                 int now = (int) (System.currentTimeMillis() / 1000);
-                return new Long(now - MMBase.startTime);
+                return Long.valueOf(now - MMBase.startTime);
             }
         };
     {
@@ -96,7 +96,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
      * @since MMBase-1.7
      */
     protected void start() {
-        MMBaseContext.startThread(this,"MMServers");
+        MMBaseContext.startThread(this, "MMServers");
     }
 
     /**
@@ -172,20 +172,20 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
         try {
             boolean imoke = false;
             String machineName = mmb.getMachineName();
-            host = mmb.getHost();
+            String host = mmb.getHost();
             log.debug("doCheckUp(): machine=" + machineName);
-            for (Iterator iter = getNodes().iterator(); iter.hasNext();) {
-                MMObjectNode node = (MMObjectNode) iter.next();
-                String tmpname = node.getStringValue("name");
-                log.debug("Checking " + tmpname);
-                if (tmpname.equals(machineName)) {
+            for (MMObjectNode node : getNodes()) {
+                String name = node.getStringValue("name");
+                String h   = node.getStringValue("host");
+                log.debug("Checking " + name + "@" + h);
+                if (name.equals(machineName) && h.equals(host)) {
                     imoke = checkMySelf(node);
                 } else {
                     checkOther(node);
                 }
             }
             if (!imoke) {
-                createMySelf(machineName);
+                createMySelf(machineName, host);
             }
         } catch (Exception e) {
             log.error("Something went wrong in MMServers Checkup Thread " + e.getMessage(), e);
@@ -202,7 +202,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
         node.setValue("atime", (int) (System.currentTimeMillis() / 1000));
         if (!checkedSystem) {
             node.setValue("os", osstr);
-            node.setValue("host", host);
+            node.setValue("host", mmb.getHost());
             node.setValue("jdk", javastr);
             checkedSystem = true;
         }
@@ -235,7 +235,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
     /**
      * @javadoc
      */
-    private void createMySelf(String machineName) {
+    private void createMySelf(String machineName, String host) {
         MMObjectNode node = getNewNode("system");
         node.setValue("name", machineName);
         node.setValue("state", ACTIVE);
@@ -250,13 +250,11 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
      * @javadoc
      */
     private void setServicesDown(MMObjectNode node) {
-        Enumeration f = possibleServices.elements();
         log.debug("setServicesDown() for " + node);
-        while (f.hasMoreElements()) {
-            String type = (String)f.nextElement();
-            Enumeration e = mmb.getInsRel().getRelated(node.getIntValue("number"), type);
+        for (String type : possibleServices) {
+            Enumeration<MMObjectNode> e = mmb.getInsRel().getRelated(node.getIntValue("number"), type);
             while (e.hasMoreElements()) {
-                MMObjectNode node2 = (MMObjectNode)e.nextElement();
+                MMObjectNode node2 = e.nextElement();
                 MMObjectBuilder parent = node2.getBuilder();
                 log.info("setServicesDown(): downnode(" + node2 + ") REMOVING node");
                 parent.removeRelations(node2);
@@ -276,7 +274,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
      */
     public void setCheckService(String name) {
         if (!possibleServices.contains(name)) {
-            possibleServices.addElement(name);
+            possibleServices.add(name);
         }
     }
 
@@ -292,13 +290,27 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
      * @javadoc
      */
     public MMObjectNode getMMServerNode(String name) {
+        return getMMServerNode(name, null);
+    }
+
+    /**
+     * @since MMBase-1.8.3
+     */
+    public MMObjectNode getMMServerNode(String name, String host) {
         NodeSearchQuery query = new NodeSearchQuery(this);
-        BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(getField("name")), name);
+        Constraint constraint = new BasicFieldValueConstraint(query.getField(getField("name")), name);
+        if (host != null) {
+            BasicCompositeConstraint comp = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
+            comp.addChild(constraint);
+            BasicFieldValueConstraint constraint2 = new BasicFieldValueConstraint(query.getField(getField("host")), host);
+            comp.addChild(constraint2);
+            constraint = comp;
+        }
         query.setConstraint(constraint);
         try {
-            List nodeList = getNodes(query);
+            List<MMObjectNode> nodeList = getNodes(query);
             if (nodeList.size() > 0) {
-                return (MMObjectNode) nodeList.get(0);
+                return nodeList.get(0);
             } else {
                 log.info("Can't find any mmserver node with name=" + name);
                 return null;
@@ -331,17 +343,23 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
 
 
     protected NodeSearchQuery query = null;
+
     /**
      * @return List of MMObjectNodes representing  active servers, which are not this server.
      */
-    public List getActiveServers() {
+    public List<MMObjectNode> getActiveServers() {
         String machineName = mmb.getMachineName();
+        String host        = mmb.getHost();
         if (log.isDebugEnabled()) {
-            log.debug("machine=" + machineName);
+            log.debug("machine=" + machineName + " host=" + host);
         }
         if (query == null) {
             query = new NodeSearchQuery(this);
-            BasicFieldValueConstraint constraint1 = new BasicFieldValueConstraint(query.getField(getField("name")), machineName);
+            BasicFieldValueConstraint constraint1a = new BasicFieldValueConstraint(query.getField(getField("name")), machineName);
+            BasicFieldValueConstraint constraint1b = new BasicFieldValueConstraint(query.getField(getField("host")), host);
+            BasicCompositeConstraint constraint1 = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
+            constraint1.addChild(constraint1a);
+            constraint1.addChild(constraint1b);
             constraint1.setInverse(true);
             BasicFieldValueConstraint constraint2 = new BasicFieldValueConstraint(query.getField(getField("state")), new Integer(ACTIVE));
             BasicCompositeConstraint constraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
