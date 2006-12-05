@@ -47,7 +47,7 @@ import org.xml.sax.InputSource;
  *
  * @author Andr&eacute; van Toly
  * @author Michiel Meeuwissen
- * @version $Id: EditTag.java,v 1.18 2006-11-24 14:28:54 pierre Exp $
+ * @version $Id: EditTag.java,v 1.19 2006-12-05 21:58:55 michiel Exp $
  * @see Editor
  * @see BasicEditor
  * @see YAMMEditor
@@ -173,7 +173,7 @@ public class EditTag extends CloudReferrerTag implements ParamHandler {
      */
     public void addParameter(String key, Object value) throws JspTagException {
         if (log.isDebugEnabled()) log.debug("adding parameter " + key + "/" + value);
-        editor.parameters.set(key, value);
+        editor.getParameters().set(key, value);
     }
 
     /**
@@ -204,8 +204,8 @@ public class EditTag extends CloudReferrerTag implements ParamHandler {
      */
     public int doEndTag() throws JspTagException {
 
-        fillStandardParameters(editor.parameters);
-        editor.parameters.checkRequiredParameters();
+        fillStandardParameters(editor.getParameters());
+        editor.getParameters().checkRequiredParameters();
         try {
             editor.getEditorHTML(getPageContext());
         } catch (IOException ioe) {
