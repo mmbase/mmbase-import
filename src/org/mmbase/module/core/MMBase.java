@@ -47,7 +47,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.213 2006-11-24 14:19:12 pierre Exp $
+ * @version $Id: MMBase.java,v 1.214 2006-12-05 19:39:34 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -342,6 +342,15 @@ public class MMBase extends ProcessorModule {
             if (pos != -1) {
                 machineNameParam = machineNameParam.substring(0, pos) + System.getProperty("user.name") + machineNameParam.substring(pos + 7);
             }
+
+            pos = machineNameParam.indexOf("${CONTEXT}");
+            if (pos != -1) {
+                if (! MMBaseContext.htmlRootInitialized) {
+                    log.warn("HTML root not yet known. MachineName will not be correct yet.");
+                }
+                machineNameParam = machineNameParam.substring(0, pos) + MMBaseContext.getHtmlRootUrlPath() + machineNameParam.substring(pos + 10);
+            }
+
             machineName = machineNameParam;
         } else {
             if (! MMBaseContext.htmlRootInitialized) {
