@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloudContext.java,v 1.53 2006-11-11 14:01:16 michiel Exp $
+ * @version $Id: BasicCloudContext.java,v 1.54 2006-12-05 19:31:12 michiel Exp $
  */
 public class BasicCloudContext implements CloudContext {
     private static final Logger log = Logging.getLoggerInstance(BasicCloudContext.class);
@@ -42,10 +42,10 @@ public class BasicCloudContext implements CloudContext {
     static TemporaryNodeManager tmpObjectManager = null;
 
     // map of clouds by name
-    private static Set<String> localClouds = new HashSet<String>();
+    private static final Set<String> localClouds = new HashSet<String>();
 
     // map of modules by name
-    private static Map<String, Module> localModules = new HashMap<String, Module>();
+    private static final Map<String, Module> localModules = new HashMap<String, Module>();
 
     /**
      *  constructor to call from the MMBase class
@@ -60,46 +60,53 @@ public class BasicCloudContext implements CloudContext {
      */
     protected boolean check() {
         if(mmb == null) {
-            Iterator<org.mmbase.module.Module> i = org.mmbase.module.Module.getModules();
-            // check if MMBase is already running
-            if (i == null) {
-                // build the error message, since it has very litle overhead (only entered once incase of startup)
-                // MMBase may only be started from the bridge when the property mmbase.config was provided
-                if (java.lang.System.getProperty("mmbase.config") == null) {
-                    // when mmbase.config is empty fill it with current working dir + /config
-                    // this way there is no need to provide the info on the commandline
-                    // java.lang.System.setProperty("mmbase.config", java.lang.System.getProperty("user.dir") + java.io.File.separatorChar + "config");
-                    throw new NotFoundException("MMBase has not been started, and cannot be started by this Class. (" + getClass().getName() + " : no property mmbase.config found)");
-                }
-                // when MMBase is not running, try to start it!
-                try {
-                    // init the MMBaseContext,...
-                    org.mmbase.module.core.MMBaseContext.init();
-                    // try to start MMBase now,...
-                    org.mmbase.module.core.MMBase.getMMBase();
-                    // now re-assign the values agina
-                    i = org.mmbase.module.Module.getModules();
-                } catch(java.lang.Exception ex) {
-                    log.error("Error while trying to start MMBase from the bridge: " + ex.getMessage(), ex);
-                }
-                // if still null,.. give error!
-                if(i == null) {
-                    return false;
+            synchronized(this) {
+                // obtained lock
+                if (mmb == null) { // if run in the mean time by other thread, then skip
+                    Iterator<org.mmbase.module.Module> i = org.mmbase.module.Module.getModules();
+                    // check if MMBase is already running
+                    if (i == null) {
+                        // build the error message, since it has very litle overhead (only entered once incase of startup)
+                        // MMBase may only be started from the bridge when the property mmbase.config was provided
+                        if (java.lang.System.getProperty("mmbase.config") == null) {
+                            // when mmbase.config is empty fill it with current working dir + /config
+                            // this way there is no need to provide the info on the commandline
+                            // java.lang.System.setProperty("mmbase.config", java.lang.System.getProperty("user.dir") + java.io.File.separatorChar + "config");
+                            throw new NotFoundException("MMBase has not been started, and cannot be started by this Class. (" + getClass().getName() + " : no property mmbase.config found)");
+                        }
+                        // when MMBase is not running, try to start it!
+                        try {
+                            // init the MMBaseContext,...
+                            org.mmbase.module.core.MMBaseContext.init();
+                            // try to start MMBase now,...
+                            org.mmbase.module.core.MMBase.getMMBase();
+                            // now re-assign the values agina
+                            i = org.mmbase.module.Module.getModules();
+                        } catch(java.lang.Exception ex) {
+                            log.error("Error while trying to start MMBase from the bridge: " + ex.getMessage(), ex);
+                        }
+                        // if still null,.. give error!
+                        if(i == null) {
+                            return false;
+                        }
+                    }
+                    // get the core module!
+                    MMBase m = org.mmbase.module.core.MMBase.getMMBase();
+                    // create module list
+                    while(i.hasNext()) {
+                        Module mod = ModuleHandler.getModule(i.next(), this);
+                        localModules.put(mod.getName(), mod);
+                    }
+
+                    transactionManager = TransactionManager.getInstance();
+                    tmpObjectManager = transactionManager.getTemporaryNodeManager();
+
+                    // set all the names of all accessable clouds..
+                    localClouds.add("mmbase");
+
+                    mmb = m;
                 }
             }
-            // get the core module!
-            mmb = org.mmbase.module.core.MMBase.getMMBase();
-            // create module list
-            while(i.hasNext()) {
-                Module mod = ModuleHandler.getModule(i.next(), this);
-                localModules.put(mod.getName(), mod);
-            }
-
-            transactionManager = TransactionManager.getInstance();
-            tmpObjectManager = transactionManager.getTemporaryNodeManager();
-
-            // set all the names of all accessable clouds..
-            localClouds.add("mmbase");
         }
         return true;
     }
