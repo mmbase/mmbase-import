@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.125 2006-11-11 19:25:27 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.126 2006-12-05 19:36:47 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager {
@@ -352,8 +352,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
     }
 
     public boolean hasField(String fieldName) {
-        if (fieldName == null) return false;
-        return getFieldTypes().containsKey(fieldName.toLowerCase());
+        return fieldName != null && getFieldTypes().containsKey(fieldName.toLowerCase());
     }
 
 
@@ -522,13 +521,12 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
                 }
                 res.add(node);
             }
-            if (res.size()>0) {
+            if (res.size() > 0) {
                 NodeManager tempNodeManager = new VirtualNodeManager((org.mmbase.module.core.VirtualNode)res.get(0), cloud);
                 return new BasicNodeList(res, tempNodeManager);
             }
             return createNodeList();
         } catch (Exception e) {
-            log.error(Logging.stackTrace(e));
             throw new BridgeException(e);
         }
     }
