@@ -32,7 +32,7 @@ import org.mmbase.util.xml.BuilderReader;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.68 2006-07-15 16:01:46 michiel Exp $
+ * @version $Id: TypeDef.java,v 1.68.2.1 2006-12-05 20:59:30 michiel Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
@@ -133,7 +133,6 @@ public class TypeDef extends MMObjectBuilder {
                 storeBuilderConfiguration(node);
             }
         } catch (Exception e) {
-            log.error(e.getMessage());
             throw new RuntimeException(e.getMessage(), e);
         }
         // try if the builder was already in TypeDef for some reason
