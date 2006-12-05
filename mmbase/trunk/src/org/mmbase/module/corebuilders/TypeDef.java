@@ -32,7 +32,7 @@ import org.mmbase.util.xml.BuilderReader;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.68 2006-07-15 16:01:46 michiel Exp $
+ * @version $Id: TypeDef.java,v 1.69 2006-12-05 21:04:13 michiel Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
@@ -49,20 +49,18 @@ public class TypeDef extends MMObjectBuilder {
 
     /**
      * Number-to-name cache.
-     * @duplicate should be moved to org.mmbase.cache
      */
-    private Map numberToNameCache = null; // object number -> typedef name
+    private Map<Integer, String> numberToNameCache = null; // object number -> typedef name
 
     /**
      * Name-to-number cache.
-     * @duplicate should be moved to org.mmbase.cache
      */
-    private Map nameToNumberCache = null; // typedef name -> object number
+    private Map<String, Integer> nameToNumberCache = null; // typedef name -> object number
 
     /**
      * List of known builders.
      */
-    private Vector typedefsLoaded = new Vector();     // Contains the names of all active builders
+    private final Vector<String> typedefsLoaded = new Vector<String>();     // Contains the names of all active builders
 
     /**
      * Sets the default deploy directory for the builders.
@@ -86,12 +84,12 @@ public class TypeDef extends MMObjectBuilder {
         return result;
     }
 
-    protected Map getNumberToNameCache() {
+    protected Map<Integer, String> getNumberToNameCache() {
         if (numberToNameCache == null) readCache();
         return numberToNameCache;
     }
 
-    protected Map getNameToNumberCache() {
+    protected Map<String, Integer> getNameToNumberCache() {
         if (nameToNumberCache == null) readCache();
         return nameToNumberCache;
     }
@@ -133,7 +131,6 @@ public class TypeDef extends MMObjectBuilder {
                 storeBuilderConfiguration(node);
             }
         } catch (Exception e) {
-            log.error(e.getMessage());
             throw new RuntimeException(e.getMessage(), e);
         }
         // try if the builder was already in TypeDef for some reason
@@ -244,18 +241,16 @@ public class TypeDef extends MMObjectBuilder {
     private boolean readCache() {
         // at least fill in typedef
         log.service("Reading typedef caches");
-        numberToNameCache = Collections.synchronizedMap(new HashMap());
-        nameToNumberCache = Collections.synchronizedMap(new HashMap());
+        numberToNameCache = Collections.synchronizedMap(new HashMap<Integer, String>());
+        nameToNumberCache = Collections.synchronizedMap(new HashMap<String, Integer>());
         NodeSearchQuery query = new NodeSearchQuery(this);
         try {
-            Iterator typedefs = getNodes(query).iterator();
-            while (typedefs.hasNext()) {
-                MMObjectNode n = (MMObjectNode) typedefs.next();
+            for (MMObjectNode n : getNodes(query)) {
                 Integer number = n.getIntegerValue("number");
                 String name    = n.getStringValue("name");
                 if (number != null && name != null) {
-                    nameToNumberCache.put(name,number);
-                    numberToNameCache.put(number,name);
+                    nameToNumberCache.put(name, number);
+                    numberToNameCache.put(number, name);
                 } else {
                     log.error("Could not add typedef cache-entry number/name= " + number + "/" + name);
                 }
@@ -572,7 +567,7 @@ public class TypeDef extends MMObjectBuilder {
      */
     public Vector getList(PageInfo sp,StringTagger tagger, StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
-            String cmd=tok.nextToken();
+            String cmd = tok.nextToken();
             if (cmd.equals("builders")) {
                 return typedefsLoaded;
             }
