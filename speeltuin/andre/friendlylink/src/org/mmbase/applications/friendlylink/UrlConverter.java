@@ -25,7 +25,7 @@ public class UrlConverter {
 	public static String URL_CACHE = "url_cache";
 	
 	/**
-	 * Gets and initiaties the cache to store nicelinks, it uses MMBaseContext to get
+	 * Gets and initiaties the cache to store flinks, it uses MMBaseContext to get
 	 * the ServletContext
 	 *
 	 * @return UrlCache
@@ -62,57 +62,55 @@ public class UrlConverter {
     }
 
     /**
-    * Converts a 'userfriendly' URL into technical URL.
+    * Converts a 'userfriendly' URL into a technical URL (like f.e. 'index.jsp').
+    * It first consults the cache, if not found consults the map with FriendlyLinks to 
+    * try to map the friendlylink to a js.
     *
     * @param contextpath the webapp context
-    * @param nicelink    contains the URL to be converted
+    * @param flink    contains the URL to be converted
     * @param params      contains the requestparameters of the URL
     * @return            the converted URL or the original URL if it could not be converted or found.
     */
-	public static String convertUrl(String contextpath, String nicelink, String params) {
+	public static String convertUrl(String contextpath, String flink, String params) {
 	    // params is to remove the found page parameter from the string
-	    if (log.isDebugEnabled()) log.debug("Converting friendlylink '" + nicelink + "' with params '" + params + "' and context: " + contextpath);
+	    if (log.isDebugEnabled()) log.debug("Converting friendlylink '" + flink + "' with params '" + params + "' and context: " + contextpath);
+
+        if (flink.indexOf("/") == 0) {
+            flink = flink.substring(1, flink.length());
+            if (log.isDebugEnabled()) log.debug("Stripped flink to '" + flink + "'");
+        }
 	    
 	    StringBuffer jspurl = new StringBuffer();
-	    // jspurl.append(contextpath).append(nicelink);
-	    jspurl.append(nicelink);
-        if (params != null) jspurl.append("&amp;").append(params);
+	    // jspurl.append(contextpath).append(flink);
+	    jspurl.append(flink);
+        if (params != null) jspurl.append("?").append(params);
 	    
 	    UrlCache cache = getCache();
-	    String link = nicelink;
-	    if (log.isDebugEnabled()) log.debug("Checking if nicelink '" + link +"' lives in the cache.");
-	    if ( cache.hasURLEntry(link) ) {
-	        jspurl = new StringBuffer( cache.getJSPEntry(link) );  // get its jspUrl
-	        if (params != null) jspurl.append("&").append(params);
-	        
+	    if (log.isDebugEnabled()) log.debug("Checking if friendlylink '" + flink +"' lives in the cache.");
+	    if ( cache.hasURLEntry(flink) ) {
 	        if (log.isDebugEnabled()) log.debug("URL was cached");
-    	    return jspurl.toString();
+
+	        jspurl = new StringBuffer( cache.getJSPEntry(flink) );  // get its jspUrl
+	        if (params != null) jspurl.append("?").append(params);
+    	    
 	    } else {    
-	        // TODO: find the correct jsp for 'friendlylink', delegate to ...Util or other depending on nodetype
-	        if (log.isDebugEnabled()) {
-	            log.debug("nicelink '" + link + "' not in cache, try searching for friendlylink in ...");
-	        }
-	        //String url = PagesUtil.friendlyLinkToJsp(contextpath, link, params);
+	        if (log.isDebugEnabled()) log.debug("URL not cached");
 	        
-	        String url = "404.jsp";
-	        
-	        Map<String, FriendlyLink> flinks = UrlFilter.getFriendlylinks();
-	        Set<String> keys = flinks.keySet();           // Get the set of keys held by the Map
+	        Map<String, FriendlyLink> friendlylinks = UrlFilter.getFriendlylinks();
+	        Set<String> keys = friendlylinks.keySet();           // Get the set of keys held by the Map
             Iterator<String> i = keys.iterator();
             while(i.hasNext()) {
                 String name = i.next();
     	        log.debug("FriendlyLink: " + name);
     	        
-    	        FriendlyLink flink = flinks.get(name);
-    	        if (url.equals("404.jsp")) {
-    	            url = flink.convertToJsp(link, params);
-    	        }
+    	        FriendlyLink friendlylink = friendlylinks.get(name);
+	            jspurl = new StringBuffer( friendlylink.convertToJsp(flink, params) );
             }
-	        if (log.isDebugEnabled()) log.debug("Returning '" + url + "'");
-
-	        return url;
+	        
 	    }
-	    
+
+        if (log.isDebugEnabled()) log.debug("Returning '" + jspurl.toString() + "'");
+        return jspurl.toString();
 	}
 	
 	/**

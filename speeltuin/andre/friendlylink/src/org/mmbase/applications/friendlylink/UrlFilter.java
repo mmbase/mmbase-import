@@ -203,7 +203,9 @@ public class UrlFilter implements Filter, MMBaseStarter  {
 		
 		
     		// URL is not excluded, pass it to UrlConverter to process and forward the request
-    		String forwardUrl = "/" + UrlConverter.convertUrl(req);
+    		String forwardUrl = UrlConverter.convertUrl(req);
+   			if (log.isDebugEnabled()) log.debug("Recieved '" + forwardUrl + " from UrlConverter, forwarding.");
+   			forwardUrl = "/" + forwardUrl;
     		if (forwardUrl != null && !forwardUrl.equals("")) {
     		    
     		    // Ergo: this removes contextpath from the url
@@ -213,7 +215,6 @@ public class UrlFilter implements Filter, MMBaseStarter  {
     		        forwardUrl = forwardUrl.substring(contextpath.length());
 		        }
 		        */
-    			if (log.isDebugEnabled()) log.debug("Recieved an url from UrlConverter, forwarding: " + forwardUrl);
     		    
     		    /* 
     		     * RequestDispatcher: If the path begins with a "/" it is interpreted
