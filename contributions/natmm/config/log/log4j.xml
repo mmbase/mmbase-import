@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd" [
     <!ENTITY mmlevel "org.mmbase.util.logging.log4j.Log4jPriority" >
-    <!ENTITY logdir  "C:/data/natmm/logs/" >
-    <!-- <!ENTITY logdir  "E:/Intranet_Logs/" > -->
+    <!ENTITY logdir  "@log.dir@" >
 ]>
 
 <log4j:configuration>
@@ -16,19 +15,19 @@
     </appender>
 
     <logger name="org.mmbase.security" >
-        <level class="&mmlevel;" value="error" />
+        <level class="&mmlevel;" value="@log.level@" />
     </logger>
 
     <logger name="org.mmbase.util.XMLErrorHandler" >
-       <level class="&mmlevel;" value="error" />
+       <level class="&mmlevel;" value="@log.level@" />
     </logger>
 
     <logger name="mmbase.applications.editwizard.Utils" >
-       <level class="&mmlevel;" value="error" />
+       <level class="&mmlevel;" value="@log.level@" />
     </logger>
 
     <logger name="STDERR">
-       <level class="&mmlevel;" value="error" />   
+       <level class="&mmlevel;" value="@log.level@" />   
     </logger>
 
     <logger name="org.mmbase.PAGE.LOGTAG" >
@@ -36,7 +35,7 @@
     </logger>
 
     <root>
-        <level class="&mmlevel;" value="info" />
+        <level class="&mmlevel;" value="@log.level@" />
         <appender-ref ref="logfile" />
     </root>
 
