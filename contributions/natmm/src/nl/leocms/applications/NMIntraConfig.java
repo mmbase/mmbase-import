@@ -114,18 +114,18 @@ public class NMIntraConfig {
    // Natuurmonumenten
    public static boolean showFirstSubpage = false;
 
-   public static String fromEmailAddress = "intranet@natuurmonumenten.nl";
-   public static String defaultPZAddress = "A.deBeer@natuurmonumenten.nl";
-   public static String defaultFZAddress = "receptie@natuurmonumenten.nl";
-   public static String toEmailAddress   = "beheerder@natuurmonumenten.nl";
-   public static String newsEmailAddress = "intranieuws@natuurmonumenten.nl";
+   public static String fromEmailAddress = "@nmintraconf.fromEmailAddress@";
+   public static String defaultPZAddress = "@nmintraconf.defaultPZAddress@";
+   public static String defaultFZAddress = "@nmintraconf.defaultFZAddress@";
+   public static String toEmailAddress   = "@nmintraconf.toEmailAddress@";
+   public static String newsEmailAddress = "@nmintraconf.newsEmailAddress@";
 
-   public static String sDocumentsUrl = "/documents/PenO";
-   public static String sDocumentsRoot = "D:/apps/Tomcat_Intranet/webapps/documents/PenO";
-   public static String incomingDir = "E:/Intranet_Input/";
-   public static String tempDir = "E:/Intranet_Temp/";
-   public static String sCorporateWebsite = "http://www.natuurmonumenten.nl/";
-   public static String sCorporateEditors = "http://www.natuurmonumenten.nl/editors/";
+   public static String sDocumentsUrl = "@nmintraconf.sDocumentsUrl@";
+   public static String sDocumentsRoot = "@nmintraconf.sDocumentsRoot@";
+   public static String incomingDir = "@nmintraconf.incomingDir@";
+   public static String tempDir = "@nmintraconf.tempDir@";
+   public static String sCorporateWebsite = "@nmintraconf.sCorporateWebsite@";
+   public static String sCorporateEditors = "@nmintraconf.sCorporateEditors@";
    
    // Landschap Noord-Holland
    /*
