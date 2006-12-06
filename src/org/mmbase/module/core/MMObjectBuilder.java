@@ -61,7 +61,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.402 2006-11-24 14:21:36 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.403 2006-12-06 13:03:20 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -246,7 +246,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
     protected final static Parameter[] WRAP_PARAMETERS = {
         new Parameter(Parameter.FIELD, true),
-        new Parameter("length", Number.class, new Integer(20))
+        new Parameter("length", Number.class, Integer.valueOf(20))
     };
 
     /**
@@ -1004,7 +1004,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             }
             res = node.insert(userName);
             if (res > -1) {
-                nodeCache.put(new Integer(res), node);
+                nodeCache.put(Integer.valueOf(res), node);
             }
         } finally {
             synchronized(nodeCache) {
@@ -1892,7 +1892,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             int days = curtime/(3600*24);
             return "" + ((days*(3600*24))-3600);
         } else if (function.equals("age")) {
-            Integer val = new Integer(node.getAge());
+            Integer val = Integer.valueOf(node.getAge());
             return val.toString();
         } else if (function.equals("wap")) {
             String val = node.getStringValue(field);
@@ -2931,7 +2931,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
          }
 
          //update the cache
-         Integer changedNode = new Integer((event.getRelationDestinationType().equals(getTableName()) ? event.getRelationSourceNumber() : event.getRelationDestinationNumber()));
+         Integer changedNode = Integer.valueOf((event.getRelationDestinationType().equals(getTableName()) ? event.getRelationSourceNumber() : event.getRelationDestinationNumber()));
          MMObjectNode.delRelationsCache(changedNode);
      }
 
