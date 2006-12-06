@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE cloudmodel PUBLIC "-//MMBase/DTD cloudmodel 1.0//EN" "http://www.mmbase.org/dtd/cloudmodel_1_0.dtd">
 <cloudmodel>
+  <requirements>
+    <requires name="Resources" maintainer="mmbase.org" version="1" />
+  </requirements>
+
 	<neededbuilderlist>
 		<builder maintainer="mmbase.org" version="0">forummessagebox</builder>
 		<builder maintainer="mmbase.org" version="0">forumprivatemessage</builder>
