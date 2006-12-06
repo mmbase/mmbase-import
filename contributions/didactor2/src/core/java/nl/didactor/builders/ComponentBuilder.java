@@ -23,7 +23,7 @@ import nl.didactor.component.BasicComponent;
 /**
  *
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: ComponentBuilder.java,v 1.9 2006-11-01 10:05:05 mmeeuwissen Exp $
+ * @version $Id: ComponentBuilder.java,v 1.10 2006-12-06 14:35:02 mmeeuwissen Exp $
  */
 public class ComponentBuilder extends AbstractSmartpathBuilder {
 
@@ -43,7 +43,7 @@ public class ComponentBuilder extends AbstractSmartpathBuilder {
             while (i.hasNext()) {
                 Component c = registerComponent((MMObjectNode)i.next());
                 if (c != null) {
-                    v.add(c); 
+                    v.add(c);
                 }
             }
         } catch (Exception e) {
@@ -82,7 +82,7 @@ public class ComponentBuilder extends AbstractSmartpathBuilder {
         }
         log.info("Registering component " + componentname + " with class '" + classname + "'");
         Component comp = null;
-       
+
         if (classname == null || "".equals(classname)) {
             comp = new BasicComponent(componentname);
         } else {
@@ -137,8 +137,14 @@ public class ComponentBuilder extends AbstractSmartpathBuilder {
         if (!getMMBase().getBuilder(builderName).created()) {
             // Builder is not yet created in database, so there is no work for us
             return;
-        }        
-        BuilderReader parser = new BuilderReader(getMMBase().getBuilderLoader().getInputSource(path + "/" + builderName + ".xml"), getMMBase());
+        }
+        BuilderReader parser;
+        try {
+            parser = new BuilderReader(getMMBase().getBuilderLoader().getDocument(path + "/" + builderName + ".xml", false,  BuilderReader.class), getMMBase());
+        } catch (Exception sax) {
+            log.warn("Could not read " + path + "/" + builderName + ".xml: " + sax.getMessage() + " skipping");
+            return;
+        }
         String status = parser.getStatus();
         if (status.equals("active")) {
             HashMap columns = new HashMap();
