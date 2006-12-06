@@ -30,9 +30,11 @@
                   </mm:link>
                 </li>
               </jsp:attribute>
-              <li title="${_node.description}">
-                <jsp:text>${_node.answer}: ${_node.total_answers}</jsp:text>
-              </li>
+	      <jsp:body>
+                <li title="${_node.description}">
+                  <jsp:text>${_node.answer}: ${_node.total_answers}</jsp:text>
+                </li>
+              </jsp:body>
             </mm-poll:poll>
           </ul>
         </mm:listnodes>
