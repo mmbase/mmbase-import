@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="learnobjects" maintainer="didactor.nl" version="2" extends="object">
-  <status>active</status>
+<?xml version="1.0" encoding="UTF-8"?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    name="learnobjects" maintainer="didactor.nl" version="1" extends="object">
+
   <class>nl.didactor.builders.DidactorBuilder</class>
   <searchage>31</searchage>
   <names>
@@ -31,7 +35,7 @@
   </properties>
 
   <fieldlist>
-    <field>
+    <field name="name">
       <descriptions>
         <description xml:lang="nl">Naam van het leerobject</description>
         <description xml:lang="en">Name of the learnobject</description>
@@ -39,21 +43,15 @@
       <gui>
         <guiname xml:lang="nl">Naam</guiname>
         <guiname xml:lang="en">Name</guiname>
-        <guitype>string</guitype>
       </gui>
-      <editor>
-        <positions>
-          <input>1</input>
-          <list>1</list>
-          <search>1</search>
-        </positions>
-      </editor>
-      <db>
-        <name>name</name>
-        <type state="persistent" size="255" notnull="true" key="false">STRING</type>
-      </db>
+      <editor><positions><list>1</list></positions></editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="true" />
+        <maxLength value="255" enforce="never"/>
+      </datatype>
     </field>
-    <field>
+
+    <field name="showtitle">
       <descriptions>
         <description xml:lang="nl">Titel laten zien van leerobject</description>
         <description xml:lang="en">Show the title of learnobject</description>
@@ -61,7 +59,6 @@
       <gui>
         <guiname xml:lang="nl">ToonTitel</guiname>
         <guiname xml:lang="en">ShowTitle</guiname>
-        <guitype>boolean</guitype>
       </gui>
       <editor>
         <positions>
@@ -70,10 +67,10 @@
           <search>20</search>
         </positions>
       </editor>
-      <db>
-        <name>showtitle</name>
-        <type key="false" site="255" notnull="false" state="persistent">STRING</type>
-      </db>
+      <datatype base="boolean" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="true" />
+      </datatype>
     </field>
+
   </fieldlist>
 </builder>
