@@ -47,5 +47,7 @@
 		<relation from="forums" to="postareas" type="forarearel" />
 		<relation from="postareas" to="postthreads" type="areathreadrel" />
 	</allowedrelationlist>
-
+  <datasourcelist />
+  <relationsourcelist />
+  <contextsourcelist />
 </application>
