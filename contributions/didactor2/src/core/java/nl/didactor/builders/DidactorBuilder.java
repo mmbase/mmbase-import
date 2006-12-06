@@ -17,7 +17,7 @@ import java.util.*;
  */
 public class DidactorBuilder extends MMObjectBuilder {
     private org.mmbase.util.Encode encoder = null;
-    private static Logger log = Logging.getLoggerInstance(DidactorBuilder.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(DidactorBuilder.class);
 
     private SortedSet preInsertComponents = new TreeSet();
     private SortedSet postInsertComponents = new TreeSet();
@@ -28,9 +28,7 @@ public class DidactorBuilder extends MMObjectBuilder {
     private SortedSet preDeleteComponents = new TreeSet();
 
     public boolean init() {
-        FieldDefs fd = new FieldDefs("_justinserted", "string", -1, -1, "_justinserted", FieldDefs.TYPE_STRING, -1, FieldDefs.DBSTATE_VIRTUAL);
-        addField(fd);
-
+        checkAddTmpField("_justinserted");
         return super.init();
     }
 
