@@ -87,19 +87,19 @@ public class NatMMConfig {
    public static boolean useCreationDateInURL = false;
    public static boolean isUISconnected = false;
 
-   public static String companyName = "Natuurmonumenten";
-   public static String fromEmailAddress = "website@natuurmonumenten.nl";
-   public static String fromCADAddress = "denatuurin@natuurmonumenten.nl";
-   public static String infoUrl = "http://www.natuurmonumenten.nl/vragen";
+   public static String companyName = "@natmmconf.companyName@";
+   public static String fromEmailAddress = "@natmmconf.fromEmailAddress@";
+   public static String fromCADAddress = "@natmmconf.fromCADAddress@";
+   public static String infoUrl = "@natmmconf.infoUrl@";
 
-   public static String toEmailAddress = "hangyi@xs4all.nl";
-   public static String [] liveUrl = { "http://www.natuurmonumenten.nl/", "http://www.prod.natuurmm.asp4all.nl/" };
-   public static String tmpMemberId = "9002162";
+   public static String toEmailAddress = "@natmmconf.toEmailAddress@";
+   public static String [] liveUrl = { "@natmmconf.liveUrl@" };
+   public static String tmpMemberId = "@natmmconf.tmpMemberId@";
 
-   public static String toSubscribeAddress = "AanmeldingLidmaatschap@Natuurmonumenten.nl";
-   public static String rootDir = "/export/www/natuurmm/jakarta-tomcat/webapps/ROOT/";
-   public static String tempDir = "/export/www/natuurmm/jakarta-tomcat/temp/";
-   public static String incomingDir = "/home/import/incoming/";
+   public static String toSubscribeAddress = "@natmmconf.toSubscribeAddress@";
+   public static String rootDir = "@natmmconf.rootDir@";
+   public static String tempDir = "@natmmconf.tempDir@";
+   public static String incomingDir = "@natmmconf.incomingDir@";
    
    // Life Line demo site
    /*

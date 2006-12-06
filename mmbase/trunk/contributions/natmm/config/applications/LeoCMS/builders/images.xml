@@ -26,11 +26,8 @@
     <property name="max-nodes-from-query">250</property>
     <!-- <property name="ImageConvertClass">org.mmbase.module.builders.ConvertJAI</property> -->
     <property name="ImageConvertClass">org.mmbase.module.builders.ConvertImageMagick</property>
-    <property name="ImageConvert.ConverterCommand">convert.exe</property>
-    <!-- <property name="ImageConvert.ConverterRoot">c:/apps/ImageMagick</property> -->
-    <!-- <property name="ImageConvert.ConverterRoot">e:/apps/imagemagick/</property> -->
-    <property name="ImageConvert.ConverterRoot">d:/apps/imagemagick/</property>
-   
+    <property name="ImageConvert.ConverterCommand">@images.convertercommand@</property>
+    <property name="ImageConvert.ConverterRoot">@images.converterroot@</property>
     <property name="MaxConcurrentRequests">3</property>
   </properties>
 

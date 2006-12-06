@@ -14,7 +14,7 @@
 	     <property name="host">127.0.0.1</property>
         <property name="authtype">none</property>
         <property name="dtdbase">http://www.mmbase.org/dtd/</property>
-        <property name="basename">v1</property>
+        <property name="basename">@database.tableprefix@</property>
         <property name="language">nl</property>
         <property name="encoding">UTF-8</property>
     </properties>
