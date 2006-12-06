@@ -1,6 +1,7 @@
 //	written	by Tan Ling	Wee	on 2 Dec 2001
 //	last updated 23 June 2002
 //	email :	fuushikaden@yahoo.com
+// JIRA check
 
 	var	fixedX = -1 			// x position (-1 if to appear below control)
 	var	fixedY = -1			// y position (-1 if to appear below control)
