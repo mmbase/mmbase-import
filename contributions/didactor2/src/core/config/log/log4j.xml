@@ -25,8 +25,13 @@
      </layout>
   </appender>
 
-  <logger name="org.mmbase.security" >
-    <level class="&mmlevel;" value ="warn" />
+
+  <logger name="org.mmbase.storage.implementation.database.DatabaseStorageManager">
+    <!-- warnings are about non-corresponding datatypes. May occur some after upgrade.
+         Not so important.
+         If you fixed the errors, you can lower this and concentrate on warnings, if you like.
+         -->
+    <level class="&mmlevel;" value ="error" />
   </logger>
 
   <!-- make sure that <mm:log> messages from webpages are visible -->
@@ -38,14 +43,6 @@
     <level class="&mmlevel;" value ="warn" />
   </logger>
 
-  <logger name="org.mmbase.util.XMLErrorHandler" >
-    <level class="&mmlevel;" value ="fatal" />
-  </logger>
-
-  <logger name="org.mmbase.applications.editwizard.Utils" >
-    <level class="&mmlevel;" value ="error" />
-  </logger>
-
   <!-- Uncomment this to log all sql commands to file:
   <logger name="org.mmbase.module.database.MultiConnection" additivity="false">
     <level class="&mmlevel;" value ="debug" />   
@@ -54,7 +51,8 @@
   -->
 
   <logger name="STDERR">
-    <level class="&mmlevel;" value ="warn" />   
+    <level class="&mmlevel;" value ="fatal" /> 
+    <!-- if not fatal, stderr is directed to mmbase log -->
   </logger>
 
   <root>
