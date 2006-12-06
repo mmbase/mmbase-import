@@ -11,8 +11,8 @@
   <property file="configure.properties"/>
 
   <property name="defaultexcludes" value="yes" />
-  <property name="mmbase.version" value="mmbase-1.8.2.20061003" />
-  <property name="mmbase.distro.location" value="http://www.mmbase.org/development/download/stable/MMBase-1_8_2/" />
+  <property name="mmbase.version" value="mmbase-1.8.3.20061205" />
+  <property name="mmbase.distro.location" value="http://www.mmbase.org/development/download/stable/MMBase-1_8_3/" />
   <property name="mmbase.distro" value="${mmbase.distro.location}/${mmbase.version}.zip" />
 
 
@@ -53,6 +53,10 @@
        <available file="${build.dir}/webapp/WEB-INF/config/applications" type="dir" />
        <then>
          <copy todir="${build.dir}/webapp/WEB-INF/config/builders" flatten="yes">
+           <!-- 
+                flatten yes? having builders in a sensible sub-dir would make life a bit better
+                bearable ...
+           -->
            <fileset dir="${build.dir}/webapp/WEB-INF/config/applications">
              <include name="**/builders/*.xml"/>
            </fileset>
