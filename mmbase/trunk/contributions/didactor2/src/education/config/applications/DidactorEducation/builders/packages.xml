@@ -19,7 +19,7 @@
    </properties>
 
    <fieldlist>
-     <field nam="name">
+     <field name="name">
        <gui>
          <guiname xml:lang="nl">Naam</guiname>
          <guiname xml:lang="en">Name</guiname>
