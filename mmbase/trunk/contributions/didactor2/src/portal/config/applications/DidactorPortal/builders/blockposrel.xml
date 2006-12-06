@@ -75,8 +75,8 @@
         <guiname xml:lang="en">Units</guiname>
       </gui>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <required value="false" />
         <default value="0" />
+        <required value="false" />
         <enumeration>
           <!-- just a guess -->
           <entry value="0" display="pixels" />
