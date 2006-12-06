@@ -149,8 +149,8 @@
         <guiname xml:lang="en">Feedbackpage after test</guiname>
       </gui>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <required value="true" />
         <default value="0" />
+        <required value="true" />
         <enumeration>
           <entry value="0" xml:lang="nl" display="Een pagina die aangeeft of de student geslaagd/gezakt is" />
           <entry value="1" xml:lang="nl" display="Een pagina die alle antwoorden met feedback laat zien" />
