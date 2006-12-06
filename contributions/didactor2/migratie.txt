@@ -12,6 +12,22 @@ E.g.: if "versioning" is absent, delete "Versioning" node from version control t
 and restart Tomcat.
 ----
 
+2006-12
+
+   To upgrade mmbob:
+
+    alter table mmb_posters modify password varchar(128);
+
+   If you want the bcc functionality to work:
+
+    alter table mmb_emails add bcc varchar(255);
+
+   Inspect mmbase log for more alter tables which can be done. Reasonable fall-backs are used if you
+   don't do anything.
+
+   
+
+
 2006-01-04
 
     To add mailbox "drafts" to people, please run /migrate/migrate-2006-01-04.jsp
