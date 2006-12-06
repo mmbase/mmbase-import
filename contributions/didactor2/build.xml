@@ -15,8 +15,6 @@
   <property name="mmbase.distro.location" value="http://www.mmbase.org/development/download/stable/MMBase-1_8_3/" />
   <property name="mmbase.distro" value="${mmbase.distro.location}/${mmbase.version}.zip" />
 
-
-
   <target name="create.dirs">
     <mkdir dir="${build.dir}" />
     <mkdir dir="${build.dir}/classes" />
@@ -154,17 +152,19 @@
     </if>
   </target>
 
-  <target name="compile.component">
+  <target name="compile.component" depends="mmbase.distro">
     <echo message="Compiling component ${component}" />
     <!-- copy external libs -->
     <if>
       <available file="src/${component}/lib" type="dir" />
       <then>
-        <copy todir="${build.dir}/webapp/WEB-INF/lib">
+        <copy todir="${build.dir}/webapp/WEB-INF/lib"  preservelastmodified="true">
           <fileset
               defaultexcludes="${defaultexcludes}"
               dir="src/${component}/lib">
             <include name="**"/>
+          </fileset>
+          <fileset dir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib" >
           </fileset>
         </copy>
       </then>
@@ -183,6 +183,8 @@
           </fileset>
           <fileset dir="src/${component}/lib">
             <include name="*.jar" />
+          </fileset>
+          <fileset dir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib">
           </fileset>
         </path>
         <mkdir dir="${build.dir}/classes/${component}" />
