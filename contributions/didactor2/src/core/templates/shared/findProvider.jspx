@@ -121,7 +121,11 @@
   
   <mm:notpresent referid="provider">
     <mm:write referid="servername" jspvar="sn">
+      <mm:listnodes type="providers" max="1" orderby="number">
+        <mm:node id="provider" />
+      </mm:listnodes>
       <mm:log jspvar="log"><jsp:scriptlet>log.error("No provider found, perhaps no url " + sn + " was linked?");</jsp:scriptlet></mm:log>
+      <mm:log>Just guessing a provider: ${_provider} (the oldest one).</mm:log>
     </mm:write>
   </mm:notpresent>
 
