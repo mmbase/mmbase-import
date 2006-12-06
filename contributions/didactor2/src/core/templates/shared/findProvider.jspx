@@ -118,9 +118,9 @@
       </mm:listcontainer>
     </mm:notpresent>
   </mm:present>
-  
+
   <mm:notpresent referid="provider">
-    <mm:write referid="servername" jspvar="sn">
+    <mm:write referid="servername" jspvar="sn" write="false">
       <mm:listnodes type="providers" max="1" orderby="number">
         <mm:node id="provider" />
       </mm:listnodes>
