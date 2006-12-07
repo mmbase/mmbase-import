@@ -1,13 +1,33 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<mm:cloud method="delegate" authenticate="asis">
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%><mm:cloud method="delegate" authenticate="asis">
 <jsp:directive.include file="/shared/setImports.jsp" />
 <div class="applicationMenubar" style="white-space: nowrap">
-  <div class="menuItemApplicationMenubar">
-    <a title="<di:translate key="core.home" />" href="<mm:treefile page="/index.jsp" objectlist="$includePath" referids="provider?"/>" class="menubar"><di:translate key="core.home" /></a>
-  </div>
-      
-  <mm:isgreaterthan referid="user" value="0">
+  <mm:hasrank value="didactor-anonymous">
+    <div class="menuItemApplicationMenubar">
+      <mm:link page="/education">
+      <form method="post" action="${_}">
+        <input type="hidden" name="authenticate"  value="plain"  />
+        <input type="hidden" name="command"       value="login" />
+        <input type="hidden" name="provider"       value="${provider}" />
+        <input type="hidden" name="educatin"       value="${education}" />
+        <di:translate key="core.username" />: <input id="loginUsername" type="text" size="20" name="username" value="${newusername}" />
+        <di:translate key="core.password" />: <input id="loginPassword" type="password" size="20" name="password" value="${newpassword}" />
+        <input class="formbutton" id="loginSubmit" type="submit" value="<di:translate key="core.login" />" />
+      </form>
+      </mm:link>
+      <mm:node number="component.register" notfound="skipbody">
+        <di:translate key="register.noaccountyet" />
+        <di:translate key="register.registeryourself" />
+        <a href="<mm:treefile page="/register/index.jsp" objectlist="$includePath" referids="$referids" />"><di:translate key="register.here" /></a>
+      </mm:node>
+    </div>
+  </mm:hasrank>
+  <mm:hasrank minvalue="basic user">
+    <div class="menuItemApplicationMenubar">
+      <a title="<di:translate key="core.home" />" href="<mm:treefile page="/index.jsp" objectlist="$includePath" referids="provider?"/>" class="menubar"><di:translate key="core.home" /></a>
+    </div>
+
     <div class="menuSeperatorApplicationMenubar"></div>
     <div class="menuItemApplicationMenubar">
       <mm:node number="$user">
@@ -18,15 +38,12 @@
     <div class="menuSeperatorApplicationMenubar"></div>
     
     <div class="menuItemApplicationMenubar">
-      <mm:node number="component.portfolio" notfound="skipbody">
-        <mm:import id="hasportfolio">true</mm:import>
-      </mm:node>
-      <mm:present referid="hasportfolio">
+      <mm:hasnode number="component.portfolio">
         <a title="<di:translate key="core.configuration" />" href="<mm:treefile page="/portfolio/index.jsp?edit=true" objectlist="$includePath" referids="$referids"/>" class="menubar"><di:translate key="core.configuration" /></a>
-      </mm:present>
-      <mm:notpresent referid="hasportfolio">
+      </mm:hasnode>
+      <mm:hasnode number="component.portfolio" inverse="true">
         <a title="<di:translate key="core.configuration" />" href="<mm:treefile page="/admin/index.jsp" objectlist="$includePath" referids="$referids" />" class="menubar"><di:translate key="core.configuration" /></a>
-      </mm:notpresent>
+      </mm:hasnode>
     </div>
 
     <div class="menuSeperatorApplicationMenubar"></div>
@@ -88,7 +105,7 @@
     </mm:present>
     <!-- end of region cms help and faq -->
                                 
-  </mm:isgreaterthan>
+  </mm:hasrank>
 </div>
 
 <script language="JavaScript" type="text/javascript">
