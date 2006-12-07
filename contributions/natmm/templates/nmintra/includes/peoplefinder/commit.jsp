@@ -8,7 +8,7 @@ String thisPerson = "";
 String messageTitle = "";
 String messageBody = "";
 String messageHref =  thisPage;
-String messageLinktext = "terug naar het smoelenboek";
+String messageLinktext = "terug naar '" + cloud.getNode(paginaID).getStringValue("titel") + "'";
 String messageLinkParam = "";
 
 String emailHelpText = 
