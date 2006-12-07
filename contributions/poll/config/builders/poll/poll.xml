@@ -81,4 +81,9 @@
     </field>
 
   </fieldlist>
+  <functionlist>
+    <function key="total">
+      <class>org.mmbase.poll.Total</class>
+    </function>
+  </functionlist>
 </builder>
