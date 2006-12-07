@@ -1,0 +1,18 @@
+<mm:cloud
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    >
+  <jsp:output omit-xml-declaration="yes" />
+
+  <mm:import externid="article" required="true" />
+  <div class="article">
+    <mm:node referid="article">
+      <h1><mm:field name="title" /></h1>
+      <mm:field name="body" escape="p,links" />
+    </mm:node>
+    <mm:link>
+      <a href="${_}">back</a>
+    </mm:link>
+  </div>
+</mm:cloud>

@@ -27,9 +27,21 @@
 
         <!-- 1 and 3 are floats, so must be outputted first -->
         <c:forEach items="1,3,2" var="col">
-          <div class="column x${col}">
-            <mm:treeinclude page="/portal/column.div.jspx" objectlist="$includePath" referids="$referids,col,referids,includePath" />
-          </div>
+          <mm:context>
+            <div class="column x${col}">
+              <mm:import id="c" externid="col${col}" />
+              <c:choose>
+                <c:when test="${c eq 'ignore'}">
+                </c:when>
+                <c:when test="${empty c}">
+                  <mm:treeinclude page="/portal/column.div.jspx" objectlist="$includePath" referids="$referids,col,referids,includePath" />
+                </c:when>
+                <c:otherwise>
+                  <mm:treeinclude page="/portal/${c}.div.jspx"  objectlist="$includePath" referids="$referids,col,referids,includePath" />
+                </c:otherwise>
+              </c:choose>
+            </div>
+          </mm:context>
         </c:forEach>
       </body>
     </html>
