@@ -4,7 +4,7 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     >
-  <jsp:directive.page buffer="800kb" />
+  <jsp:directive.page buffer="80kb" />
   <jsp:directive.include file="/shared/findProvider.jspx" />
 
   <mm:content type="application/xhtml+xml">
@@ -13,12 +13,12 @@
 
         <title><di:translate key="education.learnenvironmenttitle" /></title>
 
-        <mm:treefile page="/css/base.css"  objectlist="$includePath">
+        <mm:treefile page="/css/base.css"  objectlist="$includePath" write="false">
           <link rel="stylesheet" type="text/css" href="${_}" />
         </mm:treefile>
-        <mm:treefile page="/portal/style/base.css"  objectlist="$includePath">
+        <mm:treefile page="/portal/style/base.css"  objectlist="$includePath" write="false">
           <link rel="stylesheet" type="text/css" href="${_}" />
-        </mm:treefile>s
+        </mm:treefile>
 
       </head>
       <body class="portal">
