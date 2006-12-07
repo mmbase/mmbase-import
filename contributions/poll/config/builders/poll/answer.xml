@@ -18,7 +18,7 @@
     <description xml:lang="nl">De antwoorden om met de poll te gebruiken</description>
   </descriptions>
 
-  <fieldlist>    
+  <fieldlist>
     <field name="answer">
       <gui>
         <guiname xml:lang="en">Answer</guiname>
@@ -57,7 +57,10 @@
           <list>3</list>
         </positions>
       </editor>
-      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="0" />
+        <required value="true" />
+      </datatype>
     </field>
 
   </fieldlist>
