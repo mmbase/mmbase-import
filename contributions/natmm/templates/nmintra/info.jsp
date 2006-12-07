@@ -133,7 +133,6 @@ if(!articleId.equals("-1")) {
                   Long nextEmbargoDate = (Long) tmapArticles.firstKey();
                   String article = (String) tmapArticles.get(nextEmbargoDate);
                   %>
-                  <%= article %><br/>
                   <mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel" constraints="<%= "artikel.number = '" + article + "'" %>"><%
                     String titleClass = "pageheader"; 
                     String readmoreUrl = "info.jsp";
@@ -143,7 +142,7 @@ if(!articleId.equals("-1")) {
                     ><mm:field name="pagina.titel_fra" jspvar="showDate" vartype="String" write="false"
                        ><%@include file="includes/info/summaryrow.jsp" 
                     %></mm:field
-                   ></mm:list>
+                  ></mm:list>
                   <%
                   tmapArticles.remove(nextEmbargoDate);
                 }
