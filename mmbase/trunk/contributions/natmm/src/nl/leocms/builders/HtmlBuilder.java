@@ -43,7 +43,7 @@ import nl.leocms.util.tools.HtmlCleaner;
  *
  * @author Nico Klasens (Finalist IT Group)
  * @created 23-okt-2003
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class HtmlBuilder extends MMObjectBuilder {
    /** MMbase logging system */
@@ -61,12 +61,12 @@ public class HtmlBuilder extends MMObjectBuilder {
 
       String tmp = getInitParameter("htmlFields");
       if (tmp != null) {
-         StringTokenizer tokenizer = new StringTokenizer(tmp, ", ");
+         StringTokenizer tokenizer = new StringTokenizer(tmp, ", \n");
          while(tokenizer.hasMoreTokens()) {
             String field = tokenizer.nextToken();
-            log.debug("html field: " + field.trim());
             htmlFields.add(field);
          }
+         log.debug("html fields for " + getSingularName() + ": " + htmlFields); 
       }
       return true;
    }
@@ -122,11 +122,11 @@ public class HtmlBuilder extends MMObjectBuilder {
    private void cleanField(MMObjectNode node, FieldDefs field) {
       if (field != null) {
          String fieldName = field.getDBName();
-
          if (field.getDBState() == FieldDefs.DBSTATE_PERSISTENT
             && field.getDBType() == FieldDefs.TYPE_STRING
             && htmlFields.contains(fieldName)) {
-
+            log.debug("cleaning field " + fieldName);
+         
             // Persistent string field.
             String originalValue = (String) node.values.get(fieldName);
             if (originalValue!=null && !"".equals(originalValue.trim())) {
@@ -137,11 +137,9 @@ public class HtmlBuilder extends MMObjectBuilder {
 
                node.setValue(fieldName, newValue);
 
-               if (log.isDebugEnabled()) {
                   if (!originalValue.equals(newValue)) {
                      log.debug("Replaced " + fieldName + " value \"" + originalValue + "\"\n \t by \n\"" + newValue + "\"");
                   }
-               }
             }
          }
       }
