@@ -28,9 +28,9 @@ import org.mmbase.util.logging.Logger;
 public class Factory {
     private static final Logger log = Logging.getLoggerInstance(Factory.class);
 
-
-
     private static ImageInformer imageInformer;
+    private static ImageConverter imageConverter;
+
     protected static Map params = new HashMap();
 
     /**
@@ -71,7 +71,7 @@ public class Factory {
         }
 
 
-        ImageConverter imageConverter = loadImageConverter();
+        imageConverter = loadImageConverter();
         imageInformer = loadImageInformer();
         log.info("Got " + imageInformer);
 
@@ -142,7 +142,7 @@ public class Factory {
         try {
             Class cl = Class.forName(className);
             ii = (ImageInformer) cl.newInstance();
-            log.service("loaded '" + className+"' for image Factory");
+            log.service("loaded '" + className + "' for image informer Factory");
         } catch (ClassNotFoundException e) {
             log.error("is classname in " + params.get("configfile") + " correct? ('not found class " + className + "')");
             log.error(Logging.stackTrace(e));
@@ -164,6 +164,9 @@ public class Factory {
         return imageInformer;
     }
 
+    public static ImageConverter getImageConverter() {
+        return imageConverter;
+    }
 
     /**
      * Triggers a image-conversion.
