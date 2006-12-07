@@ -1,0 +1,18 @@
+<mm:node
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    >
+  <jsp:output omit-xml-declaration="yes" />
+  <!-- generic code to deplay a webblock -->
+  <div class="${_node.name}">
+    <h1><mm:field name="name" /></h1>
+    <mm:field name="description"><mm:isnotempty><h2><mm:write /></h2></mm:isnotempty></mm:field>
+    <mm:relatednodes type="news" role="posrel">
+      <h2><mm:field name="title" /></h2>
+      <mm:field name="subtitle"><mm:isnotempty><h3><mm:write /></h3></mm:isnotempty></mm:field>
+      <mm:field name="intro" escape="p,links" />
+      <mm:field name="body" escape="p,links"/>
+    </mm:relatednodes>
+  </div>
+</mm:node>

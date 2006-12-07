@@ -10,8 +10,13 @@
            page="/mmbase/edit/wizard/jsp/list.jsp">
     <mm:param name="templates">/editwizards/data/</mm:param>
     <mm:param name="origin">${_node}</mm:param>
-    <mm:param name="wizard">config/${wizarddir}/${type}-origin</mm:param>
+    <mm:param name="startnodes">${_node}</mm:param>
+    <mm:param name="wizard">config/${wizarddir}/${type}</mm:param>
     <mm:param name="nodepath">webblocks,${empty role ? '' : role + ','}${type}</mm:param>
-    <a href="${_}"><mm:nodeinfo nodetype="${type}" type="plural_guinodemanager" /></a>
+    <mm:param name="searchdirs">destination</mm:param>
+    <a href="${_}">
+      <mm:nodeinfo nodetype="${type}" type="plural_guinodemanager" />
+      (#<mm:countrelations  role="${empty role ? '' : role}" type="${type}" searchdir="destination" />)
+    </a>
   </mm:link>
 </mm:node>
