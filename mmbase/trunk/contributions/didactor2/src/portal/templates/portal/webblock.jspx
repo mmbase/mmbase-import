@@ -12,7 +12,11 @@
       <h2><mm:field name="title" /></h2>
       <mm:field name="subtitle"><mm:isnotempty><h3><mm:write /></h3></mm:isnotempty></mm:field>
       <mm:field name="intro" escape="p,links" />
-      <mm:field name="body" escape="p,links"/>
+      <mm:link referids="_node@article">
+        <mm:param name="col2" value="article" />
+        <mm:param name="col3" value="ignore" />
+        <a href="${_}">&gt;&gt;</a>
+      </mm:link>
     </mm:relatednodes>
   </div>
 </mm:node>
