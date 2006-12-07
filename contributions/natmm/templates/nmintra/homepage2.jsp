@@ -9,6 +9,7 @@
 <mm:import id="ishome" />
 <mm:import id="jsps"><%= editwizard_location %>/jsp/</mm:import>
 <% String rightBarTitle = ""; %>
+<%@include file="includes/tickertape_init.jsp" %>
 <%@include file="includes/header.jsp" %>
   <td><%@include file="includes/pagetitle.jsp" %></td>
   <td><%@include file="includes/rightbartitle.jsp"%></td>
