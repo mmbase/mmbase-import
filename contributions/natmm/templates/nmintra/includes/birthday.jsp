@@ -1,4 +1,4 @@
-<%
+<mm:present referid="ishome"><%
 cal.setTime(new Date());
 String now = cal.get(Calendar.DAY_OF_MONTH) + " " + (cal.get(Calendar.MONTH) + 1);
 
@@ -108,3 +108,4 @@ if(number_of_birthdays>0) {
     </tr>
   </table>
 </mm:node>
+</mm:present>
