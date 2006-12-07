@@ -1,0 +1,18 @@
+<mm:node
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    >
+  <jsp:output omit-xml-declaration="yes" />
+
+  <div class="menu">
+    <h1><di:translate key="education.learnenvironmenttitle" /></h1>
+    <h2><mm:field name="name" /></h2>
+    <mm:field name="description"><mm:isnotempty><h2><mm:write /></h2></mm:isnotempty></mm:field>
+    <ul>
+      <mm:relatednodes type="urls" role="posrel">
+        <li><a href="${_node.url}"><mm:field name="url" /></a></li>
+      </mm:relatednodes>
+    </ul>
+  </div>
+</mm:node>
