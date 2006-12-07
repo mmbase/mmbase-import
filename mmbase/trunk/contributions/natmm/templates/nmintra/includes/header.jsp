@@ -19,7 +19,7 @@
       var wHeight = 0;
       var infoPageDiff = 87;
       var navListDiff = 62;
-      var smoelenBoekDiff = 378;
+      var smoelenBoekDiff = 400; // was 378, but then some IE version render the bottom of the div outside the visible window 
       var linkListDiff = 511;
       var rightColumnDiff = 109;
       var minHeight = 300;
