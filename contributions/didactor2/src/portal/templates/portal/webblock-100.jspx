@@ -1,0 +1,24 @@
+<mm:node id="component"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    >
+  <!--
+      MMBase 'components' will only existing in MMBase &gt; 1.8
+      This tries to do something similar already with mmbase 1.8, just be using a 
+      dynamic include (which abuses the 'description' field of the webblock).
+  -->
+  <jsp:output omit-xml-declaration="yes" />
+  <mm:import externid="education" required="true" />
+  <div class="component">
+    <h1><mm:field name="name" /></h1>
+    <mm:haspage page="${_node.description}">
+      <mm:node referid="education">
+        <mm:include page="${component.description}" />
+      </mm:node>
+    </mm:haspage>
+    <mm:haspage page="${_node.description}" inverse="true">
+      <p>No such page ${_node.description}</p>
+    </mm:haspage>
+  </div>
+</mm:node>

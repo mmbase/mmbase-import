@@ -9,8 +9,9 @@ div.x1 {
     background-color: #2e72f8;
 }
 
-div.x1 div.menu {
+div.column div.menu *, div.column div.menu {
     background-color: #e2641b;
+    color: black;
 }
 
 div.x3 {
@@ -24,4 +25,23 @@ div.column h1 {
     background-repeat: no-repeat;
     background-color: #dc6f8c;
 
+}
+
+div.column * {
+    background-color: white;
+}
+
+div.poll {
+    padding-bottom: 2ex;
+}
+div.poll .results {
+    background-color: red;
+}
+div.poll ul {
+    padding-left: 1ex;
+    list-style-type: none;
+}
+div.poll ul li {
+    white-space: nowrap;
+    margin-bottom: 1ex;
 }

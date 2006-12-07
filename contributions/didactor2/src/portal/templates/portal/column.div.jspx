@@ -17,11 +17,12 @@
         <mm:constraint field="blockposrel.x" value="${col}" />
         <mm:sortorder field="blockposrel.y" />
         <mm:relatednodes>
-          <div class="${_node.name}">
-            <h1><mm:field name="description" /></h1>
-            <mm:relatednodes type="articles">
-            </mm:relatednodes>
-          </div>
+          <mm:haspage page="webblock-${_node.type}.jspx">
+            <mm:include page="webblock-${_node.type}.jspx" />
+          </mm:haspage>
+          <mm:haspage page="webblock-${_node.type}.jspx" inverse="true">
+            <mm:include page="webblock.jspx" />
+          </mm:haspage>
         </mm:relatednodes>
       </mm:relatednodescontainer>
     </mm:node>

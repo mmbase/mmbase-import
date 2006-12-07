@@ -9,7 +9,7 @@
   <p>
     <mm:node referid="webblock">
       <mm:include page="related-type.jspx">
-        <mm:param name="type">urls</mm:param>
+        <mm:param name="type">components</mm:param>
       </mm:include>
     </mm:node>
   </p>
