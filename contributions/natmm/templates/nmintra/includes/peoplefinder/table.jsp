@@ -89,7 +89,7 @@
               <td style="padding-bottom:3px;vertical-align:bottom;"><mm:field name="omschrijving_fra" /></td>
            </tr>
            <%
-           if(sRubriekLayout.equals("" + NMIntraConfig.SUBSITE1_LAYOUT)) { 
+           if(!sRubriekLayout.equals("" + NMIntraConfig.SUBSITE1_LAYOUT)) { 
               %>
               <tr><td style="padding-bottom:3px;">En verder:&nbsp;</td><td style="padding-bottom:3px;vertical-align:bottom;"><mm:field name="omschrijving" /></td></tr>
               <%

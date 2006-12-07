@@ -94,7 +94,7 @@
 		if (actionId.equals("feedback")){
          %><jsp:include page="includes/feedback/form.jsp">
             <jsp:param name="object" value="<%= eventId %>" />
-            <jsp:param name="field" value="naam" />
+            <jsp:param name="field" value="titel" />
             <jsp:param name="ntype" value="activiteit" />
             <jsp:param name="by" value="het organiserende Bezoekerscentrum" />
             <jsp:param name="param" value="ev" />

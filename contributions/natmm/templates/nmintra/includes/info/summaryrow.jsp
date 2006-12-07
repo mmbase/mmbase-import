@@ -1,4 +1,5 @@
 <mm:remove referid="attachmentfound" />
+<mm:remove referid="this_article" />
 <mm:node element="artikel" id="this_article" jspvar="thisArticle">
   <mm:notpresent referid="ishome">
     <mm:related path="posrel1,paragraaf,posrel2,attachments"

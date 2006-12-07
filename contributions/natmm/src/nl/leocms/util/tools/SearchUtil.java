@@ -16,6 +16,7 @@ import org.apache.lucene.search.*;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.document.Document;
 
+import nl.leocms.evenementen.Evenement;
 import nl.leocms.util.*;
 import nl.leocms.util.tools.HtmlCleaner;
 
@@ -24,7 +25,7 @@ import nl.leocms.util.tools.HtmlCleaner;
  * Utilities functions for the search pages
  *
  * @author H. Hangyi
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class SearchUtil {
 
@@ -279,19 +280,110 @@ public class SearchUtil {
 
       return period;
    }
+   
+    /* 
+    * version used by natmm search page
+    */
+    public HashSet addPages(
+      Cloud cloud,
+      net.sf.mmapps.modules.lucenesearch.SearchConfig cf,
+      String sQuery,
+      int index,
+      String path,
+      String rootRubriek,
+      long nowSec,
+      HashSet hsetPagesNodes) {
 
-   public HashSet addPages(
+      HashSet hsetNodes = new HashSet();
+      try { 
+        net.sf.mmapps.modules.lucenesearch.SearchIndex si = cf.getIndex(index);
+        Analyzer analyzer = si.getAnalyzer();
+        IndexReader ir = IndexReader.open(si.getIndex());
+        QueryParser qp = new QueryParser("indexed.text", analyzer);
+        qp.setDefaultOperator(QueryParser.AND_OPERATOR);
+        org.apache.lucene.search.Query result = null;
+        SearchValidator sv = new SearchValidator();
+        String value = sv.validate(sQuery);
+        try {
+          result = qp.parse(value);
+        } catch (Exception e) {
+          log.error("Error parsing field 'indexed.text' with value '" + value + "'");
+        }
+        if (result != null) {
+        int quarterOfAnHour = 60*15;
+        BooleanQuery constructedQuery = new BooleanQuery();
+        constructedQuery.add(result, BooleanClause.Occur.MUST);
+      
+        IndexSearcher searcher = new IndexSearcher(ir); 
+        Hits hits = searcher.search(constructedQuery);
+        TreeSet includedEvents = new TreeSet();
+      
+        for (int i = 0; i < hits.length(); i++) {
+            Document doc = hits.doc(i);
+            String docNumber = doc.get("node");
+            if(path!=null) {
+                NodeList list = cloud.getList(docNumber,path,"pagina.number",null,null,null,"SOURCE",true);
+                for(int j=0; j<list.size(); j++) {
+                  String paginaNumber = list.getNode(j).getStringValue("pagina.number");
+                  if(PaginaHelper.getSubsiteRubriek(cloud,paginaNumber).equals(rootRubriek)) {
+                    if (index==1) {
+                      PaginaHelper ph = new PaginaHelper(cloud);
+                      String sConstraints = (new nl.leocms.util.tools.SearchUtil()).articleConstraint(nowSec, quarterOfAnHour);
+                      NodeList nl = cloud.getList(docNumber,"natuurgebieden,rolerel,artikel","artikel.number",sConstraints,null,null,null,true);
+                      if (ph.getPaginaTemplate(paginaNumber).getStringValue("url").equals("routes.jsp")
+                        &&(nl.size()>0)){
+                        hsetPagesNodes.add(paginaNumber);
+                        hsetNodes.add(docNumber);
+                      }
+                    } else if (index==2) {
+                      PaginaHelper ph = new PaginaHelper(cloud);
+                      if (ph.getPaginaTemplate(paginaNumber).getStringValue("url").equals("natuurgebieden.jsp")){
+                        hsetPagesNodes.add(paginaNumber);
+                        hsetNodes.add(docNumber);
+                      }
+                    } else {
+                       hsetPagesNodes.add(paginaNumber);
+                       hsetNodes.add(docNumber);
+                    }
+                  }
+                }
+            } else { // *** no path implies an Evenement ***
+                Node e = cloud.getNode(docNumber);
+               String sParent =  Evenement.findParentNumber(docNumber);
+                if(!includedEvents.contains(sParent) && Evenement.isOnInternet(e,nowSec)) {
+                  String paginaNumber = cloud.getNode("agenda").getStringValue("number");
+                   if(PaginaHelper.getSubsiteRubriek(cloud,paginaNumber).equals(rootRubriek)) {
+                     hsetNodes.add(docNumber);
+                      includedEvents.add(sParent);
+                  }
+                }
+             }
+         }
+      
+          if(searcher!=null) { searcher.close(); }
+          if(ir!=null) { ir.close(); }
+        }
+      } catch (Exception e) { 
+        log.error("lucene index " + index + " throws error on query " + sQuery); 
+      } 
+      return hsetNodes;
+   }
+
+   /* 
+    * version used by nmintra search page
+    */
+    public HashSet addPages(
       Cloud cloud,
       SearchConfig cf,
-		String sQuery,
+		  String sQuery,
       int index,
       String path,
       String sRubriekNumber,
-		String sPoolNumber,
+		  String sPoolNumber,
       long nowSec,
-		long fromTime,
-		long toTime,
-		boolean searchArchive,
+		  long fromTime,
+		  long toTime,
+		  boolean searchArchive,
       HashSet hsetPagesNodes) {
       HashSet hsetNodes = new HashSet();
       try {
@@ -328,13 +420,17 @@ public class SearchUtil {
             if (searcher != null) { searcher.close(); }
             if (ir != null) { ir.close(); }
          }
-         log.debug("Searching for " + sQuery + " on " + path + " results in nodes " + hsetNodes + " and pages " + hsetPagesNodes);
+         log.info("Searching for " + sQuery + " on " + path + " results in nodes " + hsetNodes + " and pages " + hsetPagesNodes);
       } catch (Exception e) {
          log.error("Lucene index " + index + " on query " + sQuery + " throws error " + e);
       }
       return hsetNodes;
    }
 
+   /* 
+    * version used by nmintra search page, if the query is empty
+    * see for a good example of usage: templates/nmintra/info.jsp
+    */
    public HashSet addPages(
       Cloud cloud,
       String path,
@@ -372,6 +468,16 @@ public class SearchUtil {
       boolean searchArchive,
       HashSet hsetPagesNodes) {
 
+      log.debug("calculate(path="+path
+        +" sRubriekNumber="+sRubriekNumber
+        +" sPoolNumber="+sPoolNumber
+        +" docNumber="+docNumber
+        +" nowSec="+nowSec
+        +" fromTime="+fromTime
+        +" toTime="+toTime
+        +" searchArchive="+searchArchive
+        +" hsetPagesNodes="+hsetPagesNodes+")");
+      
       HashSet hsetNodes = new HashSet();
       String sBuiderName = getBuilderName(path);
       String sConstraints = "";
@@ -382,28 +488,37 @@ public class SearchUtil {
                "') AND (" + sBuiderName + ".embargo < '" + toTime + "')";
          }
       }
-      NodeList list = cloud.getList(docNumber, path, "pagina.number," +
-                                    sBuiderName + ".number",
-                                    sConstraints, null, null, null, true);
-      for (int j = 0; j < list.size(); j++) {
-         String paginaNumber = list.getNode(j).getStringValue("pagina.number");
-         if (docNumber.equals("")){
-            docNumber = list.getNode(j).getStringValue(sBuiderName + ".number");
-         }
-         Vector breadcrumbs = PaginaHelper.getBreadCrumbs(cloud, paginaNumber);
-         boolean inRubriek = sRubriekNumber.equals("") || breadcrumbs.contains(sRubriekNumber);
-         // exclude builders that do not have a relation to pools
-         boolean inPool = sPoolNumber.equals("")
-                  || ( !sBuiderName.equals("producttypes") 
-                        && !sBuiderName.equals("documents")
-                        && PoolUtil.getPool(cloud, docNumber).contains(cloud.getNode(sPoolNumber)));
-         boolean inArchive = breadcrumbs.contains(cloud.getNode("archive").getStringValue("number"));
-         // when not searching the archive, exclude contentelements that are in the archive
-         if(inRubriek && inPool && !(!searchArchive && inArchive) ) {
-            hsetPagesNodes.add(paginaNumber);
-            hsetNodes.add(docNumber);
-         }
+      Node doc = null;
+      try {
+        doc = cloud.getNode(docNumber);
+      } catch (Exception e) {
+        log.error("Node " + docNumber + " does not exist, maybe it was deleted.");
       }
+      if(doc!=null) {
+        NodeList list = cloud.getList(docNumber, path, "pagina.number," +
+                                      sBuiderName + ".number",
+                                      sConstraints, null, null, null, true);
+        for (int j = 0; j < list.size(); j++) {
+           String paginaNumber = list.getNode(j).getStringValue("pagina.number");
+           if (docNumber.equals("")){
+              docNumber = list.getNode(j).getStringValue(sBuiderName + ".number");
+           }
+           Vector breadcrumbs = PaginaHelper.getBreadCrumbs(cloud, paginaNumber);
+           boolean inRubriek = sRubriekNumber.equals("") || breadcrumbs.contains(sRubriekNumber);
+           // exclude builders that do not have a relation to pools
+           boolean inPool = sPoolNumber.equals("")
+                    || ( !sBuiderName.equals("producttypes") 
+                          && !sBuiderName.equals("documents")
+                          && PoolUtil.containsPool(cloud, docNumber, sPoolNumber));
+           boolean inArchive = breadcrumbs.contains(cloud.getNode("archive").getStringValue("number"));
+           // when not searching the archive, exclude contentelements that are in the archive
+           if(inRubriek && inPool && !(!searchArchive && inArchive) ) {
+              hsetPagesNodes.add(paginaNumber);
+              hsetNodes.add(docNumber);
+           }
+        }
+      }
+      log.debug("found " + hsetNodes);
       return hsetNodes;
    }
 
@@ -419,4 +534,17 @@ public class SearchUtil {
       return cloud.getList(sPaginaID,"pagina,contentrel,artikel","artikel.number",
       sConstraints,"artikel.embargo",null,"destination",true);
    }
+   
+   
+   public String queryString(String sQuery) {
+     String DOUBLESPACE = "  ";
+     String SINGLESPACE = " ";
+     String qStr = sQuery;
+     while(qStr.indexOf(DOUBLESPACE)>-1) {
+       qStr = qStr.replaceAll(DOUBLESPACE,SINGLESPACE);
+     }
+     qStr = qStr.trim().replaceAll(SINGLESPACE,"* AND ") + "*";
+     return  qStr;
+   }
+
 }
