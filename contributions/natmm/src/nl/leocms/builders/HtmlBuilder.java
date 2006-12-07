@@ -43,7 +43,7 @@ import nl.leocms.util.tools.HtmlCleaner;
  *
  * @author Nico Klasens (Finalist IT Group)
  * @created 23-okt-2003
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class HtmlBuilder extends MMObjectBuilder {
    /** MMbase logging system */
@@ -136,10 +136,9 @@ public class HtmlBuilder extends MMObjectBuilder {
                String newValue = HtmlCleaner.cleanHtml(originalValue);
 
                node.setValue(fieldName, newValue);
-
-                  if (!originalValue.equals(newValue)) {
-                     log.debug("Replaced " + fieldName + " value \"" + originalValue + "\"\n \t by \n\"" + newValue + "\"");
-                  }
+               if (log.isDebugEnabled() && !originalValue.equals(newValue)) {
+                 log.debug("Replaced " + fieldName + " value \"" + originalValue + "\"\n \t by \n\"" + newValue + "\"");
+               }
             }
          }
       }
