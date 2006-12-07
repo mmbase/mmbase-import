@@ -3,7 +3,7 @@
     xmlns:jsp="http://java.sun.com/JSP/Page" 
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xml:lang="en" lang="en">
-  <mm:content type="text/html" language="nl" expires="0">
+  <mm:content type="text/html" language="nl" expires="0" postprocessor="none">
     <jsp:directive.page session="true" />
     <jsp:output doctype-root-element="html"
                 doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
