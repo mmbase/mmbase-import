@@ -1,14 +1,3 @@
-<%-- <%@page import="
-  org.mmbase.module.Module,
-	net.sf.mmapps.modules.lucenesearch.LuceneModule,
-	net.sf.mmapps.modules.lucenesearch.util.*,
-	org.apache.lucene.index.IndexReader,
-	org.apache.lucene.analysis.*,
-  org.apache.lucene.search.*,
-	org.apache.lucene.queryParser.QueryParser,
-	org.apache.lucene.document.Document,
-  nl.leocms.util.tools.SearchUtil" %> --%>
-  
 <%@page import="
   org.mmbase.module.Module,
 	net.sf.mmapps.modules.lucenesearch.LuceneModule,
@@ -77,6 +66,7 @@ if(!articleId.equals("-1")) {
          </mm:field>
       </mm:node
       ><%@include file="includes/info/movetoarchive.jsp" 
+      %><%@include file="includes/tickertape_init.jsp" 
       %><%@include file="includes/header.jsp" 
       %><td><%@include file="includes/pagetitle.jsp" %></td>
       <td><%@include file="includes/rightbartitle.jsp" %></td>
