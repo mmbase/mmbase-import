@@ -10,11 +10,11 @@
 	xmlns="http://www.dynasol.nl/xmlns/mmbase-shorthand"
 	xsi:schemaLocation="http://www.dynasol.nl/xmlns/mmbase-shorthand http://www.xs4all.nl/~ebunders/schema/mmbase-shorthand.xsd ">
 
-	<reldef role="biografierel" builder="insrel" guiname="biografie van" />
-	<reldef role="boekbesprekingrel" builder="insrel" guiname="boekbespreking" />
-	<reldef role="inforel" builder="insrel" guiname="informatie over" />
-	<reldef role="winnaarrel" builder="insrel" guiname="de winnaar" />
-	<reldef role="related" builder="insrel" />
+	<reldef role="biografierel" guiname="biografie van" />
+	<reldef role="boekbesprekingrel"  builder="boekbesprekingrel" guiname="boekbespreking" />
+	<reldef role="inforel"  guiname="informatie over" />
+	<reldef role="winnaarrel"  guiname="de winnaar" />
+	<reldef role="posrel"  guiname="positie relatie"/>
 
 	<builder name="artikel">
 		<field name="naam" datatype="line" flags="n" />
@@ -28,7 +28,6 @@
 		<field name="door" datatype="line" />
 		<relation role="posrel" target="paragraaf" />
 		<relation role="boekbesprekingrel" target="boek" />
-
 	</builder>
 
 	<builder name="paragraaf">
@@ -64,6 +63,10 @@
 		<relation role="related" target="auteur" />
 		<relation role="related" target="illustrator" />
 	</builder>
+    
+    <builder name="boekbesprekingrel">
+        <field name="test" datatype="line"/>
+    </builder>
 	
 	<builder name="uitgever">
 		<field name="naam" datatype="line"/>
@@ -108,8 +111,8 @@
 		<field name="nominatiegroepen" datatype="boolean" />
 		<field name="naam" datatype="line" />
 		<field name="omschrijving" datatype="string" />
-		<relation role="insrel" target="jaargang" />
-		<relation role="insrel" target="attachments" />
+		<relation role="related" target="jaargang" />
+		<relation role="related" target="attachments" />
 		<relation role="winnaarrel" target="nominatie" />
 	</builder>
 
@@ -126,8 +129,8 @@
 	</builder>
 	
 	<builder name="nominatie">
-		<relation role="insrel" target="boek"/>
-		<relation role="insrel" target="illustratie"/>
+		<relation role="related" target="boek"/>
+		<relation role="related" target="illustratie"/>
 	</builder>
 
 	<!-- 
