@@ -33,7 +33,16 @@
       <mm:setfield name="titel_fra">1</mm:setfield>
     </mm:relatednodes>
    </mm:node>
-   3. Flush OS cache<br/>
+   3. Create alias archive for archive rubriek<br/>
+   <mm:node number="archive" notfound="skipbody">
+    <mm:import id="found_archive_alias" />
+   </mm:node>
+   <mm:notpresent referid="found_archive_alias">
+    <mm:listnodes type="rubriek" constraints="naam = 'Archief'">
+      <mm:createalias>archive</mm:createalias>
+    </mm:listnodes>
+   </mm:notpresent>
+   4. Flush OS cache<br/>
    <% UrlConverter.getCache().flushAll(); %>
    <cache:flush scope="application"/>
 </mm:log>
