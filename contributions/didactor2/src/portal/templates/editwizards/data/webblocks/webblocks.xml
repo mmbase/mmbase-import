@@ -2,20 +2,31 @@
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="empty">
   <title xml:lang="nl">Homepage elementen editor</title>
+
   <action type="load">
     <relation destination="webblocks" role="blockposrel">
     </relation>
   </action>
   <action type="create">
     <object type="webblocks">
-      </object>
+      <field name="name">Title</field>
+      <relation destination="$origin" role="blockposrel" >
+        <field name="x">$col</field>
+        <!-- unused: -->
+        <field name="width">0</field>
+        <field name="height">0</field>
+      </relation>
+    </object>
   </action>
-  <lists extends="data/patmos/lib/lists/webblocktypes.xml"/>
+
+  <lists>
+    <optionlist include="webblocks/webblocktypes.xml"/>
+    <optionlist include="webblocks/displaytypes.xml"/>
+  </lists>
 
   <form-schema id="step1">
     <title>Homepage elementen invoeren</title>
     <field fdatapath="relation/field[@name='x']" ftype="int">
-      <prompt>X-positie van dit homepage-element</prompt>
       <description>X-positie van dit homepage-element (1=links, 2=midden, 3=rechts)</description>
     </field>
     <field fdatapath="relation/field[@name='y']" ftype="int">
@@ -30,8 +41,9 @@
       <prompt>Omschrijving</prompt>
       <description>Naam zoals die in het menu moet verschijnen</description>
     </field>
-    <field name="display" ftype="int">
+    <field name="display" ftype="enum">
       <prompt>Weergave</prompt>
+      <optionlist select="displaytypes"/>
       <description>Weegave. Kan verschillend zijn per webblock</description>
     </field>
     <field name="type" ftype="enum">
