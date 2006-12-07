@@ -17,13 +17,7 @@ if((sCategory != null) && (!sCategory.equals(""))) {
    </mm:list><%
 } 
 
-String DOUBLESPACE = "  ";
-String SINGLESPACE = " ";
-String qStr = sQuery;
-while(qStr.indexOf(DOUBLESPACE)>-1) {
-   qStr = qStr.replaceAll(DOUBLESPACE,SINGLESPACE);
-}
-qStr = qStr.trim().replaceAll(SINGLESPACE,"* AND ") + "*";
+String qStr = su.queryString(sQuery);
 
 log.info("User searched on '" +  qStr + "'");
 boolean searchArchive = sArchive.equals("ja");
@@ -42,6 +36,7 @@ if (!sQuery.equals("")){
 	hsetVacatureNodes = su.addPages(cloud, cf, qStr, 10, "vacature,contentrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
 	
 	hsetAttachmentsParagraafNodes = su.addPages(cloud, cf, qStr, 11, "attachments,posrel,paragraaf,posrel,artikel,contentrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
+	hsetAttachmentsParagraafNodes = su.addPages(cloud, cf, qStr, 11, "attachments,posrel,paragraaf,posrel,artikel,readmore,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
 	hsetAttachmentsContentblocksNodes = su.addPages(cloud, cf, qStr, 11, "attachments,readmore,contentblocks,readmore,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
 	hsetAttachmentsItemsNodes = su.addPages(cloud, cf, qStr, 11, "attachments,posrel,items,posrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
 	hsetAttachmentsVacaturesNodes = su.addPages(cloud, cf, qStr, 11, "attachments,posrel,vacature,contentrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);

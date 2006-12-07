@@ -31,12 +31,25 @@ public class PoolUtil {
    private static Logger log = Logging.getLoggerInstance(PoolUtil.class.getName());
 
    public static NodeList getPool(Cloud cloud, String sNodeNumber){
-      Node n = cloud.getNode(sNodeNumber);
-      NodeList nPools = n.getRelatedNodes("pools", "posrel", null);
+      NodeList nPools = null;
+      try {
+        Node n = cloud.getNode(sNodeNumber);
+        nPools = n.getRelatedNodes("pools", "posrel", null);
+      } catch (Exception e) {
+        log.error("Node " + sNodeNumber + " does not exist, maybe it was deleted.");
+      }
       return nPools;
-
    }
 
+   /*
+   * true if sPoolNumber is one of the pools related to sNodeNumber
+   */
+   public static boolean containsPool(Cloud cloud, String sNodeNumber, String sPoolNumber) {
+     NodeList nPools = getPool(cloud, sNodeNumber);
+     boolean containsPool = (nPools != null) && nPools.contains(cloud.getNode(sPoolNumber));
+     log.debug(sNodeNumber + " is related" + (containsPool?"":" not") + " to pool " + sPoolNumber); 
+     return containsPool; 
+   }
 
    /* Adds the pools related to source that match poolsConstraint also to destination
    */

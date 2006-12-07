@@ -1,5 +1,6 @@
 <mm:node number="<%= eventId %>">
    <div class="pageheader"><mm:field name="titel" /></div>
+   <br/>
    <mm:related path="posrel,images" orderby="images.title"
          ><div align="center" style="margin-top:8px;margin-bottom:15px;"><img src="<mm:node element="images"><mm:image template="+s(400)" /></mm:node
          >" alt="<mm:field name="images.title" />" border="0"></div>
@@ -54,6 +55,7 @@
     
    %>
    </table>
+   <br/>
    <%
 
    String [] text_fields = { "omschrijving", "omschrijving_eng", "omschrijving_de", "omschrijving_fra"};

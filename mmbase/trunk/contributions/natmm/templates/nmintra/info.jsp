@@ -1,4 +1,18 @@
-<%@page import="nl.leocms.util.tools.SearchUtil" %>
+<%-- <%@page import="
+  org.mmbase.module.Module,
+	net.sf.mmapps.modules.lucenesearch.LuceneModule,
+	net.sf.mmapps.modules.lucenesearch.util.*,
+	org.apache.lucene.index.IndexReader,
+	org.apache.lucene.analysis.*,
+  org.apache.lucene.search.*,
+	org.apache.lucene.queryParser.QueryParser,
+	org.apache.lucene.document.Document,
+  nl.leocms.util.tools.SearchUtil" %> --%>
+  
+<%@page import="
+  org.mmbase.module.Module,
+	net.sf.mmapps.modules.lucenesearch.LuceneModule,
+	nl.leocms.util.tools.SearchUtil" %>
 <%@include file="/taglibs.jsp" %>
 <%@include file="includes/getactiveaccount.jsp" %>
 <mm:cloud logon="<%= account %>" pwd="<%= password %>" jspvar="cloud">
@@ -74,72 +88,74 @@ if(!articleId.equals("-1")) {
         <tr><td colspan="3"><img src="media/spacer.gif" width="1" height="8"></td></tr>
         <tr><td><img src="media/spacer.gif" width="10" height="1"></td>
             <td><%@include file="includes/relatedteaser.jsp" %><%
-             
-                String articleConstraint = "";
-                boolean isFirst = true;
-                if(!isArchive) {
-                  isFirst = false;
-                  articleConstraint = su.articleConstraint(nowSec,quarterOfAnHour);
-                }
-                String articlePath = "pagina,contentrel,artikel";
-                if(!thisPool.equals("-1")) {
-                    if(!isFirst ) { articleConstraint += " AND "; }
-                    isFirst = false;
-                    articleConstraint += "( pools.number = '" + thisPool + "' )";
-                    articlePath += ",posrel,pools";
-                }
-                if(checkOnPeriod) {
-                  if(!isFirst) { articleConstraint += " AND "; }
-                  isFirst = false;
-                  articleConstraint += "(( artikel.begindatum > '" + fromTime + "') AND (artikel.begindatum < '" + toTime + "'))";
-                }
-                if(!termSearchId.equals("")) {
-                  if(!isFirst ) { articleConstraint += " AND "; }
-                  isFirst = false;
-                  articleConstraint += "(( UPPER(artikel.titel) LIKE '%" + termSearchId.toUpperCase() + "%') OR ( UPPER(artikel.intro) LIKE '%" + termSearchId.toUpperCase() + "%') ";
-                  if(!thisPool.equals("-1")) {
-                     articleConstraint += " OR ( UPPER(pools.name) LIKE '%" + termSearchId.toUpperCase() + "%' )";
-                  }
-                  articleConstraint += ")";
-                }
-                String extTemplateQueryString = templateQueryString; 
-                if(!periodId.equals("")){ extTemplateQueryString += "&d=" + periodId; }
-                int listSize = 0; 
+              
+              TreeMap tmapArticles = new TreeMap();
+              String sPool = (thisPool.equals("-1") ? "" : thisPool);
+              HashSet hsetPages = new HashSet();
+              HashSet hsetArticles = new HashSet();
+              
+              if(!termSearchId.equals("")) {
+                String qStr = su.queryString(termSearchId);
+                LuceneModule mod = (LuceneModule) Module.getModule("lucenemodule");
+                net.sf.mmapps.modules.lucenesearch.LuceneManager lm  = mod.getLuceneManager();
+                net.sf.mmapps.modules.lucenesearch.SearchConfig cf = lm.getConfig();
+                hsetArticles = su.addPages(cloud,cf,qStr,0,"artikel,contentrel,pagina","",sPool,nowSec,fromTime,toTime,isArchive,hsetPages);
+              } else {
+              	hsetArticles = su.addPages(cloud, "artikel,contentrel,pagina", "", sPool, nowSec, fromTime, toTime, isArchive, hsetPages);
+              }
+              for (Iterator it = hsetArticles.iterator(); it.hasNext(); ) {
+                String article = (String) it.next();
+                %><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel" constraints="<%= "artikel.number = '" + article + "'" %>"><%
+                  tmapArticles.put(cloud.getNode(article).getLongValue("embargo"),article);
+                %></mm:list><%
+              }
+              int listSize = tmapArticles.size(); 
+              
+              String extTemplateQueryString = templateQueryString; 
+              if(!periodId.equals("")){ extTemplateQueryString += "&d=" + periodId; }
+              %>
+              <%@include file="includes/info/offsetlinks.jsp" %>
+              <% 
+              if(iRubriekLayout==NMIntraConfig.SUBSITE1_LAYOUT) { 
                 %>
-                <%--
-                <%= articlePath %><br/>
-                <%= articleConstraint %><br/>
-                --%>
-                <mm:list nodes="<%= paginaID %>" path="<%= articlePath %>" constraints="<%= articleConstraint %>"
-				         orderby="artikel.embargo" searchdir="destination"
-                  ><mm:first><mm:size jspvar="dummy" vartype="Integer" write="false"><% listSize = dummy.intValue();  %></mm:size></mm:first
-                ></mm:list>
-					 <%@include file="includes/info/offsetlinks.jsp" %>
-           <div style="text-align:right"><a href="<%= editwizard_location 
-                   %>/jsp/wizard.jsp?language=nl&wizard=config/artikel/artikel_nieuws_nmintra_simple&objectnumber=new&origin=<%= paginaID 
-                   %>&referrer=<%= request.getServletPath().replaceAll("//","/")+"?p=" + paginaID
-                   %>">voeg een nieuwsbericht toe</a></div>
-           <%
-                if(listSize>0) {
-                   %><mm:list nodes="<%= paginaID %>" path="<%= articlePath %>" orderby="artikel.embargo" searchdir="destination" directions="DOWN" 
-                       offset="<%= "" + (thisOffset-1)*objectPerPage %>" max="<%= "" + objectPerPage %>" constraints="<%= articleConstraint %>"><%
-                       String titleClass = "pageheader"; 
-                       String readmoreUrl = "info.jsp";
-                       %><mm:field name="artikel.number" jspvar="article_number" vartype="String" write="false"><%
-                           readmoreUrl += "?p=" + paginaID + "&article=" + article_number; 
-                       %></mm:field
-                       ><mm:field name="pagina.titel_fra" jspvar="showDate" vartype="String" write="false"
-                           ><%@include file="includes/info/summaryrow.jsp" 
-                       %></mm:field
-                     ></mm:list><%
-               } else { 
-                  %><mm:list nodes="<%= paginaID %>" path="<%= articlePath %>" max="1">
-								Er zijn geen artikelen gevonden, die voldoen aan uw selectie criteria.
-								<mm:import id="pagehasarticles" />
-				        </mm:list>
-						  <mm:notpresent referid="pagehasarticles">
-								Dit archief bevat geen artikelen.
-						  </mm:notpresent><%
+                <div style="text-align:right"><a href="<%= editwizard_location 
+                       %>/jsp/wizard.jsp?language=nl&wizard=config/artikel/artikel_nieuws_nmintra_simple&objectnumber=new&origin=<%= paginaID 
+                       %>&referrer=<%= request.getServletPath().replaceAll("//","/")+"?p=" + paginaID
+                       %>">voeg een nieuwsbericht toe</a></div>
+                <%
+              }
+              if(listSize>0) {
+                for(int i= 0; i< listSize && i < (thisOffset-1)*objectPerPage; i++) {
+                  tmapArticles.remove(tmapArticles.firstKey());
+                }
+                listSize = tmapArticles.size(); 
+                for(int i= 0; i< listSize && i < objectPerPage; i++) {
+                  Long nextEmbargoDate = (Long) tmapArticles.firstKey();
+                  String article = (String) tmapArticles.get(nextEmbargoDate);
+                  %>
+                  <%= article %><br/>
+                  <mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel" constraints="<%= "artikel.number = '" + article + "'" %>"><%
+                    String titleClass = "pageheader"; 
+                    String readmoreUrl = "info.jsp";
+                    %><mm:field name="artikel.number" jspvar="article_number" vartype="String" write="false"><%
+                       readmoreUrl += "?p=" + paginaID + "&article=" + article_number; 
+                    %></mm:field
+                    ><mm:field name="pagina.titel_fra" jspvar="showDate" vartype="String" write="false"
+                       ><%@include file="includes/info/summaryrow.jsp" 
+                    %></mm:field
+                   ></mm:list>
+                  <%
+                  tmapArticles.remove(nextEmbargoDate);
+                }
+              } else { 
+                  %>
+                  <mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel" max="1">
+                     Er zijn geen artikelen gevonden, die voldoen aan uw zoek criteria.
+                     <mm:import id="pagehasarticles" />
+                  </mm:list>
+                  <mm:notpresent referid="pagehasarticles">
+                    Dit archief bevat geen artikelen.
+                  </mm:notpresent><%
                }
                %><%@include file="includes/pageowner.jsp" 
         %></td>
