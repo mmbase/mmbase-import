@@ -1,7 +1,11 @@
 <!-- elements in namespace, but attributes not-->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ms="http://www.dynasol.nl/xmlns/mmbase-shorthand"
-	xmlns:redirect="org.apache.xalan.xslt.extensions.Redirect" xmlns:dt="http://www.mmbase.org/xmlns/datatypes"
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+    xmlns:ms="http://www.dynasol.nl/xmlns/mmbase-shorthand"
+	xmlns:redirect="org.apache.xalan.xslt.extensions.Redirect" 
+    xmlns:dt="http://www.mmbase.org/xmlns/datatypes"
+    xmlns:ext="xalan://ebunders.mmbase.shorthand.Ext"
 	extension-element-prefixes="redirect" version="1.0">
+    
 
 
 	<!-- reads the builder sources from an index file and writes them 
@@ -16,10 +20,14 @@
 	<xsl:variable name="applicationname" select="/ms:application/@name" />
 
 	<xsl:key name="roles" match="ms:relation" use="@role" />
+	<xsl:key name="reldefbuilders" match="ms:reldef" use="@builder" />
 
 
 	<!-- general -->
 	<xsl:template match="/">
+        <!--create the application dir-->
+        <xsl:variable name="b"><xsl:value-of select="$applicationname"/>/builders</xsl:variable>
+        <xsl:value-of select="ext:mkdir($b)"/>
 		<xsl:apply-templates mode="application" />
 		<xsl:apply-templates mode="builders" />
 	</xsl:template>
@@ -78,6 +86,9 @@
 				<xsl:call-template name="blankline" />
 
 				<neededreldeflist>
+                    <xsl:if test="not(//reldef[@name='related'])">
+                        <reldef guitargetname="related" guisourcename="related" builder="insrel" direction="bidirectional" target="related" source="related"/>
+                    </xsl:if>
 					<xsl:for-each select="ms:builder/ms:relation[generate-id() =generate-id(key('roles', @role)[1])]">
 						<xsl:call-template name="reldefs" />
 					</xsl:for-each>
@@ -100,12 +111,19 @@
 				</datasourcelist>
 
 				<xsl:call-template name="blankline" />
-
+                <!--
+                    the reldef builders are all the unique values in the '//reldef/@builder' element node set.
+                    If there is a //relation[@role='related'] and there is no //reldef[@builder='insrel', add that by default
+                    If there is a  //relation[@role='posrel'] but no //reldef[@builder='posrel', add that too.
+                -->
 				<relationsourcelist>
-					<xsl:if test="not(ms:builder/@name='insrel')">
+					<xsl:if test="//ms:relation[@role='related'] and not(//ms:reldef[@builder='insrel'])">
 						<relationsource builder="insrel" path="{$applicationname}/insrel.xml" />
 					</xsl:if>
-					<xsl:for-each select="ms:builder/ms:relation[generate-id() =generate-id(key('roles', @role)[1])]">
+                    <xsl:if test="//ms:relation[@role='posrel'] and not(//ms:reldef[@builder='posrel'])">
+						<relationsource builder="posrel" path="{$applicationname}/posrel.xml" />
+					</xsl:if>
+					<xsl:for-each select="//ms:reldef[generate-id() = generate-id(key('reldefbuilders', @builder)[1])]">
 
 						<xsl:variable name="role">
 							<xsl:value-of select="@role" />
@@ -171,15 +189,16 @@
 			<xsl:value-of select="@role" />
 		</xsl:variable>
 
-		<!--  determin builder-->
+		<!--  determin builder
+            if there is a reldef for this role, and this reldef has a builder attribute, that is the builder.
+            otherwise it is insrel
+        -->
 		<xsl:variable name="builder">
 			<xsl:choose>
-				<xsl:when test="/ms:application/ms:reldef[@role=$role and @builder]">
-					<xsl:value-of select="/ms:application/ms:reldef[@role=$role]/@builder" />
+				<xsl:when test="//ms:reldef[@role=$role and @builder]">
+					<xsl:value-of select="//ms:reldef[@role=$role]/@builder" />
 				</xsl:when>
-				<xsl:otherwise>
-					<xsl:value-of select="$role" />
-				</xsl:otherwise>
+				<xsl:otherwise>insrel</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
 
@@ -235,7 +254,6 @@
 
 	<xsl:template match="ms:builder" mode="builders">
 		<xsl:if test="not(@create='false')">
-			<test>dit is een test</test>
 			<redirect:write file="generated/{$applicationname}/builders/{@name}.xml">
 				<xsl:variable name="version">
 					<xsl:call-template name="getbuilderversion" />

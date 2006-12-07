@@ -27,7 +27,9 @@
 	<target name="transform" depends="compile" description="create an mmbase apps1 from an mmbase-shortand xml file">
 		<delete dir="${generated.dir}" />
 		<mkdir dir="${generated.dir}" />
+        <!--
 		<mkdir dir="${generated.dir}/${application}/builders" />
+        -->
 
 		<java classname="ebunders.mmbase.shorthand.Transform" classpathref="cp">
 			<arg value="${basedir}/mmbase-shorthand.xsl" />
