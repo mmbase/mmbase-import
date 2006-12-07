@@ -46,7 +46,8 @@ optional attributes:
 reldef  (child of application)
 --------------------------------
 This element is not mandatory, but it allows you to add more information to reldef configurations. The actual list of reldefs (neededreldeflist) is derived from the 'relation' elements (which also define the typerels).
-If you want to create a role for an existing relation builder, you have to create a reldef element for this.
+If you want a relation to use an other builder than insrel, you have to create a reldef element for it, and at least suppy a builder attribute.
+if a relation with 'related' as role is found but no reldef with 'insrel' as builder, an entry for insrel is created in the relationsource list of the application file. The same goes for posrel. So you dont have to define the relation roles 'related' or 'posrel' with reldef elements. For posrel you must define a builder element though (unless that builder is aleready available).
 
 mandatory attributes:
 - role
@@ -54,7 +55,7 @@ mandatory attributes:
 optional attributes:
 - unidirection [true|false] (default: false)
 - guiname (default: role)
-- builder (default: role)
+- builder (default: insrel)
 
 builder (child of application)
 --------------------------------
