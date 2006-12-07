@@ -8,7 +8,7 @@
   <jsp:directive.attribute name="canvote"   fragment="true" />
   
   <mm:node referid="poll">
-    <mm:import id="thispoll" from="cookie" externid="poll${_node}">canvote</mm:import>
+    <mm:import id="thispoll" from="request,cookie" externid="poll${_node}">canvote</mm:import>
     <mm:relatednodescontainer type="answer" role="posrel">
       <mm:sortorder field="posrel.pos" />
       <mm:size>

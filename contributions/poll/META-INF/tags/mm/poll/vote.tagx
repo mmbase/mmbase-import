@@ -58,7 +58,9 @@
             </mm:present>
           </mm:compare>
           <mm:write cookie="poll$poll" value="$answer" />
+          <mm:write request="poll$poll" value="$answer" />
           <mm:write session="havethis$poll" value="Good bye" />
+          <mm:import from="request,cookie" externid="poll${poll}" id="test" />
           <c:if test="${! empty redirect}">
             <mm:redirect referid="redirect" />
           </c:if>
