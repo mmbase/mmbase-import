@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * (or wizard) itself (and frame it in a div, as requested by the contract of a HEAD block).
  *
  * @author Michiel Meeuwissen
- * @version $Id: EditwizardRenderer.java,v 1.7 2006-11-10 13:38:18 michiel Exp $
+ * @version $Id: EditwizardRenderer.java,v 1.8 2006-12-08 15:19:16 johannes Exp $
  * @since MMBase-1.9
  */
 public class EditwizardRenderer extends AbstractRenderer {
@@ -48,7 +48,7 @@ public class EditwizardRenderer extends AbstractRenderer {
         return new Parameter[] {Parameter.RESPONSE, Parameter.REQUEST, Parameter.LOCALE};
     }
 
-    public void render(Parameters blockParameters, Parameters frameworkParameters, Writer w) throws IOException {
+    public void render(Parameters blockParameters, Parameters frameworkParameters, Writer w, Renderer.WindowState state) throws IOException {
         HttpServletRequest request   = blockParameters.get(Parameter.REQUEST);
         HttpServletResponse response = blockParameters.get(Parameter.RESPONSE);
         Locale  locale = blockParameters.get(Parameter.LOCALE);
