@@ -17,7 +17,7 @@ import org.mmbase.util.functions.*;
  * {@link Processor}, which is similar to a Renderer, but a processor never generates contents, only
  * handles interaction.
  * @author Michiel Meeuwissen
- * @version $Id: Renderer.java,v 1.11 2006-12-08 14:36:45 michiel Exp $
+ * @version $Id: Renderer.java,v 1.12 2006-12-08 16:49:44 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Renderer {
@@ -54,9 +54,6 @@ public interface Renderer {
         }
     }
 
-
-
-
     /**
      * Describes what kind of renderer this is
      */
@@ -77,5 +74,5 @@ public interface Renderer {
      * Renders to a writer. In case of e.g. a JSPView, the parameters must also contain
      * the Http Servlet response and request, besided specific parameters for this component.
      */
-    void render(Parameters blockParameters, Parameters frameworkParameters, Writer w, WindowState state) throws IOException;
+    void render(Parameters blockParameters, Parameters frameworkParameters, Writer w, WindowState state) throws FrameworkException;
 }

@@ -17,7 +17,7 @@ import org.mmbase.util.functions.Parameters;
  * nothing, it only can change the state of the block, and hence influence the renderers.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Processor.java,v 1.4 2006-11-02 10:49:56 michiel Exp $
+ * @version $Id: Processor.java,v 1.5 2006-12-08 16:49:44 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Processor {
@@ -39,5 +39,5 @@ public interface Processor {
      * Process. In case of e.g. a JSPProcessor, the parameters must also contain
      * the Http Servlet response and request, besided specific parameters for this component.
      */
-    void process(Parameters blockParameters, Parameters frameworkParameters) throws IOException;
+    void process(Parameters blockParameters, Parameters frameworkParameters) throws FrameworkException;
 }

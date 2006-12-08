@@ -1,5 +1,5 @@
 /*
-
+f
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
 
@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * The overly simple renderer which is simply based on a String present in the configuration file
  *
  * @author Michiel Meeuwissen
- * @version $Id: StringRenderer.java,v 1.4 2006-12-08 15:19:16 johannes Exp $
+ * @version $Id: StringRenderer.java,v 1.5 2006-12-08 16:49:44 michiel Exp $
  * @since MMBase-1.9
  */
 public class StringRenderer extends AbstractRenderer {
@@ -44,14 +44,18 @@ public class StringRenderer extends AbstractRenderer {
         return new Parameter[] {Parameter.REQUEST};
     }
 
-    public void render(Parameters blockParameters, Parameters frameworkParameters, Writer w, Renderer.WindowState state) throws IOException {
-        HttpServletRequest request = blockParameters.get(Parameter.REQUEST);
-        if (request == null) throw new RuntimeException("No request parameter in " + blockParameters);
-        Object previousRenderer = request.getAttribute(Renderer.KEY);
-        StringBuffer sb = new StringBuffer(string);
-        PatternNodeFunctionProvider.handleRequest(sb, blockParameters, requestMethods);
-        w.write(sb.toString());
-        request.setAttribute(Renderer.KEY, previousRenderer);
+    public void render(Parameters blockParameters, Parameters frameworkParameters, Writer w, Renderer.WindowState state) throws FrameworkException {
+        try {
+            HttpServletRequest request = blockParameters.get(Parameter.REQUEST);
+            if (request == null) throw new RuntimeException("No request parameter in " + blockParameters);
+            Object previousRenderer = request.getAttribute(Renderer.KEY);
+            StringBuffer sb = new StringBuffer(string);
+            PatternNodeFunctionProvider.handleRequest(sb, blockParameters, requestMethods);
+            w.write(sb.toString());
+            request.setAttribute(Renderer.KEY, previousRenderer);
+        } catch (IOException ioe) {
+            throw new FrameworkException(ioe.getMessage(), ioe);
+        }
     }
 
     public String toString() {
