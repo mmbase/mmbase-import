@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The creation of the URL is delegated to the MMBase framework.
  * </p>
- * @version $Id: Url.java,v 1.12 2006-12-08 13:18:32 johannes Exp $;
+ * @version $Id: Url.java,v 1.13 2006-12-08 17:39:09 johannes Exp $;
  * @since MMBase-1.9
  */
 public class Url implements Comparable, CharSequence, Casting.Unwrappable {
@@ -101,7 +101,7 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
             for (Map.Entry<String, ?> entry : params) {
                 blockParams.set(entry.getKey(), entry.getValue());
             }
-            result = framework.getBlockUrl(page, component, blockParams, frameworkParams, writeamp).toString();
+            result = framework.getBlockUrl(block, component, blockParams, frameworkParams, Renderer.WindowState.NORMAL, writeamp).toString();
             if (log.isDebugEnabled()) {
                 log.debug("using " + blockParams);
             }
