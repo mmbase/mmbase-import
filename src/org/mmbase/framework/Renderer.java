@@ -17,12 +17,17 @@ import org.mmbase.util.functions.*;
  * {@link Processor}, which is similar to a Renderer, but a processor never generates contents, only
  * handles interaction.
  * @author Michiel Meeuwissen
- * @version $Id: Renderer.java,v 1.10 2006-11-07 21:44:35 michiel Exp $
+ * @version $Id: Renderer.java,v 1.11 2006-12-08 14:36:45 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Renderer {
 
     public final static String KEY = "org.mmbase.framework.renderer";
+
+
+    enum WindowState {
+        MAXIMIZED, MINIMIZED, NORMAL;
+    }
 
     enum Type {
         /**
@@ -41,13 +46,16 @@ public interface Renderer {
         Renderer getEmpty(final Block block) {
             return new Renderer() {
                 public Type getType() { return Type.this; }
-                public void render(Parameters parameters, Parameters urlparameters, Writer w) { };
+                public void render(Parameters parameters, Parameters urlparameters, Writer w, WindowState state) { };
                 public Parameter[] getParameters() { return Parameter.EMPTY; };
                 public Block getBlock() { return block ; };
                 public String toString() { return "EMPTY Renderer"; }
             };
         }
     }
+
+
+
 
     /**
      * Describes what kind of renderer this is
@@ -69,5 +77,5 @@ public interface Renderer {
      * Renders to a writer. In case of e.g. a JSPView, the parameters must also contain
      * the Http Servlet response and request, besided specific parameters for this component.
      */
-    void render(Parameters blockParameters, Parameters frameworkParameters, Writer w) throws IOException;
+    void render(Parameters blockParameters, Parameters frameworkParameters, Writer w, WindowState state) throws IOException;
 }

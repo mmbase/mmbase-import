@@ -19,7 +19,7 @@ import org.mmbase.util.functions.Parameters;
  * A Framework is the place where components are displayed in. 
  *
  * @author Johannes Verelst
- * @version $Id: Framework.java,v 1.15 2006-12-08 13:19:04 johannes Exp $
+ * @version $Id: Framework.java,v 1.16 2006-12-08 14:36:45 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Framework {
@@ -82,6 +82,6 @@ public interface Framework {
      */
     public Parameters createFrameworkParameters(); 
 
-    public void render(Renderer renderer, Parameters blockParameters, Parameters frameworkParameters, Writer w) throws IOException;
+    public void render(Renderer renderer, Parameters blockParameters, Parameters frameworkParameters, Writer w, Renderer.WindowState state) throws IOException;
     public void process(Processor renderer, Parameters blockParameters, Parameters frameworkParameters) throws IOException;
 }
