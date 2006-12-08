@@ -9,7 +9,7 @@
   <jsp:output omit-xml-declaration="yes" />
   <mm:content expires="0" type="application/xhtml+xml">
     <mm:cloud>
-      <mm:url id="baseurl" write="false" />
+      <mm:url id="baseurl" page="frontend" write="false" />
       
       <mm-poll:vote redirect="${baseurl}" checkip="- 5 day" />
       
