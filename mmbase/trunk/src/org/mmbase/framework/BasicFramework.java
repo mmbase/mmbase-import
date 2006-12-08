@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.12 2006-11-24 15:03:38 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.13 2006-12-08 12:08:50 johannes Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -82,20 +82,24 @@ public class BasicFramework implements Framework {
         return show;
     }
 
-    public StringBuilder getUrl(String page, Renderer renderer, Component component, Parameters blockParameters, Parameters frameworkParameters) {
-        return getUrl(page, component, blockParameters, frameworkParameters, false);
+    public StringBuilder getInternalUrl(String page, Renderer renderer, Component component, Parameters blockParameters, Parameters frameworkParameters) {
+        return getBlockUrl(page, component, blockParameters, frameworkParameters, false);
     }
 
-    public StringBuilder getUrl(String page, Processor processor, Component component, Parameters blockParameters, Parameters frameworkParameters) {
-        return getUrl(page, component, blockParameters, frameworkParameters, false);
+    public StringBuilder getInternalUrl(String page, Processor processor, Component component, Parameters blockParameters, Parameters frameworkParameters) {
+        return getBlockUrl(page, component, blockParameters, frameworkParameters, false);
+    }
+
+    public StringBuilder getUrl(String page, Component component, Parameters frameworkParameters, boolean escapeAmps) {
+        return getBlockUrl(page, component, new Parameters(), frameworkParameters, escapeAmps);
     }
 
 
-    public StringBuilder getUrl(String page, Component component, Parameters blockParameters, Parameters frameworkParameters, boolean writeamp) {
+    public StringBuilder getBlockUrl(String block, Component component, Parameters blockParameters, Parameters frameworkParameters, boolean writeamp) {
         // just generate the URL
         HttpServletRequest req = frameworkParameters.get(Parameter.REQUEST);
         if (component == null) {
-            StringBuilder sb = getUrl(page, blockParameters.toMap(), req, writeamp);
+            StringBuilder sb = getUrl(block, blockParameters.toMap(), req, writeamp);
             return sb;
         } else {
             State state = getState(req);
@@ -105,7 +109,7 @@ public class BasicFramework implements Framework {
                 map.put(entry.getKey(), entry.getValue()[0]);
             }
             map.putAll(state.getMap(blockParameters.toMap()));
-            StringBuilder sb = getUrl(page, map, req, writeamp);
+            StringBuilder sb = getUrl(block, map, req, writeamp);
             return sb;
         }
     }

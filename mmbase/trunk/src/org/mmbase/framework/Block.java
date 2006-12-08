@@ -21,27 +21,30 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
- * @version $Id: Block.java,v 1.20 2006-11-12 09:33:23 michiel Exp $
+ * @version $Id: Block.java,v 1.21 2006-12-08 12:08:50 johannes Exp $
  * @since MMBase-1.9
  */
 public class Block {
 
     private static final Logger log = Logging.getLoggerInstance(Block.class);
 
-
     private final Map<Renderer.Type, Renderer> renderers = new EnumMap<Renderer.Type, Renderer>(Renderer.Type.class);
+
+    public enum WindowState {
+        MAXIMIZED, MINIMIZED, NORMAL
+    };
 
     Processor processor;
     protected Parameter.Wrapper specific;
-
 
     private final String name;
     private final String mimetype;
     private final Component parent;
     private final LocalizedString description;
     private final Type[] classification;
+    private final WindowState windowState;
 
-    public Block(String name, String mimetype, Component parent, Type[] cla) {
+    public Block(String name, String mimetype, Component parent, Type[] cla, WindowState windowState) {
         if (name == null) throw new IllegalArgumentException();
         this.name = name;
         this.mimetype = mimetype;
@@ -51,6 +54,7 @@ public class Block {
         for (Type t : classification) {
             t.blocks.add(this);
         }
+        this.windowState = windowState;
     }
 
     /**
@@ -58,6 +62,10 @@ public class Block {
      */
     public String getName() {
         return name;
+    }
+
+    public WindowState getWindowState() {
+        return windowState;
     }
 
     /**
@@ -223,5 +231,6 @@ public class Block {
             return name + subs.toString();
         }
     }
+
 
 }
