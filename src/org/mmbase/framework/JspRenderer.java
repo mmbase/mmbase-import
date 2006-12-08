@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * A Renderer implmentation based on a jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JspRenderer.java,v 1.15 2006-11-07 21:44:35 michiel Exp $
+ * @version $Id: JspRenderer.java,v 1.16 2006-12-08 12:52:38 johannes Exp $
  * @since MMBase-1.9
  */
 public class JspRenderer extends AbstractRenderer {
@@ -50,7 +50,7 @@ public class JspRenderer extends AbstractRenderer {
             HttpServletResponse response = blockParameters.get(Parameter.RESPONSE);
             HttpServletRequest request  = blockParameters.get(Parameter.REQUEST);
             GenericResponseWrapper respw = new GenericResponseWrapper(response);
-            String url = getFramework().getUrl(path, this, getBlock().getComponent(), blockParameters, frameworkParameters).toString();
+            String url = getFramework().getInternalUrl(path, this, getBlock().getComponent(), blockParameters, frameworkParameters).toString();
             RequestDispatcher requestDispatcher = request.getRequestDispatcher(url);
             for (Map.Entry<String, ?> entry : blockParameters.toMap().entrySet()) {
                 request.setAttribute(entry.getKey(), entry.getValue());
