@@ -12,7 +12,10 @@
   </ul>
   <ul>
     <mm:stringlist referid="blockType.blocks">
-      <li>${_.component} : ${_}</li>
+      <li>
+        ${_.component} : ${_}
+        Window state: ${_.windowState}.
+      </li>
     </mm:stringlist>
   </ul>
 
