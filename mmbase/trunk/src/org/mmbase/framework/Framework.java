@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Johannes Verelst
  * @author Pierre van Rooden
- * @version $Id: Framework.java,v 1.17 2006-12-08 16:13:19 michiel Exp $
+ * @version $Id: Framework.java,v 1.18 2006-12-08 16:20:57 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Framework {
@@ -108,7 +108,7 @@ public interface Framework {
      * </ul>
      * It is recommended that a framework at least contains the above parameters, as these are often used by MMBase components.
      * A framework may create a different or expanded list of parameters, but is responsible for filling them properly.
-     * If the framework does not use the MMBase taglib for rendering of components, it needs to provide it´s own mechanism to 
+     * If the framework does not use the MMBase taglib for rendering of components, it needs to provide it's own mechanism to 
      * fill the above parameters with default values (such as through a servlet or portlet).
      */
     public Parameters createFrameworkParameters(); 
