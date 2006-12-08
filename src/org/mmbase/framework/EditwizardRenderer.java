@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * (or wizard) itself (and frame it in a div, as requested by the contract of a HEAD block).
  *
  * @author Michiel Meeuwissen
- * @version $Id: EditwizardRenderer.java,v 1.8 2006-12-08 15:19:16 johannes Exp $
+ * @version $Id: EditwizardRenderer.java,v 1.9 2006-12-08 16:49:44 michiel Exp $
  * @since MMBase-1.9
  */
 public class EditwizardRenderer extends AbstractRenderer {
@@ -48,14 +48,18 @@ public class EditwizardRenderer extends AbstractRenderer {
         return new Parameter[] {Parameter.RESPONSE, Parameter.REQUEST, Parameter.LOCALE};
     }
 
-    public void render(Parameters blockParameters, Parameters frameworkParameters, Writer w, Renderer.WindowState state) throws IOException {
-        HttpServletRequest request   = blockParameters.get(Parameter.REQUEST);
-        HttpServletResponse response = blockParameters.get(Parameter.RESPONSE);
-        Locale  locale = blockParameters.get(Parameter.LOCALE);
-        w.write(response.encodeUrl(request.getContextPath() +
-                                   "/mmbase/edit/wizard/jsp/list.jsp?wizard=" + list +
-                                   "&amp;nodepath=" + path +
-                                   "&amp;language=" + locale.getLanguage()));
+    public void render(Parameters blockParameters, Parameters frameworkParameters, Writer w, Renderer.WindowState state) throws FrameworkException {
+        try {
+            HttpServletRequest request   = blockParameters.get(Parameter.REQUEST);
+            HttpServletResponse response = blockParameters.get(Parameter.RESPONSE);
+            Locale  locale = blockParameters.get(Parameter.LOCALE);
+            w.write(response.encodeUrl(request.getContextPath() +
+                                       "/mmbase/edit/wizard/jsp/list.jsp?wizard=" + list +
+                                       "&amp;nodepath=" + path +
+                                       "&amp;language=" + locale.getLanguage()));
+        } catch (IOException eio) {
+            throw new FrameworkException(eio.getMessage(), eio);
+        }
     }
     public String toString() {
         return "EW " + list + " &nodepath= " + path;

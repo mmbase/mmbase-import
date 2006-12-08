@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.15 2006-12-08 14:36:45 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.16 2006-12-08 16:49:44 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -83,23 +83,22 @@ public class BasicFramework implements Framework {
     }
 
     public StringBuilder getInternalUrl(String page, Renderer renderer, Component component, Parameters blockParameters, Parameters frameworkParameters) {
-        return getBlockUrl(page, component, blockParameters, frameworkParameters, false);
+        return getInternalUrl(page, component, blockParameters, frameworkParameters, false);
     }
 
     public StringBuilder getInternalUrl(String page, Processor processor, Component component, Parameters blockParameters, Parameters frameworkParameters) {
-        return getBlockUrl(page, component, blockParameters, frameworkParameters, false);
+        return getInternalUrl(page, component, blockParameters, frameworkParameters, false);
     }
 
     public StringBuilder getUrl(String page, Component component, Parameters urlParameters, Parameters frameworkParameters, boolean escapeAmps) {
-        return getBlockUrl(page, component, urlParameters, frameworkParameters, escapeAmps);
+        return getInternalUrl(page, component, urlParameters, frameworkParameters, escapeAmps);
     }
 
-
-    public StringBuilder getBlockUrl(String block, Component component, Parameters blockParameters, Parameters frameworkParameters, boolean writeamp) {
-        // just generate the URL
+    protected StringBuilder getInternalUrl(String page, Component component, Parameters blockParameters, Parameters
+ frameworkParameters, boolean writeamp) {       // just generate the URL
         HttpServletRequest req = frameworkParameters.get(Parameter.REQUEST);
         if (component == null) {
-            StringBuilder sb = getUrl(block, blockParameters.toMap(), req, writeamp);
+            StringBuilder sb = getUrl(page, blockParameters.toMap(), req, writeamp);
             return sb;
         } else {
             State state = getState(req);
@@ -109,9 +108,14 @@ public class BasicFramework implements Framework {
                 map.put(entry.getKey(), entry.getValue()[0]);
             }
             map.putAll(state.getMap(blockParameters.toMap()));
-            StringBuilder sb = getUrl(block, map, req, writeamp);
+            StringBuilder sb = getUrl(page, map, req, writeamp);
             return sb;
         }
+    }
+
+
+    public StringBuilder getBlockUrl(Block block, Component component, Parameters blockParameters, Parameters frameworkParameters, Renderer.WindowState state, boolean writeamp) {
+        throw new UnsupportedOperationException();
     }
 
     public Block getBlock(Component component, String blockName) {
@@ -143,7 +147,7 @@ public class BasicFramework implements Framework {
         }
     }
 
-    public void render(Renderer renderer, Parameters blockParameters, Parameters frameworkParameters, Writer w, Renderer.WindowState windowState) throws IOException {
+    public void render(Renderer renderer, Parameters blockParameters, Parameters frameworkParameters, Writer w, Renderer.WindowState windowState) throws FrameworkException {
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
         Object previousRenderer = request.getAttribute(Renderer.KEY);
         request.setAttribute(Renderer.KEY, renderer);
@@ -159,7 +163,7 @@ public class BasicFramework implements Framework {
         }
     }
 
-    public void process(Processor processor, Parameters blockParameters, Parameters frameworkParameters) throws IOException {
+    public void process(Processor processor, Parameters blockParameters, Parameters frameworkParameters) throws FrameworkException {
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
         for (Map.Entry<String, ?> entry : blockParameters.toMap().entrySet()) {
             request.setAttribute(entry.getKey(), entry.getValue());
