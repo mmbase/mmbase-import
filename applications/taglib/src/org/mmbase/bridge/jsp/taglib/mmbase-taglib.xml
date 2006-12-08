@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.384 2006-11-14 21:59:04 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.385 2006-12-08 18:12:07 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -49,7 +49,7 @@ version: $Id: mmbase-taglib.xml,v 1.384 2006-11-14 21:59:04 michiel Exp $
   <shortname>mm</shortname>
   <info>
     <p>
-      This is the MMBase taglib reference documentation. There is also a 
+      This is the MMBase taglib reference documentation. There is also a
       <a href="http://www.mmbase.org/docs/applications/taglib/frontenddevelopers/taglib/taglib-tutorial.html">taglib tutorial.</a>
     </p>
     <p>
@@ -577,10 +577,10 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-	Inverts the condition: the body of the tag will only be
-	executed if the condition does not evaluate to true. This
-	is an optional attribute with its default value set to
-	'false'.
+        Inverts the condition: the body of the tag will only be
+        executed if the condition does not evaluate to true. This
+        is an optional attribute with its default value set to
+        'false'.
       </info>
       <possiblevalue>
         <value>true</value>
@@ -4408,7 +4408,7 @@ like the parameter list or the session (where ever it is available) --&gt;
       <refercontext>true</refercontext>
       <info>
         <p>
-        	This width is used for a re-size of the image when no `transformation' template is provided.
+                This width is used for a re-size of the image when no `transformation' template is provided.
         </p>
       </info>
     </attribute>
@@ -4419,7 +4419,7 @@ like the parameter list or the session (where ever it is available) --&gt;
       <refercontext>true</refercontext>
       <info>
         <p>
-        	This height is used for a re-size of the image when no `transformation' template is provided.
+                This height is used for a re-size of the image when no `transformation' template is provided.
         </p>
       </info>
     </attribute>
@@ -4455,8 +4455,8 @@ like the parameter list or the session (where ever it is available) --&gt;
       <refercontext>true</refercontext>
       <info>
         <p>
-        	Class attribute of html img-tag.
-        	Only applied when mode=img.
+                Class attribute of html img-tag.
+                Only applied when mode=img.
         </p>
       </info>
     </attribute>
@@ -4467,8 +4467,8 @@ like the parameter list or the session (where ever it is available) --&gt;
       <refercontext>true</refercontext>
       <info>
         <p>
-        	Style attribute of html img-tag.
-        	Only applied when mode=img.
+                Style attribute of html img-tag.
+                Only applied when mode=img.
         </p>
       </info>
     </attribute>
@@ -4479,8 +4479,8 @@ like the parameter list or the session (where ever it is available) --&gt;
       <refercontext>true</refercontext>
       <info>
         <p>
-        	Align attribute of html img-tag.
-        	Only applied when mode=img.
+                Align attribute of html img-tag.
+                Only applied when mode=img.
         </p>
       </info>
     </attribute>
@@ -4491,8 +4491,8 @@ like the parameter list or the session (where ever it is available) --&gt;
       <refercontext>true</refercontext>
       <info>
         <p>
-        	Border attribute of html img-tag.
-        	Only applied when mode=img.
+                Border attribute of html img-tag.
+                Only applied when mode=img.
         </p>
       </info>
     </attribute>
@@ -4503,8 +4503,8 @@ like the parameter list or the session (where ever it is available) --&gt;
       <refercontext>true</refercontext>
       <info>
         <p>
-        	Hspace attribute of html img-tag.
-        	Only applied when mode=img.
+                Hspace attribute of html img-tag.
+                Only applied when mode=img.
         </p>
       </info>
     </attribute>
@@ -4515,8 +4515,8 @@ like the parameter list or the session (where ever it is available) --&gt;
       <refercontext>true</refercontext>
       <info>
         <p>
-        	Vspace attribute of html img-tag.
-        	Only applied when mode=img.
+                Vspace attribute of html img-tag.
+                Only applied when mode=img.
         </p>
       </info>
     </attribute>
@@ -5887,7 +5887,7 @@ Of course, the default behavior of getSmartPath can still be overridden.
     <info>
       <p>
         This tag must live as a sub-tag of Formatter. You can add `in line' XSL with this.
-        If the surrounding &lt;xsl:stylesheet tag is missing, something like the following one is automatically added 
+        If the surrounding &lt;xsl:stylesheet tag is missing, something like the following one is automatically added
         (actually it is a bit more complex)
       </p>
       <pre>
@@ -6995,14 +6995,14 @@ The 0 is just counter, which starts at 0 on every page.
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.QueryAgeConstraintTag</tagclass>
     <info>
       <p>
-	In MMBase, objects on default do not have a `creation time' field. But the `number' field can
-	be used to estimate the age (in days), because for every day a `day mark' is remembered. This
-	tag gives easy access to this functionality.
+        In MMBase, objects on default do not have a `creation time' field. But the `number' field can
+        be used to estimate the age (in days), because for every day a `day mark' is remembered. This
+        tag gives easy access to this functionality.
       </p>
       <p>
-	Note that in MMBase 1.8 it <em>is</em> possible to define creation and lastmodified time
-	fields of DATETIME database type. Age-constraints can then also be accomplished by constraints
-	on the date parts of such a field.
+        Note that in MMBase 1.8 it <em>is</em> possible to define creation and lastmodified time
+        fields of DATETIME database type. Age-constraints can then also be accomplished by constraints
+        on the date parts of such a field.
       </p>
     </info>
     <see tag="constraint" attribute="part" />
@@ -7028,7 +7028,7 @@ The 0 is just counter, which starts at 0 on every page.
         If the surrounding nodelist container is a list container then the constraint can be on the
         several elements from the path. With this attribute you must indicate to which. This is not
         needed for listnodes and relatednodes containers (and probably would be a `number' field otherwise).
-	This attribute is deprecated in favour of 'element'.
+        This attribute is deprecated in favour of 'element'.
       </info>
       <see tag="ageconstraint" attribute="element"/>
       <see tag="listcontainer" />
@@ -8027,6 +8027,11 @@ The 0 is just counter, which starts at 0 on every page.
       <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
+      <name>windowstate</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
       <name>render</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
@@ -8055,7 +8060,7 @@ The 0 is just counter, which starts at 0 on every page.
     <name>option</name>
     <path>/META-INF/tags/mm/u/option.tagx</path>
     <info>
-      Like the HTML option tag, which it produces. It only support also a 'compare' attribute to support added selected="selected" or not.     
+      Like the HTML option tag, which it produces. It only support also a 'compare' attribute to support added selected="selected" or not.
     </info>
     <example><pre><![CDATA[
     <mm:option name="a" value="hoi" compare="${a}" />
