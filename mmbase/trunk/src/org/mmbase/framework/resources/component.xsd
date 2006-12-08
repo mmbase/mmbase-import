@@ -66,6 +66,15 @@
       <xsd:attribute name="name" type="xsd:ID" />
       <xsd:attribute name="mimetype" type="xsd:token" />
       <xsd:attribute name="classification" type="xsd:token" />
+      <xsd:attribute name="windowstate">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string" default="normal">
+            <xsd:enumeration value="maximized" />
+            <xsd:enumeration value="minimized" />
+            <xsd:enumeration value="normal" />
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:attribute>
     </xsd:complexType>
   </xsd:element>
 
