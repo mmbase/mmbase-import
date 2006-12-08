@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.13 2006-12-08 12:08:50 johannes Exp $
+ * @version $Id: BasicFramework.java,v 1.14 2006-12-08 13:19:04 johannes Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -90,8 +90,8 @@ public class BasicFramework implements Framework {
         return getBlockUrl(page, component, blockParameters, frameworkParameters, false);
     }
 
-    public StringBuilder getUrl(String page, Component component, Parameters frameworkParameters, boolean escapeAmps) {
-        return getBlockUrl(page, component, new Parameters(), frameworkParameters, escapeAmps);
+    public StringBuilder getUrl(String page, Component component, Parameters urlParameters, Parameters frameworkParameters, boolean escapeAmps) {
+        return getBlockUrl(page, component, urlParameters, frameworkParameters, escapeAmps);
     }
 
 
