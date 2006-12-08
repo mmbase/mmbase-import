@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * A Renderer implmentation based on a jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JspRenderer.java,v 1.16 2006-12-08 12:52:38 johannes Exp $
+ * @version $Id: JspRenderer.java,v 1.17 2006-12-08 14:36:45 michiel Exp $
  * @since MMBase-1.9
  */
 public class JspRenderer extends AbstractRenderer {
@@ -45,7 +45,7 @@ public class JspRenderer extends AbstractRenderer {
         return new Parameter[] {Parameter.RESPONSE, Parameter.REQUEST};
     }
 
-    public void render(Parameters blockParameters, Parameters frameworkParameters, Writer w) throws IOException {
+    public void render(Parameters blockParameters, Parameters frameworkParameters, Writer w, WindowState state) throws IOException {
         try {
             HttpServletResponse response = blockParameters.get(Parameter.RESPONSE);
             HttpServletRequest request  = blockParameters.get(Parameter.REQUEST);
