@@ -13,6 +13,7 @@ import javax.servlet.jsp.PageContext;
 import java.util.*;
 import java.io.*;
 import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
 import org.mmbase.util.Entry;
 import org.mmbase.util.functions.Parameters;
 
@@ -21,7 +22,7 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Johannes Verelst
  * @author Pierre van Rooden
- * @version $Id: Framework.java,v 1.18 2006-12-08 16:20:57 michiel Exp $
+ * @version $Id: Framework.java,v 1.19 2006-12-09 12:57:08 johannes Exp $
  * @since MMBase-1.9
  */
 public interface Framework {
@@ -136,4 +137,15 @@ public interface Framework {
      */
     public void process(Processor processor, Parameters blockParameters, Parameters frameworkParameters) throws FrameworkException;
 
+    /**
+     * Return the MMBase Node for the given user id. This will use the underlying security implementation by default, but a
+     * framework can override this, for instance if it chooses not to use MMBase security to distinguish between users.
+     */
+    public Node getUserNode(Parameters frameworkParameters);
+
+    /**
+     * Return the builder name that is used to store users. This will return the name of the nodemanager that returns
+     * the nodes from the getUserNode() method.
+     */
+    public String getUserBuilder();
 }

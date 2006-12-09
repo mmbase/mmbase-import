@@ -17,13 +17,15 @@ import org.mmbase.util.transformers.Url;
 import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.Cloud;
 
 /**
  * The framework that does nothing, besides adding the block-parameters to the URL. No support for
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.17 2006-12-09 11:36:57 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.18 2006-12-09 12:57:08 johannes Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -134,7 +136,7 @@ public class BasicFramework implements Framework {
     }
 
     public Parameters createFrameworkParameters() {
-        return new Parameters(Parameter.REQUEST, 
+        return new Parameters(Parameter.REQUEST, Parameter.CLOUD,
                               new Parameter("component", String.class), 
                               new Parameter("block", String.class));
     }
@@ -184,7 +186,16 @@ public class BasicFramework implements Framework {
         processor.process(blockParameters, frameworkParameters);
     }
 
-    protected static class  State {
+    public Node getUserNode(Parameters frameworkParameters) {
+        Cloud cloud = frameworkParameters.get(Parameter.CLOUD);
+        return cloud.getCloudContext().getAuthentication().getNode(cloud.getUser());
+    }
+
+    public String getUserBuilder() {
+        return org.mmbase.module.core.MMBase.getMMBase().getMMBaseCop().getAuthentication().getUserBuilder();
+    }
+
+    protected static class State {
         private Map<Renderer, Integer> renderers = new HashMap<Renderer, Integer>();
         private int count;
         private Renderer renderer;
