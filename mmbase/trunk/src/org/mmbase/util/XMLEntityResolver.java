@@ -30,7 +30,7 @@ import org.xml.sax.InputSource;
  * @rename EntityResolver
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.60 2006-12-09 14:46:38 michiel Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.61 2006-12-09 16:01:49 michiel Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
 
@@ -63,8 +63,12 @@ public class XMLEntityResolver implements EntityResolver {
         abstract InputStream getStream();
     }
     static class StringResource extends Resource {
+        private String string;
+        StringResource(String s) {
+            string = s;
+        }
         InputStream getStream() {
-            return new ByteArrayInputStream("bla".getBytes());
+            return new ByteArrayInputStream(string.getBytes());
         }
     }
     static class FileResource extends Resource {
@@ -120,6 +124,7 @@ public class XMLEntityResolver implements EntityResolver {
         registerSystemID("http://www.w3.org/2001/03/xml.xsd",       "xml.xsd", null);
         registerSystemID("http://www.w3.org/2001/03/XMLSchema.dtd", "XMLSchema.dtd", null);
         registerSystemID("http://www.w3.org/2001/03/datatypes.dtd", "datatypes.dtd", null);
+
     }
 
 
@@ -183,12 +188,20 @@ public class XMLEntityResolver implements EntityResolver {
 
         InputStream definitionStream = null;
 
+        if ("http://www.mmbase.org/mmentities.ent".equals(systemId)) {
+            //StringBuilder sb = new StringBuilder();
+            //Class c = org.mmbase.framework.Framework.class;
+            new StringResource("<!ENTITY framework.userBuilder \"" + org.mmbase.module.core.MMBase.getMMBase().getFramework().getUserBuilder() + "\">").getStream();
+        }
+
         // first try with publicID or namespace
         if (publicId != null) {
             Resource res = publicIDtoResource.get(publicId);
             log.debug("Found publicId " + publicId + " -> " + res);
             definitionStream = res == null ? null : res.getStream();
         }
+
+
         log.debug("Get definition stream by public id: " + definitionStream);
 
         if (definitionStream == null) {
