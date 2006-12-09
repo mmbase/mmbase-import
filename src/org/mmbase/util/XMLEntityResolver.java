@@ -12,14 +12,13 @@ package org.mmbase.util;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ByteArrayInputStream;
-import java.util.Map;
-import java.util.Hashtable;
+import java.util.*;
+import java.util.concurrent.*;
 
 import org.mmbase.util.xml.ApplicationReader;
 import org.mmbase.util.xml.BuilderReader;
 import org.mmbase.util.xml.ModuleReader;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.*;
 
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
@@ -31,7 +30,7 @@ import org.xml.sax.InputSource;
  * @rename EntityResolver
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.59 2006-01-17 12:25:21 michiel Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.60 2006-12-09 14:46:38 michiel Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
 
@@ -41,26 +40,39 @@ public class XMLEntityResolver implements EntityResolver {
     private static final String XSD_SUBPATH = "xsd/"; // deprecated
 
     private static Logger log = Logging.getLoggerInstance(XMLEntityResolver.class);
+    static {
+        //log.setLevel(Level.DEBUG);
+    }
 
     private static final String MMRESOURCES = "/org/mmbase/resources/";
 
-    private static Map publicIDtoResource = new Hashtable();
+    private static Map<String, Resource> publicIDtoResource = new ConcurrentHashMap<String, Resource>();
     // This maps public id's to classes which are know to be able to parse this XML's.
     // The package of these XML's will also contain the resources with the DTD.
 
     /**
      * XSD's have only system ID
      */
-    private static Map systemIDtoResource = new Hashtable();
+    private static Map<String, Resource> systemIDtoResource = new ConcurrentHashMap<String, Resource>();
+
 
     /**
      * Container for dtd resources information
      */
-    static class Resource {
-        private Class clazz;
-        private String file;
-        Resource(Class c, String f) {
-            clazz = c; file = f;
+    static abstract class  Resource {
+        abstract InputStream getStream();
+    }
+    static class StringResource extends Resource {
+        InputStream getStream() {
+            return new ByteArrayInputStream("bla".getBytes());
+        }
+    }
+    static class FileResource extends Resource {
+        private final Class clazz;
+        private final String file;
+        FileResource(Class c, String f) {
+            clazz = c; 
+            file = f;
         }
 
         String getResource() {
@@ -69,10 +81,25 @@ public class XMLEntityResolver implements EntityResolver {
         String getFileName() {
             return file;
         }
-        InputStream getAsStream() {
-            if (log.isDebugEnabled()) log.debug("Getting document definition as resource " + getResource() + " of " + clazz.getName());
-            return clazz != null ? clazz.getResourceAsStream(getResource()) : null;
+        InputStream getStream() {
+            InputStream stream = null;
+            if (file != null) {
+                stream = ResourceLoader.getConfigurationRoot().getResourceAsStream(DTD_SUBPATH + getFileName());
+                if (stream == null) {
+                    stream = ResourceLoader.getConfigurationRoot().getResourceAsStream(XMLNS_SUBPATH + getFileName());
+                }
+                if (stream == null) {
+                    // XXX I think this was deprecated in favour in xmlns/ (all in 1.8), so perhaps this can be dropped
+                    stream = ResourceLoader.getConfigurationRoot().getResourceAsStream(XSD_SUBPATH + getFileName());
+                }
+            }
+            if (stream == null && clazz != null) {
+                stream = clazz.getResourceAsStream(getResource());
+            }
+
+            return stream;
         }
+
         public String toString() {
             return file + ": " + clazz;
         }
@@ -105,7 +132,7 @@ public class XMLEntityResolver implements EntityResolver {
      * @since MMBase-1.7
      */
     public static void registerPublicID(String publicID, String dtd, Class c) {
-        publicIDtoResource.put(publicID, new Resource(c, dtd));
+        publicIDtoResource.put(publicID, new FileResource(c, dtd));
         if (log.isDebugEnabled()) log.debug("publicIDtoResource: " + publicID + " " + dtd + c.getName());
     }
 
@@ -115,7 +142,7 @@ public class XMLEntityResolver implements EntityResolver {
      * @since MMBase-1.8
      */
     public static void registerSystemID(String systemID, String xsd, Class c) {
-        systemIDtoResource.put(systemID, new Resource(c, xsd));
+        systemIDtoResource.put(systemID, new FileResource(c, xsd));
     }
 
     private String definitionPath;
@@ -146,24 +173,6 @@ public class XMLEntityResolver implements EntityResolver {
     }
 
 
-    private InputStream getStream(Resource res) {
-        InputStream stream = null;
-       if (res != null) {
-           stream = ResourceLoader.getConfigurationRoot().getResourceAsStream(DTD_SUBPATH + res.getFileName());
-           if (stream == null) {
-               stream = ResourceLoader.getConfigurationRoot().getResourceAsStream(XMLNS_SUBPATH + res.getFileName());
-           }
-           if (stream == null) {
-               // XXX I think this was deprecated in favour in xmlns/ (all in 1.8), so perhaps this can be dropped
-               stream = ResourceLoader.getConfigurationRoot().getResourceAsStream(XSD_SUBPATH + res.getFileName());
-           }
-           if (stream == null) {
-               stream = res.getAsStream();
-           }
-       }
-       return stream;
-    }
-
     /**
      * Takes the systemId and returns the local location of the dtd/xsd
      */
@@ -171,24 +180,21 @@ public class XMLEntityResolver implements EntityResolver {
         if (log.isDebugEnabled()) {
             log.debug("resolving PUBLIC " + publicId + " SYSTEM " + systemId);
         }
-        if (! validate) {
-            log.debug("Not validating, not need to resolve DTD,  returning empty resource");
-            return new InputSource(new ByteArrayInputStream(new byte[0])); 
-        }
 
         InputStream definitionStream = null;
 
         // first try with publicID or namespace
         if (publicId != null) {
-            Resource res = (Resource) publicIDtoResource.get(publicId);
-            definitionStream = getStream(res);
+            Resource res = publicIDtoResource.get(publicId);
+            log.debug("Found publicId " + publicId + " -> " + res);
+            definitionStream = res == null ? null : res.getStream();
         }
         log.debug("Get definition stream by public id: " + definitionStream);
 
         if (definitionStream == null) {
-            Resource res = (Resource) systemIDtoResource.get(systemId);
+            Resource res = systemIDtoResource.get(systemId);
             if (res != null) {
-                definitionStream = getStream(res);
+                definitionStream = res.getStream();
             }
         }
 
@@ -214,15 +220,15 @@ public class XMLEntityResolver implements EntityResolver {
                     Resource res = null;
                     if (base != null) {
                         if (mmResource.startsWith("xmlns/")) {
-                            res = new Resource(base, mmResource.substring(6));
+                            res = new FileResource(base, mmResource.substring(6));
                         } else {
-                            res = new Resource(base, mmResource.substring(4));  // dtd or xsd
+                            res = new FileResource(base, mmResource.substring(4));  // dtd or xsd
                         }
                     }
                     if (res != null) {
-                        definitionStream = res.getAsStream();
+                        definitionStream = res.getStream();
                         if (definitionStream == null) {
-                            log.warn("Could not find " + res.getResource() + " in " + base.getName() + ", falling back to " + MMRESOURCES);
+                            log.warn("Could not find " + res.toString() + " in " + base.getName() + ", falling back to " + MMRESOURCES);
                             base = null; // try it in org.mmbase.resources too.
                         }
                     }
@@ -234,12 +240,10 @@ public class XMLEntityResolver implements EntityResolver {
                     }
                 }
                 if (definitionStream == null) {
-                    
                     if (resolveBase != null) {
                         log.error("Could not find MMBase entity '" + publicId + " " +  systemId + "' (did you make a typo?), returning null, system id will be used (needing a connection, or put in config dir)");
                     } else {
                         log.service("Could not find MMBase entity '" + publicId + " " +  systemId + "' (did you make a typo?), returning null, system id will be used (needing a connection, or put in config dir)");
-                        
                     }
                     // not sure, probably should return 'null' after all, then it will be resolved with internet.
                     // but this can not happen, in fact...
@@ -264,7 +268,7 @@ public class XMLEntityResolver implements EntityResolver {
     }
 
     /**
-     * @return whether the resolver has determiend a DTD
+     * @return whether the resolver has determined a DTD
      */
     public boolean hasDTD() {
         return hasDefinition;
