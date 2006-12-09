@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.16 2006-12-08 16:49:44 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.17 2006-12-09 11:36:57 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -94,8 +94,7 @@ public class BasicFramework implements Framework {
         return getInternalUrl(page, component, urlParameters, frameworkParameters, escapeAmps);
     }
 
-    protected StringBuilder getInternalUrl(String page, Component component, Parameters blockParameters, Parameters
- frameworkParameters, boolean writeamp) {       // just generate the URL
+    protected StringBuilder getInternalUrl(String page, Component component, Parameters blockParameters, Parameters frameworkParameters, boolean writeamp) {       // just generate the URL
         HttpServletRequest req = frameworkParameters.get(Parameter.REQUEST);
         if (component == null) {
             StringBuilder sb = getUrl(page, blockParameters.toMap(), req, writeamp);
@@ -115,7 +114,19 @@ public class BasicFramework implements Framework {
 
 
     public StringBuilder getBlockUrl(Block block, Component component, Parameters blockParameters, Parameters frameworkParameters, Renderer.WindowState state, boolean writeamp) {
-        throw new UnsupportedOperationException();
+
+        frameworkParameters.set("component", component.getName());
+        frameworkParameters.set("block", block.getName());
+        if (blockParameters.containsParameter(Parameter.NODE)) {
+            frameworkParameters.set("n", blockParameters.get(Parameter.NODE));
+            StringBuilder sb = getInternalUrl("/mmbase/framework/render-node.jspx", 
+                                              component, blockParameters, frameworkParameters, writeamp);
+            return sb;
+        } else {
+            StringBuilder sb = getInternalUrl("/mmbase/framework/render.jspx", 
+                                              component, blockParameters, frameworkParameters, writeamp);
+            return sb;
+        }
     }
 
     public Block getBlock(Component component, String blockName) {
@@ -123,7 +134,9 @@ public class BasicFramework implements Framework {
     }
 
     public Parameters createFrameworkParameters() {
-        return new Parameters(Parameter.REQUEST, new Parameter("component", String.class), new Parameter("block", String.class));
+        return new Parameters(Parameter.REQUEST, 
+                              new Parameter("component", String.class), 
+                              new Parameter("block", String.class));
     }
 
     public boolean makeRelativeUrl() {
