@@ -15,13 +15,15 @@ import javax.servlet.jsp.JspException;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
 import org.mmbase.bridge.Cloud;
+import org.mmbase.framework.Framework;
+import org.mmbase.util.functions.Parameters;
 
 /**
  * Lives under a cloudprovider. Can give information about the node,
  * like what its name is.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: CloudInfoTag.java,v 1.10 2006-06-23 11:39:50 michiel Exp $ 
+ * @version $Id: CloudInfoTag.java,v 1.11 2006-12-09 15:16:21 johannes Exp $ 
  * @since   MMBase-1.8
  */
 
@@ -32,6 +34,7 @@ public class CloudInfoTag extends CloudReferrerTag implements Writer {
     private static final int TYPE_RANK                  = 2;
     private static final int TYPE_RANK_INT              = 3;
     private static final int TYPE_AUTHENTICATE          = 4;
+    private static final int TYPE_USERNODE              = 5;
     private static final int TYPE_MMBASEVERSION         = 100;
     private static final int TYPE_TAGLIBVERSION         = 101;
 
@@ -48,6 +51,8 @@ public class CloudInfoTag extends CloudReferrerTag implements Writer {
             return TYPE_NAME;
         } else if ("user".equals(t)) {
             return TYPE_USER;
+        } else if ("usernode".equals(t)) {
+            return TYPE_USERNODE;
         } else if ("rank".equals(t)) { 
             return TYPE_RANK;
         } else if ("rankint".equals(t)) { 
@@ -67,7 +72,7 @@ public class CloudInfoTag extends CloudReferrerTag implements Writer {
 
         Cloud cloud = getCloudVar();
 
-        String show;
+        Object show;
 
         // set node if necessary:
         switch(getType()) {
@@ -76,6 +81,13 @@ public class CloudInfoTag extends CloudReferrerTag implements Writer {
             break;
         case TYPE_USER:
             show = cloud.getUser().getIdentifier();
+            break;
+        case TYPE_USERNODE:
+            Framework fw = org.mmbase.module.core.MMBase.getMMBase().getFramework();
+            Parameters frameworkParams = fw.createFrameworkParameters();
+            fillStandardParameters(frameworkParams);
+            frameworkParams.setAutoCasting(true);
+            show = fw.getUserNode(frameworkParams);
             break;
         case TYPE_RANK:
             show = cloud.getUser().getRank().toString();
@@ -96,7 +108,6 @@ public class CloudInfoTag extends CloudReferrerTag implements Writer {
             show = "";
         }
 
-        
         helper.setValue(show);
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), helper.getValue());
