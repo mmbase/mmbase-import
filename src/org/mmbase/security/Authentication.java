@@ -12,6 +12,7 @@ package org.mmbase.security;
 import java.util.Map;
 
 import org.mmbase.util.functions.*;
+import org.mmbase.bridge.Node;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -23,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen (javadocs)
- * @version $Id: Authentication.java,v 1.34 2006-01-17 21:25:28 michiel Exp $
+ * @version $Id: Authentication.java,v 1.35 2006-12-09 12:57:36 johannes Exp $
  */
 public abstract class Authentication extends Configurable implements AuthenticationData {
     private static final Logger log = Logging.getLoggerInstance(Authentication.class);
@@ -59,6 +60,18 @@ public abstract class Authentication extends Configurable implements Authenticat
      *	@exception SecurityException When something strang happened
      */
     public abstract UserContext login(String application, Map loginInfo, Object[] parameters) throws SecurityException;
+
+    /**
+     * {@inheritDoc}
+     * @since MMBase-1.9
+     */
+    public Node getNode(UserContext userContext) throws SecurityException {
+        throw new UnsupportedOperationException("This security implementation does not support mapping from Security usercontexts to MMBase nodes");
+    }
+
+    public String getUserBuilder() {
+        throw new UnsupportedOperationException("This security implementation does not support mapping from Security usercontext to MMBase nodes");
+    }
 
     /**
      * @since MMBase-1.8

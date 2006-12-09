@@ -9,16 +9,16 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security;
 import org.mmbase.util.functions.*;
-
+import org.mmbase.bridge.Node;
 
 /**
  * This interface represents information about the authentication implemtentation.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AuthenticationData.java,v 1.6 2005-10-12 19:07:31 michiel Exp $
+ * @version $Id: AuthenticationData.java,v 1.7 2006-12-09 12:57:36 johannes Exp $
  * @since MMBase-1.8
  */
-public interface  AuthenticationData {
+public interface AuthenticationData {
 
     static final int METHOD_UNSET     = -1;
 
@@ -102,6 +102,19 @@ public interface  AuthenticationData {
      *	@exception SecurityException When something strange happened
      */
     boolean isValid(UserContext userContext) throws SecurityException;
+
+    /**
+     * This method returns an MMBase node that corresponds with the given UserContext
+     * @since MMBase-1.9
+     */
+    Node getNode(UserContext userContext) throws SecurityException;
+
+    /**
+     * This method returns the builder name of the nodes that will be returned by the
+     * getNode() call.
+     * @since MMBase-1.9
+     */
+    String getUserBuilder();
 
     /**
      * Several 'methods' to authenticate could be available.
