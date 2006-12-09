@@ -2,7 +2,7 @@
 
 
 MMBase Build File
-$Id: build.xml,v 1.158 2006-11-16 11:29:25 michiel Exp $
+$Id: build.xml,v 1.159 2006-12-09 17:12:04 michiel Exp $
 =================
 
 This build file can be used to build the following from CVS or from the source
@@ -335,18 +335,19 @@ builddate=${builddate}
     <mkdir dir="${compile.lib.dir}"/>
 
     <!-- including xerces/xml-apis makes a huge difference in compile time for rmmci -->
-    <copy file="${xerces.jar}"   todir="${compile.lib.dir}" />
-    <copy file="${xml-apis.jar}"   todir="${compile.lib.dir}" />
+    <copy file="${xerces.jar}"                todir="${compile.lib.dir}" />
+    <copy file="${xml-apis.jar}"              todir="${compile.lib.dir}" />
 
     <!-- org.apache.xpath.XPathAPI is used here and there. This dependency can be dropped in 1.5 (which includes xpath api itself) -->
-    <copy file="${xalan.jar}"          todir="${compile.lib.dir}" />
-    <copy file="${serializer.jar}"          todir="${compile.lib.dir}" /> <!-- used when making tld's in taglib -->
+    <copy file="${xalan.jar}"                 todir="${compile.lib.dir}" />
+    <copy file="${serializer.jar}"            todir="${compile.lib.dir}" /> <!-- used when making tld's in taglib -->
 
-    <copy file="${servlet.jar}"   todir="${compile.lib.dir}" />
-    <copy file="${fileupload.jar}" tofile="${compile.lib.dir}/commons-fileupload.jar" />
-    <copy file="${log4j.jar}"     tofile="${compile.lib.dir}/log4j.jar" />
-    <copy file="${javamail.jar}"  todir="${compile.lib.dir}" />
-    <copy file="${javaactivation.jar}"  todir="${compile.lib.dir}" />
+    <copy file="${servlet.jar}"               todir="${compile.lib.dir}" />
+    <copy file="${fileupload.jar}"            tofile="${compile.lib.dir}/commons-fileupload.jar" />
+    <copy file="${log4j.jar}"                 tofile="${compile.lib.dir}/log4j.jar" />
+    <copy file="${javamail.jar}"              todir="${compile.lib.dir}" />
+    <copy file="${javaactivation.jar}"        todir="${compile.lib.dir}" />
+    <copy file="${taglibs-standard-jstl.jar}" todir="${compile.lib.dir}" />
   </target>
 
   <target name="lib.compile.zip" depends="lib.compile" description="Packages the download dir." >
