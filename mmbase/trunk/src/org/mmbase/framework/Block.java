@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
- * @version $Id: Block.java,v 1.22 2006-12-08 14:36:45 michiel Exp $
+ * @version $Id: Block.java,v 1.23 2006-12-09 09:08:38 michiel Exp $
  * @since MMBase-1.9
  */
 public class Block {
@@ -29,8 +29,8 @@ public class Block {
     private static final Logger log = Logging.getLoggerInstance(Block.class);
 
     private final Map<Renderer.Type, Renderer> renderers = new EnumMap<Renderer.Type, Renderer>(Renderer.Type.class);
-
     Processor processor;
+
     protected Parameter.Wrapper specific;
 
     private final String name;
@@ -40,15 +40,17 @@ public class Block {
     private final Type[] classification;
 
     public Block(String name, String mimetype, Component parent, Type[] cla) {
-        if (name == null) throw new IllegalArgumentException();
+        if (name   == null) throw new IllegalArgumentException();
+        if (parent == null) throw new IllegalArgumentException();
+        if (cla    == null) throw new IllegalArgumentException();
         this.name = name;
-        this.mimetype = mimetype;
         this.parent = parent;
-        this.description = new LocalizedString(name);
+        this.mimetype = mimetype; // can this be null?
         this.classification = cla;
         for (Type t : classification) {
             t.blocks.add(this);
         }
+        this.description = new LocalizedString(name);
     }
 
     /**
@@ -181,7 +183,7 @@ public class Block {
 
         private final String name;
         private final Type parent;
-        final List<Type> subs = new ArrayList<Type>();
+        final List<Type>  subs   = new ArrayList<Type>();
         final List<Block> blocks = new ArrayList<Block>();
         private Type(String n) {
             name = n;
