@@ -16,7 +16,7 @@ import org.mmbase.util.LocalizedString;
  * components, and may be requested several views.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Component.java,v 1.6 2006-10-24 17:16:32 michiel Exp $
+ * @version $Id: Component.java,v 1.7 2006-12-09 15:24:28 johannes Exp $
  * @since MMBase-1.9
  */
 public interface Component {
@@ -25,6 +25,11 @@ public interface Component {
      * Every component has a (universally) unique name
      */
     String getName();
+
+    /**
+     * The name of the bundle to use for messages
+     */
+    String getBundle();
 
     /**
      * The description can contain further information about the component, mainly to be displayed
