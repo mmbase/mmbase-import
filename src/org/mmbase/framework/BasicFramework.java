@@ -20,12 +20,15 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.Cloud;
 
+import javax.servlet.jsp.jstl.core.Config;
+import javax.servlet.jsp.jstl.fmt.LocalizationContext;
+
 /**
  * The framework that does nothing, besides adding the block-parameters to the URL. No support for
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.18 2006-12-09 12:57:08 johannes Exp $
+ * @version $Id: BasicFramework.java,v 1.19 2006-12-09 15:24:28 johannes Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -171,7 +174,12 @@ public class BasicFramework implements Framework {
         state.render(renderer);
         request.setAttribute(COMPONENT_ID_KEY, state.getPrefix());
         setBlockParameters(state, blockParameters);
-        try{
+        String bundle = renderer.getBlock().getComponent().getBundle();
+
+        LocalizationContext ctx = new LocalizationContext(ResourceBundle.getBundle(bundle), Locale.getDefault());
+        request.setAttribute(Config.FMT_LOCALIZATION_CONTEXT + ".request", ctx);
+
+        try {
             renderer.render(blockParameters, frameworkParameters, w, windowState);
         } finally {
             request.setAttribute(Renderer.KEY, previousRenderer);
