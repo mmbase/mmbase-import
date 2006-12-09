@@ -20,13 +20,14 @@ import org.mmbase.util.logging.*;
  * components, and may be requested several blocks.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicComponent.java,v 1.22 2006-12-08 14:36:45 michiel Exp $
+ * @version $Id: BasicComponent.java,v 1.23 2006-12-09 15:24:28 johannes Exp $
  * @since MMBase-1.9
  */
 public class BasicComponent implements Component {
     private static final Logger log = Logging.getLoggerInstance(BasicComponent.class);
 
     private final String name;
+    private String bundle;
     private final LocalizedString description;
     private final Map<String, Block> blocks = new HashMap<String, Block>();
     private Block defaultBlock = null;
@@ -52,6 +53,13 @@ public class BasicComponent implements Component {
         uri = el.getOwnerDocument().getDocumentURI();
         log.debug("Configuring " + this);
         description.fillFromXml("description", el);
+
+        NodeList bundleElements = el.getElementsByTagName("bundle");
+        for (int i=0; i<bundleElements.getLength(); i++) {
+            Element element = (Element) bundleElements.item(i);
+            bundle = element.getAttribute("name");
+        }
+
         NodeList blockElements = el.getElementsByTagName("block");
         if (log.isDebugEnabled()) {
             log.debug("Found description: " + description);
@@ -152,4 +160,7 @@ public class BasicComponent implements Component {
         return getName();
     }
 
+    public String getBundle() {
+        return bundle;
+    }
 }
