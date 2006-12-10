@@ -8,6 +8,136 @@
 
   <description xml:lang="en">MMBase core components</description>
 
+  <!-- about etc. -->
+  <block name="welcome" 
+         classification="mmbase.about"
+         mimetype="text/html">
+    <description xml:lang="en">Shows welcome page for mmbase admin pages</description>
+    <body jsp="/mmbase/admin/about/about.div.jsp" />
+  </block>
+
+  <block name="license" 
+         classification="mmbase.about"
+         mimetype="text/html">
+    <description xml:lang="en">Shows the MMBase licence</description>
+    <body jsp="/mmbase/mpl-1.0.div.jsp" />
+  </block>
+  
+  <!-- admin -->
+  <block name="servers" 
+         classification="mmbase.admin"
+         mimetype="text/html">
+    <description xml:lang="en">An overview describing all MMBase servers running on this MMBase system</description>
+    <body jsp="/mmbase/admin/admin/servers.div.jsp">
+      <param name="component" type="string" />
+      <param name="view" type="string" /> <!-- hmm, should not be done like this -->
+    </body>
+  </block>
+  
+  <block name="databases" 
+         classification="mmbase.admin"
+         mimetype="text/html">
+    <description xml:lang="en">Information about the database and its connections</description>
+    <body jsp="/mmbase/admin/admin/databases.jsp">
+      <param name="component" type="string" />
+      <param name="view" type="string" /> <!-- hmm, should not be done like this -->
+    </body>
+  </block>
+  
+  <block name="modules" 
+         classification="mmbase.admin"
+         mimetype="text/html">
+    <description xml:lang="en">Information about the installed modules</description>
+    <body jsp="/mmbase/admin/admin/modules.jsp">
+      <param name="component" type="string" />
+      <param name="view" type="string" /> <!-- hmm, should not be done like this -->
+    </body>
+  </block>
+  
+  <block name="applications" 
+         classification="mmbase.admin"
+         mimetype="text/html">
+    <description xml:lang="en">Shows an overview of all MMBase apps 1 applications</description>
+    <body jsp="/mmbase/admin/admin/applications.jsp">
+      <param name="component" type="string" />
+      <param name="view" type="string" /> <!-- hmm, should not be done like this -->
+    </body>
+  </block>
+  
+  <block name="builders" 
+         classification="mmbase.admin"
+         mimetype="text/html">
+    <description xml:lang="en">Shows an overview of all builders present in this MMBase installation</description>
+    <body jsp="/mmbase/admin/admin/builders.jsp">
+      <param name="component" type="string" />
+      <param name="view" type="string" /> <!-- hmm, should not be done like this -->
+    </body>
+  </block>
+  
+  <block name="transactions" 
+         classification="mmbase.admin"
+         mimetype="text/html">
+    <description xml:lang="en">Shows an overview of all open MMBase transactions</description>
+    <body jsp="/mmbase/admin/transactions.jspx">
+      <param name="transaction" type="string" />
+    </body>
+  </block>
+
+  <!-- tools -->
+  <block name="cache" 
+         classification="mmbase.tools"
+         mimetype="text/html">
+    <description xml:lang="en">This tools hows the performance of the various MMBase
+    caches. You can also (temporary) turn on/off the cache here. For a persistant 
+    change you should change caches.xml.</description>
+    <body jsp="/mmbase/admin/tools/cache.jsp">
+      <param name="component" type="string" />
+      <param name="view" type="string" /> <!-- hmm, should not be done like this -->
+    </body>
+  </block>
+  
+  <block name="blobs" 
+         classification="mmbase.tools"
+         mimetype="text/html">
+    <description xml:lang="en">The blobs</description>
+    <body jsp="/mmbase/admin/admin/blobs.jsp">
+      <param name="component" type="string" />
+      <param name="view" type="string" /> <!-- hmm, should not be done like this -->
+    </body>
+  </block>
+
+  <block name="email" 
+         classification="mmbase.tools"
+         mimetype="text/html">
+    <description xml:lang="en">Tool to monitor the emails that are schedules and sned with the email applications.</description>
+    <body jsp="/mmbase/admin/tools/email.jsp">
+      <param name="component" type="string" />
+      <param name="view" type="string" /> <!-- hmm, should not be done like this -->
+    </body>
+  </block>
+
+  <block name="sql tool" 
+         classification="mmbase.tools"
+         mimetype="text/html">
+    <description xml:lang="en">A tool to directly edit your SQL database. 
+     We prefer you don't use this so it is disabled by default. Better to use your own database tools.</description>
+    <body jsp="/mmbase/admin/tools/querytool.jsp">
+      <param name="component" type="string" />
+      <param name="view" type="string" /> <!-- hmm, should not be done like this -->
+    </body>
+  </block>
+    
+  <block name="events" 
+         classification="mmbase.tools"
+         mimetype="text/html">
+    <description xml:lang="en">A tool to directly send events into your MMBase system.</description>
+    <body jsp="/mmbase/events/index.jspx">
+      <param name="component" type="string" />
+      <param name="view" type="string" /> <!-- hmm, should not be done like this -->
+    </body>
+  </block>
+  
+  <!-- components -->
   <block name="components" 
          classification="mmbase.admin,mmbase.components"
          mimetype="text/html">
@@ -26,27 +156,12 @@
     </body>
   </block>
 
-  <block name="transactions" 
-         classification="mmbase.admin"
+  <!-- examples -->
+  <block name="mmexamples" 
+         classification="mmbase.examples"
          mimetype="text/html">
-    <description xml:lang="en">Shows an overview of all open MMBase transactions</description>
-    <body jsp="/mmbase/admin/transactions.jspx">
-      <param name="transaction" type="string" />
-    </body>
-  </block>
-
-  <block name="license" 
-         classification="mmbase.about,mmbase"
-         mimetype="text/html">
-    <description xml:lang="en">Shows the mmbase licence</description>
-    <body jsp="/mmbase/mpl-1.0.div.jsp" />
-  </block>
-
-  <block name="welcome" 
-         classification="mmbase.about"
-         mimetype="text/html">
-    <description xml:lang="en">Shows welcome page for mmbase admin pages</description>
-    <body jsp="/mmbase/admin/about/about.div.jsp" />
+    <description xml:lang="en">Shows the MMBase example pages</description>
+    <body jsp="/mmbase/admin/mmexamples.div.jsp" />
   </block>
 
 </component>
