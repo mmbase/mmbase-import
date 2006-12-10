@@ -1,11 +1,8 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
-%><div
+<div
     class="component mm_c_core mm_c_b_license ${requestScope.className}"
     id="${requestScope.componentId}">
-<p align="center">
-  <font size="+2"><b>MOZILLA PUBLIC LICENSE</b></font><br>
-  <b>Version 1.0</b>
-</p>
+  <h2>MOZILLA PUBLIC LICENSE</h2>
+  <h3>Version 1.0</h3>
 
 <p></p><hr width="20%"><p>
 
