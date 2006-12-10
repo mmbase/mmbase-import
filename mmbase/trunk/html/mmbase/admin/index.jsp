@@ -4,7 +4,7 @@
 %><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <mm:content expires="0" escaper="none">
-<mm:cloud>
+<mm:cloud rank="administrator" loginpage="login.jsp">
 <mm:import externid="category">about</mm:import>
 <mm:import externid="subcategory"></mm:import>
 <mm:import externid="component">core</mm:import>
@@ -27,7 +27,7 @@
 	<div id="logo"><a href="."><img src="../style/logo.png" alt="MMBase" width="40" height="50" /></a></div>
 	<div id="head">
 	  <h1>MMBase Administration</h1>
-	  <p>You are logged in as: foo</p><!-- not implemented yet -->
+	  <p>You are logged in as: <mm:cloudinfo type="user" /> (rank: <mm:cloudinfo type="user" />)</p>
 	</div>
   </div>
 </div>
@@ -69,14 +69,14 @@
   </mm:present>
   </div>
 </div>
-  <div id="footer">
+<div id="footer">
   <ul>
     <li><a href="http://www.mmbase.org">www.mmbase.org</a></li>
     <li><a href="http://www.mmbase.org/license">license</a></li>
     <li><a href="http://www.mmbase.org/contact">contact</a></li>
     <li><a href="http://www.mmbase.org/mmdocs">mmdocs</a></li>
   </ul>
-  </div>
+</div>
 </div><!-- /#wrap -->
 </body>
 </html>

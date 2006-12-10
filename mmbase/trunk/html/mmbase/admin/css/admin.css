@@ -1,4 +1,6 @@
 /* MMBase admin css */
+head > title { text-transform: capitalize; }
+
 body
 {
 	margin: 0;
@@ -36,8 +38,7 @@ img { border: 0; }
 
 #logo img
 {
-	float: right;
-	margin: 2px 0 2px 0;
+	margin-top: 2px;
 }
 
 #head
