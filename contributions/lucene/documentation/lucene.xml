@@ -6,7 +6,7 @@
   <articleinfo>
     <title>MMBase Lucene module</title>
     <date>2005-12-24</date>
-    <edition>$Id: lucene.xml,v 1.4 2006-08-31 08:41:53 michiel Exp $</edition>
+    <edition>$Id: lucene.xml,v 1.5 2006-12-11 13:19:33 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Pierre</firstname>
@@ -143,15 +143,15 @@
           instance. More general jdbc connection configuration may easily be added.
         </para>
         <para>          
-      <example>
-        <title>Example for jdbc-tag</title>
-        <programlisting id="luceneindex2.xml"><![CDATA[
+          <example>
+            <title>Example for jdbc-tag</title>
+              <programlisting id="luceneindex2.xml"><![CDATA[
 <?xml version="1.0"?>
   <index name="vraag">
     <analyzer class="org.mmbase.module.lucene.analysis.nl.StandardCleaningAnalyzer" />
     <jdbc sql="select id,parentid,threadid,title,body,authorid,ratingcount,ratingpoints,configtype,status,createdtime,modifiedtime,priority,ip from frm_forum where configtype = 'vraag' and (status != 'H' or status is null) order by id"
-          key="id"
-          find="select id, parentid, threadid, title, body, authorid,ratingcount,ratingpoints,configtype,status,createdtime,modifiedtime,priority,ip from frm_forum where configtype = 'vraag' and id = [KEY]"
+          identifier="id"
+          find="select id, parentid, threadid, title, body, authorid,ratingcount,ratingpoints,configtype,status,createdtime,modifiedtime,priority,ip from frm_forum where configtype = 'vraag' and id = [IDENTIFIER]"
           >
     </jdbc>
   </index>
@@ -159,8 +159,8 @@
   <index name="vraag_threads">
     <analyzer class="org.mmbase.module.lucene.analysis.nl.StandardCleaningAnalyzer" />
     <jdbc sql="select id,parentid,threadid,title,body,authorid,ratingcount,ratingpoints,configtype,status,createdtime,modifiedtime,priority,ip from frm_forum where configtype = 'vraag' and (status != 'H' or status is null) order by threadid,id"
-          key="threadid"
-          find="select id, parentid, threadid, title, body, authorid,ratingcount,ratingpoints,configtype,status,createdtime,modifiedtime,priority,ip from frm_forum where configtype = 'vraag' and id = [KEY]"
+          identifier="threadid"
+          find="select id, parentid, threadid, title, body, authorid,ratingcount,ratingpoints,configtype,status,createdtime,modifiedtime,priority,ip from frm_forum where configtype = 'vraag' and id = [IDENTIFIER]"
           >
       <field name="createdtime" multiple="first" />
     </jdbc>
@@ -170,10 +170,11 @@
   <index name="vraag_threads_variant">
     <analyzer class="org.mmbase.module.lucene.analysis.nl.StandardCleaningAnalyzer" />
     <jdbc sql="select id,parentid,threadid,title,body,authorid,ratingcount,ratingpoints,configtype,status,createdtime,modifiedtime,priority,ip from frm_forum where configtype = 'vraag' and id == threadid and (status != 'H' or status is null) order by id"
+          identifier="threadid"
           key="threadid"
-          find="select id, parentid, threadid, title, body, authorid,ratingcount,ratingpoints,configtype,status,createdtime,modifiedtime,priority,ip from frm_forum where configtype = 'vraag' and id = [KEY]"
+          find="select id, parentid, threadid, title, body, authorid,ratingcount,ratingpoints,configtype,status,createdtime,modifiedtime,priority,ip from frm_forum where configtype = 'vraag' and id = [IDENTIFIER]"
           >
-          <related sql="select id,parentid,threadid,title,body,authorid,ratingcount,ratingpoints,configtype,status,createdtime,modifiedtime,priority,ip from frm_forum where configtype = 'vraag' and threadid == [KEY] and (status != 'H' or status is null) order by id" key="id">
+          <related sql="select id,parentid,threadid,title,body,authorid,ratingcount,ratingpoints,configtype,status,createdtime,modifiedtime,priority,ip from frm_forum where configtype = 'vraag' and threadid == [PARENTKEY] and (status != 'H' or status is null) order by id" key="id">
              <field name="createdtime" multiple="first" />
           </related>
     </jdbc>
@@ -181,8 +182,9 @@
 
 </luceneindex>
 ]]>
+        </programlisting>
+          </example>
         </para>
-      </section>
     </section>
   </section>
   <section id="history">
