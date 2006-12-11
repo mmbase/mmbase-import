@@ -75,6 +75,9 @@
       </xsl:if>
       <xsl:apply-templates select="tag" mode="base" />    
       <xsl:if test="$version = '2.0'">
+        <!--
+            See MMB-1348
+        -->
         <xsl:apply-templates select="tag-file" />
         <xsl:apply-templates select="function" mode="base" />
       </xsl:if>
