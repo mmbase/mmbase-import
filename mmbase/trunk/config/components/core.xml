@@ -29,8 +29,7 @@
          mimetype="text/html">
     <description xml:lang="en">An overview describing all MMBase servers running on this MMBase system</description>
     <body jsp="/mmbase/admin/admin/servers.div.jsp">
-      <param name="component" type="string" />
-      <param name="view" type="string" /> <!-- hmm, should not be done like this -->
+      <param name="server" type="string" />
     </body>
   </block>
   
@@ -39,8 +38,7 @@
          mimetype="text/html">
     <description xml:lang="en">Information about the database and its connections</description>
     <body jsp="/mmbase/admin/admin/databases.jsp">
-      <param name="component" type="string" />
-      <param name="view" type="string" /> <!-- hmm, should not be done like this -->
+
     </body>
   </block>
   
@@ -49,8 +47,7 @@
          mimetype="text/html">
     <description xml:lang="en">Information about the installed modules</description>
     <body jsp="/mmbase/admin/admin/modules.jsp">
-      <param name="component" type="string" />
-      <param name="view" type="string" /> <!-- hmm, should not be done like this -->
+
     </body>
   </block>
   
@@ -59,8 +56,7 @@
          mimetype="text/html">
     <description xml:lang="en">Shows an overview of all MMBase apps 1 applications</description>
     <body jsp="/mmbase/admin/admin/applications.jsp">
-      <param name="component" type="string" />
-      <param name="view" type="string" /> <!-- hmm, should not be done like this -->
+
     </body>
   </block>
   
@@ -69,8 +65,7 @@
          mimetype="text/html">
     <description xml:lang="en">Shows an overview of all builders present in this MMBase installation</description>
     <body jsp="/mmbase/admin/admin/builders.jsp">
-      <param name="component" type="string" />
-      <param name="view" type="string" /> <!-- hmm, should not be done like this -->
+
     </body>
   </block>
   
@@ -91,8 +86,7 @@
     caches. You can also (temporary) turn on/off the cache here. For a persistant 
     change you should change caches.xml.</description>
     <body jsp="/mmbase/admin/tools/cache.jsp">
-      <param name="component" type="string" />
-      <param name="view" type="string" /> <!-- hmm, should not be done like this -->
+
     </body>
   </block>
   
@@ -101,8 +95,6 @@
          mimetype="text/html">
     <description xml:lang="en">The blobs</description>
     <body jsp="/mmbase/admin/admin/blobs.jsp">
-      <param name="component" type="string" />
-      <param name="view" type="string" /> <!-- hmm, should not be done like this -->
     </body>
   </block>
 
@@ -111,8 +103,6 @@
          mimetype="text/html">
     <description xml:lang="en">Tool to monitor the emails that are schedules and sned with the email applications.</description>
     <body jsp="/mmbase/admin/tools/email.jsp">
-      <param name="component" type="string" />
-      <param name="view" type="string" /> <!-- hmm, should not be done like this -->
     </body>
   </block>
 
@@ -122,8 +112,7 @@
     <description xml:lang="en">A tool to directly edit your SQL database. 
      We prefer you don't use this so it is disabled by default. Better to use your own database tools.</description>
     <body jsp="/mmbase/admin/tools/querytool.jsp">
-      <param name="component" type="string" />
-      <param name="view" type="string" /> <!-- hmm, should not be done like this -->
+
     </body>
   </block>
     
@@ -132,8 +121,6 @@
          mimetype="text/html">
     <description xml:lang="en">A tool to directly send events into your MMBase system.</description>
     <body jsp="/mmbase/events/index.jspx">
-      <param name="component" type="string" />
-      <param name="view" type="string" /> <!-- hmm, should not be done like this -->
     </body>
   </block>
   
