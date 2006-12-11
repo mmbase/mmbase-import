@@ -28,7 +28,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.20 2006-12-11 10:11:52 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.21 2006-12-11 17:15:18 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -37,6 +37,10 @@ public class BasicFramework implements Framework {
     private static final CharTransformer paramEscaper = new Url(Url.ESCAPE);
 
     public final static String KEY = "org.mmbase.framework.state";
+
+    public static final Parameter<Node> N = new Parameter<Node>("n", Node.class);
+    public static final Parameter<String> COMPONENT = new Parameter<String>("component", String.class);
+    public static final Parameter<String> BLOCK     = new Parameter<String>("block", String.class);
 
 
     public String getName() {
@@ -120,15 +124,15 @@ public class BasicFramework implements Framework {
 
     public StringBuilder getBlockUrl(Block block, Component component, Parameters blockParameters, Parameters frameworkParameters, Renderer.WindowState state, boolean writeamp) {
 
-        frameworkParameters.set("component", component.getName());
-        frameworkParameters.set("block", block.getName());
-        if (blockParameters.containsParameter(Parameter.NODE)) {
-            frameworkParameters.set("n", blockParameters.get(Parameter.NODE));
-            StringBuilder sb = getInternalUrl("/mmbase/framework/render-node.jspx", 
+        frameworkParameters.set(COMPONENT, component.getName());
+        frameworkParameters.set(BLOCK, block.getName());
+        if (blockParameters.containsParameter(Parameter.NODE) && blockParameters.get(Parameter.NODE) != null) {
+            frameworkParameters.set(N, blockParameters.get(Parameter.NODE));
+            StringBuilder sb = getInternalUrl("/mmbase/framework/render-node.jspx",
                                               component, blockParameters, frameworkParameters, writeamp);
             return sb;
         } else {
-            StringBuilder sb = getInternalUrl("/mmbase/framework/render.jspx", 
+            StringBuilder sb = getInternalUrl("/mmbase/framework/render.jspx",
                                               component, blockParameters, frameworkParameters, writeamp);
             return sb;
         }
@@ -139,9 +143,7 @@ public class BasicFramework implements Framework {
     }
 
     public Parameters createFrameworkParameters() {
-        return new Parameters(Parameter.REQUEST, Parameter.CLOUD,
-                              new Parameter("component", String.class), 
-                              new Parameter("block", String.class));
+        return new Parameters(Parameter.REQUEST, Parameter.CLOUD, N, COMPONENT, BLOCK);
     }
 
     public boolean makeRelativeUrl() {
