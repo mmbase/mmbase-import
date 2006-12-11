@@ -77,6 +77,7 @@
       <xsl:if test="$version = '2.0'">
         <!--
             See MMB-1348
+            It seems that the present tag-file entries cause the problem.
         -->
         <xsl:apply-templates select="tag-file" />
         <xsl:apply-templates select="function" mode="base" />
