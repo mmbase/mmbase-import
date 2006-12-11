@@ -73,8 +73,9 @@
   <ul>
     <li><a href="http://www.mmbase.org">www.mmbase.org</a></li>
     <li><a href="http://www.mmbase.org/license">license</a></li>
-    <li><a href="http://www.mmbase.org/contact">contact</a></li>
     <li><a href="http://www.mmbase.org/mmdocs">mmdocs</a></li>
+    <li><a href="http://www.mmbase.org/bugs">bugs</a></li>
+    <li><a href="http://www.mmbase.org/contact">contact</a></li>
   </ul>
 </div>
 </div><!-- /#wrap -->
