@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.37 2006-07-14 17:44:26 nklasens Exp $
+ * @version  $Id: validator.js,v 1.37.2.1 2006-12-11 20:21:29 nklasens Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -47,6 +47,10 @@ Validator.prototype.attach = function (element) {
             addEvent(element, "keyup", function(ev) { self.validateEvent(ev) });
             addEvent(element, "change", function(ev) { self.validateEvent(ev) });
             addEvent(element, "blur", function(ev) { self.validateEvent(ev) });
+            // IE calls this when the user does a right-click paste
+            addEvent(element, "paste", function(ev) { self.validateIEPasteEvent(ev) });
+            // FireFox calls this when the user does a right-click paste
+            addEvent(element, "input", function(ev) { self.validateEvent(ev) });
             break;
         case "radio":
         case "checkbox":
@@ -78,15 +82,33 @@ addEvent = function(el, evname, func) {
             }
         }
         else {
-            el.attachEvent("on" + evname, func);
+                el.attachEvent("on" + evname, func);
         }
     } else {
         el.addEventListener(evname, func, true);
     }
 }
 
+Validator.prototype.validateIEPasteEvent = function (evt) {
+    evt = (evt) ? evt : ((window.event) ? window.event : "")
+
+    if (evt) {
+        var elem = getTargetElement(evt)
+        if (elem) {
+            var self=this;
+            // Internet Explorer seems to fire onpaste before the actual paste of 
+            // text occurs in some circumstances. The one millisecond delay is 
+            // enough to force Internet Explorer to run the function after the 
+            // actual text has been pasted.
+            setTimeout(function() { self.validate(elem) }, 1);
+        }
+    }
+
+}
+
 Validator.prototype.validateEvent = function (evt) {
     evt = (evt) ? evt : ((window.event) ? window.event : "")
+
     if (evt) {
         var elem = getTargetElement(evt)
         if (elem) {
@@ -631,10 +653,10 @@ function isEmpty(value) {
 function getTargetElement(evt) {
     var elem
     if (evt.target) {
-        elem = (evt.target.nodeType == 3) ? evt.target.parentNode : evt.target
+        elem = (evt.target.nodeType == 3) ? evt.target.parentNode : evt.target;
     } else {
-        elem = evt.srcElement
+        elem = evt.srcElement;
     }
-    return elem
+    return elem;
 
 }
