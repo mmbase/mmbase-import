@@ -10,10 +10,10 @@
   <mm:cloud>
     <mm:node referid="n">
       <head>
-        <mm:component component="${component}" block="${block}" render="head" />
+        <mm:component name="${component}" block="${block}" render="head" />
       </head>
       <body>
-        <mm:component component="${component}" block="${block}" render="body" />
+        <mm:component name="${component}" block="${block}" render="body" />
       </body>
     </mm:node>
   </mm:cloud>
