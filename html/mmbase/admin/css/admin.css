@@ -34,6 +34,7 @@ img { border: 0; }
 {
 	width: 20%;
 	float: left;
+	text-align: right;
 }
 
 #logo img
@@ -81,7 +82,11 @@ img { border: 0; }
 	font-size: 0.9em;
 }
 
-#footer ul { padding: 0 0 0 1em; }
+#footer ul
+{
+	padding: 0 0 0 1em;
+	margin-left: 20%;
+}
 #footer a:link, #footer a:visited { text-decoration: none; }
 #footer a:hover, #footer a:active { text-decoration: underline; }
 
@@ -98,7 +103,7 @@ img { border: 0; }
 {
 	float: left;
 	width: 20%;
-	margin: 0;
+	margin: 0 0 2em 0;
 	padding: 0;
 	font-family: "Lucida Grande", Arial, sans-serif;
 	background-color: #E6E9DD;
@@ -192,3 +197,5 @@ th, td
 	text-align: left;
 	vertical-align: top;
 }
+
+td.view { text-align: right; }
