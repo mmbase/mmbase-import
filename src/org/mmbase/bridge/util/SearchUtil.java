@@ -71,20 +71,7 @@ public class SearchUtil {
     public static NodeList findNodeList(Cloud cloud, String managerName, String fieldname, Object value, String sortName, String sortDirection) {
         NodeManager manager = cloud.getNodeManager(managerName);
         NodeQuery query = manager.createQuery();
-        if (!isEmptyOrWhitespace(fieldname)) {
-            if (value instanceof String) {
-                addEqualConstraint(query, manager, fieldname, (String) value);    
-            }
-            else if (value instanceof Integer) {
-                addEqualConstraint(query, manager, fieldname, (Integer) value);    
-            }
-            else if (value instanceof Boolean) {
-                addEqualConstraint(query, manager, fieldname, (Boolean) value);    
-            }
-            else {
-                addEqualConstraint(query, manager, fieldname, value);
-            }
-        }
+        addEqualConstraint(query, manager, fieldname, value);
         if (!isEmptyOrWhitespace(sortName)) {
             addSortOrder(query, manager, sortName, sortDirection);
         }
@@ -155,38 +142,7 @@ public class SearchUtil {
 
     public static NodeQuery createRelatedNodeListQuery(Node parent, String managerName, String role, String fieldname, Object value, String sortName, String sortDirection, String searchdir) {
         NodeQuery query = createRelatedNodeListQuery(parent, managerName, role, searchdir);
-
-        NodeManager manager = parent.getCloud().getNodeManager(managerName);
-        if (!isEmptyOrWhitespace(fieldname)) {
-            if (value instanceof String) {
-                addEqualConstraint(query, manager, fieldname, (String) value);    
-            }
-            else if (value instanceof Integer) {
-                addEqualConstraint(query, manager, fieldname, (Integer) value);    
-            }
-            else if (value instanceof Boolean) {
-                addEqualConstraint(query, manager, fieldname, (Boolean) value);    
-            }
-            else {
-                addEqualConstraint(query, manager, fieldname, value);
-            }
-        }
-        if (!isEmptyOrWhitespace(sortName)) {
-            if (sortName.startsWith(role + ".")) {
-                String sortField = sortName.substring(role.length() + 1);
-                RelationManager relationManager = null;
-                if (SOURCE.equals(searchdir)) {
-                    relationManager = parent.getCloud().getRelationManager(manager, parent.getNodeManager(), role);
-                }
-                else {
-                    relationManager = parent.getCloud().getRelationManager(parent.getNodeManager(), manager, role);
-                }
-                addRelationSortOrder(query, relationManager, sortField, sortDirection);
-            }
-            else {
-                addSortOrder(query, manager, sortName, sortDirection);
-            }
-        }
+        addFeatures(query, parent, managerName, role, fieldname, value, sortName, sortDirection, searchdir);
         return query;
     }
 
@@ -207,6 +163,31 @@ public class SearchUtil {
         return query;
     }
 
+    public static NodeQuery createRelatedNodeListQuery(NodeList parentNodes, String managerName, String role) {
+        return createRelatedNodeListQuery(parentNodes, managerName, role, DESTINATION);
+    }
+    
+    public static NodeQuery createRelatedNodeListQuery(NodeList parentNodes, String managerName, String role, String searchdir) {
+        if (parentNodes.isEmpty()) {
+            throw new IllegalArgumentException("paretnodes is empty. should be at leat one");
+        }
+        Node parent = parentNodes.getNode(0);
+        
+        NodeManager manager = parent.getCloud().getNodeManager(managerName);
+
+        NodeQuery query = parent.getCloud().createNodeQuery();
+        Step step1 = query.addStep(parent.getNodeManager());
+        for (Iterator iter = parentNodes.iterator(); iter.hasNext();) {
+            Node parentNode = (Node) iter.next();
+            query.addNode(step1, parentNode);
+        }
+
+        RelationStep step2 = query.addRelationStep(manager, role, searchdir);
+        Step step3 = step2.getNext();
+        query.setNodeStep(step3); // makes it ready for use as NodeQuery
+        return query;
+    }
+    
     public static RelationList findRelations(Node parent, String managerName, String role, String sortName, String sortDirection) {
         return findRelations(parent, managerName, role, sortName, sortDirection, DESTINATION);
     }
@@ -228,6 +209,34 @@ public class SearchUtil {
         return (RelationList) nm.getList(query);
     }
 
+    public static void addFeatures(NodeQuery query, Node parent, String managerName, String role, String fieldname, Object value, String sortName, String sortDirection) {
+        addFeatures(query, parent, managerName, role, fieldname, value, sortName, sortDirection, DESTINATION);
+    }
+
+    
+    public static void addFeatures(NodeQuery query, Node parent, String managerName, String role, String fieldname, Object value, String sortName, String sortDirection, String searchdir) {
+        NodeManager manager = parent.getCloud().getNodeManager(managerName);
+        
+        addEqualConstraint(query, manager, fieldname, value);
+
+        if (!isEmptyOrWhitespace(sortName)) {
+            if (sortName.startsWith(role + ".")) {
+                String sortField = sortName.substring(role.length() + 1);
+                RelationManager relationManager = null;
+                if (SOURCE.equals(searchdir)) {
+                    relationManager = parent.getCloud().getRelationManager(manager, parent.getNodeManager(), role);
+                }
+                else {
+                    relationManager = parent.getCloud().getRelationManager(parent.getNodeManager(), manager, role);
+                }
+                addRelationSortOrder(query, relationManager, sortField, sortDirection);
+            }
+            else {
+                addSortOrder(query, manager, sortName, sortDirection);
+            }
+        }
+    }
+    
     public static void addSortOrder(NodeQuery query, NodeManager manager, String sortName, String sortDirection) {
         StepField sf = query.getStepField(manager.getField(sortName));
         addSortOrder(query, sf, sortDirection);
@@ -310,10 +319,23 @@ public class SearchUtil {
     }
 
     public static void addEqualConstraint(NodeQuery query, NodeManager manager, String fieldname, Object value) {
-        FieldValueConstraint constraint = createEqualConstraint(query, manager, fieldname, value);
-        addConstraint(query, constraint);
+        if (!isEmptyOrWhitespace(fieldname)) {
+            if (value instanceof String) {
+                addEqualConstraint(query, manager, fieldname, (String) value);    
+            }
+            else if (value instanceof Integer) {
+                addEqualConstraint(query, manager, fieldname, (Integer) value);    
+            }
+            else if (value instanceof Boolean) {
+                addEqualConstraint(query, manager, fieldname, (Boolean) value);    
+            }
+            else {
+                FieldValueConstraint constraint = createEqualConstraint(query, manager, fieldname, value);
+                addConstraint(query, constraint);
+            }
+        }
     }
-
+    
     public static void addEqualConstraint(Query query, NodeManager manager, String fieldname, Object value) {
         FieldValueConstraint constraint = createEqualConstraint(query, manager, fieldname, value);
         addConstraint(query, constraint);
