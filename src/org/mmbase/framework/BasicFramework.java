@@ -28,7 +28,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.19 2006-12-09 15:24:28 johannes Exp $
+ * @version $Id: BasicFramework.java,v 1.20 2006-12-11 10:11:52 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -175,9 +175,13 @@ public class BasicFramework implements Framework {
         request.setAttribute(COMPONENT_ID_KEY, state.getPrefix());
         setBlockParameters(state, blockParameters);
         String bundle = renderer.getBlock().getComponent().getBundle();
-
-        LocalizationContext ctx = new LocalizationContext(ResourceBundle.getBundle(bundle), Locale.getDefault());
-        request.setAttribute(Config.FMT_LOCALIZATION_CONTEXT + ".request", ctx);
+        if (bundle != null) {
+            ResourceBundle b = ResourceBundle.getBundle(bundle);
+            if (b != null) {
+                LocalizationContext ctx = new LocalizationContext(b, Locale.getDefault());
+                request.setAttribute(Config.FMT_LOCALIZATION_CONTEXT + ".request", ctx);
+            }
+        }
 
         try {
             renderer.render(blockParameters, frameworkParameters, w, windowState);
