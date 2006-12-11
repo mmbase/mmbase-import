@@ -184,7 +184,7 @@
             <td><mm:link><a href="${_}" class="navigate"><img src="${img.ok}" alt="reload"  /></a></mm:link></td>
           </tr>
           <tr>
-            <th>Log out</th>
+            <th>You are <mm:cloudinfo type="user" />. Log out</th>
             <td>
               <mm:link>
                 <mm:param name="logout" />
