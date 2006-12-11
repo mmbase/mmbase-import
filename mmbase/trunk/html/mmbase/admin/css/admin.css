@@ -3,199 +3,204 @@ head > title { text-transform: capitalize; }
 
 body
 {
-	margin: 0;
-	padding: 0;
-	font-size: small;
-	background: #fff;
-	font-family: "Lucida Grande", Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    font-size: small;
+    background: #fff;
+    font-family: "Lucida Grande", Arial, sans-serif;
 }
+
+a:link { color: #030; }
+a:visited { color: #309; }
+a:hover { color: #00F; }
+a:active { color: #D6E44B; }
 
 h1, h2, h3, h4, h5, h6
 {
-	font-family: "Lucida Grande", Arial, sans-serif;
-	color: #002828;
+    font-family: "Lucida Grande", Arial, sans-serif;
+    color: #002828;
 }
 
 img { border: 0; }
 
 #outerheader
 {
-	background: #002828;
-	height: 56px;
+    background: #002828;
+    height: 56px;
 }
 
 #header
 {
-	max-width: 1200px;
-	margin: 0 auto 0 auto;
+    max-width: 1200px;
+    margin: 0 auto 0 auto;
 }
 
 #logo
 {
-	width: 20%;
-	float: left;
-	text-align: right;
+    width: 20%;
+    float: left;
+    text-align: right;
 }
 
 #logo img
 {
-	margin-top: 2px;
+    margin-top: 2px;
 }
 
 #head
 {
-	font-family: "Lucida Grande", sans-serif;
-	color: #fff;
-	float: right;
-	width: 80%;
+    font-family: "Lucida Grande", sans-serif;
+    color: #fff;
+    float: right;
+    width: 80%;
 }
 
 #head h1
 {
-	color: #fff;
-	margin: 8px 0 0 0.5em;
+    color: #fff;
+    margin: 8px 0 0 0.5em;
 }
 
 #head p { margin: 0 0 0 1em; }
 
 #wrap
 {
-	max-width: 1200px;
-	margin: 0 auto 0 auto;
+    max-width: 1200px;
+    margin: 0 auto 0 auto;
 }
 
 #content
 {
-	float: right;
-	width: 80%;
+    float: right;
+    width: 80%;
 }
 
 .padder { padding: 0 1em 0 1em; }
 
 #footer
 {
-	clear: both;
-	padding: 0;
-	margin: 0;
-	border-top: 1px solid #E6E9DD;
-	list-style: none;
-	font-size: 0.9em;
+    clear: both;
+    padding: 0;
+    margin: 0;
+    border-top: 1px solid #E6E9DD;
+    list-style: none;
+    font-size: 0.9em;
 }
 
 #footer ul
 {
-	padding: 0 0 0 1em;
-	margin-left: 20%;
+    padding: 0 0 0 1em;
+    margin-left: 20%;
 }
 #footer a:link, #footer a:visited { text-decoration: none; }
 #footer a:hover, #footer a:active { text-decoration: underline; }
 
 #footer li
 {
-	float: left;
-	margin: 0;
-	padding: 0 1em 0 0;
-	list-style: none;
+    float: left;
+    margin: 0;
+    padding: 0 1em 0 0;
+    list-style: none;
 }
 
 /*********** navigation top-level ***********/
 #navigation
 {
-	float: left;
-	width: 20%;
-	margin: 0 0 2em 0;
-	padding: 0;
-	font-family: "Lucida Grande", Arial, sans-serif;
-	background-color: #E6E9DD;
-	/*border-top: 1px solid #002828;*/
+    float: left;
+    width: 20%;
+    margin: 0 0 2em 0;
+    padding: 0;
+    font-family: "Lucida Grande", Arial, sans-serif;
+    background-color: #E6E9DD;
+    /*border-top: 1px solid #002828;*/
 }
 
 #navigation ul
 {
-	list-style: none;
-	margin: 0;
-	padding: 0;
-	border: none;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border: none;
 }
 
 #navigation li { margin: 0; }
 
 #navigation li a
 {
-	display: block;
-	padding: 5px 0 5px 0.5em;
-	border-left: 1px solid #002828;
-	border-right: 1px solid #002828;
-	border-bottom: 1px solid #002828;
-	background-color: #E6E9DD;
-	color: #002828;
-	width: 100%;
-	font-weight: bold;
-	text-transform: uppercase;
-	text-decoration: none;
+    display: block;
+    padding: 5px 0 5px 0.5em;
+    border-left: 1px solid #002828;
+    border-right: 1px solid #002828;
+    border-bottom: 1px solid #002828;
+    background-color: #E6E9DD;
+    color: #002828;
+    width: 100%;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-decoration: none;
 }
 
 #navigation li a.selected { background-color: #ccc; }
 
 #navigation li li a
 {
-	display: block;
-	padding: 5px 0 5px 1em;
-	border-left: 1px solid #002828;
-	border-right: 1px solid #002828;
-	border-bottom: 1px solid #002828;
-	background-color: #efefef;
-	color: #002828;
-	width: 100%;
-	font-weight: normal;
-	text-transform: lowercase;
-	text-decoration: none;
+    display: block;
+    padding: 5px 0 5px 1em;
+    border-left: 1px solid #002828;
+    border-right: 1px solid #002828;
+    border-bottom: 1px solid #002828;
+    background-color: #efefef;
+    color: #002828;
+    width: 100%;
+    font-weight: normal;
+    text-transform: lowercase;
+    text-decoration: none;
 }
 
 html>body #navigation li a { width: auto; }
 
 #navigation li a:hover
 {
-	background-color: #708A23;
-	color: #D6E44B;
+    background-color: #708A23;
+    color: #D6E44B;
 }
 
 /*********** content classes etc. ***********/
 h2.top
 {
-	font-size: 1.8em;
-	margin: 0.5em 0 0 0;
-	text-transform: capitalize;
-	border-bottom: 1px solid #708A23;
+    font-size: 1.8em;
+    margin: 0.5em 0 0 0;
+    text-transform: capitalize;
+    border-bottom: 1px solid #708A23;
 }
 
 table
 {
-	border-color: #CCC #CCC transparent #CCC;
-	border-width: 1px 1px 0 1px;
-	border-style: solid solid none solid;
+    border-color: #CCC #CCC transparent #CCC;
+    border-width: 1px 1px 0 1px;
+    border-style: solid solid none solid;
 }
 caption
 {
-	background: #ccc;
-	border-color: #CCC;
-	border-width: 1px 1px 0 1px;
-	border-style: solid solid none solid;
-	padding: 2px;
+    background: #ccc;
+    border-color: #CCC;
+    border-width: 1px 1px 0 1px;
+    border-style: solid solid none solid;
+    padding: 2px;
 }
 
 th
 {
-	background-color: #E6E9DD;
+    background-color: #E6E9DD;
 }
 
 th, td
 {
-	margin: 0;
-	padding: 4px;
-	border-bottom: 1px solid #ccc;
-	text-align: left;
-	vertical-align: top;
+    margin: 0;
+    padding: 4px;
+    border-bottom: 1px solid #ccc;
+    text-align: left;
+    vertical-align: top;
 }
 
 td.view { text-align: right; }
