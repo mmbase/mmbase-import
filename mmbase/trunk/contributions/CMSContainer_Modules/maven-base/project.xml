@@ -446,7 +446,7 @@
 			<type>plugin</type>
 			<url>http://mmapps.sourceforge.net/maven-mmbase-module-plugin/</url>
 		</dependency>
-
+<!--
         <dependency>
             <groupId>jaxb</groupId>
             <artifactId>jaxb-api</artifactId>
@@ -476,7 +476,7 @@
                 <war.bundle>${war.bundle}</war.bundle>
             </properties>
         </dependency>
-
+-->
         <dependency>
             <groupId>activation</groupId>
             <artifactId>activation</artifactId>
