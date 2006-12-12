@@ -21,14 +21,16 @@
 
 
 <mm:node number="$testNo">
-  <mm:relatednodescontainer path="madetests,copybooks" element="madetests">
-    <mm:constraint field="score"  referid="TESTSCORE_INCOMPLETE" inverse="true"/>
-    <mm:constraint field="copybooks.number"  value="$copybookNo" />
-    <mm:relatednodes>
-      <mm:field id="madetestNo" name="number" write="false"/>
-      <mm:field id="madetestscore" name="score" write="false"/>
-    </mm:relatednodes>
-  </mm:relatednodescontainer>
+  <mm:isnotempty referid="copybookNo">
+    <mm:relatednodescontainer path="madetests,copybooks" element="madetests">
+      <mm:constraint field="score"  referid="TESTSCORE_INCOMPLETE" inverse="true"/>
+      <mm:constraint field="copybooks.number"  value="$copybookNo" />
+      <mm:relatednodes>
+        <mm:field id="madetestNo" name="number" write="false"/>
+        <mm:field id="madetestscore" name="score" write="false"/>
+      </mm:relatednodes>
+    </mm:relatednodescontainer>
+  </mm:isnotempty>
   <!-- alternative implementation of mm:node ? -->
   <mm:listnodescontainer type="tests">
     <mm:constraint operator="equal" field="number" referid="testNo" />
