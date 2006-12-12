@@ -23,7 +23,7 @@
   <mm:import externid="education" />
   <mm:import externid="class" />
   <mm:import externid="user" vartype="integer" />
-  <jsp:directive.include file="globalLang.jsp"  />
+  <jsp:directive.include file="globalLang.jspx"  />
   <mm:isgreaterthan referid="user" value="0">
     <mm:remove referid="userdisabled"/>
 

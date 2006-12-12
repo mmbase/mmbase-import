@@ -137,5 +137,5 @@
   </mm:notpresent>
   
   <mm:import id="referids">provider?,education?,class?,workgroup?</mm:import>
-  <jsp:directive.include file="globalLang.jsp" />
+  <jsp:directive.include file="globalLang.jspx" />
 </jsp:root>
