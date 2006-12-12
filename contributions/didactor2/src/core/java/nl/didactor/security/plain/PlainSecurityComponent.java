@@ -21,7 +21,7 @@ import nl.didactor.security.UserContext;
 /**
  * Default AuthenticationComponent for Didactor.
  * @javadoc
- * @version $Id: PlainSecurityComponent.java,v 1.6 2006-11-06 16:20:03 mmeeuwissen Exp $
+ * @version $Id: PlainSecurityComponent.java,v 1.7 2006-12-12 13:22:59 mmeeuwissen Exp $
  */
 
 public class PlainSecurityComponent implements AuthenticationComponent {
@@ -107,9 +107,18 @@ public class PlainSecurityComponent implements AuthenticationComponent {
     }
 
     protected String getLoginPage(HttpServletRequest request) {
-        String page = (String) properties.get(request.getServerName() + ".plain.login_page");
+        String page = (String) properties.get(request.getServerName() + request.getContextPath() + ".plain.login_page");
+        if (page == null) {
+            page = (String) properties.get(request.getServerName() + ".plain.login_page");
+        }
         if (page == null) {
             page = (String) properties.get("plain.login_page");
+        }
+        if (page == null) {
+            org.mmbase.module.core.MMBase mmb = org.mmbase.module.core.MMBase.getMMBase();
+            if (mmb.getRootBuilder().getNode("component.portal") != null) {
+                page = request.getContextPath() + "/portal";
+            }
         }
         return page == null ? "/login_plain.jsp" : page;
     }

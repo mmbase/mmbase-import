@@ -123,7 +123,7 @@ public class Authentication extends org.mmbase.security.Authentication {
                 String loginComponent = (String)session.getAttribute("didactor-logincomponent");
                 if (loginComponent != null) {
                     for (int i=0; i<securityComponents.size(); i++) {
-                        AuthenticationComponent ac = (AuthenticationComponent)securityComponents.get(i);
+                        AuthenticationComponent ac = (AuthenticationComponent) securityComponents.get(i);
                         if (ac != null && loginComponent.equals(ac.getName())) {
                             log.debug("Sending logout command to component '" + loginComponent + "'");
                             UserContext uc = ac.isLoggedIn(request, response);
@@ -131,7 +131,7 @@ public class Authentication extends org.mmbase.security.Authentication {
                                 log.warn("Logging out a user who is not logged in! This cannot be reported!");
                             } else {
                                 Event event = new Event(uc.getIdentifier(), request.getSession(true).getId(), 
-                                        null, null, null, "LOGOUT", null, "logout");
+                                                        null, null, null, "LOGOUT", null, "logout");
                                 EventDispatcher.report(event, request, response);
                             }
                             ac.logout(request, response);
