@@ -18,7 +18,7 @@ public class ContentChannelBuilder extends ChannelBuilder {
     }
     
     protected String[] getFragmentFieldname() {
-        return new String[] { RepositoryUtil.FRAGMENT_FIELD };
+        return RepositoryUtil.fragmentFieldnames;
     }
 
     protected String getRelationName() {
@@ -26,7 +26,7 @@ public class ContentChannelBuilder extends ChannelBuilder {
     }
 
     protected String[] getPathManagers() {
-        return new String[] { RepositoryUtil.CONTENTCHANNEL };
+        return RepositoryUtil.treeManagers;
     }
 
 }

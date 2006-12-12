@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.mmbase.bridge.Node;
 
 import com.finalist.cmsc.repository.RepositoryUtil;
+import com.finalist.cmsc.security.UserRole;
 import com.finalist.tree.ajax.SelectAjaxRenderer;
 
 public class SelectRenderer extends SelectAjaxRenderer {
@@ -32,6 +33,12 @@ public class SelectRenderer extends SelectAjaxRenderer {
     
     public String getIcon(Object node) {
         Node n = (Node) node;
-        return "type/" + n.getNodeManager().getName() + ".png";
+        if(RepositoryUtil.isContentChannel(n)) {
+            UserRole role = RepositoryUtil.getRole(n.getCloud(), n, false);
+            return "type/" + n.getNodeManager().getName() + "_"+role.getRole().getName()+".png";
+        }
+        else {
+            return "type/" + n.getNodeManager().getName()+".png";
+        }
     }
 }

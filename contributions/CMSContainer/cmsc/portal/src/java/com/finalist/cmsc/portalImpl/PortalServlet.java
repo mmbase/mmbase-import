@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.pluto.PortletContainerException;
@@ -38,7 +39,6 @@ import com.finalist.pluto.portalImpl.factory.FactoryAccess;
 import com.finalist.cmsc.portalImpl.registry.PortalRegistry;
 import com.finalist.cmsc.services.ServiceManager;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
-import com.finalist.cmsc.services.sitemanagement.SiteModelManager;
 import com.finalist.pluto.portalImpl.services.factorymanager.FactoryManager;
 import com.finalist.pluto.portalImpl.services.log.CommonsLogging;
 import com.finalist.pluto.portalImpl.servlet.ServletObjectAccess;
@@ -165,8 +165,18 @@ public class PortalServlet extends HttpServlet {
 		}
 
 		try {
-			String path = extractPath(request, currentURL);
-			log.debug("===>getScreen:'" + path + "'");
+            String path = extractPath(request, currentURL);
+            log.debug("===>getScreen:'" + path + "'");
+            // NIJ-519: language can be defined per site, read by CmscPortlet
+            Site site = SiteManagement.getSiteFromPath(path);
+            if (site != null) {
+                String language = site.getLanguage();
+                // NIJ-519 r2: Locale accepts anything, also whitespace
+                if (!StringUtils.isBlank(language)) {
+                    Locale locale = new Locale(language.trim());
+                    request.setAttribute("siteLocale", locale);
+                }
+            }
 			ScreenFragment screen = getScreen(path);
 			if (screen != null) {
 				reg.setScreen(screen);

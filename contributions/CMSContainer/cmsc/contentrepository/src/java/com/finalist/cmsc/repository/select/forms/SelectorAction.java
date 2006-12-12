@@ -30,6 +30,8 @@ import com.finalist.tree.ajax.SelectAjaxRenderer;
 
 public class SelectorAction extends com.finalist.cmsc.struts.SelectorAction {
 
+    private boolean contentChannelOnly;
+    
     @Override
     public ActionForward execute(ActionMapping mapping, ActionForm form,
             HttpServletRequest request, HttpServletResponse response, Cloud cloud) throws Exception {
@@ -39,6 +41,13 @@ public class SelectorAction extends com.finalist.cmsc.struts.SelectorAction {
             RepositoryInfo info = new RepositoryInfo(RepositoryUtil.getRepositoryInfo(cloud));
             cloud.setProperty("Selector" + RepositoryInfo.class.getName(), info);
         }
+        
+        if (mapping instanceof SelectorChannelActionMapping) {
+            SelectorChannelActionMapping selectoMapping = (SelectorChannelActionMapping) mapping;
+            contentChannelOnly = selectoMapping.isContentChannelOnly();
+        }
+        
+        addToRequest(request, "actionname", mapping.getPath());
         
         JstlUtil.setResourceBundle(request, "cmsc-repository");
         return super.execute(mapping, form, request, response, cloud);
@@ -66,14 +75,14 @@ public class SelectorAction extends com.finalist.cmsc.struts.SelectorAction {
     }
 
     protected List getOpenChannels(Node channelNode) {
-        if (RepositoryUtil.isChannel(channelNode)) {
+        if (RepositoryUtil.isContentChannel(channelNode)) {
             return RepositoryUtil.getPathToRoot(channelNode);
         }
         return null;
     }
 
     protected AjaxTree getTree(HttpServletRequest request, HttpServletResponse response, Cloud cloud, TreeInfo info, String persistentid) {
-        RepositoryTreeModel model = new RepositoryTreeModel(cloud);
+        RepositoryTreeModel model = new RepositoryTreeModel(cloud, contentChannelOnly);
         SelectAjaxRenderer chr = new SelectRenderer(response, getLinkPattern(), getTarget());
         AjaxTree t = new AjaxTree(model, chr, info);
         t.setImgBaseUrl("../../gfx/icons/");
@@ -89,7 +98,14 @@ public class SelectorAction extends com.finalist.cmsc.struts.SelectorAction {
         else {
             Node parentNode = RepositoryUtil.getChannelFromPath(cloud, path);
             if(parentNode != null) {
-                NodeList children = RepositoryUtil.getChildren(parentNode);
+                NodeList children;
+                if (contentChannelOnly) {
+                    children = RepositoryUtil.getContentChannelOrderedChildren(parentNode);
+                }
+                else {
+                    children = RepositoryUtil.getChildren(parentNode);
+                }
+                
                 for (Iterator iter = children.iterator(); iter.hasNext();) {
                     Node child = (Node) iter.next();
                     strings.add(child.getStringValue(TreeUtil.PATH_FIELD));

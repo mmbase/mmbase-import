@@ -28,10 +28,15 @@ See http://www.MMBase.org/license
    		<dependency>
 			<groupId>mmbase</groupId>
 			<artifactId>mmbase-cloudcontext</artifactId>
-			<version>${mmbase.version}</version>
+			<version>${mmbase.cloudcontext.version}</version>
 			<type>jar</type>
 		</dependency>
-
+      <dependency>
+          <groupId>org.samba.jcifs</groupId>
+          <artifactId>jcifs</artifactId>
+          <version>1.2.9</version>
+          <type>jar</type>
+      </dependency>      
 	</dependencies>
 </project>
 

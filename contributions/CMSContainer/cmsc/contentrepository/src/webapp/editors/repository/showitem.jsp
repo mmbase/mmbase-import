@@ -22,7 +22,7 @@
             <table class="listcontent">
                <mm:field name="number">
                <tr>
-                  <td><mm:fieldinfo type="guiname" /></td>
+                  <td><fmt:message key="showchannels.number" /></td>
                   <td><mm:fieldinfo type="guivalue" /></td>
                </tr>
                </mm:field> 

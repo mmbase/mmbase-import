@@ -51,4 +51,13 @@
          </db>
       </field>
 </fieldlist>
+
+  <indexlist>
+    <index name="treeorder">
+      <indexfield name="snumber" />
+      <indexfield name="pos" />
+      <indexfield name="dnumber" />
+    </index>
+  </indexlist>
+
 </builder>

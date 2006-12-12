@@ -9,7 +9,7 @@ function <portlet:namespace />reorder() {
 		onUpdate : function() { 
 			var ajaxOptions = {
 				onComplete : function(request) { new Effect.Highlight('<portlet:namespace />list',{}); },
-				parameters : 'action=reorderpartial&parent=${contentchannel}&offset=${offset}&'
+				parameters : 'action=reorderpartial&parent=${contentchannel}&offset=${offset}&direction=${direction}&'
 							 + Sortable.serialize('<portlet:namespace />list', {name: 'ids'} ),
 				evalScripts : true,
 				asynchronous : true

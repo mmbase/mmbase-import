@@ -1,5 +1,8 @@
 package com.finalist.cmsc.mmbase;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.sf.mmapps.commons.util.StringUtil;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
@@ -22,6 +25,9 @@ import org.mmbase.util.logging.Logging;
  */
 public class PropertiesUtil {
 
+    private static final String PROPERTY_HIDDEN_TYPES = "system.contenttypes.hide";
+
+	
    /** MMbase logging system */
    private static Logger log = Logging.getLoggerInstance(PropertiesUtil.class.getName());
 
@@ -158,4 +164,26 @@ public class PropertiesUtil {
       property.commit();
       log.info("Changed Property " + key + "in environment " + environment + " value=" + value);
    }
+   
+   
+   /**
+    * Helper method to get all hidden types
+    * 
+    * @return
+    */
+	public static List<String> getHiddenTypes() {
+		String property = getProperty(PROPERTY_HIDDEN_TYPES);
+		if(property == null) {
+			return new ArrayList<String>();
+		}
+		
+		ArrayList<String> list = new ArrayList<String>();
+		String[] values = property.split(",");
+		for(String value : values) {
+			list.add(value);
+		}
+		return list;
+	}
+
+   
 }

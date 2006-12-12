@@ -10,7 +10,6 @@ import org.mmbase.bridge.*;
 
 import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.struts.MMBaseAction;
-import com.finalist.cmsc.util.NameUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

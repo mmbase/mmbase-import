@@ -16,9 +16,12 @@ import net.sf.mmapps.commons.util.StringUtil;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.Node;
 import org.mmbase.datatypes.processors.Processor;
+import org.mmbase.datatypes.processors.ParameterizedProcessorFactory;
 import org.mmbase.security.Rank;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.util.functions.Parameters;
+import org.mmbase.util.functions.Parameter;
 import org.w3c.dom.*;
 import org.w3c.dom.NodeList;
 
@@ -26,57 +29,69 @@ import com.finalist.cmsc.mmbase.ResourcesUtil;
 
 
 @SuppressWarnings("serial")
-public class RichTextGetProcessor implements Processor {
+public class RichTextGetProcessor implements ParameterizedProcessorFactory {
 
-    /** MMbase logging system */
-    private static Logger log = Logging.getLoggerInstance(RichTextGetProcessor.class.getName());
-    
-    public Object process(Node node, Field field, Object value) {
-       String out = "";
-       String in = (String) value;
-       if (!StringUtil.isEmpty(in) && RichText.hasRichtextItems(in)) {
-           try {
-               Document doc = RichText.getRichTextDocument(in);
-               if (doc == null) {
-                   out = in;
-               }
-               else {
-                   resolve(node, doc);
-                   out = RichText.getRichTextString(doc);
-               }
-           } catch (Exception e) {
-               log.error("resolve failed " +node.getNumber() + " " + field.getName(), e);
-               throw new RuntimeException(e);
-           }
-       }
-       else {
-          out = in;
-       }
-       return out;
-    }
+   /** MMbase logging system */
+   private static Logger log = Logging.getLoggerInstance(RichTextGetProcessor.class.getName());
+   protected static final Parameter[] PARAMS = new Parameter[] {
+       new Parameter("dynamicDescriptions", String.class, "false")
+   };
 
-    /**
+   public Parameters createParameters() {
+      return new Parameters(PARAMS);
+   }
+
+   public Processor createProcessor(Parameters parameters) {
+      final boolean dynamicDescriptions = Boolean.parseBoolean(parameters.get("dynamicDescriptions").toString());
+      return new Processor() {
+         public Object process(Node node, Field field, Object value) {
+             String out = "";
+             String in = (String) value;
+             if (!StringUtil.isEmpty(in) && RichText.hasRichtextItems(in)) {
+                 try {
+                     Document doc = RichText.getRichTextDocument(in);
+                     if (doc == null) {
+                         out = in;
+                     }
+                     else {
+                         resolve(node, doc, dynamicDescriptions);
+                         out = RichText.getRichTextString(doc);
+                     }
+                 } catch (Exception e) {
+                     log.error("resolve failed " +node.getNumber() + " " + field.getName(), e);
+                     throw new RuntimeException(e);
+                 }
+             }
+             else {
+                out = in;
+             }
+             return out;
+          }
+      };
+   }
+
+   /**
      * Transform given richtext field data links to frontend links using given
      * navigation bean.
-     * 
+     *
      * @param node MMbase node
      * @param doc richtext field data
      * @return transformed field data DOM object
      */
-    public Document resolve(Node node, Document doc) {
+    public Document resolve(Node node, Document doc, boolean dynamicDescriptions) {
         Cloud cloud = node.getCloud();
-        
+
         Map<String,String> inlineLinks = new HashMap<String,String>();
         RelationList links = node.getRelations(RichText.INLINEREL_NM, null, "DESTINATION");
         for (Iterator iter = links.iterator(); iter.hasNext();) {
             Relation inlineRel = (Relation) iter.next();
             inlineLinks.put(inlineRel.getStringValue(RichText.REFERID_FIELD), inlineRel.getStringValue("dnumber"));
         }
-        
+
         // transform links
         NodeList linklist = doc.getElementsByTagName(RichText.LINK_TAGNAME);
         if (linklist.getLength() > 0) {
-            resolveLinks(cloud, linklist, inlineLinks);
+            resolveLinks(cloud, linklist, inlineLinks, dynamicDescriptions);
         }
 
         Map<String,Relation> inlineImages = new HashMap<String,Relation>();
@@ -90,17 +105,17 @@ public class RichTextGetProcessor implements Processor {
         NodeList imglist = doc.getElementsByTagName(RichText.IMG_TAGNAME);
         log.debug("" + imglist.getLength() + " images found in richtext.");
         if (imglist.getLength() > 0) {
-            resolveImages(cloud, imglist, inlineImages);
+            resolveImages(cloud, imglist, inlineImages, dynamicDescriptions);
         }
 
         return doc;
     }
 
-    /**
+   /**
      * Find image tags in the text and replace them with marked up blocks
      * including the corrected image tag.
      */
-    private void resolveImages(Cloud cloud, NodeList nl, Map<String, Relation> inlineImages) {
+    private void resolveImages(Cloud cloud, NodeList nl, Map<String, Relation> inlineImages, boolean dynamicDescriptions) {
        for (int j = nl.getLength() - 1; j >= 0; --j) {
           Element image = (Element) nl.item(j);
 
@@ -127,12 +142,19 @@ public class RichTextGetProcessor implements Processor {
              String imageId = inlineRel.getStringValue("dnumber");
 
              Node imageNode = cloud.getNode(imageId);
-
+             if (dynamicDescriptions) {
+                String description = imageNode.getStringValue("description");
+                if (StringUtil.isEmptyOrWhitespace(description)) {
+                   description = imageNode.getStringValue(RichText.TITLE_ATTR);
+                }
+                image.setAttribute(RichText.ALT_ATTR, description);
+                image.setAttribute(RichText.TITLE_ATTR, description);
+             }
              int height = inlineRel.getIntValue("height");
              int width = inlineRel.getIntValue("width");
             
-             imageNode = ResourcesUtil.getImageNode(imageNode, height, width);
-             String servletPath = ResourcesUtil.getServletPath(imageNode, imageNode.getStringValue("number"));
+             Node scaledImageNode = ResourcesUtil.getImageNode(imageNode, height, width);
+             String servletPath = ResourcesUtil.getServletPath(scaledImageNode, scaledImageNode.getStringValue("number"));
 
              image.setAttribute(RichText.SRC_ATTR, servletPath);
              if (width > 0) {
@@ -158,7 +180,7 @@ public class RichTextGetProcessor implements Processor {
     /**
      * Find a tags in the text and replace them with valid links
      */
-    private void resolveLinks(Cloud cloud, NodeList nl, Map<String, String> inlineLinks) {
+    private void resolveLinks(Cloud cloud, NodeList nl, Map<String, String> inlineLinks, boolean dynamicDescriptions) {
        for (int j = nl.getLength() - 1; 0 <= j; --j) {
           Element aElement = (Element) nl.item(j);
 
@@ -169,12 +191,17 @@ public class RichTextGetProcessor implements Processor {
              if (!inlineLinks.containsKey(String.valueOf(idrel))) {
                  if (cloud.getUser().getRank() == Rank.ANONYMOUS) {
                      org.w3c.dom.Node parentNode = aElement.getParentNode();
+                     org.w3c.dom.Node nextSibling = aElement.getNextSibling();
+                     while (nextSibling != null && nextSibling.getNodeType() == org.w3c.dom.Node.ATTRIBUTE_NODE) {
+                         nextSibling = nextSibling.getNextSibling();
+                     }
+                     
                      parentNode.removeChild(aElement);
                      org.w3c.dom.NodeList children = aElement.getChildNodes();
                      for (int i = 0; i < children.getLength(); i++) {
                          org.w3c.dom.Node child = children.item(i);
                          if (child.getNodeType() != org.w3c.dom.Node.ATTRIBUTE_NODE) {
-                             parentNode.appendChild(child);
+                             parentNode.insertBefore(child, nextSibling);
                          }
                     }
                  }
@@ -188,7 +215,10 @@ public class RichTextGetProcessor implements Processor {
              String url = null;
              String builderName = destinationNode.getNodeManager().getName();
              if ("attachments".equals(builderName)) {
-                 name = destinationNode.getStringValue(RichText.TITLE_ATTR);
+                 name = destinationNode.getStringValue(RichText.DESCRIPTION_ATTR);
+                 if (StringUtil.isEmptyOrWhitespace(name)) {
+                    name = destinationNode.getStringValue(RichText.TITLE_ATTR); 
+                 }
                  url = ResourcesUtil.getServletPath(destinationNode, destinationNode.getStringValue("number"));
              } else {
                  if ("urls".equals(builderName)) {
@@ -196,7 +226,14 @@ public class RichTextGetProcessor implements Processor {
                      url = destinationNode.getStringValue("url");
                  }
                  else {
-                     name = destinationNode.getStringValue(RichText.TITLE_ATTR);
+                     if (destinationNode.getNodeManager().hasField(RichText.TITLE_ATTR)) {
+                         name = destinationNode.getStringValue(RichText.TITLE_ATTR);
+                     }
+                     else {
+                         if (destinationNode.getNodeManager().hasField("name")) {
+                             name = destinationNode.getStringValue("name");
+                         }
+                     }
                      url = getContentUrl(destinationNode);
                  }
              }
@@ -205,11 +242,14 @@ public class RichTextGetProcessor implements Processor {
                  aElement.removeAttribute(RichText.HREF_ATTR);
              }
              aElement.setAttribute(RichText.HREF_ATTR,url);
-             
-             if (!aElement.hasAttribute(RichText.TITLE_ATTR)) {
+
+             if (StringUtil.isEmptyOrWhitespace(name)) {
+                name = url;
+             }
+             if (!aElement.hasAttribute(RichText.TITLE_ATTR) || dynamicDescriptions) {
                  aElement.setAttribute(RichText.TITLE_ATTR, name);
              }
-             
+
              if (cloud.getUser().getRank() == Rank.ANONYMOUS) {
                  aElement.removeAttribute(RichText.RELATIONID_ATTR);
                  if (aElement.hasAttribute(RichText.DESTINATION_ATTR)) {
@@ -221,8 +261,9 @@ public class RichTextGetProcessor implements Processor {
     }
 
     private String getContentUrl(Node node) {
-        String servletpath = ResourcesUtil.getServletPathWithAssociation("content", "/content/*");
-        return servletpath + node.getStringValue("number") + "/" + node.getStringValue("title");
+        String title = node.getStringValue("title");
+        String id = node.getStringValue("number");
+        return ResourcesUtil.getServletPathWithAssociation("content", "/content/*", id, title);
     }
 
 }

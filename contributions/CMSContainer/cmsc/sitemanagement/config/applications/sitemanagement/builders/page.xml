@@ -12,10 +12,10 @@
 	<class>com.finalist.cmsc.navigation.NavigationBuilder</class>
 	<searchage>70</searchage>
 	<names>
-      <singular xml:lang="nl">page</singular>
-      <singular xml:lang="en">page</singular>
-      <plural xml:lang="nl">page</plural>
-      <plural xml:lang="en">page</plural>
+      <singular xml:lang="nl">Pagina</singular>
+      <singular xml:lang="en">Page</singular>
+      <plural xml:lang="nl">Pagina's</plural>
+      <plural xml:lang="en">Pages</plural>
 	</names>
 	<descriptions>
 		<description xml:lang="nl"></description>
@@ -272,7 +272,30 @@
 				<type key="false" required="true" state="persistent">BOOLEAN</type>
 			</db>
 		</field>
-
+		
+		<field>
+			<descriptions>
+				<description xml:lang="nl"></description>
+				<description xml:lang="en"></description>
+			</descriptions>
+			<gui>
+				<guiname xml:lang="nl">Externe URL</guiname>
+				<guiname xml:lang="en">External URL</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>15</input>
+					<list>15</list>
+					<search>15</search>
+				</positions>
+			</editor>
+			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+			<db>
+				<name>externalurl</name>
+				<type key="false" required="false" size="255" state="persistent">STRING</type>
+			</db>
+		</field>
+		
 		<!--
 			VIRTUAL FIELDS.	
 		-->
@@ -341,4 +364,11 @@
 		</field>
 
 	</fieldlist>
+	
+  <indexlist>
+    <index name="expiredate">
+      <indexfield name="use_expirydate" />
+      <indexfield name="expiredate" />
+    </index>
+  </indexlist>
 </builder>

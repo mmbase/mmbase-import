@@ -29,6 +29,7 @@ public class SearchForm extends ActionForm {
    private String personal;
    private String useraccount;
 	private String title;
+	private String keywords;
 	private String objectid;
    private String mode = "basic";
    private String search = "true";
@@ -202,4 +203,13 @@ public class SearchForm extends ActionForm {
    public void setParentchannelpath(String parentchannelpath) {
       this.parentchannelpath = parentchannelpath;
    }
+
+public String getKeywords() {
+	return keywords;
+}
+
+public void setKeywords(String keywords) {
+	this.keywords = keywords;
+}
+   
 }

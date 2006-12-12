@@ -4,13 +4,21 @@ import java.io.IOException;
 import java.util.*;
 
 import javax.portlet.*;
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.jsp.jstl.core.Config;
 import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 
+import net.sf.mmapps.commons.bridge.CloudUtil;
 import net.sf.mmapps.commons.util.StringUtil;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.pluto.core.CoreUtils;
+import org.apache.pluto.core.InternalPortletRequest;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.NodeList;
+import org.mmbase.security.UserContext;
 
 import com.finalist.cmsc.beans.om.PortletParameter;
 import com.finalist.cmsc.beans.om.View;
@@ -18,6 +26,7 @@ import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 import com.finalist.cmsc.services.sitemanagement.SiteManagementAdmin;
 import com.finalist.cmsc.util.bundles.CombinedResourceBundle;
+import com.finalist.pluto.portalImpl.aggregation.PortletFragment;
 import com.finalist.pluto.portalImpl.core.*;
 
 @SuppressWarnings("unused")
@@ -149,49 +158,114 @@ public abstract class CmscPortlet extends GenericPortlet {
             }
         }
     }
+    
+    private List<Locale> getLocales(RenderRequest request) {
+        PortletMode mode = request.getPortletMode();
+        
+        List<Locale> locales = new ArrayList<Locale>();
+        
+        Locale siteLocale = null;
+        if (mode.equals(PortletMode.VIEW) || mode.equals(PortletMode.EDIT)) {
+        	siteLocale = (Locale) request.getAttribute("siteLocale");
+        }
+        if(siteLocale == null) {
+        	siteLocale = request.getLocale();
+        }
+        locales.add(siteLocale);
+        Locale editorsLocale = (Locale) request.getAttribute("editorsLocale");
+        if(editorsLocale == null) {
+        	Cloud cloud = CloudUtil.getCloudFromThread();
+        	if(cloud != null) {
+	        	UserContext user = cloud.getUser();
+	        	if(user != null) {
+					String username = user.getIdentifier();
+		        	if(username != null && !username.equals("anonymous")) {
+		        		
+		        		NodeList userNodes = cloud.getNodeManager("user").getList("username = '"+username+"'", null, null);
+		        		if(userNodes.size() > 0) {
+		        			editorsLocale = new Locale(userNodes.getNode(0).getStringValue("language"));
+		        		}
+		        	}
+	        	}
+        	}
+        	
+        	if(editorsLocale == null) { 
+        		editorsLocale = siteLocale;
+        	}
+        	request.setAttribute("editorsLocale", editorsLocale);
+        }
+        
+        if(editorsLocale != null && !editorsLocale.equals(siteLocale)) {
+        	locales.add(editorsLocale);
+        }
+        
+        return locales;
+    }
 
+    /**
+     * This will set both the primary and the secondary resource bundle 
+     * (which is used when in edit modus)
+     * 
+     * @param req
+     * @param baseName
+     */
     private void setResourceBundle(RenderRequest req, String baseName) {
-        ResourceBundle bundle = null;
-        CombinedResourceBundle cbundle = null;
-        while (!StringUtil.isEmpty(baseName)) {
-            try {
-                ResourceBundle otherbundle = ResourceBundle.getBundle(baseName, req.getLocale());
-                if (cbundle == null) {
-                    cbundle = new CombinedResourceBundle(otherbundle);
-                }
-                else {
-                    cbundle.addBundles(otherbundle);
-                }
-            }
-            catch (java.util.MissingResourceException mre) {
-                log.debug("Resource bundel not found for basename " + baseName);
-            }
-            int lastIndex = baseName.lastIndexOf("/");
-            if (lastIndex > -1) {
-                baseName = baseName.substring(0, lastIndex);
-            }
-            else {
-                baseName = null;
-            }
+        List<Locale> locales = getLocales(req);
+        int count = 0;
+        for(Locale locale:locales) {
+            ResourceBundle bundle = null;
+            CombinedResourceBundle cbundle = null;
+
+            while (!StringUtil.isEmpty(baseName)) {
+	            try {
+	                ResourceBundle otherbundle = ResourceBundle.getBundle(baseName, locale);
+	                if (cbundle == null) {
+	                    cbundle = new CombinedResourceBundle(otherbundle);
+	                }
+	                else {
+	                    cbundle.addBundles(otherbundle);
+	                }
+	            }
+	            catch (java.util.MissingResourceException mre) {
+	                log.debug("Resource bundel not found for basename " + baseName);
+	            }
+	            int lastIndex = baseName.lastIndexOf("/");
+	            if (lastIndex > -1) {
+	                baseName = baseName.substring(0, lastIndex);
+	            }
+	            else {
+	                baseName = null;
+	            }
+	        }
+	        ResourceBundle portletbundle = getResourceBundle(locale);
+	        if (portletbundle == null) {
+	            bundle = cbundle;
+	        }
+	        else {
+	            if (cbundle == null) {
+	                bundle = portletbundle;
+	            }
+	            else {
+	                cbundle.addBundles(portletbundle);
+	                bundle = cbundle;
+	            }
+	        }
+
+	        // this is JSTL specific, but the problem is that a RenderRequest is not a ServletRequest
+	        if (bundle != null) {
+		        if(count == 0 || locales.size() == 1) {
+		            LocalizationContext ctx = new LocalizationContext(bundle, locale);
+		            req.setAttribute(Config.FMT_LOCALIZATION_CONTEXT + ".request", ctx);
+		        }
+		        else {
+		            LocalizationContext ctx = new LocalizationContext(bundle, locale);
+		            req.setAttribute(Config.FMT_LOCALIZATION_CONTEXT + ".request.editors", ctx);
+		        }
+	        	count++;
+        	}
+	        
         }
-        ResourceBundle portletbundle = getResourceBundle(req.getLocale());
-        if (portletbundle == null) {
-            bundle = cbundle;
-        }
-        else {
-            if (cbundle == null) {
-                bundle = portletbundle;
-            }
-            else {
-                cbundle.addBundles(portletbundle);
-                bundle = cbundle;
-            }
-        }
-        // this is JSTL specific, but the problem is that a RenderRequest is not a ServletRequest
-        if (bundle != null) {
-            LocalizationContext ctx = new LocalizationContext(bundle);
-            req.setAttribute(Config.FMT_LOCALIZATION_CONTEXT + ".request", ctx);
-        }
+        
     }
 
     protected void doView(RenderRequest req, RenderResponse res) throws PortletException, java.io.IOException {
@@ -407,4 +481,11 @@ public abstract class CmscPortlet extends GenericPortlet {
         }
     }
 
+    protected PortletFragment getPortletFragment(PortletRequest request) {
+    	InternalPortletRequest internalPortletRequest = CoreUtils.getInternalRequest(request);
+    	ServletRequest servletRequest = ((HttpServletRequestWrapper) internalPortletRequest).getRequest();
+    	return (PortletFragment) servletRequest.getAttribute(PortalConstants.FRAGMENT);
+    }
+
+    
 }

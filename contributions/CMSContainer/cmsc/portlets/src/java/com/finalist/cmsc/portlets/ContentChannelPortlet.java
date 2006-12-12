@@ -53,6 +53,14 @@ public class ContentChannelPortlet extends AbstractContentPortlet {
 
     protected static final String VIEW_TYPE = "viewtype";
     protected static final String DISPLAY_TYPE = "displaytype";
+
+	private static final String YEAR = "year";
+	private static final String MONTH = "month";
+	private static final String DAY = "day";
+	
+	private static final String ARCHIVE_PAGE = "archivepage";
+	private static final String START_INDEX = "startindex";
+		
     
 
     protected void saveParameters(ActionRequest request, String portletId) {
@@ -69,6 +77,8 @@ public class ContentChannelPortlet extends AbstractContentPortlet {
         setPortletParameter(portletId, PAGES_INDEX, request.getParameter(PAGES_INDEX));
         setPortletParameter(portletId, INDEX_POSITION, request.getParameter(INDEX_POSITION));
         setPortletParameter(portletId, VIEW_TYPE, request.getParameter(VIEW_TYPE));
+        setPortletParameter(portletId, ARCHIVE_PAGE, request.getParameter(ARCHIVE_PAGE));
+        setPortletParameter(portletId, START_INDEX, request.getParameter(START_INDEX));        
     }
 
     protected void setEditResponse(ActionRequest request, ActionResponse response,
@@ -87,6 +97,7 @@ public class ContentChannelPortlet extends AbstractContentPortlet {
     @Override
     protected void doView(RenderRequest req, RenderResponse res) throws PortletException, IOException {
         PortletPreferences preferences = req.getPreferences();
+        
         String channel = preferences.getValue(CONTENTCHANNEL, null);
         if (!StringUtil.isEmpty(channel)) {
             addContentElements(req);
@@ -115,21 +126,25 @@ public class ContentChannelPortlet extends AbstractContentPortlet {
         }
     }
  
-    private void addContentElements(RenderRequest req) {
+    protected void addContentElements(RenderRequest req) {
         String elementId = req.getParameter(ELEMENT_ID);
         if (StringUtil.isEmpty(elementId)) {
             PortletPreferences preferences = req.getPreferences();
             String portletId = preferences.getValue(PortalConstants.CMSC_OM_PORTLET_ID, null);
             List<String> contenttypes = SiteManagement.getContentTypes(portletId);
             
-            String channel = preferences.getValue(CONTENTCHANNEL, null);
+            String channel = preferences.getValue(CONTENTCHANNEL, null);            
             
-            int offset = 0;
+            int offset = 0;               
             String currentOffset = req.getParameter(OFFSET);
             if (!StringUtil.isEmpty(currentOffset)) {
-                offset = Integer.parseInt(currentOffset);
-            }
-            setAttribute(req, "offset", offset);
+                offset = Integer.parseInt(currentOffset);                
+            }            
+            int startIndex = Integer.parseInt( preferences.getValue(START_INDEX, "1") ) - 1;
+            if (startIndex > 0) {
+            	offset = offset + startIndex ; 
+            }            
+            setAttribute(req, "offset", offset);          
             
             String orderby = preferences.getValue(ORDERBY, null);
             String direction = preferences.getValue(DIRECTION, null);
@@ -146,11 +161,23 @@ public class ContentChannelPortlet extends AbstractContentPortlet {
             }
             elementsPerPage = Math.min(elementsPerPage, maxElements);
             
+            String filterYear = req.getParameter(YEAR);
+            int year = (filterYear == null)?-1:Integer.parseInt(filterYear);
+            
+            String filterMonth = req.getParameter(MONTH);
+            int month = (filterMonth == null)?-1:Integer.parseInt(filterMonth);
+
+            String filterDay = req.getParameter(DAY);
+            int day = (filterDay == null)?-1:Integer.parseInt(filterDay);
+            
             int totalItems = ContentRepository.countContentElements(channel, contenttypes, orderby, direction, 
-                    Boolean.valueOf(useLifecycle).booleanValue(), archive, offset, elementsPerPage);
+                    Boolean.valueOf(useLifecycle).booleanValue(), archive, offset, elementsPerPage, year, month, day);
+            if (startIndex > 0) {
+            	totalItems = totalItems - startIndex; 
+            }
             
             List<ContentElement> elements = ContentRepository.getContentElements(channel, contenttypes, orderby, direction, 
-                    Boolean.valueOf(useLifecycle).booleanValue(), archive, offset, elementsPerPage);
+                    Boolean.valueOf(useLifecycle).booleanValue(), archive, offset, elementsPerPage, year, month, day);
             
             setAttribute(req, ELEMENTS, elements);
             if (contenttypes != null && !contenttypes.isEmpty()) {

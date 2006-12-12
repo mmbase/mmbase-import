@@ -13,6 +13,16 @@
       <td><html:text style="width: 250px" property="url"/></td>
    </tr>
    <tr>
+      <td><fmt:message key="urlform.valid" /></td>
+      <td>
+        <html:select property="valid">
+            <html:option value=""><fmt:message key="urlform.valid.option.all" /></html:option>
+            <html:option value="0"><fmt:message key="urlform.valid.option.invalid" /></html:option>
+            <html:option value="1"><fmt:message key="urlform.valid.option.valid" /></html:option>
+        </html:select>
+      </td>
+   </tr>
+   <tr>
       <td></td>
       <td><input type="submit" name="submitButton" onclick="setOffset(0);" 
       			value="<fmt:message key="urlform.submit" />"/></td>

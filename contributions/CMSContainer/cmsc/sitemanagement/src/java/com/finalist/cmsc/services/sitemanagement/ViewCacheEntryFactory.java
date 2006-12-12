@@ -28,6 +28,10 @@ public class ViewCacheEntryFactory extends MMBaseCacheEntryFactory {
 
     protected Serializable loadEntry(Serializable key) throws Exception {
         Node viewNode = getNode(key);
+        if (viewNode == null) {
+            return null;
+        }
+
         View view = (View) MMBaseNodeMapper.copyNode(viewNode, View.class);
         List<String> types = PortletUtil.getAllowedTypes(viewNode);
         for (String type : types) {

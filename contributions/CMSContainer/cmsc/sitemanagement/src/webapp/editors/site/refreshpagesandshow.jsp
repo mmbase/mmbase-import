@@ -23,5 +23,7 @@
 			}
 		</script>
 	</head>
-	<body onload="refreshPages()"></body>
+	<body onload="refreshPages()">
+		<fmt:message key="pagerefresh.message" />...
+	</body>
 </html:html>

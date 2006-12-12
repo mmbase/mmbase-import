@@ -4,10 +4,17 @@ import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.naming.*;
+import javax.sql.DataSource;
+
+import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
+
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.CloudContext;
 import org.mmbase.bridge.ContextProvider;
 import org.mmbase.module.core.MMBase;
+import org.mmbase.storage.StorageManagerFactory;
+import org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -71,6 +78,41 @@ public class SqlExecutor {
 
    private Connection getConnection() {
         if (connection == null) {
+            MMBase mmbase = MMBase.getMMBase();
+            StorageManagerFactory sf = mmbase.getStorageManagerFactory();
+            if (sf instanceof DatabaseStorageManagerFactory) {
+                try {
+                    DatabaseStorageManagerFactory df = (DatabaseStorageManagerFactory) sf;
+                    connection = df.getDataSource().getConnection();
+                }
+                catch (SQLException e) {
+                    log.debug("Failed to get connection " + e.getMessage(), e);
+                }
+            }
+            else {
+                String dataSourceURI = mmbase.getInitParameter("datasource");
+                if (dataSourceURI != null) {
+                    try {
+                        String contextName = mmbase.getInitParameter("datasource-context");
+                        if (contextName == null) {
+                            contextName = "java:comp/env";
+                        }
+                        log.service("Using configured datasource " + dataSourceURI);
+                        Context initialContext = new InitialContext();
+                        Context environmentContext = (Context) initialContext.lookup(contextName);
+                        DataSource ds = (DataSource)environmentContext.lookup(dataSourceURI);
+                        if (ds == null) {
+                            connection = ds.getConnection();
+                        }
+                    } catch(NamingException ne) {
+                        log.warn("Datasource '" + dataSourceURI + "' not available. (" + ne.getMessage() + "). Attempt to use JDBC Module to access database.");
+                    }
+                    catch (SQLException e) {
+                        log.debug("Failed to get connection " + e.getMessage(), e);
+                    }
+                }
+            }
+            
             throw new NullPointerException("connection not set. Write code to get it from MMBase datasource!");
         }
         return connection;
@@ -85,9 +127,7 @@ public class SqlExecutor {
    public static final String DEFAULT_AUTHENTICATION = "name/password";
    
    private static Cloud getCloud() {
-      final CloudContext context = ContextProvider.getCloudContext("local");
-      final Map loginInfo = getUserCredentials("admin", "admin2k");
-      return context.getCloud(DEFAULT_CLOUD_NAME, DEFAULT_AUTHENTICATION, loginInfo);
+      return CloudProviderFactory.getCloudProvider().getAdminCloud();
    }
    
    public static Map getUserCredentials(String username, String password) {

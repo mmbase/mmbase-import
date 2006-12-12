@@ -14,7 +14,11 @@ function initMenu() {
 			menuFrame = document;
 		}
 		var framehref = menuFrame.location.href;
-      selectMenuByUrl(framehref);
+		
+		suburl = framehref.substring(0,framehref.lastIndexOf('/'));
+		suburl = suburl.substring(suburl.lastIndexOf('/'), suburl.length);
+      selectMenuByUrl(suburl);
+      
 }
 
 function selectMenuByUrl(url) {
@@ -28,7 +32,7 @@ function selectMenuByUrl(url) {
       for(var i=0; i < numberOflistItems; i++) {
          var listItem = listItems[i];
          var ahref = listItem.getElementsByTagName('a')[0].href;
-         if (url.indexOf(ahref) != -1) {
+         if (ahref.indexOf(url) != -1) {
             selectMenu(listItem);
             listItemFound = true;
             break;

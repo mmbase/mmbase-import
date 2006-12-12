@@ -46,10 +46,9 @@
   </script>
   <html:form action="/editors/site/ReorderAction">
    
-   <mm:import externid="returnurl" from="parameters"/>
-   <mm:present referid="returnurl">
-      <input type="hidden" name="returnurl" value="<mm:write referid="returnurl"/>"/>
-   </mm:present>
+   <c:if test="${param.returnurl != null}">
+      <input type="hidden" name="returnurl" value="${param.returnurl}"/>
+   </c:if>
    
 	<table>
 	  <tr>
@@ -62,7 +61,7 @@
 	    </td>
 	    <td style="padding-top:50px"> 
 		  <img src="../gfx/icons/up.png" onmouseup="moveUp()" alt="" /><br />
-		  <img src="../gfx/icons/down.png" onmouseup="moveUp()" alt="" />
+		  <img src="../gfx/icons/down.png" onmouseup="moveDown()" alt="" />
 	    </td>
 	  </tr>
 	</table>

@@ -10,7 +10,7 @@
 -->
    <status>active</status>
    <!--
-   <class>ContentRepository.Childrel</class>
+   <class>Utilities.Childrel</class>
    -->
    <searchage>70</searchage>
    <names>

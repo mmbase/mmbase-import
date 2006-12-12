@@ -69,7 +69,7 @@ public class XMLServlet extends HttpServlet {
          String xml = "";
          try {
             Node node = cloud.getNode(pk);
-            if (RepositoryUtil.isChannel(node)) {
+            if (RepositoryUtil.isContentChannel(node)) {
                xml = XMLController.toXml(node);
             }
             else {

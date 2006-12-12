@@ -33,6 +33,7 @@ public class ReorderAction extends MMBaseFormlessAction {
                 String parent = request.getParameter("parent");
                 if (!isCancelled(request)) {
                     String ids = request.getParameter("ids");
+                    ids = reverseIds(ids);
                     RepositoryUtil.reorderContent(cloud, parent, ids);
                 }
                 String returnurl = request.getParameter("returnurl");
@@ -44,8 +45,12 @@ public class ReorderAction extends MMBaseFormlessAction {
             }
             if ("reorderpartial".equals(action)) {
                 String parent = request.getParameter("parent");
+                String direction = request.getParameter("direction");
                 String offsetStr = request.getParameter("offset");
                 String[] ids = request.getParameterValues("ids[]");
+                if (!StringUtil.isEmptyOrWhitespace(direction) && direction.equalsIgnoreCase("down")) {
+                   ids = reverseIds(ids).split(",");
+                }
                 RepositoryUtil.reorderContent(cloud, parent, ids, Integer.parseInt(offsetStr));
                 return null;
             }
@@ -53,5 +58,21 @@ public class ReorderAction extends MMBaseFormlessAction {
          
          return mapping.findForward("reorder");
     }
+
+	private String reverseIds(String ids) {
+		String[] strings = ids.split(",");
+      return reverseIds(strings);
+	}
+
+   private String reverseIds(String[] strings) {
+      StringBuffer result = new StringBuffer();
+      for(int count = strings.length-1; count >= 0; count--) {
+			result.append(strings[count]);
+			if(count > 0) {
+				result.append(",");
+			}
+		}
+      return result.toString();
+   }
 
 }

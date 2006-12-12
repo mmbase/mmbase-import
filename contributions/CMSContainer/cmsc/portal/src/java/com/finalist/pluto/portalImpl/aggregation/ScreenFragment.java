@@ -18,7 +18,7 @@ import com.finalist.pluto.portalImpl.core.PortalURL;
 
 /**
  * @author Wouter Heijke
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class ScreenFragment extends AbstractFragmentContainer{
 	private static Log log = LogFactory.getLog(ScreenFragment.class);
@@ -37,10 +37,6 @@ public class ScreenFragment extends AbstractFragmentContainer{
 		// do nothing
 		// we assume that the given url points already to the base portal
 		// servlet
-	}
-
-	public boolean isPartOfURL(PortalURL url) {
-		return true;
 	}
 
 	public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

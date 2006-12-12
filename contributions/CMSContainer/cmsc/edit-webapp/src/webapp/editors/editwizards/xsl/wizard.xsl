@@ -4,7 +4,7 @@
 
    Author: Nico Klasens
    Created: 25-07-2003
-   Version: $Revision: 1.3 $
+   Version: $Revision: 1.4 $
 -->
 <xsl:stylesheet 
   version="1.0"
@@ -25,6 +25,7 @@
   <!-- Reason why the wizardcontroller made the wizard readonly (currently these are NONE, RIGHTS and WORKFLOW) -->
   <xsl:param name="READONLY-REASON">NONE</xsl:param>
   <xsl:param name="WORKFLOW">false</xsl:param>
+  <xsl:param name="WORKFLOW-ACCEPTED-ENABLED">false</xsl:param>
   <xsl:param name="WRITER">true</xsl:param>
   <xsl:param name="EDITOR">false</xsl:param>
   <xsl:param name="CHIEFEDITOR">false</xsl:param>
@@ -51,7 +52,16 @@
       <xsl:if test="$READONLY-REASON=&apos;RIGHTS&apos;">
         <p class="readonly-reason"> <xsl:value-of select="$REASON-RIGHTS"/> </p>
       </xsl:if>
+      <xsl:if test="$READONLY-REASON=&apos;PUBLISH&apos;">
+         <p class="readonly-reason">Dit object staat klaar om gepubliceerd te worden. Zolang dit niet gebeurd is kan dit object niet bewerkt worden.</p>
+      </xsl:if>
     </xsl:if>
+   </xsl:template>
+
+
+   <xsl:template name="formhiddenargs">
+ 		<input type="hidden" name="workflowcommand" value="" id="workflowcommand" />
+		<input type="hidden" name="workflowcomment" value="" id="workflowcomment" />
    </xsl:template>
 
   <!-- prompts for starting a editwizard -->
@@ -144,6 +154,28 @@
               <xsl:call-template name="saveonlybutton" />
               <!-- commit  -->
               <xsl:call-template name="savebutton" />
+<!-- EXTRA WORKFLOW KNOWLODGE -->
+				<xsl:if test="$WORKFLOW=&apos;true&apos;">
+					<xsl:if test="$ACTIVITY=&apos;DRAFT&apos;">
+						<xsl:call-template name="finishbutton" />
+					</xsl:if>
+
+					<xsl:if test="$EDITOR=&apos;true&apos;">
+						<xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+						<xsl:if test="$ACTIVITY!=&apos;DRAFT&apos;">
+							<xsl:call-template name="rejectbutton" />
+						</xsl:if>
+						<xsl:if test="($WORKFLOW-ACCEPTED-ENABLED=&apos;true&apos; and $ACTIVITY!=&apos;APPROVED&apos;)">
+							<xsl:call-template name="acceptbutton" />
+						</xsl:if>
+					</xsl:if>
+
+					<xsl:if test="$CHIEFEDITOR=&apos;true&apos;">
+						<xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+						<xsl:call-template name="publishbutton" />
+					</xsl:if>                
+				</xsl:if>
+<!-- END -->
             </xsl:if>
           </nobr>
         </td>
@@ -212,6 +244,110 @@
       </xsl:if>
     </img>
   </xsl:template>
+
+
+  <xsl:variable name="tooltip_finish">Voltooi het object en bied het ter goedkeuring aan</xsl:variable>
+  <xsl:variable name="tooltip_no_finish">
+  	De wijzigingen kunnen niet bewaard worden, omdat nog niet alle data correct is ingevuld.
+  </xsl:variable>
+
+  <xsl:variable name="tooltip_accept">Keur het object goed
+</xsl:variable>
+  <xsl:variable name="tooltip_no_accept">
+  	De wijzigingen kunnen niet goedgekeurd worden, omdat nog niet alle data correct is ingevuld.
+  </xsl:variable>
+
+  <xsl:variable name="tooltip_reject">Afwijzen.</xsl:variable>
+  <xsl:variable name="tooltip_no_reject">
+  	De wijzigingen kunnen niet afgewezen worden, omdat nog niet alle data correct is ingevuld.
+  </xsl:variable>
+
+  <xsl:variable name="tooltip_publish">Publiceer het object</xsl:variable>
+  <xsl:variable name="tooltip_no_publish">
+  	De wijzigingen kunnen niet gepubliceerd worden, omdat nog niet alle data correct is ingevuld.
+  </xsl:variable>
+
+  <xsl:template name="finishbutton">
+    <img
+      id="bottombutton-finish"
+      onclick="doFinish();"
+      enabledsrc="{$mediadir}finish.gif"
+      disabledsrc="{$mediadir}finish_disabled.gif">
+      <xsl:if test="@allowsave=&apos;true&apos;">
+        <xsl:attribute name="class">bottombutton</xsl:attribute>
+        <xsl:attribute name="src"><xsl:value-of select="$mediadir" />finish.gif</xsl:attribute>
+        <xsl:attribute name="titlefinish"><xsl:value-of select="$tooltip_finish" /></xsl:attribute>
+      </xsl:if>
+      <xsl:if test="@allowsave=&apos;false&apos;">
+        <xsl:attribute name="class">bottombutton-disabled</xsl:attribute>
+        <xsl:attribute name="src"><xsl:value-of select="$mediadir" />finish_disabled.gif</xsl:attribute>
+        <xsl:attribute name="titlenofinish"><xsl:value-of select="$tooltip_no_finish" /></xsl:attribute>
+        <xsl:attribute name="disabled" />
+      </xsl:if>
+    </img>
+  </xsl:template>
+
+  <xsl:template name="acceptbutton">
+    <img
+      id="bottombutton-accept"
+      onclick="doAccept();"
+      enabledsrc="{$mediadir}accept.gif"
+      disabledsrc="{$mediadir}accept_disabled.gif">
+      <xsl:if test="@allowsave=&apos;true&apos;">
+        <xsl:attribute name="class">bottombutton</xsl:attribute>
+        <xsl:attribute name="src"><xsl:value-of select="$mediadir" />accept.gif</xsl:attribute>
+        <xsl:attribute name="titleaccept"><xsl:value-of select="$tooltip_accept" /></xsl:attribute>
+      </xsl:if>
+      <xsl:if test="@allowsave=&apos;false&apos;">
+        <xsl:attribute name="class">bottombutton-disabled</xsl:attribute>
+        <xsl:attribute name="src"><xsl:value-of select="$mediadir" />accept_disabled.gif</xsl:attribute>
+        <xsl:attribute name="titlenoaccept"><xsl:value-of select="$tooltip_no_accept" /></xsl:attribute>
+        <xsl:attribute name="disabled" />
+      </xsl:if>
+    </img>
+  </xsl:template>
+
+  <xsl:template name="rejectbutton">
+    <img
+      id="bottombutton-reject"
+      onclick="doReject();"
+      enabledsrc="{$mediadir}reject.gif"
+      disabledsrc="{$mediadir}reject_disabled.gif">
+      <xsl:if test="@allowsave=&apos;true&apos;">
+        <xsl:attribute name="class">bottombutton</xsl:attribute>
+        <xsl:attribute name="src"><xsl:value-of select="$mediadir" />reject.gif</xsl:attribute>
+        <xsl:attribute name="titlereject"><xsl:value-of select="$tooltip_reject" /></xsl:attribute>
+      </xsl:if>
+      <xsl:if test="@allowsave=&apos;false&apos;">
+        <xsl:attribute name="class">bottombutton-disabled</xsl:attribute>
+        <xsl:attribute name="src"><xsl:value-of select="$mediadir" />reject_disabled.gif</xsl:attribute>
+        <xsl:attribute name="titlenoreject"><xsl:value-of select="$tooltip_no_reject" /></xsl:attribute>
+        <xsl:attribute name="disabled" />
+      </xsl:if>
+    </img>
+  </xsl:template>
+
+  <xsl:template name="publishbutton">
+    <img
+      id="bottombutton-publish"
+      onclick="doPublish();"
+      enabledsrc="{$mediadir}publish.gif"
+      disabledsrc="{$mediadir}publish_disabled.gif">
+      <xsl:if test="@allowsave=&apos;true&apos;">
+        <xsl:attribute name="class">bottombutton</xsl:attribute>
+        <xsl:attribute name="src"><xsl:value-of select="$mediadir" />publish.gif</xsl:attribute>
+        <xsl:attribute name="titlepublish"><xsl:value-of select="$tooltip_publish" /></xsl:attribute>
+      </xsl:if>
+      <xsl:if test="@allowsave=&apos;false&apos;">
+        <xsl:attribute name="class">bottombutton-disabled</xsl:attribute>
+        <xsl:attribute name="src"><xsl:value-of select="$mediadir" />publish_disabled.gif</xsl:attribute>
+        <xsl:attribute name="titlenopublish"><xsl:value-of select="$tooltip_no_publish" /></xsl:attribute>
+        <xsl:attribute name="disabled" />
+      </xsl:if>
+    </img>
+  </xsl:template>
+
+
 
   <xsl:template match="field">
     <td class="fieldprompt">
@@ -445,6 +581,20 @@
                   </a>
              </xsl:for-each>
          </xsl:if>
+         <xsl:if test="command[@name=&apos;channelselector&apos;]">
+             <xsl:for-each select="command[@name=&apos;channelselector&apos;]">
+                  <a href="#" onclick="select_fid='{../@fid}';select_did='{../command[@name=&apos;add-item&apos;]/@value}';window.open('../../../../editors/repository/select/SelectorContentChannel.do', 'channelselector', 'width=350,height=500,status=yes,toolbar=no,titlebar=no,scrollbars=yes,resizable=yes,menubar=no');">
+                     <xsl:call-template name="prompt_search"/>
+                  </a>
+             </xsl:for-each>
+         </xsl:if>
+         <xsl:if test="command[@name=&apos;contentselector&apos;]">
+             <xsl:for-each select="command[@name=&apos;contentselector&apos;]">
+                <a href="#" onclick="select_fid='{../@fid}';select_did='{../command[@name=&apos;add-item&apos;]/@value}';window.open('../../../../editors/repository/SearchInitAction.do?action=selectforwizard', 'contentselector', 'width=1000,height=550,status=yes,toolbar=no,titlebar=no,scrollbars=yes,resizable=yes,menubar=no');">
+                     <xsl:call-template name="prompt_search"/>
+                  </a>
+             </xsl:for-each>
+         </xsl:if>         
       </xsl:if>
     </xsl:if>
   </xsl:template>

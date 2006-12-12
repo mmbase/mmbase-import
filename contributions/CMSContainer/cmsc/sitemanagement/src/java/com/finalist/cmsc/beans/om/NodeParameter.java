@@ -22,7 +22,7 @@ public class NodeParameter extends NodeBean {
 
 	private String key;
 
-	private Node value;
+	private String value;
 
 	public String getKey() {
 		return key;
@@ -32,11 +32,13 @@ public class NodeParameter extends NodeBean {
 		this.key = key;
 	}
 
-	public Node getValue() {
+	public String getValueAsString() {
 		return value;
 	}
 
 	public void setValue(Node value) {
-		this.value = value;
+        if (value != null) {
+            this.value = String.valueOf(value.getNumber());
+        }
 	}
 }

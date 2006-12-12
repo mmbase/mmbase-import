@@ -81,7 +81,7 @@
 		<dependency>
 			<groupId>mmbase</groupId>
 			<artifactId>mmbase-cloudcontext</artifactId>
-			<version>${mmbase.version}</version>
+			<version>${mmbase.cloudcontext.version}</version>
 			<type>mmbase-module</type>
 			<properties>
 				<mmbase.config.bundle>false</mmbase.config.bundle>
@@ -136,6 +136,7 @@
 				<mmbase.config.bundle>false</mmbase.config.bundle>
 			</properties>
 		</dependency>
+<!--
 		<dependency>
 			<groupId>mmbase</groupId>
 			<artifactId>mmbase-rmmci</artifactId>
@@ -145,7 +146,22 @@
 				<mmbase.config.bundle>false</mmbase.config.bundle>
 			</properties>
 		</dependency>
+-->
+      <dependency>
+         <groupId>mmbase</groupId>
+         <artifactId>mmbase-rmmci-server</artifactId>
+         <version>${mmbasermmci.version}</version>
+         <type>jar</type>
+      </dependency>
+<!-- mmbase 1.9
 		<dependency>
+			<groupId>mmbase</groupId>
+			<artifactId>mmbase-resources</artifactId>
+			<version>${mmbase.version}</version>
+			<type>jar</type>
+		</dependency>
+-->
+      <dependency>
 			<groupId>mmbase</groupId>
 			<artifactId>mmbase-taglib</artifactId>
 			<version>${mmbase.version}</version>
@@ -177,7 +193,7 @@
 		<dependency>
 			<groupId>mmapps</groupId>
 			<artifactId>mmcommons</artifactId>
-			<version>1.3.6</version>
+			<version>1.3.6.1</version>
 			<type>jar</type>
 			<properties>
 				<war.bundle>${war.bundle}</war.bundle>

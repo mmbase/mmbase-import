@@ -38,6 +38,18 @@ See http://www.MMBase.org/license
 			<version>${cmsc.version}</version>
 			<type>jar</type>
 		</dependency>
+   		<dependency>
+			<groupId>finalist</groupId>
+			<artifactId>cmsc-security</artifactId>
+			<version>${cmsc.version}</version>
+			<type>jar</type>
+		</dependency>
+   		<dependency>
+			<groupId>finalist</groupId>
+			<artifactId>cmsc-servicemanagement</artifactId>
+			<version>${cmsc.version}</version>
+			<type>jar</type>
+		</dependency>
 
    		<dependency>
 			<groupId>mmbase</groupId>

@@ -22,15 +22,14 @@ import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 
 import com.finalist.cmsc.beans.om.*;
-import com.finalist.cmsc.navigation.NavigationUtil;
-import com.finalist.cmsc.navigation.PortletUtil;
+import com.finalist.cmsc.navigation.*;
 import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.security.UserRole;
 import com.finalist.cmsc.services.Properties;
 
 /**
  * MMBase specific PortalLayoutService implementation, in this case MMBase
- * manages the Screens/Layout and Portlets
+ * manages the Pages/Layout and Portlets
  * 
  * @author Wouter Heijke
  */
@@ -54,7 +53,10 @@ public class SiteManagementAdminServiceMMBaseImpl extends SiteManagementAdminSer
             String key = param.getKey();
             String value = param.getValue();
             Cloud cloud = getUserCloud();
+
             PortletUtil.updatePortletParameter(cloud, portletId, key, value);
+            updatePageForPortlet(portletId);
+
             siteModelManager.clearPortlet(portletId);
 		}
         
@@ -74,6 +76,8 @@ public class SiteManagementAdminServiceMMBaseImpl extends SiteManagementAdminSer
                 node = cloud.getNode(value);
             }
             PortletUtil.updatePortletParameter(cloud, portletId, key, node);
+            updatePageForPortlet(portletId);
+
             siteModelManager.clearPortlet(portletId);
         }
 
@@ -88,6 +92,8 @@ public class SiteManagementAdminServiceMMBaseImpl extends SiteManagementAdminSer
 		try {
 			Cloud cloud = getUserCloud();
 			PortletUtil.updatePortletView(cloud, portletId, viewId);
+            updatePageForPortlet(portletId);
+
             siteModelManager.clearPortlet(portletId);
 		} catch (Exception e) {
 			log.error("something went wrong while setting view (" + viewId + ") for portlet (" + portletId + ")");
@@ -100,13 +106,15 @@ public class SiteManagementAdminServiceMMBaseImpl extends SiteManagementAdminSer
 		return result;
 	}
 
-    public boolean setPagePortlet(String screenId, String portletId, String id) {
+    public boolean setPagePortlet(String pageId, String portletId, String id) {
         boolean result = true;
-        log.debug("setScreenPortlet screen:'" + screenId + "' portlet:'" + portletId + "'");
+        log.debug("page:'" + pageId + "' portlet:'" + portletId + "'");
         try {
             Cloud cloud = getUserCloud();
-            PortletUtil.setPagePortlet(cloud, screenId, portletId, id);
-            siteModelManager.clearPage(screenId);
+            PortletUtil.setPagePortlet(cloud, pageId, portletId, id);
+            updatePage(pageId);
+
+            siteModelManager.clearPage(pageId);
         } catch (Exception e) {
             log.error("something went wrong while adding portlet (" + portletId + ")", e);
             result = false;
@@ -114,16 +122,18 @@ public class SiteManagementAdminServiceMMBaseImpl extends SiteManagementAdminSer
         return result;
     }
     
-	public boolean createPagePortlet(String screenId, String portletName, String definitionName, String layoutId,
+	public boolean createPagePortlet(String pageId, String portletName, String definitionName, String layoutId,
 			String viewId) {
         boolean result = true;
-        log.debug("createScreenPortlet screen:'" + screenId + "' portlet:'" + portletName +
+        log.debug("page:'" + pageId + "' portlet:'" + portletName +
                   "' definition:'" + definitionName + "'");
         try {
     		Cloud cloud = getUserCloud();
     		Node newNode = PortletUtil.createPortlet(cloud, portletName, definitionName, viewId);
-            PortletUtil.setPagePortlet(cloud, screenId, newNode, layoutId);
-            siteModelManager.clearPage(screenId);
+            PortletUtil.setPagePortlet(cloud, pageId, newNode, layoutId);
+            updatePage(pageId);
+
+            siteModelManager.clearPage(pageId);
         } catch (Exception e) {
             log.error("something went wrong while creating portlet (" + portletName + ")", e);
             result = false;
@@ -135,6 +145,8 @@ public class SiteManagementAdminServiceMMBaseImpl extends SiteManagementAdminSer
 	public void deletePagePortlet(Page page, Portlet portlet, String layoutId) {
 		if (page != null && portlet != null) {
 			PortletUtil.deletePagePortlet(getUserCloud(), page.getId(), portlet.getId(), layoutId);
+            updatePage(page.getId());
+
             siteModelManager.clearPage(page.getId());
 		}
 	}
@@ -175,8 +187,31 @@ public class SiteManagementAdminServiceMMBaseImpl extends SiteManagementAdminSer
         return result;
     }
 
+    protected void updatePageForPortlet(String portletId) {
+        Cloud cloud = getUserCloud();
+        Node portlet = cloud.getNode(portletId);
+        Node page = PagesUtil.getPage(portlet);
+        if (page != null) {
+            updatePage(page);
+        }
+    }
+
+    protected void updatePage(String pageId) {
+        updatePage(Integer.parseInt(pageId));
+    }
+        
+    protected void updatePage(int pageId) {
+        Cloud cloud = getUserCloud();
+        Node page = cloud.getNode(pageId);
+        updatePage(page);
+    }
     
-	private Cloud getUserCloud() {
+    protected void updatePage(Node page) {
+        // trigger system field processing like dates
+        page.commit();
+    }
+    
+	protected Cloud getUserCloud() {
         Cloud cloud = CloudUtil.getCloudFromThread();
         if (cloud == null) {
             log.warn("User cloud not found in thread; make sure that the user cloud is bound");

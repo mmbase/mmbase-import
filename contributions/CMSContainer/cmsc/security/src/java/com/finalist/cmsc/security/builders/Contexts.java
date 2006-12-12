@@ -51,7 +51,8 @@ public class Contexts extends org.mmbase.security.implementation.cloudcontext.bu
         if(operation == Operation.READ) {
             return Authorization.COMPLETE_CHECK;
         } else {
-            //not checking for READ: never mind, this is only used for read checks any way
+            // Queries are read operations
+            // not checking for READ: never mind, this method is only used for read checks any way 
             return Authorization.NO_CHECK;
         }
     }

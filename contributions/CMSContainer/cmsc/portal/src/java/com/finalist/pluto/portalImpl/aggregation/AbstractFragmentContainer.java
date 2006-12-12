@@ -54,6 +54,4 @@ public abstract class AbstractFragmentContainer extends AbstractFragment {
 
 	abstract public void createURL(PortalURL url);
 
-	abstract public boolean isPartOfURL(PortalURL url);
-
 }

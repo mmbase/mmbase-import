@@ -130,7 +130,9 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
             List<Integer> siteIds = siteCache.getSites();
             for (Integer siteId : siteIds) {
                 Site site = (Site) getCache(PAGE_CACHE).get(siteId);
-                sites.add(site);
+                if (site != null) {
+                    sites.add(site);
+                }
             }
         }
         catch (CacheException e) {
@@ -146,7 +148,9 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
                 List<Integer> pageIds = siteCache.getPagesForPath(path);
                 for (Integer pageId : pageIds) {
                     Page page = (Page) getCache(PAGE_CACHE).get(pageId);
-                    pages.add(page);
+                    if (page != null) {
+                        pages.add(page);
+                    }
                 }
             }
             catch (CacheException e) {
@@ -163,7 +167,9 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
                 List<Integer> pageIds = siteCache.getChildren(findpage);
                 for (Integer pageId : pageIds) {
                     Page page = (Page) getCache(PAGE_CACHE).get(pageId);
-                    pages.add(page);
+                    if (page != null) {
+                        pages.add(page);
+                    }
                 }
             }
             catch (CacheException e) {

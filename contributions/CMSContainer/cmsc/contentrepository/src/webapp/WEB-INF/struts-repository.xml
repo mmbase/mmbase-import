@@ -15,6 +15,7 @@
 		<form-bean name="AttachmentForm" type="com.finalist.cmsc.resources.forms.AttachmentForm" />
 		<form-bean name="UrlForm" type="com.finalist.cmsc.resources.forms.UrlForm" />
 		<form-bean name="DeleteSecondaryContentForm" type="com.finalist.cmsc.resources.forms.DeleteSecondaryContentForm" />
+		<form-bean name="SecondaryEditForm" type="com.finalist.cmsc.resources.forms.SecondaryEditForm" />
 
 		<form-bean name="RolesForm" type="com.finalist.cmsc.security.forms.RolesForm" />
 
@@ -49,6 +50,10 @@
 		<action path="/editors/repository/Content" type="com.finalist.cmsc.repository.forms.ContentAction" 
 			unknown="false" validate="false">
 			<forward name="success" path="/editors/repository/content.jsp" redirect="false" />
+		</action>
+		<action path="/editors/repository/Collection" type="com.finalist.cmsc.repository.forms.CollectionAction" 
+			unknown="false" validate="false">
+			<forward name="success" path="/editors/repository/collection.jsp" redirect="false" />
 		</action>
 
 		<action path="/editors/repository/MoveContent" type="com.finalist.cmsc.repository.forms.MoveContentAction" 
@@ -97,14 +102,23 @@
 	
 		<action path="/editors/repository/select/SelectorChannel" type="com.finalist.cmsc.repository.select.forms.SelectorAction" 
 			unknown="false" validate="false"
-			className="com.finalist.cmsc.struts.SelectorActionMapping">
+			className="com.finalist.cmsc.repository.select.forms.SelectorChannelActionMapping">
 			<set-property property="linkPattern" value="javascript:selectItem({0},''{1}'')" />
+			<set-property property="contentChannelOnly" value="false" />
+			<forward name="success" path="/editors/repository/select/selectorpopup.jsp" redirect="false" />
+		</action>
+
+		<action path="/editors/repository/select/SelectorContentChannel" type="com.finalist.cmsc.repository.select.forms.SelectorAction" 
+			unknown="false" validate="false"
+			className="com.finalist.cmsc.repository.select.forms.SelectorChannelActionMapping">
+			<set-property property="linkPattern" value="javascript:selectItem({0},''{1}'')" />
+			<set-property property="contentChannelOnly" value="true" />
 			<forward name="success" path="/editors/repository/select/selectorpopup.jsp" redirect="false" />
 		</action>
 
 		<action path="/editors/repository/select/SelectorContent" type="com.finalist.cmsc.repository.select.forms.SelectorAction" 
 			unknown="false" validate="false"
-			className="com.finalist.cmsc.struts.SelectorLinkActionMapping">
+			className="com.finalist.cmsc.repository.select.forms.SelectorLinkActionMapping">
 			<set-property property="resource" value="content.jsp" />
 			<set-property property="target" value="selectcontent" />
 			<forward name="success" path="/editors/repository/select/selector.jsp" redirect="false" />
@@ -142,6 +156,12 @@
 		<action path="/editors/resources/DeleteSecondaryContentAction" type="com.finalist.cmsc.resources.forms.DeleteSecondaryContentAction"
 			name="DeleteSecondaryContentForm" scope="request" input="/editors/resources/imagesearch.jsp" unknown="false" validate="false">
 		</action>
+
+		<action path="/editors/resources/SecondaryEditAction" type="com.finalist.cmsc.resources.forms.SecondaryEditAction"
+			name="SecondaryEditForm" scope="request" input="/editors/resources/secondaryedit.jsp" unknown="false" validate="true">
+			<forward name="success" path="/editors/resources/secondaryedit.jsp" redirect="false" />
+		</action>
+
 
 		<!-- ==== Recycle bin ==== -->
 

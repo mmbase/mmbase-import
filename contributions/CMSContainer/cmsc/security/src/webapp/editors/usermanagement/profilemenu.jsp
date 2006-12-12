@@ -23,6 +23,9 @@
                <li class="password">
 	               <a href="changepassword.jsp" target="rightpane"><fmt:message key="changepassword.title" /></a>
 				</li>
+               <li class="language">
+	               <a href="changelanguage.jsp" target="rightpane"><fmt:message key="changelanguage.title" /></a>
+				</li>
 			</ul>
 			
 			<div class="side_block_end"></div>

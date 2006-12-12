@@ -7,18 +7,18 @@ import org.mmbase.bridge.NodeManager;
 import org.mmbase.module.Module;
 
 public class ModuleUtil {
+	/**
+	 * A feature can be both a module or a node manager
+	 * @param featureName
+	 * @return
+	 */
 	public static boolean checkFeature(String featureName) {
 		if (featureName != null) {
-			
+
 			// check for module
-			// TODO: use the new hasModule method, which will not give warning is the log when the module is not available
-			Module mod = Module.getModule(featureName);
-			if (mod != null) {
-				if (mod.hasStarted()) {
-					return true;
-				}
+			if(Module.hasModule(featureName)) {
+				return true;
 			}
-			
 			
 			// check for node manager
 			Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();

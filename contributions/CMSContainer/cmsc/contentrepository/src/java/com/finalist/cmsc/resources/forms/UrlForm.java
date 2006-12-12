@@ -7,7 +7,11 @@ public class UrlForm extends SearchForm {
     private String name;
     private String description;
     private String url;
+    private String valid;
 
+    public UrlForm() {
+        super("urls");
+    }
 
     public String getDescription() {
         return description;
@@ -36,4 +40,13 @@ public class UrlForm extends SearchForm {
     public void setUrl(String url) {
         this.url = url;
     }
+
+    public String getValid() {
+        return valid;
+    }
+
+    public void setValid(String valid) {
+        this.valid = valid;
+    }
+
 }

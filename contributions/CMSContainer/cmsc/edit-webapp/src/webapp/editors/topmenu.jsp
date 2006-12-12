@@ -44,7 +44,7 @@
             <ul>
                <li><a href="<mm:url page="dashboard.jsp" />" target="bottompane" class="active" onclick="selectMenu(this.parentNode)"><fmt:message key="topmenu.home" /></a></li>
                <mm:haspage page="/editors/workflow/">
-                  <li><a href="<mm:url page="workflow/workflow.jsp" />" target="bottompane" onclick="selectMenu(this.parentNode)"><fmt:message key="topmenu.workflow" /></a></li>
+                  <li><a href="<mm:url page="workflow/index.jsp" />" target="bottompane" onclick="selectMenu(this.parentNode)"><fmt:message key="topmenu.workflow" /></a></li>
                </mm:haspage>
                <mm:haspage page="/editors/site/">
                   <li><a href="<mm:url page="site/index.jsp" />" target="bottompane" onclick="selectMenu(this.parentNode)"><fmt:message key="topmenu.site" /></a></li>
@@ -52,6 +52,9 @@
                <mm:haspage page="/editors/repository/">
                   <li><a href="<mm:url page="repository/index.jsp" />" target="bottompane" onclick="selectMenu(this.parentNode)"><fmt:message key="topmenu.repository" /></a></li>
                </mm:haspage>
+               <mm:haspage page="/editors/taskmanagement/">
+                  <li><a href="<mm:url page="taskmanagement/index.jsp" />" target="bottompane" onclick="selectMenu(this.parentNode)"><fmt:message key="topmenu.taskmanagement" /></a></li>
+               </mm:haspage>    
                   <li><a href="<mm:url page="usermanagement/index.jsp" />" target="bottompane" onclick="selectMenu(this.parentNode)"><fmt:message key="topmenu.profile" /></a></li>
                <mm:haspage page="/editors/admin/">
                   <mm:hasrank minvalue="administrator">

@@ -35,7 +35,6 @@
 		<action path="/editors/site/SiteDelete" type="com.finalist.cmsc.navigation.forms.SiteDelete"
 			unknown="false" validate="false">
 			<forward name="sitedelete" path="/editors/site/sitedelete.jsp" redirect="false" />
-			<forward name="sitedeletewarning" path="/editors/site/sitedeletewarning.jsp" redirect="false" />
 			<forward name="success" path="/editors/site/refreshpages.jsp" redirect="false" />
 		</action>
 
@@ -55,7 +54,6 @@
 		<action path="/editors/site/PageDelete" type="com.finalist.cmsc.navigation.forms.PageDelete"
 			unknown="false" validate="false">
 			<forward name="pagedelete" path="/editors/site/pagedelete.jsp" redirect="false" />
-			<forward name="pagedeletewarning" path="/editors/site/pagedeletewarning.jsp" redirect="false" />
 			<forward name="success" path="/editors/site/refreshpages.jsp" redirect="false" />
 		</action>
 

@@ -14,8 +14,7 @@ import java.io.Serializable;
 import net.sf.mmapps.commons.beans.MMBaseNodeMapper;
 
 import org.mmbase.bridge.*;
-import org.mmbase.core.event.NodeEvent;
-import org.mmbase.core.event.RelationEvent;
+import org.mmbase.core.event.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -107,4 +106,32 @@ public class PageCacheEntryFactory extends MMBaseCacheEntryFactory {
     protected boolean isNodeEvent(NodeEvent event, String nodeType) {
         return super.isNodeEvent(event, nodeType) || super.isNodeEvent(event, SiteUtil.SITE);
     }
+    
+    public void notify(RelationEvent event) {
+        if (isRelationEvent(event)) {
+            Integer key = getKey(event);
+            if (key != null) {
+                switch (event.getType()) {
+                    case Event.TYPE_CHANGE:
+                        refreshEntry(key);
+                        break;
+                    case Event.TYPE_DELETE:
+                        // don't remove page entry when layout removed from page.
+                        if (!event.getRelationDestinationType().equals(PagesUtil.LAYOUT)) {
+                            deleteEntry(key);
+                        }
+                        break;
+                    case Event.TYPE_NEW:
+                        refreshEntry(key);
+                        break;
+                    case NodeEvent.TYPE_RELATION_CHANGE:
+                        deleteEntry(key);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+
 }

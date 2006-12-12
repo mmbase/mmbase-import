@@ -44,7 +44,7 @@ public abstract class SearchAction extends MMBaseAction {
     /**
      * MMbase logging system
      */
-    private static Logger log = Logging.getLoggerInstance(ImageAction.class.getName());
+    private static Logger log = Logging.getLoggerInstance(SearchAction.class.getName());
 
     public ActionForward execute(ActionMapping mapping, ActionForm form,
             HttpServletRequest request, HttpServletResponse response, Cloud cloud) throws Exception {
@@ -125,33 +125,6 @@ public abstract class SearchAction extends MMBaseAction {
     }
 
     
-    class QueryStringComposer {
 
-        private StringBuffer queryString = null;
-
-        public void addParameter(String key, String value) {
-            if (value == null || key == null) { return; }
-
-            if (queryString == null) {
-                queryString = new StringBuffer("?");
-            }
-            else {
-                queryString.append("&");
-            }
-
-            queryString.append(key);
-            queryString.append("=");
-            queryString.append(value);
-        }
-
-        public String getQueryString() {
-            if (queryString != null) {
-                return queryString.toString();
-            }
-            else {
-                return "";
-            }
-        }
-    }
 
 }

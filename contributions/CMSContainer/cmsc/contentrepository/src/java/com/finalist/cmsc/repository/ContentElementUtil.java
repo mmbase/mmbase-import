@@ -18,6 +18,7 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.*;
 
+import com.finalist.cmsc.mmbase.TypeUtil;
 import com.finalist.cmsc.security.SecurityUtil;
 
 public class ContentElementUtil {
@@ -30,11 +31,11 @@ public class ContentElementUtil {
     public static final String CREATIONDATE_FIELD = "creationdate";
     public static final String PUBLISHDATE_FIELD = "publishdate";
     public static final String EXPIREDATE_FIELD = "expiredate";
+    public static final String USE_EXPIRY_FIELD = "use_expirydate";
     public static final String LASTMODIFIEDDATE_FIELD = "lastmodifieddate";
     public static final String CREATOR_FIELD = "creator";
     public static final String LASTMODIFIER_FIELD = "lastmodifier";
     public static final String NOTIFICATIONDATE_FIELD = "notificationdate";
-    public static final String USE_EXPIRY_FIELD = "use_expirydate";
     public static final String KEYWORD_FIELD = "keywords";
     public static final String ARCHIVEDATE_FIELD = "archivedate";
 
@@ -47,6 +48,10 @@ public class ContentElementUtil {
         // utility
     }
 
+    public static NodeManager getNodeManager(Cloud cloud) {
+        return cloud.getNodeManager(CONTENTELEMENT);
+    }
+    
     public static List<NodeManager> getContentTypes(Cloud cloud) {
         List<NodeManager> result = new ArrayList<NodeManager>();
         NodeManagerList nml = cloud.getNodeManagers();
@@ -113,39 +118,51 @@ public class ContentElementUtil {
     }
 
     public static void removeContentBlock(Node node) {
-        List nodes = findContentBlockNodes(node);
+        List<Node> nodes = findContentBlockNodes(node);
         for (Iterator iter = nodes.iterator(); iter.hasNext();) {
             Node removeNode = (Node) iter.next();
             removeNode.delete(true);
         }
     }
 
-    public static List findContentBlockNodes(Node node) {
+    public static List<Node> findContentBlockNodes(Node node) {
         List<Node> nodes = new ArrayList<Node>();
-        findContentBlockNodes(node, nodes, false);
+        findContentBlockNodes(node, nodes, false, false);
         return nodes;
     }
 
-    public static List findContentBlockNodesWithRelations(Node node) {
+    public static List<Node> findContentBlockNodesWithRelations(Node node) {
         List<Node> nodes = new ArrayList<Node>();
-        findContentBlockNodes(node, nodes, true);
+        findContentBlockNodes(node, nodes, true, false);
         return nodes;
     }
 
-    private static void findContentBlockNodes(Node node, List<Node> nodes, boolean withRelation) {
+    public static void findContentBlockNodes(Node node, List<Node> nodes, boolean withRelation, boolean remove) {
+        if (!remove) {
+            if (!nodes.contains(node)) {
+            nodes.add(node);
+        }
+        }
+
         NodeIterator childs = node.getRelatedNodes("object", null, DESTINATION).nodeIterator();
         while (childs.hasNext()) {
            Node childNode = childs.nextNode();
            if (isContentElement(childNode)) {
                if (!RepositoryUtil.hasContentChannel(childNode)) {
-                   findContentBlockNodes(childNode, nodes, withRelation);
+                   findContentBlockNodes(childNode, nodes, withRelation, remove);
                }
            }
            else {
-               if (!RepositoryUtil.isChannel(childNode)) {
-				   //TODO: should this be checked? Only important to remove?
-                  if (childNode.countRelatedNodes(null, null, SOURCE) <= 1) {
-                      findContentBlockNodes(childNode, nodes, withRelation);
+               if (!RepositoryUtil.isContentChannel(childNode)) {
+				  if (remove) {
+                      if (childNode.countRelatedNodes(null, null, SOURCE) <= 1) {
+                          findContentBlockNodes(childNode, nodes, withRelation, remove);
+                      }
+                  }
+                  else {
+                      if (!TypeUtil.isSystemType(childNode.getNodeManager().getName())) {
+                          findContentBlockNodes(childNode, nodes, withRelation, remove);
+                      }
                   }
                }
            }
@@ -155,11 +172,16 @@ public class ContentElementUtil {
             RelationIterator relations = node.getRelations().relationIterator();
             while (relations.hasNext()) {
                Relation rel = (Relation) relations.next();
-               nodes.add(rel);
+               if (!nodes.contains(rel)) {
+            	   nodes.add(rel);
+	           }
+    	    }
+        }
+        if (remove) {
+            if (!nodes.contains(node)) {
+                nodes.add(node);
             }
         }
-
-        nodes.add(node);
     }
 
     public static Node createContentElement(Cloud cloud, String manager, String creationPath, boolean linkToChannel) {
@@ -245,23 +267,22 @@ public class ContentElementUtil {
         return null;
     }
     
-    public static void addLifeCycleConstraint(Node channel, NodeQuery query, long date) {
+    public static void addNotExpiredConstraint(Node channel, NodeQuery query, long date) {
         NodeManager contentManager = channel.getCloud().getNodeManager(CONTENTELEMENT);
 
-        Field useExpireField = contentManager.getField(USE_EXPIRY_FIELD);
-        Field expireField = contentManager.getField(EXPIREDATE_FIELD);
-        Field publishField = contentManager.getField(PUBLISHDATE_FIELD);
+        Constraint useExpire = getUseExpireConstraint(query, contentManager, Boolean.FALSE);
+        Constraint expirydate = getExpireConstraint(query, date, contentManager, true);
 
-        Constraint useExpire = query.createConstraint(query.getStepField(useExpireField),
-                FieldCompareConstraint.EQUAL, Boolean.FALSE);
-        
-        Object expireDateObj = (publishField.getType() == Field.TYPE_DATETIME) ? new Date(date) : new Long(date);
-        Constraint expirydate = query.createConstraint(query.getStepField(expireField),
-                FieldCompareConstraint.GREATER_EQUAL, expireDateObj);
+        Constraint composite = query.createConstraint(useExpire, CompositeConstraint.LOGICAL_OR, expirydate);
+        SearchUtil.addConstraint(query, composite);
+    }
+    
+    public static void addLifeCycleConstraint(NodeQuery query, long date) {
+        NodeManager contentManager = query.getCloud().getNodeManager(CONTENTELEMENT);
 
-        Object publishDateObj = (publishField.getType() == Field.TYPE_DATETIME) ? new Date(date) : new Long(date);
-        Constraint publishdate = query.createConstraint(query.getStepField(publishField),
-                FieldCompareConstraint.LESS_EQUAL, publishDateObj);
+        Constraint useExpire = getUseExpireConstraint(query, contentManager, Boolean.FALSE);
+        Constraint expirydate = getExpireConstraint(query, date, contentManager, true);
+        Constraint publishdate = getPublishConstraint(query, date, contentManager, false);
 
         Constraint lifecycleComposite = query.createConstraint(expirydate, CompositeConstraint.LOGICAL_AND, publishdate);
         
@@ -269,6 +290,44 @@ public class ContentElementUtil {
         SearchUtil.addConstraint(query, composite);
     }
 
+    public static void addLifeCycleInverseConstraint(NodeQuery query, long date) {
+        NodeManager contentManager = query.getCloud().getNodeManager(CONTENTELEMENT);
+
+        Constraint useExpire = getUseExpireConstraint(query, contentManager, Boolean.TRUE);
+        Constraint expirydate = getExpireConstraint(query, date, contentManager, false);
+        Constraint publishdate = getPublishConstraint(query, date, contentManager, true);
+
+        Constraint lifecycleComposite = query.createConstraint(expirydate, CompositeConstraint.LOGICAL_OR, publishdate);
+        
+        Constraint composite = query.createConstraint(useExpire, CompositeConstraint.LOGICAL_AND, lifecycleComposite);
+        SearchUtil.addConstraint(query, composite);
+    }
+    
+    public static Constraint getUseExpireConstraint(NodeQuery query, NodeManager contentManager, Boolean value) {
+        Field useExpireField = contentManager.getField(USE_EXPIRY_FIELD);
+        Constraint useExpire = query.createConstraint(query.getStepField(useExpireField),
+                FieldCompareConstraint.EQUAL, value);
+        return useExpire;
+    }
+
+    public static Constraint getExpireConstraint(NodeQuery query, long date, NodeManager contentManager, boolean greater) {
+        int operator = (greater ? FieldCompareConstraint.GREATER_EQUAL: FieldCompareConstraint.LESS_EQUAL);
+
+        Field expireField = contentManager.getField(EXPIREDATE_FIELD);
+        Object expireDateObj = (expireField.getType() == Field.TYPE_DATETIME) ? new Date(date) : new Long(date);
+        Constraint expirydate = query.createConstraint(query.getStepField(expireField), operator, expireDateObj);
+        return expirydate;
+    }
+    
+    public static Constraint getPublishConstraint(NodeQuery query, long date, NodeManager contentManager, boolean greater) {
+        int operator = (greater ? FieldCompareConstraint.GREATER_EQUAL: FieldCompareConstraint.LESS_EQUAL);
+        
+        Field publishField = contentManager.getField(PUBLISHDATE_FIELD);
+        Object publishDateObj = (publishField.getType() == Field.TYPE_DATETIME) ? new Date(date) : new Long(date);
+        Constraint publishdate = query.createConstraint(query.getStepField(publishField), operator, publishDateObj);
+        return publishdate;
+    }
+    
     public static void addArchiveConstraint(Node channel, NodeQuery query, Long date, String archive) {
         if (StringUtil.isEmpty(archive) || "all".equalsIgnoreCase(archive)) {
             return;

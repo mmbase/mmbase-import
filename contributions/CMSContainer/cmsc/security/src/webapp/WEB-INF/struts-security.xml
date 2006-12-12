@@ -8,6 +8,7 @@
 	<!-- ========== Form Bean Definitions =================================== -->
 	<form-beans>
 		<form-bean name="ChangePasswordForm" type="com.finalist.cmsc.security.forms.ChangePasswordForm" />
+		<form-bean name="ChangeLanguageForm" type="com.finalist.cmsc.security.forms.ChangeLanguageForm" />
 		<form-bean name="UserForm" type="com.finalist.cmsc.security.forms.UserForm" />
 		<form-bean name="GroupForm" type="com.finalist.cmsc.security.forms.GroupForm" />
 	</form-beans>
@@ -39,6 +40,13 @@
 			<forward name="success" path="/editors/usermanagement/changepassword.jsp" redirect="false" />
 			<forward name="cancel" path="/editors/empty.html" redirect="true" />
 		</action>
+		<action path="/editors/usermanagement/ChangeLanguageAction"
+			type="com.finalist.cmsc.security.forms.ChangeLanguageAction" name="ChangeLanguageForm" scope="request"
+			input="/editors/usermanagement/changelanguage.jsp" unknown="false" validate="true">
+			<forward name="success" path="/editors/usermanagement/changelanguage.jsp" redirect="false" />
+			<forward name="cancel" path="/editors/empty.html" redirect="true" />
+		</action>
+
 		<action path="/editors/usermanagement/DeleteUserAction" type="com.finalist.cmsc.security.forms.DeleteUserAction"
 			unknown="false" validate="false">
 			<forward name="success" path="/editors/usermanagement/userlist.jsp" redirect="false" />

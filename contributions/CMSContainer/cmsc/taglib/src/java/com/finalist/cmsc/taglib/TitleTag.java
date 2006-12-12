@@ -14,29 +14,44 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.tagext.SimpleTagSupport;
+
+import com.finalist.cmsc.beans.om.Page;
+import com.finalist.cmsc.beans.om.Site;
+import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 
 /**
  * Tag to show the title of a Screen
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
  */
-public class TitleTag extends SimpleTagSupport {
+public class TitleTag extends CmscTag {
 
 	/**
 	 * JSP variable name.
 	 */
 	public String var;
 
+    /**
+     * include site title
+     */
+    public boolean site = true;
+    
 	public void doTag() throws JspException, IOException {
 		PageContext ctx = (PageContext) getJspContext();
 		HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
 
 		ScreenTag container = (ScreenTag) findAncestorWithClass(this, ScreenTag.class);
 		if (container != null) {
-			String title = container.getTitle();
-
+			Page page = container.getPage();
+            String title = page.getTitle();
+			if (site) {
+                String path = getPath();
+                Site site = SiteManagement.getSiteFromPath(path);
+                if (!site.equals(page)) {
+                    title = site.getTitle() + " - " + title;
+                }
+            }
+            
 			// handle result
 			if (var != null) {
 				// put in variable
@@ -57,4 +72,8 @@ public class TitleTag extends SimpleTagSupport {
 	public void setVar(String var) {
 		this.var = var;
 	}
+    
+    public void setSite(boolean site) {
+        this.site = site;
+    }
 }

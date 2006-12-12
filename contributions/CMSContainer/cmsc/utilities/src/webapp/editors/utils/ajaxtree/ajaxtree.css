@@ -53,7 +53,67 @@
 	background: buttonface;
 }
 
+
+.marked {
+	color: windowtext;
+	background: buttonface;
+	text-decoration: none;
+}
+
 .ajax-tree-item a.ajax-tree-option {
 	margin-left: 0px;
 	padding: 1px 0px 1px 0px;
 }
+
+
+/* styles for the ContextMenu /HTMLArea */
+/* The ContextMenu plugin is (c) dynarch.com 2003. */
+/* Distributed under the same terms as HTMLArea itself */
+
+div.htmlarea-context-menu {
+  position: absolute;
+  border: 1px solid #aca899;
+  padding: 2px 2px;
+  background-color: #ffffff;
+  color: #000;
+  cursor: default;
+  z-index: 1000;
+}
+
+div.htmlarea-context-menu table {
+  font: 11px tahoma,verdana,sans-serif;
+  border-collapse: collapse;
+}
+
+div.htmlarea-context-menu tr.item td.icon {
+  padding: 2px 2px;
+  width: 18px;
+  height: 18px;
+  background-color: #cdf;
+}
+
+div.htmlarea-context-menu tr.item td.label {
+    
+}
+
+div.htmlarea-context-menu tr.item td.label a {
+  text-decoration: none;
+}
+
+div.htmlarea-context-menu tr.item_hover {
+  background-color: #316ac5;
+}
+
+div.htmlarea-context-menu tr.separator td.label div {
+  margin-right: 3px;
+}
+
+div.htmlarea-context-menu tr.item_hover td.label a{
+  text-decoration: none;
+  color: #fff;
+}
+
+div.htmlarea-context-menu tr.item_hover td.icon {
+  background-color: #619af5;
+}
+

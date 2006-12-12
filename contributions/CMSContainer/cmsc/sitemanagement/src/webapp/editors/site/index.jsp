@@ -31,7 +31,7 @@
 		<title><fmt:message key="site.title" /></title>
 		<script type="text/javascript" src="portalcontrols.js.jsp"></script>
 	</head>
-    <frameset cols="321,*" onload="window.top.toppane.initMenu();" framespacing="0" border="0">
+    <frameset cols="250,*" onload="window.top.toppane.initMenu();" framespacing="0" border="0">
 		<frame scrolling="auto" frameborder="0"  src="<mm:url referid="channelsurl"/>" name="pages"/>
 		<frame frameborder="0" src="<mm:url referid="contenturl"/>" name="content"  onload="frameLoaded();"/>
 	</frameset>

@@ -69,8 +69,9 @@ public class ServerSideIncludePortlet extends CmscPortlet {
         	
         	String html = null;
         	
+            // check if method is set to post by processView
         	String method = (String)request.getPortletSession().getAttribute("method");
-        	getLogger().info("Using method: "+method);
+        	getLogger().debug("Using method: "+method);
         	if(method != null && method.equals("post")) {
         		html = HttpUtil.doPost(sourceAttr.toString(), parameterMap);
         	}
@@ -78,34 +79,18 @@ public class ServerSideIncludePortlet extends CmscPortlet {
         		html = HttpUtil.doGet(sourceAttr.toString(), parameterMap);
         	}
         	
-        	String lowerHtml = html.toLowerCase();
-        	
-        	int formIndex = lowerHtml.indexOf("<form");
-        	if(formIndex >= 0) {
-        		int methodIndex = lowerHtml.indexOf("method");
-        		if(methodIndex > 0) {
-        			for(int count = methodIndex; count < lowerHtml.length() && method == null; count++) {
-        				char chr = lowerHtml.charAt(count); 
-        				if(chr == '\'' || chr == '\"') {
-        					method = lowerHtml.substring(count+1, lowerHtml.indexOf(chr, count+1));
-        					if(method.equals("post")) {
-        						request.getPortletSession().setAttribute("method", "post");
-        					}
-        				}
-        			}
-        		}
-        	}
-        	
         	content.append("<div>");
         	content.append("<!-- begin server side include of ").append(sourceAttr).append("-->");
         	content.append(html);
         	content.append("<!-- end server side include -->");
         	content.append("</div>");
-        }
-        catch(PageNotFoundException e) {
+        } catch(PageNotFoundException e) {
         	getLogger().error(e);
         	content.append("Pagina niet gevonden!");
         }
+
+        // always remove method so it is not reused by other requests
+        request.getPortletSession().removeAttribute("method");
 
         // set required content type and write HTML IFRAME content
         response.setContentType("text/html");
@@ -128,9 +113,11 @@ public class ServerSideIncludePortlet extends CmscPortlet {
     /**
      * Set all the request parameters as the render parameters. 
      */
-	public void processView(ActionRequest req, ActionResponse resp) throws PortletException, IOException {
-		Map parameterMap = req.getParameterMap();
-		resp.setRenderParameters(parameterMap);
+	public void processView(ActionRequest request, ActionResponse response) throws PortletException, IOException {
+        // set method to post so doView knows that is must use doPost
+        request.getPortletSession().setAttribute("method", "post");
+		Map parameterMap = request.getParameterMap();
+		response.setRenderParameters(parameterMap);
 	}
     
 

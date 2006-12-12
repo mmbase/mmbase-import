@@ -9,6 +9,8 @@ See http://www.MMBase.org/license
 */
 package com.finalist.cmsc.mmbase;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 
 import net.sf.mmapps.commons.util.StringUtil;
@@ -77,6 +79,24 @@ public class ResourcesUtil {
             }
         }
         return template;
+    }
+    
+    public static String getServletPathWithAssociation(String association, String defaultPath, String id, String title) {
+        String servletpath = getServletPathWithAssociation(association, defaultPath);
+        if (!servletpath.endsWith("/")) {
+            servletpath += "/";
+        }
+        String url = servletpath + id;
+        if (!StringUtil.isEmpty(title)) {
+            try {
+                url += "/" + URLEncoder.encode(title, "utf-8");
+            }
+            catch (UnsupportedEncodingException e) {
+                // then don't add the title to be on the save side
+            }
+        }
+        return url;
+
     }
     
     public static String getServletPathWithAssociation(String association, String defaultPath) {

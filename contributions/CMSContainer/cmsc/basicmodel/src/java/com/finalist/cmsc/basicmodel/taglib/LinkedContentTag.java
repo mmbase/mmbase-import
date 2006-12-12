@@ -316,8 +316,9 @@ public class LinkedContentTag extends NodeReferrerTag {
        * @return the url that should be referenced by the link
        */
       private String getHref(Node content) {
-          String servletpath = ResourcesUtil.getServletPathWithAssociation("content", "/content/*");
-          return servletpath + "/" + content.getStringValue("number") + "/" + content.getStringValue("title");
+          String title = content.getStringValue("title");
+          String id = content.getStringValue("number");
+          return ResourcesUtil.getServletPathWithAssociation("content", "/content/*", id, title);
       }
 
       /**
