@@ -6,11 +6,11 @@
   be placed in a dropdown box.
 
 --%>
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<%@page import="nl.didactor.component.Component, java.util.TreeMap, java.util.Iterator"%>
-
-<mm:cloud method="asis">
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%><%@page import="nl.didactor.component.Component, java.util.TreeMap, java.util.Iterator"
+%>
+<mm:cloud method="delegate" authenticate="asis">
   <jsp:directive.include file="/shared/setImports.jsp" />
   <script language="JavaScript1.1" type="text/javascript">
 
@@ -21,7 +21,9 @@ function getUrl(url){
 }
 
 function keepalive(){
-  getUrl("<mm:treefile page="/shared/onlineReporter.jsp" objectlist="$includePath" referids="$referids" escapeamps="false"/>");
+  getUrl("<mm:treefile page="/shared/onlineReporter.jsp" objectlist="$includePath" 
+                       escape="js-double-quotes" referids="$referids"
+                       escapeamps="${empty param.escapeamps ?  false : param.escapeamps}" />");
   setTimeout("keepalive();",1000 * 60 * 2); // keep alive every 2 minutes
 }
 
@@ -33,8 +35,8 @@ keepalive();
 %>
 
 <div class="providerMenubar" style="white-space: nowrap">
-<mm:isgreaterthan referid="user" value="0">
-  <mm:node number="$provider">
+<mm:hasrank minvalue="basic user">
+  <mm:node referid="provider">
     <mm:relatednodes role="settingrel" type="components">
       <mm:field name="name" jspvar="cname" write="false" vartype="String">
         <% 
@@ -74,6 +76,11 @@ keepalive();
     <mm:param name="type">div</mm:param>
     <mm:param name="scope">provider</mm:param>
   </mm:treeinclude>
-</mm:isgreaterthan>
+</mm:hasrank>
+<mm:hasrank value="anonymous">
+  <mm:node referid="provider">
+    <mm:nodeinfo type="gui" />
+  </mm:node>
+</mm:hasrank>
 </div>
 </mm:cloud>
