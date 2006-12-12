@@ -1,8 +1,8 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"%>
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%>
 <mm:content postprocessor="reducespace" expires="0">
-<mm:cloud method="delegate" jspvar="cloud">
+<mm:cloud method="delegate">
 
 <mm:import externid="learnobject" required="true"/>
 <mm:import id="madetest" externid="madetest"/>
@@ -15,8 +15,8 @@
 <mm:import externid="questionperpageamount">0</mm:import>
 <mm:import externid="clearmadetest">false</mm:import>
 
-<%@include file="/shared/setImports.jsp" %>
-<%@include file="/education/tests/definitions.jsp" %>
+<jsp:directive.include file="/shared/setImports.jsp" />
+<jsp:directive.include file="/education/tests/definitions.jsp" />
 
 <%-- find user's copybook --%>
 <mm:node number="$user">
@@ -176,7 +176,7 @@
    while (flag != 0) {
       String questionNo = (String) listTestPath.get(i);
 %>
-      <mm:node number="<%= questionNo %>" notfound="skip">
+   <mm:node number="<%= questionNo %>" notfound="skip">
       <mm:hasnode number="${copybookNo}">
         <mm:nodeinfo type="type">
           <mm:treeinclude page="/education/${_}/index.jsp" objectlist="$includePath" referids="$referids,_node@question,learnobject@testnumber,madetest" />
