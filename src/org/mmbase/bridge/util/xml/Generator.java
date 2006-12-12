@@ -25,7 +25,7 @@ import org.mmbase.util.xml.XMLWriter;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.39 2006-02-17 21:16:57 michiel Exp $
+ * @version $Id: Generator.java,v 1.39.2.1 2006-12-12 21:15:17 michiel Exp $
  * @since  MMBase-1.6
  */
 public class Generator {
@@ -327,6 +327,7 @@ public class Generator {
         object = createElement("object");
 
         setAttribute(object, "id", "" + node.getNumber());
+        object.setIdAttribute("id", true);
         setAttribute(object, "type", node.getNodeManager().getName());
         // and the otype (type as number)
         setAttribute(object, "otype", node.getStringValue("otype"));
