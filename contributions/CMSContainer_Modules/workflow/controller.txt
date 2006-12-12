@@ -1,0 +1,114 @@
+   protected void removeFromQueue(Node node, Map removedNodes, List clouds) {
+      if(!removedNodes.containsKey(new Integer(node.getNumber()))) {
+         PublishUtil.removeFromQueue(node, clouds);
+         removedNodes.put(new Integer(node.getNumber()), node);
+         // remove children
+         NodeIterator iter = node.getRelatedNodes("object", null, DESTINATION).nodeIterator();
+         while(iter.hasNext()) {
+            Node virtualNode = iter.nextNode();
+            Node child = cloud.getNode(virtualNode.getNumber());
+            if(child!=null && !removedNodes.containsKey(new Integer(child.getNumber()))) {
+               removeFromQueue(child, removedNodes, clouds);
+               removedNodes.put(new Integer(child.getNumber()), child);
+            } else if (child==null) {
+               log.error("Could not find child node (" + virtualNode.getNumber() + ")");
+            } else {
+               log.debug("Skipping child (" + child.getNodeManager().getName() + " " + child.getNumber() + ") since it was already removed");
+            }
+         }
+      }
+   }
+
+   // publishes node and all workflow children
+   protected void publishNode(Node node, HashMap publishedNodesMap, boolean publishAlways, boolean skipWorkFlowCheck, List clouds) {
+      if(SiteUtil.isPublishable(node)) {
+         boolean isAllowedToPublish = true;
+
+         if (!skipWorkFlowCheck) {
+             if (hasWorkflow(node, TYPE_CONTENT)) {
+                Node wf = getWorkflowNode(node, TYPE_CONTENT);
+                if (publishAlways || wf.getIntValue("status") >= STATUS_APPROVED) {
+                   wf.setIntValue(WORKFLOW_STATUS_FIELD, STATUS_PUBLISHED);
+                   wf.commit();
+                }
+                else {
+                   isAllowedToPublish = false;
+                }
+             }
+         }
+
+         
+         if(isAllowedToPublish) {
+            if(shouldSkip(node) && isAllowedToPublish) {
+               log.debug("skipping: ("+node.getNumber()+") "+node.getNodeManager().getName()+" (is static content)");
+            }
+            else {
+               // publish Node
+               if(!publishedNodesMap.containsKey(new Integer(node.getNumber()))) {
+                  for (Iterator iter = clouds.iterator(); iter.hasNext();) {
+                    Node remoteCloud = (Node) iter.next();
+                    PublishUtil.PublishOrUpdateNode(node, remoteCloud);                    
+                  }
+                  publishedNodesMap.put(new Integer(node.getNumber()), node);
+
+                  if (!"portletparameter".equals(node.getNodeManager().getName())
+                        && !"layout".equals(node.getNodeManager().getName())
+                        && !"faq_category".equals(node.getNodeManager().getName())) {
+                        // We do know that there aren't any related nodes with direction DESTINATION for a portletparameter, layout or faq_category
+                        // To avoid the WARN message like below we skip a child check :
+                        // No relation defined between portletparameter and object using RelationStep(tablename:insrel, alias:insrel, nodes:[], dir:destination, role:null)
+                        // with direction(s) DESTINATION. Trying anyway, but perhaps the query should be fixed, because this should always result nothing.
+                  
+                     // publish children
+                     NodeIterator iter = node.getRelatedNodes("object", null, DESTINATION).nodeIterator();
+                     while(iter.hasNext()) {
+                        Node virtualNode = iter.nextNode();
+                       Node child = cloud.getNode(virtualNode.getNumber());
+                       if(child!=null && !publishedNodesMap.containsKey(new Integer(child.getNumber()))) {
+                          publishNode(child, publishedNodesMap, publishAlways, skipWorkFlowCheck, clouds);
+                          publishedNodesMap.put(new Integer(child.getNumber()), child);
+                       } else if (child==null) {
+                          log.error("Could not find child node (" + virtualNode.getNumber() + ")");
+                       } else {
+                          log.debug("Skipping child (" + child.getNodeManager().getName() + " " + child.getNumber() + ") since it was already published");
+                       }
+                    }
+                  }
+               } else {
+	              log.debug("Skipping node (" + node.getNodeManager().getName() + " " + node.getNumber() + ") since it was already published");
+	           }
+            }
+         } else {
+            log.error("Could not publish node " + node.getNodeManager().getName() + " (" + node.getNumber() + ")");
+         }
+      } else {
+         log.debug("Node is not a publishable element, skipping");
+      }
+   }
+
+   /**
+    * See if we can skip this node (it is not publishable)
+    */
+   private boolean shouldSkip(Node contentNode) {
+      String contentType = contentNode.getNodeManager().getName();
+      if(contentType.equals("layout")) {
+         return true;
+      }
+      else if(contentType.equals("portlet")) {
+         if(SiteUtil.isDefaultPortlet(contentNode)) {
+            return true;
+         }
+      }
+      return false;
+   }
+   
+   /**
+    * Retrieves the last errors that occured (after calling publishContent).
+    *
+    * @return A List of Strings holding the errors that occured, or null if no errors occured.
+    */
+   public List getLastErrors() {
+      return this.lastErrors;
+   }
+
+   public abstract void removeWorkflow(Node contentNode, NodeList sites) ;
